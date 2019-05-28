@@ -72,7 +72,7 @@ void Window::Init(const WindowProps &props)
 	Graphics::API::Context::SetRenderAPI(props.RenderAPI);
 
 	//Create Window
-	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) + "[INDEV][19w22a1]";
+	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) + "[INDEV][19w22a2]";
 	m_window = glfwCreateWindow(static_cast<int>(props.Width), static_cast<int>(props.Height), newTitle.c_str(), nullptr, nullptr);
 
 	//Create Context & Initialize Renderer

@@ -104,3 +104,6 @@ SITREP 05/27/2019|19w22a1
     - Re-Added GLFW and ImGui as submodules ~>45 mins
     - Added GLSLang as Dependencie submodule ~>70 mins
     - Reimplemented Hot Shader Reloading(FileWatcher) ~>120 mins
+
+SITREP 05/28/2019|19w21a2
+    - Uploaded Repository to GitHub Yay :D ~>20 mins

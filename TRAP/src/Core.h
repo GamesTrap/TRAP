@@ -16,7 +16,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 {
 	return static_cast<uint32_t>(version) & 0xFFF;
 }
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 2, 74);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 2, 75);
 
 #ifdef TRAP_PLATFORM_WINDOWS
 inline void TP_DEBUG_BREAK()

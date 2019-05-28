@@ -42,3 +42,4 @@ For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj
 - [GLAD](https://glad.dav1d.de/)
 - [ImGui](https://github.com/GamesTrap/imgui)
 - [VulkanSDK](https://vulkan.lunarg.com/sdk/home)
+- [GLSLang](https://github.com/KhronosGroup/glslang)
