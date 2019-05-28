@@ -1,0 +1,9 @@
+[submodule "Dependencies/GLSLang"]
+	path = Dependencies/GLSLang
+	url = git@github.com:GamesTrap/glslang.git
+[submodule "Dependencies/ImGui"]
+	path = Dependencies/ImGui
+	url = git@github.com:GamesTrap/imgui.git
+[submodule "Dependencies/GLFW"]
+	path = Dependencies/GLFW
+	url = git@github.com:GamesTrap/glfw.git
