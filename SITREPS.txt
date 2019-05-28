@@ -1,0 +1,106 @@
+SITREP 05/08/2019|19w19b1
+    - Added Precompiled Header files(PCH) to speed up compiling ~30 mins
+    - Optimized all vector accesses by replacing vector.at() with vector[] operators ~>50 mins
+    - Log.txt is now created by the Virtual File System(VFS) ~<1 min
+    - Replaced all uint8_t with std::byte less error prone because std::bytes has no operator overloads except bitwise operations ~10 mins
+    - Added macros for versioning TRAP Engine ~<5 mins
+    - Changed TRAP Engine version to 19w19b1(0.2.53) ~<1 min
+    - Changed Parameters of WriteFile(VFS), WriteFile(FileSystem) to use std::vector<std::byte>& instead of std::byte* ~<5 mins
+    - Added TP_RENDERER_ASSERT back to VKContext ~>10 mins
+
+SITREP 05/09/2019|19w19b2
+    - Changed TRAP Engine version to 19w19b2(0.2.54)
+    - Started Adding TP_RENDERER_ASSERT back to VKRenderer ~10 mins
+
+SITREP 05/10/2019|19w19b3a
+    - Changed TRAP Engine version to 19w19b3(0.2.55) 
+    - Reported Bug #1 Destruction of Context before VkImageViews could be cleaned up by Renderer Destructor
+    - Added more TP_RENDERER_ASSERT back to VKRenderer ~10 mins
+
+SITREP 05/14/2019|19w20a
+    - Updated Trello board https://trello.com/b/OFXQuscQ/trap-engine-redesign
+    - Updated Version Number
+
+SITREP 05/15/2019|19w20a1
+    - Finished adding TP_RENDERER_ASSERT back to VKRenderer ~<10 mins
+    - Changed TRAP Engine version to 19w20a1(0.2.56) 
+
+SITREP 05/16/2019|19w20b2
+    - Fixed Bug #1 replaced VKContext* Get() with shared_ptr<VKContext> Get() ~15 mins
+    - Changed TRAP Engine version to 19w20b2(0.2.58)
+    - Renamed VK to Vulkan, GL to OpenGL, DX to D3D12 ~<15 mins
+    - Added a Config class(not using VFS for now) ~>20 mins
+
+SITREP 05/18/2019|19w20c1
+    - Changed TRAP Engine version to 19w20c1(0.2.59)
+    - Added Config class(using VFS for reading and writing to files) ~>30 mins
+    - Added Loading & Saving of Window Width, Height, Mode, VSync and RenderAPI ~<10 mins
+
+SITREP 05/19/2019|19w20c2
+    - Changed TRAP Engine version to 19w20c2(0.2.60)
+    - Changed Config class std::map to std::vector
+
+SITREP 05/19/2019|19w20d2
+    - Changed TRAP Engine version to 19w20d2(0.2.62)
+    - Removed Warnings ~>40 mins
+    - Removed #defines ~>30 mins
+    - Removed potential memory leak in LayerStack ~>20 mins
+
+SITREP 05/20/2019|19w21a2
+    - Changed TRAP Engine version to 19w21a2(0.2.66)
+    - Fixed Bug #4 replaced VFS::Get()->WriteTextFile() with ofstream ~<10 mins
+    - Config changed forEach loops to use std::find_if() ~>20 mins
+    - Changed enums to enum classes ~>30 mins
+    - Removed EVENT_CLASS_CATEGORY macro ~>10 mins
+    - Removed EVENT_CLASS_TYPE ~>20 mins
+
+SITREP 05/21/2019|19w21b1
+    - Changed TRAP Engine version to 19w21b1(0.2.67)
+    - Updated ImGui ~>5 mins
+    - Replaced some function parameters and return types from string to string_view(Only Shader System is missing now) ~>30 mins
+
+SITREP 05/22/2019|19w21b2
+    - Changed TRAP Engine version to 19w21b2(0.2.68)
+    - Started removing new & delete from Shader System ~>60 mins
+
+SITREP 05/23/2019|19w21b3
+    - Changed TRAP Engine version to 19w21b3(0.2.69)
+    - Finished removing new & delete from Shader System(replaced by unique_ptr) ~>120 mins
+    - Added advanced debugging for OpenGL(DebugCallback) ~>20 mins
+    - Fixed Bug Shaders are now correctly destroyed before Context current == nullptr ~>15 mins
+    - Renamed Pixel Shader to Fragment Shader ~>15 mins
+    - Replaced some function parameters and return types from string to string_view(Shader System)
+
+SITREP 05/24/2019|19w21c1
+    - Changed TRAP Engine version to 19w21c1(0.2.70)
+    - Windows Favors Nvidia or Amd GPU now ~<5 mins
+    - Fixed Bug #6 Added a check if shader == nullptr return ~1 mins
+    - Removed TryCompile & TryCompileFromFile ~<5 mins
+    - Replaced GetTimeStamp with __TIME__ macro ~5 mins
+    - Added Timer & TimeStamp classes ~>15 mins
+    - Added GetFrameTime & GetFPS in Application ~>20 mins
+    - Readded GetTimeStamp with new Format ~>15 mins
+    - Added some missing constructors ~>15 mins
+    - Replaced all shared_ptr with unique_ptr ~>30 mins
+    - Added Multi Monitor support ~>20 mins
+    - Added Shutdown in Application to use for Hotkeys ~<10 mins
+    - Added Monitor Resolution Check for Fullscreen see Bug #2 ~>20 mins
+    - Added Refresh Rate to Fullscreen ~>10 mins
+
+SITREP 05/25/2019|19w21c2
+    - Changed TRAP Engine version to 19w21c2(0.2.71)
+    - Added Optional Shader Types to Shader System ~>100 mins
+    - Added Hot Shader Reloading Support with Hotkey(R+S) and On File Modified ~>150 mins
+    - Added Fallback Shader to Shader System for runtime Shader compile errors ~>60 mins
+
+SITREP 05/26/2019|19w21c3
+    - Changed TRAP Engine version to 19w21c3(0.2.73)
+    - Splitted Dependencies into a seperate group ~>50 mins
+    - Added GLSLang library for runtime GLSL to SPIRV compiling ~>120 mins
+
+SITREP 05/27/2019|19w22a1
+    - Changed TRAP Engine version to 19w22a1(0.2.74)
+    - Removed GLFW and ImGui ~<10 mins
+    - Re-Added GLFW and ImGui as submodules ~>45 mins
+    - Added GLSLang as Dependencie submodule ~>70 mins
+    - Reimplemented Hot Shader Reloading(FileWatcher) ~>120 mins
