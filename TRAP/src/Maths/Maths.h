@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_MATHS_H_
+#define _TRAP_MATHS_H_
 
 #include "MathsFunc.h"
 
@@ -25,3 +26,5 @@ namespace TRAP::Maths
 	typedef tVec4<int32_t> Vec4i;
 	typedef tVec4<uint32_t> Vec4ui;
 }
+
+#endif /*_TRAP_MATHS_H_*/

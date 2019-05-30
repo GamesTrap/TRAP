@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_OPENGLCONTEXT_H_
+#define _TRAP_OPENGLCONTEXT_H_
 
 namespace TRAP::Graphics::API
 {
@@ -16,6 +17,15 @@ namespace TRAP::Graphics::API
 
 		static void Present(Window* window);
 
-		static OpenGLContext* Get() { return dynamic_cast<OpenGLContext*>(s_Context.get()); }
+		static OpenGLContext* Get();
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::Graphics::API::OpenGLContext* TRAP::Graphics::API::OpenGLContext::Get()
+{
+	return dynamic_cast<OpenGLContext*>(s_Context.get());
+}
+
+#endif /*_TRAP_OPENGLCONTEXT_H_*/

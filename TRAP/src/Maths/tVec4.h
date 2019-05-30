@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_TVEC4_H_
+#define _TRAP_TVEC4_H_
 
 namespace TRAP::Maths
 {
@@ -140,3 +141,7 @@ namespace TRAP::Maths
 		friend std::ostream& operator<<(std::ostream& stream, const tVec3<T>& vector);
 	};
 }
+
+#include "tVec4.inl"
+
+#endif /*_TRAP_TVEC4_H_*/

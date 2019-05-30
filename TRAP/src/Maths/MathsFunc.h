@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_MATHSFUNC_H_
+#define _TRAP_MATHSFUNC_H_
 
 constexpr float TP_PI = 3.14159265358f;
 
@@ -26,3 +27,5 @@ namespace TRAP::Maths
 
 	float Clamp(float value, float minimum, float maximum);
 }
+
+#endif /*_TRAP_MATHSFUNC_H_*/

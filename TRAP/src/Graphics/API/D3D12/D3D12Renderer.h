@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_D3D12RENDERER_H_
+#define _TRAP_D3D12RENDERER_H_
 
 namespace TRAP::Graphics
 {
@@ -26,10 +27,26 @@ namespace TRAP::Graphics
 
 		std::string_view GetTitleInternal() const override;
 
-		static D3D12Renderer* Get() { return reinterpret_cast<D3D12Renderer*>(s_Instance.get()); }
+		static D3D12Renderer* Get();
 
 	private:
 		API::D3D12Context* m_context;
 		std::string m_rendererTitle;
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string_view TRAP::Graphics::D3D12Renderer::GetTitleInternal() const
+{	
+	return m_rendererTitle;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::Graphics::D3D12Renderer* TRAP::Graphics::D3D12Renderer::Get()
+{
+	return reinterpret_cast<D3D12Renderer*>(s_Instance.get());
+}
+
+#endif /*_TRAP_D3D12RENDERER_H_*/

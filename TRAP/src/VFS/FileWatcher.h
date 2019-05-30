@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_FILEWATCHER_H_
+#define _TRAP_FILEWATCHER_H_
 
 namespace TRAP
 {
@@ -17,7 +18,7 @@ namespace TRAP
 		FileWatcher(const std::string& virtualPath, float updateTimeInMilliseconds);
 
 		//Monitor physicalPaths inside virtualPath for changes and in case of a change execute the user supplied action function
-		void Start(const std::function<void(std::filesystem::path, std::string, FileStatus)>& action);
+		void Check(const std::function<void(std::filesystem::path, std::string, FileStatus)>& action);
 
 	private:
 		std::string m_virtualPathToWatch;
@@ -30,3 +31,5 @@ namespace TRAP
 		Utils::Timer m_timer;
 	};
 }
+
+#endif /*_TRAP_FILEWATCHER_H_*/

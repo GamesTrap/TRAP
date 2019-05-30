@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_SHADERRESOURCE_H_
+#define _TRAP_SHADERRESOURCE_H_
 
 namespace TRAP::Graphics::API
 {
@@ -19,3 +20,5 @@ namespace TRAP::Graphics::API
 
 	typedef std::vector<std::unique_ptr<ShaderResourceDeclaration>> ShaderResourceList;
 }
+
+#endif /*_TRAP_SHADERRESOURCE_H_*/

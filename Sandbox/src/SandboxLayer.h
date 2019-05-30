@@ -69,8 +69,8 @@ public:
 		//FPS & FrameTime
 		if(timer.Elapsed() >= 10.0f) //Output Every Second
 		{
-			TRAP::TP_INFO("[Sandbox] FPS: ", TRAP::Application::Get().GetFPS());
-			TRAP::TP_INFO("[Sandbox] FrameTime: ", TRAP::Application::Get().GetFrameTime(), "ms");
+			TP_INFO("[Sandbox] FPS: ", TRAP::Application::Get().GetFPS());
+			TP_INFO("[Sandbox] FrameTime: ", TRAP::Application::Get().GetFrameTime(), "ms");
 			timer.Reset();
 		}
 	}

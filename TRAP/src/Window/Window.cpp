@@ -3,18 +3,20 @@
 
 #include <glad/glad.h>
 
-namespace TRAP
-{
-static bool s_GLFWInitialized = false;
+//-------------------------------------------------------------------------------------------------------------------//
 
-static void GLFWErrorCallback(const int error, const char *description)
+static void GLFWErrorCallback(const int error, const char* description)
 {
 	TP_ERROR("[Window][GLFW] (", error, "): ", description);
 }
 
-Window::Window(const WindowProps &props)
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Window::Window(const WindowProps& props)
+	: m_window(nullptr), m_useMonitor(nullptr)
 {
-	std::string init = "[Window] Initializing Window: \"" + props.Title + "\" " + std::to_string(props.Width) + 'x' + std::to_string(props.Height) + "@" + std::to_string(props.RefreshRate) + "Hz VSync: ";
+	std::string init = "[Window] Initializing Window: \"" + props.Title + "\" " + std::to_string(props.Width) + 'x' +
+		        	   std::to_string(props.Height) + "@" + std::to_string(props.RefreshRate) + "Hz VSync: ";
 	if (props.VSync > 0)
 		init += "On(" + std::to_string(props.VSync) + ") Mode: ";
 	else
@@ -33,32 +35,39 @@ Window::Window(const WindowProps &props)
 	Init(props);
 }
 
-Window::~Window()
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Window::~Window()
 {
 	Graphics::ShaderManager::Shutdown();
 	TP_DEBUG("[Window] Destroying Window: \"", m_data.Title, "\"");
 	Shutdown();
 }
 
-void Window::Init(const WindowProps &props)
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::Init(const WindowProps& props)
 {
 	m_data.Title = props.Title;
 	m_data.Width = props.Width;
 	m_data.Height = props.Height;
 	m_data.RefreshRate = props.RefreshRate;
 
-	if (!s_GLFWInitialized)
+	static bool sGLFWInitialized = false;
+	if (!sGLFWInitialized)
 	{
 		const int success = glfwInit();
 		TP_CORE_ASSERT(success, "Could not initialize GLFW!");
 		glfwSetErrorCallback(GLFWErrorCallback);
-		s_GLFWInitialized = true;
+		sGLFWInitialized = true;
 	}
 
 	SetMonitor(props.Monitor);
 
 	m_baseVideoMode = *(glfwGetVideoMode(m_useMonitor));
-	TP_DEBUG("[Window] Storing underlying OS video mode: ", m_baseVideoMode.width, 'x', m_baseVideoMode.height, '@', m_baseVideoMode.refreshRate, "Hz (R", m_baseVideoMode.redBits, 'G', m_baseVideoMode.greenBits, 'B', m_baseVideoMode.blueBits, ')');
+	TP_DEBUG("[Window] Storing underlying OS video mode: ",
+	         m_baseVideoMode.width, 'x', m_baseVideoMode.height, '@', m_baseVideoMode.refreshRate, "Hz (R",
+	         m_baseVideoMode.redBits, 'G', m_baseVideoMode.greenBits, 'B', m_baseVideoMode.blueBits, ')');
 
 	if (props.RenderAPI != Graphics::API::RenderAPI::OPENGL)
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -72,8 +81,14 @@ void Window::Init(const WindowProps &props)
 	Graphics::API::Context::SetRenderAPI(props.RenderAPI);
 
 	//Create Window
-	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) + "[INDEV][19w22a2]";
-	m_window = glfwCreateWindow(static_cast<int>(props.Width), static_cast<int>(props.Height), newTitle.c_str(), nullptr, nullptr);
+	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
+			               std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
+			              "[INDEV][19w22a3]";
+	m_window = glfwCreateWindow(static_cast<int>(props.Width),
+	                            static_cast<int>(props.Height),
+	                            newTitle.c_str(),
+	                            nullptr,
+	                            nullptr);
 
 	//Create Context & Initialize Renderer
 	Graphics::API::Context::Create(this);
@@ -95,23 +110,23 @@ void Window::Init(const WindowProps &props)
 	glfwSetWindowUserPointer(m_window, &m_data);
 
 	//Set GLFW callbacks
-	glfwSetWindowSizeCallback(m_window, [](GLFWwindow *window, const int width, const int height) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, const int width, const int height) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 		data.Width = width;
 		data.Height = height;
 
 		WindowResizeEvent event(width, height);
 		data.EventCallback(event);
-	});
+		});
 
-	glfwSetWindowPosCallback(m_window, [](GLFWwindow *window, const int x, const int y) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetWindowPosCallback(m_window, [](GLFWwindow* window, const int x, const int y) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 		WindowMovedEvent event(x, y);
 		data.EventCallback(event);
-	});
+		});
 
-	glfwSetWindowFocusCallback(m_window, [](GLFWwindow *window, const int focused) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetWindowFocusCallback(m_window, [](GLFWwindow* window, const int focused) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		if (focused)
 		{
@@ -123,16 +138,16 @@ void Window::Init(const WindowProps &props)
 			WindowLostFocusEvent event;
 			data.EventCallback(event);
 		}
-	});
+		});
 
-	glfwSetWindowCloseCallback(m_window, [](GLFWwindow *window) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 		WindowCloseEvent event;
 		data.EventCallback(event);
-	});
+		});
 
-	glfwSetKeyCallback(m_window, [](GLFWwindow *window, const int key, int scancode, const int action, int mods) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetKeyCallback(m_window, [](GLFWwindow* window, const int key, int scancode, const int action, int mods) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		switch (action)
 		{
@@ -160,17 +175,17 @@ void Window::Init(const WindowProps &props)
 		default:
 			break;
 		}
-	});
+		});
 
-	glfwSetCharCallback(m_window, [](GLFWwindow *window, const unsigned int keycode) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetCharCallback(m_window, [](GLFWwindow* window, const unsigned int keycode) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		KeyTypedEvent event(static_cast<int>(keycode));
 		data.EventCallback(event);
-	});
+		});
 
-	glfwSetMouseButtonCallback(m_window, [](GLFWwindow *window, const int button, const int action, int mods) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, const int button, const int action, int mods) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		switch (action)
 		{
@@ -191,34 +206,43 @@ void Window::Init(const WindowProps &props)
 		default:
 			break;
 		}
-	});
+		});
 
-	glfwSetScrollCallback(m_window, [](GLFWwindow *window, const double xOffset, const double yOffset) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetScrollCallback(m_window, [](GLFWwindow* window, const double xOffset, const double yOffset) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		MouseScrolledEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset));
 		data.EventCallback(event);
-	});
+		});
 
-	glfwSetCursorPosCallback(m_window, [](GLFWwindow *window, const double xPos, const double yPos) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, const double xPos, const double yPos) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		MouseMovedEvent event(static_cast<float>(xPos), static_cast<float>(yPos));
 		data.EventCallback(event);
-	});
+		});
 }
 
-void Window::Shutdown() const
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::Shutdown() const
 {
 	glfwDestroyWindow(m_window);
 }
 
-void Window::OnUpdate()
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::OnUpdate()
 {
 	glfwPollEvents();
 }
 
-void Window::SetWindowMode(const DisplayMode &mode, unsigned int width, unsigned int height, unsigned int refreshRate)
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetWindowMode(const DisplayMode& mode,
+                                 unsigned int width,
+                                 unsigned int height,
+                                 unsigned int refreshRate)
 {
 	if (!m_window) //Ensure there is a window to work on
 		return;
@@ -234,7 +258,7 @@ void Window::SetWindowMode(const DisplayMode &mode, unsigned int width, unsigned
 		glfwGetWindowPos(m_window, &(m_oldWindowedParams.XPos), &(m_oldWindowedParams.YPos));
 	}
 
-	GLFWmonitor *monitor = nullptr;
+	GLFWmonitor* monitor = nullptr;
 
 	if (mode == DisplayMode::BORDERLESS)
 	{
@@ -263,7 +287,9 @@ void Window::SetWindowMode(const DisplayMode &mode, unsigned int width, unsigned
 			for (int i = 0; i < monitorVideoModesCount; i++)
 			{
 				//Check if resolution pair is valid
-				if (static_cast<unsigned int>(monitorVideoModes[i].width) == m_data.Width && static_cast<unsigned int>(monitorVideoModes[i].height) == m_data.Height && static_cast<unsigned int>(monitorVideoModes[i].refreshRate))
+				if (static_cast<unsigned int>(monitorVideoModes[i].width) == m_data.Width && static_cast<unsigned int>(
+					monitorVideoModes[i].height) == m_data.Height && static_cast<unsigned int>(monitorVideoModes[i].
+					refreshRate))
 				{
 					width = m_data.Width;
 					height = m_data.Height;
@@ -295,16 +321,31 @@ void Window::SetWindowMode(const DisplayMode &mode, unsigned int width, unsigned
 		m_data.EventCallback(event);
 	}
 
-	constexpr auto GetModeStr = [&](const DisplayMode displayMode) {if (displayMode == DisplayMode::WINDOWED) return "Windowed"; return displayMode == DisplayMode::BORDERLESS ? "Borderless" : "Fullscreen"; }; //Little hack to convert enum class DisplayMode to string
-	TP_INFO("[Window] Changing window mode from ", GetModeStr(m_data.Mode), " to ", GetModeStr(mode), ": ", width, 'x', height, '@', refreshRate, "Hz");
+	constexpr auto GetModeStr = [&](const DisplayMode displayMode)
+	{
+		if (displayMode == DisplayMode::WINDOWED)
+			return "Windowed";
+		return displayMode == DisplayMode::BORDERLESS ? "Borderless" : "Fullscreen";
+	}; //Little hack to convert enum class DisplayMode to string
+	TP_INFO("[Window] Changing window mode from ",
+	        GetModeStr(m_data.Mode), " to ", GetModeStr(mode), ": ",
+	        width, 'x', height, '@', refreshRate, "Hz");
 
 	//Record new window type
 	m_data.Mode = mode;
 
-	glfwSetWindowMonitor(m_window, monitor, m_oldWindowedParams.XPos, m_oldWindowedParams.YPos, static_cast<int>(width), static_cast<int>(height), static_cast<int>(refreshRate));
+	glfwSetWindowMonitor(m_window,
+	                     monitor,
+	                     m_oldWindowedParams.XPos,
+	                     m_oldWindowedParams.YPos,
+	                     static_cast<int>(width),
+	                     static_cast<int>(height),
+	                     static_cast<int>(refreshRate));
 }
 
-void Window::SetMonitor(const unsigned int monitor)
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetMonitor(const unsigned int monitor)
 {
 	int monitorCount;
 	const auto monitors = glfwGetMonitors(&monitorCount);
@@ -320,8 +361,10 @@ void Window::SetMonitor(const unsigned int monitor)
 	}
 }
 
-void Window::Clear()
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::Clear()
 {
-	Graphics::Renderer::Clear(static_cast<int>(Graphics::RendererBufferType::RENDERER_BUFFER_COLOR) | static_cast<int>(Graphics::RendererBufferType::RENDERER_BUFFER_DEPTH));
+	Graphics::Renderer::Clear(static_cast<int>(Graphics::RendererBufferType::RENDERER_BUFFER_COLOR) |
+		                            static_cast<int>(Graphics::RendererBufferType::RENDERER_BUFFER_DEPTH));
 }
-} // namespace TRAP

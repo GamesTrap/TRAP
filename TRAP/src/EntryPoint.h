@@ -1,11 +1,11 @@
-#pragma once
+#ifndef _TRAP_ENTRYPOINT_H_
+#define _TRAP_ENTRYPOINT_H_H
 
 #ifdef TRAP_PLATFORM_WINDOWS
 extern "C"
 {
-	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001; //Utilize NVIDIA GPU
-	_declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1; //Utilize AMD GPU
-
+	inline _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001; //Utilize NVIDIA GPU
+	inline _declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1; //Utilize AMD GPU
 }
 #endif
 
@@ -20,3 +20,5 @@ int main()
 	const auto app = TRAP::CreateApplication();
 	app->Run();
 }
+
+#endif /*_TRAP_ENTRYPOINT_H_*/

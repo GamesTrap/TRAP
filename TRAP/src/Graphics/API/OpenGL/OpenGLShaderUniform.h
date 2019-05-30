@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_OPENGLSHADERUNIFORM_H_
+#define _TRAP_OPENGLSHADERUNIFORM_H_
 
 namespace TRAP::Graphics::API
 {
@@ -86,3 +87,89 @@ namespace TRAP::Graphics::API
 		unsigned int m_shaderType; //0 = VS, 1 = PS, 2 = GS, 3 = TCS, 4 = TES, 5 = CS
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline const std::string& TRAP::Graphics::API::OpenGLShaderUniformDeclaration::GetName() const
+{
+	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned int TRAP::Graphics::API::OpenGLShaderUniformDeclaration::GetSize() const
+{
+	return m_size;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned int TRAP::Graphics::API::OpenGLShaderUniformDeclaration::GetCount() const
+{
+	return m_count;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned int TRAP::Graphics::API::OpenGLShaderUniformDeclaration::GetOffset() const
+{
+	return m_offset;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned int TRAP::Graphics::API::OpenGLShaderUniformDeclaration::GetAbsoluteOffset() const
+{
+	return m_struct ? m_struct->GetOffset() + m_offset : m_offset;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline int32_t TRAP::Graphics::API::OpenGLShaderUniformDeclaration::GetLocation() const
+{
+	return m_location;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::Graphics::API::OpenGLShaderUniformDeclaration::Type TRAP::Graphics::API::OpenGLShaderUniformDeclaration::GetType() const
+{
+	return m_type;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string_view TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::GetName() const
+{
+	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned int TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::GetRegister() const
+{
+	return m_register;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned int TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::GetShaderType() const
+{
+	return m_shaderType;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned int TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::GetSize() const
+{
+	return m_size;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline const TRAP::Graphics::API::ShaderUniformList& TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::GetUniformDeclarations() const
+{
+	return m_uniforms;
+}
+
+#endif /*_TRAP_OPENGLSHADERUNIFORM_H_*/

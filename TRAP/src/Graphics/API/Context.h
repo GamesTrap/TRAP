@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_CONTEXT_H_
+#define _TRAP_CONTEXT_H_
 
 namespace TRAP {
 	class Window;
@@ -28,11 +29,11 @@ namespace TRAP::Graphics::API
 
 		static void Create(Window* window);
 
-		static RenderAPI GetRenderAPI() { return s_RenderAPI; }
-		static void SetRenderAPI(const RenderAPI api) { s_RenderAPI = api; }
+		static RenderAPI GetRenderAPI();
+		static void SetRenderAPI(RenderAPI api);
 
-		static void SetVSyncInterval(const unsigned int interval) { if (s_Context) s_Context->SetVSyncIntervalInternal(interval); m_vsyncInterval = interval; }
-		static unsigned int GetVSyncInterval() { return m_vsyncInterval; }
+		static void SetVSyncInterval(unsigned int interval);
+		static unsigned int GetVSyncInterval();
 
 	protected:
 		static std::unique_ptr<Context> s_Context;
@@ -44,3 +45,33 @@ namespace TRAP::Graphics::API
 		static unsigned int m_vsyncInterval;
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::Graphics::API::RenderAPI TRAP::Graphics::API::Context::GetRenderAPI()
+{	
+	return s_RenderAPI;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Graphics::API::Context::SetRenderAPI(const RenderAPI api)
+{
+	s_RenderAPI = api;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Graphics::API::Context::SetVSyncInterval(const unsigned int interval)
+{
+	if (s_Context) s_Context->SetVSyncIntervalInternal(interval); m_vsyncInterval = interval;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned TRAP::Graphics::API::Context::GetVSyncInterval()
+{
+	return m_vsyncInterval;
+}
+
+#endif /*_TRAP_CONTEXT_H_*/

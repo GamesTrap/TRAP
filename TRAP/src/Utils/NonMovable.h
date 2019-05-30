@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_NONMOVABLE_H_
+#define _TRAP_NONMOVABLE_H_
 
 class NonMovable
 {
@@ -9,3 +10,5 @@ public:
 protected:
 	NonMovable() = default;
 };
+
+#endif /*_TRAP_NONMOVABLE_H_*/

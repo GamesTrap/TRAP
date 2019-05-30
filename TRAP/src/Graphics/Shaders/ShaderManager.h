@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_SHADERMANAGER_H_
+#define _TRAP_SHADERMANAGER_H_
 
 namespace TRAP::Graphics
 {
@@ -21,3 +22,5 @@ namespace TRAP::Graphics
 		static std::vector<std::unique_ptr<API::Shader>> s_Shaders;
 	};
 }
+
+#endif /*_TRAP_SHADERMANAGER_H_*/

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_OPENGLRENDERER_H_
+#define _TRAP_OPENGLRENDERER_H_
 
 namespace TRAP::Graphics
 {
@@ -26,7 +27,7 @@ namespace TRAP::Graphics
 
 		std::string_view GetTitleInternal() const override;
 
-		static OpenGLRenderer* Get() { return reinterpret_cast<OpenGLRenderer*>(s_Instance.get()); }
+		static OpenGLRenderer* Get();
 
 		static unsigned int TRAPRendererBufferToGL(unsigned int buffer);
 		static unsigned int TRAPRendererBlendFunctionToGL(RendererBlendFunction function);
@@ -40,3 +41,19 @@ namespace TRAP::Graphics
 		std::string m_rendererTitle;
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string_view TRAP::Graphics::OpenGLRenderer::GetTitleInternal() const
+{
+	return m_rendererTitle;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::Graphics::OpenGLRenderer* TRAP::Graphics::OpenGLRenderer::Get()
+{
+	return reinterpret_cast<OpenGLRenderer*>(s_Instance.get());
+}
+
+#endif /*_TRAP_OPENGLRENDERER_H_*/

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_OPENGLSHADERRESOURCE_H_
+#define _TRAP_OPENGLSHADERRESOURCE_H_
 
 namespace TRAP::Graphics::API
 {
@@ -33,3 +34,33 @@ namespace TRAP::Graphics::API
 		Type m_type;
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline const std::string& TRAP::Graphics::API::OpenGLShaderResourceDeclaration::GetName() const
+{	
+	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned TRAP::Graphics::API::OpenGLShaderResourceDeclaration::GetRegister() const
+{
+	return m_register;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned TRAP::Graphics::API::OpenGLShaderResourceDeclaration::GetCount() const
+{
+	return m_count;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::Graphics::API::OpenGLShaderResourceDeclaration::Type TRAP::Graphics::API::OpenGLShaderResourceDeclaration::GetType() const
+{
+	return m_type;
+}
+
+#endif /*_TRAP_OPENGLSHADERRESOURCE_H_*/

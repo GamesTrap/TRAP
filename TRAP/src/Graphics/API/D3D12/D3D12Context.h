@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_D3D12CONTEXT_H_
+#define _TRAP_D3D12CONTEXT_H_
 
 namespace TRAP::Graphics::API
 {
@@ -16,6 +17,15 @@ namespace TRAP::Graphics::API
 
 		void Present(Window* window);
 
-		static D3D12Context* Get() { return dynamic_cast<D3D12Context*>(s_Context.get()); }
+		static D3D12Context* Get();
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::Graphics::API::D3D12Context* TRAP::Graphics::API::D3D12Context::Get()
+{
+	return dynamic_cast<D3D12Context*>(s_Context.get());
+}
+
+#endif /*_TRAP_D3D12CONTEXT_H_*/

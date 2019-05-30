@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_KEYCODES_H_
+#define _TRAP_KEYCODES_H_
 
 #define TP_KEY_SPACE              32
 #define TP_KEY_APOSTROPHE         39  /* ' */
@@ -122,3 +123,5 @@
 #define TP_KEY_RIGHT_ALT          346
 #define TP_KEY_RIGHT_SUPER        347
 #define TP_KEY_MENU               348
+
+#endif /*_TRAP_KEYCODES_H_*/

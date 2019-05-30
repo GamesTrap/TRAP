@@ -106,4 +106,9 @@ SITREP 05/27/2019|19w22a1
     - Reimplemented Hot Shader Reloading(FileWatcher) ~>120 mins
 
 SITREP 05/28/2019|19w21a2
+    - Changed TRAP Engine version to 19w22a2(0.2.75)
     - Uploaded Repository to GitHub Yay :D ~>20 mins
+
+SITREP 05/29/2019|19w21a3
+    - Changed TRAP Engine version to 19w22a3(0.2.76)
+    - Big CodeStyle overhaul ~>180 mins

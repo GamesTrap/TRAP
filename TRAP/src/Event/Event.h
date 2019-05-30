@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_EVENT_H_
+#define _TRAP_EVENT_H_
 
 namespace TRAP
 {
@@ -40,12 +41,9 @@ namespace TRAP
 		virtual EventType GetEventType() const = 0;
 		virtual const char* GetName() const = 0;
 		virtual int GetCategoryFlags() const = 0;
-		virtual std::string ToString() const { return GetName(); }
+		virtual std::string ToString() const;
 
-		bool IsInCategory(const EventCategory category) const
-		{
-			return GetCategoryFlags() & static_cast<int>(category);
-		}
+		bool IsInCategory(EventCategory category) const;
 	};
 
 	class EventDispatcher
@@ -79,8 +77,28 @@ namespace TRAP
 		return false;
 	}
 
-	inline std::ostream& operator<<(std::ostream& os, const Event& e)
-	{
-		return os << e.ToString();
-	}
+	std::ostream& operator<<(std::ostream& os, const Event& e);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::ostream& TRAP::operator<<(std::ostream& os, const TRAP::Event& e)
+{
+	return os << e.ToString();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string TRAP::Event::ToString() const
+{
+	return GetName();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline bool TRAP::Event::IsInCategory(const EventCategory category) const
+{
+	return GetCategoryFlags() & static_cast<int>(category);
+}
+
+#endif /*_TRAP_EVENT_H_*/

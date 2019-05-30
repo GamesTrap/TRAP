@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_MAT4_H_
+#define _TRAP_MAT4_H_
 
 #include "tVec4.h"
 
@@ -56,3 +57,5 @@ namespace TRAP::Maths
 		std::string ToString() const;
 	};
 }
+
+#endif /*_TRAP_MAT4_H_*/

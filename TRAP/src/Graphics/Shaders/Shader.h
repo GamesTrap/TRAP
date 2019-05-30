@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_SHADER_H_
+#define _TRAP_SHADER_H_
 
 namespace TRAP::Graphics::API
 {
@@ -77,3 +78,5 @@ namespace TRAP::Graphics::API
 		static std::unique_ptr<Shader> CreateFromSource(const std::string& name, const std::string& VSSource, const std::string& FSSource, const std::string& GSSource, const std::string& TCSSource, const std::string& TESSource, const std::string& CSSource);;
 	};
 }
+
+#endif /*_TRAP_SHADER_H_*/

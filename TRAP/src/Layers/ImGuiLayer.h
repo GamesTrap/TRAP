@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_IMGUILAYER_H_
+#define _TRAP_IMGUILAYER_H_
 
 namespace TRAP
 {
@@ -21,3 +22,5 @@ namespace TRAP
 		float m_time = 0.0f;
 	};
 }
+
+#endif /*_TRAP_IMGUILAYER_H_*/

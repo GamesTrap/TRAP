@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_VULKANCONTEXT_H_
+#define _TRAP_VULKANCONTEXT_H_
 
 namespace TRAP::Graphics::API
 {
@@ -16,9 +17,9 @@ namespace TRAP::Graphics::API
 
 		void Present(Window* window);
 
-		static VulkanContext* Get() { return dynamic_cast<VulkanContext*>(s_Context.get()); }
-		VkSurfaceKHR& GetSurface() { return m_surface; }
-		Window* GetWindow() const { return m_window; }
+		static VulkanContext* Get();
+		VkSurfaceKHR& GetSurface();
+		Window* GetWindow() const;
 
 		void InitSurface();
 		void DeInitSurface();
@@ -52,3 +53,33 @@ namespace TRAP::Graphics::API
 		bool m_vsync;
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Graphics::API::VulkanContext::SetVSyncIntervalInternal(unsigned int interval)
+{
+	m_vsync = interval;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::Graphics::API::VulkanContext* TRAP::Graphics::API::VulkanContext::Get()
+{
+	return dynamic_cast<VulkanContext*>(s_Context.get());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline VkSurfaceKHR& TRAP::Graphics::API::VulkanContext::GetSurface()
+{
+	return m_surface;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::Window* TRAP::Graphics::API::VulkanContext::GetWindow() const
+{
+	return m_window;
+}
+
+#endif /*_TRAP_VULKANCONTEXT_H_*/

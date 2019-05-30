@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_LAYERSTACK_H_
+#define _TRAP_LAYERSTACK_H_
 
 namespace TRAP {
 
@@ -10,8 +11,8 @@ namespace TRAP {
 		void PopLayer(const std::unique_ptr<Layer>& layer);
 		void PopOverlay(const std::unique_ptr<Layer>& overlay);
 
-		std::vector<std::unique_ptr<Layer>>::iterator begin() { return m_layers.begin(); }
-		std::vector<std::unique_ptr<Layer>>::iterator end() { return m_layers.end(); }
+		std::vector<std::unique_ptr<Layer>>::iterator begin();
+		std::vector<std::unique_ptr<Layer>>::iterator end();
 
 	private:
 		std::vector<std::unique_ptr<Layer>> m_layers;
@@ -19,3 +20,19 @@ namespace TRAP {
 	};
 
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::begin()
+{
+	return m_layers.begin();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::end()
+{
+	return m_layers.end();
+}
+
+#endif /*_TRAP_LAYERSTACK_H_*/

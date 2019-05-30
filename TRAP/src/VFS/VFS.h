@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_VFS_H_
+#define _TRAP_VFS_H_
 
 #include <string>
 #include <vector>
@@ -30,15 +31,13 @@ namespace TRAP
 		static void Init();
 		static void Shutdown();
 
-		bool GetHotShaderReloading() const { return m_hotShaderReloading; }
-		void SetHotShaderReloading(const bool enabled) { m_hotShaderReloading = enabled; }
-		FileWatcher* GetShaderFileWatcher() const { return m_shaderFileWatcher.get(); }
+		bool GetHotShaderReloading() const;
+		void SetHotShaderReloading(bool enabled);
+		FileWatcher* GetShaderFileWatcher() const;
 
-		std::unordered_map<std::string, std::vector<std::string>> GetMounts() const;
+		static VFS* Get();
 
-		static VFS* Get() { return s_Instance.get(); }
-
-		static std::string MakeCompatible(const std::string& virtualPath);
+		static std::string MakeVirtualPathCompatible(const std::string& virtualPath);
 
 	private:
 		static std::unique_ptr<VFS> s_Instance;
@@ -49,3 +48,33 @@ namespace TRAP
 		std::unique_ptr<FileWatcher> m_shaderFileWatcher;
 	};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline bool TRAP::VFS::GetHotShaderReloading() const
+{
+	return m_hotShaderReloading;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::VFS::SetHotShaderReloading(const bool enabled)
+{
+	m_hotShaderReloading = enabled;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::FileWatcher* TRAP::VFS::GetShaderFileWatcher() const
+{
+	return m_shaderFileWatcher.get();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::VFS* TRAP::VFS::Get()
+{
+	return s_Instance.get();
+}
+
+#endif /*_TRAP_VFS_H_*/

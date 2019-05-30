@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_TRAP_H_
+#define _TRAP_TRAP_H_
 
 //For use by TRAP Applications
 #include "Application.h"
@@ -21,3 +22,5 @@
 //----ENTRY POINT-------
 #include "EntryPoint.h"
 //----------------------
+
+#endif /*_TRAP_TRAP_H_*/

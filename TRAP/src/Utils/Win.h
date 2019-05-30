@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_WIN_H_
+#define _TRAP_WIN_H_
 
 //Target Windows 7 or later
 #ifndef _WIN32_WINNT
@@ -116,3 +117,5 @@
 #endif
 
 #include <Windows.h>
+
+#endif /*_TRAP_WIN_H_*/

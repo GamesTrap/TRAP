@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_LAYER_H_
+#define _TRAP_LAYER_H_
 
 namespace TRAP {
 
@@ -19,9 +20,24 @@ namespace TRAP {
 		virtual void OnEvent(Event& event) {}
 		virtual void OnResize(unsigned int width, unsigned int height) {}
 
-		std::string_view GetName() const { return m_DebugName; }
+		std::string_view GetName() const;
 	protected:
 		std::string m_DebugName;
 	};
-
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::Layer::Layer(std::string debugName)
+	: m_DebugName(std::move(debugName))
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string_view TRAP::Layer::GetName() const
+{
+	return m_DebugName;
+}
+
+#endif /*_TRAP_LAYER_H_*/

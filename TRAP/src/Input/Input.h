@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_INPUT_H_
+#define _TRAP_INPUT_H_
 
 namespace TRAP
 {
@@ -16,3 +17,5 @@ namespace TRAP
 		static const float m_lastTime;
 	};
 }
+
+#endif /*_TRAP_INPUT_H_*/

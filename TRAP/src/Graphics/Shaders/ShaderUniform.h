@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_SHADERUNIFORM_H_
+#define _TRAP_SHADERUNIFORM_H_
 
 namespace TRAP::Graphics::API
 {
@@ -76,3 +77,40 @@ namespace TRAP::Graphics::API
 
 	typedef std::vector<std::unique_ptr<ShaderStruct>> ShaderStructList;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Graphics::API::ShaderStruct::SetOffset(unsigned offset)
+{
+	m_offset = offset;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string_view TRAP::Graphics::API::ShaderStruct::GetName() const
+{
+	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned int TRAP::Graphics::API::ShaderStruct::GetSize() const
+{
+	return m_size;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned int TRAP::Graphics::API::ShaderStruct::GetOffset() const
+{
+	return m_offset;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline const std::vector<std::unique_ptr<TRAP::Graphics::API::ShaderUniformDeclaration>>& TRAP::Graphics::API::ShaderStruct::GetFields() const
+{
+	return m_fields;
+}
+
+#endif /*_TRAP_SHADERUNIFORM_H_*/

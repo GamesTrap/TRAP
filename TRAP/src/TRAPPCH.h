@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_TRAPPCH_H_
+#define _TRAP_TRAPPCH_H_
 
 #include <iostream>
 #include <memory>
@@ -99,3 +100,5 @@
 #include "Application.h"
 
 #include "imgui.h"
+
+#endif /*_TRAP_TRAPPCH_H_*/

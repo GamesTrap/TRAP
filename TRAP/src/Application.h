@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TRAP_APPLICATION_H_
+#define _TRAP_APPLICATION_H_
 #include "TRAPPCH.h"
 
 #include "Layers/ImGuiLayer.h"
@@ -22,15 +23,15 @@ namespace TRAP
 		void PushLayer(std::unique_ptr<Layer> layer);
 		void PushOverlay(std::unique_ptr<Layer> overlay);
 
-		Window* GetWindow() const { return m_window.get(); }
-		Utils::Config* GetConfig() { return &m_config; }
+		Window* GetWindow() const;
+		Utils::Config* GetConfig();
 
 		unsigned int GetFPS() const;
 		float GetFrameTime() const;
 
-		void Shutdown() { m_running = false; }
+		void Shutdown();
 
-		static Application& Get() { return *s_Instance; }
+		static Application& Get();
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
@@ -52,3 +53,47 @@ namespace TRAP
 	//To be defined in CLIENT
 	std::unique_ptr<Application> CreateApplication();
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::Window* TRAP::Application::GetWindow() const
+{
+	return m_window.get();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::Utils::Config* TRAP::Application::GetConfig()
+{
+	return &m_config;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned int TRAP::Application::GetFPS() const
+{
+	return m_FramesPerSecond;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline float TRAP::Application::GetFrameTime() const
+{
+	return m_Frametime;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Application::Shutdown()
+{
+	m_running = false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::Application& TRAP::Application::Get()
+{
+	return *s_Instance;
+}
+
+#endif /*_TRAP_APPLICATION_H_*/
