@@ -4,7 +4,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 //FALLBACK/PASSTHROUGH SHADER
-static const char* s_PassthroughVSGLSL
+static constexpr char* s_PassthroughVSGLSL
 {
 	R"(
 		#version 460 core
@@ -17,7 +17,7 @@ static const char* s_PassthroughVSGLSL
 		}
 		)"
 };
-static const char* s_PassthroughFSGLSL
+static constexpr char* s_PassthroughFSGLSL
 {
 	R"(
 		#version 460 core

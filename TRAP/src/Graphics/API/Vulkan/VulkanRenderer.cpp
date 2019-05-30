@@ -320,8 +320,8 @@ void TRAP::Graphics::VulkanRenderer::DeInitDebug()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #else
-void VulkanRenderer::InitDebug() {}
-void VulkanRenderer::DeInitDebug() {}
+void TRAP::Graphics::VulkanRenderer::InitDebug() {}
+void TRAP::Graphics::VulkanRenderer::DeInitDebug() {}
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//

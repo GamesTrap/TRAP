@@ -109,6 +109,8 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	glfwSetWindowUserPointer(m_window, &m_data);
 
+	SetIcon();
+
 	//Set GLFW callbacks
 	glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, const int width, const int height) {
 		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
@@ -359,6 +361,14 @@ void TRAP::Window::SetMonitor(const unsigned int monitor)
 		m_data.Monitor = 0;
 		m_useMonitor = glfwGetPrimaryMonitor();
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetIcon(const unsigned int width, const unsigned int height, unsigned char* pixels) const
+{
+	GLFWimage image{static_cast<int>(width), static_cast<int>(height), pixels};
+	glfwSetWindowIcon(m_window, 1, &image);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

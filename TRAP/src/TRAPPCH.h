@@ -33,6 +33,8 @@
 #include "Utils/Win.h"
 #endif
 
+#include "Utils/Logo.h"
+
 #include "Utils/Timer.h"
 #include "Utils/TimeStep.h"
 

@@ -77,6 +77,7 @@ namespace TRAP
 		                   unsigned int height = 0,
 		                   unsigned int refreshRate = 0);
 		void SetMonitor(unsigned int monitor = 0);
+		void SetIcon(unsigned int width = 32, unsigned int height = 32, unsigned char* pixels = Utils::INTERNAL::Logo.data()) const; //TODO Replace pixels with TRAP::Image Loader...
 
 		void* GetNativeWindow() const;
 

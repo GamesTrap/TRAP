@@ -117,3 +117,4 @@ SITREP 05/30/2019|19w22a4
     - Changed TRAP Engine version to 19w22a4(0.2.77)
     - Changed checks if TRAP_PLATFORM_WINDOWS for D3D12 API ~>10 mins
     - Changed calculation of FPS & set FPS and FrameTime at the end of the GameLoop ~>15 mins
+    - Added SetIcon inside Window and embedded TRAP logo as default icon ~>40 mins
