@@ -1,6 +1,8 @@
 #ifndef _TRAP_D3D12CONTEXT_H_
 #define _TRAP_D3D12CONTEXT_H_
 
+#ifdef TRAP_PLATFORM_WINDOWS
+
 namespace TRAP::Graphics::API
 {
 	class D3D12Context final : public Context
@@ -27,5 +29,7 @@ inline TRAP::Graphics::API::D3D12Context* TRAP::Graphics::API::D3D12Context::Get
 {
 	return dynamic_cast<D3D12Context*>(s_Context.get());
 }
+
+#endif
 
 #endif /*_TRAP_D3D12CONTEXT_H_*/

@@ -152,18 +152,16 @@ void TRAP::Application::OnEvent(Event& e)
 
 void TRAP::Application::Run()
 {
-	Utils::Timer FPSTimer;
 	Utils::TimeStep deltaTime(0.0f);
-	unsigned int frames = 0;
 
 	while (m_running)
 	{
+		Utils::Timer FrameTimeTimer;
 		m_window->Clear();
 
 		Utils::TimeStep currentFrame(m_timer->Elapsed());
 		deltaTime.Update(currentFrame.GetSeconds());
 
-		Utils::Timer FrameTimeTimer;
 		for (const auto& layer : m_layerStack)
 			layer->OnUpdate(deltaTime.GetSeconds());
 
@@ -175,18 +173,8 @@ void TRAP::Application::Run()
 			ImGuiLayer::End();
 		}
 
-		m_Frametime = FrameTimeTimer.ElapsedMilliseconds();
-		++frames;
-
 		Graphics::Renderer::Present(m_window.get());
 		m_window->OnUpdate();
-
-		if (FPSTimer.Elapsed() >= 1.0f) //Update FPS Counter every Second
-		{
-			m_FramesPerSecond = frames;
-			frames = 0;
-			FPSTimer.Reset();
-		}
 
 		//Update Shaders if needed
 		if (VFS::Get()->GetHotShaderReloading() && VFS::Get()->GetShaderFileWatcher())
@@ -205,6 +193,9 @@ void TRAP::Application::Run()
 					Graphics::ShaderManager::Reload(virtualPath);
 				});
 		}
+
+		m_Frametime = FrameTimeTimer.ElapsedMilliseconds();
+		m_FramesPerSecond = static_cast<unsigned int>(1000.0f / m_Frametime);
 	}
 }
 

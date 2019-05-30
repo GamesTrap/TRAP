@@ -11,9 +11,7 @@ namespace TRAP::Graphics::API
 	{
 		NONE,
 		OPENGL,
-#ifdef TRAP_PLATFORM_WINDOWS
 		D3D12,
-#endif
 		VULKAN
 	};
 

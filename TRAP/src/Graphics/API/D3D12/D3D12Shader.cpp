@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "D3D12Shader.h"
 
+#ifdef TRAP_PLATFORM_WINDOWS
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::D3D12Shader::D3D12Shader(std::string name, std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource)
@@ -121,3 +123,5 @@ void TRAP::Graphics::API::D3D12Shader::SetCSUserUniformBuffer(uint8_t* data, con
 {
 	//ResolveAndSetUniforms(m_CSUserUniformBuffer.get(), data, size);
 }
+
+#endif

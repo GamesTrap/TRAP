@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "D3D12Renderer.h"
 
+#ifdef TRAP_PLATFORM_WINDOWS
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::D3D12Renderer::D3D12Renderer()
@@ -75,3 +77,5 @@ void TRAP::Graphics::D3D12Renderer::SetBlendEquationInternal(RendererBlendEquati
 void TRAP::Graphics::D3D12Renderer::SetViewportInternal(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
 {
 }
+
+#endif

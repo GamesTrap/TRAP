@@ -83,7 +83,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	//Create Window
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 			               std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-			              "[INDEV][19w22a3]";
+			              "[INDEV][19w22a4]";
 	m_window = glfwCreateWindow(static_cast<int>(props.Width),
 	                            static_cast<int>(props.Height),
 	                            newTitle.c_str(),

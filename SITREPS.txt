@@ -105,10 +105,15 @@ SITREP 05/27/2019|19w22a1
     - Added GLSLang as Dependencie submodule ~>70 mins
     - Reimplemented Hot Shader Reloading(FileWatcher) ~>120 mins
 
-SITREP 05/28/2019|19w21a2
+SITREP 05/28/2019|19w22a2
     - Changed TRAP Engine version to 19w22a2(0.2.75)
     - Uploaded Repository to GitHub Yay :D ~>20 mins
 
-SITREP 05/29/2019|19w21a3
+SITREP 05/29/2019|19w22a3
     - Changed TRAP Engine version to 19w22a3(0.2.76)
     - Big CodeStyle overhaul ~>180 mins
+
+SITREP 05/30/2019|19w22a4
+    - Changed TRAP Engine version to 19w22a4(0.2.77)
+    - Changed checks if TRAP_PLATFORM_WINDOWS for D3D12 API ~>10 mins
+    - Changed calculation of FPS & set FPS and FrameTime at the end of the GameLoop ~>15 mins

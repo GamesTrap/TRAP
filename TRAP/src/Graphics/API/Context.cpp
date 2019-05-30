@@ -24,6 +24,10 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 		TP_INFO("[Context][D3D12] Initializing Context");
 		s_Context = std::make_unique<D3D12Context>(window);
 		break;
+#else
+	case RenderAPI::D3D12:
+		TP_CRITICAL("[Context][D3D12] Unsupported Platform!");
+		exit(-1); //TODO Better Crash
 #endif
 
 	case RenderAPI::VULKAN:

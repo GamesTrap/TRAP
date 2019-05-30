@@ -21,6 +21,10 @@ void TRAP::Graphics::Renderer::Init()
 		TP_INFO("[Renderer][D3D12] Initializing Renderer");
 		s_Instance = std::make_unique<D3D12Renderer>();
 		break;
+#else
+	case API::RenderAPI::D3D12:
+		TP_CRITICAL("[Renderer][D3D12] Unsupported Platform!");
+		exit(-1);
 #endif
 
 	case API::RenderAPI::VULKAN:

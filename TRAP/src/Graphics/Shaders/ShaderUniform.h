@@ -24,7 +24,9 @@ namespace TRAP::Graphics::API
 	private:
 		friend class Shader;
 		friend class OpenGLShader;
+#ifdef TRAP_PLATFORM_WINDOWS
 		friend class D3D12Shader;
+#endif
 		friend class VulkanShader;
 		friend class ShaderStruct;
 	};

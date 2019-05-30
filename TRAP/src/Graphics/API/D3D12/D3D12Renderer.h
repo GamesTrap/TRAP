@@ -1,6 +1,8 @@
 #ifndef _TRAP_D3D12RENDERER_H_
 #define _TRAP_D3D12RENDERER_H_
 
+#ifdef TRAP_PLATFORM_WINDOWS
+
 namespace TRAP::Graphics
 {
 	class D3D12Renderer final : public Renderer
@@ -48,5 +50,7 @@ inline TRAP::Graphics::D3D12Renderer* TRAP::Graphics::D3D12Renderer::Get()
 {
 	return reinterpret_cast<D3D12Renderer*>(s_Instance.get());
 }
+
+#endif
 
 #endif /*_TRAP_D3D12RENDERER_H_*/

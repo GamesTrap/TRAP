@@ -1,6 +1,8 @@
 #ifndef _TRAP_D3D12COMMON_H_
 #define _TRAP_D3D12COMMON_H_
 
+#ifdef TRAP_PLATFORM_WINDOWS
+
 namespace TRAP::Graphics::API
 {
 	void CheckD3D12Error(HRESULT result, const char* function, const char* file, int line);
@@ -70,5 +72,7 @@ namespace TRAP::Graphics
 	#define DXCall(x) x
 #endif
 }
+
+#endif
 
 #endif /*_TRAP_D3D12COMMON_H_*/

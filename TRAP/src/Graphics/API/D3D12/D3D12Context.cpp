@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "D3D12Context.h"
 
+#ifdef TRAP_PLATFORM_WINDOWS
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 namespace TRAP::Graphics::API
@@ -37,3 +39,5 @@ void TRAP::Graphics::API::D3D12Context::SetVSyncIntervalInternal(unsigned int in
 void TRAP::Graphics::API::D3D12Context::Present(Window* window)
 {
 }
+
+#endif

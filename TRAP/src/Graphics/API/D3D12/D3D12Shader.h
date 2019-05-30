@@ -1,6 +1,8 @@
 #ifndef _TRAP_D3D12SHADER_H_
 #define _TRAP_D3D12SHADER_H_
 
+#ifdef TRAP_PLATFORM_WINDOWS
+
 namespace TRAP::Graphics::API
 {
 	class D3D12Shader : public Shader
@@ -266,5 +268,7 @@ inline const std::string& TRAP::Graphics::API::D3D12Shader::GetCSSource() const
 {
 	return m_CSSource;
 }
+
+#endif
 
 #endif /*_TRAP_D3D12SHADER_H_*/
