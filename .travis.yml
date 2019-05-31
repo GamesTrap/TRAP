@@ -34,8 +34,8 @@ matrix:
         - make
     - os: windows
       before_install:
-        - curl --silent --show-error https://vulkan.lunarg.com/sdk/download/1.1.106.0/windows/VulkanSDK-1.1.106.0-Installer.exe
-        - .\VulkanSDK-1.1.106.0-Installer.exe /S
+        - curl -L -O --silent --show-error --output VulkanSDK.exe https://vulkan.lunarg.com/sdk/download/1.1.106.0/windows/VulkanSDK-1.1.106.0-Installer.exe?Human=true
+        - .\VulkanSDK.exe /S
       env: 
         - LABEL="windows-msvc" 
         - MSBUILD_PATH="/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin"

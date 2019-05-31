@@ -17,21 +17,21 @@ IncludeDir["GLFW"] = "Dependencies/GLFW/include"
 IncludeDir["GLAD"] = "Dependencies/GLAD/include"
 IncludeDir["IMGUI"] = "Dependencies/ImGui"
 IncludeDir["VULKAN"] = os.getenv("VULKAN_SDK")
-IncludeDir["GLSLANG"] = "Dependencies/glslang"
-IncludeDir["OGLCOMPILER"] = "Dependencies/glslang/OGLCompilersDLL"
-IncludeDir["OSDEPENDENT"] = "Dependencies/glslang/glslang/OSDependent"
-IncludeDir["HLSL"] = "Dependencies/glslang/hlsl"
-IncludeDir["SPIRV"] = "Dependencies/glslang/SPIRV"
-IncludeDir["STANDALONE"] = "Dependencies/glslang/StandAlone"
+IncludeDir["GLSLANG"] = "Dependencies/GLSLang"
+IncludeDir["OGLCOMPILER"] = "Dependencies/GLSLang/OGLCompilersDLL"
+IncludeDir["OSDEPENDENT"] = "Dependencies/GLSLang/glslang/OSDependent"
+IncludeDir["HLSL"] = "Dependencies/GLSLang/hlsl"
+IncludeDir["SPIRV"] = "Dependencies/GLSLang/SPIRV"
+IncludeDir["STANDALONE"] = "Dependencies/GLSLang/StandAlone"
 
 group "Dependencies"
 	include "Dependencies/GLFW"
 	include "Dependencies/GLAD"
-	include "Dependencies/IMGUI"
+	include "Dependencies/ImGui"
 	group "Dependencies/GLSLang"
 		include "Dependencies/GLSLang/SPIRV"
 		include "Dependencies/GLSLang/StandAlone"
-		include "Dependencies/GLSLANG/GLSLANG"
+		include "Dependencies/GLSLang/glslang"
 
 group "Engine"
 project "TRAP"
@@ -110,14 +110,14 @@ project "TRAP"
 		{ 
 			"GLFW",
 			"GLAD",
-			"IMGUI",
+			"ImGui",
 			"D3D12",
 			"DXGI",
 			"D3DCOMPILER",
 			"%{IncludeDir.VULKAN}/lib/vulkan-1",
-			"GLSLANG",
+			"GLSLang",
 			"SPIRV",
-			"STANDALONE"
+			"StandAlone"
 		}
 
 	filter "system:linux"
@@ -140,11 +140,11 @@ project "TRAP"
 		{
 			"GLFW",
 			"GLAD",
-			"IMGUI",
+			"ImGui",
 			"%{IncludeDir.VULKAN}/lib/libvulkan",
-			"GLSLANG",
+			"GLSLang",
 			"SPIRV",
-			"STANDALONE"
+			"StandAlone"
 		}
 
 	filter "system:macosx"
@@ -165,11 +165,12 @@ project "TRAP"
 		{
 			"GLFW",
 			"GLAD",
-			"IMGUI",
+			"ImGui",
 			"%{IncludeDir.VULKAN}/lib/libvulkan",
-			"GLSLANG",
+			"GLSLang",
 			"SPIRV",
-			"STANDALONE"
+			"StandAlone",
+			"stdc++fs"
 		}
 
 	filter "configurations:Debug"
