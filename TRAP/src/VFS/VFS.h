@@ -1,11 +1,6 @@
 #ifndef _TRAP_VFS_H_
 #define _TRAP_VFS_H_
 
-#include <string>
-#include <vector>
-#include <filesystem>
-#include <unordered_map>
-
 #include "FileWatcher.h"
 
 namespace TRAP
