@@ -38,7 +38,7 @@ matrix:
         - make
     - os: windows
       before_install:
-        - curl -L -O --silent --show-error https://vulkan.lunarg.com/sdk/download/1.1.106.0/windows/VulkanSDK-1.1.106.0-Installer.exe
+        - curl -L -O https://vulkan.lunarg.com/sdk/download/1.1.106.0/windows/VulkanSDK-1.1.106.0-Installer.exe
         - VulkanSDK-1.1.106.0-Installer.exe /S
       env: 
         - LABEL="windows-msvc" 
