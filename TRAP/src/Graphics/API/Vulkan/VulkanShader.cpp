@@ -168,7 +168,7 @@ std::unique_ptr<glslang::TShader> TRAP::Graphics::API::VulkanShader::PreProcess(
 	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_4);
 	const EShMessages messages = static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules);
 	DirStackFileIncluder includer;
-	if (!shader->preprocess(&glslang::DefaultTBuiltInResource, glslang::EShTargetOpenGL_450, ECoreProfile, true, false, messages, &preProcessedSource, includer))
+	if (!shader->preprocess(&glslang::DefaultTBuiltInResource, glslang::EShTargetOpenGL_450, ECoreProfile, true, true, messages, &preProcessedSource, includer))
 	{
 		TP_ERROR("[Shader}[Vulkan] GLSL Preprocessing failed!");
 		TP_ERROR("[Shader][Vulkan] ", shader->getInfoLog());

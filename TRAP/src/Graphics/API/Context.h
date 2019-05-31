@@ -27,6 +27,8 @@ namespace TRAP::Graphics::API
 
 		static void Create(Window* window);
 
+		static void AutoSelectRenderAPI();
+		static void CheckAllRenderAPIs();
 		static RenderAPI GetRenderAPI();
 		static void SetRenderAPI(RenderAPI api);
 
@@ -41,6 +43,10 @@ namespace TRAP::Graphics::API
 		virtual void SetVSyncIntervalInternal(unsigned int interval = 0) = 0;
 
 		static unsigned int m_vsyncInterval;
+
+		static bool s_isD3D12Capable;
+		static bool s_isVulkanCapable;
+		static bool s_isOpenGLCapable;
 	};
 }
 
@@ -49,13 +55,6 @@ namespace TRAP::Graphics::API
 inline TRAP::Graphics::API::RenderAPI TRAP::Graphics::API::Context::GetRenderAPI()
 {	
 	return s_RenderAPI;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline void TRAP::Graphics::API::Context::SetRenderAPI(const RenderAPI api)
-{
-	s_RenderAPI = api;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

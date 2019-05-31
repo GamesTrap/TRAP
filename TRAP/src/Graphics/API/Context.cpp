@@ -8,6 +8,10 @@ TRAP::Graphics::API::RenderAPI TRAP::Graphics::API::Context::s_RenderAPI = Rende
 
 unsigned int TRAP::Graphics::API::Context::m_vsyncInterval = 0;
 
+bool TRAP::Graphics::API::Context::s_isD3D12Capable = false;
+bool TRAP::Graphics::API::Context::s_isVulkanCapable = false;
+bool TRAP::Graphics::API::Context::s_isOpenGLCapable = false;
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::Context::Create(Window* window)
@@ -25,9 +29,9 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 		s_Context = std::make_unique<D3D12Context>(window);
 		break;
 #else
-	case RenderAPI::D3D12:
-		TP_CRITICAL("[Context][D3D12] Unsupported Platform!");
-		exit(-1); //TODO Better Crash
+	case RenderAPI::D3D12: //Shouldn't be used because it's a windows only API
+		TP_CRITICAL("[Context][D3D12] Unsupported Platform(not Windows)!");
+		exit(-1); //TODO User friendly exit(MsgBox?)
 #endif
 
 	case RenderAPI::VULKAN:
@@ -36,6 +40,144 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 		break;
 
 	default:
-		break;
+		TP_CRITICAL("[Engine] Unsupported Device!");
+		exit(-1); //TODO User friendly exit(MsgBox?)
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::Context::AutoSelectRenderAPI()
+{
+	TP_INFO("[Context] Auto selecting RenderAPI");
+#ifdef TRAP_PLATFORM_WINDOWS
+	if (s_isD3D12Capable)
+	{
+		SetRenderAPI(RenderAPI::D3D12);
+		return;
+	}
+
+	TP_DEBUG("[Context][D3D12] Device isn't D3D12 capable!");
+#endif
+
+	//Check if Vulkan capable
+	if (s_isVulkanCapable)
+	{
+		SetRenderAPI(RenderAPI::VULKAN);
+		return;
+	}
+	TP_DEBUG("[Context][Vulkan] Device isn't Vulkan 1.1 capable!");
+
+
+	if (s_isOpenGLCapable)
+	{
+		SetRenderAPI(RenderAPI::OPENGL);
+		return;
+	}
+	TP_DEBUG("[Context][OpenGL] Device isn't OpenGL 4.6 capable!");
+
+	SetRenderAPI(RenderAPI::NONE);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::Context::CheckAllRenderAPIs()
+{
+#ifdef TRAP_PLATFORM_WINDOWS
+	//Check if D3D12 capable
+	s_isD3D12Capable = D3D12Context::IsD3D12Capable();
+#endif
+
+	//Check if Vulkan 1.1 capable
+	s_isVulkanCapable = VulkanContext::IsVulkanCapable();
+
+	//Check if OpenGL 4.6 capable
+	s_isOpenGLCapable = OpenGLContext::IsOpenGLCapable();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::Context::SetRenderAPI(const RenderAPI api) //TODO Test Runtime API Switch
+{
+	const RenderAPI oldAPI = s_RenderAPI;
+	if(api == RenderAPI::D3D12)
+	{
+		if (s_isD3D12Capable)
+		{
+			s_RenderAPI = api;
+			//Runtime switch RenderAPI here TODO
+		}
+		else
+		{
+			TP_ERROR("[Context][D3D12] This device doesn't support D3D12!");
+			if(s_isVulkanCapable)
+			{
+				TP_WARN("[Context] Switching RenderAPI to Vulkan 1.1");
+				SetRenderAPI(RenderAPI::VULKAN);
+				return;
+			}
+
+			if(s_isOpenGLCapable)
+			{
+				TP_WARN("[Context] Switching RenderAPI to OpenGL 4.6");
+				SetRenderAPI(RenderAPI::OPENGL);
+				return;
+			}
+
+			return;
+		}
+	}
+
+	if (api == RenderAPI::VULKAN)
+	{
+		if (s_isVulkanCapable)
+		{
+			s_RenderAPI = api;
+			//Runtime switch RenderAPI here TODO
+		}
+		else
+		{
+			TP_ERROR("[Context][Vulkan] This device doesn't support Vulkan 1.1!");
+			if(s_isD3D12Capable)
+			{
+				TP_WARN("[Context] Switching RenderAPI to D3D12");
+				SetRenderAPI(RenderAPI::D3D12);
+				return;
+			}
+
+			if(s_isOpenGLCapable)
+			{
+				TP_WARN("[Context] Switching RenderAPI to OpenGL 4.6");
+				SetRenderAPI(RenderAPI::OPENGL);
+				return;
+			}
+
+			return;
+		}
+	}
+
+	if (api == RenderAPI::OPENGL)
+	{
+		if (s_isOpenGLCapable)
+		{
+			s_RenderAPI = api;
+			//Runtime switch RenderAPI here TODO
+		}
+		else
+		{
+			TP_ERROR("[Context][OpenGL] This device doesn't support OpenGL 4.6!");
+			if(s_isD3D12Capable)
+			{
+				TP_WARN("[Context] Switching RenderAPI to D3D12");
+				SetRenderAPI(RenderAPI::D3D12);
+				return;
+			}
+
+			if(s_isVulkanCapable)
+			{
+				TP_WARN("[Context] Switching RenderAPI to Vulkan 1.1");
+				SetRenderAPI(RenderAPI::VULKAN);
+			}
+		}
+	}	
 }

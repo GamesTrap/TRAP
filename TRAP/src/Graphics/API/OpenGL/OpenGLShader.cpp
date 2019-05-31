@@ -409,7 +409,7 @@ void TRAP::Graphics::API::OpenGLShader::ParseUniform(const std::string& statemen
 
 	index++; //"uniform"
 	const std::string typeString = tokens[index++];
-	std::string name = tokens[index++]; //TODO TEST if index++ is needed or if index is enough
+	std::string name = tokens[index];
 	//Strip; from name if present
 	if (const char* s = strstr(name.c_str(), ";"))
 		name = std::string(name.c_str(), s - name.c_str());
@@ -540,8 +540,7 @@ void TRAP::Graphics::API::OpenGLShader::ParseUniformStruct(const std::string& bl
 
 			const char* end = strstr(nameStr, "]");
 			std::string c(s + 1, end - s);
-			//count = std::atoi(c.c_str());
-			count = std::stoi(c); //TODO TEST
+			count = std::stoi(c);
 		}
 		const std::unique_ptr<ShaderUniformDeclaration> field = std::make_unique<OpenGLShaderUniformDeclaration>(OpenGLShaderUniformDeclaration::StringToType(type), name1, count);
 		uniformStruct->AddField(field.get());

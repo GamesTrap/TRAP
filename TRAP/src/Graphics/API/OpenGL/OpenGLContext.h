@@ -18,6 +18,11 @@ namespace TRAP::Graphics::API
 		static void Present(Window* window);
 
 		static OpenGLContext* Get();
+
+		static bool IsOpenGLCapable();
+
+	private:
+		static bool s_IsGladInitialized;
 	};
 }
 

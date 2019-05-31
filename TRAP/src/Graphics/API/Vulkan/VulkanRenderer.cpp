@@ -3,7 +3,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::VulkanRenderer::VulkanRenderer()
+TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
 	: m_instance(nullptr),
 	m_physicalDevice(nullptr),
 	m_physicalDeviceProperties(),
@@ -19,7 +19,7 @@ TRAP::Graphics::VulkanRenderer::VulkanRenderer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::VulkanRenderer::~VulkanRenderer()
+TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 {
 	m_context->DeInitImageViews();
 	m_context->DeInitSwapchain();
@@ -32,7 +32,7 @@ TRAP::Graphics::VulkanRenderer::~VulkanRenderer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::InitInternal()
+void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 {
 	if (glfwVulkanSupported())
 	{
@@ -72,50 +72,50 @@ void TRAP::Graphics::VulkanRenderer::InitInternal()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::ClearInternal(unsigned int buffer)
+void TRAP::Graphics::API::VulkanRenderer::ClearInternal(unsigned int buffer)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::PresentInternal(Window* window)
+void TRAP::Graphics::API::VulkanRenderer::PresentInternal(Window* window)
 {
 	m_context->Present(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::SetDepthTestingInternal(bool enabled)
+void TRAP::Graphics::API::VulkanRenderer::SetDepthTestingInternal(bool enabled)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::SetBlendInternal(bool enabled)
+void TRAP::Graphics::API::VulkanRenderer::SetBlendInternal(bool enabled)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::SetViewportInternal(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+void TRAP::Graphics::API::VulkanRenderer::SetViewportInternal(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::SetBlendFunctionInternal(RendererBlendFunction source, RendererBlendFunction destination)
+void TRAP::Graphics::API::VulkanRenderer::SetBlendFunctionInternal(RendererBlendFunction source, RendererBlendFunction destination)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::SetBlendEquationInternal(RendererBlendEquation blendEquation)
+void TRAP::Graphics::API::VulkanRenderer::SetBlendEquationInternal(RendererBlendEquation blendEquation)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::SetupInstanceLayersAndExtensions()
+void TRAP::Graphics::API::VulkanRenderer::SetupInstanceLayersAndExtensions()
 {
 	TP_DEBUG("[Renderer][Vulkan] Setting up Instance Layers and Extensions");
 
@@ -166,7 +166,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugCallback(const VkDebugUtilsMessageSeve
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::SetupDeviceLayersAndExtensions()
+void TRAP::Graphics::API::VulkanRenderer::SetupDeviceLayersAndExtensions()
 {
 	TP_DEBUG("[Renderer][Vulkan] Setting up Device Layers and Extensions");
 
@@ -183,7 +183,7 @@ void TRAP::Graphics::VulkanRenderer::SetupDeviceLayersAndExtensions()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::SetupPhysicalDevice()
+void TRAP::Graphics::API::VulkanRenderer::SetupPhysicalDevice()
 {
 	TP_DEBUG("[Renderer][Vulkan] Setting up Physical Device");
 
@@ -203,7 +203,7 @@ void TRAP::Graphics::VulkanRenderer::SetupPhysicalDevice()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::SetupQueues()
+void TRAP::Graphics::API::VulkanRenderer::SetupQueues()
 {
 	TP_DEBUG("[Renderer][Vulkan] Setting up Graphics and Present Queue Family");
 
@@ -221,7 +221,7 @@ void TRAP::Graphics::VulkanRenderer::SetupQueues()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::InitInstance()
+void TRAP::Graphics::API::VulkanRenderer::InitInstance()
 {
 	TP_DEBUG("[Renderer][Vulkan] Initializing Instance");
 
@@ -254,7 +254,7 @@ void TRAP::Graphics::VulkanRenderer::InitInstance()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::DeInitInstance()
+void TRAP::Graphics::API::VulkanRenderer::DeInitInstance()
 {
 	if (m_instance)
 	{
@@ -272,7 +272,7 @@ PFN_vkDestroyDebugUtilsMessengerEXT fvkDestroyDebugUtilsMessengerEXT = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::InitDebug()
+void TRAP::Graphics::API::VulkanRenderer::InitDebug()
 {
 	if (m_debugCallbackSupported)
 	{
@@ -307,7 +307,7 @@ void TRAP::Graphics::VulkanRenderer::InitDebug()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::DeInitDebug()
+void TRAP::Graphics::API::VulkanRenderer::DeInitDebug()
 {
 	if (m_debugReport && m_debugCallbackSupported)
 	{
@@ -320,13 +320,13 @@ void TRAP::Graphics::VulkanRenderer::DeInitDebug()
 //-------------------------------------------------------------------------------------------------------------------//
 
 #else
-void TRAP::Graphics::VulkanRenderer::InitDebug() {}
-void TRAP::Graphics::VulkanRenderer::DeInitDebug() {}
+void TRAP::Graphics::API::VulkanRenderer::InitDebug() {}
+void TRAP::Graphics::API::VulkanRenderer::DeInitDebug() {}
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::InitDevice()
+void TRAP::Graphics::API::VulkanRenderer::InitDevice()
 {
 	TP_DEBUG("[Renderer][Vulkan] Initializing Device");
 
@@ -365,7 +365,7 @@ void TRAP::Graphics::VulkanRenderer::InitDevice()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::DeInitDevice()
+void TRAP::Graphics::API::VulkanRenderer::DeInitDevice()
 {
 	if (m_device)
 	{
@@ -377,7 +377,7 @@ void TRAP::Graphics::VulkanRenderer::DeInitDevice()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::PickPhysicalDevice(std::vector<VkPhysicalDevice>& availablePhysicalDevices)
+void TRAP::Graphics::API::VulkanRenderer::PickPhysicalDevice(std::vector<VkPhysicalDevice>& availablePhysicalDevices)
 {
 	TP_DEBUG("[Renderer][Vulkan] Selecting Physical Device");
 
@@ -420,7 +420,7 @@ void TRAP::Graphics::VulkanRenderer::PickPhysicalDevice(std::vector<VkPhysicalDe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int TRAP::Graphics::VulkanRenderer::RateDeviceSuitability(VkPhysicalDevice physicalDevice) const
+int TRAP::Graphics::API::VulkanRenderer::RateDeviceSuitability(VkPhysicalDevice physicalDevice) const
 {
 	int score = 0;
 
@@ -475,7 +475,7 @@ int TRAP::Graphics::VulkanRenderer::RateDeviceSuitability(VkPhysicalDevice physi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::VulkanRenderer::IsLayerSupported(const std::vector<VkLayerProperties>& availableLayers, const char* layer)
+bool TRAP::Graphics::API::VulkanRenderer::IsLayerSupported(const std::vector<VkLayerProperties>& availableLayers, const char* layer)
 {
 	for (auto& availableLayer : availableLayers)
 		if (strcmp(availableLayer.layerName, layer) == 0)
@@ -491,7 +491,7 @@ bool TRAP::Graphics::VulkanRenderer::IsLayerSupported(const std::vector<VkLayerP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::VulkanRenderer::IsExtensionSupported(const std::vector<VkExtensionProperties>& availableExtensions, const char* extension)
+bool TRAP::Graphics::API::VulkanRenderer::IsExtensionSupported(const std::vector<VkExtensionProperties>& availableExtensions, const char* extension)
 {
 	for (auto& availableExtension : availableExtensions)
 		if (strcmp(availableExtension.extensionName, extension) == 0)
@@ -514,7 +514,7 @@ bool TRAP::Graphics::VulkanRenderer::IsExtensionSupported(const std::vector<VkEx
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<VkPhysicalDevice> TRAP::Graphics::VulkanRenderer::GetAvailablePhysicalDevices() const
+std::vector<VkPhysicalDevice> TRAP::Graphics::API::VulkanRenderer::GetAvailablePhysicalDevices() const
 {
 	TP_DEBUG("[Renderer][Vulkan] Getting available Physical Devices");
 
@@ -529,7 +529,7 @@ std::vector<VkPhysicalDevice> TRAP::Graphics::VulkanRenderer::GetAvailablePhysic
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<VkLayerProperties> TRAP::Graphics::VulkanRenderer::GetAvailableInstanceLayers()
+std::vector<VkLayerProperties> TRAP::Graphics::API::VulkanRenderer::GetAvailableInstanceLayers()
 {
 	TP_DEBUG("[Renderer][Vulkan] Getting available Instance Layers");
 
@@ -543,7 +543,7 @@ std::vector<VkLayerProperties> TRAP::Graphics::VulkanRenderer::GetAvailableInsta
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<VkExtensionProperties> TRAP::Graphics::VulkanRenderer::GetAvailableInstanceExtensions()
+std::vector<VkExtensionProperties> TRAP::Graphics::API::VulkanRenderer::GetAvailableInstanceExtensions()
 {
 	TP_DEBUG("[Renderer][Vulkan] Getting available Instance Extensions");
 
@@ -558,7 +558,7 @@ std::vector<VkExtensionProperties> TRAP::Graphics::VulkanRenderer::GetAvailableI
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<VkLayerProperties> TRAP::Graphics::VulkanRenderer::GetAvailableDeviceLayers()
+std::vector<VkLayerProperties> TRAP::Graphics::API::VulkanRenderer::GetAvailableDeviceLayers()
 {
 	TP_DEBUG("[Renderer][Vulkan] Getting available Device Layers(Deprecated)");
 
@@ -572,7 +572,7 @@ std::vector<VkLayerProperties> TRAP::Graphics::VulkanRenderer::GetAvailableDevic
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<VkExtensionProperties> TRAP::Graphics::VulkanRenderer::GetAvailableDeviceExtensions() const
+std::vector<VkExtensionProperties> TRAP::Graphics::API::VulkanRenderer::GetAvailableDeviceExtensions() const
 {
 	TP_DEBUG("[Renderer][Vulkan] Getting available Device Extensions");
 
@@ -587,7 +587,7 @@ std::vector<VkExtensionProperties> TRAP::Graphics::VulkanRenderer::GetAvailableD
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<VkExtensionProperties> TRAP::Graphics::VulkanRenderer::GetAvailableDeviceExtensions(VkPhysicalDevice physicalDevice)
+std::vector<VkExtensionProperties> TRAP::Graphics::API::VulkanRenderer::GetAvailableDeviceExtensions(VkPhysicalDevice physicalDevice)
 {
 	uint32_t extensionCount = 0;
 	VkCall(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr));
@@ -599,7 +599,7 @@ std::vector<VkExtensionProperties> TRAP::Graphics::VulkanRenderer::GetAvailableD
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<VkQueueFamilyProperties> TRAP::Graphics::VulkanRenderer::GetAvailableQueueFamilies() const
+std::vector<VkQueueFamilyProperties> TRAP::Graphics::API::VulkanRenderer::GetAvailableQueueFamilies() const
 {
 	TP_DEBUG("[Renderer][Vulkan] Getting available Queue Families");
 
@@ -614,7 +614,7 @@ std::vector<VkQueueFamilyProperties> TRAP::Graphics::VulkanRenderer::GetAvailabl
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<VkQueueFamilyProperties> TRAP::Graphics::VulkanRenderer::GetAvailableQueueFamilies(VkPhysicalDevice physicalDevice)
+std::vector<VkQueueFamilyProperties> TRAP::Graphics::API::VulkanRenderer::GetAvailableQueueFamilies(VkPhysicalDevice physicalDevice)
 {
 	uint32_t queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
@@ -628,7 +628,7 @@ std::vector<VkQueueFamilyProperties> TRAP::Graphics::VulkanRenderer::GetAvailabl
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::AddInstanceLayer(const std::vector<VkLayerProperties>& availableInstanceLayers, const char* layer)
+void TRAP::Graphics::API::VulkanRenderer::AddInstanceLayer(const std::vector<VkLayerProperties>& availableInstanceLayers, const char* layer)
 {
 	if (IsLayerSupported(availableInstanceLayers, layer))
 	{
@@ -639,7 +639,7 @@ void TRAP::Graphics::VulkanRenderer::AddInstanceLayer(const std::vector<VkLayerP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::AddInstanceExtension(const std::vector<VkExtensionProperties>& availableInstanceExtensions, const char* extension)
+void TRAP::Graphics::API::VulkanRenderer::AddInstanceExtension(const std::vector<VkExtensionProperties>& availableInstanceExtensions, const char* extension)
 {
 	if (IsExtensionSupported(availableInstanceExtensions, extension))
 	{
@@ -653,7 +653,7 @@ void TRAP::Graphics::VulkanRenderer::AddInstanceExtension(const std::vector<VkEx
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::AddDeviceLayer(const std::vector<VkLayerProperties>& availableDeviceLayers, const char* layer)
+void TRAP::Graphics::API::VulkanRenderer::AddDeviceLayer(const std::vector<VkLayerProperties>& availableDeviceLayers, const char* layer)
 {
 	if (IsLayerSupported(availableDeviceLayers, layer))
 	{
@@ -664,7 +664,7 @@ void TRAP::Graphics::VulkanRenderer::AddDeviceLayer(const std::vector<VkLayerPro
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VulkanRenderer::AddDeviceExtension(const std::vector<VkExtensionProperties>& availableDeviceExtensions, const char* extension)
+void TRAP::Graphics::API::VulkanRenderer::AddDeviceExtension(const std::vector<VkExtensionProperties>& availableDeviceExtensions, const char* extension)
 {
 	if (IsExtensionSupported(availableDeviceExtensions, extension))
 	{

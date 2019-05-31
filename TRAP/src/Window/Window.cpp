@@ -69,34 +69,44 @@ void TRAP::Window::Init(const WindowProps& props)
 	         m_baseVideoMode.width, 'x', m_baseVideoMode.height, '@', m_baseVideoMode.refreshRate, "Hz (R",
 	         m_baseVideoMode.redBits, 'G', m_baseVideoMode.greenBits, 'B', m_baseVideoMode.blueBits, ')');
 
-	if (props.RenderAPI != Graphics::API::RenderAPI::OPENGL)
+	Graphics::API::Context::CheckAllRenderAPIs();
+	if (props.RenderAPI == Graphics::API::RenderAPI::NONE)
+		Graphics::API::Context::AutoSelectRenderAPI();
+	else		
+		Graphics::API::Context::SetRenderAPI(props.RenderAPI);
+	if (Graphics::API::Context::GetRenderAPI() != Graphics::API::RenderAPI::OPENGL)
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	if (props.RenderAPI == Graphics::API::RenderAPI::OPENGL)
+	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL)
 	{
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	}
-	Graphics::API::Context::SetRenderAPI(props.RenderAPI);
 
 	//Create Window
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 			               std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-			              "[INDEV][19w22a4]";
+			              "[INDEV][19w22b1]";
 	m_window = glfwCreateWindow(static_cast<int>(props.Width),
 	                            static_cast<int>(props.Height),
 	                            newTitle.c_str(),
 	                            nullptr,
 	                            nullptr);
 
+	if (m_window == nullptr)
+	{
+		TP_CRITICAL("[Window] Failed to create window");
+		exit(-1); //TODO User friendly exit(MsgBox?)
+	}
+
 	//Create Context & Initialize Renderer
 	Graphics::API::Context::Create(this);
 	Graphics::API::Context::SetVSyncInterval(props.VSync);
-	Graphics::Renderer::Init();
+	Graphics::API::Renderer::Init();
 
 	//Update Window Title
-	newTitle += Graphics::Renderer::GetTitle();
+	newTitle += Graphics::API::Renderer::GetTitle();
 	glfwSetWindowTitle(m_window, newTitle.c_str());
 
 	//Change to windowed, fullscreen, or fullscreen borderless
@@ -375,6 +385,6 @@ void TRAP::Window::SetIcon(const unsigned int width, const unsigned int height, 
 
 void TRAP::Window::Clear()
 {
-	Graphics::Renderer::Clear(static_cast<int>(Graphics::RendererBufferType::RENDERER_BUFFER_COLOR) |
-		                            static_cast<int>(Graphics::RendererBufferType::RENDERER_BUFFER_DEPTH));
+	Graphics::API::Renderer::Clear(static_cast<int>(Graphics::API::RendererBufferType::RENDERER_BUFFER_COLOR) |
+		                            static_cast<int>(Graphics::API::RendererBufferType::RENDERER_BUFFER_DEPTH));
 }

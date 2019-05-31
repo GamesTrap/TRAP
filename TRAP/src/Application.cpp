@@ -1,35 +1,6 @@
 #include "TRAPPCH.h"
 #include "Application.h"
 
-/*void SwitchRenderAPI(Graphics::API::RenderAPI currentRenderAPI) TBC
-{
-	static bool d3d12Failed = false;
-
-	switch(currentRenderAPI)
-	{
-	case Graphics::API::RenderAPI::D3D12:
-		d3d12Failed = true;
-		return; //Switch to Vulkan
-
-	case Graphics::API::RenderAPI::VULKAN:
-#ifdef TRAP_PLATFORM_WINDOWS
-		if(!d3d12Failed) //Switch to D3D12
-		{
-			return;
-		}
-#endif
-		return; //Switch to OpenGL
-
-	case Graphics::API::RenderAPI::OPENGL: //Needs Window Recreation(WindowHints???)
-		return; //Exit Program(No Renderer Supported!)
-
-	default:
-		return;
-	}
-}*/
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
@@ -56,7 +27,7 @@ TRAP::Application::Application()
 	unsigned int vsync = 0;
 	DisplayMode displayMode = DisplayMode::WINDOWED;
 	unsigned int monitor;
-	Graphics::API::RenderAPI renderAPI = Graphics::API::RenderAPI::VULKAN;
+	Graphics::API::RenderAPI renderAPI = Graphics::API::RenderAPI::NONE;
 	bool hotShaderReloading = false;
 	m_config.Get("Width", width);
 	m_config.Get("Height", height);
@@ -173,7 +144,7 @@ void TRAP::Application::Run()
 			ImGuiLayer::End();
 		}
 
-		Graphics::Renderer::Present(m_window.get());
+		Graphics::API::Renderer::Present(m_window.get());
 		m_window->OnUpdate();
 
 		//Update Shaders if needed

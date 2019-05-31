@@ -1,7 +1,7 @@
 #ifndef _TRAP_VULKANRENDERER_H_
 #define _TRAP_VULKANRENDERER_H_
 
-namespace TRAP::Graphics
+namespace TRAP::Graphics::API
 {
 	class VulkanRenderer final : public Renderer
 	{
@@ -96,49 +96,49 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::string_view TRAP::Graphics::VulkanRenderer::GetTitleInternal() const
+inline std::string_view TRAP::Graphics::API::VulkanRenderer::GetTitleInternal() const
 {
 	return m_rendererTitle;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::Graphics::VulkanRenderer* TRAP::Graphics::VulkanRenderer::Get()
+inline TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::Get()
 {
-	return reinterpret_cast<VulkanRenderer*>(s_Instance.get());
+	return reinterpret_cast<VulkanRenderer*>(s_Renderer.get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline VkInstance& TRAP::Graphics::VulkanRenderer::GetInstance()
+inline VkInstance& TRAP::Graphics::API::VulkanRenderer::GetInstance()
 {
 	return m_instance;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline VkPhysicalDevice& TRAP::Graphics::VulkanRenderer::GetPhysicalDevice()
+inline VkPhysicalDevice& TRAP::Graphics::API::VulkanRenderer::GetPhysicalDevice()
 {
 	return m_physicalDevice;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::optional<uint32_t>& TRAP::Graphics::VulkanRenderer::GetGraphicsQueueFamilyIndex()
+inline std::optional<uint32_t>& TRAP::Graphics::API::VulkanRenderer::GetGraphicsQueueFamilyIndex()
 {
 	return m_graphicsFamilyIndex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::optional<uint32_t>& TRAP::Graphics::VulkanRenderer::GetPresentQueueFamilyIndex()
+inline std::optional<uint32_t>& TRAP::Graphics::API::VulkanRenderer::GetPresentQueueFamilyIndex()
 {
 	return m_presentFamilyIndex;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline VkDevice& TRAP::Graphics::VulkanRenderer::GetDevice()
+inline VkDevice& TRAP::Graphics::API::VulkanRenderer::GetDevice()
 {
 	return m_device;
 }

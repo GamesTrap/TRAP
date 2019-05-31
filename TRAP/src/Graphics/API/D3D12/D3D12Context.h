@@ -20,6 +20,8 @@ namespace TRAP::Graphics::API
 		void Present(Window* window);
 
 		static D3D12Context* Get();
+
+		static bool IsD3D12Capable();
 	};
 }
 

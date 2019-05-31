@@ -75,7 +75,7 @@ namespace TRAP::Graphics::API
 		const ShaderResourceList& GetResource() const override;
 
 	private:
-		static unsigned int Compile(std::array<std::string*, 6>& shaders, OpenGLShaderErrorInfo& info = OpenGLShaderErrorInfo()); //TODO
+		static unsigned int Compile(std::array<std::string*, 6>& shaders, OpenGLShaderErrorInfo& info);
 
 		void Parse(const std::string& VSSource, const std::string& FSSource, const std::string& GSSource, const std::string& TCSSource, const std::string& TESSource, const std::string& CSSource);
 		void ParseUniform(const std::string& statement, unsigned int shaderType);

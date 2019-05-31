@@ -13,11 +13,6 @@ TRAP::Graphics::API::VulkanContext::VulkanContext(Window* window)
 	m_window(window),
 	m_vsync(false)
 {
-	if (m_window == nullptr)
-	{
-		TP_ERROR("[Context][Vulkan] Window is nullptr");
-		exit(-1);
-	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -312,4 +307,16 @@ VkExtent2D TRAP::Graphics::API::VulkanContext::ChooseSwapchainExtent() const
 	TP_DEBUG("[Renderer][Vulkan] Using Swapchain Extent: ", actualExtent.width, 'x', actualExtent.height);
 
 	return actualExtent;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
+{
+	//TODO Check if Vulkan 1.1 capable
+
+	if (glfwVulkanSupported())
+		return true;
+
+	return false;
 }

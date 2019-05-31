@@ -6,7 +6,7 @@ namespace TRAP
 	class Window;
 }
 
-namespace TRAP::Graphics
+namespace TRAP::Graphics::API
 {
 	enum class RendererBufferType
 	{
@@ -74,71 +74,71 @@ namespace TRAP::Graphics
 
 		virtual std::string_view GetTitleInternal() const = 0;
 
-		static std::unique_ptr<Renderer> s_Instance;
+		static std::unique_ptr<Renderer> s_Renderer;
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::Renderer::Clear(const unsigned int buffer)
+inline void TRAP::Graphics::API::Renderer::Clear(const unsigned int buffer)
 {
-	s_Instance->ClearInternal(buffer);
+	s_Renderer->ClearInternal(buffer);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::Renderer::Present(Window* window)
+inline void TRAP::Graphics::API::Renderer::Present(Window* window)
 {
-	s_Instance->PresentInternal(window);
+	s_Renderer->PresentInternal(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::Renderer::SetDepthTesting(const bool enabled)
+inline void TRAP::Graphics::API::Renderer::SetDepthTesting(const bool enabled)
 {
-	s_Instance->SetDepthTestingInternal(enabled);
+	s_Renderer->SetDepthTestingInternal(enabled);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::Renderer::SetBlend(const bool enabled)
+inline void TRAP::Graphics::API::Renderer::SetBlend(const bool enabled)
 {
-	s_Instance->SetBlendInternal(enabled);
+	s_Renderer->SetBlendInternal(enabled);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::Renderer::SetViewport(const unsigned int x, const unsigned int y, const unsigned int width, const unsigned int height)
+inline void TRAP::Graphics::API::Renderer::SetViewport(const unsigned int x, const unsigned int y, const unsigned int width, const unsigned int height)
 {
-	s_Instance->SetViewportInternal(x, y, width, height);
+	s_Renderer->SetViewportInternal(x, y, width, height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::Renderer::SetBlendFunction(const RendererBlendFunction source, const RendererBlendFunction destination)
+inline void TRAP::Graphics::API::Renderer::SetBlendFunction(const RendererBlendFunction source, const RendererBlendFunction destination)
 {
-	s_Instance->SetBlendFunctionInternal(source, destination);
+	s_Renderer->SetBlendFunctionInternal(source, destination);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::Renderer::SeBlendEquation(const RendererBlendEquation blendEquation)
+inline void TRAP::Graphics::API::Renderer::SeBlendEquation(const RendererBlendEquation blendEquation)
 {
-	s_Instance->SetBlendEquationInternal(blendEquation);
+	s_Renderer->SetBlendEquationInternal(blendEquation);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::string_view TRAP::Graphics::Renderer::GetTitle()
+inline std::string_view TRAP::Graphics::API::Renderer::GetTitle()
 {
-	return s_Instance->GetTitleInternal();
+	return s_Renderer->GetTitleInternal();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::Graphics::Renderer* TRAP::Graphics::Renderer::GetRenderer()
+inline TRAP::Graphics::API::Renderer* TRAP::Graphics::API::Renderer::GetRenderer()
 {
-	return s_Instance.get();
+	return s_Renderer.get();
 }
 
 #endif /*_TRAP_RENDERER_H_*/

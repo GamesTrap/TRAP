@@ -40,4 +40,13 @@ void TRAP::Graphics::API::D3D12Context::Present(Window* window)
 {
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::API::D3D12Context::IsD3D12Capable()
+{
+	//TODO Check if D3D12 capable
+
+	return true;
+}
+
 #endif

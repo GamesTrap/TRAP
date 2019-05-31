@@ -3,7 +3,7 @@
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
-namespace TRAP::Graphics
+namespace TRAP::Graphics::API
 {
 	class D3D12Renderer final : public Renderer
 	{
@@ -39,16 +39,16 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::string_view TRAP::Graphics::D3D12Renderer::GetTitleInternal() const
+inline std::string_view TRAP::Graphics::API::D3D12Renderer::GetTitleInternal() const
 {	
 	return m_rendererTitle;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::Graphics::D3D12Renderer* TRAP::Graphics::D3D12Renderer::Get()
+inline TRAP::Graphics::API::D3D12Renderer* TRAP::Graphics::API::D3D12Renderer::Get()
 {
-	return reinterpret_cast<D3D12Renderer*>(s_Instance.get());
+	return reinterpret_cast<D3D12Renderer*>(s_Renderer.get());
 }
 
 #endif

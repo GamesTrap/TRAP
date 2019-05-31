@@ -5,21 +5,21 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::D3D12Renderer::D3D12Renderer()
+TRAP::Graphics::API::D3D12Renderer::D3D12Renderer()
 	: m_context(API::D3D12Context::Get())
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::D3D12Renderer::~D3D12Renderer()
+TRAP::Graphics::API::D3D12Renderer::~D3D12Renderer()
 {
 	TP_DEBUG("[Renderer][D3D12] Destroying Renderer");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::D3D12Renderer::InitInternal()
+void TRAP::Graphics::API::D3D12Renderer::InitInternal()
 {
 	SetDepthTesting(true);
 	SetBlendFunction(RendererBlendFunction::SOURCE_ALPHA, RendererBlendFunction::ONE_MINUS_SOURCE_ALPHA);
@@ -37,44 +37,44 @@ void TRAP::Graphics::D3D12Renderer::InitInternal()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::D3D12Renderer::ClearInternal(unsigned int buffer)
+void TRAP::Graphics::API::D3D12Renderer::ClearInternal(unsigned int buffer)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::D3D12Renderer::PresentInternal(Window* window)
+void TRAP::Graphics::API::D3D12Renderer::PresentInternal(Window* window)
 {
 	m_context->Present(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::D3D12Renderer::SetDepthTestingInternal(bool enabled)
+void TRAP::Graphics::API::D3D12Renderer::SetDepthTestingInternal(bool enabled)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::D3D12Renderer::SetBlendInternal(bool enabled)
+void TRAP::Graphics::API::D3D12Renderer::SetBlendInternal(bool enabled)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::D3D12Renderer::SetBlendFunctionInternal(RendererBlendFunction source, RendererBlendFunction destination)
+void TRAP::Graphics::API::D3D12Renderer::SetBlendFunctionInternal(RendererBlendFunction source, RendererBlendFunction destination)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::D3D12Renderer::SetBlendEquationInternal(RendererBlendEquation blendEquation)
+void TRAP::Graphics::API::D3D12Renderer::SetBlendEquationInternal(RendererBlendEquation blendEquation)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::D3D12Renderer::SetViewportInternal(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+void TRAP::Graphics::API::D3D12Renderer::SetViewportInternal(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
 {
 }
 

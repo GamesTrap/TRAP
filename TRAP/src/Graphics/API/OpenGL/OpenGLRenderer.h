@@ -1,7 +1,7 @@
 #ifndef _TRAP_OPENGLRENDERER_H_
 #define _TRAP_OPENGLRENDERER_H_
 
-namespace TRAP::Graphics
+namespace TRAP::Graphics::API
 {
 	class OpenGLRenderer final : public Renderer
 	{
@@ -44,16 +44,16 @@ namespace TRAP::Graphics
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::string_view TRAP::Graphics::OpenGLRenderer::GetTitleInternal() const
+inline std::string_view TRAP::Graphics::API::OpenGLRenderer::GetTitleInternal() const
 {
 	return m_rendererTitle;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::Graphics::OpenGLRenderer* TRAP::Graphics::OpenGLRenderer::Get()
+inline TRAP::Graphics::API::OpenGLRenderer* TRAP::Graphics::API::OpenGLRenderer::Get()
 {
-	return reinterpret_cast<OpenGLRenderer*>(s_Instance.get());
+	return reinterpret_cast<OpenGLRenderer*>(s_Renderer.get());
 }
 
 #endif /*_TRAP_OPENGLRENDERER_H_*/

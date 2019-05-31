@@ -79,6 +79,8 @@ public:
 	{
 		if (event.GetKeyCode() == TP_KEY_ESCAPE)
 			TRAP::Application::Get().Shutdown();
+		/*if (event.GetKeyCode() == TP_KEY_F1)
+			TRAP::Graphics::API::Context::SetRenderAPI(TRAP::Graphics::API::RenderAPI::D3D12);*/
 
 		return true;
 	}

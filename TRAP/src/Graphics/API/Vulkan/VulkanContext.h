@@ -33,6 +33,8 @@ namespace TRAP::Graphics::API
 
 		std::vector<VkSurfaceFormatKHR> GetAvailableSurfaceFormats(VkPhysicalDevice physicalDevice) const;
 		std::vector<VkPresentModeKHR> GetAvailableSurfacePresentModes(VkPhysicalDevice physicalDevice) const;
+
+		static bool IsVulkanCapable();
 	private:
 		std::vector<VkSurfaceFormatKHR> GetAvailableSurfaceFormats() const;
 		std::vector<VkPresentModeKHR> GetAvailableSurfacePresentModes() const;

@@ -23,7 +23,7 @@ namespace TRAP::Graphics::API
 		void Init();
 		static void Shutdown();
 
-		static void Compile(std::array<std::string*, 6> & shaders, VulkanShaderErrorInfo& info = VulkanShaderErrorInfo()); //TODO
+		static void Compile(std::array<std::string*, 6> & shaders, VulkanShaderErrorInfo& info);
 		static std::unique_ptr<glslang::TShader> PreProcess(const char* source, unsigned int shaderType, std::string& preProcessedSource);
 
 		void Bind() const override;

@@ -3,21 +3,21 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::OpenGLRenderer::OpenGLRenderer()
+TRAP::Graphics::API::OpenGLRenderer::OpenGLRenderer()
 	: m_context(API::OpenGLContext::Get())
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::OpenGLRenderer::~OpenGLRenderer()
+TRAP::Graphics::API::OpenGLRenderer::~OpenGLRenderer()
 {
 	TP_DEBUG("[Renderer][OpenGL] Destroying Renderer");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::OpenGLRenderer::InitInternal()
+void TRAP::Graphics::API::OpenGLRenderer::InitInternal()
 {
 #ifdef TRAP_DEBUG
 	InitDebug();
@@ -44,7 +44,7 @@ void TRAP::Graphics::OpenGLRenderer::InitInternal()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::OpenGLRenderer::ClearInternal(const unsigned int buffer)
+void TRAP::Graphics::API::OpenGLRenderer::ClearInternal(const unsigned int buffer)
 {
 	OpenGLCall(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
 	OpenGLCall(glClear(TRAPRendererBufferToGL(buffer)));
@@ -52,14 +52,14 @@ void TRAP::Graphics::OpenGLRenderer::ClearInternal(const unsigned int buffer)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::OpenGLRenderer::PresentInternal(Window* window)
+void TRAP::Graphics::API::OpenGLRenderer::PresentInternal(Window* window)
 {
 	m_context->Present(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::OpenGLRenderer::SetDepthTestingInternal(const bool enabled)
+void TRAP::Graphics::API::OpenGLRenderer::SetDepthTestingInternal(const bool enabled)
 {
 	if (enabled)
 	{
@@ -73,7 +73,7 @@ void TRAP::Graphics::OpenGLRenderer::SetDepthTestingInternal(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::OpenGLRenderer::SetBlendInternal(const bool enabled)
+void TRAP::Graphics::API::OpenGLRenderer::SetBlendInternal(const bool enabled)
 {
 	if (enabled)
 	{
@@ -87,28 +87,28 @@ void TRAP::Graphics::OpenGLRenderer::SetBlendInternal(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::OpenGLRenderer::SetBlendFunctionInternal(const RendererBlendFunction source, const RendererBlendFunction destination)
+void TRAP::Graphics::API::OpenGLRenderer::SetBlendFunctionInternal(const RendererBlendFunction source, const RendererBlendFunction destination)
 {
 	OpenGLCall(glBlendFunc(TRAPRendererBlendFunctionToGL(source), TRAPRendererBlendFunctionToGL(destination)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::OpenGLRenderer::SetBlendEquationInternal(const RendererBlendEquation blendEquation)
+void TRAP::Graphics::API::OpenGLRenderer::SetBlendEquationInternal(const RendererBlendEquation blendEquation)
 {
 	OpenGLCall(glBlendEquation(TRAPRendererBlendEquationToGL(blendEquation)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::OpenGLRenderer::SetViewportInternal(const unsigned int x, const unsigned int y, const unsigned int width, const unsigned int height)
+void TRAP::Graphics::API::OpenGLRenderer::SetViewportInternal(const unsigned int x, const unsigned int y, const unsigned int width, const unsigned int height)
 {
 	OpenGLCall(glViewport(x, y, width, height));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Graphics::OpenGLRenderer::TRAPRendererBufferToGL(const unsigned int buffer)
+unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBufferToGL(const unsigned int buffer)
 {
 	unsigned int result = 0;
 
@@ -124,7 +124,7 @@ unsigned int TRAP::Graphics::OpenGLRenderer::TRAPRendererBufferToGL(const unsign
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Graphics::OpenGLRenderer::TRAPRendererBlendFunctionToGL(const RendererBlendFunction function)
+unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendFunctionToGL(const RendererBlendFunction function)
 {
 	switch (function)
 	{
@@ -150,7 +150,7 @@ unsigned int TRAP::Graphics::OpenGLRenderer::TRAPRendererBlendFunctionToGL(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Graphics::OpenGLRenderer::TRAPRendererBlendEquationToGL(const RendererBlendEquation blendEquation)
+unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendEquationToGL(const RendererBlendEquation blendEquation)
 {
 	switch (blendEquation)
 	{
@@ -167,7 +167,7 @@ unsigned int TRAP::Graphics::OpenGLRenderer::TRAPRendererBlendEquationToGL(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void GLAPIENTRY TRAP::Graphics::OpenGLRenderer::DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+void GLAPIENTRY TRAP::Graphics::API::OpenGLRenderer::DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
 	std::stringstream ss("[Renderer][OpenGL] [");
 	switch (source)
@@ -265,7 +265,7 @@ void GLAPIENTRY TRAP::Graphics::OpenGLRenderer::DebugCallback(GLenum source, GLe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::OpenGLRenderer::InitDebug()
+void TRAP::Graphics::API::OpenGLRenderer::InitDebug()
 {
 	OpenGLCall(glEnable(GL_DEBUG_OUTPUT));
 	OpenGLCall(glDebugMessageCallback(DebugCallback, nullptr));
