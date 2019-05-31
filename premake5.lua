@@ -169,8 +169,7 @@ project "TRAP"
 			"%{IncludeDir.VULKAN}/lib/libvulkan",
 			"GLSLang",
 			"SPIRV",
-			"StandAlone",
-			"stdc++fs"
+			"StandAlone"
 		}
 
 	filter "configurations:Debug"
