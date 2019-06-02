@@ -49,7 +49,7 @@ namespace TRAP
 
 		std::unique_ptr<Utils::Timer> m_timer;
 		unsigned int m_FramesPerSecond;
-		float m_Frametime;
+		float m_FrameTime;
 
 		static Application* s_Instance;
 	};
@@ -83,7 +83,7 @@ inline unsigned int TRAP::Application::GetFPS() const
 
 inline float TRAP::Application::GetFrameTime() const
 {
-	return m_Frametime;
+	return m_FrameTime;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

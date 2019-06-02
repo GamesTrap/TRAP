@@ -13,5 +13,6 @@ float TRAP::Utils::Timer::Elapsed() const
 
 float TRAP::Utils::Timer::ElapsedMilliseconds() const
 {
-	return Elapsed() * 1000.0f;
+	return std::chrono::duration_cast<std::chrono::duration<float, std::milli>>
+		(std::chrono::high_resolution_clock::now() - m_start).count();
 }

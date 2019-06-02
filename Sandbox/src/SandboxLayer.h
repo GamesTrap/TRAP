@@ -57,7 +57,7 @@ public:
 		}
 	}
 
-	void OnUpdate(float deltaTime) override
+	void OnUpdate(TRAP::Utils::TimeStep deltaTime) override
 	{
 		if (TRAP::Graphics::API::Context::GetRenderAPI() == TRAP::Graphics::API::RenderAPI::OPENGL)
 		{
@@ -83,14 +83,23 @@ public:
 		if (event.GetKeyCode() == TP_KEY_ESCAPE)
 			TRAP::Application::Get().Shutdown();
 
-		if (event.GetKeyCode() == TP_KEY_F1) //Switch to D3D12
+		if (event.GetKeyCode() == TP_KEY_F1 && event.GetRepeatCount() < 1) //Switch to D3D12
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::D3D12);
-		if (event.GetKeyCode() == TP_KEY_F2) //Switch to Vulkan
+		if (event.GetKeyCode() == TP_KEY_F2 && event.GetRepeatCount() < 1) //Switch to Vulkan
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::VULKAN);
-		if (event.GetKeyCode() == TP_KEY_F3) //Switch to OpenGL
+		if (event.GetKeyCode() == TP_KEY_F3 && event.GetRepeatCount() < 1) //Switch to OpenGL
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::OPENGL);
-		if (event.GetKeyCode() == TP_KEY_F10 && event.GetRepeatCount() < 1) //Use Default/Passthrough Shader
+		if (event.GetKeyCode() == TP_KEY_F4 && event.GetRepeatCount() < 1) //Use Default/Passthrough Shader
 			m_usePassthrough = !m_usePassthrough;
+		if (event.GetKeyCode() == TP_KEY_F5 && event.GetRepeatCount() < 1) //Make Window windowed
+			TRAP::Application::Get().GetWindow()->SetWindowMode(TRAP::DisplayMode::WINDOWED);
+		if (event.GetKeyCode() == TP_KEY_F6 && event.GetRepeatCount() < 1) //Make Window Borderless Fullscreen
+			TRAP::Application::Get().GetWindow()->SetWindowMode(TRAP::DisplayMode::BORDERLESS);
+		if (event.GetKeyCode() == TP_KEY_F7 && event.GetRepeatCount() < 1) //Make Window Exclusive Fullscreen
+			TRAP::Application::Get().GetWindow()->SetWindowMode(TRAP::DisplayMode::FULLSCREEN);
+
+		if (event.GetKeyCode() == TP_KEY_F11 && event.GetRepeatCount() < 1)
+			TRAP::Utils::MsgBox::Show("Testing MsgBox System", "Test MsgBox");
 
 		return true;
 	}

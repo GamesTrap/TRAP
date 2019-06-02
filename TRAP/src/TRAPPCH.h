@@ -28,11 +28,22 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#ifdef TRAP_PLATFORM_MACOSX
+#include <Cocoa/Cocoa.h>
+#include <AvailabilityMacros.h>
+#endif
+
+#ifdef TRAP_PLATFORM_LINUX
+#include <gtk/gtk.h>
+#endif
+
 #ifdef TRAP_PLATFORM_WINDOWS
 #include <dxgi1_6.h>
 #include <d3d12.h>
 #include "Utils/Win.h"
 #endif
+
+#include "Utils/MsgBox/MsgBox.h"
 
 #include "Utils/Logo.h"
 

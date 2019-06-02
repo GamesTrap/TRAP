@@ -69,7 +69,10 @@ project "TRAP"
 		"%{prj.name}/src/Graphics/API/D3D12/D3D12Renderer.h",
 		"%{prj.name}/src/Graphics/API/D3D12/D3D12Shader.h",
 		"%{prj.name}/src/Graphics/API/D3D12/D3D12Shader.h",
-		"%{prj.name}/src/Platform/**"
+		"%{prj.name}/src/Platform/**",
+		"%{prj.name}/src/Utils/MsgBox/MsgBoxWindows.cpp",
+		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinux.cpp",
+		"%{prj.name}/src/Utils/MsgBox/MsgBoxOSX.cpp"
 	}
 
 	includedirs
@@ -97,7 +100,8 @@ project "TRAP"
 			"%{prj.name}/src/Graphics/API/D3D12/D3D12Renderer.cpp",
 			"%{prj.name}/src/Graphics/API/D3D12/D3D12Renderer.h",
 			"%{prj.name}/src/Graphics/API/D3D12/D3D12Shader.h",
-			"%{prj.name}/src/Graphics/API/D3D12/D3D12Shader.h"
+			"%{prj.name}/src/Graphics/API/D3D12/D3D12Shader.h",
+			"%{prj.name}/src/Utils/MsgBox/MsgBoxWindows.cpp"
 		}
 
 		defines
@@ -127,7 +131,8 @@ project "TRAP"
         {
 			"%{prj.name}/src/Log/ANSILog.cpp",
             "%{prj.name}/src/Platform/Linux/**.h",
-			"%{prj.name}/src/Platform/Linux/**.cpp"
+			"%{prj.name}/src/Platform/Linux/**.cpp",
+			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinux.cpp"
         }
 
 		defines
@@ -144,7 +149,13 @@ project "TRAP"
 			"%{IncludeDir.VULKAN}/lib/libvulkan",
 			"GLSLang",
 			"SPIRV",
-			"StandAlone"
+			"StandAlone",
+			"GTK+-2.0"
+		}
+
+		includedirs
+		{
+			os.getenv("GTK3_INCLUDE_DIRS")
 		}
 
 	filter "system:macosx"
@@ -153,6 +164,7 @@ project "TRAP"
 			"%{prj.name}/src/Log/ANSILog.cpp",
 			"%{prj.name}/src/Platform/Mac/**.h",
 			"%{prj.name}/src/Platform/Mac/**.cpp",
+			"%{prj.name}/src/Utils/MsgBox/MsgBoxOSX.cpp"
 		}
 
 		defines
@@ -169,7 +181,10 @@ project "TRAP"
 			"%{IncludeDir.VULKAN}/lib/libvulkan",
 			"GLSLang",
 			"SPIRV",
-			"StandAlone"
+			"StandAlone",
+			"Cocoa.framework"
+
+			"c++fs"
 		}
 
 	filter "configurations:Debug"

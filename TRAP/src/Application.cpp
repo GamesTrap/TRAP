@@ -7,7 +7,7 @@ TRAP::Application* TRAP::Application::s_Instance = nullptr;
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Application::Application()
-	: m_timer(std::make_unique<Utils::Timer>()), m_FramesPerSecond(0), m_Frametime(0.0f)
+	: m_timer(std::make_unique<Utils::Timer>()), m_FramesPerSecond(0), m_FrameTime(0.0f)
 {
 	TP_DEBUG("[Application] Initializing TRAP Modules...");
 
@@ -41,19 +41,19 @@ TRAP::Application::Application()
 	VFS::Get()->SetHotShaderReloading(hotShaderReloading);
 
 	m_window = std::make_unique<Window>
-	(
-		WindowProps
 		(
-			"Sandbox",
-	                  width,
-			         height,
-	            refreshRate,
-	                  vsync,
-	            displayMode,
-	                monitor,
-	              renderAPI
-		)
-	);
+			WindowProps
+			(
+				"Sandbox",
+				width,
+				height,
+				refreshRate,
+				vsync,
+				displayMode,
+				monitor,
+				renderAPI
+			)
+			);
 	m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
 	//Always added as a fallback shader
@@ -125,13 +125,12 @@ void TRAP::Application::Run()
 	while (m_running)
 	{
 		Utils::Timer FrameTimeTimer;
+		deltaTime.Update(m_timer->Elapsed());
+
 		m_window->Clear();
 
-		Utils::TimeStep currentFrame(m_timer->Elapsed());
-		deltaTime.Update(currentFrame.GetSeconds());
-
 		for (const auto& layer : m_layerStack)
-			layer->OnUpdate(deltaTime.GetSeconds());
+			layer->OnUpdate(deltaTime);
 
 		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL)
 		{
@@ -150,8 +149,8 @@ void TRAP::Application::Run()
 			//Check monitoring shader folders for changes and
 			//in case of changes run ShaderManager::Reload(virtualPath)
 			VFS::Get()->GetShaderFileWatcher()->Check([](const std::filesystem::path& physicalPath,
-			                                             const std::string& virtualPath,
-			                                             const FileStatus status) -> void
+				const std::string& virtualPath,
+				const FileStatus status) -> void
 				{
 					//Process only regular files and FileStatus::Modified
 					if (!is_regular_file(physicalPath) || status == FileStatus::Created || status == FileStatus::Erased)
@@ -162,9 +161,9 @@ void TRAP::Application::Run()
 				});
 		}
 
-		if(Graphics::API::Context::s_newRenderAPI != Graphics::API::RenderAPI::NONE && Graphics::API::Context::s_newRenderAPI != Graphics::API::Context::GetRenderAPI())
+		if (Graphics::API::Context::s_newRenderAPI != Graphics::API::RenderAPI::NONE && Graphics::API::Context::s_newRenderAPI != Graphics::API::Context::GetRenderAPI())
 		{
-			if(Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL || Graphics::API::Context::s_newRenderAPI == Graphics::API::RenderAPI::OPENGL)
+			if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL || Graphics::API::Context::s_newRenderAPI == Graphics::API::RenderAPI::OPENGL)
 				ReCreateWindow(Graphics::API::Context::s_newRenderAPI);
 			else
 				ReCreate(Graphics::API::Context::s_newRenderAPI);
@@ -172,8 +171,8 @@ void TRAP::Application::Run()
 			Graphics::API::Context::SetRenderAPI(Graphics::API::Context::s_newRenderAPI);
 		}
 
-		m_Frametime = FrameTimeTimer.ElapsedMilliseconds();
-		m_FramesPerSecond = static_cast<unsigned int>(1000.0f / m_Frametime);
+		m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
+		m_FramesPerSecond = static_cast<unsigned int>(1000.0f / m_FrameTime);
 	}
 }
 
@@ -197,14 +196,14 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 	Graphics::API::Renderer::Shutdown();
 	Graphics::API::Context::Shutdown();
 
-	WindowProps props{std::string(m_window->GetTitle()), m_window->GetWidth(), m_window->GetHeight(), m_window->GetRefreshRate(), Graphics::API::Context::GetVSyncInterval(), m_window->GetDisplayMode(), m_window->GetMonitor(), renderAPI};
+	WindowProps props{ std::string(m_window->GetTitle()), m_window->GetWidth(), m_window->GetHeight(), m_window->GetRefreshRate(), Graphics::API::Context::GetVSyncInterval(), m_window->GetDisplayMode(), m_window->GetMonitor(), renderAPI };
 	m_window.reset();
 	m_window = std::make_unique<Window>(props);
 	m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Add(Graphics::ShaderFactory::PassthroughShader());
-	
-	for(const auto& layer : m_layerStack)
+
+	for (const auto& layer : m_layerStack)
 		layer->OnAttach();
 }
 

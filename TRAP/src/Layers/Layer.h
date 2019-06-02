@@ -15,7 +15,7 @@ namespace TRAP {
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate(float deltaTime) {}
+		virtual void OnUpdate(Utils::TimeStep deltaTime) {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 		virtual void OnResize(unsigned int width, unsigned int height) {}
