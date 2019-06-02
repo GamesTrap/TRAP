@@ -22,14 +22,14 @@ namespace TRAP::Graphics::API
 		Window* GetWindow() const;
 
 		void InitSurface();
-		void DeInitSurface();
+		void DeInitSurface(VkInstance instance);
 
 		void SetupSwapchain();
 		void InitSwapchain();
-		void DeInitSwapchain();
+		void DeInitSwapchain(VkDevice device);
 
 		void InitImageViews();
-		void DeInitImageViews();
+		void DeInitImageViews(VkDevice device);
 
 		std::vector<VkSurfaceFormatKHR> GetAvailableSurfaceFormats(VkPhysicalDevice physicalDevice) const;
 		std::vector<VkPresentModeKHR> GetAvailableSurfacePresentModes(VkPhysicalDevice physicalDevice) const;

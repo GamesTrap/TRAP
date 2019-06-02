@@ -13,6 +13,7 @@ TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, std::string VS
 
 TRAP::Graphics::API::OpenGLShader::~OpenGLShader()
 {
+	TP_DEBUG("[Shader][OpenGL] Destroying Shader: \"", m_name, "\"");
 	Shutdown();
 }
 
@@ -38,7 +39,7 @@ void TRAP::Graphics::API::OpenGLShader::Init()
 
 void TRAP::Graphics::API::OpenGLShader::Shutdown() const
 {
-	TP_DEBUG("[Shader][OpenGL] Deleting \"", m_name, "\"");
+	TP_DEBUG("[Shader][OpenGL] Destroying \"", m_name, "\"");
 	if (m_handle)
 	{
 		OpenGLCall(glDeleteProgram(m_handle));

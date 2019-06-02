@@ -40,12 +40,12 @@ void TRAP::Graphics::API::VulkanContext::InitSurface()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanContext::DeInitSurface()
+void TRAP::Graphics::API::VulkanContext::DeInitSurface(VkInstance instance)
 {
 	if (m_surface)
 	{
 		TP_DEBUG("[Renderer][Vulkan] Destroying Surface");
-		vkDestroySurfaceKHR(VulkanRenderer::Get()->GetInstance(), m_surface, nullptr);
+		vkDestroySurfaceKHR(instance, m_surface, nullptr);
 		m_surface = nullptr;
 	}
 }
@@ -126,12 +126,12 @@ void TRAP::Graphics::API::VulkanContext::InitSwapchain()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanContext::DeInitSwapchain()
+void TRAP::Graphics::API::VulkanContext::DeInitSwapchain(VkDevice device)
 {
 	if (m_swapchain)
 	{
 		TP_DEBUG("[Renderer][Vulkan] Destroying Swapchain");
-		vkDestroySwapchainKHR(VulkanRenderer::Get()->GetDevice(), m_swapchain, nullptr);
+		vkDestroySwapchainKHR(device, m_swapchain, nullptr);
 		m_swapchain = nullptr;
 	}
 }
@@ -175,13 +175,13 @@ void TRAP::Graphics::API::VulkanContext::InitImageViews()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanContext::DeInitImageViews()
+void TRAP::Graphics::API::VulkanContext::DeInitImageViews(VkDevice device)
 {
 	if (!m_swapchainImageViews.empty())
 		TP_DEBUG("[Renderer][Vulkan] Destroying Swapchain Image Views");
 
 	for (VkImageView imageView : m_swapchainImageViews)
-		vkDestroyImageView(VulkanRenderer::Get()->GetDevice(), imageView, nullptr);
+		vkDestroyImageView(device, imageView, nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

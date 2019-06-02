@@ -17,6 +17,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::string VS
 
 TRAP::Graphics::API::VulkanShader::~VulkanShader()
 {
+	TP_DEBUG("[Shader][Vulkan] Destroying Shader: \"", m_name, "\"");
 	Shutdown();
 }
 

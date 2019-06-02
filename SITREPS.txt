@@ -122,3 +122,7 @@ SITREP 05/30/2019|19w22a4
 SITREP 05/31/2019|19w22b1
     - Changed TRAP Engine version to 19w22b1(0.2.78)
     - Added Automatic selection of RenderAPI if there's no/an invalid provided in Engine.cfg ~>60 mins
+
+SITREP 06/02/2019|19w22c1
+    - Changed TRAP Engine version to 19w22c1(0.3.0)
+    - Added Runtime switching between RenderAPIs ~>180 mins

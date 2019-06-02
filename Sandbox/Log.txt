@@ -1,40 +1,58 @@
-[22:16:28][Debug][Application] Initializing TRAP Modules...
-[22:16:28][Debug][VFS] Initializing Virtual File System
-[22:16:28][Info][Config] Loading settings file "Engine.cfg"
-[22:16:28][Trace][Config] Width = 1280
-[22:16:28][Trace][Config] Height = 720
-[22:16:28][Trace][Config] RefreshRate = 144
-[22:16:28][Trace][Config] VSync = 0
-[22:16:28][Trace][Config] DisplayMode = Windowed
-[22:16:28][Trace][Config] Monitor = 0
-[22:16:28][Trace][Config] HotShaderReloading = TRUE
-[22:16:28][Trace][Config] Size: 7
-[22:16:28][Info][Window] Initializing Window: "Sandbox" 1280x720@144Hz VSync: Off Mode: Windowed Monitor: 0
-[22:16:28][Debug][Window] Storing underlying OS video mode: 2560x1440@144Hz (R8G8B8)
-[22:16:29][Info][Context] Auto selecting RenderAPI
-[22:16:29][Info][Context][D3D12] Initializing Context
-[22:16:29][Info][Renderer][D3D12] Initializing Renderer
-[22:16:29][Info][Renderer][D3D12] ----------------------------------
-[22:16:29][Info][Renderer][D3D12] DirectX 12.1(D3D12):
-[22:16:29][Critical][Renderer][D3D12] NOT IMPLEMENTED WIP
-[22:16:29][Info][Renderer][D3D12] ----------------------------------
-[22:16:29][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
-[22:16:39][Info][Sandbox] FPS: 234356
-[22:16:40][Info][Sandbox] FrameTime: 0.004267ms
-[22:16:50][Debug][Application] Shutting down TRAP Modules...
-[22:16:50][Trace][Config] Width = 1280
-[22:16:50][Trace][Config] Height = 720
-[22:16:50][Trace][Config] RefreshRate = 144
-[22:16:50][Trace][Config] VSync = 0
-[22:16:50][Trace][Config] DisplayMode = Windowed
-[22:16:50][Trace][Config] Monitor = 0
-[22:16:50][Trace][Config] HotShaderReloading = TRUE
-[22:16:50][Trace][Config] RenderAPI = D3D12
-[22:16:50][Trace][Config] Size: 8
-[22:16:50][Info][Config] Saving: Engine.cfg
-[22:16:50][Debug][VFS] Shutting down Virtual File System
-[22:16:50][Debug][ShaderManager] Destroying Shaders
-[22:16:50][Debug][Window] Destroying Window: "Sandbox"
-[22:16:50][Debug][Renderer][D3D12] Destroying Renderer
-[22:16:50][Debug][Context][D3D12] Destroying Context
-[22:16:50][Info][Logger] Saving Log.txt
+[13:35:54][Debug][Application] Initializing TRAP Modules...
+[13:35:54][Debug][VFS] Initializing Virtual File System
+[13:35:54][Info][Config] Loading settings file "Engine.cfg"
+[13:35:54][Trace][Config] Width = 1280
+[13:35:54][Trace][Config] Height = 720
+[13:35:54][Trace][Config] RefreshRate = 144
+[13:35:54][Trace][Config] VSync = 0
+[13:35:54][Trace][Config] DisplayMode = Windowed
+[13:35:54][Trace][Config] Monitor = 0
+[13:35:54][Trace][Config] RenderAPI = OpenGL
+[13:35:54][Trace][Config] HotShaderReloading = TRUE
+[13:35:54][Trace][Config] Size: 8
+[13:35:54][Info][Window] Initializing Window: "Sandbox" 1280x720@144Hz VSync: Off Mode: Windowed Monitor: 0
+[13:35:55][Debug][Window] Storing underlying OS video mode: 2560x1440@144Hz (R8G8B8)
+[13:35:55][Info][Context][OpenGL] Initializing Context
+[13:35:55][Info][Renderer][OpenGL] Initializing Renderer
+[13:35:55][Info][Renderer][OpenGL] ----------------------------------
+[13:35:55][Info][Renderer][OpenGL] OpenGL:
+[13:35:55][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 430.86
+[13:35:55][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
+[13:35:55][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
+[13:35:55][Info][Renderer][OpenGL] ----------------------------------
+[13:35:55][Debug][Shader][OpenGL] Compiling: "Passthrough"
+[13:35:55][Debug][Shader][OpenGL] Compiling Vertex Shader
+[13:35:55][Debug][Shader][OpenGL] Compiling Fragment Shader
+[13:35:55][Debug][Shader][OpenGL] Bound: "Passthrough"
+[13:35:55][Debug][Shader][OpenGL] Unbound: "Passthrough"
+[13:35:55][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
+[13:35:55][Debug][Shader][OpenGL] Compiling: "Debug"
+[13:35:55][Debug][Shader][OpenGL] Compiling Vertex Shader
+[13:35:55][Debug][Shader][OpenGL] Compiling Fragment Shader
+[13:35:55][Debug][Shader][OpenGL] Bound: "Debug"
+[13:35:55][Debug][Shader][OpenGL] Unbound: "Debug"
+[13:35:55][Debug][Shader][OpenGL] Bound: "Debug"
+[13:36:00][Info][Sandbox] FPS: 1360
+[13:36:00][Info][Sandbox] FrameTime: 0.735289ms
+[13:36:02][Debug][Application] Shutting down TRAP Modules...
+[13:36:02][Trace][Config] Width = 1280
+[13:36:02][Trace][Config] Height = 720
+[13:36:02][Trace][Config] RefreshRate = 144
+[13:36:02][Trace][Config] VSync = 0
+[13:36:02][Trace][Config] DisplayMode = Windowed
+[13:36:02][Trace][Config] Monitor = 0
+[13:36:02][Trace][Config] RenderAPI = OpenGL
+[13:36:02][Trace][Config] HotShaderReloading = TRUE
+[13:36:02][Trace][Config] Size: 8
+[13:36:02][Info][Config] Saving: Engine.cfg
+[13:36:02][Debug][VFS] Shutting down Virtual File System
+[13:36:02][Debug][Shader][OpenGL] Unbound: "Debug"
+[13:36:02][Debug][ShaderManager] Destroying Shaders
+[13:36:02][Debug][Shader][OpenGL] Destroying Shader: "Passthrough"
+[13:36:02][Debug][Shader][OpenGL] Destroying "Passthrough"
+[13:36:02][Debug][Shader][OpenGL] Destroying Shader: "Debug"
+[13:36:02][Debug][Shader][OpenGL] Destroying "Debug"
+[13:36:02][Debug][Window] Destroying Window: "Sandbox"
+[13:36:02][Debug][Renderer][OpenGL] Destroying Renderer
+[13:36:02][Debug][Context][OpenGL] Destroying Context
+[13:36:02][Info][Logger] Saving Log.txt

@@ -59,11 +59,8 @@ TRAP::Application::Application()
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Add(Graphics::ShaderFactory::PassthroughShader());
 
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL)
-	{
-		m_ImGuiLayer = std::make_unique<ImGuiLayer>();
-		PushOverlay(std::move(m_ImGuiLayer));
-	}
+	m_ImGuiLayer = std::make_unique<ImGuiLayer>();
+	PushOverlay(std::move(m_ImGuiLayer));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -165,6 +162,16 @@ void TRAP::Application::Run()
 				});
 		}
 
+		if(Graphics::API::Context::s_newRenderAPI != Graphics::API::RenderAPI::NONE && Graphics::API::Context::s_newRenderAPI != Graphics::API::Context::GetRenderAPI())
+		{
+			if(Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL || Graphics::API::Context::s_newRenderAPI == Graphics::API::RenderAPI::OPENGL)
+				ReCreateWindow(Graphics::API::Context::s_newRenderAPI);
+			else
+				ReCreate(Graphics::API::Context::s_newRenderAPI);
+
+			Graphics::API::Context::SetRenderAPI(Graphics::API::Context::s_newRenderAPI);
+		}
+
 		m_Frametime = FrameTimeTimer.ElapsedMilliseconds();
 		m_FramesPerSecond = static_cast<unsigned int>(1000.0f / m_Frametime);
 	}
@@ -177,4 +184,50 @@ bool TRAP::Application::OnWindowClose(WindowCloseEvent& e)
 	m_running = false;
 
 	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
+{
+	for (const auto& layer : m_layerStack)
+		layer->OnDetach();
+	Graphics::API::Context::SetRenderAPI(renderAPI);
+
+	Graphics::API::Renderer::Shutdown();
+	Graphics::API::Context::Shutdown();
+
+	WindowProps props{std::string(m_window->GetTitle()), m_window->GetWidth(), m_window->GetHeight(), m_window->GetRefreshRate(), Graphics::API::Context::GetVSyncInterval(), m_window->GetDisplayMode(), m_window->GetMonitor(), renderAPI};
+	m_window.reset();
+	m_window = std::make_unique<Window>(props);
+	m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+	//Always added as a fallback shader
+	Graphics::ShaderManager::Add(Graphics::ShaderFactory::PassthroughShader());
+	
+	for(const auto& layer : m_layerStack)
+		layer->OnAttach();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI)
+{
+	for (const auto& layer : m_layerStack)
+		layer->OnDetach();
+	Graphics::API::Context::SetRenderAPI(renderAPI);
+
+	Graphics::ShaderManager::Shutdown();
+	Graphics::API::Renderer::Shutdown();
+	Graphics::API::Context::Shutdown();
+
+	Graphics::API::Context::Create(m_window.get());
+	Graphics::API::Context::SetVSyncInterval(Graphics::API::Context::GetVSyncInterval());
+	Graphics::API::Renderer::Init();
+	m_window->SetTitle(std::string(m_window->GetTitle()));
+
+	//Always added as a fallback shader
+	Graphics::ShaderManager::Add(Graphics::ShaderFactory::PassthroughShader());
+
+	for (const auto& layer : m_layerStack)
+		layer->OnAttach();
 }

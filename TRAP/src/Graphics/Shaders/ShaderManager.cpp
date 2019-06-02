@@ -176,6 +176,8 @@ void TRAP::Graphics::ShaderManager::Shutdown()
 		API::Shader::s_CurrentlyBound->Unbind();
 
 	TP_DEBUG("[ShaderManager] Destroying Shaders");
-	for (auto& shader : s_Shaders)
-		shader.reset();
+	//for (auto& shader : s_Shaders)
+		//shader.reset();
+
+	s_Shaders.clear();
 }

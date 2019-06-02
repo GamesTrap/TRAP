@@ -69,6 +69,8 @@ namespace TRAP
 		DisplayMode GetDisplayMode() const;
 		unsigned int GetMonitor() const;
 
+		void SetTitle(const std::string& title);
+
 		//Window attributes
 		void SetEventCallback(const EventCallbackFn& callback);
 		

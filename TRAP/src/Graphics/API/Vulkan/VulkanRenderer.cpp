@@ -1,5 +1,5 @@
 #include "TRAPPCH.h"
-#include "VulKanRenderer.h"
+#include "VulkanRenderer.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -21,13 +21,13 @@ TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
 
 TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 {
-	m_context->DeInitImageViews();
-	m_context->DeInitSwapchain();
+	TP_DEBUG("[Renderer][Vulkan] Destroying Renderer");
+	m_context->DeInitImageViews(m_device);
+	m_context->DeInitSwapchain(m_device);
 	DeInitDevice();
 	DeInitDebug();
-	m_context->DeInitSurface();
+	m_context->DeInitSurface(m_instance);
 	DeInitInstance();
-	TP_DEBUG("[Renderer][Vulkan] Destroying Renderer");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

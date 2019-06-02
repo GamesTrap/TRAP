@@ -25,6 +25,7 @@ namespace TRAP
 
 		Window* GetWindow() const;
 		Utils::Config* GetConfig();
+		LayerStack& GetLayerStack();
 
 		unsigned int GetFPS() const;
 		float GetFrameTime() const;
@@ -32,6 +33,9 @@ namespace TRAP
 		void Shutdown();
 
 		static Application& Get();
+
+		void ReCreateWindow(Graphics::API::RenderAPI renderAPI);
+		void ReCreate(Graphics::API::RenderAPI renderAPI);
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
@@ -94,6 +98,13 @@ inline void TRAP::Application::Shutdown()
 inline TRAP::Application& TRAP::Application::Get()
 {
 	return *s_Instance;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::LayerStack& TRAP::Application::GetLayerStack()
+{
+	return m_layerStack;
 }
 
 #endif /*_TRAP_APPLICATION_H_*/

@@ -5,12 +5,21 @@
 
 std::unique_ptr<TRAP::Graphics::API::Context> TRAP::Graphics::API::Context::s_Context = nullptr;
 TRAP::Graphics::API::RenderAPI TRAP::Graphics::API::Context::s_RenderAPI = RenderAPI::NONE;
+TRAP::Graphics::API::RenderAPI TRAP::Graphics::API::Context::s_newRenderAPI = RenderAPI::NONE;
 
 unsigned int TRAP::Graphics::API::Context::m_vsyncInterval = 0;
 
 bool TRAP::Graphics::API::Context::s_isD3D12Capable = false;
 bool TRAP::Graphics::API::Context::s_isVulkanCapable = false;
 bool TRAP::Graphics::API::Context::s_isOpenGLCapable = false;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::Context::Shutdown()
+{
+	s_Context.reset();
+	s_Context = nullptr;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -97,87 +106,88 @@ void TRAP::Graphics::API::Context::CheckAllRenderAPIs()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::Context::SetRenderAPI(const RenderAPI api) //TODO Test Runtime API Switch
+void TRAP::Graphics::API::Context::SetRenderAPI(const RenderAPI api)
 {
-	const RenderAPI oldAPI = s_RenderAPI;
-	if(api == RenderAPI::D3D12)
+	s_RenderAPI = api;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::Context::SwitchRenderAPI(RenderAPI api)
+{
+	if (api != s_RenderAPI)
 	{
-		if (s_isD3D12Capable)
+		if (api == RenderAPI::D3D12)
 		{
-			s_RenderAPI = api;
-			//Runtime switch RenderAPI here TODO
-		}
-		else
-		{
+			if (s_isD3D12Capable)
+			{
+				TP_WARN("[Context] Switching RenderAPI to D3D12");
+				s_newRenderAPI = RenderAPI::D3D12;
+
+				return;
+			}
+
 			TP_ERROR("[Context][D3D12] This device doesn't support D3D12!");
-			if(s_isVulkanCapable)
+			if (s_isVulkanCapable)
 			{
-				TP_WARN("[Context] Switching RenderAPI to Vulkan 1.1");
-				SetRenderAPI(RenderAPI::VULKAN);
+				SwitchRenderAPI(RenderAPI::VULKAN);
 				return;
 			}
 
-			if(s_isOpenGLCapable)
+			if (s_isOpenGLCapable)
 			{
-				TP_WARN("[Context] Switching RenderAPI to OpenGL 4.6");
-				SetRenderAPI(RenderAPI::OPENGL);
+				SwitchRenderAPI(RenderAPI::OPENGL);
 				return;
 			}
 
 			return;
 		}
-	}
 
-	if (api == RenderAPI::VULKAN)
-	{
-		if (s_isVulkanCapable)
+		if (api == RenderAPI::VULKAN)
 		{
-			s_RenderAPI = api;
-			//Runtime switch RenderAPI here TODO
-		}
-		else
-		{
+			if (s_isVulkanCapable)
+			{
+				TP_WARN("[Context] Switching RenderAPI to Vulkan 1.1");
+				s_newRenderAPI = RenderAPI::VULKAN;
+
+				return;
+			}
+
 			TP_ERROR("[Context][Vulkan] This device doesn't support Vulkan 1.1!");
-			if(s_isD3D12Capable)
+			if (s_isD3D12Capable)
 			{
-				TP_WARN("[Context] Switching RenderAPI to D3D12");
-				SetRenderAPI(RenderAPI::D3D12);
+				SwitchRenderAPI(RenderAPI::D3D12);
 				return;
 			}
 
-			if(s_isOpenGLCapable)
+			if (s_isOpenGLCapable)
 			{
-				TP_WARN("[Context] Switching RenderAPI to OpenGL 4.6");
-				SetRenderAPI(RenderAPI::OPENGL);
+				SwitchRenderAPI(RenderAPI::OPENGL);
 				return;
 			}
 
 			return;
 		}
-	}
 
-	if (api == RenderAPI::OPENGL)
-	{
-		if (s_isOpenGLCapable)
+		if (api == RenderAPI::OPENGL)
 		{
-			s_RenderAPI = api;
-			//Runtime switch RenderAPI here TODO
-		}
-		else
-		{
-			TP_ERROR("[Context][OpenGL] This device doesn't support OpenGL 4.6!");
-			if(s_isD3D12Capable)
+			if (s_isOpenGLCapable)
 			{
-				TP_WARN("[Context] Switching RenderAPI to D3D12");
-				SetRenderAPI(RenderAPI::D3D12);
+				TP_WARN("[Context] Switching RenderAPI to OpenGL 4.6");
+				s_newRenderAPI = RenderAPI::OPENGL;
+
 				return;
 			}
 
-			if(s_isVulkanCapable)
+			TP_ERROR("[Context][OpenGL] This device doesn't support OpenGL 4.6!");
+			if (s_isD3D12Capable)
 			{
-				TP_WARN("[Context] Switching RenderAPI to Vulkan 1.1");
-				SetRenderAPI(RenderAPI::VULKAN);
+				SwitchRenderAPI(RenderAPI::D3D12);
+				return;
 			}
+
+			if (s_isVulkanCapable)
+				SwitchRenderAPI(RenderAPI::VULKAN);
 		}
-	}	
+	}
 }

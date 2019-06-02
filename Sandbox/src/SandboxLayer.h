@@ -8,7 +8,7 @@ class SandboxLayer : public TRAP::Layer
 {
 public:
 	SandboxLayer()
-		: Layer("Sandbox"), m_vertexArray(0), m_vertexBuffer(0), m_indexBuffer(0)
+		: Layer("Sandbox"), m_vertexArray(0), m_vertexBuffer(0), m_indexBuffer(0), m_usePassthrough(false)
 	{
 	}
 
@@ -62,12 +62,15 @@ public:
 		if (TRAP::Graphics::API::Context::GetRenderAPI() == TRAP::Graphics::API::RenderAPI::OPENGL)
 		{
 			OpenGLCall(glBindVertexArray(m_vertexArray));
-			TRAP::Graphics::ShaderManager::Get("Debug")->Bind();
+			if (m_usePassthrough)
+				TRAP::Graphics::ShaderManager::Get("Passthrough")->Bind();
+			else
+				TRAP::Graphics::ShaderManager::Get("Debug")->Bind();
 			OpenGLCall(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr));
 		}
 
 		//FPS & FrameTime
-		if(timer.Elapsed() >= 10.0f) //Output Every Second
+		if(timer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 		{
 			TP_INFO("[Sandbox] FPS: ", TRAP::Application::Get().GetFPS());
 			TP_INFO("[Sandbox] FrameTime: ", TRAP::Application::Get().GetFrameTime(), "ms");
@@ -75,12 +78,19 @@ public:
 		}
 	}
 	
-	bool OnKeyPressed(TRAP::KeyPressedEvent& event) const
+	bool OnKeyPressed(TRAP::KeyPressedEvent& event)
 	{
 		if (event.GetKeyCode() == TP_KEY_ESCAPE)
 			TRAP::Application::Get().Shutdown();
-		/*if (event.GetKeyCode() == TP_KEY_F1)
-			TRAP::Graphics::API::Context::SetRenderAPI(TRAP::Graphics::API::RenderAPI::D3D12);*/
+
+		if (event.GetKeyCode() == TP_KEY_F1) //Switch to D3D12
+			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::D3D12);
+		if (event.GetKeyCode() == TP_KEY_F2) //Switch to Vulkan
+			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::VULKAN);
+		if (event.GetKeyCode() == TP_KEY_F3) //Switch to OpenGL
+			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::OPENGL);
+		if (event.GetKeyCode() == TP_KEY_F10 && event.GetRepeatCount() < 1) //Use Default/Passthrough Shader
+			m_usePassthrough = !m_usePassthrough;
 
 		return true;
 	}
@@ -94,5 +104,6 @@ public:
 private:
 	unsigned int m_vertexArray, m_vertexBuffer, m_indexBuffer;
 	TRAP::Utils::Timer timer;
+	bool m_usePassthrough;
 };
 

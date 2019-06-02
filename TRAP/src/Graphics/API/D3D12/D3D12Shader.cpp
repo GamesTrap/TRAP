@@ -12,6 +12,13 @@ TRAP::Graphics::API::D3D12Shader::D3D12Shader(std::string name, std::string VSSo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::API::D3D12Shader::~D3D12Shader()
+{
+	TP_DEBUG("[Shader][D3D12] Destroying Shader: \"", m_name, "\"");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::D3D12Shader::Bind() const
 {
 }

@@ -26,15 +26,18 @@ namespace TRAP::Graphics::API
 		Context& operator=(Context&&) = default;
 
 		static void Create(Window* window);
+		static void Shutdown();
 
 		static void AutoSelectRenderAPI();
 		static void CheckAllRenderAPIs();
 		static RenderAPI GetRenderAPI();
 		static void SetRenderAPI(RenderAPI api);
+		static void SwitchRenderAPI(RenderAPI api);
 
 		static void SetVSyncInterval(unsigned int interval);
 		static unsigned int GetVSyncInterval();
 
+		static RenderAPI s_newRenderAPI;
 	protected:
 		static std::unique_ptr<Context> s_Context;
 		static RenderAPI s_RenderAPI;

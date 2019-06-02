@@ -13,7 +13,7 @@ namespace TRAP::Graphics::API
 		D3D12Shader& operator=(const D3D12Shader&) = default;
 		D3D12Shader(D3D12Shader&&) = default;
 		D3D12Shader& operator=(D3D12Shader&&) = default;
-		~D3D12Shader() = default;
+		~D3D12Shader();
 
 		void Bind() const override;
 		void Unbind() const override;

@@ -2,6 +2,7 @@
 #include "Window.h"
 
 #include <glad/glad.h>
+#include <utility>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -60,6 +61,8 @@ void TRAP::Window::Init(const WindowProps& props)
 		TP_CORE_ASSERT(success, "Could not initialize GLFW!");
 		glfwSetErrorCallback(GLFWErrorCallback);
 		sGLFWInitialized = true;
+
+		Graphics::API::Context::CheckAllRenderAPIs();
 	}
 
 	SetMonitor(props.Monitor);
@@ -69,7 +72,8 @@ void TRAP::Window::Init(const WindowProps& props)
 	         m_baseVideoMode.width, 'x', m_baseVideoMode.height, '@', m_baseVideoMode.refreshRate, "Hz (R",
 	         m_baseVideoMode.redBits, 'G', m_baseVideoMode.greenBits, 'B', m_baseVideoMode.blueBits, ')');
 
-	Graphics::API::Context::CheckAllRenderAPIs();
+	glfwDefaultWindowHints();
+
 	if (props.RenderAPI == Graphics::API::RenderAPI::NONE)
 		Graphics::API::Context::AutoSelectRenderAPI();
 	else		
@@ -87,7 +91,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	//Create Window
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 			               std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-			              "[INDEV][19w22b1]";
+			              "[INDEV][19w22c1]";
 	m_window = glfwCreateWindow(static_cast<int>(props.Width),
 	                            static_cast<int>(props.Height),
 	                            newTitle.c_str(),
@@ -387,4 +391,15 @@ void TRAP::Window::Clear()
 {
 	Graphics::API::Renderer::Clear(static_cast<int>(Graphics::API::RendererBufferType::RENDERER_BUFFER_COLOR) |
 		                            static_cast<int>(Graphics::API::RendererBufferType::RENDERER_BUFFER_DEPTH));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetTitle(const std::string& title)
+{
+	m_data.Title = title;
+	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
+		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
+		"[INDEV][19w22c1]" + std::string(Graphics::API::Renderer::GetTitle());
+	glfwSetWindowTitle(m_window, newTitle.c_str());
 }

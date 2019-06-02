@@ -4,7 +4,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::OpenGLRenderer::OpenGLRenderer()
-	: m_context(API::OpenGLContext::Get())
+	: m_context(OpenGLContext::Get())
 {
 }
 

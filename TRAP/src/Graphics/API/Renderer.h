@@ -44,6 +44,7 @@ namespace TRAP::Graphics::API
 		Renderer& operator=(Renderer&&) = default;
 
 		static void Init();
+		static void Shutdown();
 
 		static void Clear(unsigned int buffer);
 		static void Present(Window* window);
