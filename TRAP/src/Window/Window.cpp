@@ -82,9 +82,18 @@ void TRAP::Window::Init(const WindowProps& props)
 			Graphics::API::Context::SetRenderAPI(props.RenderAPI);
 		else
 		{
-			//TODO In future replace incompatible RenderAPi with a compatible one @ runtime
-			Show("This shouldn't happen except if you tried to manually set RenderAPI inside Engine.cfg to an incompatible one.\nPlease delete Engine.cfg or revert your changes!", "Incompatible RenderAPI", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
-			exit(-1);
+			if(Graphics::API::Context::IsD3D12Capable())
+				Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::D3D12);
+			else if(Graphics::API::Context::IsVulkanCapable())
+				Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::VULKAN);
+			else if(Graphics::API::Context::IsOpenGLCapable())
+				Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::OPENGL);
+			else
+			{
+				//All RenderAPIs are unsupported
+				Show("Every RenderAPI that TRAP Engine uses is unsupported on your device!", "Incompatible Device", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+				exit(-1);				
+			}
 		}
 	}
 	if (Graphics::API::Context::GetRenderAPI() != Graphics::API::RenderAPI::OPENGL)

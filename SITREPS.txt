@@ -128,3 +128,4 @@ SITREP 06/02/2019|19w22c1
     - Added Runtime switching between RenderAPIs ~>180 mins
     - Added MsgBox API to create cross-platform Message Boxes ~>45 mins
     - Fixed Bug #9 Crash if Engine.cfg was overwritten with an incompatible RenderAPI ~>30 mins
+    - Added RenderAPI auto correction for Bug #9 ~>20 mins

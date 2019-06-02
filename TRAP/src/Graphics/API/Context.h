@@ -33,7 +33,11 @@ namespace TRAP::Graphics::API
 		static RenderAPI GetRenderAPI();
 		static void SetRenderAPI(RenderAPI api);
 		static void SwitchRenderAPI(RenderAPI api);
+
 		static bool IsSupported(RenderAPI api);
+		static bool IsD3D12Capable();
+		static bool IsVulkanCapable();
+		static bool IsOpenGLCapable();
 
 		static void SetVSyncInterval(unsigned int interval);
 		static unsigned int GetVSyncInterval();
@@ -73,6 +77,27 @@ inline void TRAP::Graphics::API::Context::SetVSyncInterval(const unsigned int in
 inline unsigned TRAP::Graphics::API::Context::GetVSyncInterval()
 {
 	return m_vsyncInterval;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline bool TRAP::Graphics::API::Context::IsD3D12Capable()
+{
+	return s_isD3D12Capable;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline bool TRAP::Graphics::API::Context::IsVulkanCapable()
+{
+	return s_isVulkanCapable;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline bool TRAP::Graphics::API::Context::IsOpenGLCapable()
+{
+	return s_isOpenGLCapable;
 }
 
 #endif /*_TRAP_CONTEXT_H_*/
