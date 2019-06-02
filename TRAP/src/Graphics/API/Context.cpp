@@ -40,7 +40,8 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 #else
 	case RenderAPI::D3D12: //Shouldn't be used because it's a windows only API
 		TP_CRITICAL("[Context][D3D12] Unsupported Platform(not Windows)!");
-		exit(-1); //TODO User friendly exit(MsgBox?)
+		Show("D3D12 is unsupported on this OS!", "Unsupported RenderAPI", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+		exit(-1);
 #endif
 
 	case RenderAPI::VULKAN:
@@ -50,7 +51,8 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 
 	default:
 		TP_CRITICAL("[Engine] Unsupported Device!");
-		exit(-1); //TODO User friendly exit(MsgBox?)
+		Show("Device is unsupported!\n No RenderAPI selected!", "Unsupported Device", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+		exit(-1);
 	}
 }
 
@@ -113,7 +115,7 @@ void TRAP::Graphics::API::Context::SetRenderAPI(const RenderAPI api)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::Context::SwitchRenderAPI(RenderAPI api)
+void TRAP::Graphics::API::Context::SwitchRenderAPI(const RenderAPI api)
 {
 	if (api != s_RenderAPI)
 	{
@@ -190,4 +192,23 @@ void TRAP::Graphics::API::Context::SwitchRenderAPI(RenderAPI api)
 				SwitchRenderAPI(RenderAPI::VULKAN);
 		}
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::API::Context::IsSupported(const RenderAPI api)
+{
+	if (api == RenderAPI::D3D12)
+		if (s_isD3D12Capable)
+			return true;
+
+	if (api == RenderAPI::VULKAN)
+		if (s_isVulkanCapable)
+			return true;
+
+	if (api == RenderAPI::OPENGL)
+		if (s_isOpenGLCapable)
+			return true;
+
+	return false;
 }

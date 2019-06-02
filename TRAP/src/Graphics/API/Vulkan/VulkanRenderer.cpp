@@ -34,40 +34,31 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 
 void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 {
-	if (glfwVulkanSupported())
-	{
-		SetupInstanceLayersAndExtensions();
-		InitInstance();
-		m_context->InitSurface();
-		InitDebug();
-		SetupPhysicalDevice();
-		SetupDeviceLayersAndExtensions();
-		InitDevice();
-		m_context->SetupSwapchain();
-		m_context->InitSwapchain();
-		m_context->InitImageViews();
+	SetupInstanceLayersAndExtensions();
+	InitInstance();
+	m_context->InitSurface();
+	InitDebug();
+	SetupPhysicalDevice();
+	SetupDeviceLayersAndExtensions();
+	InitDevice();
+	m_context->SetupSwapchain();
+	m_context->InitSwapchain();
+	m_context->InitImageViews();
 
-		//Not implemented
-		SetDepthTesting(true);
-		SetBlend(true);
-		SetBlendFunction(RendererBlendFunction::SOURCE_ALPHA, RendererBlendFunction::ONE_MINUS_SOURCE_ALPHA);
-		//////////////////
+	//Not implemented
+	SetDepthTesting(true);
+	SetBlend(true);
+	SetBlendFunction(RendererBlendFunction::SOURCE_ALPHA, RendererBlendFunction::ONE_MINUS_SOURCE_ALPHA);
+	//////////////////
 
-		TP_INFO("[Renderer][Vulkan] ----------------------------------");
-		TP_INFO("[Renderer][Vulkan] Vulkan:");
-		TP_INFO("[Renderer][Vulkan] Version:  ", VK_VERSION_MAJOR(m_physicalDeviceProperties.apiVersion), '.', VK_VERSION_MINOR(m_physicalDeviceProperties.apiVersion), '.', VK_VERSION_PATCH(m_physicalDeviceProperties.apiVersion));
-		TP_INFO("[Renderer][Vulkan] Renderer: ", m_physicalDeviceProperties.deviceName);
-		TP_INFO("[Renderer][Vulkan] Driver:   ", VK_VERSION_MAJOR(m_physicalDeviceProperties.driverVersion), '.', VK_VERSION_MINOR(m_physicalDeviceProperties.driverVersion), '.', VK_VERSION_PATCH(m_physicalDeviceProperties.driverVersion));
-		TP_INFO("[Renderer][Vulkan] ----------------------------------");
+	TP_INFO("[Renderer][Vulkan] ----------------------------------");
+	TP_INFO("[Renderer][Vulkan] Vulkan:");
+	TP_INFO("[Renderer][Vulkan] Version:  ", VK_VERSION_MAJOR(m_physicalDeviceProperties.apiVersion), '.', VK_VERSION_MINOR(m_physicalDeviceProperties.apiVersion), '.', VK_VERSION_PATCH(m_physicalDeviceProperties.apiVersion));
+	TP_INFO("[Renderer][Vulkan] Renderer: ", m_physicalDeviceProperties.deviceName);
+	TP_INFO("[Renderer][Vulkan] Driver:   ", VK_VERSION_MAJOR(m_physicalDeviceProperties.driverVersion), '.', VK_VERSION_MINOR(m_physicalDeviceProperties.driverVersion), '.', VK_VERSION_PATCH(m_physicalDeviceProperties.driverVersion));
+	TP_INFO("[Renderer][Vulkan] ----------------------------------");
 
-		m_rendererTitle = "[Vulkan " + std::to_string(VK_VERSION_MAJOR(m_physicalDeviceProperties.apiVersion)) + '.' + std::to_string(VK_VERSION_MINOR(m_physicalDeviceProperties.apiVersion)) + '.' + std::to_string(VK_VERSION_PATCH(m_physicalDeviceProperties.apiVersion)) + ']';
-	}
-	else //TODO INFO Switch API(exiting program)
-	{
-		TP_CRITICAL("[Renderer][Vulkan] Vulkan is unsupported!");
-		TP_CRITICAL("[Renderer][Vulkan] Shutting down!");
-		exit(-1);
-	}
+	m_rendererTitle = "[Vulkan " + std::to_string(VK_VERSION_MAJOR(m_physicalDeviceProperties.apiVersion)) + '.' + std::to_string(VK_VERSION_MINOR(m_physicalDeviceProperties.apiVersion)) + '.' + std::to_string(VK_VERSION_PATCH(m_physicalDeviceProperties.apiVersion)) + ']';
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

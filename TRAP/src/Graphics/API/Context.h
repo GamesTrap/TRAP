@@ -33,6 +33,7 @@ namespace TRAP::Graphics::API
 		static RenderAPI GetRenderAPI();
 		static void SetRenderAPI(RenderAPI api);
 		static void SwitchRenderAPI(RenderAPI api);
+		static bool IsSupported(RenderAPI api);
 
 		static void SetVSyncInterval(unsigned int interval);
 		static unsigned int GetVSyncInterval();

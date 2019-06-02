@@ -32,7 +32,8 @@ void TRAP::Graphics::API::Renderer::Init()
 #else
 	case RenderAPI::D3D12:
 		TP_CRITICAL("[Renderer][D3D12] Unsupported Platform(not Windows)!");
-		exit(-1); //TODO User friendly exit(MsgBox?)
+		Show("D3D12 is unsupported on this OS!", "Unsupported RenderAPI", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+		exit(-1);
 #endif
 
 	case RenderAPI::VULKAN:
@@ -41,7 +42,8 @@ void TRAP::Graphics::API::Renderer::Init()
 		break;
 
 	default:
-		return;
+		Show("Device is unsupported!\n No RenderAPI selected!", "Unsupported Device", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+		exit(-1);
 	}
 
 	s_Renderer->InitInternal();

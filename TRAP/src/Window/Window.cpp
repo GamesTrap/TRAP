@@ -76,8 +76,17 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	if (props.RenderAPI == Graphics::API::RenderAPI::NONE)
 		Graphics::API::Context::AutoSelectRenderAPI();
-	else		
-		Graphics::API::Context::SetRenderAPI(props.RenderAPI);
+	else
+	{
+		if(Graphics::API::Context::IsSupported(props.RenderAPI))
+			Graphics::API::Context::SetRenderAPI(props.RenderAPI);
+		else
+		{
+			//TODO In future replace incompatible RenderAPi with a compatible one @ runtime
+			Show("This shouldn't happen except if you tried to manually set RenderAPI inside Engine.cfg to an incompatible one.\nPlease delete Engine.cfg or revert your changes!", "Incompatible RenderAPI", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+			exit(-1);
+		}
+	}
 	if (Graphics::API::Context::GetRenderAPI() != Graphics::API::RenderAPI::OPENGL)
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL)
@@ -101,7 +110,8 @@ void TRAP::Window::Init(const WindowProps& props)
 	if (m_window == nullptr)
 	{
 		TP_CRITICAL("[Window] Failed to create window");
-		exit(-1); //TODO User friendly exit(MsgBox?)
+		Show("Failed to create Window!", "Failed to Create Window", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+		exit(-1);
 	}
 
 	//Create Context & Initialize Renderer
