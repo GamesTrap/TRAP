@@ -44,9 +44,11 @@ void TRAP::Graphics::API::D3D12Context::Present(Window* window)
 
 bool TRAP::Graphics::API::D3D12Context::IsD3D12Capable()
 {
-	//TODO Check if D3D12 capable
-
-	return true;
+#ifdef TRAP_PLATFORM_WINDOWS
+	return false;//TODO Check if D3D12 capable
+#else
+	return false;
+#endif
 }
 
 #endif

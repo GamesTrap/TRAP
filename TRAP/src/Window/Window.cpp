@@ -91,7 +91,10 @@ void TRAP::Window::Init(const WindowProps& props)
 			else
 			{
 				//All RenderAPIs are unsupported
-				Show("Every RenderAPI that TRAP Engine uses is unsupported on your device!", "Incompatible Device", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+				Show("Every RenderAPI that TRAP Engine uses is unsupported on your device!\nDoes your system meet the minimum system requirements for running TRAP Engine?",
+				     "Incompatible Device",
+				     Utils::MsgBox::Style::Error,
+				     Utils::MsgBox::Buttons::Quit);
 				exit(-1);				
 			}
 		}
@@ -109,7 +112,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	//Create Window
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 			               std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-			              "[INDEV][19w22c1]";
+			              "[INDEV][19w23a1]";
 	m_window = glfwCreateWindow(static_cast<int>(props.Width),
 	                            static_cast<int>(props.Height),
 	                            newTitle.c_str(),
@@ -419,6 +422,6 @@ void TRAP::Window::SetTitle(const std::string& title)
 	m_data.Title = title;
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w22c1]" + std::string(Graphics::API::Renderer::GetTitle());
+		"[INDEV][19w23a1]" + std::string(Graphics::API::Renderer::GetTitle());
 	glfwSetWindowTitle(m_window, newTitle.c_str());
 }

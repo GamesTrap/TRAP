@@ -1,95 +1,95 @@
-[22:58:37][Debug][Application] Initializing TRAP Modules...
-[22:58:37][Debug][VFS] Initializing Virtual File System
-[22:58:37][Info][Config] Loading settings file "Engine.cfg"
-[22:58:37][Trace][Config] Width = 1280
-[22:58:37][Trace][Config] Height = 720
-[22:58:37][Trace][Config] RefreshRate = 144
-[22:58:37][Trace][Config] VSync = 0
-[22:58:37][Trace][Config] DisplayMode = Windowed
-[22:58:37][Trace][Config] Monitor = 0
-[22:58:37][Trace][Config] RenderAPI = D3D12
-[22:58:37][Trace][Config] HotShaderReloading = TRUE
-[22:58:37][Trace][Config] Size: 8
-[22:58:37][Info][Window] Initializing Window: "Sandbox" 1280x720@144Hz VSync: Off Mode: Windowed Monitor: 0
-[22:58:38][Debug][Window] Storing underlying OS video mode: 2560x1440@144Hz (R8G8B8)
-[22:58:38][Info][Context][Vulkan] Initializing Context
-[22:58:38][Info][Renderer][Vulkan] Initializing Renderer
-[22:58:38][Debug][Renderer][Vulkan] Setting up Instance Layers and Extensions
-[22:58:38][Debug][Renderer][Vulkan] Getting available Instance Layers
-[22:58:38][Debug][Renderer][Vulkan] Loading Instance Layer: VK_LAYER_KHRONOS_validation
-[22:58:38][Debug][Renderer][Vulkan] Getting available Instance Extensions
-[22:58:38][Debug][Renderer][Vulkan] Loading Instance Extension: VK_KHR_surface
-[22:58:38][Debug][Renderer][Vulkan] Loading Instance Extension: VK_KHR_win32_surface
-[22:58:38][Debug][Renderer][Vulkan] Loading Instance Extension: VK_EXT_debug_utils
-[22:58:38][Debug][Renderer][Vulkan] Initializing Instance
-[22:58:39][Debug][Renderer][Vulkan] Initializing Surface
-[22:58:39][Debug][Renderer][Vulkan] Initializing Debug Callback
-[22:58:39][Debug][Renderer][Vulkan] 0(Layer Internal Message) Added messenger
-[22:58:39][Debug][Renderer][Vulkan] 0(Layer Internal Message) Added messenger
-[22:58:39][Debug][Renderer][Vulkan] 0(Layer Internal Message) Added messenger
-[22:58:39][Debug][Renderer][Vulkan] Setting up Physical Device
-[22:58:39][Debug][Renderer][Vulkan] Getting available Physical Devices
-[22:58:39][Debug][Renderer][Vulkan] Found Physical Device: GeForce RTX 2080
-[22:58:39][Debug][Renderer][Vulkan] Found Physical Device: GeForce GTX 1070
-[22:58:39][Debug][Renderer][Vulkan] Selecting Physical Device
-[22:58:39][Debug][Renderer][Vulkan] Physical Device: GeForce RTX 2080 Score: 40768
-[22:58:39][Debug][Renderer][Vulkan] Physical Device: GeForce GTX 1070 Score: 40768
-[22:58:39][Debug][Renderer][Vulkan] Selected Physical Device: GeForce RTX 2080(Score: 40768)
-[22:58:39][Debug][Renderer][Vulkan] Setting up Graphics and Present Queue Family
-[22:58:39][Debug][Renderer][Vulkan] Getting available Queue Families
-[22:58:39][Debug][Renderer][Vulkan] Setting up Device Layers and Extensions
-[22:58:39][Debug][Renderer][Vulkan] Getting available Device Layers(Deprecated)
-[22:58:39][Debug][Renderer][Vulkan] Loading Device Layer(Deprecated): VK_LAYER_KHRONOS_validation
-[22:58:39][Debug][Renderer][Vulkan] Getting available Device Extensions
-[22:58:39][Debug][Renderer][Vulkan] Loading Device Extension: VK_KHR_swapchain
-[22:58:39][Debug][Renderer][Vulkan] Initializing Device
-[22:58:39][Debug][Renderer][Vulkan] Initializing Device
-[22:58:39][Debug][Renderer][Vulkan] Setting up Swapchain
-[22:58:39][Debug][Renderer][Vulkan] Choosing Swapchain Surface Format
-[22:58:39][Debug][Renderer][Vulkan] Using Surface Format: VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
-[22:58:39][Debug][Renderer][Vulkan] Choosing Swapchain Surface Present Mode
-[22:58:39][Debug][Renderer][Vulkan] Using Surface Present Mode: VK_PRESENT_MODE_MAILBOX_KHR(Triple Buffered)
-[22:58:39][Debug][Renderer][Vulkan] Choosing Swapchain Extent
-[22:58:39][Debug][Renderer][Vulkan] Using Swapchain Extent: 1280x720
-[22:58:39][Debug][Renderer][Vulkan] Initializing Swapchain
-[22:58:39][Debug][Renderer][Vulkan] Initializing Swapchain Image Views
-[22:58:39][Info][Renderer][Vulkan] ----------------------------------
-[22:58:39][Info][Renderer][Vulkan] Vulkan:
-[22:58:39][Info][Renderer][Vulkan] Version:  1.1.99
-[22:58:39][Info][Renderer][Vulkan] Renderer: GeForce RTX 2080
-[22:58:39][Info][Renderer][Vulkan] Driver:   430.344.0
-[22:58:39][Info][Renderer][Vulkan] ----------------------------------
-[22:58:39][Debug][Shader][Vulkan] Compiling: "Passthrough"
-[22:58:39][Debug][Shader][Vulkan] Pre-Processing Vertex Shader
-[22:58:41][Debug][Shader][Vulkan] Pre-Processing Fragment Shader
-[22:58:41][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
-[22:58:41][Debug][Shader][Vulkan] Compiling: "Debug"
-[22:58:41][Debug][Shader][Vulkan] Pre-Processing Vertex Shader
-[22:58:42][Debug][Shader][Vulkan] Pre-Processing Fragment Shader
-[22:58:44][Debug][Application] Shutting down TRAP Modules...
-[22:58:44][Trace][Config] Width = 1280
-[22:58:44][Trace][Config] Height = 720
-[22:58:44][Trace][Config] RefreshRate = 144
-[22:58:44][Trace][Config] VSync = 0
-[22:58:44][Trace][Config] DisplayMode = Windowed
-[22:58:44][Trace][Config] Monitor = 0
-[22:58:44][Trace][Config] RenderAPI = Vulkan
-[22:58:44][Trace][Config] HotShaderReloading = TRUE
-[22:58:44][Trace][Config] Size: 8
-[22:58:44][Info][Config] Saving: Engine.cfg
-[22:58:44][Debug][VFS] Shutting down Virtual File System
-[22:58:44][Debug][ShaderManager] Destroying Shaders
-[22:58:44][Debug][Shader][Vulkan] Destroying Shader: "Passthrough"
-[22:58:44][Debug][Shader][Vulkan] Destroying Shader: "Debug"
-[22:58:44][Debug][Window] Destroying Window: "Sandbox"
-[22:58:44][Debug][Renderer][Vulkan] Destroying Renderer
-[22:58:44][Debug][Renderer][Vulkan] Destroying Swapchain Image Views
-[22:58:44][Debug][Renderer][Vulkan] Destroying Swapchain
-[22:58:44][Debug][Renderer][Vulkan] Destroying Device
-[22:58:44][Debug][Renderer][Vulkan] Destroying Debug Callback
-[22:58:44][Debug][Renderer][Vulkan] 0(VUID_Undefined) Destroyed messenger
+[22:03:31][Debug][Application] Initializing TRAP Modules...
+[22:03:31][Debug][VFS] Initializing Virtual File System
+[22:03:31][Info][Config] Loading settings file "Engine.cfg"
+[22:03:31][Trace][Config] Width = 1280
+[22:03:31][Trace][Config] Height = 720
+[22:03:31][Trace][Config] RefreshRate = 144
+[22:03:31][Trace][Config] VSync = 0
+[22:03:31][Trace][Config] DisplayMode = Windowed
+[22:03:31][Trace][Config] Monitor = 0
+[22:03:31][Trace][Config] RenderAPI = Vulkan
+[22:03:31][Trace][Config] HotShaderReloading = TRUE
+[22:03:31][Trace][Config] Size: 8
+[22:03:31][Info][Window] Initializing Window: "Sandbox" 1280x720@144Hz VSync: Off Mode: Windowed Monitor: 0
+[22:03:33][Debug][Window] Storing underlying OS video mode: 2560x1440@144Hz (R8G8B8)
+[22:03:33][Info][Context][Vulkan] Initializing Context
+[22:03:33][Info][Renderer][Vulkan] Initializing Renderer
+[22:03:33][Debug][Renderer][Vulkan] Setting up Instance Layers and Extensions
+[22:03:33][Debug][Renderer][Vulkan] Getting available Instance Layers
+[22:03:33][Debug][Renderer][Vulkan] Loading Instance Layer: VK_LAYER_KHRONOS_validation
+[22:03:33][Debug][Renderer][Vulkan] Getting available Instance Extensions
+[22:03:33][Debug][Renderer][Vulkan] Loading Instance Extension: VK_KHR_surface
+[22:03:33][Debug][Renderer][Vulkan] Loading Instance Extension: VK_KHR_win32_surface
+[22:03:33][Debug][Renderer][Vulkan] Loading Instance Extension: VK_EXT_debug_utils
+[22:03:33][Debug][Renderer][Vulkan] Initializing Instance
+[22:03:34][Debug][Renderer][Vulkan] Initializing Surface
+[22:03:34][Debug][Renderer][Vulkan] Initializing Debug Callback
+[22:03:34][Debug][Renderer][Vulkan] 0(Layer Internal Message) Added messenger
+[22:03:34][Debug][Renderer][Vulkan] 0(Layer Internal Message) Added messenger
+[22:03:34][Debug][Renderer][Vulkan] 0(Layer Internal Message) Added messenger
+[22:03:34][Debug][Renderer][Vulkan] Setting up Physical Device
+[22:03:34][Debug][Renderer][Vulkan] Getting available Physical Devices
+[22:03:34][Debug][Renderer][Vulkan] Found Physical Device: GeForce RTX 2080
+[22:03:34][Debug][Renderer][Vulkan] Found Physical Device: GeForce GTX 1070
+[22:03:34][Debug][Renderer][Vulkan] Selecting Physical Device
+[22:03:34][Debug][Renderer][Vulkan] Physical Device: GeForce RTX 2080 Score: 40768
+[22:03:34][Debug][Renderer][Vulkan] Physical Device: GeForce GTX 1070 Score: 40768
+[22:03:34][Debug][Renderer][Vulkan] Selected Physical Device: GeForce RTX 2080(Score: 40768)
+[22:03:34][Debug][Renderer][Vulkan] Setting up Graphics and Present Queue Family
+[22:03:34][Debug][Renderer][Vulkan] Getting available Queue Families
+[22:03:34][Debug][Renderer][Vulkan] Setting up Device Layers and Extensions
+[22:03:34][Debug][Renderer][Vulkan] Getting available Device Layers(Deprecated)
+[22:03:34][Debug][Renderer][Vulkan] Loading Device Layer(Deprecated): VK_LAYER_KHRONOS_validation
+[22:03:34][Debug][Renderer][Vulkan] Getting available Device Extensions
+[22:03:34][Debug][Renderer][Vulkan] Loading Device Extension: VK_KHR_swapchain
+[22:03:34][Debug][Renderer][Vulkan] Initializing Device
+[22:03:34][Debug][Renderer][Vulkan] Initializing Device
+[22:03:34][Debug][Renderer][Vulkan] Setting up Swapchain
+[22:03:34][Debug][Renderer][Vulkan] Choosing Swapchain Surface Format
+[22:03:34][Debug][Renderer][Vulkan] Using Surface Format: VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
+[22:03:34][Debug][Renderer][Vulkan] Choosing Swapchain Surface Present Mode
+[22:03:34][Debug][Renderer][Vulkan] Using Surface Present Mode: VK_PRESENT_MODE_MAILBOX_KHR(Triple Buffered)
+[22:03:34][Debug][Renderer][Vulkan] Choosing Swapchain Extent
+[22:03:34][Debug][Renderer][Vulkan] Using Swapchain Extent: 1280x720
+[22:03:34][Debug][Renderer][Vulkan] Initializing Swapchain
+[22:03:34][Debug][Renderer][Vulkan] Initializing Swapchain Image Views
+[22:03:34][Info][Renderer][Vulkan] ----------------------------------
+[22:03:34][Info][Renderer][Vulkan] Vulkan:
+[22:03:34][Info][Renderer][Vulkan] Version:  1.1.99
+[22:03:34][Info][Renderer][Vulkan] Renderer: GeForce RTX 2080
+[22:03:34][Info][Renderer][Vulkan] Driver:   430.344.0
+[22:03:34][Info][Renderer][Vulkan] ----------------------------------
+[22:03:34][Debug][Shader][Vulkan] Compiling: "Passthrough"
+[22:03:34][Debug][Shader][Vulkan] Pre-Processing Vertex Shader
+[22:03:36][Debug][Shader][Vulkan] Pre-Processing Fragment Shader
+[22:03:36][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
+[22:03:36][Debug][Shader][Vulkan] Compiling: "Debug"
+[22:03:36][Debug][Shader][Vulkan] Pre-Processing Vertex Shader
+[22:03:36][Debug][Shader][Vulkan] Pre-Processing Fragment Shader
+[22:03:41][Debug][Application] Shutting down TRAP Modules...
+[22:03:41][Trace][Config] Width = 1280
+[22:03:41][Trace][Config] Height = 720
+[22:03:41][Trace][Config] RefreshRate = 144
+[22:03:41][Trace][Config] VSync = 0
+[22:03:41][Trace][Config] DisplayMode = Windowed
+[22:03:41][Trace][Config] Monitor = 0
+[22:03:41][Trace][Config] RenderAPI = Vulkan
+[22:03:41][Trace][Config] HotShaderReloading = TRUE
+[22:03:41][Trace][Config] Size: 8
+[22:03:41][Info][Config] Saving: Engine.cfg
+[22:03:41][Debug][VFS] Shutting down Virtual File System
+[22:03:41][Debug][ShaderManager] Destroying Shaders
+[22:03:41][Debug][Shader][Vulkan] Destroying Shader: "Passthrough"
+[22:03:41][Debug][Shader][Vulkan] Destroying Shader: "Debug"
+[22:03:41][Debug][Window] Destroying Window: "Sandbox"
+[22:03:41][Debug][Renderer][Vulkan] Destroying Renderer
+[22:03:41][Debug][Renderer][Vulkan] Destroying Swapchain Image Views
+[22:03:41][Debug][Renderer][Vulkan] Destroying Swapchain
+[22:03:41][Debug][Renderer][Vulkan] Destroying Device
+[22:03:41][Debug][Renderer][Vulkan] Destroying Debug Callback
+[22:03:41][Debug][Renderer][Vulkan] 0(VUID_Undefined) Destroyed messenger
 
-[22:58:44][Debug][Renderer][Vulkan] Destroying Surface
-[22:58:44][Debug][Renderer][Vulkan] Destroying Instance
-[22:58:44][Debug][Context][Vulkan] Destroying Context
-[22:58:44][Info][Logger] Saving Log.txt
+[22:03:41][Debug][Renderer][Vulkan] Destroying Surface
+[22:03:41][Debug][Renderer][Vulkan] Destroying Instance
+[22:03:41][Debug][Context][Vulkan] Destroying Context
+[22:03:41][Info][Logger] Saving Log.txt

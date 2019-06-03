@@ -182,7 +182,7 @@ project "TRAP"
 			"GLSLang",
 			"SPIRV",
 			"StandAlone",
-			"Cocoa.framework"
+			"Cocoa.framework",
 
 			"c++fs"
 		}

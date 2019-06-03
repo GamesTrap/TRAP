@@ -240,7 +240,6 @@ void TRAP::Graphics::API::VulkanRenderer::InitInstance()
 	};
 
 	VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &m_instance));
-	TP_RENDERER_ASSERT(m_instance, "[Renderer][Vulkan] Couldn't create Instance!"); //TODO INFO Critical switch Render API
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -402,10 +401,10 @@ void TRAP::Graphics::API::VulkanRenderer::PickPhysicalDevice(std::vector<VkPhysi
 	}
 	else
 	{
-		TP_CRITICAL("[Renderer][Vulkan] Could not find a suitable Physical Device"); //TODO INFO Switch RenderAPI
+		TP_CRITICAL("[Renderer][Vulkan] Could not find a suitable Physical Device");
 		TP_CRITICAL("[Renderer][Vulkan] Vulkan is unsupported!");
 		TP_CRITICAL("[Renderer][Vulkan] Shutting down!");
-		exit(-1);
+		exit(-1); //TODO Add inside VulkanContext IsVulkanCapable() and remove from here
 	}
 }
 
@@ -492,12 +491,12 @@ bool TRAP::Graphics::API::VulkanRenderer::IsExtensionSupported(const std::vector
 		TP_WARN("[Renderer][Vulkan] Extension ", extension, " is not supported(Vulkan SDK installed?)");
 	else
 		TP_WARN("[Renderer][Vulkan] Extension ", extension, " is not supported");
-	if (strcmp(extension, VK_KHR_SURFACE_EXTENSION_NAME) == 0 || strcmp(extension, "VK_KHR_win32_surface") == 0 || strcmp(extension, "VK_MVK_macos_surface") == 0 || strcmp(extension, "VK_KHR_xlib_surface") == 0 || strcmp(extension, "VK_KHR_xcb_surface") == 0 || strcmp(extension, "VK_KHR_wayland_surface") == 0 || strcmp(extension, VK_KHR_SWAPCHAIN_EXTENSION_NAME) == 0)
+	if (strcmp(extension, VK_KHR_SWAPCHAIN_EXTENSION_NAME) == 0)
 	{
-		TP_CRITICAL("[Renderer][Vulkan] Extension ", extension, " is not supported!"); //TODO INFO Critical Switch RenderAPI
+		TP_CRITICAL("[Renderer][Vulkan] Extension ", extension, " is not supported!");
 		TP_CRITICAL("[Renderer][Vulkan] Vulkan is unsupported!");
 		TP_CRITICAL("[Renderer][Vulkan] Shutting down!");
-		exit(-1);
+		exit(-1); //TODO Add inside VulkanContext IsVulkanCapable() and remove from here
 	}
 
 	return false;

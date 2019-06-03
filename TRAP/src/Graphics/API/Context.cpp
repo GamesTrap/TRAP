@@ -32,17 +32,10 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 		s_Context = std::make_unique<OpenGLContext>(window);
 		break;
 
-#ifdef TRAP_PLATFORM_WINDOWS
 	case RenderAPI::D3D12:
 		TP_INFO("[Context][D3D12] Initializing Context");
 		s_Context = std::make_unique<D3D12Context>(window);
 		break;
-#else
-	case RenderAPI::D3D12: //Shouldn't be used because it's a windows only API
-		TP_CRITICAL("[Context][D3D12] Unsupported Platform(not Windows)!");
-		Show("D3D12 is unsupported on this OS!", "Unsupported RenderAPI", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
-		exit(-1);
-#endif
 
 	case RenderAPI::VULKAN:
 		TP_INFO("[Context][Vulkan] Initializing Context");
@@ -50,8 +43,9 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 		break;
 
 	default:
+		//This should never be reached.
 		TP_CRITICAL("[Engine] Unsupported Device!");
-		Show("Device is unsupported!\n No RenderAPI selected!", "Unsupported Device", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+		Show("Device is unsupported!\nNo RenderAPI selected!", "Unsupported Device", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
 		exit(-1);
 	}
 }

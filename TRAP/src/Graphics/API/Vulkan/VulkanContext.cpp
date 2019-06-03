@@ -311,12 +311,302 @@ VkExtent2D TRAP::Graphics::API::VulkanContext::ChooseSwapchainExtent() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//I know i know it's a heavy function but I don't want to use the VulkanRenderer/Context functions because this should execute silently
 bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 {
-	//TODO Check if Vulkan 1.1 capable
-
 	if (glfwVulkanSupported())
+	{
+		//Instance Extensions
+		//Get Required Instance Extensions from GLFW
+		uint32_t requiredExtensionsCount = 0;
+		const char** requiredExtensions = glfwGetRequiredInstanceExtensions(&requiredExtensionsCount);
+
+		//Get Instance Extensions
+		uint32_t extensionsCount = 0;
+		VkCall(vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, nullptr));
+		std::vector<VkExtensionProperties> availableInstanceExtensions(extensionsCount);
+		VkCall(vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, availableInstanceExtensions.data()));
+
+		//No Instance Extensions found
+		if (extensionsCount == 0 || availableInstanceExtensions.empty())
+			return false; 
+
+		//Check if required Instance Extensions are available
+		std::vector<const char*> instanceExtensions;
+		for (uint32_t i = 0; i < requiredExtensionsCount; i++)
+		{
+			for (auto& availableExtension : availableInstanceExtensions)
+				if (strcmp(availableExtension.extensionName, requiredExtensions[i]) == 0)
+					instanceExtensions.push_back(requiredExtensions[i]);					
+		}
+
+		if (instanceExtensions.empty())
+			return false;
+
+		//Check if a required Instance Extension is unsupported
+		for(uint32_t i = 0; i < requiredExtensionsCount; i++)
+		{
+			auto extension = std::find(instanceExtensions.begin(), instanceExtensions.end(), requiredExtensions[i]);
+			if (extension == instanceExtensions.end())
+				return false;			
+		}
+		//All required Instance Extensions are available
+
+		//Check if instance can be created
+		VkApplicationInfo applicationInfo
+		{
+			VK_STRUCTURE_TYPE_APPLICATION_INFO,
+			nullptr,
+			"Vulkan capability test",
+			VK_MAKE_VERSION(1, 0, 0),
+			"TRAP Engine",
+			TRAP_VERSION,
+			VK_API_VERSION_1_1
+		};
+
+		VkInstanceCreateInfo instanceCreateInfo
+		{
+			VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+			nullptr,
+			0,
+			&applicationInfo,
+			0,
+			nullptr,
+			static_cast<uint32_t>(instanceExtensions.size()),
+			instanceExtensions.data()
+		};
+
+		VkInstance instance;
+		VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &instance));
+		if (!instance)
+			return false;
+
+		//Create Vulkan 1.1 Test window
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		glfwWindowHint(GLFW_VISIBLE, false);
+		glfwWindowHint(GLFW_FOCUSED, false);
+		glfwWindowHint(GLFW_FOCUS_ON_SHOW, false);
+		GLFWwindow* VulkanTestWindow = glfwCreateWindow(800, 600, "Vulkan Tester", nullptr, nullptr);
+		glfwDefaultWindowHints();
+		if (!VulkanTestWindow)
+			return false;
+
+		VkSurfaceKHR surface;
+		VkCall(glfwCreateWindowSurface(instance, VulkanTestWindow, nullptr, &surface));
+
+		if(!surface)
+		{
+			//Needs to be destroyed after testing
+			vkDestroyInstance(instance, nullptr);
+
+			return false;
+		}
+
+		//Get Physical Devices
+		uint32_t physicalDevicesCount = 0;
+		VkCall(vkEnumeratePhysicalDevices(instance, &physicalDevicesCount, nullptr));
+		std::vector<VkPhysicalDevice> physicalDevicesList(physicalDevicesCount);
+		VkCall(vkEnumeratePhysicalDevices(instance, &physicalDevicesCount, physicalDevicesList.data()));
+
+		//No physical Devices found
+		if(physicalDevicesCount == 0 || physicalDevicesList.empty())
+		{
+			//Needs to be destroyed after testing
+			vkDestroyInstance(instance, nullptr);
+
+			return false;
+		}
+
+		//Check physical Devices for features
+		std::multimap<int, VkPhysicalDevice> candidates;
+
+		int highestScore = 0;
+		int score = 0;
+		for (const auto& physicalDevice : physicalDevicesList)
+		{
+			VkPhysicalDeviceProperties deviceProperties;
+			vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+
+			//Discrete GPUs have a significant performance advantage
+			if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+				score += 1000;
+			else if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
+				score += 250;
+
+			//Make sure GPU has a Graphics Queue
+			uint32_t graphicsFamilyIndex = 0;
+
+			//Get Queue Families
+			uint32_t queueFamilyCount = 0;
+			vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
+			std::vector<VkQueueFamilyProperties> availableQueueFamilies(queueFamilyCount);
+			vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, availableQueueFamilies.data());
+
+			//Check if physical device support Graphics Queue Family
+			for (uint32_t i = 0; i < availableQueueFamilies.size(); i++)
+				if (availableQueueFamilies[i].queueCount > 0 && availableQueueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+				{
+					graphicsFamilyIndex = i;
+					score += 1000;
+				}
+
+			//Make sure GPU has Present support and a Present Queue
+			VkBool32 presentSupport = false;
+			VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, graphicsFamilyIndex, surface, &presentSupport));
+			for (auto& queueFamilyProperty : availableQueueFamilies)
+				if (queueFamilyProperty.queueCount > 0 && presentSupport)
+					score += 1000;
+
+			//Maximum possible size of textures affects graphics quality
+			score += deviceProperties.limits.maxImageDimension2D;
+
+			//Get available Device Extensions
+			uint32_t extensionCount = 0;
+			VkCall(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr));
+			std::vector<VkExtensionProperties> availableDeviceExtensions(extensionCount);
+			VkCall(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, availableDeviceExtensions.data()));
+
+			//Make sure GPU has Swapchain support
+			for (auto& availableExtension : availableDeviceExtensions)
+				if (strcmp(availableExtension.extensionName, VK_KHR_SWAPCHAIN_EXTENSION_NAME) == 0)
+				{
+					//GPU Supports Swapchains
+					score += 1000;
+
+					//Double Check to make sure GPU really has Swapchain support :D
+
+					//Get available surface formats
+					uint32_t surfaceFormatCount = 0;
+					std::vector<VkSurfaceFormatKHR> surfaceFormats(surfaceFormatCount);
+					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatCount, nullptr));
+					std::vector<VkSurfaceFormatKHR> availableSurfaceFormats{ surfaceFormatCount };
+					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatCount, surfaceFormats.data()));
+					if (!surfaceFormats.empty())
+						score += 1000;
+
+					//Get Available surface present modes
+					uint32_t surfacePresentModeCount = 0;
+					std::vector<VkPresentModeKHR> presentModes(surfacePresentModeCount);
+					VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &surfacePresentModeCount, nullptr));
+					std::vector<VkPresentModeKHR> surfacePresentModes{ surfacePresentModeCount };
+					VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &surfacePresentModeCount, presentModes.data()));
+					if (!presentModes.empty())
+						score += 1000;
+				}
+			if (score > highestScore)
+				highestScore = score;
+
+			candidates.insert(std::make_pair(score, physicalDevice));
+		}
+
+		if(candidates.empty())
+		{
+			//Needs to be destroyed after testing
+			vkDestroySurfaceKHR(instance, surface, nullptr);
+
+			glfwDestroyWindow(VulkanTestWindow);
+
+			//Needs to be destroyed after testing
+			vkDestroyInstance(instance, nullptr);
+
+			return false;
+		}
+
+		//Use first physical Device with highest score
+		VkPhysicalDevice physicalDevice;
+		for (const auto& candidate : candidates)
+			if (candidate.first == highestScore)
+			{
+				physicalDevice = candidate.second;
+				break;
+			}
+
+		//Get Queue Families
+		uint32_t queueFamilyCount = 0;
+		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
+		std::vector<VkQueueFamilyProperties> availableQueueFamilies(queueFamilyCount);
+		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, availableQueueFamilies.data());
+
+		//Check if best physical Device supports Graphics Queue Family
+		bool supportsGraphicsQueueFamily = false;
+		uint32_t graphicsFamilyIndex = 0;
+		for (uint32_t i = 0; i < availableQueueFamilies.size(); i++)
+			if (availableQueueFamilies[i].queueCount > 0 && availableQueueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+			{
+				graphicsFamilyIndex = i;
+				supportsGraphicsQueueFamily = true;
+				break;
+			}
+
+		if(!supportsGraphicsQueueFamily)
+		{
+			//Needs to be destroyed after testing
+			vkDestroySurfaceKHR(instance, surface, nullptr);
+
+			glfwDestroyWindow(VulkanTestWindow);
+
+			//Needs to be destroyed after testing
+			vkDestroyInstance(instance, nullptr);
+
+			return false;
+		}
+
+		//Check if physical Device supports presenting and has a present Queue
+		bool presentQueue = false;
+		VkBool32 presentSupport = false;
+		VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, graphicsFamilyIndex, surface, &presentSupport));
+		for (auto& queueFamilyProperty : availableQueueFamilies)
+			if (queueFamilyProperty.queueCount > 0 && presentSupport)
+				presentQueue = true;
+
+		if(!presentQueue || !presentSupport)
+		{
+			//Needs to be destroyed after testing
+			vkDestroySurfaceKHR(instance, surface, nullptr);
+
+			glfwDestroyWindow(VulkanTestWindow);
+
+			//Needs to be destroyed after testing
+			vkDestroyInstance(instance, nullptr);
+
+			return false;
+		}
+
+		//Get available Device Extensions
+		uint32_t extensionCount = 0;
+		VkCall(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr));
+		std::vector<VkExtensionProperties> availableDeviceExtensions(extensionCount);
+		VkCall(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, availableDeviceExtensions.data()));
+
+		//Check if physical Device has Swapchain support
+		bool swapchainSupported = false;
+		for (auto& availableExtension : availableDeviceExtensions)
+			if (strcmp(availableExtension.extensionName, VK_KHR_SWAPCHAIN_EXTENSION_NAME) == 0)
+				swapchainSupported = true;
+
+		if (!swapchainSupported)
+		{
+			//Needs to be destroyed after testing
+			vkDestroySurfaceKHR(instance, surface, nullptr);
+
+			glfwDestroyWindow(VulkanTestWindow);
+
+			//Needs to be destroyed after testing
+			vkDestroyInstance(instance, nullptr);
+
+			return false;
+		}
+
+		//Needs to be destroyed after testing
+		vkDestroySurfaceKHR(instance, surface, nullptr);
+
+		glfwDestroyWindow(VulkanTestWindow);
+
+		//Needs to be destroyed after testing
+		vkDestroyInstance(instance, nullptr);
+
 		return true;
+	}
 
 	return false;
 }
