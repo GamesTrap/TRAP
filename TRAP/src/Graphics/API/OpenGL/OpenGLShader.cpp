@@ -31,7 +31,6 @@ void TRAP::Graphics::API::OpenGLShader::Init()
 		TP_ERROR("[Shader][OpenGL] ", error.Message[error.Shader]);
 		TP_WARN("[Shader][OpenGL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
 	}
-	//TP_ASSERT(m_handle, "[Shader][OpenGL] Handle is invalid!");
 	ResolveUniforms();
 }
 

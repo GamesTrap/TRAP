@@ -74,7 +74,7 @@ std::unique_ptr<TRAP::Graphics::API::Shader> TRAP::Graphics::API::Shader::Create
 
 	switch (Context::GetRenderAPI())
 	{
-		/*case RenderAPI::D3D12:
+		case RenderAPI::D3D12:
 		{
 			std::unique_ptr<D3D12Shader> result;
 			if (address != nullptr)
@@ -91,7 +91,7 @@ std::unique_ptr<TRAP::Graphics::API::Shader> TRAP::Graphics::API::Shader::Create
 			result->m_TESFilepath =VFSTESFilePath;
 			result->m_CSFilepath = VFSCSFilePath;
 			return result;
-		}*/
+		}
 
 	case RenderAPI::VULKAN:
 	{
@@ -142,12 +142,12 @@ std::unique_ptr<TRAP::Graphics::API::Shader> TRAP::Graphics::API::Shader::Create
 {
 	switch (Context::GetRenderAPI())
 	{
-		/*case RenderAPI::D3D12:
-		 {
-			std::unique_ptr<D3D12Shader> result =  std::make_unique<D3D12Shader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
-
-			return result;
-		}*/
+	case RenderAPI::D3D12:
+	{
+		std::unique_ptr<D3D12Shader> result =  std::make_unique<D3D12Shader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
+		
+		return result;
+	}
 
 	case RenderAPI::VULKAN:
 	{

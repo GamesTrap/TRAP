@@ -2,7 +2,7 @@
 
 layout(location = 0) out vec4 FragColor;
 
-in vec3 vPos;
+layout(location = 1) in vec3 vPos;
 
 void main()
 {

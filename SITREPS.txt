@@ -133,3 +133,16 @@ SITREP 06/02/2019|19w22c1
 SITREP 06/03/2019|19w23a1
     - Changed TRAP Engine version to 19w23a1(0.3.1)
     - Added IsVulkanCapable() functionality inside VulkanContext ~>70 mins
+    - Added check if Vulkan 1.1 is supported by physical device inside VulkanContext ~<10 mins
+
+SITREP 06/05/2019|19w23a2
+    - Changed TRAP Engine verison to 19w23b1(0.3.2)
+    - Worked on VulkanShader ~>70 mins
+
+SITREP 06/10/2019|19w24a1
+    - Changed TRAP Engine version to 19w24a1(0.4.0)
+    - Added BufferLayout ~>40 mins
+    - Added Vertex Buffer ~>45 mins
+    - Added Index Buffer ~>30 mins
+    - Added Vertex Array ~>35 mins
+    - Changed where ShaderManager gets destroyed ~>10 mins

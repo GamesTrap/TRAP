@@ -189,7 +189,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetupPhysicalDevice()
 	}
 #endif
 
-	PickPhysicalDevice(physicalDevices); //TODO INFO Critical if no suitable Physical Device was found | Switch RenderAPI
+	PickPhysicalDevice(physicalDevices);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -404,7 +404,7 @@ void TRAP::Graphics::API::VulkanRenderer::PickPhysicalDevice(std::vector<VkPhysi
 		TP_CRITICAL("[Renderer][Vulkan] Could not find a suitable Physical Device");
 		TP_CRITICAL("[Renderer][Vulkan] Vulkan is unsupported!");
 		TP_CRITICAL("[Renderer][Vulkan] Shutting down!");
-		exit(-1); //TODO Add inside VulkanContext IsVulkanCapable() and remove from here
+		exit(-1);
 	}
 }
 
@@ -422,6 +422,10 @@ int TRAP::Graphics::API::VulkanRenderer::RateDeviceSuitability(VkPhysicalDevice 
 		score += 1000;
 	else if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
 		score += 250;
+
+	//Check if Physical device is Vulkan 1.1 capable
+	if (deviceProperties.apiVersion >= VK_VERSION_1_1)
+		score += 1000;
 
 	//Make sure GPU has a Graphics Queue
 	uint32_t graphicsFamilyIndex = 0;
@@ -496,7 +500,7 @@ bool TRAP::Graphics::API::VulkanRenderer::IsExtensionSupported(const std::vector
 		TP_CRITICAL("[Renderer][Vulkan] Extension ", extension, " is not supported!");
 		TP_CRITICAL("[Renderer][Vulkan] Vulkan is unsupported!");
 		TP_CRITICAL("[Renderer][Vulkan] Shutting down!");
-		exit(-1); //TODO Add inside VulkanContext IsVulkanCapable() and remove from here
+		exit(-1);
 	}
 
 	return false;

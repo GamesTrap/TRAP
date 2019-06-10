@@ -8,7 +8,7 @@ class SandboxLayer : public TRAP::Layer
 {
 public:
 	SandboxLayer()
-		: Layer("Sandbox"), m_vertexArray(0), m_vertexBuffer(0), m_indexBuffer(0), m_usePassthrough(false)
+		: Layer("Sandbox"), m_usePassthrough(false)
 	{
 	}
 
@@ -24,60 +24,60 @@ public:
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
 		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::API::Shader::CreateFromFile("Debug", "/Shaders/Debug.vert", "/Shaders/Debug.frag", "", "", "", ""));
 
-		//Triangle for OpenGL to test Shader System
-		if (TRAP::Graphics::API::Context::GetRenderAPI() == TRAP::Graphics::API::RenderAPI::OPENGL)
+		std::array<float, 3 * 3> vertices
 		{
-			OpenGLCall(glGenVertexArrays(1, &m_vertexArray));
-			OpenGLCall(glBindVertexArray(m_vertexArray));
+			-0.5f, -0.5f, 0.0f,
+			 0.5f, -0.5f, 0.0f,
+			 0.0f,  0.5f, 0.0f
+		};
 
-			OpenGLCall(glGenBuffers(1, &m_vertexBuffer));
-			OpenGLCall(glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer));
+		std::array<uint32_t, 3> indices
+		{
+			0, 1, 2
+		};
 
-			std::array<float, 3 * 3> vertices
+		m_vertexArray = TRAP::Graphics::API::VertexArray::Create();
+		m_vertexBuffer = TRAP::Graphics::API::VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()), TRAP::Graphics::API::BufferUsage::STATIC);
+		{
+			const TRAP::Graphics::API::BufferLayout layout =
 			{
-				-0.5f, -0.5f, 0.0f,
-				 0.5f, -0.5f, 0.0f,
-				 0.0f,  0.5f, 0.0f
+				{TRAP::Graphics::API::ShaderDataType::Float3, "Position"}
 			};
 
-			OpenGLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW));
-
-			OpenGLCall(glEnableVertexAttribArray(0));
-			OpenGLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr));
-
-			OpenGLCall(glGenBuffers(1, &m_indexBuffer));
-			OpenGLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer));
-
-			std::array<unsigned int, 3> indices
-			{
-				0, 1, 2
-			};
-
-			OpenGLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices.data(), GL_STATIC_DRAW));
+			m_vertexBuffer->SetLayout(layout);
 		}
+		m_vertexArray->AddBuffer(m_vertexBuffer);
+		m_indexBuffer = TRAP::Graphics::API::IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size()), TRAP::Graphics::API::BufferUsage::STATIC);
+	}
+
+	void OnDetach() override
+	{
+		m_indexBuffer->Unbind();
+		m_vertexBuffer->Unbind();
+		m_vertexArray->Unbind();
+
+		m_indexBuffer.reset();
+		m_vertexBuffer.reset();
+		m_vertexArray.reset();
 	}
 
 	void OnUpdate(TRAP::Utils::TimeStep deltaTime) override
 	{
-		if (TRAP::Graphics::API::Context::GetRenderAPI() == TRAP::Graphics::API::RenderAPI::OPENGL)
-		{
-			OpenGLCall(glBindVertexArray(m_vertexArray));
-			if (m_usePassthrough)
-				TRAP::Graphics::ShaderManager::Get("Passthrough")->Bind();
-			else
-				TRAP::Graphics::ShaderManager::Get("Debug")->Bind();
-			OpenGLCall(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr));
-		}
+		if (m_usePassthrough)
+			TRAP::Graphics::ShaderManager::Get("Passthrough")->Bind();
+		else
+			TRAP::Graphics::ShaderManager::Get("Debug")->Bind();
+		m_vertexArray->Draw(m_indexBuffer->GetCount());
 
 		//FPS & FrameTime
-		if(timer.Elapsed() >= 5.0f) //Output Every 5 Seconds
+		if (timer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 		{
 			TP_INFO("[Sandbox] FPS: ", TRAP::Application::Get().GetFPS());
 			TP_INFO("[Sandbox] FrameTime: ", TRAP::Application::Get().GetFrameTime(), "ms");
 			timer.Reset();
 		}
 	}
-	
+
 	bool OnKeyPressed(TRAP::KeyPressedEvent& event)
 	{
 		if (event.GetKeyCode() == TP_KEY_ESCAPE)
@@ -111,8 +111,10 @@ public:
 	}
 
 private:
-	unsigned int m_vertexArray, m_vertexBuffer, m_indexBuffer;
 	TRAP::Utils::Timer timer;
 	bool m_usePassthrough;
-};
 
+	std::unique_ptr<TRAP::Graphics::API::VertexBuffer> m_vertexBuffer;
+	std::unique_ptr<TRAP::Graphics::API::VertexArray> m_vertexArray;
+	std::unique_ptr<TRAP::Graphics::API::IndexBuffer> m_indexBuffer;
+};

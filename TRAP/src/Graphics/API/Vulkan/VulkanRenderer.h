@@ -89,7 +89,7 @@ namespace TRAP::Graphics::API
 		bool m_debugCallbackSupported;
 		VkDebugUtilsMessengerEXT m_debugReport;		
 
-		API::VulkanContext* m_context;
+		VulkanContext* m_context;
 		std::string m_rendererTitle;
 	};
 }

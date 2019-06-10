@@ -68,6 +68,7 @@ TRAP::Application::Application()
 TRAP::Application::~Application()
 {
 	TP_DEBUG("[Application] Shutting down TRAP Modules...");
+	Graphics::ShaderManager::Shutdown();
 	m_config.Set("Width", m_window->GetWidth());
 	m_config.Set("Height", m_window->GetHeight());
 	m_config.Set("RefreshRate", m_window->GetRefreshRate());
@@ -193,6 +194,7 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 		layer->OnDetach();
 	Graphics::API::Context::SetRenderAPI(renderAPI);
 
+	Graphics::ShaderManager::Shutdown();
 	Graphics::API::Renderer::Shutdown();
 	Graphics::API::Context::Shutdown();
 

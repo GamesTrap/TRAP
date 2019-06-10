@@ -1,11 +1,11 @@
 #version 460 core
 
-layout(location = 0) in vec3 aPos;
+layout(location = 0) in vec3 Position;
 
-out vec3 vPos;
+layout(location = 1) out vec3 vPos;
 
 void main()
 {
-	vPos = aPos;
-	gl_Position = vec4(aPos, 1.0f);
+	vPos = Position;
+	gl_Position = vec4(Position, 1.0f);
 }

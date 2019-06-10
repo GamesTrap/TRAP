@@ -42,4 +42,47 @@ namespace TRAP::Graphics
 #endif
 }
 
+namespace TRAP::Graphics::API
+{
+	static uint32_t TRAPBufferUsageToOpenGL(BufferUsage usage)
+	{
+		switch (usage)
+		{
+		case BufferUsage::STATIC:
+			return GL_STATIC_DRAW;
+
+		case BufferUsage::DYNAMIC:
+			return GL_DYNAMIC_DRAW;
+
+		default:
+			return 0;
+		}
+	}
+
+	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
+	{
+		switch (type)
+		{
+		case ShaderDataType::Float:    return GL_FLOAT;
+		case ShaderDataType::Float2:   return GL_FLOAT;
+		case ShaderDataType::Float3:   return GL_FLOAT;
+		case ShaderDataType::Float4:   return GL_FLOAT;
+
+		case ShaderDataType::Mat3:     return GL_FLOAT;
+		case ShaderDataType::Mat4:     return GL_FLOAT;
+
+		case ShaderDataType::Int:      return GL_INT;
+		case ShaderDataType::Int2:     return GL_INT;
+		case ShaderDataType::Int3:     return GL_INT;
+		case ShaderDataType::Int4:     return GL_INT;
+
+		case ShaderDataType::Bool:     return GL_BOOL;
+
+		default:
+			TP_CORE_ASSERT(false, "Unknown ShaderDataType!");
+			return 0;
+		}
+	}
+}
+
 #endif /*_TRAP_OPENGLCOMMON_H_*/

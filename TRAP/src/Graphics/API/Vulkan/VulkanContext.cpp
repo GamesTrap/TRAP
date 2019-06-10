@@ -433,6 +433,9 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			else if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
 				score += 250;
 
+			if (deviceProperties.apiVersion >= VK_VERSION_1_1)
+				score += 1000;
+
 			//Make sure GPU has a Graphics Queue
 			uint32_t graphicsFamilyIndex = 0;
 
@@ -513,7 +516,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		}
 
 		//Use first physical Device with highest score
-		VkPhysicalDevice physicalDevice;
+		VkPhysicalDevice physicalDevice{};
 		for (const auto& candidate : candidates)
 			if (candidate.first == highestScore)
 			{
@@ -585,6 +588,22 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 				swapchainSupported = true;
 
 		if (!swapchainSupported)
+		{
+			//Needs to be destroyed after testing
+			vkDestroySurfaceKHR(instance, surface, nullptr);
+
+			glfwDestroyWindow(VulkanTestWindow);
+
+			//Needs to be destroyed after testing
+			vkDestroyInstance(instance, nullptr);
+
+			return false;
+		}
+
+		//Check if Physical device is Vulkan 1.1 capable
+		VkPhysicalDeviceProperties deviceProperties;
+		vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+		if (deviceProperties.apiVersion < VK_VERSION_1_1)
 		{
 			//Needs to be destroyed after testing
 			vkDestroySurfaceKHR(instance, surface, nullptr);
