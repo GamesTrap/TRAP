@@ -433,7 +433,18 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			else if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
 				score += 250;
 
+			//Check if Physical device is Vulkan 1.1 capable
 			if (deviceProperties.apiVersion >= VK_VERSION_1_1)
+				score += 1000;
+
+			VkPhysicalDeviceFeatures deviceFeatures;
+			vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
+
+			//Check if Physical device has geometry shader compatibility
+			if (deviceFeatures.geometryShader)
+				score += 1000;
+			//Check if Physical device has tessellation shader compatibility
+			if (deviceFeatures.tessellationShader)
 				score += 1000;
 
 			//Make sure GPU has a Graphics Queue
@@ -604,6 +615,36 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		VkPhysicalDeviceProperties deviceProperties;
 		vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
 		if (deviceProperties.apiVersion < VK_VERSION_1_1)
+		{
+			//Needs to be destroyed after testing
+			vkDestroySurfaceKHR(instance, surface, nullptr);
+
+			glfwDestroyWindow(VulkanTestWindow);
+
+			//Needs to be destroyed after testing
+			vkDestroyInstance(instance, nullptr);
+
+			return false;
+		}
+
+		//Check if Physical device supports Geometry and Tessellation Shaders
+		VkPhysicalDeviceFeatures deviceFeatures;
+		vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
+		//Geometry Shaders
+		if(!deviceFeatures.geometryShader)
+		{
+			//Needs to be destroyed after testing
+			vkDestroySurfaceKHR(instance, surface, nullptr);
+
+			glfwDestroyWindow(VulkanTestWindow);
+
+			//Needs to be destroyed after testing
+			vkDestroyInstance(instance, nullptr);
+
+			return false;
+		}
+		//Tessellation Shaders
+		if(!deviceFeatures.tessellationShader)
 		{
 			//Needs to be destroyed after testing
 			vkDestroySurfaceKHR(instance, surface, nullptr);

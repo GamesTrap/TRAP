@@ -328,6 +328,8 @@ void TRAP::Graphics::API::VulkanRenderer::InitDevice()
 
 	//Enable Device Features here if needed
 	VkPhysicalDeviceFeatures deviceFeatures{};
+	deviceFeatures.geometryShader = true;
+	deviceFeatures.tessellationShader = true;
 
 	TP_DEBUG("[Renderer][Vulkan] Initializing Device");
 
@@ -425,6 +427,16 @@ int TRAP::Graphics::API::VulkanRenderer::RateDeviceSuitability(VkPhysicalDevice 
 
 	//Check if Physical device is Vulkan 1.1 capable
 	if (deviceProperties.apiVersion >= VK_VERSION_1_1)
+		score += 1000;
+
+	VkPhysicalDeviceFeatures deviceFeatures;
+	vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
+
+	//Check if Physical device has geometry shader compatibility
+	if (deviceFeatures.geometryShader)
+		score += 1000;
+	//Check if Physical device has tessellation shader compatibility
+	if (deviceFeatures.tessellationShader)
 		score += 1000;
 
 	//Make sure GPU has a Graphics Queue

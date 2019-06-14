@@ -1,6 +1,8 @@
 #ifndef _TRAP_D3D12INDEXBUFFER_H_
 #define _TRAP_D3D12INDEXBUFFER_H_
 
+#ifdef TRAP_PLATFORM_WINDOWS
+
 namespace TRAP::Graphics::API
 {
 	class D3D12IndexBuffer : public IndexBuffer
@@ -24,3 +26,5 @@ namespace TRAP::Graphics::API
 }
 
 #endif
+
+#endif /*_TRAP_D3D12INDEXBUFFER_H_*/

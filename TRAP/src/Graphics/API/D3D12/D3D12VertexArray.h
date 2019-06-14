@@ -1,6 +1,8 @@
 #ifndef _TRAP_D3D12VERTEXARRAY_H_
 #define _TRAP_D3D12VERTEXARRAY_H_
 
+#ifdef TRAP_PLATFORM_WINDOWS
+
 namespace TRAP::Graphics::API
 {
 	class D3D12VertexArray final : public VertexArray
@@ -21,5 +23,7 @@ namespace TRAP::Graphics::API
 		void Draw(uint32_t count) const override;
 	};
 }
+
+#endif
 
 #endif /*_TRAP_D3D12VERTEXARRAY_H_*/

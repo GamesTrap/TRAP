@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "D3D12VertexBuffer.h"
 
+#ifdef TRAP_PLATFORM_WINDOWS
+
 TRAP::Graphics::API::D3D12VertexBuffer::D3D12VertexBuffer(float* vertices, uint32_t size, BufferUsage usage)
 {
 }
@@ -34,3 +36,5 @@ void TRAP::Graphics::API::D3D12VertexBuffer::SetLayout(const BufferLayout& layou
 {
 	m_layout = layout;
 }
+
+#endif

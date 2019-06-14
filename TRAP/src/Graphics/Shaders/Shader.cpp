@@ -74,24 +74,26 @@ std::unique_ptr<TRAP::Graphics::API::Shader> TRAP::Graphics::API::Shader::Create
 
 	switch (Context::GetRenderAPI())
 	{
-		case RenderAPI::D3D12:
+#ifdef TRAP_PLATFORM_WINDOWS
+	case RenderAPI::D3D12:
+	{
+		std::unique_ptr<D3D12Shader> result;
+		if (address != nullptr)
 		{
-			std::unique_ptr<D3D12Shader> result;
-			if (address != nullptr)
-			{
-				address = std::make_unique<D3D12Shader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource).get();
-				result = std::unique_ptr<D3D12Shader>(dynamic_cast<D3D12Shader*>(address));
-			}
-			else
-				result = std::make_unique<D3D12Shader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
-			result->m_VSFilepath = VFSVSFilePath;
-			result->m_FSFilepath = VFSFSFilePath;
-			result->m_GSFilepath = VFSGSFilePath;
-			result->m_TCSFilepath =VFSTCSFilePath;
-			result->m_TESFilepath =VFSTESFilePath;
-			result->m_CSFilepath = VFSCSFilePath;
-			return result;
+			address = std::make_unique<D3D12Shader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource).get();
+			result = std::unique_ptr<D3D12Shader>(dynamic_cast<D3D12Shader*>(address));
 		}
+		else
+			result = std::make_unique<D3D12Shader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
+		result->m_VSFilepath = VFSVSFilePath;
+		result->m_FSFilepath = VFSFSFilePath;
+		result->m_GSFilepath = VFSGSFilePath;
+		result->m_TCSFilepath = VFSTCSFilePath;
+		result->m_TESFilepath = VFSTESFilePath;
+		result->m_CSFilepath = VFSCSFilePath;
+		return result;
+	}
+#endif
 
 	case RenderAPI::VULKAN:
 	{
@@ -142,12 +144,14 @@ std::unique_ptr<TRAP::Graphics::API::Shader> TRAP::Graphics::API::Shader::Create
 {
 	switch (Context::GetRenderAPI())
 	{
+#ifdef TRAP_PLATFORM_WINDOWS
 	case RenderAPI::D3D12:
 	{
-		std::unique_ptr<D3D12Shader> result =  std::make_unique<D3D12Shader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
-		
+		std::unique_ptr<D3D12Shader> result = std::make_unique<D3D12Shader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
+
 		return result;
 	}
+#endif
 
 	case RenderAPI::VULKAN:
 	{

@@ -32,7 +32,7 @@ namespace TRAP::Graphics::API
 		static D3D12Renderer* Get();
 
 	private:
-		API::D3D12Context* m_context;
+		D3D12Context* m_context;
 		std::string m_rendererTitle;
 	};
 }

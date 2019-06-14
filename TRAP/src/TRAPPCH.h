@@ -20,7 +20,7 @@
 #include <unordered_set>
 #include <thread>
 
-#include <vulkan.h>
+#include <vulkan/vulkan.h>
 #include <glslang/Public/ShaderLang.h>
 #include <SPIRV/GlslangToSpv.h>
 #include <StandAlone/ResourceLimits.h>

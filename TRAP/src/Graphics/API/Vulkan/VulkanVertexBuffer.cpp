@@ -2,7 +2,7 @@
 #include "VulkanVertexBuffer.h"
 
 TRAP::Graphics::API::VulkanVertexBuffer::VulkanVertexBuffer(float* vertices, uint32_t size, BufferUsage usage)
-{	
+{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

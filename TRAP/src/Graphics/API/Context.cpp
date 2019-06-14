@@ -32,10 +32,12 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 		s_Context = std::make_unique<OpenGLContext>(window);
 		break;
 
+#ifdef TRAP_PLATFORM_WINDOWS
 	case RenderAPI::D3D12:
 		TP_INFO("[Context][D3D12] Initializing Context");
 		s_Context = std::make_unique<D3D12Context>(window);
 		break;
+#endif
 
 	case RenderAPI::VULKAN:
 		TP_INFO("[Context][Vulkan] Initializing Context");
@@ -91,6 +93,8 @@ void TRAP::Graphics::API::Context::CheckAllRenderAPIs()
 #ifdef TRAP_PLATFORM_WINDOWS
 	//Check if D3D12 capable
 	s_isD3D12Capable = D3D12Context::IsD3D12Capable();
+#else
+	s_isD3D12Capable = false;
 #endif
 
 	//Check if Vulkan 1.1 capable

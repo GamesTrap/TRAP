@@ -1,6 +1,8 @@
 #ifndef _TRAP_D3D12VERTEXBUFFER_H_
 #define _TRAP_D3D12VERTEXBUFFER_H_
 
+#ifdef TRAP_PLATFORM_WINDOWS
+
 namespace TRAP::Graphics::API
 {
 	class D3D12VertexBuffer final : public VertexBuffer
@@ -23,5 +25,7 @@ namespace TRAP::Graphics::API
 		BufferLayout m_layout;
 	};
 }
+
+#endif
 
 #endif /*_TRAP_D3D12VERTEXBUFFER_H_*/

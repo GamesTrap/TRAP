@@ -146,3 +146,6 @@ SITREP 06/10/2019|19w24a1
     - Added Index Buffer ~>30 mins
     - Added Vertex Array ~>35 mins
     - Changed where ShaderManager gets destroyed ~>10 mins
+
+SITREP 06/14/2019|19w24a2
+    - Added checks for Geometry and Tessellation Shader support inside Vulkan ~>30 mins

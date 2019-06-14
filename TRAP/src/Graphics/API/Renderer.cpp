@@ -24,10 +24,12 @@ void TRAP::Graphics::API::Renderer::Init()
 		s_Renderer = std::make_unique<OpenGLRenderer>();
 		break;
 
+#ifdef TRAP_PLATFORM_WINDOWS
 	case RenderAPI::D3D12:
 		TP_INFO("[Renderer][D3D12] Initializing Renderer");
 		s_Renderer = std::make_unique<D3D12Renderer>();
 		break;
+#endif
 
 	case RenderAPI::VULKAN:
 		TP_INFO("[Renderer][Vulkan] Initializing Renderer");

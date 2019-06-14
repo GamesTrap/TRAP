@@ -75,7 +75,7 @@ project "TRAP"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.IMGUI}",
-		"%{IncludeDir.VULKAN}/Include/vulkan",
+		"%{IncludeDir.VULKAN}/Include/",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
 		"%{IncludeDir.STANDALONE}"
@@ -213,7 +213,7 @@ project "Sandbox"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.IMGUI}",
-		"%{IncludeDir.VULKAN}/Include/vulkan",
+		"%{IncludeDir.VULKAN}/Include/",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
 		"%{IncludeDir.STANDALONE}"
