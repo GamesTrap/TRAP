@@ -26,6 +26,9 @@ void TRAP::Graphics::API::OpenGLRenderer::InitInternal()
 	SetDepthTesting(true);
 	SetBlend(true);
 	SetBlendFunction(RendererBlendFunction::SOURCE_ALPHA, RendererBlendFunction::ONE_MINUS_SOURCE_ALPHA);
+	SetCull(true);
+	SetFrontFace(RendererFrontFace::COUNTER_CLOCKWISE);
+	SetCullMode(RendererCullMode::BACK);
 
 	TP_INFO("[Renderer][OpenGL] ----------------------------------");
 	TP_INFO("[Renderer][OpenGL] OpenGL:");
@@ -33,11 +36,6 @@ void TRAP::Graphics::API::OpenGLRenderer::InitInternal()
 	TP_INFO("[Renderer][OpenGL] Vendor:   ", glGetString(GL_VENDOR));
 	TP_INFO("[Renderer][OpenGL] Renderer: ", glGetString(GL_RENDERER));
 	TP_INFO("[Renderer][OpenGL] ----------------------------------");
-
-	//Move to API independent layer
-	OpenGLCall(glEnable(GL_CULL_FACE));
-	OpenGLCall(glFrontFace(GL_CCW));
-	OpenGLCall(glCullFace(GL_BACK));
 
 	m_rendererTitle = "[OpenGL " + std::string(reinterpret_cast<const char*>(glGetString(GL_VERSION)) + std::string("]"));
 }
@@ -47,14 +45,14 @@ void TRAP::Graphics::API::OpenGLRenderer::InitInternal()
 void TRAP::Graphics::API::OpenGLRenderer::ClearInternal(const unsigned int buffer)
 {
 	OpenGLCall(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
-	OpenGLCall(glClear(TRAPRendererBufferToGL(buffer)));
+	OpenGLCall(glClear(TRAPRendererBufferToOpenGL(buffer)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLRenderer::PresentInternal(Window* window)
 {
-	m_context->Present(window);
+	OpenGLContext::Present(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -87,16 +85,51 @@ void TRAP::Graphics::API::OpenGLRenderer::SetBlendInternal(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::OpenGLRenderer::SetCullInternal(const bool enabled)
+{
+	if(enabled)
+	{
+		OpenGLCall(glEnable(GL_CULL_FACE));
+	}
+	else
+	{
+		OpenGLCall(glDisable(GL_CULL_FACE));
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLRenderer::SetFrontFaceInternal(const RendererFrontFace frontFace)
+{
+	OpenGLCall(glFrontFace(TRAPRendererFrontFaceToOpenGL(frontFace)));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLRenderer::SetWireFrameInternal(const bool enabled)
+{
+	if (enabled)
+	{
+		OpenGLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
+	}
+	else
+	{
+		OpenGLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::OpenGLRenderer::SetBlendFunctionInternal(const RendererBlendFunction source, const RendererBlendFunction destination)
 {
-	OpenGLCall(glBlendFunc(TRAPRendererBlendFunctionToGL(source), TRAPRendererBlendFunctionToGL(destination)));
+	OpenGLCall(glBlendFunc(TRAPRendererBlendFunctionToOpenGL(source), TRAPRendererBlendFunctionToOpenGL(destination)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLRenderer::SetBlendEquationInternal(const RendererBlendEquation blendEquation)
 {
-	OpenGLCall(glBlendEquation(TRAPRendererBlendEquationToGL(blendEquation)));
+	OpenGLCall(glBlendEquation(TRAPRendererBlendEquationToOpenGL(blendEquation)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -108,7 +141,14 @@ void TRAP::Graphics::API::OpenGLRenderer::SetViewportInternal(const unsigned int
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBufferToGL(const unsigned int buffer)
+void TRAP::Graphics::API::OpenGLRenderer::SetCullModeInternal(RendererCullMode cullMode)
+{
+	OpenGLCall(glCullFace(TRAPRendererCullModeToOpenGL(cullMode)));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBufferToOpenGL(const unsigned int buffer)
 {
 	unsigned int result = 0;
 
@@ -124,7 +164,7 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBufferToGL(const u
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendFunctionToGL(const RendererBlendFunction function)
+unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendFunctionToOpenGL(const RendererBlendFunction function)
 {
 	switch (function)
 	{
@@ -150,7 +190,7 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendFunctionToGL(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendEquationToGL(const RendererBlendEquation blendEquation)
+unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendEquationToOpenGL(const RendererBlendEquation blendEquation)
 {
 	switch (blendEquation)
 	{
@@ -159,6 +199,46 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendEquationToGL(
 
 	case RendererBlendEquation::SUBTRACT:
 		return GL_FUNC_SUBTRACT;
+
+	default:
+		return 0;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererCullModeToOpenGL(const RendererCullMode cullMode)
+{
+	switch(cullMode)
+	{
+	case RendererCullMode::NONE:
+		return 0;
+
+	case RendererCullMode::FRONT:
+		return GL_FRONT;
+
+	case RendererCullMode::BACK:
+		return GL_BACK;
+
+	case RendererCullMode::FRONT_AND_BACK:
+		return GL_FRONT_AND_BACK;
+
+	default:
+		return 0;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererFrontFaceToOpenGL(const RendererFrontFace frontFace)
+{
+	switch(frontFace)
+	{
+	case RendererFrontFace::CLOCKWISE:
+		return GL_CW;
+
+	case RendererFrontFace::COUNTER_CLOCKWISE:
+		return GL_CCW;
 
 	default:
 		return 0;

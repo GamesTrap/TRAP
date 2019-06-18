@@ -305,7 +305,6 @@ void TRAP::Graphics::API::OpenGLShader::Bind() const
 	{
 		if (m_handle != 0)
 		{
-			TP_DEBUG("[Shader][OpenGL] Bound: \"", m_name, "\"");
 			OpenGLCall(glUseProgram(m_handle));
 			s_CurrentlyBound = this;
 		}
@@ -321,7 +320,6 @@ void TRAP::Graphics::API::OpenGLShader::Bind() const
 
 void TRAP::Graphics::API::OpenGLShader::Unbind() const
 {
-	TP_DEBUG("[Shader][OpenGL] Unbound: \"", m_name, "\"");
 	OpenGLCall(glUseProgram(0));
 	s_CurrentlyBound = nullptr;
 }
@@ -879,7 +877,7 @@ bool TRAP::Graphics::API::OpenGLShader::IsSystemUniform(ShaderUniformDeclaration
 int32_t TRAP::Graphics::API::OpenGLShader::GetUniformLocation(const std::string& name) const
 {
 	OpenGLCall(const GLint result = glGetUniformLocation(m_handle, name.c_str()));
-	if (result == -1)
+	if (result == 255)
 		TP_ERROR("[Shader][OpenGL] \"", m_name, "\": Could not find uniform ", name, " in Shader!");
 
 	return result;

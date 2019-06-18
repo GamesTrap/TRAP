@@ -30,7 +30,6 @@ TRAP::Graphics::API::Shader* TRAP::Graphics::ShaderManager::Get(const std::strin
 void TRAP::Graphics::ShaderManager::Clean()
 {
 	s_Shaders.clear();
-	TP_DEBUG("[ShaderManager] Cleared");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -40,35 +39,35 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 	//Name
 	if (nameOrVirtualPath[0] != '/')
 	{
-		for (auto& s_Shader : s_Shaders)
+		for (auto& shader : s_Shaders)
 		{
-			if (s_Shader->GetName() == nameOrVirtualPath)
+			if (shader->GetName() == nameOrVirtualPath)
 			{
-				const std::string VSPath = s_Shader->GetVSFilePath();
-				const std::string FSPath = s_Shader->GetFSFilePath();
-				const std::string GSPath = s_Shader->GetGSFilePath();
-				const std::string TCSPath = s_Shader->GetTCSFilePath();
-				const std::string TESPath = s_Shader->GetTESFilePath();
-				const std::string CSPath = s_Shader->GetCSFilePath();
+				const std::string VSPath = shader->GetVSFilePath();
+				const std::string FSPath = shader->GetFSFilePath();
+				const std::string GSPath = shader->GetGSFilePath();
+				const std::string TCSPath = shader->GetTCSFilePath();
+				const std::string TESPath = shader->GetTESFilePath();
+				const std::string CSPath = shader->GetCSFilePath();
 				std::string error;
 				if (VSPath.empty() && FSPath.empty() && GSPath.empty() && TCSPath.empty() && TESPath.empty() && CSPath.empty())
 				{
-					const std::string VSSource = s_Shader->GetVSSource();
-					const std::string FSSource = s_Shader->GetFSSource();
-					const std::string GSSource = s_Shader->GetGSSource();
-					const std::string TCSSource = s_Shader->GetTCSSource();
-					const std::string TESSource = s_Shader->GetTESSource();
-					const std::string CSSource = s_Shader->GetCSSource();
+					const std::string VSSource = shader->GetVSSource();
+					const std::string FSSource = shader->GetFSSource();
+					const std::string GSSource = shader->GetGSSource();
+					const std::string TCSSource = shader->GetTCSSource();
+					const std::string TESSource = shader->GetTESSource();
+					const std::string CSSource = shader->GetCSSource();
 
-					s_Shader.reset();
-					s_Shader = API::Shader::CreateFromSource(nameOrVirtualPath, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
+					shader.reset();
+					shader = API::Shader::CreateFromSource(nameOrVirtualPath, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
 					TP_INFO("[ShaderManager] Reloaded: \"", nameOrVirtualPath, "\"");
 				}
 				else
 				{
-					s_Shader.reset();
-					s_Shader = API::Shader::CreateFromFile(nameOrVirtualPath, VSPath, FSPath, GSPath, TCSPath, TESPath, CSPath,
-						s_Shader.get());
+					shader.reset();
+					shader = API::Shader::CreateFromFile(nameOrVirtualPath, VSPath, FSPath, GSPath, TCSPath, TESPath, CSPath,
+						shader.get());
 					TP_INFO("[ShaderManager] Reloaded: \"", nameOrVirtualPath, "\"");
 				}
 
@@ -77,9 +76,8 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 		}
 		TP_WARN("[ShaderManager] Could not find Shader: \"", nameOrVirtualPath, "\" to reload.");
 	}
-	else
+	else //Virtual Path
 	{
-		//Virtual Path
 		for (const auto& shader : s_Shaders)
 		{
 			if (nameOrVirtualPath == shader->GetVSFilePath())
@@ -176,8 +174,5 @@ void TRAP::Graphics::ShaderManager::Shutdown()
 		API::Shader::s_CurrentlyBound->Unbind();
 
 	TP_DEBUG("[ShaderManager] Destroying Shaders");
-	//for (auto& shader : s_Shaders)
-		//shader.reset();
-
-	s_Shaders.clear();
+	Clean();
 }

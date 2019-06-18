@@ -149,3 +149,15 @@ SITREP 06/10/2019|19w24a1
 
 SITREP 06/14/2019|19w24a2
     - Added checks for Geometry and Tessellation Shader support inside Vulkan ~>30 mins
+
+SITREP 06/15/2019|19w24a3
+    - Added TGAImage and BMPImage class to load Images ~>120 mins
+
+SITREP 06/16/2019|19w24a4
+    - Added abstract Image class ~>30 mins
+    - Added Texture(2D) class ~>60 mins
+    - Added TextureManager ~>45 mins
+
+SITREP 06/17/2019|19w25a1
+    - Added TextureManager Reload functionality ~>60 mins
+    - Added Conversion from BGR(A) to RGB(A) format ~>25 mins

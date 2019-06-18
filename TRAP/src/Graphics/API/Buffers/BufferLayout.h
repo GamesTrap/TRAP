@@ -46,8 +46,8 @@ namespace TRAP::Graphics::API
 		bool Normalized{};
 
 		BufferElement() = default;
-		BufferElement(ShaderDataType type, std::string name, bool normalized = false)
-			: Name(std::move(name)), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized)
+		BufferElement(const ShaderDataType type, std::string name, bool normalized = false)
+			: Name(std::move(name)), Type(type), Size(ShaderDataTypeSize(type)), Normalized(normalized)
 		{
 		}
 

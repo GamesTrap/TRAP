@@ -20,18 +20,26 @@ namespace TRAP::Graphics::API
 
 		void SetDepthTestingInternal(bool enabled) override;
 		void SetBlendInternal(bool enabled) override;
+		void SetCullInternal(bool enabled) override;
+		void SetFrontFaceInternal(RendererFrontFace frontFace) override;
 		void SetViewportInternal(unsigned int x, unsigned int y, unsigned int width, unsigned int height) override;
 
 		void SetBlendFunctionInternal(RendererBlendFunction source, RendererBlendFunction destination) override;
 		void SetBlendEquationInternal(RendererBlendEquation blendEquation) override;
 
+		void SetCullModeInternal(RendererCullMode cullMode) override;
+
+		void SetWireFrameInternal(bool enabled) override;
+
 		std::string_view GetTitleInternal() const override;
 
 		static OpenGLRenderer* Get();
 
-		static unsigned int TRAPRendererBufferToGL(unsigned int buffer);
-		static unsigned int TRAPRendererBlendFunctionToGL(RendererBlendFunction function);
-		static unsigned int TRAPRendererBlendEquationToGL(RendererBlendEquation blendEquation);
+		static unsigned int TRAPRendererBufferToOpenGL(unsigned int buffer);
+		static unsigned int TRAPRendererBlendFunctionToOpenGL(RendererBlendFunction function);
+		static unsigned int TRAPRendererBlendEquationToOpenGL(RendererBlendEquation blendEquation);
+		static unsigned int TRAPRendererCullModeToOpenGL(RendererCullMode cullMode);
+		static unsigned int TRAPRendererFrontFaceToOpenGL(RendererFrontFace frontFace);
 
 	private:
 		static void GLAPIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);

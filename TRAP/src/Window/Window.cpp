@@ -2,7 +2,6 @@
 #include "Window.h"
 
 #include <glad/glad.h>
-#include <utility>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -40,7 +39,6 @@ TRAP::Window::Window(const WindowProps& props)
 
 TRAP::Window::~Window()
 {
-	//Graphics::ShaderManager::Shutdown();
 	TP_DEBUG("[Window] Destroying Window: \"", m_data.Title, "\"");
 	Shutdown();
 }
@@ -112,7 +110,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	//Create Window
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 			               std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-			              "[INDEV][19w24a2]";
+			              "[INDEV][19w25a1]";
 	m_window = glfwCreateWindow(static_cast<int>(props.Width),
 	                            static_cast<int>(props.Height),
 	                            newTitle.c_str(),
@@ -422,6 +420,6 @@ void TRAP::Window::SetTitle(const std::string& title)
 	m_data.Title = title;
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w24a2]" + std::string(Graphics::API::Renderer::GetTitle());
+		"[INDEV][19w25a1]" + std::string(Graphics::API::Renderer::GetTitle());
 	glfwSetWindowTitle(m_window, newTitle.c_str());
 }

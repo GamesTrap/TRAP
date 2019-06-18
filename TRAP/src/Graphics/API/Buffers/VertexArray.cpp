@@ -1,6 +1,10 @@
 #include "TRAPPCH.h"
 #include "VertexArray.h"
 
+const TRAP::Graphics::API::VertexArray* TRAP::Graphics::API::VertexArray::s_CurrentlyBound = nullptr;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::unique_ptr<TRAP::Graphics::API::VertexArray> TRAP::Graphics::API::VertexArray::Create()
 {
 	switch(Context::GetRenderAPI())

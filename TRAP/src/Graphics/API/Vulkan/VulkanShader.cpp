@@ -43,7 +43,6 @@ void TRAP::Graphics::API::VulkanShader::Init()
 	VulkanShaderErrorInfo error;
 	TP_DEBUG("[Shader][Vulkan] Compiling: \"", m_name, "\"");
 	Compile(shaders, error);
-
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -496,12 +495,23 @@ bool TRAP::Graphics::API::VulkanShader::CreateShaderModule(VkShaderModule& shade
 
 void TRAP::Graphics::API::VulkanShader::Bind() const
 {
+	if (s_CurrentlyBound != this)
+	{
+		if(!m_shaderStages.empty())
+			s_CurrentlyBound = this;			
+		else
+		{
+			ShaderManager::Get("Passthrough")->Bind();
+			s_CurrentlyBound = ShaderManager::Get("Passthrough");
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanShader::Unbind() const
 {
+	s_CurrentlyBound = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

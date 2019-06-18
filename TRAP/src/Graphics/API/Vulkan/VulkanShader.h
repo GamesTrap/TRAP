@@ -71,6 +71,8 @@ namespace TRAP::Graphics::API
 		const std::string& GetTESSource() const override;
 		const std::string& GetCSSource() const override;
 
+		std::vector<VkPipelineShaderStageCreateInfo>& GetShaderStageCreateInfos();
+
 	private:
 		void Compile(std::array<std::string*, 6> & shaders, VulkanShaderErrorInfo& info);
 		static std::unique_ptr<glslang::TShader> PreProcess(const char* source, unsigned int shaderType, std::string& preProcessedSource);
@@ -294,6 +296,13 @@ inline const std::string& TRAP::Graphics::API::VulkanShader::GetTESSource() cons
 inline const std::string& TRAP::Graphics::API::VulkanShader::GetCSSource() const
 {
 	return m_CSSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::vector<VkPipelineShaderStageCreateInfo>& TRAP::Graphics::API::VulkanShader::GetShaderStageCreateInfos()
+{
+	return m_shaderStages;
 }
 
 #endif /*_TRAP_VULKANSHADER_H_*/

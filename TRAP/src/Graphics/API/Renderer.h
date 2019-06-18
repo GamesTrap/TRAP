@@ -33,6 +33,20 @@ namespace TRAP::Graphics::API
 		SUBTRACT
 	};
 
+	enum class RendererCullMode
+	{
+		NONE,
+		FRONT,
+		BACK,
+		FRONT_AND_BACK
+	};
+
+	enum class RendererFrontFace
+	{
+		CLOCKWISE,
+		COUNTER_CLOCKWISE
+	};
+
 	class Renderer
 	{
 	public:
@@ -51,10 +65,16 @@ namespace TRAP::Graphics::API
 
 		static void SetDepthTesting(bool enabled);
 		static void SetBlend(bool enabled);
+		static void SetCull(bool enabled);
+		static void SetFrontFace(RendererFrontFace frontFace);
+		static void SetWireFrame(bool enabled);
 		static void SetViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height);
 
 		static void SetBlendFunction(RendererBlendFunction source, RendererBlendFunction destination);
 		static void SeBlendEquation(RendererBlendEquation blendEquation);
+
+		static void SetCullMode(RendererCullMode cullMode);
+
 
 		static std::string_view GetTitle();
 
@@ -68,10 +88,16 @@ namespace TRAP::Graphics::API
 
 		virtual void SetDepthTestingInternal(bool enabled) = 0;
 		virtual void SetBlendInternal(bool enabled) = 0;
+		virtual void SetCullInternal(bool enabled) = 0;
+		virtual void SetFrontFaceInternal(RendererFrontFace frontFace) = 0;
+		virtual void SetWireFrameInternal(bool enabled) = 0;
 		virtual void SetViewportInternal(unsigned int x, unsigned int y, unsigned int width, unsigned int height) = 0;
 
 		virtual void SetBlendFunctionInternal(RendererBlendFunction source, RendererBlendFunction destination) = 0;
 		virtual void SetBlendEquationInternal(RendererBlendEquation blendEquation) = 0;
+
+		virtual void SetCullModeInternal(RendererCullMode cullMode) = 0;
+
 
 		virtual std::string_view GetTitleInternal() const = 0;
 
@@ -109,6 +135,27 @@ inline void TRAP::Graphics::API::Renderer::SetBlend(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+inline void TRAP::Graphics::API::Renderer::SetCull(const bool enabled)
+{
+	s_Renderer->SetCullInternal(enabled);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Graphics::API::Renderer::SetFrontFace(const RendererFrontFace frontFace)
+{
+	s_Renderer->SetFrontFaceInternal(frontFace);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Graphics::API::Renderer::SetWireFrame(const bool enabled)
+{
+	s_Renderer->SetWireFrameInternal(enabled);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 inline void TRAP::Graphics::API::Renderer::SetViewport(const unsigned int x, const unsigned int y, const unsigned int width, const unsigned int height)
 {
 	s_Renderer->SetViewportInternal(x, y, width, height);
@@ -126,6 +173,13 @@ inline void TRAP::Graphics::API::Renderer::SetBlendFunction(const RendererBlendF
 inline void TRAP::Graphics::API::Renderer::SeBlendEquation(const RendererBlendEquation blendEquation)
 {
 	s_Renderer->SetBlendEquationInternal(blendEquation);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Graphics::API::Renderer::SetCullMode(const RendererCullMode cullMode)
+{
+	s_Renderer->SetCullModeInternal(cullMode);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

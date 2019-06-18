@@ -62,6 +62,24 @@ void TRAP::Graphics::API::D3D12Renderer::SetBlendInternal(bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::D3D12Renderer::SetCullInternal(bool enabled)
+{	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::D3D12Renderer::SetFrontFaceInternal(RendererFrontFace frontFace)
+{	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::D3D12Renderer::SetWireFrameInternal(bool enabled)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::D3D12Renderer::SetBlendFunctionInternal(RendererBlendFunction source, RendererBlendFunction destination)
 {
 }
@@ -76,6 +94,12 @@ void TRAP::Graphics::API::D3D12Renderer::SetBlendEquationInternal(RendererBlendE
 
 void TRAP::Graphics::API::D3D12Renderer::SetViewportInternal(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
 {
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::D3D12Renderer::SetCullModeInternal(RendererCullMode cullMode)
+{	
 }
 
 #endif

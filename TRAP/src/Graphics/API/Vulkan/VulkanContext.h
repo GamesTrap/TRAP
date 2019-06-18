@@ -35,6 +35,11 @@ namespace TRAP::Graphics::API
 		std::vector<VkPresentModeKHR> GetAvailableSurfacePresentModes(VkPhysicalDevice physicalDevice) const;
 
 		static bool IsVulkanCapable();
+
+		VkExtent2D GetSwapchainExtent() const;
+
+		VkFormat GetSwapchainImageFormat() const;
+
 	private:
 		std::vector<VkSurfaceFormatKHR> GetAvailableSurfaceFormats() const;
 		std::vector<VkPresentModeKHR> GetAvailableSurfacePresentModes() const;
@@ -43,7 +48,7 @@ namespace TRAP::Graphics::API
 		VkExtent2D ChooseSwapchainExtent() const;
 
 		std::vector<VkImageView> m_swapchainImageViews;
-		std::vector<VkImage> m_swapchainImages;
+		std::vector<VkImage> m_swapchainImages; //Use as Framebuffers
 		VkSwapchainKHR m_swapchain;
 		VkExtent2D m_extent;
 		VkSurfaceCapabilitiesKHR m_capabilities;
@@ -58,7 +63,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::API::VulkanContext::SetVSyncIntervalInternal(unsigned int interval)
+inline void TRAP::Graphics::API::VulkanContext::SetVSyncIntervalInternal(const unsigned int interval)
 {
 	m_vsync = interval;
 }
@@ -82,6 +87,11 @@ inline VkSurfaceKHR& TRAP::Graphics::API::VulkanContext::GetSurface()
 inline TRAP::Window* TRAP::Graphics::API::VulkanContext::GetWindow() const
 {
 	return m_window;
+}
+
+inline VkFormat TRAP::Graphics::API::VulkanContext::GetSwapchainImageFormat() const
+{
+	return m_format.format;
 }
 
 #endif /*_TRAP_VULKANCONTEXT_H_*/

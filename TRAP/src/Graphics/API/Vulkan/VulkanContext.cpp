@@ -627,7 +627,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			return false;
 		}
 
-		//Check if Physical device supports Geometry and Tessellation Shaders
+		//Check if Physical device supports Geometry and Tessellation Shaders and WireFrame
 		VkPhysicalDeviceFeatures deviceFeatures;
 		vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
 		//Geometry Shaders
@@ -656,6 +656,19 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 
 			return false;
 		}
+		//WireFrame
+		if(!deviceFeatures.fillModeNonSolid)
+		{
+			//Needs to be destroyed after testing
+			vkDestroySurfaceKHR(instance, surface, nullptr);
+
+			glfwDestroyWindow(VulkanTestWindow);
+
+			//Needs to be destroyed after testing
+			vkDestroyInstance(instance, nullptr);
+
+			return false;
+		}
 
 		//Needs to be destroyed after testing
 		vkDestroySurfaceKHR(instance, surface, nullptr);
@@ -669,4 +682,11 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 	}
 
 	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkExtent2D TRAP::Graphics::API::VulkanContext::GetSwapchainExtent() const
+{
+	return m_extent;
 }

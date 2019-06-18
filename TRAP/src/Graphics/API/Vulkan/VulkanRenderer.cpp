@@ -13,7 +13,7 @@ TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
 	m_presentQueue(nullptr),
 	m_debugCallbackSupported(false),
 	m_debugReport(),
-	m_context(API::VulkanContext::Get())
+	m_context(VulkanContext::Get())
 {
 }
 
@@ -45,7 +45,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 	m_context->InitSwapchain();
 	m_context->InitImageViews();
 
-	//Not implemented
+	//Do Pipeline Stuff here(blending, depth testing, see below)
 	SetDepthTesting(true);
 	SetBlend(true);
 	SetBlendFunction(RendererBlendFunction::SOURCE_ALPHA, RendererBlendFunction::ONE_MINUS_SOURCE_ALPHA);
@@ -82,7 +82,25 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthTestingInternal(bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetBlendInternal(bool enabled)
+void TRAP::Graphics::API::VulkanRenderer::SetBlendInternal(const bool enabled)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetCullInternal(const bool enabled)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetFrontFaceInternal(const RendererFrontFace frontFace)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetWireFrameInternal(const bool enabled)
 {
 }
 
@@ -94,13 +112,19 @@ void TRAP::Graphics::API::VulkanRenderer::SetViewportInternal(unsigned int x, un
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetBlendFunctionInternal(RendererBlendFunction source, RendererBlendFunction destination)
+void TRAP::Graphics::API::VulkanRenderer::SetBlendFunctionInternal(const RendererBlendFunction source, const RendererBlendFunction destination)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetBlendEquationInternal(RendererBlendEquation blendEquation)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetCullModeInternal(const RendererCullMode cullMode)
 {
 }
 
@@ -330,8 +354,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitDevice()
 	VkPhysicalDeviceFeatures deviceFeatures{};
 	deviceFeatures.geometryShader = true;
 	deviceFeatures.tessellationShader = true;
-
-	TP_DEBUG("[Renderer][Vulkan] Initializing Device");
+	deviceFeatures.fillModeNonSolid = true;
 
 	VkDeviceCreateInfo deviceCreateInfo
 	{
@@ -437,6 +460,9 @@ int TRAP::Graphics::API::VulkanRenderer::RateDeviceSuitability(VkPhysicalDevice 
 		score += 1000;
 	//Check if Physical device has tessellation shader compatibility
 	if (deviceFeatures.tessellationShader)
+		score += 1000;
+	//Check if Physical device has WireFrame compatibility
+	if (deviceFeatures.fillModeNonSolid)
 		score += 1000;
 
 	//Make sure GPU has a Graphics Queue

@@ -15,12 +15,20 @@ namespace TRAP::Graphics::API
 		D3D12VertexArray& operator=(D3D12VertexArray&&) = default;
 		~D3D12VertexArray();
 
-		void AddBuffer(std::unique_ptr<VertexBuffer>& buffer) override;
+		void AddVertexBuffer(std::unique_ptr<VertexBuffer>& buffer) override;
+		void SetIndexBuffer(std::unique_ptr<IndexBuffer>& buffer) override;
+
+		std::vector<std::unique_ptr<VertexBuffer>>& GetVertexBuffers() override;
+		IndexBuffer* GetIndexBuffer() override;
 
 		void Bind() const override;
 		void Unbind() const override;
 
-		void Draw(uint32_t count) const override;
+		void Draw() const override;
+
+	private:
+		std::vector<std::unique_ptr<VertexBuffer>> m_vertexBuffers;
+		std::unique_ptr<IndexBuffer> m_indexBuffer;
 	};
 }
 

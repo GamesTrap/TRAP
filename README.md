@@ -43,3 +43,29 @@ For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj
 - [ImGui](https://github.com/GamesTrap/imgui)
 - [VulkanSDK](https://vulkan.lunarg.com/sdk/home)
 - [GLSLang](https://github.com/KhronosGroup/glslang)
+
+## System Requirements
+
+### Minimum System Requirements
+- OS: Windows 10/macOS Catalina 10.15/Ubuntu 19.04 (64-Bit versions only) <!--More Operating Systems need to be tested-->
+- Processor: TBD
+- Graphics Card: TBD
+- Memory: 4 GB RAM
+- Storage: 5+ GB available space
+- Any of these RenderAPIs
+  - DirectX(Windows only): Version 12
+  - Vulkan: Version 1.1
+  - OpenGL: Version 4.6
+- Additional Notes: -
+
+### Recommended System Requirements
+- OS: Windows 10/macOS Catalina 10.15/Ubuntu 19.04 (64-Bit versions only) <!--More Operating Systems need to be tested-->
+- Processor: TBD
+- Graphics Card: TBD
+- Memory: 4 GB RAM
+- Storage: 10+ GB available space
+- Any of these RenderAPIs
+  - DirectX(Windows only): Version 12
+  - Vulkan: Version 1.1
+  - OpenGL: Version 4.6
+- Additional Notes: -

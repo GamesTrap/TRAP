@@ -20,10 +20,15 @@ namespace TRAP::Graphics::API
 
 		void SetDepthTestingInternal(bool enabled) override;
 		void SetBlendInternal(bool enabled) override;
+		void SetCullInternal(bool enabled) override;
+		void SetFrontFaceInternal(RendererFrontFace frontFace) override;
+		void SetWireFrameInternal(bool enabled) override;
 		void SetViewportInternal(unsigned int x, unsigned int y, unsigned int width, unsigned int height) override;
 
 		void SetBlendFunctionInternal(RendererBlendFunction source, RendererBlendFunction destination) override;
 		void SetBlendEquationInternal(RendererBlendEquation blendEquation) override;
+
+		void SetCullModeInternal(RendererCullMode cullMode) override;
 
 		std::string_view GetTitleInternal() const override;
 

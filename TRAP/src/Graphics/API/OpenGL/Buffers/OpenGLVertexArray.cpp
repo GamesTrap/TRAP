@@ -4,7 +4,6 @@
 TRAP::Graphics::API::OpenGLVertexArray::OpenGLVertexArray()
 	: m_handle(0)
 {
-	TP_DEBUG("[VAO][OpenGL] Creating VertexArray");
 	OpenGLCall(glCreateVertexArrays(1, &m_handle));
 }
 
@@ -12,15 +11,15 @@ TRAP::Graphics::API::OpenGLVertexArray::OpenGLVertexArray()
 
 TRAP::Graphics::API::OpenGLVertexArray::~OpenGLVertexArray()
 {
-	TP_DEBUG("[VAO][OpenGL] Destroying VertexArray");
 	OpenGLCall(glDeleteBuffers(1, &m_handle));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLVertexArray::AddBuffer(std::unique_ptr<VertexBuffer>& buffer)
+void TRAP::Graphics::API::OpenGLVertexArray::AddVertexBuffer(std::unique_ptr<VertexBuffer>& buffer)
 {
-	TP_DEBUG("[VAO][OpenGL] Adding VertexBuffer");
+	TP_CORE_ASSERT(buffer->GetLayout().GetElements().size(), "[VBO][OpenGL] VertexBuffer has no layout!");
+
 	Bind();
 	buffer->Bind();
 
@@ -39,27 +38,59 @@ void TRAP::Graphics::API::OpenGLVertexArray::AddBuffer(std::unique_ptr<VertexBuf
 
 		index++;
 	}
+
+	m_vertexBuffers.push_back(std::move(buffer));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLVertexArray::SetIndexBuffer(std::unique_ptr<IndexBuffer>& buffer)
+{
+	Bind();
+	buffer->Bind();
+
+	m_indexBuffer = std::move(buffer);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<std::unique_ptr<TRAP::Graphics::API::VertexBuffer>>& TRAP::Graphics::API::OpenGLVertexArray::GetVertexBuffers()
+{
+	return m_vertexBuffers;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::IndexBuffer* TRAP::Graphics::API::OpenGLVertexArray::GetIndexBuffer()
+{
+	return m_indexBuffer.get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLVertexArray::Bind() const
 {
-	TP_DEBUG("[VAO][OpenGL] Binding VertexArray");
-	OpenGLCall(glBindVertexArray(m_handle));
+	if(s_CurrentlyBound != this)
+	{
+		OpenGLCall(glBindVertexArray(m_handle));
+		s_CurrentlyBound = this;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLVertexArray::Unbind() const
 {
-	TP_DEBUG("[VAO][OpenGL] Unbinding VertexArray");
-	OpenGLCall(glBindVertexArray(0));
+	if(s_CurrentlyBound != nullptr)
+	{
+		OpenGLCall(glBindVertexArray(0));
+		s_CurrentlyBound = nullptr;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLVertexArray::Draw(const uint32_t count) const
+void TRAP::Graphics::API::OpenGLVertexArray::Draw() const
 {
-	OpenGLCall(glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr));
+	OpenGLCall(glDrawElements(GL_TRIANGLES, m_indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr));
 }

@@ -67,6 +67,13 @@
 
 #include "Maths/Maths.h"
 
+#include "ImageLoader/DefaultImage.h"
+#include "ImageLoader/Image.h"
+#include "ImageLoader/TGAImage.h"
+#include "ImageLoader/BMPImage.h"
+#include "ImageLoader/PNGImage.h"
+#include "ImageLoader/JPGImage.h"
+
 #include "Event/Event.h"
 #include "Event/ApplicationEvent.h"
 #include "Event/KeyEvent.h"
@@ -86,10 +93,10 @@
 #include "Graphics/API/OpenGL/OpenGLShaderResource.h"
 #include "Graphics/API/OpenGL/OpenGLShader.h"
 
-#include "Graphics/API/BufferLayout.h"
-#include "Graphics/API/VertexBuffer.h"
-#include "Graphics/API/VertexArray.h"
-#include "Graphics/API/IndexBuffer.h"
+#include "Graphics/API/Buffers/BufferLayout.h"
+#include "Graphics/API/Buffers/VertexBuffer.h"
+#include "Graphics/API/Buffers/IndexBuffer.h"
+#include "Graphics/API/Buffers/VertexArray.h"
 
 #include "Graphics/API/OpenGL/OpenGLCommon.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
@@ -101,22 +108,32 @@
 
 #include "Window/Window.h"
 
-#include "Graphics/API/OpenGL/OpenGLVertexBuffer.h"
-#include "Graphics/API/Vulkan/VulkanVertexBuffer.h"
+#include "Graphics/Textures/Texture.h"
+#include "Graphics/Textures/Texture2D.h"
+#include "Graphics/Textures/TextureManager.h"
+
+#include "Graphics/API/OpenGL/Textures/OpenGLTexture2D.h"
+#include "Graphics/API/Vulkan/Textures/VulkanTexture2D.h"
 #ifdef TRAP_PLATFORM_WINDOWS
-#include "Graphics/API/D3D12/D3D12VertexBuffer.h"
+#include "Graphics/API/D3D12/Textures/D3D12Texture2D.h"
 #endif
 
-#include "Graphics/API/OpenGL/OpenGLVertexArray.h"
-#include "Graphics/API/Vulkan/VulkanVertexArray.h"
+#include "Graphics/API/OpenGL/Buffers/OpenGLVertexBuffer.h"
+#include "Graphics/API/Vulkan/Buffers/VulkanVertexBuffer.h"
 #ifdef TRAP_PLATFORM_WINDOWS
-#include "Graphics/API/D3D12/D3D12VertexArray.h"
+#include "Graphics/API/D3D12/Buffers/D3D12VertexBuffer.h"
 #endif
 
-#include "Graphics/API/OpenGL/OpenGLIndexBuffer.h"
-#include "Graphics/API/Vulkan/VulkanIndexBuffer.h"
+#include "Graphics/API/OpenGL/Buffers/OpenGLIndexBuffer.h"
+#include "Graphics/API/Vulkan/Buffers/VulkanIndexBuffer.h"
 #ifdef TRAP_PLATFORM_WINDOWS
-#include "Graphics/API/D3D12/D3D12IndexBuffer.h"
+#include "Graphics/API/D3D12/Buffers/D3D12IndexBuffer.h"
+#endif
+
+#include "Graphics/API/OpenGL/Buffers/OpenGLVertexArray.h"
+#include "Graphics/API/Vulkan/Buffers/VulkanVertexArray.h"
+#ifdef TRAP_PLATFORM_WINDOWS
+#include "Graphics/API/D3D12/Buffers/D3D12VertexArray.h"
 #endif
 
 #include "Graphics/API/Context.h"
