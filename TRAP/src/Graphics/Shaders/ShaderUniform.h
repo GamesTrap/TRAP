@@ -82,7 +82,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::API::ShaderStruct::SetOffset(unsigned offset)
+inline void TRAP::Graphics::API::ShaderStruct::SetOffset(unsigned int offset)
 {
 	m_offset = offset;
 }

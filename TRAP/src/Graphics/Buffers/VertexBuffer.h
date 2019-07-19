@@ -1,7 +1,7 @@
 #ifndef _TRAP_VERTEXBUFFER_H_
 #define _TRAP_VERTEXBUFFER_H_
 
-namespace TRAP::Graphics::API
+namespace TRAP::Graphics
 {
 	enum class BufferUsage
 	{

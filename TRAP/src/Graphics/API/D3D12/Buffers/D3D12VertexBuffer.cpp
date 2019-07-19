@@ -25,7 +25,7 @@ void TRAP::Graphics::API::D3D12VertexBuffer::Unbind()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Graphics::API::BufferLayout& TRAP::Graphics::API::D3D12VertexBuffer::GetLayout() const
+const TRAP::Graphics::BufferLayout& TRAP::Graphics::API::D3D12VertexBuffer::GetLayout() const
 {
 	return m_layout;
 }

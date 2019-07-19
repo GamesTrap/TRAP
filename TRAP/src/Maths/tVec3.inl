@@ -40,7 +40,7 @@ TRAP::Maths::tVec3<T>::tVec3(const T& x, const T& y, const T& z)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T>::tVec3(const TRAP::Maths::tVec2<T>& xy, const T& z)
+TRAP::Maths::tVec3<T>::tVec3(const tVec2<T>& xy, const T& z)
 	: x(xy.x), y(xy.y), z(z)
 {
 }
@@ -415,7 +415,7 @@ TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Multiply(const Mat3& transform) con
 			transform.rows[0].x * x + transform.rows[0].y * y + transform.rows[0].z * z,
 			transform.rows[1].x * x + transform.rows[1].y * y + transform.rows[1].z * z,
 			transform.rows[2].x * x + transform.rows[2].y * y + transform.rows[2].z * z
-			);
+		);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -428,135 +428,7 @@ TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Multiply(const Mat4& transform) con
 			transform.rows[0].x * x + transform.rows[0].y * y + transform.rows[0].z * z + transform.rows[0].w,
 			transform.rows[1].x * x + transform.rows[1].y * y + transform.rows[1].z * z + transform.rows[1].w,
 			transform.rows[2].x * x + transform.rows[2].y * y + transform.rows[2].z * z + transform.rows[2].w
-			);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator+(TRAP::Maths::tVec3<T> left, const TRAP::Maths::tVec2<T>& right)
-{
-	return left.Add(right);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator-(TRAP::Maths::tVec3<T> left, const TRAP::Maths::tVec2<T>& right)
-{
-	return left.Subtract(right);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator*(TRAP::Maths::tVec3<T> left, const TRAP::Maths::tVec2<T>& right)
-{
-	return left.Multiply(right);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator/(TRAP::Maths::tVec3<T> left, const TRAP::Maths::tVec2<T>& right)
-{
-	return left.Divide(right);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator+(TRAP::Maths::tVec3<T> left, const TRAP::Maths::tVec3<T>& right)
-{
-	return left.Add(right);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator-(TRAP::Maths::tVec3<T> left, const TRAP::Maths::tVec3<T>& right)
-{
-	return left.Subtract(right);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator*(TRAP::Maths::tVec3<T> left, const TRAP::Maths::tVec3<T>& right)
-{
-	return left.Multiply(right);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator/(TRAP::Maths::tVec3<T> left, const TRAP::Maths::tVec3<T>& right)
-{
-	return left.Divide(right);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator+(TRAP::Maths::tVec3<T> left, const TRAP::Maths::tVec4<T>& right)
-{
-	return left.Add(right);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator-(TRAP::Maths::tVec3<T> left, const TRAP::Maths::tVec4<T>& right)
-{
-	return left.Subtract(right);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator*(TRAP::Maths::tVec3<T> left, const TRAP::Maths::tVec4<T>& right)
-{
-	return left.Multiply(right);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator/(TRAP::Maths::tVec3<T> left, const TRAP::Maths::tVec4<T>& right)
-{
-	return left.Divide(right);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator+(TRAP::Maths::tVec3<T> left, T value)
-{
-	return tVec3<T>(left.x + value, left.y + value, left.z + value);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator-(TRAP::Maths::tVec3<T> left, T value)
-{
-	return tVec3<T>(left.x - value, left.y - value, left.z - value);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator*(TRAP::Maths::tVec3<T> left, T value)
-{
-	return tVec3<T>(left.x * value, left.y * value, left.z * value);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> operator/(TRAP::Maths::tVec3<T> left, T value)
-{
-	return tVec3<T>(left.x / value, left.y / value, left.z / value);
+		);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -925,14 +797,6 @@ std::string TRAP::Maths::tVec3<T>::ToString() const
 	result << "Vec3: (" << x << ", " << y << ", " << z << ')';
 
 	return result.str();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-std::ostream& operator<<(std::ostream& stream, const TRAP::Maths::tVec3<T>& vector)
-{
-	return stream << vector.ToString();
 }
 
 #endif /*_TRAP_TVEC3_INL_*/

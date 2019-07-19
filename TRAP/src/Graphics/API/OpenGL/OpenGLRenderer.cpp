@@ -23,6 +23,7 @@ void TRAP::Graphics::API::OpenGLRenderer::InitInternal()
 	InitDebug();
 #endif
 
+	SetClearColor();
 	SetDepthTesting(true);
 	SetBlend(true);
 	SetBlendFunction(RendererBlendFunction::SOURCE_ALPHA, RendererBlendFunction::ONE_MINUS_SOURCE_ALPHA);
@@ -42,22 +43,28 @@ void TRAP::Graphics::API::OpenGLRenderer::InitInternal()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::ClearInternal(const unsigned int buffer)
-{
-	OpenGLCall(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
+void TRAP::Graphics::API::OpenGLRenderer::Clear(const unsigned int buffer)
+{	
 	OpenGLCall(glClear(TRAPRendererBufferToOpenGL(buffer)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::PresentInternal(Window* window)
+void TRAP::Graphics::API::OpenGLRenderer::Present(Window* window)
 {
 	OpenGLContext::Present(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetDepthTestingInternal(const bool enabled)
+void TRAP::Graphics::API::OpenGLRenderer::SetClearColor(const Maths::Vec4& color)
+{
+	OpenGLCall(glClearColor(color.x, color.y, color.z, color.w));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLRenderer::SetDepthTesting(const bool enabled)
 {
 	if (enabled)
 	{
@@ -71,7 +78,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetDepthTestingInternal(const bool ena
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetBlendInternal(const bool enabled)
+void TRAP::Graphics::API::OpenGLRenderer::SetBlend(const bool enabled)
 {
 	if (enabled)
 	{
@@ -85,7 +92,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetBlendInternal(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetCullInternal(const bool enabled)
+void TRAP::Graphics::API::OpenGLRenderer::SetCull(const bool enabled)
 {
 	if(enabled)
 	{
@@ -99,14 +106,14 @@ void TRAP::Graphics::API::OpenGLRenderer::SetCullInternal(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetFrontFaceInternal(const RendererFrontFace frontFace)
+void TRAP::Graphics::API::OpenGLRenderer::SetFrontFace(const RendererFrontFace frontFace)
 {
 	OpenGLCall(glFrontFace(TRAPRendererFrontFaceToOpenGL(frontFace)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetWireFrameInternal(const bool enabled)
+void TRAP::Graphics::API::OpenGLRenderer::SetWireFrame(const bool enabled)
 {
 	if (enabled)
 	{
@@ -120,30 +127,37 @@ void TRAP::Graphics::API::OpenGLRenderer::SetWireFrameInternal(const bool enable
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetBlendFunctionInternal(const RendererBlendFunction source, const RendererBlendFunction destination)
+void TRAP::Graphics::API::OpenGLRenderer::SetBlendFunction(const RendererBlendFunction source, const RendererBlendFunction destination)
 {
 	OpenGLCall(glBlendFunc(TRAPRendererBlendFunctionToOpenGL(source), TRAPRendererBlendFunctionToOpenGL(destination)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetBlendEquationInternal(const RendererBlendEquation blendEquation)
+void TRAP::Graphics::API::OpenGLRenderer::SetBlendEquation(const RendererBlendEquation blendEquation)
 {
 	OpenGLCall(glBlendEquation(TRAPRendererBlendEquationToOpenGL(blendEquation)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetViewportInternal(const unsigned int x, const unsigned int y, const unsigned int width, const unsigned int height)
+void TRAP::Graphics::API::OpenGLRenderer::SetViewport(const unsigned int x, const unsigned int y, const unsigned int width, const unsigned int height)
 {
 	OpenGLCall(glViewport(x, y, width, height));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetCullModeInternal(RendererCullMode cullMode)
+void TRAP::Graphics::API::OpenGLRenderer::SetCullMode(const RendererCullMode cullMode)
 {
 	OpenGLCall(glCullFace(TRAPRendererCullModeToOpenGL(cullMode)));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLRenderer::DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray)
+{
+	OpenGLCall(glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

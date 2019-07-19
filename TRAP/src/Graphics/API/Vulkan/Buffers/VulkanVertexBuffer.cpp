@@ -23,7 +23,7 @@ void TRAP::Graphics::API::VulkanVertexBuffer::Unbind()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Graphics::API::BufferLayout& TRAP::Graphics::API::VulkanVertexBuffer::GetLayout() const
+const TRAP::Graphics::BufferLayout& TRAP::Graphics::API::VulkanVertexBuffer::GetLayout() const
 {
 	return m_layout;
 }

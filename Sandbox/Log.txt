@@ -1,107 +1,183 @@
-[22:31:40][Debug][Application] Initializing TRAP Modules...
-[22:31:40][Debug][VFS] Initializing Virtual File System
-[22:31:40][Info][Config] Loading settings file "Engine.cfg"
-[22:31:40][Trace][Config] Width = 1280
-[22:31:40][Trace][Config] Height = 720
-[22:31:40][Trace][Config] RefreshRate = 144
-[22:31:40][Trace][Config] VSync = 0
-[22:31:40][Trace][Config] DisplayMode = Windowed
-[22:31:40][Trace][Config] Monitor = 0
-[22:31:40][Trace][Config] RenderAPI = OpenGL
-[22:31:40][Trace][Config] HotShaderReloading = TRUE
-[22:31:40][Trace][Config] HotTextureReloading = TRUE
-[22:31:40][Trace][Config] Size: 9
-[22:31:40][Info][Window] Initializing Window: "Sandbox" 1280x720@144Hz VSync: Off Mode: Windowed Monitor: 0
-[22:31:42][Debug][Window] Storing underlying OS video mode: 2560x1440@144Hz (R8G8B8)
-[22:31:42][Info][Context][OpenGL] Initializing Context
-[22:31:42][Info][Renderer][OpenGL] Initializing Renderer
-[22:31:42][Info][Renderer][OpenGL] ----------------------------------
-[22:31:42][Info][Renderer][OpenGL] OpenGL:
-[22:31:42][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 430.86
-[22:31:42][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
-[22:31:42][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
-[22:31:42][Info][Renderer][OpenGL] ----------------------------------
-[22:31:42][Debug][Shader][OpenGL] Compiling: "Passthrough"
-[22:31:42][Debug][Shader][OpenGL] Compiling Vertex Shader
-[22:31:42][Debug][Shader][OpenGL] Compiling Fragment Shader
-[22:31:42][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
-[22:31:42][Debug][Shader][OpenGL] Compiling: "Color"
-[22:31:42][Debug][Shader][OpenGL] Compiling Vertex Shader
-[22:31:42][Debug][Shader][OpenGL] Compiling Fragment Shader
-[22:31:42][Debug][Shader][OpenGL] Compiling: "Texture"
-[22:31:42][Debug][Shader][OpenGL] Compiling Vertex Shader
-[22:31:42][Debug][Shader][OpenGL] Compiling Fragment Shader
-[22:31:42][Info][VFS] Mounting VirtualPath: "/textures" to PhysicalPath: "Assets/Textures"
-[22:31:42][Debug][Image][BMP] Loading Image: /Textures/Test.bmp
-[22:31:47][Info][Sandbox] FPS: 2467
-[22:31:47][Info][Sandbox] FrameTime: 0.405334ms
-[22:31:53][Info][Sandbox] FPS: 0
-[22:31:53][Info][Sandbox] FrameTime: 2511.69ms
-[22:31:58][Info][Sandbox] FPS: 2585
-[22:31:58][Info][Sandbox] FrameTime: 0.386845ms
-[22:32:03][Info][Sandbox] FPS: 2496
-[22:32:03][Info][Sandbox] FrameTime: 0.400498ms
-[22:32:08][Info][Sandbox] FPS: 920
-[22:32:08][Info][Sandbox] FrameTime: 1.08658ms
-[22:32:13][Info][Sandbox] FPS: 951
-[22:32:13][Info][Sandbox] FrameTime: 1.05102ms
-[22:32:18][Info][Sandbox] FPS: 834
-[22:32:18][Info][Sandbox] FrameTime: 1.19894ms
-[22:32:23][Info][Sandbox] FPS: 2268
-[22:32:23][Info][Sandbox] FrameTime: 0.440889ms
-[22:32:28][Info][Sandbox] FPS: 2300
-[22:32:28][Info][Sandbox] FrameTime: 0.434632ms
-[22:32:33][Info][Sandbox] FPS: 2211
-[22:32:33][Info][Sandbox] FrameTime: 0.452267ms
-[22:32:37][Info][Texture] Texture Modified Reloading...
-[22:32:37][Debug][Texture2D][OpenGL] Destroying Texture2D: "Test"
-[22:32:37][Debug][Image][BMP] Loading Image: /textures/Test.bmp
-[22:32:37][Info][TextureManager] Reloaded: "Test"
-[22:32:38][Info][Sandbox] FPS: 2475
-[22:32:38][Info][Sandbox] FrameTime: 0.403911ms
-[22:32:43][Info][Sandbox] FPS: 2141
-[22:32:44][Info][Sandbox] FrameTime: 0.467059ms
-[22:32:49][Info][Sandbox] FPS: 1869
-[22:32:49][Info][Sandbox] FrameTime: 0.53504ms
-[22:32:52][Info][Texture] Texture Modified Reloading...
-[22:32:52][Debug][Texture2D][OpenGL] Destroying Texture2D: "Test"
-[22:32:52][Debug][Image][BMP] Loading Image: /textures/Test.bmp
-[22:32:52][Info][TextureManager] Reloaded: "Test"
-[22:32:54][Info][Sandbox] FPS: 1444
-[22:32:54][Info][Sandbox] FrameTime: 0.692054ms
-[22:32:59][Info][Sandbox] FPS: 2175
-[22:32:59][Info][Sandbox] FrameTime: 0.459663ms
-[22:33:00][Info][Texture] Texture Modified Reloading...
-[22:33:00][Debug][Texture2D][OpenGL] Destroying Texture2D: "Test"
-[22:33:00][Debug][Image][BMP] Loading Image: /textures/Test.bmp
-[22:33:00][Info][TextureManager] Reloaded: "Test"
-[22:33:04][Info][Sandbox] FPS: 1968
-[22:33:04][Info][Sandbox] FrameTime: 0.508018ms
-[22:33:09][Info][Sandbox] FPS: 2240
-[22:33:09][Info][Sandbox] FrameTime: 0.446294ms
-[22:33:12][Debug][Application] Shutting down TRAP Modules...
-[22:33:12][Debug][ShaderManager] Destroying Shaders
-[22:33:12][Debug][Shader][OpenGL] Destroying Shader: "Passthrough"
-[22:33:12][Debug][Shader][OpenGL] Destroying "Passthrough"
-[22:33:12][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[22:33:12][Debug][Shader][OpenGL] Destroying "Color"
-[22:33:12][Debug][Shader][OpenGL] Destroying Shader: "Texture"
-[22:33:12][Debug][Shader][OpenGL] Destroying "Texture"
-[22:33:12][Debug][Texture2D][OpenGL] Destroying Texture2D: "Fallback"
-[22:33:12][Debug][Texture2D][OpenGL] Destroying Texture2D: "Test"
-[22:33:12][Trace][Config] Width = 1280
-[22:33:12][Trace][Config] Height = 720
-[22:33:12][Trace][Config] RefreshRate = 144
-[22:33:12][Trace][Config] VSync = 0
-[22:33:12][Trace][Config] DisplayMode = Windowed
-[22:33:12][Trace][Config] Monitor = 0
-[22:33:12][Trace][Config] RenderAPI = OpenGL
-[22:33:12][Trace][Config] HotShaderReloading = TRUE
-[22:33:12][Trace][Config] HotTextureReloading = TRUE
-[22:33:12][Trace][Config] Size: 9
-[22:33:12][Info][Config] Saving: Engine.cfg
-[22:33:12][Debug][VFS] Shutting down Virtual File System
-[22:33:12][Debug][Window] Destroying Window: "Sandbox"
-[22:33:12][Debug][Renderer][OpenGL] Destroying Renderer
-[22:33:12][Debug][Context][OpenGL] Destroying Context
-[22:33:12][Info][Logger] Saving Log.txt
+[02:07:06][Debug][Application] Initializing TRAP Modules...
+[02:07:06][Debug][VFS] Initializing Virtual File System
+[02:07:06][Info][Config] Loading settings file "Engine.cfg"
+[02:07:06][Trace][Config] Width = 1280
+[02:07:06][Trace][Config] Height = 720
+[02:07:06][Trace][Config] RefreshRate = 144
+[02:07:06][Trace][Config] VSync = 0
+[02:07:06][Trace][Config] DisplayMode = Windowed
+[02:07:06][Trace][Config] Monitor = 0
+[02:07:06][Trace][Config] RenderAPI = OpenGL
+[02:07:06][Trace][Config] HotShaderReloading = TRUE
+[02:07:06][Trace][Config] Size: 8
+[02:07:06][Info][Window] Initializing Window: "Sandbox" 1280x720@144Hz VSync: Off Mode: Windowed Monitor: 0
+[02:07:08][Debug][Window] Storing underlying OS video mode: 2560x1440@144Hz (R8G8B8)
+[02:07:08][Info][Context][OpenGL] Initializing Context
+[02:07:08][Info][Renderer][OpenGL] Initializing Renderer
+[02:07:08][Info][Renderer][OpenGL] ----------------------------------
+[02:07:08][Info][Renderer][OpenGL] OpenGL:
+[02:07:08][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 431.36
+[02:07:08][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
+[02:07:08][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
+[02:07:08][Info][Renderer][OpenGL] ----------------------------------
+[02:07:08][Debug][Shader][OpenGL] Compiling: "Passthrough"
+[02:07:08][Debug][Shader][OpenGL] Compiling Vertex Shader
+[02:07:08][Debug][Shader][OpenGL] Compiling Fragment Shader
+[02:07:08][Debug][LayerStack] Pushing Overlay: ImGuiLayer
+[02:07:08][Debug][LayerStack] Pushing Layer: Sandbox
+[02:07:08][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
+[02:07:08][Debug][Shader][OpenGL] Compiling: "Color"
+[02:07:08][Debug][Shader][OpenGL] Compiling Vertex Shader
+[02:07:08][Debug][Shader][OpenGL] Compiling Fragment Shader
+[02:07:10][Warn][Context] Switching RenderAPI to D3D12
+[02:07:10][Debug][ShaderManager] Destroying Shaders
+[02:07:10][Debug][Shader][OpenGL] Destroying Shader: "Passthrough"
+[02:07:10][Debug][Shader][OpenGL] Destroying "Passthrough"
+[02:07:10][Debug][Shader][OpenGL] Destroying Shader: "Color"
+[02:07:10][Debug][Shader][OpenGL] Destroying "Color"
+[02:07:10][Debug][Renderer][OpenGL] Destroying Renderer
+[02:07:10][Debug][Context][OpenGL] Destroying Context
+[02:07:10][Debug][Window] Destroying Window: "Sandbox - FPS: 3333 FrameTime: 0.300000"
+[02:07:10][Info][Window] Initializing Window: "Sandbox - FPS: 3333 FrameTime: 0.300000" 1280x720@144Hz VSync: Off Mode: Windowed Monitor: 0
+[02:07:10][Debug][Window] Storing underlying OS video mode: 2560x1440@144Hz (R8G8B8)
+[02:07:10][Info][Context][D3D12] Initializing Context
+[02:07:10][Info][Renderer][D3D12] Initializing Renderer
+[02:07:10][Info][Renderer][D3D12] ----------------------------------
+[02:07:10][Info][Renderer][D3D12] DirectX 12.1(D3D12):
+[02:07:10][Critical][Renderer][D3D12] NOT IMPLEMENTED WIP
+[02:07:10][Info][Renderer][D3D12] ----------------------------------
+[02:07:10][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
+[02:07:10][Warn][VertexArray][D3D12] WIP
+[02:07:10][Warn][VertexBuffer][D3D12] WIP
+[02:07:10][Warn][IndexBuffer][D3D12] WIP
+[02:07:12][Warn][Context] Switching RenderAPI to OpenGL 4.6
+[02:07:12][Debug][ShaderManager] Destroying Shaders
+[02:07:12][Debug][Shader][D3D12] Destroying Shader: "Color"
+[02:07:12][Debug][Renderer][D3D12] Destroying Renderer
+[02:07:12][Debug][Context][D3D12] Destroying Context
+[02:07:12][Debug][Window] Destroying Window: "Sandbox - FPS: 192307 FrameTime: 0.005200"
+[02:07:12][Info][Window] Initializing Window: "Sandbox - FPS: 192307 FrameTime: 0.005200" 1280x720@144Hz VSync: Off Mode: Windowed Monitor: 0
+[02:07:12][Debug][Window] Storing underlying OS video mode: 2560x1440@144Hz (R8G8B8)
+[02:07:12][Info][Context][OpenGL] Initializing Context
+[02:07:12][Info][Renderer][OpenGL] Initializing Renderer
+[02:07:12][Info][Renderer][OpenGL] ----------------------------------
+[02:07:12][Info][Renderer][OpenGL] OpenGL:
+[02:07:12][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 431.36
+[02:07:12][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
+[02:07:12][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
+[02:07:12][Info][Renderer][OpenGL] ----------------------------------
+[02:07:12][Debug][Shader][OpenGL] Compiling: "Passthrough"
+[02:07:12][Debug][Shader][OpenGL] Compiling Vertex Shader
+[02:07:12][Debug][Shader][OpenGL] Compiling Fragment Shader
+[02:07:12][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
+[02:07:12][Debug][Shader][OpenGL] Compiling: "Color"
+[02:07:12][Debug][Shader][OpenGL] Compiling Vertex Shader
+[02:07:12][Debug][Shader][OpenGL] Compiling Fragment Shader
+[02:07:13][Info][Sandbox] FPS: 3645
+[02:07:13][Info][Sandbox] FrameTime: 0.2743ms
+[02:07:14][Warn][Context] Switching RenderAPI to Vulkan 1.1
+[02:07:14][Debug][ShaderManager] Destroying Shaders
+[02:07:14][Debug][Shader][OpenGL] Destroying Shader: "Passthrough"
+[02:07:14][Debug][Shader][OpenGL] Destroying "Passthrough"
+[02:07:14][Debug][Shader][OpenGL] Destroying Shader: "Color"
+[02:07:14][Debug][Shader][OpenGL] Destroying "Color"
+[02:07:14][Debug][Renderer][OpenGL] Destroying Renderer
+[02:07:14][Debug][Context][OpenGL] Destroying Context
+[02:07:14][Debug][Window] Destroying Window: "Sandbox - FPS: 3306 FrameTime: 0.302400"
+[02:07:14][Info][Window] Initializing Window: "Sandbox - FPS: 3306 FrameTime: 0.302400" 1280x720@144Hz VSync: Off Mode: Windowed Monitor: 0
+[02:07:14][Debug][Window] Storing underlying OS video mode: 2560x1440@144Hz (R8G8B8)
+[02:07:14][Info][Context][Vulkan] Initializing Context
+[02:07:14][Info][Renderer][Vulkan] Initializing Renderer
+[02:07:14][Debug][Renderer][Vulkan] Setting up Instance Layers and Extensions
+[02:07:14][Debug][Renderer][Vulkan] Getting available Instance Layers
+[02:07:14][Debug][Renderer][Vulkan] Loading Instance Layer: VK_LAYER_KHRONOS_validation
+[02:07:14][Debug][Renderer][Vulkan] Getting available Instance Extensions
+[02:07:14][Debug][Renderer][Vulkan] Loading Instance Extension: VK_KHR_surface
+[02:07:14][Debug][Renderer][Vulkan] Loading Instance Extension: VK_KHR_win32_surface
+[02:07:14][Debug][Renderer][Vulkan] Loading Instance Extension: VK_EXT_debug_utils
+[02:07:14][Debug][Renderer][Vulkan] Initializing Instance
+[02:07:14][Debug][Renderer][Vulkan] Initializing Surface
+[02:07:14][Debug][Renderer][Vulkan] Initializing Debug Callback
+[02:07:14][Debug][Renderer][Vulkan] 0(Layer Internal Message) Added messenger
+[02:07:14][Debug][Renderer][Vulkan] Setting up Physical Device
+[02:07:14][Debug][Renderer][Vulkan] Getting available Physical Devices
+[02:07:14][Debug][Renderer][Vulkan] Found Physical Device: GeForce RTX 2080
+[02:07:14][Debug][Renderer][Vulkan] Found Physical Device: GeForce GTX 1070
+[02:07:14][Debug][Renderer][Vulkan] Selecting Physical Device
+[02:07:15][Debug][Renderer][Vulkan] Physical Device: GeForce RTX 2080 Score: 44768
+[02:07:15][Debug][Renderer][Vulkan] Physical Device: GeForce GTX 1070 Score: 44768
+[02:07:15][Debug][Renderer][Vulkan] Selected Physical Device: GeForce RTX 2080(Score: 44768)
+[02:07:15][Debug][Renderer][Vulkan] Setting up Graphics and Present Queue Family
+[02:07:15][Debug][Renderer][Vulkan] Getting available Queue Families
+[02:07:15][Debug][Renderer][Vulkan] Setting up Device Layers and Extensions
+[02:07:15][Debug][Renderer][Vulkan] Getting available Device Layers(Deprecated)
+[02:07:15][Debug][Renderer][Vulkan] Loading Device Layer(Deprecated): VK_LAYER_KHRONOS_validation
+[02:07:15][Debug][Renderer][Vulkan] Getting available Device Extensions
+[02:07:15][Debug][Renderer][Vulkan] Loading Device Extension: VK_KHR_swapchain
+[02:07:15][Debug][Renderer][Vulkan] Initializing Device
+[02:07:15][Debug][Renderer][Vulkan] Setting up Swapchain
+[02:07:15][Debug][Renderer][Vulkan] Choosing Swapchain Surface Format
+[02:07:15][Debug][Renderer][Vulkan] Using Surface Format: VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR
+[02:07:15][Debug][Renderer][Vulkan] Choosing Swapchain Surface Present Mode
+[02:07:15][Debug][Renderer][Vulkan] Using Surface Present Mode: VK_PRESENT_MODE_MAILBOX_KHR(Triple Buffered)
+[02:07:15][Debug][Renderer][Vulkan] Choosing Swapchain Extent
+[02:07:15][Debug][Renderer][Vulkan] Using Swapchain Extent: 1280x720
+[02:07:15][Debug][Renderer][Vulkan] Initializing Swapchain
+[02:07:15][Debug][Renderer][Vulkan] Initializing Swapchain Image Views
+[02:07:15][Info][Renderer][Vulkan] ----------------------------------
+[02:07:15][Info][Renderer][Vulkan] Vulkan:
+[02:07:15][Info][Renderer][Vulkan] Version:  1.1.99
+[02:07:15][Info][Renderer][Vulkan] Renderer: GeForce RTX 2080
+[02:07:15][Info][Renderer][Vulkan] Driver:   431.144.0
+[02:07:15][Info][Renderer][Vulkan] ----------------------------------
+[02:07:15][Debug][Shader][Vulkan] Compiling: "Passthrough"
+[02:07:15][Debug][Shader][Vulkan][GLSL] Pre-Processing Vertex Shader
+[02:07:15][Debug][Shader][Vulkan][GLSL] Parsing Vertex Shader
+[02:07:15][Debug][Shader][Vulkan][GLSL] Pre-Processing Fragment Shader
+[02:07:15][Debug][Shader][Vulkan][GLSL] Parsing Fragment Shader
+[02:07:15][Debug][Shader][Vulkan][GLSL] Linking Shaders
+[02:07:15][Debug][Shader][Vulkan][SPIRV] Converting Shaders to SPIRV
+[02:07:15][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
+[02:07:15][Debug][Shader][Vulkan] Compiling: "Color"
+[02:07:15][Debug][Shader][Vulkan][GLSL] Pre-Processing Vertex Shader
+[02:07:15][Debug][Shader][Vulkan][GLSL] Parsing Vertex Shader
+[02:07:15][Error][Shader][Vulkan] Parsing failed: 
+[02:07:15][Error][Shader][Vulkan] ERROR: 0:8: 'non-opaque uniforms outside a block' : not allowed when using GLSL for Vulkan 
+ERROR: 1 compilation errors.  No code generated.
+
+
+[02:07:15][Error][Shader][Vulkan] 
+[02:07:15][Warn][VertexArray][Vulkan] WIP
+[02:07:15][Warn][VertexBuffer][Vulkan] WIP
+[02:07:15][Warn][IndexBuffer][Vulkan] WIP
+[02:07:18][Info][Sandbox] FPS: 192307
+[02:07:18][Info][Sandbox] FrameTime: 0.0052ms
+[02:07:23][Info][Sandbox] FPS: 192307
+[02:07:23][Info][Sandbox] FrameTime: 0.0052ms
+[02:07:27][Debug][Application] Shutting down TRAP Modules...
+[02:07:27][Debug][ShaderManager] Destroying Shaders
+[02:07:27][Debug][Shader][Vulkan] Destroying Shader: "Passthrough"
+[02:07:27][Debug][Shader][Vulkan] Destroying Shader: "Color"
+[02:07:27][Trace][Config] Width = 1280
+[02:07:27][Trace][Config] Height = 720
+[02:07:27][Trace][Config] RefreshRate = 144
+[02:07:27][Trace][Config] VSync = 0
+[02:07:27][Trace][Config] DisplayMode = Windowed
+[02:07:27][Trace][Config] Monitor = 0
+[02:07:27][Trace][Config] RenderAPI = Vulkan
+[02:07:27][Trace][Config] HotShaderReloading = TRUE
+[02:07:27][Trace][Config] Size: 8
+[02:07:27][Info][Config] Saving: Engine.cfg
+[02:07:27][Debug][VFS] Shutting down Virtual File System
+[02:07:27][Debug][LayerStack] Destroying Layer: Sandbox
+[02:07:27][Debug][LayerStack] Destroying Layer: ImGuiLayer
+[02:07:27][Debug][Window] Destroying Window: "Sandbox - FPS: 188679 FrameTime: 0.005300"
+[02:07:27][Debug][Renderer][Vulkan] Destroying Renderer
+[02:07:27][Debug][Renderer][Vulkan] Destroying Swapchain Image Views
+[02:07:27][Debug][Renderer][Vulkan] Destroying Swapchain
+[02:07:27][Debug][Renderer][Vulkan] Destroying Device
+[02:07:27][Debug][Renderer][Vulkan] Destroying Debug Callback
+[02:07:27][Debug][Renderer][Vulkan] Destroying Surface
+[02:07:27][Debug][Renderer][Vulkan] Destroying Instance
+[02:07:27][Debug][Context][Vulkan] Destroying Context
+[02:07:27][Info][Logger] Saving Log.txt

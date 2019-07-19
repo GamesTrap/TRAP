@@ -3,7 +3,7 @@
 
 namespace TRAP::Graphics::API
 {
-	class OpenGLRenderer final : public Renderer
+	class OpenGLRenderer final : public RendererAPI
 	{
 	public:
 		OpenGLRenderer();
@@ -15,23 +15,26 @@ namespace TRAP::Graphics::API
 
 		void InitInternal() override;
 
-		void ClearInternal(unsigned int buffer) override;
-		void PresentInternal(Window* window) override;
+		void Clear(unsigned int buffer) override;
+		void Present(Window* window) override;
 
-		void SetDepthTestingInternal(bool enabled) override;
-		void SetBlendInternal(bool enabled) override;
-		void SetCullInternal(bool enabled) override;
-		void SetFrontFaceInternal(RendererFrontFace frontFace) override;
-		void SetViewportInternal(unsigned int x, unsigned int y, unsigned int width, unsigned int height) override;
+		void SetClearColor(const Maths::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) override;
+		void SetDepthTesting(bool enabled) override;
+		void SetBlend(bool enabled) override;
+		void SetCull(bool enabled) override;
+		void SetFrontFace(RendererFrontFace frontFace) override;
+		void SetViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height) override;
 
-		void SetBlendFunctionInternal(RendererBlendFunction source, RendererBlendFunction destination) override;
-		void SetBlendEquationInternal(RendererBlendEquation blendEquation) override;
+		void SetBlendFunction(RendererBlendFunction source, RendererBlendFunction destination) override;
+		void SetBlendEquation(RendererBlendEquation blendEquation) override;
 
-		void SetCullModeInternal(RendererCullMode cullMode) override;
+		void SetCullMode(RendererCullMode cullMode) override;
 
-		void SetWireFrameInternal(bool enabled) override;
+		void SetWireFrame(bool enabled) override;
 
-		std::string_view GetTitleInternal() const override;
+		void DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray) override;
+
+		std::string_view GetTitle() const override;
 
 		static OpenGLRenderer* Get();
 
@@ -52,7 +55,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::string_view TRAP::Graphics::API::OpenGLRenderer::GetTitleInternal() const
+inline std::string_view TRAP::Graphics::API::OpenGLRenderer::GetTitle() const
 {
 	return m_rendererTitle;
 }

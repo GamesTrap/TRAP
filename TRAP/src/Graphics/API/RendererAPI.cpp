@@ -1,13 +1,13 @@
 #include "TRAPPCH.h"
-#include "Renderer.h"
+#include "RendererAPI.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Graphics::API::Renderer> TRAP::Graphics::API::Renderer::s_Renderer = nullptr;
+std::unique_ptr<TRAP::Graphics::API::RendererAPI> TRAP::Graphics::API::RendererAPI::s_Renderer = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::Renderer::Shutdown()
+void TRAP::Graphics::API::RendererAPI::Shutdown()
 {
 	s_Renderer.reset();
 	s_Renderer = nullptr;
@@ -15,7 +15,7 @@ void TRAP::Graphics::API::Renderer::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::Renderer::Init()
+void TRAP::Graphics::API::RendererAPI::Init()
 {
 	switch (Context::GetRenderAPI())
 	{

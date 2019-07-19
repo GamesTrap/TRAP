@@ -32,7 +32,7 @@ void TRAP::Graphics::API::OpenGLVertexBuffer::Unbind()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Graphics::API::BufferLayout& TRAP::Graphics::API::OpenGLVertexBuffer::GetLayout() const
+const TRAP::Graphics::BufferLayout& TRAP::Graphics::API::OpenGLVertexBuffer::GetLayout() const
 {
 	return m_layout;
 }

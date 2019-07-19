@@ -65,7 +65,7 @@ namespace TRAP
 		unsigned int GetWidth() const;
 		unsigned int GetHeight() const;
 		unsigned int GetRefreshRate() const;
-		std::string_view GetTitle() const;
+		std::string GetTitle() const;
 		DisplayMode GetDisplayMode() const;
 		unsigned int GetMonitor() const;
 
@@ -79,11 +79,9 @@ namespace TRAP
 		                   unsigned int height = 0,
 		                   unsigned int refreshRate = 0);
 		void SetMonitor(unsigned int monitor = 0);
-		void SetIcon(unsigned int width = 32, unsigned int height = 32, unsigned char* pixels = Utils::TRAPLogo.data()) const; //TODO Replace pixels with TRAP::Image objects?
+		void SetIcon(unsigned int width = 32, unsigned int height = 32, uint8_t* pixels = Utils::TRAPLogo.data()) const; //TODO Replace pixels with TRAP::Image objects?
 
 		void* GetNativeWindow() const;
-
-		static void Clear();
 
 	private:
 		void Init(const WindowProps& props);
@@ -138,7 +136,7 @@ inline unsigned int TRAP::Window::GetRefreshRate() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::string_view TRAP::Window::GetTitle() const
+inline std::string TRAP::Window::GetTitle() const
 {
 	return m_data.Title;
 }

@@ -20,7 +20,7 @@ namespace TRAP::Graphics::API
 		};
 
 		OpenGLShaderUniformDeclaration(Type type, std::string name, unsigned int count = 1);
-		OpenGLShaderUniformDeclaration(ShaderStruct* uniformStruct, std::string name, unsigned int count = 1);
+		OpenGLShaderUniformDeclaration(std::unique_ptr<ShaderStruct>& uniformStruct, std::string name, unsigned int count = 1);
 
 		const std::string& GetName() const override;
 		unsigned int GetSize() const override;
@@ -49,7 +49,7 @@ namespace TRAP::Graphics::API
 		unsigned int m_offset;
 
 		Type m_type;
-		const std::unique_ptr<ShaderStruct>& m_struct;
+		std::unique_ptr<ShaderStruct> m_struct;
 		mutable int32_t m_location;
 	};
 
@@ -67,7 +67,7 @@ namespace TRAP::Graphics::API
 	public:
 		OpenGLShaderUniformBufferDeclaration(std::string name, unsigned int shaderType);
 
-		void PushUniform(OpenGLShaderUniformDeclaration* uniform);
+		void PushUniform(std::unique_ptr<OpenGLShaderUniformDeclaration>& uniform);
 
 		std::string_view GetName() const override;
 		unsigned int GetRegister() const override;

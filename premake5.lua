@@ -113,7 +113,6 @@ project "TRAP"
 		}
 
 	filter "system:linux"
-
 		-- Add Linux-specific files
         files
         {

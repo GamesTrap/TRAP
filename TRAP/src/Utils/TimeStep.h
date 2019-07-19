@@ -12,6 +12,8 @@ namespace TRAP::Utils
 		float GetMilliseconds() const;
 		float GetSeconds() const;
 
+		operator float() const;
+
 	private:
 		float m_timeStep;
 		float m_lastTime;
@@ -30,6 +32,13 @@ inline float TRAP::Utils::TimeStep::GetMilliseconds() const
 inline float TRAP::Utils::TimeStep::GetSeconds() const
 {
 	return m_timeStep * 0.001f;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::Utils::TimeStep::operator float() const
+{
+	return m_timeStep;
 }
 
 #endif /*_TRAP_TIMESTEP_H_*/

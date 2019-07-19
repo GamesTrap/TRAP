@@ -47,4 +47,4 @@ namespace TRAP::Maths
 	};
 }
 
-#endif _TRAP_MAT3_H_
+#endif /*_TRAP_MAT3_H_*/

@@ -6,6 +6,13 @@ namespace TRAP {
 	class LayerStack
 	{
 	public:
+		LayerStack() = default;
+		LayerStack(const LayerStack&) = default;
+		LayerStack& operator=(const LayerStack&) = default;
+		LayerStack(LayerStack&&) = default;
+		LayerStack& operator=(LayerStack&&) = default;
+		~LayerStack();
+
 		void PushLayer(std::unique_ptr<Layer> layer);
 		void PushOverlay(std::unique_ptr<Layer> overlay);
 		void PopLayer(const std::unique_ptr<Layer>& layer);

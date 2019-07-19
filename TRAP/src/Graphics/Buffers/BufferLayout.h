@@ -1,7 +1,7 @@
 #ifndef _TRAP_BUFFERLAYOUT_H_
 #define _TRAP_BUFFERLAYOUT_H_
 
-namespace TRAP::Graphics::API
+namespace TRAP::Graphics
 {
 	enum class ShaderDataType
 	{
@@ -82,42 +82,42 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline uint32_t TRAP::Graphics::API::BufferLayout::GetStride() const
+inline uint32_t TRAP::Graphics::BufferLayout::GetStride() const
 {
 	return m_stride;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const std::vector<TRAP::Graphics::API::BufferElement>& TRAP::Graphics::API::BufferLayout::GetElements() const
+inline const std::vector<TRAP::Graphics::BufferElement>& TRAP::Graphics::BufferLayout::GetElements() const
 {
 	return m_elements;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::vector<TRAP::Graphics::API::BufferElement>::iterator TRAP::Graphics::API::BufferLayout::begin()
+inline std::vector<TRAP::Graphics::BufferElement>::iterator TRAP::Graphics::BufferLayout::begin()
 {
 	return m_elements.begin();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::vector<TRAP::Graphics::API::BufferElement>::iterator TRAP::Graphics::API::BufferLayout::end()
+inline std::vector<TRAP::Graphics::BufferElement>::iterator TRAP::Graphics::BufferLayout::end()
 {
 	return m_elements.end();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::vector<TRAP::Graphics::API::BufferElement>::const_iterator TRAP::Graphics::API::BufferLayout::begin() const
+inline std::vector<TRAP::Graphics::BufferElement>::const_iterator TRAP::Graphics::BufferLayout::begin() const
 {
 	return m_elements.begin();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::vector<TRAP::Graphics::API::BufferElement>::const_iterator TRAP::Graphics::API::BufferLayout::end() const
+inline std::vector<TRAP::Graphics::BufferElement>::const_iterator TRAP::Graphics::BufferLayout::end() const
 {
 	return m_elements.end();
 }

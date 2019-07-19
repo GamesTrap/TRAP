@@ -29,6 +29,7 @@ namespace TRAP
 
 		unsigned int GetFPS() const;
 		float GetFrameTime() const;
+		Utils::TimeStep GetTime() const;
 
 		void Shutdown();
 

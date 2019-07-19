@@ -42,6 +42,9 @@
 #include <dxgi1_6.h>
 #include <d3d12.h>
 #include "Utils/Win.h"
+
+#undef near
+#undef far
 #endif
 
 #include "Utils/MsgBox/MsgBox.h"
@@ -68,11 +71,6 @@
 #include "Maths/Maths.h"
 
 #include "ImageLoader/DefaultImage.h"
-#include "ImageLoader/Image.h"
-#include "ImageLoader/TGAImage.h"
-#include "ImageLoader/BMPImage.h"
-#include "ImageLoader/PNGImage.h"
-#include "ImageLoader/JPGImage.h"
 
 #include "Event/Event.h"
 #include "Event/ApplicationEvent.h"
@@ -93,10 +91,10 @@
 #include "Graphics/API/OpenGL/OpenGLShaderResource.h"
 #include "Graphics/API/OpenGL/OpenGLShader.h"
 
-#include "Graphics/API/Buffers/BufferLayout.h"
-#include "Graphics/API/Buffers/VertexBuffer.h"
-#include "Graphics/API/Buffers/IndexBuffer.h"
-#include "Graphics/API/Buffers/VertexArray.h"
+#include "Graphics/Buffers/BufferLayout.h"
+#include "Graphics/Buffers/VertexBuffer.h"
+#include "Graphics/Buffers/IndexBuffer.h"
+#include "Graphics/Buffers/VertexArray.h"
 
 #include "Graphics/API/OpenGL/OpenGLCommon.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
@@ -104,19 +102,10 @@
 #include "Graphics/API/D3D12/D3D12Common.h"
 #endif
 
-#include "Graphics/API/Renderer.h"
+#include "Graphics/API/RendererAPI.h"
+#include "Graphics/Renderer.h"
 
 #include "Window/Window.h"
-
-#include "Graphics/Textures/Texture.h"
-#include "Graphics/Textures/Texture2D.h"
-#include "Graphics/Textures/TextureManager.h"
-
-#include "Graphics/API/OpenGL/Textures/OpenGLTexture2D.h"
-#include "Graphics/API/Vulkan/Textures/VulkanTexture2D.h"
-#ifdef TRAP_PLATFORM_WINDOWS
-#include "Graphics/API/D3D12/Textures/D3D12Texture2D.h"
-#endif
 
 #include "Graphics/API/OpenGL/Buffers/OpenGLVertexBuffer.h"
 #include "Graphics/API/Vulkan/Buffers/VulkanVertexBuffer.h"
@@ -136,6 +125,7 @@
 #include "Graphics/API/D3D12/Buffers/D3D12VertexArray.h"
 #endif
 
+
 #include "Graphics/API/Context.h"
 #include "Graphics/API/OpenGL/OpenGLContext.h"
 #include "Graphics/API/Vulkan/VulkanContext.h"
@@ -148,6 +138,9 @@
 #ifdef TRAP_PLATFORM_WINDOWS
 #include "Graphics/API/D3D12/D3D12Renderer.h"
 #endif
+
+#include "Graphics/RenderCommand.h"
+#include "Graphics/OrthographicCamera.h"
 
 #include "Layers/Layer.h"
 #include "Layers/LayerStack.h"

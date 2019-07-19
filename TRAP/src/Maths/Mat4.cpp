@@ -83,7 +83,7 @@ TRAP::Maths::Vec4 TRAP::Maths::Mat4::Multiply(const Vec4& other) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 operator*(TRAP::Maths::Mat4 left, const TRAP::Maths::Mat4& right)
+TRAP::Maths::Mat4 TRAP::Maths::operator*(Mat4 left, const Mat4& right)
 {
 	return left.Multiply(right);
 }
@@ -97,14 +97,14 @@ TRAP::Maths::Mat4& TRAP::Maths::Mat4::operator*=(const Mat4& other)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Vec3 operator*(const TRAP::Maths::Mat4& left, const TRAP::Maths::Vec3& right)
+TRAP::Maths::Vec3 TRAP::Maths::operator*(const Mat4& left, const Vec3& right)
 {
 	return left.Multiply(right);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Vec4 operator*(const TRAP::Maths::Mat4& left, const TRAP::Maths::Vec4& right)
+TRAP::Maths::Vec4 TRAP::Maths::operator*(const Mat4& left, const Vec4& right)
 {
 	return  left.Multiply(right);
 }
@@ -124,18 +124,18 @@ TRAP::Maths::Mat4& TRAP::Maths::Mat4::Invert()
 	temp[9] = -elements[0] * elements[9] * elements[15] + elements[0] * elements[11] * elements[13] + elements[8] * elements[1] * elements[15] - elements[8] * elements[3] * elements[13] - elements[12] * elements[1] * elements[11] + elements[12] * elements[3] * elements[9];
 	temp[13] = elements[0] * elements[9] * elements[14] - elements[0] * elements[10] * elements[13] - elements[8] * elements[1] * elements[14] + elements[8] * elements[2] * elements[13] + elements[12] * elements[1] * elements[10] - elements[12] * elements[2] * elements[9];
 	temp[2] = elements[1] * elements[6] * elements[15] - elements[1] * elements[7] * elements[14] - elements[5] * elements[2] * elements[15] + elements[5] * elements[3] * elements[14] + elements[13] * elements[2] * elements[7] - elements[13] * elements[3] * elements[6];
-	temp[6] = -elements[0] * elements[6] * elements[15] + elements[0] * elements[7] * elements[14] + elements[4] * elements[2] * elements[15] - elements[4] * elements[3] * elements[14] - elements[12] * elements[2] * elements[7] + elements[12] * elements[3] * elements[6];
+	temp[6] = -elements[0] * elements[6] * elements[15] + elements[0] * elements[7] * elements[14] + elements[4] * elements[2] * elements[15] -	elements[4] * elements[3] * elements[14] - elements[12] * elements[2] * elements[7] + elements[12] * elements[3] * elements[6];
 	temp[10] = elements[0] * elements[5] * elements[15] - elements[0] * elements[7] * elements[13] - elements[4] * elements[1] * elements[15] + elements[4] * elements[3] * elements[13] + elements[12] * elements[1] * elements[7] - elements[12] * elements[3] * elements[5];
 	temp[14] = -elements[0] * elements[5] * elements[14] + elements[0] * elements[6] * elements[13] + elements[4] * elements[1] * elements[14] - elements[4] * elements[2] * elements[13] - elements[12] * elements[1] * elements[6] + elements[12] * elements[2] * elements[5];
-	temp[3] = -elements[1] * elements[6] * elements[11] + elements[1] * elements[7] * elements[10] + elements[5] * elements[2] * elements[11] - elements[5] * elements[3] * elements[10] - elements[9] * elements[2] * elements[7] + elements[9] * elements[3] * elements[6];
+	temp[3] = -elements[1] * elements[6] * elements[11] + elements[1] * elements[7] * elements[10] + elements[5] * elements[2] * elements[11] - elements[5] * elements[3] * elements[10] - elements[9] * elements[2] * elements[7] +elements[9] * elements[3] * elements[6];
 	temp[7] = elements[0] * elements[6] * elements[11] - elements[0] * elements[7] * elements[10] - elements[4] * elements[2] * elements[11] + elements[4] * elements[3] * elements[10] + elements[8] * elements[2] * elements[7] - elements[8] * elements[3] * elements[6];
-	temp[11] = -elements[0] * elements[5] * elements[11] + elements[0] * elements[7] * elements[9] + elements[4] * elements[1] * elements[11] - elements[4] * elements[3] * elements[9] - elements[8] * elements[1] * elements[7] + elements[8] * elements[3] * elements[5];
-	temp[15] = elements[0] * elements[5] * elements[10] - elements[0] * elements[6] * elements[9] - elements[4] * elements[1] * elements[10] + elements[4] * elements[2] * elements[9] + elements[8] * elements[1] * elements[6] - elements[8] * elements[2] * elements[5];
+	temp[11] = -elements[0] * elements[5] * elements[11] + elements[0] * elements[7] * elements[9] + elements[4] * elements[1] * elements[11] - elements[4] * elements[3] * elements[9] - elements[8] * elements[1] * elements[7] +elements[8] * elements[3] * elements[5];
+	temp[15] = elements[0] * elements[5] * elements[10] - elements[0] * elements[6] * elements[9] - elements[4] * elements[1] * elements[10] + elements[4] * elements[2] * elements[9] + elements[8] * elements[1] * elements[6] -elements[8] * elements[2] * elements[5];
 
 	float determinant = elements[0] * temp[0] + elements[1] * temp[4] + elements[2] * temp[8] + elements[3] * temp[12];
 	determinant = 1.0f / determinant;
 
-	for (auto i = 0; i < 4; i++)
+	for (int32_t i = 0; i < 4 * 4; i++)
 		elements[i] = temp[i] * determinant;
 
 	return *this;
@@ -174,32 +174,32 @@ void TRAP::Maths::Mat4::SetPosition(const Vec3& position)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 TRAP::Maths::Mat4::Orthographic(const float left, const float right, const float bottom, const float top, const float Near, const float Far)
+TRAP::Maths::Mat4 TRAP::Maths::Mat4::Orthographic(const float left, const float right, const float bottom, const float top, const float near, const float far)
 {
 	Mat4 result = Identity();
 
 	result.elements[0 + 0 * 4] = 2.0f / (right - left);
 	result.elements[1 + 1 * 4] = 2.0f / (top - bottom);
-	result.elements[2 + 2 * 4] = 2.0f / (Near - Far);
+	result.elements[2 + 2 * 4] = 2.0f / (near - far);
 
 	result.elements[3 + 0 * 4] = (left + right) / (left - right);
 	result.elements[3 + 1 * 4] = (bottom + top) / (bottom - top);
-	result.elements[3 + 2 * 4] = (Far + Near) / (Far - Near);
+	result.elements[3 + 2 * 4] = (far + near) / (far - near);
 
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 TRAP::Maths::Mat4::Perspective(const float fov, const float aspectRatio, const float Near, const float Far)
+TRAP::Maths::Mat4 TRAP::Maths::Mat4::Perspective(const float fov, const float aspectRatio, const float near, const float far)
 {
 	Mat4 result = Identity();
 
 	const float q = 1.0f / Tan(ToRadians(0.5f * fov));
 	const float a = q / aspectRatio;
 
-	const float b = (Near + Far) / (Near - Far);
-	const float c = (2.0f * Near * Far) / (Near - Far);
+	const float b = (near + far) / (near - far);
+	const float c = (2.0f * near * far) / (near - far);
 
 	result.elements[0 + 0 * 4] = a;
 	result.elements[1 + 1 * 4] = q;

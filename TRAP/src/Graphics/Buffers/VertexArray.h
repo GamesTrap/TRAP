@@ -1,7 +1,7 @@
 #ifndef _TRAP_VERTEXARRAY_H_
 #define _TRAP_VERTEXARRAY_H_
 
-namespace TRAP::Graphics::API
+namespace TRAP::Graphics
 {
 	class VertexArray
 	{
@@ -23,8 +23,6 @@ namespace TRAP::Graphics::API
 
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
-
-		virtual void Draw() const = 0;
 
 		static const VertexArray* s_CurrentlyBound;
 	};

@@ -148,16 +148,33 @@ SITREP 06/10/2019|19w24a1
     - Changed where ShaderManager gets destroyed ~>10 mins
 
 SITREP 06/14/2019|19w24a2
+    - Changed TRAP Engine version to 19w24a2(0.4.1)
     - Added checks for Geometry and Tessellation Shader support inside Vulkan ~>30 mins
 
 SITREP 06/15/2019|19w24a3
+    - Changed TRAP Engine version to 19w24a3(0.4.2)
     - Added TGAImage and BMPImage class to load Images ~>120 mins
 
 SITREP 06/16/2019|19w24a4
+    - Changed TRAP Engine version to 19w24a(0.4.3)
     - Added abstract Image class ~>30 mins
     - Added Texture(2D) class ~>60 mins
     - Added TextureManager ~>45 mins
 
-SITREP 06/17/2019|19w25a1
+SITREP 06/17/2019|19w25a2
+    - Changed TRAP Engine version to 19w25a2(0.4.5)
     - Added TextureManager Reload functionality ~>60 mins
     - Added Conversion from BGR(A) to RGB(A) format ~>25 mins
+
+SITREP 07/09/2019|19w28a1
+    - Changed TRAP Engine version to 19w28a1(0.4.6)
+    - Removed Texture stuff for now...
+    - Moved some Renderer abstractions ~>40 mins
+    - Renamed Renderer class to RendererAPI
+    - Added new Renderer class for abstractions
+    - Added RenderCommand class for Renderer settings
+    - Removed rectangle from Sandbox ~<5 mins
+    - Added automatic viewport change on WindowResizeEvent ~<10 mins
+    - Started evaluating the validity of my Maths API results(Vectors seem to work fine) ~>30 mins
+    - Added OrthographicCamera class ~>35 mins
+    - Changed Sandbox Color Shader to allow View and Projection Matrix ~< 10mins

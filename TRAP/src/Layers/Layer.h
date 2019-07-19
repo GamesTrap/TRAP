@@ -18,7 +18,6 @@ namespace TRAP {
 		virtual void OnUpdate(Utils::TimeStep deltaTime) {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
-		virtual void OnResize(unsigned int width, unsigned int height) {}
 
 		std::string_view GetName() const;
 	protected:

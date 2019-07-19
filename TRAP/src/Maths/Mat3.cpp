@@ -81,7 +81,7 @@ TRAP::Maths::Vec4 TRAP::Maths::Mat3::Multiply(const Vec4& other) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat3 operator*(TRAP::Maths::Mat3 left, const TRAP::Maths::Mat3& right)
+TRAP::Maths::Mat3 TRAP::Maths::operator*(Mat3 left, const Mat3& right)
 {
 	return left.Multiply(right);
 }
@@ -95,14 +95,14 @@ TRAP::Maths::Mat3& TRAP::Maths::Mat3::operator*=(const Mat3& other)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Vec3 operator*(const TRAP::Maths::Mat3& left, const TRAP::Maths::Vec3& right)
+TRAP::Maths::Vec3 TRAP::Maths::operator*(const Mat3& left, const Vec3& right)
 {
 	return left.Multiply(right);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Vec4 operator*(const TRAP::Maths::Mat3& left, const TRAP::Maths::Vec4& right)
+TRAP::Maths::Vec4 TRAP::Maths::operator*(const Mat3& left, const Vec4& right)
 {
 	return  left.Multiply(right);
 }

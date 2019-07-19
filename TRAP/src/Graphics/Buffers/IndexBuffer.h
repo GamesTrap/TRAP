@@ -1,7 +1,7 @@
 #ifndef _TRAP_INDEXBUFFER_H_
 #define _TRAP_INDEXBUFFER_H_
 
-namespace TRAP::Graphics::API
+namespace TRAP::Graphics
 {
 	class IndexBuffer
 	{

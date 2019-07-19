@@ -15,7 +15,7 @@ namespace TRAP::Maths
 	{
 		union
 		{
-			std::array<float, 4*4> elements;
+			std::array<float, 4 * 4> elements;
 			std::array<Vec4, 4> rows;
 		};
 

@@ -110,7 +110,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	//Create Window
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 			               std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-			              "[INDEV][19w25a1]";
+			              "[INDEV][19w28a1]";
 	m_window = glfwCreateWindow(static_cast<int>(props.Width),
 	                            static_cast<int>(props.Height),
 	                            newTitle.c_str(),
@@ -127,10 +127,10 @@ void TRAP::Window::Init(const WindowProps& props)
 	//Create Context & Initialize Renderer
 	Graphics::API::Context::Create(this);
 	Graphics::API::Context::SetVSyncInterval(props.VSync);
-	Graphics::API::Renderer::Init();
+	Graphics::API::RendererAPI::Init();
 
 	//Update Window Title
-	newTitle += Graphics::API::Renderer::GetTitle();
+	newTitle += Graphics::Renderer::GetTitle();
 	glfwSetWindowTitle(m_window, newTitle.c_str());
 
 	//Change to windowed, fullscreen, or fullscreen borderless
@@ -399,18 +399,10 @@ void TRAP::Window::SetMonitor(const unsigned int monitor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetIcon(const unsigned int width, const unsigned int height, unsigned char* pixels) const
+void TRAP::Window::SetIcon(const unsigned int width, const unsigned int height, uint8_t* pixels) const
 {
 	GLFWimage image{static_cast<int>(width), static_cast<int>(height), pixels};
 	glfwSetWindowIcon(m_window, 1, &image);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Window::Clear()
-{
-	Graphics::API::Renderer::Clear(static_cast<int>(Graphics::API::RendererBufferType::RENDERER_BUFFER_COLOR) |
-		                            static_cast<int>(Graphics::API::RendererBufferType::RENDERER_BUFFER_DEPTH));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -420,6 +412,6 @@ void TRAP::Window::SetTitle(const std::string& title)
 	m_data.Title = title;
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w25a1]" + std::string(Graphics::API::Renderer::GetTitle());
+		"[INDEV][19w28a1]" + std::string(Graphics::Renderer::GetTitle());
 	glfwSetWindowTitle(m_window, newTitle.c_str());
 }

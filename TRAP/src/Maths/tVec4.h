@@ -67,20 +67,25 @@ namespace TRAP::Maths
 		tVec4<T> Multiply(const Mat3& transform) const;
 		tVec4<T> Multiply(const Mat4& transform) const;
 
-		friend tVec4<T> operator+(tVec4<T> left, const tVec2<T>& right);
-		friend tVec4<T> operator-(tVec4<T> left, const tVec2<T>& right);
-		friend tVec4<T> operator*(tVec4<T> left, const tVec2<T>& right);
-		friend tVec4<T> operator/(tVec4<T> left, const tVec2<T>& right);
+		friend tVec4<T> operator+(tVec4<T> left, const tVec2<T>& right) { return left.Add(right); }
+		friend tVec4<T> operator-(tVec4<T> left, const tVec2<T>& right) { return left.Subtract(right); }
+		friend tVec4<T> operator*(tVec4<T> left, const tVec2<T>& right) { return left.Multiply(right); }
+		friend tVec4<T> operator/(tVec4<T> left, const tVec2<T>& right) { return left.Divide(right); }
 
-		friend tVec4<T> operator+(tVec4<T> left, const tVec3<T>& right);
-		friend tVec4<T> operator-(tVec4<T> left, const tVec3<T>& right);
-		friend tVec4<T> operator*(tVec4<T> left, const tVec3<T>& right);
-		friend tVec4<T> operator/(tVec4<T> left, const tVec3<T>& right);
+		friend tVec4<T> operator+(tVec4<T> left, const tVec3<T>& right) { return left.Add(right); }
+		friend tVec4<T> operator-(tVec4<T> left, const tVec3<T>& right) { return left.Subtract(right); }
+		friend tVec4<T> operator*(tVec4<T> left, const tVec3<T>& right) { return left.Multiply(right); }
+		friend tVec4<T> operator/(tVec4<T> left, const tVec3<T>& right) { return left.Divide(right); }
 
-		friend tVec4<T> operator+(tVec4<T> left, const tVec4<T>& right);
-		friend tVec4<T> operator-(tVec4<T> left, const tVec4<T>& right);
-		friend tVec4<T> operator*(tVec4<T> left, const tVec4<T>& right);
-		friend tVec4<T> operator/(tVec4<T> left, const tVec4<T>& right);
+		friend tVec4<T> operator+(tVec4<T> left, const tVec4<T>& right) { return left.Add(right); }
+		friend tVec4<T> operator-(tVec4<T> left, const tVec4<T>& right) { return left.Subtract(right); }
+		friend tVec4<T> operator*(tVec4<T> left, const tVec4<T>& right) { return left.Multiply(right); }
+		friend tVec4<T> operator/(tVec4<T> left, const tVec4<T>& right) { return left.Divide(right); }
+
+		friend tVec4<T> operator+(tVec4<T> left, T value) { return tVec4<T>(left.x + value, left.y + value, left.z + value, left.w + value); }
+		friend tVec4<T> operator-(tVec4<T> left, T value) { return tVec4<T>(left.x - value, left.y - value, left.z - value, left.w - value); }
+		friend tVec4<T> operator*(tVec4<T> left, T value) { return tVec4<T>(left.x * value, left.y * value, left.z * value, left.w * value); }
+		friend tVec4<T> operator/(tVec4<T> left, T value) { return tVec4<T>(left.x / value, left.y / value, left.z / value, left.w / value); }
 
 		bool operator==(const tVec2<T>& other) const;
 		bool operator!=(const tVec2<T>& other) const;
@@ -138,7 +143,7 @@ namespace TRAP::Maths
 
 		std::string ToString() const;
 
-		friend std::ostream& operator<<(std::ostream& stream, const tVec3<T>& vector);
+		friend std::ostream& operator<<(std::ostream& stream, const tVec4<T>& vector) { return stream << vector.ToString(); }
 	};
 }
 

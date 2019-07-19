@@ -54,14 +54,14 @@ void TRAP::Graphics::API::OpenGLVertexArray::SetIndexBuffer(std::unique_ptr<Inde
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::unique_ptr<TRAP::Graphics::API::VertexBuffer>>& TRAP::Graphics::API::OpenGLVertexArray::GetVertexBuffers()
+std::vector<std::unique_ptr<TRAP::Graphics::VertexBuffer>>& TRAP::Graphics::API::OpenGLVertexArray::GetVertexBuffers()
 {
 	return m_vertexBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::IndexBuffer* TRAP::Graphics::API::OpenGLVertexArray::GetIndexBuffer()
+TRAP::Graphics::IndexBuffer* TRAP::Graphics::API::OpenGLVertexArray::GetIndexBuffer()
 {
 	return m_indexBuffer.get();
 }
@@ -86,11 +86,4 @@ void TRAP::Graphics::API::OpenGLVertexArray::Unbind() const
 		OpenGLCall(glBindVertexArray(0));
 		s_CurrentlyBound = nullptr;
 	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::OpenGLVertexArray::Draw() const
-{
-	OpenGLCall(glDrawElements(GL_TRIANGLES, m_indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr));
 }

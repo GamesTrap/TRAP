@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "BufferLayout.h"
 
-uint32_t TRAP::Graphics::API::BufferElement::GetComponentCount() const
+uint32_t TRAP::Graphics::BufferElement::GetComponentCount() const
 {
 	switch (Type)
 	{
@@ -28,7 +28,7 @@ uint32_t TRAP::Graphics::API::BufferElement::GetComponentCount() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::BufferLayout::CalculateOffsetsAndStride()
+void TRAP::Graphics::BufferLayout::CalculateOffsetsAndStride()
 {
 	uint32_t offset = 0;
 	m_stride = 0;

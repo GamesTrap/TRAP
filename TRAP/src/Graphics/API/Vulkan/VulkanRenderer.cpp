@@ -63,69 +63,81 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::ClearInternal(unsigned int buffer)
+void TRAP::Graphics::API::VulkanRenderer::Clear(unsigned int buffer)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::PresentInternal(Window* window)
+void TRAP::Graphics::API::VulkanRenderer::Present(Window* window)
 {
 	m_context->Present(window);
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetDepthTestingInternal(bool enabled)
+void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Maths::Vec4& color)
+{	
+}
+
+//------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(bool enabled)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetBlendInternal(const bool enabled)
+void TRAP::Graphics::API::VulkanRenderer::SetBlend(const bool enabled)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetCullInternal(const bool enabled)
+void TRAP::Graphics::API::VulkanRenderer::SetCull(const bool enabled)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetFrontFaceInternal(const RendererFrontFace frontFace)
+void TRAP::Graphics::API::VulkanRenderer::SetFrontFace(const RendererFrontFace frontFace)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetWireFrameInternal(const bool enabled)
+void TRAP::Graphics::API::VulkanRenderer::SetWireFrame(const bool enabled)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetViewportInternal(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+void TRAP::Graphics::API::VulkanRenderer::SetViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetBlendFunctionInternal(const RendererBlendFunction source, const RendererBlendFunction destination)
+void TRAP::Graphics::API::VulkanRenderer::SetBlendFunction(const RendererBlendFunction source, const RendererBlendFunction destination)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetBlendEquationInternal(RendererBlendEquation blendEquation)
+void TRAP::Graphics::API::VulkanRenderer::SetBlendEquation(RendererBlendEquation blendEquation)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetCullModeInternal(const RendererCullMode cullMode)
+void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const RendererCullMode cullMode)
 {
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray)
+{	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

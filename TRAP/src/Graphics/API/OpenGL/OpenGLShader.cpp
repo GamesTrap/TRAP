@@ -436,10 +436,11 @@ void TRAP::Graphics::API::OpenGLShader::ParseUniform(const std::string& statemen
 
 		if (type == OpenGLShaderUniformDeclaration::Type::NONE)
 		{
+			//TODO Maybe needs to be changed
 			//Find struct
 			ShaderStruct* Struct = FindStruct(typeString);
 			TP_ASSERT(Struct, "[Shader][OpenGL] Struct is invalid!");
-			declaration = std::make_unique<OpenGLShaderUniformDeclaration>(Struct, name, count);
+			declaration = std::make_unique<OpenGLShaderUniformDeclaration>(std::unique_ptr<ShaderStruct>(Struct), name, count);
 		}
 		else
 			declaration = std::make_unique<OpenGLShaderUniformDeclaration>(type, name, count);
@@ -447,17 +448,17 @@ void TRAP::Graphics::API::OpenGLShader::ParseUniform(const std::string& statemen
 		if (Utils::String::StartsWith(name, "sys_"))
 		{
 			if (shaderType == 0)
-				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_VSUniformBuffers.front().get())->PushUniform(declaration.get());
+				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_VSUniformBuffers.front().get())->PushUniform(declaration);
 			else if (shaderType == 1)
-				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_FSUniformBuffers.front().get())->PushUniform(declaration.get());
+				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_FSUniformBuffers.front().get())->PushUniform(declaration);
 			else if (shaderType == 2)
-				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_GSUniformBuffers.front().get())->PushUniform(declaration.get());
+				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_GSUniformBuffers.front().get())->PushUniform(declaration);
 			else if (shaderType == 3)
-				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_TCSUniformBuffers.front().get())->PushUniform(declaration.get());
+				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_TCSUniformBuffers.front().get())->PushUniform(declaration);
 			else if (shaderType == 4)
-				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_TESUniformBuffers.front().get())->PushUniform(declaration.get());
+				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_TESUniformBuffers.front().get())->PushUniform(declaration);
 			else if (shaderType == 5)
-				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_CSUniformBuffers.front().get())->PushUniform(declaration.get());
+				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_CSUniformBuffers.front().get())->PushUniform(declaration);
 		}
 		else
 		{
@@ -466,42 +467,42 @@ void TRAP::Graphics::API::OpenGLShader::ParseUniform(const std::string& statemen
 				if (m_VSUserUniformBuffer == nullptr)
 					m_VSUserUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", 0);
 
-				m_VSUserUniformBuffer->PushUniform(declaration.get());
+				m_VSUserUniformBuffer->PushUniform(declaration);
 			}
 			else if (shaderType == 1)
 			{
 				if (m_FSUserUniformBuffer == nullptr)
 					m_FSUserUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", 1);
 
-				m_FSUserUniformBuffer->PushUniform(declaration.get());
+				m_FSUserUniformBuffer->PushUniform(declaration);
 			}
 			else if (shaderType == 2)
 			{
 				if (m_GSUserUniformBuffer == nullptr)
 					m_GSUserUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", 2);
 
-				m_GSUserUniformBuffer->PushUniform(declaration.get());
+				m_GSUserUniformBuffer->PushUniform(declaration);
 			}
 			else if (shaderType == 3)
 			{
 				if (m_TCSUserUniformBuffer == nullptr)
 					m_TCSUserUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", 3);
 
-				m_TCSUserUniformBuffer->PushUniform(declaration.get());
+				m_TCSUserUniformBuffer->PushUniform(declaration);
 			}
 			else if (shaderType == 4)
 			{
 				if (m_TESUserUniformBuffer == nullptr)
 					m_TESUserUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", 4);
 
-				m_TESUserUniformBuffer->PushUniform(declaration.get());
+				m_TESUserUniformBuffer->PushUniform(declaration);
 			}
 			else if (shaderType == 5)
 			{
 				if (m_CSUserUniformBuffer == nullptr)
 					m_CSUserUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", 5);
 
-				m_CSUserUniformBuffer->PushUniform(declaration.get());
+				m_CSUserUniformBuffer->PushUniform(declaration);
 			}
 		}
 	}

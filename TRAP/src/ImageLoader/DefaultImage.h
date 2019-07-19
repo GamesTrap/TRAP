@@ -1,7 +1,7 @@
 #ifndef _TRAP_DEFAULTIMAGE_H_
 #define _TRAP_DEFAULTIMAGE_H_
 
-namespace TRAP::ImageLoader
+namespace TRAP::INTERNAL
 {
 
 	inline std::array<uint8_t, 4096> defaultImageData =

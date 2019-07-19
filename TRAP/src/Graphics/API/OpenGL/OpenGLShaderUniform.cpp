@@ -4,14 +4,14 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::OpenGLShaderUniformDeclaration::OpenGLShaderUniformDeclaration(const Type type, std::string name, const unsigned int count)
-	: m_name(std::move(name)), m_size(SizeOfUniformType(type)* count), m_count(count), m_offset(0), m_type(type), m_struct(nullptr), m_location(0)
+	: m_name(std::move(name)), m_size(SizeOfUniformType(type) * count), m_count(count), m_offset(0), m_type(type), m_struct(nullptr), m_location(0)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::OpenGLShaderUniformDeclaration::OpenGLShaderUniformDeclaration(ShaderStruct* uniformStruct, std::string name, const unsigned int count)
-	: m_name(std::move(name)), m_size(0), m_count(count), m_offset(0), m_type(Type::STRUCT), m_struct(std::unique_ptr<ShaderStruct>(uniformStruct)), m_location(0)
+TRAP::Graphics::API::OpenGLShaderUniformDeclaration::OpenGLShaderUniformDeclaration(std::unique_ptr<ShaderStruct>& uniformStruct, std::string name, const unsigned int count)
+	: m_name(std::move(name)), m_size(0), m_count(count), m_offset(0), m_type(Type::STRUCT), m_struct(std::move(uniformStruct)), m_location(0)
 {
 	m_size = m_struct->GetSize() * count;
 }
@@ -121,7 +121,7 @@ TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::OpenGLShaderUniformBu
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::PushUniform(OpenGLShaderUniformDeclaration* uniform)
+void TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::PushUniform(std::unique_ptr<OpenGLShaderUniformDeclaration>& uniform)
 {
 	unsigned int offset = 0;
 	if (!m_uniforms.empty())
@@ -131,7 +131,7 @@ void TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::PushUniform(Open
 	}
 	uniform->SetOffset(offset);
 	m_size += uniform->GetSize();
-	m_uniforms.push_back(std::unique_ptr<ShaderUniformDeclaration>(uniform));
+	m_uniforms.emplace_back(std::move(uniform));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

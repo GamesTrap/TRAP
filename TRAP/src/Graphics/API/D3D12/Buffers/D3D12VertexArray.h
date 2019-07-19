@@ -24,8 +24,6 @@ namespace TRAP::Graphics::API
 		void Bind() const override;
 		void Unbind() const override;
 
-		void Draw() const override;
-
 	private:
 		std::vector<std::unique_ptr<VertexBuffer>> m_vertexBuffers;
 		std::unique_ptr<IndexBuffer> m_indexBuffer;

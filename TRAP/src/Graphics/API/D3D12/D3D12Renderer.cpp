@@ -6,7 +6,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::D3D12Renderer::D3D12Renderer()
-	: m_context(API::D3D12Context::Get())
+	: m_context(D3D12Context::Get())
 {
 }
 
@@ -37,68 +37,80 @@ void TRAP::Graphics::API::D3D12Renderer::InitInternal()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::ClearInternal(unsigned int buffer)
+void TRAP::Graphics::API::D3D12Renderer::Clear(unsigned int buffer)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::PresentInternal(Window* window)
+void TRAP::Graphics::API::D3D12Renderer::Present(Window* window)
 {
 	m_context->Present(window);
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::SetDepthTestingInternal(bool enabled)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::D3D12Renderer::SetBlendInternal(bool enabled)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::D3D12Renderer::SetCullInternal(bool enabled)
+void TRAP::Graphics::API::D3D12Renderer::SetClearColor(const Maths::Vec4& color)
 {	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::SetFrontFaceInternal(RendererFrontFace frontFace)
+void TRAP::Graphics::API::D3D12Renderer::SetDepthTesting(bool enabled)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::D3D12Renderer::SetBlend(bool enabled)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::D3D12Renderer::SetCull(bool enabled)
 {	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::SetWireFrameInternal(bool enabled)
+void TRAP::Graphics::API::D3D12Renderer::SetFrontFace(RendererFrontFace frontFace)
+{	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::D3D12Renderer::SetWireFrame(bool enabled)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::SetBlendFunctionInternal(RendererBlendFunction source, RendererBlendFunction destination)
+void TRAP::Graphics::API::D3D12Renderer::SetBlendFunction(RendererBlendFunction source, RendererBlendFunction destination)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::SetBlendEquationInternal(RendererBlendEquation blendEquation)
+void TRAP::Graphics::API::D3D12Renderer::SetBlendEquation(RendererBlendEquation blendEquation)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::SetViewportInternal(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+void TRAP::Graphics::API::D3D12Renderer::SetViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::SetCullModeInternal(RendererCullMode cullMode)
+void TRAP::Graphics::API::D3D12Renderer::SetCullMode(RendererCullMode cullMode)
+{	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::D3D12Renderer::DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray)
 {	
 }
 

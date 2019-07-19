@@ -23,14 +23,14 @@ void TRAP::Graphics::API::D3D12VertexArray::SetIndexBuffer(std::unique_ptr<Index
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::unique_ptr<TRAP::Graphics::API::VertexBuffer>>& TRAP::Graphics::API::D3D12VertexArray::GetVertexBuffers()
+std::vector<std::unique_ptr<TRAP::Graphics::VertexBuffer>>& TRAP::Graphics::API::D3D12VertexArray::GetVertexBuffers()
 {
 	return m_vertexBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::IndexBuffer* TRAP::Graphics::API::D3D12VertexArray::GetIndexBuffer()
+TRAP::Graphics::IndexBuffer* TRAP::Graphics::API::D3D12VertexArray::GetIndexBuffer()
 {
 	return m_indexBuffer.get();
 }
@@ -44,12 +44,6 @@ void TRAP::Graphics::API::D3D12VertexArray::Bind() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::D3D12VertexArray::Unbind() const
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::D3D12VertexArray::Draw() const
 {
 }
 
