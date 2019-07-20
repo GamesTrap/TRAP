@@ -186,3 +186,6 @@ SITREP 07/19/2019|19w29a1
     - Changed Shader file format ~>20 mins
     - Added support for comments(non range based) in Shaders ~>40 mins
     - Shader parser now ignores UniformBufferBlock because they get handled by the UBOs ~>20 mins
+
+SITREP 07/21/2019|19w29a2
+    - Changed TRAP Engine version to 19w29a2(0.4.8)
