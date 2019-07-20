@@ -65,13 +65,13 @@ namespace TRAP::Graphics::API
 	class OpenGLShaderUniformBufferDeclaration final : public ShaderUniformBufferDeclaration
 	{
 	public:
-		OpenGLShaderUniformBufferDeclaration(std::string name, unsigned int shaderType);
+		OpenGLShaderUniformBufferDeclaration(std::string name, ShaderType shaderType);
 
 		void PushUniform(std::unique_ptr<OpenGLShaderUniformDeclaration>& uniform);
 
 		std::string_view GetName() const override;
 		unsigned int GetRegister() const override;
-		unsigned int GetShaderType() const override;
+		ShaderType GetShaderType() const override;
 		unsigned int GetSize() const override;
 		const ShaderUniformList& GetUniformDeclarations() const override;
 
@@ -84,7 +84,7 @@ namespace TRAP::Graphics::API
 		ShaderUniformList m_uniforms;
 		unsigned int m_register;
 		unsigned int m_size;
-		unsigned int m_shaderType; //0 = VS, 1 = PS, 2 = GS, 3 = TCS, 4 = TES, 5 = CS
+		ShaderType m_shaderType;
 	};
 }
 
@@ -153,7 +153,7 @@ inline unsigned int TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::G
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline unsigned int TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::GetShaderType() const
+inline TRAP::Graphics::API::ShaderType TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::GetShaderType() const
 {
 	return m_shaderType;
 }

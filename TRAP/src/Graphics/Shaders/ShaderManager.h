@@ -16,11 +16,18 @@ namespace TRAP::Graphics
 
 		static void Shutdown();
 
+		static const std::vector<std::unique_ptr<API::Shader>>& GetShaders();
+
 	private:
 		ShaderManager() = default;
 
 		static std::vector<std::unique_ptr<API::Shader>> s_Shaders;
 	};
+}
+
+inline const std::vector<std::unique_ptr<TRAP::Graphics::API::Shader>>& TRAP::Graphics::ShaderManager::GetShaders()
+{
+	return s_Shaders;
 }
 
 #endif /*_TRAP_SHADERMANAGER_H_*/

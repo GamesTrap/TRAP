@@ -114,7 +114,7 @@ std::string TRAP::Graphics::API::OpenGLShaderUniformDeclaration::TypeToString(co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::OpenGLShaderUniformBufferDeclaration(std::string name, const unsigned int shaderType)
+TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::OpenGLShaderUniformBufferDeclaration(std::string name, const ShaderType shaderType)
 	: m_name(std::move(name)), m_register(0), m_size(0), m_shaderType(shaderType)
 {
 }

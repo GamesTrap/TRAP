@@ -3,6 +3,8 @@
 
 namespace TRAP::Graphics::API
 {
+	enum class ShaderType;
+
 	class ShaderUniformDeclaration
 	{
 	public:
@@ -45,7 +47,7 @@ namespace TRAP::Graphics::API
 
 		virtual std::string_view GetName() const = 0;
 		virtual unsigned int GetRegister() const = 0;
-		virtual unsigned int GetShaderType() const = 0;
+		virtual ShaderType GetShaderType() const = 0;
 		virtual unsigned int GetSize() const = 0;
 		virtual const ShaderUniformList& GetUniformDeclarations() const = 0;
 
@@ -59,7 +61,7 @@ namespace TRAP::Graphics::API
 	public:
 		explicit ShaderStruct(std::string name);
 
-		void AddField(ShaderUniformDeclaration* field);
+		void AddField(std::unique_ptr<ShaderUniformDeclaration>& field);
 
 		void SetOffset(unsigned int offset);
 

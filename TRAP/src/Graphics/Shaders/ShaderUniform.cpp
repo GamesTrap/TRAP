@@ -10,15 +10,12 @@ TRAP::Graphics::API::ShaderStruct::ShaderStruct(std::string name)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::ShaderStruct::AddField(ShaderUniformDeclaration* field)
+void TRAP::Graphics::API::ShaderStruct::AddField(std::unique_ptr<ShaderUniformDeclaration>& field)
 {
 	m_size += field->GetSize();
 	unsigned int offset = 0;
 	if (!m_fields.empty())
-	{
-		const std::unique_ptr<ShaderUniformDeclaration>& previous = m_fields.back();
-		offset = previous->GetOffset() + previous->GetSize();
-	}
+		offset = m_fields.back()->GetOffset() + m_fields.back()->GetSize();
 	field->SetOffset(offset);
-	m_fields.push_back(std::unique_ptr<ShaderUniformDeclaration>(field));
+	m_fields.emplace_back(std::move(field));
 }

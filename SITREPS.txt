@@ -178,3 +178,11 @@ SITREP 07/09/2019|19w28a1
     - Started evaluating the validity of my Maths API results(Vectors seem to work fine) ~>30 mins
     - Added OrthographicCamera class ~>35 mins
     - Changed Sandbox Color Shader to allow View and Projection Matrix ~< 10mins
+
+SITREP 07/19/2019|19w29a1
+    - Changed TRAP Engine version to 19w29a1(0.4.7)
+    - Updated Submodules ~< 15mins
+    - Added UniformBuffer support ~>100 mins
+    - Changed Shader file format ~>20 mins
+    - Added support for comments(non range based) in Shaders ~>40 mins
+    - Shader parser now ignores UniformBufferBlock because they get handled by the UBOs ~>20 mins

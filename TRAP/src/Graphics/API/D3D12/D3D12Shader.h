@@ -8,6 +8,7 @@ namespace TRAP::Graphics::API
 	class D3D12Shader : public Shader
 	{
 	public:
+		D3D12Shader(std::string name, std::string source);
 		D3D12Shader(std::string name, std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource);
 		D3D12Shader(const D3D12Shader&) = default;
 		D3D12Shader& operator=(const D3D12Shader&) = default;
@@ -18,28 +19,16 @@ namespace TRAP::Graphics::API
 		void Bind() const override;
 		void Unbind() const override;
 
-		void SetVSSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot) override;
-		void SetFSSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot) override;
-		void SetGSSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot) override;
-		void SetTCSSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot) override;
-		void SetTESSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot) override;
-		void SetCSSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot) override;
-
-		void SetVSUserUniformBuffer(uint8_t* data, unsigned int size) override;
-		void SetFSUserUniformBuffer(uint8_t* data, unsigned int size) override;
-		void SetGSUserUniformBuffer(uint8_t* data, unsigned int size) override;
-		void SetTCSUserUniformBuffer(uint8_t* data, unsigned int size) override;
-		void SetTESUserUniformBuffer(uint8_t* data, unsigned int size) override;
-		void SetCSUserUniformBuffer(uint8_t* data, unsigned int size) override;
+		void SetVSUniformBuffer(uint8_t* data, unsigned int size) override;
+		void SetFSUniformBuffer(uint8_t* data, unsigned int size) override;
+		void SetGSUniformBuffer(uint8_t* data, unsigned int size) override;
+		void SetTCSUniformBuffer(uint8_t* data, unsigned int size) override;
+		void SetTESUniformBuffer(uint8_t* data, unsigned int size) override;
+		void SetCSUniformBuffer(uint8_t* data, unsigned int size) override;
 
 		const std::string& GetName() const override;
 		
-		const std::string& GetVSFilePath() const override;
-		const std::string& GetFSFilePath() const override;
-		const std::string& GetGSFilePath() const override;
-		const std::string& GetTCSFilePath() const override;
-		const std::string& GetTESFilePath() const override;
-		const std::string& GetCSFilePath() const override;
+		const std::string& GetFilePath() const override;
 
 		const std::string& GetVSSource() const override;
 		const std::string& GetFSSource() const override;
@@ -48,18 +37,18 @@ namespace TRAP::Graphics::API
 		const std::string& GetTESSource() const override;
 		const std::string& GetCSSource() const override;
 
-		const ShaderUniformBufferList& GetVSSystemUniforms() const override;
-		const ShaderUniformBufferList& GetFSSystemUniforms() const override;
-		const ShaderUniformBufferList& GetGSSystemUniforms() const override;
-		const ShaderUniformBufferList& GetTCSSystemUniforms() const override;
-		const ShaderUniformBufferList& GetTESSystemUniforms() const override;
-		const ShaderUniformBufferList& GetCSSystemUniforms() const override;
-		ShaderUniformBufferDeclaration* GetVSUserUniformBuffer() const override;
-		ShaderUniformBufferDeclaration* GetFSUserUniformBuffer() const override;
-		ShaderUniformBufferDeclaration* GetGSUserUniformBuffer() const override;
-		ShaderUniformBufferDeclaration* GetTCSUserUniformBuffer() const override;
-		ShaderUniformBufferDeclaration* GetTESUserUniformBuffer() const override;
-		ShaderUniformBufferDeclaration* GetCSUserUniformBuffer() const override;
+		const ShaderUniformBufferList& GetVSUniforms() const override;
+		const ShaderUniformBufferList& GetFSUniforms() const override;
+		const ShaderUniformBufferList& GetGSUniforms() const override;
+		const ShaderUniformBufferList& GetTCSUniforms() const override;
+		const ShaderUniformBufferList& GetTESUniforms() const override;
+		const ShaderUniformBufferList& GetCSUniforms() const override;
+		ShaderUniformBufferDeclaration* GetVSUniformBuffer() const override;
+		ShaderUniformBufferDeclaration* GetFSUniformBuffer() const override;
+		ShaderUniformBufferDeclaration* GetGSUniformBuffer() const override;
+		ShaderUniformBufferDeclaration* GetTCSUniformBuffer() const override;
+		ShaderUniformBufferDeclaration* GetTESUniformBuffer() const override;
+		ShaderUniformBufferDeclaration* GetCSUniformBuffer() const override;
 		const ShaderResourceList& GetResource() const override;
 
 	private:
@@ -67,7 +56,7 @@ namespace TRAP::Graphics::API
 		friend class ::TRAP::Graphics::ShaderManager;
 
 		//unsigned int m_handle;
-		std::string m_name, m_VSFilepath, m_FSFilepath, m_GSFilepath, m_TCSFilepath, m_TESFilepath, m_CSFilepath;
+		std::string m_name, m_filepath, m_source;
 		std::string m_VSSource, m_FSSource, m_GSSource, m_TCSSource, m_TESSource, m_CSSource;
 
 		ShaderUniformBufferList m_VSUniformBuffers;
@@ -89,84 +78,84 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::D3D12Shader::GetVSSystemUniforms() const
+inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::D3D12Shader::GetVSUniforms() const
 {
 	return m_VSUniformBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::D3D12Shader::GetFSSystemUniforms() const
+inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::D3D12Shader::GetFSUniforms() const
 {
 	return m_FSUniformBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::D3D12Shader::GetGSSystemUniforms() const
+inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::D3D12Shader::GetGSUniforms() const
 {
 	return m_GSUniformBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::D3D12Shader::GetTCSSystemUniforms() const
+inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::D3D12Shader::GetTCSUniforms() const
 {
 	return m_TCSUniformBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::D3D12Shader::GetTESSystemUniforms() const
+inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::D3D12Shader::GetTESUniforms() const
 {
 	return m_TESUniformBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::D3D12Shader::GetCSSystemUniforms() const
+inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::D3D12Shader::GetCSUniforms() const
 {
 	return m_CSUniformBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::D3D12Shader::GetVSUserUniformBuffer() const
+inline TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::D3D12Shader::GetVSUniformBuffer() const
 {
 	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::D3D12Shader::GetFSUserUniformBuffer() const
+inline TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::D3D12Shader::GetFSUniformBuffer() const
 {
 	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::D3D12Shader::GetGSUserUniformBuffer() const
+inline TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::D3D12Shader::GetGSUniformBuffer() const
 {
 	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::D3D12Shader::GetTCSUserUniformBuffer() const
+inline TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::D3D12Shader::GetTCSUniformBuffer() const
 {
 	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::D3D12Shader::GetTESUserUniformBuffer() const
+inline TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::D3D12Shader::GetTESUniformBuffer() const
 {
 	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::D3D12Shader::GetCSUserUniformBuffer() const
+inline TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::D3D12Shader::GetCSUniformBuffer() const
 {
 	return nullptr;
 }
@@ -187,44 +176,9 @@ inline const std::string& TRAP::Graphics::API::D3D12Shader::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const std::string& TRAP::Graphics::API::D3D12Shader::GetVSFilePath() const
+inline const std::string& TRAP::Graphics::API::D3D12Shader::GetFilePath() const
 {
-	return m_VSFilepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::D3D12Shader::GetFSFilePath() const
-{
-	return m_FSFilepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::D3D12Shader::GetGSFilePath() const
-{
-	return m_GSFilepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::D3D12Shader::GetTCSFilePath() const
-{
-	return m_TCSFilepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::D3D12Shader::GetTESFilePath() const
-{
-	return m_TESFilepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::D3D12Shader::GetCSFilePath() const
-{
-	return m_CSFilepath;
+	return m_filepath;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

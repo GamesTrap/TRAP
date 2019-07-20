@@ -43,14 +43,9 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 		{
 			if (shader->GetName() == nameOrVirtualPath)
 			{
-				const std::string VSPath = shader->GetVSFilePath();
-				const std::string FSPath = shader->GetFSFilePath();
-				const std::string GSPath = shader->GetGSFilePath();
-				const std::string TCSPath = shader->GetTCSFilePath();
-				const std::string TESPath = shader->GetTESFilePath();
-				const std::string CSPath = shader->GetCSFilePath();
+				const std::string path = shader->GetFilePath();
 				std::string error;
-				if (VSPath.empty() && FSPath.empty() && GSPath.empty() && TCSPath.empty() && TESPath.empty() && CSPath.empty())
+				if (path.empty())
 				{
 					const std::string VSSource = shader->GetVSSource();
 					const std::string FSSource = shader->GetFSSource();
@@ -66,8 +61,7 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 				else
 				{
 					shader.reset();
-					shader = API::Shader::CreateFromFile(nameOrVirtualPath, VSPath, FSPath, GSPath, TCSPath, TESPath, CSPath,
-						shader.get());
+					shader = API::Shader::CreateFromFile(nameOrVirtualPath, path, shader.get());
 					TP_INFO("[ShaderManager] Reloaded: \"", nameOrVirtualPath, "\"");
 				}
 
@@ -80,32 +74,7 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 	{
 		for (const auto& shader : s_Shaders)
 		{
-			if (nameOrVirtualPath == shader->GetVSFilePath())
-			{
-				Reload(shader);
-				return;
-			}
-			if (nameOrVirtualPath == shader->GetFSFilePath())
-			{
-				Reload(shader);
-				return;
-			}
-			if (nameOrVirtualPath == shader->GetGSFilePath())
-			{
-				Reload(shader);
-				return;
-			}
-			if (nameOrVirtualPath == shader->GetTCSFilePath())
-			{
-				Reload(shader);
-				return;
-			}
-			if (nameOrVirtualPath == shader->GetTESFilePath())
-			{
-				Reload(shader);
-				return;
-			}
-			if (nameOrVirtualPath == shader->GetCSFilePath())
+			if (nameOrVirtualPath == shader->GetFilePath())
 			{
 				Reload(shader);
 				return;
@@ -124,14 +93,9 @@ void TRAP::Graphics::ShaderManager::Reload(const std::unique_ptr<API::Shader>& s
 		if (s_Shader == shader)
 		{
 			const std::string name = shader->GetName();
-			const std::string VSPath = shader->GetVSFilePath();
-			const std::string FSPath = shader->GetFSFilePath();
-			const std::string GSPath = shader->GetGSFilePath();
-			const std::string TCSPath = shader->GetTCSFilePath();
-			const std::string TESPath = shader->GetTESFilePath();
-			const std::string CSPath = shader->GetCSFilePath();
+			const std::string path = shader->GetFilePath();
 			std::string error;
-			if (VSPath.empty() && FSPath.empty() && GSPath.empty() && TCSPath.empty() && TESPath.empty() && CSPath.empty())
+			if (path.empty())
 			{
 				const std::string VSSource = shader->GetVSSource();
 				const std::string FSSource = shader->GetFSSource();
@@ -147,7 +111,7 @@ void TRAP::Graphics::ShaderManager::Reload(const std::unique_ptr<API::Shader>& s
 			else
 			{
 				s_Shader.reset();
-				s_Shader = API::Shader::CreateFromFile(name, VSPath, FSPath, GSPath, TCSPath, TESPath, CSPath, shader.get());
+				s_Shader = API::Shader::CreateFromFile(name, path, shader.get());
 				TP_INFO("[ShaderManager] Reloaded: \"", name, "\"");
 			}
 

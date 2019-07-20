@@ -83,6 +83,8 @@ namespace TRAP::Graphics::API
 			return 0;
 		}
 	}
+
+
 }
 
 #endif /*_TRAP_OPENGLCOMMON_H_*/

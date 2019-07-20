@@ -1,10 +1,21 @@
 #include "TRAPPCH.h"
 #include "OpenGLShader.h"
+#include <utility>
+
+//std::vector<std::unique_ptr<TRAP::Graphics::API::OpenGLUniformBuffer>> TRAP::Graphics::API::OpenGLShader::s_uniformBuffers;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, std::string source)
+	: m_handle(0), m_name(std::move(name)), m_source(std::move(source))
+{
+	Init();
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource)
-	: m_handle(0), m_name(std::move(name)), m_VSSource(std::move(VSSource)), m_FSSource(std::move(FSSource)), m_GSSource(std::move(GSSource)), m_TCSSource(std::move(TCSSource)), m_TESSource(std::move(TESSource)), m_CSSource(std::move(CSSource)), m_VSUserUniformBuffer(nullptr), m_FSUserUniformBuffer(nullptr)
+	: m_handle(0), m_name(std::move(name)), m_VSSource(std::move(VSSource)), m_FSSource(std::move(FSSource)), m_GSSource(std::move(GSSource)), m_TCSSource(std::move(TCSSource)), m_TESSource(std::move(TESSource)), m_CSSource(std::move(CSSource))
 {
 	Init();
 }
@@ -22,6 +33,8 @@ TRAP::Graphics::API::OpenGLShader::~OpenGLShader()
 void TRAP::Graphics::API::OpenGLShader::Init()
 {
 	std::array<std::string*, 6> shaders{ &m_VSSource, &m_FSSource, &m_GSSource, &m_TCSSource, &m_TESSource, &m_CSSource };
+	if(!m_source.empty())
+		PreProcess(m_source, shaders);
 	Parse(*shaders[0], *shaders[1], *shaders[2], *shaders[3], *shaders[4], *shaders[5]);
 	OpenGLShaderErrorInfo error;
 	TP_DEBUG("[Shader][OpenGL] Compiling: \"", m_name, "\"");
@@ -38,7 +51,6 @@ void TRAP::Graphics::API::OpenGLShader::Init()
 
 void TRAP::Graphics::API::OpenGLShader::Shutdown() const
 {
-	TP_DEBUG("[Shader][OpenGL] Destroying \"", m_name, "\"");
 	if (m_handle)
 	{
 		OpenGLCall(glDeleteProgram(m_handle));
@@ -328,12 +340,12 @@ void TRAP::Graphics::API::OpenGLShader::Unbind() const
 
 void TRAP::Graphics::API::OpenGLShader::Parse(const std::string& VSSource, const std::string& FSSource, const std::string& GSSource, const std::string& TCSSource, const std::string& TESSource, const std::string& CSSource)
 {
-	m_VSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", 0));
-	m_FSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", 1));
-	m_GSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", 2));
-	m_TCSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", 3));
-	m_TESUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", 4));
-	m_CSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", 5));
+	m_VSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::VERTEX));
+	m_FSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::FRAGMENT));
+	m_GSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::GEOMETRY));
+	m_TCSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::TESSELLATIONCONTROL));
+	m_TESUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::TESSELLATIONEVALUATION));
+	m_CSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::COMPUTE));
 
 	const char* token;
 	const char* vstr;
@@ -346,62 +358,67 @@ void TRAP::Graphics::API::OpenGLShader::Parse(const std::string& VSSource, const
 	//Vertex Shader
 	vstr = VSSource.c_str();
 	while ((token = Utils::String::FindToken(vstr, "struct")))
-		ParseUniformStruct(Utils::String::GetBlock(token, &vstr), 0);
+		ParseUniformStruct(Utils::String::GetBlock(token, &vstr));
 
 	vstr = VSSource.c_str();
 	while ((token = Utils::String::FindToken(vstr, "uniform")))
-		ParseUniform(Utils::String::GetStatement(token, &vstr), 0);
+		ParseUniform(Utils::String::GetStatement(token, &vstr), ShaderType::VERTEX);
 
 	//Fragment Shader
 	fstr = FSSource.c_str();
 	while ((token = Utils::String::FindToken(fstr, "struct")))
-		ParseUniformStruct(Utils::String::GetBlock(token, &fstr), 1);
+		ParseUniformStruct(Utils::String::GetBlock(token, &fstr));
 
 	fstr = FSSource.c_str();
 	while ((token = Utils::String::FindToken(fstr, "uniform")))
-		ParseUniform(Utils::String::GetStatement(token, &fstr), 1);
+		ParseUniform(Utils::String::GetStatement(token, &fstr), ShaderType::FRAGMENT);
 
 	//Geometry Shader
 	gstr = GSSource.c_str();
 	while ((token = Utils::String::FindToken(gstr, "struct")))
-		ParseUniformStruct(Utils::String::GetBlock(token, &gstr), 2);
+		ParseUniformStruct(Utils::String::GetBlock(token, &gstr));
 
 	gstr = GSSource.c_str();
 	while ((token = Utils::String::FindToken(gstr, "uniform")))
-		ParseUniform(Utils::String::GetStatement(token, &gstr), 2);
+		ParseUniform(Utils::String::GetStatement(token, &gstr), ShaderType::GEOMETRY);
 
 	//Tessellation Control Shader
 	tcstr = TCSSource.c_str();
 	while ((token = Utils::String::FindToken(tcstr, "struct")))
-		ParseUniformStruct(Utils::String::GetBlock(token, &tcstr), 3);
+		ParseUniformStruct(Utils::String::GetBlock(token, &tcstr));
 
 	tcstr = TCSSource.c_str();
 	while ((token = Utils::String::FindToken(tcstr, "uniform")))
-		ParseUniform(Utils::String::GetStatement(token, &tcstr), 3);
+		ParseUniform(Utils::String::GetStatement(token, &tcstr), ShaderType::TESSELLATIONCONTROL);
 
 	//Tessellation Evaluation Shader
 	testr = TESSource.c_str();
 	while ((token = Utils::String::FindToken(testr, "struct")))
-		ParseUniformStruct(Utils::String::GetBlock(token, &testr), 4);
+		ParseUniformStruct(Utils::String::GetBlock(token, &testr));
 
 	testr = TESSource.c_str();
 	while ((token = Utils::String::FindToken(testr, "uniform")))
-		ParseUniform(Utils::String::GetStatement(token, &testr), 4);
+		ParseUniform(Utils::String::GetStatement(token, &testr), ShaderType::TESSELLATIONEVALUATION);
 
 	//Compute Shader
 	cstr = CSSource.c_str();
 	while ((token = Utils::String::FindToken(cstr, "struct")))
-		ParseUniformStruct(Utils::String::GetBlock(token, &cstr), 5);
+		ParseUniformStruct(Utils::String::GetBlock(token, &cstr));
 
 	cstr = CSSource.c_str();
 	while ((token = Utils::String::FindToken(cstr, "uniform")))
-		ParseUniform(Utils::String::GetStatement(token, &cstr), 5);
+		ParseUniform(Utils::String::GetStatement(token, &cstr), ShaderType::COMPUTE);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::ParseUniform(const std::string& statement, const unsigned int shaderType)
+void TRAP::Graphics::API::OpenGLShader::ParseUniform(const std::string& statement, const ShaderType shaderType)
 {
+	//Check if Uniform Buffer Block
+	if(Utils::String::FindToken(statement, "{"))
+		//Ignore Uniform Buffer Block - They get handled by UniformBufferObject
+		return;
+
 	std::vector<std::string> tokens = Utils::String::Tokenize(statement);
 	unsigned int index = 0;
 
@@ -436,86 +453,67 @@ void TRAP::Graphics::API::OpenGLShader::ParseUniform(const std::string& statemen
 
 		if (type == OpenGLShaderUniformDeclaration::Type::NONE)
 		{
-			//TODO Maybe needs to be changed
 			//Find struct
 			ShaderStruct* Struct = FindStruct(typeString);
-			TP_ASSERT(Struct, "[Shader][OpenGL] Struct is invalid!");
-			declaration = std::make_unique<OpenGLShaderUniformDeclaration>(std::unique_ptr<ShaderStruct>(Struct), name, count);
+			if(Struct)
+				declaration = std::make_unique<OpenGLShaderUniformDeclaration>(std::unique_ptr<ShaderStruct>(Struct), name, count);
 		}
 		else
 			declaration = std::make_unique<OpenGLShaderUniformDeclaration>(type, name, count);
 
-		if (Utils::String::StartsWith(name, "sys_"))
-		{
-			if (shaderType == 0)
-				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_VSUniformBuffers.front().get())->PushUniform(declaration);
-			else if (shaderType == 1)
-				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_FSUniformBuffers.front().get())->PushUniform(declaration);
-			else if (shaderType == 2)
-				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_GSUniformBuffers.front().get())->PushUniform(declaration);
-			else if (shaderType == 3)
-				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_TCSUniformBuffers.front().get())->PushUniform(declaration);
-			else if (shaderType == 4)
-				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_TESUniformBuffers.front().get())->PushUniform(declaration);
-			else if (shaderType == 5)
-				dynamic_cast<OpenGLShaderUniformBufferDeclaration*>(m_CSUniformBuffers.front().get())->PushUniform(declaration);
-		}
-		else
-		{
-			if (shaderType == 0)
+			if (shaderType == ShaderType::VERTEX)
 			{
-				if (m_VSUserUniformBuffer == nullptr)
-					m_VSUserUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", 0);
+				if (m_VSUniformBuffer == nullptr)
+					m_VSUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::VERTEX);
 
-				m_VSUserUniformBuffer->PushUniform(declaration);
+				m_VSUniformBuffer->PushUniform(declaration);
 			}
-			else if (shaderType == 1)
+			else if (shaderType == ShaderType::FRAGMENT)
 			{
-				if (m_FSUserUniformBuffer == nullptr)
-					m_FSUserUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", 1);
+				if (m_FSUniformBuffer == nullptr)
+					m_FSUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::FRAGMENT);
 
-				m_FSUserUniformBuffer->PushUniform(declaration);
+				m_FSUniformBuffer->PushUniform(declaration);
 			}
-			else if (shaderType == 2)
+			else if (shaderType == ShaderType::GEOMETRY)
 			{
-				if (m_GSUserUniformBuffer == nullptr)
-					m_GSUserUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", 2);
+				if (m_GSUniformBuffer == nullptr)
+					m_GSUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::GEOMETRY);
 
-				m_GSUserUniformBuffer->PushUniform(declaration);
+				m_GSUniformBuffer->PushUniform(declaration);
 			}
-			else if (shaderType == 3)
+			else if (shaderType == ShaderType::TESSELLATIONCONTROL)
 			{
-				if (m_TCSUserUniformBuffer == nullptr)
-					m_TCSUserUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", 3);
+				if (m_TCSUniformBuffer == nullptr)
+					m_TCSUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::TESSELLATIONCONTROL);
 
-				m_TCSUserUniformBuffer->PushUniform(declaration);
+				m_TCSUniformBuffer->PushUniform(declaration);
 			}
-			else if (shaderType == 4)
+			else if (shaderType == ShaderType::TESSELLATIONEVALUATION)
 			{
-				if (m_TESUserUniformBuffer == nullptr)
-					m_TESUserUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", 4);
+				if (m_TESUniformBuffer == nullptr)
+					m_TESUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::TESSELLATIONEVALUATION);
 
-				m_TESUserUniformBuffer->PushUniform(declaration);
+				m_TESUniformBuffer->PushUniform(declaration);
 			}
-			else if (shaderType == 5)
+			else if (shaderType == ShaderType::COMPUTE)
 			{
-				if (m_CSUserUniformBuffer == nullptr)
-					m_CSUserUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", 5);
+				if (m_CSUniformBuffer == nullptr)
+					m_CSUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::COMPUTE);
 
-				m_CSUserUniformBuffer->PushUniform(declaration);
+				m_CSUniformBuffer->PushUniform(declaration);
 			}
-		}
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::ParseUniformStruct(const std::string& block, unsigned int shaderType)
+void TRAP::Graphics::API::OpenGLShader::ParseUniformStruct(const std::string& block)
 {
 	std::vector<std::string> tokens = Utils::String::Tokenize(block);
 
 	unsigned int index = 0;
-	index++; //Struxt
+	index++; //Struct
 	const std::string name = tokens[index++];
 	std::unique_ptr<ShaderStruct> uniformStruct = std::make_unique<ShaderStruct>(name);
 	index++; //{
@@ -541,8 +539,8 @@ void TRAP::Graphics::API::OpenGLShader::ParseUniformStruct(const std::string& bl
 			std::string c(s + 1, end - s);
 			count = std::stoi(c);
 		}
-		const std::unique_ptr<ShaderUniformDeclaration> field = std::make_unique<OpenGLShaderUniformDeclaration>(OpenGLShaderUniformDeclaration::StringToType(type), name1, count);
-		uniformStruct->AddField(field.get());
+		std::unique_ptr<ShaderUniformDeclaration> field = std::make_unique<OpenGLShaderUniformDeclaration>(OpenGLShaderUniformDeclaration::StringToType(type), name1, count);
+		uniformStruct->AddField(field);
 	}
 	m_structs.push_back(std::move(uniformStruct));
 }
@@ -585,7 +583,10 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 				}
 			}
 			else
+			{
+				TP_WARN("[Shader][OpenGL][VertexShader] Shader: ", this->m_name, " Uniform: ", convertedVSUniform->m_name, " Non-Opaque Uniforms outside a block are incompatible with Vulkan!");
 				convertedVSUniform->m_location = GetUniformLocation(convertedVSUniform->m_name);
+			}
 		}
 	}
 
@@ -607,7 +608,10 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 				}
 			}
 			else
+			{
+				TP_WARN("[Shader][OpenGL][FragmentShader] Shader: ", this->m_name, " Uniform: ", convertedFSUniform->m_name, " Non-Opaque Uniforms outside a block are incompatible with Vulkan!");
 				convertedFSUniform->m_location = GetUniformLocation(convertedFSUniform->m_name);
+			}
 		}
 	}
 
@@ -629,7 +633,10 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 				}
 			}
 			else
+			{
+				TP_WARN("[Shader][OpenGL][GeometryShader] Shader: ", this->m_name, " Uniform: ", convertedGSUniform->m_name, " Non-Opaque Uniforms outside a block are incompatible with Vulkan!");
 				convertedGSUniform->m_location = GetUniformLocation(convertedGSUniform->m_name);
+			}
 		}
 	}
 
@@ -651,7 +658,10 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 				}
 			}
 			else
+			{
+				TP_WARN("[Shader][OpenGL][TessellationControlShader] Shader: ", " Uniform: ", convertedTCSUniform->m_name, this->m_name, " Non-Opaque Uniforms outside a block are incompatible with Vulkan!");
 				convertedTCSUniform->m_location = GetUniformLocation(convertedTCSUniform->m_name);
+			}
 		}
 	}
 
@@ -673,7 +683,10 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 				}
 			}
 			else
+			{
+				TP_WARN("[Shader][OpenGL][TessellationEvaluationShader] Shader: ", " Uniform: ", convertedTESUniform->m_name, this->m_name, " Non-Opaque Uniforms outside a block are incompatible with Vulkan!");
 				convertedTESUniform->m_location = GetUniformLocation(convertedTESUniform->m_name);
+			}
 		}
 	}
 
@@ -695,12 +708,15 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 				}
 			}
 			else
+			{
+				TP_WARN("[Shader][OpenGL][ComputeShader] Shader: ", this->m_name, " Uniform: ", convertedCSUniform->m_name, " Non-Opaque Uniforms outside a block are incompatible with Vulkan!");
 				convertedCSUniform->m_location = GetUniformLocation(convertedCSUniform->m_name);
+			}
 		}
 	}
 
 	{
-		OpenGLShaderUniformBufferDeclaration* VSUserDecl = m_VSUserUniformBuffer.get();
+		OpenGLShaderUniformBufferDeclaration* VSUserDecl = m_VSUniformBuffer.get();
 		if (VSUserDecl)
 		{
 			const ShaderUniformList& VSUserUniforms = VSUserDecl->GetUniformDeclarations();
@@ -718,13 +734,16 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 					}
 				}
 				else
+				{
+					TP_WARN("[Shader][OpenGL][VertexShader] Shader: ", this->m_name, " Uniform: ", convertedVSUserUniform->m_name, " Non-Opaque Uniforms outside a block are incompatible with Vulkan!");
 					convertedVSUserUniform->m_location = GetUniformLocation(convertedVSUserUniform->m_name);
+				}
 			}
 		}
 	}
 
 	{
-		OpenGLShaderUniformBufferDeclaration* FSUserDecl = m_FSUserUniformBuffer.get();
+		OpenGLShaderUniformBufferDeclaration* FSUserDecl = m_FSUniformBuffer.get();
 		if (FSUserDecl)
 		{
 			const ShaderUniformList& FSUserUniforms = FSUserDecl->GetUniformDeclarations();
@@ -742,13 +761,16 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 					}
 				}
 				else
+				{
+					TP_WARN("[Shader][OpenGL][FragmentShader] Shader: ", this->m_name, " Uniform: ", convertedFSUserUniform->m_name, " Non-Opaque Uniforms outside a block are incompatible with Vulkan!");
 					convertedFSUserUniform->m_location = GetUniformLocation(convertedFSUserUniform->m_name);
+				}
 			}
 		}
 	}
 
 	{
-		OpenGLShaderUniformBufferDeclaration* GSUserDecl = m_GSUserUniformBuffer.get();
+		OpenGLShaderUniformBufferDeclaration* GSUserDecl = m_GSUniformBuffer.get();
 		if (GSUserDecl)
 		{
 			const ShaderUniformList& GSUserUniforms = GSUserDecl->GetUniformDeclarations();
@@ -766,13 +788,16 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 					}
 				}
 				else
+				{
+					TP_WARN("[Shader][OpenGL][GeometryShader] Shader: ", this->m_name, " Uniform: ", convertedGSUserUniform->m_name, " Non-Opaque Uniforms outside a block are incompatible with Vulkan!");
 					convertedGSUserUniform->m_location = GetUniformLocation(convertedGSUserUniform->m_name);
+				}
 			}
 		}
 	}
 
 	{
-		OpenGLShaderUniformBufferDeclaration* TCSUserDecl = m_TCSUserUniformBuffer.get();
+		OpenGLShaderUniformBufferDeclaration* TCSUserDecl = m_TCSUniformBuffer.get();
 		if (TCSUserDecl)
 		{
 			const ShaderUniformList& TCSUserUniforms = TCSUserDecl->GetUniformDeclarations();
@@ -790,13 +815,16 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 					}
 				}
 				else
+				{
+					TP_WARN("[Shader][OpenGL][TessellationControlShader] Shader: ", this->m_name, " Uniform: ", convertedTCSUserUniform->m_name, " Non-Opaque Uniforms outside a block are incompatible with Vulkan!");
 					convertedTCSUserUniform->m_location = GetUniformLocation(convertedTCSUserUniform->m_name);
+				}
 			}
 		}
 	}
 
 	{
-		OpenGLShaderUniformBufferDeclaration* TESUserDecl = m_TESUserUniformBuffer.get();
+		OpenGLShaderUniformBufferDeclaration* TESUserDecl = m_TESUniformBuffer.get();
 		if (TESUserDecl)
 		{
 			const ShaderUniformList& TESUserUniforms = TESUserDecl->GetUniformDeclarations();
@@ -814,13 +842,16 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 					}
 				}
 				else
+				{
+					TP_WARN("[Shader][OpenGL][TessellationEvaluationShader] Shader: ", this->m_name, " Uniform: ", convertedTESUserUniform->m_name, " Non-Opaque Uniforms outside a block are incompatible with Vulkan!");
 					convertedTESUserUniform->m_location = GetUniformLocation(convertedTESUserUniform->m_name);
+				}
 			}
 		}
 	}
 
 	{
-		OpenGLShaderUniformBufferDeclaration* CSUserDecl = m_CSUserUniformBuffer.get();
+		OpenGLShaderUniformBufferDeclaration* CSUserDecl = m_CSUniformBuffer.get();
 		if (CSUserDecl)
 		{
 			const ShaderUniformList& CSUserUniforms = CSUserDecl->GetUniformDeclarations();
@@ -838,7 +869,10 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 					}
 				}
 				else
+				{
+					TP_WARN("[Shader][OpenGL][ComputeShader] Shader: ", this->m_name, " Uniform: ", convertedCSUserUniform->m_name, " Non-Opaque Uniforms outside a block are incompatible with Vulkan!");
 					convertedCSUserUniform->m_location = GetUniformLocation(convertedCSUserUniform->m_name);
+				}
 			}
 		}
 	}
@@ -958,27 +992,27 @@ TRAP::Graphics::API::ShaderUniformDeclaration* TRAP::Graphics::API::OpenGLShader
 			return result;
 	}
 
-	result = FindUniformDeclaration(name, m_VSUserUniformBuffer.get());
+	result = FindUniformDeclaration(name, m_VSUniformBuffer.get());
 	if (result)
 		return result;
 
-	result = FindUniformDeclaration(name, m_FSUserUniformBuffer.get());
+	result = FindUniformDeclaration(name, m_FSUniformBuffer.get());
 	if (result)
 		return result;
 
-	result = FindUniformDeclaration(name, m_GSUserUniformBuffer.get());
+	result = FindUniformDeclaration(name, m_GSUniformBuffer.get());
 	if (result)
 		return result;
 
-	result = FindUniformDeclaration(name, m_TCSUserUniformBuffer.get());
+	result = FindUniformDeclaration(name, m_TCSUniformBuffer.get());
 	if (result)
 		return result;
 
-	result = FindUniformDeclaration(name, m_TESUserUniformBuffer.get());
+	result = FindUniformDeclaration(name, m_TESUniformBuffer.get());
 	if (result)
 		return result;
 
-	result = FindUniformDeclaration(name, m_CSUserUniformBuffer.get());
+	result = FindUniformDeclaration(name, m_CSUniformBuffer.get());
 	if (result)
 		return result;
 
@@ -987,104 +1021,44 @@ TRAP::Graphics::API::ShaderUniformDeclaration* TRAP::Graphics::API::OpenGLShader
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetVSSystemUniformBuffer(uint8_t* data, const unsigned int size, const unsigned int slot)
+void TRAP::Graphics::API::OpenGLShader::SetVSUniformBuffer(uint8_t* data, const unsigned int size)
 {
-	Bind();
-	TP_ASSERT(m_VSUniformBuffers.size() > slot, "[Shader][OpenGL] VSUniformBuffers size is > slot");
-	const std::unique_ptr<ShaderUniformBufferDeclaration>& declaration = m_VSUniformBuffers[slot];
-	ResolveAndSetUniforms(declaration.get(), data, size);
+	ResolveAndSetUniforms(m_VSUniformBuffer.get(), data);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetFSSystemUniformBuffer(uint8_t* data, const unsigned int size, const unsigned int slot)
+void TRAP::Graphics::API::OpenGLShader::SetFSUniformBuffer(uint8_t* data, const unsigned int size)
 {
-	Bind();
-	TP_ASSERT(m_FSUniformBuffers.size() > slot, "[Shader][OpenGL] FSUniformBuffers size is > slot");
-	const std::unique_ptr<ShaderUniformBufferDeclaration>& declaration = m_FSUniformBuffers[slot];
-	ResolveAndSetUniforms(declaration.get(), data, size);
+	ResolveAndSetUniforms(m_FSUniformBuffer.get(), data);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetGSSystemUniformBuffer(uint8_t* data, const unsigned int size, const unsigned int slot)
+void TRAP::Graphics::API::OpenGLShader::SetGSUniformBuffer(uint8_t* data, const unsigned int size)
 {
-	Bind();
-	TP_ASSERT(m_GSUniformBuffers.size() > slot, "[Shader][OpenGL] GSUniformBuffers size is > slot");
-	const std::unique_ptr<ShaderUniformBufferDeclaration>& declaration = m_GSUniformBuffers[slot];
-	ResolveAndSetUniforms(declaration.get(), data, size);
+	ResolveAndSetUniforms(m_GSUniformBuffer.get(), data);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetTCSSystemUniformBuffer(uint8_t* data, const unsigned int size, const unsigned int slot)
+void TRAP::Graphics::API::OpenGLShader::SetTCSUniformBuffer(uint8_t* data, const unsigned int size)
 {
-	Bind();
-	TP_ASSERT(m_TCSUniformBuffers.size() > slot, "[Shader][OpenGL] TCSUniformBuffers size is > slot");
-	const std::unique_ptr<ShaderUniformBufferDeclaration>& declaration = m_TCSUniformBuffers[slot];
-	ResolveAndSetUniforms(declaration.get(), data, size);
+	ResolveAndSetUniforms(m_TCSUniformBuffer.get(), data);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetTESSystemUniformBuffer(uint8_t* data, const unsigned int size, const unsigned int slot)
+void TRAP::Graphics::API::OpenGLShader::SetTESUniformBuffer(uint8_t* data, const unsigned int size)
 {
-	Bind();
-	TP_ASSERT(m_TESUniformBuffers.size() > slot, "[Shader][OpenGL] TESUniformBuffers size is > slot");
-	const std::unique_ptr<ShaderUniformBufferDeclaration>& declaration = m_TESUniformBuffers[slot];
-	ResolveAndSetUniforms(declaration.get(), data, size);
+	ResolveAndSetUniforms(m_TESUniformBuffer.get(), data);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetCSSystemUniformBuffer(uint8_t* data, const unsigned int size, const unsigned int slot)
+void TRAP::Graphics::API::OpenGLShader::SetCSUniformBuffer(uint8_t* data, const unsigned int size)
 {
-	Bind();
-	TP_ASSERT(m_CSUniformBuffers.size() > slot, "[Shader][OpenGL] CSUniformBuffers size is > slot");
-	const std::unique_ptr<ShaderUniformBufferDeclaration>& declaration = m_CSUniformBuffers[slot];
-	ResolveAndSetUniforms(declaration.get(), data, size);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::OpenGLShader::SetVSUserUniformBuffer(uint8_t* data, const unsigned int size)
-{
-	ResolveAndSetUniforms(m_VSUserUniformBuffer.get(), data, size);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::OpenGLShader::SetFSUserUniformBuffer(uint8_t* data, const unsigned int size)
-{
-	ResolveAndSetUniforms(m_FSUserUniformBuffer.get(), data, size);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::OpenGLShader::SetGSUserUniformBuffer(uint8_t* data, const unsigned int size)
-{
-	ResolveAndSetUniforms(m_GSUserUniformBuffer.get(), data, size);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::OpenGLShader::SetTCSUserUniformBuffer(uint8_t* data, const unsigned int size)
-{
-	ResolveAndSetUniforms(m_TCSUserUniformBuffer.get(), data, size);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::OpenGLShader::SetTESUserUniformBuffer(uint8_t* data, const unsigned int size)
-{
-	ResolveAndSetUniforms(m_TESUserUniformBuffer.get(), data, size);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::OpenGLShader::SetCSUserUniformBuffer(uint8_t* data, const unsigned int size)
-{
-	ResolveAndSetUniforms(m_CSUserUniformBuffer.get(), data, size);
+	ResolveAndSetUniforms(m_CSUniformBuffer.get(), data);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1102,16 +1076,16 @@ TRAP::Graphics::API::ShaderStruct* TRAP::Graphics::API::OpenGLShader::FindStruct
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::ResolveAndSetUniforms(ShaderUniformBufferDeclaration* buffer, uint8_t* data, const unsigned int size) const
+void TRAP::Graphics::API::OpenGLShader::ResolveAndSetUniforms(ShaderUniformBufferDeclaration* buffer, uint8_t* data) const
 {
 	const ShaderUniformList& uniforms = buffer->GetUniformDeclarations();
 	for (const auto& i : uniforms)
-		ResolveAndSetUniform(dynamic_cast<OpenGLShaderUniformDeclaration*>(i.get()), data, size);
+		ResolveAndSetUniform(dynamic_cast<OpenGLShaderUniformDeclaration*>(i.get()), data);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::ResolveAndSetUniform(OpenGLShaderUniformDeclaration* uniform, uint8_t* data, unsigned int size) const
+void TRAP::Graphics::API::OpenGLShader::ResolveAndSetUniform(OpenGLShaderUniformDeclaration* uniform, uint8_t* data) const
 {
 	if (uniform->GetLocation() == -1)
 		return;
@@ -1162,7 +1136,7 @@ void TRAP::Graphics::API::OpenGLShader::SetUniform(const std::string& name, uint
 		TP_ERROR("[Shader][OpenGL] Cannot find uniform in \"", m_name, "\" Shader with name '", name, "'");
 		return;
 	}
-	ResolveAndSetUniform(dynamic_cast<OpenGLShaderUniformDeclaration*>(uniform), data, 0);
+	ResolveAndSetUniform(dynamic_cast<OpenGLShaderUniformDeclaration*>(uniform), data);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1328,4 +1302,46 @@ void TRAP::Graphics::API::OpenGLShader::SetUniformMat3(const unsigned int locati
 void TRAP::Graphics::API::OpenGLShader::SetUniformMat4(const unsigned int location, const Maths::Mat4& matrix)
 {
 	OpenGLCall(glUniformMatrix4fv(location, 1, GL_TRUE, matrix.elements.data()));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, std::array<std::string*, 6>& shaders)
+{
+	ShaderType type = ShaderType::UNKNOWN;
+
+	std::vector<std::string> lines = Utils::String::GetLines(source);
+	//Get Shader Type
+	for(unsigned int i = 0; i < lines.size(); i++)
+	{
+		if(Utils::String::StartsWith(lines[i], "#shader"))
+		{
+			if (Utils::String::FindToken(lines[i], "vertex"))
+				type = ShaderType::VERTEX;
+			else if (Utils::String::FindToken(lines[i], "fragment"))
+				type = ShaderType::FRAGMENT;
+			else if (Utils::String::FindToken(lines[i], "geometry"))
+				type = ShaderType::GEOMETRY;
+			else if (Utils::String::FindToken(lines[i], "tessellationcontrol"))
+				type = ShaderType::TESSELLATIONCONTROL;
+			else if (Utils::String::FindToken(lines[i], "tessellationevaluation"))
+				type = ShaderType::TESSELLATIONEVALUATION;
+			else if (Utils::String::FindToken(lines[i], "compute"))
+				type = ShaderType::COMPUTE;
+
+			//Add version tag if doesnt exist
+			if(!Utils::String::StartsWith(lines[i + 1], "#version ") && type != ShaderType::UNKNOWN)
+				shaders[static_cast<int32_t>(type) - 1]->append("#version 460 core\n");
+		}
+		else if(type != ShaderType::UNKNOWN)
+		{
+			//Ignore comments(Only non-range based)
+			//@TODO Also ignore any range based comments
+			if(!Utils::String::StartsWith(lines[i], "//"))
+			{
+				shaders[static_cast<int32_t>(type) - 1]->append(Utils::String::SplitString(lines[i], "//").front());
+				shaders[static_cast<int32_t>(type) - 1]->append("\n");
+			}
+		}
+	}
 }

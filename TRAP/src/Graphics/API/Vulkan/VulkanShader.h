@@ -13,6 +13,7 @@ namespace TRAP::Graphics::API
 	class VulkanShader : public Shader
 	{
 	public:
+		VulkanShader(std::string name, std::string source);
 		VulkanShader(std::string name, std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource);
 		VulkanShader(const VulkanShader&) = default;
 		VulkanShader& operator=(const VulkanShader&) = default;
@@ -26,43 +27,31 @@ namespace TRAP::Graphics::API
 		void Bind() const override;
 		void Unbind() const override;
 
-		void SetVSSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot = 0) override;
-		void SetFSSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot = 0) override;
-		void SetGSSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot = 0) override;
-		void SetTCSSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot = 0) override;
-		void SetTESSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot = 0) override;
-		void SetCSSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot = 0) override;
+		void SetVSUniformBuffer(uint8_t* data, unsigned int size) override;
+		void SetFSUniformBuffer(uint8_t* data, unsigned int size) override;
+		void SetGSUniformBuffer(uint8_t* data, unsigned int size) override;
+		void SetTCSUniformBuffer(uint8_t* data, unsigned int size) override;
+		void SetTESUniformBuffer(uint8_t* data, unsigned int size) override;
+		void SetCSUniformBuffer(uint8_t* data, unsigned int size) override;
 
-		void SetVSUserUniformBuffer(uint8_t* data, unsigned int size) override;
-		void SetFSUserUniformBuffer(uint8_t* data, unsigned int size) override;
-		void SetGSUserUniformBuffer(uint8_t* data, unsigned int size) override;
-		void SetTCSUserUniformBuffer(uint8_t* data, unsigned int size) override;
-		void SetTESUserUniformBuffer(uint8_t* data, unsigned int size) override;
-		void SetCSUserUniformBuffer(uint8_t* data, unsigned int size) override;
-
-		const ShaderUniformBufferList& GetVSSystemUniforms() const override;
-		const ShaderUniformBufferList& GetFSSystemUniforms() const override;
-		const ShaderUniformBufferList& GetGSSystemUniforms() const override;
-		const ShaderUniformBufferList& GetTCSSystemUniforms() const override;
-		const ShaderUniformBufferList& GetTESSystemUniforms() const override;
-		const ShaderUniformBufferList& GetCSSystemUniforms() const override;
-		const ShaderUniformBufferDeclaration* GetVSUserUniformBuffer() const override;
-		const ShaderUniformBufferDeclaration* GetFSUserUniformBuffer() const override;
-		const ShaderUniformBufferDeclaration* GetGSUserUniformBuffer() const override;
-		const ShaderUniformBufferDeclaration* GetTCSUserUniformBuffer() const override;
-		const ShaderUniformBufferDeclaration* GetTESUserUniformBuffer() const override;
-		const ShaderUniformBufferDeclaration* GetCSUserUniformBuffer() const override;
+		const ShaderUniformBufferList& GetVSUniforms() const override;
+		const ShaderUniformBufferList& GetFSUniforms() const override;
+		const ShaderUniformBufferList& GetGSUniforms() const override;
+		const ShaderUniformBufferList& GetTCSUniforms() const override;
+		const ShaderUniformBufferList& GetTESUniforms() const override;
+		const ShaderUniformBufferList& GetCSUniforms() const override;
+		const ShaderUniformBufferDeclaration* GetVSUniformBuffer() const override;
+		const ShaderUniformBufferDeclaration* GetFSUniformBuffer() const override;
+		const ShaderUniformBufferDeclaration* GetGSUniformBuffer() const override;
+		const ShaderUniformBufferDeclaration* GetTCSUniformBuffer() const override;
+		const ShaderUniformBufferDeclaration* GetTESUniformBuffer() const override;
+		const ShaderUniformBufferDeclaration* GetCSUniformBuffer() const override;
 
 		const ShaderResourceList& GetResource() const override;
 
 		const std::string& GetName() const override;
 		
-		const std::string& GetVSFilePath() const override;
-		const std::string& GetFSFilePath() const override;
-		const std::string& GetGSFilePath() const override;
-		const std::string& GetTCSFilePath() const override;
-		const std::string& GetTESFilePath() const override;
-		const std::string& GetCSFilePath() const override;
+		const std::string& GetFilePath() const override;
 
 		const std::string& GetVSSource() const override;
 		const std::string& GetFSSource() const override;
@@ -75,6 +64,7 @@ namespace TRAP::Graphics::API
 
 	private:
 		void Compile(std::array<std::string*, 6> & shaders, VulkanShaderErrorInfo& info);
+		static void PreProcessGLSL(const std::string& source, std::array<std::string*, 6>& shaders);
 		static std::unique_ptr<glslang::TShader> PreProcess(const char* source, unsigned int shaderType, std::string& preProcessedSource);
 		static bool Parse(glslang::TShader* shader);
 		static bool Link(glslang::TShader* VShader, glslang::TShader* FShader, glslang::TShader* GShader, glslang::TShader* TCShader, glslang::TShader* TEShader, glslang::TShader* CShader, glslang::TProgram& program);
@@ -85,7 +75,7 @@ namespace TRAP::Graphics::API
 		friend class ::TRAP::Graphics::ShaderManager;
 
 		//unsigned int m_handle;
-		std::string m_name, m_VSFilepath, m_FSFilepath, m_GSFilepath, m_TCSFilepath, m_TESFilepath, m_CSFilepath;
+		std::string m_name, m_filepath, m_source;
 		std::string m_VSSource, m_FSSource, m_GSSource, m_TCSSource, m_TESSource, m_CSSource;
 
 		ShaderUniformBufferList m_VSUniformBuffers;
@@ -118,84 +108,84 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetVSSystemUniforms() const
+inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetVSUniforms() const
 {
 	return m_VSUniformBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetFSSystemUniforms() const
+inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetFSUniforms() const
 {
 	return m_FSUniformBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetGSSystemUniforms() const
+inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetGSUniforms() const
 {
 	return m_GSUniformBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetTCSSystemUniforms() const
+inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetTCSUniforms() const
 {
 	return m_TCSUniformBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetTESSystemUniforms() const
+inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetTESUniforms() const
 {
 	return m_TESUniformBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetCSSystemUniforms() const
+inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetCSUniforms() const
 {
 	return m_CSUniformBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetVSUserUniformBuffer() const
+inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetVSUniformBuffer() const
 {
 	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetFSUserUniformBuffer() const
+inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetFSUniformBuffer() const
 {
 	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetGSUserUniformBuffer() const
+inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetGSUniformBuffer() const
 {
 	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetTCSUserUniformBuffer() const
+inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetTCSUniformBuffer() const
 {
 	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetTESUserUniformBuffer() const
+inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetTESUniformBuffer() const
 {
 	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetCSUserUniformBuffer() const
+inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetCSUniformBuffer() const
 {
 	return nullptr;
 }
@@ -216,44 +206,9 @@ inline const std::string& TRAP::Graphics::API::VulkanShader::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const std::string& TRAP::Graphics::API::VulkanShader::GetVSFilePath() const
+inline const std::string& TRAP::Graphics::API::VulkanShader::GetFilePath() const
 {
-	return m_VSFilepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::VulkanShader::GetFSFilePath() const
-{
-	return m_FSFilepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::VulkanShader::GetGSFilePath() const
-{
-	return m_GSFilepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::VulkanShader::GetTCSFilePath() const
-{
-	return m_TCSFilepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::VulkanShader::GetTESFilePath() const
-{
-	return m_TESFilepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::VulkanShader::GetCSFilePath() const
-{
-	return m_CSFilepath;
+	return m_filepath;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -21,9 +21,11 @@ public:
 		m_usePassthrough(false),
 		m_wireFrame(false),
 		m_showTriangle(true),
+		m_triangleVertexArray(nullptr),
 		m_camera(-1.6f, 1.6f, -0.9f, 0.9f, -1.0f, 1.0f),
 		m_cameraPosition(0.0f),
-		m_cameraRotation(0.0f)
+		m_cameraRotation(0.0f),
+		m_uniformBuffer(nullptr)
 	{
 	}
 
@@ -38,7 +40,7 @@ public:
 	void OnAttach() override
 	{
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
-		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::API::Shader::CreateFromFile("Color", "/Shaders/Color.vert", "/Shaders/Color.frag", "", "", "", ""));
+		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::API::Shader::CreateFromFile("Color", "/Shaders/Color.shader"));
 
 		//////////////
 		// Triangle //
@@ -68,31 +70,17 @@ public:
 		std::unique_ptr<TRAP::Graphics::IndexBuffer> triangleIndexBuffer = TRAP::Graphics::IndexBuffer::Create(triangleIndices.data(), static_cast<uint32_t>(triangleIndices.size()), TRAP::Graphics::BufferUsage::STATIC);
 		m_triangleVertexArray->SetIndexBuffer(triangleIndexBuffer);
 
-		if (TRAP::Graphics::API::Context::GetRenderAPI() == TRAP::Graphics::API::RenderAPI::OPENGL)
-		{
-			m_systemUniforms.resize(g_RequiredSystemUniformsCount);
-
-			const TRAP::Graphics::API::ShaderUniformBufferList& VSSU = TRAP::Graphics::ShaderManager::Get("Color")->GetVSSystemUniforms();
-			TP_ASSERT(!VSSU.empty(), "[Shader][OpenGL] Vertex Shader System Uniforms are empty!");
-			for (const auto& uniformBuffer : VSSU)
-			{
-				m_systemUniformBuffers.emplace_back(uniformBuffer->GetSize());
-				for (const std::unique_ptr<TRAP::Graphics::API::ShaderUniformDeclaration>& decl : uniformBuffer->GetUniformDeclarations())
-					for (unsigned int j = 0; j < g_RequiredSystemUniformsCount; j++)
-						if (decl->GetName() == g_RequiredSystemUniforms[j])
-							m_systemUniforms[j] = SystemUniform2D(&m_systemUniformBuffers[0], decl->GetOffset());
-			}
-
-			std::memcpy(m_systemUniforms[sys_ProjectionMatrixIndex].Buffer->Buffer.data() + m_systemUniforms[sys_ProjectionMatrixIndex].Offset, &m_camera.GetProjectionMatrix(), sizeof(TRAP::Maths::Mat4));
-			std::memcpy(m_systemUniforms[sys_ViewMatrixIndex].Buffer->Buffer.data() + m_systemUniforms[sys_ViewMatrixIndex].Offset, &m_camera.GetViewMatrix(), sizeof(TRAP::Maths::Mat4));
-		}
+		//Matrices needs to be transposed because of the row-major order
+		UBOData uboData{ TRAP::Maths::Mat4::Transpose(m_camera.GetProjectionMatrix()), TRAP::Maths::Mat4::Transpose(m_camera.GetViewMatrix()) };
+		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("matBuf", sizeof(UBOData), TRAP::Graphics::BufferUsage::DYNAMIC);
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnDetach() override
 	{
-		m_systemUniformBuffers.clear();
+		m_uniformBuffer->Unbind();
+		m_uniformBuffer.reset();
 
 		m_triangleVertexArray->Unbind();
 		m_triangleVertexArray.reset();
@@ -102,12 +90,9 @@ public:
 
 	void OnUpdate(const TRAP::Utils::TimeStep deltaTime) override
 	{
-		if (TRAP::Graphics::API::Context::GetRenderAPI() == TRAP::Graphics::API::RenderAPI::OPENGL)
-		{
-			//Update camera every frame
-			std::memcpy(m_systemUniforms[sys_ProjectionMatrixIndex].Buffer->Buffer.data() + m_systemUniforms[sys_ProjectionMatrixIndex].Offset, &m_camera.GetProjectionMatrix(), sizeof(TRAP::Maths::Mat4));
-			std::memcpy(m_systemUniforms[sys_ViewMatrixIndex].Buffer->Buffer.data() + m_systemUniforms[sys_ViewMatrixIndex].Offset, &m_camera.GetViewMatrix(), sizeof(TRAP::Maths::Mat4));
-		}
+		//Update camera every frame
+		TRAP::Maths::Mat4 transposedViewMatrix = TRAP::Maths::Mat4::Transpose(m_camera.GetViewMatrix());
+		m_uniformBuffer->UpdateSubData(&transposedViewMatrix, sizeof(TRAP::Maths::Mat4), sizeof(TRAP::Maths::Mat4));
 
 		TRAP::Graphics::RenderCommand::SetClearColor();
 		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_COLOR | TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_DEPTH);
@@ -123,12 +108,7 @@ public:
 				if (m_usePassthrough)
 					TRAP::Graphics::ShaderManager::Get("Passthrough")->Bind();
 				else
-				{
 					TRAP::Graphics::ShaderManager::Get("Color")->Bind();
-					if (TRAP::Graphics::API::Context::GetRenderAPI() == TRAP::Graphics::API::RenderAPI::OPENGL)
-						for (unsigned int i = 0; i < m_systemUniformBuffers.size(); i++)
-							TRAP::Graphics::ShaderManager::Get("Color")->SetVSSystemUniformBuffer(m_systemUniformBuffers[i].Buffer.data(), static_cast<unsigned int>(m_systemUniformBuffers[i].Buffer.size()), i);
-				}
 
 				TRAP::Graphics::Renderer::Submit(m_triangleVertexArray);
 			}
@@ -172,38 +152,6 @@ public:
 			m_cameraRotation.y += m_cameraRotationSpeed * deltaTime;
 		if (TRAP::Input::IsKeyPressed(TP_KEY_KP_9))
 			m_cameraRotation.y -= m_cameraRotationSpeed * deltaTime;
-
-		if (TRAP::Input::IsKeyPressed(TP_KEY_SPACE))
-		{
-			if (m_cameraPosition.x > 0.0f)
-				m_cameraPosition.x -= m_cameraMovementSpeed * deltaTime;
-			else if (m_cameraPosition.x < 0.0f)
-				m_cameraPosition.x += m_cameraMovementSpeed * deltaTime;
-			if (m_cameraPosition.y > 0.0f)
-				m_cameraPosition.y -= m_cameraMovementSpeed * deltaTime;
-			else if (m_cameraPosition.y < 0.0f)
-				m_cameraPosition.y += m_cameraMovementSpeed * deltaTime;
-			if (m_cameraPosition.z > 0.0f)
-				m_cameraPosition.z -= m_cameraMovementSpeed * deltaTime;
-			else if (m_cameraPosition.z < 0.0f)
-				m_cameraPosition.z += m_cameraMovementSpeed * deltaTime;
-		}
-
-		if (TRAP::Input::IsKeyPressed(TP_KEY_KP_5))
-		{
-			if (m_cameraRotation.x > 0.0f)
-				m_cameraRotation.x -= m_cameraRotationSpeed * deltaTime;
-			else if (m_cameraRotation.x < 0.0f)
-				m_cameraRotation.x += m_cameraRotationSpeed * deltaTime;
-			if (m_cameraRotation.y > 0.0f)
-				m_cameraRotation.y -= m_cameraRotationSpeed * deltaTime;
-			else if (m_cameraRotation.y < 0.0f)
-				m_cameraRotation.y += m_cameraRotationSpeed * deltaTime;
-			if (m_cameraRotation.z > 0.0f)
-				m_cameraRotation.z -= m_cameraRotationSpeed * deltaTime;
-			else if (m_cameraRotation.z < 0.0f)
-				m_cameraRotation.z += m_cameraRotationSpeed * deltaTime;
-		}
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -278,29 +226,10 @@ private:
 	float m_cameraMovementSpeed = 5.0f;
 	float m_cameraRotationSpeed = 180.0f;
 
-	struct UniformBuffer
+	std::unique_ptr<TRAP::Graphics::UniformBuffer> m_uniformBuffer;
+	struct UBOData
 	{
-		std::vector<uint8_t> Buffer;
-
-		UniformBuffer() = default;
-		explicit UniformBuffer(const unsigned int size)
-			: Buffer(size, 0)
-		{
-		}
+		TRAP::Maths::Mat4 ProjectionMatrix;
+		TRAP::Maths::Mat4 ViewMatrix;
 	};
-
-	std::vector<UniformBuffer> m_systemUniformBuffers;
-
-	struct SystemUniform2D
-	{
-		UniformBuffer* Buffer{};
-		unsigned int Offset{};
-
-		SystemUniform2D() = default;
-		SystemUniform2D(UniformBuffer* buffer, const unsigned int offset)
-			: Buffer(buffer), Offset(offset)
-		{}
-	};
-
-	std::vector<SystemUniform2D> m_systemUniforms;
 };

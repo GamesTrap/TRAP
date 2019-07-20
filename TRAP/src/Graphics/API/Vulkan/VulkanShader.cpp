@@ -7,6 +7,23 @@ bool TRAP::Graphics::API::VulkanShader::s_glslangInitialized = false;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::string source)
+	: m_name(std::move(name)),
+	m_source(std::move(source)),
+	m_VShaderModule(nullptr),
+	m_FShaderModule(nullptr),
+	m_GShaderModule(nullptr),
+	m_TCShaderModule(nullptr),
+	m_TEShaderModule(nullptr),
+	m_CShaderModule(nullptr)/*,
+	m_VSUserUniformBuffer(nullptr),
+	m_FSUserUniformBuffer(nullptr)*/
+{
+	Init();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource)
 	: m_name(std::move(name)),
 	  m_VSSource(std::move(VSSource)),
@@ -40,6 +57,8 @@ TRAP::Graphics::API::VulkanShader::~VulkanShader()
 void TRAP::Graphics::API::VulkanShader::Init()
 {
 	std::array<std::string*, 6> shaders{ &m_VSSource, &m_FSSource, &m_GSSource, &m_TCSSource, &m_TESSource, &m_CSSource };
+	if (!m_source.empty())
+		PreProcessGLSL(m_source, shaders);
 	VulkanShaderErrorInfo error;
 	TP_DEBUG("[Shader][Vulkan] Compiling: \"", m_name, "\"");
 	Compile(shaders, error);
@@ -516,72 +535,77 @@ void TRAP::Graphics::API::VulkanShader::Unbind() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::SetVSSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot)
+void TRAP::Graphics::API::VulkanShader::SetVSUniformBuffer(uint8_t* data, unsigned int size)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::SetFSSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot)
+void TRAP::Graphics::API::VulkanShader::SetFSUniformBuffer(uint8_t* data, unsigned int size)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::SetGSSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot)
+void TRAP::Graphics::API::VulkanShader::SetGSUniformBuffer(uint8_t* data, unsigned int size)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::SetTCSSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot)
+void TRAP::Graphics::API::VulkanShader::SetTCSUniformBuffer(uint8_t* data, unsigned int size)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::SetTESSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot)
+void TRAP::Graphics::API::VulkanShader::SetTESUniformBuffer(uint8_t* data, unsigned int size)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::SetCSSystemUniformBuffer(uint8_t* data, unsigned int size, unsigned int slot)
+void TRAP::Graphics::API::VulkanShader::SetCSUniformBuffer(uint8_t* data, unsigned int size)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::SetVSUserUniformBuffer(uint8_t* data, unsigned int size)
+void TRAP::Graphics::API::VulkanShader::PreProcessGLSL(const std::string& source, std::array<std::string*, 6>& shaders)
 {
-}
+	ShaderType type = ShaderType::UNKNOWN;
 
-//-------------------------------------------------------------------------------------------------------------------//
+	std::vector<std::string> lines = Utils::String::GetLines(source);
+	//Get Shader Type
+	for (unsigned int i = 0; i < lines.size(); i++)
+	{
+		if (Utils::String::StartsWith(lines[i], "#shader"))
+		{
+			if (Utils::String::FindToken(lines[i], "vertex"))
+				type = ShaderType::VERTEX;
+			else if (Utils::String::FindToken(lines[i], "fragment"))
+				type = ShaderType::FRAGMENT;
+			else if (Utils::String::FindToken(lines[i], "geometry"))
+				type = ShaderType::GEOMETRY;
+			else if (Utils::String::FindToken(lines[i], "tessellationcontrol"))
+				type = ShaderType::TESSELLATIONCONTROL;
+			else if (Utils::String::FindToken(lines[i], "tessellationevaluation"))
+				type = ShaderType::TESSELLATIONEVALUATION;
+			else if (Utils::String::FindToken(lines[i], "compute"))
+				type = ShaderType::COMPUTE;
 
-void TRAP::Graphics::API::VulkanShader::SetFSUserUniformBuffer(uint8_t* data, unsigned int size)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanShader::SetGSUserUniformBuffer(uint8_t* data, unsigned int size)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanShader::SetTCSUserUniformBuffer(uint8_t* data, unsigned int size)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanShader::SetTESUserUniformBuffer(uint8_t* data, unsigned int size)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanShader::SetCSUserUniformBuffer(uint8_t* data, unsigned int size)
-{
+			//Add version tag if doesnt exist
+			if (!Utils::String::StartsWith(lines[i + 1], "#version ") && type != ShaderType::UNKNOWN)
+				shaders[static_cast<int32_t>(type) - 1]->append("#version 460 core\n");
+		}
+		else if (type != ShaderType::UNKNOWN)
+		{
+			//Ignore comments
+			if (!Utils::String::StartsWith(lines[i], "//"))
+			{
+				shaders[static_cast<int32_t>(type) - 1]->append(lines[i]);
+				shaders[static_cast<int32_t>(type) - 1]->append("\n");
+			}
+		}
+	}
 }

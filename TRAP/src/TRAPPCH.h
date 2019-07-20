@@ -87,6 +87,7 @@
 #ifdef TRAP_PLATFORM_WINDOWS
 #include "Graphics/API/D3D12/D3D12Shader.h"
 #endif
+
 #include "Graphics/API/OpenGL/OpenGLShaderUniform.h"
 #include "Graphics/API/OpenGL/OpenGLShaderResource.h"
 #include "Graphics/API/OpenGL/OpenGLShader.h"
@@ -95,6 +96,7 @@
 #include "Graphics/Buffers/VertexBuffer.h"
 #include "Graphics/Buffers/IndexBuffer.h"
 #include "Graphics/Buffers/VertexArray.h"
+#include "Graphics/Buffers/UniformBuffer.h"
 
 #include "Graphics/API/OpenGL/OpenGLCommon.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
@@ -125,6 +127,11 @@
 #include "Graphics/API/D3D12/Buffers/D3D12VertexArray.h"
 #endif
 
+#include "Graphics/API/OpenGL/Buffers/OpenGLUniformBuffer.h"
+#include "Graphics/API/Vulkan/Buffers/VulkanUniformBuffer.h"
+#ifdef TRAP_PLATFORM_WINDOWS
+#include "Graphics/API/D3D12/Buffers/D3D12UniformBuffer.h"
+#endif
 
 #include "Graphics/API/Context.h"
 #include "Graphics/API/OpenGL/OpenGLContext.h"
