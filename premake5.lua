@@ -137,12 +137,7 @@ project "TRAP"
 			"GLSLang",
 			"SPIRV",
 			"StandAlone",
-			"GTK+-2.0"
-		}
-
-		includedirs
-		{
-			os.getenv("GTK3_INCLUDE_DIRS")
+			"GTK+-3.0"
 		}
 
 	filter "system:macosx"

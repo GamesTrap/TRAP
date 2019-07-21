@@ -43,9 +43,9 @@ matrix:
       env: 
         - LABEL="windows-msvc" 
         - MSBUILD_PATH="/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin"
-        - VULKAN_SDK="/C/VulkanSDK/1.1.108.0/include"
+        - VK_SDK="/C/VulkanSDK/1.1.108.0/"
       script:
         - libs/premake5/windows/premake5.exe vs2017 
         - export PATH=$MSBUILD_PATH:$PATH 
-        - export VULKAN_SDK=$VULKAN_SDK
+        - export VULKAN_SDK=$TRAVIS_BUILD_DIR/VulkanSDK/1.1.108.0/
         - MSBuild.exe TRAP.sln //t:Build
