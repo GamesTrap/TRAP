@@ -16,7 +16,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Dependencies/GLFW/include"
 IncludeDir["GLAD"] = "Dependencies/GLAD/include"
 IncludeDir["IMGUI"] = "Dependencies/ImGui"
-IncludeDir["VULKAN"] = os.getenv("VULKAN_SDK")
+IncludeDir["VULKAN"] = os.getenv("VK_SDK")
 IncludeDir["GLSLANG"] = "Dependencies/GLSLang"
 IncludeDir["OGLCOMPILER"] = "Dependencies/GLSLang/OGLCompilersDLL"
 IncludeDir["OSDEPENDENT"] = "Dependencies/GLSLang/glslang/OSDependent"
@@ -106,13 +106,15 @@ project "TRAP"
 			"D3D12",
 			"DXGI",
 			"D3DCOMPILER",
-			"%{IncludeDir.VULKAN}/lib/vulkan-1",
+			"%{IncludeDir.VULKAN}/Lib/vulkan-1",
 			"GLSLang",
 			"SPIRV",
 			"StandAlone"
 		}
 
 	filter "system:linux"
+		buildoptions { "`pkg-config --cflags gtk+-3.0`", "`pkg-config --libs gtk+-3.0`" }
+
 		-- Add Linux-specific files
         files
         {
