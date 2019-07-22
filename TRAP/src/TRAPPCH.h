@@ -21,6 +21,7 @@
 #include <thread>
 #include <chrono>
 #include <ctime>
+#include <cstdio>
 
 #include <vulkan/vulkan.h>
 #include <glslang/Public/ShaderLang.h>

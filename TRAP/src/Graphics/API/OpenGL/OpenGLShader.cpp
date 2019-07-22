@@ -87,7 +87,11 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 			OpenGLCall(glGetShaderInfoLog(vertex, length, &length, error.data()));
 			const std::string errorMessage(error.data(), length);
 			int32_t lineNumber;
+		#ifdef TRAP_PLATFORM_WINDOWS
 			sscanf_s(error.data(), "%*s %*d:%d", &lineNumber);
+		#else
+			sscanf(error.data(), "%*s %*d:%d", &lineNumber);
+		#endif
 			info.Shader = 0;
 			info.Message[info.Shader] += "Failed to compile Vertex Shader!\n";
 			info.Line[info.Shader] += lineNumber;
@@ -121,7 +125,11 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 			OpenGLCall(glGetShaderInfoLog(fragment, length, &length, error.data()));
 			const std::string errorMessage(error.data(), length);
 			int32_t lineNumber;
+		#ifdef TRAP_PLATFORM_WINDOWS
 			sscanf_s(error.data(), "%*s %*d:%d", &lineNumber);
+		#else
+			sscanf(error.data(), "%*s %*d:%d", &lineNumber);
+		#endif
 			info.Shader = 1;
 			info.Message[info.Shader] += "Failed to compile Fragment Shader!\n";
 			info.Line[info.Shader] = lineNumber;
@@ -155,7 +163,11 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 			OpenGLCall(glGetShaderInfoLog(geometry, length, &length, error.data()));
 			const std::string errorMessage(error.data(), length);
 			int32_t lineNumber;
+		#ifdef TRAP_PLATFORM_WINDOWS
 			sscanf_s(error.data(), "%*s %*d:%d", &lineNumber);
+		#else
+			sscanf(error.data(), "%*s %*d:%d", &lineNumber);
+		#endif
 			info.Shader = 2;
 			info.Message[info.Shader] += "Failed to compile Geometry Shader!\n";
 			info.Line[info.Shader] = lineNumber;
@@ -189,7 +201,11 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 			OpenGLCall(glGetShaderInfoLog(tesscontrol, length, &length, error.data()));
 			const std::string errorMessage(error.data(), length);
 			int32_t lineNumber;
+		#ifdef TRAP_PLATFORM_WINDOWS
 			sscanf_s(error.data(), "%*s %*d:%d", &lineNumber);
+		#else
+			sscanf(error.data(), "%*s %*d:%d", &lineNumber);
+		#endif
 			info.Shader = 2;
 			info.Message[info.Shader] += "Failed to compile Tessellation Control Shader!\n";
 			info.Line[info.Shader] = lineNumber;
@@ -223,7 +239,11 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 			OpenGLCall(glGetShaderInfoLog(tesseval, length, &length, error.data()));
 			const std::string errorMessage(error.data(), length);
 			int32_t lineNumber;
+		#ifdef TRAP_PLATFORM_WINDOWS
 			sscanf_s(error.data(), "%*s %*d:%d", &lineNumber);
+		#else
+			sscanf(error.data(), "%*s %*d:%d", &lineNumber);
+		#endif
 			info.Shader = 2;
 			info.Message[info.Shader] += "Failed to compile Tessellation Evaluation Shader!\n";
 			info.Line[info.Shader] = lineNumber;
@@ -257,7 +277,11 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 			OpenGLCall(glGetShaderInfoLog(compute, length, &length, error.data()));
 			const std::string errorMessage(error.data(), length);
 			int32_t lineNumber;
+		#ifdef TRAP_PLATFORM_WINDOWS
 			sscanf_s(error.data(), "%*s %*d:%d", &lineNumber);
+		#else
+			sscanf(error.data(), "%*s %*d:%d", &lineNumber);
+		#endif
 			info.Shader = 2;
 			info.Message[info.Shader] += "Failed to compile Compute Shader!\n";
 			info.Line[info.Shader] = lineNumber;
