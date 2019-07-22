@@ -2,15 +2,19 @@
 #define _TRAP_MATHS_H_
 
 #include "MathsFunc.h"
-/*#include "tVec2.h"
-#include "tVec3.h"
-#include "tVec4.h"*/
 #include "Math.h"
-//#include "Mat3.h"
-//#include "Mat4.h"
 
 namespace TRAP::Maths
 {
+	template<class T>
+	struct tVec2;
+	template<class T>
+	struct tVec3;
+	template<class T>
+	struct tVec4;
+	struct Mat3;
+	struct Mat4;
+
 	typedef tVec2<float> Vec2;
 	typedef tVec2<float> Vec2f;
 	typedef tVec2<int32_t> Vec2i;

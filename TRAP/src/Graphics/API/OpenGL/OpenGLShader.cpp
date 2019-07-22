@@ -5,8 +5,6 @@
 #include "Utils/String.h"
 #include "OpenGLShaderResource.h"
 
-//std::vector<std::unique_ptr<TRAP::Graphics::API::OpenGLUniformBuffer>> TRAP::Graphics::API::OpenGLShader::s_uniformBuffers;
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, std::string source)
