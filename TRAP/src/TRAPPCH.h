@@ -20,6 +20,7 @@
 #include <unordered_set>
 #include <thread>
 #include <chrono>
+#include <ctime>
 
 #include <vulkan/vulkan.h>
 #include <glslang/Public/ShaderLang.h>
