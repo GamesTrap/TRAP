@@ -19,6 +19,7 @@
 #include <map>
 #include <unordered_set>
 #include <thread>
+#include <chrono>
 
 #include <vulkan/vulkan.h>
 #include <glslang/Public/ShaderLang.h>

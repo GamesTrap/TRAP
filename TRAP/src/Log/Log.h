@@ -1,6 +1,8 @@
 #ifndef _TRAP_LOG_H_
 #define _TRAP_LOG_H_
 
+#include "TRAPPCH.h"
+
 namespace TRAP
 {
 	enum class Level
