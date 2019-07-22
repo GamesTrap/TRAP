@@ -28,7 +28,7 @@ std::string TRAP::Log::GetTimeStamp()
 #ifdef TRAP_PLATFORM_WINDOWS
 	localtime_s(&tm, &time);
 #else
-	localtime_r(&mktime(&tm), &time);
+	localtime_r(&time, &tm);
 #endif
 	ss << std::put_time(&tm, "%T") << ']';
 
