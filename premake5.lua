@@ -227,6 +227,8 @@ project "Sandbox"
 		}
 
 	filter "system:linux"
+		buildoptions { "`pkg-config --cflags gtk+-3.0`", "`pkg-config --libs gtk+-3.0`" }
+
 		defines
 		{
 			"TRAP_PLATFORM_LINUX"
