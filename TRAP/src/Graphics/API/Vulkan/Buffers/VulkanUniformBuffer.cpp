@@ -7,6 +7,12 @@ TRAP::Graphics::API::VulkanUniformBuffer::VulkanUniformBuffer(const char* name, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::API::VulkanUniformBuffer::VulkanUniformBuffer(const char* name, const void* data, uint32_t size, BufferUsage usage)
+{	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanUniformBuffer::Bind() const
 {
 }

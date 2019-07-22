@@ -1,7 +1,8 @@
 #ifndef _TRAP_CONTEXT_H_
 #define _TRAP_CONTEXT_H_
 
-namespace TRAP {
+namespace TRAP
+{
 	class Window;
 }
 

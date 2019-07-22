@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "LayerStack.h"
 
+#include "Layers/Layer.h"
+
 TRAP::LayerStack::~LayerStack()
 {
 	for(const auto& layer : m_layers)

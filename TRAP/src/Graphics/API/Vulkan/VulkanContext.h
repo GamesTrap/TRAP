@@ -1,6 +1,8 @@
 #ifndef _TRAP_VULKANCONTEXT_H_
 #define _TRAP_VULKANCONTEXT_H_
 
+#include "Graphics/API/Context.h"
+
 namespace TRAP::Graphics::API
 {
 	class VulkanContext final : public Context

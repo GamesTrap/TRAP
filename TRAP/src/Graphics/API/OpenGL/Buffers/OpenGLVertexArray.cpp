@@ -1,6 +1,11 @@
 #include "TRAPPCH.h"
 #include "OpenGLVertexArray.h"
 
+#include "Graphics/API/OpenGL/OpenGLCommon.h"
+#include "Graphics/Buffers/VertexBuffer.h"
+#include "Graphics/Buffers/IndexBuffer.h"
+#include "Graphics/Buffers/BufferLayout.h"
+
 TRAP::Graphics::API::OpenGLVertexArray::OpenGLVertexArray()
 	: m_handle(0)
 {

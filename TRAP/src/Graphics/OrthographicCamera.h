@@ -1,6 +1,8 @@
 #ifndef _TRAP_ORTHOGRAPHICCAMERA_H_
 #define _TRAP_ORTHOGRAPHICCAMERA_H_
 
+#include "Maths/Maths.h"
+
 namespace TRAP::Graphics
 {
 	class OrthographicCamera

@@ -1,6 +1,8 @@
 #ifndef _TRAP_SHADERMANAGER_H_
 #define _TRAP_SHADERMANAGER_H_
 
+#include "Shader.h"
+
 namespace TRAP::Graphics
 {
 	class ShaderManager

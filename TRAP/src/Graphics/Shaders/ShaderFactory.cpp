@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "ShaderFactory.h"
 
+#include "Graphics/API/Context.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 //FALLBACK/PASSTHROUGH SHADER

@@ -1,6 +1,8 @@
 #ifndef _TRAP_OPENGLSHADERRESOURCE_H_
 #define _TRAP_OPENGLSHADERRESOURCE_H_
 
+#include "Graphics/Shaders/ShaderResource.h"
+
 namespace TRAP::Graphics::API
 {
 	class OpenGLShaderResourceDeclaration final : public ShaderResourceDeclaration

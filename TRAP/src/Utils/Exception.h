@@ -13,7 +13,7 @@ namespace TRAP
 		Exception& operator=(Exception&&) = delete;
 		virtual ~Exception() = default;
 
-		const char* what() const override;
+		char const* what() const override;
 
 		virtual const char* GetType() const noexcept;
 		int GetLine() const noexcept;

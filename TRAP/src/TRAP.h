@@ -22,6 +22,21 @@
 
 #include "VFS/VFS.h"
 
+//----UTILS-------------
+#include "Utils/MsgBox/MsgBox.h"
+#include "Utils/TimeStep.h"
+#include "Utils/Timer.h"
+#include "Utils/Exception.h"
+#include "Utils/NonCopyable.h"
+#include "Utils/NonMovable.h"
+#include "Utils/Singleton.h"
+#include "Utils/String.h"
+//----------------------
+
+//----MATHS-------------
+#include "Maths/Maths.h"
+//----------------------
+
 //----RENDERER----------
 #include "Graphics/Renderer.h"
 #include "Graphics/RenderCommand.h"
@@ -30,7 +45,9 @@
 #include "Graphics/Buffers/IndexBuffer.h"
 #include "Graphics/Buffers/VertexArray.h"
 #include "Graphics/Buffers/VertexBuffer.h"
+#include "Graphics/Buffers/UniformBuffer.h"
 
+#include "Graphics/Shaders/ShaderManager.h"
 #include "Graphics/Shaders/Shader.h"
 
 #include "Graphics/OrthographicCamera.h"
@@ -39,5 +56,6 @@
 //----ENTRY POINT-------
 #include "EntryPoint.h"
 //----------------------
+
 
 #endif /*_TRAP_TRAP_H_*/

@@ -1,6 +1,8 @@
 #ifndef _TRAP_D3D12CONTEXT_H_
 #define _TRAP_D3D12CONTEXT_H_
 
+#include "Graphics/API/Context.h"
+
 #ifdef TRAP_PLATFORM_WINDOWS
 
 namespace TRAP::Graphics::API
@@ -8,7 +10,7 @@ namespace TRAP::Graphics::API
 	class D3D12Context final : public Context
 	{
 	public:
-		D3D12Context(Window* window);
+		explicit D3D12Context(Window* window);
 		~D3D12Context();
 		D3D12Context(const D3D12Context&) = default;
 		D3D12Context& operator=(const D3D12Context&) = default;

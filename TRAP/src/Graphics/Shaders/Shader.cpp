@@ -1,6 +1,12 @@
 #include "TRAPPCH.h"
 #include "Shader.h"
 
+#include "VFS/VFS.h"
+#include "Graphics/API/Context.h"
+#include "Graphics/API/D3D12/D3D12Shader.h"
+#include "Graphics/API/OpenGL/OpenGLShader.h"
+#include "Graphics/API/Vulkan/VulkanShader.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 const TRAP::Graphics::API::Shader* TRAP::Graphics::API::Shader::s_CurrentlyBound = nullptr;

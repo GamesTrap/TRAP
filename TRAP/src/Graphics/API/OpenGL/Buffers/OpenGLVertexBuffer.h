@@ -1,6 +1,9 @@
 #ifndef _TRAP_OPENGLVERTEXBUFFER_H_
 #define _TRAP_OPENGLVERTEXBUFFER_H_
 
+#include "Graphics/Buffers/VertexBuffer.h"
+#include "Graphics/Buffers/BufferLayout.h"
+
 namespace TRAP::Graphics::API
 {
 	class OpenGLVertexBuffer final : public VertexBuffer

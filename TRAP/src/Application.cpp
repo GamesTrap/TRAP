@@ -1,6 +1,12 @@
 #include "TRAPPCH.h"
 #include "Application.h"
 
+#include "VFS/VFS.h"
+#include "Graphics/Shaders/ShaderManager.h"
+#include "Graphics/Shaders/ShaderFactory.h"
+#include "Graphics/RenderCommand.h"
+#include "Graphics/API/RendererAPI.h"
+
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 

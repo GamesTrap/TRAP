@@ -1,6 +1,8 @@
 #ifndef _TRAP_RENDERER_H_
 #define _TRAP_RENDERER_H_
 
+#include "API/RendererAPI.h"
+
 namespace TRAP::Graphics
 {
 	class Renderer

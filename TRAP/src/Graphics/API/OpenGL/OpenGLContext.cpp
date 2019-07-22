@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "OpenGLContext.h"
 
+#include "Window/Window.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Graphics::API::OpenGLContext::s_IsGladInitialized = false;

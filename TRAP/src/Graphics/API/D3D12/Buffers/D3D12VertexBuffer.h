@@ -1,6 +1,9 @@
 #ifndef _TRAP_D3D12VERTEXBUFFER_H_
 #define _TRAP_D3D12VERTEXBUFFER_H_
 
+#include "Graphics/Buffers/VertexBuffer.h"
+#include "Graphics/Buffers/BufferLayout.h"
+
 #ifdef TRAP_PLATFORM_WINDOWS
 
 namespace TRAP::Graphics::API

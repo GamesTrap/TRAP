@@ -189,3 +189,4 @@ SITREP 07/19/2019|19w29a1
 
 SITREP 07/21/2019|19w29a2
     - Changed TRAP Engine version to 19w29a2(0.4.8)
+    - Resolved Cyclic Dependency in tVec2,3,4 and Mat3,4(I know Math.h is ugly) ~>30 mins

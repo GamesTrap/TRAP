@@ -1,6 +1,10 @@
 #include "TRAPPCH.h"
 #include "VulkanShader.h"
 
+#include "VulkanCommon.h"
+#include "VulkanRenderer.h"
+#include "Utils/String.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Graphics::API::VulkanShader::s_glslangInitialized = false;

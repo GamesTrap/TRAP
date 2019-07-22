@@ -7,6 +7,12 @@ TRAP::Graphics::API::D3D12UniformBuffer::D3D12UniformBuffer(const char* name, ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::API::D3D12UniformBuffer::D3D12UniformBuffer(const char* name, const void* data, uint32_t size, BufferUsage usage)
+{	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::D3D12UniformBuffer::Bind() const
 {	
 }

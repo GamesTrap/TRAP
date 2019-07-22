@@ -1,6 +1,8 @@
 #ifndef _TRAP_DEFAULTIMAGE_H_
 #define _TRAP_DEFAULTIMAGE_H_
 
+#include "TRAPPCH.h"
+
 namespace TRAP::INTERNAL
 {
 

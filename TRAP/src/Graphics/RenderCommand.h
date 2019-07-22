@@ -1,6 +1,10 @@
 #ifndef _TRAP_RENDERCOMMAND_H_
 #define _TRAP_RENDERCOMMAND_H_
 
+#include "Graphics/Buffers/VertexArray.h"
+#include "Graphics/API/RendererAPI.h"
+#include "Maths/Maths.h"
+
 namespace TRAP::Graphics
 {
 	enum RendererBufferType

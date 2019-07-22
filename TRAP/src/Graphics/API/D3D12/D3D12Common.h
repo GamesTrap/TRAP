@@ -1,6 +1,8 @@
 #ifndef _TRAP_D3D12COMMON_H_
 #define _TRAP_D3D12COMMON_H_
 
+#include "TRAPPCH.h"
+
 #ifdef TRAP_PLATFORM_WINDOWS
 
 namespace TRAP::Graphics::API

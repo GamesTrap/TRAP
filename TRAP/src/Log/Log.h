@@ -1,8 +1,6 @@
 #ifndef _TRAP_LOG_H_
 #define _TRAP_LOG_H_
 
-#include "VFS/VFS.h"
-
 namespace TRAP
 {
 	enum class Level

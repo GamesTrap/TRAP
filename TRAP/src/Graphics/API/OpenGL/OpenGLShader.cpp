@@ -1,6 +1,9 @@
 #include "TRAPPCH.h"
 #include "OpenGLShader.h"
-#include <utility>
+
+#include "OpenGLCommon.h"
+#include "Utils/String.h"
+#include "OpenGLShaderResource.h"
 
 //std::vector<std::unique_ptr<TRAP::Graphics::API::OpenGLUniformBuffer>> TRAP::Graphics::API::OpenGLShader::s_uniformBuffers;
 

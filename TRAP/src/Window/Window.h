@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Event/Event.h"
+#include "Utils/Logo.h"
 
 namespace TRAP
 {

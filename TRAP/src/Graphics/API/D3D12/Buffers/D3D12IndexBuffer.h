@@ -1,11 +1,13 @@
 #ifndef _TRAP_D3D12INDEXBUFFER_H_
 #define _TRAP_D3D12INDEXBUFFER_H_
 
+#include "Graphics/Buffers/IndexBuffer.h"
+
 #ifdef TRAP_PLATFORM_WINDOWS
 
 namespace TRAP::Graphics::API
 {
-	class D3D12IndexBuffer : public IndexBuffer
+	class D3D12IndexBuffer final : public IndexBuffer
 	{
 	public:
 		D3D12IndexBuffer(uint32_t* indices, uint32_t size, BufferUsage usage);

@@ -1,9 +1,11 @@
 #ifndef _TRAP_SHADER_H_
 #define _TRAP_SHADER_H_
 
+#include "ShaderUniform.h"
+#include "ShaderResource.h"
+
 namespace TRAP::Graphics::API
 {
-
 	enum class ShaderType
 	{
 		UNKNOWN,

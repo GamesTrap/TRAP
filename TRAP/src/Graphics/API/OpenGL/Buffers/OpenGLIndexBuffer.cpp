@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "OpenGLIndexBuffer.h"
 
+#include "Graphics/API/OpenGL/OpenGLCommon.h"
+
 TRAP::Graphics::API::OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, const uint32_t size, const BufferUsage usage)
 	: m_handle(0), m_count(size)
 {

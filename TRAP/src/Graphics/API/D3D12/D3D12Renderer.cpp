@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "D3D12Renderer.h"
 
+#include "Graphics/RenderCommand.h"
+
 #ifdef TRAP_PLATFORM_WINDOWS
 
 //-------------------------------------------------------------------------------------------------------------------//

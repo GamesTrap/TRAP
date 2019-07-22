@@ -1,6 +1,11 @@
 #include "TRAPPCH.h"
 #include "VertexArray.h"
 
+#include "Graphics/API/Context.h"
+#include "Graphics/API/D3D12/Buffers/D3D12VertexArray.h"
+#include "Graphics/API/Vulkan/Buffers/VulkanVertexArray.h"
+#include "Graphics/API/OpenGL/Buffers/OpenGLVertexArray.h"
+
 const TRAP::Graphics::VertexArray* TRAP::Graphics::VertexArray::s_CurrentlyBound = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//

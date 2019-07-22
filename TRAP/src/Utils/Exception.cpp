@@ -10,7 +10,7 @@ TRAP::Exception::Exception(const int line, const char* file) noexcept
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::Exception::what() const
+char const* TRAP::Exception::what() const
 {
 	std::ostringstream oss;
 	oss << GetType() << std::endl << GetOriginString();

@@ -1,6 +1,8 @@
 #ifndef _TRAP_OPENGLSHADERUNIFORM_H_
 #define _TRAP_OPENGLSHADERUNIFORM_H_
 
+#include "Graphics/Shaders/ShaderUniform.h"
+
 namespace TRAP::Graphics::API
 {
 	class OpenGLShaderUniformDeclaration final : public ShaderUniformDeclaration

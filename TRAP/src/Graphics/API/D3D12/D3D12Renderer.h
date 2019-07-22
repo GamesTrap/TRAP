@@ -3,6 +3,10 @@
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
+#include "Graphics/API/RendererAPI.h"
+#include "D3D12Context.h"
+#include "Maths/Maths.h"
+
 namespace TRAP::Graphics::API
 {
 	class D3D12Renderer final : public RendererAPI

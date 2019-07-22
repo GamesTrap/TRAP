@@ -3,6 +3,8 @@
 
 namespace TRAP::Graphics
 {
+	enum class BufferUsage;
+
 	class UniformBuffer
 	{
 	public:
@@ -14,6 +16,7 @@ namespace TRAP::Graphics
 		UniformBuffer& operator=(UniformBuffer&&) = default;
 
 		static std::unique_ptr<UniformBuffer> Create(const char* name, uint32_t size, BufferUsage usage);
+		static std::unique_ptr<UniformBuffer> Create(const char* name, void* data, uint32_t size, BufferUsage usage);
 
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;

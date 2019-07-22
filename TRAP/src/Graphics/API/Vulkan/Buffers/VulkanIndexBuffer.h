@@ -1,6 +1,8 @@
 #ifndef _TRAP_VULKANINDEXBUFFER_H_
 #define _TRAP_VULKANINDEXBUFFER_H_
 
+#include "Graphics/Buffers/IndexBuffer.h"
+
 namespace TRAP::Graphics::API
 {
 	class VulkanIndexBuffer : public IndexBuffer

@@ -1,6 +1,9 @@
 #ifndef _TRAP_VULKANVERTEXBUFFER_H_
 #define _TRAP_VULKANVERTEXBUFFER_H_
 
+#include "Graphics/Buffers/VertexBuffer.h"
+#include "Graphics/Buffers/BufferLayout.h"
+
 namespace TRAP::Graphics::API
 {
 	class VulkanVertexBuffer final : public VertexBuffer

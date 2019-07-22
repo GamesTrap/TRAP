@@ -1,6 +1,9 @@
 #include "TRAPPCH.h"
 #include "Renderer.h"
 
+#include "RenderCommand.h"
+#include "Graphics/Buffers/VertexArray.h"
+
 void TRAP::Graphics::Renderer::BeginScene()
 {
 }

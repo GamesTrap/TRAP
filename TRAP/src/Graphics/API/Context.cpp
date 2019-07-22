@@ -1,6 +1,11 @@
 #include "TRAPPCH.h"
 #include "Context.h"
 
+#include "OpenGL/OpenGLContext.h"
+#include "D3D12/D3D12Context.h"
+#include "Vulkan/VulkanContext.h"
+#include "Utils/MsgBox/MsgBox.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::unique_ptr<TRAP::Graphics::API::Context> TRAP::Graphics::API::Context::s_Context = nullptr;

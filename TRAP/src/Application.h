@@ -4,6 +4,12 @@
 
 #include "Layers/ImGuiLayer.h"
 
+#include "Window/Window.h"
+#include "Config/Config.h"
+#include "Layers/LayerStack.h"
+#include "Utils/Timer.h"
+#include "Event/ApplicationEvent.h"
+
 namespace TRAP
 {
 	class Application

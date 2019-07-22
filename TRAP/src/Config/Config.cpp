@@ -1,6 +1,9 @@
 #include "TRAPPCH.h"
 #include "Config.h"
 
+#include "Utils/String.h"
+#include "VFS/VFS.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Utils::Config::Config()

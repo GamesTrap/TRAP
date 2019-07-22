@@ -2,12 +2,12 @@
 #define _TRAP_MATHS_H_
 
 #include "MathsFunc.h"
-
-#include "tVec2.h"
+/*#include "tVec2.h"
 #include "tVec3.h"
-#include "tVec4.h"
-#include "Mat3.h"
-#include "Mat4.h"
+#include "tVec4.h"*/
+#include "Math.h"
+//#include "Mat3.h"
+//#include "Mat4.h"
 
 namespace TRAP::Maths
 {

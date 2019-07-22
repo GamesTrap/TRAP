@@ -7,7 +7,6 @@ void TRAP::Log::Save()
 {
 	TP_INFO("[Logger] Saving Log.txt");
 
-	//Save to Log.txt Can't be handled by VFS see BUG#4
 	std::ofstream file("Log.txt");
 	if (file.is_open())
 	{

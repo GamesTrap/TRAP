@@ -1,6 +1,11 @@
 #include "TRAPPCH.h"
 #include "OpenGLUniformBuffer.h"
 
+#include "Graphics/API/OpenGL/OpenGLCommon.h"
+#include "Graphics/Shaders/Shader.h"
+#include "Graphics/Shaders/ShaderManager.h"
+#include "Graphics/API/OpenGL/OpenGLShader.h"
+
 TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer()
 	: m_handle(0), m_name(""), m_size(0)
 {	

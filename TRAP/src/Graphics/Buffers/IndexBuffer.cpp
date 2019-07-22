@@ -1,6 +1,11 @@
 #include "TRAPPCH.h"
 #include "IndexBuffer.h"
 
+#include "Graphics/API/Context.h"
+#include "Graphics/API/D3D12/Buffers/D3D12IndexBuffer.h"
+#include "Graphics/API/Vulkan/Buffers/VulkanIndexBuffer.h"
+#include "Graphics/API/OpenGL/Buffers/OpenGLIndexBuffer.h"
+
 std::unique_ptr<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uint32_t* indices, uint32_t size, BufferUsage usage)
 {
 	switch(API::Context::GetRenderAPI())

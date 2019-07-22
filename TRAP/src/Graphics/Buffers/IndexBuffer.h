@@ -3,6 +3,8 @@
 
 namespace TRAP::Graphics
 {
+	enum class BufferUsage;
+
 	class IndexBuffer
 	{
 	public:

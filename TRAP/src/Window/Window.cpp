@@ -3,6 +3,13 @@
 
 #include <glad/glad.h>
 
+#include "Utils/MsgBox/MsgBox.h"
+#include "Graphics/API/RendererAPI.h"
+#include "Graphics/Renderer.h"
+#include "Event/ApplicationEvent.h"
+#include "Event/KeyEvent.h"
+#include "Event/MouseEvent.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 static void GLFWErrorCallback(const int error, const char* description)
