@@ -16,7 +16,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Dependencies/GLFW/include"
 IncludeDir["GLAD"] = "Dependencies/GLAD/include"
 IncludeDir["IMGUI"] = "Dependencies/ImGui"
-IncludeDir["VULKAN"] = os.getenv("VK_SDK")
+IncludeDir["VULKAN"] = os.getenv("VK_SDK_PATH")
 IncludeDir["GLSLANG"] = "Dependencies/GLSLang"
 IncludeDir["OGLCOMPILER"] = "Dependencies/GLSLang/OGLCompilersDLL"
 IncludeDir["OSDEPENDENT"] = "Dependencies/GLSLang/glslang/OSDependent"
@@ -113,7 +113,7 @@ project "TRAP"
 		}
 
 	filter "system:linux"
-		buildoptions { "`pkg-config --cflags gtk+-3.0`", "`pkg-config --libs gtk+-3.0`" }
+		buildoptions { "`pkg-config --cflags gtk+-3.0`", "`pkg-config --libs gtk+-3.0`", "`pkg-config --cflags vulkan-sdk`", "`pkg-config --libs vulkan-sdk`" }
 
 		-- Add Linux-specific files
         files
@@ -135,11 +135,9 @@ project "TRAP"
 			"GLFW",
 			"GLAD",
 			"ImGui",
-			"%{IncludeDir.VULKAN}/lib/libvulkan",
 			"GLSLang",
 			"SPIRV",
-			"StandAlone",
-			"GTK+-3.0"
+			"StandAlone"
 		}
 
 	filter "system:macosx"
@@ -193,6 +191,7 @@ project "Sandbox"
 	staticruntime "on"
 	cppdialect "C++17"
 	systemversion "latest"
+	buildoptions { "`pkg-config --cflags gtk+-3.0`" }
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -209,10 +208,10 @@ project "Sandbox"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.IMGUI}",
-		"%{IncludeDir.VULKAN}/Include/",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
-		"%{IncludeDir.STANDALONE}"
+		"%{IncludeDir.STANDALONE}",
+		"%{IncludeDir.VULKAN}/Include/"
 	}
 
 	links
@@ -227,8 +226,6 @@ project "Sandbox"
 		}
 
 	filter "system:linux"
-		buildoptions { "`pkg-config --cflags gtk+-3.0`", "`pkg-config --libs gtk+-3.0`" }
-
 		defines
 		{
 			"TRAP_PLATFORM_LINUX"

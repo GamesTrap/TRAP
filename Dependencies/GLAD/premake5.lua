@@ -4,7 +4,6 @@ project "GLAD"
     systemversion "latest"
     staticruntime "on"
     cdialect "C11"
-    pic "on"
 
     targetdir ("../../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
     objdir ("../../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
