@@ -87,10 +87,8 @@ public:
 	void OnUpdate(const TRAP::Utils::TimeStep deltaTime) override
 	{
 		//Update camera every frame
-		//TRAP::Maths::Mat4 transposedViewMatrix = TRAP::Maths::Mat4::Transpose(m_camera.GetViewMatrix());
-		//m_uniformBuffer->UpdateSubData(&transposedViewMatrix, sizeof(TRAP::Maths::Mat4), sizeof(TRAP::Maths::Mat4));
-		UBOData uboData{TRAP::Maths::Mat4::Transpose(m_camera.GetProjectionMatrix()), TRAP::Maths::Mat4::Transpose(m_camera.GetViewMatrix())};
-		m_uniformBuffer->UpdateData(&uboData, sizeof(UBOData), TRAP::Graphics::BufferUsage::DYNAMIC);
+		TRAP::Maths::Mat4 transposedViewMatrix = TRAP::Maths::Mat4::Transpose(m_camera.GetViewMatrix());
+		m_uniformBuffer->UpdateSubData(&transposedViewMatrix, sizeof(TRAP::Maths::Mat4), sizeof(TRAP::Maths::Mat4));
 
 		TRAP::Graphics::RenderCommand::SetClearColor();
 		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_COLOR | TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_DEPTH);
