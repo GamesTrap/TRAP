@@ -194,3 +194,8 @@ SITREP 07/21/2019|19w29a2
 SITREP 07/22/2019|19w30a1
     - Changed TRAP Engine version to 19w30a1(0.4.9)
     - Removed unused Exception class <5 mins
+    - Removed MsgBoxLinux(Will be re-added without the need of GTK)
+
+SITREP 07/24/2019|19w30a2
+    - Changed TRAP Engine version to 19w30a2(0.4.10)
+    - Fixed premake5.lua to successfully build on Linux

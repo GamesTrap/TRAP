@@ -96,10 +96,12 @@ void TRAP::Window::Init(const WindowProps &props)
 			else
 			{
 				//All RenderAPIs are unsupported
+#ifndef TRAP_PLATFORM_LINUX
 				Show("Every RenderAPI that TRAP Engine uses is unsupported on your device!\nDoes your system meet the minimum system requirements for running TRAP Engine?",
 					 "Incompatible Device",
 					 Utils::MsgBox::Style::Error,
 					 Utils::MsgBox::Buttons::Quit);
+#endif
 				exit(-1);
 			}
 		}
@@ -117,7 +119,7 @@ void TRAP::Window::Init(const WindowProps &props)
 	//Create Window
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 						   std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-						   "[INDEV][19w30a1]";
+						   "[INDEV][19w30a2]";
 	m_window = glfwCreateWindow(static_cast<int>(props.Width),
 								static_cast<int>(props.Height),
 								newTitle.c_str(),
@@ -127,7 +129,9 @@ void TRAP::Window::Init(const WindowProps &props)
 	if (m_window == nullptr)
 	{
 		TP_CRITICAL("[Window] Failed to create window");
+#ifndef TRAP_PLATFORM_LINUX
 		Show("Failed to create Window!", "Failed to Create Window", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+#endif
 		exit(-1);
 	}
 
@@ -416,6 +420,6 @@ void TRAP::Window::SetTitle(const std::string &title)
 	m_data.Title = title;
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 								 std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-								 "[INDEV][19w30a1]" + std::string(Graphics::Renderer::GetTitle());
+								 "[INDEV][19w30a2]" + std::string(Graphics::Renderer::GetTitle());
 	glfwSetWindowTitle(m_window, newTitle.c_str());
 }

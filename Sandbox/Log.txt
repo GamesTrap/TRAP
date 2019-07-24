@@ -1,52 +1,52 @@
-[18:36:24][Debug][Application] Initializing TRAP Modules...
-[18:36:24][Debug][VFS] Initializing Virtual File System
-[18:36:24][Info][Config] Loading settings file "Engine.cfg"
-[18:36:24][Trace][Config] Width = 1280
-[18:36:24][Trace][Config] Height = 720
-[18:36:24][Trace][Config] RefreshRate = 144
-[18:36:24][Trace][Config] VSync = 0
-[18:36:24][Trace][Config] DisplayMode = Windowed
-[18:36:24][Trace][Config] Monitor = 0
-[18:36:24][Trace][Config] RenderAPI = OpenGL
-[18:36:24][Trace][Config] HotShaderReloading = TRUE
-[18:36:24][Trace][Config] Size: 8
-[18:36:24][Info][Window] Initializing Window: "Sandbox" 1280x720@144Hz VSync: Off Mode: Windowed Monitor: 0
-[18:36:25][Debug][Window] Storing underlying OS video mode: 2560x1440@144Hz (R8G8B8)
-[18:36:25][Info][Context][OpenGL] Initializing Context
-[18:36:25][Info][Renderer][OpenGL] Initializing Renderer
-[18:36:25][Info][Renderer][OpenGL] ----------------------------------
-[18:36:25][Info][Renderer][OpenGL] OpenGL:
-[18:36:25][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 431.36
-[18:36:25][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
-[18:36:25][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
-[18:36:25][Info][Renderer][OpenGL] ----------------------------------
-[18:36:25][Debug][Shader][OpenGL] Compiling: "Passthrough"
-[18:36:25][Debug][Shader][OpenGL] Compiling Vertex Shader
-[18:36:25][Debug][Shader][OpenGL] Compiling Fragment Shader
-[18:36:25][Debug][LayerStack] Pushing Overlay: ImGuiLayer
-[18:36:25][Debug][LayerStack] Pushing Layer: Sandbox
-[18:36:25][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
-[18:36:25][Debug][Shader][OpenGL] Compiling: "Color"
-[18:36:25][Debug][Shader][OpenGL] Compiling Vertex Shader
-[18:36:25][Debug][Shader][OpenGL] Compiling Fragment Shader
-[18:36:29][Debug][Application] Shutting down TRAP Modules...
-[18:36:29][Debug][ShaderManager] Destroying Shaders
-[18:36:29][Debug][Shader][OpenGL] Destroying Shader: "Passthrough"
-[18:36:29][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[18:36:29][Trace][Config] Width = 1280
-[18:36:29][Trace][Config] Height = 720
-[18:36:29][Trace][Config] RefreshRate = 144
-[18:36:29][Trace][Config] VSync = 0
-[18:36:29][Trace][Config] DisplayMode = Windowed
-[18:36:29][Trace][Config] Monitor = 0
-[18:36:29][Trace][Config] RenderAPI = OpenGL
-[18:36:29][Trace][Config] HotShaderReloading = TRUE
-[18:36:29][Trace][Config] Size: 8
-[18:36:29][Info][Config] Saving: Engine.cfg
-[18:36:29][Debug][VFS] Shutting down Virtual File System
-[18:36:29][Debug][LayerStack] Destroying Layer: Sandbox
-[18:36:29][Debug][LayerStack] Destroying Layer: ImGuiLayer
-[18:36:30][Debug][Window] Destroying Window: "Sandbox - FPS: 2407 FrameTime: 0.415300"
-[18:36:30][Debug][Renderer][OpenGL] Destroying Renderer
-[18:36:30][Debug][Context][OpenGL] Destroying Context
-[18:36:30][Info][Logger] Saving Log.txt
+[16:41:53][Debug][Application] Initializing TRAP Modules...
+[16:41:53][Debug][VFS] Initializing Virtual File System
+[16:41:53][Info][Config] Loading settings file "Engine.cfg"
+[16:41:53][Trace][Config] Width = 1280
+[16:41:53][Trace][Config] Height = 720
+[16:41:53][Trace][Config] RefreshRate = 144
+[16:41:53][Trace][Config] VSync = 0
+[16:41:53][Trace][Config] DisplayMode = Windowed
+[16:41:53][Trace][Config] Monitor = 0
+[16:41:53][Trace][Config] RenderAPI = OpenGL
+[16:41:53][Trace][Config] HotShaderReloading = TRUE
+[16:41:53][Trace][Config] Size: 8
+[16:41:53][Info][Window] Initializing Window: "Sandbox" 1280x720@144Hz VSync: Off Mode: Windowed Monitor: 0
+[16:41:54][Debug][Window] Storing underlying OS video mode: 2560x1440@144Hz (R8G8B8)
+[16:41:54][Info][Context][OpenGL] Initializing Context
+[16:41:54][Info][Renderer][OpenGL] Initializing Renderer
+[16:41:54][Info][Renderer][OpenGL] ----------------------------------
+[16:41:54][Info][Renderer][OpenGL] OpenGL:
+[16:41:54][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 431.60
+[16:41:54][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
+[16:41:54][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
+[16:41:54][Info][Renderer][OpenGL] ----------------------------------
+[16:41:54][Debug][Shader][OpenGL] Compiling: "Passthrough"
+[16:41:54][Debug][Shader][OpenGL] Compiling Vertex Shader
+[16:41:54][Debug][Shader][OpenGL] Compiling Fragment Shader
+[16:41:54][Debug][LayerStack] Pushing Overlay: ImGuiLayer
+[16:41:54][Debug][LayerStack] Pushing Layer: Sandbox
+[16:41:54][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
+[16:41:54][Debug][Shader][OpenGL] Compiling: "Color"
+[16:41:54][Debug][Shader][OpenGL] Compiling Vertex Shader
+[16:41:54][Debug][Shader][OpenGL] Compiling Fragment Shader
+[16:41:58][Debug][Application] Shutting down TRAP Modules...
+[16:41:58][Debug][ShaderManager] Destroying Shaders
+[16:41:58][Debug][Shader][OpenGL] Destroying Shader: "Passthrough"
+[16:41:58][Debug][Shader][OpenGL] Destroying Shader: "Color"
+[16:41:58][Trace][Config] Width = 1280
+[16:41:58][Trace][Config] Height = 720
+[16:41:58][Trace][Config] RefreshRate = 144
+[16:41:58][Trace][Config] VSync = 0
+[16:41:58][Trace][Config] DisplayMode = Windowed
+[16:41:58][Trace][Config] Monitor = 0
+[16:41:58][Trace][Config] RenderAPI = OpenGL
+[16:41:58][Trace][Config] HotShaderReloading = TRUE
+[16:41:58][Trace][Config] Size: 8
+[16:41:58][Info][Config] Saving: Engine.cfg
+[16:41:58][Debug][VFS] Shutting down Virtual File System
+[16:41:58][Debug][LayerStack] Destroying Layer: Sandbox
+[16:41:58][Debug][LayerStack] Destroying Layer: ImGuiLayer
+[16:41:58][Debug][Window] Destroying Window: "Sandbox - FPS: 855 FrameTime: 1.169000"
+[16:41:58][Debug][Renderer][OpenGL] Destroying Renderer
+[16:41:58][Debug][Context][OpenGL] Destroying Context
+[16:41:58][Info][Logger] Saving Log.txt

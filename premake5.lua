@@ -113,16 +113,19 @@ project "TRAP"
 		}
 
 	filter "system:linux"
-		buildoptions { "`pkg-config --cflags gtk+-3.0`", "`pkg-config --libs gtk+-3.0`", "`pkg-config --cflags vulkan-sdk`", "`pkg-config --libs vulkan-sdk`" }
 
 		-- Add Linux-specific files
         files
         {
 			"%{prj.name}/src/Log/ANSILog.cpp",
             "%{prj.name}/src/Platform/Linux/**.h",
-			"%{prj.name}/src/Platform/Linux/**.cpp",
-			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinux.cpp"
-        }
+			"%{prj.name}/src/Platform/Linux/**.cpp"
+		}
+		
+		removefiles 
+		{
+			"%{prj.name}/src/Utils/MsgBox/MsgBox.h"
+		}
 
 		defines
 		{
@@ -132,12 +135,13 @@ project "TRAP"
 
 		links
 		{
-			"GLFW",
 			"GLAD",
+			"GLFW",
 			"ImGui",
 			"GLSLang",
 			"SPIRV",
-			"StandAlone"
+			"StandAlone",
+			"vulkan"
 		}
 
 	filter "system:macosx"
@@ -191,7 +195,6 @@ project "Sandbox"
 	staticruntime "on"
 	cppdialect "C++17"
 	systemversion "latest"
-	buildoptions { "`pkg-config --cflags gtk+-3.0`" }
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -226,6 +229,24 @@ project "Sandbox"
 		}
 
 	filter "system:linux"
+		links
+		{
+			"GLAD",
+			"GLFW",
+			"ImGui",
+			"GLSLang",
+			"SPIRV",
+			"StandAlone",
+			"vulkan",
+
+			"dl",
+			"pthread",
+			"X11",
+			"HLSL",
+			"OGLCompiler",
+			"OSDependent"
+		}
+
 		defines
 		{
 			"TRAP_PLATFORM_LINUX"

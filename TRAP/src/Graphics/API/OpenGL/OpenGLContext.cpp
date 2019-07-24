@@ -13,7 +13,7 @@ TRAP::Graphics::API::OpenGLContext::OpenGLContext(Window* window)
 {
 	glfwMakeContextCurrent(static_cast<GLFWwindow*>(window->GetNativeWindow()));
 
-	if(!s_IsGladInitialized)
+	if (!s_IsGladInitialized)
 	{
 		TP_RENDERER_ASSERT(gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)), "Could not initialize GLAD");
 		s_IsGladInitialized = true;

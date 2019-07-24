@@ -38,10 +38,6 @@
 #include <AvailabilityMacros.h>
 #endif
 
-#ifdef TRAP_PLATFORM_LINUX
-#include <gtk/gtk.h>
-#endif
-
 #ifdef TRAP_PLATFORM_WINDOWS
 #include <dxgiformat.h>
 #include <dxgi1_6.h>

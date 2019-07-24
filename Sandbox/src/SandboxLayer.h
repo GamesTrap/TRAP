@@ -182,8 +182,10 @@ public:
 			TRAP::Graphics::RenderCommand::SetWireFrame(m_wireFrame);
 		}
 
+#ifndef TRAP_PLATFORM_LINUX
 		if (event.GetKeyCode() == TP_KEY_F11 && event.GetRepeatCount() < 1)
 			TRAP::Utils::MsgBox::Show("Testing MsgBox System", "Test MsgBox");
+#endif
 
 		return true;
 	}
