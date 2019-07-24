@@ -41,7 +41,7 @@ matrix:
       filter_secrets: false
       before_install:
         - curl -L -O https://vulkan.lunarg.com/sdk/download/1.1.108.0/windows/VulkanSDK-1.1.108.0-Installer.exe
-        - travis_wait START /WAIT "" "VulkanSDK-1.1.108.0-Installer.exe" /S
+        - .\VulkanSDK-1.1.108.0-Installer.exe /S
       env: 
         - LABEL="windows-msvc" 
         - MSBUILD_PATH="/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin"
