@@ -46,6 +46,7 @@ matrix:
       env: 
         - LABEL="windows-msvc" 
         - MSBUILD_PATH="/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin"
+        - VULKAN_SDK="/C/VulkanSDK/1.1.108.0"
       script:
         - setx VULKAN_SDK "C:\VulkanSDK\1.1.108.0"
         - set VULKAN_SDK "C:\VulkanSDK\1.1.108.0"
