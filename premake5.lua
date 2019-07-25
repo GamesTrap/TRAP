@@ -169,6 +169,7 @@ project "TRAP"
 			"SPIRV",
 			"StandAlone",
 			"Cocoa.framework",
+			"Foundation.framework",
 
 			"c++fs"
 		}
@@ -256,6 +257,21 @@ project "Sandbox"
 		defines
 		{
 			"TRAP_PLATFORM_MACOSX"
+		}
+
+		links
+		{
+			"GLFW",
+			"GLAD",
+			"ImGui",
+			"%{IncludeDir.VULKAN}/lib/libvulkan",
+			"GLSLang",
+			"SPIRV",
+			"StandAlone",
+			"Cocoa.framework",
+			"Foundation.framework",
+
+			"c++fs"
 		}
 
 	filter "configurations:Debug"
