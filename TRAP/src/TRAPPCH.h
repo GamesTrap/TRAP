@@ -34,10 +34,8 @@
 #include <imgui.h>
 
 #ifdef TRAP_PLATFORM_MACOSX
-#include <Cocoa/Cocoa.h>
-#include <AvailabilityMacros.h>
-#include <objc/objc.h>
-#include <objc/objc-runtime.h>
+#import <Cocoa/Cocoa.h>
+#import <AvailabilityMacros.h>
 #endif
 
 #ifdef TRAP_PLATFORM_WINDOWS
