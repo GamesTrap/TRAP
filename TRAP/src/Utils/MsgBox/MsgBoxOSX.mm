@@ -1,6 +1,11 @@
 #include "TRAPPCH.h"
 #include "MsgBox.h"
 
+#ifdef __OBJC__
+	#import <Cocoa/Cocoa.h>
+	#import <AvailabilityMacros.h>
+#endif
+
 namespace TRAP::Utils::MsgBox::INTERNAL
 {
 NSString *const kOkStr = @"OK";

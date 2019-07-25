@@ -33,11 +33,6 @@
 
 #include <imgui.h>
 
-#ifdef TRAP_PLATFORM_MACOSX
-#import <Cocoa/Cocoa.h>
-#import <AvailabilityMacros.h>
-#endif
-
 #ifdef TRAP_PLATFORM_WINDOWS
 #include <dxgiformat.h>
 #include <dxgi1_6.h>
