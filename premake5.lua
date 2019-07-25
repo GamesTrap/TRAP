@@ -66,7 +66,7 @@ project "TRAP"
 		"%{prj.name}/src/Platform/**",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxWindows.cpp",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinux.cpp",
-		"%{prj.name}/src/Utils/MsgBox/MsgBoxOSX.cpp"
+		"%{prj.name}/src/Utils/MsgBox/MsgBoxOSX.mm"
 	}
 
 	includedirs
@@ -150,7 +150,7 @@ project "TRAP"
 			"%{prj.name}/src/Log/ANSILog.cpp",
 			"%{prj.name}/src/Platform/Mac/**.h",
 			"%{prj.name}/src/Platform/Mac/**.cpp",
-			"%{prj.name}/src/Utils/MsgBox/MsgBoxOSX.cpp"
+			"%{prj.name}/src/Utils/MsgBox/MsgBoxOSX.mm"
 		}
 
 		defines
