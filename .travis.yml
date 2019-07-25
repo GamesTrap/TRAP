@@ -22,20 +22,20 @@ matrix:
         - chmod +x libs/premake5/linux/premake5
         - libs/premake5/linux/premake5 gmake2
         - make
-    - os: osx
-      osx_image: xcode11
-      before_install:
-        - wget -O vulkansdk-macos-1.1.108.0.tar.gz https://sdk.lunarg.com/sdk/download/1.1.108.0/mac/vulkansdk-macos-1.1.108.0.tar.gz?Human=true
-        - tar -xzf vulkansdk-macos-1.1.108.0.tar.gz
-        - export VULKAN_SDK=$TRAVIS_BUILD_DIR/vulkansdk-macos-1.1.108.0/macOS
-        - brew update
-        - brew install llvm
-        - echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> ~/.bash_profile
-        - source ~/.bash_profile
-      script:
-        - chmod +x libs/premake5/osx/premake5
-        - libs/premake5/osx/premake5 gmake2
-        - make
+    #- os: osx
+      #osx_image: xcode11
+      #before_install:
+        #- wget -O vulkansdk-macos-1.1.108.0.tar.gz https://sdk.lunarg.com/sdk/download/1.1.108.0/mac/vulkansdk-macos-1.1.108.0.tar.gz?Human=true
+        #- tar -xzf vulkansdk-macos-1.1.108.0.tar.gz
+        #- export VULKAN_SDK=$TRAVIS_BUILD_DIR/vulkansdk-macos-1.1.108.0/macOS
+        #- brew update
+        #- brew install llvm
+        #- echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> ~/.bash_profile
+        #- source ~/.bash_profile
+      #script:
+        #- chmod +x libs/premake5/osx/premake5
+        #- libs/premake5/osx/premake5 gmake2
+        #- make
     - os: windows
       sudo: required
       filter_secrets: false
