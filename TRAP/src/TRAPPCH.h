@@ -36,6 +36,8 @@
 #ifdef TRAP_PLATFORM_MACOSX
 #include <Cocoa/Cocoa.h>
 #include <AvailabilityMacros.h>
+#include <objc/objc.h>
+#include <objc/objc-runtime.h>
 #endif
 
 #ifdef TRAP_PLATFORM_WINDOWS
