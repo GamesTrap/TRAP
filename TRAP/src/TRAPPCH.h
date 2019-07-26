@@ -22,6 +22,8 @@
 #include <chrono>
 #include <ctime>
 #include <cstdio>
+#include <iomanip>
+#include <cstring>
 
 #include <vulkan/vulkan.h>
 #include <glslang/Public/ShaderLang.h>

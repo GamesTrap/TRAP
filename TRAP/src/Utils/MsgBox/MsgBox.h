@@ -1,8 +1,6 @@
 #ifndef _TRAP_MSGBOX_H_
 #define _TRAP_MSGBOX_H_
 
-#ifndef TRAP_PLATFORM_LINUX
-
 namespace TRAP::Utils::MsgBox
 {
 	//Options for styles to apply to a message box
@@ -69,8 +67,6 @@ namespace TRAP::Utils::MsgBox
 	{
 		return Show(message, title, Style::Info, Buttons::OK);
 	}
-} // namespace TRAP::Utils::MsgBox
-
-#endif
+}
 
 #endif /*_TRAP_MSGBOX_H_*/

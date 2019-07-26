@@ -198,4 +198,10 @@ SITREP 07/22/2019|19w30a1
 
 SITREP 07/24/2019|19w30a2
     - Changed TRAP Engine version to 19w30a2(0.4.10)
-    - Fixed premake5.lua to successfully build on Linux
+    - Readded MsgBoxLinux ~>75 mins
+    - Fixed premake5.lua to successfully build on Linux and Windows
+    - Fixed all issues with Travis
+
+SITREP 07/26/2019|19w30a3
+    - Changed TRAP Engine version to 19w30a3(0.5.0)
+    - Linux support now official

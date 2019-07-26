@@ -42,11 +42,8 @@ void TRAP::Graphics::API::RendererAPI::Init()
 		break;
 
 	default:
-		//This should never be reached.
 		TP_CRITICAL("[Renderer] Unsupported Device!");
-#ifndef TRAP_PLATFORM_LINUX
 		Show("Device is unsupported!\n No RenderAPI selected!", "Unsupported Device", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
-#endif
 		exit(-1);
 	}
 

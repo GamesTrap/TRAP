@@ -52,9 +52,7 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 	default:
 		//This should never be reached.
 		TP_CRITICAL("[Engine] Unsupported Device!");
-#ifndef TRAP_PLATFORM_LINUX
 		Show("Device is unsupported!\nNo RenderAPI selected!", "Unsupported Device", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
-#endif
 		exit(-1);
 	}
 }

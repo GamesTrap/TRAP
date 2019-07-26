@@ -65,7 +65,7 @@ project "TRAP"
 		"%{prj.name}/src/Graphics/API/D3D12/**",
 		"%{prj.name}/src/Platform/**",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxWindows.cpp",
-		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinux.cpp",
+		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.cpp",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxOSX.mm"
 	}
 
@@ -113,6 +113,19 @@ project "TRAP"
 		}
 
 	filter "system:linux"
+	if os.getenv("WAYLAND_DISPLAY") and os.getenv("XDG_SESSION_TYPE") then
+		if os.getenv("XDG_SESSION_TYPE") == "wayland" then			
+			files
+			{
+				"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxWayland.cpp"
+			}
+		end
+	else		
+		files
+		{
+			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.cpp"
+		}
+	end
 
 		-- Add Linux-specific files
         files
@@ -120,11 +133,6 @@ project "TRAP"
 			"%{prj.name}/src/Log/ANSILog.cpp",
             "%{prj.name}/src/Platform/Linux/**.h",
 			"%{prj.name}/src/Platform/Linux/**.cpp"
-		}
-		
-		removefiles 
-		{
-			"%{prj.name}/src/Utils/MsgBox/MsgBox.h"
 		}
 
 		defines
