@@ -213,3 +213,7 @@ SITREP 07/27/2019|19w30a4
     - Added Projection Matrix recalculation on resizing ~>15 mins
     - Added support for Model(Transformation) Matrix ~>35 mins
     - Added new FPS calculation method thx to Nilusss <10 mins
+
+SITREP 07/27/2019|19w30a5
+    - Changed TRAP Engine version to 19w30a5(0.5.2)
+    - Added Projection/View/Model Matrix to the Passthrough Shader ~<10 mins

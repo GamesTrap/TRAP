@@ -15,11 +15,11 @@ public:
 		m_vertexArray(nullptr),
 		m_camera
 		(-(static_cast<float>(TRAP::Application::Get().GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::Get().GetWindow()->GetHeight())),
-		         static_cast<float>(TRAP::Application::Get().GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::Get().GetWindow()->GetHeight()),
-		         -1.0f,
-		         1.0f,
-		         -1.0f,
-		         1.0f
+			static_cast<float>(TRAP::Application::Get().GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::Get().GetWindow()->GetHeight()),
+			-1.0f,
+			1.0f,
+			-1.0f,
+			1.0f
 		),
 		m_cameraPosition(0.0f),
 		m_cameraRotation(0.0f)
@@ -79,8 +79,10 @@ public:
 		{
 			0, 1, 2
 		};*/
-		std::array<uint32_t, 6> rectangleIndices{
-			0, 1, 2, 2, 3, 0 };
+		std::array<uint32_t, 6> rectangleIndices
+		{
+			0, 1, 2, 2, 3, 0
+		};
 		std::unique_ptr<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(rectangleIndices.data(), static_cast<uint32_t>(rectangleIndices.size()), TRAP::Graphics::BufferUsage::STATIC);
 		m_vertexArray->SetIndexBuffer(indexBuffer);
 	}
@@ -108,26 +110,24 @@ public:
 		{
 			if (m_show)
 			{
-				if (m_usePassthrough)
-					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray);
-				else
+				static TRAP::Maths::Mat4 scale = TRAP::Maths::Mat4::Scale(TRAP::Maths::Vec3(0.1f));
+
+				for (int y = 0; y < 10; y++)
 				{
-					static TRAP::Maths::Mat4 scale = TRAP::Maths::Mat4::Scale(TRAP::Maths::Vec3(0.1f));
-
-					for(int y = 0; y < 10; y++)
+					for (int x = 0; x < 10; x++)
 					{
-						for(int x = 0; x < 10; x++)
-						{
-							TRAP::Maths::Vec3 position(static_cast<float>(x) * 0.11f, static_cast<float>(y) * 0.11f, 0.0f);
-							TRAP::Maths::Mat4 transform = TRAP::Maths::Mat4::Translate(position) * scale;
-							TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray, transform);
-						}
-					}
+						TRAP::Maths::Vec3 position(static_cast<float>(x) * 0.11f, static_cast<float>(y) * 0.11f, 0.0f);
+						TRAP::Maths::Mat4 transform = TRAP::Maths::Mat4::Translate(position) * scale;
 
-					//TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray, TRAP::Maths::Mat4::Transpose(TRAP::Maths::Mat4::Identity()));
+						if (m_usePassthrough)
+							TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray, transform);
+						else						
+							TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray, transform);						
+					}
 				}
 			}
 		}
+
 		TRAP::Graphics::Renderer::EndScene();
 
 		//FPS & FrameTime
