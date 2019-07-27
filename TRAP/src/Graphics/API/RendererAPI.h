@@ -1,7 +1,16 @@
 #ifndef _TRAP_RENDERERAPI_H_
 #define _TRAP_RENDERERAPI_H_
 
-namespace TRAP::Graphics {
+#include "Maths/Maths.h"
+
+namespace TRAP
+{
+	class Window;
+}
+
+namespace TRAP::Graphics 
+{
+	class VertexArray;
 	enum class RendererCullMode;
 	enum class RendererBlendEquation;
 	enum class RendererBlendFunction;

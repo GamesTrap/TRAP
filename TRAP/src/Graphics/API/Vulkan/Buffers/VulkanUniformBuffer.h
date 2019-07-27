@@ -1,12 +1,15 @@
 #ifndef _TRAP_VULKANUNIFORMBUFFER_H_
 #define _TRAP_VULKANUNIFORMBUFFER_H_
 
+#include "Graphics/Buffers/UniformBuffer.h"
+
 namespace TRAP::Graphics::API
 {
 	class VulkanUniformBuffer : public UniformBuffer
 	{
 	public:
 		VulkanUniformBuffer(const char* name, uint32_t size, BufferUsage usage);
+		VulkanUniformBuffer(const char* name, const void* data, uint32_t size, BufferUsage usage);
 		virtual ~VulkanUniformBuffer() = default;
 		VulkanUniformBuffer(const VulkanUniformBuffer&) = default;
 		VulkanUniformBuffer& operator=(const VulkanUniformBuffer&) = default;

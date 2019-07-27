@@ -1,6 +1,9 @@
 #include "TRAPPCH.h"
 #include "VFS.h"
 
+#include "Utils/String.h"
+#include "FileSystem.h"
+
 std::unique_ptr<TRAP::VFS> TRAP::VFS::s_Instance = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//

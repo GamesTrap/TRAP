@@ -1,6 +1,8 @@
 #ifndef _TRAP_OPENGLINDEXBUFFER_H_
 #define _TRAP_OPENGLINDEXBUFFER_H_
 
+#include "Graphics/Buffers/IndexBuffer.h"
+
 namespace TRAP::Graphics::API
 {
 	class OpenGLIndexBuffer final : public IndexBuffer

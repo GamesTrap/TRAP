@@ -1,6 +1,11 @@
 #ifndef _TRAP_VULKANSHADER_H_
 #define _TRAP_VULKANSHADER_H_
 
+#include "Graphics/Shaders/Shader.h"
+#include "Graphics/Shaders/ShaderUniform.h"
+#include "Graphics/Shaders/ShaderResource.h"
+#include "Graphics/Shaders/ShaderManager.h"
+
 namespace TRAP::Graphics::API
 {
 	struct VulkanShaderErrorInfo

@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "MathsFunc.h"
 
+#include <cmath>
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 float TRAP::Maths::ToRadians(const float degrees)

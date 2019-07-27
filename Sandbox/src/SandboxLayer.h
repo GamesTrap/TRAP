@@ -1,31 +1,20 @@
 #pragma once
 
 #include <TRAP.h>
-#include <utility>
-
-constexpr unsigned int g_RequiredSystemUniformsCount{ 2 };
-inline std::array<const std::string, g_RequiredSystemUniformsCount> g_RequiredSystemUniforms =
-{
-	"sys_ProjectionMatrix",
-	"sys_ViewMatrix"
-};
-
-constexpr unsigned int sys_ProjectionMatrixIndex = 0;
-constexpr unsigned int sys_ViewMatrixIndex = 1;
 
 class SandboxLayer : public TRAP::Layer
 {
 public:
 	SandboxLayer()
 		: Layer("Sandbox"),
-		m_usePassthrough(false),
-		m_wireFrame(false),
-		m_showTriangle(true),
-		m_triangleVertexArray(nullptr),
-		m_camera(-1.6f, 1.6f, -0.9f, 0.9f, -1.0f, 1.0f),
-		m_cameraPosition(0.0f),
-		m_cameraRotation(0.0f),
-		m_uniformBuffer(nullptr)
+		  m_usePassthrough(false),
+		  m_wireFrame(false),
+		  m_showTriangle(true),
+		  m_vertexArray(nullptr),
+		  m_camera(-1.6f, 1.6f, -0.9f, 0.9f, -1.0f, 1.0f),
+		  m_cameraPosition(0.0f),
+		  m_cameraRotation(0.0f),
+		  m_uniformBuffer(nullptr)
 	{
 	}
 
@@ -42,37 +31,44 @@ public:
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
 		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::API::Shader::CreateFromFile("Color", "/Shaders/Color.shader"));
 
-		//////////////
-		// Triangle //
-		//////////////
-		m_triangleVertexArray = TRAP::Graphics::VertexArray::Create();
+		///////////////
+		// Rectangle //
+		///////////////
+		m_vertexArray = TRAP::Graphics::VertexArray::Create();
 
 		//XYZ RGBA
-		std::array<float, 3 * 7> triangleVertices
+		/*std::array<float, 7 * 3> triangleVertices
 		{
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,
 			 0.0f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f
-		};
-		std::unique_ptr<TRAP::Graphics::VertexBuffer> triangleVertexBuffer = TRAP::Graphics::VertexBuffer::Create(triangleVertices.data(), static_cast<uint32_t>(triangleVertices.size()), TRAP::Graphics::BufferUsage::STATIC);
+		};*/
+		std::array<float, 7 * 4> rectangleVertices{
+			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,
+			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,
+			 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f};
+		std::unique_ptr<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(rectangleVertices.data(), static_cast<uint32_t>(rectangleVertices.size()), TRAP::Graphics::BufferUsage::STATIC);
 		const TRAP::Graphics::BufferLayout triangleLayout =
-		{
-			{TRAP::Graphics::ShaderDataType::Float3, "Position"},
-			{TRAP::Graphics::ShaderDataType::Float4, "Color"}
-		};
-		triangleVertexBuffer->SetLayout(triangleLayout);
-		m_triangleVertexArray->AddVertexBuffer(triangleVertexBuffer);
+			{
+				{TRAP::Graphics::ShaderDataType::Float3, "Position"},
+				{TRAP::Graphics::ShaderDataType::Float4, "Color"}
+			};
+		vertexBuffer->SetLayout(triangleLayout);
+		m_vertexArray->AddVertexBuffer(vertexBuffer);
 
-		std::array<uint32_t, 3> triangleIndices
+		/*std::array<uint32_t, 3> triangleIndices
 		{
 			0, 1, 2
-		};
-		std::unique_ptr<TRAP::Graphics::IndexBuffer> triangleIndexBuffer = TRAP::Graphics::IndexBuffer::Create(triangleIndices.data(), static_cast<uint32_t>(triangleIndices.size()), TRAP::Graphics::BufferUsage::STATIC);
-		m_triangleVertexArray->SetIndexBuffer(triangleIndexBuffer);
+		};*/
+		std::array<uint32_t, 6> rectangleIndices{
+			0, 1, 2, 2, 3, 0};
+		std::unique_ptr<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(rectangleIndices.data(), static_cast<uint32_t>(rectangleIndices.size()), TRAP::Graphics::BufferUsage::STATIC);
+		m_vertexArray->SetIndexBuffer(indexBuffer);
 
 		//Matrices needs to be transposed because of the row-major order
-		UBOData uboData{ TRAP::Maths::Mat4::Transpose(m_camera.GetProjectionMatrix()), TRAP::Maths::Mat4::Transpose(m_camera.GetViewMatrix()) };
-		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("matBuf", sizeof(UBOData), TRAP::Graphics::BufferUsage::DYNAMIC);
+		UBOData uboData{TRAP::Maths::Mat4::Transpose(m_camera.GetProjectionMatrix()), TRAP::Maths::Mat4::Transpose(m_camera.GetViewMatrix())};
+		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("matBuf", &uboData, sizeof(UBOData), TRAP::Graphics::BufferUsage::DYNAMIC);
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -82,8 +78,8 @@ public:
 		m_uniformBuffer->Unbind();
 		m_uniformBuffer.reset();
 
-		m_triangleVertexArray->Unbind();
-		m_triangleVertexArray.reset();
+		m_vertexArray->Unbind();
+		m_vertexArray.reset();
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -110,7 +106,7 @@ public:
 				else
 					TRAP::Graphics::ShaderManager::Get("Color")->Bind();
 
-				TRAP::Graphics::Renderer::Submit(m_triangleVertexArray);
+				TRAP::Graphics::Renderer::Submit(m_vertexArray);
 			}
 		}
 		TRAP::Graphics::Renderer::EndScene();
@@ -156,7 +152,7 @@ public:
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	bool OnKeyPressed(TRAP::KeyPressedEvent& event)
+	bool OnKeyPressed(TRAP::KeyPressedEvent &event)
 	{
 		if (event.GetKeyCode() == TP_KEY_ESCAPE)
 			TRAP::Application::Get().Shutdown();
@@ -186,15 +182,17 @@ public:
 			TRAP::Graphics::RenderCommand::SetWireFrame(m_wireFrame);
 		}
 
+#ifndef TRAP_PLATFORM_LINUX
 		if (event.GetKeyCode() == TP_KEY_F11 && event.GetRepeatCount() < 1)
 			TRAP::Utils::MsgBox::Show("Testing MsgBox System", "Test MsgBox");
+#endif
 
 		return true;
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	void OnEvent(TRAP::Event& event) override
+	void OnEvent(TRAP::Event &event) override
 	{
 		TRAP::EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<TRAP::KeyPressedEvent>(TP_BIND_EVENT_FN(SandboxLayer::OnKeyPressed));
@@ -204,7 +202,7 @@ public:
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	bool OnResize(TRAP::WindowResizeEvent& event) const
+	bool OnResize(TRAP::WindowResizeEvent &event) const
 	{
 		TRAP::Graphics::RenderCommand::SetViewport(0, 0, event.GetWidth(), event.GetHeight());
 
@@ -218,7 +216,7 @@ private:
 	bool m_wireFrame;
 	bool m_showTriangle;
 
-	std::unique_ptr<TRAP::Graphics::VertexArray> m_triangleVertexArray;
+	std::unique_ptr<TRAP::Graphics::VertexArray> m_vertexArray;
 
 	TRAP::Graphics::OrthographicCamera m_camera;
 	TRAP::Maths::Vec3 m_cameraPosition;

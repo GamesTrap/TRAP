@@ -1,6 +1,10 @@
 #ifndef _TRAP_OPENGLRENDERER_H_
 #define _TRAP_OPENGLRENDERER_H_
 
+#include "Graphics/API/RendererAPI.h"
+#include "Maths/Maths.h"
+#include "OpenGLContext.h"
+
 namespace TRAP::Graphics::API
 {
 	class OpenGLRenderer final : public RendererAPI

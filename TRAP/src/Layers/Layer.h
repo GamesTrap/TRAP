@@ -1,6 +1,9 @@
 #ifndef _TRAP_LAYER_H_
 #define _TRAP_LAYER_H_
 
+#include "Utils/TimeStep.h"
+#include "Event/Event.h"
+
 namespace TRAP {
 
 	class Layer

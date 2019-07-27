@@ -12,6 +12,9 @@
 #include <GLFW/glfw3native.h>
 #endif
 
+#include "Application.h"
+#include "Graphics/API/Context.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::ImGuiLayer::ImGuiLayer()

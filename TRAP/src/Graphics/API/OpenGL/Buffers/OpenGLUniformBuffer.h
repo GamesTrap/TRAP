@@ -1,6 +1,8 @@
 #ifndef _TRAP_OPENGLUNIFORMBUFFER_H_
 #define _TRAP_OPENGLUNIFORMBUFFER_H_
 
+#include "Graphics/Buffers/UniformBuffer.h"
+
 namespace TRAP::Graphics::API
 {
 	class OpenGLUniformBuffer final : public UniformBuffer

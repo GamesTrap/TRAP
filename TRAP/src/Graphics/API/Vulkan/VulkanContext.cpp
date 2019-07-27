@@ -1,6 +1,10 @@
 #include "TRAPPCH.h"
 #include "VulkanContext.h"
 
+#include "VulkanCommon.h"
+#include "VulkanRenderer.h"
+#include "Window/Window.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanContext::VulkanContext(Window* window)

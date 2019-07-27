@@ -1,6 +1,11 @@
 #include "TRAPPCH.h"
 #include "VertexBuffer.h"
 
+#include "Graphics/API/Context.h"
+#include "Graphics/API/D3D12/Buffers/D3D12VertexBuffer.h"
+#include "Graphics/API/Vulkan/Buffers/VulkanVertexBuffer.h"
+#include "Graphics/API/OpenGL/Buffers/OpenGLVertexBuffer.h"
+
 std::unique_ptr<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(float* vertices, uint32_t size, BufferUsage usage)
 {
 	switch(API::Context::GetRenderAPI())

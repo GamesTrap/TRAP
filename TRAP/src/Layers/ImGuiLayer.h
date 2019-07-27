@@ -1,6 +1,8 @@
 #ifndef _TRAP_IMGUILAYER_H_
 #define _TRAP_IMGUILAYER_H_
 
+#include "Layer.h"
+
 namespace TRAP
 {
 	class  ImGuiLayer final : public Layer

@@ -3,9 +3,11 @@
 
 #include "Graphics/API/Context.h"
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include "Event/Event.h"
+#include "Utils/Logo.h"
 
 namespace TRAP
 {

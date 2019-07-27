@@ -10,7 +10,7 @@ TRAP::Graphics::API::OpenGLShaderUniformDeclaration::OpenGLShaderUniformDeclarat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::OpenGLShaderUniformDeclaration::OpenGLShaderUniformDeclaration(std::unique_ptr<ShaderStruct>& uniformStruct, std::string name, const unsigned int count)
+TRAP::Graphics::API::OpenGLShaderUniformDeclaration::OpenGLShaderUniformDeclaration(std::unique_ptr<ShaderStruct> uniformStruct, std::string name, const unsigned int count)
 	: m_name(std::move(name)), m_size(0), m_count(count), m_offset(0), m_type(Type::STRUCT), m_struct(std::move(uniformStruct)), m_location(0)
 {
 	m_size = m_struct->GetSize() * count;

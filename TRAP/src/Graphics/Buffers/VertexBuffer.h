@@ -1,6 +1,8 @@
 #ifndef _TRAP_VERTEXBUFFER_H_
 #define _TRAP_VERTEXBUFFER_H_
 
+#include "BufferLayout.h"
+
 namespace TRAP::Graphics
 {
 	enum class BufferUsage

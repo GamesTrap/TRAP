@@ -10,11 +10,11 @@ matrix:
       before_install: 
         - sudo apt-get -qq update
         - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-        - sudo apt-get update -qq
+        - sudo apt-get -qq update
         - sudo apt-get -qq install -y g++-9 gcc-9
-        - sudo apt-get -qq install -y xorg-dev libassimp-dev libglm-dev graphviz libxcb-dri3-0 libxcb-present0 libpciaccess0 cmake libpng-dev libxcb-dri3-dev libx11-dev libx11-xcb-dev libmirclient-dev libwayland-dev libxrandr-dev
+        - sudo apt-get -qq install -y xorg-dev graphviz libxcb-dri3-0 libxcb-present0 libpciaccess0 cmake libxcb-dri3-dev libx11-dev libx11-xcb-dev libmirclient-dev libwayland-dev libxrandr-dev
         - wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
-        - sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.1.106-xenial.list http://packages.lunarg.com/vulkan/1.1.106/lunarg-vulkan-1.1.106-xenial.list
+        - sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-1.1.108-xenial.list http://packages.lunarg.com/vulkan/1.1.108/lunarg-vulkan-1.1.108-xenial.list
         - sudo apt -qq update
         - sudo apt install -y vulkan-sdk
       install: if [[ "$COMPILER" == "g++-9" ]]; then export CXX="g++-9" CC="gcc-9"; fi
@@ -22,30 +22,34 @@ matrix:
         - chmod +x libs/premake5/linux/premake5
         - libs/premake5/linux/premake5 gmake2
         - make
-    - os: osx
-      osx_image: xcode10.2
-      before_install:
-        - wget -O vulkansdk-macos-1.1.106.0.tar.gz https://sdk.lunarg.com/sdk/download/1.1.106.0/mac/vulkansdk-macos-1.1.106.0.tar.gz?Human=true
-        - tar -xzf vulkansdk-macos-1.1.106.0.tar.gz
-        - export VULKAN_SDK=$TRAVIS_BUILD_DIR/vulkansdk-macos-1.1.106.0/macOS
-        - brew update
-        - brew install llvm
-        - echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> ~/.bash_profile
-        - source ~/.bash_profile
-      script:
-        - chmod +x libs/premake5/osx/premake5
-        - libs/premake5/osx/premake5 gmake2
-        - make
+    #- os: osx
+      #osx_image: xcode11
+      #before_install:
+        #- wget -O vulkansdk-macos-1.1.108.0.tar.gz https://sdk.lunarg.com/sdk/download/1.1.108.0/mac/vulkansdk-macos-1.1.108.0.tar.gz?Human=true
+        #- tar -xzf vulkansdk-macos-1.1.108.0.tar.gz
+        #- export VULKAN_SDK=$TRAVIS_BUILD_DIR/vulkansdk-macos-1.1.108.0/macOS
+        #- brew update
+        #- brew install llvm
+        #- echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> ~/.bash_profile
+        #- source ~/.bash_profile
+      #script:
+        #- chmod +x libs/premake5/osx/premake5
+        #- libs/premake5/osx/premake5 gmake2
+        #- make
     - os: windows
+      sudo: required
+      filter_secrets: false
       before_install:
-        - curl -L -O https://vulkan.lunarg.com/sdk/download/1.1.106.0/windows/VulkanSDK-1.1.106.0-Installer.exe
-        - start /wait VulkanSDK-1.1.106.0-Installer.exe /S
+        - curl -L -O https://vulkan.lunarg.com/sdk/download/1.1.108.0/windows/VulkanSDK-1.1.108.0-Installer.exe
+        - chmod +x VulkanSDK-1.1.108.0-Installer.exe
+        - PowerShell -Command 'Start-Process -Wait -FilePath "VulkanSDK-1.1.108.0-Installer.exe" -ArgumentList "/S" -PassThru'
       env: 
         - LABEL="windows-msvc" 
         - MSBUILD_PATH="/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin"
-        - VULKAN_SDK="/C/VulkanSDK/1.1.106.0"
+        - VULKAN_SDK="/C/VulkanSDK/1.1.108.0"
       script:
+        - setx VULKAN_SDK "C:\VulkanSDK\1.1.108.0"
+        - set VULKAN_SDK "C:\VulkanSDK\1.1.108.0"
         - libs/premake5/windows/premake5.exe vs2017 
         - export PATH=$MSBUILD_PATH:$PATH 
-        - export VULKAN_SDK=$VULKAN_SDK
         - MSBuild.exe TRAP.sln //t:Build

@@ -1,6 +1,11 @@
 #include "TRAPPCH.h"
 #include "OpenGLRenderer.h"
 
+#include "OpenGLCommon.h"
+#include "Graphics/RenderCommand.h"
+#include "Graphics/Buffers/VertexArray.h"
+#include "Graphics/Buffers/IndexBuffer.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::OpenGLRenderer::OpenGLRenderer()

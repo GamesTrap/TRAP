@@ -7,7 +7,6 @@ void TRAP::Log::Save()
 {
 	TP_INFO("[Logger] Saving Log.txt");
 
-	//Save to Log.txt Can't be handled by VFS see BUG#4
 	std::ofstream file("Log.txt");
 	if (file.is_open())
 	{
@@ -29,7 +28,7 @@ std::string TRAP::Log::GetTimeStamp()
 #ifdef TRAP_PLATFORM_WINDOWS
 	localtime_s(&tm, &time);
 #else
-	localtime_r(&tm, &time);
+	localtime_r(&time, &tm);
 #endif
 	ss << std::put_time(&tm, "%T") << ']';
 

@@ -65,8 +65,8 @@ project "TRAP"
 		"%{prj.name}/src/Graphics/API/D3D12/**",
 		"%{prj.name}/src/Platform/**",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxWindows.cpp",
-		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinux.cpp",
-		"%{prj.name}/src/Utils/MsgBox/MsgBoxOSX.cpp"
+		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.cpp",
+		"%{prj.name}/src/Utils/MsgBox/MsgBoxOSX.mm"
 	}
 
 	includedirs
@@ -106,21 +106,34 @@ project "TRAP"
 			"D3D12",
 			"DXGI",
 			"D3DCOMPILER",
-			"%{IncludeDir.VULKAN}/lib/vulkan-1",
+			"%{IncludeDir.VULKAN}/Lib/vulkan-1",
 			"GLSLang",
 			"SPIRV",
 			"StandAlone"
 		}
 
 	filter "system:linux"
+	if os.getenv("WAYLAND_DISPLAY") and os.getenv("XDG_SESSION_TYPE") then
+		if os.getenv("XDG_SESSION_TYPE") == "wayland" then			
+			files
+			{
+				"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxWayland.cpp"
+			}
+		end
+	else		
+		files
+		{
+			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.cpp"
+		}
+	end
+
 		-- Add Linux-specific files
         files
         {
 			"%{prj.name}/src/Log/ANSILog.cpp",
             "%{prj.name}/src/Platform/Linux/**.h",
-			"%{prj.name}/src/Platform/Linux/**.cpp",
-			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinux.cpp"
-        }
+			"%{prj.name}/src/Platform/Linux/**.cpp"
+		}
 
 		defines
 		{
@@ -130,19 +143,13 @@ project "TRAP"
 
 		links
 		{
-			"GLFW",
 			"GLAD",
+			"GLFW",
 			"ImGui",
-			"%{IncludeDir.VULKAN}/lib/libvulkan",
 			"GLSLang",
 			"SPIRV",
 			"StandAlone",
-			"GTK+-2.0"
-		}
-
-		includedirs
-		{
-			os.getenv("GTK3_INCLUDE_DIRS")
+			"vulkan"
 		}
 
 	filter "system:macosx"
@@ -151,7 +158,7 @@ project "TRAP"
 			"%{prj.name}/src/Log/ANSILog.cpp",
 			"%{prj.name}/src/Platform/Mac/**.h",
 			"%{prj.name}/src/Platform/Mac/**.cpp",
-			"%{prj.name}/src/Utils/MsgBox/MsgBoxOSX.cpp"
+			"%{prj.name}/src/Utils/MsgBox/MsgBoxOSX.mm"
 		}
 
 		defines
@@ -170,6 +177,7 @@ project "TRAP"
 			"SPIRV",
 			"StandAlone",
 			"Cocoa.framework",
+			"Foundation.framework",
 
 			"c++fs"
 		}
@@ -212,10 +220,10 @@ project "Sandbox"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.IMGUI}",
-		"%{IncludeDir.VULKAN}/Include/",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
-		"%{IncludeDir.STANDALONE}"
+		"%{IncludeDir.STANDALONE}",
+		"%{IncludeDir.VULKAN}/Include/"
 	}
 
 	links
@@ -230,6 +238,24 @@ project "Sandbox"
 		}
 
 	filter "system:linux"
+		links
+		{
+			"GLAD",
+			"GLFW",
+			"ImGui",
+			"GLSLang",
+			"SPIRV",
+			"StandAlone",
+			"vulkan",
+
+			"dl",
+			"pthread",
+			"X11",
+			"HLSL",
+			"OGLCompiler",
+			"OSDependent"
+		}
+
 		defines
 		{
 			"TRAP_PLATFORM_LINUX"
@@ -239,6 +265,21 @@ project "Sandbox"
 		defines
 		{
 			"TRAP_PLATFORM_MACOSX"
+		}
+
+		links
+		{
+			"GLFW",
+			"GLAD",
+			"ImGui",
+			"%{IncludeDir.VULKAN}/lib/libvulkan",
+			"GLSLang",
+			"SPIRV",
+			"StandAlone",
+			"Cocoa.framework",
+			"Foundation.framework",
+
+			"c++fs"
 		}
 
 	filter "configurations:Debug"

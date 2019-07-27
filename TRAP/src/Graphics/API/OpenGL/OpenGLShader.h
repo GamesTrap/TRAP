@@ -1,6 +1,13 @@
 #ifndef _TRAP_OPENGLSHADER_H_
 #define _TRAP_OPENGLSHADER_H_
 
+#include "Graphics/Shaders/Shader.h"
+#include "Graphics/Shaders/ShaderUniform.h"
+#include "Graphics/Shaders/ShaderResource.h"
+#include "Graphics/Shaders/ShaderManager.h"
+#include "Maths/Maths.h"
+#include "OpenGLShaderUniform.h"
+
 namespace TRAP::Graphics::API
 {
 	struct OpenGLShaderErrorInfo

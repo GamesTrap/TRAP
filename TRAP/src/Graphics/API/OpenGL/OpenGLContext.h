@@ -1,6 +1,8 @@
 #ifndef _TRAP_OPENGLCONTEXT_H_
 #define _TRAP_OPENGLCONTEXT_H_
 
+#include "Graphics/API/Context.h"
+
 namespace TRAP::Graphics::API
 {
 	class OpenGLContext final : public Context

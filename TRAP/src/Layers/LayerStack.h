@@ -1,8 +1,10 @@
 #ifndef _TRAP_LAYERSTACK_H_
 #define _TRAP_LAYERSTACK_H_
 
-namespace TRAP {
+#include "Layer.h"
 
+namespace TRAP 
+{
 	class LayerStack
 	{
 	public:

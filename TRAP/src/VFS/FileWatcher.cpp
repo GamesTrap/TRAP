@@ -1,6 +1,10 @@
 #include "TRAPPCH.h"
 #include "FileWatcher.h"
 
+#include "Utils/String.h"
+#include "FileSystem.h"
+#include "VFS.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, float updateTimeInMilliseconds)

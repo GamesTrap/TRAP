@@ -1,10 +1,12 @@
 #include "TRAPPCH.h"
 #include "ShaderFactory.h"
 
+#include "Graphics/API/Context.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 //FALLBACK/PASSTHROUGH SHADER
-static constexpr char* s_PassthroughVSGLSL
+static constexpr const char* s_PassthroughVSGLSL
 {
 	R"(
 		#version 460 core
@@ -17,7 +19,7 @@ static constexpr char* s_PassthroughVSGLSL
 		}
 	)"
 };
-static constexpr char* s_PassthroughFSGLSL
+static constexpr const char* s_PassthroughFSGLSL
 {
 	R"(
 		#version 460 core

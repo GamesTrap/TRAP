@@ -3,6 +3,11 @@
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
+#include "Graphics/Shaders/Shader.h"
+#include "Graphics/Shaders/ShaderUniform.h"
+#include "Graphics/Shaders/ShaderResource.h"
+#include "Graphics/Shaders/ShaderManager.h"
+
 namespace TRAP::Graphics::API
 {
 	class D3D12Shader : public Shader

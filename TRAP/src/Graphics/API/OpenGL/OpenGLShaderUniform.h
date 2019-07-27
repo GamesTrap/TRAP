@@ -1,6 +1,8 @@
 #ifndef _TRAP_OPENGLSHADERUNIFORM_H_
 #define _TRAP_OPENGLSHADERUNIFORM_H_
 
+#include "Graphics/Shaders/ShaderUniform.h"
+
 namespace TRAP::Graphics::API
 {
 	class OpenGLShaderUniformDeclaration final : public ShaderUniformDeclaration
@@ -20,7 +22,7 @@ namespace TRAP::Graphics::API
 		};
 
 		OpenGLShaderUniformDeclaration(Type type, std::string name, unsigned int count = 1);
-		OpenGLShaderUniformDeclaration(std::unique_ptr<ShaderStruct>& uniformStruct, std::string name, unsigned int count = 1);
+		OpenGLShaderUniformDeclaration(std::unique_ptr<ShaderStruct> uniformStruct, std::string name, unsigned int count = 1);
 
 		const std::string& GetName() const override;
 		unsigned int GetSize() const override;

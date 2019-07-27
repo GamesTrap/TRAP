@@ -20,4 +20,4 @@ namespace TRAP
 	};
 }
 
-#endif _TRAP_FILESYSTEM_H_
+#endif /*_TRAP_FILESYSTEM_H_*/

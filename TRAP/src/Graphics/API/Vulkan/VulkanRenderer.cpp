@@ -1,6 +1,10 @@
 #include "TRAPPCH.h"
 #include "VulkanRenderer.h"
 
+#include "Graphics/RenderCommand.h"
+#include "VulkanCommon.h"
+#include "Window/Window.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()

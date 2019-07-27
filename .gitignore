@@ -163,3 +163,4 @@ bin/*
 *.sln
 *.vcxproj
 *.filters
+Makefile

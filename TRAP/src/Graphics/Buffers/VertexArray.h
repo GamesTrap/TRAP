@@ -1,6 +1,9 @@
 #ifndef _TRAP_VERTEXARRAY_H_
 #define _TRAP_VERTEXARRAY_H_
 
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+
 namespace TRAP::Graphics
 {
 	class VertexArray

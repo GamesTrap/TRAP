@@ -1,6 +1,10 @@
 #ifndef _TRAP_VULKANRENDERER_H_
 #define _TRAP_VULKANRENDERER_H_
 
+#include "Graphics/API/RendererAPI.h"
+#include "Maths/Maths.h"
+#include "VulkanContext.h"
+
 namespace TRAP::Graphics::API
 {
 	class VulkanRenderer final : public RendererAPI

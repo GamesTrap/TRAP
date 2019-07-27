@@ -1,12 +1,15 @@
 #ifndef _TRAP_D3D12UNIFORMBUFFER_H_
 #define _TRAP_D3D12UNIFORMBUFFER_H_
 
+#include "Graphics/Buffers/UniformBuffer.h"
+
 namespace TRAP::Graphics::API
 {
 	class D3D12UniformBuffer : public UniformBuffer
 	{
 	public:
 		D3D12UniformBuffer(const char* name, uint32_t size, BufferUsage usage);
+		D3D12UniformBuffer(const char* name, const void* data, uint32_t size, BufferUsage usage);
 		virtual ~D3D12UniformBuffer() = default;
 		D3D12UniformBuffer(const D3D12UniformBuffer&) = default;
 		D3D12UniformBuffer& operator=(const D3D12UniformBuffer&) = default;

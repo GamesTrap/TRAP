@@ -3,6 +3,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Application.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Input::IsKeyPressed(const int keycode)

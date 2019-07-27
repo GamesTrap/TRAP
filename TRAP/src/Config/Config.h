@@ -1,7 +1,6 @@
 #ifndef _TRAP_CONFIG_H_
 #define _TRAP_CONFIG_H_
 
-#include "Graphics/API/Context.h"
 #include "Window/Window.h"
 
 namespace TRAP::Utils

@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "OpenGLContext.h"
 
+#include "Window/Window.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Graphics::API::OpenGLContext::s_IsGladInitialized = false;
@@ -11,7 +13,7 @@ TRAP::Graphics::API::OpenGLContext::OpenGLContext(Window* window)
 {
 	glfwMakeContextCurrent(static_cast<GLFWwindow*>(window->GetNativeWindow()));
 
-	if(!s_IsGladInitialized)
+	if (!s_IsGladInitialized)
 	{
 		TP_RENDERER_ASSERT(gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)), "Could not initialize GLAD");
 		s_IsGladInitialized = true;

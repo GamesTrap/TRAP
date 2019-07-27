@@ -1,6 +1,11 @@
 #include "TRAPPCH.h"
 #include "RendererAPI.h"
 
+#include "OpenGL/OpenGLRenderer.h"
+#include "D3D12/D3D12Renderer.h"
+#include "Vulkan/VulkanRenderer.h"
+#include "Utils/MsgBox/MsgBox.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::unique_ptr<TRAP::Graphics::API::RendererAPI> TRAP::Graphics::API::RendererAPI::s_Renderer = nullptr;
@@ -37,7 +42,6 @@ void TRAP::Graphics::API::RendererAPI::Init()
 		break;
 
 	default:
-		//This should never be reached.
 		TP_CRITICAL("[Renderer] Unsupported Device!");
 		Show("Device is unsupported!\n No RenderAPI selected!", "Unsupported Device", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
 		exit(-1);

@@ -1,6 +1,8 @@
 #ifndef _TRAP_VULKANVERTEXARRAY_H_
 #define _TRAP_VULKANVERTEXARRAY_H_
 
+#include "Graphics/Buffers/VertexArray.h"
+
 namespace TRAP::Graphics::API
 {
 	class VulkanVertexArray final : public VertexArray

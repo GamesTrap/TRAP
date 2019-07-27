@@ -1,6 +1,8 @@
 #ifndef _TRAP_APPLICATIONEVENT_H_
 #define _TRAP_APPLICATIONEVENT_H_
 
+#include "Event.h"
+
 namespace TRAP
 {
 	class WindowResizeEvent final : public Event
