@@ -205,3 +205,7 @@ SITREP 07/24/2019|19w30a2
 SITREP 07/26/2019|19w30a3
     - Changed TRAP Engine version to 19w30a3(0.5.0)
     - Linux support now official
+
+SITREP 07/27/2019|19w30a4
+    - Changed TRAP Engine version to 19w30a4(0.5.1)
+    - Added FPS and FrameTime overlay ~<20 mins

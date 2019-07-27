@@ -2,11 +2,13 @@
 
 #include <TRAP.h>
 
-class SandboxLayer : public TRAP::Layer
+class SandboxLayer final : public TRAP::Layer
 {
 public:
 	SandboxLayer()
 		: Layer("Sandbox"),
+		  m_FPS(0),
+		  m_frameTimeHistory(),
 		  m_usePassthrough(false),
 		  m_wireFrame(false),
 		  m_showTriangle(true),
@@ -14,14 +16,20 @@ public:
 		  m_camera(-1.6f, 1.6f, -0.9f, 0.9f, -1.0f, 1.0f),
 		  m_cameraPosition(0.0f),
 		  m_cameraRotation(0.0f),
-		  m_uniformBuffer(nullptr)
-	{
-	}
+		  m_uniformBuffer(nullptr) { }
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnImGuiRender() override
 	{
+		ImGui::SetNextWindowBgAlpha(0.3f);
+		ImGui::Begin("Performance", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+		ImGui::Text("Performance");
+		ImGui::Separator();
+		ImGui::Text("%u FPS", m_FPS);
+		ImGui::Text("%.3f FrameTime", TRAP::Application::Get().GetFrameTime());
+		ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0, 33, ImVec2(250, 75));
+		ImGui::End();
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -43,17 +51,19 @@ public:
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,
 			 0.0f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f
 		};*/
-		std::array<float, 7 * 4> rectangleVertices{
+		std::array<float, 7 * 4> rectangleVertices
+		{
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,
 			 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,
-			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f};
+			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f 
+		};
 		std::unique_ptr<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(rectangleVertices.data(), static_cast<uint32_t>(rectangleVertices.size()), TRAP::Graphics::BufferUsage::STATIC);
 		const TRAP::Graphics::BufferLayout triangleLayout =
-			{
-				{TRAP::Graphics::ShaderDataType::Float3, "Position"},
-				{TRAP::Graphics::ShaderDataType::Float4, "Color"}
-			};
+		{
+			{TRAP::Graphics::ShaderDataType::Float3, "Position"},
+			{TRAP::Graphics::ShaderDataType::Float4, "Color"}
+		};
 		vertexBuffer->SetLayout(triangleLayout);
 		m_vertexArray->AddVertexBuffer(vertexBuffer);
 
@@ -62,12 +72,12 @@ public:
 			0, 1, 2
 		};*/
 		std::array<uint32_t, 6> rectangleIndices{
-			0, 1, 2, 2, 3, 0};
+			0, 1, 2, 2, 3, 0 };
 		std::unique_ptr<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(rectangleIndices.data(), static_cast<uint32_t>(rectangleIndices.size()), TRAP::Graphics::BufferUsage::STATIC);
 		m_vertexArray->SetIndexBuffer(indexBuffer);
 
 		//Matrices needs to be transposed because of the row-major order
-		UBOData uboData{TRAP::Maths::Mat4::Transpose(m_camera.GetProjectionMatrix()), TRAP::Maths::Mat4::Transpose(m_camera.GetViewMatrix())};
+		UBOData uboData{ TRAP::Maths::Mat4::Transpose(m_camera.GetProjectionMatrix()), TRAP::Maths::Mat4::Transpose(m_camera.GetViewMatrix()) };
 		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("matBuf", &uboData, sizeof(UBOData), TRAP::Graphics::BufferUsage::DYNAMIC);
 	}
 
@@ -116,9 +126,23 @@ public:
 		{
 			TRAP::Application::Get().GetWindow()->SetTitle("Sandbox - FPS: " + std::to_string(TRAP::Application::Get().GetFPS()) + " FrameTime: " + std::to_string(TRAP::Application::Get().GetFrameTime()));
 			m_titleTimer.Reset();
+
+			m_FPS = TRAP::Application::Get().GetFPS();
+
+			static int frameTimeIndex = 0;
+			if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
+			{
+				m_frameTimeHistory[frameTimeIndex] = TRAP::Application::Get().GetFrameTime();
+				frameTimeIndex++;
+			}
+			else
+			{
+				std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
+				m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Application::Get().GetFrameTime();
+			}
 		}
 		if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
-		{
+		{			
 			TP_INFO("[Sandbox] FPS: ", TRAP::Application::Get().GetFPS());
 			TP_INFO("[Sandbox] FrameTime: ", TRAP::Application::Get().GetFrameTime(), "ms");
 			m_fpsTimer.Reset();
@@ -152,7 +176,7 @@ public:
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	bool OnKeyPressed(TRAP::KeyPressedEvent &event)
+	bool OnKeyPressed(TRAP::KeyPressedEvent& event)
 	{
 		if (event.GetKeyCode() == TP_KEY_ESCAPE)
 			TRAP::Application::Get().Shutdown();
@@ -192,7 +216,7 @@ public:
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	void OnEvent(TRAP::Event &event) override
+	void OnEvent(TRAP::Event& event) override
 	{
 		TRAP::EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<TRAP::KeyPressedEvent>(TP_BIND_EVENT_FN(SandboxLayer::OnKeyPressed));
@@ -202,7 +226,7 @@ public:
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	bool OnResize(TRAP::WindowResizeEvent &event) const
+	bool OnResize(TRAP::WindowResizeEvent& event) const
 	{
 		TRAP::Graphics::RenderCommand::SetViewport(0, 0, event.GetWidth(), event.GetHeight());
 
@@ -210,6 +234,8 @@ public:
 	}
 
 private:
+	unsigned int m_FPS;
+	std::array<float, 50> m_frameTimeHistory;
 	TRAP::Utils::Timer m_fpsTimer;
 	TRAP::Utils::Timer m_titleTimer;
 	bool m_usePassthrough;
