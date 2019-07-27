@@ -7,15 +7,22 @@ class SandboxLayer final : public TRAP::Layer
 public:
 	SandboxLayer()
 		: Layer("Sandbox"),
-		  m_FPS(0),
-		  m_frameTimeHistory(),
-		  m_usePassthrough(false),
-		  m_wireFrame(false),
-		  m_showTriangle(true),
-		  m_vertexArray(nullptr),
-		  m_camera(-1.6f, 1.6f, -0.9f, 0.9f, -1.0f, 1.0f),
-		  m_cameraPosition(0.0f),
-		  m_cameraRotation(0.0f)
+		m_FPS(0),
+		m_frameTimeHistory(),
+		m_usePassthrough(false),
+		m_wireFrame(false),
+		m_showTriangle(true),
+		m_vertexArray(nullptr),
+		m_camera
+		(-(static_cast<float>(TRAP::Application::Get().GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::Get().GetWindow()->GetHeight())),
+		         static_cast<float>(TRAP::Application::Get().GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::Get().GetWindow()->GetHeight()),
+		         -1.0f,
+		         1.0f,
+		         -1.0f,
+		         1.0f
+		),
+		m_cameraPosition(0.0f),
+		m_cameraRotation(0.0f)
 	{
 	}
 
@@ -57,7 +64,7 @@ public:
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,
 			 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,
-			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f 
+			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f
 		};
 		std::unique_ptr<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(rectangleVertices.data(), static_cast<uint32_t>(rectangleVertices.size()), TRAP::Graphics::BufferUsage::STATIC);
 		const TRAP::Graphics::BufferLayout triangleLayout =
@@ -90,12 +97,13 @@ public:
 
 	void OnUpdate(const TRAP::Utils::TimeStep deltaTime) override
 	{
+		m_camera.SetPosition(m_cameraPosition);
+		m_camera.SetRotation(m_cameraRotation);
+
 		TRAP::Graphics::RenderCommand::SetClearColor();
 		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_COLOR | TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_DEPTH);
 		TRAP::Graphics::RenderCommand::SetCull(false); //Disables Culling
 
-		m_camera.SetPosition(m_cameraPosition);
-		m_camera.SetRotation(m_cameraRotation);
 
 		TRAP::Graphics::Renderer::BeginScene(m_camera);
 		{
@@ -130,7 +138,7 @@ public:
 			}
 		}
 		if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
-		{			
+		{
 			TP_INFO("[Sandbox] FPS: ", TRAP::Application::Get().GetFPS());
 			TP_INFO("[Sandbox] FrameTime: ", TRAP::Application::Get().GetFrameTime(), "ms");
 			m_fpsTimer.Reset();
@@ -212,9 +220,19 @@ public:
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	bool OnResize(TRAP::WindowResizeEvent& event) const
+	bool OnResize(TRAP::WindowResizeEvent& event)
 	{
 		TRAP::Graphics::RenderCommand::SetViewport(0, 0, event.GetWidth(), event.GetHeight());
+		const float aspectRatio = static_cast<float>(event.GetWidth()) / static_cast<float>(event.GetHeight());
+		m_camera = TRAP::Graphics::OrthographicCamera
+		{
+			-aspectRatio,
+			aspectRatio,
+			-1.0f,
+			1.0f,
+			-1.0f,
+			1.0f
+		};
 
 		return true;
 	}
