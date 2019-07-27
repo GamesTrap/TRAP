@@ -11,7 +11,7 @@ public:
 		m_frameTimeHistory(),
 		m_usePassthrough(false),
 		m_wireFrame(false),
-		m_showTriangle(true),
+		m_show(true),
 		m_vertexArray(nullptr),
 		m_camera
 		(-(static_cast<float>(TRAP::Application::Get().GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::Get().GetWindow()->GetHeight())),
@@ -104,15 +104,26 @@ public:
 		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_COLOR | TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_DEPTH);
 		TRAP::Graphics::RenderCommand::SetCull(false); //Disables Culling
 
-
 		TRAP::Graphics::Renderer::BeginScene(m_camera);
 		{
-			if (m_showTriangle)
+			if (m_show)
 			{
 				if (m_usePassthrough)
 					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray);
 				else
-					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray);
+				{
+					static TRAP::Maths::Mat4 scale = TRAP::Maths::Mat4::Scale(TRAP::Maths::Vec3(0.1f));
+
+					for(int y = 0; y < 10; y++)
+					{
+						for(int x = 0; x < 10; x++)
+						{
+							TRAP::Maths::Vec3 position(static_cast<float>(x) * 0.11f, static_cast<float>(y) * 0.11f, 0.0f);
+							TRAP::Maths::Mat4 transform = TRAP::Maths::Mat4::Translate(position) * scale;
+							TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray, transform);
+						}
+					}
+				}
 			}
 		}
 		TRAP::Graphics::Renderer::EndScene();
@@ -146,7 +157,7 @@ public:
 
 		///////////////////
 		//Camera Controls//
-		///////////////////
+		///////////////////		
 		if (TRAP::Input::IsKeyPressed(TP_KEY_A))
 			m_cameraPosition.x -= m_cameraMovementSpeed * deltaTime;
 		if (TRAP::Input::IsKeyPressed(TP_KEY_D))
@@ -195,7 +206,7 @@ public:
 			TRAP::Application::Get().GetWindow()->SetWindowMode(TRAP::DisplayMode::FULLSCREEN);
 
 		if (event.GetKeyCode() == TP_KEY_F9 && event.GetRepeatCount() < 1) //Enable/Disable Triangle
-			m_showTriangle = !m_showTriangle;
+			m_show = !m_show;
 		if (event.GetKeyCode() == TP_KEY_F10 && event.GetRepeatCount() < 1) //Enable/Disable WireFrame Mode
 		{
 			m_wireFrame = !m_wireFrame;
@@ -244,7 +255,7 @@ private:
 	TRAP::Utils::Timer m_titleTimer;
 	bool m_usePassthrough;
 	bool m_wireFrame;
-	bool m_showTriangle;
+	bool m_show;
 
 	std::unique_ptr<TRAP::Graphics::VertexArray> m_vertexArray;
 

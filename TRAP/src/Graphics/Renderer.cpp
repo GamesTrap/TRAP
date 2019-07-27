@@ -6,18 +6,18 @@
 #include "OrthographicCamera.h"
 #include "Graphics/Shaders/Shader.h"
 
-std::unique_ptr<TRAP::Graphics::Renderer::SceneData> TRAP::Graphics::Renderer::m_sceneData = std::make_unique<SceneData>();
+std::unique_ptr<TRAP::Graphics::Renderer::SceneData> TRAP::Graphics::Renderer::s_sceneData = std::make_unique<SceneData>();
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Renderer::m_uniformBuffer = nullptr;
+std::unique_ptr<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Renderer::s_uniformBuffer = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer::BeginScene(OrthographicCamera& camera)
 {
-	m_sceneData->m_projectionMatrix = Maths::Mat4::Transpose(camera.GetProjectionMatrix());
-	m_sceneData->m_viewMatrix = Maths::Mat4::Transpose(camera.GetViewMatrix());
+	s_sceneData->m_projectionMatrix = Maths::Mat4::Transpose(camera.GetProjectionMatrix());
+	s_sceneData->m_viewMatrix = Maths::Mat4::Transpose(camera.GetViewMatrix());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -28,15 +28,16 @@ void TRAP::Graphics::Renderer::EndScene()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Submit(const API::Shader* shader, const std::unique_ptr<VertexArray>& vertexArray)
+void TRAP::Graphics::Renderer::Submit(const API::Shader* shader, const std::unique_ptr<VertexArray>& vertexArray, const Maths::Mat4& transform)
 {
+	s_sceneData->m_modelMatrix = Maths::Mat4::Transpose(transform);
 	if(shader)
 	{
 		shader->Bind();
-		if (!m_uniformBuffer)
-			m_uniformBuffer = UniformBuffer::Create("MatrixBuffer", m_sceneData.get(), sizeof(SceneData), BufferUsage::DYNAMIC);
+		if (!s_uniformBuffer)
+			s_uniformBuffer = UniformBuffer::Create("MatrixBuffer", s_sceneData.get(), sizeof(SceneData), BufferUsage::DYNAMIC);
 		else
-			m_uniformBuffer->UpdateData(m_sceneData.get(), sizeof(SceneData), BufferUsage::DYNAMIC);
+			s_uniformBuffer->UpdateData(s_sceneData.get(), sizeof(SceneData), BufferUsage::DYNAMIC);
 	}
 
 	vertexArray->Bind();
@@ -47,6 +48,6 @@ void TRAP::Graphics::Renderer::Submit(const API::Shader* shader, const std::uniq
 
 void TRAP::Graphics::Renderer::Cleanup()
 {
-	m_uniformBuffer->Unbind();
-	m_uniformBuffer.reset();
+	s_uniformBuffer->Unbind();
+	s_uniformBuffer.reset();
 }

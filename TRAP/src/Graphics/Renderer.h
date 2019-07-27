@@ -21,7 +21,7 @@ namespace TRAP::Graphics
 		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();
 
-		static void Submit(const API::Shader* shader, const std::unique_ptr<VertexArray>& vertexArray);
+		static void Submit(const API::Shader* shader, const std::unique_ptr<VertexArray>& vertexArray, const Maths::Mat4& transform = Maths::Mat4::Transpose(Maths::Mat4::Identity()));
 
 		static void Cleanup();
 
@@ -29,16 +29,17 @@ namespace TRAP::Graphics
 		struct SceneData
 		{
 			SceneData()
-				: m_projectionMatrix(0.0f), m_viewMatrix(0.0f)
+				: m_projectionMatrix(0.0f), m_viewMatrix(0.0f), m_modelMatrix(0.0f)
 			{
 			}
 
 			Maths::Mat4 m_projectionMatrix;
 			Maths::Mat4 m_viewMatrix;
+			Maths::Mat4 m_modelMatrix;
 		};
 
-		static std::unique_ptr<SceneData> m_sceneData;
-		static std::unique_ptr<UniformBuffer> m_uniformBuffer;
+		static std::unique_ptr<SceneData> s_sceneData;
+		static std::unique_ptr<UniformBuffer> s_uniformBuffer;
 	};
 }
 
