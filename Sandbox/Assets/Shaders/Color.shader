@@ -4,7 +4,7 @@ layout(location = 1) in vec4 Color;
 
 layout(location = 2) out vec4 vColor;
 
-layout(std140, set = 0, binding = 0) uniform matBuf
+layout(std140, set = 0, binding = 0) uniform MatrixBuffer
 {
 	mat4 sys_ProjectionMatrix;
 	mat4 sys_ViewMatrix;

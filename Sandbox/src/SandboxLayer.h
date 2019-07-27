@@ -15,8 +15,9 @@ public:
 		  m_vertexArray(nullptr),
 		  m_camera(-1.6f, 1.6f, -0.9f, 0.9f, -1.0f, 1.0f),
 		  m_cameraPosition(0.0f),
-		  m_cameraRotation(0.0f),
-		  m_uniformBuffer(nullptr) { }
+		  m_cameraRotation(0.0f)
+	{
+	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -75,19 +76,12 @@ public:
 			0, 1, 2, 2, 3, 0 };
 		std::unique_ptr<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(rectangleIndices.data(), static_cast<uint32_t>(rectangleIndices.size()), TRAP::Graphics::BufferUsage::STATIC);
 		m_vertexArray->SetIndexBuffer(indexBuffer);
-
-		//Matrices needs to be transposed because of the row-major order
-		UBOData uboData{ TRAP::Maths::Mat4::Transpose(m_camera.GetProjectionMatrix()), TRAP::Maths::Mat4::Transpose(m_camera.GetViewMatrix()) };
-		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("matBuf", &uboData, sizeof(UBOData), TRAP::Graphics::BufferUsage::DYNAMIC);
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnDetach() override
 	{
-		m_uniformBuffer->Unbind();
-		m_uniformBuffer.reset();
-
 		m_vertexArray->Unbind();
 		m_vertexArray.reset();
 	}
@@ -96,10 +90,6 @@ public:
 
 	void OnUpdate(const TRAP::Utils::TimeStep deltaTime) override
 	{
-		//Update camera every frame
-		TRAP::Maths::Mat4 transposedViewMatrix = TRAP::Maths::Mat4::Transpose(m_camera.GetViewMatrix());
-		m_uniformBuffer->UpdateSubData(&transposedViewMatrix, sizeof(TRAP::Maths::Mat4), sizeof(TRAP::Maths::Mat4));
-
 		TRAP::Graphics::RenderCommand::SetClearColor();
 		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_COLOR | TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_DEPTH);
 		TRAP::Graphics::RenderCommand::SetCull(false); //Disables Culling
@@ -107,16 +97,14 @@ public:
 		m_camera.SetPosition(m_cameraPosition);
 		m_camera.SetRotation(m_cameraRotation);
 
-		TRAP::Graphics::Renderer::BeginScene();
+		TRAP::Graphics::Renderer::BeginScene(m_camera);
 		{
 			if (m_showTriangle)
 			{
 				if (m_usePassthrough)
-					TRAP::Graphics::ShaderManager::Get("Passthrough")->Bind();
+					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray);
 				else
-					TRAP::Graphics::ShaderManager::Get("Color")->Bind();
-
-				TRAP::Graphics::Renderer::Submit(m_vertexArray);
+					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray);
 			}
 		}
 		TRAP::Graphics::Renderer::EndScene();
@@ -206,10 +194,8 @@ public:
 			TRAP::Graphics::RenderCommand::SetWireFrame(m_wireFrame);
 		}
 
-#ifndef TRAP_PLATFORM_LINUX
 		if (event.GetKeyCode() == TP_KEY_F11 && event.GetRepeatCount() < 1)
 			TRAP::Utils::MsgBox::Show("Testing MsgBox System", "Test MsgBox");
-#endif
 
 		return true;
 	}
@@ -247,13 +233,6 @@ private:
 	TRAP::Graphics::OrthographicCamera m_camera;
 	TRAP::Maths::Vec3 m_cameraPosition;
 	TRAP::Maths::Vec3 m_cameraRotation;
-	float m_cameraMovementSpeed = 5.0f;
+	float m_cameraMovementSpeed = 2.5f;
 	float m_cameraRotationSpeed = 180.0f;
-
-	std::unique_ptr<TRAP::Graphics::UniformBuffer> m_uniformBuffer;
-	struct UBOData
-	{
-		TRAP::Maths::Mat4 ProjectionMatrix;
-		TRAP::Maths::Mat4 ViewMatrix;
-	};
 };

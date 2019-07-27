@@ -46,6 +46,7 @@ TRAP::Window::Window(const WindowProps &props)
 
 TRAP::Window::~Window()
 {
+	Graphics::Renderer::Cleanup();
 	TP_DEBUG("[Window] Destroying Window: \"", m_data.Title, "\"");
 	Shutdown();
 }
