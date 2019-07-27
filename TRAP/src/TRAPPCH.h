@@ -24,6 +24,7 @@
 #include <cstdio>
 #include <iomanip>
 #include <cstring>
+#include <deque>
 
 #include <vulkan/vulkan.h>
 #include <glslang/Public/ShaderLang.h>

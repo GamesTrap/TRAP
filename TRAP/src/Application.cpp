@@ -128,6 +128,7 @@ void TRAP::Application::OnEvent(Event& e)
 void TRAP::Application::Run()
 {
 	Utils::TimeStep deltaTime(0.0f);
+	std::deque<Utils::Timer> framesPerSecond;
 
 	while (m_running)
 	{
@@ -177,7 +178,10 @@ void TRAP::Application::Run()
 		}
 
 		m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
-		m_FramesPerSecond = static_cast<unsigned int>(1000.0f / m_FrameTime);
+		m_FramesPerSecond = framesPerSecond.size();
+		framesPerSecond.emplace_back();
+		while (framesPerSecond.front().ElapsedMilliseconds() >= 1000.0f)
+			framesPerSecond.pop_front();
 	}
 }
 

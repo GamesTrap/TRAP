@@ -123,6 +123,8 @@ public:
 							TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray, transform);
 						}
 					}
+
+					//TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray, TRAP::Maths::Mat4::Transpose(TRAP::Maths::Mat4::Identity()));
 				}
 			}
 		}

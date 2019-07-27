@@ -209,3 +209,7 @@ SITREP 07/26/2019|19w30a3
 SITREP 07/27/2019|19w30a4
     - Changed TRAP Engine version to 19w30a4(0.5.1)
     - Added FPS and FrameTime overlay ~<20 mins
+    - Migrated UBO for Matrices to the abstract Renderer ~>20 mins
+    - Added Projection Matrix recalculation on resizing ~>15 mins
+    - Added support for Model(Transformation) Matrix ~>35 mins
+    - Added new FPS calculation method thx to Nilusss <10 mins
