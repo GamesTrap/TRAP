@@ -202,10 +202,6 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 		layer->OnDetach();
 	Graphics::API::Context::SetRenderAPI(renderAPI);
 
-	Graphics::ShaderManager::Shutdown();
-	Graphics::API::RendererAPI::Shutdown();
-	Graphics::API::Context::Shutdown();
-
 	WindowProps props{ std::string(m_window->GetTitle()), m_window->GetWidth(), m_window->GetHeight(), m_window->GetRefreshRate(), Graphics::API::Context::GetVSyncInterval(), m_window->GetDisplayMode(), m_window->GetMonitor(), renderAPI };
 	m_window.reset();
 	m_window = std::make_unique<Window>(props);

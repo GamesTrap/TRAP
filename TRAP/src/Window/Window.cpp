@@ -9,6 +9,7 @@
 #include "Event/ApplicationEvent.h"
 #include "Event/KeyEvent.h"
 #include "Event/MouseEvent.h"
+#include "Graphics/Shaders/ShaderManager.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -47,6 +48,9 @@ TRAP::Window::Window(const WindowProps &props)
 TRAP::Window::~Window()
 {
 	Graphics::Renderer::Cleanup();
+	Graphics::ShaderManager::Shutdown();
+	Graphics::API::RendererAPI::Shutdown();
+	Graphics::API::Context::Shutdown();
 	TP_DEBUG("[Window] Destroying Window: \"", m_data.Title, "\"");
 	Shutdown();
 }
