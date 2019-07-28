@@ -6,6 +6,7 @@
 #include "Graphics/Shaders/ShaderFactory.h"
 #include "Graphics/RenderCommand.h"
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/Renderer.h"
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
@@ -132,6 +133,8 @@ void TRAP::Application::Run()
 
 	while (m_running)
 	{
+		m_drawCalls = 0;
+
 		Utils::Timer FrameTimeTimer;
 		deltaTime.Update(m_timer->Elapsed());
 
@@ -178,7 +181,7 @@ void TRAP::Application::Run()
 		}
 
 		m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
-		m_FramesPerSecond = framesPerSecond.size();
+		m_FramesPerSecond = static_cast<unsigned int>(framesPerSecond.size());
 		framesPerSecond.emplace_back();
 		while (framesPerSecond.front().ElapsedMilliseconds() >= 1000.0f)
 			framesPerSecond.pop_front();

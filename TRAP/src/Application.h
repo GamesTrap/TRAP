@@ -36,6 +36,8 @@ namespace TRAP
 		unsigned int GetFPS() const;
 		float GetFrameTime() const;
 		Utils::TimeStep GetTime() const;
+		unsigned int GetDrawCalls() const;
+		void AddSingleDrawCall();
 
 		void Shutdown();
 
@@ -57,6 +59,7 @@ namespace TRAP
 		std::unique_ptr<Utils::Timer> m_timer;
 		unsigned int m_FramesPerSecond;
 		float m_FrameTime;
+		unsigned int m_drawCalls;
 
 		static Application* s_Instance;
 	};
@@ -91,6 +94,20 @@ inline unsigned int TRAP::Application::GetFPS() const
 inline float TRAP::Application::GetFrameTime() const
 {
 	return m_FrameTime;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned int TRAP::Application::GetDrawCalls() const
+{
+	return m_drawCalls;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Application::AddSingleDrawCall()
+{
+	++m_drawCalls;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

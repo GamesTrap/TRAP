@@ -3,6 +3,7 @@
 
 #include "API/RendererAPI.h"
 #include "Buffers/UniformBuffer.h"
+#include "Application.h"
 
 namespace TRAP::Graphics
 {
@@ -17,6 +18,9 @@ namespace TRAP::Graphics
 	{
 	public:
 		static std::string_view GetTitle();
+		static unsigned int GetDrawCalls();
+		static unsigned int GetFPS();
+		static float GetFrameTime();
 
 		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();
@@ -48,6 +52,27 @@ namespace TRAP::Graphics
 inline std::string_view TRAP::Graphics::Renderer::GetTitle()
 {
 	return API::RendererAPI::GetRenderer()->GetTitle();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned int TRAP::Graphics::Renderer::GetDrawCalls()
+{
+	return Application::Get().GetDrawCalls();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned int TRAP::Graphics::Renderer::GetFPS()
+{
+	return Application::Get().GetFPS();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline float TRAP::Graphics::Renderer::GetFrameTime()
+{
+	return Application::Get().GetFrameTime();
 }
 
 #endif /*_TRAP_RENDERER_H_*/

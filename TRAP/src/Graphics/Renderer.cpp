@@ -30,6 +30,8 @@ void TRAP::Graphics::Renderer::EndScene()
 
 void TRAP::Graphics::Renderer::Submit(const API::Shader* shader, const std::unique_ptr<VertexArray>& vertexArray, const Maths::Mat4& transform)
 {
+	Application::Get().AddSingleDrawCall();
+
 	s_sceneData->m_modelMatrix = Maths::Mat4::Transpose(transform);
 	if(shader)
 	{

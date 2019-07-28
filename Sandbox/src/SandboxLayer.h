@@ -7,7 +7,6 @@ class SandboxLayer final : public TRAP::Layer
 public:
 	SandboxLayer()
 		: Layer("Sandbox"),
-		m_FPS(0),
 		m_frameTimeHistory(),
 		m_usePassthrough(false),
 		m_wireFrame(false),
@@ -34,9 +33,10 @@ public:
 		ImGui::Begin("Performance", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
 		ImGui::Text("Performance");
 		ImGui::Separator();
-		ImGui::Text("%u FPS", m_FPS);
-		ImGui::Text("%.3f FrameTime", TRAP::Application::Get().GetFrameTime());
-		ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0, 33, ImVec2(250, 75));
+		ImGui::Text("DrawCalls: %u", TRAP::Graphics::Renderer::GetDrawCalls());
+		ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
+		ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
+		ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
 		ImGui::End();
 	}
 
@@ -122,22 +122,20 @@ public:
 						if (m_usePassthrough)
 							TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray, transform);
 						else						
-							TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray, transform);						
+							TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray, transform);
 					}
 				}
 			}
 		}
+		TRAP::Graphics::Renderer::EndScene();
 
+		TRAP::Graphics::Renderer::BeginScene(m_camera);
 		TRAP::Graphics::Renderer::EndScene();
 
 		//FPS & FrameTime
-		if (m_titleTimer.Elapsed() >= 0.05f) //Update Title
+		if (m_titleTimer.Elapsed() >= 0.025f)
 		{
-			TRAP::Application::Get().GetWindow()->SetTitle("Sandbox - FPS: " + std::to_string(TRAP::Application::Get().GetFPS()) + " FrameTime: " + std::to_string(TRAP::Application::Get().GetFrameTime()));
 			m_titleTimer.Reset();
-
-			m_FPS = TRAP::Application::Get().GetFPS();
-
 			static int frameTimeIndex = 0;
 			if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
 			{
@@ -152,8 +150,9 @@ public:
 		}
 		if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 		{
-			TP_INFO("[Sandbox] FPS: ", TRAP::Application::Get().GetFPS());
-			TP_INFO("[Sandbox] FrameTime: ", TRAP::Application::Get().GetFrameTime(), "ms");
+			TP_INFO("[Sandbox] DrawCall(s): ", TRAP::Graphics::Renderer::GetDrawCalls());
+			TP_INFO("[Sandbox] FPS: ", TRAP::Graphics::Renderer::GetFPS());
+			TP_INFO("[Sandbox] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
 			m_fpsTimer.Reset();
 		}
 
@@ -251,7 +250,6 @@ public:
 	}
 
 private:
-	unsigned int m_FPS;
 	std::array<float, 50> m_frameTimeHistory;
 	TRAP::Utils::Timer m_fpsTimer;
 	TRAP::Utils::Timer m_titleTimer;
