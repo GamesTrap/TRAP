@@ -60,6 +60,7 @@ namespace TRAP
 		unsigned int m_FramesPerSecond;
 		float m_FrameTime;
 		unsigned int m_drawCalls;
+		unsigned int m_fpsLimit;
 
 		static Application* s_Instance;
 	};

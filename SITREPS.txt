@@ -218,3 +218,7 @@ SITREP 07/28/2019|19w30a5
     - Changed TRAP Engine version to 19w30a5(0.5.2)
     - Added Projection/View/Model Matrix to the Passthrough Shader ~<10 mins
     - Changed destruction order Renderer->ShaderManager->RendererAPI->Context->Window ~<10 mins
+
+SITREP 07/29/2019|19w31a1
+    - Changed TRAP Engine version to 19w31a1(0.5.3)
+    - Added GetDrawCalls() ~<15 mins

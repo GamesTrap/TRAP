@@ -6,7 +6,6 @@
 #include "Graphics/Shaders/ShaderFactory.h"
 #include "Graphics/RenderCommand.h"
 #include "Graphics/API/RendererAPI.h"
-#include "Graphics/Renderer.h"
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
@@ -14,7 +13,7 @@ TRAP::Application* TRAP::Application::s_Instance = nullptr;
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Application::Application()
-	: m_timer(std::make_unique<Utils::Timer>()), m_FramesPerSecond(0), m_FrameTime(0.0f)
+	: m_timer(std::make_unique<Utils::Timer>()), m_FramesPerSecond(0), m_FrameTime(0.0f), m_drawCalls(0), m_fpsLimit(0)
 {
 	TP_DEBUG("[Application] Initializing TRAP Modules...");
 
@@ -40,6 +39,7 @@ TRAP::Application::Application()
 	m_config.Get("Height", height);
 	m_config.Get("RefreshRate", refreshRate);
 	m_config.Get("VSync", vsync);
+	m_config.Get("FPSLimit", m_fpsLimit);
 	m_config.Get("DisplayMode", displayMode);
 	m_config.Get("Monitor", monitor);
 	m_config.Get("RenderAPI", renderAPI);
@@ -80,6 +80,7 @@ TRAP::Application::~Application()
 	m_config.Set("Height", m_window->GetHeight());
 	m_config.Set("RefreshRate", m_window->GetRefreshRate());
 	m_config.Set("VSync", Graphics::API::Context::GetVSyncInterval());
+	m_config.Set("FPSLimit", m_fpsLimit);
 	m_config.Set("DisplayMode", m_window->GetDisplayMode());
 	m_config.Set("Monitor", m_window->GetMonitor());
 	m_config.Set("RenderAPI", Graphics::API::Context::GetRenderAPI());
@@ -130,9 +131,13 @@ void TRAP::Application::Run()
 {
 	Utils::TimeStep deltaTime(0.0f);
 	std::deque<Utils::Timer> framesPerSecond;
+	auto nextFrame = std::chrono::steady_clock::now();
 
 	while (m_running)
 	{
+		if (m_fpsLimit)
+			nextFrame += std::chrono::milliseconds(1000 / m_fpsLimit);
+			
 		m_drawCalls = 0;
 
 		Utils::Timer FrameTimeTimer;
@@ -185,6 +190,10 @@ void TRAP::Application::Run()
 		framesPerSecond.emplace_back();
 		while (framesPerSecond.front().ElapsedMilliseconds() >= 1000.0f)
 			framesPerSecond.pop_front();
+
+		//FPSLimiter
+		if (m_fpsLimit)
+			std::this_thread::sleep_until(nextFrame);
 	}
 }
 
