@@ -19,6 +19,7 @@ namespace TRAP {
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate(Utils::TimeStep deltaTime) {}
+		virtual void OnTick() {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 

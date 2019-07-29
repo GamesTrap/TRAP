@@ -13,7 +13,12 @@ TRAP::Application* TRAP::Application::s_Instance = nullptr;
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Application::Application()
-	: m_timer(std::make_unique<Utils::Timer>()), m_FramesPerSecond(0), m_FrameTime(0.0f), m_drawCalls(0), m_fpsLimit(0)
+	: m_timer(std::make_unique<Utils::Timer>()),
+	  m_FramesPerSecond(0),
+	  m_FrameTime(0.0f),
+	  m_drawCalls(0),
+	  m_fpsLimit(0),
+	  m_tickRate(100)
 {
 	TP_DEBUG("[Application] Initializing TRAP Modules...");
 
@@ -132,6 +137,7 @@ void TRAP::Application::Run()
 	Utils::TimeStep deltaTime(0.0f);
 	std::deque<Utils::Timer> framesPerSecond;
 	auto nextFrame = std::chrono::steady_clock::now();
+	Utils::Timer tickTimer;
 
 	while (m_running)
 	{
@@ -145,6 +151,14 @@ void TRAP::Application::Run()
 
 		for (const auto& layer : m_layerStack)
 			layer->OnUpdate(deltaTime);
+
+		if(tickTimer.ElapsedMilliseconds() > 1000.0f / static_cast<float>(m_tickRate))
+		{
+			for (const auto& layer : m_layerStack)			
+				layer->OnTick();
+
+			tickTimer.Reset();
+		}
 
 		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL)
 		{

@@ -38,6 +38,8 @@ namespace TRAP
 		Utils::TimeStep GetTime() const;
 		unsigned int GetDrawCalls() const;
 		void AddSingleDrawCall();
+		unsigned int GetTickRate() const;
+		void SetTickRate(unsigned int);
 
 		void Shutdown();
 
@@ -61,6 +63,7 @@ namespace TRAP
 		float m_FrameTime;
 		unsigned int m_drawCalls;
 		unsigned int m_fpsLimit;
+		unsigned int m_tickRate;
 
 		static Application* s_Instance;
 	};
@@ -110,6 +113,22 @@ inline void TRAP::Application::AddSingleDrawCall()
 {
 	++m_drawCalls;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned int TRAP::Application::GetTickRate() const
+{
+	return m_tickRate;
+}
+
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Application::SetTickRate(const unsigned int tickRate)
+{
+	m_tickRate = tickRate;
+}
+
 
 //-------------------------------------------------------------------------------------------------------------------//
 

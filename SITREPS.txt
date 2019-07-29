@@ -222,3 +222,5 @@ SITREP 07/28/2019|19w30a5
 SITREP 07/29/2019|19w31a1
     - Changed TRAP Engine version to 19w31a1(0.5.3)
     - Added GetDrawCalls() ~<15 mins
+    - Added optional FPSLimiter ~<20 mins
+    - Added OnTick, SetTickRate, GetTickRate functions ~<30 mins

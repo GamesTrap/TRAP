@@ -21,6 +21,9 @@ namespace TRAP::Graphics
 		static unsigned int GetDrawCalls();
 		static unsigned int GetFPS();
 		static float GetFrameTime();
+		static unsigned int GetTickRate();
+
+		static void SetTickRate(unsigned int tickRate);
 
 		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();
@@ -73,6 +76,20 @@ inline unsigned int TRAP::Graphics::Renderer::GetFPS()
 inline float TRAP::Graphics::Renderer::GetFrameTime()
 {
 	return Application::Get().GetFrameTime();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned int TRAP::Graphics::Renderer::GetTickRate()
+{
+	return Application::Get().GetTickRate();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Graphics::Renderer::SetTickRate(const unsigned int tickRate)
+{
+	Application::Get().SetTickRate(tickRate);
 }
 
 #endif /*_TRAP_RENDERER_H_*/
