@@ -1338,18 +1338,8 @@ void TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, st
 		}
 		else if(type != ShaderType::UNKNOWN)
 		{
-			//Ignore comments(Only non-range based)
-			//@TODO Also ignore any range based comments
-			if(Utils::String::SplitString(lines[i], "//").size() > 1)
-			{
-				shaders[static_cast<int32_t>(type) - 1]->append(Utils::String::SplitString(lines[i], "//").front());
-				shaders[static_cast<int32_t>(type) - 1]->append("\n");
-			}
-			else
-			{
-				shaders[static_cast<int32_t>(type) - 1]->append(lines[i]);
-				shaders[static_cast<int32_t>(type) - 1]->append("\n");
-			}
+			shaders[static_cast<int32_t>(type) - 1]->append(lines[i]);
+			shaders[static_cast<int32_t>(type) - 1]->append("\n");
 		}
 	}
 }

@@ -233,3 +233,4 @@ SITREP 07/30/2019|19w31a2
     - Tested if Tessellation Control and Evaulation Shader are working ~>30 mins
     - Added PATCHES to RendererPrimitive for Tessellation ~<5 mins
     - Fixed bug with single comments ~>10 mins
+    - Removed OpenGLShader comment detection because its unecessary ~>20 mins
