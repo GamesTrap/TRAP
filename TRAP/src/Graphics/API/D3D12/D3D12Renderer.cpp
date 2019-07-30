@@ -112,7 +112,7 @@ void TRAP::Graphics::API::D3D12Renderer::SetCullMode(RendererCullMode cullMode)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray)
+void TRAP::Graphics::API::D3D12Renderer::DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {	
 }
 

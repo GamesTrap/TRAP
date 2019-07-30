@@ -37,13 +37,13 @@ void TRAP::Graphics::API::OpenGLShader::Init()
 	if(!m_source.empty())
 		PreProcess(m_source, shaders);
 	Parse(*shaders[0], *shaders[1], *shaders[2], *shaders[3], *shaders[4], *shaders[5]);
-	OpenGLShaderErrorInfo error;
 	TP_DEBUG("[Shader][OpenGL] Compiling: \"", m_name, "\"");
-	m_handle = Compile(shaders, error);
+	m_handle = Compile(shaders);
 	if (!m_handle)
 	{
-		TP_ERROR("[Shader][OpenGL] ", error.Message[error.Shader]);
 		TP_WARN("[Shader][OpenGL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
+
+		return;
 	}
 	ResolveUniforms();
 }
@@ -60,7 +60,7 @@ void TRAP::Graphics::API::OpenGLShader::Shutdown() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*, 6> & shaders, OpenGLShaderErrorInfo& info)
+unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*, 6> & shaders)
 {
 	OpenGLCall(const unsigned int program = glCreateProgram());
 
@@ -83,17 +83,9 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 			OpenGLCall(glGetShaderiv(vertex, GL_INFO_LOG_LENGTH, &length));
 			std::vector<char> error(length);
 			OpenGLCall(glGetShaderInfoLog(vertex, length, &length, error.data()));
-			const std::string errorMessage(error.data(), length);
-			int32_t lineNumber;
-		#ifdef TRAP_PLATFORM_WINDOWS
-			sscanf_s(error.data(), "%*s %*d:%d", &lineNumber);
-		#else
-			sscanf(error.data(), "%*s %*d:%d", &lineNumber);
-		#endif
-			info.Shader = 0;
-			info.Message[info.Shader] += "Failed to compile Vertex Shader!\n";
-			info.Line[info.Shader] += lineNumber;
-			info.Message[info.Shader] += errorMessage;
+			const std::string errorMessage(error.data(), length - 1);
+			TP_ERROR("[Shader][OpenGL][VertexShader] Failed to compile Shader!");
+			TP_ERROR("[Shader][OpenGL][VertexShader] ", errorMessage);
 			OpenGLCall(glDeleteShader(vertex));
 
 			return 0;
@@ -121,17 +113,9 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 			OpenGLCall(glGetShaderiv(fragment, GL_INFO_LOG_LENGTH, &length));
 			std::vector<char> error(length);
 			OpenGLCall(glGetShaderInfoLog(fragment, length, &length, error.data()));
-			const std::string errorMessage(error.data(), length);
-			int32_t lineNumber;
-		#ifdef TRAP_PLATFORM_WINDOWS
-			sscanf_s(error.data(), "%*s %*d:%d", &lineNumber);
-		#else
-			sscanf(error.data(), "%*s %*d:%d", &lineNumber);
-		#endif
-			info.Shader = 1;
-			info.Message[info.Shader] += "Failed to compile Fragment Shader!\n";
-			info.Line[info.Shader] = lineNumber;
-			info.Message[info.Shader] += errorMessage;
+			const std::string errorMessage(error.data(), length - 1);
+			TP_ERROR("[Shader][OpenGL][FragmentShader] Failed to compile Shader!");
+			TP_ERROR("[Shader][OpenGL][FragmentShader] ", errorMessage);
 			OpenGLCall(glDeleteShader(fragment));
 
 			return 0;
@@ -159,17 +143,9 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 			OpenGLCall(glGetShaderiv(geometry, GL_INFO_LOG_LENGTH, &length));
 			std::vector<char> error(length);
 			OpenGLCall(glGetShaderInfoLog(geometry, length, &length, error.data()));
-			const std::string errorMessage(error.data(), length);
-			int32_t lineNumber;
-		#ifdef TRAP_PLATFORM_WINDOWS
-			sscanf_s(error.data(), "%*s %*d:%d", &lineNumber);
-		#else
-			sscanf(error.data(), "%*s %*d:%d", &lineNumber);
-		#endif
-			info.Shader = 2;
-			info.Message[info.Shader] += "Failed to compile Geometry Shader!\n";
-			info.Line[info.Shader] = lineNumber;
-			info.Message[info.Shader] += errorMessage;
+			const std::string errorMessage(error.data(), length - 1);
+			TP_ERROR("[Shader][OpenGL][GeometryShader] Failed to compile Shader!");
+			TP_ERROR("[Shader][OpenGL][GeometryShader] ", errorMessage);
 			OpenGLCall(glDeleteShader(geometry));
 
 			return 0;
@@ -197,17 +173,9 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 			OpenGLCall(glGetShaderiv(tesscontrol, GL_INFO_LOG_LENGTH, &length));
 			std::vector<char> error(length);
 			OpenGLCall(glGetShaderInfoLog(tesscontrol, length, &length, error.data()));
-			const std::string errorMessage(error.data(), length);
-			int32_t lineNumber;
-		#ifdef TRAP_PLATFORM_WINDOWS
-			sscanf_s(error.data(), "%*s %*d:%d", &lineNumber);
-		#else
-			sscanf(error.data(), "%*s %*d:%d", &lineNumber);
-		#endif
-			info.Shader = 2;
-			info.Message[info.Shader] += "Failed to compile Tessellation Control Shader!\n";
-			info.Line[info.Shader] = lineNumber;
-			info.Message[info.Shader] += errorMessage;
+			const std::string errorMessage(error.data(), length - 1);
+			TP_ERROR("[Shader][OpenGL][TessellationControlShader] Failed to compile Shader!");
+			TP_ERROR("[Shader][OpenGL][TessellationControlShader] ", errorMessage);
 			OpenGLCall(glDeleteShader(tesscontrol));
 
 			return 0;
@@ -235,17 +203,9 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 			OpenGLCall(glGetShaderiv(tesseval, GL_INFO_LOG_LENGTH, &length));
 			std::vector<char> error(length);
 			OpenGLCall(glGetShaderInfoLog(tesseval, length, &length, error.data()));
-			const std::string errorMessage(error.data(), length);
-			int32_t lineNumber;
-		#ifdef TRAP_PLATFORM_WINDOWS
-			sscanf_s(error.data(), "%*s %*d:%d", &lineNumber);
-		#else
-			sscanf(error.data(), "%*s %*d:%d", &lineNumber);
-		#endif
-			info.Shader = 2;
-			info.Message[info.Shader] += "Failed to compile Tessellation Evaluation Shader!\n";
-			info.Line[info.Shader] = lineNumber;
-			info.Message[info.Shader] += errorMessage;
+			const std::string errorMessage(error.data(), length - 1);
+			TP_ERROR("[Shader][OpenGL][TessellationEvaluationShader] Failed to compile Shader!");
+			TP_ERROR("[Shader][OpenGL][TessellationEvaluationShader] ", errorMessage);
 			OpenGLCall(glDeleteShader(tesseval));
 
 			return 0;
@@ -273,17 +233,9 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 			OpenGLCall(glGetShaderiv(compute, GL_INFO_LOG_LENGTH, &length));
 			std::vector<char> error(length);
 			OpenGLCall(glGetShaderInfoLog(compute, length, &length, error.data()));
-			const std::string errorMessage(error.data(), length);
-			int32_t lineNumber;
-		#ifdef TRAP_PLATFORM_WINDOWS
-			sscanf_s(error.data(), "%*s %*d:%d", &lineNumber);
-		#else
-			sscanf(error.data(), "%*s %*d:%d", &lineNumber);
-		#endif
-			info.Shader = 2;
-			info.Message[info.Shader] += "Failed to compile Compute Shader!\n";
-			info.Line[info.Shader] = lineNumber;
-			info.Message[info.Shader] += errorMessage;
+			const std::string errorMessage(error.data(), length - 1);
+			TP_ERROR("[Shader][OpenGL][ComputeShader] Failed to compile Shader!");
+			TP_ERROR("[Shader][OpenGL][ComputeShader] ", errorMessage);
 			OpenGLCall(glDeleteShader(compute));
 
 			return 0;
@@ -293,7 +245,27 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 	}
 
 	OpenGLCall(glLinkProgram(program));
-	OpenGLCall(glValidateProgram(program));
+	int linkResult;
+	OpenGLCall(glGetProgramiv(program, GL_LINK_STATUS, &linkResult));
+	if (linkResult == GL_FALSE)
+	{
+		int length;
+		OpenGLCall(glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length));
+		std::vector<char> error(length);
+		OpenGLCall(glGetProgramInfoLog(program, length, &length, error.data()));
+		const std::string errorMessage(error.data(), length - 1);
+		TP_ERROR("[Shader][OpenGL][Program] Failed to link Program!");
+		TP_ERROR("[Shader][OpenGL][Program] ", errorMessage);
+	}
+
+	int validateResult = 0;
+	if (linkResult == GL_TRUE)
+	{
+		OpenGLCall(glValidateProgram(program));
+		OpenGLCall(glGetProgramiv(program, GL_VALIDATE_STATUS, &validateResult));
+		if (validateResult == GL_FALSE)
+			TP_ERROR("[Shader][OpenGL][Program] Failed to validate Program!");
+	}
 
 	if (!shaders[0]->empty())
 	{
@@ -329,6 +301,12 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 	{
 		OpenGLCall(glDetachShader(program, compute));
 		OpenGLCall(glDeleteShader(compute));
+	}
+
+	if (!linkResult || !validateResult)
+	{
+		OpenGLCall(glDeleteProgram(program));
+		return 0;
 	}
 
 	return program;

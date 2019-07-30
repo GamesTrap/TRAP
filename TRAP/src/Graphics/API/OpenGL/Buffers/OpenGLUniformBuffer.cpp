@@ -48,7 +48,11 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::Bind() const
 
 	for (const std::unique_ptr<Shader>& shader : ShaderManager::GetShaders())
 	{
-		OpenGLCall(const uint32_t uniformBlockIndex = glGetUniformBlockIndex(dynamic_cast<OpenGLShader*>(shader.get())->GetHandle(), m_name));
+		uint32_t uniformBlockIndex = GL_INVALID_INDEX;
+		if(dynamic_cast<OpenGLShader*>(shader.get())->GetHandle())
+		{			
+			OpenGLCall(uniformBlockIndex = glGetUniformBlockIndex(dynamic_cast<OpenGLShader*>(shader.get())->GetHandle(), m_name));
+		}
 
 		if (uniformBlockIndex != GL_INVALID_INDEX)
 		{			

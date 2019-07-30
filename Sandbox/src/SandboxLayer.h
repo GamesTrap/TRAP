@@ -125,11 +125,10 @@ public:
 							TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray, transform);
 					}
 				}
+
+				//TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray);
 			}
 		}
-		TRAP::Graphics::Renderer::EndScene();
-
-		TRAP::Graphics::Renderer::BeginScene(m_camera);
 		TRAP::Graphics::Renderer::EndScene();
 
 		//FPS & FrameTime

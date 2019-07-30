@@ -47,7 +47,7 @@ For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj
 ## System Requirements
 
 ### Minimum System Requirements
-- OS: Windows 10/macOS Catalina 10.15/Ubuntu 19.04 (64-Bit versions only) <!--More Operating Systems need to be tested-->
+- OS: Windows 7/Ubuntu 18.04.2 or newer (64-Bit versions only) <!--Test on Mac 10.15-->
 - Processor: TBD
 - Graphics Card: TBD
 - Memory: 4 GB RAM
@@ -59,7 +59,7 @@ For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj
 - Additional Notes: -
 
 ### Recommended System Requirements
-- OS: Windows 10/macOS Catalina 10.15/Ubuntu 19.04 (64-Bit versions only) <!--More Operating Systems need to be tested-->
+- OS: Windows 7/Ubuntu 18.04.2 or newer (64-Bit versions only) <!--Test on Mac 10.15-->
 - Processor: TBD
 - Graphics Card: TBD
 - Memory: 4 GB RAM

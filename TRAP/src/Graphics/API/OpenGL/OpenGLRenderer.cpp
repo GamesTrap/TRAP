@@ -160,9 +160,9 @@ void TRAP::Graphics::API::OpenGLRenderer::SetCullMode(const RendererCullMode cul
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray)
+void TRAP::Graphics::API::OpenGLRenderer::DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {
-	OpenGLCall(glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr));
+	OpenGLCall(glDrawElements(TRAPRendererPrimitiveToOpenGL(primitive), vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -171,11 +171,11 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBufferToOpenGL(con
 {
 	unsigned int result = 0;
 
-	if (buffer & static_cast<int>(RendererBufferType::RENDERER_BUFFER_COLOR))
+	if (buffer & static_cast<int>(RENDERER_BUFFER_COLOR))
 		result |= GL_COLOR_BUFFER_BIT;
-	if (buffer & static_cast<int>(RendererBufferType::RENDERER_BUFFER_DEPTH))
+	if (buffer & static_cast<int>(RENDERER_BUFFER_DEPTH))
 		result |= GL_DEPTH_BUFFER_BIT;
-	if (buffer & static_cast<int>(RendererBufferType::RENDERER_BUFFER_STENCIL))
+	if (buffer & static_cast<int>(RENDERER_BUFFER_STENCIL))
 		result |= GL_STENCIL_BUFFER_BIT;
 
 	return result;
@@ -266,9 +266,30 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererFrontFaceToOpenGL(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererPrimitiveToOpenGL(const RendererPrimitive primitive)
+{
+	switch(primitive)
+	{
+	case RendererPrimitive::POINT:
+		return GL_POINTS;
+
+	case RendererPrimitive::LINE:
+		return GL_LINES;
+
+	case RendererPrimitive::TRIANGLE:
+		return GL_TRIANGLES;
+
+	default:
+		return 0;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void GLAPIENTRY TRAP::Graphics::API::OpenGLRenderer::DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-	std::stringstream ss("[Renderer][OpenGL] [");
+	std::stringstream ss;
+	ss << "[Renderer][OpenGL] [";
 	switch (source)
 	{
 	case GL_DEBUG_SOURCE_API:

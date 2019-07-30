@@ -4,6 +4,7 @@
 #include "API/RendererAPI.h"
 #include "Buffers/UniformBuffer.h"
 #include "Application.h"
+#include "RenderCommand.h"
 
 namespace TRAP::Graphics
 {
@@ -28,7 +29,7 @@ namespace TRAP::Graphics
 		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();
 
-		static void Submit(const API::Shader* shader, const std::unique_ptr<VertexArray>& vertexArray, const Maths::Mat4& transform = Maths::Mat4::Transpose(Maths::Mat4::Identity()));
+		static void Submit(const API::Shader* shader, const std::unique_ptr<VertexArray>& vertexArray, const Maths::Mat4& transform = Maths::Mat4::Transpose(Maths::Mat4::Identity()), RendererPrimitive primitive = RendererPrimitive::TRIANGLE);
 
 		static void Cleanup();
 

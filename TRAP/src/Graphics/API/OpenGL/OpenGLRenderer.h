@@ -36,7 +36,7 @@ namespace TRAP::Graphics::API
 
 		void SetWireFrame(bool enabled) override;
 
-		void DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray) override;
+		void DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive) override;
 
 		std::string_view GetTitle() const override;
 
@@ -47,6 +47,7 @@ namespace TRAP::Graphics::API
 		static unsigned int TRAPRendererBlendEquationToOpenGL(RendererBlendEquation blendEquation);
 		static unsigned int TRAPRendererCullModeToOpenGL(RendererCullMode cullMode);
 		static unsigned int TRAPRendererFrontFaceToOpenGL(RendererFrontFace frontFace);
+		static unsigned int TRAPRendererPrimitiveToOpenGL(RendererPrimitive primitive);
 
 	private:
 		static void GLAPIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);

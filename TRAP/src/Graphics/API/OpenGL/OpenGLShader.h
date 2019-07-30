@@ -10,13 +10,6 @@
 
 namespace TRAP::Graphics::API
 {
-	struct OpenGLShaderErrorInfo
-	{
-		unsigned int Shader{};
-		std::array<std::string, 6> Message;
-		std::array<unsigned int, 6> Line{};
-	};
-
 	class OpenGLShader final : public Shader
 	{
 	public:
@@ -71,7 +64,7 @@ namespace TRAP::Graphics::API
 		const ShaderResourceList& GetResource() const override;
 
 	private:
-		static unsigned int Compile(std::array<std::string*, 6>& shaders, OpenGLShaderErrorInfo& info);
+		static unsigned int Compile(std::array<std::string*, 6>& shaders);
 
 		void Parse(const std::string& VSSource, const std::string& FSSource, const std::string& GSSource, const std::string& TCSSource, const std::string& TESSource, const std::string& CSSource);
 		void ParseUniform(const std::string& statement, ShaderType shaderType);

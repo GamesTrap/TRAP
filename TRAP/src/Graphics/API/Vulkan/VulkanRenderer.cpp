@@ -140,7 +140,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const RendererCullMode cul
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray)
+void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {	
 }
 

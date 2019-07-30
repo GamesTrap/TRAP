@@ -37,7 +37,7 @@ namespace TRAP::Graphics::API
 
 		void SetCullMode(RendererCullMode cullMode) override;
 
-		void DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray) override;
+		void DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive) override;
 
 		std::string_view GetTitle() const override;
 

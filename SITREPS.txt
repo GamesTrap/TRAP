@@ -224,3 +224,6 @@ SITREP 07/29/2019|19w31a1
     - Added GetDrawCalls() ~<15 mins
     - Added optional FPSLimiter ~<20 mins
     - Added OnTick, SetTickRate, GetTickRate functions ~<30 mins
+    - Tested if Geometry Shaders are working ~>20 mins
+    - Added OpenGL Shader Linker Error detection ~>25 mins
+    - Added RendererPrimitive option ~>15 mins

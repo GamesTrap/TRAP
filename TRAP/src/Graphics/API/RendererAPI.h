@@ -11,6 +11,7 @@ namespace TRAP
 namespace TRAP::Graphics 
 {
 	class VertexArray;
+	enum class RendererPrimitive;
 	enum class RendererCullMode;
 	enum class RendererBlendEquation;
 	enum class RendererBlendFunction;
@@ -52,7 +53,7 @@ namespace TRAP::Graphics::API
 
 		virtual void SetCullMode(RendererCullMode cullMode) = 0;
 
-		virtual void DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray) = 0;
+		virtual void DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive) = 0;
 
 		virtual std::string_view GetTitle() const = 0;
 
