@@ -50,7 +50,8 @@ namespace TRAP::Graphics
 	{
 		POINT,
 		LINE,
-		TRIANGLE
+		TRIANGLE,
+		PATCH
 	};
 
 	class RenderCommand

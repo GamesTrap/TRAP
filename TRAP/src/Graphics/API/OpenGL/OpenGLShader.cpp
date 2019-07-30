@@ -159,7 +159,7 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 	if (!shaders[3]->empty())
 	{
 		TCSSource = shaders[3]->c_str();
-		OpenGLCall(tesscontrol = glCreateShader(GL_GEOMETRY_SHADER));
+		OpenGLCall(tesscontrol = glCreateShader(GL_TESS_CONTROL_SHADER));
 
 		TP_DEBUG("[Shader][OpenGL] Compiling Tessellation Control Shader");
 		OpenGLCall(glShaderSource(tesscontrol, 1, &TCSSource, nullptr));
@@ -189,7 +189,7 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 	if (!shaders[4]->empty())
 	{
 		TESSource = shaders[4]->c_str();
-		OpenGLCall(tesseval = glCreateShader(GL_GEOMETRY_SHADER));
+		OpenGLCall(tesseval = glCreateShader(GL_TESS_EVALUATION_SHADER));
 
 		TP_DEBUG("[Shader][OpenGL] Compiling Tessellation Evaluation Shader");
 		OpenGLCall(glShaderSource(tesseval, 1, &TESSource, nullptr));
@@ -219,7 +219,7 @@ unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*,
 	if (!shaders[5]->empty())
 	{
 		CSSSource = shaders[5]->c_str();
-		OpenGLCall(compute = glCreateShader(GL_GEOMETRY_SHADER));
+		OpenGLCall(compute = glCreateShader(GL_COMPUTE_SHADER));
 
 		TP_DEBUG("[Shader][OpenGL] Compiling Compute Shader");
 		OpenGLCall(glShaderSource(compute, 1, &CSSSource, nullptr));

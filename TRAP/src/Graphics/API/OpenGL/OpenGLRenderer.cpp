@@ -279,6 +279,9 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererPrimitiveToOpenGL(
 	case RendererPrimitive::TRIANGLE:
 		return GL_TRIANGLES;
 
+	case RendererPrimitive::PATCH:
+		return GL_PATCHES;
+
 	default:
 		return 0;
 	}

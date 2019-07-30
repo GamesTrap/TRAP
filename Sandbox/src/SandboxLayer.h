@@ -110,7 +110,7 @@ public:
 		{
 			if (m_show)
 			{
-				static TRAP::Maths::Mat4 scale = TRAP::Maths::Mat4::Scale(TRAP::Maths::Vec3(0.1f));
+				/*static TRAP::Maths::Mat4 scale = TRAP::Maths::Mat4::Scale(TRAP::Maths::Vec3(0.1f));
 
 				for (int y = 0; y < 10; y++)
 				{
@@ -124,9 +124,9 @@ public:
 						else						
 							TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray, transform);
 					}
-				}
+				}*/
 
-				//TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray);
+				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray);
 			}
 		}
 		TRAP::Graphics::Renderer::EndScene();
