@@ -53,37 +53,37 @@ public:
 		m_vertexArray = TRAP::Graphics::VertexArray::Create();
 
 		//XYZ RGBA
-		/*std::array<float, 7 * 3> triangleVertices
+		/*std::array<float, 7 * 3> vertices //Triangle
 		{
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,
 			 0.0f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f
 		};*/
-		std::array<float, 7 * 4> rectangleVertices
+		std::array<float, 7 * 4> vertices //Quad
 		{
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,
 			 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,
 			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f
 		};
-		std::unique_ptr<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(rectangleVertices.data(), static_cast<uint32_t>(rectangleVertices.size()), TRAP::Graphics::BufferUsage::STATIC);
-		const TRAP::Graphics::BufferLayout triangleLayout =
+		std::unique_ptr<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()), TRAP::Graphics::BufferUsage::STATIC);
+		const TRAP::Graphics::BufferLayout layout =
 		{
 			{TRAP::Graphics::ShaderDataType::Float3, "Position"},
 			{TRAP::Graphics::ShaderDataType::Float4, "Color"}
 		};
-		vertexBuffer->SetLayout(triangleLayout);
+		vertexBuffer->SetLayout(layout);
 		m_vertexArray->AddVertexBuffer(vertexBuffer);
 
-		/*std::array<uint32_t, 3> triangleIndices
+		/*std::array<uint32_t, 3> indices //Triangle
 		{
 			0, 1, 2
 		};*/
-		std::array<uint32_t, 6> rectangleIndices
+		std::array<uint32_t, 6> indices //Quad
 		{
 			0, 1, 2, 2, 3, 0
 		};
-		std::unique_ptr<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(rectangleIndices.data(), static_cast<uint32_t>(rectangleIndices.size()), TRAP::Graphics::BufferUsage::STATIC);
+		std::unique_ptr<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size()), TRAP::Graphics::BufferUsage::STATIC);
 		m_vertexArray->SetIndexBuffer(indexBuffer);
 	}
 
@@ -126,7 +126,10 @@ public:
 					}
 				}*/
 
-				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray);
+				if (m_usePassthrough)
+					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray);
+				else
+					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray);
 			}
 		}
 		TRAP::Graphics::Renderer::EndScene();

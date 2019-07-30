@@ -1,701 +1,91 @@
-[14:31:13][Debug][Application] Initializing TRAP Modules...
-[14:31:13][Debug][VFS] Initializing Virtual File System
-[14:31:13][Info][Config] Loading settings file "Engine.cfg"
-[14:31:13][Trace][Config] Width = 1280
-[14:31:13][Trace][Config] Height = 720
-[14:31:13][Trace][Config] RefreshRate = 144
-[14:31:13][Trace][Config] VSync = 0
-[14:31:13][Trace][Config] FPSLimit = 0
-[14:31:13][Trace][Config] DisplayMode = Windowed
-[14:31:13][Trace][Config] Monitor = 0
-[14:31:13][Trace][Config] RenderAPI = OpenGL
-[14:31:13][Trace][Config] HotShaderReloading = TRUE
-[14:31:13][Trace][Config] Size: 9
-[14:31:13][Info][Window] Initializing Window: "Sandbox" 1280x720@144Hz VSync: Off Mode: Windowed Monitor: 0
-[14:31:14][Debug][Window] Storing underlying OS video mode: 2560x1440@144Hz (R8G8B8)
-[14:31:14][Info][Context][OpenGL] Initializing Context
-[14:31:14][Info][Renderer][OpenGL] Initializing Renderer
-[14:31:14][Info][Renderer][OpenGL] ----------------------------------
-[14:31:14][Info][Renderer][OpenGL] OpenGL:
-[14:31:14][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 431.60
-[14:31:14][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
-[14:31:14][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
-[14:31:14][Info][Renderer][OpenGL] ----------------------------------
-[14:31:14][Debug][Shader][OpenGL] Compiling: "Passthrough"
-[14:31:14][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:31:14][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:31:14][Debug][LayerStack] Pushing Overlay: ImGuiLayer
-[14:31:14][Debug][LayerStack] Pushing Layer: Sandbox
-[14:31:14][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
-[14:31:14][Debug][Shader][OpenGL] Compiling: "Color"
-[14:31:14][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:31:14][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:31:14][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:31:19][Info][Sandbox] DrawCall(s): 1
-[14:31:19][Info][Sandbox] FPS: 981
-[14:31:19][Info][Sandbox] FrameTime: 0.498ms
-[14:31:24][Info][Sandbox] DrawCall(s): 1
-[14:31:24][Info][Sandbox] FPS: 1979
-[14:31:24][Info][Sandbox] FrameTime: 0.6499ms
-[14:31:29][Info][Sandbox] DrawCall(s): 1
-[14:31:29][Info][Sandbox] FPS: 1989
-[14:31:29][Info][Sandbox] FrameTime: 0.466ms
-[14:31:34][Info][Sandbox] DrawCall(s): 1
-[14:31:34][Info][Sandbox] FPS: 2023
-[14:31:34][Info][Sandbox] FrameTime: 0.4515ms
-[14:31:39][Info][Sandbox] DrawCall(s): 1
-[14:31:39][Info][Sandbox] FPS: 1855
-[14:31:39][Info][Sandbox] FrameTime: 0.6475ms
-[14:31:44][Info][Sandbox] DrawCall(s): 1
-[14:31:44][Info][Sandbox] FPS: 1911
-[14:31:44][Info][Sandbox] FrameTime: 0.4803ms
-[14:31:49][Info][Sandbox] DrawCall(s): 1
-[14:31:49][Info][Sandbox] FPS: 1898
-[14:31:49][Info][Sandbox] FrameTime: 0.5919ms
-[14:31:54][Info][Sandbox] DrawCall(s): 1
-[14:31:54][Info][Sandbox] FPS: 2021
-[14:31:54][Info][Sandbox] FrameTime: 0.5101ms
-[14:31:59][Info][Sandbox] DrawCall(s): 1
-[14:31:59][Info][Sandbox] FPS: 1974
-[14:31:59][Info][Sandbox] FrameTime: 0.4871ms
-[14:32:04][Info][Sandbox] DrawCall(s): 1
-[14:32:04][Info][Sandbox] FPS: 1995
-[14:32:04][Info][Sandbox] FrameTime: 0.4649ms
-[14:32:09][Info][Sandbox] DrawCall(s): 1
-[14:32:09][Info][Sandbox] FPS: 2025
-[14:32:09][Info][Sandbox] FrameTime: 0.4599ms
-[14:32:14][Info][Sandbox] DrawCall(s): 1
-[14:32:14][Info][Sandbox] FPS: 2037
-[14:32:14][Info][Sandbox] FrameTime: 0.5251ms
-[14:32:19][Info][Sandbox] DrawCall(s): 1
-[14:32:19][Info][Sandbox] FPS: 2047
-[14:32:19][Info][Sandbox] FrameTime: 0.464ms
-[14:32:24][Info][Sandbox] DrawCall(s): 1
-[14:32:24][Info][Sandbox] FPS: 2036
-[14:32:24][Info][Sandbox] FrameTime: 0.4527ms
-[14:32:29][Info][Sandbox] DrawCall(s): 1
-[14:32:29][Info][Sandbox] FPS: 2025
-[14:32:29][Info][Sandbox] FrameTime: 0.4971ms
-[14:32:34][Info][Sandbox] DrawCall(s): 1
-[14:32:34][Info][Sandbox] FPS: 2033
-[14:32:34][Info][Sandbox] FrameTime: 0.4667ms
-[14:32:39][Info][Sandbox] DrawCall(s): 1
-[14:32:39][Info][Sandbox] FPS: 1988
-[14:32:39][Info][Sandbox] FrameTime: 0.5449ms
-[14:32:44][Info][Sandbox] DrawCall(s): 1
-[14:32:44][Info][Sandbox] FPS: 2017
-[14:32:44][Info][Sandbox] FrameTime: 0.5654ms
-[14:32:49][Info][Sandbox] DrawCall(s): 1
-[14:32:49][Info][Sandbox] FPS: 2010
-[14:32:49][Info][Sandbox] FrameTime: 0.4558ms
-[14:32:54][Info][Sandbox] DrawCall(s): 1
-[14:32:54][Info][Sandbox] FPS: 2045
-[14:32:54][Info][Sandbox] FrameTime: 0.4606ms
-[14:32:59][Info][Sandbox] DrawCall(s): 1
-[14:32:59][Info][Sandbox] FPS: 2034
-[14:32:59][Info][Sandbox] FrameTime: 0.5106ms
-[14:33:03][Info][Shader] Shader Modified Reloading...
-[14:33:03][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:33:03][Debug][Shader][OpenGL] Compiling: "Color"
-[14:33:03][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:33:03][Error][Shader][OpenGL][VertexShader] Failed to compile Shader!
-[14:33:03][Error][Shader][OpenGL][VertexShader] 0(13) : error C1503: undefined variable "vPosition"
-[14:33:03][Warn][Shader][OpenGL] Shader: "Color" using fallback Shader: "Passthrough"
-[14:33:03][Info][ShaderManager] Reloaded: "Color"
-[14:33:04][Info][Sandbox] DrawCall(s): 1
-[14:33:04][Info][Sandbox] FPS: 1925
-[14:33:04][Info][Sandbox] FrameTime: 0.4506ms
-[14:33:09][Info][Sandbox] DrawCall(s): 1
-[14:33:09][Info][Sandbox] FPS: 2012
-[14:33:09][Info][Sandbox] FrameTime: 0.4617ms
-[14:33:14][Info][Sandbox] DrawCall(s): 1
-[14:33:14][Info][Sandbox] FPS: 2008
-[14:33:14][Info][Sandbox] FrameTime: 0.4712ms
-[14:33:14][Info][Shader] Shader Modified Reloading...
-[14:33:14][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:33:14][Debug][Shader][OpenGL] Compiling: "Color"
-[14:33:14][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:33:14][Error][Shader][OpenGL][VertexShader] Failed to compile Shader!
-[14:33:14][Error][Shader][OpenGL][VertexShader] 0(13) : error C1035: assignment of incompatible types
-[14:33:14][Warn][Shader][OpenGL] Shader: "Color" using fallback Shader: "Passthrough"
-[14:33:14][Info][ShaderManager] Reloaded: "Color"
-[14:33:19][Info][Sandbox] DrawCall(s): 1
-[14:33:19][Info][Sandbox] FPS: 2012
-[14:33:19][Info][Sandbox] FrameTime: 0.4646ms
-[14:33:23][Info][Shader] Shader Modified Reloading...
-[14:33:23][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:33:23][Debug][Shader][OpenGL] Compiling: "Color"
-[14:33:23][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:33:23][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:33:23][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:33:23][Error][Shader][OpenGL][TessellationControlShader] Failed to compile Shader!
-[14:33:23][Error][Shader][OpenGL][TessellationControlShader] 0(15) : error C0000: syntax error, unexpected '}', expecting ',' or ';' at token "}"
-[14:33:23][Warn][Shader][OpenGL] Shader: "Color" using fallback Shader: "Passthrough"
-[14:33:23][Info][ShaderManager] Reloaded: "Color"
-[14:33:24][Info][Sandbox] DrawCall(s): 1
-[14:33:24][Info][Sandbox] FPS: 2008
-[14:33:24][Info][Sandbox] FrameTime: 0.6293ms
-[14:33:29][Info][Sandbox] DrawCall(s): 1
-[14:33:29][Info][Sandbox] FPS: 2031
-[14:33:29][Info][Sandbox] FrameTime: 0.4543ms
-[14:33:34][Info][Sandbox] DrawCall(s): 1
-[14:33:34][Info][Sandbox] FPS: 2034
-[14:33:34][Info][Sandbox] FrameTime: 0.4584ms
-[14:33:39][Info][Sandbox] DrawCall(s): 1
-[14:33:39][Info][Sandbox] FPS: 2029
-[14:33:39][Info][Sandbox] FrameTime: 0.4575ms
-[14:33:44][Info][Sandbox] DrawCall(s): 1
-[14:33:44][Info][Sandbox] FPS: 2027
-[14:33:44][Info][Sandbox] FrameTime: 0.4519ms
-[14:33:49][Info][Sandbox] DrawCall(s): 1
-[14:33:49][Info][Sandbox] FPS: 2029
-[14:33:49][Info][Sandbox] FrameTime: 0.5006ms
-[14:33:54][Info][Sandbox] DrawCall(s): 1
-[14:33:54][Info][Sandbox] FPS: 2003
-[14:33:54][Info][Sandbox] FrameTime: 1.0622ms
-[14:33:59][Info][Sandbox] DrawCall(s): 1
-[14:33:59][Info][Sandbox] FPS: 1995
-[14:33:59][Info][Sandbox] FrameTime: 0.4653ms
-[14:34:04][Info][Sandbox] DrawCall(s): 1
-[14:34:04][Info][Sandbox] FPS: 1995
-[14:34:04][Info][Sandbox] FrameTime: 0.4587ms
-[14:34:07][Info][Shader] Shader Modified Reloading...
-[14:34:07][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:34:07][Debug][Shader][OpenGL] Compiling: "Color"
-[14:34:07][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:34:07][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:34:07][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:34:08][Info][ShaderManager] Reloaded: "Color"
-[14:34:09][Info][Sandbox] DrawCall(s): 1
-[14:34:09][Info][Sandbox] FPS: 2035
-[14:34:09][Info][Sandbox] FrameTime: 0.5383ms
-[14:34:14][Info][Sandbox] DrawCall(s): 1
-[14:34:14][Info][Sandbox] FPS: 1793
-[14:34:14][Info][Sandbox] FrameTime: 0.5253ms
-[14:34:19][Info][Sandbox] DrawCall(s): 1
-[14:34:19][Info][Sandbox] FPS: 1840
-[14:34:19][Info][Sandbox] FrameTime: 0.4892ms
-[14:34:24][Info][Sandbox] DrawCall(s): 1
-[14:34:24][Info][Sandbox] FPS: 2035
-[14:34:24][Info][Sandbox] FrameTime: 0.5221ms
-[14:34:29][Info][Sandbox] DrawCall(s): 1
-[14:34:29][Info][Sandbox] FPS: 2026
-[14:34:29][Info][Sandbox] FrameTime: 0.4563ms
-[14:34:34][Info][Sandbox] DrawCall(s): 1
-[14:34:34][Info][Sandbox] FPS: 2012
-[14:34:34][Info][Sandbox] FrameTime: 0.4516ms
-[14:34:39][Info][Sandbox] DrawCall(s): 1
-[14:34:39][Info][Sandbox] FPS: 2016
-[14:34:39][Info][Sandbox] FrameTime: 0.4502ms
-[14:34:44][Info][Sandbox] DrawCall(s): 1
-[14:34:44][Info][Sandbox] FPS: 2014
-[14:34:44][Info][Sandbox] FrameTime: 0.5608ms
-[14:34:48][Info][Shader] Shader Modified Reloading...
-[14:34:48][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:34:48][Debug][Shader][OpenGL] Compiling: "Color"
-[14:34:48][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:34:48][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:34:48][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:34:48][Info][ShaderManager] Reloaded: "Color"
-[14:34:49][Info][Sandbox] DrawCall(s): 1
-[14:34:49][Info][Sandbox] FPS: 2026
-[14:34:49][Info][Sandbox] FrameTime: 0.471ms
-[14:34:54][Info][Shader] Shader Modified Reloading...
-[14:34:54][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:34:54][Debug][Shader][OpenGL] Compiling: "Color"
-[14:34:54][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:34:54][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:34:54][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:34:54][Info][ShaderManager] Reloaded: "Color"
-[14:34:54][Info][Sandbox] DrawCall(s): 1
-[14:34:54][Info][Sandbox] FPS: 1936
-[14:34:54][Info][Sandbox] FrameTime: 0.5545ms
-[14:34:59][Info][Sandbox] DrawCall(s): 1
-[14:34:59][Info][Sandbox] FPS: 2024
-[14:34:59][Info][Sandbox] FrameTime: 0.4614ms
-[14:35:04][Info][Sandbox] DrawCall(s): 1
-[14:35:04][Info][Sandbox] FPS: 2026
-[14:35:04][Info][Sandbox] FrameTime: 0.4596ms
-[14:35:09][Info][Sandbox] DrawCall(s): 1
-[14:35:09][Info][Sandbox] FPS: 2026
-[14:35:09][Info][Sandbox] FrameTime: 0.4878ms
-[14:35:14][Info][Sandbox] DrawCall(s): 1
-[14:35:14][Info][Sandbox] FPS: 1964
-[14:35:14][Info][Sandbox] FrameTime: 0.4572ms
-[14:35:19][Info][Sandbox] DrawCall(s): 1
-[14:35:19][Info][Sandbox] FPS: 2031
-[14:35:19][Info][Sandbox] FrameTime: 0.4646ms
-[14:35:24][Info][Sandbox] DrawCall(s): 1
-[14:35:24][Info][Sandbox] FPS: 1920
-[14:35:24][Info][Sandbox] FrameTime: 0.4642ms
-[14:35:29][Info][Sandbox] DrawCall(s): 1
-[14:35:29][Info][Sandbox] FPS: 2014
-[14:35:29][Info][Sandbox] FrameTime: 0.4737ms
-[14:35:34][Info][Sandbox] DrawCall(s): 1
-[14:35:34][Info][Sandbox] FPS: 2034
-[14:35:34][Info][Sandbox] FrameTime: 0.5101ms
-[14:35:39][Info][Sandbox] DrawCall(s): 1
-[14:35:39][Info][Sandbox] FPS: 1981
-[14:35:39][Info][Sandbox] FrameTime: 0.5057ms
-[14:35:44][Info][Sandbox] DrawCall(s): 1
-[14:35:44][Info][Sandbox] FPS: 2021
-[14:35:44][Info][Sandbox] FrameTime: 0.4572ms
-[14:35:49][Info][Sandbox] DrawCall(s): 1
-[14:35:49][Info][Sandbox] FPS: 2014
-[14:35:49][Info][Sandbox] FrameTime: 0.4671ms
-[14:35:54][Info][Sandbox] DrawCall(s): 1
-[14:35:54][Info][Sandbox] FPS: 2024
-[14:35:54][Info][Sandbox] FrameTime: 0.4528ms
-[14:35:56][Info][Shader] Shader Modified Reloading...
-[14:35:56][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:35:56][Debug][Shader][OpenGL] Compiling: "Color"
-[14:35:56][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:35:56][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:35:56][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:35:56][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:35:56][Error][Shader][OpenGL][Program] Failed to link Program!
-[14:35:56][Error][Shader][OpenGL][Program] Link info
----------
-error: "vColor" not declared as an output from the previous stage
-[14:35:56][Warn][Shader][OpenGL] Shader: "Color" using fallback Shader: "Passthrough"
-[14:35:56][Info][ShaderManager] Reloaded: "Color"
-[14:35:56][Critical][Renderer][OpenGL] [API][ERROR] 1281 GL_INVALID_VALUE error generated. Program handle does not refer to an object generated by OpenGL.
-[14:35:56][Critical][Renderer][OpenGL] [API][ERROR] 1281 GL_INVALID_VALUE error generated. <program> handle does not refer to an object generated by OpenGL.
-[14:35:56][Error][Renderer][OpenGL] [API][PERFORMANCE] 131218 Program/shader state performance warning: Vertex shader in program 5 is being recompiled based on GL state.
-[14:35:59][Info][Sandbox] DrawCall(s): 1
-[14:35:59][Info][Sandbox] FPS: 2002
-[14:35:59][Info][Sandbox] FrameTime: 0.4532ms
-[14:36:04][Info][Sandbox] DrawCall(s): 1
-[14:36:50][Info][Sandbox] FPS: 2027
-[14:36:50][Info][Sandbox] FrameTime: 0.4723ms
-[14:36:54][Info][Shader] Shader Modified Reloading...
-[14:36:54][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:36:54][Debug][Shader][OpenGL] Compiling: "Color"
-[14:36:54][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:36:54][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:36:54][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:36:54][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:36:54][Error][Shader][OpenGL][Program] Failed to link Program!
-[14:36:54][Error][Shader][OpenGL][Program] Link info
----------
-error: "vColor" not declared as an output from the previous stage
-[14:36:54][Warn][Shader][OpenGL] Shader: "Color" using fallback Shader: "Passthrough"
-[14:36:54][Info][ShaderManager] Reloaded: "Color"
-[14:36:55][Info][Sandbox] DrawCall(s): 1
-[14:36:55][Info][Sandbox] FPS: 1975
-[14:36:55][Info][Sandbox] FrameTime: 0.5162ms
-[14:37:00][Info][Sandbox] DrawCall(s): 1
-[14:37:00][Info][Sandbox] FPS: 1710
-[14:37:00][Info][Sandbox] FrameTime: 0.6636ms
-[14:37:05][Info][Sandbox] DrawCall(s): 1
-[14:37:05][Info][Sandbox] FPS: 1934
-[14:37:05][Info][Sandbox] FrameTime: 0.4495ms
-[14:37:05][Info][Shader] Shader Modified Reloading...
-[14:37:05][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:37:05][Debug][Shader][OpenGL] Compiling: "Color"
-[14:37:05][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:37:05][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:37:05][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:37:05][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:37:05][Error][Shader][OpenGL][TessellationEvaluationShader] Failed to compile Shader!
-[14:37:05][Error][Shader][OpenGL][TessellationEvaluationShader] 0(2) : error C0000: syntax error, unexpected ';', expecting reserved word or reserved word "in" or reserved word "out" or reserved word "uniform" at token ";"
-[14:37:05][Warn][Shader][OpenGL] Shader: "Color" using fallback Shader: "Passthrough"
-[14:37:05][Info][ShaderManager] Reloaded: "Color"
-[14:37:07][Info][Shader] Shader Modified Reloading...
-[14:37:07][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:37:07][Debug][Shader][OpenGL] Compiling: "Color"
-[14:37:07][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:37:07][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:37:07][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:37:07][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:37:07][Error][Shader][OpenGL][Program] Failed to link Program!
-[14:37:07][Error][Shader][OpenGL][Program] Link info
----------
-error: "vColor" not declared as an output from the previous stage
-[14:37:07][Warn][Shader][OpenGL] Shader: "Color" using fallback Shader: "Passthrough"
-[14:37:07][Info][ShaderManager] Reloaded: "Color"
-[14:37:10][Info][Sandbox] DrawCall(s): 1
-[14:37:10][Info][Sandbox] FPS: 2027
-[14:37:10][Info][Sandbox] FrameTime: 0.5288ms
-[14:37:15][Info][Sandbox] DrawCall(s): 1
-[14:37:15][Info][Sandbox] FPS: 2039
-[14:37:15][Info][Sandbox] FrameTime: 0.5588ms
-[14:37:20][Info][Sandbox] DrawCall(s): 1
-[14:37:20][Info][Sandbox] FPS: 2022
-[14:37:20][Info][Sandbox] FrameTime: 0.4569ms
-[14:37:25][Info][Sandbox] DrawCall(s): 1
-[14:37:25][Info][Sandbox] FPS: 1973
-[14:37:25][Info][Sandbox] FrameTime: 0.5023ms
-[14:37:26][Info][Shader] Shader Modified Reloading...
-[14:37:26][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:37:26][Debug][Shader][OpenGL] Compiling: "Color"
-[14:37:26][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:37:26][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:37:26][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:37:26][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:37:26][Error][Shader][OpenGL][Program] Failed to link Program!
-[14:37:26][Error][Shader][OpenGL][Program] Link info
----------
-error: "vColor" not declared as an output from the previous stage
-[14:37:26][Warn][Shader][OpenGL] Shader: "Color" using fallback Shader: "Passthrough"
-[14:37:26][Info][ShaderManager] Reloaded: "Color"
-[14:37:30][Info][Sandbox] DrawCall(s): 1
-[14:37:30][Info][Sandbox] FPS: 2038
-[14:37:30][Info][Sandbox] FrameTime: 0.4618ms
-[14:37:35][Info][Sandbox] DrawCall(s): 1
-[14:37:35][Info][Sandbox] FPS: 1986
-[14:37:35][Info][Sandbox] FrameTime: 0.4626ms
-[14:37:40][Info][Sandbox] DrawCall(s): 1
-[14:37:40][Info][Sandbox] FPS: 2014
-[14:37:40][Info][Sandbox] FrameTime: 0.4989ms
-[14:37:45][Info][Sandbox] DrawCall(s): 1
-[14:37:45][Info][Sandbox] FPS: 2050
-[14:37:45][Info][Sandbox] FrameTime: 0.4504ms
-[14:37:47][Info][Shader] Shader Modified Reloading...
-[14:37:47][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:37:47][Debug][Shader][OpenGL] Compiling: "Color"
-[14:37:47][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:37:47][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:37:47][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:37:47][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:37:47][Error][Shader][OpenGL][TessellationEvaluationShader] Failed to compile Shader!
-[14:37:47][Error][Shader][OpenGL][TessellationEvaluationShader] 0(7) : error C5052: gl_InvocationID is not accessible in this profile
-0(7) : error C5052: gl_InvocationID is not accessible in this profile
-[14:37:47][Warn][Shader][OpenGL] Shader: "Color" using fallback Shader: "Passthrough"
-[14:37:47][Info][ShaderManager] Reloaded: "Color"
-[14:37:50][Info][Sandbox] DrawCall(s): 1
-[14:37:50][Info][Sandbox] FPS: 2051
-[14:37:50][Info][Sandbox] FrameTime: 0.4519ms
-[14:37:55][Info][Sandbox] DrawCall(s): 1
-[14:37:55][Info][Sandbox] FPS: 1997
-[14:37:55][Info][Sandbox] FrameTime: 0.4788ms
-[14:38:00][Info][Sandbox] DrawCall(s): 1
-[14:38:00][Info][Sandbox] FPS: 2035
-[14:38:00][Info][Sandbox] FrameTime: 0.4574ms
-[14:38:05][Info][Sandbox] DrawCall(s): 1
-[14:38:05][Info][Sandbox] FPS: 2040
-[14:38:05][Info][Sandbox] FrameTime: 0.454ms
-[14:38:10][Info][Sandbox] DrawCall(s): 1
-[14:38:10][Info][Sandbox] FPS: 2019
-[14:38:10][Info][Sandbox] FrameTime: 0.4525ms
-[14:38:15][Info][Sandbox] DrawCall(s): 1
-[14:38:15][Info][Sandbox] FPS: 2029
-[14:38:15][Info][Sandbox] FrameTime: 0.4466ms
-[14:38:20][Info][Sandbox] DrawCall(s): 1
-[14:38:20][Info][Sandbox] FPS: 2042
-[14:38:20][Info][Sandbox] FrameTime: 0.5506ms
-[14:38:25][Info][Sandbox] DrawCall(s): 1
-[14:38:25][Info][Sandbox] FPS: 2022
-[14:38:25][Info][Sandbox] FrameTime: 0.4494ms
-[14:38:30][Info][Sandbox] DrawCall(s): 1
-[14:38:30][Info][Sandbox] FPS: 2031
-[14:38:30][Info][Sandbox] FrameTime: 0.4897ms
-[14:38:35][Info][Sandbox] DrawCall(s): 1
-[14:38:35][Info][Sandbox] FPS: 2007
-[14:38:35][Info][Sandbox] FrameTime: 0.4472ms
-[14:38:40][Info][Sandbox] DrawCall(s): 1
-[14:38:40][Info][Sandbox] FPS: 2012
-[14:38:40][Info][Sandbox] FrameTime: 0.4556ms
-[14:38:45][Info][Sandbox] DrawCall(s): 1
-[14:38:45][Info][Sandbox] FPS: 2025
-[14:38:45][Info][Sandbox] FrameTime: 0.4824ms
-[14:38:50][Info][Sandbox] DrawCall(s): 1
-[14:38:50][Info][Sandbox] FPS: 2009
-[14:38:50][Info][Sandbox] FrameTime: 0.4504ms
-[14:38:55][Info][Sandbox] DrawCall(s): 1
-[14:38:55][Info][Sandbox] FPS: 2021
-[14:38:55][Info][Sandbox] FrameTime: 0.5489ms
-[14:39:00][Info][Sandbox] DrawCall(s): 1
-[14:39:00][Info][Sandbox] FPS: 2045
-[14:39:00][Info][Sandbox] FrameTime: 0.4527ms
-[14:39:05][Info][Sandbox] DrawCall(s): 1
-[14:39:05][Info][Sandbox] FPS: 2035
-[14:39:05][Info][Sandbox] FrameTime: 0.468ms
-[14:39:10][Info][Sandbox] DrawCall(s): 1
-[14:39:10][Info][Sandbox] FPS: 2051
-[14:39:10][Info][Sandbox] FrameTime: 0.4574ms
-[14:39:12][Info][Shader] Shader Modified Reloading...
-[14:39:12][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:39:12][Debug][Shader][OpenGL] Compiling: "Color"
-[14:39:12][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:39:12][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:39:12][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:39:12][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:39:12][Error][Shader][OpenGL][Program] Failed to link Program!
-[14:39:12][Error][Shader][OpenGL][Program] Link info
----------
-error: "vColor" not declared as an output from the previous stage
-[14:39:12][Warn][Shader][OpenGL] Shader: "Color" using fallback Shader: "Passthrough"
-[14:39:12][Info][ShaderManager] Reloaded: "Color"
-[14:39:15][Info][Sandbox] DrawCall(s): 1
-[14:39:15][Info][Sandbox] FPS: 2046
-[14:39:15][Info][Sandbox] FrameTime: 0.5126ms
-[14:39:20][Info][Sandbox] DrawCall(s): 1
-[14:39:20][Info][Sandbox] FPS: 2045
-[14:39:20][Info][Sandbox] FrameTime: 0.4645ms
-[14:39:25][Info][Sandbox] DrawCall(s): 1
-[14:39:25][Info][Sandbox] FPS: 2040
-[14:39:25][Info][Sandbox] FrameTime: 0.4497ms
-[14:39:30][Info][Sandbox] DrawCall(s): 1
-[14:39:30][Info][Sandbox] FPS: 2019
-[14:39:30][Info][Sandbox] FrameTime: 0.7153ms
-[14:39:35][Info][Sandbox] DrawCall(s): 1
-[14:39:35][Info][Sandbox] FPS: 2039
-[14:39:35][Info][Sandbox] FrameTime: 0.4683ms
-[14:39:40][Info][Sandbox] DrawCall(s): 1
-[14:39:40][Info][Sandbox] FPS: 2044
-[14:39:40][Info][Sandbox] FrameTime: 0.4476ms
-[14:39:45][Info][Sandbox] DrawCall(s): 1
-[14:39:45][Info][Sandbox] FPS: 2034
-[14:39:45][Info][Sandbox] FrameTime: 0.6712ms
-[14:39:50][Info][Sandbox] DrawCall(s): 1
-[14:39:50][Info][Sandbox] FPS: 2020
-[14:39:50][Info][Sandbox] FrameTime: 0.5191ms
-[14:39:55][Info][Sandbox] DrawCall(s): 1
-[14:39:55][Info][Sandbox] FPS: 2038
-[14:39:55][Info][Sandbox] FrameTime: 0.448ms
-[14:40:00][Info][Sandbox] DrawCall(s): 1
-[14:40:00][Info][Sandbox] FPS: 2012
-[14:40:00][Info][Sandbox] FrameTime: 0.4639ms
-[14:40:00][Info][Shader] Shader Modified Reloading...
-[14:40:00][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:40:00][Debug][Shader][OpenGL] Compiling: "Color"
-[14:40:00][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:40:00][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:40:00][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:40:00][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:40:00][Info][ShaderManager] Reloaded: "Color"
-[14:40:05][Info][Sandbox] DrawCall(s): 1
-[14:40:05][Info][Sandbox] FPS: 2028
-[14:40:05][Info][Sandbox] FrameTime: 0.64ms
-[14:40:10][Info][Sandbox] DrawCall(s): 1
-[14:40:10][Info][Sandbox] FPS: 2008
-[14:40:10][Info][Sandbox] FrameTime: 0.7265ms
-[14:40:12][Info][Shader] Shader Modified Reloading...
-[14:40:12][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:40:12][Debug][Shader][OpenGL] Compiling: "Color"
-[14:40:12][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:40:12][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:40:12][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:40:12][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:40:12][Info][ShaderManager] Reloaded: "Color"
-[14:40:15][Info][Sandbox] DrawCall(s): 1
-[14:40:15][Info][Sandbox] FPS: 2035
-[14:40:15][Info][Sandbox] FrameTime: 0.4677ms
-[14:40:20][Info][Sandbox] DrawCall(s): 1
-[14:40:20][Info][Sandbox] FPS: 1912
-[14:40:20][Info][Sandbox] FrameTime: 0.6497ms
-[14:40:25][Info][Sandbox] DrawCall(s): 1
-[14:40:25][Info][Sandbox] FPS: 2001
-[14:40:25][Info][Sandbox] FrameTime: 0.4496ms
-[14:40:28][Info][Shader] Shader Modified Reloading...
-[14:40:28][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:40:28][Debug][Shader][OpenGL] Compiling: "Color"
-[14:40:28][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:40:28][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:40:28][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:40:28][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:40:28][Info][ShaderManager] Reloaded: "Color"
-[14:40:30][Info][Sandbox] DrawCall(s): 1
-[14:40:30][Info][Sandbox] FPS: 2020
-[14:40:30][Info][Sandbox] FrameTime: 0.4712ms
-[14:40:35][Info][Sandbox] DrawCall(s): 1
-[14:40:35][Info][Sandbox] FPS: 2000
-[14:40:35][Info][Sandbox] FrameTime: 0.46ms
-[14:40:37][Info][Shader] Shader Modified Reloading...
-[14:40:37][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:40:37][Debug][Shader][OpenGL] Compiling: "Color"
-[14:40:37][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:40:37][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:40:37][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:40:37][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:40:37][Info][ShaderManager] Reloaded: "Color"
-[14:40:40][Info][Sandbox] DrawCall(s): 1
-[14:40:40][Info][Sandbox] FPS: 2024
-[14:40:40][Info][Sandbox] FrameTime: 0.512ms
-[14:40:42][Info][Shader] Shader Modified Reloading...
-[14:40:42][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:40:42][Debug][Shader][OpenGL] Compiling: "Color"
-[14:40:42][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:40:42][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:40:42][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:40:42][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:40:42][Info][ShaderManager] Reloaded: "Color"
-[14:40:45][Info][Sandbox] DrawCall(s): 1
-[14:40:45][Info][Sandbox] FPS: 2025
-[14:40:45][Info][Sandbox] FrameTime: 0.4621ms
-[14:40:50][Info][Sandbox] DrawCall(s): 1
-[14:40:50][Info][Sandbox] FPS: 2027
-[14:40:50][Info][Sandbox] FrameTime: 0.4804ms
-[14:40:55][Info][Sandbox] DrawCall(s): 1
-[14:40:55][Info][Sandbox] FPS: 2032
-[14:40:55][Info][Sandbox] FrameTime: 0.4861ms
-[14:41:00][Info][Sandbox] DrawCall(s): 1
-[14:41:00][Info][Sandbox] FPS: 2001
-[14:41:00][Info][Sandbox] FrameTime: 0.481ms
-[14:41:05][Info][Sandbox] DrawCall(s): 1
-[14:41:05][Info][Sandbox] FPS: 2028
-[14:41:05][Info][Sandbox] FrameTime: 0.7746ms
-[14:41:10][Info][Sandbox] DrawCall(s): 1
-[14:41:10][Info][Sandbox] FPS: 2018
-[14:41:10][Info][Sandbox] FrameTime: 0.52ms
-[14:41:15][Info][Sandbox] DrawCall(s): 1
-[14:41:15][Info][Sandbox] FPS: 2029
-[14:41:15][Info][Sandbox] FrameTime: 0.4686ms
-[14:41:20][Info][Sandbox] DrawCall(s): 1
-[14:41:20][Info][Sandbox] FPS: 2036
-[14:41:20][Info][Sandbox] FrameTime: 0.4903ms
-[14:41:25][Info][Sandbox] DrawCall(s): 1
-[14:41:25][Info][Sandbox] FPS: 2021
-[14:41:25][Info][Sandbox] FrameTime: 0.4788ms
-[14:41:30][Info][Sandbox] DrawCall(s): 1
-[14:41:30][Info][Sandbox] FPS: 1976
-[14:41:30][Info][Sandbox] FrameTime: 0.4539ms
-[14:41:35][Info][Sandbox] DrawCall(s): 1
-[14:41:35][Info][Sandbox] FPS: 2010
-[14:41:35][Info][Sandbox] FrameTime: 0.4584ms
-[14:41:40][Info][Sandbox] DrawCall(s): 1
-[14:41:40][Info][Sandbox] FPS: 2032
-[14:41:40][Info][Sandbox] FrameTime: 0.5102ms
-[14:41:45][Info][Sandbox] DrawCall(s): 1
-[14:41:45][Info][Sandbox] FPS: 2030
-[14:41:45][Info][Sandbox] FrameTime: 0.4575ms
-[14:41:50][Info][Sandbox] DrawCall(s): 1
-[14:41:50][Info][Sandbox] FPS: 1998
-[14:41:50][Info][Sandbox] FrameTime: 0.4632ms
-[14:41:55][Info][Sandbox] DrawCall(s): 1
-[14:41:55][Info][Sandbox] FPS: 1965
-[14:41:55][Info][Sandbox] FrameTime: 0.459ms
-[14:42:00][Info][Sandbox] DrawCall(s): 1
-[14:42:00][Info][Sandbox] FPS: 1964
-[14:42:00][Info][Sandbox] FrameTime: 0.451ms
-[14:42:05][Info][Sandbox] DrawCall(s): 1
-[14:42:05][Info][Sandbox] FPS: 1952
-[14:42:05][Info][Sandbox] FrameTime: 0.5355ms
-[14:42:06][Info][Shader] Shader Modified Reloading...
-[14:42:06][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:42:06][Debug][Shader][OpenGL] Compiling: "Color"
-[14:42:06][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:42:06][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:42:06][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:42:06][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:42:06][Info][ShaderManager] Reloaded: "Color"
-[14:42:10][Info][Sandbox] DrawCall(s): 1
-[14:42:10][Info][Sandbox] FPS: 2018
-[14:42:10][Info][Sandbox] FrameTime: 0.4536ms
-[14:42:13][Info][Shader] Shader Modified Reloading...
-[14:42:13][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:42:13][Debug][Shader][OpenGL] Compiling: "Color"
-[14:42:13][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:42:13][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:42:13][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:42:13][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:42:13][Info][ShaderManager] Reloaded: "Color"
-[14:42:15][Info][Sandbox] DrawCall(s): 1
-[14:42:15][Info][Sandbox] FPS: 2008
-[14:42:15][Info][Sandbox] FrameTime: 0.5154ms
-[14:42:20][Info][Shader] Shader Modified Reloading...
-[14:42:20][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:42:20][Debug][Shader][OpenGL] Compiling: "Color"
-[14:42:20][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:42:20][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:42:20][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:42:20][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:42:20][Info][ShaderManager] Reloaded: "Color"
-[14:42:20][Info][Sandbox] DrawCall(s): 1
-[14:42:20][Info][Sandbox] FPS: 1928
-[14:42:20][Info][Sandbox] FrameTime: 0.4941ms
-[14:42:25][Info][Shader] Shader Modified Reloading...
-[14:42:25][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:42:25][Debug][Shader][OpenGL] Compiling: "Color"
-[14:42:25][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:42:25][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:42:25][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:42:25][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:42:25][Info][ShaderManager] Reloaded: "Color"
-[14:42:25][Info][Sandbox] DrawCall(s): 1
-[14:42:25][Info][Sandbox] FPS: 1973
-[14:42:25][Info][Sandbox] FrameTime: 0.6455ms
-[14:42:28][Info][Shader] Shader Modified Reloading...
-[14:42:28][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:42:28][Debug][Shader][OpenGL] Compiling: "Color"
-[14:42:28][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:42:28][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:42:28][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:42:28][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:42:28][Info][ShaderManager] Reloaded: "Color"
-[14:42:30][Info][Sandbox] DrawCall(s): 1
-[14:42:30][Info][Sandbox] FPS: 2026
-[14:42:30][Info][Sandbox] FrameTime: 0.4598ms
-[14:42:35][Info][Shader] Shader Modified Reloading...
-[14:42:35][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:42:35][Debug][Shader][OpenGL] Compiling: "Color"
-[14:42:35][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:42:35][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:42:35][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:42:35][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:42:35][Info][ShaderManager] Reloaded: "Color"
-[14:42:35][Info][Sandbox] DrawCall(s): 1
-[14:42:35][Info][Sandbox] FPS: 1940
-[14:42:35][Info][Sandbox] FrameTime: 0.4866ms
-[14:42:40][Info][Sandbox] DrawCall(s): 1
-[14:42:40][Info][Sandbox] FPS: 2038
-[14:42:40][Info][Sandbox] FrameTime: 0.482ms
-[14:42:45][Info][Sandbox] DrawCall(s): 1
-[14:42:45][Info][Sandbox] FPS: 2008
-[14:42:45][Info][Sandbox] FrameTime: 0.4593ms
-[14:42:46][Info][Shader] Shader Modified Reloading...
-[14:42:46][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:42:46][Debug][Shader][OpenGL] Compiling: "Color"
-[14:42:46][Debug][Shader][OpenGL] Compiling Vertex Shader
-[14:42:46][Debug][Shader][OpenGL] Compiling Fragment Shader
-[14:42:46][Debug][Shader][OpenGL] Compiling Tessellation Control Shader
-[14:42:46][Debug][Shader][OpenGL] Compiling Tessellation Evaluation Shader
-[14:42:46][Info][ShaderManager] Reloaded: "Color"
-[14:42:50][Info][Sandbox] DrawCall(s): 1
-[14:42:50][Info][Sandbox] FPS: 1846
-[14:42:50][Info][Sandbox] FrameTime: 0.7582ms
-[14:42:55][Info][Sandbox] DrawCall(s): 1
-[14:42:55][Info][Sandbox] FPS: 1906
-[14:42:55][Info][Sandbox] FrameTime: 0.6507ms
-[14:43:00][Info][Sandbox] DrawCall(s): 1
-[14:43:00][Info][Sandbox] FPS: 872
-[14:43:00][Info][Sandbox] FrameTime: 349.537ms
-[14:43:05][Info][Sandbox] DrawCall(s): 1
-[14:43:05][Info][Sandbox] FPS: 1899
-[14:43:05][Info][Sandbox] FrameTime: 0.5013ms
-[14:43:10][Info][Sandbox] DrawCall(s): 1
-[14:43:10][Info][Sandbox] FPS: 1883
-[14:43:10][Info][Sandbox] FrameTime: 0.5069ms
-[14:43:15][Info][Sandbox] DrawCall(s): 1
-[14:43:15][Info][Sandbox] FPS: 1782
-[14:43:15][Info][Sandbox] FrameTime: 0.5705ms
-[14:43:20][Info][Sandbox] DrawCall(s): 1
-[14:43:20][Info][Sandbox] FPS: 2062
-[14:43:20][Info][Sandbox] FrameTime: 0.4579ms
-[14:43:25][Info][Sandbox] DrawCall(s): 1
-[14:43:25][Info][Sandbox] FPS: 1472
-[14:43:25][Info][Sandbox] FrameTime: 0.4681ms
-[14:43:28][Debug][Application] Shutting down TRAP Modules...
-[14:43:28][Debug][ShaderManager] Destroying Shaders
-[14:43:28][Debug][Shader][OpenGL] Destroying Shader: "Passthrough"
-[14:43:28][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[14:43:28][Trace][Config] Width = 1280
-[14:43:28][Trace][Config] Height = 736
-[14:43:28][Trace][Config] RefreshRate = 144
-[14:43:28][Trace][Config] VSync = 0
-[14:43:28][Trace][Config] FPSLimit = 0
-[14:43:28][Trace][Config] DisplayMode = Windowed
-[14:43:28][Trace][Config] Monitor = 0
-[14:43:28][Trace][Config] RenderAPI = OpenGL
-[14:43:28][Trace][Config] HotShaderReloading = TRUE
-[14:43:28][Trace][Config] Size: 9
-[14:43:28][Info][Config] Saving: Engine.cfg
-[14:43:28][Debug][VFS] Shutting down Virtual File System
-[14:43:28][Debug][LayerStack] Destroying Layer: Sandbox
-[14:43:28][Debug][LayerStack] Destroying Layer: ImGuiLayer
-[14:43:28][Debug][ShaderManager] Destroying Shaders
-[14:43:28][Debug][Renderer][OpenGL] Destroying Renderer
-[14:43:28][Debug][Context][OpenGL] Destroying Context
-[14:43:28][Debug][Window] Destroying Window: "Sandbox"
-[14:43:28][Info][Logger] Saving Log.txt
+[18:22:23][Debug][Application] Initializing TRAP Modules...
+[18:22:23][Debug][VFS] Initializing Virtual File System
+[18:22:23][Info][Config] Loading settings file "Engine.cfg"
+[18:22:23][Trace][Config] Width = 1280
+[18:22:23][Trace][Config] Height = 720
+[18:22:23][Trace][Config] RefreshRate = 144
+[18:22:23][Trace][Config] VSync = 0
+[18:22:23][Trace][Config] FPSLimit = 0
+[18:22:23][Trace][Config] DisplayMode = Windowed
+[18:22:23][Trace][Config] Monitor = 0
+[18:22:23][Trace][Config] RenderAPI = OpenGL
+[18:22:23][Trace][Config] HotShaderReloading = TRUE
+[18:22:23][Trace][Config] Size: 9
+[18:22:23][Info][Window] Initializing Window: "Sandbox" 1280x720@144Hz VSync: Off Mode: Windowed Monitor: 0
+[18:22:24][Debug][Window] Storing underlying OS video mode: 2560x1440@144Hz (R8G8B8)
+[18:22:24][Info][Context][OpenGL] Initializing Context
+[18:22:24][Info][Renderer][OpenGL] Initializing Renderer
+[18:22:24][Info][Renderer][OpenGL] ----------------------------------
+[18:22:24][Info][Renderer][OpenGL] OpenGL:
+[18:22:24][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 431.60
+[18:22:24][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
+[18:22:24][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
+[18:22:24][Info][Renderer][OpenGL] ----------------------------------
+[18:22:24][Debug][Shader][OpenGL] Compiling: "Passthrough"
+[18:22:24][Debug][Shader][OpenGL] Compiling Vertex Shader
+[18:22:24][Debug][Shader][OpenGL] Compiling Fragment Shader
+[18:22:24][Debug][LayerStack] Pushing Overlay: ImGuiLayer
+[18:22:24][Debug][LayerStack] Pushing Layer: Sandbox
+[18:22:24][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
+[18:22:24][Debug][Shader][OpenGL] Compiling: "Color"
+[18:22:24][Debug][Shader][OpenGL] Compiling Vertex Shader
+[18:22:24][Debug][Shader][OpenGL] Compiling Fragment Shader
+[18:22:29][Info][Sandbox] DrawCall(s): 1
+[18:22:29][Info][Sandbox] FPS: 1659
+[18:22:29][Info][Sandbox] FrameTime: 0.6086ms
+[18:22:34][Info][Shader] Shader Modified Reloading...
+[18:22:34][Debug][Shader][OpenGL] Destroying Shader: "Color"
+[18:22:34][Debug][Shader][OpenGL] Compiling: "Color"
+[18:22:34][Debug][Shader][OpenGL] Compiling Vertex Shader
+[18:22:34][Debug][Shader][OpenGL] Compiling Fragment Shader
+[18:22:34][Info][ShaderManager] Reloaded: "Color"
+[18:22:34][Info][Sandbox] DrawCall(s): 1
+[18:22:34][Info][Sandbox] FPS: 1445
+[18:22:34][Info][Sandbox] FrameTime: 1.553ms
+[18:22:39][Info][Sandbox] DrawCall(s): 1
+[18:22:39][Info][Sandbox] FPS: 2006
+[18:22:39][Info][Sandbox] FrameTime: 0.4697ms
+[18:22:44][Info][Sandbox] DrawCall(s): 1
+[18:22:44][Info][Sandbox] FPS: 2017
+[18:22:44][Info][Sandbox] FrameTime: 0.5081ms
+[18:22:49][Info][Shader] Shader Modified Reloading...
+[18:22:49][Debug][Shader][OpenGL] Destroying Shader: "Color"
+[18:22:49][Debug][Shader][OpenGL] Compiling: "Color"
+[18:22:49][Debug][Shader][OpenGL] Compiling Vertex Shader
+[18:22:49][Debug][Shader][OpenGL] Compiling Fragment Shader
+[18:22:49][Info][ShaderManager] Reloaded: "Color"
+[18:22:49][Info][Sandbox] DrawCall(s): 1
+[18:22:49][Info][Sandbox] FPS: 1866
+[18:22:49][Info][Sandbox] FrameTime: 0.61ms
+[18:22:54][Info][Sandbox] DrawCall(s): 1
+[18:22:54][Info][Sandbox] FPS: 1984
+[18:22:54][Info][Sandbox] FrameTime: 0.4663ms
+[18:22:56][Info][Shader] Shader Modified Reloading...
+[18:22:56][Debug][Shader][OpenGL] Destroying Shader: "Color"
+[18:22:56][Debug][Shader][OpenGL] Compiling: "Color"
+[18:22:56][Debug][Shader][OpenGL] Compiling Vertex Shader
+[18:22:56][Debug][Shader][OpenGL] Compiling Fragment Shader
+[18:22:56][Info][ShaderManager] Reloaded: "Color"
+[18:22:59][Debug][Application] Shutting down TRAP Modules...
+[18:22:59][Debug][ShaderManager] Destroying Shaders
+[18:22:59][Debug][Shader][OpenGL] Destroying Shader: "Passthrough"
+[18:22:59][Debug][Shader][OpenGL] Destroying Shader: "Color"
+[18:22:59][Trace][Config] Width = 1280
+[18:22:59][Trace][Config] Height = 720
+[18:22:59][Trace][Config] RefreshRate = 144
+[18:22:59][Trace][Config] VSync = 0
+[18:22:59][Trace][Config] FPSLimit = 0
+[18:22:59][Trace][Config] DisplayMode = Windowed
+[18:22:59][Trace][Config] Monitor = 0
+[18:22:59][Trace][Config] RenderAPI = OpenGL
+[18:22:59][Trace][Config] HotShaderReloading = TRUE
+[18:22:59][Trace][Config] Size: 9
+[18:22:59][Info][Config] Saving: Engine.cfg
+[18:22:59][Debug][VFS] Shutting down Virtual File System
+[18:22:59][Debug][LayerStack] Destroying Layer: Sandbox
+[18:22:59][Debug][LayerStack] Destroying Layer: ImGuiLayer
+[18:22:59][Debug][ShaderManager] Destroying Shaders
+[18:22:59][Debug][Renderer][OpenGL] Destroying Renderer
+[18:22:59][Debug][Context][OpenGL] Destroying Context
+[18:22:59][Debug][Window] Destroying Window: "Sandbox"
+[18:22:59][Info][Logger] Saving Log.txt

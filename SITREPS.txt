@@ -232,3 +232,4 @@ SITREP 07/30/2019|19w31a2
     - Changed TRAP Engine version to 19w31a2(0.5.4)
     - Tested if Tessellation Control and Evaulation Shader are working ~>30 mins
     - Added PATCHES to RendererPrimitive for Tessellation ~<5 mins
+    - Fixed bug with single comments ~>10 mins
