@@ -10,10 +10,10 @@ namespace TRAP::Graphics::API
 {
 	enum class RenderAPI
 	{
-		NONE,
-		OPENGL,
+		NONE = 0,
+		OpenGL,
 		D3D12,
-		VULKAN
+		Vulkan
 	};
 
 	class Context

@@ -49,6 +49,11 @@
 #include "Graphics/Shaders/ShaderManager.h"
 #include "Graphics/Shaders/Shader.h"
 
+#include "Graphics/Textures/TextureManager.h"
+#include "ImageLoader/Image.h"
+#include "Graphics/Textures/Texture.h"
+#include "Graphics/Textures/Texture2D.h"
+
 #include "Graphics/OrthographicCamera.h"
 //----------------------
 

@@ -32,7 +32,7 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 {
 	switch (GetRenderAPI())
 	{
-	case RenderAPI::OPENGL:
+	case RenderAPI::OpenGL:
 		TP_INFO("[Context][OpenGL] Initializing Context");
 		s_Context = std::make_unique<OpenGLContext>(window);
 		break;
@@ -44,7 +44,7 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 		break;
 #endif
 
-	case RenderAPI::VULKAN:
+	case RenderAPI::Vulkan:
 		TP_INFO("[Context][Vulkan] Initializing Context");
 		s_Context = std::make_unique<VulkanContext>(window);
 		break;
@@ -75,7 +75,7 @@ void TRAP::Graphics::API::Context::AutoSelectRenderAPI()
 	//Check if Vulkan capable
 	if (s_isVulkanCapable)
 	{
-		SetRenderAPI(RenderAPI::VULKAN);
+		SetRenderAPI(RenderAPI::Vulkan);
 		return;
 	}
 	TP_DEBUG("[Context][Vulkan] Device isn't Vulkan 1.1 capable!");
@@ -83,7 +83,7 @@ void TRAP::Graphics::API::Context::AutoSelectRenderAPI()
 
 	if (s_isOpenGLCapable)
 	{
-		SetRenderAPI(RenderAPI::OPENGL);
+		SetRenderAPI(RenderAPI::OpenGL);
 		return;
 	}
 	TP_DEBUG("[Context][OpenGL] Device isn't OpenGL 4.6 capable!");
@@ -135,25 +135,25 @@ void TRAP::Graphics::API::Context::SwitchRenderAPI(const RenderAPI api)
 			TP_ERROR("[Context][D3D12] This device doesn't support D3D12!");
 			if (s_isVulkanCapable)
 			{
-				SwitchRenderAPI(RenderAPI::VULKAN);
+				SwitchRenderAPI(RenderAPI::Vulkan);
 				return;
 			}
 
 			if (s_isOpenGLCapable)
 			{
-				SwitchRenderAPI(RenderAPI::OPENGL);
+				SwitchRenderAPI(RenderAPI::OpenGL);
 				return;
 			}
 
 			return;
 		}
 
-		if (api == RenderAPI::VULKAN)
+		if (api == RenderAPI::Vulkan)
 		{
 			if (s_isVulkanCapable)
 			{
 				TP_WARN("[Context] Switching RenderAPI to Vulkan 1.1");
-				s_newRenderAPI = RenderAPI::VULKAN;
+				s_newRenderAPI = RenderAPI::Vulkan;
 
 				return;
 			}
@@ -167,19 +167,19 @@ void TRAP::Graphics::API::Context::SwitchRenderAPI(const RenderAPI api)
 
 			if (s_isOpenGLCapable)
 			{
-				SwitchRenderAPI(RenderAPI::OPENGL);
+				SwitchRenderAPI(RenderAPI::OpenGL);
 				return;
 			}
 
 			return;
 		}
 
-		if (api == RenderAPI::OPENGL)
+		if (api == RenderAPI::OpenGL)
 		{
 			if (s_isOpenGLCapable)
 			{
 				TP_WARN("[Context] Switching RenderAPI to OpenGL 4.6");
-				s_newRenderAPI = RenderAPI::OPENGL;
+				s_newRenderAPI = RenderAPI::OpenGL;
 
 				return;
 			}
@@ -192,7 +192,7 @@ void TRAP::Graphics::API::Context::SwitchRenderAPI(const RenderAPI api)
 			}
 
 			if (s_isVulkanCapable)
-				SwitchRenderAPI(RenderAPI::VULKAN);
+				SwitchRenderAPI(RenderAPI::Vulkan);
 		}
 	}
 }
@@ -205,11 +205,11 @@ bool TRAP::Graphics::API::Context::IsSupported(const RenderAPI api)
 		if (s_isD3D12Capable)
 			return true;
 
-	if (api == RenderAPI::VULKAN)
+	if (api == RenderAPI::Vulkan)
 		if (s_isVulkanCapable)
 			return true;
 
-	if (api == RenderAPI::OPENGL)
+	if (api == RenderAPI::OpenGL)
 		if (s_isOpenGLCapable)
 			return true;
 

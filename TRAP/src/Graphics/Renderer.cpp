@@ -28,7 +28,7 @@ void TRAP::Graphics::Renderer::EndScene()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Submit(const API::Shader* shader, const std::unique_ptr<VertexArray>& vertexArray, const Maths::Mat4& transform, const RendererPrimitive primitive)
+void TRAP::Graphics::Renderer::Submit(const Shader* shader, const std::unique_ptr<VertexArray>& vertexArray, const Maths::Mat4& transform, const RendererPrimitive primitive)
 {
 	Application::Get().AddSingleDrawCall();
 
@@ -37,11 +37,11 @@ void TRAP::Graphics::Renderer::Submit(const API::Shader* shader, const std::uniq
 	{
 		shader->Bind();
 		if (!s_uniformBuffer)
-			s_uniformBuffer = UniformBuffer::Create("MatrixBuffer", s_sceneData.get(), sizeof(SceneData), BufferUsage::DYNAMIC);
+			s_uniformBuffer = UniformBuffer::Create("MatrixBuffer", s_sceneData.get(), sizeof(SceneData), BufferUsage::Dynamic);
 		else
 		{
 			s_uniformBuffer->Bind();
-			s_uniformBuffer->UpdateData(s_sceneData.get(), sizeof(SceneData), BufferUsage::DYNAMIC);
+			s_uniformBuffer->UpdateData(s_sceneData.get(), sizeof(SceneData), BufferUsage::Dynamic);
 		}
 	}
 

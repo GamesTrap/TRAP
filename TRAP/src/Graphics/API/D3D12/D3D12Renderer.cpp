@@ -24,7 +24,7 @@ TRAP::Graphics::API::D3D12Renderer::~D3D12Renderer()
 void TRAP::Graphics::API::D3D12Renderer::InitInternal()
 {
 	SetDepthTesting(true);
-	SetBlendFunction(RendererBlendFunction::SOURCE_ALPHA, RendererBlendFunction::ONE_MINUS_SOURCE_ALPHA);
+	SetBlendFunction(RendererBlendFunction::Source_Alpha, RendererBlendFunction::One_Minus_Source_Alpha);
 	SetBlend(true);
 
 	TP_INFO("[Renderer][D3D12] ----------------------------------");

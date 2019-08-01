@@ -4,17 +4,17 @@
 #include "ShaderUniform.h"
 #include "ShaderResource.h"
 
-namespace TRAP::Graphics::API
+namespace TRAP::Graphics
 {
 	enum class ShaderType
 	{
-		UNKNOWN,
-		VERTEX,
-		FRAGMENT,
-		GEOMETRY,
-		TESSELLATIONCONTROL,
-		TESSELLATIONEVALUATION,
-		COMPUTE
+		Unknown = 0,
+		Vertex,
+		Fragment,
+		Geometry,
+		Tessellation_Control,
+		Tessellation_Evaluation,
+		Compute
 	};
 
 	class Shader
@@ -39,20 +39,20 @@ namespace TRAP::Graphics::API
 		virtual void SetTESUniformBuffer(uint8_t* data, unsigned int size) = 0;
 		virtual void SetCSUniformBuffer(uint8_t* data, unsigned int size) = 0;
 
-		virtual const ShaderUniformBufferList& GetVSUniforms() const = 0;
-		virtual const ShaderUniformBufferList& GetFSUniforms() const = 0;
-		virtual const ShaderUniformBufferList& GetGSUniforms() const = 0;
-		virtual const ShaderUniformBufferList& GetTCSUniforms() const = 0;
-		virtual const ShaderUniformBufferList& GetTESUniforms() const = 0;
-		virtual const ShaderUniformBufferList& GetCSUniforms() const = 0;
-		virtual const ShaderUniformBufferDeclaration* GetVSUniformBuffer() const = 0;
-		virtual const ShaderUniformBufferDeclaration* GetFSUniformBuffer() const = 0;
-		virtual const ShaderUniformBufferDeclaration* GetGSUniformBuffer() const = 0;
-		virtual const ShaderUniformBufferDeclaration* GetTCSUniformBuffer() const = 0;
-		virtual const ShaderUniformBufferDeclaration* GetTESUniformBuffer() const = 0;
-		virtual const ShaderUniformBufferDeclaration* GetCSUniformBuffer() const = 0;
+		virtual const API::ShaderUniformBufferList& GetVSUniforms() const = 0;
+		virtual const API::ShaderUniformBufferList& GetFSUniforms() const = 0;
+		virtual const API::ShaderUniformBufferList& GetGSUniforms() const = 0;
+		virtual const API::ShaderUniformBufferList& GetTCSUniforms() const = 0;
+		virtual const API::ShaderUniformBufferList& GetTESUniforms() const = 0;
+		virtual const API::ShaderUniformBufferList& GetCSUniforms() const = 0;
+		virtual const API::ShaderUniformBufferDeclaration* GetVSUniformBuffer() const = 0;
+		virtual const API::ShaderUniformBufferDeclaration* GetFSUniformBuffer() const = 0;
+		virtual const API::ShaderUniformBufferDeclaration* GetGSUniformBuffer() const = 0;
+		virtual const API::ShaderUniformBufferDeclaration* GetTCSUniformBuffer() const = 0;
+		virtual const API::ShaderUniformBufferDeclaration* GetTESUniformBuffer() const = 0;
+		virtual const API::ShaderUniformBufferDeclaration* GetCSUniformBuffer() const = 0;
 
-		virtual const ShaderResourceList& GetResource() const = 0;
+		virtual const API::ShaderResourceList& GetResource() const = 0;
 
 		virtual const std::string& GetName() const = 0;
 

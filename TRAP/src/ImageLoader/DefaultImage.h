@@ -3,9 +3,10 @@
 
 #include "TRAPPCH.h"
 
+#include "Image.h"
+
 namespace TRAP::INTERNAL
 {
-
 	inline std::array<uint8_t, 4096> defaultImageData =
 	{
 	13,13,13,255,
@@ -1032,6 +1033,29 @@ namespace TRAP::INTERNAL
 	13,13,13,255,
 	13,13,13,255,
 	13,13,13,255
+	};
+
+	class DefaultImage final : public Image
+	{
+	public:
+		explicit DefaultImage(std::string filepath);
+
+		void* GetPixelData() override;
+		uint32_t GetPixelDataSize() const override;
+		uint32_t GetBitsPerPixel() const override;
+		uint32_t GetBytesPerPixel() const override;
+		uint32_t GetWidth() const override;
+		uint32_t GetHeight() const override;
+		bool HasAlphaChannel() const override;
+		bool IsImageCompressed() const override;
+		bool IsImageGrayScale() const override;
+		bool IsImageColored() const override;
+		bool IsHDR() const override;
+		std::string GetFilePath() const override;
+		ImageFormat GetFormat() const override;
+
+	private:
+		std::string m_filepath;
 	};
 }
 #endif /*_TRAP_DEFAULTIMAGE_H_*/

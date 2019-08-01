@@ -20,11 +20,11 @@ std::unique_ptr<TRAP::Graphics::VertexArray> TRAP::Graphics::VertexArray::Create
 		return std::make_unique<API::D3D12VertexArray>();
 #endif
 
-	case API::RenderAPI::VULKAN:
+	case API::RenderAPI::Vulkan:
 		TP_WARN("[VertexArray][Vulkan] WIP");
 		return std::make_unique<API::VulkanVertexArray>();
 
-	case API::RenderAPI::OPENGL:
+	case API::RenderAPI::OpenGL:
 		return std::make_unique<API::OpenGLVertexArray>();
 
 	default:

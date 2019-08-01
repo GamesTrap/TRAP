@@ -34,6 +34,11 @@ void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physica
 		if (virtualPathLower == "/shaders")
 			//Create a ShaderFileWatcher instance that will check the mounted folders for changes every second				
 			m_shaderFileWatcher = std::make_unique<FileWatcher>("/shaders", 1000.0f);
+
+	if (m_hotTextureReloading)
+		if (virtualPathLower == "/textures")
+			//Create a TextureFileWatcher instance that will check the mounted folder for changes every second
+			m_textureFileWatcher = std::make_unique<FileWatcher>("/textures", 1000.0f);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -62,6 +67,10 @@ void TRAP::VFS::Unmount(const std::string& path)
 	if (m_hotShaderReloading && m_shaderFileWatcher)
 		if (pathLower == "/shaders")
 			m_shaderFileWatcher.reset();
+
+	if (m_hotTextureReloading && m_textureFileWatcher)
+		if (pathLower == "/textures")
+			m_textureFileWatcher.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

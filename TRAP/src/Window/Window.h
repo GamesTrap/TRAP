@@ -13,9 +13,9 @@ namespace TRAP
 {
 	enum class DisplayMode
 	{
-		WINDOWED,
-		FULLSCREEN,
-		BORDERLESS
+		Windowed,
+		Fullscreen,
+		Borderless
 	};
 
 	struct WindowProps
@@ -34,9 +34,9 @@ namespace TRAP
 		                     const unsigned int height = 720,
 		                     const unsigned int refreshRate = 60,
 		                     const unsigned int vsync = 0,
-		                     const DisplayMode mode = DisplayMode::WINDOWED,
+		                     const DisplayMode mode = DisplayMode::Windowed,
 		                     const unsigned int monitor = 0,
-		                     Graphics::API::RenderAPI api = Graphics::API::RenderAPI::VULKAN)
+		                     Graphics::API::RenderAPI api = Graphics::API::RenderAPI::Vulkan)
 			: Title(std::move(title)),
 			  Width(width),
 			  Height(height),

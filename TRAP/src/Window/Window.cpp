@@ -30,11 +30,11 @@ TRAP::Window::Window(const WindowProps &props)
 	else
 		init += "Off Mode: ";
 
-	if (props.Mode == DisplayMode::WINDOWED)
+	if (props.Mode == DisplayMode::Windowed)
 		init += "Windowed";
-	else if (props.Mode == DisplayMode::BORDERLESS)
+	else if (props.Mode == DisplayMode::Borderless)
 		init += "Borderless";
-	else if (props.Mode == DisplayMode::FULLSCREEN)
+	else if (props.Mode == DisplayMode::Fullscreen)
 		init += "Fullscreen";
 
 	init += " Monitor: " + std::to_string(props.Monitor);
@@ -95,9 +95,9 @@ void TRAP::Window::Init(const WindowProps &props)
 			if (Graphics::API::Context::IsD3D12Capable())
 				Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::D3D12);
 			else if (Graphics::API::Context::IsVulkanCapable())
-				Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::VULKAN);
+				Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::Vulkan);
 			else if (Graphics::API::Context::IsOpenGLCapable())
-				Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::OPENGL);
+				Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::OpenGL);
 			else
 			{
 				//All RenderAPIs are unsupported
@@ -109,9 +109,9 @@ void TRAP::Window::Init(const WindowProps &props)
 			}
 		}
 	}
-	if (Graphics::API::Context::GetRenderAPI() != Graphics::API::RenderAPI::OPENGL)
+	if (Graphics::API::Context::GetRenderAPI() != Graphics::API::RenderAPI::OpenGL)
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL)
+	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 	{
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -122,7 +122,7 @@ void TRAP::Window::Init(const WindowProps &props)
 	//Create Window
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 						   std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-						   "[INDEV][19w31a2]";
+						   "[INDEV][19w31a3]";
 	m_window = glfwCreateWindow(static_cast<int>(props.Width),
 								static_cast<int>(props.Height),
 								newTitle.c_str(),
@@ -298,7 +298,7 @@ void TRAP::Window::SetWindowMode(const DisplayMode &mode,
 		return;
 
 	//If currently windowed, stash the current size and position of the window
-	if (m_data.Mode == DisplayMode::WINDOWED)
+	if (m_data.Mode == DisplayMode::Windowed)
 	{
 		m_oldWindowedParams.Width = m_data.Width;
 		m_oldWindowedParams.Height = m_data.Height;
@@ -308,7 +308,7 @@ void TRAP::Window::SetWindowMode(const DisplayMode &mode,
 
 	GLFWmonitor *monitor = nullptr;
 
-	if (mode == DisplayMode::BORDERLESS)
+	if (mode == DisplayMode::Borderless)
 	{
 		//For borderless fullscreen, the new width and height will be the video mode width and height
 		width = m_baseVideoMode.width;
@@ -317,14 +317,14 @@ void TRAP::Window::SetWindowMode(const DisplayMode &mode,
 		monitor = m_useMonitor;
 		TP_DEBUG("[Window] Using Monitor: ", m_data.Monitor, '(', glfwGetMonitorName(monitor), ')');
 	}
-	else if (mode == DisplayMode::WINDOWED && (width == 0 || height == 0))
+	else if (mode == DisplayMode::Windowed && (width == 0 || height == 0))
 	{
 		//For windowed, use old window height and width if none provided
 		width = m_oldWindowedParams.Width;
 		height = m_oldWindowedParams.Height;
 		refreshRate = m_oldWindowedParams.RefreshRate;
 	}
-	else if (mode == DisplayMode::FULLSCREEN)
+	else if (mode == DisplayMode::Fullscreen)
 	{
 		monitor = m_useMonitor;
 		if (width == 0 || height == 0)
@@ -368,9 +368,9 @@ void TRAP::Window::SetWindowMode(const DisplayMode &mode,
 	}
 
 	constexpr auto GetModeStr = [&](const DisplayMode displayMode) {
-		if (displayMode == DisplayMode::WINDOWED)
+		if (displayMode == DisplayMode::Windowed)
 			return "Windowed";
-		return displayMode == DisplayMode::BORDERLESS ? "Borderless" : "Fullscreen";
+		return displayMode == DisplayMode::Borderless ? "Borderless" : "Fullscreen";
 	}; //Little hack to convert enum class DisplayMode to string
 	TP_INFO("[Window] Changing window mode from ",
 			GetModeStr(m_data.Mode), " to ", GetModeStr(mode), ": ",
@@ -421,6 +421,6 @@ void TRAP::Window::SetTitle(const std::string &title)
 	m_data.Title = title;
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 								 std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-								 "[INDEV][19w31a2]" + std::string(Graphics::Renderer::GetTitle());
+								 "[INDEV][19w31a3]" + std::string(Graphics::Renderer::GetTitle());
 	glfwSetWindowTitle(m_window, newTitle.c_str());
 }

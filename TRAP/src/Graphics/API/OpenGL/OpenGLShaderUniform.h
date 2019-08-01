@@ -10,15 +10,15 @@ namespace TRAP::Graphics::API
 	public:
 		enum class Type
 		{
-			NONE,
-			FLOAT32,
-			VEC2,
-			VEC3,
-			VEC4,
-			MAT3,
-			MAT4,
-			INT32,
-			STRUCT
+			NONE = 0,
+			Float32,
+			Vec2,
+			Vec3,
+			Vec4,
+			Mat3,
+			Mat4,
+			Int32,
+			Struct
 		};
 
 		OpenGLShaderUniformDeclaration(Type type, std::string name, unsigned int count = 1);
@@ -155,7 +155,7 @@ inline unsigned int TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::G
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::Graphics::API::ShaderType TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::GetShaderType() const
+inline TRAP::Graphics::ShaderType TRAP::Graphics::API::OpenGLShaderUniformBufferDeclaration::GetShaderType() const
 {
 	return m_shaderType;
 }

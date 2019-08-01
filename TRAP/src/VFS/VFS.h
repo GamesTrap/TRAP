@@ -31,6 +31,10 @@ namespace TRAP
 		void SetHotShaderReloading(bool enabled);
 		FileWatcher* GetShaderFileWatcher() const;
 
+		bool GetHotTextureReloading() const;
+		void SetHotTextureReloading(bool enabled);
+		FileWatcher* GetTextureFileWatcher() const;
+
 		static VFS* Get();
 
 		static std::string MakeVirtualPathCompatible(const std::string& virtualPath);
@@ -42,6 +46,9 @@ namespace TRAP
 
 		bool m_hotShaderReloading = false;
 		std::unique_ptr<FileWatcher> m_shaderFileWatcher;
+
+		bool m_hotTextureReloading = false;
+		std::unique_ptr<FileWatcher> m_textureFileWatcher;
 	};
 }
 
@@ -64,6 +71,27 @@ inline void TRAP::VFS::SetHotShaderReloading(const bool enabled)
 inline TRAP::FileWatcher* TRAP::VFS::GetShaderFileWatcher() const
 {
 	return m_shaderFileWatcher.get();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline bool TRAP::VFS::GetHotTextureReloading() const
+{
+	return m_hotTextureReloading;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::VFS::SetHotTextureReloading(const bool enabled)
+{
+	m_hotTextureReloading = enabled;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::FileWatcher* TRAP::VFS::GetTextureFileWatcher() const
+{
+	return m_textureFileWatcher.get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

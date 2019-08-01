@@ -10,7 +10,7 @@
 
 namespace TRAP::Graphics::API
 {
-	class D3D12Shader : public Shader
+	class D3D12Shader final : public Graphics::Shader
 	{
 	public:
 		D3D12Shader(std::string name, std::string source);
@@ -57,7 +57,7 @@ namespace TRAP::Graphics::API
 		const ShaderResourceList& GetResource() const override;
 
 	private:
-		friend class Shader;
+		friend class ::TRAP::Graphics::Shader;
 		friend class ::TRAP::Graphics::ShaderManager;
 
 		//unsigned int m_handle;

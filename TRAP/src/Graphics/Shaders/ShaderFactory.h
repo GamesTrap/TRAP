@@ -5,7 +5,7 @@
 
 namespace TRAP::Graphics::ShaderFactory
 {
-	std::unique_ptr<TRAP::Graphics::API::Shader> PassthroughShader();
+	std::unique_ptr<Shader> PassthroughShader();
 }
 
 #endif /*_TRAP_SHADERFACTORY_H_*/

@@ -10,10 +10,10 @@ namespace TRAP::Graphics::API
 	public:
 		enum class Type
 		{
-			NONE,
-			TEXTURE2D,
-			TEXTURECUBE,
-			TEXTURESHADOW
+			NONE = 0,
+			Texture2D,
+			TextureCube,
+			TextureShadow
 		};
 
 		OpenGLShaderResourceDeclaration(Type type, const std::string& name, unsigned int count);

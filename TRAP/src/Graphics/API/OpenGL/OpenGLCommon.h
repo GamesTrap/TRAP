@@ -51,10 +51,10 @@ namespace TRAP::Graphics::API
 	{
 		switch (usage)
 		{
-		case BufferUsage::STATIC:
+		case BufferUsage::Static:
 			return GL_STATIC_DRAW;
 
-		case BufferUsage::DYNAMIC:
+		case BufferUsage::Dynamic:
 			return GL_DYNAMIC_DRAW;
 
 		default:

@@ -3,11 +3,11 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::unique_ptr<TRAP::Graphics::API::Shader>> TRAP::Graphics::ShaderManager::s_Shaders;
+std::vector<std::unique_ptr<TRAP::Graphics::Shader>> TRAP::Graphics::ShaderManager::s_Shaders;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::ShaderManager::Add(std::unique_ptr<API::Shader> shader)
+void TRAP::Graphics::ShaderManager::Add(std::unique_ptr<Shader> shader)
 {
 	if (shader)
 		s_Shaders.push_back(std::move(shader));
@@ -15,7 +15,7 @@ void TRAP::Graphics::ShaderManager::Add(std::unique_ptr<API::Shader> shader)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::Shader* TRAP::Graphics::ShaderManager::Get(const std::string_view name)
+TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Get(const std::string_view name)
 {
 	for (const auto& shader : s_Shaders)
 		if (shader->GetName() == name)
@@ -55,13 +55,13 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 					const std::string CSSource = shader->GetCSSource();
 
 					shader.reset();
-					shader = API::Shader::CreateFromSource(nameOrVirtualPath, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
+					shader = Shader::CreateFromSource(nameOrVirtualPath, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
 					TP_INFO("[ShaderManager] Reloaded: \"", nameOrVirtualPath, "\"");
 				}
 				else
 				{
 					shader.reset();
-					shader = API::Shader::CreateFromFile(nameOrVirtualPath, path, shader.get());
+					shader = Shader::CreateFromFile(nameOrVirtualPath, path, shader.get());
 					TP_INFO("[ShaderManager] Reloaded: \"", nameOrVirtualPath, "\"");
 				}
 
@@ -86,7 +86,7 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::ShaderManager::Reload(const std::unique_ptr<API::Shader>& shader)
+void TRAP::Graphics::ShaderManager::Reload(const std::unique_ptr<Shader>& shader)
 {
 	for (auto& s_Shader : s_Shaders)
 	{
@@ -105,13 +105,13 @@ void TRAP::Graphics::ShaderManager::Reload(const std::unique_ptr<API::Shader>& s
 				const std::string CSSource = shader->GetCSSource();
 
 				s_Shader.reset();
-				s_Shader = API::Shader::CreateFromSource(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
+				s_Shader = Shader::CreateFromSource(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
 				TP_INFO("[ShaderManager] Reloaded: \"", name, "\"");
 			}
 			else
 			{
 				s_Shader.reset();
-				s_Shader = API::Shader::CreateFromFile(name, path, shader.get());
+				s_Shader = Shader::CreateFromFile(name, path, shader.get());
 				TP_INFO("[ShaderManager] Reloaded: \"", name, "\"");
 			}
 
@@ -134,8 +134,8 @@ void TRAP::Graphics::ShaderManager::ReloadAll()
 
 void TRAP::Graphics::ShaderManager::Shutdown()
 {
-	if (API::Shader::s_CurrentlyBound)
-		API::Shader::s_CurrentlyBound->Unbind();
+	if (Shader::s_CurrentlyBound)
+		Shader::s_CurrentlyBound->Unbind();
 
 	TP_DEBUG("[ShaderManager] Destroying Shaders");
 	Clean();

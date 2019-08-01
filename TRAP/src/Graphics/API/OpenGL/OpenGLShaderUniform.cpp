@@ -11,7 +11,7 @@ TRAP::Graphics::API::OpenGLShaderUniformDeclaration::OpenGLShaderUniformDeclarat
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::OpenGLShaderUniformDeclaration::OpenGLShaderUniformDeclaration(std::unique_ptr<ShaderStruct> uniformStruct, std::string name, const unsigned int count)
-	: m_name(std::move(name)), m_size(0), m_count(count), m_offset(0), m_type(Type::STRUCT), m_struct(std::move(uniformStruct)), m_location(0)
+	: m_name(std::move(name)), m_size(0), m_count(count), m_offset(0), m_type(Type::Struct), m_struct(std::move(uniformStruct)), m_location(0)
 {
 	m_size = m_struct->GetSize() * count;
 }
@@ -20,7 +20,7 @@ TRAP::Graphics::API::OpenGLShaderUniformDeclaration::OpenGLShaderUniformDeclarat
 
 void TRAP::Graphics::API::OpenGLShaderUniformDeclaration::SetOffset(const unsigned int offset)
 {
-	if (m_type == Type::STRUCT)
+	if (m_type == Type::Struct)
 		m_struct->SetOffset(offset);
 
 	m_offset = offset;
@@ -32,25 +32,25 @@ unsigned int TRAP::Graphics::API::OpenGLShaderUniformDeclaration::SizeOfUniformT
 {
 	switch (type)
 	{
-	case Type::INT32:
+	case Type::Int32:
 		return 4;
 
-	case Type::FLOAT32:
+	case Type::Float32:
 		return 4;
 
-	case Type::VEC2:
+	case Type::Vec2:
 		return  4 * 2;
 
-	case Type::VEC3:
+	case Type::Vec3:
 		return 4 * 3;
 
-	case Type::VEC4:
+	case Type::Vec4:
 		return 4 * 4;
 
-	case Type::MAT3:
+	case Type::Mat3:
 		return 4 * 3 * 3;
 
-	case Type::MAT4:
+	case Type::Mat4:
 		return 4 * 4 * 4;
 
 	default:
@@ -63,19 +63,19 @@ unsigned int TRAP::Graphics::API::OpenGLShaderUniformDeclaration::SizeOfUniformT
 TRAP::Graphics::API::OpenGLShaderUniformDeclaration::Type TRAP::Graphics::API::OpenGLShaderUniformDeclaration::StringToType(const std::string_view type)
 {
 	if (type == "int32")
-		return Type::INT32;
+		return Type::Int32;
 	if (type == "float")
-		return Type::FLOAT32;
+		return Type::Float32;
 	if (type == "vec2")
-		return Type::VEC2;
+		return Type::Vec2;
 	if (type == "vec3")
-		return Type::VEC3;
+		return Type::Vec3;
 	if (type == "vec4")
-		return Type::VEC4;
+		return Type::Vec4;
 	if (type == "mat3")
-		return Type::MAT3;
+		return Type::Mat3;
 	if (type == "mat4")
-		return Type::MAT4;
+		return Type::Mat4;
 
 	return Type::NONE;
 }
@@ -86,25 +86,25 @@ std::string TRAP::Graphics::API::OpenGLShaderUniformDeclaration::TypeToString(co
 {
 	switch (type)
 	{
-	case Type::INT32:
+	case Type::Int32:
 		return "int32";
 
-	case Type::FLOAT32:
+	case Type::Float32:
 		return "float";
 
-	case Type::VEC2:
+	case Type::Vec2:
 		return "vec2";
 
-	case Type::VEC3:
+	case Type::Vec3:
 		return "vec3";
 
-	case Type::VEC4:
+	case Type::Vec4:
 		return "vec4";
 
-	case Type::MAT3:
+	case Type::Mat3:
 		return "mat3";
 
-	case Type::MAT4:
+	case Type::Mat4:
 		return "mat4";
 
 	default:

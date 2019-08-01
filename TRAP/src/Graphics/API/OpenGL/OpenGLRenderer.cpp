@@ -31,10 +31,10 @@ void TRAP::Graphics::API::OpenGLRenderer::InitInternal()
 	SetClearColor();
 	SetDepthTesting(true);
 	SetBlend(true);
-	SetBlendFunction(RendererBlendFunction::SOURCE_ALPHA, RendererBlendFunction::ONE_MINUS_SOURCE_ALPHA);
+	SetBlendFunction(RendererBlendFunction::Source_Alpha, RendererBlendFunction::One_Minus_Source_Alpha);
 	SetCull(true);
-	SetFrontFace(RendererFrontFace::COUNTER_CLOCKWISE);
-	SetCullMode(RendererCullMode::BACK);
+	SetFrontFace(RendererFrontFace::Counter_Clockwise);
+	SetCullMode(RendererCullMode::Back);
 
 	TP_INFO("[Renderer][OpenGL] ----------------------------------");
 	TP_INFO("[Renderer][OpenGL] OpenGL:");
@@ -187,19 +187,19 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendFunctionToOpe
 {
 	switch (function)
 	{
-	case RendererBlendFunction::ZERO:
+	case RendererBlendFunction::Zero:
 		return GL_ZERO;
 
-	case RendererBlendFunction::ONE:
+	case RendererBlendFunction::One:
 		return GL_ONE;
 
-	case RendererBlendFunction::SOURCE_ALPHA:
+	case RendererBlendFunction::Source_Alpha:
 		return GL_SRC_ALPHA;
 
-	case RendererBlendFunction::DESTINATION_ALPHA:
+	case RendererBlendFunction::Destination_Alpha:
 		return GL_DST_ALPHA;
 
-	case RendererBlendFunction::ONE_MINUS_SOURCE_ALPHA:
+	case RendererBlendFunction::One_Minus_Source_Alpha:
 		return GL_ONE_MINUS_SRC_ALPHA;
 
 	default:
@@ -213,10 +213,10 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendEquationToOpe
 {
 	switch (blendEquation)
 	{
-	case RendererBlendEquation::ADD:
+	case RendererBlendEquation::Add:
 		return GL_FUNC_ADD;
 
-	case RendererBlendEquation::SUBTRACT:
+	case RendererBlendEquation::Subtract:
 		return GL_FUNC_SUBTRACT;
 
 	default:
@@ -233,13 +233,13 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererCullModeToOpenGL(c
 	case RendererCullMode::NONE:
 		return 0;
 
-	case RendererCullMode::FRONT:
+	case RendererCullMode::Front:
 		return GL_FRONT;
 
-	case RendererCullMode::BACK:
+	case RendererCullMode::Back:
 		return GL_BACK;
 
-	case RendererCullMode::FRONT_AND_BACK:
+	case RendererCullMode::Front_And_Back:
 		return GL_FRONT_AND_BACK;
 
 	default:
@@ -253,10 +253,10 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererFrontFaceToOpenGL(
 {
 	switch(frontFace)
 	{
-	case RendererFrontFace::CLOCKWISE:
+	case RendererFrontFace::Clockwise:
 		return GL_CW;
 
-	case RendererFrontFace::COUNTER_CLOCKWISE:
+	case RendererFrontFace::Counter_Clockwise:
 		return GL_CCW;
 
 	default:
@@ -270,16 +270,16 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererPrimitiveToOpenGL(
 {
 	switch(primitive)
 	{
-	case RendererPrimitive::POINT:
+	case RendererPrimitive::Point:
 		return GL_POINTS;
 
-	case RendererPrimitive::LINE:
+	case RendererPrimitive::Line:
 		return GL_LINES;
 
-	case RendererPrimitive::TRIANGLE:
+	case RendererPrimitive::Triangle:
 		return GL_TRIANGLES;
 
-	case RendererPrimitive::PATCH:
+	case RendererPrimitive::Patch:
 		return GL_PATCHES;
 
 	default:

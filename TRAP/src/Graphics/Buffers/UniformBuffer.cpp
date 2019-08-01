@@ -16,11 +16,11 @@ std::unique_ptr<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Cr
 		return std::make_unique<API::D3D12UniformBuffer>(name, size, usage);
 #endif
 
-	case API::RenderAPI::VULKAN:
+	case API::RenderAPI::Vulkan:
 		TP_WARN("[VertexArray][Vulkan] WIP");
 		return std::make_unique<API::VulkanUniformBuffer>(name, size, usage);
 
-	case API::RenderAPI::OPENGL:
+	case API::RenderAPI::OpenGL:
 		return std::make_unique<API::OpenGLUniformBuffer>(name, size, usage);
 
 	default:
@@ -41,11 +41,11 @@ std::unique_ptr<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Cr
 		return std::make_unique<API::D3D12UniformBuffer>(name, data, size, usage);
 #endif
 
-	case API::RenderAPI::VULKAN:
+	case API::RenderAPI::Vulkan:
 		TP_WARN("[VertexArray][Vulkan] WIP");
 		return std::make_unique<API::VulkanUniformBuffer>(name, data, size, usage);
 
-	case API::RenderAPI::OPENGL:
+	case API::RenderAPI::OpenGL:
 		return std::make_unique<API::OpenGLUniformBuffer>(name, data, size, usage);
 
 	default:

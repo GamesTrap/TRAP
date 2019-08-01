@@ -40,18 +40,18 @@ static constexpr const char* s_PassthroughFSGLSL
 	)"
 };
 
-std::unique_ptr<TRAP::Graphics::API::Shader> TRAP::Graphics::ShaderFactory::PassthroughShader()
+std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::ShaderFactory::PassthroughShader()
 {
 	switch (API::Context::GetRenderAPI())
 	{
 	/*case API::RenderAPI::D3D12:
-		return API::Shader::CreateFromSource("Passthrough", s_DebugVertexShaderD3D12, s_DebugPixelShaderD3D12, "", "", "", "");*/
+		return Shader::CreateFromSource("Passthrough", s_DebugVertexShaderD3D12, s_DebugPixelShaderD3D12, "", "", "", "");*/
 
-	case API::RenderAPI::VULKAN:
-		return API::Shader::CreateFromSource("Passthrough", s_PassthroughVSGLSL, s_PassthroughFSGLSL, "", "", "", "");
+	case API::RenderAPI::Vulkan:
+		return Shader::CreateFromSource("Passthrough", s_PassthroughVSGLSL, s_PassthroughFSGLSL, "", "", "", "");
 
-	case API::RenderAPI::OPENGL:
-		return API::Shader::CreateFromSource("Passthrough", s_PassthroughVSGLSL, s_PassthroughFSGLSL, "", "", "", "");
+	case API::RenderAPI::OpenGL:
+		return Shader::CreateFromSource("Passthrough", s_PassthroughVSGLSL, s_PassthroughFSGLSL, "", "", "", "");
 
 	default:
 		return nullptr;

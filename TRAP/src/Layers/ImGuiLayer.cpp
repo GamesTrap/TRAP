@@ -55,12 +55,12 @@ void TRAP::ImGuiLayer::OnAttach()
 		//ImGui_ImplDX12_Init();
 	}
 #endif*/
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::VULKAN)
+	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 	{
 		ImGui_ImplGlfw_InitForVulkan(window, false);
 		//ImGui_ImplVulkan_Init();
 	}
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL)
+	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 	{
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init("#version 460 core");
@@ -78,12 +78,12 @@ void TRAP::ImGuiLayer::OnDetach()
 		ImGui_ImplWin32_Shutdown();
 	}
 #endif*/
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::VULKAN)
+	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 	{
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 	}
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL)
+	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 	{
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
@@ -103,12 +103,12 @@ void TRAP::ImGuiLayer::Begin()
 		ImGui_ImplWin32_NewFrame();
 	}
 #endif*/
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::VULKAN)
+	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 	{
 		ImGui_ImplVulkan_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 	}
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL)
+	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 	{
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -130,9 +130,9 @@ void TRAP::ImGuiLayer::End()
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::D3D12)
 		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData());
 #endif
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::VULKAN)
+	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData());*/
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL)
+	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -145,11 +145,11 @@ void TRAP::ImGuiLayer::End()
 			//Save current context here
 		}
 #endif*/
-		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::VULKAN)
+		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 		{
 			//Save current context here
 		}
-		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL)
+		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 			backupCurrentContext = glfwGetCurrentContext();
 
 		ImGui::UpdatePlatformWindows();
@@ -161,11 +161,11 @@ void TRAP::ImGuiLayer::End()
 			//Load saved context here
 		}
 #endif*/
-		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::VULKAN)
+		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 		{
 			//Load saved context here
 		}
-		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL)
+		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 			glfwMakeContextCurrent(backupCurrentContext);
 	}
 }

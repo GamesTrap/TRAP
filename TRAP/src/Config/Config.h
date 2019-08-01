@@ -169,13 +169,13 @@ inline std::string TRAP::Utils::Config::ConvertToString<TRAP::DisplayMode>(const
 {
 	switch (value)
 	{
-	case DisplayMode::WINDOWED:
+	case DisplayMode::Windowed:
 		return "Windowed";
 
-	case DisplayMode::BORDERLESS:
+	case DisplayMode::Borderless:
 		return "Borderless";
 
-	case DisplayMode::FULLSCREEN:
+	case DisplayMode::Fullscreen:
 		return "Fullscreen";
 
 	default:
@@ -190,13 +190,13 @@ inline std::string TRAP::Utils::Config::ConvertToString<TRAP::Graphics::API::Ren
 {
 	switch (value)
 	{
-	case Graphics::API::RenderAPI::VULKAN:
+	case Graphics::API::RenderAPI::Vulkan:
 		return "Vulkan";
 
 	case Graphics::API::RenderAPI::D3D12:
 		return "D3D12";
 
-	case Graphics::API::RenderAPI::OPENGL:
+	case Graphics::API::RenderAPI::OpenGL:
 		return "OpenGL";
 
 	default:
@@ -311,13 +311,13 @@ template<>
 inline TRAP::DisplayMode TRAP::Utils::Config::ConvertToType<TRAP::DisplayMode>(const std::string& input) const
 {
 	if (input == "Windowed")
-		return DisplayMode::WINDOWED;
+		return DisplayMode::Windowed;
 	if (input == "Borderless")
-		return DisplayMode::BORDERLESS;
+		return DisplayMode::Borderless;
 	if (input == "Fullscreen")
-		return DisplayMode::FULLSCREEN;
+		return DisplayMode::Fullscreen;
 
-	return DisplayMode::WINDOWED;
+	return DisplayMode::Windowed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -326,11 +326,11 @@ template<>
 inline TRAP::Graphics::API::RenderAPI TRAP::Utils::Config::ConvertToType<TRAP::Graphics::API::RenderAPI>(const std::string& input) const
 {
 	if (input == "Vulkan")
-		return Graphics::API::RenderAPI::VULKAN;
+		return Graphics::API::RenderAPI::Vulkan;
 	if (input == "D3D12")
 		return Graphics::API::RenderAPI::D3D12;
 	if (input == "OpenGL")
-		return Graphics::API::RenderAPI::OPENGL;
+		return Graphics::API::RenderAPI::OpenGL;
 
 	return Graphics::API::RenderAPI::NONE;
 }

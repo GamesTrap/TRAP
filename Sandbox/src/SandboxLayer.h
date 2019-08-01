@@ -45,7 +45,12 @@ public:
 	void OnAttach() override
 	{
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
-		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::API::Shader::CreateFromFile("Color", "/Shaders/Color.shader"));
+		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("Color", "/Shaders/test/Texture.shader"));
+
+		//EXPERIMENTAL
+		TRAP::VFS::Get()->MountTextures("Assets/Textures");
+		TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture2D::CreateFromFile("Debug", "/Textures/EXPERIMENTAL/255/Debug3RGB.pnm"));
+		//////////////
 
 		///////////////
 		// Rectangle //
@@ -59,18 +64,19 @@ public:
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,
 			 0.0f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f
 		};*/
-		std::array<float, 7 * 4> vertices //Quad
+		std::array<float, 9 * 4> vertices //Quad
 		{
-			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,
-			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,
-			 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,
-			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f
+			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,    1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,    1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f,    0.0f, 1.0f
 		};
-		std::unique_ptr<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()), TRAP::Graphics::BufferUsage::STATIC);
+		std::unique_ptr<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()), TRAP::Graphics::BufferUsage::Static);
 		const TRAP::Graphics::BufferLayout layout =
 		{
 			{TRAP::Graphics::ShaderDataType::Float3, "Position"},
-			{TRAP::Graphics::ShaderDataType::Float4, "Color"}
+			{TRAP::Graphics::ShaderDataType::Float4, "Color"},
+			{TRAP::Graphics::ShaderDataType::Float2, "UV"}
 		};
 		vertexBuffer->SetLayout(layout);
 		m_vertexArray->AddVertexBuffer(vertexBuffer);
@@ -83,7 +89,7 @@ public:
 		{
 			0, 1, 2, 2, 3, 0
 		};
-		std::unique_ptr<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size()), TRAP::Graphics::BufferUsage::STATIC);
+		std::unique_ptr<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size()), TRAP::Graphics::BufferUsage::Static);
 		m_vertexArray->SetIndexBuffer(indexBuffer);
 	}
 
@@ -129,7 +135,10 @@ public:
 				if (m_usePassthrough)
 					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray);
 				else
+				{
+					TRAP::Graphics::TextureManager::Get("Debug")->Bind();					
 					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray);
+				}
 			}
 		}
 		TRAP::Graphics::Renderer::EndScene();
@@ -194,19 +203,19 @@ public:
 		if (event.GetKeyCode() == TP_KEY_F1 && event.GetRepeatCount() < 1) //Switch to D3D12
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::D3D12);
 		if (event.GetKeyCode() == TP_KEY_F2 && event.GetRepeatCount() < 1) //Switch to Vulkan
-			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::VULKAN);
+			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::Vulkan);
 		if (event.GetKeyCode() == TP_KEY_F3 && event.GetRepeatCount() < 1) //Switch to OpenGL
-			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::OPENGL);
+			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::OpenGL);
 
 		if (event.GetKeyCode() == TP_KEY_F4 && event.GetRepeatCount() < 1) //Use Default/Passthrough Shader
 			m_usePassthrough = !m_usePassthrough;
 
 		if (event.GetKeyCode() == TP_KEY_F5 && event.GetRepeatCount() < 1) //Make Window windowed
-			TRAP::Application::Get().GetWindow()->SetWindowMode(TRAP::DisplayMode::WINDOWED);
+			TRAP::Application::Get().GetWindow()->SetWindowMode(TRAP::DisplayMode::Windowed);
 		if (event.GetKeyCode() == TP_KEY_F6 && event.GetRepeatCount() < 1) //Make Window Borderless Fullscreen
-			TRAP::Application::Get().GetWindow()->SetWindowMode(TRAP::DisplayMode::BORDERLESS);
+			TRAP::Application::Get().GetWindow()->SetWindowMode(TRAP::DisplayMode::Borderless);
 		if (event.GetKeyCode() == TP_KEY_F7 && event.GetRepeatCount() < 1) //Make Window Exclusive Fullscreen
-			TRAP::Application::Get().GetWindow()->SetWindowMode(TRAP::DisplayMode::FULLSCREEN);
+			TRAP::Application::Get().GetWindow()->SetWindowMode(TRAP::DisplayMode::Fullscreen);
 
 		if (event.GetKeyCode() == TP_KEY_F9 && event.GetRepeatCount() < 1) //Enable/Disable Triangle
 			m_show = !m_show;
@@ -217,7 +226,7 @@ public:
 		}
 
 		if (event.GetKeyCode() == TP_KEY_F11 && event.GetRepeatCount() < 1)
-			TRAP::Utils::MsgBox::Show("Testing MsgBox System", "Test MsgBox");
+			TRAP::Utils::MsgBox::Show("Just a prank bro!", "Critical Error");
 
 		return true;
 	}

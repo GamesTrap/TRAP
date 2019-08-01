@@ -13,11 +13,11 @@ TRAP::Graphics::API::OpenGLShaderResourceDeclaration::OpenGLShaderResourceDeclar
 TRAP::Graphics::API::OpenGLShaderResourceDeclaration::Type TRAP::Graphics::API::OpenGLShaderResourceDeclaration::StringToType(const std::string& type)
 {
 	if (type == "sampler2D")
-		return Type::TEXTURE2D;
+		return Type::Texture2D;
 	if (type == "samplerCube")
-		return Type::TEXTURECUBE;
+		return Type::TextureCube;
 	if (type == "samplerShadow")
-		return Type::TEXTURESHADOW;
+		return Type::TextureShadow;
 
 	return Type::NONE;
 }
@@ -28,13 +28,13 @@ std::string TRAP::Graphics::API::OpenGLShaderResourceDeclaration::TypeToString(c
 {
 	switch (type)
 	{
-	case Type::TEXTURE2D:
+	case Type::Texture2D:
 		return "sampler2D";
 
-	case Type::TEXTURECUBE:
+	case Type::TextureCube:
 		return "samplerCube";
 
-	case Type::TEXTURESHADOW:
+	case Type::TextureShadow:
 		return "samplerShadow";
 
 	default:

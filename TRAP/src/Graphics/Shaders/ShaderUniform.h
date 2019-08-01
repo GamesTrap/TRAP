@@ -1,10 +1,13 @@
 #ifndef _TRAP_SHADERUNIFORM_H_
 #define _TRAP_SHADERUNIFORM_H_
 
-namespace TRAP::Graphics::API
+namespace TRAP::Graphics 
 {
 	enum class ShaderType;
+}
 
+namespace TRAP::Graphics::API
+{
 	class ShaderUniformDeclaration
 	{
 	public:

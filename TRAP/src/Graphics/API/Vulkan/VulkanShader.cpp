@@ -577,7 +577,7 @@ void TRAP::Graphics::API::VulkanShader::SetCSUniformBuffer(uint8_t* data, unsign
 
 void TRAP::Graphics::API::VulkanShader::PreProcessGLSL(const std::string& source, std::array<std::string*, 6>& shaders)
 {
-	ShaderType type = ShaderType::UNKNOWN;
+	ShaderType type = ShaderType::Unknown;
 
 	std::vector<std::string> lines = Utils::String::GetLines(source);
 	//Get Shader Type
@@ -586,30 +586,29 @@ void TRAP::Graphics::API::VulkanShader::PreProcessGLSL(const std::string& source
 		if (Utils::String::StartsWith(lines[i], "#shader"))
 		{
 			if (Utils::String::FindToken(lines[i], "vertex"))
-				type = ShaderType::VERTEX;
+				type = ShaderType::Vertex;
 			else if (Utils::String::FindToken(lines[i], "fragment"))
-				type = ShaderType::FRAGMENT;
+				type = ShaderType::Fragment;
 			else if (Utils::String::FindToken(lines[i], "geometry"))
-				type = ShaderType::GEOMETRY;
-			else if (Utils::String::FindToken(lines[i], "tessellationcontrol"))
-				type = ShaderType::TESSELLATIONCONTROL;
-			else if (Utils::String::FindToken(lines[i], "tessellationevaluation"))
-				type = ShaderType::TESSELLATIONEVALUATION;
+				type = ShaderType::Geometry;
+			else if (Utils::String::FindToken(lines[i], "tessellation"))
+			{
+				if (Utils::String::FindToken(lines[i], "control"))
+					type = ShaderType::Tessellation_Control;
+				else if (Utils::String::FindToken(lines[i], "evaluation"))
+					type = ShaderType::Tessellation_Evaluation;
+			}
 			else if (Utils::String::FindToken(lines[i], "compute"))
-				type = ShaderType::COMPUTE;
+				type = ShaderType::Compute;
 
 			//Add version tag if doesnt exist
-			if (!Utils::String::StartsWith(lines[i + 1], "#version ") && type != ShaderType::UNKNOWN)
+			if (!Utils::String::StartsWith(lines[i + 1], "#version ") && type != ShaderType::Unknown)
 				shaders[static_cast<int32_t>(type) - 1]->append("#version 460 core\n");
 		}
-		else if (type != ShaderType::UNKNOWN)
+		else if (type != ShaderType::Unknown)
 		{
-			//Ignore comments
-			if (!Utils::String::StartsWith(lines[i], "//"))
-			{
-				shaders[static_cast<int32_t>(type) - 1]->append(lines[i]);
-				shaders[static_cast<int32_t>(type) - 1]->append("\n");
-			}
+			shaders[static_cast<int32_t>(type) - 1]->append(lines[i]);
+			shaders[static_cast<int32_t>(type) - 1]->append("\n");
 		}
 	}
 }

@@ -15,7 +15,7 @@ namespace TRAP::Graphics::API
 		std::array<unsigned int, 6> Line{};
 	};
 
-	class VulkanShader : public Shader
+	class VulkanShader final : public Graphics::Shader
 	{
 	public:
 		VulkanShader(std::string name, std::string source);
@@ -76,7 +76,7 @@ namespace TRAP::Graphics::API
 		static std::vector<std::vector<unsigned int>> ConvertToSPIRV(glslang::TShader* VShader, glslang::TShader* FShader, glslang::TShader* GShader, glslang::TShader* TCShader, glslang::TShader* TEShader, glslang::TShader* CShader, glslang::TProgram& program);
 		static bool CreateShaderModule(VkShaderModule& shaderModule, std::vector<unsigned int>& SPIRVCode);
 
-		friend class Shader;
+		friend class ::TRAP::Graphics::Shader;
 		friend class ::TRAP::Graphics::ShaderManager;
 
 		//unsigned int m_handle;

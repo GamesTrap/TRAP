@@ -8,10 +8,7 @@
 
 namespace TRAP::Graphics
 {
-	namespace API 
-	{
-		class Shader;
-	}
+	class Shader;
 
 	class OrthographicCamera;
 
@@ -29,7 +26,7 @@ namespace TRAP::Graphics
 		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();
 
-		static void Submit(const API::Shader* shader, const std::unique_ptr<VertexArray>& vertexArray, const Maths::Mat4& transform = Maths::Mat4::Transpose(Maths::Mat4::Identity()), RendererPrimitive primitive = RendererPrimitive::TRIANGLE);
+		static void Submit(const Shader* shader, const std::unique_ptr<VertexArray>& vertexArray, const Maths::Mat4& transform = Maths::Mat4::Transpose(Maths::Mat4::Identity()), RendererPrimitive primitive = RendererPrimitive::Triangle);
 
 		static void Cleanup();
 

@@ -17,41 +17,41 @@ namespace TRAP::Graphics
 
 	enum class RendererBlendFunction
 	{
-		NONE,
-		ZERO,
-		ONE,
-		SOURCE_ALPHA,
-		DESTINATION_ALPHA,
-		ONE_MINUS_SOURCE_ALPHA
+		NONE = 0,
+		Zero,
+		One,
+		Source_Alpha,
+		Destination_Alpha,
+		One_Minus_Source_Alpha
 	};
 
 	enum class RendererBlendEquation
 	{
-		NONE,
-		ADD,
-		SUBTRACT
+		NONE = 0,
+		Add,
+		Subtract
 	};
 
 	enum class RendererCullMode
 	{
-		NONE,
-		FRONT,
-		BACK,
-		FRONT_AND_BACK
+		NONE = 0,
+		Front,
+		Back,
+		Front_And_Back
 	};
 
 	enum class RendererFrontFace
 	{
-		CLOCKWISE,
-		COUNTER_CLOCKWISE
+		Clockwise,
+		Counter_Clockwise
 	};
 
 	enum class RendererPrimitive
 	{
-		POINT,
-		LINE,
-		TRIANGLE,
-		PATCH
+		Point,
+		Line,
+		Triangle,
+		Patch
 	};
 
 	class RenderCommand
@@ -73,7 +73,7 @@ namespace TRAP::Graphics
 
 		static void SetCullMode(RendererCullMode cullMode);
 
-		static void DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive = RendererPrimitive::TRIANGLE);
+		static void DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive = RendererPrimitive::Triangle);
 	};
 }
 

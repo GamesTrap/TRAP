@@ -10,7 +10,7 @@
 
 namespace TRAP::Graphics::API
 {
-	class OpenGLShader final : public Shader
+	class OpenGLShader final : public Graphics::Shader
 	{
 	public:
 		OpenGLShader(std::string name, std::string Source);
@@ -108,7 +108,7 @@ namespace TRAP::Graphics::API
 
 		static void PreProcess(const std::string& source, std::array<std::string*, 6>& shaders);
 
-		friend class Shader;
+		friend class ::TRAP::Graphics::Shader;
 		friend class ::TRAP::Graphics::ShaderManager;
 
 		unsigned int m_handle;

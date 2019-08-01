@@ -24,7 +24,7 @@ void TRAP::Graphics::API::RendererAPI::Init()
 {
 	switch (Context::GetRenderAPI())
 	{
-	case RenderAPI::OPENGL:
+	case RenderAPI::OpenGL:
 		TP_INFO("[Renderer][OpenGL] Initializing Renderer");
 		s_Renderer = std::make_unique<OpenGLRenderer>();
 		break;
@@ -36,7 +36,7 @@ void TRAP::Graphics::API::RendererAPI::Init()
 		break;
 #endif
 
-	case RenderAPI::VULKAN:
+	case RenderAPI::Vulkan:
 		TP_INFO("[Renderer][Vulkan] Initializing Renderer");
 		s_Renderer = std::make_unique<VulkanRenderer>();
 		break;

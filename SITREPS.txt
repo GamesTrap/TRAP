@@ -234,3 +234,19 @@ SITREP 07/30/2019|19w31a2
     - Added PATCHES to RendererPrimitive for Tessellation ~<5 mins
     - Fixed bug with single comments ~>10 mins
     - Removed OpenGLShader comment detection because its unecessary ~>20 mins
+
+SITREP 07/31/2019|19w31a3
+    - Changed TRAP Engine version to 19w31a3(0.5.5)
+    - Added Image class ~>20 mins
+    - Added DefaultImage for errors ~>25 mins
+    - Added PPM Image Format ~>15 mins
+    - Added PNM Image Format ~>15 mins
+    - Added PGM Image Format ~>15 mins
+    - Added PAM Image Format ~>20 mins
+    - Added PFM Image Format ~>25 mins
+
+SITREP 08/01/2019|19w31a4
+    - Changed TRAP Engine version to 19w31a4(0.5.6)
+    - Confirmed PPM, PNM, PGM, PAM and PFM Image Formats working ~>60 mins
+    - Added TextureManager ~>30 mins
+    - Added HotTextureReloading ~>25 mins

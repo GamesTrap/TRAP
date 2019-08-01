@@ -6,6 +6,8 @@
 #include "Graphics/Shaders/ShaderFactory.h"
 #include "Graphics/RenderCommand.h"
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/Textures/TextureManager.h"
+#include "Graphics/Textures/Texture2D.h"
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
@@ -36,10 +38,11 @@ TRAP::Application::Application()
 	unsigned int height = 720;
 	unsigned int refreshRate = 60;
 	unsigned int vsync = 0;
-	DisplayMode displayMode = DisplayMode::WINDOWED;
+	DisplayMode displayMode = DisplayMode::Windowed;
 	unsigned int monitor;
 	Graphics::API::RenderAPI renderAPI = Graphics::API::RenderAPI::NONE;
 	bool hotShaderReloading = false;
+	bool hotTextureReloading = false;
 	m_config.Get("Width", width);
 	m_config.Get("Height", height);
 	m_config.Get("RefreshRate", refreshRate);
@@ -49,8 +52,10 @@ TRAP::Application::Application()
 	m_config.Get("Monitor", monitor);
 	m_config.Get("RenderAPI", renderAPI);
 	m_config.Get("HotShaderReloading", hotShaderReloading);
+	m_config.Get("HotTextureReloading", hotTextureReloading);
 
 	VFS::Get()->SetHotShaderReloading(hotShaderReloading);
+	VFS::Get()->SetHotTextureReloading(hotTextureReloading);
 
 	m_window = std::make_unique<Window>
 		(
@@ -70,6 +75,8 @@ TRAP::Application::Application()
 
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Add(Graphics::ShaderFactory::PassthroughShader());
+	//Always added as a fallback texture
+	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
 
 	m_ImGuiLayer = std::make_unique<ImGuiLayer>();
 	PushOverlay(std::move(m_ImGuiLayer));
@@ -80,6 +87,7 @@ TRAP::Application::Application()
 TRAP::Application::~Application()
 {
 	TP_DEBUG("[Application] Shutting down TRAP Modules...");
+	Graphics::TextureManager::Shutdown();
 	Graphics::ShaderManager::Shutdown();
 	m_config.Set("Width", m_window->GetWidth());
 	m_config.Set("Height", m_window->GetHeight());
@@ -90,6 +98,7 @@ TRAP::Application::~Application()
 	m_config.Set("Monitor", m_window->GetMonitor());
 	m_config.Set("RenderAPI", Graphics::API::Context::GetRenderAPI());
 	m_config.Set("HotShaderReloading", VFS::Get()->GetHotShaderReloading());
+	m_config.Set("HotTextureReloading", VFS::Get()->GetHotTextureReloading());
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	m_config.Print();
 #endif
@@ -160,7 +169,7 @@ void TRAP::Application::Run()
 			tickTimer.Reset();
 		}
 
-		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL)
+		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 		{
 			ImGuiLayer::Begin();
 			for (const auto& layer : m_layerStack)
@@ -184,14 +193,31 @@ void TRAP::Application::Run()
 					if (!is_regular_file(physicalPath) || status == FileStatus::Created || status == FileStatus::Erased)
 						return;
 
-					TP_INFO("[Shader] Shader Modified Reloading...");
+					TP_INFO("[ShaderManager] Shader Modified Reloading...");
 					Graphics::ShaderManager::Reload(virtualPath);
+				});
+		}
+		//Update Textures if needed
+		if (VFS::Get()->GetHotTextureReloading() && VFS::Get()->GetTextureFileWatcher())
+		{
+			//Check monitoring texture folders for changes and
+			//in case of changes run TextureManager::Reload(virtualPath)
+			VFS::Get()->GetTextureFileWatcher()->Check([](const std::filesystem::path& physicalPath,
+				const std::string& virtualPath,
+				const FileStatus status) -> void
+				{
+					//Process only regular files and FileStatus::Modified
+					if (!is_regular_file(physicalPath) || status == FileStatus::Created || status == FileStatus::Erased)
+						return;
+
+					TP_INFO("[TextureManager] Texture Modified Reloading...");
+					Graphics::TextureManager::Reload(virtualPath);
 				});
 		}
 
 		if (Graphics::API::Context::s_newRenderAPI != Graphics::API::RenderAPI::NONE && Graphics::API::Context::s_newRenderAPI != Graphics::API::Context::GetRenderAPI())
 		{
-			if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OPENGL || Graphics::API::Context::s_newRenderAPI == Graphics::API::RenderAPI::OPENGL)
+			if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL || Graphics::API::Context::s_newRenderAPI == Graphics::API::RenderAPI::OpenGL)
 				ReCreateWindow(Graphics::API::Context::s_newRenderAPI);
 			else
 				ReCreate(Graphics::API::Context::s_newRenderAPI);
@@ -234,6 +260,8 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 	m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Add(Graphics::ShaderFactory::PassthroughShader());
+	//Always added as a fallback texture
+	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
 
 	for (const auto& layer : m_layerStack)
 		layer->OnAttach();
@@ -247,6 +275,7 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI)
 		layer->OnDetach();
 	Graphics::API::Context::SetRenderAPI(renderAPI);
 
+	Graphics::TextureManager::Shutdown();
 	Graphics::ShaderManager::Shutdown();
 	Graphics::API::RendererAPI::Shutdown();
 	Graphics::API::Context::Shutdown();
@@ -258,6 +287,8 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI)
 
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Add(Graphics::ShaderFactory::PassthroughShader());
+	//Always added as a fallback texture
+	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
 
 	for (const auto& layer : m_layerStack)
 		layer->OnAttach();

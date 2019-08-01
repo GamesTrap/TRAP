@@ -7,8 +7,8 @@ namespace TRAP::Graphics
 {
 	enum class BufferUsage
 	{
-		STATIC,
-		DYNAMIC
+		Static,
+		Dynamic
 	};
 
 	class VertexBuffer
@@ -27,7 +27,7 @@ namespace TRAP::Graphics
 		virtual const BufferLayout& GetLayout() const = 0;
 		virtual void SetLayout(const BufferLayout& layout) = 0;
 
-		static std::unique_ptr<VertexBuffer> Create(float* vertices, uint32_t size, BufferUsage usage = BufferUsage::STATIC);
+		static std::unique_ptr<VertexBuffer> Create(float* vertices, uint32_t size, BufferUsage usage = BufferUsage::Static);
 	};
 }
 

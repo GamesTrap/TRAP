@@ -52,7 +52,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 	//Do Pipeline Stuff here(blending, depth testing, see below)
 	SetDepthTesting(true);
 	SetBlend(true);
-	SetBlendFunction(RendererBlendFunction::SOURCE_ALPHA, RendererBlendFunction::ONE_MINUS_SOURCE_ALPHA);
+	SetBlendFunction(RendererBlendFunction::Source_Alpha, RendererBlendFunction::One_Minus_Source_Alpha);
 	//////////////////
 
 	TP_INFO("[Renderer][Vulkan] ----------------------------------");

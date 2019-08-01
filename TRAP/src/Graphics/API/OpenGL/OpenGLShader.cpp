@@ -343,12 +343,12 @@ void TRAP::Graphics::API::OpenGLShader::Unbind() const
 
 void TRAP::Graphics::API::OpenGLShader::Parse(const std::string& VSSource, const std::string& FSSource, const std::string& GSSource, const std::string& TCSSource, const std::string& TESSource, const std::string& CSSource)
 {
-	m_VSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::VERTEX));
-	m_FSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::FRAGMENT));
-	m_GSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::GEOMETRY));
-	m_TCSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::TESSELLATIONCONTROL));
-	m_TESUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::TESSELLATIONEVALUATION));
-	m_CSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::COMPUTE));
+	m_VSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::Vertex));
+	m_FSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::Fragment));
+	m_GSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::Geometry));
+	m_TCSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::Tessellation_Control));
+	m_TESUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::Tessellation_Evaluation));
+	m_CSUniformBuffers.push_back(std::make_unique<OpenGLShaderUniformBufferDeclaration>("Global", ShaderType::Compute));
 
 	const char* token;
 	const char* vstr;
@@ -365,7 +365,7 @@ void TRAP::Graphics::API::OpenGLShader::Parse(const std::string& VSSource, const
 
 	vstr = VSSource.c_str();
 	while ((token = Utils::String::FindToken(vstr, "uniform")))
-		ParseUniform(Utils::String::GetStatement(token, &vstr), ShaderType::VERTEX);
+		ParseUniform(Utils::String::GetStatement(token, &vstr), ShaderType::Vertex);
 
 	//Fragment Shader
 	fstr = FSSource.c_str();
@@ -374,7 +374,7 @@ void TRAP::Graphics::API::OpenGLShader::Parse(const std::string& VSSource, const
 
 	fstr = FSSource.c_str();
 	while ((token = Utils::String::FindToken(fstr, "uniform")))
-		ParseUniform(Utils::String::GetStatement(token, &fstr), ShaderType::FRAGMENT);
+		ParseUniform(Utils::String::GetStatement(token, &fstr), ShaderType::Fragment);
 
 	//Geometry Shader
 	gstr = GSSource.c_str();
@@ -383,7 +383,7 @@ void TRAP::Graphics::API::OpenGLShader::Parse(const std::string& VSSource, const
 
 	gstr = GSSource.c_str();
 	while ((token = Utils::String::FindToken(gstr, "uniform")))
-		ParseUniform(Utils::String::GetStatement(token, &gstr), ShaderType::GEOMETRY);
+		ParseUniform(Utils::String::GetStatement(token, &gstr), ShaderType::Geometry);
 
 	//Tessellation Control Shader
 	tcstr = TCSSource.c_str();
@@ -392,7 +392,7 @@ void TRAP::Graphics::API::OpenGLShader::Parse(const std::string& VSSource, const
 
 	tcstr = TCSSource.c_str();
 	while ((token = Utils::String::FindToken(tcstr, "uniform")))
-		ParseUniform(Utils::String::GetStatement(token, &tcstr), ShaderType::TESSELLATIONCONTROL);
+		ParseUniform(Utils::String::GetStatement(token, &tcstr), ShaderType::Tessellation_Control);
 
 	//Tessellation Evaluation Shader
 	testr = TESSource.c_str();
@@ -401,7 +401,7 @@ void TRAP::Graphics::API::OpenGLShader::Parse(const std::string& VSSource, const
 
 	testr = TESSource.c_str();
 	while ((token = Utils::String::FindToken(testr, "uniform")))
-		ParseUniform(Utils::String::GetStatement(token, &testr), ShaderType::TESSELLATIONEVALUATION);
+		ParseUniform(Utils::String::GetStatement(token, &testr), ShaderType::Tessellation_Evaluation);
 
 	//Compute Shader
 	cstr = CSSource.c_str();
@@ -410,7 +410,7 @@ void TRAP::Graphics::API::OpenGLShader::Parse(const std::string& VSSource, const
 
 	cstr = CSSource.c_str();
 	while ((token = Utils::String::FindToken(cstr, "uniform")))
-		ParseUniform(Utils::String::GetStatement(token, &cstr), ShaderType::COMPUTE);
+		ParseUniform(Utils::String::GetStatement(token, &cstr), ShaderType::Compute);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -464,45 +464,45 @@ void TRAP::Graphics::API::OpenGLShader::ParseUniform(const std::string& statemen
 		else
 			declaration = std::make_unique<OpenGLShaderUniformDeclaration>(type, name, count);
 
-			if (shaderType == ShaderType::VERTEX)
+			if (shaderType == ShaderType::Vertex)
 			{
 				if (m_VSUniformBuffer == nullptr)
-					m_VSUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::VERTEX);
+					m_VSUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::Vertex);
 
 				m_VSUniformBuffer->PushUniform(declaration);
 			}
-			else if (shaderType == ShaderType::FRAGMENT)
+			else if (shaderType == ShaderType::Fragment)
 			{
 				if (m_FSUniformBuffer == nullptr)
-					m_FSUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::FRAGMENT);
+					m_FSUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::Fragment);
 
 				m_FSUniformBuffer->PushUniform(declaration);
 			}
-			else if (shaderType == ShaderType::GEOMETRY)
+			else if (shaderType == ShaderType::Geometry)
 			{
 				if (m_GSUniformBuffer == nullptr)
-					m_GSUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::GEOMETRY);
+					m_GSUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::Geometry);
 
 				m_GSUniformBuffer->PushUniform(declaration);
 			}
-			else if (shaderType == ShaderType::TESSELLATIONCONTROL)
+			else if (shaderType == ShaderType::Tessellation_Control)
 			{
 				if (m_TCSUniformBuffer == nullptr)
-					m_TCSUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::TESSELLATIONCONTROL);
+					m_TCSUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::Tessellation_Control);
 
 				m_TCSUniformBuffer->PushUniform(declaration);
 			}
-			else if (shaderType == ShaderType::TESSELLATIONEVALUATION)
+			else if (shaderType == ShaderType::Tessellation_Evaluation)
 			{
 				if (m_TESUniformBuffer == nullptr)
-					m_TESUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::TESSELLATIONEVALUATION);
+					m_TESUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::Tessellation_Evaluation);
 
 				m_TESUniformBuffer->PushUniform(declaration);
 			}
-			else if (shaderType == ShaderType::COMPUTE)
+			else if (shaderType == ShaderType::Compute)
 			{
 				if (m_CSUniformBuffer == nullptr)
-					m_CSUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::COMPUTE);
+					m_CSUniformBuffer = std::make_unique<OpenGLShaderUniformBufferDeclaration>("", ShaderType::Compute);
 
 				m_CSUniformBuffer->PushUniform(declaration);
 			}
@@ -575,7 +575,7 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 		for (const auto& VSUniform : VSUniforms)
 		{
 			auto* convertedVSUniform = dynamic_cast<OpenGLShaderUniformDeclaration*>(VSUniform.get());
-			if (convertedVSUniform->GetType() == OpenGLShaderUniformDeclaration::Type::STRUCT)
+			if (convertedVSUniform->GetType() == OpenGLShaderUniformDeclaration::Type::Struct)
 			{
 				const ShaderStruct& VSStruct = convertedVSUniform->GetShaderUniformStruct();
 				const auto& VSFields = VSStruct.GetFields();
@@ -600,7 +600,7 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 		for (const auto& FSUniform : FSUniforms)
 		{
 			auto* convertedFSUniform = dynamic_cast<OpenGLShaderUniformDeclaration*>(FSUniform.get());
-			if (convertedFSUniform->GetType() == OpenGLShaderUniformDeclaration::Type::STRUCT)
+			if (convertedFSUniform->GetType() == OpenGLShaderUniformDeclaration::Type::Struct)
 			{
 				const ShaderStruct& FSStruct = convertedFSUniform->GetShaderUniformStruct();
 				const auto& FSFields = FSStruct.GetFields();
@@ -625,7 +625,7 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 		for (const auto& GSUniform : GSUniforms)
 		{
 			auto* convertedGSUniform = dynamic_cast<OpenGLShaderUniformDeclaration*>(GSUniform.get());
-			if (convertedGSUniform->GetType() == OpenGLShaderUniformDeclaration::Type::STRUCT)
+			if (convertedGSUniform->GetType() == OpenGLShaderUniformDeclaration::Type::Struct)
 			{
 				const ShaderStruct& GSStruct = convertedGSUniform->GetShaderUniformStruct();
 				const auto& GSFields = GSStruct.GetFields();
@@ -650,7 +650,7 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 		for (const auto& TCSUniform : TCSUniforms)
 		{
 			auto* convertedTCSUniform = dynamic_cast<OpenGLShaderUniformDeclaration*>(TCSUniform.get());
-			if (convertedTCSUniform->GetType() == OpenGLShaderUniformDeclaration::Type::STRUCT)
+			if (convertedTCSUniform->GetType() == OpenGLShaderUniformDeclaration::Type::Struct)
 			{
 				const ShaderStruct& TCSStruct = convertedTCSUniform->GetShaderUniformStruct();
 				const auto& TCSFields = TCSStruct.GetFields();
@@ -675,7 +675,7 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 		for (const auto& TESUniform : TESUniforms)
 		{
 			auto* convertedTESUniform = dynamic_cast<OpenGLShaderUniformDeclaration*>(TESUniform.get());
-			if (convertedTESUniform->GetType() == OpenGLShaderUniformDeclaration::Type::STRUCT)
+			if (convertedTESUniform->GetType() == OpenGLShaderUniformDeclaration::Type::Struct)
 			{
 				const ShaderStruct& TESStruct = convertedTESUniform->GetShaderUniformStruct();
 				const auto& TESFields = TESStruct.GetFields();
@@ -700,7 +700,7 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 		for (const auto& CSUniform : CSUniforms)
 		{
 			auto* convertedCSUniform = dynamic_cast<OpenGLShaderUniformDeclaration*>(CSUniform.get());
-			if (convertedCSUniform->GetType() == OpenGLShaderUniformDeclaration::Type::STRUCT)
+			if (convertedCSUniform->GetType() == OpenGLShaderUniformDeclaration::Type::Struct)
 			{
 				const ShaderStruct& CSStruct = convertedCSUniform->GetShaderUniformStruct();
 				const auto& CSFields = CSStruct.GetFields();
@@ -726,7 +726,7 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 			for (const auto& VSUserUniform : VSUserUniforms)
 			{
 				auto* convertedVSUserUniform = dynamic_cast<OpenGLShaderUniformDeclaration*>(VSUserUniform.get());
-				if (convertedVSUserUniform->GetType() == OpenGLShaderUniformDeclaration::Type::STRUCT)
+				if (convertedVSUserUniform->GetType() == OpenGLShaderUniformDeclaration::Type::Struct)
 				{
 					const ShaderStruct& VSUserStruct = convertedVSUserUniform->GetShaderUniformStruct();
 					const auto& VSUserFields = VSUserStruct.GetFields();
@@ -753,7 +753,7 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 			for (const auto& FSUserUniform : FSUserUniforms)
 			{
 				auto* convertedFSUserUniform = dynamic_cast<OpenGLShaderUniformDeclaration*>(FSUserUniform.get());
-				if (convertedFSUserUniform->GetType() == OpenGLShaderUniformDeclaration::Type::STRUCT)
+				if (convertedFSUserUniform->GetType() == OpenGLShaderUniformDeclaration::Type::Struct)
 				{
 					const ShaderStruct& FSUserStruct = convertedFSUserUniform->GetShaderUniformStruct();
 					const auto& FSUserFields = FSUserStruct.GetFields();
@@ -780,7 +780,7 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 			for (const auto& GSUserUniform : GSUserUniforms)
 			{
 				auto* convertedGSUserUniform = dynamic_cast<OpenGLShaderUniformDeclaration*>(GSUserUniform.get());
-				if (convertedGSUserUniform->GetType() == OpenGLShaderUniformDeclaration::Type::STRUCT)
+				if (convertedGSUserUniform->GetType() == OpenGLShaderUniformDeclaration::Type::Struct)
 				{
 					const ShaderStruct& GSUserStruct = convertedGSUserUniform->GetShaderUniformStruct();
 					const auto& GSUserFields = GSUserStruct.GetFields();
@@ -807,7 +807,7 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 			for (const auto& TCSUserUniform : TCSUserUniforms)
 			{
 				auto* convertedTCSUserUniform = dynamic_cast<OpenGLShaderUniformDeclaration*>(TCSUserUniform.get());
-				if (convertedTCSUserUniform->GetType() == OpenGLShaderUniformDeclaration::Type::STRUCT)
+				if (convertedTCSUserUniform->GetType() == OpenGLShaderUniformDeclaration::Type::Struct)
 				{
 					const ShaderStruct& TCSUserStruct = convertedTCSUserUniform->GetShaderUniformStruct();
 					const auto& TCSUserFields = TCSUserStruct.GetFields();
@@ -834,7 +834,7 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 			for (const auto& TESUserUniform : TESUserUniforms)
 			{
 				auto* convertedTESUserUniform = dynamic_cast<OpenGLShaderUniformDeclaration*>(TESUserUniform.get());
-				if (convertedTESUserUniform->GetType() == OpenGLShaderUniformDeclaration::Type::STRUCT)
+				if (convertedTESUserUniform->GetType() == OpenGLShaderUniformDeclaration::Type::Struct)
 				{
 					const ShaderStruct& TESUserStruct = convertedTESUserUniform->GetShaderUniformStruct();
 					const auto& TESUserFields = TESUserStruct.GetFields();
@@ -861,7 +861,7 @@ void TRAP::Graphics::API::OpenGLShader::ResolveUniforms()
 			for (const auto& CSUserUniform : CSUserUniforms)
 			{
 				auto* convertedCSUserUniform = dynamic_cast<OpenGLShaderUniformDeclaration*>(CSUserUniform.get());
-				if (convertedCSUserUniform->GetType() == OpenGLShaderUniformDeclaration::Type::STRUCT)
+				if (convertedCSUserUniform->GetType() == OpenGLShaderUniformDeclaration::Type::Struct)
 				{
 					const ShaderStruct& CSUserStruct = convertedCSUserUniform->GetShaderUniformStruct();
 					const auto& CSUserFields = CSUserStruct.GetFields();
@@ -1096,31 +1096,31 @@ void TRAP::Graphics::API::OpenGLShader::ResolveAndSetUniform(OpenGLShaderUniform
 	const unsigned int offset = uniform->GetOffset();
 	switch (uniform->GetType())
 	{
-	case OpenGLShaderUniformDeclaration::Type::FLOAT32:
+	case OpenGLShaderUniformDeclaration::Type::Float32:
 		SetUniform1f(uniform->GetLocation(), *reinterpret_cast<float*>(&data[offset]));
 		break;
 
-	case OpenGLShaderUniformDeclaration::Type::INT32:
+	case OpenGLShaderUniformDeclaration::Type::Int32:
 		SetUniform1i(uniform->GetLocation(), *reinterpret_cast<int32_t*>(&data[offset]));
 		break;
 
-	case OpenGLShaderUniformDeclaration::Type::VEC2:
+	case OpenGLShaderUniformDeclaration::Type::Vec2:
 		SetUniform2f(uniform->GetLocation(), *reinterpret_cast<Maths::Vec2*>(&data[offset]));
 		break;
 
-	case OpenGLShaderUniformDeclaration::Type::VEC3:
+	case OpenGLShaderUniformDeclaration::Type::Vec3:
 		SetUniform3f(uniform->GetLocation(), *reinterpret_cast<Maths::Vec3*>(&data[offset]));
 		break;
 
-	case OpenGLShaderUniformDeclaration::Type::VEC4:
+	case OpenGLShaderUniformDeclaration::Type::Vec4:
 		SetUniform4f(uniform->GetLocation(), *reinterpret_cast<Maths::Vec4*>(&data[offset]));
 		break;
 
-	case OpenGLShaderUniformDeclaration::Type::MAT3:
+	case OpenGLShaderUniformDeclaration::Type::Mat3:
 		SetUniformMat3(uniform->GetLocation(), *reinterpret_cast<Maths::Mat3*>(&data[offset]));
 		break;
 
-	case OpenGLShaderUniformDeclaration::Type::MAT4:
+	case OpenGLShaderUniformDeclaration::Type::Mat4:
 		SetUniformMat4(uniform->GetLocation(), *reinterpret_cast<Maths::Mat4*>(&data[offset]));
 		break;
 
@@ -1148,31 +1148,31 @@ void TRAP::Graphics::API::OpenGLShader::ResolveAndSetUniformField(const OpenGLSh
 {
 	switch (field.GetType())
 	{
-	case OpenGLShaderUniformDeclaration::Type::FLOAT32:
+	case OpenGLShaderUniformDeclaration::Type::Float32:
 		SetUniform1f(field.GetLocation(), *reinterpret_cast<float*>(&data[offset]));
 		break;
 
-	case OpenGLShaderUniformDeclaration::Type::INT32:
+	case OpenGLShaderUniformDeclaration::Type::Int32:
 		SetUniform1i(field.GetLocation(), *reinterpret_cast<int32_t*>(&data[offset]));
 		break;
 
-	case OpenGLShaderUniformDeclaration::Type::VEC2:
+	case OpenGLShaderUniformDeclaration::Type::Vec2:
 		SetUniform2f(field.GetLocation(), *reinterpret_cast<Maths::Vec2*>(&data[offset]));
 		break;
 
-	case OpenGLShaderUniformDeclaration::Type::VEC3:
+	case OpenGLShaderUniformDeclaration::Type::Vec3:
 		SetUniform3f(field.GetLocation(), *reinterpret_cast<Maths::Vec3*>(&data[offset]));
 		break;
 
-	case OpenGLShaderUniformDeclaration::Type::VEC4:
+	case OpenGLShaderUniformDeclaration::Type::Vec4:
 		SetUniform4f(field.GetLocation(), *reinterpret_cast<Maths::Vec4*>(&data[offset]));
 		break;
 
-	case OpenGLShaderUniformDeclaration::Type::MAT3:
+	case OpenGLShaderUniformDeclaration::Type::Mat3:
 		SetUniformMat3(field.GetLocation(), *reinterpret_cast<Maths::Mat3*>(&data[offset]));
 		break;
 
-	case OpenGLShaderUniformDeclaration::Type::MAT4:
+	case OpenGLShaderUniformDeclaration::Type::Mat4:
 		SetUniformMat4(field.GetLocation(), *reinterpret_cast<Maths::Mat4*>(&data[offset]));
 		break;
 
@@ -1311,7 +1311,7 @@ void TRAP::Graphics::API::OpenGLShader::SetUniformMat4(const unsigned int locati
 
 void TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, std::array<std::string*, 6>& shaders)
 {
-	ShaderType type = ShaderType::UNKNOWN;
+	ShaderType type = ShaderType::Unknown;
 
 	std::vector<std::string> lines = Utils::String::GetLines(source);
 	//Get Shader Type
@@ -1320,23 +1320,26 @@ void TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, st
 		if(Utils::String::StartsWith(lines[i], "#shader"))
 		{
 			if (Utils::String::FindToken(lines[i], "vertex"))
-				type = ShaderType::VERTEX;
+				type = ShaderType::Vertex;
 			else if (Utils::String::FindToken(lines[i], "fragment"))
-				type = ShaderType::FRAGMENT;
+				type = ShaderType::Fragment;
 			else if (Utils::String::FindToken(lines[i], "geometry"))
-				type = ShaderType::GEOMETRY;
-			else if (Utils::String::FindToken(lines[i], "tessellationcontrol"))
-				type = ShaderType::TESSELLATIONCONTROL;
-			else if (Utils::String::FindToken(lines[i], "tessellationevaluation"))
-				type = ShaderType::TESSELLATIONEVALUATION;
+				type = ShaderType::Geometry;
+			else if (Utils::String::FindToken(lines[i], "tessellation"))
+			{
+				if (Utils::String::FindToken(lines[i], "control"))
+					type = ShaderType::Tessellation_Control;
+				else if (Utils::String::FindToken(lines[i], "evaluation"))
+					type = ShaderType::Tessellation_Evaluation;
+			}
 			else if (Utils::String::FindToken(lines[i], "compute"))
-				type = ShaderType::COMPUTE;
+				type = ShaderType::Compute;
 
 			//Add version tag if doesnt exist
-			if(!Utils::String::StartsWith(lines[i + 1], "#version ") && type != ShaderType::UNKNOWN)
+			if(!Utils::String::StartsWith(lines[i + 1], "#version ") && type != ShaderType::Unknown)
 				shaders[static_cast<int32_t>(type) - 1]->append("#version 460 core\n");
 		}
-		else if(type != ShaderType::UNKNOWN)
+		else if(type != ShaderType::Unknown)
 		{
 			shaders[static_cast<int32_t>(type) - 1]->append(lines[i]);
 			shaders[static_cast<int32_t>(type) - 1]->append("\n");
