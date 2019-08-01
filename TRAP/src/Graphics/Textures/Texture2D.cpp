@@ -4,7 +4,9 @@
 #include "Graphics/API/Context.h"
 #include "Graphics/API/OpenGL/Textures/OpenGLTexture2D.h"
 #include "Graphics/API/Vulkan/Textures/VulkanTexture2D.h"
+#ifdef TRAP_PLATFORM_WINDOWS
 #include "Graphics/API/D3D12/Textures/D3D12Texture2D.h"
+#endif
 
 std::unique_ptr<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string& name, const std::string& filepath, TextureParameters parameters)
 {
@@ -30,8 +32,10 @@ std::unique_ptr<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::Create(Tex
 {
 	switch (API::Context::GetRenderAPI())
 	{
+#ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
 		return std::make_unique<API::D3D12Texture2D>(parameters);
+#endif
 
 	case API::RenderAPI::Vulkan:
 		return std::make_unique<API::VulkanTexture2D>(parameters);
