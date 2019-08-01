@@ -12,8 +12,10 @@ std::unique_ptr<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFrom
 {
 	switch(API::Context::GetRenderAPI())
 	{
+#ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
 		return std::make_unique<API::D3D12Texture2D>(name, filepath, parameters);
+#endif
 
 	case API::RenderAPI::Vulkan:
 		return std::make_unique<API::VulkanTexture2D>(name, filepath, parameters);
