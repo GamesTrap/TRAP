@@ -7,7 +7,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, float updateTimeInMilliseconds)
+TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, const float updateTimeInMilliseconds)
 	: m_virtualPathToWatch(virtualPath), m_delay(updateTimeInMilliseconds)
 {
 	m_timer.Reset();
@@ -18,10 +18,28 @@ TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, float updateTimeI
 	{
 		if (!FileSystem::SilentFileOrFolderExists(path))
 		{
-			for (const auto& file : std::filesystem::recursive_directory_iterator(path))
+			for (auto& file : std::filesystem::recursive_directory_iterator(path))
 			{
-				m_physicalPaths[file.path().string()] = FileSystem::GetLastWriteTime(file);
-				m_virtualPaths[file.path().string()] = virtualPathLower + '/' + file.path().filename().string();
+				if(!std::filesystem::is_directory(file))
+				{
+					m_physicalPaths[file.path().string()] = FileSystem::GetLastWriteTime(file);
+					m_virtualPaths[file.path().string()] = [&]() -> std::string
+					{
+						std::string result = virtualPathLower + '/';
+						std::filesystem::path temp = file.path();
+						temp.make_preferred();
+					#ifdef TRAP_PLATFORM_WINDOWS
+						std::vector<std::string> dirs = Utils::String::SplitString(temp.string(), "\\");
+					#else
+						std::vector<std::string> dirs = Utils::String::SplitString(temp.string(), '/');
+					#endif
+						for (unsigned int i = Utils::String::GetCount(path.string(), '/') + 1; i < dirs.size(); i++)
+							result += dirs[i] + '/';
+						result.pop_back();
+
+						return result;
+					}();
+				}
 			}
 		}
 	}
@@ -70,6 +88,22 @@ void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, st
 					if (m_physicalPaths.find(file.path().string()) == m_physicalPaths.end())
 					{
 						m_physicalPaths[file.path().string()] = currentFileLastWriteTime;
+						m_virtualPaths[file.path().string()] = [&]() -> std::string
+						{
+							std::string result = Utils::String::ToLower(m_virtualPathToWatch) + '/';
+							std::filesystem::path temp = file.path();
+							temp.make_preferred();
+						#ifdef TRAP_PLATFORM_WINDOWS
+							std::vector<std::string> dirs = Utils::String::SplitString(temp.string(), "\\");
+						#else
+							std::vector<std::string> dirs = Utils::String::SplitString(temp.string(), '/');
+						#endif
+							for (unsigned int i = Utils::String::GetCount(path.string(), '/') + 1; i < dirs.size(); i++)
+								result += dirs[i] + '/';
+							result.pop_back();
+
+							return result;
+						}();
 						action(file.path(), m_virtualPaths[file.path().string()], FileStatus::Created);
 					}
 					else //File modification

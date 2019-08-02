@@ -250,3 +250,7 @@ SITREP 08/01/2019|19w31a4
     - Confirmed PPM, PNM, PGM, PAM and PFM Image Formats working ~>60 mins
     - Added TextureManager ~>30 mins
     - Added HotTextureReloading ~>25 mins
+
+SITREP 08/02/2019|19w31a5
+    - Changed TRAP Engine version to 19w31a5(0.5.7)
+    - Allow FileWatcher to track sub directory files ~>40 mins

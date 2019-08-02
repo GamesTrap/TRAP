@@ -25,10 +25,30 @@ void TRAP::VFS::Shutdown()
 
 void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physicalPath)
 {
+	if(virtualPath.empty() || physicalPath.empty())
+	{
+		TP_ERROR("[VFS] Virtual or Physical path is empty!");
+		return;
+	}
+
 	TP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
-	TP_INFO("[VFS] Mounting VirtualPath: \"", virtualPath, "\" to PhysicalPath: \"", physicalPath, "\"");
+
 	const std::string virtualPathLower = Utils::String::ToLower(virtualPath);
-	m_mountPoints[virtualPathLower].push_back(physicalPath);
+	TP_INFO("[VFS] Mounting VirtualPath: \"", virtualPath, "\" to PhysicalPath: \"", [&]()
+		{
+			if (*(physicalPath.end() - 1) == '/')
+				return std::string(physicalPath.begin(), physicalPath.end() - 1);
+
+			return physicalPath;
+		}(), "\"");
+	//m_mountPoints[virtualPathLower].emplace_back(physicalPath);
+	m_mountPoints[virtualPathLower].emplace_back([&]()
+	{
+			if (*(physicalPath.end() - 1) == '/')
+				return std::string(physicalPath.begin(), physicalPath.end() - 1);
+
+			return physicalPath;
+	}());
 
 	if (m_hotShaderReloading)
 		if (virtualPathLower == "/shaders")
@@ -182,7 +202,7 @@ std::vector<std::filesystem::path> TRAP::VFS::ResolveToPhysicalPaths(const std::
 		return std::vector<std::filesystem::path>();
 
 	return std::vector<std::filesystem::path>(m_mountPoints[virtualPathLower].begin(),
-	                                          m_mountPoints[virtualPathLower].end());
+		m_mountPoints[virtualPathLower].end());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

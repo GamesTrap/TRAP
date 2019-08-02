@@ -42,6 +42,11 @@ namespace TRAP::Utils::String
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	std::string ToLower(std::string string);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	unsigned int GetCount(const std::string& string, const std::string& delimiters);
+	unsigned int GetCount(const std::string& string, char delimiter);
 }
 
 #endif /*_TRAP_STRING_H_*/
