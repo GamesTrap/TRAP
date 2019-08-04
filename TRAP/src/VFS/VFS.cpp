@@ -41,7 +41,6 @@ void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physica
 
 			return physicalPath;
 		}(), "\"");
-	//m_mountPoints[virtualPathLower].emplace_back(physicalPath);
 	m_mountPoints[virtualPathLower].emplace_back([&]()
 	{
 			if (*(physicalPath.end() - 1) == '/')

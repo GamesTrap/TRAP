@@ -32,10 +32,10 @@ For example, run `premake vs2019` to generate the `.sln` and `.vcxproj` files fo
 Premake can generate makefile project files.
 For example, run `premake gmake2` to generate the `Makefile` files.
 
-### Mac OS X
+### Mac OS X (Untested)
 
 Premake can generate project files for XCode4.
-For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj` fiesl for XCode 4.
+For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj` files for XCode 4.
 
 ## 3rd Party Libraries used by TRAP Engine:
 - [GLFW](https://github.com/GamesTrap/glfw)

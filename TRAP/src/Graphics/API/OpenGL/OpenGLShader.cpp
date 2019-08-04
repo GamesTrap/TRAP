@@ -914,11 +914,17 @@ bool TRAP::Graphics::API::OpenGLShader::IsSystemUniform(ShaderUniformDeclaration
 
 int32_t TRAP::Graphics::API::OpenGLShader::GetUniformLocation(const std::string& name) const
 {
-	OpenGLCall(const GLint result = glGetUniformLocation(m_handle, name.c_str()));
-	if (result == 255)
-		TP_ERROR("[Shader][OpenGL] \"", m_name, "\": Could not find uniform ", name, " in Shader!");
+	const auto locationSearch = m_uniformLocationCache.find(name);
+	if(locationSearch != m_uniformLocationCache.end())
+		return locationSearch->second;
 
-	return result;
+	OpenGLCall(const GLint location = glGetUniformLocation(m_handle, name.c_str()));
+	if (location == -1)
+		TP_ERROR("[Shader][OpenGL] \"", m_name, "\": Could not find uniform ", name, " in Shader!");
+	else
+		m_uniformLocationCache[name] = location;
+
+	return location;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

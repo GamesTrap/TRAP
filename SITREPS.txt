@@ -254,3 +254,8 @@ SITREP 08/01/2019|19w31a4
 SITREP 08/02/2019|19w31a5
     - Changed TRAP Engine version to 19w31a5(0.5.7)
     - Allow FileWatcher to track sub directory files ~>40 mins
+    - Started working on TGA Image Format ~>30 mins
+
+SITREP 08/03/2019|19w31a6
+    - Changed TRAP Engine version to 19w31a6(0.5.8)
+    - Added uniform location caching for OpenGL shaders ~>25 mins

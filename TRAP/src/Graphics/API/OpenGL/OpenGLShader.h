@@ -112,6 +112,7 @@ namespace TRAP::Graphics::API
 		friend class ::TRAP::Graphics::ShaderManager;
 
 		unsigned int m_handle;
+		mutable std::unordered_map<std::string, GLint> m_uniformLocationCache;
 		std::string m_name, m_filepath, m_source;
 		std::string m_VSSource, m_FSSource, m_GSSource, m_TCSSource, m_TESSource, m_CSSource;
 

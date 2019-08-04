@@ -10,6 +10,7 @@
 #include "PortableMaps/PNMImage.h"
 #include "PortableMaps/PAMImage.h"
 #include "PortableMaps/PFMImage.h"
+#include "TARGA/TGAImage.h"
 #include "Maths/Maths.h"
 
 std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
@@ -29,6 +30,8 @@ std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepa
 		result = std::make_unique<INTERNAL::PAMImage>(virtualFilePath);
 	else if (fileFormat == "pfm")
 		result = std::make_unique<INTERNAL::PFMImage>(virtualFilePath);
+	else if (fileFormat == "tga" || fileFormat == "icb" || fileFormat == "vda" || fileFormat == "vst")
+		result = std::make_unique<INTERNAL::TGAImage>(virtualFilePath);
 	else
 	{
 		TP_ERROR("[Image] Unsupported or unknown Image Format!");
