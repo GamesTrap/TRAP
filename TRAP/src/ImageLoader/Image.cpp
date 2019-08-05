@@ -355,3 +355,104 @@ std::vector<float> TRAP::Image::FlipY(const unsigned int width, const unsigned i
 	}
 	return {};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<uint8_t> TRAP::Image::FlipX(const unsigned int width, const unsigned int height, ImageFormat format, uint8_t* data)
+{
+	if (data)
+	{
+		unsigned int xt, xb;
+
+		switch (format)
+		{
+		case ImageFormat::Gray_Scale:
+		{
+			std::vector<uint8_t> newData;
+			newData.assign(data, data + width * height);
+
+			for (xt = 0, xb = width - 1; xt <= xb; xt++, xb--)
+				for (unsigned int y = 0; y < height; y++)
+				{
+					const uint8_t temp{ newData[(y + xb * height) + 0] };
+
+					newData[y + xb * height + 0] = newData[y + xt * height + 0];
+
+					newData[y + xt * height + 0] = temp;
+				}
+
+			return newData;
+		}
+
+		case ImageFormat::Gray_Scale_Alpha:
+		{
+			std::vector<uint8_t> newData;
+			newData.assign(data, data + width * height * 2);
+
+			for (xt = 0, xb = width - 1; xt <= xb; xt++, xb--)
+				for (unsigned int y = 0; y < height; y++)
+				{
+					const TRAP::Maths::tVec2<uint8_t> temp{ newData[2 * (y + xb * height) + 0], newData[2 * (y + xb * height) + 1] };
+
+					newData[2 * (y + xb * height) + 0] = newData[2 * (y + xt * height) + 0];
+					newData[2 * (y + xb * height) + 1] = newData[2 * (y + xt * height) + 1];
+
+					newData[2 * (y + xt * height) + 0] = temp.x;
+					newData[2 * (y + xt * height) + 1] = temp.y;
+				}
+
+			return newData;
+		}
+
+		case ImageFormat::RGB:
+		{
+			std::vector<uint8_t> newData;
+			newData.assign(data, data + width * height * 3);
+
+			for (xt = 0, xb = width - 1; xt <= xb; xt++, xb--)
+				for (unsigned int y = 0; y < height; y++)
+				{
+					const TRAP::Maths::tVec3<uint8_t> temp{ newData[3 * (y + xb * height) + 0], newData[3 * (y + xb * height) + 1], newData[3 * (y + xb * height) + 2] };
+
+					newData[3 * (y + xb * height) + 0] = newData[3 * (y + xt * height) + 0];
+					newData[3 * (y + xb * height) + 1] = newData[3 * (y + xt * height) + 1];
+					newData[3 * (y + xb * height) + 2] = newData[3 * (y + xt * height) + 2];
+
+					newData[3 * (y + xt * height) + 0] = temp.x;
+					newData[3 * (y + xt * height) + 1] = temp.y;
+					newData[3 * (y + xt * height) + 2] = temp.z;
+				}
+
+			return newData;
+		}
+
+		case ImageFormat::RGBA:
+		{
+			std::vector<uint8_t> newData;
+			newData.assign(data, data + width * height * 4);
+
+			for (xt = 0, xb = width - 1; xt <= xb; xt++, xb--)
+				for (unsigned int y = 0; y < height; y++)
+				{
+					const Maths::tVec4<uint8_t> temp{ newData[4 * (y + xb * height) + 0], newData[4 * (y + xb * height) + 1], newData[4 * (y + xb * height) + 2], newData[4 * (y + xb * height) + 3] };
+
+					newData[4 * (y + xb * height) + 0] = newData[4 * (y + xt * height) + 0];
+					newData[4 * (y + xb * height) + 1] = newData[4 * (y + xt * height) + 1];
+					newData[4 * (y + xb * height) + 2] = newData[4 * (y + xt * height) + 2];
+					newData[4 * (y + xb * height) + 3] = newData[4 * (y + xt * height) + 3];
+
+					newData[4 * (y + xt * height) + 0] = temp.x;
+					newData[4 * (y + xt * height) + 1] = temp.y;
+					newData[4 * (y + xt * height) + 2] = temp.z;
+					newData[4 * (y + xt * height) + 3] = temp.w;
+				}
+
+			return newData;
+		}
+
+		default:
+			return {};
+		}
+	}
+	return {};
+}

@@ -45,6 +45,8 @@ namespace TRAP
 		static std::vector<uint8_t> FlipY(unsigned int width, unsigned int height, ImageFormat format, uint8_t* data);
 		static std::vector<uint16_t> FlipY(unsigned int width, unsigned int height, ImageFormat format, uint16_t* data);
 		static std::vector<float> FlipY(unsigned int width, unsigned int height, ImageFormat format, float* data);
+
+		static std::vector<uint8_t> FlipX(unsigned int width, unsigned int height, ImageFormat format, uint8_t* data);
 	};
 }
 

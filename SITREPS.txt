@@ -259,3 +259,11 @@ SITREP 08/02/2019|19w31a5
 SITREP 08/03/2019|19w31a6
     - Changed TRAP Engine version to 19w31a6(0.5.8)
     - Added uniform location caching for OpenGL shaders ~>25 mins
+
+SITREP 08/04/2019|19w31a7
+    - Changed TRAP Engine version to 19w31a7(0.5.9)
+    - Working on TGA Image Loader ~>120 mins
+
+SITREP 08/05/2019|19w32a1
+    - Changed TRAP Engine version to 19w32a1(0.5.10)
+    - Finished TGA Image Loader ~>60 mins 
