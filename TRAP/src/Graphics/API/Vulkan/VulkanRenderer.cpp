@@ -80,7 +80,7 @@ void TRAP::Graphics::API::VulkanRenderer::Present(Window* window)
 
 //------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Maths::Vec4& color)
+void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Math::Vec4& color)
 {	
 }
 

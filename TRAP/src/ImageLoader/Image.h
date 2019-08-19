@@ -3,6 +3,19 @@
 
 #include "TRAPPCH.h"
 
+namespace TRAP::INTERNAL
+{
+	std::vector<uint8_t> DecodeBGR16(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
+	std::vector<uint8_t> DecodeBGR24(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
+	std::vector<uint8_t> DecodeBGRA32(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
+	std::vector<uint8_t> DecodeBGRAMap8(std::vector<uint8_t>& source, uint32_t width, uint32_t height, uint32_t channels, std::vector<uint8_t>& colorMap);
+	std::vector<uint8_t> DecodeRLEBGRAMap8(std::vector<uint8_t>& source, uint32_t width, uint32_t height, uint32_t channels, std::vector<uint8_t>& colorMap);
+	std::vector<uint8_t> DecodeRLEGrayScale(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
+	std::vector<uint8_t> DecodeRLEBGR16(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
+	std::vector<uint8_t> DecodeRLEBGR24(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
+	std::vector<uint8_t> DecodeRLEBGRA32(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
+}
+
 namespace TRAP
 {
 	enum class ImageFormat

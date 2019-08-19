@@ -38,6 +38,7 @@ TRAP::Application::Application()
 	unsigned int height = 720;
 	unsigned int refreshRate = 60;
 	unsigned int vsync = 0;
+	unsigned int fpsLimit = 0;
 	DisplayMode displayMode = DisplayMode::Windowed;
 	unsigned int monitor;
 	Graphics::API::RenderAPI renderAPI = Graphics::API::RenderAPI::NONE;
@@ -47,12 +48,20 @@ TRAP::Application::Application()
 	m_config.Get("Height", height);
 	m_config.Get("RefreshRate", refreshRate);
 	m_config.Get("VSync", vsync);
-	m_config.Get("FPSLimit", m_fpsLimit);
+	m_config.Get("FPSLimit", fpsLimit);
 	m_config.Get("DisplayMode", displayMode);
 	m_config.Get("Monitor", monitor);
 	m_config.Get("RenderAPI", renderAPI);
 	m_config.Get("HotShaderReloading", hotShaderReloading);
 	m_config.Get("HotTextureReloading", hotTextureReloading);
+
+	if(fpsLimit > 0)
+	{
+		if (fpsLimit >= 25 && fpsLimit <= 500)
+			m_fpsLimit = fpsLimit;
+		else
+			m_fpsLimit = 0;
+	}
 
 	VFS::Get()->SetHotShaderReloading(hotShaderReloading);
 	VFS::Get()->SetHotTextureReloading(hotTextureReloading);

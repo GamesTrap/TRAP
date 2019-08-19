@@ -267,3 +267,20 @@ SITREP 08/04/2019|19w31a7
 SITREP 08/05/2019|19w32a1
     - Changed TRAP Engine version to 19w32a1(0.5.10)
     - Finished TGA Image Loader ~>60 mins 
+
+SITREP 08/11/2019|19w32a2
+    - Changed TRAP Engine version to 19w32a2(0.5.11)
+    - Added Range to FPSLimiter(25-1000FPS) ~<15 mins
+
+SITREP 08/13/2019|19w33a1
+    - Changed TRAP Engine version to 19w33a1(0.5.12)
+    - Working on BMP Image Loader ~>120 mins
+    - Added check if OpenGLTexture2D exceeds max size ~>30 mins
+
+SITREP 08/14/2019|19w33a2
+    - Changed TRAP Engine version to 19w33a2(0.5.13)
+    - Got 32 BPP BMP Images working ~>60 mins
+
+SITREP 08/19/2019|19w34a1
+    - Changed TRAP Engine version to 19w34a1(0.5.14)
+    - Got padding for 8 BPP BMP Images working ~>45 mins

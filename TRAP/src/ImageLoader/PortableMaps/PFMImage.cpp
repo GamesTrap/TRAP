@@ -4,7 +4,7 @@
 #include "Utils/String.h"
 #include "VFS/VFS.h"
 #include "VFS/FileSystem.h"
-#include "Maths/Maths.h"
+#include "Maths/Math.h"
 
 namespace TRAP::INTERNAL
 {

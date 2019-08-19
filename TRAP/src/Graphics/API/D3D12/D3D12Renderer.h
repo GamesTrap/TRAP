@@ -24,7 +24,7 @@ namespace TRAP::Graphics::API
 		void Clear(unsigned int buffer) override;
 		void Present(Window* window) override;
 
-		void SetClearColor(const Maths::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) override;
+		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) override;
 		void SetDepthTesting(bool enabled) override;
 		void SetBlend(bool enabled) override;
 		void SetCull(bool enabled) override;

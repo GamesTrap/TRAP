@@ -7,7 +7,7 @@ TRAP::Graphics::OrthographicCamera::OrthographicCamera(const float left,
                                                        const float top,
                                                        const float near,
                                                        const float far)
-	: m_projectionMatrix(Maths::Mat4::Orthographic(left, right, bottom, top, near, far)), m_viewMatrix(Maths::Mat4::Identity()), m_position(0.0f), m_rotation(0.0f)
+	: m_projectionMatrix(Math::Mat4::Orthographic(left, right, bottom, top, near, far)), m_viewMatrix(Math::Mat4::Identity()), m_position(0.0f), m_rotation(0.0f)
 {
 }
 
@@ -15,10 +15,10 @@ TRAP::Graphics::OrthographicCamera::OrthographicCamera(const float left,
 
 void TRAP::Graphics::OrthographicCamera::RecalculateViewMatrix()
 {
-	const Maths::Mat4 transform = Maths::Mat4::Translate(m_position) *
-		                          Maths::Mat4::Rotate(m_rotation.x, Maths::Vec3::XAxis()) * 
-		                          Maths::Mat4::Rotate(m_rotation.y, Maths::Vec3::YAxis()) * 
-		                          Maths::Mat4::Rotate(m_rotation.z, Maths::Vec3::ZAxis());
+	const Math::Mat4 transform = Math::Mat4::Translate(m_position) *
+		                          Math::Mat4::Rotate(m_rotation.x, Math::Vec3::XAxis()) * 
+		                          Math::Mat4::Rotate(m_rotation.y, Math::Vec3::YAxis()) * 
+		                          Math::Mat4::Rotate(m_rotation.z, Math::Vec3::ZAxis());
 
-	m_viewMatrix = Maths::Mat4::Invert(transform);
+	m_viewMatrix = Math::Mat4::Invert(transform);
 }

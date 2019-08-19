@@ -40,7 +40,7 @@ namespace TRAP::Graphics::API
 		virtual void Clear(unsigned int buffer) = 0;
 		virtual void Present(Window* window) = 0;
 
-		virtual void SetClearColor(const Maths::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) = 0;
+		virtual void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) = 0;
 		virtual void SetDepthTesting(bool enabled) = 0;
 		virtual void SetBlend(bool enabled) = 0;
 		virtual void SetCull(bool enabled) = 0;

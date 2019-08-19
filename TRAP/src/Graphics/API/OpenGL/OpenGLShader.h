@@ -90,21 +90,21 @@ namespace TRAP::Graphics::API
 		void SetUniform1fv(const std::string& name, float* value, int32_t count) const;
 		void SetUniform1i(const std::string& name, int32_t value) const;
 		void SetUniform1iv(const std::string& name, int32_t* value, int32_t count) const;
-		void SetUniform2f(const std::string& name, const Maths::Vec2& vector) const;
-		void SetUniform3f(const std::string& name, const Maths::Vec3& vector) const;
-		void SetUniform4f(const std::string& name, const Maths::Vec4& vector) const;
-		void SetUniformMat3(const std::string& name, const Maths::Mat3& matrix) const;
-		void SetUniformMat4(const std::string& name, const Maths::Mat4& matrix) const;
+		void SetUniform2f(const std::string& name, const Math::Vec2& vector) const;
+		void SetUniform3f(const std::string& name, const Math::Vec3& vector) const;
+		void SetUniform4f(const std::string& name, const Math::Vec4& vector) const;
+		void SetUniformMat3(const std::string& name, const Math::Mat3& matrix) const;
+		void SetUniformMat4(const std::string& name, const Math::Mat4& matrix) const;
 
 		static void SetUniform1f(unsigned int location, float value);
 		static void SetUniform1fv(unsigned int location, float* value, int32_t count);
 		static void SetUniform1i(unsigned int location, int32_t value);
 		static void SetUniform1iv(unsigned int location, int32_t* value, int32_t count);
-		static void SetUniform2f(unsigned int location, const Maths::Vec2& vector);
-		static void SetUniform3f(unsigned int location, const Maths::Vec3& vector);
-		static void SetUniform4f(unsigned int location, const Maths::Vec4& vector);
-		static void SetUniformMat3(unsigned int location, const Maths::Mat3& matrix);
-		static void SetUniformMat4(unsigned int location, const Maths::Mat4& matrix);
+		static void SetUniform2f(unsigned int location, const Math::Vec2& vector);
+		static void SetUniform3f(unsigned int location, const Math::Vec3& vector);
+		static void SetUniform4f(unsigned int location, const Math::Vec4& vector);
+		static void SetUniformMat3(unsigned int location, const Math::Mat3& matrix);
+		static void SetUniformMat4(unsigned int location, const Math::Mat4& matrix);
 
 		static void PreProcess(const std::string& source, std::array<std::string*, 6>& shaders);
 

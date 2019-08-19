@@ -45,15 +45,16 @@ public:
 	void OnAttach() override
 	{
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
-		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("Color", "/Shaders/Texture.shader"));
+		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("Color", "/Shaders/Color.shader"));
+		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("Texture", "/Shaders/Texture.shader"));
 
 		//EXPERIMENTAL
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
-		TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture2D::CreateFromFile("Debug", "/Textures/Debug3.tga"));
+		TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture2D::CreateFromFile("Debug", "/Textures/24bpp-31x32.bmp"));
 		//////////////
 
 		///////////////
-		// Rectangle //
+		//    Quad   //
 		///////////////
 		m_vertexArray = TRAP::Graphics::VertexArray::Create();
 
@@ -116,18 +117,18 @@ public:
 		{
 			if (m_show)
 			{
-				/*static TRAP::Maths::Mat4 scale = TRAP::Maths::Mat4::Scale(TRAP::Maths::Vec3(0.1f));
+				/*static TRAP::Math::Mat4 scale = TRAP::Math::Mat4::Scale(TRAP::Math::Vec3(0.1f));
 
 				for (int y = 0; y < 10; y++)
 				{
 					for (int x = 0; x < 10; x++)
 					{
-						TRAP::Maths::Vec3 position(static_cast<float>(x) * 0.11f, static_cast<float>(y) * 0.11f, 0.0f);
-						TRAP::Maths::Mat4 transform = TRAP::Maths::Mat4::Translate(position) * scale;
+						TRAP::Math::Vec3 position(static_cast<float>(x) * 0.11f, static_cast<float>(y) * 0.11f, 0.0f);
+						TRAP::Math::Mat4 transform = TRAP::Math::Mat4::Translate(position) * scale;
 
 						if (m_usePassthrough)
 							TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray, transform);
-						else						
+						else
 							TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray, transform);
 					}
 				}*/
@@ -137,7 +138,7 @@ public:
 				else
 				{
 					TRAP::Graphics::TextureManager::Get("Debug")->Bind();					
-					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray);
+					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Texture"), m_vertexArray);
 				}
 			}
 		}
@@ -217,7 +218,7 @@ public:
 		if (event.GetKeyCode() == TP_KEY_F7 && event.GetRepeatCount() < 1) //Make Window Exclusive Fullscreen
 			TRAP::Application::Get().GetWindow()->SetWindowMode(TRAP::DisplayMode::Fullscreen);
 
-		if (event.GetKeyCode() == TP_KEY_F9 && event.GetRepeatCount() < 1) //Enable/Disable Triangle
+		if (event.GetKeyCode() == TP_KEY_F9 && event.GetRepeatCount() < 1) //Enable/Disable
 			m_show = !m_show;
 		if (event.GetKeyCode() == TP_KEY_F10 && event.GetRepeatCount() < 1) //Enable/Disable WireFrame Mode
 		{
@@ -271,8 +272,8 @@ private:
 	std::unique_ptr<TRAP::Graphics::VertexArray> m_vertexArray;
 
 	TRAP::Graphics::OrthographicCamera m_camera;
-	TRAP::Maths::Vec3 m_cameraPosition;
-	TRAP::Maths::Vec3 m_cameraRotation;
+	TRAP::Math::Vec3 m_cameraPosition;
+	TRAP::Math::Vec3 m_cameraRotation;
 	float m_cameraMovementSpeed = 2.5f;
 	float m_cameraRotationSpeed = 180.0f;
 };

@@ -34,7 +34,16 @@ void TRAP::Graphics::API::OpenGLTexture2D::Load(const std::string& filepath)
 		m_image = Image::LoadFromFile(filepath);
 	else
 		m_image = Image::LoadFallback();
-	
+
+	int maxTextureSize = 0;
+	OpenGLCall(glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize));
+	if(m_image->GetWidth() > static_cast<unsigned int>(maxTextureSize) || static_cast<unsigned int>(m_image->GetHeight()) > static_cast<unsigned int>(maxTextureSize))
+	{
+		TP_CRITICAL("[Texture2D][OpenGL] Width: ", m_image->GetWidth(), " or Height: ", m_image->GetHeight(), " is bigger than the maximum allowed texture size(", maxTextureSize, ")!");
+		TP_WARN("[Texture2D][OpenGL] Using Default Image!");
+		m_image = Image::LoadFallback();
+	}
+
 	OpenGLCall(glGenTextures(1, &m_handle));
 	OpenGLCall(glBindTexture(GL_TEXTURE_2D, m_handle));
 	OpenGLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));

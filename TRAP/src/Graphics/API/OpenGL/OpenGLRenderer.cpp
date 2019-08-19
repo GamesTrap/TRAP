@@ -62,7 +62,7 @@ void TRAP::Graphics::API::OpenGLRenderer::Present(Window* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetClearColor(const Maths::Vec4& color)
+void TRAP::Graphics::API::OpenGLRenderer::SetClearColor(const Math::Vec4& color)
 {
 	OpenGLCall(glClearColor(color.x, color.y, color.z, color.w));
 }

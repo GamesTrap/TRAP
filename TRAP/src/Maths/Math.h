@@ -4,7 +4,7 @@
 #include <string>
 #include "MathsFunc.h"
 
-namespace TRAP::Maths
+namespace TRAP::Math
 {
 template <class T>
 struct tVec2;
@@ -538,7 +538,7 @@ struct Mat4
 
 	std::string ToString() const;
 };
-} // namespace TRAP::Maths
+} // namespace TRAP::Math
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
@@ -555,7 +555,7 @@ struct Mat4
 //Vector 2//
 ////////////
 template <class T>
-TRAP::Maths::tVec2<T>::tVec2()
+TRAP::Math::tVec2<T>::tVec2()
 	: x(0), y(0)
 {
 }
@@ -563,7 +563,7 @@ TRAP::Maths::tVec2<T>::tVec2()
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T>::tVec2(const T &scalar)
+TRAP::Math::tVec2<T>::tVec2(const T &scalar)
 	: x(scalar), y(scalar)
 {
 }
@@ -571,7 +571,7 @@ TRAP::Maths::tVec2<T>::tVec2(const T &scalar)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T>::tVec2(const T &x, const T &y)
+TRAP::Math::tVec2<T>::tVec2(const T &x, const T &y)
 	: x(x), y(y)
 {
 }
@@ -579,7 +579,7 @@ TRAP::Maths::tVec2<T>::tVec2(const T &x, const T &y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T>::tVec2(const tVec3<T> &vector)
+TRAP::Math::tVec2<T>::tVec2(const tVec3<T> &vector)
 	: x(vector.x), y(vector.y)
 {
 }
@@ -587,7 +587,7 @@ TRAP::Maths::tVec2<T>::tVec2(const tVec3<T> &vector)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T>::tVec2(const tVec4<T> &vector)
+TRAP::Math::tVec2<T>::tVec2(const tVec4<T> &vector)
 	: x(vector.x), y(vector.y)
 {
 }
@@ -595,7 +595,7 @@ TRAP::Maths::tVec2<T>::tVec2(const tVec4<T> &vector)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Add(const tVec2<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Add(const tVec2<T> &other)
 {
 	x += other.x;
 	y += other.y;
@@ -606,7 +606,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Add(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Subtract(const tVec2<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Subtract(const tVec2<T> &other)
 {
 	x -= other.x;
 	y -= other.y;
@@ -617,7 +617,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Subtract(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Multiply(const tVec2<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Multiply(const tVec2<T> &other)
 {
 	x *= other.x;
 	y *= other.y;
@@ -628,7 +628,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Multiply(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Divide(const tVec2<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Divide(const tVec2<T> &other)
 {
 	x /= other.x;
 	y /= other.y;
@@ -639,7 +639,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Divide(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Add(const tVec3<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Add(const tVec3<T> &other)
 {
 	x += other.x;
 	y += other.y;
@@ -650,7 +650,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Add(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Subtract(const tVec3<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Subtract(const tVec3<T> &other)
 {
 	x -= other.x;
 	y -= other.y;
@@ -661,7 +661,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Subtract(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Multiply(const tVec3<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Multiply(const tVec3<T> &other)
 {
 	x *= other.x;
 	y *= other.y;
@@ -672,7 +672,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Multiply(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Divide(const tVec3<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Divide(const tVec3<T> &other)
 {
 	x /= other.x;
 	y /= other.y;
@@ -683,7 +683,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Divide(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Add(const tVec4<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Add(const tVec4<T> &other)
 {
 	x += other.x;
 	y += other.y;
@@ -694,7 +694,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Add(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Subtract(const tVec4<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Subtract(const tVec4<T> &other)
 {
 	x -= other.x;
 	y -= other.y;
@@ -705,7 +705,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Subtract(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Multiply(const tVec4<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Multiply(const tVec4<T> &other)
 {
 	x *= other.x;
 	y *= other.y;
@@ -716,7 +716,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Multiply(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Divide(const tVec4<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Divide(const tVec4<T> &other)
 {
 	x /= other.x;
 	y /= other.y;
@@ -727,7 +727,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Divide(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Add(const T &value)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Add(const T &value)
 {
 	x += value;
 	y += value;
@@ -738,7 +738,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Add(const T &value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Subtract(const T &value)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Subtract(const T &value)
 {
 	x -= value;
 	y -= value;
@@ -749,7 +749,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Subtract(const T &value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Multiply(const T &value)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Multiply(const T &value)
 {
 	x *= value;
 	y *= value;
@@ -760,7 +760,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Multiply(const T &value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Divide(const T &value)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Divide(const T &value)
 {
 	x /= value;
 	y /= value;
@@ -771,7 +771,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Divide(const T &value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Add(const T &x, const T &y)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Add(const T &x, const T &y)
 {
 	this.x += x;
 	this.y += y;
@@ -782,7 +782,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Add(const T &x, const T &y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Subtract(const T &x, const T &y)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Subtract(const T &x, const T &y)
 {
 	this.x -= x;
 	this.y -= y;
@@ -793,7 +793,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Subtract(const T &x, const T &y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Multiply(const T &x, const T &y)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Multiply(const T &x, const T &y)
 {
 	this.x *= x;
 	this.y *= y;
@@ -804,7 +804,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Multiply(const T &x, const T &y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Divide(const T &x, const T &y)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Divide(const T &x, const T &y)
 {
 	this.x /= x;
 	this.y /= y;
@@ -815,7 +815,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::Divide(const T &x, const T &y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator==(const tVec2<T> &other) const
+bool TRAP::Math::tVec2<T>::operator==(const tVec2<T> &other) const
 {
 	return x == other.x && y == other.y;
 }
@@ -823,7 +823,7 @@ bool TRAP::Maths::tVec2<T>::operator==(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator!=(const tVec2<T> &other) const
+bool TRAP::Math::tVec2<T>::operator!=(const tVec2<T> &other) const
 {
 	return !(*this == other);
 }
@@ -831,7 +831,7 @@ bool TRAP::Maths::tVec2<T>::operator!=(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator==(const tVec3<T> &other) const
+bool TRAP::Math::tVec2<T>::operator==(const tVec3<T> &other) const
 {
 	return x == other.x && y == other.y;
 }
@@ -839,7 +839,7 @@ bool TRAP::Maths::tVec2<T>::operator==(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator!=(const tVec3<T> &other) const
+bool TRAP::Math::tVec2<T>::operator!=(const tVec3<T> &other) const
 {
 	return !(*this == other);
 }
@@ -847,7 +847,7 @@ bool TRAP::Maths::tVec2<T>::operator!=(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator==(const tVec4<T> &other) const
+bool TRAP::Math::tVec2<T>::operator==(const tVec4<T> &other) const
 {
 	return x == other.x && y == other.y;
 }
@@ -855,7 +855,7 @@ bool TRAP::Maths::tVec2<T>::operator==(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator!=(const tVec4<T> &other) const
+bool TRAP::Math::tVec2<T>::operator!=(const tVec4<T> &other) const
 {
 	return !(*this == other);
 }
@@ -863,7 +863,7 @@ bool TRAP::Maths::tVec2<T>::operator!=(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator+=(const tVec2<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator+=(const tVec2<T> &other)
 {
 	return Add(other);
 }
@@ -871,7 +871,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator+=(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator-=(const tVec2<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator-=(const tVec2<T> &other)
 {
 	return Subtract(other);
 }
@@ -879,7 +879,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator-=(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator*=(const tVec2<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator*=(const tVec2<T> &other)
 {
 	return Multiply(other);
 }
@@ -887,7 +887,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator*=(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator/=(const tVec2<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator/=(const tVec2<T> &other)
 {
 	return Divide(other);
 }
@@ -895,7 +895,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator/=(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator+=(const tVec3<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator+=(const tVec3<T> &other)
 {
 	return Add(other);
 }
@@ -903,7 +903,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator+=(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator-=(const tVec3<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator-=(const tVec3<T> &other)
 {
 	return Subtract(other);
 }
@@ -911,7 +911,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator-=(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator*=(const tVec3<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator*=(const tVec3<T> &other)
 {
 	return Multiply(other);
 }
@@ -919,7 +919,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator*=(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator/=(const tVec3<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator/=(const tVec3<T> &other)
 {
 	return Divide(other);
 }
@@ -927,7 +927,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator/=(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator+=(const tVec4<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator+=(const tVec4<T> &other)
 {
 	return Add(other);
 }
@@ -935,7 +935,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator+=(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator-=(const tVec4<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator-=(const tVec4<T> &other)
 {
 	return Subtract(other);
 }
@@ -943,7 +943,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator-=(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator*=(const tVec4<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator*=(const tVec4<T> &other)
 {
 	return Multiply(other);
 }
@@ -951,7 +951,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator*=(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator/=(const tVec4<T> &other)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator/=(const tVec4<T> &other)
 {
 	return Divide(other);
 }
@@ -959,7 +959,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator/=(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator+=(T value)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator+=(T value)
 {
 	return Add(value);
 }
@@ -967,7 +967,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator+=(T value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator-=(T value)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator-=(T value)
 {
 	return Subtract(value);
 }
@@ -975,7 +975,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator-=(T value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator*=(T value)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator*=(T value)
 {
 	return Multiply(value);
 }
@@ -983,7 +983,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator*=(T value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator/=(T value)
+TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator/=(T value)
 {
 	return Divide(value);
 }
@@ -991,7 +991,7 @@ TRAP::Maths::tVec2<T> &TRAP::Maths::tVec2<T>::operator/=(T value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator<(const tVec2<T> &other) const
+bool TRAP::Math::tVec2<T>::operator<(const tVec2<T> &other) const
 {
 	return x < other.x && y < other.y;
 }
@@ -999,7 +999,7 @@ bool TRAP::Maths::tVec2<T>::operator<(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator<=(const tVec2<T> &other) const
+bool TRAP::Math::tVec2<T>::operator<=(const tVec2<T> &other) const
 {
 	return x <= other.x && y <= other.y;
 }
@@ -1007,7 +1007,7 @@ bool TRAP::Maths::tVec2<T>::operator<=(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator>(const tVec2<T> &other) const
+bool TRAP::Math::tVec2<T>::operator>(const tVec2<T> &other) const
 {
 	return x > other.x && y > other.y;
 }
@@ -1015,7 +1015,7 @@ bool TRAP::Maths::tVec2<T>::operator>(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator>=(const tVec2<T> &other) const
+bool TRAP::Math::tVec2<T>::operator>=(const tVec2<T> &other) const
 {
 	return x >= other.x && y >= other.y;
 }
@@ -1023,7 +1023,7 @@ bool TRAP::Maths::tVec2<T>::operator>=(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator<(const tVec3<T> &other) const
+bool TRAP::Math::tVec2<T>::operator<(const tVec3<T> &other) const
 {
 	return x < other.x && y < other.y;
 }
@@ -1031,7 +1031,7 @@ bool TRAP::Maths::tVec2<T>::operator<(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator<=(const tVec3<T> &other) const
+bool TRAP::Math::tVec2<T>::operator<=(const tVec3<T> &other) const
 {
 	return x <= other.x && y <= other.y;
 }
@@ -1039,7 +1039,7 @@ bool TRAP::Maths::tVec2<T>::operator<=(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator>(const tVec3<T> &other) const
+bool TRAP::Math::tVec2<T>::operator>(const tVec3<T> &other) const
 {
 	return x > other.x && y > other.y;
 }
@@ -1047,7 +1047,7 @@ bool TRAP::Maths::tVec2<T>::operator>(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator>=(const tVec3<T> &other) const
+bool TRAP::Math::tVec2<T>::operator>=(const tVec3<T> &other) const
 {
 	return x >= other.x && y >= other.y;
 }
@@ -1055,7 +1055,7 @@ bool TRAP::Maths::tVec2<T>::operator>=(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator<(const tVec4<T> &other) const
+bool TRAP::Math::tVec2<T>::operator<(const tVec4<T> &other) const
 {
 	return x < other.x && y < other.y;
 }
@@ -1063,7 +1063,7 @@ bool TRAP::Maths::tVec2<T>::operator<(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator<=(const tVec4<T> &other) const
+bool TRAP::Math::tVec2<T>::operator<=(const tVec4<T> &other) const
 {
 	return x <= other.x && y <= other.y;
 }
@@ -1071,7 +1071,7 @@ bool TRAP::Maths::tVec2<T>::operator<=(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator>(const tVec4<T> &other) const
+bool TRAP::Math::tVec2<T>::operator>(const tVec4<T> &other) const
 {
 	return x > other.x && y > other.y;
 }
@@ -1079,7 +1079,7 @@ bool TRAP::Maths::tVec2<T>::operator>(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec2<T>::operator>=(const tVec4<T> &other) const
+bool TRAP::Math::tVec2<T>::operator>=(const tVec4<T> &other) const
 {
 	return x >= other.x && y >= other.y;
 }
@@ -1087,7 +1087,7 @@ bool TRAP::Maths::tVec2<T>::operator>=(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec2<T>::Dot(const tVec2<T> &other) const
+float TRAP::Math::tVec2<T>::Dot(const tVec2<T> &other) const
 {
 	return x * other.x + y * other.y;
 }
@@ -1095,7 +1095,7 @@ float TRAP::Maths::tVec2<T>::Dot(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec2<T>::Dot(const tVec3<T> &other) const
+float TRAP::Math::tVec2<T>::Dot(const tVec3<T> &other) const
 {
 	return x * other.x + y * other.y;
 }
@@ -1103,7 +1103,7 @@ float TRAP::Maths::tVec2<T>::Dot(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec2<T>::Dot(const tVec4<T> &other) const
+float TRAP::Math::tVec2<T>::Dot(const tVec4<T> &other) const
 {
 	return x * other.x + y * other.y;
 }
@@ -1111,7 +1111,7 @@ float TRAP::Maths::tVec2<T>::Dot(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec2<T>::Magnitude() const
+float TRAP::Math::tVec2<T>::Magnitude() const
 {
 	return Sqrt(x * x + y * y);
 }
@@ -1119,7 +1119,7 @@ float TRAP::Maths::tVec2<T>::Magnitude() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec2<T> TRAP::Maths::tVec2<T>::Normalize() const
+TRAP::Math::tVec2<T> TRAP::Math::tVec2<T>::Normalize() const
 {
 	float length = Magnitude();
 
@@ -1129,7 +1129,7 @@ TRAP::Maths::tVec2<T> TRAP::Maths::tVec2<T>::Normalize() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec2<T>::Distance(const tVec2<T> &other) const
+float TRAP::Math::tVec2<T>::Distance(const tVec2<T> &other) const
 {
 	const float a = x - other.x;
 	const float b = y - other.y;
@@ -1140,7 +1140,7 @@ float TRAP::Maths::tVec2<T>::Distance(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec2<T>::Distance(const tVec3<T> &other) const
+float TRAP::Math::tVec2<T>::Distance(const tVec3<T> &other) const
 {
 	const float a = x - other.x;
 	const float b = y - other.y;
@@ -1151,7 +1151,7 @@ float TRAP::Maths::tVec2<T>::Distance(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec2<T>::Distance(const tVec4<T> &other) const
+float TRAP::Math::tVec2<T>::Distance(const tVec4<T> &other) const
 {
 	const float a = x - other.x;
 	const float b = y - other.y;
@@ -1162,7 +1162,7 @@ float TRAP::Maths::tVec2<T>::Distance(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-std::string TRAP::Maths::tVec2<T>::ToString() const
+std::string TRAP::Math::tVec2<T>::ToString() const
 {
 	std::stringstream result;
 	result << x << ", " << y;
@@ -1185,7 +1185,7 @@ std::string TRAP::Maths::tVec2<T>::ToString() const
 //Vector 3//
 ////////////
 template <class T>
-TRAP::Maths::tVec3<T>::tVec3()
+TRAP::Math::tVec3<T>::tVec3()
 	: x(0), y(0), z(0)
 {
 }
@@ -1193,7 +1193,7 @@ TRAP::Maths::tVec3<T>::tVec3()
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T>::tVec3(const T &scalar)
+TRAP::Math::tVec3<T>::tVec3(const T &scalar)
 	: x(scalar), y(scalar), z(scalar)
 {
 }
@@ -1201,7 +1201,7 @@ TRAP::Maths::tVec3<T>::tVec3(const T &scalar)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T>::tVec3(const T &x, const T &y)
+TRAP::Math::tVec3<T>::tVec3(const T &x, const T &y)
 	: x(x), y(y), z(0)
 {
 }
@@ -1209,7 +1209,7 @@ TRAP::Maths::tVec3<T>::tVec3(const T &x, const T &y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T>::tVec3(const T &x, const T &y, const T &z)
+TRAP::Math::tVec3<T>::tVec3(const T &x, const T &y, const T &z)
 	: x(x), y(y), z(z)
 {
 }
@@ -1217,7 +1217,7 @@ TRAP::Maths::tVec3<T>::tVec3(const T &x, const T &y, const T &z)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T>::tVec3(const tVec2<T> &xy, const T &z)
+TRAP::Math::tVec3<T>::tVec3(const tVec2<T> &xy, const T &z)
 	: x(xy.x), y(xy.y), z(z)
 {
 }
@@ -1225,7 +1225,7 @@ TRAP::Maths::tVec3<T>::tVec3(const tVec2<T> &xy, const T &z)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T>::tVec3(const T &x, const tVec2<T> &yz)
+TRAP::Math::tVec3<T>::tVec3(const T &x, const tVec2<T> &yz)
 	: x(x), y(yz.x), z(yz.y)
 {
 }
@@ -1233,7 +1233,7 @@ TRAP::Maths::tVec3<T>::tVec3(const T &x, const tVec2<T> &yz)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T>::tVec3(const tVec4<T> &vector)
+TRAP::Math::tVec3<T>::tVec3(const tVec4<T> &vector)
 	: x(vector.x), y(vector.y), z(vector.z)
 {
 }
@@ -1241,7 +1241,7 @@ TRAP::Maths::tVec3<T>::tVec3(const tVec4<T> &vector)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Up()
+TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Up()
 {
 	return tVec3<T>(0.0f, 1.0f, 0.0f);
 }
@@ -1249,7 +1249,7 @@ TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Up()
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Down()
+TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Down()
 {
 	return tVec3<T>(0.0f, -1.0f, 0.0f);
 }
@@ -1257,7 +1257,7 @@ TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Down()
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Left()
+TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Left()
 {
 	return tVec3<T>(-1.0f, 0.0f, 0.0f);
 }
@@ -1265,7 +1265,7 @@ TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Left()
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Right()
+TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Right()
 {
 	return tVec3<T>(1.0f, 1.0f, 0.0f);
 }
@@ -1273,7 +1273,7 @@ TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Right()
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Zero()
+TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Zero()
 {
 	return tVec3<T>(0.0f, 0.0f, 0.0f);
 }
@@ -1281,7 +1281,7 @@ TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Zero()
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::XAxis()
+TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::XAxis()
 {
 	return tVec3<T>(1.0f, 0.0f, 0.0f);
 }
@@ -1289,7 +1289,7 @@ TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::XAxis()
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::YAxis()
+TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::YAxis()
 {
 	return tVec3<T>(0.0f, 1.0f, 0.0f);
 }
@@ -1297,7 +1297,7 @@ TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::YAxis()
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::ZAxis()
+TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::ZAxis()
 {
 	return tVec3<T>(0.0f, 0.0f, 1.0f);
 }
@@ -1305,7 +1305,7 @@ TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::ZAxis()
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Add(const tVec2<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Add(const tVec2<T> &other)
 {
 	x += other.x;
 	y += other.y;
@@ -1316,7 +1316,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Add(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Subtract(const tVec2<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Subtract(const tVec2<T> &other)
 {
 	x -= other.x;
 	y -= other.y;
@@ -1327,7 +1327,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Subtract(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Multiply(const tVec2<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Multiply(const tVec2<T> &other)
 {
 	x *= other.x;
 	y *= other.y;
@@ -1338,7 +1338,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Multiply(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Divide(const tVec2<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Divide(const tVec2<T> &other)
 {
 	x /= other.x;
 	y /= other.y;
@@ -1349,55 +1349,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Divide(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Add(const tVec3<T> &other)
-{
-	x += other.x;
-	y += other.y;
-	z += other.z;
-
-	return *this;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Subtract(const tVec3<T> &other)
-{
-	x -= other.x;
-	y -= other.y;
-	z -= other.z;
-
-	return *this;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Multiply(const tVec3<T> &other)
-{
-	x *= other.x;
-	y *= other.y;
-	z *= other.z;
-
-	return *this;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Divide(const tVec3<T> &other)
-{
-	x /= other.x;
-	y /= other.y;
-	z /= other.z;
-
-	return *this;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Add(const tVec4<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Add(const tVec3<T> &other)
 {
 	x += other.x;
 	y += other.y;
@@ -1409,7 +1361,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Add(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Subtract(const tVec4<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Subtract(const tVec3<T> &other)
 {
 	x -= other.x;
 	y -= other.y;
@@ -1421,7 +1373,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Subtract(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Multiply(const tVec4<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Multiply(const tVec3<T> &other)
 {
 	x *= other.x;
 	y *= other.y;
@@ -1433,7 +1385,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Multiply(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Divide(const tVec4<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Divide(const tVec3<T> &other)
 {
 	x /= other.x;
 	y /= other.y;
@@ -1445,7 +1397,55 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Divide(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Add(const T &value)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Add(const tVec4<T> &other)
+{
+	x += other.x;
+	y += other.y;
+	z += other.z;
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template <class T>
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Subtract(const tVec4<T> &other)
+{
+	x -= other.x;
+	y -= other.y;
+	z -= other.z;
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template <class T>
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Multiply(const tVec4<T> &other)
+{
+	x *= other.x;
+	y *= other.y;
+	z *= other.z;
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template <class T>
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Divide(const tVec4<T> &other)
+{
+	x /= other.x;
+	y /= other.y;
+	z /= other.z;
+
+	return *this;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template <class T>
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Add(const T &value)
 {
 	x += value;
 	y += value;
@@ -1457,7 +1457,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Add(const T &value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Subtract(const T &value)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Subtract(const T &value)
 {
 	x -= value;
 	y -= value;
@@ -1469,7 +1469,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Subtract(const T &value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Multiply(const T &value)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Multiply(const T &value)
 {
 	x *= value;
 	y *= value;
@@ -1481,7 +1481,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Multiply(const T &value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Divide(const T &value)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Divide(const T &value)
 {
 	x /= value;
 	y /= value;
@@ -1493,7 +1493,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Divide(const T &value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Add(const T &x, const T &y)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Add(const T &x, const T &y)
 {
 	this.x += x;
 	this.y += y;
@@ -1504,7 +1504,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Add(const T &x, const T &y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Subtract(const T &x, const T &y)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Subtract(const T &x, const T &y)
 {
 	this.x -= x;
 	this.y -= y;
@@ -1515,7 +1515,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Subtract(const T &x, const T &y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Multiply(const T &x, const T &y)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Multiply(const T &x, const T &y)
 {
 	this.x *= x;
 	this.y *= y;
@@ -1526,7 +1526,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Multiply(const T &x, const T &y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Divide(const T &x, const T &y)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Divide(const T &x, const T &y)
 {
 	this.x /= x;
 	this.y /= y;
@@ -1537,7 +1537,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Divide(const T &x, const T &y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Add(const T &x, const T &y, const T &z)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Add(const T &x, const T &y, const T &z)
 {
 	this.x += x;
 	this.y += y;
@@ -1549,7 +1549,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Add(const T &x, const T &y, const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Subtract(const T &x, const T &y, const T &z)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Subtract(const T &x, const T &y, const T &z)
 {
 	this.x -= x;
 	this.y -= y;
@@ -1561,7 +1561,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Subtract(const T &x, const T &y, c
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Multiply(const T &x, const T &y, const T &z)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Multiply(const T &x, const T &y, const T &z)
 {
 	this.x *= x;
 	this.y *= y;
@@ -1573,7 +1573,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Multiply(const T &x, const T &y, c
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Divide(const T &x, const T &y, const T &z)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Divide(const T &x, const T &y, const T &z)
 {
 	this.x /= x;
 	this.y /= y;
@@ -1585,7 +1585,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::Divide(const T &x, const T &y, con
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Multiply(const Mat3 &transform) const
+TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Multiply(const Mat3 &transform) const
 {
 	return tVec3<T>(
 		transform.rows[0].x * x + transform.rows[0].y * y + transform.rows[0].z * z,
@@ -1596,7 +1596,7 @@ TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Multiply(const Mat3 &transform) con
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Multiply(const Mat4 &transform) const
+TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Multiply(const Mat4 &transform) const
 {
 	return tVec3<T>(
 		transform.rows[0].x * x + transform.rows[0].y * y + transform.rows[0].z * z + transform.rows[0].w,
@@ -1607,7 +1607,7 @@ TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Multiply(const Mat4 &transform) con
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator==(const tVec2<T> &other) const
+bool TRAP::Math::tVec3<T>::operator==(const tVec2<T> &other) const
 {
 	return x == other.x && y == other.y;
 }
@@ -1615,7 +1615,7 @@ bool TRAP::Maths::tVec3<T>::operator==(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator!=(const tVec2<T> &other) const
+bool TRAP::Math::tVec3<T>::operator!=(const tVec2<T> &other) const
 {
 	return !(*this == other);
 }
@@ -1623,7 +1623,7 @@ bool TRAP::Maths::tVec3<T>::operator!=(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator==(const tVec3<T> &other) const
+bool TRAP::Math::tVec3<T>::operator==(const tVec3<T> &other) const
 {
 	return x == other.x && y == other.y && z == other.z;
 }
@@ -1631,7 +1631,7 @@ bool TRAP::Maths::tVec3<T>::operator==(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator!=(const tVec3<T> &other) const
+bool TRAP::Math::tVec3<T>::operator!=(const tVec3<T> &other) const
 {
 	return !(*this == other);
 }
@@ -1639,7 +1639,7 @@ bool TRAP::Maths::tVec3<T>::operator!=(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator==(const tVec4<T> &other) const
+bool TRAP::Math::tVec3<T>::operator==(const tVec4<T> &other) const
 {
 	return x == other.x && y == other.y && z == other.z;
 }
@@ -1647,7 +1647,7 @@ bool TRAP::Maths::tVec3<T>::operator==(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator!=(const tVec4<T> &other) const
+bool TRAP::Math::tVec3<T>::operator!=(const tVec4<T> &other) const
 {
 	return !(*this == other);
 }
@@ -1655,7 +1655,7 @@ bool TRAP::Maths::tVec3<T>::operator!=(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator+=(const tVec2<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator+=(const tVec2<T> &other)
 {
 	return Add(other);
 }
@@ -1663,7 +1663,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator+=(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator-=(const tVec2<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator-=(const tVec2<T> &other)
 {
 	return Subtract(other);
 }
@@ -1671,7 +1671,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator-=(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator*=(const tVec2<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator*=(const tVec2<T> &other)
 {
 	return Multiply(other);
 }
@@ -1679,7 +1679,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator*=(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator/=(const tVec2<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator/=(const tVec2<T> &other)
 {
 	return Divide(other);
 }
@@ -1687,7 +1687,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator/=(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator+=(const tVec3<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator+=(const tVec3<T> &other)
 {
 	return Add(other);
 }
@@ -1695,7 +1695,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator+=(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator-=(const tVec3<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator-=(const tVec3<T> &other)
 {
 	return Subtract(other);
 }
@@ -1703,7 +1703,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator-=(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator*=(const tVec3<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator*=(const tVec3<T> &other)
 {
 	return Multiply(other);
 }
@@ -1711,7 +1711,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator*=(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator/=(const tVec3<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator/=(const tVec3<T> &other)
 {
 	return Divide(other);
 }
@@ -1719,7 +1719,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator/=(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator+=(const tVec4<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator+=(const tVec4<T> &other)
 {
 	return Add(other);
 }
@@ -1727,7 +1727,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator+=(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator-=(const tVec4<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator-=(const tVec4<T> &other)
 {
 	return Subtract(other);
 }
@@ -1735,7 +1735,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator-=(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator*=(const tVec4<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator*=(const tVec4<T> &other)
 {
 	return Multiply(other);
 }
@@ -1743,7 +1743,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator*=(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator/=(const tVec4<T> &other)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator/=(const tVec4<T> &other)
 {
 	return Divide(other);
 }
@@ -1751,7 +1751,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator/=(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator+=(T value)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator+=(T value)
 {
 	return Add(value);
 }
@@ -1759,7 +1759,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator+=(T value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator-=(T value)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator-=(T value)
 {
 	return Subtract(value);
 }
@@ -1767,7 +1767,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator-=(T value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator*=(T value)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator*=(T value)
 {
 	return Multiply(value);
 }
@@ -1775,7 +1775,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator*=(T value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator/=(T value)
+TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator/=(T value)
 {
 	return Divide(value);
 }
@@ -1783,7 +1783,7 @@ TRAP::Maths::tVec3<T> &TRAP::Maths::tVec3<T>::operator/=(T value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator<(const tVec2<T> &other) const
+bool TRAP::Math::tVec3<T>::operator<(const tVec2<T> &other) const
 {
 	return x < other.x && y < other.y;
 }
@@ -1791,7 +1791,7 @@ bool TRAP::Maths::tVec3<T>::operator<(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator<=(const tVec2<T> &other) const
+bool TRAP::Math::tVec3<T>::operator<=(const tVec2<T> &other) const
 {
 	return x <= other.x && y <= other.y;
 }
@@ -1799,7 +1799,7 @@ bool TRAP::Maths::tVec3<T>::operator<=(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator>(const tVec2<T> &other) const
+bool TRAP::Math::tVec3<T>::operator>(const tVec2<T> &other) const
 {
 	return x > other.x && y > other.y;
 }
@@ -1807,7 +1807,7 @@ bool TRAP::Maths::tVec3<T>::operator>(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator>=(const tVec2<T> &other) const
+bool TRAP::Math::tVec3<T>::operator>=(const tVec2<T> &other) const
 {
 	return x >= other.x && y >= other.y;
 }
@@ -1815,7 +1815,7 @@ bool TRAP::Maths::tVec3<T>::operator>=(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator<(const tVec3<T> &other) const
+bool TRAP::Math::tVec3<T>::operator<(const tVec3<T> &other) const
 {
 	return x < other.x && y < other.y && z < other.z;
 }
@@ -1823,7 +1823,7 @@ bool TRAP::Maths::tVec3<T>::operator<(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator<=(const tVec3<T> &other) const
+bool TRAP::Math::tVec3<T>::operator<=(const tVec3<T> &other) const
 {
 	return x <= other.x && y <= other.y && z <= other.z;
 }
@@ -1831,7 +1831,7 @@ bool TRAP::Maths::tVec3<T>::operator<=(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator>(const tVec3<T> &other) const
+bool TRAP::Math::tVec3<T>::operator>(const tVec3<T> &other) const
 {
 	return x > other.x && y > other.y && z > other.z;
 }
@@ -1839,7 +1839,7 @@ bool TRAP::Maths::tVec3<T>::operator>(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator>=(const tVec3<T> &other) const
+bool TRAP::Math::tVec3<T>::operator>=(const tVec3<T> &other) const
 {
 	return x >= other.x && y >= other.y && y >= other.z;
 }
@@ -1847,7 +1847,7 @@ bool TRAP::Maths::tVec3<T>::operator>=(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator<(const tVec4<T> &other) const
+bool TRAP::Math::tVec3<T>::operator<(const tVec4<T> &other) const
 {
 	return x < other.x && y < other.y && z < other.z;
 }
@@ -1855,7 +1855,7 @@ bool TRAP::Maths::tVec3<T>::operator<(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator<=(const tVec4<T> &other) const
+bool TRAP::Math::tVec3<T>::operator<=(const tVec4<T> &other) const
 {
 	return x <= other.x && y <= other.y && z <= other.z;
 }
@@ -1863,7 +1863,7 @@ bool TRAP::Maths::tVec3<T>::operator<=(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator>(const tVec4<T> &other) const
+bool TRAP::Math::tVec3<T>::operator>(const tVec4<T> &other) const
 {
 	return x > other.x && y > other.y && z > other.z;
 }
@@ -1871,7 +1871,7 @@ bool TRAP::Maths::tVec3<T>::operator>(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec3<T>::operator>=(const tVec4<T> &other) const
+bool TRAP::Math::tVec3<T>::operator>=(const tVec4<T> &other) const
 {
 	return x >= other.x && y >= other.y && z >= other.z;
 }
@@ -1879,7 +1879,7 @@ bool TRAP::Maths::tVec3<T>::operator>=(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec3<T>::Dot(const tVec2<T> &other) const
+float TRAP::Math::tVec3<T>::Dot(const tVec2<T> &other) const
 {
 	return x * other.x + y * other.y;
 }
@@ -1887,7 +1887,7 @@ float TRAP::Maths::tVec3<T>::Dot(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec3<T>::Dot(const tVec3<T> &other) const
+float TRAP::Math::tVec3<T>::Dot(const tVec3<T> &other) const
 {
 	return x * other.x + y * other.y + z * other.z;
 }
@@ -1895,7 +1895,7 @@ float TRAP::Maths::tVec3<T>::Dot(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec3<T>::Dot(const tVec4<T> &other) const
+float TRAP::Math::tVec3<T>::Dot(const tVec4<T> &other) const
 {
 	return x * other.x + y * other.y + z * other.z;
 }
@@ -1903,7 +1903,7 @@ float TRAP::Maths::tVec3<T>::Dot(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Cross(const tVec3<T> &other) const
+TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Cross(const tVec3<T> &other) const
 {
 	return tVec3<T>(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
 }
@@ -1911,7 +1911,7 @@ TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Cross(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec3<T>::Magnitude() const
+float TRAP::Math::tVec3<T>::Magnitude() const
 {
 	return Sqrt(x * x + y * y + z * z);
 }
@@ -1919,7 +1919,7 @@ float TRAP::Maths::tVec3<T>::Magnitude() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Normalize() const
+TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Normalize() const
 {
 	float length = Magnitude();
 
@@ -1929,7 +1929,7 @@ TRAP::Maths::tVec3<T> TRAP::Maths::tVec3<T>::Normalize() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec3<T>::Distance(const tVec2<T> &other) const
+float TRAP::Math::tVec3<T>::Distance(const tVec2<T> &other) const
 {
 	const float a = x - other.x;
 	const float b = y - other.y;
@@ -1940,7 +1940,7 @@ float TRAP::Maths::tVec3<T>::Distance(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec3<T>::Distance(const tVec3<T> &other) const
+float TRAP::Math::tVec3<T>::Distance(const tVec3<T> &other) const
 {
 	const float a = x - other.x;
 	const float b = y - other.y;
@@ -1952,7 +1952,7 @@ float TRAP::Maths::tVec3<T>::Distance(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec3<T>::Distance(const tVec4<T> &other) const
+float TRAP::Math::tVec3<T>::Distance(const tVec4<T> &other) const
 {
 	const float a = x - other.x;
 	const float b = y - other.y;
@@ -1964,7 +1964,7 @@ float TRAP::Maths::tVec3<T>::Distance(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-std::string TRAP::Maths::tVec3<T>::ToString() const
+std::string TRAP::Math::tVec3<T>::ToString() const
 {
 	std::stringstream result;
 	result << x << ", " << y << ", " << z;
@@ -1987,7 +1987,7 @@ std::string TRAP::Maths::tVec3<T>::ToString() const
 //Vector 4//
 ////////////
 template <class T>
-TRAP::Maths::tVec4<T>::tVec4()
+TRAP::Math::tVec4<T>::tVec4()
 	: x(0), y(0), z(0), w(0)
 {
 }
@@ -1995,7 +1995,7 @@ TRAP::Maths::tVec4<T>::tVec4()
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T>::tVec4(const T &scalar)
+TRAP::Math::tVec4<T>::tVec4(const T &scalar)
 	: x(scalar), y(scalar), z(scalar), w(scalar)
 {
 }
@@ -2003,7 +2003,7 @@ TRAP::Maths::tVec4<T>::tVec4(const T &scalar)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T>::tVec4(const T &x, const T &y)
+TRAP::Math::tVec4<T>::tVec4(const T &x, const T &y)
 	: x(x), y(y), z(0), w(0)
 {
 }
@@ -2011,7 +2011,7 @@ TRAP::Maths::tVec4<T>::tVec4(const T &x, const T &y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T>::tVec4(const T &x, const T &y, const T &z)
+TRAP::Math::tVec4<T>::tVec4(const T &x, const T &y, const T &z)
 	: x(x), y(y), z(z), w(0)
 {
 }
@@ -2019,7 +2019,7 @@ TRAP::Maths::tVec4<T>::tVec4(const T &x, const T &y, const T &z)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T>::tVec4(const T &x, const T &y, const T &z, const T &w)
+TRAP::Math::tVec4<T>::tVec4(const T &x, const T &y, const T &z, const T &w)
 	: x(x), y(y), z(z), w(w)
 {
 }
@@ -2027,7 +2027,7 @@ TRAP::Maths::tVec4<T>::tVec4(const T &x, const T &y, const T &z, const T &w)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T>::tVec4(const tVec2<T> &xy, const T &z)
+TRAP::Math::tVec4<T>::tVec4(const tVec2<T> &xy, const T &z)
 	: x(xy.x), y(xy, y), z(z), w(0)
 {
 }
@@ -2035,7 +2035,7 @@ TRAP::Maths::tVec4<T>::tVec4(const tVec2<T> &xy, const T &z)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T>::tVec4(const T &x, const tVec2<T> &yz)
+TRAP::Math::tVec4<T>::tVec4(const T &x, const tVec2<T> &yz)
 	: x(x), y(yz.x), z(yz.y), w(0)
 {
 }
@@ -2043,7 +2043,7 @@ TRAP::Maths::tVec4<T>::tVec4(const T &x, const tVec2<T> &yz)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T>::tVec4(const tVec2<T> &xy, const T &z, const T &w)
+TRAP::Math::tVec4<T>::tVec4(const tVec2<T> &xy, const T &z, const T &w)
 	: x(xy.x), y(xy.y), z(z), w(w)
 {
 }
@@ -2051,7 +2051,7 @@ TRAP::Maths::tVec4<T>::tVec4(const tVec2<T> &xy, const T &z, const T &w)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T>::tVec4(const T &x, const T &y, const tVec2<T> &zw)
+TRAP::Math::tVec4<T>::tVec4(const T &x, const T &y, const tVec2<T> &zw)
 	: x(x), y(y), z(zw.x), w(zw.y)
 {
 }
@@ -2059,7 +2059,7 @@ TRAP::Maths::tVec4<T>::tVec4(const T &x, const T &y, const tVec2<T> &zw)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T>::tVec4(const tVec2<T> &xy, const tVec2<T> &zw)
+TRAP::Math::tVec4<T>::tVec4(const tVec2<T> &xy, const tVec2<T> &zw)
 	: x(xy.x), y(xy.y), z(zw.x), w(zw.y)
 {
 }
@@ -2067,7 +2067,7 @@ TRAP::Maths::tVec4<T>::tVec4(const tVec2<T> &xy, const tVec2<T> &zw)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T>::tVec4(const tVec3<T> &xyz, const T &w)
+TRAP::Math::tVec4<T>::tVec4(const tVec3<T> &xyz, const T &w)
 	: x(xyz.x), y(xyz.y), z(xyz.z), w(w)
 {
 }
@@ -2075,7 +2075,7 @@ TRAP::Maths::tVec4<T>::tVec4(const tVec3<T> &xyz, const T &w)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T>::tVec4(const T &x, const tVec3<T> &yzw)
+TRAP::Math::tVec4<T>::tVec4(const T &x, const tVec3<T> &yzw)
 	: x(x), y(yzw.x), z(yzw.y), w(yzw.z)
 {
 }
@@ -2083,7 +2083,7 @@ TRAP::Maths::tVec4<T>::tVec4(const T &x, const tVec3<T> &yzw)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Add(const tVec2<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Add(const tVec2<T> &other)
 {
 	x += other.x;
 	y += other.y;
@@ -2094,7 +2094,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Add(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Subtract(const tVec2<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Subtract(const tVec2<T> &other)
 {
 	x -= other.x;
 	y -= other.y;
@@ -2105,7 +2105,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Subtract(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Multiply(const tVec2<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Multiply(const tVec2<T> &other)
 {
 	x *= other.x;
 	y *= other.y;
@@ -2116,7 +2116,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Multiply(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Divide(const tVec2<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Divide(const tVec2<T> &other)
 {
 	x /= other.x;
 	y /= other.y;
@@ -2127,7 +2127,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Divide(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Add(const tVec3<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Add(const tVec3<T> &other)
 {
 	x += other.x;
 	y += other.y;
@@ -2139,7 +2139,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Add(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Subtract(const tVec3<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Subtract(const tVec3<T> &other)
 {
 	x -= other.x;
 	y -= other.y;
@@ -2151,7 +2151,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Subtract(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Multiply(const tVec3<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Multiply(const tVec3<T> &other)
 {
 	x *= other.x;
 	y *= other.y;
@@ -2163,7 +2163,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Multiply(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Divide(const tVec3<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Divide(const tVec3<T> &other)
 {
 	x /= other.x;
 	y /= other.y;
@@ -2175,7 +2175,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Divide(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Add(const tVec4<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Add(const tVec4<T> &other)
 {
 	x += other.x;
 	y += other.y;
@@ -2188,7 +2188,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Add(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Subtract(const tVec4<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Subtract(const tVec4<T> &other)
 {
 	x -= other.x;
 	y -= other.y;
@@ -2201,7 +2201,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Subtract(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Multiply(const tVec4<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Multiply(const tVec4<T> &other)
 {
 	x *= other.x;
 	y *= other.y;
@@ -2214,7 +2214,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Multiply(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Divide(const tVec4<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Divide(const tVec4<T> &other)
 {
 	x /= other.x;
 	y /= other.y;
@@ -2227,7 +2227,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Divide(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Add(const T &value)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Add(const T &value)
 {
 	x += value;
 	y += value;
@@ -2240,7 +2240,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Add(const T &value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Subtract(const T &value)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Subtract(const T &value)
 {
 	x -= value;
 	y -= value;
@@ -2253,7 +2253,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Subtract(const T &value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Multiply(const T &value)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Multiply(const T &value)
 {
 	x *= value;
 	y *= value;
@@ -2266,7 +2266,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Multiply(const T &value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Divide(const T &value)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Divide(const T &value)
 {
 	x /= value;
 	y /= value;
@@ -2279,7 +2279,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Divide(const T &value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Add(const T &x, const T &y)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Add(const T &x, const T &y)
 {
 	this.x += x;
 	this.y += y;
@@ -2290,7 +2290,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Add(const T &x, const T &y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Subtract(const T &x, const T &y)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Subtract(const T &x, const T &y)
 {
 	this.x -= x;
 	this.y -= y;
@@ -2301,7 +2301,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Subtract(const T &x, const T &y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Multiply(const T &x, const T &y)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Multiply(const T &x, const T &y)
 {
 	this.x *= x;
 	this.y *= y;
@@ -2312,7 +2312,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Multiply(const T &x, const T &y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Divide(const T &x, const T &y)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Divide(const T &x, const T &y)
 {
 	this.x /= x;
 	this.y /= y;
@@ -2323,7 +2323,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Divide(const T &x, const T &y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Add(const T &x, const T &y, const T &z)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Add(const T &x, const T &y, const T &z)
 {
 	this.x += x;
 	this.y += y;
@@ -2335,7 +2335,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Add(const T &x, const T &y, const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Subtract(const T &x, const T &y, const T &z)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Subtract(const T &x, const T &y, const T &z)
 {
 	this.x -= x;
 	this.y -= y;
@@ -2347,7 +2347,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Subtract(const T &x, const T &y, c
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Multiply(const T &x, const T &y, const T &z)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Multiply(const T &x, const T &y, const T &z)
 {
 	this.x *= x;
 	this.y *= y;
@@ -2359,7 +2359,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Multiply(const T &x, const T &y, c
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Divide(const T &x, const T &y, const T &z)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Divide(const T &x, const T &y, const T &z)
 {
 	this.x /= x;
 	this.y /= y;
@@ -2371,7 +2371,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Divide(const T &x, const T &y, con
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Add(const T &x, const T &y, const T &z, const T &w)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Add(const T &x, const T &y, const T &z, const T &w)
 {
 	this.x += x;
 	this.y += y;
@@ -2384,7 +2384,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Add(const T &x, const T &y, const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Subtract(const T &x, const T &y, const T &z, const T &w)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Subtract(const T &x, const T &y, const T &z, const T &w)
 {
 	this.x -= x;
 	this.y -= y;
@@ -2397,7 +2397,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Subtract(const T &x, const T &y, c
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Multiply(const T &x, const T &y, const T &z, const T &w)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Multiply(const T &x, const T &y, const T &z, const T &w)
 {
 	this.x *= x;
 	this.y *= y;
@@ -2410,7 +2410,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Multiply(const T &x, const T &y, c
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Divide(const T &x, const T &y, const T &z, const T &w)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Divide(const T &x, const T &y, const T &z, const T &w)
 {
 	this.x /= x;
 	this.y /= y;
@@ -2423,7 +2423,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::Divide(const T &x, const T &y, con
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> TRAP::Maths::tVec4<T>::Multiply(const Mat3 &transform) const
+TRAP::Math::tVec4<T> TRAP::Math::tVec4<T>::Multiply(const Mat3 &transform) const
 {
 	return tVec4<T>(
 		transform.rows[0].x * x + transform.rows[0].y * y + transform.rows[0].z * z + w,
@@ -2435,7 +2435,7 @@ TRAP::Maths::tVec4<T> TRAP::Maths::tVec4<T>::Multiply(const Mat3 &transform) con
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> TRAP::Maths::tVec4<T>::Multiply(const Mat4 &transform) const
+TRAP::Math::tVec4<T> TRAP::Math::tVec4<T>::Multiply(const Mat4 &transform) const
 {
 	return tVec4<T>(
 		transform.rows[0].x * x + transform.rows[0].y * y + transform.rows[0].z * z + transform.rows[0].w * w,
@@ -2447,7 +2447,7 @@ TRAP::Maths::tVec4<T> TRAP::Maths::tVec4<T>::Multiply(const Mat4 &transform) con
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator==(const tVec2<T> &other) const
+bool TRAP::Math::tVec4<T>::operator==(const tVec2<T> &other) const
 {
 	return x == other.x && y == other.y;
 }
@@ -2455,7 +2455,7 @@ bool TRAP::Maths::tVec4<T>::operator==(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator!=(const tVec2<T> &other) const
+bool TRAP::Math::tVec4<T>::operator!=(const tVec2<T> &other) const
 {
 	return !(*this == other);
 }
@@ -2463,7 +2463,7 @@ bool TRAP::Maths::tVec4<T>::operator!=(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator==(const tVec3<T> &other) const
+bool TRAP::Math::tVec4<T>::operator==(const tVec3<T> &other) const
 {
 	return x == other.x && y == other.y && z == other.z;
 }
@@ -2471,7 +2471,7 @@ bool TRAP::Maths::tVec4<T>::operator==(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator!=(const tVec3<T> &other) const
+bool TRAP::Math::tVec4<T>::operator!=(const tVec3<T> &other) const
 {
 	return !(*this == other);
 }
@@ -2479,7 +2479,7 @@ bool TRAP::Maths::tVec4<T>::operator!=(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator==(const tVec4<T> &other) const
+bool TRAP::Math::tVec4<T>::operator==(const tVec4<T> &other) const
 {
 	return x == other.x && y == other.y && z == other.z && w == other.w;
 }
@@ -2487,7 +2487,7 @@ bool TRAP::Maths::tVec4<T>::operator==(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator!=(const tVec4<T> &other) const
+bool TRAP::Math::tVec4<T>::operator!=(const tVec4<T> &other) const
 {
 	return !(*this == other);
 }
@@ -2495,7 +2495,7 @@ bool TRAP::Maths::tVec4<T>::operator!=(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator+=(const tVec2<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator+=(const tVec2<T> &other)
 {
 	return Add(other);
 }
@@ -2503,7 +2503,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator+=(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator-=(const tVec2<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator-=(const tVec2<T> &other)
 {
 	return Subtract(other);
 }
@@ -2511,7 +2511,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator-=(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator*=(const tVec2<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator*=(const tVec2<T> &other)
 {
 	return Multiply(other);
 }
@@ -2519,7 +2519,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator*=(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator/=(const tVec2<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator/=(const tVec2<T> &other)
 {
 	return Divide(other);
 }
@@ -2527,7 +2527,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator/=(const tVec2<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator+=(const tVec3<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator+=(const tVec3<T> &other)
 {
 	return Add(other);
 }
@@ -2535,7 +2535,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator+=(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator-=(const tVec3<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator-=(const tVec3<T> &other)
 {
 	return Subtract(other);
 }
@@ -2543,7 +2543,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator-=(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator*=(const tVec3<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator*=(const tVec3<T> &other)
 {
 	return Multiply(other);
 }
@@ -2551,7 +2551,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator*=(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator/=(const tVec3<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator/=(const tVec3<T> &other)
 {
 	return Divide(other);
 }
@@ -2559,7 +2559,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator/=(const tVec3<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator+=(const tVec4<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator+=(const tVec4<T> &other)
 {
 	return Add(other);
 }
@@ -2567,7 +2567,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator+=(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator-=(const tVec4<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator-=(const tVec4<T> &other)
 {
 	return Subtract(other);
 }
@@ -2575,7 +2575,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator-=(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator*=(const tVec4<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator*=(const tVec4<T> &other)
 {
 	return Multiply(other);
 }
@@ -2583,7 +2583,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator*=(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator/=(const tVec4<T> &other)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator/=(const tVec4<T> &other)
 {
 	return Divide(other);
 }
@@ -2591,7 +2591,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator/=(const tVec4<T> &other)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator+=(T value)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator+=(T value)
 {
 	return Add(value);
 }
@@ -2599,7 +2599,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator+=(T value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator-=(T value)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator-=(T value)
 {
 	return Subtract(value);
 }
@@ -2607,7 +2607,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator-=(T value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator*=(T value)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator*=(T value)
 {
 	return Multiply(value);
 }
@@ -2615,7 +2615,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator*=(T value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator/=(T value)
+TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator/=(T value)
 {
 	return Divide(value);
 }
@@ -2623,7 +2623,7 @@ TRAP::Maths::tVec4<T> &TRAP::Maths::tVec4<T>::operator/=(T value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator<(const tVec2<T> &other) const
+bool TRAP::Math::tVec4<T>::operator<(const tVec2<T> &other) const
 {
 	return x < other.x && y < other.y;
 }
@@ -2631,7 +2631,7 @@ bool TRAP::Maths::tVec4<T>::operator<(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator<=(const tVec2<T> &other) const
+bool TRAP::Math::tVec4<T>::operator<=(const tVec2<T> &other) const
 {
 	return x <= other.x && y <= other.y;
 }
@@ -2639,7 +2639,7 @@ bool TRAP::Maths::tVec4<T>::operator<=(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator>(const tVec2<T> &other) const
+bool TRAP::Math::tVec4<T>::operator>(const tVec2<T> &other) const
 {
 	return x > other.x && y > other.y;
 }
@@ -2647,7 +2647,7 @@ bool TRAP::Maths::tVec4<T>::operator>(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator>=(const tVec2<T> &other) const
+bool TRAP::Math::tVec4<T>::operator>=(const tVec2<T> &other) const
 {
 	return x >= other.x && y >= other.y;
 }
@@ -2655,7 +2655,7 @@ bool TRAP::Maths::tVec4<T>::operator>=(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator<(const tVec3<T> &other) const
+bool TRAP::Math::tVec4<T>::operator<(const tVec3<T> &other) const
 {
 	return x < other.x && y < other.y && z < other.z;
 }
@@ -2663,7 +2663,7 @@ bool TRAP::Maths::tVec4<T>::operator<(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator<=(const tVec3<T> &other) const
+bool TRAP::Math::tVec4<T>::operator<=(const tVec3<T> &other) const
 {
 	return x <= other.x && y <= other.y && z <= other.z;
 }
@@ -2671,7 +2671,7 @@ bool TRAP::Maths::tVec4<T>::operator<=(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator>(const tVec3<T> &other) const
+bool TRAP::Math::tVec4<T>::operator>(const tVec3<T> &other) const
 {
 	return x > other.x && y > other.y && z > other.z;
 }
@@ -2679,7 +2679,7 @@ bool TRAP::Maths::tVec4<T>::operator>(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator>=(const tVec3<T> &other) const
+bool TRAP::Math::tVec4<T>::operator>=(const tVec3<T> &other) const
 {
 	return x >= other.x && y >= other.y && y >= other.z;
 }
@@ -2687,7 +2687,7 @@ bool TRAP::Maths::tVec4<T>::operator>=(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator<(const tVec4<T> &other) const
+bool TRAP::Math::tVec4<T>::operator<(const tVec4<T> &other) const
 {
 	return x < other.x && y < other.y && z < other.z && w < other.w;
 }
@@ -2695,7 +2695,7 @@ bool TRAP::Maths::tVec4<T>::operator<(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator<=(const tVec4<T> &other) const
+bool TRAP::Math::tVec4<T>::operator<=(const tVec4<T> &other) const
 {
 	return x <= other.x && y <= other.y && z <= other.z && w <= other.w;
 }
@@ -2703,7 +2703,7 @@ bool TRAP::Maths::tVec4<T>::operator<=(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator>(const tVec4<T> &other) const
+bool TRAP::Math::tVec4<T>::operator>(const tVec4<T> &other) const
 {
 	return x > other.x && y > other.y && z > other.z && w > other.w;
 }
@@ -2711,7 +2711,7 @@ bool TRAP::Maths::tVec4<T>::operator>(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-bool TRAP::Maths::tVec4<T>::operator>=(const tVec4<T> &other) const
+bool TRAP::Math::tVec4<T>::operator>=(const tVec4<T> &other) const
 {
 	return x >= other.x && y >= other.y && z >= other.z && w >= other.w;
 }
@@ -2719,7 +2719,7 @@ bool TRAP::Maths::tVec4<T>::operator>=(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec4<T>::Dot(const tVec2<T> &other) const
+float TRAP::Math::tVec4<T>::Dot(const tVec2<T> &other) const
 {
 	return x * other.x + y * other.y;
 }
@@ -2727,7 +2727,7 @@ float TRAP::Maths::tVec4<T>::Dot(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec4<T>::Dot(const tVec3<T> &other) const
+float TRAP::Math::tVec4<T>::Dot(const tVec3<T> &other) const
 {
 	return x * other.x + y * other.y + z * other.z;
 }
@@ -2735,7 +2735,7 @@ float TRAP::Maths::tVec4<T>::Dot(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec4<T>::Dot(const tVec4<T> &other) const
+float TRAP::Math::tVec4<T>::Dot(const tVec4<T> &other) const
 {
 	return x * other.x + y * other.y + z * other.z + w * other.w;
 }
@@ -2743,7 +2743,7 @@ float TRAP::Maths::tVec4<T>::Dot(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec4<T>::Magnitude() const
+float TRAP::Math::tVec4<T>::Magnitude() const
 {
 	return Sqrt(x * x + y * y + z * z + w * w);
 }
@@ -2751,7 +2751,7 @@ float TRAP::Maths::tVec4<T>::Magnitude() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-TRAP::Maths::tVec4<T> TRAP::Maths::tVec4<T>::Normalize() const
+TRAP::Math::tVec4<T> TRAP::Math::tVec4<T>::Normalize() const
 {
 	float length = Magnitude();
 
@@ -2761,7 +2761,7 @@ TRAP::Maths::tVec4<T> TRAP::Maths::tVec4<T>::Normalize() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec4<T>::Distance(const tVec2<T> &other) const
+float TRAP::Math::tVec4<T>::Distance(const tVec2<T> &other) const
 {
 	const float a = x - other.x;
 	const float b = y - other.y;
@@ -2772,7 +2772,7 @@ float TRAP::Maths::tVec4<T>::Distance(const tVec2<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec4<T>::Distance(const tVec3<T> &other) const
+float TRAP::Math::tVec4<T>::Distance(const tVec3<T> &other) const
 {
 	const float a = x - other.x;
 	const float b = y - other.y;
@@ -2784,7 +2784,7 @@ float TRAP::Maths::tVec4<T>::Distance(const tVec3<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-float TRAP::Maths::tVec4<T>::Distance(const tVec4<T> &other) const
+float TRAP::Math::tVec4<T>::Distance(const tVec4<T> &other) const
 {
 	const float a = x - other.x;
 	const float b = y - other.y;
@@ -2797,7 +2797,7 @@ float TRAP::Maths::tVec4<T>::Distance(const tVec4<T> &other) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <class T>
-std::string TRAP::Maths::tVec4<T>::ToString() const
+std::string TRAP::Math::tVec4<T>::ToString() const
 {
 	std::stringstream result;
 	result << x << ", " << y << ", " << z << ", " << w;

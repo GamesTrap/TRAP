@@ -16,8 +16,8 @@ std::unique_ptr<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Renderer::s_unifo
 
 void TRAP::Graphics::Renderer::BeginScene(OrthographicCamera& camera)
 {
-	s_sceneData->m_projectionMatrix = Maths::Mat4::Transpose(camera.GetProjectionMatrix());
-	s_sceneData->m_viewMatrix = Maths::Mat4::Transpose(camera.GetViewMatrix());
+	s_sceneData->m_projectionMatrix = Math::Mat4::Transpose(camera.GetProjectionMatrix());
+	s_sceneData->m_viewMatrix = Math::Mat4::Transpose(camera.GetViewMatrix());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -28,11 +28,11 @@ void TRAP::Graphics::Renderer::EndScene()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Submit(const Shader* shader, const std::unique_ptr<VertexArray>& vertexArray, const Maths::Mat4& transform, const RendererPrimitive primitive)
+void TRAP::Graphics::Renderer::Submit(const Shader* shader, const std::unique_ptr<VertexArray>& vertexArray, const Math::Mat4& transform, const RendererPrimitive primitive)
 {
 	Application::Get().AddSingleDrawCall();
 
-	s_sceneData->m_modelMatrix = Maths::Mat4::Transpose(transform);
+	s_sceneData->m_modelMatrix = Math::Mat4::Transpose(transform);
 	if(shader)
 	{
 		shader->Bind();

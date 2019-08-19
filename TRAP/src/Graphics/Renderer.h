@@ -26,7 +26,7 @@ namespace TRAP::Graphics
 		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();
 
-		static void Submit(const Shader* shader, const std::unique_ptr<VertexArray>& vertexArray, const Maths::Mat4& transform = Maths::Mat4::Transpose(Maths::Mat4::Identity()), RendererPrimitive primitive = RendererPrimitive::Triangle);
+		static void Submit(const Shader* shader, const std::unique_ptr<VertexArray>& vertexArray, const Math::Mat4& transform = Math::Mat4::Transpose(Math::Mat4::Identity()), RendererPrimitive primitive = RendererPrimitive::Triangle);
 
 		static void Cleanup();
 
@@ -38,9 +38,9 @@ namespace TRAP::Graphics
 			{
 			}
 
-			Maths::Mat4 m_projectionMatrix;
-			Maths::Mat4 m_viewMatrix;
-			Maths::Mat4 m_modelMatrix;
+			Math::Mat4 m_projectionMatrix;
+			Math::Mat4 m_viewMatrix;
+			Math::Mat4 m_modelMatrix;
 		};
 
 		static std::unique_ptr<SceneData> s_sceneData;

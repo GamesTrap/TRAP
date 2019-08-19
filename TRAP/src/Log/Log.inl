@@ -108,7 +108,7 @@ void TRAP::Log::Critical(const Args& ... args)
 	};
 
 	//Bold White on Red
-	SetColor(BACKGROUND_RED | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	SetColor(BACKGROUND_RED | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); //TODO Fix Background Red over multiple lines
 	std::cout << stream.str() << '\n';
 	ResetColor();
 	m_buffer.emplace_back(Level::Critical, stream.str());

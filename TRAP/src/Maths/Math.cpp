@@ -4,7 +4,7 @@
 ////////////
 //Matrix 3//
 ////////////
-TRAP::Maths::Mat3::Mat3(const float diagonal)
+TRAP::Math::Mat3::Mat3(const float diagonal)
 {
 	elements[0 + 0 * 3] = diagonal;
 	elements[1 + 1 * 3] = diagonal;
@@ -13,14 +13,14 @@ TRAP::Maths::Mat3::Mat3(const float diagonal)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat3::Mat3(float *elements)
+TRAP::Math::Mat3::Mat3(float *elements)
 {
 	std::memcpy(this->elements.data(), elements, 3 * 3 * sizeof(float));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat3::Mat3(const tVec3<float> &row0, const tVec3<float> &row1, const tVec3<float> &row2)
+TRAP::Math::Mat3::Mat3(const tVec3<float> &row0, const tVec3<float> &row1, const tVec3<float> &row2)
 {
 	rows[0] = row0;
 	rows[1] = row1;
@@ -29,14 +29,14 @@ TRAP::Maths::Mat3::Mat3(const tVec3<float> &row0, const tVec3<float> &row1, cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat3 TRAP::Maths::Mat3::Identity()
+TRAP::Math::Mat3 TRAP::Math::Mat3::Identity()
 {
 	return Mat3(1.0f);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat3 &TRAP::Maths::Mat3::Multiply(const Mat3 &other)
+TRAP::Math::Mat3 &TRAP::Math::Mat3::Multiply(const Mat3 &other)
 {
 	std::array<float, 9> data{};
 	for (auto row = 0; row < 3; row++)
@@ -56,56 +56,56 @@ TRAP::Maths::Mat3 &TRAP::Maths::Mat3::Multiply(const Mat3 &other)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::tVec3<float> TRAP::Maths::Mat3::Multiply(const tVec3<float> &other) const
+TRAP::Math::tVec3<float> TRAP::Math::Mat3::Multiply(const tVec3<float> &other) const
 {
 	return other.Multiply(*this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::tVec4<float> TRAP::Maths::Mat3::Multiply(const tVec4<float> &other) const
+TRAP::Math::tVec4<float> TRAP::Math::Mat3::Multiply(const tVec4<float> &other) const
 {
 	return other.Multiply(*this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat3 TRAP::Maths::operator*(Mat3 left, const Mat3 &right)
+TRAP::Math::Mat3 TRAP::Math::operator*(Mat3 left, const Mat3 &right)
 {
 	return left.Multiply(right);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat3 &TRAP::Maths::Mat3::operator*=(const Mat3 &other)
+TRAP::Math::Mat3 &TRAP::Math::Mat3::operator*=(const Mat3 &other)
 {
 	return Multiply(other);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::tVec3<float> TRAP::Maths::operator*(const Mat3 &left, const tVec3<float> &right)
+TRAP::Math::tVec3<float> TRAP::Math::operator*(const Mat3 &left, const tVec3<float> &right)
 {
 	return left.Multiply(right);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::tVec4<float> TRAP::Maths::operator*(const Mat3 &left, const tVec4<float> &right)
+TRAP::Math::tVec4<float> TRAP::Math::operator*(const Mat3 &left, const tVec4<float> &right)
 {
 	return left.Multiply(right);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::tVec3<float> TRAP::Maths::Mat3::GetColumn(const int index) const
+TRAP::Math::tVec3<float> TRAP::Math::Mat3::GetColumn(const int index) const
 {
 	return tVec3<float>(elements[index + 0 * 3], elements[index + 1 * 3], elements[index + 2 * 3]);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Maths::Mat3::SetColumn(const unsigned int index, const tVec3<float> &column)
+void TRAP::Math::Mat3::SetColumn(const unsigned int index, const tVec3<float> &column)
 {
 	elements[index + 0 * 3] = column.x;
 	elements[index + 1 * 3] = column.y;
@@ -114,21 +114,21 @@ void TRAP::Maths::Mat3::SetColumn(const unsigned int index, const tVec3<float> &
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::tVec3<float> TRAP::Maths::Mat3::GetPosition() const
+TRAP::Math::tVec3<float> TRAP::Math::Mat3::GetPosition() const
 {
 	return tVec3<float>(GetColumn(3));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Maths::Mat3::SetPosition(const tVec3<float> &position)
+void TRAP::Math::Mat3::SetPosition(const tVec3<float> &position)
 {
 	SetColumn(3, position);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat3 TRAP::Maths::Mat3::Transpose(const Mat3 &matrix)
+TRAP::Math::Mat3 TRAP::Math::Mat3::Transpose(const Mat3 &matrix)
 {
 	return Mat3(
 		tVec3<float>(matrix.rows[0].x, matrix.rows[1].x, matrix.rows[2].x),
@@ -138,7 +138,7 @@ TRAP::Maths::Mat3 TRAP::Maths::Mat3::Transpose(const Mat3 &matrix)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Maths::Mat3::ToString() const
+std::string TRAP::Math::Mat3::ToString() const
 {
 	std::stringstream result;
 	result << rows[0].x << ", " << rows[1].x << ", " << rows[2].x << ", "
@@ -162,7 +162,7 @@ std::string TRAP::Maths::Mat3::ToString() const
 ////////////
 //Matrix 4//
 ////////////
-TRAP::Maths::Mat4::Mat4(const float diagonal)
+TRAP::Math::Mat4::Mat4(const float diagonal)
 {
 	elements[0 + 0 * 4] = diagonal;
 	elements[1 + 1 * 4] = diagonal;
@@ -172,14 +172,14 @@ TRAP::Maths::Mat4::Mat4(const float diagonal)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4::Mat4(float *elements)
+TRAP::Math::Mat4::Mat4(float *elements)
 {
 	std::memcpy(this->elements.data(), elements, 4 * 4 * sizeof(float));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4::Mat4(const tVec4<float> &row0, const tVec4<float> &row1, const tVec4<float> &row2, const tVec4<float> &row3)
+TRAP::Math::Mat4::Mat4(const tVec4<float> &row0, const tVec4<float> &row1, const tVec4<float> &row2, const tVec4<float> &row3)
 {
 	rows[0] = row0;
 	rows[1] = row1;
@@ -189,14 +189,14 @@ TRAP::Maths::Mat4::Mat4(const tVec4<float> &row0, const tVec4<float> &row1, cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 TRAP::Maths::Mat4::Identity()
+TRAP::Math::Mat4 TRAP::Math::Mat4::Identity()
 {
 	return Mat4(1.0f);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 &TRAP::Maths::Mat4::Multiply(const Mat4 &other)
+TRAP::Math::Mat4 &TRAP::Math::Mat4::Multiply(const Mat4 &other)
 {
 	std::array<float, 16> data{};
 	for (unsigned int row = 0; row < 4; row++)
@@ -216,49 +216,49 @@ TRAP::Maths::Mat4 &TRAP::Maths::Mat4::Multiply(const Mat4 &other)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::tVec3<float> TRAP::Maths::Mat4::Multiply(const tVec3<float> &other) const
+TRAP::Math::tVec3<float> TRAP::Math::Mat4::Multiply(const tVec3<float> &other) const
 {
 	return other.Multiply(*this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::tVec4<float> TRAP::Maths::Mat4::Multiply(const tVec4<float> &other) const
+TRAP::Math::tVec4<float> TRAP::Math::Mat4::Multiply(const tVec4<float> &other) const
 {
 	return other.Multiply(*this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 TRAP::Maths::operator*(Mat4 left, const Mat4 &right)
+TRAP::Math::Mat4 TRAP::Math::operator*(Mat4 left, const Mat4 &right)
 {
 	return left.Multiply(right);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 &TRAP::Maths::Mat4::operator*=(const Mat4 &other)
+TRAP::Math::Mat4 &TRAP::Math::Mat4::operator*=(const Mat4 &other)
 {
 	return Multiply(other);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::tVec3<float> TRAP::Maths::operator*(const Mat4 &left, const tVec3<float> &right)
+TRAP::Math::tVec3<float> TRAP::Math::operator*(const Mat4 &left, const tVec3<float> &right)
 {
 	return left.Multiply(right);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::tVec4<float> TRAP::Maths::operator*(const Mat4 &left, const tVec4<float> &right)
+TRAP::Math::tVec4<float> TRAP::Math::operator*(const Mat4 &left, const tVec4<float> &right)
 {
 	return left.Multiply(right);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 &TRAP::Maths::Mat4::Invert()
+TRAP::Math::Mat4 &TRAP::Math::Mat4::Invert()
 {
 	std::array<float, 16> temp{};
 
@@ -290,14 +290,14 @@ TRAP::Maths::Mat4 &TRAP::Maths::Mat4::Invert()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::tVec4<float> TRAP::Maths::Mat4::GetColumn(const int index) const
+TRAP::Math::tVec4<float> TRAP::Math::Mat4::GetColumn(const int index) const
 {
 	return tVec4<float>(elements[index + 0 * 4], elements[index + 1 * 4], elements[index + 2 * 4], elements[index + 3 * 4]);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Maths::Mat4::SetColumn(const unsigned int index, const tVec4<float> &column)
+void TRAP::Math::Mat4::SetColumn(const unsigned int index, const tVec4<float> &column)
 {
 	elements[index + 0 * 4] = column.x;
 	elements[index + 1 * 4] = column.y;
@@ -307,7 +307,7 @@ void TRAP::Maths::Mat4::SetColumn(const unsigned int index, const tVec4<float> &
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::tVec3<float> TRAP::Maths::Mat4::GetPosition() const
+TRAP::Math::tVec3<float> TRAP::Math::Mat4::GetPosition() const
 {
 	//return tVec3<float>(GetColumn(3));
 	return tVec3<float>(GetColumn(3).x, GetColumn(3).y, GetColumn(3).z);
@@ -315,7 +315,7 @@ TRAP::Maths::tVec3<float> TRAP::Maths::Mat4::GetPosition() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Maths::Mat4::SetPosition(const tVec3<float> &position)
+void TRAP::Math::Mat4::SetPosition(const tVec3<float> &position)
 {
 	//SetColumn(3, tVec4<float>(position, 1.0f));
 	SetColumn(3, tVec4<float>(position.x, position.y, position.z, 1.0f));
@@ -323,7 +323,7 @@ void TRAP::Maths::Mat4::SetPosition(const tVec3<float> &position)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 TRAP::Maths::Mat4::Orthographic(const float left, const float right, const float bottom, const float top, const float near, const float far)
+TRAP::Math::Mat4 TRAP::Math::Mat4::Orthographic(const float left, const float right, const float bottom, const float top, const float near, const float far)
 {
 	Mat4 result = Identity();
 
@@ -340,7 +340,7 @@ TRAP::Maths::Mat4 TRAP::Maths::Mat4::Orthographic(const float left, const float 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 TRAP::Maths::Mat4::Perspective(const float fov, const float aspectRatio, const float near, const float far)
+TRAP::Math::Mat4 TRAP::Math::Mat4::Perspective(const float fov, const float aspectRatio, const float near, const float far)
 {
 	Mat4 result = Identity();
 
@@ -361,7 +361,7 @@ TRAP::Maths::Mat4 TRAP::Maths::Mat4::Perspective(const float fov, const float as
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 TRAP::Maths::Mat4::LookAt(const tVec3<float> &camera, const tVec3<float> &object, const tVec3<float> &up)
+TRAP::Math::Mat4 TRAP::Math::Mat4::LookAt(const tVec3<float> &camera, const tVec3<float> &object, const tVec3<float> &up)
 {
 	Mat4 result = Identity();
 	const tVec3<float> f = (object - camera).Normalize();
@@ -385,7 +385,7 @@ TRAP::Maths::Mat4 TRAP::Maths::Mat4::LookAt(const tVec3<float> &camera, const tV
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 TRAP::Maths::Mat4::Translate(const tVec3<float> &translation)
+TRAP::Math::Mat4 TRAP::Math::Mat4::Translate(const tVec3<float> &translation)
 {
 	Mat4 result = Identity();
 
@@ -398,7 +398,7 @@ TRAP::Maths::Mat4 TRAP::Maths::Mat4::Translate(const tVec3<float> &translation)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 TRAP::Maths::Mat4::Rotate(const float angle, const tVec3<float> &axis)
+TRAP::Math::Mat4 TRAP::Math::Mat4::Rotate(const float angle, const tVec3<float> &axis)
 {
 	Mat4 result = Identity();
 
@@ -428,7 +428,7 @@ TRAP::Maths::Mat4 TRAP::Maths::Mat4::Rotate(const float angle, const tVec3<float
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 TRAP::Maths::Mat4::Scale(const tVec3<float> &scale)
+TRAP::Math::Mat4 TRAP::Math::Mat4::Scale(const tVec3<float> &scale)
 {
 	Mat4 result = Identity();
 
@@ -441,7 +441,7 @@ TRAP::Maths::Mat4 TRAP::Maths::Mat4::Scale(const tVec3<float> &scale)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 TRAP::Maths::Mat4::Invert(const Mat4 &matrix)
+TRAP::Math::Mat4 TRAP::Math::Mat4::Invert(const Mat4 &matrix)
 {
 	Mat4 result = matrix;
 
@@ -450,7 +450,7 @@ TRAP::Maths::Mat4 TRAP::Maths::Mat4::Invert(const Mat4 &matrix)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Maths::Mat4 TRAP::Maths::Mat4::Transpose(const Mat4 &matrix)
+TRAP::Math::Mat4 TRAP::Math::Mat4::Transpose(const Mat4 &matrix)
 {
 	return Mat4(
 		tVec4<float>(matrix.rows[0].x, matrix.rows[1].x, matrix.rows[2].x, matrix.rows[3].x),
@@ -461,7 +461,7 @@ TRAP::Maths::Mat4 TRAP::Maths::Mat4::Transpose(const Mat4 &matrix)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Maths::Mat4::ToString() const
+std::string TRAP::Math::Mat4::ToString() const
 {
 	std::stringstream result;
 	result << rows[0].x << ", " << rows[1].x << ", " << rows[2].x << ", " << rows[3].x << ", "

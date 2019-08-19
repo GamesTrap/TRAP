@@ -4,7 +4,7 @@
 #include "MathsFunc.h"
 #include "Math.h"
 
-namespace TRAP::Maths
+namespace TRAP::Math
 {
 	template<class T>
 	struct tVec2;

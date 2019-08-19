@@ -60,7 +60,7 @@ namespace TRAP::Graphics
 		static void Clear(unsigned int buffer);
 		static void Present(Window* window);
 
-		static void SetClearColor(const Maths::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f });
+		static void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f });
 		static void SetDepthTesting(bool enabled);
 		static void SetBlend(bool enabled);
 		static void SetCull(bool enabled);
@@ -100,7 +100,7 @@ inline void TRAP::Graphics::RenderCommand::Present(Window* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::RenderCommand::SetClearColor(const Maths::Vec4& color)
+inline void TRAP::Graphics::RenderCommand::SetClearColor(const Math::Vec4& color)
 {
 	API::RendererAPI::GetRenderer()->SetClearColor(color);
 }

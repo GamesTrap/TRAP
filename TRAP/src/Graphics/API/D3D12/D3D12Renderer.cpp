@@ -52,7 +52,7 @@ void TRAP::Graphics::API::D3D12Renderer::Present(Window* window)
 
 //------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::SetClearColor(const Maths::Vec4& color)
+void TRAP::Graphics::API::D3D12Renderer::SetClearColor(const Math::Vec4& color)
 {	
 }
 

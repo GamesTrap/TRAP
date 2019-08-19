@@ -1111,23 +1111,23 @@ void TRAP::Graphics::API::OpenGLShader::ResolveAndSetUniform(OpenGLShaderUniform
 		break;
 
 	case OpenGLShaderUniformDeclaration::Type::Vec2:
-		SetUniform2f(uniform->GetLocation(), *reinterpret_cast<Maths::Vec2*>(&data[offset]));
+		SetUniform2f(uniform->GetLocation(), *reinterpret_cast<Math::Vec2*>(&data[offset]));
 		break;
 
 	case OpenGLShaderUniformDeclaration::Type::Vec3:
-		SetUniform3f(uniform->GetLocation(), *reinterpret_cast<Maths::Vec3*>(&data[offset]));
+		SetUniform3f(uniform->GetLocation(), *reinterpret_cast<Math::Vec3*>(&data[offset]));
 		break;
 
 	case OpenGLShaderUniformDeclaration::Type::Vec4:
-		SetUniform4f(uniform->GetLocation(), *reinterpret_cast<Maths::Vec4*>(&data[offset]));
+		SetUniform4f(uniform->GetLocation(), *reinterpret_cast<Math::Vec4*>(&data[offset]));
 		break;
 
 	case OpenGLShaderUniformDeclaration::Type::Mat3:
-		SetUniformMat3(uniform->GetLocation(), *reinterpret_cast<Maths::Mat3*>(&data[offset]));
+		SetUniformMat3(uniform->GetLocation(), *reinterpret_cast<Math::Mat3*>(&data[offset]));
 		break;
 
 	case OpenGLShaderUniformDeclaration::Type::Mat4:
-		SetUniformMat4(uniform->GetLocation(), *reinterpret_cast<Maths::Mat4*>(&data[offset]));
+		SetUniformMat4(uniform->GetLocation(), *reinterpret_cast<Math::Mat4*>(&data[offset]));
 		break;
 
 	default:
@@ -1163,23 +1163,23 @@ void TRAP::Graphics::API::OpenGLShader::ResolveAndSetUniformField(const OpenGLSh
 		break;
 
 	case OpenGLShaderUniformDeclaration::Type::Vec2:
-		SetUniform2f(field.GetLocation(), *reinterpret_cast<Maths::Vec2*>(&data[offset]));
+		SetUniform2f(field.GetLocation(), *reinterpret_cast<Math::Vec2*>(&data[offset]));
 		break;
 
 	case OpenGLShaderUniformDeclaration::Type::Vec3:
-		SetUniform3f(field.GetLocation(), *reinterpret_cast<Maths::Vec3*>(&data[offset]));
+		SetUniform3f(field.GetLocation(), *reinterpret_cast<Math::Vec3*>(&data[offset]));
 		break;
 
 	case OpenGLShaderUniformDeclaration::Type::Vec4:
-		SetUniform4f(field.GetLocation(), *reinterpret_cast<Maths::Vec4*>(&data[offset]));
+		SetUniform4f(field.GetLocation(), *reinterpret_cast<Math::Vec4*>(&data[offset]));
 		break;
 
 	case OpenGLShaderUniformDeclaration::Type::Mat3:
-		SetUniformMat3(field.GetLocation(), *reinterpret_cast<Maths::Mat3*>(&data[offset]));
+		SetUniformMat3(field.GetLocation(), *reinterpret_cast<Math::Mat3*>(&data[offset]));
 		break;
 
 	case OpenGLShaderUniformDeclaration::Type::Mat4:
-		SetUniformMat4(field.GetLocation(), *reinterpret_cast<Maths::Mat4*>(&data[offset]));
+		SetUniformMat4(field.GetLocation(), *reinterpret_cast<Math::Mat4*>(&data[offset]));
 		break;
 
 	default:
@@ -1217,35 +1217,35 @@ void TRAP::Graphics::API::OpenGLShader::SetUniform1iv(const std::string& name, i
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetUniform2f(const std::string& name, const Maths::Vec2& vector) const
+void TRAP::Graphics::API::OpenGLShader::SetUniform2f(const std::string& name, const Math::Vec2& vector) const
 {
 	SetUniform2f(GetUniformLocation(name), vector);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetUniform3f(const std::string& name, const Maths::Vec3& vector) const
+void TRAP::Graphics::API::OpenGLShader::SetUniform3f(const std::string& name, const Math::Vec3& vector) const
 {
 	SetUniform3f(GetUniformLocation(name), vector);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetUniform4f(const std::string& name, const Maths::Vec4& vector) const
+void TRAP::Graphics::API::OpenGLShader::SetUniform4f(const std::string& name, const Math::Vec4& vector) const
 {
 	SetUniform4f(GetUniformLocation(name), vector);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetUniformMat3(const std::string& name, const Maths::Mat3& matrix) const
+void TRAP::Graphics::API::OpenGLShader::SetUniformMat3(const std::string& name, const Math::Mat3& matrix) const
 {
 	SetUniformMat3(GetUniformLocation(name), matrix);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetUniformMat4(const std::string& name, const Maths::Mat4& matrix) const
+void TRAP::Graphics::API::OpenGLShader::SetUniformMat4(const std::string& name, const Math::Mat4& matrix) const
 {
 	SetUniformMat4(GetUniformLocation(name), matrix);
 }
@@ -1280,35 +1280,35 @@ void TRAP::Graphics::API::OpenGLShader::SetUniform1iv(const unsigned int locatio
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetUniform2f(const unsigned int location, const Maths::Vec2& vector)
+void TRAP::Graphics::API::OpenGLShader::SetUniform2f(const unsigned int location, const Math::Vec2& vector)
 {
 	OpenGLCall(glUniform2f(location, vector.x, vector.y));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetUniform3f(const unsigned int location, const Maths::Vec3& vector)
+void TRAP::Graphics::API::OpenGLShader::SetUniform3f(const unsigned int location, const Math::Vec3& vector)
 {
 	OpenGLCall(glUniform3f(location, vector.x, vector.y, vector.z));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetUniform4f(const unsigned int location, const Maths::Vec4& vector)
+void TRAP::Graphics::API::OpenGLShader::SetUniform4f(const unsigned int location, const Math::Vec4& vector)
 {
 	OpenGLCall(glUniform4f(location, vector.x, vector.y, vector.z, vector.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetUniformMat3(const unsigned int location, const Maths::Mat3& matrix)
+void TRAP::Graphics::API::OpenGLShader::SetUniformMat3(const unsigned int location, const Math::Mat3& matrix)
 {
 	OpenGLCall(glUniformMatrix3fv(location, 1, GL_TRUE, matrix.elements.data()));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::SetUniformMat4(const unsigned int location, const Maths::Mat4& matrix)
+void TRAP::Graphics::API::OpenGLShader::SetUniformMat4(const unsigned int location, const Math::Mat4& matrix)
 {
 	OpenGLCall(glUniformMatrix4fv(location, 1, GL_TRUE, matrix.elements.data()));
 }
