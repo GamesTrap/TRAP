@@ -2,6 +2,7 @@
 #include "OpenGLTexture2D.h"
 
 #include "Graphics/API/OpenGL/OpenGLCommon.h"
+#include "Maths/Maths.h"
 
 TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const TextureParameters parameters)
 	: m_name("Fallback"), m_parameters(parameters), m_handle(0), parameters(parameters)
@@ -51,6 +52,15 @@ void TRAP::Graphics::API::OpenGLTexture2D::Load(const std::string& filepath)
 	OpenGLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
 	OpenGLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
 
+	bool resetPixelStore = false;
+	//if(!std::ispow2(m_image->GetWidth() || !std::ispow2(m_image->GetHeight())
+	if (!Math::IsPow2(m_image->GetWidth()) || !Math::IsPow2(m_image->GetHeight()))
+	{
+		TP_WARN("[Texture2D][OpenGL][Performance] Image is NPOT! This can affect transfer speed!");
+		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+		resetPixelStore = true;
+	}
+	
 	if(m_image->IsHDR())
 	{
 		OpenGLCall(glTexImage2D(GL_TEXTURE_2D, 0, TRAPImageFormatToOpenGL(m_image->GetFormat()), m_image->GetWidth(),
@@ -76,6 +86,11 @@ void TRAP::Graphics::API::OpenGLTexture2D::Load(const std::string& filepath)
 
 	OpenGLCall(glGenerateMipmap(GL_TEXTURE_2D));
 	OpenGLCall(glBindTexture(GL_TEXTURE_2D, 0));
+
+	if(resetPixelStore)
+	{
+		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 4));
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

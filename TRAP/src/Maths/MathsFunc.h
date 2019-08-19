@@ -43,6 +43,8 @@ namespace TRAP::Math
 
 	template<typename T>
 	T Abs(T value);
+
+	constexpr bool IsPow2(const unsigned int x);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -348,6 +350,13 @@ template<>
 inline long double TRAP::Math::Abs(long double value)
 {
 	return std::abs(value);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+constexpr bool TRAP::Math::IsPow2(const unsigned int x)
+{
+	return !(x == 0) && !(x & (x - 1));
 }
 
 #endif /*_TRAP_MATHSFUNC_H_*/

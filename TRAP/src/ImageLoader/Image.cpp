@@ -493,7 +493,7 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeBGR24(std::vector<uint8_t>& source, c
 
 std::vector<uint8_t> TRAP::INTERNAL::DecodeBGRA32(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
-	for (unsigned int i = 0; i < width * height * 3; i += 3)
+	for (unsigned int i = 0; i < width * height * 4; i += 4)
 		source[i] ^= source[i + 2] ^= source[i] ^= source[i + 2];
 
 	return source;

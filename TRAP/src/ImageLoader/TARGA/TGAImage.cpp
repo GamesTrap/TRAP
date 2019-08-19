@@ -96,12 +96,6 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 				colorMapData.ColorMap.emplace_back(temp);
 			}
 		}
-		if ((header.ImageDescriptor & 0x30) != 0x20 && (header.ImageDescriptor & 0x30) != 0x00)
-		{
-			TP_ERROR("[Image][TGA] Not Top/Bottom Left origin!");
-			TP_WARN("[Image][TGA] Using Default Image!");
-			return;
-		}
 		bool needXFlip = false;
 		bool needYFlip = false;
 		if ((header.ImageDescriptor & 0x30) == 0x30 || (header.ImageDescriptor & 0x30) == 0x10) //1. If Image is stored Top/Right | 2. If Image is stored Bottom/Right

@@ -137,15 +137,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		std::vector<uint8_t> imageData{};
 		imageData.reserve(m_width * m_height * (m_bitsPerPixel / 8));
 		if ((m_bitsPerPixel != 32 && infoHeader.Compression == 0) && 4 - (((m_bitsPerPixel / 8) * m_width) % 4) != 4) //Padding
-		{
-			//TODO Remove
-			if(m_bitsPerPixel > 8)
-			{
-				TP_ERROR("[Image][BMP] Padding for images with BPP > 8 is not supported yet");
-				TP_WARN("[Image][BMP] Using Default Image!");
-				return;
-			}
-			
+		{			
 			uint32_t padding = 4 - (((m_bitsPerPixel / 8) * m_width) % 4);
 			for (unsigned int j = 0; j < m_height; j++)
 			{
@@ -202,16 +194,14 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 						m_data[i] = 255;
 			}
 			else if (m_bitsPerPixel == 16) //RGB
-			{
-				//todo padding
+			{				
 				m_format = ImageFormat::RGB;
 				m_isImageColored = true;
 				m_bitsPerPixel = 24;
 				m_data = DecodeBGR16(imageData, m_width, m_height);
 			}
 			else if (m_bitsPerPixel == 24) //RGB
-			{
-				//todo padding
+			{				
 				m_format = ImageFormat::RGB;
 				m_isImageColored = true;
 				m_data = DecodeBGR24(imageData, m_width, m_height);
