@@ -52,7 +52,7 @@ namespace TRAP::Math
 template<typename T>
 T TRAP::Math::Sin(T angle)
 {
-	static_assert(false, "Invalid type!");
+	TP_ASSERT(false, "Invalid type!");
 	return 0;
 }
 template<>
@@ -78,7 +78,7 @@ inline long double TRAP::Math::Sin(long double angle)
 template<typename T>
 T TRAP::Math::Cos(T angle)
 {
-	static_assert(false, "Invalid type!");
+	TP_ASSERT(false, "Invalid type!");
 	return 0;
 }
 template<>
@@ -104,7 +104,7 @@ inline long double TRAP::Math::Cos(long double angle)
 template<typename T>
 T TRAP::Math::Tan(T angle)
 {
-	static_assert(false, "Invalid type!");
+	TP_ASSERT(false, "Invalid type!");
 	return 0;
 }
 template<>
@@ -130,7 +130,7 @@ inline long double TRAP::Math::Tan(long double angle)
 template<typename T>
 T TRAP::Math::Sqrt(T value)
 {
-	static_assert(false, "Invalid type!");
+	TP_ASSERT(false, "Invalid type!");
 	return 0;
 }
 template<>
@@ -156,7 +156,7 @@ inline long double TRAP::Math::Sqrt(long double value)
 template<typename T>
 T TRAP::Math::RSqrt(T value)
 {
-	static_assert(false, "Invalid type!");
+	TP_ASSERT(false, "Invalid type!");
 	return 0;
 }
 template<>
@@ -182,7 +182,7 @@ inline long double TRAP::Math::RSqrt(long double value)
 template<typename T>
 T TRAP::Math::ASin(T value)
 {
-	static_assert(false, "Invalid type!");
+	TP_ASSERT(false, "Invalid type!");
 	return 0;
 }
 template<>
@@ -208,7 +208,7 @@ inline long double TRAP::Math::ASin(long double value)
 template<typename T>
 T TRAP::Math::ACos(T value)
 {
-	static_assert(false, "Invalid type!");
+	TP_ASSERT(false, "Invalid type!");
 	return 0;
 }
 template<>
@@ -234,7 +234,7 @@ inline long double TRAP::Math::ACos(long double value)
 template<typename T>
 T TRAP::Math::ATan(T value)
 {
-	static_assert(false, "Invalid type!");
+	TP_ASSERT(false, "Invalid type!");
 	return 0;
 }
 template<>
@@ -260,7 +260,7 @@ inline long double TRAP::Math::ATan(long double value)
 template<typename T>
 T TRAP::Math::ATan2(T y, T x)
 {
-	static_assert(false, "Invalid type!");
+	TP_ASSERT(false, "Invalid type!");
 	return 0;
 }
 template<>
@@ -316,7 +316,7 @@ constexpr const T& TRAP::Math::Clamp(const T& value, const T& minimum, const T& 
 template<typename T>
 T TRAP::Math::Abs(T value)
 {
-	static_assert(false, "Invalid type!");
+	TP_ASSERT(false, "Invalid type!");
 	return 0;
 }
 template<>

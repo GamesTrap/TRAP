@@ -284,3 +284,4 @@ SITREP 08/14/2019|19w33a2
 SITREP 08/19/2019|19w34a1
     - Changed TRAP Engine version to 19w34a1(0.5.14)
     - Got padding for 8 BPP BMP Images working ~>45 mins
+    - Fixed Linux compiling ~<10 mins
