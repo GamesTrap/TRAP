@@ -10,6 +10,7 @@
 #include "Event/KeyEvent.h"
 #include "Event/MouseEvent.h"
 #include "Graphics/Shaders/ShaderManager.h"
+#include "Graphics/Textures/TextureManager.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -48,6 +49,7 @@ TRAP::Window::Window(const WindowProps &props)
 TRAP::Window::~Window()
 {
 	Graphics::Renderer::Cleanup();
+	Graphics::TextureManager::Shutdown();
 	Graphics::ShaderManager::Shutdown();
 	Graphics::API::RendererAPI::Shutdown();
 	Graphics::API::Context::Shutdown();
