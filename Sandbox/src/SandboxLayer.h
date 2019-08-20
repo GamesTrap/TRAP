@@ -59,12 +59,6 @@ public:
 		m_vertexArray = TRAP::Graphics::VertexArray::Create();
 
 		//XYZ RGBA
-		/*std::array<float, 7 * 3> vertices //Triangle
-		{
-			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,
-			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,
-			 0.0f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f
-		};*/
 		std::array<float, 9 * 4> vertices //Quad
 		{
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 0.0f,
@@ -82,10 +76,6 @@ public:
 		vertexBuffer->SetLayout(layout);
 		m_vertexArray->AddVertexBuffer(vertexBuffer);
 
-		/*std::array<uint32_t, 3> indices //Triangle
-		{
-			0, 1, 2
-		};*/
 		std::array<uint32_t, 6> indices //Quad
 		{
 			0, 1, 2, 2, 3, 0

@@ -4,7 +4,6 @@
 #include "Utils/String.h"
 #include "VFS/VFS.h"
 #include "VFS/FileSystem.h"
-#include "Maths/Math.h"
 
 namespace TRAP::INTERNAL
 {
@@ -12,15 +11,15 @@ namespace TRAP::INTERNAL
 	int LittleEndian()
 	{
 		int intVal = 1;
-		unsigned char* uVal = reinterpret_cast<unsigned char*>(&intVal);
+		uint8_t* uVal = reinterpret_cast<uint8_t*>(&intVal);
 		return uVal[0] == 1;
 	}
 
 	//If endianness doesn't agree, swap bytes
 	void SwapBytes(float* fPtr)
 	{
-		unsigned char* ptr = reinterpret_cast<unsigned char*>(fPtr);
-		unsigned char temp = 0;
+		uint8_t* ptr = reinterpret_cast<uint8_t*>(fPtr);
+		uint8_t temp = 0;
 		temp = ptr[0]; ptr[0] = ptr[3]; ptr[3] = temp;
 		temp = ptr[1]; ptr[1] = ptr[2]; ptr[2] = temp;
 	}

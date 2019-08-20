@@ -285,3 +285,10 @@ SITREP 08/19/2019|19w34a1
     - Changed TRAP Engine version to 19w34a1(0.5.14)
     - Got padding for 8 BPP BMP Images working ~>45 mins
     - Fixed Linux compiling ~<10 mins
+    - Added support for NPOT Textures ~>35 mins
+
+SITREP 08/20/2019|19w34a2
+    - Changed TRAP Engine version to 19w34a2(0.5.15)
+    - Tested NPOT Textures on all current image formats ~>45 mins
+    - Simplified FlipX/Y function ~>20 mins
+    - Made the OpenGLTexture2D more bindless ~>35 mins

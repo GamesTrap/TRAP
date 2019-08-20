@@ -132,7 +132,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			}
 			if (header.BitsPerPixel == 8)
 			{
-				m_data = DecodeBGRAMap8(colorMapData.ImageData, m_width, m_height, header.ColorMapDepth / 8, colorMapData.ColorMap);
+				m_data = DecoeBGRAMap(colorMapData.ImageData, m_width, m_height, header.ColorMapDepth / 8, colorMapData.ColorMap);
 				m_bitsPerPixel = header.ColorMapDepth;
 				if (m_bitsPerPixel == 24)
 					m_imageFormat = ImageFormat::RGB;					
@@ -159,7 +159,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			}
 			if (header.BitsPerPixel == 8)
 			{
-				m_data = DecodeRLEBGRAMap8(colorMapData.ImageData, m_width, m_height, header.ColorMapDepth / 8, colorMapData.ColorMap);
+				m_data = DecodeRLEBGRAMap(colorMapData.ImageData, m_width, m_height, header.ColorMapDepth / 8, colorMapData.ColorMap);
 				m_bitsPerPixel = header.ColorMapDepth;
 				if (m_bitsPerPixel == 24)
 					m_imageFormat = ImageFormat::RGB;
@@ -214,14 +214,14 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			case 16:
 			{
 				m_imageFormat = ImageFormat::RGB;
-				m_data = DecodeBGR16(colorMapData.ImageData, m_width, m_height);
+				m_data = ConvertBGR16ToRGB16(colorMapData.ImageData, m_width, m_height);
 				break;
 			}
 
 			case 24:
 			{
 				m_imageFormat = ImageFormat::RGB;
-				m_data = DecodeBGR24(colorMapData.ImageData, m_width, m_height);
+				m_data = ConvertBGR24ToRGB24(colorMapData.ImageData, m_width, m_height);
 				break;
 			}
 
@@ -229,7 +229,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			{
 				m_imageFormat = ImageFormat::RGBA;
 				m_hasAlphaChannel = true;
-				m_data = DecodeBGRA32(colorMapData.ImageData, m_width, m_height);
+				m_data = ConvertBGRA32ToRGBA32(colorMapData.ImageData, m_width, m_height);
 				break;
 			}
 
@@ -249,14 +249,14 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			case 16:
 			{
 				m_imageFormat = ImageFormat::RGB;
-				m_data = DecodeRLEBGR16(colorMapData.ImageData, m_width, m_height);
+				m_data = ConvertRLEBGR16ToRGB(colorMapData.ImageData, m_width, m_height);
 				break;
 			}
 
 			case 24:
 			{
 				m_imageFormat = ImageFormat::RGB;
-				m_data = DecodeRLEBGR24(colorMapData.ImageData, m_width, m_height);
+				m_data = ConvertRLEBGR24ToRGB(colorMapData.ImageData, m_width, m_height);
 				break;
 			}
 
@@ -264,7 +264,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			{
 				m_imageFormat = ImageFormat::RGBA;
 				m_hasAlphaChannel = true;
-				m_data = DecodeRLEBGRA32(colorMapData.ImageData, m_width, m_height);
+				m_data = ConvertRLEBGRA32ToRGBA(colorMapData.ImageData, m_width, m_height);
 				break;
 			}
 

@@ -178,7 +178,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 				m_isImageColored = true;
 				m_bitsPerPixel = 32;
 				m_hasAlphaChannel = true;
-				m_data = DecodeBGRAMap8(imageData, m_width, m_height, 4, colorTable);
+				m_data = DecoeBGRAMap(imageData, m_width, m_height, 4, colorTable);
 				//Check if alpha is used
 				bool alphaUsed = false;
 				for (unsigned int i = 3; i < m_data.size(); i += 4)
@@ -198,13 +198,13 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 				m_format = ImageFormat::RGB;
 				m_isImageColored = true;
 				m_bitsPerPixel = 24;
-				m_data = DecodeBGR16(imageData, m_width, m_height);
+				m_data = ConvertBGR16ToRGB16(imageData, m_width, m_height);
 			}
 			else if (m_bitsPerPixel == 24) //RGB
 			{				
 				m_format = ImageFormat::RGB;
 				m_isImageColored = true;
-				m_data = DecodeBGR24(imageData, m_width, m_height);
+				m_data = ConvertBGR24ToRGB24(imageData, m_width, m_height);
 			}
 			else if (m_bitsPerPixel == 32) //RGBA
 			{
@@ -226,7 +226,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 					for (unsigned int i = 3; i < imageData.size(); i += 4)
 						imageData[i] = 255;
 
-				m_data = DecodeBGRA32(imageData, m_width, m_height);
+				m_data = ConvertBGRA32ToRGBA32(imageData, m_width, m_height);
 			}
 		}
 		else if (infoHeader.Compression == 1) //RLE 8
