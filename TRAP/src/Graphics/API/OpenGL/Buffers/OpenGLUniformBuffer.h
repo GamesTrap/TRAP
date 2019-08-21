@@ -9,8 +9,8 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		OpenGLUniformBuffer();
-		OpenGLUniformBuffer(const char* name, const void* data, uint32_t size, BufferUsage usage);
-		OpenGLUniformBuffer(const char* name, uint32_t size, BufferUsage usage);
+		OpenGLUniformBuffer(const char* name, const void* data, uint32_t size);
+		OpenGLUniformBuffer(const char* name, uint32_t size);
 		OpenGLUniformBuffer(const OpenGLUniformBuffer&) = default;
 		OpenGLUniformBuffer& operator=(const OpenGLUniformBuffer&) = default;
 		OpenGLUniformBuffer(OpenGLUniformBuffer&&) = default;
@@ -20,7 +20,7 @@ namespace TRAP::Graphics::API
 		void Bind() const override;
 		void Unbind() const override;
 
-		void UpdateData(const void* data, uint32_t size, BufferUsage usage) override;
+		void UpdateData(const void* data, uint32_t size) override;
 		void UpdateSubData(const void* data, uint32_t size, uint32_t offset) override;
 
 		std::string GetName() const;

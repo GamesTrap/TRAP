@@ -8,17 +8,16 @@ namespace TRAP::Graphics::API
 	class OpenGLIndexBuffer final : public IndexBuffer
 	{
 	public:
-		OpenGLIndexBuffer(uint32_t* indices, uint32_t size, BufferUsage usage);
+		OpenGLIndexBuffer(uint32_t* indices, uint32_t size);
 		OpenGLIndexBuffer(const OpenGLIndexBuffer&) = default;
 		OpenGLIndexBuffer& operator=(const OpenGLIndexBuffer&) = default;
 		OpenGLIndexBuffer(OpenGLIndexBuffer&&) = default;
 		OpenGLIndexBuffer& operator=(OpenGLIndexBuffer&&) = default;
 		virtual ~OpenGLIndexBuffer();
 
-		void Bind() const override;
-		void Unbind() const override;
-
 		uint32_t GetCount() const override;
+
+		uint32_t GetHandle() const;
 
 	private:
 		uint32_t m_handle;

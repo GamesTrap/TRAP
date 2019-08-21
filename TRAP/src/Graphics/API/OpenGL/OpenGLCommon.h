@@ -47,21 +47,6 @@ namespace TRAP::Graphics
 
 namespace TRAP::Graphics::API
 {
-	static uint32_t TRAPBufferUsageToOpenGL(BufferUsage usage)
-	{
-		switch (usage)
-		{
-		case BufferUsage::Static:
-			return GL_STATIC_DRAW;
-
-		case BufferUsage::Dynamic:
-			return GL_DYNAMIC_DRAW;
-
-		default:
-			return 0;
-		}
-	}
-
 	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
 	{
 		switch (type)

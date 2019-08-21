@@ -1,25 +1,13 @@
 #include "TRAPPCH.h"
 #include "VulkanVertexBuffer.h"
 
-TRAP::Graphics::API::VulkanVertexBuffer::VulkanVertexBuffer(float* vertices, uint32_t size, BufferUsage usage)
+TRAP::Graphics::API::VulkanVertexBuffer::VulkanVertexBuffer(float* vertices, uint32_t size)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanVertexBuffer::~VulkanVertexBuffer() = default;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanVertexBuffer::Bind()
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanVertexBuffer::Unbind()
-{
-}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

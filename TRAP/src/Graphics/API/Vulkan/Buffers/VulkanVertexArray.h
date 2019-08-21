@@ -9,8 +9,8 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		VulkanVertexArray();
-		VulkanVertexArray(const VulkanVertexArray&) = default;
-		VulkanVertexArray& operator=(const VulkanVertexArray&) = default;
+		VulkanVertexArray(const VulkanVertexArray&) = delete;
+		VulkanVertexArray& operator=(const VulkanVertexArray&) = delete;
 		VulkanVertexArray(VulkanVertexArray&&) = default;
 		VulkanVertexArray& operator=(VulkanVertexArray&&) = default;
 		~VulkanVertexArray();
@@ -18,11 +18,11 @@ namespace TRAP::Graphics::API
 		void AddVertexBuffer(std::unique_ptr<VertexBuffer>& buffer) override;
 		void SetIndexBuffer(std::unique_ptr<IndexBuffer>& buffer) override;
 
-		std::vector<std::unique_ptr<VertexBuffer>>& GetVertexBuffers() override;
-		IndexBuffer* GetIndexBuffer() override;
-
 		void Bind() const override;
 		void Unbind() const override;
+		
+		std::vector<std::unique_ptr<VertexBuffer>>& GetVertexBuffers() override;
+		IndexBuffer* GetIndexBuffer() override;
 
 	private:
 		std::vector<std::unique_ptr<VertexBuffer>> m_vertexBuffers;

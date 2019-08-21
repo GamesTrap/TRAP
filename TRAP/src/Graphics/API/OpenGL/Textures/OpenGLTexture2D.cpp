@@ -51,8 +51,7 @@ void TRAP::Graphics::API::OpenGLTexture2D::Load(const std::string& filepath)
 		m_image = Image::LoadFallback();
 	}
 
-	OpenGLCall(glGenTextures(1, &m_handle));
-	OpenGLCall(glBindTexture(GL_TEXTURE_2D, m_handle));
+	OpenGLCall(glCreateTextures(GL_TEXTURE_2D, 1, &m_handle));
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
@@ -100,23 +99,20 @@ void TRAP::Graphics::API::OpenGLTexture2D::Load(const std::string& filepath)
 	}
 	
 	OpenGLCall(glGenerateTextureMipmap(m_handle));
-	OpenGLCall(glBindTexture(GL_TEXTURE_2D, 0));	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLTexture2D::Bind(const unsigned int slot) const
 {
-	OpenGLCall(glActiveTexture(GL_TEXTURE0 + slot));
-	OpenGLCall(glBindTexture(GL_TEXTURE_2D, m_handle));
+	OpenGLCall(glBindTextureUnit(slot, m_handle));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLTexture2D::Unbind(const unsigned int slot) const
 {
-	OpenGLCall(glActiveTexture(GL_TEXTURE0 + slot));
-	OpenGLCall(glBindTexture(GL_TEXTURE_2D, 0));
+	OpenGLCall(glBindTextureUnit(0, 0));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

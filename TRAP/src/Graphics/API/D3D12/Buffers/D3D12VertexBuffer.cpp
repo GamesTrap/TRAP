@@ -3,25 +3,13 @@
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
-TRAP::Graphics::API::D3D12VertexBuffer::D3D12VertexBuffer(float* vertices, uint32_t size, BufferUsage usage)
+TRAP::Graphics::API::D3D12VertexBuffer::D3D12VertexBuffer(float* vertices, uint32_t size)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::D3D12VertexBuffer::~D3D12VertexBuffer() = default;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::D3D12VertexBuffer::Bind()
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::D3D12VertexBuffer::Unbind()
-{
-}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

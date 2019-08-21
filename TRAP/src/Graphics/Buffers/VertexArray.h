@@ -21,11 +21,11 @@ namespace TRAP::Graphics
 		virtual void AddVertexBuffer(std::unique_ptr<VertexBuffer>& buffer) = 0;
 		virtual void SetIndexBuffer(std::unique_ptr<IndexBuffer>& buffer) = 0;
 
-		virtual std::vector<std::unique_ptr<VertexBuffer>>& GetVertexBuffers() = 0;
-		virtual IndexBuffer* GetIndexBuffer() = 0;
-
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
+		
+		virtual std::vector<std::unique_ptr<VertexBuffer>>& GetVertexBuffers() = 0;
+		virtual IndexBuffer* GetIndexBuffer() = 0;
 
 		static const VertexArray* s_CurrentlyBound;
 	};

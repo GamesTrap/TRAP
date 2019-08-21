@@ -37,11 +37,11 @@ void TRAP::Graphics::Renderer::Submit(const Shader* shader, const std::unique_pt
 	{
 		shader->Bind();
 		if (!s_uniformBuffer)
-			s_uniformBuffer = UniformBuffer::Create("MatrixBuffer", s_sceneData.get(), sizeof(SceneData), BufferUsage::Dynamic);
+			s_uniformBuffer = UniformBuffer::Create("MatrixBuffer", s_sceneData.get(), sizeof(SceneData));
 		else
 		{
 			s_uniformBuffer->Bind();
-			s_uniformBuffer->UpdateData(s_sceneData.get(), sizeof(SceneData), BufferUsage::Dynamic);
+			s_uniformBuffer->UpdateData(s_sceneData.get(), sizeof(SceneData));
 		}
 	}
 

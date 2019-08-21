@@ -9,15 +9,12 @@ namespace TRAP::Graphics::API
 	class VulkanVertexBuffer final : public VertexBuffer
 	{
 	public:
-		VulkanVertexBuffer(float* vertices, uint32_t size, BufferUsage usage);
+		VulkanVertexBuffer(float* vertices, uint32_t size);
 		VulkanVertexBuffer(const VulkanVertexBuffer&) = default;
 		VulkanVertexBuffer& operator=(const VulkanVertexBuffer&) = default;
 		VulkanVertexBuffer(VulkanVertexBuffer&&) = default;
 		VulkanVertexBuffer& operator=(VulkanVertexBuffer&&) = default;
 		~VulkanVertexBuffer();
-
-		void Bind() override;
-		void Unbind() override;
 
 		const BufferLayout& GetLayout() const override;
 		void SetLayout(const BufferLayout& layout) override;

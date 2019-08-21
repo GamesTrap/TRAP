@@ -292,3 +292,7 @@ SITREP 08/20/2019|19w34a2
     - Tested NPOT Textures on all current image formats ~>45 mins
     - Simplified FlipX/Y function ~>20 mins
     - Made the OpenGLTexture2D more bindless ~>35 mins
+
+SITREP 08/21/2019|19w34a3
+    - Changed TRAP Engine version to 19w34a3(0.5.16)
+    - Switched to OpenGL DSA(Direct State Access) mode ~>60 mins

@@ -3,7 +3,7 @@
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
-TRAP::Graphics::API::D3D12IndexBuffer::D3D12IndexBuffer(uint32_t* indices, const uint32_t size, BufferUsage usage)
+TRAP::Graphics::API::D3D12IndexBuffer::D3D12IndexBuffer(uint32_t* indices, const uint32_t size)
 	: m_count(size)
 {
 }
@@ -11,18 +11,6 @@ TRAP::Graphics::API::D3D12IndexBuffer::D3D12IndexBuffer(uint32_t* indices, const
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::D3D12IndexBuffer::~D3D12IndexBuffer() = default;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::D3D12IndexBuffer::Bind() const
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::D3D12IndexBuffer::Unbind() const
-{
-}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

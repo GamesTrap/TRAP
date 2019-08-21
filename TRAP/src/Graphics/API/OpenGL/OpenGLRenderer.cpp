@@ -391,5 +391,6 @@ void GLAPIENTRY TRAP::Graphics::API::OpenGLRenderer::DebugCallback(GLenum source
 void TRAP::Graphics::API::OpenGLRenderer::InitDebug()
 {
 	OpenGLCall(glEnable(GL_DEBUG_OUTPUT));
+	OpenGLCall(glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS));
 	OpenGLCall(glDebugMessageCallback(DebugCallback, nullptr));
 }

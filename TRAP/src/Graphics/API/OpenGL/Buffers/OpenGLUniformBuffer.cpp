@@ -10,27 +10,24 @@ TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer()
 	: m_handle(0), m_name(""), m_size(0)
 {	
 	OpenGLCall(glCreateBuffers(1, &m_handle));
-	OpenGLUniformBuffer::Bind();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(const char* name, const void* data, const uint32_t size, const BufferUsage usage)
+TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(const char* name, const void* data, const uint32_t size)
 	: m_handle(0), m_name(name), m_size(size)
 {
 	OpenGLCall(glCreateBuffers(1, &m_handle));
-	OpenGLUniformBuffer::Bind();
-	OpenGLCall(glBufferData(GL_UNIFORM_BUFFER, m_size, data, TRAPBufferUsageToOpenGL(usage)));
+	OpenGLCall(glNamedBufferStorage(m_handle, m_size, data, GL_DYNAMIC_STORAGE_BIT));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(const char* name, const uint32_t size, const BufferUsage usage)
+TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(const char* name, const uint32_t size)
 	: m_handle(0), m_name(name), m_size(size)
 {
 	OpenGLCall(glCreateBuffers(1, &m_handle));
-	OpenGLUniformBuffer::Bind();
-	OpenGLCall(glBufferData(GL_UNIFORM_BUFFER, m_size, nullptr, TRAPBufferUsageToOpenGL(usage)));
+	OpenGLCall(glNamedBufferStorage(m_handle, m_size, nullptr, GL_DYNAMIC_STORAGE_BIT));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -75,14 +72,14 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::Unbind() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLUniformBuffer::UpdateData(const void* data, const uint32_t size, const BufferUsage usage)
+void TRAP::Graphics::API::OpenGLUniformBuffer::UpdateData(const void* data, const uint32_t size)
 {
-	OpenGLCall(glBufferData(GL_UNIFORM_BUFFER, size, data, TRAPBufferUsageToOpenGL(usage)));
+	OpenGLCall(glNamedBufferSubData(m_handle, 0, size, data));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLUniformBuffer::UpdateSubData(const void* data, const uint32_t size, const uint32_t offset)
 {
-	OpenGLCall(glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data));
+	OpenGLCall(glNamedBufferSubData(m_handle, offset, size, data));
 }

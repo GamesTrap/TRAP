@@ -66,7 +66,7 @@ public:
 			 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,    1.0f, 1.0f,
 			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f,    0.0f, 1.0f
 		};
-		std::unique_ptr<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()), TRAP::Graphics::BufferUsage::Static);
+		std::unique_ptr<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()));
 		const TRAP::Graphics::BufferLayout layout =
 		{
 			{TRAP::Graphics::ShaderDataType::Float3, "Position"},
@@ -80,7 +80,7 @@ public:
 		{
 			0, 1, 2, 2, 3, 0
 		};
-		std::unique_ptr<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size()), TRAP::Graphics::BufferUsage::Static);
+		std::unique_ptr<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size()));
 		m_vertexArray->SetIndexBuffer(indexBuffer);
 	}
 

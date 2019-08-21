@@ -21,6 +21,18 @@ void TRAP::Graphics::API::VulkanVertexArray::SetIndexBuffer(std::unique_ptr<Inde
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanVertexArray::Bind() const
+{	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanVertexArray::Unbind() const
+{	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::vector<std::unique_ptr<TRAP::Graphics::VertexBuffer>>& TRAP::Graphics::API::VulkanVertexArray::GetVertexBuffers()
 {
 	return m_vertexBuffers;
@@ -31,16 +43,4 @@ std::vector<std::unique_ptr<TRAP::Graphics::VertexBuffer>>& TRAP::Graphics::API:
 TRAP::Graphics::IndexBuffer* TRAP::Graphics::API::VulkanVertexArray::GetIndexBuffer()
 {
 	return m_indexBuffer.get();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanVertexArray::Bind() const
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanVertexArray::Unbind() const
-{
 }

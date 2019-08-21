@@ -8,8 +8,8 @@ namespace TRAP::Graphics::API
 	class VulkanUniformBuffer : public UniformBuffer
 	{
 	public:
-		VulkanUniformBuffer(const char* name, uint32_t size, BufferUsage usage);
-		VulkanUniformBuffer(const char* name, const void* data, uint32_t size, BufferUsage usage);
+		VulkanUniformBuffer(const char* name, uint32_t size);
+		VulkanUniformBuffer(const char* name, const void* data, uint32_t size);
 		virtual ~VulkanUniformBuffer() = default;
 		VulkanUniformBuffer(const VulkanUniformBuffer&) = default;
 		VulkanUniformBuffer& operator=(const VulkanUniformBuffer&) = default;
@@ -19,7 +19,7 @@ namespace TRAP::Graphics::API
 		void Bind() const override;
 		void Unbind() const override;
 
-		void UpdateData(const void* data, uint32_t size, BufferUsage usage) override;
+		void UpdateData(const void* data, uint32_t size) override;
 		void UpdateSubData(const void* data, uint32_t size, uint32_t offset) override;
 	};
 }
