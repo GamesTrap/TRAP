@@ -296,3 +296,7 @@ SITREP 08/20/2019|19w34a2
 SITREP 08/21/2019|19w34a3
     - Changed TRAP Engine version to 19w34a3(0.5.16)
     - Switched to OpenGL DSA(Direct State Access) mode ~>60 mins
+
+SITREP 08/22/2019|19w34a4
+    - Changed TRAP Engine version to 19w34a4(0.5.17)
+    - Removed support for Non-Opaque Uniforms in GLSL Shaders(Use UBOs instead) ~>45 mins 

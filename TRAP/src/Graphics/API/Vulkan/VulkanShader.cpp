@@ -19,9 +19,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::string so
 	m_GShaderModule(nullptr),
 	m_TCShaderModule(nullptr),
 	m_TEShaderModule(nullptr),
-	m_CShaderModule(nullptr)/*,
-	m_VSUserUniformBuffer(nullptr),
-	m_FSUserUniformBuffer(nullptr)*/
+	m_CShaderModule(nullptr)
 {
 	Init();
 }
@@ -41,9 +39,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::string VS
 	  m_GShaderModule(nullptr),
 	  m_TCShaderModule(nullptr),
 	  m_TEShaderModule(nullptr),
-	  m_CShaderModule(nullptr)/*, 
-	  m_VSUserUniformBuffer(nullptr),
-      m_FSUserUniformBuffer(nullptr)*/
+	  m_CShaderModule(nullptr)
 {
 	Init();
 }
@@ -535,42 +531,6 @@ void TRAP::Graphics::API::VulkanShader::Bind() const
 void TRAP::Graphics::API::VulkanShader::Unbind() const
 {
 	s_CurrentlyBound = nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanShader::SetVSUniformBuffer(uint8_t* data, unsigned int size)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanShader::SetFSUniformBuffer(uint8_t* data, unsigned int size)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanShader::SetGSUniformBuffer(uint8_t* data, unsigned int size)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanShader::SetTCSUniformBuffer(uint8_t* data, unsigned int size)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanShader::SetTESUniformBuffer(uint8_t* data, unsigned int size)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanShader::SetCSUniformBuffer(uint8_t* data, unsigned int size)
-{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

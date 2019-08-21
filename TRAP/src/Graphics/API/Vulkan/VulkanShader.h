@@ -2,8 +2,6 @@
 #define _TRAP_VULKANSHADER_H_
 
 #include "Graphics/Shaders/Shader.h"
-#include "Graphics/Shaders/ShaderUniform.h"
-#include "Graphics/Shaders/ShaderResource.h"
 #include "Graphics/Shaders/ShaderManager.h"
 
 namespace TRAP::Graphics::API
@@ -32,28 +30,6 @@ namespace TRAP::Graphics::API
 		void Bind() const override;
 		void Unbind() const override;
 
-		void SetVSUniformBuffer(uint8_t* data, unsigned int size) override;
-		void SetFSUniformBuffer(uint8_t* data, unsigned int size) override;
-		void SetGSUniformBuffer(uint8_t* data, unsigned int size) override;
-		void SetTCSUniformBuffer(uint8_t* data, unsigned int size) override;
-		void SetTESUniformBuffer(uint8_t* data, unsigned int size) override;
-		void SetCSUniformBuffer(uint8_t* data, unsigned int size) override;
-
-		const ShaderUniformBufferList& GetVSUniforms() const override;
-		const ShaderUniformBufferList& GetFSUniforms() const override;
-		const ShaderUniformBufferList& GetGSUniforms() const override;
-		const ShaderUniformBufferList& GetTCSUniforms() const override;
-		const ShaderUniformBufferList& GetTESUniforms() const override;
-		const ShaderUniformBufferList& GetCSUniforms() const override;
-		const ShaderUniformBufferDeclaration* GetVSUniformBuffer() const override;
-		const ShaderUniformBufferDeclaration* GetFSUniformBuffer() const override;
-		const ShaderUniformBufferDeclaration* GetGSUniformBuffer() const override;
-		const ShaderUniformBufferDeclaration* GetTCSUniformBuffer() const override;
-		const ShaderUniformBufferDeclaration* GetTESUniformBuffer() const override;
-		const ShaderUniformBufferDeclaration* GetCSUniformBuffer() const override;
-
-		const ShaderResourceList& GetResource() const override;
-
 		const std::string& GetName() const override;
 		
 		const std::string& GetFilePath() const override;
@@ -79,24 +55,8 @@ namespace TRAP::Graphics::API
 		friend class ::TRAP::Graphics::Shader;
 		friend class ::TRAP::Graphics::ShaderManager;
 
-		//unsigned int m_handle;
 		std::string m_name, m_filepath, m_source;
 		std::string m_VSSource, m_FSSource, m_GSSource, m_TCSSource, m_TESSource, m_CSSource;
-
-		ShaderUniformBufferList m_VSUniformBuffers;
-		ShaderUniformBufferList m_FSUniformBuffers;
-		ShaderUniformBufferList m_GSUniformBuffers;
-		ShaderUniformBufferList m_TCSUniformBuffers;
-		ShaderUniformBufferList m_TESUniformBuffers;
-		ShaderUniformBufferList m_CSUniformBuffers;
-		/*std::unique_ptr<VulkanShaderUniformBufferDeclaration> m_VSUserUniformBuffer;
-		std::unique_ptr<VulkanShaderUniformBufferDeclaration> m_FSUserUniformBuffer;
-		std::unique_ptr<VulkanShaderUniformBufferDeclaration> m_GSUserUniformBuffer;
-		std::unique_ptr<VulkanShaderUniformBufferDeclaration> m_TCSUserUniformBuffer;
-		std::unique_ptr<VulkanShaderUniformBufferDeclaration> m_TESUserUniformBuffer;
-		std::unique_ptr<VulkanShaderUniformBufferDeclaration> m_CSUserUniformBuffer;*/
-		ShaderResourceList m_resources;
-		ShaderStructList m_structs;
 
 		static bool s_glslangInitialized;
 
@@ -109,97 +69,6 @@ namespace TRAP::Graphics::API
 
 		std::vector<VkPipelineShaderStageCreateInfo> m_shaderStages;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetVSUniforms() const
-{
-	return m_VSUniformBuffers;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetFSUniforms() const
-{
-	return m_FSUniformBuffers;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetGSUniforms() const
-{
-	return m_GSUniformBuffers;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetTCSUniforms() const
-{
-	return m_TCSUniformBuffers;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetTESUniforms() const
-{
-	return m_TESUniformBuffers;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const TRAP::Graphics::API::ShaderUniformBufferList& TRAP::Graphics::API::VulkanShader::GetCSUniforms() const
-{
-	return m_CSUniformBuffers;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetVSUniformBuffer() const
-{
-	return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetFSUniformBuffer() const
-{
-	return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetGSUniformBuffer() const
-{
-	return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetTCSUniformBuffer() const
-{
-	return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetTESUniformBuffer() const
-{
-	return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const TRAP::Graphics::API::ShaderUniformBufferDeclaration* TRAP::Graphics::API::VulkanShader::GetCSUniformBuffer() const
-{
-	return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const TRAP::Graphics::API::ShaderResourceList& TRAP::Graphics::API::VulkanShader::GetResource() const
-{
-	return m_resources;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

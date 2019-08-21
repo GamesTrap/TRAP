@@ -127,7 +127,7 @@ public:
 					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray);
 				else
 				{
-					TRAP::Graphics::TextureManager::Get("Debug")->Bind();					
+					TRAP::Graphics::TextureManager::Get("Debug")->Bind();
 					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Texture"), m_vertexArray);
 				}
 			}
