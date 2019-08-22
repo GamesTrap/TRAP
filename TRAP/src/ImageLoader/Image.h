@@ -89,7 +89,7 @@ std::vector<T> TRAP::Image::FlipY(const unsigned int width, const unsigned int h
 	else if (format == ImageFormat::RGBA)
 		newData.assign(data, data + width * height * 4);
 
-	for (yt = 0, yb = height - 1; yt <= yb; yt++, yb--)
+	for (yt = 0, yb = height - 1; yt < yb; yt++, yb--)
 		for (unsigned int x = 0; x < width; x++)
 		{
 			if (format == ImageFormat::Gray_Scale)
@@ -159,7 +159,7 @@ std::vector<T> TRAP::Image::FlipX(const unsigned int width, const unsigned int h
 	else if (format == ImageFormat::RGBA)
 		newData.assign(data, data + width * height * 4);
 
-	for (xt = 0, xb = width - 1; xt <= xb; xt++, xb--)
+	for (xt = 0, xb = width - 1; xt < xb; xt++, xb--)
 		for (unsigned int y = 0; y < height; y++)
 		{
 			if (format == ImageFormat::Gray_Scale)

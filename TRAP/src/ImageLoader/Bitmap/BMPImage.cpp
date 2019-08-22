@@ -5,6 +5,7 @@
 #include "VFS/VFS.h"
 #include "VFS/FileSystem.h"
 #include "Maths/Maths.h"
+#include "ImageLoader/TARGA/TGAImage.h"
 
 TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 	: m_filepath(std::move(filepath)),
@@ -105,7 +106,6 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		m_width = infoHeader.Width;
 		m_bitsPerPixel = infoHeader.BitsPerPixel;
 
-		//Load Color Table into vector with RGBA Format
 		if (m_bitsPerPixel <= 8 && !infoHeader.CLRUsed)
 		{
 			TP_ERROR("[Image][BMP] No color stored in color table!");
@@ -123,13 +123,28 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		uint8_t temp;
 		if (m_bitsPerPixel <= 8)
 		{
-			colorTable.reserve(4 * infoHeader.CLRUsed);
+			//colorTable.reserve(4 * infoHeader.CLRUsed);
+			colorTable.resize(256);
 
 			for (unsigned int i = 0; i < 4 * infoHeader.CLRUsed; i++)
 			{
 				file.read(reinterpret_cast<char*>(&temp), sizeof(uint8_t));
-				colorTable.emplace_back(temp);
+				colorTable[i] = temp;
 			}
+
+			//Check if alpha is used
+			bool alphaUsed = false;
+			for (unsigned int i = 3; i < colorTable.size() - 1; i += 4)
+				if (colorTable[i] > 0)
+				{
+					alphaUsed = true;
+					break;
+				}
+
+			//If alpha is unused set all alpha bytes to 255
+			if (!alphaUsed)
+				for (unsigned int i = 3; i < colorTable.size() - 1; i += 4)
+					colorTable[i] = 255;
 		}
 
 		//Load Pixel Data(BGRA) into vector
@@ -178,11 +193,11 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 				m_isImageColored = true;
 				m_bitsPerPixel = 32;
 				m_hasAlphaChannel = true;
-				m_data = DecodeBGRAMap(imageData, m_width, m_height, 4, colorTable);
+				
 				//Check if alpha is used
 				bool alphaUsed = false;
-				for (unsigned int i = 3; i < m_data.size(); i += 4)
-					if (m_data[i] > 0)
+				for (unsigned int i = 3; i < imageData.size() - 1; i += 4)
+					if (imageData[i] > 0)
 					{
 						alphaUsed = true;
 						break;
@@ -190,8 +205,10 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 
 				//If alpha is unused set all alpha bytes to 255
 				if (!alphaUsed)
-					for (unsigned int i = 3; i < m_data.size(); i += 4)
-						m_data[i] = 255;
+					for (unsigned int i = 3; i < imageData.size() - 1; i += 4)
+						imageData[i] = 255;
+				
+				m_data = DecodeBGRAMap(imageData, m_width, m_height, 4, colorTable);
 			}
 			else if (m_bitsPerPixel == 16) //RGB
 			{				
@@ -237,7 +254,21 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			m_bitsPerPixel = 32;
 			m_format = ImageFormat::RGBA;
 
-			//m_data = DecodeRLEBGRAMap(imageData, m_width, m_height, 4, colorTable);
+			//Check if alpha is used
+			bool alphaUsed = false;
+			for (unsigned int i = 3; i < imageData.size() - 1; i += 4)
+				if (imageData[i] > 0)
+				{
+					alphaUsed = true;
+					break;
+				}
+
+			//If alpha is unused set all alpha bytes to 255
+			if (!alphaUsed)
+				for (unsigned int i = 3; i < imageData.size() - 1; i += 4)
+					imageData[i] = 255;
+
+			//m_data = DecodeRLEBGRAMap(imageData, m_width, m_height, 4, colorTable); //TODO Function bugged?
 		}
 		else if (infoHeader.Compression == 2) //RLE 4
 		{

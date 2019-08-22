@@ -5,7 +5,7 @@
 #include "ImageLoader/Image.h"
 
 namespace TRAP::INTERNAL
-{
+{	
 	class TGAImage final : public Image
 	{
 	public:
