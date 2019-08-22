@@ -183,7 +183,7 @@ void TRAP::Graphics::API::OpenGLShader::CheckForUniforms()
 			{
 				if (!IsTypeOpaque(type)) //Check if is Non-Opaque type
 				{
-					TP_ERROR("[Shader][OpenGL] Non-Opaque Uniform: \"", uniformName, "\" found! This is unsupported because of SPIR-V support!");
+					TP_ERROR("[Shader][OpenGL] Non-Opaque Uniform: \"", uniformName.get(), "\" found! This is unsupported because of SPIR-V support!");
 					error = true;
 				}
 			}

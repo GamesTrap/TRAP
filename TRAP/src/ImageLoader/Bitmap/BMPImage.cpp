@@ -237,14 +237,11 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			m_bitsPerPixel = 32;
 			m_format = ImageFormat::RGBA;
 
-			TP_ERROR("[Image][BMP] RLE 8 support is not available yet");
-			TP_WARN("[Image][BMP] Using Default Image!");
-			return;
+			//m_data = DecodeRLEBGRAMap(imageData, m_width, m_height, 4, colorTable);
 		}
 		else if (infoHeader.Compression == 2) //RLE 4
 		{
-			//TODO
-			TP_ERROR("[Image][BMP] RLE 4 support is not available yet");
+			TP_ERROR("[Image][BMP] RLE 4 is unsupported!");
 			TP_WARN("[Image][BMP] Using Default Image!");
 			return;
 		}
