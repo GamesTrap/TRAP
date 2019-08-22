@@ -301,3 +301,4 @@ SITREP 08/22/2019|19w34a4
     - Changed TRAP Engine version to 19w34a4(0.5.17)
     - Removed support for Non-Opaque Uniforms in GLSL Shaders(Use UBOs instead) ~>45 mins 
     - Added support for custom window icon with TRAP::Image ~>20 mins
+    - Simplified Compile function from OpenGLShader ~>30 mins

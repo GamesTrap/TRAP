@@ -37,6 +37,27 @@ namespace TRAP::Graphics::API
 
 	private:
 		static unsigned int Compile(std::array<std::string*, 6>& shaders);
+		
+		static bool CompileShader(ShaderType type, const char* source, unsigned int& handle);
+		static bool CreateProgram(std::array<std::string*, 6>& shaders,
+		                          unsigned int& vertex,
+		                          unsigned int& fragment,
+		                          unsigned int& geometry,
+		                          unsigned int& tessControl,
+		                          unsigned int& tessEval,
+		                          unsigned int& compute,
+		                          unsigned int& handle);
+		static void LinkProgram(int& linkResult, int& validateResult, const unsigned int& handle);
+		static void DeleteShaders(std::array<std::string*, 6>& shaders,
+		                          const unsigned int& vertex,
+		                          const unsigned int& fragment,
+		                          const unsigned int& geometry,
+		                          const unsigned int& tessControl,
+		                          const unsigned int& tessEval,
+		                          const unsigned int& compute,
+								  const unsigned int& handle);
+
+		static GLenum ShaderTypeToOpenGL(ShaderType type);
 
 		static bool IsTypeOpaque(GLenum type);
 

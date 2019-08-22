@@ -116,3 +116,32 @@ std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource
 		return nullptr;
 	}
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Graphics::Shader::ShaderTypeToString(const ShaderType type)
+{
+	switch(type)
+	{
+	case ShaderType::Vertex:
+		return "VertexShader";
+
+	case ShaderType::Fragment:
+		return "FragmentShader";
+
+	case ShaderType::Geometry:
+		return "GeometryShade";
+
+	case ShaderType::Tessellation_Control:
+		return "TessellationControlShader";
+
+	case ShaderType::Tessellation_Evaluation:
+		return "TessellationEvaluationShader";
+
+	case ShaderType::Compute:
+		return "ComputeShader";
+		
+	default:
+		return "";
+	}
+}
