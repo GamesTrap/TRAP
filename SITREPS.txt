@@ -304,3 +304,4 @@ SITREP 08/22/2019|19w34a4
     - Simplified Compile function from OpenGLShader ~>30 mins
     - Added support for 16BPP Indexed (RLE) TGA Image Files ~>45 mins
     - Fixed bug in DecodeBGRAMap & DecodeRLEBGRAMap ~<5 mins
+    - Added Support for BMPV5 BitField Images ~>60 mins

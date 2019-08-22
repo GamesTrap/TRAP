@@ -50,7 +50,7 @@ public:
 
 		//EXPERIMENTAL
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
-		TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture2D::CreateFromFile("Debug", "/Textures/BMPTests/rle8-absolute-320x240.bmp"));
+		TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture2D::CreateFromFile("Debug", "/Textures/BMPTests/spaces in  filename.bmp"));
 		//////////////
 
 		///////////////

@@ -63,7 +63,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			int32_t Height = 0;
 			uint16_t Planes = 0; //Always 1
 			uint16_t BitsPerPixel = 0; //1, 4, 8, 16, 24, 32
-			uint32_t Compression = 0; //0 = Uncompressed | 1 = RLE 8BPP | 2 = RLE 4BPP | 3 = Bitfields
+			uint32_t Compression = 0; //0 = Uncompressed | 1 = RLE 8BPP | 2 = RLE 4BPP | 3 = BitFields
 			uint32_t SizeImage = 0; //Size of the image in bytes
 			int32_t XPixelsPerMeter = 0;
 			int32_t YPixelsPerMeter = 0;
@@ -81,6 +81,22 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		file.read(reinterpret_cast<char*>(&infoHeader.YPixelsPerMeter), sizeof(int32_t));
 		file.read(reinterpret_cast<char*>(&infoHeader.CLRUsed), sizeof(uint32_t));
 		file.read(reinterpret_cast<char*>(&infoHeader.CLRImportant), sizeof(uint32_t));
+
+		std::array<uint32_t, 4> masks{};
+		if(infoHeader.Compression == 3) //BitFields
+		{
+			if (infoHeader.Size == 40)
+			{
+				TP_ERROR("[Image][BMP] Only BMPV5 Images with BitFields are supported!");
+				TP_WARN("[Image][BMP] Using Default Image!");
+				return;
+			}
+			
+			file.read(reinterpret_cast<char*>(&masks[0]), sizeof(uint32_t));
+			file.read(reinterpret_cast<char*>(&masks[1]), sizeof(uint32_t));
+			file.read(reinterpret_cast<char*>(&masks[2]), sizeof(uint32_t));
+			file.read(reinterpret_cast<char*>(&masks[3]), sizeof(uint32_t));
+		}		
 
 		if (infoHeader.Width < 1)
 		{
@@ -123,28 +139,13 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		uint8_t temp;
 		if (m_bitsPerPixel <= 8)
 		{
-			//colorTable.reserve(4 * infoHeader.CLRUsed);
-			colorTable.resize(256);
+			colorTable.reserve(4 * infoHeader.CLRUsed);
 
 			for (unsigned int i = 0; i < 4 * infoHeader.CLRUsed; i++)
 			{
 				file.read(reinterpret_cast<char*>(&temp), sizeof(uint8_t));
-				colorTable[i] = temp;
+				colorTable.emplace_back(temp);
 			}
-
-			//Check if alpha is used
-			bool alphaUsed = false;
-			for (unsigned int i = 3; i < colorTable.size() - 1; i += 4)
-				if (colorTable[i] > 0)
-				{
-					alphaUsed = true;
-					break;
-				}
-
-			//If alpha is unused set all alpha bytes to 255
-			if (!alphaUsed)
-				for (unsigned int i = 3; i < colorTable.size() - 1; i += 4)
-					colorTable[i] = 255;
 		}
 
 		//Load Pixel Data(BGRA) into vector
@@ -254,21 +255,10 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			m_bitsPerPixel = 32;
 			m_format = ImageFormat::RGBA;
 
-			//Check if alpha is used
-			bool alphaUsed = false;
-			for (unsigned int i = 3; i < imageData.size() - 1; i += 4)
-				if (imageData[i] > 0)
-				{
-					alphaUsed = true;
-					break;
-				}
-
-			//If alpha is unused set all alpha bytes to 255
-			if (!alphaUsed)
-				for (unsigned int i = 3; i < imageData.size() - 1; i += 4)
-					imageData[i] = 255;
-
-			//m_data = DecodeRLEBGRAMap(imageData, m_width, m_height, 4, colorTable); //TODO Function bugged?
+			//m_data = DecodeRLEBGRAMap(imageData, m_width, m_height, 4, colorTable); //TODO doesnt work with BMPs RLE
+			TP_ERROR("[Image][BMP] RLE 8 is WIP!");
+			TP_WARN("[Image][BMP] Using Default Image!");
+			return;
 		}
 		else if (infoHeader.Compression == 2) //RLE 4
 		{
@@ -276,13 +266,86 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			TP_WARN("[Image][BMP] Using Default Image!");
 			return;
 		}
-		else if (infoHeader.Compression == 3) //BITFIELDS
+		else if (infoHeader.Compression == 3) //BitFields
 		{
 			m_isImageCompressed = true;
-			//TODO
-			TP_ERROR("[Image][BMP] Bitfields support is not available yet");
-			TP_WARN("[Image][BMP] Using Default Image!");
-			return;
+			m_isImageColored = true;
+			m_hasAlphaChannel = true;
+			m_format = ImageFormat::RGBA;
+
+			std::array<BitField, 4> bitFields{};
+
+			std::vector<uint8_t> data{};
+			data.reserve(m_width* m_height* m_bitsPerPixel / 8);
+			if(m_bitsPerPixel == 32)
+			{
+				if(!ValidateBitFields(bitFields, masks))
+				{
+					TP_ERROR("[Image][BMP] Invalid BitFields!");
+					TP_WARN("[Image][BMP] Using Default Image!");
+					return;
+				}
+				
+				for (uint32_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
+				{
+					uint32_t value = static_cast<uint32_t>(imageData[i]) +
+						(static_cast<uint32_t>(imageData[i + 1]) << 8) +
+						(static_cast<uint32_t>(imageData[i + 2]) << 16) +
+						(static_cast<uint32_t>(imageData[i + 3]) << 24);
+
+					data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[0]), bitFields[0].Span));
+					data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[1]), bitFields[1].Span));
+					data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[2]), bitFields[2].Span));
+					if (GetBytesPerPixel() == 4)
+					{
+						if (bitFields[3].Span)
+							data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[3]), bitFields[3].Span));
+						else
+							data.emplace_back(255);
+					}
+
+					i += 4;
+				}
+			}
+			else if(m_bitsPerPixel == 16)
+			{
+				if (!ValidateBitFields(bitFields, masks))
+				{
+					TP_ERROR("[Image][BMP] Invalid BitFields!");
+					TP_WARN("[Image][BMP] Using Default Image!");
+					return;
+				}
+
+				for (uint32_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
+				{
+					uint16_t value = static_cast<uint16_t>(imageData[i]) +
+							         static_cast<uint16_t>(imageData[i + 1] << 8);
+
+					data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[0]), bitFields[0].Span));
+					data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[1]), bitFields[1].Span));
+					data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[2]), bitFields[2].Span));
+					if(GetBytesPerPixel() == 4)
+					{
+						if (bitFields[3].Span)
+							data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[3]), bitFields[3].Span));
+						else
+							data.emplace_back(255);
+					}
+
+					i += 2;
+				}
+				
+				m_data = data;
+				m_bitsPerPixel = 32;
+			}
+			else
+			{
+				TP_ERROR("[Image][BMP] Invalid BitsPerPixel for BitField Image!");
+				TP_WARN("[Image][BMP] Using Default Image!");
+				return;
+			}
+
+			m_data = data;
 		}
 
 		if (needYFlip)
@@ -381,4 +444,100 @@ std::string TRAP::INTERNAL::BMPImage::GetFilePath() const
 TRAP::ImageFormat TRAP::INTERNAL::BMPImage::GetFormat() const
 {
 	return m_format;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::BMPImage::ValidateBitFields(std::array<BitField, 4>& bitFields, std::array<uint32_t, 4>& masks) const
+{
+	BitField* bf = bitFields.data();
+
+	uint32_t totalMask = 0;
+	BitField totalField{};
+
+	for(int i = 0; i < 4; i++)
+	{
+		//No overlapping masks.
+		if (totalMask & masks[i])
+			return false;
+		totalMask |= masks[i];
+
+		if (!ParseBitfield(bf[i], masks[i]))
+			return false;
+
+		//Make sure it fits in bit size
+		if (bf[i].Start + bf[i].Span > m_bitsPerPixel)
+			return false;
+	}
+
+	if (!totalMask)
+		return false;
+
+	//Check for contiguous-ity between fields, too.
+	if (!ParseBitfield(totalField, totalMask))
+		return false;
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::BMPImage::ParseBitfield(BitField& field, const uint32_t mask)
+{
+	uint32_t bit;
+	for (bit = 0; bit < 32 && !(mask & (uint32_t(1) << bit)); bit++)
+		;
+
+	if(bit >= 32)
+	{
+		//Absent BitMasks are valid.
+		field.Start = field.Span = 0;
+		return true;
+	}
+
+	field.Start = bit;
+	for (; bit < 32 && (mask & (uint32_t(1) << bit)); bit++)
+		;
+	field.Span = bit - field.Start;
+
+	//If there are more set bits, there was a gap, which is invalid
+	if (bit < 32 && (mask & ~((uint32_t(1) << bit) - 1)))
+		return false;
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint8_t TRAP::INTERNAL::BMPImage::Make8Bits(uint32_t value, const uint32_t bitSpan)
+{
+	uint32_t output = 0;
+
+	if (bitSpan == 8)
+		return static_cast<uint8_t>(value);
+	if (bitSpan > 8)
+		return static_cast<uint8_t>(value >> (bitSpan - 8));
+
+	value <<= (8 - bitSpan); //Shift it up intro the most significant bits.
+	while(value)
+	{
+		output |= value;
+		value >>= bitSpan;
+	}
+
+	return static_cast<uint8_t>(output);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint16_t x, BitField& bitField)
+{
+	return static_cast<uint32_t>(x >> bitField.Start & (uint32_t(1) << bitField.Span) - 1);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint32_t x, BitField& bitField)
+{
+	return static_cast<uint32_t>(x >> bitField.Start & (uint32_t(1) << bitField.Span) - 1);
 }

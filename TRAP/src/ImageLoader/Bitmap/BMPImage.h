@@ -26,6 +26,17 @@ namespace TRAP::INTERNAL
 		ImageFormat GetFormat() const override;
 
 	private:
+		typedef struct Bitfield
+		{
+			uint32_t Start;
+			uint32_t Span;
+		} BitField;
+		bool ValidateBitFields(std::array<BitField, 4>& bitFields, std::array<uint32_t, 4>& masks) const;
+		static bool ParseBitfield(BitField& field, uint32_t mask);
+		static uint8_t Make8Bits(uint32_t value, uint32_t bitSpan);
+		static uint32_t ApplyBitField(uint32_t x, BitField& bitField);
+		static uint32_t ApplyBitField(uint16_t x, BitField& bitField);
+		
 		std::string m_filepath;
 		uint32_t m_bitsPerPixel;
 		uint32_t m_width;
