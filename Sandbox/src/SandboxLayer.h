@@ -51,6 +51,9 @@ public:
 		//EXPERIMENTAL
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
 		TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture2D::CreateFromFile("Debug", "/Textures/Debug3.tga"));
+
+		const std::unique_ptr<TRAP::Image> icon = TRAP::Image::LoadFromFile("/Textures/Debug3.tga");
+		TRAP::Application::Get().GetWindow()->SetIcon(icon);
 		//////////////
 
 		///////////////

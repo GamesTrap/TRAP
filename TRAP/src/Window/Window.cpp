@@ -417,11 +417,44 @@ void TRAP::Window::SetMonitor(const unsigned int monitor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetIcon(const unsigned int width, const unsigned int height, uint8_t *pixels) const
+void TRAP::Window::SetIcon() const
 {
-	GLFWimage image{static_cast<int>(width), static_cast<int>(height), pixels};
+	GLFWimage image{32, 32, Utils::TRAPLogo.data()};
 	glfwSetWindowIcon(m_window, 1, &image);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetIcon(const std::unique_ptr<Image>& image) const
+{
+	if (image->IsHDR())
+	{
+		TP_ERROR("[Window][Icon] HDR is not supported for window icons!");
+		TP_WARN("[Window][Icon] Using Default Icon!");
+		SetIcon();
+		return;
+	}
+	if ((image->IsImageGrayScale() && image->GetBitsPerPixel() == 16 && !image->HasAlphaChannel()) ||
+		(image->IsImageGrayScale() && image->GetBitsPerPixel() == 24 && image->HasAlphaChannel()) ||
+		(image->IsImageColored() && image->GetBitsPerPixel() == 48 && !image->HasAlphaChannel()) ||
+		(image->IsImageColored() && image->GetBitsPerPixel() == 64 && image->HasAlphaChannel()))
+	{
+		TP_ERROR("[Window][Icon] Images with short pixel data are not supported for window icons!");
+		TP_WARN("[Window][Icon] Using Default Icon!");
+		SetIcon();
+		return;
+	}
+	if(image->GetFormat() != ImageFormat::RGBA)
+	{
+		TP_ERROR("[Window][Icon] Only RGBA Images are supported for window icons!");
+		TP_WARN("[Window][Icon] Using Default Icon!");
+		SetIcon();
+		return;
+	}
+	
+	GLFWimage glfwImage{ static_cast<int32_t>(image->GetWidth()), static_cast<int32_t>(image->GetHeight()), static_cast<uint8_t*>(image->GetPixelData()) };
+	glfwSetWindowIcon(m_window, 1, &glfwImage);
+};
 
 //-------------------------------------------------------------------------------------------------------------------//
 

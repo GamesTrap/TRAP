@@ -8,6 +8,7 @@
 
 #include "Event/Event.h"
 #include "Utils/Logo.h"
+#include "ImageLoader/Image.h"
 
 namespace TRAP
 {
@@ -81,7 +82,8 @@ namespace TRAP
 		                   unsigned int height = 0,
 		                   unsigned int refreshRate = 0);
 		void SetMonitor(unsigned int monitor = 0);
-		void SetIcon(unsigned int width = 32, unsigned int height = 32, uint8_t* pixels = Utils::TRAPLogo.data()) const; //TODO Replace pixels with TRAP::Image objects?
+		void SetIcon() const;
+		void SetIcon(const std::unique_ptr<Image>& image) const;
 
 		void* GetNativeWindow() const;
 
