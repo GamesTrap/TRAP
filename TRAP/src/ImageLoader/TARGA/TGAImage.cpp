@@ -132,9 +132,14 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			}
 			if (header.BitsPerPixel == 8)
 			{
-				m_data = DecoeBGRAMap(colorMapData.ImageData, m_width, m_height, header.ColorMapDepth / 8, colorMapData.ColorMap);
+				m_data = DecodeBGRAMap(colorMapData.ImageData, m_width, m_height, header.ColorMapDepth / 8, colorMapData.ColorMap);
 				m_bitsPerPixel = header.ColorMapDepth;
-				if (m_bitsPerPixel == 24)
+				if(m_bitsPerPixel == 16)
+				{
+					m_imageFormat = ImageFormat::RGB;
+					m_bitsPerPixel = 24;
+				}
+				else if (m_bitsPerPixel == 24)
 					m_imageFormat = ImageFormat::RGB;					
 				else if (m_bitsPerPixel == 32)
 				{
@@ -149,7 +154,6 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 		case 9:
 		{
 			m_isImageColored = true;
-			m_imageFormat = ImageFormat::RGB;
 			m_isImageCompressed = true;
 			if (header.BitsPerPixel > 8)
 			{
@@ -161,6 +165,11 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			{
 				m_data = DecodeRLEBGRAMap(colorMapData.ImageData, m_width, m_height, header.ColorMapDepth / 8, colorMapData.ColorMap);
 				m_bitsPerPixel = header.ColorMapDepth;
+				if(m_bitsPerPixel == 16)
+				{
+					m_imageFormat = ImageFormat::RGB;
+					m_bitsPerPixel = 24;
+				}
 				if (m_bitsPerPixel == 24)
 					m_imageFormat = ImageFormat::RGB;
 				else if (m_bitsPerPixel == 32)
@@ -168,9 +177,6 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 					m_imageFormat = ImageFormat::RGBA;
 					m_hasAlphaChannel = true;
 				}
-				TP_CRITICAL("[Image][TGA] Compressed(RLE) ColorMapped is WIP");
-				TP_WARN("[Image][TGA] Using Default Image!");
-				return;
 			}
 			break;
 		}
@@ -214,7 +220,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			case 16:
 			{
 				m_imageFormat = ImageFormat::RGB;
-				m_data = ConvertBGR16ToRGB16(colorMapData.ImageData, m_width, m_height);
+				m_bitsPerPixel = 24;
+				m_data = ConvertBGR16ToRGB24(colorMapData.ImageData, m_width, m_height);
 				break;
 			}
 
@@ -249,7 +256,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			case 16:
 			{
 				m_imageFormat = ImageFormat::RGB;
-				m_data = ConvertRLEBGR16ToRGB(colorMapData.ImageData, m_width, m_height);
+				m_bitsPerPixel = 24;
+				m_data = ConvertRLEBGR16ToRGB24(colorMapData.ImageData, m_width, m_height);
 				break;
 			}
 

@@ -6,13 +6,13 @@
 
 namespace TRAP::INTERNAL
 {
-	std::vector<uint8_t> ConvertBGR16ToRGB16(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
+	std::vector<uint8_t> ConvertBGR16ToRGB24(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
 	std::vector<uint8_t> ConvertBGR24ToRGB24(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
 	std::vector<uint8_t> ConvertBGRA32ToRGBA32(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
-	std::vector<uint8_t> DecoeBGRAMap(std::vector<uint8_t>& source, uint32_t width, uint32_t height, uint32_t channels, std::vector<uint8_t>& colorMap);
+	std::vector<uint8_t> DecodeBGRAMap(std::vector<uint8_t>& source, uint32_t width, uint32_t height, uint32_t channels, std::vector<uint8_t>& colorMap);
 	std::vector<uint8_t> DecodeRLEBGRAMap(std::vector<uint8_t>& source, uint32_t width, uint32_t height, uint32_t channels, std::vector<uint8_t>& colorMap);
 	std::vector<uint8_t> DecodeRLEGrayScale(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
-	std::vector<uint8_t> ConvertRLEBGR16ToRGB(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
+	std::vector<uint8_t> ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
 	std::vector<uint8_t> ConvertRLEBGR24ToRGB(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
 	std::vector<uint8_t> ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
 }

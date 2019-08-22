@@ -59,7 +59,7 @@ std::unique_ptr<TRAP::Image> TRAP::Image::LoadFallback()
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR16ToRGB16(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	std::vector<uint8_t> data{};
 	data.reserve(width * height * 3);
@@ -87,7 +87,7 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR24ToRGB24(std::vector<uint8_t>& s
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::vector<uint8_t> TRAP::INTERNAL::ConvertBGRA32ToRGBA32(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
-{
+{	
 	for (unsigned int i = 0; i < width * height * 4; i += 4)
 		source[i] ^= source[i + 2] ^= source[i] ^= source[i + 2];
 
@@ -96,7 +96,7 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertBGRA32ToRGBA32(std::vector<uint8_t>&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::DecoeBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
+std::vector<uint8_t> TRAP::INTERNAL::DecodeBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
 {
 	std::vector<uint8_t> data{};
 	data.reserve(width * height * channels);
@@ -105,6 +105,12 @@ std::vector<uint8_t> TRAP::INTERNAL::DecoeBGRAMap(std::vector<uint8_t>& source, 
 	{
 		if (channels == 1)
 			data.emplace_back(colorMap[source[i] * channels]);
+		else if (channels == 2)
+		{
+			data.emplace_back((colorMap[source[i] * channels + 1] << 1) & 0xF8);
+			data.emplace_back(((colorMap[source[i] * channels + 1] << 6) | (colorMap[source[i] * channels] >> 2)) & 0xF8);
+			data.emplace_back((colorMap[source[i] * channels] << 3) & 0xF8);
+		}
 		else if (channels == 3)
 		{
 			data.emplace_back(colorMap[source[i] * channels + 2]);
@@ -152,6 +158,12 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEBGRAMap(std::vector<uint8_t>& sour
 			{
 				data.emplace_back(colorMap[source[i] * channels]);
 				l++;
+			}
+			else if (channels == 2)
+			{
+				data.emplace_back((colorMap[source[i] * channels + 1] << 1) & 0xF8);
+				data.emplace_back(((colorMap[source[i] * channels + 1] << 6) | (colorMap[source[i] * channels] >> 2)) & 0xF8);
+				data.emplace_back((colorMap[source[i] * channels] << 3) & 0xF8);
 			}
 			else if (channels == 3)
 			{
@@ -219,7 +231,7 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEGrayScale(std::vector<uint8_t>& so
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR16ToRGB(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	std::vector<uint8_t> data{};
 	data.reserve(width * height * 3);

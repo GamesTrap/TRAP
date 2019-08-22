@@ -178,7 +178,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 				m_isImageColored = true;
 				m_bitsPerPixel = 32;
 				m_hasAlphaChannel = true;
-				m_data = DecoeBGRAMap(imageData, m_width, m_height, 4, colorTable);
+				m_data = DecodeBGRAMap(imageData, m_width, m_height, 4, colorTable);
 				//Check if alpha is used
 				bool alphaUsed = false;
 				for (unsigned int i = 3; i < m_data.size(); i += 4)
@@ -198,7 +198,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 				m_format = ImageFormat::RGB;
 				m_isImageColored = true;
 				m_bitsPerPixel = 24;
-				m_data = ConvertBGR16ToRGB16(imageData, m_width, m_height);
+				m_data = ConvertBGR16ToRGB24(imageData, m_width, m_height);
 			}
 			else if (m_bitsPerPixel == 24) //RGB
 			{				
