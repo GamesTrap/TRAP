@@ -305,3 +305,7 @@ SITREP 08/22/2019|19w34a4
     - Added support for 16BPP Indexed (RLE) TGA Image Files ~>45 mins
     - Fixed bug in DecodeBGRAMap & DecodeRLEBGRAMap ~<5 mins
     - Added Support for BMPV5 BitField Images ~>60 mins
+
+SITREP 08/23/2019|19w34a5
+    - Added Multi-Window support ~> 100 mins
+    - Changed Events system so it now passes current window title through ~>30 mins

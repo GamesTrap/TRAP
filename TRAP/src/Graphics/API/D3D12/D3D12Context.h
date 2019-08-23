@@ -21,6 +21,8 @@ namespace TRAP::Graphics::API
 
 		void Present(Window* window);
 
+		void UseInternal(Window* window) override;
+
 		static D3D12Context* Get();
 
 		static bool IsD3D12Capable();

@@ -2,19 +2,21 @@
 #define _TRAP_APPLICATIONEVENT_H_
 
 #include "Event.h"
+#include <utility>
 
 namespace TRAP
 {
 	class WindowResizeEvent final : public Event
 	{
 	public:
-		WindowResizeEvent(const unsigned int width, const unsigned int height)
-			: m_width(width), m_height(height)
+		WindowResizeEvent(const unsigned int width, const unsigned int height, std::string title)
+			: m_width(width), m_height(height), m_title(std::move(title))
 		{			
 		}
 
 		unsigned int GetWidth() const;
 		unsigned int GetHeight() const;
+		std::string GetTitle() const;
 
 		std::string ToString() const override
 		{
@@ -31,29 +33,39 @@ namespace TRAP
 
 	private:
 		unsigned int m_width, m_height;
+		std::string m_title;
 	};
 
 	class WindowCloseEvent final : public Event
 	{
 	public:
-		WindowCloseEvent() = default;
+		explicit WindowCloseEvent(std::string title)
+			: m_title(std::move(title))
+		{			
+		}
+
+		std::string GetTitle() const;
 
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
 		int GetCategoryFlags() const override;
+
+	private:
+		std::string m_title;
 	};
 
 	class WindowMovedEvent final : public Event
 	{
 	public:
-		WindowMovedEvent(const int x, const int y)
-			: m_x(x), m_y(y)
+		WindowMovedEvent(const int x, const int y, std::string title)
+			: m_x(x), m_y(y), m_title(std::move(title))
 		{			
 		}
 
 		int GetX() const;
 		int GetY() const;
+		std::string GetTitle() const;
 
 		std::string ToString() const override
 		{
@@ -70,28 +82,45 @@ namespace TRAP
 
 	private:
 		int m_x, m_y;
+		std::string m_title;
 	};
 
 	class WindowFocusEvent final : public Event
 	{
 	public:
-		WindowFocusEvent() = default;
+		explicit WindowFocusEvent(std::string title)
+			: m_title(std::move(title))
+		{			
+		}
 
+		std::string GetTitle() const;
+		
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
 		int GetCategoryFlags() const override;
+
+	private:
+		std::string m_title;
 	};
 
 	class WindowLostFocusEvent final : public Event
 	{
 	public:
-		WindowLostFocusEvent() = default;
+		explicit WindowLostFocusEvent(std::string title)
+			: m_title(std::move(title))
+		{			
+		}
+
+		std::string GetTitle() const;
 
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
 		int GetCategoryFlags() const override;
+
+	private:
+		std::string m_title;
 	};
 
 	class AppTickEvent final : public Event
@@ -378,6 +407,41 @@ inline const char* TRAP::AppRenderEvent::GetName() const
 inline int TRAP::AppRenderEvent::GetCategoryFlags() const
 {
 	return static_cast<int>(EventCategory::EventCategoryApplication);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string TRAP::WindowResizeEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string TRAP::WindowCloseEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string TRAP::WindowMovedEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string TRAP::WindowFocusEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string TRAP::WindowLostFocusEvent::GetTitle() const
+{
+	return m_title;
 }
 
 #endif /*_TRAP_APPLICATIONEVENT_H_*/

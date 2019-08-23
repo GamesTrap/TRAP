@@ -43,6 +43,14 @@ void TRAP::Graphics::API::OpenGLContext::Present(Window* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::OpenGLContext::UseInternal(Window* window)
+{
+	if (Window::GetActiveWindows() > 1)
+		glfwMakeContextCurrent(static_cast<GLFWwindow*>(window->GetNativeWindow()));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::Graphics::API::OpenGLContext::IsOpenGLCapable()
 {
 	//Create OpenGL 4.6 Test window

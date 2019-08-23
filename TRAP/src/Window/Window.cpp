@@ -14,6 +14,10 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+uint32_t TRAP::Window::s_windows = 0;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 static void GLFWErrorCallback(const int error, const char *description)
 {
 	TP_ERROR("[Window][GLFW] (", error, "): ", description);
@@ -26,10 +30,20 @@ TRAP::Window::Window(const WindowProps &props)
 {
 	std::string init = "[Window] Initializing Window: \"" + props.Title + "\" " + std::to_string(props.Width) + 'x' +
 					   std::to_string(props.Height) + "@" + std::to_string(props.RefreshRate) + "Hz VSync: ";
-	if (props.VSync > 0)
-		init += "On(" + std::to_string(props.VSync) + ") Mode: ";
+	if(s_windows > 0)
+	{
+		if (Graphics::API::Context::GetVSyncInterval() > 0)
+			init += "On(" + std::to_string(Graphics::API::Context::GetVSyncInterval()) + ") Mode: ";
+		else
+			init += "Off Mode: ";
+	}
 	else
-		init += "Off Mode: ";
+	{
+		if (props.VSync > 0)
+			init += "On(" + std::to_string(props.VSync) + ") Mode: ";
+		else
+			init += "Off Mode: ";
+	}
 
 	if (props.Mode == DisplayMode::Windowed)
 		init += "Windowed";
@@ -48,11 +62,18 @@ TRAP::Window::Window(const WindowProps &props)
 
 TRAP::Window::~Window()
 {
-	Graphics::Renderer::Cleanup();
-	Graphics::TextureManager::Shutdown();
-	Graphics::ShaderManager::Shutdown();
-	Graphics::API::RendererAPI::Shutdown();
-	Graphics::API::Context::Shutdown();
+	if (s_windows > 1)
+		Use();
+	s_windows--;
+
+	if(!s_windows)
+	{
+		Graphics::Renderer::Cleanup();
+		Graphics::TextureManager::Shutdown();
+		Graphics::ShaderManager::Shutdown();
+		Graphics::API::RendererAPI::Shutdown();
+		Graphics::API::Context::Shutdown();		
+	}
 	TP_DEBUG("[Window] Destroying Window: \"", m_data.Title, "\"");
 	Shutdown();
 }
@@ -86,46 +107,49 @@ void TRAP::Window::Init(const WindowProps &props)
 
 	glfwDefaultWindowHints();
 
-	if (props.RenderAPI == Graphics::API::RenderAPI::NONE)
-		Graphics::API::Context::AutoSelectRenderAPI();
-	else
+	if (!s_windows)
 	{
-		if (Graphics::API::Context::IsSupported(props.RenderAPI))
-			Graphics::API::Context::SetRenderAPI(props.RenderAPI);
+		if (props.RenderAPI == Graphics::API::RenderAPI::NONE)
+			Graphics::API::Context::AutoSelectRenderAPI();
 		else
 		{
-			if (Graphics::API::Context::IsD3D12Capable())
-				Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::D3D12);
-			else if (Graphics::API::Context::IsVulkanCapable())
-				Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::Vulkan);
-			else if (Graphics::API::Context::IsOpenGLCapable())
-				Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::OpenGL);
+			if (Graphics::API::Context::IsSupported(props.RenderAPI))
+				Graphics::API::Context::SetRenderAPI(props.RenderAPI);
 			else
 			{
-				//All RenderAPIs are unsupported
-				Show("Every RenderAPI that TRAP Engine uses is unsupported on your device!\nDoes your system meet the minimum system requirements for running TRAP Engine?",
-					 "Incompatible Device",
-					 Utils::MsgBox::Style::Error,
-					 Utils::MsgBox::Buttons::Quit);
-				exit(-1);
+				if (Graphics::API::Context::IsD3D12Capable())
+					Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::D3D12);
+				else if (Graphics::API::Context::IsVulkanCapable())
+					Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::Vulkan);
+				else if (Graphics::API::Context::IsOpenGLCapable())
+					Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::OpenGL);
+				else
+				{
+					//All RenderAPIs are unsupported
+					Show("Every RenderAPI that TRAP Engine uses is unsupported on your device!\nDoes your system meet the minimum system requirements for running TRAP Engine?",
+						"Incompatible Device",
+						Utils::MsgBox::Style::Error,
+						Utils::MsgBox::Buttons::Quit);
+					exit(-1);
+				}
 			}
 		}
-	}
-	if (Graphics::API::Context::GetRenderAPI() != Graphics::API::RenderAPI::OpenGL)
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
-	{
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	}
+		if (Graphics::API::Context::GetRenderAPI() != Graphics::API::RenderAPI::OpenGL)
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
+		{
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		}
+	}	
 
 	//Create Window
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 						   std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-						   "[INDEV][19w34a4]";
+						   "[INDEV][19w34a5]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif
@@ -143,11 +167,22 @@ void TRAP::Window::Init(const WindowProps &props)
 		exit(-1);
 	}
 
-	//Create Context & Initialize Renderer
-	Graphics::API::Context::Create(this);
-	Graphics::API::Context::SetVSyncInterval(props.VSync);
-	Graphics::API::RendererAPI::Init();
+	if (!s_windows)
+	{
+		//Create Context & Initialize Renderer
+		Graphics::API::Context::Create(this);
+		Graphics::API::Context::SetVSyncInterval(props.VSync);
+		Graphics::API::RendererAPI::Init();
+	}
 
+	s_windows++;
+	if (s_windows > 1)
+	{
+		Use(this);
+		Graphics::API::Context::SetVSyncInterval(Graphics::API::Context::GetVSyncInterval());
+		Use(Application::Get().GetWindow());
+	}
+	
 	//Update Window Title
 #ifndef TRAP_RELEASE
 	newTitle += Graphics::Renderer::GetTitle();
@@ -172,13 +207,13 @@ void TRAP::Window::Init(const WindowProps &props)
 		data.Width = width;
 		data.Height = height;
 
-		WindowResizeEvent event(width, height);
+		WindowResizeEvent event(width, height, data.Title);
 		data.EventCallback(event);
 	});
 
 	glfwSetWindowPosCallback(m_window, [](GLFWwindow *window, const int x, const int y) {
 		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
-		WindowMovedEvent event(x, y);
+		WindowMovedEvent event(x, y, data.Title);
 		data.EventCallback(event);
 	});
 
@@ -187,19 +222,19 @@ void TRAP::Window::Init(const WindowProps &props)
 
 		if (focused)
 		{
-			WindowFocusEvent event;
+			WindowFocusEvent event(data.Title);
 			data.EventCallback(event);
 		}
 		else
 		{
-			WindowLostFocusEvent event;
+			WindowLostFocusEvent event(data.Title);
 			data.EventCallback(event);
 		}
 	});
 
 	glfwSetWindowCloseCallback(m_window, [](GLFWwindow *window) {
 		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
-		WindowCloseEvent event;
+		WindowCloseEvent event(data.Title);
 		data.EventCallback(event);
 	});
 
@@ -210,21 +245,21 @@ void TRAP::Window::Init(const WindowProps &props)
 		{
 		case GLFW_PRESS:
 		{
-			KeyPressedEvent event(key, 0);
+			KeyPressedEvent event(key, 0, data.Title);
 			data.EventCallback(event);
 			break;
 		}
 
 		case GLFW_RELEASE:
 		{
-			KeyReleasedEvent event(key);
+			KeyReleasedEvent event(key, data.Title);
 			data.EventCallback(event);
 			break;
 		}
 
 		case GLFW_REPEAT:
 		{
-			KeyPressedEvent event(key, 1);
+			KeyPressedEvent event(key, 1, data.Title);
 			data.EventCallback(event);
 			break;
 		}
@@ -237,7 +272,7 @@ void TRAP::Window::Init(const WindowProps &props)
 	glfwSetCharCallback(m_window, [](GLFWwindow *window, const unsigned int keycode) {
 		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
 
-		KeyTypedEvent event(static_cast<int>(keycode));
+		KeyTypedEvent event(static_cast<int>(keycode), data.Title);
 		data.EventCallback(event);
 	});
 
@@ -248,14 +283,14 @@ void TRAP::Window::Init(const WindowProps &props)
 		{
 		case GLFW_PRESS:
 		{
-			MouseButtonPressedEvent event(button);
+			MouseButtonPressedEvent event(button, data.Title);
 			data.EventCallback(event);
 			break;
 		}
 
 		case GLFW_RELEASE:
 		{
-			MouseButtonReleasedEvent event(button);
+			MouseButtonReleasedEvent event(button, data.Title);
 			data.EventCallback(event);
 			break;
 		}
@@ -268,14 +303,14 @@ void TRAP::Window::Init(const WindowProps &props)
 	glfwSetScrollCallback(m_window, [](GLFWwindow *window, const double xOffset, const double yOffset) {
 		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
 
-		MouseScrolledEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset));
+		MouseScrolledEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset), data.Title);
 		data.EventCallback(event);
 	});
 
 	glfwSetCursorPosCallback(m_window, [](GLFWwindow *window, const double xPos, const double yPos) {
 		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
 
-		MouseMovedEvent event(static_cast<float>(xPos), static_cast<float>(yPos));
+		MouseMovedEvent event(static_cast<float>(xPos), static_cast<float>(yPos), data.Title);
 		data.EventCallback(event);
 	});
 }
@@ -292,6 +327,20 @@ void TRAP::Window::Shutdown() const
 void TRAP::Window::OnUpdate()
 {
 	glfwPollEvents();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::Use(Window* window)
+{
+	Graphics::API::Context::Use(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::Use()
+{
+	Graphics::API::Context::Use(Application::Get().GetWindow());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -372,7 +421,7 @@ void TRAP::Window::SetWindowMode(const DisplayMode &mode,
 	//Trigger resize event
 	if (m_data.EventCallback)
 	{
-		WindowResizeEvent event(width, height);
+		WindowResizeEvent event(width, height, m_data.Title);
 		m_data.EventCallback(event);
 	}
 
@@ -464,7 +513,7 @@ void TRAP::Window::SetTitle(const std::string &title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 								 std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-								 "[INDEV][19w34a4]" + std::string(Graphics::Renderer::GetTitle());
+								 "[INDEV][19w34a5]" + std::string(Graphics::Renderer::GetTitle());
 	glfwSetWindowTitle(m_window, newTitle.c_str());
 #else
 	glfwSetWindowTitle(m_window, m_data.Title.c_str());

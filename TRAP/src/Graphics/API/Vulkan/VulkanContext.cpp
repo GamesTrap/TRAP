@@ -34,6 +34,12 @@ void TRAP::Graphics::API::VulkanContext::Present(Window* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanContext::UseInternal(Window* window)
+{	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanContext::InitSurface()
 {
 	TP_DEBUG("[Renderer][Vulkan] Initializing Surface");

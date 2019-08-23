@@ -22,8 +22,8 @@ namespace TRAP
 	class KeyPressedEvent final : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(const int keyCode, const int repeatCount)
-			: KeyEvent(keyCode), m_repeatCount(repeatCount)
+		KeyPressedEvent(const int keyCode, const int repeatCount, std::string title)
+			: KeyEvent(keyCode), m_repeatCount(repeatCount), m_title(std::move(title))
 		{			
 		}
 
@@ -37,19 +37,22 @@ namespace TRAP
 			return ss.str();
 		}
 
+		std::string GetTitle() const;
+
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
 
 	private:
 		int m_repeatCount;
+		std::string m_title;
 	};
 
 	class KeyReleasedEvent final : public KeyEvent
 	{
 	public:
-		explicit KeyReleasedEvent(const int keyCode)
-			: KeyEvent(keyCode)
+		explicit KeyReleasedEvent(const int keyCode, std::string title)
+			: KeyEvent(keyCode), m_title(std::move(title))
 		{			
 		}
 
@@ -61,16 +64,21 @@ namespace TRAP
 			return ss.str();
 		}
 
+		std::string GetTitle() const;
+
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
+
+	private:
+		std::string m_title;
 	};
 
 	class KeyTypedEvent final : public KeyEvent
 	{
 	public:
-		explicit KeyTypedEvent(const int keyCode)
-			: KeyEvent(keyCode)
+		explicit KeyTypedEvent(const int keyCode, std::string title)
+			: KeyEvent(keyCode), m_title(std::move(title))
 		{			
 		}
 
@@ -82,9 +90,14 @@ namespace TRAP
 			return ss.str();
 		}
 
+		std::string GetTitle() const;
+
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
+
+	private:
+		std::string m_title;
 	};
 }
 
@@ -170,6 +183,27 @@ inline TRAP::EventType TRAP::KeyTypedEvent::GetEventType() const
 inline const char* TRAP::KeyTypedEvent::GetName() const
 {
 	return "KeyTyped";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string TRAP::KeyPressedEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string TRAP::KeyReleasedEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string TRAP::KeyTypedEvent::GetTitle() const
+{
+	return m_title;
 }
 
 #endif /*_TRAP_KEYEVENT_H_*/

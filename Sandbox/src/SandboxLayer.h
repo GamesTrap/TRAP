@@ -50,7 +50,7 @@ public:
 
 		//EXPERIMENTAL
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
-		TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture2D::CreateFromFile("Debug", "/Textures/BMPTests/spaces in  filename.bmp"));
+		TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture2D::CreateFromFile("Debug", "/Textures/Debug3.tga"));
 		//////////////
 
 		///////////////
@@ -82,6 +82,10 @@ public:
 		};
 		std::unique_ptr<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size()));
 		m_vertexArray->SetIndexBuffer(indexBuffer);
+
+		//Multiple Windows
+		m_window = std::make_unique<TRAP::Window>(TRAP::WindowProps{"Testing", 800, 600, 144, TRAP::DisplayMode::Windowed, 0});
+		m_window->SetEventCallback(TP_BIND_EVENT_FN(SandboxLayer::OnEvent));
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -90,12 +94,15 @@ public:
 	{
 		m_vertexArray->Unbind();
 		m_vertexArray.reset();
+		
+		//Multiple Windows
+		m_window.reset();
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnUpdate(const TRAP::Utils::TimeStep deltaTime) override
-	{
+	{		
 		m_camera.SetPosition(m_cameraPosition);
 		m_camera.SetRotation(m_cameraRotation);
 
@@ -182,14 +189,33 @@ public:
 			m_cameraRotation.y += m_cameraRotationSpeed * deltaTime;
 		if (TRAP::Input::IsKeyPressed(TP_KEY_KP_9))
 			m_cameraRotation.y -= m_cameraRotationSpeed * deltaTime;
+
+		//Multiple Windows
+		if (m_window)
+		{
+			TRAP::Window::Use(m_window.get());
+			TRAP::Graphics::RenderCommand::SetClearColor({1.0f, 0.0f, 1.0f, 1.0f});
+			TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_COLOR | TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_DEPTH);
+			TRAP::Graphics::RenderCommand::Present(m_window.get());
+			m_window->OnUpdate();
+		}
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	bool OnKeyPressed(TRAP::KeyPressedEvent& event)
 	{
-		if (event.GetKeyCode() == TP_KEY_ESCAPE)
-			TRAP::Application::Get().Shutdown();
+		if (event.GetTitle() == TRAP::Application::Get().GetWindow()->GetTitle())
+		{
+			if (event.GetKeyCode() == TP_KEY_ESCAPE)
+				TRAP::Application::Get().Shutdown();
+		}
+		else
+			if(event.GetKeyCode() == TP_KEY_ESCAPE)
+			{
+				TRAP::WindowCloseEvent windowCloseEvent(m_window->GetTitle());
+				OnEvent(windowCloseEvent);
+			}
 
 		if (event.GetKeyCode() == TP_KEY_F1 && event.GetRepeatCount() < 1) //Switch to D3D12
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::D3D12);
@@ -228,26 +254,46 @@ public:
 	{
 		TRAP::EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<TRAP::KeyPressedEvent>(TP_BIND_EVENT_FN(SandboxLayer::OnKeyPressed));
-
 		dispatcher.Dispatch<TRAP::WindowResizeEvent>(TP_BIND_EVENT_FN(SandboxLayer::OnResize));
+
+		//Multiple Windows
+		dispatcher.Dispatch<TRAP::WindowCloseEvent>(TP_BIND_EVENT_FN(SandboxLayer::OnClose));
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	bool OnResize(TRAP::WindowResizeEvent& event)
 	{
-		TRAP::Graphics::RenderCommand::SetViewport(0, 0, event.GetWidth(), event.GetHeight());
-		const float aspectRatio = static_cast<float>(event.GetWidth()) / static_cast<float>(event.GetHeight());
-		m_camera = TRAP::Graphics::OrthographicCamera
+		if(m_window && event.GetTitle() == m_window->GetTitle())
 		{
-			-aspectRatio,
-			aspectRatio,
-			-1.0f,
-			1.0f,
-			-1.0f,
-			1.0f
-		};
+			TRAP::Window::Use(m_window.get());
+			TRAP::Graphics::RenderCommand::SetViewport(0, 0, event.GetWidth(), event.GetHeight());
+			TRAP::Window::Use();
+		}
+		else
+		{
+			TRAP::Graphics::RenderCommand::SetViewport(0, 0, event.GetWidth(), event.GetHeight());
+			const float aspectRatio = static_cast<float>(event.GetWidth()) / static_cast<float>(event.GetHeight());
+			m_camera = TRAP::Graphics::OrthographicCamera
+			{
+				-aspectRatio,
+				aspectRatio,
+				-1.0f,
+				1.0f,
+				-1.0f,
+				1.0f
+			};
+		}			
 
+		return true;
+	}
+	
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool OnClose(TRAP::WindowCloseEvent& event)
+	{
+		m_window.reset();
+		
 		return true;
 	}
 
@@ -266,4 +312,7 @@ private:
 	TRAP::Math::Vec3 m_cameraRotation;
 	float m_cameraMovementSpeed = 2.5f;
 	float m_cameraRotationSpeed = 180.0f;
+
+	//Multiple Windows
+	std::unique_ptr<TRAP::Window> m_window;
 };

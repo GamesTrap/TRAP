@@ -48,6 +48,21 @@ namespace TRAP
 			  Monitor(monitor)
 		{				
 		}
+
+		explicit WindowProps(std::string title = "TRAP Engine",
+			const unsigned int width = 1280,
+			const unsigned int height = 720,
+			const unsigned int refreshRate = 60,
+			const DisplayMode mode = DisplayMode::Windowed,
+			const unsigned int monitor = 0)
+			: Title(std::move(title)),
+			  Width(width),
+			  Height(height),
+			  RefreshRate(refreshRate),
+			  VSync(0),
+			  RenderAPI(Graphics::API::Context::GetRenderAPI()),
+			  Mode(mode),
+			  Monitor(monitor) { }
 	};
 
 	//Interface representing a desktop system based window
@@ -64,6 +79,8 @@ namespace TRAP
 		~Window();
 
 		static void OnUpdate();
+		static void Use(Window* window);
+		static void Use();
 
 		unsigned int GetWidth() const;
 		unsigned int GetHeight() const;
@@ -71,6 +88,7 @@ namespace TRAP
 		std::string GetTitle() const;
 		DisplayMode GetDisplayMode() const;
 		unsigned int GetMonitor() const;
+		static unsigned int GetActiveWindows();
 
 		void SetTitle(const std::string& title);
 
@@ -114,6 +132,8 @@ namespace TRAP
 		};
 
 		WindowedModeParams m_oldWindowedParams{};
+
+		static uint32_t s_windows;
 	};
 }
 
@@ -157,6 +177,13 @@ inline TRAP::DisplayMode TRAP::Window::GetDisplayMode() const
 inline unsigned int TRAP::Window::GetMonitor() const
 {
 	return m_data.Monitor;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned TRAP::Window::GetActiveWindows()
+{
+	return s_windows;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

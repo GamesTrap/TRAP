@@ -178,6 +178,7 @@ void TRAP::Application::Run()
 			tickTimer.Reset();
 		}
 
+		Window::Use(m_window.get());
 		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 		{
 			ImGuiLayer::Begin();

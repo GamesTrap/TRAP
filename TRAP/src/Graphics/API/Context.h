@@ -43,6 +43,8 @@ namespace TRAP::Graphics::API
 		static void SetVSyncInterval(unsigned int interval);
 		static unsigned int GetVSyncInterval();
 
+		static void Use(Window* window);
+
 		static RenderAPI s_newRenderAPI;
 	protected:
 		static std::unique_ptr<Context> s_Context;
@@ -50,6 +52,7 @@ namespace TRAP::Graphics::API
 
 	private:
 		virtual void SetVSyncIntervalInternal(unsigned int interval = 0) = 0;
+		virtual void UseInternal(Window* window) = 0;
 
 		static unsigned int m_vsyncInterval;
 
@@ -71,6 +74,15 @@ inline TRAP::Graphics::API::RenderAPI TRAP::Graphics::API::Context::GetRenderAPI
 inline void TRAP::Graphics::API::Context::SetVSyncInterval(const unsigned int interval)
 {
 	if (s_Context) s_Context->SetVSyncIntervalInternal(interval); m_vsyncInterval = interval;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Graphics::API::Context::Use(Window* window)
+{
+	if (s_Context)
+		if (window)
+			s_Context->UseInternal(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

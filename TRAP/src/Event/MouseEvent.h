@@ -6,13 +6,14 @@ namespace TRAP
 	class MouseMovedEvent final : public Event
 	{
 	public:
-		MouseMovedEvent(const float x, const float y)
-			: m_mouseX(x), m_mouseY(y)
+		MouseMovedEvent(const float x, const float y, std::string title)
+			: m_mouseX(x), m_mouseY(y), m_title(std::move(title))
 		{			
 		}
 
 		float GetX() const;
 		float GetY() const;
+		std::string GetTitle() const;
 
 		std::string ToString() const override
 		{
@@ -29,18 +30,20 @@ namespace TRAP
 
 	private:
 		float m_mouseX, m_mouseY;
+		std::string m_title;
 	};
 
 	class MouseScrolledEvent final : public Event
 	{
 	public:
-		MouseScrolledEvent(const float xOffset, const float yOffset)
-			: m_xOffset(xOffset), m_yOffset(yOffset)
+		MouseScrolledEvent(const float xOffset, const float yOffset, std::string title)
+			: m_xOffset(xOffset), m_yOffset(yOffset), m_title(std::move(title))
 		{			
 		}
 
 		float GetXOffset() const;
 		float GetYOffset() const;
+		std::string GetTitle() const;
 
 		std::string ToString() const override
 		{
@@ -57,6 +60,7 @@ namespace TRAP
 
 	private:
 		float m_xOffset, m_yOffset;
+		std::string m_title;
 	};
 
 	class MouseButtonEvent : public Event
@@ -78,8 +82,8 @@ namespace TRAP
 	class MouseButtonPressedEvent final : public MouseButtonEvent
 	{
 	public:
-		explicit MouseButtonPressedEvent(const int button)
-			: MouseButtonEvent(button)
+		explicit MouseButtonPressedEvent(const int button, std::string title)
+			: MouseButtonEvent(button), m_title(std::move(title))
 		{
 		}
 
@@ -91,16 +95,21 @@ namespace TRAP
 			return ss.str();
 		}
 
+		std::string GetTitle() const;
+
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
+
+	private:
+		std::string m_title;
 	};
 
 	class MouseButtonReleasedEvent final : public MouseButtonEvent
 	{
 	public:
-		explicit MouseButtonReleasedEvent(const int button)
-			: MouseButtonEvent(button)
+		explicit MouseButtonReleasedEvent(const int button, std::string title)
+			: MouseButtonEvent(button), m_title(std::move(title))
 		{			
 		}
 
@@ -112,9 +121,14 @@ namespace TRAP
 			return ss.str();
 		}
 
+		std::string GetTitle() const;
+
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
+
+	private:
+		std::string m_title;
 	};
 }
 
@@ -256,6 +270,34 @@ inline TRAP::EventType TRAP::MouseButtonReleasedEvent::GetEventType() const
 inline const char* TRAP::MouseButtonReleasedEvent::GetName() const
 {
 	return "MouseButtonReleased";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string TRAP::MouseMovedEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string TRAP::MouseScrolledEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string TRAP::MouseButtonPressedEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline std::string TRAP::MouseButtonReleasedEvent::GetTitle() const
+{
+	return m_title;
 }
 
 #endif /*_TRAP_MOUSEEVENT_H_*/
