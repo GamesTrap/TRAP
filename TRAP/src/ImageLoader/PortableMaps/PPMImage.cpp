@@ -72,20 +72,26 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 		if(header.MaxValue > 255)
 		{
 			m_bitsPerPixel = 48;
-			m_data2Byte.reserve(m_width * m_height * 3);
-
-			short temp;
-			for(unsigned int i = 0; i < m_width * m_height * 3; i++)
+			m_data2Byte.resize(m_width * m_height * 3);
+			if(!file.read(reinterpret_cast<char*>(m_data2Byte.data()), m_width * m_height * 3 * sizeof(uint16_t)))
 			{
-				file.read(reinterpret_cast<char*>(&temp), sizeof(uint16_t));
-				m_data2Byte.emplace_back(temp);
+				file.close();
+				TP_ERROR("[Image][PPM] Couldn't load pixel data!");
+				TP_WARN("[Image][PPM] Using Default Image!");
+				return;
 			}
 		}
 		else
 		{
 			m_bitsPerPixel = 24;
-			m_data.reserve(m_width * m_height * 3);
-			m_data.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+			m_data.resize(m_width * m_height * 3);
+			if (!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * 3))
+			{
+				file.close();
+				TP_ERROR("[Image][PPM] Couldn't load pixel data!");
+				TP_WARN("[Image][PPM] Using Default Image!");
+				return;
+			}
 		}
 
 		file.close();

@@ -16,9 +16,9 @@ namespace TRAP::INTERNAL
 	}
 
 	//If endianness doesn't agree, swap bytes
-	void SwapBytes(float* fPtr)
+	void SwapBytes(float& f)
 	{
-		uint8_t* ptr = reinterpret_cast<uint8_t*>(fPtr);
+		uint8_t* ptr = reinterpret_cast<uint8_t*>(&f);
 		uint8_t temp = 0;
 		temp = ptr[0]; ptr[0] = ptr[3]; ptr[3] = temp;
 		temp = ptr[1]; ptr[1] = ptr[2]; ptr[2] = temp;
@@ -95,15 +95,19 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 			m_format = ImageFormat::RGB;
 			m_isImageColored = true;
 			m_bitsPerPixel = 96;
-			m_data.reserve(m_width * m_height * 3);
-			float val;
-			for (unsigned int i = 0; i < m_width * m_height * 3; i++)
+			m_data.resize(m_width* m_height * 3);
+			if (!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * 3 * sizeof(float)))
 			{
-				file.read(reinterpret_cast<char*>(&val), sizeof(float));
-				if (needSwap)
-					SwapBytes(&val);
-				m_data.emplace_back(val);
+				file.close();
+				m_data.clear();
+				TP_ERROR("[Image][PAM] Couldn't load pixel data!");
+				TP_WARN("[Image][PAM] Using Default Image!");
+				return;
 			}
+
+			if (needSwap)
+				for (float& element : m_data)
+					SwapBytes(element);
 		}
 		else if(header.MagicNumber == "Pf")
 		{
@@ -111,15 +115,19 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 			m_format = ImageFormat::Gray_Scale;
 			m_isImageGrayScale = true;
 			m_bitsPerPixel = 32;
-			m_data.reserve(m_width * m_height);
-			float val;
-			for (unsigned int i = 0; i < m_width * m_height; i++)
+			m_data.resize(m_width* m_height);
+			if (!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * sizeof(float)))
 			{
-				file.read(reinterpret_cast<char*>(&val), sizeof(float));
-				if (needSwap)
-					SwapBytes(&val);
-				m_data.emplace_back(val);
+				file.close();
+				m_data.clear();
+				TP_ERROR("[Image][PAM] Couldn't load pixel data!");
+				TP_WARN("[Image][PAM] Using Default Image!");
+				return;
 			}
+
+			if (needSwap)
+				for (float& element : m_data)
+					SwapBytes(element);
 		}
 
 		file.close();

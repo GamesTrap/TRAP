@@ -77,27 +77,30 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 
 		if (header.ImageType == 0)
 		{
+			file.close();
 			TP_ERROR("[Image][TGA] Image doesn't contain pixel data!");
 			TP_WARN("[Image][TGA] Using Default Image!");
 			return;
 		}
 		if (header.IDLength != 0)
 		{
-			colorMapData.ImageID.reserve(header.IDLength);
+			colorMapData.ImageID.resize(header.IDLength);
 			file.read(static_cast<char*>(colorMapData.ImageID.data()), header.IDLength);
 		}
 		if (header.ColorMapType == 1)
 		{
-			colorMapData.ColorMap.reserve((header.ColorMapDepth / 8) * header.NumOfColorMaps);
-			uint8_t temp;
-			for (unsigned int i = 0; i < static_cast<unsigned int>((header.ColorMapDepth / 8) * header.NumOfColorMaps); i++)
+			colorMapData.ColorMap.resize((header.ColorMapDepth / 8) * header.NumOfColorMaps);
+			if(!file.read(reinterpret_cast<char*>(colorMapData.ColorMap.data()), (header.ColorMapDepth / 8) * header.NumOfColorMaps))
 			{
-				file.read(reinterpret_cast<char*>(&temp), sizeof(uint8_t));
-				colorMapData.ColorMap.emplace_back(temp);
+				file.close();
+				TP_ERROR("[Image][TGA] Couldn't load Color Map!");
+				TP_WARN("[Image][TGA] Using Default Image!");
+				return;
 			}
 		}
 		if(header.BitsPerPixel == 15)
 		{
+			file.close();
 			TP_ERROR("[Image][TGA] BitsPerPixel 15 is unsupported!");
 			TP_WARN("[Image][TGA] Using Default Image!");
 			return;
@@ -110,38 +113,41 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			needYFlip = true;
 		if (header.Width < 2 || header.Height < 2)
 		{
+			file.close();
 			TP_ERROR("[Image][TGA] Image Width/Height is invalid/unsupported!");
 			TP_WARN("[Image][TGA] Using Default Image!");
 			return;
 		}
-		uint8_t temp;
 		if(header.ImageType == 9 || header.ImageType == 11 || header.ImageType == 10) //All RLE formats
 		{
-			uint32_t currentPosition = file.tellg(); //Store current position in file
+			uint32_t currentPosition = static_cast<uint32_t>(file.tellg()); //Store current position in file
 			file.seekg(0, std::ios::end); //Go to the end of file
 			uint32_t pixelDataSize = static_cast<uint32_t>(file.tellg()) - currentPosition;
 			file.seekg(-18, std::ios::end); //Check if there is a footer
-			std::string offsetCheck;
-			offsetCheck.resize(16);
+			std::string offsetCheck{16, '\0'};
 			file.read(offsetCheck.data(), 16);
 			if (offsetCheck == "TRUEVISION-XFILE")
 				pixelDataSize -= 26; //If a footer was found subtract the 26 bytes from pixelDataSize
 			file.seekg(currentPosition); //Go back to starting position
 			
-			colorMapData.ImageData.reserve(pixelDataSize);
-			for(unsigned int i = 0; i < pixelDataSize; i++)
+			colorMapData.ImageData.resize(pixelDataSize);
+			if (!file.read(reinterpret_cast<char*>(colorMapData.ImageData.data()), pixelDataSize))
 			{
-				file.read(reinterpret_cast<char*>(&temp), sizeof(uint8_t));
-				colorMapData.ImageData.emplace_back(temp);
+				file.close();
+				TP_ERROR("[Image][TGA] Couldn't read pixel data!");
+				TP_WARN("[Image][TGA] Using Default Image!");
+				return;
 			}
 		}
 		else
 		{
-			colorMapData.ImageData.reserve(header.Width * header.Height * (header.BitsPerPixel / 8));
-			for (unsigned int i = 0; i < static_cast<unsigned int>(header.Width * header.Height * (header.BitsPerPixel / 8)); i++)
+			colorMapData.ImageData.resize(header.Width* header.Height* (header.BitsPerPixel / 8));
+			if (!file.read(reinterpret_cast<char*>(colorMapData.ImageData.data()), header.Width * header.Height * (header.BitsPerPixel / 8)))
 			{
-				file.read(reinterpret_cast<char*>(&temp), sizeof(uint8_t));
-				colorMapData.ImageData.emplace_back(temp);
+				file.close();
+				TP_ERROR("[Image][TGA] Couldn't read pixel data!");
+				TP_WARN("[Image][TGA] Using Default Image!");
+				return;
 			}
 		}
 
@@ -155,6 +161,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			m_isImageColored = true;
 			if (header.BitsPerPixel > 8)
 			{
+				file.close();
 				TP_ERROR("[Image][TGA] Bad ColorMapped index size: ", header.BitsPerPixel, " bits/pixel");
 				TP_WARN("[Image][TGA] Using Default Image!");
 				return;
@@ -186,6 +193,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			m_isImageCompressed = true;
 			if (header.BitsPerPixel > 8)
 			{
+				file.close();
 				TP_ERROR("[Image][TGA] Bad ColorMapped RLE index size: ", header.BitsPerPixel, " bits/pixel");
 				TP_WARN("[Image][TGA] Using Default Image!");
 				return;
@@ -218,6 +226,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 				m_data = colorMapData.ImageData;
 			if (header.BitsPerPixel > 8)
 			{
+				file.close();
 				TP_ERROR("[Image][TGA] Bad GrayScale pixel size: ", header.BitsPerPixel, " bits/pixel");
 				TP_WARN("[Image][TGA] Using Default Image!");
 				return;
@@ -234,6 +243,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 				m_data = DecodeRLEGrayScale(colorMapData.ImageData, header.Width, header.Height);
 			if (header.BitsPerPixel > 8)
 			{
+				file.close();
 				TP_ERROR("[Image][TGA] Bad GrayScale RLE pixel size: ", header.BitsPerPixel, " bits/pixel");
 				TP_WARN("[Image][TGA] Using Default Image!");
 				return;
@@ -270,6 +280,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			}
 
 			default:
+				file.close();
 				TP_ERROR("[Image][TGA] Bad TrueColor pixel size: ", header.BitsPerPixel, " bits/pixel");
 				TP_WARN("[Image][TGA] Using Default Image!");
 				return;
@@ -306,6 +317,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			}
 
 			default:
+				file.close();
 				TP_ERROR("[Image][TGA] Bad TrueColor RLE pixel size: ", header.BitsPerPixel, " bits/pixel");
 				TP_WARN("[Image][TGA] Using Default Image!");
 				return;
@@ -314,21 +326,20 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 		}
 
 		case 0: //Shouldn't be reached because of the above check!
+			file.close();
 			TP_ERROR("[Image][TGA] Image doesn't contain pixel data!");
 			TP_WARN("[Image][TGA] Using Default Image!");
 			return;
 
 		default:
+			file.close();
 			TP_ERROR("[Image][TGA] Unknown or invalid Image Type!");
 			TP_WARN("[Image][TGA] Using Default Image!");
 			return;
 		}
 
 		if (needXFlip)
-		{
-			TP_WARN("[Image][TGA] Image Flipping on X axis is untested!");
 			m_data = FlipX(m_width, m_height, m_imageFormat, m_data.data());
-		}
 		if (needYFlip)
 			m_data = FlipY(m_width, m_height, m_imageFormat, m_data.data());
 

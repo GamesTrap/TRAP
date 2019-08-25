@@ -79,7 +79,7 @@ std::vector<T> TRAP::Image::FlipY(const unsigned int width, const unsigned int h
 		return {};
 
 	std::vector<T> newData{};
-	uint32_t stride;
+	uint64_t stride;
 	if (format == ImageFormat::Gray_Scale)
 	{
 		newData.assign(data, data + width * height);
@@ -105,8 +105,8 @@ std::vector<T> TRAP::Image::FlipY(const unsigned int width, const unsigned int h
 	row.resize(stride);
 	
 	row.reserve(stride);
-	uint32_t lowOffset = 0;
-	uint32_t highOffset = (height - 1) * stride;
+	uint64_t lowOffset = 0;
+	uint64_t highOffset = (height - 1) * stride;
 
 	for (; lowOffset < highOffset; lowOffset += stride, highOffset -= stride)
 	{
@@ -132,7 +132,7 @@ std::vector<T> TRAP::Image::FlipX(const unsigned int width, const unsigned int h
 		return {};
 
 	std::vector<T> newData{};
-	uint32_t stride;
+	uint64_t stride;
 	if (format == ImageFormat::Gray_Scale)
 	{
 		newData.assign(data, data + width * height);
@@ -156,8 +156,8 @@ std::vector<T> TRAP::Image::FlipX(const unsigned int width, const unsigned int h
 
 	std::vector<T> row{};
 	row.resize(stride);
-	uint32_t lowOffset = 0;
-	uint32_t highOffset = (width - 1) * stride;
+	uint64_t lowOffset = 0;
+	uint64_t highOffset = (width - 1) * stride;
 
 	for (; lowOffset < highOffset; lowOffset += stride, highOffset -= stride)
 	{

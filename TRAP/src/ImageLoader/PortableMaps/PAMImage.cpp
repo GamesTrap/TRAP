@@ -113,12 +113,14 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 				m_format = ImageFormat::RGBA;
 			}
 
-			m_data.reserve(m_width * m_height * header.Depth);
-			short temp;
-			for (unsigned int i = 0; i < m_width * m_height * header.Depth; i++)
+			m_data2Byte.resize(m_width * m_height * header.Depth);
+			if (!file.read(reinterpret_cast<char*>(m_data2Byte.data()), m_width * m_height * header.Depth * sizeof(uint16_t)))
 			{
-				file.read(reinterpret_cast<char*>(&temp), sizeof(uint16_t));
-				m_data2Byte.emplace_back(temp);
+				file.close();
+				m_data2Byte.clear();
+				TP_ERROR("[Image][PAM] Couldn't load pixel data!");
+				TP_WARN("[Image][PAM] Using Default Image!");
+				return;
 			}
 		}
 		else
@@ -154,8 +156,15 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 				m_format = ImageFormat::RGBA;
 			}
 
-			m_data.reserve(m_width * m_height * header.Depth);
-			m_data.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+			m_data.resize(m_width * m_height * header.Depth);
+			if(!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * header.Depth))
+			{
+				file.close();
+				m_data.clear();
+				TP_ERROR("[Image][PAM] Couldn't load pixel data!");
+				TP_WARN("[Image][PAM] Using Default Image!");
+				return;
+			}
 		}
 
 		file.close();

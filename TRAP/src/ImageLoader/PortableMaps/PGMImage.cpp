@@ -73,19 +73,28 @@ TRAP::INTERNAL::PGMImage::PGMImage(std::string filepath)
 		if(header.MaxValue > 255)
 		{
 			m_bitsPerPixel = 16;
-			m_data2Byte.reserve(m_width* m_height);
-			short temp;
-			for (unsigned int i = 0; i < m_width * m_height * 3; i++)
+			m_data2Byte.resize(m_width * m_height);
+			if(!file.read(reinterpret_cast<char*>(m_data2Byte.data()), m_width * m_height * sizeof(uint16_t)))
 			{
-				file.read(reinterpret_cast<char*>(&temp), sizeof(uint16_t));
-				m_data2Byte.emplace_back(temp);
+				file.close();
+				m_data.clear();
+				TP_ERROR("[Image][PGM] Couldn't load pixel data!");
+				TP_WARN("[Image][PGM] Using Default Image!");
+				return;
 			}
 		}
 		else
 		{
 			m_bitsPerPixel = 8;
-			m_data.reserve(m_width * m_height);
-			m_data.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+			m_data.resize(m_width * m_height);
+			if(!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height))
+			{
+				file.close();
+				m_data.clear();
+				TP_ERROR("[Image][PGM] Couldn't load pixel data!");
+				TP_WARN("[Image][PGM] Using Default Image!");
+				return;
+			}
 		}
 
 		file.close();

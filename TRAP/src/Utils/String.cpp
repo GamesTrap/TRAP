@@ -140,5 +140,5 @@ std::string TRAP::Utils::String::ToLower(std::string string)
 
 unsigned int TRAP::Utils::String::GetCount(const std::string& string, const char delimiter)
 {
-	return std::count(string.begin(), string.end(), delimiter);
+	return static_cast<unsigned int>(std::count(string.begin(), string.end(), delimiter));
 }

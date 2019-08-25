@@ -78,12 +78,13 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 				m_format = ImageFormat::Gray_Scale;
 				m_isImageGrayScale = true;
 				m_bitsPerPixel = 16;
-				m_data2Byte.reserve(m_width * m_height);
-				short temp;
-				for (unsigned int i = 0; i < m_width * m_height; i++)
+				m_data2Byte.resize(m_width * m_height);
+				if(!file.read(reinterpret_cast<char*>(m_data2Byte.data()), m_width * m_height * sizeof(uint16_t)))
 				{
-					file.read(reinterpret_cast<char*>(&temp), sizeof(uint16_t));
-					m_data2Byte.emplace_back(temp);
+					file.close();
+					TP_ERROR("[Image][PNM] Couldn't load pixel data!");
+					TP_WARN("[Image][PNM] Using Default Image!");
+					return;
 				}
 			}
 			else if (header.MagicNumber == "P3" || header.MagicNumber == "P6")
@@ -92,12 +93,13 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 				m_format = ImageFormat::RGB;
 				m_isImageColored = true;
 				m_bitsPerPixel = 48;
-				m_data2Byte.reserve(m_width * m_height * 3);
-				short temp;
-				for (unsigned int i = 0; i < m_width * m_height * 3; i++)
+				m_data2Byte.resize(m_width * m_height * 3);
+				if (!file.read(reinterpret_cast<char*>(m_data2Byte.data()), m_width * m_height * 3 * sizeof(uint16_t)))
 				{
-					file.read(reinterpret_cast<char*>(&temp), sizeof(uint16_t));
-					m_data2Byte.emplace_back(temp);
+					file.close();
+					TP_ERROR("[Image][PNM] Couldn't load pixel data!");
+					TP_WARN("[Image][PNM] Using Default Image!");
+					return;
 				}
 			}
 		}
@@ -109,8 +111,14 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 				m_format = ImageFormat::Gray_Scale;
 				m_isImageGrayScale = true;
 				m_bitsPerPixel = 8;
-				m_data.reserve(m_width * m_height);
-				m_data.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+				m_data.resize(m_width * m_height);
+				if(!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height))
+				{
+					file.close();
+					TP_ERROR("[Image][PNM] Couldn't load pixel data!");
+					TP_WARN("[Image][PNM] Using Default Image!");
+					return;
+				}
 			}
 			else if (header.MagicNumber == "P3" || header.MagicNumber == "P6")
 			{
@@ -118,8 +126,14 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 				m_format = ImageFormat::RGB;
 				m_isImageColored = true;
 				m_bitsPerPixel = 24;
-				m_data.reserve(m_width * m_height * 3);
-				m_data.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+				m_data.resize(m_width * m_height * 3);
+				if (!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * 3))
+				{
+					file.close();
+					TP_ERROR("[Image][PNM] Couldn't load pixel data!");
+					TP_WARN("[Image][PNM] Using Default Image!");
+					return;
+				}
 			}
 		}
 

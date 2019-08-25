@@ -15,7 +15,7 @@
 
 std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
 {
-	std::string virtualFilePath = VFS::Get()->MakeVirtualPathCompatible(filepath);
+	std::string virtualFilePath = VFS::MakeVirtualPathCompatible(filepath);
 	const std::string fileFormat = Utils::String::GetSuffix(Utils::String::ToLower(virtualFilePath));
 
 	std::unique_ptr<Image> result;
@@ -62,13 +62,14 @@ std::unique_ptr<TRAP::Image> TRAP::Image::LoadFallback()
 std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	std::vector<uint8_t> data{};
-	data.reserve(width * height * 3);
+	data.resize(width * height * 3);
 
+	uint32_t index = 0;
 	for (unsigned int i = 0; i < width * height * 2; i += 2)
 	{
-		data.emplace_back((source[i + 1] << 1) & 0xF8);
-		data.emplace_back(((source[i + 1] << 6) | (source[i] >> 2)) & 0xF8);
-		data.emplace_back((source[i] << 3) & 0xF8);
+		data[index++] = (source[i + 1] << 1) & 0xF8;
+		data[index++] = ((source[i + 1] << 6) | (source[i] >> 2)) & 0xF8;
+		data[index++] = (source[i] << 3) & 0xF8;
 	}
 
 	return data;
@@ -78,7 +79,7 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR16ToRGB24(std::vector<uint8_t>& s
 
 std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR24ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
-	for (unsigned int i = 0; i < width * height * 3; i += 3)
+	for (uint32_t i = 0; i < width * height * 3; i += 3)
 		source[i] ^= source[i + 2] ^= source[i] ^= source[i + 2];
 
 	return source;
@@ -88,7 +89,7 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR24ToRGB24(std::vector<uint8_t>& s
 
 std::vector<uint8_t> TRAP::INTERNAL::ConvertBGRA32ToRGBA32(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {	
-	for (unsigned int i = 0; i < width * height * 4; i += 4)
+	for (uint32_t i = 0; i < width * height * 4; i += 4)
 		source[i] ^= source[i + 2] ^= source[i] ^= source[i + 2];
 
 	return source;
@@ -99,30 +100,31 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertBGRA32ToRGBA32(std::vector<uint8_t>&
 std::vector<uint8_t> TRAP::INTERNAL::DecodeBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
 {
 	std::vector<uint8_t> data{};
-	data.reserve(width * height * channels);
+	data.resize(width * height * channels);
 
+	uint32_t index = 0;
 	for (unsigned int i = 0; i < width * height; i++)
 	{
 		if (channels == 1)
-			data.emplace_back(colorMap[source[i] * channels]);
+			data[index++] = colorMap[source[i] * channels];
 		else if (channels == 2)
 		{
-			data.emplace_back((colorMap[source[i] * channels + 1] << 1) & 0xF8);
-			data.emplace_back(((colorMap[source[i] * channels + 1] << 6) | (colorMap[source[i] * channels] >> 2)) & 0xF8);
-			data.emplace_back((colorMap[source[i] * channels] << 3) & 0xF8);
+			data[index++] = (colorMap[source[i] * channels + 1] << 1) & 0xF8;
+			data[index++] = ((colorMap[source[i] * channels + 1] << 6) | (colorMap[source[i] * channels] >> 2)) & 0xF8;
+			data[index++] = (colorMap[source[i] * channels] << 3) & 0xF8;
 		}
 		else if (channels == 3)
 		{
-			data.emplace_back(colorMap[source[i] * channels + 2]);
-			data.emplace_back(colorMap[source[i] * channels + 1]);
-			data.emplace_back(colorMap[source[i] * channels + 0]);
+			data[index++] = colorMap[source[i] * channels + 2];
+			data[index++] = colorMap[source[i] * channels + 1];
+			data[index++] = colorMap[source[i] * channels + 0];
 		}
 		else if (channels == 4)
 		{
-			data.emplace_back(colorMap[source[i] * channels + 2]);
-			data.emplace_back(colorMap[source[i] * channels + 1]);
-			data.emplace_back(colorMap[source[i] * channels + 0]);
-			data.emplace_back(colorMap[source[i] * channels + 3]);
+			data[index++] = colorMap[source[i] * channels + 2];
+			data[index++] = colorMap[source[i] * channels + 1];
+			data[index++] = colorMap[source[i] * channels + 0];
+			data[index++] = colorMap[source[i] * channels + 3];
 		}
 	}
 
@@ -134,9 +136,10 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeBGRAMap(std::vector<uint8_t>& source,
 std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
 {
 	std::vector<uint8_t> data{};
-	data.reserve(width * height * channels);
+	data.resize(width * height * channels);
 
-	for (unsigned int i = 0, l = 0; i < source.size();)//for (unsigned int i = 0, l = 0; i < width * height;)
+	uint32_t index = 0;
+	for (unsigned int i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
 
@@ -156,28 +159,28 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEBGRAMap(std::vector<uint8_t>& sour
 		{
 			if (channels == 1)
 			{
-				data.emplace_back(colorMap[source[i] * channels]);
+				data[index++] = colorMap[source[i] * channels];
 				l++;
 			}
 			else if (channels == 2)
 			{
-				data.emplace_back((colorMap[source[i] * channels + 1] << 1) & 0xF8);
-				data.emplace_back(((colorMap[source[i] * channels + 1] << 6) | (colorMap[source[i] * channels] >> 2)) & 0xF8);
-				data.emplace_back((colorMap[source[i] * channels] << 3) & 0xF8);
+				data[index++] = (colorMap[source[i] * channels + 1] << 1) & 0xF8;
+				data[index++] = ((colorMap[source[i] * channels + 1] << 6) | (colorMap[source[i] * channels] >> 2)) & 0xF8;
+				data[index++] = (colorMap[source[i] * channels] << 3) & 0xF8;
 			}
 			else if (channels == 3)
 			{
-				data.emplace_back(colorMap[source[i] * channels + 2]);
-				data.emplace_back(colorMap[source[i] * channels + 1]);
-				data.emplace_back(colorMap[source[i] * channels + 0]);
+				data[index++] = colorMap[source[i] * channels + 2];
+				data[index++] = colorMap[source[i] * channels + 1];
+				data[index++] = colorMap[source[i] * channels + 0];
 				l += 3;
 			}
 			else if (channels == 4)
 			{
-				data.emplace_back(colorMap[source[i] * channels + 2]);
-				data.emplace_back(colorMap[source[i] * channels + 1]);
-				data.emplace_back(colorMap[source[i] * channels + 0]);
-				data.emplace_back(colorMap[source[i] * channels + 3]);
+				data[index++] = colorMap[source[i] * channels + 2];
+				data[index++] = colorMap[source[i] * channels + 1];
+				data[index++] = colorMap[source[i] * channels + 0];
+				data[index++] = colorMap[source[i] * channels + 3];
 				l += 4;
 			}
 
@@ -196,8 +199,9 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEBGRAMap(std::vector<uint8_t>& sour
 std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEGrayScale(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	std::vector<uint8_t> data{};
-	data.reserve(width * height);
+	data.resize(width * height);
 
+	uint32_t index = 0;
 	for (unsigned int i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
@@ -216,7 +220,7 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEGrayScale(std::vector<uint8_t>& so
 
 		for (int j = 0; j < count; j++)
 		{
-			data.emplace_back(source[i]);
+			data[index++] = source[i];
 
 			if (raw) //In RAW mode, keep advancing to subsequent values
 				i++; //In RLE mode, just repeat the packet[1] color
@@ -234,8 +238,9 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEGrayScale(std::vector<uint8_t>& so
 std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	std::vector<uint8_t> data{};
-	data.reserve(width * height * 3);
+	data.resize(width * height * 3);
 
+	uint32_t index = 0;
 	for (unsigned int i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
@@ -253,9 +258,9 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>
 
 		for (int j = 0; j < count; j++)
 		{
-			data.emplace_back((source[i + 1] << 1) & 0xF8);
-			data.emplace_back(((source[i + 1] << 6) | (source[i] >> 2)) & 0xF8);
-			data.emplace_back((source[i] << 3) & 0xF8);
+			data[index++] = (source[i + 1] << 1) & 0xF8;
+			data[index++] = ((source[i + 1] << 6) | (source[i] >> 2)) & 0xF8;
+			data[index++] = (source[i] << 3) & 0xF8;
 
 			if (raw) //In RAW mode, keep advancing to subsequent values
 				i += 2; //IN RLE mode, just repeat the packet[1] RGB color
@@ -273,8 +278,9 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>
 std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	std::vector<uint8_t> data{};
-	data.reserve(width * height * 3);
+	data.resize(width * height * 3);
 
+	uint32_t index = 0;
 	for (unsigned int i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
@@ -292,9 +298,9 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>
 
 		for (int j = 0; j < count; j++)
 		{
-			data.emplace_back(source[i + 2]); //Red
-			data.emplace_back(source[i + 1]); //Green
-			data.emplace_back(source[i]);     //Blue
+			data[index++] = source[i + 2]; //Red
+			data[index++] = source[i + 1]; //Green
+			data[index++] = source[i];     //Blue
 
 			if (raw) //In RAW mode, keep advancing to subsequent values
 				i += 3; //IN RLE mode, just repeat the packet[1] RGB color
@@ -312,8 +318,9 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>
 std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	std::vector<uint8_t> data{};
-	data.reserve(width * height * 4);
+	data.resize(width * height * 4);
 
+	uint32_t index = 0;
 	for (unsigned int i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
@@ -331,10 +338,10 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>
 
 		for (int j = 0; j < count; j++)
 		{
-			data.emplace_back(source[i + 2]); //Red
-			data.emplace_back(source[i + 1]); //Green
-			data.emplace_back(source[i]);     //Blue
-			data.emplace_back(source[i + 3]); //Alpha
+			data[index++] = source[i + 2]; //Red
+			data[index++] = source[i + 1]; //Green
+			data[index++] = source[i];     //Blue
+			data[index++] = source[i + 3]; //Alpha
 
 			if (raw) //In RAW mode, keep advancing to subsequent values
 				i += 4; //IN RLE mode, just repeat the packet[1] RGBA color

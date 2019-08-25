@@ -318,3 +318,4 @@ SITREP 08/24/2019|19w34a6
 SITREP 08/25/2019|19w34a7
     - Changed TRAP Engine version to 19w34a7(0.5.20)
     - Optimized Vertical/Horizontal Functions for Image flipping ~>25 mins
+    - Optimized Image Decode/Convert Functions ~>65 mins

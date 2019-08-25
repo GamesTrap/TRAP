@@ -50,6 +50,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 
 		if (header.MagicNumber != 0x4D42)
 		{
+			file.close();
 			TP_ERROR("[Image][BMP] Magic number is invalid!");
 			TP_WARN("[Image][BMP] Using Default Image!");
 			return;
@@ -86,6 +87,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		{
 			if (infoHeader.Size == 40)
 			{
+				file.close();
 				TP_ERROR("[Image][BMP] Only BMPV5 Images with BitFields are supported!");
 				TP_WARN("[Image][BMP] Using Default Image!");
 				return;
@@ -99,6 +101,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 
 		if (infoHeader.Width < 1)
 		{
+			file.close();
 			TP_ERROR("[Image][BMP] Width is invalid!");
 			TP_WARN("[Image][BMP] Using Default Image!");
 			return;
@@ -109,6 +112,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			m_height = Math::Abs(infoHeader.Height);
 		else if (infoHeader.Height == 0)
 		{
+			file.close();
 			TP_ERROR("[Image][BMP] Height is invalid!");
 			TP_WARN("[Image][BMP] Using Default Image!");
 			return;
@@ -123,68 +127,78 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 
 		if (m_bitsPerPixel <= 8 && !infoHeader.CLRUsed)
 		{
+			file.close();
 			TP_ERROR("[Image][BMP] No color stored in color table!");
 			TP_WARN("[Image][BMP] Using Default Image!");
 			return;
 		}
 		if (m_bitsPerPixel == 1)
 		{
+			file.close();
 			TP_ERROR("[Image][BMP] BitsPerPixel is invalid/unsupported!");
 			TP_WARN("[Image][BMP] Using Default Image!");
 			return;
 		}
 
 		std::vector<uint8_t> colorTable{};
-		uint8_t temp;
 		if (m_bitsPerPixel <= 8)
 		{
-			colorTable.reserve(4 * infoHeader.CLRUsed);
-
-			for (unsigned int i = 0; i < 4 * infoHeader.CLRUsed; i++)
+			colorTable.resize(4 * infoHeader.CLRUsed);
+			if(file.read(reinterpret_cast<char*>(colorTable.data()), 4 * infoHeader.CLRUsed))
 			{
-				file.read(reinterpret_cast<char*>(&temp), sizeof(uint8_t));
-				colorTable.emplace_back(temp);
+				file.close();
+				TP_ERROR("[Image][BMP] Couldn't load Color Map data!");
+				TP_WARN("[Image][BMP] Using Default Image!");
+				return;
 			}
 		}
 
 		//Load Pixel Data(BGRA) into vector
 		file.seekg(header.DataOffset, std::ios::beg);
-		std::vector<uint8_t> imageData{};
-		imageData.reserve(m_width * m_height * (m_bitsPerPixel / 8));
+		std::vector<uint8_t> imageData{};		
 		if ((m_bitsPerPixel != 32 && infoHeader.Compression == 0) && 4 - (((m_bitsPerPixel / 8) * m_width) % 4) != 4) //Padding
-		{			
+		{
+			imageData.resize(m_width * m_height * (m_bitsPerPixel / 8));
 			uint32_t padding = 4 - (((m_bitsPerPixel / 8) * m_width) % 4);
+			uint64_t offset = 0;
 			for (unsigned int j = 0; j < m_height; j++)
 			{
-				for (unsigned int i = 0; i < m_width; i++)
+				if(!file.read(reinterpret_cast<char*>(imageData.data()) + offset, m_width * (m_bitsPerPixel / 8)))
 				{
-					for (unsigned int k = 0; k < m_bitsPerPixel / 8; k++)
-					{
-						file.read(reinterpret_cast<char*>(&temp), sizeof(uint8_t));
-						imageData.emplace_back(temp);
-					}
+					file.close();
+					TP_ERROR("[Image][BMP] Couldn't load pixel data!");
+					TP_WARN("[Image][BMP] Using Default Image!");
+					return;
 				}
 
 				for (unsigned int pad = 0; pad < padding; pad++)
 					file.ignore();
+
+				offset += m_width * (m_bitsPerPixel / 8);
 			}
 		}
 		else //No Padding
 		{
 			if (infoHeader.Compression != 1)
 			{
-				for (unsigned int i = 0; i < static_cast<unsigned int>(m_width * m_height * (m_bitsPerPixel / 8)); i++)
+				imageData.resize(m_width* m_height* (m_bitsPerPixel / 8));
+				if(!file.read(reinterpret_cast<char*>(imageData.data()), m_width * m_height * (m_bitsPerPixel / 8)))
 				{
-					file.read(reinterpret_cast<char*>(&temp), sizeof(uint8_t));
-					imageData.emplace_back(temp);
+					file.close();
+					TP_ERROR("[Image][BMP] Couldn't load pixel data!");
+					TP_WARN("[Image][BMP] Using Default Image!");
+					return;
 				}
 			}
 			else
 			{
-				for(uint32_t i = 0; i < infoHeader.SizeImage; i++)
+				imageData.resize(infoHeader.SizeImage);
+				if (!file.read(reinterpret_cast<char*>(imageData.data()), infoHeader.SizeImage))
 				{
-					file.read(reinterpret_cast<char*>(&temp), sizeof(uint8_t));
-					imageData.emplace_back(temp);
+					file.close();
+					TP_ERROR("[Image][BMP] Couldn't load pixel data!");
+					TP_WARN("[Image][BMP] Using Default Image!");
+					return;
 				}
 			}
 		}
@@ -193,6 +207,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		{
 			if (m_bitsPerPixel < 8)
 			{
+				file.close();
 				TP_ERROR("[Image][BMP] BitsPerPixel ", m_bitsPerPixel, " is unsupported!");
 				TP_WARN("[Image][BMP] Using Default Image!");
 				return;
@@ -257,8 +272,9 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 				m_data = ConvertBGRA32ToRGBA32(imageData, m_width, m_height);
 			}
 		}
-		else if (infoHeader.Compression == 1) //RLE 8
+		else if (infoHeader.Compression == 1) //RLE 8 TODO
 		{
+			file.close();
 			TP_ERROR("[Image][BMP] RLE 8 is unsupported!");
 			TP_WARN("[Image][BMP] Using Default Image!");
 			return;
@@ -287,6 +303,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		}
 		else if (infoHeader.Compression == 2) //RLE 4
 		{
+			file.close();
 			TP_ERROR("[Image][BMP] RLE 4 is unsupported!");
 			TP_WARN("[Image][BMP] Using Default Image!");
 			return;
@@ -301,32 +318,34 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			std::array<BitField, 4> bitFields{};
 
 			std::vector<uint8_t> data{};
-			data.reserve(m_width* m_height* m_bitsPerPixel / 8);
+			data.resize(m_width * m_height * m_bitsPerPixel / 8);
 			if(m_bitsPerPixel == 32)
 			{
 				if(!ValidateBitFields(bitFields, masks))
 				{
+					file.close();
 					TP_ERROR("[Image][BMP] Invalid BitFields!");
 					TP_WARN("[Image][BMP] Using Default Image!");
 					return;
 				}
-				
-				for (uint32_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
+
+				uint64_t index = 0;
+				for (uint64_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
 				{
 					uint32_t value = static_cast<uint32_t>(imageData[i]) +
 						(static_cast<uint32_t>(imageData[i + 1]) << 8) +
 						(static_cast<uint32_t>(imageData[i + 2]) << 16) +
 						(static_cast<uint32_t>(imageData[i + 3]) << 24);
 
-					data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[0]), bitFields[0].Span));
-					data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[1]), bitFields[1].Span));
-					data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[2]), bitFields[2].Span));
+					data[index++] = Make8Bits(ApplyBitField(value, bitFields[0]), bitFields[0].Span);
+					data[index++] = Make8Bits(ApplyBitField(value, bitFields[1]), bitFields[1].Span);
+					data[index++] = Make8Bits(ApplyBitField(value, bitFields[2]), bitFields[2].Span);
 					if (GetBytesPerPixel() == 4)
 					{
 						if (bitFields[3].Span)
-							data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[3]), bitFields[3].Span));
+							data[index++] = Make8Bits(ApplyBitField(value, bitFields[3]), bitFields[3].Span);
 						else
-							data.emplace_back(255);
+							data[index++] = 255;
 					}
 
 					i += 4;
@@ -336,25 +355,27 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			{
 				if (!ValidateBitFields(bitFields, masks))
 				{
+					file.close();
 					TP_ERROR("[Image][BMP] Invalid BitFields!");
 					TP_WARN("[Image][BMP] Using Default Image!");
 					return;
 				}
 
-				for (uint32_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
+				uint64_t index = 0;
+				for (uint64_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
 				{
 					uint16_t value = static_cast<uint16_t>(imageData[i]) +
 							         static_cast<uint16_t>(imageData[i + 1] << 8);
 
-					data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[0]), bitFields[0].Span));
-					data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[1]), bitFields[1].Span));
-					data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[2]), bitFields[2].Span));
+					data[index++] = Make8Bits(ApplyBitField(value, bitFields[0]), bitFields[0].Span);
+					data[index++] = Make8Bits(ApplyBitField(value, bitFields[1]), bitFields[1].Span);
+					data[index++] = Make8Bits(ApplyBitField(value, bitFields[2]), bitFields[2].Span);
 					if(GetBytesPerPixel() == 4)
 					{
 						if (bitFields[3].Span)
-							data.emplace_back(Make8Bits(ApplyBitField(value, bitFields[3]), bitFields[3].Span));
+							data[index++] = Make8Bits(ApplyBitField(value, bitFields[3]), bitFields[3].Span);
 						else
-							data.emplace_back(255);
+							data[index++] = 255;
 					}
 
 					i += 2;
@@ -365,6 +386,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			}
 			else
 			{
+				file.close();
 				TP_ERROR("[Image][BMP] Invalid BitsPerPixel for BitField Image!");
 				TP_WARN("[Image][BMP] Using Default Image!");
 				return;
