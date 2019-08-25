@@ -21,7 +21,7 @@ namespace TRAP::INTERNAL
 		bool IsImageCompressed() const override;
 		bool IsImageGrayScale() const override;
 		bool IsImageColored() const override;
-		bool IsHDR() const override; //TGA Spec???
+		bool IsHDR() const override;
 		std::string GetFilePath() const override;
 		ImageFormat GetFormat() const override;
 

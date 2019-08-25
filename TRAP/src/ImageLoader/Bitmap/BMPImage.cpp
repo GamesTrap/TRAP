@@ -5,7 +5,6 @@
 #include "VFS/VFS.h"
 #include "VFS/FileSystem.h"
 #include "Maths/Maths.h"
-#include "ImageLoader/TARGA/TGAImage.h"
 
 TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 	: m_filepath(std::move(filepath)),
@@ -61,26 +60,26 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			uint32_t Size = 0; //Size of this header in bytes
 			uint32_t Width = 0;
 			int32_t Height = 0;
-			uint16_t Planes = 0; //Always 1
+			//uint16_t Planes = 0; //Always 1
 			uint16_t BitsPerPixel = 0; //1, 4, 8, 16, 24, 32
 			uint32_t Compression = 0; //0 = Uncompressed | 1 = RLE 8BPP | 2 = RLE 4BPP | 3 = BitFields
 			uint32_t SizeImage = 0; //Size of the image in bytes
-			int32_t XPixelsPerMeter = 0;
-			int32_t YPixelsPerMeter = 0;
+			//int32_t XPixelsPerMeter = 0;
+			//int32_t YPixelsPerMeter = 0;
 			uint32_t CLRUsed = 0; //Amount of colors in palette
-			uint32_t CLRImportant = 0; //Amount of important colors in palette
+			//uint32_t CLRImportant = 0; //Amount of important colors in palette
 		} infoHeader;
 		file.read(reinterpret_cast<char*>(&infoHeader.Size), sizeof(uint32_t));
 		file.read(reinterpret_cast<char*>(&infoHeader.Width), sizeof(uint32_t));
 		file.read(reinterpret_cast<char*>(&infoHeader.Height), sizeof(int32_t));
-		file.read(reinterpret_cast<char*>(&infoHeader.Planes), sizeof(uint16_t));
+		file.ignore(2);
 		file.read(reinterpret_cast<char*>(&infoHeader.BitsPerPixel), sizeof(uint16_t));
 		file.read(reinterpret_cast<char*>(&infoHeader.Compression), sizeof(uint32_t));
 		file.read(reinterpret_cast<char*>(&infoHeader.SizeImage), sizeof(uint32_t));
-		file.read(reinterpret_cast<char*>(&infoHeader.XPixelsPerMeter), sizeof(int32_t));
-		file.read(reinterpret_cast<char*>(&infoHeader.YPixelsPerMeter), sizeof(int32_t));
+		file.ignore(4);
+		file.ignore(4);
 		file.read(reinterpret_cast<char*>(&infoHeader.CLRUsed), sizeof(uint32_t));
-		file.read(reinterpret_cast<char*>(&infoHeader.CLRImportant), sizeof(uint32_t));
+		file.ignore(4);
 
 		std::array<uint32_t, 4> masks{};
 		if(infoHeader.Compression == 3) //BitFields
@@ -172,10 +171,21 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		}
 		else //No Padding
 		{
-			for (unsigned int i = 0; i < static_cast<unsigned int>(m_width * m_height * (m_bitsPerPixel / 8)); i++)
+			if (infoHeader.Compression != 1)
 			{
-				file.read(reinterpret_cast<char*>(&temp), sizeof(uint8_t));
-				imageData.emplace_back(temp);
+				for (unsigned int i = 0; i < static_cast<unsigned int>(m_width * m_height * (m_bitsPerPixel / 8)); i++)
+				{
+					file.read(reinterpret_cast<char*>(&temp), sizeof(uint8_t));
+					imageData.emplace_back(temp);
+				}
+			}
+			else
+			{
+				for(uint32_t i = 0; i < infoHeader.SizeImage; i++)
+				{
+					file.read(reinterpret_cast<char*>(&temp), sizeof(uint8_t));
+					imageData.emplace_back(temp);
+				}
 			}
 		}
 
@@ -197,8 +207,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 				
 				//Check if alpha is used
 				bool alphaUsed = false;
-				for (unsigned int i = 3; i < imageData.size() - 1; i += 4)
-					if (imageData[i] > 0)
+				for (unsigned int i = 3; i < colorTable.size(); i += 4)
+					if (colorTable[i] > 0)
 					{
 						alphaUsed = true;
 						break;
@@ -206,8 +216,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 
 				//If alpha is unused set all alpha bytes to 255
 				if (!alphaUsed)
-					for (unsigned int i = 3; i < imageData.size() - 1; i += 4)
-						imageData[i] = 255;
+					for (unsigned int i = 3; i < colorTable.size(); i += 4)
+						colorTable[i] = 255;
 				
 				m_data = DecodeBGRAMap(imageData, m_width, m_height, 4, colorTable);
 			}
@@ -249,16 +259,31 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		}
 		else if (infoHeader.Compression == 1) //RLE 8
 		{
+			TP_ERROR("[Image][BMP] RLE 8 is unsupported!");
+			TP_WARN("[Image][BMP] Using Default Image!");
+			return;
+			
 			m_isImageCompressed = true;
 			m_hasAlphaChannel = true;
 			m_isImageColored = true;
 			m_bitsPerPixel = 32;
 			m_format = ImageFormat::RGBA;
 
-			//m_data = DecodeRLEBGRAMap(imageData, m_width, m_height, 4, colorTable); //TODO doesnt work with BMPs RLE
-			TP_ERROR("[Image][BMP] RLE 8 is WIP!");
-			TP_WARN("[Image][BMP] Using Default Image!");
-			return;
+			//Check if alpha is used
+			bool alphaUsed = false;
+			for (unsigned int i = 3; i < colorTable.size(); i += 4)
+				if (colorTable[i] > 0)
+				{
+					alphaUsed = true;
+					break;
+				}
+
+			//If alpha is unused set all alpha bytes to 255
+			if (!alphaUsed)
+				for (unsigned int i = 3; i < colorTable.size(); i += 4)
+					colorTable[i] = 255;
+			
+			//m_data = DecodeRLEBGRAMap(imageData, m_width, m_height, 4, colorTable);
 		}
 		else if (infoHeader.Compression == 2) //RLE 4
 		{

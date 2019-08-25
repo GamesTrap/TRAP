@@ -69,7 +69,7 @@ namespace TRAP::Graphics
 		static void SetViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height);
 
 		static void SetBlendFunction(RendererBlendFunction source, RendererBlendFunction destination);
-		static void SeBlendEquation(RendererBlendEquation blendEquation);
+		static void SetBlendEquation(RendererBlendEquation blendEquation);
 
 		static void SetCullMode(RendererCullMode cullMode);
 
@@ -156,7 +156,7 @@ inline void TRAP::Graphics::RenderCommand::SetBlendFunction(const RendererBlendF
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::RenderCommand::SeBlendEquation(const RendererBlendEquation blendEquation)
+inline void TRAP::Graphics::RenderCommand::SetBlendEquation(const RendererBlendEquation blendEquation)
 {
 	API::RendererAPI::GetRenderer()->SetBlendEquation(blendEquation);
 }

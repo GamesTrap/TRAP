@@ -136,7 +136,7 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEBGRAMap(std::vector<uint8_t>& sour
 	std::vector<uint8_t> data{};
 	data.reserve(width * height * channels);
 
-	for (unsigned int i = 0, l = 0; i < width * height;)
+	for (unsigned int i = 0, l = 0; i < source.size();)//for (unsigned int i = 0, l = 0; i < width * height;)
 	{
 		//Pixels encoded in "packets"
 
@@ -198,7 +198,7 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEGrayScale(std::vector<uint8_t>& so
 	std::vector<uint8_t> data{};
 	data.reserve(width * height);
 
-	for (unsigned int i = 0, l = 0; i < width * height;)
+	for (unsigned int i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
 
@@ -236,7 +236,7 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>
 	std::vector<uint8_t> data{};
 	data.reserve(width * height * 3);
 
-	for (unsigned int i = 0, l = 0; i < width * height * 2;)
+	for (unsigned int i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
 		//First byte is RAW/RLE flags(upper bit) and count(1-128 as 0-127 in lower 7 bits)
@@ -270,12 +270,12 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR24ToRGB(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	std::vector<uint8_t> data{};
 	data.reserve(width * height * 3);
 
-	for (unsigned int i = 0, l = 0; i < width * height * 3;)
+	for (unsigned int i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
 		//First byte is RAW/RLE flags(upper bit) and count(1-128 as 0-127 in lower 7 bits)
@@ -314,7 +314,7 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>
 	std::vector<uint8_t> data{};
 	data.reserve(width * height * 4);
 
-	for (unsigned int i = 0, l = 0; i < width * height * 4;)
+	for (unsigned int i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
 		//First byte is RAW/RLE flags(upper bit) and count(1-128 as 0-127 in lower 7 bits)

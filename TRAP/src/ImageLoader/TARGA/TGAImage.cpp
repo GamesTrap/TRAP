@@ -96,24 +96,53 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 				colorMapData.ColorMap.emplace_back(temp);
 			}
 		}
+		if(header.BitsPerPixel == 15)
+		{
+			TP_ERROR("[Image][TGA] BitsPerPixel 15 is unsupported!");
+			TP_WARN("[Image][TGA] Using Default Image!");
+			return;
+		}
 		bool needXFlip = false;
 		bool needYFlip = false;
 		if ((header.ImageDescriptor & 0x30) == 0x30 || (header.ImageDescriptor & 0x30) == 0x10) //1. If Image is stored Top/Right | 2. If Image is stored Bottom/Right
 			needXFlip = true;
 		if ((header.ImageDescriptor & 0x30) == 0x00 || (header.ImageDescriptor & 0x30) == 0x10) //1. If Image is stored Bottom/Left | 2. If Image is stored Bottom/Right
 			needYFlip = true;
-		if (header.Width < 1 || header.Height < 1)
+		if (header.Width < 2 || header.Height < 2)
 		{
-			TP_ERROR("[Image][TGA] Image Width/Height is invalid!");
+			TP_ERROR("[Image][TGA] Image Width/Height is invalid/unsupported!");
 			TP_WARN("[Image][TGA] Using Default Image!");
 			return;
 		}
-		colorMapData.ImageData.reserve(header.Width * header.Height * (header.BitsPerPixel / 8));
 		uint8_t temp;
-		for (unsigned int i = 0; i < static_cast<unsigned int>(header.Width * header.Height * (header.BitsPerPixel / 8)); i++)
+		if(header.ImageType == 9 || header.ImageType == 11 || header.ImageType == 10) //All RLE formats
 		{
-			file.read(reinterpret_cast<char*>(&temp), sizeof(uint8_t));
-			colorMapData.ImageData.emplace_back(temp);
+			uint32_t currentPosition = file.tellg(); //Store current position in file
+			file.seekg(0, std::ios::end); //Go to the end of file
+			uint32_t pixelDataSize = static_cast<uint32_t>(file.tellg()) - currentPosition;
+			file.seekg(-18, std::ios::end); //Check if there is a footer
+			std::string offsetCheck;
+			offsetCheck.resize(16);
+			file.read(offsetCheck.data(), 16);
+			if (offsetCheck == "TRUEVISION-XFILE")
+				pixelDataSize -= 26; //If a footer was found subtract the 26 bytes from pixelDataSize
+			file.seekg(currentPosition); //Go back to starting position
+			
+			colorMapData.ImageData.reserve(pixelDataSize);
+			for(unsigned int i = 0; i < pixelDataSize; i++)
+			{
+				file.read(reinterpret_cast<char*>(&temp), sizeof(uint8_t));
+				colorMapData.ImageData.emplace_back(temp);
+			}
+		}
+		else
+		{
+			colorMapData.ImageData.reserve(header.Width * header.Height * (header.BitsPerPixel / 8));
+			for (unsigned int i = 0; i < static_cast<unsigned int>(header.Width * header.Height * (header.BitsPerPixel / 8)); i++)
+			{
+				file.read(reinterpret_cast<char*>(&temp), sizeof(uint8_t));
+				colorMapData.ImageData.emplace_back(temp);
+			}
 		}
 
 		m_width = header.Width;
@@ -264,7 +293,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			case 24:
 			{
 				m_imageFormat = ImageFormat::RGB;
-				m_data = ConvertRLEBGR24ToRGB(colorMapData.ImageData, m_width, m_height);
+				m_data = ConvertRLEBGR24ToRGB24(colorMapData.ImageData, m_width, m_height);
 				break;
 			}
 

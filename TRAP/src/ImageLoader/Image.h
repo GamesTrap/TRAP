@@ -13,7 +13,7 @@ namespace TRAP::INTERNAL
 	std::vector<uint8_t> DecodeRLEBGRAMap(std::vector<uint8_t>& source, uint32_t width, uint32_t height, uint32_t channels, std::vector<uint8_t>& colorMap);
 	std::vector<uint8_t> DecodeRLEGrayScale(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
 	std::vector<uint8_t> ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
-	std::vector<uint8_t> ConvertRLEBGR24ToRGB(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
+	std::vector<uint8_t> ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
 	std::vector<uint8_t> ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
 }
 
@@ -57,7 +57,7 @@ namespace TRAP
 
 		static std::unique_ptr<Image> LoadFromFile(const std::string& filepath);
 		static std::unique_ptr<Image> LoadFallback();
-
+		
 		template<typename T>
 		static std::vector<T> FlipY(unsigned int width, unsigned int height, ImageFormat format, T* data);
 		template<typename T>
@@ -78,59 +78,42 @@ std::vector<T> TRAP::Image::FlipY(const unsigned int width, const unsigned int h
 	if (format == ImageFormat::NONE || !data)
 		return {};
 
-	unsigned int yt, yb;
 	std::vector<T> newData{};
+	uint32_t stride;
 	if (format == ImageFormat::Gray_Scale)
+	{
 		newData.assign(data, data + width * height);
+		stride = width;
+	}
 	else if (format == ImageFormat::Gray_Scale_Alpha)
+	{
 		newData.assign(data, data + width * height * 2);
+		stride = width * 2;
+	}
 	else if (format == ImageFormat::RGB)
+	{
 		newData.assign(data, data + width * height * 3);
+		stride = width * 3;
+	}
 	else if (format == ImageFormat::RGBA)
+	{
 		newData.assign(data, data + width * height * 4);
+		stride = width * 4;
+	}
 
-	for (yt = 0, yb = height - 1; yt < yb; yt++, yb--)
-		for (unsigned int x = 0; x < width; x++)
-		{
-			if (format == ImageFormat::Gray_Scale)
-			{
-				const T temp{ newData[(x + yb * width) + 0] };
-				newData[x + yb * width + 0] = newData[x + yt * width + 0];
-				newData[x + yt * width + 0] = temp;
-			}
-			else if (format == ImageFormat::Gray_Scale_Alpha)
-			{
-				const Math::tVec2<T> temp{ newData[2 * (x + yb * width) + 0], newData[2 * (x + yb * width) + 1] };
-				newData[2 * (x + yb * width) + 0] = newData[2 * (x + yt * width) + 0];
-				newData[2 * (x + yb * width) + 1] = newData[2 * (x + yt * width) + 1];
-				newData[2 * (x + yt * width) + 0] = temp.x;
-				newData[2 * (x + yt * width) + 1] = temp.y;
-			}
-			else if (format == ImageFormat::RGB)
-			{
-				const Math::tVec3<T> temp{ newData[3 * (x + yb * width) + 0], newData[3 * (x + yb * width) + 1], newData[3 * (x + yb * width) + 2] };
-				newData[3 * (x + yb * width) + 0] = newData[3 * (x + yt * width) + 0];
-				newData[3 * (x + yb * width) + 1] = newData[3 * (x + yt * width) + 1];
-				newData[3 * (x + yb * width) + 2] = newData[3 * (x + yt * width) + 2];
-				newData[3 * (x + yt * width) + 0] = temp.x;
-				newData[3 * (x + yt * width) + 1] = temp.y;
-				newData[3 * (x + yt * width) + 2] = temp.z;
-			}
-			else if (format == ImageFormat::RGBA)
-			{
-				const Math::tVec4<T> temp{ newData[4 * (x + yb * width) + 0], newData[4 * (x + yb * width) + 1], newData[4 * (x + yb * width) + 2], newData[4 * (x + yb * width) + 3] };
-				newData[4 * (x + yb * width) + 0] = newData[4 * (x + yt * width) + 0];
-				newData[4 * (x + yb * width) + 1] = newData[4 * (x + yt * width) + 1];
-				newData[4 * (x + yb * width) + 2] = newData[4 * (x + yt * width) + 2];
-				newData[4 * (x + yb * width) + 3] = newData[4 * (x + yt * width) + 3];
-				newData[4 * (x + yt * width) + 0] = temp.x;
-				newData[4 * (x + yt * width) + 1] = temp.y;
-				newData[4 * (x + yt * width) + 2] = temp.z;
-				newData[4 * (x + yt * width) + 3] = temp.w;
-			}
-			else
-				return {};
-		}
+	std::vector<T> row{};
+	row.resize(stride);
+	
+	row.reserve(stride);
+	uint32_t lowOffset = 0;
+	uint32_t highOffset = (height - 1) * stride;
+
+	for (; lowOffset < highOffset; lowOffset += stride, highOffset -= stride)
+	{
+		std::copy(newData.data() + lowOffset, newData.data() + lowOffset + stride, row.data());
+		std::copy(newData.data() + highOffset, newData.data() + highOffset + stride, newData.data() + lowOffset);
+		std::copy(row.data(), row.data() + stride, newData.data() + highOffset);
+	}
 
 	return newData;
 }
@@ -148,59 +131,40 @@ std::vector<T> TRAP::Image::FlipX(const unsigned int width, const unsigned int h
 	if (format == ImageFormat::NONE || !data)
 		return {};
 
-	unsigned int xt, xb;
 	std::vector<T> newData{};
+	uint32_t stride;
 	if (format == ImageFormat::Gray_Scale)
+	{
 		newData.assign(data, data + width * height);
+		stride = height;
+	}
 	else if (format == ImageFormat::Gray_Scale_Alpha)
+	{
 		newData.assign(data, data + width * height * 2);
+		stride = height * 2;
+	}
 	else if (format == ImageFormat::RGB)
+	{
 		newData.assign(data, data + width * height * 3);
+		stride = height * 3;
+	}
 	else if (format == ImageFormat::RGBA)
+	{
 		newData.assign(data, data + width * height * 4);
+		stride = height * 4;
+	}
 
-	for (xt = 0, xb = width - 1; xt < xb; xt++, xb--)
-		for (unsigned int y = 0; y < height; y++)
-		{
-			if (format == ImageFormat::Gray_Scale)
-			{
-				const T temp{ newData[(y + xb * height) + 0] };
-				newData[y + xb * height + 0] = newData[y + xt * height + 0];
-				newData[y + xt * height + 0] = temp;
-			}
-			else if (format == ImageFormat::Gray_Scale_Alpha)
-			{
-				const TRAP::Math::tVec2<T> temp{ newData[2 * (y + xb * height) + 0], newData[2 * (y + xb * height) + 1] };
-				newData[2 * (y + xb * height) + 0] = newData[2 * (y + xt * height) + 0];
-				newData[2 * (y + xb * height) + 1] = newData[2 * (y + xt * height) + 1];
-				newData[2 * (y + xt * height) + 0] = temp.x;
-				newData[2 * (y + xt * height) + 1] = temp.y;
-			}
-			else if (format == ImageFormat::RGB)
-			{
-				const TRAP::Math::tVec3<T> temp{ newData[3 * (y + xb * height) + 0], newData[3 * (y + xb * height) + 1], newData[3 * (y + xb * height) + 2] };
-				newData[3 * (y + xb * height) + 0] = newData[3 * (y + xt * height) + 0];
-				newData[3 * (y + xb * height) + 1] = newData[3 * (y + xt * height) + 1];
-				newData[3 * (y + xb * height) + 2] = newData[3 * (y + xt * height) + 2];
-				newData[3 * (y + xt * height) + 0] = temp.x;
-				newData[3 * (y + xt * height) + 1] = temp.y;
-				newData[3 * (y + xt * height) + 2] = temp.z;
-			}
-			else if (format == ImageFormat::RGBA)
-			{
-				const Math::tVec4<T> temp{ newData[4 * (y + xb * height) + 0], newData[4 * (y + xb * height) + 1], newData[4 * (y + xb * height) + 2], newData[4 * (y + xb * height) + 3] };
-				newData[4 * (y + xb * height) + 0] = newData[4 * (y + xt * height) + 0];
-				newData[4 * (y + xb * height) + 1] = newData[4 * (y + xt * height) + 1];
-				newData[4 * (y + xb * height) + 2] = newData[4 * (y + xt * height) + 2];
-				newData[4 * (y + xb * height) + 3] = newData[4 * (y + xt * height) + 3];
-				newData[4 * (y + xt * height) + 0] = temp.x;
-				newData[4 * (y + xt * height) + 1] = temp.y;
-				newData[4 * (y + xt * height) + 2] = temp.z;
-				newData[4 * (y + xt * height) + 3] = temp.w;
-			}
-			else
-				return {};
-		}
+	std::vector<T> row{};
+	row.resize(stride);
+	uint32_t lowOffset = 0;
+	uint32_t highOffset = (width - 1) * stride;
+
+	for (; lowOffset < highOffset; lowOffset += stride, highOffset -= stride)
+	{
+		std::copy(newData.data() + lowOffset, newData.data() + lowOffset + stride, row.data());
+		std::copy(newData.data() + highOffset, newData.data() + highOffset + stride, newData.data() + lowOffset);
+		std::copy(row.data(), row.data() + stride, newData.data() + highOffset);
+	}
 
 	return newData;
 }

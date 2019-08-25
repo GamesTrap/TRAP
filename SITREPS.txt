@@ -307,5 +307,14 @@ SITREP 08/22/2019|19w34a4
     - Added Support for BMPV5 BitField Images ~>60 mins
 
 SITREP 08/23/2019|19w34a5
+    - Changed TRAP Engine version to 19w34a5(0.5.18)
     - Added Multi-Window support ~> 100 mins
     - Changed Events system so it now passes current window title through ~>30 mins
+
+SITREP 08/24/2019|19w34a6
+    - Changed TRAP Engine version to 19w34a6(0.5.19)
+    - Optimized memory usage in TGA Image Loader for RLE images ~>45 mins
+
+SITREP 08/25/2019|19w34a7
+    - Changed TRAP Engine version to 19w34a7(0.5.20)
+    - Optimized Vertical/Horizontal Functions for Image flipping ~>25 mins
