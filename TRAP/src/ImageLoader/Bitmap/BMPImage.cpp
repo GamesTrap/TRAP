@@ -144,13 +144,27 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		if (m_bitsPerPixel <= 8)
 		{
 			colorTable.resize(4 * infoHeader.CLRUsed);
-			if(file.read(reinterpret_cast<char*>(colorTable.data()), 4 * infoHeader.CLRUsed))
+			if(!file.read(reinterpret_cast<char*>(colorTable.data()), 4 * infoHeader.CLRUsed))
 			{
 				file.close();
 				TP_ERROR("[Image][BMP] Couldn't load Color Map data!");
 				TP_WARN("[Image][BMP] Using Default Image!");
 				return;
 			}
+
+			//Check if alpha is used
+			bool alphaUsed = false;
+			for (unsigned int i = 3; i < colorTable.size(); i += 4)
+				if (colorTable[i] > 0)
+				{
+					alphaUsed = true;
+					break;
+				}
+
+			//If alpha is unused set all alpha bytes to 255
+			if (!alphaUsed)
+				for (unsigned int i = 3; i < colorTable.size(); i += 4)
+					colorTable[i] = 255;
 		}
 
 		//Load Pixel Data(BGRA) into vector
@@ -160,7 +174,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		{
 			imageData.resize(m_width * m_height * (m_bitsPerPixel / 8));
 			uint32_t padding = 4 - (((m_bitsPerPixel / 8) * m_width) % 4);
-			uint64_t offset = 0;
+			uint32_t offset = 0;
 			for (unsigned int j = 0; j < m_height; j++)
 			{
 				if(!file.read(reinterpret_cast<char*>(imageData.data()) + offset, m_width * (m_bitsPerPixel / 8)))
@@ -220,20 +234,6 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 				m_bitsPerPixel = 32;
 				m_hasAlphaChannel = true;
 				
-				//Check if alpha is used
-				bool alphaUsed = false;
-				for (unsigned int i = 3; i < colorTable.size(); i += 4)
-					if (colorTable[i] > 0)
-					{
-						alphaUsed = true;
-						break;
-					}
-
-				//If alpha is unused set all alpha bytes to 255
-				if (!alphaUsed)
-					for (unsigned int i = 3; i < colorTable.size(); i += 4)
-						colorTable[i] = 255;
-				
 				m_data = DecodeBGRAMap(imageData, m_width, m_height, 4, colorTable);
 			}
 			else if (m_bitsPerPixel == 16) //RGB
@@ -272,36 +272,14 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 				m_data = ConvertBGRA32ToRGBA32(imageData, m_width, m_height);
 			}
 		}
-		else if (infoHeader.Compression == 1) //RLE 8 TODO
+		else if (infoHeader.Compression == 1) //Microsoft RLE 8
 		{
 			file.close();
 			TP_ERROR("[Image][BMP] RLE 8 is unsupported!");
 			TP_WARN("[Image][BMP] Using Default Image!");
 			return;
-			
-			m_isImageCompressed = true;
-			m_hasAlphaChannel = true;
-			m_isImageColored = true;
-			m_bitsPerPixel = 32;
-			m_format = ImageFormat::RGBA;
-
-			//Check if alpha is used
-			bool alphaUsed = false;
-			for (unsigned int i = 3; i < colorTable.size(); i += 4)
-				if (colorTable[i] > 0)
-				{
-					alphaUsed = true;
-					break;
-				}
-
-			//If alpha is unused set all alpha bytes to 255
-			if (!alphaUsed)
-				for (unsigned int i = 3; i < colorTable.size(); i += 4)
-					colorTable[i] = 255;
-			
-			//m_data = DecodeRLEBGRAMap(imageData, m_width, m_height, 4, colorTable);
 		}
-		else if (infoHeader.Compression == 2) //RLE 4
+		else if (infoHeader.Compression == 2) //Microsoft RLE 4
 		{
 			file.close();
 			TP_ERROR("[Image][BMP] RLE 4 is unsupported!");
@@ -329,8 +307,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 					return;
 				}
 
-				uint64_t index = 0;
-				for (uint64_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
+				uint32_t index = 0;
+				for (uint32_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
 				{
 					uint32_t value = static_cast<uint32_t>(imageData[i]) +
 						(static_cast<uint32_t>(imageData[i + 1]) << 8) +
@@ -361,8 +339,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 					return;
 				}
 
-				uint64_t index = 0;
-				for (uint64_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
+				uint32_t index = 0;
+				for (uint32_t i = 0; i < m_width * m_height * m_bitsPerPixel / 8 - 1;)
 				{
 					uint16_t value = static_cast<uint16_t>(imageData[i]) +
 							         static_cast<uint16_t>(imageData[i + 1] << 8);

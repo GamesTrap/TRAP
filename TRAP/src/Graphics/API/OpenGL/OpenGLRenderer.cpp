@@ -162,7 +162,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetCullMode(const RendererCullMode cul
 
 void TRAP::Graphics::API::OpenGLRenderer::DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {
-	OpenGLCall(glDrawElements(TRAPRendererPrimitiveToOpenGL(primitive), vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr));
+	OpenGLCall(glDrawElementsBaseVertex(TRAPRendererPrimitiveToOpenGL(primitive), vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr, 0));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

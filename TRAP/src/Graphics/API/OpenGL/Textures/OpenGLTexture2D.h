@@ -9,6 +9,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit OpenGLTexture2D(TextureParameters parameters);
+		OpenGLTexture2D(ImageFormat format, uint32_t width, uint32_t height, TextureParameters parameters);
 		OpenGLTexture2D(std::string name, const std::string& filepath, TextureParameters parameters);
 		~OpenGLTexture2D();
 		OpenGLTexture2D(const OpenGLTexture2D&) = delete;
@@ -38,7 +39,6 @@ namespace TRAP::Graphics::API
 		std::string m_name;
 		TextureParameters m_parameters;
 		uint32_t m_handle;
-		TextureParameters parameters;
 
 		static uint32_t s_maxTextureSize;
 	};

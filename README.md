@@ -4,7 +4,7 @@
 
 Status: [![Build Status](https://travis-ci.com/GamesTrap/TRAP.svg?branch=master)](https://travis-ci.com/GamesTrap/TRAP)
 
-TRAP is a cross-platform, high performance game engine currently in development.   
+TRAP is a cross-platform, high performance game engine currently in development.  
 This README will be updated with more info eventually.
 
 ## Setup
@@ -13,7 +13,7 @@ This README will be updated with more info eventually.
 
 TRAP Engine requires the [VulkanSDK](https://vulkan.lunarg.com/sdk/home)  
 TRAP Engine requires a GPU that is DirectX12, Vulkan 1.1, OpenGL 4.6 or newer compatible.
-  
+
 First clone the repository with `git clone --recursive https://github.com/GamesTrap/TRAP`.
 
 > Note: If the repository has already been cloned non-recursively, use `git submodule update --init` to clone the necessary submodules.
@@ -38,6 +38,7 @@ Premake can generate project files for XCode4.
 For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj` files for XCode 4.
 
 ## 3rd Party Libraries used by TRAP Engine:
+
 - [GLFW](https://github.com/GamesTrap/glfw)
 - [GLAD](https://glad.dav1d.de/)
 - [ImGui](https://github.com/GamesTrap/imgui)
@@ -47,6 +48,7 @@ For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj
 ## System Requirements
 
 ### Minimum System Requirements
+
 - OS: Windows 7/Ubuntu 18.04.2 or newer (64-Bit versions only) <!--Test on Mac 10.15-->
 - Processor: TBD
 - Graphics Card: TBD
@@ -59,6 +61,7 @@ For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj
 - Additional Notes: -
 
 ### Recommended System Requirements
+
 - OS: Windows 7/Ubuntu 18.04.2 or newer (64-Bit versions only) <!--Test on Mac 10.15-->
 - Processor: TBD
 - Graphics Card: TBD

@@ -82,9 +82,9 @@ public:
 		};
 		std::unique_ptr<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size()));
 		m_vertexArray->SetIndexBuffer(indexBuffer);
-
+		
 		TRAP::Graphics::RenderCommand::SetClearColor();
-		TRAP::Graphics::RenderCommand::SetCull(false); //Disables Culling
+		TRAP::Graphics::RenderCommand::SetCull(false);
 		TRAP::Graphics::RenderCommand::SetBlend(true);
 		TRAP::Graphics::RenderCommand::SetBlendFunction(TRAP::Graphics::RendererBlendFunction::Source_Alpha, TRAP::Graphics::RendererBlendFunction::One_Minus_Source_Alpha);
 	}

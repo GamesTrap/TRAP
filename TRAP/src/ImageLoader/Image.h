@@ -57,6 +57,7 @@ namespace TRAP
 
 		static std::unique_ptr<Image> LoadFromFile(const std::string& filepath);
 		static std::unique_ptr<Image> LoadFallback();
+		static std::unique_ptr<Image> CreateEmpty(ImageFormat format, uint32_t width, uint32_t height);
 		
 		template<typename T>
 		static std::vector<T> FlipY(unsigned int width, unsigned int height, ImageFormat format, T* data);
@@ -79,7 +80,7 @@ std::vector<T> TRAP::Image::FlipY(const unsigned int width, const unsigned int h
 		return {};
 
 	std::vector<T> newData{};
-	uint64_t stride;
+	uint32_t stride = 0;
 	if (format == ImageFormat::Gray_Scale)
 	{
 		newData.assign(data, data + width * height);
@@ -105,8 +106,8 @@ std::vector<T> TRAP::Image::FlipY(const unsigned int width, const unsigned int h
 	row.resize(stride);
 	
 	row.reserve(stride);
-	uint64_t lowOffset = 0;
-	uint64_t highOffset = (height - 1) * stride;
+	uint32_t lowOffset = 0;
+	uint32_t highOffset = (height - 1) * stride;
 
 	for (; lowOffset < highOffset; lowOffset += stride, highOffset -= stride)
 	{
@@ -132,7 +133,7 @@ std::vector<T> TRAP::Image::FlipX(const unsigned int width, const unsigned int h
 		return {};
 
 	std::vector<T> newData{};
-	uint64_t stride;
+	uint32_t stride;
 	if (format == ImageFormat::Gray_Scale)
 	{
 		newData.assign(data, data + width * height);
@@ -156,8 +157,8 @@ std::vector<T> TRAP::Image::FlipX(const unsigned int width, const unsigned int h
 
 	std::vector<T> row{};
 	row.resize(stride);
-	uint64_t lowOffset = 0;
-	uint64_t highOffset = (width - 1) * stride;
+	uint32_t lowOffset = 0;
+	uint32_t highOffset = (width - 1) * stride;
 
 	for (; lowOffset < highOffset; lowOffset += stride, highOffset -= stride)
 	{

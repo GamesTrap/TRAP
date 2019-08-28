@@ -41,8 +41,6 @@ namespace TRAP::Graphics::API
 		const std::string& GetTESSource() const override;
 		const std::string& GetCSSource() const override;
 
-		std::vector<VkPipelineShaderStageCreateInfo>& GetShaderStageCreateInfos();
-
 	private:
 		void Compile(std::array<std::string*, 6> & shaders, VulkanShaderErrorInfo& info);
 		static void PreProcessGLSL(const std::string& source, std::array<std::string*, 6>& shaders);
@@ -67,7 +65,8 @@ namespace TRAP::Graphics::API
 		VkShaderModule m_TEShaderModule;
 		VkShaderModule m_CShaderModule;
 
-		std::vector<VkPipelineShaderStageCreateInfo> m_shaderStages;
+		std::vector<VkPipelineShaderStageCreateInfo> m_graphicsShaderStages;
+		VkPipelineShaderStageCreateInfo m_computeShaderStage;
 	};
 }
 
@@ -125,13 +124,6 @@ inline const std::string& TRAP::Graphics::API::VulkanShader::GetTESSource() cons
 inline const std::string& TRAP::Graphics::API::VulkanShader::GetCSSource() const
 {
 	return m_CSSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::vector<VkPipelineShaderStageCreateInfo>& TRAP::Graphics::API::VulkanShader::GetShaderStageCreateInfos()
-{
-	return m_shaderStages;
 }
 
 #endif /*_TRAP_VULKANSHADER_H_*/

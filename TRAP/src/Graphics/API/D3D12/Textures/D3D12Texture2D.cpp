@@ -2,8 +2,16 @@
 #include "D3D12Texture2D.h"
 
 TRAP::Graphics::API::D3D12Texture2D::D3D12Texture2D(const TextureParameters parameters)
-	: m_name("Fallback"), m_parameters(parameters), m_handle(0)
+	: m_image(Image::LoadFromFile("")), m_name("Fallback"), m_parameters(parameters), m_handle(0)
 {	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::D3D12Texture2D::D3D12Texture2D(const ImageFormat format, const uint32_t width, const uint32_t height, const TextureParameters parameters)
+	: m_image(Image::CreateEmpty(format, width, height)), m_name("Empty"), m_parameters(parameters), m_handle(0)
+{
+	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -12,6 +12,7 @@
 #include "PortableMaps/PFMImage.h"
 #include "TARGA/TGAImage.h"
 #include "Bitmap/BMPImage.h"
+#include "EmptyImage.h"
 
 std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
 {
@@ -42,7 +43,7 @@ std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepa
 	}
 
 	//Test for Errors
-	if (result->GetPixelDataSize() == 0)
+	if (result->GetPixelDataSize() == 0 || result->GetFormat() == ImageFormat::NONE)
 		result = std::make_unique<INTERNAL::DefaultImage>(virtualFilePath);
 
 	return result;
@@ -53,6 +54,13 @@ std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepa
 std::unique_ptr<TRAP::Image> TRAP::Image::LoadFallback()
 {
 	return std::make_unique<INTERNAL::DefaultImage>("");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::unique_ptr<TRAP::Image> TRAP::Image::CreateEmpty(ImageFormat format, uint32_t width, uint32_t height)
+{
+	return std::make_unique<INTERNAL::EmptyImage>(format, width, height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

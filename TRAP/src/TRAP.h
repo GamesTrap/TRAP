@@ -45,6 +45,8 @@
 #include "Graphics/Buffers/VertexArray.h"
 #include "Graphics/Buffers/VertexBuffer.h"
 #include "Graphics/Buffers/UniformBuffer.h"
+#include "Graphics/Buffers/FrameBuffers/FrameBuffer.h"
+#include "Graphics/Buffers/FrameBuffers/FrameBuffer2D.h"
 
 #include "Graphics/Shaders/ShaderManager.h"
 #include "Graphics/Shaders/Shader.h"

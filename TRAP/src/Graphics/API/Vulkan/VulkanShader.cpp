@@ -218,7 +218,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 			"main",
 			nullptr
 		};
-		m_shaderStages.push_back(shaderStageInfo);
+		m_graphicsShaderStages.push_back(shaderStageInfo);
 	}
 	if(!SPIRV[1].empty())
 	{
@@ -235,7 +235,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 			"main",
 			nullptr
 		};
-		m_shaderStages.push_back(shaderStageInfo);
+		m_graphicsShaderStages.push_back(shaderStageInfo);
 	}
 	if(!SPIRV[2].empty())
 	{
@@ -252,7 +252,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 			"main",
 			nullptr
 		};
-		m_shaderStages.push_back(shaderStageInfo);
+		m_graphicsShaderStages.push_back(shaderStageInfo);
 	}
 	if(!SPIRV[3].empty())
 	{
@@ -269,7 +269,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 			"main",
 			nullptr
 		};
-		m_shaderStages.push_back(shaderStageInfo);
+		m_graphicsShaderStages.push_back(shaderStageInfo);
 	}
 	if(!SPIRV[4].empty())
 	{
@@ -286,7 +286,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 			"main",
 			nullptr
 		};
-		m_shaderStages.push_back(shaderStageInfo);
+		m_graphicsShaderStages.push_back(shaderStageInfo);
 	}
 	if (!SPIRV[5].empty())
 	{
@@ -303,7 +303,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 			"main",
 			nullptr
 		};
-		m_shaderStages.push_back(shaderStageInfo);
+		m_computeShaderStage = shaderStageInfo;
 	}
 }
 

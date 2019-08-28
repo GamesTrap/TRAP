@@ -9,9 +9,36 @@ uint32_t TRAP::Graphics::API::OpenGLTexture2D::s_maxTextureSize = 0;
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const TextureParameters parameters)
-	: m_name("Fallback"), m_parameters(parameters), m_handle(0), parameters(parameters)
+	: m_name("Fallback"), m_parameters(parameters), m_handle(0)
 {
 	Load("");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const ImageFormat format, const uint32_t width, const uint32_t height, const TextureParameters parameters)
+	: m_image(Image::CreateEmpty(ImageFormat::RGBA, width, height)), m_name("Empty"), m_parameters(parameters), m_handle(0)
+{
+	if (s_maxTextureSize == 0) //Only load maximum available texture size once
+	{
+		OpenGLCall(glGetIntegerv(GL_MAX_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxTextureSize)));
+	}
+	if (m_image->GetWidth() > s_maxTextureSize || m_image->GetHeight() > s_maxTextureSize)
+	{
+		TP_CRITICAL("[Texture2D][OpenGL] Texture: \"", m_name, "\" Width: ", m_image->GetWidth(), " or Height: ", m_image->GetHeight(), " is bigger than the maximum allowed texture size(", s_maxTextureSize, ")!");
+		TP_WARN("[Texture2D][OpenGL] Using Default Image!");
+		m_image = Image::LoadFallback();
+	}
+	else
+		m_image = Image::CreateEmpty(format, width, height);
+
+	OpenGLCall(glCreateTextures(GL_TEXTURE_2D, 1, &m_handle));
+	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));
+	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));
+	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
+	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_T, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
+
+	OpenGLCall(glTextureStorage2D(m_handle, 1, TRAPImageFormatToOpenGLPrecise(m_image->GetFormat(), m_image->GetBytesPerPixel()), m_image->GetWidth(), m_image->GetHeight()));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

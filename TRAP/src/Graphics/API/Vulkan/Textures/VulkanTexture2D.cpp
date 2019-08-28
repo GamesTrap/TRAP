@@ -2,7 +2,14 @@
 #include "VulkanTexture2D.h"
 
 TRAP::Graphics::API::VulkanTexture2D::VulkanTexture2D(const TextureParameters parameters)
-	: m_name("Fallback"), m_parameters(parameters), m_handle(0)
+	: m_image(Image::LoadFallback()), m_name("Fallback"), m_parameters(parameters), m_handle(0)
+{	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::VulkanTexture2D::VulkanTexture2D(const ImageFormat format, const uint32_t width, const uint32_t height, const TextureParameters parameters)
+	: m_image(Image::CreateEmpty(format, width, height)), m_name("Empty"), m_parameters(parameters), m_handle(0)
 {	
 }
 
@@ -27,6 +34,8 @@ void TRAP::Graphics::API::VulkanTexture2D::Load(const std::string& filepath)
 {
 	TP_DEBUG("[Texture2D][Vulkan] Loading Texture: \"", m_name, "\"");
 	m_image = Image::LoadFromFile(filepath);
+
+	TP_WARN("[Texture2D][Vulkan] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
