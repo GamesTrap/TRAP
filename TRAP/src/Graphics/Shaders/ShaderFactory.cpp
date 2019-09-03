@@ -44,8 +44,10 @@ std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::ShaderFactory::Passthrou
 {
 	switch (API::Context::GetRenderAPI())
 	{
-	/*case API::RenderAPI::D3D12:
-		return Shader::CreateFromSource("Passthrough", s_DebugVertexShaderD3D12, s_DebugPixelShaderD3D12, "", "", "", "");*/
+/*#ifdef TRAP_PLATFORM_WINDOWS
+	case API::RenderAPI::D3D12:
+		return Shader::CreateFromSource("Passthrough", s_DebugVertexShaderD3D12, s_DebugPixelShaderD3D12, "", "", "", "");
+#endif*/
 
 	case API::RenderAPI::Vulkan:
 		return Shader::CreateFromSource("Passthrough", s_PassthroughVSGLSL, s_PassthroughFSGLSL, "", "", "", "");

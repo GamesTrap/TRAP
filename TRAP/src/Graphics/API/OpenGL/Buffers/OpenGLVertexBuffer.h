@@ -18,13 +18,22 @@ namespace TRAP::Graphics::API
 
 		const BufferLayout& GetLayout() const override;
 		void SetLayout(const BufferLayout& layout) override;
-
-		uint32_t GetHandle() const;
+		uint32_t GetVertexCount() const override;
+		
+		uint32_t GetHandle() const;		
 
 	private:
 		uint32_t m_handle;
 		BufferLayout m_layout;
+		uint32_t m_vertexCount;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline uint32_t TRAP::Graphics::API::OpenGLVertexBuffer::GetVertexCount() const
+{
+	return m_vertexCount;
 }
 
 #endif /*_TRAP_OPENGLVERTEXBUFFER_H_*/

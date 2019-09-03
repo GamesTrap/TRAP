@@ -167,6 +167,13 @@ void TRAP::Graphics::API::OpenGLRenderer::DrawIndexed(const std::unique_ptr<Vert
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::OpenGLRenderer::Draw(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
+{
+	OpenGLCall(glDrawArrays(TRAPRendererPrimitiveToOpenGL(primitive), 0, vertexArray->GetIndexCount()));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBufferToOpenGL(const unsigned int buffer)
 {
 	unsigned int result = 0;

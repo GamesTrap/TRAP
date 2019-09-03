@@ -46,7 +46,10 @@ void TRAP::Graphics::Renderer::Submit(const Shader* shader, const std::unique_pt
 	}
 
 	vertexArray->Bind();
-	RenderCommand::DrawIndexed(vertexArray, primitive);
+	if (vertexArray->GetIndexBuffer())
+		RenderCommand::DrawIndexed(vertexArray, primitive);
+	else
+		RenderCommand::Draw(vertexArray, primitive);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

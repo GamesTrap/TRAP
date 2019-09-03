@@ -37,6 +37,7 @@ namespace TRAP::Graphics::API
 		void SetWireFrame(bool enabled) override;
 
 		void DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive) override;
+		void Draw(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive) override;
 
 		std::string_view GetTitle() const override;
 

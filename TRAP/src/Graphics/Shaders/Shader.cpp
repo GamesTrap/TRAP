@@ -93,7 +93,6 @@ std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource
 	case API::RenderAPI::D3D12:
 	{
 		std::unique_ptr<API::D3D12Shader> result = std::make_unique<API::D3D12Shader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
-
 		return result;
 	}
 #endif
@@ -101,14 +100,12 @@ std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource
 	case API::RenderAPI::Vulkan:
 	{
 		std::unique_ptr<API::VulkanShader> result = std::make_unique<API::VulkanShader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
-
 		return result;
 	}
 
 	case API::RenderAPI::OpenGL:
 	{
 		std::unique_ptr<API::OpenGLShader> result = std::make_unique<API::OpenGLShader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
-
 		return result;
 	}
 

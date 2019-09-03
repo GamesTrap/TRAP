@@ -5,7 +5,7 @@
 
 namespace TRAP::Graphics::API
 {
-	class OpenGLTexture2D final : public Graphics::Texture2D
+	class OpenGLTexture2D final : public Texture2D
 	{
 	public:
 		explicit OpenGLTexture2D(TextureParameters parameters);
@@ -26,11 +26,7 @@ namespace TRAP::Graphics::API
 		TextureParameters GetParameters() override;
 
 		void SetWrap(TextureWrap wrap) override;
-		void SetFilter(TextureFilter filter) override;
-
-		static uint32_t TRAPImageFormatToOpenGL(ImageFormat format);
-		static uint32_t TRAPImageFormatToOpenGLPrecise(ImageFormat format, uint32_t bytesPerPixel);
-		static uint32_t TRAPTextureWrapToOpenGL(TextureWrap wrap);
+		void SetFilter(TextureFilter filter) override;		
 
 	private:
 		void Load(const std::string& filepath);
@@ -39,8 +35,6 @@ namespace TRAP::Graphics::API
 		std::string m_name;
 		TextureParameters m_parameters;
 		uint32_t m_handle;
-
-		static uint32_t s_maxTextureSize;
 	};
 }
 

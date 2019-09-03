@@ -4,12 +4,8 @@
 #include "Graphics/API/OpenGL/OpenGLCommon.h"
 #include "Maths/Maths.h"
 
-uint32_t TRAP::Graphics::API::OpenGLTexture2D::s_maxTextureSize = 0;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const TextureParameters parameters)
-	: m_name("Fallback"), m_parameters(parameters), m_handle(0)
+	: m_name("Fallback2D"), m_parameters(parameters), m_handle(0)
 {
 	Load("");
 }
@@ -17,12 +13,13 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const TextureParameters pa
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const ImageFormat format, const uint32_t width, const uint32_t height, const TextureParameters parameters)
-	: m_image(Image::CreateEmpty(ImageFormat::RGBA, width, height)), m_name("Empty"), m_parameters(parameters), m_handle(0)
+	: m_name("Empty"), m_parameters(parameters), m_handle(0)
 {
 	if (s_maxTextureSize == 0) //Only load maximum available texture size once
 	{
 		OpenGLCall(glGetIntegerv(GL_MAX_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxTextureSize)));
 	}
+	
 	if (m_image->GetWidth() > s_maxTextureSize || m_image->GetHeight() > s_maxTextureSize)
 	{
 		TP_CRITICAL("[Texture2D][OpenGL] Texture: \"", m_name, "\" Width: ", m_image->GetWidth(), " or Height: ", m_image->GetHeight(), " is bigger than the maximum allowed texture size(", s_maxTextureSize, ")!");
@@ -88,7 +85,6 @@ void TRAP::Graphics::API::OpenGLTexture2D::Load(const std::string& filepath)
 	//if(!std::ispow2(m_image->GetWidth() || !std::ispow2(m_image->GetHeight())	
 	if (!Math::IsPow2(m_image->GetWidth()) || !Math::IsPow2(m_image->GetHeight()))
 	{
-		TP_WARN("[Texture2D][OpenGL][Performance] Texture: \"", m_name, "\" is NPOT! This can affect performance!");
 		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 		resetPixelStore = true;
 	}
@@ -160,103 +156,4 @@ void TRAP::Graphics::API::OpenGLTexture2D::SetWrap(const TextureWrap wrap)
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(wrap)));
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_T, TRAPTextureWrapToOpenGL(wrap)));
 	OpenGLCall(glGenerateTextureMipmap(m_handle));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::API::OpenGLTexture2D::TRAPImageFormatToOpenGL(const ImageFormat format)
-{
-	switch(format)
-	{
-	case ImageFormat::RGB:
-		return GL_RGB;
-
-	case ImageFormat::RGBA:
-		return GL_RGBA;
-
-	case ImageFormat::Gray_Scale:
-		return GL_RED;
-
-	case ImageFormat::Gray_Scale_Alpha:
-		return GL_RG;
-
-	default:
-		return 0;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::API::OpenGLTexture2D::TRAPImageFormatToOpenGLPrecise(const ImageFormat format, const uint32_t bytesPerPixel)
-{
-	switch (format)
-	{
-	case ImageFormat::RGB:
-		{
-		if (bytesPerPixel == 3)
-			return GL_RGB8;
-		if (bytesPerPixel == 6)
-			return GL_RGB16;
-		if (bytesPerPixel == 12)
-			return GL_RGB32F;
-
-		}
-
-	case ImageFormat::RGBA:
-		{
-		if (bytesPerPixel == 4)
-			return GL_RGBA8;
-		if (bytesPerPixel == 8)
-			return GL_RGBA16;
-		if (bytesPerPixel == 16)
-			return GL_RGBA32F;
-		}
-
-	case ImageFormat::Gray_Scale:
-		{
-		if (bytesPerPixel == 1)
-			return GL_R8;
-		if (bytesPerPixel == 2)
-			return GL_R16;
-		if (bytesPerPixel == 4)
-			return GL_R32F;
-		}
-
-	case ImageFormat::Gray_Scale_Alpha:
-		{
-		if (bytesPerPixel == 2)
-			return GL_RG8;
-		if (bytesPerPixel == 4)
-			return GL_RG16;
-		if (bytesPerPixel == 8)
-			return GL_RG32F;		
-		}
-
-	default:
-		return 0;
-	}
-}
-
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::API::OpenGLTexture2D::TRAPTextureWrapToOpenGL(const TextureWrap wrap)
-{
-	switch(wrap)
-	{
-	case TextureWrap::Clamp_To_Border:
-		return GL_CLAMP_TO_BORDER;
-
-	case TextureWrap::Clamp_To_Edge:
-		return GL_CLAMP_TO_EDGE;
-
-	case TextureWrap::Repeat:
-		return GL_REPEAT;
-
-	case TextureWrap::Mirrored_Repeat:
-		return GL_MIRRORED_REPEAT;
-
-	default:
-		return 0;
-	}
 }

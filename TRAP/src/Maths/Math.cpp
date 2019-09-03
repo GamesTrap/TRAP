@@ -407,21 +407,17 @@ TRAP::Math::Mat4 TRAP::Math::Mat4::Rotate(const float angle, const tVec3<float> 
 	const float s = Sin(r);
 	const float omc = 1.0f - c;
 
-	const float x = axis.x;
-	const float y = axis.y;
-	const float z = axis.z;
+	result.elements[0 + 0 * 4] = axis.x * axis.x * omc + c;
+	result.elements[0 + 1 * 4] = axis.y * axis.x * omc + axis.z * s;
+	result.elements[0 + 2 * 4] = axis.x * axis.z * omc - axis.y * s;
 
-	result.elements[0 + 0 * 4] = x * x * omc + c;
-	result.elements[0 + 1 * 4] = y * x * omc + z * s;
-	result.elements[0 + 2 * 4] = x * z * omc - y * s;
+	result.elements[1 + 0 * 4] = axis.x * axis.y * omc - axis.z * s;
+	result.elements[1 + 1 * 4] = axis.y * axis.y * omc + c;
+	result.elements[1 + 2 * 4] = axis.y * axis.z * omc + axis.x * s;
 
-	result.elements[1 + 0 * 4] = x * y * omc - z * s;
-	result.elements[1 + 1 * 4] = y * y * omc + c;
-	result.elements[1 + 2 * 4] = y * z * omc + x * s;
-
-	result.elements[2 + 0 * 4] = x * z * omc + y * s;
-	result.elements[2 + 1 * 4] = y * z * omc - x * s;
-	result.elements[2 + 2 * 4] = z * z * omc + c;
+	result.elements[2 + 0 * 4] = axis.x * axis.z * omc + axis.y * s;
+	result.elements[2 + 1 * 4] = axis.y * axis.z * omc - axis.x * s;
+	result.elements[2 + 2 * 4] = axis.z * axis.z * omc + c;
 
 	return result;
 }

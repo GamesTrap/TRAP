@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "TextureManager.h"
 #include "Texture2D.h"
+#include "TextureCube.h"
 
 std::vector<std::unique_ptr<TRAP::Graphics::Texture>> TRAP::Graphics::TextureManager::s_textures;
 
@@ -13,13 +14,18 @@ void TRAP::Graphics::TextureManager::Add(std::unique_ptr<Texture> texture)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Get(const std::string& name)
+TRAP::Graphics::Texture* TRAP::Graphics::TextureManager::Get(const std::string& name, const TextureType textureType)
 {
-	for(const auto& texture : s_textures)
-		if (texture->GetName() == name)
+	for (const auto& texture : s_textures)
+		if (texture->GetName() == name && texture->GetType() == textureType)
 			return texture.get();
 
-	return Get("Fallback");
+	if (textureType == TextureType::Texture2D)
+		return Get("Fallback2D", TextureType::Texture2D);
+	if (textureType == TextureType::TextureCube)
+		return Get("FallbackCube", TextureType::TextureCube);
+
+	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -55,7 +61,23 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 				{
 					texture.reset();
 					texture = Texture2D::CreateFromFile(name, filePath, textureParameters);
-					TP_INFO("[TextureManager] Reloaded: \"", nameOrVirtualPath, "\"");
+					TP_INFO("[TextureManager][Texture2D] Reloaded: \"", nameOrVirtualPath, "\"");
+				}
+				else if (textureType == TextureType::TextureCube)
+				{
+					const InputFormat inputFormat = dynamic_cast<TextureCube*>(texture.get())->GetInputFormat();
+
+					std::array<std::string, 6> filePaths{};
+					for (uint32_t i = 0; i < dynamic_cast<TextureCube*>(texture.get())->GetImages().size(); i++)
+						filePaths[i] = dynamic_cast<TextureCube*>(texture.get())->GetImages()[i]->GetFilePath();
+
+					texture.reset();
+					if (inputFormat == InputFormat::Vertical_Cross || inputFormat == InputFormat::Horizontal_Cross)
+						texture = TextureCube::CreateFromCross(name, filePath, inputFormat, textureParameters);
+					else
+						texture = TextureCube::CreateFromFiles(name, filePaths, textureParameters);
+
+					TP_INFO("[TextureManager][TextureCube] Reloaded: \"", nameOrVirtualPath, "\"");
 				}
 				else
 					TP_WARN("[TextureManager] Unknown TextureType: \"", nameOrVirtualPath, "\"");
@@ -67,10 +89,27 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 	else //Virtual Path
 	{
 		for (const auto& texture : s_textures)
-			if (nameOrVirtualPath == texture->GetImage()->GetFilePath())
+			if (texture->GetType() == TextureType::Texture2D)
 			{
-				Reload(texture);
-				return;
+				if (nameOrVirtualPath == texture->GetImage()->GetFilePath())
+				{
+					Reload(texture);
+					return;
+				}
+			}
+			else if(texture->GetType() == TextureType::TextureCube)
+			{
+				for (uint32_t i = 0; i < dynamic_cast<TextureCube*>(texture.get())->GetImages().size(); i++)
+				{
+					if (dynamic_cast<TextureCube*>(texture.get())->GetImages()[i])
+					{
+						if (nameOrVirtualPath == dynamic_cast<TextureCube*>(texture.get())->GetImages()[i]->GetFilePath())
+						{
+							Reload(texture);
+							return;
+						}
+					}
+				}
 			}
 		TP_WARN("[TextureManager] Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
 	}
@@ -80,13 +119,13 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 
 void TRAP::Graphics::TextureManager::Reload(const std::unique_ptr<Texture>& texture)
 {
-	for(auto& s_texture : s_textures)
+	for (auto& s_texture : s_textures)
 	{
-		if(s_texture == texture)
+		if (s_texture == texture)
 		{
 			const std::string name = texture->GetName();
 			const std::string filepath = texture->GetImage()->GetFilePath();
-			if(filepath.empty())
+			if (filepath.empty())
 			{
 				TP_WARN("[TextureManager] Could not find Texture: \"", name, "\" to reload.");
 				return;
@@ -99,7 +138,23 @@ void TRAP::Graphics::TextureManager::Reload(const std::unique_ptr<Texture>& text
 			{
 				s_texture.reset();
 				s_texture = Texture2D::CreateFromFile(name, filepath, textureParameters);
-				TP_INFO("[TextureManager] Reloaded: \"", name, "\"");
+				TP_INFO("[TextureManager][Texture2D] Reloaded: \"", name, "\"");
+			}
+			else if (textureType == TextureType::TextureCube)
+			{
+				const InputFormat inputFormat = dynamic_cast<TextureCube*>(texture.get())->GetInputFormat();
+
+				std::array<std::string, 6> filePaths{};
+				for (uint32_t i = 0; i < dynamic_cast<TextureCube*>(texture.get())->GetImages().size(); i++)
+					filePaths[i] = dynamic_cast<TextureCube*>(texture.get())->GetImages()[i]->GetFilePath();
+
+				s_texture.reset();
+				if (inputFormat == InputFormat::Vertical_Cross || inputFormat == InputFormat::Horizontal_Cross)
+					s_texture = TextureCube::CreateFromCross(name, filepath, inputFormat, textureParameters);
+				else
+					s_texture = TextureCube::CreateFromFiles(name, filePaths, textureParameters);
+
+				TP_INFO("[TextureManager][TextureCube] Reloaded: \"", name, "\"");
 			}
 			else
 				TP_WARN("[TextureManager] Unknown TextureType: \"", name, "\"");

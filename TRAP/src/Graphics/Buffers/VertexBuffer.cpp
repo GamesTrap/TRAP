@@ -12,12 +12,10 @@ std::unique_ptr<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Crea
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
-		TP_WARN("[VertexBuffer][D3D12] WIP");
 		return std::make_unique<API::D3D12VertexBuffer>(vertices, size);
 #endif
 
 	case API::RenderAPI::Vulkan:
-		TP_WARN("[VertexBuffer][Vulkan] WIP");
 		return std::make_unique<API::VulkanVertexBuffer>(vertices, size);
 
 	case API::RenderAPI::OpenGL:

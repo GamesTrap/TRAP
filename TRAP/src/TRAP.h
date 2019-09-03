@@ -26,8 +26,6 @@
 #include "Utils/MsgBox/MsgBox.h"
 #include "Utils/TimeStep.h"
 #include "Utils/Timer.h"
-#include "Utils/NonCopyable.h"
-#include "Utils/NonMovable.h"
 #include "Utils/Singleton.h"
 #include "Utils/String.h"
 //----------------------
@@ -55,6 +53,7 @@
 #include "ImageLoader/Image.h"
 #include "Graphics/Textures/Texture.h"
 #include "Graphics/Textures/Texture2D.h"
+#include "Graphics/Textures/TextureCube.h"
 
 #include "Graphics/OrthographicCamera.h"
 //----------------------

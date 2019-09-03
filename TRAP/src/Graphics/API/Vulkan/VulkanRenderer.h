@@ -36,6 +36,7 @@ namespace TRAP::Graphics::API
 		void SetCullMode(RendererCullMode cullMode) override;
 
 		void DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive) override;
+		void Draw(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive) override;
 
 		std::string_view GetTitle() const override;
 
@@ -45,6 +46,9 @@ namespace TRAP::Graphics::API
 		std::optional<uint32_t>& GetGraphicsQueueFamilyIndex();
 		std::optional<uint32_t>& GetPresentQueueFamilyIndex();
 		VkDevice& GetDevice();
+
+		void InitGraphicsPipeline(const std::vector<VkPipelineShaderStageCreateInfo>& shaderStages);
+		void DeInitGraphicsPipeline();
 
 	private:
 		void SetupInstanceLayersAndExtensions();
@@ -60,6 +64,12 @@ namespace TRAP::Graphics::API
 
 		void InitDevice();
 		void DeInitDevice();
+		
+		void InitRenderPass();
+		void DeInitRenderPass();
+		
+		void InitPipelineLayout();
+		void DeInitPipelineLayout();
 
 		void PickPhysicalDevice(std::vector<VkPhysicalDevice>& availablePhysicalDevices);
 		int RateDeviceSuitability(VkPhysicalDevice physicalDevice) const;
@@ -97,9 +107,13 @@ namespace TRAP::Graphics::API
 		
 		std::vector<const char*> m_deviceExtensions;
 		std::vector<const char*> m_deviceLayers; //Only for compatibility(Deprecated See Vulkan Specification)
-
+		
 		bool m_debugCallbackSupported;
-		VkDebugUtilsMessengerEXT m_debugReport;		
+		VkDebugUtilsMessengerEXT m_debugReport;
+
+		VkRenderPass m_renderPass;
+		VkPipelineLayout m_pipelineLayout;
+		VkPipeline m_graphicsPipeline;
 
 		VulkanContext* m_context;
 		std::string m_rendererTitle;

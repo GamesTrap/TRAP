@@ -1,7 +1,10 @@
 #include "TRAPPCH.h"
 #include "VulkanVertexArray.h"
 
-TRAP::Graphics::API::VulkanVertexArray::VulkanVertexArray() = default;
+TRAP::Graphics::API::VulkanVertexArray::VulkanVertexArray()
+{
+	TP_WARN("[VertexArray][Vulkan] WIP");
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

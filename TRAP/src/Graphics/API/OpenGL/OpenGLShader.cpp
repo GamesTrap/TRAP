@@ -216,7 +216,7 @@ void TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, st
 		{
 			if (Utils::String::FindToken(lines[i], "vertex"))
 				type = ShaderType::Vertex;
-			else if (Utils::String::FindToken(lines[i], "fragment"))
+			else if (Utils::String::FindToken(lines[i], "fragment") || Utils::String::FindToken(lines[i], "pixel"))
 				type = ShaderType::Fragment;
 			else if (Utils::String::FindToken(lines[i], "geometry"))
 				type = ShaderType::Geometry;

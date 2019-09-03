@@ -116,4 +116,10 @@ void TRAP::Graphics::API::D3D12Renderer::DrawIndexed(const std::unique_ptr<Verte
 {	
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::D3D12Renderer::Draw(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
+{
+}
+
 #endif

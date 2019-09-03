@@ -23,11 +23,19 @@ namespace TRAP::Graphics::API
 		
 		std::vector<std::unique_ptr<VertexBuffer>>& GetVertexBuffers() override;
 		IndexBuffer* GetIndexBuffer() override;
+		uint32_t GetIndexCount() const override;
 
 	private:
 		std::vector<std::unique_ptr<VertexBuffer>> m_vertexBuffers;
 		std::unique_ptr<IndexBuffer> m_indexBuffer;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline uint32_t TRAP::Graphics::API::VulkanVertexArray::GetIndexCount() const
+{
+	return 0;
 }
 
 #endif /*_TRAP_VULKANVERTEXARRAY_H_*/

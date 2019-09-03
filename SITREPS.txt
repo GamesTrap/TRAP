@@ -326,3 +326,25 @@ SITREP 08/28/2019|19w35a2
     - Added EmptyImage for OpenGLFrameBuffer ~>20 mins
     - Vulkan Splitted Compute/Graphics shaders ~<10 mins
     - OpenGL Changed DrawCall function ~<5 mins
+
+SITREP 08/29/2019|19w35a3
+    - Changed TRAP Engine version to 19w35a3(0.5.23)
+    - Vulkan Added incomplete graphics pipeline ~>65 mins
+    - Added TextureCube Base class ~>30 mins    
+
+SITREP 09/02/2019|19w36a1
+    - Changed TRAP Engine version to 19w36a1(0.5.24)
+    - OpenGL Added Texture Cube with Vertical Cross ~>45 mins
+    - Added HotTextureReloading to TextureCube ~>45 mins
+    - OpenGL Added TextureCube with Horizontal Cross ~>25 mins
+    - Modified TextureManager::Get() function to pass TextureType ~>15 mins
+    - Added Fallback for TextureCube ~>25 mins
+    - Made Input class Singleton ~<15 mins
+    - OpenGL Added TextureCube with multiple images ~>40 mins
+
+SITREP 09/03/2019|19w36a2
+    - Changed TRAP Engine version to 19w36a2(0.5.25)
+    - Removed std::function in EventDispatcher for performance ~<10 mins
+    - Fixed Changing Wrap/Filter of Texture ~<20 mins
+    - Added automatic drawing without IndexBuffer if no IndexBuffer exists ~>20 mins
+    - Added functions Get2D/GetCube to TextureManager ~<10 mins

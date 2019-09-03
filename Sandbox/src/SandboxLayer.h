@@ -11,7 +11,6 @@ public:
 		m_usePassthrough(false),
 		m_wireFrame(false),
 		m_show(true),
-		m_vertexArray(nullptr),
 		m_camera
 		(-(static_cast<float>(TRAP::Application::Get().GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::Get().GetWindow()->GetHeight())),
 			static_cast<float>(TRAP::Application::Get().GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::Get().GetWindow()->GetHeight()),
@@ -47,6 +46,7 @@ public:
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
 		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("Color", "/Shaders/Color.shader"));
 		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("Texture", "/Shaders/Texture.shader"));
+		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("SkyBox", "/Shaders/SkyBox.shader"));
 
 		//EXPERIMENTAL
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
@@ -82,7 +82,7 @@ public:
 		};
 		std::unique_ptr<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size()));
 		m_vertexArray->SetIndexBuffer(indexBuffer);
-		
+
 		TRAP::Graphics::RenderCommand::SetClearColor();
 		TRAP::Graphics::RenderCommand::SetCull(false);
 		TRAP::Graphics::RenderCommand::SetBlend(true);
@@ -100,11 +100,11 @@ public:
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnUpdate(const TRAP::Utils::TimeStep deltaTime) override
-	{		
+	{
 		m_camera.SetPosition(m_cameraPosition);
 		m_camera.SetRotation(m_cameraRotation);
-		
-		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_COLOR | TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_DEPTH);		
+
+		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_COLOR | TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_DEPTH); //TODO Update submodules
 
 		TRAP::Graphics::Renderer::BeginScene(m_camera);
 		{
@@ -130,7 +130,7 @@ public:
 					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray);
 				else
 				{
-					TRAP::Graphics::TextureManager::Get("Debug")->Bind();
+					TRAP::Graphics::TextureManager::Get2D("Debug")->Bind();
 					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Texture"), m_vertexArray);
 				}
 			}
@@ -172,7 +172,7 @@ public:
 			m_cameraPosition.y += m_cameraMovementSpeed * deltaTime;
 		if (TRAP::Input::IsKeyPressed(TP_KEY_S))
 			m_cameraPosition.y -= m_cameraMovementSpeed * deltaTime;
-
+		
 		if (TRAP::Input::IsKeyPressed(TP_KEY_KP_4))
 			m_cameraRotation.z += m_cameraRotationSpeed * deltaTime;
 		if (TRAP::Input::IsKeyPressed(TP_KEY_KP_6))
@@ -191,8 +191,8 @@ public:
 
 	bool OnKeyPressed(TRAP::KeyPressedEvent& event)
 	{
-			if (event.GetKeyCode() == TP_KEY_ESCAPE)
-				TRAP::Application::Get().Shutdown();
+		if (event.GetKeyCode() == TP_KEY_ESCAPE)
+			TRAP::Application::Get().Shutdown();
 
 		if (event.GetKeyCode() == TP_KEY_F1 && event.GetRepeatCount() < 1) //Switch to D3D12
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::D3D12);
@@ -238,17 +238,17 @@ public:
 
 	bool OnResize(TRAP::WindowResizeEvent& event)
 	{
-			TRAP::Graphics::RenderCommand::SetViewport(0, 0, event.GetWidth(), event.GetHeight());
-			const float aspectRatio = static_cast<float>(event.GetWidth()) / static_cast<float>(event.GetHeight());
-			m_camera = TRAP::Graphics::OrthographicCamera
-			{
-				-aspectRatio,
-				aspectRatio,
-				-1.0f,
-				1.0f,
-				-1.0f,
-				1.0f
-			};			
+		TRAP::Graphics::RenderCommand::SetViewport(0, 0, event.GetWidth(), event.GetHeight());
+		const float aspectRatio = static_cast<float>(event.GetWidth()) / static_cast<float>(event.GetHeight());
+		m_camera = TRAP::Graphics::OrthographicCamera
+		{
+			-aspectRatio,
+			aspectRatio,
+			-1.0f,
+			1.0f,
+			-1.0f,
+			1.0f
+		};
 
 		return true;
 	}
@@ -261,7 +261,7 @@ private:
 	bool m_wireFrame;
 	bool m_show;
 
-	std::unique_ptr<TRAP::Graphics::VertexArray> m_vertexArray;
+	std::unique_ptr<TRAP::Graphics::VertexArray> m_vertexArray{};
 
 	TRAP::Graphics::OrthographicCamera m_camera;
 	TRAP::Math::Vec3 m_cameraPosition;

@@ -516,13 +516,13 @@ void TRAP::Graphics::API::VulkanShader::Bind() const
 {
 	if (s_CurrentlyBound != this)
 	{
-		if(!m_shaderStages.empty())
-			s_CurrentlyBound = this;			
-		else
+		if(!m_graphicsShaderStages.empty())
 		{
-			ShaderManager::Get("Passthrough")->Bind();
-			s_CurrentlyBound = ShaderManager::Get("Passthrough");
+			s_CurrentlyBound = this;
+			VulkanRenderer::Get()->InitGraphicsPipeline(m_graphicsShaderStages);
 		}
+		else
+			ShaderManager::Get("Passthrough")->Bind();
 	}
 }
 

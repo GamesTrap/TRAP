@@ -12,12 +12,10 @@ std::unique_ptr<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Cr
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
-		TP_WARN("[VertexArray][D3D12] WIP");
 		return std::make_unique<API::D3D12UniformBuffer>(name, size);
 #endif
 
 	case API::RenderAPI::Vulkan:
-		TP_WARN("[VertexArray][Vulkan] WIP");
 		return std::make_unique<API::VulkanUniformBuffer>(name, size);
 
 	case API::RenderAPI::OpenGL:
@@ -37,12 +35,10 @@ std::unique_ptr<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Cr
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
-		TP_WARN("[VertexArray][D3D12] WIP");
 		return std::make_unique<API::D3D12UniformBuffer>(name, data, size);
 #endif
 
 	case API::RenderAPI::Vulkan:
-		TP_WARN("[VertexArray][Vulkan] WIP");
 		return std::make_unique<API::VulkanUniformBuffer>(name, data, size);
 
 	case API::RenderAPI::OpenGL:

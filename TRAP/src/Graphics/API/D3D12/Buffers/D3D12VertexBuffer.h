@@ -20,10 +20,18 @@ namespace TRAP::Graphics::API
 
 		const BufferLayout& GetLayout() const override;
 		void SetLayout(const BufferLayout& layout) override;
+		uint32_t GetVertexCount() const override;
 
 	private:
 		BufferLayout m_layout;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline uint32_t TRAP::Graphics::API::D3D12VertexBuffer::GetVertexCount() const
+{
+	return 0;
 }
 
 #endif

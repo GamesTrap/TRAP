@@ -1,9 +1,11 @@
 #ifndef _TRAP_INPUT_H_
 #define _TRAP_INPUT_H_
 
+#include "Utils/Singleton.h"
+
 namespace TRAP
 {
-	class Input
+	class Input final : public Singleton
 	{
 	public:
 		static bool IsKeyPressed(int keycode);

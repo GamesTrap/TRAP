@@ -4,7 +4,7 @@
 #include "Graphics/API/OpenGL/OpenGLCommon.h"
 
 TRAP::Graphics::API::OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, const uint32_t size)
-	: m_handle(0)
+	: m_handle(0), m_vertexCount(size)
 {
 	OpenGLCall(glCreateBuffers(1, &m_handle));
 	OpenGLCall(glNamedBufferStorage(m_handle, size * sizeof(uint32_t), vertices, GL_DYNAMIC_STORAGE_BIT));

@@ -3,7 +3,10 @@
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
-TRAP::Graphics::API::D3D12VertexArray::D3D12VertexArray() = default;
+TRAP::Graphics::API::D3D12VertexArray::D3D12VertexArray()
+{
+	TP_WARN("[VertexArray][D3D12] WIP");
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

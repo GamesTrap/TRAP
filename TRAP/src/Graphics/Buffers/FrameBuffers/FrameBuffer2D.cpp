@@ -5,7 +5,9 @@
 
 #include "Graphics/API/OpenGL/Buffers/FrameBuffers/OpenGLFrameBuffer2D.h"
 #include "Graphics/API/Vulkan/Buffers/FrameBuffers/VulkanFrameBuffer2D.h"
+#ifdef TRAP_PLATFORM_WINDOWS
 #include "Graphics/API/D3D12/Buffers/FrameBuffers/D3D12FrameBuffer2D.h"
+#endif
 
 std::unique_ptr<TRAP::Graphics::FrameBuffer2D> TRAP::Graphics::FrameBuffer2D::Create(uint32_t width, uint32_t height)
 {

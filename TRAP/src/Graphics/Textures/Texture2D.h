@@ -13,6 +13,9 @@ namespace TRAP::Graphics
 		static std::unique_ptr<Texture2D> Create(TextureParameters parameters = TextureParameters());
 
 		TextureType GetType() const override;
+
+	protected:
+		static uint32_t s_maxTextureSize;
 	};
 }
 

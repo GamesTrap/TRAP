@@ -51,7 +51,7 @@ namespace TRAP::Graphics::API
 		VkExtent2D ChooseSwapchainExtent() const;
 
 		std::vector<VkImageView> m_swapchainImageViews;
-		std::vector<VkImage> m_swapchainImages; //Use as Framebuffers
+		std::vector<VkImage> m_swapchainImages;
 		VkSwapchainKHR m_swapchain;
 		VkExtent2D m_extent;
 		VkSurfaceCapabilitiesKHR m_capabilities;

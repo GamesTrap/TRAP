@@ -28,8 +28,6 @@ namespace TRAP::Graphics::API
 		void SetFilter(TextureFilter filter) override;
 
 	private:
-		void Load(const std::string& filepath);
-
 		std::unique_ptr<Image> m_image;
 		std::string m_name;
 		TextureParameters m_parameters;

@@ -26,8 +26,10 @@ namespace TRAP::Graphics
 		
 		virtual std::vector<std::unique_ptr<VertexBuffer>>& GetVertexBuffers() = 0;
 		virtual IndexBuffer* GetIndexBuffer() = 0;
+		virtual uint32_t GetIndexCount() const = 0;
 
-		static const VertexArray* s_CurrentlyBound;
+	protected:
+		const static VertexArray* s_CurrentlyBound;
 	};
 }
 

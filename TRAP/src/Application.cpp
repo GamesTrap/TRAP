@@ -8,6 +8,7 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/Textures/TextureManager.h"
 #include "Graphics/Textures/Texture2D.h"
+#include "Graphics/Textures/TextureCube.h"
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
@@ -86,6 +87,7 @@ TRAP::Application::Application()
 	Graphics::ShaderManager::Add(Graphics::ShaderFactory::PassthroughShader());
 	//Always added as a fallback texture
 	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
+	Graphics::TextureManager::Add(Graphics::TextureCube::Create());
 
 	m_ImGuiLayer = std::make_unique<ImGuiLayer>();
 	PushOverlay(std::move(m_ImGuiLayer));

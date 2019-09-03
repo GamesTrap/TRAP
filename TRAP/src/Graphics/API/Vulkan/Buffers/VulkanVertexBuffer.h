@@ -18,10 +18,18 @@ namespace TRAP::Graphics::API
 
 		const BufferLayout& GetLayout() const override;
 		void SetLayout(const BufferLayout& layout) override;
+		uint32_t GetVertexCount() const override;
 
 	private:
 		BufferLayout m_layout;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline uint32_t TRAP::Graphics::API::VulkanVertexBuffer::GetVertexCount() const
+{
+	return 0;
 }
 
 #endif /*_TRAP_VULKANVERTEXBUFFER_H_*/

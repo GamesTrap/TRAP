@@ -12,12 +12,10 @@ std::unique_ptr<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
-		TP_WARN("[IndexBuffer][D3D12] WIP");
 		return std::make_unique<API::D3D12IndexBuffer>(indices, size);
 #endif
 
 	case API::RenderAPI::Vulkan:
-		TP_WARN("[IndexBuffer][Vulkan] WIP");
 		return std::make_unique<API::VulkanIndexBuffer>(indices, size);
 
 	case API::RenderAPI::OpenGL:

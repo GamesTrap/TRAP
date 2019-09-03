@@ -9,7 +9,7 @@
 #include "OpenGLIndexBuffer.h"
 
 TRAP::Graphics::API::OpenGLVertexArray::OpenGLVertexArray()
-	: m_handle(0)
+	: m_indexCount(0), m_handle(0)
 {
 	OpenGLCall(glCreateVertexArrays(1, &m_handle));
 }
@@ -29,9 +29,10 @@ TRAP::Graphics::API::OpenGLVertexArray::~OpenGLVertexArray()
 void TRAP::Graphics::API::OpenGLVertexArray::AddVertexBuffer(std::unique_ptr<VertexBuffer>& buffer)
 {
 	TP_CORE_ASSERT(buffer->GetLayout().GetElements().size(), "[VBO][OpenGL] VertexBuffer has no layout!");
-
-	OpenGLCall(glVertexArrayVertexBuffer(m_handle, 0, dynamic_cast<OpenGLVertexBuffer*>(buffer.get())->GetHandle(), 0, buffer->GetLayout().GetStride()));
 	
+	OpenGLCall(glVertexArrayVertexBuffer(m_handle, 0, dynamic_cast<OpenGLVertexBuffer*>(buffer.get())->GetHandle(), 0, buffer->GetLayout().GetStride()));
+
+	uint32_t components = 0;
 	uint32_t index = 0;
 	const auto& layout = buffer->GetLayout();
 	for (const auto& element : layout)
@@ -39,9 +40,12 @@ void TRAP::Graphics::API::OpenGLVertexArray::AddVertexBuffer(std::unique_ptr<Ver
 		OpenGLCall(glEnableVertexArrayAttrib(m_handle, index));
 		OpenGLCall(glVertexArrayAttribFormat(m_handle, index, element.GetComponentCount(), TRAP::Graphics::API::ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized, element.Offset));
 		OpenGLCall(glVertexArrayAttribBinding(m_handle, index, 0));
-
+		components += element.GetComponentCount();
+		
 		index++;
 	}
+
+	m_indexCount += buffer->GetVertexCount() / components;
 
 	m_vertexBuffers.push_back(std::move(buffer));
 }

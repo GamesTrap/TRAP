@@ -23,13 +23,22 @@ namespace TRAP::Graphics::API
 		
 		std::vector<std::unique_ptr<VertexBuffer>>& GetVertexBuffers() override;
 		IndexBuffer* GetIndexBuffer() override;
+		uint32_t GetIndexCount() const override;
 
 	private:
 		std::vector<std::unique_ptr<VertexBuffer>> m_vertexBuffers;
 		std::unique_ptr<IndexBuffer> m_indexBuffer;
+		uint32_t m_indexCount;
 
 		uint32_t m_handle;
 	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline uint32_t TRAP::Graphics::API::OpenGLVertexArray::GetIndexCount() const
+{
+	return m_indexCount;
 }
 
 #endif /*_TRAP_OPENGLVERTEXARRAY_H_*/

@@ -74,6 +74,7 @@ namespace TRAP::Graphics
 		static void SetCullMode(RendererCullMode cullMode);
 
 		static void DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive = RendererPrimitive::Triangle);
+		static void Draw(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive = RendererPrimitive::Triangle);
 	};
 }
 
@@ -82,6 +83,13 @@ namespace TRAP::Graphics
 inline void TRAP::Graphics::RenderCommand::DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {
 	API::RendererAPI::GetRenderer()->DrawIndexed(vertexArray, primitive);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Graphics::RenderCommand::Draw(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
+{
+	API::RendererAPI::GetRenderer()->Draw(vertexArray, primitive);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -8,6 +8,10 @@
 #include "Graphics/API/D3D12/Textures/D3D12Texture2D.h"
 #endif
 
+uint32_t TRAP::Graphics::Texture2D::s_maxTextureSize = 0;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::unique_ptr<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string& name, const std::string& filepath, TextureParameters parameters)
 {
 	switch(API::Context::GetRenderAPI())

@@ -12,7 +12,7 @@ namespace TRAP::Graphics
 		Bool
 	};
 
-	static uint32_t ShaderDataTypeSize(ShaderDataType type)
+	static uint32_t ShaderDataTypeSize(const ShaderDataType type)
 	{
 		switch (type)
 		{
@@ -46,7 +46,7 @@ namespace TRAP::Graphics
 		bool Normalized{};
 
 		BufferElement() = default;
-		BufferElement(const ShaderDataType type, std::string name, bool normalized = false)
+		BufferElement(const ShaderDataType type, std::string name, const bool normalized = false)
 			: Name(std::move(name)), Type(type), Size(ShaderDataTypeSize(type)), Normalized(normalized)
 		{
 		}

@@ -3,12 +3,14 @@
 
 TRAP::Graphics::API::D3D12UniformBuffer::D3D12UniformBuffer(const char* name, uint32_t size)
 {
+	TP_WARN("[UniformBuffer][D3D12] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::D3D12UniformBuffer::D3D12UniformBuffer(const char* name, const void* data, uint32_t size)
-{	
+{
+	TP_WARN("[UniformBuffer][D3D12] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

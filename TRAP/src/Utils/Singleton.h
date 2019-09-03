@@ -1,11 +1,19 @@
 #ifndef _TRAP_SINGLETON_H_
 #define _TRAP_SINGLETON_H_
 
-#include "NonMovable.h"
-#include "NonCopyable.h"
+class Singleton
+{
+public:
+	Singleton(Singleton& other) = delete;
+	Singleton(Singleton&& other) = delete;
 
-class Singleton : public NonMovable, public NonCopyable
-{	
+
+	Singleton& operator =(Singleton& other) = delete;
+	Singleton& operator =(Singleton&& other) = delete;
+
+protected:
+	Singleton() = default;
+	virtual ~Singleton() = default;
 };
 
 #endif /*_TRAP_SINGLETON_H_*/
