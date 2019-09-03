@@ -46,7 +46,6 @@ public:
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
 		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("Color", "/Shaders/Color.shader"));
 		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("Texture", "/Shaders/Texture.shader"));
-		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("SkyBox", "/Shaders/SkyBox.shader"));
 
 		//EXPERIMENTAL
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
@@ -104,7 +103,7 @@ public:
 		m_camera.SetPosition(m_cameraPosition);
 		m_camera.SetRotation(m_cameraRotation);
 
-		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_COLOR | TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_DEPTH); //TODO Update submodules
+		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_COLOR | TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_DEPTH);
 
 		TRAP::Graphics::Renderer::BeginScene(m_camera);
 		{

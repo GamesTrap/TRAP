@@ -348,3 +348,4 @@ SITREP 09/03/2019|19w36a2
     - Fixed Changing Wrap/Filter of Texture ~<20 mins
     - Added automatic drawing without IndexBuffer if no IndexBuffer exists ~>20 mins
     - Added functions Get2D/GetCube to TextureManager ~<10 mins
+    - Updated Submodules ~15 mins
