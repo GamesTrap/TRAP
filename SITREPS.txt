@@ -362,3 +362,4 @@ SITREP 09/04/2019|19w36a3
     - Made VSync Window dependent ~>25 mins
     - Removed GetVSyncInterval from API::Context ~<10 mins
     - Added SetVSyncInterval and GetVSyncInterval to TRAP::Window ~>15 mins
+    - Removed unecessary TRAP::WindowProps constructor ~<20 mins

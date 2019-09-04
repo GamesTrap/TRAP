@@ -66,21 +66,21 @@ TRAP::Application::Application()
 
 	VFS::Get()->SetHotShaderReloading(hotShaderReloading);
 	VFS::Get()->SetHotTextureReloading(hotTextureReloading);
-
+	
+	Graphics::API::Context::SetRenderAPI(renderAPI);
 	m_window = std::make_unique<Window>
+	(
+		WindowProps
 		(
-			WindowProps
-			(
-				"Sandbox",
-				width,
-				height,
-				refreshRate,
-				vsync,
-				displayMode,
-				monitor,
-				renderAPI
-			)
-			);
+			"Sandbox",
+			width,
+			height,
+			refreshRate,
+			vsync,
+			displayMode,
+			monitor
+		)
+	);
 	m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
 	//Always added as a fallback shader
@@ -266,7 +266,7 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 		layer->OnDetach();
 	Graphics::API::Context::SetRenderAPI(renderAPI);
 
-	WindowProps props{ std::string(m_window->GetTitle()), m_window->GetWidth(), m_window->GetHeight(), m_window->GetRefreshRate(), m_window->GetVSyncInterval(), m_window->GetDisplayMode(), m_window->GetMonitor(), renderAPI };
+	WindowProps props{ std::string(m_window->GetTitle()), m_window->GetWidth(), m_window->GetHeight(), m_window->GetRefreshRate(), m_window->GetVSyncInterval(), m_window->GetDisplayMode(), m_window->GetMonitor() };
 	m_window.reset();
 	m_window = std::make_unique<Window>(props);
 	m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));

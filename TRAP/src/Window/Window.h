@@ -34,27 +34,6 @@ namespace TRAP
 		DisplayMode Mode;
 		unsigned int Monitor;
 
-	private:
-		explicit WindowProps(std::string title = "TRAP Engine",
-		                     const unsigned int width = 1280,
-		                     const unsigned int height = 720,
-		                     const unsigned int refreshRate = 60,
-		                     const unsigned int vsync = 0,
-		                     const DisplayMode mode = DisplayMode::Windowed,
-		                     const unsigned int monitor = 0,
-		                     Graphics::API::RenderAPI api = Graphics::API::RenderAPI::Vulkan)
-			: Title(std::move(title)),
-			  Width(width),
-			  Height(height),
-			  RefreshRate(refreshRate),
-			  VSync(vsync),
-			  RenderAPI(api),
-			  Mode(mode),
-			  Monitor(monitor)
-		{				
-		}
-
-	public:
 		explicit WindowProps(std::string title = "TRAP Engine",
 			const unsigned int width = 1280,
 			const unsigned int height = 720,
