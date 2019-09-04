@@ -35,7 +35,12 @@ namespace TRAP::Graphics::API
 		void SetViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height) override;
 
 		void SetBlendFunction(RendererBlendFunction source, RendererBlendFunction destination) override;
+		void SetBlendFunctionSeparate(RendererBlendFunction sourceRGB,
+		                              RendererBlendFunction sourceAlpha,
+		                              RendererBlendFunction destinationRGB,
+		                              RendererBlendFunction destinationAlpha) override;
 		void SetBlendEquation(RendererBlendEquation blendEquation) override;
+		void SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB, RendererBlendEquation blendEquationAlpha) override;
 
 		void SetCullMode(RendererCullMode cullMode) override;
 

@@ -354,3 +354,8 @@ SITREP 09/04/2019|19w36a3
     - Changed TRAP Engine version to 19w36a3(0.5.26)
     - Added Camera Base class ~<15 mins
     - OpenGL Added Texture Swizzle for GrayScale Images ~<25 mins
+    - RenderCommand Added Enable/Disable of Depth Masking ~<15 mins
+    - RenderCommand Added Setting of the Depth Test Function ~<25 mins
+    - RenderCommand Added Setting of different Blend Equations for RGB and alpha ~<25 mins
+    - RenderCommand Added Setting of different Blend Functions for srcRGB, srcAlpha, dstRGB, dstAlpha ~<30 mins
+    - RenderCommand Added Default values to some functions ~<10 mins

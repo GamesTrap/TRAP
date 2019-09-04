@@ -106,8 +106,23 @@ void TRAP::Graphics::API::D3D12Renderer::SetBlendFunction(RendererBlendFunction 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::D3D12Renderer::SetBlendFunctionSeparate(RendererBlendFunction sourceRGB,
+	                                                              RendererBlendFunction sourceAlpha,
+	                                                              RendererBlendFunction destinationRGB,
+	                                                              RendererBlendFunction destinationAlpha)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::D3D12Renderer::SetBlendEquation(RendererBlendEquation blendEquation)
 {
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::D3D12Renderer::SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB, RendererBlendEquation blendEquationAlpha)
+{	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

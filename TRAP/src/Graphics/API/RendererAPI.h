@@ -52,7 +52,13 @@ namespace TRAP::Graphics::API
 		virtual void SetViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height) = 0;
 
 		virtual void SetBlendFunction(RendererBlendFunction source, RendererBlendFunction destination) = 0;
+		virtual void SetBlendFunctionSeparate(RendererBlendFunction sourceRGB,
+			                                  RendererBlendFunction sourceAlpha,
+			                                  RendererBlendFunction destinationRGB,
+			                                  RendererBlendFunction destinationAlpha
+		) = 0;
 		virtual void SetBlendEquation(RendererBlendEquation blendEquation) = 0;
+		virtual void SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB, RendererBlendEquation blendEquationAlpha) = 0;
 
 		virtual void SetCullMode(RendererCullMode cullMode) = 0;
 

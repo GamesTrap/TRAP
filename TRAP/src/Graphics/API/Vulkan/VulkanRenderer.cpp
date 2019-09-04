@@ -146,8 +146,23 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendFunction(const RendererBlendFu
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::SetBlendFunctionSeparate(RendererBlendFunction sourceRGB,
+	                                                               RendererBlendFunction sourceAlpha,
+	                                                               RendererBlendFunction destinationRGB,
+	                                                               RendererBlendFunction destinationAlpha)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::SetBlendEquation(RendererBlendEquation blendEquation)
 {
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB, RendererBlendEquation blendEquationAlpha)
+{	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

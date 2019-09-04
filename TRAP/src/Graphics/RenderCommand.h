@@ -17,7 +17,6 @@ namespace TRAP::Graphics
 
 	enum class RendererBlendFunction
 	{
-		NONE = 0,
 		Zero,
 		One,
 		Source_Alpha,
@@ -27,14 +26,12 @@ namespace TRAP::Graphics
 
 	enum class RendererBlendEquation
 	{
-		NONE = 0,
 		Add,
 		Subtract
 	};
 
 	enum class RendererCullMode
 	{
-		NONE = 0,
 		Front,
 		Back,
 		Front_And_Back
@@ -75,17 +72,23 @@ namespace TRAP::Graphics
 		static void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f });
 		static void SetDepthTesting(bool enabled);
 		static void SetDepthMasking(bool enabled);
-		static void SetDepthFunction(RendererDepthFunction function);
+		static void SetDepthFunction(RendererDepthFunction function = RendererDepthFunction::Less);
 		static void SetBlend(bool enabled);
 		static void SetCull(bool enabled);
-		static void SetFrontFace(RendererFrontFace frontFace);
+		static void SetFrontFace(RendererFrontFace frontFace = RendererFrontFace::Counter_Clockwise);
 		static void SetWireFrame(bool enabled);
 		static void SetViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height);
 
-		static void SetBlendFunction(RendererBlendFunction source, RendererBlendFunction destination);
-		static void SetBlendEquation(RendererBlendEquation blendEquation);
+		static void SetBlendFunction(RendererBlendFunction source = RendererBlendFunction::One, RendererBlendFunction destination = RendererBlendFunction::Zero);
+		static void SetBlendFunctionSeparate(RendererBlendFunction sourceRGB = RendererBlendFunction::One,
+		                                     RendererBlendFunction sourceAlpha = RendererBlendFunction::One,
+		                                     RendererBlendFunction destinationRGB = RendererBlendFunction::Zero,
+		                                     RendererBlendFunction destinationAlpha = RendererBlendFunction::Zero
+		);
+		static void SetBlendEquation(RendererBlendEquation blendEquation = RendererBlendEquation::Add);
+		static void SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB = RendererBlendEquation::Add, RendererBlendEquation blendEquationAlpha = RendererBlendEquation::Add);
 
-		static void SetCullMode(RendererCullMode cullMode);
+		static void SetCullMode(RendererCullMode cullMode = RendererCullMode::Back);
 
 		static void DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive = RendererPrimitive::Triangle);
 		static void Draw(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive = RendererPrimitive::Triangle);
@@ -192,9 +195,26 @@ inline void TRAP::Graphics::RenderCommand::SetBlendFunction(const RendererBlendF
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+inline void TRAP::Graphics::RenderCommand::SetBlendFunctionSeparate(const RendererBlendFunction sourceRGB,
+                                                                    const RendererBlendFunction sourceAlpha,
+                                                                    const RendererBlendFunction destinationRGB,
+                                                                    const RendererBlendFunction destinationAlpha)
+{
+	API::RendererAPI::GetRenderer()->SetBlendFunctionSeparate(sourceRGB, sourceAlpha, destinationRGB, destinationAlpha);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 inline void TRAP::Graphics::RenderCommand::SetBlendEquation(const RendererBlendEquation blendEquation)
 {
 	API::RendererAPI::GetRenderer()->SetBlendEquation(blendEquation);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Graphics::RenderCommand::SetBlendEquationSeparate(const RendererBlendEquation blendEquationRGB, const RendererBlendEquation blendEquationAlpha)
+{
+	API::RendererAPI::GetRenderer()->SetBlendEquationSeparate(blendEquationRGB, blendEquationAlpha);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

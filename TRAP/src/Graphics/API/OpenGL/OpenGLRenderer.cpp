@@ -153,9 +153,30 @@ void TRAP::Graphics::API::OpenGLRenderer::SetBlendFunction(const RendererBlendFu
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::OpenGLRenderer::SetBlendFunctionSeparate(const RendererBlendFunction sourceRGB,
+                                                                   const RendererBlendFunction sourceAlpha,
+                                                                   const RendererBlendFunction destinationRGB,
+                                                                   const RendererBlendFunction destinationAlpha)
+{
+	OpenGLCall(glBlendFuncSeparate(TRAPRendererBlendFunctionToOpenGL(sourceRGB),
+		                           TRAPRendererBlendFunctionToOpenGL(destinationRGB),
+		                           TRAPRendererBlendFunctionToOpenGL(sourceAlpha),
+		                           TRAPRendererBlendFunctionToOpenGL(destinationAlpha)
+	));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::OpenGLRenderer::SetBlendEquation(const RendererBlendEquation blendEquation)
 {
 	OpenGLCall(glBlendEquation(TRAPRendererBlendEquationToOpenGL(blendEquation)));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLRenderer::SetBlendEquationSeparate(const RendererBlendEquation blendEquationRGB, const RendererBlendEquation blendEquationAlpha)
+{
+	OpenGLCall(glBlendEquationSeparate(TRAPRendererBlendEquationToOpenGL(blendEquationRGB), TRAPRendererBlendEquationToOpenGL(blendEquationAlpha)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -251,9 +272,6 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererCullModeToOpenGL(c
 {
 	switch(cullMode)
 	{
-	case RendererCullMode::NONE:
-		return 0;
-
 	case RendererCullMode::Front:
 		return GL_FRONT;
 
