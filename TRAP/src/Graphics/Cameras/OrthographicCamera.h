@@ -2,25 +2,26 @@
 #define _TRAP_ORTHOGRAPHICCAMERA_H_
 
 #include "Maths/Maths.h"
+#include "Camera.h"
 
 namespace TRAP::Graphics
 {
-	class OrthographicCamera
+	class OrthographicCamera : public Camera
 	{
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top, float near, float far);
 
-		const Math::Vec3& GetPosition() const;
-		void SetPosition(const Math::Vec3& position);
+		const Math::Vec3& GetPosition() const override;
+		void SetPosition(const Math::Vec3& position) override;
 
-		const Math::Vec3& GetRotation() const;
-		void SetRotation(const Math::Vec3& rotation);
+		const Math::Vec3& GetRotation() const override;
+		void SetRotation(const Math::Vec3& rotation) override;
 
-		const Math::Mat4& GetProjectionMatrix() const;
-		const Math::Mat4& GetViewMatrix() const;
+		const Math::Mat4& GetProjectionMatrix() const override;
+		const Math::Mat4& GetViewMatrix() const override;
 
-		void Translate(const Math::Vec3& translation);
-		void Rotate(const Math::Vec3& rotation);
+		void Translate(const Math::Vec3& translation) override;
+		void Rotate(const Math::Vec3& rotation) override;
 
 	private:
 		void RecalculateViewMatrix();

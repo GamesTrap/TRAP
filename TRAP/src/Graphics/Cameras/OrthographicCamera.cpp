@@ -14,7 +14,7 @@ TRAP::Graphics::OrthographicCamera::OrthographicCamera(const float left,
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::OrthographicCamera::RecalculateViewMatrix()
-{
+{	
 	const Math::Mat4 transform = Math::Mat4::Translate(m_position) *
 		                          Math::Mat4::Rotate(m_rotation.x, Math::Vec3::XAxis()) * 
 		                          Math::Mat4::Rotate(m_rotation.y, Math::Vec3::YAxis()) * 

@@ -41,7 +41,7 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(const TextureParameter
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, const std::array<std::string, 6>& filepaths, const TextureParameters parameters)
+TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, const std::array<std::string, 6> & filepaths, const TextureParameters parameters)
 	: m_handle(0), m_name(std::move(name)), m_parameters(parameters), m_inputFormat(InputFormat::NONE)
 {
 	TP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
@@ -50,8 +50,8 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 		OpenGLCall(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize)));
 	}
 
-	for(const auto& path : filepaths)
-		if(path.empty())
+	for (const auto& path : filepaths)
+		if (path.empty())
 		{
 			TP_ERROR("[TextureCube][OpenGL] FilePaths are empty!");
 			TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
@@ -78,12 +78,12 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
 		return;
 	}
-	
-	if(m_inputFormat == InputFormat::Vertical_Cross)
+
+	if (m_inputFormat == InputFormat::Vertical_Cross)
 		LoadVerticalCross(filepath);
-	else if(m_inputFormat == InputFormat::Horizontal_Cross)
+	else if (m_inputFormat == InputFormat::Horizontal_Cross)
 		LoadHorizontalCross(filepath);
-	else if(m_inputFormat == InputFormat::NONE)
+	else if (m_inputFormat == InputFormat::NONE)
 	{
 		TP_ERROR("[TextureCube][OpenGL] InputFormat is None!");
 		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
@@ -103,9 +103,9 @@ TRAP::Graphics::API::OpenGLTextureCube::~OpenGLTextureCube()
 
 void TRAP::Graphics::API::OpenGLTextureCube::Bind(const unsigned int slot) const
 {
-	if(m_handle)
+	if (m_handle)
 	{
-		OpenGLCall(glBindTextureUnit(slot, m_handle));		
+		OpenGLCall(glBindTextureUnit(slot, m_handle));
 	}
 	else
 		TextureManager::Get("FallbackCube", TextureType::TextureCube)->Bind();
@@ -149,7 +149,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross(const std::string
 		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map!");
 		return;
 	}
-	
+
 	m_images[0] = Image::LoadFromFile(filepath);
 
 	if (m_images[0]->GetWidth() > s_maxCubeTextureSize || m_images[0]->GetHeight() > s_maxCubeTextureSize)
@@ -216,7 +216,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross(const std::string
 						if (face == 5)
 							offset = faceWidth - (x + 1);
 						const uint32_t xp = cx * faceWidth + offset;
-						switch(stride)
+						switch (stride)
 						{
 						case 1:
 							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<float*>(m_images[0]->GetPixelData())[(xp + yp * m_images[0]->GetWidth()) * stride + 0];
@@ -239,7 +239,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross(const std::string
 							cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<float*>(m_images[0]->GetPixelData())[(xp + yp * m_images[0]->GetWidth()) * stride + 2];
 							cubeTextureData[face][(x + y * faceWidth) * stride + 3] = static_cast<float*>(m_images[0]->GetPixelData())[(xp + yp * m_images[0]->GetWidth()) * stride + 3];
 							break;
-							
+
 						default:
 							break;
 						}
@@ -337,7 +337,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross(const std::string
 		std::vector<std::vector<uint8_t>> cubeTextureData;
 		cubeTextureData.resize(6);
 		for (auto& i : cubeTextureData)
-			i.resize(faceWidth* faceHeight * stride);
+			i.resize(faceWidth * faceHeight * stride);
 
 		for (uint32_t cy = 0; cy < 4; cy++)
 		{
@@ -404,6 +404,15 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross(const std::string
 		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(m_images[0]->GetFormat()), GL_UNSIGNED_BYTE, cubeTextureData[5].data()));
 	}
 
+	if (m_images[0]->HasAlphaChannel() && m_images[0]->IsImageGrayScale())
+	{
+		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
+	}
+	else if (m_images[0]->IsImageGrayScale())
+	{
+		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
+	}
+
 	if (resetPixelStore)
 	{
 		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 4));
@@ -424,7 +433,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross(const std::stri
 		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map!");
 		return;
 	}
-	
+
 	m_images[0] = Image::LoadFromFile(filepath);
 
 	if (m_images[0]->GetWidth() > s_maxCubeTextureSize || m_images[0]->GetHeight() > s_maxCubeTextureSize)
@@ -433,11 +442,11 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross(const std::stri
 		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
 		return;
 	}
-	if(m_images[0]->GetWidth() <= m_images[0]->GetHeight())
+	if (m_images[0]->GetWidth() <= m_images[0]->GetHeight())
 	{
 		TP_ERROR("[TextureCube][OpenGL] Texture: \"", m_name, "\" Invalid InputFormat usage!");
 		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
-		return;		
+		return;
 	}
 
 	const uint32_t stride = m_images[0]->GetBitsPerPixel() / 8;
@@ -665,6 +674,15 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross(const std::stri
 
 		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(m_images[0]->GetFormat()), GL_UNSIGNED_BYTE, cubeTextureData[2].data()));
 		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(m_images[0]->GetFormat()), GL_UNSIGNED_BYTE, cubeTextureData[4].data()));
+
+		if (m_images[0]->HasAlphaChannel() && m_images[0]->IsImageGrayScale())
+		{
+			OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
+		}
+		else if (m_images[0]->IsImageGrayScale())
+		{
+			OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
+		}
 	}
 
 	if (resetPixelStore)
@@ -677,9 +695,9 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross(const std::stri
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLTextureCube::LoadFiles(const std::array<std::string, 6>& filepaths)
+void TRAP::Graphics::API::OpenGLTextureCube::LoadFiles(const std::array<std::string, 6> & filepaths)
 {
-	for(uint32_t i = 0; i < filepaths.size(); i++)
+	for (uint32_t i = 0; i < filepaths.size(); i++)
 	{
 		const std::string virtualFilePath = VFS::MakeVirtualPathCompatible(filepaths[i]);
 		std::filesystem::path physicalPath;
@@ -689,14 +707,16 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadFiles(const std::array<std::str
 			TP_WARN("[TextureCube][OpenGL] Using Default Cube Map!");
 			return;
 		}
-		
+
 		m_images[i] = Image::LoadFromFile(filepaths[i]);
 	}
 
 	const uint32_t width = m_images[0]->GetWidth();
 	const uint32_t height = m_images[0]->GetHeight();
-	
-	for(const auto& image : m_images)
+	const bool isGrayScale = m_images[0]->IsImageGrayScale();
+	const bool hasAlphaChannel = m_images[0]->HasAlphaChannel();
+
+	for (const auto& image : m_images)
 	{
 		if (image->GetWidth() > s_maxCubeTextureSize || image->GetHeight() > s_maxCubeTextureSize)
 		{
@@ -705,9 +725,16 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadFiles(const std::array<std::str
 			return;
 		}
 
-		if(image->GetWidth() != width || image->GetHeight() != height)
+		if (image->GetWidth() != width || image->GetHeight() != height)
 		{
 			TP_ERROR("[TextureCube][OpenGL] Texture: \"", m_name, "\" Image size: ", image->GetWidth(), "x", image->GetHeight(), " is not the same size as the other images!");
+			TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
+			return;
+		}
+
+		if(image->IsImageGrayScale() != isGrayScale && image->HasAlphaChannel() != hasAlphaChannel)
+		{
+			TP_ERROR("[TextureCube][OpenGL] Texture: \"", m_name, "\" Image: \"", image->GetFilePath(), "\" doesn't match other images properties!");
 			TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
 			return;
 		}
@@ -731,7 +758,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadFiles(const std::array<std::str
 	const uint32_t numMipMapLevels = 1 + static_cast<uint32_t>(std::floor(std::log2(Math::Max(width, height)))); //Same as specification
 	OpenGLCall(glTextureStorage2D(m_handle, numMipMapLevels, TRAPImageFormatToOpenGLPrecise(m_images[0]->GetFormat(), m_images[0]->GetBytesPerPixel()), width, height));
 
-	for(uint32_t i = 0; i < 6; i++)
+	for (uint32_t i = 0; i < 6; i++)
 	{
 		if (m_images[i]->IsHDR())
 		{
@@ -748,8 +775,17 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadFiles(const std::array<std::str
 		{
 			OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, i, width, height, 1, TRAPImageFormatToOpenGL(m_images[i]->GetFormat()), GL_UNSIGNED_BYTE, m_images[i]->GetPixelData()));
 		}
-	}	
+	}
 
+	if (hasAlphaChannel && isGrayScale)
+	{
+		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
+	}
+	else if (isGrayScale)
+	{
+		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
+	}
+	
 	if (resetPixelStore)
 	{
 		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 4));

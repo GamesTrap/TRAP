@@ -55,7 +55,8 @@
 #include "Graphics/Textures/Texture2D.h"
 #include "Graphics/Textures/TextureCube.h"
 
-#include "Graphics/OrthographicCamera.h"
+#include "Graphics/Cameras/Camera.h"
+#include "Graphics/Cameras/OrthographicCamera.h"
 //----------------------
 
 //----ENTRY POINT-------

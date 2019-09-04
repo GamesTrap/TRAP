@@ -10,7 +10,7 @@ namespace TRAP::Graphics
 {
 	class Shader;
 
-	class OrthographicCamera;
+	class Camera;
 
 	class Renderer
 	{
@@ -23,7 +23,7 @@ namespace TRAP::Graphics
 
 		static void SetTickRate(unsigned int tickRate);
 
-		static void BeginScene(OrthographicCamera& camera);
+		static void BeginScene(Camera& camera);
 		static void EndScene();
 
 		static void Submit(const Shader* shader, const std::unique_ptr<VertexArray>& vertexArray, const Math::Mat4& transform = Math::Mat4::Identity(), RendererPrimitive primitive = RendererPrimitive::Triangle);

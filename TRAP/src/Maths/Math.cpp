@@ -329,11 +329,11 @@ TRAP::Math::Mat4 TRAP::Math::Mat4::Orthographic(const float left, const float ri
 
 	result.elements[0 + 0 * 4] = 2.0f / (right - left);
 	result.elements[1 + 1 * 4] = 2.0f / (top - bottom);
-	result.elements[2 + 2 * 4] = 2.0f / (near - far);
+	result.elements[2 + 2 * 4] = -2.0f / (far - near);
 
-	result.elements[3 + 0 * 4] = (left + right) / (left - right);
-	result.elements[3 + 1 * 4] = (bottom + top) / (bottom - top);
-	result.elements[3 + 2 * 4] = (far + near) / (far - near);
+	result.elements[3 + 0 * 4] = -(right + left) / (right - left);
+	result.elements[3 + 1 * 4] = -(top + bottom) / (top - bottom);
+	result.elements[3 + 2 * 4] = -(far + near) / (far - near);
 
 	return result;
 }
@@ -342,19 +342,15 @@ TRAP::Math::Mat4 TRAP::Math::Mat4::Orthographic(const float left, const float ri
 
 TRAP::Math::Mat4 TRAP::Math::Mat4::Perspective(const float fov, const float aspectRatio, const float near, const float far)
 {
-	Mat4 result = Identity();
+	Mat4 result = Mat4(0.0f);
 
-	const float q = 1.0f / Tan(ToRadians(0.5f * fov));
-	const float a = q / aspectRatio;
+	const float tanHalfFOV = Tan(ToRadians(fov) / 2.0f);
 
-	const float b = (near + far) / (near - far);
-	const float c = (2.0f * near * far) / (near - far);
-
-	result.elements[0 + 0 * 4] = a;
-	result.elements[1 + 1 * 4] = q;
-	result.elements[2 + 2 * 4] = b;
+	result.elements[0 + 0 * 4] = 1.0f / (aspectRatio * tanHalfFOV);
+	result.elements[1 + 1 * 4] = 1.0f / tanHalfFOV;
+	result.elements[2 + 2 * 4] = -(far + near) / (far - near);
 	result.elements[2 + 3 * 4] = -1.0f;
-	result.elements[3 + 2 * 4] = c;
+	result.elements[3 + 2 * 4] = -(2.0f * far * near) / (far - near);
 
 	return result;
 }

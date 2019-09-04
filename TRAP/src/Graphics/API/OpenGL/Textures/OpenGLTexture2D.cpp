@@ -115,6 +115,15 @@ void TRAP::Graphics::API::OpenGLTexture2D::Load(const std::string& filepath)
 			TRAPImageFormatToOpenGL(m_image->GetFormat()), GL_UNSIGNED_BYTE,
 			TRAP::Image::FlipY(m_image->GetWidth(), m_image->GetHeight(), m_image->GetFormat(), static_cast<uint8_t*>(m_image->GetPixelData())).data()));
 	}
+
+	if(m_image->HasAlphaChannel() && m_image->IsImageGrayScale())
+	{
+		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
+	}
+	else if(m_image->IsImageGrayScale())
+	{
+		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
+	}
 	
 	if(resetPixelStore)
 	{

@@ -3,7 +3,7 @@
 
 #include "RenderCommand.h"
 #include "Graphics/Buffers/VertexArray.h"
-#include "OrthographicCamera.h"
+#include "Cameras/Camera.h"
 #include "Graphics/Shaders/Shader.h"
 
 std::unique_ptr<TRAP::Graphics::Renderer::SceneData> TRAP::Graphics::Renderer::s_sceneData = std::make_unique<SceneData>();
@@ -14,7 +14,7 @@ std::unique_ptr<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Renderer::s_unifo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::BeginScene(OrthographicCamera& camera)
+void TRAP::Graphics::Renderer::BeginScene(Camera& camera)
 {
 	s_sceneData->m_projectionMatrix = Math::Mat4::Transpose(camera.GetProjectionMatrix());
 	s_sceneData->m_viewMatrix = Math::Mat4::Transpose(camera.GetViewMatrix());

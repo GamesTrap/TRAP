@@ -12,7 +12,8 @@ public:
 		m_wireFrame(false),
 		m_show(true),
 		m_camera
-		(-(static_cast<float>(TRAP::Application::Get().GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::Get().GetWindow()->GetHeight())),
+		(
+			-(static_cast<float>(TRAP::Application::Get().GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::Get().GetWindow()->GetHeight())),
 			static_cast<float>(TRAP::Application::Get().GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::Get().GetWindow()->GetHeight()),
 			-1.0f,
 			1.0f,
