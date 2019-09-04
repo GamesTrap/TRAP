@@ -83,6 +83,20 @@ void TRAP::Graphics::API::OpenGLRenderer::SetDepthTesting(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::OpenGLRenderer::SetDepthMasking(const bool enabled)
+{
+	OpenGLCall(glDepthMask(enabled));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLRenderer::SetDepthFunction(const RendererDepthFunction function)
+{
+	OpenGLCall(glDepthFunc(TRAPRendererDepthFunctionToOpenGL(function)));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::OpenGLRenderer::SetBlend(const bool enabled)
 {
 	if (enabled)
@@ -296,7 +310,42 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererPrimitiveToOpenGL(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void GLAPIENTRY TRAP::Graphics::API::OpenGLRenderer::DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererDepthFunctionToOpenGL(const RendererDepthFunction function)
+{
+	switch(function)
+	{
+	case RendererDepthFunction::Always:
+		return GL_ALWAYS;
+
+	case RendererDepthFunction::Never:
+		return GL_NEVER;
+
+	case RendererDepthFunction::Less:
+		return GL_LESS;
+
+	case RendererDepthFunction::Equal:
+		return GL_EQUAL;
+
+	case RendererDepthFunction::Less_Equal:
+		return GL_LEQUAL;
+
+	case RendererDepthFunction::Greater:
+		return GL_GREATER;
+
+	case RendererDepthFunction::Not_Equal:
+		return GL_NOTEQUAL;
+
+	case RendererDepthFunction::Greater_Equal:
+		return GL_GEQUAL;
+		
+	default:
+		return 0;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void GLAPIENTRY TRAP::Graphics::API::OpenGLRenderer::DebugCallback(const GLenum source, const GLenum type, const GLuint id, const GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
 	std::stringstream ss;
 	ss << "[Renderer][OpenGL] [";

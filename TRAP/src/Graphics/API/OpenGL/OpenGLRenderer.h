@@ -24,6 +24,8 @@ namespace TRAP::Graphics::API
 
 		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) override;
 		void SetDepthTesting(bool enabled) override;
+		void SetDepthMasking(bool enabled) override;
+		void SetDepthFunction(RendererDepthFunction function) override;
 		void SetBlend(bool enabled) override;
 		void SetCull(bool enabled) override;
 		void SetFrontFace(RendererFrontFace frontFace) override;
@@ -49,6 +51,7 @@ namespace TRAP::Graphics::API
 		static unsigned int TRAPRendererCullModeToOpenGL(RendererCullMode cullMode);
 		static unsigned int TRAPRendererFrontFaceToOpenGL(RendererFrontFace frontFace);
 		static unsigned int TRAPRendererPrimitiveToOpenGL(RendererPrimitive primitive);
+		static unsigned int TRAPRendererDepthFunctionToOpenGL(RendererDepthFunction function);
 
 	private:
 		static void GLAPIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);

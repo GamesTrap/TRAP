@@ -64,6 +64,18 @@ void TRAP::Graphics::API::D3D12Renderer::SetDepthTesting(bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::D3D12Renderer::SetDepthMasking(bool enabled)
+{	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::D3D12Renderer::SetDepthFunction(RendererDepthFunction function)
+{	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::D3D12Renderer::SetBlend(bool enabled)
 {
 }

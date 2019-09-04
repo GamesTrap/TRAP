@@ -98,6 +98,18 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::SetDepthMasking(bool enabled)
+{	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetDepthFunction(RendererDepthFunction function)
+{	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::SetBlend(const bool enabled)
 {
 }

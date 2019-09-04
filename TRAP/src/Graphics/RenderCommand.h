@@ -54,6 +54,18 @@ namespace TRAP::Graphics
 		Patch
 	};
 
+	enum class RendererDepthFunction
+	{
+		Always,
+		Never,
+		Less,
+		Equal,
+		Less_Equal,
+		Greater,
+		Not_Equal,
+		Greater_Equal
+	};
+
 	class RenderCommand
 	{
 	public:
@@ -62,6 +74,8 @@ namespace TRAP::Graphics
 
 		static void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f });
 		static void SetDepthTesting(bool enabled);
+		static void SetDepthMasking(bool enabled);
+		static void SetDepthFunction(RendererDepthFunction function);
 		static void SetBlend(bool enabled);
 		static void SetCull(bool enabled);
 		static void SetFrontFace(RendererFrontFace frontFace);
@@ -118,6 +132,20 @@ inline void TRAP::Graphics::RenderCommand::SetClearColor(const Math::Vec4& color
 inline void TRAP::Graphics::RenderCommand::SetDepthTesting(const bool enabled)
 {
 	API::RendererAPI::GetRenderer()->SetDepthTesting(enabled);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Graphics::RenderCommand::SetDepthMasking(const bool enabled)
+{
+	API::RendererAPI::GetRenderer()->SetDepthMasking(enabled);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Graphics::RenderCommand::SetDepthFunction(RendererDepthFunction function)
+{
+	API::RendererAPI::GetRenderer()->SetDepthFunction(function);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -24,6 +24,8 @@ namespace TRAP::Graphics::API
 
 		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) override;
 		void SetDepthTesting(bool enabled) override;
+		void SetDepthMasking(bool enabled) override;
+		void SetDepthFunction(RendererDepthFunction function) override;
 		void SetBlend(bool enabled) override;
 		void SetCull(bool enabled) override;
 		void SetFrontFace(RendererFrontFace frontFace) override;
