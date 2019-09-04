@@ -30,20 +30,10 @@ TRAP::Window::Window(const WindowProps &props)
 {
 	std::string init = "[Window] Initializing Window: \"" + props.Title + "\" " + std::to_string(props.Width) + 'x' +
 					   std::to_string(props.Height) + "@" + std::to_string(props.RefreshRate) + "Hz VSync: ";
-	if(s_windows > 0)
-	{
-		if (Graphics::API::Context::GetVSyncInterval() > 0)
-			init += "On(" + std::to_string(Graphics::API::Context::GetVSyncInterval()) + ") Mode: ";
-		else
-			init += "Off Mode: ";
-	}
+	if (props.VSync > 0)
+		init += "On(" + std::to_string(props.VSync) + ") Mode: ";
 	else
-	{
-		if (props.VSync > 0)
-			init += "On(" + std::to_string(props.VSync) + ") Mode: ";
-		else
-			init += "Off Mode: ";
-	}
+		init += "Off Mode: ";
 
 	if (props.Mode == DisplayMode::Windowed)
 		init += "Windowed";
@@ -86,6 +76,7 @@ void TRAP::Window::Init(const WindowProps &props)
 	m_data.Width = props.Width;
 	m_data.Height = props.Height;
 	m_data.RefreshRate = props.RefreshRate;
+	m_data.VSync = props.VSync;
 
 	static bool sGLFWInitialized = false;
 	if (!sGLFWInitialized)
@@ -179,8 +170,8 @@ void TRAP::Window::Init(const WindowProps &props)
 	if (s_windows > 1)
 	{
 		Use(this);
-		Graphics::API::Context::SetVSyncInterval(Graphics::API::Context::GetVSyncInterval());
-		Use(Application::Get().GetWindow());
+		SetVSyncInterval(props.VSync);
+		Use();
 	}
 	
 	//Update Window Title

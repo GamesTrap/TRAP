@@ -103,7 +103,7 @@ TRAP::Application::~Application()
 	m_config.Set("Width", m_window->GetWidth());
 	m_config.Set("Height", m_window->GetHeight());
 	m_config.Set("RefreshRate", m_window->GetRefreshRate());
-	m_config.Set("VSync", Graphics::API::Context::GetVSyncInterval());
+	m_config.Set("VSync", m_window->GetVSyncInterval());
 	m_config.Set("FPSLimit", m_fpsLimit);
 	m_config.Set("DisplayMode", m_window->GetDisplayMode());
 	m_config.Set("Monitor", m_window->GetMonitor());
@@ -266,7 +266,7 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 		layer->OnDetach();
 	Graphics::API::Context::SetRenderAPI(renderAPI);
 
-	WindowProps props{ std::string(m_window->GetTitle()), m_window->GetWidth(), m_window->GetHeight(), m_window->GetRefreshRate(), Graphics::API::Context::GetVSyncInterval(), m_window->GetDisplayMode(), m_window->GetMonitor(), renderAPI };
+	WindowProps props{ std::string(m_window->GetTitle()), m_window->GetWidth(), m_window->GetHeight(), m_window->GetRefreshRate(), m_window->GetVSyncInterval(), m_window->GetDisplayMode(), m_window->GetMonitor(), renderAPI };
 	m_window.reset();
 	m_window = std::make_unique<Window>(props);
 	m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
@@ -293,7 +293,7 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI)
 	Graphics::API::Context::Shutdown();
 
 	Graphics::API::Context::Create(m_window.get());
-	Graphics::API::Context::SetVSyncInterval(Graphics::API::Context::GetVSyncInterval());
+	Graphics::API::Context::SetVSyncInterval(m_window->GetVSyncInterval());
 	Graphics::API::RendererAPI::Init();
 	m_window->SetTitle(std::string(m_window->GetTitle()));
 

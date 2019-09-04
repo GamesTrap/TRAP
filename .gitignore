@@ -164,3 +164,5 @@ bin/*
 *.vcxproj
 *.filters
 Makefile
+docs/_build/
+.vscode

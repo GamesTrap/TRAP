@@ -359,3 +359,6 @@ SITREP 09/04/2019|19w36a3
     - RenderCommand Added Setting of different Blend Equations for RGB and alpha ~<25 mins
     - RenderCommand Added Setting of different Blend Functions for srcRGB, srcAlpha, dstRGB, dstAlpha ~<30 mins
     - RenderCommand Added Default values to some functions ~<10 mins
+    - Made VSync Window dependent ~>25 mins
+    - Removed GetVSyncInterval from API::Context ~<10 mins
+    - Added SetVSyncInterval and GetVSyncInterval to TRAP::Window ~>15 mins

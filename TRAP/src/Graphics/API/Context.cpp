@@ -12,8 +12,6 @@ std::unique_ptr<TRAP::Graphics::API::Context> TRAP::Graphics::API::Context::s_Co
 TRAP::Graphics::API::RenderAPI TRAP::Graphics::API::Context::s_RenderAPI = RenderAPI::NONE;
 TRAP::Graphics::API::RenderAPI TRAP::Graphics::API::Context::s_newRenderAPI = RenderAPI::NONE;
 
-unsigned int TRAP::Graphics::API::Context::m_vsyncInterval = 0;
-
 bool TRAP::Graphics::API::Context::s_isD3D12Capable = false;
 bool TRAP::Graphics::API::Context::s_isVulkanCapable = false;
 bool TRAP::Graphics::API::Context::s_isOpenGLCapable = false;

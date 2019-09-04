@@ -41,7 +41,6 @@ namespace TRAP::Graphics::API
 		static bool IsOpenGLCapable();
 
 		static void SetVSyncInterval(unsigned int interval);
-		static unsigned int GetVSyncInterval();
 
 		static void Use(Window* window);
 
@@ -53,8 +52,6 @@ namespace TRAP::Graphics::API
 	private:
 		virtual void SetVSyncIntervalInternal(unsigned int interval = 0) = 0;
 		virtual void UseInternal(Window* window) = 0;
-
-		static unsigned int m_vsyncInterval;
 
 		static bool s_isD3D12Capable;
 		static bool s_isVulkanCapable;
@@ -73,7 +70,7 @@ inline TRAP::Graphics::API::RenderAPI TRAP::Graphics::API::Context::GetRenderAPI
 
 inline void TRAP::Graphics::API::Context::SetVSyncInterval(const unsigned int interval)
 {
-	if (s_Context) s_Context->SetVSyncIntervalInternal(interval); m_vsyncInterval = interval;
+	if (s_Context) s_Context->SetVSyncIntervalInternal(interval);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -83,13 +80,6 @@ inline void TRAP::Graphics::API::Context::Use(Window* window)
 	if (s_Context)
 		if (window)
 			s_Context->UseInternal(window);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline unsigned TRAP::Graphics::API::Context::GetVSyncInterval()
-{
-	return m_vsyncInterval;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

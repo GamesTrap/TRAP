@@ -12,6 +12,8 @@
 
 namespace TRAP
 {
+	class Application;
+	
 	enum class DisplayMode
 	{
 		Windowed,
@@ -21,6 +23,8 @@ namespace TRAP
 
 	struct WindowProps
 	{
+		friend class Application;
+		
 		std::string Title;
 		unsigned int Width;
 		unsigned int Height;
@@ -30,6 +34,7 @@ namespace TRAP
 		DisplayMode Mode;
 		unsigned int Monitor;
 
+	private:
 		explicit WindowProps(std::string title = "TRAP Engine",
 		                     const unsigned int width = 1280,
 		                     const unsigned int height = 720,
@@ -49,20 +54,24 @@ namespace TRAP
 		{				
 		}
 
+	public:
 		explicit WindowProps(std::string title = "TRAP Engine",
 			const unsigned int width = 1280,
 			const unsigned int height = 720,
 			const unsigned int refreshRate = 60,
+			const unsigned int vsync = 0,
 			const DisplayMode mode = DisplayMode::Windowed,
 			const unsigned int monitor = 0)
 			: Title(std::move(title)),
 			  Width(width),
 			  Height(height),
 			  RefreshRate(refreshRate),
-			  VSync(0),
+			  VSync(vsync),
 			  RenderAPI(Graphics::API::Context::GetRenderAPI()),
 			  Mode(mode),
-			  Monitor(monitor) { }
+			  Monitor(monitor)
+		{
+		}
 	};
 
 	//Interface representing a desktop system based window
@@ -89,6 +98,7 @@ namespace TRAP
 		DisplayMode GetDisplayMode() const;
 		unsigned int GetMonitor() const;
 		static unsigned int GetActiveWindows();
+		unsigned int GetVSyncInterval() const;
 
 		void SetTitle(const std::string& title);
 
@@ -102,6 +112,7 @@ namespace TRAP
 		void SetMonitor(unsigned int monitor = 0);
 		void SetIcon() const;
 		void SetIcon(const std::unique_ptr<Image>& image) const;
+		static void SetVSyncInterval(const uint32_t interval);
 
 		void* GetNativeWindow() const;
 
@@ -116,7 +127,7 @@ namespace TRAP
 		struct WindowData
 		{
 			std::string Title;
-			unsigned int Width{}, Height{}, RefreshRate{};
+			unsigned int Width{}, Height{}, RefreshRate{}, VSync{};
 			DisplayMode Mode{};
 			unsigned int Monitor{};
 
@@ -198,6 +209,20 @@ inline void TRAP::Window::SetEventCallback(const EventCallbackFn& callback)
 inline void* TRAP::Window::GetNativeWindow() const
 {
 	return m_window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline unsigned TRAP::Window::GetVSyncInterval() const
+{
+	return m_data.VSync;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline void TRAP::Window::SetVSyncInterval(const uint32_t interval)
+{
+	Graphics::API::Context::SetVSyncInterval(interval);
 }
 
 #endif /*_TRAP_WINDOW_H_*/
