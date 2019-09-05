@@ -8,9 +8,9 @@ namespace TRAP
 	class Input final : public Singleton
 	{
 	public:
-		static bool IsKeyPressed(int keycode);
+		static bool IsKeyPressed(int32_t keycode);
 
-		static bool IsMouseButtonPressed(int button);
+		static bool IsMouseButtonPressed(int32_t button);
 		static std::pair<float, float> GetMousePosition();
 		static float GetMouseX();
 		static float GetMouseY();

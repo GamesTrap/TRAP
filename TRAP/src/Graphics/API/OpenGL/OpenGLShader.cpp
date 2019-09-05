@@ -57,11 +57,11 @@ void TRAP::Graphics::API::OpenGLShader::Shutdown() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*, 6>& shaders)
+uint32_t TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*, 6>& shaders)
 {
-	unsigned int program = 0;
-	unsigned int vertex = 0, fragment = 0, geometry = 0, tessControl = 0, tessEval = 0, compute = 0;
-	int linkResult = 0, validateResult = 0;
+	uint32_t program = 0;
+	uint32_t vertex = 0, fragment = 0, geometry = 0, tessControl = 0, tessEval = 0, compute = 0;
+	int32_t linkResult = 0, validateResult = 0;
 	
 	if (!CreateProgram(shaders, vertex, fragment, geometry, tessControl, tessEval, compute, program))
 		return 0;
@@ -210,7 +210,7 @@ void TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, st
 
 	std::vector<std::string> lines = Utils::String::GetLines(source);
 	//Get Shader Type
-	for (unsigned int i = 0; i < lines.size(); i++)
+	for (uint32_t i = 0; i < lines.size(); i++)
 	{
 		if (Utils::String::StartsWith(lines[i], "#shader"))
 		{
@@ -244,7 +244,7 @@ void TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, st
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::OpenGLShader::CompileShader(const ShaderType type, const char* source, unsigned int& handle)
+bool TRAP::Graphics::API::OpenGLShader::CompileShader(const ShaderType type, const char* source, uint32_t& handle)
 {
 	OpenGLCall(handle = glCreateShader(ShaderTypeToOpenGL(type)));
 
@@ -252,11 +252,11 @@ bool TRAP::Graphics::API::OpenGLShader::CompileShader(const ShaderType type, con
 	OpenGLCall(glShaderSource(handle, 1, &source, nullptr));
 	OpenGLCall(glCompileShader(handle));
 
-	int result;
+	int32_t result;
 	OpenGLCall(glGetShaderiv(handle, GL_COMPILE_STATUS, &result));
 	if (result == GL_FALSE)
 	{
-		int length;
+		int32_t length;
 		OpenGLCall(glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &length));
 		std::vector<char> error(length);
 		OpenGLCall(glGetShaderInfoLog(handle, length, &length, error.data()));
@@ -303,13 +303,13 @@ GLenum TRAP::Graphics::API::OpenGLShader::ShaderTypeToOpenGL(const ShaderType ty
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Graphics::API::OpenGLShader::CreateProgram(std::array<std::string*, 6>& shaders,
-	                                                  unsigned int& vertex,
-                                                      unsigned int& fragment,
-                                                      unsigned int& geometry,
-                                                      unsigned int& tessControl,
-                                                      unsigned int& tessEval,
-                                                      unsigned int& compute,
-                                                      unsigned int& handle)
+	                                                  uint32_t& vertex,
+                                                      uint32_t& fragment,
+                                                      uint32_t& geometry,
+                                                      uint32_t& tessControl,
+                                                      uint32_t& tessEval,
+                                                      uint32_t& compute,
+                                                      uint32_t& handle)
 {
 	OpenGLCall(handle = glCreateProgram());
 
@@ -366,13 +366,13 @@ bool TRAP::Graphics::API::OpenGLShader::CreateProgram(std::array<std::string*, 6
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::LinkProgram(int& linkResult, int& validateResult, const unsigned int& handle)
+void TRAP::Graphics::API::OpenGLShader::LinkProgram(int32_t& linkResult, int32_t& validateResult, const uint32_t& handle)
 {
 	OpenGLCall(glLinkProgram(handle));
 	OpenGLCall(glGetProgramiv(handle, GL_LINK_STATUS, &linkResult));
 	if (linkResult == GL_FALSE)
 	{
-		int length;
+		int32_t length;
 		OpenGLCall(glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length));
 		std::vector<char> error(length);
 		OpenGLCall(glGetProgramInfoLog(handle, length, &length, error.data()));
@@ -393,13 +393,13 @@ void TRAP::Graphics::API::OpenGLShader::LinkProgram(int& linkResult, int& valida
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLShader::DeleteShaders(std::array<std::string*, 6>& shaders,
-                                                      const unsigned int& vertex,
-                                                      const unsigned int& fragment,
-                                                      const unsigned int& geometry,
-                                                      const unsigned int& tessControl,
-                                                      const unsigned int& tessEval,
-                                                      const unsigned int& compute,
-                                                      const unsigned int& handle)
+                                                      const uint32_t& vertex,
+                                                      const uint32_t& fragment,
+                                                      const uint32_t& geometry,
+                                                      const uint32_t& tessControl,
+                                                      const uint32_t& tessEval,
+                                                      const uint32_t& compute,
+                                                      const uint32_t& handle)
 {
 	if (!shaders[0]->empty())
 	{

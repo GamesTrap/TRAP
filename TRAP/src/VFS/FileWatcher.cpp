@@ -33,7 +33,7 @@ TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, const float updat
 					#else
 						std::vector<std::string> dirs = Utils::String::SplitString(temp.string(), '/');
 					#endif
-						for (unsigned int i = Utils::String::GetCount(path.string(), '/') + 1; i < dirs.size(); i++)
+						for (uint32_t i = Utils::String::GetCount(path.string(), '/') + 1; i < dirs.size(); i++)
 							result += dirs[i] + '/';
 						result.pop_back();
 
@@ -98,7 +98,7 @@ void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, st
 						#else
 							std::vector<std::string> dirs = Utils::String::SplitString(temp.string(), '/');
 						#endif
-							for (unsigned int i = Utils::String::GetCount(path.string(), '/') + 1; i < dirs.size(); i++)
+							for (uint32_t i = Utils::String::GetCount(path.string(), '/') + 1; i < dirs.size(); i++)
 								result += dirs[i] + '/';
 							result.pop_back();
 

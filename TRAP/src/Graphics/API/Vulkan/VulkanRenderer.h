@@ -19,7 +19,7 @@ namespace TRAP::Graphics::API
 
 		void InitInternal() override;
 
-		void Clear(unsigned int buffer) override;
+		void Clear(uint32_t buffer) override;
 		void Present(Window* window) override;
 
 		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) override;
@@ -30,7 +30,7 @@ namespace TRAP::Graphics::API
 		void SetCull(bool enabled) override;
 		void SetFrontFace(RendererFrontFace frontFace) override;
 		void SetWireFrame(bool enabled) override;
-		void SetViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height) override;
+		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override;
 
 		void SetBlendFunction(RendererBlendFunction source, RendererBlendFunction destination) override;
 		void SetBlendFunctionSeparate(RendererBlendFunction sourceRGB,
@@ -79,7 +79,7 @@ namespace TRAP::Graphics::API
 		void DeInitPipelineLayout();
 
 		void PickPhysicalDevice(std::vector<VkPhysicalDevice>& availablePhysicalDevices);
-		int RateDeviceSuitability(VkPhysicalDevice physicalDevice) const;
+		int32_t RateDeviceSuitability(VkPhysicalDevice physicalDevice) const;
 
 		static bool IsLayerSupported(const std::vector<VkLayerProperties>& availableLayers, const char* layer);
 		static bool IsExtensionSupported(const std::vector<VkExtensionProperties>& availableExtensions, const char* extension);

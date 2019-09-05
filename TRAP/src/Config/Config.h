@@ -110,7 +110,7 @@ inline std::string TRAP::Utils::Config::ConvertToString<unsigned char>(const uns
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<>
-inline std::string TRAP::Utils::Config::ConvertToString<int>(const int value) const
+inline std::string TRAP::Utils::Config::ConvertToString<int32_t>(const int32_t value) const
 {
 	std::stringstream ss;
 	ss << value;
@@ -121,7 +121,7 @@ inline std::string TRAP::Utils::Config::ConvertToString<int>(const int value) co
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<>
-inline std::string TRAP::Utils::Config::ConvertToString<unsigned int>(const unsigned int value) const
+inline std::string TRAP::Utils::Config::ConvertToString<uint32_t>(const uint32_t value) const
 {
 	std::stringstream ss;
 	ss << value;
@@ -216,9 +216,9 @@ T TRAP::Utils::Config::ConvertToType(const std::string& input) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<>
-inline int TRAP::Utils::Config::ConvertToType<int>(const std::string& input) const
+inline int32_t TRAP::Utils::Config::ConvertToType<int32_t>(const std::string& input) const
 {
-	int value;
+	int32_t value;
 	std::stringstream ss(input);
 	ss >> value;
 
@@ -228,9 +228,9 @@ inline int TRAP::Utils::Config::ConvertToType<int>(const std::string& input) con
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<>
-inline unsigned int TRAP::Utils::Config::ConvertToType<unsigned int>(const std::string& input) const
+inline uint32_t TRAP::Utils::Config::ConvertToType<uint32_t>(const std::string& input) const
 {
-	unsigned int value;
+	uint32_t value;
 	std::stringstream ss(input);
 	ss >> value;
 

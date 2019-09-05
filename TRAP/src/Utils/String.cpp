@@ -75,14 +75,14 @@ std::string TRAP::Utils::String::GetBlock(const char* str, const char** outPosit
 
 	if (outPosition)
 		* outPosition = end;
-	const auto length = static_cast<unsigned int>(end - str + 1);
+	const auto length = static_cast<uint32_t>(end - str + 1);
 
 	return std::string(str, length);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Utils::String::GetBlock(const std::string& string, const unsigned int offset)
+std::string TRAP::Utils::String::GetBlock(const std::string& string, const uint32_t offset)
 {
 	const char* str = string.c_str() + offset;
 
@@ -99,7 +99,7 @@ std::string TRAP::Utils::String::GetStatement(const char* str, const char** outP
 
 	if (outPosition)
 		* outPosition = end;
-	const auto length = static_cast<unsigned int>(end - str + 1);
+	const auto length = static_cast<uint32_t>(end - str + 1);
 
 	return std::string(str, length);
 }
@@ -138,7 +138,7 @@ std::string TRAP::Utils::String::ToLower(std::string string)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Utils::String::GetCount(const std::string& string, const char delimiter)
+uint32_t TRAP::Utils::String::GetCount(const std::string& string, const char delimiter)
 {
-	return static_cast<unsigned int>(std::count(string.begin(), string.end(), delimiter));
+	return static_cast<uint32_t>(std::count(string.begin(), string.end(), delimiter));
 }

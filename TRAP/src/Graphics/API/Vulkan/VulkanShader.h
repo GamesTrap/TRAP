@@ -8,9 +8,9 @@ namespace TRAP::Graphics::API
 {
 	struct VulkanShaderErrorInfo
 	{
-		unsigned int Shader{};
+		uint32_t Shader{};
 		std::array<std::string, 6> Message;
-		std::array<unsigned int, 6> Line{};
+		std::array<uint32_t, 6> Line{};
 	};
 
 	class VulkanShader final : public Graphics::Shader
@@ -44,11 +44,11 @@ namespace TRAP::Graphics::API
 	private:
 		void Compile(std::array<std::string*, 6> & shaders, VulkanShaderErrorInfo& info);
 		static void PreProcessGLSL(const std::string& source, std::array<std::string*, 6>& shaders);
-		static std::unique_ptr<glslang::TShader> PreProcess(const char* source, unsigned int shaderType, std::string& preProcessedSource);
+		static std::unique_ptr<glslang::TShader> PreProcess(const char* source, uint32_t shaderType, std::string& preProcessedSource);
 		static bool Parse(glslang::TShader* shader);
 		static bool Link(glslang::TShader* VShader, glslang::TShader* FShader, glslang::TShader* GShader, glslang::TShader* TCShader, glslang::TShader* TEShader, glslang::TShader* CShader, glslang::TProgram& program);
-		static std::vector<std::vector<unsigned int>> ConvertToSPIRV(glslang::TShader* VShader, glslang::TShader* FShader, glslang::TShader* GShader, glslang::TShader* TCShader, glslang::TShader* TEShader, glslang::TShader* CShader, glslang::TProgram& program);
-		static bool CreateShaderModule(VkShaderModule& shaderModule, std::vector<unsigned int>& SPIRVCode);
+		static std::vector<std::vector<uint32_t>> ConvertToSPIRV(glslang::TShader* VShader, glslang::TShader* FShader, glslang::TShader* GShader, glslang::TShader* TCShader, glslang::TShader* TEShader, glslang::TShader* CShader, glslang::TProgram& program);
+		static bool CreateShaderModule(VkShaderModule& shaderModule, std::vector<uint32_t>& SPIRVCode);
 
 		friend class ::TRAP::Graphics::Shader;
 		friend class ::TRAP::Graphics::ShaderManager;

@@ -8,9 +8,9 @@
 namespace TRAP::INTERNAL
 {
 	//Check whether machine is little endian
-	int LittleEndian()
+	int32_t LittleEndian()
 	{
-		int intVal = 1;
+		int32_t intVal = 1;
 		uint8_t* uVal = reinterpret_cast<uint8_t*>(&intVal);
 		return uVal[0] == 1;
 	}
@@ -82,8 +82,8 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 		}
 
 		//Determine endianness
-		int littleEndianFile = (header.ByteOrder < 0.0f);
-		int littleEndianMachine = LittleEndian();
+		int32_t littleEndianFile = (header.ByteOrder < 0.0f);
+		int32_t littleEndianMachine = LittleEndian();
 		bool needSwap = littleEndianFile != littleEndianMachine;
 
 		m_width = header.Width;

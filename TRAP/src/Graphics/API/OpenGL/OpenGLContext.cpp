@@ -29,9 +29,9 @@ TRAP::Graphics::API::OpenGLContext::~OpenGLContext()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLContext::SetVSyncIntervalInternal(const unsigned int interval)
+void TRAP::Graphics::API::OpenGLContext::SetVSyncIntervalInternal(const uint32_t interval)
 {
-	glfwSwapInterval(static_cast<int>(interval));
+	glfwSwapInterval(static_cast<int32_t>(interval));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

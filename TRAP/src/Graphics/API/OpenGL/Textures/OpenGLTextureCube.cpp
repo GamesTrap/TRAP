@@ -101,7 +101,7 @@ TRAP::Graphics::API::OpenGLTextureCube::~OpenGLTextureCube()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLTextureCube::Bind(const unsigned int slot) const
+void TRAP::Graphics::API::OpenGLTextureCube::Bind(const uint32_t slot) const
 {
 	if (m_handle)
 	{
@@ -113,7 +113,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::Bind(const unsigned int slot) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLTextureCube::Unbind(unsigned int slot) const
+void TRAP::Graphics::API::OpenGLTextureCube::Unbind(uint32_t slot) const
 {
 	OpenGLCall(glBindTextureUnit(0, 0));
 }
@@ -406,11 +406,11 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross(const std::string
 
 	if (m_images[0]->HasAlphaChannel() && m_images[0]->IsImageGrayScale())
 	{
-		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
+		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
 	}
 	else if (m_images[0]->IsImageGrayScale())
 	{
-		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
+		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
 	}
 
 	if (resetPixelStore)
@@ -677,11 +677,11 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross(const std::stri
 
 		if (m_images[0]->HasAlphaChannel() && m_images[0]->IsImageGrayScale())
 		{
-			OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
+			OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
 		}
 		else if (m_images[0]->IsImageGrayScale())
 		{
-			OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
+			OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
 		}
 	}
 
@@ -779,11 +779,11 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadFiles(const std::array<std::str
 
 	if (hasAlphaChannel && isGrayScale)
 	{
-		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
+		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
 	}
 	else if (isGrayScale)
 	{
-		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
+		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
 	}
 	
 	if (resetPixelStore)

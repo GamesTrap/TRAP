@@ -48,7 +48,7 @@ void TRAP::Graphics::API::OpenGLRenderer::InitInternal()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::Clear(const unsigned int buffer)
+void TRAP::Graphics::API::OpenGLRenderer::Clear(const uint32_t buffer)
 {	
 	OpenGLCall(glClear(TRAPRendererBufferToOpenGL(buffer)));
 }
@@ -181,7 +181,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetBlendEquationSeparate(const Rendere
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetViewport(const unsigned int x, const unsigned int y, const unsigned int width, const unsigned int height)
+void TRAP::Graphics::API::OpenGLRenderer::SetViewport(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height)
 {
 	OpenGLCall(glViewport(x, y, width, height));
 }
@@ -209,15 +209,15 @@ void TRAP::Graphics::API::OpenGLRenderer::Draw(const std::unique_ptr<VertexArray
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBufferToOpenGL(const unsigned int buffer)
+uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBufferToOpenGL(const uint32_t buffer)
 {
-	unsigned int result = 0;
+	uint32_t result = 0;
 
-	if (buffer & static_cast<int>(RENDERER_BUFFER_COLOR))
+	if (buffer & static_cast<int32_t>(RENDERER_BUFFER_COLOR))
 		result |= GL_COLOR_BUFFER_BIT;
-	if (buffer & static_cast<int>(RENDERER_BUFFER_DEPTH))
+	if (buffer & static_cast<int32_t>(RENDERER_BUFFER_DEPTH))
 		result |= GL_DEPTH_BUFFER_BIT;
-	if (buffer & static_cast<int>(RENDERER_BUFFER_STENCIL))
+	if (buffer & static_cast<int32_t>(RENDERER_BUFFER_STENCIL))
 		result |= GL_STENCIL_BUFFER_BIT;
 
 	return result;
@@ -225,7 +225,7 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBufferToOpenGL(con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendFunctionToOpenGL(const RendererBlendFunction function)
+uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendFunctionToOpenGL(const RendererBlendFunction function)
 {
 	switch (function)
 	{
@@ -251,7 +251,7 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendFunctionToOpe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendEquationToOpenGL(const RendererBlendEquation blendEquation)
+uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendEquationToOpenGL(const RendererBlendEquation blendEquation)
 {
 	switch (blendEquation)
 	{
@@ -268,7 +268,7 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendEquationToOpe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererCullModeToOpenGL(const RendererCullMode cullMode)
+uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererCullModeToOpenGL(const RendererCullMode cullMode)
 {
 	switch(cullMode)
 	{
@@ -288,7 +288,7 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererCullModeToOpenGL(c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererFrontFaceToOpenGL(const RendererFrontFace frontFace)
+uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererFrontFaceToOpenGL(const RendererFrontFace frontFace)
 {
 	switch(frontFace)
 	{
@@ -305,7 +305,7 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererFrontFaceToOpenGL(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererPrimitiveToOpenGL(const RendererPrimitive primitive)
+uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererPrimitiveToOpenGL(const RendererPrimitive primitive)
 {
 	switch(primitive)
 	{
@@ -328,7 +328,7 @@ unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererPrimitiveToOpenGL(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-unsigned int TRAP::Graphics::API::OpenGLRenderer::TRAPRendererDepthFunctionToOpenGL(const RendererDepthFunction function)
+uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererDepthFunctionToOpenGL(const RendererDepthFunction function)
 {
 	switch(function)
 	{

@@ -17,8 +17,8 @@ namespace TRAP::Graphics::API
 		VulkanTexture2D(VulkanTexture2D&&) = default;
 		VulkanTexture2D& operator=(VulkanTexture2D&&) = default;
 
-		void Bind(unsigned int slot = 0) const override;
-		void Unbind(unsigned int slot = 0) const override;
+		void Bind(uint32_t slot = 0) const override;
+		void Unbind(uint32_t slot = 0) const override;
 
 		std::string GetName() const override;
 		Image* GetImage() override;

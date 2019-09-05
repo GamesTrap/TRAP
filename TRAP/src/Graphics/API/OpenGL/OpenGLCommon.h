@@ -8,7 +8,7 @@ namespace TRAP::Graphics::API
 {
 	void OpenGLClearError();
 
-	bool OpenGLLogCall(const char* function, const char* file, int line);
+	bool OpenGLLogCall(const char* function, const char* file, int32_t line);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -20,7 +20,7 @@ inline void TRAP::Graphics::API::OpenGLClearError()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline bool TRAP::Graphics::API::OpenGLLogCall(const char* function, const char* file, const int line)
+inline bool TRAP::Graphics::API::OpenGLLogCall(const char* function, const char* file, const int32_t line)
 {
 	while (const GLenum error = glGetError())
 	{

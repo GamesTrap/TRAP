@@ -470,8 +470,8 @@ struct Mat3
 	tVec4<float> Multiply(const tVec4<float> &other) const;
 	friend tVec4<float> operator*(const Mat3 &left, const tVec4<float> &right);
 
-	tVec3<float> GetColumn(int index) const;
-	void SetColumn(unsigned int index, const tVec3<float> &column);
+	tVec3<float> GetColumn(int32_t index) const;
+	void SetColumn(uint32_t index, const tVec3<float> &column);
 	tVec3<float> GetPosition() const;
 	void SetPosition(const tVec3<float> &position);
 
@@ -520,8 +520,8 @@ struct Mat4
 
 	Mat4 &Invert();
 
-	tVec4<float> GetColumn(int index) const;
-	void SetColumn(unsigned int index, const tVec4<float> &column);
+	tVec4<float> GetColumn(int32_t index) const;
+	void SetColumn(uint32_t index, const tVec4<float> &column);
 	tVec3<float> GetPosition() const;
 	void SetPosition(const tVec3<float> &position);
 

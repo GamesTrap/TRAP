@@ -16,12 +16,12 @@ namespace TRAP::Graphics
 	{
 	public:
 		static std::string_view GetTitle();
-		static unsigned int GetDrawCalls();
-		static unsigned int GetFPS();
+		static uint32_t GetDrawCalls();
+		static uint32_t GetFPS();
 		static float GetFrameTime();
-		static unsigned int GetTickRate();
+		static uint32_t GetTickRate();
 
-		static void SetTickRate(unsigned int tickRate);
+		static void SetTickRate(uint32_t tickRate);
 
 		static void BeginScene(Camera& camera);
 		static void EndScene();
@@ -57,14 +57,14 @@ inline std::string_view TRAP::Graphics::Renderer::GetTitle()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline unsigned int TRAP::Graphics::Renderer::GetDrawCalls()
+inline uint32_t TRAP::Graphics::Renderer::GetDrawCalls()
 {
 	return Application::Get().GetDrawCalls();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline unsigned int TRAP::Graphics::Renderer::GetFPS()
+inline uint32_t TRAP::Graphics::Renderer::GetFPS()
 {
 	return Application::Get().GetFPS();
 }
@@ -78,14 +78,14 @@ inline float TRAP::Graphics::Renderer::GetFrameTime()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline unsigned int TRAP::Graphics::Renderer::GetTickRate()
+inline uint32_t TRAP::Graphics::Renderer::GetTickRate()
 {
 	return Application::Get().GetTickRate();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::Renderer::SetTickRate(const unsigned int tickRate)
+inline void TRAP::Graphics::Renderer::SetTickRate(const uint32_t tickRate)
 {
 	Application::Get().SetTickRate(tickRate);
 }

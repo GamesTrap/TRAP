@@ -35,13 +35,13 @@ TRAP::Application::Application()
 	m_config.Print();
 #endif
 
-	unsigned int width = 1280;
-	unsigned int height = 720;
-	unsigned int refreshRate = 60;
-	unsigned int vsync = 0;
-	unsigned int fpsLimit = 0;
+	uint32_t width = 1280;
+	uint32_t height = 720;
+	uint32_t refreshRate = 60;
+	uint32_t vsync = 0;
+	uint32_t fpsLimit = 0;
 	DisplayMode displayMode = DisplayMode::Windowed;
-	unsigned int monitor;
+	uint32_t monitor;
 	Graphics::API::RenderAPI renderAPI = Graphics::API::RenderAPI::NONE;
 	bool hotShaderReloading = false;
 	bool hotTextureReloading = false;
@@ -238,7 +238,7 @@ void TRAP::Application::Run()
 		}
 
 		m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
-		m_FramesPerSecond = static_cast<unsigned int>(framesPerSecond.size());
+		m_FramesPerSecond = static_cast<uint32_t>(framesPerSecond.size());
 		framesPerSecond.emplace_back();
 		while (framesPerSecond.front().ElapsedMilliseconds() >= 1000.0f)
 			framesPerSecond.pop_front();

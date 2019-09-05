@@ -15,7 +15,7 @@ namespace TRAP::Graphics::API
 		OpenGLContext(OpenGLContext&&) = default;
 		OpenGLContext& operator=(OpenGLContext&&) = default;
 
-		void SetVSyncIntervalInternal(unsigned int interval) override;
+		void SetVSyncIntervalInternal(uint32_t interval) override;
 
 		static void Present(Window* window);
 		void UseInternal(Window* window) override;

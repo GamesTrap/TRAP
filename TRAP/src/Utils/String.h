@@ -21,7 +21,7 @@ namespace TRAP::Utils::String
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	std::string GetBlock(const char* str, const char** outPosition = nullptr);
-	std::string GetBlock(const std::string& string, unsigned int offset = 0);
+	std::string GetBlock(const std::string& string, uint32_t offset = 0);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -45,8 +45,8 @@ namespace TRAP::Utils::String
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	unsigned int GetCount(const std::string& string, const std::string& delimiters);
-	unsigned int GetCount(const std::string& string, char delimiter);
+	uint32_t GetCount(const std::string& string, const std::string& delimiters);
+	uint32_t GetCount(const std::string& string, char delimiter);
 }
 
 #endif /*_TRAP_STRING_H_*/

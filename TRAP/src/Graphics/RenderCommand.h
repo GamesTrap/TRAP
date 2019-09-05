@@ -66,7 +66,7 @@ namespace TRAP::Graphics
 	class RenderCommand
 	{
 	public:
-		static void Clear(unsigned int buffer);
+		static void Clear(uint32_t buffer);
 		static void Present(Window* window);
 
 		static void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f });
@@ -77,7 +77,7 @@ namespace TRAP::Graphics
 		static void SetCull(bool enabled);
 		static void SetFrontFace(RendererFrontFace frontFace = RendererFrontFace::Counter_Clockwise);
 		static void SetWireFrame(bool enabled);
-		static void SetViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height);
+		static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 
 		static void SetBlendFunction(RendererBlendFunction source = RendererBlendFunction::One, RendererBlendFunction destination = RendererBlendFunction::Zero);
 		static void SetBlendFunctionSeparate(RendererBlendFunction sourceRGB = RendererBlendFunction::One,
@@ -111,7 +111,7 @@ inline void TRAP::Graphics::RenderCommand::Draw(const std::unique_ptr<VertexArra
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::RenderCommand::Clear(const unsigned int buffer)
+inline void TRAP::Graphics::RenderCommand::Clear(const uint32_t buffer)
 {
 	API::RendererAPI::GetRenderer()->Clear(buffer);
 }
@@ -181,7 +181,7 @@ inline void TRAP::Graphics::RenderCommand::SetWireFrame(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::RenderCommand::SetViewport(const unsigned int x, const unsigned int y, const unsigned int width, const unsigned int height)
+inline void TRAP::Graphics::RenderCommand::SetViewport(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height)
 {
 	API::RendererAPI::GetRenderer()->SetViewport(x, y, width, height);
 }

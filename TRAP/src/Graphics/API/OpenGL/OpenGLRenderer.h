@@ -19,7 +19,7 @@ namespace TRAP::Graphics::API
 
 		void InitInternal() override;
 
-		void Clear(unsigned int buffer) override;
+		void Clear(uint32_t buffer) override;
 		void Present(Window* window) override;
 
 		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) override;
@@ -29,7 +29,7 @@ namespace TRAP::Graphics::API
 		void SetBlend(bool enabled) override;
 		void SetCull(bool enabled) override;
 		void SetFrontFace(RendererFrontFace frontFace) override;
-		void SetViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height) override;
+		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override;
 
 		void SetBlendFunction(RendererBlendFunction source, RendererBlendFunction destination) override;
 		void SetBlendFunctionSeparate(RendererBlendFunction sourceRGB,
@@ -50,13 +50,13 @@ namespace TRAP::Graphics::API
 
 		static OpenGLRenderer* Get();
 
-		static unsigned int TRAPRendererBufferToOpenGL(unsigned int buffer);
-		static unsigned int TRAPRendererBlendFunctionToOpenGL(RendererBlendFunction function);
-		static unsigned int TRAPRendererBlendEquationToOpenGL(RendererBlendEquation blendEquation);
-		static unsigned int TRAPRendererCullModeToOpenGL(RendererCullMode cullMode);
-		static unsigned int TRAPRendererFrontFaceToOpenGL(RendererFrontFace frontFace);
-		static unsigned int TRAPRendererPrimitiveToOpenGL(RendererPrimitive primitive);
-		static unsigned int TRAPRendererDepthFunctionToOpenGL(RendererDepthFunction function);
+		static uint32_t TRAPRendererBufferToOpenGL(uint32_t buffer);
+		static uint32_t TRAPRendererBlendFunctionToOpenGL(RendererBlendFunction function);
+		static uint32_t TRAPRendererBlendEquationToOpenGL(RendererBlendEquation blendEquation);
+		static uint32_t TRAPRendererCullModeToOpenGL(RendererCullMode cullMode);
+		static uint32_t TRAPRendererFrontFaceToOpenGL(RendererFrontFace frontFace);
+		static uint32_t TRAPRendererPrimitiveToOpenGL(RendererPrimitive primitive);
+		static uint32_t TRAPRendererDepthFunctionToOpenGL(RendererDepthFunction function);
 
 	private:
 		static void GLAPIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);

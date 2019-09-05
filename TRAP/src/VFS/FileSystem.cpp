@@ -44,7 +44,7 @@ std::vector<std::byte> TRAP::FileSystem::ReadFile(const std::filesystem::path& f
 		std::ifstream file(filePath, std::ios::binary | std::ios::ate);
 		if (file.is_open())
 		{
-			const unsigned int length = static_cast<const unsigned int>(file.tellg());
+			const uint32_t length = static_cast<const uint32_t>(file.tellg());
 			file.seekg(0);
 			std::vector<std::byte> buffer{ length };
 			file.read(reinterpret_cast<char*>(buffer.data()), length);

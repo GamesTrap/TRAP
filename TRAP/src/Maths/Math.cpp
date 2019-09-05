@@ -98,14 +98,14 @@ TRAP::Math::tVec4<float> TRAP::Math::operator*(const Mat3 &left, const tVec4<flo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::tVec3<float> TRAP::Math::Mat3::GetColumn(const int index) const
+TRAP::Math::tVec3<float> TRAP::Math::Mat3::GetColumn(const int32_t index) const
 {
 	return tVec3<float>(elements[index + 0 * 3], elements[index + 1 * 3], elements[index + 2 * 3]);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Math::Mat3::SetColumn(const unsigned int index, const tVec3<float> &column)
+void TRAP::Math::Mat3::SetColumn(const uint32_t index, const tVec3<float> &column)
 {
 	elements[index + 0 * 3] = column.x;
 	elements[index + 1 * 3] = column.y;
@@ -199,11 +199,11 @@ TRAP::Math::Mat4 TRAP::Math::Mat4::Identity()
 TRAP::Math::Mat4 &TRAP::Math::Mat4::Multiply(const Mat4 &other)
 {
 	std::array<float, 16> data{};
-	for (unsigned int row = 0; row < 4; row++)
-		for (unsigned int col = 0; col < 4; col++)
+	for (uint32_t row = 0; row < 4; row++)
+		for (uint32_t col = 0; col < 4; col++)
 		{
 			float sum = 0.0f;
-			for (unsigned int e = 0; e < 4; e++)
+			for (uint32_t e = 0; e < 4; e++)
 				sum += elements[4 * row + e] * other.elements[col + e * 4];
 
 			data[col + row * 4] = sum;
@@ -290,14 +290,14 @@ TRAP::Math::Mat4 &TRAP::Math::Mat4::Invert()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::tVec4<float> TRAP::Math::Mat4::GetColumn(const int index) const
+TRAP::Math::tVec4<float> TRAP::Math::Mat4::GetColumn(const int32_t index) const
 {
 	return tVec4<float>(elements[index + 0 * 4], elements[index + 1 * 4], elements[index + 2 * 4], elements[index + 3 * 4]);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Math::Mat4::SetColumn(const unsigned int index, const tVec4<float> &column)
+void TRAP::Math::Mat4::SetColumn(const uint32_t index, const tVec4<float> &column)
 {
 	elements[index + 0 * 4] = column.x;
 	elements[index + 1 * 4] = column.y;

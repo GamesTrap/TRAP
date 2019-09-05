@@ -17,8 +17,8 @@ namespace TRAP::Graphics::API
 		D3D12TextureCube(D3D12TextureCube&&) = default;
 		D3D12TextureCube& operator=(D3D12TextureCube&&) = default;
 
-		void Bind(unsigned int slot) const override;
-		void Unbind(unsigned int slot) const override;
+		void Bind(uint32_t slot) const override;
+		void Unbind(uint32_t slot) const override;
 
 		std::string GetName() const override;
 		Image* GetImage() override;

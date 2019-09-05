@@ -40,7 +40,7 @@ namespace TRAP
 
 		virtual EventType GetEventType() const = 0;
 		virtual const char* GetName() const = 0;
-		virtual int GetCategoryFlags() const = 0;
+		virtual int32_t GetCategoryFlags() const = 0;
 		virtual std::string ToString() const;
 
 		bool IsInCategory(EventCategory category) const;
@@ -95,7 +95,7 @@ inline std::string TRAP::Event::ToString() const
 
 inline bool TRAP::Event::IsInCategory(const EventCategory category) const
 {
-	return GetCategoryFlags() & static_cast<int>(category);
+	return GetCategoryFlags() & static_cast<int32_t>(category);
 }
 
 #endif /*_TRAP_EVENT_H_*/

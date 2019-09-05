@@ -8,7 +8,7 @@ void TRAP::Log::Trace(const Args& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Trace]";
-	using List = int[];
+	using List = int32_t[];
 	(void)List {
 		0, ((void)(stream << args), 0)...
 	};
@@ -26,7 +26,7 @@ void TRAP::Log::Debug(const Args& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Debug]";
-	using List = int[];
+	using List = int32_t[];
 	(void)List {
 		0, ((void)(stream << args), 0)...
 	};
@@ -45,7 +45,7 @@ void TRAP::Log::Info(const Args& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Info]";
-	using List = int[];
+	using List = int32_t[];
 	(void)List {
 		0, ((void)(stream << args), 0)...
 	};
@@ -64,7 +64,7 @@ void TRAP::Log::Warn(const Args& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Warn]";
-	using List = int[];
+	using List = int32_t[];
 	(void)List {
 		0, ((void)(stream << args), 0)...
 	};
@@ -83,7 +83,7 @@ void TRAP::Log::Error(const Args& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Error]";
-	using List = int[];
+	using List = int32_t[];
 	(void)List {
 		0, ((void)(stream << args), 0)...
 	};
@@ -102,7 +102,7 @@ void TRAP::Log::Critical(const Args& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Critical]";
-	using List = int[];
+	using List = int32_t[];
 	(void)List {
 		0, ((void)(stream << args), 0)...
 	};
@@ -122,7 +122,7 @@ void TRAP::Log::Debug(const Args& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Debug]";
-	using List = int[];
+	using List = int32_t[];
 	(void)List {
 		0, ((void)(stream << args), 0)...
 	};
@@ -139,7 +139,7 @@ void TRAP::Log::Info(const Args& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Info]";
-	using List = int[];
+	using List = int32_t[];
 	(void)List {
 		0, ((void)(stream << args), 0)...
 	};
@@ -156,7 +156,7 @@ void TRAP::Log::Warn(const Args& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Warn]";
-	using List = int[];
+	using List = int32_t[];
 	(void)List {
 		0, ((void)(stream << args), 0)...
 	};
@@ -173,7 +173,7 @@ void TRAP::Log::Error(const Args& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Error]";
-	using List = int[];
+	using List = int32_t[];
 	(void)List {
 		0, ((void)(stream << args), 0)...
 	};
@@ -190,7 +190,7 @@ void TRAP::Log::Critical(const Args& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Critical]";
-	using List = int[];
+	using List = int32_t[];
 	(void)List {
 		0, ((void)(stream << args), 0)...
 	};

@@ -118,11 +118,11 @@ void TRAP::Graphics::API::OpenGLTexture2D::Load(const std::string& filepath)
 
 	if(m_image->HasAlphaChannel() && m_image->IsImageGrayScale())
 	{
-		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
+		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
 	}
 	else if(m_image->IsImageGrayScale())
 	{
-		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
+		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
 	}
 	
 	if(resetPixelStore)
@@ -135,14 +135,14 @@ void TRAP::Graphics::API::OpenGLTexture2D::Load(const std::string& filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLTexture2D::Bind(const unsigned int slot) const
+void TRAP::Graphics::API::OpenGLTexture2D::Bind(const uint32_t slot) const
 {
 	OpenGLCall(glBindTextureUnit(slot, m_handle));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLTexture2D::Unbind(const unsigned int slot) const
+void TRAP::Graphics::API::OpenGLTexture2D::Unbind(const uint32_t slot) const
 {
 	OpenGLCall(glBindTextureUnit(0, 0));
 }

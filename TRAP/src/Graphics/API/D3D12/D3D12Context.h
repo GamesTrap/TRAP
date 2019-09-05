@@ -17,7 +17,7 @@ namespace TRAP::Graphics::API
 		D3D12Context(D3D12Context&&) = default;
 		D3D12Context& operator=(D3D12Context&&) = default;
 
-		void SetVSyncIntervalInternal(unsigned int interval) override;
+		void SetVSyncIntervalInternal(uint32_t interval) override;
 
 		void Present(Window* window);
 

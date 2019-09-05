@@ -15,7 +15,7 @@ namespace TRAP::Graphics::API
 		VulkanContext(VulkanContext&&) = default;
 		VulkanContext& operator=(VulkanContext&&) = default;
 
-		void SetVSyncIntervalInternal(unsigned int interval) override;
+		void SetVSyncIntervalInternal(uint32_t interval) override;
 
 		void Present(Window* window);
 		void UseInternal(Window* window) override;
@@ -66,7 +66,7 @@ namespace TRAP::Graphics::API
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::API::VulkanContext::SetVSyncIntervalInternal(const unsigned int interval)
+inline void TRAP::Graphics::API::VulkanContext::SetVSyncIntervalInternal(const uint32_t interval)
 {
 	m_vsync = interval;
 }

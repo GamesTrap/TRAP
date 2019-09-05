@@ -4,7 +4,7 @@
 //Internal MsgBox Stuff
 namespace TRAP::Utils::MsgBox::INTERNAL
 {
-	unsigned int GetIcon(const Style style)
+	uint32_t GetIcon(const Style style)
 	{
 		switch(style)
 		{
@@ -25,7 +25,7 @@ namespace TRAP::Utils::MsgBox::INTERNAL
 		}
 	}
 
-	unsigned int GetButtons(const Buttons buttons)
+	uint32_t GetButtons(const Buttons buttons)
 	{
 		switch(buttons)
 		{
@@ -44,7 +44,7 @@ namespace TRAP::Utils::MsgBox::INTERNAL
 		}
 	}
 
-	Selection GetSelection(const int response, const Buttons buttons)
+	Selection GetSelection(const int32_t response, const Buttons buttons)
 	{
 		switch(response)
 		{
@@ -73,7 +73,7 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::Show(const char* message,
 														 const Style style,
 														 const Buttons buttons)
 {
-	unsigned int flags = MB_TASKMODAL;
+	uint32_t flags = MB_TASKMODAL;
 
 	flags |= INTERNAL::GetIcon(style);
 	flags |= INTERNAL::GetButtons(buttons);

@@ -17,8 +17,8 @@ namespace TRAP::Graphics::API
 		OpenGLTextureCube(OpenGLTextureCube&&) = default;
 		OpenGLTextureCube& operator=(OpenGLTextureCube&&) = default;
 
-		void Bind(unsigned int slot) const override;
-		void Unbind(unsigned int slot) const override;
+		void Bind(uint32_t slot) const override;
+		void Unbind(uint32_t slot) const override;
 
 		uint32_t GetHandle() const;
 		std::string GetName() const override;

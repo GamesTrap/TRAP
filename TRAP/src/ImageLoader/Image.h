@@ -60,16 +60,16 @@ namespace TRAP
 		static std::unique_ptr<Image> CreateEmpty(ImageFormat format, uint32_t width, uint32_t height);
 		
 		template<typename T>
-		static std::vector<T> FlipY(unsigned int width, unsigned int height, ImageFormat format, T* data);
+		static std::vector<T> FlipY(uint32_t width, uint32_t height, ImageFormat format, T* data);
 		template<typename T>
-		static std::vector<T> FlipX(unsigned int width, unsigned int height, ImageFormat format, T* data);
+		static std::vector<T> FlipX(uint32_t width, uint32_t height, ImageFormat format, T* data);
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-std::vector<T> TRAP::Image::FlipY(const unsigned int width, const unsigned int height, const ImageFormat format, T* data)
+std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, const ImageFormat format, T* data)
 {
 	if (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value || std::is_same<T, float>::value))
 	{
@@ -122,7 +122,7 @@ std::vector<T> TRAP::Image::FlipY(const unsigned int width, const unsigned int h
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-std::vector<T> TRAP::Image::FlipX(const unsigned int width, const unsigned int height, const ImageFormat format, T* data)
+std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, const ImageFormat format, T* data)
 {
 	if (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value || std::is_same<T, float>::value))
 	{

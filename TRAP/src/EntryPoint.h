@@ -5,7 +5,7 @@
 extern "C"
 {
 	inline _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;		  //Utilize NVIDIA GPU
-	inline _declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1; //Utilize AMD GPU
+	inline _declspec(dllexport) int32_t AmdPowerXpressRequestHighPerformance = 1; //Utilize AMD GPU
 }
 #endif
 
@@ -13,7 +13,7 @@ inline std::unique_ptr<TRAP::Log> logger = std::make_unique<TRAP::Log>();
 
 extern std::unique_ptr<TRAP::Application> TRAP::CreateApplication();
 
-int main()
+int32_t main()
 {
 	const auto app = TRAP::CreateApplication();
 	app->Run();

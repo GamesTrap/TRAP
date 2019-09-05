@@ -26,7 +26,7 @@ namespace TRAP
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
-		int GetCategoryFlags() const override;
+		int32_t GetCategoryFlags() const override;
 
 	private:
 		float m_mouseX, m_mouseY;
@@ -56,7 +56,7 @@ namespace TRAP
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
-		int GetCategoryFlags() const override;
+		int32_t GetCategoryFlags() const override;
 
 	private:
 		float m_xOffset, m_yOffset;
@@ -66,23 +66,23 @@ namespace TRAP
 	class MouseButtonEvent : public Event
 	{
 	public:
-		int GetMouseButton() const;
+		int32_t GetMouseButton() const;
 
-		int GetCategoryFlags() const override;
+		int32_t GetCategoryFlags() const override;
 
 	protected:
-		explicit MouseButtonEvent(const int button)
+		explicit MouseButtonEvent(const int32_t button)
 			: m_button(button)
 		{			
 		}
 
-		int m_button;
+		int32_t m_button;
 	};
 
 	class MouseButtonPressedEvent final : public MouseButtonEvent
 	{
 	public:
-		explicit MouseButtonPressedEvent(const int button, std::string title)
+		explicit MouseButtonPressedEvent(const int32_t button, std::string title)
 			: MouseButtonEvent(button), m_title(std::move(title))
 		{
 		}
@@ -108,7 +108,7 @@ namespace TRAP
 	class MouseButtonReleasedEvent final : public MouseButtonEvent
 	{
 	public:
-		explicit MouseButtonReleasedEvent(const int button, std::string title)
+		explicit MouseButtonReleasedEvent(const int32_t button, std::string title)
 			: MouseButtonEvent(button), m_title(std::move(title))
 		{			
 		}
@@ -169,9 +169,9 @@ inline const char* TRAP::MouseMovedEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::MouseMovedEvent::GetCategoryFlags() const
+inline int32_t TRAP::MouseMovedEvent::GetCategoryFlags() const
 {
-	return static_cast<int>(EventCategory::EventCategoryMouse) | static_cast<int>(EventCategory::EventCategoryInput);
+	return static_cast<int32_t>(EventCategory::EventCategoryMouse) | static_cast<int32_t>(EventCategory::EventCategoryInput);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -211,23 +211,23 @@ inline const char* TRAP::MouseScrolledEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::MouseScrolledEvent::GetCategoryFlags() const
+inline int32_t TRAP::MouseScrolledEvent::GetCategoryFlags() const
 {
-	return static_cast<int>(EventCategory::EventCategoryMouse) | static_cast<int>(EventCategory::EventCategoryInput);
+	return static_cast<int32_t>(EventCategory::EventCategoryMouse) | static_cast<int32_t>(EventCategory::EventCategoryInput);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::MouseButtonEvent::GetMouseButton() const
+inline int32_t TRAP::MouseButtonEvent::GetMouseButton() const
 {
 	return m_button;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::MouseButtonEvent::GetCategoryFlags() const
+inline int32_t TRAP::MouseButtonEvent::GetCategoryFlags() const
 {
-	return static_cast<int>(EventCategory::EventCategoryMouse) | static_cast<int>(EventCategory::EventCategoryInput);
+	return static_cast<int32_t>(EventCategory::EventCategoryMouse) | static_cast<int32_t>(EventCategory::EventCategoryInput);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

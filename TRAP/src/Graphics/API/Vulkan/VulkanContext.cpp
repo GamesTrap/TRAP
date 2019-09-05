@@ -428,10 +428,10 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		}
 
 		//Check physical Devices for features
-		std::multimap<int, VkPhysicalDevice> candidates;
+		std::multimap<int32_t, VkPhysicalDevice> candidates;
 
-		int highestScore = 0;
-		int score = 0;
+		int32_t highestScore = 0;
+		int32_t score = 0;
 		for (const auto& physicalDevice : physicalDevicesList)
 		{
 			VkPhysicalDeviceProperties deviceProperties;

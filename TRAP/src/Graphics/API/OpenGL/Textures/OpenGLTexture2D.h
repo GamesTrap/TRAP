@@ -17,8 +17,8 @@ namespace TRAP::Graphics::API
 		OpenGLTexture2D(OpenGLTexture2D&&) = default;
 		OpenGLTexture2D& operator=(OpenGLTexture2D&&) = default;
 
-		void Bind(unsigned int slot = 0) const override;
-		void Unbind(unsigned int slot = 0) const override;
+		void Bind(uint32_t slot = 0) const override;
+		void Unbind(uint32_t slot = 0) const override;
 
 		uint32_t GetHandle() const;
 		std::string GetName() const override;

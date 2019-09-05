@@ -73,7 +73,7 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR16ToRGB24(std::vector<uint8_t>& s
 	data.resize(width * height * 3);
 
 	uint32_t index = 0;
-	for (unsigned int i = 0; i < width * height * 2; i += 2)
+	for (uint32_t i = 0; i < width * height * 2; i += 2)
 	{
 		data[index++] = (source[i + 1] << 1) & 0xF8;
 		data[index++] = ((source[i + 1] << 6) | (source[i] >> 2)) & 0xF8;
@@ -111,7 +111,7 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeBGRAMap(std::vector<uint8_t>& source,
 	data.resize(width * height * channels);
 
 	uint32_t index = 0;
-	for (unsigned int i = 0; i < width * height; i++)
+	for (uint32_t i = 0; i < width * height; i++)
 	{
 		if (channels == 1)
 			data[index++] = colorMap[source[i] * channels];
@@ -147,7 +147,7 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEBGRAMap(std::vector<uint8_t>& sour
 	data.resize(width * height * channels);
 
 	uint32_t index = 0;
-	for (unsigned int i = 0, l = 0; i < source.size();)
+	for (uint32_t i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
 
@@ -155,15 +155,15 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEBGRAMap(std::vector<uint8_t>& sour
 		//If RAW, the next count channels-byte color values in the file are taken verbatim
 		//If RLE, the next single channels-byte color value speaks for the next count pixels
 
-		const int raw = (source[i] & 0x80) == 0; //Is this packet RAW pixels or a repeating color
-		int count = (source[i] & 0x7F) + 1; //How many RAW pixels or color repeats
+		const int32_t raw = (source[i] & 0x80) == 0; //Is this packet RAW pixels or a repeating color
+		int32_t count = (source[i] & 0x7F) + 1; //How many RAW pixels or color repeats
 		i++;
 
 		//Prevent from writing out of data range
 		if (count * channels + l > width * height * channels)
-			count = static_cast<int>((width * height * channels - l) / channels);
+			count = static_cast<int32_t>((width * height * channels - l) / channels);
 
-		for (int j = 0; j < count; j++)
+		for (int32_t j = 0; j < count; j++)
 		{
 			if (channels == 1)
 			{
@@ -210,7 +210,7 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEGrayScale(std::vector<uint8_t>& so
 	data.resize(width * height);
 
 	uint32_t index = 0;
-	for (unsigned int i = 0, l = 0; i < source.size();)
+	for (uint32_t i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
 
@@ -218,15 +218,15 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEGrayScale(std::vector<uint8_t>& so
 		//If RAW, the next count byte color values in the file are taken verbatim
 		//If RLE, the next single byte color value speaks for the next count pixels
 
-		const int raw = (source[i] & 0x80) == 0; //Is this packet RAW pixels or a repeating color
-		int count = (source[i] & 0x7F) + 1; //How many RAW pixels or color repeats
+		const int32_t raw = (source[i] & 0x80) == 0; //Is this packet RAW pixels or a repeating color
+		int32_t count = (source[i] & 0x7F) + 1; //How many RAW pixels or color repeats
 		i++;
 
 		//Prevent from writing out of data range
 		if (count + l > width * height)
-			count = static_cast<int>(width * height - l);
+			count = static_cast<int32_t>(width * height - l);
 
-		for (int j = 0; j < count; j++)
+		for (int32_t j = 0; j < count; j++)
 		{
 			data[index++] = source[i];
 
@@ -249,22 +249,22 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>
 	data.resize(width * height * 3);
 
 	uint32_t index = 0;
-	for (unsigned int i = 0, l = 0; i < source.size();)
+	for (uint32_t i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
 		//First byte is RAW/RLE flags(upper bit) and count(1-128 as 0-127 in lower 7 bits)
 		//If RAW, the next count channel-byte color values in the file are taken verbatim
 		//If RLE, the next single channel-byte color value speaks for the next count pixels
 
-		const int raw = (source[i] & 0x80) == 0; //Is this packet RAW pixels or a repeating color
-		int count = (source[i] & 0x7F) + 1; //How many RAW pixels or color repeats
+		const int32_t raw = (source[i] & 0x80) == 0; //Is this packet RAW pixels or a repeating color
+		int32_t count = (source[i] & 0x7F) + 1; //How many RAW pixels or color repeats
 		i++;
 
 		//Prevent from writing out of data range
 		if (count * 3 + l > width * height * 3)
-			count = static_cast<int>((width * height * 3 - l) / 3);
+			count = static_cast<int32_t>((width * height * 3 - l) / 3);
 
-		for (int j = 0; j < count; j++)
+		for (int32_t j = 0; j < count; j++)
 		{
 			data[index++] = (source[i + 1] << 1) & 0xF8;
 			data[index++] = ((source[i + 1] << 6) | (source[i] >> 2)) & 0xF8;
@@ -289,22 +289,22 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>
 	data.resize(width * height * 3);
 
 	uint32_t index = 0;
-	for (unsigned int i = 0, l = 0; i < source.size();)
+	for (uint32_t i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
 		//First byte is RAW/RLE flags(upper bit) and count(1-128 as 0-127 in lower 7 bits)
 		//If RAW, the next count channel-byte color values in the file are taken verbatim
 		//If RLE, the next single channel-byte color value speaks for the next count pixels
 
-		const int raw = (source[i] & 0x80) == 0; //Is this packet RAW pixels or a repeating color
-		int count = (source[i] & 0x7F) + 1; //How many RAW pixels or color repeats
+		const int32_t raw = (source[i] & 0x80) == 0; //Is this packet RAW pixels or a repeating color
+		int32_t count = (source[i] & 0x7F) + 1; //How many RAW pixels or color repeats
 		i++;
 
 		//Prevent from writing out of data range
 		if (count * 3 + l > width * height * 3)
-			count = static_cast<int>((width * height * 3 - l) / 3);
+			count = static_cast<int32_t>((width * height * 3 - l) / 3);
 
-		for (int j = 0; j < count; j++)
+		for (int32_t j = 0; j < count; j++)
 		{
 			data[index++] = source[i + 2]; //Red
 			data[index++] = source[i + 1]; //Green
@@ -329,22 +329,22 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>
 	data.resize(width * height * 4);
 
 	uint32_t index = 0;
-	for (unsigned int i = 0, l = 0; i < source.size();)
+	for (uint32_t i = 0, l = 0; i < source.size();)
 	{
 		//Pixels encoded in "packets"
 		//First byte is RAW/RLE flags(upper bit) and count(1-128 as 0-127 in lower 7 bits)
 		//If RAW, the next count channel-byte color values in the file are taken verbatim
 		//If RLE, the next single channel-byte color value speaks for the next count pixels
 
-		const int raw = (source[i] & 0x80) == 0; //Is this packet RAW pixels or a repeating color
-		int count = (source[i] & 0x7F) + 1; //How many RAW pixels or color repeats
+		const int32_t raw = (source[i] & 0x80) == 0; //Is this packet RAW pixels or a repeating color
+		int32_t count = (source[i] & 0x7F) + 1; //How many RAW pixels or color repeats
 		i++;
 
 		//Prevent from writing out of data range
 		if (count * 4 + l > width * height * 4)
-			count = static_cast<int>((width * height * 4 - l) / 4);
+			count = static_cast<int32_t>((width * height * 4 - l) / 4);
 
-		for (int j = 0; j < count; j++)
+		for (int32_t j = 0; j < count; j++)
 		{
 			data[index++] = source[i + 2]; //Red
 			data[index++] = source[i + 1]; //Green

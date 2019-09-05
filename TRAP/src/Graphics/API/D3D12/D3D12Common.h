@@ -7,12 +7,12 @@
 
 namespace TRAP::Graphics::API
 {
-	void CheckD3D12Error(HRESULT result, const char* function, const char* file, int line);
+	void CheckD3D12Error(HRESULT result, const char* function, const char* file, int32_t line);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::API::CheckD3D12Error(const HRESULT result, const char* function, const char* file, const int line)
+inline void TRAP::Graphics::API::CheckD3D12Error(const HRESULT result, const char* function, const char* file, const int32_t line)
 {
 	if (result == S_OK)
 		return;

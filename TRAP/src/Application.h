@@ -33,13 +33,13 @@ namespace TRAP
 		Utils::Config* GetConfig();
 		LayerStack& GetLayerStack();
 
-		unsigned int GetFPS() const;
+		uint32_t GetFPS() const;
 		float GetFrameTime() const;
 		Utils::TimeStep GetTime() const;
-		unsigned int GetDrawCalls() const;
+		uint32_t GetDrawCalls() const;
 		void AddSingleDrawCall();
-		unsigned int GetTickRate() const;
-		void SetTickRate(unsigned int);
+		uint32_t GetTickRate() const;
+		void SetTickRate(uint32_t);
 
 		void Shutdown();
 
@@ -59,11 +59,11 @@ namespace TRAP
 		Utils::Config m_config;
 
 		std::unique_ptr<Utils::Timer> m_timer;
-		unsigned int m_FramesPerSecond;
+		uint32_t m_FramesPerSecond;
 		float m_FrameTime;
-		unsigned int m_drawCalls;
-		unsigned int m_fpsLimit;
-		unsigned int m_tickRate;
+		uint32_t m_drawCalls;
+		uint32_t m_fpsLimit;
+		uint32_t m_tickRate;
 
 		static Application* s_Instance;
 	};
@@ -88,7 +88,7 @@ inline TRAP::Utils::Config* TRAP::Application::GetConfig()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline unsigned int TRAP::Application::GetFPS() const
+inline uint32_t TRAP::Application::GetFPS() const
 {
 	return m_FramesPerSecond;
 }
@@ -102,7 +102,7 @@ inline float TRAP::Application::GetFrameTime() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline unsigned int TRAP::Application::GetDrawCalls() const
+inline uint32_t TRAP::Application::GetDrawCalls() const
 {
 	return m_drawCalls;
 }
@@ -116,7 +116,7 @@ inline void TRAP::Application::AddSingleDrawCall()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline unsigned int TRAP::Application::GetTickRate() const
+inline uint32_t TRAP::Application::GetTickRate() const
 {
 	return m_tickRate;
 }
@@ -124,7 +124,7 @@ inline unsigned int TRAP::Application::GetTickRate() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Application::SetTickRate(const unsigned int tickRate)
+inline void TRAP::Application::SetTickRate(const uint32_t tickRate)
 {
 	m_tickRate = tickRate;
 }

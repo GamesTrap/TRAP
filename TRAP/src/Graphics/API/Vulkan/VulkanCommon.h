@@ -5,12 +5,12 @@
 
 namespace TRAP::Graphics::API
 {
-	bool ErrorCheck(VkResult result, const char* function, const char* file, int line);
+	bool ErrorCheck(VkResult result, const char* function, const char* file, int32_t line);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const char* function, const char* file, const int line)
+inline bool TRAP::Graphics::API::ErrorCheck(const VkResult result, const char* function, const char* file, const int32_t line)
 {
 	if (result < 0)
 	{

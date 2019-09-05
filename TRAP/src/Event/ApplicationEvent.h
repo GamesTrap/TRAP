@@ -9,13 +9,13 @@ namespace TRAP
 	class WindowResizeEvent final : public Event
 	{
 	public:
-		WindowResizeEvent(const unsigned int width, const unsigned int height, std::string title)
+		WindowResizeEvent(const uint32_t width, const uint32_t height, std::string title)
 			: m_width(width), m_height(height), m_title(std::move(title))
 		{			
 		}
 
-		unsigned int GetWidth() const;
-		unsigned int GetHeight() const;
+		uint32_t GetWidth() const;
+		uint32_t GetHeight() const;
 		std::string GetTitle() const;
 
 		std::string ToString() const override
@@ -29,10 +29,10 @@ namespace TRAP
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
-		int GetCategoryFlags() const override;
+		int32_t GetCategoryFlags() const override;
 
 	private:
-		unsigned int m_width, m_height;
+		uint32_t m_width, m_height;
 		std::string m_title;
 	};
 
@@ -49,7 +49,7 @@ namespace TRAP
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
-		int GetCategoryFlags() const override;
+		int32_t GetCategoryFlags() const override;
 
 	private:
 		std::string m_title;
@@ -58,13 +58,13 @@ namespace TRAP
 	class WindowMovedEvent final : public Event
 	{
 	public:
-		WindowMovedEvent(const int x, const int y, std::string title)
+		WindowMovedEvent(const int32_t x, const int32_t y, std::string title)
 			: m_x(x), m_y(y), m_title(std::move(title))
 		{			
 		}
 
-		int GetX() const;
-		int GetY() const;
+		int32_t GetX() const;
+		int32_t GetY() const;
 		std::string GetTitle() const;
 
 		std::string ToString() const override
@@ -78,10 +78,10 @@ namespace TRAP
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
-		int GetCategoryFlags() const override;
+		int32_t GetCategoryFlags() const override;
 
 	private:
-		int m_x, m_y;
+		int32_t m_x, m_y;
 		std::string m_title;
 	};
 
@@ -98,7 +98,7 @@ namespace TRAP
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
-		int GetCategoryFlags() const override;
+		int32_t GetCategoryFlags() const override;
 
 	private:
 		std::string m_title;
@@ -117,7 +117,7 @@ namespace TRAP
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
-		int GetCategoryFlags() const override;
+		int32_t GetCategoryFlags() const override;
 
 	private:
 		std::string m_title;
@@ -131,7 +131,7 @@ namespace TRAP
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
-		int GetCategoryFlags() const override;
+		int32_t GetCategoryFlags() const override;
 	};
 
 	class AppUpdateEvent final : public Event
@@ -142,7 +142,7 @@ namespace TRAP
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
-		int GetCategoryFlags() const override;
+		int32_t GetCategoryFlags() const override;
 	};
 
 	class AppRenderEvent final : public Event
@@ -153,7 +153,7 @@ namespace TRAP
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
-		int GetCategoryFlags() const override;
+		int32_t GetCategoryFlags() const override;
 	};
 }
 
@@ -194,9 +194,9 @@ inline const char* TRAP::WindowResizeEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::WindowResizeEvent::GetCategoryFlags() const
+inline int32_t TRAP::WindowResizeEvent::GetCategoryFlags() const
 {
-	return static_cast<int>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -222,21 +222,21 @@ inline const char* TRAP::WindowCloseEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::WindowCloseEvent::GetCategoryFlags() const
+inline int32_t TRAP::WindowCloseEvent::GetCategoryFlags() const
 {
-	return static_cast<int>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::WindowMovedEvent::GetX() const
+inline int32_t TRAP::WindowMovedEvent::GetX() const
 {
 	return m_x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::WindowMovedEvent::GetY() const
+inline int32_t TRAP::WindowMovedEvent::GetY() const
 {
 	return m_y;
 }
@@ -264,9 +264,9 @@ inline const char* TRAP::WindowMovedEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::WindowMovedEvent::GetCategoryFlags() const
+inline int32_t TRAP::WindowMovedEvent::GetCategoryFlags() const
 {
-	return static_cast<int>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -292,9 +292,9 @@ inline const char* TRAP::WindowFocusEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::WindowFocusEvent::GetCategoryFlags() const
+inline int32_t TRAP::WindowFocusEvent::GetCategoryFlags() const
 {
-	return static_cast<int>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -320,9 +320,9 @@ inline const char* TRAP::WindowLostFocusEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::WindowLostFocusEvent::GetCategoryFlags() const
+inline int32_t TRAP::WindowLostFocusEvent::GetCategoryFlags() const
 {
-	return static_cast<int>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -348,9 +348,9 @@ inline const char* TRAP::AppTickEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::AppTickEvent::GetCategoryFlags() const
+inline int32_t TRAP::AppTickEvent::GetCategoryFlags() const
 {
-	return static_cast<int>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -376,9 +376,9 @@ inline const char* TRAP::AppUpdateEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::AppUpdateEvent::GetCategoryFlags() const
+inline int32_t TRAP::AppUpdateEvent::GetCategoryFlags() const
 {
-	return static_cast<int>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -404,9 +404,9 @@ inline const char* TRAP::AppRenderEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::AppRenderEvent::GetCategoryFlags() const
+inline int32_t TRAP::AppRenderEvent::GetCategoryFlags() const
 {
-	return static_cast<int>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

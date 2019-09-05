@@ -7,7 +7,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::IsKeyPressed(const int keycode)
+bool TRAP::Input::IsKeyPressed(const int32_t keycode)
 {
 	const auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow()->GetNativeWindow());
 	const auto state = glfwGetKey(window, keycode);
@@ -17,7 +17,7 @@ bool TRAP::Input::IsKeyPressed(const int keycode)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::IsMouseButtonPressed(const int button)
+bool TRAP::Input::IsMouseButtonPressed(const int32_t button)
 {
 	const auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow()->GetNativeWindow());
 	const auto state = glfwGetMouseButton(window, button);

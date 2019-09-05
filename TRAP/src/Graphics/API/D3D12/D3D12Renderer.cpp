@@ -39,7 +39,7 @@ void TRAP::Graphics::API::D3D12Renderer::InitInternal()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::Clear(unsigned int buffer)
+void TRAP::Graphics::API::D3D12Renderer::Clear(uint32_t buffer)
 {
 }
 
@@ -127,7 +127,7 @@ void TRAP::Graphics::API::D3D12Renderer::SetBlendEquationSeparate(RendererBlendE
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::SetViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+void TRAP::Graphics::API::D3D12Renderer::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 {
 }
 

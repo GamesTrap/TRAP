@@ -30,7 +30,7 @@ TRAP::Graphics::API::D3D12Context::~D3D12Context()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Context::SetVSyncIntervalInternal(unsigned int interval)
+void TRAP::Graphics::API::D3D12Context::SetVSyncIntervalInternal(uint32_t interval)
 {
 }
 

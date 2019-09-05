@@ -73,7 +73,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::Clear(unsigned int buffer)
+void TRAP::Graphics::API::VulkanRenderer::Clear(uint32_t buffer)
 {
 }
 
@@ -134,7 +134,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetWireFrame(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+void TRAP::Graphics::API::VulkanRenderer::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 {
 }
 
@@ -724,10 +724,10 @@ void TRAP::Graphics::API::VulkanRenderer::PickPhysicalDevice(std::vector<VkPhysi
 {
 	TP_DEBUG("[Renderer][Vulkan] Selecting Physical Device");
 
-	std::multimap<int, VkPhysicalDevice> candidates;
+	std::multimap<int32_t, VkPhysicalDevice> candidates;
 
-	int highestScore = 0;
-	int score = 0;
+	int32_t highestScore = 0;
+	int32_t score = 0;
 	for (const auto& device : availablePhysicalDevices)
 	{
 		score = RateDeviceSuitability(device);
@@ -763,9 +763,9 @@ void TRAP::Graphics::API::VulkanRenderer::PickPhysicalDevice(std::vector<VkPhysi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int TRAP::Graphics::API::VulkanRenderer::RateDeviceSuitability(VkPhysicalDevice physicalDevice) const
+int32_t TRAP::Graphics::API::VulkanRenderer::RateDeviceSuitability(VkPhysicalDevice physicalDevice) const
 {
-	int score = 0;
+	int32_t score = 0;
 
 	VkPhysicalDeviceProperties deviceProperties;
 	vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);

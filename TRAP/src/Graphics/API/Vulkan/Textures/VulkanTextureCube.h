@@ -17,8 +17,8 @@ namespace TRAP::Graphics::API
 		VulkanTextureCube(VulkanTextureCube&&) = default;
 		VulkanTextureCube& operator=(VulkanTextureCube&&) = default;
 
-		void Bind(unsigned int slot) const override;
-		void Unbind(unsigned int slot) const override;
+		void Bind(uint32_t slot) const override;
+		void Unbind(uint32_t slot) const override;
 
 		std::string GetName() const override;
 		Image* GetImage() override;

@@ -154,7 +154,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 
 			//Check if alpha is used
 			bool alphaUsed = false;
-			for (unsigned int i = 3; i < colorTable.size(); i += 4)
+			for (uint32_t i = 3; i < colorTable.size(); i += 4)
 				if (colorTable[i] > 0)
 				{
 					alphaUsed = true;
@@ -163,7 +163,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 
 			//If alpha is unused set all alpha bytes to 255
 			if (!alphaUsed)
-				for (unsigned int i = 3; i < colorTable.size(); i += 4)
+				for (uint32_t i = 3; i < colorTable.size(); i += 4)
 					colorTable[i] = 255;
 		}
 
@@ -175,7 +175,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			imageData.resize(m_width * m_height * (m_bitsPerPixel / 8));
 			uint32_t padding = 4 - (((m_bitsPerPixel / 8) * m_width) % 4);
 			uint32_t offset = 0;
-			for (unsigned int j = 0; j < m_height; j++)
+			for (uint32_t j = 0; j < m_height; j++)
 			{
 				if(!file.read(reinterpret_cast<char*>(imageData.data()) + offset, m_width * (m_bitsPerPixel / 8)))
 				{
@@ -185,7 +185,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 					return;
 				}
 
-				for (unsigned int pad = 0; pad < padding; pad++)
+				for (uint32_t pad = 0; pad < padding; pad++)
 					file.ignore();
 
 				offset += m_width * (m_bitsPerPixel / 8);
@@ -257,7 +257,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 
 				//Check if alpha is used
 				bool alphaUsed = false;
-				for (unsigned int i = 3; i < imageData.size(); i += 4)
+				for (uint32_t i = 3; i < imageData.size(); i += 4)
 					if (imageData[i] > 0)
 					{
 						alphaUsed = true;
@@ -266,7 +266,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 
 				//If alpha is unused set all alpha bytes to 255
 				if (!alphaUsed)
-					for (unsigned int i = 3; i < imageData.size(); i += 4)
+					for (uint32_t i = 3; i < imageData.size(); i += 4)
 						imageData[i] = 255;
 
 				m_data = ConvertBGRA32ToRGBA32(imageData, m_width, m_height);
@@ -480,7 +480,7 @@ bool TRAP::INTERNAL::BMPImage::ValidateBitFields(std::array<BitField, 4>& bitFie
 	uint32_t totalMask = 0;
 	BitField totalField{};
 
-	for(int i = 0; i < 4; i++)
+	for(int32_t i = 0; i < 4; i++)
 	{
 		//No overlapping masks.
 		if (totalMask & masks[i])

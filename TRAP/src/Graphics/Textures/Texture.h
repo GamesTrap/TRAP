@@ -56,8 +56,8 @@ namespace TRAP::Graphics
 		Texture(Texture&&) = default;
 		Texture& operator=(Texture&&) = default;
 
-		virtual void Bind(unsigned int slot = 0) const = 0;
-		virtual void Unbind(unsigned int slot = 0) const = 0;
+		virtual void Bind(uint32_t slot = 0) const = 0;
+		virtual void Unbind(uint32_t slot = 0) const = 0;
 
 		virtual std::string GetName() const = 0;
 		virtual TextureType GetType() const = 0;

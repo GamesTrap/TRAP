@@ -29,13 +29,13 @@ TRAP::Graphics::API::D3D12TextureCube::~D3D12TextureCube() = default;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12TextureCube::Bind(unsigned int slot) const
+void TRAP::Graphics::API::D3D12TextureCube::Bind(uint32_t slot) const
 {	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12TextureCube::Unbind(unsigned int slot) const
+void TRAP::Graphics::API::D3D12TextureCube::Unbind(uint32_t slot) const
 {	
 }
 

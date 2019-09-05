@@ -33,29 +33,29 @@ namespace TRAP::Graphics::API
 		const std::string& GetTESSource() const override;
 		const std::string& GetCSSource() const override;
 
-		unsigned int GetHandle() const;;
+		uint32_t GetHandle() const;;
 
 	private:
-		static unsigned int Compile(std::array<std::string*, 6>& shaders);
+		static uint32_t Compile(std::array<std::string*, 6>& shaders);
 		
-		static bool CompileShader(ShaderType type, const char* source, unsigned int& handle);
+		static bool CompileShader(ShaderType type, const char* source, uint32_t& handle);
 		static bool CreateProgram(std::array<std::string*, 6>& shaders,
-		                          unsigned int& vertex,
-		                          unsigned int& fragment,
-		                          unsigned int& geometry,
-		                          unsigned int& tessControl,
-		                          unsigned int& tessEval,
-		                          unsigned int& compute,
-		                          unsigned int& handle);
-		static void LinkProgram(int& linkResult, int& validateResult, const unsigned int& handle);
+		                          uint32_t& vertex,
+		                          uint32_t& fragment,
+		                          uint32_t& geometry,
+		                          uint32_t& tessControl,
+		                          uint32_t& tessEval,
+		                          uint32_t& compute,
+		                          uint32_t& handle);
+		static void LinkProgram(int32_t& linkResult, int32_t& validateResult, const uint32_t& handle);
 		static void DeleteShaders(std::array<std::string*, 6>& shaders,
-		                          const unsigned int& vertex,
-		                          const unsigned int& fragment,
-		                          const unsigned int& geometry,
-		                          const unsigned int& tessControl,
-		                          const unsigned int& tessEval,
-		                          const unsigned int& compute,
-								  const unsigned int& handle);
+		                          const uint32_t& vertex,
+		                          const uint32_t& fragment,
+		                          const uint32_t& geometry,
+		                          const uint32_t& tessControl,
+		                          const uint32_t& tessEval,
+		                          const uint32_t& compute,
+								  const uint32_t& handle);
 
 		static GLenum ShaderTypeToOpenGL(ShaderType type);
 
@@ -68,7 +68,7 @@ namespace TRAP::Graphics::API
 		friend class ::TRAP::Graphics::Shader;
 		friend class ::TRAP::Graphics::ShaderManager;
 
-		unsigned int m_handle;
+		uint32_t m_handle;
 		std::string m_name, m_filepath, m_source;
 		std::string m_VSSource, m_FSSource, m_GSSource, m_TCSSource, m_TESSource, m_CSSource;
 	};

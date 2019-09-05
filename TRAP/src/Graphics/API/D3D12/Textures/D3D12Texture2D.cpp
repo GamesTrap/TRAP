@@ -29,13 +29,13 @@ TRAP::Graphics::API::D3D12Texture2D::~D3D12Texture2D() = default;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Texture2D::Bind(const unsigned int slot) const
+void TRAP::Graphics::API::D3D12Texture2D::Bind(const uint32_t slot) const
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Texture2D::Unbind(const unsigned int slot) const
+void TRAP::Graphics::API::D3D12Texture2D::Unbind(const uint32_t slot) const
 {
 }
 

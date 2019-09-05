@@ -6,28 +6,28 @@ namespace TRAP
 	class KeyEvent : public Event
 	{
 	public:
-		int GetKeyCode() const;
+		int32_t GetKeyCode() const;
 
-		int GetCategoryFlags() const override;
+		int32_t GetCategoryFlags() const override;
 
 	protected:
-		explicit KeyEvent(const int keyCode)
+		explicit KeyEvent(const int32_t keyCode)
 			: m_keyCode(keyCode)
 		{			
 		}
 
-		int m_keyCode;
+		int32_t m_keyCode;
 	};
 
 	class KeyPressedEvent final : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(const int keyCode, const int repeatCount, std::string title)
+		KeyPressedEvent(const int32_t keyCode, const int32_t repeatCount, std::string title)
 			: KeyEvent(keyCode), m_repeatCount(repeatCount), m_title(std::move(title))
 		{			
 		}
 
-		int GetRepeatCount() const;
+		int32_t GetRepeatCount() const;
 
 		std::string ToString() const override
 		{
@@ -44,14 +44,14 @@ namespace TRAP
 		const char* GetName() const override;
 
 	private:
-		int m_repeatCount;
+		int32_t m_repeatCount;
 		std::string m_title;
 	};
 
 	class KeyReleasedEvent final : public KeyEvent
 	{
 	public:
-		explicit KeyReleasedEvent(const int keyCode, std::string title)
+		explicit KeyReleasedEvent(const int32_t keyCode, std::string title)
 			: KeyEvent(keyCode), m_title(std::move(title))
 		{			
 		}
@@ -77,7 +77,7 @@ namespace TRAP
 	class KeyTypedEvent final : public KeyEvent
 	{
 	public:
-		explicit KeyTypedEvent(const int keyCode, std::string title)
+		explicit KeyTypedEvent(const int32_t keyCode, std::string title)
 			: KeyEvent(keyCode), m_title(std::move(title))
 		{			
 		}
@@ -103,21 +103,21 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::KeyEvent::GetKeyCode() const
+inline int32_t TRAP::KeyEvent::GetKeyCode() const
 {
 	return m_keyCode;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::KeyEvent::GetCategoryFlags() const
+inline int32_t TRAP::KeyEvent::GetCategoryFlags() const
 {
-	return static_cast<int>(EventCategory::EventCategoryKeyboard) | static_cast<int>(EventCategory::EventCategoryInput);
+	return static_cast<int32_t>(EventCategory::EventCategoryKeyboard) | static_cast<int32_t>(EventCategory::EventCategoryInput);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int TRAP::KeyPressedEvent::GetRepeatCount() const
+inline int32_t TRAP::KeyPressedEvent::GetRepeatCount() const
 {
 	return m_repeatCount;
 }

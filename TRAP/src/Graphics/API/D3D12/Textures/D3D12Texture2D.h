@@ -19,8 +19,8 @@ namespace TRAP::Graphics::API
 		D3D12Texture2D(D3D12Texture2D&&) = default;
 		D3D12Texture2D& operator=(D3D12Texture2D&&) = default;
 
-		void Bind(unsigned int slot = 0) const override;
-		void Unbind(unsigned int slot = 0) const override;
+		void Bind(uint32_t slot = 0) const override;
+		void Unbind(uint32_t slot = 0) const override;
 
 		std::string GetName() const override;
 		Image* GetImage() override;

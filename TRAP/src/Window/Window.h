@@ -12,8 +12,7 @@
 
 namespace TRAP
 {
-	class Application;
-	
+	//Used to set Display modes of windows
 	enum class DisplayMode
 	{
 		Windowed,
@@ -21,26 +20,26 @@ namespace TRAP
 		Borderless
 	};
 
+	//Used to create new windows
 	struct WindowProps
-	{
-		friend class Application;
-		
+	{		
 		std::string Title;
-		unsigned int Width;
-		unsigned int Height;
-		unsigned int RefreshRate;
-		unsigned int VSync;
+		uint32_t Width;
+		uint32_t Height;
+		uint32_t RefreshRate;
+		uint32_t VSync;
 		Graphics::API::RenderAPI RenderAPI;
 		DisplayMode Mode;
-		unsigned int Monitor;
+		uint32_t Monitor;
 
+		//Sets up properties for new window(s)
 		explicit WindowProps(std::string title = "TRAP Engine",
-			const unsigned int width = 1280,
-			const unsigned int height = 720,
-			const unsigned int refreshRate = 60,
-			const unsigned int vsync = 0,
+			const uint32_t width = 1280,
+			const uint32_t height = 720,
+			const uint32_t refreshRate = 60,
+			const uint32_t vsync = 0,
 			const DisplayMode mode = DisplayMode::Windowed,
-			const unsigned int monitor = 0)
+			const uint32_t monitor = 0)
 			: Title(std::move(title)),
 			  Width(width),
 			  Height(height),
@@ -70,14 +69,14 @@ namespace TRAP
 		static void Use(Window* window);
 		static void Use();
 
-		unsigned int GetWidth() const;
-		unsigned int GetHeight() const;
-		unsigned int GetRefreshRate() const;
+		uint32_t GetWidth() const;
+		uint32_t GetHeight() const;
+		uint32_t GetRefreshRate() const;
 		std::string GetTitle() const;
 		DisplayMode GetDisplayMode() const;
-		unsigned int GetMonitor() const;
-		static unsigned int GetActiveWindows();
-		unsigned int GetVSyncInterval() const;
+		uint32_t GetMonitor() const;
+		static uint32_t GetActiveWindows();
+		uint32_t GetVSyncInterval() const;
 
 		void SetTitle(const std::string& title);
 
@@ -85,10 +84,10 @@ namespace TRAP
 		void SetEventCallback(const EventCallbackFn& callback);
 		
 		void SetWindowMode(const DisplayMode& mode,
-		                   unsigned int width = 0,
-		                   unsigned int height = 0,
-		                   unsigned int refreshRate = 0);
-		void SetMonitor(unsigned int monitor = 0);
+		                   uint32_t width = 0,
+		                   uint32_t height = 0,
+		                   uint32_t refreshRate = 0);
+		void SetMonitor(uint32_t monitor = 0);
 		void SetIcon() const;
 		void SetIcon(const std::unique_ptr<Image>& image) const;
 		static void SetVSyncInterval(const uint32_t interval);
@@ -97,7 +96,7 @@ namespace TRAP
 
 	private:
 		void Init(const WindowProps& props);
-		void Shutdown() const;
+		void Shutdown();
 
 		GLFWwindow* m_window;
 		GLFWmonitor* m_useMonitor; //Stores a reference to the primary monitor
@@ -106,9 +105,9 @@ namespace TRAP
 		struct WindowData
 		{
 			std::string Title;
-			unsigned int Width{}, Height{}, RefreshRate{}, VSync{};
+			uint32_t Width{}, Height{}, RefreshRate{}, VSync{};
 			DisplayMode Mode{};
-			unsigned int Monitor{};
+			uint32_t Monitor{};
 
 			EventCallbackFn EventCallback;
 		};
@@ -117,8 +116,8 @@ namespace TRAP
 
 		struct WindowedModeParams
 		{
-			unsigned int Width, Height, RefreshRate;
-			int XPos, YPos;
+			uint32_t Width, Height, RefreshRate;
+			int32_t XPos, YPos;
 		};
 
 		WindowedModeParams m_oldWindowedParams{};
@@ -129,21 +128,21 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline unsigned int TRAP::Window::GetWidth() const
+inline uint32_t TRAP::Window::GetWidth() const
 {
 	return m_data.Width;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline unsigned int TRAP::Window::GetHeight() const
+inline uint32_t TRAP::Window::GetHeight() const
 {
 	return m_data.Height;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline unsigned int TRAP::Window::GetRefreshRate() const
+inline uint32_t TRAP::Window::GetRefreshRate() const
 {
 	return m_data.RefreshRate;
 }
@@ -164,7 +163,7 @@ inline TRAP::DisplayMode TRAP::Window::GetDisplayMode() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline unsigned int TRAP::Window::GetMonitor() const
+inline uint32_t TRAP::Window::GetMonitor() const
 {
 	return m_data.Monitor;
 }
