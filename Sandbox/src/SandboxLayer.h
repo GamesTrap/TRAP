@@ -205,11 +205,11 @@ public:
 			m_usePassthrough = !m_usePassthrough;
 
 		if (event.GetKeyCode() == TP_KEY_F5 && event.GetRepeatCount() < 1) //Make Window windowed
-			TRAP::Application::Get().GetWindow()->SetWindowMode(TRAP::DisplayMode::Windowed);
+			TRAP::Application::Get().GetWindow()->SetDisplayMode(TRAP::DisplayMode::Windowed);
 		if (event.GetKeyCode() == TP_KEY_F6 && event.GetRepeatCount() < 1) //Make Window Borderless Fullscreen
-			TRAP::Application::Get().GetWindow()->SetWindowMode(TRAP::DisplayMode::Borderless);
+			TRAP::Application::Get().GetWindow()->SetDisplayMode(TRAP::DisplayMode::Borderless);
 		if (event.GetKeyCode() == TP_KEY_F7 && event.GetRepeatCount() < 1) //Make Window Exclusive Fullscreen
-			TRAP::Application::Get().GetWindow()->SetWindowMode(TRAP::DisplayMode::Fullscreen);
+			TRAP::Application::Get().GetWindow()->SetDisplayMode(TRAP::DisplayMode::Fullscreen);
 
 		if (event.GetKeyCode() == TP_KEY_F9 && event.GetRepeatCount() < 1) //Enable/Disable
 			m_show = !m_show;

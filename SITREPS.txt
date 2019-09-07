@@ -367,5 +367,15 @@ SITREP 09/04/2019|19w36a3
 SITREP 09/05/2019|19w36a4
     - Changed TRAP Engine version to 19w36a4(0.5.27)
     - BufferElement GetComponentCount() Removed Invalid returns ~<15 mins
+    - Started Working on Documentation ~>60 mins
     - Replaced every unsigned int with uint32_t ~<20 mins
     - Replaced every int with int32_t ~<20 mins
+
+SITREP 09/06/2019|19w36a5
+    - Changed TRAP Engine version to 19w36a5(0.5.28)
+    - Working on Documentation(TRAP::Window) ~>60 mins
+    - Fixed a Bug inside Window SetDisplayMode when using Fullscreen ~<20 mins
+    - Restructured Window class ~<30 mins
+
+SITREP 09/07/2019|19w36a6
+    - Changed TRAP Engine version to 19w36a6(0.5.29)

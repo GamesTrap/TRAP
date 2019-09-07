@@ -63,14 +63,305 @@ TRAP::Window::~Window()
 		Graphics::ShaderManager::Shutdown();
 		Graphics::API::RendererAPI::Shutdown();
 		Graphics::API::Context::Shutdown();		
-	}
+	}	
 	TP_DEBUG("[Window] Destroying Window: \"", m_data.Title, "\"");
 	Shutdown();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::Init(const WindowProps &props)
+void TRAP::Window::OnUpdate()
+{
+	glfwPollEvents();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::Use(Window* window)
+{
+	if (window)
+		Graphics::API::Context::Use(window);
+	else
+		Use();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::Use()
+{
+	Graphics::API::Context::Use(Application::Get().GetWindow());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Window::GetActiveWindows()
+{
+	return s_windows;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Window::GetMonitors()
+{
+	uint32_t monitors = 0;
+	glfwGetMonitors(reinterpret_cast<int*>(&monitors));
+
+	return monitors;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Window::GetTitle() const
+{
+	return m_data.Title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Window::GetWidth() const
+{
+	return m_data.Width;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Window::GetHeight() const
+{
+	return m_data.Height;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Window::GetRefreshRate() const
+{
+	return m_data.RefreshRate;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::DisplayMode TRAP::Window::GetDisplayMode() const
+{
+	return m_data.Mode;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Window::GetMonitor() const
+{
+	return m_data.Monitor;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Window::GetVSyncInterval() const
+{
+	return m_data.VSync;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void* TRAP::Window::GetNativeWindow() const
+{
+	return m_window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetTitle(const std::string& title)
+{
+	if (!title.empty())
+		m_data.Title = title;
+	else
+		m_data.Title = "TRAP Engine";
+
+#ifndef TRAP_RELEASE
+	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
+		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
+		"[INDEV][19w36a6]" + std::string(Graphics::Renderer::GetTitle());
+	glfwSetWindowTitle(m_window, newTitle.c_str());
+#else
+	glfwSetWindowTitle(m_window, m_data.Title.c_str());
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
+	uint32_t width,
+	uint32_t height,
+	uint32_t refreshRate)
+{
+	//If currently windowed, stash the current size and position of the window
+	if (m_data.Mode == DisplayMode::Windowed)
+	{
+		m_oldWindowedParams.Width = m_data.Width;
+		m_oldWindowedParams.Height = m_data.Height;
+		m_oldWindowedParams.RefreshRate = m_data.RefreshRate;
+		glfwGetWindowPos(m_window, &(m_oldWindowedParams.XPos), &(m_oldWindowedParams.YPos));
+	}
+
+	GLFWmonitor* monitor = nullptr;
+
+	if (mode == DisplayMode::Borderless)
+	{
+		//For borderless fullscreen, the new width, height and refresh rate will be the video mode width, height and refresh rate
+		width = m_baseVideoMode.width;
+		height = m_baseVideoMode.height;
+		refreshRate = m_baseVideoMode.refreshRate;
+		monitor = m_useMonitor;
+		TP_DEBUG("[Window] Using Monitor: ", m_data.Monitor, '(', glfwGetMonitorName(monitor), ')');
+	}
+	else if (mode == DisplayMode::Windowed && (width == 0 || height == 0))
+	{
+		//For windowed, use old window height and width if none provided
+		width = m_oldWindowedParams.Width;
+		height = m_oldWindowedParams.Height;
+		refreshRate = m_oldWindowedParams.RefreshRate;
+	}
+	else if (mode == DisplayMode::Fullscreen)
+	{
+		monitor = m_useMonitor;
+		bool valid = false;
+		int32_t monitorVideoModesCount = 0;
+		const auto monitorVideoModes = glfwGetVideoModes(m_useMonitor, &monitorVideoModesCount);
+		if (width != 0 && height != 0 && refreshRate != 0)
+		{
+			for (int32_t i = 0; i < monitorVideoModesCount; i++)
+			{
+				//Check if resolution pair is valid
+				if (static_cast<uint32_t>(monitorVideoModes[i].width) == width && static_cast<uint32_t>(monitorVideoModes[i].height) == height && static_cast<uint32_t>(monitorVideoModes[i].refreshRate) == refreshRate)
+				{
+					valid = true;
+					break;
+				}
+			}
+		}
+
+		//Resolution pair is invalid so use native/default resolution
+		if (!valid)
+		{
+			width = monitorVideoModes[monitorVideoModesCount - 1].width;
+			height = monitorVideoModes[monitorVideoModesCount - 1].height;
+			refreshRate = monitorVideoModes[monitorVideoModesCount - 1].refreshRate;
+		}
+
+		TP_DEBUG("[Window] Using Monitor: ", m_data.Monitor, '(', glfwGetMonitorName(monitor), ')');
+	}
+
+	//Update stored width and height
+	m_data.Width = width;
+	m_data.Height = height;
+	m_data.RefreshRate = refreshRate;
+
+	//Trigger resize event
+	if (m_data.EventCallback)
+	{
+		WindowResizeEvent event(width, height, m_data.Title);
+		m_data.EventCallback(event);
+	}
+
+	constexpr auto GetModeStr = [&](const DisplayMode displayMode) {
+		if (displayMode == DisplayMode::Windowed)
+			return "Windowed";
+		return displayMode == DisplayMode::Borderless ? "Borderless" : "Fullscreen";
+	}; //Little hack to convert enum class DisplayMode to string
+	TP_INFO("[Window] Changing window mode from ",
+		GetModeStr(m_data.Mode), " to ", GetModeStr(mode), ": ",
+		width, 'x', height, '@', refreshRate, "Hz");
+
+	//Record new window type
+	m_data.Mode = mode;
+
+	glfwSetWindowMonitor(m_window,
+		monitor,
+		m_oldWindowedParams.XPos,
+		m_oldWindowedParams.YPos,
+		static_cast<int32_t>(width),
+		static_cast<int32_t>(height),
+		static_cast<int32_t>(refreshRate));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetMonitor(const uint32_t monitor)
+{
+	int32_t monitorCount;
+	const auto monitors = glfwGetMonitors(&monitorCount);
+	if (monitor <= static_cast<uint32_t>(monitorCount))
+	{
+		m_data.Monitor = monitor;
+		m_useMonitor = monitors[monitor];
+	}
+	else
+	{
+		m_data.Monitor = 0;
+		m_useMonitor = glfwGetPrimaryMonitor();
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetVSyncInterval(const uint32_t interval) const
+{
+	Graphics::API::Context::SetVSyncInterval(interval);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetIcon() const
+{
+	GLFWimage image{ 32, 32, Utils::TRAPLogo.data() };
+	glfwSetWindowIcon(m_window, 1, &image);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetIcon(const std::unique_ptr<Image>& image) const
+{
+	if (!image)
+	{
+		SetIcon();
+		return;
+	}
+	if (image->IsHDR())
+	{
+		TP_ERROR("[Window][Icon] HDR is not supported for window icons!");
+		TP_WARN("[Window][Icon] Using Default Icon!");
+		SetIcon();
+		return;
+	}
+	if ((image->IsImageGrayScale() && image->GetBitsPerPixel() == 16 && !image->HasAlphaChannel()) ||
+		(image->IsImageGrayScale() && image->GetBitsPerPixel() == 24 && image->HasAlphaChannel()) ||
+		(image->IsImageColored() && image->GetBitsPerPixel() == 48 && !image->HasAlphaChannel()) ||
+		(image->IsImageColored() && image->GetBitsPerPixel() == 64 && image->HasAlphaChannel()))
+	{
+		TP_ERROR("[Window][Icon] Images with short pixel data are not supported for window icons!");
+		TP_WARN("[Window][Icon] Using Default Icon!");
+		SetIcon();
+		return;
+	}
+	if (image->GetFormat() != ImageFormat::RGBA)
+	{
+		TP_ERROR("[Window][Icon] Only RGBA Images are supported for window icons!");
+		TP_WARN("[Window][Icon] Using Default Icon!");
+		SetIcon();
+		return;
+	}
+
+	GLFWimage glfwImage{ static_cast<int32_t>(image->GetWidth()), static_cast<int32_t>(image->GetHeight()), static_cast<uint8_t*>(image->GetPixelData()) };
+	glfwSetWindowIcon(m_window, 1, &glfwImage);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetEventCallback(const EventCallbackFn& callback)
+{
+	m_data.EventCallback = callback;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::Init(const WindowProps& props)
 {
 	m_data.Title = props.Title;
 	m_data.Width = props.Width;
@@ -93,8 +384,8 @@ void TRAP::Window::Init(const WindowProps &props)
 
 	m_baseVideoMode = *(glfwGetVideoMode(m_useMonitor));
 	TP_DEBUG("[Window] Storing underlying OS video mode: ",
-			 m_baseVideoMode.width, 'x', m_baseVideoMode.height, '@', m_baseVideoMode.refreshRate, "Hz (R",
-			 m_baseVideoMode.redBits, 'G', m_baseVideoMode.greenBits, 'B', m_baseVideoMode.blueBits, ')');
+		m_baseVideoMode.width, 'x', m_baseVideoMode.height, '@', m_baseVideoMode.refreshRate, "Hz (R",
+		m_baseVideoMode.redBits, 'G', m_baseVideoMode.greenBits, 'B', m_baseVideoMode.blueBits, ')');
 
 	glfwDefaultWindowHints();
 
@@ -134,22 +425,22 @@ void TRAP::Window::Init(const WindowProps &props)
 			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		}
-	}	
+	}
 
 	//Create Window
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
-						   std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-						   "[INDEV][19w36a4]";
+		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
+		"[INDEV][19w36a6]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif
-	
+
 	m_window = glfwCreateWindow(static_cast<int32_t>(props.Width),
-								static_cast<int32_t>(props.Height),
-								newTitle.c_str(),
-								nullptr,
-								nullptr);
+		static_cast<int32_t>(props.Height),
+		newTitle.c_str(),
+		nullptr,
+		nullptr);
 
 	if (m_window == nullptr)
 	{
@@ -173,7 +464,7 @@ void TRAP::Window::Init(const WindowProps &props)
 		SetVSyncInterval(props.VSync);
 		Use();
 	}
-	
+
 	//Update Window Title
 #ifndef TRAP_RELEASE
 	newTitle += Graphics::Renderer::GetTitle();
@@ -186,30 +477,30 @@ void TRAP::Window::Init(const WindowProps &props)
 	m_oldWindowedParams.Height = props.Height;
 	m_oldWindowedParams.RefreshRate = props.RefreshRate;
 	glfwGetWindowPos(m_window, &(m_oldWindowedParams.XPos), &(m_oldWindowedParams.YPos));
-	SetWindowMode(props.Mode, 0, 0);
+	SetDisplayMode(props.Mode, 0, 0);
 
 	glfwSetWindowUserPointer(m_window, &m_data);
 
 	SetIcon();
 
 	//Set GLFW callbacks
-	glfwSetWindowSizeCallback(m_window, [](GLFWwindow *window, const int32_t width, const int32_t height) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, const int32_t width, const int32_t height) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 		data.Width = width;
 		data.Height = height;
 
 		WindowResizeEvent event(width, height, data.Title);
 		data.EventCallback(event);
-	});
+		});
 
-	glfwSetWindowPosCallback(m_window, [](GLFWwindow *window, const int32_t x, const int32_t y) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetWindowPosCallback(m_window, [](GLFWwindow* window, const int32_t x, const int32_t y) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 		WindowMovedEvent event(x, y, data.Title);
 		data.EventCallback(event);
-	});
+		});
 
-	glfwSetWindowFocusCallback(m_window, [](GLFWwindow *window, const int32_t focused) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetWindowFocusCallback(m_window, [](GLFWwindow* window, const int32_t focused) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		if (focused)
 		{
@@ -221,16 +512,16 @@ void TRAP::Window::Init(const WindowProps &props)
 			WindowLostFocusEvent event(data.Title);
 			data.EventCallback(event);
 		}
-	});
+		});
 
-	glfwSetWindowCloseCallback(m_window, [](GLFWwindow *window) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 		WindowCloseEvent event(data.Title);
 		data.EventCallback(event);
-	});
+		});
 
-	glfwSetKeyCallback(m_window, [](GLFWwindow *window, const int32_t key, int32_t scancode, const int32_t action, int32_t mods) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetKeyCallback(m_window, [](GLFWwindow* window, const int32_t key, int32_t scancode, const int32_t action, int32_t mods) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		switch (action)
 		{
@@ -258,17 +549,17 @@ void TRAP::Window::Init(const WindowProps &props)
 		default:
 			break;
 		}
-	});
+		});
 
-	glfwSetCharCallback(m_window, [](GLFWwindow *window, const uint32_t keycode) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetCharCallback(m_window, [](GLFWwindow* window, const uint32_t keycode) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		KeyTypedEvent event(static_cast<int32_t>(keycode), data.Title);
 		data.EventCallback(event);
-	});
+		});
 
-	glfwSetMouseButtonCallback(m_window, [](GLFWwindow *window, const int32_t button, const int32_t action, int32_t mods) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, const int32_t button, const int32_t action, int32_t mods) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		switch (action)
 		{
@@ -289,231 +580,27 @@ void TRAP::Window::Init(const WindowProps &props)
 		default:
 			break;
 		}
-	});
+		});
 
-	glfwSetScrollCallback(m_window, [](GLFWwindow *window, const double xOffset, const double yOffset) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetScrollCallback(m_window, [](GLFWwindow* window, const double xOffset, const double yOffset) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		MouseScrolledEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset), data.Title);
 		data.EventCallback(event);
-	});
+		});
 
-	glfwSetCursorPosCallback(m_window, [](GLFWwindow *window, const double xPos, const double yPos) {
-		WindowData &data = *static_cast<WindowData *>(glfwGetWindowUserPointer(window));
+	glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, const double xPos, const double yPos) {
+		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		MouseMovedEvent event(static_cast<float>(xPos), static_cast<float>(yPos), data.Title);
 		data.EventCallback(event);
-	});
+		});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Window::Shutdown()
 {
-	if(m_window)
-	{
-		glfwDestroyWindow(m_window);
-		m_window = nullptr;		
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Window::OnUpdate()
-{
-	glfwPollEvents();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Window::Use(Window* window)
-{
-	if (window)
-		Graphics::API::Context::Use(window);
-	else
-		Use();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Window::Use()
-{
-	Graphics::API::Context::Use(Application::Get().GetWindow());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Window::SetWindowMode(const DisplayMode &mode,
-								 uint32_t width,
-								 uint32_t height,
-								 uint32_t refreshRate)
-{
-	if (!m_window) //Ensure there is a window to work on
-		return;
-	if (mode == m_data.Mode) //Nothing to do as this is not a change
-		return;
-
-	//If currently windowed, stash the current size and position of the window
-	if (m_data.Mode == DisplayMode::Windowed)
-	{
-		m_oldWindowedParams.Width = m_data.Width;
-		m_oldWindowedParams.Height = m_data.Height;
-		m_oldWindowedParams.RefreshRate = m_data.RefreshRate;
-		glfwGetWindowPos(m_window, &(m_oldWindowedParams.XPos), &(m_oldWindowedParams.YPos));
-	}
-
-	GLFWmonitor *monitor = nullptr;
-
-	if (mode == DisplayMode::Borderless)
-	{
-		//For borderless fullscreen, the new width and height will be the video mode width and height
-		width = m_baseVideoMode.width;
-		height = m_baseVideoMode.height;
-		refreshRate = m_baseVideoMode.refreshRate;
-		monitor = m_useMonitor;
-		TP_DEBUG("[Window] Using Monitor: ", m_data.Monitor, '(', glfwGetMonitorName(monitor), ')');
-	}
-	else if (mode == DisplayMode::Windowed && (width == 0 || height == 0))
-	{
-		//For windowed, use old window height and width if none provided
-		width = m_oldWindowedParams.Width;
-		height = m_oldWindowedParams.Height;
-		refreshRate = m_oldWindowedParams.RefreshRate;
-	}
-	else if (mode == DisplayMode::Fullscreen)
-	{
-		monitor = m_useMonitor;
-		if (width == 0 || height == 0)
-		{
-			//Use the old window size
-			int32_t monitorVideoModesCount = 0;
-			const auto monitorVideoModes = glfwGetVideoModes(m_useMonitor, &monitorVideoModesCount);
-			for (int32_t i = 0; i < monitorVideoModesCount; i++)
-			{
-				//Check if resolution pair is valid
-				if (static_cast<uint32_t>(monitorVideoModes[i].width) == m_data.Width && static_cast<uint32_t>(monitorVideoModes[i].height) == m_data.Height && static_cast<uint32_t>(monitorVideoModes[i].refreshRate))
-				{
-					width = m_data.Width;
-					height = m_data.Height;
-					refreshRate = m_data.RefreshRate;
-				}
-			}
-
-			//Resolution pair is invalid so use default
-			if (width == 0 || height == 0)
-			{
-				width = monitorVideoModes[monitorVideoModesCount - 1].width;
-				height = monitorVideoModes[monitorVideoModesCount - 1].height;
-				refreshRate = monitorVideoModes[monitorVideoModesCount - 1].refreshRate;
-			}
-		}
-
-		TP_DEBUG("[Window] Using Monitor: ", m_data.Monitor, '(', glfwGetMonitorName(monitor), ')');
-	}
-
-	//Update stored width and height
-	m_data.Width = width;
-	m_data.Height = height;
-	m_data.RefreshRate = refreshRate;
-
-	//Trigger resize event
-	if (m_data.EventCallback)
-	{
-		WindowResizeEvent event(width, height, m_data.Title);
-		m_data.EventCallback(event);
-	}
-
-	constexpr auto GetModeStr = [&](const DisplayMode displayMode) {
-		if (displayMode == DisplayMode::Windowed)
-			return "Windowed";
-		return displayMode == DisplayMode::Borderless ? "Borderless" : "Fullscreen";
-	}; //Little hack to convert enum class DisplayMode to string
-	TP_INFO("[Window] Changing window mode from ",
-			GetModeStr(m_data.Mode), " to ", GetModeStr(mode), ": ",
-			width, 'x', height, '@', refreshRate, "Hz");
-
-	//Record new window type
-	m_data.Mode = mode;
-
-	glfwSetWindowMonitor(m_window,
-						 monitor,
-						 m_oldWindowedParams.XPos,
-						 m_oldWindowedParams.YPos,
-						 static_cast<int32_t>(width),
-						 static_cast<int32_t>(height),
-						 static_cast<int32_t>(refreshRate));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Window::SetMonitor(const uint32_t monitor)
-{
-	int32_t monitorCount;
-	const auto monitors = glfwGetMonitors(&monitorCount);
-	if (monitor <= static_cast<uint32_t>(monitorCount))
-	{
-		m_data.Monitor = monitor;
-		m_useMonitor = monitors[monitor];
-	}
-	else
-	{
-		m_data.Monitor = 0;
-		m_useMonitor = glfwGetPrimaryMonitor();
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Window::SetIcon() const
-{
-	GLFWimage image{32, 32, Utils::TRAPLogo.data()};
-	glfwSetWindowIcon(m_window, 1, &image);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Window::SetIcon(const std::unique_ptr<Image>& image) const
-{
-	if (image->IsHDR())
-	{
-		TP_ERROR("[Window][Icon] HDR is not supported for window icons!");
-		TP_WARN("[Window][Icon] Using Default Icon!");
-		SetIcon();
-		return;
-	}
-	if ((image->IsImageGrayScale() && image->GetBitsPerPixel() == 16 && !image->HasAlphaChannel()) ||
-		(image->IsImageGrayScale() && image->GetBitsPerPixel() == 24 && image->HasAlphaChannel()) ||
-		(image->IsImageColored() && image->GetBitsPerPixel() == 48 && !image->HasAlphaChannel()) ||
-		(image->IsImageColored() && image->GetBitsPerPixel() == 64 && image->HasAlphaChannel()))
-	{
-		TP_ERROR("[Window][Icon] Images with short pixel data are not supported for window icons!");
-		TP_WARN("[Window][Icon] Using Default Icon!");
-		SetIcon();
-		return;
-	}
-	if(image->GetFormat() != ImageFormat::RGBA)
-	{
-		TP_ERROR("[Window][Icon] Only RGBA Images are supported for window icons!");
-		TP_WARN("[Window][Icon] Using Default Icon!");
-		SetIcon();
-		return;
-	}
-	
-	GLFWimage glfwImage{ static_cast<int32_t>(image->GetWidth()), static_cast<int32_t>(image->GetHeight()), static_cast<uint8_t*>(image->GetPixelData()) };
-	glfwSetWindowIcon(m_window, 1, &glfwImage);
-};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Window::SetTitle(const std::string &title)
-{
-	m_data.Title = title;
-#ifndef TRAP_RELEASE
-	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
-								 std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-								 "[INDEV][19w36a4]" + std::string(Graphics::Renderer::GetTitle());
-	glfwSetWindowTitle(m_window, newTitle.c_str());
-#else
-	glfwSetWindowTitle(m_window, m_data.Title.c_str());
-#endif
+	glfwDestroyWindow(m_window);
+	m_window = nullptr;
 }

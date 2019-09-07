@@ -1,0 +1,386 @@
+.. _window:
+
+=======
+Windows
+=======
+
+-------
+General
+-------
+
+| Windows in :ref:`trap_engine` are using the library `GLFW <https://github.com/GamesTrap/glfw>`_
+
+.. note::
+   | :ref:`trap_engine` always creates 1 TRAP::`Window`_ and uses it as Main Window!
+   | Properties of this TRAP::`Window`_ can be set in Engine.cfg
+.. Reference Engine.cfg
+
+-----------
+DisplayMode
+-----------
+
+.. code-block:: cpp
+
+    enum class TRAP::DisplayMode
+    {
+    Windowed,
+    Fullscreen,
+    Borderless
+    };
+
+| **Description**
+| TRAP::`DisplayMode`_ is used to set the display mode of a TRAP::`Window`_.
+
+-----------
+WindowProps
+-----------
+
+| Window Properties
+
+.. code-block:: cpp
+
+    TRAP::WindowProps(std::string title,
+                      const uint32_t width,
+                      const uint32_t height,
+                      const uint32_t refreshRate,
+                      const uint32_t vsync,
+                      const TRAP::DisplayMode mode,
+                      const uint32_t monitor);
+
+| **Description**
+| Holds properties for a TRAP::`Window`_.
+| Gets used on TRAP::`Window`_ `Constructor`_.
+
+| **Parameters**
+
+- :code:`title` Sets the Title of TRAP::`WindowProps`_. Default value: :code:`"TRAP Engine"`
+- :code:`width` Sets the Width of TRAP::`WindowProps`_. Default value: :code:`1280`
+- :code:`height` Sets the Height of TRAP::`WindowProps`_. Default value: :code:`720`
+- :code:`refreshRate` Sets the Refresh Rate of TRAP::`WindowProps`_. Default value: :code:`60`
+- :code:`vsync` Sets the VSync interval of TRAP::`WindowProps`_. Default value: :code:`0`
+- :code:`mode` Sets the Display Mode of TRAP::`WindowProps`_. Default value: :code:`TRAP::DisplayMode::Windowed`
+- :code:`monitor` Sets the Monitor of TRAP::`WindowProps`_. Default value: :code:`0`
+
+.. note::
+   Width, Height, RefreshRate, VSync, TRAP::`DisplayMode`_ and Monitor values loaded by Engine.cfg only affect the Main Window!
+.. Reference Engine.cfg
+
+------
+Window
+------
+
+^^^^^^^^^^^
+Constructor
+^^^^^^^^^^^
+
+.. code-block:: cpp
+
+    TRAP::Window(const WindowProps& props);
+
+| **Description**
+| Creates a new TRAP::Window
+
+| **Parameters**
+
+- :code:`props` Properties for the new TRAP::`Window`_. See TRAP::`WindowProps`_ for more info.
+
+^^^^^^^^^^
+Destructor
+^^^^^^^^^^
+
+.. code-block:: cpp
+
+    TRAP::~Window();
+
+| **Description**
+| Destructs TRAP::`Window`_
+
+.. note:: If more than 1 TRAP::`Window`_\(Main TRAP::`Window`_ also counts!\) exists then TRAP::`Window`_::`Use`_ gets called!
+
+.. note:: If 1 TRAP::`Window`_\(Main TRAP::`Window`_ also counts!\) exists then this will also cleanup the Renderer and shuts down the TextureManager, ShaderManager, RendererAPI and Context!
+.. Reference TextureManager, ShaderManager, RendererAPI, Context
+
+^^^^^^^^
+OnUpdate
+^^^^^^^^
+
+.. code-block:: cpp
+
+    static void TRAP::Window::OnUpdate();
+
+| **Description**
+| Processes queued TRAP::`Window`_ Events
+
+.. Reference Events
+
+^^^
+Use
+^^^
+
+.. code-block:: cpp
+
+   static void TRAP::Window::Use();
+
+| **Description**
+| Makes the Context of the Main TRAP::`Window`_ current
+
+.. Reference Context
+
+.. code-block:: cpp
+
+   static void TRAP::Window::Use(TRAP::Window* window);
+
+| **Description**
+| Makes the Context of the specified TRAP::`Window`_ current
+
+| **Parameters**
+
+- :code:`window` Specifies the TRAP::`Window`_ to make the context current
+
+.. note::
+   If :code:`window` is nullptr then the Main TRAP::`Window`_\s Context will be set to current!
+
+^^^^^^^^^^^^^^^^
+GetActiveWindows
+^^^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   static uint32_t TRAP::Window::GetActiveWindows();
+
+| **Description**
+| Returns the amount of open TRAP::`Window`_\(s\)
+
+^^^^^^^^^^^
+GetMonitors
+^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   static uint32_t TRAP::Window::GetMonitors();
+
+| **Description**
+| Returns the amount of connected Monitors
+
+^^^^^^^^
+GetTitle
+^^^^^^^^
+
+.. code-block:: cpp
+
+   std::string TRAP::Window::GetTitle() const;
+
+| **Description**
+| Returns the Title of a TRAP::`Window`_
+
+^^^^^^^^
+GetWidth
+^^^^^^^^
+
+.. code-block:: cpp
+
+   uint32_t TRAP::Window::GetWidth() const;
+
+| **Description**
+| Returns the Width of a TRAP::`Window`_
+
+^^^^^^^^^
+GetHeight
+^^^^^^^^^
+
+.. code-block:: cpp
+
+   uint32_t TRAP::Window::GetHeight() const;
+
+| **Description**
+| Returns the Height of a TRAP::`Window`_
+
+^^^^^^^^^^^^^^
+GetRefreshRate
+^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   uint32_t TRAP::Window::GetRefreshRate() const;
+
+| **Description**
+| Returns the Refresh Rate of a TRAP::`Window`_
+
+^^^^^^^^^^^^^^
+GetDisplayMode
+^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   TRAP::DisplayMode TRAP::Window::GetDisplayMode() const;
+
+| **Description**
+| Returns the TRAP::`DisplayMode`_ of a TRAP::`Window`_
+
+^^^^^^^^^^
+GetMonitor
+^^^^^^^^^^
+
+.. code-block:: cpp
+
+   uint32_t TRAP::Window::GetMonitor() const;
+
+| **Description**
+| Returns the Monitor number of a TRAP::`Window`_
+
+^^^^^^^^^^^^^^^^
+GetVSyncInterval
+^^^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   uint32_t TRAP::Window::GetVSyncInterval() const;
+
+| **Description**
+| Returns the VSync Interval of a TRAP::`Window`_
+
+^^^^^^^^^^^^^^^^
+GetNativeWindow
+^^^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   void* TRAP::Window::GetNativeWindow() const;
+
+| **Description**
+| Returns a pointer to the internal GLFWwindow* of a TRAP::`Window`_
+
+^^^^^^^^
+SetTitle
+^^^^^^^^
+
+.. code-block:: cpp
+
+   void TRAP::Window::SetTitle(const std::string& title);
+
+| **Description**
+| Sets the Title of a TRAP::`Window`_
+
+| **Parameters**
+
+- :code:`title` Specifies the new Title for a TRAP::`Window`_
+
+.. note::
+   If :code:`title` is empty then :code:`"TRAP Engine"` will be used as Title!
+
+^^^^^^^^^^^^^^
+SetDisplayMode
+^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   void TRAP::Window::SetDisplayMode(const TRAP::DisplayMode& mode, 
+                                     uint32_t width,
+                                     uint32_t height,
+                                     uint32_t refreshRate);
+
+| **Description**
+| Sets the TRAP::`DisplayMode`_ of a TRAP::`Window`_
+
+.. note::
+   This can also be used to Resize a TRAP::`Window`_ 
+
+| **Parameters**
+
+- :code:`mode` Specifies the new TRAP::`DisplayMode`_ of a TRAP::`Window`_
+- :code:`width` Specifies the new Width of a TRAP::`Window`_. Default value: :code:`0`
+- :code:`height` Specifies the new Height of a TRAP::`Window`_. Default value: :code:`0`
+- :code:`refreshRate` Specifies the new Refresh Rate of a TRAP::`Window`_. Default value: :code:`0`
+
+.. note::
+   If :code:`mode` is TRAP::`DisplayMode`_::Windowed & :code:`width` and :code:`height` are :code:`0` then :code:`width`, :code:`height` and :code:`refreshRate` will be set to the last used values of the TRAP::`Window`_
+
+.. note::
+   If :code:`mode` is TRAP::`DisplayMode`_::Borderless then :code:`width`, :code:`height` and :code:`refreshRate` will be ignored! The Native Resolution of the current Monitor of the TRAP::`Window`_ will be used!
+
+.. note::
+   If :code:`mode` is TRAP::`DisplayMode`_::Fullscreen & :code:`width`, :code:`height` and :code:`refreshRate` are :code:`0` then the Native Resolution and Refresh Rate of the current Monitor of the TRAP::`Window`_ will be used!
+
+.. note::
+   :code:`refreshRate` only affects the TRAP::`Window`_ if :code:`mode` is TRAP::`DisplayMode`_::Fullscreen!
+
+^^^^^^^^^^
+SetMonitor
+^^^^^^^^^^
+
+.. code-block:: cpp
+
+   void SetMonitor(const uint32_t monitor);
+
+| **Description**
+| Sets the Monitor to use by a TRAP::`Window`_
+
+| **Parameters**
+
+- :code:`monitor` specifies the Monitor to use. Default value: :code:`0`
+
+.. note::
+   If :code:`monitor` is an invalid Monitor then the TRAP::`Window`_ will use the primary Monitor!
+
+^^^^^^^^^^^^^^^^
+SetVSyncInterval
+^^^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   void SetVSyncInterval(uint32_t interval) const;
+
+| **Description**
+| Sets the VSync Interval of a TRAP::`Window`_
+
+| **Parameters**
+
+- :code:`interval` specifies the Interval to use.
+
+^^^^^^^
+SetIcon
+^^^^^^^
+
+.. code-block:: cpp
+
+   void SetIcon() const;
+
+| **Description**
+| Sets the Icon of a TRAP::`Window`_ to the default TRAP Engine Icon
+
+.. code-block:: cpp
+
+   void SetIcon(const std::unique_ptr<Image>& image) const;
+
+.. Reference to Image
+
+| **Description**
+| Sets the Icon of a TRAP::`Window`_ to the specified Image
+
+.. Reference to Image
+
+| **Parameters**
+| :code:`image` Specifies the Image to be used as Icon
+
+.. note::
+   If :code:`image` is nullptr then the default TRAP Engine Icon will be used!
+
+^^^^^^^^^^^^^^^^
+SetEventCallback
+^^^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+   
+   void SetEventCallback(const EventCallbackFn& callback);
+
+| **Description**
+| Sets the Function where to send Events to from a TRAP::`Window`_
+
+.. Reference Event
+
+| **Parameters**
+
+- :code:`callback` specifies the Function where Events will be send to
+
+.. note::
+   :code:`EventCallbackFn` is the same as :code:`std::function<void(Event&)>`

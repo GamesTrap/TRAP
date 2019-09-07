@@ -22,7 +22,7 @@ namespace TRAP
 
 	//Used to create new windows
 	struct WindowProps
-	{		
+	{
 		std::string Title;
 		uint32_t Width;
 		uint32_t Height;
@@ -41,13 +41,13 @@ namespace TRAP
 			const DisplayMode mode = DisplayMode::Windowed,
 			const uint32_t monitor = 0)
 			: Title(std::move(title)),
-			  Width(width),
-			  Height(height),
-			  RefreshRate(refreshRate),
-			  VSync(vsync),
-			  RenderAPI(Graphics::API::Context::GetRenderAPI()),
-			  Mode(mode),
-			  Monitor(monitor)
+			Width(width),
+			Height(height),
+			RefreshRate(refreshRate),
+			VSync(vsync),
+			RenderAPI(Graphics::API::Context::GetRenderAPI()),
+			Mode(mode),
+			Monitor(monitor)
 		{
 		}
 	};
@@ -68,38 +68,36 @@ namespace TRAP
 		static void OnUpdate();
 		static void Use(Window* window);
 		static void Use();
+		static uint32_t GetActiveWindows();
+		static uint32_t GetMonitors();
 
+		std::string GetTitle() const;
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
 		uint32_t GetRefreshRate() const;
-		std::string GetTitle() const;
 		DisplayMode GetDisplayMode() const;
 		uint32_t GetMonitor() const;
-		static uint32_t GetActiveWindows();
 		uint32_t GetVSyncInterval() const;
-
-		void SetTitle(const std::string& title);
-
-		//Window attributes
-		void SetEventCallback(const EventCallbackFn& callback);
-		
-		void SetWindowMode(const DisplayMode& mode,
-		                   uint32_t width = 0,
-		                   uint32_t height = 0,
-		                   uint32_t refreshRate = 0);
-		void SetMonitor(uint32_t monitor = 0);
-		void SetIcon() const;
-		void SetIcon(const std::unique_ptr<Image>& image) const;
-		static void SetVSyncInterval(const uint32_t interval);
 
 		void* GetNativeWindow() const;
 
-	private:
-		void Init(const WindowProps& props);
-		void Shutdown();
+		void SetTitle(const std::string& title);
+		void SetDisplayMode(const DisplayMode& mode,
+			uint32_t width = 0,
+			uint32_t height = 0,
+			uint32_t refreshRate = 0);
+		void SetMonitor(uint32_t monitor = 0);
+		void SetVSyncInterval(uint32_t interval) const;
+		void SetIcon() const;
+		void SetIcon(const std::unique_ptr<Image>& image) const;
+		void SetEventCallback(const EventCallbackFn& callback);
 
+	private:
+		void Shutdown();
+		void Init(const WindowProps& props);
+		
 		GLFWwindow* m_window;
-		GLFWmonitor* m_useMonitor; //Stores a reference to the primary monitor
+		GLFWmonitor* m_useMonitor; //Stores a reference to the monitor
 		GLFWvidmode m_baseVideoMode{}; //Stores the underlying video mode being used by the OS
 
 		struct WindowData
@@ -118,89 +116,10 @@ namespace TRAP
 		{
 			uint32_t Width, Height, RefreshRate;
 			int32_t XPos, YPos;
-		};
-
-		WindowedModeParams m_oldWindowedParams{};
+		} m_oldWindowedParams{};
 
 		static uint32_t s_windows;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Window::GetWidth() const
-{
-	return m_data.Width;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Window::GetHeight() const
-{
-	return m_data.Height;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Window::GetRefreshRate() const
-{
-	return m_data.RefreshRate;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::string TRAP::Window::GetTitle() const
-{
-	return m_data.Title;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::DisplayMode TRAP::Window::GetDisplayMode() const
-{
-	return m_data.Mode;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Window::GetMonitor() const
-{
-	return m_data.Monitor;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline unsigned TRAP::Window::GetActiveWindows()
-{
-	return s_windows;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline void TRAP::Window::SetEventCallback(const EventCallbackFn& callback)
-{
-	m_data.EventCallback = callback;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline void* TRAP::Window::GetNativeWindow() const
-{
-	return m_window;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline unsigned TRAP::Window::GetVSyncInterval() const
-{
-	return m_data.VSync;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline void TRAP::Window::SetVSyncInterval(const uint32_t interval)
-{
-	Graphics::API::Context::SetVSyncInterval(interval);
 }
 
 #endif /*_TRAP_WINDOW_H_*/
