@@ -11,6 +11,7 @@
 #include "Event/MouseEvent.h"
 #include "Graphics/Shaders/ShaderManager.h"
 #include "Graphics/Textures/TextureManager.h"
+#include "Input/Input.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -35,11 +36,11 @@ TRAP::Window::Window(const WindowProps &props)
 	else
 		init += "Off Mode: ";
 
-	if (props.Mode == DisplayMode::Windowed)
+	if (props.displayMode == DisplayMode::Windowed)
 		init += "Windowed";
-	else if (props.Mode == DisplayMode::Borderless)
+	else if (props.displayMode == DisplayMode::Borderless)
 		init += "Borderless";
-	else if (props.Mode == DisplayMode::Fullscreen)
+	else if (props.displayMode == DisplayMode::Fullscreen)
 		init += "Fullscreen";
 
 	init += " Monitor: " + std::to_string(props.Monitor);
@@ -141,7 +142,7 @@ uint32_t TRAP::Window::GetRefreshRate() const
 
 TRAP::DisplayMode TRAP::Window::GetDisplayMode() const
 {
-	return m_data.Mode;
+	return m_data.displayMode;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -162,7 +163,14 @@ uint32_t TRAP::Window::GetVSyncInterval() const
 
 TRAP::CursorMode TRAP::Window::GetCursorMode() const
 {
-	return m_cursorMode;
+	return m_data.cursorMode;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Window::GetRawMouseInput() const
+{
+	return m_data.rawMouseInput;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -199,7 +207,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 	uint32_t refreshRate)
 {
 	//If currently windowed, stash the current size and position of the window
-	if (m_data.Mode == DisplayMode::Windowed)
+	if (m_data.displayMode == DisplayMode::Windowed)
 	{
 		m_oldWindowedParams.Width = m_data.Width;
 		m_oldWindowedParams.Height = m_data.Height;
@@ -273,11 +281,11 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 		return displayMode == DisplayMode::Borderless ? "Borderless" : "Fullscreen";
 	}; //Little hack to convert enum class DisplayMode to string
 	TP_INFO("[Window] Changing window mode from ",
-		GetModeStr(m_data.Mode), " to ", GetModeStr(mode), ": ",
+		GetModeStr(m_data.displayMode), " to ", GetModeStr(mode), ": ",
 		width, 'x', height, '@', refreshRate, "Hz");
 
 	//Record new window type
-	m_data.Mode = mode;
+	m_data.displayMode = mode;
 
 	glfwSetWindowMonitor(m_window,
 		monitor,
@@ -321,20 +329,37 @@ void TRAP::Window::SetCursorMode(const CursorMode& mode)
 	if (mode == CursorMode::Normal)
 	{
 		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		m_cursorMode = mode;
+		m_data.cursorMode = mode;
 	}
 	else if (mode == CursorMode::Hidden)
 	{
 		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-		m_cursorMode = mode;
+		m_data.cursorMode = mode;
 	}
 	else if (mode == CursorMode::Disabled)
 	{
 		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		m_cursorMode = mode;
+		m_data.cursorMode = mode;
 	}
 	else
 		TP_ERROR("[Window] Invalid CursorMode!");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetRawMouseInput(const bool enabled)
+{
+	if(Input::IsRawMouseInputSupported())
+	{
+		m_data.rawMouseInput = enabled;
+		glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, enabled);
+		TP_DEBUG("[Window] Mouse Input ", enabled ? "Enabled" : "Disabled");
+	}
+	else
+	{
+		TP_ERROR("[Window] Raw Mouse Input is unsupported!");
+		m_data.rawMouseInput = false;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -399,6 +424,8 @@ void TRAP::Window::Init(const WindowProps& props)
 	m_data.Height = props.Height;
 	m_data.RefreshRate = props.RefreshRate;
 	m_data.VSync = props.VSync;
+	m_data.cursorMode = props.cursorMode;
+	m_data.rawMouseInput = props.rawMouseInput;
 
 	static bool sGLFWInitialized = false;
 	if (!sGLFWInitialized)
@@ -508,11 +535,13 @@ void TRAP::Window::Init(const WindowProps& props)
 	m_oldWindowedParams.Height = props.Height;
 	m_oldWindowedParams.RefreshRate = props.RefreshRate;
 	glfwGetWindowPos(m_window, &(m_oldWindowedParams.XPos), &(m_oldWindowedParams.YPos));
-	SetDisplayMode(props.Mode, 0, 0);
+	SetDisplayMode(props.displayMode, 0, 0);
 
 	glfwSetWindowUserPointer(m_window, &m_data);
 
 	SetIcon();
+	SetCursorMode(m_data.cursorMode);
+	SetRawMouseInput(m_data.rawMouseInput);
 
 	//Set GLFW callbacks
 	glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, const int32_t width, const int32_t height) {

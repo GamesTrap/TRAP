@@ -37,8 +37,10 @@ namespace TRAP
 		uint32_t RefreshRate;
 		uint32_t VSync;
 		Graphics::API::RenderAPI RenderAPI;
-		DisplayMode Mode;
+		DisplayMode displayMode;
 		uint32_t Monitor;
+		CursorMode cursorMode;
+		bool rawMouseInput;
 
 		//Sets up properties for new window(s)
 		explicit WindowProps(std::string title = "TRAP Engine",
@@ -46,16 +48,20 @@ namespace TRAP
 			const uint32_t height = 720,
 			const uint32_t refreshRate = 60,
 			const uint32_t vsync = 0,
-			const DisplayMode mode = DisplayMode::Windowed,
-			const uint32_t monitor = 0)
+			const DisplayMode displayMode = DisplayMode::Windowed,
+			const uint32_t monitor = 0,
+			const CursorMode cursorMode = CursorMode::Normal,
+			const bool rawMouseInput = false)
 			: Title(std::move(title)),
-			Width(width),
-			Height(height),
-			RefreshRate(refreshRate),
-			VSync(vsync),
-			RenderAPI(Graphics::API::Context::GetRenderAPI()),
-			Mode(mode),
-			Monitor(monitor)
+			  Width(width),
+			  Height(height),
+			  RefreshRate(refreshRate),
+			  VSync(vsync),
+			  RenderAPI(Graphics::API::Context::GetRenderAPI()),
+			  displayMode(displayMode),
+			  Monitor(monitor),
+			  cursorMode(cursorMode),
+			  rawMouseInput(rawMouseInput)
 		{
 		}
 	};
@@ -87,6 +93,7 @@ namespace TRAP
 		uint32_t GetMonitor() const;
 		uint32_t GetVSyncInterval() const;
 		CursorMode GetCursorMode() const;
+		bool GetRawMouseInput() const;
 
 		void* GetNativeWindow() const;
 
@@ -98,6 +105,7 @@ namespace TRAP
 		void SetMonitor(uint32_t monitor = 0);
 		void SetVSyncInterval(uint32_t interval);
 		void SetCursorMode(const CursorMode& mode);
+		void SetRawMouseInput(bool enabled);
 		void SetIcon() const;
 		void SetIcon(const std::unique_ptr<Image>& image) const;
 		void SetEventCallback(const EventCallbackFn& callback);
@@ -114,8 +122,10 @@ namespace TRAP
 		{
 			std::string Title;
 			uint32_t Width{}, Height{}, RefreshRate{}, VSync{};
-			DisplayMode Mode{};
+			DisplayMode displayMode{};
 			uint32_t Monitor{};
+			CursorMode cursorMode{};
+			bool rawMouseInput{};
 
 			EventCallbackFn EventCallback;
 		} m_data;
@@ -124,9 +134,7 @@ namespace TRAP
 		{
 			uint32_t Width, Height, RefreshRate;
 			int32_t XPos, YPos;
-		} m_oldWindowedParams{};
-
-		CursorMode m_cursorMode;
+		} m_oldWindowedParams{};		
 		
 		static uint32_t s_windows;
 	};

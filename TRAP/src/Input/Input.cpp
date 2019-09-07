@@ -27,6 +27,13 @@ bool TRAP::Input::IsMouseButtonPressed(const int32_t button)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+bool TRAP::Input::IsRawMouseInputSupported()
+{
+	return glfwRawMouseMotionSupported();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::pair<float, float> TRAP::Input::GetMousePosition()
 {
 	const auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow()->GetNativeWindow());
@@ -52,19 +59,4 @@ float TRAP::Input::GetMouseY()
 	auto [x, y] = GetMousePosition();
 
 	return y;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Input::SetCursorMode(const CursorMode& mode)
-{
-	m_currentCursorMode = mode;
-	glfwSetInputMode()
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::CursorMode TRAP::Input::GetCursorMode()
-{
-	return m_currentCursorMode;
 }

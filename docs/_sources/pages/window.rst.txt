@@ -60,8 +60,10 @@ WindowProps
                       const uint32_t height,
                       const uint32_t refreshRate,
                       const uint32_t vsync,
-                      const TRAP::DisplayMode mode,
-                      const uint32_t monitor);
+                      const TRAP::DisplayMode displayMode,
+                      const uint32_t monitor,
+                      const TRAP::CursorMode cursorMode,
+                      const bool rawMouseInput);
 
 | **Description**
 | Holds properties for a TRAP::`Window`_.
@@ -74,12 +76,17 @@ WindowProps
 - :code:`height` Sets the Height of TRAP::`WindowProps`_. Default value: :code:`720`
 - :code:`refreshRate` Sets the Refresh Rate of TRAP::`WindowProps`_. Default value: :code:`60`
 - :code:`vsync` Sets the VSync interval of TRAP::`WindowProps`_. Default value: :code:`0`
-- :code:`mode` Sets the Display Mode of TRAP::`WindowProps`_. Default value: :code:`TRAP::DisplayMode::Windowed`
+- :code:`displayMode` Sets the Display Mode of TRAP::`WindowProps`_. Default value: :code:`TRAP::DisplayMode::Windowed`
 - :code:`monitor` Sets the Monitor of TRAP::`WindowProps`_. Default value: :code:`0`
+- :code:`cursorMode` Sets the TRAP::`CursorMode`_. Default value: :code:`TRAP::CursorMode::Normal`
+- :code:`rawMouseInput` Sets the Mouse Input. Default value: :code:`false`
 
 .. note::
    Width, Height, RefreshRate, VSync, TRAP::`DisplayMode`_ and Monitor values loaded by Engine.cfg only affect the Main Window!
 .. Reference Engine.cfg
+
+.. note::
+   If Raw Mouse Input is unsupported then :code:`rawMouseInput` will be set to :code:`false`!
 
 ------
 Window
@@ -267,6 +274,17 @@ GetCursorMode
 | Returns the TRAP::`CursorMode`_ of a TRAP::`Window`_
 
 ^^^^^^^^^^^^^^^^
+GetRawMouseInput
+^^^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   bool TRAP::Window::GetRawMouseInput() const;
+
+| **Description**
+| Returns true if the TRAP::`Window`_ uses Raw Mouse Input
+
+^^^^^^^^^^^^^^^^
 GetNativeWindow
 ^^^^^^^^^^^^^^^^
 
@@ -337,7 +355,7 @@ SetMonitor
 
 .. code-block:: cpp
 
-   void SetMonitor(const uint32_t monitor);
+   void TRAP::Window::SetMonitor(const uint32_t monitor);
 
 | **Description**
 | Sets the Monitor to use by a TRAP::`Window`_
@@ -355,7 +373,7 @@ SetVSyncInterval
 
 .. code-block:: cpp
 
-   void SetVSyncInterval(uint32_t interval);
+   void TRAP::Window::SetVSyncInterval(uint32_t interval);
 
 | **Description**
 | Sets the VSync Interval of a TRAP::`Window`_
@@ -370,7 +388,7 @@ SetCursorMode
 
 .. code-block:: cpp
 
-   void SetCursorMode(const CursorMode& mode);
+   void TRAP::Window::SetCursorMode(const CursorMode& mode);
 
 | **Description**
 | Sets the TRAP::`CursorMode`_ of a TRAP::`Window`_
@@ -379,30 +397,47 @@ SetCursorMode
 
 - :code:`mode` specifies the TRAP::`CursorMode`_ to use.
 
+^^^^^^^^^^^^^^^^
+SetRawMouseInput
+^^^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   void TRAP::Window::SetRawMouseInput(const bool enabled);
+
+| **Description**
+| Sets Raw Mouse Input of a TRAP::`Window`_
+
+| **Parameters**
+
+- :code:`enabled` specifies if the TRAP::`Window`_ should use Raw Mouse Input.
+
+.. Reference TRAP::Input::IsRawMouseInputSupported();
+
 ^^^^^^^
 SetIcon
 ^^^^^^^
 
 .. code-block:: cpp
 
-   void SetIcon() const;
+   void TRAP::Window::SetIcon() const;
 
 | **Description**
 | Sets the Icon of a TRAP::`Window`_ to the default TRAP Engine Icon
 
 .. code-block:: cpp
 
-   void SetIcon(const std::unique_ptr<Image>& image) const;
+   void TRAP::Window::SetIcon(const std::unique_ptr<TRAP::Image>& image) const;
 
 .. Reference to Image
 
 | **Description**
-| Sets the Icon of a TRAP::`Window`_ to the specified Image
+| Sets the Icon of a TRAP::`Window`_ to the specified TRAP::Image
 
 .. Reference to Image
 
 | **Parameters**
-| :code:`image` Specifies the Image to be used as Icon
+| :code:`image` Specifies the TRAP::Image to be used as Icon
 
 .. note::
    If :code:`image` is nullptr then the default TRAP Engine Icon will be used!
@@ -413,7 +448,7 @@ SetEventCallback
 
 .. code-block:: cpp
    
-   void SetEventCallback(const EventCallbackFn& callback);
+   void TRAP::Window::SetEventCallback(const EventCallbackFn& callback);
 
 | **Description**
 | Sets the Function where to send Events to from a TRAP::`Window`_
