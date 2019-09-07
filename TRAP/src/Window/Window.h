@@ -20,6 +20,14 @@ namespace TRAP
 		Borderless
 	};
 
+	//Used to set Cursor mode of windows
+	enum class CursorMode
+	{
+		Normal,
+		Hidden,
+		Disabled
+	};
+
 	//Used to create new windows
 	struct WindowProps
 	{
@@ -78,16 +86,18 @@ namespace TRAP
 		DisplayMode GetDisplayMode() const;
 		uint32_t GetMonitor() const;
 		uint32_t GetVSyncInterval() const;
+		CursorMode GetCursorMode() const;
 
 		void* GetNativeWindow() const;
 
 		void SetTitle(const std::string& title);
 		void SetDisplayMode(const DisplayMode& mode,
-			uint32_t width = 0,
-			uint32_t height = 0,
-			uint32_t refreshRate = 0);
+			                uint32_t width = 0,
+			                uint32_t height = 0,
+			                uint32_t refreshRate = 0);
 		void SetMonitor(uint32_t monitor = 0);
-		void SetVSyncInterval(uint32_t interval) const;
+		void SetVSyncInterval(uint32_t interval);
+		void SetCursorMode(const CursorMode& mode);
 		void SetIcon() const;
 		void SetIcon(const std::unique_ptr<Image>& image) const;
 		void SetEventCallback(const EventCallbackFn& callback);
@@ -108,9 +118,7 @@ namespace TRAP
 			uint32_t Monitor{};
 
 			EventCallbackFn EventCallback;
-		};
-
-		WindowData m_data;
+		} m_data;
 
 		struct WindowedModeParams
 		{
@@ -118,6 +126,8 @@ namespace TRAP
 			int32_t XPos, YPos;
 		} m_oldWindowedParams{};
 
+		CursorMode m_cursorMode;
+		
 		static uint32_t s_windows;
 	};
 }

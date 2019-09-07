@@ -32,6 +32,22 @@ DisplayMode
 | TRAP::`DisplayMode`_ is used to set the display mode of a TRAP::`Window`_.
 
 -----------
+CursorMode
+-----------
+
+.. code-block:: cpp
+
+    enum class TRAP::CursorMode
+    {
+    Normal,
+    Hidden,
+    Disabled
+    };
+
+| **Description**
+| TRAP::`CursorMode`_ is used to set the cursor mode of a TRAP::`Window`_.
+
+-----------
 WindowProps
 -----------
 
@@ -239,6 +255,17 @@ GetVSyncInterval
 | **Description**
 | Returns the VSync Interval of a TRAP::`Window`_
 
+^^^^^^^^^^^^^
+GetCursorMode
+^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   TRAP::CursorMode TRAP::Window::GetCursorMode() const;
+
+| **Description**
+| Returns the TRAP::`CursorMode`_ of a TRAP::`Window`_
+
 ^^^^^^^^^^^^^^^^
 GetNativeWindow
 ^^^^^^^^^^^^^^^^
@@ -328,7 +355,7 @@ SetVSyncInterval
 
 .. code-block:: cpp
 
-   void SetVSyncInterval(uint32_t interval) const;
+   void SetVSyncInterval(uint32_t interval);
 
 | **Description**
 | Sets the VSync Interval of a TRAP::`Window`_
@@ -336,6 +363,21 @@ SetVSyncInterval
 | **Parameters**
 
 - :code:`interval` specifies the Interval to use.
+
+^^^^^^^^^^^^^
+SetCursorMode
+^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   void SetCursorMode(const CursorMode& mode);
+
+| **Description**
+| Sets the TRAP::`CursorMode`_ of a TRAP::`Window`_
+
+| **Parameters**
+
+- :code:`mode` specifies the TRAP::`CursorMode`_ to use.
 
 ^^^^^^^
 SetIcon

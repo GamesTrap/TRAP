@@ -5,18 +5,23 @@
 
 namespace TRAP
 {
+	
 	class Input final : public Singleton
 	{
 	public:
 		static bool IsKeyPressed(int32_t keycode);
-
 		static bool IsMouseButtonPressed(int32_t button);
+		
 		static std::pair<float, float> GetMousePosition();
 		static float GetMouseX();
 		static float GetMouseY();
 
+		static void SetCursorMode(const CursorMode& mode);
+		static CursorMode GetCursorMode();
+
 	private:
 		static const float m_lastTime;
+		static CursorMode m_currentCursorMode;
 	};
 }
 

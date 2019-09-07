@@ -160,6 +160,13 @@ uint32_t TRAP::Window::GetVSyncInterval() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::CursorMode TRAP::Window::GetCursorMode() const
+{
+	return m_cursorMode;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void* TRAP::Window::GetNativeWindow() const
 {
 	return m_window;
@@ -301,9 +308,33 @@ void TRAP::Window::SetMonitor(const uint32_t monitor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetVSyncInterval(const uint32_t interval) const
+void TRAP::Window::SetVSyncInterval(const uint32_t interval)
 {
 	Graphics::API::Context::SetVSyncInterval(interval);
+	m_data.VSync = interval;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetCursorMode(const CursorMode& mode)
+{
+	if (mode == CursorMode::Normal)
+	{
+		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		m_cursorMode = mode;
+	}
+	else if (mode == CursorMode::Hidden)
+	{
+		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		m_cursorMode = mode;
+	}
+	else if (mode == CursorMode::Disabled)
+	{
+		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		m_cursorMode = mode;
+	}
+	else
+		TP_ERROR("[Window] Invalid CursorMode!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

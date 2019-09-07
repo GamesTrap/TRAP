@@ -53,3 +53,18 @@ float TRAP::Input::GetMouseY()
 
 	return y;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Input::SetCursorMode(const CursorMode& mode)
+{
+	m_currentCursorMode = mode;
+	glfwSetInputMode()
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::CursorMode TRAP::Input::GetCursorMode()
+{
+	return m_currentCursorMode;
+}

@@ -87,6 +87,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Windows</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#general">General</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#displaymode">DisplayMode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cursormode">CursorMode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#windowprops">WindowProps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">Window</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#constructor">Constructor</a></li>
@@ -102,11 +103,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#getdisplaymode">GetDisplayMode</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getmonitor">GetMonitor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getvsyncinterval">GetVSyncInterval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getcursormode">GetCursorMode</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getnativewindow">GetNativeWindow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#settitle">SetTitle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setdisplaymode">SetDisplayMode</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setmonitor">SetMonitor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setvsyncinterval">SetVSyncInterval</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setcursormode">SetCursorMode</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#seticon">SetIcon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#seteventcallback">SetEventCallback</a></li>
 </ul>
@@ -205,6 +208,21 @@
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
 <div class="line">TRAP::<a class="reference internal" href="#displaymode">DisplayMode</a> is used to set the display mode of a TRAP::<a class="reference internal" href="#window">Window</a>.</div>
+</div>
+</div>
+<div class="section" id="cursormode">
+<h2>CursorMode<a class="headerlink" href="#cursormode" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">CursorMode</span>
+<span class="p">{</span>
+<span class="n">Normal</span><span class="p">,</span>
+<span class="n">Hidden</span><span class="p">,</span>
+<span class="n">Disabled</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">TRAP::<a class="reference internal" href="#cursormode">CursorMode</a> is used to set the cursor mode of a TRAP::<a class="reference internal" href="#window">Window</a>.</div>
 </div>
 </div>
 <div class="section" id="windowprops">
@@ -406,6 +424,16 @@
 <div class="line">Returns the VSync Interval of a TRAP::<a class="reference internal" href="#window">Window</a></div>
 </div>
 </div>
+<div class="section" id="getcursormode">
+<h3>GetCursorMode<a class="headerlink" href="#getcursormode" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">CursorMode</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">GetCursorMode</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the TRAP::<a class="reference internal" href="#cursormode">CursorMode</a> of a TRAP::<a class="reference internal" href="#window">Window</a></div>
+</div>
+</div>
 <div class="section" id="getnativewindow">
 <h3>GetNativeWindow<a class="headerlink" href="#getnativewindow" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">GetNativeWindow</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
@@ -500,7 +528,7 @@
 </div>
 <div class="section" id="setvsyncinterval">
 <h3>SetVSyncInterval<a class="headerlink" href="#setvsyncinterval" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">SetVSyncInterval</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">interval</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">SetVSyncInterval</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">interval</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
@@ -512,6 +540,22 @@
 </div>
 <ul class="simple">
 <li><p><code class="code docutils literal notranslate"><span class="pre">interval</span></code> specifies the Interval to use.</p></li>
+</ul>
+</div>
+<div class="section" id="setcursormode">
+<h3>SetCursorMode<a class="headerlink" href="#setcursormode" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">SetCursorMode</span><span class="p">(</span><span class="k">const</span> <span class="n">CursorMode</span><span class="o">&amp;</span> <span class="n">mode</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Sets the TRAP::<a class="reference internal" href="#cursormode">CursorMode</a> of a TRAP::<a class="reference internal" href="#window">Window</a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">mode</span></code> specifies the TRAP::<a class="reference internal" href="#cursormode">CursorMode</a> to use.</p></li>
 </ul>
 </div>
 <div class="section" id="seticon">
