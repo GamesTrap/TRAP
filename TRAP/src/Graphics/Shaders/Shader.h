@@ -40,7 +40,8 @@ namespace TRAP::Graphics
 		virtual const std::string& GetTESSource() const = 0;
 		virtual const std::string& GetCSSource() const = 0;
 
-		static std::unique_ptr<Shader> CreateFromFile(const std::string& name, const std::string& filePath, Shader* address = nullptr);
+		static std::unique_ptr<Shader> CreateFromFile(const std::string& name, const std::string& filePath);
+		static std::unique_ptr<Shader> CreateFromFile(const std::string& filepath);
 		static std::unique_ptr<Shader> CreateFromSource(const std::string& name, const std::string& VSSource, const std::string& FSSource, const std::string& GSSource, const std::string& TCSSource, const std::string& TESSource, const std::string& CSSource);;
 
 		static std::string ShaderTypeToString(ShaderType type);

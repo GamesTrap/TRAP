@@ -61,7 +61,7 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 				else
 				{
 					shader.reset();
-					shader = Shader::CreateFromFile(nameOrVirtualPath, path, shader.get());
+					shader = Shader::CreateFromFile(nameOrVirtualPath, path);
 					TP_INFO("[ShaderManager] Reloaded: \"", nameOrVirtualPath, "\"");
 				}
 
@@ -111,7 +111,7 @@ void TRAP::Graphics::ShaderManager::Reload(const std::unique_ptr<Shader>& shader
 			else
 			{
 				s_Shader.reset();
-				s_Shader = Shader::CreateFromFile(name, path, shader.get());
+				s_Shader = Shader::CreateFromFile(name, path);
 				TP_INFO("[ShaderManager] Reloaded: \"", name, "\"");
 			}
 

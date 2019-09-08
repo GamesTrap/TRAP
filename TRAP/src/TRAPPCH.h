@@ -44,6 +44,7 @@
 
 #undef near
 #undef far
+#undef DELETE
 #endif
 
 #include "Core.h"

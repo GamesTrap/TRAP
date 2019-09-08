@@ -79,7 +79,7 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline std::ostream& TRAP::operator<<(std::ostream& os, const TRAP::Event& e)
+inline std::ostream& TRAP::operator<<(std::ostream& os, const Event& e)
 {
 	return os << e.ToString();
 }

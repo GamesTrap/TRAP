@@ -379,5 +379,15 @@ SITREP 09/06/2019|19w36a5
 
 SITREP 09/07/2019|19w36a6
     - Changed TRAP Engine version to 19w36a6(0.5.29)
-    - Added setting of the cursor mode ~>20 mins
-    - Added raw mouse input ~>20 mins
+    - Added setting of the CursorMode ~>20 mins
+    - Added Raw Mouse Input support ~>20 mins
+
+SITREP 09/08/2019|19w36a7
+    - Changed TRAP Engine version to 19w36a7(0.5.30)
+    - Replaced Key and Mouse defines with enum classes ~<45 mins
+    - Input Added GetKeyName ~<20 mins
+    - Window Added GetMonitorNames, GetMonitorName ~>15 mins
+    - Started Adding Gamepad support ~<10 mins
+    - Shader Added CreateFromFile without name parameter ~<15 mins
+    - Texture2D Added CreateFromFile without name parameter ~<15 mins
+    - TextureCube Added CreateFromCross without name parameter ~<15 mins

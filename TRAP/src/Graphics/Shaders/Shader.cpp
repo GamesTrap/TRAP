@@ -2,6 +2,7 @@
 #include "Shader.h"
 
 #include "VFS/VFS.h"
+#include "Utils/String.h"
 #include "Graphics/API/Context.h"
 #include "Graphics/API/D3D12/D3D12Shader.h"
 #include "Graphics/API/OpenGL/OpenGLShader.h"
@@ -13,8 +14,14 @@ const TRAP::Graphics::Shader* TRAP::Graphics::Shader::s_CurrentlyBound = nullptr
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name, const std::string& filePath, Shader* address)
+std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name, const std::string& filePath)
 {
+	if(name.empty())
+	{
+		TP_WARN("[Shader] Name is empty! Using Filename as Shader Name!");
+		return CreateFromFile(filePath);
+	}
+	
 	std::string source;
 	std::string VFSFilePath;
 	if (!filePath.empty())
@@ -37,14 +44,7 @@ std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(c
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
 	{
-		std::unique_ptr<API::D3D12Shader> result;
-		if (address != nullptr)
-		{
-			address = std::make_unique<API::D3D12Shader>(name, source).get();
-			result = std::unique_ptr<API::D3D12Shader>(dynamic_cast<API::D3D12Shader*>(address));
-		}
-		else
-			result = std::make_unique<API::D3D12Shader>(name, source);
+		std::unique_ptr<API::D3D12Shader> result = std::make_unique<API::D3D12Shader>(name, source);
 		result->m_filepath = VFSFilePath;
 		return result;
 	}
@@ -52,28 +52,68 @@ std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(c
 
 	case API::RenderAPI::Vulkan:
 	{
-		std::unique_ptr<API::VulkanShader> result;
-		if (address != nullptr)
-		{
-			address = std::make_unique<API::VulkanShader>(name, source).get();
-			result = std::unique_ptr<API::VulkanShader>(dynamic_cast<API::VulkanShader*>(address));
-		}
-		else
-			result = std::make_unique<API::VulkanShader>(name, source);
+		std::unique_ptr<API::VulkanShader> result = std::make_unique<API::VulkanShader>(name, source);
 		result->m_filepath = VFSFilePath;
 		return result;
 	}
 
 	case API::RenderAPI::OpenGL:
 	{
-		std::unique_ptr<API::OpenGLShader> result;
-		if (address != nullptr)
-		{
-			address = std::make_unique<API::OpenGLShader>(name, source).get();
-			result = std::unique_ptr<API::OpenGLShader>(dynamic_cast<API::OpenGLShader*>(address));
-		}
-		else
-			result = std::make_unique<API::OpenGLShader>(name, source);
+		std::unique_ptr<API::OpenGLShader> result = std::make_unique<API::OpenGLShader>(name, source);
+		result->m_filepath = VFSFilePath;
+		return result;
+	}
+
+	default:
+		return nullptr;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& filePath)
+{
+	std::string source;
+	std::string VFSFilePath;
+	std::string name;
+	if (!filePath.empty())
+	{
+		source = VFS::Get()->SilentReadTextFile(filePath);
+		VFSFilePath = VFS::MakeVirtualPathCompatible(filePath);
+		name = Utils::String::SplitString(VFSFilePath, '/').back();
+		name = name.substr(0, name.size() - (Utils::String::GetSuffix(name).size() + 1));
+	}
+
+	if (!filePath.empty() && source.empty())
+		TP_ERROR("[Shader] Shader couldn't load Shader!");
+
+	if (source.empty())
+	{
+		TP_WARN("[Shader] Shader using fallback Shader: \"Passthrough\"");
+		return nullptr;
+	}
+
+	switch (API::Context::GetRenderAPI())
+	{
+#ifdef TRAP_PLATFORM_WINDOWS
+	case API::RenderAPI::D3D12:
+	{
+		std::unique_ptr<API::D3D12Shader> result = std::make_unique<API::D3D12Shader>(name, source);
+		result->m_filepath = VFSFilePath;
+		return result;
+	}
+#endif
+
+	case API::RenderAPI::Vulkan:
+	{
+		std::unique_ptr<API::VulkanShader> result = std::make_unique<API::VulkanShader>(name, source);
+		result->m_filepath = VFSFilePath;
+		return result;
+	}
+
+	case API::RenderAPI::OpenGL:
+	{
+		std::unique_ptr<API::OpenGLShader> result = std::make_unique<API::OpenGLShader>(name, source);
 		result->m_filepath = VFSFilePath;
 		return result;
 	}

@@ -45,8 +45,8 @@ public:
 	void OnAttach() override
 	{
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
-		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("Color", "/Shaders/Color.shader"));
-		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("Texture", "/Shaders/Texture.shader"));
+		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("/Shaders/Color.shader"));
+		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("/Shaders/Texture.shader"));
 
 		//EXPERIMENTAL
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
@@ -163,27 +163,27 @@ public:
 
 		///////////////////
 		//Camera Controls//
-		///////////////////		
-		if (TRAP::Input::IsKeyPressed(TP_KEY_A))
+		///////////////////
+		if (TRAP::Input::IsKeyPressed(TRAP::Key::A))
 			m_cameraPosition.x -= m_cameraMovementSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TP_KEY_D))
+		if (TRAP::Input::IsKeyPressed(TRAP::Key::D))
 			m_cameraPosition.x += m_cameraMovementSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TP_KEY_W))
+		if (TRAP::Input::IsKeyPressed(TRAP::Key::W))
 			m_cameraPosition.y += m_cameraMovementSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TP_KEY_S))
+		if (TRAP::Input::IsKeyPressed(TRAP::Key::S))
 			m_cameraPosition.y -= m_cameraMovementSpeed * deltaTime;
-		
-		if (TRAP::Input::IsKeyPressed(TP_KEY_KP_4))
+
+		if (TRAP::Input::IsKeyPressed(TRAP::Key::KP_4))
 			m_cameraRotation.z += m_cameraRotationSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TP_KEY_KP_6))
+		if (TRAP::Input::IsKeyPressed(TRAP::Key::KP_6))
 			m_cameraRotation.z -= m_cameraRotationSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TP_KEY_KP_8))
+		if (TRAP::Input::IsKeyPressed(TRAP::Key::KP_8))
 			m_cameraRotation.x += m_cameraRotationSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TP_KEY_KP_2))
+		if (TRAP::Input::IsKeyPressed(TRAP::Key::KP_2))
 			m_cameraRotation.x -= m_cameraRotationSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TP_KEY_KP_7))
+		if (TRAP::Input::IsKeyPressed(TRAP::Key::KP_7))
 			m_cameraRotation.y += m_cameraRotationSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TP_KEY_KP_9))
+		if (TRAP::Input::IsKeyPressed(TRAP::Key::KP_9))
 			m_cameraRotation.y -= m_cameraRotationSpeed * deltaTime;
 	}
 
@@ -191,35 +191,35 @@ public:
 
 	bool OnKeyPressed(TRAP::KeyPressedEvent& event)
 	{
-		if (event.GetKeyCode() == TP_KEY_ESCAPE)
+		if (event.GetKeyCode() == TRAP::Key::ESCAPE)
 			TRAP::Application::Get().Shutdown();
 
-		if (event.GetKeyCode() == TP_KEY_F1 && event.GetRepeatCount() < 1) //Switch to D3D12
+		if (event.GetKeyCode() == TRAP::Key::F1 && event.GetRepeatCount() < 1) //Switch to D3D12
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::D3D12);
-		if (event.GetKeyCode() == TP_KEY_F2 && event.GetRepeatCount() < 1) //Switch to Vulkan
+		if (event.GetKeyCode() == TRAP::Key::F2 && event.GetRepeatCount() < 1) //Switch to Vulkan
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::Vulkan);
-		if (event.GetKeyCode() == TP_KEY_F3 && event.GetRepeatCount() < 1) //Switch to OpenGL
+		if (event.GetKeyCode() == TRAP::Key::F3 && event.GetRepeatCount() < 1) //Switch to OpenGL
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::OpenGL);
 
-		if (event.GetKeyCode() == TP_KEY_F4 && event.GetRepeatCount() < 1) //Use Default/Passthrough Shader
+		if (event.GetKeyCode() == TRAP::Key::F4 && event.GetRepeatCount() < 1) //Use Default/Passthrough Shader
 			m_usePassthrough = !m_usePassthrough;
 
-		if (event.GetKeyCode() == TP_KEY_F5 && event.GetRepeatCount() < 1) //Make Window windowed
+		if (event.GetKeyCode() == TRAP::Key::F5 && event.GetRepeatCount() < 1) //Make Window windowed
 			TRAP::Application::Get().GetWindow()->SetDisplayMode(TRAP::DisplayMode::Windowed);
-		if (event.GetKeyCode() == TP_KEY_F6 && event.GetRepeatCount() < 1) //Make Window Borderless Fullscreen
+		if (event.GetKeyCode() == TRAP::Key::F6 && event.GetRepeatCount() < 1) //Make Window Borderless Fullscreen
 			TRAP::Application::Get().GetWindow()->SetDisplayMode(TRAP::DisplayMode::Borderless);
-		if (event.GetKeyCode() == TP_KEY_F7 && event.GetRepeatCount() < 1) //Make Window Exclusive Fullscreen
+		if (event.GetKeyCode() == TRAP::Key::F7 && event.GetRepeatCount() < 1) //Make Window Exclusive Fullscreen
 			TRAP::Application::Get().GetWindow()->SetDisplayMode(TRAP::DisplayMode::Fullscreen);
 
-		if (event.GetKeyCode() == TP_KEY_F9 && event.GetRepeatCount() < 1) //Enable/Disable
+		if (event.GetKeyCode() == TRAP::Key::F9 && event.GetRepeatCount() < 1) //Enable/Disable
 			m_show = !m_show;
-		if (event.GetKeyCode() == TP_KEY_F10 && event.GetRepeatCount() < 1) //Enable/Disable WireFrame Mode
+		if (event.GetKeyCode() == TRAP::Key::F10 && event.GetRepeatCount() < 1) //Enable/Disable WireFrame Mode
 		{
 			m_wireFrame = !m_wireFrame;
 			TRAP::Graphics::RenderCommand::SetWireFrame(m_wireFrame);
 		}
 
-		if (event.GetKeyCode() == TP_KEY_F11 && event.GetRepeatCount() < 1)
+		if (event.GetKeyCode() == TRAP::Key::F11 && event.GetRepeatCount() < 1)
 			TRAP::Utils::MsgBox::Show("Just a prank bro!", "Critical Error");
 
 		return true;

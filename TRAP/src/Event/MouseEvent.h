@@ -1,5 +1,6 @@
 #ifndef _TRAP_MOUSEEVENT_H_
 #define _TRAP_MOUSEEVENT_H_
+#include "Input/MouseButtonCodes.h"
 
 namespace TRAP
 {
@@ -66,23 +67,23 @@ namespace TRAP
 	class MouseButtonEvent : public Event
 	{
 	public:
-		int32_t GetMouseButton() const;
+		MouseButton GetMouseButton() const;
 
 		int32_t GetCategoryFlags() const override;
 
 	protected:
-		explicit MouseButtonEvent(const int32_t button)
+		explicit MouseButtonEvent(const MouseButton button)
 			: m_button(button)
 		{			
 		}
 
-		int32_t m_button;
+		MouseButton m_button;
 	};
 
 	class MouseButtonPressedEvent final : public MouseButtonEvent
 	{
 	public:
-		explicit MouseButtonPressedEvent(const int32_t button, std::string title)
+		explicit MouseButtonPressedEvent(const MouseButton button, std::string title)
 			: MouseButtonEvent(button), m_title(std::move(title))
 		{
 		}
@@ -90,7 +91,7 @@ namespace TRAP
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseButtonPressedEvent: " << m_button;
+			ss << "MouseButtonPressedEvent: " << static_cast<int32_t>(m_button);
 
 			return ss.str();
 		}
@@ -108,7 +109,7 @@ namespace TRAP
 	class MouseButtonReleasedEvent final : public MouseButtonEvent
 	{
 	public:
-		explicit MouseButtonReleasedEvent(const int32_t button, std::string title)
+		explicit MouseButtonReleasedEvent(const MouseButton button, std::string title)
 			: MouseButtonEvent(button), m_title(std::move(title))
 		{			
 		}
@@ -116,7 +117,7 @@ namespace TRAP
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseButtonReleasedEvent: " << m_button;
+			ss << "MouseButtonReleasedEvent: " << static_cast<int32_t>(m_button);
 
 			return ss.str();
 		}
@@ -218,7 +219,7 @@ inline int32_t TRAP::MouseScrolledEvent::GetCategoryFlags() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int32_t TRAP::MouseButtonEvent::GetMouseButton() const
+inline TRAP::MouseButton TRAP::MouseButtonEvent::GetMouseButton() const
 {
 	return m_button;
 }

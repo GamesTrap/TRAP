@@ -84,6 +84,7 @@ namespace TRAP
 		static void Use();
 		static uint32_t GetActiveWindows();
 		static uint32_t GetMonitors();
+		static std::unordered_map<uint32_t, std::string> GetMonitorNames();
 
 		std::string GetTitle() const;
 		uint32_t GetWidth() const;
@@ -91,6 +92,7 @@ namespace TRAP
 		uint32_t GetRefreshRate() const;
 		DisplayMode GetDisplayMode() const;
 		uint32_t GetMonitor() const;
+		std::string GetMonitorName() const;
 		uint32_t GetVSyncInterval() const;
 		CursorMode GetCursorMode() const;
 		bool GetRawMouseInput() const;

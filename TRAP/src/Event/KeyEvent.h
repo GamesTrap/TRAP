@@ -1,28 +1,30 @@
 #ifndef _TRAP_KEYEVENT_H_
 #define _TRAP_KEYEVENT_H_
 
+#include "Input/KeyCodes.h"
+
 namespace TRAP
 {
 	class KeyEvent : public Event
 	{
 	public:
-		int32_t GetKeyCode() const;
+		Key GetKeyCode() const;
 
 		int32_t GetCategoryFlags() const override;
 
 	protected:
-		explicit KeyEvent(const int32_t keyCode)
+		explicit KeyEvent(const Key keyCode)
 			: m_keyCode(keyCode)
 		{			
 		}
 
-		int32_t m_keyCode;
+		Key m_keyCode;
 	};
 
 	class KeyPressedEvent final : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(const int32_t keyCode, const int32_t repeatCount, std::string title)
+		KeyPressedEvent(const Key keyCode, const int32_t repeatCount, std::string title)
 			: KeyEvent(keyCode), m_repeatCount(repeatCount), m_title(std::move(title))
 		{			
 		}
@@ -32,7 +34,7 @@ namespace TRAP
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyPressedEvent: " << m_keyCode << " (" << m_repeatCount << " repeats)";
+			ss << "KeyPressedEvent: " << static_cast<int32_t>(m_keyCode) << " (" << m_repeatCount << " repeats)";
 
 			return ss.str();
 		}
@@ -51,7 +53,7 @@ namespace TRAP
 	class KeyReleasedEvent final : public KeyEvent
 	{
 	public:
-		explicit KeyReleasedEvent(const int32_t keyCode, std::string title)
+		explicit KeyReleasedEvent(const Key keyCode, std::string title)
 			: KeyEvent(keyCode), m_title(std::move(title))
 		{			
 		}
@@ -59,7 +61,7 @@ namespace TRAP
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyReleasedEvent: " << m_keyCode;
+			ss << "KeyReleasedEvent: " << static_cast<int32_t>(m_keyCode);
 
 			return ss.str();
 		}
@@ -77,7 +79,7 @@ namespace TRAP
 	class KeyTypedEvent final : public KeyEvent
 	{
 	public:
-		explicit KeyTypedEvent(const int32_t keyCode, std::string title)
+		explicit KeyTypedEvent(const Key keyCode, std::string title)
 			: KeyEvent(keyCode), m_title(std::move(title))
 		{			
 		}
@@ -85,7 +87,7 @@ namespace TRAP
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyTypedEvent: " << m_keyCode;
+			ss << "KeyTypedEvent: " << static_cast<int32_t>(m_keyCode);
 
 			return ss.str();
 		}
@@ -103,7 +105,7 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline int32_t TRAP::KeyEvent::GetKeyCode() const
+inline TRAP::Key TRAP::KeyEvent::GetKeyCode() const
 {
 	return m_keyCode;
 }

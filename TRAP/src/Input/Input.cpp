@@ -7,20 +7,20 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::IsKeyPressed(const int32_t keycode)
+bool TRAP::Input::IsKeyPressed(const Key keycode)
 {
 	const auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow()->GetNativeWindow());
-	const auto state = glfwGetKey(window, keycode);
+	const auto state = glfwGetKey(window, static_cast<int32_t>(keycode));
 
 	return state == GLFW_PRESS || state == GLFW_REPEAT;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::IsMouseButtonPressed(const int32_t button)
+bool TRAP::Input::IsMouseButtonPressed(const MouseButton button)
 {
 	const auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow()->GetNativeWindow());
-	const auto state = glfwGetMouseButton(window, button);
+	const auto state = glfwGetMouseButton(window, static_cast<int32_t>(button));
 
 	return state == GLFW_PRESS;
 }
@@ -59,4 +59,15 @@ float TRAP::Input::GetMouseY()
 	auto [x, y] = GetMousePosition();
 
 	return y;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Input::GetKeyName(const Key key)
+{
+	if(glfwGetKeyName(static_cast<int32_t>(key), 0))
+		return glfwGetKeyName(static_cast<int32_t>(key), 0);
+	
+	TP_ERROR("[Input] Couldn't get name of Key: ", static_cast<int32_t>(key), "!");
+	return "";
 }

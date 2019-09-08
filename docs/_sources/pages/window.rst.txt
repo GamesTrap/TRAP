@@ -185,6 +185,17 @@ GetMonitors
 | **Description**
 | Returns the amount of connected Monitors
 
+^^^^^^^^^^^^^^^
+GetMonitorNames
+^^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   static std::unordered_map<uint32_t, std::string> TRAP::Window::GetMonitorNames();
+
+| **Description**
+| Returns an :code:`std::unordered_map` containing the Monitor number as the key and the Name of the Monitor as mappedType
+
 ^^^^^^^^
 GetTitle
 ^^^^^^^^
@@ -250,6 +261,17 @@ GetMonitor
 
 | **Description**
 | Returns the Monitor number of a TRAP::`Window`_
+
+^^^^^^^^^^^^^^
+GetMonitorName
+^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   std::string TRAP::Window::GetMonitorName() const;
+
+| **Description**
+| Returns the Name of a Monitor of a TRAP::`Window`_
 
 ^^^^^^^^^^^^^^^^
 GetVSyncInterval
