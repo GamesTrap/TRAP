@@ -28,7 +28,7 @@ void TRAP::Graphics::Renderer::EndScene()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Submit(const Shader* shader, const std::unique_ptr<VertexArray>& vertexArray, const Math::Mat4& transform, const RendererPrimitive primitive)
+void TRAP::Graphics::Renderer::Submit(const std::unique_ptr<Shader>& shader, const std::unique_ptr<VertexArray>& vertexArray, const Math::Mat4& transform, const RendererPrimitive primitive)
 {
 	Application::Get().AddSingleDrawCall();
 

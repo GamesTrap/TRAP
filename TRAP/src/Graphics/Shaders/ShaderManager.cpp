@@ -3,26 +3,37 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::unique_ptr<TRAP::Graphics::Shader>> TRAP::Graphics::ShaderManager::s_Shaders;
+std::unordered_map<std::string, std::unique_ptr<TRAP::Graphics::Shader>> TRAP::Graphics::ShaderManager::s_Shaders;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::ShaderManager::Add(std::unique_ptr<Shader> shader)
 {
 	if (shader)
-		s_Shaders.push_back(std::move(shader));
+	{
+		if(!Exists(shader->GetName()))
+			s_Shaders[shader->GetName()] = std::move(shader);			
+		else
+			TP_ERROR("[ShaderManager] Shader with Name: ", shader->GetName(), " already exists!");
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::Shader* TRAP::Graphics::ShaderManager::Get(const std::string_view name)
+const std::unique_ptr<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Get(const std::string& name)
 {
-	for (const auto& shader : s_Shaders)
-		if (shader->GetName() == name)
-			return shader.get();
+	if(Exists(name))
+		return s_Shaders[name];
 
 	//Should always be available as a fallback
 	return Get("Passthrough");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::unordered_map<std::string, std::unique_ptr<TRAP::Graphics::Shader>>& TRAP::Graphics::ShaderManager::GetShaders()
+{
+	return s_Shaders;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -39,47 +50,42 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 	//Name
 	if (nameOrVirtualPath[0] != '/')
 	{
-		for (auto& shader : s_Shaders)
+		if(Exists(nameOrVirtualPath))
 		{
-			if (shader->GetName() == nameOrVirtualPath)
+			const std::string path = s_Shaders[nameOrVirtualPath]->GetFilePath();
+			std::string error;
+			if (path.empty())
 			{
-				const std::string path = shader->GetFilePath();
-				std::string error;
-				if (path.empty())
-				{
-					const std::string VSSource = shader->GetVSSource();
-					const std::string FSSource = shader->GetFSSource();
-					const std::string GSSource = shader->GetGSSource();
-					const std::string TCSSource = shader->GetTCSSource();
-					const std::string TESSource = shader->GetTESSource();
-					const std::string CSSource = shader->GetCSSource();
+				const std::string VSSource = s_Shaders[nameOrVirtualPath]->GetVSSource();
+				const std::string FSSource = s_Shaders[nameOrVirtualPath]->GetFSSource();
+				const std::string GSSource = s_Shaders[nameOrVirtualPath]->GetGSSource();
+				const std::string TCSSource = s_Shaders[nameOrVirtualPath]->GetTCSSource();
+				const std::string TESSource = s_Shaders[nameOrVirtualPath]->GetTESSource();
+				const std::string CSSource = s_Shaders[nameOrVirtualPath]->GetCSSource();
 
-					shader.reset();
-					shader = Shader::CreateFromSource(nameOrVirtualPath, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
-					TP_INFO("[ShaderManager] Reloaded: \"", nameOrVirtualPath, "\"");
-				}
-				else
-				{
-					shader.reset();
-					shader = Shader::CreateFromFile(nameOrVirtualPath, path);
-					TP_INFO("[ShaderManager] Reloaded: \"", nameOrVirtualPath, "\"");
-				}
-
-				return;
+				s_Shaders[nameOrVirtualPath].reset();
+				s_Shaders[nameOrVirtualPath] = Shader::CreateFromSource(nameOrVirtualPath, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
+				TP_INFO("[ShaderManager] Reloaded: \"", nameOrVirtualPath, "\"");
+			}
+			else
+			{
+				s_Shaders[nameOrVirtualPath].reset();
+				s_Shaders[nameOrVirtualPath] = Shader::CreateFromFile(nameOrVirtualPath, path);
+				TP_INFO("[ShaderManager] Reloaded: \"", nameOrVirtualPath, "\"");
 			}
 		}
-		TP_WARN("[ShaderManager] Could not find Shader: \"", nameOrVirtualPath, "\" to reload.");
+		else
+			TP_WARN("[ShaderManager] Could not find Shader: \"", nameOrVirtualPath, "\" to reload.");
 	}
 	else //Virtual Path
 	{
 		for (const auto& shader : s_Shaders)
-		{
-			if (nameOrVirtualPath == shader->GetFilePath())
+			if (nameOrVirtualPath == shader.second->GetFilePath())
 			{
-				Reload(shader);
+				Reload(shader.second);
 				return;
 			}
-		}
+		
 		TP_WARN("[ShaderManager] Could not find Shader: \"", nameOrVirtualPath, "\" to reload.");
 	}
 }
@@ -88,37 +94,33 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 
 void TRAP::Graphics::ShaderManager::Reload(const std::unique_ptr<Shader>& shader)
 {
-	for (auto& s_Shader : s_Shaders)
+	if(Exists(shader->GetName()))
 	{
-		if (s_Shader == shader)
+		const std::string name = shader->GetName();
+		const std::string path = shader->GetFilePath();
+		std::string error;
+		if (path.empty())
 		{
-			const std::string name = shader->GetName();
-			const std::string path = shader->GetFilePath();
-			std::string error;
-			if (path.empty())
-			{
-				const std::string VSSource = shader->GetVSSource();
-				const std::string FSSource = shader->GetFSSource();
-				const std::string GSSource = shader->GetGSSource();
-				const std::string TCSSource = shader->GetTCSSource();
-				const std::string TESSource = shader->GetTESSource();
-				const std::string CSSource = shader->GetCSSource();
+			const std::string VSSource = shader->GetVSSource();
+			const std::string FSSource = shader->GetFSSource();
+			const std::string GSSource = shader->GetGSSource();
+			const std::string TCSSource = shader->GetTCSSource();
+			const std::string TESSource = shader->GetTESSource();
+			const std::string CSSource = shader->GetCSSource();
 
-				s_Shader.reset();
-				s_Shader = Shader::CreateFromSource(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
-				TP_INFO("[ShaderManager] Reloaded: \"", name, "\"");
-			}
-			else
-			{
-				s_Shader.reset();
-				s_Shader = Shader::CreateFromFile(name, path);
-				TP_INFO("[ShaderManager] Reloaded: \"", name, "\"");
-			}
-
-			return;
+			s_Shaders[name].reset();
+			s_Shaders[name] = Shader::CreateFromSource(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
+			TP_INFO("[ShaderManager] Reloaded: \"", name, "\"");
+		}
+		else
+		{
+			s_Shaders[name].reset();
+			s_Shaders[name] = Shader::CreateFromFile(name, path);
+			TP_INFO("[ShaderManager] Reloaded: \"", name, "\"");
 		}
 	}
-	TP_WARN("[ShaderManager] Could not find Shader: \"", shader->GetName(), "\" to reload.");
+	else
+		TP_WARN("[ShaderManager] Could not find Shader: \"", shader->GetName(), "\" to reload.");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -127,7 +129,7 @@ void TRAP::Graphics::ShaderManager::ReloadAll()
 {
 	TP_INFO("[ShaderManager] Reloading all may take a while...");
 	for (auto& shader : s_Shaders)
-		Reload(shader);
+		Reload(shader.second);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -139,4 +141,11 @@ void TRAP::Graphics::ShaderManager::Shutdown()
 
 	TP_DEBUG("[ShaderManager] Destroying Shaders");
 	Clean();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::ShaderManager::Exists(const std::string& name)
+{
+	return s_Shaders.find(name) != s_Shaders.end();
 }

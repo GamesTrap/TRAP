@@ -23,7 +23,7 @@ namespace TRAP::Graphics::API
 		uint32_t GetWidth() const override;
 		uint32_t GetHeight() const override;
 
-		Texture* GetTexture() const override;
+		const std::unique_ptr<Texture>& GetTexture() const override;
 		void SetClearColor(const Math::Vec4& color) override;
 		
 	private:
@@ -55,9 +55,9 @@ inline uint32_t TRAP::Graphics::API::OpenGLFrameBuffer2D::GetHeight() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::Graphics::Texture* TRAP::Graphics::API::OpenGLFrameBuffer2D::GetTexture() const
+inline const std::unique_ptr<TRAP::Graphics::Texture>& TRAP::Graphics::API::OpenGLFrameBuffer2D::GetTexture() const
 {
-	return m_texture.get();
+	return reinterpret_cast<const std::unique_ptr<Texture>&>(m_texture);
 }
 
 #endif /*_TRAP_OPENGLFRAMEBUFFER2D_H_*/

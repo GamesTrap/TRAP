@@ -93,7 +93,7 @@ void TRAP::Graphics::API::OpenGLShader::Bind() const
 		else
 		{
 			ShaderManager::Get("Passthrough")->Bind();
-			s_CurrentlyBound = ShaderManager::Get("Passthrough");
+			s_CurrentlyBound = ShaderManager::Get("Passthrough").get();
 		}
 	}
 }

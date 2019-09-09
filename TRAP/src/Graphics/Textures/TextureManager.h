@@ -11,9 +11,9 @@ namespace TRAP::Graphics
 	{
 	public:
 		static void Add(std::unique_ptr<Texture> texture);
-		static Texture* Get(const std::string& name, TextureType textureType);
-		static Texture2D* Get2D(const std::string& name);
-		static TextureCube* GetCube(const std::string& name);
+		static const std::unique_ptr<Texture>& Get(const std::string& name, TextureType textureType);
+		static const std::unique_ptr<Texture2D>& Get2D(const std::string& name);
+		static const std::unique_ptr<TextureCube>& GetCube(const std::string& name);
 		static void Clean();
 
 		static void Reload(const std::string& nameOrVirtualPath);
@@ -22,25 +22,13 @@ namespace TRAP::Graphics
 
 		static void Shutdown();
 
+		static bool Exists(const std::string& name);
+
 	private:
 		TextureManager() = default;
 
-		static std::vector<std::unique_ptr<Texture>> s_textures;
+		static std::unordered_map<std::string, std::unique_ptr<Texture>> s_Textures;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Graphics::Texture2D* TRAP::Graphics::TextureManager::Get2D(const std::string& name)
-{
-	return dynamic_cast<Texture2D*>(Get(name, TextureType::Texture2D));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Graphics::TextureCube* TRAP::Graphics::TextureManager::GetCube(const std::string& name)
-{
-	return dynamic_cast<TextureCube*>(Get(name, TextureType::TextureCube));
 }
 
 #endif /*_TRAP_TEXTUREMANAGER_H_*/
