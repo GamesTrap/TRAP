@@ -4,14 +4,14 @@
 #include "Utils/String.h"
 #include "FileSystem.h"
 
-std::unique_ptr<TRAP::VFS> TRAP::VFS::s_Instance = nullptr;
+TRAP::Scope<TRAP::VFS> TRAP::VFS::s_Instance = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::VFS::Init()
 {
 	TP_DEBUG("[VFS] Initializing Virtual File System");
-	s_Instance = std::make_unique<VFS>();
+	s_Instance = MakeScope<VFS>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -52,12 +52,12 @@ void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physica
 	if (m_hotShaderReloading)
 		if (virtualPathLower == "/shaders")
 			//Create a ShaderFileWatcher instance that will check the mounted folders for changes every second				
-			m_shaderFileWatcher = std::make_unique<FileWatcher>("/shaders", 1000.0f);
+			m_shaderFileWatcher = MakeScope<FileWatcher>("/shaders", 1000.0f);
 
 	if (m_hotTextureReloading)
 		if (virtualPathLower == "/textures")
 			//Create a TextureFileWatcher instance that will check the mounted folder for changes every second
-			m_textureFileWatcher = std::make_unique<FileWatcher>("/textures", 1000.0f);
+			m_textureFileWatcher = MakeScope<FileWatcher>("/textures", 1000.0f);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

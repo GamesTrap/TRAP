@@ -151,7 +151,7 @@ Use
 
 .. code-block:: cpp
 
-   static void TRAP::Window::Use(TRAP::Window* window);
+   static void TRAP::Window::Use(const std::unique_ptr<TRAP::Window>& window);
 
 | **Description**
 | Makes the Context of the specified TRAP::`Window`_ current

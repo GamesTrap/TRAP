@@ -28,13 +28,13 @@ TRAP::Graphics::API::VulkanContext::~VulkanContext()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanContext::Present(Window* window)
+void TRAP::Graphics::API::VulkanContext::Present(const std::unique_ptr<Window>& window)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanContext::UseInternal(Window* window)
+void TRAP::Graphics::API::VulkanContext::UseInternal(const std::unique_ptr<Window>& window)
 {	
 }
 

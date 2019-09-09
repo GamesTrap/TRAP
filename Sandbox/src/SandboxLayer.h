@@ -50,7 +50,6 @@ public:
 
 		//EXPERIMENTAL
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
-		//TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture2D::CreateFromFile("Debug", "/Textures/TRAPWhiteLogo2048x2048.tga"));
 		TRAP::Graphics::TextureManager::Load("Debug", "/Textures/TRAPWhiteLogo2048x2048.tga");
 		//////////////
 
@@ -67,7 +66,7 @@ public:
 			 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,    1.0f, 1.0f,
 			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f,    0.0f, 1.0f
 		};
-		std::unique_ptr<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()));
+		TRAP::Scope<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()));
 		const TRAP::Graphics::BufferLayout layout =
 		{
 			{TRAP::Graphics::ShaderDataType::Float3, "Position"},
@@ -81,7 +80,7 @@ public:
 		{
 			0, 1, 2, 2, 3, 0
 		};
-		std::unique_ptr<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size()));
+		TRAP::Scope<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size()));
 		m_vertexArray->SetIndexBuffer(indexBuffer);
 
 		TRAP::Graphics::RenderCommand::SetClearColor();
@@ -93,7 +92,7 @@ public:
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnDetach() override
-	{
+	{		
 		m_vertexArray->Unbind();
 		m_vertexArray.reset();
 	}
@@ -262,7 +261,7 @@ private:
 	bool m_wireFrame;
 	bool m_show;
 
-	std::unique_ptr<TRAP::Graphics::VertexArray> m_vertexArray{};
+	TRAP::Scope<TRAP::Graphics::VertexArray> m_vertexArray{};
 
 	TRAP::Graphics::OrthographicCamera m_camera;
 	TRAP::Math::Vec3 m_cameraPosition;

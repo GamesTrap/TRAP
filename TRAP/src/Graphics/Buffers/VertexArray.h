@@ -16,16 +16,16 @@ namespace TRAP::Graphics
 		VertexArray(VertexArray&&) = default;
 		VertexArray& operator=(VertexArray&&) = default;
 
-		static std::unique_ptr<VertexArray> Create();
+		static Scope<VertexArray> Create();
 
-		virtual void AddVertexBuffer(std::unique_ptr<VertexBuffer>& buffer) = 0;
-		virtual void SetIndexBuffer(std::unique_ptr<IndexBuffer>& buffer) = 0;
+		virtual void AddVertexBuffer(Scope<VertexBuffer>& buffer) = 0;
+		virtual void SetIndexBuffer(Scope<IndexBuffer>& buffer) = 0;
 
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 		
-		virtual std::vector<std::unique_ptr<VertexBuffer>>& GetVertexBuffers() = 0;
-		virtual IndexBuffer* GetIndexBuffer() = 0;
+		virtual std::vector<Scope<VertexBuffer>>& GetVertexBuffers() = 0;
+		virtual const Scope<IndexBuffer>& GetIndexBuffer() = 0;
 		virtual uint32_t GetIndexCount() const = 0;
 
 	protected:

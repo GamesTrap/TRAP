@@ -80,7 +80,8 @@ namespace TRAP
 		~Window();
 
 		static void OnUpdate();
-		static void Use(Window* window);
+		
+		static void Use(const std::unique_ptr<Window>& window);
 		static void Use();
 		static uint32_t GetActiveWindows();
 		static uint32_t GetMonitors();
@@ -109,7 +110,7 @@ namespace TRAP
 		void SetCursorMode(const CursorMode& mode);
 		void SetRawMouseInput(bool enabled);
 		void SetIcon() const;
-		void SetIcon(const std::unique_ptr<Image>& image) const;
+		void SetIcon(const Scope<Image>& image) const;
 		void SetEventCallback(const EventCallbackFn& callback);
 
 	private:

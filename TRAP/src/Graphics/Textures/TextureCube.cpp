@@ -14,7 +14,7 @@ uint32_t TRAP::Graphics::TextureCube::s_maxCubeTextureSize = 0;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFiles(const std::string& name, const std::array<std::string, 6>& filepaths, TextureParameters parameters)
+TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFiles(const std::string& name, const std::array<std::string, 6>& filepaths, TextureParameters parameters)
 {
 	if(name.empty())
 	{
@@ -26,14 +26,14 @@ std::unique_ptr<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
-		return std::make_unique<API::D3D12TextureCube>(name, filepaths, parameters);
+		return MakeScope<API::D3D12TextureCube>(name, filepaths, parameters);
 #endif
 
 	case API::RenderAPI::OpenGL:
-		return std::make_unique<API::OpenGLTextureCube>(name, filepaths, parameters);
+		return MakeScope<API::OpenGLTextureCube>(name, filepaths, parameters);
 
 	case API::RenderAPI::Vulkan:
-		return std::make_unique<API::VulkanTextureCube>(name, filepaths, parameters);
+		return MakeScope<API::VulkanTextureCube>(name, filepaths, parameters);
 
 	default:
 		return nullptr;
@@ -42,7 +42,7 @@ std::unique_ptr<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromCross(const std::string& name, const std::string& filepath, InputFormat format, TextureParameters parameters)
+TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromCross(const std::string& name, const std::string& filepath, InputFormat format, TextureParameters parameters)
 {
 	if(name.empty())
 	{
@@ -54,14 +54,14 @@ std::unique_ptr<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
-		return std::make_unique<API::D3D12TextureCube>(name, filepath, format, parameters);
+		return MakeScope<API::D3D12TextureCube>(name, filepath, format, parameters);
 #endif
 
 	case API::RenderAPI::OpenGL:
-		return std::make_unique<API::OpenGLTextureCube>(name, filepath, format, parameters);
+		return MakeScope<API::OpenGLTextureCube>(name, filepath, format, parameters);
 
 	case API::RenderAPI::Vulkan:
-		return std::make_unique<API::VulkanTextureCube>(name, filepath, format, parameters);
+		return MakeScope<API::VulkanTextureCube>(name, filepath, format, parameters);
 
 	default:
 		return nullptr;
@@ -70,7 +70,7 @@ std::unique_ptr<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromCross(const std::string& filepath, InputFormat format, TextureParameters parameters)
+TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromCross(const std::string& filepath, InputFormat format, TextureParameters parameters)
 {
 	std::string name = VFS::GetFileName(VFS::MakeVirtualPathCompatible(filepath));
 	
@@ -78,14 +78,14 @@ std::unique_ptr<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
-		return std::make_unique<API::D3D12TextureCube>(name, filepath, format, parameters);
+		return MakeScope<API::D3D12TextureCube>(name, filepath, format, parameters);
 #endif
 
 	case API::RenderAPI::OpenGL:
-		return std::make_unique<API::OpenGLTextureCube>(name, filepath, format, parameters);
+		return MakeScope<API::OpenGLTextureCube>(name, filepath, format, parameters);
 
 	case API::RenderAPI::Vulkan:
-		return std::make_unique<API::VulkanTextureCube>(name, filepath, format, parameters);
+		return MakeScope<API::VulkanTextureCube>(name, filepath, format, parameters);
 
 	default:
 		return nullptr;
@@ -94,20 +94,20 @@ std::unique_ptr<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create(TextureParameters parameters)
+TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create(TextureParameters parameters)
 {
 	switch (API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
-		return std::make_unique<API::D3D12TextureCube>(parameters);
+		return MakeScope<API::D3D12TextureCube>(parameters);
 #endif
 
 	case API::RenderAPI::Vulkan:
-		return std::make_unique<API::VulkanTextureCube>(parameters);
+		return MakeScope<API::VulkanTextureCube>(parameters);
 
 	case API::RenderAPI::OpenGL:
-		return std::make_unique<API::OpenGLTextureCube>(parameters);
+		return MakeScope<API::OpenGLTextureCube>(parameters);
 
 	default:
 		return nullptr;

@@ -14,13 +14,13 @@ TRAP::Graphics::API::D3D12VertexArray::~D3D12VertexArray() = default;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12VertexArray::AddVertexBuffer(std::unique_ptr<VertexBuffer>& buffer)
+void TRAP::Graphics::API::D3D12VertexArray::AddVertexBuffer(Scope<VertexBuffer>& buffer)
 {	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12VertexArray::SetIndexBuffer(std::unique_ptr<IndexBuffer>& buffer)
+void TRAP::Graphics::API::D3D12VertexArray::SetIndexBuffer(Scope<IndexBuffer>& buffer)
 {	
 }
 
@@ -38,16 +38,16 @@ void TRAP::Graphics::API::D3D12VertexArray::Unbind() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::unique_ptr<TRAP::Graphics::VertexBuffer>>& TRAP::Graphics::API::D3D12VertexArray::GetVertexBuffers()
+std::vector<TRAP::Scope<TRAP::Graphics::VertexBuffer>>& TRAP::Graphics::API::D3D12VertexArray::GetVertexBuffers()
 {
 	return m_vertexBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::IndexBuffer* TRAP::Graphics::API::D3D12VertexArray::GetIndexBuffer()
+const TRAP::Scope<TRAP::Graphics::IndexBuffer>& TRAP::Graphics::API::D3D12VertexArray::GetIndexBuffer()
 {
-	return m_indexBuffer.get();
+	return m_indexBuffer;
 }
 
 #endif

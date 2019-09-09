@@ -26,10 +26,10 @@ namespace TRAP
 
 		void OnEvent(Event& e);
 
-		void PushLayer(std::unique_ptr<Layer> layer);
-		void PushOverlay(std::unique_ptr<Layer> overlay);
+		void PushLayer(Scope<Layer> layer);
+		void PushOverlay(Scope<Layer> overlay);
 
-		Window* GetWindow() const;
+		const std::unique_ptr<Window>& GetWindow() const;
 		Utils::Config* GetConfig();
 		LayerStack& GetLayerStack();
 
@@ -74,9 +74,9 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::Window* TRAP::Application::GetWindow() const
+inline const std::unique_ptr<TRAP::Window>& TRAP::Application::GetWindow() const
 {
-	return m_window.get();
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

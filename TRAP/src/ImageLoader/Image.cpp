@@ -14,53 +14,53 @@
 #include "Bitmap/BMPImage.h"
 #include "EmptyImage.h"
 
-std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
+TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
 {
 	std::string virtualFilePath = VFS::MakeVirtualPathCompatible(filepath);
 	const std::string fileFormat = Utils::String::GetSuffix(Utils::String::ToLower(virtualFilePath));
 
-	std::unique_ptr<Image> result;
+	Scope<Image> result;
 
 	if (fileFormat == "pgm")
-		result = std::make_unique<INTERNAL::PGMImage>(virtualFilePath);
+		result = MakeScope<INTERNAL::PGMImage>(virtualFilePath);
 	else if (fileFormat == "ppm")
-		result = std::make_unique<INTERNAL::PPMImage>(virtualFilePath);
+		result = MakeScope<INTERNAL::PPMImage>(virtualFilePath);
 	else if (fileFormat == "pnm")
-		result = std::make_unique<INTERNAL::PNMImage>(virtualFilePath);
+		result = MakeScope<INTERNAL::PNMImage>(virtualFilePath);
 	else if (fileFormat == "pam")
-		result = std::make_unique<INTERNAL::PAMImage>(virtualFilePath);
+		result = MakeScope<INTERNAL::PAMImage>(virtualFilePath);
 	else if (fileFormat == "pfm")
-		result = std::make_unique<INTERNAL::PFMImage>(virtualFilePath);
+		result = MakeScope<INTERNAL::PFMImage>(virtualFilePath);
 	else if (fileFormat == "tga" || fileFormat == "icb" || fileFormat == "vda" || fileFormat == "vst")
-		result = std::make_unique<INTERNAL::TGAImage>(virtualFilePath);
+		result = MakeScope<INTERNAL::TGAImage>(virtualFilePath);
 	else if (fileFormat == "bmp" || fileFormat == "dib")
-		result = std::make_unique<INTERNAL::BMPImage>(virtualFilePath);
+		result = MakeScope<INTERNAL::BMPImage>(virtualFilePath);
 	else
 	{
 		TP_ERROR("[Image] Unsupported or unknown Image Format!");
 		TP_WARN("[Image] Using Default Image!");
-		return std::make_unique<INTERNAL::DefaultImage>(virtualFilePath);
+		return MakeScope<INTERNAL::DefaultImage>(virtualFilePath);
 	}
 
 	//Test for Errors
 	if (result->GetPixelDataSize() == 0 || result->GetFormat() == ImageFormat::NONE)
-		result = std::make_unique<INTERNAL::DefaultImage>(virtualFilePath);
+		result = MakeScope<INTERNAL::DefaultImage>(virtualFilePath);
 
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Image> TRAP::Image::LoadFallback()
+TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
 {
-	return std::make_unique<INTERNAL::DefaultImage>("");
+	return MakeScope<INTERNAL::DefaultImage>("");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Image> TRAP::Image::CreateEmpty(ImageFormat format, uint32_t width, uint32_t height)
+TRAP::Scope<TRAP::Image> TRAP::Image::CreateEmpty(ImageFormat format, uint32_t width, uint32_t height)
 {
-	return std::make_unique<INTERNAL::EmptyImage>(format, width, height);
+	return MakeScope<INTERNAL::EmptyImage>(format, width, height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

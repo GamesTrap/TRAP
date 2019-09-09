@@ -8,7 +8,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Graphics::API::Context> TRAP::Graphics::API::Context::s_Context = nullptr;
+TRAP::Scope<TRAP::Graphics::API::Context> TRAP::Graphics::API::Context::s_Context = nullptr;
 TRAP::Graphics::API::RenderAPI TRAP::Graphics::API::Context::s_RenderAPI = RenderAPI::NONE;
 TRAP::Graphics::API::RenderAPI TRAP::Graphics::API::Context::s_newRenderAPI = RenderAPI::NONE;
 
@@ -32,19 +32,19 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 	{
 	case RenderAPI::OpenGL:
 		TP_INFO("[Context][OpenGL] Initializing Context");
-		s_Context = std::make_unique<OpenGLContext>(window);
+		s_Context = MakeScope<OpenGLContext>(window);
 		break;
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	case RenderAPI::D3D12:
 		TP_INFO("[Context][D3D12] Initializing Context");
-		s_Context = std::make_unique<D3D12Context>(window);
+		s_Context = MakeScope<D3D12Context>(window);
 		break;
 #endif
 
 	case RenderAPI::Vulkan:
 		TP_INFO("[Context][Vulkan] Initializing Context");
-		s_Context = std::make_unique<VulkanContext>(window);
+		s_Context = MakeScope<VulkanContext>(window);
 		break;
 
 	default:

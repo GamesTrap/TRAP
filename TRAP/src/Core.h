@@ -130,4 +130,23 @@ constexpr T BIT(T x)
 
 #define TP_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
+namespace TRAP
+{
+	template<typename T>
+	using Scope = std::unique_ptr<T>;
+	template<typename T, typename... Args>
+	constexpr Scope<T> MakeScope(Args&&... args)
+	{
+		return std::make_unique<T>(std::forward<Args>(args)...);		
+	}
+
+	template<typename T>
+	using Ref = std::shared_ptr<T>;
+	template<typename T, typename... Args>
+	constexpr Ref<T> MakeRef(Args&&... args)
+	{
+		return std::make_shared<T>(std::forward<Args>(args)...);
+	}
+}
+
 #endif /*_TRAP_CORE_H_*/

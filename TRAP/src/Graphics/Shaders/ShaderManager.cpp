@@ -3,13 +3,13 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unordered_map<std::string, std::unique_ptr<TRAP::Graphics::Shader>> TRAP::Graphics::ShaderManager::s_Shaders;
+std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Shader>> TRAP::Graphics::ShaderManager::s_Shaders;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::unique_ptr<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(const std::string& filepath)
+const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(const std::string& filepath)
 {
-	std::unique_ptr<Shader> shader = Shader::CreateFromFile(filepath);
+	Scope<Shader> shader = Shader::CreateFromFile(filepath);
 	const std::string name = shader->GetName();
 	
 	Add(std::move(shader));
@@ -19,9 +19,9 @@ const std::unique_ptr<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Lo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::unique_ptr<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(const std::string& name, const std::string& filepath)
+const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(const std::string& name, const std::string& filepath)
 {
-	std::unique_ptr<Shader> shader = Shader::CreateFromFile(name, filepath);
+	Scope<Shader> shader = Shader::CreateFromFile(name, filepath);
 
 	Add(std::move(shader));
 
@@ -30,9 +30,9 @@ const std::unique_ptr<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Lo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::unique_ptr<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(const std::string& name, const std::string& VSSource, const std::string& FSSource, const std::string& GSSource, const std::string& TCSSource, const std::string& TESSource, const std::string& CSSSource)
+const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(const std::string& name, const std::string& VSSource, const std::string& FSSource, const std::string& GSSource, const std::string& TCSSource, const std::string& TESSource, const std::string& CSSSource)
 {
-	std::unique_ptr<Shader> shader = Shader::CreateFromSource(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSSource);
+	Scope<Shader> shader = Shader::CreateFromSource(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSSource);
 
 	Add(std::move(shader));
 
@@ -41,7 +41,7 @@ const std::unique_ptr<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Lo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::ShaderManager::Add(std::unique_ptr<Shader> shader)
+void TRAP::Graphics::ShaderManager::Add(Scope<Shader> shader)
 {
 	if (shader)
 	{
@@ -54,7 +54,7 @@ void TRAP::Graphics::ShaderManager::Add(std::unique_ptr<Shader> shader)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::unique_ptr<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Get(const std::string& name)
+const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Get(const std::string& name)
 {
 	if(Exists(name))
 		return s_Shaders[name];
@@ -65,7 +65,7 @@ const std::unique_ptr<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Ge
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::unordered_map<std::string, std::unique_ptr<TRAP::Graphics::Shader>>& TRAP::Graphics::ShaderManager::GetShaders()
+const std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Shader>>& TRAP::Graphics::ShaderManager::GetShaders()
 {
 	return s_Shaders;
 }
@@ -126,7 +126,7 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::ShaderManager::Reload(const std::unique_ptr<Shader>& shader)
+void TRAP::Graphics::ShaderManager::Reload(const Scope<Shader>& shader)
 {
 	if(Exists(shader->GetName()))
 	{

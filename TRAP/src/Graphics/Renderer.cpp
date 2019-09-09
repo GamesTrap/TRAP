@@ -6,11 +6,11 @@
 #include "Cameras/Camera.h"
 #include "Graphics/Shaders/Shader.h"
 
-std::unique_ptr<TRAP::Graphics::Renderer::SceneData> TRAP::Graphics::Renderer::s_sceneData = std::make_unique<SceneData>();
+TRAP::Scope<TRAP::Graphics::Renderer::SceneData> TRAP::Graphics::Renderer::s_sceneData = MakeScope<SceneData>();
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Renderer::s_uniformBuffer = nullptr;
+TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Renderer::s_uniformBuffer = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -28,7 +28,7 @@ void TRAP::Graphics::Renderer::EndScene()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Submit(const std::unique_ptr<Shader>& shader, const std::unique_ptr<VertexArray>& vertexArray, const Math::Mat4& transform, const RendererPrimitive primitive)
+void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<VertexArray>& vertexArray, const Math::Mat4& transform, const RendererPrimitive primitive)
 {
 	Application::Get().AddSingleDrawCall();
 

@@ -13,8 +13,8 @@ namespace TRAP::Graphics
 		UniformBuffer(UniformBuffer&&) = default;
 		UniformBuffer& operator=(UniformBuffer&&) = default;
 
-		static std::unique_ptr<UniformBuffer> Create(const char* name, uint32_t size);
-		static std::unique_ptr<UniformBuffer> Create(const char* name, void* data, uint32_t size);
+		static Scope<UniformBuffer> Create(const char* name, uint32_t size);
+		static Scope<UniformBuffer> Create(const char* name, void* data, uint32_t size);
 
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;

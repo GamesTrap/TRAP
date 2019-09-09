@@ -32,7 +32,7 @@ namespace TRAP::Graphics::API
 
 	private:
 		std::string m_name;
-		std::vector<std::unique_ptr<Image>> m_images;
+		std::vector<Scope<Image>> m_images;
 		TextureParameters m_parameters;
 	};
 }

@@ -55,9 +55,9 @@ namespace TRAP
 		virtual std::string GetFilePath() const = 0;
 		virtual ImageFormat GetFormat() const = 0;
 
-		static std::unique_ptr<Image> LoadFromFile(const std::string& filepath);
-		static std::unique_ptr<Image> LoadFallback();
-		static std::unique_ptr<Image> CreateEmpty(ImageFormat format, uint32_t width, uint32_t height);
+		static Scope<Image> LoadFromFile(const std::string& filepath);
+		static Scope<Image> LoadFallback();
+		static Scope<Image> CreateEmpty(ImageFormat format, uint32_t width, uint32_t height);
 		
 		template<typename T>
 		static std::vector<T> FlipY(uint32_t width, uint32_t height, ImageFormat format, T* data);

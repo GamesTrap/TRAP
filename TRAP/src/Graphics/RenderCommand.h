@@ -67,7 +67,7 @@ namespace TRAP::Graphics
 	{
 	public:
 		static void Clear(uint32_t buffer);
-		static void Present(Window* window);
+		static void Present(const std::unique_ptr<Window>& window);
 
 		static void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f });
 		static void SetDepthTesting(bool enabled);
@@ -90,21 +90,21 @@ namespace TRAP::Graphics
 
 		static void SetCullMode(RendererCullMode cullMode = RendererCullMode::Back);
 
-		static void DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive = RendererPrimitive::Triangle);
-		static void Draw(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive = RendererPrimitive::Triangle);
+		static void DrawIndexed(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive = RendererPrimitive::Triangle);
+		static void Draw(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive = RendererPrimitive::Triangle);
 	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::RenderCommand::DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
+inline void TRAP::Graphics::RenderCommand::DrawIndexed(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {
 	API::RendererAPI::GetRenderer()->DrawIndexed(vertexArray, primitive);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::RenderCommand::Draw(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
+inline void TRAP::Graphics::RenderCommand::Draw(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {
 	API::RendererAPI::GetRenderer()->Draw(vertexArray, primitive);
 }
@@ -118,7 +118,7 @@ inline void TRAP::Graphics::RenderCommand::Clear(const uint32_t buffer)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::RenderCommand::Present(Window* window)
+inline void TRAP::Graphics::RenderCommand::Present(const std::unique_ptr<Window>& window)
 {
 	API::RendererAPI::GetRenderer()->Present(window);
 }

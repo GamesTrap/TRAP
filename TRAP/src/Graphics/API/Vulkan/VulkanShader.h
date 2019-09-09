@@ -44,7 +44,7 @@ namespace TRAP::Graphics::API
 	private:
 		void Compile(std::array<std::string*, 6> & shaders, VulkanShaderErrorInfo& info);
 		static void PreProcessGLSL(const std::string& source, std::array<std::string*, 6>& shaders);
-		static std::unique_ptr<glslang::TShader> PreProcess(const char* source, uint32_t shaderType, std::string& preProcessedSource);
+		static Scope<glslang::TShader> PreProcess(const char* source, uint32_t shaderType, std::string& preProcessedSource);
 		static bool Parse(glslang::TShader* shader);
 		static bool Link(glslang::TShader* VShader, glslang::TShader* FShader, glslang::TShader* GShader, glslang::TShader* TCShader, glslang::TShader* TEShader, glslang::TShader* CShader, glslang::TProgram& program);
 		static std::vector<std::vector<uint32_t>> ConvertToSPIRV(glslang::TShader* VShader, glslang::TShader* FShader, glslang::TShader* GShader, glslang::TShader* TCShader, glslang::TShader* TEShader, glslang::TShader* CShader, glslang::TProgram& program);

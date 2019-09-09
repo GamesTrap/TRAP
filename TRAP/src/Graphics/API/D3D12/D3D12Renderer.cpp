@@ -45,7 +45,7 @@ void TRAP::Graphics::API::D3D12Renderer::Clear(uint32_t buffer)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::Present(Window* window)
+void TRAP::Graphics::API::D3D12Renderer::Present(const std::unique_ptr<Window>& window)
 {
 	m_context->Present(window);
 }
@@ -139,13 +139,13 @@ void TRAP::Graphics::API::D3D12Renderer::SetCullMode(RendererCullMode cullMode)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
+void TRAP::Graphics::API::D3D12Renderer::DrawIndexed(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::Draw(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
+void TRAP::Graphics::API::D3D12Renderer::Draw(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {
 }
 

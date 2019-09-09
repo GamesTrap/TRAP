@@ -19,7 +19,7 @@ namespace TRAP::Graphics
 		virtual void SetLayout(const BufferLayout& layout) = 0;
 		virtual uint32_t GetVertexCount() const = 0;
 
-		static std::unique_ptr<VertexBuffer> Create(float* vertices, uint32_t size);
+		static Scope<VertexBuffer> Create(float* vertices, uint32_t size);
 	};
 }
 

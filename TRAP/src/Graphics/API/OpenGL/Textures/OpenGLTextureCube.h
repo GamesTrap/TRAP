@@ -38,7 +38,7 @@ namespace TRAP::Graphics::API
 		
 		uint32_t m_handle;
 		std::string m_name;
-		std::array<std::unique_ptr<Image>, 6> m_images;
+		std::array<Scope<Image>, 6> m_images;
 		TextureParameters m_parameters;
 		InputFormat m_inputFormat;
 	};

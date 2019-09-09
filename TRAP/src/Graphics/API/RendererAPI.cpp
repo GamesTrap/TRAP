@@ -8,7 +8,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Graphics::API::RendererAPI> TRAP::Graphics::API::RendererAPI::s_Renderer = nullptr;
+TRAP::Scope<TRAP::Graphics::API::RendererAPI> TRAP::Graphics::API::RendererAPI::s_Renderer = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -26,19 +26,19 @@ void TRAP::Graphics::API::RendererAPI::Init()
 	{
 	case RenderAPI::OpenGL:
 		TP_INFO("[Renderer][OpenGL] Initializing Renderer");
-		s_Renderer = std::make_unique<OpenGLRenderer>();
+		s_Renderer = MakeScope<OpenGLRenderer>();
 		break;
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	case RenderAPI::D3D12:
 		TP_INFO("[Renderer][D3D12] Initializing Renderer");
-		s_Renderer = std::make_unique<D3D12Renderer>();
+		s_Renderer = MakeScope<D3D12Renderer>();
 		break;
 #endif
 
 	case RenderAPI::Vulkan:
 		TP_INFO("[Renderer][Vulkan] Initializing Renderer");
-		s_Renderer = std::make_unique<VulkanRenderer>();
+		s_Renderer = MakeScope<VulkanRenderer>();
 		break;
 
 	default:

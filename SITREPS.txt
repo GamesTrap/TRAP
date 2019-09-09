@@ -402,3 +402,4 @@ SITREP 09/09/2019|19w36a8
     - ShaderManager Added Load functions to replace Add + CreateFromFile/Source ~<20 mins
     - TextureManager Added Load functions to replace Add + CreateFromFile(s)/Cross ~<20 mins
     - VFS Added GetFileName to retrieve filename of a virtualPath ~<15 mins
+    - Added Scopes and Refs as unique_ptr and shared_ptr replacement ~>35 mins

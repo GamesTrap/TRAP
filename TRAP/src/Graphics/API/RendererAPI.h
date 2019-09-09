@@ -39,7 +39,7 @@ namespace TRAP::Graphics::API
 		virtual void InitInternal() = 0;
 
 		virtual void Clear(uint32_t buffer) = 0;
-		virtual void Present(Window* window) = 0;
+		virtual void Present(const std::unique_ptr<Window>& window) = 0;
 
 		virtual void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) = 0;
 		virtual void SetDepthTesting(bool enabled) = 0;
@@ -62,13 +62,13 @@ namespace TRAP::Graphics::API
 
 		virtual void SetCullMode(RendererCullMode cullMode) = 0;
 
-		virtual void DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive) = 0;
-		virtual void Draw(const std::unique_ptr<VertexArray>& vertexArray, RendererPrimitive primitive) = 0;
+		virtual void DrawIndexed(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive) = 0;
+		virtual void Draw(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive) = 0;
 
 		virtual std::string_view GetTitle() const = 0;
 
 	protected:
-		static std::unique_ptr<RendererAPI> s_Renderer;
+		static Scope<RendererAPI> s_Renderer;
 	};
 }
 

@@ -91,7 +91,7 @@ void TRAP::Window::OnUpdate()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::Use(Window* window)
+void TRAP::Window::Use(const std::unique_ptr<Window>& window)
 {
 	if (window)
 		Graphics::API::Context::Use(window);
@@ -414,7 +414,7 @@ void TRAP::Window::SetIcon() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetIcon(const std::unique_ptr<Image>& image) const
+void TRAP::Window::SetIcon(const Scope<Image>& image) const
 {
 	if (!image)
 	{
@@ -571,7 +571,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	s_windows++;
 	if (s_windows > 1)
 	{
-		Use(this);
+		Use(std::unique_ptr<Window>(this));
 		SetVSyncInterval(props.VSync);
 		Use();
 	}

@@ -93,12 +93,12 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 	}
 
 	glslang::TProgram program;
-	std::unique_ptr<glslang::TShader> VShader = nullptr;
-	std::unique_ptr<glslang::TShader> FShader = nullptr;
-	std::unique_ptr<glslang::TShader> GShader = nullptr;
-	std::unique_ptr<glslang::TShader> TCShader = nullptr;
-	std::unique_ptr<glslang::TShader> TEShader = nullptr;
-	std::unique_ptr<glslang::TShader> CShader = nullptr;
+	Scope<glslang::TShader> VShader = nullptr;
+	Scope<glslang::TShader> FShader = nullptr;
+	Scope<glslang::TShader> GShader = nullptr;
+	Scope<glslang::TShader> TCShader = nullptr;
+	Scope<glslang::TShader> TEShader = nullptr;
+	Scope<glslang::TShader> CShader = nullptr;
 
 	if (!shaders[0]->empty())
 	{
@@ -309,42 +309,42 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<glslang::TShader> TRAP::Graphics::API::VulkanShader::PreProcess(const char* source, const uint32_t shaderType, std::string& preProcessedSource)
+TRAP::Scope<glslang::TShader> TRAP::Graphics::API::VulkanShader::PreProcess(const char* source, const uint32_t shaderType, std::string& preProcessedSource)
 {
-	std::unique_ptr<glslang::TShader> shader;
+	Scope<glslang::TShader> shader;
 	if (shaderType == 0)
 	{
-		shader = std::make_unique<glslang::TShader>(EShLangVertex);
+		shader = MakeScope<glslang::TShader>(EShLangVertex);
 		shader->setStrings(&source, 1);
 		shader->setEnvInput(glslang::EShSourceGlsl, EShLangVertex, glslang::EShClientVulkan, 460);
 	}
 	else if (shaderType == 1)
 	{
-		shader = std::make_unique<glslang::TShader>(EShLangFragment);
+		shader = MakeScope<glslang::TShader>(EShLangFragment);
 		shader->setStrings(&source, 1);
 		shader->setEnvInput(glslang::EShSourceGlsl, EShLangFragment, glslang::EShClientVulkan, 460);
 	}
 	else if (shaderType == 2)
 	{
-		shader = std::make_unique<glslang::TShader>(EShLangGeometry);
+		shader = MakeScope<glslang::TShader>(EShLangGeometry);
 		shader->setStrings(&source, 1);
 		shader->setEnvInput(glslang::EShSourceGlsl, EShLangGeometry, glslang::EShClientVulkan, 460);
 	}
 	else if (shaderType == 3)
 	{
-		shader = std::make_unique<glslang::TShader>(EShLangTessControl);
+		shader = MakeScope<glslang::TShader>(EShLangTessControl);
 		shader->setStrings(&source, 1);
 		shader->setEnvInput(glslang::EShSourceGlsl, EShLangTessControl, glslang::EShClientVulkan, 460);
 	}
 	else if (shaderType == 4)
 	{
-		shader = std::make_unique<glslang::TShader>(EShLangTessEvaluation);
+		shader = MakeScope<glslang::TShader>(EShLangTessEvaluation);
 		shader->setStrings(&source, 1);
 		shader->setEnvInput(glslang::EShSourceGlsl, EShLangTessEvaluation, glslang::EShClientVulkan, 460);
 	}
 	else if (shaderType == 5)
 	{
-		shader = std::make_unique<glslang::TShader>(EShLangCompute);
+		shader = MakeScope<glslang::TShader>(EShLangCompute);
 		shader->setStrings(&source, 1);
 		shader->setEnvInput(glslang::EShSourceGlsl, EShLangCompute, glslang::EShClientVulkan, 460);
 	}

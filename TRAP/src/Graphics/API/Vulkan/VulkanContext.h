@@ -17,8 +17,8 @@ namespace TRAP::Graphics::API
 
 		void SetVSyncIntervalInternal(uint32_t interval) override;
 
-		void Present(Window* window);
-		void UseInternal(Window* window) override;
+		void Present(const std::unique_ptr<Window>& window);
+		void UseInternal(const std::unique_ptr<Window>& window) override;
 
 		static VulkanContext* Get();
 		VkSurfaceKHR& GetSurface();

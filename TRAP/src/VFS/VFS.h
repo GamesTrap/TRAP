@@ -41,15 +41,15 @@ namespace TRAP
 		static std::string GetFileName(const std::string& virtualPath);
 
 	private:
-		static std::unique_ptr<VFS> s_Instance;
+		static Scope<VFS> s_Instance;
 
 		std::unordered_map<std::string, std::vector<std::string>> m_mountPoints;
 
 		bool m_hotShaderReloading = false;
-		std::unique_ptr<FileWatcher> m_shaderFileWatcher;
+		Scope<FileWatcher> m_shaderFileWatcher;
 
 		bool m_hotTextureReloading = false;
-		std::unique_ptr<FileWatcher> m_textureFileWatcher;
+		Scope<FileWatcher> m_textureFileWatcher;
 	};
 }
 

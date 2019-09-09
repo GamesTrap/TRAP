@@ -15,7 +15,7 @@ namespace TRAP::Graphics
 
 		virtual uint32_t GetCount() const = 0;
 
-		static std::unique_ptr<IndexBuffer> Create(uint32_t* indices, uint32_t size);
+		static Scope<IndexBuffer> Create(uint32_t* indices, uint32_t size);
 	};
 }
 

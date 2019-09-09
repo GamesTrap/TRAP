@@ -15,10 +15,10 @@ namespace TRAP::Graphics
 	class TextureCube : public Texture
 	{
 	public:
-		static std::unique_ptr<TextureCube> CreateFromFiles(const std::string& name, const std::array<std::string, 6>& filepaths, TextureParameters parameters = TextureParameters());
-		static std::unique_ptr<TextureCube> CreateFromCross(const std::string& name, const std::string& filepath, InputFormat format, TextureParameters parameters = TextureParameters());
-		static std::unique_ptr<TextureCube> CreateFromCross(const std::string& filepath, InputFormat format, TextureParameters parameters = TextureParameters());
-		static std::unique_ptr<TextureCube> Create(TextureParameters parameters = TextureParameters());
+		static Scope<TextureCube> CreateFromFiles(const std::string& name, const std::array<std::string, 6>& filepaths, TextureParameters parameters = TextureParameters());
+		static Scope<TextureCube> CreateFromCross(const std::string& name, const std::string& filepath, InputFormat format, TextureParameters parameters = TextureParameters());
+		static Scope<TextureCube> CreateFromCross(const std::string& filepath, InputFormat format, TextureParameters parameters = TextureParameters());
+		static Scope<TextureCube> Create(TextureParameters parameters = TextureParameters());
 
 		TextureType GetType() const override;
 		virtual InputFormat GetInputFormat() const = 0;

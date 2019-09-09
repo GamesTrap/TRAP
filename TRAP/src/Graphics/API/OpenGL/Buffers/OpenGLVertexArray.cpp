@@ -26,7 +26,7 @@ TRAP::Graphics::API::OpenGLVertexArray::~OpenGLVertexArray()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLVertexArray::AddVertexBuffer(std::unique_ptr<VertexBuffer>& buffer)
+void TRAP::Graphics::API::OpenGLVertexArray::AddVertexBuffer(Scope<VertexBuffer>& buffer)
 {
 	TP_CORE_ASSERT(buffer->GetLayout().GetElements().size(), "[VBO][OpenGL] VertexBuffer has no layout!");
 	
@@ -47,12 +47,12 @@ void TRAP::Graphics::API::OpenGLVertexArray::AddVertexBuffer(std::unique_ptr<Ver
 
 	m_indexCount += buffer->GetVertexCount() / components;
 
-	m_vertexBuffers.push_back(std::move(buffer));
+	m_vertexBuffers.emplace_back(std::move(buffer));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLVertexArray::SetIndexBuffer(std::unique_ptr<IndexBuffer>& buffer)
+void TRAP::Graphics::API::OpenGLVertexArray::SetIndexBuffer(Scope<IndexBuffer>& buffer)
 {
 	m_indexBuffer = std::move(buffer);
 	OpenGLCall(glVertexArrayElementBuffer(m_handle, dynamic_cast<OpenGLIndexBuffer*>(m_indexBuffer.get())->GetHandle()));
@@ -79,14 +79,14 @@ void TRAP::Graphics::API::OpenGLVertexArray::Unbind() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::unique_ptr<TRAP::Graphics::VertexBuffer>>& TRAP::Graphics::API::OpenGLVertexArray::GetVertexBuffers()
+std::vector<TRAP::Scope<TRAP::Graphics::VertexBuffer>>& TRAP::Graphics::API::OpenGLVertexArray::GetVertexBuffers()
 {
 	return m_vertexBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::IndexBuffer* TRAP::Graphics::API::OpenGLVertexArray::GetIndexBuffer()
+const TRAP::Scope<TRAP::Graphics::IndexBuffer>& TRAP::Graphics::API::OpenGLVertexArray::GetIndexBuffer()
 {
-	return m_indexBuffer.get();
+	return m_indexBuffer;
 }

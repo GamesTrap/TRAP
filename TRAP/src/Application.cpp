@@ -119,7 +119,7 @@ TRAP::Application::~Application()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::PushLayer(std::unique_ptr<Layer> layer)
+void TRAP::Application::PushLayer(Scope<Layer> layer)
 {
 	//layer->OnAttach();
 	m_layerStack.PushLayer(std::move(layer));
@@ -127,7 +127,7 @@ void TRAP::Application::PushLayer(std::unique_ptr<Layer> layer)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::PushOverlay(std::unique_ptr<Layer> overlay)
+void TRAP::Application::PushOverlay(Scope<Layer> overlay)
 {
 	//overlay->OnAttach();
 	m_layerStack.PushOverlay(std::move(overlay));
@@ -180,7 +180,7 @@ void TRAP::Application::Run()
 			tickTimer.Reset();
 		}
 
-		Window::Use(m_window.get());
+		Window::Use(m_window);
 		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 		{
 			ImGuiLayer::Begin();
@@ -189,7 +189,7 @@ void TRAP::Application::Run()
 			ImGuiLayer::End();
 		}
 
-		Graphics::RenderCommand::Present(m_window.get());
+		Graphics::RenderCommand::Present(m_window);
 		m_window->OnUpdate();
 
 		//Update Shaders if needed

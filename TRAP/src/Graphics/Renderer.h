@@ -26,8 +26,8 @@ namespace TRAP::Graphics
 		static void BeginScene(Camera& camera);
 		static void EndScene();
 
-		static void Submit(const std::unique_ptr<Shader>& shader, const std::unique_ptr<VertexArray>& vertexArray, const Math::Mat4& transform = Math::Mat4::Identity(), RendererPrimitive primitive = RendererPrimitive::Triangle);
-
+		static void Submit(const Scope<Shader>& shader, const Scope<VertexArray>& vertexArray, const Math::Mat4& transform = Math::Mat4::Identity(), RendererPrimitive primitive = RendererPrimitive::Triangle);
+		
 		static void Cleanup();
 
 	private:
@@ -43,8 +43,8 @@ namespace TRAP::Graphics
 			Math::Mat4 m_modelMatrix;
 		};
 
-		static std::unique_ptr<SceneData> s_sceneData;
-		static std::unique_ptr<UniformBuffer> s_uniformBuffer;
+		static Scope<SceneData> s_sceneData;
+		static Scope<UniformBuffer> s_uniformBuffer;
 	};
 }
 

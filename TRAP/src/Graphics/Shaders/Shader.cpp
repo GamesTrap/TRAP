@@ -13,7 +13,7 @@ const TRAP::Graphics::Shader* TRAP::Graphics::Shader::s_CurrentlyBound = nullptr
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name, const std::string& filePath)
+TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name, const std::string& filePath)
 {
 	if(name.empty())
 	{
@@ -43,7 +43,7 @@ std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(c
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
 	{
-		std::unique_ptr<API::D3D12Shader> result = std::make_unique<API::D3D12Shader>(name, source);
+		Scope<API::D3D12Shader> result = MakeScope<API::D3D12Shader>(name, source);
 		result->m_filepath = VFSFilePath;
 		return result;
 	}
@@ -51,14 +51,14 @@ std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(c
 
 	case API::RenderAPI::Vulkan:
 	{
-		std::unique_ptr<API::VulkanShader> result = std::make_unique<API::VulkanShader>(name, source);
+		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, source);
 		result->m_filepath = VFSFilePath;
 		return result;
 	}
 
 	case API::RenderAPI::OpenGL:
 	{
-		std::unique_ptr<API::OpenGLShader> result = std::make_unique<API::OpenGLShader>(name, source);
+		Scope<API::OpenGLShader> result = MakeScope<API::OpenGLShader>(name, source);
 		result->m_filepath = VFSFilePath;
 		return result;
 	}
@@ -70,7 +70,7 @@ std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& filePath)
+TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& filePath)
 {
 	std::string source;
 	std::string VFSFilePath;
@@ -96,7 +96,7 @@ std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(c
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
 	{
-		std::unique_ptr<API::D3D12Shader> result = std::make_unique<API::D3D12Shader>(name, source);
+		Scope<API::D3D12Shader> result = MakeScope<API::D3D12Shader>(name, source);
 		result->m_filepath = VFSFilePath;
 		return result;
 	}
@@ -104,14 +104,14 @@ std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(c
 
 	case API::RenderAPI::Vulkan:
 	{
-		std::unique_ptr<API::VulkanShader> result = std::make_unique<API::VulkanShader>(name, source);
+		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, source);
 		result->m_filepath = VFSFilePath;
 		return result;
 	}
 
 	case API::RenderAPI::OpenGL:
 	{
-		std::unique_ptr<API::OpenGLShader> result = std::make_unique<API::OpenGLShader>(name, source);
+		Scope<API::OpenGLShader> result = MakeScope<API::OpenGLShader>(name, source);
 		result->m_filepath = VFSFilePath;
 		return result;
 	}
@@ -123,29 +123,20 @@ std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const std::string& name, const std::string& VSSource, const std::string& FSSource, const std::string& GSSource, const std::string& TCSSource, const std::string& TESSource, const std::string& CSSource)
+TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const std::string& name, const std::string& VSSource, const std::string& FSSource, const std::string& GSSource, const std::string& TCSSource, const std::string& TESSource, const std::string& CSSource)
 {
 	switch (API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
-	{
-		std::unique_ptr<API::D3D12Shader> result = std::make_unique<API::D3D12Shader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
-		return result;
-	}
+		return MakeScope<API::D3D12Shader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
 #endif
 
 	case API::RenderAPI::Vulkan:
-	{
-		std::unique_ptr<API::VulkanShader> result = std::make_unique<API::VulkanShader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
-		return result;
-	}
+		return MakeScope<API::VulkanShader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
 
 	case API::RenderAPI::OpenGL:
-	{
-		std::unique_ptr<API::OpenGLShader> result = std::make_unique<API::OpenGLShader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
-		return result;
-	}
+		return MakeScope<API::OpenGLShader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
 
 	default:
 		return nullptr;

@@ -10,20 +10,20 @@ const TRAP::Graphics::VertexArray* TRAP::Graphics::VertexArray::s_CurrentlyBound
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Graphics::VertexArray> TRAP::Graphics::VertexArray::Create()
+TRAP::Scope<TRAP::Graphics::VertexArray> TRAP::Graphics::VertexArray::Create()
 {
 	switch(API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
-		return std::make_unique<API::D3D12VertexArray>();
+		return TRAP::MakeScope<API::D3D12VertexArray>();
 #endif
 
 	case API::RenderAPI::Vulkan:
-		return std::make_unique<API::VulkanVertexArray>();
+		return TRAP::MakeScope<API::VulkanVertexArray>();
 
 	case API::RenderAPI::OpenGL:
-		return std::make_unique<API::OpenGLVertexArray>();
+		return TRAP::MakeScope<API::OpenGLVertexArray>();
 
 	default:
 		//Shouldn't be reached

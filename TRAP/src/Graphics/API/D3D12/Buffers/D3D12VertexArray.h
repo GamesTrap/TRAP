@@ -17,19 +17,19 @@ namespace TRAP::Graphics::API
 		D3D12VertexArray& operator=(D3D12VertexArray&&) = default;
 		~D3D12VertexArray();
 
-		void AddVertexBuffer(std::unique_ptr<VertexBuffer>& buffer) override;
-		void SetIndexBuffer(std::unique_ptr<IndexBuffer>& buffer) override;
+		void AddVertexBuffer(Scope<VertexBuffer>& buffer) override;
+		void SetIndexBuffer(Scope<IndexBuffer>& buffer) override;
 
 		void Bind() const override;
 		void Unbind() const override;
 		
-		std::vector<std::unique_ptr<VertexBuffer>>& GetVertexBuffers() override;
-		IndexBuffer* GetIndexBuffer() override;
+		std::vector<Scope<VertexBuffer>>& GetVertexBuffers() override;
+		const Scope<IndexBuffer>& GetIndexBuffer() override;
 		uint32_t GetIndexCount() const override;
 
 	private:
-		std::vector<std::unique_ptr<VertexBuffer>> m_vertexBuffers;
-		std::unique_ptr<IndexBuffer> m_indexBuffer;
+		std::vector<Scope<VertexBuffer>> m_vertexBuffers;
+		Scope<IndexBuffer> m_indexBuffer;
 	};
 }
 

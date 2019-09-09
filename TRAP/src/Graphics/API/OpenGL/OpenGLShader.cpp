@@ -173,7 +173,7 @@ void TRAP::Graphics::API::OpenGLShader::CheckForUniforms()
 		uint32_t count = 0;
 		GLenum type = GL_NONE;
 		OpenGLCall(glGetProgramiv(m_handle, GL_ACTIVE_UNIFORM_MAX_LENGTH, reinterpret_cast<int32_t*>(&maxNameLength)));
-		const std::unique_ptr<char[]> uniformName = std::make_unique<char[]>(maxNameLength);
+		const Scope<char[]> uniformName = MakeScope<char[]>(maxNameLength);
 
 		for (uint32_t i = 0; i < uniformCount; ++i)
 		{

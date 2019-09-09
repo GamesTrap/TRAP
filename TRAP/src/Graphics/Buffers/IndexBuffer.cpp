@@ -6,20 +6,20 @@
 #include "Graphics/API/Vulkan/Buffers/VulkanIndexBuffer.h"
 #include "Graphics/API/OpenGL/Buffers/OpenGLIndexBuffer.h"
 
-std::unique_ptr<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uint32_t* indices, uint32_t size)
+TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uint32_t* indices, uint32_t size)
 {
 	switch(API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
-		return std::make_unique<API::D3D12IndexBuffer>(indices, size);
+		return MakeScope<API::D3D12IndexBuffer>(indices, size);
 #endif
 
 	case API::RenderAPI::Vulkan:
-		return std::make_unique<API::VulkanIndexBuffer>(indices, size);
+		return MakeScope<API::VulkanIndexBuffer>(indices, size);
 
 	case API::RenderAPI::OpenGL:
-		return std::make_unique<API::OpenGLIndexBuffer>(indices, size);
+		return MakeScope<API::OpenGLIndexBuffer>(indices, size);
 
 	default:
 		//Shouldn't be reached

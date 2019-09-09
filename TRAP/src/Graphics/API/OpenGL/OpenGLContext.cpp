@@ -36,14 +36,14 @@ void TRAP::Graphics::API::OpenGLContext::SetVSyncIntervalInternal(const uint32_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLContext::Present(Window* window)
+void TRAP::Graphics::API::OpenGLContext::Present(const std::unique_ptr<Window>& window)
 {
 	glfwSwapBuffers(static_cast<GLFWwindow*>(window->GetNativeWindow()));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLContext::UseInternal(Window* window)
+void TRAP::Graphics::API::OpenGLContext::UseInternal(const std::unique_ptr<Window>& window)
 {
 	if (Window::GetActiveWindows() > 1)
 		glfwMakeContextCurrent(static_cast<GLFWwindow*>(window->GetNativeWindow()));

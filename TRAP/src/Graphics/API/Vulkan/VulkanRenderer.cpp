@@ -79,7 +79,7 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(uint32_t buffer)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::Present(Window* window)
+void TRAP::Graphics::API::VulkanRenderer::Present(const std::unique_ptr<Window>& window)
 {
 	m_context->Present(window);
 }
@@ -173,13 +173,13 @@ void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const RendererCullMode cul
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
+void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::Draw(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
+void TRAP::Graphics::API::VulkanRenderer::Draw(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {
 }
 

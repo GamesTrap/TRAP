@@ -31,7 +31,7 @@ namespace TRAP::Graphics::API
 	private:
 		void Load(const std::string& filepath);
 
-		std::unique_ptr<Image> m_image;
+		Scope<Image> m_image;
 		std::string m_name;
 		TextureParameters m_parameters;
 		uint32_t m_handle;

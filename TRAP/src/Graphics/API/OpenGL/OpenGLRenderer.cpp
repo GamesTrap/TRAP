@@ -55,7 +55,7 @@ void TRAP::Graphics::API::OpenGLRenderer::Clear(const uint32_t buffer)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::Present(Window* window)
+void TRAP::Graphics::API::OpenGLRenderer::Present(const std::unique_ptr<Window>& window)
 {
 	OpenGLContext::Present(window);
 }
@@ -195,14 +195,14 @@ void TRAP::Graphics::API::OpenGLRenderer::SetCullMode(const RendererCullMode cul
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::DrawIndexed(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
+void TRAP::Graphics::API::OpenGLRenderer::DrawIndexed(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {
 	OpenGLCall(glDrawElementsBaseVertex(TRAPRendererPrimitiveToOpenGL(primitive), vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr, 0));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::Draw(const std::unique_ptr<VertexArray>& vertexArray, const RendererPrimitive primitive)
+void TRAP::Graphics::API::OpenGLRenderer::Draw(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {
 	OpenGLCall(glDrawArrays(TRAPRendererPrimitiveToOpenGL(primitive), 0, vertexArray->GetIndexCount()));
 }

@@ -21,7 +21,7 @@ namespace TRAP::Graphics
 
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0;
-		virtual const std::unique_ptr<Texture>& GetTexture() const = 0;
+		virtual const Scope<Texture>& GetTexture() const = 0;
 
 	protected:
 		virtual void Init() {};
