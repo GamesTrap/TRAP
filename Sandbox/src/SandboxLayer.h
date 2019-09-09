@@ -45,12 +45,13 @@ public:
 	void OnAttach() override
 	{
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
-		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("/Shaders/Color.shader"));
-		TRAP::Graphics::ShaderManager::Add(TRAP::Graphics::Shader::CreateFromFile("/Shaders/Texture.shader"));
+		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
+		TRAP::Graphics::ShaderManager::Load("/Shaders/Texture.shader");
 
 		//EXPERIMENTAL
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
-		TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture2D::CreateFromFile("Debug", "/Textures/TRAPWhiteLogo2048x2048.tga"));
+		//TRAP::Graphics::TextureManager::Add(TRAP::Graphics::Texture2D::CreateFromFile("Debug", "/Textures/TRAPWhiteLogo2048x2048.tga"));
+		TRAP::Graphics::TextureManager::Load("Debug", "/Textures/TRAPWhiteLogo2048x2048.tga");
 		//////////////
 
 		///////////////

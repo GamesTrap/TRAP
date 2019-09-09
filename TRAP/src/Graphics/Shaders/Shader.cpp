@@ -2,7 +2,6 @@
 #include "Shader.h"
 
 #include "VFS/VFS.h"
-#include "Utils/String.h"
 #include "Graphics/API/Context.h"
 #include "Graphics/API/D3D12/D3D12Shader.h"
 #include "Graphics/API/OpenGL/OpenGLShader.h"
@@ -80,8 +79,7 @@ std::unique_ptr<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(c
 	{
 		source = VFS::Get()->SilentReadTextFile(filePath);
 		VFSFilePath = VFS::MakeVirtualPathCompatible(filePath);
-		name = Utils::String::SplitString(VFSFilePath, '/').back();
-		name = name.substr(0, name.size() - (Utils::String::GetSuffix(name).size() + 1));
+		name = VFS::GetFileName(VFSFilePath);
 	}
 
 	if (!filePath.empty() && source.empty())

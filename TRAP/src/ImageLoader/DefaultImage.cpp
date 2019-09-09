@@ -1,8 +1,9 @@
 #include "TRAPPCH.h"
 #include "DefaultImage.h"
+#include "Embed.h"
 
 TRAP::INTERNAL::DefaultImage::DefaultImage(std::string filepath)
-	: m_filepath(std::move(filepath))
+	: m_filepath(std::move(filepath)), m_data(Embed::DefaultImageData.begin(), Embed::DefaultImageData.end())
 {
 }
 
@@ -10,14 +11,14 @@ TRAP::INTERNAL::DefaultImage::DefaultImage(std::string filepath)
 
 void* TRAP::INTERNAL::DefaultImage::GetPixelData()
 {
-	return defaultImageData.data();
+	return m_data.data();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint32_t TRAP::INTERNAL::DefaultImage::GetPixelDataSize() const
 {
-	return static_cast<uint32_t>(defaultImageData.size());
+	return static_cast<uint32_t>(m_data.size());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

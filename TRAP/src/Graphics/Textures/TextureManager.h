@@ -10,6 +10,12 @@ namespace TRAP::Graphics
 	class TextureManager
 	{
 	public:
+		static const std::unique_ptr<Texture>& Load(const std::string& filepath, TextureParameters parameters = TextureParameters());
+		static const std::unique_ptr<Texture>& Load(const std::string& name, const std::string& filepath, TextureParameters parameters = TextureParameters());
+		static const std::unique_ptr<Texture>& Load(const std::string& name, const std::string& filepath, InputFormat format, TextureParameters parameters = TextureParameters());
+		static const std::unique_ptr<Texture>& Load(const std::string& filepath, InputFormat format, TextureParameters parameters = TextureParameters());
+		static const std::unique_ptr<Texture>& Load(const std::string& name, const std::array<std::string, 6> & filepaths, TextureParameters parameters = TextureParameters());
+		
 		static void Add(std::unique_ptr<Texture> texture);
 		static const std::unique_ptr<Texture>& Get(const std::string& name, TextureType textureType);
 		static const std::unique_ptr<Texture2D>& Get2D(const std::string& name);

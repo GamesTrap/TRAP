@@ -7,6 +7,63 @@ std::unordered_map<std::string, std::unique_ptr<TRAP::Graphics::Texture>> TRAP::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+const std::unique_ptr<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load(const std::string& filepath, const TextureParameters parameters)
+{
+	std::unique_ptr<Texture> texture = Texture2D::CreateFromFile(filepath, parameters);
+	const std::string name = texture->GetName();
+
+	Add(std::move(texture));
+
+	return Get(name, TextureType::Texture2D);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::unique_ptr<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load(const std::string& name, const std::string& filepath, const TextureParameters parameters)
+{
+	std::unique_ptr<Texture> texture = Texture2D::CreateFromFile(name, filepath, parameters);
+
+	Add(std::move(texture));
+
+	return Get(name, TextureType::Texture2D);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::unique_ptr<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load(const std::string& name, const std::string& filepath, const InputFormat format, const TextureParameters parameters)
+{
+	std::unique_ptr<Texture> texture = TextureCube::CreateFromCross(name, filepath, format, parameters);
+
+	Add(std::move(texture));
+
+	return Get(name, TextureType::TextureCube);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::unique_ptr<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load(const std::string& filepath, const InputFormat format, const TextureParameters parameters)
+{
+	std::unique_ptr<Texture> texture = TextureCube::CreateFromCross(filepath, format, parameters);
+	const std::string name = texture->GetName();
+
+	Add(std::move(texture));
+
+	return Get(name, TextureType::TextureCube);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::unique_ptr<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load(const std::string& name, const std::array<std::string, 6> & filepaths, TextureParameters parameters)
+{
+	std::unique_ptr<Texture> texture = TextureCube::CreateFromFiles(name, filepaths, parameters);
+
+	Add(std::move(texture));
+
+	return Get(name, TextureType::TextureCube);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::TextureManager::Add(std::unique_ptr<Texture> texture)
 {
 	if(texture)

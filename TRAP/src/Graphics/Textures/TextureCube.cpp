@@ -72,8 +72,7 @@ std::unique_ptr<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create
 
 std::unique_ptr<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromCross(const std::string& filepath, InputFormat format, TextureParameters parameters)
 {
-	std::string name = Utils::String::SplitString(VFS::MakeVirtualPathCompatible(filepath), '/').back();
-	name = name.substr(0, name.size() - (Utils::String::GetSuffix(name).size() + 1));
+	std::string name = VFS::GetFileName(VFS::MakeVirtualPathCompatible(filepath));
 	
 	switch (API::Context::GetRenderAPI())
 	{

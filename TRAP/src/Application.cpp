@@ -3,7 +3,7 @@
 
 #include "VFS/VFS.h"
 #include "Graphics/Shaders/ShaderManager.h"
-#include "Graphics/Shaders/ShaderFactory.h"
+#include "Embed.h"
 #include "Graphics/RenderCommand.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/Textures/TextureManager.h"
@@ -84,7 +84,7 @@ TRAP::Application::Application()
 	m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
 	//Always added as a fallback shader
-	Graphics::ShaderManager::Add(Graphics::ShaderFactory::PassthroughShader());
+	Graphics::ShaderManager::Load("Passthrough", Embed::PassthroughVS, Embed::PassthroughFS);
 	//Always added as a fallback texture
 	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
 	Graphics::TextureManager::Add(Graphics::TextureCube::Create());
@@ -271,7 +271,7 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 	m_window = std::make_unique<Window>(props);
 	m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 	//Always added as a fallback shader
-	Graphics::ShaderManager::Add(Graphics::ShaderFactory::PassthroughShader());
+	Graphics::ShaderManager::Load("Passthrough", Embed::PassthroughVS, Embed::PassthroughFS);
 	//Always added as a fallback texture
 	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
 
@@ -298,7 +298,7 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI)
 	m_window->SetTitle(std::string(m_window->GetTitle()));
 
 	//Always added as a fallback shader
-	Graphics::ShaderManager::Add(Graphics::ShaderFactory::PassthroughShader());
+	Graphics::ShaderManager::Load("Passthrough", Embed::PassthroughVS, Embed::PassthroughFS);
 	//Always added as a fallback texture
 	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
 

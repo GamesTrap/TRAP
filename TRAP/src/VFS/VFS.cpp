@@ -266,3 +266,13 @@ std::string TRAP::VFS::MakeVirtualPathCompatible(const std::string& virtualPath)
 
 	return '/' + virtualDir + remainder;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::VFS::GetFileName(const std::string& virtualPath)
+{
+	std::string result = Utils::String::SplitString(virtualPath, '/').back();
+	result = result.substr(0, result.size() - (Utils::String::GetSuffix(result).size() + 1));
+
+	return result;
+}

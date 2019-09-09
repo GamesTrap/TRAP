@@ -44,8 +44,7 @@ std::unique_ptr<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFrom
 
 std::unique_ptr<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string& filepath, TextureParameters parameters)
 {
-	std::string name = Utils::String::SplitString(VFS::MakeVirtualPathCompatible(filepath), '/').back();
-	name = name.substr(0, name.size() - (Utils::String::GetSuffix(name).size() + 1));
+	std::string name = VFS::GetFileName(VFS::MakeVirtualPathCompatible(filepath));
 	
 	switch (API::Context::GetRenderAPI())
 	{

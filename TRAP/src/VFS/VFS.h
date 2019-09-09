@@ -38,6 +38,7 @@ namespace TRAP
 		static VFS* Get();
 
 		static std::string MakeVirtualPathCompatible(const std::string& virtualPath);
+		static std::string GetFileName(const std::string& virtualPath);
 
 	private:
 		static std::unique_ptr<VFS> s_Instance;

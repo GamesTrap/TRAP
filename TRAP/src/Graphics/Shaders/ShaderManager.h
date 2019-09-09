@@ -8,6 +8,16 @@ namespace TRAP::Graphics
 	class ShaderManager
 	{
 	public:
+		static const std::unique_ptr<Shader>& Load(const std::string& filepath);
+		static const std::unique_ptr<Shader>& Load(const std::string& name, const std::string& filepath);
+		static const std::unique_ptr<Shader>& Load(const std::string& name,
+		                                           const std::string& VSSource,
+		                                           const std::string& FSSource,
+		                                           const std::string& GSSource = "",
+		                                           const std::string& TCSSource = "",
+		                                           const std::string& TESSource = "",
+		                                           const std::string& CSSSource = "");
+		
 		static void Add(std::unique_ptr<Shader> shader);
 		static const std::unique_ptr<Shader>& Get(const std::string& name);
 		static const std::unordered_map<std::string, std::unique_ptr<Shader>>& GetShaders();
