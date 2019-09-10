@@ -403,3 +403,7 @@ SITREP 09/09/2019|19w36a8
     - TextureManager Added Load functions to replace Add + CreateFromFile(s)/Cross ~<20 mins
     - VFS Added GetFileName to retrieve filename of a virtualPath ~<15 mins
     - Added Scopes and Refs as unique_ptr and shared_ptr replacement ~>35 mins
+
+SITREP 09/11/2019|19w36a9
+    - Changed TRAP Engine version to 19w36a9(0.5.32)
+    - Window Added Detection for which Windows uses which Monitor when using Fullscreen or Borderless ~>35 mins

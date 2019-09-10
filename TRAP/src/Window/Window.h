@@ -7,7 +7,6 @@
 #include <GLFW/glfw3.h>
 
 #include "Event/Event.h"
-#include "Utils/Logo.h"
 #include "ImageLoader/Image.h"
 
 namespace TRAP
@@ -140,6 +139,8 @@ namespace TRAP
 		} m_oldWindowedParams{};		
 		
 		static uint32_t s_windows;
+
+		static std::vector<Window*> s_fullscreenWindows;
 	};
 }
 
