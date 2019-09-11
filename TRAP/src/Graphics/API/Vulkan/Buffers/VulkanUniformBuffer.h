@@ -16,7 +16,7 @@ namespace TRAP::Graphics::API
 		VulkanUniformBuffer(VulkanUniformBuffer&&) = default;
 		VulkanUniformBuffer& operator=(VulkanUniformBuffer&&) = default;
 
-		void Bind() const override;
+		void Bind(uint32_t bindingPoint) const override;
 		void Unbind() const override;
 
 		void UpdateData(const void* data, uint32_t size) override;

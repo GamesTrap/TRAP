@@ -16,7 +16,7 @@ namespace TRAP::Graphics
 		static Scope<UniformBuffer> Create(const char* name, uint32_t size);
 		static Scope<UniformBuffer> Create(const char* name, void* data, uint32_t size);
 
-		virtual void Bind() const = 0;
+		virtual void Bind(uint32_t bindingPoint = 1) const = 0;
 		virtual void Unbind() const = 0;
 
 		virtual void UpdateData(const void* data, uint32_t size) = 0;

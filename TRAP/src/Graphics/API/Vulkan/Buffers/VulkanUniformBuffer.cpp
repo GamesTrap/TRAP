@@ -15,7 +15,7 @@ TRAP::Graphics::API::VulkanUniformBuffer::VulkanUniformBuffer(const char* name, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanUniformBuffer::Bind() const
+void TRAP::Graphics::API::VulkanUniformBuffer::Bind(uint32_t bindingPoint) const
 {
 }
 

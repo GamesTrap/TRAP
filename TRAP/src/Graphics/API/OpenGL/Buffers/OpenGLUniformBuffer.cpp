@@ -42,12 +42,10 @@ TRAP::Graphics::API::OpenGLUniformBuffer::~OpenGLUniformBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLUniformBuffer::Bind() const
+void TRAP::Graphics::API::OpenGLUniformBuffer::Bind(const uint32_t bindingPoint) const
 {
-	OpenGLCall(glBindBuffer(GL_UNIFORM_BUFFER, m_handle));
-
 	for (const auto& shader : ShaderManager::GetShaders())
-	{
+	{		
 		uint32_t uniformBlockIndex = GL_INVALID_INDEX;
 		if(dynamic_cast<OpenGLShader*>(shader.second.get())->GetHandle())
 		{			
@@ -56,11 +54,11 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::Bind() const
 
 		if (uniformBlockIndex != GL_INVALID_INDEX)
 		{			
-			OpenGLCall(glUniformBlockBinding(dynamic_cast<OpenGLShader*>(shader.second.get())->GetHandle(), uniformBlockIndex, 0));		
+			OpenGLCall(glUniformBlockBinding(dynamic_cast<OpenGLShader*>(shader.second.get())->GetHandle(), uniformBlockIndex, bindingPoint));
 		}
 	}
 
-	OpenGLCall(glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_handle));
+	OpenGLCall(glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, m_handle));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -47,6 +47,7 @@ public:
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Texture.shader");
+		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColor.shader"); //TODO
 
 		//EXPERIMENTAL
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
@@ -87,12 +88,16 @@ public:
 		TRAP::Graphics::RenderCommand::SetCull(false);
 		TRAP::Graphics::RenderCommand::SetBlend(true);
 		TRAP::Graphics::RenderCommand::SetBlendFunction(TRAP::Graphics::RendererBlendFunction::Source_Alpha, TRAP::Graphics::RendererBlendFunction::One_Minus_Source_Alpha);
+
+		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("ColorBuffer", &m_color, sizeof(TRAP::Math::Vec4));
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnDetach() override
 	{
+		m_uniformBuffer.reset();
+		
 		m_vertexArray->Unbind();
 		m_vertexArray.reset();
 	}
@@ -130,8 +135,10 @@ public:
 					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray);
 				else
 				{
+					m_uniformBuffer->Bind(1);
 					TRAP::Graphics::TextureManager::Get2D("Debug")->Bind();
-					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Texture"), m_vertexArray);
+					//TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Texture"), m_vertexArray);
+					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColor"), m_vertexArray);
 				}
 			}
 		}
@@ -268,4 +275,7 @@ private:
 	TRAP::Math::Vec3 m_cameraRotation;
 	float m_cameraMovementSpeed = 2.5f;
 	float m_cameraRotationSpeed = 180.0f;
+
+	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_uniformBuffer{};
+	TRAP::Math::Vec4 m_color{1.0f, 0.0f, 0.0f, 1.0f};
 };

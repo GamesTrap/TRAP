@@ -272,6 +272,18 @@
 <p class="admonition-title">Note</p>
 <p>If Raw Mouse Input is unsupported then <code class="code docutils literal notranslate"><span class="pre">rawMouseInput</span></code> will be set to <code class="code docutils literal notranslate"><span class="pre">false</span></code>!</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <code class="code docutils literal notranslate"><span class="pre">displayMode</span></code> is set to TRAP::<a class="reference internal" href="#displaymode">DisplayMode</a>::Borderless then <code class="code docutils literal notranslate"><span class="pre">width</span></code>, <code class="code docutils literal notranslate"><span class="pre">height</span></code> and <code class="code docutils literal notranslate"><span class="pre">refreshRate</span></code> will be ignored! The Native Resolution and Refresh Rate of <code class="code docutils literal notranslate"><span class="pre">monitor</span></code> will be used!</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">If <code class="code docutils literal notranslate"><span class="pre">displayMode</span></code> is either set to TRAP::<a class="reference internal" href="#displaymode">DisplayMode</a>::Borderless or TRAP::<a class="reference internal" href="#displaymode">DisplayMode</a>::Fullscreen and another TRAP::<a class="reference internal" href="#window">Window</a> with TRAP::<a class="reference internal" href="#displaymode">DisplayMode</a>::Borderless or TRAP::<a class="reference internal" href="#displaymode">DisplayMode</a>::Fullscreen already uses the same <code class="code docutils literal notranslate"><span class="pre">monitor</span></code> then <code class="code docutils literal notranslate"><span class="pre">displayMode</span></code> will be set to TRAP::<a class="reference internal" href="#displaymode">DisplayMode</a>::Windowed!</div>
+<div class="line"><br /></div>
+<div class="line">If <code class="code docutils literal notranslate"><span class="pre">width</span></code>, <code class="code docutils literal notranslate"><span class="pre">height</span></code> and <code class="code docutils literal notranslate"><span class="pre">refreshRate</span></code> are set to <code class="code docutils literal notranslate"><span class="pre">0</span></code> then <code class="code docutils literal notranslate"><span class="pre">width</span></code> will be set to <code class="code docutils literal notranslate"><span class="pre">800</span></code>, <code class="code docutils literal notranslate"><span class="pre">height</span></code> will be set to <code class="code docutils literal notranslate"><span class="pre">600</span></code> and <code class="code docutils literal notranslate"><span class="pre">refreshRate</span></code> will be set to the <code class="code docutils literal notranslate"><span class="pre">monitor</span></code>’s Native Refresh Rate!</div>
+</div>
+</div>
 </div>
 <div class="section" id="id1">
 <h2>Window<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
@@ -546,6 +558,10 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><code class="code docutils literal notranslate"><span class="pre">refreshRate</span></code> only affects the TRAP::<a class="reference internal" href="#window">Window</a> if <code class="code docutils literal notranslate"><span class="pre">mode</span></code> is TRAP::<a class="reference internal" href="#displaymode">DisplayMode</a>::Fullscreen!</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If <code class="code docutils literal notranslate"><span class="pre">mode</span></code> is either set to TRAP::<a class="reference internal" href="#displaymode">DisplayMode</a>::Borderless or TRAP::<a class="reference internal" href="#displaymode">DisplayMode</a>::Fullscreen and another TRAP::<a class="reference internal" href="#window">Window</a> with TRAP::<a class="reference internal" href="#displaymode">DisplayMode</a>::Borderless or TRAP::<a class="reference internal" href="#displaymode">DisplayMode</a>::Fullscreen already uses the same <code class="code docutils literal notranslate"><span class="pre">monitor</span></code> then nothing will be changed!</p>
 </div>
 </div>
 <div class="section" id="setmonitor">

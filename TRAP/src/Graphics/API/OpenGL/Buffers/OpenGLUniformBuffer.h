@@ -17,7 +17,7 @@ namespace TRAP::Graphics::API
 		OpenGLUniformBuffer& operator=(OpenGLUniformBuffer&&) = default;
 		~OpenGLUniformBuffer();
 
-		void Bind() const override;
+		void Bind(uint32_t bindingPoint) const override;
 		void Unbind() const override;
 
 		void UpdateData(const void* data, uint32_t size) override;

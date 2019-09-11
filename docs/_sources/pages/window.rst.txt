@@ -88,6 +88,14 @@ WindowProps
 .. note::
    If Raw Mouse Input is unsupported then :code:`rawMouseInput` will be set to :code:`false`!
 
+.. note::
+   If :code:`displayMode` is set to TRAP::`DisplayMode`_::Borderless then :code:`width`, :code:`height` and :code:`refreshRate` will be ignored! The Native Resolution and Refresh Rate of :code:`monitor` will be used!
+
+.. warning::
+   | If :code:`displayMode` is either set to TRAP::`DisplayMode`_::Borderless or TRAP::`DisplayMode`_::Fullscreen and another TRAP::`Window`_ with TRAP::`DisplayMode`_::Borderless or TRAP::`DisplayMode`_::Fullscreen already uses the same :code:`monitor` then :code:`displayMode` will be set to TRAP::`DisplayMode`_::Windowed!
+   | 
+   | If :code:`width`, :code:`height` and :code:`refreshRate` are set to :code:`0` then :code:`width` will be set to :code:`800`, :code:`height` will be set to :code:`600` and :code:`refreshRate` will be set to the :code:`monitor`'s Native Refresh Rate!
+
 ------
 Window
 ------
@@ -370,6 +378,9 @@ SetDisplayMode
 
 .. note::
    :code:`refreshRate` only affects the TRAP::`Window`_ if :code:`mode` is TRAP::`DisplayMode`_::Fullscreen!
+
+.. warning::
+   If :code:`mode` is either set to TRAP::`DisplayMode`_::Borderless or TRAP::`DisplayMode`_::Fullscreen and another TRAP::`Window`_ with TRAP::`DisplayMode`_::Borderless or TRAP::`DisplayMode`_::Fullscreen already uses the same :code:`monitor` then nothing will be changed!
 
 ^^^^^^^^^^
 SetMonitor

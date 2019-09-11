@@ -641,7 +641,7 @@ void TRAP::Window::Init(const WindowProps& props)
 				{
 					width = 800;
 					height = 600;
-					refreshRate = 60;
+					refreshRate = m_baseVideoMode.refreshRate;
 				}
 				else
 				{
@@ -680,7 +680,7 @@ void TRAP::Window::Init(const WindowProps& props)
 				{
 					width = 800;
 					height = 600;
-					refreshRate = 60;
+					refreshRate = m_baseVideoMode.refreshRate;
 				}
 				else
 				{

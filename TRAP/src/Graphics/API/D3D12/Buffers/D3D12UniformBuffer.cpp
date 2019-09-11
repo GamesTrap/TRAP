@@ -15,7 +15,7 @@ TRAP::Graphics::API::D3D12UniformBuffer::D3D12UniformBuffer(const char* name, co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12UniformBuffer::Bind() const
+void TRAP::Graphics::API::D3D12UniformBuffer::Bind(uint32_t bindingPoint) const
 {	
 }
 
