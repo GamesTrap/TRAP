@@ -9,10 +9,10 @@ namespace TRAP::Graphics
 {
 	enum RendererBufferType
 	{
-		RENDERER_BUFFER_NONE = 0,
-		RENDERER_BUFFER_COLOR = BIT(0),
-		RENDERER_BUFFER_DEPTH = BIT(1),
-		RENDERER_BUFFER_STENCIL = BIT(2)
+		NONE = 0,
+		Color = BIT(0),
+		Depth = BIT(1),
+		Stencil = BIT(2)
 	};
 
 	enum class RendererBlendFunction

@@ -109,7 +109,7 @@ public:
 		m_camera.SetPosition(m_cameraPosition);
 		m_camera.SetRotation(m_cameraRotation);
 
-		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_COLOR | TRAP::Graphics::RendererBufferType::RENDERER_BUFFER_DEPTH);
+		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color | TRAP::Graphics::RendererBufferType::Depth);
 
 		TRAP::Graphics::Renderer::BeginScene(m_camera);
 		{
@@ -193,12 +193,12 @@ public:
 		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::KP_9))
 			m_cameraRotation.y -= m_cameraRotationSpeed * deltaTime;
 
-		if(TRAP::Input::IsJoystickConnected(TRAP::Input::Joystick::ONE))
+		if(TRAP::Input::IsJoystickConnected(TRAP::Input::Joystick::One))
 		{
-			const float XAxis = TRAP::Input::GetJoystickAxis(TRAP::Input::Joystick::ONE, TRAP::Input::JoystickAxis::LEFT_X);
+			const float XAxis = TRAP::Input::GetJoystickAxis(TRAP::Input::Joystick::One, TRAP::Input::JoystickAxis::Left_X);
 			if (XAxis < -0.1f || XAxis > 0.1f)
 				m_cameraPosition.x -= XAxis * m_cameraMovementSpeed * deltaTime;
-			const float YAxis = TRAP::Input::GetJoystickAxis(TRAP::Input::Joystick::ONE, TRAP::Input::JoystickAxis::LEFT_Y);
+			const float YAxis = TRAP::Input::GetJoystickAxis(TRAP::Input::Joystick::One, TRAP::Input::JoystickAxis::Left_Y);
 			if (YAxis < -0.1f || YAxis > 0.1f)
 				m_cameraPosition.y += YAxis * m_cameraMovementSpeed * deltaTime;
 		}
@@ -208,7 +208,7 @@ public:
 
 	bool OnKeyPressed(TRAP::KeyPressedEvent& event)
 	{
-		if (event.GetKeyCode() == TRAP::Input::Key::ESCAPE)
+		if (event.GetKeyCode() == TRAP::Input::Key::Escape)
 			TRAP::Application::Shutdown();
 
 		if (event.GetKeyCode() == TRAP::Input::Key::F1 && event.GetRepeatCount() < 1) //Switch to D3D12

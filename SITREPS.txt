@@ -413,3 +413,4 @@ SITREP 09/11/2019|19w37a2
 SITREP 09/12/2019|19w37a3
     - Changed TRAP Engine version to 19w37a3(0.5.33)
     - Finished Controller support ~>45 mins
+    - Changed all enums to use UpperCamelCase ~<20 mins
