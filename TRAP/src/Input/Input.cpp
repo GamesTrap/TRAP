@@ -177,6 +177,24 @@ float TRAP::Input::GetJoystickAxis(Joystick joystick, const JoystickAxis axis)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Input::JoystickHat TRAP::Input::GetJoystickHat(Joystick joystick, const uint32_t hat)
+{
+	if (!IsJoystickConnected(joystick))
+	{
+		TP_WARN("[Input][Joystick] ID: ", static_cast<int32_t>(joystick), " is not Connected!");
+		return JoystickHat::CENTERED;
+	}
+
+	uint32_t hatCount = 0;
+	const unsigned char* hats = glfwGetJoystickHats(static_cast<int32_t>(joystick), reinterpret_cast<int32_t*>(&hatCount));
+	if (hats && hat < hatCount)
+		return static_cast<JoystickHat>(hats[hat]);
+
+	return JoystickHat::CENTERED;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::Input::GetJoystickName(Joystick joystick)
 {
 	if (!IsJoystickConnected(joystick))
@@ -189,6 +207,66 @@ std::string TRAP::Input::GetJoystickName(Joystick joystick)
 		return glfwGetGamepadName(static_cast<int32_t>(joystick));
 
 	return glfwGetJoystickName(static_cast<int32_t>(joystick));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<float> TRAP::Input::GetAllJoystickAxes(Joystick joystick)
+{
+	if (!IsJoystickConnected(joystick))
+	{
+		TP_WARN("[Input][Joystick] ID: ", static_cast<int32_t>(joystick), " is not Connected!");
+		return {};
+	}
+
+	uint32_t axisCount = 0;
+	const float* axes = glfwGetJoystickAxes(static_cast<int32_t>(joystick), reinterpret_cast<int32_t*>(&axisCount));
+	if(axes)
+		return std::vector<float>(axes, axes + axisCount);
+
+	return {};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<bool> TRAP::Input::GetAllJoystickButtons(Joystick joystick)
+{
+	if (!IsJoystickConnected(joystick))
+	{
+		TP_WARN("[Input][Joystick] ID: ", static_cast<int32_t>(joystick), " is not Connected!");
+		return {};
+	}
+
+	if (!IsJoystickGamepad(joystick))
+	{
+		TP_WARN("[Input][Joystick] ID: ", static_cast<int32_t>(joystick), " is not a Gamepad!");
+		return {};
+	}
+
+	uint32_t buttonCount = 0;
+	const unsigned char* buttons = glfwGetJoystickButtons(static_cast<int32_t>(joystick), reinterpret_cast<int32_t*>(&buttonCount));
+	if (buttons)
+		return std::vector<bool>(buttons, buttons + buttonCount);
+
+	return {};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<TRAP::Input::JoystickHat> TRAP::Input::GetAllJoystickHats(Joystick joystick)
+{
+	if (!IsJoystickConnected(joystick))
+	{
+		TP_WARN("[Input][Joystick] ID: ", static_cast<int32_t>(joystick), " is not Connected!");
+		return {};
+	}
+
+	uint32_t hatCount = 0;
+	const unsigned char* hats = glfwGetJoystickHats(static_cast<int32_t>(joystick), reinterpret_cast<int32_t*>(&hatCount));
+	if(hats)
+		return std::vector<JoystickHat>(reinterpret_cast<const JoystickHat*>(hats), reinterpret_cast<const JoystickHat*>(hats) + hatCount);
+
+	return {};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

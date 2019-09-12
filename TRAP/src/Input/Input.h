@@ -191,6 +191,19 @@ namespace TRAP
 			TRIANGLE = Y
 		};
 
+		enum class JoystickHat
+		{
+			CENTERED = 0,
+			UP = 1,
+			RIGHT = 2,
+			DOWN = 4,
+			LEFT = 8,
+			RIGHT_UP = RIGHT | UP,
+			RIGHT_DOWN = RIGHT | DOWN,
+			LEFT_UP = LEFT | UP,
+			LEFT_DOWN = LEFT | DOWN
+		};
+
 	public:
 		static void Init();
 		
@@ -206,8 +219,12 @@ namespace TRAP
 		static float GetMouseY();
 		static std::string GetKeyName(Key key);
 		static float GetJoystickAxis(Joystick joystick, JoystickAxis axis);
+		static JoystickHat GetJoystickHat(Joystick joystick, uint32_t hat);
 		static std::string GetJoystickName(Joystick joystick);
-
+		static std::vector<float> GetAllJoystickAxes(Joystick joystick);
+		static std::vector<bool> GetAllJoystickButtons(Joystick joystick);
+		static std::vector<JoystickHat> GetAllJoystickHats(Joystick joystick);
+		
 		struct Controller
 		{
 			bool Connected = false;
