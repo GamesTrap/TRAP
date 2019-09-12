@@ -39,12 +39,15 @@ void TRAP::Graphics::API::OpenGLFrameBuffer2D::Init()
 	OpenGLCall(glCreateRenderbuffers(1, &m_depthBufferHandle));
 
 	m_texture = Texture2D::CreateEmpty(ImageFormat::RGBA, m_width, m_height, {TextureFilter::Linear, TextureWrap::Clamp_To_Edge});
-	OpenGLCall(glNamedFramebufferTexture(m_frameBufferHandle, GL_COLOR_ATTACHMENT0, (dynamic_cast<OpenGLTexture2D*>(m_texture.get()))->GetHandle(), 0));
+	if (m_texture)
+	{
+		OpenGLCall(glNamedFramebufferTexture(m_frameBufferHandle, GL_COLOR_ATTACHMENT0, (dynamic_cast<OpenGLTexture2D*>(m_texture.get()))->GetHandle(), 0));
 
-	OpenGLCall(glNamedRenderbufferStorage(m_depthBufferHandle, GL_DEPTH_COMPONENT16, m_width, m_height));
-	OpenGLCall(glNamedFramebufferRenderbuffer(m_frameBufferHandle, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBufferHandle));
+		OpenGLCall(glNamedRenderbufferStorage(m_depthBufferHandle, GL_DEPTH_COMPONENT16, m_width, m_height));
+		OpenGLCall(glNamedFramebufferRenderbuffer(m_frameBufferHandle, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBufferHandle));
 
-	OpenGLCall(glCheckNamedFramebufferStatus(m_frameBufferHandle, GL_FRAMEBUFFER));
+		OpenGLCall(glCheckNamedFramebufferStatus(m_frameBufferHandle, GL_FRAMEBUFFER));
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

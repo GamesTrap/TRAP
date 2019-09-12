@@ -359,7 +359,6 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 					i += 2;
 				}
 				
-				m_data = data;
 				m_bitsPerPixel = 32;
 			}
 			else
@@ -370,7 +369,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 				return;
 			}
 
-			m_data = data;
+			m_data = std::move(data);
 		}
 
 		if (needYFlip)

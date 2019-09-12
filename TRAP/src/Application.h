@@ -9,10 +9,11 @@
 #include "Layers/LayerStack.h"
 #include "Utils/Timer.h"
 #include "Event/ApplicationEvent.h"
+#include "Utils/Singleton.h"
 
 namespace TRAP
 {
-	class Application
+	class Application : public Singleton
 	{
 	public:
 		Application();
@@ -29,7 +30,7 @@ namespace TRAP
 		void PushLayer(Scope<Layer> layer);
 		void PushOverlay(Scope<Layer> overlay);
 
-		const std::unique_ptr<Window>& GetWindow() const;
+		//const std::unique_ptr<Window>& GetWindow() const;
 		Utils::Config* GetConfig();
 		LayerStack& GetLayerStack();
 
@@ -41,9 +42,10 @@ namespace TRAP
 		uint32_t GetTickRate() const;
 		void SetTickRate(uint32_t);
 
-		void Shutdown();
+		static void Shutdown();
 
 		static Application& Get();
+		static const std::unique_ptr<Window>& GetWindow();
 
 		void ReCreateWindow(Graphics::API::RenderAPI renderAPI);
 		void ReCreate(Graphics::API::RenderAPI renderAPI);
@@ -74,9 +76,10 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline const std::unique_ptr<TRAP::Window>& TRAP::Application::GetWindow() const
+//inline const std::unique_ptr<TRAP::Window>& TRAP::Application::GetWindow() const
+inline const std::unique_ptr<TRAP::Window>& TRAP::Application::GetWindow()
 {
-	return m_window;
+	return Get().m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -134,7 +137,7 @@ inline void TRAP::Application::SetTickRate(const uint32_t tickRate)
 
 inline void TRAP::Application::Shutdown()
 {
-	m_running = false;
+	Get().m_running = false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

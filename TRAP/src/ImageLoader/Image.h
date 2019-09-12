@@ -133,7 +133,7 @@ std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, c
 		return {};
 
 	std::vector<T> newData{};
-	uint32_t stride;
+	uint32_t stride = 0;
 	if (format == ImageFormat::Gray_Scale)
 	{
 		newData.assign(data, data + width * height);

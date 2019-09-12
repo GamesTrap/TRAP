@@ -1,30 +1,30 @@
 #ifndef _TRAP_KEYEVENT_H_
 #define _TRAP_KEYEVENT_H_
 
-#include "Input/KeyCodes.h"
+#include "Input/Input.h"
 
 namespace TRAP
 {
 	class KeyEvent : public Event
 	{
 	public:
-		Key GetKeyCode() const;
+		Input::Key GetKeyCode() const;
 
 		int32_t GetCategoryFlags() const override;
 
 	protected:
-		explicit KeyEvent(const Key keyCode)
+		explicit KeyEvent(const Input::Key keyCode)
 			: m_keyCode(keyCode)
 		{			
 		}
 
-		Key m_keyCode;
+		Input::Key m_keyCode;
 	};
 
 	class KeyPressedEvent final : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(const Key keyCode, const int32_t repeatCount, std::string title)
+		KeyPressedEvent(const Input::Key keyCode, const int32_t repeatCount, std::string title)
 			: KeyEvent(keyCode), m_repeatCount(repeatCount), m_title(std::move(title))
 		{			
 		}
@@ -53,7 +53,7 @@ namespace TRAP
 	class KeyReleasedEvent final : public KeyEvent
 	{
 	public:
-		explicit KeyReleasedEvent(const Key keyCode, std::string title)
+		explicit KeyReleasedEvent(const Input::Key keyCode, std::string title)
 			: KeyEvent(keyCode), m_title(std::move(title))
 		{			
 		}
@@ -79,7 +79,7 @@ namespace TRAP
 	class KeyTypedEvent final : public KeyEvent
 	{
 	public:
-		explicit KeyTypedEvent(const Key keyCode, std::string title)
+		explicit KeyTypedEvent(const Input::Key keyCode, std::string title)
 			: KeyEvent(keyCode), m_title(std::move(title))
 		{			
 		}
@@ -105,7 +105,7 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::Key TRAP::KeyEvent::GetKeyCode() const
+inline TRAP::Input::Key TRAP::KeyEvent::GetKeyCode() const
 {
 	return m_keyCode;
 }

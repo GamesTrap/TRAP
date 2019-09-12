@@ -503,7 +503,6 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 					uint32_t surfaceFormatCount = 0;
 					std::vector<VkSurfaceFormatKHR> surfaceFormats(surfaceFormatCount);
 					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatCount, nullptr));
-					std::vector<VkSurfaceFormatKHR> availableSurfaceFormats{ surfaceFormatCount };
 					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatCount, surfaceFormats.data()));
 					if (!surfaceFormats.empty())
 						score += 1000;
@@ -512,7 +511,6 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 					uint32_t surfacePresentModeCount = 0;
 					std::vector<VkPresentModeKHR> presentModes(surfacePresentModeCount);
 					VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &surfacePresentModeCount, nullptr));
-					std::vector<VkPresentModeKHR> surfacePresentModes{ surfacePresentModeCount };
 					VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &surfacePresentModeCount, presentModes.data()));
 					if (!presentModes.empty())
 						score += 1000;

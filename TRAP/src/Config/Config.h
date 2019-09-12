@@ -28,7 +28,7 @@ namespace TRAP::Utils
 		template<typename T>
 		void Set(const std::string& key, T value);
 		template<typename T>
-		void Set(const std::string& key, std::vector<T> value);
+		void Set(const std::string& key, const std::vector<T>& value);
 
 		void Print() const;
 
@@ -391,7 +391,7 @@ void TRAP::Utils::Config::Set(const std::string& key, const T value)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T> value)
+void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& value)
 {
 	//Transform the vector into a string that separates the elements with a comma
 	const std::string valueAsString;

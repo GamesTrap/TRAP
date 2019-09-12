@@ -45,7 +45,7 @@ void TRAP::ImGuiLayer::OnAttach()
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 	}
 
-	GLFWwindow* window = static_cast<GLFWwindow*>(Application::Get().GetWindow()->GetNativeWindow());
+	GLFWwindow* window = static_cast<GLFWwindow*>(Application::GetWindow()->GetNativeWindow());
 
 	//Setup Platform/Renderer bindings
 /*#ifdef TRAP_PLATFORM_WINDOWS
@@ -122,7 +122,7 @@ void TRAP::ImGuiLayer::Begin()
 void TRAP::ImGuiLayer::End()
 {
 	ImGuiIO& io = ImGui::GetIO();
-	io.DisplaySize = ImVec2(static_cast<float>(Application::Get().GetWindow()->GetWidth()), static_cast<float>(Application::Get().GetWindow()->GetHeight()));
+	io.DisplaySize = ImVec2(static_cast<float>(Application::GetWindow()->GetWidth()), static_cast<float>(Application::GetWindow()->GetHeight()));
 
 	//Rendering
 	ImGui::Render();

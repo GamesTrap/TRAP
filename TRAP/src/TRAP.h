@@ -8,9 +8,6 @@
 
 //----INPUT-------------
 #include "Input/Input.h"
-#include "Input/KeyCodes.h"
-#include "Input/MouseButtonCodes.h"
-#include "Input/GamepadCodes.h"
 //----------------------
 
 //----EVENTS------------

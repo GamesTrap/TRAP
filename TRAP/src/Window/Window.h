@@ -139,7 +139,7 @@ namespace TRAP
 		} m_oldWindowedParams{};		
 		
 		static uint32_t s_windows;
-
+		static bool s_GLFWInitialized;
 		static std::vector<Window*> s_fullscreenWindows;
 	};
 }

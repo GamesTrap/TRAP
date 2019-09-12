@@ -13,8 +13,8 @@ public:
 		m_show(true),
 		m_camera
 		(
-			-(static_cast<float>(TRAP::Application::Get().GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::Get().GetWindow()->GetHeight())),
-			static_cast<float>(TRAP::Application::Get().GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::Get().GetWindow()->GetHeight()),
+			-(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
+			static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()),
 			-1.0f,
 			1.0f,
 			-1.0f,
@@ -38,6 +38,39 @@ public:
 		ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
 		ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
 		ImGui::End();
+
+		if (TRAP::Input::IsJoystickConnected(TRAP::Input::Joystick::ONE))
+		{
+			ImGui::SetNextWindowBgAlpha(0.3f);
+			ImGui::Begin("Controller", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+			ImGui::Text("Controller ID: 0 Name \"%s\" %s", TRAP::Input::GetJoystickName(TRAP::Input::Joystick::ONE).c_str(), "Axes Status");
+			ImGui::Separator();
+			ImGui::Text("Analog Stick Left X Axis:  %f", m_axes[static_cast<uint32_t>(TRAP::Input::JoystickAxis::LEFT_X)]);
+			ImGui::Text("Analog Stick Left Y Axis:  %f", m_axes[static_cast<uint32_t>(TRAP::Input::JoystickAxis::LEFT_Y)]);
+			ImGui::Text("Analog Stick Right X Axis: %f", m_axes[static_cast<uint32_t>(TRAP::Input::JoystickAxis::RIGHT_X)]);
+			ImGui::Text("Analog Stick Right Y Axis: %f", m_axes[static_cast<uint32_t>(TRAP::Input::JoystickAxis::RIGHT_Y)]);
+			ImGui::Text("Left Trigger:              %f", m_axes[static_cast<uint32_t>(TRAP::Input::JoystickAxis::LEFT_TRIGGER)]);
+			ImGui::Text("Right Trigger:             %f", m_axes[static_cast<uint32_t>(TRAP::Input::JoystickAxis::RIGHT_TRIGGER)]);
+			ImGui::Separator();
+			ImGui::Text("Controller ID: 0 Name \"%s\" %s", TRAP::Input::GetJoystickName(TRAP::Input::Joystick::ONE).c_str(), "Button Status");
+			ImGui::Separator();
+			ImGui::Text("Button A:                  %s", m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::A)] ? "Pressed" : "Released");
+			ImGui::Text("Button B:                  %s", m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::B)] ? "Pressed" : "Released");
+			ImGui::Text("Button X:                  %s", m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::X)] ? "Pressed" : "Released");
+			ImGui::Text("Button Y:                  %s", m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::Y)] ? "Pressed" : "Released");
+			ImGui::Text("Button Left Bumper:        %s", m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::LEFT_BUMPER)] ? "Pressed" : "Released");
+			ImGui::Text("Button Right Bumper:       %s", m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::RIGHT_BUMPER)] ? "Pressed" : "Released");
+			ImGui::Text("Button Back:               %s", m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::BACK)] ? "Pressed" : "Released");
+			ImGui::Text("Button Start:              %s", m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::START)] ? "Pressed" : "Released");
+			ImGui::Text("Button Guide:              %s", m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::GUIDE)] ? "Pressed" : "Released");
+			ImGui::Text("Button Left Thumb:         %s", m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::LEFT_THUMB)] ? "Pressed" : "Released");
+			ImGui::Text("Button Right Thumb:        %s", m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::RIGHT_THUMB)] ? "Pressed" : "Released");
+			ImGui::Text("Button DPad Up:            %s", m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::DPAD_UP)] ? "Pressed" : "Released");
+			ImGui::Text("Button DPad Right:         %s", m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::DPAD_RIGHT)] ? "Pressed" : "Released");
+			ImGui::Text("Button DPad Down:          %s", m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::DPAD_DOWN)] ? "Pressed" : "Released");
+			ImGui::Text("Button DPad Left:          %s", m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::DPAD_LEFT)] ? "Pressed" : "Released");
+			ImGui::End();
+		}
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -47,7 +80,7 @@ public:
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Texture.shader");
-		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColor.shader"); //TODO
+		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColor.shader");
 
 		//EXPERIMENTAL
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
@@ -151,13 +184,13 @@ public:
 			static int frameTimeIndex = 0;
 			if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
 			{
-				m_frameTimeHistory[frameTimeIndex] = TRAP::Application::Get().GetFrameTime();
+				m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
 				frameTimeIndex++;
 			}
 			else
 			{
 				std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
-				m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Application::Get().GetFrameTime();
+				m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();				
 			}
 		}
 		if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
@@ -171,62 +204,144 @@ public:
 		///////////////////
 		//Camera Controls//
 		///////////////////
-		if (TRAP::Input::IsKeyPressed(TRAP::Key::A))
+		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::A))
 			m_cameraPosition.x -= m_cameraMovementSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Key::D))
+		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::D))
 			m_cameraPosition.x += m_cameraMovementSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Key::W))
+		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::W))
 			m_cameraPosition.y += m_cameraMovementSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Key::S))
+		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::S))
 			m_cameraPosition.y -= m_cameraMovementSpeed * deltaTime;
 
-		if (TRAP::Input::IsKeyPressed(TRAP::Key::KP_4))
+		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::KP_4))
 			m_cameraRotation.z += m_cameraRotationSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Key::KP_6))
+		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::KP_6))
 			m_cameraRotation.z -= m_cameraRotationSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Key::KP_8))
+		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::KP_8))
 			m_cameraRotation.x += m_cameraRotationSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Key::KP_2))
+		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::KP_2))
 			m_cameraRotation.x -= m_cameraRotationSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Key::KP_7))
+		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::KP_7))
 			m_cameraRotation.y += m_cameraRotationSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Key::KP_9))
+		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::KP_9))
 			m_cameraRotation.y -= m_cameraRotationSpeed * deltaTime;
+
+		if(TRAP::Input::IsJoystickConnected(TRAP::Input::Joystick::ONE))
+		{
+			const float XAxis = TRAP::Input::GetJoystickAxis(TRAP::Input::Joystick::ONE, TRAP::Input::JoystickAxis::LEFT_X);
+			if (XAxis < -0.1f || XAxis > 0.1f)
+				m_cameraPosition.x -= XAxis * m_cameraMovementSpeed * deltaTime;
+			const float YAxis = TRAP::Input::GetJoystickAxis(TRAP::Input::Joystick::ONE, TRAP::Input::JoystickAxis::LEFT_Y);
+			if (YAxis < -0.1f || YAxis > 0.1f)
+				m_cameraPosition.y += YAxis * m_cameraMovementSpeed * deltaTime;
+
+			m_axes[static_cast<uint32_t>(TRAP::Input::JoystickAxis::LEFT_X)] = TRAP::Input::GetJoystickAxis(TRAP::Input::Joystick::ONE, TRAP::Input::JoystickAxis::LEFT_X);
+			m_axes[static_cast<uint32_t>(TRAP::Input::JoystickAxis::LEFT_Y)] = TRAP::Input::GetJoystickAxis(TRAP::Input::Joystick::ONE, TRAP::Input::JoystickAxis::LEFT_Y);
+			m_axes[static_cast<uint32_t>(TRAP::Input::JoystickAxis::RIGHT_X)] = TRAP::Input::GetJoystickAxis(TRAP::Input::Joystick::ONE, TRAP::Input::JoystickAxis::RIGHT_X);
+			m_axes[static_cast<uint32_t>(TRAP::Input::JoystickAxis::RIGHT_Y)] = TRAP::Input::GetJoystickAxis(TRAP::Input::Joystick::ONE, TRAP::Input::JoystickAxis::RIGHT_Y);
+			m_axes[static_cast<uint32_t>(TRAP::Input::JoystickAxis::LEFT_TRIGGER)] = TRAP::Input::GetJoystickAxis(TRAP::Input::Joystick::ONE, TRAP::Input::JoystickAxis::LEFT_TRIGGER);
+			m_axes[static_cast<uint32_t>(TRAP::Input::JoystickAxis::RIGHT_TRIGGER)] = TRAP::Input::GetJoystickAxis(TRAP::Input::Joystick::ONE, TRAP::Input::JoystickAxis::RIGHT_TRIGGER);
+			
+			//Ugly I know :/
+			if(TRAP::Input::IsJoystickGamepad(TRAP::Input::Joystick::ONE))
+			{
+				if (TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Joystick::ONE, TRAP::Input::GamepadButton::A))
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::A)] = true;
+				else
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::A)] = false;
+				if(TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Joystick::ONE, TRAP::Input::GamepadButton::B))
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::B)] = true;
+				else
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::B)] = false;
+				if(TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Joystick::ONE, TRAP::Input::GamepadButton::X))
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::X)] = true;
+				else
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::X)] = false;
+				if(TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Joystick::ONE, TRAP::Input::GamepadButton::Y))
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::Y)] = true;
+				else
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::Y)] = false;
+				if(TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Joystick::ONE, TRAP::Input::GamepadButton::LEFT_BUMPER))
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::LEFT_BUMPER)] = true;
+				else
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::LEFT_BUMPER)] = false;
+				if(TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Joystick::ONE, TRAP::Input::GamepadButton::RIGHT_BUMPER))
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::RIGHT_BUMPER)] = true;
+				else
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::RIGHT_BUMPER)] = false;
+				if(TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Joystick::ONE, TRAP::Input::GamepadButton::BACK))
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::BACK)] = true;
+				else
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::BACK)] = false;
+				if(TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Joystick::ONE, TRAP::Input::GamepadButton::START))
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::START)] = true;
+				else
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::START)] = false;
+				if(TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Joystick::ONE, TRAP::Input::GamepadButton::GUIDE))
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::GUIDE)] = true;
+				else
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::GUIDE)] = false;
+				if(TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Joystick::ONE, TRAP::Input::GamepadButton::LEFT_THUMB))
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::LEFT_THUMB)] = true;
+				else
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::LEFT_THUMB)] = false;
+				if(TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Joystick::ONE, TRAP::Input::GamepadButton::RIGHT_THUMB))
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::RIGHT_THUMB)] = true;
+				else
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::RIGHT_THUMB)] = false;
+				if(TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Joystick::ONE, TRAP::Input::GamepadButton::DPAD_UP))
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::DPAD_UP)] = true;
+				else
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::DPAD_UP)] = false;
+				if(TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Joystick::ONE, TRAP::Input::GamepadButton::DPAD_RIGHT))
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::DPAD_RIGHT)] = true;
+				else
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::DPAD_RIGHT)] = false;
+				if(TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Joystick::ONE, TRAP::Input::GamepadButton::DPAD_DOWN))
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::DPAD_DOWN)] = true;
+				else
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::DPAD_DOWN)] = false;
+				if(TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Joystick::ONE, TRAP::Input::GamepadButton::DPAD_LEFT))
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::DPAD_LEFT)] = true;
+				else
+					m_buttons[static_cast<uint32_t>(TRAP::Input::GamepadButton::DPAD_LEFT)] = false;
+			}
+		}
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	bool OnKeyPressed(TRAP::KeyPressedEvent& event)
 	{
-		if (event.GetKeyCode() == TRAP::Key::ESCAPE)
-			TRAP::Application::Get().Shutdown();
+		if (event.GetKeyCode() == TRAP::Input::Key::ESCAPE)
+			TRAP::Application::Shutdown();
 
-		if (event.GetKeyCode() == TRAP::Key::F1 && event.GetRepeatCount() < 1) //Switch to D3D12
+		if (event.GetKeyCode() == TRAP::Input::Key::F1 && event.GetRepeatCount() < 1) //Switch to D3D12
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::D3D12);
-		if (event.GetKeyCode() == TRAP::Key::F2 && event.GetRepeatCount() < 1) //Switch to Vulkan
+		if (event.GetKeyCode() == TRAP::Input::Key::F2 && event.GetRepeatCount() < 1) //Switch to Vulkan
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::Vulkan);
-		if (event.GetKeyCode() == TRAP::Key::F3 && event.GetRepeatCount() < 1) //Switch to OpenGL
+		if (event.GetKeyCode() == TRAP::Input::Key::F3 && event.GetRepeatCount() < 1) //Switch to OpenGL
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::OpenGL);
 
-		if (event.GetKeyCode() == TRAP::Key::F4 && event.GetRepeatCount() < 1) //Use Default/Passthrough Shader
+		if (event.GetKeyCode() == TRAP::Input::Key::F4 && event.GetRepeatCount() < 1) //Use Default/Passthrough Shader
 			m_usePassthrough = !m_usePassthrough;
 
-		if (event.GetKeyCode() == TRAP::Key::F5 && event.GetRepeatCount() < 1) //Make Window windowed
-			TRAP::Application::Get().GetWindow()->SetDisplayMode(TRAP::DisplayMode::Windowed);
-		if (event.GetKeyCode() == TRAP::Key::F6 && event.GetRepeatCount() < 1) //Make Window Borderless Fullscreen
-			TRAP::Application::Get().GetWindow()->SetDisplayMode(TRAP::DisplayMode::Borderless);
-		if (event.GetKeyCode() == TRAP::Key::F7 && event.GetRepeatCount() < 1) //Make Window Exclusive Fullscreen
-			TRAP::Application::Get().GetWindow()->SetDisplayMode(TRAP::DisplayMode::Fullscreen);
+		if (event.GetKeyCode() == TRAP::Input::Key::F5 && event.GetRepeatCount() < 1) //Make Window windowed
+			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::DisplayMode::Windowed);
+		if (event.GetKeyCode() == TRAP::Input::Key::F6 && event.GetRepeatCount() < 1) //Make Window Borderless Fullscreen
+			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::DisplayMode::Borderless);
+		if (event.GetKeyCode() == TRAP::Input::Key::F7 && event.GetRepeatCount() < 1) //Make Window Exclusive Fullscreen
+			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::DisplayMode::Fullscreen);
 
-		if (event.GetKeyCode() == TRAP::Key::F9 && event.GetRepeatCount() < 1) //Enable/Disable
+		if (event.GetKeyCode() == TRAP::Input::Key::F9 && event.GetRepeatCount() < 1) //Enable/Disable
 			m_show = !m_show;
-		if (event.GetKeyCode() == TRAP::Key::F10 && event.GetRepeatCount() < 1) //Enable/Disable WireFrame Mode
+		if (event.GetKeyCode() == TRAP::Input::Key::F10 && event.GetRepeatCount() < 1) //Enable/Disable WireFrame Mode
 		{
 			m_wireFrame = !m_wireFrame;
 			TRAP::Graphics::RenderCommand::SetWireFrame(m_wireFrame);
 		}
 
-		if (event.GetKeyCode() == TRAP::Key::F11 && event.GetRepeatCount() < 1)
+		if (event.GetKeyCode() == TRAP::Input::Key::F11 && event.GetRepeatCount() < 1)
 			TRAP::Utils::MsgBox::Show("Just a prank bro!", "Critical Error");
 
 		return true;
@@ -278,4 +393,7 @@ private:
 
 	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_uniformBuffer{};
 	TRAP::Math::Vec4 m_color{1.0f, 0.0f, 0.0f, 1.0f};
+
+	std::array<float, 6> m_axes{};
+	std::array<bool, 15> m_buttons{};
 };

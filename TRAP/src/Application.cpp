@@ -9,6 +9,7 @@
 #include "Graphics/Textures/TextureManager.h"
 #include "Graphics/Textures/Texture2D.h"
 #include "Graphics/Textures/TextureCube.h"
+#include "Input/Input.h"
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
@@ -83,6 +84,9 @@ TRAP::Application::Application()
 	);
 	m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
+	//Initialize Input for Joysticks
+	Input::Init();
+
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Load("Passthrough", Embed::PassthroughVS, Embed::PassthroughFS);
 	//Always added as a fallback texture
@@ -139,8 +143,6 @@ void TRAP::Application::OnEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-
-	//TP_TRACE("[Window] ", e.ToString());
 
 	for (auto it = m_layerStack.end(); it != m_layerStack.begin();)
 	{
@@ -270,6 +272,8 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 	m_window.reset();
 	m_window = std::make_unique<Window>(props);
 	m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+	//Initialize Input for Joysticks
+	Input::Init();
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Load("Passthrough", Embed::PassthroughVS, Embed::PassthroughFS);
 	//Always added as a fallback texture
@@ -296,7 +300,7 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI)
 	Graphics::API::Context::SetVSyncInterval(m_window->GetVSyncInterval());
 	Graphics::API::RendererAPI::Init();
 	m_window->SetTitle(std::string(m_window->GetTitle()));
-
+	//Note: Input doesn't need to be Initialized here because GLFW is still initialized
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Load("Passthrough", Embed::PassthroughVS, Embed::PassthroughFS);
 	//Always added as a fallback texture

@@ -17,6 +17,8 @@ int32_t main()
 {
 	const auto app = TRAP::CreateApplication();
 	app->Run();
+
+	return 0;
 }
 
 #endif /*_TRAP_ENTRYPOINT_H_*/

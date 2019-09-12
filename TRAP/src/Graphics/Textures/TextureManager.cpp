@@ -138,19 +138,22 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 			}
 			else if (textureType == TextureType::TextureCube)
 			{
-				const InputFormat inputFormat = dynamic_cast<TextureCube*>(s_Textures[nameOrVirtualPath].get())->GetInputFormat();
+				if (s_Textures[nameOrVirtualPath])
+				{
+					const InputFormat inputFormat = dynamic_cast<TextureCube*>(s_Textures[nameOrVirtualPath].get())->GetInputFormat();
 
-				std::array<std::string, 6> filePaths{};
-				for (uint32_t i = 0; i < dynamic_cast<TextureCube*>(s_Textures[nameOrVirtualPath].get())->GetImages().size(); i++)
-					filePaths[i] = dynamic_cast<TextureCube*>(s_Textures[nameOrVirtualPath].get())->GetImages()[i]->GetFilePath();
+					std::array<std::string, 6> filePaths{};
+					for (uint32_t i = 0; i < dynamic_cast<TextureCube*>(s_Textures[nameOrVirtualPath].get())->GetImages().size(); i++)
+						filePaths[i] = dynamic_cast<TextureCube*>(s_Textures[nameOrVirtualPath].get())->GetImages()[i]->GetFilePath();
 
-				s_Textures[nameOrVirtualPath].reset();
-				if (inputFormat == InputFormat::Vertical_Cross || inputFormat == InputFormat::Horizontal_Cross)
-					s_Textures[nameOrVirtualPath] = TextureCube::CreateFromCross(name, filePath, inputFormat, textureParameters);
-				else
-					s_Textures[nameOrVirtualPath] = TextureCube::CreateFromFiles(name, filePaths, textureParameters);
+					s_Textures[nameOrVirtualPath].reset();
+					if (inputFormat == InputFormat::Vertical_Cross || inputFormat == InputFormat::Horizontal_Cross)
+						s_Textures[nameOrVirtualPath] = TextureCube::CreateFromCross(name, filePath, inputFormat, textureParameters);
+					else
+						s_Textures[nameOrVirtualPath] = TextureCube::CreateFromFiles(name, filePaths, textureParameters);
 
-				TP_INFO("[TextureManager][TextureCube] Reloaded: \"", nameOrVirtualPath, "\"");
+					TP_INFO("[TextureManager][TextureCube] Reloaded: \"", nameOrVirtualPath, "\"");
+				}
 			}
 			else
 				//Shouldn't be reached
@@ -208,19 +211,22 @@ void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 		}
 		else if (textureType == TextureType::TextureCube)
 		{
-			const InputFormat inputFormat = dynamic_cast<TextureCube*>(texture.get())->GetInputFormat();
+			if (texture)
+			{
+				const InputFormat inputFormat = dynamic_cast<TextureCube*>(texture.get())->GetInputFormat();
 
-			std::array<std::string, 6> filePaths{};
-			for (uint32_t i = 0; i < dynamic_cast<TextureCube*>(texture.get())->GetImages().size(); i++)
-				filePaths[i] = dynamic_cast<TextureCube*>(texture.get())->GetImages()[i]->GetFilePath();
+				std::array<std::string, 6> filePaths{};
+				for (uint32_t i = 0; i < dynamic_cast<TextureCube*>(texture.get())->GetImages().size(); i++)
+					filePaths[i] = dynamic_cast<TextureCube*>(texture.get())->GetImages()[i]->GetFilePath();
 
-			s_Textures[name].reset();
-			if (inputFormat == InputFormat::Vertical_Cross || inputFormat == InputFormat::Horizontal_Cross)
-				s_Textures[name] = TextureCube::CreateFromCross(name, filepath, inputFormat, textureParameters);
-			else
-				s_Textures[name] = TextureCube::CreateFromFiles(name, filePaths, textureParameters);
+				s_Textures[name].reset();
+				if (inputFormat == InputFormat::Vertical_Cross || inputFormat == InputFormat::Horizontal_Cross)
+					s_Textures[name] = TextureCube::CreateFromCross(name, filepath, inputFormat, textureParameters);
+				else
+					s_Textures[name] = TextureCube::CreateFromFiles(name, filePaths, textureParameters);
 
-			TP_INFO("[TextureManager][TextureCube] Reloaded: \"", name, "\"");
+				TP_INFO("[TextureManager][TextureCube] Reloaded: \"", name, "\"");
+			}
 		}
 		else
 			TP_WARN("[TextureManager] Unknown TextureType: \"", name, "\"");

@@ -1,6 +1,5 @@
 #ifndef _TRAP_MOUSEEVENT_H_
 #define _TRAP_MOUSEEVENT_H_
-#include "Input/MouseButtonCodes.h"
 
 namespace TRAP
 {
@@ -67,23 +66,23 @@ namespace TRAP
 	class MouseButtonEvent : public Event
 	{
 	public:
-		MouseButton GetMouseButton() const;
+		Input::MouseButton GetMouseButton() const;
 
 		int32_t GetCategoryFlags() const override;
 
 	protected:
-		explicit MouseButtonEvent(const MouseButton button)
+		explicit MouseButtonEvent(const Input::MouseButton button)
 			: m_button(button)
 		{			
 		}
 
-		MouseButton m_button;
+		Input::MouseButton m_button;
 	};
 
 	class MouseButtonPressedEvent final : public MouseButtonEvent
 	{
 	public:
-		explicit MouseButtonPressedEvent(const MouseButton button, std::string title)
+		explicit MouseButtonPressedEvent(const Input::MouseButton button, std::string title)
 			: MouseButtonEvent(button), m_title(std::move(title))
 		{
 		}
@@ -109,7 +108,7 @@ namespace TRAP
 	class MouseButtonReleasedEvent final : public MouseButtonEvent
 	{
 	public:
-		explicit MouseButtonReleasedEvent(const MouseButton button, std::string title)
+		explicit MouseButtonReleasedEvent(const Input::MouseButton button, std::string title)
 			: MouseButtonEvent(button), m_title(std::move(title))
 		{			
 		}
@@ -219,7 +218,7 @@ inline int32_t TRAP::MouseScrolledEvent::GetCategoryFlags() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline TRAP::MouseButton TRAP::MouseButtonEvent::GetMouseButton() const
+inline TRAP::Input::MouseButton TRAP::MouseButtonEvent::GetMouseButton() const
 {
 	return m_button;
 }

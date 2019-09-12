@@ -48,7 +48,6 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 			return;
 		}
 
-		std::string tempTrash;
 		struct Header
 		{
 			std::string MagicNumber = "";
