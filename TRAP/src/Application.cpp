@@ -41,7 +41,7 @@ TRAP::Application::Application()
 	uint32_t refreshRate = 60;
 	uint32_t vsync = 0;
 	uint32_t fpsLimit = 0;
-	DisplayMode displayMode = DisplayMode::Windowed;
+	Window::DisplayMode displayMode = Window::DisplayMode::Windowed;
 	uint32_t monitor;
 	Graphics::API::RenderAPI renderAPI = Graphics::API::RenderAPI::NONE;
 	bool hotShaderReloading = false;
@@ -156,7 +156,7 @@ void TRAP::Application::OnEvent(Event& e)
 
 void TRAP::Application::Run()
 {
-	Utils::TimeStep deltaTime(0.0f);
+	float lastFrameTime = 0.0f;
 	std::deque<Utils::Timer> framesPerSecond;
 	auto nextFrame = std::chrono::steady_clock::now();
 	Utils::Timer tickTimer;
@@ -169,7 +169,9 @@ void TRAP::Application::Run()
 		m_drawCalls = 0;
 
 		Utils::Timer FrameTimeTimer;
-		deltaTime.Update(m_timer->Elapsed());
+		const float time = m_timer->Elapsed();
+		const Utils::TimeStep deltaTime{ time - lastFrameTime };
+		lastFrameTime = time;
 
 		for (const auto& layer : m_layerStack)
 			layer->OnUpdate(deltaTime);
@@ -204,7 +206,9 @@ void TRAP::Application::Run()
 				const FileStatus status) -> void
 				{
 					//Process only regular files and FileStatus::Modified
-					if (!is_regular_file(physicalPath) || status == FileStatus::Created || status == FileStatus::Erased)
+					if (!is_regular_file(physicalPath))
+						return;
+					if (status == FileStatus::Created || status == FileStatus::Erased)
 						return;
 
 					TP_INFO("[ShaderManager] Shader Modified Reloading...");
@@ -221,7 +225,9 @@ void TRAP::Application::Run()
 				const FileStatus status) -> void
 				{
 					//Process only regular files and FileStatus::Modified
-					if (!is_regular_file(physicalPath) || status == FileStatus::Created || status == FileStatus::Erased)
+					if (!is_regular_file(physicalPath))
+						return;
+					if (status == FileStatus::Created || status == FileStatus::Erased)
 						return;
 
 					TP_INFO("[TextureManager] Texture Modified Reloading...");
@@ -312,10 +318,9 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::TimeStep TRAP::Application::GetTime() const
+TRAP::Utils::TimeStep TRAP::Application::GetTimeInternal() const
 {
-	Utils::TimeStep timeStep(0.0f);
-	timeStep.Update(m_timer->Elapsed());
+	const Utils::TimeStep timeStep(m_timer->Elapsed());
 
 	return timeStep;
 }

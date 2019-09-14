@@ -177,7 +177,7 @@ uint32_t TRAP::Window::GetRefreshRate() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::DisplayMode TRAP::Window::GetDisplayMode() const
+TRAP::Window::DisplayMode TRAP::Window::GetDisplayMode() const
 {
 	return m_data.displayMode;
 }
@@ -205,7 +205,7 @@ uint32_t TRAP::Window::GetVSyncInterval() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::CursorMode TRAP::Window::GetCursorMode() const
+TRAP::Window::CursorMode TRAP::Window::GetCursorMode() const
 {
 	return m_data.cursorMode;
 }
@@ -238,7 +238,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w37a3]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][19w37a5]" + std::string(Graphics::Renderer::GetTitle());
 	glfwSetWindowTitle(m_window, newTitle.c_str());
 #else
 	glfwSetWindowTitle(m_window, m_data.Title.c_str());
@@ -500,6 +500,7 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	if (!s_GLFWInitialized)
 	{
+		glfwInitHint(GLFW_JOYSTICK_HAT_BUTTONS, false);
 		const int32_t success = glfwInit();
 		TP_CORE_ASSERT(success, "Could not initialize GLFW!");
 		glfwSetErrorCallback(GLFWErrorCallback);
@@ -576,7 +577,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w37a3]";
+		"[INDEV][19w37a5]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif

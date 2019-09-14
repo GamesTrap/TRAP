@@ -7,12 +7,16 @@
 
 namespace TRAP::Graphics
 {
-	enum RendererBufferType
+	enum class RendererBufferType
 	{
 		NONE = 0,
 		Color = BIT(0),
 		Depth = BIT(1),
-		Stencil = BIT(2)
+		Stencil = BIT(2),
+		Color_Depth = Color | Depth,
+		Color_Stencil = Color | Stencil,
+		Color_Depth_Stencil = Color | Stencil | Depth,
+		Depth_Stencil = Depth | Stencil
 	};
 
 	enum class RendererBlendFunction
@@ -66,7 +70,7 @@ namespace TRAP::Graphics
 	class RenderCommand
 	{
 	public:
-		static void Clear(uint32_t buffer);
+		static void Clear(RendererBufferType buffer);
 		static void Present(const std::unique_ptr<Window>& window);
 
 		static void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f });
@@ -111,7 +115,7 @@ inline void TRAP::Graphics::RenderCommand::Draw(const Scope<VertexArray>& vertex
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-inline void TRAP::Graphics::RenderCommand::Clear(const uint32_t buffer)
+inline void TRAP::Graphics::RenderCommand::Clear(const RendererBufferType buffer)
 {
 	API::RendererAPI::GetRenderer()->Clear(buffer);
 }

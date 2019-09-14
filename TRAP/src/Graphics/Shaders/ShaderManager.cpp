@@ -10,11 +10,16 @@ std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Shader>> TRAP::Graph
 const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(const std::string& filepath)
 {
 	Scope<Shader> shader = Shader::CreateFromFile(filepath);
-	const std::string name = shader->GetName();
-	
-	Add(std::move(shader));
-	
-	return Get(name);
+	if(shader)
+	{
+		const std::string name = shader->GetName();
+		
+		Add(std::move(shader));
+		
+		return Get(name);
+	}
+
+	return Get("Passthrough");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -23,9 +28,14 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(c
 {
 	Scope<Shader> shader = Shader::CreateFromFile(name, filepath);
 
-	Add(std::move(shader));
+	if(shader)
+	{
+		Add(std::move(shader));
+		
+		return Get(name);
+	}
 
-	return Get(name);
+	return Get("Passthrough");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -34,9 +44,14 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(c
 {
 	Scope<Shader> shader = Shader::CreateFromSource(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSSource);
 
-	Add(std::move(shader));
+	if(shader)
+	{
+		Add(std::move(shader));
+		
+		return Get(name);
+	}
 
-	return Get(name);
+	return Get("Passthrough");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -57,8 +72,8 @@ void TRAP::Graphics::ShaderManager::Add(Scope<Shader> shader)
 const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Get(const std::string& name)
 {
 	if(Exists(name))
-		return s_Shaders[name];
-
+			return s_Shaders[name];
+	
 	//Should always be available as a fallback
 	return Get("Passthrough");
 }
@@ -142,12 +157,14 @@ void TRAP::Graphics::ShaderManager::Reload(const Scope<Shader>& shader)
 			const std::string TESSource = shader->GetTESSource();
 			const std::string CSSource = shader->GetCSSource();
 
+			s_Shaders[name]->Unbind();
 			s_Shaders[name].reset();
 			s_Shaders[name] = Shader::CreateFromSource(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
 			TP_INFO("[ShaderManager] Reloaded: \"", name, "\"");
 		}
 		else
 		{
+			s_Shaders[name]->Unbind();
 			s_Shaders[name].reset();
 			s_Shaders[name] = Shader::CreateFromFile(name, path);
 			TP_INFO("[ShaderManager] Reloaded: \"", name, "\"");

@@ -17,6 +17,7 @@ namespace TRAP::Graphics
 	enum class RendererBlendFunction;
 	enum class RendererFrontFace;
 	enum class RendererDepthFunction;
+	enum class RendererBufferType;
 }
 
 namespace TRAP::Graphics::API
@@ -38,7 +39,7 @@ namespace TRAP::Graphics::API
 
 		virtual void InitInternal() = 0;
 
-		virtual void Clear(uint32_t buffer) = 0;
+		virtual void Clear(RendererBufferType buffer) = 0;
 		virtual void Present(const std::unique_ptr<Window>& window) = 0;
 
 		virtual void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) = 0;

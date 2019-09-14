@@ -165,17 +165,17 @@ inline std::string TRAP::Utils::Config::ConvertToString<double>(const double val
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<>
-inline std::string TRAP::Utils::Config::ConvertToString<TRAP::DisplayMode>(const DisplayMode value) const
+inline std::string TRAP::Utils::Config::ConvertToString<TRAP::Window::DisplayMode>(const Window::DisplayMode value) const
 {
 	switch (value)
 	{
-	case DisplayMode::Windowed:
+	case Window::DisplayMode::Windowed:
 		return "Windowed";
 
-	case DisplayMode::Borderless:
+	case Window::DisplayMode::Borderless:
 		return "Borderless";
 
-	case DisplayMode::Fullscreen:
+	case Window::DisplayMode::Fullscreen:
 		return "Fullscreen";
 
 	default:
@@ -308,16 +308,16 @@ inline std::string TRAP::Utils::Config::ConvertToType<std::string>(const std::st
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<>
-inline TRAP::DisplayMode TRAP::Utils::Config::ConvertToType<TRAP::DisplayMode>(const std::string& input) const
+inline TRAP::Window::DisplayMode TRAP::Utils::Config::ConvertToType<TRAP::Window::DisplayMode>(const std::string& input) const
 {
 	if (input == "Windowed")
-		return DisplayMode::Windowed;
+		return Window::DisplayMode::Windowed;
 	if (input == "Borderless")
-		return DisplayMode::Borderless;
+		return Window::DisplayMode::Borderless;
 	if (input == "Fullscreen")
-		return DisplayMode::Fullscreen;
+		return Window::DisplayMode::Fullscreen;
 
-	return DisplayMode::Windowed;
+	return Window::DisplayMode::Windowed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

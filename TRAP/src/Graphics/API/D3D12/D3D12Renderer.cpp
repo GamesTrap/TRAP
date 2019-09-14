@@ -39,7 +39,7 @@ void TRAP::Graphics::API::D3D12Renderer::InitInternal()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::Clear(uint32_t buffer)
+void TRAP::Graphics::API::D3D12Renderer::Clear(RendererBufferType buffer)
 {
 }
 

@@ -35,8 +35,7 @@ namespace TRAP
 		LayerStack& GetLayerStack();
 
 		uint32_t GetFPS() const;
-		float GetFrameTime() const;
-		Utils::TimeStep GetTime() const;
+		float GetFrameTime() const;		
 		uint32_t GetDrawCalls() const;
 		void AddSingleDrawCall();
 		uint32_t GetTickRate() const;
@@ -46,11 +45,14 @@ namespace TRAP
 
 		static Application& Get();
 		static const std::unique_ptr<Window>& GetWindow();
+		static Utils::TimeStep GetTime();
 
 		void ReCreateWindow(Graphics::API::RenderAPI renderAPI);
 		void ReCreate(Graphics::API::RenderAPI renderAPI);
 
 	private:
+		Utils::TimeStep GetTimeInternal() const;
+		
 		bool OnWindowClose(WindowCloseEvent& e);
 
 		std::unique_ptr<Window> m_window;
@@ -152,6 +154,13 @@ inline TRAP::Application& TRAP::Application::Get()
 inline TRAP::LayerStack& TRAP::Application::GetLayerStack()
 {
 	return m_layerStack;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+inline TRAP::Utils::TimeStep TRAP::Application::GetTime()
+{
+	return Get().GetTimeInternal();
 }
 
 #endif /*_TRAP_APPLICATION_H_*/

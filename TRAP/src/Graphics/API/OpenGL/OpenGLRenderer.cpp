@@ -48,7 +48,7 @@ void TRAP::Graphics::API::OpenGLRenderer::InitInternal()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::Clear(const uint32_t buffer)
+void TRAP::Graphics::API::OpenGLRenderer::Clear(const RendererBufferType buffer)
 {	
 	OpenGLCall(glClear(TRAPRendererBufferToOpenGL(buffer)));
 }
@@ -209,16 +209,22 @@ void TRAP::Graphics::API::OpenGLRenderer::Draw(const Scope<VertexArray>& vertexA
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBufferToOpenGL(const uint32_t buffer)
+uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBufferToOpenGL(const RendererBufferType buffer)
 {
 	uint32_t result = 0;
 
-	if (buffer & static_cast<int32_t>(RENDERER_BUFFER_COLOR))
-		result |= GL_COLOR_BUFFER_BIT;
-	if (buffer & static_cast<int32_t>(RENDERER_BUFFER_DEPTH))
-		result |= GL_DEPTH_BUFFER_BIT;
-	if (buffer & static_cast<int32_t>(RENDERER_BUFFER_STENCIL))
-		result |= GL_STENCIL_BUFFER_BIT;
+	if (buffer == RendererBufferType::Color)
+		result = GL_COLOR_BUFFER_BIT;
+	else if (buffer == RendererBufferType::Depth)
+		result = GL_DEPTH_BUFFER_BIT;
+	else if (buffer == RendererBufferType::Stencil)
+		result = GL_STENCIL_BUFFER_BIT;
+	else if (buffer == RendererBufferType::Color_Depth)
+		result = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
+	else if (buffer == RendererBufferType::Color_Depth_Stencil)
+		result = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
+	else if (buffer == RendererBufferType::Depth_Stencil)
+		result = GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;	
 
 	return result;
 }

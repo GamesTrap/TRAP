@@ -11,64 +11,28 @@
 
 namespace TRAP
 {
-	//Used to set Display modes of windows
-	enum class DisplayMode
-	{
-		Windowed,
-		Fullscreen,
-		Borderless
-	};
-
-	//Used to set Cursor mode of windows
-	enum class CursorMode
-	{
-		Normal,
-		Hidden,
-		Disabled
-	};
-
-	//Used to create new windows
-	struct WindowProps
-	{
-		std::string Title;
-		uint32_t Width;
-		uint32_t Height;
-		uint32_t RefreshRate;
-		uint32_t VSync;
-		Graphics::API::RenderAPI RenderAPI;
-		DisplayMode displayMode;
-		uint32_t Monitor;
-		CursorMode cursorMode;
-		bool rawMouseInput;
-
-		//Sets up properties for new window(s)
-		explicit WindowProps(std::string title = "TRAP Engine",
-			const uint32_t width = 1280,
-			const uint32_t height = 720,
-			const uint32_t refreshRate = 60,
-			const uint32_t vsync = 0,
-			const DisplayMode displayMode = DisplayMode::Windowed,
-			const uint32_t monitor = 0,
-			const CursorMode cursorMode = CursorMode::Normal,
-			const bool rawMouseInput = false)
-			: Title(std::move(title)),
-			  Width(width),
-			  Height(height),
-			  RefreshRate(refreshRate),
-			  VSync(vsync),
-			  RenderAPI(Graphics::API::Context::GetRenderAPI()),
-			  displayMode(displayMode),
-			  Monitor(monitor),
-			  cursorMode(cursorMode),
-			  rawMouseInput(rawMouseInput)
-		{
-		}
-	};
+	struct WindowProps;
 
 	//Interface representing a desktop system based window
 	class Window final
 	{
 	public:
+		//Used to set Display modes of windows
+		enum class DisplayMode
+		{
+			Windowed,
+			Fullscreen,
+			Borderless
+		};
+
+		//Used to set Cursor mode of windows
+		enum class CursorMode
+		{
+			Normal,
+			Hidden,
+			Disabled
+		};
+		
 		using EventCallbackFn = std::function<void(Event&)>;
 
 		explicit Window(const WindowProps& props);
@@ -141,6 +105,44 @@ namespace TRAP
 		static uint32_t s_windows;
 		static bool s_GLFWInitialized;
 		static std::vector<Window*> s_fullscreenWindows;
+	};
+
+	//Used to create new windows
+	struct WindowProps
+	{
+		std::string Title;
+		uint32_t Width;
+		uint32_t Height;
+		uint32_t RefreshRate;
+		uint32_t VSync;
+		Graphics::API::RenderAPI RenderAPI;
+		Window::DisplayMode displayMode;
+		uint32_t Monitor;
+		Window::CursorMode cursorMode;
+		bool rawMouseInput;
+
+		//Sets up properties for new window(s)
+		explicit WindowProps(std::string title = "TRAP Engine",
+			const uint32_t width = 1280,
+			const uint32_t height = 720,
+			const uint32_t refreshRate = 60,
+			const uint32_t vsync = 0,
+			const Window::DisplayMode displayMode = Window::DisplayMode::Windowed,
+			const uint32_t monitor = 0,
+			const Window::CursorMode cursorMode = Window::CursorMode::Normal,
+			const bool rawMouseInput = false)
+			: Title(std::move(title)),
+			Width(width),
+			Height(height),
+			RefreshRate(refreshRate),
+			VSync(vsync),
+			RenderAPI(Graphics::API::Context::GetRenderAPI()),
+			displayMode(displayMode),
+			Monitor(monitor),
+			cursorMode(cursorMode),
+			rawMouseInput(rawMouseInput)
+		{
+		}
 	};
 }
 

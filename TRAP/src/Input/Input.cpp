@@ -7,41 +7,41 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Input::Controller> TRAP::Input::m_joysticks;
+std::vector<TRAP::Input::ControllerStatus> TRAP::Input::s_controllerStatuses;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Input::Init()
 {
-	m_joysticks.resize(4); //Only 4 Controllers are supported!
+	s_controllerStatuses.resize(4); //Only 4 Controllers are supported!
 	
 	//Assuming GLFW is already initialized
-	m_joysticks[static_cast<int32_t>(Joystick::ONE)] =
+	s_controllerStatuses[static_cast<int32_t>(Controller::One)] =
 	{
-		static_cast<bool>(glfwJoystickPresent(static_cast<int32_t>(Joystick::ONE))),
-		static_cast<bool>(glfwJoystickIsGamepad(static_cast<int32_t>(Joystick::ONE)))
+		static_cast<bool>(glfwJoystickPresent(static_cast<int32_t>(Controller::One))),
+		static_cast<bool>(glfwJoystickIsGamepad(static_cast<int32_t>(Controller::One)))
 	};
-	m_joysticks[static_cast<int32_t>(Joystick::TWO)] =
+	s_controllerStatuses[static_cast<int32_t>(Controller::Two)] =
 	{
-		static_cast<bool>(glfwJoystickPresent(static_cast<int32_t>(Joystick::TWO))),
-		static_cast<bool>(glfwJoystickIsGamepad(static_cast<int32_t>(Joystick::TWO)))
+		static_cast<bool>(glfwJoystickPresent(static_cast<int32_t>(Controller::Two))),
+		static_cast<bool>(glfwJoystickIsGamepad(static_cast<int32_t>(Controller::Two)))
 	};
-	m_joysticks[static_cast<int32_t>(Joystick::THREE)] = 
+	s_controllerStatuses[static_cast<int32_t>(Controller::Three)] =
 	{
-		static_cast<bool>(glfwJoystickPresent(static_cast<int32_t>(Joystick::THREE))),
-		static_cast<bool>(glfwJoystickIsGamepad(static_cast<int32_t>(Joystick::THREE)))
+		static_cast<bool>(glfwJoystickPresent(static_cast<int32_t>(Controller::Three))),
+		static_cast<bool>(glfwJoystickIsGamepad(static_cast<int32_t>(Controller::Three)))
 	};
-	m_joysticks[static_cast<int32_t>(Joystick::FOUR)] =
+	s_controllerStatuses[static_cast<int32_t>(Controller::Four)] =
 	{
-		static_cast<bool>(glfwJoystickPresent(static_cast<int32_t>(Joystick::FOUR))),
-		static_cast<bool>(glfwJoystickIsGamepad(static_cast<int32_t>(Joystick::FOUR))),
+		static_cast<bool>(glfwJoystickPresent(static_cast<int32_t>(Controller::Four))),
+		static_cast<bool>(glfwJoystickIsGamepad(static_cast<int32_t>(Controller::Four))),
 	};
 
-	for(uint32_t i = 0; i < m_joysticks.size(); i++)
+	for(uint32_t i = 0; i < s_controllerStatuses.size(); i++)
 	{
-		if (m_joysticks[i].Connected && !m_joysticks[i].IsGamepad) //Connected and not a Gamepad
-			TP_DEBUG("[Input][Joystick] ID: ", i, " Joystick: \"", glfwGetJoystickName(i), "\" Connected!");
-		else if (m_joysticks[i].Connected && m_joysticks[i].IsGamepad) //Connected and a Gamepad
+		if (s_controllerStatuses[i].Connected && !s_controllerStatuses[i].IsGamepad) //Connected and not a Gamepad
+			TP_DEBUG("[Input][Controller] ID: ", i, " Controller: \"", glfwGetJoystickName(i), "\" Connected!");
+		else if (s_controllerStatuses[i].Connected && s_controllerStatuses[i].IsGamepad) //Connected and a Gamepad
 			TP_DEBUG("[Input][Gamepad] ID: ", i, " Gamepad: \"", glfwGetGamepadName(i), "\" Connected!");
 	}
 	
@@ -50,10 +50,10 @@ void TRAP::Input::Init()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::IsKeyPressed(const Key keycode)
+bool TRAP::Input::IsKeyPressed(const Key key)
 {
 	const auto window = static_cast<GLFWwindow*>(Application::GetWindow()->GetNativeWindow());
-	const auto state = glfwGetKey(window, static_cast<int32_t>(keycode));
+	const auto state = glfwGetKey(window, static_cast<int32_t>(key));
 
 	return state == GLFW_PRESS || state == GLFW_REPEAT;
 }
@@ -70,22 +70,22 @@ bool TRAP::Input::IsMouseButtonPressed(const MouseButton button)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::IsGamepadButtonPressed(Joystick joystick, GamepadButton button)
+bool TRAP::Input::IsGamepadButtonPressed(Controller controller, GamepadButton button)
 {
-	if(!IsJoystickConnected(joystick))
+	if(!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Joystick] ID: ", static_cast<int32_t>(joystick), " is not Connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
 		return false;
 	}
 
-	if(!IsJoystickGamepad(joystick))
+	if(!IsControllerGamepad(controller))
 	{
-		TP_WARN("[Input][Joystick] ID: ", static_cast<int32_t>(joystick), " is not a Gamepad!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not a Gamepad!");
 		return false;
 	}
 
 	GLFWgamepadstate state{};
-	if (glfwGetGamepadState(static_cast<int32_t>(joystick), &state))
+	if (glfwGetGamepadState(static_cast<int32_t>(controller), &state))
 		return state.buttons[static_cast<uint32_t>(button)];		
 
 	return false;
@@ -100,22 +100,22 @@ bool TRAP::Input::IsRawMouseInputSupported()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::IsJoystickConnected(const Joystick joystick)
+bool TRAP::Input::IsControllerConnected(const Controller controller)
 {
-	return m_joysticks[static_cast<int32_t>(joystick)].Connected;
+	return s_controllerStatuses[static_cast<int32_t>(controller)].Connected;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::IsJoystickGamepad(Joystick joystick)
+bool TRAP::Input::IsControllerGamepad(Controller controller)
 {
-	if(!IsJoystickConnected(joystick))
+	if(!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Joystick] ID: ", static_cast<int32_t>(joystick), " is not Connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
 		return false;
 	}
 
-	return m_joysticks[static_cast<int32_t>(joystick)].IsGamepad;
+	return s_controllerStatuses[static_cast<int32_t>(controller)].IsGamepad;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -160,16 +160,16 @@ std::string TRAP::Input::GetKeyName(const Key key)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Input::GetJoystickAxis(Joystick joystick, const JoystickAxis axis)
+float TRAP::Input::GetControllerAxis(Controller controller, const ControllerAxis axis)
 {
-	if(!IsJoystickConnected(joystick))
+	if(!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Joystick] ID: ", static_cast<int32_t>(joystick), " is not Connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
 		return 0.0f;
 	}
 
 	GLFWgamepadstate state{};
-	if (glfwGetGamepadState(static_cast<int32_t>(joystick), &state))
+	if (glfwGetGamepadState(static_cast<int32_t>(controller), &state))
 		return state.axes[static_cast<uint32_t>(axis)];
 
 	return 0.0f;
@@ -177,50 +177,57 @@ float TRAP::Input::GetJoystickAxis(Joystick joystick, const JoystickAxis axis)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::JoystickHat TRAP::Input::GetJoystickHat(Joystick joystick, const uint32_t hat)
+TRAP::Input::ControllerHat TRAP::Input::GetControllerHat(Controller controller, const uint32_t hat)
 {
-	if (!IsJoystickConnected(joystick))
+	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Joystick] ID: ", static_cast<int32_t>(joystick), " is not Connected!");
-		return JoystickHat::CENTERED;
+		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
+		return ControllerHat::Centered;
 	}
 
 	uint32_t hatCount = 0;
-	const unsigned char* hats = glfwGetJoystickHats(static_cast<int32_t>(joystick), reinterpret_cast<int32_t*>(&hatCount));
+	const unsigned char* hats = glfwGetJoystickHats(static_cast<int32_t>(controller), reinterpret_cast<int32_t*>(&hatCount));
 	if (hats && hat < hatCount)
-		return static_cast<JoystickHat>(hats[hat]);
+		return static_cast<ControllerHat>(hats[hat]);
 
-	return JoystickHat::CENTERED;
+	return ControllerHat::Centered;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Input::GetJoystickName(Joystick joystick)
+std::string TRAP::Input::GetControllerName(Controller controller)
 {
-	if (!IsJoystickConnected(joystick))
+	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Joystick] ID: ", static_cast<int32_t>(joystick), " is not Connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
 		return "";
 	}
 
-	if(IsJoystickGamepad(joystick))
-		return glfwGetGamepadName(static_cast<int32_t>(joystick));
+	if(IsControllerGamepad(controller))
+		return glfwGetGamepadName(static_cast<int32_t>(controller));
 
-	return glfwGetJoystickName(static_cast<int32_t>(joystick));
+	return glfwGetJoystickName(static_cast<int32_t>(controller));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<float> TRAP::Input::GetAllJoystickAxes(Joystick joystick)
+const TRAP::Input::ControllerStatus& TRAP::Input::GetControllerStatus(Controller controller)
 {
-	if (!IsJoystickConnected(joystick))
+	return s_controllerStatuses[static_cast<uint32_t>(controller)];
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<float> TRAP::Input::GetAllControllerAxes(Controller controller)
+{
+	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Joystick] ID: ", static_cast<int32_t>(joystick), " is not Connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
 		return {};
 	}
 
 	uint32_t axisCount = 0;
-	const float* axes = glfwGetJoystickAxes(static_cast<int32_t>(joystick), reinterpret_cast<int32_t*>(&axisCount));
+	const float* axes = glfwGetJoystickAxes(static_cast<int32_t>(controller), reinterpret_cast<int32_t*>(&axisCount));
 	if(axes)
 		return std::vector<float>(axes, axes + axisCount);
 
@@ -229,22 +236,22 @@ std::vector<float> TRAP::Input::GetAllJoystickAxes(Joystick joystick)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<bool> TRAP::Input::GetAllJoystickButtons(Joystick joystick)
+std::vector<bool> TRAP::Input::GetAllControllerButtons(Controller controller)
 {
-	if (!IsJoystickConnected(joystick))
+	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Joystick] ID: ", static_cast<int32_t>(joystick), " is not Connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
 		return {};
 	}
 
-	if (!IsJoystickGamepad(joystick))
+	if (!IsControllerGamepad(controller))
 	{
-		TP_WARN("[Input][Joystick] ID: ", static_cast<int32_t>(joystick), " is not a Gamepad!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not a Gamepad!");
 		return {};
 	}
 
 	uint32_t buttonCount = 0;
-	const unsigned char* buttons = glfwGetJoystickButtons(static_cast<int32_t>(joystick), reinterpret_cast<int32_t*>(&buttonCount));
+	const unsigned char* buttons = glfwGetJoystickButtons(static_cast<int32_t>(controller), reinterpret_cast<int32_t*>(&buttonCount));
 	if (buttons)
 		return std::vector<bool>(buttons, buttons + buttonCount);
 
@@ -253,45 +260,52 @@ std::vector<bool> TRAP::Input::GetAllJoystickButtons(Joystick joystick)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Input::JoystickHat> TRAP::Input::GetAllJoystickHats(Joystick joystick)
+std::vector<TRAP::Input::ControllerHat> TRAP::Input::GetAllControllerHats(Controller controller)
 {
-	if (!IsJoystickConnected(joystick))
+	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Joystick] ID: ", static_cast<int32_t>(joystick), " is not Connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
 		return {};
 	}
 
 	uint32_t hatCount = 0;
-	const unsigned char* hats = glfwGetJoystickHats(static_cast<int32_t>(joystick), reinterpret_cast<int32_t*>(&hatCount));
+	const unsigned char* hats = glfwGetJoystickHats(static_cast<int32_t>(controller), reinterpret_cast<int32_t*>(&hatCount));
 	if(hats)
-		return std::vector<JoystickHat>(reinterpret_cast<const JoystickHat*>(hats), reinterpret_cast<const JoystickHat*>(hats) + hatCount);
+		return std::vector<ControllerHat>(reinterpret_cast<const ControllerHat*>(hats), reinterpret_cast<const ControllerHat*>(hats) + hatCount);
 
 	return {};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+const std::vector<TRAP::Input::ControllerStatus>& TRAP::Input::GetAllControllerStatuses()
+{
+	return s_controllerStatuses;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Input::JoystickCallback(const int32_t joystick, const int32_t event)
 {
-	if(joystick <= static_cast<int32_t>(Joystick::FOUR))
+	if(joystick <= static_cast<int32_t>(Controller::Four))
 	{
 		if(event == GLFW_CONNECTED)
 		{
 			if (!glfwJoystickIsGamepad(joystick))
-				TP_DEBUG("[Input][Joystick] ID: ", joystick, " Joystick: \"", glfwGetJoystickName(joystick), "\" Connected!");
+				TP_DEBUG("[Input][Controller] ID: ", joystick, " Controller: \"", glfwGetJoystickName(joystick), "\" Connected!");
 			else
 				TP_DEBUG("[Input][Gamepad] ID: ", joystick, " Gamepad: \"", glfwGetGamepadName(joystick), "\" Connected!");
 
-			m_joysticks[joystick] = { true, static_cast<bool>(glfwJoystickIsGamepad(joystick)) };
+			s_controllerStatuses[joystick] = { true, static_cast<bool>(glfwJoystickIsGamepad(joystick)) };
 		}
 		else
 		{
-			if (!m_joysticks[joystick].IsGamepad)
-				TP_DEBUG("[Input][Joystick] ID: ", joystick, " Disconnected!");
+			if (!s_controllerStatuses[joystick].IsGamepad)
+				TP_DEBUG("[Input][Controller] ID: ", joystick, " Disconnected!");
 			else
 				TP_DEBUG("[Input][Gamepad] ID: ", joystick, " Disconnected!");
 
-			m_joysticks[joystick] = { false, false };
+			s_controllerStatuses[joystick] = { false, false };
 		}
 	}
 }

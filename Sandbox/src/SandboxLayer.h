@@ -51,7 +51,7 @@ public:
 
 		//EXPERIMENTAL
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
-		TRAP::Graphics::TextureManager::Load("Debug", "/Textures/TRAPWhiteLogo2048x2048.tga");
+		TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.tga");
 		//////////////
 
 		///////////////
@@ -75,6 +75,7 @@ public:
 			{TRAP::Graphics::ShaderDataType::Float2, "UV"}
 		};
 		vertexBuffer->SetLayout(layout);
+		vertexBuffer->SetLayout(layout);
 		m_vertexArray->AddVertexBuffer(vertexBuffer);
 
 		std::array<uint32_t, 6> indices //Quad
@@ -89,7 +90,8 @@ public:
 		TRAP::Graphics::RenderCommand::SetBlend(true);
 		TRAP::Graphics::RenderCommand::SetBlendFunction(TRAP::Graphics::RendererBlendFunction::Source_Alpha, TRAP::Graphics::RendererBlendFunction::One_Minus_Source_Alpha);
 
-		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("ColorBuffer", &m_color, sizeof(TRAP::Math::Vec4));
+		UniformData data{ TRAP::Application::GetTime() };
+		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("ColorBuffer", &data, sizeof(UniformData));
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -109,7 +111,7 @@ public:
 		m_camera.SetPosition(m_cameraPosition);
 		m_camera.SetRotation(m_cameraRotation);
 
-		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color | TRAP::Graphics::RendererBufferType::Depth);
+		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
 
 		TRAP::Graphics::Renderer::BeginScene(m_camera);
 		{
@@ -135,9 +137,10 @@ public:
 					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray);
 				else
 				{
+					float time = TRAP::Application::GetTime();
+					m_uniformBuffer->UpdateData(&time, sizeof(UniformData));
 					m_uniformBuffer->Bind(1);
-					TRAP::Graphics::TextureManager::Get2D("Debug")->Bind();
-					//TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Texture"), m_vertexArray);
+					TRAP::Graphics::TextureManager::Get2D("TRAP")->Bind();
 					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColor"), m_vertexArray);
 				}
 			}
@@ -193,14 +196,14 @@ public:
 		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::KP_9))
 			m_cameraRotation.y -= m_cameraRotationSpeed * deltaTime;
 
-		if(TRAP::Input::IsJoystickConnected(TRAP::Input::Joystick::One))
+		if(TRAP::Input::IsControllerConnected(TRAP::Input::Controller::One))
 		{
-			const float XAxis = TRAP::Input::GetJoystickAxis(TRAP::Input::Joystick::One, TRAP::Input::JoystickAxis::Left_X);
+			const float XAxis = TRAP::Input::GetControllerAxis(TRAP::Input::Controller::One, TRAP::Input::ControllerAxis::Left_X);
 			if (XAxis < -0.1f || XAxis > 0.1f)
-				m_cameraPosition.x -= XAxis * m_cameraMovementSpeed * deltaTime;
-			const float YAxis = TRAP::Input::GetJoystickAxis(TRAP::Input::Joystick::One, TRAP::Input::JoystickAxis::Left_Y);
+				m_cameraPosition.x += XAxis * m_cameraMovementSpeed * deltaTime;
+			const float YAxis = TRAP::Input::GetControllerAxis(TRAP::Input::Controller::One, TRAP::Input::ControllerAxis::Left_Y);
 			if (YAxis < -0.1f || YAxis > 0.1f)
-				m_cameraPosition.y += YAxis * m_cameraMovementSpeed * deltaTime;
+				m_cameraPosition.y -= YAxis * m_cameraMovementSpeed * deltaTime;
 		}
 	}
 
@@ -222,11 +225,11 @@ public:
 			m_usePassthrough = !m_usePassthrough;
 
 		if (event.GetKeyCode() == TRAP::Input::Key::F5 && event.GetRepeatCount() < 1) //Make Window windowed
-			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::DisplayMode::Windowed);
+			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Windowed);
 		if (event.GetKeyCode() == TRAP::Input::Key::F6 && event.GetRepeatCount() < 1) //Make Window Borderless Fullscreen
-			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::DisplayMode::Borderless);
+			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Borderless);
 		if (event.GetKeyCode() == TRAP::Input::Key::F7 && event.GetRepeatCount() < 1) //Make Window Exclusive Fullscreen
-			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::DisplayMode::Fullscreen);
+			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Fullscreen);
 
 		if (event.GetKeyCode() == TRAP::Input::Key::F9 && event.GetRepeatCount() < 1) //Enable/Disable
 			m_show = !m_show;
@@ -267,6 +270,9 @@ public:
 			1.0f
 		};
 
+		UniformData data{ TRAP::Application::GetTime() };
+		m_uniformBuffer->UpdateData(&data, sizeof(UniformData));
+
 		return true;
 	}
 
@@ -287,5 +293,8 @@ private:
 	float m_cameraRotationSpeed = 180.0f;
 
 	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_uniformBuffer{};
-	TRAP::Math::Vec4 m_color{1.0f, 0.0f, 0.0f, 1.0f};
+	struct UniformData
+	{
+		float Time{};
+	};
 };

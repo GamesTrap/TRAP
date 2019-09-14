@@ -73,7 +73,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::Clear(uint32_t buffer)
+void TRAP::Graphics::API::VulkanRenderer::Clear(RendererBufferType buffer)
 {
 }
 
