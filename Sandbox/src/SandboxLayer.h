@@ -48,6 +48,7 @@ public:
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Texture.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColor.shader");
+		TRAP::Graphics::ShaderManager::Load("/Shaders/RainyWindow.shader");
 
 		//EXPERIMENTAL
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
@@ -138,7 +139,7 @@ public:
 				else
 				{
 					float time = TRAP::Application::GetTime();
-					m_uniformBuffer->UpdateData(&time, sizeof(UniformData));
+					m_uniformBuffer->UpdateData(&time, sizeof(float));
 					m_uniformBuffer->Bind(1);
 					TRAP::Graphics::TextureManager::Get2D("TRAP")->Bind();
 					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColor"), m_vertexArray);
@@ -269,9 +270,6 @@ public:
 			-1.0f,
 			1.0f
 		};
-
-		UniformData data{ TRAP::Application::GetTime() };
-		m_uniformBuffer->UpdateData(&data, sizeof(UniformData));
 
 		return true;
 	}

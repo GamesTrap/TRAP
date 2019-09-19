@@ -1,6 +1,39 @@
 #ifndef _TRAP_CORE_H_
 #define _TRAP_CORE_H_
 
+#ifdef _WIN32
+	//Windows x64/x86
+	#ifdef _WIN64
+		//Windows x64
+		#define TRAP_PLATFORM_WINDOWS
+	#else
+		//Windows x86
+		#error "x86 Builds aren unsupported!"
+	#endif
+#elif defined(__APPLE__) || defined(__MACH__)
+	#include <TargetConditionals.h>
+	//TARGET_OS_MAC exists on all the platforms so we must check all of them(in this order) to ensure that we're running on MAC
+	//and not some other Apple platform
+	#if TARGET_IPHONE_SIMULATOR == 1
+		#error "IOS simulator is unsupported!"
+	#elif TARGET_OS_IPHONE == 1
+		#error "IOS is unsupported!"
+	#elif TARGET_OS_MAC == 1
+		#define TRAP_PLATFORM_MACOSX //Untested and very likely not working
+		//Tested support will be added when Travis-CI has MacOS 10.15 support
+	#else
+		#error "Unknown Apple platform!"
+	#endif
+
+	//We also have to check __ANDROID__ before __linux__ sine android is based on the linux kernel it has __linux__ defined
+#elif defined(__ANDROID__)
+	#error "Android is unsupported!" //Maybe in the future
+#elif defined(__linux__)
+	#define TRAP_PLATFORM_LINUX
+#else
+	#error "Unknown platform!"
+#endif
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 constexpr uint32_t TRAP_MAKE_VERSION(const uint32_t major, const uint32_t minor, const uint32_t patch)
@@ -31,7 +64,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 35);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 36);
 
 //-------------------------------------------------------------------------------------------------------------------//
 

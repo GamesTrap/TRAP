@@ -99,7 +99,6 @@ project "TRAP"
 
 		defines
 		{
-			"TRAP_PLATFORM_WINDOWS",
 			"GLFW_INCLUDE_NONE"
 		}
 
@@ -142,7 +141,6 @@ project "TRAP"
 
 		defines
 		{
-			"TRAP_PLATFORM_LINUX",
 			"GLFW_INCLUDE_NONE"
 		}
 
@@ -168,7 +166,6 @@ project "TRAP"
 
 		defines
 		{
-			"TRAP_PLATFORM_MACOSX",
 			"GLFW_INCLUDE_NONE"
 		}
 	
@@ -236,12 +233,6 @@ project "Sandbox"
 		"TRAP"
 	}
 
-	filter "system:windows"
-		defines
-		{
-			"TRAP_PLATFORM_WINDOWS"
-		}
-
 	filter "system:linux"
 		links
 		{
@@ -261,17 +252,7 @@ project "Sandbox"
 			"OSDependent"
 		}
 
-		defines
-		{
-			"TRAP_PLATFORM_LINUX"
-		}
-
 	filter "system:macosx"
-		defines
-		{
-			"TRAP_PLATFORM_MACOSX"
-		}
-
 		links
 		{
 			"GLFW",

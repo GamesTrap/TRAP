@@ -36,6 +36,8 @@
 
 #include <imgui.h>
 
+#include "Core.h"
+
 #ifdef TRAP_PLATFORM_WINDOWS
 #include <dxgiformat.h>
 #include <dxgi1_6.h>
@@ -46,7 +48,5 @@
 #undef far
 #undef DELETE
 #endif
-
-#include "Core.h"
 
 #endif /*_TRAP_TRAPPCH_H_*/

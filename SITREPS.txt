@@ -424,3 +424,7 @@ SITREP 09/14/2019|19w37a5
     - Renderer changed Clear() ~<20 mins
     - Fixed TimeStep class ~<20 mins
     - Added new shader for testing(and fun :D) ~>20 mins
+
+SITREP 09/19/2019|19w38a1
+    - Changed TRAP Engine version to 19w38a1(0.5.36)
+    - Moved Platform detection macros from premake to Core.h ~<20 mins
