@@ -21,9 +21,6 @@ namespace TRAP::Graphics
 
 		virtual const Math::Mat4& GetProjectionMatrix() const = 0;
 		virtual const Math::Mat4& GetViewMatrix() const = 0;
-
-		virtual void Translate(const Math::Vec3& translation) = 0;
-		virtual void Rotate(const Math::Vec3& rotation) = 0;
 	};
 }
 

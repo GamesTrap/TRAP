@@ -30,7 +30,6 @@ namespace TRAP
 		void PushLayer(Scope<Layer> layer);
 		void PushOverlay(Scope<Layer> overlay);
 
-		//const std::unique_ptr<Window>& GetWindow() const;
 		Utils::Config* GetConfig();
 		LayerStack& GetLayerStack();
 
@@ -54,6 +53,7 @@ namespace TRAP
 		Utils::TimeStep GetTimeInternal() const;
 		
 		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
 
 		std::unique_ptr<Window> m_window;
 		std::unique_ptr<ImGuiLayer> m_ImGuiLayer;
@@ -78,7 +78,6 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//inline const std::unique_ptr<TRAP::Window>& TRAP::Application::GetWindow() const
 inline const std::unique_ptr<TRAP::Window>& TRAP::Application::GetWindow()
 {
 	return Get().m_window;

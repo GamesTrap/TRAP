@@ -428,3 +428,10 @@ SITREP 09/14/2019|19w37a5
 SITREP 09/19/2019|19w38a1
     - Changed TRAP Engine version to 19w38a1(0.5.36)
     - Moved Platform detection macros from premake to Core.h ~<20 mins
+    - Added OrthographicCameraController class and outsourced camera stuff from Sandbox ~>20 mins
+    - Added Zooming via mouse scrolling | controller triggers ~<5 mins
+    - Made OrthographicCameraController rotations optional ~<5 mins
+    - Made OrthographicCameraController controller input optional ~>10 mins
+    - Removed Translate and Rotate functions from OrthographicCamera ~<5 mins
+    - Added support for multiple OrthographicCameraControllers on different Windows ~>25 mins
+    - Main Window Resizing now gets handled inside the Engine ~<10 mins

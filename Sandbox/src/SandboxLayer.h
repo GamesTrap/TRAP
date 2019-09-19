@@ -11,17 +11,7 @@ public:
 		m_usePassthrough(false),
 		m_wireFrame(false),
 		m_show(true),
-		m_camera
-		(
-			-(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
-			static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()),
-			-1.0f,
-			1.0f,
-			-1.0f,
-			1.0f
-		),
-		m_cameraPosition(0.0f),
-		m_cameraRotation(0.0f)
+		m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()))
 	{
 	}
 
@@ -48,7 +38,7 @@ public:
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Texture.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColor.shader");
-		TRAP::Graphics::ShaderManager::Load("/Shaders/RainyWindow.shader");
+		//TRAP::Graphics::ShaderManager::Load("/Shaders/RainyWindow.shader");
 
 		//EXPERIMENTAL
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
@@ -109,12 +99,11 @@ public:
 
 	void OnUpdate(const TRAP::Utils::TimeStep deltaTime) override
 	{
-		m_camera.SetPosition(m_cameraPosition);
-		m_camera.SetRotation(m_cameraRotation);
-
+		m_cameraController.OnUpdate(deltaTime);
+		
 		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
 
-		TRAP::Graphics::Renderer::BeginScene(m_camera);
+		TRAP::Graphics::Renderer::BeginScene(m_cameraController.GetCamera());
 		{
 			if (m_show)
 			{
@@ -171,41 +160,6 @@ public:
 			TP_INFO("[Sandbox] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
 			m_fpsTimer.Reset();
 		}
-
-		///////////////////
-		//Camera Controls//
-		///////////////////
-		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::A))
-			m_cameraPosition.x -= m_cameraMovementSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::D))
-			m_cameraPosition.x += m_cameraMovementSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::W))
-			m_cameraPosition.y += m_cameraMovementSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::S))
-			m_cameraPosition.y -= m_cameraMovementSpeed * deltaTime;
-
-		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::KP_4))
-			m_cameraRotation.z += m_cameraRotationSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::KP_6))
-			m_cameraRotation.z -= m_cameraRotationSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::KP_8))
-			m_cameraRotation.x += m_cameraRotationSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::KP_2))
-			m_cameraRotation.x -= m_cameraRotationSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::KP_7))
-			m_cameraRotation.y += m_cameraRotationSpeed * deltaTime;
-		if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::KP_9))
-			m_cameraRotation.y -= m_cameraRotationSpeed * deltaTime;
-
-		if(TRAP::Input::IsControllerConnected(TRAP::Input::Controller::One))
-		{
-			const float XAxis = TRAP::Input::GetControllerAxis(TRAP::Input::Controller::One, TRAP::Input::ControllerAxis::Left_X);
-			if (XAxis < -0.1f || XAxis > 0.1f)
-				m_cameraPosition.x += XAxis * m_cameraMovementSpeed * deltaTime;
-			const float YAxis = TRAP::Input::GetControllerAxis(TRAP::Input::Controller::One, TRAP::Input::ControllerAxis::Left_Y);
-			if (YAxis < -0.1f || YAxis > 0.1f)
-				m_cameraPosition.y -= YAxis * m_cameraMovementSpeed * deltaTime;
-		}
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -250,28 +204,10 @@ public:
 
 	void OnEvent(TRAP::Event& event) override
 	{
+		m_cameraController.OnEvent(event);
+		
 		TRAP::EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<TRAP::KeyPressedEvent>(TP_BIND_EVENT_FN(SandboxLayer::OnKeyPressed));
-		dispatcher.Dispatch<TRAP::WindowResizeEvent>(TP_BIND_EVENT_FN(SandboxLayer::OnResize));
-	}
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
-	bool OnResize(TRAP::WindowResizeEvent& event)
-	{
-		TRAP::Graphics::RenderCommand::SetViewport(0, 0, event.GetWidth(), event.GetHeight());
-		const float aspectRatio = static_cast<float>(event.GetWidth()) / static_cast<float>(event.GetHeight());
-		m_camera = TRAP::Graphics::OrthographicCamera
-		{
-			-aspectRatio,
-			aspectRatio,
-			-1.0f,
-			1.0f,
-			-1.0f,
-			1.0f
-		};
-
-		return true;
 	}
 
 private:
@@ -282,13 +218,9 @@ private:
 	bool m_wireFrame;
 	bool m_show;
 
-	TRAP::Scope<TRAP::Graphics::VertexArray> m_vertexArray{};
+	TRAP::Graphics::OrthographicCameraController m_cameraController;
 
-	TRAP::Graphics::OrthographicCamera m_camera;
-	TRAP::Math::Vec3 m_cameraPosition;
-	TRAP::Math::Vec3 m_cameraRotation;
-	float m_cameraMovementSpeed = 2.5f;
-	float m_cameraRotationSpeed = 180.0f;
+	TRAP::Scope<TRAP::Graphics::VertexArray> m_vertexArray{};
 
 	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_uniformBuffer{};
 	struct UniformData

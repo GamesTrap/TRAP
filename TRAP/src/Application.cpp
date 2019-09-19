@@ -143,6 +143,7 @@ void TRAP::Application::OnEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
+	dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
 
 	for (auto it = m_layerStack.end(); it != m_layerStack.begin();)
 	{
@@ -263,6 +264,18 @@ bool TRAP::Application::OnWindowClose(WindowCloseEvent& e)
 {
 	m_running = false;
 
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Application::OnWindowResize(WindowResizeEvent& e)
+{
+	if (Window::GetActiveWindows() > 1)
+		Window::Use();
+	
+	Graphics::RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
+	
 	return true;
 }
 

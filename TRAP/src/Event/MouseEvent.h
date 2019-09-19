@@ -1,5 +1,6 @@
 #ifndef _TRAP_MOUSEEVENT_H_
 #define _TRAP_MOUSEEVENT_H_
+#include "Input/Input.h"
 
 namespace TRAP
 {

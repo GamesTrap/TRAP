@@ -5,10 +5,11 @@
 
 TRAP::LayerStack::~LayerStack()
 {
-	for(const auto& layer : m_layers)
+	for(auto& layer : m_layers)
 	{
 		TP_DEBUG("[LayerStack] Destroying Layer: ", layer->GetName());
 		layer->OnDetach();
+		layer.reset();
 	}
 }
 
