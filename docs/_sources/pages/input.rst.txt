@@ -1,0 +1,563 @@
+.. _input:
+
+=====
+Input
+=====
+
+-------
+General
+-------
+
+| Input in :ref:`trap_engine` is used to poll input from Keyboard, Mouse and up to 4 Controllers.
+
+---
+Key
+---
+
+.. code-block:: cpp
+
+    enum class TRAP::Input::Key
+    {
+        Space          = 32,
+        Apostrophe     = 39,
+        Comma          = 44,
+        Minus          = 45,
+        Period         = 46,
+        Slash          = 47,
+        Zero           = 48,
+        One            = 49,
+        Two            = 50,
+        Three          = 51,
+        Four           = 52,
+        Five           = 53,
+        Six            = 54,
+        Seven          = 55,
+        Eight          = 56,
+        Nine           = 57,
+        Semicolon      = 59,
+        Equal          = 61,
+        A              = 65,
+        B              = 66,
+        C              = 67,
+        D              = 68,
+        E              = 69,
+        F              = 70,
+        G              = 71,
+        H              = 72,
+        I              = 73,
+        J              = 74,
+        K              = 75,
+        L              = 76,
+        M              = 77,
+        N              = 78,
+        O              = 79,
+        P              = 80,
+        Q              = 81,
+        R              = 82,
+        S              = 83,
+        T              = 84,
+        U              = 85,
+        V              = 86,
+        W              = 87,
+        X              = 88,
+        Y              = 89,
+        Z              = 90,
+        Left_Bracket   = 91,
+        Backslash      = 92,
+        Right_Bracket  = 93,
+        Grave_Accent   = 96,
+        World_1        = 161,
+        World_2        = 162,
+
+        /* Function keys */
+        Escape         = 256,
+        Enter          = 257,
+        Tab            = 258,
+        Backspace      = 259,
+        Insert         = 260,
+        Delete         = 261,
+        Right          = 262,
+        Left           = 263,
+        Down           = 264,
+        Up             = 265,
+        Page_Up        = 266,
+        Page_Down      = 267,
+        Home           = 268,
+        End            = 269,
+        Caps_Lock      = 280,
+        Scroll_Lock    = 281,
+        NUM_Lock       = 282,
+        Print_Screen   = 283,
+        Pause          = 284,
+        F1             = 290,
+        F2             = 291,
+        F3             = 292,
+        F4             = 293,
+        F5             = 294,
+        F6             = 295,
+        F7             = 296,
+        F8             = 297,
+        F9             = 298,
+        F10            = 299,
+        F11            = 300,
+        F12            = 301,
+        F13            = 302,
+        F14            = 303,
+        F15            = 304,
+        F16            = 305,
+        F17            = 306,
+        F18            = 307,
+        F19            = 308,
+        F20            = 309,
+        F21            = 310,
+        F22            = 311,
+        F23            = 312,
+        F24            = 313,
+        F25            = 314,
+        KP_0           = 320,
+        KP_1           = 321,
+        KP_2           = 322,
+        KP_3           = 323,
+        KP_4           = 324,
+        KP_5           = 325,
+        KP_6           = 326,
+        KP_7           = 327,
+        KP_8           = 328,
+        KP_9           = 329,
+        KP_Decimal     = 330,
+        KP_Divide      = 331,
+        KP_Multiply    = 332,
+        KP_Subtract    = 333,
+        KP_Add         = 334,
+        KP_Enter       = 335,
+        KP_Equal       = 336,
+        Left_Shift     = 340,
+        Left_Control   = 341,
+        Left_ALT       = 342,
+        Left_Super     = 343,
+        Right_Shift    = 344,
+        Right_Control  = 345,
+        Right_ALT      = 346,
+        Right_Super    = 347,
+        Menu           = 348
+    };
+
+| **Description**
+| TRAP::`Input`_::`Key`_ is used to specify a Key on the Keyboard
+
+-----------
+MouseButton
+-----------
+
+.. code-block:: cpp
+
+    enum class TRAP::Input::MouseButton
+    {
+        One    = 0,
+        Two    = 1,
+        Three  = 2,
+        Four   = 3,
+        Five   = 4,
+        Six    = 5,
+        Seven  = 6,
+        Eight  = 7,
+        Left   = One,
+        Right  = Two,
+        Middle = Three
+    };
+
+| **Description**
+| TRAP::`Input`_::`MouseButton`_ is used to specify a Button on the Mouse
+
+----------
+Controller
+----------
+
+.. code-block:: cpp
+
+    enum class TRAP::Input::Controller
+    {
+        One   = 0,
+        Two   = 1,
+        Three = 2,
+        Four  = 3
+    };
+
+| **Description**
+| TRAP::`Input`_::`Controller`_ is used to specify a Joystick/Gamepad/Controller etc.
+
+--------------
+ControllerAxis
+--------------
+
+.. code-block:: cpp
+
+    enum class TRAP::Input::ControllerAxis
+    {
+        Left_X        = 0,
+        Left_Y        = 1,
+        Right_X       = 2,
+        Right_Y       = 3,
+        Left_Trigger  = 4,
+        Right_Trigger = 5
+    };
+
+| **Description**
+| TRAP::`Input`_::`ControllerAxis`_ is used to specify an Axis of a Joystick/Gamepad/Controller etc.
+
+-------------
+GamepadButton
+-------------
+
+.. code-block:: cpp
+
+    enum class TRAP::Input::GamepadButton
+    {
+        A            = 0,
+        B            = 1,
+        X            = 2,
+        Y            = 3,
+        Left_Bumper  = 4,
+        Right_Bumper = 5,
+        Back         = 6,
+        Start        = 7,
+        Guide        = 8,
+        Left_Thumb   = 9,
+        Right_Thumb  = 10
+        DPad_Up      = 11
+        DPad_Right   = 12
+        DPad_Down    = 13
+        DPad_Left    = 14
+        Cross        = A,
+        Circle       = B,
+        Square       = X,
+        Triangle     = Y
+    };
+
+| **Description**
+| TRAP::`Input`_::`GamepadButton`_ is used to specify a Button of a Gamepad/Controller etc.
+
+-------------
+ControllerHat
+-------------
+
+.. code-block:: cpp
+
+    enum class TRAP::Input::ControllerHat
+    {
+        Centered   = 0,
+        Up         = 1,
+        Right      = 2,
+        Down       = 4,
+        Left       = 8,
+        Right_Up   = Right | Up,
+        Right_Down = Right | Down,
+        Left_Up    = Left | Up,
+        Left_Down  = Left | Down
+    };
+
+| **Description**
+| TRAP::`Input`_::`ControllerHat`_ is used to specify the direction of a Controller Hat
+
+----------------
+ControllerStatus
+----------------
+
+.. code-block:: cpp
+
+    struct TRAP::Input::ControllerStatus
+    {
+        bool Connected = false;
+        bool IsGamepad = false;
+    };
+
+| **Description**
+| TRAP::`Input`_::`ControllerStatus`_ represents the status of a `Controller`_
+
+----
+Init
+----
+
+.. code-block:: cpp
+
+    static void TRAP::Input::Init();
+
+| **Description**
+| Used to initialize TRAP::`Input`_::`ControllerStatus`_ of all TRAP::`Input`_::`Controller`_\s
+
+.. note::
+   This function gets called at the start of TRAP Engine
+
+------------
+IsKeyPressed
+------------
+
+.. code-block:: cpp
+
+    static bool TRAP::Input::IsKeyPressed(const TRAP::Input::Key key);
+
+| **Description**
+| Returns whether the specified TRAP::`Input`_::`Key`_ is pressed or released
+
+| **Parameters**
+
+- :code:`key` Specifies the TRAP::`Input`_::`Key`_ to check for
+
+--------------------
+IsMouseButtonPressed
+--------------------
+
+.. code-block:: cpp
+
+    static bool TRAP::Input::IsMouseButtonPressed(const TRAP::Input::MouseButton button);
+
+| **Description**
+| Returns whether the specified TRAP::`Input`_::`MouseButton`_ is pressed or released
+
+| **Parameters**
+
+- :code:`button` Specifies the TRAP::`Input`_::`MouseButton`_ to check for
+
+----------------------
+IsGamepadButtonPressed
+----------------------
+
+.. code-block:: cpp
+
+    static bool TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Controller controller,
+                                                    TRAP::Input::GamepadButton button);
+
+| **Description**
+| Returns whether the specified TRAP::`Input`_::`GamepadButton`_ of the specified TRAP::`Input`_::`Controller`_ is pressed or released
+
+| **Parameters**
+
+- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to do the check on
+- :code:`button` Specifies the TRAP::`Input`_::`GamepadButton`_ to check for
+
+------------------------
+IsRawMouseInputSupported
+------------------------
+
+.. code-block:: cpp
+
+    static bool TRAP::Input::IsRawMouseInputSupported();
+
+| **Description**
+| Returns whether raw mouse input is supported or not
+
+---------------------
+IsControllerConnected
+---------------------
+
+.. code-block:: cpp
+
+    static bool TRAP::Input::IsControllerConnected(const TRAP::Input::Controller controller);
+
+| **Description**
+| Return whether the specified TRAP::`Input`_::`Controller`_ is connected or not
+
+| **Parameters**
+
+- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to check
+
+-------------------
+IsControllerGamepad
+-------------------
+
+.. code-block:: cpp
+
+    static bool TRAP::Input::IsControllerGamepad(TRAP::Input::Controller controller);
+
+| **Description**
+| Returns whether the specified TRAP::`Input`_::`Controller`_ is a Gamepad or not
+
+| **Parameters**
+
+- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to check
+
+----------------
+GetMousePosition
+----------------
+
+.. code-block:: cpp
+
+    static TRAP::Math::Vec2 TRAP::Input::GetMousePosition();
+
+| **Description**
+| Returns a TRAP::`Math`_::`Vec2`_ containing the current mouse position
+
+---------
+GetMouseX
+---------
+
+.. code-block:: cpp
+
+    static float TRAP::Input::GetMouseX();
+
+| **Description**
+| Returns the current mouse position of the X avis
+
+---------
+GetMouseY
+---------
+
+.. code-block:: cpp
+
+    static float TRAP::Input::GetMouseY();
+
+| **Description**
+| Returns the current mouse position of the Y axis
+
+----------
+GetKeyName
+----------
+
+.. code-block:: cpp
+
+    static std::string TRAP::Input::GetKeyName(const TRAP::Input::Key key);
+
+| **Description**
+| Returns the name of the specified TRAP::`Input`_::`Key`_
+
+| **Parameters**
+
+- :code:`key` Specifies the TRAP::`Input`_::`Key` to get the name for
+
+-----------------
+GetControllerAxis
+-----------------
+
+.. code-block:: cpp
+
+    static float TRAP::Input::GetControllerAxis(TRAP::Input::Controller controller,
+                                                const ControllerAxis axis);
+
+| **Description**
+| Returns the current axis position of the specified TRAP::`Input`_::`ControllerAxis`_ from TRAP::`Input`_::`Controller`_
+
+| **Parameters**
+
+- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get axis from
+- :code:`axis` Specifies the TRAP::`Input`_::`ControllerAxis`_ to get position from
+
+.. note::
+   This function also returns a value if the specified TRAP::`Input`_::`ControllerAxis`_ doesn't exist on the actual physical device. 
+
+----------------
+GetControllerHat
+----------------
+
+.. code-block:: cpp
+
+    static TRAP::Input::ControllerHat TRAP::Input::GetControllerHat(TRAP::Input::Controller controller,
+                                                                    const uint32_t hat);
+
+| **Description**
+| Returns the current direction(in form of TRAP::`Input`_::`ControllerHat`_\) from the specified TRAP::`Input`_::`Controller`_\s :code:`hat`
+
+| **Parameters**
+
+- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get the hat direction from
+- :code:`hat` Specifies which hats direction to get
+
+-----------------
+GetControllerName
+-----------------
+
+.. code-block:: cpp
+
+    static std::string TRAP::Input::GetControllerName(TRAP::Input::Controller controller);
+
+| **Description**
+| Returns the name of the specified TRAP::`Input`_::`Controller`_
+
+| **Parameters**
+
+- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get name from
+
+-------------------
+GetControllerStatus
+-------------------
+
+.. code-block:: cpp
+
+    static const TRAP::Input::ControllerStatus& TRAP::Input::GetControllerStatus(TRAP::Input::Controller controller);
+
+| **Description**
+| Returns the status of the specified TRAP::`Input`_::`Controller`_\(in form of TRAP::`Input`_::`ControllerStatus`_\) 
+
+| **Parameters**
+
+- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get status from
+
+--------------------
+GetAllControllerAxes
+--------------------
+
+.. code-block:: cpp
+
+    static std::vector<float> TRAP::Input::GetAllControllerAxes(TRAP::Input::Controller controller);
+
+| **Description**
+| Returns a vector containing all current axis positions of the specified TRAP::`Input`_::`Controller`_
+
+| **Parameters**
+
+- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get axis positions from
+
+.. warning::
+   This function only returns axes that actually exist on the physical device
+
+.. note::
+   This function can also contain axes that are not specified in TRAP::`Input`_::`ControllerAxis`_
+
+-----------------------
+GetAllControllerButtons
+-----------------------
+
+.. code-block:: cpp
+
+    static std::vector<bool> TRAP::Input::GetAllControllerButtons(TRAP::Input::Controller controller);
+
+| **Description**
+| Returns a vector containing all current pressed or released buttons of the specified TRAP::`Input`_::`Controller`_
+
+| **Parameters**
+
+- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get buttons from
+
+.. warning::
+   This function only returns buttons that actually exist on the physical device
+
+.. note::
+   This function can also contain buttons that are not specified in TRAP::`Input`_::`GamepadButton`_
+
+--------------------
+GetAllControllerHats
+--------------------
+
+.. code-block:: cpp
+
+    static std::vector<TRAP::Input::ControllerHat> TRAP::Input::GetAllControllerHats(TRAP::Input::Controller controller);
+
+| **Description**
+| Returns a vector containing all hats current direction(in form of TRAP::`Input`_::`ControllerHat`_\) of the specified TRAP::`Input`_::`Controller`_
+
+| **Parameters**
+
+- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get hats from
+
+.. warning::
+   This function only returns hats that actually exist on the physical device
+
+------------------------
+GetAllControllerStatuses
+------------------------
+
+.. code-block:: cpp
+
+    static const std::array<TRAP::Input::ControllerStatus, 4>& TRAP::Input::GetAllControllerStatuses();
+
+| **Description**
+| Returns an array containing the statuses(in form of TRAP::`Input`_::`ControllerStatus`_\es) of all 4 TRAP::`Input`_::`Controller`_\s

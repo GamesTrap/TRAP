@@ -435,3 +435,4 @@ SITREP 09/19/2019|19w38a1
     - Removed Translate and Rotate functions from OrthographicCamera ~<5 mins
     - Added support for multiple OrthographicCameraControllers on different Windows ~>25 mins
     - Main Window Resizing now gets handled inside the Engine ~<10 mins
+    - Added documentation for TRAP::Input ~>130 mins

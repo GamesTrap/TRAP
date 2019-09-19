@@ -39,5 +39,5 @@ Linux
 Mac OS X (Untested)
 -------------------
 
-| Premake can generate project files for XCode4.
+| Premake 5 can generate project files for XCode4.
 | For example, run :code:`premake xcode4` to generate the :code:`.xcworkspace` and :code:`.xcodeproj` files for XCode 4.

@@ -74,3 +74,4 @@ Recommended System Requirements
    pages/buildingtrap
    pages/gettingstarted
    pages/window
+   pages/input

@@ -7,13 +7,13 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Input::ControllerStatus> TRAP::Input::s_controllerStatuses;
+std::array<TRAP::Input::ControllerStatus, 4> TRAP::Input::s_controllerStatuses;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Input::Init()
 {
-	s_controllerStatuses.resize(4); //Only 4 Controllers are supported!
+	//s_controllerStatuses.resize(4); //Only 4 Controllers are supported!
 	
 	//Assuming GLFW is already initialized
 	s_controllerStatuses[static_cast<int32_t>(Controller::One)] =
@@ -278,7 +278,7 @@ std::vector<TRAP::Input::ControllerHat> TRAP::Input::GetAllControllerHats(Contro
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<TRAP::Input::ControllerStatus>& TRAP::Input::GetAllControllerStatuses()
+const std::array<TRAP::Input::ControllerStatus, 4>& TRAP::Input::GetAllControllerStatuses()
 {
 	return s_controllerStatuses;
 }

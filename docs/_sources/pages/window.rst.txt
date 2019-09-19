@@ -21,15 +21,15 @@ DisplayMode
 
 .. code-block:: cpp
 
-    enum class TRAP::DisplayMode
+    enum class TRAP::Window::DisplayMode
     {
-    Windowed,
-    Fullscreen,
-    Borderless
+        Windowed,
+        Fullscreen,
+        Borderless
     };
 
 | **Description**
-| TRAP::`DisplayMode`_ is used to set the display mode of a TRAP::`Window`_.
+| TRAP::`Window`_::`DisplayMode`_ is used to set the display mode of a TRAP::`Window`_.
 
 -----------
 CursorMode
@@ -37,15 +37,15 @@ CursorMode
 
 .. code-block:: cpp
 
-    enum class TRAP::CursorMode
+    enum class TRAP::Window::CursorMode
     {
-    Normal,
-    Hidden,
-    Disabled
+        Normal,
+        Hidden,
+        Disabled
     };
 
 | **Description**
-| TRAP::`CursorMode`_ is used to set the cursor mode of a TRAP::`Window`_.
+| TRAP::`Window`_::`CursorMode`_ is used to set the cursor mode of a TRAP::`Window`_.
 
 -----------
 WindowProps
@@ -60,9 +60,9 @@ WindowProps
                       const uint32_t height,
                       const uint32_t refreshRate,
                       const uint32_t vsync,
-                      const TRAP::DisplayMode displayMode,
+                      const TRAP::Window::DisplayMode displayMode,
                       const uint32_t monitor,
-                      const TRAP::CursorMode cursorMode,
+                      const TRAP::Window::CursorMode cursorMode,
                       const bool rawMouseInput);
 
 | **Description**
@@ -76,23 +76,23 @@ WindowProps
 - :code:`height` Sets the Height of TRAP::`WindowProps`_. Default value: :code:`720`
 - :code:`refreshRate` Sets the Refresh Rate of TRAP::`WindowProps`_. Default value: :code:`60`
 - :code:`vsync` Sets the VSync interval of TRAP::`WindowProps`_. Default value: :code:`0`
-- :code:`displayMode` Sets the Display Mode of TRAP::`WindowProps`_. Default value: :code:`TRAP::DisplayMode::Windowed`
+- :code:`displayMode` Sets the Display Mode of TRAP::`WindowProps`_. Default value: :code:`TRAP::Window::DisplayMode::Windowed`
 - :code:`monitor` Sets the Monitor of TRAP::`WindowProps`_. Default value: :code:`0`
-- :code:`cursorMode` Sets the TRAP::`CursorMode`_. Default value: :code:`TRAP::CursorMode::Normal`
+- :code:`cursorMode` Sets the TRAP::`Window`_::`CursorMode`_. Default value: :code:`TRAP::Window::CursorMode::Normal`
 - :code:`rawMouseInput` Sets the Mouse Input. Default value: :code:`false`
 
 .. note::
-   Width, Height, RefreshRate, VSync, TRAP::`DisplayMode`_ and Monitor values loaded by Engine.cfg only affect the Main Window!
+   Width, Height, RefreshRate, VSync, TRAP::`Window`_::`DisplayMode`_ and Monitor values loaded by Engine.cfg only affect the Main Window!
 .. Reference Engine.cfg
 
 .. note::
    If Raw Mouse Input is unsupported then :code:`rawMouseInput` will be set to :code:`false`!
 
 .. note::
-   If :code:`displayMode` is set to TRAP::`DisplayMode`_::Borderless then :code:`width`, :code:`height` and :code:`refreshRate` will be ignored! The Native Resolution and Refresh Rate of :code:`monitor` will be used!
+   If :code:`displayMode` is set to TRAP::`Window`_::`DisplayMode`_::Borderless then :code:`width`, :code:`height` and :code:`refreshRate` will be ignored! The Native Resolution and Refresh Rate of :code:`monitor` will be used!
 
 .. warning::
-   | If :code:`displayMode` is either set to TRAP::`DisplayMode`_::Borderless or TRAP::`DisplayMode`_::Fullscreen and another TRAP::`Window`_ with TRAP::`DisplayMode`_::Borderless or TRAP::`DisplayMode`_::Fullscreen already uses the same :code:`monitor` then :code:`displayMode` will be set to TRAP::`DisplayMode`_::Windowed!
+   | If :code:`displayMode` is either set to TRAP::`Window`_::`DisplayMode`_::Borderless or TRAP::`Window`_::`DisplayMode`_::Fullscreen and another TRAP::`Window`_ with TRAP::`Window`_::`DisplayMode`_::Borderless or TRAP::`Window`_::`DisplayMode`_::Fullscreen already uses the same :code:`monitor` then :code:`displayMode` will be set to TRAP::`Window`_::`DisplayMode`_::Windowed!
    | 
    | If :code:`width`, :code:`height` and :code:`refreshRate` are set to :code:`0` then :code:`width` will be set to :code:`800`, :code:`height` will be set to :code:`600` and :code:`refreshRate` will be set to the :code:`monitor`'s Native Refresh Rate!
 
@@ -129,7 +129,6 @@ Destructor
 .. note:: If more than 1 TRAP::`Window`_\(Main TRAP::`Window`_ also counts!\) exists then TRAP::`Window`_::`Use`_ gets called!
 
 .. note:: If 1 TRAP::`Window`_\(Main TRAP::`Window`_ also counts!\) exists then this will also cleanup the Renderer and shuts down the TextureManager, ShaderManager, RendererAPI and Context!
-.. Reference TextureManager, ShaderManager, RendererAPI, Context
 
 ^^^^^^^^
 OnUpdate
@@ -140,9 +139,7 @@ OnUpdate
     static void TRAP::Window::OnUpdate();
 
 | **Description**
-| Processes queued TRAP::`Window`_ Events
-
-.. Reference Events
+| Processes queued TRAP::`Window`_ TRAP::`Event`_\s
 
 ^^^
 Use
@@ -254,10 +251,10 @@ GetDisplayMode
 
 .. code-block:: cpp
 
-   TRAP::DisplayMode TRAP::Window::GetDisplayMode() const;
+   TRAP::Window::DisplayMode TRAP::Window::GetDisplayMode() const;
 
 | **Description**
-| Returns the TRAP::`DisplayMode`_ of a TRAP::`Window`_
+| Returns the TRAP::`Window`_::`DisplayMode`_ of a TRAP::`Window`_
 
 ^^^^^^^^^^
 GetMonitor
@@ -298,10 +295,10 @@ GetCursorMode
 
 .. code-block:: cpp
 
-   TRAP::CursorMode TRAP::Window::GetCursorMode() const;
+   TRAP::Window::CursorMode TRAP::Window::GetCursorMode() const;
 
 | **Description**
-| Returns the TRAP::`CursorMode`_ of a TRAP::`Window`_
+| Returns the TRAP::`Window`_::`CursorMode`_ of a TRAP::`Window`_
 
 ^^^^^^^^^^^^^^^^
 GetRawMouseInput
@@ -349,38 +346,38 @@ SetDisplayMode
 
 .. code-block:: cpp
 
-   void TRAP::Window::SetDisplayMode(const TRAP::DisplayMode& mode, 
+   void TRAP::Window::SetDisplayMode(const TRAP::Window::DisplayMode& mode, 
                                      uint32_t width,
                                      uint32_t height,
                                      uint32_t refreshRate);
 
 | **Description**
-| Sets the TRAP::`DisplayMode`_ of a TRAP::`Window`_
+| Sets the TRAP::`Window`_::`DisplayMode`_ of a TRAP::`Window`_
 
 .. note::
    This can also be used to Resize a TRAP::`Window`_ 
 
 | **Parameters**
 
-- :code:`mode` Specifies the new TRAP::`DisplayMode`_ of a TRAP::`Window`_
+- :code:`mode` Specifies the new TRAP::`Window`_::`DisplayMode`_ of a TRAP::`Window`_
 - :code:`width` Specifies the new Width of a TRAP::`Window`_. Default value: :code:`0`
 - :code:`height` Specifies the new Height of a TRAP::`Window`_. Default value: :code:`0`
 - :code:`refreshRate` Specifies the new Refresh Rate of a TRAP::`Window`_. Default value: :code:`0`
 
 .. note::
-   If :code:`mode` is TRAP::`DisplayMode`_::Windowed & :code:`width` and :code:`height` are :code:`0` then :code:`width`, :code:`height` and :code:`refreshRate` will be set to the last used values of the TRAP::`Window`_
+   If :code:`mode` is TRAP::`Window`_::`DisplayMode`_::Windowed & :code:`width` and :code:`height` are :code:`0` then :code:`width`, :code:`height` and :code:`refreshRate` will be set to the last used values of the TRAP::`Window`_
 
 .. note::
-   If :code:`mode` is TRAP::`DisplayMode`_::Borderless then :code:`width`, :code:`height` and :code:`refreshRate` will be ignored! The Native Resolution of the current Monitor of the TRAP::`Window`_ will be used!
+   If :code:`mode` is TRAP::`Window`_::`DisplayMode`_::Borderless then :code:`width`, :code:`height` and :code:`refreshRate` will be ignored! The Native Resolution of the current Monitor of the TRAP::`Window`_ will be used!
 
 .. note::
-   If :code:`mode` is TRAP::`DisplayMode`_::Fullscreen & :code:`width`, :code:`height` and :code:`refreshRate` are :code:`0` then the Native Resolution and Refresh Rate of the current Monitor of the TRAP::`Window`_ will be used!
+   If :code:`mode` is TRAP::`Window`_::`DisplayMode`_::Fullscreen & :code:`width`, :code:`height` and :code:`refreshRate` are :code:`0` then the Native Resolution and Refresh Rate of the current Monitor of the TRAP::`Window`_ will be used!
 
 .. note::
-   :code:`refreshRate` only affects the TRAP::`Window`_ if :code:`mode` is TRAP::`DisplayMode`_::Fullscreen!
+   :code:`refreshRate` only affects the TRAP::`Window`_ if :code:`mode` is TRAP::`Window`_::`DisplayMode`_::Fullscreen!
 
 .. warning::
-   If :code:`mode` is either set to TRAP::`DisplayMode`_::Borderless or TRAP::`DisplayMode`_::Fullscreen and another TRAP::`Window`_ with TRAP::`DisplayMode`_::Borderless or TRAP::`DisplayMode`_::Fullscreen already uses the same :code:`monitor` then nothing will be changed!
+   If :code:`mode` is either set to TRAP::`Window`_::`DisplayMode`_::Borderless or TRAP::`Window`_::`DisplayMode`_::Fullscreen and another TRAP::`Window`_ with TRAP::`Window`_::`DisplayMode`_::Borderless or TRAP::`Window`_::`DisplayMode`_::Fullscreen already uses the same :code:`monitor` then nothing will be changed!
 
 ^^^^^^^^^^
 SetMonitor
@@ -421,14 +418,14 @@ SetCursorMode
 
 .. code-block:: cpp
 
-   void TRAP::Window::SetCursorMode(const CursorMode& mode);
+   void TRAP::Window::SetCursorMode(const TRAP::Window::CursorMode& mode);
 
 | **Description**
-| Sets the TRAP::`CursorMode`_ of a TRAP::`Window`_
+| Sets the TRAP::`Window`_::`CursorMode`_ of a TRAP::`Window`_
 
 | **Parameters**
 
-- :code:`mode` specifies the TRAP::`CursorMode`_ to use.
+- :code:`mode` specifies the TRAP::`Window`_::`CursorMode`_ to use.
 
 ^^^^^^^^^^^^^^^^
 SetRawMouseInput
@@ -445,7 +442,8 @@ SetRawMouseInput
 
 - :code:`enabled` specifies if the TRAP::`Window`_ should use Raw Mouse Input.
 
-.. Reference TRAP::Input::IsRawMouseInputSupported();
+.. seealso::
+   TRAP::`Input`_::`IsRawMouseInputSupported`_
 
 ^^^^^^^
 SetIcon
@@ -462,12 +460,8 @@ SetIcon
 
    void TRAP::Window::SetIcon(const std::unique_ptr<TRAP::Image>& image) const;
 
-.. Reference to Image
-
 | **Description**
-| Sets the Icon of a TRAP::`Window`_ to the specified TRAP::Image
-
-.. Reference to Image
+| Sets the Icon of a TRAP::`Window`_ to the specified TRAP::`Image`_
 
 | **Parameters**
 | :code:`image` Specifies the TRAP::Image to be used as Icon
@@ -484,9 +478,7 @@ SetEventCallback
    void TRAP::Window::SetEventCallback(const EventCallbackFn& callback);
 
 | **Description**
-| Sets the Function where to send Events to from a TRAP::`Window`_
-
-.. Reference Event
+| Sets the Function where to send all TRAP::`Event`_\s to from a TRAP::`Window`_
 
 | **Parameters**
 

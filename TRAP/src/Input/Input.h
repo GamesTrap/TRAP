@@ -231,11 +231,11 @@ namespace TRAP
 		static std::vector<float> GetAllControllerAxes(Controller controller);
 		static std::vector<bool> GetAllControllerButtons(Controller controller);
 		static std::vector<ControllerHat> GetAllControllerHats(Controller controller);
-		static const std::vector<ControllerStatus>& GetAllControllerStatuses();
+		static const std::array<ControllerStatus, 4>& GetAllControllerStatuses();
 		
 	private:
 		static void JoystickCallback(int32_t joystick, int32_t event);
-		static std::vector<ControllerStatus> s_controllerStatuses;
+		static std::array<ControllerStatus, 4> s_controllerStatuses;
 	};
 }
 
