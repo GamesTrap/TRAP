@@ -29,7 +29,8 @@ namespace TRAP::Graphics
 		static void Shutdown();
 
 		static bool Exists(const std::string& name);
-
+		static bool ExistsVirtualPath(const std::string& virtualPath);
+		
 	private:
 		TextureManager() = default;
 

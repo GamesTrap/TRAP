@@ -200,3 +200,14 @@ bool TRAP::Graphics::ShaderManager::Exists(const std::string& name)
 {
 	return s_Shaders.find(name) != s_Shaders.end();
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::ShaderManager::ExistsVirtualPath(const std::string& virtualPath)
+{
+	for(const auto& shader : s_Shaders)
+		if (shader.second->GetFilePath() == virtualPath)
+			return true;
+
+	return false;
+}

@@ -284,3 +284,28 @@ bool TRAP::Graphics::TextureManager::Exists(const std::string& name)
 {
 	return s_Textures.find(name) != s_Textures.end();
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::TextureManager::ExistsVirtualPath(const std::string& virtualPath)
+{
+	for (const auto& texture : s_Textures)
+	{
+		if (texture.second->GetType() == TextureType::Texture2D)
+		{
+			if (texture.second->GetImage()->GetFilePath() == virtualPath)
+				return true;
+		}
+		else if(texture.second->GetType() == TextureType::TextureCube)
+		{
+			const std::array<Image*, 6> images = reinterpret_cast<const Scope<TextureCube>&>(texture.second)->GetImages();
+			for(const auto& image : images)
+			{
+				if (image->GetFilePath() == virtualPath)
+					return true;
+			}
+		}
+	}
+	
+	return false;
+}

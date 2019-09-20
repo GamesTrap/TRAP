@@ -2,7 +2,6 @@
 #define _TRAP_APPLICATIONEVENT_H_
 
 #include "Event.h"
-#include <utility>
 
 namespace TRAP
 {

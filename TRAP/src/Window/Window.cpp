@@ -768,22 +768,25 @@ void TRAP::Window::Init(const WindowProps& props)
 	}
 
 	//Set GLFW callbacks
-	glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, const int32_t width, const int32_t height) {
+	glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, const int32_t width, const int32_t height)
+	{
 		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 		data.Width = width;
 		data.Height = height;
 
 		WindowResizeEvent event(width, height, data.Title);
 		data.EventCallback(event);
-		});
+	});
 
-	glfwSetWindowPosCallback(m_window, [](GLFWwindow* window, const int32_t x, const int32_t y) {
+	glfwSetWindowPosCallback(m_window, [](GLFWwindow* window, const int32_t x, const int32_t y)
+	{
 		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 		WindowMovedEvent event(x, y, data.Title);
 		data.EventCallback(event);
-		});
+	});
 
-	glfwSetWindowFocusCallback(m_window, [](GLFWwindow* window, const int32_t focused) {
+	glfwSetWindowFocusCallback(m_window, [](GLFWwindow* window, const int32_t focused)
+	{
 		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		if (focused)
@@ -796,15 +799,17 @@ void TRAP::Window::Init(const WindowProps& props)
 			WindowLostFocusEvent event(data.Title);
 			data.EventCallback(event);
 		}
-		});
+	});
 
-	glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window) {
+	glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window)
+	{
 		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 		WindowCloseEvent event(data.Title);
 		data.EventCallback(event);
-		});
+	});
 
-	glfwSetKeyCallback(m_window, [](GLFWwindow* window, const int32_t key, int32_t scancode, const int32_t action, int32_t mods) {
+	glfwSetKeyCallback(m_window, [](GLFWwindow* window, const int32_t key, int32_t scancode, const int32_t action, int32_t mods)
+	{
 		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		switch (action)
@@ -833,16 +838,18 @@ void TRAP::Window::Init(const WindowProps& props)
 		default:
 			break;
 		}
-		});
+	});
 
-	glfwSetCharCallback(m_window, [](GLFWwindow* window, const uint32_t keycode) {
+	glfwSetCharCallback(m_window, [](GLFWwindow* window, const uint32_t keycode)
+	{
 		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		KeyTypedEvent event(static_cast<Input::Key>(keycode), data.Title);
 		data.EventCallback(event);
-		});
+	});
 
-	glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, const int32_t button, const int32_t action, int32_t mods) {
+	glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, const int32_t button, const int32_t action, int32_t mods)
+	{
 		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		switch (action)
@@ -864,21 +871,23 @@ void TRAP::Window::Init(const WindowProps& props)
 		default:
 			break;
 		}
-		});
+	});
 
-	glfwSetScrollCallback(m_window, [](GLFWwindow* window, const double xOffset, const double yOffset) {
+	glfwSetScrollCallback(m_window, [](GLFWwindow* window, const double xOffset, const double yOffset)
+	{
 		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		MouseScrolledEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset), data.Title);
 		data.EventCallback(event);
-		});
+	});
 
-	glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, const double xPos, const double yPos) {
+	glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, const double xPos, const double yPos)
+	{
 		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
 		MouseMovedEvent event(static_cast<float>(xPos), static_cast<float>(yPos), data.Title);
 		data.EventCallback(event);
-		});
+	});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

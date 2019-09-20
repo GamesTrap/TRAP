@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "Input.h"
 
-#include <GLFW/glfw3.h>
-
 #include "Application.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -12,9 +10,7 @@ std::array<TRAP::Input::ControllerStatus, 4> TRAP::Input::s_controllerStatuses;
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Input::Init()
-{
-	//s_controllerStatuses.resize(4); //Only 4 Controllers are supported!
-	
+{	
 	//Assuming GLFW is already initialized
 	s_controllerStatuses[static_cast<int32_t>(Controller::One)] =
 	{

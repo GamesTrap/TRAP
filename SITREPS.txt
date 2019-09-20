@@ -436,3 +436,7 @@ SITREP 09/19/2019|19w38a1
     - Added support for multiple OrthographicCameraControllers on different Windows ~>25 mins
     - Main Window Resizing now gets handled inside the Engine ~<10 mins
     - Added documentation for TRAP::Input ~>130 mins
+
+SITREP 09/20/2019|19w38a2
+    - Changed TRAP Engine version to 19w38a2(0.5.37)
+    - Only Textures and Shaders which already exist in the Shader/TextureManager get reloaded now ~>20 mins

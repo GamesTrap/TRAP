@@ -10,6 +10,7 @@
 #include "Graphics/Textures/Texture2D.h"
 #include "Graphics/Textures/TextureCube.h"
 #include "Input/Input.h"
+#include "Utils/String.h"
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
@@ -211,9 +212,15 @@ void TRAP::Application::Run()
 						return;
 					if (status == FileStatus::Created || status == FileStatus::Erased)
 						return;
-
-					TP_INFO("[ShaderManager] Shader Modified Reloading...");
-					Graphics::ShaderManager::Reload(virtualPath);
+				
+					if (Utils::String::ToLower(Utils::String::GetSuffix(virtualPath)) == "shader")
+					{
+						if(Graphics::ShaderManager::ExistsVirtualPath(virtualPath))
+						{
+							TP_INFO("[ShaderManager] Shader Modified Reloading...");
+							Graphics::ShaderManager::Reload(virtualPath);							
+						}
+					}
 				});
 		}
 		//Update Textures if needed
@@ -231,8 +238,17 @@ void TRAP::Application::Run()
 					if (status == FileStatus::Created || status == FileStatus::Erased)
 						return;
 
-					TP_INFO("[TextureManager] Texture Modified Reloading...");
-					Graphics::TextureManager::Reload(virtualPath);
+					const std::string suffix = Utils::String::ToLower(Utils::String::GetSuffix(virtualPath));
+					if (suffix == "pgm" || suffix == "ppm" || suffix == "pnm" || suffix == "pam" || suffix == "pfm" ||
+						suffix == "tga" || suffix == "icb" || suffix == "vda" || suffix == "vst" || suffix == "bmp" ||
+						suffix == "dib")
+					{
+						if (Graphics::TextureManager::ExistsVirtualPath(virtualPath))
+						{
+							TP_INFO("[TextureManager] Texture Modified Reloading...");
+							Graphics::TextureManager::Reload(virtualPath);
+						}
+					}
 				});
 		}
 
