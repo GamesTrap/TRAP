@@ -12,6 +12,13 @@ namespace TRAP::Graphics
 		Bool
 	};
 
+	enum class BufferUsage
+	{
+		Static,  //Buffer can't be updated
+		Dynamic, //Buffer Data can be updated(also partially) when needed
+		Stream   //Whole Buffer Data must be updated every Frame
+	};
+
 	static uint32_t ShaderDataTypeSize(const ShaderDataType type)
 	{
 		switch (type)

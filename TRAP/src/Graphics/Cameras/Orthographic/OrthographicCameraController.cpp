@@ -16,7 +16,7 @@ TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(
 	  m_controller(controller),
 	  m_window(window)
 {
-	TP_CORE_ASSERT(m_window, "[OrthographicCameraController] Window is nullptr!");
+	TP_CORE_ASSERT(m_window.get(), "[OrthographicCameraController] Window is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

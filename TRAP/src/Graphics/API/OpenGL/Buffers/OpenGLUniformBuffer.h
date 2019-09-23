@@ -3,16 +3,20 @@
 
 #include "Graphics/Buffers/UniformBuffer.h"
 
+namespace TRAP::Graphics
+{
+	enum class BufferUsage;
+}
+
 namespace TRAP::Graphics::API
 {
 	class OpenGLUniformBuffer final : public UniformBuffer
 	{
 	public:
-		OpenGLUniformBuffer();
-		OpenGLUniformBuffer(const char* name, const void* data, uint32_t size);
-		OpenGLUniformBuffer(const char* name, uint32_t size);
-		OpenGLUniformBuffer(const OpenGLUniformBuffer&) = default;
-		OpenGLUniformBuffer& operator=(const OpenGLUniformBuffer&) = default;
+		OpenGLUniformBuffer(const char* name, const void* data, uint32_t size, BufferUsage usage);
+		OpenGLUniformBuffer(const char* name, uint32_t size, BufferUsage usage);
+		OpenGLUniformBuffer(const OpenGLUniformBuffer&) = delete;
+		OpenGLUniformBuffer& operator=(const OpenGLUniformBuffer&) = delete;
 		OpenGLUniformBuffer(OpenGLUniformBuffer&&) = default;
 		OpenGLUniformBuffer& operator=(OpenGLUniformBuffer&&) = default;
 		~OpenGLUniformBuffer();
@@ -20,7 +24,7 @@ namespace TRAP::Graphics::API
 		void Bind(uint32_t bindingPoint) const override;
 		void Unbind() const override;
 
-		void UpdateData(const void* data, uint32_t size) override;
+		void UpdateData(const void* data) override;
 		void UpdateSubData(const void* data, uint32_t size, uint32_t offset) override;
 
 		std::string GetName() const;
@@ -29,12 +33,14 @@ namespace TRAP::Graphics::API
 		uint32_t m_handle;
 		const char* m_name;
 		uint32_t m_size;
-	};
-}
+		BufferUsage m_usage;
+		uint8_t* m_dataPtr;
+		uint32_t m_nextHeadOffset;
+		uint32_t m_bufferCount;
+		uint32_t m_alignedSize;
 
-inline std::string TRAP::Graphics::API::OpenGLUniformBuffer::GetName() const
-{
-	return std::string(m_name);
+		static uint32_t s_uniformBufferOffsetAlignment;
+	};
 }
 
 #endif /*_TRAP_OPENGLUNIFORMBUFFER_H_*/

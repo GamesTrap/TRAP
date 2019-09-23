@@ -3,6 +3,8 @@
 
 namespace TRAP::Graphics
 {
+	enum class BufferUsage;
+
 	class UniformBuffer
 	{
 	public:
@@ -13,13 +15,13 @@ namespace TRAP::Graphics
 		UniformBuffer(UniformBuffer&&) = default;
 		UniformBuffer& operator=(UniformBuffer&&) = default;
 
-		static Scope<UniformBuffer> Create(const char* name, uint32_t size);
-		static Scope<UniformBuffer> Create(const char* name, void* data, uint32_t size);
+		static Scope<UniformBuffer> Create(const char* name, uint32_t size, BufferUsage usage);
+		static Scope<UniformBuffer> Create(const char* name, void* data, uint32_t size, BufferUsage usage);
 
 		virtual void Bind(uint32_t bindingPoint = 1) const = 0;
 		virtual void Unbind() const = 0;
 
-		virtual void UpdateData(const void* data, uint32_t size) = 0;
+		virtual void UpdateData(const void* data) = 0;
 		virtual void UpdateSubData(const void* data, uint32_t size, uint32_t offset) = 0;
 	};
 }

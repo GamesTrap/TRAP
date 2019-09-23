@@ -82,13 +82,14 @@ public:
 		TRAP::Graphics::RenderCommand::SetBlendFunction(TRAP::Graphics::RendererBlendFunction::Source_Alpha, TRAP::Graphics::RendererBlendFunction::One_Minus_Source_Alpha);
 
 		UniformData data{ TRAP::Application::GetTime() };
-		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("ColorBuffer", &data, sizeof(UniformData));
+		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("ColorBuffer", &data, sizeof(UniformData), TRAP::Graphics::BufferUsage::Stream);
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnDetach() override
 	{
+		m_uniformBuffer->Unbind();
 		m_uniformBuffer.reset();
 		
 		m_vertexArray->Unbind();
@@ -128,7 +129,7 @@ public:
 				else
 				{
 					float time = TRAP::Application::GetTime();
-					m_uniformBuffer->UpdateData(&time, sizeof(float));
+					m_uniformBuffer->UpdateData(&time);
 					m_uniformBuffer->Bind(1);
 					TRAP::Graphics::TextureManager::Get2D("TRAP")->Bind();
 					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColor"), m_vertexArray);
