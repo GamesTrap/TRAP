@@ -44,9 +44,7 @@
 #include <d3d12.h>
 #include "Utils/Win.h"
 
-#undef near
 #undef far
-#undef DELETE
 #endif
 
 #endif /*_TRAP_TRAPPCH_H_*/

@@ -38,7 +38,6 @@ public:
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Texture.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColor.shader");
-		//TRAP::Graphics::ShaderManager::Load("/Shaders/RainyWindow.shader");
 
 		//EXPERIMENTAL
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");

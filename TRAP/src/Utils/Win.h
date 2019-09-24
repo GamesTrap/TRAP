@@ -118,4 +118,7 @@
 
 #include <Windows.h>
 
+#undef near
+#undef DELETE
+
 #endif /*_TRAP_WIN_H_*/

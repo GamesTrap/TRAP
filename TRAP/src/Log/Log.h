@@ -1,7 +1,10 @@
 #ifndef _TRAP_LOG_H_
 #define _TRAP_LOG_H_
 
-#include "TRAPPCH.h"
+//#include "TRAPPCH.h" //Doesnt work anymore
+#ifdef TRAP_PLATFORM_WINDOWS
+#include "Utils/Win.h"
+#endif
 
 namespace TRAP
 {
