@@ -3,7 +3,7 @@
 
 TRAP::Graphics::API::VulkanVertexBuffer::VulkanVertexBuffer(float* vertices, uint32_t size)
 {
-	TRAP_WARN("[VertexBuffer][Vulkan] WIP");
+	TP_WARN("[VertexBuffer][Vulkan] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

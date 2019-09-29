@@ -25,14 +25,14 @@ TRAP::Application::Application()
 	m_fpsLimit(0),
 	m_tickRate(100)
 {
-	TRAP_DEBUG("[Application] Initializing TRAP Modules...");
+	TP_DEBUG("[Application] Initializing TRAP Modules...");
 
 	TRAP_CORE_ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
 
 	VFS::Init();
 	if (!m_config.LoadFromFile("Engine.cfg"))
-		TRAP_INFO("[Config] Using default values");
+		TP_INFO("[Config] Using default values");
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	m_config.Print();
 #endif
@@ -102,7 +102,7 @@ TRAP::Application::Application()
 
 TRAP::Application::~Application()
 {
-	TRAP_DEBUG("[Application] Shutting down TRAP Modules...");
+	TP_DEBUG("[Application] Shutting down TRAP Modules...");
 	Graphics::TextureManager::Shutdown();
 	Graphics::ShaderManager::Shutdown();
 	m_config.Set("Width", m_window->GetWidth());
@@ -221,7 +221,7 @@ void TRAP::Application::Run()
 					{
 						if (Graphics::ShaderManager::ExistsVirtualPath(virtualPath))
 						{
-							TRAP_INFO("[ShaderManager] Shader Modified Reloading...");
+							TP_INFO("[ShaderManager] Shader Modified Reloading...");
 							Graphics::ShaderManager::Reload(virtualPath);
 						}
 					}
@@ -249,7 +249,7 @@ void TRAP::Application::Run()
 					{
 						if (Graphics::TextureManager::ExistsVirtualPath(virtualPath))
 						{
-							TRAP_INFO("[TextureManager] Texture Modified Reloading...");
+							TP_INFO("[TextureManager] Texture Modified Reloading...");
 							Graphics::TextureManager::Reload(virtualPath);
 						}
 					}

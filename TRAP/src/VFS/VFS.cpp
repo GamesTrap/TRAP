@@ -10,7 +10,7 @@ TRAP::Scope<TRAP::VFS> TRAP::VFS::s_Instance = nullptr;
 
 void TRAP::VFS::Init()
 {
-	TRAP_DEBUG("[VFS] Initializing Virtual File System");
+	TP_DEBUG("[VFS] Initializing Virtual File System");
 	s_Instance = MakeScope<VFS>();
 }
 
@@ -18,7 +18,7 @@ void TRAP::VFS::Init()
 
 void TRAP::VFS::Shutdown()
 {
-	TRAP_DEBUG("[VFS] Shutting down Virtual File System");
+	TP_DEBUG("[VFS] Shutting down Virtual File System");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -27,14 +27,14 @@ void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physica
 {
 	if(virtualPath.empty() || physicalPath.empty())
 	{
-		TRAP_ERROR("[VFS] Virtual or Physical path is empty!");
+		TP_ERROR("[VFS] Virtual or Physical path is empty!");
 		return;
 	}
 
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 
 	const std::string virtualPathLower = Utils::String::ToLower(virtualPath);
-	TRAP_INFO("[VFS] Mounting VirtualPath: \"", virtualPath, "\" to PhysicalPath: \"", [&]()
+	TP_INFO("[VFS] Mounting VirtualPath: \"", virtualPath, "\" to PhysicalPath: \"", [&]()
 		{
 			if (*(physicalPath.end() - 1) == '/')
 				return std::string(physicalPath.begin(), physicalPath.end() - 1);
@@ -79,7 +79,7 @@ void TRAP::VFS::MountTextures(const std::string& physicalPath)
 void TRAP::VFS::Unmount(const std::string& path)
 {
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
-	TRAP_INFO("[VFS] Unmounting VirtualPath: \"", path, "\"");
+	TP_INFO("[VFS] Unmounting VirtualPath: \"", path, "\"");
 	const std::string pathLower = Utils::String::ToLower(path);
 	m_mountPoints[pathLower].clear();
 

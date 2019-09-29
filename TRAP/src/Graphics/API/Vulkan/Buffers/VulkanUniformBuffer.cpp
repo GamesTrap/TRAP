@@ -3,14 +3,14 @@
 
 TRAP::Graphics::API::VulkanUniformBuffer::VulkanUniformBuffer(const char* name, uint32_t size, BufferUsage usage)
 {
-	TRAP_WARN("[UniformBuffer][Vulkan] WIP");
+	TP_WARN("[UniformBuffer][Vulkan] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanUniformBuffer::VulkanUniformBuffer(const char* name, const void* data, uint32_t size, BufferUsage usage)
 {
-	TRAP_WARN("[UniformBuffer][Vulkan] WIP");
+	TP_WARN("[UniformBuffer][Vulkan] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -8,7 +8,7 @@
 TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(const TextureParameters parameters)
 	: m_handle(0), m_name("FallbackCube"), m_parameters(parameters), m_inputFormat(InputFormat::NONE)
 {
-	TRAP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
+	TP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
 	m_images[0] = Image::LoadFallback();
 
 	OpenGLCall(glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_handle));
@@ -44,7 +44,7 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(const TextureParameter
 TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, const std::array<std::string, 6> & filepaths, const TextureParameters parameters)
 	: m_handle(0), m_name(std::move(name)), m_parameters(parameters), m_inputFormat(InputFormat::NONE)
 {
-	TRAP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
+	TP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
 	if (s_maxCubeTextureSize == 0) //Only load maximum available texture size once
 	{
 		OpenGLCall(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize)));
@@ -53,8 +53,8 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 	for (const auto& path : filepaths)
 		if (path.empty())
 		{
-			TRAP_ERROR("[TextureCube][OpenGL] FilePaths are empty!");
-			TRAP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
+			TP_ERROR("[TextureCube][OpenGL] FilePaths are empty!");
+			TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
 			return;
 		}
 
@@ -66,7 +66,7 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, const std::string& filepath, const InputFormat format, const TextureParameters parameters)
 	: m_handle(0), m_name(std::move(name)), m_parameters(parameters), m_inputFormat(format)
 {
-	TRAP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
+	TP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
 	if (s_maxCubeTextureSize == 0) //Only load maximum available texture size once
 	{
 		OpenGLCall(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize)));
@@ -74,8 +74,8 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 
 	if (filepath.empty())
 	{
-		TRAP_ERROR("[TextureCube][OpenGL] Filepath is empty!");
-		TRAP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
+		TP_ERROR("[TextureCube][OpenGL] Filepath is empty!");
+		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
 		return;
 	}
 
@@ -85,8 +85,8 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 		LoadHorizontalCross(filepath);
 	else if (m_inputFormat == InputFormat::NONE)
 	{
-		TRAP_ERROR("[TextureCube][OpenGL] InputFormat is None!");
-		TRAP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
+		TP_ERROR("[TextureCube][OpenGL] InputFormat is None!");
+		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
 		return;
 	}
 }
@@ -95,7 +95,7 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 
 TRAP::Graphics::API::OpenGLTextureCube::~OpenGLTextureCube()
 {
-	TRAP_DEBUG("[TextureCube][OpenGL] Destroying TextureCube: \"", m_name, "\"");
+	TP_DEBUG("[TextureCube][OpenGL] Destroying TextureCube: \"", m_name, "\"");
 	OpenGLCall(glDeleteTextures(1, &m_handle));
 }
 
@@ -145,8 +145,8 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross(const std::string
 	std::filesystem::path physicalPath;
 	if (!VFS::Get()->SilentResolveReadPhysicalPath(virtualFilePath, physicalPath))
 	{
-		TRAP_ERROR("[TextureCube][OpenGL] Couldn't resolve FilePath: ", virtualFilePath, "!");
-		TRAP_WARN("[TextureCube][OpenGL] Using Default Cube Map!");
+		TP_ERROR("[TextureCube][OpenGL] Couldn't resolve FilePath: ", virtualFilePath, "!");
+		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map!");
 		return;
 	}
 
@@ -154,14 +154,14 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross(const std::string
 
 	if (m_images[0]->GetWidth() > s_maxCubeTextureSize || m_images[0]->GetHeight() > s_maxCubeTextureSize)
 	{
-		TRAP_CRITICAL("[TextureCube][OpenGL] Texture: \"", m_name, "\" Width: ", m_images[0]->GetWidth(), " or Height: ", m_images[0]->GetHeight(), " is bigger than the maximum allowed texture size(", s_maxCubeTextureSize, ")!");
-		TRAP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
+		TP_CRITICAL("[TextureCube][OpenGL] Texture: \"", m_name, "\" Width: ", m_images[0]->GetWidth(), " or Height: ", m_images[0]->GetHeight(), " is bigger than the maximum allowed texture size(", s_maxCubeTextureSize, ")!");
+		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
 		return;
 	}
 	if (m_images[0]->GetHeight() <= m_images[0]->GetWidth())
 	{
-		TRAP_ERROR("[TextureCube][OpenGL] Texture: \"", m_name, "\" Invalid InputFormat usage!");
-		TRAP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
+		TP_ERROR("[TextureCube][OpenGL] Texture: \"", m_name, "\" Invalid InputFormat usage!");
+		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
 		return;
 	}
 
@@ -429,8 +429,8 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross(const std::stri
 	std::filesystem::path physicalPath;
 	if (!VFS::Get()->SilentResolveReadPhysicalPath(virtualFilePath, physicalPath))
 	{
-		TRAP_ERROR("[TextureCube][OpenGL] Couldn't resolve FilePath: ", virtualFilePath, "!");
-		TRAP_WARN("[TextureCube][OpenGL] Using Default Cube Map!");
+		TP_ERROR("[TextureCube][OpenGL] Couldn't resolve FilePath: ", virtualFilePath, "!");
+		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map!");
 		return;
 	}
 
@@ -438,14 +438,14 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross(const std::stri
 
 	if (m_images[0]->GetWidth() > s_maxCubeTextureSize || m_images[0]->GetHeight() > s_maxCubeTextureSize)
 	{
-		TRAP_CRITICAL("[TextureCube][OpenGL] Texture: \"", m_name, "\" Width: ", m_images[0]->GetWidth(), " or Height: ", m_images[0]->GetHeight(), " is bigger than the maximum allowed texture size(", s_maxCubeTextureSize, ")!");
-		TRAP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
+		TP_CRITICAL("[TextureCube][OpenGL] Texture: \"", m_name, "\" Width: ", m_images[0]->GetWidth(), " or Height: ", m_images[0]->GetHeight(), " is bigger than the maximum allowed texture size(", s_maxCubeTextureSize, ")!");
+		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
 		return;
 	}
 	if (m_images[0]->GetWidth() <= m_images[0]->GetHeight())
 	{
-		TRAP_ERROR("[TextureCube][OpenGL] Texture: \"", m_name, "\" Invalid InputFormat usage!");
-		TRAP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
+		TP_ERROR("[TextureCube][OpenGL] Texture: \"", m_name, "\" Invalid InputFormat usage!");
+		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
 		return;
 	}
 
@@ -703,8 +703,8 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadFiles(const std::array<std::str
 		std::filesystem::path physicalPath;
 		if (!VFS::Get()->SilentResolveReadPhysicalPath(virtualFilePath, physicalPath))
 		{
-			TRAP_ERROR("[TextureCube][OpenGL] Couldn't resolve FilePath: ", virtualFilePath, "!");
-			TRAP_WARN("[TextureCube][OpenGL] Using Default Cube Map!");
+			TP_ERROR("[TextureCube][OpenGL] Couldn't resolve FilePath: ", virtualFilePath, "!");
+			TP_WARN("[TextureCube][OpenGL] Using Default Cube Map!");
 			return;
 		}
 
@@ -720,22 +720,22 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadFiles(const std::array<std::str
 	{
 		if (image->GetWidth() > s_maxCubeTextureSize || image->GetHeight() > s_maxCubeTextureSize)
 		{
-			TRAP_CRITICAL("[TextureCube][OpenGL] Texture: \"", m_name, "\" Width: ", image->GetWidth(), " or Height: ", image->GetHeight(), " is bigger than the maximum allowed texture size(", s_maxCubeTextureSize, ")!");
-			TRAP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
+			TP_CRITICAL("[TextureCube][OpenGL] Texture: \"", m_name, "\" Width: ", image->GetWidth(), " or Height: ", image->GetHeight(), " is bigger than the maximum allowed texture size(", s_maxCubeTextureSize, ")!");
+			TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
 			return;
 		}
 
 		if (image->GetWidth() != width || image->GetHeight() != height)
 		{
-			TRAP_ERROR("[TextureCube][OpenGL] Texture: \"", m_name, "\" Image size: ", image->GetWidth(), "x", image->GetHeight(), " is not the same size as the other images!");
-			TRAP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
+			TP_ERROR("[TextureCube][OpenGL] Texture: \"", m_name, "\" Image size: ", image->GetWidth(), "x", image->GetHeight(), " is not the same size as the other images!");
+			TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
 			return;
 		}
 
 		if(image->IsImageGrayScale() != isGrayScale && image->HasAlphaChannel() != hasAlphaChannel)
 		{
-			TRAP_ERROR("[TextureCube][OpenGL] Texture: \"", m_name, "\" Image: \"", image->GetFilePath(), "\" doesn't match other images properties!");
-			TRAP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
+			TP_ERROR("[TextureCube][OpenGL] Texture: \"", m_name, "\" Image: \"", image->GetFilePath(), "\" doesn't match other images properties!");
+			TP_WARN("[TextureCube][OpenGL] Using Default Cube Map");
 			return;
 		}
 	}

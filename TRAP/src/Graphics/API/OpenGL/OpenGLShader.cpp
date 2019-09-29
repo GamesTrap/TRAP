@@ -24,7 +24,7 @@ TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, std::string VS
 
 TRAP::Graphics::API::OpenGLShader::~OpenGLShader()
 {
-	TRAP_DEBUG("[Shader][OpenGL] Destroying Shader: \"", m_name, "\"");
+	TP_DEBUG("[Shader][OpenGL] Destroying Shader: \"", m_name, "\"");
 	Shutdown();
 }
 
@@ -35,11 +35,11 @@ void TRAP::Graphics::API::OpenGLShader::Init()
 	std::array<std::string*, 6> shaders{ &m_VSSource, &m_FSSource, &m_GSSource, &m_TCSSource, &m_TESSource, &m_CSSource };
 	if (!m_source.empty())
 		PreProcess(m_source, shaders);
-	TRAP_DEBUG("[Shader][OpenGL] Compiling: \"", m_name, "\"");
+	TP_DEBUG("[Shader][OpenGL] Compiling: \"", m_name, "\"");
 	m_handle = Compile(shaders);
 	if (!m_handle)
 	{
-		TRAP_WARN("[Shader][OpenGL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
+		TP_WARN("[Shader][OpenGL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
 		return;
 	}
 	CheckForUniforms();
@@ -180,7 +180,7 @@ void TRAP::Graphics::API::OpenGLShader::CheckForUniforms()
 			{
 				if (!IsTypeOpaque(type)) //Check if is Non-Opaque type
 				{
-					TRAP_ERROR("[Shader][OpenGL] Non-Opaque Uniform: \"", uniformName.get(), "\" found! This is unsupported because of SPIR-V support!");
+					TP_ERROR("[Shader][OpenGL] Non-Opaque Uniform: \"", uniformName.get(), "\" found! This is unsupported because of SPIR-V support!");
 					error = true;
 				}
 			}
@@ -188,7 +188,7 @@ void TRAP::Graphics::API::OpenGLShader::CheckForUniforms()
 
 		if (error)
 		{
-			TRAP_WARN("[Shader][OpenGL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
+			TP_WARN("[Shader][OpenGL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
 			Unbind();
 			Shutdown();
 			m_handle = 0;
@@ -245,7 +245,7 @@ bool TRAP::Graphics::API::OpenGLShader::CompileShader(const ShaderType type, con
 {
 	OpenGLCall(handle = glCreateShader(ShaderTypeToOpenGL(type)));
 
-	TRAP_DEBUG("[Shader][OpenGL] Compiling ", ShaderTypeToString(type));
+	TP_DEBUG("[Shader][OpenGL] Compiling ", ShaderTypeToString(type));
 	OpenGLCall(glShaderSource(handle, 1, &source, nullptr));
 	OpenGLCall(glCompileShader(handle));
 
@@ -258,8 +258,8 @@ bool TRAP::Graphics::API::OpenGLShader::CompileShader(const ShaderType type, con
 		std::vector<char> error(length);
 		OpenGLCall(glGetShaderInfoLog(handle, length, &length, error.data()));
 		const std::string errorMessage(error.data(), length - 1);
-		TRAP_ERROR("[Shader][OpenGL][", ShaderTypeToString(type), "] Failed to compile Shader!");
-		TRAP_ERROR("[Shader][OpenGL][", ShaderTypeToString(type), "] ", errorMessage);
+		TP_ERROR("[Shader][OpenGL][", ShaderTypeToString(type), "] Failed to compile Shader!");
+		TP_ERROR("[Shader][OpenGL][", ShaderTypeToString(type), "] ", errorMessage);
 		OpenGLCall(glDeleteShader(handle));
 
 		return false;
@@ -374,8 +374,8 @@ void TRAP::Graphics::API::OpenGLShader::LinkProgram(int32_t& linkResult, int32_t
 		std::vector<char> error(length);
 		OpenGLCall(glGetProgramInfoLog(handle, length, &length, error.data()));
 		const std::string errorMessage(error.data(), length - 1);
-		TRAP_ERROR("[Shader][OpenGL][Program] Failed to link Program!");
-		TRAP_ERROR("[Shader][OpenGL][Program] ", errorMessage);
+		TP_ERROR("[Shader][OpenGL][Program] Failed to link Program!");
+		TP_ERROR("[Shader][OpenGL][Program] ", errorMessage);
 	}
 
 	if (linkResult == GL_TRUE)
@@ -383,7 +383,7 @@ void TRAP::Graphics::API::OpenGLShader::LinkProgram(int32_t& linkResult, int32_t
 		OpenGLCall(glValidateProgram(handle));
 		OpenGLCall(glGetProgramiv(handle, GL_VALIDATE_STATUS, &validateResult));
 		if (validateResult == GL_FALSE)
-			TRAP_ERROR("[Shader][OpenGL][Program] Failed to validate Program!");
+			TP_ERROR("[Shader][OpenGL][Program] Failed to validate Program!");
 	}
 }
 

@@ -75,7 +75,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 40);
 			__debugbreak();
 		}
 	#elif defined(TRAP_PLATFORM_LINUX)
-		#include <signal.h>
+		#include <signal.h>		
 		inline void TRAP_DEBUG_BREAK()
 		{
 			raise(SIGTRAP);
@@ -103,7 +103,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 40);
 	{                                                                                         \
 		if (!(x))                                                                             \
 		{                                                                                     \
-			TRAP_ERROR("Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
+			TP_ERROR("Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
 			TRAP_DEBUG_BREAK();                                                                 \
 		}                                                                                     \
 	}
@@ -114,7 +114,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 40);
 	{                                                                                                \
 		if (!(x))                                                                                    \
 		{                                                                                            \
-			TRAP_ERROR("[Core] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
+			TP_ERROR("[Core] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
 			TRAP_DEBUG_BREAK();                                                                        \
 		}                                                                                            \
 	}
@@ -125,7 +125,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 40);
 	{                                                                                                    \
 		if (!(x))                                                                                        \
 		{                                                                                                \
-			TRAP_ERROR("[Renderer] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
+			TP_ERROR("[Renderer] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
 			TRAP_DEBUG_BREAK();                                                                            \
 		}                                                                                                \
 	}

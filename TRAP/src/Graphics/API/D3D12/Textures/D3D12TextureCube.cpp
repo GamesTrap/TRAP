@@ -4,7 +4,7 @@
 TRAP::Graphics::API::D3D12TextureCube::D3D12TextureCube(const TextureParameters parameters)
 	: m_name("FallbackCube"), m_parameters(parameters)
 {
-	TRAP_WARN("[TextureCube][D3D12] WIP");
+	TP_WARN("[TextureCube][D3D12] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -12,7 +12,7 @@ TRAP::Graphics::API::D3D12TextureCube::D3D12TextureCube(const TextureParameters 
 TRAP::Graphics::API::D3D12TextureCube::D3D12TextureCube(std::string name, std::string filepath, InputFormat format, const TextureParameters parameters)
 	: m_name(std::move(name)), m_parameters(parameters)
 {
-	TRAP_WARN("[TextureCube][D3D12] WIP");
+	TP_WARN("[TextureCube][D3D12] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -20,7 +20,7 @@ TRAP::Graphics::API::D3D12TextureCube::D3D12TextureCube(std::string name, std::s
 TRAP::Graphics::API::D3D12TextureCube::D3D12TextureCube(std::string name, const std::array<std::string, 6>& filepaths, const TextureParameters parameters)
 	: m_name(std::move(name)), m_parameters(parameters)
 {
-	TRAP_WARN("[TextureCube][D3D12] WIP");
+	TP_WARN("[TextureCube][D3D12] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

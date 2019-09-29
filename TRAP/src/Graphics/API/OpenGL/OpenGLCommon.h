@@ -24,7 +24,7 @@ inline bool TRAP::Graphics::API::OpenGLLogCall(const char* function, const char*
 {
 	while (const GLenum error = glGetError())
 	{
-		TRAP_ERROR("[Renderer][OpenGL] ", error, ": ", function, " @[", file, ':', line, ']');
+		TP_ERROR("[Renderer][OpenGL] ", error, ": ", function, " @[", file, ':', line, ']');
 
 		return false;
 	}

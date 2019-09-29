@@ -156,9 +156,9 @@ public:
 		}
 		if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 		{
-			TRAP_INFO("[Sandbox] DrawCall(s): ", TRAP::Graphics::Renderer::GetDrawCalls());
-			TRAP_INFO("[Sandbox] FPS: ", TRAP::Graphics::Renderer::GetFPS());
-			TRAP_INFO("[Sandbox] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
+			TP_INFO("[Sandbox] DrawCall(s): ", TRAP::Graphics::Renderer::GetDrawCalls());
+			TP_INFO("[Sandbox] FPS: ", TRAP::Graphics::Renderer::GetFPS());
+			TP_INFO("[Sandbox] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
 			m_fpsTimer.Reset();
 		}
 	}

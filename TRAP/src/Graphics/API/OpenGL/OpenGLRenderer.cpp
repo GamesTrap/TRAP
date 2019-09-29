@@ -17,7 +17,7 @@ TRAP::Graphics::API::OpenGLRenderer::OpenGLRenderer()
 
 TRAP::Graphics::API::OpenGLRenderer::~OpenGLRenderer()
 {
-	TRAP_DEBUG("[Renderer][OpenGL] Destroying Renderer");
+	TP_DEBUG("[Renderer][OpenGL] Destroying Renderer");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -36,12 +36,12 @@ void TRAP::Graphics::API::OpenGLRenderer::InitInternal()
 	SetFrontFace(RendererFrontFace::Counter_Clockwise);
 	SetCullMode(RendererCullMode::Back);
 
-	TRAP_INFO("[Renderer][OpenGL] ----------------------------------");
-	TRAP_INFO("[Renderer][OpenGL] OpenGL:");
-	TRAP_INFO("[Renderer][OpenGL] Version:  ", glGetString(GL_VERSION));
-	TRAP_INFO("[Renderer][OpenGL] Vendor:   ", glGetString(GL_VENDOR));
-	TRAP_INFO("[Renderer][OpenGL] Renderer: ", glGetString(GL_RENDERER));
-	TRAP_INFO("[Renderer][OpenGL] ----------------------------------");
+	TP_INFO("[Renderer][OpenGL] ----------------------------------");
+	TP_INFO("[Renderer][OpenGL] OpenGL:");
+	TP_INFO("[Renderer][OpenGL] Version:  ", glGetString(GL_VERSION));
+	TP_INFO("[Renderer][OpenGL] Vendor:   ", glGetString(GL_VENDOR));
+	TP_INFO("[Renderer][OpenGL] Renderer: ", glGetString(GL_RENDERER));
+	TP_INFO("[Renderer][OpenGL] ----------------------------------");
 
 	m_rendererTitle = "[OpenGL " + std::string(reinterpret_cast<const char*>(glGetString(GL_VERSION)) + std::string("]"));
 }
@@ -446,22 +446,22 @@ void GLAPIENTRY TRAP::Graphics::API::OpenGLRenderer::DebugCallback(const GLenum 
 	switch (severity)
 	{
 	case GL_DEBUG_SEVERITY_HIGH:
-		TRAP_CRITICAL(ss.str());
+		TP_CRITICAL(ss.str());
 		break;
 
 	case GL_DEBUG_SEVERITY_MEDIUM:
-		TRAP_ERROR(ss.str());
+		TP_ERROR(ss.str());
 		break;
 
 	case GL_DEBUG_SEVERITY_LOW:
-		TRAP_WARN(ss.str());
+		TP_WARN(ss.str());
 		break;
 
 	case GL_DEBUG_SEVERITY_NOTIFICATION:
 		break;
 
 	default:
-		TRAP_WARN(ss.str());
+		TP_WARN(ss.str());
 		break;
 	}
 }

@@ -5,7 +5,7 @@
 
 TRAP::Graphics::API::D3D12VertexArray::D3D12VertexArray()
 {
-	TRAP_WARN("[VertexArray][D3D12] WIP");
+	TP_WARN("[VertexArray][D3D12] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

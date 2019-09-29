@@ -48,7 +48,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::string VS
 
 TRAP::Graphics::API::VulkanShader::~VulkanShader()
 {
-	TRAP_DEBUG("[Shader][Vulkan] Destroying Shader: \"", m_name, "\"");
+	TP_DEBUG("[Shader][Vulkan] Destroying Shader: \"", m_name, "\"");
 	Shutdown();
 }
 
@@ -60,7 +60,7 @@ void TRAP::Graphics::API::VulkanShader::Init()
 	if (!m_source.empty())
 		PreProcessGLSL(m_source, shaders);
 	VulkanShaderErrorInfo error;
-	TRAP_DEBUG("[Shader][Vulkan] Compiling: \"", m_name, "\"");
+	TP_DEBUG("[Shader][Vulkan] Compiling: \"", m_name, "\"");
 	Compile(shaders, error);
 }
 
@@ -103,7 +103,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 	if (!shaders[0]->empty())
 	{
 		const char* VSSource = shaders[0]->c_str();
-		TRAP_DEBUG("[Shader][Vulkan][GLSL] Pre-Processing Vertex Shader");
+		TP_DEBUG("[Shader][Vulkan][GLSL] Pre-Processing Vertex Shader");
 		std::string preProcessedSource;
 		VShader = PreProcess(VSSource, 0, preProcessedSource);
 		if (preProcessedSource.empty() || !VShader)
@@ -111,7 +111,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 		const char* preProcessedCStr = preProcessedSource.c_str();
 		VShader->setStrings(&preProcessedCStr, 1);
 
-		TRAP_DEBUG("[Shader][Vulkan][GLSL] Parsing Vertex Shader");
+		TP_DEBUG("[Shader][Vulkan][GLSL] Parsing Vertex Shader");
 		if (!Parse(VShader.get()))
 			return;
 	}
@@ -119,7 +119,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 	if (!shaders[1]->empty())
 	{
 		const char* FSSource = shaders[1]->c_str();
-		TRAP_DEBUG("[Shader][Vulkan][GLSL] Pre-Processing Fragment Shader");
+		TP_DEBUG("[Shader][Vulkan][GLSL] Pre-Processing Fragment Shader");
 		std::string preProcessedSource;
 		FShader = PreProcess(FSSource, 1, preProcessedSource);
 		if (preProcessedSource.empty())
@@ -127,7 +127,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 		const char* preProcessedCStr = preProcessedSource.c_str();
 		FShader->setStrings(&preProcessedCStr, 1);
 
-		TRAP_DEBUG("[Shader][Vulkan][GLSL] Parsing Fragment Shader");
+		TP_DEBUG("[Shader][Vulkan][GLSL] Parsing Fragment Shader");
 		if (!Parse(FShader.get()))
 			return;
 	}
@@ -135,7 +135,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 	if (!shaders[2]->empty())
 	{
 		const char* GSSource = shaders[2]->c_str();
-		TRAP_DEBUG("[Shader][Vulkan][GLSL] Pre-Processing Geometry Shader");
+		TP_DEBUG("[Shader][Vulkan][GLSL] Pre-Processing Geometry Shader");
 		std::string preProcessedSource;
 		GShader = PreProcess(GSSource, 2, preProcessedSource);
 		if (preProcessedSource.empty())
@@ -143,7 +143,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 		const char* preProcessedCStr = preProcessedSource.c_str();
 		GShader->setStrings(&preProcessedCStr, 1);
 
-		TRAP_DEBUG("[Shader][Vulkan][GLSL] Parsing Geometry Shader");
+		TP_DEBUG("[Shader][Vulkan][GLSL] Parsing Geometry Shader");
 		if (!Parse(GShader.get()))
 			return;
 	}
@@ -151,7 +151,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 	if (!shaders[3]->empty())
 	{
 		const char* TCSSource = shaders[3]->c_str();
-		TRAP_DEBUG("[Shader][Vulkan][GLSL] Pre-Processing Tessellation Control Shader");
+		TP_DEBUG("[Shader][Vulkan][GLSL] Pre-Processing Tessellation Control Shader");
 		std::string preProcessedSource;
 		TCShader = PreProcess(TCSSource, 3, preProcessedSource);
 		if (preProcessedSource.empty())
@@ -159,7 +159,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 		const char* preProcessedCStr = preProcessedSource.c_str();
 		TCShader->setStrings(&preProcessedCStr, 1);
 
-		TRAP_DEBUG("[Shader][Vulkan][GLSL] Parsing Tessellation Control Shader");
+		TP_DEBUG("[Shader][Vulkan][GLSL] Parsing Tessellation Control Shader");
 		if (!Parse(TCShader.get()))
 			return;
 	}
@@ -167,7 +167,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 	if (!shaders[4]->empty())
 	{
 		const char* TESSource = shaders[4]->c_str();
-		TRAP_DEBUG("[Shader][Vulkan][GLSL] Pre-Processing Tessellation Evaluation Shader");
+		TP_DEBUG("[Shader][Vulkan][GLSL] Pre-Processing Tessellation Evaluation Shader");
 		std::string preProcessedSource;
 		TEShader = PreProcess(TESSource, 4, preProcessedSource);
 		if (preProcessedSource.empty())
@@ -175,7 +175,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 		const char* preProcessedCStr = preProcessedSource.c_str();
 		TEShader->setStrings(&preProcessedCStr, 1);
 
-		TRAP_DEBUG("[Shader][Vulkan][GLSL] Parsing Tessellation Evaluation Shader");
+		TP_DEBUG("[Shader][Vulkan][GLSL] Parsing Tessellation Evaluation Shader");
 		if (!Parse(TEShader.get()))
 			return;
 	}
@@ -183,7 +183,7 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 	if (!shaders[5]->empty())
 	{
 		const char* CSSource = shaders[5]->c_str();
-		TRAP_DEBUG("[Shader][Vulkan][GLSL] Pre-Processing Compute Shader");
+		TP_DEBUG("[Shader][Vulkan][GLSL] Pre-Processing Compute Shader");
 		std::string preProcessedSource;
 		CShader = PreProcess(CSSource, 5, preProcessedSource);
 		if (preProcessedSource.empty())
@@ -191,16 +191,16 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 		const char* preProcessedCStr = preProcessedSource.c_str();
 		CShader->setStrings(&preProcessedCStr, 1);
 
-		TRAP_DEBUG("[Shader][Vulkan][GLSL] Parsing Compute Shader");
+		TP_DEBUG("[Shader][Vulkan][GLSL] Parsing Compute Shader");
 		if (!Parse(CShader.get()))
 			return;
 	}
 
-	TRAP_DEBUG("[Shader][Vulkan][GLSL] Linking Shaders");
+	TP_DEBUG("[Shader][Vulkan][GLSL] Linking Shaders");
 	if (!Link(VShader.get(), FShader.get(), GShader.get(), TCShader.get(), TEShader.get(), CShader.get(), program))
 		return;
 
-	TRAP_DEBUG("[Shader][Vulkan][SPIRV] Converting Shaders to SPIRV");
+	TP_DEBUG("[Shader][Vulkan][SPIRV] Converting Shaders to SPIRV");
 	std::vector<std::vector<uint32_t>> SPIRV = ConvertToSPIRV(VShader.get(), FShader.get(), GShader.get(), TCShader.get(), TEShader.get(), CShader.get(), program);
 
 	if (!SPIRV[0].empty())
@@ -361,9 +361,9 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::API::VulkanShader::PreProcess(cons
 	                        &preProcessedSource,
 	                        includer))
 	{
-		TRAP_ERROR("[Shader}[Vulkan] GLSL Preprocessing failed!");
-		TRAP_ERROR("[Shader][Vulkan] ", shader->getInfoLog());
-		TRAP_ERROR("[Shader][Vulkan] ", shader->getInfoDebugLog());
+		TP_ERROR("[Shader}[Vulkan] GLSL Preprocessing failed!");
+		TP_ERROR("[Shader][Vulkan] ", shader->getInfoLog());
+		TP_ERROR("[Shader][Vulkan] ", shader->getInfoDebugLog());
 
 		return nullptr;
 	}
@@ -377,9 +377,9 @@ bool TRAP::Graphics::API::VulkanShader::Parse(glslang::TShader* shader)
 {
 	if (!shader->parse(&glslang::DefaultTBuiltInResource, 460, true, static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
 	{
-		TRAP_ERROR("[Shader][Vulkan] Parsing failed: ");
-		TRAP_ERROR("[Shader][Vulkan] ", shader->getInfoLog());
-		TRAP_ERROR("[Shader][Vulkan] ", shader->getInfoDebugLog());
+		TP_ERROR("[Shader][Vulkan] Parsing failed: ");
+		TP_ERROR("[Shader][Vulkan] ", shader->getInfoLog());
+		TP_ERROR("[Shader][Vulkan] ", shader->getInfoDebugLog());
 
 		return false;
 	}
@@ -412,9 +412,9 @@ bool TRAP::Graphics::API::VulkanShader::Link(glslang::TShader* VShader,
 
 	if (!program.link(static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
 	{
-		TRAP_ERROR("[Shader][Vulkan] Linking failed: ");
-		TRAP_ERROR("[Shader][Context] ", program.getInfoLog());
-		TRAP_ERROR("[Shader][Vulkan] ", program.getInfoDebugLog());
+		TP_ERROR("[Shader][Vulkan] Linking failed: ");
+		TP_ERROR("[Shader][Context] ", program.getInfoLog());
+		TP_ERROR("[Shader][Vulkan] ", program.getInfoDebugLog());
 
 		return false;
 	}
@@ -441,7 +441,7 @@ std::vector<std::vector<unsigned>> TRAP::Graphics::API::VulkanShader::ConvertToS
 		glslang::SpvOptions spvOptions;
 		GlslangToSpv(*program.getIntermediate(EShLangVertex), SPIRV[0], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
-			TRAP_ERROR("[Shader][Vulkan][SPIRV] Vertex Shader: ", logger.getAllMessages());
+			TP_ERROR("[Shader][Vulkan][SPIRV] Vertex Shader: ", logger.getAllMessages());
 	}
 
 	if (FShader)
@@ -450,7 +450,7 @@ std::vector<std::vector<unsigned>> TRAP::Graphics::API::VulkanShader::ConvertToS
 		glslang::SpvOptions spvOptions;
 		GlslangToSpv(*program.getIntermediate(EShLangFragment), SPIRV[1], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
-			TRAP_ERROR("[Shader][Vulkan][SPIRV] Fragment Shader: ", logger.getAllMessages());
+			TP_ERROR("[Shader][Vulkan][SPIRV] Fragment Shader: ", logger.getAllMessages());
 	}
 
 	if (GShader)
@@ -459,7 +459,7 @@ std::vector<std::vector<unsigned>> TRAP::Graphics::API::VulkanShader::ConvertToS
 		glslang::SpvOptions spvOptions;
 		GlslangToSpv(*program.getIntermediate(EShLangGeometry), SPIRV[2], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
-			TRAP_ERROR("[Shader][Vulkan][SPIRV] Geometry Shader: ", logger.getAllMessages());
+			TP_ERROR("[Shader][Vulkan][SPIRV] Geometry Shader: ", logger.getAllMessages());
 	}
 
 	if (TCShader)
@@ -468,7 +468,7 @@ std::vector<std::vector<unsigned>> TRAP::Graphics::API::VulkanShader::ConvertToS
 		glslang::SpvOptions spvOptions;
 		GlslangToSpv(*program.getIntermediate(EShLangTessControl), SPIRV[3], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
-			TRAP_ERROR("[Shader][Vulkan][SPIRV] Tessellation Control Shader: ", logger.getAllMessages());
+			TP_ERROR("[Shader][Vulkan][SPIRV] Tessellation Control Shader: ", logger.getAllMessages());
 	}
 
 	if (TEShader)
@@ -477,7 +477,7 @@ std::vector<std::vector<unsigned>> TRAP::Graphics::API::VulkanShader::ConvertToS
 		glslang::SpvOptions spvOptions;
 		GlslangToSpv(*program.getIntermediate(EShLangTessEvaluation), SPIRV[4], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
-			TRAP_ERROR("[Shader][Vulkan][SPIRV] Tessellation Evaluation Shader: ", logger.getAllMessages());
+			TP_ERROR("[Shader][Vulkan][SPIRV] Tessellation Evaluation Shader: ", logger.getAllMessages());
 	}
 
 	if (CShader)
@@ -486,7 +486,7 @@ std::vector<std::vector<unsigned>> TRAP::Graphics::API::VulkanShader::ConvertToS
 		glslang::SpvOptions spvOptions;
 		GlslangToSpv(*program.getIntermediate(EShLangCompute), SPIRV[5], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
-			TRAP_ERROR("[Shader][Vulkan][SPIRV] Compute Shader: ", logger.getAllMessages());
+			TP_ERROR("[Shader][Vulkan][SPIRV] Compute Shader: ", logger.getAllMessages());
 	}
 
 	return SPIRV;

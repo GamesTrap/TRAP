@@ -4,7 +4,7 @@
 TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(const TextureParameters parameters)
 	: m_name("FallbackCube"), m_parameters(parameters)
 {
-	TRAP_WARN("[TextureCube][Vulkan] WIP");
+	TP_WARN("[TextureCube][Vulkan] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -12,7 +12,7 @@ TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(const TextureParameter
 TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, std::string filepath, InputFormat format, const TextureParameters parameters)
 	: m_name(std::move(name)), m_parameters(parameters)
 {
-	TRAP_WARN("[TextureCube][Vulkan] WIP");
+	TP_WARN("[TextureCube][Vulkan] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -20,7 +20,7 @@ TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, std:
 TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, const std::array<std::string, 6>& filepaths, const TextureParameters parameters)
 	: m_name(std::move(name)), m_parameters(parameters)
 {
-	TRAP_WARN("[TextureCube][Vulkan] WIP");
+	TP_WARN("[TextureCube][Vulkan] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -18,7 +18,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 {
 	if(name.empty())
 	{
-		TRAP_WARN("[Texture2D] Name is empty! Using Filename as Texture2D Name!");
+		TP_WARN("[Texture2D] Name is empty! Using Filename as Texture2D Name!");
 		return CreateFromFile(filepath, parameters);
 	}
 	

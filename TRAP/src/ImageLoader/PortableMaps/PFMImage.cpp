@@ -28,13 +28,13 @@ namespace TRAP::INTERNAL
 TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_isImageGrayScale(false), m_isImageColored(false), m_width(0), m_height(0), m_format(ImageFormat::NONE)
 {
-	TRAP_DEBUG("[Image][PFM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
+	TP_DEBUG("[Image][PFM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
 	if (!VFS::Get()->SilentResolveReadPhysicalPath(m_filepath, physicalPath))
 	{
-		TRAP_ERROR("[Image][PFM] Couldn't resolve FilePath: ", m_filepath, "!");
-		TRAP_WARN("[Image][PFM] Using Default Image!");
+		TP_ERROR("[Image][PFM] Couldn't resolve FilePath: ", m_filepath, "!");
+		TP_WARN("[Image][PFM] Using Default Image!");
 		return;
 	}
 
@@ -43,8 +43,8 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 		std::ifstream file(physicalPath, std::ios::binary);
 		if (!file.is_open())
 		{
-			TRAP_ERROR("[Image][PFM] Couldn't open FilePath: ", m_filepath, "!");
-			TRAP_WARN("[Image][PFM] Using Default Image!");
+			TP_ERROR("[Image][PFM] Couldn't open FilePath: ", m_filepath, "!");
+			TP_WARN("[Image][PFM] Using Default Image!");
 			return;
 		}
 
@@ -61,22 +61,22 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 		if (!(header.MagicNumber == "PF" || header.MagicNumber == "Pf"))
 		{
 			file.close();
-			TRAP_ERROR("[Image][PFM] Invalid Magic Number!");
-			TRAP_WARN("[Image][PFM] Using Default Image!");
+			TP_ERROR("[Image][PFM] Invalid Magic Number!");
+			TP_WARN("[Image][PFM] Using Default Image!");
 			return;
 		}
 		if (header.Width < 1)
 		{
 			file.close();
-			TRAP_ERROR("[Image][PFM] Width is < 1!");
-			TRAP_WARN("[Image][PFM] Using Default Image!");
+			TP_ERROR("[Image][PFM] Width is < 1!");
+			TP_WARN("[Image][PFM] Using Default Image!");
 			return;
 		}
 		if (header.Height < 1)
 		{
 			file.close();
-			TRAP_ERROR("[Image][PFM] Height is < 1!");
-			TRAP_WARN("[Image][PFM] Using Default Image!");
+			TP_ERROR("[Image][PFM] Height is < 1!");
+			TP_WARN("[Image][PFM] Using Default Image!");
 			return;
 		}
 
@@ -99,8 +99,8 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 			{
 				file.close();
 				m_data.clear();
-				TRAP_ERROR("[Image][PAM] Couldn't load pixel data!");
-				TRAP_WARN("[Image][PAM] Using Default Image!");
+				TP_ERROR("[Image][PAM] Couldn't load pixel data!");
+				TP_WARN("[Image][PAM] Using Default Image!");
 				return;
 			}
 
@@ -119,8 +119,8 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 			{
 				file.close();
 				m_data.clear();
-				TRAP_ERROR("[Image][PAM] Couldn't load pixel data!");
-				TRAP_WARN("[Image][PAM] Using Default Image!");
+				TP_ERROR("[Image][PAM] Couldn't load pixel data!");
+				TP_WARN("[Image][PAM] Using Default Image!");
 				return;
 			}
 

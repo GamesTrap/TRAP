@@ -8,13 +8,13 @@
 TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_width(0), m_height(0)
 {
-	TRAP_DEBUG("[Image][PPM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
+	TP_DEBUG("[Image][PPM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
 	if (!VFS::Get()->SilentResolveReadPhysicalPath(m_filepath, physicalPath))
 	{
-		TRAP_ERROR("[Image][PPM] Couldn't resolve FilePath: ", m_filepath, "!");
-		TRAP_WARN("[Image][PPM] Using Default Image!");
+		TP_ERROR("[Image][PPM] Couldn't resolve FilePath: ", m_filepath, "!");
+		TP_WARN("[Image][PPM] Using Default Image!");
 		return;
 	}
 
@@ -23,8 +23,8 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 		std::ifstream file(physicalPath, std::ios::binary);
 		if (!file.is_open())
 		{
-			TRAP_ERROR("[Image][PPM] Couldn't open FilePath: ", m_filepath, "!");
-			TRAP_WARN("[Image][PPM] Using Default Image!");
+			TP_ERROR("[Image][PPM] Couldn't open FilePath: ", m_filepath, "!");
+			TP_WARN("[Image][PPM] Using Default Image!");
 			return;
 		}
 
@@ -41,29 +41,29 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 		if (!(header.MagicNumber == "P3" || header.MagicNumber == "P6"))
 		{
 			file.close();
-			TRAP_ERROR("[Image][PPM] Unsupported Format or invalid Magic Number!");
-			TRAP_WARN("[Image][PPM] Using Default Image!");
+			TP_ERROR("[Image][PPM] Unsupported Format or invalid Magic Number!");
+			TP_WARN("[Image][PPM] Using Default Image!");
 			return;
 		}
 		if (header.Width < 1)
 		{
 			file.close();
-			TRAP_ERROR("[Image][PPM] Width is < 1!");
-			TRAP_WARN("[Image][PPM] Using Default Image!");
+			TP_ERROR("[Image][PPM] Width is < 1!");
+			TP_WARN("[Image][PPM] Using Default Image!");
 			return;
 		}
 		if (header.Height < 1)
 		{
 			file.close();
-			TRAP_ERROR("[Image][PPM] Height is < 1!");
-			TRAP_WARN("[Image][PPM] Using Default Image!");
+			TP_ERROR("[Image][PPM] Height is < 1!");
+			TP_WARN("[Image][PPM] Using Default Image!");
 			return;
 		}
 		if (header.MaxValue < 1 || header.MaxValue > 65535)
 		{
 			file.close();
-			TRAP_ERROR("[Image][PPM] Max Value is unsupported/invalid!");
-			TRAP_WARN("[Image][PPM] Using Default Image!");
+			TP_ERROR("[Image][PPM] Max Value is unsupported/invalid!");
+			TP_WARN("[Image][PPM] Using Default Image!");
 			return;
 		}
 
@@ -76,8 +76,8 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 			if(!file.read(reinterpret_cast<char*>(m_data2Byte.data()), m_width * m_height * 3 * sizeof(uint16_t)))
 			{
 				file.close();
-				TRAP_ERROR("[Image][PPM] Couldn't load pixel data!");
-				TRAP_WARN("[Image][PPM] Using Default Image!");
+				TP_ERROR("[Image][PPM] Couldn't load pixel data!");
+				TP_WARN("[Image][PPM] Using Default Image!");
 				return;
 			}
 		}
@@ -88,8 +88,8 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 			if (!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * 3))
 			{
 				file.close();
-				TRAP_ERROR("[Image][PPM] Couldn't load pixel data!");
-				TRAP_WARN("[Image][PPM] Using Default Image!");
+				TP_ERROR("[Image][PPM] Couldn't load pixel data!");
+				TP_WARN("[Image][PPM] Using Default Image!");
 				return;
 			}
 		}

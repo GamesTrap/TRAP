@@ -6,7 +6,7 @@
 TRAP::Graphics::API::D3D12IndexBuffer::D3D12IndexBuffer(uint32_t* indices, const uint32_t size)
 	: m_count(size)
 {
-	TRAP_WARN("[IndexBuffer][D3D12] WIP");
+	TP_WARN("[IndexBuffer][D3D12] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

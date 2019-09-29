@@ -455,3 +455,7 @@ SITREP 09/28/2019|19w39a3
     - Worked on Event/Core documentation ~>60 mins
     - Changed some things in Core.h <10 mins
     - Changed some macro/template names ~>10 mins
+
+SITREP 09/29/2019|19w39a4
+    - Changed TRAP Engine version to 19w39a4(0.5.41)
+    - Reverted Logging macros back to use TP_ ~<20 mins

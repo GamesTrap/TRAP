@@ -25,7 +25,7 @@ TRAP::Graphics::API::OpenGLContext::OpenGLContext(Window* window)
 
 TRAP::Graphics::API::OpenGLContext::~OpenGLContext()
 {
-	TRAP_DEBUG("[Context][OpenGL] Destroying Context");
+	TP_DEBUG("[Context][OpenGL] Destroying Context");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

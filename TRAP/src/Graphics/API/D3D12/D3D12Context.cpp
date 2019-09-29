@@ -25,7 +25,7 @@ TRAP::Graphics::API::D3D12Context::D3D12Context(Window* window)
 
 TRAP::Graphics::API::D3D12Context::~D3D12Context()
 {
-	TRAP_DEBUG("[Context][D3D12] Destroying Context");
+	TP_DEBUG("[Context][D3D12] Destroying Context");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -37,8 +37,8 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
 		result = MakeScope<INTERNAL::BMPImage>(virtualFilePath);
 	else
 	{
-		TRAP_ERROR("[Image] Unsupported or unknown Image Format!");
-		TRAP_WARN("[Image] Using Default Image!");
+		TP_ERROR("[Image] Unsupported or unknown Image Format!");
+		TP_WARN("[Image] Using Default Image!");
 		return MakeScope<INTERNAL::DefaultImage>(virtualFilePath);
 	}
 
