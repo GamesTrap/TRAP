@@ -22,8 +22,8 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const ImageFormat format, 
 	
 	if (width > s_maxTextureSize || height > s_maxTextureSize)
 	{
-		TP_CRITICAL("[Texture2D][OpenGL] Texture: \"", m_name, "\" Width: ", m_image->GetWidth(), " or Height: ", m_image->GetHeight(), " is bigger than the maximum allowed texture size(", s_maxTextureSize, ")!");
-		TP_WARN("[Texture2D][OpenGL] Using Default Image!");
+		TRAP_CRITICAL("[Texture2D][OpenGL] Texture: \"", m_name, "\" Width: ", m_image->GetWidth(), " or Height: ", m_image->GetHeight(), " is bigger than the maximum allowed texture size(", s_maxTextureSize, ")!");
+		TRAP_WARN("[Texture2D][OpenGL] Using Default Image!");
 		m_image = Image::LoadFallback();
 	}
 	else
@@ -50,7 +50,7 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const st
 
 TRAP::Graphics::API::OpenGLTexture2D::~OpenGLTexture2D()
 {
-	TP_DEBUG("[Texture2D][OpenGL] Destroying Texture2D: \"", m_name, "\"");
+	TRAP_DEBUG("[Texture2D][OpenGL] Destroying Texture2D: \"", m_name, "\"");
 	OpenGLCall(glDeleteTextures(1, &m_handle));
 }
 
@@ -58,7 +58,7 @@ TRAP::Graphics::API::OpenGLTexture2D::~OpenGLTexture2D()
 
 void TRAP::Graphics::API::OpenGLTexture2D::Load(const std::string& filepath)
 {
-	TP_DEBUG("[Texture2D][OpenGL] Loading Texture: \"", m_name, "\"");
+	TRAP_DEBUG("[Texture2D][OpenGL] Loading Texture: \"", m_name, "\"");
 	if (!filepath.empty())
 		m_image = Image::LoadFromFile(filepath);
 	else
@@ -70,8 +70,8 @@ void TRAP::Graphics::API::OpenGLTexture2D::Load(const std::string& filepath)
 	}
 	if(m_image->GetWidth() > s_maxTextureSize || m_image->GetHeight() > s_maxTextureSize)
 	{
-		TP_CRITICAL("[Texture2D][OpenGL] Texture: \"", m_name, "\" Width: ", m_image->GetWidth(), " or Height: ", m_image->GetHeight(), " is bigger than the maximum allowed texture size(", s_maxTextureSize, ")!");
-		TP_WARN("[Texture2D][OpenGL] Using Default Image!");
+		TRAP_CRITICAL("[Texture2D][OpenGL] Texture: \"", m_name, "\" Width: ", m_image->GetWidth(), " or Height: ", m_image->GetHeight(), " is bigger than the maximum allowed texture size(", s_maxTextureSize, ")!");
+		TRAP_WARN("[Texture2D][OpenGL] Using Default Image!");
 		m_image = Image::LoadFallback();
 	}
 

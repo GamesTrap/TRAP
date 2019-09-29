@@ -5,7 +5,7 @@
 
 void TRAP::Log::Save()
 {
-	TP_INFO("[Logger] Saving Log.txt");
+	TRAP_INFO("[Logger] Saving Log.txt");
 
 	std::ofstream file("Log.txt");
 	if (file.is_open())

@@ -449,3 +449,9 @@ SITREP 09/23/2019|19w39a1
 SITREP 09/24/2019|19w39a2
     - Changed TRAP Engine version to 19w39a2(0.5.39)
     - Updated all submodules
+
+SITREP 09/28/2019|19w39a3
+    - Changed TRAP Engine version to 19w39a3(0.5.40)
+    - Worked on Event/Core documentation ~>60 mins
+    - Changed some things in Core.h <10 mins
+    - Changed some macro/template names ~>10 mins

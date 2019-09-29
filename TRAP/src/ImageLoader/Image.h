@@ -73,7 +73,7 @@ std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, c
 {
 	if (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value || std::is_same<T, float>::value))
 	{
-		TP_ASSERT(false, "Invalid type!");
+		TRAP_ASSERT(false, "Invalid type!");
 		return {};
 	}
 	if (format == ImageFormat::NONE || !data)
@@ -126,7 +126,7 @@ std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, c
 {
 	if (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value || std::is_same<T, float>::value))
 	{
-		TP_ASSERT(false, "Invalid type!");
+		TRAP_ASSERT(false, "Invalid type!");
 		return {};
 	}
 	if (format == ImageFormat::NONE || !data)

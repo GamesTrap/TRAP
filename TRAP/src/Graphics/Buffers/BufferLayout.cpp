@@ -16,7 +16,7 @@ uint32_t TRAP::Graphics::BufferElement::GetComponentCount() const
 	case ShaderDataType::Int4:    return 4;
 
 	default:
-		TP_CORE_ASSERT(false, "Unknown/Invalid ShaderDataType!");
+		TRAP_CORE_ASSERT(false, "Unknown/Invalid ShaderDataType!");
 		return 0;
 	}
 }

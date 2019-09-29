@@ -36,9 +36,9 @@ void TRAP::Input::Init()
 	for(uint32_t i = 0; i < s_controllerStatuses.size(); i++)
 	{
 		if (s_controllerStatuses[i].Connected && !s_controllerStatuses[i].IsGamepad) //Connected and not a Gamepad
-			TP_DEBUG("[Input][Controller] ID: ", i, " Controller: \"", glfwGetJoystickName(i), "\" Connected!");
+			TRAP_DEBUG("[Input][Controller] ID: ", i, " Controller: \"", glfwGetJoystickName(i), "\" Connected!");
 		else if (s_controllerStatuses[i].Connected && s_controllerStatuses[i].IsGamepad) //Connected and a Gamepad
-			TP_DEBUG("[Input][Gamepad] ID: ", i, " Gamepad: \"", glfwGetGamepadName(i), "\" Connected!");
+			TRAP_DEBUG("[Input][Gamepad] ID: ", i, " Gamepad: \"", glfwGetGamepadName(i), "\" Connected!");
 	}
 	
 	glfwSetJoystickCallback(JoystickCallback);
@@ -70,13 +70,13 @@ bool TRAP::Input::IsGamepadButtonPressed(Controller controller, GamepadButton bu
 {
 	if(!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
+		TRAP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
 		return false;
 	}
 
 	if(!IsControllerGamepad(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not a Gamepad!");
+		TRAP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not a Gamepad!");
 		return false;
 	}
 
@@ -107,7 +107,7 @@ bool TRAP::Input::IsControllerGamepad(Controller controller)
 {
 	if(!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
+		TRAP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
 		return false;
 	}
 
@@ -150,7 +150,7 @@ std::string TRAP::Input::GetKeyName(const Key key)
 	if(glfwGetKeyName(static_cast<int32_t>(key), 0))
 		return glfwGetKeyName(static_cast<int32_t>(key), 0);
 	
-	TP_ERROR("[Input] Couldn't get name of Key: ", static_cast<int32_t>(key), "!");
+	TRAP_ERROR("[Input] Couldn't get name of Key: ", static_cast<int32_t>(key), "!");
 	return "";
 }
 
@@ -160,7 +160,7 @@ float TRAP::Input::GetControllerAxis(Controller controller, const ControllerAxis
 {
 	if(!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
+		TRAP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
 		return 0.0f;
 	}
 
@@ -177,7 +177,7 @@ TRAP::Input::ControllerHat TRAP::Input::GetControllerHat(Controller controller, 
 {
 	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
+		TRAP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
 		return ControllerHat::Centered;
 	}
 
@@ -195,7 +195,7 @@ std::string TRAP::Input::GetControllerName(Controller controller)
 {
 	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
+		TRAP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
 		return "";
 	}
 
@@ -218,7 +218,7 @@ std::vector<float> TRAP::Input::GetAllControllerAxes(Controller controller)
 {
 	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
+		TRAP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
 		return {};
 	}
 
@@ -236,13 +236,13 @@ std::vector<bool> TRAP::Input::GetAllControllerButtons(Controller controller)
 {
 	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
+		TRAP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
 		return {};
 	}
 
 	if (!IsControllerGamepad(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not a Gamepad!");
+		TRAP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not a Gamepad!");
 		return {};
 	}
 
@@ -260,7 +260,7 @@ std::vector<TRAP::Input::ControllerHat> TRAP::Input::GetAllControllerHats(Contro
 {
 	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
+		TRAP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not Connected!");
 		return {};
 	}
 
@@ -288,18 +288,18 @@ void TRAP::Input::JoystickCallback(const int32_t joystick, const int32_t event)
 		if(event == GLFW_CONNECTED)
 		{
 			if (!glfwJoystickIsGamepad(joystick))
-				TP_DEBUG("[Input][Controller] ID: ", joystick, " Controller: \"", glfwGetJoystickName(joystick), "\" Connected!");
+				TRAP_DEBUG("[Input][Controller] ID: ", joystick, " Controller: \"", glfwGetJoystickName(joystick), "\" Connected!");
 			else
-				TP_DEBUG("[Input][Gamepad] ID: ", joystick, " Gamepad: \"", glfwGetGamepadName(joystick), "\" Connected!");
+				TRAP_DEBUG("[Input][Gamepad] ID: ", joystick, " Gamepad: \"", glfwGetGamepadName(joystick), "\" Connected!");
 
 			s_controllerStatuses[joystick] = { true, static_cast<bool>(glfwJoystickIsGamepad(joystick)) };
 		}
 		else
 		{
 			if (!s_controllerStatuses[joystick].IsGamepad)
-				TP_DEBUG("[Input][Controller] ID: ", joystick, " Disconnected!");
+				TRAP_DEBUG("[Input][Controller] ID: ", joystick, " Disconnected!");
 			else
-				TP_DEBUG("[Input][Gamepad] ID: ", joystick, " Disconnected!");
+				TRAP_DEBUG("[Input][Gamepad] ID: ", joystick, " Disconnected!");
 
 			s_controllerStatuses[joystick] = { false, false };
 		}

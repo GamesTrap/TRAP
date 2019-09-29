@@ -17,7 +17,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 {
 	if(name.empty())
 	{
-		TP_WARN("[Shader] Name is empty! Using Filename as Shader Name!");
+		TRAP_WARN("[Shader] Name is empty! Using Filename as Shader Name!");
 		return CreateFromFile(filePath);
 	}
 	
@@ -30,11 +30,11 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	}
 
 	if (!filePath.empty() && source.empty())
-		TP_ERROR("[Shader] Shader: \"", name, "\" couldn't load Shader!");
+		TRAP_ERROR("[Shader] Shader: \"", name, "\" couldn't load Shader!");
 
 	if (source.empty())
 	{
-		TP_WARN("[Shader] Shader: \"", name, "\" using fallback Shader: \"Passthrough\"");
+		TRAP_WARN("[Shader] Shader: \"", name, "\" using fallback Shader: \"Passthrough\"");
 		return nullptr;
 	}
 
@@ -83,11 +83,11 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	}
 
 	if (!filePath.empty() && source.empty())
-		TP_ERROR("[Shader] Shader couldn't load Shader!");
+		TRAP_ERROR("[Shader] Shader couldn't load Shader!");
 
 	if (source.empty())
 	{
-		TP_WARN("[Shader] Shader using fallback Shader: \"Passthrough\"");
+		TRAP_WARN("[Shader] Shader using fallback Shader: \"Passthrough\"");
 		return nullptr;
 	}
 

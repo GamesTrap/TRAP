@@ -31,25 +31,25 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 	switch (GetRenderAPI())
 	{
 	case RenderAPI::OpenGL:
-		TP_INFO("[Context][OpenGL] Initializing Context");
+		TRAP_INFO("[Context][OpenGL] Initializing Context");
 		s_Context = MakeScope<OpenGLContext>(window);
 		break;
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	case RenderAPI::D3D12:
-		TP_INFO("[Context][D3D12] Initializing Context");
+		TRAP_INFO("[Context][D3D12] Initializing Context");
 		s_Context = MakeScope<D3D12Context>(window);
 		break;
 #endif
 
 	case RenderAPI::Vulkan:
-		TP_INFO("[Context][Vulkan] Initializing Context");
+		TRAP_INFO("[Context][Vulkan] Initializing Context");
 		s_Context = MakeScope<VulkanContext>(window);
 		break;
 
 	default:
 		//This should never be reached.
-		TP_CRITICAL("[Engine] Unsupported Device!");
+		TRAP_CRITICAL("[Engine] Unsupported Device!");
 		Show("Device is unsupported!\nNo RenderAPI selected!", "Unsupported Device", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
 		exit(-1);
 	}
@@ -59,7 +59,7 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 
 void TRAP::Graphics::API::Context::AutoSelectRenderAPI()
 {
-	TP_INFO("[Context] Auto selecting RenderAPI");
+	TRAP_INFO("[Context] Auto selecting RenderAPI");
 #ifdef TRAP_PLATFORM_WINDOWS
 	if (s_isD3D12Capable)
 	{
@@ -67,7 +67,7 @@ void TRAP::Graphics::API::Context::AutoSelectRenderAPI()
 		return;
 	}
 
-	TP_DEBUG("[Context][D3D12] Device isn't D3D12 capable!");
+	TRAP_DEBUG("[Context][D3D12] Device isn't D3D12 capable!");
 #endif
 
 	//Check if Vulkan capable
@@ -76,7 +76,7 @@ void TRAP::Graphics::API::Context::AutoSelectRenderAPI()
 		SetRenderAPI(RenderAPI::Vulkan);
 		return;
 	}
-	TP_DEBUG("[Context][Vulkan] Device isn't Vulkan 1.1 capable!");
+	TRAP_DEBUG("[Context][Vulkan] Device isn't Vulkan 1.1 capable!");
 
 
 	if (s_isOpenGLCapable)
@@ -84,7 +84,7 @@ void TRAP::Graphics::API::Context::AutoSelectRenderAPI()
 		SetRenderAPI(RenderAPI::OpenGL);
 		return;
 	}
-	TP_DEBUG("[Context][OpenGL] Device isn't OpenGL 4.6 capable!");
+	TRAP_DEBUG("[Context][OpenGL] Device isn't OpenGL 4.6 capable!");
 
 	SetRenderAPI(RenderAPI::NONE);
 }
@@ -124,13 +124,13 @@ void TRAP::Graphics::API::Context::SwitchRenderAPI(const RenderAPI api)
 		{
 			if (s_isD3D12Capable)
 			{
-				TP_WARN("[Context] Switching RenderAPI to D3D12");
+				TRAP_WARN("[Context] Switching RenderAPI to D3D12");
 				s_newRenderAPI = RenderAPI::D3D12;
 
 				return;
 			}
 
-			TP_ERROR("[Context][D3D12] This device doesn't support D3D12!");
+			TRAP_ERROR("[Context][D3D12] This device doesn't support D3D12!");
 			if (s_isVulkanCapable)
 			{
 				SwitchRenderAPI(RenderAPI::Vulkan);
@@ -150,13 +150,13 @@ void TRAP::Graphics::API::Context::SwitchRenderAPI(const RenderAPI api)
 		{
 			if (s_isVulkanCapable)
 			{
-				TP_WARN("[Context] Switching RenderAPI to Vulkan 1.1");
+				TRAP_WARN("[Context] Switching RenderAPI to Vulkan 1.1");
 				s_newRenderAPI = RenderAPI::Vulkan;
 
 				return;
 			}
 
-			TP_ERROR("[Context][Vulkan] This device doesn't support Vulkan 1.1!");
+			TRAP_ERROR("[Context][Vulkan] This device doesn't support Vulkan 1.1!");
 			if (s_isD3D12Capable)
 			{
 				SwitchRenderAPI(RenderAPI::D3D12);
@@ -176,13 +176,13 @@ void TRAP::Graphics::API::Context::SwitchRenderAPI(const RenderAPI api)
 		{
 			if (s_isOpenGLCapable)
 			{
-				TP_WARN("[Context] Switching RenderAPI to OpenGL 4.6");
+				TRAP_WARN("[Context] Switching RenderAPI to OpenGL 4.6");
 				s_newRenderAPI = RenderAPI::OpenGL;
 
 				return;
 			}
 
-			TP_ERROR("[Context][OpenGL] This device doesn't support OpenGL 4.6!");
+			TRAP_ERROR("[Context][OpenGL] This device doesn't support OpenGL 4.6!");
 			if (s_isD3D12Capable)
 			{
 				SwitchRenderAPI(RenderAPI::D3D12);

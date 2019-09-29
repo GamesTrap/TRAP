@@ -39,7 +39,7 @@ namespace TRAP::Graphics
 		case ShaderDataType::Bool:   return 1;
 
 		default:
-			TP_CORE_ASSERT(false, "[BufferLayout] Unknown ShaderDataType!");
+			TRAP_CORE_ASSERT(false, "[BufferLayout] Unknown ShaderDataType!");
 			return 0;
 		}
 	}

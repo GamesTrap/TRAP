@@ -30,7 +30,7 @@ std::vector<TRAP::Window*> TRAP::Window::s_fullscreenWindows{};
 
 static void GLFWErrorCallback(const int32_t error, const char *description)
 {
-	TP_ERROR("[Window][GLFW] (", error, "): ", description);
+	TRAP_ERROR("[Window][GLFW] (", error, "): ", description);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -67,7 +67,7 @@ TRAP::Window::Window(const WindowProps &props)
 	else
 		init += "Disabled";
 	
-	TP_INFO(init);
+	TRAP_INFO(init);
 	Init(props);
 }
 
@@ -87,7 +87,7 @@ TRAP::Window::~Window()
 		Graphics::API::RendererAPI::Shutdown();
 		Graphics::API::Context::Shutdown();
 	}	
-	TP_DEBUG("[Window] Destroying Window: \"", m_data.Title, "\"");
+	TRAP_DEBUG("[Window] Destroying Window: \"", m_data.Title, "\"");
 	Shutdown();
 }
 
@@ -141,8 +141,8 @@ std::unordered_map<uint32_t, std::string> TRAP::Window::GetMonitorNames()
 
 	std::unordered_map<uint32_t, std::string> result;
 	
-	for(uint32_t i = 0; i < monitorCount; i++)
-		result.try_emplace(i, glfwGetMonitorName(monitors[i]));
+	for (uint32_t i = 0; i < monitorCount; i++)
+		result.emplace(i, glfwGetMonitorName(monitors[i]));
 
 	return result;
 }
@@ -238,12 +238,12 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w39a2]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][19w39a3]" + std::string(Graphics::Renderer::GetTitle());
 	glfwSetWindowTitle(m_window, newTitle.c_str());
 #else
 	glfwSetWindowTitle(m_window, m_data.Title.c_str());
 #endif
-	TP_DEBUG("[Window] \"", oldTitle, "\" Set Title: \"", m_data.Title, "\"");
+	TRAP_DEBUG("[Window] \"", oldTitle, "\" Set Title: \"", m_data.Title, "\"");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -271,7 +271,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 	{
 		if(s_fullscreenWindows[m_data.Monitor])
 		{
-			TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Borderless because Monitor: ", m_data.Monitor,
+			TRAP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Borderless because Monitor: ", m_data.Monitor,
 			         '(', glfwGetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
 			return;
 		}
@@ -282,7 +282,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 		height = m_baseVideoMode.height;
 		refreshRate = m_baseVideoMode.refreshRate;
 		monitor = m_useMonitor;
-		TP_DEBUG("[Window] \"", m_data.Title, "\" Using Monitor: ", m_data.Monitor, '(', glfwGetMonitorName(monitor), ')');
+		TRAP_DEBUG("[Window] \"", m_data.Title, "\" Using Monitor: ", m_data.Monitor, '(', glfwGetMonitorName(monitor), ')');
 	}
 	else if (mode == DisplayMode::Windowed && (width == 0 || height == 0 || refreshRate == 0))
 	{
@@ -295,7 +295,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 	{
 		if (s_fullscreenWindows[m_data.Monitor])
 		{
-			TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Fullscreen because Monitor: ", m_data.Monitor,
+			TRAP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Fullscreen because Monitor: ", m_data.Monitor,
 				'(', glfwGetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
 			return;
 		}
@@ -326,7 +326,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 			refreshRate = monitorVideoModes[monitorVideoModesCount - 1].refreshRate;
 		}
 
-		TP_DEBUG("[Window] \"", m_data.Title, "\" Using Monitor: ", m_data.Monitor, '(', glfwGetMonitorName(monitor), ')');
+		TRAP_DEBUG("[Window] \"", m_data.Title, "\" Using Monitor: ", m_data.Monitor, '(', glfwGetMonitorName(monitor), ')');
 	}
 
 	//Update stored width and height
@@ -346,7 +346,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 			return "Windowed";
 		return displayMode == DisplayMode::Borderless ? "Borderless" : "Fullscreen";
 	}; //Little hack to convert enum class DisplayMode to string
-	TP_INFO("[Window] \"", m_data.Title, "\" Changing window mode from ",
+	TRAP_INFO("[Window] \"", m_data.Title, "\" Changing window mode from ",
 		GetModeStr(m_data.displayMode), " to ", GetModeStr(mode), ": ",
 		width, 'x', height, '@', refreshRate, "Hz");
 
@@ -370,14 +370,14 @@ void TRAP::Window::SetMonitor(const uint32_t monitor)
 	const auto monitors = glfwGetMonitors(&monitorCount);
 	if (monitor <= static_cast<uint32_t>(monitorCount))
 	{
-		TP_DEBUG("[Window] \"", m_data.Title, "\" Set Monitor: ", monitor, " Name: ", glfwGetMonitorName(monitors[monitor]));
+		TRAP_DEBUG("[Window] \"", m_data.Title, "\" Set Monitor: ", monitor, " Name: ", glfwGetMonitorName(monitors[monitor]));
 		m_data.Monitor = monitor;
 		m_useMonitor = monitors[monitor];
 	}
 	else
 	{
-		TP_ERROR("[Window] \"", m_data.Title, "\" Invalid Monitor!");
-		TP_WARN("[Window] \"", m_data.Title, "\" Using Primary Monitor!");
+		TRAP_ERROR("[Window] \"", m_data.Title, "\" Invalid Monitor!");
+		TRAP_WARN("[Window] \"", m_data.Title, "\" Using Primary Monitor!");
 		m_data.Monitor = 0;
 		m_useMonitor = glfwGetPrimaryMonitor();
 	}
@@ -397,19 +397,19 @@ void TRAP::Window::SetCursorMode(const CursorMode& mode)
 {
 	if (mode == CursorMode::Normal)
 	{
-		TP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Normal");
+		TRAP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Normal");
 		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		m_data.cursorMode = mode;
 	}
 	else if (mode == CursorMode::Hidden)
 	{
-		TP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Hidden");
+		TRAP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Hidden");
 		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		m_data.cursorMode = mode;
 	}
 	else if (mode == CursorMode::Disabled)
 	{
-		TP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Disabled");
+		TRAP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Disabled");
 		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		m_data.cursorMode = mode;
 	}
@@ -423,11 +423,11 @@ void TRAP::Window::SetRawMouseInput(const bool enabled)
 	{
 		m_data.rawMouseInput = enabled;
 		glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, enabled);
-		TP_DEBUG("[Window] \"", m_data.Title, "\" Raw Mouse Input ", enabled ? "Enabled" : "Disabled");
+		TRAP_DEBUG("[Window] \"", m_data.Title, "\" Raw Mouse Input ", enabled ? "Enabled" : "Disabled");
 	}
 	else
 	{
-		TP_ERROR("[Window] \"", m_data.Title, "\" Raw Mouse Input is unsupported!");
+		TRAP_ERROR("[Window] \"", m_data.Title, "\" Raw Mouse Input is unsupported!");
 		m_data.rawMouseInput = false;
 	}
 }
@@ -451,8 +451,8 @@ void TRAP::Window::SetIcon(const Scope<Image>& image) const
 	}
 	if (image->IsHDR())
 	{
-		TP_ERROR("[Window][Icon] \"", m_data.Title, "\" HDR is not supported for window icons!");
-		TP_WARN("[Window][Icon] \"", m_data.Title, "\" Using Default Icon!");
+		TRAP_ERROR("[Window][Icon] \"", m_data.Title, "\" HDR is not supported for window icons!");
+		TRAP_WARN("[Window][Icon] \"", m_data.Title, "\" Using Default Icon!");
 		SetIcon();
 		return;
 	}
@@ -461,15 +461,15 @@ void TRAP::Window::SetIcon(const Scope<Image>& image) const
 		(image->IsImageColored() && image->GetBitsPerPixel() == 48 && !image->HasAlphaChannel()) ||
 		(image->IsImageColored() && image->GetBitsPerPixel() == 64 && image->HasAlphaChannel()))
 	{
-		TP_ERROR("[Window][Icon] \"", m_data.Title, "\" Images with short pixel data are not supported for window icons!");
-		TP_WARN("[Window][Icon] \"", m_data.Title, "\" Using Default Icon!");
+		TRAP_ERROR("[Window][Icon] \"", m_data.Title, "\" Images with short pixel data are not supported for window icons!");
+		TRAP_WARN("[Window][Icon] \"", m_data.Title, "\" Using Default Icon!");
 		SetIcon();
 		return;
 	}
 	if (image->GetFormat() != ImageFormat::RGBA)
 	{
-		TP_ERROR("[Window][Icon] \"", m_data.Title, "\" Only RGBA Images are supported for window icons!");
-		TP_WARN("[Window][Icon] \"", m_data.Title, "\" Using Default Icon!");
+		TRAP_ERROR("[Window][Icon] \"", m_data.Title, "\" Only RGBA Images are supported for window icons!");
+		TRAP_WARN("[Window][Icon] \"", m_data.Title, "\" Using Default Icon!");
 		SetIcon();
 		return;
 	}
@@ -502,7 +502,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	{
 		glfwInitHint(GLFW_JOYSTICK_HAT_BUTTONS, false);
 		const int32_t success = glfwInit();
-		TP_CORE_ASSERT(success, "Could not initialize GLFW!");
+		TRAP_CORE_ASSERT(success, "Could not initialize GLFW!");
 		glfwSetErrorCallback(GLFWErrorCallback);
 		s_GLFWInitialized = true;
 
@@ -522,14 +522,14 @@ void TRAP::Window::Init(const WindowProps& props)
 		m_useMonitor = monitors[props.Monitor];
 	else
 	{
-		TP_ERROR("[Window] \"", m_data.Title, "\" Invalid Monitor!");
-		TP_WARN("[Window] \"", m_data.Title, "\" Using Primary Monitor!");
+		TRAP_ERROR("[Window] \"", m_data.Title, "\" Invalid Monitor!");
+		TRAP_WARN("[Window] \"", m_data.Title, "\" Using Primary Monitor!");
 		m_data.Monitor = 0;
 		m_useMonitor = glfwGetPrimaryMonitor();
 	}
 
 	m_baseVideoMode = *(glfwGetVideoMode(m_useMonitor));
-	TP_DEBUG("[Window] Storing underlying OS video mode: ",
+	TRAP_DEBUG("[Window] Storing underlying OS video mode: ",
 		m_baseVideoMode.width, 'x', m_baseVideoMode.height, '@', m_baseVideoMode.refreshRate, "Hz (R",
 		m_baseVideoMode.redBits, 'G', m_baseVideoMode.greenBits, 'B', m_baseVideoMode.blueBits, ')');
 
@@ -577,7 +577,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w39a2]";
+		"[INDEV][19w39a3]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif
@@ -590,7 +590,7 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	if (!m_window)
 	{
-		TP_CRITICAL("[Window] Failed to create window");
+		TRAP_CRITICAL("[Window] Failed to create window");
 		Show("Failed to create Window!", "Failed to Create Window", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
 		exit(-1);
 	}
@@ -637,9 +637,9 @@ void TRAP::Window::Init(const WindowProps& props)
 		{
 			if (s_fullscreenWindows[m_data.Monitor])
 			{
-				TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Borderless because Monitor: ", m_data.Monitor,
+				TRAP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Borderless because Monitor: ", m_data.Monitor,
 					'(', glfwGetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
-				TP_WARN("[Window] \"", m_data.Title, "\" is now using DisplayMode Windowed!");
+				TRAP_WARN("[Window] \"", m_data.Title, "\" is now using DisplayMode Windowed!");
 				m_data.displayMode = DisplayMode::Windowed;
 				if (width == 0 || height == 0 || refreshRate == 0)
 				{
@@ -676,9 +676,9 @@ void TRAP::Window::Init(const WindowProps& props)
 		{
 			if (s_fullscreenWindows[m_data.Monitor])
 			{
-				TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Fullscreen because Monitor: ", m_data.Monitor,
+				TRAP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Fullscreen because Monitor: ", m_data.Monitor,
 					'(', glfwGetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
-				TP_WARN("[Window] \"", m_data.Title, "\" is now using DisplayMode Windowed!");
+				TRAP_WARN("[Window] \"", m_data.Title, "\" is now using DisplayMode Windowed!");
 				m_data.displayMode = DisplayMode::Windowed;
 				if(width == 0 || height == 0 || refreshRate == 0)
 				{
@@ -763,7 +763,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, m_data.rawMouseInput);
 	else
 	{
-		TP_ERROR("[Window] \"", m_data.Title, "\" Raw Mouse Input is unsupported!");
+		TRAP_ERROR("[Window] \"", m_data.Title, "\" Raw Mouse Input is unsupported!");
 		m_data.rawMouseInput = false;
 	}
 

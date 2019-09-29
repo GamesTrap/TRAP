@@ -24,7 +24,7 @@ inline bool TRAP::Graphics::API::OpenGLLogCall(const char* function, const char*
 {
 	while (const GLenum error = glGetError())
 	{
-		TP_ERROR("[Renderer][OpenGL] ", error, ": ", function, " @[", file, ':', line, ']');
+		TRAP_ERROR("[Renderer][OpenGL] ", error, ": ", function, " @[", file, ':', line, ']');
 
 		return false;
 	}
@@ -67,7 +67,7 @@ namespace TRAP::Graphics::API
 		case ShaderDataType::Bool:     return GL_BOOL;
 
 		default:
-			TP_CORE_ASSERT(false, "Unknown ShaderDataType!");
+			TRAP_CORE_ASSERT(false, "Unknown ShaderDataType!");
 			return 0;
 		}
 	}

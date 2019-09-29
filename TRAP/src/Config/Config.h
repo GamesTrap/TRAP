@@ -57,7 +57,7 @@ namespace TRAP::Utils
 template<typename T>
 std::string TRAP::Utils::Config::ConvertToString(T value) const
 {
-	TP_ERROR("[Config] Unsupported type supplied, either change types, or write a correct conversion function for the template type.");
+	TRAP_ERROR("[Config] Unsupported type supplied, either change types, or write a correct conversion function for the template type.");
 	throw "[Config] Unsupported type supplied, either change types, or write a correct conversion function for the template type.";
 }
 
@@ -209,7 +209,7 @@ inline std::string TRAP::Utils::Config::ConvertToString<TRAP::Graphics::API::Ren
 template<typename T>
 T TRAP::Utils::Config::ConvertToType(const std::string& input) const
 {
-	TP_ERROR("[Config] Unconvertable type encountered, please use a different type, or define the handle case in Config.h");
+	TRAP_ERROR("[Config] Unconvertable type encountered, please use a different type, or define the handle case in Config.h");
 	throw "[Config] Unconvertable type encountered, please use a different type, or define the handle case in Config.h";
 }
 

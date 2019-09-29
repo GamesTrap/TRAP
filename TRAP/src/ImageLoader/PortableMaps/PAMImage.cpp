@@ -8,13 +8,13 @@
 TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_isImageGrayScale(false), m_isImageColored(false), m_hasAlphaChannel(false), m_width(0), m_height(0), m_format(ImageFormat::NONE)
 {
-	TP_DEBUG("[Image][PAM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
+	TRAP_DEBUG("[Image][PAM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
 	if (!VFS::Get()->SilentResolveReadPhysicalPath(m_filepath, physicalPath))
 	{
-		TP_ERROR("[Image][PAM] Couldn't resolve FilePath: ", m_filepath, "!");
-		TP_WARN("[Image][PAM] Using Default Image!");
+		TRAP_ERROR("[Image][PAM] Couldn't resolve FilePath: ", m_filepath, "!");
+		TRAP_WARN("[Image][PAM] Using Default Image!");
 		return;
 	}
 
@@ -23,8 +23,8 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 		std::ifstream file(physicalPath, std::ios::binary);
 		if (!file.is_open())
 		{
-			TP_ERROR("[Image][PAM] Couldn't open FilePath: ", m_filepath, "!");
-			TP_WARN("[Image][PAM] Using Default Image!");
+			TRAP_ERROR("[Image][PAM] Couldn't open FilePath: ", m_filepath, "!");
+			TRAP_WARN("[Image][PAM] Using Default Image!");
 			return;
 		}
 
@@ -44,36 +44,36 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 		if (header.MagicNumber != "P7")
 		{
 			file.close();
-			TP_ERROR("[Image][PAM] Invalid Magic Number!");
-			TP_WARN("[Image][PAM] Using Default Image!");
+			TRAP_ERROR("[Image][PAM] Invalid Magic Number!");
+			TRAP_WARN("[Image][PAM] Using Default Image!");
 			return;
 		}
 		if (header.Width < 1)
 		{
 			file.close();
-			TP_ERROR("[Image][PAM] Width is < 1!");
-			TP_WARN("[Image][PAM] Using Default Image!");
+			TRAP_ERROR("[Image][PAM] Width is < 1!");
+			TRAP_WARN("[Image][PAM] Using Default Image!");
 			return;
 		}
 		if (header.Height < 1)
 		{
 			file.close();
-			TP_ERROR("[Image][PAM] Height is < 1!");
-			TP_WARN("[Image][PAM] Using Default Image!");
+			TRAP_ERROR("[Image][PAM] Height is < 1!");
+			TRAP_WARN("[Image][PAM] Using Default Image!");
 			return;
 		}
 		if (header.MaxValue < 1 || header.MaxValue > 65535)
 		{
 			file.close();
-			TP_ERROR("[Image][PAM] MaxValue is unsupported/invalid!");
-			TP_WARN("[Image][PAM] Using Default Image!");
+			TRAP_ERROR("[Image][PAM] MaxValue is unsupported/invalid!");
+			TRAP_WARN("[Image][PAM] Using Default Image!");
 			return;
 		}
 		if (!(header.TuplType == "GRAYSCALE" || header.TuplType == "RGB" || header.TuplType == "GRAYSCALE_ALPHA" || header.TuplType == "RGB_ALPHA"))
 		{
 			file.close();
-			TP_ERROR("[Image][PAM] TuplType is unsupported or invalid!");
-			TP_WARN("[Image][PAM] Using Default Image!");
+			TRAP_ERROR("[Image][PAM] TuplType is unsupported or invalid!");
+			TRAP_WARN("[Image][PAM] Using Default Image!");
 			return;
 		}
 
@@ -118,8 +118,8 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 			{
 				file.close();
 				m_data2Byte.clear();
-				TP_ERROR("[Image][PAM] Couldn't load pixel data!");
-				TP_WARN("[Image][PAM] Using Default Image!");
+				TRAP_ERROR("[Image][PAM] Couldn't load pixel data!");
+				TRAP_WARN("[Image][PAM] Using Default Image!");
 				return;
 			}
 		}
@@ -161,8 +161,8 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 			{
 				file.close();
 				m_data.clear();
-				TP_ERROR("[Image][PAM] Couldn't load pixel data!");
-				TP_WARN("[Image][PAM] Using Default Image!");
+				TRAP_ERROR("[Image][PAM] Couldn't load pixel data!");
+				TRAP_WARN("[Image][PAM] Using Default Image!");
 				return;
 			}
 		}

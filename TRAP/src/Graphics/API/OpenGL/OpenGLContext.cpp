@@ -2,6 +2,7 @@
 #include "OpenGLContext.h"
 
 #include "Window/Window.h"
+#include "OpenGLCommon.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -15,7 +16,7 @@ TRAP::Graphics::API::OpenGLContext::OpenGLContext(Window* window)
 
 	if (!s_IsGladInitialized)
 	{
-		TP_RENDERER_ASSERT(gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)), "Could not initialize GLAD");
+		TRAP_RENDERER_ASSERT(gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)), "Could not initialize GLAD");
 		s_IsGladInitialized = true;
 	}
 }
@@ -24,7 +25,7 @@ TRAP::Graphics::API::OpenGLContext::OpenGLContext(Window* window)
 
 TRAP::Graphics::API::OpenGLContext::~OpenGLContext()
 {
-	TP_DEBUG("[Context][OpenGL] Destroying Context");
+	TRAP_DEBUG("[Context][OpenGL] Destroying Context");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -68,7 +69,7 @@ bool TRAP::Graphics::API::OpenGLContext::IsOpenGLCapable()
 
 	glfwMakeContextCurrent(OpenGLTestWindow);
 
-	//CHeck if OpenGL can be loaded
+	//Check if OpenGL can be loaded
 	if (!s_IsGladInitialized)
 	{
 		if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
@@ -78,6 +79,8 @@ bool TRAP::Graphics::API::OpenGLContext::IsOpenGLCapable()
 
 	//Check if OpenGL Version is higher or equal to 4.6
 	const bool isOpenGLCapable = GLVersion.major >= 4 && GLVersion.minor >= 6;
+
+	//Now destroy the test window
 	glfwDestroyWindow(OpenGLTestWindow);
 	glfwMakeContextCurrent(nullptr);
 

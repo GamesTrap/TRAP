@@ -13,7 +13,7 @@ namespace TRAP::Graphics
 	class OrthographicCameraController
 	{
 	public:
-		explicit OrthographicCameraController(float aspectRatio, bool useController = false, Input::Controller controller = Input::Controller::One, bool rotation = false, const std::unique_ptr<Window>& window = Application::GetWindow());
+		explicit OrthographicCameraController(float aspectRatio, bool rotation = false, bool useController = false, Input::Controller controller = Input::Controller::One, const std::unique_ptr<Window>& window = Application::GetWindow());
 
 		void OnUpdate(Utils::TimeStep deltaTime);
 		void OnEvent(Event& e);

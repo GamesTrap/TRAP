@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _GAMESTRAP_SANDBOXLAYER_H_
+#define _GAMESTRAP_SANDBOXLAYER_H_
 
 #include <TRAP.h>
 
@@ -34,15 +35,15 @@ public:
 
 	void OnAttach() override
 	{
+		//Mount & Load Shaders
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Texture.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColor.shader");
 
-		//EXPERIMENTAL
+		//Mount & Load Textures
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
 		TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.tga");
-		//////////////
 
 		///////////////
 		//    Quad   //
@@ -155,9 +156,9 @@ public:
 		}
 		if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 		{
-			TP_INFO("[Sandbox] DrawCall(s): ", TRAP::Graphics::Renderer::GetDrawCalls());
-			TP_INFO("[Sandbox] FPS: ", TRAP::Graphics::Renderer::GetFPS());
-			TP_INFO("[Sandbox] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
+			TRAP_INFO("[Sandbox] DrawCall(s): ", TRAP::Graphics::Renderer::GetDrawCalls());
+			TRAP_INFO("[Sandbox] FPS: ", TRAP::Graphics::Renderer::GetFPS());
+			TRAP_INFO("[Sandbox] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
 			m_fpsTimer.Reset();
 		}
 	}
@@ -207,7 +208,7 @@ public:
 		m_cameraController.OnEvent(event);
 		
 		TRAP::EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<TRAP::KeyPressedEvent>(TP_BIND_EVENT_FN(SandboxLayer::OnKeyPressed));
+		dispatcher.Dispatch<TRAP::KeyPressedEvent>(TRAP_BIND_EVENT_FN(SandboxLayer::OnKeyPressed));
 	}
 
 private:
@@ -228,3 +229,5 @@ private:
 		float Time{};
 	};
 };
+
+#endif /*_GAMESTRAP_SANDBOXLAYER_H_*/

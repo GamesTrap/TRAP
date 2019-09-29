@@ -25,7 +25,7 @@
 		#error "Unknown Apple platform!"
 	#endif
 
-	//We also have to check __ANDROID__ before __linux__ sine android is based on the linux kernel it has __linux__ defined
+	//We also have to check __ANDROID__ before __linux__ since android is based on the linux kernel it has __linux__ defined
 #elif defined(__ANDROID__)
 	#error "Android is unsupported!" //Maybe in the future
 #elif defined(__linux__)
@@ -64,67 +64,69 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 39);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 40);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#ifdef TRAP_PLATFORM_WINDOWS
-inline void TP_DEBUG_BREAK()
-{
-	__debugbreak();
-}
-#elif defined(TRAP_PLATFORM_LINUX)
-#include <signal.h>
-inline void TP_DEBUG_BREAK()
-{
-	raise(SIGTRAP);
-}
-#else
-constexpr void TP_DEBUG_BREAK()
-{
-}
+#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
+	#ifdef TRAP_PLATFORM_WINDOWS
+		inline void TRAP_DEBUG_BREAK()
+		{
+			__debugbreak();
+		}
+	#elif defined(TRAP_PLATFORM_LINUX)
+		#include <signal.h>
+		inline void TRAP_DEBUG_BREAK()
+		{
+			raise(SIGTRAP);
+		}
+	#else
+		constexpr void TRAP_DEBUG_BREAK()
+		{
+		}
+	#endif
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
-#define TP_ENABLE_ASSERTS
+	#define TRAP_ENABLE_ASSERTS
 #endif
 
 #include "Log/Log.h"
 
-#ifdef TP_ENABLE_ASSERTS
+#ifdef TRAP_ENABLE_ASSERTS
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#define TP_ASSERT(x, ...)                                                                     \
+#define TRAP_ASSERT(x, ...)                                                                     \
 	{                                                                                         \
 		if (!(x))                                                                             \
 		{                                                                                     \
-			TP_ERROR("Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
-			TP_DEBUG_BREAK();                                                                 \
+			TRAP_ERROR("Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
+			TRAP_DEBUG_BREAK();                                                                 \
 		}                                                                                     \
 	}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#define TP_CORE_ASSERT(x, ...)                                                                       \
+#define TRAP_CORE_ASSERT(x, ...)                                                                       \
 	{                                                                                                \
 		if (!(x))                                                                                    \
 		{                                                                                            \
-			TP_ERROR("[Core] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
-			TP_DEBUG_BREAK();                                                                        \
+			TRAP_ERROR("[Core] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
+			TRAP_DEBUG_BREAK();                                                                        \
 		}                                                                                            \
 	}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#define TP_RENDERER_ASSERT(x, ...)                                                                       \
+#define TRAP_RENDERER_ASSERT(x, ...)                                                                       \
 	{                                                                                                    \
 		if (!(x))                                                                                        \
 		{                                                                                                \
-			TP_ERROR("[Renderer] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
-			TP_DEBUG_BREAK();                                                                            \
+			TRAP_ERROR("[Renderer] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
+			TRAP_DEBUG_BREAK();                                                                            \
 		}                                                                                                \
 	}
 
@@ -132,21 +134,21 @@ constexpr void TP_DEBUG_BREAK()
 
 #else
 template <typename T, typename... Args>
-constexpr void TP_ASSERT(T x, const Args &... args)
+constexpr void TRAP_ASSERT(T x, const Args &... args)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T, typename... Args>
-constexpr void TP_CORE_ASSERT(T x, const Args &... args)
+constexpr void TRAP_CORE_ASSERT(T x, const Args &... args)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T, typename... Args>
-constexpr void TP_RENDERER_ASSERT(T x, const Args &... args)
+constexpr void TRAP_RENDERER_ASSERT(T x, const Args &... args)
 {
 }
 #endif
@@ -161,7 +163,7 @@ constexpr T BIT(T x)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#define TP_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+#define TRAP_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
 namespace TRAP
 {

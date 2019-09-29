@@ -4,7 +4,7 @@
 TRAP::Graphics::API::VulkanIndexBuffer::VulkanIndexBuffer(uint32_t* indices, const uint32_t size)
 	: m_count(size)
 {
-	TP_WARN("[IndexBuffer][Vulkan] WIP");
+	TRAP_WARN("[IndexBuffer][Vulkan] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

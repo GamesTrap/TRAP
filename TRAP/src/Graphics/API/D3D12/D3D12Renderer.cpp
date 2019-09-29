@@ -16,7 +16,7 @@ TRAP::Graphics::API::D3D12Renderer::D3D12Renderer()
 
 TRAP::Graphics::API::D3D12Renderer::~D3D12Renderer()
 {
-	TP_DEBUG("[Renderer][D3D12] Destroying Renderer");
+	TRAP_DEBUG("[Renderer][D3D12] Destroying Renderer");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -27,11 +27,11 @@ void TRAP::Graphics::API::D3D12Renderer::InitInternal()
 	SetBlendFunction(RendererBlendFunction::Source_Alpha, RendererBlendFunction::One_Minus_Source_Alpha);
 	SetBlend(true);
 
-	TP_INFO("[Renderer][D3D12] ----------------------------------");
-	TP_INFO("[Renderer][D3D12] DirectX 12.1(D3D12):");
-	TP_CRITICAL("[Renderer][D3D12] NOT IMPLEMENTED WIP");
+	TRAP_INFO("[Renderer][D3D12] ----------------------------------");
+	TRAP_INFO("[Renderer][D3D12] DirectX 12.1(D3D12):");
+	TRAP_CRITICAL("[Renderer][D3D12] NOT IMPLEMENTED WIP");
 	//Device, etc...
-	TP_INFO("[Renderer][D3D12] ----------------------------------");
+	TRAP_INFO("[Renderer][D3D12] ----------------------------------");
 
 	//Create Device
 	m_rendererTitle = "[DirectX 12.1]";

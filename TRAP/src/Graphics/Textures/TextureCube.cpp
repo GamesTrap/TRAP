@@ -18,7 +18,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 {
 	if(name.empty())
 	{
-		TP_ERROR("[TextureCube] Invalid Name!");
+		TRAP_ERROR("[TextureCube] Invalid Name!");
 		return nullptr;
 	}
 	
@@ -46,7 +46,7 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 {
 	if(name.empty())
 	{
-		TP_WARN("[TextureCube] Name is empty! Using Filename as TextureCube Name!");
+		TRAP_WARN("[TextureCube] Name is empty! Using Filename as TextureCube Name!");
 		return CreateFromCross(filepath, format, parameters);
 	}
 	

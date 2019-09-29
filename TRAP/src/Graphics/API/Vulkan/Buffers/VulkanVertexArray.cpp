@@ -3,7 +3,7 @@
 
 TRAP::Graphics::API::VulkanVertexArray::VulkanVertexArray()
 {
-	TP_WARN("[VertexArray][Vulkan] WIP");
+	TRAP_WARN("[VertexArray][Vulkan] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

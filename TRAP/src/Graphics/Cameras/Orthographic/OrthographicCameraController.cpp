@@ -5,9 +5,9 @@
 
 TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(
 	const float aspectRatio,
+	const bool rotation,
 	const bool useController,
 	const Input::Controller controller,
-	const bool rotation,
 	const std::unique_ptr<Window>& window)
 	: m_aspectRatio(aspectRatio),
 	  m_camera(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel, -1.0f, 1.0f),
@@ -16,7 +16,7 @@ TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(
 	  m_controller(controller),
 	  m_window(window)
 {
-	TP_CORE_ASSERT(m_window.get(), "[OrthographicCameraController] Window is nullptr!");
+	TRAP_CORE_ASSERT(m_window.get(), "[OrthographicCameraController] Window is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -101,8 +101,8 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 void TRAP::Graphics::OrthographicCameraController::OnEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<MouseScrolledEvent>(TP_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
-	dispatcher.Dispatch<WindowResizeEvent>(TP_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
+	dispatcher.Dispatch<MouseScrolledEvent>(TRAP_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
+	dispatcher.Dispatch<WindowResizeEvent>(TRAP_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

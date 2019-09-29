@@ -97,7 +97,7 @@ void TRAP::Graphics::TextureManager::Add(Scope<Texture> texture)
 		if (!Exists(texture->GetName()))
 			s_Textures[texture->GetName()] = std::move(texture);
 		else
-			TP_ERROR("[TextureManager] Texture with Name: ", texture->GetName(), " already exists!");
+			TRAP_ERROR("[TextureManager] Texture with Name: ", texture->GetName(), " already exists!");
 	}
 }
 
@@ -148,7 +148,7 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 			const std::string filePath = s_Textures[nameOrVirtualPath]->GetImage()->GetFilePath();
 			if (filePath.empty())
 			{
-				TP_WARN("[TextureManager] Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
+				TRAP_WARN("[TextureManager] Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
 				return;
 			}
 
@@ -160,7 +160,7 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 			{
 				s_Textures[nameOrVirtualPath].reset();
 				s_Textures[nameOrVirtualPath] = Texture2D::CreateFromFile(name, filePath, textureParameters);
-				TP_INFO("[TextureManager][Texture2D] Reloaded: \"", nameOrVirtualPath, "\"");
+				TRAP_INFO("[TextureManager][Texture2D] Reloaded: \"", nameOrVirtualPath, "\"");
 			}
 			else if (textureType == TextureType::TextureCube)
 			{
@@ -178,15 +178,15 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 					else
 						s_Textures[nameOrVirtualPath] = TextureCube::CreateFromFiles(name, filePaths, textureParameters);
 
-					TP_INFO("[TextureManager][TextureCube] Reloaded: \"", nameOrVirtualPath, "\"");
+					TRAP_INFO("[TextureManager][TextureCube] Reloaded: \"", nameOrVirtualPath, "\"");
 				}
 			}
 			else
 				//Shouldn't be reached
-				TP_WARN("[TextureManager] Unknown TextureType: \"", nameOrVirtualPath, "\"");
+				TRAP_WARN("[TextureManager] Unknown TextureType: \"", nameOrVirtualPath, "\"");
 		}
 		else
-			TP_WARN("[TextureManager] Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
+			TRAP_WARN("[TextureManager] Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
 	}
 	else //Virtual Path
 	{
@@ -208,7 +208,7 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 							return;
 						}
 		
-		TP_WARN("[TextureManager] Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
+		TRAP_WARN("[TextureManager] Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
 	}
 }
 
@@ -222,7 +222,7 @@ void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 		const std::string filepath = texture->GetImage()->GetFilePath();
 		if (filepath.empty())
 		{
-			TP_WARN("[TextureManager] Could not find Texture: \"", name, "\" to reload.");
+			TRAP_WARN("[TextureManager] Could not find Texture: \"", name, "\" to reload.");
 			return;
 		}
 
@@ -233,7 +233,7 @@ void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 		{
 			s_Textures[name].reset();
 			s_Textures[name] = Texture2D::CreateFromFile(name, filepath, textureParameters);
-			TP_INFO("[TextureManager][Texture2D] Reloaded: \"", name, "\"");
+			TRAP_INFO("[TextureManager][Texture2D] Reloaded: \"", name, "\"");
 		}
 		else if (textureType == TextureType::TextureCube)
 		{
@@ -251,21 +251,21 @@ void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 				else
 					s_Textures[name] = TextureCube::CreateFromFiles(name, filePaths, textureParameters);
 
-				TP_INFO("[TextureManager][TextureCube] Reloaded: \"", name, "\"");
+				TRAP_INFO("[TextureManager][TextureCube] Reloaded: \"", name, "\"");
 			}
 		}
 		else
-			TP_WARN("[TextureManager] Unknown TextureType: \"", name, "\"");
+			TRAP_WARN("[TextureManager] Unknown TextureType: \"", name, "\"");
 	}
 	else
-		TP_WARN("[TextureManager] Could not find Texture: \"", texture->GetName(), "\" to reload.");
+		TRAP_WARN("[TextureManager] Could not find Texture: \"", texture->GetName(), "\" to reload.");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::TextureManager::ReloadAll()
 {
-	TP_INFO("[TextureManager] Reloading all may take a while...");
+	TRAP_INFO("[TextureManager] Reloading all may take a while...");
 	for (auto& texture : s_Textures)
 		Reload(texture.second);
 }
@@ -274,7 +274,7 @@ void TRAP::Graphics::TextureManager::ReloadAll()
 
 void TRAP::Graphics::TextureManager::Shutdown()
 {
-	TP_DEBUG("[TextureManager] Destroying Textures");
+	TRAP_DEBUG("[TextureManager] Destroying Textures");
 	Clean();
 }
 

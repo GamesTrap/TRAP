@@ -11,6 +11,7 @@
 #include <optional>
 
 #include <string>
+#include <cstring>
 #include <fstream>
 #include <sstream>
 #include <vector>

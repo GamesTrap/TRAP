@@ -19,20 +19,20 @@ TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
 TRAP::Application::Application()
 	: m_timer(std::make_unique<Utils::Timer>()),
-	  m_FramesPerSecond(0),
-	  m_FrameTime(0.0f),
-	  m_drawCalls(0),
-	  m_fpsLimit(0),
-	  m_tickRate(100)
+	m_FramesPerSecond(0),
+	m_FrameTime(0.0f),
+	m_drawCalls(0),
+	m_fpsLimit(0),
+	m_tickRate(100)
 {
-	TP_DEBUG("[Application] Initializing TRAP Modules...");
+	TRAP_DEBUG("[Application] Initializing TRAP Modules...");
 
-	TP_CORE_ASSERT(!s_Instance, "Application already exists!");
+	TRAP_CORE_ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
 
 	VFS::Init();
 	if (!m_config.LoadFromFile("Engine.cfg"))
-		TP_INFO("[Config] Using default values");
+		TRAP_INFO("[Config] Using default values");
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	m_config.Print();
 #endif
@@ -58,7 +58,7 @@ TRAP::Application::Application()
 	m_config.Get("HotShaderReloading", hotShaderReloading);
 	m_config.Get("HotTextureReloading", hotTextureReloading);
 
-	if(fpsLimit > 0)
+	if (fpsLimit > 0)
 	{
 		if (fpsLimit >= 25 && fpsLimit <= 500)
 			m_fpsLimit = fpsLimit;
@@ -68,21 +68,21 @@ TRAP::Application::Application()
 
 	VFS::Get()->SetHotShaderReloading(hotShaderReloading);
 	VFS::Get()->SetHotTextureReloading(hotTextureReloading);
-	
+
 	Graphics::API::Context::SetRenderAPI(renderAPI);
 	m_window = std::make_unique<Window>
-	(
-		WindowProps
 		(
-			"Sandbox",
-			width,
-			height,
-			refreshRate,
-			vsync,
-			displayMode,
-			monitor
-		)
-	);
+			WindowProps
+			(
+				"Sandbox",
+				width,
+				height,
+				refreshRate,
+				vsync,
+				displayMode,
+				monitor
+			)
+			);
 	m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
 	//Initialize Input for Joysticks
@@ -102,7 +102,7 @@ TRAP::Application::Application()
 
 TRAP::Application::~Application()
 {
-	TP_DEBUG("[Application] Shutting down TRAP Modules...");
+	TRAP_DEBUG("[Application] Shutting down TRAP Modules...");
 	Graphics::TextureManager::Shutdown();
 	Graphics::ShaderManager::Shutdown();
 	m_config.Set("Width", m_window->GetWidth());
@@ -167,7 +167,7 @@ void TRAP::Application::Run()
 	{
 		if (m_fpsLimit)
 			nextFrame += std::chrono::milliseconds(1000 / m_fpsLimit);
-			
+
 		m_drawCalls = 0;
 
 		Utils::Timer FrameTimeTimer;
@@ -175,15 +175,18 @@ void TRAP::Application::Run()
 		const Utils::TimeStep deltaTime{ time - lastFrameTime };
 		lastFrameTime = time;
 
-		for (const auto& layer : m_layerStack)
-			layer->OnUpdate(deltaTime);
-
-		if(tickTimer.ElapsedMilliseconds() > 1000.0f / static_cast<float>(m_tickRate))
+		if (!m_minimized)
 		{
-			for (const auto& layer : m_layerStack)			
-				layer->OnTick();
+			for (const auto& layer : m_layerStack)
+				layer->OnUpdate(deltaTime);
 
-			tickTimer.Reset();
+			if (tickTimer.ElapsedMilliseconds() > 1000.0f / static_cast<float>(m_tickRate))
+			{
+				for (const auto& layer : m_layerStack)
+					layer->OnTick();
+
+				tickTimer.Reset();
+			}
 		}
 
 		Window::Use(m_window);
@@ -195,7 +198,8 @@ void TRAP::Application::Run()
 			ImGuiLayer::End();
 		}
 
-		Graphics::RenderCommand::Present(m_window);
+		if(!m_minimized)
+			Graphics::RenderCommand::Present(m_window);
 		m_window->OnUpdate();
 
 		//Update Shaders if needed
@@ -212,13 +216,13 @@ void TRAP::Application::Run()
 						return;
 					if (status == FileStatus::Created || status == FileStatus::Erased)
 						return;
-				
+
 					if (Utils::String::ToLower(Utils::String::GetSuffix(virtualPath)) == "shader")
 					{
-						if(Graphics::ShaderManager::ExistsVirtualPath(virtualPath))
+						if (Graphics::ShaderManager::ExistsVirtualPath(virtualPath))
 						{
-							TP_INFO("[ShaderManager] Shader Modified Reloading...");
-							Graphics::ShaderManager::Reload(virtualPath);							
+							TRAP_INFO("[ShaderManager] Shader Modified Reloading...");
+							Graphics::ShaderManager::Reload(virtualPath);
 						}
 					}
 				});
@@ -245,7 +249,7 @@ void TRAP::Application::Run()
 					{
 						if (Graphics::TextureManager::ExistsVirtualPath(virtualPath))
 						{
-							TP_INFO("[TextureManager] Texture Modified Reloading...");
+							TRAP_INFO("[TextureManager] Texture Modified Reloading...");
 							Graphics::TextureManager::Reload(virtualPath);
 						}
 					}
@@ -289,10 +293,19 @@ bool TRAP::Application::OnWindowResize(WindowResizeEvent& e)
 {
 	if (Window::GetActiveWindows() > 1)
 		Window::Use();
-	
+
+	if (e.GetWidth() == 0 || e.GetHeight() == 0)
+	{
+		m_minimized = true;
+
+		return false;
+	}
+
 	Graphics::RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
-	
-	return true;
+
+	m_minimized = false;
+
+	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

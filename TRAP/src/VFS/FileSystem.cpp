@@ -7,7 +7,7 @@ bool TRAP::FileSystem::FileOrFolderExists(const std::filesystem::path& path)
 {
 	if (!exists(path))
 	{
-		TP_WARN("[FileSystem] File/Folder: ", path, " doesn't exist!");
+		TRAP_WARN("[FileSystem] File/Folder: ", path, " doesn't exist!");
 		return false;
 	}
 
@@ -53,7 +53,7 @@ std::vector<std::byte> TRAP::FileSystem::ReadFile(const std::filesystem::path& f
 			return buffer;
 		}
 
-		TP_ERROR("[FileSystem] Could not open File: ", filePath);
+		TRAP_ERROR("[FileSystem] Could not open File: ", filePath);
 	}
 
 	return std::vector<std::byte>();
@@ -75,7 +75,7 @@ std::string TRAP::FileSystem::ReadTextFile(const std::filesystem::path& filePath
 			return buffer.str();
 		}
 
-		TP_ERROR("[FileSystem] Could not open File: ", filePath);
+		TRAP_ERROR("[FileSystem] Could not open File: ", filePath);
 	}
 
 	return "";
@@ -97,7 +97,7 @@ std::string TRAP::FileSystem::SilentReadTextFile(const std::filesystem::path& fi
 			return buffer.str();
 		}
 
-		TP_ERROR("[FileSystem] Could not open File: ", filePath);
+		TRAP_ERROR("[FileSystem] Could not open File: ", filePath);
 	}
 
 	return "";
@@ -116,7 +116,7 @@ bool TRAP::FileSystem::WriteFile(const std::filesystem::path& filePath, std::vec
 		return true;
 	}
 
-	TP_ERROR("[FileSystem] Could not write File: ", filePath);
+	TRAP_ERROR("[FileSystem] Could not write File: ", filePath);
 
 	return false;
 }
@@ -134,7 +134,7 @@ bool TRAP::FileSystem::WriteTextFile(const std::filesystem::path& filePath, cons
 		return true;
 	}
 
-	TP_ERROR("[FileSystem] Could not write File: ", filePath);
+	TRAP_ERROR("[FileSystem] Could not write File: ", filePath);
 
 	return false;
 }

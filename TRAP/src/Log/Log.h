@@ -91,7 +91,7 @@ inline TRAP::Log& TRAP::Log::Get()
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename... Args>
-constexpr void TP_TRACE(const Args& ... args)
+constexpr void TRAP_TRACE(const Args& ... args)
 {
 	::TRAP::Log::Get().Trace(args...);
 }
@@ -100,7 +100,7 @@ constexpr void TP_TRACE(const Args& ... args)
 
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 template<typename... Args>
-constexpr void TP_DEBUG(const Args& ... args)
+constexpr void TRAP_DEBUG(const Args& ... args)
 {
 	::TRAP::Log::Get().Debug(args...);
 }
@@ -109,7 +109,7 @@ constexpr void TP_DEBUG(const Args& ... args)
 
 #else
 template<typename... Args>
-constexpr void TP_DEBUG(const Args& ... args)
+constexpr void TRAP_DEBUG(const Args& ... args)
 {
 }
 #endif
@@ -117,7 +117,7 @@ constexpr void TP_DEBUG(const Args& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename... Args>
-constexpr void TP_INFO(const Args& ... args)
+constexpr void TRAP_INFO(const Args& ... args)
 {
 	::TRAP::Log::Get().Info(args...);
 }
@@ -125,7 +125,7 @@ constexpr void TP_INFO(const Args& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename... Args>
-constexpr void TP_WARN(const Args& ... args)
+constexpr void TRAP_WARN(const Args& ... args)
 {
 	::TRAP::Log::Get().Warn(args...);
 }
@@ -133,7 +133,7 @@ constexpr void TP_WARN(const Args& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename... Args>
-constexpr void TP_ERROR(const Args& ... args)
+constexpr void TRAP_ERROR(const Args& ... args)
 {
 	::TRAP::Log::Get().Error(args...);
 }
@@ -141,7 +141,7 @@ constexpr void TP_ERROR(const Args& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename... Args>
-constexpr void TP_CRITICAL(const Args& ... args)
+constexpr void TRAP_CRITICAL(const Args& ... args)
 {
 	::TRAP::Log::Get().Critical(args...);
 }

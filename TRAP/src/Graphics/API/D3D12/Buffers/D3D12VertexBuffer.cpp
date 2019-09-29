@@ -5,7 +5,7 @@
 
 TRAP::Graphics::API::D3D12VertexBuffer::D3D12VertexBuffer(float* vertices, uint32_t size)
 {
-	TP_WARN("[VertexBuffer][D3D12] WIP");
+	TRAP_WARN("[VertexBuffer][D3D12] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

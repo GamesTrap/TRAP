@@ -58,6 +58,7 @@ namespace TRAP
 		std::unique_ptr<Window> m_window;
 		std::unique_ptr<ImGuiLayer> m_ImGuiLayer;
 		bool m_running = true;
+		bool m_minimized = false;
 		LayerStack m_layerStack;
 
 		Utils::Config m_config;
