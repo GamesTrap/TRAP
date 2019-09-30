@@ -35,8 +35,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Input" href="input.html" />
-    <link rel="prev" title="Getting Started" href="gettingstarted.html" /> 
+    <link rel="prev" title="Input" href="input.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,12 +84,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../index.html">TRAP Engine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="buildingtrap.html">Building TRAP</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input.html">Input</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Windows</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#general">General</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#displaymode">DisplayMode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cursormode">CursorMode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#windowprops">WindowProps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id1">Window</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#window">Window</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#constructor">Constructor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#destructor">Destructor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#onupdate">OnUpdate</a></li>
@@ -121,7 +122,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="input.html">Input</a></li>
 </ul>
 
             
@@ -173,7 +173,7 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/pages/window.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/pages/windows.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -187,7 +187,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="windows">
-<span id="window"></span><h1>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="general">
 <h2>General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h2>
 <div class="line-block">
@@ -287,8 +287,8 @@
 </div>
 </div>
 </div>
-<div class="section" id="id1">
-<h2>Window<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="window">
+<h2>Window<a class="headerlink" href="#window" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="constructor">
 <h3>Constructor<a class="headerlink" href="#constructor" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="p">(</span><span class="k">const</span> <span class="n">WindowProps</span><span class="o">&amp;</span> <span class="n">props</span><span class="p">);</span>
@@ -635,7 +635,7 @@
 </ul>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>TRAP::<a href="#id4"><span class="problematic" id="id5">`Input`_</span></a>::<a href="#id6"><span class="problematic" id="id7">`IsRawMouseInputSupported`_</span></a></p>
+<p>TRAP::<a class="reference internal" href="input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="input.html#israwmouseinputsupported"><span class="std std-ref">IsRawMouseInputSupported</span></a></p>
 </div>
 </div>
 <div class="section" id="seticon">
@@ -652,7 +652,7 @@
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Sets the Icon of a TRAP::<a class="reference internal" href="#window">Window</a> to the specified TRAP::<a href="#id8"><span class="problematic" id="id9">`Image`_</span></a></div>
+<div class="line">Sets the Icon of a TRAP::<a class="reference internal" href="#window">Window</a> to the specified TRAP::<a href="#id4"><span class="problematic" id="id5">`Image`_</span></a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
@@ -670,7 +670,7 @@
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Sets the Function where to send all TRAP::<a href="#id10"><span class="problematic" id="id11">`Event`_</span></a>s to from a TRAP::<a class="reference internal" href="#window">Window</a></div>
+<div class="line">Sets the Function where to send all TRAP::<a href="#id6"><span class="problematic" id="id7">`Event`_</span></a>s to from a TRAP::<a class="reference internal" href="#window">Window</a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
@@ -694,10 +694,8 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="input.html" class="btn btn-neutral float-right" title="Input" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="gettingstarted.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="input.html" class="btn btn-neutral float-left" title="Input" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

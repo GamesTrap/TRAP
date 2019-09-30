@@ -1,4 +1,4 @@
-.. _window:
+.. _windows:
 
 =======
 Windows
@@ -443,7 +443,7 @@ SetRawMouseInput
 - :code:`enabled` specifies if the TRAP::`Window`_ should use Raw Mouse Input.
 
 .. seealso::
-   TRAP::`Input`_::`IsRawMouseInputSupported`_
+   TRAP:::ref:`input`:::ref:`IsRawMouseInputSupported`
 
 ^^^^^^^
 SetIcon

@@ -35,7 +35,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="Windows" href="window.html" /> 
+    <link rel="next" title="Windows" href="windows.html" />
+    <link rel="prev" title="Core" href="core.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -84,7 +85,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../index.html">TRAP Engine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="buildingtrap.html">Building TRAP</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="window.html">Windows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Input</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#general">General</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#key">Key</a></li>
@@ -115,6 +116,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#getallcontrollerstatuses">GetAllControllerStatuses</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="windows.html">Windows</a></li>
 </ul>
 
             
@@ -185,6 +187,10 @@
 <h2>General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h2>
 <div class="line-block">
 <div class="line">Input in <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a> is used to poll input from Keyboard, Mouse and up to 4 Controllers.</div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For <a href="#id3"><span class="problematic" id="id4">`Event`_</span></a> based input see TRAP::<span class="xref std std-ref">events</span></p>
 </div>
 </div>
 <div class="section" id="key">
@@ -441,7 +447,7 @@
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerstatus">ControllerStatus</a> represents the status of a <a class="reference internal" href="#controller">Controller</a></div>
+<div class="line">TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerstatus">ControllerStatus</a> represents the status of a TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a></div>
 </div>
 </div>
 <div class="section" id="init">
@@ -509,7 +515,7 @@
 </ul>
 </div>
 <div class="section" id="israwmouseinputsupported">
-<h2>IsRawMouseInputSupported<a class="headerlink" href="#israwmouseinputsupported" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>IsRawMouseInputSupported<a class="headerlink" href="#israwmouseinputsupported" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsRawMouseInputSupported</span><span class="p">();</span>
 </pre></div>
 </div>
@@ -557,7 +563,7 @@
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns a TRAP::<a href="#id2"><span class="problematic" id="id3">`Math`_</span></a>::<a href="#id4"><span class="problematic" id="id5">`Vec2`_</span></a> containing the current mouse position</div>
+<div class="line">Returns a TRAP::<a href="#id5"><span class="problematic" id="id6">`Math`_</span></a>::<a href="#id7"><span class="problematic" id="id8">`Vec2`_</span></a> containing the current mouse position</div>
 </div>
 </div>
 <div class="section" id="getmousex">
@@ -756,8 +762,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="windows.html" class="btn btn-neutral float-right" title="Windows" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="window.html" class="btn btn-neutral float-left" title="Windows" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="core.html" class="btn btn-neutral float-left" title="Core" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

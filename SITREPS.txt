@@ -463,3 +463,4 @@ SITREP 09/29/2019|19w39a4
 SITREP 09/30/2019|19w40a1
     - Changed TRAP Engine version to 19w40a1(0.5.42)
     - Fixed invalid monitor usage if Engine.cfg doesnt exist ~<5 mins
+    - Added Core.h documentation ~>30 mins

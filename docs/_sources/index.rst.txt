@@ -73,5 +73,6 @@ Recommended System Requirements
    self
    pages/buildingtrap
    pages/gettingstarted
-   pages/window
+   pages/core
    pages/input
+   pages/windows
