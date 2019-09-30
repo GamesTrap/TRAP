@@ -64,7 +64,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 40);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 42);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -85,6 +85,10 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 40);
 		{
 		}
 	#endif
+#else
+	constexpr void TRAP_DEBUG_BREAK()
+	{
+	}
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//

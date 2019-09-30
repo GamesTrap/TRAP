@@ -43,7 +43,7 @@ TRAP::Application::Application()
 	uint32_t vsync = 0;
 	uint32_t fpsLimit = 0;
 	Window::DisplayMode displayMode = Window::DisplayMode::Windowed;
-	uint32_t monitor;
+	uint32_t monitor = 0;
 	Graphics::API::RenderAPI renderAPI = Graphics::API::RenderAPI::NONE;
 	bool hotShaderReloading = false;
 	bool hotTextureReloading = false;

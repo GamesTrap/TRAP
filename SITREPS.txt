@@ -459,3 +459,7 @@ SITREP 09/28/2019|19w39a3
 SITREP 09/29/2019|19w39a4
     - Changed TRAP Engine version to 19w39a4(0.5.41)
     - Reverted Logging macros back to use TP_ ~<20 mins
+
+SITREP 09/30/2019|19w40a1
+    - Changed TRAP Engine version to 19w40a1(0.5.42)
+    - Fixed invalid monitor usage if Engine.cfg doesnt exist ~<5 mins
