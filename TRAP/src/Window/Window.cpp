@@ -238,7 +238,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w40a1]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][19w40a2]" + std::string(Graphics::Renderer::GetTitle());
 	glfwSetWindowTitle(m_window, newTitle.c_str());
 #else
 	glfwSetWindowTitle(m_window, m_data.Title.c_str());
@@ -497,6 +497,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	m_data.Monitor = props.Monitor;
 	m_data.cursorMode = props.cursorMode;
 	m_data.rawMouseInput = props.rawMouseInput;
+	m_data.windowModeParams = &m_oldWindowedParams;
 
 	if (!s_GLFWInitialized)
 	{
@@ -577,7 +578,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w40a1]";
+		"[INDEV][19w40a2]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif
@@ -781,6 +782,13 @@ void TRAP::Window::Init(const WindowProps& props)
 	glfwSetWindowPosCallback(m_window, [](GLFWwindow* window, const int32_t x, const int32_t y)
 	{
 		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+
+		if(data.displayMode == DisplayMode::Windowed)
+		{
+			data.windowModeParams->XPos = x;
+			data.windowModeParams->YPos = y;			
+		}
+		
 		WindowMovedEvent event(x, y, data.Title);
 		data.EventCallback(event);
 	});

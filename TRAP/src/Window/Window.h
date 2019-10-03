@@ -83,7 +83,13 @@ namespace TRAP
 		GLFWwindow* m_window;
 		GLFWmonitor* m_useMonitor; //Stores a reference to the monitor
 		GLFWvidmode m_baseVideoMode{}; //Stores the underlying video mode being used by the OS
-
+		
+		struct WindowedModeParams
+		{
+			uint32_t Width, Height, RefreshRate;
+			int32_t XPos, YPos;
+		} m_oldWindowedParams{};
+		
 		struct WindowData
 		{
 			std::string Title;
@@ -94,13 +100,9 @@ namespace TRAP
 			bool rawMouseInput{};
 
 			EventCallbackFn EventCallback;
-		} m_data;
 
-		struct WindowedModeParams
-		{
-			uint32_t Width, Height, RefreshRate;
-			int32_t XPos, YPos;
-		} m_oldWindowedParams{};		
+			WindowedModeParams* windowModeParams = nullptr;
+		} m_data;
 		
 		static uint32_t s_windows;
 		static bool s_GLFWInitialized;
