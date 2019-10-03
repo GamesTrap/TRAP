@@ -28,6 +28,10 @@ std::vector<TRAP::Window*> TRAP::Window::s_fullscreenWindows{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::unordered_map<uint32_t, GLFWvidmode> TRAP::Window::m_baseVideoModes{};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 static void GLFWErrorCallback(const int32_t error, const char *description)
 {
 	TP_ERROR("[Window][GLFW] (", error, "): ", description);
@@ -271,16 +275,20 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 	{
 		if(s_fullscreenWindows[m_data.Monitor])
 		{
-			TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Borderless because Monitor: ", m_data.Monitor,
-			         '(', glfwGetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
+			if(s_fullscreenWindows[m_data.Monitor] == this)
+				TP_WARN("[Window] \"", m_data.Title, "\" already uses DisplayMode: Borderless!");
+			else
+				TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Borderless because Monitor: ", m_data.Monitor,
+					'(', glfwGetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
+			
 			return;
 		}
 
 		s_fullscreenWindows[m_data.Monitor] = this;
 		//For borderless fullscreen, the new width, height and refresh rate will be the video mode width, height and refresh rate
-		width = m_baseVideoMode.width;
-		height = m_baseVideoMode.height;
-		refreshRate = m_baseVideoMode.refreshRate;
+		width = m_baseVideoModes[m_data.Monitor].width;
+		height = m_baseVideoModes[m_data.Monitor].height;
+		refreshRate = m_baseVideoModes[m_data.Monitor].refreshRate;
 		monitor = m_useMonitor;
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Using Monitor: ", m_data.Monitor, '(', glfwGetMonitorName(monitor), ')');
 	}
@@ -293,7 +301,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 	}
 	else if (mode == DisplayMode::Fullscreen)
 	{
-		if (s_fullscreenWindows[m_data.Monitor])
+		if (s_fullscreenWindows[m_data.Monitor] != this && s_fullscreenWindows[m_data.Monitor])
 		{
 			TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Fullscreen because Monitor: ", m_data.Monitor,
 				'(', glfwGetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
@@ -307,6 +315,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 		const auto monitorVideoModes = glfwGetVideoModes(m_useMonitor, &monitorVideoModesCount);
 		if (width != 0 && height != 0 && refreshRate != 0)
 		{
+			//TODO Only check if its not the same as the monitors baseVideoMode and set valid to true if its the same
 			for (int32_t i = 0; i < monitorVideoModesCount; i++)
 			{
 				//Check if resolution pair is valid
@@ -529,10 +538,15 @@ void TRAP::Window::Init(const WindowProps& props)
 		m_useMonitor = glfwGetPrimaryMonitor();
 	}
 
-	m_baseVideoMode = *(glfwGetVideoMode(m_useMonitor));
-	TP_DEBUG("[Window] Storing underlying OS video mode: ",
-		m_baseVideoMode.width, 'x', m_baseVideoMode.height, '@', m_baseVideoMode.refreshRate, "Hz (R",
-		m_baseVideoMode.redBits, 'G', m_baseVideoMode.greenBits, 'B', m_baseVideoMode.blueBits, ')');
+	//TODO FOR EACH MONITOR
+	if(m_baseVideoModes.empty())
+		for(uint32_t i = 0; i < static_cast<uint32_t>(monitorCount); i++)
+		{
+			m_baseVideoModes[i] = *(glfwGetVideoMode(monitors[i]));
+			TP_DEBUG("[Window] Storing underlying OS video mode: Monitor: ", i, " ",
+			m_baseVideoModes[i].width, 'x', m_baseVideoModes[i].height, '@', m_baseVideoModes[i].refreshRate, "Hz (R",
+			m_baseVideoModes[i].redBits, 'G', m_baseVideoModes[i].greenBits, 'B', m_baseVideoModes[i].blueBits, ')');			
+		}
 
 	glfwDefaultWindowHints();
 
@@ -646,7 +660,7 @@ void TRAP::Window::Init(const WindowProps& props)
 				{
 					width = 800;
 					height = 600;
-					refreshRate = m_baseVideoMode.refreshRate;
+					refreshRate = m_baseVideoModes[m_data.Monitor].refreshRate;
 				}
 				else
 				{
@@ -660,15 +674,15 @@ void TRAP::Window::Init(const WindowProps& props)
 				s_fullscreenWindows[m_data.Monitor] = this;
 
 				//For borderless fullscreen, the new width, height and refresh rate will be the video mode width, height and refresh rate
-				width = m_baseVideoMode.width;
-				height = m_baseVideoMode.height;
-				refreshRate = m_baseVideoMode.refreshRate;
+				width = m_baseVideoModes[m_data.Monitor].width;
+				height = m_baseVideoModes[m_data.Monitor].height;
+				refreshRate = m_baseVideoModes[m_data.Monitor].refreshRate;
 				monitor = m_useMonitor;
 			}
 		}
 		else if (props.displayMode == DisplayMode::Windowed && (width == 0 || height == 0 || refreshRate == 0))
 		{
-			//For windowed, use old window height and width if none provided
+			//For windowed, use old window height, width and refresh rate if none provided
 			width = m_oldWindowedParams.Width;
 			height = m_oldWindowedParams.Height;
 			refreshRate = m_oldWindowedParams.RefreshRate;
@@ -685,7 +699,7 @@ void TRAP::Window::Init(const WindowProps& props)
 				{
 					width = 800;
 					height = 600;
-					refreshRate = m_baseVideoMode.refreshRate;
+					refreshRate = m_baseVideoModes[m_data.Monitor].refreshRate;
 				}
 				else
 				{
@@ -706,6 +720,7 @@ void TRAP::Window::Init(const WindowProps& props)
 				{
 					for (int32_t i = 0; i < monitorVideoModesCount; i++)
 					{
+						//TODO Only check if its not the same as the monitors baseVideoMode and set valid to true if its the same
 						//Check if resolution pair is valid
 						if ((static_cast<uint32_t>(monitorVideoModes[i].width) == width && static_cast<uint32_t>(monitorVideoModes[i].height) == height) && static_cast<uint32_t>(monitorVideoModes[i].refreshRate) == refreshRate)
 						{

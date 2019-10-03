@@ -82,7 +82,8 @@ namespace TRAP
 		
 		GLFWwindow* m_window;
 		GLFWmonitor* m_useMonitor; //Stores a reference to the monitor
-		GLFWvidmode m_baseVideoMode{}; //Stores the underlying video mode being used by the OS
+		//GLFWvidmode m_baseVideoMode{}; //Stores the underlying video mode being used by the OS //TODO make it unordered_map with monitor as key and base mode as val
+		static std::unordered_map<uint32_t, GLFWvidmode> m_baseVideoModes; //Stores the underlying video mode being used by the OS for every monitor
 		
 		struct WindowedModeParams
 		{

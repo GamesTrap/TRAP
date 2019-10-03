@@ -468,3 +468,4 @@ SITREP 09/30/2019|19w40a1
 SITREP 10/03/2019|19w40a2
     - Changed TRAP Engine version to 19w40a2(0.5.43)
     - Fixed Window not updating position on windowed mode ~>10 mins
+    - Window Added storing of base video mode for every monitor ~>20 mins
