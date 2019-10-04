@@ -242,7 +242,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w40a2]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][19w40a3]" + std::string(Graphics::Renderer::GetTitle());
 	glfwSetWindowTitle(m_window, newTitle.c_str());
 #else
 	glfwSetWindowTitle(m_window, m_data.Title.c_str());
@@ -276,7 +276,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 		if(s_fullscreenWindows[m_data.Monitor])
 		{
 			if(s_fullscreenWindows[m_data.Monitor] == this)
-				TP_WARN("[Window] \"", m_data.Title, "\" already uses DisplayMode: Borderless!");
+				TP_WARN("[Window] \"", m_data.Title, "\" already uses DisplayMode: Borderless or Fullscreen!");
 			else
 				TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Borderless because Monitor: ", m_data.Monitor,
 					'(', glfwGetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
@@ -315,11 +315,15 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 		const auto monitorVideoModes = glfwGetVideoModes(m_useMonitor, &monitorVideoModesCount);
 		if (width != 0 && height != 0 && refreshRate != 0)
 		{
-			//TODO Only check if its not the same as the monitors baseVideoMode and set valid to true if its the same
 			for (int32_t i = 0; i < monitorVideoModesCount; i++)
 			{
 				//Check if resolution pair is valid
 				if (static_cast<uint32_t>(monitorVideoModes[i].width) == width && static_cast<uint32_t>(monitorVideoModes[i].height) == height && static_cast<uint32_t>(monitorVideoModes[i].refreshRate) == refreshRate)
+				{
+					valid = true;
+					break;
+				}
+				if(static_cast<uint32_t>(m_baseVideoModes[m_data.Monitor].width) == width && static_cast<uint32_t>(m_baseVideoModes[m_data.Monitor].height) == height && static_cast<uint32_t>(m_baseVideoModes[m_data.Monitor].refreshRate) == refreshRate)
 				{
 					valid = true;
 					break;
@@ -330,9 +334,9 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 		//Resolution pair is invalid so use native/default resolution
 		if (!valid)
 		{
-			width = monitorVideoModes[monitorVideoModesCount - 1].width;
-			height = monitorVideoModes[monitorVideoModesCount - 1].height;
-			refreshRate = monitorVideoModes[monitorVideoModesCount - 1].refreshRate;
+			width = m_baseVideoModes[m_data.Monitor].width;
+			height = m_baseVideoModes[m_data.Monitor].height;
+			refreshRate = m_baseVideoModes[m_data.Monitor].refreshRate;
 		}
 
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Using Monitor: ", m_data.Monitor, '(', glfwGetMonitorName(monitor), ')');
@@ -538,7 +542,6 @@ void TRAP::Window::Init(const WindowProps& props)
 		m_useMonitor = glfwGetPrimaryMonitor();
 	}
 
-	//TODO FOR EACH MONITOR
 	if(m_baseVideoModes.empty())
 		for(uint32_t i = 0; i < static_cast<uint32_t>(monitorCount); i++)
 		{
@@ -592,7 +595,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w40a2]";
+		"[INDEV][19w40a3]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif
@@ -720,9 +723,13 @@ void TRAP::Window::Init(const WindowProps& props)
 				{
 					for (int32_t i = 0; i < monitorVideoModesCount; i++)
 					{
-						//TODO Only check if its not the same as the monitors baseVideoMode and set valid to true if its the same
 						//Check if resolution pair is valid
 						if ((static_cast<uint32_t>(monitorVideoModes[i].width) == width && static_cast<uint32_t>(monitorVideoModes[i].height) == height) && static_cast<uint32_t>(monitorVideoModes[i].refreshRate) == refreshRate)
+						{
+							valid = true;
+							break;
+						}
+						if (static_cast<uint32_t>(m_baseVideoModes[m_data.Monitor].width) == width && static_cast<uint32_t>(m_baseVideoModes[m_data.Monitor].height) == height && static_cast<uint32_t>(m_baseVideoModes[m_data.Monitor].refreshRate) == refreshRate)
 						{
 							valid = true;
 							break;
@@ -733,9 +740,9 @@ void TRAP::Window::Init(const WindowProps& props)
 				//Resolution pair is invalid so use native/default resolution
 				if (!valid)
 				{
-					width = monitorVideoModes[monitorVideoModesCount - 1].width;
-					height = monitorVideoModes[monitorVideoModesCount - 1].height;
-					refreshRate = monitorVideoModes[monitorVideoModesCount - 1].refreshRate;
+					width = m_baseVideoModes[m_data.Monitor].width;
+					height = m_baseVideoModes[m_data.Monitor].height;
+					refreshRate = m_baseVideoModes[m_data.Monitor].refreshRate;
 				}
 			}
 		}
