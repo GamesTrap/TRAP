@@ -86,3 +86,21 @@ bool TRAP::Graphics::API::OpenGLContext::IsOpenGLCapable()
 
 	return isOpenGLCapable;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::API::OpenGLContext::IsExtensionSupported(const std::string& extension)
+{
+	uint32_t numExtensions = 0;
+
+	OpenGLCall(glGetIntegerv(GL_NUM_EXTENSIONS, reinterpret_cast<int32_t*>(&numExtensions)));
+
+	for (uint32_t i = 0; i < numExtensions; i++)
+	{
+		OpenGLCall(const uint8_t* e = glGetStringi(GL_EXTENSIONS, i));
+		if (!strcmp(reinterpret_cast<const char*>(e), extension.c_str()))
+			return true;
+	}
+
+	return false;
+}

@@ -5,10 +5,22 @@
 #include "Graphics/Textures/TextureManager.h"
 #include "VFS/VFS.h"
 
+uint32_t TRAP::Graphics::API::OpenGLTextureCube::s_MaxCombinedTextureUnits = 0;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(const TextureParameters parameters)
 	: m_handle(0), m_name("FallbackCube"), m_parameters(parameters), m_inputFormat(InputFormat::NONE)
 {
 	TP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
+	if (s_MaxCombinedTextureUnits == 0)
+	{
+		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_MaxCombinedTextureUnits)));
+	}
+	if (s_maxCubeTextureSize == 0) //Only load maximum available texture size once
+	{
+		OpenGLCall(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize)));
+	}
 	m_images[0] = Image::LoadFallback();
 
 	OpenGLCall(glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_handle));
@@ -45,6 +57,10 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 	: m_handle(0), m_name(std::move(name)), m_parameters(parameters), m_inputFormat(InputFormat::NONE)
 {
 	TP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
+	if (s_MaxCombinedTextureUnits == 0)
+	{
+		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_MaxCombinedTextureUnits)));
+	}
 	if (s_maxCubeTextureSize == 0) //Only load maximum available texture size once
 	{
 		OpenGLCall(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize)));
@@ -67,6 +83,10 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 	: m_handle(0), m_name(std::move(name)), m_parameters(parameters), m_inputFormat(format)
 {
 	TP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
+	if (s_MaxCombinedTextureUnits == 0)
+	{
+		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_MaxCombinedTextureUnits)));
+	}
 	if (s_maxCubeTextureSize == 0) //Only load maximum available texture size once
 	{
 		OpenGLCall(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize)));
@@ -102,20 +122,30 @@ TRAP::Graphics::API::OpenGLTextureCube::~OpenGLTextureCube()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLTextureCube::Bind(const uint32_t slot) const
-{
-	if (m_handle)
+{	
+	if (slot < s_MaxCombinedTextureUnits)
 	{
-		OpenGLCall(glBindTextureUnit(slot, m_handle));
+		if (m_handle)
+		{
+			OpenGLCall(glBindTextureUnit(slot, m_handle));
+		}
+		else
+			TextureManager::Get("FallbackCube", TextureType::TextureCube)->Bind(slot);
 	}
 	else
-		TextureManager::Get("FallbackCube", TextureType::TextureCube)->Bind();
+		TP_ERROR("[TextureCube][OpenGL] Couldn't bind Texture: \"", m_name, "\" to slot: ", slot, "! Out of range");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLTextureCube::Unbind(uint32_t slot) const
+void TRAP::Graphics::API::OpenGLTextureCube::Unbind(const uint32_t slot) const
 {
-	OpenGLCall(glBindTextureUnit(0, 0));
+	if (slot < s_MaxCombinedTextureUnits)
+	{
+		OpenGLCall(glBindTextureUnit(slot, 0));
+	}
+	else
+		TP_ERROR("[TextureCube][OpenGL] Couldn't unbind Texture: \"", m_name, "\" from slot: ", slot, "! Out of range");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

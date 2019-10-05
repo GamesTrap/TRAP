@@ -35,6 +35,8 @@ namespace TRAP::Graphics::API
 		std::string m_name;
 		TextureParameters m_parameters;
 		uint32_t m_handle;
+
+		static uint32_t s_MaxCombinedTextureUnits;
 	};
 }
 

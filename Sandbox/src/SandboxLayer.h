@@ -83,6 +83,9 @@ public:
 
 		UniformData data{ TRAP::Application::GetTime() };
 		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("ColorBuffer", &data, sizeof(UniformData), TRAP::Graphics::BufferUsage::Stream);
+
+		TRAP::Graphics::TextureManager::Get2D("TRAP")->Bind();
+		m_uniformBuffer->Bind(1);
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -108,30 +111,12 @@ public:
 		{
 			if (m_show)
 			{
-				/*static TRAP::Math::Mat4 scale = TRAP::Math::Mat4::Scale(TRAP::Math::Vec3(0.1f));
-
-				for (int y = 0; y < 10; y++)
-				{
-					for (int x = 0; x < 10; x++)
-					{
-						TRAP::Math::Vec3 position(static_cast<float>(x) * 0.11f, static_cast<float>(y) * 0.11f, 0.0f);
-						TRAP::Math::Mat4 transform = TRAP::Math::Mat4::Translate(position) * scale;
-
-						if (m_usePassthrough)
-							TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray, transform);
-						else
-							TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Color"), m_vertexArray, transform);
-					}
-				}*/
-
 				if (m_usePassthrough)
 					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray);
 				else
 				{
 					float time = TRAP::Application::GetTime();
-					m_uniformBuffer->UpdateData(&time);
-					m_uniformBuffer->Bind(1);
-					TRAP::Graphics::TextureManager::Get2D("TRAP")->Bind();
+					m_uniformBuffer->UpdateData(&time);					
 					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColor"), m_vertexArray);
 				}
 			}

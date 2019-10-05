@@ -41,6 +41,8 @@ namespace TRAP::Graphics::API
 		std::array<Scope<Image>, 6> m_images;
 		TextureParameters m_parameters;
 		InputFormat m_inputFormat;
+
+		static uint32_t s_MaxCombinedTextureUnits;
 	};
 }
 
