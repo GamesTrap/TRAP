@@ -11,7 +11,9 @@ General
 | Input in :ref:`trap_engine` is used to poll input from Keyboard, Mouse and up to 4 Controllers.
 
 .. seealso::
-   For `Event`_ based input see TRAP:::ref:`events`
+   For :ref:`event` based input see TRAP:::ref:`events`
+
+.. _key:
 
 ---
 Key
@@ -147,6 +149,8 @@ Key
 
 | **Description**
 | TRAP::`Input`_::`Key`_ is used to specify a Key on the Keyboard
+
+.. _mouse_button:
 
 -----------
 MouseButton

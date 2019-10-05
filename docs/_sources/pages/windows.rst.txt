@@ -13,6 +13,7 @@ General
 .. note::
    | :ref:`trap_engine` always creates 1 TRAP::`Window`_ and uses it as Main Window!
    | Properties of this TRAP::`Window`_ can be set in Engine.cfg
+
 .. Reference Engine.cfg
 
 -----------
@@ -96,6 +97,8 @@ WindowProps
    | 
    | If :code:`width`, :code:`height` and :code:`refreshRate` are set to :code:`0` then :code:`width` will be set to :code:`800`, :code:`height` will be set to :code:`600` and :code:`refreshRate` will be set to the :code:`monitor`'s Native Refresh Rate!
 
+.. _window:
+
 ------
 Window
 ------
@@ -139,7 +142,7 @@ OnUpdate
     static void TRAP::Window::OnUpdate();
 
 | **Description**
-| Processes queued TRAP::`Window`_ TRAP::`Event`_\s
+| Processes queued TRAP::`Window`_ TRAP:::ref:`event`\s
 
 ^^^
 Use
@@ -478,7 +481,7 @@ SetEventCallback
    void TRAP::Window::SetEventCallback(const EventCallbackFn& callback);
 
 | **Description**
-| Sets the Function where to send all TRAP::`Event`_\s to from a TRAP::`Window`_
+| Sets the Function where to send all TRAP:::ref`event`\s to from a TRAP::`Window`_
 
 | **Parameters**
 

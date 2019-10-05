@@ -48,7 +48,7 @@ namespace TRAP::Graphics
 	{
 		std::string Name;
 		ShaderDataType Type{ShaderDataType::None};
-		uint32_t Size{};
+		intptr_t Size{};
 		uint32_t Offset{};
 		bool Normalized{};
 

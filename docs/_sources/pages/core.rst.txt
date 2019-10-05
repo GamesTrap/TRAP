@@ -133,9 +133,9 @@ TRAP_ASSERT
 .. warning::
    This macro won't do anything if :code:`TRAP_ENABLE_ASSERTS` is not defined!
 
--------------------
+----------------
 TRAP_CORE_ASSERT
--------------------
+----------------
 
 .. code-block:: cpp
 
@@ -171,6 +171,8 @@ TRAP_RENDERER_ASSERT
 .. warning::
    This macro won't do anything if :code:`TRAP_ENABLE_ASSERTS` is not defined!
 
+.. _core_bit:
+
 ---
 BIT
 ---
@@ -186,6 +188,8 @@ BIT
 | **Parameters**
 
 - :code:`x` Specifies the amount to shift
+
+.. _trap_bind_event_fn:
 
 ------------------
 TRAP_BIND_EVENT_FN
@@ -203,7 +207,7 @@ TRAP_BIND_EVENT_FN
 - :code:`fn` Specifies the function to send TRAP:::ref:`Events` to
 
 .. seealso::
-    TRAP:::ref:`Events`\: :ref:`event_callback`
+    TRAP:::ref:`event_dispatcher`\:::ref:`event_dispatch`
 
 -----
 Scope
@@ -282,4 +286,3 @@ MakeScope
 
 .. note::
    This may change in the future when memory management gets added
-   

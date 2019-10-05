@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Input" href="input.html" />
+    <link rel="next" title="Events" href="events.html" />
     <link rel="prev" title="Getting Started" href="gettingstarted.html" /> 
 </head>
 
@@ -102,9 +102,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#scope">Scope</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#makescope">MakeScope</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ref">Ref</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id2">MakeScope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">MakeScope</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="events.html">Events</a></li>
 <li class="toctree-l1"><a class="reference internal" href="input.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="windows.html">Windows</a></li>
 </ul>
@@ -350,7 +351,7 @@
 </div>
 </div>
 <div class="section" id="bit">
-<h2>BIT<a class="headerlink" href="#bit" title="Permalink to this headline">¶</a></h2>
+<span id="core-bit"></span><h2>BIT<a class="headerlink" href="#bit" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
 <span class="k">constexpr</span> <span class="n">T</span> <span class="n">BIT</span><span class="p">(</span><span class="n">T</span> <span class="n">x</span><span class="p">);</span>
 </pre></div>
@@ -367,23 +368,23 @@
 </ul>
 </div>
 <div class="section" id="trap-bind-event-fn">
-<h2>TRAP_BIND_EVENT_FN<a class="headerlink" href="#trap-bind-event-fn" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>TRAP_BIND_EVENT_FN<a class="headerlink" href="#trap-bind-event-fn" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP_BIND_EVENT_FN</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">This macro is used for setting the callback function for TRAP::<span class="xref std std-ref">Events</span></div>
+<div class="line">This macro is used for setting the callback function for TRAP::<a class="reference internal" href="events.html#events"><span class="std std-ref">Events</span></a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">fn</span></code> Specifies the function to send TRAP::<span class="xref std std-ref">Events</span> to</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">fn</span></code> Specifies the function to send TRAP::<a class="reference internal" href="events.html#events"><span class="std std-ref">Events</span></a> to</p></li>
 </ul>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>TRAP::<span class="xref std std-ref">Events</span>: <span class="xref std std-ref">event_callback</span></p>
+<p>TRAP::<a class="reference internal" href="events.html#event-dispatcher"><span class="std std-ref">EventDispatcher</span></a>::<a class="reference internal" href="events.html#event-dispatch"><span class="std std-ref">Dispatch</span></a></p>
 </div>
 </div>
 <div class="section" id="scope">
@@ -450,8 +451,8 @@
 <p>This may change in the future when memory management gets added</p>
 </div>
 </div>
-<div class="section" id="id2">
-<h2>MakeScope<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h2>MakeScope<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
 <span class="k">constexpr</span> <span class="n">Ref</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">MakeRef</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span><span class="p">...</span> <span class="n">args</span><span class="p">);</span>
 </pre></div>
@@ -482,7 +483,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="input.html" class="btn btn-neutral float-right" title="Input" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="events.html" class="btn btn-neutral float-right" title="Events" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="gettingstarted.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

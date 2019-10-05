@@ -114,7 +114,7 @@ inline TRAP::Input::Key TRAP::KeyEvent::GetKeyCode() const
 
 inline int32_t TRAP::KeyEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::EventCategoryKeyboard) | static_cast<int32_t>(EventCategory::EventCategoryInput);
+	return static_cast<int32_t>(EventCategory::Keyboard) | static_cast<int32_t>(EventCategory::Input);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

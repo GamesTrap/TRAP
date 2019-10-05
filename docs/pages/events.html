@@ -1,0 +1,1807 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Events &mdash; TRAP 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Input" href="input.html" />
+    <link rel="prev" title="Core" href="core.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> TRAP
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">TRAP Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="buildingtrap.html">Building TRAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Events</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#general">General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#eventtype">EventType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#eventcategory">EventCategory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#event">Event</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#geteventtype">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getname">GetName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getcategoryflags">GetCategoryFlags</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tostring">ToString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#isincategory">IsInCategory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#eventdispatcher">EventDispatcher</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dispatch">Dispatch</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#windowresizeevent">WindowResizeEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getwidth">GetWidth</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getheight">GetHeight</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gettitle">GetTitle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">ToString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getstatictype">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">GetName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">GetCategoryFlags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#windowcloseevent">WindowCloseEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">GetTitle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">GetName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">GetCategoryFlags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#windowmovedevent">WindowMovedEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id14">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getx">GetX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gety">GetY</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">GetTitle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">ToString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id19">GetName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">GetCategoryFlags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#windowfocusevent">WindowFocusEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id21">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id22">GetTitle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id25">GetName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id26">GetCategoryFlags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#windowlostfocusevent">WindowLostFocusEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id27">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id28">GetTitle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id29">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id30">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id31">GetName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id32">GetCategoryFlags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#apptickevent">AppTickEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id33">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id34">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id35">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id36">GetName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id37">GetCategoryFlags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#appupdateevent">AppUpdateEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id38">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id39">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id40">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id41">GetName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id42">GetCategoryFlags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#apprenderevent">AppRenderEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id43">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id44">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id45">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id46">GetName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id47">GetCategoryFlags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mousemovedevent">MouseMovedEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id48">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id49">GetX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id50">GetY</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id51">GetTitle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id52">ToString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id53">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id54">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id55">GetName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id56">GetCategoryFlags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mousescrolledevent">MouseScrolledEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id57">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getxoffset">GetXOffset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getyoffset">GetYOffset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id58">GetTitle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id59">ToString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id60">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id61">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id62">GetName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id63">GetCategoryFlags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mousebuttonevent">MouseButtonEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id64">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getmousebutton">GetMouseButton</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id65">GetCategoryFlags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mousebuttonpressedevent">MouseButtonPressedEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id66">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id67">ToString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id68">GetTitle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id69">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id70">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id71">GetName</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mousebuttonreleasedevent">MouseButtonReleasedEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id72">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id73">ToString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id74">GetTitle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id75">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id76">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id77">GetName</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#keyevent">KeyEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id78">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getkeycode">GetKeyCode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id79">GetCategoryFlags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#keypressedevent">KeyPressedEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id80">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getrepeatcount">GetRepeatCount</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id81">ToString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id82">GetTitle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id83">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id84">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id85">GetName</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#keyreleasedevent">KeyReleasedEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id86">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id87">ToString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id88">GetTitle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id89">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id90">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id91">GetName</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#keytypedevent">KeyTypedEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id92">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id93">ToString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id94">GetTitle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id95">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id96">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id97">GetName</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="windows.html">Windows</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TRAP</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Events</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/pages/events.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="events">
+<span id="id1"></span><h1>Events<a class="headerlink" href="#events" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="general">
+<h2>General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h2>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="core.html#core"><span class="std std-ref">Core</span></a>: <a class="reference internal" href="core.html#trap-bind-event-fn"><span class="std std-ref">TRAP_BIND_EVENT_FN</span></a></p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><a class="reference internal" href="#events">Events</a> in <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a> are currently blocking, meaning when an event occurs it immediately gets dispatched and must be dealt with right then and there!</p>
+</div>
+</div>
+<div class="section" id="eventtype">
+<h2>EventType<a class="headerlink" href="#eventtype" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">EventType</span>
+<span class="p">{</span>
+    <span class="n">None</span><span class="p">,</span>
+    <span class="n">WindowClose</span><span class="p">,</span> <span class="n">WindowResize</span><span class="p">,</span> <span class="n">WindowFocus</span><span class="p">,</span> <span class="n">WindowLostFocus</span><span class="p">,</span> <span class="n">WindowMoved</span><span class="p">,</span>
+    <span class="n">AppTick</span><span class="p">,</span> <span class="n">AppUpdate</span><span class="p">,</span> <span class="n">AppRender</span><span class="p">,</span> <span class="c1">//These are currently unused!</span>
+    <span class="n">KeyPressed</span><span class="p">,</span> <span class="n">KeyReleased</span><span class="p">,</span> <span class="n">KeyTyped</span><span class="p">,</span>
+    <span class="n">MouseButtonPressed</span><span class="p">,</span> <span class="n">MouseButtonReleased</span><span class="p">,</span> <span class="n">MouseMoved</span><span class="p">,</span> <span class="n">MouseScrolled</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">TRAP::<a class="reference internal" href="#eventtype">EventType</a> is used to specifiy the type of a TRAP::<a class="reference internal" href="#event">Event</a></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>TRAP::<a class="reference internal" href="#eventtype">EventType</a>::AppTick, TRAP::<a class="reference internal" href="#eventtype">EventType</a>::AppUpdate and TRAP::<a class="reference internal" href="#eventtype">EventType</a>::AppRender are currently unused by <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a>!</p>
+</div>
+</div>
+<div class="section" id="eventcategory">
+<h2>EventCategory<a class="headerlink" href="#eventcategory" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">EventCategory</span>
+<span class="p">{</span>
+    <span class="n">None</span>        <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">Application</span> <span class="o">=</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">Input</span>       <span class="o">=</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">Keyboard</span>    <span class="o">=</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+    <span class="n">Mouse</span>       <span class="o">=</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+    <span class="n">MouseButton</span> <span class="o">=</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a> is used to specifiy the category of a TRAP::<a class="reference internal" href="#event">Event</a></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="core.html#core-bit"><span class="std std-ref">BIT</span></a></p>
+</div>
+</div>
+<div class="section" id="event">
+<span id="id2"></span><h2>Event<a class="headerlink" href="#event" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">TRAP::<a class="reference internal" href="#event">Event</a> is used as a base class for every event type in TRAP::<a class="reference internal" href="#eventtype">EventType</a></div>
+</div>
+<div class="section" id="geteventtype">
+<h3>GetEventType<a class="headerlink" href="#geteventtype" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This function returns the type(in form of TRAP::<a class="reference internal" href="#eventtype">EventType</a>) of a TRAP::<a class="reference internal" href="#event">Event</a></div>
+</div>
+</div>
+<div class="section" id="getname">
+<h3>GetName<a class="headerlink" href="#getname" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This function returns a c-string containing the name of a TRAP::<a class="reference internal" href="#event">Event</a></div>
+</div>
+</div>
+<div class="section" id="getcategoryflags">
+<h3>GetCategoryFlags<a class="headerlink" href="#getcategoryflags" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This function returns an int32_t containing the category flags of a TRAP::<a class="reference internal" href="#event">Event</a></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a></p>
+</div>
+</div>
+<div class="section" id="tostring">
+<h3>ToString<a class="headerlink" href="#tostring" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="n">ToString</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This function returns a std::string containing the name and values of a TRAP::<a class="reference internal" href="#event">Event</a></div>
+</div>
+</div>
+<div class="section" id="isincategory">
+<h3>IsInCategory<a class="headerlink" href="#isincategory" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="n">IsInCategory</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventCategory</span> <span class="n">category</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This functions returns whether the TRAP::<a class="reference internal" href="#event">Event</a> is in the specified TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a> or not</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">category</span></code> Specifies the TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a> to check</div>
+</div>
+</div>
+</div>
+<div class="section" id="eventdispatcher">
+<span id="event-dispatcher"></span><h2>EventDispatcher<a class="headerlink" href="#eventdispatcher" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">TRAP::<a class="reference internal" href="#eventdispatcher">EventDispatcher</a> is used to dispatch TRAP::<cite>Event</cite>s to different functions</div>
+</div>
+<div class="section" id="constructor">
+<h3>Constructor<a class="headerlink" href="#constructor" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventDispatcher</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Event</span><span class="o">&amp;</span> <span class="n">event</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Creates a new TRAP::<a class="reference internal" href="#eventdispatcher">EventDispatcher</a> for the given TRAP::<a class="reference internal" href="#event">Event</a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">event</span></code> Specifies the TRAP::<a class="reference internal" href="#event">Event</a> to dispatch</div>
+</div>
+</div>
+<div class="section" id="dispatch">
+<span id="event-dispatch"></span><h3>Dispatch<a class="headerlink" href="#dispatch" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="k">typename</span> <span class="n">F</span><span class="o">&gt;</span>
+<span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventDispatcher</span><span class="o">::</span><span class="n">Dispatch</span><span class="p">(</span><span class="k">const</span> <span class="n">F</span><span class="o">&amp;</span> <span class="n">func</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This function dispatches the specified TRAP::<a class="reference internal" href="#event">Event</a> class to the specified function <code class="code docutils literal notranslate"><span class="pre">func</span></code> and returns true if dispatched successfully</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">T</span></code> Specifies the TRAP::<a class="reference internal" href="#event">Event</a> class to dispatch</div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">F(func)</span></code> Specifies the function to dispatch the TRAP::<a class="reference internal" href="#event">Event</a> to</div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Use <a class="reference internal" href="core.html#trap-bind-event-fn"><span class="std std-ref">TRAP_BIND_EVENT_FN</span></a> to specify the function for the parameter <code class="code docutils literal notranslate"><span class="pre">F(func)</span></code></p>
+</div>
+</div>
+</div>
+<div class="section" id="windowresizeevent">
+<h2>WindowResizeEvent<a class="headerlink" href="#windowresizeevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#windowresizeevent">WindowResizeEvent</a> inherits from TRAP::<a class="reference internal" href="#event">Event</a></p>
+</div>
+<div class="section" id="id3">
+<h3>Constructor<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">WindowResizeEvent</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">width</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">height</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#windowresizeevent">WindowResizeEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">width</span></code> Specifies the new width for the TRAP::<a class="reference internal" href="#windowresizeevent">WindowResizeEvent</a></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">height</span></code> Specifies the new height for the TRAP::<a class="reference internal" href="#windowresizeevent">WindowResizeEvent</a></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">title</span></code> Specifies the title of the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> the TRAP::<a class="reference internal" href="#windowresizeevent">WindowResizeEvent</a> is for</div>
+</div>
+</div>
+<div class="section" id="getwidth">
+<h3>GetWidth<a class="headerlink" href="#getwidth" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowResizeEvent</span><span class="o">::</span><span class="n">GetWidth</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the width of the TRAP::<a class="reference internal" href="#windowresizeevent">WindowResizeEvent</a></div>
+</div>
+</div>
+<div class="section" id="getheight">
+<h3>GetHeight<a class="headerlink" href="#getheight" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowResizeEvent</span><span class="o">::</span><span class="n">GetHeight</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the height of the TRAP::<a class="reference internal" href="#windowresizeevent">WindowResizeEvent</a></div>
+</div>
+</div>
+<div class="section" id="gettitle">
+<h3>GetTitle<a class="headerlink" href="#gettitle" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowResizeEvent</span><span class="o">::</span><span class="n">GetTitle</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the title of the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> from the TRAP::<a class="reference internal" href="#windowresizeevent">WindowResizeEvent</a></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h3>ToString<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowResizeEvent</span><span class="o">::</span><span class="n">ToString</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;WindowResizeEvent:</span> <span class="pre">&quot;</span> <span class="pre">+</span> <span class="pre">width</span> <span class="pre">+</span> <span class="pre">'x'</span> <span class="pre">+</span> <span class="pre">height</span></code></div>
+</div>
+</div>
+<div class="section" id="getstatictype">
+<h3>GetStaticType<a class="headerlink" href="#getstatictype" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowResizeEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::WindowResize</div>
+</div>
+</div>
+<div class="section" id="id5">
+<h3>GetEventType<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowResizeEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::WindowResize</div>
+</div>
+</div>
+<div class="section" id="id6">
+<h3>GetName<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowResizeEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;WindowResize&quot;</span></code></div>
+</div>
+</div>
+<div class="section" id="id7">
+<h3>GetCategoryFlags<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowResizeEvent</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Application casted to an <code class="code docutils literal notranslate"><span class="pre">int32_t</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="windowcloseevent">
+<h2>WindowCloseEvent<a class="headerlink" href="#windowcloseevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#windowcloseevent">WindowCloseEvent</a> inherits from TRAP::<a class="reference internal" href="#event">Event</a></p>
+</div>
+<div class="section" id="id8">
+<h3>Constructor<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">WindowCloseEvent</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#windowcloseevent">WindowCloseEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">title</span></code> Specifies the title of the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> the event is for</div>
+</div>
+</div>
+<div class="section" id="id9">
+<h3>GetTitle<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowCloseEvent</span><span class="o">::</span><span class="n">GetTitle</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the title of the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> from the TRAP::<a class="reference internal" href="#windowcloseevent">WindowCloseEvent</a></div>
+</div>
+</div>
+<div class="section" id="id10">
+<h3>GetStaticType<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowCloseEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::WindowClose</div>
+</div>
+</div>
+<div class="section" id="id11">
+<h3>GetEventType<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowCloseEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::WindowClose</div>
+</div>
+</div>
+<div class="section" id="id12">
+<h3>GetName<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowCloseEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;WindowClose&quot;</span></code></div>
+</div>
+</div>
+<div class="section" id="id13">
+<h3>GetCategoryFlags<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowCloseEvent</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Application casted to an <code class="code docutils literal notranslate"><span class="pre">int32_t</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="windowmovedevent">
+<h2>WindowMovedEvent<a class="headerlink" href="#windowmovedevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#windowmovedevent">WindowMovedEvent</a> inherits from TRAP::<a class="reference internal" href="#event">Event</a></p>
+</div>
+<div class="section" id="id14">
+<h3>Constructor<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">WindowMovedEvent</span><span class="p">(</span><span class="k">const</span> <span class="kt">int32_t</span> <span class="n">x</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int32_t</span> <span class="n">y</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#windowmovedevent">WindowMovedEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">x</span></code> Specifies the new x position for the TRAP::<a class="reference internal" href="#windowmovedevent">WindowMovedEvent</a></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">y</span></code> Specifies the new y position for the TRAP::<a class="reference internal" href="#windowmovedevent">WindowMovedEvent</a></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">title</span></code> Specifies the title of the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> the TRAP::<a class="reference internal" href="#windowmovedevent">WindowMovedEvent</a> is for</div>
+</div>
+</div>
+<div class="section" id="getx">
+<h3>GetX<a class="headerlink" href="#getx" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowMovedEvent</span><span class="o">::</span><span class="n">GetX</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the x position of the TRAP::<a class="reference internal" href="#windowmovedevent">WindowMovedEvent</a></div>
+</div>
+</div>
+<div class="section" id="gety">
+<h3>GetY<a class="headerlink" href="#gety" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowMovedEvent</span><span class="o">::</span><span class="n">GetY</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the y position of the TRAP::<a class="reference internal" href="#windowmovedevent">WindowMovedEvent</a></div>
+</div>
+</div>
+<div class="section" id="id15">
+<h3>GetTitle<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowMovedEvent</span><span class="o">::</span><span class="n">GetTitle</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the title of the window from the TRAP::<a class="reference internal" href="#windowmovedevent">WindowMovedEvent</a></div>
+</div>
+</div>
+<div class="section" id="id16">
+<h3>ToString<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowMovedEvent</span><span class="o">::</span><span class="n">ToString</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;WindowMovedEvent:</span> <span class="pre">&quot;</span> <span class="pre">+</span> <span class="pre">x</span> <span class="pre">+</span> <span class="pre">&quot;,</span> <span class="pre">&quot;</span> <span class="pre">+</span> <span class="pre">y</span></code></div>
+</div>
+</div>
+<div class="section" id="id17">
+<h3>GetStaticType<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowMovedEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::WindowMoved</div>
+</div>
+</div>
+<div class="section" id="id18">
+<h3>GetEventType<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowMovedEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::WindowMoved</div>
+</div>
+</div>
+<div class="section" id="id19">
+<h3>GetName<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowMovedEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;WindowMoved&quot;</span></code></div>
+</div>
+</div>
+<div class="section" id="id20">
+<h3>GetCategoryFlags<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowMovedEvent</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Application casted to an <code class="code docutils literal notranslate"><span class="pre">int32_t</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="windowfocusevent">
+<h2>WindowFocusEvent<a class="headerlink" href="#windowfocusevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#windowfocusevent">WindowFocusEvent</a> inherits from TRAP::<a class="reference internal" href="#event">Event</a></p>
+</div>
+<div class="section" id="id21">
+<h3>Constructor<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">WindowFocusEvent</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#windowfocusevent">WindowFocusEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">title</span></code> Specifies the title of the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> the TRAP::<a class="reference internal" href="#windowfocusevent">WindowFocusEvent</a> is for</div>
+</div>
+</div>
+<div class="section" id="id22">
+<h3>GetTitle<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowFocusEvent</span><span class="o">::</span><span class="n">GetTitle</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the title of the window from the TRAP::<a class="reference internal" href="#windowfocusevent">WindowFocusEvent</a></div>
+</div>
+</div>
+<div class="section" id="id23">
+<h3>GetStaticType<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowFocusEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::WindowFocus</div>
+</div>
+</div>
+<div class="section" id="id24">
+<h3>GetEventType<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowFocusEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::WindowFocus</div>
+</div>
+</div>
+<div class="section" id="id25">
+<h3>GetName<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowFocusEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;WindowFocus&quot;</span></code></div>
+</div>
+</div>
+<div class="section" id="id26">
+<h3>GetCategoryFlags<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowFocusEvent</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Application casted to an <code class="code docutils literal notranslate"><span class="pre">int32_t</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="windowlostfocusevent">
+<h2>WindowLostFocusEvent<a class="headerlink" href="#windowlostfocusevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#windowlostfocusevent">WindowLostFocusEvent</a> inherits from TRAP::<a class="reference internal" href="#event">Event</a></p>
+</div>
+<div class="section" id="id27">
+<h3>Constructor<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">WindowLostFocusEvent</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#windowlostfocusevent">WindowLostFocusEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">title</span></code> Specifies the title of the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> the TRAP::<a class="reference internal" href="#windowlostfocusevent">WindowLostFocusEvent</a> is for</div>
+</div>
+</div>
+<div class="section" id="id28">
+<h3>GetTitle<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowLostFocusEvent</span><span class="o">::</span><span class="n">GetTitle</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the title of the window from the TRAP::<a class="reference internal" href="#windowlostfocusevent">WindowLostFocusEvent</a></div>
+</div>
+</div>
+<div class="section" id="id29">
+<h3>GetStaticType<a class="headerlink" href="#id29" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowLostFocusEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::WindowLostFocus</div>
+</div>
+</div>
+<div class="section" id="id30">
+<h3>GetEventType<a class="headerlink" href="#id30" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowLostFocusEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::WindowLostFocus</div>
+</div>
+</div>
+<div class="section" id="id31">
+<h3>GetName<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowLostFocusEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;WindowLostFocus&quot;</span></code></div>
+</div>
+</div>
+<div class="section" id="id32">
+<h3>GetCategoryFlags<a class="headerlink" href="#id32" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">WindowLostFocusEvent</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Application casted to an <code class="code docutils literal notranslate"><span class="pre">int32_t</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="apptickevent">
+<h2>AppTickEvent<a class="headerlink" href="#apptickevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#apptickevent">AppTickEvent</a> inherits from TRAP::<a class="reference internal" href="#event">Event</a></p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>TRAP::<a class="reference internal" href="#apptickevent">AppTickEvent</a> is currently unused by <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a></p>
+</div>
+<div class="section" id="id33">
+<h3>Constructor<a class="headerlink" href="#id33" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">AppTickEvent</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#apptickevent">AppTickEvent</a>s</div>
+</div>
+</div>
+<div class="section" id="id34">
+<h3>GetStaticType<a class="headerlink" href="#id34" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">AppTickEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::AppTick</div>
+</div>
+</div>
+<div class="section" id="id35">
+<h3>GetEventType<a class="headerlink" href="#id35" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">AppTickEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::AppTick</div>
+</div>
+</div>
+<div class="section" id="id36">
+<h3>GetName<a class="headerlink" href="#id36" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">AppTickEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;AppTick&quot;</span></code></div>
+</div>
+</div>
+<div class="section" id="id37">
+<h3>GetCategoryFlags<a class="headerlink" href="#id37" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">AppTickEvent</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Application casted to an <code class="code docutils literal notranslate"><span class="pre">int32_t</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="appupdateevent">
+<h2>AppUpdateEvent<a class="headerlink" href="#appupdateevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#appupdateevent">AppUpdateEvent</a> inherits from TRAP::<a class="reference internal" href="#event">Event</a></p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>TRAP::<a class="reference internal" href="#appupdateevent">AppUpdateEvent</a> is currently unused by <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a></p>
+</div>
+<div class="section" id="id38">
+<h3>Constructor<a class="headerlink" href="#id38" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">AppUpdateEvent</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#appupdateevent">AppUpdateEvent</a>s</div>
+</div>
+</div>
+<div class="section" id="id39">
+<h3>GetStaticType<a class="headerlink" href="#id39" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">AppUpdateEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::AppUpdate</div>
+</div>
+</div>
+<div class="section" id="id40">
+<h3>GetEventType<a class="headerlink" href="#id40" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">AppUpdateEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::AppUpdate</div>
+</div>
+</div>
+<div class="section" id="id41">
+<h3>GetName<a class="headerlink" href="#id41" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">AppUpdateEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;AppUpdate&quot;</span></code></div>
+</div>
+</div>
+<div class="section" id="id42">
+<h3>GetCategoryFlags<a class="headerlink" href="#id42" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">AppUpdateEvent</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Application casted to an <code class="code docutils literal notranslate"><span class="pre">int32_t</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="apprenderevent">
+<h2>AppRenderEvent<a class="headerlink" href="#apprenderevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#apprenderevent">AppRenderEvent</a> inherits from TRAP::<a class="reference internal" href="#event">Event</a></p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>TRAP::<a class="reference internal" href="#apprenderevent">AppRenderEvent</a> is currently unused by <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a></p>
+</div>
+<div class="section" id="id43">
+<h3>Constructor<a class="headerlink" href="#id43" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">AppRenderEvent</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#apprenderevent">AppRenderEvent</a>s</div>
+</div>
+</div>
+<div class="section" id="id44">
+<h3>GetStaticType<a class="headerlink" href="#id44" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">AppRenderEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::AppRender</div>
+</div>
+</div>
+<div class="section" id="id45">
+<h3>GetEventType<a class="headerlink" href="#id45" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">AppRenderEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::AppRender</div>
+</div>
+</div>
+<div class="section" id="id46">
+<h3>GetName<a class="headerlink" href="#id46" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">AppRenderEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;AppRender&quot;</span></code></div>
+</div>
+</div>
+<div class="section" id="id47">
+<h3>GetCategoryFlags<a class="headerlink" href="#id47" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">AppRenderEvent</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Application casted to an <code class="code docutils literal notranslate"><span class="pre">int32_t</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="mousemovedevent">
+<h2>MouseMovedEvent<a class="headerlink" href="#mousemovedevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#mousemovedevent">MouseMovedEvent</a> inherits from TRAP::<a class="reference internal" href="#event">Event</a></p>
+</div>
+<div class="section" id="id48">
+<h3>Constructor<a class="headerlink" href="#id48" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">MouseMovedEvent</span><span class="p">(</span><span class="k">const</span> <span class="kt">float</span> <span class="n">x</span><span class="p">,</span> <span class="k">const</span> <span class="kt">float</span> <span class="n">y</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#mousemovedevent">MouseMovedEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">x</span></code> Specifies the new x position for the TRAP::<a class="reference internal" href="#mousemovedevent">MouseMovedEvent</a></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">y</span></code> Specifies the new y position for the TRAP::<a class="reference internal" href="#mousemovedevent">MouseMovedEvent</a></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">title</span></code> Specifies the title of the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> the TRAP::<a class="reference internal" href="#mousemovedevent">MouseMovedEvent</a> is for</div>
+</div>
+</div>
+<div class="section" id="id49">
+<h3>GetX<a class="headerlink" href="#id49" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseMovedEvent</span><span class="o">::</span><span class="n">GetX</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the x position of the TRAP::<a class="reference internal" href="#mousemovedevent">MouseMovedEvent</a></div>
+</div>
+</div>
+<div class="section" id="id50">
+<h3>GetY<a class="headerlink" href="#id50" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseMovedEvent</span><span class="o">::</span><span class="n">GetY</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the y position of the TRAP::<a class="reference internal" href="#mousemovedevent">MouseMovedEvent</a></div>
+</div>
+</div>
+<div class="section" id="id51">
+<h3>GetTitle<a class="headerlink" href="#id51" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseMovedEvent</span><span class="o">::</span><span class="n">GetTitle</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the title of the window from the TRAP::<a class="reference internal" href="#mousemovedevent">MouseMovedEvent</a></div>
+</div>
+</div>
+<div class="section" id="id52">
+<h3>ToString<a class="headerlink" href="#id52" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseMovedEvent</span><span class="o">::</span><span class="n">ToString</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;MouseMovedEvent:</span> <span class="pre">&quot;</span> <span class="pre">+</span> <span class="pre">x</span> <span class="pre">+</span> <span class="pre">&quot;,</span> <span class="pre">&quot;</span> <span class="pre">+</span> <span class="pre">y</span></code></div>
+</div>
+</div>
+<div class="section" id="id53">
+<h3>GetStaticType<a class="headerlink" href="#id53" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseMovedEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::MouseMoved</div>
+</div>
+</div>
+<div class="section" id="id54">
+<h3>GetEventType<a class="headerlink" href="#id54" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseMovedEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::MouseMoved</div>
+</div>
+</div>
+<div class="section" id="id55">
+<h3>GetName<a class="headerlink" href="#id55" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseMovedEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;MouseMoved&quot;</span></code></div>
+</div>
+</div>
+<div class="section" id="id56">
+<h3>GetCategoryFlags<a class="headerlink" href="#id56" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseMovedEvent</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Mouse | TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Input casted to an <code class="code docutils literal notranslate"><span class="pre">int32_t</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="mousescrolledevent">
+<h2>MouseScrolledEvent<a class="headerlink" href="#mousescrolledevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#mousescrolledevent">MouseScrolledEvent</a> inherits from TRAP::<a class="reference internal" href="#event">Event</a></p>
+</div>
+<div class="section" id="id57">
+<h3>Constructor<a class="headerlink" href="#id57" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">MouseScrolledEvent</span><span class="p">(</span><span class="k">const</span> <span class="kt">float</span> <span class="n">xOffset</span><span class="p">,</span> <span class="k">const</span> <span class="kt">float</span> <span class="n">yOffset</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#mousescrolledevent">MouseScrolledEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">xOffset</span></code> Specifies the new x offset for the TRAP::<a class="reference internal" href="#mousescrolledevent">MouseScrolledEvent</a></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">yOffset</span></code> Specifies the new y offset for the TRAP::<a class="reference internal" href="#mousescrolledevent">MouseScrolledEvent</a></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">title</span></code> Specifies the title of the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> the TRAP::<a class="reference internal" href="#mousescrolledevent">MouseScrolledEvent</a> is for</div>
+</div>
+</div>
+<div class="section" id="getxoffset">
+<h3>GetXOffset<a class="headerlink" href="#getxoffset" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseScrolledEvent</span><span class="o">::</span><span class="n">GetXOffset</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the x offset of the TRAP::<a class="reference internal" href="#mousescrolledevent">MouseScrolledEvent</a></div>
+</div>
+</div>
+<div class="section" id="getyoffset">
+<h3>GetYOffset<a class="headerlink" href="#getyoffset" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseScrolledEvent</span><span class="o">::</span><span class="n">GetYOffset</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the y offset of the TRAP::<a class="reference internal" href="#mousescrolledevent">MouseScrolledEvent</a></div>
+</div>
+</div>
+<div class="section" id="id58">
+<h3>GetTitle<a class="headerlink" href="#id58" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseScrolledEvent</span><span class="o">::</span><span class="n">GetTitle</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the title of the window from the TRAP::<a class="reference internal" href="#mousescrolledevent">MouseScrolledEvent</a></div>
+</div>
+</div>
+<div class="section" id="id59">
+<h3>ToString<a class="headerlink" href="#id59" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseScrolledEvent</span><span class="o">::</span><span class="n">ToString</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;MouseScrolledEvent:</span> <span class="pre">&quot;</span> <span class="pre">+</span> <span class="pre">xOffset</span> <span class="pre">+</span> <span class="pre">&quot;,</span> <span class="pre">&quot;</span> <span class="pre">+</span> <span class="pre">yOffset</span></code></div>
+</div>
+</div>
+<div class="section" id="id60">
+<h3>GetStaticType<a class="headerlink" href="#id60" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseScrolledEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::MouseScrolled</div>
+</div>
+</div>
+<div class="section" id="id61">
+<h3>GetEventType<a class="headerlink" href="#id61" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseScrolledEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::MouseScrolled</div>
+</div>
+</div>
+<div class="section" id="id62">
+<h3>GetName<a class="headerlink" href="#id62" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseScrolledEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;MouseScrolled&quot;</span></code></div>
+</div>
+</div>
+<div class="section" id="id63">
+<h3>GetCategoryFlags<a class="headerlink" href="#id63" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseScrolledEvent</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Mouse | TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Input casted to an <code class="code docutils literal notranslate"><span class="pre">int32_t</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="mousebuttonevent">
+<h2>MouseButtonEvent<a class="headerlink" href="#mousebuttonevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#mousebuttonevent">MouseButtonEvent</a> inherits from TRAP::<a class="reference internal" href="#event">Event</a></p>
+</div>
+<div class="section" id="id64">
+<h3>Constructor<a class="headerlink" href="#id64" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">protected</span><span class="o">:</span>
+    <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseButtonEvent</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">MouseButton</span> <span class="n">button</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#mousebuttonevent">MouseButtonEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">button</span></code> Specifies the TRAP::<a class="reference internal" href="input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="input.html#mouse-button"><span class="std std-ref">MouseButton</span></a> for the TRAP::<a class="reference internal" href="#mousebuttonevent">MouseButtonEvent</a></div>
+</div>
+</div>
+<div class="section" id="getmousebutton">
+<h3>GetMouseButton<a class="headerlink" href="#getmousebutton" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">MouseButton</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseButtonEvent</span><span class="o">::</span><span class="n">GetMouseButton</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This returns the TRAP::<a class="reference internal" href="input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="input.html#mouse-button"><span class="std std-ref">MouseButton</span></a> of the TRAP::<a class="reference internal" href="#mousebuttonevent">MouseButtonEvent</a></div>
+</div>
+</div>
+<div class="section" id="id65">
+<h3>GetCategoryFlags<a class="headerlink" href="#id65" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseButtonEvent</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Mouse | TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Input casted to an <code class="code docutils literal notranslate"><span class="pre">int32_t</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="mousebuttonpressedevent">
+<h2>MouseButtonPressedEvent<a class="headerlink" href="#mousebuttonpressedevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#mousebuttonpressedevent">MouseButtonPressedEvent</a> inherits from TRAP::<a class="reference internal" href="#mousebuttonevent">MouseButtonEvent</a></p>
+</div>
+<div class="section" id="id66">
+<h3>Constructor<a class="headerlink" href="#id66" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">MouseButtonPressedEvent</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">MouseButton</span> <span class="n">button</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#mousebuttonpressedevent">MouseButtonPressedEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">button</span></code> Specifies the TRAP::<a class="reference internal" href="input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="input.html#mouse-button"><span class="std std-ref">MouseButton</span></a> for the TRAP::<a class="reference internal" href="#mousebuttonpressedevent">MouseButtonPressedEvent</a></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">title</span></code> Specifies the title of the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> the TRAP::<a class="reference internal" href="#mousebuttonpressedevent">MouseButtonPressedEvent</a> is for</div>
+</div>
+</div>
+<div class="section" id="id67">
+<h3>ToString<a class="headerlink" href="#id67" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseButtonPressedEvent</span><span class="o">::</span><span class="n">ToString</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;MouseButtonPressedEvent:</span> <span class="pre">&quot;</span> <span class="pre">+</span> <span class="pre">button</span></code></div>
+</div>
+</div>
+<div class="section" id="id68">
+<h3>GetTitle<a class="headerlink" href="#id68" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseButtonPressedEvent</span><span class="o">::</span><span class="n">GetTitle</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the title of the window from the TRAP::<a class="reference internal" href="#mousebuttonpressedevent">MouseButtonPressedEvent</a></div>
+</div>
+</div>
+<div class="section" id="id69">
+<h3>GetStaticType<a class="headerlink" href="#id69" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseButtonPressedEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::MouseButtonPressed</div>
+</div>
+</div>
+<div class="section" id="id70">
+<h3>GetEventType<a class="headerlink" href="#id70" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseButtonPressedEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::MouseButtonPressed</div>
+</div>
+</div>
+<div class="section" id="id71">
+<h3>GetName<a class="headerlink" href="#id71" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseScrolledEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;MouseButtonPressed&quot;</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="mousebuttonreleasedevent">
+<h2>MouseButtonReleasedEvent<a class="headerlink" href="#mousebuttonreleasedevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#mousebuttonreleasedevent">MouseButtonReleasedEvent</a> inherits from TRAP::<a class="reference internal" href="#mousebuttonevent">MouseButtonEvent</a></p>
+</div>
+<div class="section" id="id72">
+<h3>Constructor<a class="headerlink" href="#id72" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">MouseButtonReleasedEvent</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">MouseButton</span> <span class="n">button</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#mousebuttonreleasedevent">MouseButtonReleasedEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">button</span></code> Specifies the TRAP::<a class="reference internal" href="input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="input.html#mouse-button"><span class="std std-ref">MouseButton</span></a> for the TRAP::<a class="reference internal" href="#mousebuttonreleasedevent">MouseButtonReleasedEvent</a></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">title</span></code> Specifies the title of the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> the TRAP::<a class="reference internal" href="#mousebuttonreleasedevent">MouseButtonReleasedEvent</a> is for</div>
+</div>
+</div>
+<div class="section" id="id73">
+<h3>ToString<a class="headerlink" href="#id73" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseButtonReleasedEvent</span><span class="o">::</span><span class="n">ToString</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;MouseButtonReleasedEvent:</span> <span class="pre">&quot;</span> <span class="pre">+</span> <span class="pre">button</span></code></div>
+</div>
+</div>
+<div class="section" id="id74">
+<h3>GetTitle<a class="headerlink" href="#id74" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseButtonReleasedEvent</span><span class="o">::</span><span class="n">GetTitle</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the title of the window from the TRAP::<a class="reference internal" href="#mousebuttonreleasedevent">MouseButtonReleasedEvent</a></div>
+</div>
+</div>
+<div class="section" id="id75">
+<h3>GetStaticType<a class="headerlink" href="#id75" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseButtonReleasedEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::MouseButtonReleased</div>
+</div>
+</div>
+<div class="section" id="id76">
+<h3>GetEventType<a class="headerlink" href="#id76" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseButtonReleasedEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::MouseButtonReleased</div>
+</div>
+</div>
+<div class="section" id="id77">
+<h3>GetName<a class="headerlink" href="#id77" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MouseButtonReleasedEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;MouseButtonReleased&quot;</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="keyevent">
+<h2>KeyEvent<a class="headerlink" href="#keyevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#keyevent">KeyEvent</a> inherits from TRAP::<a class="reference internal" href="#event">Event</a></p>
+</div>
+<div class="section" id="id78">
+<h3>Constructor<a class="headerlink" href="#id78" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">protected</span><span class="o">:</span>
+    <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyEvent</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span> <span class="n">keyCode</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#keyevent">KeyEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">keyCode</span></code> Specifies the TRAP::<a class="reference internal" href="input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="input.html#key"><span class="std std-ref">Key</span></a> for the TRAP::<a class="reference internal" href="#keyevent">KeyEvent</a></div>
+</div>
+</div>
+<div class="section" id="getkeycode">
+<h3>GetKeyCode<a class="headerlink" href="#getkeycode" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyEvent</span><span class="o">::</span><span class="n">GetKeyCode</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This returns the TRAP::<a class="reference internal" href="input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="input.html#key"><span class="std std-ref">Key</span></a> of the TRAP::<a class="reference internal" href="#keyevent">KeyEvent</a></div>
+</div>
+</div>
+<div class="section" id="id79">
+<h3>GetCategoryFlags<a class="headerlink" href="#id79" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyEvent</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Keyboard | TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Input casted to an <code class="code docutils literal notranslate"><span class="pre">int32_t</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="keypressedevent">
+<h2>KeyPressedEvent<a class="headerlink" href="#keypressedevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#keypressedevent">KeyPressedEvent</a> inherits from TRAP::<a class="reference internal" href="#keyevent">KeyEvent</a></p>
+</div>
+<div class="section" id="id80">
+<h3>Constructor<a class="headerlink" href="#id80" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">KeyPressedEvent</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span> <span class="n">keyCode</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int32_t</span> <span class="n">repeatCount</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#keypressedevent">KeyPressedEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">keyCode</span></code> Specifies the TRAP::<a class="reference internal" href="input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="input.html#key"><span class="std std-ref">Key</span></a> for the TRAP::<a class="reference internal" href="#keypressedevent">KeyPressedEvent</a></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">repeatCount</span></code> Specifies the amount of repeats for the given <code class="code docutils literal notranslate"><span class="pre">keyCode</span></code> for the TRAP::<a class="reference internal" href="#keypressedevent">KeyPressedEvent</a></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">title</span></code> Specifies the title of the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> the TRAP::<a class="reference internal" href="#keypressedevent">KeyPressedEvent</a> is for</div>
+</div>
+</div>
+<div class="section" id="getrepeatcount">
+<h3>GetRepeatCount<a class="headerlink" href="#getrepeatcount" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyPressedEvent</span><span class="o">::</span><span class="n">GetRepeatCount</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the amount of repeats of the TRAP::<a class="reference internal" href="input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="input.html#key"><span class="std std-ref">Key</span></a> from the TRAP::<a class="reference internal" href="#keypressedevent">KeyPressedEvent</a></div>
+</div>
+</div>
+<div class="section" id="id81">
+<h3>ToString<a class="headerlink" href="#id81" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyPressedEvent</span><span class="o">::</span><span class="n">ToString</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;KeyPressedEvent:</span> <span class="pre">&quot;</span> <span class="pre">+</span> <span class="pre">keyCode</span> <span class="pre">+</span> <span class="pre">&quot;</span> <span class="pre">(&quot;</span> <span class="pre">+</span> <span class="pre">repeatCount</span> <span class="pre">+</span> <span class="pre">&quot;</span> <span class="pre">repeats)&quot;</span></code></div>
+</div>
+</div>
+<div class="section" id="id82">
+<h3>GetTitle<a class="headerlink" href="#id82" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyPressedEvent</span><span class="o">::</span><span class="n">GetTitle</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the title of the window from the TRAP::<a class="reference internal" href="#keypressedevent">KeyPressedEvent</a></div>
+</div>
+</div>
+<div class="section" id="id83">
+<h3>GetStaticType<a class="headerlink" href="#id83" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyPressedEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::KeyPressed</div>
+</div>
+</div>
+<div class="section" id="id84">
+<h3>GetEventType<a class="headerlink" href="#id84" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyPressedEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::KeyPressed</div>
+</div>
+</div>
+<div class="section" id="id85">
+<h3>GetName<a class="headerlink" href="#id85" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyPressedEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;KeyPressed&quot;</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="keyreleasedevent">
+<h2>KeyReleasedEvent<a class="headerlink" href="#keyreleasedevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#keyreleasedevent">KeyReleasedEvent</a> inherits from TRAP::<a class="reference internal" href="#keyevent">KeyEvent</a></p>
+</div>
+<div class="section" id="id86">
+<h3>Constructor<a class="headerlink" href="#id86" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">KeyReleasedEvent</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span> <span class="n">keyCode</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#keyreleasedevent">KeyReleasedEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">keyCode</span></code> Specifies the TRAP::<a class="reference internal" href="input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="input.html#key"><span class="std std-ref">Key</span></a> for the TRAP::<a class="reference internal" href="#keyreleasedevent">KeyReleasedEvent</a></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">title</span></code> Specifies the title of the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> the TRAP::<a class="reference internal" href="#keyreleasedevent">KeyReleasedEvent</a> is for</div>
+</div>
+</div>
+<div class="section" id="id87">
+<h3>ToString<a class="headerlink" href="#id87" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyReleasedEvent</span><span class="o">::</span><span class="n">ToString</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;KeyReleasedEvent:</span> <span class="pre">&quot;</span> <span class="pre">+</span> <span class="pre">keyCode&quot;</span></code></div>
+</div>
+</div>
+<div class="section" id="id88">
+<h3>GetTitle<a class="headerlink" href="#id88" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyReleasedEvent</span><span class="o">::</span><span class="n">GetTitle</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the title of the window from the TRAP::<a class="reference internal" href="#keyreleasedevent">KeyReleasedEvent</a></div>
+</div>
+</div>
+<div class="section" id="id89">
+<h3>GetStaticType<a class="headerlink" href="#id89" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyReleasedEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::KeyReleased</div>
+</div>
+</div>
+<div class="section" id="id90">
+<h3>GetEventType<a class="headerlink" href="#id90" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyReleasedEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::KeyReleased</div>
+</div>
+</div>
+<div class="section" id="id91">
+<h3>GetName<a class="headerlink" href="#id91" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyReleasedEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;KeyReleased&quot;</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="keytypedevent">
+<h2>KeyTypedEvent<a class="headerlink" href="#keytypedevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#keytypedevent">KeyTypedEvent</a> inherits from TRAP::<a class="reference internal" href="#keyevent">KeyEvent</a></p>
+</div>
+<div class="section" id="id92">
+<h3>Constructor<a class="headerlink" href="#id92" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">KeyTypedEvent</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span> <span class="n">keyCode</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#keytypedevent">KeyTypedEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">keyCode</span></code> Specifies the TRAP::<a class="reference internal" href="input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="input.html#key"><span class="std std-ref">Key</span></a> for the TRAP::<a class="reference internal" href="#keytypedevent">KeyTypedEvent</a></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">title</span></code> Specifies the title of the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> the TRAP::<a class="reference internal" href="#keytypedevent">KeyTypedEvent</a> is for</div>
+</div>
+</div>
+<div class="section" id="id93">
+<h3>ToString<a class="headerlink" href="#id93" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyTypedEvent</span><span class="o">::</span><span class="n">ToString</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;KeyTypedEvent:</span> <span class="pre">&quot;</span> <span class="pre">+</span> <span class="pre">keyCode&quot;</span></code></div>
+</div>
+</div>
+<div class="section" id="id94">
+<h3>GetTitle<a class="headerlink" href="#id94" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyTypedEvent</span><span class="o">::</span><span class="n">GetTitle</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the title of the window from the TRAP::<a class="reference internal" href="#keytypedevent">KeyTypedEvent</a></div>
+</div>
+</div>
+<div class="section" id="id95">
+<h3>GetStaticType<a class="headerlink" href="#id95" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyTypedEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::KeyTyped</div>
+</div>
+</div>
+<div class="section" id="id96">
+<h3>GetEventType<a class="headerlink" href="#id96" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyTypedEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::KeyTyped</div>
+</div>
+</div>
+<div class="section" id="id97">
+<h3>GetName<a class="headerlink" href="#id97" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">KeyTypedEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;KeyTyped&quot;</span></code></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="input.html" class="btn btn-neutral float-right" title="Input" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="core.html" class="btn btn-neutral float-left" title="Core" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019 Jan &#34;GamesTrap&#34; Schürkamp All Rights Reserved
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -49,7 +49,7 @@ namespace TRAP
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseScrolledEvent: " << GetXOffset() << ", " << GetYOffset();
+			ss << "MouseScrollEvent: " << GetXOffset() << ", " << GetYOffset();
 
 			return ss.str();
 		}
@@ -172,7 +172,7 @@ inline const char* TRAP::MouseMovedEvent::GetName() const
 
 inline int32_t TRAP::MouseMovedEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::EventCategoryMouse) | static_cast<int32_t>(EventCategory::EventCategoryInput);
+	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -214,7 +214,7 @@ inline const char* TRAP::MouseScrolledEvent::GetName() const
 
 inline int32_t TRAP::MouseScrolledEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::EventCategoryMouse) | static_cast<int32_t>(EventCategory::EventCategoryInput);
+	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -228,7 +228,7 @@ inline TRAP::Input::MouseButton TRAP::MouseButtonEvent::GetMouseButton() const
 
 inline int32_t TRAP::MouseButtonEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::EventCategoryMouse) | static_cast<int32_t>(EventCategory::EventCategoryInput);
+	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

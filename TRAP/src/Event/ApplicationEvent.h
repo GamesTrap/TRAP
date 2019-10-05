@@ -20,7 +20,7 @@ namespace TRAP
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "WindowResizeEvent: " << m_width << ", " << m_height;
+			ss << "WindowResizeEvent: " << m_width << "x" << m_height;
 
 			return ss.str();
 		}
@@ -59,7 +59,7 @@ namespace TRAP
 	public:
 		WindowMovedEvent(const int32_t x, const int32_t y, std::string title)
 			: m_x(x), m_y(y), m_title(std::move(title))
-		{			
+		{
 		}
 
 		int32_t GetX() const;
@@ -195,7 +195,7 @@ inline const char* TRAP::WindowResizeEvent::GetName() const
 
 inline int32_t TRAP::WindowResizeEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::Application);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -223,7 +223,7 @@ inline const char* TRAP::WindowCloseEvent::GetName() const
 
 inline int32_t TRAP::WindowCloseEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::Application);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -258,14 +258,14 @@ inline TRAP::EventType TRAP::WindowMovedEvent::GetEventType() const
 
 inline const char* TRAP::WindowMovedEvent::GetName() const
 {
-	return "WindowMoved";
+	return "WindowMove";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 inline int32_t TRAP::WindowMovedEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::Application);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -293,7 +293,7 @@ inline const char* TRAP::WindowFocusEvent::GetName() const
 
 inline int32_t TRAP::WindowFocusEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::Application);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -321,7 +321,7 @@ inline const char* TRAP::WindowLostFocusEvent::GetName() const
 
 inline int32_t TRAP::WindowLostFocusEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::Application);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -349,7 +349,7 @@ inline const char* TRAP::AppTickEvent::GetName() const
 
 inline int32_t TRAP::AppTickEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::Application);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -377,7 +377,7 @@ inline const char* TRAP::AppUpdateEvent::GetName() const
 
 inline int32_t TRAP::AppUpdateEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::Application);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -405,7 +405,7 @@ inline const char* TRAP::AppRenderEvent::GetName() const
 
 inline int32_t TRAP::AppRenderEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::EventCategoryApplication);
+	return static_cast<int32_t>(EventCategory::Application);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -38,7 +38,7 @@ void TRAP::Graphics::API::OpenGLVertexArray::AddVertexBuffer(Scope<VertexBuffer>
 	for (const auto& element : layout)
 	{
 		OpenGLCall(glEnableVertexArrayAttrib(m_handle, index));
-		OpenGLCall(glVertexArrayAttribFormat(m_handle, index, element.GetComponentCount(), TRAP::Graphics::API::ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized, element.Offset));
+		OpenGLCall(glVertexArrayAttribFormat(m_handle, index, element.GetComponentCount(), TRAP::Graphics::API::ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized, static_cast<intptr_t>(element.Offset)));
 		OpenGLCall(glVertexArrayAttribBinding(m_handle, index, 0));
 		components += element.GetComponentCount();
 		

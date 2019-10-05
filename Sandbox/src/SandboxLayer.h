@@ -34,7 +34,7 @@ public:
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnAttach() override
-	{
+	{		
 		//Mount & Load Shaders
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
