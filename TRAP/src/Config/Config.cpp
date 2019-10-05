@@ -50,12 +50,12 @@ bool TRAP::Utils::Config::Read()
 	for (const auto& line : lines)
 	{
 		//Parse line
-		std::pair<std::string, std::string> keyValuePair = ParseLine(line);
+		auto [key, value] = ParseLine(line);
 
-		if (!keyValuePair.first.empty())
+		if (!key.empty())
 		{
 			//If the line is not empty or a comment save it to the vector
-			m_data.push_back(keyValuePair);
+			m_data.emplace_back(key, value);
 		}
 	}
 
@@ -78,39 +78,39 @@ bool TRAP::Utils::Config::Write() const
 		for (const auto& line : lines)
 		{
 			//Parse line
-			std::pair<std::string, std::string> keyValuePair = ParseLine(line);
+			auto [key, value] = ParseLine(line);
 
-			if (!keyValuePair.first.empty())
+			if (!key.empty())
 			{
 				//Check if the key is found in the vector
-				const auto it = std::find_if(m_data.begin(), m_data.end(), [&keyValuePair](const std::pair<std::string, std::string>& element) {return element.first == keyValuePair.first; });
+				const auto it = std::find_if(m_data.begin(), m_data.end(), [&key](const std::pair<std::string, std::string>& element) {return element.first == key; });
 				if (it != m_data.end())
 					//If so take it's value, otherwise the value from the file is kept
-					keyValuePair.second = it->second;
+					value = it->second;
 			}
 			else
 			{
 				//If the line is empty or a comment simply take the whole line as the key
-				keyValuePair.first = line;
+				key = line;
 			}
-			fileContents.push_back(keyValuePair);
+			fileContents.emplace_back(key, value);
 		}
 	}
 	else
 	{
 		//Can't open file for reading. Use only the data from the map
-		for (const auto& it : m_data)
-			fileContents.emplace_back(it.first, it.second);
+		for (const auto& [key, value] : m_data)
+			fileContents.emplace_back(key, value);
 	}
 
 	std::stringstream ss;
-	for (const auto& fileContent : fileContents)
+	for (const auto& [key, value] : fileContents)
 	{
-		ss << fileContent.first; //Write the key
+		ss << key; //Write the key
 
-		if (!fileContent.second.empty())
+		if (!value.empty())
 			//If this line is not empty or a comment also write the assignment and the value
-			ss << " = " << fileContent.second;
+			ss << " = " << value;
 
 		ss << '\n';
 	}
@@ -155,8 +155,8 @@ std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::st
 
 void TRAP::Utils::Config::Print() const
 {
-	for (auto& element : m_data)
-		TP_TRACE("[Config] ", element.first, " = ", element.second);
+	for (auto& [key, value] : m_data)
+		TP_TRACE("[Config] ", key, " = ", value);
 
 	TP_TRACE("[Config] Size: ", m_data.size());
 }

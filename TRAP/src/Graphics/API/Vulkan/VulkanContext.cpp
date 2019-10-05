@@ -536,10 +536,10 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 
 		//Use first physical Device with highest score
 		VkPhysicalDevice physicalDevice{};
-		for (const auto& candidate : candidates)
-			if (candidate.first == highestScore)
+		for (const auto& [key, value] : candidates)
+			if (key == highestScore)
 			{
-				physicalDevice = candidate.second;
+				physicalDevice = value;
 				break;
 			}
 

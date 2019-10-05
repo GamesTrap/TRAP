@@ -374,11 +374,11 @@ void TRAP::Utils::Config::Set(const std::string& key, const T value)
 {
 	//The [] operator replaces the value if the key is found
 	m_isChanged = true;
-	for (auto& item : m_data)
+	for (auto& [elementKey, elementValue] : m_data)
 	{
-		if (item.first == key)
+		if (elementKey == key)
 		{
-			item.second = ConvertToString<T>(value);
+			elementValue = ConvertToString<T>(value);
 
 			return;
 		}
@@ -401,11 +401,11 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 
 	//The [] operator replaces the value if the key is found, if not it creates a new element
 	m_isChanged = true;
-	for (auto& item : m_data)
+	for (auto& [elementKey, elementValue] : m_data)
 	{
-		if (item.first == key)
+		if (elementKey == key)
 		{
-			item.second = valueAsString;
+			elementValue = valueAsString;
 
 			return;
 		}

@@ -740,10 +740,10 @@ void TRAP::Graphics::API::VulkanRenderer::PickPhysicalDevice(std::vector<VkPhysi
 	if (!candidates.empty())
 	{
 		//Use first physical Device with highest score
-		for (const auto& candidate : candidates)
-			if (candidate.first == highestScore)
+		for (const auto& [key, value] : candidates)
+			if (key == highestScore)
 			{
-				m_physicalDevice = candidate.second;
+				m_physicalDevice = value;
 				break;
 			}
 		vkGetPhysicalDeviceProperties(m_physicalDevice, &m_physicalDeviceProperties);

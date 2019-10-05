@@ -10,8 +10,8 @@ void TRAP::Log::Save()
 	std::ofstream file("Log.txt");
 	if (file.is_open())
 	{
-		for (const auto& item : m_buffer)
-			file << item.second << '\n';
+		for (const auto& [level, message] : m_buffer)
+			file << message << '\n';
 
 		file.close();
 	}

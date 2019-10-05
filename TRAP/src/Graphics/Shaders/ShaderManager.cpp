@@ -128,10 +128,10 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 	}
 	else //Virtual Path
 	{
-		for (const auto& shader : s_Shaders)
-			if (nameOrVirtualPath == shader.second->GetFilePath())
+		for (const auto& [name, shader] : s_Shaders)
+			if (nameOrVirtualPath == shader->GetFilePath())
 			{
-				Reload(shader.second);
+				Reload(shader);
 				return;
 			}
 		
@@ -179,8 +179,8 @@ void TRAP::Graphics::ShaderManager::Reload(const Scope<Shader>& shader)
 void TRAP::Graphics::ShaderManager::ReloadAll()
 {
 	TP_INFO("[ShaderManager] Reloading all may take a while...");
-	for (auto& shader : s_Shaders)
-		Reload(shader.second);
+	for (auto& [name, shader] : s_Shaders)
+		Reload(shader);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -205,8 +205,8 @@ bool TRAP::Graphics::ShaderManager::Exists(const std::string& name)
 
 bool TRAP::Graphics::ShaderManager::ExistsVirtualPath(const std::string& virtualPath)
 {
-	for(const auto& shader : s_Shaders)
-		if (shader.second->GetFilePath() == virtualPath)
+	for(const auto& [name, shader] : s_Shaders)
+		if (shader->GetFilePath() == virtualPath)
 			return true;
 
 	return false;

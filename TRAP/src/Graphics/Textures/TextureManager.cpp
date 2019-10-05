@@ -190,21 +190,21 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 	}
 	else //Virtual Path
 	{
-		for (const auto& texture : s_Textures)
-			if (texture.second->GetType() == TextureType::Texture2D)
+		for (const auto& [name, texture] : s_Textures)
+			if (texture->GetType() == TextureType::Texture2D)
 			{
-				if (nameOrVirtualPath == texture.second->GetImage()->GetFilePath())
+				if (nameOrVirtualPath == texture->GetImage()->GetFilePath())
 				{
-					Reload(texture.second);
+					Reload(texture);
 					return;
 				}
 			}
-			else if(texture.second->GetType() == TextureType::TextureCube)
-				for (uint32_t i = 0; i < dynamic_cast<TextureCube*>(texture.second.get())->GetImages().size(); i++)
-					if (dynamic_cast<TextureCube*>(texture.second.get())->GetImages()[i])
-						if (nameOrVirtualPath == dynamic_cast<TextureCube*>(texture.second.get())->GetImages()[i]->GetFilePath())
+			else if(texture->GetType() == TextureType::TextureCube)
+				for (uint32_t i = 0; i < dynamic_cast<TextureCube*>(texture.get())->GetImages().size(); i++)
+					if (dynamic_cast<TextureCube*>(texture.get())->GetImages()[i])
+						if (nameOrVirtualPath == dynamic_cast<TextureCube*>(texture.get())->GetImages()[i]->GetFilePath())
 						{
-							Reload(texture.second);
+							Reload(texture);
 							return;
 						}
 		
@@ -266,8 +266,8 @@ void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 void TRAP::Graphics::TextureManager::ReloadAll()
 {
 	TP_INFO("[TextureManager] Reloading all may take a while...");
-	for (auto& texture : s_Textures)
-		Reload(texture.second);
+	for (auto& [name, texture] : s_Textures)
+		Reload(texture);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -289,16 +289,16 @@ bool TRAP::Graphics::TextureManager::Exists(const std::string& name)
 
 bool TRAP::Graphics::TextureManager::ExistsVirtualPath(const std::string& virtualPath)
 {
-	for (const auto& texture : s_Textures)
+	for (const auto& [name, texture] : s_Textures)
 	{
-		if (texture.second->GetType() == TextureType::Texture2D)
+		if (texture->GetType() == TextureType::Texture2D)
 		{
-			if (texture.second->GetImage()->GetFilePath() == virtualPath)
+			if (texture->GetImage()->GetFilePath() == virtualPath)
 				return true;
 		}
-		else if(texture.second->GetType() == TextureType::TextureCube)
+		else if(texture->GetType() == TextureType::TextureCube)
 		{
-			const std::array<Image*, 6> images = reinterpret_cast<const Scope<TextureCube>&>(texture.second)->GetImages();
+			const std::array<Image*, 6> images = reinterpret_cast<const Scope<TextureCube>&>(texture)->GetImages();
 			for(const auto& image : images)
 			{
 				if (image->GetFilePath() == virtualPath)
