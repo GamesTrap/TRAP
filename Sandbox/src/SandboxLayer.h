@@ -116,7 +116,7 @@ public:
 				else
 				{
 					float time = TRAP::Application::GetTime();
-					m_uniformBuffer->UpdateData(&time);					
+					m_uniformBuffer->UpdateData(&time);
 					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColor"), m_vertexArray);
 				}
 			}

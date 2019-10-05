@@ -480,3 +480,4 @@ SITREP 10/05/2019|19w40a4
     - Finished & Added Event documentation ~>75 mins
     - OpenGLTexture2D & OpenGLTextureCube Added safety checks to Bind and Unbind ~>10 mins
     - Now utilizing structured bindings ~<30 mins
+    - OpenGLTexture2D & OpenGLTextureCube Optimized Binding/Unbinding of the same Texture to the same slot ~>25 mins

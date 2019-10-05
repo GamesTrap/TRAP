@@ -42,7 +42,8 @@ namespace TRAP::Graphics::API
 		TextureParameters m_parameters;
 		InputFormat m_inputFormat;
 
-		static uint32_t s_MaxCombinedTextureUnits;
+		static uint32_t s_maxCombinedTextureUnits;
+		static std::unordered_map<uint32_t, const OpenGLTextureCube*> s_boundCubeTextures;
 	};
 }
 

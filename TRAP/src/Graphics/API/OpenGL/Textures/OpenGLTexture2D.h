@@ -36,7 +36,8 @@ namespace TRAP::Graphics::API
 		TextureParameters m_parameters;
 		uint32_t m_handle;
 
-		static uint32_t s_MaxCombinedTextureUnits;
+		static uint32_t s_maxCombinedTextureUnits;
+		static std::unordered_map<uint32_t, const OpenGLTexture2D*> s_bound2DTextures;
 	};
 }
 
