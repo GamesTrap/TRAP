@@ -23,3 +23,10 @@ void TRAP::Graphics::API::VulkanVertexBuffer::SetLayout(const BufferLayout& layo
 {
 	m_layout = layout;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::VulkanVertexBuffer::GetVertexCount() const
+{
+	return 0;
+}

@@ -3,6 +3,27 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::TextureParameters::TextureParameters()
+	: Filter(TextureFilter::Nearest), Wrap(TextureWrap::Clamp_To_Edge)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::TextureParameters::TextureParameters(const TextureFilter filter)
+	: Filter(filter), Wrap(TextureWrap::Clamp_To_Edge)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::TextureParameters::TextureParameters(const TextureFilter filter, const TextureWrap wrap)
+	: Filter(filter), Wrap(wrap)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 uint8_t TRAP::Graphics::Texture::GetStrideFromFormat(const ImageFormat format)
 {
 	switch(format)

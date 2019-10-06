@@ -13,7 +13,7 @@ namespace TRAP::Graphics::API
 		std::array<uint32_t, 6> Line{};
 	};
 
-	class VulkanShader final : public Graphics::Shader
+	class VulkanShader final : public Shader
 	{
 	public:
 		VulkanShader(std::string name, std::string source);
@@ -68,62 +68,6 @@ namespace TRAP::Graphics::API
 		std::vector<VkPipelineShaderStageCreateInfo> m_graphicsShaderStages;
 		VkPipelineShaderStageCreateInfo m_computeShaderStage;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::VulkanShader::GetName() const
-{
-	return m_name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::VulkanShader::GetFilePath() const
-{
-	return m_filepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::VulkanShader::GetVSSource() const
-{
-	return m_VSSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::VulkanShader::GetFSSource() const
-{
-	return m_FSSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::VulkanShader::GetGSSource() const
-{
-	return m_GSSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::VulkanShader::GetTCSSource() const
-{
-	return m_TCSSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::VulkanShader::GetTESSource() const
-{	
-	return m_TESSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::VulkanShader::GetCSSource() const
-{
-	return m_CSSource;
 }
 
 #endif /*_TRAP_VULKANSHADER_H_*/

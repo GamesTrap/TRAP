@@ -13,7 +13,7 @@ namespace TRAP
 		Erased
 	};
 
-	class FileWatcher
+	class FileWatcher final
 	{
 	public:
 		//Keep a record of files from every physicalPath inside virtualPath and their last modification time

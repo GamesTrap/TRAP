@@ -36,7 +36,34 @@ void TRAP::Graphics::API::D3D12TextureCube::Bind(uint32_t slot) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::D3D12TextureCube::Unbind(uint32_t slot) const
-{	
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Graphics::API::D3D12TextureCube::GetName() const
+{
+	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Image* TRAP::Graphics::API::D3D12TextureCube::GetImage()
+{
+	return m_images[0].get();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::TextureParameters TRAP::Graphics::API::D3D12TextureCube::GetParameters()
+{
+	return m_parameters;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::D3D12TextureCube::SetWrap(const TextureWrap wrap)
+{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -47,13 +74,14 @@ void TRAP::Graphics::API::D3D12TextureCube::SetFilter(const TextureFilter filter
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12TextureCube::SetWrap(const TextureWrap wrap)
-{	
+TRAP::Graphics::InputFormat TRAP::Graphics::API::D3D12TextureCube::GetInputFormat() const
+{
+	return InputFormat::NONE;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::InputFormat TRAP::Graphics::API::D3D12TextureCube::GetInputFormat() const
+std::array<TRAP::Image*, 6> TRAP::Graphics::API::D3D12TextureCube::GetImages() const
 {
-	return InputFormat::NONE;
+	return { m_images[0].get(), m_images[1].get(), m_images[2].get(), m_images[3].get(), m_images[4].get(), m_images[5].get(), };
 }

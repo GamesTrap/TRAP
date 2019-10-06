@@ -132,16 +132,9 @@ void TRAP::Graphics::API::OpenGLRenderer::SetFrontFace(const RendererFrontFace f
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetWireFrame(const bool enabled)
+void TRAP::Graphics::API::OpenGLRenderer::SetViewport(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height)
 {
-	if (enabled)
-	{
-		OpenGLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
-	}
-	else
-	{
-		OpenGLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
-	}
+	OpenGLCall(glViewport(x, y, width, height));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -181,16 +174,23 @@ void TRAP::Graphics::API::OpenGLRenderer::SetBlendEquationSeparate(const Rendere
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetViewport(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height)
+void TRAP::Graphics::API::OpenGLRenderer::SetCullMode(const RendererCullMode cullMode)
 {
-	OpenGLCall(glViewport(x, y, width, height));
+	OpenGLCall(glCullFace(TRAPRendererCullModeToOpenGL(cullMode)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetCullMode(const RendererCullMode cullMode)
+void TRAP::Graphics::API::OpenGLRenderer::SetWireFrame(const bool enabled)
 {
-	OpenGLCall(glCullFace(TRAPRendererCullModeToOpenGL(cullMode)));
+	if (enabled)
+	{
+		OpenGLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
+	}
+	else
+	{
+		OpenGLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -205,6 +205,20 @@ void TRAP::Graphics::API::OpenGLRenderer::DrawIndexed(const Scope<VertexArray>& 
 void TRAP::Graphics::API::OpenGLRenderer::Draw(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {
 	OpenGLCall(glDrawArrays(TRAPRendererPrimitiveToOpenGL(primitive), 0, vertexArray->GetIndexCount()));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string_view TRAP::Graphics::API::OpenGLRenderer::GetTitle() const
+{
+	return m_rendererTitle;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::OpenGLRenderer* TRAP::Graphics::API::OpenGLRenderer::Get()
+{
+	return reinterpret_cast<OpenGLRenderer*>(s_Renderer.get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

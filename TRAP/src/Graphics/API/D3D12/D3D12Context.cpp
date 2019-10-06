@@ -43,7 +43,14 @@ void TRAP::Graphics::API::D3D12Context::Present(const std::unique_ptr<Window>& w
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::D3D12Context::UseInternal(const std::unique_ptr<Window>& window)
-{	
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::D3D12Context* TRAP::Graphics::API::D3D12Context::Get()
+{
+	return dynamic_cast<D3D12Context*>(s_Context.get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

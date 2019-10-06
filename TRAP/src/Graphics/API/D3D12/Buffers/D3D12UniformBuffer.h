@@ -5,7 +5,7 @@
 
 namespace TRAP::Graphics::API
 {
-	class D3D12UniformBuffer : public UniformBuffer
+	class D3D12UniformBuffer final : public UniformBuffer
 	{
 	public:
 		D3D12UniformBuffer(const char* name, uint32_t size, BufferUsage usage);

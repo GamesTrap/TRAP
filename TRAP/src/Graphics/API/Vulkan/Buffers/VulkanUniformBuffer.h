@@ -5,7 +5,7 @@
 
 namespace TRAP::Graphics::API
 {
-	class VulkanUniformBuffer : public UniformBuffer
+	class VulkanUniformBuffer final : public UniformBuffer
 	{
 	public:
 		VulkanUniformBuffer(const char* name, uint32_t size, BufferUsage usage);

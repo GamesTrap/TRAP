@@ -185,6 +185,231 @@ void TRAP::Graphics::API::VulkanRenderer::Draw(const Scope<VertexArray>& vertexA
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::string_view TRAP::Graphics::API::VulkanRenderer::GetTitle() const
+{
+	return m_rendererTitle;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::Get()
+{
+	return reinterpret_cast<VulkanRenderer*>(s_Renderer.get());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkInstance& TRAP::Graphics::API::VulkanRenderer::GetInstance()
+{
+	return m_instance;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPhysicalDevice& TRAP::Graphics::API::VulkanRenderer::GetPhysicalDevice()
+{
+	return m_physicalDevice;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::optional<uint32_t>& TRAP::Graphics::API::VulkanRenderer::GetGraphicsQueueFamilyIndex()
+{
+	return m_graphicsFamilyIndex;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::optional<uint32_t>& TRAP::Graphics::API::VulkanRenderer::GetPresentQueueFamilyIndex()
+{
+	return m_presentFamilyIndex;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkDevice& TRAP::Graphics::API::VulkanRenderer::GetDevice()
+{
+	return m_device;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::InitGraphicsPipeline(const std::vector<VkPipelineShaderStageCreateInfo>& shaderStages)
+{
+	DeInitGraphicsPipeline(); //Delete old Graphics Pipeline if it exists
+
+	TP_DEBUG("[Renderer][Vulkan] Initializing Graphics Pipeline");
+
+	VkPipelineVertexInputStateCreateInfo vertexInputStateCreateInfo
+	{
+		VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
+		nullptr,
+		0,
+		0,
+		nullptr,
+		0,
+		nullptr
+	};
+
+	VkPipelineInputAssemblyStateCreateInfo inputAssembly
+	{
+		VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+		nullptr,
+		0,
+		VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,
+		false
+	};
+
+	VkViewport viewport
+	{
+		0.0f,
+		0.0f,
+		static_cast<float>(m_context->GetSwapchainExtent().width),
+		static_cast<float>(m_context->GetSwapchainExtent().height),
+		0.0f,
+		1.0f
+	};
+
+	VkRect2D scissor
+	{
+		{0, 0},
+		m_context->GetSwapchainExtent()
+	};
+
+	VkPipelineViewportStateCreateInfo viewportStateCreateInfo
+	{
+		VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
+		nullptr,
+		0,
+		1,
+		&viewport,
+		1,
+		&scissor
+	};
+
+	VkPipelineRasterizationStateCreateInfo rasterizationStateCreateInfo
+	{
+		VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+		nullptr,
+		0,
+		false,
+		false,
+		VK_POLYGON_MODE_FILL, //TODO Wireframe? & RendererPrimitive?
+		VK_CULL_MODE_BACK_BIT, //TODO Set Culling from Renderer
+		VK_FRONT_FACE_COUNTER_CLOCKWISE, //TODO Set Front Face from Renderer
+		false,
+		0.0f,
+		0.0f,
+		0.0f,
+		1.0f
+	};
+
+	VkPipelineMultisampleStateCreateInfo multisampleStateCreateInfo //TODO Multisampling...
+	{
+		VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
+		nullptr,
+		0,
+		VK_SAMPLE_COUNT_1_BIT,
+		false,
+		1.0f,
+		nullptr,
+		false,
+		false
+	};
+
+	/*VkPipelineDepthStencilStateCreateInfo depthStencilStateCreateInfo //TODO Depth And Stencil...
+	{
+		VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+		nullptr,
+		0,
+		false, //TODO Set Depth Test from Rendere
+		false,
+	};*/
+
+	//TODO Colorblending...
+	VkPipelineColorBlendAttachmentState colorBlendAttachmentState
+	{
+		false, //Blending enabled
+		VK_BLEND_FACTOR_ONE, //SRC Factor
+		VK_BLEND_FACTOR_ZERO, //DST Factor
+		VK_BLEND_OP_ADD, //Blending Operation
+		VK_BLEND_FACTOR_ONE, //SRC Alpha Factor
+		VK_BLEND_FACTOR_ZERO, //DST Alpha Factor
+		VK_BLEND_OP_ADD, //Blending Alpha Operation
+		VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT
+	};
+
+	VkPipelineColorBlendStateCreateInfo colorBlending
+	{
+		VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+		nullptr,
+		0,
+		false,
+		VK_LOGIC_OP_COPY,
+		1,
+		&colorBlendAttachmentState,
+	{0.0f, 0.0f, 0.0f, 0.0f}
+	};
+
+	//Make Viewport Size and blend constants dynamically changeable
+	std::array<VkDynamicState, 2> dynamicStates
+	{
+		VK_DYNAMIC_STATE_VIEWPORT,
+		VK_DYNAMIC_STATE_BLEND_CONSTANTS
+	};
+	VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo
+	{
+		VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
+		nullptr,
+		0,
+		static_cast<uint32_t>(dynamicStates.size()),
+		dynamicStates.data()
+	};
+
+	InitPipelineLayout();
+
+	VkGraphicsPipelineCreateInfo pipelineCreateInfo
+	{
+		VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
+		nullptr,
+		0,
+		static_cast<uint32_t>(shaderStages.size()),
+		shaderStages.data(),
+		& vertexInputStateCreateInfo,
+		& inputAssembly,
+		nullptr,
+		& viewportStateCreateInfo,
+		& rasterizationStateCreateInfo,
+		& multisampleStateCreateInfo,
+		nullptr,
+		& colorBlending,
+		& dynamicStateCreateInfo,
+		m_pipelineLayout,
+		m_renderPass,
+		0,
+		nullptr,
+		-1
+	};
+
+	VkCall(vkCreateGraphicsPipelines(m_device, nullptr, 1, &pipelineCreateInfo, nullptr, &m_graphicsPipeline));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::DeInitGraphicsPipeline()
+{
+	if (m_graphicsPipeline)
+	{
+		TP_DEBUG("[Renderer][Vulkan] Destroying Graphics Pipeline");
+		vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
+		m_graphicsPipeline = nullptr;
+
+		DeInitPipelineLayout();
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::SetupInstanceLayersAndExtensions()
 {
 	TP_DEBUG("[Renderer][Vulkan] Setting up Instance Layers and Extensions");
@@ -205,34 +430,6 @@ void TRAP::Graphics::API::VulkanRenderer::SetupInstanceLayersAndExtensions()
 	AddInstanceExtension(availableInstanceExtensions, VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 #endif
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
-VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, const VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* callbackData, void* userData)
-{
-	std::ostringstream stream;
-
-	stream << "[Renderer][Vulkan]";
-	if (messageType == VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT)
-		stream << "[Violation] ";
-	else if (messageType == VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
-		stream << "[Performance] ";
-	else
-		stream << ' ';
-	stream << callbackData->messageIdNumber << '(' << callbackData->pMessageIdName << ") " << callbackData->pMessage;
-	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
-		TP_DEBUG(stream.str());
-	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
-		TP_INFO(stream.str());
-	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-		TP_WARN(stream.str());
-	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
-		TP_ERROR(stream.str());
-
-	return false;
-}
-#endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -338,6 +535,32 @@ void TRAP::Graphics::API::VulkanRenderer::DeInitInstance()
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 PFN_vkCreateDebugUtilsMessengerEXT fvkCreateDebugUtilsMessengerEXT = nullptr;
 PFN_vkDestroyDebugUtilsMessengerEXT fvkDestroyDebugUtilsMessengerEXT = nullptr;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, const VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* callbackData, void* userData)
+{
+	std::ostringstream stream;
+
+	stream << "[Renderer][Vulkan]";
+	if (messageType == VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT)
+		stream << "[Violation] ";
+	else if (messageType == VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
+		stream << "[Performance] ";
+	else
+		stream << ' ';
+	stream << callbackData->messageIdNumber << '(' << callbackData->pMessageIdName << ") " << callbackData->pMessage;
+	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
+		TP_DEBUG(stream.str());
+	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
+		TP_INFO(stream.str());
+	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+		TP_WARN(stream.str());
+	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+		TP_ERROR(stream.str());
+
+	return false;
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -540,182 +763,6 @@ void TRAP::Graphics::API::VulkanRenderer::DeInitPipelineLayout()
 		vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
 		m_pipelineLayout = nullptr;
 	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::InitGraphicsPipeline(const std::vector<VkPipelineShaderStageCreateInfo>& shaderStages)
-{
-	DeInitGraphicsPipeline(); //Delete old Graphics Pipeline if it exists
-	
-	TP_DEBUG("[Renderer][Vulkan] Initializing Graphics Pipeline");
-
-	VkPipelineVertexInputStateCreateInfo vertexInputStateCreateInfo
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		0,
-		nullptr,
-		0,
-		nullptr
-	};
-
-	VkPipelineInputAssemblyStateCreateInfo inputAssembly
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,
-		false
-	};
-
-	VkViewport viewport
-	{
-		0.0f,
-		0.0f,
-		static_cast<float>(m_context->GetSwapchainExtent().width),
-		static_cast<float>(m_context->GetSwapchainExtent().height),
-		0.0f,
-		1.0f
-	};
-
-	VkRect2D scissor
-	{
-		{0, 0},
-		m_context->GetSwapchainExtent()
-	};
-
-	VkPipelineViewportStateCreateInfo viewportStateCreateInfo
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		1,
-		&viewport,
-		1,
-		&scissor
-	};
-
-	VkPipelineRasterizationStateCreateInfo rasterizationStateCreateInfo
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		false,
-		false,
-		VK_POLYGON_MODE_FILL, //TODO Wireframe? & RendererPrimitive?
-		VK_CULL_MODE_BACK_BIT, //TODO Set Culling from Renderer
-		VK_FRONT_FACE_COUNTER_CLOCKWISE, //TODO Set Front Face from Renderer
-		false,
-		0.0f,
-		0.0f,
-		0.0f,
-		1.0f
-	};
-
-	VkPipelineMultisampleStateCreateInfo multisampleStateCreateInfo //TODO Multisampling...
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		VK_SAMPLE_COUNT_1_BIT,
-		false,
-		1.0f,
-		nullptr,
-		false,
-		false
-	};
-
-	/*VkPipelineDepthStencilStateCreateInfo depthStencilStateCreateInfo //TODO Depth And Stencil...
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		false, //TODO Set Depth Test from Rendere
-		false,
-	};*/
-
-	//TODO Colorblending...
-	VkPipelineColorBlendAttachmentState colorBlendAttachmentState
-	{
-		false, //Blending enabled
-		VK_BLEND_FACTOR_ONE, //SRC Factor
-		VK_BLEND_FACTOR_ZERO, //DST Factor
-		VK_BLEND_OP_ADD, //Blending Operation
-		VK_BLEND_FACTOR_ONE, //SRC Alpha Factor
-		VK_BLEND_FACTOR_ZERO, //DST Alpha Factor
-		VK_BLEND_OP_ADD, //Blending Alpha Operation
-		VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT
-	};
-
-	VkPipelineColorBlendStateCreateInfo colorBlending
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		false,
-		VK_LOGIC_OP_COPY,
-		1,
-		&colorBlendAttachmentState,
-	{0.0f, 0.0f, 0.0f, 0.0f}
-	};
-
-	//Make Viewport Size and blend constants dynamically changeable
-	std::array<VkDynamicState, 2> dynamicStates
-	{
-		VK_DYNAMIC_STATE_VIEWPORT,
-		VK_DYNAMIC_STATE_BLEND_CONSTANTS
-	};
-	VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		static_cast<uint32_t>(dynamicStates.size()),
-		dynamicStates.data()
-	};
-
-	InitPipelineLayout();
-
-	VkGraphicsPipelineCreateInfo pipelineCreateInfo
-	{
-		VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
-		nullptr,
-		0,
-		static_cast<uint32_t>(shaderStages.size()),
-		shaderStages.data(),
-		&vertexInputStateCreateInfo,
-		&inputAssembly,
-		nullptr,
-		&viewportStateCreateInfo,
-		&rasterizationStateCreateInfo,
-		&multisampleStateCreateInfo,
-		nullptr,
-		&colorBlending,
-		&dynamicStateCreateInfo,
-		m_pipelineLayout,
-		m_renderPass,
-		0,
-		nullptr,
-		-1
-	};
-
-	VkCall(vkCreateGraphicsPipelines(m_device, nullptr, 1, &pipelineCreateInfo, nullptr, &m_graphicsPipeline));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::DeInitGraphicsPipeline()
-{
-	if(m_graphicsPipeline)
-	{
-		TP_DEBUG("[Renderer][Vulkan] Destroying Graphics Pipeline");
-		vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
-		m_graphicsPipeline = nullptr;
-		
-		DeInitPipelineLayout();
-	}	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

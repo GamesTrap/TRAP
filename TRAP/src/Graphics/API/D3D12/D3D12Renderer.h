@@ -57,20 +57,6 @@ namespace TRAP::Graphics::API
 	};
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::string_view TRAP::Graphics::API::D3D12Renderer::GetTitle() const
-{	
-	return m_rendererTitle;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Graphics::API::D3D12Renderer* TRAP::Graphics::API::D3D12Renderer::Get()
-{
-	return reinterpret_cast<D3D12Renderer*>(s_Renderer.get());
-}
-
 #endif
 
 #endif /*_TRAP_D3D12RENDERER_H_*/

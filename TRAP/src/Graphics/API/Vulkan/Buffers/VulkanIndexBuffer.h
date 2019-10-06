@@ -5,7 +5,7 @@
 
 namespace TRAP::Graphics::API
 {
-	class VulkanIndexBuffer : public IndexBuffer
+	class VulkanIndexBuffer final : public IndexBuffer
 	{
 	public:
 		VulkanIndexBuffer(uint32_t* indices, uint32_t size);

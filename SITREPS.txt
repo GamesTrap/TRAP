@@ -487,3 +487,5 @@ SITREP 10/06/2019|19w40a5
     - OpenGLUniformBuffer Fixed Unbind function not using bindingPoint ~<20 mins
     - OpenGLUniformBuffer Added Unbind/Bind safety checks ~>20 mins
     - OpenGLUniformBuffer Optimized Binding/Unbinding of the same UniformBuffer to the same bindingPoint ~>20 mins
+    - Moved all inline functions to the .cpp files ~>120 mins
+    - Reordered functions to match declarations ~>125 mins

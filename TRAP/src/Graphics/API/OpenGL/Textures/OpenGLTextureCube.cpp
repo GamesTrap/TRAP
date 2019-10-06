@@ -160,11 +160,30 @@ void TRAP::Graphics::API::OpenGLTextureCube::Unbind(const uint32_t slot) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLTextureCube::SetFilter(const TextureFilter filter)
+uint32_t TRAP::Graphics::API::OpenGLTextureCube::GetHandle() const
 {
-	m_parameters.Filter = filter;
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));
+	return m_handle;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Graphics::API::OpenGLTextureCube::GetName() const
+{
+	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Image* TRAP::Graphics::API::OpenGLTextureCube::GetImage()
+{
+	return m_images[0].get();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::TextureParameters TRAP::Graphics::API::OpenGLTextureCube::GetParameters()
+{
+	return m_parameters;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -175,6 +194,29 @@ void TRAP::Graphics::API::OpenGLTextureCube::SetWrap(const TextureWrap wrap)
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(wrap)));
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_T, TRAPTextureWrapToOpenGL(wrap)));
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(wrap)));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLTextureCube::SetFilter(const TextureFilter filter)
+{
+	m_parameters.Filter = filter;
+	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));
+	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::InputFormat TRAP::Graphics::API::OpenGLTextureCube::GetInputFormat() const
+{
+	return m_inputFormat;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::array<TRAP::Image*, 6> TRAP::Graphics::API::OpenGLTextureCube::GetImages() const
+{
+	return { m_images[0].get(), m_images[1].get(), m_images[2].get(), m_images[3].get(), m_images[4].get(), m_images[5].get() };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

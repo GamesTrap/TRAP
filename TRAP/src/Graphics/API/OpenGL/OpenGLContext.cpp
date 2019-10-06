@@ -52,6 +52,13 @@ void TRAP::Graphics::API::OpenGLContext::UseInternal(const std::unique_ptr<Windo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::API::OpenGLContext* TRAP::Graphics::API::OpenGLContext::Get()
+{
+	return dynamic_cast<OpenGLContext*>(s_Context.get());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::Graphics::API::OpenGLContext::IsOpenGLCapable()
 {
 	//Create OpenGL 4.6 Test window

@@ -70,25 +70,19 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 46);
 
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	#ifdef TRAP_PLATFORM_WINDOWS
-		inline void TRAP_DEBUG_BREAK()
-		{
-			__debugbreak();
-		}
+		void TRAP_DEBUG_BREAK();
 	#elif defined(TRAP_PLATFORM_LINUX)
 		#include <signal.h>		
-		inline void TRAP_DEBUG_BREAK()
-		{
-			raise(SIGTRAP);
-		}
+		void TRAP_DEBUG_BREAK();
 	#else
 		constexpr void TRAP_DEBUG_BREAK()
-		{
+		{			
 		}
 	#endif
 #else
-	constexpr void TRAP_DEBUG_BREAK()
-	{
-	}
+		constexpr void TRAP_DEBUG_BREAK()
+		{			
+		}
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------//

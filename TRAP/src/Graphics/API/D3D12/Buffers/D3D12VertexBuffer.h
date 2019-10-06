@@ -27,13 +27,6 @@ namespace TRAP::Graphics::API
 	};
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Graphics::API::D3D12VertexBuffer::GetVertexCount() const
-{
-	return 0;
-}
-
 #endif
 
 #endif /*_TRAP_D3D12VERTEXBUFFER_H_*/

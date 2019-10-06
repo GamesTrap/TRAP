@@ -5,7 +5,6 @@
 #include "Graphics/API/OpenGL/Textures/OpenGLTextureCube.h"
 #include "Graphics/API/Vulkan/Textures/VulkanTextureCube.h"
 #include "VFS/VFS.h"
-#include "Utils/String.h"
 #ifdef TRAP_PLATFORM_WINDOWS
 #include "Graphics/API/D3D12/Textures/D3D12TextureCube.h"
 #endif

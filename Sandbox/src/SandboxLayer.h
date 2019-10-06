@@ -93,7 +93,7 @@ public:
 	{
 		m_uniformBuffer->Unbind();
 		m_uniformBuffer.reset();
-
+		
 		m_vertexArray->Unbind();
 		m_vertexArray.reset();
 	}

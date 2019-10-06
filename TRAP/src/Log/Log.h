@@ -21,15 +21,8 @@ namespace TRAP
 	class Log
 	{
 	public:
-		Log()
-		{
-			m_buffer.reserve(256);
-			s_Instance = this;
-		}
-		~Log()
-		{
-			Save();
-		}
+		Log();
+		~Log();
 		Log(const Log&) = default;
 		Log& operator=(const Log&) = default;
 		Log(Log&&) = default;
@@ -75,13 +68,6 @@ namespace TRAP
 
 		inline static Log* s_Instance = nullptr;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Log& TRAP::Log::Get()
-{
-	return *s_Instance;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

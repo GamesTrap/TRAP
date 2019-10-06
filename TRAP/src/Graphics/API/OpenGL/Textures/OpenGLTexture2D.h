@@ -41,32 +41,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Graphics::API::OpenGLTexture2D::GetHandle() const
-{
-	return m_handle;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::string TRAP::Graphics::API::OpenGLTexture2D::GetName() const
-{
-	return m_name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Image* TRAP::Graphics::API::OpenGLTexture2D::GetImage()
-{
-	return m_image.get();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Graphics::TextureParameters TRAP::Graphics::API::OpenGLTexture2D::GetParameters()
-{
-	return m_parameters;
-}
-
 #endif /*_TRAP_OPENGLTEXTURE2D_H_*/

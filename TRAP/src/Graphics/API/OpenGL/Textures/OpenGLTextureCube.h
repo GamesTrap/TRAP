@@ -8,7 +8,7 @@ namespace TRAP::Graphics::API
 	class OpenGLTextureCube final : public TextureCube
 	{
 	public:
-		OpenGLTextureCube(TextureParameters parameters);
+		explicit OpenGLTextureCube(TextureParameters parameters);
 		OpenGLTextureCube(std::string name, const std::array<std::string, 6>& filepaths, TextureParameters parameters);
 		OpenGLTextureCube(std::string name, const std::string& filepath, InputFormat format, TextureParameters parameters);
 		~OpenGLTextureCube();
@@ -45,48 +45,6 @@ namespace TRAP::Graphics::API
 		static uint32_t s_maxCombinedTextureUnits;
 		static std::unordered_map<uint32_t, const OpenGLTextureCube*> s_boundCubeTextures;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Graphics::API::OpenGLTextureCube::GetHandle() const
-{
-	return m_handle;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::string TRAP::Graphics::API::OpenGLTextureCube::GetName() const
-{
-	return m_name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Image* TRAP::Graphics::API::OpenGLTextureCube::GetImage()
-{
-	return m_images[0].get();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Graphics::TextureParameters TRAP::Graphics::API::OpenGLTextureCube::GetParameters()
-{
-	return m_parameters;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Graphics::InputFormat TRAP::Graphics::API::OpenGLTextureCube::GetInputFormat() const
-{
-	return m_inputFormat;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::array<TRAP::Image*, 6> TRAP::Graphics::API::OpenGLTextureCube::GetImages() const
-{
-	return { m_images[0].get(), m_images[1].get(), m_images[2].get(), m_images[3].get(), m_images[4].get(), m_images[5].get() };
 }
 
 #endif /*_TRAP_OPENGLTEXTURECUBE_H_*/

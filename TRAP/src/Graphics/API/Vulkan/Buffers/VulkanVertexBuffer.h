@@ -25,11 +25,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Graphics::API::VulkanVertexBuffer::GetVertexCount() const
-{
-	return 0;
-}
-
 #endif /*_TRAP_VULKANVERTEXBUFFER_H_*/

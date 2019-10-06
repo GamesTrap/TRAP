@@ -4,7 +4,6 @@
 #include "Graphics/API/Context.h"
 #include "Graphics/API/OpenGL/Textures/OpenGLTexture2D.h"
 #include "Graphics/API/Vulkan/Textures/VulkanTexture2D.h"
-#include "Utils/String.h"
 #include "VFS/VFS.h"
 #ifdef TRAP_PLATFORM_WINDOWS
 #include "Graphics/API/D3D12/Textures/D3D12Texture2D.h"
@@ -106,4 +105,11 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::Create(Texture
 	default:
 		return nullptr;
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::TextureType TRAP::Graphics::Texture2D::GetType() const
+{
+	return TextureType::Texture2D;
 }

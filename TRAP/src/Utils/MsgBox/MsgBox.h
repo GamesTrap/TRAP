@@ -47,26 +47,17 @@ namespace TRAP::Utils::MsgBox
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	//Convenience function to call Show() with the default buttons
-	inline Selection Show(const char* message, const char* title, Style style)
-	{
-		return Show(message, title, style, Buttons::OK);
-	}
+	Selection Show(const char* message, const char* title, Style style);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	//Convenience function to call Show() with the default style
-	inline Selection Show(const char* message, const char* title, Buttons buttons)
-	{
-		return Show(message, title, Style::Info, buttons);
-	}
+	Selection Show(const char* message, const char* title, Buttons buttons);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	//Convenience function to call Show() with the default style and buttons
-	inline Selection Show(const char* message, const char* title)
-	{
-		return Show(message, title, Style::Info, Buttons::OK);
-	}
+	Selection Show(const char* message, const char* title);
 }
 
 #endif /*_TRAP_MSGBOX_H_*/

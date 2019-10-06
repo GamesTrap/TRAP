@@ -100,6 +100,12 @@ void TRAP::Graphics::API::D3D12Renderer::SetWireFrame(bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::D3D12Renderer::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::D3D12Renderer::SetBlendFunction(RendererBlendFunction source, RendererBlendFunction destination)
 {
 }
@@ -127,12 +133,6 @@ void TRAP::Graphics::API::D3D12Renderer::SetBlendEquationSeparate(RendererBlendE
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::D3D12Renderer::SetCullMode(RendererCullMode cullMode)
 {	
 }
@@ -147,6 +147,20 @@ void TRAP::Graphics::API::D3D12Renderer::DrawIndexed(const Scope<VertexArray>& v
 
 void TRAP::Graphics::API::D3D12Renderer::Draw(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string_view TRAP::Graphics::API::D3D12Renderer::GetTitle() const
+{
+	return m_rendererTitle;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::D3D12Renderer* TRAP::Graphics::API::D3D12Renderer::Get()
+{
+	return reinterpret_cast<D3D12Renderer*>(s_Renderer.get());
 }
 
 #endif

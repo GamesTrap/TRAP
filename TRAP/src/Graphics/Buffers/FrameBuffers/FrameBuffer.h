@@ -24,7 +24,7 @@ namespace TRAP::Graphics
 		virtual const Scope<Texture>& GetTexture() const = 0;
 
 	protected:
-		virtual void Init() {};
+		virtual void Init();
 	};
 }
 

@@ -29,13 +29,6 @@ namespace TRAP::Graphics::API
 	};
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Graphics::API::D3D12Context* TRAP::Graphics::API::D3D12Context::Get()
-{
-	return dynamic_cast<D3D12Context*>(s_Context.get());
-}
-
 #endif
 
 #endif /*_TRAP_D3D12CONTEXT_H_*/

@@ -2,6 +2,7 @@
 
 #include "OpenGLFrameBuffer2D.h"
 #include "Graphics/API/OpenGL/OpenGLCommon.h"
+#include "Graphics/API/OpenGL/Textures/OpenGLTexture2D.h"
 
 const TRAP::Graphics::API::OpenGLFrameBuffer2D* TRAP::Graphics::API::OpenGLFrameBuffer2D::s_currentlyBound = nullptr;
 
@@ -33,25 +34,6 @@ TRAP::Graphics::API::OpenGLFrameBuffer2D::~OpenGLFrameBuffer2D()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLFrameBuffer2D::Init()
-{
-	OpenGLCall(glCreateFramebuffers(1, &m_frameBufferHandle));
-	OpenGLCall(glCreateRenderbuffers(1, &m_depthBufferHandle));
-
-	m_texture = Texture2D::CreateEmpty(ImageFormat::RGBA, m_width, m_height, {TextureFilter::Linear, TextureWrap::Clamp_To_Edge});
-	if (m_texture)
-	{
-		OpenGLCall(glNamedFramebufferTexture(m_frameBufferHandle, GL_COLOR_ATTACHMENT0, (dynamic_cast<OpenGLTexture2D*>(m_texture.get()))->GetHandle(), 0));
-
-		OpenGLCall(glNamedRenderbufferStorage(m_depthBufferHandle, GL_DEPTH_COMPONENT16, m_width, m_height));
-		OpenGLCall(glNamedFramebufferRenderbuffer(m_frameBufferHandle, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBufferHandle));
-
-		OpenGLCall(glCheckNamedFramebufferStatus(m_frameBufferHandle, GL_FRAMEBUFFER));
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::OpenGLFrameBuffer2D::Bind() const
 {
 	if(s_currentlyBound != this)
@@ -75,6 +57,43 @@ void TRAP::Graphics::API::OpenGLFrameBuffer2D::Unbind() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::OpenGLFrameBuffer2D::Clear()
+{
+	if (s_currentlyBound == this)
+	{
+		OpenGLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+	}
+	else
+	{
+		Bind();
+		OpenGLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+		Unbind();
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::OpenGLFrameBuffer2D::GetWidth() const
+{
+	return m_width;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::OpenGLFrameBuffer2D::GetHeight() const
+{
+	return m_height;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::API::OpenGLFrameBuffer2D::GetTexture() const
+{
+	return m_texture;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::OpenGLFrameBuffer2D::SetClearColor(const Math::Vec4& color)
 {
 	if(s_currentlyBound == this)
@@ -89,19 +108,21 @@ void TRAP::Graphics::API::OpenGLFrameBuffer2D::SetClearColor(const Math::Vec4& c
 	}
 }
 
-
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLFrameBuffer2D::Clear()
+void TRAP::Graphics::API::OpenGLFrameBuffer2D::Init()
 {
-	if (s_currentlyBound == this)
+	OpenGLCall(glCreateFramebuffers(1, &m_frameBufferHandle));
+	OpenGLCall(glCreateRenderbuffers(1, &m_depthBufferHandle));
+
+	m_texture = Texture2D::CreateEmpty(ImageFormat::RGBA, m_width, m_height, { TextureFilter::Linear, TextureWrap::Clamp_To_Edge });
+	if (m_texture)
 	{
-		OpenGLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+		OpenGLCall(glNamedFramebufferTexture(m_frameBufferHandle, GL_COLOR_ATTACHMENT0, (dynamic_cast<OpenGLTexture2D*>(m_texture.get()))->GetHandle(), 0));
+
+		OpenGLCall(glNamedRenderbufferStorage(m_depthBufferHandle, GL_DEPTH_COMPONENT16, m_width, m_height));
+		OpenGLCall(glNamedFramebufferRenderbuffer(m_frameBufferHandle, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBufferHandle));
+
+		OpenGLCall(glCheckNamedFramebufferStatus(m_frameBufferHandle, GL_FRAMEBUFFER));
 	}
-	else
-	{
-		Bind();
-		OpenGLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-		Unbind();
-	}	
 }

@@ -36,6 +36,13 @@ void TRAP::Graphics::API::OpenGLVertexBuffer::SetLayout(const BufferLayout& layo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+uint32_t TRAP::Graphics::API::OpenGLVertexBuffer::GetVertexCount() const
+{
+	return m_vertexCount;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 uint32_t TRAP::Graphics::API::OpenGLVertexBuffer::GetHandle() const
 {
 	return m_handle;

@@ -58,3 +58,17 @@ void TRAP::LayerStack::PopOverlay(const std::unique_ptr<Layer>& overlay)
 		m_layers.erase(it);
 	}
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::begin()
+{
+	return m_layers.begin();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::end()
+{
+	return m_layers.end();
+}

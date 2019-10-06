@@ -77,12 +77,11 @@ namespace TRAP
 		void SetEventCallback(const EventCallbackFn& callback);
 
 	private:
-		void Shutdown();
 		void Init(const WindowProps& props);
+		void Shutdown();
 		
 		GLFWwindow* m_window;
 		GLFWmonitor* m_useMonitor; //Stores a reference to the monitor
-		//GLFWvidmode m_baseVideoMode{}; //Stores the underlying video mode being used by the OS //TODO make it unordered_map with monitor as key and base mode as val
 		static std::unordered_map<uint32_t, GLFWvidmode> m_baseVideoModes; //Stores the underlying video mode being used by the OS for every monitor
 		
 		struct WindowedModeParams
@@ -126,26 +125,14 @@ namespace TRAP
 
 		//Sets up properties for new window(s)
 		explicit WindowProps(std::string title = "TRAP Engine",
-			const uint32_t width = 1280,
-			const uint32_t height = 720,
-			const uint32_t refreshRate = 60,
-			const uint32_t vsync = 0,
-			const Window::DisplayMode displayMode = Window::DisplayMode::Windowed,
-			const uint32_t monitor = 0,
-			const Window::CursorMode cursorMode = Window::CursorMode::Normal,
-			const bool rawMouseInput = false)
-			: Title(std::move(title)),
-			Width(width),
-			Height(height),
-			RefreshRate(refreshRate),
-			VSync(vsync),
-			RenderAPI(Graphics::API::Context::GetRenderAPI()),
-			displayMode(displayMode),
-			Monitor(monitor),
-			cursorMode(cursorMode),
-			rawMouseInput(rawMouseInput)
-		{
-		}
+		                     uint32_t width = 1280,
+		                     uint32_t height = 720,
+		                     uint32_t refreshRate = 60,
+		                     uint32_t vsync = 0,
+		                     Window::DisplayMode displayMode = Window::DisplayMode::Windowed,
+		                     uint32_t monitor = 0,
+		                     Window::CursorMode cursorMode = Window::CursorMode::Normal,
+		                     bool rawMouseInput = false);
 	};
 }
 

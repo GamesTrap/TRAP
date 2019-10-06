@@ -204,7 +204,6 @@ namespace TRAP
 			Left_Down  = Left | Down
 		};
 
-	public:
 		struct ControllerStatus
 		{
 			bool Connected = false;

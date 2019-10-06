@@ -7,7 +7,7 @@
 
 namespace TRAP::Graphics::API
 {
-	class D3D12Texture2D final : public Graphics::Texture2D
+	class D3D12Texture2D final : public Texture2D
 	{
 	public:
 		explicit D3D12Texture2D(TextureParameters parameters);
@@ -35,27 +35,6 @@ namespace TRAP::Graphics::API
 		TextureParameters m_parameters;
 		uint32_t m_handle;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::string TRAP::Graphics::API::D3D12Texture2D::GetName() const
-{
-	return m_name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Image* TRAP::Graphics::API::D3D12Texture2D::GetImage()
-{
-	return m_image.get();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Graphics::TextureParameters TRAP::Graphics::API::D3D12Texture2D::GetParameters()
-{
-	return m_parameters;
 }
 
 #endif

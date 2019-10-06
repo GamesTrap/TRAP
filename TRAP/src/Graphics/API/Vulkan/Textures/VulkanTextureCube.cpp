@@ -29,14 +29,35 @@ TRAP::Graphics::API::VulkanTextureCube::~VulkanTextureCube() = default;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanTextureCube::Bind(unsigned slot) const
+void TRAP::Graphics::API::VulkanTextureCube::Bind(uint32_t slot) const
 {	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanTextureCube::Unbind(unsigned slot) const
+void TRAP::Graphics::API::VulkanTextureCube::Unbind(uint32_t slot) const
 {	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Graphics::API::VulkanTextureCube::GetName() const
+{
+	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Image* TRAP::Graphics::API::VulkanTextureCube::GetImage()
+{
+	return m_images[0].get();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::TextureParameters TRAP::Graphics::API::VulkanTextureCube::GetParameters()
+{
+	return m_parameters;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -56,4 +77,11 @@ void TRAP::Graphics::API::VulkanTextureCube::SetFilter(TextureFilter filter)
 TRAP::Graphics::InputFormat TRAP::Graphics::API::VulkanTextureCube::GetInputFormat() const
 {
 	return InputFormat::NONE;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::array<TRAP::Image*, 6> TRAP::Graphics::API::VulkanTextureCube::GetImages() const
+{
+	return { m_images[0].get(), m_images[1].get(), m_images[2].get(), m_images[3].get(), m_images[4].get(), m_images[5].get(), };
 }

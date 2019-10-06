@@ -23,8 +23,10 @@ bool TRAP::Utils::Config::LoadFromFile(const std::string& filename)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Config::SaveToFile()
+bool TRAP::Utils::Config::SaveToFile(const std::string& filename)
 {
+	m_filename = filename;
+	
 	if (m_isChanged)
 	{
 		TP_INFO("[Config] Saving: ", m_filename);
@@ -34,6 +36,23 @@ bool TRAP::Utils::Config::SaveToFile()
 	}
 
 	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Utils::Config::IsChanged() const
+{
+	return m_isChanged;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Utils::Config::Print() const
+{
+	for (auto& [key, value] : m_data)
+		TP_TRACE("[Config] ", key, " = ", value);
+
+	TP_TRACE("[Config] Size: ", m_data.size());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -149,14 +168,4 @@ std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::st
 
 	//If this line is empty or a comment, return an empty pair
 	return std::make_pair("", "");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Utils::Config::Print() const
-{
-	for (auto& [key, value] : m_data)
-		TP_TRACE("[Config] ", key, " = ", value);
-
-	TP_TRACE("[Config] Size: ", m_data.size());
 }

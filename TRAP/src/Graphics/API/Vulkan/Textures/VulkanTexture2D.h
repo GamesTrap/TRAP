@@ -5,7 +5,7 @@
 
 namespace TRAP::Graphics::API
 {
-	class VulkanTexture2D final : public Graphics::Texture2D
+	class VulkanTexture2D final : public Texture2D
 	{
 	public:
 		explicit VulkanTexture2D(TextureParameters parameters);
@@ -33,27 +33,6 @@ namespace TRAP::Graphics::API
 		TextureParameters m_parameters;
 		uint32_t m_handle;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::string TRAP::Graphics::API::VulkanTexture2D::GetName() const
-{
-	return m_name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Image* TRAP::Graphics::API::VulkanTexture2D::GetImage()
-{
-	return m_image.get();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Graphics::TextureParameters TRAP::Graphics::API::VulkanTexture2D::GetParameters()
-{
-	return m_parameters;
 }
 
 #endif /*_TRAP_VULKANTEXTURE2D_H_*/

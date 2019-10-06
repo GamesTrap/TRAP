@@ -29,41 +29,10 @@ namespace TRAP::Graphics::API
 	private:
 		void Init() override;
 
-		uint32_t m_frameBufferHandle;
-		uint32_t m_depthBufferHandle;
-
 		uint32_t m_width, m_height;
 		Math::Vec4 m_clearColor;
-		Scope<Texture2D> m_texture;
+		Scope<Texture> m_texture;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Graphics::API::VulkanFrameBuffer2D::GetWidth() const
-{
-	return m_width;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Graphics::API::VulkanFrameBuffer2D::GetHeight() const
-{
-	return m_height;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::API::VulkanFrameBuffer2D::GetTexture() const
-{
-	return reinterpret_cast<const Scope<Texture>&>(m_texture);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline void TRAP::Graphics::API::VulkanFrameBuffer2D::SetClearColor(const Math::Vec4& color)
-{
-	m_clearColor = color;
 }
 
 #endif /*_TRAP_VULKANFRAMEBUFFER2D_H_*/

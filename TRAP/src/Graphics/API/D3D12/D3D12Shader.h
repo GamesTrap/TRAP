@@ -8,7 +8,7 @@
 
 namespace TRAP::Graphics::API
 {
-	class D3D12Shader final : public Graphics::Shader
+	class D3D12Shader final : public Shader
 	{
 	public:
 		D3D12Shader(std::string name, std::string source);
@@ -40,62 +40,6 @@ namespace TRAP::Graphics::API
 		std::string m_name, m_filepath, m_source;
 		std::string m_VSSource, m_FSSource, m_GSSource, m_TCSSource, m_TESSource, m_CSSource;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::D3D12Shader::GetName() const
-{
-	return m_name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::D3D12Shader::GetFilePath() const
-{
-	return m_filepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::D3D12Shader::GetVSSource() const
-{
-	return m_VSSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::D3D12Shader::GetFSSource() const
-{
-	return m_FSSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::D3D12Shader::GetGSSource() const
-{
-	return m_GSSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::D3D12Shader::GetTCSSource() const
-{
-	return m_TCSSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::D3D12Shader::GetTESSource() const
-{
-	return m_TESSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::D3D12Shader::GetCSSource() const
-{
-	return m_CSSource;
 }
 
 #endif

@@ -73,11 +73,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Graphics::API::RendererAPI* TRAP::Graphics::API::RendererAPI::GetRenderer()
-{
-	return s_Renderer.get();
-}
-
 #endif /*_TRAP_RENDERERAPI_H_*/

@@ -10,8 +10,21 @@ TRAP::Utils::TimeStep::TimeStep(const float time)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/*void TRAP::Utils::TimeStep::Update(const float currentTime)
+TRAP::Utils::TimeStep::operator float() const
 {
-	m_timeStep = currentTime - m_lastTime;
-	m_lastTime = currentTime;
-}*/
+	return m_time;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Utils::TimeStep::GetSeconds() const
+{
+	return m_time;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Utils::TimeStep::GetMilliseconds() const
+{
+	return m_time * 1000.0f;
+}

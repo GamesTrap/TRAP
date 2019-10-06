@@ -14,6 +14,48 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Renderer::s_uniformBu
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::string_view TRAP::Graphics::Renderer::GetTitle()
+{
+	return API::RendererAPI::GetRenderer()->GetTitle();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::Renderer::GetDrawCalls()
+{
+	return Application::Get().GetDrawCalls();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::Renderer::GetFPS()
+{
+	return Application::Get().GetFPS();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Graphics::Renderer::GetFrameTime()
+{
+	return Application::Get().GetFrameTime();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::Renderer::GetTickRate()
+{
+	return Application::Get().GetTickRate();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer::SetTickRate(const uint32_t tickRate)
+{
+	Application::Get().SetTickRate(tickRate);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::Renderer::BeginScene(Camera& camera)
 {
 	s_sceneData->m_projectionMatrix = Math::Mat4::Transpose(camera.GetProjectionMatrix());
@@ -58,4 +100,11 @@ void TRAP::Graphics::Renderer::Cleanup()
 {
 	s_uniformBuffer->Unbind(0);
 	s_uniformBuffer.reset();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::Renderer::SceneData::SceneData()
+	: m_projectionMatrix(0.0f), m_viewMatrix(0.0f), m_modelMatrix(0.0f)
+{
 }

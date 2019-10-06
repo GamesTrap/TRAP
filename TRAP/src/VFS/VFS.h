@@ -5,7 +5,7 @@
 
 namespace TRAP
 {
-	class VFS
+	class VFS final
 	{
 	public:
 		void Mount(const std::string& virtualPath, const std::string& physicalPath);
@@ -51,55 +51,6 @@ namespace TRAP
 		bool m_hotTextureReloading = false;
 		Scope<FileWatcher> m_textureFileWatcher;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline bool TRAP::VFS::GetHotShaderReloading() const
-{
-	return m_hotShaderReloading;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline void TRAP::VFS::SetHotShaderReloading(const bool enabled)
-{
-	m_hotShaderReloading = enabled;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::FileWatcher* TRAP::VFS::GetShaderFileWatcher() const
-{
-	return m_shaderFileWatcher.get();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline bool TRAP::VFS::GetHotTextureReloading() const
-{
-	return m_hotTextureReloading;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline void TRAP::VFS::SetHotTextureReloading(const bool enabled)
-{
-	m_hotTextureReloading = enabled;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::FileWatcher* TRAP::VFS::GetTextureFileWatcher() const
-{
-	return m_textureFileWatcher.get();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::VFS* TRAP::VFS::Get()
-{
-	return s_Instance.get();
 }
 
 #endif /*_TRAP_VFS_H_*/

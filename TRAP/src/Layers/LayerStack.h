@@ -30,18 +30,4 @@ namespace TRAP
 
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::begin()
-{
-	return m_layers.begin();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::end()
-{
-	return m_layers.end();
-}
-
 #endif /*_TRAP_LAYERSTACK_H_*/

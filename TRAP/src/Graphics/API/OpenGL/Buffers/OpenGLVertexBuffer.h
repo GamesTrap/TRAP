@@ -29,11 +29,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Graphics::API::OpenGLVertexBuffer::GetVertexCount() const
-{
-	return m_vertexCount;
-}
-
 #endif /*_TRAP_OPENGLVERTEXBUFFER_H_*/

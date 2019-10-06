@@ -31,11 +31,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Graphics::API::OpenGLContext* TRAP::Graphics::API::OpenGLContext::Get()
-{
-	return dynamic_cast<OpenGLContext*>(s_Context.get());
-}
-
 #endif /*_TRAP_OPENGLCONTEXT_H_*/

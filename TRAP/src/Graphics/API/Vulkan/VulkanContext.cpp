@@ -28,6 +28,13 @@ TRAP::Graphics::API::VulkanContext::~VulkanContext()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanContext::SetVSyncIntervalInternal(const uint32_t interval)
+{
+	m_vsync = interval;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanContext::Present(const std::unique_ptr<Window>& window)
 {
 }
@@ -36,6 +43,27 @@ void TRAP::Graphics::API::VulkanContext::Present(const std::unique_ptr<Window>& 
 
 void TRAP::Graphics::API::VulkanContext::UseInternal(const std::unique_ptr<Window>& window)
 {	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::VulkanContext* TRAP::Graphics::API::VulkanContext::Get()
+{
+	return dynamic_cast<VulkanContext*>(s_Context.get());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkSurfaceKHR& TRAP::Graphics::API::VulkanContext::GetSurface()
+{
+	return m_surface;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Window* TRAP::Graphics::API::VulkanContext::GetWindow() const
+{
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -50,7 +78,7 @@ void TRAP::Graphics::API::VulkanContext::InitSurface()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanContext::DeInitSurface(VkInstance instance)
+void TRAP::Graphics::API::VulkanContext::DeInitSurface(const VkInstance instance)
 {
 	if (m_surface)
 	{
@@ -209,21 +237,6 @@ std::vector<VkSurfaceFormatKHR> TRAP::Graphics::API::VulkanContext::GetAvailable
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<VkSurfaceFormatKHR> TRAP::Graphics::API::VulkanContext::GetAvailableSurfaceFormats() const
-{
-	TP_DEBUG("[Renderer][Vulkan] Getting available Surface Formats");
-
-	uint32_t surfaceFormatCount = 0;
-	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(VulkanRenderer::Get()->GetPhysicalDevice(), m_surface, &surfaceFormatCount, nullptr));
-	std::vector<VkSurfaceFormatKHR> availableSurfaceFormats{ surfaceFormatCount };
-	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(VulkanRenderer::Get()->GetPhysicalDevice(), m_surface, &surfaceFormatCount, availableSurfaceFormats.data()));
-	TRAP_RENDERER_ASSERT(!availableSurfaceFormats.empty(), "[Renderer][Vulkan] Couldn't get available Surface Formats!");
-
-	return availableSurfaceFormats;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 std::vector<VkPresentModeKHR> TRAP::Graphics::API::VulkanContext::GetAvailableSurfacePresentModes(VkPhysicalDevice physicalDevice) const
 {
 	uint32_t surfacePresentModeCount = 0;
@@ -237,86 +250,16 @@ std::vector<VkPresentModeKHR> TRAP::Graphics::API::VulkanContext::GetAvailableSu
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<VkPresentModeKHR> TRAP::Graphics::API::VulkanContext::GetAvailableSurfacePresentModes() const
+VkExtent2D TRAP::Graphics::API::VulkanContext::GetSwapchainExtent() const
 {
-	TP_DEBUG("[Renderer][Vulkan] Getting available Surface Present Modes");
-
-	uint32_t surfacePresentModeCount = 0;
-	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(VulkanRenderer::Get()->GetPhysicalDevice(), m_surface, &surfacePresentModeCount, nullptr));
-	std::vector<VkPresentModeKHR> surfacePresentModes{ surfacePresentModeCount };
-	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(VulkanRenderer::Get()->GetPhysicalDevice(), m_surface, &surfacePresentModeCount, surfacePresentModes.data()));
-	TRAP_RENDERER_ASSERT(!surfacePresentModes.empty(), "[Renderer][Vulkan] Couldn't get available Surface Present Modes!");
-
-	return surfacePresentModes;
+	return m_extent;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSurfaceFormatKHR TRAP::Graphics::API::VulkanContext::ChooseSwapchainSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableSurfaceFormats)
+VkFormat TRAP::Graphics::API::VulkanContext::GetSwapchainImageFormat() const
 {
-	TP_DEBUG("[Renderer][Vulkan] Choosing Swapchain Surface Format");
-
-	if (availableSurfaceFormats.size() == 1 && availableSurfaceFormats[0].format == VK_FORMAT_UNDEFINED)
-	{
-		TP_DEBUG("[Renderer][Vulkan] Using Surface Format: VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR");
-		return { VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR };
-	}
-
-	for (const auto& availableSurfaceFormat : availableSurfaceFormats)
-		if (availableSurfaceFormat.format == VK_FORMAT_B8G8R8A8_UNORM && availableSurfaceFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
-		{
-			TP_DEBUG("[Renderer][Vulkan] Using Surface Format: VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR");
-			return availableSurfaceFormat;
-		}
-
-	TP_DEBUG("[Renderer][Vulkan] Using Surface Format: Physical Device Default Format, Physical Device Default Color Space");
-	return availableSurfaceFormats[0];
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkPresentModeKHR TRAP::Graphics::API::VulkanContext::ChooseSwapchainSurfacePresentMode(const std::vector<VkPresentModeKHR>& availableSurfacePresentModes)
-{
-	TP_DEBUG("[Renderer][Vulkan] Choosing Swapchain Surface Present Mode");
-
-	for (const auto& availableSurfacePresentMode : availableSurfacePresentModes)
-	{
-		if (availableSurfacePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
-		{
-			TP_DEBUG("[Renderer][Vulkan] Using Surface Present Mode: VK_PRESENT_MODE_MAILBOX_KHR(Triple Buffered)");
-			return availableSurfacePresentMode;
-		}
-		if (availableSurfacePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR)
-		{
-			TP_DEBUG("[Renderer][Vulkan] Using Surface Present Mode: VK_PRESENT_MODE_IMMEDIATE_KHR");
-			return availableSurfacePresentMode; //Immediate Swaps High Tearing(Preferred over VSync because of driver incompatibilities)
-		}
-	}
-
-	TP_DEBUG("[Renderer][Vulkan] Using Surface Present Mode: VK_PRESENT_MOE_FIFO_KHR(VSync Double Buffered");
-	return VK_PRESENT_MODE_FIFO_KHR; //VSync mode(Required to be available by Vulkan Specification)
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkExtent2D TRAP::Graphics::API::VulkanContext::ChooseSwapchainExtent() const
-{
-	TP_DEBUG("[Renderer][Vulkan] Choosing Swapchain Extent");
-
-	if (m_capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
-	{
-		TP_DEBUG("[Renderer][Vulkan] Using Swapchain Extent: ", m_capabilities.currentExtent.width, 'x', m_capabilities.currentExtent.height);
-		return m_capabilities.currentExtent;
-	}
-
-	VkExtent2D actualExtent = { m_window->GetWidth(), m_window->GetHeight() };
-
-	actualExtent.width = std::max(m_capabilities.minImageExtent.width, std::min(m_capabilities.maxImageExtent.width, actualExtent.width));
-	actualExtent.height = std::max(m_capabilities.minImageExtent.height, std::min(m_capabilities.maxImageExtent.height, actualExtent.height));
-
-	TP_DEBUG("[Renderer][Vulkan] Using Swapchain Extent: ", actualExtent.width, 'x', actualExtent.height);
-
-	return actualExtent;
+	return m_format.format;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -694,7 +637,99 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkExtent2D TRAP::Graphics::API::VulkanContext::GetSwapchainExtent() const
+std::vector<VkSurfaceFormatKHR> TRAP::Graphics::API::VulkanContext::GetAvailableSurfaceFormats() const
 {
-	return m_extent;
+	TP_DEBUG("[Renderer][Vulkan] Getting available Surface Formats");
+
+	uint32_t surfaceFormatCount = 0;
+	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(VulkanRenderer::Get()->GetPhysicalDevice(), m_surface, &surfaceFormatCount, nullptr));
+	std::vector<VkSurfaceFormatKHR> availableSurfaceFormats{ surfaceFormatCount };
+	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(VulkanRenderer::Get()->GetPhysicalDevice(), m_surface, &surfaceFormatCount, availableSurfaceFormats.data()));
+	TRAP_RENDERER_ASSERT(!availableSurfaceFormats.empty(), "[Renderer][Vulkan] Couldn't get available Surface Formats!");
+
+	return availableSurfaceFormats;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<VkPresentModeKHR> TRAP::Graphics::API::VulkanContext::GetAvailableSurfacePresentModes() const
+{
+	TP_DEBUG("[Renderer][Vulkan] Getting available Surface Present Modes");
+
+	uint32_t surfacePresentModeCount = 0;
+	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(VulkanRenderer::Get()->GetPhysicalDevice(), m_surface, &surfacePresentModeCount, nullptr));
+	std::vector<VkPresentModeKHR> surfacePresentModes{ surfacePresentModeCount };
+	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(VulkanRenderer::Get()->GetPhysicalDevice(), m_surface, &surfacePresentModeCount, surfacePresentModes.data()));
+	TRAP_RENDERER_ASSERT(!surfacePresentModes.empty(), "[Renderer][Vulkan] Couldn't get available Surface Present Modes!");
+
+	return surfacePresentModes;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkSurfaceFormatKHR TRAP::Graphics::API::VulkanContext::ChooseSwapchainSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableSurfaceFormats)
+{
+	TP_DEBUG("[Renderer][Vulkan] Choosing Swapchain Surface Format");
+
+	if (availableSurfaceFormats.size() == 1 && availableSurfaceFormats[0].format == VK_FORMAT_UNDEFINED)
+	{
+		TP_DEBUG("[Renderer][Vulkan] Using Surface Format: VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR");
+		return { VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR };
+	}
+
+	for (const auto& availableSurfaceFormat : availableSurfaceFormats)
+		if (availableSurfaceFormat.format == VK_FORMAT_B8G8R8A8_UNORM && availableSurfaceFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+		{
+			TP_DEBUG("[Renderer][Vulkan] Using Surface Format: VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR");
+			return availableSurfaceFormat;
+		}
+
+	TP_DEBUG("[Renderer][Vulkan] Using Surface Format: Physical Device Default Format, Physical Device Default Color Space");
+	return availableSurfaceFormats[0];
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPresentModeKHR TRAP::Graphics::API::VulkanContext::ChooseSwapchainSurfacePresentMode(const std::vector<VkPresentModeKHR>& availableSurfacePresentModes)
+{
+	TP_DEBUG("[Renderer][Vulkan] Choosing Swapchain Surface Present Mode");
+
+	for (const auto& availableSurfacePresentMode : availableSurfacePresentModes)
+	{
+		if (availableSurfacePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
+		{
+			TP_DEBUG("[Renderer][Vulkan] Using Surface Present Mode: VK_PRESENT_MODE_MAILBOX_KHR(Triple Buffered)");
+			return availableSurfacePresentMode;
+		}
+		if (availableSurfacePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR)
+		{
+			TP_DEBUG("[Renderer][Vulkan] Using Surface Present Mode: VK_PRESENT_MODE_IMMEDIATE_KHR");
+			return availableSurfacePresentMode; //Immediate Swaps High Tearing(Preferred over VSync because of driver incompatibilities)
+		}
+	}
+
+	TP_DEBUG("[Renderer][Vulkan] Using Surface Present Mode: VK_PRESENT_MOE_FIFO_KHR(VSync Double Buffered");
+	return VK_PRESENT_MODE_FIFO_KHR; //VSync mode(Required to be available by Vulkan Specification)
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkExtent2D TRAP::Graphics::API::VulkanContext::ChooseSwapchainExtent() const
+{
+	TP_DEBUG("[Renderer][Vulkan] Choosing Swapchain Extent");
+
+	if (m_capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
+	{
+		TP_DEBUG("[Renderer][Vulkan] Using Swapchain Extent: ", m_capabilities.currentExtent.width, 'x', m_capabilities.currentExtent.height);
+		return m_capabilities.currentExtent;
+	}
+
+	VkExtent2D actualExtent = { m_window->GetWidth(), m_window->GetHeight() };
+
+	actualExtent.width = std::max(m_capabilities.minImageExtent.width, std::min(m_capabilities.maxImageExtent.width, actualExtent.width));
+	actualExtent.height = std::max(m_capabilities.minImageExtent.height, std::min(m_capabilities.maxImageExtent.height, actualExtent.height));
+
+	TP_DEBUG("[Renderer][Vulkan] Using Swapchain Extent: ", actualExtent.width, 'x', actualExtent.height);
+
+	return actualExtent;
 }

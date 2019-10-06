@@ -26,4 +26,11 @@ void TRAP::Graphics::API::D3D12VertexBuffer::SetLayout(const BufferLayout& layou
 	m_layout = layout;
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::D3D12VertexBuffer::GetVertexCount() const
+{
+	return 0;
+}
+
 #endif

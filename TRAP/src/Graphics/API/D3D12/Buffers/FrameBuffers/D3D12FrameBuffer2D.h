@@ -1,6 +1,8 @@
 #ifndef _TRAP_D3D12FRAMEBUFFER2D_H_
 #define _TRAP_D3D12FRAMEBUFFER2D_H_
 
+#ifdef TRAP_PLATFORM_WINDOWS
+
 #include "Graphics/Buffers/FrameBuffers/FrameBuffer2D.h"
 #include "Graphics/Textures/Texture2D.h"
 
@@ -34,36 +36,10 @@ namespace TRAP::Graphics::API
 
 		uint32_t m_width, m_height;
 		Math::Vec4 m_clearColor;
-		Scope<Texture2D> m_texture;
+		Scope<Texture> m_texture;
 	};
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Graphics::API::D3D12FrameBuffer2D::GetWidth() const
-{
-	return m_width;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Graphics::API::D3D12FrameBuffer2D::GetHeight() const
-{
-	return m_height;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::API::D3D12FrameBuffer2D::GetTexture() const
-{
-	return reinterpret_cast<const Scope<Texture>&>(m_texture);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline void TRAP::Graphics::API::D3D12FrameBuffer2D::SetClearColor(const Math::Vec4& color)
-{
-	m_clearColor = color;
-}
+#endif
 
 #endif

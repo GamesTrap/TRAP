@@ -31,11 +31,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Graphics::API::VulkanVertexArray::GetIndexCount() const
-{
-	return 0;
-}
-
 #endif /*_TRAP_VULKANVERTEXARRAY_H_*/

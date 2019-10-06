@@ -9,7 +9,7 @@ namespace TRAP::Utils
 	{
 	public:
 		//Creates and starts timer
-		Timer() { Reset(); }
+		Timer();
 		//Resets and restarts timer
 		void Reset();
 		//Returns time in seconds
@@ -20,13 +20,6 @@ namespace TRAP::Utils
 	private:
 		std::chrono::time_point<std::chrono::high_resolution_clock> m_start;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline void TRAP::Utils::Timer::Reset()
-{
-	m_start = std::chrono::high_resolution_clock::now();
 }
 
 #endif /*_TRAP_TIMER_H_*/

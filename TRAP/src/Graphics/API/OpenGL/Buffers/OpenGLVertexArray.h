@@ -34,11 +34,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Graphics::API::OpenGLVertexArray::GetIndexCount() const
-{
-	return m_indexCount;
-}
-
 #endif /*_TRAP_OPENGLVERTEXARRAY_H_*/

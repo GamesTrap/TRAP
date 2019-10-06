@@ -118,41 +118,9 @@ TRAP::Application::~Application()
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	m_config.Print();
 #endif
-	m_config.SaveToFile();
+	m_config.SaveToFile("Engine.cfg");
 	VFS::Shutdown();
 };
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Application::PushLayer(Scope<Layer> layer)
-{
-	//layer->OnAttach();
-	m_layerStack.PushLayer(std::move(layer));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Application::PushOverlay(Scope<Layer> overlay)
-{
-	//overlay->OnAttach();
-	m_layerStack.PushOverlay(std::move(overlay));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Application::OnEvent(Event& e)
-{
-	EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-	dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
-
-	for (auto it = m_layerStack.end(); it != m_layerStack.begin();)
-	{
-		(*--it)->OnEvent(e);
-		if (e.Handled)
-			break;
-	}
-}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -198,7 +166,7 @@ void TRAP::Application::Run()
 			ImGuiLayer::End();
 		}
 
-		if(!m_minimized)
+		if (!m_minimized)
 			Graphics::RenderCommand::Present(m_window);
 		m_window->OnUpdate();
 
@@ -280,32 +248,118 @@ void TRAP::Application::Run()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowClose(WindowCloseEvent& e)
+void TRAP::Application::OnEvent(Event& e)
 {
-	m_running = false;
+	EventDispatcher dispatcher(e);
+	dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
+	dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
 
-	return true;
+	for (auto it = m_layerStack.end(); it != m_layerStack.begin();)
+	{
+		(*--it)->OnEvent(e);
+		if (e.Handled)
+			break;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowResize(WindowResizeEvent& e)
+void TRAP::Application::PushLayer(Scope<Layer> layer)
 {
-	if (Window::GetActiveWindows() > 1)
-		Window::Use();
+	//layer->OnAttach();
+	m_layerStack.PushLayer(std::move(layer));
+}
 
-	if (e.GetWidth() == 0 || e.GetHeight() == 0)
-	{
-		m_minimized = true;
+//-------------------------------------------------------------------------------------------------------------------//
 
-		return false;
-	}
+void TRAP::Application::PushOverlay(Scope<Layer> overlay)
+{
+	//overlay->OnAttach();
+	m_layerStack.PushOverlay(std::move(overlay));
+}
 
-	Graphics::RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
+//-------------------------------------------------------------------------------------------------------------------//
 
-	m_minimized = false;
+TRAP::Utils::Config* TRAP::Application::GetConfig()
+{
+	return &m_config;
+}
 
-	return false;
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::LayerStack& TRAP::Application::GetLayerStack()
+{
+	return m_layerStack;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Application::GetFPS() const
+{
+	return m_FramesPerSecond;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Application::GetFrameTime() const
+{
+	return m_FrameTime;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Application::GetDrawCalls() const
+{
+	return m_drawCalls;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::AddSingleDrawCall()
+{
+	++m_drawCalls;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Application::GetTickRate() const
+{
+	return m_tickRate;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::SetTickRate(const uint32_t tickRate)
+{
+	m_tickRate = tickRate;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::Shutdown()
+{
+	Get().m_running = false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Application& TRAP::Application::Get()
+{
+	return *s_Instance;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::unique_ptr<TRAP::Window>& TRAP::Application::GetWindow()
+{
+	return Get().m_window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Utils::TimeStep TRAP::Application::GetTime()
+{
+	return Get().GetTimeInternal();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -365,4 +419,34 @@ TRAP::Utils::TimeStep TRAP::Application::GetTimeInternal() const
 	const Utils::TimeStep timeStep(m_timer->Elapsed());
 
 	return timeStep;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Application::OnWindowClose(WindowCloseEvent& e)
+{
+	m_running = false;
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Application::OnWindowResize(WindowResizeEvent& e)
+{
+	if (Window::GetActiveWindows() > 1)
+		Window::Use();
+
+	if (e.GetWidth() == 0 || e.GetHeight() == 0)
+	{
+		m_minimized = true;
+
+		return false;
+	}
+
+	Graphics::RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
+
+	m_minimized = false;
+
+	return false;
 }

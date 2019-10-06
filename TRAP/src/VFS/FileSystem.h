@@ -3,7 +3,7 @@
 
 namespace TRAP
 {
-	class FileSystem
+	class FileSystem final
 	{
 	public:
 		static bool FileOrFolderExists(const std::filesystem::path& path);

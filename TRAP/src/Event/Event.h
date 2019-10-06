@@ -49,10 +49,7 @@ namespace TRAP
 	class EventDispatcher
 	{
 	public:
-		explicit EventDispatcher(Event& event)
-			: m_event(event)
-		{			
-		}
+		explicit EventDispatcher(Event& event);
 
 		template<typename T, typename F>
 		bool Dispatch(const F& func);
@@ -75,27 +72,6 @@ namespace TRAP
 	}
 
 	std::ostream& operator<<(std::ostream& os, const Event& e);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::ostream& TRAP::operator<<(std::ostream& os, const Event& e)
-{
-	return os << e.ToString();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::string TRAP::Event::ToString() const
-{
-	return GetName();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline bool TRAP::Event::IsInCategory(const EventCategory category) const
-{
-	return GetCategoryFlags() & static_cast<int32_t>(category);
 }
 
 #endif /*_TRAP_EVENT_H_*/

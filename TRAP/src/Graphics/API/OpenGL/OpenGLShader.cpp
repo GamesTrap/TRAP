@@ -57,6 +57,93 @@ void TRAP::Graphics::API::OpenGLShader::Shutdown() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::OpenGLShader::Bind() const
+{
+	if (s_CurrentlyBound != this)
+	{
+		if (m_handle)
+		{
+			OpenGLCall(glUseProgram(m_handle));
+			s_CurrentlyBound = this;
+		}
+		else
+			ShaderManager::Get("Passthrough")->Bind();
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLShader::Unbind() const
+{
+	OpenGLCall(glUseProgram(0));
+	s_CurrentlyBound = nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::OpenGLShader::GetName() const
+{
+	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::OpenGLShader::GetFilePath() const
+{
+	return m_filepath;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::OpenGLShader::GetVSSource() const
+{
+	return m_VSSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::OpenGLShader::GetFSSource() const
+{
+	return m_FSSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::OpenGLShader::GetGSSource() const
+{
+	return m_GSSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::OpenGLShader::GetTCSSource() const
+{
+	return m_TCSSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::OpenGLShader::GetTESSource() const
+{
+	return m_TESSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::OpenGLShader::GetCSSource() const
+{
+	return m_CSSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::OpenGLShader::GetHandle() const
+{
+	return m_handle;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 uint32_t TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*, 6>& shaders)
 {
 	uint32_t program = 0;
@@ -81,26 +168,198 @@ uint32_t TRAP::Graphics::API::OpenGLShader::Compile(std::array<std::string*, 6>&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::Bind() const
+bool TRAP::Graphics::API::OpenGLShader::CompileShader(const ShaderType type, const char* source, uint32_t& handle)
 {
-	if (s_CurrentlyBound != this)
+	OpenGLCall(handle = glCreateShader(ShaderTypeToOpenGL(type)));
+
+	TP_DEBUG("[Shader][OpenGL] Compiling ", ShaderTypeToString(type));
+	OpenGLCall(glShaderSource(handle, 1, &source, nullptr));
+	OpenGLCall(glCompileShader(handle));
+
+	int32_t result;
+	OpenGLCall(glGetShaderiv(handle, GL_COMPILE_STATUS, &result));
+	if (result == GL_FALSE)
 	{
-		if (m_handle)
-		{
-			OpenGLCall(glUseProgram(m_handle));
-			s_CurrentlyBound = this;
-		}
-		else
-			ShaderManager::Get("Passthrough")->Bind();
+		int32_t length;
+		OpenGLCall(glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &length));
+		std::vector<char> error(length);
+		OpenGLCall(glGetShaderInfoLog(handle, length, &length, error.data()));
+		const std::string errorMessage(error.data(), length - 1);
+		TP_ERROR("[Shader][OpenGL][", ShaderTypeToString(type), "] Failed to compile Shader!");
+		TP_ERROR("[Shader][OpenGL][", ShaderTypeToString(type), "] ", errorMessage);
+		OpenGLCall(glDeleteShader(handle));
+
+		return false;
+	}
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::API::OpenGLShader::CreateProgram(std::array<std::string*, 6>& shaders,
+	uint32_t& vertex,
+	uint32_t& fragment,
+	uint32_t& geometry,
+	uint32_t& tessControl,
+	uint32_t& tessEval,
+	uint32_t& compute,
+	uint32_t& handle)
+{
+	OpenGLCall(handle = glCreateProgram());
+
+	if (!shaders[0]->empty())
+	{
+		if (!CompileShader(ShaderType::Vertex, shaders[0]->c_str(), vertex))
+			return false;
+
+		OpenGLCall(glAttachShader(handle, vertex));
+	}
+
+	if (!shaders[1]->empty())
+	{
+		if (!CompileShader(ShaderType::Fragment, shaders[1]->c_str(), fragment))
+			return false;
+
+		OpenGLCall(glAttachShader(handle, fragment));
+	}
+
+	if (!shaders[2]->empty())
+	{
+		if (!CompileShader(ShaderType::Geometry, shaders[2]->c_str(), geometry))
+			return false;
+
+		OpenGLCall(glAttachShader(handle, geometry));
+	}
+
+	if (!shaders[3]->empty())
+	{
+		if (!CompileShader(ShaderType::Tessellation_Control, shaders[3]->c_str(), tessControl))
+			return false;
+
+		OpenGLCall(glAttachShader(handle, tessControl));
+	}
+
+	if (!shaders[4]->empty())
+	{
+		if (!CompileShader(ShaderType::Tessellation_Evaluation, shaders[4]->c_str(), tessEval))
+			return false;
+
+		OpenGLCall(glAttachShader(handle, tessEval));
+	}
+
+	if (!shaders[5]->empty())
+	{
+		if (!CompileShader(ShaderType::Compute, shaders[5]->c_str(), compute))
+			return false;
+
+		OpenGLCall(glAttachShader(handle, compute));
+	}
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLShader::LinkProgram(int32_t& linkResult, int32_t& validateResult, const uint32_t& handle)
+{
+	OpenGLCall(glLinkProgram(handle));
+	OpenGLCall(glGetProgramiv(handle, GL_LINK_STATUS, &linkResult));
+	if (linkResult == GL_FALSE)
+	{
+		int32_t length;
+		OpenGLCall(glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length));
+		std::vector<char> error(length);
+		OpenGLCall(glGetProgramInfoLog(handle, length, &length, error.data()));
+		const std::string errorMessage(error.data(), length - 1);
+		TP_ERROR("[Shader][OpenGL][Program] Failed to link Program!");
+		TP_ERROR("[Shader][OpenGL][Program] ", errorMessage);
+	}
+
+	if (linkResult == GL_TRUE)
+	{
+		OpenGLCall(glValidateProgram(handle));
+		OpenGLCall(glGetProgramiv(handle, GL_VALIDATE_STATUS, &validateResult));
+		if (validateResult == GL_FALSE)
+			TP_ERROR("[Shader][OpenGL][Program] Failed to validate Program!");
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::Unbind() const
+void TRAP::Graphics::API::OpenGLShader::DeleteShaders(std::array<std::string*, 6>& shaders,
+	const uint32_t& vertex,
+	const uint32_t& fragment,
+	const uint32_t& geometry,
+	const uint32_t& tessControl,
+	const uint32_t& tessEval,
+	const uint32_t& compute,
+	const uint32_t& handle)
 {
-	OpenGLCall(glUseProgram(0));
-	s_CurrentlyBound = nullptr;
+	if (!shaders[0]->empty())
+	{
+		OpenGLCall(glDetachShader(handle, vertex));
+		OpenGLCall(glDeleteShader(vertex));
+	}
+
+	if (!shaders[1]->empty())
+	{
+		OpenGLCall(glDetachShader(handle, fragment));
+		OpenGLCall(glDeleteShader(fragment));
+	}
+
+	if (!shaders[2]->empty())
+	{
+		OpenGLCall(glDetachShader(handle, geometry));
+		OpenGLCall(glDeleteShader(geometry));
+	}
+
+	if (!shaders[3]->empty())
+	{
+		OpenGLCall(glDetachShader(handle, tessControl));
+		OpenGLCall(glDeleteShader(tessControl));
+	}
+
+	if (!shaders[4]->empty())
+	{
+		OpenGLCall(glDetachShader(handle, tessEval));
+		OpenGLCall(glDeleteShader(tessEval));
+	}
+
+	if (!shaders[5]->empty())
+	{
+		OpenGLCall(glDetachShader(handle, compute));
+		OpenGLCall(glDeleteShader(compute));
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+GLenum TRAP::Graphics::API::OpenGLShader::ShaderTypeToOpenGL(const ShaderType type)
+{
+	switch (type)
+	{
+	case ShaderType::Vertex:
+		return GL_VERTEX_SHADER;
+
+	case ShaderType::Fragment:
+		return GL_FRAGMENT_SHADER;
+
+	case ShaderType::Geometry:
+		return GL_GEOMETRY_SHADER;
+
+	case ShaderType::Tessellation_Control:
+		return GL_TESS_CONTROL_SHADER;
+
+	case ShaderType::Tessellation_Evaluation:
+		return GL_TESS_EVALUATION_SHADER;
+
+	case ShaderType::Compute:
+		return GL_COMPUTE_SHADER;
+
+	default:
+		return 0;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -236,201 +495,5 @@ void TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, st
 			shaders[static_cast<int32_t>(type) - 1]->append(lines[i]);
 			shaders[static_cast<int32_t>(type) - 1]->append("\n");
 		}
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Graphics::API::OpenGLShader::CompileShader(const ShaderType type, const char* source, uint32_t& handle)
-{
-	OpenGLCall(handle = glCreateShader(ShaderTypeToOpenGL(type)));
-
-	TP_DEBUG("[Shader][OpenGL] Compiling ", ShaderTypeToString(type));
-	OpenGLCall(glShaderSource(handle, 1, &source, nullptr));
-	OpenGLCall(glCompileShader(handle));
-
-	int32_t result;
-	OpenGLCall(glGetShaderiv(handle, GL_COMPILE_STATUS, &result));
-	if (result == GL_FALSE)
-	{
-		int32_t length;
-		OpenGLCall(glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &length));
-		std::vector<char> error(length);
-		OpenGLCall(glGetShaderInfoLog(handle, length, &length, error.data()));
-		const std::string errorMessage(error.data(), length - 1);
-		TP_ERROR("[Shader][OpenGL][", ShaderTypeToString(type), "] Failed to compile Shader!");
-		TP_ERROR("[Shader][OpenGL][", ShaderTypeToString(type), "] ", errorMessage);
-		OpenGLCall(glDeleteShader(handle));
-
-		return false;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-GLenum TRAP::Graphics::API::OpenGLShader::ShaderTypeToOpenGL(const ShaderType type)
-{
-	switch(type)
-	{
-	case ShaderType::Vertex:
-		return GL_VERTEX_SHADER;
-
-	case ShaderType::Fragment:
-		return GL_FRAGMENT_SHADER;
-
-	case ShaderType::Geometry:
-		return GL_GEOMETRY_SHADER;
-
-	case ShaderType::Tessellation_Control:
-		return GL_TESS_CONTROL_SHADER;
-
-	case ShaderType::Tessellation_Evaluation:
-		return GL_TESS_EVALUATION_SHADER;
-
-	case ShaderType::Compute:
-		return GL_COMPUTE_SHADER;
-		
-	default:
-		return 0;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Graphics::API::OpenGLShader::CreateProgram(std::array<std::string*, 6>& shaders,
-	                                                  uint32_t& vertex,
-                                                      uint32_t& fragment,
-                                                      uint32_t& geometry,
-                                                      uint32_t& tessControl,
-                                                      uint32_t& tessEval,
-                                                      uint32_t& compute,
-                                                      uint32_t& handle)
-{
-	OpenGLCall(handle = glCreateProgram());
-
-	if (!shaders[0]->empty())
-	{
-		if (!CompileShader(ShaderType::Vertex, shaders[0]->c_str(), vertex))
-			return false;
-
-		OpenGLCall(glAttachShader(handle, vertex));
-	}
-
-	if (!shaders[1]->empty())
-	{
-		if (!CompileShader(ShaderType::Fragment, shaders[1]->c_str(), fragment))
-			return false;
-
-		OpenGLCall(glAttachShader(handle, fragment));
-	}
-
-	if (!shaders[2]->empty())
-	{
-		if (!CompileShader(ShaderType::Geometry, shaders[2]->c_str(), geometry))
-			return false;
-
-		OpenGLCall(glAttachShader(handle, geometry));
-	}
-
-	if (!shaders[3]->empty())
-	{
-		if (!CompileShader(ShaderType::Tessellation_Control, shaders[3]->c_str(), tessControl))
-			return false;
-
-		OpenGLCall(glAttachShader(handle, tessControl));
-	}
-
-	if (!shaders[4]->empty())
-	{
-		if (!CompileShader(ShaderType::Tessellation_Evaluation, shaders[4]->c_str(), tessEval))
-			return false;
-
-		OpenGLCall(glAttachShader(handle, tessEval));
-	}
-
-	if (!shaders[5]->empty())
-	{
-		if (!CompileShader(ShaderType::Compute, shaders[5]->c_str(), compute))
-			return false;
-
-		OpenGLCall(glAttachShader(handle, compute));
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::OpenGLShader::LinkProgram(int32_t& linkResult, int32_t& validateResult, const uint32_t& handle)
-{
-	OpenGLCall(glLinkProgram(handle));
-	OpenGLCall(glGetProgramiv(handle, GL_LINK_STATUS, &linkResult));
-	if (linkResult == GL_FALSE)
-	{
-		int32_t length;
-		OpenGLCall(glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length));
-		std::vector<char> error(length);
-		OpenGLCall(glGetProgramInfoLog(handle, length, &length, error.data()));
-		const std::string errorMessage(error.data(), length - 1);
-		TP_ERROR("[Shader][OpenGL][Program] Failed to link Program!");
-		TP_ERROR("[Shader][OpenGL][Program] ", errorMessage);
-	}
-
-	if (linkResult == GL_TRUE)
-	{
-		OpenGLCall(glValidateProgram(handle));
-		OpenGLCall(glGetProgramiv(handle, GL_VALIDATE_STATUS, &validateResult));
-		if (validateResult == GL_FALSE)
-			TP_ERROR("[Shader][OpenGL][Program] Failed to validate Program!");
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::OpenGLShader::DeleteShaders(std::array<std::string*, 6>& shaders,
-                                                      const uint32_t& vertex,
-                                                      const uint32_t& fragment,
-                                                      const uint32_t& geometry,
-                                                      const uint32_t& tessControl,
-                                                      const uint32_t& tessEval,
-                                                      const uint32_t& compute,
-                                                      const uint32_t& handle)
-{
-	if (!shaders[0]->empty())
-	{
-		OpenGLCall(glDetachShader(handle, vertex));
-		OpenGLCall(glDeleteShader(vertex));
-	}
-
-	if (!shaders[1]->empty())
-	{
-		OpenGLCall(glDetachShader(handle, fragment));
-		OpenGLCall(glDeleteShader(fragment));
-	}
-
-	if (!shaders[2]->empty())
-	{
-		OpenGLCall(glDetachShader(handle, geometry));
-		OpenGLCall(glDeleteShader(geometry));
-	}
-
-	if (!shaders[3]->empty())
-	{
-		OpenGLCall(glDetachShader(handle, tessControl));
-		OpenGLCall(glDeleteShader(tessControl));
-	}
-
-	if (!shaders[4]->empty())
-	{
-		OpenGLCall(glDetachShader(handle, tessEval));
-		OpenGLCall(glDeleteShader(tessEval));
-	}
-
-	if (!shaders[5]->empty())
-	{
-		OpenGLCall(glDetachShader(handle, compute));
-		OpenGLCall(glDeleteShader(compute));
 	}
 }

@@ -18,14 +18,6 @@ bool TRAP::Graphics::API::Context::s_isOpenGLCapable = false;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::Context::Shutdown()
-{
-	s_Context.reset();
-	s_Context = nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::Context::Create(Window* window)
 {
 	switch (GetRenderAPI())
@@ -53,6 +45,14 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 		Show("Device is unsupported!\nNo RenderAPI selected!", "Unsupported Device", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
 		exit(-1);
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::Context::Shutdown()
+{
+	s_Context.reset();
+	s_Context = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -105,6 +105,13 @@ void TRAP::Graphics::API::Context::CheckAllRenderAPIs()
 
 	//Check if OpenGL 4.6 capable
 	s_isOpenGLCapable = OpenGLContext::IsOpenGLCapable();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::RenderAPI TRAP::Graphics::API::Context::GetRenderAPI()
+{
+	return s_RenderAPI;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -212,4 +219,41 @@ bool TRAP::Graphics::API::Context::IsSupported(const RenderAPI api)
 			return true;
 
 	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::API::Context::IsD3D12Capable()
+{
+	return s_isD3D12Capable;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::API::Context::IsVulkanCapable()
+{
+	return s_isVulkanCapable;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::API::Context::IsOpenGLCapable()
+{
+	return s_isOpenGLCapable;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::Context::SetVSyncInterval(const uint32_t interval)
+{
+	if (s_Context) s_Context->SetVSyncIntervalInternal(interval);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::Context::Use(const std::unique_ptr<Window>& window)
+{
+	if (s_Context)
+		if (window)
+			s_Context->UseInternal(window);
 }

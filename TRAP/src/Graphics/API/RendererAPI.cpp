@@ -12,14 +12,6 @@ TRAP::Scope<TRAP::Graphics::API::RendererAPI> TRAP::Graphics::API::RendererAPI::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::RendererAPI::Shutdown()
-{
-	s_Renderer.reset();
-	s_Renderer = nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::RendererAPI::Init()
 {
 	switch (Context::GetRenderAPI())
@@ -48,4 +40,19 @@ void TRAP::Graphics::API::RendererAPI::Init()
 	}
 
 	s_Renderer->InitInternal();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::RendererAPI::Shutdown()
+{
+	s_Renderer.reset();
+	s_Renderer = nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::RendererAPI* TRAP::Graphics::API::RendererAPI::GetRenderer()
+{
+	return s_Renderer.get();
 }

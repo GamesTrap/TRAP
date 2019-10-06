@@ -59,48 +59,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Graphics::API::RenderAPI TRAP::Graphics::API::Context::GetRenderAPI()
-{	
-	return s_RenderAPI;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline void TRAP::Graphics::API::Context::SetVSyncInterval(const uint32_t interval)
-{
-	if (s_Context) s_Context->SetVSyncIntervalInternal(interval);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline void TRAP::Graphics::API::Context::Use(const std::unique_ptr<Window>& window)
-{
-	if (s_Context)
-		if (window)
-			s_Context->UseInternal(window);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline bool TRAP::Graphics::API::Context::IsD3D12Capable()
-{
-	return s_isD3D12Capable;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline bool TRAP::Graphics::API::Context::IsVulkanCapable()
-{
-	return s_isVulkanCapable;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline bool TRAP::Graphics::API::Context::IsOpenGLCapable()
-{
-	return s_isOpenGLCapable;
-}
-
 #endif /*_TRAP_CONTEXT_H_*/

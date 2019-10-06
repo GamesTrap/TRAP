@@ -32,18 +32,9 @@ namespace TRAP::Graphics
 		TextureFilter Filter;
 		TextureWrap Wrap;
 
-		TextureParameters()
-			: Filter(TextureFilter::Nearest), Wrap(TextureWrap::Clamp_To_Edge)
-		{
-		}
-		explicit TextureParameters(const TextureFilter filter)
-			: Filter(filter), Wrap(TextureWrap::Clamp_To_Edge)
-		{
-		}
-		TextureParameters(const TextureFilter filter, const TextureWrap wrap)
-			: Filter(filter), Wrap(wrap)
-		{
-		}
+		TextureParameters();
+		explicit TextureParameters(TextureFilter filter);
+		TextureParameters(TextureFilter filter, TextureWrap wrap);
 	};
 
 	class Texture

@@ -35,4 +35,60 @@ void TRAP::Graphics::API::D3D12Shader::Unbind() const
 {
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::D3D12Shader::GetName() const
+{
+	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::D3D12Shader::GetFilePath() const
+{
+	return m_filepath;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::D3D12Shader::GetVSSource() const
+{
+	return m_VSSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::D3D12Shader::GetFSSource() const
+{
+	return m_FSSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::D3D12Shader::GetGSSource() const
+{
+	return m_GSSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::D3D12Shader::GetTCSSource() const
+{
+	return m_TCSSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::D3D12Shader::GetTESSource() const
+{
+	return m_TESSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::D3D12Shader::GetCSSource() const
+{
+	return m_CSSource;
+}
+
 #endif

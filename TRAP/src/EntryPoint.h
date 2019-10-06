@@ -1,6 +1,8 @@
 #ifndef _TRAP_ENTRYPOINT_H_
 #define _TRAP_ENTRYPOINT_H_
 
+#include "Application.h"
+
 #ifdef TRAP_PLATFORM_WINDOWS
 extern "C"
 {
@@ -13,12 +15,6 @@ inline std::unique_ptr<TRAP::Log> logger = std::make_unique<TRAP::Log>();
 
 extern std::unique_ptr<TRAP::Application> TRAP::CreateApplication();
 
-int32_t main()
-{
-	const auto app = TRAP::CreateApplication();
-	app->Run();
-
-	return 0;
-}
+int32_t main();
 
 #endif /*_TRAP_ENTRYPOINT_H_*/

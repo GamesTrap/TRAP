@@ -90,3 +90,10 @@ const TRAP::Scope<TRAP::Graphics::IndexBuffer>& TRAP::Graphics::API::OpenGLVerte
 {
 	return m_indexBuffer;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::OpenGLVertexArray::GetIndexCount() const
+{
+	return m_indexCount;
+}

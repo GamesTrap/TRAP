@@ -50,4 +50,11 @@ const TRAP::Scope<TRAP::Graphics::IndexBuffer>& TRAP::Graphics::API::D3D12Vertex
 	return m_indexBuffer;
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::D3D12VertexArray::GetIndexCount() const
+{
+	return 0;
+}
+
 #endif

@@ -41,9 +41,23 @@ void TRAP::Graphics::API::D3D12Texture2D::Unbind(const uint32_t slot) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Texture2D::SetFilter(const TextureFilter filter)
+std::string TRAP::Graphics::API::D3D12Texture2D::GetName() const
 {
-	m_parameters.Filter = filter;
+	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Image* TRAP::Graphics::API::D3D12Texture2D::GetImage()
+{
+	return m_image.get();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::TextureParameters TRAP::Graphics::API::D3D12Texture2D::GetParameters()
+{
+	return m_parameters;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -51,4 +65,11 @@ void TRAP::Graphics::API::D3D12Texture2D::SetFilter(const TextureFilter filter)
 void TRAP::Graphics::API::D3D12Texture2D::SetWrap(const TextureWrap wrap)
 {
 	m_parameters.Wrap = wrap;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::D3D12Texture2D::SetFilter(const TextureFilter filter)
+{
+	m_parameters.Filter = filter;
 }

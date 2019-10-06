@@ -8,7 +8,7 @@ namespace TRAP::Graphics::API
 	class VulkanContext final : public Context
 	{
 	public:
-		VulkanContext(Window* window);
+		explicit VulkanContext(Window* window);
 		~VulkanContext();
 		VulkanContext(const VulkanContext&) = default;
 		VulkanContext& operator=(const VulkanContext&) = default;
@@ -36,12 +36,12 @@ namespace TRAP::Graphics::API
 
 		std::vector<VkSurfaceFormatKHR> GetAvailableSurfaceFormats(VkPhysicalDevice physicalDevice) const;
 		std::vector<VkPresentModeKHR> GetAvailableSurfacePresentModes(VkPhysicalDevice physicalDevice) const;
-
-		static bool IsVulkanCapable();
-
+		
 		VkExtent2D GetSwapchainExtent() const;
 
 		VkFormat GetSwapchainImageFormat() const;
+		
+		static bool IsVulkanCapable();
 
 	private:
 		std::vector<VkSurfaceFormatKHR> GetAvailableSurfaceFormats() const;
@@ -62,39 +62,6 @@ namespace TRAP::Graphics::API
 
 		bool m_vsync;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline void TRAP::Graphics::API::VulkanContext::SetVSyncIntervalInternal(const uint32_t interval)
-{
-	m_vsync = interval;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Graphics::API::VulkanContext* TRAP::Graphics::API::VulkanContext::Get()
-{
-	return dynamic_cast<VulkanContext*>(s_Context.get());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline VkSurfaceKHR& TRAP::Graphics::API::VulkanContext::GetSurface()
-{
-	return m_surface;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Window* TRAP::Graphics::API::VulkanContext::GetWindow() const
-{
-	return m_window;
-}
-
-inline VkFormat TRAP::Graphics::API::VulkanContext::GetSwapchainImageFormat() const
-{
-	return m_format.format;
 }
 
 #endif /*_TRAP_VULKANCONTEXT_H_*/

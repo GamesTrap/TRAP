@@ -16,31 +16,18 @@ namespace TRAP {
 		Layer& operator=(Layer&&) = default;
 		virtual ~Layer() = default;
 
-		virtual void OnAttach() {}
-		virtual void OnDetach() {}
-		virtual void OnUpdate(Utils::TimeStep deltaTime) {}
-		virtual void OnTick() {}
-		virtual void OnImGuiRender() {}
-		virtual void OnEvent(Event& event) {}
+		virtual void OnAttach();
+		virtual void OnDetach();
+		virtual void OnUpdate(Utils::TimeStep deltaTime);
+		virtual void OnTick();
+		virtual void OnImGuiRender();
+		virtual void OnEvent(Event& event);
 
 		std::string_view GetName() const;
+		
 	protected:
 		std::string m_DebugName;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Layer::Layer(std::string debugName)
-	: m_DebugName(std::move(debugName))
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::string_view TRAP::Layer::GetName() const
-{
-	return m_DebugName;
 }
 
 #endif /*_TRAP_LAYER_H_*/

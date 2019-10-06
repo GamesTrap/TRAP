@@ -932,3 +932,27 @@ void TRAP::Window::Shutdown()
 		s_GLFWInitialized = false;
 	}
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::WindowProps::WindowProps(std::string title,
+	                           const uint32_t width,
+	                           const uint32_t height,
+	                           const uint32_t refreshRate,
+	                           const uint32_t vsync,
+	                           const Window::DisplayMode displayMode,
+	                           const uint32_t monitor,
+	                           const Window::CursorMode cursorMode,
+	                           const bool rawMouseInput)
+	: Title(std::move(title)),
+	  Width(width),
+	  Height(height),
+	  RefreshRate(refreshRate),
+	  VSync(vsync),
+	  RenderAPI(Graphics::API::Context::GetRenderAPI()),
+	  displayMode(displayMode),
+	  Monitor(monitor),
+	  cursorMode(cursorMode),
+	  rawMouseInput(rawMouseInput)
+{
+}

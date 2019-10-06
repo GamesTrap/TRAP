@@ -84,6 +84,85 @@ void TRAP::Graphics::API::VulkanShader::Shutdown() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanShader::Bind() const
+{
+	if (s_CurrentlyBound != this)
+	{
+		if (!m_graphicsShaderStages.empty())
+		{
+			s_CurrentlyBound = this;
+			VulkanRenderer::Get()->InitGraphicsPipeline(m_graphicsShaderStages);
+		}
+		else
+			ShaderManager::Get("Passthrough")->Bind();
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanShader::Unbind() const
+{
+	s_CurrentlyBound = nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::VulkanShader::GetName() const
+{
+	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::VulkanShader::GetFilePath() const
+{
+	return m_filepath;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::VulkanShader::GetVSSource() const
+{
+	return m_VSSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::VulkanShader::GetFSSource() const
+{
+	return m_FSSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::VulkanShader::GetGSSource() const
+{
+	return m_GSSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::VulkanShader::GetTCSSource() const
+{
+	return m_TCSSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::VulkanShader::GetTESSource() const
+{
+	return m_TESSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Graphics::API::VulkanShader::GetCSSource() const
+{
+	return m_CSSource;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & shaders, VulkanShaderErrorInfo& info)
 {
 	if (!s_glslangInitialized)
@@ -309,6 +388,46 @@ void TRAP::Graphics::API::VulkanShader::Compile(std::array<std::string*, 6> & sh
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanShader::PreProcessGLSL(const std::string& source, std::array<std::string*, 6>& shaders)
+{
+	ShaderType type = ShaderType::Unknown;
+
+	std::vector<std::string> lines = Utils::String::GetLines(source);
+	//Get Shader Type
+	for (uint32_t i = 0; i < lines.size(); i++)
+	{
+		if (Utils::String::StartsWith(lines[i], "#shader"))
+		{
+			if (Utils::String::FindToken(lines[i], "vertex"))
+				type = ShaderType::Vertex;
+			else if (Utils::String::FindToken(lines[i], "fragment"))
+				type = ShaderType::Fragment;
+			else if (Utils::String::FindToken(lines[i], "geometry"))
+				type = ShaderType::Geometry;
+			else if (Utils::String::FindToken(lines[i], "tessellation"))
+			{
+				if (Utils::String::FindToken(lines[i], "control"))
+					type = ShaderType::Tessellation_Control;
+				else if (Utils::String::FindToken(lines[i], "evaluation"))
+					type = ShaderType::Tessellation_Evaluation;
+			}
+			else if (Utils::String::FindToken(lines[i], "compute"))
+				type = ShaderType::Compute;
+
+			//Add version tag if doesnt exist
+			if (!Utils::String::StartsWith(lines[i + 1], "#version ") && type != ShaderType::Unknown)
+				shaders[static_cast<int32_t>(type) - 1]->append("#version 460 core\n");
+		}
+		else if (type != ShaderType::Unknown)
+		{
+			shaders[static_cast<int32_t>(type) - 1]->append(lines[i]);
+			shaders[static_cast<int32_t>(type) - 1]->append("\n");
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Scope<glslang::TShader> TRAP::Graphics::API::VulkanShader::PreProcess(const char* source, const uint32_t shaderType, std::string& preProcessedSource)
 {
 	Scope<glslang::TShader> shader;
@@ -424,7 +543,7 @@ bool TRAP::Graphics::API::VulkanShader::Link(glslang::TShader* VShader,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::vector<unsigned>> TRAP::Graphics::API::VulkanShader::ConvertToSPIRV(
+std::vector<std::vector<uint32_t>> TRAP::Graphics::API::VulkanShader::ConvertToSPIRV(
 										glslang::TShader* VShader,
 										glslang::TShader* FShader,
 										glslang::TShader* GShader,
@@ -505,70 +624,6 @@ bool TRAP::Graphics::API::VulkanShader::CreateShaderModule(VkShaderModule& shade
 		SPIRVCode.data()
 	};
 
-	VkResult success;
-	VkCall(success = vkCreateShaderModule(Graphics::API::VulkanRenderer::Get()->GetDevice(), &shaderModuleCreateInfo, nullptr, &shaderModule));
+	VkCall(const VkResult success = vkCreateShaderModule(Graphics::API::VulkanRenderer::Get()->GetDevice(), &shaderModuleCreateInfo, nullptr, &shaderModule));
 	return success == VK_SUCCESS;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanShader::Bind() const
-{
-	if (s_CurrentlyBound != this)
-	{
-		if(!m_graphicsShaderStages.empty())
-		{
-			s_CurrentlyBound = this;
-			VulkanRenderer::Get()->InitGraphicsPipeline(m_graphicsShaderStages);
-		}
-		else
-			ShaderManager::Get("Passthrough")->Bind();
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanShader::Unbind() const
-{
-	s_CurrentlyBound = nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanShader::PreProcessGLSL(const std::string& source, std::array<std::string*, 6>& shaders)
-{
-	ShaderType type = ShaderType::Unknown;
-
-	std::vector<std::string> lines = Utils::String::GetLines(source);
-	//Get Shader Type
-	for (uint32_t i = 0; i < lines.size(); i++)
-	{
-		if (Utils::String::StartsWith(lines[i], "#shader"))
-		{
-			if (Utils::String::FindToken(lines[i], "vertex"))
-				type = ShaderType::Vertex;
-			else if (Utils::String::FindToken(lines[i], "fragment"))
-				type = ShaderType::Fragment;
-			else if (Utils::String::FindToken(lines[i], "geometry"))
-				type = ShaderType::Geometry;
-			else if (Utils::String::FindToken(lines[i], "tessellation"))
-			{
-				if (Utils::String::FindToken(lines[i], "control"))
-					type = ShaderType::Tessellation_Control;
-				else if (Utils::String::FindToken(lines[i], "evaluation"))
-					type = ShaderType::Tessellation_Evaluation;
-			}
-			else if (Utils::String::FindToken(lines[i], "compute"))
-				type = ShaderType::Compute;
-
-			//Add version tag if doesnt exist
-			if (!Utils::String::StartsWith(lines[i + 1], "#version ") && type != ShaderType::Unknown)
-				shaders[static_cast<int32_t>(type) - 1]->append("#version 460 core\n");
-		}
-		else if (type != ShaderType::Unknown)
-		{
-			shaders[static_cast<int32_t>(type) - 1]->append(lines[i]);
-			shaders[static_cast<int32_t>(type) - 1]->append("\n");
-		}
-	}
 }

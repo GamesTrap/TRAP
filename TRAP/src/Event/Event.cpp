@@ -1,23 +1,28 @@
 #include "TRAPPCH.h"
-#include "MathsFunc.h"
+#include "Event.h"
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-float TRAP::Math::ToRadians(const float degrees)
+std::string TRAP::Event::ToString() const
 {
-	return static_cast<float>(degrees * (TP_PI / 180.0f));
+	return GetName();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Math::ToDegrees(const float radians)
+bool TRAP::Event::IsInCategory(EventCategory category) const
 {
-	return static_cast<float>(radians * (180.0f / TP_PI));
+	return GetCategoryFlags() & static_cast<int32_t>(category);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Math::Sign(const float value)
+TRAP::EventDispatcher::EventDispatcher(Event& event)
+	: m_event(event)
 {
-	return (value > 0) - (value < 0);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::ostream& TRAP::operator<<(std::ostream& os, const TRAP::Event& e)
+{
+	return os << e.ToString();
 }

@@ -6,7 +6,7 @@
 
 namespace TRAP::Graphics::API
 {
-	class OpenGLShader final : public Graphics::Shader
+	class OpenGLShader final : public Shader
 	{
 	public:
 		OpenGLShader(std::string name, std::string Source);
@@ -72,69 +72,6 @@ namespace TRAP::Graphics::API
 		std::string m_name, m_filepath, m_source;
 		std::string m_VSSource, m_FSSource, m_GSSource, m_TCSSource, m_TESSource, m_CSSource;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline unsigned TRAP::Graphics::API::OpenGLShader::GetHandle() const
-{
-	return m_handle;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::OpenGLShader::GetName() const
-{
-	return m_name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::OpenGLShader::GetFilePath() const
-{
-	return m_filepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::OpenGLShader::GetVSSource() const
-{
-	return m_VSSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::OpenGLShader::GetFSSource() const
-{
-	return m_FSSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::OpenGLShader::GetGSSource() const
-{
-	return m_GSSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::OpenGLShader::GetTCSSource() const
-{
-	return m_TCSSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::OpenGLShader::GetTESSource() const
-{
-	return m_TESSource;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline const std::string& TRAP::Graphics::API::OpenGLShader::GetCSSource() const
-{
-	return m_CSSource;
 }
 
 #endif /*_TRAP_OPENGLSHADER_H_*/

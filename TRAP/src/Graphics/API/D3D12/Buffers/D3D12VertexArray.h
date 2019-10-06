@@ -7,7 +7,7 @@
 
 namespace TRAP::Graphics::API
 {
-	class D3D12VertexArray : public VertexArray
+	class D3D12VertexArray final : public VertexArray
 	{
 	public:
 		D3D12VertexArray();
@@ -31,13 +31,6 @@ namespace TRAP::Graphics::API
 		std::vector<Scope<VertexBuffer>> m_vertexBuffers;
 		Scope<IndexBuffer> m_indexBuffer;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline uint32_t TRAP::Graphics::API::D3D12VertexArray::GetIndexCount() const
-{
-	return 0;
 }
 
 #endif

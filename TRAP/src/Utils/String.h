@@ -3,9 +3,6 @@
 
 namespace TRAP::Utils::String
 {
-
-	//-------------------------------------------------------------------------------------------------------------------//
-
 	std::vector<std::string> SplitString(const std::string& string, const std::string& delimiters);
 	std::vector<std::string> SplitString(const std::string& string, char delimiter);
 
@@ -45,7 +42,6 @@ namespace TRAP::Utils::String
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	uint32_t GetCount(const std::string& string, const std::string& delimiters);
 	uint32_t GetCount(const std::string& string, char delimiter);
 }
 

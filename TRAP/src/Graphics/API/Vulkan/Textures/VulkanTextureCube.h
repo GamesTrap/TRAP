@@ -8,7 +8,7 @@ namespace TRAP::Graphics::API
 	class VulkanTextureCube final : public TextureCube
 	{
 	public:
-		VulkanTextureCube(TextureParameters parameters);
+		explicit VulkanTextureCube(TextureParameters parameters);
 		VulkanTextureCube(std::string name, const std::array<std::string, 6> & filepaths, TextureParameters parameters);
 		VulkanTextureCube(std::string name, std::string filepath, InputFormat format, TextureParameters parameters);
 		~VulkanTextureCube();
@@ -35,34 +35,6 @@ namespace TRAP::Graphics::API
 		std::vector<Scope<Image>> m_images;
 		TextureParameters m_parameters;
 	};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::string TRAP::Graphics::API::VulkanTextureCube::GetName() const
-{
-	return m_name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Image* TRAP::Graphics::API::VulkanTextureCube::GetImage()
-{
-	return m_images[0].get(); //TODO
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Graphics::TextureParameters TRAP::Graphics::API::VulkanTextureCube::GetParameters()
-{
-	return m_parameters;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::array<TRAP::Image*, 6> TRAP::Graphics::API::VulkanTextureCube::GetImages() const
-{
-	return { m_images[0].get(), m_images[1].get(), m_images[2].get(), m_images[3].get(), m_images[4].get(), m_images[5].get(), };
 }
 
 #endif /*_TRAP_VULKANTEXTURECUBE_H_*/

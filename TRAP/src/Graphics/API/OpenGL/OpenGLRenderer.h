@@ -67,18 +67,4 @@ namespace TRAP::Graphics::API
 	};
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline std::string_view TRAP::Graphics::API::OpenGLRenderer::GetTitle() const
-{
-	return m_rendererTitle;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-inline TRAP::Graphics::API::OpenGLRenderer* TRAP::Graphics::API::OpenGLRenderer::Get()
-{
-	return reinterpret_cast<OpenGLRenderer*>(s_Renderer.get());
-}
-
 #endif /*_TRAP_OPENGLRENDERER_H_*/

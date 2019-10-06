@@ -20,9 +20,4 @@ namespace TRAP::Graphics
 	};
 }
 
-inline TRAP::Graphics::TextureType TRAP::Graphics::Texture2D::GetType() const
-{
-	return TextureType::Texture2D;
-}
-
 #endif /*_TRAP_TEXTURE2D_H_*/

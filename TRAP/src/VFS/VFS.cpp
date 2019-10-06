@@ -8,24 +8,9 @@ TRAP::Scope<TRAP::VFS> TRAP::VFS::s_Instance = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::VFS::Init()
-{
-	TP_DEBUG("[VFS] Initializing Virtual File System");
-	s_Instance = MakeScope<VFS>();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::VFS::Shutdown()
-{
-	TP_DEBUG("[VFS] Shutting down Virtual File System");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physicalPath)
 {
-	if(virtualPath.empty() || physicalPath.empty())
+	if (virtualPath.empty() || physicalPath.empty())
 	{
 		TP_ERROR("[VFS] Virtual or Physical path is empty!");
 		return;
@@ -42,12 +27,12 @@ void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physica
 			return physicalPath;
 		}(), "\"");
 	m_mountPoints[virtualPathLower].emplace_back([&]()
-	{
+		{
 			if (*(physicalPath.end() - 1) == '/')
 				return std::string(physicalPath.begin(), physicalPath.end() - 1);
 
 			return physicalPath;
-	}());
+		}());
 
 	if (m_hotShaderReloading)
 		if (virtualPathLower == "/shaders")
@@ -252,6 +237,70 @@ bool TRAP::VFS::WriteTextFile(const std::string& path, const std::string& text)
 	std::filesystem::path physicalPath;
 
 	return ResolveWritePhysicalPath(path, physicalPath) ? FileSystem::WriteTextFile(physicalPath, text) : false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::VFS::Init()
+{
+	TP_DEBUG("[VFS] Initializing Virtual File System");
+	s_Instance = MakeScope<VFS>();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::VFS::Shutdown()
+{
+	TP_DEBUG("[VFS] Shutting down Virtual File System");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::VFS::GetHotShaderReloading() const
+{
+	return m_hotShaderReloading;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::VFS::SetHotShaderReloading(const bool enabled)
+{
+	m_hotShaderReloading = enabled;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::FileWatcher* TRAP::VFS::GetShaderFileWatcher() const
+{
+	return m_shaderFileWatcher.get();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::VFS::GetHotTextureReloading() const
+{
+	return m_hotTextureReloading;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::VFS::SetHotTextureReloading(const bool enabled)
+{
+	m_hotTextureReloading = enabled;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::FileWatcher* TRAP::VFS::GetTextureFileWatcher() const
+{
+	return m_textureFileWatcher.get();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::VFS* TRAP::VFS::Get()
+{
+	return s_Instance.get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

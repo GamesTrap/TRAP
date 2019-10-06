@@ -14,59 +14,6 @@
 #include "Bitmap/BMPImage.h"
 #include "EmptyImage.h"
 
-TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
-{
-	std::string virtualFilePath = VFS::MakeVirtualPathCompatible(filepath);
-	const std::string fileFormat = Utils::String::GetSuffix(Utils::String::ToLower(virtualFilePath));
-
-	Scope<Image> result;
-
-	if (fileFormat == "pgm")
-		result = MakeScope<INTERNAL::PGMImage>(virtualFilePath);
-	else if (fileFormat == "ppm")
-		result = MakeScope<INTERNAL::PPMImage>(virtualFilePath);
-	else if (fileFormat == "pnm")
-		result = MakeScope<INTERNAL::PNMImage>(virtualFilePath);
-	else if (fileFormat == "pam")
-		result = MakeScope<INTERNAL::PAMImage>(virtualFilePath);
-	else if (fileFormat == "pfm")
-		result = MakeScope<INTERNAL::PFMImage>(virtualFilePath);
-	else if (fileFormat == "tga" || fileFormat == "icb" || fileFormat == "vda" || fileFormat == "vst")
-		result = MakeScope<INTERNAL::TGAImage>(virtualFilePath);
-	else if (fileFormat == "bmp" || fileFormat == "dib")
-		result = MakeScope<INTERNAL::BMPImage>(virtualFilePath);
-	else
-	{
-		TP_ERROR("[Image] Unsupported or unknown Image Format!");
-		TP_WARN("[Image] Using Default Image!");
-		return MakeScope<INTERNAL::DefaultImage>(virtualFilePath);
-	}
-
-	//Test for Errors
-	if (result->GetPixelDataSize() == 0 || result->GetFormat() == ImageFormat::NONE)
-		result = MakeScope<INTERNAL::DefaultImage>(virtualFilePath);
-
-	return result;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
-{
-	return MakeScope<INTERNAL::DefaultImage>("");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Scope<TRAP::Image> TRAP::Image::CreateEmpty(ImageFormat format, uint32_t width, uint32_t height)
-{
-	return MakeScope<INTERNAL::EmptyImage>(format, width, height);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-
 std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	std::vector<uint8_t> data{};
@@ -360,4 +307,57 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>
 	}
 
 	return data;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
+{
+	std::string virtualFilePath = VFS::MakeVirtualPathCompatible(filepath);
+	const std::string fileFormat = Utils::String::GetSuffix(Utils::String::ToLower(virtualFilePath));
+
+	Scope<Image> result;
+
+	if (fileFormat == "pgm")
+		result = MakeScope<INTERNAL::PGMImage>(virtualFilePath);
+	else if (fileFormat == "ppm")
+		result = MakeScope<INTERNAL::PPMImage>(virtualFilePath);
+	else if (fileFormat == "pnm")
+		result = MakeScope<INTERNAL::PNMImage>(virtualFilePath);
+	else if (fileFormat == "pam")
+		result = MakeScope<INTERNAL::PAMImage>(virtualFilePath);
+	else if (fileFormat == "pfm")
+		result = MakeScope<INTERNAL::PFMImage>(virtualFilePath);
+	else if (fileFormat == "tga" || fileFormat == "icb" || fileFormat == "vda" || fileFormat == "vst")
+		result = MakeScope<INTERNAL::TGAImage>(virtualFilePath);
+	else if (fileFormat == "bmp" || fileFormat == "dib")
+		result = MakeScope<INTERNAL::BMPImage>(virtualFilePath);
+	else
+	{
+		TP_ERROR("[Image] Unsupported or unknown Image Format!");
+		TP_WARN("[Image] Using Default Image!");
+		return MakeScope<INTERNAL::DefaultImage>(virtualFilePath);
+	}
+
+	//Test for Errors
+	if (result->GetPixelDataSize() == 0 || result->GetFormat() == ImageFormat::NONE)
+		result = MakeScope<INTERNAL::DefaultImage>(virtualFilePath);
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
+{
+	return MakeScope<INTERNAL::DefaultImage>("");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Scope<TRAP::Image> TRAP::Image::CreateEmpty(ImageFormat format, uint32_t width, uint32_t height)
+{
+	return MakeScope<INTERNAL::EmptyImage>(format, width, height);
 }
