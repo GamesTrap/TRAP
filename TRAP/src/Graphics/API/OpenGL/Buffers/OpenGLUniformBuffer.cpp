@@ -22,7 +22,7 @@ TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(const char* name, 
 {
 	if(s_maxUniformBufferBindingPoints == 0)
 	{
-		OpenGLCall(glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int32_t*>(&s_maxUniformBufferBindingPoints)))
+		OpenGLCall(glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int32_t*>(&s_maxUniformBufferBindingPoints)));
 	}
 	if(s_uniformBufferOffsetAlignment == 0)
 	{
@@ -56,7 +56,7 @@ TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(const char* name, 
 {
 	if (s_maxUniformBufferBindingPoints == 0)
 	{
-		OpenGLCall(glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int32_t*>(&s_maxUniformBufferBindingPoints)))
+		OpenGLCall(glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int32_t*>(&s_maxUniformBufferBindingPoints)));
 	}
 	if (s_uniformBufferOffsetAlignment == 0)
 	{
