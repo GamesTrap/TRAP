@@ -481,3 +481,9 @@ SITREP 10/05/2019|19w40a4
     - OpenGLTexture2D & OpenGLTextureCube Added safety checks to Bind and Unbind ~>10 mins
     - Now utilizing structured bindings ~<30 mins
     - OpenGLTexture2D & OpenGLTextureCube Optimized Binding/Unbinding of the same Texture to the same slot ~>25 mins
+
+SITREP 10/06/2019|19w40a5
+    - Changed TRAP Engine version to 19w40a5(0.5.46)
+    - OpenGLUniformBuffer Fixed Unbind function not using bindingPoint ~<20 mins
+    - OpenGLUniformBuffer Added Unbind/Bind safety checks ~>20 mins
+    - OpenGLUniformBuffer Optimized Binding/Unbinding of the same UniformBuffer to the same bindingPoint ~>20 mins

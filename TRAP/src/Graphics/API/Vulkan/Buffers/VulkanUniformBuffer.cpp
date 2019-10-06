@@ -21,7 +21,7 @@ void TRAP::Graphics::API::VulkanUniformBuffer::Bind(uint32_t bindingPoint) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanUniformBuffer::Unbind() const
+void TRAP::Graphics::API::VulkanUniformBuffer::Unbind(uint32_t bindingPoint) const
 {
 }
 

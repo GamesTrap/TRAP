@@ -22,7 +22,7 @@ namespace TRAP::Graphics::API
 		~OpenGLUniformBuffer();
 
 		void Bind(uint32_t bindingPoint) const override;
-		void Unbind() const override;
+		void Unbind(uint32_t bindingPoint) const override;
 
 		void UpdateData(const void* data) override;
 		void UpdateSubData(const void* data, uint32_t size, uint32_t offset) override;
@@ -40,6 +40,8 @@ namespace TRAP::Graphics::API
 		uint32_t m_alignedSize;
 
 		static uint32_t s_uniformBufferOffsetAlignment;
+		static uint32_t s_maxUniformBufferBindingPoints;
+		static std::unordered_map<uint32_t, const OpenGLUniformBuffer*> s_boundUniformBuffers;
 	};
 }
 

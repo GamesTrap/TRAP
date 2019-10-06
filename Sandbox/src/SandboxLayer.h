@@ -11,7 +11,6 @@ public:
 		m_frameTimeHistory(),
 		m_usePassthrough(false),
 		m_wireFrame(false),
-		m_show(true),
 		m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()))
 	{
 	}
@@ -34,7 +33,7 @@ public:
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnAttach() override
-	{		
+	{
 		//Mount & Load Shaders
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
@@ -94,7 +93,7 @@ public:
 	{
 		m_uniformBuffer->Unbind();
 		m_uniformBuffer.reset();
-		
+
 		m_vertexArray->Unbind();
 		m_vertexArray.reset();
 	}
@@ -104,21 +103,18 @@ public:
 	void OnUpdate(const TRAP::Utils::TimeStep deltaTime) override
 	{
 		m_cameraController.OnUpdate(deltaTime);
-		
+
 		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
 
 		TRAP::Graphics::Renderer::BeginScene(m_cameraController.GetCamera());
 		{
-			if (m_show)
+			if (m_usePassthrough)
+				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray);
+			else
 			{
-				if (m_usePassthrough)
-					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray);
-				else
-				{
-					float time = TRAP::Application::GetTime();
-					m_uniformBuffer->UpdateData(&time);
-					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColor"), m_vertexArray);
-				}
+				float time = TRAP::Application::GetTime();
+				m_uniformBuffer->UpdateData(&time);
+				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColor"), m_vertexArray);
 			}
 		}
 		TRAP::Graphics::Renderer::EndScene();
@@ -136,7 +132,7 @@ public:
 			else
 			{
 				std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
-				m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();				
+				m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
 			}
 		}
 		if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
@@ -172,8 +168,6 @@ public:
 		if (event.GetKeyCode() == TRAP::Input::Key::F7 && event.GetRepeatCount() < 1) //Make Window Exclusive Fullscreen
 			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Fullscreen);
 
-		if (event.GetKeyCode() == TRAP::Input::Key::F9 && event.GetRepeatCount() < 1) //Enable/Disable
-			m_show = !m_show;
 		if (event.GetKeyCode() == TRAP::Input::Key::F10 && event.GetRepeatCount() < 1) //Enable/Disable WireFrame Mode
 		{
 			m_wireFrame = !m_wireFrame;
@@ -191,7 +185,7 @@ public:
 	void OnEvent(TRAP::Event& event) override
 	{
 		m_cameraController.OnEvent(event);
-		
+
 		TRAP::EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<TRAP::KeyPressedEvent>(TRAP_BIND_EVENT_FN(SandboxLayer::OnKeyPressed));
 	}
@@ -202,7 +196,6 @@ private:
 	TRAP::Utils::Timer m_titleTimer;
 	bool m_usePassthrough;
 	bool m_wireFrame;
-	bool m_show;
 
 	TRAP::Graphics::OrthographicCameraController m_cameraController;
 

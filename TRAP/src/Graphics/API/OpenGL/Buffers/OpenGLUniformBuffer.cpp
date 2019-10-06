@@ -9,9 +9,21 @@ uint32_t TRAP::Graphics::API::OpenGLUniformBuffer::s_uniformBufferOffsetAlignmen
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+uint32_t TRAP::Graphics::API::OpenGLUniformBuffer::s_maxUniformBufferBindingPoints = 0;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::unordered_map<uint32_t, const TRAP::Graphics::API::OpenGLUniformBuffer*> TRAP::Graphics::API::OpenGLUniformBuffer::s_boundUniformBuffers{};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(const char* name, const void* data, const uint32_t size, const BufferUsage usage)
 	: m_handle(0), m_name(name), m_size(size), m_usage(usage), m_dataPtr(nullptr), m_nextHeadOffset(0), m_bufferCount(0), m_alignedSize(size)
 {
+	if(s_maxUniformBufferBindingPoints == 0)
+	{
+		OpenGLCall(glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int32_t*>(&s_maxUniformBufferBindingPoints)))
+	}
 	if(s_uniformBufferOffsetAlignment == 0)
 	{
 		OpenGLCall(glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, reinterpret_cast<int32_t*>(&s_uniformBufferOffsetAlignment)));
@@ -42,6 +54,10 @@ TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(const char* name, 
 TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(const char* name, const uint32_t size, const BufferUsage usage)
 	: m_handle(0), m_name(name), m_size(size), m_usage(usage), m_dataPtr(nullptr), m_nextHeadOffset(0), m_bufferCount(0), m_alignedSize(size)
 {
+	if (s_maxUniformBufferBindingPoints == 0)
+	{
+		OpenGLCall(glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int32_t*>(&s_maxUniformBufferBindingPoints)))
+	}
 	if (s_uniformBufferOffsetAlignment == 0)
 	{
 		OpenGLCall(glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, reinterpret_cast<int32_t*>(&s_uniformBufferOffsetAlignment)));
@@ -84,28 +100,43 @@ TRAP::Graphics::API::OpenGLUniformBuffer::~OpenGLUniformBuffer()
 
 void TRAP::Graphics::API::OpenGLUniformBuffer::Bind(const uint32_t bindingPoint) const
 {
-	for (const auto& [name, shader] : ShaderManager::GetShaders())
+	if (bindingPoint < s_maxUniformBufferBindingPoints)
 	{
-		uint32_t uniformBlockIndex = GL_INVALID_INDEX;
-		if (dynamic_cast<OpenGLShader*>(shader.get())->GetHandle())
+		if (s_boundUniformBuffers[bindingPoint] != this)
 		{
-			OpenGLCall(uniformBlockIndex = glGetUniformBlockIndex(dynamic_cast<OpenGLShader*>(shader.get())->GetHandle(), m_name));
-		}
+			for (const auto& [name, shader] : ShaderManager::GetShaders())
+			{
+				uint32_t uniformBlockIndex = GL_INVALID_INDEX;
+				if (dynamic_cast<OpenGLShader*>(shader.get())->GetHandle())
+				{
+					OpenGLCall(uniformBlockIndex = glGetUniformBlockIndex(dynamic_cast<OpenGLShader*>(shader.get())->GetHandle(), m_name));
+				}
 
-		if (uniformBlockIndex != GL_INVALID_INDEX)
-		{
-			OpenGLCall(glUniformBlockBinding(dynamic_cast<OpenGLShader*>(shader.get())->GetHandle(), uniformBlockIndex, bindingPoint));
+				if (uniformBlockIndex != GL_INVALID_INDEX)
+				{
+					OpenGLCall(glUniformBlockBinding(dynamic_cast<OpenGLShader*>(shader.get())->GetHandle(), uniformBlockIndex, bindingPoint));
+				}
+			}
+
+			OpenGLCall(glBindBufferRange(GL_UNIFORM_BUFFER, bindingPoint, m_handle, m_bufferCount * m_alignedSize, m_size));
+			s_boundUniformBuffers[bindingPoint] = this;
 		}
 	}
-
-	OpenGLCall(glBindBufferRange(GL_UNIFORM_BUFFER, bindingPoint, m_handle, m_bufferCount * m_alignedSize, m_size));
+	else
+		TP_ERROR("[UniformBuffer][OpenGL] Couldn't bind UniformBuffer: \"", m_name, "\" to binding point: ", bindingPoint, "! Out of range");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLUniformBuffer::Unbind() const
+void TRAP::Graphics::API::OpenGLUniformBuffer::Unbind(const uint32_t bindingPoint) const
 {
-	OpenGLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
+	if(bindingPoint < s_maxUniformBufferBindingPoints)
+	{
+		OpenGLCall(glBindBufferRange(GL_UNIFORM_BUFFER, bindingPoint, 0, 0, 0));
+		s_boundUniformBuffers[bindingPoint] = nullptr;
+	}
+	else
+		TP_ERROR("[UniformBuffer][OpenGL] Couldn't unbind UniformBuffer: \"", m_name, "\" from binding point: ", bindingPoint, "! Out of range");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

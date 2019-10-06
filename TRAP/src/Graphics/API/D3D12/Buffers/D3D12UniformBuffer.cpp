@@ -21,7 +21,7 @@ void TRAP::Graphics::API::D3D12UniformBuffer::Bind(uint32_t bindingPoint) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12UniformBuffer::Unbind() const
+void TRAP::Graphics::API::D3D12UniformBuffer::Unbind(uint32_t bindingPoint) const
 {	
 }
 

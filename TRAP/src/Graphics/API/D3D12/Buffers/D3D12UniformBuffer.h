@@ -17,7 +17,7 @@ namespace TRAP::Graphics::API
 		D3D12UniformBuffer& operator=(D3D12UniformBuffer&&) = default;
 
 		void Bind(uint32_t bindingPoint) const override;
-		void Unbind() const override;
+		void Unbind(uint32_t bindingPoint) const override;
 
 		void UpdateData(const void* data) override;
 		void UpdateSubData(const void* data, uint32_t size, uint32_t offset) override;

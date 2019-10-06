@@ -56,6 +56,6 @@ void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<V
 
 void TRAP::Graphics::Renderer::Cleanup()
 {
-	s_uniformBuffer->Unbind();
+	s_uniformBuffer->Unbind(0);
 	s_uniformBuffer.reset();
 }
