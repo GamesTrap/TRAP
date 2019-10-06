@@ -624,6 +624,8 @@ bool TRAP::Graphics::API::VulkanShader::CreateShaderModule(VkShaderModule& shade
 		SPIRVCode.data()
 	};
 
-	VkCall(const VkResult success = vkCreateShaderModule(Graphics::API::VulkanRenderer::Get()->GetDevice(), &shaderModuleCreateInfo, nullptr, &shaderModule));
+	VkResult success;
+	VkCall(success = vkCreateShaderModule(Graphics::API::VulkanRenderer::Get()->GetDevice(), &shaderModuleCreateInfo, nullptr, &shaderModule));
+	
 	return success == VK_SUCCESS;
 }
