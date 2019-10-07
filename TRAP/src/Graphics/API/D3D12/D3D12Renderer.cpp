@@ -160,7 +160,7 @@ std::string_view TRAP::Graphics::API::D3D12Renderer::GetTitle() const
 
 TRAP::Graphics::API::D3D12Renderer* TRAP::Graphics::API::D3D12Renderer::Get()
 {
-	return reinterpret_cast<D3D12Renderer*>(s_Renderer.get());
+	return dynamic_cast<D3D12Renderer*>(s_Renderer.get());
 }
 
 #endif

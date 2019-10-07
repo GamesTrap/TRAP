@@ -9,7 +9,7 @@ namespace TRAP::Graphics::API
 	class OpenGLShader final : public Shader
 	{
 	public:
-		OpenGLShader(std::string name, std::string Source);
+		OpenGLShader(std::string name, std::string source);
 		OpenGLShader(std::string name, std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource);
 		OpenGLShader(const OpenGLShader&) = delete;
 		OpenGLShader& operator=(const OpenGLShader&) = delete;

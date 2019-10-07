@@ -194,7 +194,7 @@ std::string_view TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::Get()
 {
-	return reinterpret_cast<VulkanRenderer*>(s_Renderer.get());
+	return dynamic_cast<VulkanRenderer*>(s_Renderer.get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

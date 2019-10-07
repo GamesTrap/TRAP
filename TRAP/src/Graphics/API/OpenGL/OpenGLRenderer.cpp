@@ -218,7 +218,7 @@ std::string_view TRAP::Graphics::API::OpenGLRenderer::GetTitle() const
 
 TRAP::Graphics::API::OpenGLRenderer* TRAP::Graphics::API::OpenGLRenderer::Get()
 {
-	return reinterpret_cast<OpenGLRenderer*>(s_Renderer.get());
+	return dynamic_cast<OpenGLRenderer*>(s_Renderer.get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

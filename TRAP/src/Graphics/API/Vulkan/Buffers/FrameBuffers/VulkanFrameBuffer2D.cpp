@@ -48,7 +48,7 @@ uint32_t TRAP::Graphics::API::VulkanFrameBuffer2D::GetHeight() const
 
 const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::API::VulkanFrameBuffer2D::GetTexture() const
 {
-	return reinterpret_cast<const Scope<Texture>&>(m_texture);
+	return dynamic_cast<const Scope<Texture>&>(m_texture);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

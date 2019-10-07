@@ -399,24 +399,42 @@ void TRAP::Graphics::API::VulkanShader::PreProcessGLSL(const std::string& source
 		if (Utils::String::StartsWith(lines[i], "#shader"))
 		{
 			if (Utils::String::FindToken(lines[i], "vertex"))
+			{
 				type = ShaderType::Vertex;
-			else if (Utils::String::FindToken(lines[i], "fragment"))
+				shaders[static_cast<int32_t>(type) - 1]->append("#version 460 core\n");
+			}
+			else if (Utils::String::FindToken(lines[i], "fragment") || Utils::String::FindToken(lines[i], "pixel"))
+			{
 				type = ShaderType::Fragment;
+				shaders[static_cast<int32_t>(type) - 1]->append("#version 460 core\n");
+			}
 			else if (Utils::String::FindToken(lines[i], "geometry"))
+			{
 				type = ShaderType::Geometry;
+				shaders[static_cast<int32_t>(type) - 1]->append("#version 460 core\n");
+			}
 			else if (Utils::String::FindToken(lines[i], "tessellation"))
 			{
 				if (Utils::String::FindToken(lines[i], "control"))
+				{
 					type = ShaderType::Tessellation_Control;
+					shaders[static_cast<int32_t>(type) - 1]->append("#version 460 core\n");
+				}
 				else if (Utils::String::FindToken(lines[i], "evaluation"))
+				{
 					type = ShaderType::Tessellation_Evaluation;
+					shaders[static_cast<int32_t>(type) - 1]->append("#version 460 core\n");
+				}
 			}
 			else if (Utils::String::FindToken(lines[i], "compute"))
+			{
 				type = ShaderType::Compute;
-
-			//Add version tag if doesnt exist
-			if (!Utils::String::StartsWith(lines[i + 1], "#version ") && type != ShaderType::Unknown)
 				shaders[static_cast<int32_t>(type) - 1]->append("#version 460 core\n");
+			}
+		}
+		else if (Utils::String::StartsWith(lines[i], "#version"))
+		{
+			TP_WARN("[Shader][OpenGL][GLSL] Found Tag: \"", lines[i], "\" this is unnecessary! Skipping Line: ", i);
 		}
 		else if (type != ShaderType::Unknown)
 		{
