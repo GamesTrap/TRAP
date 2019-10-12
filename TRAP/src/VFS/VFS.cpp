@@ -201,6 +201,16 @@ std::vector<std::byte> TRAP::VFS::ReadFile(const std::string& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::vector<std::byte> TRAP::VFS::SilentReadFile(const std::string& path)
+{
+	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
+	std::filesystem::path physicalPath;
+
+	return SilentResolveReadPhysicalPath(path, physicalPath) ? FileSystem::SilentReadFile(physicalPath) : std::vector<std::byte>();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::VFS::ReadTextFile(const std::string& path)
 {
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");

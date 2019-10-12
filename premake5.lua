@@ -28,6 +28,7 @@ IncludeDir["OSDEPENDENT"] = "Dependencies/GLSLang/glslang/OSDependent"
 IncludeDir["HLSL"] = "Dependencies/GLSLang/hlsl"
 IncludeDir["SPIRV"] = "Dependencies/GLSLang/SPIRV"
 IncludeDir["STANDALONE"] = "Dependencies/GLSLang/StandAlone"
+IncludeDir["SPIRVCROSS"] = "Dependencies/SPIRV-Cross"
 
 group "Dependencies"
 	include "Dependencies/GLFW"
@@ -37,6 +38,11 @@ group "Dependencies"
 		include "Dependencies/GLSLang/SPIRV"
 		include "Dependencies/GLSLang/StandAlone"
 		include "Dependencies/GLSLang/glslang"
+	group "Dependencies/SPIRV-Cross"
+		include "Dependencies/SPIRV-Cross/SPIRV-Cross-Core"
+		include "Dependencies/SPIRV-Cross/SPIRV-Cross-GLSL"
+		include "Dependencies/SPIRV-Cross/SPIRV-Cross-HLSL"
+		include "Dependencies/SPIRV-Cross/SPIRV-Cross-Reflect"
 
 group "Engine"
 project "TRAP"
@@ -83,7 +89,8 @@ project "TRAP"
 		"%{IncludeDir.VULKAN}/Include/",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
-		"%{IncludeDir.STANDALONE}"
+		"%{IncludeDir.STANDALONE}",
+		"%{IncludeDir.SPIRVCROSS}"
 	}
 
 	filter "system:windows"
@@ -113,7 +120,10 @@ project "TRAP"
 			"%{IncludeDir.VULKAN}/Lib/vulkan-1",
 			"GLSLang",
 			"SPIRV",
-			"StandAlone"
+			"StandAlone",
+			"SPIRV-Cross-Core",
+			"SPIRV-Cross-GLSL",
+			"SPIRV-Cross-HLSL"
 		}
 
 	filter "system:linux"
@@ -152,7 +162,10 @@ project "TRAP"
 			"GLSLang",
 			"SPIRV",
 			"StandAlone",
-			"vulkan"
+			"vulkan",
+			"SPIRV-Cross-Core",
+			"SPIRV-Cross-GLSL",
+			"SPIRV-Cross-HLSL"
 		}
 
 	filter "system:macosx"
@@ -180,6 +193,9 @@ project "TRAP"
 			"StandAlone",
 			"Cocoa.framework",
 			"Foundation.framework",
+			"SPIRV-Cross-Core",
+			"SPIRV-Cross-GLSL",
+			"SPIRV-Cross-HLSL",
 
 			"c++fs"
 		}
@@ -225,7 +241,8 @@ project "Sandbox"
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
 		"%{IncludeDir.STANDALONE}",
-		"%{IncludeDir.VULKAN}/Include/"
+		"%{IncludeDir.VULKAN}/Include/",
+		"%{IncludeDir.SPIRVCROSS}"
 	}
 
 	links
@@ -249,7 +266,10 @@ project "Sandbox"
 			"X11",
 			"HLSL",
 			"OGLCompiler",
-			"OSDependent"
+			"OSDependent",
+			"SPIRV-Cross-Core",
+			"SPIRV-Cross-GLSL",
+			"SPIRV-Cross-HLSL"
 		}
 
 	filter "system:macosx"
@@ -264,6 +284,9 @@ project "Sandbox"
 			"StandAlone",
 			"Cocoa.framework",
 			"Foundation.framework",
+			"SPIRV-Cross-Core",
+			"SPIRV-Cross-GLSL",
+			"SPIRV-Cross-HLSL",
 
 			"c++fs"
 		}
@@ -282,3 +305,70 @@ project "Sandbox"
 		defines "TRAP_RelWithDebInfo"
 		runtime "Release"
 		optimize "On"
+
+project "ConvertToSPIRV"
+	location "ConvertToSPIRV"
+	kind "ConsoleApp"
+	language "C++"
+	staticruntime "on"
+	cppdialect "C++17"
+	systemversion "latest"
+	
+	targetdir ("bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+	
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+	
+	includedirs
+	{
+		"%{IncludeDir.GLSLANG}",
+		"%{IncludeDir.SPIRV}",
+		"%{IncludeDir.STANDALONE}"
+	}
+
+	filter "system:windows"
+		links
+		{
+			"GLSLang",
+			"SPIRV",
+			"StandAlone"
+		}
+	
+	filter "system:linux"
+		links
+		{
+			"GLSLang",
+			"SPIRV",
+			"StandAlone",
+
+			"dl",
+			"HLSL",
+			"OGLCompiler",
+			"OSDependent"
+		}
+	
+	filter "system:macosx"
+		links
+		{
+			"GLSLang",
+			"SPIRV",
+			"StandAlone",
+	
+			"c++fs"
+		}
+	
+		filter "configurations:Debug"
+			runtime "Debug"
+			symbols "On"
+	
+		filter "configurations:Release"
+			runtime "Release"
+			optimize "On"
+	
+		filter "configurations:RelWithDebInfo"
+			runtime "Release"
+			optimize "On"

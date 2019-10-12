@@ -57,7 +57,7 @@ TRAP::Graphics::API::D3D12Context* TRAP::Graphics::API::D3D12Context::Get()
 
 bool TRAP::Graphics::API::D3D12Context::IsD3D12Capable()
 {
-	return true; //TODO Check if D3D12 capable
+	return false; //TODO Check if D3D12 capable
 }
 
 #endif

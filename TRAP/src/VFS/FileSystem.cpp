@@ -61,6 +61,28 @@ std::vector<std::byte> TRAP::FileSystem::ReadFile(const std::filesystem::path& f
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::vector<std::byte> TRAP::FileSystem::SilentReadFile(const std::filesystem::path& filePath)
+{
+	if (!SilentFileOrFolderExists(filePath))
+	{
+		std::ifstream file(filePath, std::ios::binary | std::ios::ate);
+		if (file.is_open())
+		{
+			const uint32_t length = static_cast<const uint32_t>(file.tellg());
+			file.seekg(0);
+			std::vector<std::byte> buffer{ length };
+			file.read(reinterpret_cast<char*>(buffer.data()), length);
+
+			file.close();
+			return buffer;
+		}
+	}
+
+	return std::vector<std::byte>();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::FileSystem::ReadTextFile(const std::filesystem::path& filePath)
 {
 	if (FileOrFolderExists(filePath))
@@ -96,8 +118,6 @@ std::string TRAP::FileSystem::SilentReadTextFile(const std::filesystem::path& fi
 			file.close();
 			return buffer.str();
 		}
-
-		TP_ERROR("[FileSystem] Could not open File: ", filePath);
 	}
 
 	return "";

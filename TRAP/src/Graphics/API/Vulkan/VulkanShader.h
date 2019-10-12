@@ -16,7 +16,8 @@ namespace TRAP::Graphics::API
 	class VulkanShader final : public Shader
 	{
 	public:
-		VulkanShader(std::string name, std::string source);
+		VulkanShader(std::string name, const std::string& source);
+		VulkanShader(std::string name, std::vector<uint32_t>& source);
 		VulkanShader(std::string name, std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource);
 		VulkanShader(const VulkanShader&) = default;
 		VulkanShader& operator=(const VulkanShader&) = default;
@@ -24,7 +25,7 @@ namespace TRAP::Graphics::API
 		VulkanShader& operator=(VulkanShader&&) = default;
 		~VulkanShader();
 
-		void Init();
+		
 		void Shutdown() const;
 
 		void Bind() const override;
@@ -34,16 +35,16 @@ namespace TRAP::Graphics::API
 		
 		const std::string& GetFilePath() const override;
 
-		const std::string& GetVSSource() const override;
-		const std::string& GetFSSource() const override;
-		const std::string& GetGSSource() const override;
-		const std::string& GetTCSSource() const override;
-		const std::string& GetTESSource() const override;
-		const std::string& GetCSSource() const override;
-
 	private:
-		void Compile(std::array<std::string*, 6> & shaders, VulkanShaderErrorInfo& info);
-		static void PreProcessGLSL(const std::string& source, std::array<std::string*, 6>& shaders);
+		void CheckLanguage(const std::string& source);
+		void InitSPIRV(std::vector<uint32_t>& source);
+		void InitHLSL(const std::string& source);
+		void InitGLSL(const std::string& source);
+		void InitGLSL(std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource);
+		
+		void CompileGLSL(std::array<std::string, 6> & shaders, VulkanShaderErrorInfo& info);
+		void CompileSPIRV(std::array<std::vector<uint32_t>, 6>& shaders, VulkanShaderErrorInfo& info);
+		static void PreProcessGLSL(const std::string& source, std::array<std::string, 6>& shaders);
 		static Scope<glslang::TShader> PreProcess(const char* source, uint32_t shaderType, std::string& preProcessedSource);
 		static bool Parse(glslang::TShader* shader);
 		static bool Link(glslang::TShader* VShader, glslang::TShader* FShader, glslang::TShader* GShader, glslang::TShader* TCShader, glslang::TShader* TEShader, glslang::TShader* CShader, glslang::TProgram& program);
@@ -53,8 +54,7 @@ namespace TRAP::Graphics::API
 		friend class ::TRAP::Graphics::Shader;
 		friend class ::TRAP::Graphics::ShaderManager;
 
-		std::string m_name, m_filepath, m_source;
-		std::string m_VSSource, m_FSSource, m_GSSource, m_TCSSource, m_TESSource, m_CSSource;
+		std::string m_name, m_filepath;
 
 		static bool s_glslangInitialized;
 

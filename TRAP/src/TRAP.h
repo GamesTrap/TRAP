@@ -58,9 +58,4 @@
 #include "Graphics/Cameras/Orthographic/OrthographicCameraController.h"
 //----------------------
 
-//----ENTRY POINT-------
-#include "EntryPoint.h"
-//----------------------
-
-
 #endif /*_TRAP_TRAP_H_*/

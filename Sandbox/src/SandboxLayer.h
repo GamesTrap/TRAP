@@ -39,6 +39,8 @@ public:
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Texture.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColor.shader");
+		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColorHLSL.shader");
+		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColorSPIRV.spirv");
 
 		//Mount & Load Textures
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
@@ -81,7 +83,7 @@ public:
 		TRAP::Graphics::RenderCommand::SetBlendFunction(TRAP::Graphics::RendererBlendFunction::Source_Alpha, TRAP::Graphics::RendererBlendFunction::One_Minus_Source_Alpha);
 
 		UniformData data{ TRAP::Application::GetTime() };
-		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("ColorBuffer", &data, sizeof(UniformData), TRAP::Graphics::BufferUsage::Stream);
+		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("ColorBuffer", &data, sizeof(UniformData), TRAP::Graphics::BufferUsage::Dynamic);
 
 		TRAP::Graphics::TextureManager::Get2D("TRAP")->Bind();
 		m_uniformBuffer->Bind(1);
@@ -114,7 +116,7 @@ public:
 			{
 				float time = TRAP::Application::GetTime();
 				m_uniformBuffer->UpdateData(&time);
-				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColor"), m_vertexArray);
+				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColorSPIRV"), m_vertexArray);
 			}
 		}
 		TRAP::Graphics::Renderer::EndScene();

@@ -493,3 +493,18 @@ SITREP 10/06/2019|19w40a5
 SITREP 10/08/2019|19w41a1
     - Changed TRAP Engine version to 19w41a1(0.5.47)
     - OpenGLShader GLSL Ignore #version tag & always add "#version 460 core" ~>15 mins
+
+SITREP 10/09/2019|19w41a2
+    - Changed TRAP Engine version to 19w41a2(0.5.48)
+    - OpenGLUniformBuffer with Stream usage now uses Orphaning(because of internal issues) ~>15 mins
+    - Working on Shading language independent loading ~>60 mins
+
+SITREP 10/12/2019|19w41a3
+    - Changed TRAP Engine version to 19w41a3(0.5.49)
+    - Working on Shading language independent loading ~>60 mins
+    - ConvertToSPIRV Finished GLSL converting ~>150 mins
+    - Shader Optimized RAM usage ~>45 mins
+    - VulkanShader Added loading of SPIR-V ~>30 mins
+    - Dependencies Added SPIRV-Cross ~>35 mins
+    - Updated documentation ~>15 mins
+    - OpenGLShader Added loading of SPIR-V ~>45 mins

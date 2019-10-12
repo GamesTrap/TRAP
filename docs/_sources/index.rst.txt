@@ -63,7 +63,8 @@ Recommended System Requirements
 - `GLAD <https://glad.dav1d.de/>`_
 - `ImGui <https://github.com/GamesTrap/imgui>`_
 - `VulkanSDK <https://vulkan.lunarg.com/sdk/home>`_
-- `GLSLang <https://github.com/KhronosGroup/glslang>`_
+- `GLSLang <https://github.com/GamesTrap/glslang>`_
+- `SPIRV-Cross <https://github.com/GamesTrap/SPIRV-Cross>`_
 
 .. toctree::
    :maxdepth: 2

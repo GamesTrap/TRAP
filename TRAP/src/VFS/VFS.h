@@ -18,6 +18,7 @@ namespace TRAP
 		std::vector<std::filesystem::path> ResolveToPhysicalPaths(const std::string& virtualPath);
 
 		std::vector<std::byte> ReadFile(const std::string& path);
+		std::vector<std::byte> SilentReadFile(const std::string& path);
 		std::string ReadTextFile(const std::string& path);
 		std::string SilentReadTextFile(const std::string& path);
 

@@ -103,20 +103,7 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 		{
 			const std::string path = s_Shaders[nameOrVirtualPath]->GetFilePath();
 			std::string error;
-			if (path.empty())
-			{
-				const std::string VSSource = s_Shaders[nameOrVirtualPath]->GetVSSource();
-				const std::string FSSource = s_Shaders[nameOrVirtualPath]->GetFSSource();
-				const std::string GSSource = s_Shaders[nameOrVirtualPath]->GetGSSource();
-				const std::string TCSSource = s_Shaders[nameOrVirtualPath]->GetTCSSource();
-				const std::string TESSource = s_Shaders[nameOrVirtualPath]->GetTESSource();
-				const std::string CSSource = s_Shaders[nameOrVirtualPath]->GetCSSource();
-
-				s_Shaders[nameOrVirtualPath].reset();
-				s_Shaders[nameOrVirtualPath] = Shader::CreateFromSource(nameOrVirtualPath, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
-				TP_INFO("[ShaderManager] Reloaded: \"", nameOrVirtualPath, "\"");
-			}
-			else
+			if (!path.empty())
 			{
 				s_Shaders[nameOrVirtualPath].reset();
 				s_Shaders[nameOrVirtualPath] = Shader::CreateFromFile(nameOrVirtualPath, path);
@@ -148,21 +135,7 @@ void TRAP::Graphics::ShaderManager::Reload(const Scope<Shader>& shader)
 		const std::string name = shader->GetName();
 		const std::string path = shader->GetFilePath();
 		std::string error;
-		if (path.empty())
-		{
-			const std::string VSSource = shader->GetVSSource();
-			const std::string FSSource = shader->GetFSSource();
-			const std::string GSSource = shader->GetGSSource();
-			const std::string TCSSource = shader->GetTCSSource();
-			const std::string TESSource = shader->GetTESSource();
-			const std::string CSSource = shader->GetCSSource();
-
-			s_Shaders[name]->Unbind();
-			s_Shaders[name].reset();
-			s_Shaders[name] = Shader::CreateFromSource(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
-			TP_INFO("[ShaderManager] Reloaded: \"", name, "\"");
-		}
-		else
+		if (!path.empty())
 		{
 			s_Shaders[name]->Unbind();
 			s_Shaders[name].reset();

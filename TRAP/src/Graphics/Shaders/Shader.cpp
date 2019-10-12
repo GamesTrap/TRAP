@@ -6,6 +6,8 @@
 #include "Graphics/API/D3D12/D3D12Shader.h"
 #include "Graphics/API/OpenGL/OpenGLShader.h"
 #include "Graphics/API/Vulkan/VulkanShader.h"
+#include "VFS/FileSystem.h"
+#include "../../../../Sandbox/src/SandboxLayer.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -23,18 +25,39 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	
 	std::string source;
 	std::string VFSFilePath;
+	std::vector<uint32_t> SPIRVSource;
+	bool isSPIRV = false;
 	if (!filePath.empty())
 	{
-		source = VFS::Get()->SilentReadTextFile(filePath);
+		if (Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "spirv" && Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "shader")
+		{
+			TP_ERROR("[Shader] File: \"", filePath, "\" suffix is not \"*.spirv\" or \"*.shader\"!");
+			TP_WARN("[Shader] Shader using fallback Shader: \"Passthrough\"");
+			return nullptr;
+		}
+		
+		isSPIRV = CheckSPIRVMagicNumber(filePath);
+		
+		if (!isSPIRV)
+			source = VFS::Get()->SilentReadTextFile(filePath);
+		else
+			SPIRVSource = Convert8To32(VFS::Get()->SilentReadFile(filePath));
+
 		VFSFilePath = VFS::MakeVirtualPathCompatible(filePath);
 	}
 
-	if (!filePath.empty() && source.empty())
-		TP_ERROR("[Shader] Shader: \"", name, "\" couldn't load Shader!");
-
-	if (source.empty())
+	if(isSPIRV)
 	{
-		TP_WARN("[Shader] Shader: \"", name, "\" using fallback Shader: \"Passthrough\"");
+		if(!filePath.empty() && SPIRVSource.empty())
+			TP_ERROR("[Shader][SPIR-V] Couldn't load Shader: \"", name, "\"!");
+	}
+	else
+		if (!filePath.empty() && source.empty() && !isSPIRV)
+			TP_ERROR("[Shader] Couldn't load Shader: \"", name, "\"!");
+
+	if ((source.empty() && !isSPIRV) || SPIRVSource.empty() && isSPIRV)
+	{
+		TP_WARN("[Shader] Shader using fallback Shader: \"Passthrough\"");
 		return nullptr;
 	}
 
@@ -43,7 +66,12 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
 	{
-		Scope<API::D3D12Shader> result = MakeScope<API::D3D12Shader>(name, source);
+		Scope<API::D3D12Shader> result;
+		if (isSPIRV)
+			result = MakeScope<API::D3D12Shader>(name, SPIRVSource);
+		else
+			result = MakeScope<API::D3D12Shader>(name, source);
+			
 		result->m_filepath = VFSFilePath;
 		return result;
 	}
@@ -51,14 +79,24 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 	case API::RenderAPI::Vulkan:
 	{
-		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, source);
+		Scope<API::VulkanShader> result;
+		if (isSPIRV)
+			result = MakeScope<API::VulkanShader>(name, SPIRVSource);
+		else
+			result = MakeScope<API::VulkanShader>(name, source);
+			
 		result->m_filepath = VFSFilePath;
 		return result;
 	}
 
 	case API::RenderAPI::OpenGL:
 	{
-		Scope<API::OpenGLShader> result = MakeScope<API::OpenGLShader>(name, source);
+		Scope<API::OpenGLShader> result;
+		if (isSPIRV)
+			result = MakeScope<API::OpenGLShader>(name, SPIRVSource);
+		else
+			result = MakeScope<API::OpenGLShader>(name, source);
+			
 		result->m_filepath = VFSFilePath;
 		return result;
 	}
@@ -75,17 +113,38 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	std::string source;
 	std::string VFSFilePath;
 	std::string name;
+	std::vector<uint32_t> SPIRVSource;
+	bool isSPIRV = false;
 	if (!filePath.empty())
 	{
-		source = VFS::Get()->SilentReadTextFile(filePath);
+		if (Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "spirv" && Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "shader")
+		{
+			TP_ERROR("[Shader] File: \"", filePath, "\" suffix is not \"*.spirv\" or \"*.shader\"!");
+			TP_WARN("[Shader] Shader using fallback Shader: \"Passthrough\"");
+			return nullptr;
+		}
+		
+		isSPIRV = CheckSPIRVMagicNumber(filePath);
+
+		if (!isSPIRV)
+			source = VFS::Get()->SilentReadTextFile(filePath);
+		else
+			SPIRVSource = Convert8To32(VFS::Get()->SilentReadFile(filePath));
+		
 		VFSFilePath = VFS::MakeVirtualPathCompatible(filePath);
 		name = VFS::GetFileName(VFSFilePath);
 	}
 
-	if (!filePath.empty() && source.empty())
-		TP_ERROR("[Shader] Shader couldn't load Shader!");
+	if (isSPIRV)
+	{
+		if (!filePath.empty() && SPIRVSource.empty())
+			TP_ERROR("[Shader][SPIR-V] Couldn't load Shader: \"", name, "\"!");
+	}
+	else
+		if (!filePath.empty() && source.empty() && !isSPIRV)
+			TP_ERROR("[Shader] Couldn't load Shader: \"", name, "\"!");
 
-	if (source.empty())
+	if ((source.empty() && !isSPIRV) || SPIRVSource.empty() && isSPIRV)
 	{
 		TP_WARN("[Shader] Shader using fallback Shader: \"Passthrough\"");
 		return nullptr;
@@ -96,7 +155,12 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
 	{
-		Scope<API::D3D12Shader> result = MakeScope<API::D3D12Shader>(name, source);
+		Scope<API::D3D12Shader> result;
+		if (isSPIRV)
+			result = MakeScope<API::D3D12Shader>(name, SPIRVSource);
+		else
+			result = MakeScope<API::D3D12Shader>(name, source);
+
 		result->m_filepath = VFSFilePath;
 		return result;
 	}
@@ -104,14 +168,24 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 	case API::RenderAPI::Vulkan:
 	{
-		Scope<API::VulkanShader> result = MakeScope<API::VulkanShader>(name, source);
+		Scope<API::VulkanShader> result;
+		if (isSPIRV)
+			result = MakeScope<API::VulkanShader>(name, SPIRVSource);
+		else
+			result = MakeScope<API::VulkanShader>(name, source);
+
 		result->m_filepath = VFSFilePath;
 		return result;
 	}
 
 	case API::RenderAPI::OpenGL:
 	{
-		Scope<API::OpenGLShader> result = MakeScope<API::OpenGLShader>(name, source);
+		Scope<API::OpenGLShader> result;
+		if (isSPIRV)
+			result = MakeScope<API::OpenGLShader>(name, SPIRVSource);
+		else
+			result = MakeScope<API::OpenGLShader>(name, source);
+
 		result->m_filepath = VFSFilePath;
 		return result;
 	}
@@ -170,4 +244,60 @@ std::string TRAP::Graphics::Shader::ShaderTypeToString(const ShaderType type)
 	default:
 		return "";
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::string& filePath)
+{	
+	//Check SPIRV Magic Number
+	std::filesystem::path physicalPath;
+	if (VFS::Get()->SilentResolveReadPhysicalPath(filePath, physicalPath))
+	{
+		if (!FileSystem::SilentFileOrFolderExists(physicalPath))
+		{
+			std::ifstream file(physicalPath, std::ios::binary);
+			if (file.is_open())
+			{
+				//SPIRV Magic Number:
+				//0x07230203
+
+				uint32_t magicNumber = 0;
+				file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //Number of SubShaders
+				file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //Size of the current SubShader in uint32_ts
+				file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //Type of the current SubShader
+				file.read(reinterpret_cast<char*>(&magicNumber), sizeof(uint32_t)); //SPIRV Magic Number
+				file.close();
+
+				if (magicNumber == 0x07230203)
+					return true;
+
+				return false;
+			}
+
+			TP_ERROR("[FileSystem] Could not open File: ", physicalPath);
+		}
+	}
+
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<uint32_t> TRAP::Graphics::Shader::Convert8To32(const std::vector<std::byte>& source)
+{
+	std::vector<uint32_t> data{};
+	data.resize(source.size() / 4);
+
+	uint32_t j = 0;
+	for(uint32_t i = 0; i < source.size(); i += 4)
+	{
+		const uint32_t val = static_cast<uint8_t>(source[i]) |
+			                 (static_cast<uint8_t>(source[i + 1]) << 8) |
+			                 (static_cast<uint8_t>(source[i + 2]) << 16) |
+			                 (static_cast<uint8_t>(source[i + 3]) << 24);
+		data[j++] = val;
+	}
+	
+	return data;
 }

@@ -33,13 +33,6 @@ namespace TRAP::Graphics
 
 		virtual const std::string& GetFilePath() const = 0;
 
-		virtual const std::string& GetVSSource() const = 0;
-		virtual const std::string& GetFSSource() const = 0;
-		virtual const std::string& GetGSSource() const = 0;
-		virtual const std::string& GetTCSSource() const = 0;
-		virtual const std::string& GetTESSource() const = 0;
-		virtual const std::string& GetCSSource() const = 0;
-
 		static Scope<Shader> CreateFromFile(const std::string& name, const std::string& filePath);
 		static Scope<Shader> CreateFromFile(const std::string& filepath);
 		static Scope<Shader> CreateFromSource(const std::string& name,
@@ -51,6 +44,10 @@ namespace TRAP::Graphics
 		                                      const std::string& CSSource = "");
 
 		static std::string ShaderTypeToString(ShaderType type);
+
+	private:
+		static bool CheckSPIRVMagicNumber(const std::string& filePath);
+		static std::vector<uint32_t> Convert8To32(const std::vector<std::byte>& source);
 	};
 }
 

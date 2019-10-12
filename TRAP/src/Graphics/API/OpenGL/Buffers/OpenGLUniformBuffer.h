@@ -29,17 +29,12 @@ namespace TRAP::Graphics::API
 
 		std::string GetName() const;
 
-	private:
+	private:		
 		uint32_t m_handle;
 		const char* m_name;
 		uint32_t m_size;
 		BufferUsage m_usage;
-		uint8_t* m_dataPtr;
-		uint32_t m_nextHeadOffset;
-		uint32_t m_bufferCount;
-		uint32_t m_alignedSize;
 
-		static uint32_t s_uniformBufferOffsetAlignment;
 		static uint32_t s_maxUniformBufferBindingPoints;
 		static std::unordered_map<uint32_t, const OpenGLUniformBuffer*> s_boundUniformBuffers;
 	};

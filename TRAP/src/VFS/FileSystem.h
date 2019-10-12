@@ -12,6 +12,7 @@ namespace TRAP
 		static std::filesystem::file_time_type GetLastWriteTime(const std::filesystem::path& path);
 
 		static std::vector<std::byte> ReadFile(const std::filesystem::path& filePath);
+		static std::vector<std::byte> SilentReadFile(const std::filesystem::path& filePath);
 		static std::string ReadTextFile(const std::filesystem::path& filePath);
 		static std::string SilentReadTextFile(const std::filesystem::path& filePath);
 
