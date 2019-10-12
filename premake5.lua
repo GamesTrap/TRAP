@@ -346,6 +346,7 @@ project "ConvertToSPIRV"
 			"StandAlone",
 
 			"dl",
+			"pthread",
 			"HLSL",
 			"OGLCompiler",
 			"OSDependent"
