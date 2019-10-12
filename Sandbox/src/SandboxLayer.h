@@ -39,7 +39,6 @@ public:
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Texture.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColor.shader");
-		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColorHLSL.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColorSPIRV.spirv");
 
 		//Mount & Load Textures

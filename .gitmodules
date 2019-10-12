@@ -9,4 +9,4 @@
 	url = https://github.com/GamesTrap/glfw.git
 [submodule "Dependencies/SPIRV-Cross"]
 	path = Dependencies/SPIRV-Cross
-	url = git@github.com:GamesTrap/SPIRV-Cross.git
+	url = https://github.com/GamesTrap/SPIRV-Cross.git
