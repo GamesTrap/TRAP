@@ -508,3 +508,4 @@ SITREP 10/12/2019|19w41a3
     - Dependencies Added SPIRV-Cross ~>35 mins
     - Updated documentation ~>15 mins
     - OpenGLShader Added loading of SPIR-V ~>45 mins
+    - Updated README.md ~<5 mins

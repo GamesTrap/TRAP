@@ -43,7 +43,8 @@ For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj
 - [GLAD](https://glad.dav1d.de/)
 - [ImGui](https://github.com/GamesTrap/imgui)
 - [VulkanSDK](https://vulkan.lunarg.com/sdk/home)
-- [GLSLang](https://github.com/KhronosGroup/glslang)
+- [GLSLang](https://github.com/GamesTrap/glslang)
+- [SPIRV-Cross](https://github.com/GamesTrap/SPIRV-Cross)
 
 ## System Requirements
 
