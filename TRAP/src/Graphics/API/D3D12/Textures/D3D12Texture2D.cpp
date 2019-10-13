@@ -4,7 +4,7 @@
 #include "VFS/VFS.h"
 
 TRAP::Graphics::API::D3D12Texture2D::D3D12Texture2D(const TextureParameters parameters)
-	: /*m_image(Image::LoadFallback()),*/ m_name("Fallback"), m_parameters(parameters), m_handle(0)
+	: m_name("Fallback"), m_parameters(parameters)
 {
 	TP_WARN("[Texture2D][D3D12] WIP");
 }
@@ -12,7 +12,7 @@ TRAP::Graphics::API::D3D12Texture2D::D3D12Texture2D(const TextureParameters para
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::D3D12Texture2D::D3D12Texture2D(const ImageFormat format, const uint32_t width, const uint32_t height, const TextureParameters parameters)
-	: /*m_image(Image::CreateEmpty(format, width, height)),*/ m_name("Empty"), m_parameters(parameters), m_handle(0)
+	: m_name("Empty"), m_parameters(parameters)
 {
 	TP_WARN("[Texture2D][D3D12] WIP");
 }
@@ -20,7 +20,7 @@ TRAP::Graphics::API::D3D12Texture2D::D3D12Texture2D(const ImageFormat format, co
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::D3D12Texture2D::D3D12Texture2D(std::string name, const std::string& filepath, const TextureParameters parameters)
-	: m_filePath(VFS::MakeVirtualPathCompatible(filepath)), m_name(std::move(name)), m_parameters(parameters), m_handle(0)
+	: m_name(std::move(name)), m_filePath(VFS::MakeVirtualPathCompatible(filepath)), m_parameters(parameters)
 {
 	TP_WARN("[Texture2D][D3D12] WIP");
 }
@@ -49,11 +49,6 @@ std::string TRAP::Graphics::API::D3D12Texture2D::GetName() const
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
-
-/*TRAP::Image* TRAP::Graphics::API::D3D12Texture2D::GetImage()
-{
-	return m_image.get();
-}*/
 
 std::string TRAP::Graphics::API::D3D12Texture2D::GetFilePath() const
 {

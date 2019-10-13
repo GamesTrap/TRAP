@@ -23,17 +23,27 @@ namespace TRAP::Graphics::API
 		uint32_t GetHandle() const;
 		std::string GetName() const override;
 		std::string GetFilePath() const override;
-		//Image* GetImage() override;
 		TextureParameters GetParameters() override;
 
 		void SetWrap(TextureWrap wrap) override;
 		void SetFilter(TextureFilter filter) override;		
 
 	private:
+		enum class PixelDataType
+		{
+			Float,
+			Unsigned_Short,
+			Unsigned_Byte
+		};
+		static GLenum PixelDataTypeToOpenGL(PixelDataType type);
+		
 		void Load();
 
+		void InitializeTexture();
+		void UploadTexture(const Scope<Image>& image) const;
+		void UploadData(const Scope<Image>& image, uint32_t numMipMapLevels, PixelDataType type) const;
+
 		std::string m_filePath;
-		//Scope<Image> m_image;
 		std::string m_name;
 		TextureParameters m_parameters;
 		uint32_t m_handle;

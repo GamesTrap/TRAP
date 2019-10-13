@@ -59,11 +59,6 @@ std::string TRAP::Graphics::API::VulkanTextureCube::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/*TRAP::Image* TRAP::Graphics::API::VulkanTextureCube::GetImage()
-{
-	return m_images[0].get();
-}*/
-
 std::string TRAP::Graphics::API::VulkanTextureCube::GetFilePath() const
 {
 	return m_filePaths[0];
@@ -96,11 +91,6 @@ TRAP::Graphics::InputFormat TRAP::Graphics::API::VulkanTextureCube::GetInputForm
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
-
-/*std::array<TRAP::Image*, 6> TRAP::Graphics::API::VulkanTextureCube::GetImages() const
-{
-	return { m_images[0].get(), m_images[1].get(), m_images[2].get(), m_images[3].get(), m_images[4].get(), m_images[5].get(), };
-}*/
 
 std::array<std::string, 6> TRAP::Graphics::API::VulkanTextureCube::GetFilePaths() const
 {

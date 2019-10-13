@@ -30,11 +30,9 @@ namespace TRAP::Graphics::API
 		void SetFilter(TextureFilter filter) override;
 
 	private:
-		std::string m_filePath;
-		//Scope<Image> m_image;
 		std::string m_name;
+		std::string m_filePath;
 		TextureParameters m_parameters;
-		uint32_t m_handle;
 	};
 }
 

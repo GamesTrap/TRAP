@@ -27,12 +27,7 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(const TextureParameter
 	}
 	Scope<Image> image = Image::LoadFallback();
 
-	OpenGLCall(glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_handle));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
+	InitializeTexture();
 
 	const uint32_t numMipMapLevels = 1 + static_cast<uint32_t>(std::floor(std::log2(Math::Max(image->GetWidth(), image->GetHeight())))); //Same as specification
 	OpenGLCall(glTextureStorage2D(m_handle, numMipMapLevels, TRAPImageFormatToOpenGLPrecise(image->GetFormat(), image->GetBytesPerPixel()), image->GetWidth(), image->GetHeight()));
@@ -185,11 +180,6 @@ std::string TRAP::Graphics::API::OpenGLTextureCube::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/*TRAP::Image* TRAP::Graphics::API::OpenGLTextureCube::GetImage()
-{
-	return m_images[0].get();
-}*/
-
 std::string TRAP::Graphics::API::OpenGLTextureCube::GetFilePath() const
 {
 	return m_filePaths[0];
@@ -230,11 +220,6 @@ TRAP::Graphics::InputFormat TRAP::Graphics::API::OpenGLTextureCube::GetInputForm
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/*std::array<TRAP::Image*, 6> TRAP::Graphics::API::OpenGLTextureCube::GetImages() const
-{
-	return { m_images[0].get(), m_images[1].get(), m_images[2].get(), m_images[3].get(), m_images[4].get(), m_images[5].get() };
-}*/
-
 std::array<std::string, 6> TRAP::Graphics::API::OpenGLTextureCube::GetFilePaths() const
 {
 	return m_filePaths;
@@ -269,12 +254,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross()
 	const uint32_t faceHeight = image->GetHeight() / 4;
 
 	bool resetPixelStore = false;
-	OpenGLCall(glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_handle));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
+	InitializeTexture();
 
 	//if (!std::ispow2(faceWidth) || !std::ispow2(faceHeight))
 	if (!Math::IsPow2(faceWidth) || !Math::IsPow2(faceHeight))
@@ -548,12 +528,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross()
 	const uint32_t faceHeight = image->GetHeight() / 3;
 
 	bool resetPixelStore = false;
-	OpenGLCall(glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_handle));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
+	InitializeTexture();
 
 	//if (!std::ispow2(faceWidth) || !std::ispow2(faceHeight))
 	if (!Math::IsPow2(faceWidth) || !Math::IsPow2(faceHeight))
@@ -830,12 +805,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadFiles()
 	}
 
 	bool resetPixelStore = false;
-	OpenGLCall(glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_handle));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
+	InitializeTexture();
 
 	//if (!std::ispow2(faceWidth) || !std::ispow2(faceHeight))
 	if (!Math::IsPow2(width) || !Math::IsPow2(height))
@@ -895,4 +865,16 @@ bool TRAP::Graphics::API::OpenGLTextureCube::CheckImageSize(const Scope<Image>& 
 	}
 
 	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLTextureCube::InitializeTexture()
+{
+	OpenGLCall(glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_handle));
+	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));
+	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));
+	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
+	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
+	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_parameters.Wrap)));
 }

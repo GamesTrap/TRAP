@@ -515,3 +515,4 @@ SITREP 10/13/2019|19w41a4
     - Changed TRAP Engine version to 19w41a4(0.5.50)
     - Application Replaced BIND_EVENT_FN with TRAP_BIND_EVENT_FN ~<10 mins
     - Texture Optimized RAM usage ~>45 mins
+    - Refactored OpenGLTexture2D ~>25 mins

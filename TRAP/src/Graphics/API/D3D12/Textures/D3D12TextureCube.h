@@ -21,7 +21,6 @@ namespace TRAP::Graphics::API
 		void Unbind(uint32_t slot) const override;
 
 		std::string GetName() const override;
-		//Image* GetImage() override;
 		std::string GetFilePath() const override;
 		TextureParameters GetParameters() override;
 
@@ -29,13 +28,11 @@ namespace TRAP::Graphics::API
 		void SetFilter(const TextureFilter filter) override;
 
 		InputFormat GetInputFormat() const override;
-		//std::array<Image*, 6> GetImages() const override;
 		std::array<std::string, 6> GetFilePaths() const override;
 
 	private:
 		std::string m_name;
 		std::array<std::string, 6> m_filePaths;
-		//std::vector<Scope<Image>> m_images;
 		TextureParameters m_parameters;
 	};
 }
