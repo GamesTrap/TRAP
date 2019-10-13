@@ -8,6 +8,7 @@
 
 #include "Event/Event.h"
 #include "ImageLoader/Image.h"
+#include <unordered_map>
 
 namespace TRAP
 {
@@ -82,7 +83,7 @@ namespace TRAP
 		
 		GLFWwindow* m_window;
 		GLFWmonitor* m_useMonitor; //Stores a reference to the monitor
-		static std::unordered_map<uint32_t, GLFWvidmode> m_baseVideoModes; //Stores the underlying video mode being used by the OS for every monitor
+		static std::unordered_map<uint32_t, GLFWvidmode> s_baseVideoModes; //Stores the underlying video mode being used by the OS for every monitor
 		
 		struct WindowedModeParams
 		{
@@ -97,7 +98,8 @@ namespace TRAP
 			DisplayMode displayMode{};
 			uint32_t Monitor{};
 			CursorMode cursorMode{};
-			bool rawMouseInput{};
+			bool RawMouseInput{};
+			std::unordered_map<uint16_t, uint32_t> KeyRepeatCounts;
 
 			EventCallbackFn EventCallback;
 
@@ -106,7 +108,7 @@ namespace TRAP
 		
 		static uint32_t s_windows;
 		static bool s_GLFWInitialized;
-		static std::vector<Window*> s_fullscreenWindows;
+		static std::vector<Window*> s_fullscreenWindows;		
 	};
 
 	//Used to create new windows

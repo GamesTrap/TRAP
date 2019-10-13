@@ -28,7 +28,7 @@ std::vector<TRAP::Window*> TRAP::Window::s_fullscreenWindows{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unordered_map<uint32_t, GLFWvidmode> TRAP::Window::m_baseVideoModes{};
+std::unordered_map<uint32_t, GLFWvidmode> TRAP::Window::s_baseVideoModes{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -218,7 +218,7 @@ TRAP::Window::CursorMode TRAP::Window::GetCursorMode() const
 
 bool TRAP::Window::GetRawMouseInput() const
 {
-	return m_data.rawMouseInput;
+	return m_data.RawMouseInput;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -286,9 +286,9 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 
 		s_fullscreenWindows[m_data.Monitor] = this;
 		//For borderless fullscreen, the new width, height and refresh rate will be the video mode width, height and refresh rate
-		width = m_baseVideoModes[m_data.Monitor].width;
-		height = m_baseVideoModes[m_data.Monitor].height;
-		refreshRate = m_baseVideoModes[m_data.Monitor].refreshRate;
+		width = s_baseVideoModes[m_data.Monitor].width;
+		height = s_baseVideoModes[m_data.Monitor].height;
+		refreshRate = s_baseVideoModes[m_data.Monitor].refreshRate;
 		monitor = m_useMonitor;
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Using Monitor: ", m_data.Monitor, '(', glfwGetMonitorName(monitor), ')');
 	}
@@ -323,7 +323,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 					valid = true;
 					break;
 				}
-				if(static_cast<uint32_t>(m_baseVideoModes[m_data.Monitor].width) == width && static_cast<uint32_t>(m_baseVideoModes[m_data.Monitor].height) == height && static_cast<uint32_t>(m_baseVideoModes[m_data.Monitor].refreshRate) == refreshRate)
+				if(static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].width) == width && static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].height) == height && static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].refreshRate) == refreshRate)
 				{
 					valid = true;
 					break;
@@ -334,9 +334,9 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 		//Resolution pair is invalid so use native/default resolution
 		if (!valid)
 		{
-			width = m_baseVideoModes[m_data.Monitor].width;
-			height = m_baseVideoModes[m_data.Monitor].height;
-			refreshRate = m_baseVideoModes[m_data.Monitor].refreshRate;
+			width = s_baseVideoModes[m_data.Monitor].width;
+			height = s_baseVideoModes[m_data.Monitor].height;
+			refreshRate = s_baseVideoModes[m_data.Monitor].refreshRate;
 		}
 
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Using Monitor: ", m_data.Monitor, '(', glfwGetMonitorName(monitor), ')');
@@ -434,14 +434,14 @@ void TRAP::Window::SetRawMouseInput(const bool enabled)
 {
 	if(Input::IsRawMouseInputSupported())
 	{
-		m_data.rawMouseInput = enabled;
+		m_data.RawMouseInput = enabled;
 		glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, enabled);
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Raw Mouse Input ", enabled ? "Enabled" : "Disabled");
 	}
 	else
 	{
 		TP_ERROR("[Window] \"", m_data.Title, "\" Raw Mouse Input is unsupported!");
-		m_data.rawMouseInput = false;
+		m_data.RawMouseInput = false;
 	}
 }
 
@@ -509,7 +509,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	m_data.VSync = props.VSync;
 	m_data.Monitor = props.Monitor;
 	m_data.cursorMode = props.cursorMode;
-	m_data.rawMouseInput = props.rawMouseInput;
+	m_data.RawMouseInput = props.rawMouseInput;
 	m_data.windowModeParams = &m_oldWindowedParams;
 
 	if (!s_GLFWInitialized)
@@ -542,13 +542,13 @@ void TRAP::Window::Init(const WindowProps& props)
 		m_useMonitor = glfwGetPrimaryMonitor();
 	}
 
-	if(m_baseVideoModes.empty())
+	if(s_baseVideoModes.empty())
 		for(uint32_t i = 0; i < static_cast<uint32_t>(monitorCount); i++)
 		{
-			m_baseVideoModes[i] = *(glfwGetVideoMode(monitors[i]));
+			s_baseVideoModes[i] = *(glfwGetVideoMode(monitors[i]));
 			TP_DEBUG("[Window] Storing underlying OS video mode: Monitor: ", i, " ",
-			m_baseVideoModes[i].width, 'x', m_baseVideoModes[i].height, '@', m_baseVideoModes[i].refreshRate, "Hz (R",
-			m_baseVideoModes[i].redBits, 'G', m_baseVideoModes[i].greenBits, 'B', m_baseVideoModes[i].blueBits, ')');			
+			s_baseVideoModes[i].width, 'x', s_baseVideoModes[i].height, '@', s_baseVideoModes[i].refreshRate, "Hz (R",
+			s_baseVideoModes[i].redBits, 'G', s_baseVideoModes[i].greenBits, 'B', s_baseVideoModes[i].blueBits, ')');			
 		}
 
 	glfwDefaultWindowHints();
@@ -663,7 +663,7 @@ void TRAP::Window::Init(const WindowProps& props)
 				{
 					width = 800;
 					height = 600;
-					refreshRate = m_baseVideoModes[m_data.Monitor].refreshRate;
+					refreshRate = s_baseVideoModes[m_data.Monitor].refreshRate;
 				}
 				else
 				{
@@ -677,9 +677,9 @@ void TRAP::Window::Init(const WindowProps& props)
 				s_fullscreenWindows[m_data.Monitor] = this;
 
 				//For borderless fullscreen, the new width, height and refresh rate will be the video mode width, height and refresh rate
-				width = m_baseVideoModes[m_data.Monitor].width;
-				height = m_baseVideoModes[m_data.Monitor].height;
-				refreshRate = m_baseVideoModes[m_data.Monitor].refreshRate;
+				width = s_baseVideoModes[m_data.Monitor].width;
+				height = s_baseVideoModes[m_data.Monitor].height;
+				refreshRate = s_baseVideoModes[m_data.Monitor].refreshRate;
 				monitor = m_useMonitor;
 			}
 		}
@@ -702,7 +702,7 @@ void TRAP::Window::Init(const WindowProps& props)
 				{
 					width = 800;
 					height = 600;
-					refreshRate = m_baseVideoModes[m_data.Monitor].refreshRate;
+					refreshRate = s_baseVideoModes[m_data.Monitor].refreshRate;
 				}
 				else
 				{
@@ -729,7 +729,7 @@ void TRAP::Window::Init(const WindowProps& props)
 							valid = true;
 							break;
 						}
-						if (static_cast<uint32_t>(m_baseVideoModes[m_data.Monitor].width) == width && static_cast<uint32_t>(m_baseVideoModes[m_data.Monitor].height) == height && static_cast<uint32_t>(m_baseVideoModes[m_data.Monitor].refreshRate) == refreshRate)
+						if (static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].width) == width && static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].height) == height && static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].refreshRate) == refreshRate)
 						{
 							valid = true;
 							break;
@@ -740,9 +740,9 @@ void TRAP::Window::Init(const WindowProps& props)
 				//Resolution pair is invalid so use native/default resolution
 				if (!valid)
 				{
-					width = m_baseVideoModes[m_data.Monitor].width;
-					height = m_baseVideoModes[m_data.Monitor].height;
-					refreshRate = m_baseVideoModes[m_data.Monitor].refreshRate;
+					width = s_baseVideoModes[m_data.Monitor].width;
+					height = s_baseVideoModes[m_data.Monitor].height;
+					refreshRate = s_baseVideoModes[m_data.Monitor].refreshRate;
 				}
 			}
 		}
@@ -783,11 +783,11 @@ void TRAP::Window::Init(const WindowProps& props)
 		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	
 	if (Input::IsRawMouseInputSupported())
-		glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, m_data.rawMouseInput);
+		glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, m_data.RawMouseInput);
 	else
 	{
 		TP_ERROR("[Window] \"", m_data.Title, "\" Raw Mouse Input is unsupported!");
-		m_data.rawMouseInput = false;
+		m_data.RawMouseInput = false;
 	}
 
 	//Set GLFW callbacks
@@ -846,6 +846,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		{
 		case GLFW_PRESS:
 		{
+			data.KeyRepeatCounts[static_cast<uint16_t>(key)] = 0;
 			KeyPressedEvent event(static_cast<Input::Key>(key), 0, data.Title);
 			data.EventCallback(event);
 			break;
@@ -853,6 +854,7 @@ void TRAP::Window::Init(const WindowProps& props)
 
 		case GLFW_RELEASE:
 		{
+			data.KeyRepeatCounts.erase(static_cast<uint16_t>(key));
 			KeyReleasedEvent event(static_cast<Input::Key>(key), data.Title);
 			data.EventCallback(event);
 			break;
@@ -860,7 +862,8 @@ void TRAP::Window::Init(const WindowProps& props)
 
 		case GLFW_REPEAT:
 		{
-			KeyPressedEvent event(static_cast<Input::Key>(key), 1, data.Title);
+			data.KeyRepeatCounts[static_cast<uint16_t>(key)]++;
+			KeyPressedEvent event(static_cast<Input::Key>(key), data.KeyRepeatCounts[static_cast<uint16_t>(key)], data.Title);
 			data.EventCallback(event);
 			break;
 		}
