@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "VulkanTextureCube.h"
 
+#include "VFS/VFS.h"
+
 TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(const TextureParameters parameters)
 	: m_name("FallbackCube"), m_parameters(parameters)
 {
@@ -9,8 +11,8 @@ TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(const TextureParameter
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, std::string filepath, InputFormat format, const TextureParameters parameters)
-	: m_name(std::move(name)), m_parameters(parameters)
+TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, const std::string& filepath, InputFormat format, const TextureParameters parameters)
+	: m_name(std::move(name)), m_filePaths{VFS::MakeVirtualPathCompatible(filepath)}, m_parameters(parameters)
 {
 	TP_WARN("[TextureCube][Vulkan] WIP");
 }
@@ -18,7 +20,16 @@ TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, std:
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, const std::array<std::string, 6>& filepaths, const TextureParameters parameters)
-	: m_name(std::move(name)), m_parameters(parameters)
+	: m_name(std::move(name)),
+	  m_filePaths{
+		  VFS::MakeVirtualPathCompatible(filepaths[0]),
+		  VFS::MakeVirtualPathCompatible(filepaths[1]),
+		  VFS::MakeVirtualPathCompatible(filepaths[2]),
+		  VFS::MakeVirtualPathCompatible(filepaths[3]),
+		  VFS::MakeVirtualPathCompatible(filepaths[4]),
+		  VFS::MakeVirtualPathCompatible(filepaths[5])
+	  },
+	  m_parameters(parameters)
 {
 	TP_WARN("[TextureCube][Vulkan] WIP");
 }
@@ -48,9 +59,14 @@ std::string TRAP::Graphics::API::VulkanTextureCube::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Image* TRAP::Graphics::API::VulkanTextureCube::GetImage()
+/*TRAP::Image* TRAP::Graphics::API::VulkanTextureCube::GetImage()
 {
 	return m_images[0].get();
+}*/
+
+std::string TRAP::Graphics::API::VulkanTextureCube::GetFilePath() const
+{
+	return m_filePaths[0];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -81,7 +97,12 @@ TRAP::Graphics::InputFormat TRAP::Graphics::API::VulkanTextureCube::GetInputForm
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<TRAP::Image*, 6> TRAP::Graphics::API::VulkanTextureCube::GetImages() const
+/*std::array<TRAP::Image*, 6> TRAP::Graphics::API::VulkanTextureCube::GetImages() const
 {
 	return { m_images[0].get(), m_images[1].get(), m_images[2].get(), m_images[3].get(), m_images[4].get(), m_images[5].get(), };
+}*/
+
+std::array<std::string, 6> TRAP::Graphics::API::VulkanTextureCube::GetFilePaths() const
+{
+	return m_filePaths;
 }

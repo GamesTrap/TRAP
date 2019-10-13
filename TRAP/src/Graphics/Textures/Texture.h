@@ -51,8 +51,8 @@ namespace TRAP::Graphics
 		virtual void Unbind(uint32_t slot = 0) const = 0;
 
 		virtual std::string GetName() const = 0;
+		virtual std::string GetFilePath() const = 0;
 		virtual TextureType GetType() const = 0;
-		virtual Image* GetImage() = 0;
 		virtual TextureParameters GetParameters() = 0;
 
 		virtual void SetWrap(TextureWrap wrap) = 0;

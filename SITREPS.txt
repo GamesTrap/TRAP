@@ -510,3 +510,8 @@ SITREP 10/12/2019|19w41a3
     - OpenGLShader Added loading of SPIR-V ~>45 mins
     - Updated README.md ~<5 mins
     - Fixed Travis CI ~<15 mins
+
+SITREP 10/13/2019|19w41a4
+    - Changed TRAP Engine version to 19w41a4(0.5.50)
+    - Application Replaced BIND_EVENT_FN with TRAP_BIND_EVENT_FN ~<10 mins
+    - Texture Optimized RAM usage ~>45 mins

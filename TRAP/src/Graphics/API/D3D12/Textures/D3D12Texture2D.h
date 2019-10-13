@@ -23,14 +23,15 @@ namespace TRAP::Graphics::API
 		void Unbind(uint32_t slot = 0) const override;
 
 		std::string GetName() const override;
-		Image* GetImage() override;
+		std::string GetFilePath() const override;
 		TextureParameters GetParameters() override;
 
 		void SetWrap(TextureWrap wrap) override;
 		void SetFilter(TextureFilter filter) override;
 
 	private:
-		Scope<Image> m_image;
+		std::string m_filePath;
+		//Scope<Image> m_image;
 		std::string m_name;
 		TextureParameters m_parameters;
 		uint32_t m_handle;

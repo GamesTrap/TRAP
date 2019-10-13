@@ -22,7 +22,7 @@ namespace TRAP::Graphics
 
 		TextureType GetType() const override;
 		virtual InputFormat GetInputFormat() const = 0;
-		virtual std::array<Image*, 6> GetImages() const = 0;
+		virtual std::array<std::string, 6> GetFilePaths() const = 0;
 
 	protected:
 		static uint32_t s_maxCubeTextureSize;

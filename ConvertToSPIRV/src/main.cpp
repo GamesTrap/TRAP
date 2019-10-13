@@ -57,12 +57,10 @@ std::string ToLower(std::string string);
 bool CheckForParameters(int argc);
 std::vector<Shader> LoadShaderSources(int argc, char* argv[]);
 std::array<SubShader, 6> PreProcessGLSL(Shader& shader);
-std::array<SubShader, 6> PreProcessHLSL(Shader& shader);
 bool CompileGLSLToSPIRV(Shader& shader);
-bool CompileHLSLToSPIRV(Shader& shader);
 std::unique_ptr<glslang::TShader> PreProcessGLSLForSPIRV(const char* source, ShaderType shaderType, std::string& preProcessedSource);
 bool ParseGLSL(glslang::TShader* shader);
-bool Link(glslang::TShader* VShader,
+bool LinkGLSL(glslang::TShader* VShader,
 	      glslang::TShader* FShader,
 	      glslang::TShader* GShader,
 	      glslang::TShader* TCShader,
@@ -100,12 +98,12 @@ int main(const int argc, char* argv[])
 			}
 			else if(shader.Language == ShaderLanguage::HLSL)
 			{
-				std::cout << "[HLSL] Currently HLSL is unsupported!" << '\n';
+				std::cout << "HLSL is unsupported for now!" << '\n';
 				std::cout << "Skipping File!" << '\n' << '\n';
 			}
 			else
 			{
-				std::cout << "Unknown ShaderLanguage!" << '\n';
+				std::cout << "Unknown Shader Language!" << '\n';
 				std::cout << "Skipping File!" << '\n' << '\n';
 			}
 		}
@@ -463,78 +461,6 @@ std::array<SubShader, 6> PreProcessGLSL(Shader& shader)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<SubShader, 6> PreProcessHLSL(Shader& shader)
-{
-	std::array<SubShader, 6> shaderSources{};
-
-	std::vector<std::string> lines = GetLines(shader.Source);
-	std::array<std::string, 6> HLSLShaderSources{};
-	ShaderType type = ShaderType::Unknown;
-
-	//Get Shader Type
-	for (uint32_t i = 1; i < lines.size(); i++)
-	{
-		if (StartsWith(ToLower(lines[i]), "#shader"))
-		{
-			if (FindToken(ToLower(lines[i]), "vertex"))
-				type = ShaderType::Vertex;
-			else if (FindToken(ToLower(lines[i]), "fragment") || FindToken(ToLower(lines[i]), "pixel"))
-				type = ShaderType::Fragment;
-			else if (FindToken(ToLower(lines[i]), "geometry"))
-				type = ShaderType::Geometry;
-			else if (FindToken(ToLower(lines[i]), "tessellation"))
-			{
-				if (FindToken(ToLower(lines[i]), "control"))
-					type = ShaderType::Tessellation_Control;
-				else if (FindToken(ToLower(lines[i]), "evaluation"))
-					type = ShaderType::Tessellation_Evaluation;
-			}
-			else if (FindToken(ToLower(lines[i]), "compute"))
-				type = ShaderType::Compute;
-		}
-		else if (type != ShaderType::Unknown)
-		{
-			HLSLShaderSources[static_cast<int32_t>(type) - 1].append(lines[i]);
-			HLSLShaderSources[static_cast<int32_t>(type) - 1].append("\n");
-		}
-	}
-
-	if (!HLSLShaderSources[0].empty())
-	{
-		std::cout << "[HLSL] Adding Vertex Shader to \"" << shader.FilePath << "\"" << '\n';
-		shaderSources[0] = SubShader{ HLSLShaderSources[0], ShaderType::Vertex };
-	}
-	if (!HLSLShaderSources[1].empty())
-	{
-		std::cout << "[HLSL] Adding Pixel Shader to \"" << shader.FilePath << "\"" << '\n';
-		shaderSources[1] = SubShader{ HLSLShaderSources[1], ShaderType::Fragment };
-	}
-	if (!HLSLShaderSources[2].empty())
-	{
-		std::cout << "[HLSL] Adding Geometry Shader to \"" << shader.FilePath << "\"" << '\n';
-		shaderSources[2] = SubShader{ HLSLShaderSources[2], ShaderType::Geometry };
-	}
-	if (!HLSLShaderSources[3].empty())
-	{
-		std::cout << "[HLSL] Adding Tessellation Control Shader to \"" << shader.FilePath << "\"" << '\n';
-		shaderSources[3] = SubShader{ HLSLShaderSources[3], ShaderType::Tessellation_Control };
-	}
-	if (!HLSLShaderSources[4].empty())
-	{
-		std::cout << "[HLSL] Adding Tessellation Evaluation Shader to \"" << shader.FilePath << "\"" << '\n';
-		shaderSources[4] = SubShader{ HLSLShaderSources[4], ShaderType::Tessellation_Evaluation };
-	}
-	if (!HLSLShaderSources[5].empty())
-	{
-		std::cout << "[HLSL] Adding Compute Shader to \"" << shader.FilePath << "\"" << '\n';
-		shaderSources[5] = SubShader{ HLSLShaderSources[5], ShaderType::Compute };
-	}
-
-	return shaderSources;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 bool CompileGLSLToSPIRV(Shader& shader)
 {
 	if (!s_glslangInitialized)
@@ -648,7 +574,7 @@ bool CompileGLSLToSPIRV(Shader& shader)
 	}
 
 	std::cout << "[GLSL] Linking Shaders" << '\n';
-	if (!Link(VShader.get(), FShader.get(), GShader.get(), TCShader.get(), TEShader.get(), CShader.get(), program))
+	if (!LinkGLSL(VShader.get(), FShader.get(), GShader.get(), TCShader.get(), TEShader.get(), CShader.get(), program))
 		return false;
 
 	std::cout << "[SPIRV] Converting Shader to SPIRV" << '\n';
@@ -668,19 +594,6 @@ bool CompileGLSLToSPIRV(Shader& shader)
 		shader.SubShaderSources[5].SPIRV = SPIRV[5];
 
 	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool CompileHLSLToSPIRV(Shader& shader)
-{
-	if (!s_glslangInitialized)
-	{
-		glslang::InitializeProcess();
-		s_glslangInitialized = true;
-	}
-
-	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -765,7 +678,7 @@ bool ParseGLSL(glslang::TShader* shader)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool Link(glslang::TShader* VShader,
+bool LinkGLSL(glslang::TShader* VShader,
           glslang::TShader* FShader,
           glslang::TShader* GShader,
           glslang::TShader* TCShader,

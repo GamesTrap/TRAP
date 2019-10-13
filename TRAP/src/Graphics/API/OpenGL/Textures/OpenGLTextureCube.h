@@ -22,23 +22,28 @@ namespace TRAP::Graphics::API
 
 		uint32_t GetHandle() const;
 		std::string GetName() const override;
-		Image* GetImage() override;
+		std::string GetFilePath() const override;
+		//Image* GetImage() override;
 		TextureParameters GetParameters() override;
 
 		void SetWrap(TextureWrap wrap) override;
 		void SetFilter(TextureFilter filter) override;		
 
 		InputFormat GetInputFormat() const override;
-		std::array<Image*, 6> GetImages() const override;
+		//std::array<Image*, 6> GetImages() const override;
+		std::array<std::string, 6> GetFilePaths() const override;
 		
 	private:
-		void LoadVerticalCross(const std::string& filepath);
-		void LoadHorizontalCross(const std::string& filepath);
-		void LoadFiles(const std::array<std::string, 6>& filepaths);
+		void LoadVerticalCross();
+		void LoadHorizontalCross();
+		void LoadFiles();
+
+		bool CheckImageSize(const Scope<Image>& image) const;
 		
 		uint32_t m_handle;
 		std::string m_name;
-		std::array<Scope<Image>, 6> m_images;
+		std::array<std::string, 6> m_filePaths;
+		//std::array<Scope<Image>, 6> m_images;
 		TextureParameters m_parameters;
 		InputFormat m_inputFormat;
 

@@ -11,8 +11,8 @@
 #include "Graphics/Textures/TextureCube.h"
 #include "Input/Input.h"
 #include "Utils/String.h"
+#include "Core.h"
 
-#define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -83,7 +83,7 @@ TRAP::Application::Application()
 				monitor
 			)
 			);
-	m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+	m_window->SetEventCallback(TRAP_BIND_EVENT_FN(Application::OnEvent));
 
 	//Initialize Input for Joysticks
 	Input::Init();
@@ -251,8 +251,8 @@ void TRAP::Application::Run()
 void TRAP::Application::OnEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-	dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
+	dispatcher.Dispatch<WindowCloseEvent>(TRAP_BIND_EVENT_FN(Application::OnWindowClose));
+	dispatcher.Dispatch<WindowResizeEvent>(TRAP_BIND_EVENT_FN(Application::OnWindowResize));
 
 	for (auto it = m_layerStack.end(); it != m_layerStack.begin();)
 	{
@@ -373,7 +373,7 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 	WindowProps props{ std::string(m_window->GetTitle()), m_window->GetWidth(), m_window->GetHeight(), m_window->GetRefreshRate(), m_window->GetVSyncInterval(), m_window->GetDisplayMode(), m_window->GetMonitor() };
 	m_window.reset();
 	m_window = std::make_unique<Window>(props);
-	m_window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+	m_window->SetEventCallback(TRAP_BIND_EVENT_FN(Application::OnEvent));
 	//Initialize Input for Joysticks
 	Input::Init();
 	//Always added as a fallback shader
