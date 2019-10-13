@@ -29,10 +29,8 @@ namespace TRAP::Graphics::API
 		uint32_t GetHandle() const;;
 
 	private:
-		void CheckLanguage(const std::string& source);
 		void InitGLSL(const std::string& source);
 		void InitGLSL(std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource);
-		void InitHLSL(const std::string& source);
 		void InitSPIRV(std::vector<uint32_t>& source);
 		
 		static uint32_t CompileGLSL(std::array<std::string, 6>& shaders);

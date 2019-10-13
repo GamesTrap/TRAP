@@ -10,7 +10,7 @@
 TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, const std::string& source)
 	: m_handle(0), m_name(std::move(name))
 {
-	CheckLanguage(source);
+	InitGLSL(source);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -94,40 +94,29 @@ uint32_t TRAP::Graphics::API::OpenGLShader::GetHandle() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::CheckLanguage(const std::string& source)
-{
-	std::vector<std::string> lines = Utils::String::GetLines(source);
-	if (Utils::String::StartsWith(Utils::String::ToLower(lines[0]), "#language "))
-	{
-		if (Utils::String::FindToken(Utils::String::ToLower(lines[0]), "glsl"))
-			InitGLSL(source);
-		else if (Utils::String::FindToken(Utils::String::ToLower(lines[0]), "hlsl"))
-			InitHLSL(source);
-		else
-		{
-			TP_ERROR("[Shader][OpenGL] Language Tag not found!");
-			TP_WARN("[Shader][OpenGL] Shader using fallback Shader: \"Passthrough\"");
-
-			InitGLSL(Embed::PassthroughVS, Embed::PassthroughFS, "", "", "", "");
-		}
-	}
-	else
-	{
-		TP_ERROR("[Shader][OpenGL] Language Tag not found!");
-		TP_WARN("[Shader][OpenGL] Shader using fallback Shader: \"Passthrough\"");
-
-		InitGLSL(Embed::PassthroughVS, Embed::PassthroughFS, "", "", "", "");
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::OpenGLShader::InitGLSL(const std::string& source)
 {
+	TP_DEBUG("[Shader][OpenGL][GLSL] Compiling: \"", m_name, "\"");
+	
 	std::array<std::string, 6> shaders{};
 	if (!source.empty())
 		PreProcess(source, shaders);
-	TP_DEBUG("[Shader][OpenGL][GLSL] Compiling: \"", m_name, "\"");
+	
+	bool isEmpty = true;
+	for(const auto& shaderSource : shaders)
+	{
+		if(!shaderSource.empty())
+		{
+			isEmpty = false;
+			break;
+		}
+	}
+	if(isEmpty)
+	{
+		TP_WARN("[Shader][OpenGL][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
+		return;
+	}
+	
 	m_handle = CompileGLSL(shaders);
 	if (!m_handle)
 	{
@@ -146,14 +135,31 @@ void TRAP::Graphics::API::OpenGLShader::InitGLSL(std::string VSSource,
                                                  std::string TESSource,
                                                  std::string CSSource)
 {
-	std::array<std::string, 6> shaders{ std::move(VSSource),
-		                                std::move(FSSource),
-		                                std::move(GSSource),
-		                                std::move(TCSSource),
-		                                std::move(TESSource),
-		                                std::move(CSSource)
-	};
 	TP_DEBUG("[Shader][OpenGL][GLSL] Compiling: \"", m_name, "\"");
+	
+	std::array<std::string, 6> shaders{ std::move(VSSource),
+										std::move(FSSource),
+										std::move(GSSource),
+										std::move(TCSSource),
+										std::move(TESSource),
+										std::move(CSSource)
+	};	
+
+	bool isEmpty = true;
+	for (const auto& shaderSource : shaders)
+	{
+		if (!shaderSource.empty())
+		{
+			isEmpty = false;
+			break;
+		}
+	}
+	if (isEmpty)
+	{
+		TP_WARN("[Shader][OpenGL][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
+		return;
+	}
+	
 	m_handle = CompileGLSL(shaders);
 	if (!m_handle)
 	{
@@ -161,14 +167,6 @@ void TRAP::Graphics::API::OpenGLShader::InitGLSL(std::string VSSource,
 		return;
 	}
 	CheckForUniforms();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::OpenGLShader::InitHLSL(const std::string& source)
-{
-	TP_ERROR("[Shader][OpenGL][HLSL] Currently HLSL is unsupported!");
-	TP_WARN("[Shader][OpenGL] Shader using fallback Shader: \"Passthrough\"");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -582,49 +580,43 @@ void TRAP::Graphics::API::OpenGLShader::CheckForUniforms()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, std::array<std::string, 6> & shaders)
+void TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, std::array<std::string, 6>& shaders)
 {	
 	ShaderType type = ShaderType::Unknown;
 
 	std::vector<std::string> lines = Utils::String::GetLines(source);
 
 	//Get Shader Type
-	for (uint32_t i = 1; i < lines.size(); i++)
+	for (uint32_t i = 0; i < lines.size(); i++)
 	{
 		if (Utils::String::StartsWith(Utils::String::ToLower(lines[i]), "#shader"))
 		{
 			if (Utils::String::FindToken(Utils::String::ToLower(lines[i]), "vertex"))
 			{
 				type = ShaderType::Vertex;
-				shaders[static_cast<int32_t>(type) - 1].append("#version 460 core\n");
 			}
-			else if (Utils::String::FindToken(Utils::String::ToLower(lines[i]), "fragment") || Utils::String::FindToken(Utils::String::ToLower(lines[i]), "pixel"))
+			else if (Utils::String::FindToken(Utils::String::ToLower(lines[i]), "fragment"))
 			{
 				type = ShaderType::Fragment;
-				shaders[static_cast<int32_t>(type) - 1].append("#version 460 core\n");
 			}
 			else if (Utils::String::FindToken(Utils::String::ToLower(lines[i]), "geometry"))
 			{
 				type = ShaderType::Geometry;
-				shaders[static_cast<int32_t>(type) - 1].append("#version 460 core\n");
 			}
 			else if (Utils::String::FindToken(Utils::String::ToLower(lines[i]), "tessellation"))
 			{
 				if (Utils::String::FindToken(Utils::String::ToLower(lines[i]), "control"))
 				{
 					type = ShaderType::Tessellation_Control;
-					shaders[static_cast<int32_t>(type) - 1].append("#version 460 core\n");
 				}
 				else if (Utils::String::FindToken(Utils::String::ToLower(lines[i]), "evaluation"))
 				{
 					type = ShaderType::Tessellation_Evaluation;
-					shaders[static_cast<int32_t>(type) - 1].append("#version 460 core\n");
 				}
 			}
 			else if (Utils::String::FindToken(Utils::String::ToLower(lines[i]), "compute"))
 			{
-				type = ShaderType::Compute;
-				shaders[static_cast<int32_t>(type) - 1].append("#version 460 core\n");
+				type = ShaderType::Compute;				
 			}
 		}
 		else if(Utils::String::StartsWith(Utils::String::ToLower(lines[i]), "#version"))
@@ -635,6 +627,20 @@ void TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, st
 		{
 			shaders[static_cast<int32_t>(type) - 1].append(lines[i]);
 			shaders[static_cast<int32_t>(type) - 1].append("\n");
+		}
+	}
+
+	for(uint32_t i = 0; i < shaders.size(); i++)
+	{
+		if (!shaders[i].empty())
+		{
+			if (Utils::String::ToLower(shaders[i]).find("main") == std::string::npos)
+			{				
+				TP_ERROR("[Shader][OpenGL][GLSL] ", ShaderTypeToString(static_cast<ShaderType>(i + 1)), ": Couldn't find \"main\" function!");
+				shaders[i] = "";
+			}
+			else //Found main function
+				shaders[i] = "#version 460 core\n" + shaders[i];
 		}
 	}
 }

@@ -1,633 +1,81 @@
-[17:16:38][Debug][Application] Initializing TRAP Modules...
-[17:16:38][Debug][VFS] Initializing Virtual File System
-[17:16:38][Info][Config] Loading settings file "Engine.cfg"
-[17:16:38][Trace][Config] Width = 1280
-[17:16:38][Trace][Config] Height = 720
-[17:16:38][Trace][Config] RefreshRate = 144
-[17:16:38][Trace][Config] VSync = 0
-[17:16:38][Trace][Config] FPSLimit = 0
-[17:16:38][Trace][Config] DisplayMode = Windowed
-[17:16:38][Trace][Config] Monitor = 0
-[17:16:38][Trace][Config] RenderAPI = OpenGL
-[17:16:38][Trace][Config] HotShaderReloading = TRUE
-[17:16:38][Trace][Config] HotTextureReloading = TRUE
-[17:16:38][Trace][Config] Size: 10
-[17:16:38][Info][Window] Initializing Window: "Sandbox" 1280x720@144Hz VSync: Off DisplayMode: Windowed Monitor: 0 CursorMode: Normal RawMouseInput: Disabled
-[17:16:39][Debug][Window] Storing underlying OS video mode: Monitor: 0 2560x1440@144Hz (R8G8B8)
-[17:16:39][Debug][Window] Storing underlying OS video mode: Monitor: 1 1920x1080@144Hz (R8G8B8)
-[17:16:39][Info][Context][OpenGL] Initializing Context
-[17:16:39][Info][Renderer][OpenGL] Initializing Renderer
-[17:16:39][Info][Renderer][OpenGL] ----------------------------------
-[17:16:39][Info][Renderer][OpenGL] OpenGL:
-[17:16:39][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 436.48
-[17:16:39][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
-[17:16:39][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
-[17:16:39][Info][Renderer][OpenGL] ----------------------------------
-[17:16:39][Debug][Shader][OpenGL][GLSL] Compiling: "Passthrough"
-[17:16:39][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[17:16:39][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[17:16:39][Debug][Texture2D][OpenGL] Loading Texture: "Fallback2D"
-[17:16:39][Debug][TextureCube][OpenGL] Loading Texture: "FallbackCube"
-[17:16:39][Debug][LayerStack] Pushing Overlay: ImGuiLayer
-[17:16:39][Debug][LayerStack] Pushing Layer: Sandbox
-[17:16:39][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
-[17:16:39][Debug][Shader][OpenGL][GLSL] Compiling: "Color"
-[17:16:39][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[17:16:39][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[17:16:39][Debug][Shader][OpenGL][GLSL] Compiling: "Texture"
-[17:16:39][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[17:16:39][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[17:16:39][Debug][Shader][OpenGL][GLSL] Compiling: "TextureColor"
-[17:16:39][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[17:16:39][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[17:16:39][Debug][Shader][OpenGL][SPIR-V] Converting: "TextureColorSPIRV" to GLSL
-[17:16:39][Debug][Shader][OpenGL][GLSL] Compiling: "TextureColorSPIRV"
-[17:16:39][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[17:16:39][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[17:16:39][Info][VFS] Mounting VirtualPath: "/textures" to PhysicalPath: "Assets/Textures"
-[17:16:39][Debug][Texture2D][OpenGL] Loading Texture: "TRAP"
-[17:16:39][Debug][Image][TGA] Loading Image: "TRAPWhiteLogo2048x2048.tga"
-[17:16:44][Info][Sandbox] DrawCall(s): 1
-[17:16:44][Info][Sandbox] FPS: 1242
-[17:16:44][Info][Sandbox] FrameTime: 0.7156ms
-[17:16:49][Info][Sandbox] DrawCall(s): 1
-[17:16:49][Info][Sandbox] FPS: 1213
-[17:16:49][Info][Sandbox] FrameTime: 1.2629ms
-[17:16:50][Trace][Input] Repeats: 1
-[17:16:50][Trace][Input] Repeats: 2
-[17:16:50][Trace][Input] Repeats: 3
-[17:16:50][Trace][Input] Repeats: 4
-[17:16:50][Trace][Input] Repeats: 5
-[17:16:50][Trace][Input] Repeats: 6
-[17:16:50][Trace][Input] Repeats: 7
-[17:16:50][Trace][Input] Repeats: 8
-[17:16:50][Trace][Input] Repeats: 9
-[17:16:50][Trace][Input] Repeats: 10
-[17:16:51][Trace][Input] Repeats: 11
-[17:16:51][Trace][Input] Repeats: 12
-[17:16:51][Trace][Input] Repeats: 13
-[17:16:51][Trace][Input] Repeats: 14
-[17:16:51][Trace][Input] Repeats: 15
-[17:16:51][Trace][Input] Repeats: 16
-[17:16:51][Trace][Input] Repeats: 17
-[17:16:51][Trace][Input] Repeats: 18
-[17:16:51][Trace][Input] Repeats: 19
-[17:16:51][Trace][Input] Repeats: 20
-[17:16:51][Trace][Input] Repeats: 21
-[17:16:51][Trace][Input] Repeats: 22
-[17:16:51][Trace][Input] Repeats: 23
-[17:16:51][Trace][Input] Repeats: 24
-[17:16:51][Trace][Input] Repeats: 25
-[17:16:51][Trace][Input] Repeats: 26
-[17:16:51][Trace][Input] Repeats: 27
-[17:16:51][Trace][Input] Repeats: 28
-[17:16:51][Trace][Input] Repeats: 29
-[17:16:51][Trace][Input] Repeats: 30
-[17:16:51][Trace][Input] Repeats: 31
-[17:16:51][Trace][Input] Repeats: 32
-[17:16:51][Trace][Input] Repeats: 33
-[17:16:51][Trace][Input] Repeats: 34
-[17:16:51][Trace][Input] Repeats: 35
-[17:16:51][Trace][Input] Repeats: 36
-[17:16:51][Trace][Input] Repeats: 37
-[17:16:51][Trace][Input] Repeats: 38
-[17:16:51][Trace][Input] Repeats: 39
-[17:16:51][Trace][Input] Repeats: 40
-[17:16:51][Trace][Input] Repeats: 41
-[17:16:52][Trace][Input] Repeats: 42
-[17:16:52][Trace][Input] Repeats: 43
-[17:16:52][Trace][Input] Repeats: 44
-[17:16:52][Trace][Input] Repeats: 45
-[17:16:52][Trace][Input] Repeats: 46
-[17:16:52][Trace][Input] Repeats: 47
-[17:16:52][Trace][Input] Repeats: 48
-[17:16:52][Trace][Input] Repeats: 49
-[17:16:52][Trace][Input] Repeats: 50
-[17:16:52][Trace][Input] Repeats: 51
-[17:16:52][Trace][Input] Repeats: 52
-[17:16:52][Trace][Input] Repeats: 53
-[17:16:52][Trace][Input] Repeats: 54
-[17:16:52][Trace][Input] Repeats: 55
-[17:16:52][Trace][Input] Repeats: 56
-[17:16:52][Trace][Input] Repeats: 57
-[17:16:52][Trace][Input] Repeats: 58
-[17:16:52][Trace][Input] Repeats: 59
-[17:16:52][Trace][Input] Repeats: 60
-[17:16:52][Trace][Input] Repeats: 61
-[17:16:52][Trace][Input] Repeats: 62
-[17:16:52][Trace][Input] Repeats: 63
-[17:16:52][Trace][Input] Repeats: 64
-[17:16:52][Trace][Input] Repeats: 65
-[17:16:52][Trace][Input] Repeats: 66
-[17:16:52][Trace][Input] Repeats: 67
-[17:16:52][Trace][Input] Repeats: 68
-[17:16:52][Trace][Input] Repeats: 69
-[17:16:52][Trace][Input] Repeats: 70
-[17:16:52][Trace][Input] Repeats: 71
-[17:16:53][Trace][Input] Repeats: 72
-[17:16:53][Trace][Input] Repeats: 73
-[17:16:53][Trace][Input] Repeats: 74
-[17:16:53][Trace][Input] Repeats: 75
-[17:16:53][Trace][Input] Repeats: 76
-[17:16:53][Trace][Input] Repeats: 77
-[17:16:53][Trace][Input] Repeats: 78
-[17:16:54][Trace][Input] Repeats: 1
-[17:16:54][Trace][Input] Repeats: 2
-[17:16:54][Info][Sandbox] DrawCall(s): 1
-[17:16:54][Info][Sandbox] FPS: 1549
-[17:16:54][Info][Sandbox] FrameTime: 1.0377ms
-[17:16:54][Trace][Input] Repeats: 3
-[17:16:54][Trace][Input] Repeats: 4
-[17:16:54][Trace][Input] Repeats: 5
-[17:16:54][Trace][Input] Repeats: 6
-[17:16:54][Trace][Input] Repeats: 7
-[17:16:54][Trace][Input] Repeats: 8
-[17:16:54][Trace][Input] Repeats: 9
-[17:16:54][Trace][Input] Repeats: 10
-[17:16:54][Trace][Input] Repeats: 11
-[17:16:54][Trace][Input] Repeats: 12
-[17:16:54][Trace][Input] Repeats: 13
-[17:16:58][Trace][Input] Repeats: 1
-[17:16:58][Trace][Input] Repeats: 2
-[17:16:58][Trace][Input] Repeats: 3
-[17:16:58][Trace][Input] Repeats: 4
-[17:16:58][Trace][Input] Repeats: 5
-[17:16:58][Trace][Input] Repeats: 6
-[17:16:58][Trace][Input] Repeats: 7
-[17:16:58][Trace][Input] Repeats: 8
-[17:16:58][Trace][Input] Repeats: 9
-[17:16:58][Trace][Input] Repeats: 10
-[17:16:58][Trace][Input] Repeats: 11
-[17:16:58][Trace][Input] Repeats: 12
-[17:16:58][Trace][Input] Repeats: 13
-[17:16:58][Trace][Input] Repeats: 14
-[17:16:58][Trace][Input] Repeats: 15
-[17:16:58][Trace][Input] Repeats: 16
-[17:16:59][Trace][Input] Repeats: 17
-[17:16:59][Trace][Input] Repeats: 18
-[17:16:59][Trace][Input] Repeats: 19
-[17:16:59][Trace][Input] Repeats: 20
-[17:16:59][Trace][Input] Repeats: 21
-[17:16:59][Trace][Input] Repeats: 22
-[17:16:59][Trace][Input] Repeats: 23
-[17:16:59][Trace][Input] Repeats: 24
-[17:16:59][Trace][Input] Repeats: 25
-[17:16:59][Trace][Input] Repeats: 26
-[17:16:59][Trace][Input] Repeats: 27
-[17:16:59][Trace][Input] Repeats: 28
-[17:16:59][Trace][Input] Repeats: 29
-[17:16:59][Trace][Input] Repeats: 30
-[17:16:59][Trace][Input] Repeats: 31
-[17:16:59][Info][Sandbox] DrawCall(s): 1
-[17:16:59][Info][Sandbox] FPS: 1378
-[17:16:59][Info][Sandbox] FrameTime: 0.4779ms
-[17:16:59][Trace][Input] Repeats: 32
-[17:16:59][Trace][Input] Repeats: 33
-[17:17:00][Trace][Input] Repeats: 1
-[17:17:00][Trace][Input] Repeats: 2
-[17:17:00][Trace][Input] Repeats: 3
-[17:17:00][Trace][Input] Repeats: 4
-[17:17:00][Trace][Input] Repeats: 5
-[17:17:00][Trace][Input] Repeats: 6
-[17:17:00][Trace][Input] Repeats: 7
-[17:17:00][Trace][Input] Repeats: 8
-[17:17:00][Trace][Input] Repeats: 9
-[17:17:00][Trace][Input] Repeats: 10
-[17:17:00][Trace][Input] Repeats: 11
-[17:17:00][Trace][Input] Repeats: 12
-[17:17:00][Trace][Input] Repeats: 13
-[17:17:00][Trace][Input] Repeats: 14
-[17:17:00][Trace][Input] Repeats: 15
-[17:17:00][Trace][Input] Repeats: 16
-[17:17:00][Trace][Input] Repeats: 17
-[17:17:00][Trace][Input] Repeats: 18
-[17:17:00][Trace][Input] Repeats: 19
-[17:17:00][Trace][Input] Repeats: 20
-[17:17:01][Trace][Input] Repeats: 1
-[17:17:01][Trace][Input] Repeats: 2
-[17:17:01][Trace][Input] Repeats: 3
-[17:17:01][Trace][Input] Repeats: 4
-[17:17:01][Trace][Input] Repeats: 5
-[17:17:01][Trace][Input] Repeats: 6
-[17:17:01][Trace][Input] Repeats: 7
-[17:17:01][Trace][Input] Repeats: 8
-[17:17:01][Trace][Input] Repeats: 9
-[17:17:01][Trace][Input] Repeats: 10
-[17:17:01][Trace][Input] Repeats: 11
-[17:17:01][Trace][Input] Repeats: 12
-[17:17:01][Trace][Input] Repeats: 13
-[17:17:01][Trace][Input] Repeats: 14
-[17:17:01][Trace][Input] Repeats: 15
-[17:17:01][Trace][Input] Repeats: 16
-[17:17:01][Trace][Input] Repeats: 17
-[17:17:01][Trace][Input] Repeats: 18
-[17:17:01][Trace][Input] Repeats: 19
-[17:17:01][Trace][Input] Repeats: 20
-[17:17:01][Trace][Input] Repeats: 21
-[17:17:01][Trace][Input] Repeats: 22
-[17:17:01][Trace][Input] Repeats: 23
-[17:17:01][Trace][Input] Repeats: 24
-[17:17:02][Trace][Input] Repeats: 25
-[17:17:02][Trace][Input] Repeats: 26
-[17:17:02][Trace][Input] Repeats: 27
-[17:17:02][Trace][Input] Repeats: 28
-[17:17:02][Trace][Input] Repeats: 29
-[17:17:02][Trace][Input] Repeats: 30
-[17:17:02][Trace][Input] Repeats: 31
-[17:17:02][Trace][Input] Repeats: 32
-[17:17:02][Trace][Input] Repeats: 33
-[17:17:02][Trace][Input] Repeats: 34
-[17:17:02][Trace][Input] Repeats: 35
-[17:17:02][Trace][Input] Repeats: 36
-[17:17:02][Trace][Input] Repeats: 37
-[17:17:02][Trace][Input] Repeats: 38
-[17:17:02][Trace][Input] Repeats: 39
-[17:17:02][Trace][Input] Repeats: 40
-[17:17:02][Trace][Input] Repeats: 41
-[17:17:02][Trace][Input] Repeats: 42
-[17:17:02][Trace][Input] Repeats: 43
-[17:17:02][Trace][Input] Repeats: 44
-[17:17:02][Trace][Input] Repeats: 45
-[17:17:02][Trace][Input] Repeats: 46
-[17:17:02][Trace][Input] Repeats: 47
-[17:17:02][Trace][Input] Repeats: 48
-[17:17:02][Trace][Input] Repeats: 49
-[17:17:04][Info][Sandbox] DrawCall(s): 1
-[17:17:04][Info][Sandbox] FPS: 2089
-[17:17:04][Info][Sandbox] FrameTime: 0.4686ms
-[17:17:04][Trace][Input] Repeats: 1
-[17:17:04][Trace][Input] Repeats: 2
-[17:17:05][Trace][Input] Repeats: 3
-[17:17:05][Trace][Input] Repeats: 4
-[17:17:05][Trace][Input] Repeats: 5
-[17:17:05][Trace][Input] Repeats: 6
-[17:17:05][Trace][Input] Repeats: 7
-[17:17:05][Trace][Input] Repeats: 8
-[17:17:05][Trace][Input] Repeats: 9
-[17:17:05][Trace][Input] Repeats: 10
-[17:17:05][Trace][Input] Repeats: 11
-[17:17:05][Trace][Input] Repeats: 12
-[17:17:05][Trace][Input] Repeats: 13
-[17:17:05][Trace][Input] Repeats: 14
-[17:17:05][Trace][Input] Repeats: 15
-[17:17:05][Trace][Input] Repeats: 16
-[17:17:05][Trace][Input] Repeats: 17
-[17:17:05][Trace][Input] Repeats: 18
-[17:17:05][Trace][Input] Repeats: 19
-[17:17:05][Trace][Input] Repeats: 20
-[17:17:05][Trace][Input] Repeats: 21
-[17:17:05][Trace][Input] Repeats: 22
-[17:17:05][Trace][Input] Repeats: 23
-[17:17:05][Trace][Input] Repeats: 24
-[17:17:05][Trace][Input] Repeats: 25
-[17:17:05][Trace][Input] Repeats: 26
-[17:17:05][Trace][Input] Repeats: 27
-[17:17:05][Trace][Input] Repeats: 28
-[17:17:05][Trace][Input] Repeats: 29
-[17:17:05][Trace][Input] Repeats: 30
-[17:17:05][Trace][Input] Repeats: 31
-[17:17:05][Trace][Input] Repeats: 32
-[17:17:06][Trace][Input] Repeats: 33
-[17:17:06][Trace][Input] Repeats: 34
-[17:17:06][Trace][Input] Repeats: 35
-[17:17:06][Trace][Input] Repeats: 36
-[17:17:06][Trace][Input] Repeats: 37
-[17:17:06][Trace][Input] Repeats: 38
-[17:17:06][Trace][Input] Repeats: 39
-[17:17:06][Trace][Input] Repeats: 40
-[17:17:06][Trace][Input] Repeats: 41
-[17:17:06][Trace][Input] Repeats: 42
-[17:17:06][Trace][Input] Repeats: 43
-[17:17:06][Trace][Input] Repeats: 44
-[17:17:06][Trace][Input] Repeats: 45
-[17:17:06][Trace][Input] Repeats: 46
-[17:17:06][Trace][Input] Repeats: 47
-[17:17:06][Trace][Input] Repeats: 48
-[17:17:06][Trace][Input] Repeats: 49
-[17:17:06][Trace][Input] Repeats: 50
-[17:17:06][Trace][Input] Repeats: 51
-[17:17:06][Trace][Input] Repeats: 52
-[17:17:06][Trace][Input] Repeats: 53
-[17:17:06][Trace][Input] Repeats: 54
-[17:17:06][Trace][Input] Repeats: 55
-[17:17:06][Trace][Input] Repeats: 56
-[17:17:06][Trace][Input] Repeats: 57
-[17:17:06][Trace][Input] Repeats: 58
-[17:17:06][Trace][Input] Repeats: 59
-[17:17:06][Trace][Input] Repeats: 60
-[17:17:06][Trace][Input] Repeats: 61
-[17:17:06][Trace][Input] Repeats: 62
-[17:17:06][Trace][Input] Repeats: 63
-[17:17:07][Trace][Input] Repeats: 64
-[17:17:07][Trace][Input] Repeats: 65
-[17:17:07][Trace][Input] Repeats: 66
-[17:17:07][Trace][Input] Repeats: 67
-[17:17:07][Trace][Input] Repeats: 68
-[17:17:07][Trace][Input] Repeats: 69
-[17:17:07][Trace][Input] Repeats: 70
-[17:17:07][Trace][Input] Repeats: 71
-[17:17:07][Trace][Input] Repeats: 72
-[17:17:07][Trace][Input] Repeats: 73
-[17:17:07][Trace][Input] Repeats: 74
-[17:17:07][Trace][Input] Repeats: 75
-[17:17:07][Trace][Input] Repeats: 76
-[17:17:07][Trace][Input] Repeats: 77
-[17:17:07][Trace][Input] Repeats: 78
-[17:17:07][Trace][Input] Repeats: 79
-[17:17:07][Trace][Input] Repeats: 80
-[17:17:07][Trace][Input] Repeats: 81
-[17:17:07][Trace][Input] Repeats: 82
-[17:17:07][Trace][Input] Repeats: 83
-[17:17:07][Trace][Input] Repeats: 84
-[17:17:07][Trace][Input] Repeats: 85
-[17:17:07][Trace][Input] Repeats: 86
-[17:17:07][Trace][Input] Repeats: 87
-[17:17:07][Trace][Input] Repeats: 88
-[17:17:07][Trace][Input] Repeats: 89
-[17:17:07][Trace][Input] Repeats: 90
-[17:17:07][Trace][Input] Repeats: 91
-[17:17:07][Trace][Input] Repeats: 92
-[17:17:07][Trace][Input] Repeats: 93
-[17:17:08][Trace][Input] Repeats: 94
-[17:17:08][Trace][Input] Repeats: 95
-[17:17:08][Trace][Input] Repeats: 96
-[17:17:08][Trace][Input] Repeats: 97
-[17:17:08][Trace][Input] Repeats: 98
-[17:17:08][Trace][Input] Repeats: 99
-[17:17:08][Trace][Input] Repeats: 100
-[17:17:08][Trace][Input] Repeats: 101
-[17:17:08][Trace][Input] Repeats: 102
-[17:17:08][Trace][Input] Repeats: 103
-[17:17:08][Trace][Input] Repeats: 104
-[17:17:08][Trace][Input] Repeats: 105
-[17:17:08][Trace][Input] Repeats: 106
-[17:17:08][Trace][Input] Repeats: 107
-[17:17:08][Trace][Input] Repeats: 108
-[17:17:08][Trace][Input] Repeats: 109
-[17:17:08][Trace][Input] Repeats: 110
-[17:17:08][Trace][Input] Repeats: 111
-[17:17:08][Trace][Input] Repeats: 112
-[17:17:08][Trace][Input] Repeats: 113
-[17:17:08][Trace][Input] Repeats: 114
-[17:17:08][Trace][Input] Repeats: 115
-[17:17:08][Trace][Input] Repeats: 116
-[17:17:08][Trace][Input] Repeats: 117
-[17:17:08][Trace][Input] Repeats: 118
-[17:17:08][Trace][Input] Repeats: 119
-[17:17:08][Trace][Input] Repeats: 120
-[17:17:08][Trace][Input] Repeats: 121
-[17:17:08][Trace][Input] Repeats: 122
-[17:17:08][Trace][Input] Repeats: 123
-[17:17:09][Trace][Input] Repeats: 124
-[17:17:09][Trace][Input] Repeats: 125
-[17:17:09][Trace][Input] Repeats: 126
-[17:17:09][Info][Sandbox] DrawCall(s): 1
-[17:17:09][Info][Sandbox] FPS: 1927
-[17:17:09][Info][Sandbox] FrameTime: 0.3726ms
-[17:17:10][Trace][Input] Repeats: 1
-[17:17:10][Trace][Input] Repeats: 2
-[17:17:10][Trace][Input] Repeats: 3
-[17:17:10][Trace][Input] Repeats: 4
-[17:17:10][Trace][Input] Repeats: 5
-[17:17:10][Trace][Input] Repeats: 6
-[17:17:10][Trace][Input] Repeats: 7
-[17:17:11][Trace][Input] Repeats: 8
-[17:17:11][Trace][Input] Repeats: 9
-[17:17:11][Trace][Input] Repeats: 1
-[17:17:11][Trace][Input] Repeats: 2
-[17:17:11][Trace][Input] Repeats: 3
-[17:17:11][Trace][Input] Repeats: 4
-[17:17:11][Trace][Input] Repeats: 5
-[17:17:11][Trace][Input] Repeats: 6
-[17:17:11][Trace][Input] Repeats: 7
-[17:17:11][Trace][Input] Repeats: 8
-[17:17:11][Trace][Input] Repeats: 9
-[17:17:11][Trace][Input] Repeats: 10
-[17:17:11][Trace][Input] Repeats: 11
-[17:17:11][Trace][Input] Repeats: 12
-[17:17:11][Trace][Input] Repeats: 13
-[17:17:12][Trace][Input] Repeats: 14
-[17:17:12][Trace][Input] Repeats: 15
-[17:17:12][Trace][Input] Repeats: 16
-[17:17:12][Trace][Input] Repeats: 17
-[17:17:12][Trace][Input] Repeats: 18
-[17:17:12][Trace][Input] Repeats: 19
-[17:17:12][Trace][Input] Repeats: 20
-[17:17:12][Trace][Input] Repeats: 21
-[17:17:12][Trace][Input] Repeats: 22
-[17:17:12][Trace][Input] Repeats: 23
-[17:17:12][Trace][Input] Repeats: 24
-[17:17:12][Trace][Input] Repeats: 25
-[17:17:12][Trace][Input] Repeats: 26
-[17:17:12][Trace][Input] Repeats: 27
-[17:17:12][Trace][Input] Repeats: 28
-[17:17:12][Trace][Input] Repeats: 29
-[17:17:12][Trace][Input] Repeats: 30
-[17:17:12][Trace][Input] Repeats: 31
-[17:17:12][Trace][Input] Repeats: 32
-[17:17:12][Trace][Input] Repeats: 33
-[17:17:12][Trace][Input] Repeats: 34
-[17:17:12][Trace][Input] Repeats: 35
-[17:17:12][Trace][Input] Repeats: 36
-[17:17:12][Trace][Input] Repeats: 37
-[17:17:12][Trace][Input] Repeats: 38
-[17:17:12][Trace][Input] Repeats: 39
-[17:17:12][Trace][Input] Repeats: 40
-[17:17:12][Trace][Input] Repeats: 41
-[17:17:12][Trace][Input] Repeats: 42
-[17:17:12][Trace][Input] Repeats: 43
-[17:17:13][Trace][Input] Repeats: 44
-[17:17:13][Trace][Input] Repeats: 45
-[17:17:13][Trace][Input] Repeats: 46
-[17:17:13][Trace][Input] Repeats: 47
-[17:17:13][Trace][Input] Repeats: 48
-[17:17:13][Trace][Input] Repeats: 49
-[17:17:13][Trace][Input] Repeats: 50
-[17:17:13][Trace][Input] Repeats: 51
-[17:17:13][Trace][Input] Repeats: 52
-[17:17:13][Trace][Input] Repeats: 53
-[17:17:13][Trace][Input] Repeats: 54
-[17:17:13][Trace][Input] Repeats: 55
-[17:17:13][Trace][Input] Repeats: 56
-[17:17:13][Trace][Input] Repeats: 57
-[17:17:13][Trace][Input] Repeats: 58
-[17:17:13][Trace][Input] Repeats: 59
-[17:17:13][Trace][Input] Repeats: 60
-[17:17:13][Trace][Input] Repeats: 61
-[17:17:13][Trace][Input] Repeats: 62
-[17:17:13][Trace][Input] Repeats: 63
-[17:17:13][Trace][Input] Repeats: 64
-[17:17:13][Trace][Input] Repeats: 65
-[17:17:13][Trace][Input] Repeats: 66
-[17:17:13][Trace][Input] Repeats: 67
-[17:17:13][Trace][Input] Repeats: 68
-[17:17:13][Trace][Input] Repeats: 69
-[17:17:13][Trace][Input] Repeats: 70
-[17:17:13][Trace][Input] Repeats: 71
-[17:17:13][Trace][Input] Repeats: 72
-[17:17:13][Trace][Input] Repeats: 73
-[17:17:13][Trace][Input] Repeats: 74
-[17:17:14][Trace][Input] Repeats: 75
-[17:17:14][Trace][Input] Repeats: 76
-[17:17:14][Trace][Input] Repeats: 77
-[17:17:14][Trace][Input] Repeats: 78
-[17:17:14][Trace][Input] Repeats: 79
-[17:17:14][Trace][Input] Repeats: 80
-[17:17:14][Trace][Input] Repeats: 81
-[17:17:14][Trace][Input] Repeats: 82
-[17:17:14][Trace][Input] Repeats: 83
-[17:17:14][Trace][Input] Repeats: 84
-[17:17:14][Trace][Input] Repeats: 85
-[17:17:14][Trace][Input] Repeats: 86
-[17:17:14][Trace][Input] Repeats: 87
-[17:17:14][Trace][Input] Repeats: 88
-[17:17:14][Trace][Input] Repeats: 89
-[17:17:14][Info][Sandbox] DrawCall(s): 1
-[17:17:14][Info][Sandbox] FPS: 2462
-[17:17:14][Info][Sandbox] FrameTime: 0.34ms
-[17:17:14][Trace][Input] Repeats: 90
-[17:17:14][Trace][Input] Repeats: 91
-[17:17:14][Trace][Input] Repeats: 92
-[17:17:14][Trace][Input] Repeats: 93
-[17:17:14][Trace][Input] Repeats: 94
-[17:17:14][Trace][Input] Repeats: 95
-[17:17:14][Trace][Input] Repeats: 96
-[17:17:14][Trace][Input] Repeats: 97
-[17:17:14][Trace][Input] Repeats: 98
-[17:17:14][Trace][Input] Repeats: 99
-[17:17:14][Trace][Input] Repeats: 100
-[17:17:14][Trace][Input] Repeats: 101
-[17:17:14][Trace][Input] Repeats: 102
-[17:17:14][Trace][Input] Repeats: 103
-[17:17:15][Trace][Input] Repeats: 104
-[17:17:15][Trace][Input] Repeats: 105
-[17:17:15][Trace][Input] Repeats: 106
-[17:17:15][Trace][Input] Repeats: 107
-[17:17:15][Trace][Input] Repeats: 108
-[17:17:15][Trace][Input] Repeats: 109
-[17:17:15][Trace][Input] Repeats: 110
-[17:17:15][Trace][Input] Repeats: 111
-[17:17:15][Trace][Input] Repeats: 112
-[17:17:15][Trace][Input] Repeats: 113
-[17:17:15][Trace][Input] Repeats: 114
-[17:17:15][Trace][Input] Repeats: 115
-[17:17:15][Trace][Input] Repeats: 116
-[17:17:15][Trace][Input] Repeats: 117
-[17:17:15][Trace][Input] Repeats: 118
-[17:17:15][Trace][Input] Repeats: 119
-[17:17:15][Trace][Input] Repeats: 120
-[17:17:16][Trace][Input] Repeats: 121
-[17:17:16][Trace][Input] Repeats: 122
-[17:17:16][Trace][Input] Repeats: 123
-[17:17:16][Trace][Input] Repeats: 124
-[17:17:16][Trace][Input] Repeats: 125
-[17:17:16][Trace][Input] Repeats: 126
-[17:17:16][Trace][Input] Repeats: 127
-[17:17:16][Trace][Input] Repeats: 128
-[17:17:16][Trace][Input] Repeats: 129
-[17:17:16][Trace][Input] Repeats: 130
-[17:17:16][Trace][Input] Repeats: 131
-[17:17:16][Trace][Input] Repeats: 132
-[17:17:16][Trace][Input] Repeats: 133
-[17:17:16][Trace][Input] Repeats: 134
-[17:17:16][Trace][Input] Repeats: 135
-[17:17:16][Trace][Input] Repeats: 136
-[17:17:16][Trace][Input] Repeats: 137
-[17:17:16][Trace][Input] Repeats: 138
-[17:17:16][Trace][Input] Repeats: 139
-[17:17:16][Trace][Input] Repeats: 140
-[17:17:16][Trace][Input] Repeats: 141
-[17:17:16][Trace][Input] Repeats: 142
-[17:17:16][Trace][Input] Repeats: 143
-[17:17:16][Trace][Input] Repeats: 144
-[17:17:16][Trace][Input] Repeats: 145
-[17:17:16][Trace][Input] Repeats: 146
-[17:17:16][Trace][Input] Repeats: 147
-[17:17:16][Trace][Input] Repeats: 148
-[17:17:16][Trace][Input] Repeats: 149
-[17:17:16][Trace][Input] Repeats: 150
-[17:17:17][Trace][Input] Repeats: 151
-[17:17:17][Trace][Input] Repeats: 152
-[17:17:17][Trace][Input] Repeats: 153
-[17:17:17][Trace][Input] Repeats: 154
-[17:17:17][Trace][Input] Repeats: 155
-[17:17:17][Trace][Input] Repeats: 156
-[17:17:17][Trace][Input] Repeats: 157
-[17:17:17][Trace][Input] Repeats: 158
-[17:17:17][Trace][Input] Repeats: 159
-[17:17:17][Trace][Input] Repeats: 160
-[17:17:17][Trace][Input] Repeats: 161
-[17:17:17][Trace][Input] Repeats: 162
-[17:17:17][Trace][Input] Repeats: 163
-[17:17:17][Trace][Input] Repeats: 164
-[17:17:17][Trace][Input] Repeats: 165
-[17:17:17][Trace][Input] Repeats: 166
-[17:17:17][Trace][Input] Repeats: 167
-[17:17:17][Trace][Input] Repeats: 168
-[17:17:17][Trace][Input] Repeats: 169
-[17:17:17][Trace][Input] Repeats: 170
-[17:17:17][Trace][Input] Repeats: 171
-[17:17:17][Trace][Input] Repeats: 172
-[17:17:17][Trace][Input] Repeats: 173
-[17:17:17][Trace][Input] Repeats: 174
-[17:17:19][Trace][Input] Repeats: 1
-[17:17:19][Trace][Input] Repeats: 2
-[17:17:19][Trace][Input] Repeats: 3
-[17:17:19][Trace][Input] Repeats: 4
-[17:17:19][Trace][Input] Repeats: 5
-[17:17:19][Trace][Input] Repeats: 6
-[17:17:19][Trace][Input] Repeats: 7
-[17:17:19][Trace][Input] Repeats: 8
-[17:17:19][Trace][Input] Repeats: 9
-[17:17:19][Trace][Input] Repeats: 10
-[17:17:19][Trace][Input] Repeats: 11
-[17:17:19][Trace][Input] Repeats: 12
-[17:17:19][Trace][Input] Repeats: 13
-[17:17:19][Trace][Input] Repeats: 14
-[17:17:19][Trace][Input] Repeats: 15
-[17:17:19][Info][Sandbox] DrawCall(s): 1
-[17:17:19][Info][Sandbox] FPS: 2561
-[17:17:19][Info][Sandbox] FrameTime: 0.4009ms
-[17:17:19][Trace][Input] Repeats: 16
-[17:17:19][Trace][Input] Repeats: 17
-[17:17:19][Trace][Input] Repeats: 18
-[17:17:19][Trace][Input] Repeats: 19
-[17:17:19][Trace][Input] Repeats: 20
-[17:17:19][Trace][Input] Repeats: 21
-[17:17:19][Trace][Input] Repeats: 22
-[17:17:19][Trace][Input] Repeats: 23
-[17:17:24][Info][Sandbox] DrawCall(s): 1
-[17:17:24][Info][Sandbox] FPS: 2638
-[17:17:24][Info][Sandbox] FrameTime: 0.3721ms
-[17:17:25][Debug][Application] Shutting down TRAP Modules...
-[17:17:25][Debug][TextureManager] Destroying Textures
-[17:17:25][Debug][Texture2D][OpenGL] Destroying Texture2D: "Fallback2D"
-[17:17:25][Debug][TextureCube][OpenGL] Destroying TextureCube: "FallbackCube"
-[17:17:25][Debug][Texture2D][OpenGL] Destroying Texture2D: "TRAP"
-[17:17:25][Debug][ShaderManager] Destroying Shaders
-[17:17:25][Debug][Shader][OpenGL] Destroying Shader: "Passthrough"
-[17:17:25][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[17:17:25][Debug][Shader][OpenGL] Destroying Shader: "Texture"
-[17:17:25][Debug][Shader][OpenGL] Destroying Shader: "TextureColor"
-[17:17:25][Debug][Shader][OpenGL] Destroying Shader: "TextureColorSPIRV"
-[17:17:25][Trace][Config] Width = 1280
-[17:17:25][Trace][Config] Height = 720
-[17:17:25][Trace][Config] RefreshRate = 144
-[17:17:25][Trace][Config] VSync = 0
-[17:17:25][Trace][Config] FPSLimit = 0
-[17:17:25][Trace][Config] DisplayMode = Windowed
-[17:17:25][Trace][Config] Monitor = 0
-[17:17:25][Trace][Config] RenderAPI = OpenGL
-[17:17:25][Trace][Config] HotShaderReloading = TRUE
-[17:17:25][Trace][Config] HotTextureReloading = TRUE
-[17:17:25][Trace][Config] Size: 10
-[17:17:25][Info][Config] Saving: Engine.cfg
-[17:17:25][Debug][VFS] Shutting down Virtual File System
-[17:17:25][Debug][LayerStack] Destroying Layer: Sandbox
-[17:17:25][Debug][LayerStack] Destroying Layer: ImGuiLayer
-[17:17:25][Debug][TextureManager] Destroying Textures
-[17:17:25][Debug][ShaderManager] Destroying Shaders
-[17:17:25][Debug][Renderer][OpenGL] Destroying Renderer
-[17:17:25][Debug][Context][OpenGL] Destroying Context
-[17:17:25][Debug][Window] Destroying Window: "Sandbox"
-[17:17:25][Info][Logger] Saving Log.txt
+[23:25:51][Debug][Application] Initializing TRAP Modules...
+[23:25:51][Debug][VFS] Initializing Virtual File System
+[23:25:51][Info][Config] Loading settings file "Engine.cfg"
+[23:25:51][Trace][Config] Width = 1280
+[23:25:51][Trace][Config] Height = 720
+[23:25:51][Trace][Config] RefreshRate = 144
+[23:25:51][Trace][Config] VSync = 0
+[23:25:51][Trace][Config] FPSLimit = 0
+[23:25:51][Trace][Config] DisplayMode = Windowed
+[23:25:51][Trace][Config] Monitor = 0
+[23:25:51][Trace][Config] RenderAPI = OpenGL
+[23:25:51][Trace][Config] HotShaderReloading = TRUE
+[23:25:51][Trace][Config] HotTextureReloading = TRUE
+[23:25:51][Trace][Config] Size: 10
+[23:25:51][Info][Window] Initializing Window: "Sandbox" 1280x720@144Hz VSync: Off DisplayMode: Windowed Monitor: 0 CursorMode: Normal RawMouseInput: Disabled
+[23:25:51][Debug][Window] Storing underlying OS video mode: Monitor: 0 2560x1440@144Hz (R8G8B8)
+[23:25:51][Debug][Window] Storing underlying OS video mode: Monitor: 1 1920x1080@144Hz (R8G8B8)
+[23:25:52][Info][Context][OpenGL] Initializing Context
+[23:25:52][Info][Renderer][OpenGL] Initializing Renderer
+[23:25:52][Info][Renderer][OpenGL] ----------------------------------
+[23:25:52][Info][Renderer][OpenGL] OpenGL:
+[23:25:52][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 436.48
+[23:25:52][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
+[23:25:52][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
+[23:25:52][Info][Renderer][OpenGL] ----------------------------------
+[23:25:52][Debug][Shader][OpenGL][GLSL] Compiling: "Passthrough"
+[23:25:52][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[23:25:52][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[23:25:52][Debug][Texture2D][OpenGL] Loading Texture: "Fallback2D"
+[23:25:52][Debug][TextureCube][OpenGL] Loading Texture: "FallbackCube"
+[23:25:52][Debug][LayerStack] Pushing Overlay: ImGuiLayer
+[23:25:52][Debug][LayerStack] Pushing Layer: Sandbox
+[23:25:52][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
+[23:25:52][Debug][Shader][OpenGL][GLSL] Compiling: "Color"
+[23:25:52][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[23:25:52][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[23:25:52][Debug][Shader][OpenGL][GLSL] Compiling: "Texture"
+[23:25:52][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[23:25:52][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[23:25:52][Debug][Shader][OpenGL][GLSL] Compiling: "TextureColor"
+[23:25:52][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[23:25:52][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[23:25:52][Debug][Shader][OpenGL][SPIR-V] Converting: "TextureColorSPIRV" to GLSL
+[23:25:52][Debug][Shader][OpenGL][GLSL] Compiling: "TextureColorSPIRV"
+[23:25:52][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[23:25:52][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[23:25:52][Info][VFS] Mounting VirtualPath: "/textures" to PhysicalPath: "Assets/Textures"
+[23:25:52][Debug][Texture2D][OpenGL] Loading Texture: "TRAP"
+[23:25:52][Debug][Image][TGA] Loading Image: "TRAPWhiteLogo2048x2048.tga"
+[23:25:55][Debug][Application] Shutting down TRAP Modules...
+[23:25:55][Debug][TextureManager] Destroying Textures
+[23:25:55][Debug][Texture2D][OpenGL] Destroying Texture2D: "Fallback2D"
+[23:25:55][Debug][TextureCube][OpenGL] Destroying TextureCube: "FallbackCube"
+[23:25:55][Debug][Texture2D][OpenGL] Destroying Texture2D: "TRAP"
+[23:25:55][Debug][ShaderManager] Destroying Shaders
+[23:25:55][Debug][Shader][OpenGL] Destroying Shader: "Passthrough"
+[23:25:55][Debug][Shader][OpenGL] Destroying Shader: "Color"
+[23:25:55][Debug][Shader][OpenGL] Destroying Shader: "Texture"
+[23:25:55][Debug][Shader][OpenGL] Destroying Shader: "TextureColor"
+[23:25:55][Debug][Shader][OpenGL] Destroying Shader: "TextureColorSPIRV"
+[23:25:55][Trace][Config] Width = 1280
+[23:25:55][Trace][Config] Height = 720
+[23:25:55][Trace][Config] RefreshRate = 144
+[23:25:55][Trace][Config] VSync = 0
+[23:25:55][Trace][Config] FPSLimit = 0
+[23:25:55][Trace][Config] DisplayMode = Windowed
+[23:25:55][Trace][Config] Monitor = 0
+[23:25:55][Trace][Config] RenderAPI = OpenGL
+[23:25:55][Trace][Config] HotShaderReloading = TRUE
+[23:25:55][Trace][Config] HotTextureReloading = TRUE
+[23:25:55][Trace][Config] Size: 10
+[23:25:55][Info][Config] Saving: Engine.cfg
+[23:25:55][Debug][VFS] Shutting down Virtual File System
+[23:25:55][Debug][LayerStack] Destroying Layer: Sandbox
+[23:25:55][Debug][LayerStack] Destroying Layer: ImGuiLayer
+[23:25:55][Debug][TextureManager] Destroying Textures
+[23:25:55][Debug][ShaderManager] Destroying Shaders
+[23:25:55][Debug][Renderer][OpenGL] Destroying Renderer
+[23:25:55][Debug][Context][OpenGL] Destroying Context
+[23:25:55][Debug][Window] Destroying Window: "Sandbox"
+[23:25:55][Info][Logger] Saving Log.txt

@@ -10,13 +10,6 @@
 #include "Logger.h"
 #include "GlslangToSpv.h"
 
-enum class ShaderLanguage
-{
-	Unknown = 0,
-	GLSL,
-	HLSL
-};
-
 enum class ShaderType
 {
 	Unknown = 0,
@@ -38,7 +31,6 @@ struct Shader
 {
 	std::string FilePath;
 	std::string Source;
-	ShaderLanguage Language;
 	std::array<SubShader, 6> SubShaderSources{};
 };
 
@@ -46,7 +38,6 @@ static bool s_glslangInitialized = false;
 
 bool FileOrFolderExists(const std::filesystem::path& path);
 std::string ReadTextFile(const std::filesystem::path& filePath);
-ShaderLanguage GetLanguage(const std::string& source);
 std::vector<std::string> GetLines(const std::string& string);
 std::vector<std::string> SplitString(const std::string& string, const std::string& delimiters);
 bool StartsWith(const std::string& string, const std::string& start);
@@ -86,26 +77,13 @@ int main(const int argc, char* argv[])
 
 		for(auto& shader : shaders)
 		{
-			if (shader.Language == ShaderLanguage::GLSL)
-			{
-				shader.SubShaderSources = PreProcessGLSL(shader);
-				if(CompileGLSLToSPIRV(shader))
-					SaveSPIRV(shader);					
-				else
-					std::cout << "Skipping File!" << '\n';
-
-				std::cout << '\n';
-			}
-			else if(shader.Language == ShaderLanguage::HLSL)
-			{
-				std::cout << "HLSL is unsupported for now!" << '\n';
-				std::cout << "Skipping File!" << '\n' << '\n';
-			}
+			shader.SubShaderSources = PreProcessGLSL(shader);
+			if(CompileGLSLToSPIRV(shader))
+				SaveSPIRV(shader);					
 			else
-			{
-				std::cout << "Unknown Shader Language!" << '\n';
-				std::cout << "Skipping File!" << '\n' << '\n';
-			}
+				std::cout << "Skipping File!" << '\n';
+
+			std::cout << '\n';
 		}
 	}
 	
@@ -142,38 +120,6 @@ std::string ReadTextFile(const std::filesystem::path& filePath)
 	std::cout << "Could not open File: " << filePath << '\n';
 	
 	return {};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-ShaderLanguage GetLanguage(const std::string& source)
-{
-	std::vector<std::string> lines = GetLines(source);
-	if (StartsWith(ToLower(lines[0]), "#language "))
-	{
-		if (FindToken(ToLower(lines[0]), "glsl"))
-		{
-			std::cout << "Found GLSL Shader!" << '\n' << '\n';
-			
-			return ShaderLanguage::GLSL;
-		}
-		if (FindToken(ToLower(lines[0]), "hlsl"))
-		{
-			std::cout << "Found HLSL Shader!" << '\n' << '\n';
-			
-			return ShaderLanguage::HLSL;
-		}
-		
-		std::cout << "Language Tag invalid!" << '\n';
-		std::cout << "Skipping file!" << '\n';
-
-		return ShaderLanguage::Unknown;
-	}
-	
-	std::cout << "Language Tag not found!"<< '\n';
-	std::cout << "Skipping file!" << '\n';
-
-	return ShaderLanguage::Unknown;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -292,18 +238,9 @@ std::vector<Shader> LoadShaderSources(const int argc, char* argv[])
 					std::string source = ReadTextFile(argv[i]);
 					if (!source.empty())
 					{
-						const ShaderLanguage type = GetLanguage(source);
-						if (type != ShaderLanguage::Unknown)
-						{
-							std::string newPath = argv[i];
-							newPath = newPath.substr(0, newPath.size() - 7);
-							shaders.push_back({ newPath, source, type });
-						}
-						else
-						{
-							std::cout << "Unknown ShaderType! Missing Language Tag?" << '\n';
-							std::cout << "Skipping File!" << '\n' << '\n';
-						}						
+						std::string newPath = argv[i];
+						newPath = newPath.substr(0, newPath.size() - 7);
+						shaders.push_back({ newPath, source });					
 					}
 					else
 					{
@@ -330,18 +267,9 @@ std::vector<Shader> LoadShaderSources(const int argc, char* argv[])
 							std::string source = ReadTextFile(file.path());
 							if (!source.empty())
 							{
-								const ShaderLanguage type = GetLanguage(source);
-								if (type != ShaderLanguage::Unknown)
-								{
-									std::string newPath = file.path().string();
-									newPath = newPath.substr(0, newPath.size() - 7);
-									shaders.push_back({ newPath, source, type });
-								}
-								else
-								{
-									std::cout << "Unknown ShaderType! Missing Language Tag?" << '\n';
-									std::cout << "Skipping File!" << '\n' << '\n';
-								}
+								std::string newPath = file.path().string();
+								newPath = newPath.substr(0, newPath.size() - 7);
+								shaders.push_back({ newPath, source });
 							}
 							else
 							{
@@ -381,47 +309,70 @@ std::array<SubShader, 6> PreProcessGLSL(Shader& shader)
 		if (StartsWith(ToLower(lines[i]), "#shader"))
 		{
 			if (FindToken(ToLower(lines[i]), "vertex"))
-			{
 				type = ShaderType::Vertex;
-				GLSLShaderSources[0].append("#version 460 core\n");
-			}
-			else if (FindToken(ToLower(lines[i]), "fragment") || FindToken(ToLower(lines[i]), "pixel"))
-			{
+			else if (FindToken(ToLower(lines[i]), "fragment"))
 				type = ShaderType::Fragment;
-				GLSLShaderSources[1].append("#version 460 core\n");
-			}
 			else if (FindToken(ToLower(lines[i]), "geometry"))
-			{
 				type = ShaderType::Geometry;
-				GLSLShaderSources[2].append("#version 460 core\n");
-			}
 			else if (FindToken(ToLower(lines[i]), "tessellation"))
 			{
 				if (FindToken(ToLower(lines[i]), "control"))
-				{
 					type = ShaderType::Tessellation_Control;
-					GLSLShaderSources[3].append("#version 460 core\n");
-				}
 				else if (FindToken(ToLower(lines[i]), "evaluation"))
-				{
 					type = ShaderType::Tessellation_Evaluation;
-					GLSLShaderSources[4].append("#version 460 core\n");
-				}
 			}
 			else if (FindToken(ToLower(lines[i]), "compute"))
-			{
 				type = ShaderType::Compute;
-				GLSLShaderSources[5].append("#version 460 core\n");
-			}
 		}
 		else if (StartsWith(ToLower(lines[i]), "#version"))
-		{
 			std::cout << "[GLSL] Found Tag: \"" << lines[i] << "\" this is unnecessary! Skipping Line: " << i;
-		}
 		else if (type != ShaderType::Unknown)
 		{
 			GLSLShaderSources[static_cast<int32_t>(type) - 1].append(lines[i]);
 			GLSLShaderSources[static_cast<int32_t>(type) - 1].append("\n");
+		}
+	}
+
+	for (uint32_t i = 0; i < GLSLShaderSources.size(); i++)
+	{
+		if (!GLSLShaderSources[i].empty())
+		{
+			if (ToLower(GLSLShaderSources[i]).find("main") == std::string::npos)
+			{
+				switch(static_cast<ShaderType>(i + 1))
+				{
+				case ShaderType::Vertex:
+					std::cout << "[GLSL] Vertex Shader: Couldn't find \"main\" function!" << '\n';
+					break;
+
+				case ShaderType::Fragment:
+					std::cout << "[GLSL] Fragment Shader: Couldn't find \"main\" function!" << '\n';
+					break;
+
+				case ShaderType::Geometry:
+					std::cout << "[GLSL] Geometry Shader: Couldn't find \"main\" function!" << '\n';
+					break;
+
+				case ShaderType::Tessellation_Control:
+					std::cout << "[GLSL] Tessellation Control Shader: Couldn't find \"main\" function!" << '\n';
+					break;
+
+				case ShaderType::Tessellation_Evaluation:
+					std::cout << "[GLSL] Tessellation Evaluation Shader: Couldn't find \"main\" function!" << '\n';
+					break;
+
+				case ShaderType::Compute:
+					std::cout << "[GLSL] Compute Shader: Couldn't find \"main\" function!" << '\n';
+					break;
+					
+				default:
+					break;
+				}
+				
+				GLSLShaderSources[i] = "";
+			}
+			else //Found main function
+				GLSLShaderSources[i] = "#version 460 core\n" + GLSLShaderSources[i];
 		}
 	}
 
@@ -803,7 +754,7 @@ void SaveSPIRV(Shader& shader)
 		{
 			if(!subShader.SPIRV.empty())
 			{
-				uint32_t SPIRVSize = subShader.SPIRV.size();
+				uint32_t SPIRVSize = static_cast<uint32_t>(subShader.SPIRV.size());
 				uint32_t type = static_cast<uint32_t>(subShader.Type);
 
 				file.write(reinterpret_cast<char*>(&SPIRVSize), sizeof(uint32_t));

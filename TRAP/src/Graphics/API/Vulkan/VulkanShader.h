@@ -36,9 +36,7 @@ namespace TRAP::Graphics::API
 		const std::string& GetFilePath() const override;
 
 	private:
-		void CheckLanguage(const std::string& source);
 		void InitSPIRV(std::vector<uint32_t>& source);
-		void InitHLSL(const std::string& source);
 		void InitGLSL(const std::string& source);
 		void InitGLSL(std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource);
 		

@@ -517,3 +517,6 @@ SITREP 10/13/2019|19w41a4
     - Texture Optimized RAM usage ~>45 mins
     - Refactored OpenGLTexture2D ~>25 mins
     - KeyPressedEvent Added actually counting the amount of key repeats ~>15 mins
+    - Removed EmptyImage class ~<20 mins
+    - Shaders Removed language tag and HLSL support ~>20 mins
+    - Shaders Fixed some edge cases in *.shader parsing ~>40 mins

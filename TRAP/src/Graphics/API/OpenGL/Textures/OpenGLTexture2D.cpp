@@ -39,19 +39,38 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const ImageFormat format, 
 		OpenGLCall(glGetIntegerv(GL_MAX_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxTextureSize)));
 	}
 
-	Scope<Image> image;
 	if (width > s_maxTextureSize || height > s_maxTextureSize)
 	{
 		TP_CRITICAL("[Texture2D][OpenGL] Texture: \"", m_name, "\" Width: ", width, " or Height: ", height, " is bigger than the maximum allowed texture size(", s_maxTextureSize, ")!");
 		TP_WARN("[Texture2D][OpenGL] Using Default Image!");
-		image = Image::LoadFallback();
+		const Scope<Image> image = Image::LoadFallback();
+		OpenGLCall(glTextureStorage2D(m_handle, 1, TRAPImageFormatToOpenGLPrecise(image->GetFormat(), image->GetBytesPerPixel()), image->GetWidth(), image->GetHeight()));
+		return;
 	}
-	else
-		image = Image::CreateEmpty(format, width, height);
 
 	InitializeTexture();
 
-	OpenGLCall(glTextureStorage2D(m_handle, 1, TRAPImageFormatToOpenGLPrecise(image->GetFormat(), image->GetBytesPerPixel()), image->GetWidth(), image->GetHeight()));
+	switch (format)
+	{
+	case ImageFormat::Gray_Scale:
+		OpenGLCall(glTextureStorage2D(m_handle, 1, TRAPImageFormatToOpenGLPrecise(format, 1), width, height));
+		break;
+
+	case ImageFormat::Gray_Scale_Alpha:
+		OpenGLCall(glTextureStorage2D(m_handle, 1, TRAPImageFormatToOpenGLPrecise(format, 2), width, height));
+		break;
+
+	case ImageFormat::RGB:
+		OpenGLCall(glTextureStorage2D(m_handle, 1, TRAPImageFormatToOpenGLPrecise(format, 3), width, height));
+		break;
+
+	case ImageFormat::RGBA:
+		OpenGLCall(glTextureStorage2D(m_handle, 1, TRAPImageFormatToOpenGLPrecise(format, 4), width, height));
+		break;
+
+	default:
+		break;
+	}	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

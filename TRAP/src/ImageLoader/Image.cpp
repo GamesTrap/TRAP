@@ -12,7 +12,6 @@
 #include "PortableMaps/PFMImage.h"
 #include "TARGA/TGAImage.h"
 #include "Bitmap/BMPImage.h"
-#include "EmptyImage.h"
 
 std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
@@ -353,11 +352,4 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
 TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
 {
 	return MakeScope<INTERNAL::DefaultImage>("");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Scope<TRAP::Image> TRAP::Image::CreateEmpty(ImageFormat format, uint32_t width, uint32_t height)
-{
-	return MakeScope<INTERNAL::EmptyImage>(format, width, height);
 }
