@@ -105,6 +105,7 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 			std::string error;
 			if (!path.empty())
 			{
+				s_Shaders[nameOrVirtualPath]->Unbind();
 				s_Shaders[nameOrVirtualPath].reset();
 				s_Shaders[nameOrVirtualPath] = Shader::CreateFromFile(nameOrVirtualPath, path);
 				TP_INFO("[ShaderManager] Reloaded: \"", nameOrVirtualPath, "\"");

@@ -2,7 +2,7 @@
 #define _TRAP_INPUT_H_
 
 #include "Utils/Singleton.h"
-#include "Maths/Maths.h"
+#include "Maths/Math.h"
 
 namespace TRAP
 {

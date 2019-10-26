@@ -4,6 +4,8 @@
 #include "Utils/String.h"
 #include "VFS/VFS.h"
 #include "VFS/FileSystem.h"
+#include "Application.h"
+#include "Utils/ByteSwap.h"
 
 TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_isImageGrayScale(false), m_isImageColored(false), m_hasAlphaChannel(false), m_width(0), m_height(0), m_format(ImageFormat::NONE)
@@ -39,8 +41,7 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 			std::string TuplType = "";
 		} header;
 		file >> header.MagicNumber >> tempTrash >> header.Width >> tempTrash >> header.Height >> tempTrash >> header.Depth >> tempTrash >> header.MaxValue >> tempTrash >> header.TuplType >> tempTrash;
-		file.ignore(256, '\n'); //Skip ahead to the pixel data.
-
+		
 		if (header.MagicNumber != "P7")
 		{
 			file.close();
@@ -76,9 +77,11 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 			TP_WARN("[Image][PAM] Using Default Image!");
 			return;
 		}
-
+		
 		m_width = header.Width;
 		m_height = header.Height;
+		
+		file.ignore(256, '\n'); //Skip ahead to the pixel data.
 
 		if(header.MaxValue > 255)
 		{
@@ -122,6 +125,13 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 				TP_WARN("[Image][PAM] Using Default Image!");
 				return;
 			}
+
+			//File uses big-endian
+			//Convert to machines endian
+			bool needSwap = static_cast<bool>(Application::GetEndian() != Application::Endian::Big);
+			if (needSwap)
+				for (uint16_t& element : m_data2Byte)
+					Utils::Memory::SwapBytes(element);
 		}
 		else
 		{
@@ -224,13 +234,6 @@ uint32_t TRAP::INTERNAL::PAMImage::GetHeight() const
 bool TRAP::INTERNAL::PAMImage::HasAlphaChannel() const
 {
 	return m_hasAlphaChannel;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PAMImage::IsImageCompressed() const
-{
-	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

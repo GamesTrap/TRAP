@@ -4,6 +4,8 @@
 #include "Utils/String.h"
 #include "VFS/VFS.h"
 #include "VFS/FileSystem.h"
+#include "Application.h"
+#include "Utils/ByteSwap.h"
 
 TRAP::INTERNAL::PGMImage::PGMImage(std::string filepath)
 	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_width(0), m_height(0)
@@ -31,12 +33,11 @@ TRAP::INTERNAL::PGMImage::PGMImage(std::string filepath)
 		struct Header
 		{
 			std::string MagicNumber = "";
-			std::uint32_t Width = 0;
-			std::uint32_t Height = 0;
-			std::uint32_t MaxValue = 255;
+			uint32_t Width = 0;
+			uint32_t Height = 0;
+			uint32_t MaxValue = 255;
 		} header;
 		file >> header.MagicNumber >> header.Width >> header.Height >> header.MaxValue;
-		file.ignore(256, '\n'); //Skip ahead to the pixel data.
 
 		if (!(header.MagicNumber == "P2" || header.MagicNumber == "P5"))
 		{
@@ -70,6 +71,8 @@ TRAP::INTERNAL::PGMImage::PGMImage(std::string filepath)
 		m_width = header.Width;
 		m_height = header.Height;
 
+		file.ignore(256, '\n'); //Skip ahead to the pixel data.
+
 		if(header.MaxValue > 255)
 		{
 			m_bitsPerPixel = 16;
@@ -82,6 +85,13 @@ TRAP::INTERNAL::PGMImage::PGMImage(std::string filepath)
 				TP_WARN("[Image][PGM] Using Default Image!");
 				return;
 			}
+
+			//File uses big-endian
+			//Convert to machines endian
+			bool needSwap = static_cast<bool>(Application::GetEndian() != Application::Endian::Big);
+			if (needSwap)
+				for (uint16_t& element : m_data2Byte)
+					Utils::Memory::SwapBytes(element);
 		}
 		else
 		{
@@ -152,13 +162,6 @@ uint32_t TRAP::INTERNAL::PGMImage::GetHeight() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::PGMImage::HasAlphaChannel() const
-{
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PGMImage::IsImageCompressed() const
 {
 	return false;
 }

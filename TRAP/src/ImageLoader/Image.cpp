@@ -12,6 +12,7 @@
 #include "PortableMaps/PFMImage.h"
 #include "TARGA/TGAImage.h"
 #include "Bitmap/BMPImage.h"
+#include "PortableNetworkGraphics/PNGImage.h"
 
 std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
@@ -333,6 +334,8 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
 		result = MakeScope<INTERNAL::TGAImage>(virtualFilePath);
 	else if (fileFormat == "bmp" || fileFormat == "dib")
 		result = MakeScope<INTERNAL::BMPImage>(virtualFilePath);
+	else if (fileFormat == "png")
+		result = MakeScope<INTERNAL::PNGImage>(virtualFilePath);
 	else
 	{
 		TP_ERROR("[Image] Unsupported or unknown Image Format!");

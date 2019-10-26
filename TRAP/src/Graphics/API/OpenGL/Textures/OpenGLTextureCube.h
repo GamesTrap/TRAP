@@ -39,7 +39,7 @@ namespace TRAP::Graphics::API
 
 		bool CheckImageSize(const Scope<Image>& image) const;
 		void InitializeTexture();
-		
+
 		uint32_t m_handle;
 		std::string m_name;
 		std::array<std::string, 6> m_filePaths;

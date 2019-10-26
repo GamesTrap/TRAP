@@ -4,26 +4,8 @@
 #include "Utils/String.h"
 #include "VFS/VFS.h"
 #include "VFS/FileSystem.h"
-
-namespace TRAP::INTERNAL
-{
-	//Check whether machine is little endian
-	int32_t LittleEndian()
-	{
-		int32_t intVal = 1;
-		uint8_t* uVal = reinterpret_cast<uint8_t*>(&intVal);
-		return uVal[0] == 1;
-	}
-
-	//If endianness doesn't agree, swap bytes
-	void SwapBytes(float& f)
-	{
-		uint8_t* ptr = reinterpret_cast<uint8_t*>(&f);
-		uint8_t temp = 0;
-		temp = ptr[0]; ptr[0] = ptr[3]; ptr[3] = temp;
-		temp = ptr[1]; ptr[1] = ptr[2]; ptr[2] = temp;
-	}
-}
+#include "Application.h"
+#include "Utils/ByteSwap.h"
 
 TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_isImageGrayScale(false), m_isImageColored(false), m_width(0), m_height(0), m_format(ImageFormat::NONE)
@@ -48,6 +30,7 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 			return;
 		}
 
+		//Read in file header
 		struct Header
 		{
 			std::string MagicNumber = "";
@@ -56,9 +39,9 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 			float ByteOrder = 0.0f;
 		} header;
 		file >> header.MagicNumber >> header.Width >> header.Height >> header.ByteOrder;
-		file.ignore(256, '\n'); //Skip ahead to the pixel data.
-
-		if (!(header.MagicNumber == "PF" || header.MagicNumber == "Pf"))
+		
+		//Do error/specification checking
+		if (header.MagicNumber != "PF" && header.MagicNumber != "Pf")
 		{
 			file.close();
 			TP_ERROR("[Image][PFM] Invalid Magic Number!");
@@ -80,33 +63,34 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 			return;
 		}
 
-		//Determine endianness
-		int32_t littleEndianFile = (header.ByteOrder < 0.0f);
-		int32_t littleEndianMachine = LittleEndian();
-		bool needSwap = littleEndianFile != littleEndianMachine;
-
 		m_width = header.Width;
 		m_height = header.Height;
+		
+		//Determine endianess
+		bool isFileLittleEndian = (header.ByteOrder < 0.0f); //If true little-endian is used else if false big-endian is used
+		bool needSwap = isFileLittleEndian != static_cast<bool>(Application::GetEndian());
+		
+		file.ignore(256, '\n'); //Skip ahead to the pixel data	
 
-		if(header.MagicNumber == "PF")
+		if (header.MagicNumber == "PF")
 		{
 			//RGB
 			m_format = ImageFormat::RGB;
 			m_isImageColored = true;
 			m_bitsPerPixel = 96;
-			m_data.resize(m_width* m_height * 3);
+			m_data.resize(m_width * m_height * 3);
 			if (!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * 3 * sizeof(float)))
 			{
 				file.close();
 				m_data.clear();
-				TP_ERROR("[Image][PAM] Couldn't load pixel data!");
-				TP_WARN("[Image][PAM] Using Default Image!");
+				TP_ERROR("[Image][PFM] Couldn't load pixel data!");
+				TP_WARN("[Image][PFM] Using Default Image!");
 				return;
 			}
 
 			if (needSwap)
 				for (float& element : m_data)
-					SwapBytes(element);
+					Utils::Memory::SwapBytes(element);
 		}
 		else if(header.MagicNumber == "Pf")
 		{
@@ -119,14 +103,14 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 			{
 				file.close();
 				m_data.clear();
-				TP_ERROR("[Image][PAM] Couldn't load pixel data!");
-				TP_WARN("[Image][PAM] Using Default Image!");
+				TP_ERROR("[Image][PFM] Couldn't load pixel data!");
+				TP_WARN("[Image][PFM] Using Default Image!");
 				return;
 			}
 
 			if (needSwap)
 				for (float& element : m_data)
-					SwapBytes(element);
+					Utils::Memory::SwapBytes(element);
 		}
 
 		file.close();
@@ -178,13 +162,6 @@ uint32_t TRAP::INTERNAL::PFMImage::GetHeight() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::PFMImage::HasAlphaChannel() const
-{
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PFMImage::IsImageCompressed() const
 {
 	return false;
 }

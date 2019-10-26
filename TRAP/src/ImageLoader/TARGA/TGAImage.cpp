@@ -4,6 +4,8 @@
 #include "Utils/String.h"
 #include "VFS/VFS.h"
 #include "VFS/FileSystem.h"
+#include "Application.h"
+#include "Utils/ByteSwap.h"
 
 TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 	: m_filepath(std::move(filepath)),
@@ -12,7 +14,6 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 	m_height(0),
 	m_isImageGrayScale(false),
 	m_isImageColored(false),
-	m_isImageCompressed(false),
 	m_hasAlphaChannel(false),
 	m_imageFormat(ImageFormat::NONE)
 {
@@ -67,6 +68,19 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 		file.read(reinterpret_cast<char*>(&header.Height), 2);
 		file.read(reinterpret_cast<char*>(&header.BitsPerPixel), 1);
 		file.read(reinterpret_cast<char*>(&header.ImageDescriptor), 1);
+
+		//File uses little-endian
+		//Convert to machines endian
+		bool needSwap = static_cast<bool>(Application::GetEndian() != Application::Endian::Little);
+		if (needSwap)
+		{
+			Utils::Memory::SwapBytes(header.ColorMapOffset);
+			Utils::Memory::SwapBytes(header.NumOfColorMaps);
+			Utils::Memory::SwapBytes(header.XOffset);
+			Utils::Memory::SwapBytes(header.YOffset);
+			Utils::Memory::SwapBytes(header.Width);
+			Utils::Memory::SwapBytes(header.Height);
+		}
 
 		struct ColorMapData
 		{
@@ -190,7 +204,6 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 		case 9:
 		{
 			m_isImageColored = true;
-			m_isImageCompressed = true;
 			if (header.BitsPerPixel > 8)
 			{
 				file.close();
@@ -238,7 +251,6 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 		{
 			m_isImageGrayScale = true;
 			m_imageFormat = ImageFormat::Gray_Scale;
-			m_isImageCompressed = true;
 			if (header.BitsPerPixel == 8)
 				m_data = DecodeRLEGrayScale(colorMapData.ImageData, header.Width, header.Height);
 			if (header.BitsPerPixel > 8)
@@ -394,13 +406,6 @@ uint32_t TRAP::INTERNAL::TGAImage::GetHeight() const
 bool TRAP::INTERNAL::TGAImage::HasAlphaChannel() const
 {
 	return m_hasAlphaChannel;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::TGAImage::IsImageCompressed() const
-{
-	return m_isImageCompressed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

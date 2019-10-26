@@ -4,7 +4,9 @@
 #include "Utils/String.h"
 #include "VFS/VFS.h"
 #include "VFS/FileSystem.h"
-#include "Maths/Maths.h"
+#include "Maths/Math.h"
+#include "Application.h"
+#include "Utils/ByteSwap.h"
 
 TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 	: m_filepath(std::move(filepath)),
@@ -14,7 +16,6 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 	m_format(ImageFormat::NONE),
 	m_isImageColored(false),
 	m_isImageGrayScale(false),
-	m_isImageCompressed(false),
 	m_hasAlphaChannel(false)
 {
 	TP_DEBUG("[Image][BMP] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
@@ -47,6 +48,16 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		file.read(reinterpret_cast<char*>(&header.Size), sizeof(uint32_t));
 		file.ignore(4);
 		file.read(reinterpret_cast<char*>(&header.DataOffset), sizeof(uint32_t));
+
+		//File uses little-endian
+		//Convert to machines endian
+		bool needSwap = static_cast<bool>(Application::GetEndian() != Application::Endian::Little);
+		if (needSwap)
+		{
+			Utils::Memory::SwapBytes(header.MagicNumber);
+			Utils::Memory::SwapBytes(header.Size);
+			Utils::Memory::SwapBytes(header.DataOffset);
+		}
 
 		if (header.MagicNumber != 0x4D42)
 		{
@@ -82,6 +93,17 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		file.read(reinterpret_cast<char*>(&infoHeader.CLRUsed), sizeof(uint32_t));
 		file.ignore(4);
 
+		if (needSwap)
+		{
+			Utils::Memory::SwapBytes(infoHeader.Size);
+			Utils::Memory::SwapBytes(infoHeader.Width);
+			Utils::Memory::SwapBytes(infoHeader.Height);
+			Utils::Memory::SwapBytes(infoHeader.BitsPerPixel);
+			Utils::Memory::SwapBytes(infoHeader.Compression);
+			Utils::Memory::SwapBytes(infoHeader.SizeImage);
+			Utils::Memory::SwapBytes(infoHeader.CLRUsed);
+		}
+		
 		std::array<uint32_t, 4> masks{};
 		if(infoHeader.Compression == 3) //BitFields
 		{
@@ -97,6 +119,14 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			file.read(reinterpret_cast<char*>(&masks[1]), sizeof(uint32_t));
 			file.read(reinterpret_cast<char*>(&masks[2]), sizeof(uint32_t));
 			file.read(reinterpret_cast<char*>(&masks[3]), sizeof(uint32_t));
+
+			if (needSwap)
+			{
+				Utils::Memory::SwapBytes(masks[0]);
+				Utils::Memory::SwapBytes(masks[1]);
+				Utils::Memory::SwapBytes(masks[2]);
+				Utils::Memory::SwapBytes(masks[3]);
+			}
 		}		
 
 		if (infoHeader.Width < 1)
@@ -288,7 +318,6 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		}
 		else if (infoHeader.Compression == 3) //BitFields
 		{
-			m_isImageCompressed = true;
 			m_isImageColored = true;
 			m_hasAlphaChannel = true;
 			m_format = ImageFormat::RGBA;
@@ -426,13 +455,6 @@ uint32_t TRAP::INTERNAL::BMPImage::GetHeight() const
 bool TRAP::INTERNAL::BMPImage::HasAlphaChannel() const
 {
 	return m_hasAlphaChannel;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::BMPImage::IsImageCompressed() const
-{
-	return m_isImageCompressed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

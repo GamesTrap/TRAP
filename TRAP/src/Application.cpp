@@ -30,6 +30,11 @@ TRAP::Application::Application()
 	TRAP_CORE_ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
 
+	//Check if machine is using little-endian or big-endian
+	int32_t intVal = 1;
+	uint8_t* uVal = reinterpret_cast<uint8_t*>(&intVal);
+	m_endian = static_cast<Endian>(uVal[0] == 1);
+
 	VFS::Init();
 	if (!m_config.LoadFromFile("Engine.cfg"))
 		TP_INFO("[Config] Using default values");
@@ -360,6 +365,13 @@ const std::unique_ptr<TRAP::Window>& TRAP::Application::GetWindow()
 TRAP::Utils::TimeStep TRAP::Application::GetTime()
 {
 	return Get().GetTimeInternal();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Application::Endian TRAP::Application::GetEndian()
+{
+	return Get().m_endian;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

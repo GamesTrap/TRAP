@@ -126,13 +126,17 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 TRAP::Graphics::API::OpenGLTextureCube::~OpenGLTextureCube()
 {
 	TP_DEBUG("[TextureCube][OpenGL] Destroying TextureCube: \"", m_name, "\"");
-	OpenGLCall(glDeleteTextures(1, &m_handle));
+	
+	if(m_handle)
+	{
+		OpenGLCall(glDeleteTextures(1, &m_handle));		
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLTextureCube::Bind(const uint32_t slot) const
-{
+{	
 	if (s_boundCubeTextures[slot] != this)
 	{
 		if (slot < s_maxCombinedTextureUnits)

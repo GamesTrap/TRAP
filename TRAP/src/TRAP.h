@@ -29,7 +29,8 @@
 //----------------------
 
 //----MATHS-------------
-#include "Maths/Maths.h"
+#include "Maths/MathFunctions.h"
+#include "Maths/Math.h"
 //----------------------
 
 //----RENDERER----------

@@ -36,6 +36,9 @@
 #include <GLFW/glfw3.h>
 #include <spirv_glsl.hpp>
 
+#include <zbuild.h>
+#include <zlib-ng.h>
+
 #include <imgui.h>
 
 #include "Core.h"
@@ -47,6 +50,8 @@
 #include "Utils/Win.h"
 
 #undef far
+#undef min
+#undef max
 #endif
 
 #endif /*_TRAP_TRAPPCH_H_*/

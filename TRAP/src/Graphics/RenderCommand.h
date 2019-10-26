@@ -3,7 +3,6 @@
 
 #include "Graphics/Buffers/VertexArray.h"
 #include "Graphics/API/RendererAPI.h"
-#include "Maths/Maths.h"
 
 namespace TRAP::Graphics
 {

@@ -10,3 +10,6 @@
 [submodule "Dependencies/SPIRV-Cross"]
 	path = Dependencies/SPIRV-Cross
 	url = https://github.com/GamesTrap/SPIRV-Cross.git
+[submodule "Dependencies/zlib-ng"]
+	path = Dependencies/zlib-ng
+	url = https://github.com/GamesTrap/zlib-ng.git

@@ -43,7 +43,7 @@ public:
 
 		//Mount & Load Textures
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
-		TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.tga");
+		TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png");
 
 		///////////////
 		//    Quad   //
@@ -84,7 +84,6 @@ public:
 		UniformData data{ TRAP::Application::GetTime() };
 		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("ColorBuffer", &data, sizeof(UniformData), TRAP::Graphics::BufferUsage::Dynamic);
 
-		TRAP::Graphics::TextureManager::Get2D("TRAP")->Bind();
 		m_uniformBuffer->Bind(1);
 	}
 
@@ -113,9 +112,10 @@ public:
 				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray);
 			else
 			{
+				TRAP::Graphics::TextureManager::Get2D("TRAP")->Bind(0);
 				float time = TRAP::Application::GetTime();
 				m_uniformBuffer->UpdateData(&time);
-				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColorSPIRV"), m_vertexArray);
+				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColor"), m_vertexArray);
 			}
 		}
 		TRAP::Graphics::Renderer::EndScene();

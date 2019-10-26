@@ -2,7 +2,7 @@
 #include "OpenGLTexture2D.h"
 
 #include "Graphics/API/OpenGL/OpenGLCommon.h"
-#include "Maths/Maths.h"
+#include "Maths/Math.h"
 #include "Graphics/Textures/TextureManager.h"
 #include "VFS/VFS.h"
 
@@ -86,13 +86,17 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const st
 TRAP::Graphics::API::OpenGLTexture2D::~OpenGLTexture2D()
 {
 	TP_DEBUG("[Texture2D][OpenGL] Destroying Texture2D: \"", m_name, "\"");
-	OpenGLCall(glDeleteTextures(1, &m_handle));
+	
+	if(m_handle)
+	{
+		OpenGLCall(glDeleteTextures(1, &m_handle));		
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLTexture2D::Bind(const uint32_t slot) const
-{
+{	
 	if (s_bound2DTextures[slot] != this)
 	{
 		if (slot < s_maxCombinedTextureUnits)

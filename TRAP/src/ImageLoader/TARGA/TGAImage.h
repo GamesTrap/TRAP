@@ -18,7 +18,6 @@ namespace TRAP::INTERNAL
 		uint32_t GetWidth() const override;
 		uint32_t GetHeight() const override;
 		bool HasAlphaChannel() const override;
-		bool IsImageCompressed() const override;
 		bool IsImageGrayScale() const override;
 		bool IsImageColored() const override;
 		bool IsHDR() const override;
@@ -32,7 +31,6 @@ namespace TRAP::INTERNAL
 		uint32_t m_height;
 		bool m_isImageGrayScale;
 		bool m_isImageColored;
-		bool m_isImageCompressed;
 		bool m_hasAlphaChannel;
 		ImageFormat m_imageFormat;
 		std::vector<uint8_t> m_data;

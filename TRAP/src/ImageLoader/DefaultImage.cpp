@@ -58,13 +58,6 @@ bool TRAP::INTERNAL::DefaultImage::HasAlphaChannel() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::DefaultImage::IsImageCompressed() const
-{
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 bool TRAP::INTERNAL::DefaultImage::IsImageGrayScale() const
 {
 	return false;

@@ -14,8 +14,14 @@
 namespace TRAP
 {
 	class Application : public Singleton
-	{
+	{		
 	public:
+		enum class Endian
+		{
+			Little = 1,
+			Big = 0
+		};
+		
 		Application();
 		Application(const Application&) = delete;
 		Application& operator=(const Application&) = delete;
@@ -45,6 +51,7 @@ namespace TRAP
 		static Application& Get();
 		static const std::unique_ptr<Window>& GetWindow();
 		static Utils::TimeStep GetTime();
+		static Endian GetEndian();
 
 		void ReCreateWindow(Graphics::API::RenderAPI renderAPI);
 		void ReCreate(Graphics::API::RenderAPI renderAPI);
@@ -70,6 +77,8 @@ namespace TRAP
 		uint32_t m_fpsLimit;
 		uint32_t m_tickRate;
 
+		Endian m_endian;
+		
 		static Application* s_Instance;
 	};
 

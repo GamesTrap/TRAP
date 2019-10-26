@@ -29,11 +29,13 @@ IncludeDir["HLSL"] = "Dependencies/GLSLang/hlsl"
 IncludeDir["SPIRV"] = "Dependencies/GLSLang/SPIRV"
 IncludeDir["STANDALONE"] = "Dependencies/GLSLang/StandAlone"
 IncludeDir["SPIRVCROSS"] = "Dependencies/SPIRV-Cross"
+IncludeDir["ZLIB"] = "Dependencies/zlib-ng"
 
 group "Dependencies"
 	include "Dependencies/GLFW"
 	include "Dependencies/GLAD"
 	include "Dependencies/ImGui"
+	include "Dependencies/ZLib-NG"
 	group "Dependencies/GLSLang"
 		include "Dependencies/GLSLang/SPIRV"
 		include "Dependencies/GLSLang/StandAlone"
@@ -90,7 +92,8 @@ project "TRAP"
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
 		"%{IncludeDir.STANDALONE}",
-		"%{IncludeDir.SPIRVCROSS}"
+		"%{IncludeDir.SPIRVCROSS}",
+		"%{IncludeDir.ZLIB}"
 	}
 
 	filter "system:windows"
@@ -123,7 +126,8 @@ project "TRAP"
 			"StandAlone",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL"
+			"SPIRV-Cross-HLSL",
+			"ZLib-NG"
 		}
 
 	filter "system:linux"
@@ -165,7 +169,8 @@ project "TRAP"
 			"vulkan",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL"
+			"SPIRV-Cross-HLSL",
+			"ZLib-NG"
 		}
 
 	filter "system:macosx"
@@ -196,6 +201,7 @@ project "TRAP"
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
 			"SPIRV-Cross-HLSL",
+			"ZLib-NG",
 
 			"c++fs"
 		}
@@ -242,7 +248,8 @@ project "Sandbox"
 		"%{IncludeDir.SPIRV}",
 		"%{IncludeDir.STANDALONE}",
 		"%{IncludeDir.VULKAN}/Include/",
-		"%{IncludeDir.SPIRVCROSS}"
+		"%{IncludeDir.SPIRVCROSS}",
+		"%{IncludeDir.ZLIB}"
 	}
 
 	links
@@ -269,7 +276,8 @@ project "Sandbox"
 			"OSDependent",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL"
+			"SPIRV-Cross-HLSL",
+			"ZLib-NG"
 		}
 
 	filter "system:macosx"
@@ -287,6 +295,7 @@ project "Sandbox"
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
 			"SPIRV-Cross-HLSL",
+			"ZLib-NG",
 
 			"c++fs"
 		}

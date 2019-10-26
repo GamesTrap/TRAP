@@ -24,8 +24,8 @@ namespace TRAP::Graphics::API
 		std::string GetFilePath() const override;
 		TextureParameters GetParameters() override;
 
-		void SetWrap(const TextureWrap wrap) override;
-		void SetFilter(const TextureFilter filter) override;
+		void SetWrap(TextureWrap wrap) override;
+		void SetFilter(TextureFilter filter) override;
 
 		InputFormat GetInputFormat() const override;
 		std::array<std::string, 6> GetFilePaths() const override;

@@ -5,7 +5,7 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "D3D12Context.h"
-#include "Maths/Maths.h"
+#include "Maths/Math.h"
 
 namespace TRAP::Graphics::API
 {

@@ -48,7 +48,6 @@ namespace TRAP
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0;
 		virtual bool HasAlphaChannel() const = 0;
-		virtual bool IsImageCompressed() const = 0;
 		virtual bool IsImageGrayScale() const = 0;
 		virtual bool IsImageColored() const = 0;
 		virtual bool IsHDR() const = 0;

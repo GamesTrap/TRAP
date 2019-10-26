@@ -520,3 +520,28 @@ SITREP 10/13/2019|19w41a4
     - Removed EmptyImage class ~<20 mins
     - Shaders Removed language tag and HLSL support ~>20 mins
     - Shaders Fixed some edge cases in *.shader parsing ~>40 mins
+
+SITREP 10/15/2019|19w42a2
+    - Changed TRAP Engine version to 19w42a2(0.5.51)
+    - Images started caring about endian correctness ~>45 mins
+    - Worked on PNG Image File Format ~>20 mins
+
+SITREP 10/18/2019|19w42a3
+    - Changed TRAP Engine version to 19w42a3(0.5.52)
+    - Finished caring about endian correctness ~>60 mins
+
+SITREP 10/19/2019|19w42a4
+    - Changed TRAP Engine version to 19w42a4(0.5.53)
+    - Worked on PNG Image File Format ~>45 mins
+
+SITREP 10/21/2019|19w43a1
+    - Changed TRAP Engine version to 19w42a5(0.5.54)
+    - PNG Finished loading of all chunks ~>100 mins
+    - PNG Finished CRC Checking ~>20 mins
+    - Started working on PNG Decompression ~> 20 mins
+
+SITREP 10/26/2019|19w43a2
+    - Changed TRAP Engine version to 19w42a5(0.5.55)
+    - Added zlib to Inflate PNG Image Data ~>40 mins
+    - Disabled warnings from all submodules ~>20 mins
+    - Added Unfinished PNG Loader ~>120 mins
