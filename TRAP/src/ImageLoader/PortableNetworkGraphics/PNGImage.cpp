@@ -7,6 +7,8 @@
 #include "Application.h"
 #include "Utils/ByteSwap.h"
 #include "Utils/Hash/CRC32.h"
+#include "Utils/Decompress/Inflate.h"
+#include "Utils/Hash/Adler32.h"
 
 TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 	: m_filepath(std::move(filepath)),
@@ -213,10 +215,9 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			decompressedData.resize(expectedSize);
 		}
 
-		if (DecompressData(data.CompressedData.data(), static_cast<uint32_t>(data.CompressedData.size()), decompressedData.data(), static_cast<uint32_t>(decompressedData.size())) < 1)
+		if (!DecompressData(data.CompressedData.data(), static_cast<uint32_t>(data.CompressedData.size()), decompressedData.data(), static_cast<uint32_t>(decompressedData.size()), needSwap))
 		{
-			TP_ERROR("[Image][PNG] Decompression Failed!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			decompressedData.clear();
 			return;
 		}
 
@@ -1532,26 +1533,64 @@ bool TRAP::INTERNAL::PNGImage::tIMECheck(const tIMEChunk& timeChunk)
 	return true;
 }
 
-int32_t TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceLength, uint8_t* destination, const int destinationLength)
+bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceLength, uint8_t* destination, const int destinationLength, bool needSwap)
 {
-	//TODO Replace with on Inflate Algorithm implementation
-	zng_stream stream{};
-	stream.total_in = stream.avail_in = sourceLength;
-	stream.total_out = stream.avail_out = destinationLength;
-	stream.next_in = source;
-	stream.next_out = destination;
-
-	int result = -1;
-	int error = zng_inflateInit(&stream);
-	if (error == Z_OK)
+	if (sourceLength < 2)
 	{
-		error = zng_inflate(&stream, Z_FINISH);
-		if (error == Z_STREAM_END)
-			result = static_cast<int>(stream.total_out);
+		TP_ERROR("[Image][PNG] Compressed zlib data is too small!");
+		TP_WARN("[Image][PNG] Using Default Image!");
+		return false; //Error, size of zlib data too small
 	}
-	zng_inflateEnd(&stream);
+	if ((source[0] * 256 + source[1]) % 31 != 0)
+	{
+		TP_ERROR("[Image][PNG] Decompression Failed! 256 * source[0](", source[0], ") + source[1](", source[1], ") must be a multiple of 31(", static_cast<uint32_t>(source[0] * 256 + source[1]), ")!");
+		TP_WARN("[Image][PNG] Using Default Image!");
+		return false; //Error: 256 * source[0] + source[1] must be a multiple of 31, the FCHECK value is supposed to be made this way
+	}
 
-	return result;
+	const uint32_t CM = source[0] & 15;
+	const uint32_t CINFO = (source[0] >> 4) & 15;
+	//FCHECK = source[1] & 31; //FCHECK is already tested above
+	const uint32_t FDICT = (source[1] >> 5) & 1;
+	//FLEVEL = (source[1] >> 6) & 3; //FLEVEL is not used here
+
+	if (CM != 8 || CINFO > 7)
+	{
+		TP_ERROR("[Image][PNG] Decompression Failed! Only Compression Method 8(De/Inflate) with sliding window of 32K is supported by the PNG Specification!");
+		TP_WARN("[Image][PNG] Using Default Image!");
+		return false; //Error: Only compression method 8: inflate with sliding window of 32K is supported by the PNG specification
+	}
+	if(FDICT != 0)
+	{
+		TP_ERROR("[Image][PNG] Decompression Failed! Additional Flags should not specify a preset dictionary!");
+		TP_WARN("[Image][PNG] Using Default Image!");
+		return false; //Error: The PNG specification says that the zlib stream should not specify a preset dictionary in the additional flags!
+	}
+
+	if (!Utils::Decompress::Inflate(source + 2, sourceLength - 2, destination, destinationLength))
+	{
+		TP_ERROR("[Image][PNG] Decompression Failed! Inflate Error!");
+		TP_WARN("[Image][PNG] Using Default Image!");
+		return false;
+	}
+
+	uint8_t* buf = &source[sourceLength - 4];
+	uint32_t adler32 = ((static_cast<uint32_t>(buf[0]) << 24u) | (static_cast<uint32_t>(buf[1]) << 16u) |
+		               (static_cast<uint32_t>(buf[2]) << 8u) | static_cast<uint32_t>(buf[3]));
+	uint32_t checksum = Utils::Hash::Adler32(destination, destinationLength);
+	if(needSwap)
+	{
+		Utils::Memory::SwapBytes(adler32);
+		Utils::Memory::SwapBytes(checksum);		
+	}
+	if (checksum != adler32)
+	{
+		TP_ERROR("[Image][PNG] Decompression Failed! Adler32 Checksum: ", adler32, " doesnt match Checksum: ", checksum, "!");
+		TP_WARN("[Image][PNG] Using Default Image!");
+		return false; //Error: Adler checksum not correct, data must be corrupt
+	}
+
+	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

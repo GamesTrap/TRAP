@@ -123,7 +123,7 @@ namespace TRAP::INTERNAL
 		bool m_isImageGrayScale;
 		bool m_hasAlphaChannel;
 
-		static int32_t DecompressData(uint8_t* source, int sourceLength, uint8_t* destination, int destinationLength);
+		static bool DecompressData(uint8_t* source, int sourceLength, uint8_t* destination, int destinationLength, bool needSwap);
 		static bool UnFilterScanline(uint8_t* recon, const uint8_t* scanline, const uint8_t* precon, std::size_t byteWidth, uint8_t filterType, std::size_t length);
 		static bool UnFilter(uint8_t* out, const uint8_t* in, uint32_t width, uint32_t height, uint32_t bitsPerPixel);
 		static uint8_t PaethPredictor(uint16_t a, uint16_t b, uint16_t c);

@@ -36,9 +36,6 @@
 #include <GLFW/glfw3.h>
 #include <spirv_glsl.hpp>
 
-#include <zbuild.h>
-#include <zlib-ng.h>
-
 #include <imgui.h>
 
 #include "Core.h"

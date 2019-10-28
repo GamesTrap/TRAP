@@ -551,3 +551,10 @@ SITREP 10/27/2019|19w43a3
     - Finished PNG Loader ~> 120 mins
     - Tested PNG Loader with PNGSuite ~>130 mins
     - Fixed small bugs in PNG Loader ~>30 mins
+
+SITREP 10/28/2019|19w44a1
+    - Changed TRAP Engine version to 19w44a1(0.5.57)
+    - Added HuffmanTree ~>60 mins
+    - Added Adler32 ~>30 mins
+    - Added own zlib inflator ~>140 mins
+    - Removed zlib-ng submodule ~>20 mins
