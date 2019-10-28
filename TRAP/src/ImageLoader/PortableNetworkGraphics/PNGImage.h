@@ -59,6 +59,7 @@ namespace TRAP::INTERNAL
 			bool tIME = false;
 			bool PLTE = false;
 			bool IDAT = false;
+			bool eXIf = false;
 		};
 
 		struct NextChunk
@@ -67,7 +68,7 @@ namespace TRAP::INTERNAL
 			std::array<uint8_t, 4> MagicNumber{};
 		} nextChunk;
 
-		bool ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data, AlreadyLoaded& alreadyLoaded, bool needSwap);
+		static bool ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data, AlreadyLoaded& alreadyLoaded, bool needSwap);
 
 		struct IHDRChunk
 		{
@@ -98,7 +99,7 @@ namespace TRAP::INTERNAL
 		static bool ProcesssRGB(std::ifstream& file, bool needSwap);
 		static bool ProcessbKGD(std::ifstream& file, const Data& data, bool needSwap);
 		static bool ProcesshIST(std::ifstream& file, uint32_t length, bool needSwap);
-		static bool ProcesstRNS(std::ifstream& file, Data& data, bool needSwap);
+		static bool ProcesstRNS(std::ifstream& file, uint32_t length, Data& data, bool needSwap);
 		static bool ProcesspHYs(std::ifstream& file, bool needSwap);
 		static bool ProcesssPLT(std::ifstream& file, uint32_t length, bool needSwap);
 		static bool ProcesstIME(std::ifstream& file, bool needSwap);
@@ -107,6 +108,7 @@ namespace TRAP::INTERNAL
 		static bool ProcesszTXt(std::ifstream& file, uint32_t length, bool needSwap);
 		static bool ProcessPLTE(std::ifstream& file, Data& data, uint32_t length, bool needSwap);
 		static bool ProcessIDAT(std::ifstream& file, Data& data, uint32_t length, bool needSwap);
+		static bool ProcesseXIf(std::ifstream& file, uint32_t length, bool needSwap);
 		static bool IHDRCheck(const IHDRChunk& ihdrChunk);
 		static bool tIMECheck(const tIMEChunk& timeChunk);
 
@@ -122,6 +124,23 @@ namespace TRAP::INTERNAL
 		bool m_hasAlphaChannel;
 
 		static int32_t DecompressData(uint8_t* source, int sourceLength, uint8_t* destination, int destinationLength);
+		static bool UnFilterScanline(uint8_t* recon, const uint8_t* scanline, const uint8_t* precon, std::size_t byteWidth, uint8_t filterType, std::size_t length);
+		static bool UnFilter(uint8_t* out, const uint8_t* in, uint32_t width, uint32_t height, uint32_t bitsPerPixel);
+		static uint8_t PaethPredictor(uint16_t a, uint16_t b, uint16_t c);
+		static std::size_t GetRawSizeIDAT(uint32_t width, uint32_t height, uint32_t bitsPerPixel);
+		static std::size_t GetRawSize(uint32_t width, uint32_t height, uint32_t bitsPerPixel);
+		static bool PostProcessScanlines(uint8_t* out, uint8_t* in, uint32_t width, uint32_t height, uint32_t bitsPerPixel, uint8_t interlaceMethod);
+		static void Adam7GetPassValues(std::array<uint32_t, 7>& passW,
+		                               std::array<uint32_t, 7>& passH,
+		                               std::array<std::size_t, 8>& filterPassStart,
+		                               std::array<std::size_t, 8>& paddedPassStart,
+		                               std::array<std::size_t, 8>& passStart,
+		                               uint32_t width,
+		                               uint32_t height,
+		                               uint32_t bitsPerPixel);
+		static void Adam7DeInterlace(uint8_t* out, const uint8_t* in, uint32_t width, uint32_t height, uint32_t bitsPerPixel);
+		static std::vector<uint16_t> ConvertTo2Byte(std::vector<uint8_t>& raw);
+		static std::vector<uint8_t> ResolveIndexed(std::vector<uint8_t>& raw, uint32_t width, uint32_t height, const Data& data);
 	};
 }
 

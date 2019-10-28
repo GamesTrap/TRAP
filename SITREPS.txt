@@ -535,13 +535,19 @@ SITREP 10/19/2019|19w42a4
     - Worked on PNG Image File Format ~>45 mins
 
 SITREP 10/21/2019|19w43a1
-    - Changed TRAP Engine version to 19w42a5(0.5.54)
+    - Changed TRAP Engine version to 19w43a1(0.5.54)
     - PNG Finished loading of all chunks ~>100 mins
     - PNG Finished CRC Checking ~>20 mins
     - Started working on PNG Decompression ~> 20 mins
 
 SITREP 10/26/2019|19w43a2
-    - Changed TRAP Engine version to 19w42a5(0.5.55)
+    - Changed TRAP Engine version to 19w43a2(0.5.55)
     - Added zlib to Inflate PNG Image Data ~>40 mins
     - Disabled warnings from all submodules ~>20 mins
     - Added Unfinished PNG Loader ~>120 mins
+
+SITREP 10/27/2019|19w43a3
+    - Changed TRAP Engine version to 19w43a3(0.5.56)
+    - Finished PNG Loader ~> 120 mins
+    - Tested PNG Loader with PNGSuite ~>130 mins
+    - Fixed small bugs in PNG Loader ~>30 mins
