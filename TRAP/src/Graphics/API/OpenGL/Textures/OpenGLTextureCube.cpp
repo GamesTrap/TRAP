@@ -177,14 +177,14 @@ uint32_t TRAP::Graphics::API::OpenGLTextureCube::GetHandle() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::API::OpenGLTextureCube::GetName() const
+std::string_view TRAP::Graphics::API::OpenGLTextureCube::GetName() const
 {
 	return m_name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::API::OpenGLTextureCube::GetFilePath() const
+std::string_view TRAP::Graphics::API::OpenGLTextureCube::GetFilePath() const
 {
 	return m_filePaths[0];
 }

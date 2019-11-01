@@ -153,7 +153,7 @@ std::unordered_map<uint32_t, std::string> TRAP::Window::GetMonitorNames()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Window::GetTitle() const
+std::string_view TRAP::Window::GetTitle() const
 {
 	return m_data.Title;
 }
@@ -242,7 +242,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w44a1]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][19w44a3]" + std::string(Graphics::Renderer::GetTitle());
 	glfwSetWindowTitle(m_window, newTitle.c_str());
 #else
 	glfwSetWindowTitle(m_window, m_data.Title.c_str());
@@ -595,7 +595,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w44a1]";
+		"[INDEV][19w44a3]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif

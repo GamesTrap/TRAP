@@ -17,10 +17,10 @@ TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
 	m_presentQueue(nullptr),
 	m_debugCallbackSupported(false),
 	m_debugReport(),
+	m_renderPass(nullptr),
 	m_pipelineLayout(nullptr),
 	m_graphicsPipeline(nullptr),
-	m_context(VulkanContext::Get()),
-	m_renderPass(nullptr)
+	m_context(VulkanContext::Get())
 {
 }
 
@@ -771,7 +771,7 @@ void TRAP::Graphics::API::VulkanRenderer::PickPhysicalDevice(std::vector<VkPhysi
 {
 	TP_DEBUG("[Renderer][Vulkan] Selecting Physical Device");
 
-	std::multimap<int32_t, VkPhysicalDevice> candidates;
+	std::multimap<int32_t, VkPhysicalDevice> candidates{};
 
 	int32_t highestScore = 0;
 	int32_t score = 0;
@@ -814,7 +814,7 @@ int32_t TRAP::Graphics::API::VulkanRenderer::RateDeviceSuitability(VkPhysicalDev
 {
 	int32_t score = 0;
 
-	VkPhysicalDeviceProperties deviceProperties;
+	VkPhysicalDeviceProperties deviceProperties{};
 	vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
 
 	//Discrete GPUs have a significant performance advantage
@@ -827,7 +827,7 @@ int32_t TRAP::Graphics::API::VulkanRenderer::RateDeviceSuitability(VkPhysicalDev
 	if (deviceProperties.apiVersion >= VK_VERSION_1_1)
 		score += 1000;
 
-	VkPhysicalDeviceFeatures deviceFeatures;
+	VkPhysicalDeviceFeatures deviceFeatures{};
 	vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
 
 	//Check if Physical device has geometry shader compatibility

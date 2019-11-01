@@ -21,8 +21,8 @@ namespace TRAP::Graphics::API
 		void Unbind(uint32_t slot) const override;
 
 		uint32_t GetHandle() const;
-		std::string GetName() const override;
-		std::string GetFilePath() const override;
+		std::string_view GetName() const override;
+		std::string_view GetFilePath() const override;
 		TextureParameters GetParameters() override;
 
 		void SetWrap(TextureWrap wrap) override;

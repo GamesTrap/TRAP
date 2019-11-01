@@ -1,8 +1,8 @@
 #include "TRAPPCH.h"
 #include "MouseEvent.h"
 
-TRAP::MouseMovedEvent::MouseMovedEvent(const float x, const float y, std::string title)
-	: m_mouseX(x), m_mouseY(y), m_title(std::move(title))
+TRAP::MouseMovedEvent::MouseMovedEvent(const float x, const float y, const std::string_view title)
+	: m_mouseX(x), m_mouseY(y), m_title(title)
 {
 }
 
@@ -22,7 +22,7 @@ float TRAP::MouseMovedEvent::GetY() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::MouseMovedEvent::GetTitle() const
+std::string_view TRAP::MouseMovedEvent::GetTitle() const
 {
 	return m_title;
 }
@@ -69,8 +69,8 @@ int32_t TRAP::MouseMovedEvent::GetCategoryFlags() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::MouseScrolledEvent::MouseScrolledEvent(const float xOffset, const float yOffset, std::string title)
-	: m_xOffset(xOffset), m_yOffset(yOffset), m_title(std::move(title))
+TRAP::MouseScrolledEvent::MouseScrolledEvent(const float xOffset, const float yOffset, const std::string_view title)
+	: m_xOffset(xOffset), m_yOffset(yOffset), m_title(title)
 {
 }
 
@@ -90,7 +90,7 @@ float TRAP::MouseScrolledEvent::GetYOffset() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::MouseScrolledEvent::GetTitle() const
+std::string_view TRAP::MouseScrolledEvent::GetTitle() const
 {
 	return m_title;
 }
@@ -160,8 +160,8 @@ TRAP::MouseButtonEvent::MouseButtonEvent(const Input::MouseButton button)
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::MouseButtonPressedEvent::MouseButtonPressedEvent(const Input::MouseButton button, std::string title)
-	: MouseButtonEvent(button), m_title(std::move(title))
+TRAP::MouseButtonPressedEvent::MouseButtonPressedEvent(const Input::MouseButton button, const std::string_view title)
+	: MouseButtonEvent(button), m_title(title)
 {
 }
 
@@ -177,7 +177,7 @@ std::string TRAP::MouseButtonPressedEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::MouseButtonPressedEvent::GetTitle() const
+std::string_view TRAP::MouseButtonPressedEvent::GetTitle() const
 {
 	return m_title;
 }
@@ -207,8 +207,8 @@ const char* TRAP::MouseButtonPressedEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::MouseButtonReleasedEvent::MouseButtonReleasedEvent(const Input::MouseButton button, std::string title)
-	: MouseButtonEvent(button), m_title(std::move(title))
+TRAP::MouseButtonReleasedEvent::MouseButtonReleasedEvent(const Input::MouseButton button, const std::string_view title)
+	: MouseButtonEvent(button), m_title(title)
 {
 }
 
@@ -224,7 +224,7 @@ std::string TRAP::MouseButtonReleasedEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::MouseButtonReleasedEvent::GetTitle() const
+std::string_view TRAP::MouseButtonReleasedEvent::GetTitle() const
 {
 	return m_title;
 }

@@ -24,8 +24,8 @@ TRAP::KeyEvent::KeyEvent(const Input::Key keyCode)
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::KeyPressedEvent::KeyPressedEvent(const Input::Key keyCode, const int32_t repeatCount, std::string title)
-	: KeyEvent(keyCode), m_repeatCount(repeatCount), m_title(std::move(title))
+TRAP::KeyPressedEvent::KeyPressedEvent(const Input::Key keyCode, const int32_t repeatCount, const std::string_view title)
+	: KeyEvent(keyCode), m_repeatCount(repeatCount), m_title(title)
 {
 }
 
@@ -48,7 +48,7 @@ std::string TRAP::KeyPressedEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::KeyPressedEvent::GetTitle() const
+std::string_view TRAP::KeyPressedEvent::GetTitle() const
 {
 	return m_title;
 }
@@ -78,8 +78,8 @@ const char* TRAP::KeyPressedEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::KeyReleasedEvent::KeyReleasedEvent(const Input::Key keyCode, std::string title)
-	: KeyEvent(keyCode), m_title(std::move(title))
+TRAP::KeyReleasedEvent::KeyReleasedEvent(const Input::Key keyCode, const std::string_view title)
+	: KeyEvent(keyCode), m_title(title)
 {
 }
 
@@ -95,7 +95,7 @@ std::string TRAP::KeyReleasedEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::KeyReleasedEvent::GetTitle() const
+std::string_view TRAP::KeyReleasedEvent::GetTitle() const
 {
 	return m_title;
 }
@@ -125,8 +125,8 @@ const char* TRAP::KeyReleasedEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::KeyTypedEvent::KeyTypedEvent(const Input::Key keyCode, std::string title)
-	: KeyEvent(keyCode), m_title(std::move(title))
+TRAP::KeyTypedEvent::KeyTypedEvent(const Input::Key keyCode, const std::string_view title)
+	: KeyEvent(keyCode), m_title(title)
 {
 }
 
@@ -142,7 +142,7 @@ std::string TRAP::KeyTypedEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::KeyTypedEvent::GetTitle() const
+std::string_view TRAP::KeyTypedEvent::GetTitle() const
 {
 	return m_title;
 }

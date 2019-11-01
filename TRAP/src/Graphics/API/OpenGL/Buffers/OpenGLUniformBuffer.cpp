@@ -13,8 +13,8 @@ std::unordered_map<uint32_t, const TRAP::Graphics::API::OpenGLUniformBuffer*> TR
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(const char* name, const void* data, const uint32_t size, const BufferUsage usage)
-	: m_handle(0), m_name(name), m_size(size), m_usage(usage)
+TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(std::string name, const void* data, const uint32_t size, const BufferUsage usage)
+	: m_handle(0), m_name(std::move(name)), m_size(size), m_usage(usage)
 {
 	if(s_maxUniformBufferBindingPoints == 0)
 	{
@@ -38,8 +38,8 @@ TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(const char* name, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(const char* name, const uint32_t size, const BufferUsage usage)
-	: m_handle(0), m_name(name), m_size(size), m_usage(usage)
+TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(std::string name, const uint32_t size, const BufferUsage usage)
+	: m_handle(0), m_name(std::move(name)), m_size(size), m_usage(usage)
 {
 	if (s_maxUniformBufferBindingPoints == 0)
 	{
@@ -84,7 +84,7 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::Bind(const uint32_t bindingPoint)
 				uint32_t uniformBlockIndex = GL_INVALID_INDEX;
 				if (dynamic_cast<OpenGLShader*>(shader.get())->GetHandle())
 				{
-					OpenGLCall(uniformBlockIndex = glGetUniformBlockIndex(dynamic_cast<OpenGLShader*>(shader.get())->GetHandle(), m_name));
+					OpenGLCall(uniformBlockIndex = glGetUniformBlockIndex(dynamic_cast<OpenGLShader*>(shader.get())->GetHandle(), m_name.c_str()));
 				}
 
 				if (uniformBlockIndex != GL_INVALID_INDEX)
@@ -163,7 +163,21 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::UpdateSubData(const void* data, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::API::OpenGLUniformBuffer::GetName() const
+std::string_view TRAP::Graphics::API::OpenGLUniformBuffer::GetName() const
 {
-	return std::string(m_name);
+	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::OpenGLUniformBuffer::GetSize() const
+{
+	return m_size;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::BufferUsage TRAP::Graphics::API::OpenGLUniformBuffer::GetUsage() const
+{
+	return m_usage;
 }

@@ -137,14 +137,14 @@ uint32_t TRAP::Graphics::API::OpenGLTexture2D::GetHandle() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::API::OpenGLTexture2D::GetName() const
+std::string_view TRAP::Graphics::API::OpenGLTexture2D::GetName() const
 {
 	return m_name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::API::OpenGLTexture2D::GetFilePath() const
+std::string_view TRAP::Graphics::API::OpenGLTexture2D::GetFilePath() const
 {
 	return m_filePath;
 }

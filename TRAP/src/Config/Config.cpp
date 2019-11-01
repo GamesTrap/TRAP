@@ -59,12 +59,12 @@ void TRAP::Utils::Config::Print() const
 
 bool TRAP::Utils::Config::Read()
 {
-	const std::string input = VFS::Get()->ReadTextFile("Engine.cfg");
+	const std::string input = VFS::Get()->ReadTextFile(m_filename);
 	if (input.empty())
 		return false;
 
-	TP_INFO("[Config] Loading settings file \"", m_filename, "\"");
-	std::vector<std::string> lines = String::SplitString(input, '\n');
+	TP_INFO("[Config] Loading File: \"", m_filename, "\"");
+	std::vector<std::string_view> lines = String::SplitStringView(input, '\n');
 
 	for (const auto& line : lines)
 	{
@@ -89,7 +89,7 @@ bool TRAP::Utils::Config::Write() const
 	std::vector<std::pair<std::string, std::string>> fileContents;
 
 	//Read the file into a vector and replace the values of the keys that match with our map
-	const std::string input = VFS::Get()->ReadTextFile("Engine.cfg");
+	const std::string input = VFS::Get()->ReadTextFile(m_filename);
 	if (!input.empty())
 	{
 		std::vector<std::string> lines = String::SplitString(input, '\n');
@@ -134,14 +134,14 @@ bool TRAP::Utils::Config::Write() const
 		ss << '\n';
 	}
 
-	return VFS::Get()->WriteTextFile("Engine.cfg", ss.str());
+	return VFS::Get()->WriteTextFile(m_filename, ss.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //This method parses a line from out format("key = value") into a std::pair<std::string, std::string> containing the key and the value.
 //If the line is empty or a comment(starts with a '#') an empty pair is returned.
-std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::string& line) const
+std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::string_view& line) const
 {
 	if (!line.empty() && line[0] != '#')
 	{
@@ -153,14 +153,14 @@ std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::st
 		const std::size_t beginKeyString = index;
 		while (!std::isspace(line[index], m_locale) && line[index] != '=')
 			index++;
-		const std::string key = line.substr(beginKeyString, index - beginKeyString);
+		const std::string key(line.data() + beginKeyString, index - beginKeyString);
 
 		//Skip the assignment
 		while (std::isspace(line[index], m_locale) || line[index] == '=')
 			index++;
 
 		//Get the value string
-		const std::string value = line.substr(index, line.size() - index);
+		const std::string value(line.data() + index, line.size() - index);
 
 		//Return the key value pair
 		return std::make_pair(key, value);

@@ -78,7 +78,7 @@ void TRAP::Graphics::API::VulkanContext::InitSurface()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanContext::DeInitSurface(const VkInstance instance)
+void TRAP::Graphics::API::VulkanContext::DeInitSurface(VkInstance instance)
 {
 	if (m_surface)
 	{
@@ -329,7 +329,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			instanceExtensions.data()
 		};
 
-		VkInstance instance;
+		VkInstance instance{};
 		VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &instance));
 		if (!instance)
 			return false;
@@ -344,7 +344,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		if (!VulkanTestWindow)
 			return false;
 
-		VkSurfaceKHR surface;
+		VkSurfaceKHR surface{};
 		VkCall(glfwCreateWindowSurface(instance, VulkanTestWindow, nullptr, &surface));
 
 		if(!surface)
@@ -371,13 +371,13 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		}
 
 		//Check physical Devices for features
-		std::multimap<int32_t, VkPhysicalDevice> candidates;
+		std::multimap<int32_t, VkPhysicalDevice> candidates{};
 
 		int32_t highestScore = 0;
 		int32_t score = 0;
 		for (const auto& physicalDevice : physicalDevicesList)
 		{
-			VkPhysicalDeviceProperties deviceProperties;
+			VkPhysicalDeviceProperties deviceProperties{};
 			vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
 
 			//Discrete GPUs have a significant performance advantage
@@ -390,7 +390,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			if (deviceProperties.apiVersion >= VK_VERSION_1_1)
 				score += 1000;
 
-			VkPhysicalDeviceFeatures deviceFeatures;
+			VkPhysicalDeviceFeatures deviceFeatures{};
 			vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
 
 			//Check if Physical device has geometry shader compatibility
@@ -563,7 +563,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		}
 
 		//Check if Physical device is Vulkan 1.1 capable
-		VkPhysicalDeviceProperties deviceProperties;
+		VkPhysicalDeviceProperties deviceProperties{};
 		vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
 		if (deviceProperties.apiVersion < VK_VERSION_1_1)
 		{
@@ -579,7 +579,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		}
 
 		//Check if Physical device supports Geometry and Tessellation Shaders and WireFrame
-		VkPhysicalDeviceFeatures deviceFeatures;
+		VkPhysicalDeviceFeatures deviceFeatures{};
 		vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
 		//Geometry Shaders
 		if(!deviceFeatures.geometryShader)

@@ -52,14 +52,14 @@ void TRAP::Graphics::API::D3D12TextureCube::Unbind(uint32_t slot) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::API::D3D12TextureCube::GetName() const
+std::string_view TRAP::Graphics::API::D3D12TextureCube::GetName() const
 {
 	return m_name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::API::D3D12TextureCube::GetFilePath() const
+std::string_view TRAP::Graphics::API::D3D12TextureCube::GetFilePath() const
 {
 	return m_filePaths[0];
 }

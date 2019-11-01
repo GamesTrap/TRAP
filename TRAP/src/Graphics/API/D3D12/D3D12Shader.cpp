@@ -45,14 +45,14 @@ void TRAP::Graphics::API::D3D12Shader::Unbind() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Graphics::API::D3D12Shader::GetName() const
+std::string_view TRAP::Graphics::API::D3D12Shader::GetName() const
 {
 	return m_name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Graphics::API::D3D12Shader::GetFilePath() const
+std::string_view TRAP::Graphics::API::D3D12Shader::GetFilePath() const
 {
 	return m_filepath;
 }

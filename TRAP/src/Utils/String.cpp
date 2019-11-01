@@ -3,6 +3,39 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string& string, const std::string& delimiters)
+{
+	std::size_t start = 0;
+	std::size_t end = string.find_first_of(delimiters);
+
+	std::vector<std::string_view> result;
+
+	while (end < std::string::npos)
+	{
+		std::string_view token(string.c_str() + start, end - start);
+
+		if (!token.empty())
+			result.push_back(token);
+
+		if (end == std::string::npos)
+			break;
+
+		start = end + 1;
+		end = string.find_first_of(delimiters, start);
+	}
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::string& string, const char delimiter)
+{
+	return SplitStringView(string, std::string(1, delimiter));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::vector<std::string> TRAP::Utils::String::SplitString(const std::string& string, const std::string& delimiters)
 {
 	std::size_t start = 0;

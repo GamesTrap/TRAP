@@ -229,7 +229,7 @@ bool TRAP::INTERNAL::PNMImage::IsHDR() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::INTERNAL::PNMImage::GetFilePath() const
+std::string_view TRAP::INTERNAL::PNMImage::GetFilePath() const
 {
 	return m_filepath;
 }

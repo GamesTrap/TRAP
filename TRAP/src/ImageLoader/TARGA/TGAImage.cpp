@@ -431,7 +431,7 @@ bool TRAP::INTERNAL::TGAImage::IsHDR() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::INTERNAL::TGAImage::GetFilePath() const
+std::string_view TRAP::INTERNAL::TGAImage::GetFilePath() const
 {
 	return m_filepath;
 }

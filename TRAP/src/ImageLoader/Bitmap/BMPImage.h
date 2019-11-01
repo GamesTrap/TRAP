@@ -21,7 +21,7 @@ namespace TRAP::INTERNAL
 		bool IsImageGrayScale() const override;
 		bool IsImageColored() const override;
 		bool IsHDR() const override;
-		std::string GetFilePath() const override;
+		std::string_view GetFilePath() const override;
 		ImageFormat GetFormat() const override;
 
 	private:

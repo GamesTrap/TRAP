@@ -22,13 +22,13 @@ namespace TRAP
 	class KeyPressedEvent final : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(Input::Key keyCode, int32_t repeatCount, std::string title);
+		KeyPressedEvent(Input::Key keyCode, int32_t repeatCount, std::string_view title);
 
 		int32_t GetRepeatCount() const;
 
-		std::string ToString() const override;
+		std::string_view GetTitle() const;
 
-		std::string GetTitle() const;
+		std::string ToString() const override;
 
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
@@ -36,41 +36,41 @@ namespace TRAP
 
 	private:
 		int32_t m_repeatCount;
-		std::string m_title;
+		std::string_view m_title;
 	};
 
 	class KeyReleasedEvent final : public KeyEvent
 	{
 	public:
-		explicit KeyReleasedEvent(Input::Key keyCode, std::string title);
+		explicit KeyReleasedEvent(Input::Key keyCode, std::string_view title);
+
+		std::string_view GetTitle() const;
 
 		std::string ToString() const override;
-
-		std::string GetTitle() const;
 
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
 
 	private:
-		std::string m_title;
+		std::string_view m_title;
 	};
 
 	class KeyTypedEvent final : public KeyEvent
 	{
 	public:
-		explicit KeyTypedEvent(Input::Key keyCode, std::string title);
+		explicit KeyTypedEvent(Input::Key keyCode, std::string_view title);
+
+		std::string_view GetTitle() const;
 
 		std::string ToString() const override;
-
-		std::string GetTitle() const;
 
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
 
 	private:
-		std::string m_title;
+		std::string_view m_title;
 	};
 }
 

@@ -43,14 +43,14 @@ void TRAP::Graphics::API::VulkanTexture2D::Unbind(const uint32_t slot) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::API::VulkanTexture2D::GetName() const
+std::string_view TRAP::Graphics::API::VulkanTexture2D::GetName() const
 {
 	return m_name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Graphics::API::VulkanTexture2D::GetFilePath() const
+std::string_view TRAP::Graphics::API::VulkanTexture2D::GetFilePath() const
 {
 	return m_filePath;
 }

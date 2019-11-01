@@ -42,7 +42,7 @@ namespace TRAP::Utils
 
 		bool Read();
 		bool Write() const;
-		std::pair<std::string, std::string> ParseLine(const std::string& line) const;
+		std::pair<std::string, std::string> ParseLine(const std::string_view& line) const;
 
 		bool m_isChanged;
 		std::string m_filename;

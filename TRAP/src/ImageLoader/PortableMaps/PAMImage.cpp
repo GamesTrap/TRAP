@@ -259,7 +259,7 @@ bool TRAP::INTERNAL::PAMImage::IsHDR() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::INTERNAL::PAMImage::GetFilePath() const
+std::string_view TRAP::INTERNAL::PAMImage::GetFilePath() const
 {
 	return m_filepath;
 }

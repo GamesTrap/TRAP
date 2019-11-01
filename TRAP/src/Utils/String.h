@@ -3,6 +3,8 @@
 
 namespace TRAP::Utils::String
 {
+	std::vector<std::string_view> SplitStringView(const std::string& string, const std::string& delimiters);
+	std::vector<std::string_view> SplitStringView(const std::string& string, char delimiter);
 	std::vector<std::string> SplitString(const std::string& string, const std::string& delimiters);
 	std::vector<std::string> SplitString(const std::string& string, char delimiter);
 

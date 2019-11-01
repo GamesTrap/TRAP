@@ -106,14 +106,14 @@ void TRAP::Graphics::API::VulkanShader::Unbind() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Graphics::API::VulkanShader::GetName() const
+std::string_view TRAP::Graphics::API::VulkanShader::GetName() const
 {
 	return m_name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Graphics::API::VulkanShader::GetFilePath() const
+std::string_view TRAP::Graphics::API::VulkanShader::GetFilePath() const
 {
 	return m_filepath;
 }
@@ -180,7 +180,7 @@ void TRAP::Graphics::API::VulkanShader::InitGLSL(const std::string& source)
 	if (!source.empty())
 		PreProcessGLSL(source, shaders);
 
-	VulkanShaderErrorInfo error;
+	VulkanShaderErrorInfo error{};
 	
 	bool isEmpty = true;
 	for (const auto& shaderSource : shaders)
@@ -213,7 +213,7 @@ void TRAP::Graphics::API::VulkanShader::InitGLSL(std::string VSSource, std::stri
 	                                    std::move(TESSource),
 	                                    std::move(CSSource)
 	};
-	VulkanShaderErrorInfo error;
+	VulkanShaderErrorInfo error{};
 
 	bool isEmpty = true;
 	for (const auto& shaderSource : shaders)
@@ -756,8 +756,8 @@ std::vector<std::vector<uint32_t>> TRAP::Graphics::API::VulkanShader::ConvertToS
 
 	if(VShader)
 	{
-		spv::SpvBuildLogger logger;
-		glslang::SpvOptions spvOptions;
+		spv::SpvBuildLogger logger{};
+		glslang::SpvOptions spvOptions{};
 		GlslangToSpv(*program.getIntermediate(EShLangVertex), SPIRV[0], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
 			TP_ERROR("[Shader][Vulkan][SPIR-V] Vertex Shader: ", logger.getAllMessages());
@@ -765,8 +765,8 @@ std::vector<std::vector<uint32_t>> TRAP::Graphics::API::VulkanShader::ConvertToS
 
 	if (FShader)
 	{
-		spv::SpvBuildLogger logger;
-		glslang::SpvOptions spvOptions;
+		spv::SpvBuildLogger logger{};
+		glslang::SpvOptions spvOptions{};
 		GlslangToSpv(*program.getIntermediate(EShLangFragment), SPIRV[1], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
 			TP_ERROR("[Shader][Vulkan][SPIR-V] Fragment Shader: ", logger.getAllMessages());
@@ -774,8 +774,8 @@ std::vector<std::vector<uint32_t>> TRAP::Graphics::API::VulkanShader::ConvertToS
 
 	if (GShader)
 	{
-		spv::SpvBuildLogger logger;
-		glslang::SpvOptions spvOptions;
+		spv::SpvBuildLogger logger{};
+		glslang::SpvOptions spvOptions{};
 		GlslangToSpv(*program.getIntermediate(EShLangGeometry), SPIRV[2], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
 			TP_ERROR("[Shader][Vulkan][SPIR-V] Geometry Shader: ", logger.getAllMessages());
@@ -783,8 +783,8 @@ std::vector<std::vector<uint32_t>> TRAP::Graphics::API::VulkanShader::ConvertToS
 
 	if (TCShader)
 	{
-		spv::SpvBuildLogger logger;
-		glslang::SpvOptions spvOptions;
+		spv::SpvBuildLogger logger{};
+		glslang::SpvOptions spvOptions{};
 		GlslangToSpv(*program.getIntermediate(EShLangTessControl), SPIRV[3], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
 			TP_ERROR("[Shader][Vulkan][SPIR-V] Tessellation Control Shader: ", logger.getAllMessages());
@@ -792,8 +792,8 @@ std::vector<std::vector<uint32_t>> TRAP::Graphics::API::VulkanShader::ConvertToS
 
 	if (TEShader)
 	{
-		spv::SpvBuildLogger logger;
-		glslang::SpvOptions spvOptions;
+		spv::SpvBuildLogger logger{};
+		glslang::SpvOptions spvOptions{};
 		GlslangToSpv(*program.getIntermediate(EShLangTessEvaluation), SPIRV[4], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
 			TP_ERROR("[Shader][Vulkan][SPIR-V] Tessellation Evaluation Shader: ", logger.getAllMessages());
@@ -801,8 +801,8 @@ std::vector<std::vector<uint32_t>> TRAP::Graphics::API::VulkanShader::ConvertToS
 
 	if (CShader)
 	{
-		spv::SpvBuildLogger logger;
-		glslang::SpvOptions spvOptions;
+		spv::SpvBuildLogger logger{};
+		glslang::SpvOptions spvOptions{};
 		GlslangToSpv(*program.getIntermediate(EShLangCompute), SPIRV[5], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
 			TP_ERROR("[Shader][Vulkan][SPIR-V] Compute Shader: ", logger.getAllMessages());

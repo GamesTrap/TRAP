@@ -23,7 +23,7 @@ TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, const float updat
 				if(!std::filesystem::is_directory(file))
 				{
 					m_physicalPaths[file.path().string()] = FileSystem::GetLastWriteTime(file);
-					m_virtualPaths[file.path().string()] = [&]() -> std::string
+					m_virtualPaths[file.path().string()] = [&]()
 					{
 						std::string result = virtualPathLower + '/';
 						std::filesystem::path temp = file.path();
@@ -88,7 +88,7 @@ void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, st
 					if (m_physicalPaths.find(file.path().string()) == m_physicalPaths.end())
 					{
 						m_physicalPaths[file.path().string()] = currentFileLastWriteTime;
-						m_virtualPaths[file.path().string()] = [&]() -> std::string
+						m_virtualPaths[file.path().string()] = [&]()
 						{
 							std::string result = Utils::String::ToLower(m_virtualPathToWatch) + '/';
 							std::filesystem::path temp = file.path();

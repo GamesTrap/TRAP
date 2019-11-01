@@ -12,7 +12,7 @@ const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load
 	Scope<Texture> texture = Texture2D::CreateFromFile(filepath, parameters);
 	if(texture)
 	{
-		const std::string name = texture->GetName();
+		const std::string name = std::string(texture->GetName());
 		
 		Add(std::move(texture));
 		
@@ -62,7 +62,7 @@ const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load
 
 	if(texture)
 	{
-		const std::string name = texture->GetName();
+		const std::string name = std::string(texture->GetName());
 		
 		Add(std::move(texture));
 		
@@ -74,7 +74,7 @@ const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load(const std::string& name, const std::array<std::string, 6> & filepaths, TextureParameters parameters)
+const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load(const std::string& name, const std::array<std::string, 6> & filepaths, const TextureParameters parameters)
 {
 	Scope<Texture> texture = TextureCube::CreateFromFiles(name, filepaths, parameters);
 
@@ -94,8 +94,8 @@ void TRAP::Graphics::TextureManager::Add(Scope<Texture> texture)
 {
 	if(texture)
 	{
-		if (!Exists(texture->GetName()))
-			s_Textures[texture->GetName()] = std::move(texture);
+		if (!Exists(std::string(texture->GetName())))
+			s_Textures[std::string(texture->GetName())] = std::move(texture);
 		else
 			TP_ERROR("[TextureManager] Texture with Name: ", texture->GetName(), " already exists!");
 	}
@@ -145,14 +145,14 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 	{
 		if(Exists(nameOrVirtualPath))
 		{
-			const std::string filePath = s_Textures[nameOrVirtualPath]->GetFilePath();
+			const std::string filePath = std::string(s_Textures[nameOrVirtualPath]->GetFilePath());
 			if (filePath.empty())
 			{
 				TP_WARN("[TextureManager] Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
 				return;
 			}
 
-			const std::string name = s_Textures[nameOrVirtualPath]->GetName();
+			const std::string name = std::string(s_Textures[nameOrVirtualPath]->GetName());
 			const TextureType textureType = s_Textures[nameOrVirtualPath]->GetType();
 			const TextureParameters textureParameters = s_Textures[nameOrVirtualPath]->GetParameters();
 
@@ -216,10 +216,10 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 
 void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 {
-	if(Exists(texture->GetName()))
+	if(Exists(std::string(texture->GetName())))
 	{
-		const std::string name = texture->GetName();
-		const std::string filepath = texture->GetFilePath();
+		const std::string name = std::string(texture->GetName());
+		const std::string filepath = std::string(texture->GetFilePath());
 		if (filepath.empty())
 		{
 			TP_WARN("[TextureManager] Could not find Texture: \"", name, "\" to reload.");

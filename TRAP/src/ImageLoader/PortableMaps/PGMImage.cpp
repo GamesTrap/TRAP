@@ -189,7 +189,7 @@ bool TRAP::INTERNAL::PGMImage::IsHDR() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::INTERNAL::PGMImage::GetFilePath() const
+std::string_view TRAP::INTERNAL::PGMImage::GetFilePath() const
 {
 	return m_filepath;
 }

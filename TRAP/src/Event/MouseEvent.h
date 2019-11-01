@@ -9,11 +9,11 @@ namespace TRAP
 	class MouseMovedEvent final : public Event
 	{
 	public:
-		MouseMovedEvent(float x, float y, std::string title);
+		MouseMovedEvent(float x, float y, std::string_view title);
 
 		float GetX() const;
 		float GetY() const;
-		std::string GetTitle() const;
+		std::string_view GetTitle() const;
 
 		std::string ToString() const override;
 
@@ -24,17 +24,17 @@ namespace TRAP
 
 	private:
 		float m_mouseX, m_mouseY;
-		std::string m_title;
+		std::string_view m_title;
 	};
 
 	class MouseScrolledEvent final : public Event
 	{
 	public:
-		MouseScrolledEvent(float xOffset, float yOffset, std::string title);
+		MouseScrolledEvent(float xOffset, float yOffset, std::string_view title);
 
 		float GetXOffset() const;
 		float GetYOffset() const;
-		std::string GetTitle() const;
+		std::string_view GetTitle() const;
 
 		std::string ToString() const override;
 
@@ -45,7 +45,7 @@ namespace TRAP
 
 	private:
 		float m_xOffset, m_yOffset;
-		std::string m_title;
+		std::string_view m_title;
 	};
 
 	class MouseButtonEvent : public Event
@@ -64,35 +64,35 @@ namespace TRAP
 	class MouseButtonPressedEvent final : public MouseButtonEvent
 	{
 	public:
-		explicit MouseButtonPressedEvent(Input::MouseButton button, std::string title);
+		explicit MouseButtonPressedEvent(Input::MouseButton button, std::string_view title);
 
+		std::string_view GetTitle() const;
+		
 		std::string ToString() const override;
-
-		std::string GetTitle() const;
 
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
 
 	private:
-		std::string m_title;
+		std::string_view m_title;
 	};
 
 	class MouseButtonReleasedEvent final : public MouseButtonEvent
 	{
 	public:
-		explicit MouseButtonReleasedEvent(Input::MouseButton button, std::string title);
+		explicit MouseButtonReleasedEvent(Input::MouseButton button, std::string_view title);
+
+		std::string_view GetTitle() const;
 
 		std::string ToString() const override;
-
-		std::string GetTitle() const;
 
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
 
 	private:
-		std::string m_title;
+		std::string_view m_title;
 	};
 }
 

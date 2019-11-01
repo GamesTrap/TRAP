@@ -558,3 +558,12 @@ SITREP 10/28/2019|19w44a1
     - Added Adler32 ~>30 mins
     - Added own zlib inflator ~>140 mins
     - Removed zlib-ng submodule ~>20 mins
+
+SITREP 10/29/2019|19w44a2
+    - Changed TRAP Engine version to 19w44a2(0.5.58)
+    - [Vulkan] Fixed some unitinialized variables ~>10 mins
+
+SITREP 10/31/2019|19w44a3
+    - Changed TRAP Engine version to 19w44a3(0.5.59)
+    - Config class can now be used in games ~<10 mins
+    - Changed some strings to string_views ~>30 mins

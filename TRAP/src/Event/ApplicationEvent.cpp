@@ -1,8 +1,8 @@
 #include "TRAPPCH.h"
 #include "ApplicationEvent.h"
 
-TRAP::WindowResizeEvent::WindowResizeEvent(const uint32_t width, const uint32_t height, std::string title)
-	: m_width(width), m_height(height), m_title(std::move(title))
+TRAP::WindowResizeEvent::WindowResizeEvent(const uint32_t width, const uint32_t height, const std::string_view title)
+	: m_width(width), m_height(height), m_title(title)
 {
 }
 
@@ -22,7 +22,7 @@ uint32_t TRAP::WindowResizeEvent::GetHeight() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::WindowResizeEvent::GetTitle() const
+std::string_view TRAP::WindowResizeEvent::GetTitle() const
 {
 	return m_title;
 }
@@ -69,14 +69,14 @@ int32_t TRAP::WindowResizeEvent::GetCategoryFlags() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::WindowCloseEvent::WindowCloseEvent(std::string title)
-	: m_title(std::move(title))
+TRAP::WindowCloseEvent::WindowCloseEvent(const std::string_view title)
+	: m_title(title)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::WindowCloseEvent::GetTitle() const
+std::string_view TRAP::WindowCloseEvent::GetTitle() const
 {
 	return m_title;
 }
@@ -113,8 +113,8 @@ int32_t TRAP::WindowCloseEvent::GetCategoryFlags() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::WindowMovedEvent::WindowMovedEvent(const int32_t x, const int32_t y, std::string title)
-	: m_x(x), m_y(y), m_title(std::move(title))
+TRAP::WindowMovedEvent::WindowMovedEvent(const int32_t x, const int32_t y, const std::string_view title)
+	: m_x(x), m_y(y), m_title(title)
 {
 }
 
@@ -134,7 +134,7 @@ int32_t TRAP::WindowMovedEvent::GetY() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::WindowMovedEvent::GetTitle() const
+std::string_view TRAP::WindowMovedEvent::GetTitle() const
 {
 	return m_title;
 }
@@ -181,14 +181,14 @@ int32_t TRAP::WindowMovedEvent::GetCategoryFlags() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::WindowFocusEvent::WindowFocusEvent(std::string title)
-	: m_title(std::move(title))
+TRAP::WindowFocusEvent::WindowFocusEvent(const std::string_view title)
+	: m_title(title)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::WindowFocusEvent::GetTitle() const
+std::string_view TRAP::WindowFocusEvent::GetTitle() const
 {
 	return m_title;
 }
@@ -225,14 +225,14 @@ int32_t TRAP::WindowFocusEvent::GetCategoryFlags() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::WindowLostFocusEvent::WindowLostFocusEvent(std::string title)
-	: m_title(std::move(title))
+TRAP::WindowLostFocusEvent::WindowLostFocusEvent(const std::string_view title)
+	: m_title(title)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::WindowLostFocusEvent::GetTitle() const
+std::string_view TRAP::WindowLostFocusEvent::GetTitle() const
 {
 	return m_title;
 }

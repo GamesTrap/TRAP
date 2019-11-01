@@ -79,7 +79,7 @@ bool TRAP::INTERNAL::DefaultImage::IsHDR() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::INTERNAL::DefaultImage::GetFilePath() const
+std::string_view TRAP::INTERNAL::DefaultImage::GetFilePath() const
 {
 	return m_filepath;
 }

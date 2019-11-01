@@ -23,9 +23,9 @@ namespace TRAP::Graphics::API
 		void Bind() const override;
 		void Unbind() const override;
 
-		const std::string& GetName() const override;
+		std::string_view GetName() const override;
 		
-		const std::string& GetFilePath() const override;
+		std::string_view GetFilePath() const override;
 
 	private:
 		friend class ::TRAP::Graphics::Shader;

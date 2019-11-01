@@ -73,14 +73,14 @@ void TRAP::Graphics::API::OpenGLShader::Unbind() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Graphics::API::OpenGLShader::GetName() const
+std::string_view TRAP::Graphics::API::OpenGLShader::GetName() const
 {
 	return m_name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Graphics::API::OpenGLShader::GetFilePath() const
+std::string_view TRAP::Graphics::API::OpenGLShader::GetFilePath() const
 {
 	return m_filepath;
 }

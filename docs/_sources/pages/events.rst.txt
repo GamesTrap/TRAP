@@ -184,7 +184,7 @@ Constructor
 
 .. code-block:: cpp
 
-    TRAP::WindowResizeEvent(const uint32_t width, const uint32_t height, std::string title);
+    TRAP::WindowResizeEvent(const uint32_t width, const uint32_t height, const std::string_view title);
 
 | **Description**
 | This is used to create new TRAP::`WindowResizeEvent`_\s
@@ -222,7 +222,7 @@ GetTitle
 
 .. code-block:: cpp
 
-    std::string TRAP::WindowResizeEvent::GetTitle() const;
+    std::string_view TRAP::WindowResizeEvent::GetTitle() const;
 
 | **Description**
 | Returns the title of the TRAP:::ref:`window` from the TRAP::`WindowResizeEvent`_
@@ -295,7 +295,7 @@ Constructor
 
 .. code-block:: cpp
 
-    TRAP::WindowCloseEvent(std::string title);
+    TRAP::WindowCloseEvent(const std::string_view title);
 
 | **Description**
 | This is used to create new TRAP::`WindowCloseEvent`_\s
@@ -309,7 +309,7 @@ GetTitle
 
 .. code-block:: cpp
 
-    std::string TRAP::WindowCloseEvent::GetTitle() const;
+    std::string_view TRAP::WindowCloseEvent::GetTitle() const;
 
 | **Description**
 | Returns the title of the TRAP:::ref:`window` from the TRAP::`WindowCloseEvent`_
@@ -371,7 +371,7 @@ Constructor
 
 .. code-block:: cpp
 
-    TRAP::WindowMovedEvent(const int32_t x, const int32_t y, std::string title);
+    TRAP::WindowMovedEvent(const int32_t x, const int32_t y, const std::string_view title);
 
 | **Description**
 | This is used to create new TRAP::`WindowMovedEvent`_\s
@@ -409,7 +409,7 @@ GetTitle
 
 .. code-block:: cpp
 
-    std::string TRAP::WindowMovedEvent::GetTitle() const;
+    std::string_view TRAP::WindowMovedEvent::GetTitle() const;
 
 | **Description**
 | Returns the title of the window from the TRAP::`WindowMovedEvent`_
@@ -482,7 +482,7 @@ Constructor
 
 .. code-block:: cpp
 
-    TRAP::WindowFocusEvent(std::string title);
+    TRAP::WindowFocusEvent(const std::string_view title);
 
 | **Description**
 | This is used to create new TRAP::`WindowFocusEvent`_\s
@@ -496,7 +496,7 @@ GetTitle
 
 .. code-block:: cpp
 
-    std::string TRAP::WindowFocusEvent::GetTitle() const;
+    std::string_view TRAP::WindowFocusEvent::GetTitle() const;
 
 | **Description**
 | Returns the title of the window from the TRAP::`WindowFocusEvent`_
@@ -558,7 +558,7 @@ Constructor
 
 .. code-block:: cpp
 
-    TRAP::WindowLostFocusEvent(std::string title);
+    TRAP::WindowLostFocusEvent(const std::string_view title);
 
 | **Description**
 | This is used to create new TRAP::`WindowLostFocusEvent`_\s
@@ -572,7 +572,7 @@ GetTitle
 
 .. code-block:: cpp
 
-    std::string TRAP::WindowLostFocusEvent::GetTitle() const;
+    std::string_view TRAP::WindowLostFocusEvent::GetTitle() const;
 
 | **Description**
 | Returns the title of the window from the TRAP::`WindowLostFocusEvent`_
@@ -829,7 +829,7 @@ Constructor
 
 .. code-block:: cpp
 
-    TRAP::MouseMovedEvent(const float x, const float y, std::string title);
+    TRAP::MouseMovedEvent(const float x, const float y, const std::string_view title);
 
 | **Description**
 | This is used to create new TRAP::`MouseMovedEvent`_\s
@@ -878,7 +878,7 @@ ToString
 
 .. code-block:: cpp
 
-    std::string TRAP::MouseMovedEvent::ToString() const override;
+    std::string_view TRAP::MouseMovedEvent::ToString() const override;
 
 | **Description**
 | Returns a string containing: :code:`"MouseMovedEvent: " + x + ", " + y`
@@ -940,7 +940,7 @@ Constructor
 
 .. code-block:: cpp
 
-    TRAP::MouseScrolledEvent(const float xOffset, const float yOffset, std::string title);
+    TRAP::MouseScrolledEvent(const float xOffset, const float yOffset, const std::string_view title);
 
 | **Description**
 | This is used to create new TRAP::`MouseScrolledEvent`_\s
@@ -989,7 +989,7 @@ ToString
 
 .. code-block:: cpp
 
-    std::string TRAP::MouseScrolledEvent::ToString() const override;
+    std::string_view TRAP::MouseScrolledEvent::ToString() const override;
 
 | **Description**
 | Returns a string containing: :code:`"MouseScrolledEvent: " + xOffset + ", " + yOffset`
@@ -1095,7 +1095,7 @@ Constructor
 
 .. code-block:: cpp
 
-    TRAP::MouseButtonPressedEvent(const TRAP::Input::MouseButton button, std::string title);
+    TRAP::MouseButtonPressedEvent(const TRAP::Input::MouseButton button, const std::string_view title);
 
 | **Description**
 | This is used to create new TRAP::`MouseButtonPressedEvent`_\s
@@ -1103,6 +1103,17 @@ Constructor
 | **Parameters**
 | :code:`button` Specifies the TRAP:::ref:`input`:::ref:`mouse_button` for the TRAP::`MouseButtonPressedEvent`_
 | :code:`title` Specifies the title of the TRAP:::ref:`window` the TRAP::`MouseButtonPressedEvent`_ is for
+
+^^^^^^^^
+GetTitle
+^^^^^^^^
+
+.. code-block:: cpp
+
+    std::string_view TRAP::MouseButtonPressedEvent::GetTitle() const;
+
+| **Description**
+| Returns the title of the window from the TRAP::`MouseButtonPressedEvent`_
 
 ^^^^^^^^
 ToString
@@ -1114,17 +1125,6 @@ ToString
 
 | **Description**
 | Returns a string containing: :code:`"MouseButtonPressedEvent: " + button`
-
-^^^^^^^^
-GetTitle
-^^^^^^^^
-
-.. code-block:: cpp
-
-    std::string TRAP::MouseButtonPressedEvent::GetTitle() const;
-
-| **Description**
-| Returns the title of the window from the TRAP::`MouseButtonPressedEvent`_
 
 ^^^^^^^^^^^^^
 GetStaticType
@@ -1172,7 +1172,7 @@ Constructor
 
 .. code-block:: cpp
 
-    TRAP::MouseButtonReleasedEvent(const TRAP::Input::MouseButton button, std::string title);
+    TRAP::MouseButtonReleasedEvent(const TRAP::Input::MouseButton button, const std::string_view title);
 
 | **Description**
 | This is used to create new TRAP::`MouseButtonReleasedEvent`_\s
@@ -1180,6 +1180,17 @@ Constructor
 | **Parameters**
 | :code:`button` Specifies the TRAP:::ref:`input`:::ref:`mouse_button` for the TRAP::`MouseButtonReleasedEvent`_
 | :code:`title` Specifies the title of the TRAP:::ref:`window` the TRAP::`MouseButtonReleasedEvent`_ is for
+
+^^^^^^^^
+GetTitle
+^^^^^^^^
+
+.. code-block:: cpp
+
+    std::string_view TRAP::MouseButtonReleasedEvent::GetTitle() const;
+
+| **Description**
+| Returns the title of the window from the TRAP::`MouseButtonReleasedEvent`_
 
 ^^^^^^^^
 ToString
@@ -1191,17 +1202,6 @@ ToString
 
 | **Description**
 | Returns a string containing: :code:`"MouseButtonReleasedEvent: " + button`
-
-^^^^^^^^
-GetTitle
-^^^^^^^^
-
-.. code-block:: cpp
-
-    std::string TRAP::MouseButtonReleasedEvent::GetTitle() const;
-
-| **Description**
-| Returns the title of the window from the TRAP::`MouseButtonReleasedEvent`_
 
 ^^^^^^^^^^^^^
 GetStaticType
@@ -1293,7 +1293,7 @@ Constructor
 
 .. code-block:: cpp
 
-    TRAP::KeyPressedEvent(const TRAP::Input::Key keyCode, const int32_t repeatCount, std::string title);
+    TRAP::KeyPressedEvent(const TRAP::Input::Key keyCode, const int32_t repeatCount, const std::string_view title);
 
 | **Description**
 | This is used to create new TRAP::`KeyPressedEvent`_\s
@@ -1315,6 +1315,17 @@ GetRepeatCount
 | Returns the amount of repeats of the TRAP:::ref:`input`:::ref:`key` from the TRAP::`KeyPressedEvent`_
 
 ^^^^^^^^
+GetTitle
+^^^^^^^^
+
+.. code-block:: cpp
+
+    std::string_view TRAP::KeyPressedEvent::GetTitle() const;
+
+| **Description**
+| Returns the title of the window from the TRAP::`KeyPressedEvent`_
+
+^^^^^^^^
 ToString
 ^^^^^^^^
 
@@ -1324,17 +1335,6 @@ ToString
 
 | **Description**
 | Returns a string containing: :code:`"KeyPressedEvent: " + keyCode + " (" + repeatCount + " repeats)"`
-
-^^^^^^^^
-GetTitle
-^^^^^^^^
-
-.. code-block:: cpp
-
-    std::string TRAP::KeyPressedEvent::GetTitle() const;
-
-| **Description**
-| Returns the title of the window from the TRAP::`KeyPressedEvent`_
 
 ^^^^^^^^^^^^^
 GetStaticType
@@ -1382,7 +1382,7 @@ Constructor
 
 .. code-block:: cpp
 
-    TRAP::KeyReleasedEvent(const TRAP::Input::Key keyCode, std::string title);
+    TRAP::KeyReleasedEvent(const TRAP::Input::Key keyCode, const std::string_view title);
 
 | **Description**
 | This is used to create new TRAP::`KeyReleasedEvent`_\s
@@ -1390,6 +1390,17 @@ Constructor
 | **Parameters**
 | :code:`keyCode` Specifies the TRAP:::ref:`input`:::ref:`key` for the TRAP::`KeyReleasedEvent`_
 | :code:`title` Specifies the title of the TRAP:::ref:`window` the TRAP::`KeyReleasedEvent`_ is for
+
+^^^^^^^^
+GetTitle
+^^^^^^^^
+
+.. code-block:: cpp
+
+    std::string_view TRAP::KeyReleasedEvent::GetTitle() const;
+
+| **Description**
+| Returns the title of the window from the TRAP::`KeyReleasedEvent`_
 
 ^^^^^^^^
 ToString
@@ -1401,17 +1412,6 @@ ToString
 
 | **Description**
 | Returns a string containing: :code:`"KeyReleasedEvent: " + keyCode"`
-
-^^^^^^^^
-GetTitle
-^^^^^^^^
-
-.. code-block:: cpp
-
-    std::string TRAP::KeyReleasedEvent::GetTitle() const;
-
-| **Description**
-| Returns the title of the window from the TRAP::`KeyReleasedEvent`_
 
 ^^^^^^^^^^^^^
 GetStaticType
@@ -1459,7 +1459,7 @@ Constructor
 
 .. code-block:: cpp
 
-    TRAP::KeyTypedEvent(const TRAP::Input::Key keyCode, std::string title);
+    TRAP::KeyTypedEvent(const TRAP::Input::Key keyCode, const std::string_view title);
 
 | **Description**
 | This is used to create new TRAP::`KeyTypedEvent`_\s
@@ -1467,6 +1467,17 @@ Constructor
 | **Parameters**
 | :code:`keyCode` Specifies the TRAP:::ref:`input`:::ref:`key` for the TRAP::`KeyTypedEvent`_
 | :code:`title` Specifies the title of the TRAP:::ref:`window` the TRAP::`KeyTypedEvent`_ is for
+
+^^^^^^^^
+GetTitle
+^^^^^^^^
+
+.. code-block:: cpp
+
+    std::string_view TRAP::KeyTypedEvent::GetTitle() const;
+
+| **Description**
+| Returns the title of the window from the TRAP::`KeyTypedEvent`_
 
 ^^^^^^^^
 ToString
@@ -1478,17 +1489,6 @@ ToString
 
 | **Description**
 | Returns a string containing: :code:`"KeyTypedEvent: " + keyCode"`
-
-^^^^^^^^
-GetTitle
-^^^^^^^^
-
-.. code-block:: cpp
-
-    std::string TRAP::KeyTypedEvent::GetTitle() const;
-
-| **Description**
-| Returns the title of the window from the TRAP::`KeyTypedEvent`_
 
 ^^^^^^^^^^^^^
 GetStaticType

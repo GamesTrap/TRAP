@@ -29,9 +29,9 @@ namespace TRAP::Graphics
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		virtual const std::string& GetName() const = 0;
+		virtual std::string_view GetName() const = 0;
 
-		virtual const std::string& GetFilePath() const = 0;
+		virtual std::string_view GetFilePath() const = 0;
 
 		static Scope<Shader> CreateFromFile(const std::string& name, const std::string& filePath);
 		static Scope<Shader> CreateFromFile(const std::string& filepath);

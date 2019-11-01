@@ -51,7 +51,7 @@ namespace TRAP
 		static uint32_t GetMonitors();
 		static std::unordered_map<uint32_t, std::string> GetMonitorNames();
 
-		std::string GetTitle() const;
+		std::string_view GetTitle() const;
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
 		uint32_t GetRefreshRate() const;

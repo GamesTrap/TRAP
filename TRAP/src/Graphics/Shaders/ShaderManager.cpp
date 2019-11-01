@@ -12,7 +12,7 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(c
 	Scope<Shader> shader = Shader::CreateFromFile(filepath);
 	if(shader)
 	{
-		const std::string name = shader->GetName();
+		const std::string name = std::string(shader->GetName());
 		
 		Add(std::move(shader));
 		
@@ -60,8 +60,8 @@ void TRAP::Graphics::ShaderManager::Add(Scope<Shader> shader)
 {
 	if (shader)
 	{
-		if(!Exists(shader->GetName()))
-			s_Shaders[shader->GetName()] = std::move(shader);			
+		if(!Exists(std::string(shader->GetName())))
+			s_Shaders[std::string(shader->GetName())] = std::move(shader);			
 		else
 			TP_ERROR("[ShaderManager] Shader with Name: ", shader->GetName(), " already exists!");
 	}
@@ -101,7 +101,7 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 	{
 		if(Exists(nameOrVirtualPath))
 		{
-			const std::string path = s_Shaders[nameOrVirtualPath]->GetFilePath();
+			const std::string path = std::string(s_Shaders[nameOrVirtualPath]->GetFilePath());
 			std::string error;
 			if (!path.empty())
 			{
@@ -131,10 +131,10 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 
 void TRAP::Graphics::ShaderManager::Reload(const Scope<Shader>& shader)
 {
-	if(Exists(shader->GetName()))
+	if(Exists(std::string(shader->GetName())))
 	{
-		const std::string name = shader->GetName();
-		const std::string path = shader->GetFilePath();
+		const std::string name = std::string(shader->GetName());
+		const std::string path = std::string(shader->GetFilePath());
 		std::string error;
 		if (!path.empty())
 		{

@@ -480,7 +480,7 @@ bool TRAP::INTERNAL::BMPImage::IsHDR() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::INTERNAL::BMPImage::GetFilePath() const
+std::string_view TRAP::INTERNAL::BMPImage::GetFilePath() const
 {
 	return m_filepath;
 }
