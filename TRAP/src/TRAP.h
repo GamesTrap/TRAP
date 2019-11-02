@@ -36,6 +36,7 @@
 //----RENDERER----------
 #include "Graphics/Renderer.h"
 #include "Graphics/RenderCommand.h"
+#include "Graphics/Renderer2D.h"
 
 #include "Graphics/Buffers/BufferLayout.h"
 #include "Graphics/Buffers/IndexBuffer.h"

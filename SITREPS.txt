@@ -567,3 +567,10 @@ SITREP 10/31/2019|19w44a3
     - Changed TRAP Engine version to 19w44a3(0.5.59)
     - Config class can now be used in games ~<10 mins
     - Changed some strings to string_views ~>30 mins
+
+SITREP 11/02/2019|19w44a4
+    - Changed TRAP Engine version to 19w44a4(0.5.60)
+    - Changed Default Fallback Image ~<10 mins
+    - Started working on Renderer2D ~>40 mins
+    - Embedeed Shader for Renderer2D ~<15 mins
+    - Shader/TextureManager Added ability to remove Shader/Texture ~<30 mins

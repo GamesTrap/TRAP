@@ -12,6 +12,7 @@
 #include "Input/Input.h"
 #include "Utils/String.h"
 #include "Core.h"
+#include "Graphics/Renderer.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
@@ -89,15 +90,20 @@ TRAP::Application::Application()
 			)
 			);
 	m_window->SetEventCallback(TRAP_BIND_EVENT_FN(Application::OnEvent));
-
+	
 	//Initialize Input for Joysticks
 	Input::Init();
 
 	//Always added as a fallback shader
-	Graphics::ShaderManager::Load("Passthrough", Embed::PassthroughVS, Embed::PassthroughFS);
+	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
 	//Always added as a fallback texture
 	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
 	Graphics::TextureManager::Add(Graphics::TextureCube::Create());
+
+	//Initialize Renderer
+	Graphics::Renderer::Init();
+
+	m_layerStack = std::make_unique<LayerStack>();
 
 	m_ImGuiLayer = std::make_unique<ImGuiLayer>();
 	PushOverlay(std::move(m_ImGuiLayer));
@@ -108,8 +114,7 @@ TRAP::Application::Application()
 TRAP::Application::~Application()
 {
 	TP_DEBUG("[Application] Shutting down TRAP Modules...");
-	Graphics::TextureManager::Shutdown();
-	Graphics::ShaderManager::Shutdown();
+	m_layerStack.reset();
 	m_config.Set("Width", m_window->GetWidth());
 	m_config.Set("Height", m_window->GetHeight());
 	m_config.Set("RefreshRate", m_window->GetRefreshRate());
@@ -124,6 +129,7 @@ TRAP::Application::~Application()
 	m_config.Print();
 #endif
 	m_config.SaveToFile("Engine.cfg");
+	m_window.reset();
 	VFS::Shutdown();
 };
 
@@ -150,12 +156,12 @@ void TRAP::Application::Run()
 
 		if (!m_minimized)
 		{
-			for (const auto& layer : m_layerStack)
+			for (const auto& layer : *m_layerStack)
 				layer->OnUpdate(deltaTime);
 
 			if (tickTimer.ElapsedMilliseconds() > 1000.0f / static_cast<float>(m_tickRate))
 			{
-				for (const auto& layer : m_layerStack)
+				for (const auto& layer : *m_layerStack)
 					layer->OnTick();
 
 				tickTimer.Reset();
@@ -166,7 +172,7 @@ void TRAP::Application::Run()
 		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 		{
 			ImGuiLayer::Begin();
-			for (const auto& layer : m_layerStack)
+			for (const auto& layer : *m_layerStack)
 				layer->OnImGuiRender();
 			ImGuiLayer::End();
 		}
@@ -259,7 +265,7 @@ void TRAP::Application::OnEvent(Event& e)
 	dispatcher.Dispatch<WindowCloseEvent>(TRAP_BIND_EVENT_FN(Application::OnWindowClose));
 	dispatcher.Dispatch<WindowResizeEvent>(TRAP_BIND_EVENT_FN(Application::OnWindowResize));
 
-	for (auto it = m_layerStack.end(); it != m_layerStack.begin();)
+	for (auto it = m_layerStack->end(); it != m_layerStack->begin();)
 	{
 		(*--it)->OnEvent(e);
 		if (e.Handled)
@@ -271,16 +277,14 @@ void TRAP::Application::OnEvent(Event& e)
 
 void TRAP::Application::PushLayer(Scope<Layer> layer)
 {
-	//layer->OnAttach();
-	m_layerStack.PushLayer(std::move(layer));
+	m_layerStack->PushLayer(std::move(layer));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Application::PushOverlay(Scope<Layer> overlay)
 {
-	//overlay->OnAttach();
-	m_layerStack.PushOverlay(std::move(overlay));
+	m_layerStack->PushOverlay(std::move(overlay));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -294,7 +298,7 @@ TRAP::Utils::Config* TRAP::Application::GetConfig()
 
 TRAP::LayerStack& TRAP::Application::GetLayerStack()
 {
-	return m_layerStack;
+	return *m_layerStack;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -378,7 +382,7 @@ TRAP::Application::Endian TRAP::Application::GetEndian()
 
 void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 {
-	for (const auto& layer : m_layerStack)
+	for (const auto& layer : *m_layerStack)
 		layer->OnDetach();
 	Graphics::API::Context::SetRenderAPI(renderAPI);
 
@@ -386,14 +390,16 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 	m_window.reset();
 	m_window = std::make_unique<Window>(props);
 	m_window->SetEventCallback(TRAP_BIND_EVENT_FN(Application::OnEvent));
+	//Initialize Renderer
+	Graphics::Renderer::Init();
 	//Initialize Input for Joysticks
 	Input::Init();
 	//Always added as a fallback shader
-	Graphics::ShaderManager::Load("Passthrough", Embed::PassthroughVS, Embed::PassthroughFS);
+	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
 	//Always added as a fallback texture
 	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
 
-	for (const auto& layer : m_layerStack)
+	for (const auto& layer : *m_layerStack)
 		layer->OnAttach();
 }
 
@@ -401,12 +407,13 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 
 void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI)
 {
-	for (const auto& layer : m_layerStack)
+	for (const auto& layer : *m_layerStack)
 		layer->OnDetach();
 	Graphics::API::Context::SetRenderAPI(renderAPI);
 
 	Graphics::TextureManager::Shutdown();
 	Graphics::ShaderManager::Shutdown();
+	Graphics::Renderer::Shutdown();
 	Graphics::API::RendererAPI::Shutdown();
 	Graphics::API::Context::Shutdown();
 
@@ -414,13 +421,15 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI)
 	Graphics::API::Context::SetVSyncInterval(m_window->GetVSyncInterval());
 	Graphics::API::RendererAPI::Init();
 	m_window->SetTitle(std::string(m_window->GetTitle()));
+	//Initialize Renderer
+	Graphics::Renderer::Init();
 	//Note: Input doesn't need to be Initialized here because GLFW is still initialized
 	//Always added as a fallback shader
-	Graphics::ShaderManager::Load("Passthrough", Embed::PassthroughVS, Embed::PassthroughFS);
+	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
 	//Always added as a fallback texture
 	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
 
-	for (const auto& layer : m_layerStack)
+	for (const auto& layer : *m_layerStack)
 		layer->OnAttach();
 }
 

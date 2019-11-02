@@ -14,6 +14,8 @@ namespace TRAP::Graphics
 	class Renderer
 	{
 	public:
+		static void Init();
+		
 		static std::string_view GetTitle();
 		static uint32_t GetDrawCalls();
 		static uint32_t GetFPS();
@@ -27,7 +29,7 @@ namespace TRAP::Graphics
 
 		static void Submit(const Scope<Shader>& shader, const Scope<VertexArray>& vertexArray, const Math::Mat4& transform = Math::Mat4::Identity(), RendererPrimitive primitive = RendererPrimitive::Triangle);
 		
-		static void Cleanup();
+		static void Shutdown();
 
 	private:
 		struct SceneData

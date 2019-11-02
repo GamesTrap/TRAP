@@ -5,12 +5,20 @@
 #include "Graphics/Buffers/VertexArray.h"
 #include "Cameras/Camera.h"
 #include "Graphics/Shaders/Shader.h"
+#include "Renderer2D.h"
 
 TRAP::Scope<TRAP::Graphics::Renderer::SceneData> TRAP::Graphics::Renderer::s_sceneData = MakeScope<SceneData>();
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Renderer::s_uniformBuffer = nullptr;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer::Init()
+{
+	Renderer2D::Init();
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -96,10 +104,15 @@ void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<V
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Cleanup()
+void TRAP::Graphics::Renderer::Shutdown()
 {
-	s_uniformBuffer->Unbind(0);
-	s_uniformBuffer.reset();
+	Renderer2D::Shutdown();
+	
+	if(s_uniformBuffer)
+	{
+		s_uniformBuffer->Unbind(0);
+		s_uniformBuffer.reset();		
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

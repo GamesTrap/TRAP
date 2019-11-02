@@ -19,7 +19,7 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(c
 		return Get(name);
 	}
 
-	return Get("Passthrough");
+	return Get("Fallback");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -35,7 +35,7 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(c
 		return Get(name);
 	}
 
-	return Get("Passthrough");
+	return Get("Fallback");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -51,7 +51,7 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(c
 		return Get(name);
 	}
 
-	return Get("Passthrough");
+	return Get("Fallback");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -63,8 +63,31 @@ void TRAP::Graphics::ShaderManager::Add(Scope<Shader> shader)
 		if(!Exists(std::string(shader->GetName())))
 			s_Shaders[std::string(shader->GetName())] = std::move(shader);			
 		else
-			TP_ERROR("[ShaderManager] Shader with Name: ", shader->GetName(), " already exists!");
+			TP_ERROR("[ShaderManager] Shader with Name: \"", shader->GetName(), "\" already exists! Ignoring new Shader");
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::ShaderManager::Remove(const Scope<Shader>& shader)
+{
+	if(shader)
+	{
+		if (Exists(std::string(shader->GetName())))
+			s_Shaders.erase(std::string(shader->GetName()));
+		else
+			TP_ERROR("[ShaderManager] Could not find Shader with Name: \"", shader->GetName(), "\"!");
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::ShaderManager::Remove(const std::string_view name)
+{
+	if (Exists(std::string(name)))
+		s_Shaders.erase(std::string(name));
+	else
+		TP_ERROR("[ShaderManager] Could not find Shader with Name: \"", name, "\"!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -75,7 +98,7 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Get(co
 			return s_Shaders[name];
 	
 	//Should always be available as a fallback
-	return Get("Passthrough");
+	return Get("Fallback");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

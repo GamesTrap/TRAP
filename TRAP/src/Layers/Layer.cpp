@@ -22,7 +22,7 @@ void TRAP::Layer::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Layer::OnUpdate(Utils::TimeStep deltaTime)
+void TRAP::Layer::OnUpdate(const Utils::TimeStep& deltaTime)
 {
 }
 

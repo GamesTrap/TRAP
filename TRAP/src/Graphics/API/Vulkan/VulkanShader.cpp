@@ -93,7 +93,7 @@ void TRAP::Graphics::API::VulkanShader::Bind() const
 			VulkanRenderer::Get()->InitGraphicsPipeline(m_graphicsShaderStages);
 		}
 		else
-			ShaderManager::Get("Passthrough")->Bind();
+			ShaderManager::Get("Fallback")->Bind();
 	}
 }
 
@@ -193,7 +193,7 @@ void TRAP::Graphics::API::VulkanShader::InitGLSL(const std::string& source)
 	}
 	if (isEmpty)
 	{
-		TP_WARN("[Shader][Vulkan][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
+		TP_WARN("[Shader][Vulkan][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Fallback\"");
 		return;
 	}	
 	
@@ -226,7 +226,7 @@ void TRAP::Graphics::API::VulkanShader::InitGLSL(std::string VSSource, std::stri
 	}
 	if (isEmpty)
 	{
-		TP_WARN("[Shader][Vulkan][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
+		TP_WARN("[Shader][Vulkan][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Fallback\"");
 		return;
 	}
 	

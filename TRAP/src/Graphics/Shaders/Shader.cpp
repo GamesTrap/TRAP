@@ -32,7 +32,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		if (Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "spirv" && Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "shader")
 		{
 			TP_ERROR("[Shader] File: \"", filePath, "\" suffix is not \"*.spirv\" or \"*.shader\"!");
-			TP_WARN("[Shader] Shader using fallback Shader: \"Passthrough\"");
+			TP_WARN("[Shader] Shader using fallback Shader: \"Fallback\"");
 			return nullptr;
 		}
 		
@@ -52,12 +52,12 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 			TP_ERROR("[Shader][SPIR-V] Couldn't load Shader: \"", name, "\"!");
 	}
 	else
-		if (!filePath.empty() && source.empty() && !isSPIRV)
+		if (!filePath.empty() && source.empty())
 			TP_ERROR("[Shader] Couldn't load Shader: \"", name, "\"!");
 
-	if ((source.empty() && !isSPIRV) || SPIRVSource.empty() && isSPIRV)
+	if ((source.empty() && !isSPIRV) || (SPIRVSource.empty() && isSPIRV))
 	{
-		TP_WARN("[Shader] Shader using fallback Shader: \"Passthrough\"");
+		TP_WARN("[Shader] Shader using fallback Shader: \"Fallback\"");
 		return nullptr;
 	}
 
@@ -120,7 +120,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		if (Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "spirv" && Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "shader")
 		{
 			TP_ERROR("[Shader] File: \"", filePath, "\" suffix is not \"*.spirv\" or \"*.shader\"!");
-			TP_WARN("[Shader] Shader using fallback Shader: \"Passthrough\"");
+			TP_WARN("[Shader] Shader using fallback Shader: \"Fallback\"");
 			return nullptr;
 		}
 		
@@ -141,12 +141,12 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 			TP_ERROR("[Shader][SPIR-V] Couldn't load Shader: \"", name, "\"!");
 	}
 	else
-		if (!filePath.empty() && source.empty() && !isSPIRV)
+		if (!filePath.empty() && source.empty())
 			TP_ERROR("[Shader] Couldn't load Shader: \"", name, "\"!");
 
-	if ((source.empty() && !isSPIRV) || SPIRVSource.empty() && isSPIRV)
+	if ((source.empty() && !isSPIRV) || (SPIRVSource.empty() && isSPIRV))
 	{
-		TP_WARN("[Shader] Shader using fallback Shader: \"Passthrough\"");
+		TP_WARN("[Shader] Shader using fallback Shader: \"Fallback\"");
 		return nullptr;
 	}
 

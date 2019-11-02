@@ -59,7 +59,7 @@ void TRAP::Graphics::API::OpenGLShader::Bind() const
 			s_CurrentlyBound = this;
 		}
 		else
-			ShaderManager::Get("Passthrough")->Bind();
+			ShaderManager::Get("Fallback")->Bind();
 	}
 }
 
@@ -113,14 +113,14 @@ void TRAP::Graphics::API::OpenGLShader::InitGLSL(const std::string& source)
 	}
 	if(isEmpty)
 	{
-		TP_WARN("[Shader][OpenGL][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
+		TP_WARN("[Shader][OpenGL][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Fallback\"");
 		return;
 	}
 	
 	m_handle = CompileGLSL(shaders);
 	if (!m_handle)
 	{
-		TP_WARN("[Shader][OpenGL][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
+		TP_WARN("[Shader][OpenGL][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Fallback\"");
 		return;
 	}
 	CheckForUniforms();
@@ -156,14 +156,14 @@ void TRAP::Graphics::API::OpenGLShader::InitGLSL(std::string VSSource,
 	}
 	if (isEmpty)
 	{
-		TP_WARN("[Shader][OpenGL][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
+		TP_WARN("[Shader][OpenGL][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Fallback\"");
 		return;
 	}
 	
 	m_handle = CompileGLSL(shaders);
 	if (!m_handle)
 	{
-		TP_WARN("[Shader][OpenGL][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
+		TP_WARN("[Shader][OpenGL][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Fallback\"");
 		return;
 	}
 	CheckForUniforms();
@@ -222,7 +222,7 @@ void TRAP::Graphics::API::OpenGLShader::InitSPIRV(std::vector<uint32_t>& source)
 	m_handle = CompileGLSL(GLSLShaders);
 	if (!m_handle)
 	{
-		TP_WARN("[Shader][OpenGL][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
+		TP_WARN("[Shader][OpenGL][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Fallback\"");
 		return;
 	}
 	CheckForUniforms();
@@ -567,7 +567,7 @@ void TRAP::Graphics::API::OpenGLShader::CheckForUniforms()
 
 		if (error)
 		{
-			TP_WARN("[Shader][OpenGL][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Passthrough\"");
+			TP_WARN("[Shader][OpenGL][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Fallback\"");
 			Unbind();
 			Shutdown();
 			m_handle = 0;

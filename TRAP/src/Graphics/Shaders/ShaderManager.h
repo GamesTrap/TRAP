@@ -2,10 +2,11 @@
 #define _TRAP_SHADERMANAGER_H_
 
 #include "Shader.h"
+#include "Utils/Singleton.h"
 
 namespace TRAP::Graphics
 {
-	class ShaderManager
+	class ShaderManager : public Singleton
 	{
 	public:
 		static const Scope<Shader>& Load(const std::string& filepath);
@@ -19,6 +20,8 @@ namespace TRAP::Graphics
 		                                 const std::string& CSSSource = "");
 		
 		static void Add(Scope<Shader> shader);
+		static void Remove(const Scope<Shader>& shader);
+		static void Remove(std::string_view name);
 		static const Scope<Shader>& Get(const std::string& name);
 		static const std::unordered_map<std::string, Scope<Shader>>& GetShaders();
 		static void Clean();

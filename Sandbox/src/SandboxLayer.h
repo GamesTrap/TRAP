@@ -48,7 +48,7 @@ public:
 		///////////////
 		//    Quad   //
 		///////////////
-		m_vertexArray = TRAP::Graphics::VertexArray::Create();
+		
 
 		//XYZ RGBA
 		std::array<float, 9 * 4> vertices //Quad
@@ -65,7 +65,6 @@ public:
 			{TRAP::Graphics::ShaderDataType::Float4, "Color"},
 			{TRAP::Graphics::ShaderDataType::Float2, "UV"}
 		};
-		vertexBuffer->SetLayout(layout);
 		vertexBuffer->SetLayout(layout);
 		m_vertexArray->AddVertexBuffer(vertexBuffer);
 
@@ -100,7 +99,7 @@ public:
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	void OnUpdate(const TRAP::Utils::TimeStep deltaTime) override
+	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override
 	{
 		m_cameraController.OnUpdate(deltaTime);
 
@@ -206,7 +205,7 @@ private:
 	struct UniformData
 	{
 		float Time{};
-	};
+	};	
 };
 
 #endif /*_GAMESTRAP_SANDBOXLAYER_H_*/

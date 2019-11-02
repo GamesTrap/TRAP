@@ -97,8 +97,31 @@ void TRAP::Graphics::TextureManager::Add(Scope<Texture> texture)
 		if (!Exists(std::string(texture->GetName())))
 			s_Textures[std::string(texture->GetName())] = std::move(texture);
 		else
-			TP_ERROR("[TextureManager] Texture with Name: ", texture->GetName(), " already exists!");
+			TP_ERROR("[TextureManager] Texture with Name: \"", texture->GetName(), "\" already exists! Ignoring new Texture");
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::TextureManager::Remove(const Scope<Texture>& texture)
+{
+	if(texture)
+	{
+		if (Exists(std::string(texture->GetName())))
+			s_Textures.erase(std::string(texture->GetName()));
+		else
+			TP_ERROR("[TextureManager] Could not find Texture with Name: \"", texture->GetName(), "\"!");
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::TextureManager::Remove(const std::string_view name)
+{
+	if (Exists(std::string(name)))
+		s_Textures.erase(std::string(name));
+	else
+		TP_ERROR("[TextureManager] Could not find Texture with Name: \"", name, "\"!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
