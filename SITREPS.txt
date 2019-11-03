@@ -574,3 +574,7 @@ SITREP 11/02/2019|19w44a4
     - Started working on Renderer2D ~>40 mins
     - Embedeed Shader for Renderer2D ~<15 mins
     - Shader/TextureManager Added ability to remove Shader/Texture ~<30 mins
+
+SITREP 11/03/2019|19w44a5
+    - Changed TRAP Engine version to 19w44a5(0.5.61)
+    - Optimized PNG Loader ~>20 mins

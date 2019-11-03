@@ -70,7 +70,7 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const ImageFormat format, 
 
 	default:
 		break;
-	}	
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

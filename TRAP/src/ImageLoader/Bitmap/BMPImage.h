@@ -10,6 +10,11 @@ namespace TRAP::INTERNAL
 	{
 	public:
 		explicit BMPImage(std::string filepath);
+		BMPImage(const BMPImage&) = default;
+		BMPImage& operator=(const BMPImage&) = default;
+		BMPImage(BMPImage&&) = default;
+		BMPImage& operator=(BMPImage&&) = default;
+		~BMPImage() = default;
 
 		void* GetPixelData() override;
 		uint32_t GetPixelDataSize() const override;

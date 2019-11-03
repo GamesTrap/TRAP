@@ -10,6 +10,11 @@ namespace TRAP::INTERNAL
 	{
 	public:
 		explicit PAMImage(std::string filepath);
+		PAMImage(const PAMImage&) = default;
+		PAMImage& operator=(const PAMImage&) = default;
+		PAMImage(PAMImage&&) = default;
+		PAMImage& operator=(PAMImage&&) = default;
+		~PAMImage() = default;
 
 		void* GetPixelData() override;
 		uint32_t GetPixelDataSize() const override;

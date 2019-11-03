@@ -11,6 +11,11 @@ namespace TRAP::INTERNAL
 	{
 	public:
 		explicit DefaultImage(std::string filepath);
+		DefaultImage(const DefaultImage&) = default;
+		DefaultImage& operator=(const DefaultImage&) = default;
+		DefaultImage(DefaultImage&&) = default;
+		DefaultImage& operator=(DefaultImage&&) = default;
+		~DefaultImage() = default;
 
 		void* GetPixelData() override;
 		uint32_t GetPixelDataSize() const override;

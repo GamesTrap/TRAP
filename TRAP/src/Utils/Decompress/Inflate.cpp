@@ -695,15 +695,16 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 				error = true; //Error: Too long backward distance
 				break;
 			}
-			std::size_t backward = start - distance;
+			const std::size_t backward = start - distance;
 
 			out.resize(pos + length);
 			if(distance < length)
 			{
 				std::memcpy(out.data() + pos, out.data() + backward, distance);
 				pos += distance;
-				for (std::size_t forward = distance; forward < length; ++forward)
-					out[(pos)++] = out[backward++];
+				const uint32_t size = length - distance;
+				std::memcpy(out.data() + pos, out.data() + backward, size);
+				pos += size;
 			}
 			else
 			{

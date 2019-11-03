@@ -24,7 +24,7 @@ TRAP::Graphics::API::OpenGLRenderer::~OpenGLRenderer()
 
 void TRAP::Graphics::API::OpenGLRenderer::InitInternal()
 {
-#ifdef TRAP_DEBUG
+#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	InitDebug();
 #endif
 

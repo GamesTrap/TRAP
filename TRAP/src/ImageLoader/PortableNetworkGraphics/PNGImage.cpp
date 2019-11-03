@@ -254,6 +254,13 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			m_isImageColored = true;
 			m_hasAlphaChannel = true;
 			m_bitsPerPixel = 32;
+			if(data.Palette.empty())
+			{
+				TP_ERROR("[Image][PNG] Indexed missing Palette!");
+				TP_WARN("[Image][PNG] Using Default Image!");
+				return;
+			}
+			
 			if (data.BitDepth == 8)
 				m_data = ResolveIndexed(raw, m_width, m_height, data);
 			else

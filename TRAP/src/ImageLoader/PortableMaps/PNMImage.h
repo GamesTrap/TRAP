@@ -10,6 +10,11 @@ namespace TRAP::INTERNAL
 	{
 	public:
 		explicit PNMImage(std::string filepath);
+		PNMImage(const PNMImage&) = default;
+		PNMImage& operator=(const PNMImage&) = default;
+		PNMImage(PNMImage&&) = default;
+		PNMImage& operator=(PNMImage&&) = default;
+		~PNMImage() = default;
 
 		void* GetPixelData() override;
 		uint32_t GetPixelDataSize() const override;

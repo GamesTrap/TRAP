@@ -10,6 +10,11 @@ namespace TRAP::INTERNAL
 	{
 	public:
 		explicit TGAImage(std::string filepath);
+		TGAImage(const TGAImage&) = default;
+		TGAImage& operator=(const TGAImage&) = default;
+		TGAImage(TGAImage&&) = default;
+		TGAImage& operator=(TGAImage&&) = default;
+		~TGAImage() = default;
 
 		void* GetPixelData() override;
 		uint32_t GetPixelDataSize() const override;
