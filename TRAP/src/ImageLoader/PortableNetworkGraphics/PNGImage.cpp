@@ -282,9 +282,9 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 				m_data = raw;
 			else
 			{
-				//m_data2Byte = ConvertTo2Byte(raw);
-				TP_ERROR("[Image][PNG] GrayScaleAlpha with BitDepth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				TP_WARN("[Image][PNG] Using Default Image!");
+				m_data2Byte = ConvertTo2Byte(raw);
+				//TP_ERROR("[Image][PNG] GrayScaleAlpha with BitDepth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
+				//TP_WARN("[Image][PNG] Using Default Image!");
 			}
 			break;
 

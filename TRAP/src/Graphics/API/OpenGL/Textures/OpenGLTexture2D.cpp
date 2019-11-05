@@ -247,7 +247,7 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadTexture(const Scope<Image>& ima
 		UploadData(image, numMipMapLevels, PixelDataType::Float);
 	//GrayScale, GrayScaleAlpha, RGB, RGBA
 	else if ((image->IsImageGrayScale() && image->GetBitsPerPixel() == 16 && !image->HasAlphaChannel()) ||
-		(image->IsImageGrayScale() && image->GetBitsPerPixel() == 24 && image->HasAlphaChannel()) ||
+		(image->IsImageGrayScale() && image->GetBitsPerPixel() == 32 && image->HasAlphaChannel()) ||
 		(image->IsImageColored() && image->GetBitsPerPixel() == 48 && !image->HasAlphaChannel()) ||
 		(image->IsImageColored() && image->GetBitsPerPixel() == 64 && image->HasAlphaChannel()))
 		UploadData(image, numMipMapLevels, PixelDataType::Unsigned_Short);

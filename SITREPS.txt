@@ -578,3 +578,8 @@ SITREP 11/02/2019|19w44a4
 SITREP 11/03/2019|19w44a5
     - Changed TRAP Engine version to 19w44a5(0.5.61)
     - Optimized PNG Loader ~>20 mins
+    - Removed macOS support ~>25 mins
+
+SITREP 11/05/2019|19w45a1
+    - Changed TRAP Engine version to 19w45a1(0.5.62)
+    - OpenGLTexture2D/Cube Fixed Uploading of 32BPP GrayScale-Alpha Images ~>20 mins

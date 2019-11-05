@@ -341,7 +341,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross()
 		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(image->GetFormat()), GL_FLOAT, cubeTextureData[5].data()));
 	}
 	else if ((image->IsImageGrayScale() && image->GetBitsPerPixel() == 16 && !image->HasAlphaChannel()) ||
-		(image->IsImageGrayScale() && image->GetBitsPerPixel() == 24 && image->HasAlphaChannel()) ||
+		(image->IsImageGrayScale() && image->GetBitsPerPixel() == 32 && image->HasAlphaChannel()) ||
 		(image->IsImageColored() && image->GetBitsPerPixel() == 48 && !image->HasAlphaChannel()) ||
 		(image->IsImageColored() && image->GetBitsPerPixel() == 64 && image->HasAlphaChannel()))
 	{
@@ -611,7 +611,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross()
 		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(image->GetFormat()), GL_FLOAT, cubeTextureData[5].data()));
 	}
 	else if ((image->IsImageGrayScale() && image->GetBitsPerPixel() == 16 && !image->HasAlphaChannel()) ||
-		(image->IsImageGrayScale() && image->GetBitsPerPixel() == 24 && image->HasAlphaChannel()) ||
+		(image->IsImageGrayScale() && image->GetBitsPerPixel() == 32 && image->HasAlphaChannel()) ||
 		(image->IsImageColored() && image->GetBitsPerPixel() == 48 && !image->HasAlphaChannel()) ||
 		(image->IsImageColored() && image->GetBitsPerPixel() == 64 && image->HasAlphaChannel()))
 	{
@@ -828,7 +828,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadFiles()
 			OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, i, width, height, 1, TRAPImageFormatToOpenGL(images[0]->GetFormat()), GL_FLOAT, images[i]->GetPixelData()));
 		}
 		else if ((images[i]->IsImageGrayScale() && images[i]->GetBitsPerPixel() == 16 && !images[i]->HasAlphaChannel()) ||
-			(images[i]->IsImageGrayScale() && images[i]->GetBitsPerPixel() == 24 && images[i]->HasAlphaChannel()) ||
+			(images[i]->IsImageGrayScale() && images[i]->GetBitsPerPixel() == 32 && images[i]->HasAlphaChannel()) ||
 			(images[i]->IsImageColored() && images[i]->GetBitsPerPixel() == 48 && !images[i]->HasAlphaChannel()) ||
 			(images[i]->IsImageColored() && images[i]->GetBitsPerPixel() == 64 && images[i]->HasAlphaChannel()))
 		{

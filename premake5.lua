@@ -168,38 +168,6 @@ project "TRAP"
 			"SPIRV-Cross-HLSL"
 		}
 
-	filter "system:macosx"
-		files
-		{
-			"%{prj.name}/src/Log/ANSILog.cpp",
-			"%{prj.name}/src/Platform/Mac/**.h",
-			"%{prj.name}/src/Platform/Mac/**.cpp",
-			"%{prj.name}/src/Utils/MsgBox/MsgBoxOSX.mm"
-		}
-
-		defines
-		{
-			"GLFW_INCLUDE_NONE"
-		}
-	
-		links
-		{
-			"GLFW",
-			"GLAD",
-			"ImGui",
-			"%{IncludeDir.VULKAN}/lib/libvulkan",
-			"GLSLang",
-			"SPIRV",
-			"StandAlone",
-			"Cocoa.framework",
-			"Foundation.framework",
-			"SPIRV-Cross-Core",
-			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL",
-
-			"c++fs"
-		}
-
 	filter "configurations:Debug"
 		defines "TRAP_DEBUG"
 		runtime "Debug"
@@ -270,25 +238,6 @@ project "Sandbox"
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
 			"SPIRV-Cross-HLSL"
-		}
-
-	filter "system:macosx"
-		links
-		{
-			"GLFW",
-			"GLAD",
-			"ImGui",
-			"%{IncludeDir.VULKAN}/lib/libvulkan",
-			"GLSLang",
-			"SPIRV",
-			"StandAlone",
-			"Cocoa.framework",
-			"Foundation.framework",
-			"SPIRV-Cross-Core",
-			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL",
-
-			"c++fs"
 		}
 
 	filter "configurations:Debug"
