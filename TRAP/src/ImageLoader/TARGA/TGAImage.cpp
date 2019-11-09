@@ -12,9 +12,6 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 	m_bitsPerPixel(0),
 	m_width(0),
 	m_height(0),
-	m_isImageGrayScale(false),
-	m_isImageColored(false),
-	m_hasAlphaChannel(false),
 	m_imageFormat(ImageFormat::NONE)
 {
 	TP_DEBUG("[Image][TGA] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
@@ -172,7 +169,6 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 		{
 		case 1:
 		{
-			m_isImageColored = true;
 			if (header.BitsPerPixel > 8)
 			{
 				file.close();
@@ -192,10 +188,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 				else if (m_bitsPerPixel == 24)
 					m_imageFormat = ImageFormat::RGB;					
 				else if (m_bitsPerPixel == 32)
-				{
 					m_imageFormat = ImageFormat::RGBA;
-					m_hasAlphaChannel = true;
-				}
 				break;
 			}
 			break;
@@ -203,7 +196,6 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 
 		case 9:
 		{
-			m_isImageColored = true;
 			if (header.BitsPerPixel > 8)
 			{
 				file.close();
@@ -223,17 +215,13 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 				if (m_bitsPerPixel == 24)
 					m_imageFormat = ImageFormat::RGB;
 				else if (m_bitsPerPixel == 32)
-				{
 					m_imageFormat = ImageFormat::RGBA;
-					m_hasAlphaChannel = true;
-				}
 			}
 			break;
 		}
 
 		case 3:
 		{
-			m_isImageGrayScale = true;
 			m_imageFormat = ImageFormat::Gray_Scale;
 			if (header.BitsPerPixel == 8)
 				m_data = colorMapData.ImageData;
@@ -249,7 +237,6 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 
 		case 11:
 		{
-			m_isImageGrayScale = true;
 			m_imageFormat = ImageFormat::Gray_Scale;
 			if (header.BitsPerPixel == 8)
 				m_data = DecodeRLEGrayScale(colorMapData.ImageData, header.Width, header.Height);
@@ -265,7 +252,6 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 
 		case 2:
 		{
-			m_isImageColored = true;
 			switch (header.BitsPerPixel)
 			{
 			case 16:
@@ -286,7 +272,6 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			case 32:
 			{
 				m_imageFormat = ImageFormat::RGBA;
-				m_hasAlphaChannel = true;
 				m_data = ConvertBGRA32ToRGBA32(colorMapData.ImageData, m_width, m_height);
 				break;
 			}
@@ -302,7 +287,6 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 
 		case 10:
 		{
-			m_isImageColored = true;
 			switch (header.BitsPerPixel)
 			{
 			case 16:
@@ -323,7 +307,6 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			case 32:
 			{
 				m_imageFormat = ImageFormat::RGBA;
-				m_hasAlphaChannel = true;
 				m_data = ConvertRLEBGRA32ToRGBA(colorMapData.ImageData, m_width, m_height);
 				break;
 			}
@@ -405,21 +388,21 @@ uint32_t TRAP::INTERNAL::TGAImage::GetHeight() const
 
 bool TRAP::INTERNAL::TGAImage::HasAlphaChannel() const
 {
-	return m_hasAlphaChannel;
+	return HasAlpha(m_imageFormat);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::TGAImage::IsImageGrayScale() const
 {
-	return m_isImageGrayScale;
+	return IsGrayScale(m_imageFormat);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::TGAImage::IsImageColored() const
 {
-	return m_isImageColored;
+	return IsColored(m_imageFormat);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

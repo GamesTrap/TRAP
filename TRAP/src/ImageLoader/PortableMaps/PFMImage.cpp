@@ -8,7 +8,7 @@
 #include "Utils/ByteSwap.h"
 
 TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
-	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_isImageGrayScale(false), m_isImageColored(false), m_width(0), m_height(0), m_format(ImageFormat::NONE)
+	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_width(0), m_height(0), m_format(ImageFormat::NONE)
 {
 	TP_DEBUG("[Image][PFM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
@@ -76,7 +76,6 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 		{
 			//RGB
 			m_format = ImageFormat::RGB;
-			m_isImageColored = true;
 			m_bitsPerPixel = 96;
 			m_data.resize(m_width * m_height * 3);
 			if (!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * 3 * sizeof(float)))
@@ -96,7 +95,6 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 		{
 			//GrayScale
 			m_format = ImageFormat::Gray_Scale;
-			m_isImageGrayScale = true;
 			m_bitsPerPixel = 32;
 			m_data.resize(m_width* m_height);
 			if (!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * sizeof(float)))
@@ -170,14 +168,14 @@ bool TRAP::INTERNAL::PFMImage::HasAlphaChannel() const
 
 bool TRAP::INTERNAL::PFMImage::IsImageGrayScale() const
 {
-	return m_isImageGrayScale;
+	return IsGrayScale(m_format);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::PFMImage::IsImageColored() const
 {
-	return m_isImageColored;
+	return IsColored(m_format);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

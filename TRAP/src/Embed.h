@@ -38,48 +38,7 @@ namespace TRAP::Embed
 	)"
 	};
 
-	//Renderer2DColor Shader
-	static constexpr const char* Renderer2DColorVS
-	{
-		R"(
-		#version 460 core
-		
-		layout(location = 0) in vec3 Position;
-
-		layout(std140, set = 0, binding = 0) uniform CameraBuffer
-		{
-			mat4 sys_ProjectionMatrix;
-			mat4 sys_ViewMatrix;
-			mat4 sys_ModelMatrix;
-		} Camera;
-
-		void main()
-		{
-			gl_Position = Camera.sys_ProjectionMatrix * Camera.sys_ViewMatrix * Camera.sys_ModelMatrix * vec4(Position, 1.0f);
-		}
-	)"
-	};
-	static constexpr const char* Renderer2DColorFS
-	{
-		R"(
-		#version 460 core
-		
-		layout(location = 0) out vec4 FragColor;
-
-		layout(std140, set = 1, binding = 1) uniform DataBuffer
-		{
-			vec4 Color;
-		} Data;
-
-		void main()
-		{
-			FragColor = Data.Color;
-		}
-	)"
-	};
-
-	//Renderer2DTexture Shader
-	static constexpr const char* Renderer2DTextureVS
+	static constexpr const char* Renderer2DVS
 	{
 		R"(
 		#version 460 core
@@ -103,49 +62,7 @@ namespace TRAP::Embed
 		}
 	)"
 	};
-	static constexpr const char* Renderer2DTextureFS
-	{
-		R"(
-		#version 460 core
-		
-		layout(location = 0) out vec4 FragColor;
-
-		layout(location = 2) in vec2 vUV;
-
-		layout(binding = 0) uniform sampler2D Texture;
-
-		void main()
-		{
-			FragColor = texture(Texture, vUV);
-		}
-	)"
-	};
-
-	static constexpr const char* Renderer2DColoredTextureVS
-	{
-		R"(
-		#version 460 core
-		
-		layout(location = 0) in vec3 Position;
-		layout(location = 1) in vec2 UV;
-
-		layout(location = 2) out vec2 vUV;
-
-		layout(std140, set = 0, binding = 0) uniform CameraBuffer
-		{
-			mat4 sys_ProjectionMatrix;
-			mat4 sys_ViewMatrix;
-			mat4 sys_ModelMatrix;
-		} Camera;
-
-		void main()
-		{
-			gl_Position = Camera.sys_ProjectionMatrix * Camera.sys_ViewMatrix * Camera.sys_ModelMatrix * vec4(Position, 1.0f);
-			vUV = UV;
-		}
-	)"
-	};
-	static constexpr const char* Renderer2DColoredTextureFS
+	static constexpr const char* Renderer2DFS
 	{
 		R"(
 		#version 460 core

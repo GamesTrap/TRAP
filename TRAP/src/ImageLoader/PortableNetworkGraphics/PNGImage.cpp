@@ -15,10 +15,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 	m_bitsPerPixel(0),
 	m_width(0),
 	m_height(0),
-	m_format(ImageFormat::NONE),
-	m_isImageColored(false),
-	m_isImageGrayScale(false),
-	m_hasAlphaChannel(false)
+	m_format(ImageFormat::NONE)
 {
 	TP_DEBUG("[Image][PNG] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
@@ -233,7 +230,6 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 		{
 		case 0: //GrayScale
 			m_format = ImageFormat::Gray_Scale;
-			m_isImageGrayScale = true;
 			if (data.BitDepth == 8)
 				m_data = raw;
 			else
@@ -242,7 +238,6 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 
 		case 2: //TrueColor
 			m_format = ImageFormat::RGB;
-			m_isImageColored = true;
 			if (data.BitDepth == 8)
 				m_data = raw;
 			else
@@ -251,8 +246,6 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 
 		case 3: //Indexed Color
 			m_format = ImageFormat::RGBA;
-			m_isImageColored = true;
-			m_hasAlphaChannel = true;
 			m_bitsPerPixel = 32;
 			if(data.Palette.empty())
 			{
@@ -276,8 +269,6 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 
 		case 4: //GrayScale Alpha
 			m_format = ImageFormat::Gray_Scale_Alpha;
-			m_isImageGrayScale = true;
-			m_hasAlphaChannel = true;
 			if (data.BitDepth == 8)
 				m_data = raw;
 			else
@@ -290,8 +281,6 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 
 		case 6: //TrueColor Alpha
 			m_format = ImageFormat::RGBA;
-			m_isImageColored = true;
-			m_hasAlphaChannel = true;
 			if (data.BitDepth == 8)
 				m_data = raw;
 			else
@@ -358,21 +347,21 @@ uint32_t TRAP::INTERNAL::PNGImage::GetHeight() const
 
 bool TRAP::INTERNAL::PNGImage::HasAlphaChannel() const
 {
-	return m_hasAlphaChannel;
+	return HasAlpha(m_format);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::PNGImage::IsImageGrayScale() const
 {
-	return m_isImageGrayScale;
+	return IsGrayScale(m_format);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::PNGImage::IsImageColored() const
 {
-	return m_isImageColored;
+	return IsColored(m_format);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

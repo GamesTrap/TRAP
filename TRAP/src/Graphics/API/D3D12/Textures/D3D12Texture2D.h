@@ -11,7 +11,10 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit D3D12Texture2D(TextureParameters parameters);
-		D3D12Texture2D(ImageFormat format, uint32_t width, uint32_t height, TextureParameters parameters);
+		D3D12Texture2D(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, TextureParameters parameters);
+		D3D12Texture2D(std::string name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<uint8_t>& pixelData, TextureParameters parameters);
+		D3D12Texture2D(std::string name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<uint16_t>& pixelData, TextureParameters parameters);
+		D3D12Texture2D(std::string name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<float>& pixelData, TextureParameters parameters);
 		D3D12Texture2D(std::string name, const std::string& filepath, TextureParameters parameters);
 		~D3D12Texture2D();
 		D3D12Texture2D(const D3D12Texture2D&) = delete;

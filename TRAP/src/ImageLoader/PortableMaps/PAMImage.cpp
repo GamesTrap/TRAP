@@ -8,7 +8,7 @@
 #include "Utils/ByteSwap.h"
 
 TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
-	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_isImageGrayScale(false), m_isImageColored(false), m_hasAlphaChannel(false), m_width(0), m_height(0), m_format(ImageFormat::NONE)
+	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_width(0), m_height(0), m_format(ImageFormat::NONE)
 {
 	TP_DEBUG("[Image][PAM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
@@ -88,30 +88,24 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 			if (header.TuplType == "GRAYSCALE" && header.Depth == 1)
 			{
 				//GrayScale
-				m_isImageGrayScale = true;
 				m_bitsPerPixel = 16;
 				m_format = ImageFormat::Gray_Scale;
 			}
 			else if (header.TuplType == "RGB" && header.Depth == 3)
 			{
 				//RGB
-				m_isImageColored = true;
 				m_bitsPerPixel = 48;
 				m_format = ImageFormat::RGB;
 			}
 			else if (header.TuplType == "GRAYSCALE_ALPHA" && header.Depth == 2)
 			{
 				//GrayScaleAlpha
-				m_isImageGrayScale = true;
-				m_hasAlphaChannel = true;
 				m_bitsPerPixel = 32;
 				m_format = ImageFormat::Gray_Scale_Alpha;
 			}
 			else if (header.TuplType == "RGB_ALPHA" && header.Depth == 4)
 			{
 				//RGBA
-				m_isImageColored = true;
-				m_hasAlphaChannel = true;
 				m_bitsPerPixel = 64;
 				m_format = ImageFormat::RGBA;
 			}
@@ -138,30 +132,24 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 			if (header.TuplType == "GRAYSCALE" && header.Depth == 1)
 			{
 				//GrayScale
-				m_isImageGrayScale = true;
 				m_bitsPerPixel = 8;
 				m_format = ImageFormat::Gray_Scale;
 			}
 			else if (header.TuplType == "RGB" && header.Depth == 3)
 			{
 				//RGB
-				m_isImageColored = true;
 				m_bitsPerPixel = 24;
 				m_format = ImageFormat::RGB;
 			}
 			else if (header.TuplType == "GRAYSCALE_ALPHA" && header.Depth == 2)
 			{
 				//GrayScaleAlpha
-				m_isImageGrayScale = true;
-				m_hasAlphaChannel = true;
 				m_bitsPerPixel = 16;
 				m_format = ImageFormat::Gray_Scale_Alpha;
 			}
 			else if (header.TuplType == "RGB_ALPHA" && header.Depth == 4)
 			{
 				//RGBA
-				m_isImageColored = true;
-				m_hasAlphaChannel = true;
 				m_bitsPerPixel = 32;
 				m_format = ImageFormat::RGBA;
 			}
@@ -233,21 +221,21 @@ uint32_t TRAP::INTERNAL::PAMImage::GetHeight() const
 
 bool TRAP::INTERNAL::PAMImage::HasAlphaChannel() const
 {
-	return m_hasAlphaChannel;
+	return HasAlpha(m_format);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::PAMImage::IsImageGrayScale() const
 {
-	return m_isImageGrayScale;
+	return IsGrayScale(m_format);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::PAMImage::IsImageColored() const
 {
-	return m_isImageColored;
+	return IsColored(m_format);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -13,9 +13,12 @@ namespace TRAP::Graphics
 	public:
 		static const Scope<Texture>& Load(const std::string& filepath, TextureParameters parameters = TextureParameters());
 		static const Scope<Texture>& Load(const std::string& name, const std::string& filepath, TextureParameters parameters = TextureParameters());
+		static const Scope<Texture2D>& Load(const std::string& name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<uint8_t>& pixelData, TextureParameters parameters = TextureParameters());
+		static const Scope<Texture2D>& Load(const std::string& name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<uint16_t>& pixelData, TextureParameters parameters = TextureParameters());
+		static const Scope<Texture2D>& Load(const std::string& name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<float>& pixelData, TextureParameters parameters = TextureParameters());
 		static const Scope<Texture>& Load(const std::string& name, const std::string& filepath, InputFormat format, TextureParameters parameters = TextureParameters());
 		static const Scope<Texture>& Load(const std::string& filepath, InputFormat format, TextureParameters parameters = TextureParameters());
-		static const Scope<Texture>& Load(const std::string& name, const std::array<std::string, 6> & filepaths, TextureParameters parameters = TextureParameters());
+		static const Scope<Texture>& Load(const std::string& name, const std::array<std::string, 6>& filepaths, TextureParameters parameters = TextureParameters());
 		
 		static void Add(Scope<Texture> texture);
 		static void Remove(const Scope<Texture>& texture);

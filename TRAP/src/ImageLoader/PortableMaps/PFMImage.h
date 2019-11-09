@@ -32,8 +32,6 @@ namespace TRAP::INTERNAL
 	private:
 		std::string m_filepath;
 		uint32_t m_bitsPerPixel;
-		bool m_isImageGrayScale;
-		bool m_isImageColored;
 		uint32_t m_width;
 		uint32_t m_height;
 		std::vector<float> m_data;

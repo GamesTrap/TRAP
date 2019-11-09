@@ -34,9 +34,6 @@ namespace TRAP::INTERNAL
 		uint32_t m_bitsPerPixel;
 		uint32_t m_width;
 		uint32_t m_height;
-		bool m_isImageGrayScale;
-		bool m_isImageColored;
-		bool m_hasAlphaChannel;
 		ImageFormat m_imageFormat;
 		std::vector<uint8_t> m_data;
 	};

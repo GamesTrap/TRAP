@@ -34,6 +34,9 @@ namespace TRAP::Graphics::API
 		uint32_t m_width, m_height;
 		Scope<Texture> m_texture;
 
+		bool m_valid;
+
+		static uint32_t s_maxRenderBufferSize;
 		static const OpenGLFrameBuffer2D* s_currentlyBound;
 	};
 }

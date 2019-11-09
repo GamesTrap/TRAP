@@ -20,9 +20,8 @@ void TRAP::Utils::Memory::SwapBytes(T& t)
 template<>
 inline void TRAP::Utils::Memory::SwapBytes<float>(float& t)
 {
-	uint8_t* ptr = reinterpret_cast<uint8_t*>(&t);
-	uint8_t temp = ptr[0]; ptr[0] = ptr[3]; ptr[3] = temp;
-	temp = ptr[1]; ptr[1] = ptr[2]; ptr[2] = temp;
+	t = static_cast<float>(((static_cast<uint32_t>(t) & 0xFF000000) >> 24) | ((static_cast<uint32_t>(t) & 0x00FF0000) >> 8) |
+		((static_cast<uint32_t>(t) & 0x0000FF00) << 8) | ((static_cast<uint32_t>(t) & 0x000000FF) << 24));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -30,10 +29,7 @@ inline void TRAP::Utils::Memory::SwapBytes<float>(float& t)
 template<>
 inline void TRAP::Utils::Memory::SwapBytes<uint16_t>(uint16_t& t)
 {
-	uint8_t* ptr = reinterpret_cast<uint8_t*>(&t);
-	const uint8_t temp = ptr[0];
-	ptr[0] = ptr[1];
-	ptr[1] = temp;
+	t = (((t & 0xFF00) >> 8) | ((t & 0x00FF) << 8));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -41,9 +37,8 @@ inline void TRAP::Utils::Memory::SwapBytes<uint16_t>(uint16_t& t)
 template<>
 inline void TRAP::Utils::Memory::SwapBytes<uint32_t>(uint32_t& t)
 {
-	uint8_t* ptr = reinterpret_cast<uint8_t*>(&t);
-	uint8_t temp = ptr[0]; ptr[0] = ptr[3]; ptr[3] = temp;
-	temp = ptr[1]; ptr[1] = ptr[2]; ptr[2] = temp;
+	t = (((t & 0xFF000000) >> 24) | ((t & 0x00FF0000) >> 8) |
+		((t & 0x0000FF00) << 8) | ((t & 0x000000FF) << 24));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -52,9 +47,8 @@ inline void TRAP::Utils::Memory::SwapBytes<uint32_t>(uint32_t& t)
 template<>
 inline void TRAP::Utils::Memory::SwapBytes<int32_t>(int32_t& t)
 {
-	uint8_t* ptr = reinterpret_cast<uint8_t*>(&t);
-	uint8_t temp = ptr[0]; ptr[0] = ptr[3]; ptr[3] = temp;
-	temp = ptr[1]; ptr[1] = ptr[2]; ptr[2] = temp;
+	t = (((t & 0xFF000000) >> 24) | ((t & 0x00FF0000) >> 8) |
+		((t & 0x0000FF00) << 8) | ((t & 0x000000FF) << 24));
 }
 
 #endif /*_TRAP_BYTESWAP_H_*/

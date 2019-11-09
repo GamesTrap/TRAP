@@ -40,6 +40,75 @@ const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+const std::unique_ptr<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Load(
+	const std::string& name,
+	const uint32_t width,
+	const uint32_t height,
+	const uint32_t bitsPerPixel,
+	const ImageFormat format,
+	const std::vector<uint8_t>& pixelData,
+	const TextureParameters parameters)
+{
+	Scope<Texture> texture = Texture2D::CreateFromMemory(name, width, height, bitsPerPixel, format, pixelData, parameters);
+
+	if (texture)
+	{
+		Add(std::move(texture));
+
+		return Get2D(name);
+	}
+
+	return Get2D("Fallback2D");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::unique_ptr<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Load(
+	const std::string& name,
+	const uint32_t width,
+	const uint32_t height,
+	const uint32_t bitsPerPixel,
+	const ImageFormat format,
+	const std::vector<uint16_t>& pixelData,
+	const TextureParameters parameters)
+{
+	Scope<Texture> texture = Texture2D::CreateFromMemory(name, width, height, bitsPerPixel, format, pixelData, parameters);
+
+	if (texture)
+	{
+		Add(std::move(texture));
+
+		return Get2D(name);
+	}
+
+	return Get2D("Fallback2D");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::unique_ptr<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Load(
+	const std::string& name,
+	const uint32_t width,
+	const uint32_t height,
+	const uint32_t bitsPerPixel,
+	const ImageFormat format,
+	const std::vector<float>& pixelData,
+	const TextureParameters parameters)
+{
+	Scope<Texture> texture = Texture2D::CreateFromMemory(name, width, height, bitsPerPixel, format, pixelData, parameters);
+
+	if (texture)
+	{
+		Add(std::move(texture));
+
+		return Get2D(name);
+	}
+
+	return Get2D("Fallback2D");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load(const std::string& name, const std::string& filepath, const InputFormat format, const TextureParameters parameters)
 {
 	Scope<Texture> texture = TextureCube::CreateFromCross(name, filepath, format, parameters);

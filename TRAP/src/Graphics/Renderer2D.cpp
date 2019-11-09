@@ -69,13 +69,11 @@ void TRAP::Graphics::Renderer2D::Init()
 	s_data->QuadVertexArray->SetIndexBuffer(indexBuffer);
 
 	s_data->CameraUniformBuffer = UniformBuffer::Create("CameraBuffer", &s_data->UniformCamera, sizeof(Renderer2DStorage::UniformCamera), BufferUsage::Stream);
-
 	s_data->DataUniformBuffer = UniformBuffer::Create("DataBuffer", &s_data->UniformData, sizeof(Renderer2DStorage::UniformData), BufferUsage::Dynamic);
 
-	ShaderManager::Load("Renderer2DColor", Embed::Renderer2DColorVS, Embed::Renderer2DColorFS);
-	ShaderManager::Load("Renderer2DTexture", Embed::Renderer2DTextureVS, Embed::Renderer2DTextureFS);
-	ShaderManager::Load("Renderer2DColoredTexture", Embed::Renderer2DColoredTextureVS, Embed::Renderer2DColoredTextureFS);
-
+	ShaderManager::Load("Renderer2D", Embed::Renderer2DVS, Embed::Renderer2DFS);
+	TextureManager::Load("Renderer2DWhite", 1, 1, 32, ImageFormat::RGBA, std::vector<uint8_t>{255, 255, 255, 255});
+	
 	TextureManager::Get2D("Fallback2D")->Bind(0);
 }
 
@@ -94,7 +92,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 	s_data->UniformCamera.ProjectionMatrix = Math::Mat4::Transpose(camera.GetProjectionMatrix());
 	s_data->UniformCamera.ViewMatrix = Math::Mat4::Transpose(camera.GetViewMatrix());
 	
-	ShaderManager::Get("Renderer2DColor")->Bind();
+	ShaderManager::Get("Renderer2D")->Bind();
 	s_data->DataUniformBuffer->Bind(1);
 }
 
@@ -124,7 +122,10 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math
 	s_data->CameraUniformBuffer->Bind(0);
 	
 	//Bind Shader
-	ShaderManager::Get("Renderer2DColor")->Bind();
+	ShaderManager::Get("Renderer2D")->Bind();
+
+	//Bind White Texture
+	TextureManager::Get2D("Renderer2DWhite")->Bind(0);
 
 	//Bind and Update DataUniformBuffer if color changed
 	s_data->DataUniformBuffer->Bind(1);
@@ -161,10 +162,18 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math
 	s_data->CameraUniformBuffer->Bind(0);
 
 	//Bind Shader
-	ShaderManager::Get("Renderer2DTexture")->Bind();
+	ShaderManager::Get("Renderer2D")->Bind();
 
 	//Bind Texture
 	texture->Bind(0);
+
+	//Bind and Update DataUniformBuffer if color changed
+	s_data->DataUniformBuffer->Bind(1);
+	if (s_data->UniformData.Color != Math::Vec4(1.0f))
+	{
+		s_data->UniformData.Color = Math::Vec4(1.0f);
+		s_data->DataUniformBuffer->UpdateData(&s_data->UniformData);
+	}
 
 	//Bind Vertex Array
 	s_data->QuadVertexArray->Bind();
@@ -193,7 +202,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math
 	s_data->CameraUniformBuffer->Bind(0);
 
 	//Bind Shader
-	ShaderManager::Get("Renderer2DColoredTexture")->Bind();
+	ShaderManager::Get("Renderer2D")->Bind();
 
 	//Bind Texture
 	texture->Bind(0);

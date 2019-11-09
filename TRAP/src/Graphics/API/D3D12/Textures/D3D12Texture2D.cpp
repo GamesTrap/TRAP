@@ -11,8 +11,32 @@ TRAP::Graphics::API::D3D12Texture2D::D3D12Texture2D(const TextureParameters para
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::D3D12Texture2D::D3D12Texture2D(const ImageFormat format, const uint32_t width, const uint32_t height, const TextureParameters parameters)
+TRAP::Graphics::API::D3D12Texture2D::D3D12Texture2D(const uint32_t width, const uint32_t height, const uint32_t bitsPerPixel, const ImageFormat format, const TextureParameters parameters)
 	: m_name("Empty"), m_parameters(parameters)
+{
+	TP_WARN("[Texture2D][D3D12] WIP");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::D3D12Texture2D::D3D12Texture2D(std::string name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<uint8_t>& pixelData, const TextureParameters parameters)
+	: m_name(std::move(name)), m_filePath(""), m_parameters(parameters)
+{
+	TP_WARN("[Texture2D][D3D12] WIP");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::D3D12Texture2D::D3D12Texture2D(std::string name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<uint16_t>& pixelData, const TextureParameters parameters)
+	: m_name(std::move(name)), m_filePath(""), m_parameters(parameters)
+{
+	TP_WARN("[Texture2D][D3D12] WIP");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::D3D12Texture2D::D3D12Texture2D(std::string name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<float>& pixelData, const TextureParameters parameters)
+	: m_name(std::move(name)), m_filePath(""), m_parameters(parameters)
 {
 	TP_WARN("[Texture2D][D3D12] WIP");
 }

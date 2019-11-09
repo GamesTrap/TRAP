@@ -583,3 +583,14 @@ SITREP 11/03/2019|19w44a5
 SITREP 11/05/2019|19w45a1
     - Changed TRAP Engine version to 19w45a1(0.5.62)
     - OpenGLTexture2D/Cube Fixed Uploading of 32BPP GrayScale-Alpha Images ~>20 mins
+
+SITREP 11/06/2019|19w45a2
+    - Changed TRAP Engine version to 19w45a2(0.5.63)
+    - Memory SwapBytes now uses bitwise operations ~>20 mins
+
+SITREP 11/09/2019|19w45a3
+    - Changed TRAP Engine version to 19w45a3(0.5.64)
+    - ImageLoader changed some functions ~>20 mins
+    - Added ability to load 2D texure from memory ~>40 mins
+    - OpenGLFrameBuffer2D Added resolution safety check ~>15 mins
+    - Renderer2D now uses only 1 shader and a 1x1 White 2D Texture ~>25 mins

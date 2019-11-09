@@ -8,8 +8,12 @@ const TRAP::Graphics::API::OpenGLFrameBuffer2D* TRAP::Graphics::API::OpenGLFrame
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+uint32_t TRAP::Graphics::API::OpenGLFrameBuffer2D::s_maxRenderBufferSize = 0;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::API::OpenGLFrameBuffer2D::OpenGLFrameBuffer2D(const uint32_t width, const uint32_t height)
-	: m_frameBufferHandle(0), m_depthBufferHandle(0), m_width(width), m_height(height)
+	: m_frameBufferHandle(0), m_depthBufferHandle(0), m_width(width), m_height(height), m_valid(false)
 {
 	Init();
 }
@@ -18,14 +22,14 @@ TRAP::Graphics::API::OpenGLFrameBuffer2D::OpenGLFrameBuffer2D(const uint32_t wid
 
 TRAP::Graphics::API::OpenGLFrameBuffer2D::~OpenGLFrameBuffer2D()
 {
-	if(s_currentlyBound == this)
+	if (m_valid && s_currentlyBound == this)
 	{
 		Unbind();
-		if(m_frameBufferHandle)
+		if (m_frameBufferHandle)
 		{
-			OpenGLCall(glDeleteFramebuffers(1, &m_frameBufferHandle));		
+			OpenGLCall(glDeleteFramebuffers(1, &m_frameBufferHandle));
 		}
-		if(m_depthBufferHandle)
+		if (m_depthBufferHandle)
 		{
 			OpenGLCall(glDeleteRenderbuffers(1, &m_depthBufferHandle));
 		}
@@ -36,11 +40,11 @@ TRAP::Graphics::API::OpenGLFrameBuffer2D::~OpenGLFrameBuffer2D()
 
 void TRAP::Graphics::API::OpenGLFrameBuffer2D::Bind() const
 {
-	if(s_currentlyBound != this)
+	if (m_valid && s_currentlyBound != this)
 	{
 		OpenGLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferHandle));
 		s_currentlyBound = this;
-		OpenGLCall(glViewport(0, 0, m_width, m_height));		
+		OpenGLCall(glViewport(0, 0, m_width, m_height));
 	}
 }
 
@@ -48,7 +52,7 @@ void TRAP::Graphics::API::OpenGLFrameBuffer2D::Bind() const
 
 void TRAP::Graphics::API::OpenGLFrameBuffer2D::Unbind() const
 {
-	if(s_currentlyBound)
+	if (s_currentlyBound)
 	{
 		OpenGLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 		s_currentlyBound = nullptr;
@@ -59,15 +63,18 @@ void TRAP::Graphics::API::OpenGLFrameBuffer2D::Unbind() const
 
 void TRAP::Graphics::API::OpenGLFrameBuffer2D::Clear()
 {
-	if (s_currentlyBound == this)
+	if (m_valid)
 	{
-		OpenGLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-	}
-	else
-	{
-		Bind();
-		OpenGLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-		Unbind();
+		if (s_currentlyBound == this)
+		{
+			OpenGLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+		}
+		else
+		{
+			Bind();
+			OpenGLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+			Unbind();
+		}
 	}
 }
 
@@ -96,15 +103,18 @@ const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::API::OpenGLFrameBuff
 
 void TRAP::Graphics::API::OpenGLFrameBuffer2D::SetClearColor(const Math::Vec4& color)
 {
-	if(s_currentlyBound == this)
+	if (m_valid)
 	{
-		OpenGLCall(glClearColor(color.x, color.y, color.z, color.w));
-	}
-	else
-	{
-		Bind();
-		OpenGLCall(glClearColor(color.x, color.y, color.z, color.w));
-		Unbind();
+		if (s_currentlyBound == this)
+		{
+			OpenGLCall(glClearColor(color.x, color.y, color.z, color.w));
+		}
+		else
+		{
+			Bind();
+			OpenGLCall(glClearColor(color.x, color.y, color.z, color.w));
+			Unbind();
+		}
 	}
 }
 
@@ -112,10 +122,22 @@ void TRAP::Graphics::API::OpenGLFrameBuffer2D::SetClearColor(const Math::Vec4& c
 
 void TRAP::Graphics::API::OpenGLFrameBuffer2D::Init()
 {
+	if (s_maxRenderBufferSize == 0)
+	{
+		OpenGLCall(glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, reinterpret_cast<int32_t*>(&s_maxRenderBufferSize)));
+	}
+
+	if(m_width > s_maxRenderBufferSize || m_height > s_maxRenderBufferSize)
+	{
+		TP_ERROR("[FrameBuffer2D][OpenGL] Couldn't create FrameBuffer!");
+		TP_ERROR("[FrameBuffer2D][OpenGL] Width: ", m_width, " or Height: ", m_height, " is bigger than the maximum render buffer size: ", s_maxRenderBufferSize, "!");
+		return;
+	}
+
 	OpenGLCall(glCreateFramebuffers(1, &m_frameBufferHandle));
 	OpenGLCall(glCreateRenderbuffers(1, &m_depthBufferHandle));
 
-	m_texture = Texture2D::CreateEmpty(ImageFormat::RGBA, m_width, m_height, { TextureFilter::Linear, TextureWrap::Clamp_To_Edge });
+	m_texture = Texture2D::CreateEmpty(m_width, m_height, 32, ImageFormat::RGBA, { TextureFilter::Linear, TextureWrap::Clamp_To_Edge });
 	if (m_texture)
 	{
 		OpenGLCall(glNamedFramebufferTexture(m_frameBufferHandle, GL_COLOR_ATTACHMENT0, (dynamic_cast<OpenGLTexture2D*>(m_texture.get()))->GetHandle(), 0));

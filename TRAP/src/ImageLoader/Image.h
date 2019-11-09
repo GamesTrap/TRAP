@@ -4,6 +4,11 @@
 #include "TRAPPCH.h"
 #include "Maths/Math.h"
 
+namespace TRAP
+{
+	enum class ImageFormat;
+}
+
 namespace TRAP::INTERNAL
 {
 	std::vector<uint8_t> ConvertBGR16ToRGB24(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
@@ -15,6 +20,9 @@ namespace TRAP::INTERNAL
 	std::vector<uint8_t> ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
 	std::vector<uint8_t> ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
 	std::vector<uint8_t> ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source, uint32_t width, uint32_t height);
+	bool IsGrayScale(ImageFormat format);
+	bool IsColored(ImageFormat format);
+	bool HasAlpha(ImageFormat format);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -55,6 +63,9 @@ namespace TRAP
 		virtual ImageFormat GetFormat() const = 0;
 
 		static Scope<Image> LoadFromFile(const std::string& filepath);
+		static Scope<Image> LoadFromMemory(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, std::vector<uint8_t> pixelData);
+		static Scope<Image> LoadFromMemory(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, std::vector<uint16_t> pixelData);
+		static Scope<Image> LoadFromMemory(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, std::vector<float> pixelData);
 		static Scope<Image> LoadFallback();
 		
 		template<typename T>

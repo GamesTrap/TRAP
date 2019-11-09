@@ -9,7 +9,10 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit VulkanTexture2D(TextureParameters parameters);
-		VulkanTexture2D(ImageFormat format, uint32_t width, uint32_t height, TextureParameters parameters);
+		VulkanTexture2D(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, TextureParameters parameters);
+		VulkanTexture2D(std::string name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<uint8_t>& pixelData, TextureParameters parameters);
+		VulkanTexture2D(std::string name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<uint16_t>& pixelData, TextureParameters parameters);
+		VulkanTexture2D(std::string name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<float>& pixelData, TextureParameters parameters);
 		VulkanTexture2D(std::string name, const std::string& filepath, TextureParameters parameters);
 		~VulkanTexture2D();
 		VulkanTexture2D(const VulkanTexture2D&) = delete;

@@ -27,7 +27,7 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const TextureParameters pa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const ImageFormat format, const uint32_t width, const uint32_t height, const TextureParameters parameters)
+TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const uint32_t width, const uint32_t height, const uint32_t bitsPerPixel, const ImageFormat format, const TextureParameters parameters)
 	: m_name("Empty"), m_parameters(parameters), m_handle(0)
 {
 	if (s_maxCombinedTextureUnits == 0)
@@ -71,6 +71,111 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const ImageFormat format, 
 	default:
 		break;
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name,
+                                                      const uint32_t width,
+                                                      const uint32_t height,
+                                                      const uint32_t bitsPerPixel,
+                                                      const ImageFormat format,
+                                                      const std::vector<uint8_t>& pixelData,
+                                                      const TextureParameters parameters)
+	: m_filePath(""), m_name(std::move(name)), m_parameters(parameters), m_handle(0)
+{
+	TP_DEBUG("[Texture2D][OpenGL] Loading Texture: \"", m_name, "\"");
+	Scope<Image> image = Image::LoadFromMemory(width, height, bitsPerPixel, format, pixelData);
+	
+	if (s_maxCombinedTextureUnits == 0)
+	{
+		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits)));
+	}
+	if (s_maxTextureSize == 0) //Only load maximum available texture size once
+	{
+		OpenGLCall(glGetIntegerv(GL_MAX_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxTextureSize)));
+	}
+
+	if (width > s_maxTextureSize || height > s_maxTextureSize)
+	{
+		TP_CRITICAL("[Texture2D][OpenGL] Texture: \"", m_name, "\" Width: ", width, " or Height: ", height, " is bigger than the maximum allowed texture size(", s_maxTextureSize, ")!");
+		TP_WARN("[Texture2D][OpenGL] Using Default Image!");
+		image = Image::LoadFallback();
+	}	
+	
+	InitializeTexture();
+
+	UploadTexture(image);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name,
+                                                      const uint32_t width,
+                                                      const uint32_t height,
+                                                      const uint32_t bitsPerPixel,
+                                                      const ImageFormat format,
+                                                      const std::vector<uint16_t>& pixelData,
+                                                      const TextureParameters parameters)
+	: m_filePath(""), m_name(std::move(name)), m_parameters(parameters), m_handle(0)
+{
+	TP_DEBUG("[Texture2D][OpenGL] Loading Texture: \"", m_name, "\"");
+	Scope<Image> image = Image::LoadFromMemory(width, height, bitsPerPixel, format, pixelData);
+
+	if (s_maxCombinedTextureUnits == 0)
+	{
+		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits)));
+	}
+	if (s_maxTextureSize == 0) //Only load maximum available texture size once
+	{
+		OpenGLCall(glGetIntegerv(GL_MAX_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxTextureSize)));
+	}
+
+	if (width > s_maxTextureSize || height > s_maxTextureSize)
+	{
+		TP_CRITICAL("[Texture2D][OpenGL] Texture: \"", m_name, "\" Width: ", width, " or Height: ", height, " is bigger than the maximum allowed texture size(", s_maxTextureSize, ")!");
+		TP_WARN("[Texture2D][OpenGL] Using Default Image!");
+		image = Image::LoadFallback();
+	}
+
+	InitializeTexture();
+
+	UploadTexture(image);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name,
+                                                      const uint32_t width,
+                                                      const uint32_t height,
+                                                      const uint32_t bitsPerPixel,
+                                                      const ImageFormat format,
+                                                      const std::vector<float>& pixelData,
+                                                      const TextureParameters parameters)
+	: m_filePath(""), m_name(std::move(name)), m_parameters(parameters), m_handle(0)
+{
+	TP_DEBUG("[Texture2D][OpenGL] Loading Texture: \"", m_name, "\"");
+	Scope<Image> image = Image::LoadFromMemory(width, height, bitsPerPixel, format, pixelData);
+
+	if (s_maxCombinedTextureUnits == 0)
+	{
+		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits)));
+	}
+	if (s_maxTextureSize == 0) //Only load maximum available texture size once
+	{
+		OpenGLCall(glGetIntegerv(GL_MAX_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxTextureSize)));
+	}
+
+	if (width > s_maxTextureSize || height > s_maxTextureSize)
+	{
+		TP_CRITICAL("[Texture2D][OpenGL] Texture: \"", m_name, "\" Width: ", width, " or Height: ", height, " is bigger than the maximum allowed texture size(", s_maxTextureSize, ")!");
+		TP_WARN("[Texture2D][OpenGL] Using Default Image!");
+		image = Image::LoadFallback();
+	}
+
+	InitializeTexture();
+
+	UploadTexture(image);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

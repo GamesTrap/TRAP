@@ -4,7 +4,6 @@
 #include "VFS/VFS.h"
 #include "Utils/String.h"
 
-#include "DefaultImage.h"
 #include "PortableMaps/PGMImage.h"
 #include "PortableMaps/PPMImage.h"
 #include "PortableMaps/PNMImage.h"
@@ -13,6 +12,8 @@
 #include "TARGA/TGAImage.h"
 #include "Bitmap/BMPImage.h"
 #include "PortableNetworkGraphics/PNGImage.h"
+#include "CustomImage.h"
+#include "Embed.h"
 
 std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
@@ -340,19 +341,109 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
 	{
 		TP_ERROR("[Image] Unsupported or unknown Image Format!");
 		TP_WARN("[Image] Using Default Image!");
-		return MakeScope<INTERNAL::DefaultImage>(virtualFilePath);
+		return MakeScope<INTERNAL::CustomImage>(virtualFilePath, 32, 32, 32, ImageFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 	}
 
 	//Test for Errors
 	if (result->GetPixelDataSize() == 0 || result->GetFormat() == ImageFormat::NONE)
-		result = MakeScope<INTERNAL::DefaultImage>(virtualFilePath);
+		result = MakeScope<INTERNAL::CustomImage>(virtualFilePath, 32, 32, 32, ImageFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, std::vector<uint8_t> pixelData)
+{
+	return MakeScope<INTERNAL::CustomImage>("", width, height, bitsPerPixel, format, pixelData);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, std::vector<uint16_t> pixelData)
+{
+	return MakeScope<INTERNAL::CustomImage>("", width, height, bitsPerPixel, format, pixelData);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, std::vector<float> pixelData)
+{
+	return MakeScope<INTERNAL::CustomImage>("", width, height, bitsPerPixel, format, pixelData);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
 {
-	return MakeScope<INTERNAL::DefaultImage>("");
+	return MakeScope<INTERNAL::CustomImage>("", 32, 32, 32, ImageFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::IsGrayScale(const ImageFormat format)
+{
+	switch(format)
+	{
+	case ImageFormat::Gray_Scale:
+		return true;
+
+	case ImageFormat::Gray_Scale_Alpha:
+		return true;
+
+	case ImageFormat::RGB:
+		return false;
+
+	case ImageFormat::RGBA:
+		return false;
+		
+	default:
+		return false;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::IsColored(const ImageFormat format)
+{
+	switch (format)
+	{
+	case ImageFormat::Gray_Scale:
+		return false;
+
+	case ImageFormat::Gray_Scale_Alpha:
+		return false;
+
+	case ImageFormat::RGB:
+		return true;
+
+	case ImageFormat::RGBA:
+		return true;
+
+	default:
+		return false;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::HasAlpha(const ImageFormat format)
+{
+	switch (format)
+	{
+	case ImageFormat::Gray_Scale:
+		return false;
+
+	case ImageFormat::Gray_Scale_Alpha:
+		return true;
+
+	case ImageFormat::RGB:
+		return false;
+
+	case ImageFormat::RGBA:
+		return true;
+
+	default:
+		return false;
+	}
 }

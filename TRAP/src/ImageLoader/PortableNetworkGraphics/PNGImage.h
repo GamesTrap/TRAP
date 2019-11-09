@@ -124,9 +124,6 @@ namespace TRAP::INTERNAL
 		std::vector<uint8_t> m_data;
 		std::vector<uint16_t> m_data2Byte;
 		ImageFormat m_format;
-		bool m_isImageColored;
-		bool m_isImageGrayScale;
-		bool m_hasAlphaChannel;
 
 		static bool DecompressData(uint8_t* source, int sourceLength, uint8_t* destination, int destinationLength, bool needSwap);
 		static bool UnFilterScanline(uint8_t* recon, const uint8_t* scanline, const uint8_t* precon, std::size_t byteWidth, uint8_t filterType, std::size_t length);

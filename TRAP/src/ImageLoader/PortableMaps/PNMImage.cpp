@@ -8,7 +8,7 @@
 #include "Utils/ByteSwap.h"
 
 TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
-	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_isImageGrayScale(false), m_isImageColored(false), m_width(0), m_height(0), m_format(ImageFormat::NONE)
+	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_width(0), m_height(0), m_format(ImageFormat::NONE)
 {
 	TP_DEBUG("[Image][PNM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
@@ -79,7 +79,6 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 			{
 				//GrayScale
 				m_format = ImageFormat::Gray_Scale;
-				m_isImageGrayScale = true;
 				m_bitsPerPixel = 16;
 				m_data2Byte.resize(m_width * m_height);
 				if(!file.read(reinterpret_cast<char*>(m_data2Byte.data()), m_width * m_height * sizeof(uint16_t)))
@@ -94,7 +93,6 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 			{
 				//RGB
 				m_format = ImageFormat::RGB;
-				m_isImageColored = true;
 				m_bitsPerPixel = 48;
 				m_data2Byte.resize(m_width * m_height * 3);
 				if (!file.read(reinterpret_cast<char*>(m_data2Byte.data()), m_width * m_height * 3 * sizeof(uint16_t)))
@@ -119,7 +117,6 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 			{
 				//GrayScale
 				m_format = ImageFormat::Gray_Scale;
-				m_isImageGrayScale = true;
 				m_bitsPerPixel = 8;
 				m_data.resize(m_width * m_height);
 				if(!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height))
@@ -134,7 +131,6 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 			{
 				//RGB
 				m_format = ImageFormat::RGB;
-				m_isImageColored = true;
 				m_bitsPerPixel = 24;
 				m_data.resize(m_width * m_height * 3);
 				if (!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * 3))
@@ -210,14 +206,14 @@ bool TRAP::INTERNAL::PNMImage::HasAlphaChannel() const
 
 bool TRAP::INTERNAL::PNMImage::IsImageGrayScale() const
 {
-	return m_isImageGrayScale;
+	return IsGrayScale(m_format);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::PNMImage::IsImageColored() const
 {
-	return m_isImageColored;
+	return IsColored(m_format);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

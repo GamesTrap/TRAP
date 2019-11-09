@@ -13,10 +13,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 	m_bitsPerPixel(0),
 	m_width(0),
 	m_height(0),
-	m_format(ImageFormat::NONE),
-	m_isImageColored(false),
-	m_isImageGrayScale(false),
-	m_hasAlphaChannel(false)
+	m_format(ImageFormat::NONE)
 {
 	TP_DEBUG("[Image][BMP] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
@@ -260,30 +257,24 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			if (m_bitsPerPixel == 8) //Color Table
 			{
 				m_format = ImageFormat::RGBA;
-				m_isImageColored = true;
 				m_bitsPerPixel = 32;
-				m_hasAlphaChannel = true;
 				
 				m_data = DecodeBGRAMap(imageData, m_width, m_height, 4, colorTable);
 			}
 			else if (m_bitsPerPixel == 16) //RGB
 			{				
 				m_format = ImageFormat::RGB;
-				m_isImageColored = true;
 				m_bitsPerPixel = 24;
 				m_data = ConvertBGR16ToRGB24(imageData, m_width, m_height);
 			}
 			else if (m_bitsPerPixel == 24) //RGB
 			{				
 				m_format = ImageFormat::RGB;
-				m_isImageColored = true;
 				m_data = ConvertBGR24ToRGB24(imageData, m_width, m_height);
 			}
 			else if (m_bitsPerPixel == 32) //RGBA
 			{
 				m_format = ImageFormat::RGBA;
-				m_isImageColored = true;
-				m_hasAlphaChannel = true;
 
 				//Check if alpha is used
 				bool alphaUsed = false;
@@ -318,8 +309,6 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		}
 		else if (infoHeader.Compression == 3) //BitFields
 		{
-			m_isImageColored = true;
-			m_hasAlphaChannel = true;
 			m_format = ImageFormat::RGBA;
 
 			std::array<BitField, 4> bitFields{};
@@ -454,21 +443,21 @@ uint32_t TRAP::INTERNAL::BMPImage::GetHeight() const
 
 bool TRAP::INTERNAL::BMPImage::HasAlphaChannel() const
 {
-	return m_hasAlphaChannel;
+	return HasAlpha(m_format);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::BMPImage::IsImageGrayScale() const
 {
-	return m_isImageGrayScale;
+	return IsGrayScale(m_format);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::BMPImage::IsImageColored() const
 {
-	return m_isImageColored;
+	return IsColored(m_format);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

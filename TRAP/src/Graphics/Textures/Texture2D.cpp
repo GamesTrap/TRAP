@@ -65,20 +65,92 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ImageFormat format, uint32_t width, uint32_t height, TextureParameters parameters)
+std::unique_ptr<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromMemory(const std::string& name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format,
+                                                                                       const std::vector<uint8_t>&
+                                                                                       pixelData, TextureParameters parameters)
 {
 	switch (API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12Texture2D>(format, width, height, parameters);
+		return MakeScope<API::D3D12Texture2D>(name, width, height, bitsPerPixel, format, pixelData, parameters);
 #endif
 
 	case API::RenderAPI::Vulkan:
-		return MakeScope<API::VulkanTexture2D>(format, width, height, parameters);
+		return MakeScope<API::VulkanTexture2D>(name, width, height, bitsPerPixel, format, pixelData, parameters);
 
 	case API::RenderAPI::OpenGL:
-		return MakeScope<API::OpenGLTexture2D>(format, width, height, parameters);
+		return MakeScope<API::OpenGLTexture2D>(name, width, height, bitsPerPixel, format, pixelData, parameters);
+
+	default:
+		return nullptr;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::unique_ptr<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromMemory(const std::string& name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format,
+                                                                                       const std::vector<uint16_t>&
+                                                                                       pixelData, TextureParameters parameters)
+{
+	switch (API::Context::GetRenderAPI())
+	{
+#ifdef TRAP_PLATFORM_WINDOWS
+	case API::RenderAPI::D3D12:
+		return MakeScope<API::D3D12Texture2D>(name, width, height, bitsPerPixel, format, pixelData, parameters);
+#endif
+
+	case API::RenderAPI::Vulkan:
+		return MakeScope<API::VulkanTexture2D>(name, width, height, bitsPerPixel, format, pixelData, parameters);
+
+	case API::RenderAPI::OpenGL:
+		return MakeScope<API::OpenGLTexture2D>(name, width, height, bitsPerPixel, format, pixelData, parameters);
+
+	default:
+		return nullptr;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::unique_ptr<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromMemory(const std::string& name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format,
+                                                                                       const std::vector<float>&
+                                                                                       pixelData, TextureParameters parameters)
+{
+	switch (API::Context::GetRenderAPI())
+	{
+#ifdef TRAP_PLATFORM_WINDOWS
+	case API::RenderAPI::D3D12:
+		return MakeScope<API::D3D12Texture2D>(name, width, height, bitsPerPixel, format, pixelData, parameters);
+#endif
+
+	case API::RenderAPI::Vulkan:
+		return MakeScope<API::VulkanTexture2D>(name, width, height, bitsPerPixel, format, pixelData, parameters);
+
+	case API::RenderAPI::OpenGL:
+		return MakeScope<API::OpenGLTexture2D>(name, width, height, bitsPerPixel, format, pixelData, parameters);
+
+	default:
+		return nullptr;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, TextureParameters parameters)
+{
+	switch (API::Context::GetRenderAPI())
+	{
+#ifdef TRAP_PLATFORM_WINDOWS
+	case API::RenderAPI::D3D12:
+		return MakeScope<API::D3D12Texture2D>(width, height, bitsPerPixel, format, parameters);
+#endif
+
+	case API::RenderAPI::Vulkan:
+		return MakeScope<API::VulkanTexture2D>(width, height, bitsPerPixel, format, parameters);
+
+	case API::RenderAPI::OpenGL:
+		return MakeScope<API::OpenGLTexture2D>(width, height, bitsPerPixel, format, parameters);
 
 	default:
 		return nullptr;

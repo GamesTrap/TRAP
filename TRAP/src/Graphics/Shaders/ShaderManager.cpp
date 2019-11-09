@@ -96,6 +96,9 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Get(co
 {
 	if(Exists(name))
 			return s_Shaders[name];
+
+	TP_ERROR("[ShaderManager] Couldn't find Shader: ", name, "!");
+	TP_WARN("[ShaderManager] Using Fallback Shader!");
 	
 	//Should always be available as a fallback
 	return Get("Fallback");
