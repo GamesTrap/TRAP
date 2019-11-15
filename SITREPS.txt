@@ -594,3 +594,12 @@ SITREP 11/09/2019|19w45a3
     - Added ability to load 2D texure from memory ~>40 mins
     - OpenGLFrameBuffer2D Added resolution safety check ~>15 mins
     - Renderer2D now uses only 1 shader and a 1x1 White 2D Texture ~>25 mins
+
+SITREP 11/10/2019|19w45a4
+    - Changed TRAP Engine version to 19w45a4(0.5.65)
+    - Started working on Controller Input(XInput) ~>40 mins
+
+SITREP 11/14/2019|19w46a1
+    - Changed TRAP Engine version to 19w46a1(0.5.66)
+    - PNG Image Loader reduced memory usage ~>30 mins
+    - Reverted last PNG Optimization because it invalidated data ~>20 mins

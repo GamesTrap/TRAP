@@ -118,11 +118,19 @@ namespace TRAP::Utils::Decompress
 			//Make table for huffman decoding
 			bool MakeTable();
 			static uint32_t ReverseBits(uint32_t bits, uint32_t num);
-			
+
+			static constexpr uint16_t NumDeflateCodeSymbols = 288;
+			static constexpr uint8_t NumDistanceSymbols = 32;
+			static constexpr uint8_t NumCodeLengthCodes = 19;
+			static constexpr uint8_t FirstBits = 9u;
+			static constexpr uint16_t InvalidSymbol = 65535u;
 			//The order in which "code length alphabet code lengths" are stored, out of this the Huffman Tree of the dynamic Huffman Tree lengths is generated
 			static constexpr std::array<uint32_t, 19> CLCLOrder{ 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 };
 		};
 
+		static constexpr uint16_t FirstLengthCodeIndex = 257;
+		static constexpr uint16_t LastLengthCodeIndex = 285;
+		
 		static bool InflateNoCompression(std::vector<uint8_t>& out, std::size_t& pos, BitReader& reader);
 		static bool InflateHuffmanBlock(std::vector<uint8_t>& out, std::size_t& pos, BitReader& reader, uint32_t btype);
 	}

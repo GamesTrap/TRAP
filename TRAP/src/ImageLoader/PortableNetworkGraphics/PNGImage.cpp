@@ -184,7 +184,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			break;
 		}
 
-		if (data.InterlaceMethod != 0 && data.InterlaceMethod != 1)
+		if (!(data.InterlaceMethod == 0 || data.InterlaceMethod == 1))
 		{
 			TP_ERROR("[Image][PNG] Interlace method is invalid!");
 			TP_WARN("[Image][PNG] Using Default Image!");
@@ -272,11 +272,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			if (data.BitDepth == 8)
 				m_data = raw;
 			else
-			{
 				m_data2Byte = ConvertTo2Byte(raw);
-				//TP_ERROR("[Image][PNG] GrayScaleAlpha with BitDepth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				//TP_WARN("[Image][PNG] Using Default Image!");
-			}
 			break;
 
 		case 6: //TrueColor Alpha
@@ -1529,7 +1525,7 @@ bool TRAP::INTERNAL::PNGImage::tIMECheck(const tIMEChunk& timeChunk)
 	return true;
 }
 
-bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceLength, uint8_t* destination, const int destinationLength, bool needSwap)
+bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceLength, uint8_t* destination, const int destinationLength, const bool needSwap)
 {
 	if (sourceLength < 2)
 	{

@@ -20,7 +20,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::EnsureBits9(const std::size_t
 	const std::size_t size = Size;
 	if (start + 1u < size)
 	{
-		Buffer = static_cast<uint32_t>(Data[start + 0]) | static_cast<uint32_t>(Data[start + 1] << 8u);
+		Buffer = static_cast<uint32_t>(Data[start + 0]) | (static_cast<uint32_t>(Data[start + 1] << 8u));
 		Buffer >>= (BP & 7u);
 
 		return true;
@@ -217,7 +217,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 	const uint32_t HCLEN = reader.ReadBits(4) + 4;
 
 	//Code length code lengths ("clcl"), the bit lengths of the Huffman Tree used to compress bitLengthLL and bitLengthD
-	std::array<uint32_t, 19 * sizeof(uint32_t)> bitLengthCL{};
+	std::array<uint32_t, 19> bitLengthCL{};
 
 	bool error = false;
 	while(!error)
@@ -233,16 +233,16 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 			reader.EnsureBits9(3); //Out of bounds already checked above
 			bitLengthCL[CLCLOrder[i]] = reader.ReadBits(3);
 		}
-		for (i = HCLEN; i != 19; ++i)
+		for (i = HCLEN; i != NumCodeLengthCodes; ++i)
 			bitLengthCL[CLCLOrder[i]] = 0;
 
-		error = !treeCL.MakeFromLengths(bitLengthCL.data(), 19, 7);
+		error = !treeCL.MakeFromLengths(bitLengthCL.data(), NumCodeLengthCodes, 7);
 		if(error)
 			break;
 
 		//Now we can use this tree to read the lengths for the tree that this function will return
-		std::array<uint32_t, 288> bitLengthLL{};
-		std::array<uint32_t, 32> bitLengthD{};
+		std::array<uint32_t, NumDeflateCodeSymbols> bitLengthLL{};
+		std::array<uint32_t, NumDistanceSymbols> bitLengthD{};
 
 		//i is the current symbol we are reading in the part that contains the code lengths of literal/length and distance codes
 		i = 0;
@@ -333,9 +333,9 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 					++i;
 				}
 			}
-			else //if(code == (uint32_t)(-1)) //DecodeSymbol returns (uint32_t)(-1) in case of error
+			else //if(code == 65535u)
 			{
-				error = true; //Nonexistent code, this can never happen
+				error = true; //Error: Tried to read disallowed Huffman symbol
 				break;
 			}
 			//Check if any of the EnsureBits above went out of bounds
@@ -355,10 +355,10 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 		}
 
 		//Now we have finally got HLIT and HDIST, so generate the code trees, and the function is done
-		error = !treeLL.MakeFromLengths(bitLengthLL.data(), 288, 15);
+		error = !treeLL.MakeFromLengths(bitLengthLL.data(), NumDeflateCodeSymbols, 15);
 		if (error)
 			break;
-		error = !treeD.MakeFromLengths(bitLengthD.data(), 32, 15);
+		error = !treeD.MakeFromLengths(bitLengthD.data(), NumDistanceSymbols, 15);
 
 		break; //End of error-while
 	}
@@ -371,19 +371,19 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 //Returns the code. The bit reader must already have been ensured at least 15bits
 uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader& reader)
 {
-	const uint16_t code = reader.PeekBits(9u);
+	const uint16_t code = reader.PeekBits(FirstBits);
 	const uint16_t l = TableLength[code];
 	const uint16_t value = TableValue[code];
-	if(l <= 9u)
+	if(l <= FirstBits)
 	{
 		reader.AdvanceBits(l);
 		
 		return value;
 	}
 
-	reader.AdvanceBits(9u);
-	const uint32_t index2 = value + reader.PeekBits(l - 9u);
-	reader.AdvanceBits(TableLength[index2] - 9u);
+	reader.AdvanceBits(FirstBits);
+	const uint32_t index2 = value + reader.PeekBits(l - FirstBits);
+	reader.AdvanceBits(TableLength[index2] - FirstBits);
 
 	return TableValue[index2];
 }
@@ -394,19 +394,19 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader&
 bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedLiteralLengthTree()
 {
 	uint32_t i;
-	std::array<uint32_t, 288 * sizeof(uint32_t)> bitLength{}; //256 literals, the end code, some length codes, and 2 unused codes
+	std::array<uint32_t, NumDeflateCodeSymbols> bitLength{}; //256 literals, the end code, some length codes, and 2 unused codes
 
 	//288 possible codes: 0-255 = Literals, 256 = EndCode, 257-285 = LengthCodes, 286-287 = Unused
 	for (i = 0; i <= 143; ++i)
 		bitLength[i] = 8;
-	for (i = 0; i <= 255; ++i)
+	for (i = 144; i <= 255; ++i)
 		bitLength[i] = 9;
-	for (i = 0; i <= 279; ++i)
+	for (i = 256; i <= 279; ++i)
 		bitLength[i] = 7;
-	for (i = 0; i <= 287; ++i)
+	for (i = 280; i <= 287; ++i)
 		bitLength[i] = 8;
 
-	if (!MakeFromLengths(bitLength.data(), 288, 15)) //256 literals, the end code, some length codes, and 2 unused codes
+	if (!MakeFromLengths(bitLength.data(), NumDeflateCodeSymbols, 15)) //256 literals, the end code, some length codes, and 2 unused codes
 		return false;
 
 	return true;
@@ -417,14 +417,13 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedLiteralLengthT
 //Get the distance code tree of a deflated block with fixed tree, as specified in the deflate specification
 bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedDistanceTree()
 {
-	uint32_t i;
-	std::array<uint32_t, 32 * sizeof(uint32_t)> bitLength{}; //The distance codes have their own symbols, 30 used, 2 unused
+	std::array<uint32_t, NumDistanceSymbols> bitLength{}; //The distance codes have their own symbols, 30 used, 2 unused
 
 	//There are 32 distance codes, but 30-31 are unused
-	for (i = 0; i != 32; ++i)
+	for (uint32_t i = 0; i != NumDistanceSymbols; ++i)
 		bitLength[i] = 5;
 
-	if (!MakeFromLengths(bitLength.data(), 32, 15))
+	if (!MakeFromLengths(bitLength.data(), NumDistanceSymbols, 15))
 		return false;
 
 	return true;
@@ -436,7 +435,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GenerateFixedDistanceTree()
 //MaxBitLength is the maximum bits that a code in the tree can have.
 bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths(const uint32_t* bitLength, const std::size_t numCodes, const uint32_t maxBitLength)
 {
-	Lengths.resize(numCodes * sizeof(uint32_t));
+	Lengths.resize(numCodes);
 	for (uint32_t i = 0; i != numCodes; ++i)
 		Lengths[i] = bitLength[i];
 	NumCodes = static_cast<uint32_t>(numCodes); //Number of symbols
@@ -454,16 +453,16 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths2()
 {
 	uint32_t bits;
 
-	Codes.resize(NumCodes * sizeof(uint32_t));
-	std::vector<uint32_t> bitLengthCount((MaxBitLength + 1) * sizeof(uint32_t), 0);
-	std::vector<uint32_t> nextCode((MaxBitLength + 1) * sizeof(uint32_t), 0);
+	Codes.resize(NumCodes);
+	std::vector<uint32_t> bitLengthCount((MaxBitLength + 1), 0);
+	std::vector<uint32_t> nextCode((MaxBitLength + 1), 0);
 
 	//Step 1: Count number of instances of each code length
 	for (bits = 0; bits != NumCodes; ++bits)
 		++bitLengthCount[Lengths[bits]];
 	//Step 2: Generate the nextCode values
 	for (bits = 1; bits <= MaxBitLength; ++bits)
-		nextCode[bits] = (nextCode[bits - 1] + bitLengthCount[bits - 1]) << 1;
+		nextCode[bits] = (nextCode[bits - 1] + bitLengthCount[bits - 1]) << 1u;
 	//Step 3: Generate all the codes
 	for(uint32_t n = 0; n != NumCodes; ++n)
 		if(Lengths[n] != 0)
@@ -483,21 +482,21 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeFromLengths2()
 
 bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 {
-	static const uint32_t headSize = 1u << 9u; //Size of the first table
-	static const uint32_t mask = (1u << 9u) /*headSize*/ - 1u;
+	static const uint32_t headSize = 1u << FirstBits; //Size of the first table
+	static const uint32_t mask = (1u << FirstBits) /*headSize*/ - 1u;
 	std::size_t i; //Total table size
-	std::vector<uint32_t> maxLengths(headSize * sizeof(uint32_t), 0);
+	std::vector<uint32_t> maxLengths(headSize, 0);
 
 	//Compute maxLengths: Max total bit length of symbols sharing prefix in the first table
 	for(i = 0; i < NumCodes; i++)
 	{
 		const uint32_t symbol = Codes[i];
 		uint32_t l = Lengths[i];
-		if (l <= 9u)
+		if (l <= FirstBits)
 			continue; //Symbols that fit in first table dont increase secondary table size
 		//Get the FIRSTBITS(9u) MSBs, the MSBs of the symbol are encoded first.
 		//See later comment about the reversing
-		const uint32_t index = ReverseBits(symbol >> (l - 9u), 9u);
+		const uint32_t index = ReverseBits(symbol >> (l - FirstBits), FirstBits);
 		maxLengths[index] = Math::Max(maxLengths[index], l);
 	}
 	//Compute total table size: Size of first table plus all secondary tables for symbols longer than FIRSTBITS(9u)
@@ -505,26 +504,26 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 	for(i = 0; i < headSize; ++i)
 	{
 		const uint32_t l = maxLengths[i];
-		if (l > 9u)
-			size += static_cast<std::size_t>(1u) << (l - 9u);
+		if (l > FirstBits)
+			size += static_cast<std::size_t>(1u) << (l - FirstBits);
 	}
-	TableLength.resize(size * sizeof(TableLength[0]), 16); //Initialize with an invalid length to indicate unused entries
-	TableValue.resize(size * sizeof(TableValue[0]));
+	TableLength.resize(size, 16); //Initialize with an invalid length to indicate unused entries
+	TableValue.resize(size);
 
 	//Fill in the first table for long symbols: Max prefix size and pointer to secondary tables
 	std::size_t pointer = headSize;
 	for(i = 0; i < headSize; ++i)
 	{
 		const uint32_t l = maxLengths[i];
-		if (l <= 9u)
+		if (l <= FirstBits)
 			continue;
 		TableLength[i] = l;
 		TableValue[i] = static_cast<uint16_t>(pointer);
-		pointer += static_cast<std::size_t>(1u) << (l - 9u);
+		pointer += static_cast<std::size_t>(1u) << (l - FirstBits);
 	}
-	maxLengths.clear();
 
 	//Fill in the first table for short symbols, or secondary table for long symbols
+	std::size_t numPresent = 0;
 	for(i = 0; i < NumCodes; ++i)
 	{
 		const uint32_t l = Lengths[i];
@@ -533,10 +532,13 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 		const uint32_t reverse = ReverseBits(symbol, l);
 		if (l == 0)
 			continue;
-		else if(l <= 9u)
+		
+		numPresent++;
+		
+		if(l <= FirstBits)
 		{
 			//Short symbol, fully in first table, replicated num times if l < FIRSTBITS(9u)
-			const uint32_t num = 1u << (9u - l);
+			const uint32_t num = 1u << (FirstBits - l);
 			for(uint32_t j = 0; j < num; ++j)
 			{
 				//Bit reader will read the 1 bits of symbol first, the remaining FIRSTBITS(9u) - l bits go to the MSBs
@@ -554,27 +556,47 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 			const uint32_t index = reverse & mask;
 			const uint32_t maxLength = TableLength[index];
 			//log2 of secondary table length, should be >= l - FIRSTBITS(9u)
-			const uint32_t tableLength = maxLength - 9u;
+			const uint32_t tableLength = maxLength - FirstBits;
 			const uint32_t start = TableValue[index]; //Starting index in secondary table
-			const uint32_t num = 1u << (tableLength - (l - 9u)); //Amount of entries of this symbol in secondary table
+			const uint32_t num = 1u << (tableLength - (l - FirstBits)); //Amount of entries of this symbol in secondary table
 			if (maxLength < l)
 				return false; //Invalid tree: Long symbol shares prefix with short symbol
 			for(uint32_t j = 0; j < num; ++j)
 			{
-				const uint32_t reverse2 = reverse >> 9u; //l - FIRSTBITS(9u) bits
-				const uint32_t index2 = start + (reverse2 | (j << (l - 9u)));
+				const uint32_t reverse2 = reverse >> FirstBits; //l - FIRSTBITS(9u) bits
+				const uint32_t index2 = start + (reverse2 | (j << (l - FirstBits)));
 				TableLength[index2] = l;
 				TableValue[index2] = static_cast<uint16_t>(i);
 			}
 		}
 	}
 
-	//A good Huffman Tree has N * 2 - 1 nodes, of which N - 1 are internal nodes.
-	//If that is not the case(due to too long length codes), the table will not have been fully used, and this is an error
-	//(not all bit combinations can be decoded)
-	for (i = 0; i < size; ++i)
-		if (TableLength[i] == 16)
-			return false;
+	if(numPresent < 2)
+	{
+		//In case of exactly 1 symbol, in theory the Huffman symbol needs 0 bits, but deflate uses 1 bit instead.
+		//In case of 0 symbols, no symbols can appear at all, but such Huffman Tree could still exist(e.g. if distance codes are never used).
+		//In both cases, not all symbols of the table will be filled in.
+		//Fill them in with an invalid symbol value so returning them from HuffmanTree::DecodeSymbol will cause error
+		for (i = 0; i < size; ++i)
+		{
+			if (TableLength[i] == 16)
+			{
+				//As Length, use a value smaller than FIRSTBITS(9u) for the head table, and a value larger than FIRSTBITS(9u) for the secondary table,
+				//to ensure valid behavior for advanceBits when reading this symbol.
+				TableLength[i] = i < headSize ? 1 : FirstBits + 1;
+				TableValue[i] = InvalidSymbol;
+			}			
+		}
+	}
+	else
+	{
+		//A good Huffman Tree has N * 2 - 1 nodes, of which N - 1 are internal nodes.
+		//If that is not the case(due to too long length codes), the table will not have been fully used, and this is an error
+		//(not all bit combinations can be decoded)		
+		for (i = 0; i < size; ++i)
+			if (TableLength[i] == 16)
+				return false;
+	}
 
 	return true;
 }
@@ -655,13 +677,13 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 			out[pos] = static_cast<uint8_t>(codeLL);
 			++(pos);
 		}
-		else if(codeLL >= 257 && codeLL <= 285) //Length code
+		else if(codeLL >= FirstLengthCodeIndex && codeLL <= LastLengthCodeIndex) //Length code
 		{
 			//Part 1: Get Length base
-			std::size_t length = HuffmanTree::LengthBase[codeLL - 257];
+			std::size_t length = HuffmanTree::LengthBase[codeLL - FirstLengthCodeIndex];
 
 			//Part 2: Get Extra bits and add the value of that to length
-			const uint32_t numExtraBitsL = HuffmanTree::LengthExtra[codeLL - 257];
+			const uint32_t numExtraBitsL = HuffmanTree::LengthExtra[codeLL - FirstLengthCodeIndex];
 			if (numExtraBitsL != 0)
 				//Bits already ensured above
 				length += reader.ReadBits(numExtraBitsL);
@@ -671,13 +693,13 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 			const uint32_t codeD = treeD.DecodeSymbol(reader);
 			if(codeD > 29)
 			{
-				if(codeD == static_cast<uint32_t>(-1)) //DecodeSymbol returns (uint32_t)(-1) in case of error
+				if(codeD <= 31)
 				{
-					error = true; //Error: No EndCode or Wrong jump outside of tree
+					error = true; //Error: Invalid distance code (30-31 are never used)
 					break;
-				}
+				}				
 				
-				error = true; //Error: Invalid distance code (30-31 are never used)
+				error = true; //Error: Tried to read disallowed Huffman symbol
 				break;
 			}
 			uint32_t distance = HuffmanTree::DistanceBase[codeD];
@@ -695,16 +717,16 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 				error = true; //Error: Too long backward distance
 				break;
 			}
-			const std::size_t backward = start - distance;
+			std::size_t backward = start - distance;
 
 			out.resize(pos + length);
 			if(distance < length)
 			{
+				std::size_t forward = 0;
 				std::memcpy(out.data() + pos, out.data() + backward, distance);
 				pos += distance;
-				const uint32_t size = length - distance;
-				std::memcpy(out.data() + pos, out.data() + backward, size);
-				pos += size;
+				for (forward = distance; forward < length; ++forward)
+					out[pos++] = out[backward++];
 			}
 			else
 			{
@@ -714,9 +736,9 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 		}
 		else if(codeLL == 256)
 			break; //End code, break the loop
-		else //if(code == (uint32_t)(-1)) //DecodeSymbol returns (uint32_t)(-1) in case of error
+		else //if(codeLL == 66535u)
 		{
-			error = true; //Error: Impossible
+			error = true; //Error: Tried to read disallowed Huffman symbol
 			break;
 		}
 		//Check if any of the EnsureBits above went out of bounds

@@ -146,7 +146,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec2& position, const Math::Vec2& size, const Scope<Texture2D>& texture)
 {
-	DrawQuad({ position.x, position.y, 1.0f }, size, texture);
+	DrawQuad({ position.x, position.y, 0.0f }, size, texture);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
