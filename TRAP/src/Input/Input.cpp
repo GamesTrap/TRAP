@@ -8,6 +8,7 @@
 
 std::array<TRAP::Input::ControllerStatus, 4> TRAP::Input::s_controllerStatuses;
 TRAP::Input::EventCallbackFn TRAP::Input::s_eventCallback{};
+TRAP::Input::ControllerAPI TRAP::Input::s_controllerAPI = ControllerAPI::Unknown;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -15,19 +16,30 @@ TRAP::Input::ControllerAPI TRAP::Input::GetControllerAPI()
 {
 #ifdef TRAP_PLATFORM_WINDOWS
 	return s_controllerAPI;
+#elif defined(TRAP_PLATFORM_LINUX)
+	return ControllerAPI::Linux;
 #endif
 
-	return ControllerAPI::XInput;
+	return ControllerAPI::Unknown;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Input::SetControllerAPI(const ControllerAPI controllerAPI)
 {
-#ifdef TRAP_PLATFORM_WINDOWS
 	s_controllerStatuses = {};
 	s_controllerAPI = controllerAPI;
+	
+#ifdef TRAP_PLATFORM_WINDOWS
+	if (s_controllerAPI == ControllerAPI::Unknown || s_controllerAPI == ControllerAPI::Linux)
+		s_controllerAPI = ControllerAPI::XInput;
+	
 	InitControllerWindows();
+#elif defined(TRAP_PLATFORM_LINUX)
+	if (s_controllerAPI != ControllerAPI::Linux)
+		s_controllerAPI = ControllerAPI::Linux;
+	
+	//TODO
 #endif
 }
 
@@ -35,10 +47,16 @@ void TRAP::Input::SetControllerAPI(const ControllerAPI controllerAPI)
 
 void TRAP::Input::Init(const ControllerAPI controllerAPI)
 {
-#ifdef TRAP_PLATFORM_WINDOWS
 	s_controllerAPI = controllerAPI;
+	
+#ifdef TRAP_PLATFORM_WINDOWS
+	if (s_controllerAPI == ControllerAPI::Unknown || s_controllerAPI == ControllerAPI::Linux)
+		s_controllerAPI = ControllerAPI::XInput;
 	InitControllerWindows();
 #elif defined(TRAP_PLATFORM_LINUX)
+	if (s_controllerAPI != ControllerAPI::Linux)
+		s_controllerAPI = ControllerAPI::Linux;
+	
 	//Assuming GLFW is already initialized
 	s_controllerStatuses[static_cast<int32_t>(Controller::One)] =
 		{
@@ -68,12 +86,6 @@ void TRAP::Input::Init(const ControllerAPI controllerAPI)
 
 	glfwSetJoystickCallback(JoystickCallback);
 #endif
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Input::Shutdown()
-{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -213,21 +225,24 @@ float TRAP::Input::GetControllerAxis(Controller controller, const ControllerAxis
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::ControllerHat TRAP::Input::GetControllerHat(Controller controller, const uint32_t hat)
+TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(Controller controller, const uint32_t dpad)
 {
 	if (!IsControllerConnected(controller))
 	{
 		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not connected!");
-		return ControllerHat::Centered;
+		return ControllerDPad::Centered;
 	}
 
-	//TODO Needed at all?
-	uint32_t hatCount = 0;
-	const unsigned char *hats = glfwGetJoystickHats(static_cast<int32_t>(controller), reinterpret_cast<int32_t *>(&hatCount));
-	if (hats && hat < hatCount)
-		return static_cast<ControllerHat>(hats[hat]);
+#ifdef TRAP_PLATFORM_WINDOWS
+	return GetControllerDPadXInput(controller, dpad);
+#elif defined(TRAP_PLATFORM_LINUX)
+	uint32_t dpadCount = 0;
+	const unsigned char* dpads = glfwGetJoystickHats(static_cast<int32_t>(controller), reinterpret_cast<int32_t*>(&dpadCount));
+	if (dpads && dpad < dpadCount)
+		return static_cast<ControllerDPad>(dpads[dpad]);
+#endif	
 
-	return ControllerHat::Centered;
+	return ControllerDPad::Centered;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -309,7 +324,7 @@ std::vector<bool> TRAP::Input::GetAllControllerButtons(Controller controller)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Input::ControllerHat> TRAP::Input::GetAllControllerHats(Controller controller)
+std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(Controller controller)
 {
 	if (!IsControllerConnected(controller))
 	{
@@ -317,11 +332,17 @@ std::vector<TRAP::Input::ControllerHat> TRAP::Input::GetAllControllerHats(Contro
 		return {};
 	}
 
-	uint32_t hatCount = 0;
-	const unsigned char *hats = glfwGetJoystickHats(static_cast<int32_t>(controller), reinterpret_cast<int32_t *>(&hatCount));
-	if (hats)
-		return std::vector<ControllerHat>(reinterpret_cast<const ControllerHat *>(hats), reinterpret_cast<const ControllerHat *>(hats) + hatCount);
+#ifdef TRAP_PLATFORM_WINDOWS
+	return GetAllControllerDPadsXInput(controller);
+#elif defined(TRAP_PLATFORM_LINUX)
+	uint32_t dpadCount = 0;
+	const unsigned char* dpads = glfwGetJoystickHats(static_cast<int32_t>(controller), reinterpret_cast<int32_t*>(&dpadCount));
+	if (dpads)
+		return std::vector<ControllerDPad>(reinterpret_cast<const ControllerDPad*>(dpads), reinterpret_cast<const ControllerDPad*>(dpads) + dpadCount);
 
+	return {};
+#endif		
+	
 	return {};
 }
 

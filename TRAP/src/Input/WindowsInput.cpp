@@ -7,7 +7,6 @@
 #ifdef TRAP_PLATFORM_WINDOWS
 
 std::array<uint32_t, 4> TRAP::Input::s_lastXInputUpdate{};
-TRAP::Input::ControllerAPI TRAP::Input::s_controllerAPI = ControllerAPI::XInput;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -200,6 +199,39 @@ float TRAP::Input::GetControllerAxisXInput(Controller controller, const Controll
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPadXInput(const Controller controller, const uint32_t dpad)
+{
+	if(dpad == 0)
+	{
+		std::vector<bool> buttons = GetAllControllerButtonsXInput(controller);
+		const bool up = buttons[11];
+		const bool right = buttons[12];
+		const bool down = buttons[13];
+		const bool left = buttons[14];
+
+		if (right && up)
+			return ControllerDPad::Right_Up;
+		if (right && down)
+			return ControllerDPad::Right_Down;
+		if (left && up)
+			return ControllerDPad::Left_Up;
+		if (left && down)
+			return ControllerDPad::Left_Down;
+		if (up)
+			return ControllerDPad::Up;
+		if (right)
+			return ControllerDPad::Right;
+		if (down)
+			return ControllerDPad::Down;
+		if (left)
+			return ControllerDPad::Left;
+	}
+	
+	return ControllerDPad::Centered;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::vector<float> TRAP::Input::GetAllControllerAxesXInput(Controller controller)
 {
 	XINPUT_STATE state{};
@@ -251,6 +283,16 @@ std::vector<bool> TRAP::Input::GetAllControllerButtonsXInput(Controller controll
 
 	TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while getting button states!");
 	return std::vector<bool>(15, false);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPadsXInput(const Controller controller)
+{
+	std::vector<ControllerDPad> dpads;
+	dpads.push_back(GetControllerDPadXInput(controller, 0));
+
+	return dpads;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

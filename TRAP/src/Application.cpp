@@ -56,7 +56,12 @@ TRAP::Application::Application()
 	Window::DisplayMode displayMode = Window::DisplayMode::Windowed;
 	uint32_t monitor = 0;
 	Graphics::API::RenderAPI renderAPI = Graphics::API::RenderAPI::NONE;
-	Input::ControllerAPI controllerAPI = Input::ControllerAPI::XInput;
+	Input::ControllerAPI controllerAPI = Input::ControllerAPI::Unknown;
+#ifdef TRAP_PLATFORM_WINDOWS
+	controllerAPI = Input::ControllerAPI::XInput;
+#elif defined(TRAP_PLATFORM_LINUX)
+	controllerAPI = Input::ControllerAPI::Linux;
+#endif
 	bool hotShaderReloading = false;
 	bool hotTextureReloading = false;
 	m_config.Get("Width", width);
@@ -123,7 +128,6 @@ TRAP::Application::Application()
 TRAP::Application::~Application()
 {
 	TP_DEBUG("[Application] Shutting down TRAP Modules...");
-	m_input->Shutdown();
 	m_layerStack.reset();
 	m_config.Set("Width", m_window->GetWidth());
 	m_config.Set("Height", m_window->GetHeight());

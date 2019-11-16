@@ -197,7 +197,7 @@ namespace TRAP
 			Triangle     = Y
 		};
 
-		enum class ControllerHat
+		enum class ControllerDPad
 		{
 			Centered   = 0,
 			Up         = 1,
@@ -238,14 +238,16 @@ namespace TRAP
 		//This is only used for windows
 		enum class ControllerAPI
 		{
+			Unknown,
+			
 			XInput,
-			DirectInput
+			DirectInput,
+			Linux
 		};
 		static ControllerAPI GetControllerAPI();
 		static void SetControllerAPI(ControllerAPI controllerAPI);
 		
 		static void Init(ControllerAPI controllerAPI);
-		static void Shutdown();
 		
 		static bool IsKeyPressed(Key key);
 		static bool IsMouseButtonPressed(MouseButton button);
@@ -259,12 +261,12 @@ namespace TRAP
 		static float GetMouseY();
 		static std::string GetKeyName(Key key);
 		static float GetControllerAxis(Controller controller, ControllerAxis axis);
-		static ControllerHat GetControllerHat(Controller controller, uint32_t hat);
+		static ControllerDPad GetControllerDPad(Controller controller, uint32_t dpad);
 		static std::string GetControllerName(Controller controller);
 		static const ControllerStatus& GetControllerStatus(Controller controller);
 		static std::vector<float> GetAllControllerAxes(Controller controller);
 		static std::vector<bool> GetAllControllerButtons(Controller controller);
-		static std::vector<ControllerHat> GetAllControllerHats(Controller controller);
+		static std::vector<ControllerDPad> GetAllControllerDPads(Controller controller);
 		static const std::array<ControllerStatus, 4>& GetAllControllerStatuses();
 		static ControllerBattery GetControllerBatteryStatus(Controller controller);
 		static ControllerConnectionType GetControllerConnectionType(Controller controller);
@@ -285,16 +287,17 @@ namespace TRAP
 		static void SetControllerVibrationXInput(Controller controller, float leftMotor, float rightMotor);
 		static bool IsGamepadButtonPressedXInput(Controller controller, GamepadButton button);
 		static float GetControllerAxisXInput(Controller controller, ControllerAxis axis);
+		static ControllerDPad GetControllerDPadXInput(Controller controller, uint32_t dpad);
 		static std::vector<float> GetAllControllerAxesXInput(Controller controller);
 		static std::vector<bool> GetAllControllerButtonsXInput(Controller controller);
+		static std::vector<ControllerDPad> GetAllControllerDPadsXInput(Controller controller);
 		static std::string GetControllerNameXInput(Controller controller);
 		
 		static uint32_t GamepadButtonToXInput(GamepadButton button);
 
 		//XInput
 		static std::array<uint32_t, 4> s_lastXInputUpdate;
-		//General
-		static ControllerAPI s_controllerAPI;		
+			
 #endif
 
 		bool OnControllerConnectEvent(ControllerConnectEvent& e);
@@ -304,6 +307,7 @@ namespace TRAP
 		
 		static std::array<ControllerStatus, 4> s_controllerStatuses;
 		static EventCallbackFn s_eventCallback;
+		static ControllerAPI s_controllerAPI;
 	};
 }
 
