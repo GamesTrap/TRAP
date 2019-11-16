@@ -13,6 +13,7 @@
 #include "Utils/String.h"
 #include "Core.h"
 #include "Graphics/Renderer.h"
+#include "Utils/MsgBox/MsgBox.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
@@ -31,6 +32,10 @@ TRAP::Application::Application()
 	TRAP_CORE_ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
 
+#ifdef TRAP_PLATFORM_WINDOWS
+	CheckIfWindows8OrNewer();
+#endif
+	
 	//Check if machine is using little-endian or big-endian
 	int32_t intVal = 1;
 	uint8_t* uVal = reinterpret_cast<uint8_t*>(&intVal);
@@ -51,6 +56,7 @@ TRAP::Application::Application()
 	Window::DisplayMode displayMode = Window::DisplayMode::Windowed;
 	uint32_t monitor = 0;
 	Graphics::API::RenderAPI renderAPI = Graphics::API::RenderAPI::NONE;
+	Input::ControllerAPI controllerAPI = Input::ControllerAPI::XInput;
 	bool hotShaderReloading = false;
 	bool hotTextureReloading = false;
 	m_config.Get("Width", width);
@@ -61,6 +67,7 @@ TRAP::Application::Application()
 	m_config.Get("DisplayMode", displayMode);
 	m_config.Get("Monitor", monitor);
 	m_config.Get("RenderAPI", renderAPI);
+	m_config.Get("ControllerAPI", controllerAPI);
 	m_config.Get("HotShaderReloading", hotShaderReloading);
 	m_config.Get("HotTextureReloading", hotTextureReloading);
 
@@ -90,9 +97,6 @@ TRAP::Application::Application()
 			)
 			);
 	m_window->SetEventCallback(TRAP_BIND_EVENT_FN(Application::OnEvent));
-	
-	//Initialize Input for Joysticks
-	Input::Init();
 
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
@@ -105,6 +109,11 @@ TRAP::Application::Application()
 
 	m_layerStack = std::make_unique<LayerStack>();
 
+	//Initialize Input for Joysticks
+	m_input = std::make_unique<Input>();
+	Input::SetEventCallback(TRAP_BIND_EVENT_FN(Application::OnEvent));
+	Input::Init(controllerAPI);
+
 	m_ImGuiLayer = std::make_unique<ImGuiLayer>();
 	PushOverlay(std::move(m_ImGuiLayer));
 }
@@ -114,6 +123,7 @@ TRAP::Application::Application()
 TRAP::Application::~Application()
 {
 	TP_DEBUG("[Application] Shutting down TRAP Modules...");
+	m_input->Shutdown();
 	m_layerStack.reset();
 	m_config.Set("Width", m_window->GetWidth());
 	m_config.Set("Height", m_window->GetHeight());
@@ -123,6 +133,7 @@ TRAP::Application::~Application()
 	m_config.Set("DisplayMode", m_window->GetDisplayMode());
 	m_config.Set("Monitor", m_window->GetMonitor());
 	m_config.Set("RenderAPI", Graphics::API::Context::GetRenderAPI());
+	m_config.Set("ControllerAPI", Input::GetControllerAPI());
 	m_config.Set("HotShaderReloading", VFS::Get()->GetHotShaderReloading());
 	m_config.Set("HotTextureReloading", VFS::Get()->GetHotTextureReloading());
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
@@ -265,6 +276,8 @@ void TRAP::Application::OnEvent(Event& e)
 	dispatcher.Dispatch<WindowCloseEvent>(TRAP_BIND_EVENT_FN(Application::OnWindowClose));
 	dispatcher.Dispatch<WindowResizeEvent>(TRAP_BIND_EVENT_FN(Application::OnWindowResize));
 
+	m_input->OnEvent(e); //Controller Connect/Disconnect Events
+
 	for (auto it = m_layerStack->end(); it != m_layerStack->begin();)
 	{
 		(*--it)->OnEvent(e);
@@ -392,8 +405,6 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 	m_window->SetEventCallback(TRAP_BIND_EVENT_FN(Application::OnEvent));
 	//Initialize Renderer
 	Graphics::Renderer::Init();
-	//Initialize Input for Joysticks
-	Input::Init();
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
 	//Always added as a fallback texture
@@ -405,7 +416,7 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI)
+void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI) const
 {
 	for (const auto& layer : *m_layerStack)
 		layer->OnDetach();
@@ -432,6 +443,24 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI)
 	for (const auto& layer : *m_layerStack)
 		layer->OnAttach();
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifdef TRAP_PLATFORM_WINDOWS
+void TRAP::Application::CheckIfWindows8OrNewer() const
+{
+	if(!IsWindows8OrGreater())
+	{
+		//Windows Version is older than XInput 1.4 requires!
+		TP_CRITICAL("[Engine] Unsupported Windows Version!");
+		Show("Windows Version is unsupported!\nWindows Version is older than Windows8!\nTRAP Engine requires Windows 8 or newer because of XInput 1.4!",
+		     "Unsupported Windows Version",
+		     Utils::MsgBox::Style::Error,
+		     Utils::MsgBox::Buttons::Quit);
+		exit(-1);
+	}
+}
+#endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 

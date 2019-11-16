@@ -77,7 +77,7 @@ project "TRAP"
 		"%{prj.name}/src/Platform/**",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxWindows.cpp",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.cpp",
-		"%{prj.name}/src/Utils/MsgBox/MsgBoxOSX.mm"
+		"%{prj.name}/src/Input/WindowsInput.cpp"
 	}
 
 	includedirs
@@ -101,7 +101,8 @@ project "TRAP"
 			"%{prj.name}/src/Platform/Windows/**.h",
 			"%{prj.name}/src/Platform/Windows/**.cpp",
 			"%{prj.name}/src/Graphics/API/D3D12/**",
-			"%{prj.name}/src/Utils/MsgBox/MsgBoxWindows.cpp"
+			"%{prj.name}/src/Utils/MsgBox/MsgBoxWindows.cpp",
+			"%{prj.name}/src/Input/WindowsInput.cpp"
 		}
 
 		defines
@@ -123,7 +124,8 @@ project "TRAP"
 			"StandAlone",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL"
+			"SPIRV-Cross-HLSL",
+			"XInput"
 		}
 
 	filter "system:linux"

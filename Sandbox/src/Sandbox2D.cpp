@@ -2,9 +2,12 @@
 
 Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D"),
-	m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
+	m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()), false, true, TRAP::Input::Controller::One),
 	m_frameTimeHistory()
-{	
+{
+	//TODO
+	//If controller connects switch to it
+	//If controller disconnect switch to mouse/keyboard
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -29,6 +32,8 @@ void Sandbox2D::OnAttach()
 	//Mount & Load Textures
 	TRAP::VFS::Get()->MountTextures("Assets/Textures");
 	TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png");
+
+	TP_DEBUG(TRAP::Input::GetControllerName(TRAP::Input::Controller::One));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

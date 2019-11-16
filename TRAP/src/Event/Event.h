@@ -13,7 +13,8 @@ namespace TRAP
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
 		AppTick, AppUpdate, AppRender,
 		KeyPressed, KeyReleased, KeyTyped,
-		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
+		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled,
+		ControllerConnected, ControlledDisconnected
 	};
 
 	enum class EventCategory
@@ -23,7 +24,8 @@ namespace TRAP
 		Input       = BIT(1),
 		Keyboard    = BIT(2),
 		Mouse       = BIT(3),
-		MouseButton = BIT(4)
+		MouseButton = BIT(4),
+		Controller  = BIT(5)
 	};
 
 	class Event

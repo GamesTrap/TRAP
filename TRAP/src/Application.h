@@ -10,6 +10,7 @@
 #include "Utils/Timer.h"
 #include "Event/ApplicationEvent.h"
 #include "Utils/Singleton.h"
+#include "Input/Input.h"
 
 namespace TRAP
 {
@@ -54,9 +55,13 @@ namespace TRAP
 		static Endian GetEndian();
 
 		void ReCreateWindow(Graphics::API::RenderAPI renderAPI);
-		void ReCreate(Graphics::API::RenderAPI renderAPI);
+		void ReCreate(Graphics::API::RenderAPI renderAPI) const;
 
 	private:
+#ifdef TRAP_PLATFORM_WINDOWS
+		void CheckIfWindows8OrNewer() const;
+#endif
+		
 		Utils::TimeStep GetTimeInternal() const;
 		
 		bool OnWindowClose(WindowCloseEvent& e);
@@ -69,6 +74,7 @@ namespace TRAP
 		std::unique_ptr<LayerStack> m_layerStack;
 
 		Utils::Config m_config;
+		std::unique_ptr<Input> m_input;
 
 		std::unique_ptr<Utils::Timer> m_timer;
 		uint32_t m_FramesPerSecond;

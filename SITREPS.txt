@@ -603,3 +603,9 @@ SITREP 11/14/2019|19w46a1
     - Changed TRAP Engine version to 19w46a1(0.5.66)
     - PNG Image Loader reduced memory usage ~>30 mins
     - Reverted last PNG Optimization because it invalidated data ~>20 mins
+
+SITREP 11/16/2019|19w46a2
+    - Changed TRAP Engine version to 19w46a2(0.5.67)
+    - Create new branch for Controller Input ~>10 mins
+    - Finished Controller Input(XInput) ~>30 mins
+    - Application Added check if Windows 8 or newer (XInput 1.4 Requirements) ~>X mins

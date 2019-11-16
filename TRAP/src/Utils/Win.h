@@ -1,9 +1,9 @@
 #ifndef _TRAP_WIN_H_
 #define _TRAP_WIN_H_
 
-//Target Windows 7 or later
+//Target Windows 8 or later
 #ifndef _WIN32_WINNT
-	#define _WIN32_WINNT 0x0601
+	#define _WIN32_WINNT 0x0602
 #endif
 #include <sdkddkver.h>
 //The following #defines disable a bunch of unused windows stuff.

@@ -47,12 +47,15 @@
 #include "Core.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
+//WinAPI
+#include "Utils/Win.h"
+#include <VersionHelpers.h>
 //DirectX
 #include <dxgiformat.h>
 #include <dxgi1_6.h>
 #include <d3d12.h>
-//WinAPI
-#include "Utils/Win.h"
+//XInput
+#include <Xinput.h>
 
 #undef far
 #undef min

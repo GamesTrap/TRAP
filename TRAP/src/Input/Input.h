@@ -3,9 +3,13 @@
 
 #include "Utils/Singleton.h"
 #include "Maths/Math.h"
+#include "Event/Event.h"
 
 namespace TRAP
 {
+	class ControllerDisconnectEvent;
+	class ControllerConnectEvent;
+
 	class Input final : public Singleton
 	{
 	public:
@@ -149,7 +153,9 @@ namespace TRAP
 			Right  = Two,
 			Middle = Three
 		};
-		
+
+		//This is Microsoft's fault btw :C
+		//XInput only supports 4 controllers at a time
 		enum class Controller
 		{
 			One   = 0,
@@ -204,13 +210,42 @@ namespace TRAP
 			Left_Down  = Left | Down
 		};
 
+		enum class ControllerBattery
+		{
+			Unknown,
+			Empty,
+			Low,
+			Medium,
+			Full
+		};
+
+		enum class ControllerConnectionType
+		{
+			Unknown,
+			Wired,
+			Wireless
+		};
+
 		struct ControllerStatus
 		{
 			bool Connected = false;
 			bool IsGamepad = false;
+			ControllerConnectionType ConnectionType = ControllerConnectionType::Unknown;
+			ControllerBattery BatteryStatus = ControllerBattery::Unknown;
 		};
+
+		//Used to determine which API to use(XInput or DirectInput)
+		//This is only used for windows
+		enum class ControllerAPI
+		{
+			XInput,
+			DirectInput
+		};
+		static ControllerAPI GetControllerAPI();
+		static void SetControllerAPI(ControllerAPI controllerAPI);
 		
-		static void Init();
+		static void Init(ControllerAPI controllerAPI);
+		static void Shutdown();
 		
 		static bool IsKeyPressed(Key key);
 		static bool IsMouseButtonPressed(MouseButton button);
@@ -231,10 +266,44 @@ namespace TRAP
 		static std::vector<bool> GetAllControllerButtons(Controller controller);
 		static std::vector<ControllerHat> GetAllControllerHats(Controller controller);
 		static const std::array<ControllerStatus, 4>& GetAllControllerStatuses();
+		static ControllerBattery GetControllerBatteryStatus(Controller controller);
+		static ControllerConnectionType GetControllerConnectionType(Controller controller);
+
+		using EventCallbackFn = std::function<void(Event&)>;
+		static void SetEventCallback(const EventCallbackFn& func);
+		static void SetControllerVibration(Controller controller, float leftMotor, float rightMotor);
+
+		void OnEvent(Event& e);
 		
 	private:
+#ifdef TRAP_PLATFORM_WINDOWS
+		static void InitControllerWindows();
+
+		static void InitControllerXInput();
+		static void UpdateControllerConnectionXInput(Controller controller);
+		static void UpdateControllerBatteryAndConnectionTypeXInput(Controller controller);
+		static void SetControllerVibrationXInput(Controller controller, float leftMotor, float rightMotor);
+		static bool IsGamepadButtonPressedXInput(Controller controller, GamepadButton button);
+		static float GetControllerAxisXInput(Controller controller, ControllerAxis axis);
+		static std::vector<float> GetAllControllerAxesXInput(Controller controller);
+		static std::vector<bool> GetAllControllerButtonsXInput(Controller controller);
+		static std::string GetControllerNameXInput(Controller controller);
+		
+		static uint32_t GamepadButtonToXInput(GamepadButton button);
+
+		//XInput
+		static std::array<uint32_t, 4> s_lastXInputUpdate;
+		//General
+		static ControllerAPI s_controllerAPI;		
+#endif
+
+		bool OnControllerConnectEvent(ControllerConnectEvent& e);
+		bool OnControllerDisconnectEvent(ControllerDisconnectEvent& e);
+		
 		static void JoystickCallback(int32_t joystick, int32_t event);
+		
 		static std::array<ControllerStatus, 4> s_controllerStatuses;
+		static EventCallbackFn s_eventCallback;
 	};
 }
 

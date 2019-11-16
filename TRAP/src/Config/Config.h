@@ -2,6 +2,7 @@
 #define _TRAP_CONFIG_H_
 
 #include "Window/Window.h"
+#include "Input/Input.h"
 
 namespace TRAP::Utils
 {
@@ -264,6 +265,19 @@ inline TRAP::Graphics::API::RenderAPI TRAP::Utils::Config::ConvertToType<TRAP::G
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+template<>
+inline TRAP::Input::ControllerAPI TRAP::Utils::Config::ConvertToType<TRAP::Input::ControllerAPI>(const std::string& input) const
+{
+	if (input == "XInput")
+		return Input::ControllerAPI::XInput;
+	if (input == "DirectInput")
+		return Input::ControllerAPI::DirectInput;
+
+	return Input::ControllerAPI::XInput;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 template<typename T>
 std::string TRAP::Utils::Config::ConvertToString(T value) const
 {
@@ -408,6 +422,24 @@ inline std::string TRAP::Utils::Config::ConvertToString<TRAP::Graphics::API::Ren
 
 	case Graphics::API::RenderAPI::OpenGL:
 		return "OpenGL";
+
+	default:
+		return "";
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+inline std::string TRAP::Utils::Config::ConvertToString<TRAP::Input::ControllerAPI>(const Input::ControllerAPI value) const
+{
+	switch (value)
+	{
+	case Input::ControllerAPI::XInput:
+		return "XInput";
+
+	case Input::ControllerAPI::DirectInput:
+		return "DirectInput";
 
 	default:
 		return "";
