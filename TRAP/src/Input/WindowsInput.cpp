@@ -60,7 +60,6 @@ void TRAP::Input::UpdateControllerConnectionXInput(Controller controller)
 			return;
 		s_lastXInputUpdate[static_cast<uint32_t>(controller)] = state.dwPacketNumber;
 		s_controllerStatuses[static_cast<uint32_t>(controller)].Connected = true;
-		s_controllerStatuses[static_cast<uint32_t>(controller)].IsGamepad = true;
 
 		return;
 	}
@@ -140,9 +139,11 @@ void TRAP::Input::SetControllerVibrationXInput(Controller controller, const floa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::IsGamepadButtonPressedXInput(Controller controller, const GamepadButton button)
+bool TRAP::Input::IsGamepadButtonPressedXInput(Controller controller, const ControllerButton button)
 {
-	const uint32_t buttonXInput = GamepadButtonToXInput(button);
+	const int32_t buttonXInput = ControllerButtonToXInput(button);
+	if(buttonXInput == -1)
+		return false;
 	if (buttonXInput == 0)
 	{
 		TP_ERROR("[Input][Controller][XInput] Could not get button state!");
@@ -262,21 +263,21 @@ std::vector<bool> TRAP::Input::GetAllControllerButtonsXInput(Controller controll
 	if (result == ERROR_SUCCESS)
 	{
 		std::vector<bool> buttons(15, false);
-		buttons[0] = (state.Gamepad.wButtons & GamepadButtonToXInput(GamepadButton::A)) != 0;
-		buttons[1] = (state.Gamepad.wButtons & GamepadButtonToXInput(GamepadButton::B)) != 0;
-		buttons[2] = (state.Gamepad.wButtons & GamepadButtonToXInput(GamepadButton::X)) != 0;
-		buttons[3] = (state.Gamepad.wButtons & GamepadButtonToXInput(GamepadButton::Y)) != 0;
-		buttons[4] = (state.Gamepad.wButtons & GamepadButtonToXInput(GamepadButton::Left_Bumper)) != 0;
-		buttons[5] = (state.Gamepad.wButtons & GamepadButtonToXInput(GamepadButton::Right_Bumper)) != 0;
-		buttons[6] = (state.Gamepad.wButtons & GamepadButtonToXInput(GamepadButton::Back)) != 0;
-		buttons[7] = (state.Gamepad.wButtons & GamepadButtonToXInput(GamepadButton::Start)) != 0;
-		buttons[8] = (state.Gamepad.wButtons & GamepadButtonToXInput(GamepadButton::Guide)) != 0;
-		buttons[9] = (state.Gamepad.wButtons & GamepadButtonToXInput(GamepadButton::Left_Thumb)) != 0;
-		buttons[10] = (state.Gamepad.wButtons & GamepadButtonToXInput(GamepadButton::Right_Thumb)) != 0;
-		buttons[11] = (state.Gamepad.wButtons & GamepadButtonToXInput(GamepadButton::DPad_Up)) != 0;
-		buttons[12] = (state.Gamepad.wButtons & GamepadButtonToXInput(GamepadButton::DPad_Right)) != 0;
-		buttons[13] = (state.Gamepad.wButtons & GamepadButtonToXInput(GamepadButton::DPad_Down)) != 0;
-		buttons[14] = (state.Gamepad.wButtons & GamepadButtonToXInput(GamepadButton::DPad_Left)) != 0;
+		buttons[0] = (state.Gamepad.wButtons & ControllerButtonToXInput(ControllerButton::A)) != 0;
+		buttons[1] = (state.Gamepad.wButtons & ControllerButtonToXInput(ControllerButton::B)) != 0;
+		buttons[2] = (state.Gamepad.wButtons & ControllerButtonToXInput(ControllerButton::X)) != 0;
+		buttons[3] = (state.Gamepad.wButtons & ControllerButtonToXInput(ControllerButton::Y)) != 0;
+		buttons[4] = (state.Gamepad.wButtons & ControllerButtonToXInput(ControllerButton::Left_Bumper)) != 0;
+		buttons[5] = (state.Gamepad.wButtons & ControllerButtonToXInput(ControllerButton::Right_Bumper)) != 0;
+		buttons[6] = (state.Gamepad.wButtons & ControllerButtonToXInput(ControllerButton::Back)) != 0;
+		buttons[7] = (state.Gamepad.wButtons & ControllerButtonToXInput(ControllerButton::Start)) != 0;
+		buttons[8] = (state.Gamepad.wButtons & ControllerButtonToXInput(ControllerButton::Guide)) != 0;
+		buttons[9] = (state.Gamepad.wButtons & ControllerButtonToXInput(ControllerButton::Left_Thumb)) != 0;
+		buttons[10] = (state.Gamepad.wButtons & ControllerButtonToXInput(ControllerButton::Right_Thumb)) != 0;
+		buttons[11] = (state.Gamepad.wButtons & ControllerButtonToXInput(ControllerButton::DPad_Up)) != 0;
+		buttons[12] = (state.Gamepad.wButtons & ControllerButtonToXInput(ControllerButton::DPad_Right)) != 0;
+		buttons[13] = (state.Gamepad.wButtons & ControllerButtonToXInput(ControllerButton::DPad_Down)) != 0;
+		buttons[14] = (state.Gamepad.wButtons & ControllerButtonToXInput(ControllerButton::DPad_Left)) != 0;
 
 		return buttons;
 	}
@@ -324,9 +325,7 @@ std::string TRAP::Input::GetControllerNameXInput(Controller controller)
 			return "XInput Drum Kit";
 
 		case XINPUT_DEVSUBTYPE_GAMEPAD:
-		{
 			return "XInput Gamepad";
-		}
 
 		default:
 			return "Unknown XInput Device";
@@ -339,57 +338,57 @@ std::string TRAP::Input::GetControllerNameXInput(Controller controller)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Input::GamepadButtonToXInput(const GamepadButton button)
+int32_t TRAP::Input::ControllerButtonToXInput(const ControllerButton button)
 {
 	switch (button)
 	{
-	case GamepadButton::A:
-		//case GamepadButton::Cross:
+	case ControllerButton::A:
+		//case ControllerButton::Cross:
 		return 0x1000;
 
-	case GamepadButton::B:
-		//case GamepadButton::Circle:
+	case ControllerButton::B:
+		//case ControllerButton::Circle:
 		return 0x2000;
 
-	case GamepadButton::X:
-		//case GamepadButton::Square:
+	case ControllerButton::X:
+		//case ControllerButton::Square:
 		return 0x4000;
 
-	case GamepadButton::Y:
-		//case GamepadButton::Triangle:
+	case ControllerButton::Y:
+		//case ControllerButton::Triangle:
 		return 0x8000;
 
-	case GamepadButton::Left_Bumper:
+	case ControllerButton::Left_Bumper:
 		return 0x0100;
 
-	case GamepadButton::Right_Bumper:
+	case ControllerButton::Right_Bumper:
 		return 0x0200;
 
-	case GamepadButton::Back:
+	case ControllerButton::Back:
 		return 0x0020;
 
-	case GamepadButton::Start:
+	case ControllerButton::Start:
 		return 0x0010;
 
-	case GamepadButton::Guide:
-		return 0;
+	case ControllerButton::Guide:
+		return -1;
 
-	case GamepadButton::Left_Thumb:
+	case ControllerButton::Left_Thumb:
 		return 0x0040;
 
-	case GamepadButton::Right_Thumb:
+	case ControllerButton::Right_Thumb:
 		return 0x080;
 
-	case GamepadButton::DPad_Up:
+	case ControllerButton::DPad_Up:
 		return 0x0001;
 
-	case GamepadButton::DPad_Right:
+	case ControllerButton::DPad_Right:
 		return 0x0008;
 
-	case GamepadButton::DPad_Down:
+	case ControllerButton::DPad_Down:
 		return 0x0002;
 
-	case GamepadButton::DPad_Left:
+	case ControllerButton::DPad_Left:
 		return 0x0004;
 
 	default:

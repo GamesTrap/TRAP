@@ -46,6 +46,18 @@
 //TRAP Engine
 #include "Core.h"
 
+#ifdef TRAP_PLATFORM_LINUX
+#include <linux/input.h>
+#include <linux/limits.h>
+#include <regex.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/inotify.h>
+#include <fcntl.h>
+#include <dirent.h>
+#include <unistd.h>
+#endif
+
 #ifdef TRAP_PLATFORM_WINDOWS
 //WinAPI
 #include "Utils/Win.h"

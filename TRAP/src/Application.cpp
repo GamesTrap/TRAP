@@ -128,6 +128,7 @@ TRAP::Application::Application()
 TRAP::Application::~Application()
 {
 	TP_DEBUG("[Application] Shutting down TRAP Modules...");
+	m_input->Shutdown();
 	m_layerStack.reset();
 	m_config.Set("Width", m_window->GetWidth());
 	m_config.Set("Height", m_window->GetHeight());

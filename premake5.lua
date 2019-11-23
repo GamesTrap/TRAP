@@ -77,7 +77,8 @@ project "TRAP"
 		"%{prj.name}/src/Platform/**",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxWindows.cpp",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.cpp",
-		"%{prj.name}/src/Input/WindowsInput.cpp"
+		"%{prj.name}/src/Input/WindowsInput.cpp",
+		"%{prj.name}/src/Input/LinuxInput.cpp"
 	}
 
 	includedirs
@@ -148,7 +149,8 @@ project "TRAP"
         {
 			"%{prj.name}/src/Log/ANSILog.cpp",
             "%{prj.name}/src/Platform/Linux/**.h",
-			"%{prj.name}/src/Platform/Linux/**.cpp"
+			"%{prj.name}/src/Platform/Linux/**.cpp",
+			"%{prj.name}/src/Input/LinuxInput.cpp"
 		}
 
 		defines

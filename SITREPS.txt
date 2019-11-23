@@ -611,3 +611,13 @@ SITREP 11/16/2019|19w46a2
         - Application Added check if Windows 8 or newer (XInput 1.4 Requirements) ~>X mins
         - Renamed ControllerHat functions to ControllerDPad ~>10 mins
         - Added GetControllerDPad for XInput ~>20 mins
+
+SITREP 11/17/2019|19w46a3
+    - Changed TRAP Engine version to 19w46a3(0.5.68)
+    - Branch ControllerInput:
+        - Started working on Linux Controller Input ~>30 mins
+
+SITREP 11/23/2019|19w47a1
+    - Changed TRAP Engine version to 19w47a1(0.5.69)
+    - Branch ControllerInput:
+        - Finished Linux Controller Input ~>120 mins
