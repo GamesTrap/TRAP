@@ -71,8 +71,9 @@ void TRAP::Input::Init(const ControllerAPI controllerAPI)
 
 void TRAP::Input::Shutdown()
 {
-	//Only needed on Linux for now
-#ifdef TRAP_PLATFORM_LINUX
+#ifdef TRAP_PLATFORM_WINDOWS
+	ShutdownControllerWindows();
+#elif defined(TRAP_PLATFORM_LINUX)
 	ShutdownControllerLinux();	
 #endif
 }
@@ -562,11 +563,11 @@ void TRAP::Input::InternalInputControllerButton(ControllerInternal* js, const in
 //-------------------------------------------------------------------------------------------------------------------//
 
 
-bool TRAP::Input::InternalPollController(Controller controller)
+bool TRAP::Input::InternalPollController(const Controller controller)
 {
 #ifdef TRAP_PLATFORM_WINDOWS
 	//DirectInput...
-#elif definedTRAP_PLATFORM_LINUX)
+#elif defined(TRAP_PLATFORM_LINUX)
 	return PollControllerLinux(controller);
 #endif
 

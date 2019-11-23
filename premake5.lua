@@ -125,8 +125,7 @@ project "TRAP"
 			"StandAlone",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL",
-			"XInput"
+			"SPIRV-Cross-HLSL"
 		}
 
 	filter "system:linux"

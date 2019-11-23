@@ -621,3 +621,4 @@ SITREP 11/23/2019|19w47a1
     - Changed TRAP Engine version to 19w47a1(0.5.69)
     - Branch ControllerInput:
         - Finished Linux Controller Input ~>120 mins
+        - Windows XInput gets loaded at runtime now ~>20 mins

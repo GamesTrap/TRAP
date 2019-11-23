@@ -287,8 +287,24 @@ namespace TRAP
 #ifdef TRAP_PLATFORM_WINDOWS
 		static constexpr const char* MappingName = "Windows";
 		static void InitControllerWindows();
+		static void ShutdownControllerWindows();
+
+		struct XInput
+		{
+			HINSTANCE Instance = nullptr;
+			typedef DWORD(WINAPI* PFN_XInputGetState)(DWORD, XINPUT_STATE*);
+			PFN_XInputGetState GetState = nullptr;
+			typedef DWORD(WINAPI* PFN_XInputGetBatteryInformation)(DWORD, BYTE, XINPUT_BATTERY_INFORMATION*);
+			PFN_XInputGetBatteryInformation GetBatteryInformation = nullptr;
+			typedef DWORD(WINAPI* PFN_XInputGetCapabilities)(DWORD, DWORD, XINPUT_CAPABILITIES*);
+			PFN_XInputGetCapabilities GetCapabilities = nullptr;
+			typedef DWORD(WINAPI* PFN_XInputSetState)(DWORD, XINPUT_VIBRATION*);
+			PFN_XInputSetState SetState = nullptr;
+		};
+		static XInput xinput;
 
 		static void InitControllerXInput();
+		static void ShutdownControllerXInput();
 		static void UpdateControllerConnectionXInput(Controller controller);
 		static void UpdateControllerBatteryAndConnectionTypeXInput(Controller controller);
 		static void SetControllerVibrationXInput(Controller controller, float leftMotor, float rightMotor);

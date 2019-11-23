@@ -7,6 +7,7 @@
 #ifdef TRAP_PLATFORM_WINDOWS
 
 std::array<uint32_t, 4> TRAP::Input::s_lastXInputUpdate{};
+TRAP::Input::XInput TRAP::Input::xinput{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -16,6 +17,14 @@ void TRAP::Input::InitControllerWindows()
 		InitControllerXInput();
 	else
 		TP_ERROR("[Input][Controller][DirectInput] Implementation is WIP! Please use XInput for now");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Input::ShutdownControllerWindows()
+{
+	if (s_controllerAPI == ControllerAPI::XInput)
+		ShutdownControllerXInput();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -33,6 +42,22 @@ void TRAP::Input::InitControllerXInput()
 	//TODO
 	//Test if connecting/disconnecting controller works while window is focused
 	//Test if connecting/disconnecting controller works while window isn't focused
+	
+	xinput.Instance = LoadLibraryA("xinput1_4.dll");
+		
+	if(xinput.Instance)
+	{
+		xinput.GetState = reinterpret_cast<XInput::PFN_XInputGetState>(GetProcAddress(xinput.Instance, "XInputGetState"));
+		xinput.GetBatteryInformation = reinterpret_cast<XInput::PFN_XInputGetBatteryInformation>(GetProcAddress(xinput.Instance, "XInputGetBatteryInformation"));
+		xinput.GetCapabilities = reinterpret_cast<XInput::PFN_XInputGetCapabilities>(GetProcAddress(xinput.Instance, "XInputGetCapabilities"));
+		xinput.SetState = reinterpret_cast<XInput::PFN_XInputSetState>(GetProcAddress(xinput.Instance, "XInputSetState"));
+	}
+	else
+	{
+		TP_ERROR("[Input][Controller][XInput] Could not load XInput1_4.DLL! Switching to DirectInput!");
+		SetControllerAPI(ControllerAPI::DirectInput);
+		return;
+	}
 
 	for (uint32_t i = 0; i < s_controllerStatuses.size(); i++)
 	{
@@ -50,10 +75,18 @@ void TRAP::Input::InitControllerXInput()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Input::ShutdownControllerXInput()
+{
+	if (xinput.Instance)
+		FreeLibrary(xinput.Instance);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Input::UpdateControllerConnectionXInput(Controller controller)
 {
 	XINPUT_STATE state{};
-	const uint32_t result = XInputGetState(static_cast<uint32_t>(controller), &state);
+	const uint32_t result = xinput.GetState(static_cast<uint32_t>(controller), &state);
 	if (result == ERROR_SUCCESS)
 	{
 		if (state.dwPacketNumber == s_lastXInputUpdate[static_cast<uint32_t>(controller)]) //If true nothing changed
@@ -72,7 +105,7 @@ void TRAP::Input::UpdateControllerConnectionXInput(Controller controller)
 void TRAP::Input::UpdateControllerBatteryAndConnectionTypeXInput(Controller controller)
 {
 	XINPUT_BATTERY_INFORMATION battery{};
-	const uint32_t result = XInputGetBatteryInformation(static_cast<uint32_t>(controller), BATTERY_DEVTYPE_GAMEPAD, &battery);
+	const uint32_t result = xinput.GetBatteryInformation(static_cast<uint32_t>(controller), BATTERY_DEVTYPE_GAMEPAD, &battery);
 	if (result == ERROR_SUCCESS)
 	{
 		switch (battery.BatteryType)
@@ -132,7 +165,7 @@ void TRAP::Input::SetControllerVibrationXInput(Controller controller, const floa
 	const uint16_t left = static_cast<uint16_t>(static_cast<float>(65535) * leftMotor);
 	const uint16_t right = static_cast<uint16_t>(static_cast<float>(65535) * rightMotor);
 	XINPUT_VIBRATION vibration{left, right};
-	const uint32_t result = XInputSetState(static_cast<uint32_t>(controller), &vibration);
+	const uint32_t result = xinput.SetState(static_cast<uint32_t>(controller), &vibration);
 	if (result != ERROR_SUCCESS)
 		TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while setting vibration!");
 }
@@ -152,7 +185,7 @@ bool TRAP::Input::IsGamepadButtonPressedXInput(Controller controller, const Cont
 	}
 
 	XINPUT_STATE state{};
-	const uint32_t result = XInputGetState(static_cast<uint32_t>(controller), &state);
+	const uint32_t result = xinput.GetState(static_cast<uint32_t>(controller), &state);
 	if (result == ERROR_SUCCESS)
 		return (state.Gamepad.wButtons & buttonXInput) != 0;
 
@@ -165,7 +198,7 @@ bool TRAP::Input::IsGamepadButtonPressedXInput(Controller controller, const Cont
 float TRAP::Input::GetControllerAxisXInput(Controller controller, const ControllerAxis axis)
 {
 	XINPUT_STATE state{};
-	const uint32_t result = XInputGetState(static_cast<uint32_t>(controller), &state);
+	const uint32_t result = xinput.GetState(static_cast<uint32_t>(controller), &state);
 	if (result == ERROR_SUCCESS)
 	{
 		switch (axis)
@@ -236,7 +269,7 @@ TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPadXInput(const Controlle
 std::vector<float> TRAP::Input::GetAllControllerAxesXInput(Controller controller)
 {
 	XINPUT_STATE state{};
-	const uint32_t result = XInputGetState(static_cast<uint32_t>(controller), &state);
+	const uint32_t result = xinput.GetState(static_cast<uint32_t>(controller), &state);
 	if (result == ERROR_SUCCESS)
 	{
 		std::vector<float> axes(6, 0.0f);
@@ -259,7 +292,7 @@ std::vector<float> TRAP::Input::GetAllControllerAxesXInput(Controller controller
 std::vector<bool> TRAP::Input::GetAllControllerButtonsXInput(Controller controller)
 {
 	XINPUT_STATE state{};
-	const uint32_t result = XInputGetState(static_cast<uint32_t>(controller), &state);
+	const uint32_t result = xinput.GetState(static_cast<uint32_t>(controller), &state);
 	if (result == ERROR_SUCCESS)
 	{
 		std::vector<bool> buttons(15, false);
@@ -290,10 +323,7 @@ std::vector<bool> TRAP::Input::GetAllControllerButtonsXInput(Controller controll
 
 std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPadsXInput(const Controller controller)
 {
-	std::vector<ControllerDPad> dpads;
-	dpads.push_back(GetControllerDPadXInput(controller, 0));
-
-	return dpads;
+	return { GetControllerDPadXInput(controller, 0) };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -301,7 +331,7 @@ std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPadsXInpu
 std::string TRAP::Input::GetControllerNameXInput(Controller controller)
 {
 	XINPUT_CAPABILITIES caps{};
-	const uint32_t result = XInputGetCapabilities(static_cast<uint32_t>(controller), 0, &caps);
+	const uint32_t result = xinput.GetCapabilities(static_cast<uint32_t>(controller), 0, &caps);
 	if (result == ERROR_SUCCESS)
 	{
 		switch (caps.SubType)

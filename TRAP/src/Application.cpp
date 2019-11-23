@@ -33,7 +33,7 @@ TRAP::Application::Application()
 	s_Instance = this;
 
 #ifdef TRAP_PLATFORM_WINDOWS
-	CheckIfWindows8OrNewer();
+	CheckIfWindows7OrNewer();
 #endif
 	
 	//Check if machine is using little-endian or big-endian
@@ -452,13 +452,13 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI) const
 //-------------------------------------------------------------------------------------------------------------------//
 
 #ifdef TRAP_PLATFORM_WINDOWS
-void TRAP::Application::CheckIfWindows8OrNewer() const
+void TRAP::Application::CheckIfWindows7OrNewer() const
 {
-	if(!IsWindows8OrGreater())
+	if(!IsWindows7OrGreater())
 	{
 		//Windows Version is older than XInput 1.4 requires!
 		TP_CRITICAL("[Engine] Unsupported Windows Version!");
-		Show("Windows Version is unsupported!\nWindows Version is older than Windows8!\nTRAP Engine requires Windows 8 or newer because of XInput 1.4!",
+		Show("Windows Version is unsupported!\nWindows Version is older than Windows 7!\nTRAP Engine requires Windows 7 or newer!",
 		     "Unsupported Windows Version",
 		     Utils::MsgBox::Style::Error,
 		     Utils::MsgBox::Buttons::Quit);

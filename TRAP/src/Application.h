@@ -59,7 +59,7 @@ namespace TRAP
 
 	private:
 #ifdef TRAP_PLATFORM_WINDOWS
-		void CheckIfWindows8OrNewer() const;
+		void CheckIfWindows7OrNewer() const;
 #endif
 		
 		Utils::TimeStep GetTimeInternal() const;
