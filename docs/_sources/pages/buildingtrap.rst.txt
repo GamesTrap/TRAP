@@ -34,10 +34,3 @@ Linux
 
 | Premake 5 can generate makefile project files.
 | For example, run :code:`premake gmake2` to generate the :code:`Makefile` files.
-
--------------------
-Mac OS X (Untested)
--------------------
-
-| Premake 5 can generate project files for XCode4.
-| For example, run :code:`premake xcode4` to generate the :code:`.xcworkspace` and :code:`.xcodeproj` files for XCode 4.

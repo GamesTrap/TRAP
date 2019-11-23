@@ -4,6 +4,10 @@
 Input
 =====
 
+.. warning::
+   Support for DirectInput Controllers is currently WIP!
+   Please use XInput instead for now
+
 -------
 General
 -------
@@ -176,6 +180,8 @@ MouseButton
 | **Description**
 | TRAP::`Input`_::`MouseButton`_ is used to specify a Button on the Mouse
 
+.. _controller:
+
 ----------
 Controller
 ----------
@@ -212,13 +218,13 @@ ControllerAxis
 | **Description**
 | TRAP::`Input`_::`ControllerAxis`_ is used to specify an Axis of a Joystick/Gamepad/Controller etc.
 
--------------
-GamepadButton
--------------
+----------------
+ControllerButton
+----------------
 
 .. code-block:: cpp
 
-    enum class TRAP::Input::GamepadButton
+    enum class TRAP::Input::ControllerButton
     {
         A            = 0,
         B            = 1,
@@ -242,15 +248,15 @@ GamepadButton
     };
 
 | **Description**
-| TRAP::`Input`_::`GamepadButton`_ is used to specify a Button of a Gamepad/Controller etc.
+| TRAP::`Input`_::`ControllerButton`_ is used to specify a Button of a Gamepad/Controller etc.
 
--------------
-ControllerHat
--------------
+--------------
+ControllerDPad
+--------------
 
 .. code-block:: cpp
 
-    enum class TRAP::Input::ControllerHat
+    enum class TRAP::Input::ControllerDPad
     {
         Centered   = 0,
         Up         = 1,
@@ -264,7 +270,41 @@ ControllerHat
     };
 
 | **Description**
-| TRAP::`Input`_::`ControllerHat`_ is used to specify the direction of a Controller Hat
+| TRAP::`Input`_::`ControllerDPad`_ is used to specify the direction of a Controller directional pad
+
+-----------------
+ControllerBattery
+-----------------
+
+.. code-block:: cpp
+
+    enum class TRAP::Input::ControllerBattery
+    {
+        Unknown,
+        Empty,
+        Low,
+        Medium,
+        Full
+    };
+
+| **Description**
+| TRAP::`Input`_::`ControllerBattery`_ is used to specify the status of a battery of a Controller
+
+------------------------
+ControllerConnectionType
+------------------------
+
+.. code-block:: cpp
+
+    enum class TRAP::Input::ControllerConnectionType
+    {
+        Unknown,
+        Wired,
+        Wireless
+    };
+
+| **Description**
+| TRAP::`Input`_::`ControllerConnectionType`_ is used to specify the type of connection of a Controller
 
 ----------------
 ControllerStatus
@@ -275,11 +315,30 @@ ControllerStatus
     struct TRAP::Input::ControllerStatus
     {
         bool Connected = false;
-        bool IsGamepad = false;
+        ControllerConnectionType ConnectionType = ControllerConnectionType::Unknown;
+        ControllerBattery BatteryStatus = ControllerBattery::Unknown;
     };
 
 | **Description**
 | TRAP::`Input`_::`ControllerStatus`_ represents the status of a TRAP::`Input`_::`Controller`_
+
+-------------
+ControllerAPI
+-------------
+
+.. code-block:: cpp
+
+    enum class TRAP::Input::ControllerAPI
+    {
+        Unknown,
+
+        XInput,
+        DirectInput,
+        Linux
+    };
+
+| **Description**
+| TRAP::`Input`_::`ControllerAPI`_ is used to specify the API used for Controller input
 
 ----
 Init
@@ -294,6 +353,46 @@ Init
 
 .. note::
    This function gets called at the start of TRAP Engine
+
+--------
+Shutdown
+--------
+
+.. code-block:: cpp
+
+    static void TRAP::Input::Shutdown();
+
+| **Description**
+| Used to shutdown Controller Input
+
+.. note::
+   This function gets called while TRAP Engine shuts down
+
+----------------
+GetControllerAPI
+----------------
+
+.. code-block:: cpp
+
+    static TRAP::Input::ControllerAPI TRAP::Input::GetControllerAPI();
+
+| **Description**
+| Returns the currently used API for Controller Input
+
+----------------
+SetControllerAPI
+----------------
+
+.. code-block:: cpp
+
+    static void TRAP::Input::SetControllerAPI(const TRAP::Input::ControllerAPI controllerAPI);
+
+| **Description**
+| Used to set the API for Controller Input
+
+| **Parameters**
+
+- :code:`controllerAPI` Specifies the new TRAP::`Input`_::`ControllerAPI`_ to use for Controller Input
 
 ------------
 IsKeyPressed
@@ -332,15 +431,15 @@ IsGamepadButtonPressed
 .. code-block:: cpp
 
     static bool TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Controller controller,
-                                                    TRAP::Input::GamepadButton button);
+                                                    TRAP::Input::ControllerButton button);
 
 | **Description**
-| Returns whether the specified TRAP::`Input`_::`GamepadButton`_ of the specified TRAP::`Input`_::`Controller`_ is pressed or released
+| Returns whether the specified TRAP::`Input`_::`ControllerButton`_ of the specified TRAP::`Input`_::`Controller`_ is pressed or released
 
 | **Parameters**
 
 - :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to do the check on
-- :code:`button` Specifies the TRAP::`Input`_::`GamepadButton`_ to check for
+- :code:`button` Specifies the TRAP::`Input`_::`ControllerButton`_ to check for
 
 .. _israwmouseinputsupported:
 
@@ -364,7 +463,7 @@ IsControllerConnected
     static bool TRAP::Input::IsControllerConnected(const TRAP::Input::Controller controller);
 
 | **Description**
-| Return whether the specified TRAP::`Input`_::`Controller`_ is connected or not
+| Returns whether the specified TRAP::`Input`_::`Controller`_ is connected or not
 
 | **Parameters**
 
@@ -440,7 +539,7 @@ GetControllerAxis
 .. code-block:: cpp
 
     static float TRAP::Input::GetControllerAxis(TRAP::Input::Controller controller,
-                                                const ControllerAxis axis);
+                                                const TRAP::Input::ControllerAxis axis);
 
 | **Description**
 | Returns the current axis position of the specified TRAP::`Input`_::`ControllerAxis`_ from TRAP::`Input`_::`Controller`_
@@ -453,22 +552,22 @@ GetControllerAxis
 .. note::
    This function also returns a value if the specified TRAP::`Input`_::`ControllerAxis`_ doesn't exist on the actual physical device. 
 
-----------------
-GetControllerHat
-----------------
+-----------------
+GetControllerDPad
+-----------------
 
 .. code-block:: cpp
 
-    static TRAP::Input::ControllerHat TRAP::Input::GetControllerHat(TRAP::Input::Controller controller,
-                                                                    const uint32_t hat);
+    static TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(TRAP::Input::Controller controller,
+                                                                      const uint32_t dpad);
 
 | **Description**
-| Returns the current direction(in form of TRAP::`Input`_::`ControllerHat`_\) from the specified TRAP::`Input`_::`Controller`_\s :code:`hat`
+| Returns the current direction(in form of TRAP::`Input`_::`ControllerDPad`_\) from the specified TRAP::`Input`_::`Controller`_\s :code:`dpad`
 
 | **Parameters**
 
-- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get the hat direction from
-- :code:`hat` Specifies which hats direction to get
+- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get the DPad direction from
+- :code:`dpad` Specifies which DPads direction to get
 
 -----------------
 GetControllerName
@@ -499,6 +598,36 @@ GetControllerStatus
 | **Parameters**
 
 - :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get status from
+
+--------------------------
+GetControllerBatteryStatus
+--------------------------
+
+.. code-block:: cpp
+
+    static TRAP::Input::ControllerBattery TRAP::Input::GetControllerBatteryStatus(TRAP::Input::Controller controller);
+
+| **Description**
+| Returns the current battery status of the specified TRAP::`Input`_::`Controller`_\(in form of TRAP::`Input`_::`ControllerBattery`_\) 
+
+| **Parameters**
+
+- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get battery status from
+
+---------------------------
+GetControllerConnectionType
+---------------------------
+
+.. code-block:: cpp
+
+    static TRAP::Input::ControllerConnectionType TRAP::Input::GetControllerConnectionType(TRAP::Input::Controller controller);
+
+| **Description**
+| Returns the current connection type of the specified TRAP::`Input`_::`Controller`_\(in form of TRAP::`Input`_::`ControllerConnectionType`_\) 
+
+| **Parameters**
+
+- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get connection type from
 
 --------------------
 GetAllControllerAxes
@@ -540,25 +669,25 @@ GetAllControllerButtons
    This function only returns buttons that actually exist on the physical device
 
 .. note::
-   This function can also contain buttons that are not specified in TRAP::`Input`_::`GamepadButton`_
+   This function can also contain buttons that are not specified in TRAP::`Input`_::`ControllerButton`_
 
---------------------
-GetAllControllerHats
---------------------
+---------------------
+GetAllControllerDPads
+---------------------
 
 .. code-block:: cpp
 
-    static std::vector<TRAP::Input::ControllerHat> TRAP::Input::GetAllControllerHats(TRAP::Input::Controller controller);
+    static std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(TRAP::Input::Controller controller);
 
 | **Description**
-| Returns a vector containing all hats current direction(in form of TRAP::`Input`_::`ControllerHat`_\) of the specified TRAP::`Input`_::`Controller`_
+| Returns a vector containing all DPads current direction(in form of TRAP::`Input`_::`ControllerDPad`_\) of the specified TRAP::`Input`_::`Controller`_
 
 | **Parameters**
 
-- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get hats from
+- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get DPads from
 
 .. warning::
-   This function only returns hats that actually exist on the physical device
+   This function only returns DPads that actually exist on the physical device
 
 ------------------------
 GetAllControllerStatuses
@@ -569,4 +698,99 @@ GetAllControllerStatuses
     static const std::array<TRAP::Input::ControllerStatus, 4>& TRAP::Input::GetAllControllerStatuses();
 
 | **Description**
-| Returns an array containing the statuses(in form of TRAP::`Input`_::`ControllerStatus`_\es) of all 4 TRAP::`Input`_::`Controller`_\s
+| Returns an array containing the statuses(in form of TRAP::`Input`_::`ControllerStatus`_\es) of all TRAP::`Input`_::`Controller`_\s
+
+----------------------
+SetControllerVibration
+----------------------
+
+.. code-block:: cpp
+
+    static void TRAP::Input::SetControllerVibration(TRAP::Input::Controller controller, const float leftMotor, const float rightMotor);
+
+| **Description**
+| Sets the vibration strength of the specified motors of a of a TRAP::`Input`_::`Controller`_
+
+| **Parameters**
+
+- :code:`leftMotor` Specifies the left vibration motor of a Controller
+- :code:`rightMotor` Specifies the right vibration motor of a Controller
+
+----------------
+SetEventCallback
+----------------
+
+.. code-block:: cpp
+
+    static void TRAP::Input::SetEventCallback(const EventCallbackFn& func);
+
+| **Description**
+| Sets the Function where to send all TRAP:::ref`controller_event`\s to
+
+| **Parameters**
+
+- :code:`callback` specifies the Function where Events will be send to
+
+.. note::
+   :code:`EventCallbackFn` is the same as :code:`std::function<void(Event&)>`
+
+------------------------
+UpdateControllerMappings
+------------------------
+
+.. code-block:: cpp
+
+    static void TRAP::Input::UpdateControllerMappings(const std::string& map);
+
+| **Description**
+| Adds the specified mapping(s) for use by the Controller Input API
+
+| **Parameters**
+
+- :code:`map` Specifies mappings to use for Controller Input
+
+Format for a C-String Controller map:
+
+.. code-block:: cpp
+
+   const char* ControllerMappings[] =
+   {
+       "{GUID},{Name},{Buttons/Axes/DPads},{Platform(Windows/Linux)}",
+       nullptr
+   };
+
+Real world Controller map example:
+
+.. code-block:: cpp
+
+   const char* ControllerMappings[] = 
+   {
+       "030000005e040000ea02000001030000,Xbox One S Controller,a:b0,b:b1,back:b6,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b8,leftshoulder:b4,leftstick:b9,lefttrigger:a2,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b10,righttrigger:a5,rightx:a3,righty:a4,start:b7,x:b2,y:b3,platform:Linux,",
+       nullptr
+   };
+
+.. warning::
+   This functions gets used internally to add predefined mappings for Windows and Linux Controllers
+
+.. seealso::
+   ControllerMappings.h
+
+.. TODO: Reference to ControllerMapping.h
+
+-------
+OnEvent
+-------
+
+.. code-block:: cpp
+
+    static void TRAP::Input::OnEvent(TRAP::Event& e);
+
+| **Description**
+| Default function for processing TRAP:::ref:`controller_event`\s
+
+| **Parameters**
+
+- :code:`e` specifies the TRAP:::ref:`Event` to process
+
+.. warning::
+   This function gets used by TRAP Engine internally and should never be called by the client!

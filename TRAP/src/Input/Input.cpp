@@ -16,6 +16,40 @@ uint32_t TRAP::Input::MappingCount = 0;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Input::Init(const ControllerAPI controllerAPI)
+{
+	s_controllerAPI = controllerAPI;
+	
+#ifdef TRAP_PLATFORM_WINDOWS
+	if (s_controllerAPI == ControllerAPI::Unknown || s_controllerAPI == ControllerAPI::Linux)
+		s_controllerAPI = ControllerAPI::XInput;
+	
+	InitControllerWindows();
+#elif defined(TRAP_PLATFORM_LINUX)
+	if (s_controllerAPI != ControllerAPI::Linux)
+		s_controllerAPI = ControllerAPI::Linux;
+	
+	for(int32_t i = 0; TRAP::Embed::ControllerMappings[i]; i++)
+		UpdateControllerMappings(TRAP::Embed::ControllerMappings[i])
+	
+	if (!InitControllerLinux())
+		TP_ERROR("[Input][Controller][Linux] Failed to initialize controller support for Linux!");
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Input::Shutdown()
+{
+#ifdef TRAP_PLATFORM_WINDOWS
+	ShutdownControllerWindows();
+#elif defined(TRAP_PLATFORM_LINUX)
+	ShutdownControllerLinux();	
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Input::ControllerAPI TRAP::Input::GetControllerAPI()
 {
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -33,49 +67,14 @@ void TRAP::Input::SetControllerAPI(const ControllerAPI controllerAPI)
 {
 	s_controllerStatuses = {};
 	s_controllerAPI = controllerAPI;
-	
+
 #ifdef TRAP_PLATFORM_WINDOWS
 	if (s_controllerAPI == ControllerAPI::Unknown || s_controllerAPI == ControllerAPI::Linux)
 		s_controllerAPI = ControllerAPI::XInput;
-	
+
 	InitControllerWindows();
 #endif
 	//Linux is ignored because it only got 1 supported API for controllers
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Input::Init(const ControllerAPI controllerAPI)
-{
-	s_controllerAPI = controllerAPI;
-	
-#ifdef TRAP_PLATFORM_WINDOWS
-	if (s_controllerAPI == ControllerAPI::Unknown || s_controllerAPI == ControllerAPI::Linux)
-		s_controllerAPI = ControllerAPI::XInput;
-	
-	InitControllerWindows();
-#elif defined(TRAP_PLATFORM_LINUX)
-	if (s_controllerAPI != ControllerAPI::Linux)
-		s_controllerAPI = ControllerAPI::Linux;
-	
-	for(int32_t i = 0; TRAP::Embed::ControllerMappings[i]; i++)
-		if (!UpdateControllerMappings(TRAP::Embed::ControllerMappings[i]))
-			TP_ERROR("[Input][Controller][Linux] Failed to initialize controller mappings!");
-	
-	if (!InitControllerLinux())
-		TP_ERROR("[Input][Controller][Linux] Failed to initialize controller support for Linux!");
-#endif
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Input::Shutdown()
-{
-#ifdef TRAP_PLATFORM_WINDOWS
-	ShutdownControllerWindows();
-#elif defined(TRAP_PLATFORM_LINUX)
-	ShutdownControllerLinux();	
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -237,7 +236,7 @@ TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(Controller controller
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Input::GetGamepadName(Controller controller)
+std::string TRAP::Input::GetControllerName(Controller controller)
 {
 	if (!IsControllerConnected(controller))
 	{
@@ -257,26 +256,33 @@ std::string TRAP::Input::GetGamepadName(Controller controller)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Input::GetControllerName(Controller controller)
+const TRAP::Input::ControllerStatus &TRAP::Input::GetControllerStatus(Controller controller)
 {
-	if (!IsControllerConnected(controller))
-	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not connected!");
-		return "";
-	}
-
-#ifdef TRAP_PLATFORM_WINDOWS
-	return GetControllerNameXInput(controller);
-#elif defined(TRAP_PLATFORM_LINUX)
-	return GetControllerNameLinux(controller);
-#endif
+	return s_controllerStatuses[static_cast<uint32_t>(controller)];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Input::ControllerStatus &TRAP::Input::GetControllerStatus(Controller controller)
+TRAP::Input::ControllerBattery TRAP::Input::GetControllerBatteryStatus(Controller controller)
 {
-	return s_controllerStatuses[static_cast<uint32_t>(controller)];
+#ifdef TRAP_PLATFORM_WINDOWS
+	if (s_controllerAPI == ControllerAPI::XInput)
+		UpdateControllerBatteryAndConnectionTypeXInput(controller);
+#endif
+
+	return s_controllerStatuses[static_cast<uint32_t>(controller)].BatteryStatus;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Input::ControllerConnectionType TRAP::Input::GetControllerConnectionType(Controller controller)
+{
+#ifdef TRAP_PLATFORM_WINDOWS
+	if (s_controllerAPI == ControllerAPI::XInput)
+		UpdateControllerBatteryAndConnectionTypeXInput(controller);
+#endif
+
+	return s_controllerStatuses[static_cast<uint32_t>(controller)].ConnectionType;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -343,37 +349,6 @@ const std::array<TRAP::Input::ControllerStatus, 4> &TRAP::Input::GetAllControlle
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::ControllerBattery TRAP::Input::GetControllerBatteryStatus(Controller controller)
-{
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		UpdateControllerBatteryAndConnectionTypeXInput(controller);
-#endif
-	
-	return s_controllerStatuses[static_cast<uint32_t>(controller)].BatteryStatus;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Input::ControllerConnectionType TRAP::Input::GetControllerConnectionType(Controller controller)
-{
-#ifdef TRAP_PLATFORM_WINDOWS
-	if (s_controllerAPI == ControllerAPI::XInput)
-		UpdateControllerBatteryAndConnectionTypeXInput(controller);
-#endif
-	
-	return s_controllerStatuses[static_cast<uint32_t>(controller)].ConnectionType;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Input::SetEventCallback(const EventCallbackFn &func)
-{
-	s_eventCallback = func;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Input::SetControllerVibration(Controller controller, const float leftMotor, const float rightMotor)
 {
 	if (!IsControllerConnected(controller))
@@ -391,7 +366,14 @@ void TRAP::Input::SetControllerVibration(Controller controller, const float left
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::UpdateControllerMappings(const std::string& map)
+void TRAP::Input::SetEventCallback(const EventCallbackFn &callback)
+{
+	s_eventCallback = callback;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Input::UpdateControllerMappings(const std::string& map)
 {
 	const char* c = map.c_str();
 	
@@ -440,8 +422,6 @@ bool TRAP::Input::UpdateControllerMappings(const std::string& map)
 		if(s_controllerStatuses[jID].Connected)
 			js->mapping = FindValidMapping(js);
 	}
-	
-	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -469,7 +449,7 @@ bool TRAP::Input::OnControllerConnectEvent(ControllerConnectEvent &e)
 	if (!IsControllerGamepad(e.GetController()) && s_controllerStatuses[static_cast<uint32_t>(e.GetController())].Connected) //Connected and not a Gamepad
 		TP_DEBUG("[Input][Controller] ID: ", static_cast<uint32_t>(e.GetController()), " Controller: \"", GetControllerName(static_cast<Controller>(e.GetController())), "\" Connected!");
 	else if (IsControllerGamepad(e.GetController()) && s_controllerStatuses[static_cast<uint32_t>(e.GetController())].Connected) //Connected and a Gamepad
-		TP_DEBUG("[Input][Controller] ID: ", static_cast<uint32_t>(e.GetController()), " Gamepad: \"", GetGamepadName(static_cast<Controller>(e.GetController())), "\" Connected!");
+		TP_DEBUG("[Input][Controller] ID: ", static_cast<uint32_t>(e.GetController()), " Gamepad: \"", GetControllerName(static_cast<Controller>(e.GetController())), "\" Connected!");
 
 	return false;
 }

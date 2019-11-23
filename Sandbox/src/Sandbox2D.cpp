@@ -130,7 +130,7 @@ void Sandbox2D::OnImGuiRender()
 			ImGui::Separator();
 			ImGui::Text("Infos");
 			ImGui::Text("API: %s", ControllerAPIToString(TRAP::Input::GetControllerAPI()).c_str());
-			ImGui::Text("Name: %s", TRAP::Input::GetGamepadName(TRAP::Input::Controller::One).c_str());
+			ImGui::Text("Name: %s", TRAP::Input::GetControllerName(TRAP::Input::Controller::One).c_str());
 			ImGui::Text("Status: %s", TRAP::Input::IsControllerConnected(TRAP::Input::Controller::One) ? "Connected" : "Disconnected");
 			ImGui::Text("Gamepad: %s", TRAP::Input::IsControllerGamepad(TRAP::Input::Controller::One) ? "True" : "False");
 			ImGui::Text("Battery: %s", BatteryStatusToString(TRAP::Input::GetControllerBatteryStatus(TRAP::Input::Controller::One)).c_str());
@@ -168,7 +168,7 @@ void Sandbox2D::OnImGuiRender()
 			ImGui::Separator();
 			ImGui::Text("Infos");
 			ImGui::Text("API: %s", ControllerAPIToString(TRAP::Input::GetControllerAPI()).c_str());
-			ImGui::Text("Name: %s", TRAP::Input::GetGamepadName(TRAP::Input::Controller::One).c_str());
+			ImGui::Text("Name: %s", TRAP::Input::GetControllerName(TRAP::Input::Controller::One).c_str());
 			ImGui::Text("Status: %s", TRAP::Input::IsControllerConnected(TRAP::Input::Controller::One) ? "Connected" : "Disconnected");
 			ImGui::Text("Gamepad: %s", TRAP::Input::IsControllerGamepad(TRAP::Input::Controller::One) ? "True" : "False");
 			ImGui::Text("Battery: %s", BatteryStatusToString(TRAP::Input::GetControllerBatteryStatus(TRAP::Input::Controller::One)).c_str());

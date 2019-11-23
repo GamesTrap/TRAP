@@ -1,3 +1,6 @@
+#ifndef _TRAP_CONTROLLERMAPPINGS_H_
+#define _TRAP_CONTROLLERMAPPINGS_H_
+
 // SDL_GameControllerDB project under the following license:
 //
 // Simple DirectMedia Layer
@@ -347,3 +350,5 @@ namespace TRAP::Embed
 		nullptr
 	};
 }
+
+#endif /*_TRAP_CONTROLLERMAPPINGS_H_*/

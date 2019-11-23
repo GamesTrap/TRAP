@@ -10,9 +10,6 @@ namespace TRAP
 	class ControllerDisconnectEvent;
 	class ControllerConnectEvent;
 
-	//TODO Rename everything to controller only !!!
-	//TODO Update docs
-
 	class Input final : public Singleton
 	{
 	public:
@@ -246,11 +243,12 @@ namespace TRAP
 			DirectInput,
 			Linux
 		};
-		static ControllerAPI GetControllerAPI();
-		static void SetControllerAPI(ControllerAPI controllerAPI);
 		
 		static void Init(ControllerAPI controllerAPI);
 		static void Shutdown();
+
+		static ControllerAPI GetControllerAPI();
+		static void SetControllerAPI(ControllerAPI controllerAPI);
 		
 		static bool IsKeyPressed(Key key);
 		static bool IsMouseButtonPressed(MouseButton button);
@@ -265,21 +263,21 @@ namespace TRAP
 		static std::string GetKeyName(Key key);
 		static float GetControllerAxis(Controller controller, ControllerAxis axis);
 		static ControllerDPad GetControllerDPad(Controller controller, uint32_t dpad);
-		static std::string GetGamepadName(Controller controller);
 		static std::string GetControllerName(Controller controller);
 		static const ControllerStatus& GetControllerStatus(Controller controller);
+		static ControllerBattery GetControllerBatteryStatus(Controller controller);
+		static ControllerConnectionType GetControllerConnectionType(Controller controller);
 		static std::vector<float> GetAllControllerAxes(Controller controller);
 		static std::vector<bool> GetAllControllerButtons(Controller controller);
 		static std::vector<ControllerDPad> GetAllControllerDPads(Controller controller);
 		static const std::array<ControllerStatus, 4>& GetAllControllerStatuses();
-		static ControllerBattery GetControllerBatteryStatus(Controller controller);
-		static ControllerConnectionType GetControllerConnectionType(Controller controller);
 
-		using EventCallbackFn = std::function<void(Event&)>;
-		static void SetEventCallback(const EventCallbackFn& func);
 		static void SetControllerVibration(Controller controller, float leftMotor, float rightMotor);
 		
-		static bool UpdateControllerMappings(const std::string& map);
+		using EventCallbackFn = std::function<void(Event&)>;
+		static void SetEventCallback(const EventCallbackFn& callback);
+		
+		static void UpdateControllerMappings(const std::string& map);
 
 		void OnEvent(Event& e);
 		

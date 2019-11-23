@@ -6,40 +6,41 @@
 
 namespace TRAP
 {
-	class ControllerConnectEvent final : public Event
+	class ControllerEvent : public Event
 	{
 	public:
-		explicit ControllerConnectEvent(TRAP::Input::Controller controller);
+		Input::Controller GetController() const;
 
-		TRAP::Input::Controller GetController() const;
+		int32_t GetCategoryFlags() const override;
+
+	protected:
+		explicit ControllerEvent(Input::Controller controller);
+		
+		Input::Controller m_controller;
+	};
+	
+	class ControllerConnectEvent final : public ControllerEvent
+	{
+	public:
+		explicit ControllerConnectEvent(Input::Controller controller);
 		
 		std::string ToString() const override;
 
-		int32_t GetCategoryFlags() const override;
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
-
-	private:
-		TRAP::Input::Controller m_controller;
 	};
 
-	class ControllerDisconnectEvent final : public Event
+	class ControllerDisconnectEvent final : public ControllerEvent
 	{
 	public:
-		explicit ControllerDisconnectEvent(TRAP::Input::Controller controller);
-
-		TRAP::Input::Controller GetController() const;
+		explicit ControllerDisconnectEvent(Input::Controller controller);
 		
 		std::string ToString() const override;
 
-		int32_t GetCategoryFlags() const override;
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
-
-	private:
-		TRAP::Input::Controller m_controller;
 	};
 }
 
