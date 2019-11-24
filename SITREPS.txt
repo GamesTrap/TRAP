@@ -623,3 +623,10 @@ SITREP 11/23/2019|19w47a1
         - Finished Linux Controller Input ~>120 mins
         - Windows XInput gets loaded at runtime now ~>20 mins
         - Updated Documentation ~>45 mins
+
+SITREP 11/24/2019|19w47a2
+    - Changed TRAP Engine version to 19w47a2(0.5.70)
+    - Branch ControllerInput:
+        - Reverted XInput runtime loading ~<10 mins
+        - TRAP Engine now requires Windows 8 or newer because of XInput 1.4
+        - Added DirectInput as new Controller API ~>50 mins

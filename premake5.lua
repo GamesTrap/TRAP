@@ -125,7 +125,10 @@ project "TRAP"
 			"StandAlone",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL"
+			"SPIRV-Cross-HLSL",
+			"DInput8",
+			"DXGUID",
+			"XInput"
 		}
 
 	filter "system:linux"

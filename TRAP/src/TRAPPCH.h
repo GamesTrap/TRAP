@@ -68,6 +68,8 @@
 #include <d3d12.h>
 //XInput
 #include <Xinput.h>
+//DirectInput
+#include <dinput.h>
 
 #undef far
 #undef min

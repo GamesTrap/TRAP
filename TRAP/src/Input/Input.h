@@ -287,21 +287,12 @@ namespace TRAP
 		static void InitControllerWindows();
 		static void ShutdownControllerWindows();
 
-		struct XInput
-		{
-			HINSTANCE Instance = nullptr;
-			typedef DWORD(WINAPI* PFN_XInputGetState)(DWORD, XINPUT_STATE*);
-			PFN_XInputGetState GetState = nullptr;
-			typedef DWORD(WINAPI* PFN_XInputGetBatteryInformation)(DWORD, BYTE, XINPUT_BATTERY_INFORMATION*);
-			PFN_XInputGetBatteryInformation GetBatteryInformation = nullptr;
-			typedef DWORD(WINAPI* PFN_XInputGetCapabilities)(DWORD, DWORD, XINPUT_CAPABILITIES*);
-			PFN_XInputGetCapabilities GetCapabilities = nullptr;
-			typedef DWORD(WINAPI* PFN_XInputSetState)(DWORD, XINPUT_VIBRATION*);
-			PFN_XInputSetState SetState = nullptr;
-		};
-		static XInput xinput;
-
-		static void InitControllerXInput();
+		static void UpdateControllerConnectionWindows(); //TODO call inside window events
+		static void DetectControllerDisconnectionWindows(); //TODO call inside window events
+		
+		//////////
+		//XInput//
+		//////////
 		static void ShutdownControllerXInput();
 		static void UpdateControllerConnectionXInput(Controller controller);
 		static void UpdateControllerBatteryAndConnectionTypeXInput(Controller controller);
@@ -315,9 +306,58 @@ namespace TRAP
 		static std::string GetControllerNameXInput(Controller controller);
 		
 		static int32_t ControllerButtonToXInput(ControllerButton button);
-
-		//XInput
+		static bool CheckConnectionXInput(Controller controller);
+		
 		static std::array<uint32_t, 4> s_lastXInputUpdate;
+
+		///////////////
+		//DirectInput//
+		///////////////
+		static void InitControllerDirectInput();
+		static void ShutdownControllerDirectInput();
+
+		static std::string GetControllerNameDirectInput(Controller controller);
+		static std::string GetGamepadNameDirectInput(Controller controller);
+		static std::vector<float> GetAllControllerAxesDirectInput(Controller controller);
+		static std::vector<bool> GetAllControllerButtonsDirectInput(Controller controller);
+		static std::vector<ControllerDPad> GetAllControllerDPadsDirectInput(Controller controller);
+
+		
+		static void UpdateControllerConnectionDirectInput();
+		static void CloseControllerDirectInput(Controller controller);
+		static bool PollControllerDirectInput(Controller controller, int32_t mode);
+
+		static BOOL CALLBACK DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* doi, void* user);
+		static bool SupportsXInput(const GUID* guid);
+		static int CompareControllerObjects(const void* first, const void* second);
+		static BOOL CALLBACK DeviceCallback(const DIDEVICEINSTANCE* deviceInstance, void* user);
+		
+		static IDirectInput8W* API;		
+		
+		struct Object
+		{
+			int32_t Offset = 0;
+			int32_t Type = 0;
+		};
+		struct ControllerWindows
+		{
+			std::vector<Object> Objects{};
+			int32_t ObjectCount = 0;
+			IDirectInputDevice8W* Device = nullptr;
+			DWORD Index = 0;
+			GUID guid{};
+		};
+
+		struct ObjectEnum
+		{
+			IDirectInputDevice8W* Device = nullptr;
+			std::vector<Object> Objects;
+			int32_t ObjectCount = 0;
+			int32_t AxisCount = 0;
+			int32_t SliderCount = 0;
+			int32_t ButtonCount = 0;
+			int32_t PoVCount = 0;
+		};
 #elif defined(TRAP_PLATFORM_LINUX)
 		static constexpr const char* MappingName = "Linux";
 		struct ControllerInternal;
@@ -391,6 +431,7 @@ namespace TRAP
 		{
 			std::vector<float> Axes{};
 			std::vector<bool> Buttons{};
+			int32_t ButtonCount = 0;
 			std::vector<ControllerDPad> DPads{};
 			std::string Name{};
 			void* UserPointer = nullptr;
@@ -398,7 +439,7 @@ namespace TRAP
 			Mapping* mapping = nullptr;
 			
 #ifdef TRAP_PLATFORM_WINDOWS
-			//TODO
+			ControllerWindows wsjs;
 #elif defined(TRAP_PLATFORM_LINUX)
 			ControllerLinux linjs;
 #endif
@@ -408,7 +449,7 @@ namespace TRAP
 		static void InternalInputControllerDPad(ControllerInternal* js, int32_t dpad, char value);
 		static void InternalInputControllerAxis(ControllerInternal* js, int32_t axis, float value);
 		static void InternalInputControllerButton(ControllerInternal* js, int32_t button, bool pressed);
-		static bool InternalPollController(Controller controller);
+		static bool InternalPollController(Controller controller, int32_t mode);
 		
 		///////////
 		//Mapping//
@@ -423,6 +464,7 @@ namespace TRAP
 		static bool IsMappedControllerButtonPressed(Controller controller, ControllerButton button);
 		static float GetMappedControllerAxis(Controller controller, ControllerAxis axis);
 		static ControllerDPad GetMappedControllerDPad(Controller controller, uint32_t dpad);
+		static void UpdateControllerGUID(std::array<char, 33>& guid);
 	};
 }
 
