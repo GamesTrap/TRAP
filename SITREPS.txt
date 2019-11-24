@@ -630,3 +630,5 @@ SITREP 11/24/2019|19w47a2
         - Reverted XInput runtime loading ~<10 mins
         - TRAP Engine now requires Windows 8 or newer because of XInput 1.4
         - Added DirectInput as new Controller API ~>50 mins
+        - Updated Docs ~<5 mins
+    - Created new Branch for a new Windowing API for Windows(Win32) and Linux(X11) ~<20 mins
