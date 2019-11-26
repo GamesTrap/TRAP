@@ -272,8 +272,10 @@ inline TRAP::Input::ControllerAPI TRAP::Utils::Config::ConvertToType<TRAP::Input
 		return Input::ControllerAPI::XInput;
 	if (input == "DirectInput")
 		return Input::ControllerAPI::DirectInput;
+	if (input == "Linux")
+		return Input::ControllerAPI::Linux;
 
-	return Input::ControllerAPI::XInput;
+	return Input::ControllerAPI::Unknown;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -440,6 +442,12 @@ inline std::string TRAP::Utils::Config::ConvertToString<TRAP::Input::ControllerA
 
 	case Input::ControllerAPI::DirectInput:
 		return "DirectInput";
+
+	case Input::ControllerAPI::Linux:
+		return "Linux";
+
+	case Input::ControllerAPI::Unknown:
+		return "Unknown";
 
 	default:
 		return "";

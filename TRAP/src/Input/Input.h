@@ -174,7 +174,7 @@ namespace TRAP
 			Right_Trigger = 5
 		};
 		
-		enum class GamepadButton
+		enum class ControllerButton
 		{
 			A            = 0,
 			B            = 1,
@@ -197,7 +197,7 @@ namespace TRAP
 			Triangle     = Y
 		};
 
-		enum class ControllerHat
+		enum class ControllerDPad
 		{
 			Centered   = 0,
 			Up         = 1,
@@ -229,7 +229,6 @@ namespace TRAP
 		struct ControllerStatus
 		{
 			bool Connected = false;
-			bool IsGamepad = false;
 			ControllerConnectionType ConnectionType = ControllerConnectionType::Unknown;
 			ControllerBattery BatteryStatus = ControllerBattery::Unknown;
 		};
@@ -238,18 +237,22 @@ namespace TRAP
 		//This is only used for windows
 		enum class ControllerAPI
 		{
+			Unknown,
+			
 			XInput,
-			DirectInput
+			DirectInput,
+			Linux
 		};
-		static ControllerAPI GetControllerAPI();
-		static void SetControllerAPI(ControllerAPI controllerAPI);
 		
 		static void Init(ControllerAPI controllerAPI);
 		static void Shutdown();
+
+		static ControllerAPI GetControllerAPI();
+		static void SetControllerAPI(ControllerAPI controllerAPI);
 		
 		static bool IsKeyPressed(Key key);
 		static bool IsMouseButtonPressed(MouseButton button);
-		static bool IsGamepadButtonPressed(Controller controller, GamepadButton button);
+		static bool IsGamepadButtonPressed(Controller controller, ControllerButton button);
 		static bool IsRawMouseInputSupported();
 		static bool IsControllerConnected(Controller controller);
 		static bool IsControllerGamepad(Controller controller);
@@ -259,51 +262,209 @@ namespace TRAP
 		static float GetMouseY();
 		static std::string GetKeyName(Key key);
 		static float GetControllerAxis(Controller controller, ControllerAxis axis);
-		static ControllerHat GetControllerHat(Controller controller, uint32_t hat);
+		static ControllerDPad GetControllerDPad(Controller controller, uint32_t dpad);
 		static std::string GetControllerName(Controller controller);
 		static const ControllerStatus& GetControllerStatus(Controller controller);
-		static std::vector<float> GetAllControllerAxes(Controller controller);
-		static std::vector<bool> GetAllControllerButtons(Controller controller);
-		static std::vector<ControllerHat> GetAllControllerHats(Controller controller);
-		static const std::array<ControllerStatus, 4>& GetAllControllerStatuses();
 		static ControllerBattery GetControllerBatteryStatus(Controller controller);
 		static ControllerConnectionType GetControllerConnectionType(Controller controller);
+		static std::vector<float> GetAllControllerAxes(Controller controller);
+		static std::vector<bool> GetAllControllerButtons(Controller controller);
+		static std::vector<ControllerDPad> GetAllControllerDPads(Controller controller);
+		static const std::array<ControllerStatus, 4>& GetAllControllerStatuses();
 
-		using EventCallbackFn = std::function<void(Event&)>;
-		static void SetEventCallback(const EventCallbackFn& func);
 		static void SetControllerVibration(Controller controller, float leftMotor, float rightMotor);
+		
+		using EventCallbackFn = std::function<void(Event&)>;
+		static void SetEventCallback(const EventCallbackFn& callback);
+		
+		static void UpdateControllerMappings(const std::string& map);
 
 		void OnEvent(Event& e);
 		
-	private:
+	private:		
 #ifdef TRAP_PLATFORM_WINDOWS
+		static constexpr const char* MappingName = "Windows";
 		static void InitControllerWindows();
+		static void ShutdownControllerWindows();
 
-		static void InitControllerXInput();
+		static void UpdateControllerConnectionWindows(); //TODO call inside window events
+		static void DetectControllerDisconnectionWindows(); //TODO call inside window events
+		
+		//////////
+		//XInput//
+		//////////
+		static void ShutdownControllerXInput();
 		static void UpdateControllerConnectionXInput(Controller controller);
 		static void UpdateControllerBatteryAndConnectionTypeXInput(Controller controller);
 		static void SetControllerVibrationXInput(Controller controller, float leftMotor, float rightMotor);
-		static bool IsGamepadButtonPressedXInput(Controller controller, GamepadButton button);
+		static bool IsGamepadButtonPressedXInput(Controller controller, ControllerButton button);
 		static float GetControllerAxisXInput(Controller controller, ControllerAxis axis);
+		static ControllerDPad GetControllerDPadXInput(Controller controller, uint32_t dpad);
 		static std::vector<float> GetAllControllerAxesXInput(Controller controller);
 		static std::vector<bool> GetAllControllerButtonsXInput(Controller controller);
+		static std::vector<ControllerDPad> GetAllControllerDPadsXInput(Controller controller);
 		static std::string GetControllerNameXInput(Controller controller);
 		
-		static uint32_t GamepadButtonToXInput(GamepadButton button);
-
-		//XInput
+		static int32_t ControllerButtonToXInput(ControllerButton button);
+		static bool CheckConnectionXInput(Controller controller);
+		
 		static std::array<uint32_t, 4> s_lastXInputUpdate;
-		//General
-		static ControllerAPI s_controllerAPI;		
+
+		///////////////
+		//DirectInput//
+		///////////////
+		static void InitControllerDirectInput();
+		static void ShutdownControllerDirectInput();
+
+		static std::string GetControllerNameDirectInput(Controller controller);
+		static std::string GetGamepadNameDirectInput(Controller controller);
+		static std::vector<float> GetAllControllerAxesDirectInput(Controller controller);
+		static std::vector<bool> GetAllControllerButtonsDirectInput(Controller controller);
+		static std::vector<ControllerDPad> GetAllControllerDPadsDirectInput(Controller controller);
+
+		
+		static void UpdateControllerConnectionDirectInput();
+		static void CloseControllerDirectInput(Controller controller);
+		static bool PollControllerDirectInput(Controller controller, int32_t mode);
+
+		static BOOL CALLBACK DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* doi, void* user);
+		static bool SupportsXInput(const GUID* guid);
+		static int CompareControllerObjects(const void* first, const void* second);
+		static BOOL CALLBACK DeviceCallback(const DIDEVICEINSTANCE* deviceInstance, void* user);
+		
+		static IDirectInput8W* API;		
+		
+		struct Object
+		{
+			int32_t Offset = 0;
+			int32_t Type = 0;
+		};
+		struct ControllerWindows
+		{
+			std::vector<Object> Objects{};
+			int32_t ObjectCount = 0;
+			IDirectInputDevice8W* Device = nullptr;
+			DWORD Index = 0;
+			GUID guid{};
+		};
+
+		struct ObjectEnum
+		{
+			IDirectInputDevice8W* Device = nullptr;
+			std::vector<Object> Objects;
+			int32_t ObjectCount = 0;
+			int32_t AxisCount = 0;
+			int32_t SliderCount = 0;
+			int32_t ButtonCount = 0;
+			int32_t PoVCount = 0;
+		};
+#elif defined(TRAP_PLATFORM_LINUX)
+		static constexpr const char* MappingName = "Linux";
+		struct ControllerInternal;
+		
+		static bool InitControllerLinux();
+		static void ShutdownControllerLinux();
+
+		static std::string GetControllerNameLinux(Controller controller);
+		static std::string GetGamepadNameLinux(Controller controller);
+		static std::vector<float> GetAllControllerAxesLinux(Controller controller);
+		static std::vector<bool> GetAllControllerButtonsLinux(Controller controller);
+		static std::vector<ControllerDPad> GetAllControllerDPadsLinux(Controller controller);
+		static void SetControllerVibrationLinux(Controller controller, float leftMotor, float rightMotor);
+
+		static bool OpenControllerDeviceLinux(const char* path);
+		static void CloseControllerLinux(Controller controller);
+		static void DetectControllerConnectionLinux(); //TODO This needs to be called in X11 windows when polling for events!
+		static int32_t PollControllerLinux(Controller controller);
+
+		static void PollABSStateLinux(ControllerInternal* js);
+		static void HandleABSEventLinux(ControllerInternal* js, int32_t code, int32_t value);
+		static void HandleKeyEventLinux(ControllerInternal* js, int32_t code, int32_t value);
+		
+		struct ControllerLinuxLibrary
+		{
+			int32_t INotify = 0;
+			int32_t Watch = 0;
+			regex_t Regex{};
+			bool Dropped = false;
+		};
+		static ControllerLinuxLibrary s_linuxController;
+
+		struct ControllerLinux
+		{
+			int32_t FD = 0;
+			bool VibrationSupported = false;
+			int16_t CurrentVibration = -1;
+			std::array<char, PATH_MAX> Path{};
+			std::array<int32_t, KEY_CNT - BTN_MISC> KeyMap{};
+			std::array<int32_t, ABS_CNT> ABSMap{};
+			std::array<struct input_absinfo, ABS_CNT> ABSInfo{};
+			std::array<std::array<int32_t, 4>, 2> DPads{};
+		};
 #endif
 
 		bool OnControllerConnectEvent(ControllerConnectEvent& e);
 		bool OnControllerDisconnectEvent(ControllerDisconnectEvent& e);
 		
-		static void JoystickCallback(int32_t joystick, int32_t event);
-		
 		static std::array<ControllerStatus, 4> s_controllerStatuses;
 		static EventCallbackFn s_eventCallback;
+		static ControllerAPI s_controllerAPI;
+
+		//Controller mapping element
+		struct MapElement
+		{
+			uint8_t Type = 0;
+			uint8_t Index = 0;
+			int8_t AxisScale = 0;
+			int8_t AxisOffset = 0;
+		};
+		//Controller mapping
+		struct Mapping
+		{
+			std::array<char, 128> Name{};
+			std::array<char, 33> guid{};
+			std::array<MapElement, 15> Buttons{};
+			std::array<MapElement, 6> Axes{};
+		};
+
+		struct ControllerInternal
+		{
+			std::vector<float> Axes{};
+			std::vector<bool> Buttons{};
+			int32_t ButtonCount = 0;
+			std::vector<ControllerDPad> DPads{};
+			std::string Name{};
+			void* UserPointer = nullptr;
+			std::string guid{};
+			Mapping* mapping = nullptr;
+			
+#ifdef TRAP_PLATFORM_WINDOWS
+			ControllerWindows wsjs;
+#elif defined(TRAP_PLATFORM_LINUX)
+			ControllerLinux linjs;
+#endif
+		};
+		static std::array<ControllerInternal, 4> s_controllerInternal;
+		static ControllerInternal* AddInternalController(const std::string& name, const std::string& guid, int32_t axisCount, int32_t buttonCount, int32_t dpadCount);
+		static void InternalInputControllerDPad(ControllerInternal* js, int32_t dpad, char value);
+		static void InternalInputControllerAxis(ControllerInternal* js, int32_t axis, float value);
+		static void InternalInputControllerButton(ControllerInternal* js, int32_t button, bool pressed);
+		static bool InternalPollController(Controller controller, int32_t mode);
+		
+		///////////
+		//Mapping//
+		///////////	
+		static std::vector<Mapping> Mappings;
+		static uint32_t MappingCount;
+		
+		static bool ParseMapping(Mapping* mapping, const char* str);
+		static Mapping* FindMapping(const char* guid);
+		static Mapping* FindValidMapping(const ControllerInternal* js);
+		static bool IsValidElementForController(const MapElement* e, const ControllerInternal* js);
+		static bool IsMappedControllerButtonPressed(Controller controller, ControllerButton button);
+		static float GetMappedControllerAxis(Controller controller, ControllerAxis axis);
+		static ControllerDPad GetMappedControllerDPad(Controller controller, uint32_t dpad);
+		static void UpdateControllerGUID(std::array<char, 33>& guid);
 	};
 }
 

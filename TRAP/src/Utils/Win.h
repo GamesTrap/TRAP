@@ -51,9 +51,9 @@
 #ifndef NOKERNEL	
 	#define NOKERNEL
 #endif
-#ifndef NONLS
+/*#ifndef NONLS
 	#define NONLS
-#endif
+#endif*/
 #ifndef NOMEMMGR
 	#define NOMEMMGR
 #endif

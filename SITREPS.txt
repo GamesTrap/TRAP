@@ -607,10 +607,33 @@ SITREP 11/14/2019|19w46a1
 SITREP 11/16/2019|19w46a2
     - Changed TRAP Engine version to 19w46a2(0.5.67)
     - Create new branch for Controller Input ~>10 mins
-    - Finished Controller Input(XInput) ~>30 mins
-    - Application Added check if Windows 8 or newer (XInput 1.4 Requirements) ~>X mins
+        - Finished Controller Input(XInput) ~>30 mins
+        - Application Added check if Windows 8 or newer (XInput 1.4 Requirements) ~>X mins
+        - Renamed ControllerHat functions to ControllerDPad ~>10 mins
+        - Added GetControllerDPad for XInput ~>20 mins
 
+SITREP 11/17/2019|19w46a3
+    - Changed TRAP Engine version to 19w46a3(0.5.68)
+    - Branch ControllerInput:
+        - Started working on Linux Controller Input ~>30 mins
+
+SITREP 11/23/2019|19w47a1
+    - Changed TRAP Engine version to 19w47a1(0.5.69)
+    - Branch ControllerInput:
+        - Finished Linux Controller Input ~>120 mins
+        - Windows XInput gets loaded at runtime now ~>20 mins
+        - Updated Documentation ~>45 mins
+
+SITREP 11/24/2019|19w47a2
+    - Changed TRAP Engine version to 19w47a2(0.5.70)
+    - Branch ControllerInput:
+        - Reverted XInput runtime loading ~<10 mins
+        - TRAP Engine now requires Windows 8 or newer because of XInput 1.4
+        - Added DirectInput as new Controller API ~>50 mins
+        - Updated Docs ~<5 mins
+    - Created new Branch for a new Windowing API for Windows(Win32) and Linux(X11) ~<20 mins
+    
 SITREP 11/26/2019|19w48a1
-    - Changed TRAP Engine version to 19w48a1(0.5.68)
+    - Changed TRAP Engine version to 19w48a1(0.5.71)
     - Fixed SandboxLayer not initializing VertexArray ~<5 mins
     - Fixed VulkanTexture2D creating Fallback2D with wrong name ~<5 mins

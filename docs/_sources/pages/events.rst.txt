@@ -26,7 +26,8 @@ EventType
         WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
         AppTick, AppUpdate, AppRender, //These are currently unused!
         KeyPressed, KeyReleased, KeyTyped,
-        MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
+        MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled,
+        ControllerConnected, ControllerDisconnected
     };
 
 | **Description**
@@ -48,7 +49,8 @@ EventCategory
         Input       = BIT(1),
         Keyboard    = BIT(2),
         Mouse       = BIT(3),
-        MouseButton = BIT(4)
+        MouseButton = BIT(4),
+        Controller  = BIT(5)
     };
 
 | **Description**
@@ -1522,3 +1524,179 @@ GetName
 
 | **Description**
 | Returns a c-string containing: :code:`"KeyTyped"`
+
+.. _controller_event:
+
+---------------
+ControllerEvent
+---------------
+
+.. note::
+   TRAP::`ControllerEvent`_ inherits from TRAP::`Event`_
+
+^^^^^^^^^^^
+Constructor
+^^^^^^^^^^^
+
+.. code-block:: cpp
+
+    protected:
+        TRAP::ControllerEvent(const TRAP::Input::Controller controller);
+
+| **Description**
+| This is used to create new TRAP::`ControllerEvent`_\s
+
+| **Parameters**
+| :code:`controller` Specifies the TRAP:::ref:`input`:::ref:`controller` for the TRAP::`ControllerEvent`_
+
+^^^^^^^^^^^^^
+GetController
+^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+    TRAP::Input::Controller TRAP::ControllerEvent::GetController() const;
+
+| **Description**
+| This returns the TRAP:::ref:`input`:::ref:`controller` of the TRAP::`ControllerEvent`_
+
+^^^^^^^^^^^^^^^^
+GetCategoryFlags
+^^^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+    int32_t TRAP::ControllerEvent::GetCategoryFlags() const override;
+
+| **Description**
+| Returns TRAP::`EventCategory`_::Controller | TRAP::`EventCategory`_::Input casted to an :code:`int32_t`
+
+----------------------
+ControllerConnectEvent
+----------------------
+
+.. note::
+   TRAP::`ControllerConnectEvent`_ inherits from TRAP::`ControllerEvent`_
+
+^^^^^^^^^^^
+Constructor
+^^^^^^^^^^^
+
+.. code-block:: cpp
+
+    TRAP::ControllerConnectEvent(const TRAP::Input::Controller controller);
+
+| **Description**
+| This is used to create new TRAP::`ControllerConnectEvent`_\s
+
+| **Parameters**
+| :code:`controller` Specifies the TRAP:::ref:`input`:::ref:`controller` for the TRAP::`ControllerConnectEvent`_
+
+^^^^^^^^
+ToString
+^^^^^^^^
+
+.. code-block:: cpp
+
+    std::string TRAP::ControllerConnectEvent::ToString() const override;
+
+| **Description**
+| Returns a string containing: :code:`"ControllerConnectEvent: " + controller`
+
+^^^^^^^^^^^^^
+GetStaticType
+^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+    static TRAP::EventType TRAP::ControllerConnectEvent::GetStaticType();
+
+| **Description**
+| Returns TRAP::`EventType`_::ControllerConnected
+
+^^^^^^^^^^^^
+GetEventType
+^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+    TRAP::EventType TRAP::ControllerConnectEvent::GetEventType() const override;
+
+| **Description**
+| Returns TRAP::`EventType`_::ControllerConnected
+
+^^^^^^^
+GetName
+^^^^^^^
+
+.. code-block:: cpp
+
+    const char* TRAP::ControllerConnectEvent::GetName() const override;
+
+| **Description**
+| Returns a c-string containing: :code:`"ControllerConnect"`
+
+-------------------------
+ControllerDisconnectEvent
+-------------------------
+
+.. note::
+   TRAP::`ControllerDisconnectEvent`_ inherits from TRAP::`ControllerEvent`_
+
+^^^^^^^^^^^
+Constructor
+^^^^^^^^^^^
+
+.. code-block:: cpp
+
+    TRAP::ControllerDisconnectEvent(const TRAP::Input::Controller controller);
+
+| **Description**
+| This is used to create new TRAP::`ControllerDisconnectEvent`_\s
+
+| **Parameters**
+| :code:`controller` Specifies the TRAP:::ref:`input`:::ref:`controller` for the TRAP::`ControllerDisconnectEvent`_
+
+^^^^^^^^
+ToString
+^^^^^^^^
+
+.. code-block:: cpp
+
+    std::string TRAP::ControllerDisconnectEvent::ToString() const override;
+
+| **Description**
+| Returns a string containing: :code:`"ControllerDisconnectEvent: " + controller`
+
+^^^^^^^^^^^^^
+GetStaticType
+^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+    static TRAP::EventType TRAP::ControllerDisconnectEvent::GetStaticType();
+
+| **Description**
+| Returns TRAP::`EventType`_::ControllerDisconnected
+
+^^^^^^^^^^^^
+GetEventType
+^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+    TRAP::EventType TRAP::ControllerDisconnectEvent::GetEventType() const override;
+
+| **Description**
+| Returns TRAP::`EventType`_::ControllerDisconnect
+
+^^^^^^^
+GetName
+^^^^^^^
+
+.. code-block:: cpp
+
+    const char* TRAP::ControllerDisconnectEvent::GetName() const override;
+
+| **Description**
+| Returns a c-string containing: :code:`"ControllerDisconnect"`

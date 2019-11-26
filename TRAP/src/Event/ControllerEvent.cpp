@@ -1,16 +1,32 @@
 #include "TRAPPCH.h"
 #include "ControllerEvent.h"
 
-TRAP::ControllerConnectEvent::ControllerConnectEvent(const Input::Controller controller)
+TRAP::Input::Controller TRAP::ControllerEvent::GetController() const
+{
+	return m_controller;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::ControllerEvent::GetCategoryFlags() const
+{
+	return static_cast<int32_t>(EventCategory::Controller) | static_cast<int32_t>(EventCategory::Input);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::ControllerEvent::ControllerEvent(const Input::Controller controller)
 	: m_controller(controller)
 {	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::Controller TRAP::ControllerConnectEvent::GetController() const
-{
-	return m_controller;
+TRAP::ControllerConnectEvent::ControllerConnectEvent(const Input::Controller controller)
+	: ControllerEvent(controller)
+{	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -21,13 +37,6 @@ std::string TRAP::ControllerConnectEvent::ToString() const
 	ss << "ControllerConnectEvent: " << static_cast<uint32_t>(m_controller);
 
 	return ss.str();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-int32_t TRAP::ControllerConnectEvent::GetCategoryFlags() const
-{
-	return static_cast<int32_t>(EventCategory::Controller) | static_cast<int32_t>(EventCategory::Input);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -53,16 +62,9 @@ const char* TRAP::ControllerConnectEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::ControllerDisconnectEvent::ControllerDisconnectEvent(Input::Controller controller)
-	: m_controller()
+TRAP::ControllerDisconnectEvent::ControllerDisconnectEvent(const Input::Controller controller)
+	: ControllerEvent(controller)
 {
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Input::Controller TRAP::ControllerDisconnectEvent::GetController() const
-{
-	return m_controller;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -73,13 +75,6 @@ std::string TRAP::ControllerDisconnectEvent::ToString() const
 	ss << "ControllerDisconnectEvent: " << static_cast<uint32_t>(m_controller);
 
 	return ss.str();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-int32_t TRAP::ControllerDisconnectEvent::GetCategoryFlags() const
-{
-	return static_cast<int32_t>(EventCategory::Controller) | static_cast<int32_t>(EventCategory::Input);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

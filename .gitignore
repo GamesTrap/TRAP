@@ -166,3 +166,10 @@ bin/*
 Makefile
 docs/_build/
 .vscode
+.codelite
+.build-debug
+.build-release
+.build-relwithdebinfo
+*.mk
+*.project
+*.workspace
