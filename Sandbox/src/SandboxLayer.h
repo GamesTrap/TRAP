@@ -66,6 +66,7 @@ public:
 			{TRAP::Graphics::ShaderDataType::Float2, "UV"}
 		};
 		vertexBuffer->SetLayout(layout);
+		m_vertexArray = TRAP::Graphics::VertexArray::Create();
 		m_vertexArray->AddVertexBuffer(vertexBuffer);
 
 		std::array<uint32_t, 6> indices //Quad
