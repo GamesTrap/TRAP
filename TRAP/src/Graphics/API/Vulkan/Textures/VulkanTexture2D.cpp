@@ -4,7 +4,7 @@
 #include "VFS/VFS.h"
 
 TRAP::Graphics::API::VulkanTexture2D::VulkanTexture2D(const TextureParameters parameters)
-	: m_name("Fallback"), m_parameters(parameters)
+	: m_name("Fallback2D"), m_parameters(parameters)
 {
 	TP_WARN("[Texture2D][Vulkan] WIP");
 }
