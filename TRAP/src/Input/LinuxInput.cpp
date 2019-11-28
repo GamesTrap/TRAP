@@ -4,13 +4,17 @@
 #ifdef TRAP_PLATFORM_LINUX
 
 #include "Event/ControllerEvent.h"
+#include "Utils/ControllerMappings.h"
 
 TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::InitControllerLinux()
+bool TRAP::Input::InitController()
 {
+	for (int32_t i = 0; TRAP::Embed::ControllerMappings[i]; i++)
+		UpdateControllerMappings(TRAP::Embed::ControllerMappings[i]);
+
 	const char* dirName = "/dev/input";
 
 	s_linuxController.INotify = inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
@@ -58,14 +62,14 @@ bool TRAP::Input::InitControllerLinux()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::ShutdownControllerLinux()
+void TRAP::Input::ShutdownController()
 {
 	for(int32_t jID = 0; jID <= static_cast<int32_t>(Controller::Four); jID++)
 	{
 		if(s_controllerInternal[jID].linjs.CurrentVibration != -1)
-			SetControllerVibrationLinux(static_cast<Controller>(jID), 0.0f, 0.0f);
+			SetControllerVibration(static_cast<Controller>(jID), 0.0f, 0.0f);
 		if (s_controllerStatuses[jID].Connected)
-			CloseControllerLinux(static_cast<Controller>(jID));
+			CloseController(static_cast<Controller>(jID));
 	}
 	
 	s_controllerStatuses = {};
@@ -83,32 +87,22 @@ void TRAP::Input::ShutdownControllerLinux()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Input::GetControllerNameLinux(Controller controller)
+std::string TRAP::Input::GetControllerNameInternal(Controller controller)
 {
-	if (!PollControllerLinux(controller))
+	if (!PollController(controller, 0))
 		return "";
+
+	if (s_controllerInternal[static_cast<int32_t>(controller)].mapping)
+		return std::string(s_controllerInternal[static_cast<int32_t>(controller)].mapping->Name.data());
 	
 	return s_controllerInternal[static_cast<int32_t>(controller)].Name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Input::GetGamepadNameLinux(Controller controller)
+std::vector<float> TRAP::Input::GetAllControllerAxesInternal(Controller controller)
 {
-	if(!PollControllerLinux(controller))
-		return "";
-		
-	if(s_controllerInternal[static_cast<int32_t>(controller)].mapping)
-		return std::string(s_controllerInternal[static_cast<int32_t>(controller)].mapping->Name.data());
-		
-	return "";
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<float> TRAP::Input::GetAllControllerAxesLinux(Controller controller)
-{
-	if (!PollControllerLinux(controller))
+	if (!PollController(controller, 0))
 		return {};
 
 	return s_controllerInternal[static_cast<int32_t>(controller)].Axes;
@@ -116,9 +110,9 @@ std::vector<float> TRAP::Input::GetAllControllerAxesLinux(Controller controller)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<bool> TRAP::Input::GetAllControllerButtonsLinux(Controller controller)
+std::vector<bool> TRAP::Input::GetAllControllerButtonsInternal(Controller controller)
 {
-	if (!PollControllerLinux(controller))
+	if (!PollController(controller, 0))
 		return {};
 
 	return s_controllerInternal[static_cast<int32_t>(controller)].Buttons;
@@ -126,9 +120,9 @@ std::vector<bool> TRAP::Input::GetAllControllerButtonsLinux(Controller controlle
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPadsLinux(Controller controller)
+std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPadsInternal(Controller controller)
 {
-	if (!PollControllerLinux(controller))
+	if (!PollController(controller, 0))
 		return {};
 
 	return s_controllerInternal[static_cast<int32_t>(controller)].DPads;
@@ -136,9 +130,9 @@ std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPadsLinux
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::SetControllerVibrationLinux(Controller controller, float leftMotor, float rightMotor)
+void TRAP::Input::SetControllerVibrationInternal(Controller controller, float leftMotor, float rightMotor)
 {
-	if(!PollControllerLinux(controller))
+	if(!PollController(controller, 0))
 		return;
 		
 	ControllerInternal* js = &s_controllerInternal[static_cast<uint32_t>(controller)];
@@ -314,7 +308,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const char* path)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Frees all resources associated with the specified controller
-void TRAP::Input::CloseControllerLinux(Controller controller)
+void TRAP::Input::CloseController(Controller controller)
 {
 	ControllerInternal* con = &s_controllerInternal[static_cast<int32_t>(controller)];
 	
@@ -327,7 +321,7 @@ void TRAP::Input::CloseControllerLinux(Controller controller)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::DetectControllerConnectionLinux()
+void TRAP::Input::DetectControllerConnection()
 {
 	if (s_linuxController.INotify <= 0)
 		return;
@@ -357,7 +351,7 @@ void TRAP::Input::DetectControllerConnectionLinux()
 			{
 				if(std::strcmp(s_controllerInternal[jID].linjs.Path.data(), path.data()) == 0)
 				{
-					CloseControllerLinux(static_cast<Controller>(jID));
+					CloseController(static_cast<Controller>(jID));
 					break;
 				}
 			}
@@ -367,7 +361,7 @@ void TRAP::Input::DetectControllerConnectionLinux()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Input::PollControllerLinux(Controller controller)
+bool TRAP::Input::PollController(Controller controller, int32_t mode)
 {
 	if(s_controllerStatuses[static_cast<int32_t>(controller)].Connected)
 	{
@@ -383,7 +377,7 @@ int32_t TRAP::Input::PollControllerLinux(Controller controller)
 			{
 				//Reset the controller slot if the device was disconnected
 				if (errno == ENODEV)
-					CloseControllerLinux(controller);
+					CloseController(controller);
 
 				break;
 			}

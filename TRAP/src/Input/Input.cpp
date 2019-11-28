@@ -3,7 +3,6 @@
 
 #include "Application.h"
 #include "Event/ControllerEvent.h"
-#include "Utils/ControllerMappings.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -23,42 +22,46 @@ void TRAP::Input::Init(const ControllerAPI controllerAPI)
 #ifdef TRAP_PLATFORM_WINDOWS
 	if (s_controllerAPI == ControllerAPI::Unknown || s_controllerAPI == ControllerAPI::Linux)
 		s_controllerAPI = ControllerAPI::XInput;
-	
-	InitControllerWindows();
 #elif defined(TRAP_PLATFORM_LINUX)
 	if (s_controllerAPI != ControllerAPI::Linux)
 		s_controllerAPI = ControllerAPI::Linux;
-	
-	for (int32_t i = 0; TRAP::Embed::ControllerMappings[i]; i++)
-		UpdateControllerMappings(TRAP::Embed::ControllerMappings[i]);
-	
-	if (!InitControllerLinux())
-		TP_ERROR("[Input][Controller][Linux] Failed to initialize controller support for Linux!");
 #endif
+
+	if(!InitController())
+	{
+		switch(s_controllerAPI)
+		{
+		case ControllerAPI::XInput:
+			TP_ERROR("[Input][Controller][XInput] Failed to initialize controller support for XInput!");
+			break;
+			
+		case ControllerAPI::DirectInput:
+			TP_ERROR("[Input][Controller][DirectInput] Failed to initialize controller support for DirectInput!");
+			break;
+			
+		case ControllerAPI::Linux:
+			TP_ERROR("[Input][Controller][Linux] Failed to initialize controller support for Linux!");
+			break;
+			
+		default:
+			break;
+		}
+	}
+
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Input::Shutdown()
 {
-#ifdef TRAP_PLATFORM_WINDOWS
-	ShutdownControllerWindows();
-#elif defined(TRAP_PLATFORM_LINUX)
-	ShutdownControllerLinux();	
-#endif
+	ShutdownController();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Input::ControllerAPI TRAP::Input::GetControllerAPI()
 {
-#ifdef TRAP_PLATFORM_WINDOWS
 	return s_controllerAPI;
-#elif defined(TRAP_PLATFORM_LINUX)
-	return ControllerAPI::Linux;
-#endif
-
-	return ControllerAPI::Unknown;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -72,7 +75,7 @@ void TRAP::Input::SetControllerAPI(const ControllerAPI controllerAPI)
 	if (s_controllerAPI == ControllerAPI::Unknown || s_controllerAPI == ControllerAPI::Linux)
 		s_controllerAPI = ControllerAPI::XInput;
 
-	InitControllerWindows();
+	InitController();
 #endif
 	//Linux is ignored because it only got 1 supported API for controllers
 }
@@ -116,13 +119,9 @@ bool TRAP::Input::IsGamepadButtonPressed(Controller controller, const Controller
 #ifdef TRAP_PLATFORM_WINDOWS
 	if (s_controllerAPI == ControllerAPI::XInput)
 		return IsGamepadButtonPressedXInput(controller, button);
-	if (s_controllerAPI == ControllerAPI::DirectInput)
-		return IsMappedControllerButtonPressed(controller, button);
-#elif defined(TRAP_PLATFORM_LINUX)
-	return IsMappedControllerButtonPressed(controller, button);
 #endif
-
-	return false;
+	
+	return IsMappedControllerButtonPressed(controller, button);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -136,7 +135,7 @@ bool TRAP::Input::IsRawMouseInputSupported()
 
 bool TRAP::Input::IsControllerConnected(const Controller controller)
 {
-	InternalPollController(controller, 0);
+	PollController(controller, 0);
 	
 	return s_controllerStatuses[static_cast<int32_t>(controller)].Connected;
 }
@@ -151,10 +150,8 @@ bool TRAP::Input::IsControllerGamepad(Controller controller)
 		return false;
 	}
 	
-#ifdef TRAP_PLATFORM_WINDOWS
 	if(s_controllerAPI == ControllerAPI::XInput)
 		return true;
-#endif
 	
 	return s_controllerInternal[static_cast<int32_t>(controller)].mapping;
 }
@@ -211,12 +208,11 @@ float TRAP::Input::GetControllerAxis(Controller controller, const ControllerAxis
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	if(s_controllerAPI == ControllerAPI::XInput)
-		return GetControllerAxisXInput(controller, axis);
-	if (s_controllerAPI == ControllerAPI::DirectInput)
-		return GetMappedControllerAxis(controller, axis);
-#elif defined(TRAP_PLATFORM_LINUX)
-	return GetMappedControllerAxis(controller, axis);
+		return GetControllerAxisXInput(controller, axis);	
 #endif
+	
+	if (s_controllerAPI != ControllerAPI::Unknown)
+		return GetMappedControllerAxis(controller, axis);
 
 	return 0.0f;
 }
@@ -234,11 +230,10 @@ TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(Controller controller
 #ifdef TRAP_PLATFORM_WINDOWS
 	if(s_controllerAPI == ControllerAPI::XInput)
 		return GetControllerDPadXInput(controller, dpad);
-	if (s_controllerAPI == ControllerAPI::DirectInput)
-		return GetMappedControllerDPad(controller, dpad);
-#elif defined(TRAP_PLATFORM_LINUX)
-	return GetMappedControllerDPad(controller, dpad);
 #endif
+	
+	if (s_controllerAPI != ControllerAPI::Unknown)
+		return GetMappedControllerDPad(controller, dpad);
 
 	return ControllerDPad::Centered;
 }
@@ -253,24 +248,7 @@ std::string TRAP::Input::GetControllerName(Controller controller)
 		return "";
 	}
 
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		return GetControllerNameXInput(controller);
-	if(s_controllerAPI == ControllerAPI::DirectInput)
-	{
-		if(IsControllerGamepad(controller))
-			return GetGamepadNameDirectInput(controller);
-
-		return GetControllerNameDirectInput(controller);
-	}
-#elif defined(TRAP_PLATFORM_LINUX)
-	if(IsControllerGamepad(controller))
-		return GetGamepadNameLinux(controller);
-	
-	return GetControllerNameLinux(controller);
-#endif
-
-	return "";
+	return GetControllerNameInternal(controller);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -314,15 +292,7 @@ std::vector<float> TRAP::Input::GetAllControllerAxes(Controller controller)
 		return {};
 	}
 
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		return GetAllControllerAxesXInput(controller);
-	if (s_controllerAPI == ControllerAPI::DirectInput)
-		return GetAllControllerAxesDirectInput(controller);
-#elif defined(TRAP_PLATFORM_LINUX)
-	return GetAllControllerAxesLinux(controller);
-#endif
-	return {};
+	return GetAllControllerAxes(controller);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -335,15 +305,7 @@ std::vector<bool> TRAP::Input::GetAllControllerButtons(Controller controller)
 		return {};
 	}
 
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		return GetAllControllerButtonsXInput(controller);
-	if (s_controllerAPI == ControllerAPI::DirectInput)
-		return GetAllControllerButtonsDirectInput(controller);
-#elif defined(TRAP_PLATFORM_LINUX)
-	return GetAllControllerButtonsLinux(controller);
-#endif
-	return {};
+	return GetAllControllerButtonsInternal(controller);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -356,16 +318,7 @@ std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(Cont
 		return {};
 	}
 
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		return GetAllControllerDPadsXInput(controller);
-	if (s_controllerAPI == ControllerAPI::DirectInput)
-		return GetAllControllerDPadsDirectInput(controller);
-#elif defined(TRAP_PLATFORM_LINUX)
-	return GetAllControllerDPadsLinux(controller);
-#endif
-	
-	return {};
+	return GetAllControllerDPadsInternal(controller);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -385,12 +338,7 @@ void TRAP::Input::SetControllerVibration(Controller controller, const float left
 		return;
 	}
 
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		SetControllerVibrationXInput(controller, leftMotor, rightMotor);
-#elif defined(TRAP_PLATFORM_LINUX)
-	SetControllerVibrationLinux(controller, leftMotor, rightMotor);
-#endif
+	SetControllerVibrationInternal(controller, leftMotor, rightMotor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -469,22 +417,17 @@ bool TRAP::Input::OnControllerConnectEvent(ControllerConnectEvent &e)
 #ifdef TRAP_PLATFORM_WINDOWS
 	if(s_controllerAPI == ControllerAPI::XInput)
 		UpdateControllerBatteryAndConnectionTypeXInput(e.GetController());
-	if(s_controllerAPI == ControllerAPI::DirectInput)
+	else
+#endif
 	{
 		s_controllerStatuses[static_cast<uint32_t>(e.GetController())].BatteryStatus = ControllerBattery::Unknown;
 		s_controllerStatuses[static_cast<uint32_t>(e.GetController())].ConnectionType = ControllerConnectionType::Unknown;
 	}
-#elif defined(TRAP_PLATFORM_LINUX)
-	s_controllerStatuses[static_cast<uint32_t>(e.GetController())].BatteryStatus = ControllerBattery::Unknown;
-	s_controllerStatuses[static_cast<uint32_t>(e.GetController())].ConnectionType = ControllerConnectionType::Unknown;
-#endif
 
 	s_controllerStatuses[static_cast<uint32_t>(e.GetController())].Connected = true;
 
-	if (!IsControllerGamepad(e.GetController()) && s_controllerStatuses[static_cast<uint32_t>(e.GetController())].Connected) //Connected and not a Gamepad
+	if (s_controllerStatuses[static_cast<uint32_t>(e.GetController())].Connected) //Connected
 		TP_DEBUG("[Input][Controller] ID: ", static_cast<uint32_t>(e.GetController()), " Controller: \"", GetControllerName(static_cast<Controller>(e.GetController())), "\" Connected!");
-	else if (IsControllerGamepad(e.GetController()) && s_controllerStatuses[static_cast<uint32_t>(e.GetController())].Connected) //Connected and a Gamepad
-		TP_DEBUG("[Input][Controller] ID: ", static_cast<uint32_t>(e.GetController()), " Gamepad: \"", GetControllerName(static_cast<Controller>(e.GetController())), "\" Connected!");
 
 	return false;
 }
@@ -572,23 +515,6 @@ void TRAP::Input::InternalInputControllerAxis(ControllerInternal* js, const int3
 void TRAP::Input::InternalInputControllerButton(ControllerInternal* js, const int32_t button, const bool pressed)
 {
 	js->Buttons[button] = pressed;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-
-bool TRAP::Input::InternalPollController(const Controller controller, const int32_t mode)
-{
-#ifdef TRAP_PLATFORM_WINDOWS
-	if (s_controllerAPI == ControllerAPI::XInput)
-		return CheckConnectionXInput(controller);
-	else if (s_controllerAPI == ControllerAPI::DirectInput)
-		return PollControllerDirectInput(controller, mode);
-#elif defined(TRAP_PLATFORM_LINUX)
-	return PollControllerLinux(controller);
-#endif
-
-	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -800,7 +726,7 @@ bool TRAP::Input::IsValidElementForController(const MapElement* e, const Control
 
 bool TRAP::Input::IsMappedControllerButtonPressed(Controller controller, ControllerButton button)
 {
-	if(!InternalPollController(controller, 2))
+	if(!PollController(controller, 2))
 		return false;
 		
 	ControllerInternal* js = &s_controllerInternal[static_cast<uint32_t>(controller)];
@@ -839,7 +765,7 @@ bool TRAP::Input::IsMappedControllerButtonPressed(Controller controller, Control
 
 float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis axis)
 {
-	if(!InternalPollController(controller, 1))
+	if(!PollController(controller, 1))
 		return 0.0f;
 		
 	ControllerInternal* js = &s_controllerInternal[static_cast<uint32_t>(controller)];
@@ -870,7 +796,7 @@ float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis
 
 TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(Controller controller, const uint32_t dpad)
 {
-	if(!InternalPollController(controller, 3))
+	if(!PollController(controller, 3))
 		return ControllerDPad::Centered;
 		
 	ControllerInternal* js = &s_controllerInternal[static_cast<uint32_t>(controller)];
