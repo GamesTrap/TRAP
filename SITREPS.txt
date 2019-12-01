@@ -649,3 +649,4 @@ SITREP 11/30/2019|19w48a3
 SITREP 12/01/2019|19w48a4
     - Changed TRAP Engine version to 19w48a4(0.5.74)
     - Replaced cstring functions from Controller Input with std::strings ~>40 mins
+    - Merged some XInput functions with the other APIs ~>20 mins

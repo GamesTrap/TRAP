@@ -68,10 +68,13 @@ TRAP::Input::ControllerAPI TRAP::Input::GetControllerAPI()
 
 void TRAP::Input::SetControllerAPI(const ControllerAPI controllerAPI)
 {
+#ifdef TRAP_PLATFORM_WINDOWS
+	if (controllerAPI != s_controllerAPI)
+		ShutdownController();
+	
 	s_controllerStatuses = {};
 	s_controllerAPI = controllerAPI;
 
-#ifdef TRAP_PLATFORM_WINDOWS
 	if (s_controllerAPI == ControllerAPI::Unknown || s_controllerAPI == ControllerAPI::Linux)
 		s_controllerAPI = ControllerAPI::XInput;
 
@@ -115,11 +118,6 @@ bool TRAP::Input::IsGamepadButtonPressed(Controller controller, const Controller
 		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not a Gamepad!");
 		return false;
 	}
-
-#ifdef TRAP_PLATFORM_WINDOWS
-	if (s_controllerAPI == ControllerAPI::XInput)
-		return IsGamepadButtonPressedXInput(controller, button);
-#endif
 	
 	return IsMappedControllerButtonPressed(controller, button);
 }
@@ -205,11 +203,6 @@ float TRAP::Input::GetControllerAxis(Controller controller, const ControllerAxis
 		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return 0.0f;
 	}
-
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		return GetControllerAxisXInput(controller, axis);	
-#endif
 	
 	if (s_controllerAPI != ControllerAPI::Unknown)
 		return GetMappedControllerAxis(controller, axis);
@@ -226,11 +219,6 @@ TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(Controller controller
 		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return ControllerDPad::Centered;
 	}
-
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		return GetControllerDPadXInput(controller, dpad);
-#endif
 	
 	if (s_controllerAPI != ControllerAPI::Unknown)
 		return GetMappedControllerDPad(controller, dpad);
@@ -578,7 +566,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 		}
 
 		for (const auto& c : splittedField[0])
-			if (!std::isalnum(c))
+			if (!std::isalnum(static_cast<int8_t>(c)))
 			{
 				TP_ERROR("[Input][Controller] Invalid char inside field: ", i, "!");
 				return false;
@@ -714,39 +702,60 @@ bool TRAP::Input::IsValidElementForController(const MapElement* e, const Control
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Input::IsMappedControllerButtonPressed(Controller controller, ControllerButton button)
-{
-	if(!PollController(controller, 2))
+{	
+	if(s_controllerAPI == ControllerAPI::XInput)
+	{
+		const int32_t buttonXInput = ControllerButtonToXInput(button);
+		if (buttonXInput == -1)
+			return false;
+		if (buttonXInput == 0)
+		{
+			TP_ERROR("[Input][Controller][XInput] Could not get button state!");
+			TP_ERROR("[Input][Controller][XInput] Invalid Button!");
+			return false;
+		}
+
+		XINPUT_STATE state{};
+		const uint32_t result = XInputGetState(static_cast<DWORD>(controller), &state);
+		if (result == ERROR_SUCCESS)
+			return (state.Gamepad.wButtons & buttonXInput) != 0;
+
+		TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while getting button status!");
 		return false;
-		
+	}
+
+	if (!PollController(controller, 2))
+		return false;
+
 	ControllerInternal* js = &s_controllerInternal[static_cast<uint8_t>(controller)];
-		
-	if(!js->mapping)
+
+	if (!js->mapping)
 		return false;
-		
+
 	const MapElement* e = &js->mapping->Buttons[static_cast<uint8_t>(button)];
-	if(e->Index < js->ButtonCount)
-		if(e->Type == 2) //Button
+	if (e->Index < js->ButtonCount)
+		if (e->Type == 2) //Button
 			return js->Buttons[e->Index];
-	if(e->Type == 1) //Axis
+	if (e->Type == 1) //Axis
 	{
 		const float value = js->Axes[e->Index] * static_cast<float>(e->AxisScale) + static_cast<float>(e->AxisOffset);
-		if(e->AxisOffset < 0 || (e->AxisOffset == 0 && e->AxisScale > 0))
+		if (e->AxisOffset < 0 || (e->AxisOffset == 0 && e->AxisScale > 0))
 		{
-			if(value >= 0.0f)
+			if (value >= 0.0f)
 				return true;
 		}
 		else
 		{
-			if(value <= 0.0f)
+			if (value <= 0.0f)
 				return false;
 		}
 	}
-	else if(e->Type == 3) //DPad
+	else if (e->Type == 3) //DPad
 	{
-		if(js->Buttons[e->Index >>  4])
+		if (js->Buttons[e->Index >> 4])
 			return true;
 	}
-		
+
 	return false;
 }
 
@@ -754,6 +763,42 @@ bool TRAP::Input::IsMappedControllerButtonPressed(Controller controller, Control
 
 float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis axis)
 {
+	if(s_controllerAPI == ControllerAPI::XInput)
+	{
+		XINPUT_STATE state{};
+		const uint32_t result = XInputGetState(static_cast<DWORD>(controller), &state);
+		if (result == ERROR_SUCCESS)
+		{
+			switch (axis)
+			{
+			case ControllerAxis::Left_X:
+				return (static_cast<float>(state.Gamepad.sThumbLX) + 0.5f) / 32767.5f;
+
+			case ControllerAxis::Left_Y:
+				return -(static_cast<float>(state.Gamepad.sThumbLY) + 0.5f) / 32767.5f;
+
+			case ControllerAxis::Right_X:
+				return (static_cast<float>(state.Gamepad.sThumbRX) + 0.5f) / 32767.5f;
+
+			case ControllerAxis::Right_Y:
+				return -(static_cast<float>(state.Gamepad.sThumbRY) + 0.5f) / 32767.5f;
+
+			case ControllerAxis::Left_Trigger:
+				return static_cast<float>(state.Gamepad.bLeftTrigger) / 127.5f - 1.0f;
+
+			case ControllerAxis::Right_Trigger:
+				return static_cast<float>(state.Gamepad.bRightTrigger) / 127.5f - 1.0f;
+
+			default:
+				TP_ERROR("[Input][Controller][XInput] Could not get axis state!");
+				return 0.0f;
+			}
+		}
+
+		TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while getting axis state!");
+		return 0.0f;
+	}
+	
 	if(!PollController(controller, 1))
 		return 0.0f;
 		
@@ -785,6 +830,37 @@ float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis
 
 TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(Controller controller, const uint32_t dpad)
 {
+	if(s_controllerAPI == ControllerAPI::XInput)
+	{
+		if (dpad == 0)
+		{
+			std::vector<bool> buttons = GetAllControllerButtonsInternal(controller);
+			const bool up = buttons[11];
+			const bool right = buttons[12];
+			const bool down = buttons[13];
+			const bool left = buttons[14];
+
+			if (right && up)
+				return ControllerDPad::Right_Up;
+			if (right && down)
+				return ControllerDPad::Right_Down;
+			if (left && up)
+				return ControllerDPad::Left_Up;
+			if (left && down)
+				return ControllerDPad::Left_Down;
+			if (up)
+				return ControllerDPad::Up;
+			if (right)
+				return ControllerDPad::Right;
+			if (down)
+				return ControllerDPad::Down;
+			if (left)
+				return ControllerDPad::Left;
+		}
+
+		return ControllerDPad::Centered;
+	}
+	
 	if(!PollController(controller, 3))
 		return ControllerDPad::Centered;
 		

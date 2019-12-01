@@ -301,10 +301,7 @@ namespace TRAP
 		//////////
 		//XInput//
 		//////////
-		static void UpdateControllerBatteryAndConnectionTypeXInput(Controller controller);		
-		static bool IsGamepadButtonPressedXInput(Controller controller, ControllerButton button);
-		static float GetControllerAxisXInput(Controller controller, ControllerAxis axis);
-		static ControllerDPad GetControllerDPadXInput(Controller controller, uint32_t dpad);		
+		static void UpdateControllerBatteryAndConnectionTypeXInput(Controller controller);	
 		static int32_t ControllerButtonToXInput(ControllerButton button);		
 		static std::array<uint32_t, 4> s_lastXInputUpdate;
 		///////////////

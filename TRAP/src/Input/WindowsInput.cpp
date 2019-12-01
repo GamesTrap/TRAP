@@ -180,7 +180,32 @@ std::string TRAP::Input::GetControllerNameInternal(Controller controller)
 std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPadsInternal(Controller controller)
 {
 	if (s_controllerAPI == ControllerAPI::XInput)
-		return { GetControllerDPadXInput(controller, 0) };
+	{
+		std::vector<bool> buttons = GetAllControllerButtonsInternal(controller);
+		const bool up = buttons[11];
+		const bool right = buttons[12];
+		const bool down = buttons[13];
+		const bool left = buttons[14];
+
+		if (right && up)
+			return { ControllerDPad::Right_Up };
+		if (right && down)
+			return { ControllerDPad::Right_Down };
+		if (left && up)
+			return { ControllerDPad::Left_Up };
+		if (left && down)
+			return { ControllerDPad::Left_Down };
+		if (up)
+			return { ControllerDPad::Up };
+		if (right)
+			return { ControllerDPad::Right };
+		if (down)
+			return { ControllerDPad::Down };
+		if (left)
+			return { ControllerDPad::Left };
+
+		return { ControllerDPad::Centered };
+	}
 	if (s_controllerAPI == ControllerAPI::DirectInput)
 	{
 		if (!PollController(controller, 3))
@@ -447,100 +472,6 @@ void TRAP::Input::UpdateControllerBatteryAndConnectionTypeXInput(Controller cont
 		return;
 	}
 	TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, "!");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Input::IsGamepadButtonPressedXInput(Controller controller, const ControllerButton button)
-{
-	const int32_t buttonXInput = ControllerButtonToXInput(button);
-	if (buttonXInput == -1)
-		return false;
-	if (buttonXInput == 0)
-	{
-		TP_ERROR("[Input][Controller][XInput] Could not get button state!");
-		TP_ERROR("[Input][Controller][XInput] Invalid Button!");
-		return false;
-	}
-
-	XINPUT_STATE state{};
-	const uint32_t result = XInputGetState(static_cast<DWORD>(controller), &state);
-	if (result == ERROR_SUCCESS)
-		return (state.Gamepad.wButtons & buttonXInput) != 0;
-
-	TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while getting button status!");
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-float TRAP::Input::GetControllerAxisXInput(Controller controller, const ControllerAxis axis)
-{
-	XINPUT_STATE state{};
-	const uint32_t result = XInputGetState(static_cast<DWORD>(controller), &state);
-	if (result == ERROR_SUCCESS)
-	{
-		switch (axis)
-		{
-		case ControllerAxis::Left_X:
-			return (static_cast<float>(state.Gamepad.sThumbLX) + 0.5f) / 32767.5f;
-
-		case ControllerAxis::Left_Y:
-			return -(static_cast<float>(state.Gamepad.sThumbLY) + 0.5f) / 32767.5f;
-
-		case ControllerAxis::Right_X:
-			return (static_cast<float>(state.Gamepad.sThumbRX) + 0.5f) / 32767.5f;
-
-		case ControllerAxis::Right_Y:
-			return -(static_cast<float>(state.Gamepad.sThumbRY) + 0.5f) / 32767.5f;
-
-		case ControllerAxis::Left_Trigger:
-			return static_cast<float>(state.Gamepad.bLeftTrigger) / 127.5f - 1.0f;
-
-		case ControllerAxis::Right_Trigger:
-			return static_cast<float>(state.Gamepad.bRightTrigger) / 127.5f - 1.0f;
-
-		default:
-			TP_ERROR("[Input][Controller][XInput] Could not get axis state!");
-			return 0.0f;
-		}
-	}
-
-	TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while getting axis state!");
-	return 0.0f;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPadXInput(const Controller controller, const uint32_t dpad)
-{
-	if (dpad == 0)
-	{
-		std::vector<bool> buttons = GetAllControllerButtonsInternal(controller);
-		const bool up = buttons[11];
-		const bool right = buttons[12];
-		const bool down = buttons[13];
-		const bool left = buttons[14];
-
-		if (right && up)
-			return ControllerDPad::Right_Up;
-		if (right && down)
-			return ControllerDPad::Right_Down;
-		if (left && up)
-			return ControllerDPad::Left_Up;
-		if (left && down)
-			return ControllerDPad::Left_Down;
-		if (up)
-			return ControllerDPad::Up;
-		if (right)
-			return ControllerDPad::Right;
-		if (down)
-			return ControllerDPad::Down;
-		if (left)
-			return ControllerDPad::Left;
-	}
-
-	return ControllerDPad::Centered;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
