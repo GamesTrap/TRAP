@@ -702,7 +702,8 @@ bool TRAP::Input::IsValidElementForController(const MapElement* e, const Control
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Input::IsMappedControllerButtonPressed(Controller controller, ControllerButton button)
-{	
+{
+#ifdef TRAP_PLATFORM_WINDOWS
 	if(s_controllerAPI == ControllerAPI::XInput)
 	{
 		const int32_t buttonXInput = ControllerButtonToXInput(button);
@@ -723,6 +724,7 @@ bool TRAP::Input::IsMappedControllerButtonPressed(Controller controller, Control
 		TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while getting button status!");
 		return false;
 	}
+#endif
 
 	if (!PollController(controller, 2))
 		return false;
@@ -763,6 +765,7 @@ bool TRAP::Input::IsMappedControllerButtonPressed(Controller controller, Control
 
 float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis axis)
 {
+#ifdef TRAP_PLATFORM_WINDOWS
 	if(s_controllerAPI == ControllerAPI::XInput)
 	{
 		XINPUT_STATE state{};
@@ -798,6 +801,7 @@ float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis
 		TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while getting axis state!");
 		return 0.0f;
 	}
+#endif
 	
 	if(!PollController(controller, 1))
 		return 0.0f;
@@ -830,6 +834,7 @@ float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis
 
 TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(Controller controller, const uint32_t dpad)
 {
+#ifdef TRAP_PLATFORM_WINDOWS
 	if(s_controllerAPI == ControllerAPI::XInput)
 	{
 		if (dpad == 0)
@@ -860,6 +865,7 @@ TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(Controller cont
 
 		return ControllerDPad::Centered;
 	}
+#endif
 	
 	if(!PollController(controller, 3))
 		return ControllerDPad::Centered;
