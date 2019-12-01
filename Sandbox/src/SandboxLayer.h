@@ -40,7 +40,7 @@ public:
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Texture.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColor.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColorSPIRV.spirv");
-
+		
 		//Mount & Load Textures
 		TRAP::VFS::Get()->MountTextures("Assets/Textures");
 		TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png");
@@ -81,7 +81,7 @@ public:
 		TRAP::Graphics::RenderCommand::SetBlend(true);
 		TRAP::Graphics::RenderCommand::SetBlendFunction(TRAP::Graphics::RendererBlendFunction::Source_Alpha, TRAP::Graphics::RendererBlendFunction::One_Minus_Source_Alpha);
 
-		UniformData data{ TRAP::Application::GetTime() };
+		UniformData data{ TRAP::Application::GetTime()};
 		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("ColorBuffer", &data, sizeof(UniformData), TRAP::Graphics::BufferUsage::Dynamic);
 
 		m_uniformBuffer->Bind(1);

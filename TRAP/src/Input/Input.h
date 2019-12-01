@@ -296,7 +296,8 @@ namespace TRAP
 		
 #ifdef TRAP_PLATFORM_WINDOWS
 		static constexpr const char* MappingName = "Windows";
-		static void UpdateControllerConnectionWindows(); //TODO call inside window events		
+		static void UpdateControllerConnectionWindows(); //TODO call inside window events
+		static void UpdateControllerGUIDWindows(std::string& guid);
 		//////////
 		//XInput//
 		//////////
@@ -340,7 +341,7 @@ namespace TRAP
 #elif defined(TRAP_PLATFORM_LINUX)
 		static constexpr const char* MappingName = "Linux";
 		struct ControllerInternal;
-		static bool OpenControllerDeviceLinux(const char* path);
+		static bool OpenControllerDeviceLinux(const std::string& path);
 		static void PollABSStateLinux(ControllerInternal* js);
 		static void HandleABSEventLinux(ControllerInternal* js, int32_t code, int32_t value);
 		static void HandleKeyEventLinux(ControllerInternal* js, int32_t code, int32_t value);		
@@ -357,7 +358,7 @@ namespace TRAP
 			int32_t FD = 0;
 			bool VibrationSupported = false;
 			int16_t CurrentVibration = -1;
-			std::array<char, PATH_MAX> Path{};
+			std::string Path{};
 			std::array<int32_t, KEY_CNT - BTN_MISC> KeyMap{};
 			std::array<int32_t, ABS_CNT> ABSMap{};
 			std::array<struct input_absinfo, ABS_CNT> ABSInfo{};
@@ -383,8 +384,8 @@ namespace TRAP
 		//Controller mapping
 		struct Mapping
 		{
-			std::array<char, 128> Name{};
-			std::array<char, 33> guid{};
+			std::string Name{};
+			std::string guid{};
 			std::array<MapElement, 15> Buttons{};
 			std::array<MapElement, 6> Axes{};
 		};
@@ -408,7 +409,7 @@ namespace TRAP
 		};
 		static std::array<ControllerInternal, 4> s_controllerInternal;
 		static ControllerInternal* AddInternalController(const std::string& name, const std::string& guid, int32_t axisCount, int32_t buttonCount, int32_t dpadCount);
-		static void InternalInputControllerDPad(ControllerInternal* js, int32_t dpad, char value);
+		static void InternalInputControllerDPad(ControllerInternal* js, int32_t dpad, uint8_t value);
 		static void InternalInputControllerAxis(ControllerInternal* js, int32_t axis, float value);
 		static void InternalInputControllerButton(ControllerInternal* js, int32_t button, bool pressed);
 		
@@ -416,16 +417,14 @@ namespace TRAP
 		//Mapping//
 		///////////	
 		static std::vector<Mapping> Mappings;
-		static uint32_t MappingCount;
 		
-		static bool ParseMapping(Mapping* mapping, const char* str);
-		static Mapping* FindMapping(const char* guid);
+		static bool ParseMapping(Mapping& mapping, const std::string& str);
+		static Mapping* FindMapping(const std::string& guid);
 		static Mapping* FindValidMapping(const ControllerInternal* js);
 		static bool IsValidElementForController(const MapElement* e, const ControllerInternal* js);
 		static bool IsMappedControllerButtonPressed(Controller controller, ControllerButton button);
 		static float GetMappedControllerAxis(Controller controller, ControllerAxis axis);
 		static ControllerDPad GetMappedControllerDPad(Controller controller, uint32_t dpad);
-		static void UpdateControllerGUID(std::array<char, 33>& guid);
 	};
 }
 

@@ -639,5 +639,13 @@ SITREP 11/26/2019|19w48a1
     - Fixed VulkanTexture2D creating Fallback2D with wrong name ~<5 mins
 
 SITREP 11/28/2019|19w48a2
-    - Changed TRAP Engine version to 19w48a1(0.5.72)
+    - Changed TRAP Engine version to 19w48a2(0.5.72)
     - Tidied up Input header functions ~>30 mins
+
+SITREP 11/30/2019|19w48a3
+    - Changed TRAP Engine version to 19w48a3(0.5.73)
+    - Updated documentation ~>15 mins
+
+SITREP 12/01/2019|19w48a4
+    - Changed TRAP Engine version to 19w48a4(0.5.74)
+    - Replaced cstring functions from Controller Input with std::strings ~>40 mins

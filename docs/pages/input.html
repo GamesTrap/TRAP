@@ -936,33 +936,25 @@ Please use XInput instead for now</p>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Adds the specified mapping(s) for use by the Controller Input API</div>
+<div class="line">Adds the specified mapping for use by the Controller Input API</div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">map</span></code> Specifies mappings to use for Controller Input</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">map</span></code> Specifies a single mapping to use for Controller Input</p></li>
 </ul>
-<p>Format for a C-String Controller map:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">ControllerMappings</span><span class="p">[]</span> <span class="o">=</span>
-<span class="p">{</span>
-    <span class="s">&quot;{GUID},{Name},{Buttons/Axes/DPads},{Platform(Windows/Linux)}&quot;</span><span class="p">,</span>
-    <span class="k">nullptr</span>
-<span class="p">};</span>
+<p>Format for a Controller map:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;</span><span class="si">{GUID}</span><span class="s2">,</span><span class="si">{Name}</span><span class="s2">,{Buttons/Axes/DPads},{Platform(Windows/Linux)}&quot;</span>
 </pre></div>
 </div>
 <p>Real world Controller map example:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">ControllerMappings</span><span class="p">[]</span> <span class="o">=</span>
-<span class="p">{</span>
-    <span class="s">&quot;030000005e040000ea02000001030000,Xbox One S Controller,a:b0,b:b1,back:b6,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b8,leftshoulder:b4,leftstick:b9,lefttrigger:a2,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b10,righttrigger:a5,rightx:a3,righty:a4,start:b7,x:b2,y:b3,platform:Linux,&quot;</span><span class="p">,</span>
-    <span class="k">nullptr</span>
-<span class="p">};</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="s">&quot;030000005e040000ea02000001030000,Xbox One S Controller,a:b0,b:b1,back:b6,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b8,leftshoulder:b4,leftstick:b9,lefttrigger:a2,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b10,righttrigger:a5,rightx:a3,righty:a4,start:b7,x:b2,y:b3,platform:Linux,&quot;</span>
 </pre></div>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This functions gets used internally to add predefined mappings for Windows and Linux Controllers</p>
+<p>This functions gets used internally to add a predefined list of mappings for Windows and Linux Controllers</p>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>

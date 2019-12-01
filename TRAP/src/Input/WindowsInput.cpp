@@ -16,8 +16,8 @@ bool TRAP::Input::InitController()
 {
 	if (s_controllerAPI == ControllerAPI::DirectInput)
 	{
-		for (int32_t i = 0; Embed::ControllerMappings[i]; i++)
-			UpdateControllerMappings(Embed::ControllerMappings[i]);
+		for (const auto & map : Embed::ControllerMappings)
+			UpdateControllerMappings(map);
 
 		if (FAILED(DirectInput8Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8W, reinterpret_cast<void**>(&API), nullptr)))
 		{
@@ -41,7 +41,7 @@ void TRAP::Input::ShutdownController()
 {
 	if (s_controllerAPI == ControllerAPI::XInput)
 	{
-		for (uint32_t i = 0; i <= static_cast<uint32_t>(Controller::Four); i++)
+		for (uint8_t i = 0; i <= static_cast<uint8_t>(Controller::Four); i++)
 		{
 			if (s_controllerStatuses[i].Connected)
 			{
@@ -52,9 +52,9 @@ void TRAP::Input::ShutdownController()
 	}
 	else if (s_controllerAPI == ControllerAPI::DirectInput)
 	{
-		for (uint32_t jID = 0; jID <= static_cast<uint32_t>(Controller::Four); jID++)
-			if (s_controllerStatuses[jID].Connected)
-				CloseController(static_cast<Controller>(jID));
+		for (uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Four); cID++)
+			if (s_controllerStatuses[cID].Connected)
+				CloseController(static_cast<Controller>(cID));
 
 		if (API)
 			IDirectInput8_Release(API);
@@ -65,19 +65,19 @@ void TRAP::Input::ShutdownController()
 
 void TRAP::Input::UpdateControllerConnectionWindows()
 {
-	for (uint32_t i = 0; i < s_controllerStatuses.size(); i++)
+	for (uint8_t i = 0; i < s_controllerStatuses.size(); i++)
 	{
 		if (!s_controllerStatuses[i].Connected)
 		{
 			if (s_controllerAPI == ControllerAPI::XInput)
 			{
 				XINPUT_STATE state{};
-				const uint32_t result = XInputGetState(static_cast<uint32_t>(static_cast<Controller>(i)), &state);
+				const uint32_t result = XInputGetState(static_cast<DWORD>(static_cast<Controller>(i)), &state);
 				if (result == ERROR_SUCCESS)
 				{
-					if (state.dwPacketNumber == s_lastXInputUpdate[static_cast<uint32_t>(static_cast<Controller>(i))]) //If true nothing changed
+					if (state.dwPacketNumber == s_lastXInputUpdate[static_cast<uint8_t>(static_cast<Controller>(i))]) //If true nothing changed
 						return;
-					s_lastXInputUpdate[static_cast<uint32_t>(static_cast<Controller>(i))] = state.dwPacketNumber;
+					s_lastXInputUpdate[i] = state.dwPacketNumber;
 
 					UpdateControllerBatteryAndConnectionTypeXInput(static_cast<Controller>(i));
 
@@ -87,7 +87,7 @@ void TRAP::Input::UpdateControllerConnectionWindows()
 					return;
 				}
 				if (result != ERROR_NOT_CONNECTED && result != ERROR_DEVICE_NOT_CONNECTED)
-					TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(static_cast<Controller>(i)), " Error: ", result, "!");
+					TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(i), " Error: ", result, "!");
 			}
 			else if (s_controllerAPI == ControllerAPI::DirectInput)
 			{
@@ -101,11 +101,23 @@ void TRAP::Input::UpdateControllerConnectionWindows()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Input::UpdateControllerGUIDWindows(std::string& guid)
+{
+	if (std::string_view(guid.data() + 20) == "504944564944")
+	{
+		std::string original = guid;
+
+		guid = "03000000" + std::string(original.begin(), original.begin() + 4) + "0000" + std::string(original.begin() + 4, original.begin() + 4 + 4) + "000000000000";
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Input::DetectControllerConnection()
 {
-	for (uint32_t jID = 0; jID <= static_cast<uint32_t>(Controller::Four); jID++)
-		if (s_controllerStatuses[jID].Connected)
-			PollController(static_cast<Controller>(jID), 0);
+	for (uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Four); cID++)
+		if (s_controllerStatuses[cID].Connected)
+			PollController(static_cast<Controller>(cID), 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -115,7 +127,7 @@ std::string TRAP::Input::GetControllerNameInternal(Controller controller)
 	if (s_controllerAPI == ControllerAPI::XInput)
 	{
 		XINPUT_CAPABILITIES caps{};
-		const uint32_t result = XInputGetCapabilities(static_cast<uint32_t>(controller), 0, &caps);
+		const uint32_t result = XInputGetCapabilities(static_cast<DWORD>(controller), 0, &caps);
 		if (result == ERROR_SUCCESS)
 		{
 			switch (caps.SubType)
@@ -155,9 +167,9 @@ std::string TRAP::Input::GetControllerNameInternal(Controller controller)
 			return "";
 
 		if (IsControllerGamepad(controller))
-			return std::string(s_controllerInternal[static_cast<int32_t>(controller)].mapping->Name.data());
+			return s_controllerInternal[static_cast<uint8_t>(controller)].mapping->Name;
 
-		return s_controllerInternal[static_cast<int32_t>(controller)].Name;
+		return s_controllerInternal[static_cast<uint8_t>(controller)].Name;
 	}
 
 	return {};
@@ -174,7 +186,7 @@ std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPadsInter
 		if (!PollController(controller, 3))
 			return {};
 
-		return s_controllerInternal[static_cast<int32_t>(controller)].DPads;
+		return s_controllerInternal[static_cast<uint8_t>(controller)].DPads;
 	}
 
 	return {};
@@ -187,7 +199,7 @@ std::vector<float> TRAP::Input::GetAllControllerAxesInternal(Controller controll
 	if (s_controllerAPI == ControllerAPI::XInput)
 	{
 		XINPUT_STATE state{};
-		const uint32_t result = XInputGetState(static_cast<uint32_t>(controller), &state);
+		const uint32_t result = XInputGetState(static_cast<DWORD>(controller), &state);
 		if (result == ERROR_SUCCESS)
 		{
 			std::vector<float> axes(6, 0.0f);
@@ -209,7 +221,7 @@ std::vector<float> TRAP::Input::GetAllControllerAxesInternal(Controller controll
 		if (!PollController(controller, 1))
 			return {};
 
-		return s_controllerInternal[static_cast<int32_t>(controller)].Axes;
+		return s_controllerInternal[static_cast<uint8_t>(controller)].Axes;
 	}
 
 	return {};
@@ -222,7 +234,7 @@ std::vector<bool> TRAP::Input::GetAllControllerButtonsInternal(Controller contro
 	if (s_controllerAPI == ControllerAPI::XInput)
 	{
 		XINPUT_STATE state{};
-		const uint32_t result = XInputGetState(static_cast<uint32_t>(controller), &state);
+		const uint32_t result = XInputGetState(static_cast<DWORD>(controller), &state);
 		if (result == ERROR_SUCCESS)
 		{
 			std::vector<bool> buttons(15, false);
@@ -253,7 +265,7 @@ std::vector<bool> TRAP::Input::GetAllControllerButtonsInternal(Controller contro
 		if (!PollController(controller, 2))
 			return {};
 
-		return s_controllerInternal[static_cast<int32_t>(controller)].Buttons;
+		return s_controllerInternal[static_cast<uint8_t>(controller)].Buttons;
 	}
 
 	return {};
@@ -268,7 +280,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 		const uint16_t left = static_cast<uint16_t>(static_cast<float>(65535)* leftMotor);
 		const uint16_t right = static_cast<uint16_t>(static_cast<float>(65535)* rightMotor);
 		XINPUT_VIBRATION vibration{ left, right };
-		const uint32_t result = XInputSetState(static_cast<uint32_t>(controller), &vibration);
+		const uint32_t result = XInputSetState(static_cast<DWORD>(controller), &vibration);
 		if (result != ERROR_SUCCESS)
 			TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while setting vibration!");
 	}
@@ -281,10 +293,10 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 	if(s_controllerAPI == ControllerAPI::XInput)
 	{
 		XINPUT_STATE state{};
-		const DWORD result = XInputGetState(static_cast<uint32_t>(controller), &state);
+		const DWORD result = XInputGetState(static_cast<DWORD>(controller), &state);
 		if (result != ERROR_SUCCESS)
 		{
-			if (result == ERROR_DEVICE_NOT_CONNECTED && s_controllerStatuses[static_cast<uint32_t>(controller)].Connected)
+			if (result == ERROR_DEVICE_NOT_CONNECTED && s_controllerStatuses[static_cast<uint8_t>(controller)].Connected)
 			{			
 				ControllerDisconnectEvent event(controller);
 				s_eventCallback(event);
@@ -294,15 +306,14 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 	}	
 	if(s_controllerAPI == ControllerAPI::DirectInput)
 	{
-		ControllerInternal* js = &s_controllerInternal[static_cast<uint32_t>(controller)];
+		ControllerInternal* js = &s_controllerInternal[static_cast<uint8_t>(controller)];
 		if (js->wsjs.Device)
 		{
-			int i = 0, ai = 0, bi = 0, pi = 0;
-			HRESULT result{};
+			int ai = 0, bi = 0, pi = 0;
 			DIJOYSTATE state{};
 
 			IDirectInputDevice8_Poll(js->wsjs.Device);
-			result = IDirectInputDevice8_GetDeviceState(js->wsjs.Device, sizeof(state), &state);
+			HRESULT result = IDirectInputDevice8_GetDeviceState(js->wsjs.Device, sizeof(state), &state);
 
 			if (result == DIERR_NOTACQUIRED || result == DIERR_INPUTLOST)
 			{
@@ -320,7 +331,7 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 			if (mode == 0)
 				return true;
 
-			for (i = 0; i < js->wsjs.ObjectCount; i++)
+			for (int32_t i = 0; i < js->wsjs.ObjectCount; i++)
 			{
 				void* data = reinterpret_cast<char*>(&state) + js->wsjs.Objects[i].Offset;
 
@@ -345,17 +356,17 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 
 				case 3:
 					{
-						const std::array<int, 9> states =
+						const std::array<uint8_t, 9> states =
 						{
-							static_cast<int32_t>(ControllerDPad::Up),
-							static_cast<int32_t>(ControllerDPad::Right_Up),
-							static_cast<int32_t>(ControllerDPad::Right),
-							static_cast<int32_t>(ControllerDPad::Right_Down),
-							static_cast<int32_t>(ControllerDPad::Down),
-							static_cast<int32_t>(ControllerDPad::Left_Down),
-							static_cast<int32_t>(ControllerDPad::Left),
-							static_cast<int32_t>(ControllerDPad::Left_Up),
-							static_cast<int32_t>(ControllerDPad::Centered)
+							static_cast<uint8_t>(ControllerDPad::Up),
+							static_cast<uint8_t>(ControllerDPad::Right_Up),
+							static_cast<uint8_t>(ControllerDPad::Right),
+							static_cast<uint8_t>(ControllerDPad::Right_Down),
+							static_cast<uint8_t>(ControllerDPad::Down),
+							static_cast<uint8_t>(ControllerDPad::Left_Down),
+							static_cast<uint8_t>(ControllerDPad::Left),
+							static_cast<uint8_t>(ControllerDPad::Left_Up),
+							static_cast<uint8_t>(ControllerDPad::Centered)
 						};
 
 						//Screams of horror are appropriate at this point
@@ -385,50 +396,50 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 void TRAP::Input::UpdateControllerBatteryAndConnectionTypeXInput(Controller controller)
 {
 	XINPUT_BATTERY_INFORMATION battery{};
-	const uint32_t result = XInputGetBatteryInformation(static_cast<uint32_t>(controller), BATTERY_DEVTYPE_GAMEPAD, &battery);
+	const uint32_t result = XInputGetBatteryInformation(static_cast<DWORD>(controller), BATTERY_DEVTYPE_GAMEPAD, &battery);
 	if (result == ERROR_SUCCESS)
 	{
 		switch (battery.BatteryType)
 		{
 		case BATTERY_TYPE_WIRED:
-			s_controllerStatuses[static_cast<uint32_t>(controller)].ConnectionType = ControllerConnectionType::Wired;
+			s_controllerStatuses[static_cast<uint8_t>(controller)].ConnectionType = ControllerConnectionType::Wired;
 			break;
 
 		case BATTERY_TYPE_ALKALINE:
 		case BATTERY_TYPE_NIMH:
 		case BATTERY_TYPE_UNKNOWN:
-			s_controllerStatuses[static_cast<uint32_t>(controller)].ConnectionType = ControllerConnectionType::Wireless;
+			s_controllerStatuses[static_cast<uint8_t>(controller)].ConnectionType = ControllerConnectionType::Wireless;
 			break;
 
 		default:
 			TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while checking battery information!");
-			s_controllerStatuses[static_cast<uint32_t>(controller)].ConnectionType = ControllerConnectionType::Unknown;
+			s_controllerStatuses[static_cast<uint8_t>(controller)].ConnectionType = ControllerConnectionType::Unknown;
 			break;
 		}
 
-		if (s_controllerStatuses[static_cast<uint32_t>(controller)].ConnectionType == ControllerConnectionType::Wireless)
+		if (s_controllerStatuses[static_cast<uint8_t>(controller)].ConnectionType == ControllerConnectionType::Wireless)
 		{
 			switch (battery.BatteryLevel)
 			{
 			case BATTERY_LEVEL_EMPTY:
-				s_controllerStatuses[static_cast<uint32_t>(controller)].BatteryStatus = ControllerBattery::Empty;
+				s_controllerStatuses[static_cast<uint8_t>(controller)].BatteryStatus = ControllerBattery::Empty;
 				break;
 
 			case BATTERY_LEVEL_LOW:
-				s_controllerStatuses[static_cast<uint32_t>(controller)].BatteryStatus = ControllerBattery::Low;
+				s_controllerStatuses[static_cast<uint8_t>(controller)].BatteryStatus = ControllerBattery::Low;
 				break;
 
 			case BATTERY_LEVEL_MEDIUM:
-				s_controllerStatuses[static_cast<uint32_t>(controller)].BatteryStatus = ControllerBattery::Medium;
+				s_controllerStatuses[static_cast<uint8_t>(controller)].BatteryStatus = ControllerBattery::Medium;
 				break;
 
 			case BATTERY_LEVEL_FULL:
-				s_controllerStatuses[static_cast<uint32_t>(controller)].BatteryStatus = ControllerBattery::Full;
+				s_controllerStatuses[static_cast<uint8_t>(controller)].BatteryStatus = ControllerBattery::Full;
 				break;
 
 			default:
 				TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while checking battery status!");
-				s_controllerStatuses[static_cast<uint32_t>(controller)].BatteryStatus = ControllerBattery::Unknown;
+				s_controllerStatuses[static_cast<uint8_t>(controller)].BatteryStatus = ControllerBattery::Unknown;
 				break;
 			}
 		}
@@ -453,7 +464,7 @@ bool TRAP::Input::IsGamepadButtonPressedXInput(Controller controller, const Cont
 	}
 
 	XINPUT_STATE state{};
-	const uint32_t result = XInputGetState(static_cast<uint32_t>(controller), &state);
+	const uint32_t result = XInputGetState(static_cast<DWORD>(controller), &state);
 	if (result == ERROR_SUCCESS)
 		return (state.Gamepad.wButtons & buttonXInput) != 0;
 
@@ -466,7 +477,7 @@ bool TRAP::Input::IsGamepadButtonPressedXInput(Controller controller, const Cont
 float TRAP::Input::GetControllerAxisXInput(Controller controller, const ControllerAxis axis)
 {
 	XINPUT_STATE state{};
-	const uint32_t result = XInputGetState(static_cast<uint32_t>(controller), &state);
+	const uint32_t result = XInputGetState(static_cast<DWORD>(controller), &state);
 	if (result == ERROR_SUCCESS)
 	{
 		switch (axis)
@@ -596,10 +607,10 @@ int32_t TRAP::Input::ControllerButtonToXInput(const ControllerButton button)
 
 void TRAP::Input::CloseController(Controller controller)
 {
-	if (s_controllerInternal[static_cast<uint32_t>(controller)].wsjs.Device)
+	if (s_controllerInternal[static_cast<uint8_t>(controller)].wsjs.Device)
 	{
-		IDirectInputDevice8_Unacquire(s_controllerInternal[static_cast<uint32_t>(controller)].wsjs.Device);
-		IDirectInputDevice8_Release(s_controllerInternal[static_cast<uint32_t>(controller)].wsjs.Device);
+		IDirectInputDevice8_Unacquire(s_controllerInternal[static_cast<uint8_t>(controller)].wsjs.Device);
+		IDirectInputDevice8_Release(s_controllerInternal[static_cast<uint8_t>(controller)].wsjs.Device);
 	}
 
 	ControllerDisconnectEvent event(controller);
@@ -752,13 +763,15 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	IDirectInputDevice8* device = nullptr;
 	ControllerInternal* controller;
 	ObjectEnum data{};
-	std::array<char, 33> guid{};
-	std::array<char, 256> Name{};
+	std::string guid;
+	guid.resize(33);
+	std::string name;
+	name.resize(256);
 
-	for (uint32_t jID = 0; jID <= static_cast<uint32_t>(Controller::Four); jID++)
+	for (uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Four); cID++)
 	{
-		controller = &s_controllerInternal[jID];
-		if (s_controllerStatuses[jID].Connected)
+		controller = &s_controllerInternal[cID];
+		if (s_controllerStatuses[cID].Connected)
 		{
 			if (std::memcmp(&controller->wsjs.guid, &deviceInstance->guidInstance, sizeof(GUID)) == 0)
 				return DIENUM_CONTINUE;
@@ -814,7 +827,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 	std::qsort(data.Objects.data(), data.ObjectCount, sizeof(Object), CompareControllerObjects);
 
-	if (!WideCharToMultiByte(CP_UTF8, 0, deviceInstance->tszInstanceName, -1, Name.data(), static_cast<int32_t>(Name.size()), nullptr, nullptr))
+	if (!WideCharToMultiByte(CP_UTF8, 0, deviceInstance->tszInstanceName, -1, name.data(), static_cast<int32_t>(name.size()), nullptr, nullptr))
 	{
 		TP_ERROR("[Input][Controller][DirectInput] Failed to convert Controller name to UTF-8");
 		IDirectInputDevice8_Release(device);
@@ -823,7 +836,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 	//Generate a Controller GUID that matches the SDL 2.0.5+ one
 	if (std::memcmp(&deviceInstance->guidProduct.Data4[2], "PIDVID", 6) == 0)
-	{
+	{		
 		sprintf_s(guid.data(), guid.size(), "03000000%02x%02x0000%02x%02x000000000000",
 			static_cast<uint8_t>(deviceInstance->guidProduct.Data1),
 			static_cast<uint8_t>(deviceInstance->guidProduct.Data1 >> 8),
@@ -834,13 +847,13 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	else
 	{
 		sprintf_s(guid.data(), guid.size(), "05000000%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x00",
-			Name[0], Name[1], Name[2], Name[3],
-			Name[4], Name[5], Name[6], Name[7],
-			Name[8], Name[9], Name[10]
+			name[0], name[1], name[2], name[3],
+			name[4], name[5], name[6], name[7],
+			name[8], name[9], name[10]
 		);
 	}
 
-	controller = AddInternalController(Name.data(), guid.data(), data.AxisCount + data.SliderCount, data.ButtonCount, data.PoVCount);
+	controller = AddInternalController(name, guid, data.AxisCount + data.SliderCount, data.ButtonCount, data.PoVCount);
 
 	if (!controller)
 	{
@@ -853,13 +866,22 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	controller->wsjs.Objects = data.Objects;
 	controller->wsjs.ObjectCount = data.ObjectCount;
 
-	uint32_t jID = 0;
-	for (jID = 0; jID <= static_cast<uint32_t>(Controller::Four); jID++)
-		if (!s_controllerStatuses[jID].Connected)
+	int8_t cIDUsable = -1;
+	for (uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Four); cID++)
+		if (!s_controllerStatuses[cID].Connected)
+		{
+			cIDUsable = cID;
 			break;
+		}
 
-	ControllerConnectEvent event(static_cast<Controller>(jID));
-	s_eventCallback(event);
+	if(cIDUsable != -1)
+	{
+		ControllerConnectEvent event(static_cast<Controller>(cIDUsable));
+		s_eventCallback(event);
+
+		return DIENUM_STOP;
+	}
+	
 
 	return DIENUM_CONTINUE;
 }
