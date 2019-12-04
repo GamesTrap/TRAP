@@ -27,6 +27,7 @@
 #include <cstring>
 #include <deque>
 #include <future>
+#include <cctype>
 
 //VulkanAPI
 #include <vulkan/vulkan.h>

@@ -743,34 +743,26 @@ UpdateControllerMappings
     static void TRAP::Input::UpdateControllerMappings(const std::string& map);
 
 | **Description**
-| Adds the specified mapping(s) for use by the Controller Input API
+| Adds the specified mapping for use by the Controller Input API
 
 | **Parameters**
 
-- :code:`map` Specifies mappings to use for Controller Input
+- :code:`map` Specifies a single mapping to use for Controller Input
 
-Format for a C-String Controller map:
+Format for a Controller map:
 
-.. code-block:: cpp
+.. code-block::
 
-   const char* ControllerMappings[] =
-   {
-       "{GUID},{Name},{Buttons/Axes/DPads},{Platform(Windows/Linux)}",
-       nullptr
-   };
+   "{GUID},{Name},{Buttons/Axes/DPads},{Platform(Windows/Linux)}"
 
 Real world Controller map example:
 
 .. code-block:: cpp
 
-   const char* ControllerMappings[] = 
-   {
-       "030000005e040000ea02000001030000,Xbox One S Controller,a:b0,b:b1,back:b6,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b8,leftshoulder:b4,leftstick:b9,lefttrigger:a2,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b10,righttrigger:a5,rightx:a3,righty:a4,start:b7,x:b2,y:b3,platform:Linux,",
-       nullptr
-   };
+   "030000005e040000ea02000001030000,Xbox One S Controller,a:b0,b:b1,back:b6,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b8,leftshoulder:b4,leftstick:b9,lefttrigger:a2,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b10,righttrigger:a5,rightx:a3,righty:a4,start:b7,x:b2,y:b3,platform:Linux,"
 
 .. warning::
-   This functions gets used internally to add predefined mappings for Windows and Linux Controllers
+   This functions gets used internally to add a predefined list of mappings for Windows and Linux Controllers
 
 .. seealso::
    ControllerMappings.h

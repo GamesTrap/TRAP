@@ -4,13 +4,17 @@
 #ifdef TRAP_PLATFORM_LINUX
 
 #include "Event/ControllerEvent.h"
+#include "Utils/ControllerMappings.h"
 
 TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::InitControllerLinux()
+bool TRAP::Input::InitController()
 {
+	for (int32_t i = 0; i < TRAP::Embed::ControllerMappings.size(); i++)
+		UpdateControllerMappings(TRAP::Embed::ControllerMappings[i]);
+
 	const char* dirName = "/dev/input";
 
 	s_linuxController.INotify = inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
@@ -42,10 +46,11 @@ bool TRAP::Input::InitControllerLinux()
 			if (regexec(&s_linuxController.Regex, entry->d_name, 1, &match, 0) != 0)
 				continue;
 
-			std::array<char, PATH_MAX> path;
-			snprintf(path.data(), path.size(), "%s/%s", dirName, entry->d_name);
+			std::string path = dirName;
+			path += '/';
+			path += entry->d_name;
 
-			if (OpenControllerDeviceLinux(path.data()))
+			if (OpenControllerDeviceLinux(path))
 				count++;
 		}
 
@@ -58,14 +63,14 @@ bool TRAP::Input::InitControllerLinux()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::ShutdownControllerLinux()
+void TRAP::Input::ShutdownController()
 {
-	for(int32_t jID = 0; jID <= static_cast<int32_t>(Controller::Four); jID++)
+	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Four); cID++)
 	{
-		if(s_controllerInternal[jID].linjs.CurrentVibration != -1)
-			SetControllerVibrationLinux(static_cast<Controller>(jID), 0.0f, 0.0f);
-		if (s_controllerStatuses[jID].Connected)
-			CloseControllerLinux(static_cast<Controller>(jID));
+		if(s_controllerInternal[cID].linjs.CurrentVibration != -1)
+			SetControllerVibration(static_cast<Controller>(cID), 0.0f, 0.0f);
+		if (s_controllerStatuses[cID].Connected)
+			CloseController(static_cast<Controller>(cID));
 	}
 	
 	s_controllerStatuses = {};
@@ -79,69 +84,61 @@ void TRAP::Input::ShutdownControllerLinux()
 
 		close(s_linuxController.INotify);
 	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string TRAP::Input::GetControllerNameLinux(Controller controller)
-{
-	if (!PollControllerLinux(controller))
-		return "";
 	
-	return s_controllerInternal[static_cast<int32_t>(controller)].Name;
+	s_controllerInternal = {};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Input::GetGamepadNameLinux(Controller controller)
+std::string TRAP::Input::GetControllerNameInternal(Controller controller)
 {
-	if(!PollControllerLinux(controller))
+	if (!PollController(controller, 0))
 		return "";
-		
-	if(s_controllerInternal[static_cast<int32_t>(controller)].mapping)
-		return std::string(s_controllerInternal[static_cast<int32_t>(controller)].mapping->Name.data());
-		
-	return "";
+
+	if (s_controllerInternal[static_cast<uint8_t>(controller)].mapping)
+		return s_controllerInternal[static_cast<uint8_t>(controller)].mapping->Name;
+	
+	return s_controllerInternal[static_cast<uint8_t>(controller)].Name;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<float> TRAP::Input::GetAllControllerAxesLinux(Controller controller)
+std::vector<float> TRAP::Input::GetAllControllerAxesInternal(Controller controller)
 {
-	if (!PollControllerLinux(controller))
+	if (!PollController(controller, 0))
 		return {};
 
-	return s_controllerInternal[static_cast<int32_t>(controller)].Axes;
+	return s_controllerInternal[static_cast<uint8_t>(controller)].Axes;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<bool> TRAP::Input::GetAllControllerButtonsLinux(Controller controller)
+std::vector<bool> TRAP::Input::GetAllControllerButtonsInternal(Controller controller)
 {
-	if (!PollControllerLinux(controller))
+	if (!PollController(controller, 0))
 		return {};
 
-	return s_controllerInternal[static_cast<int32_t>(controller)].Buttons;
+	return s_controllerInternal[static_cast<uint8_t>(controller)].Buttons;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPadsLinux(Controller controller)
+std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPadsInternal(Controller controller)
 {
-	if (!PollControllerLinux(controller))
+	if (!PollController(controller, 0))
 		return {};
 
-	return s_controllerInternal[static_cast<int32_t>(controller)].DPads;
+	return s_controllerInternal[static_cast<uint8_t>(controller)].DPads;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::SetControllerVibrationLinux(Controller controller, float leftMotor, float rightMotor)
+void TRAP::Input::SetControllerVibrationInternal(Controller controller, float leftMotor, float rightMotor)
 {
-	if(!PollControllerLinux(controller))
+	if(!PollController(controller, 0))
 		return;
 		
-	ControllerInternal* js = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	ControllerInternal* js = &s_controllerInternal[static_cast<uint8_t>(controller)];
 	if(js->linjs.VibrationSupported)
 	{
 		struct input_event play;
@@ -189,23 +186,23 @@ void TRAP::Input::SetControllerVibrationLinux(Controller controller, float leftM
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Attempt to open the specified controller device
-bool TRAP::Input::OpenControllerDeviceLinux(const char* path)
+bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 {
-	for(int32_t jID = 0; jID <= static_cast<int32_t>(Controller::Four); jID++)
+	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Four); cID++)
 	{
-		if (!s_controllerStatuses[jID].Connected)
+		if (!s_controllerStatuses[cID].Connected)
 			continue;
-		if (std::strcmp(s_controllerInternal[jID].linjs.Path.data(), path) == 0)
+		if (s_controllerInternal[cID].linjs.Path == path)
 			return false;
 	}
 
 	ControllerLinux linjs = {};
-	linjs.FD = open(path, O_RDWR | O_NONBLOCK); //O_RDWR is needed for vibrations
+	linjs.FD = open(path.data(), O_RDWR | O_NONBLOCK); //O_RDWR is needed for vibrations
 	if(linjs.FD != -1)
 		linjs.VibrationSupported = true;
 		
 	if(errno == EACCES)
-		linjs.FD = open(path, O_RDONLY | O_NONBLOCK);
+		linjs.FD = open(path.data(), O_RDONLY | O_NONBLOCK);
 	
 	if (linjs.FD == -1)
 		return false;
@@ -232,11 +229,13 @@ bool TRAP::Input::OpenControllerDeviceLinux(const char* path)
 		return false;
 	}
 
-	std::array<char, 256> name{};
+	std::string name;
+	name.resize(256);
 	if (ioctl(linjs.FD, EVIOCGNAME(name.size()), name.data()) < 0)
-		std::strncpy(name.data(), "Unknown", name.size());
+		name = "Unknown";
 
-	std::array<char, 33> guid{};
+	std::string guid;
+	guid.resize(33);
 	//Generate a controller GUID that matches the SDL 2.0.5+ one
 	if(ID.vendor && ID.product && ID.version)
 	{
@@ -288,25 +287,34 @@ bool TRAP::Input::OpenControllerDeviceLinux(const char* path)
 		}
 	}
 
-	ControllerInternal* js = AddInternalController(name.data(), guid.data(), axisCount, buttonCount, dpadCount);
+	ControllerInternal* js = AddInternalController(name, guid, axisCount, buttonCount, dpadCount);
 	if(!js)
 	{
 		close(linjs.FD);
 		return false;
 	}
 
-	std::strncpy(linjs.Path.data(), path, linjs.Path.size() - 1);
+	linjs.Path = path;
 	std::memcpy(&js->linjs, &linjs, sizeof(linjs));
 
 	PollABSStateLinux(js);
 
-	int32_t jID;
-	for (jID = 0; jID <= static_cast<int32_t>(Controller::Four); jID++)
-		if (!s_controllerStatuses[jID].Connected)
+	uint8_t cID;
+	int8_t cIDUsable = -1;
+	for (cID = 0; cID <= static_cast<uint8_t>(Controller::Four); cID++)
+		if (!s_controllerStatuses[cID].Connected)
+		{
+			cIDUsable = cID;
 			break;
-	
-	ControllerConnectEvent event(static_cast<Controller>(jID));
-	s_eventCallback(event);
+		}
+
+	if(cIDUsable != -1)
+	{
+		ControllerConnectEvent event(static_cast<Controller>(cIDUsable));
+		s_eventCallback(event);
+		
+		return false;
+	}
 	
 	return true;
 }
@@ -314,9 +322,9 @@ bool TRAP::Input::OpenControllerDeviceLinux(const char* path)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Frees all resources associated with the specified controller
-void TRAP::Input::CloseControllerLinux(Controller controller)
+void TRAP::Input::CloseController(Controller controller)
 {
-	ControllerInternal* con = &s_controllerInternal[static_cast<int32_t>(controller)];
+	ControllerInternal* con = &s_controllerInternal[static_cast<uint8_t>(controller)];
 	
 	close(con->linjs.FD);
 	*con = {};
@@ -327,7 +335,7 @@ void TRAP::Input::CloseControllerLinux(Controller controller)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::DetectControllerConnectionLinux()
+void TRAP::Input::DetectControllerConnection()
 {
 	if (s_linuxController.INotify <= 0)
 		return;
@@ -346,18 +354,18 @@ void TRAP::Input::DetectControllerConnectionLinux()
 		if (regexec(&s_linuxController.Regex, e->name, 1, &match, 0) != 0)
 			continue;
 
-		std::array<char, PATH_MAX> path{};
-		snprintf(path.data(), path.size(), "/dev/input/%s", e->name);
+		std::string path = "/dev/input/";
+		path += e->name;
 
 		if (e->mask & (IN_CREATE | IN_ATTRIB))
-			OpenControllerDeviceLinux(path.data());
+			OpenControllerDeviceLinux(path);
 		else if(e->mask & IN_DELETE)
 		{
-			for(int32_t jID = 0; jID <= static_cast<int32_t>(Controller::Four); jID++)
+			for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Four); cID++)
 			{
-				if(std::strcmp(s_controllerInternal[jID].linjs.Path.data(), path.data()) == 0)
+				if(s_controllerInternal[cID].linjs.Path == path)
 				{
-					CloseControllerLinux(static_cast<Controller>(jID));
+					CloseController(static_cast<Controller>(cID));
 					break;
 				}
 			}
@@ -367,11 +375,11 @@ void TRAP::Input::DetectControllerConnectionLinux()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Input::PollControllerLinux(Controller controller)
+bool TRAP::Input::PollController(Controller controller, int32_t mode)
 {
-	if(s_controllerStatuses[static_cast<int32_t>(controller)].Connected)
+	if(s_controllerStatuses[static_cast<uint8_t>(controller)].Connected)
 	{
-		ControllerInternal* js = &s_controllerInternal[static_cast<int32_t>(controller)];
+		ControllerInternal* js = &s_controllerInternal[static_cast<uint8_t>(controller)];
 	
 		//Read all queued events (non-blocking)
 		for(;;)
@@ -383,7 +391,7 @@ int32_t TRAP::Input::PollControllerLinux(Controller controller)
 			{
 				//Reset the controller slot if the device was disconnected
 				if (errno == ENODEV)
-					CloseControllerLinux(controller);
+					CloseController(controller);
 
 				break;
 			}
@@ -409,7 +417,7 @@ int32_t TRAP::Input::PollControllerLinux(Controller controller)
 		}
 	}
 
-	return s_controllerStatuses[static_cast<int32_t>(controller)].Connected;
+	return s_controllerStatuses[static_cast<uint8_t>(controller)].Connected;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -440,23 +448,23 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* js, int32_t code, int3
 
 	if (code >= ABS_HAT0X && code <= ABS_HAT3Y)
 	{
-		static const std::array<std::array<char, 3>, 3> stateMap =
+		static const std::array<std::array<uint8_t, 3>, 3> stateMap =
 		{
 			{
 				{
-					static_cast<char>(ControllerDPad::Centered),
-					static_cast<char>(ControllerDPad::Up),
-					static_cast<char>(ControllerDPad::Down)
+					static_cast<uint8_t>(ControllerDPad::Centered),
+					static_cast<uint8_t>(ControllerDPad::Up),
+					static_cast<uint8_t>(ControllerDPad::Down)
 				},
 				{
-					static_cast<char>(ControllerDPad::Left),
-					static_cast<char>(ControllerDPad::Left_Up),
-					static_cast<char>(ControllerDPad::Left_Down)
+					static_cast<uint8_t>(ControllerDPad::Left),
+					static_cast<uint8_t>(ControllerDPad::Left_Up),
+					static_cast<uint8_t>(ControllerDPad::Left_Down)
 				},
 				{
-					static_cast<char>(ControllerDPad::Right),
-					static_cast<char>(ControllerDPad::Right_Up),
-					static_cast<char>(ControllerDPad::Right_Down)
+					static_cast<uint8_t>(ControllerDPad::Right),
+					static_cast<uint8_t>(ControllerDPad::Right_Up),
+					static_cast<uint8_t>(ControllerDPad::Right_Down)
 				}
 			}
 		};

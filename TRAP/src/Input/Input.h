@@ -281,59 +281,37 @@ namespace TRAP
 
 		void OnEvent(Event& e);
 		
-	private:		
+	private:
+		//Universal API Methods
+		static bool InitController();
+		static void ShutdownController();
+		static std::string GetControllerNameInternal(Controller controller);
+		static std::vector<float> GetAllControllerAxesInternal(Controller controller);
+		static std::vector<bool> GetAllControllerButtonsInternal(Controller controller);
+		static std::vector<ControllerDPad> GetAllControllerDPadsInternal(Controller controller);
+		static void SetControllerVibrationInternal(Controller controller, float leftMotor, float rightMotor);
+		static bool PollController(Controller controller, int32_t mode);
+		static void DetectControllerConnection(); //TODO call inside window events & This needs to be called in X11 windows when polling for events!
+		static void CloseController(Controller controller);
+		
 #ifdef TRAP_PLATFORM_WINDOWS
 		static constexpr const char* MappingName = "Windows";
-		static void InitControllerWindows();
-		static void ShutdownControllerWindows();
-
 		static void UpdateControllerConnectionWindows(); //TODO call inside window events
-		static void DetectControllerDisconnectionWindows(); //TODO call inside window events
-		
+		static void UpdateControllerGUIDWindows(std::string& guid);
 		//////////
 		//XInput//
 		//////////
-		static void ShutdownControllerXInput();
-		static void UpdateControllerConnectionXInput(Controller controller);
-		static void UpdateControllerBatteryAndConnectionTypeXInput(Controller controller);
-		static void SetControllerVibrationXInput(Controller controller, float leftMotor, float rightMotor);
-		static bool IsGamepadButtonPressedXInput(Controller controller, ControllerButton button);
-		static float GetControllerAxisXInput(Controller controller, ControllerAxis axis);
-		static ControllerDPad GetControllerDPadXInput(Controller controller, uint32_t dpad);
-		static std::vector<float> GetAllControllerAxesXInput(Controller controller);
-		static std::vector<bool> GetAllControllerButtonsXInput(Controller controller);
-		static std::vector<ControllerDPad> GetAllControllerDPadsXInput(Controller controller);
-		static std::string GetControllerNameXInput(Controller controller);
-		
-		static int32_t ControllerButtonToXInput(ControllerButton button);
-		static bool CheckConnectionXInput(Controller controller);
-		
+		static void UpdateControllerBatteryAndConnectionTypeXInput(Controller controller);	
+		static int32_t ControllerButtonToXInput(ControllerButton button);		
 		static std::array<uint32_t, 4> s_lastXInputUpdate;
-
 		///////////////
 		//DirectInput//
 		///////////////
-		static void InitControllerDirectInput();
-		static void ShutdownControllerDirectInput();
-
-		static std::string GetControllerNameDirectInput(Controller controller);
-		static std::string GetGamepadNameDirectInput(Controller controller);
-		static std::vector<float> GetAllControllerAxesDirectInput(Controller controller);
-		static std::vector<bool> GetAllControllerButtonsDirectInput(Controller controller);
-		static std::vector<ControllerDPad> GetAllControllerDPadsDirectInput(Controller controller);
-
-		
-		static void UpdateControllerConnectionDirectInput();
-		static void CloseControllerDirectInput(Controller controller);
-		static bool PollControllerDirectInput(Controller controller, int32_t mode);
-
 		static BOOL CALLBACK DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* doi, void* user);
 		static bool SupportsXInput(const GUID* guid);
 		static int CompareControllerObjects(const void* first, const void* second);
-		static BOOL CALLBACK DeviceCallback(const DIDEVICEINSTANCE* deviceInstance, void* user);
-		
+		static BOOL CALLBACK DeviceCallback(const DIDEVICEINSTANCE* deviceInstance, void* user);		
 		static IDirectInput8W* API;		
-		
 		struct Object
 		{
 			int32_t Offset = 0;
@@ -347,7 +325,6 @@ namespace TRAP
 			DWORD Index = 0;
 			GUID guid{};
 		};
-
 		struct ObjectEnum
 		{
 			IDirectInputDevice8W* Device = nullptr;
@@ -361,26 +338,10 @@ namespace TRAP
 #elif defined(TRAP_PLATFORM_LINUX)
 		static constexpr const char* MappingName = "Linux";
 		struct ControllerInternal;
-		
-		static bool InitControllerLinux();
-		static void ShutdownControllerLinux();
-
-		static std::string GetControllerNameLinux(Controller controller);
-		static std::string GetGamepadNameLinux(Controller controller);
-		static std::vector<float> GetAllControllerAxesLinux(Controller controller);
-		static std::vector<bool> GetAllControllerButtonsLinux(Controller controller);
-		static std::vector<ControllerDPad> GetAllControllerDPadsLinux(Controller controller);
-		static void SetControllerVibrationLinux(Controller controller, float leftMotor, float rightMotor);
-
-		static bool OpenControllerDeviceLinux(const char* path);
-		static void CloseControllerLinux(Controller controller);
-		static void DetectControllerConnectionLinux(); //TODO This needs to be called in X11 windows when polling for events!
-		static int32_t PollControllerLinux(Controller controller);
-
+		static bool OpenControllerDeviceLinux(const std::string& path);
 		static void PollABSStateLinux(ControllerInternal* js);
 		static void HandleABSEventLinux(ControllerInternal* js, int32_t code, int32_t value);
-		static void HandleKeyEventLinux(ControllerInternal* js, int32_t code, int32_t value);
-		
+		static void HandleKeyEventLinux(ControllerInternal* js, int32_t code, int32_t value);		
 		struct ControllerLinuxLibrary
 		{
 			int32_t INotify = 0;
@@ -389,13 +350,12 @@ namespace TRAP
 			bool Dropped = false;
 		};
 		static ControllerLinuxLibrary s_linuxController;
-
 		struct ControllerLinux
 		{
 			int32_t FD = 0;
 			bool VibrationSupported = false;
 			int16_t CurrentVibration = -1;
-			std::array<char, PATH_MAX> Path{};
+			std::string Path{};
 			std::array<int32_t, KEY_CNT - BTN_MISC> KeyMap{};
 			std::array<int32_t, ABS_CNT> ABSMap{};
 			std::array<struct input_absinfo, ABS_CNT> ABSInfo{};
@@ -421,8 +381,8 @@ namespace TRAP
 		//Controller mapping
 		struct Mapping
 		{
-			std::array<char, 128> Name{};
-			std::array<char, 33> guid{};
+			std::string Name{};
+			std::string guid{};
 			std::array<MapElement, 15> Buttons{};
 			std::array<MapElement, 6> Axes{};
 		};
@@ -446,25 +406,22 @@ namespace TRAP
 		};
 		static std::array<ControllerInternal, 4> s_controllerInternal;
 		static ControllerInternal* AddInternalController(const std::string& name, const std::string& guid, int32_t axisCount, int32_t buttonCount, int32_t dpadCount);
-		static void InternalInputControllerDPad(ControllerInternal* js, int32_t dpad, char value);
+		static void InternalInputControllerDPad(ControllerInternal* js, int32_t dpad, uint8_t value);
 		static void InternalInputControllerAxis(ControllerInternal* js, int32_t axis, float value);
 		static void InternalInputControllerButton(ControllerInternal* js, int32_t button, bool pressed);
-		static bool InternalPollController(Controller controller, int32_t mode);
 		
 		///////////
 		//Mapping//
 		///////////	
 		static std::vector<Mapping> Mappings;
-		static uint32_t MappingCount;
 		
-		static bool ParseMapping(Mapping* mapping, const char* str);
-		static Mapping* FindMapping(const char* guid);
+		static bool ParseMapping(Mapping& mapping, const std::string& str);
+		static Mapping* FindMapping(const std::string& guid);
 		static Mapping* FindValidMapping(const ControllerInternal* js);
 		static bool IsValidElementForController(const MapElement* e, const ControllerInternal* js);
 		static bool IsMappedControllerButtonPressed(Controller controller, ControllerButton button);
 		static float GetMappedControllerAxis(Controller controller, ControllerAxis axis);
 		static ControllerDPad GetMappedControllerDPad(Controller controller, uint32_t dpad);
-		static void UpdateControllerGUID(std::array<char, 33>& guid);
 	};
 }
 

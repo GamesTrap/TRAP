@@ -3,7 +3,7 @@
 
 #include "Application.h"
 #include "Event/ControllerEvent.h"
-#include "Utils/ControllerMappings.h"
+#include "Utils/String.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -12,7 +12,6 @@ TRAP::Input::EventCallbackFn TRAP::Input::s_eventCallback{};
 TRAP::Input::ControllerAPI TRAP::Input::s_controllerAPI = ControllerAPI::Unknown;
 std::array<TRAP::Input::ControllerInternal, 4> TRAP::Input::s_controllerInternal{};
 std::vector<TRAP::Input::Mapping> TRAP::Input::Mappings{};
-uint32_t TRAP::Input::MappingCount = 0;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -23,56 +22,63 @@ void TRAP::Input::Init(const ControllerAPI controllerAPI)
 #ifdef TRAP_PLATFORM_WINDOWS
 	if (s_controllerAPI == ControllerAPI::Unknown || s_controllerAPI == ControllerAPI::Linux)
 		s_controllerAPI = ControllerAPI::XInput;
-	
-	InitControllerWindows();
 #elif defined(TRAP_PLATFORM_LINUX)
 	if (s_controllerAPI != ControllerAPI::Linux)
 		s_controllerAPI = ControllerAPI::Linux;
-	
-	for (int32_t i = 0; TRAP::Embed::ControllerMappings[i]; i++)
-		UpdateControllerMappings(TRAP::Embed::ControllerMappings[i]);
-	
-	if (!InitControllerLinux())
-		TP_ERROR("[Input][Controller][Linux] Failed to initialize controller support for Linux!");
 #endif
+
+	if(!InitController())
+	{
+		switch(s_controllerAPI)
+		{
+		case ControllerAPI::XInput:
+			TP_ERROR("[Input][Controller][XInput] Failed to initialize controller support for XInput!");
+			break;
+			
+		case ControllerAPI::DirectInput:
+			TP_ERROR("[Input][Controller][DirectInput] Failed to initialize controller support for DirectInput!");
+			break;
+			
+		case ControllerAPI::Linux:
+			TP_ERROR("[Input][Controller][Linux] Failed to initialize controller support for Linux!");
+			break;
+			
+		default:
+			break;
+		}
+	}
+
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Input::Shutdown()
 {
-#ifdef TRAP_PLATFORM_WINDOWS
-	ShutdownControllerWindows();
-#elif defined(TRAP_PLATFORM_LINUX)
-	ShutdownControllerLinux();	
-#endif
+	ShutdownController();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Input::ControllerAPI TRAP::Input::GetControllerAPI()
 {
-#ifdef TRAP_PLATFORM_WINDOWS
 	return s_controllerAPI;
-#elif defined(TRAP_PLATFORM_LINUX)
-	return ControllerAPI::Linux;
-#endif
-
-	return ControllerAPI::Unknown;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Input::SetControllerAPI(const ControllerAPI controllerAPI)
 {
+#ifdef TRAP_PLATFORM_WINDOWS
+	if (controllerAPI != s_controllerAPI)
+		ShutdownController();
+	
 	s_controllerStatuses = {};
 	s_controllerAPI = controllerAPI;
 
-#ifdef TRAP_PLATFORM_WINDOWS
 	if (s_controllerAPI == ControllerAPI::Unknown || s_controllerAPI == ControllerAPI::Linux)
 		s_controllerAPI = ControllerAPI::XInput;
 
-	InitControllerWindows();
+	InitController();
 #endif
 	//Linux is ignored because it only got 1 supported API for controllers
 }
@@ -103,26 +109,17 @@ bool TRAP::Input::IsGamepadButtonPressed(Controller controller, const Controller
 {
 	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return false;
 	}
 
 	if (!IsControllerGamepad(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not a Gamepad!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not a Gamepad!");
 		return false;
 	}
-
-#ifdef TRAP_PLATFORM_WINDOWS
-	if (s_controllerAPI == ControllerAPI::XInput)
-		return IsGamepadButtonPressedXInput(controller, button);
-	if (s_controllerAPI == ControllerAPI::DirectInput)
-		return IsMappedControllerButtonPressed(controller, button);
-#elif defined(TRAP_PLATFORM_LINUX)
+	
 	return IsMappedControllerButtonPressed(controller, button);
-#endif
-
-	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -136,9 +133,9 @@ bool TRAP::Input::IsRawMouseInputSupported()
 
 bool TRAP::Input::IsControllerConnected(const Controller controller)
 {
-	InternalPollController(controller, 0);
+	PollController(controller, 0);
 	
-	return s_controllerStatuses[static_cast<int32_t>(controller)].Connected;
+	return s_controllerStatuses[static_cast<uint8_t>(controller)].Connected;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -147,16 +144,14 @@ bool TRAP::Input::IsControllerGamepad(Controller controller)
 {
 	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return false;
 	}
 	
-#ifdef TRAP_PLATFORM_WINDOWS
 	if(s_controllerAPI == ControllerAPI::XInput)
 		return true;
-#endif
 	
-	return s_controllerInternal[static_cast<int32_t>(controller)].mapping;
+	return s_controllerInternal[static_cast<uint8_t>(controller)].mapping;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -195,7 +190,7 @@ std::string TRAP::Input::GetKeyName(const Key key)
 	if (glfwGetKeyName(static_cast<int32_t>(key), 0))
 		return glfwGetKeyName(static_cast<int32_t>(key), 0);
 
-	TP_ERROR("[Input] Couldn't get name of Key: ", static_cast<int32_t>(key), "!");
+	TP_ERROR("[Input] Couldn't get name of Key: ", static_cast<uint32_t>(key), "!");
 	return "";
 }
 
@@ -205,18 +200,12 @@ float TRAP::Input::GetControllerAxis(Controller controller, const ControllerAxis
 {
 	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return 0.0f;
 	}
-
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		return GetControllerAxisXInput(controller, axis);
-	if (s_controllerAPI == ControllerAPI::DirectInput)
+	
+	if (s_controllerAPI != ControllerAPI::Unknown)
 		return GetMappedControllerAxis(controller, axis);
-#elif defined(TRAP_PLATFORM_LINUX)
-	return GetMappedControllerAxis(controller, axis);
-#endif
 
 	return 0.0f;
 }
@@ -227,18 +216,12 @@ TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(Controller controller
 {
 	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return ControllerDPad::Centered;
 	}
-
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		return GetControllerDPadXInput(controller, dpad);
-	if (s_controllerAPI == ControllerAPI::DirectInput)
+	
+	if (s_controllerAPI != ControllerAPI::Unknown)
 		return GetMappedControllerDPad(controller, dpad);
-#elif defined(TRAP_PLATFORM_LINUX)
-	return GetMappedControllerDPad(controller, dpad);
-#endif
 
 	return ControllerDPad::Centered;
 }
@@ -249,35 +232,18 @@ std::string TRAP::Input::GetControllerName(Controller controller)
 {
 	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return "";
 	}
 
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		return GetControllerNameXInput(controller);
-	if(s_controllerAPI == ControllerAPI::DirectInput)
-	{
-		if(IsControllerGamepad(controller))
-			return GetGamepadNameDirectInput(controller);
-
-		return GetControllerNameDirectInput(controller);
-	}
-#elif defined(TRAP_PLATFORM_LINUX)
-	if(IsControllerGamepad(controller))
-		return GetGamepadNameLinux(controller);
-	
-	return GetControllerNameLinux(controller);
-#endif
-
-	return "";
+	return GetControllerNameInternal(controller);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 const TRAP::Input::ControllerStatus &TRAP::Input::GetControllerStatus(Controller controller)
 {
-	return s_controllerStatuses[static_cast<uint32_t>(controller)];
+	return s_controllerStatuses[static_cast<uint8_t>(controller)];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -289,7 +255,7 @@ TRAP::Input::ControllerBattery TRAP::Input::GetControllerBatteryStatus(Controlle
 		UpdateControllerBatteryAndConnectionTypeXInput(controller);
 #endif
 
-	return s_controllerStatuses[static_cast<uint32_t>(controller)].BatteryStatus;
+	return s_controllerStatuses[static_cast<uint8_t>(controller)].BatteryStatus;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -301,7 +267,7 @@ TRAP::Input::ControllerConnectionType TRAP::Input::GetControllerConnectionType(C
 		UpdateControllerBatteryAndConnectionTypeXInput(controller);
 #endif
 
-	return s_controllerStatuses[static_cast<uint32_t>(controller)].ConnectionType;
+	return s_controllerStatuses[static_cast<uint8_t>(controller)].ConnectionType;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -310,19 +276,11 @@ std::vector<float> TRAP::Input::GetAllControllerAxes(Controller controller)
 {
 	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return {};
 	}
 
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		return GetAllControllerAxesXInput(controller);
-	if (s_controllerAPI == ControllerAPI::DirectInput)
-		return GetAllControllerAxesDirectInput(controller);
-#elif defined(TRAP_PLATFORM_LINUX)
-	return GetAllControllerAxesLinux(controller);
-#endif
-	return {};
+	return GetAllControllerAxesInternal(controller);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -331,19 +289,11 @@ std::vector<bool> TRAP::Input::GetAllControllerButtons(Controller controller)
 {
 	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return {};
 	}
 
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		return GetAllControllerButtonsXInput(controller);
-	if (s_controllerAPI == ControllerAPI::DirectInput)
-		return GetAllControllerButtonsDirectInput(controller);
-#elif defined(TRAP_PLATFORM_LINUX)
-	return GetAllControllerButtonsLinux(controller);
-#endif
-	return {};
+	return GetAllControllerButtonsInternal(controller);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -352,20 +302,11 @@ std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(Cont
 {
 	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return {};
 	}
 
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		return GetAllControllerDPadsXInput(controller);
-	if (s_controllerAPI == ControllerAPI::DirectInput)
-		return GetAllControllerDPadsDirectInput(controller);
-#elif defined(TRAP_PLATFORM_LINUX)
-	return GetAllControllerDPadsLinux(controller);
-#endif
-	
-	return {};
+	return GetAllControllerDPadsInternal(controller);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -381,16 +322,11 @@ void TRAP::Input::SetControllerVibration(Controller controller, const float left
 {
 	if (!IsControllerConnected(controller))
 	{
-		TP_WARN("[Input][Controller] ID: ", static_cast<int32_t>(controller), " is not connected!");
+		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return;
 	}
 
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		SetControllerVibrationXInput(controller, leftMotor, rightMotor);
-#elif defined(TRAP_PLATFORM_LINUX)
-	SetControllerVibrationLinux(controller, leftMotor, rightMotor);
-#endif
+	SetControllerVibrationInternal(controller, leftMotor, rightMotor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -404,51 +340,21 @@ void TRAP::Input::SetEventCallback(const EventCallbackFn &callback)
 
 void TRAP::Input::UpdateControllerMappings(const std::string& map)
 {
-	const char* c = map.c_str();
-	
-	while(*c)
+	Mapping mapping{};
+
+	if(ParseMapping(mapping, map))
 	{
-		if((*c >= '0' && *c <= '9') ||
-		   (*c >= 'a' && *c <= 'f') ||
-		   (*c >= 'A' && *c <= 'F'))
-		{
-			std::array<char, 1024> line{};
-			
-			const std::size_t length = std::strcspn(c, "\r\n");
-			if(length < line.size())
-			{
-				Mapping mapping{};
-				
-				std::memcpy(line.data(), c, length);
-				line[length] = '\0';
-				
-				if(ParseMapping(&mapping, line.data()))
-				{
-					Mapping* previous = FindMapping(mapping.guid.data());
-					if(previous)
-						*previous = mapping;
-					else
-					{
-						MappingCount++;
-						Mappings.resize(MappingCount);
-						Mappings[MappingCount - 1] = mapping;
-					}
-				}
-			}
-			
-			c += length;
-		}
+		Mapping* previous = FindMapping(mapping.guid);
+		if (previous)
+			*previous = mapping;
 		else
-		{
-			c += std::strcspn(c, "\r\n");
-			c += std::strspn(c, "\r\n");
-		}
+			Mappings.push_back(mapping);
 	}
 	
-	for(uint32_t jID = 0; jID <= static_cast<uint32_t>(Controller::Four); jID++)
+	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Four); cID++)
 	{
-		ControllerInternal* js = &s_controllerInternal[jID];
-		if(s_controllerStatuses[jID].Connected)
+		ControllerInternal* js = &s_controllerInternal[cID];
+		if(s_controllerStatuses[cID].Connected)
 			js->mapping = FindValidMapping(js);
 	}
 }
@@ -469,22 +375,17 @@ bool TRAP::Input::OnControllerConnectEvent(ControllerConnectEvent &e)
 #ifdef TRAP_PLATFORM_WINDOWS
 	if(s_controllerAPI == ControllerAPI::XInput)
 		UpdateControllerBatteryAndConnectionTypeXInput(e.GetController());
-	if(s_controllerAPI == ControllerAPI::DirectInput)
-	{
-		s_controllerStatuses[static_cast<uint32_t>(e.GetController())].BatteryStatus = ControllerBattery::Unknown;
-		s_controllerStatuses[static_cast<uint32_t>(e.GetController())].ConnectionType = ControllerConnectionType::Unknown;
-	}
-#elif defined(TRAP_PLATFORM_LINUX)
-	s_controllerStatuses[static_cast<uint32_t>(e.GetController())].BatteryStatus = ControllerBattery::Unknown;
-	s_controllerStatuses[static_cast<uint32_t>(e.GetController())].ConnectionType = ControllerConnectionType::Unknown;
+	else
 #endif
+	{
+		s_controllerStatuses[static_cast<uint8_t>(e.GetController())].BatteryStatus = ControllerBattery::Unknown;
+		s_controllerStatuses[static_cast<uint8_t>(e.GetController())].ConnectionType = ControllerConnectionType::Unknown;
+	}
 
-	s_controllerStatuses[static_cast<uint32_t>(e.GetController())].Connected = true;
+	s_controllerStatuses[static_cast<uint8_t>(e.GetController())].Connected = true;
 
-	if (!IsControllerGamepad(e.GetController()) && s_controllerStatuses[static_cast<uint32_t>(e.GetController())].Connected) //Connected and not a Gamepad
+	if (s_controllerStatuses[static_cast<uint8_t>(e.GetController())].Connected) //Connected
 		TP_DEBUG("[Input][Controller] ID: ", static_cast<uint32_t>(e.GetController()), " Controller: \"", GetControllerName(static_cast<Controller>(e.GetController())), "\" Connected!");
-	else if (IsControllerGamepad(e.GetController()) && s_controllerStatuses[static_cast<uint32_t>(e.GetController())].Connected) //Connected and a Gamepad
-		TP_DEBUG("[Input][Controller] ID: ", static_cast<uint32_t>(e.GetController()), " Gamepad: \"", GetControllerName(static_cast<Controller>(e.GetController())), "\" Connected!");
 
 	return false;
 }
@@ -493,7 +394,7 @@ bool TRAP::Input::OnControllerConnectEvent(ControllerConnectEvent &e)
 
 bool TRAP::Input::OnControllerDisconnectEvent(ControllerDisconnectEvent &e)
 {
-	s_controllerStatuses[static_cast<uint32_t>(e.GetController())] = {};
+	s_controllerStatuses[static_cast<uint8_t>(e.GetController())] = {};
 	TP_DEBUG("[Input][Controller] ID: ", static_cast<uint32_t>(e.GetController()), " disconnected!");
 
 	return false;
@@ -503,17 +404,17 @@ bool TRAP::Input::OnControllerDisconnectEvent(ControllerDisconnectEvent &e)
 
 TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(const std::string& name, const std::string& guid, const int32_t axisCount, const int32_t buttonCount, const int32_t dpadCount)
 {
-	int jID;
-	for(jID = 0; jID <= static_cast<int32_t>(Controller::Four); jID++)
+	uint8_t cID;
+	for(cID = 0; cID <= static_cast<uint8_t>(Controller::Four); cID++)
 	{
-		if (!s_controllerStatuses[jID].Connected)
+		if (!s_controllerStatuses[cID].Connected)
 			break;
 	}
 
-	if (jID >= static_cast<int32_t>(Controller::Four))
+	if (cID >= static_cast<uint8_t>(Controller::Four))
 		return nullptr;
 
-	ControllerInternal* js = &s_controllerInternal[jID];
+	ControllerInternal* js = &s_controllerInternal[cID];
 	js->Name = name;
 	js->guid = guid;
 	js->Axes.resize(axisCount);
@@ -529,7 +430,7 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(const std::s
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of the new value of a controller DPad
-void TRAP::Input::InternalInputControllerDPad(ControllerInternal* js, const int32_t dpad, const char value)
+void TRAP::Input::InternalInputControllerDPad(ControllerInternal* js, const int32_t dpad, const uint8_t value)
 {
 	const int32_t base = js->ButtonCount + dpad * 4;
 
@@ -576,175 +477,177 @@ void TRAP::Input::InternalInputControllerButton(ControllerInternal* js, const in
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-
-bool TRAP::Input::InternalPollController(const Controller controller, const int32_t mode)
-{
-#ifdef TRAP_PLATFORM_WINDOWS
-	if (s_controllerAPI == ControllerAPI::XInput)
-		return CheckConnectionXInput(controller);
-	else if (s_controllerAPI == ControllerAPI::DirectInput)
-		return PollControllerDirectInput(controller, mode);
-#elif defined(TRAP_PLATFORM_LINUX)
-	return PollControllerLinux(controller);
-#endif
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Parse an SDL_GameControllerDB line and adds it to the mapping list
-bool TRAP::Input::ParseMapping(Mapping* mapping, const char* str)
+bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 {
-	const char* c = str;
-	std::size_t i;
 	struct Fields
 	{
-		const char* Name = nullptr;
+		std::string Name = nullptr;
 		MapElement* Element = nullptr;
 	};
 	std::array<Fields, 22> fields =
 	{
 		{
 			{"platform", nullptr},
-			{"a", &mapping->Buttons[static_cast<uint32_t>(ControllerButton::A)]},
-			{"b", &mapping->Buttons[static_cast<uint32_t>(ControllerButton::B)]},
-			{"x", &mapping->Buttons[static_cast<uint32_t>(ControllerButton::X)]},
-			{"y", &mapping->Buttons[static_cast<uint32_t>(ControllerButton::Y)]},
-			{"back", &mapping->Buttons[static_cast<uint32_t>(ControllerButton::Back)]},
-			{"start", &mapping->Buttons[static_cast<uint32_t>(ControllerButton::Start)]},
-			{"guide", &mapping->Buttons[static_cast<uint32_t>(ControllerButton::Guide)]},
-			{"leftshoulder", &mapping->Buttons[static_cast<uint32_t>(ControllerButton::Left_Bumper)]},
-			{"rightshoulder", &mapping->Buttons[static_cast<uint32_t>(ControllerButton::Right_Bumper)]},
-			{"leftstick", &mapping->Buttons[static_cast<uint32_t>(ControllerButton::Left_Thumb)]},
-			{"rightstick", &mapping->Buttons[static_cast<uint32_t>(ControllerButton::Right_Thumb)]},
-			{"dpup", &mapping->Buttons[static_cast<uint32_t>(ControllerButton::DPad_Up)]},
-			{"dpright", &mapping->Buttons[static_cast<uint32_t>(ControllerButton::DPad_Right)]},
-			{"dpdown", &mapping->Buttons[static_cast<uint32_t>(ControllerButton::DPad_Down)]},
-			{"dpleft", &mapping->Buttons[static_cast<uint32_t>(ControllerButton::DPad_Left)]},
-			{"lefttrigger", &mapping->Axes[static_cast<uint32_t>(ControllerAxis::Left_Trigger)]},
-			{"righttrigger", &mapping->Axes[static_cast<uint32_t>(ControllerAxis::Right_Trigger)]},
-			{"leftx", &mapping->Axes[static_cast<uint32_t>(ControllerAxis::Left_X)]},
-			{"lefty", &mapping->Axes[static_cast<uint32_t>(ControllerAxis::Left_Y)]},
-			{"rightx", &mapping->Axes[static_cast<uint32_t>(ControllerAxis::Right_X)]},
-			{"righty", &mapping->Axes[static_cast<uint32_t>(ControllerAxis::Right_Y)]}
+			{"a", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::A)]},
+			{"b", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::B)]},
+			{"x", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::X)]},
+			{"y", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Y)]},
+			{"back", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Back)]},
+			{"start", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Start)]},
+			{"guide", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Guide)]},
+			{"leftshoulder", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Left_Bumper)]},
+			{"rightshoulder", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Right_Bumper)]},
+			{"leftstick", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Left_Thumb)]},
+			{"rightstick", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::Right_Thumb)]},
+			{"dpup", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::DPad_Up)]},
+			{"dpright", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::DPad_Right)]},
+			{"dpdown", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::DPad_Down)]},
+			{"dpleft", &mapping.Buttons[static_cast<uint32_t>(ControllerButton::DPad_Left)]},
+			{"lefttrigger", &mapping.Axes[static_cast<uint32_t>(ControllerAxis::Left_Trigger)]},
+			{"righttrigger", &mapping.Axes[static_cast<uint32_t>(ControllerAxis::Right_Trigger)]},
+			{"leftx", &mapping.Axes[static_cast<uint32_t>(ControllerAxis::Left_X)]},
+			{"lefty", &mapping.Axes[static_cast<uint32_t>(ControllerAxis::Left_Y)]},
+			{"rightx", &mapping.Axes[static_cast<uint32_t>(ControllerAxis::Right_X)]},
+			{"righty", &mapping.Axes[static_cast<uint32_t>(ControllerAxis::Right_Y)]}
 		}
 	};
-	
-	std::size_t length = std::strcspn(c, ",");
-	if(length != 32 || c[length] != ',')
+
+	std::vector<std::string> splittedString = Utils::String::SplitString(str, ',');
+
+	if(splittedString.empty())
 	{
-		TP_ERROR("[Input][Controller] Invalid value!");
+		TP_ERROR("[Input][Controller] Map is empty!");
 		return false;
 	}
-	
-	std::memcpy(mapping->guid.data(), c, length);
-	c += length + 1;
-	
-	length = std::strcspn(c, ",");
-	if(length >= mapping->Name.size() || c[length] != ',')
+	if (splittedString.size() > 24)
 	{
-		TP_ERROR("[Input][Controller] Invalid value!");
+		TP_ERROR("[Input][Controller] Map has too many elements! There must be less than 24 elements!");
 		return false;
 	}
-	
-	std::memcpy(mapping->Name.data(), c, length);
-	c += length + 1;
-	
-	while(*c)
+
+	if(splittedString[0].size() != 32)
 	{
-		if(*c == '+' || *c == '-')
-			return false;
-			
-		for(i = 0; i < fields.size(); i++)
+		TP_ERROR("[Input][Controller] Invalid GUID size! Must be 32 bytes long");
+		return false;
+	}
+
+	if (splittedString[0].empty())
+	{
+		TP_ERROR("[Input][Controller] Mapping GUID can't be empty!");
+		return false;
+	}
+	mapping.guid = splittedString[0] + '\0';
+	
+	if(splittedString[1].empty())
+	{
+		TP_ERROR("[Input][Controller] Mapping Name can't be empty!");
+		return false;
+	}
+	mapping.Name = splittedString[1] + '\0';
+
+	for (uint8_t i = 2; i < splittedString.size();) //Start after Mapping Name
+	{
+		std::vector<std::string> splittedField = Utils::String::SplitString(splittedString[i] + ':', ':');
+		if (splittedField.empty())
 		{
-			length = std::strlen(fields[i].Name);
-			if(std::strncmp(c, fields[i].Name, length) != 0 || c[length] != ':')
-				continue;
-				
-			c += length + 1;
-			
-			if(fields[i].Element)
+			TP_ERROR("[Input][Controller] Field can't be empty!");
+			return false;
+		}
+		if (splittedField.size() < 2)
+		{
+			TP_ERROR("[Input][Controller] Too few elements inside field: ", i, "!");
+			return false;
+		}
+		if (splittedField.size() > 2)
+		{
+			TP_ERROR("[Input][Controller] Too many elements inside field: ", i, "!");
+			return false;
+		}
+
+		for (const auto& c : splittedField[0])
+			if (!std::isalnum(static_cast<int8_t>(c)))
 			{
-				MapElement* e = fields[i].Element;
-				int8_t minimum = -1;
-				int8_t maximum = 1;
-				
-				if(*c == '+')
-				{
-					minimum = 0;
-					c += 1;
-				}
-				else if(*c == '-')
-				{
-					maximum = 0;
-					c += 1;
-				}
-				
-				if(*c == 'a')
-					e->Type = 1; //Axis
-				else if(*c == 'b')
-					e->Type = 2; //Button
-				else if(*c == 'h')
-					e->Type = 3; //DPad
-				else
-					break;
-					
-				if(e->Type == 3) //DPad
-				{
-					const uint64_t hat = std::strtoul(c + 1, const_cast<char**>(&c), 10);
-					const uint64_t bit = std::strtoul(c + 1, const_cast<char**>(&c), 10);
-					e->Index = static_cast<uint8_t>((hat << 4) | bit);
-				}
-				else
-					e->Index = static_cast<uint8_t>(std::strtoul(c + 1, const_cast<char**>(&c), 10));
-					
-				if(e->Type == 1) //Axis
-				{
-					e->AxisScale = 2 / (maximum - minimum);
-					e->AxisOffset = -(maximum + minimum);
-					
-					if(*c == '~')
-					{
-						e->AxisScale = -e->AxisScale;
-						e->AxisOffset = -e->AxisOffset;
-					}
-				}
+				TP_ERROR("[Input][Controller] Invalid char inside field: ", i, "!");
+				return false;
+			}
+
+		uint8_t j;
+		for (j = 0; j < fields.size(); j++)
+			if (fields[j].Name == splittedField[0])
+				break;
+
+		if(fields[j].Element)
+		{
+			MapElement* e = fields[j].Element;
+			int8_t minimum = -1;
+			int8_t maximum = 1;
+			uint32_t charOffset = 0;
+
+			if (splittedField[1][0] == '+')
+			{
+				minimum = 0;
+				charOffset++;
+			}
+			else if (splittedField[1][0] == '-')
+			{
+				maximum = 0;
+				charOffset++;
+			}
+
+			if (splittedField[1][charOffset] == 'a')
+				e->Type = 1; //Axis
+			else if (splittedField[1][charOffset] == 'b')
+				e->Type = 2; //Button
+			else if (splittedField[1][charOffset] == 'h')
+				e->Type = 3; //DPad
+			else
+				break;
+
+			charOffset++;
+
+			if (e->Type == 3) //DPad
+			{
+				const uint64_t hat = std::stoul(splittedField[1].data() + charOffset);
+				const uint64_t bit = std::stoul(splittedField[1].data() + charOffset);
+				e->Index = static_cast<uint8_t>((hat << 4) | bit);
 			}
 			else
+				e->Index = static_cast<uint8_t>(std::stoul(splittedField[1].data() + charOffset));
+
+			if (e->Type == 1) //Axis
 			{
-				length = std::strlen(MappingName);
-				if(std::strncmp(c, MappingName, length) != 0)
-					return false;
+				e->AxisScale = 2 / (maximum - minimum);
+				e->AxisOffset = -(maximum + minimum);
+
+				if (splittedField[1][charOffset] == '~')
+				{
+					e->AxisScale = -e->AxisScale;
+					e->AxisOffset = -e->AxisOffset;
+				}
 			}
-			
-			break;
 		}
-		
-		c += std::strcspn(c, ",");
-		c += std::strspn(c, ",");
+
+		i++;
 	}
+
+	mapping.guid = Utils::String::ToLower(mapping.guid);
+
+#ifdef TRAP_PLATFORM_WINDOWS
+	UpdateControllerGUIDWindows(mapping.guid);
+#endif
 	
-	for(i = 0; i < 32; i++)
-	{
-		if(mapping->guid[i] >= 'A' && mapping->guid[i] <= 'F')
-			mapping->guid[i] += 'a' - 'A';
-	}
-	
-	UpdateControllerGUID(mapping->guid);
 	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Find a mapping based on controller GUID
-TRAP::Input::Mapping* TRAP::Input::FindMapping(const char* guid)
+TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string& guid)
 {
-	for(uint32_t i = 0; i < MappingCount; i++)
-	{
-		if(std::strcmp(Mappings[i].guid.data(), guid) == 0)
-			return &Mappings[i];
-	}
+	for (auto& Mapping : Mappings)
+		if(Mapping.guid == guid)
+			return &Mapping;
 	
 	return nullptr;
 }
@@ -754,25 +657,25 @@ TRAP::Input::Mapping* TRAP::Input::FindMapping(const char* guid)
 //Finds a mapping based on controller GUID and verifies element indices
 TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* js)
 {
-	Mapping* mapping = FindMapping(js->guid.data());
+	Mapping* mapping = FindMapping(js->guid);
 	if(mapping)
 	{
-		uint32_t i;
+		uint8_t i;
 		
-		for(i = 0; i <= static_cast<uint32_t>(ControllerButton::DPad_Left); i++)
+		for(i = 0; i <= static_cast<uint8_t>(ControllerButton::DPad_Left); i++)
 		{
 			if(!IsValidElementForController(&mapping->Buttons[i], js))
 			{
-				TP_ERROR("[Input][Controller] Invalid button in Controller mapping: ", mapping->guid.data(), " ", mapping->Name.data());
+				TP_ERROR("[Input][Controller] Invalid button in Controller mapping: ", mapping->guid, " ", mapping->Name);
 				return nullptr;
 			}
 		}
 		
-		for(i = 0; i <= static_cast<uint32_t>(ControllerAxis::Right_Trigger); i++)
+		for(i = 0; i <= static_cast<uint8_t>(ControllerAxis::Right_Trigger); i++)
 		{
 			if(!IsValidElementForController(&mapping->Axes[i], js))
 			{
-				TP_ERROR("[Input][Controller] Invalid axis in Controller mapping: ", mapping->guid.data(), " ", mapping->Name.data());
+				TP_ERROR("[Input][Controller] Invalid axis in Controller mapping: ", mapping->guid, " ", mapping->Name);
 				return nullptr;
 			}
 		}
@@ -800,38 +703,61 @@ bool TRAP::Input::IsValidElementForController(const MapElement* e, const Control
 
 bool TRAP::Input::IsMappedControllerButtonPressed(Controller controller, ControllerButton button)
 {
-	if(!InternalPollController(controller, 2))
+#ifdef TRAP_PLATFORM_WINDOWS
+	if(s_controllerAPI == ControllerAPI::XInput)
+	{
+		const int32_t buttonXInput = ControllerButtonToXInput(button);
+		if (buttonXInput == -1)
+			return false;
+		if (buttonXInput == 0)
+		{
+			TP_ERROR("[Input][Controller][XInput] Could not get button state!");
+			TP_ERROR("[Input][Controller][XInput] Invalid Button!");
+			return false;
+		}
+
+		XINPUT_STATE state{};
+		const uint32_t result = XInputGetState(static_cast<DWORD>(controller), &state);
+		if (result == ERROR_SUCCESS)
+			return (state.Gamepad.wButtons & buttonXInput) != 0;
+
+		TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while getting button status!");
 		return false;
-		
-	ControllerInternal* js = &s_controllerInternal[static_cast<uint32_t>(controller)];
-		
-	if(!js->mapping)
+	}
+#endif
+
+	if (!PollController(controller, 2))
 		return false;
-		
-	const MapElement* e = &js->mapping->Buttons[static_cast<uint32_t>(button)];
-	if(e->Index < js->ButtonCount)
-		if(e->Type == 2) //Button
+
+	ControllerInternal* js = &s_controllerInternal[static_cast<uint8_t>(controller)];
+
+	if (!js->mapping)
+		return false;
+
+	const MapElement* e = &js->mapping->Buttons[static_cast<uint8_t>(button)];
+	if (e->Index < js->ButtonCount)
+		if (e->Type == 2) //Button
 			return js->Buttons[e->Index];
-	if(e->Type == 1) //Axis
+	if (e->Type == 1) //Axis
 	{
 		const float value = js->Axes[e->Index] * static_cast<float>(e->AxisScale) + static_cast<float>(e->AxisOffset);
-		if(e->AxisOffset < 0 || (e->AxisOffset == 0 && e->AxisScale > 0))
+		if (e->AxisOffset < 0 || (e->AxisOffset == 0 && e->AxisScale > 0))
 		{
-			if(value >= 0.0f)
+			if (value >= 0.0f)
 				return true;
 		}
 		else
 		{
-			if(value <= 0.0f)
+			if (value <= 0.0f)
 				return false;
 		}
 	}
-	else if(e->Type == 3) //DPad
+	else if (e->Type == 3) //DPad
 	{
-		if(js->Buttons[e->Index >>  4])
+		if (js->Buttons[e->Index >> 4])
 			return true;
 	}
-		
+
 	return false;
 }
 
@@ -839,19 +765,57 @@ bool TRAP::Input::IsMappedControllerButtonPressed(Controller controller, Control
 
 float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis axis)
 {
-	if(!InternalPollController(controller, 1))
+#ifdef TRAP_PLATFORM_WINDOWS
+	if(s_controllerAPI == ControllerAPI::XInput)
+	{
+		XINPUT_STATE state{};
+		const uint32_t result = XInputGetState(static_cast<DWORD>(controller), &state);
+		if (result == ERROR_SUCCESS)
+		{
+			switch (axis)
+			{
+			case ControllerAxis::Left_X:
+				return (static_cast<float>(state.Gamepad.sThumbLX) + 0.5f) / 32767.5f;
+
+			case ControllerAxis::Left_Y:
+				return -(static_cast<float>(state.Gamepad.sThumbLY) + 0.5f) / 32767.5f;
+
+			case ControllerAxis::Right_X:
+				return (static_cast<float>(state.Gamepad.sThumbRX) + 0.5f) / 32767.5f;
+
+			case ControllerAxis::Right_Y:
+				return -(static_cast<float>(state.Gamepad.sThumbRY) + 0.5f) / 32767.5f;
+
+			case ControllerAxis::Left_Trigger:
+				return static_cast<float>(state.Gamepad.bLeftTrigger) / 127.5f - 1.0f;
+
+			case ControllerAxis::Right_Trigger:
+				return static_cast<float>(state.Gamepad.bRightTrigger) / 127.5f - 1.0f;
+
+			default:
+				TP_ERROR("[Input][Controller][XInput] Could not get axis state!");
+				return 0.0f;
+			}
+		}
+
+		TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while getting axis state!");
+		return 0.0f;
+	}
+#endif
+	
+	if(!PollController(controller, 1))
 		return 0.0f;
 		
-	ControllerInternal* js = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	ControllerInternal* js = &s_controllerInternal[static_cast<uint8_t>(controller)];
 		
 	if(!js->mapping)
 		return 0.0f;
 		
-	const MapElement* e = &js->mapping->Axes[static_cast<uint32_t>(axis)];
+	const MapElement* e = &js->mapping->Axes[static_cast<uint8_t>(axis)];
 	if(e->Type == 1) //Axis
 	{
 		const float value = js->Axes[e->Index] * static_cast<float>(e->AxisScale) + static_cast<float>(e->AxisOffset);
-		return Math::Min(TRAP::Math::Max(value, -1.0f), 1.0f);
+		return Math::Min(Math::Max(value, -1.0f), 1.0f);
 	}
 	if(e->Type == 2) //Button
 		return js->Buttons[e->Index] ? 1.0f : -1.0f;
@@ -870,10 +834,43 @@ float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis
 
 TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(Controller controller, const uint32_t dpad)
 {
-	if(!InternalPollController(controller, 3))
+#ifdef TRAP_PLATFORM_WINDOWS
+	if(s_controllerAPI == ControllerAPI::XInput)
+	{
+		if (dpad == 0)
+		{
+			std::vector<bool> buttons = GetAllControllerButtonsInternal(controller);
+			const bool up = buttons[11];
+			const bool right = buttons[12];
+			const bool down = buttons[13];
+			const bool left = buttons[14];
+
+			if (right && up)
+				return ControllerDPad::Right_Up;
+			if (right && down)
+				return ControllerDPad::Right_Down;
+			if (left && up)
+				return ControllerDPad::Left_Up;
+			if (left && down)
+				return ControllerDPad::Left_Down;
+			if (up)
+				return ControllerDPad::Up;
+			if (right)
+				return ControllerDPad::Right;
+			if (down)
+				return ControllerDPad::Down;
+			if (left)
+				return ControllerDPad::Left;
+		}
+
+		return ControllerDPad::Centered;
+	}
+#endif
+	
+	if(!PollController(controller, 3))
 		return ControllerDPad::Centered;
 		
-	ControllerInternal* js = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	ControllerInternal* js = &s_controllerInternal[static_cast<uint8_t>(controller)];
 		
 	if(!js->mapping)
 		return ControllerDPad::Centered;
@@ -883,17 +880,4 @@ TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(Controller cont
 		return js->DPads[e->Index >> 4];
 		
 	return ControllerDPad::Centered;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Input::UpdateControllerGUID(std::array<char, 33>& guid)
-{
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(std::strcmp(guid.data() + 20, "504944564944") == 0)
-	{
-		std::array<char, 33> original = guid;
-		sprintf_s(guid.data(), guid.size(), "03000000%.4s0000%.4s000000000000", original.data(), original.data() + 4);
-	}
-#endif
 }
