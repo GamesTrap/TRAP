@@ -4,6 +4,7 @@
 #include "Graphics/RenderCommand.h"
 #include "VulkanCommon.h"
 #include "Window/Window.h"
+#include "Window/WindowingAPI.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -421,11 +422,10 @@ void TRAP::Graphics::API::VulkanRenderer::SetupInstanceLayersAndExtensions()
 #endif
 
 	//Instance Extensions
-	uint32_t requiredExtensionsCount = 0;
-	const char** requiredExtensions = glfwGetRequiredInstanceExtensions(&requiredExtensionsCount);
+	const std::array<std::string, 2>& requiredExtensions = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
 	const std::vector<VkExtensionProperties> availableInstanceExtensions = GetAvailableInstanceExtensions();
-	for (uint32_t i = 0; i < requiredExtensionsCount; i++)
-		AddInstanceExtension(availableInstanceExtensions, requiredExtensions[i]);
+	for (auto& requiredExtension : requiredExtensions)
+		AddInstanceExtension(availableInstanceExtensions, requiredExtension.c_str());
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	AddInstanceExtension(availableInstanceExtensions, VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 #endif

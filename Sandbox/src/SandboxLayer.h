@@ -101,7 +101,7 @@ public:
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override
-	{
+	{	
 		m_cameraController.OnUpdate(deltaTime);
 
 		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
@@ -206,7 +206,7 @@ private:
 	struct UniformData
 	{
 		float Time{};
-	};	
+	};
 };
 
 #endif /*_GAMESTRAP_SANDBOXLAYER_H_*/

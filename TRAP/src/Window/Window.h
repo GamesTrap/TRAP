@@ -4,11 +4,12 @@
 #include "Graphics/API/Context.h"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include "Event/Event.h"
 #include "ImageLoader/Image.h"
 #include <unordered_map>
+#include "Input/Input.h"
+#include "WindowingAPI.h"
 
 namespace TRAP
 {
@@ -62,7 +63,7 @@ namespace TRAP
 		CursorMode GetCursorMode() const;
 		bool GetRawMouseInput() const;
 
-		void* GetNativeWindow() const;
+		void* GetInternalWindow();
 
 		void SetTitle(const std::string& title);
 		void SetDisplayMode(const DisplayMode& mode,
@@ -81,9 +82,9 @@ namespace TRAP
 		void Init(const WindowProps& props);
 		void Shutdown();
 		
-		GLFWwindow* m_window;
-		GLFWmonitor* m_useMonitor; //Stores a reference to the monitor
-		static std::unordered_map<uint32_t, GLFWvidmode> s_baseVideoModes; //Stores the underlying video mode being used by the OS for every monitor
+		Ref<INTERNAL::WindowingAPI::InternalWindow> m_window;
+		Ref<INTERNAL::WindowingAPI::InternalMonitor> m_useMonitor; //Stores a reference to the monitor
+		static std::unordered_map<uint32_t, INTERNAL::WindowingAPI::VideoMode> s_baseVideoModes; //Stores the underlying video mode being used by the OS for every monitor
 		
 		struct WindowedModeParams
 		{
@@ -94,7 +95,7 @@ namespace TRAP
 		struct WindowData
 		{
 			std::string Title;
-			uint32_t Width{}, Height{}, RefreshRate{}, VSync{};
+			int32_t Width{}, Height{}, RefreshRate{}, VSync{};
 			DisplayMode displayMode{};
 			uint32_t Monitor{};
 			CursorMode cursorMode{};
@@ -107,8 +108,8 @@ namespace TRAP
 		} m_data;
 		
 		static uint32_t s_windows;
-		static bool s_GLFWInitialized;
-		static std::vector<Window*> s_fullscreenWindows;		
+		static bool s_WindowingAPIInitialized;
+		static std::vector<Window*> s_fullscreenWindows;
 	};
 
 	//Used to create new windows

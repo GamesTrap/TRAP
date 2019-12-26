@@ -13,7 +13,6 @@
 #include "Utils/String.h"
 #include "Core.h"
 #include "Graphics/Renderer.h"
-#include "Utils/MsgBox/MsgBox.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
@@ -31,10 +30,6 @@ TRAP::Application::Application()
 
 	TRAP_CORE_ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
-
-#ifdef TRAP_PLATFORM_WINDOWS
-	CheckIfWindows7OrNewer();
-#endif
 	
 	//Check if machine is using little-endian or big-endian
 	int32_t intVal = 1;
@@ -119,8 +114,9 @@ TRAP::Application::Application()
 	Input::SetEventCallback(TRAP_BIND_EVENT_FN(Application::OnEvent));
 	Input::Init(controllerAPI);
 
-	m_ImGuiLayer = std::make_unique<ImGuiLayer>();
-	PushOverlay(std::move(m_ImGuiLayer));
+	//TODO Uncomment
+	/*m_ImGuiLayer = std::make_unique<ImGuiLayer>();
+	PushOverlay(std::move(m_ImGuiLayer));*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -156,8 +152,8 @@ void TRAP::Application::Run()
 	float lastFrameTime = 0.0f;
 	std::deque<Utils::Timer> framesPerSecond;
 	auto nextFrame = std::chrono::steady_clock::now();
-	Utils::Timer tickTimer;
-
+	Utils::Timer tickTimer;	
+	
 	while (m_running)
 	{
 		if (m_fpsLimit)
@@ -185,13 +181,14 @@ void TRAP::Application::Run()
 		}
 
 		Window::Use(m_window);
-		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
+		//TODO Uncomment
+		/*if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 		{
 			ImGuiLayer::Begin();
 			for (const auto& layer : *m_layerStack)
 				layer->OnImGuiRender();
 			ImGuiLayer::End();
-		}
+		}*/
 
 		if (!m_minimized)
 			Graphics::RenderCommand::Present(m_window);
@@ -283,11 +280,14 @@ void TRAP::Application::OnEvent(Event& e)
 
 	m_input->OnEvent(e); //Controller Connect/Disconnect Events
 
-	for (auto it = m_layerStack->end(); it != m_layerStack->begin();)
+	if (m_layerStack)
 	{
-		(*--it)->OnEvent(e);
-		if (e.Handled)
-			break;
+		for (auto it = m_layerStack->end(); it != m_layerStack->begin();)
+		{
+			(*--it)->OnEvent(e);
+			if (e.Handled)
+				break;
+		}
 	}
 }
 
@@ -439,7 +439,7 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI) const
 	m_window->SetTitle(std::string(m_window->GetTitle()));
 	//Initialize Renderer
 	Graphics::Renderer::Init();
-	//Note: Input doesn't need to be Initialized here because GLFW is still initialized
+	//Note: Input doesn't need to be Initialized here because WindowingAPI is still initialized
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
 	//Always added as a fallback texture
@@ -448,24 +448,6 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI) const
 	for (const auto& layer : *m_layerStack)
 		layer->OnAttach();
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifdef TRAP_PLATFORM_WINDOWS
-void TRAP::Application::CheckIfWindows7OrNewer() const
-{
-	if(!IsWindows7OrGreater())
-	{
-		//Windows Version is older than XInput 1.4 requires!
-		TP_CRITICAL("[Engine] Unsupported Windows Version!");
-		Show("Windows Version is unsupported!\nWindows Version is older than Windows 7!\nTRAP Engine requires Windows 7 or newer!",
-		     "Unsupported Windows Version",
-		     Utils::MsgBox::Style::Error,
-		     Utils::MsgBox::Buttons::Quit);
-		exit(-1);
-	}
-}
-#endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 

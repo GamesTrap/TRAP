@@ -39,6 +39,7 @@ void TRAP::Graphics::API::OpenGLRenderer::InitInternal()
 	TP_INFO("[Renderer][OpenGL] ----------------------------------");
 	TP_INFO("[Renderer][OpenGL] OpenGL:");
 	TP_INFO("[Renderer][OpenGL] Version:  ", glGetString(GL_VERSION));
+	TP_INFO("[Renderer][OpenGL] GLSL Version: ", glGetString(GL_SHADING_LANGUAGE_VERSION));
 	TP_INFO("[Renderer][OpenGL] Vendor:   ", glGetString(GL_VENDOR));
 	TP_INFO("[Renderer][OpenGL] Renderer: ", glGetString(GL_RENDERER));
 	TP_INFO("[Renderer][OpenGL] ----------------------------------");

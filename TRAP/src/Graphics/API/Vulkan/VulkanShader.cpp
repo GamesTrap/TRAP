@@ -668,26 +668,31 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::API::VulkanShader::PreProcess(cons
 		shader->setEnvInput(glslang::EShSourceGlsl, EShLangCompute, glslang::EShClientVulkan, 460);
 	}
 
-	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
-	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3); //TODO Update to SPIRV 1.4
-	DirStackFileIncluder includer;
-	if (!shader->preprocess(&glslang::DefaultTBuiltInResource,
-	                        460,
-	                        ECoreProfile,
-	                        true,
-	                        true,
-	                        static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules),
-	                        &preProcessedSource,
-	                        includer))
+	if (shader)
 	{
-		TP_ERROR("[Shader}[Vulkan][GLSL] Preprocessing failed!");
-		TP_ERROR("[Shader][Vulkan][GLSL] ", shader->getInfoLog());
-		TP_ERROR("[Shader][Vulkan][GLSL] ", shader->getInfoDebugLog());
+		shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
+		shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3); //TODO Update to SPIRV 1.4
+		DirStackFileIncluder includer;
+		if (!shader->preprocess(&glslang::DefaultTBuiltInResource,
+			460,
+			ECoreProfile,
+			true,
+			true,
+			static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules),
+			&preProcessedSource,
+			includer))
+		{
+			TP_ERROR("[Shader}[Vulkan][GLSL] Preprocessing failed!");
+			TP_ERROR("[Shader][Vulkan][GLSL] ", shader->getInfoLog());
+			TP_ERROR("[Shader][Vulkan][GLSL] ", shader->getInfoDebugLog());
 
-		return nullptr;
+			return nullptr;
+		}
+		
+		return shader;
 	}
-
-	return shader;
+	
+	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

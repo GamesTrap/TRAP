@@ -3,122 +3,59 @@
 
 //Target Windows 8 or later
 #ifndef _WIN32_WINNT
-	#define _WIN32_WINNT 0x0602
+	#define _WIN32_WINNT 0x0601
 #endif
 #include <sdkddkver.h>
-//The following #defines disable a bunch of unused windows stuff.
-//If you get weird errors when trying to do some windows stuff,
-//try removing some (or all) of these defines (it will increase build time though).
-#ifndef WIN32_LEAN_AND_MEAN
-	#define WIN32_LEAN_AND_MEAN
-#endif
-#ifndef NOGDICAPMASKS
-	#define NOGDICAPMASKS
-#endif
-#ifndef NOSYSMETRICS
-	#define NOSYSMETRICS
-#endif
-#ifndef NOMENUS
-	#define NOMENUS
-#endif
-#ifndef NOICONS
-	#define NOICONS
-#endif
-#ifndef NOSYSCOMMANDS
-	#define NOSYSCOMMANDS
-#endif
-#ifndef NORASTEROPS
-	#define NORASTEROPS
-#endif
+
 #ifndef OEMRESOURCE
 	#define OEMRESOURCE
 #endif
-#ifndef NOATOM
-	#define NOATOM
-#endif
-#ifndef NOCLIPBOARD
-	#define NOCLIPBOARD
-#endif
-#ifndef NOCOLOR
-	#define NOCOLOR
-#endif
-#ifndef NOCTLMGR
-	#define NOCTLMGR
-#endif
-#ifndef NODRAWTEXT
-	#define NODRAWTEXT
-#endif
-#ifndef NOKERNEL	
-	#define NOKERNEL
-#endif
-/*#ifndef NONLS
-	#define NONLS
-#endif*/
-#ifndef NOMEMMGR
-	#define NOMEMMGR
-#endif
-#ifndef NOMETAFILE
-	#define NOMETAFILE
-#endif
-#ifndef NOMINMAX
-	#define NOMINMAX
-#endif
-#ifndef NOOPENFILE
-	#define NOOPENFILE
-#endif
-#ifndef NOSCROLL
-	#define NOSCROLL
-#endif
-#ifndef NOSERVICE
-	#define NOSERVICE
-#endif
-#ifndef NOSOUND
-	#define NOSOUND
-#endif
-#ifndef NOTEXTMETRIC
-	#define NOTEXTMETRIC
-#endif
-#ifndef NOWH
-	#define NOWH
-#endif
-#ifndef NOCOMM
-	#define NOCOMM
-#endif
-#ifndef NOKANJI
-	#define NOKANJI
-#endif
-#ifndef NOHELP
-	#define NOHELP
-#endif
-#ifndef NOPROFILER
-	#define NOPROFILER
-#endif
-#ifndef NODEFERWINDOWPOS
-	#define NODEFERWINDOWPOS
-#endif
-#ifndef NOMCX
-	#define NOMCX
-#endif
-#ifndef NORPC
-	#define NORPC
-#endif
-#ifndef NOPROXYSTUB
-	#define NOPROXYSTUB
-#endif
-#ifndef NOIMAGE
-	#define NOIMAGE
-#endif
-#ifndef NOTAPE
-	#define NOTAPE
-#endif
-
-#ifndef STRICT
-	#define STRICT
-#endif
 
 #include <Windows.h>
+#include <windowsx.h>
 
-#undef near
-#undef DELETE
+//HACK: Define macros that some windows.h variants don't
+#ifndef WM_MOUSEHWHEEL
+	#define WM_MOUSEHWHEEL 0x020E
+#endif
+#ifndef WM_DWMCOMPOSITIONCHANGED
+	#define WM_DWMCOMPOSITIONCHANGED 0x031E
+#endif
+#ifndef WM_COPYGLOBALDATA
+	#define WM_COPYGLOBALDATA 0x0049
+#endif
+#ifndef WM_UNICHAR
+	#define WM_UNICHAR 0x0109
+#endif
+#ifndef UNICODE_NOCHAR
+	#define UNICODE_NOCHAR 0xFFFF
+#endif
+#ifndef WM_DPICHANGED
+	#define WM_DPICHANGED 0x02E0
+#endif
+#ifndef GET_XBUTTON_WPARAM
+	#define GET_XBUTTON_WPARAM(w) (HIWORD(w))
+#endif
+#ifndef EDS_ROTATEDMODE
+	#define EDS_ROTATEDMODE 0x00000004
+#endif
+#ifndef DISPLAY_DEVICE_ACTIVE
+	#define DISPLAY_DEVICE_ACTIVE 0x00000001
+#endif
+#ifndef _WIN32_WINNT_WINBLUE
+	#define _WIN32_WINNT_WINBLUE 0x0602
+#endif
+#ifndef _WIN32_WINNT_WIN8
+	#define _WIN32_WINNT_WIN8 0x0602
+#endif
+#ifndef WM_GETDPISCALEDSIZE
+	#define WM_GETDPISCALEDSIZE 0x02e4
+#endif
+#ifndef USER_DEFAULT_SCREEN_DPI
+	#define USER_DEFAULT_SCREEN_DPI 96
+#endif
+#ifndef OCR_HAND
+	#define OCR_HAND 32649
+#endif
 
 #endif /*_TRAP_WIN_H_*/

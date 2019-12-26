@@ -20,7 +20,7 @@ uint32_t TRAP::Window::s_windows = 0;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Window::s_GLFWInitialized = false;
+bool TRAP::Window::s_WindowingAPIInitialized = false;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -28,14 +28,7 @@ std::vector<TRAP::Window*> TRAP::Window::s_fullscreenWindows{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unordered_map<uint32_t, GLFWvidmode> TRAP::Window::s_baseVideoModes{};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-static void GLFWErrorCallback(const int32_t error, const char *description)
-{
-	TP_ERROR("[Window][GLFW] (", error, "): ", description);
-}
+std::unordered_map<uint32_t, TRAP::INTERNAL::WindowingAPI::VideoMode> TRAP::Window::s_baseVideoModes{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -99,7 +92,7 @@ TRAP::Window::~Window()
 
 void TRAP::Window::OnUpdate()
 {
-	glfwPollEvents();
+	INTERNAL::WindowingAPI::PollEvents();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -130,23 +123,21 @@ uint32_t TRAP::Window::GetActiveWindows()
 
 uint32_t TRAP::Window::GetMonitors()
 {
-	uint32_t monitors = 0;
-	glfwGetMonitors(reinterpret_cast<int32_t*>(&monitors));
+	const auto monitors = INTERNAL::WindowingAPI::GetMonitors();
 
-	return monitors;
+	return static_cast<uint32_t>(monitors.size());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::unordered_map<uint32_t, std::string> TRAP::Window::GetMonitorNames()
 {
-	uint32_t monitorCount = 0;
-	const auto monitors = glfwGetMonitors(reinterpret_cast<int32_t*>(&monitorCount));
+	const auto monitors = INTERNAL::WindowingAPI::GetMonitors();
 
 	std::unordered_map<uint32_t, std::string> result;
 	
-	for (uint32_t i = 0; i < monitorCount; i++)
-		result.emplace(i, glfwGetMonitorName(monitors[i]));
+	for (uint32_t i = 0; i < monitors.size(); i++)
+		result.emplace(i, INTERNAL::WindowingAPI::GetMonitorName(monitors[i]));
 
 	return result;
 }
@@ -197,7 +188,7 @@ uint32_t TRAP::Window::GetMonitor() const
 
 std::string TRAP::Window::GetMonitorName() const
 {
-	return glfwGetMonitorName(m_useMonitor);
+	return INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -223,9 +214,9 @@ bool TRAP::Window::GetRawMouseInput() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void* TRAP::Window::GetNativeWindow() const
+void* TRAP::Window::GetInternalWindow()
 {
-	return m_window;
+	return static_cast<void*>(&m_window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -242,10 +233,10 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w48a3]" + std::string(Graphics::Renderer::GetTitle());
-	glfwSetWindowTitle(m_window, newTitle.c_str());
+		"[INDEV][19w52a3]" + std::string(Graphics::Renderer::GetTitle());
+	INTERNAL::WindowingAPI::SetWindowTitle(m_window, newTitle);
 #else
-	glfwSetWindowTitle(m_window, m_data.Title.c_str());
+	INTERNAL::WindowingAPI::SetWindowTitle(m_window, m_data.Title);
 #endif
 	TP_DEBUG("[Window] \"", oldTitle, "\" Set Title: \"", m_data.Title, "\"");
 }
@@ -263,13 +254,13 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 		m_oldWindowedParams.Width = m_data.Width;
 		m_oldWindowedParams.Height = m_data.Height;
 		m_oldWindowedParams.RefreshRate = m_data.RefreshRate;
-		glfwGetWindowPos(m_window, &(m_oldWindowedParams.XPos), &(m_oldWindowedParams.YPos));
+		INTERNAL::WindowingAPI::GetWindowPos(m_window, m_oldWindowedParams.XPos, m_oldWindowedParams.YPos);
 	}
 
 	if((m_data.displayMode == DisplayMode::Fullscreen || m_data.displayMode == DisplayMode::Borderless) && mode == DisplayMode::Windowed)
 		s_fullscreenWindows[m_data.Monitor] = nullptr;
 
-	GLFWmonitor* monitor = nullptr;
+	Ref<INTERNAL::WindowingAPI::InternalMonitor> monitor = nullptr;
 
 	if (mode == DisplayMode::Borderless)
 	{
@@ -279,18 +270,18 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 				TP_WARN("[Window] \"", m_data.Title, "\" already uses DisplayMode: Borderless or Fullscreen!");
 			else
 				TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Borderless because Monitor: ", m_data.Monitor,
-					'(', glfwGetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
+					'(', INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
 			
 			return;
 		}
 
 		s_fullscreenWindows[m_data.Monitor] = this;
 		//For borderless fullscreen, the new width, height and refresh rate will be the video mode width, height and refresh rate
-		width = s_baseVideoModes[m_data.Monitor].width;
-		height = s_baseVideoModes[m_data.Monitor].height;
-		refreshRate = s_baseVideoModes[m_data.Monitor].refreshRate;
+		width = s_baseVideoModes[m_data.Monitor].Width;
+		height = s_baseVideoModes[m_data.Monitor].Height;
+		refreshRate = s_baseVideoModes[m_data.Monitor].RefreshRate;
 		monitor = m_useMonitor;
-		TP_DEBUG("[Window] \"", m_data.Title, "\" Using Monitor: ", m_data.Monitor, '(', glfwGetMonitorName(monitor), ')');
+		TP_DEBUG("[Window] \"", m_data.Title, "\" Using Monitor: ", m_data.Monitor, '(', INTERNAL::WindowingAPI::GetMonitorName(monitor), ')');
 	}
 	else if (mode == DisplayMode::Windowed && (width == 0 || height == 0 || refreshRate == 0))
 	{
@@ -304,26 +295,29 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 		if (s_fullscreenWindows[m_data.Monitor] != this && s_fullscreenWindows[m_data.Monitor])
 		{
 			TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Fullscreen because Monitor: ", m_data.Monitor,
-				'(', glfwGetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
+				'(', INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
 			return;
 		}
 
 		s_fullscreenWindows[m_data.Monitor] = this;		
 		monitor = m_useMonitor;
 		bool valid = false;
-		int32_t monitorVideoModesCount = 0;
-		const auto monitorVideoModes = glfwGetVideoModes(m_useMonitor, &monitorVideoModesCount);
+		const auto monitorVideoModes = INTERNAL::WindowingAPI::GetVideoModes(m_useMonitor);
 		if (width != 0 && height != 0 && refreshRate != 0)
 		{
-			for (int32_t i = 0; i < monitorVideoModesCount; i++)
+			for (const auto& monitorVideoMode : monitorVideoModes)
 			{
 				//Check if resolution pair is valid
-				if (static_cast<uint32_t>(monitorVideoModes[i].width) == width && static_cast<uint32_t>(monitorVideoModes[i].height) == height && static_cast<uint32_t>(monitorVideoModes[i].refreshRate) == refreshRate)
+				if (static_cast<uint32_t>(monitorVideoMode.Width) == width &&
+					static_cast<uint32_t>(monitorVideoMode.Height) == height &&
+					static_cast<uint32_t>(monitorVideoMode.RefreshRate) == refreshRate)
 				{
 					valid = true;
 					break;
 				}
-				if(static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].width) == width && static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].height) == height && static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].refreshRate) == refreshRate)
+				if (static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].Width) == width &&
+				    static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].Height) == height &&
+					static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].RefreshRate) == refreshRate)
 				{
 					valid = true;
 					break;
@@ -334,12 +328,12 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 		//Resolution pair is invalid so use native/default resolution
 		if (!valid)
 		{
-			width = s_baseVideoModes[m_data.Monitor].width;
-			height = s_baseVideoModes[m_data.Monitor].height;
-			refreshRate = s_baseVideoModes[m_data.Monitor].refreshRate;
+			width = s_baseVideoModes[m_data.Monitor].Width;
+			height = s_baseVideoModes[m_data.Monitor].Height;
+			refreshRate = s_baseVideoModes[m_data.Monitor].RefreshRate;
 		}
 
-		TP_DEBUG("[Window] \"", m_data.Title, "\" Using Monitor: ", m_data.Monitor, '(', glfwGetMonitorName(monitor), ')');
+		TP_DEBUG("[Window] \"", m_data.Title, "\" Using Monitor: ", m_data.Monitor, '(', INTERNAL::WindowingAPI::GetMonitorName(monitor), ')');
 	}
 
 	//Update stored width and height
@@ -354,7 +348,8 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 		m_data.EventCallback(event);
 	}
 
-	constexpr auto GetModeStr = [&](const DisplayMode displayMode) {
+	constexpr auto GetModeStr = [&](const DisplayMode displayMode)
+	{
 		if (displayMode == DisplayMode::Windowed)
 			return "Windowed";
 		return displayMode == DisplayMode::Borderless ? "Borderless" : "Fullscreen";
@@ -366,7 +361,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 	//Record new window type
 	m_data.displayMode = mode;
 
-	glfwSetWindowMonitor(m_window,
+	INTERNAL::WindowingAPI::SetWindowMonitor(m_window,
 		monitor,
 		m_oldWindowedParams.XPos,
 		m_oldWindowedParams.YPos,
@@ -379,11 +374,10 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 
 void TRAP::Window::SetMonitor(const uint32_t monitor)
 {
-	int32_t monitorCount;
-	const auto monitors = glfwGetMonitors(&monitorCount);
-	if (monitor <= static_cast<uint32_t>(monitorCount))
+	const auto monitors = INTERNAL::WindowingAPI::GetMonitors();
+	if (monitor <= static_cast<uint32_t>(monitors.size()))
 	{
-		TP_DEBUG("[Window] \"", m_data.Title, "\" Set Monitor: ", monitor, " Name: ", glfwGetMonitorName(monitors[monitor]));
+		TP_DEBUG("[Window] \"", m_data.Title, "\" Set Monitor: ", monitor, " Name: ", INTERNAL::WindowingAPI::GetMonitorName(monitors[monitor]));
 		m_data.Monitor = monitor;
 		m_useMonitor = monitors[monitor];
 	}
@@ -392,7 +386,7 @@ void TRAP::Window::SetMonitor(const uint32_t monitor)
 		TP_ERROR("[Window] \"", m_data.Title, "\" Invalid Monitor!");
 		TP_WARN("[Window] \"", m_data.Title, "\" Using Primary Monitor!");
 		m_data.Monitor = 0;
-		m_useMonitor = glfwGetPrimaryMonitor();
+		m_useMonitor = INTERNAL::WindowingAPI::GetPrimaryMonitor();
 	}
 }
 
@@ -411,19 +405,19 @@ void TRAP::Window::SetCursorMode(const CursorMode& mode)
 	if (mode == CursorMode::Normal)
 	{
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Normal");
-		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		INTERNAL::WindowingAPI::SetCursorMode(m_window, INTERNAL::WindowingAPI::CursorMode::Normal);
 		m_data.cursorMode = mode;
 	}
 	else if (mode == CursorMode::Hidden)
 	{
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Hidden");
-		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		INTERNAL::WindowingAPI::SetCursorMode(m_window, INTERNAL::WindowingAPI::CursorMode::Hidden);
 		m_data.cursorMode = mode;
 	}
 	else if (mode == CursorMode::Disabled)
 	{
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Disabled");
-		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		INTERNAL::WindowingAPI::SetCursorMode(m_window, INTERNAL::WindowingAPI::CursorMode::Disabled);
 		m_data.cursorMode = mode;
 	}
 }
@@ -435,7 +429,7 @@ void TRAP::Window::SetRawMouseInput(const bool enabled)
 	if(Input::IsRawMouseInputSupported())
 	{
 		m_data.RawMouseInput = enabled;
-		glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, enabled);
+		INTERNAL::WindowingAPI::SetRawMouseMotionMode(m_window, enabled);
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Raw Mouse Input ", enabled ? "Enabled" : "Disabled");
 	}
 	else
@@ -449,8 +443,8 @@ void TRAP::Window::SetRawMouseInput(const bool enabled)
 
 void TRAP::Window::SetIcon() const
 {
-	GLFWimage image{ 32, 32, Embed::TRAPLogo.data() };
-	glfwSetWindowIcon(m_window, 1, &image);
+	const std::vector<uint8_t> TRAPLogo{ Embed::TRAPLogo.begin(), Embed::TRAPLogo.end() };
+	INTERNAL::WindowingAPI::SetWindowIcon(m_window, Image::LoadFromMemory(32, 32, 32, ImageFormat::RGBA, TRAPLogo));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -487,8 +481,7 @@ void TRAP::Window::SetIcon(const Scope<Image>& image) const
 		return;
 	}
 
-	GLFWimage glfwImage{ static_cast<int32_t>(image->GetWidth()), static_cast<int32_t>(image->GetHeight()), static_cast<uint8_t*>(image->GetPixelData()) };
-	glfwSetWindowIcon(m_window, 1, &glfwImage);
+	INTERNAL::WindowingAPI::SetWindowIcon(m_window, image);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -496,6 +489,14 @@ void TRAP::Window::SetIcon(const Scope<Image>& image) const
 void TRAP::Window::SetEventCallback(const EventCallbackFn& callback)
 {
 	m_data.EventCallback = callback;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+static void WindowingAPIErrorCallback(const TRAP::INTERNAL::WindowingAPI::Error error, const std::string& description)
+{
+	if(error != TRAP::INTERNAL::WindowingAPI::Error::No_Error)
+		TP_ERROR("[Window][Internal] ", description);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -512,46 +513,43 @@ void TRAP::Window::Init(const WindowProps& props)
 	m_data.RawMouseInput = props.rawMouseInput;
 	m_data.windowModeParams = &m_oldWindowedParams;
 
-	if (!s_GLFWInitialized)
+	if (!s_WindowingAPIInitialized)
 	{
-		glfwInitHint(GLFW_JOYSTICK_HAT_BUTTONS, false);
-		const int32_t success = glfwInit();
+		const int32_t success = INTERNAL::WindowingAPI::Init();
 		TRAP_CORE_ASSERT(success, "Could not initialize GLFW!");
-		glfwSetErrorCallback(GLFWErrorCallback);
-		s_GLFWInitialized = true;
+		INTERNAL::WindowingAPI::SetErrorCallback(WindowingAPIErrorCallback);
+		s_WindowingAPIInitialized = true;
 
 		Graphics::API::Context::CheckAllRenderAPIs();
 	}
 
 	if(s_fullscreenWindows.empty())
 	{
-		uint32_t monitorCount = 0;
-		glfwGetMonitors(reinterpret_cast<int32_t*>(&monitorCount));
-		s_fullscreenWindows.resize(monitorCount);
+		const auto monitors = INTERNAL::WindowingAPI::GetMonitors();
+		s_fullscreenWindows.resize(monitors.size());
 	}
 	
-	int32_t monitorCount;
-	const auto monitors = glfwGetMonitors(&monitorCount);
-	if (props.Monitor <= static_cast<uint32_t>(monitorCount))
+	const auto monitors = INTERNAL::WindowingAPI::GetMonitors();
+	if (props.Monitor < monitors.size())
 		m_useMonitor = monitors[props.Monitor];
 	else
 	{
 		TP_ERROR("[Window] \"", m_data.Title, "\" Invalid Monitor!");
 		TP_WARN("[Window] \"", m_data.Title, "\" Using Primary Monitor!");
 		m_data.Monitor = 0;
-		m_useMonitor = glfwGetPrimaryMonitor();
+		m_useMonitor = INTERNAL::WindowingAPI::GetPrimaryMonitor();
 	}
 
 	if(s_baseVideoModes.empty())
-		for(uint32_t i = 0; i < static_cast<uint32_t>(monitorCount); i++)
+		for(uint32_t i = 0; i < monitors.size(); i++)
 		{
-			s_baseVideoModes[i] = *(glfwGetVideoMode(monitors[i]));
+			s_baseVideoModes[i] = INTERNAL::WindowingAPI::GetVideoMode(monitors[i]);
 			TP_DEBUG("[Window] Storing underlying OS video mode: Monitor: ", i, " ",
-			s_baseVideoModes[i].width, 'x', s_baseVideoModes[i].height, '@', s_baseVideoModes[i].refreshRate, "Hz (R",
-			s_baseVideoModes[i].redBits, 'G', s_baseVideoModes[i].greenBits, 'B', s_baseVideoModes[i].blueBits, ')');			
+			s_baseVideoModes[i].Width, 'x', s_baseVideoModes[i].Height, '@', s_baseVideoModes[i].RefreshRate, "Hz (R",
+			s_baseVideoModes[i].RedBits, 'G', s_baseVideoModes[i].GreenBits, 'B', s_baseVideoModes[i].BlueBits, ')');			
 		}
 
-	glfwDefaultWindowHints();
+	INTERNAL::WindowingAPI::DefaultWindowHints();
 
 	if (!s_windows)
 	{
@@ -581,30 +579,27 @@ void TRAP::Window::Init(const WindowProps& props)
 			}
 		}
 		if (Graphics::API::Context::GetRenderAPI() != Graphics::API::RenderAPI::OpenGL)
-			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+			INTERNAL::WindowingAPI::SetContextAPI(INTERNAL::WindowingAPI::ContextAPI::None);
 		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
-		{
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
-			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		}
+			INTERNAL::WindowingAPI::SetContextAPI(INTERNAL::WindowingAPI::ContextAPI::OpenGL);
 	}
 
 	//Create Window
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w48a3]";
+		"[INDEV][19w52a3]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif
 
-	m_window = glfwCreateWindow(static_cast<int32_t>(props.Width),
+	m_window = INTERNAL::WindowingAPI::CreateWindow(static_cast<int32_t>(props.Width),
 		static_cast<int32_t>(props.Height),
-		newTitle.c_str(),
+		newTitle,
 		nullptr,
 		nullptr);
+
+	INTERNAL::WindowingAPI::GetWindowSize(m_window, m_data.Width, m_data.Height);
 
 	if (!m_window)
 	{
@@ -626,7 +621,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	{
 		std::unique_ptr<Window> window(this); //Little Hack so this pointer doesnt get invalidated :/
 		Use(window);
-		window.release();
+		auto unused = window.release();
 		SetVSyncInterval(props.VSync);
 		Use();
 	}
@@ -635,165 +630,141 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	newTitle += Graphics::Renderer::GetTitle();
 #endif
-	glfwSetWindowTitle(m_window, newTitle.c_str());
+	INTERNAL::WindowingAPI::SetWindowTitle(m_window, newTitle);
 
+	int32_t width = 0, height = 0, refreshRate = 0;
+	
+	//If currently windowed, stash the current size and position of the window
+	if (m_data.displayMode == DisplayMode::Windowed)
 	{
-		uint32_t width = 0, height = 0, refreshRate = 0;
-		
-		//If currently windowed, stash the current size and position of the window
-		if (m_data.displayMode == DisplayMode::Windowed)
-		{
-			m_oldWindowedParams.Width = m_data.Width;
-			m_oldWindowedParams.Height = m_data.Height;
-			m_oldWindowedParams.RefreshRate = m_data.RefreshRate;
-			glfwGetWindowPos(m_window, &(m_oldWindowedParams.XPos), &(m_oldWindowedParams.YPos));
-		}
-
-		GLFWmonitor* monitor = nullptr;
-
-		if (props.displayMode == DisplayMode::Borderless)
-		{
-			if (s_fullscreenWindows[m_data.Monitor])
-			{
-				TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Borderless because Monitor: ", m_data.Monitor,
-					'(', glfwGetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
-				TP_WARN("[Window] \"", m_data.Title, "\" is now using DisplayMode Windowed!");
-				m_data.displayMode = DisplayMode::Windowed;
-				if (width == 0 || height == 0 || refreshRate == 0)
-				{
-					width = 800;
-					height = 600;
-					refreshRate = s_baseVideoModes[m_data.Monitor].refreshRate;
-				}
-				else
-				{
-					width = m_data.Width;
-					height = m_data.Height;
-					refreshRate = m_data.RefreshRate;
-				}
-			}
-			else
-			{
-				s_fullscreenWindows[m_data.Monitor] = this;
-
-				//For borderless fullscreen, the new width, height and refresh rate will be the video mode width, height and refresh rate
-				width = s_baseVideoModes[m_data.Monitor].width;
-				height = s_baseVideoModes[m_data.Monitor].height;
-				refreshRate = s_baseVideoModes[m_data.Monitor].refreshRate;
-				monitor = m_useMonitor;
-			}
-		}
-		else if (props.displayMode == DisplayMode::Windowed && (width == 0 || height == 0 || refreshRate == 0))
-		{
-			//For windowed, use old window height, width and refresh rate if none provided
-			width = m_oldWindowedParams.Width;
-			height = m_oldWindowedParams.Height;
-			refreshRate = m_oldWindowedParams.RefreshRate;
-		}
-		else if (props.displayMode == DisplayMode::Fullscreen)
-		{
-			if (s_fullscreenWindows[m_data.Monitor])
-			{
-				TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Fullscreen because Monitor: ", m_data.Monitor,
-					'(', glfwGetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
-				TP_WARN("[Window] \"", m_data.Title, "\" is now using DisplayMode Windowed!");
-				m_data.displayMode = DisplayMode::Windowed;
-				if(width == 0 || height == 0 || refreshRate == 0)
-				{
-					width = 800;
-					height = 600;
-					refreshRate = s_baseVideoModes[m_data.Monitor].refreshRate;
-				}
-				else
-				{
-					width = m_data.Width;
-					height = m_data.Height;
-					refreshRate = m_data.RefreshRate;
-				}
-			}
-			else
-			{
-				s_fullscreenWindows[m_data.Monitor] = this;
-
-				monitor = m_useMonitor;
-				bool valid = false;
-				int32_t monitorVideoModesCount = 0;
-				const auto monitorVideoModes = glfwGetVideoModes(m_useMonitor, &monitorVideoModesCount);
-				if (width != 0 && height != 0 && refreshRate != 0)
-				{
-					for (int32_t i = 0; i < monitorVideoModesCount; i++)
-					{
-						//Check if resolution pair is valid
-						if ((static_cast<uint32_t>(monitorVideoModes[i].width) == width && static_cast<uint32_t>(monitorVideoModes[i].height) == height) && static_cast<uint32_t>(monitorVideoModes[i].refreshRate) == refreshRate)
-						{
-							valid = true;
-							break;
-						}
-						if (static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].width) == width && static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].height) == height && static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].refreshRate) == refreshRate)
-						{
-							valid = true;
-							break;
-						}
-					}
-				}
-
-				//Resolution pair is invalid so use native/default resolution
-				if (!valid)
-				{
-					width = s_baseVideoModes[m_data.Monitor].width;
-					height = s_baseVideoModes[m_data.Monitor].height;
-					refreshRate = s_baseVideoModes[m_data.Monitor].refreshRate;
-				}
-			}
-		}
-
-		//Update stored width and height
-		m_data.Width = width;
-		m_data.Height = height;
-		m_data.RefreshRate = refreshRate;
-
-		//Trigger resize event
-		if (m_data.EventCallback)
-		{
-			WindowResizeEvent event(width, height, m_data.Title);
-			m_data.EventCallback(event);
-		}
-
-		//Record new window type
-		m_data.displayMode = props.displayMode;
-
-		glfwSetWindowMonitor(m_window,
-			monitor,
-			m_oldWindowedParams.XPos,
-			m_oldWindowedParams.YPos,
-			static_cast<int32_t>(width),
-			static_cast<int32_t>(height),
-			static_cast<int32_t>(refreshRate));
+		m_oldWindowedParams.Width = m_data.Width;
+		m_oldWindowedParams.Height = m_data.Height;
+		m_oldWindowedParams.RefreshRate = m_data.RefreshRate;
+		INTERNAL::WindowingAPI::GetWindowPos(m_window, m_oldWindowedParams.XPos, m_oldWindowedParams.YPos);
 	}
 
-	glfwSetWindowUserPointer(m_window, &m_data);
+	Ref<INTERNAL::WindowingAPI::InternalMonitor> monitor = nullptr;
+
+	if (props.displayMode == DisplayMode::Borderless)
+	{
+		if (s_fullscreenWindows[m_data.Monitor])
+		{
+			TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Borderless because Monitor: ", m_data.Monitor,
+				'(', INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
+			TP_WARN("[Window] \"", m_data.Title, "\" is now using DisplayMode Windowed!");
+			m_data.displayMode = DisplayMode::Windowed;
+			width = 800;
+			height = 600;
+			refreshRate = s_baseVideoModes[m_data.Monitor].RefreshRate;
+		}
+		else
+		{
+			s_fullscreenWindows[m_data.Monitor] = this;
+
+			//For borderless fullscreen, the new width, height and refresh rate will be the video mode width, height and refresh rate
+			width = s_baseVideoModes[m_data.Monitor].Width;
+			height = s_baseVideoModes[m_data.Monitor].Height;
+			refreshRate = s_baseVideoModes[m_data.Monitor].RefreshRate;
+			monitor = m_useMonitor;
+		}
+	}
+	else if (props.displayMode == DisplayMode::Windowed)
+	{
+		//For windowed, use old window height, width and refresh rate if none provided
+		width = m_oldWindowedParams.Width;
+		height = m_oldWindowedParams.Height;
+		refreshRate = m_oldWindowedParams.RefreshRate;
+	}
+	else if (props.displayMode == DisplayMode::Fullscreen)
+	{
+		if (s_fullscreenWindows[m_data.Monitor])
+		{
+			TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Fullscreen because Monitor: ", m_data.Monitor,
+				'(', INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
+			TP_WARN("[Window] \"", m_data.Title, "\" is now using DisplayMode Windowed!");
+			m_data.displayMode = DisplayMode::Windowed;
+			width = 800;
+			height = 600;
+			refreshRate = s_baseVideoModes[m_data.Monitor].RefreshRate;
+		}
+		else
+		{
+			s_fullscreenWindows[m_data.Monitor] = this;
+
+			monitor = m_useMonitor;
+			bool valid = false;
+			const auto monitorVideoModes = INTERNAL::WindowingAPI::GetVideoModes(m_useMonitor);
+			if (width != 0 && height != 0 && refreshRate != 0)
+			{
+				for (const auto& monitorVideoMode : monitorVideoModes)
+				{
+					//Check if resolution pair is valid
+					if ((monitorVideoMode.Width == width &&
+							monitorVideoMode.Height == height) &&
+						monitorVideoMode.RefreshRate == refreshRate)
+					{
+						valid = true;
+						break;
+					}
+					if (s_baseVideoModes[m_data.Monitor].Width == width &&
+						s_baseVideoModes[m_data.Monitor].Height == height &&
+						s_baseVideoModes[m_data.Monitor].RefreshRate == refreshRate)
+					{
+						valid = true;
+						break;
+					}
+				}
+			}
+
+			//Resolution pair is invalid so use native/default resolution
+			if (!valid)
+			{
+				width = s_baseVideoModes[m_data.Monitor].Width;
+				height = s_baseVideoModes[m_data.Monitor].Height;
+				refreshRate = s_baseVideoModes[m_data.Monitor].RefreshRate;
+			}
+		}
+	}
+
+	//Update stored width and height
+	m_data.Width = width;
+	m_data.Height = height;
+	m_data.RefreshRate = refreshRate;
+
+	//Record new window type
+	m_data.displayMode = props.displayMode;
+
+	INTERNAL::WindowingAPI::SetWindowMonitor(m_window,
+		monitor,
+		m_oldWindowedParams.XPos,
+		m_oldWindowedParams.YPos,
+		width,
+		height,
+		refreshRate);
+
+	INTERNAL::WindowingAPI::SetWindowUserPointer(m_window, &m_data);
 
 	SetIcon();
 
 	if (m_data.cursorMode == CursorMode::Normal)
-		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		INTERNAL::WindowingAPI::SetCursorMode(m_window, INTERNAL::WindowingAPI::CursorMode::Normal);
 	else if (m_data.cursorMode == CursorMode::Hidden)
-		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		INTERNAL::WindowingAPI::SetCursorMode(m_window, INTERNAL::WindowingAPI::CursorMode::Hidden);
 	else if (m_data.cursorMode == CursorMode::Disabled)
-		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		INTERNAL::WindowingAPI::SetCursorMode(m_window, INTERNAL::WindowingAPI::CursorMode::Disabled);
 	
 	if (Input::IsRawMouseInputSupported())
-		glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, m_data.RawMouseInput);
+		INTERNAL::WindowingAPI::SetRawMouseMotionMode(m_window, m_data.RawMouseInput);
 	else
 	{
 		TP_ERROR("[Window] \"", m_data.Title, "\" Raw Mouse Input is unsupported!");
 		m_data.RawMouseInput = false;
 	}
 
-	//Set GLFW callbacks
-	glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, const int32_t width, const int32_t height)
+	//Set WindowingAPI callbacks
+	INTERNAL::WindowingAPI::SetWindowSizeCallback(m_window, [](Ref<INTERNAL::WindowingAPI::InternalWindow> window, const int32_t width, const int32_t height)
 	{
-		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 		data.Width = width;
 		data.Height = height;
 
@@ -801,9 +772,9 @@ void TRAP::Window::Init(const WindowProps& props)
 		data.EventCallback(event);
 	});
 
-	glfwSetWindowPosCallback(m_window, [](GLFWwindow* window, const int32_t x, const int32_t y)
+	INTERNAL::WindowingAPI::SetWindowPosCallback(m_window, [](Ref<INTERNAL::WindowingAPI::InternalWindow> window, const int32_t x, const int32_t y)
 	{
-		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
 		if(data.displayMode == DisplayMode::Windowed)
 		{
@@ -815,9 +786,9 @@ void TRAP::Window::Init(const WindowProps& props)
 		data.EventCallback(event);
 	});
 
-	glfwSetWindowFocusCallback(m_window, [](GLFWwindow* window, const int32_t focused)
+	INTERNAL::WindowingAPI::SetWindowFocusCallback(m_window, [](Ref<INTERNAL::WindowingAPI::InternalWindow> window, const bool focused)
 	{
-		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
 		if (focused)
 		{
@@ -831,92 +802,75 @@ void TRAP::Window::Init(const WindowProps& props)
 		}
 	});
 
-	glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window)
+	INTERNAL::WindowingAPI::SetWindowCloseCallback(m_window, [](Ref<INTERNAL::WindowingAPI::InternalWindow> window)
 	{
-		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 		WindowCloseEvent event(data.Title);
 		data.EventCallback(event);
 	});
 
-	glfwSetKeyCallback(m_window, [](GLFWwindow* window, const int32_t key, int32_t scancode, const int32_t action, int32_t mods)
+	INTERNAL::WindowingAPI::SetKeyCallback(m_window, [](Ref<INTERNAL::WindowingAPI::InternalWindow> window, const Input::Key key, int32_t scancode, const bool pressed)
 	{
-		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-		switch (action)
+		if(pressed)
 		{
-		case GLFW_PRESS:
-		{
-			data.KeyRepeatCounts[static_cast<uint16_t>(key)] = 0;
-			KeyPressedEvent event(static_cast<Input::Key>(key), 0, data.Title);
-			data.EventCallback(event);
-			break;
+			if(data.KeyRepeatCounts.find(static_cast<uint16_t>(key)) == data.KeyRepeatCounts.end())
+			{
+				data.KeyRepeatCounts[static_cast<uint16_t>(key)] = 0;
+				KeyPressedEvent event(static_cast<Input::Key>(key), 0, data.Title);
+				data.EventCallback(event);
+			}
+			else
+			{
+				data.KeyRepeatCounts[static_cast<uint16_t>(key)]++;
+				KeyPressedEvent event(static_cast<Input::Key>(key), data.KeyRepeatCounts[static_cast<uint16_t>(key)], data.Title);
+				data.EventCallback(event);
+			}
 		}
-
-		case GLFW_RELEASE:
+		else
 		{
 			data.KeyRepeatCounts.erase(static_cast<uint16_t>(key));
 			KeyReleasedEvent event(static_cast<Input::Key>(key), data.Title);
 			data.EventCallback(event);
-			break;
-		}
-
-		case GLFW_REPEAT:
-		{
-			data.KeyRepeatCounts[static_cast<uint16_t>(key)]++;
-			KeyPressedEvent event(static_cast<Input::Key>(key), data.KeyRepeatCounts[static_cast<uint16_t>(key)], data.Title);
-			data.EventCallback(event);
-			break;
-		}
-
-		default:
-			break;
 		}
 	});
 
-	glfwSetCharCallback(m_window, [](GLFWwindow* window, const uint32_t keycode)
+	INTERNAL::WindowingAPI::SetCharCallback(m_window, [](Ref<INTERNAL::WindowingAPI::InternalWindow> window, const uint32_t keycode)
 	{
-		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
 		KeyTypedEvent event(static_cast<Input::Key>(keycode), data.Title);
 		data.EventCallback(event);
 	});
 
-	glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, const int32_t button, const int32_t action, int32_t mods)
+	INTERNAL::WindowingAPI::SetMouseButtonCallback(m_window, [](Ref<INTERNAL::WindowingAPI::InternalWindow> window, const Input::MouseButton button, const bool pressed)
 	{
-		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
-		switch (action)
-		{
-		case GLFW_PRESS:
+		if (pressed)
 		{
 			MouseButtonPressedEvent event(static_cast<Input::MouseButton>(button), data.Title);
 			data.EventCallback(event);
-			break;
 		}
-
-		case GLFW_RELEASE:
+		else
 		{
 			MouseButtonReleasedEvent event(static_cast<Input::MouseButton>(button), data.Title);
 			data.EventCallback(event);
-			break;
-		}
-
-		default:
-			break;
 		}
 	});
 
-	glfwSetScrollCallback(m_window, [](GLFWwindow* window, const double xOffset, const double yOffset)
+	INTERNAL::WindowingAPI::SetScrollCallback(m_window, [](Ref<INTERNAL::WindowingAPI::InternalWindow> window, const double xOffset, const double yOffset)
 	{
-		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
 		MouseScrolledEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset), data.Title);
 		data.EventCallback(event);
 	});
 
-	glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, const double xPos, const double yPos)
+	INTERNAL::WindowingAPI::SetCursorPosCallback(m_window, [](Ref<INTERNAL::WindowingAPI::InternalWindow> window, const double xPos, const double yPos)
 	{
-		WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
 		MouseMovedEvent event(static_cast<float>(xPos), static_cast<float>(yPos), data.Title);
 		data.EventCallback(event);
@@ -927,13 +881,10 @@ void TRAP::Window::Init(const WindowProps& props)
 
 void TRAP::Window::Shutdown()
 {
-	glfwDestroyWindow(m_window);
+	INTERNAL::WindowingAPI::DestroyWindow(m_window);
 	m_window = nullptr;
 	if (!s_windows)
-	{
-		glfwTerminate();
-		s_GLFWInitialized = false;
-	}
+		INTERNAL::WindowingAPI::Shutdown();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

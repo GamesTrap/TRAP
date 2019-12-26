@@ -51,7 +51,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 73);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 82);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -111,6 +111,17 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 73);
 		if (!(x))                                                                                        \
 		{                                                                                                \
 			TP_ERROR("[Renderer] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
+			TRAP_DEBUG_BREAK();                                                                            \
+		}                                                                                                \
+	}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#define TRAP_WINDOW_ASSERT(x, ...)                                                                       \
+	{                                                                                                    \
+		if (!(x))                                                                                        \
+		{                                                                                                \
+			TP_ERROR("[Window] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
 			TRAP_DEBUG_BREAK();                                                                            \
 		}                                                                                                \
 	}

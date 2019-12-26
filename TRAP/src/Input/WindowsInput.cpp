@@ -79,8 +79,6 @@ void TRAP::Input::UpdateControllerConnectionWindows()
 						return;
 					s_lastXInputUpdate[i] = state.dwPacketNumber;
 
-					UpdateControllerBatteryAndConnectionTypeXInput(static_cast<Controller>(i));
-
 					ControllerConnectEvent event(static_cast<Controller>(i));
 					s_eventCallback(event);
 
@@ -130,32 +128,10 @@ std::string TRAP::Input::GetControllerNameInternal(Controller controller)
 		const uint32_t result = XInputGetCapabilities(static_cast<DWORD>(controller), 0, &caps);
 		if (result == ERROR_SUCCESS)
 		{
-			switch (caps.SubType)
-			{
-			case XINPUT_DEVSUBTYPE_WHEEL:
-				return "XInput Wheel";
-
-			case XINPUT_DEVSUBTYPE_ARCADE_STICK:
-				return "XInput Arcade Stick";
-
-			case XINPUT_DEVSUBTYPE_FLIGHT_STICK:
-				return "XInput Flight Stick";
-
-			case XINPUT_DEVSUBTYPE_DANCE_PAD:
-				return "XInput Dance Pad";
-
-			case XINPUT_DEVSUBTYPE_GUITAR:
-				return "XInput Guitar";
-
-			case XINPUT_DEVSUBTYPE_DRUM_KIT:
-				return "XInput Drum Kit";
-
-			case XINPUT_DEVSUBTYPE_GAMEPAD:
+			if (caps.SubType == XINPUT_DEVSUBTYPE_GAMEPAD)
 				return "XInput Gamepad";
-
-			default:
-				return "Unknown XInput Device";
-			}
+			
+			return "Unknown XInput Device";
 		}
 
 		TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while getting controller name!");
@@ -414,64 +390,6 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 	}
 
 	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Input::UpdateControllerBatteryAndConnectionTypeXInput(Controller controller)
-{
-	XINPUT_BATTERY_INFORMATION battery{};
-	const uint32_t result = XInputGetBatteryInformation(static_cast<DWORD>(controller), BATTERY_DEVTYPE_GAMEPAD, &battery);
-	if (result == ERROR_SUCCESS)
-	{
-		switch (battery.BatteryType)
-		{
-		case BATTERY_TYPE_WIRED:
-			s_controllerStatuses[static_cast<uint8_t>(controller)].ConnectionType = ControllerConnectionType::Wired;
-			break;
-
-		case BATTERY_TYPE_ALKALINE:
-		case BATTERY_TYPE_NIMH:
-		case BATTERY_TYPE_UNKNOWN:
-			s_controllerStatuses[static_cast<uint8_t>(controller)].ConnectionType = ControllerConnectionType::Wireless;
-			break;
-
-		default:
-			TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while checking battery information!");
-			s_controllerStatuses[static_cast<uint8_t>(controller)].ConnectionType = ControllerConnectionType::Unknown;
-			break;
-		}
-
-		if (s_controllerStatuses[static_cast<uint8_t>(controller)].ConnectionType == ControllerConnectionType::Wireless)
-		{
-			switch (battery.BatteryLevel)
-			{
-			case BATTERY_LEVEL_EMPTY:
-				s_controllerStatuses[static_cast<uint8_t>(controller)].BatteryStatus = ControllerBattery::Empty;
-				break;
-
-			case BATTERY_LEVEL_LOW:
-				s_controllerStatuses[static_cast<uint8_t>(controller)].BatteryStatus = ControllerBattery::Low;
-				break;
-
-			case BATTERY_LEVEL_MEDIUM:
-				s_controllerStatuses[static_cast<uint8_t>(controller)].BatteryStatus = ControllerBattery::Medium;
-				break;
-
-			case BATTERY_LEVEL_FULL:
-				s_controllerStatuses[static_cast<uint8_t>(controller)].BatteryStatus = ControllerBattery::Full;
-				break;
-
-			default:
-				TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while checking battery status!");
-				s_controllerStatuses[static_cast<uint8_t>(controller)].BatteryStatus = ControllerBattery::Unknown;
-				break;
-			}
-		}
-
-		return;
-	}
-	TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, "!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

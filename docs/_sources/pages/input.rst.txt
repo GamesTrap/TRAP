@@ -272,40 +272,6 @@ ControllerDPad
 | **Description**
 | TRAP::`Input`_::`ControllerDPad`_ is used to specify the direction of a Controller directional pad
 
------------------
-ControllerBattery
------------------
-
-.. code-block:: cpp
-
-    enum class TRAP::Input::ControllerBattery
-    {
-        Unknown,
-        Empty,
-        Low,
-        Medium,
-        Full
-    };
-
-| **Description**
-| TRAP::`Input`_::`ControllerBattery`_ is used to specify the status of a battery of a Controller
-
-------------------------
-ControllerConnectionType
-------------------------
-
-.. code-block:: cpp
-
-    enum class TRAP::Input::ControllerConnectionType
-    {
-        Unknown,
-        Wired,
-        Wireless
-    };
-
-| **Description**
-| TRAP::`Input`_::`ControllerConnectionType`_ is used to specify the type of connection of a Controller
-
 ----------------
 ControllerStatus
 ----------------
@@ -315,8 +281,6 @@ ControllerStatus
     struct TRAP::Input::ControllerStatus
     {
         bool Connected = false;
-        ControllerConnectionType ConnectionType = ControllerConnectionType::Unknown;
-        ControllerBattery BatteryStatus = ControllerBattery::Unknown;
     };
 
 | **Description**
@@ -598,36 +562,6 @@ GetControllerStatus
 | **Parameters**
 
 - :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get status from
-
---------------------------
-GetControllerBatteryStatus
---------------------------
-
-.. code-block:: cpp
-
-    static TRAP::Input::ControllerBattery TRAP::Input::GetControllerBatteryStatus(TRAP::Input::Controller controller);
-
-| **Description**
-| Returns the current battery status of the specified TRAP::`Input`_::`Controller`_\(in form of TRAP::`Input`_::`ControllerBattery`_\) 
-
-| **Parameters**
-
-- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get battery status from
-
----------------------------
-GetControllerConnectionType
----------------------------
-
-.. code-block:: cpp
-
-    static TRAP::Input::ControllerConnectionType TRAP::Input::GetControllerConnectionType(TRAP::Input::Controller controller);
-
-| **Description**
-| Returns the current connection type of the specified TRAP::`Input`_::`Controller`_\(in form of TRAP::`Input`_::`ControllerConnectionType`_\) 
-
-| **Parameters**
-
-- :code:`controller` Specifies the TRAP::`Input`_::`Controller`_ to get connection type from
 
 --------------------
 GetAllControllerAxes

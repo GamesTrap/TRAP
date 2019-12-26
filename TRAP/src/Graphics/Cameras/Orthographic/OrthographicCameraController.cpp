@@ -21,7 +21,7 @@ TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeStep deltaTime)
+void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeStep& deltaTime)
 {
 	if (m_useController)
 	{

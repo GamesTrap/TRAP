@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "Event/ControllerEvent.h"
 #include "Utils/String.h"
+#include "Window/WindowingAPI.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -87,20 +88,23 @@ void TRAP::Input::SetControllerAPI(const ControllerAPI controllerAPI)
 
 bool TRAP::Input::IsKeyPressed(const Key key)
 {
-	const auto window = static_cast<GLFWwindow *>(Application::GetWindow()->GetNativeWindow());
-	const auto state = glfwGetKey(window, static_cast<int32_t>(key));
+	if (key == Key::Invalid || key == Key::Unknown)
+		return false;
+	
+	const auto window = *static_cast<const std::shared_ptr<INTERNAL::WindowingAPI::InternalWindow>*>(Application::GetWindow()->GetInternalWindow());
+	const auto state = INTERNAL::WindowingAPI::GetKey(window, key);
 
-	return state == GLFW_PRESS || state == GLFW_REPEAT;
+	return state;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Input::IsMouseButtonPressed(const MouseButton button)
 {
-	const auto window = static_cast<GLFWwindow *>(Application::GetWindow()->GetNativeWindow());
-	const auto state = glfwGetMouseButton(window, static_cast<int32_t>(button));
+	const auto window = *static_cast<const std::shared_ptr<INTERNAL::WindowingAPI::InternalWindow>*>(Application::GetWindow()->GetInternalWindow());
+	const auto state = INTERNAL::WindowingAPI::GetMouseButton(window, button);
 
-	return state == GLFW_PRESS;
+	return state;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -126,7 +130,7 @@ bool TRAP::Input::IsGamepadButtonPressed(Controller controller, const Controller
 
 bool TRAP::Input::IsRawMouseInputSupported()
 {
-	return glfwRawMouseMotionSupported();
+	return INTERNAL::WindowingAPI::RawMouseMotionSupported();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -158,9 +162,9 @@ bool TRAP::Input::IsControllerGamepad(Controller controller)
 
 TRAP::Math::Vec2 TRAP::Input::GetMousePosition()
 {
-	const auto window = static_cast<GLFWwindow *>(Application::GetWindow()->GetNativeWindow());
+	const auto window = *static_cast<const std::shared_ptr<INTERNAL::WindowingAPI::InternalWindow>*>(Application::GetWindow()->GetInternalWindow());
 	double xPos, yPos;
-	glfwGetCursorPos(window, &xPos, &yPos);
+	INTERNAL::WindowingAPI::GetCursorPos(window, xPos, yPos);
 
 	return {static_cast<float>(xPos), static_cast<float>(yPos)};
 }
@@ -187,8 +191,8 @@ float TRAP::Input::GetMouseY()
 
 std::string TRAP::Input::GetKeyName(const Key key)
 {
-	if (glfwGetKeyName(static_cast<int32_t>(key), 0))
-		return glfwGetKeyName(static_cast<int32_t>(key), 0);
+	if (INTERNAL::WindowingAPI::GetKeyName(key, 0))
+		return INTERNAL::WindowingAPI::GetKeyName(key, 0);	
 
 	TP_ERROR("[Input] Couldn't get name of Key: ", static_cast<uint32_t>(key), "!");
 	return "";
@@ -244,30 +248,6 @@ std::string TRAP::Input::GetControllerName(Controller controller)
 const TRAP::Input::ControllerStatus &TRAP::Input::GetControllerStatus(Controller controller)
 {
 	return s_controllerStatuses[static_cast<uint8_t>(controller)];
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Input::ControllerBattery TRAP::Input::GetControllerBatteryStatus(Controller controller)
-{
-#ifdef TRAP_PLATFORM_WINDOWS
-	if (s_controllerAPI == ControllerAPI::XInput)
-		UpdateControllerBatteryAndConnectionTypeXInput(controller);
-#endif
-
-	return s_controllerStatuses[static_cast<uint8_t>(controller)].BatteryStatus;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Input::ControllerConnectionType TRAP::Input::GetControllerConnectionType(Controller controller)
-{
-#ifdef TRAP_PLATFORM_WINDOWS
-	if (s_controllerAPI == ControllerAPI::XInput)
-		UpdateControllerBatteryAndConnectionTypeXInput(controller);
-#endif
-
-	return s_controllerStatuses[static_cast<uint8_t>(controller)].ConnectionType;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -372,16 +352,6 @@ void TRAP::Input::OnEvent(Event &e)
 
 bool TRAP::Input::OnControllerConnectEvent(ControllerConnectEvent &e)
 {
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		UpdateControllerBatteryAndConnectionTypeXInput(e.GetController());
-	else
-#endif
-	{
-		s_controllerStatuses[static_cast<uint8_t>(e.GetController())].BatteryStatus = ControllerBattery::Unknown;
-		s_controllerStatuses[static_cast<uint8_t>(e.GetController())].ConnectionType = ControllerConnectionType::Unknown;
-	}
-
 	s_controllerStatuses[static_cast<uint8_t>(e.GetController())].Connected = true;
 
 	if (s_controllerStatuses[static_cast<uint8_t>(e.GetController())].Connected) //Connected

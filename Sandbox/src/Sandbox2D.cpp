@@ -14,46 +14,6 @@ Sandbox2D::Sandbox2D()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string BatteryStatusToString(const TRAP::Input::ControllerBattery battery)
-{
-	switch(battery)
-	{
-	case TRAP::Input::ControllerBattery::Empty:
-		return "Empty";
-		
-	case TRAP::Input::ControllerBattery::Low:
-		return "Low";
-		
-	case TRAP::Input::ControllerBattery::Medium:
-		return "Medium";
-		
-	case TRAP::Input::ControllerBattery::Full:
-		return "Full";
-		
-	default:
-		return "Unknown";
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string ConnectionTypeToString(const TRAP::Input::ControllerConnectionType connection)
-{
-	switch(connection)
-	{
-	case TRAP::Input::ControllerConnectionType::Wired:
-		return "Wired";
-
-	case TRAP::Input::ControllerConnectionType::Wireless:
-		return "Wireless";
-		
-	default:
-		return "Unknown";
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 std::string ControllerAPIToString(const TRAP::Input::ControllerAPI controllerAPI)
 {
 	switch(controllerAPI)
@@ -133,8 +93,6 @@ void Sandbox2D::OnImGuiRender()
 			ImGui::Text("Name: %s", TRAP::Input::GetControllerName(TRAP::Input::Controller::One).c_str());
 			ImGui::Text("Status: %s", TRAP::Input::IsControllerConnected(TRAP::Input::Controller::One) ? "Connected" : "Disconnected");
 			ImGui::Text("Gamepad: %s", TRAP::Input::IsControllerGamepad(TRAP::Input::Controller::One) ? "True" : "False");
-			ImGui::Text("Battery: %s", BatteryStatusToString(TRAP::Input::GetControllerBatteryStatus(TRAP::Input::Controller::One)).c_str());
-			ImGui::Text("Connection: %s", ConnectionTypeToString(TRAP::Input::GetControllerConnectionType(TRAP::Input::Controller::One)).c_str());
 			ImGui::Separator();
 			ImGui::Text("Axes");
 			ImGui::Text("Left X: %f", TRAP::Input::GetControllerAxis(TRAP::Input::Controller::One, TRAP::Input::ControllerAxis::Left_X));
@@ -171,8 +129,6 @@ void Sandbox2D::OnImGuiRender()
 			ImGui::Text("Name: %s", TRAP::Input::GetControllerName(TRAP::Input::Controller::One).c_str());
 			ImGui::Text("Status: %s", TRAP::Input::IsControllerConnected(TRAP::Input::Controller::One) ? "Connected" : "Disconnected");
 			ImGui::Text("Gamepad: %s", TRAP::Input::IsControllerGamepad(TRAP::Input::Controller::One) ? "True" : "False");
-			ImGui::Text("Battery: %s", BatteryStatusToString(TRAP::Input::GetControllerBatteryStatus(TRAP::Input::Controller::One)).c_str());
-			ImGui::Text("Connection: %s", ConnectionTypeToString(TRAP::Input::GetControllerConnectionType(TRAP::Input::Controller::One)).c_str());
 			ImGui::Separator();
 			ImGui::Text("Axes");
 			for(uint32_t i = 0; i < TRAP::Input::GetAllControllerAxes(TRAP::Input::Controller::One).size(); i++)

@@ -95,8 +95,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#controlleraxis">ControllerAxis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#controllerbutton">ControllerButton</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#controllerdpad">ControllerDPad</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#controllerbattery">ControllerBattery</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#controllerconnectiontype">ControllerConnectionType</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#controllerstatus">ControllerStatus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#controllerapi">ControllerAPI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#init">Init</a></li>
@@ -117,8 +115,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#getcontrollerdpad">GetControllerDPad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getcontrollername">GetControllerName</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getcontrollerstatus">GetControllerStatus</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getcontrollerbatterystatus">GetControllerBatteryStatus</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getcontrollerconnectiontype">GetControllerConnectionType</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getallcontrolleraxes">GetAllControllerAxes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getallcontrollerbuttons">GetAllControllerButtons</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getallcontrollerdpads">GetAllControllerDPads</a></li>
@@ -454,45 +450,11 @@ Please use XInput instead for now</p>
 <div class="line">TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerdpad">ControllerDPad</a> is used to specify the direction of a Controller directional pad</div>
 </div>
 </div>
-<div class="section" id="controllerbattery">
-<h2>ControllerBattery<a class="headerlink" href="#controllerbattery" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerBattery</span>
-<span class="p">{</span>
-    <span class="n">Unknown</span><span class="p">,</span>
-    <span class="n">Empty</span><span class="p">,</span>
-    <span class="n">Low</span><span class="p">,</span>
-    <span class="n">Medium</span><span class="p">,</span>
-    <span class="n">Full</span>
-<span class="p">};</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerbattery">ControllerBattery</a> is used to specify the status of a battery of a Controller</div>
-</div>
-</div>
-<div class="section" id="controllerconnectiontype">
-<h2>ControllerConnectionType<a class="headerlink" href="#controllerconnectiontype" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerConnectionType</span>
-<span class="p">{</span>
-    <span class="n">Unknown</span><span class="p">,</span>
-    <span class="n">Wired</span><span class="p">,</span>
-    <span class="n">Wireless</span>
-<span class="p">};</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerconnectiontype">ControllerConnectionType</a> is used to specify the type of connection of a Controller</div>
-</div>
-</div>
 <div class="section" id="controllerstatus">
 <h2>ControllerStatus<a class="headerlink" href="#controllerstatus" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerStatus</span>
 <span class="p">{</span>
     <span class="kt">bool</span> <span class="n">Connected</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
-    <span class="n">ControllerConnectionType</span> <span class="n">ConnectionType</span> <span class="o">=</span> <span class="n">ControllerConnectionType</span><span class="o">::</span><span class="n">Unknown</span><span class="p">;</span>
-    <span class="n">ControllerBattery</span> <span class="n">BatteryStatus</span> <span class="o">=</span> <span class="n">ControllerBattery</span><span class="o">::</span><span class="n">Unknown</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -780,38 +742,6 @@ Please use XInput instead for now</p>
 </div>
 <ul class="simple">
 <li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get status from</p></li>
-</ul>
-</div>
-<div class="section" id="getcontrollerbatterystatus">
-<h2>GetControllerBatteryStatus<a class="headerlink" href="#getcontrollerbatterystatus" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerBattery</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetControllerBatteryStatus</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Returns the current battery status of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a>(in form of TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerbattery">ControllerBattery</a>)</div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get battery status from</p></li>
-</ul>
-</div>
-<div class="section" id="getcontrollerconnectiontype">
-<h2>GetControllerConnectionType<a class="headerlink" href="#getcontrollerconnectiontype" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerConnectionType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetControllerConnectionType</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Returns the current connection type of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a>(in form of TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerconnectiontype">ControllerConnectionType</a>)</div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get connection type from</p></li>
 </ul>
 </div>
 <div class="section" id="getallcontrolleraxes">

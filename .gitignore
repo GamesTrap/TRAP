@@ -173,3 +173,4 @@ docs/_build/
 *.mk
 *.project
 *.workspace
+*.DotSettings

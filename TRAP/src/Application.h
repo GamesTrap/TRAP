@@ -2,7 +2,7 @@
 #define _TRAP_APPLICATION_H_
 #include "TRAPPCH.h"
 
-#include "Layers/ImGuiLayer.h"
+#include "Layers/ImGui/ImGuiLayer.h"
 
 #include "Window/Window.h"
 #include "Config/Config.h"
@@ -57,11 +57,7 @@ namespace TRAP
 		void ReCreateWindow(Graphics::API::RenderAPI renderAPI);
 		void ReCreate(Graphics::API::RenderAPI renderAPI) const;
 
-	private:
-#ifdef TRAP_PLATFORM_WINDOWS
-		void CheckIfWindows7OrNewer() const;
-#endif
-		
+	private:		
 		Utils::TimeStep GetTimeInternal() const;
 		
 		bool OnWindowClose(WindowCloseEvent& e);

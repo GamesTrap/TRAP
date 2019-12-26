@@ -650,3 +650,25 @@ SITREP 12/01/2019|19w48a4
     - Changed TRAP Engine version to 19w48a4(0.5.74)
     - Replaced cstring functions from Controller Input with std::strings ~>40 mins
     - Merged some XInput functions with the other APIs ~>20 mins
+
+SITREP 12/04/2019|19w49a1
+    - Changed TRAP Engine version to 19w49a1(0.5.75)
+    - Branch Window:
+        - Started working on new Window API ~>40 mins
+        - Removed GLFW
+
+SITREP 12/20/2019-12/23/2019|19w51a4-19w52a1
+    - Changed TRAP Engine version to 19w52a1(0.5.80)
+    - Branch Window:
+        - Finished big parts of the new WindowingAPI ~> 720mins
+        - Current phase: Debugging of core features & Tidying up the API
+
+SITREP 12/25/2019|19w52a2
+    - Changed TRAP Engine version to 19w52a2(0.5.81)
+    - Branch Window:
+        - Updated Docs ~>20 mins
+        - Debugged and Fixed WindowingAPI ~> 65mins
+
+SITREP 12/26/2019|19w52a3
+    - Changed TRAP Engine version to 19w52a3(0.5.82)
+    - Finished Windows side of WindowingAPI ~> 240mins

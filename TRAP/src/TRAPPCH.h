@@ -38,8 +38,6 @@
 #include <StandAlone/DirStackFileIncluder.h>
 //GLAD
 #include <glad/glad.h>
-//GLFW
-#include <GLFW/glfw3.h>
 //SPIRV to GLSL
 #include <spirv_glsl.hpp>
 //ImGUI
@@ -62,7 +60,8 @@
 #ifdef TRAP_PLATFORM_WINDOWS
 //WinAPI
 #include "Utils/Win.h"
-#include <VersionHelpers.h>
+#include <Dbt.h>
+#include <dwmapi.h>
 //DirectX
 #include <dxgiformat.h>
 #include <dxgi1_6.h>
@@ -70,11 +69,22 @@
 //XInput
 #include <Xinput.h>
 //DirectInput
+#ifndef DIDFT_OPTIONAL
+	#define DIDFT_OPTIONAL 0x80000000
+#endif
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0800
+#endif
 #include <dinput.h>
 
 #undef far
 #undef min
 #undef max
+#undef CreateWindow
+#undef GetWindowStyle
+#undef GetWindowExStyle
+#undef near
+#undef DELETE
 #endif
 
 #endif /*_TRAP_TRAPPCH_H_*/
