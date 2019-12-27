@@ -671,4 +671,11 @@ SITREP 12/25/2019|19w52a2
 
 SITREP 12/26/2019|19w52a3
     - Changed TRAP Engine version to 19w52a3(0.5.82)
-    - Finished Windows side of WindowingAPI ~> 240mins
+    - Branch Window:
+        - Finished Windows side of WindowingAPI ~> 240mins
+
+SITREP 12/27/2019|19w52a4
+    - Changed TRAP Engine version to 19w52a4(0.5.83)
+    - Branch Window:
+        - Added more Cursors ~> 20mins
+        - Updated ImGui submodule ~<10 mins

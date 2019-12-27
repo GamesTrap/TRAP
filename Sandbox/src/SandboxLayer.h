@@ -207,6 +207,8 @@ private:
 	{
 		float Time{};
 	};
+
+	uint32_t m_count = 0;
 };
 
 #endif /*_GAMESTRAP_SANDBOXLAYER_H_*/

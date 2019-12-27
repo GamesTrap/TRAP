@@ -422,7 +422,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetupInstanceLayersAndExtensions()
 #endif
 
 	//Instance Extensions
-	const std::array<std::string, 2>& requiredExtensions = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
+	std::array<std::string, 2> requiredExtensions = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
 	const std::vector<VkExtensionProperties> availableInstanceExtensions = GetAvailableInstanceExtensions();
 	for (auto& requiredExtension : requiredExtensions)
 		AddInstanceExtension(availableInstanceExtensions, requiredExtension.c_str());
@@ -1053,7 +1053,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddInstanceExtension(const std::vector
 		if (strcmp(extension, VK_EXT_DEBUG_UTILS_EXTENSION_NAME) == 0)
 			m_debugCallbackSupported = true;
 
-		m_instanceExtensions.push_back(extension);
+		m_instanceExtensions.emplace_back(extension);
 		TP_DEBUG("[Renderer][Vulkan] Loading Instance Extension: ", extension);
 	}
 }

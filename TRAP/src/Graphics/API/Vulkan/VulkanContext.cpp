@@ -290,7 +290,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		{
 			for (auto& availableExtension : availableInstanceExtensions)
 				if (availableExtension.extensionName == requiredExtension)
-					instanceExtensions.push_back(requiredExtension.data());
+					instanceExtensions.emplace_back(requiredExtension.c_str());
 		}
 
 		if (instanceExtensions.empty())

@@ -71,7 +71,7 @@ namespace TRAP::INTERNAL
 		//Generic function pointer used for returning client API function pointers
 		//without forcing a cast from a regular pointer.
 		typedef void (*GLProcess)();
-		typedef void (*MakeContextCurrentFunc)(const Ref<InternalWindow>& window);
+		typedef void (*MakeContextCurrentFunc)(Ref<InternalWindow> window);
 		typedef void (*SwapBuffersFunc)(const Ref<InternalWindow>& window);
 		typedef void (*SwapIntervalFunc)(int32_t interval);
 		typedef bool (*ExtensionSupportedFunc)(const char* extension);
@@ -132,7 +132,6 @@ namespace TRAP::INTERNAL
 		enum class Error
 		{
 			No_Error,
-			Not_Initialized,
 			No_Current_Context,
 			Invalid_Enum,
 			Invalid_Value,
@@ -162,6 +161,19 @@ namespace TRAP::INTERNAL
 			Normal,
 			Hidden,
 			Disabled
+		};
+		enum class CursorType
+		{
+			Arrow,
+			Input,
+			Crosshair,
+			PointingHand,
+			ResizeHorizontal,
+			ResizeVertical,
+			ResizeDiagonalTopLeftBottomRight,
+			ResizeDiagonalTopRightBottomLeft,
+			ResizeAll,
+			NotAllowed
 		};
 	private:
 		//-------//
@@ -299,6 +311,7 @@ namespace TRAP::INTERNAL
 			uint32_t Height = 0;
 			std::string Title{};
 			bool Resizable = false;
+			bool Decorated = true;
 			bool Visible = false;
 			bool Maximized = false;
 			bool Focused = false;
@@ -506,6 +519,7 @@ namespace TRAP::INTERNAL
 			
 			//Window settings and state
 			bool Resizable = true;
+			bool Decorated = true;
 			bool ShouldClose = false;
 			void* UserPointer = nullptr;
 			VideoMode VideoMode{};
@@ -599,14 +613,12 @@ namespace TRAP::INTERNAL
 		static void SetWindowTitle(const Ref<InternalWindow>& window, const std::string& title);
 		//Retrieves the content scale for the specified monitor.
 		static void GetMonitorContentScale(Ref<InternalMonitor> monitor, float& xScale, float& yScale);
-		//Returns and clears the last error for the calling thread.
-		//static Error GetError(std::string& description);
 		//Destroys a cursor.
 		static void DestroyCursor(Ref<InternalCursor> cursor);
 		//Creates a custom cursor.
 		static Ref<InternalCursor> CreateCursor(const Scope<Image>& image, int32_t xHotspot, int32_t yHotspot);
 		//Creates a cursor with a standard shape.
-		static Ref<InternalCursor> CreateStandardCursor();
+		static Ref<InternalCursor> CreateStandardCursor(const CursorType& type);
 		//Sets the cursor for the window.
 		static void SetCursor(const Ref<InternalWindow>& window, const Ref<InternalCursor>& cursor);
 		//Sets the icon for the specified window.
@@ -728,7 +740,7 @@ namespace TRAP::INTERNAL
 		//Returns whether the Vulkan loader and an ICD have been found.
 		static bool VulkanSupported();
 		//Returns the Vulkan instance extensions required by TRAP.
-		static const std::array<std::string, 2>& GetRequiredInstanceExtensions();
+		static std::array<std::string, 2> GetRequiredInstanceExtensions();
 		//Creates a Vulkan surface for the specified window.
 		static VkResult CreateWindowSurface(VkInstance instance, const Ref<InternalWindow>& window, const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -780,7 +792,7 @@ namespace TRAP::INTERNAL
 			                             const FrameBufferConfig& FBConfig);
 		static void PlatformSetWindowTitle(Ref<InternalWindow> window, const std::string& title);
 		static bool PlatformCreateCursor(Ref<InternalCursor> cursor, const Scope<Image>& image, int32_t xHotspot, int32_t yHotspot);
-		static bool PlatformCreateStandardCursor(Ref<InternalCursor> cursor);
+		static bool PlatformCreateStandardCursor(Ref<InternalCursor> cursor, const CursorType& type);
 		static void PlatformDestroyCursor(Ref<InternalCursor> cursor);
 		static void PlatformSetCursor(Ref<InternalWindow> window, Ref<InternalCursor> cursor);
 		static void PlatformSetCursorMode(Ref<InternalWindow> window, CursorMode mode);
@@ -920,7 +932,7 @@ namespace TRAP::INTERNAL
 			                         const ContextConfig& CTXConfig,
 			                         const FrameBufferConfig& FBConfig);
 		static void DestroyContextWGL(const Ref<InternalWindow>& window);
-		static void MakeContextCurrentWGL(const Ref<InternalWindow>& window);
+		static void MakeContextCurrentWGL(Ref<InternalWindow> window);
 		static void SwapBuffersWGL(const Ref<InternalWindow>& window);
 		static void SwapIntervalWGL(int32_t interval);
 		static GLProcess GetProcAddressWGL(const char* procName);

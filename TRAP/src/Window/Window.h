@@ -34,6 +34,21 @@ namespace TRAP
 			Hidden,
 			Disabled
 		};
+
+		//Used to set Cursor type of windows
+		enum class CursorType
+		{
+			Arrow,
+			Input,
+			Crosshair,
+			PointingHand,
+			ResizeHorizontal,
+			ResizeVertical,
+			ResizeDiagonalTopLeftBottomRight,
+			ResizeDiagonalTopRightBottomLeft,
+			ResizeAll,
+			NotAllowed
+		};
 		
 		using EventCallbackFn = std::function<void(Event&)>;
 
@@ -73,6 +88,7 @@ namespace TRAP
 		void SetMonitor(uint32_t monitor = 0);
 		void SetVSyncInterval(uint32_t interval);
 		void SetCursorMode(const CursorMode& mode);
+		void SetCursorType(const CursorType& cursor); //Document
 		void SetRawMouseInput(bool enabled);
 		void SetIcon() const;
 		void SetIcon(const Scope<Image>& image) const;

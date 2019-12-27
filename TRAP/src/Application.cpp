@@ -114,7 +114,6 @@ TRAP::Application::Application()
 	Input::SetEventCallback(TRAP_BIND_EVENT_FN(Application::OnEvent));
 	Input::Init(controllerAPI);
 
-	//TODO Uncomment
 	/*m_ImGuiLayer = std::make_unique<ImGuiLayer>();
 	PushOverlay(std::move(m_ImGuiLayer));*/
 }
@@ -181,7 +180,6 @@ void TRAP::Application::Run()
 		}
 
 		Window::Use(m_window);
-		//TODO Uncomment
 		/*if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 		{
 			ImGuiLayer::Begin();

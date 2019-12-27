@@ -1009,6 +1009,38 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 			return 0;
 		}
 
+		case WM_GETMINMAXINFO:
+		{
+			int32_t xOffset, yOffset;
+			UINT DPI = USER_DEFAULT_SCREEN_DPI;
+			MINMAXINFO* mmi = reinterpret_cast<MINMAXINFO*>(lParam);
+
+			if (window->Monitor)
+				break;
+
+			if (IsWindows10AnniversaryUpdateOrGreaterWin32())
+				DPI = s_Data.User32.GetDPIForWindow(window->Handle);
+
+			GetFullWindowSize(GetWindowStyle(window), GetWindowExStyle(window), 0, 0, xOffset, yOffset, DPI);
+
+			if(!window->Decorated)
+			{
+				MONITORINFO mi;
+				const HMONITOR mh = MonitorFromWindow(window->Handle, MONITOR_DEFAULTTONEAREST);
+
+				ZeroMemory(&mi, sizeof(mi));
+				mi.cbSize = sizeof(mi);
+				GetMonitorInfo(mh, &mi);
+
+				mmi->ptMaxPosition.x = mi.rcWork.left - mi.rcMonitor.left;
+				mmi->ptMaxPosition.y = mi.rcWork.top - mi.rcMonitor.top;
+				mmi->ptMaxSize.x = mi.rcWork.right - mi.rcWork.left;
+				mmi->ptMaxSize.y = mi.rcWork.bottom - mi.rcWork.top;
+			}
+
+			return 0;
+		}
+
 		case WM_ERASEBKGND:
 		{
 			return TRUE;
@@ -1017,6 +1049,10 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 		case WM_NCACTIVATE:
 		case WM_NCPAINT:
 		{
+			//Prevent title bar from being drawn after restoring a minimized undecorated window
+			if (!window->Decorated)
+				return TRUE;
+			
 			break;
 		}
 
@@ -1548,7 +1584,7 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeWin32(Ref<InternalMonitor> monito
 
 	best = ChooseVideoMode(monitor, desired);
 	PlatformGetVideoMode(monitor, current);
-	if (!CompareVideoModes(&current, best))
+	if (!CompareVideoModes(&current, best)) //TODO Only on Borderless?
 		return;
 
 	ZeroMemory(&dm, sizeof(dm));
@@ -1647,10 +1683,15 @@ DWORD TRAP::INTERNAL::WindowingAPI::GetWindowStyle(const Ref<InternalWindow> win
 	{
 		style |= WS_SYSMENU | WS_MINIMIZEBOX;
 
-		style |= WS_CAPTION;
+		if (window->Decorated)
+		{
+			style |= WS_CAPTION;
 
-		if (window->Resizable)
-			style |= WS_MAXIMIZEBOX | WS_THICKFRAME;
+			if (window->Resizable)
+				style |= WS_MAXIMIZEBOX | WS_THICKFRAME;
+		}
+		else
+			style |= WS_POPUP;
 	}
 
 	return style;
@@ -2093,7 +2134,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyContextWGL(const Ref<InternalWindow>& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::MakeContextCurrentWGL(const Ref<InternalWindow>& window)
+void TRAP::INTERNAL::WindowingAPI::MakeContextCurrentWGL(const Ref<InternalWindow> window)
 {
 	if (window)
 	{
@@ -2144,7 +2185,7 @@ void TRAP::INTERNAL::WindowingAPI::SwapBuffersWGL(const Ref<InternalWindow>& win
 void TRAP::INTERNAL::WindowingAPI::SwapIntervalWGL(int32_t interval)
 {
 	const auto winPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
-	const Ref<InternalWindow> window = Ref<InternalWindow>(winPtr, [](InternalWindow*){});
+	const Ref<InternalWindow> window = Ref<InternalWindow>(winPtr, [](InternalWindow*) {});
 
 	window->Context.Interval = interval;
 
@@ -2253,7 +2294,7 @@ const TRAP::INTERNAL::WindowingAPI::FrameBufferConfig* TRAP::INTERNAL::Windowing
 	{
 		const FrameBufferConfig* current = &alternatives[i];
 
-		if (desired.Stereo > 0 && current->Stereo == 0)
+		if (desired.Stereo != current->Stereo)
 			//Stereo is a hard constraint
 			continue;
 
@@ -2471,7 +2512,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::ChoosePixelFormat(const Ref<InternalWindow
 			
 			if (!s_Data.WGL.GetPixelFormatAttribivARB(window->Context.DC,
 				pixelFormat, 0,
-				attribs.size(),
+				static_cast<uint32_t>(attribs.size()),
 				attribs.data(), values.data()))
 			{
 				InputErrorWin32(Error::Platform_Error, "[WGL] Failed to retrieve pixel format attributes");
@@ -2592,12 +2633,8 @@ bool TRAP::INTERNAL::WindowingAPI::RefreshContextAttribs(const Ref<InternalWindo
 {
 	window->Context.Client = ContextAPI::OpenGL;
 
-	Ref<InternalWindow> previous = nullptr;
-	if(PlatformGetTLS(s_Data.ContextSlot))
-	{
-		const auto winPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
-		previous = Ref<InternalWindow>(winPtr, [](InternalWindow*) {});
-	}
+	const auto winPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
+	const Ref<InternalWindow> previous = Ref<InternalWindow>(winPtr, [](InternalWindow*) {});;
 	MakeContextCurrent(window);
 
 	window->Context.GetIntegerv = reinterpret_cast<PFNGLGETINTEGERVPROC>(window->Context.GetProcAddress("glGetIntegerv"));
@@ -3011,13 +3048,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetVulkanResultString(const VkResult r
 //-------------------------------------------------------------------------------------------------------------------//
 
 HWND TRAP::INTERNAL::WindowingAPI::GetWin32Window(const Ref<InternalWindow> window)
-{
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return nullptr;
-	}
-	
+{	
 	return window->Handle;
 }
 
@@ -3156,11 +3187,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(const Ref<InternalWi
 		MONITORINFO mi = { sizeof(mi) };
 		UINT flags = SWP_SHOWWINDOW | SWP_NOACTIVATE | SWP_NOCOPYBITS;
 
-		DWORD style = GetWindowLongW(window->Handle, GWL_STYLE);
-		style &= ~WS_OVERLAPPEDWINDOW;
-		style |= GetWindowStyle(window);
-		SetWindowLongW(window->Handle, GWL_STYLE, style);
-		flags |= SWP_FRAMECHANGED;
+		if (window->Decorated)
+		{
+			DWORD style = static_cast<DWORD>(GetWindowLongPtrW(window->Handle, GWL_STYLE));
+			style &= ~WS_OVERLAPPEDWINDOW;
+			style |= GetWindowStyle(window);
+			SetWindowLongW(window->Handle, GWL_STYLE, style);
+			flags |= SWP_FRAMECHANGED;
+		}
 
 		AcquireMonitor(window);
 
@@ -3175,14 +3209,17 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(const Ref<InternalWi
 	else
 	{
 		RECT rect = { xPos, yPos, xPos + width, yPos + height };
-		DWORD style = GetWindowLongW(window->Handle, GWL_STYLE);
+		DWORD style = static_cast<DWORD>(GetWindowLongPtrW(window->Handle, GWL_STYLE));
 		UINT flags = SWP_NOACTIVATE | SWP_NOCOPYBITS;
 
-		style &= ~WS_POPUP;
-		style |= GetWindowStyle(window);
-		SetWindowLongW(window->Handle, GWL_STYLE, style);
+		if (window->Decorated)
+		{
+			style &= ~WS_POPUP;
+			style |= GetWindowStyle(window);
+			SetWindowLongW(window->Handle, GWL_STYLE, style);
 
-		flags |= SWP_FRAMECHANGED;
+			flags |= SWP_FRAMECHANGED;
+		}
 
 		const HWND after = HWND_NOTOPMOST;
 
@@ -3240,7 +3277,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::VideoMode> TRAP::INTERNAL::WindowingAP
 
 		for (i = 0; i < count; i++)
 		{
-			if (CompareVideoModes(result.data() + i, &mode) == 0)
+			if (CompareVideoModes(&result[i], &mode) == 0)
 				break;
 		}
 
@@ -3248,14 +3285,14 @@ std::vector<TRAP::INTERNAL::WindowingAPI::VideoMode> TRAP::INTERNAL::WindowingAP
 		if (i < count)
 			continue;
 
-		if (monitor->ModesPruned)
+		if (monitor->ModesPruned) //TODO Used in old TRAP version by GLFW?!
 		{
 			//Skip modes not supported by the connected displays
 			if (ChangeDisplaySettingsExW(monitor->AdapterName.data(),
 				&dm,
 				nullptr,
 				CDS_TEST,
-				nullptr) != DISP_CHANGE_SUCCESSFUL)
+				nullptr) != DISP_CHANGE_SUCCESSFUL) //Performance Slow!
 			{
 				continue;
 			}
@@ -3264,12 +3301,14 @@ std::vector<TRAP::INTERNAL::WindowingAPI::VideoMode> TRAP::INTERNAL::WindowingAP
 		if (count == size)
 		{
 			size += 128;
-			result.resize(result.size() + 128);
+			result.reserve(result.size() + 128);
 		}
 
 		count++;
-		result[count - 1] = mode;
+		result.push_back(mode);
 	}
+
+	result.shrink_to_fit();
 
 	if (!count)
 	{
@@ -3540,9 +3579,56 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursor(const Ref<InternalCursor
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursor(const Ref<InternalCursor> cursor)
+bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursor(const Ref<InternalCursor> cursor, const CursorType& type)
 {
-	const uint32_t id = OCR_NORMAL;
+	uint32_t id = OCR_NORMAL;
+
+	switch(type)
+	{
+		case CursorType::Arrow:
+			id = OCR_NORMAL;
+			break;
+
+		case CursorType::Input:
+			id = OCR_IBEAM;
+			break;
+
+		case CursorType::Crosshair:
+			id = OCR_CROSS;
+			break;
+
+		case CursorType::PointingHand:
+			id = OCR_HAND;
+			break;
+
+		case CursorType::ResizeVertical:
+			id = OCR_SIZENS;
+			break;
+
+		case CursorType::ResizeHorizontal:
+			id = OCR_SIZEWE;
+			break;
+
+		case CursorType::ResizeDiagonalTopLeftBottomRight:
+			id = OCR_SIZENWSE;
+			break;
+
+		case CursorType::ResizeDiagonalTopRightBottomLeft:
+			id = OCR_SIZENESW;
+			break;
+
+		case CursorType::ResizeAll:
+			id = OCR_SIZEALL;
+			break;
+
+		case CursorType::NotAllowed:
+			id = OCR_NO;
+			break;
+		
+		default:
+			break;
+	}
+	
 
 	cursor->Handle = static_cast<HCURSOR>(LoadImageW(nullptr,
 		MAKEINTRESOURCEW(id),

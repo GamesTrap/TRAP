@@ -83,24 +83,15 @@ void TRAP::INTERNAL::WindowingAPI::Shutdown()
 
 void TRAP::INTERNAL::WindowingAPI::DestroyWindow(Ref<InternalWindow> window)
 {
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
-
 	if (window == nullptr)
 		return;
 
 	//Clear all callbacks to avoid exposing a half torn-down window object
 	window->Callbacks = {};
 
-	if (PlatformGetTLS(s_Data.ContextSlot))
-	{
-		//The window's context must not be current on another thread when the window is destroyed
-		if (window.get() == static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot)))
-			MakeContextCurrent(nullptr);
-	}
+	//The window's context must not be current on another thread when the window is destroyed
+	if (window.get() == static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot)))
+		MakeContextCurrent(nullptr);
 
 	PlatformDestroyWindow(window);
 
@@ -122,18 +113,8 @@ void TRAP::INTERNAL::WindowingAPI::DestroyWindow(Ref<InternalWindow> window)
 //Makes the context of the specified window current for the calling
 void TRAP::INTERNAL::WindowingAPI::MakeContextCurrent(const Ref<InternalWindow>& window)
 {
-	Ref<InternalWindow> previous = nullptr;
-	if(PlatformGetTLS(s_Data.ContextSlot))
-	{
-		const auto winPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
-		previous = Ref<InternalWindow>(winPtr, [](InternalWindow*) {});
-	}
-
-	if (!s_Data.Initialized)
-	{                                               
-		InputError(Error::Not_Initialized, "");
-		return;                                     
-	}
+	const auto winPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
+	const Ref<InternalWindow> previous = Ref<InternalWindow>(winPtr, [](InternalWindow*) {});
 
 	if (window && window->Context.Client == ContextAPI::None)
 	{
@@ -162,6 +143,7 @@ void TRAP::INTERNAL::WindowingAPI::DefaultWindowHints()
 	//The default is a focused, visible and resizable window with decorations
 	s_Data.Hints.Window = {};
 	s_Data.Hints.Window.Resizable = true;
+	s_Data.Hints.Window.Decorated = true;
 	s_Data.Hints.Window.Visible = true;
 	s_Data.Hints.Window.Focused = true;
 
@@ -315,6 +297,7 @@ TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Windowin
 
 	window->Monitor = std::move(monitor);
 	window->Resizable = WNDConfig.Resizable;
+	window->Decorated = WNDConfig.Decorated;
 	window->CursorMode = CursorMode::Normal;
 
 	//Open the actual window and create its context
@@ -354,11 +337,6 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(const Ref<InternalWindow
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	window->ShouldClose = value;
 }
 
@@ -367,11 +345,6 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowShouldClose(const Ref<InternalWindow
 void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(const Ref<InternalWindow>& window, const std::string& title)
 {
 	TRAP_WINDOW_ASSERT(window, "window is nullptr!");
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	PlatformSetWindowTitle(window, title);
 }
@@ -382,32 +355,6 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(Ref<InternalMonitor> m
 {
 	PlatformGetMonitorContentScale(std::move(monitor), xScale, yScale);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-/*TRAP::INTERNAL::WindowingAPI::Error TRAP::INTERNAL::WindowingAPI::GetError(std::string& description)
-{
-	WindowingError* error;
-	Error code = Error::No_Error;
-
-	if (!description.empty())
-		description = {};
-
-	if (s_Data.Initialized)
-		error = static_cast<WindowingError*>(PlatformGetTLS(s_Data.ErrorSlot));
-	else
-		error = &s_MainThreadError;
-
-	if (error)
-	{
-		code = error->ErrorCode;
-		error->ErrorCode = Error::No_Error;
-		if (!description.empty() && static_cast<uint32_t>(code))
-			description = error->Description;
-	}
-
-	return code;
-}*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -448,9 +395,7 @@ void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::strin
 		description += str;
 	else
 	{
-		if (code == Error::Not_Initialized)
-			description += " The Windowing library is not initialized";
-		else if (code == Error::No_Current_Context)
+		if (code == Error::No_Current_Context)
 			description += " There is no current context";
 		else if (code == Error::Invalid_Enum)
 			description += " Invalid argument for enum parameter";
@@ -502,12 +447,6 @@ void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::strin
 
 void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Ref<InternalCursor> cursor)
 {
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
-
 	if (cursor == nullptr)
 		return;
 
@@ -545,12 +484,6 @@ TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Windowin
 	Ref<InternalCursor> cursor;
 
 	TRAP_WINDOW_ASSERT(image, "[Window] image is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return nullptr;
-	}
 
 	if (image) //If image is not nullptr
 	{
@@ -623,20 +556,14 @@ TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Windowin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::WindowingAPI::CreateStandardCursor()
+TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::WindowingAPI::CreateStandardCursor(const CursorType& type)
 {
 	Ref<InternalCursor> cursor = MakeRef<InternalCursor>();
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return nullptr;
-	}
 	
 	cursor->Next = s_Data.CursorListHead;
 	s_Data.CursorListHead = cursor;
 
-	if (!PlatformCreateStandardCursor(cursor))
+	if (!PlatformCreateStandardCursor(cursor, type))
 	{
 		DestroyCursor(cursor);
 		return nullptr;
@@ -651,12 +578,6 @@ void TRAP::INTERNAL::WindowingAPI::SetCursor(const Ref<InternalWindow>& window, 
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
-
 	window->Cursor = cursor;
 
 	PlatformSetCursor(window, cursor);
@@ -667,12 +588,6 @@ void TRAP::INTERNAL::WindowingAPI::SetCursor(const Ref<InternalWindow>& window, 
 void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(const Ref<InternalWindow>& window, const Scope<Image>& image)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 
 	if (image) //If image is not nullptr
 	{
@@ -728,12 +643,6 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPos(const Ref<InternalWindow>& windo
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
-
 	if (window->Monitor)
 		return;
 
@@ -749,12 +658,6 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowPos(const Ref<InternalWindow>& windo
 
 	xPos = 0;
 	yPos = 0;
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	PlatformGetWindowPos(window, xPos, yPos);
 }
@@ -767,12 +670,6 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSize(const Ref<InternalWindow>& wind
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 	TRAP_WINDOW_ASSERT(width > 0, "[Window] width is smalles than or equal to 0!");
 	TRAP_WINDOW_ASSERT(height > 0, "[Window] height is smalles than or equal to 0!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 
 	window->VideoMode.Width = width;
 	window->VideoMode.Height = height;
@@ -789,12 +686,6 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowSize(const Ref<InternalWindow>& wind
 
 	width = 0;
 	height = 0;
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	PlatformGetWindowSize(window, width, height);
 }
@@ -808,12 +699,6 @@ void TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(const Ref<InternalWindow>&
 
 	width = 0;
 	height = 0;
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	PlatformGetFrameBufferSize(window, width, height);
 }
@@ -827,12 +712,6 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowContentScale(const Ref<InternalWindo
 
 	xScale = 0.0f;
 	yScale = 0.0f;
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 
 	PlatformGetWindowContentScale(window, xScale, yScale);
 }
@@ -851,12 +730,6 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(const Ref<InternalWindow>& w
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 	TRAP_WINDOW_ASSERT(width > 0, "[Window] width is smalles than or equal to 0!");
 	TRAP_WINDOW_ASSERT(height > 0, "[Window] height is smalles than or equal to 0!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 
 	if (width <= 0 || height <= 0)
 	{
@@ -885,12 +758,6 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(const Ref<InternalWindow>& w
 void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(const Ref<InternalWindow>& window, void* pointer)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	window->UserPointer = pointer;
 }
@@ -901,12 +768,6 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowUserPointer(const Ref<InternalWindow
 void* TRAP::INTERNAL::WindowingAPI::GetWindowUserPointer(const Ref<InternalWindow>& window)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return nullptr;
-	}
 	
 	return window->UserPointer;
 }
@@ -932,12 +793,6 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPosCallback(const Ref<InternalWindow
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
-
 	window->Callbacks.Pos = callback;
 }
 
@@ -947,12 +802,6 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowPosCallback(const Ref<InternalWindow
 void TRAP::INTERNAL::WindowingAPI::SetWindowSizeCallback(const Ref<InternalWindow>& window, const WindowSizeFunc callback)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	window->Callbacks.Size = callback;
 }
@@ -963,12 +812,6 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeCallback(const Ref<InternalWindo
 void TRAP::INTERNAL::WindowingAPI::SetWindowCloseCallback(const Ref<InternalWindow>& window, const WindowCloseFunc callback)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	window->Callbacks.Close = callback;
 }
@@ -979,12 +822,6 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowCloseCallback(const Ref<InternalWind
 void TRAP::INTERNAL::WindowingAPI::SetWindowFocusCallback(const Ref<InternalWindow>& window, const WindowFocusFunc callback)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	window->Callbacks.Focus = callback;
 }
@@ -995,12 +832,6 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowFocusCallback(const Ref<InternalWind
 void TRAP::INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(const Ref<InternalWindow>& window, const FrameBufferSizeFunc callback)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	window->Callbacks.FBSize = callback;
 }
@@ -1011,12 +842,6 @@ void TRAP::INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(const Ref<Internal
 void TRAP::INTERNAL::WindowingAPI::SetWindowContentScaleCallback(const Ref<InternalWindow>& window, const WindowContentScaleFunc callback)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	window->Callbacks.Scale = callback;
 }
@@ -1027,12 +852,6 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowContentScaleCallback(const Ref<Inter
 void TRAP::INTERNAL::WindowingAPI::SetKeyCallback(const Ref<InternalWindow>& window, const KeyFunc callback)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	window->Callbacks.Key = callback;
 }
@@ -1043,12 +862,6 @@ void TRAP::INTERNAL::WindowingAPI::SetKeyCallback(const Ref<InternalWindow>& win
 void TRAP::INTERNAL::WindowingAPI::SetCharCallback(const Ref<InternalWindow>& window, const CharFunc callback)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	window->Callbacks.Character = callback;
 }
@@ -1059,12 +872,6 @@ void TRAP::INTERNAL::WindowingAPI::SetCharCallback(const Ref<InternalWindow>& wi
 void TRAP::INTERNAL::WindowingAPI::SetMouseButtonCallback(const Ref<InternalWindow>& window, const MouseButtonFunc callback)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	window->Callbacks.MouseButton = callback;
 }
@@ -1075,12 +882,6 @@ void TRAP::INTERNAL::WindowingAPI::SetMouseButtonCallback(const Ref<InternalWind
 void TRAP::INTERNAL::WindowingAPI::SetCursorPosCallback(const Ref<InternalWindow>& window, const CursorPositionFunc callback)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	window->Callbacks.CursorPos = callback;
 }
@@ -1091,12 +892,6 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPosCallback(const Ref<InternalWindow
 void TRAP::INTERNAL::WindowingAPI::SetScrollCallback(const Ref<InternalWindow>& window, const ScrollFunc callback)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	window->Callbacks.Scroll = callback;
 }
@@ -1107,12 +902,6 @@ void TRAP::INTERNAL::WindowingAPI::SetScrollCallback(const Ref<InternalWindow>& 
 void TRAP::INTERNAL::WindowingAPI::SetDropCallback(const Ref<InternalWindow>& window, const DropFunc callback)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	window->Callbacks.Drop = callback;
 }
@@ -1256,12 +1045,6 @@ TRAP::INTERNAL::WindowingAPI::DropFunc TRAP::INTERNAL::WindowingAPI::GetDropCall
 //Processes all pending events.
 void TRAP::INTERNAL::WindowingAPI::PollEvents()
 {
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
-
 	PlatformPollEvents();
 }
 
@@ -1271,12 +1054,6 @@ void TRAP::INTERNAL::WindowingAPI::PollEvents()
 void TRAP::INTERNAL::WindowingAPI::SetCursorMode(const Ref<InternalWindow>& window, const CursorMode mode)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	if (window->CursorMode == mode)
 		return;
@@ -1294,12 +1071,6 @@ TRAP::INTERNAL::WindowingAPI::CursorMode TRAP::INTERNAL::WindowingAPI::GetCursor
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return CursorMode::Normal;
-	}
-
 	return window->CursorMode;
 }
 
@@ -1307,13 +1078,7 @@ TRAP::INTERNAL::WindowingAPI::CursorMode TRAP::INTERNAL::WindowingAPI::GetCursor
 
 //Returns whether raw mouse motion is supported.
 bool TRAP::INTERNAL::WindowingAPI::RawMouseMotionSupported()
-{
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return false;
-	}
-	
+{	
 	return PlatformRawMouseMotionSupported();
 }
 
@@ -1341,12 +1106,6 @@ bool TRAP::INTERNAL::WindowingAPI::GetRawMouseMotionMode(const Ref<InternalWindo
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return false;
-	}
-
 	return window->RawMouseMotion;
 }
 
@@ -1355,12 +1114,6 @@ bool TRAP::INTERNAL::WindowingAPI::GetRawMouseMotionMode(const Ref<InternalWindo
 //Returns the layout-specific name of the specified printable key.
 const char* TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32_t scanCode)
 {
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return nullptr;
-	}
-
 	if (key != Input::Key::Unknown && key != Input::Key::Invalid)
 	{
 		if (key != Input::Key::KP_Equal &&
@@ -1381,12 +1134,6 @@ bool TRAP::INTERNAL::WindowingAPI::GetKey(const Ref<InternalWindow>& window, Inp
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return false;
-	}
-
 	if (key < Input::Key::Space || key > Input::Key::Menu)
 	{
 		InputError(Error::Invalid_Enum, " Invalid key: " + std::to_string(static_cast<int32_t>(key)));
@@ -1403,12 +1150,6 @@ bool TRAP::INTERNAL::WindowingAPI::GetMouseButton(const Ref<InternalWindow>& win
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return false;
-	}
-
 	return window->MouseButtons[static_cast<uint32_t>(button)];
 }
 
@@ -1421,12 +1162,6 @@ void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const Ref<InternalWindow>& windo
 
 	xPos = 0.0;
 	yPos = 0.0;
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 
 	if (window->CursorMode == CursorMode::Disabled)
 	{
@@ -1443,12 +1178,6 @@ void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const Ref<InternalWindow>& windo
 void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const Ref<InternalWindow>& window, const std::string& string)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 	
 	PlatformSetClipboardString(string);
 }
@@ -1457,13 +1186,7 @@ void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const Ref<InternalWindow>&
 
 //Returns the contents of the clipboard as a string.
 std::string TRAP::INTERNAL::WindowingAPI::GetClipboardString(const Ref<InternalWindow>& window)
-{
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return {};
-	}
-	
+{	
 	return PlatformGetClipboardString();
 }
 
@@ -1472,12 +1195,6 @@ std::string TRAP::INTERNAL::WindowingAPI::GetClipboardString(const Ref<InternalW
 //Returns the window whose context is current on the calling thread.
 TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::WindowingAPI::GetCurrentContext()
 {
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return nullptr;
-	}
-
 	if (!PlatformGetTLS(s_Data.ContextSlot))
 		return nullptr;
 
@@ -1491,12 +1208,6 @@ TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Windowin
 void TRAP::INTERNAL::WindowingAPI::SwapBuffers(const Ref<InternalWindow>& window)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
 
 	if (window->Context.Client == ContextAPI::None)
 	{
@@ -1512,18 +1223,8 @@ void TRAP::INTERNAL::WindowingAPI::SwapBuffers(const Ref<InternalWindow>& window
 //Sets the swap interval for the current context.
 void TRAP::INTERNAL::WindowingAPI::SwapInterval(const int32_t interval)
 {
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return;
-	}
-
-	Ref<InternalWindow> window = nullptr;
-	if (PlatformGetTLS(s_Data.ContextSlot))
-	{
-		const auto winPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
-		window = Ref<InternalWindow>(winPtr, [](InternalWindow*) {});
-	}
+	const auto winPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
+	const Ref<InternalWindow> window = Ref<InternalWindow>(winPtr, [](InternalWindow*) {});
 	
 	if (!window)
 	{
@@ -1539,18 +1240,8 @@ void TRAP::INTERNAL::WindowingAPI::SwapInterval(const int32_t interval)
 //Returns whether the specified extension is available.
 bool TRAP::INTERNAL::WindowingAPI::ExtensionSupported(const std::string& extension)
 {
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return false;
-	}
-
-	Ref<InternalWindow> window = nullptr;
-	if (PlatformGetTLS(s_Data.ContextSlot))
-	{
-		const auto winPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
-		window = Ref<InternalWindow>(winPtr, [](InternalWindow*) {});
-	}
+	const auto winPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
+	const Ref<InternalWindow> window = Ref<InternalWindow>(winPtr, [](InternalWindow*) {});
 	
 	if (!window)
 	{
@@ -1595,18 +1286,8 @@ TRAP::INTERNAL::WindowingAPI::GLProcess TRAP::INTERNAL::WindowingAPI::GetProcAdd
 {
 	TRAP_WINDOW_ASSERT(procName,"[Window] Process name is nullptr!");
 
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return nullptr;
-	}
-
-	Ref<InternalWindow> window = nullptr;
-	if (PlatformGetTLS(s_Data.ContextSlot))
-	{
-		const auto winPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
-		window = Ref<InternalWindow>(winPtr, [](InternalWindow*) {});
-	}
+	const auto winPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
+	const Ref<InternalWindow> window = Ref<InternalWindow>(winPtr, [](InternalWindow*) {});
 	
 	if (!window)
 	{
@@ -1621,31 +1302,19 @@ TRAP::INTERNAL::WindowingAPI::GLProcess TRAP::INTERNAL::WindowingAPI::GetProcAdd
 
 //Returns whether the Vulkan loader and an ICD have been found.
 bool TRAP::INTERNAL::WindowingAPI::VulkanSupported()
-{
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return false;
-	}
-	
+{	
 	return InitVulkan(1);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the Vulkan instance extensions required by TRAP.
-const std::array<std::string, 2>& TRAP::INTERNAL::WindowingAPI::GetRequiredInstanceExtensions()
+std::array<std::string, 2> TRAP::INTERNAL::WindowingAPI::GetRequiredInstanceExtensions()
 {
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return {};
-	}
-
 	if (!InitVulkan(2))
 		return {};
 
-	if constexpr (s_Data.VK.Extensions.empty())
+	if (s_Data.VK.Extensions[0].empty() || s_Data.VK.Extensions[1].empty())
 		return {};
 
 	return s_Data.VK.Extensions;
@@ -1661,12 +1330,6 @@ VkResult TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(VkInstance instance,
 {
 	TRAP_WINDOW_ASSERT(instance, "[Vulkan] Instance is nullptr!");
 	TRAP_WINDOW_ASSERT(window, " Window is nullptr!");
-
-	if (!s_Data.Initialized)
-	{
-		InputError(Error::Not_Initialized, "");
-		return VK_ERROR_INITIALIZATION_FAILED;
-	}
 
 	if (!InitVulkan(2))
 		return VK_ERROR_INITIALIZATION_FAILED;

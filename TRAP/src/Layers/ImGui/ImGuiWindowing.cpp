@@ -119,15 +119,15 @@ bool TRAP::INTERNAL::ImGuiWindowing::Init(const std::shared_ptr<WindowingAPI::In
 	io.GetClipboardTextFn = GetClipboardText;
 	io.ClipboardUserData = static_cast<void*>(&s_window);
 
-	s_mouseCursors[ImGuiMouseCursor_Arrow] = WindowingAPI::CreateStandardCursor();
-	s_mouseCursors[ImGuiMouseCursor_TextInput] = WindowingAPI::CreateStandardCursor(WindowingAPI::Cursor::IBeam);
-	s_mouseCursors[ImGuiMouseCursor_ResizeNS] = WindowingAPI::CreateStandardCursor(WindowingAPI::Cursor::VResize);
-	s_mouseCursors[ImGuiMouseCursor_ResizeEW] = WindowingAPI::CreateStandardCursor(WindowingAPI::Cursor::HResize);
-	s_mouseCursors[ImGuiMouseCursor_Hand] = WindowingAPI::CreateStandardCursor(WindowingAPI::Cursor::Hand);
-	s_mouseCursors[ImGuiMouseCursor_ResizeAll] = WindowingAPI::CreateStandardCursor(WindowingAPI::Cursor::AllResize);
-	s_mouseCursors[ImGuiMouseCursor_ResizeNESW] = WindowingAPI::CreateStandardCursor(WindowingAPI::Cursor::NEWSResize);
-	s_mouseCursors[ImGuiMouseCursor_ResizeNWSE] = WindowingAPI::CreateStandardCursor(WindowingAPI::Cursor::NWSEResize);
-	s_mouseCursors[ImGuiMouseCursor_NotAllowed] = WindowingAPI::CreateStandardCursor(WindowingAPI::Cursor::NotAllowed);
+	s_mouseCursors[ImGuiMouseCursor_Arrow] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::Arrow);
+	s_mouseCursors[ImGuiMouseCursor_TextInput] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::Input);
+	s_mouseCursors[ImGuiMouseCursor_ResizeNS] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::ResizeVertical);
+	s_mouseCursors[ImGuiMouseCursor_ResizeEW] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::ResizeHorizontal);
+	s_mouseCursors[ImGuiMouseCursor_Hand] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::PointingHand);
+	s_mouseCursors[ImGuiMouseCursor_ResizeAll] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::ResizeAll);
+	s_mouseCursors[ImGuiMouseCursor_ResizeNESW] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::ResizeDiagonalTopLeftBottomRight);
+	s_mouseCursors[ImGuiMouseCursor_ResizeNWSE] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::ResizeDiagonalTopRightBottomLeft);
+	s_mouseCursors[ImGuiMouseCursor_NotAllowed] = WindowingAPI::CreateStandardCursor(WindowingAPI::CursorType::NotAllowed);
 
 	//Chain WindowingAPI callback: our callback will call the user's previously installed callbacks, if any.
 	s_prevUserCallbackMouseButton = nullptr;
@@ -263,5 +263,4 @@ void TRAP::INTERNAL::ImGuiWindowing::CharCallback(const std::shared_ptr<Windowin
 
 	ImGuiIO& io = ImGui::GetIO();
 	io.AddInputCharacter(codePoint);
-}
-*/
+}*/
