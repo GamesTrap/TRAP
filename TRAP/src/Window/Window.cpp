@@ -97,7 +97,7 @@ void TRAP::Window::OnUpdate()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::Use(const std::unique_ptr<Window>& window)
+void TRAP::Window::Use(const Scope<Window>& window)
 {
 	if (window)
 		Graphics::API::Context::Use(window);
@@ -675,11 +675,10 @@ void TRAP::Window::Init(const WindowProps& props)
 	s_windows++;
 	if (s_windows > 1)
 	{
-		std::unique_ptr<Window> window(this); //Little Hack so this pointer doesnt get invalidated :/
+		Scope<Window> window(this); //Little Hack so this pointer doesnt get invalidated :/
 		Use(window);
 		auto unused = window.release();
 		SetVSyncInterval(props.VSync);
-		Use();
 	}
 
 	//Update Window Title
@@ -789,9 +788,7 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	//Record new window type
 	m_data.displayMode = props.displayMode;
-
-	//Bug New size doesnt change viewport
-	//Maybe solved by FrameBufferResizeEvent?!
+	
 
 	if (m_data.displayMode == DisplayMode::Borderless)
 		INTERNAL::WindowingAPI::SetWindowMonitorBorderless(m_window, monitor);
@@ -806,6 +803,9 @@ void TRAP::Window::Init(const WindowProps& props)
 			refreshRate);
 	}
 
+	INTERNAL::WindowingAPI::GetFrameBufferSize(m_window, width, height);
+	Graphics::RenderCommand::SetViewport(0, 0, width, height);
+	
 	INTERNAL::WindowingAPI::SetWindowUserPointer(m_window, &m_data);
 
 	SetIcon();
@@ -939,6 +939,9 @@ void TRAP::Window::Init(const WindowProps& props)
 		MouseMovedEvent event(static_cast<float>(xPos), static_cast<float>(yPos), data.Title);
 		data.EventCallback(event);
 	});
+
+	if (s_windows > 1)
+		Use();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -61,7 +61,7 @@ namespace TRAP
 
 		static void OnUpdate();
 		
-		static void Use(const std::unique_ptr<Window>& window);
+		static void Use(const Scope<Window>& window);
 		static void Use();
 		static uint32_t GetActiveWindows();
 		static uint32_t GetMonitors();

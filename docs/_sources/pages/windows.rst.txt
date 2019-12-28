@@ -173,19 +173,10 @@ Use
 
 .. code-block:: cpp
 
-   static void TRAP::Window::Use();
+   static void TRAP::Window::Use(const TRAP::Scope<TRAP::Window>& window = TRAP::Application::GetWindow());
 
 | **Description**
 | Makes the Context of the Main TRAP::`Window`_ current
-
-.. Reference Context
-
-.. code-block:: cpp
-
-   static void TRAP::Window::Use(const std::unique_ptr<TRAP::Window>& window);
-
-| **Description**
-| Makes the Context of the specified TRAP::`Window`_ current
 
 | **Parameters**
 
@@ -193,6 +184,8 @@ Use
 
 .. note::
    If :code:`window` is nullptr then the Main TRAP::`Window`_\s Context will be set to current!
+
+.. Reference Context
 
 ^^^^^^^^^^^^^^^^
 GetActiveWindows
