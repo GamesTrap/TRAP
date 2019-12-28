@@ -4,21 +4,17 @@
 #include "Utils/Singleton.h"
 #include "Maths/Math.h"
 #include "Event/Event.h"
+//#include "Application.h"
 
 namespace TRAP
 {
+	class Window;
 	class ControllerDisconnectEvent;
 	class ControllerConnectEvent;
 
 	class Input final : public Singleton
 	{
 	public:
-		enum class Status
-		{
-			Pressed,
-			Released,
-			Repeated
-		};
 		
 		enum class Key
 		{
@@ -243,13 +239,16 @@ namespace TRAP
 		static void SetControllerAPI(ControllerAPI controllerAPI);
 		
 		static bool IsKeyPressed(Key key);
+		static bool IsKeyPressed(Key key, const Scope<Window>& window);
 		static bool IsMouseButtonPressed(MouseButton button);
+		static bool IsMouseButtonPressed(MouseButton button, const Scope<Window>& window);
 		static bool IsGamepadButtonPressed(Controller controller, ControllerButton button);
 		static bool IsRawMouseInputSupported();
 		static bool IsControllerConnected(Controller controller);
 		static bool IsControllerGamepad(Controller controller);
 
 		static Math::Vec2 GetMousePosition();
+		static Math::Vec2 GetMousePosition(const Scope<Window>& window);
 		static float GetMouseX();
 		static float GetMouseY();
 		static std::string GetKeyName(Key key);

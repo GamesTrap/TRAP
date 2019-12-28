@@ -83,7 +83,7 @@ TRAP::Application::Application()
 	VFS::Get()->SetHotTextureReloading(hotTextureReloading);
 
 	Graphics::API::Context::SetRenderAPI(renderAPI);
-	m_window = std::make_unique<Window>
+	m_window = MakeScope<Window>
 		(
 			WindowProps
 			(
@@ -256,11 +256,14 @@ void TRAP::Application::Run()
 			Graphics::API::Context::SetRenderAPI(Graphics::API::Context::s_newRenderAPI);
 		}
 
-		m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
-		m_FramesPerSecond = static_cast<uint32_t>(framesPerSecond.size());
-		framesPerSecond.emplace_back();
-		while (framesPerSecond.front().ElapsedMilliseconds() >= 1000.0f)
-			framesPerSecond.pop_front();
+		if (!m_minimized)
+		{
+			m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
+			m_FramesPerSecond = static_cast<uint32_t>(framesPerSecond.size());
+			framesPerSecond.emplace_back();
+			while (framesPerSecond.front().ElapsedMilliseconds() >= 1000.0f)
+				framesPerSecond.pop_front();
+		}
 
 		//FPSLimiter
 		if (m_fpsLimit)

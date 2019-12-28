@@ -689,7 +689,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 			if (window->CursorMode == CursorMode::Disabled)
 				EnableCursor(window);
 
-			if (window->Monitor)
+			if (window->Monitor && !window->BorderlessFullscreen)
 				PlatformMinimizeWindow(window);
 
 			InputWindowFocus(window, false);
@@ -1435,6 +1435,30 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(Ref<InternalWindow> window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Make the specified window active on its monitor
+void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(Ref<InternalWindow> window)
+{
+	if(!s_Data.AcquiredMonitorCount)
+	{
+		SetThreadExecutionState(ES_CONTINUOUS | ES_DISPLAY_REQUIRED);
+
+		//HACK: When mouse trails are enabled the cursor becomes invisible when
+		//      the OpenGL ICD switches to page flipping
+		if (IsWindowsXPOrGreaterWin32())
+		{
+			SystemParametersInfo(SPI_GETMOUSETRAILS, 0, &s_Data.MouseTrailSize, 0);
+			SystemParametersInfo(SPI_SETMOUSETRAILS, 0, nullptr, 0);
+		}
+	}
+
+	if (!window->Monitor->Window)
+		s_Data.AcquiredMonitorCount++;
+
+	window->Monitor->Window = window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Remove the window and restore the original video mode
 void TRAP::INTERNAL::WindowingAPI::ReleaseMonitor(Ref<InternalWindow> window)
 {
@@ -1584,8 +1608,8 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeWin32(Ref<InternalMonitor> monito
 
 	best = ChooseVideoMode(monitor, desired);
 	PlatformGetVideoMode(monitor, current);
-	if (!CompareVideoModes(&current, best)) //TODO Only on Borderless?
-		return;
+	/*if (!CompareVideoModes(&current, best)) //TODO Only on Borderless?
+		return;*/
 
 	ZeroMemory(&dm, sizeof(dm));
 	dm.dmSize = sizeof(dm);
@@ -3174,11 +3198,16 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(const Ref<InternalWi
 				SWP_NOCOPYBITS | SWP_NOACTIVATE | SWP_NOZORDER);
 		}
 
+		//Note: Set VSync interval again because DWM now doesnt apply here
+		SwapInterval(window->Context.Interval);
+
 		return;
 	}
 
 	if (window->Monitor)
 		ReleaseMonitor(window);
+	if (window->BorderlessFullscreen)
+		window->BorderlessFullscreen = false;
 
 	window->Monitor = monitor;
 
@@ -3239,6 +3268,45 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(const Ref<InternalWi
 			rect.left, rect.top,
 			rect.right - rect.left, rect.bottom - rect.top,
 			flags);
+	}
+
+	//Note: Set VSync interval again because DWM now doesnt apply here
+	SwapInterval(window->Context.Interval);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(const Ref<InternalWindow>& window, const Ref<InternalMonitor> monitor)
+{
+	window->BorderlessFullscreen = true;
+	window->Monitor = monitor;
+
+	if (window->Monitor)
+	{
+		MONITORINFO mi = { sizeof(mi) };
+		UINT flags = SWP_SHOWWINDOW | SWP_NOACTIVATE | SWP_NOCOPYBITS;
+
+		if (window->Decorated)
+		{
+			DWORD style = static_cast<DWORD>(GetWindowLongPtrW(window->Handle, GWL_STYLE));
+			style &= ~WS_OVERLAPPEDWINDOW;
+			style |= GetWindowStyle(window);
+			SetWindowLongW(window->Handle, GWL_STYLE, style);
+			flags |= SWP_FRAMECHANGED;
+		}
+
+		AcquireMonitorBorderless(window);
+
+		GetMonitorInfo(window->Monitor->Handle, &mi);
+		::SetWindowPos(window->Handle, HWND_TOP,
+			mi.rcMonitor.left,
+			mi.rcMonitor.top,
+			mi.rcMonitor.right - mi.rcMonitor.left,
+			mi.rcMonitor.bottom - mi.rcMonitor.top,
+			flags);
+
+		//Note: Set VSync interval again because DWM now doesnt apply here
+		SwapInterval(window->Context.Interval);
 	}
 }
 

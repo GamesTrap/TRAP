@@ -73,7 +73,7 @@ void TRAP::Graphics::API::VulkanContext::InitSurface()
 {
 	TP_DEBUG("[Renderer][Vulkan] Initializing Surface");
 
-	VkCall(INTERNAL::WindowingAPI::CreateWindowSurface(VulkanRenderer::Get()->GetInstance(), *static_cast<const std::shared_ptr<INTERNAL::WindowingAPI::InternalWindow>*>(m_window->GetInternalWindow()), nullptr, m_surface));
+	VkCall(INTERNAL::WindowingAPI::CreateWindowSurface(VulkanRenderer::Get()->GetInstance(), m_window->GetInternalWindow(), nullptr, m_surface));
 	TRAP_RENDERER_ASSERT(m_surface, "[Renderer][Vulkan] Couldn't create Surface!");
 }
 

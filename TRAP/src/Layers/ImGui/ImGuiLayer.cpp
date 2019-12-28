@@ -44,7 +44,7 @@ void TRAP::ImGuiLayer::OnAttach()
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 	}
 
-	const Ref<INTERNAL::WindowingAPI::InternalWindow> window = *static_cast<const Ref<INTERNAL::WindowingAPI::InternalWindow>*>(Application::GetWindow()->GetInternalWindow());
+	const Ref<INTERNAL::WindowingAPI::InternalWindow> window = Application::GetWindow()->GetInternalWindow();
 
 	//Setup Platform/Renderer bindings
 /*#ifdef TRAP_PLATFORM_WINDOWS

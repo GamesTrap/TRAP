@@ -102,7 +102,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#scope">Scope</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#makescope">MakeScope</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ref">Ref</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">MakeScope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">MakeScope</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="events.html">Events</a></li>
@@ -431,7 +431,7 @@
 </div>
 </div>
 <div class="section" id="ref">
-<h2>Ref<a class="headerlink" href="#ref" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2>Ref<a class="headerlink" href="#ref" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
 <span class="k">using</span> <span class="n">Ref</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
 </pre></div>
@@ -451,8 +451,8 @@
 <p>This may change in the future when memory management gets added</p>
 </div>
 </div>
-<div class="section" id="id3">
-<h2>MakeScope<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>MakeScope<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
 <span class="k">constexpr</span> <span class="n">Ref</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">MakeRef</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span><span class="p">...</span> <span class="n">args</span><span class="p">);</span>
 </pre></div>

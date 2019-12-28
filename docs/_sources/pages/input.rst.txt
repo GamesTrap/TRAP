@@ -27,6 +27,9 @@ Key
 
     enum class TRAP::Input::Key
     {
+        Invalid        = -2,
+        Unknown        = -1,
+
         Space          = 32,
         Apostrophe     = 39,
         Comma          = 44,
@@ -364,14 +367,15 @@ IsKeyPressed
 
 .. code-block:: cpp
 
-    static bool TRAP::Input::IsKeyPressed(const TRAP::Input::Key key);
+    static bool TRAP::Input::IsKeyPressed(const TRAP::Input::Key key, const TRAP::Scope<TRAP::Window>& window = TRAP::Application::GetWindow());
 
 | **Description**
-| Returns whether the specified TRAP::`Input`_::`Key`_ is pressed or released
+| Returns whether the specified TRAP::`Input`_::`Key`_ is pressed or released from the specified TRAP:::ref:`window`
 
 | **Parameters**
 
 - :code:`key` Specifies the TRAP::`Input`_::`Key`_ to check for
+- :code:`window` Specifies the TRAP:::ref:`window` to check from
 
 --------------------
 IsMouseButtonPressed
@@ -379,14 +383,15 @@ IsMouseButtonPressed
 
 .. code-block:: cpp
 
-    static bool TRAP::Input::IsMouseButtonPressed(const TRAP::Input::MouseButton button);
+    static bool TRAP::Input::IsMouseButtonPressed(const TRAP::Input::MouseButton button, const TRAP::Scope<TRAP::Window>& window = TRAP::Application::GetWindow());
 
 | **Description**
-| Returns whether the specified TRAP::`Input`_::`MouseButton`_ is pressed or released
+| Returns whether the specified TRAP::`Input`_::`MouseButton`_ is pressed or released from the specified TRAP:::ref:`window`
 
 | **Parameters**
 
 - :code:`button` Specifies the TRAP::`Input`_::`MouseButton`_ to check for
+- :code:`window` Specifies the TRAP:::ref:`window` to check from
 
 ----------------------
 IsGamepadButtonPressed
@@ -454,10 +459,14 @@ GetMousePosition
 
 .. code-block:: cpp
 
-    static TRAP::Math::Vec2 TRAP::Input::GetMousePosition();
+    static TRAP::Math::Vec2 TRAP::Input::GetMousePosition(const TRAP::Scope<TRAP::Window>& window = TRAP::Application::GetWindow());
 
 | **Description**
-| Returns a TRAP::`Math`_::`Vec2`_ containing the current mouse position
+| Returns a TRAP::`Math`_::`Vec2`_ containing the current mouse position from the specified TRAP:::ref:`window`
+
+| **Parameters**
+
+- :code:`window` Specifies the TRAP:::ref:`window` to check from
 
 ---------
 GetMouseX
@@ -720,3 +729,34 @@ OnEvent
 
 .. warning::
    This function gets used by TRAP Engine internally and should never be called by the client!
+
+--------------------------
+DetectControllerConnection
+--------------------------
+
+.. code-block:: cpp
+
+    static void TRAP::Input::DetectControllerConnection();
+
+| **Description**
+| Checks the current connection status of each TRAP::`Controller`_
+
+.. warning::
+   This function gets used by TRAP Engine internally and doesnt need to be called by the client!
+
+---------------------------------
+UpdateControllerConnectionWindows
+---------------------------------
+
+.. code-block:: cpp
+
+    static void TRAP::Input::UpdateControllerConnectionWindows();
+
+| **Description**
+| Checks for newly connected TRAP::`Controller`_\s
+
+.. warning::
+   This function is Windows Platform specific! Never use this function in Cross-Platform code!
+
+.. warning::
+   This function gets used by TRAP Engine internally and should not be called by the client!

@@ -679,3 +679,11 @@ SITREP 12/27/2019|19w52a4
     - Branch Window:
         - Added more Cursors ~> 20mins
         - Updated ImGui submodule ~<10 mins
+
+SITREP 12/28/2019|19w52a5
+    - Changed TRAP Engine version to 19w52a5(0.5.84)
+    - Branch Window:
+        - Changed Borderless Fullscreen Window behaviour ~< 25 mins
+        - Fixed: VSync setting gets ignored if switch to Fullscreen ~<20 mins
+        - Fixed: Input polling only used Main Render Window. Now it uses an optional parameter ~<30 min
+        - Updated Docs ~>25 mins

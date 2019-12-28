@@ -32,9 +32,9 @@ DisplayMode
 | **Description**
 | TRAP::`Window`_::`DisplayMode`_ is used to set the display mode of a TRAP::`Window`_.
 
------------
+----------
 CursorMode
------------
+----------
 
 .. code-block:: cpp
 
@@ -47,6 +47,29 @@ CursorMode
 
 | **Description**
 | TRAP::`Window`_::`CursorMode`_ is used to set the cursor mode of a TRAP::`Window`_.
+
+----------
+CursorType
+----------
+
+.. code-block:: cpp
+
+    enum class TRAP::Window::CursorType
+    {
+        Arrow,
+		Input,
+		Crosshair,
+		PointingHand,
+		ResizeHorizontal,
+		ResizeVertical,
+		ResizeDiagonalTopLeftBottomRight,
+		ResizeDiagonalTopRightBottomLeft,
+		ResizeAll,
+		NotAllowed
+    };
+
+| **Description**
+| TRAP::`Window`_::`CursorType`_ is used to set the cursor type used by a TRAP::`Window`_.
 
 -----------
 WindowProps
@@ -314,16 +337,16 @@ GetRawMouseInput
 | **Description**
 | Returns true if the TRAP::`Window`_ uses Raw Mouse Input
 
-^^^^^^^^^^^^^^^^
-GetNativeWindow
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
+GetInternalWindow
+^^^^^^^^^^^^^^^^^
 
 .. code-block:: cpp
 
-   void* TRAP::Window::GetNativeWindow() const;
+   const TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalWindow>& TRAP::Window::GetInternalWindow() const;
 
 | **Description**
-| Returns a pointer to the internal GLFWwindow* of a TRAP::`Window`_
+| Returns a TRAP:::ref:`ref` pointing to the TRAP::INTERNAL::WindowingAPI::InternalWindow of a TRAP::`Window`_
 
 ^^^^^^^^
 SetTitle
@@ -429,6 +452,21 @@ SetCursorMode
 | **Parameters**
 
 - :code:`mode` specifies the TRAP::`Window`_::`CursorMode`_ to use.
+
+^^^^^^^^^^^^^
+SetCursorType
+^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   void TRAP::Window::SetCursorType(const TRAP::Window::CursorType& type);
+
+| **Description**
+| Sets the TRAP::`Window`_::`CursorType`_ used by a TRAP::`Window`_
+
+| **Parameters**
+
+- :code:`type` specifies the TRAP::`Window`_::`CursorType`_ to use.
 
 ^^^^^^^^^^^^^^^^
 SetRawMouseInput

@@ -34,7 +34,7 @@ namespace TRAP
 			Hidden,
 			Disabled
 		};
-
+		
 		//Used to set Cursor type of windows
 		enum class CursorType
 		{
@@ -78,7 +78,7 @@ namespace TRAP
 		CursorMode GetCursorMode() const;
 		bool GetRawMouseInput() const;
 
-		void* GetInternalWindow();
+		const Ref<INTERNAL::WindowingAPI::InternalWindow>& GetInternalWindow() const;
 
 		void SetTitle(const std::string& title);
 		void SetDisplayMode(const DisplayMode& mode,
@@ -88,7 +88,7 @@ namespace TRAP
 		void SetMonitor(uint32_t monitor = 0);
 		void SetVSyncInterval(uint32_t interval);
 		void SetCursorMode(const CursorMode& mode);
-		void SetCursorType(const CursorType& cursor); //Document
+		void SetCursorType(const CursorType& cursor) const;
 		void SetRawMouseInput(bool enabled);
 		void SetIcon() const;
 		void SetIcon(const Scope<Image>& image) const;

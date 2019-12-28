@@ -521,6 +521,7 @@ namespace TRAP::INTERNAL
 			bool Resizable = true;
 			bool Decorated = true;
 			bool ShouldClose = false;
+			bool BorderlessFullscreen = false;
 			void* UserPointer = nullptr;
 			VideoMode VideoMode{};
 			Ref<InternalMonitor> Monitor = nullptr;
@@ -643,6 +644,8 @@ namespace TRAP::INTERNAL
 		                             int32_t width,
 		                             int32_t height,
 		                             int32_t refreshRate);
+		//Sets the mode, monitor and placement of a window.
+		static void SetWindowMonitorBorderless(const Ref<InternalWindow>& window, const Ref<InternalMonitor>& monitor);
 		//Sets the user pointer of the specified window.
 		static void SetWindowUserPointer(const Ref<InternalWindow>& window, void* pointer);
 		//Returns the user pointer of the specified window.
@@ -770,6 +773,7 @@ namespace TRAP::INTERNAL
 			                                   int32_t& right, int32_t& bottom);
 		static void PlatformSetWindowMonitor(const Ref<InternalWindow>& window, Ref<InternalMonitor> monitor,
 			                                 int32_t xPos, int32_t yPos, int32_t width, int32_t height, int32_t refreshRate);
+		static void PlatformSetWindowMonitorBorderless(const Ref<InternalWindow>& window, Ref<InternalMonitor> monitor);
 		static std::vector<VideoMode> PlatformGetVideoModes(Ref<InternalMonitor> monitor);
 		static bool PlatformInit();
 		static bool PlatformCreateMutex(Mutex& mutex); 
@@ -896,6 +900,8 @@ namespace TRAP::INTERNAL
 		static void PollMonitorsWin32();
 		//Make the specified window and its video mode active on its monitor
 		static void AcquireMonitor(Ref<InternalWindow> window);
+		//Make the specified window active on its monitor
+		static void AcquireMonitorBorderless(Ref<InternalWindow> window);
 		//Remove the window and restore the original video mode
 		static void ReleaseMonitor(Ref<InternalWindow> window);
 		static void FitToMonitor(Ref<InternalWindow> window);		

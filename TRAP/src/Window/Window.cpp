@@ -214,9 +214,9 @@ bool TRAP::Window::GetRawMouseInput() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void* TRAP::Window::GetInternalWindow()
+const TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalWindow>& TRAP::Window::GetInternalWindow() const
 {
-	return static_cast<void*>(&m_window);
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -233,7 +233,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w52a4]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][19w52a5]" + std::string(Graphics::Renderer::GetTitle());
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window, newTitle);
 #else
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window, m_data.Title);
@@ -361,13 +361,18 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 	//Record new window type
 	m_data.displayMode = mode;
 
-	INTERNAL::WindowingAPI::SetWindowMonitor(m_window,
-		monitor,
-		m_oldWindowedParams.XPos,
-		m_oldWindowedParams.YPos,
-		static_cast<int32_t>(width),
-		static_cast<int32_t>(height),
-		static_cast<int32_t>(refreshRate));
+	if(mode == DisplayMode::Borderless)
+		INTERNAL::WindowingAPI::SetWindowMonitorBorderless(m_window, monitor);
+	else
+	{
+		INTERNAL::WindowingAPI::SetWindowMonitor(m_window,
+			monitor,
+			m_oldWindowedParams.XPos,
+			m_oldWindowedParams.YPos,
+			static_cast<int32_t>(width),
+			static_cast<int32_t>(height),
+			static_cast<int32_t>(refreshRate));
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -424,7 +429,7 @@ void TRAP::Window::SetCursorMode(const CursorMode& mode)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetCursorType(const CursorType& cursor)
+void TRAP::Window::SetCursorType(const CursorType& cursor) const
 {
 	switch(cursor)
 	{
@@ -639,7 +644,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][19w52a4]";
+		"[INDEV][19w52a5]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif
@@ -785,13 +790,21 @@ void TRAP::Window::Init(const WindowProps& props)
 	//Record new window type
 	m_data.displayMode = props.displayMode;
 
-	INTERNAL::WindowingAPI::SetWindowMonitor(m_window,
-		monitor,
-		m_oldWindowedParams.XPos,
-		m_oldWindowedParams.YPos,
-		width,
-		height,
-		refreshRate);
+	//Bug New size doesnt change viewport
+	//Maybe solved by FrameBufferResizeEvent?!
+
+	if (m_data.displayMode == DisplayMode::Borderless)
+		INTERNAL::WindowingAPI::SetWindowMonitorBorderless(m_window, monitor);
+	else
+	{
+		INTERNAL::WindowingAPI::SetWindowMonitor(m_window,
+			monitor,
+			m_oldWindowedParams.XPos,
+			m_oldWindowedParams.YPos,
+			width,
+			height,
+			refreshRate);
+	}
 
 	INTERNAL::WindowingAPI::SetWindowUserPointer(m_window, &m_data);
 

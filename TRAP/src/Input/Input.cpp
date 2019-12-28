@@ -89,10 +89,32 @@ void TRAP::Input::SetControllerAPI(const ControllerAPI controllerAPI)
 bool TRAP::Input::IsKeyPressed(const Key key)
 {
 	if (key == Key::Invalid || key == Key::Unknown)
+	{
+		TP_WARN("[Input] Invalid Key provided!");
 		return false;
+	}
+
+	const auto state = INTERNAL::WindowingAPI::GetKey(Application::GetWindow()->GetInternalWindow(), key);
+
+	return state;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Input::IsKeyPressed(const Key key, const Scope<Window>& window)
+{
+	if (key == Key::Invalid || key == Key::Unknown)
+	{
+		TP_WARN("[Input] Invalid Key provided!");
+		return false;
+	}
+	if(!window)
+	{
+		TP_WARN("[Input] Tried to pass nullptr to IsKeyPressed!");
+		return false;
+	}
 	
-	const auto window = *static_cast<const std::shared_ptr<INTERNAL::WindowingAPI::InternalWindow>*>(Application::GetWindow()->GetInternalWindow());
-	const auto state = INTERNAL::WindowingAPI::GetKey(window, key);
+	const auto state = INTERNAL::WindowingAPI::GetKey(window->GetInternalWindow(), key);
 
 	return state;
 }
@@ -101,8 +123,22 @@ bool TRAP::Input::IsKeyPressed(const Key key)
 
 bool TRAP::Input::IsMouseButtonPressed(const MouseButton button)
 {
-	const auto window = *static_cast<const std::shared_ptr<INTERNAL::WindowingAPI::InternalWindow>*>(Application::GetWindow()->GetInternalWindow());
-	const auto state = INTERNAL::WindowingAPI::GetMouseButton(window, button);
+	const auto state = INTERNAL::WindowingAPI::GetMouseButton(Application::GetWindow()->GetInternalWindow(), button);
+
+	return state;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Input::IsMouseButtonPressed(const MouseButton button, const Scope<Window>& window)
+{
+	if (!window)
+	{
+		TP_WARN("[Input] Tried to pass nullptr to IsMouseButtonPressed!");
+		return false;
+	}
+	
+	const auto state = INTERNAL::WindowingAPI::GetMouseButton(window->GetInternalWindow(), button);
 
 	return state;
 }
@@ -162,11 +198,26 @@ bool TRAP::Input::IsControllerGamepad(Controller controller)
 
 TRAP::Math::Vec2 TRAP::Input::GetMousePosition()
 {
-	const auto window = *static_cast<const std::shared_ptr<INTERNAL::WindowingAPI::InternalWindow>*>(Application::GetWindow()->GetInternalWindow());
 	double xPos, yPos;
-	INTERNAL::WindowingAPI::GetCursorPos(window, xPos, yPos);
+	INTERNAL::WindowingAPI::GetCursorPos(Application::GetWindow()->GetInternalWindow(), xPos, yPos);
 
 	return {static_cast<float>(xPos), static_cast<float>(yPos)};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Math::Vec2 TRAP::Input::GetMousePosition(const Scope<Window>& window)
+{
+	if(!window)
+	{
+		TP_WARN("[Input] Tried to pass nullptr to GetMousePosition!");
+		return {0.0f, 0.0f};
+	}
+	
+	double xPos, yPos;
+	INTERNAL::WindowingAPI::GetCursorPos(window->GetInternalWindow(), xPos, yPos);
+
+	return { static_cast<float>(xPos), static_cast<float>(yPos) };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

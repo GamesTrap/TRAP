@@ -299,6 +299,7 @@ TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Windowin
 	window->Resizable = WNDConfig.Resizable;
 	window->Decorated = WNDConfig.Decorated;
 	window->CursorMode = CursorMode::Normal;
+	window->BorderlessFullscreen = false;
 
 	//Open the actual window and create its context
 	if (!PlatformCreateWindow(window, WNDConfig, CTXConfig, FBConfig))
@@ -750,6 +751,24 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(const Ref<InternalWindow>& w
 	PlatformSetWindowMonitor(window, std::move(monitor),
 		xPos, yPos, width, height,
 		refreshRate);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Sets the mode, monitor and placement of a window.
+void TRAP::INTERNAL::WindowingAPI::SetWindowMonitorBorderless(const Ref<InternalWindow>& window, const Ref<InternalMonitor>& monitor)
+{
+	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
+	TRAP_WINDOW_ASSERT(monitor, "[Window] window is nullptr!");
+
+	window->VideoMode.Width = monitor->CurrentMode.Width;
+	window->VideoMode.Height = monitor->CurrentMode.Height;
+	window->VideoMode.RefreshRate = monitor->CurrentMode.RefreshRate;
+	window->VideoMode.RedBits = monitor->CurrentMode.RedBits;
+	window->VideoMode.GreenBits = monitor->CurrentMode.GreenBits;
+	window->VideoMode.BlueBits = monitor->CurrentMode.BlueBits;
+
+	PlatformSetWindowMonitorBorderless(window, monitor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

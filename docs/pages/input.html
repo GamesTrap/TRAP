@@ -123,6 +123,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#seteventcallback">SetEventCallback</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#updatecontrollermappings">UpdateControllerMappings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#onevent">OnEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#detectcontrollerconnection">DetectControllerConnection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#updatecontrollerconnectionwindows">UpdateControllerConnectionWindows</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="windows.html">Windows</a></li>
@@ -211,6 +213,9 @@ Please use XInput instead for now</p>
 <span id="id2"></span><h2>Key<a class="headerlink" href="#key" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span>
 <span class="p">{</span>
+    <span class="n">Invalid</span>        <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">Unknown</span>        <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+
     <span class="n">Space</span>          <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
     <span class="n">Apostrophe</span>     <span class="o">=</span> <span class="mi">39</span><span class="p">,</span>
     <span class="n">Comma</span>          <span class="o">=</span> <span class="mi">44</span><span class="p">,</span>
@@ -536,34 +541,36 @@ Please use XInput instead for now</p>
 </div>
 <div class="section" id="iskeypressed">
 <h2>IsKeyPressed<a class="headerlink" href="#iskeypressed" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsKeyPressed</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span> <span class="n">key</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsKeyPressed</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span> <span class="n">key</span><span class="p">,</span> <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">&gt;&amp;</span> <span class="n">window</span> <span class="o">=</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Application</span><span class="o">::</span><span class="n">GetWindow</span><span class="p">());</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns whether the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#key">Key</a> is pressed or released</div>
+<div class="line">Returns whether the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#key">Key</a> is pressed or released from the specified TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
 <li><p><code class="code docutils literal notranslate"><span class="pre">key</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#key">Key</a> to check for</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">window</span></code> Specifies the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> to check from</p></li>
 </ul>
 </div>
 <div class="section" id="ismousebuttonpressed">
 <h2>IsMouseButtonPressed<a class="headerlink" href="#ismousebuttonpressed" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsMouseButtonPressed</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">MouseButton</span> <span class="n">button</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsMouseButtonPressed</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">MouseButton</span> <span class="n">button</span><span class="p">,</span> <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">&gt;&amp;</span> <span class="n">window</span> <span class="o">=</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Application</span><span class="o">::</span><span class="n">GetWindow</span><span class="p">());</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns whether the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#mousebutton">MouseButton</a> is pressed or released</div>
+<div class="line">Returns whether the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#mousebutton">MouseButton</a> is pressed or released from the specified TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
 <li><p><code class="code docutils literal notranslate"><span class="pre">button</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#mousebutton">MouseButton</a> to check for</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">window</span></code> Specifies the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> to check from</p></li>
 </ul>
 </div>
 <div class="section" id="isgamepadbuttonpressed">
@@ -628,13 +635,19 @@ Please use XInput instead for now</p>
 </div>
 <div class="section" id="getmouseposition">
 <h2>GetMousePosition<a class="headerlink" href="#getmouseposition" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Math</span><span class="o">::</span><span class="n">Vec2</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetMousePosition</span><span class="p">();</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Math</span><span class="o">::</span><span class="n">Vec2</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetMousePosition</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">&gt;&amp;</span> <span class="n">window</span> <span class="o">=</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Application</span><span class="o">::</span><span class="n">GetWindow</span><span class="p">());</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns a TRAP::<a href="#id5"><span class="problematic" id="id6">`Math`_</span></a>::<a href="#id7"><span class="problematic" id="id8">`Vec2`_</span></a> containing the current mouse position</div>
+<div class="line">Returns a TRAP::<a href="#id5"><span class="problematic" id="id6">`Math`_</span></a>::<a href="#id7"><span class="problematic" id="id8">`Vec2`_</span></a> containing the current mouse position from the specified TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
 </div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">window</span></code> Specifies the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> to check from</p></li>
+</ul>
 </div>
 <div class="section" id="getmousex">
 <h2>GetMouseX<a class="headerlink" href="#getmousex" title="Permalink to this headline">¶</a></h2>
@@ -909,6 +922,38 @@ Please use XInput instead for now</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This function gets used by TRAP Engine internally and should never be called by the client!</p>
+</div>
+</div>
+<div class="section" id="detectcontrollerconnection">
+<h2>DetectControllerConnection<a class="headerlink" href="#detectcontrollerconnection" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">DetectControllerConnection</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Checks the current connection status of each TRAP::<a class="reference internal" href="#controller">Controller</a></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function gets used by TRAP Engine internally and doesnt need to be called by the client!</p>
+</div>
+</div>
+<div class="section" id="updatecontrollerconnectionwindows">
+<h2>UpdateControllerConnectionWindows<a class="headerlink" href="#updatecontrollerconnectionwindows" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">UpdateControllerConnectionWindows</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Checks for newly connected TRAP::<a class="reference internal" href="#controller">Controller</a>s</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function is Windows Platform specific! Never use this function in Cross-Platform code!</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function gets used by TRAP Engine internally and should not be called by the client!</p>
 </div>
 </div>
 </div>

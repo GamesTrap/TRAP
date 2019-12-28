@@ -13,7 +13,7 @@ bool TRAP::Graphics::API::OpenGLContext::s_IsGladInitialized = false;
 
 TRAP::Graphics::API::OpenGLContext::OpenGLContext(Window* window)
 {
-	INTERNAL::WindowingAPI::MakeContextCurrent(*static_cast<const Ref<INTERNAL::WindowingAPI::InternalWindow>*>(window->GetInternalWindow()));
+	INTERNAL::WindowingAPI::MakeContextCurrent(window->GetInternalWindow());
 
 	if (!s_IsGladInitialized)
 	{
@@ -40,7 +40,7 @@ void TRAP::Graphics::API::OpenGLContext::SetVSyncIntervalInternal(const uint32_t
 
 void TRAP::Graphics::API::OpenGLContext::Present(const std::unique_ptr<Window>& window)
 {
-	INTERNAL::WindowingAPI::SwapBuffers(*static_cast<const std::shared_ptr<INTERNAL::WindowingAPI::InternalWindow>*>(window->GetInternalWindow()));
+	INTERNAL::WindowingAPI::SwapBuffers(window->GetInternalWindow());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -50,7 +50,7 @@ void TRAP::Graphics::API::OpenGLContext::UseInternal(const std::unique_ptr<Windo
 	if (window)
 	{
 		if (Window::GetActiveWindows() > 1)
-			INTERNAL::WindowingAPI::MakeContextCurrent(*static_cast<const std::shared_ptr<INTERNAL::WindowingAPI::InternalWindow>*>(window->GetInternalWindow()));
+			INTERNAL::WindowingAPI::MakeContextCurrent(window->GetInternalWindow());
 	}
 	else
 		INTERNAL::WindowingAPI::MakeContextCurrent(nullptr);
