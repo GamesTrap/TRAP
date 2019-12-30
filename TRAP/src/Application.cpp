@@ -13,6 +13,7 @@
 #include "Utils/String.h"
 #include "Core.h"
 #include "Graphics/Renderer.h"
+#include "Event/KeyEvent.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
@@ -157,6 +158,8 @@ void TRAP::Application::Run()
 	{
 		if (m_fpsLimit)
 			nextFrame += std::chrono::milliseconds(1000 / m_fpsLimit);
+		if (!m_focused)
+			nextFrame += std::chrono::milliseconds(1000 / 30); //30 FPS
 
 		m_drawCalls = 0;
 
@@ -266,7 +269,7 @@ void TRAP::Application::Run()
 		}
 
 		//FPSLimiter
-		if (m_fpsLimit)
+		if (m_fpsLimit || !m_focused)
 			std::this_thread::sleep_until(nextFrame);
 	}
 }
@@ -278,6 +281,9 @@ void TRAP::Application::OnEvent(Event& e)
 	EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<WindowCloseEvent>(TRAP_BIND_EVENT_FN(Application::OnWindowClose));
 	dispatcher.Dispatch<WindowResizeEvent>(TRAP_BIND_EVENT_FN(Application::OnWindowResize));
+	dispatcher.Dispatch<KeyPressedEvent>(TRAP_BIND_EVENT_FN(Application::OnKeyPress));
+	dispatcher.Dispatch<WindowFocusEvent>(TRAP_BIND_EVENT_FN(Application::OnWindowFocus));
+	dispatcher.Dispatch<WindowLostFocusEvent>(TRAP_BIND_EVENT_FN(Application::OnWindowLostFocus));
 
 	m_input->OnEvent(e); //Controller Connect/Disconnect Events
 
@@ -294,14 +300,14 @@ void TRAP::Application::OnEvent(Event& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::PushLayer(Scope<Layer> layer)
+void TRAP::Application::PushLayer(Scope<Layer> layer) const
 {
 	m_layerStack->PushLayer(std::move(layer));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::PushOverlay(Scope<Layer> overlay)
+void TRAP::Application::PushOverlay(Scope<Layer> overlay) const
 {
 	m_layerStack->PushOverlay(std::move(overlay));
 }
@@ -315,7 +321,7 @@ TRAP::Utils::Config* TRAP::Application::GetConfig()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::LayerStack& TRAP::Application::GetLayerStack()
+TRAP::LayerStack& TRAP::Application::GetLayerStack() const
 {
 	return *m_layerStack;
 }
@@ -378,7 +384,7 @@ TRAP::Application& TRAP::Application::Get()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::unique_ptr<TRAP::Window>& TRAP::Application::GetWindow()
+const TRAP::Scope<TRAP::Window>& TRAP::Application::GetWindow()
 {
 	return Get().m_window;
 }
@@ -440,7 +446,6 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI) const
 	m_window->SetTitle(std::string(m_window->GetTitle()));
 	//Initialize Renderer
 	Graphics::Renderer::Init();
-	//Note: Input doesn't need to be Initialized here because WindowingAPI is still initialized
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
 	//Always added as a fallback texture
@@ -475,7 +480,7 @@ bool TRAP::Application::OnWindowResize(WindowResizeEvent& e)
 	if (Window::GetActiveWindows() > 1)
 		Window::Use();
 
-	if (e.GetWidth() == 0 || e.GetHeight() == 0)
+	if ((e.GetWidth() == 0 || e.GetHeight() == 0) && Window::GetActiveWindows() == 1)
 	{
 		m_minimized = true;
 
@@ -486,5 +491,47 @@ bool TRAP::Application::OnWindowResize(WindowResizeEvent& e)
 
 	m_minimized = false;
 
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Application::OnKeyPress(KeyPressedEvent& e)
+{
+	if (Window::GetActiveWindows() == 1)
+	{
+		if ((e.GetKeyCode() == Input::Key::Enter || e.GetKeyCode() == Input::Key::KP_Enter) && Input::IsKeyPressed(Input::Key::Left_ALT) && e.GetRepeatCount() < 1)
+		{
+			if (m_window->GetDisplayMode() == Window::DisplayMode::Windowed ||
+				m_window->GetDisplayMode() == Window::DisplayMode::Borderless)
+			{
+				m_window->SetDisplayMode(Window::DisplayMode::Fullscreen, 0, 0, 0);
+			}
+			else if (m_window->GetDisplayMode() == Window::DisplayMode::Fullscreen)
+			{
+				m_window->SetDisplayMode(Window::DisplayMode::Windowed, 0, 0, 0);
+			}
+		}
+	}
+	
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Application::OnWindowFocus(WindowFocusEvent& e)
+{
+	m_focused = true;
+
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Application::OnWindowLostFocus(WindowLostFocusEvent& e)
+{
+	if (Window::GetActiveWindows() == 1)
+		m_focused = false;
+	
 	return false;
 }

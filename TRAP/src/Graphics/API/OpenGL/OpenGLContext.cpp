@@ -40,7 +40,10 @@ void TRAP::Graphics::API::OpenGLContext::SetVSyncIntervalInternal(const uint32_t
 
 void TRAP::Graphics::API::OpenGLContext::Present(const std::unique_ptr<Window>& window)
 {
-	INTERNAL::WindowingAPI::SwapBuffers(window->GetInternalWindow());
+	if (window)
+		INTERNAL::WindowingAPI::SwapBuffers(window->GetInternalWindow());
+	else
+		TP_WARN("[Context][OpenGL] Tried to pass nullptr to Present!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

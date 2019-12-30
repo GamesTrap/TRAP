@@ -47,8 +47,7 @@ public:
 
 		///////////////
 		//    Quad   //
-		///////////////
-		
+		///////////////		
 
 		//XYZ RGBA
 		std::array<float, 9 * 4> vertices //Quad
@@ -90,7 +89,7 @@ public:
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnDetach() override
-	{
+	{		
 		m_uniformBuffer->Unbind();
 		m_uniformBuffer.reset();
 		
@@ -101,7 +100,7 @@ public:
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override
-	{	
+	{		
 		m_cameraController.OnUpdate(deltaTime);
 
 		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
@@ -207,8 +206,6 @@ private:
 	{
 		float Time{};
 	};
-
-	uint32_t m_count = 0;
 };
 
 #endif /*_GAMESTRAP_SANDBOXLAYER_H_*/

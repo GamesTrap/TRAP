@@ -688,3 +688,11 @@ SITREP 12/28/2019|19w52a5
         - Fixed: Input polling only used Main Render Window. Now it uses an optional parameter ~<30 mins
         - Updated Docs ~>25 mins
         - Fixed: Fullscreen Windows using wrong Viewport size ~<20 mins
+        - Updated Readme ~<20 mins
+
+SITREP 12/29/2019|19w52a6
+    - Changed TRAP Engine version to 19w52a6(0.5.85)
+    - Branch Window:
+        - Added Hotkey ALT+(KP)Enter to switch between Windowed and Fullscreen mode (Single-Window only!) ~<30 mins
+        - Fixed Minimizing the Main Window on Multi-Window programs also stopped Rendering on the other Windows ~<20 mins
+        - Added 30 FPS Lock if Main Window loses focus (Single-Window only!) ~<20 mins

@@ -8,8 +8,6 @@ Windows
 General
 -------
 
-| Windows in :ref:`trap_engine` are using the library `GLFW <https://github.com/GamesTrap/glfw>`_
-
 .. note::
    | :ref:`trap_engine` always creates 1 TRAP::`Window`_ and uses it as Main Window!
    | Properties of this TRAP::`Window`_ can be set in Engine.cfg

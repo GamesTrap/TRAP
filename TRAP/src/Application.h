@@ -14,6 +14,8 @@
 
 namespace TRAP
 {
+	class KeyPressedEvent;
+
 	class Application : public Singleton
 	{		
 	public:
@@ -34,11 +36,11 @@ namespace TRAP
 
 		void OnEvent(Event& e);
 
-		void PushLayer(Scope<Layer> layer);
-		void PushOverlay(Scope<Layer> overlay);
+		void PushLayer(Scope<Layer> layer) const;
+		void PushOverlay(Scope<Layer> overlay) const;
 
 		Utils::Config* GetConfig();
-		LayerStack& GetLayerStack();
+		LayerStack& GetLayerStack() const;
 
 		uint32_t GetFPS() const;
 		float GetFrameTime() const;		
@@ -50,7 +52,7 @@ namespace TRAP
 		static void Shutdown();
 
 		static Application& Get();
-		static const std::unique_ptr<Window>& GetWindow();
+		static const Scope<Window>& GetWindow();
 		static Utils::TimeStep GetTime();
 		static Endian GetEndian();
 
@@ -62,11 +64,15 @@ namespace TRAP
 		
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
+		bool OnKeyPress(KeyPressedEvent& e);
+		bool OnWindowFocus(WindowFocusEvent& e);
+		bool OnWindowLostFocus(WindowLostFocusEvent& e);
 
 		Scope<Window> m_window;
 		std::unique_ptr<ImGuiLayer> m_ImGuiLayer;
 		bool m_running = true;
 		bool m_minimized = false;
+		bool m_focused = true;
 		std::unique_ptr<LayerStack> m_layerStack;
 
 		Utils::Config m_config;
