@@ -89,10 +89,15 @@ namespace TRAP
 		void SetVSyncInterval(uint32_t interval);
 		void SetCursorMode(const CursorMode& mode);
 		void SetCursorType(const CursorType& cursor) const;
+		void SetCursorIcon(const Scope<Image>& image) const;
 		void SetRawMouseInput(bool enabled);
 		void SetIcon() const;
 		void SetIcon(const Scope<Image>& image) const;
 		void SetEventCallback(const EventCallbackFn& callback);
+
+		bool IsMaximized() const;
+		bool IsMinimized() const;
+		bool IsResizable() const;
 
 	private:
 		void Init(const WindowProps& props);
@@ -104,7 +109,7 @@ namespace TRAP
 		
 		struct WindowedModeParams
 		{
-			uint32_t Width, Height, RefreshRate;
+			int32_t Width, Height, RefreshRate;
 			int32_t XPos, YPos;
 		} m_oldWindowedParams{};
 		
@@ -138,6 +143,8 @@ namespace TRAP
 		uint32_t VSync;
 		Graphics::API::RenderAPI RenderAPI;
 		Window::DisplayMode displayMode;
+		bool Maximized;
+		bool Resizable;
 		uint32_t Monitor;
 		Window::CursorMode cursorMode;
 		bool rawMouseInput;
@@ -149,6 +156,8 @@ namespace TRAP
 		                     uint32_t refreshRate = 60,
 		                     uint32_t vsync = 0,
 		                     Window::DisplayMode displayMode = Window::DisplayMode::Windowed,
+							 bool maximized = false,
+							 bool resizable = true,
 		                     uint32_t monitor = 0,
 		                     Window::CursorMode cursorMode = Window::CursorMode::Normal,
 		                     bool rawMouseInput = false);

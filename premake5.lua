@@ -121,7 +121,8 @@ project "TRAP"
 			"SPIRV-Cross-HLSL",
 			"DInput8",
 			"DXGUID",
-			"XInput"
+			"XInput",
+			"Imm32"
 		}
 
 	filter "system:linux"
@@ -158,7 +159,8 @@ project "TRAP"
 			"vulkan",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL"
+			"SPIRV-Cross-HLSL",
+			"Imm32"
 		}
 
 	filter "configurations:Debug"
@@ -228,7 +230,8 @@ project "Sandbox"
 			"OSDependent",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL"
+			"SPIRV-Cross-HLSL",
+			"Imm32"
 		}
 
 	filter "configurations:Debug"

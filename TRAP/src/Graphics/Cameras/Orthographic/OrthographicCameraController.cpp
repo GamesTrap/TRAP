@@ -101,8 +101,8 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 void TRAP::Graphics::OrthographicCameraController::OnEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<MouseScrolledEvent>(TRAP_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
-	dispatcher.Dispatch<WindowResizeEvent>(TRAP_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
+	dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent& e) {return OnMouseScrolled(e); });
+	dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) {return OnWindowResized(e); });
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

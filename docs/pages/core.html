@@ -98,11 +98,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#trap-core-assert">TRAP_CORE_ASSERT</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#trap-renderer-assert">TRAP_RENDERER_ASSERT</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bit">BIT</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#trap-bind-event-fn">TRAP_BIND_EVENT_FN</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#scope">Scope</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#makescope">MakeScope</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ref">Ref</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id4">MakeScope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">MakeScope</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="events.html">Events</a></li>
@@ -367,26 +366,6 @@
 <li><p><code class="code docutils literal notranslate"><span class="pre">x</span></code> Specifies the amount to shift</p></li>
 </ul>
 </div>
-<div class="section" id="trap-bind-event-fn">
-<span id="id2"></span><h2>TRAP_BIND_EVENT_FN<a class="headerlink" href="#trap-bind-event-fn" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP_BIND_EVENT_FN</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">This macro is used for setting the callback function for TRAP::<a class="reference internal" href="events.html#events"><span class="std std-ref">Events</span></a></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">fn</span></code> Specifies the function to send TRAP::<a class="reference internal" href="events.html#events"><span class="std std-ref">Events</span></a> to</p></li>
-</ul>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>TRAP::<a class="reference internal" href="events.html#event-dispatcher"><span class="std std-ref">EventDispatcher</span></a>::<a class="reference internal" href="events.html#event-dispatch"><span class="std std-ref">Dispatch</span></a></p>
-</div>
-</div>
 <div class="section" id="scope">
 <h2>Scope<a class="headerlink" href="#scope" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
@@ -431,7 +410,7 @@
 </div>
 </div>
 <div class="section" id="ref">
-<span id="id3"></span><h2>Ref<a class="headerlink" href="#ref" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>Ref<a class="headerlink" href="#ref" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
 <span class="k">using</span> <span class="n">Ref</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
 </pre></div>
@@ -451,8 +430,8 @@
 <p>This may change in the future when memory management gets added</p>
 </div>
 </div>
-<div class="section" id="id4">
-<h2>MakeScope<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h2>MakeScope<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
 <span class="k">constexpr</span> <span class="n">Ref</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">MakeRef</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span><span class="p">...</span> <span class="n">args</span><span class="p">);</span>
 </pre></div>

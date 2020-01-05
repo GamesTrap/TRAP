@@ -1728,7 +1728,7 @@ DWORD TRAP::INTERNAL::WindowingAPI::GetWindowExStyle(const Ref<InternalWindow> w
 {
 	DWORD style = WS_EX_APPWINDOW;
 
-	if (window->Monitor)
+	if (window->Monitor || window->Floating)
 		style |= WS_EX_TOPMOST;
 
 	return style;
@@ -1859,7 +1859,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateHelperWindow()
 
 	//HACK: The command to the first ShowWindow call is ignored if the parent
 	//      process passed along a STARTUPINFO, so clear that with a no-op call
-	ShowWindow(s_Data.HelperWindowHandle, SW_HIDE);
+	::ShowWindow(s_Data.HelperWindowHandle, SW_HIDE);
 
 	//Register for HID device notifications
 	{
@@ -2959,6 +2959,31 @@ void TRAP::INTERNAL::WindowingAPI::DisableCursor(const Ref<InternalWindow> windo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Update native window styles to match attributes
+void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const Ref<InternalWindow>& window)
+{
+	RECT rect;
+	DWORD style = GetWindowLongW(window->Handle, GWL_STYLE);
+	style &= ~(WS_OVERLAPPEDWINDOW | WS_POPUP);
+	style |= GetWindowStyle(window);
+
+	GetClientRect(window->Handle, &rect);
+
+	if (IsWindows10AnniversaryUpdateOrGreaterWin32())
+		s_Data.User32.AdjustWindowRectExForDPI(&rect, style, FALSE, GetWindowExStyle(window), s_Data.User32.GetDPIForWindow(window->Handle));
+	else
+		AdjustWindowRectEx(&rect, style, FALSE, GetWindowExStyle(window));
+
+	ClientToScreen(window->Handle, reinterpret_cast<POINT*>(&rect.left));
+	ClientToScreen(window->Handle, reinterpret_cast<POINT*>(&rect.right));
+	SetWindowLongW(window->Handle, GWL_STYLE, style);
+	::SetWindowPos(window->Handle, HWND_TOP, rect.left, rect.top,
+		           rect.right - rect.left, rect.bottom - rect.top,
+		           SWP_FRAMECHANGED | SWP_NOACTIVATE | SWP_NOZORDER);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const uint32_t mode)
 {
 	uint32_t count;
@@ -3249,8 +3274,12 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(const Ref<InternalWi
 
 			flags |= SWP_FRAMECHANGED;
 		}
-
-		const HWND after = HWND_NOTOPMOST;
+		
+		HWND after;
+		if (window->Floating)
+			after = HWND_TOPMOST;
+		else
+			after = HWND_NOTOPMOST;
 
 		if (IsWindows10AnniversaryUpdateOrGreaterWin32())
 		{
@@ -3579,7 +3608,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPos(Ref<InternalMonitor> mo
 
 void TRAP::INTERNAL::WindowingAPI::PlatformShowWindow(const Ref<InternalWindow> window)
 {
-	ShowWindow(window->Handle, SW_SHOWNA);
+	::ShowWindow(window->Handle, SW_SHOWNA);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3756,7 +3785,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorPos(const Ref<InternalWindow
 	window->LastCursorPosY = pos.y;
 
 	ClientToScreen(window->Handle, &pos);
-	SetCursorPos(pos.x, pos.y);
+	::SetCursorPos(pos.x, pos.y);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3854,6 +3883,65 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSize(const Ref<InternalWindo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(const Ref<InternalWindow> window, const bool enabled)
+{
+	UpdateWindowStyles(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(const Ref<InternalWindow> window, const bool enabled)
+{
+	UpdateWindowStyles(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const Ref<InternalWindow> window, const bool enabled)
+{
+	const HWND after = enabled ? HWND_TOPMOST : HWND_NOTOPMOST;
+	::SetWindowPos(window->Handle, after, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacity(const Ref<InternalWindow> window, const float opacity)
+{
+	if(opacity < 1.0f)
+	{
+		const BYTE alpha = static_cast<BYTE>(255 * opacity);
+		DWORD style = GetWindowLongW(window->Handle, GWL_EXSTYLE);
+		style |= WS_EX_LAYERED;
+		SetWindowLongW(window->Handle, GWL_EXSTYLE, style);
+		SetLayeredWindowAttributes(window->Handle, 0, alpha, LWA_ALPHA);
+	}
+	else
+	{
+		DWORD style = GetWindowLongW(window->Handle, GWL_EXSTYLE);
+		style &= ~WS_EX_LAYERED;
+		SetWindowLongW(window->Handle, GWL_EXSTYLE, style);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacity(const Ref<InternalWindow> window)
+{
+	BYTE alpha;
+	DWORD flags;
+
+	if((GetWindowLongW(window->Handle, GWL_EXSTYLE) & WS_EX_LAYERED) &&
+		GetLayeredWindowAttributes(window->Handle, nullptr, &alpha, &flags))
+	{
+		if (flags & LWA_ALPHA)
+			return alpha / 255.0f;
+	}
+
+	return 1.0f;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSize(const Ref<InternalWindow> window, int32_t& width, int32_t& height)
 {
 	PlatformGetWindowSize(window, width, height);
@@ -3865,6 +3953,40 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScale(const Ref<Inter
 {
 	const HANDLE handle = MonitorFromWindow(window->Handle, MONITOR_DEFAULTTONEAREST);
 	GetMonitorContentScaleWin32(static_cast<HMONITOR>(handle), xScale, yScale);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkArea(const Ref<InternalMonitor> monitor, int32_t& xPos, int32_t& yPos, int32_t& width, int32_t& height)
+{
+	MONITORINFO mi = { sizeof(mi) };
+	GetMonitorInfo(monitor->Handle, &mi);
+
+	xPos = mi.rcWork.left;
+	yPos = mi.rcWork.top;
+	width = mi.rcWork.right - mi.rcWork.left;
+	height = mi.rcWork.bottom - mi.rcWork.top;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::WindowingAPI::PlatformWindowVisible(const Ref<InternalWindow> window)
+{
+	return IsWindowVisible(window->Handle);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMaximized(const Ref<InternalWindow> window)
+{
+	return IsZoomed(window->Handle);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMinimized(const Ref<InternalWindow> window)
+{
+	return IsIconic(window->Handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3944,6 +4066,13 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 bool TRAP::INTERNAL::WindowingAPI::PlatformWindowFocused(const Ref<InternalWindow> window)
 {
 	return window->Handle == GetActiveWindow();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::WindowingAPI::PlatformWindowHovered(const Ref<InternalWindow> window)
+{
+	return CursorInContentArea(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4097,7 +4226,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(const VkInsta
 
 void TRAP::INTERNAL::WindowingAPI::PlatformMinimizeWindow(const Ref<InternalWindow> window)
 {
-	ShowWindow(window->Handle, SW_MINIMIZE);
+	::ShowWindow(window->Handle, SW_MINIMIZE);
 }
 
 #endif

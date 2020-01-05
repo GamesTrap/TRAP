@@ -158,6 +158,8 @@ bool TRAP::Input::IsGamepadButtonPressed(Controller controller, const Controller
 		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not a Gamepad!");
 		return false;
 	}
+
+	PollController(controller, 0);
 	
 	return IsMappedControllerButtonPressed(controller, button);
 }
@@ -172,9 +174,7 @@ bool TRAP::Input::IsRawMouseInputSupported()
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Input::IsControllerConnected(const Controller controller)
-{
-	PollController(controller, 0);
-	
+{	
 	return s_controllerStatuses[static_cast<uint8_t>(controller)].Connected;
 }
 
@@ -258,6 +258,8 @@ float TRAP::Input::GetControllerAxis(Controller controller, const ControllerAxis
 		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return 0.0f;
 	}
+
+	PollController(controller, 0);
 	
 	if (s_controllerAPI != ControllerAPI::Unknown)
 		return GetMappedControllerAxis(controller, axis);
@@ -274,6 +276,8 @@ TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(Controller controller
 		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return ControllerDPad::Centered;
 	}
+
+	PollController(controller, 0);
 	
 	if (s_controllerAPI != ControllerAPI::Unknown)
 		return GetMappedControllerDPad(controller, dpad);
@@ -311,6 +315,8 @@ std::vector<float> TRAP::Input::GetAllControllerAxes(Controller controller)
 		return {};
 	}
 
+	PollController(controller, 0);
+
 	return GetAllControllerAxesInternal(controller);
 }
 
@@ -323,6 +329,8 @@ std::vector<bool> TRAP::Input::GetAllControllerButtons(Controller controller)
 		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return {};
 	}
+
+	PollController(controller, 0);
 
 	return GetAllControllerButtonsInternal(controller);
 }
@@ -337,6 +345,8 @@ std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(Cont
 		return {};
 	}
 
+	PollController(controller, 0);
+	
 	return GetAllControllerDPadsInternal(controller);
 }
 
@@ -356,6 +366,8 @@ void TRAP::Input::SetControllerVibration(Controller controller, const float left
 		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return;
 	}
+
+	PollController(controller, 0);
 
 	SetControllerVibrationInternal(controller, leftMotor, rightMotor);
 }
@@ -395,8 +407,8 @@ void TRAP::Input::UpdateControllerMappings(const std::string& map)
 void TRAP::Input::OnEvent(Event &e)
 {
 	EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<ControllerConnectEvent>(TRAP_BIND_EVENT_FN(Input::OnControllerConnectEvent));
-	dispatcher.Dispatch<ControllerDisconnectEvent>(TRAP_BIND_EVENT_FN(Input::OnControllerDisconnectEvent));
+	dispatcher.Dispatch<ControllerConnectEvent>([](ControllerConnectEvent& e) {return OnControllerConnectEvent(e); });
+	dispatcher.Dispatch<ControllerDisconnectEvent>([](ControllerDisconnectEvent& e) {return OnControllerDisconnectEvent(e); });
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -50,6 +50,8 @@ TRAP::Application::Application()
 	uint32_t vsync = 0;
 	uint32_t fpsLimit = 0;
 	Window::DisplayMode displayMode = Window::DisplayMode::Windowed;
+	bool maximized = false;
+	bool resizable = true;
 	uint32_t monitor = 0;
 	Graphics::API::RenderAPI renderAPI = Graphics::API::RenderAPI::NONE;
 	Input::ControllerAPI controllerAPI = Input::ControllerAPI::Unknown;
@@ -66,6 +68,8 @@ TRAP::Application::Application()
 	m_config.Get("VSync", vsync);
 	m_config.Get("FPSLimit", fpsLimit);
 	m_config.Get("DisplayMode", displayMode);
+	m_config.Get("Maximized", maximized);
+	m_config.Get("Resizable", resizable);
 	m_config.Get("Monitor", monitor);
 	m_config.Get("RenderAPI", renderAPI);
 	m_config.Get("ControllerAPI", controllerAPI);
@@ -94,10 +98,12 @@ TRAP::Application::Application()
 				refreshRate,
 				vsync,
 				displayMode,
+				maximized,
+				resizable,
 				monitor
 			)
 			);
-	m_window->SetEventCallback(TRAP_BIND_EVENT_FN(Application::OnEvent));
+	m_window->SetEventCallback([this](Event& e) {OnEvent(e); });
 
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
@@ -112,11 +118,11 @@ TRAP::Application::Application()
 
 	//Initialize Input for Joysticks
 	m_input = std::make_unique<Input>();
-	Input::SetEventCallback(TRAP_BIND_EVENT_FN(Application::OnEvent));
+	Input::SetEventCallback([this](Event& e) {OnEvent(e); });
 	Input::Init(controllerAPI);
 
-	/*m_ImGuiLayer = std::make_unique<ImGuiLayer>();
-	PushOverlay(std::move(m_ImGuiLayer));*/
+	m_ImGuiLayer = std::make_unique<ImGuiLayer>();
+	PushOverlay(std::move(m_ImGuiLayer));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -132,6 +138,8 @@ TRAP::Application::~Application()
 	m_config.Set("VSync", m_window->GetVSyncInterval());
 	m_config.Set("FPSLimit", m_fpsLimit);
 	m_config.Set("DisplayMode", m_window->GetDisplayMode());
+	m_config.Set("Maximized", m_window->IsMaximized());
+	m_config.Set("Resizable", m_window->IsResizable());
 	m_config.Set("Monitor", m_window->GetMonitor());
 	m_config.Set("RenderAPI", Graphics::API::Context::GetRenderAPI());
 	m_config.Set("ControllerAPI", Input::GetControllerAPI());
@@ -158,9 +166,9 @@ void TRAP::Application::Run()
 	{
 		if (m_fpsLimit)
 			nextFrame += std::chrono::milliseconds(1000 / m_fpsLimit);
-		if (!m_focused)
+		if (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
 			nextFrame += std::chrono::milliseconds(1000 / 30); //30 FPS
-
+		
 		m_drawCalls = 0;
 
 		Utils::Timer FrameTimeTimer;
@@ -183,13 +191,13 @@ void TRAP::Application::Run()
 		}
 
 		Window::Use(m_window);
-		/*if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
+		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 		{
 			ImGuiLayer::Begin();
 			for (const auto& layer : *m_layerStack)
 				layer->OnImGuiRender();
 			ImGuiLayer::End();
-		}*/
+		}
 
 		if (!m_minimized)
 			Graphics::RenderCommand::Present(m_window);
@@ -269,7 +277,7 @@ void TRAP::Application::Run()
 		}
 
 		//FPSLimiter
-		if (m_fpsLimit || !m_focused)
+		if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
 			std::this_thread::sleep_until(nextFrame);
 	}
 }
@@ -279,11 +287,11 @@ void TRAP::Application::Run()
 void TRAP::Application::OnEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<WindowCloseEvent>(TRAP_BIND_EVENT_FN(Application::OnWindowClose));
-	dispatcher.Dispatch<WindowResizeEvent>(TRAP_BIND_EVENT_FN(Application::OnWindowResize));
-	dispatcher.Dispatch<KeyPressedEvent>(TRAP_BIND_EVENT_FN(Application::OnKeyPress));
-	dispatcher.Dispatch<WindowFocusEvent>(TRAP_BIND_EVENT_FN(Application::OnWindowFocus));
-	dispatcher.Dispatch<WindowLostFocusEvent>(TRAP_BIND_EVENT_FN(Application::OnWindowLostFocus));
+	dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) {return OnWindowClose(e); });
+	dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) {return OnWindowResize(e); });
+	dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent& e) {return OnKeyPress(e); });
+	dispatcher.Dispatch<WindowFocusEvent>([this](WindowFocusEvent& e) {return OnWindowFocus(e); });
+	dispatcher.Dispatch<WindowLostFocusEvent>([this](WindowLostFocusEvent& e) {return OnWindowLostFocus(e); });
 
 	m_input->OnEvent(e); //Controller Connect/Disconnect Events
 
@@ -405,16 +413,40 @@ TRAP::Application::Endian TRAP::Application::GetEndian()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Application::SetClipboardString(const std::string& string)
+{
+	INTERNAL::WindowingAPI::SetClipboardString(string);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Application::GetClipboardString()
+{
+	return INTERNAL::WindowingAPI::GetClipboardString();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 {
 	for (const auto& layer : *m_layerStack)
 		layer->OnDetach();
 	Graphics::API::Context::SetRenderAPI(renderAPI);
 
-	WindowProps props{ std::string(m_window->GetTitle()), m_window->GetWidth(), m_window->GetHeight(), m_window->GetRefreshRate(), m_window->GetVSyncInterval(), m_window->GetDisplayMode(), m_window->GetMonitor() };
+	WindowProps props{
+		std::string(m_window->GetTitle()),
+		m_window->GetWidth(),
+		m_window->GetHeight(),
+		m_window->GetRefreshRate(),
+		m_window->GetVSyncInterval(),
+		m_window->GetDisplayMode(),
+		m_window->IsMaximized(),
+		m_window->IsResizable(),
+		m_window->GetMonitor()
+	};
 	m_window.reset();
 	m_window = std::make_unique<Window>(props);
-	m_window->SetEventCallback(TRAP_BIND_EVENT_FN(Application::OnEvent));
+	m_window->SetEventCallback([this](Event& e) {OnEvent(e); });
 	//Initialize Renderer
 	Graphics::Renderer::Init();
 	//Always added as a fallback shader
@@ -496,7 +528,7 @@ bool TRAP::Application::OnWindowResize(WindowResizeEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnKeyPress(KeyPressedEvent& e)
+bool TRAP::Application::OnKeyPress(KeyPressedEvent& e) const
 {
 	if (Window::GetActiveWindows() == 1)
 	{
@@ -504,13 +536,9 @@ bool TRAP::Application::OnKeyPress(KeyPressedEvent& e)
 		{
 			if (m_window->GetDisplayMode() == Window::DisplayMode::Windowed ||
 				m_window->GetDisplayMode() == Window::DisplayMode::Borderless)
-			{
 				m_window->SetDisplayMode(Window::DisplayMode::Fullscreen, 0, 0, 0);
-			}
 			else if (m_window->GetDisplayMode() == Window::DisplayMode::Fullscreen)
-			{
 				m_window->SetDisplayMode(Window::DisplayMode::Windowed, 0, 0, 0);
-			}
 		}
 	}
 	

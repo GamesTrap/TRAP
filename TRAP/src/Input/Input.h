@@ -268,7 +268,7 @@ namespace TRAP
 		
 		static void UpdateControllerMappings(const std::string& map);
 
-		void OnEvent(Event& e);
+		static void OnEvent(Event& e);
 		
 		static void DetectControllerConnection();
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -353,8 +353,8 @@ namespace TRAP
 		};
 #endif
 
-		bool OnControllerConnectEvent(ControllerConnectEvent& e);
-		bool OnControllerDisconnectEvent(ControllerDisconnectEvent& e);
+		static bool OnControllerConnectEvent(ControllerConnectEvent& e);
+		static bool OnControllerDisconnectEvent(ControllerDisconnectEvent& e);
 		
 		static std::array<ControllerStatus, 4> s_controllerStatuses;
 		static EventCallbackFn s_eventCallback;

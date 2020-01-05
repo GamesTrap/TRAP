@@ -2,6 +2,7 @@
 #define _GAMESTRAP_SANDBOXLAYER_H_
 
 #include <TRAP.h>
+#include "Embed.h"
 
 class SandboxLayer final : public TRAP::Layer
 {
@@ -187,7 +188,7 @@ public:
 		m_cameraController.OnEvent(event);
 
 		TRAP::EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<TRAP::KeyPressedEvent>(TRAP_BIND_EVENT_FN(SandboxLayer::OnKeyPressed));
+		dispatcher.Dispatch<TRAP::KeyPressedEvent>([this](TRAP::KeyPressedEvent& e) { return OnKeyPressed(e); });
 	}
 
 private:

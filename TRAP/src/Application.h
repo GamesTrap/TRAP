@@ -32,9 +32,7 @@ namespace TRAP
 		Application& operator=(Application&&) = delete;
 		virtual ~Application();
 
-		void Run();
-
-		void OnEvent(Event& e);
+		void Run();		
 
 		void PushLayer(Scope<Layer> layer) const;
 		void PushOverlay(Scope<Layer> overlay) const;
@@ -56,15 +54,19 @@ namespace TRAP
 		static Utils::TimeStep GetTime();
 		static Endian GetEndian();
 
+		static void SetClipboardString(const std::string& string);
+		static std::string GetClipboardString();
+
 		void ReCreateWindow(Graphics::API::RenderAPI renderAPI);
 		void ReCreate(Graphics::API::RenderAPI renderAPI) const;
 
 	private:		
 		Utils::TimeStep GetTimeInternal() const;
-		
+
+		void OnEvent(Event& e);
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
-		bool OnKeyPress(KeyPressedEvent& e);
+		bool OnKeyPress(KeyPressedEvent& e) const;
 		bool OnWindowFocus(WindowFocusEvent& e);
 		bool OnWindowLostFocus(WindowLostFocusEvent& e);
 

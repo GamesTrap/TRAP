@@ -62,6 +62,7 @@
 #include "Utils/Win.h"
 #include <Dbt.h>
 #include <dwmapi.h>
+#include <imm.h>
 //DirectX
 #include <dxgiformat.h>
 #include <dxgi1_6.h>
@@ -83,6 +84,9 @@
 #undef CreateWindow
 #undef GetWindowStyle
 #undef GetWindowExStyle
+#undef IsMaximized
+#undef IsMinimized
+#undef IsRestored
 #undef near
 #undef DELETE
 #endif

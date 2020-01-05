@@ -463,7 +463,8 @@ struct tVec4
 ////////////
 struct Mat3
 {
-	union {
+	union
+	{
 		std::array<float, 3 * 3> elements{};
 		std::array<tVec3<float>, 3> rows;
 	};

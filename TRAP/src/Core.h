@@ -51,7 +51,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 85);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 87);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -158,8 +158,6 @@ constexpr T BIT(T x)
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
-
-#define TRAP_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
 namespace TRAP
 {

@@ -118,9 +118,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#setvsyncinterval">SetVSyncInterval</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setcursormode">SetCursorMode</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setcursortype">SetCursorType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setcursoricon">SetCursorIcon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setrawmouseinput">SetRawMouseInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#seticon">SetIcon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#seteventcallback">SetEventCallback</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ismaximized">IsMaximized</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#isminimized">IsMinimized</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#isresizable">IsResizable</a></li>
 </ul>
 </li>
 </ul>
@@ -264,6 +268,7 @@
                   <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">refreshRate</span><span class="p">,</span>
                   <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">vsync</span><span class="p">,</span>
                   <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">DisplayMode</span> <span class="n">displayMode</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="kt">bool</span> <span class="n">maximized</span><span class="p">,</span>
                   <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">monitor</span><span class="p">,</span>
                   <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">CursorMode</span> <span class="n">cursorMode</span><span class="p">,</span>
                   <span class="k">const</span> <span class="kt">bool</span> <span class="n">rawMouseInput</span><span class="p">);</span>
@@ -284,6 +289,7 @@
 <li><p><code class="code docutils literal notranslate"><span class="pre">refreshRate</span></code> Sets the Refresh Rate of TRAP::<a class="reference internal" href="#windowprops">WindowProps</a>. Default value: <code class="code docutils literal notranslate"><span class="pre">60</span></code></p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">vsync</span></code> Sets the VSync interval of TRAP::<a class="reference internal" href="#windowprops">WindowProps</a>. Default value: <code class="code docutils literal notranslate"><span class="pre">0</span></code></p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">displayMode</span></code> Sets the Display Mode of TRAP::<a class="reference internal" href="#windowprops">WindowProps</a>. Default value: <code class="code docutils literal notranslate"><span class="pre">TRAP::Window::DisplayMode::Windowed</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">maximized</span></code> Sets maximized state of a TRAP::<a class="reference internal" href="#windowprops">WindowProps</a>. Default value: <code class="code docutils literal notranslate"><span class="pre">false</span></code></p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">monitor</span></code> Sets the Monitor of TRAP::<a class="reference internal" href="#windowprops">WindowProps</a>. Default value: <code class="code docutils literal notranslate"><span class="pre">0</span></code></p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">cursorMode</span></code> Sets the TRAP::<a class="reference internal" href="#window">Window</a>::<a class="reference internal" href="#cursormode">CursorMode</a>. Default value: <code class="code docutils literal notranslate"><span class="pre">TRAP::Window::CursorMode::Normal</span></code></p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">rawMouseInput</span></code> Sets the Mouse Input. Default value: <code class="code docutils literal notranslate"><span class="pre">false</span></code></p></li>
@@ -649,6 +655,26 @@
 <li><p><code class="code docutils literal notranslate"><span class="pre">type</span></code> specifies the TRAP::<a class="reference internal" href="#window">Window</a>::<a class="reference internal" href="#cursortype">CursorType</a> to use.</p></li>
 </ul>
 </div>
+<div class="section" id="setcursoricon">
+<h3>SetCursorIcon<a class="headerlink" href="#setcursoricon" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">SetCursorIcon</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">ImageWindow</span><span class="o">&gt;&amp;</span> <span class="n">image</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Sets the specified TRAP::<a href="#id3"><span class="problematic" id="id4">`Image`_</span></a> to use as mouse cursor by a TRAP::<a class="reference internal" href="#window">Window</a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">image</span></code> specifies the TRAP::<a href="#id5"><span class="problematic" id="id6">`Image`_</span></a> to use.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <code class="code docutils literal notranslate"><span class="pre">image</span></code> is nullptr then the default arrow mouse cursor will be used!</p>
+</div>
+</div>
 <div class="section" id="setrawmouseinput">
 <h3>SetRawMouseInput<a class="headerlink" href="#setrawmouseinput" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">SetRawMouseInput</span><span class="p">(</span><span class="k">const</span> <span class="kt">bool</span> <span class="n">enabled</span><span class="p">);</span>
@@ -683,11 +709,11 @@
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Sets the Icon of a TRAP::<a class="reference internal" href="#window">Window</a> to the specified TRAP::<a href="#id3"><span class="problematic" id="id4">`Image`_</span></a></div>
+<div class="line">Sets the Icon of a TRAP::<a class="reference internal" href="#window">Window</a> to the specified TRAP::<a href="#id7"><span class="problematic" id="id8">`Image`_</span></a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
-<div class="line"><code class="code docutils literal notranslate"><span class="pre">image</span></code> Specifies the TRAP::Image to be used as Icon</div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">image</span></code> Specifies the TRAP::<a href="#id9"><span class="problematic" id="id10">`Image`_</span></a> to be used as Icon</div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -712,6 +738,36 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><code class="code docutils literal notranslate"><span class="pre">EventCallbackFn</span></code> is the same as <code class="code docutils literal notranslate"><span class="pre">std::function&lt;void(Event&amp;)&gt;</span></code></p>
+</div>
+</div>
+<div class="section" id="ismaximized">
+<h3>IsMaximized<a class="headerlink" href="#ismaximized" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">IsMaximized</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns whether the TRAP::<a class="reference internal" href="#window">Window</a> is maximized or not</div>
+</div>
+</div>
+<div class="section" id="isminimized">
+<h3>IsMinimized<a class="headerlink" href="#isminimized" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">IsMinimized</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns whether the TRAP::<a class="reference internal" href="#window">Window</a> is minimized or not</div>
+</div>
+</div>
+<div class="section" id="isresizable">
+<h3>IsResizable<a class="headerlink" href="#isresizable" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">IsResizable</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns whether the TRAP::<a class="reference internal" href="#window">Window</a> is resizable or not</div>
 </div>
 </div>
 </div>

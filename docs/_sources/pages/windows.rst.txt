@@ -83,6 +83,7 @@ WindowProps
                       const uint32_t refreshRate,
                       const uint32_t vsync,
                       const TRAP::Window::DisplayMode displayMode,
+                      const bool maximized,
                       const uint32_t monitor,
                       const TRAP::Window::CursorMode cursorMode,
                       const bool rawMouseInput);
@@ -99,6 +100,7 @@ WindowProps
 - :code:`refreshRate` Sets the Refresh Rate of TRAP::`WindowProps`_. Default value: :code:`60`
 - :code:`vsync` Sets the VSync interval of TRAP::`WindowProps`_. Default value: :code:`0`
 - :code:`displayMode` Sets the Display Mode of TRAP::`WindowProps`_. Default value: :code:`TRAP::Window::DisplayMode::Windowed`
+- :code:`maximized` Sets maximized state of a TRAP::`WindowProps`_. Default value: :code:`false`
 - :code:`monitor` Sets the Monitor of TRAP::`WindowProps`_. Default value: :code:`0`
 - :code:`cursorMode` Sets the TRAP::`Window`_::`CursorMode`_. Default value: :code:`TRAP::Window::CursorMode::Normal`
 - :code:`rawMouseInput` Sets the Mouse Input. Default value: :code:`false`
@@ -459,6 +461,24 @@ SetCursorType
 
 - :code:`type` specifies the TRAP::`Window`_::`CursorType`_ to use.
 
+^^^^^^^^^^^^^
+SetCursorIcon
+^^^^^^^^^^^^^
+
+.. code-block:: cpp
+
+   void TRAP::Window::SetCursorIcon(const TRAP::Scope<TRAP::ImageWindow>& image) const;
+
+| **Description**
+| Sets the specified TRAP::`Image`_ to use as mouse cursor by a TRAP::`Window`_
+
+| **Parameters**
+
+- :code:`image` specifies the TRAP::`Image`_ to use.
+
+.. note::
+   If :code:`image` is nullptr then the default arrow mouse cursor will be used!
+
 ^^^^^^^^^^^^^^^^
 SetRawMouseInput
 ^^^^^^^^^^^^^^^^
@@ -496,7 +516,7 @@ SetIcon
 | Sets the Icon of a TRAP::`Window`_ to the specified TRAP::`Image`_
 
 | **Parameters**
-| :code:`image` Specifies the TRAP::Image to be used as Icon
+| :code:`image` Specifies the TRAP::`Image`_ to be used as Icon
 
 .. note::
    If :code:`image` is nullptr then the default TRAP Engine Icon will be used!
@@ -518,3 +538,36 @@ SetEventCallback
 
 .. note::
    :code:`EventCallbackFn` is the same as :code:`std::function<void(Event&)>`
+
+^^^^^^^^^^^
+IsMaximized
+^^^^^^^^^^^
+
+.. code-block:: cpp
+   
+   bool TRAP::Window::IsMaximized() const;
+
+| **Description**
+| Returns whether the TRAP::`Window`_ is maximized or not
+
+^^^^^^^^^^^
+IsMinimized
+^^^^^^^^^^^
+
+.. code-block:: cpp
+   
+   bool TRAP::Window::IsMinimized() const;
+
+| **Description**
+| Returns whether the TRAP::`Window`_ is minimized or not
+
+^^^^^^^^^^^
+IsResizable
+^^^^^^^^^^^
+
+.. code-block:: cpp
+   
+   bool TRAP::Window::IsResizable() const;
+
+| **Description**
+| Returns whether the TRAP::`Window`_ is resizable or not

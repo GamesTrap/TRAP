@@ -189,26 +189,6 @@ BIT
 
 - :code:`x` Specifies the amount to shift
 
-.. _trap_bind_event_fn:
-
-------------------
-TRAP_BIND_EVENT_FN
-------------------
-
-.. code-block:: cpp
-
-    TRAP_BIND_EVENT_FN(fn)
-
-| **Description**
-| This macro is used for setting the callback function for TRAP:::ref:`Events`
-
-| **Parameters**
-
-- :code:`fn` Specifies the function to send TRAP:::ref:`Events` to
-
-.. seealso::
-    TRAP:::ref:`event_dispatcher`\:::ref:`event_dispatch`
-
 -----
 Scope
 -----

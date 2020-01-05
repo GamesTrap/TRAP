@@ -143,9 +143,10 @@ void TRAP::INTERNAL::WindowingAPI::DefaultWindowHints()
 	//The default is a focused, visible and resizable window with decorations
 	s_Data.Hints.Window = {};
 	s_Data.Hints.Window.Resizable = true;
-	s_Data.Hints.Window.Decorated = true;
 	s_Data.Hints.Window.Visible = true;
+	s_Data.Hints.Window.Decorated = true;
 	s_Data.Hints.Window.Focused = true;
+	s_Data.Hints.Window.FocusOnShow = true;
 
 	//The default is 24 bits of color, 24 bits of depth and 8 bits of stencil, double buffered
 	s_Data.Hints.FrameBuffer = {};
@@ -188,6 +189,24 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 			break;
 		}
 
+		case Hint::FocusOnShow:
+		{
+			s_Data.Hints.Window.FocusOnShow = value;
+			break;
+		}
+
+		case Hint::Decorated:
+		{
+			s_Data.Hints.Window.Decorated = value;
+			break;
+		}
+
+		case Hint::Floating:
+		{
+			s_Data.Hints.Window.Floating = value;
+			break;
+		}
+
 		/*case Hint::Stereo:
 		{
 			s_Data.Hints.FrameBuffer.Stereo = value;
@@ -195,7 +214,10 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 		}*/
 
 		default:
-			break;
+		{
+			InputError(Error::Invalid_Enum, " Invalid Window Hint!");
+			break;			
+		}
 	}
 }
 
@@ -298,6 +320,8 @@ TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Windowin
 	window->Monitor = std::move(monitor);
 	window->Resizable = WNDConfig.Resizable;
 	window->Decorated = WNDConfig.Decorated;
+	window->Floating = WNDConfig.Floating;
+	window->FocusOnShow = WNDConfig.FocusOnShow;
 	window->CursorMode = CursorMode::Normal;
 	window->BorderlessFullscreen = false;
 
@@ -490,19 +514,19 @@ TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Windowin
 	{
 		if (image->IsHDR())
 		{
-			InputError(Error::Invalid_Value, "[Icon] HDR is unsupported as icon!");
+			InputError(Error::Invalid_Value, "[Cursor] HDR is unsupported as icon!");
 			return nullptr;
 		}
 
 		if (image->GetBitsPerPixel() > 32)
 		{
-			InputError(Error::Invalid_Value, "[Icon] BPP > 32 is unsupported as icon!");
+			InputError(Error::Invalid_Value, "[Cursor] BPP > 32 is unsupported as icon!");
 			return nullptr;
 		}
 
-		if ((image->GetFormat() != ImageFormat::RGB && image->GetBitsPerPixel() != 24) || (image->GetFormat() != ImageFormat::RGBA && image->GetBitsPerPixel() != 32))
+		if (!((image->GetFormat() == ImageFormat::RGB && image->GetBitsPerPixel() == 24) || (image->GetFormat() == ImageFormat::RGBA && image->GetBitsPerPixel() == 32)))
 		{
-			InputError(Error::Invalid_Value, "[Icon] Unsupported BPP or format used!");
+			InputError(Error::Invalid_Value, "[Cursor] Unsupported BPP or format used!");
 			return nullptr;
 		}
 
@@ -706,6 +730,32 @@ void TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(const Ref<InternalWindow>&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Sets the opacity of the whole window.
+void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const Ref<InternalWindow>& window, float opacity)
+{
+	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
+
+	if(opacity < 0.0f || opacity > 1.0f)
+	{
+		InputError(Error::Invalid_Value, " Invalid Window Opacity: " + std::to_string(opacity));
+		return;
+	}
+
+	PlatformSetWindowOpacity(window, opacity);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Returns the opacity of the whole window.
+float TRAP::INTERNAL::WindowingAPI::GetWindowOpacity(const Ref<InternalWindow>& window)
+{
+	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
+
+	return PlatformGetWindowOpacity(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Retrieves the content scale for the specified window.
 void TRAP::INTERNAL::WindowingAPI::GetWindowContentScale(const Ref<InternalWindow>& window, float& xScale, float& yScale)
 {
@@ -715,6 +765,102 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowContentScale(const Ref<InternalWindo
 	yScale = 0.0f;
 
 	PlatformGetWindowContentScale(window, xScale, yScale);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Sets an attribute for the specified window.
+void TRAP::INTERNAL::WindowingAPI::SetWindowAttrib(const Ref<InternalWindow>& window, const Hint hint, const bool value)
+{
+	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
+
+	switch(hint)
+	{
+		case Hint::Resizable:
+		{
+			if (window->Resizable == value)
+				return;
+
+			window->Resizable = value;
+
+			if (!window->Monitor)
+				PlatformSetWindowResizable(window, value);
+			break;
+		}
+
+		case Hint::FocusOnShow:
+		{
+			window->FocusOnShow = value;
+			break;
+		}
+
+		case Hint::Decorated:
+		{
+			if (window->Decorated == value)
+				return;
+
+			window->Decorated = value;
+			if (!window->Monitor)
+				PlatformSetWindowDecorated(window, value);
+		}
+
+		case Hint::Floating:
+		{
+			if (window->Floating == value)
+				return;
+
+			window->Floating = value;
+			if (!window->Monitor)
+				PlatformSetWindowFloating(window, value);
+		}
+
+		default:
+		{
+			InputError(Error::Invalid_Enum, "Invalid window attribute provided!");
+			break;
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Returns an attribute of the specified window.
+bool TRAP::INTERNAL::WindowingAPI::GetWindowAttrib(const Ref<InternalWindow>& window, const Hint hint)
+{
+	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
+
+	switch(hint)
+	{
+	case Hint::Focused:
+		return PlatformWindowFocused(window);
+
+	case Hint::Visible:
+		return PlatformWindowVisible(window);
+
+	case Hint::Maximized:
+		return PlatformWindowMaximized(window);
+
+	case Hint::Minimized:
+		return PlatformWindowMinimized(window);
+
+	case Hint::Resizable:
+		return window->Resizable;
+
+	case Hint::FocusOnShow:
+		return window->FocusOnShow;
+
+	case Hint::Hovered:
+		return PlatformWindowHovered(window);
+
+	case Hint::Decorated:
+		return window->Decorated;
+
+	case Hint::Floating:
+		return window->Floating;
+
+	default:
+		return false;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1174,6 +1320,34 @@ bool TRAP::INTERNAL::WindowingAPI::GetMouseButton(const Ref<InternalWindow>& win
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Sets the position of the cursor, relative to the content area of the window
+void TRAP::INTERNAL::WindowingAPI::SetCursorPos(const Ref<InternalWindow>& window, const double xPos, const double yPos)
+{
+	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
+
+	if (xPos < -DBL_MAX || xPos > DBL_MAX ||
+	    yPos < -DBL_MAX || yPos > DBL_MAX)
+	{
+		InputError(Error::Invalid_Value, " Invalid cursor position: " + std::to_string(xPos) + "x" + std::to_string(yPos));
+		return;
+	}
+
+	if (!PlatformWindowFocused(window))
+		return;
+
+	if (window->CursorMode == CursorMode::Disabled)
+	{
+		//Only update the accumulated position if the cursor is disabled
+		window->VirtualCursorPosX = xPos;
+		window->VirtualCursorPosY = yPos;
+	}
+	else
+		//Update system cursor position
+		PlatformSetCursorPos(window, xPos, yPos);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Retrieves the position of the cursor relative to the content area of the window.
 void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const Ref<InternalWindow>& window, double& xPos, double& yPos)
 {
@@ -1193,18 +1367,69 @@ void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const Ref<InternalWindow>& windo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Sets the clipboard to the specified string.
-void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const Ref<InternalWindow>& window, const std::string& string)
+//Returns the position of the monitor's viewport on the virtual screen.
+void TRAP::INTERNAL::WindowingAPI::GetMonitorPos(const Ref<InternalMonitor>& monitor, int32_t& xPos, int32_t& yPos)
+{
+	TRAP_WINDOW_ASSERT(monitor, "[Window] monitor is nullptr!");
+
+	xPos = 0;
+	yPos = 0;
+
+	PlatformGetMonitorPos(monitor, xPos, yPos);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const Ref<InternalMonitor>& monitor, int32_t& xPos, int32_t& yPos, int32_t& width, int32_t& height)
+{
+	TRAP_WINDOW_ASSERT(monitor, "[Window] monitor is nullptr!");
+
+	xPos = 0;
+	yPos = 0;
+	width = 0;
+	height = 0;
+
+	PlatformGetMonitorWorkArea(monitor, xPos, yPos, width, height);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Makes the specified window visible.
+void TRAP::INTERNAL::WindowingAPI::ShowWindow(Ref<InternalWindow>& window)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-	
+
+	if (window->Monitor)
+		return;
+
+	PlatformShowWindow(window);
+
+	if (window->FocusOnShow)
+		PlatformFocusWindow(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Brings the specified window to front and sets input focus.
+void TRAP::INTERNAL::WindowingAPI::FocusWindow(const Ref<InternalWindow>& window)
+{
+	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
+
+	PlatformFocusWindow(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Sets the clipboard to the specified string.
+void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
+{	
 	PlatformSetClipboardString(string);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns the contents of the clipboard as a string.
-std::string TRAP::INTERNAL::WindowingAPI::GetClipboardString(const Ref<InternalWindow>& window)
+std::string TRAP::INTERNAL::WindowingAPI::GetClipboardString()
 {	
 	return PlatformGetClipboardString();
 }

@@ -8,9 +8,6 @@ Events
 General
 -------
 
-.. seealso::
-   :ref:`core`: :ref:`trap_bind_event_fn`
-
 .. warning::
    `Events`_ in :ref:`trap_engine` are currently blocking, meaning when an event occurs it immediately gets dispatched and must be dealt with right then and there!
 
@@ -171,7 +168,8 @@ Dispatch
 | :code:`F(func)` Specifies the function to dispatch the TRAP::`Event`_ to
 
 .. seealso::
-   Use :ref:`trap_bind_event_fn` to specify the function for the parameter :code:`F(func)`
+   Use a lambda to call an user created function that takes the TRAP::`Event`_ as a parameter
+   Example: :code:`Dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) {return OnWindowClose(e); });`
 
 -----------------
 WindowResizeEvent

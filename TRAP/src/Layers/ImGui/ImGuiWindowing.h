@@ -40,15 +40,44 @@ namespace TRAP::INTERNAL
 		};		
 		
 		static void InitPlatformInterface();
-		//static void UpdateMonitors();
+		static void UpdateMousePosAndButtons();
+		static void UpdateMouseCursor();
+		static void UpdateGamepads();
+		static void UpdateMonitors();
 
 		static bool Init(const std::shared_ptr<WindowingAPI::InternalWindow>& window, bool installCallbacks, WindowingAPI::ContextAPI clientAPI);
 		static const char* GetClipboardText(void* userData);
 		static void SetClipboardText(void* userData, const char* text);
-		static void MouseButtonCallback(const std::shared_ptr<WindowingAPI::InternalWindow>& window, Input::MouseButton mouseButton, bool pressed);
-		static void ScrollCallback(const std::shared_ptr<WindowingAPI::InternalWindow>& window, double xOffset, double yOffset);
-		static void KeyCallback(const std::shared_ptr<WindowingAPI::InternalWindow>& window, Input::Key key, int32_t scanCode, bool pressed);
-		static void CharCallback(const std::shared_ptr<WindowingAPI::InternalWindow>& window, uint32_t codePoint);
+		static void MouseButtonCallback(Ref<WindowingAPI::InternalWindow> window, Input::MouseButton mouseButton, bool pressed);
+		static void ScrollCallback(Ref<WindowingAPI::InternalWindow> window, double xOffset, double yOffset);
+		static void KeyCallback(Ref<WindowingAPI::InternalWindow> window, Input::Key key, int32_t scanCode, bool pressed);
+		static void CharCallback(Ref<WindowingAPI::InternalWindow> window, uint32_t codePoint);
+		static void WindowCloseCallback(Ref<WindowingAPI::InternalWindow> window);
+		static void WindowPosCallback(Ref<WindowingAPI::InternalWindow> window, int32_t x, int32_t y);
+		static void WindowSizeCallback(Ref<WindowingAPI::InternalWindow> window, int32_t width, int32_t height);
+		static void CreateWindow(ImGuiViewport* viewport);
+		static void DestroyWindow(ImGuiViewport* viewport);
+#ifdef TRAP_PLATFORM_WINDOWS
+		static WNDPROC s_TRAPWndProc;
+		static LRESULT CALLBACK WndProcNoInputs(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif
+		static void ShowWindow(ImGuiViewport* viewport);
+		static ImVec2 GetWindowPos(ImGuiViewport* viewport);
+		static void SetWindowPos(ImGuiViewport* viewport, ImVec2 pos);
+		static ImVec2 GetWindowSize(ImGuiViewport* viewport);
+		static void SetWindowSize(ImGuiViewport* viewport, ImVec2 size);
+		static void SetWindowTitle(ImGuiViewport* viewport, const char* title);
+		static void SetWindowFocus(ImGuiViewport* viewport);
+		static bool GetWindowFocus(ImGuiViewport* viewport);
+		static bool GetWindowMinimized(ImGuiViewport* viewport);
+		static void SetWindowAlpha(ImGuiViewport* viewport, float alpha);
+		static void RenderWindow(ImGuiViewport* viewport, void* unused);
+		static void SwapBuffers(ImGuiViewport* viewport, void* unused);
+#ifdef TRAP_PLATFORM_WINDOWS
+		static void SetIMEInputPos(ImGuiViewport* viewport, ImVec2 pos);
+#endif
+		static int32_t CreateVkSurface(ImGuiViewport* viewport, ImU64 vkInstance, const void* vkAllocator, ImU64* outVkSurface);
+		static void MonitorCallback(Ref<WindowingAPI::InternalMonitor>& unused1, bool unused2);
 	};
 }
 

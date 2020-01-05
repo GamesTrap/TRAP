@@ -147,8 +147,13 @@ namespace TRAP::INTERNAL
 		{
 			Resizable,
 			Maximized,
+			Minimized,
 			Visible,
-			Focused
+			Focused,
+			FocusOnShow,
+			Hovered,
+			Decorated,
+			Floating
 			//Stereo //Used for 3D/VR
 		};
 		enum class ContextAPI
@@ -311,10 +316,12 @@ namespace TRAP::INTERNAL
 			uint32_t Height = 0;
 			std::string Title{};
 			bool Resizable = false;
-			bool Decorated = true;
 			bool Visible = false;
+			bool Decorated = true;
 			bool Maximized = false;
 			bool Focused = false;
+			bool Floating = false;
+			bool FocusOnShow = true;
 		};
 		//Context configuration
 		struct ContextConfig
@@ -520,7 +527,9 @@ namespace TRAP::INTERNAL
 			//Window settings and state
 			bool Resizable = true;
 			bool Decorated = true;
+			bool Floating = false;
 			bool ShouldClose = false;
+			bool FocusOnShow = true;
 			bool BorderlessFullscreen = false;
 			void* UserPointer = nullptr;
 			VideoMode VideoMode{};
@@ -634,8 +643,16 @@ namespace TRAP::INTERNAL
 		static void GetWindowSize(const Ref<InternalWindow>& window, int32_t& width, int32_t& height);
 		//Retrieves the size of the framebuffer of the specified window.
 		static void GetFrameBufferSize(const Ref<InternalWindow>& window, int32_t& width, int32_t& height);
+		//Sets the opacity of the whole window.
+		static void SetWindowOpacity(const Ref<InternalWindow>& window, float opacity);
+		//Returns the opacity of the whole window.
+		static float GetWindowOpacity(const Ref<InternalWindow>& window);		
 		//Retrieves the content scale for the specified window.
 		static void GetWindowContentScale(const Ref<InternalWindow>& window, float& xScale, float& yScale);
+		//Sets an attribute for the specified window.
+		static void SetWindowAttrib(const Ref<InternalWindow>& window, Hint hint, bool value);
+		//Returns an attribute of the specified window.
+		static bool GetWindowAttrib(const Ref<InternalWindow>& window, Hint hint);
 		//Sets the mode, monitor, video mode and placement of a window.
 		static void SetWindowMonitor(const Ref<InternalWindow>& window,
 		                             Ref<InternalMonitor> monitor,
@@ -724,12 +741,22 @@ namespace TRAP::INTERNAL
 		static bool GetKey(const Ref<InternalWindow>& window, Input::Key key);
 		//Returns the last reported state of a mouse button for the specified window.
 		static bool GetMouseButton(const Ref<InternalWindow>& window, Input::MouseButton button);
+		//Sets the position of the cursor, relative to the content area of the window
+		static void SetCursorPos(const Ref<InternalWindow>& window, double xPos, double yPos);
 		//Retrieves the position of the cursor relative to the content area of the window.
 		static void GetCursorPos(const Ref<InternalWindow>& window, double& xPos, double& yPos);
+		//Returns the position of the monitor's viewport on the virtual screen.
+		static void GetMonitorPos(const Ref<InternalMonitor>& monitor, int32_t& xPos, int32_t& yPos);
+		//Retrieves the work area of the monitor.
+		static void GetMonitorWorkArea(const Ref<InternalMonitor>& monitor, int32_t& xPos, int32_t& yPos, int32_t& width, int32_t& height);
+		//Makes the specified window visible.
+		static void ShowWindow(Ref<InternalWindow>& window);
+		//Brings the specified window to front and sets input focus.
+		static void FocusWindow(const Ref<InternalWindow>& window);
 		//Sets the clipboard to the specified string.
-		static void SetClipboardString(const Ref<InternalWindow>& window, const std::string& string);
+		static void SetClipboardString(const std::string& string);
 		//Returns the contents of the clipboard as a string.
-		static std::string GetClipboardString(const Ref<InternalWindow>& window);
+		static std::string GetClipboardString();
 		//Returns the window whose context is current on the calling thread.
 		static Ref<InternalWindow> GetCurrentContext();
 		//Swaps the front and back buffers of the specified window.
@@ -805,10 +832,20 @@ namespace TRAP::INTERNAL
 		static void PlatformSetWindowIcon(Ref<InternalWindow> window, const Scope<Image>& image);
 		static void PlatformGetWindowPos(Ref<InternalWindow> window, int32_t& xPos, int32_t& yPos);
 		static void PlatformSetWindowSize(Ref<InternalWindow> window, int32_t width, int32_t height);
+		static void PlatformSetWindowResizable(Ref<InternalWindow> window, bool enabled);
+		static void PlatformSetWindowDecorated(Ref<InternalWindow> window, bool enabled);
+		static void PlatformSetWindowFloating(Ref<InternalWindow> window, bool enabled);
+		static void PlatformSetWindowOpacity(Ref<InternalWindow> window, float opacity);
+		static float PlatformGetWindowOpacity(Ref<InternalWindow> window);
 		static void PlatformGetFrameBufferSize(Ref<InternalWindow> window, int32_t& width, int32_t& height);
 		static void PlatformGetWindowContentScale(Ref<InternalWindow> window, float& xScale, float& yScale);
+		static void PlatformGetMonitorWorkArea(Ref<InternalMonitor> monitor, int32_t& xPos, int32_t& yPos, int32_t& width, int32_t& height);
+		static bool PlatformWindowVisible(Ref<InternalWindow> window);
+		static bool PlatformWindowMaximized(Ref<InternalWindow> window);
+		static bool PlatformWindowMinimized(Ref<InternalWindow> window);
 		static void PlatformPollEvents();
 		static bool PlatformWindowFocused(Ref<InternalWindow> window);
+		static bool PlatformWindowHovered(Ref<InternalWindow> window);
 		static bool PlatformRawMouseMotionSupported();
 		static void PlatformSetRawMouseMotion(Ref<InternalWindow> window, bool enabled);
 		static int32_t PlatformGetKeyScanCode(Input::Key key);
@@ -978,6 +1015,8 @@ namespace TRAP::INTERNAL
 		static void EnableCursor(Ref<InternalWindow> window);
 		//Apply disabled cursor mode to a focused window
 		static void DisableCursor(Ref<InternalWindow> window);
+		//Update native window styles to match attributes
+		static void UpdateWindowStyles(const Ref<InternalWindow>& window);
 		static bool InitVulkan(uint32_t mode);
 		static std::string GetVulkanResultString(VkResult result);
 #endif

@@ -354,10 +354,6 @@
 <span id="id1"></span><h1>Events<a class="headerlink" href="#events" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="general">
 <h2>General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h2>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="core.html#core"><span class="std std-ref">Core</span></a>: <a class="reference internal" href="core.html#trap-bind-event-fn"><span class="std std-ref">TRAP_BIND_EVENT_FN</span></a></p>
-</div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p><a class="reference internal" href="#events">Events</a> in <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a> are currently blocking, meaning when an event occurs it immediately gets dispatched and must be dealt with right then and there!</p>
@@ -510,7 +506,8 @@
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>Use <a class="reference internal" href="core.html#trap-bind-event-fn"><span class="std std-ref">TRAP_BIND_EVENT_FN</span></a> to specify the function for the parameter <code class="code docutils literal notranslate"><span class="pre">F(func)</span></code></p>
+<p>Use a lambda to call an user created function that takes the TRAP::<a class="reference internal" href="#event">Event</a> as a parameter
+Example: <code class="code docutils literal notranslate"><span class="pre">Dispatch&lt;WindowCloseEvent&gt;([this](WindowCloseEvent&amp;</span> <span class="pre">e)</span> <span class="pre">{return</span> <span class="pre">OnWindowClose(e);</span> <span class="pre">});</span></code></p>
 </div>
 </div>
 </div>

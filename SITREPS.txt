@@ -696,3 +696,22 @@ SITREP 12/29/2019|19w52a6
         - Added Hotkey ALT+(KP)Enter to switch between Windowed and Fullscreen mode (Single-Window only!) ~<30 mins
         - Fixed Minimizing the Main Window on Multi-Window programs also stopped Rendering on the other Windows ~<20 mins
         - Added 30 FPS Lock if Main Window loses focus (Single-Window only!) ~<20 mins
+
+SITREP 01/04/2020|20w01a1
+    - Changed TRAP Engine version to 20w01a1(0.5.86)
+    - Branch Window:
+        - Added Main Window now keeps track of maximized status and saves it for next start ~>20 mins
+        - Added ability to set maximized state upon window creation ~>10 mins
+        - Added ability to set resizable state upon window creation ~<10 mins
+        - Added ability to set custom image as mouse cursor ~<20 mins
+        - Added ability to query maximized, minimized and resizable states from a window ~<30 mins
+        - Replaced every TRAP_BIND_EVENT_FN with lambdas <~20 mins
+        - Removed TRAP_BIND_EVENT_FN instead use lambdas now <~20 mins
+        - Fixed TRAP::Window crash if no EventCallbackFn was set ~<20 mins
+        - Updated Docs
+
+SITREP 01/05/2020|20w01a2
+    - Changed TRAP Engine version to 20w01a2(0.5.87)
+    - Branch Window:
+        - Added ImGui support ~>150 mins
+        - Fixed False triggering 30FPS lock if ImGui child window is focused outside Main Window ~<30 mins
