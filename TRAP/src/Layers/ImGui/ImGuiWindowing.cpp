@@ -396,7 +396,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetClipboardText(void* userData, const char
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(Ref<WindowingAPI::InternalWindow> window, Input::MouseButton mouseButton, const bool pressed)
+void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const Ref<WindowingAPI::InternalWindow>& window, Input::MouseButton mouseButton, const bool pressed)
 {
 	if (s_prevUserCallbackMouseButton != nullptr && window == s_window)
 		s_prevUserCallbackMouseButton(window, mouseButton, pressed);
@@ -407,7 +407,7 @@ void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(Ref<WindowingAPI::Inter
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::ScrollCallback(Ref<WindowingAPI::InternalWindow> window, const double xOffset, const double yOffset)
+void TRAP::INTERNAL::ImGuiWindowing::ScrollCallback(const Ref<WindowingAPI::InternalWindow>& window, const double xOffset, const double yOffset)
 {
 	if (s_prevUserCallbackScroll != nullptr && window == s_window)
 		s_prevUserCallbackScroll(window, xOffset, yOffset);
@@ -419,7 +419,7 @@ void TRAP::INTERNAL::ImGuiWindowing::ScrollCallback(Ref<WindowingAPI::InternalWi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(Ref<WindowingAPI::InternalWindow> window, Input::Key key, const int32_t scanCode, const bool pressed)
+void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const Ref<WindowingAPI::InternalWindow>& window, Input::Key key, const int32_t scanCode, const bool pressed)
 {
 	if (s_prevUserCallbackKey != nullptr && window == s_window)
 		s_prevUserCallbackKey(window, key, scanCode, pressed);
@@ -439,7 +439,7 @@ void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(Ref<WindowingAPI::InternalWindo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::CharCallback(Ref<WindowingAPI::InternalWindow> window, const uint32_t codePoint)
+void TRAP::INTERNAL::ImGuiWindowing::CharCallback(const Ref<WindowingAPI::InternalWindow>& window, const uint32_t codePoint)
 {
 	if (s_prevUserCallbackChar != nullptr && window == s_window)
 		s_prevUserCallbackChar(window, codePoint);
@@ -454,7 +454,7 @@ void TRAP::INTERNAL::ImGuiWindowing::CharCallback(Ref<WindowingAPI::InternalWind
 //If you are new to dear imgui or creating a new binding for dear imgui, it is recommended that you completely ignore this section first...
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::WindowCloseCallback(Ref<WindowingAPI::InternalWindow> window)
+void TRAP::INTERNAL::ImGuiWindowing::WindowCloseCallback(const Ref<WindowingAPI::InternalWindow>& window)
 {
 	if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(window.get()))
 		viewport->PlatformRequestClose = true;
@@ -462,7 +462,7 @@ void TRAP::INTERNAL::ImGuiWindowing::WindowCloseCallback(Ref<WindowingAPI::Inter
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::WindowPosCallback(Ref<WindowingAPI::InternalWindow> window, int32_t x, int32_t y)
+void TRAP::INTERNAL::ImGuiWindowing::WindowPosCallback(const Ref<WindowingAPI::InternalWindow>& window, int32_t x, int32_t y)
 {
 	if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(window.get()))
 		viewport->PlatformRequestMove = true;
@@ -470,7 +470,7 @@ void TRAP::INTERNAL::ImGuiWindowing::WindowPosCallback(Ref<WindowingAPI::Interna
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::WindowSizeCallback(Ref<WindowingAPI::InternalWindow> window, int32_t width, int32_t height)
+void TRAP::INTERNAL::ImGuiWindowing::WindowSizeCallback(const Ref<WindowingAPI::InternalWindow>& window, int32_t width, int32_t height)
 {
 	if(ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(window.get()))
 	{
@@ -738,7 +738,7 @@ int32_t TRAP::INTERNAL::ImGuiWindowing::CreateVkSurface(ImGuiViewport* viewport,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::MonitorCallback(Ref<WindowingAPI::InternalMonitor>& unused1, bool unused2)
+void TRAP::INTERNAL::ImGuiWindowing::MonitorCallback(const Ref<WindowingAPI::InternalMonitor>& unused1, bool unused2)
 {
 	s_wantUpdateMonitors = true;
 }

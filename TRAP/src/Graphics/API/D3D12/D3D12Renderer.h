@@ -22,7 +22,7 @@ namespace TRAP::Graphics::API
 		void InitInternal() override;
 
 		void Clear(RendererBufferType buffer) override;
-		void Present(const std::unique_ptr<Window>& window) override;
+		void Present(const Scope<Window>& window) override;
 
 		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) override;
 		void SetDepthTesting(bool enabled) override;

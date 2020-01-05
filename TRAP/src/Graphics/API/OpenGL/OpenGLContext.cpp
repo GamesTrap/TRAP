@@ -38,7 +38,7 @@ void TRAP::Graphics::API::OpenGLContext::SetVSyncIntervalInternal(const uint32_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLContext::Present(const std::unique_ptr<Window>& window)
+void TRAP::Graphics::API::OpenGLContext::Present(const Scope<Window>& window)
 {
 	if (window)
 		INTERNAL::WindowingAPI::SwapBuffers(window->GetInternalWindow());
@@ -48,7 +48,7 @@ void TRAP::Graphics::API::OpenGLContext::Present(const std::unique_ptr<Window>& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLContext::UseInternal(const std::unique_ptr<Window>& window)
+void TRAP::Graphics::API::OpenGLContext::UseInternal(const Scope<Window>& window)
 {
 	if (window)
 	{
@@ -74,7 +74,7 @@ bool TRAP::Graphics::API::OpenGLContext::IsOpenGLCapable()
 	INTERNAL::WindowingAPI::SetContextAPI(INTERNAL::WindowingAPI::ContextAPI::OpenGL);
 	INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 	INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
-	const Ref<INTERNAL::WindowingAPI::InternalWindow> OpenGLTestWindow = INTERNAL::WindowingAPI::CreateWindow(800, 600, "OpenGL Version Tester", nullptr, nullptr);
+	Ref<INTERNAL::WindowingAPI::InternalWindow> OpenGLTestWindow = INTERNAL::WindowingAPI::CreateWindow(800, 600, "OpenGL Version Tester", nullptr, nullptr);
 	INTERNAL::WindowingAPI::DefaultWindowHints();
 	if (!OpenGLTestWindow)
 		return false;

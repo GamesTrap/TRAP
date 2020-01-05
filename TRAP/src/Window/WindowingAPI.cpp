@@ -81,7 +81,7 @@ void TRAP::INTERNAL::WindowingAPI::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DestroyWindow(Ref<InternalWindow> window)
+void TRAP::INTERNAL::WindowingAPI::DestroyWindow(Ref<InternalWindow>& window)
 {
 	if (window == nullptr)
 		return;
@@ -281,8 +281,8 @@ std::vector<TRAP::INTERNAL::WindowingAPI::VideoMode> TRAP::INTERNAL::WindowingAP
 TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::WindowingAPI::CreateWindow(const uint32_t width,
 	                                                                                               const uint32_t height,
 	                                                                                               const std::string& title,
-	                                                                                               Ref<InternalMonitor> monitor,
-	                                                                                               Ref<InternalWindow> share)
+	                                                                                               const Ref<InternalMonitor>& monitor,
+	                                                                                               const Ref<InternalWindow>& share)
 {
 	TRAP_WINDOW_ASSERT(!title.empty(), "[Window] Empty Title provided!");
 	TRAP_WINDOW_ASSERT(width > 0, "[Window] Invalid width provided!");
@@ -301,7 +301,7 @@ TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Windowin
 	WNDConfig.Width = width;
 	WNDConfig.Height = height;
 	WNDConfig.Title = title;
-	CTXConfig.Share = std::move(share);
+	CTXConfig.Share = share;
 
 	if (!IsValidContextConfig(CTXConfig))
 		return nullptr;
@@ -317,7 +317,7 @@ TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Windowin
 	window->VideoMode.BlueBits = FBConfig.BlueBits;
 	window->VideoMode.RefreshRate = -1;
 
-	window->Monitor = std::move(monitor);
+	window->Monitor = monitor;
 	window->Resizable = WNDConfig.Resizable;
 	window->Decorated = WNDConfig.Decorated;
 	window->Floating = WNDConfig.Floating;
@@ -376,9 +376,9 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowTitle(const Ref<InternalWindow>& win
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(Ref<InternalMonitor> monitor, float& xScale, float& yScale)
+void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScale(const Ref<InternalMonitor>& monitor, float& xScale, float& yScale)
 {
-	PlatformGetMonitorContentScale(std::move(monitor), xScale, yScale);
+	PlatformGetMonitorContentScale(monitor, xScale, yScale);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -470,7 +470,7 @@ void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::strin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Ref<InternalCursor> cursor)
+void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Ref<InternalCursor>& cursor)
 {
 	if (cursor == nullptr)
 		return;
@@ -731,7 +731,7 @@ void TRAP::INTERNAL::WindowingAPI::GetFrameBufferSize(const Ref<InternalWindow>&
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the opacity of the whole window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const Ref<InternalWindow>& window, float opacity)
+void TRAP::INTERNAL::WindowingAPI::SetWindowOpacity(const Ref<InternalWindow>& window, const float opacity)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
@@ -867,7 +867,7 @@ bool TRAP::INTERNAL::WindowingAPI::GetWindowAttrib(const Ref<InternalWindow>& wi
 
 //Sets the mode, monitor, video mode and placement of a window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(const Ref<InternalWindow>& window,
-                                                    Ref<InternalMonitor> monitor,
+                                                    const Ref<InternalMonitor>& monitor,
                                                     const int32_t xPos,
                                                     const int32_t yPos,
                                                     const int32_t width,
@@ -894,7 +894,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(const Ref<InternalWindow>& w
 	window->VideoMode.Height = height;
 	window->VideoMode.RefreshRate = refreshRate;
 
-	PlatformSetWindowMonitor(window, std::move(monitor),
+	PlatformSetWindowMonitor(window, monitor,
 		xPos, yPos, width, height,
 		refreshRate);
 }
@@ -1395,7 +1395,7 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const Ref<InternalMonitor>
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Makes the specified window visible.
-void TRAP::INTERNAL::WindowingAPI::ShowWindow(Ref<InternalWindow>& window)
+void TRAP::INTERNAL::WindowingAPI::ShowWindow(const Ref<InternalWindow>& window)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 

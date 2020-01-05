@@ -80,7 +80,7 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(RendererBufferType buffer)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::Present(const std::unique_ptr<Window>& window)
+void TRAP::Graphics::API::VulkanRenderer::Present(const Scope<Window>& window)
 {
 	m_context->Present(window);
 }

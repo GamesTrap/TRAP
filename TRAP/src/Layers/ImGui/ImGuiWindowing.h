@@ -48,13 +48,13 @@ namespace TRAP::INTERNAL
 		static bool Init(const std::shared_ptr<WindowingAPI::InternalWindow>& window, bool installCallbacks, WindowingAPI::ContextAPI clientAPI);
 		static const char* GetClipboardText(void* userData);
 		static void SetClipboardText(void* userData, const char* text);
-		static void MouseButtonCallback(Ref<WindowingAPI::InternalWindow> window, Input::MouseButton mouseButton, bool pressed);
-		static void ScrollCallback(Ref<WindowingAPI::InternalWindow> window, double xOffset, double yOffset);
-		static void KeyCallback(Ref<WindowingAPI::InternalWindow> window, Input::Key key, int32_t scanCode, bool pressed);
-		static void CharCallback(Ref<WindowingAPI::InternalWindow> window, uint32_t codePoint);
-		static void WindowCloseCallback(Ref<WindowingAPI::InternalWindow> window);
-		static void WindowPosCallback(Ref<WindowingAPI::InternalWindow> window, int32_t x, int32_t y);
-		static void WindowSizeCallback(Ref<WindowingAPI::InternalWindow> window, int32_t width, int32_t height);
+		static void MouseButtonCallback(const Ref<WindowingAPI::InternalWindow>& window, Input::MouseButton mouseButton, bool pressed);
+		static void ScrollCallback(const Ref<WindowingAPI::InternalWindow>& window, double xOffset, double yOffset);
+		static void KeyCallback(const Ref<WindowingAPI::InternalWindow>& window, Input::Key key, int32_t scanCode, bool pressed);
+		static void CharCallback(const Ref<WindowingAPI::InternalWindow>& window, uint32_t codePoint);
+		static void WindowCloseCallback(const Ref<WindowingAPI::InternalWindow>& window);
+		static void WindowPosCallback(const Ref<WindowingAPI::InternalWindow>& window, int32_t x, int32_t y);
+		static void WindowSizeCallback(const Ref<WindowingAPI::InternalWindow>& window, int32_t width, int32_t height);
 		static void CreateWindow(ImGuiViewport* viewport);
 		static void DestroyWindow(ImGuiViewport* viewport);
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -77,7 +77,7 @@ namespace TRAP::INTERNAL
 		static void SetIMEInputPos(ImGuiViewport* viewport, ImVec2 pos);
 #endif
 		static int32_t CreateVkSurface(ImGuiViewport* viewport, ImU64 vkInstance, const void* vkAllocator, ImU64* outVkSurface);
-		static void MonitorCallback(Ref<WindowingAPI::InternalMonitor>& unused1, bool unused2);
+		static void MonitorCallback(const Ref<WindowingAPI::InternalMonitor>& unused1, bool unused2);
 	};
 }
 

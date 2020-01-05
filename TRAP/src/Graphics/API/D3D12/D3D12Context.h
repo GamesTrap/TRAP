@@ -19,9 +19,9 @@ namespace TRAP::Graphics::API
 
 		void SetVSyncIntervalInternal(uint32_t interval) override;
 
-		void Present(const std::unique_ptr<Window>& window);
+		void Present(const Scope<Window>& window);
 
-		void UseInternal(const std::unique_ptr<Window>& window) override;
+		void UseInternal(const Scope<Window>& window) override;
 
 		static D3D12Context* Get();
 

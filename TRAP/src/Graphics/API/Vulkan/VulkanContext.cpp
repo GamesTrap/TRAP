@@ -36,13 +36,13 @@ void TRAP::Graphics::API::VulkanContext::SetVSyncIntervalInternal(const uint32_t
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanContext::Present(const std::unique_ptr<Window>& window)
+void TRAP::Graphics::API::VulkanContext::Present(const Scope<Window>& window)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanContext::UseInternal(const std::unique_ptr<Window>& window)
+void TRAP::Graphics::API::VulkanContext::UseInternal(const Scope<Window>& window)
 {	
 }
 

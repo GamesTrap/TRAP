@@ -715,3 +715,4 @@ SITREP 01/05/2020|20w01a2
     - Branch Window:
         - Added ImGui support ~>150 mins
         - Fixed False triggering 30FPS lock if ImGui child window is focused outside Main Window ~<30 mins
+        - Moar references ~>40 mins

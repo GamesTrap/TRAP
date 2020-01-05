@@ -40,7 +40,7 @@ namespace TRAP::Graphics::API
 		virtual void InitInternal() = 0;
 
 		virtual void Clear(RendererBufferType buffer) = 0;
-		virtual void Present(const std::unique_ptr<Window>& window) = 0;
+		virtual void Present(const Scope<Window>& window) = 0;
 
 		virtual void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) = 0;
 		virtual void SetDepthTesting(bool enabled) = 0;

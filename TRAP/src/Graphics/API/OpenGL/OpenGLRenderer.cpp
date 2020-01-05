@@ -56,7 +56,7 @@ void TRAP::Graphics::API::OpenGLRenderer::Clear(const RendererBufferType buffer)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::Present(const std::unique_ptr<Window>& window)
+void TRAP::Graphics::API::OpenGLRenderer::Present(const Scope<Window>& window)
 {
 	OpenGLContext::Present(window);
 }

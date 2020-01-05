@@ -246,12 +246,13 @@ bool TRAP::Graphics::API::Context::IsOpenGLCapable()
 
 void TRAP::Graphics::API::Context::SetVSyncInterval(const uint32_t interval)
 {
-	if (s_Context) s_Context->SetVSyncIntervalInternal(interval);
+	if (s_Context) 
+		s_Context->SetVSyncIntervalInternal(interval);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::Context::Use(const std::unique_ptr<Window>& window)
+void TRAP::Graphics::API::Context::Use(const Scope<Window>& window)
 {
 	if (s_Context)
 		if (window)
