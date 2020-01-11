@@ -77,16 +77,17 @@ WindowProps
 
 .. code-block:: cpp
 
-    TRAP::WindowProps(std::string title,
-                      const uint32_t width,
-                      const uint32_t height,
-                      const uint32_t refreshRate,
-                      const uint32_t vsync,
-                      const TRAP::Window::DisplayMode displayMode,
-                      const bool maximized,
-                      const uint32_t monitor,
-                      const TRAP::Window::CursorMode cursorMode,
-                      const bool rawMouseInput);
+    TRAP::WindowProps(std::string title = "TRAP Engine",
+                      const uint32_t width = 1280,
+                      const uint32_t height = 720,
+                      const uint32_t refreshRate = 60,
+                      const uint32_t vsync = 0,
+                      const TRAP::Window::DisplayMode displayMode = TRAP::Window::DisplayMode::Windowed,
+                      const bool maximized = false,
+                      const bool resizable = true,
+                      const uint32_t monitor = 0,
+                      const TRAP::Window::CursorMode cursorMode = TRAP::Window::CursorMode::Normal,
+                      const bool rawMouseInput = false);
 
 | **Description**
 | Holds properties for a TRAP::`Window`_.
@@ -101,6 +102,7 @@ WindowProps
 - :code:`vsync` Sets the VSync interval of TRAP::`WindowProps`_. Default value: :code:`0`
 - :code:`displayMode` Sets the Display Mode of TRAP::`WindowProps`_. Default value: :code:`TRAP::Window::DisplayMode::Windowed`
 - :code:`maximized` Sets maximized state of a TRAP::`WindowProps`_. Default value: :code:`false`
+- :code:`resizable` Sets resizability of a TRAP::`WindowProps`_. Default value: :code:`true`
 - :code:`monitor` Sets the Monitor of TRAP::`WindowProps`_. Default value: :code:`0`
 - :code:`cursorMode` Sets the TRAP::`Window`_::`CursorMode`_. Default value: :code:`TRAP::Window::CursorMode::Normal`
 - :code:`rawMouseInput` Sets the Mouse Input. Default value: :code:`false`
@@ -510,7 +512,7 @@ SetIcon
 
 .. code-block:: cpp
 
-   void TRAP::Window::SetIcon(const std::unique_ptr<TRAP::Image>& image) const;
+   void TRAP::Window::SetIcon(const TRAP::Scope<TRAP::Image>& image) const;
 
 | **Description**
 | Sets the Icon of a TRAP::`Window`_ to the specified TRAP::`Image`_
@@ -538,6 +540,21 @@ SetEventCallback
 
 .. note::
    :code:`EventCallbackFn` is the same as :code:`std::function<void(Event&)>`
+
+^^^^^^^^^^^^
+SetResizable
+^^^^^^^^^^^^
+
+.. code-block:: cpp
+   
+   void TRAP::Window::SetResizable(const bool enabled) const;
+
+| **Description**
+| Enables/Disables resizability of a TRAP::`Window`_
+
+| **Parameters**
+
+- :code:`enabled` specifies if the resizability should be enabled or disabled
 
 ^^^^^^^^^^^
 IsMaximized
@@ -571,3 +588,28 @@ IsResizable
 
 | **Description**
 | Returns whether the TRAP::`Window`_ is resizable or not
+
+^^^^^^^^^^^^^^
+MaximizeWindow
+^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+   
+   void TRAP::Window::MaximizeWindow(const TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalWindow>& window) const;
+
+| **Description**
+| Maximizes the TRAP::`Window`_
+
+.. note::
+   Ignored if the TRAP::`Window`_ doesnt use TRAP::`Window`_::`DisplayMode`_\::Windowed
+
+^^^^^^^^^^^^^^
+MinimizeWindow
+^^^^^^^^^^^^^^
+
+.. code-block:: cpp
+   
+   void TRAP::Window::MinimizeWindow(const TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalWindow>& window) const;
+
+| **Description**
+| Minimizes the TRAP::`Window`_

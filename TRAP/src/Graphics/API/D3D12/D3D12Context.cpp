@@ -42,7 +42,7 @@ void TRAP::Graphics::API::D3D12Context::Present(const Scope<Window>& window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Context::UseInternal(const Scope<Window>& window)
+void TRAP::Graphics::API::D3D12Context::UseInternal(const Window* window)
 {
 }
 

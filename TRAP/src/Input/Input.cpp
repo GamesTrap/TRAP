@@ -94,7 +94,7 @@ bool TRAP::Input::IsKeyPressed(const Key key)
 		return false;
 	}
 
-	const auto state = INTERNAL::WindowingAPI::GetKey(Application::GetWindow()->GetInternalWindow(), key);
+	const auto state = INTERNAL::WindowingAPI::GetKey(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow()), key);
 
 	return state;
 }
@@ -114,7 +114,7 @@ bool TRAP::Input::IsKeyPressed(const Key key, const Scope<Window>& window)
 		return false;
 	}
 	
-	const auto state = INTERNAL::WindowingAPI::GetKey(window->GetInternalWindow(), key);
+	const auto state = INTERNAL::WindowingAPI::GetKey(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), key);
 
 	return state;
 }
@@ -123,7 +123,7 @@ bool TRAP::Input::IsKeyPressed(const Key key, const Scope<Window>& window)
 
 bool TRAP::Input::IsMouseButtonPressed(const MouseButton button)
 {
-	const auto state = INTERNAL::WindowingAPI::GetMouseButton(Application::GetWindow()->GetInternalWindow(), button);
+	const auto state = INTERNAL::WindowingAPI::GetMouseButton(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow()), button);
 
 	return state;
 }
@@ -138,7 +138,7 @@ bool TRAP::Input::IsMouseButtonPressed(const MouseButton button, const Scope<Win
 		return false;
 	}
 	
-	const auto state = INTERNAL::WindowingAPI::GetMouseButton(window->GetInternalWindow(), button);
+	const auto state = INTERNAL::WindowingAPI::GetMouseButton(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), button);
 
 	return state;
 }
@@ -199,7 +199,7 @@ bool TRAP::Input::IsControllerGamepad(Controller controller)
 TRAP::Math::Vec2 TRAP::Input::GetMousePosition()
 {
 	double xPos, yPos;
-	INTERNAL::WindowingAPI::GetCursorPos(Application::GetWindow()->GetInternalWindow(), xPos, yPos);
+	INTERNAL::WindowingAPI::GetCursorPos(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow()), xPos, yPos);
 
 	return {static_cast<float>(xPos), static_cast<float>(yPos)};
 }
@@ -215,7 +215,7 @@ TRAP::Math::Vec2 TRAP::Input::GetMousePosition(const Scope<Window>& window)
 	}
 	
 	double xPos, yPos;
-	INTERNAL::WindowingAPI::GetCursorPos(window->GetInternalWindow(), xPos, yPos);
+	INTERNAL::WindowingAPI::GetCursorPos(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), xPos, yPos);
 
 	return { static_cast<float>(xPos), static_cast<float>(yPos) };
 }

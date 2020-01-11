@@ -13,7 +13,8 @@ bool TRAP::Graphics::API::OpenGLContext::s_IsGladInitialized = false;
 
 TRAP::Graphics::API::OpenGLContext::OpenGLContext(Window* window)
 {
-	INTERNAL::WindowingAPI::MakeContextCurrent(window->GetInternalWindow());
+	
+	INTERNAL::WindowingAPI::MakeContextCurrent(static_cast<INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()));
 
 	if (!s_IsGladInitialized)
 	{
@@ -41,19 +42,19 @@ void TRAP::Graphics::API::OpenGLContext::SetVSyncIntervalInternal(const uint32_t
 void TRAP::Graphics::API::OpenGLContext::Present(const Scope<Window>& window)
 {
 	if (window)
-		INTERNAL::WindowingAPI::SwapBuffers(window->GetInternalWindow());
+		INTERNAL::WindowingAPI::SwapBuffers(static_cast<INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()));
 	else
 		TP_WARN("[Context][OpenGL] Tried to pass nullptr to Present!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLContext::UseInternal(const Scope<Window>& window)
+void TRAP::Graphics::API::OpenGLContext::UseInternal(const Window* window)
 {
 	if (window)
 	{
 		if (Window::GetActiveWindows() > 1)
-			INTERNAL::WindowingAPI::MakeContextCurrent(window->GetInternalWindow());
+			INTERNAL::WindowingAPI::MakeContextCurrent(static_cast<INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()));
 	}
 	else
 		INTERNAL::WindowingAPI::MakeContextCurrent(nullptr);
@@ -74,12 +75,12 @@ bool TRAP::Graphics::API::OpenGLContext::IsOpenGLCapable()
 	INTERNAL::WindowingAPI::SetContextAPI(INTERNAL::WindowingAPI::ContextAPI::OpenGL);
 	INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 	INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
-	Ref<INTERNAL::WindowingAPI::InternalWindow> OpenGLTestWindow = INTERNAL::WindowingAPI::CreateWindow(800, 600, "OpenGL Version Tester", nullptr, nullptr);
+	Scope<INTERNAL::WindowingAPI::InternalWindow> OpenGLTestWindow = INTERNAL::WindowingAPI::CreateWindow(800, 600, "OpenGL Version Tester", nullptr, nullptr);
 	INTERNAL::WindowingAPI::DefaultWindowHints();
 	if (!OpenGLTestWindow)
 		return false;
 
-	INTERNAL::WindowingAPI::MakeContextCurrent(OpenGLTestWindow);
+	INTERNAL::WindowingAPI::MakeContextCurrent(OpenGLTestWindow.get());
 
 	//Check if OpenGL can be loaded
 	if (!s_IsGladInitialized)
@@ -93,7 +94,7 @@ bool TRAP::Graphics::API::OpenGLContext::IsOpenGLCapable()
 	const bool isOpenGLCapable = GLVersion.major >= 4 && GLVersion.minor >= 6;
 
 	//Now destroy the test window
-	INTERNAL::WindowingAPI::DestroyWindow(OpenGLTestWindow);
+	INTERNAL::WindowingAPI::DestroyWindow(std::move(OpenGLTestWindow));
 	INTERNAL::WindowingAPI::MakeContextCurrent(nullptr);
 
 	return isOpenGLCapable;

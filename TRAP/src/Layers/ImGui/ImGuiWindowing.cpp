@@ -2,11 +2,11 @@
 #include "ImGuiWindowing.h"
 #include "Application.h"
 
-std::shared_ptr<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::ImGuiWindowing::s_window = nullptr;
+TRAP::INTERNAL::WindowingAPI::InternalWindow* TRAP::INTERNAL::ImGuiWindowing::s_window = nullptr;
 TRAP::INTERNAL::WindowingAPI::ContextAPI TRAP::INTERNAL::ImGuiWindowing::s_clientAPI = WindowingAPI::ContextAPI::OpenGL;
 double TRAP::INTERNAL::ImGuiWindowing::s_time = 0.0;
 std::array<bool, 5> TRAP::INTERNAL::ImGuiWindowing::s_mouseJustPressed{};
-std::array<std::shared_ptr<TRAP::INTERNAL::WindowingAPI::InternalCursor>, ImGuiMouseCursor_COUNT> TRAP::INTERNAL::ImGuiWindowing::s_mouseCursors{};
+std::array<TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor>, ImGuiMouseCursor_COUNT> TRAP::INTERNAL::ImGuiWindowing::s_mouseCursors{};
 bool TRAP::INTERNAL::ImGuiWindowing::s_installedCallbacks = false;
 bool TRAP::INTERNAL::ImGuiWindowing::s_wantUpdateMonitors = true;
 
@@ -19,7 +19,7 @@ TRAP::INTERNAL::WindowingAPI::CharFunc TRAP::INTERNAL::ImGuiWindowing::s_prevUse
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::ImGuiWindowing::InitForOpenGL(const std::shared_ptr<WindowingAPI::InternalWindow>& window, const bool installCallbacks)
+bool TRAP::INTERNAL::ImGuiWindowing::InitForOpenGL(WindowingAPI::InternalWindow* window, const bool installCallbacks)
 {
 	return Init(window, installCallbacks, WindowingAPI::ContextAPI::OpenGL);
 }
@@ -39,7 +39,7 @@ void TRAP::INTERNAL::ImGuiWindowing::Shutdown()
 
 	for (ImGuiMouseCursor cursorN = 0; cursorN < ImGuiMouseCursor_COUNT; cursorN++)
 	{
-		WindowingAPI::DestroyCursor(s_mouseCursors[cursorN]);
+		WindowingAPI::DestroyCursor(std::move(s_mouseCursors[cursorN]));
 		s_mouseCursors[cursorN] = nullptr;
 	}
 }
@@ -76,7 +76,7 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::ImGuiWindowing::Init(const std::shared_ptr<WindowingAPI::InternalWindow>& window, const bool installCallbacks, const WindowingAPI::ContextAPI clientAPI)
+bool TRAP::INTERNAL::ImGuiWindowing::Init(WindowingAPI::InternalWindow* window, const bool installCallbacks, const WindowingAPI::ContextAPI clientAPI)
 {
 	s_window = window;
 	s_time = 0.0;
@@ -136,19 +136,19 @@ bool TRAP::INTERNAL::ImGuiWindowing::Init(const std::shared_ptr<WindowingAPI::In
 	if(installCallbacks)
 	{
 		s_installedCallbacks = true;
-		s_prevUserCallbackMouseButton = WindowingAPI::GetMouseButtonCallback(window);
-		WindowingAPI::SetMouseButtonCallback(window, MouseButtonCallback);
-		s_prevUserCallbackScroll = WindowingAPI::GetScrollCallback(window);
-		WindowingAPI::SetScrollCallback(window, ScrollCallback);
-		s_prevUserCallbackKey = WindowingAPI::GetKeyCallback(window);
-		WindowingAPI::SetKeyCallback(window, KeyCallback);
-		s_prevUserCallbackChar = WindowingAPI::GetCharCallback(window);
-		WindowingAPI::SetCharCallback(window, CharCallback);
+		s_prevUserCallbackMouseButton = WindowingAPI::GetMouseButtonCallback(s_window);
+		WindowingAPI::SetMouseButtonCallback(s_window, MouseButtonCallback);
+		s_prevUserCallbackScroll = WindowingAPI::GetScrollCallback(s_window);
+		WindowingAPI::SetScrollCallback(s_window, ScrollCallback);
+		s_prevUserCallbackKey = WindowingAPI::GetKeyCallback(s_window);
+		WindowingAPI::SetKeyCallback(s_window, KeyCallback);
+		s_prevUserCallbackChar = WindowingAPI::GetCharCallback(s_window);
+		WindowingAPI::SetCharCallback(s_window, CharCallback);
 	}
 
 	//Our mouse update function expect PlatformHandle to be filled for the main viewport
 	ImGuiViewport* mainViewport = ImGui::GetMainViewport();
-	mainViewport->PlatformHandle = static_cast<void*>(&s_window);
+	mainViewport->PlatformHandle = s_window;
 #ifdef TRAP_PLATFORM_WINDOWS
 	mainViewport->PlatformHandleRaw = WindowingAPI::GetWin32Window(s_window);
 #endif
@@ -190,10 +190,10 @@ void TRAP::INTERNAL::ImGuiWindowing::InitPlatformInterface()
 	//Register main window handle (which is owned by the main application, not by us)
 	ImGuiViewport* main_viewport = ImGui::GetMainViewport();
 	ImGuiViewportDataTRAP* data = IM_NEW(ImGuiViewportDataTRAP)();
-	data->Window = s_window;
+	data->WindowPtr = s_window;
 	data->WindowOwned = false;
 	main_viewport->PlatformUserData = data;
-	main_viewport->PlatformHandle = static_cast<void*>(s_window.get());
+	main_viewport->PlatformHandle = s_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -218,27 +218,24 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMousePosAndButtons()
 	{
 		ImGuiViewport* viewport = platformIO.Viewports[n];
 		WindowingAPI::InternalWindow* windowPtr = static_cast<WindowingAPI::InternalWindow*>(viewport->PlatformHandle);
-		Ref<WindowingAPI::InternalWindow> window = nullptr;
-		if (windowPtr)
-			window = Ref<WindowingAPI::InternalWindow>(windowPtr, [](WindowingAPI::InternalWindow*) {});
 		
-		if (!window)
+		if (!windowPtr)
 			return;
 		
-		const bool focused = WindowingAPI::GetWindowAttrib(window, WindowingAPI::Hint::Focused);
+		const bool focused = WindowingAPI::GetWindowAttrib(windowPtr, WindowingAPI::Hint::Focused);
 		if(focused)
 		{
 			if (io.WantSetMousePos)
-				WindowingAPI::SetCursorPos(window, static_cast<double>(mousePosBackup.x - viewport->Pos.x), static_cast<double>(mousePosBackup.y - viewport->Pos.y));
+				WindowingAPI::SetCursorPos(windowPtr, static_cast<double>(mousePosBackup.x - viewport->Pos.x), static_cast<double>(mousePosBackup.y - viewport->Pos.y));
 			else
 			{
 				double mouseX = 0.0, mouseY = 0.0;
-				WindowingAPI::GetCursorPos(window, mouseX, mouseY);
+				WindowingAPI::GetCursorPos(windowPtr, mouseX, mouseY);
 				if(io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 				{
 					//Multi-Viewport mode: mouse position in OS absolute coordinates (io.MousePos is (0,0) when the mouse is on the upper-left of the primary monitor)
 					int32_t windowX = 0, windowY = 0;
-					WindowingAPI::GetWindowPos(window, windowX, windowY);
+					WindowingAPI::GetWindowPos(windowPtr, windowX, windowY);
 					io.MousePos = ImVec2(static_cast<float>(mouseX) + windowX, static_cast<float>(mouseY) + windowY);
 				}
 				else
@@ -248,7 +245,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMousePosAndButtons()
 				}
 			}
 			for (uint32_t i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++)
-				io.MouseDown[i] |= WindowingAPI::GetMouseButton(window, static_cast<Input::MouseButton>(i)) != 0;
+				io.MouseDown[i] |= WindowingAPI::GetMouseButton(windowPtr, static_cast<Input::MouseButton>(i)) != 0;
 		}
 
 		//(Optional) When using multiple viewports: set io.MouseHoveredViewport to the viewport the OS mouse cursor is hovering.
@@ -257,7 +254,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMousePosAndButtons()
 		//- This is _regardless_ of whether another viewport is focused or being dragged from.
 		//If ImGuiBackendFlags_HasMouseHoveredViewport is not set by the back-end, imgui will ignore this field and infer the information by relying on the
 		//rectangles and last focused time of every viewports it knows about. It will be unaware of other windows that may be sitting between or over your windows.
-		if (WindowingAPI::GetWindowAttrib(window, WindowingAPI::Hint::Hovered) && !(viewport->Flags & ImGuiViewportFlags_NoInputs))
+		if (WindowingAPI::GetWindowAttrib(windowPtr, WindowingAPI::Hint::Hovered) && !(viewport->Flags & ImGuiViewportFlags_NoInputs))
 			io.MouseHoveredViewport = viewport->ID;
 	}
 }
@@ -275,23 +272,20 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 	for(uint32_t n = 0; n < static_cast<uint32_t>(platformIO.Viewports.Size); n++)
 	{
 		WindowingAPI::InternalWindow* windowPtr = static_cast<WindowingAPI::InternalWindow*>(platformIO.Viewports[n]->PlatformHandle);
-		Ref<WindowingAPI::InternalWindow> window = nullptr;
-		if (windowPtr)
-			window = Ref<WindowingAPI::InternalWindow>(windowPtr, [](WindowingAPI::InternalWindow*) {});
 		
-		if (!window)
+		if (!windowPtr)
 			return;
 
 		if(imguiCursor == ImGuiMouseCursor_None || io.MouseDrawCursor)
 		{
 			//Hide OS mouse cursor if imgui is drawing it or if it wants no cursor
-			WindowingAPI::SetCursorMode(window, WindowingAPI::CursorMode::Hidden);
+			WindowingAPI::SetCursorMode(windowPtr, WindowingAPI::CursorMode::Hidden);
 		}
 		else
 		{
 			//Show OS mouse cursor
-			WindowingAPI::SetCursor(window, s_mouseCursors[imguiCursor] ? s_mouseCursors[imguiCursor] : s_mouseCursors[ImGuiMouseCursor_Arrow]);
-			WindowingAPI::SetCursorMode(window, WindowingAPI::CursorMode::Normal);
+			WindowingAPI::SetCursor(windowPtr, s_mouseCursors[imguiCursor] ? s_mouseCursors[imguiCursor].get() : s_mouseCursors[ImGuiMouseCursor_Arrow].get());
+			WindowingAPI::SetCursorMode(windowPtr, WindowingAPI::CursorMode::Normal);
 		}
 	}
 }
@@ -354,7 +348,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateGamepads()
 void TRAP::INTERNAL::ImGuiWindowing::UpdateMonitors()
 {
 	ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
-	const std::vector<Ref<WindowingAPI::InternalMonitor>>& monitors = WindowingAPI::GetMonitors();
+	const auto& monitors = WindowingAPI::GetMonitors();
 	platformIO.Monitors.resize(0);
 	for (uint32_t n = 0; n < monitors.size(); n++)
 	{
@@ -396,7 +390,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetClipboardText(void* userData, const char
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const Ref<WindowingAPI::InternalWindow>& window, Input::MouseButton mouseButton, const bool pressed)
+void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const WindowingAPI::InternalWindow* window, Input::MouseButton mouseButton, const bool pressed)
 {
 	if (s_prevUserCallbackMouseButton != nullptr && window == s_window)
 		s_prevUserCallbackMouseButton(window, mouseButton, pressed);
@@ -407,7 +401,7 @@ void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const Ref<WindowingAPI:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::ScrollCallback(const Ref<WindowingAPI::InternalWindow>& window, const double xOffset, const double yOffset)
+void TRAP::INTERNAL::ImGuiWindowing::ScrollCallback(const WindowingAPI::InternalWindow* window, const double xOffset, const double yOffset)
 {
 	if (s_prevUserCallbackScroll != nullptr && window == s_window)
 		s_prevUserCallbackScroll(window, xOffset, yOffset);
@@ -419,7 +413,7 @@ void TRAP::INTERNAL::ImGuiWindowing::ScrollCallback(const Ref<WindowingAPI::Inte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const Ref<WindowingAPI::InternalWindow>& window, Input::Key key, const int32_t scanCode, const bool pressed)
+void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const WindowingAPI::InternalWindow* window, Input::Key key, const int32_t scanCode, const bool pressed)
 {
 	if (s_prevUserCallbackKey != nullptr && window == s_window)
 		s_prevUserCallbackKey(window, key, scanCode, pressed);
@@ -439,7 +433,7 @@ void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const Ref<WindowingAPI::Interna
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::CharCallback(const Ref<WindowingAPI::InternalWindow>& window, const uint32_t codePoint)
+void TRAP::INTERNAL::ImGuiWindowing::CharCallback(const WindowingAPI::InternalWindow* window, const uint32_t codePoint)
 {
 	if (s_prevUserCallbackChar != nullptr && window == s_window)
 		s_prevUserCallbackChar(window, codePoint);
@@ -454,25 +448,25 @@ void TRAP::INTERNAL::ImGuiWindowing::CharCallback(const Ref<WindowingAPI::Intern
 //If you are new to dear imgui or creating a new binding for dear imgui, it is recommended that you completely ignore this section first...
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::WindowCloseCallback(const Ref<WindowingAPI::InternalWindow>& window)
+void TRAP::INTERNAL::ImGuiWindowing::WindowCloseCallback(const WindowingAPI::InternalWindow* window)
 {
-	if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(window.get()))
+	if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(const_cast<WindowingAPI::InternalWindow*>(window)))
 		viewport->PlatformRequestClose = true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::WindowPosCallback(const Ref<WindowingAPI::InternalWindow>& window, int32_t x, int32_t y)
+void TRAP::INTERNAL::ImGuiWindowing::WindowPosCallback(const WindowingAPI::InternalWindow* window, int32_t x, int32_t y)
 {
-	if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(window.get()))
+	if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(const_cast<WindowingAPI::InternalWindow*>(window)))
 		viewport->PlatformRequestMove = true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::WindowSizeCallback(const Ref<WindowingAPI::InternalWindow>& window, int32_t width, int32_t height)
+void TRAP::INTERNAL::ImGuiWindowing::WindowSizeCallback(const WindowingAPI::InternalWindow* window, int32_t width, int32_t height)
 {
-	if(ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(window.get()))
+	if(ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(const_cast<WindowingAPI::InternalWindow*>(window)))
 	{
 		if(ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData))
 		{
@@ -502,26 +496,27 @@ void TRAP::INTERNAL::ImGuiWindowing::CreateWindow(ImGuiViewport* viewport)
 	WindowingAPI::WindowHint(WindowingAPI::Hint::FocusOnShow, false);
 	WindowingAPI::WindowHint(WindowingAPI::Hint::Decorated, (viewport->Flags & ImGuiViewportFlags_NoDecoration) ? false : true);
 	WindowingAPI::WindowHint(WindowingAPI::Hint::Floating, (viewport->Flags & ImGuiViewportFlags_TopMost) ? true : false);
-	const Ref<WindowingAPI::InternalWindow> shareWindow = (s_clientAPI == WindowingAPI::ContextAPI::OpenGL) ? s_window : nullptr;
+	const WindowingAPI::InternalWindow* shareWindow = (s_clientAPI == WindowingAPI::ContextAPI::OpenGL) ? s_window : nullptr;
 	data->Window = WindowingAPI::CreateWindow(static_cast<int32_t>(viewport->Size.x), static_cast<int32_t>(viewport->Size.y), "No Title Yet", nullptr, shareWindow);
+	data->WindowPtr = data->Window.get();
 	data->WindowOwned = true;
-	viewport->PlatformHandle = static_cast<void*>(data->Window.get());
+	viewport->PlatformHandle = static_cast<void*>(data->WindowPtr);
 #ifdef TRAP_PLATFORM_WINDOWS
-	viewport->PlatformHandleRaw = WindowingAPI::GetWin32Window(data->Window);
+	viewport->PlatformHandleRaw = WindowingAPI::GetWin32Window(data->WindowPtr);
 #endif
-	WindowingAPI::SetWindowPos(data->Window, static_cast<int32_t>(viewport->Pos.x), static_cast<int32_t>(viewport->Pos.y));
+	WindowingAPI::SetWindowPos(data->WindowPtr, static_cast<int32_t>(viewport->Pos.x), static_cast<int32_t>(viewport->Pos.y));
 
 	//Install callbacks for secondary viewports
-	WindowingAPI::SetMouseButtonCallback(data->Window, MouseButtonCallback);
-	WindowingAPI::SetScrollCallback(data->Window, ScrollCallback);
-	WindowingAPI::SetKeyCallback(data->Window, KeyCallback);
-	WindowingAPI::SetCharCallback(data->Window, CharCallback);
-	WindowingAPI::SetWindowCloseCallback(data->Window, WindowCloseCallback);
-	WindowingAPI::SetWindowPosCallback(data->Window, WindowPosCallback);
-	WindowingAPI::SetWindowSizeCallback(data->Window, WindowSizeCallback);
+	WindowingAPI::SetMouseButtonCallback(data->WindowPtr, MouseButtonCallback);
+	WindowingAPI::SetScrollCallback(data->WindowPtr, ScrollCallback);
+	WindowingAPI::SetKeyCallback(data->WindowPtr, KeyCallback);
+	WindowingAPI::SetCharCallback(data->WindowPtr, CharCallback);
+	WindowingAPI::SetWindowCloseCallback(data->WindowPtr, WindowCloseCallback);
+	WindowingAPI::SetWindowPosCallback(data->WindowPtr, WindowPosCallback);
+	WindowingAPI::SetWindowSizeCallback(data->WindowPtr, WindowSizeCallback);
 	if(s_clientAPI == WindowingAPI::ContextAPI::OpenGL)
 	{
-		WindowingAPI::MakeContextCurrent(data->Window);
+		WindowingAPI::MakeContextCurrent(data->WindowPtr);
 		WindowingAPI::SwapInterval(0);
 	}
 }
@@ -538,35 +533,14 @@ void TRAP::INTERNAL::ImGuiWindowing::DestroyWindow(ImGuiViewport* viewport)
 			const HWND hwnd = static_cast<HWND>(viewport->PlatformHandleRaw);
 			::RemovePropA(hwnd, "IMGUI_VIEWPORT");
 #endif
-			WindowingAPI::DestroyWindow(data->Window);
+			WindowingAPI::DestroyWindow(std::move(data->Window));
 		}
 		data->Window = nullptr;
+		data->WindowPtr = nullptr;
 		IM_DELETE(data);
 	}
 	viewport->PlatformUserData = viewport->PlatformHandle = nullptr;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#ifdef TRAP_PLATFORM_WINDOWS
-WNDPROC TRAP::INTERNAL::ImGuiWindowing::s_TRAPWndProc = nullptr;
-LRESULT TRAP::INTERNAL::ImGuiWindowing::WndProcNoInputs(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-	if(msg == WM_NCHITTEST)
-	{
-		//Let mouse pass-through the window.
-		//This will allow the back-end to set io.MouseHoveredViewport properly (which is OPTIONAL).
-		//The ImGuiViewportFlags_NoInputs flag is set while dragging a viewport, as want to detect the window behind the one we are dragging.
-		//If you cannot easily access those viewport flags from your windowing/event code: you may manually synchronize its state e.g. in
-		//your main loop after calling UpdatePlatformWindows().
-		//Iterate all viewports/platform windows and pass the flag to your windowing system.
-		ImGuiViewport* viewport = static_cast<ImGuiViewport*>(::GetPropA(hWnd, "IMGUI_VIEWPORT"));
-		if (viewport->Flags & ImGuiViewportFlags_NoInputs)
-			return HTTRANSPARENT;
-	}
-	return ::CallWindowProc(s_TRAPWndProc, hWnd, msg, wParam, lParam);
-}
-#endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -584,15 +558,9 @@ void TRAP::INTERNAL::ImGuiWindowing::ShowWindow(ImGuiViewport* viewport)
 		exStyle |= WS_EX_TOOLWINDOW;
 		::SetWindowLong(hwnd, GWL_EXSTYLE, exStyle);
 	}
-
-	//TRAP hack: Install hook for WM_NCHITTEST message handler
-	::SetPropA(hwnd, "IMGUI_VIEWPORT", viewport);
-	if (s_TRAPWndProc == nullptr)
-		s_TRAPWndProc = reinterpret_cast<WNDPROC>(::GetWindowLongPtr(hwnd, GWLP_WNDPROC));
-	::SetWindowLongPtr(hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(WndProcNoInputs));
 #endif
-
-	WindowingAPI::ShowWindow(data->Window);
+	
+	WindowingAPI::ShowWindow(data->WindowPtr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -601,7 +569,7 @@ ImVec2 TRAP::INTERNAL::ImGuiWindowing::GetWindowPos(ImGuiViewport* viewport)
 {
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 	int32_t x = 0, y = 0;
-	WindowingAPI::GetWindowPos(data->Window, x, y);
+	WindowingAPI::GetWindowPos(data->WindowPtr, x, y);
 	
 	return ImVec2(static_cast<float>(x), static_cast<float>(y));
 }
@@ -612,7 +580,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowPos(ImGuiViewport* viewport, const
 {
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
-	return WindowingAPI::SetWindowPos(data->Window, static_cast<int32_t>(pos.x), static_cast<int32_t>(pos.y));
+	return WindowingAPI::SetWindowPos(data->WindowPtr, static_cast<int32_t>(pos.x), static_cast<int32_t>(pos.y));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -621,7 +589,7 @@ ImVec2 TRAP::INTERNAL::ImGuiWindowing::GetWindowSize(ImGuiViewport* viewport)
 {
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 	int32_t width = 0, height = 0;
-	WindowingAPI::GetWindowSize(data->Window, width, height);
+	WindowingAPI::GetWindowSize(data->WindowPtr, width, height);
 
 	return ImVec2(static_cast<float>(width), static_cast<float>(height));
 }
@@ -633,7 +601,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowSize(ImGuiViewport* viewport, cons
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 	data->IgnoreWindowSizeEventFrame = ImGui::GetFrameCount();
 
-	WindowingAPI::SetWindowSize(data->Window, static_cast<int32_t>(size.x), static_cast<int32_t>(size.y));
+	WindowingAPI::SetWindowSize(data->WindowPtr, static_cast<int32_t>(size.x), static_cast<int32_t>(size.y));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -642,7 +610,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowTitle(ImGuiViewport* viewport, con
 {
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
-	WindowingAPI::SetWindowTitle(data->Window, title);
+	WindowingAPI::SetWindowTitle(data->WindowPtr, title);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -651,7 +619,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowFocus(ImGuiViewport* viewport)
 {
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
-	WindowingAPI::FocusWindow(data->Window);
+	WindowingAPI::FocusWindow(data->WindowPtr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -660,7 +628,7 @@ bool TRAP::INTERNAL::ImGuiWindowing::GetWindowFocus(ImGuiViewport* viewport)
 {
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
-	return WindowingAPI::GetWindowAttrib(data->Window, WindowingAPI::Hint::Focused) != 0;
+	return WindowingAPI::GetWindowAttrib(data->WindowPtr, WindowingAPI::Hint::Focused) != 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -669,7 +637,7 @@ bool TRAP::INTERNAL::ImGuiWindowing::GetWindowMinimized(ImGuiViewport* viewport)
 {
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
-	return WindowingAPI::GetWindowAttrib(data->Window, WindowingAPI::Hint::Minimized) != 0;
+	return WindowingAPI::GetWindowAttrib(data->WindowPtr, WindowingAPI::Hint::Minimized) != 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -678,7 +646,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowAlpha(ImGuiViewport* viewport, con
 {
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
-	WindowingAPI::SetWindowOpacity(data->Window, alpha);
+	WindowingAPI::SetWindowOpacity(data->WindowPtr, alpha);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -687,7 +655,12 @@ void TRAP::INTERNAL::ImGuiWindowing::RenderWindow(ImGuiViewport* viewport, void*
 {
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 	if (s_clientAPI == WindowingAPI::ContextAPI::OpenGL)
-		WindowingAPI::MakeContextCurrent(data->Window);
+		WindowingAPI::MakeContextCurrent(data->WindowPtr);
+
+	if(viewport->Flags & ImGuiViewportFlags_NoInputs)
+		WindowingAPI::SetWindowAttrib(data->WindowPtr, WindowingAPI::Hint::MousePassthrough, true);
+	else
+		WindowingAPI::SetWindowAttrib(data->WindowPtr, WindowingAPI::Hint::MousePassthrough, false);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -697,8 +670,8 @@ void TRAP::INTERNAL::ImGuiWindowing::SwapBuffers(ImGuiViewport* viewport, void* 
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 	if(s_clientAPI == WindowingAPI::ContextAPI::OpenGL)
 	{
-		WindowingAPI::MakeContextCurrent(data->Window);
-		WindowingAPI::SwapBuffers(data->Window);
+		WindowingAPI::MakeContextCurrent(data->WindowPtr);
+		WindowingAPI::SwapBuffers(data->WindowPtr);
 	}
 }
 
@@ -729,7 +702,7 @@ int32_t TRAP::INTERNAL::ImGuiWindowing::CreateVkSurface(ImGuiViewport* viewport,
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 	IM_ASSERT(s_clientAPI == WindowingAPI::ContextAPI::None);
 	const VkResult err = WindowingAPI::CreateWindowSurface(reinterpret_cast<VkInstance>(vkInstance),
-	                                                       data->Window,
+	                                                       data->WindowPtr,
 	                                                       static_cast<const VkAllocationCallbacks*>(vkAllocator),
 	                                                       reinterpret_cast<VkSurfaceKHR&>(*outVkSurface));
 
@@ -738,7 +711,7 @@ int32_t TRAP::INTERNAL::ImGuiWindowing::CreateVkSurface(ImGuiViewport* viewport,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::MonitorCallback(const Ref<WindowingAPI::InternalMonitor>& unused1, bool unused2)
+void TRAP::INTERNAL::ImGuiWindowing::MonitorCallback(const WindowingAPI::InternalMonitor* unused1, bool unused2)
 {
 	s_wantUpdateMonitors = true;
 }

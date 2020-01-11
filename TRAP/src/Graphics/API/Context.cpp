@@ -252,7 +252,7 @@ void TRAP::Graphics::API::Context::SetVSyncInterval(const uint32_t interval)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::Context::Use(const Scope<Window>& window)
+void TRAP::Graphics::API::Context::Use(const Window* window)
 {
 	if (s_Context)
 		if (window)

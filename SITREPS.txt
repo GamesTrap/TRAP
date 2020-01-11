@@ -716,3 +716,23 @@ SITREP 01/05/2020|20w01a2
         - Added ImGui support ~>150 mins
         - Fixed False triggering 30FPS lock if ImGui child window is focused outside Main Window ~<30 mins
         - Moar references ~>40 mins
+
+SITREP 01/06/2020|20w02a1
+    - Changed TRAP Engine version to 20w02a1(0.5.88)
+    - Branch Window:
+        - Changed Context Use function to use raw pointer instead of const Scope reference ~<10 mins
+        - Removed pointer hack inside Window.cpp ~<10 mins
+        - Changed some Window functionality ~>30 mins
+
+SITREP 01/07/2020|20w02a2
+    - Changed TRAP Engine version to 20w02a2(0.5.89)
+    - Branch Window:
+        - Added 3 more functions to Window.cpp ~<30 mins
+        - Updated Docs ~<10 mins
+        - Removed some undefined behaviour ~>30 mins
+        - Removed some null deallocator smart pointer ~>30 mins
+
+SITREP 01/11/2020|20w02a3
+    - Changed TRAP Engine version to 20w02a3(0.5.90)
+    - Branch Window:
+        - Changed WindowingAPI from Scopes to Refs ~>145 mins

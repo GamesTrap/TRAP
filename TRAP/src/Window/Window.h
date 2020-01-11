@@ -53,8 +53,8 @@ namespace TRAP
 		using EventCallbackFn = std::function<void(Event&)>;
 
 		explicit Window(const WindowProps& props);
-		Window(const Window&) = default;
-		Window& operator=(const Window&) = default;
+		Window(const Window&) = delete;
+		Window& operator=(const Window&) = delete;
 		Window(Window&&) = default;
 		Window& operator=(Window&&) = default;
 		~Window();
@@ -78,7 +78,7 @@ namespace TRAP
 		CursorMode GetCursorMode() const;
 		bool GetRawMouseInput() const;
 
-		const Ref<INTERNAL::WindowingAPI::InternalWindow>& GetInternalWindow() const;
+		void* GetInternalWindow() const;
 
 		void SetTitle(const std::string& title);
 		void SetDisplayMode(const DisplayMode& mode,
@@ -94,17 +94,21 @@ namespace TRAP
 		void SetIcon() const;
 		void SetIcon(const Scope<Image>& image) const;
 		void SetEventCallback(const EventCallbackFn& callback);
+		void SetResizable(bool enabled) const;
 
 		bool IsMaximized() const;
 		bool IsMinimized() const;
 		bool IsResizable() const;
 
+		void Maximize() const;
+		void Minimize() const;
+
 	private:
 		void Init(const WindowProps& props);
 		void Shutdown();
 		
-		Ref<INTERNAL::WindowingAPI::InternalWindow> m_window;
-		Ref<INTERNAL::WindowingAPI::InternalMonitor> m_useMonitor; //Stores a reference to the monitor
+		Scope<INTERNAL::WindowingAPI::InternalWindow> m_window;
+		INTERNAL::WindowingAPI::InternalMonitor* m_useMonitor; //Stores a reference to the monitor
 		static std::unordered_map<uint32_t, INTERNAL::WindowingAPI::VideoMode> s_baseVideoModes; //Stores the underlying video mode being used by the OS for every monitor
 		
 		struct WindowedModeParams
@@ -160,7 +164,7 @@ namespace TRAP
 							 bool resizable = true,
 		                     uint32_t monitor = 0,
 		                     Window::CursorMode cursorMode = Window::CursorMode::Normal,
-		                     bool rawMouseInput = false);
+		                     bool rawMouseInput = false);		
 	};
 }
 

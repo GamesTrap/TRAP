@@ -35,36 +35,16 @@ std::unordered_map<uint32_t, TRAP::INTERNAL::WindowingAPI::VideoMode> TRAP::Wind
 TRAP::Window::Window(const WindowProps &props)
 	: m_window(nullptr), m_useMonitor(nullptr)
 {
-	std::string init = "[Window] Initializing Window: \"" + props.Title + "\" " + std::to_string(props.Width) + 'x' +
-					   std::to_string(props.Height) + "@" + std::to_string(props.RefreshRate) + "Hz VSync: ";
-	if (props.VSync > 0)
-		init += "On(" + std::to_string(props.VSync) + ") DisplayMode: ";
-	else
-		init += "Off DisplayMode: ";
-
-	if (props.displayMode == DisplayMode::Windowed)
-		init += "Windowed";
-	else if (props.displayMode == DisplayMode::Borderless)
-		init += "Borderless";
-	else if (props.displayMode == DisplayMode::Fullscreen)
-		init += "Fullscreen";
-
-	init += " Monitor: " + std::to_string(props.Monitor) + " CursorMode: ";
-
-	if (props.cursorMode == CursorMode::Normal)
-		init += "Normal";
-	else if (props.cursorMode == CursorMode::Hidden)
-		init += "Hidden";
-	else if (props.cursorMode == CursorMode::Disabled)
-		init += "Disabled";
-
-	init += " RawMouseInput: ";
-	if(props.rawMouseInput)
-		init += "Enabled";
-	else
-		init += "Disabled";
+	TP_INFO
+	(
+		"[Window] Initializing Window: \"", props.Title, "\" ", props.Width, "x", props.Height, "@", props.RefreshRate, "Hz VSync: ",
+		props.VSync > 0 ? "On" : "Off", "(", props.VSync, //Output VSync status
+		") DisplayMode: ", props.displayMode == DisplayMode::Windowed ? "Windowed" : props.displayMode == DisplayMode::Borderless ? "Borderless" : "Fullscreen", //Output DisplayMode
+		" Monitor: ", props.Monitor,
+		" CursorMode: ", props.cursorMode == CursorMode::Normal ? "Normal" : props.cursorMode == CursorMode::Hidden ? "Hidden" : "Disabled", //Output CursorMode
+		" RawMouseInput: ", props.rawMouseInput ? "Enabled" : "Disabled"
+	);
 	
-	TP_INFO(init);
 	Init(props);
 }
 
@@ -100,7 +80,7 @@ void TRAP::Window::OnUpdate()
 void TRAP::Window::Use(const Scope<Window>& window)
 {
 	if (window)
-		Graphics::API::Context::Use(window);
+		Graphics::API::Context::Use(window.get());
 	else
 		Use();
 }
@@ -109,7 +89,7 @@ void TRAP::Window::Use(const Scope<Window>& window)
 
 void TRAP::Window::Use()
 {
-	Graphics::API::Context::Use(Application::GetWindow());
+	Graphics::API::Context::Use(Application::GetWindow().get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -214,9 +194,9 @@ bool TRAP::Window::GetRawMouseInput() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Ref<TRAP::INTERNAL::WindowingAPI::InternalWindow>& TRAP::Window::GetInternalWindow() const
+void* TRAP::Window::GetInternalWindow() const
 {
-	return m_window;
+	return m_window.get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -233,8 +213,8 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w01a2]" + std::string(Graphics::Renderer::GetTitle());
-	INTERNAL::WindowingAPI::SetWindowTitle(m_window, newTitle);
+		"[INDEV][20w02a2]" + std::string(Graphics::Renderer::GetTitle());
+	INTERNAL::WindowingAPI::SetWindowTitle(m_window.get(), newTitle);
 #else
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window, m_data.Title);
 #endif
@@ -248,39 +228,60 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 	uint32_t height,
 	uint32_t refreshRate)
 {
+	//Only change windowed mode if resolution and refresh rate changed
+	if(m_data.displayMode == DisplayMode::Windowed && mode == DisplayMode::Windowed)
+	{
+		//Only update refresh rate used for Borderless or Fullscreen
+		if(m_data.RefreshRate != static_cast<int32_t>(refreshRate)) 
+		{
+			m_oldWindowedParams.RefreshRate = m_data.RefreshRate;
+			m_data.RefreshRate = refreshRate;
+		}
+
+		TP_WARN("[Window] \"", m_data.Title, "\" already uses DisplayMode Windowed!");
+		return;
+	}
+	
 	//If currently windowed, stash the current size and position of the window
 	if (m_data.displayMode == DisplayMode::Windowed)
 	{
 		m_oldWindowedParams.Width = m_data.Width;
 		m_oldWindowedParams.Height = m_data.Height;
 		m_oldWindowedParams.RefreshRate = m_data.RefreshRate;
-		INTERNAL::WindowingAPI::GetWindowPos(m_window, m_oldWindowedParams.XPos, m_oldWindowedParams.YPos);
+		INTERNAL::WindowingAPI::GetWindowPos(m_window.get(), m_oldWindowedParams.XPos, m_oldWindowedParams.YPos);
 	}
 
-	if((m_data.displayMode == DisplayMode::Fullscreen || m_data.displayMode == DisplayMode::Borderless) && mode == DisplayMode::Windowed)
+	if(mode == DisplayMode::Windowed)
 		s_fullscreenWindows[m_data.Monitor] = nullptr;
 
-	Ref<INTERNAL::WindowingAPI::InternalMonitor> monitor = nullptr;
+	INTERNAL::WindowingAPI::InternalMonitor* monitor = nullptr;
 
 	if (mode == DisplayMode::Borderless)
 	{
 		if(s_fullscreenWindows[m_data.Monitor])
 		{
-			if(s_fullscreenWindows[m_data.Monitor] == this)
-				TP_WARN("[Window] \"", m_data.Title, "\" already uses DisplayMode: Borderless or Fullscreen!");
-			else
+			//Check if Monitor is already used by another window
+			if (s_fullscreenWindows[m_data.Monitor] != this) 
+			{
 				TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Borderless because Monitor: ", m_data.Monitor,
 					'(', INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
-			
-			return;
+				return;
+			}
+			//Check if Monitor is used by this window and display mode should be set to borderless
+			if(s_fullscreenWindows[m_data.Monitor] == this && m_data.displayMode == DisplayMode::Borderless) 
+			{
+				TP_WARN("[Window] \"", m_data.Title, "\" already uses DisplayMode Borderless on Monitor: ", m_data.Monitor, "(", INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor), ")!");
+				return;
+			}			
 		}
 
 		s_fullscreenWindows[m_data.Monitor] = this;
-		//For borderless fullscreen, the new width, height and refresh rate will be the video mode width, height and refresh rate
+		//For borderless fullscreen, the new width, height and refresh rate will be the default/native video modes width, height and refresh rate
 		width = s_baseVideoModes[m_data.Monitor].Width;
 		height = s_baseVideoModes[m_data.Monitor].Height;
 		refreshRate = s_baseVideoModes[m_data.Monitor].RefreshRate;
 		monitor = m_useMonitor;
+		
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Using Monitor: ", m_data.Monitor, '(', INTERNAL::WindowingAPI::GetMonitorName(monitor), ')');
 	}
 	else if (mode == DisplayMode::Windowed && (width == 0 || height == 0 || refreshRate == 0))
@@ -292,7 +293,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 	}
 	else if (mode == DisplayMode::Fullscreen)
 	{
-		if (s_fullscreenWindows[m_data.Monitor] != this && s_fullscreenWindows[m_data.Monitor])
+		if (s_fullscreenWindows[m_data.Monitor] && s_fullscreenWindows[m_data.Monitor] != this)
 		{
 			TP_ERROR("[Window] \"", m_data.Title, "\" couldn't set DisplayMode to Fullscreen because Monitor: ", m_data.Monitor,
 				'(', INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor), ')', " is already used by Window: \"", s_fullscreenWindows[m_data.Monitor]->GetTitle(), "\"!");
@@ -305,33 +306,45 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 		const auto monitorVideoModes = INTERNAL::WindowingAPI::GetVideoModes(m_useMonitor);
 		if (width != 0 && height != 0 && refreshRate != 0)
 		{
-			for (const auto& monitorVideoMode : monitorVideoModes)
+			//Check if current running mode is same as target mode
+			if (static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].Width) == width &&
+				static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].Height) == height &&
+				static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].RefreshRate) == refreshRate)
+				valid = true;
+
+			if (!valid) //If not check every video mode of the monitor
 			{
-				//Check if resolution pair is valid
-				if (static_cast<uint32_t>(monitorVideoMode.Width) == width &&
-					static_cast<uint32_t>(monitorVideoMode.Height) == height &&
-					static_cast<uint32_t>(monitorVideoMode.RefreshRate) == refreshRate)
+				for (const auto& monitorVideoMode : monitorVideoModes)
 				{
-					valid = true;
-					break;
-				}
-				if (static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].Width) == width &&
-				    static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].Height) == height &&
-					static_cast<uint32_t>(s_baseVideoModes[m_data.Monitor].RefreshRate) == refreshRate)
-				{
-					valid = true;
-					break;
+					//Check if resolution pair is valid and break if found
+					if (static_cast<uint32_t>(monitorVideoMode.Width) == width &&
+						static_cast<uint32_t>(monitorVideoMode.Height) == height &&
+						static_cast<uint32_t>(monitorVideoMode.RefreshRate) == refreshRate)
+					{
+						valid = true;
+						break;
+					}
 				}
 			}
 		}
 
-		//Resolution pair is invalid so use native/default resolution
+		//Resolution pair is still invalid so use native/default resolution
 		if (!valid)
 		{
 			width = s_baseVideoModes[m_data.Monitor].Width;
 			height = s_baseVideoModes[m_data.Monitor].Height;
 			refreshRate = s_baseVideoModes[m_data.Monitor].RefreshRate;
 		}
+
+		//Needed to switch from borderless to fullscreen directly
+		if (m_data.displayMode == DisplayMode::Borderless)
+			INTERNAL::WindowingAPI::SetWindowMonitor(m_window.get(),
+				nullptr,
+				m_oldWindowedParams.XPos,
+				m_oldWindowedParams.YPos,
+				static_cast<int32_t>(width),
+				static_cast<int32_t>(height),
+				static_cast<int32_t>(refreshRate));
 
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Using Monitor: ", m_data.Monitor, '(', INTERNAL::WindowingAPI::GetMonitorName(monitor), ')');
 	}
@@ -362,10 +375,10 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 	m_data.displayMode = mode;
 
 	if(mode == DisplayMode::Borderless)
-		INTERNAL::WindowingAPI::SetWindowMonitorBorderless(m_window, monitor);
+		INTERNAL::WindowingAPI::SetWindowMonitorBorderless(m_window.get(), monitor);
 	else
 	{
-		INTERNAL::WindowingAPI::SetWindowMonitor(m_window,
+		INTERNAL::WindowingAPI::SetWindowMonitor(m_window.get(),
 			monitor,
 			m_oldWindowedParams.XPos,
 			m_oldWindowedParams.YPos,
@@ -379,6 +392,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 
 void TRAP::Window::SetMonitor(const uint32_t monitor)
 {
+	const uint32_t oldMonitor = m_data.Monitor;
 	const auto monitors = INTERNAL::WindowingAPI::GetMonitors();
 	if (monitor <= static_cast<uint32_t>(monitors.size()))
 	{
@@ -391,7 +405,19 @@ void TRAP::Window::SetMonitor(const uint32_t monitor)
 		TP_ERROR("[Window] \"", m_data.Title, "\" Invalid Monitor!");
 		TP_WARN("[Window] \"", m_data.Title, "\" Using Primary Monitor!");
 		m_data.Monitor = 0;
-		m_useMonitor = INTERNAL::WindowingAPI::GetPrimaryMonitor();
+		m_useMonitor = INTERNAL::WindowingAPI::GetPrimaryMonitor().get();
+	}
+
+	if(m_data.displayMode != DisplayMode::Windowed)
+	{
+		s_fullscreenWindows[oldMonitor] = nullptr;
+		if (s_fullscreenWindows[m_data.Monitor]) //Monitor already has a Fullscreen/Borderless Window
+		{
+			TP_ERROR("[Window] Monitor: ", m_data.Monitor, "(", INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor), ") is already used by another Window!");
+			SetDisplayMode(DisplayMode::Windowed, 800, 600, 0);
+		}
+		else
+			SetDisplayMode(m_data.displayMode, m_data.Width, m_data.Height, m_data.RefreshRate);
 	}
 }
 
@@ -410,19 +436,19 @@ void TRAP::Window::SetCursorMode(const CursorMode& mode)
 	if (mode == CursorMode::Normal)
 	{
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Normal");
-		INTERNAL::WindowingAPI::SetCursorMode(m_window, INTERNAL::WindowingAPI::CursorMode::Normal);
+		INTERNAL::WindowingAPI::SetCursorMode(m_window.get(), INTERNAL::WindowingAPI::CursorMode::Normal);
 		m_data.cursorMode = mode;
 	}
 	else if (mode == CursorMode::Hidden)
 	{
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Hidden");
-		INTERNAL::WindowingAPI::SetCursorMode(m_window, INTERNAL::WindowingAPI::CursorMode::Hidden);
+		INTERNAL::WindowingAPI::SetCursorMode(m_window.get(), INTERNAL::WindowingAPI::CursorMode::Hidden);
 		m_data.cursorMode = mode;
 	}
 	else if (mode == CursorMode::Disabled)
 	{
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Disabled");
-		INTERNAL::WindowingAPI::SetCursorMode(m_window, INTERNAL::WindowingAPI::CursorMode::Disabled);
+		INTERNAL::WindowingAPI::SetCursorMode(m_window.get(), INTERNAL::WindowingAPI::CursorMode::Disabled);
 		m_data.cursorMode = mode;
 	}
 }
@@ -434,43 +460,43 @@ void TRAP::Window::SetCursorType(const CursorType& cursor) const
 	switch(cursor)
 	{
 	case CursorType::Arrow:		
-		INTERNAL::WindowingAPI::SetCursor(m_window, INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::Arrow));
+		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::Arrow).get());
 		break;
 
 	case CursorType::Input:
-		INTERNAL::WindowingAPI::SetCursor(m_window, INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::Input));
+		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::Input).get());
 		break;
 		
 	case CursorType::Crosshair:
-		INTERNAL::WindowingAPI::SetCursor(m_window, INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::Crosshair));
+		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::Crosshair).get());
 		break;
 		
 	case CursorType::PointingHand:
-		INTERNAL::WindowingAPI::SetCursor(m_window, INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::PointingHand));
+		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::PointingHand).get());
 		break;
 
 	case CursorType::ResizeHorizontal:
-		INTERNAL::WindowingAPI::SetCursor(m_window, INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::ResizeHorizontal));
+		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::ResizeHorizontal).get());
 		break;
 
 	case CursorType::ResizeVertical:
-		INTERNAL::WindowingAPI::SetCursor(m_window, INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::ResizeVertical));
+		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::ResizeVertical).get());
 		break;
 		
 	case CursorType::ResizeDiagonalTopLeftBottomRight:
-		INTERNAL::WindowingAPI::SetCursor(m_window, INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::ResizeDiagonalTopLeftBottomRight));
+		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::ResizeDiagonalTopLeftBottomRight).get());
 		break;
 
 	case CursorType::ResizeDiagonalTopRightBottomLeft:
-		INTERNAL::WindowingAPI::SetCursor(m_window, INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::ResizeDiagonalTopRightBottomLeft));
+		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::ResizeDiagonalTopRightBottomLeft).get());
 		break;
 		
 	case CursorType::ResizeAll:
-		INTERNAL::WindowingAPI::SetCursor(m_window, INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::ResizeAll));
+		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::ResizeAll).get());
 		break;
 		
 	case CursorType::NotAllowed:
-		INTERNAL::WindowingAPI::SetCursor(m_window, INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::NotAllowed));
+		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::NotAllowed).get());
 		break;
 		
 	default:
@@ -482,7 +508,7 @@ void TRAP::Window::SetCursorType(const CursorType& cursor) const
 
 void TRAP::Window::SetCursorIcon(const Scope<Image>& image) const
 {
-	INTERNAL::WindowingAPI::SetCursor(m_window, INTERNAL::WindowingAPI::CreateCursor(image, 0, 0));
+	INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateCursor(image, 0, 0).get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -492,7 +518,7 @@ void TRAP::Window::SetRawMouseInput(const bool enabled)
 	if(Input::IsRawMouseInputSupported())
 	{
 		m_data.RawMouseInput = enabled;
-		INTERNAL::WindowingAPI::SetRawMouseMotionMode(m_window, enabled);
+		INTERNAL::WindowingAPI::SetRawMouseMotionMode(m_window.get(), enabled);
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Raw Mouse Input ", enabled ? "Enabled" : "Disabled");
 	}
 	else
@@ -507,7 +533,7 @@ void TRAP::Window::SetRawMouseInput(const bool enabled)
 void TRAP::Window::SetIcon() const
 {
 	const std::vector<uint8_t> TRAPLogo{ Embed::TRAPLogo.begin(), Embed::TRAPLogo.end() };
-	INTERNAL::WindowingAPI::SetWindowIcon(m_window, Image::LoadFromMemory(32, 32, 32, ImageFormat::RGBA, TRAPLogo));
+	INTERNAL::WindowingAPI::SetWindowIcon(m_window.get(), Image::LoadFromMemory(32, 32, 32, ImageFormat::RGBA, TRAPLogo));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -544,7 +570,7 @@ void TRAP::Window::SetIcon(const Scope<Image>& image) const
 		return;
 	}
 
-	INTERNAL::WindowingAPI::SetWindowIcon(m_window, image);
+	INTERNAL::WindowingAPI::SetWindowIcon(m_window.get(), image);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -556,23 +582,45 @@ void TRAP::Window::SetEventCallback(const EventCallbackFn& callback)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Window::SetResizable(const bool enabled) const
+{
+	INTERNAL::WindowingAPI::SetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Resizable, enabled);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::Window::IsMaximized() const
 {
-	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window, INTERNAL::WindowingAPI::Hint::Maximized);
+	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Maximized);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Window::IsMinimized() const
 {
-	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window, INTERNAL::WindowingAPI::Hint::Minimized);
+	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Minimized);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Window::IsResizable() const
 {
-	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window, INTERNAL::WindowingAPI::Hint::Resizable);
+	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Resizable);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::Maximize() const
+{
+	if(m_data.displayMode == DisplayMode::Windowed)
+		INTERNAL::WindowingAPI::MaximizeWindow(m_window.get());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::Minimize() const
+{
+	INTERNAL::WindowingAPI::MinimizeWindow(m_window.get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -580,7 +628,7 @@ bool TRAP::Window::IsResizable() const
 static void WindowingAPIErrorCallback(const TRAP::INTERNAL::WindowingAPI::Error error, const std::string& description)
 {
 	if(error != TRAP::INTERNAL::WindowingAPI::Error::No_Error)
-		TP_ERROR("[Window][Internal] ", description);
+		TP_ERROR("[Window][Internal]", description);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -600,7 +648,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	if (!s_WindowingAPIInitialized)
 	{
 		const int32_t success = INTERNAL::WindowingAPI::Init();
-		TRAP_CORE_ASSERT(success, "Could not initialize GLFW!");
+		TRAP_CORE_ASSERT(success, "Could not initialize WindowingAPI!");
 		INTERNAL::WindowingAPI::SetErrorCallback(WindowingAPIErrorCallback);
 		s_WindowingAPIInitialized = true;
 
@@ -614,14 +662,14 @@ void TRAP::Window::Init(const WindowProps& props)
 	}
 	
 	const auto monitors = INTERNAL::WindowingAPI::GetMonitors();
-	if (props.Monitor < monitors.size())
+	if (props.Monitor < static_cast<uint32_t>(monitors.size()))
 		m_useMonitor = monitors[props.Monitor];
 	else
 	{
 		TP_ERROR("[Window] \"", m_data.Title, "\" Invalid Monitor!");
 		TP_WARN("[Window] \"", m_data.Title, "\" Using Primary Monitor!");
 		m_data.Monitor = 0;
-		m_useMonitor = INTERNAL::WindowingAPI::GetPrimaryMonitor();
+		m_useMonitor = INTERNAL::WindowingAPI::GetPrimaryMonitor().get();
 	}
 
 	if(s_baseVideoModes.empty())
@@ -680,7 +728,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w01a2]";
+		"[INDEV][20w02a2]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif
@@ -691,7 +739,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		nullptr,
 		nullptr);
 
-	INTERNAL::WindowingAPI::GetWindowSize(m_window, m_data.Width, m_data.Height);
+	INTERNAL::WindowingAPI::GetWindowSize(m_window.get(), m_data.Width, m_data.Height);
 
 	if (!m_window)
 	{
@@ -711,9 +759,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	s_windows++;
 	if (s_windows > 1)
 	{
-		Scope<Window> window(this); //Little Hack so this pointer doesnt get invalidated :/
-		Graphics::API::Context::Use(window);
-		auto unused = window.release();
+		Graphics::API::Context::Use(this);
 		SetVSyncInterval(props.VSync);
 	}
 
@@ -721,7 +767,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	newTitle += Graphics::Renderer::GetTitle();
 #endif
-	INTERNAL::WindowingAPI::SetWindowTitle(m_window, newTitle);
+	INTERNAL::WindowingAPI::SetWindowTitle(m_window.get(), newTitle);
 
 	int32_t width = 0, height = 0, refreshRate = 0;
 	
@@ -731,10 +777,10 @@ void TRAP::Window::Init(const WindowProps& props)
 		m_oldWindowedParams.Width = m_data.Width;
 		m_oldWindowedParams.Height = m_data.Height;
 		m_oldWindowedParams.RefreshRate = m_data.RefreshRate;
-		INTERNAL::WindowingAPI::GetWindowPos(m_window, m_oldWindowedParams.XPos, m_oldWindowedParams.YPos);
+		INTERNAL::WindowingAPI::GetWindowPos(m_window.get(), m_oldWindowedParams.XPos, m_oldWindowedParams.YPos);
 	}
 
-	Ref<INTERNAL::WindowingAPI::InternalMonitor> monitor = nullptr;
+	INTERNAL::WindowingAPI::InternalMonitor* monitor = nullptr;
 
 	if (props.displayMode == DisplayMode::Borderless)
 	{
@@ -826,10 +872,10 @@ void TRAP::Window::Init(const WindowProps& props)
 	
 
 	if (m_data.displayMode == DisplayMode::Borderless)
-		INTERNAL::WindowingAPI::SetWindowMonitorBorderless(m_window, monitor);
+		INTERNAL::WindowingAPI::SetWindowMonitorBorderless(m_window.get(), monitor);
 	else
 	{
-		INTERNAL::WindowingAPI::SetWindowMonitor(m_window,
+		INTERNAL::WindowingAPI::SetWindowMonitor(m_window.get(),
 			monitor,
 			m_oldWindowedParams.XPos,
 			m_oldWindowedParams.YPos,
@@ -838,22 +884,22 @@ void TRAP::Window::Init(const WindowProps& props)
 			refreshRate);
 	}
 
-	INTERNAL::WindowingAPI::GetFrameBufferSize(m_window, width, height);
+	INTERNAL::WindowingAPI::GetFrameBufferSize(m_window.get(), width, height);
 	Graphics::RenderCommand::SetViewport(0, 0, width, height);
 	
-	INTERNAL::WindowingAPI::SetWindowUserPointer(m_window, &m_data);
+	INTERNAL::WindowingAPI::SetWindowUserPointer(m_window.get(), &m_data);
 
 	SetIcon();
 
 	if (m_data.cursorMode == CursorMode::Normal)
-		INTERNAL::WindowingAPI::SetCursorMode(m_window, INTERNAL::WindowingAPI::CursorMode::Normal);
+		INTERNAL::WindowingAPI::SetCursorMode(m_window.get(), INTERNAL::WindowingAPI::CursorMode::Normal);
 	else if (m_data.cursorMode == CursorMode::Hidden)
-		INTERNAL::WindowingAPI::SetCursorMode(m_window, INTERNAL::WindowingAPI::CursorMode::Hidden);
+		INTERNAL::WindowingAPI::SetCursorMode(m_window.get(), INTERNAL::WindowingAPI::CursorMode::Hidden);
 	else if (m_data.cursorMode == CursorMode::Disabled)
-		INTERNAL::WindowingAPI::SetCursorMode(m_window, INTERNAL::WindowingAPI::CursorMode::Disabled);
+		INTERNAL::WindowingAPI::SetCursorMode(m_window.get(), INTERNAL::WindowingAPI::CursorMode::Disabled);
 	
 	if (Input::IsRawMouseInputSupported())
-		INTERNAL::WindowingAPI::SetRawMouseMotionMode(m_window, m_data.RawMouseInput);
+		INTERNAL::WindowingAPI::SetRawMouseMotionMode(m_window.get(), m_data.RawMouseInput);
 	else
 	{
 		TP_ERROR("[Window] \"", m_data.Title, "\" Raw Mouse Input is unsupported!");
@@ -861,7 +907,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	}
 
 	//Set WindowingAPI callbacks
-	INTERNAL::WindowingAPI::SetWindowSizeCallback(m_window, [](const Ref<INTERNAL::WindowingAPI::InternalWindow>& window, const int32_t width, const int32_t height)
+	INTERNAL::WindowingAPI::SetWindowSizeCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const int32_t width, const int32_t height)
 	{
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 		data.Width = width;
@@ -874,7 +920,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		data.EventCallback(event);
 	});
 
-	INTERNAL::WindowingAPI::SetWindowPosCallback(m_window, [](const Ref<INTERNAL::WindowingAPI::InternalWindow>& window, const int32_t x, const int32_t y)
+	INTERNAL::WindowingAPI::SetWindowPosCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const int32_t x, const int32_t y)
 	{
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -891,7 +937,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		data.EventCallback(event);
 	});
 
-	INTERNAL::WindowingAPI::SetWindowFocusCallback(m_window, [](const Ref<INTERNAL::WindowingAPI::InternalWindow>& window, const bool focused)
+	INTERNAL::WindowingAPI::SetWindowFocusCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const bool focused)
 	{
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -910,7 +956,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		}
 	});
 
-	INTERNAL::WindowingAPI::SetWindowCloseCallback(m_window, [](const Ref<INTERNAL::WindowingAPI::InternalWindow>& window)
+	INTERNAL::WindowingAPI::SetWindowCloseCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window)
 	{
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -921,7 +967,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		data.EventCallback(event);
 	});
 
-	INTERNAL::WindowingAPI::SetKeyCallback(m_window, [](const Ref<INTERNAL::WindowingAPI::InternalWindow>& window, const Input::Key key, int32_t scancode, const bool pressed)
+	INTERNAL::WindowingAPI::SetKeyCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const Input::Key key, int32_t scancode, const bool pressed)
 	{
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -960,7 +1006,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		}
 	});
 
-	INTERNAL::WindowingAPI::SetCharCallback(m_window, [](const Ref<INTERNAL::WindowingAPI::InternalWindow>& window, const uint32_t keycode)
+	INTERNAL::WindowingAPI::SetCharCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const uint32_t keycode)
 	{
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -971,7 +1017,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		data.EventCallback(event);
 	});
 
-	INTERNAL::WindowingAPI::SetMouseButtonCallback(m_window, [](const Ref<INTERNAL::WindowingAPI::InternalWindow>& window, const Input::MouseButton button, const bool pressed)
+	INTERNAL::WindowingAPI::SetMouseButtonCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const Input::MouseButton button, const bool pressed)
 	{
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -990,7 +1036,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		}
 	});
 
-	INTERNAL::WindowingAPI::SetScrollCallback(m_window, [](const Ref<INTERNAL::WindowingAPI::InternalWindow>& window, const double xOffset, const double yOffset)
+	INTERNAL::WindowingAPI::SetScrollCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const double xOffset, const double yOffset)
 	{
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1001,7 +1047,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		data.EventCallback(event);
 	});
 
-	INTERNAL::WindowingAPI::SetCursorPosCallback(m_window, [](const Ref<INTERNAL::WindowingAPI::InternalWindow>& window, const double xPos, const double yPos)
+	INTERNAL::WindowingAPI::SetCursorPosCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const double xPos, const double yPos)
 	{
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1020,7 +1066,7 @@ void TRAP::Window::Init(const WindowProps& props)
 
 void TRAP::Window::Shutdown()
 {
-	INTERNAL::WindowingAPI::DestroyWindow(m_window);
+	INTERNAL::WindowingAPI::DestroyWindow(std::move(m_window));
 	m_window = nullptr;
 	if (!s_windows)
 		INTERNAL::WindowingAPI::Shutdown();

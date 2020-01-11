@@ -8,16 +8,16 @@ namespace TRAP::INTERNAL
 	class ImGuiWindowing
 	{
 	public:
-		static bool InitForOpenGL(const std::shared_ptr<WindowingAPI::InternalWindow>& window, bool installCallbacks);
+		static bool InitForOpenGL(WindowingAPI::InternalWindow* window, bool installCallbacks);
 		static void Shutdown();
 		static void NewFrame();
 
 	private:
-		static std::shared_ptr<WindowingAPI::InternalWindow> s_window; //Main Window
+		static WindowingAPI::InternalWindow* s_window; //Main Window
 		static WindowingAPI::ContextAPI s_clientAPI;
 		static double s_time;
 		static std::array<bool, 5> s_mouseJustPressed;
-		static std::array<std::shared_ptr<WindowingAPI::InternalCursor>, ImGuiMouseCursor_COUNT> s_mouseCursors;
+		static std::array<Scope<WindowingAPI::InternalCursor>, ImGuiMouseCursor_COUNT> s_mouseCursors;
 		static bool s_installedCallbacks;
 		static bool s_wantUpdateMonitors;
 
@@ -29,7 +29,8 @@ namespace TRAP::INTERNAL
 
 		struct ImGuiViewportDataTRAP
 		{
-			std::shared_ptr<WindowingAPI::InternalWindow> Window = nullptr;
+			Scope<WindowingAPI::InternalWindow> Window = nullptr;
+			WindowingAPI::InternalWindow* WindowPtr = nullptr;
 			bool WindowOwned = false;
 			int32_t IgnoreWindowSizeEventFrame = -1;
 
@@ -45,22 +46,18 @@ namespace TRAP::INTERNAL
 		static void UpdateGamepads();
 		static void UpdateMonitors();
 
-		static bool Init(const std::shared_ptr<WindowingAPI::InternalWindow>& window, bool installCallbacks, WindowingAPI::ContextAPI clientAPI);
+		static bool Init(WindowingAPI::InternalWindow* window, bool installCallbacks, WindowingAPI::ContextAPI clientAPI);
 		static const char* GetClipboardText(void* userData);
 		static void SetClipboardText(void* userData, const char* text);
-		static void MouseButtonCallback(const Ref<WindowingAPI::InternalWindow>& window, Input::MouseButton mouseButton, bool pressed);
-		static void ScrollCallback(const Ref<WindowingAPI::InternalWindow>& window, double xOffset, double yOffset);
-		static void KeyCallback(const Ref<WindowingAPI::InternalWindow>& window, Input::Key key, int32_t scanCode, bool pressed);
-		static void CharCallback(const Ref<WindowingAPI::InternalWindow>& window, uint32_t codePoint);
-		static void WindowCloseCallback(const Ref<WindowingAPI::InternalWindow>& window);
-		static void WindowPosCallback(const Ref<WindowingAPI::InternalWindow>& window, int32_t x, int32_t y);
-		static void WindowSizeCallback(const Ref<WindowingAPI::InternalWindow>& window, int32_t width, int32_t height);
+		static void MouseButtonCallback(const WindowingAPI::InternalWindow* window, Input::MouseButton mouseButton, bool pressed);
+		static void ScrollCallback(const WindowingAPI::InternalWindow* window, double xOffset, double yOffset);
+		static void KeyCallback(const WindowingAPI::InternalWindow* window, Input::Key key, int32_t scanCode, bool pressed);
+		static void CharCallback(const WindowingAPI::InternalWindow* window, uint32_t codePoint);
+		static void WindowCloseCallback(const WindowingAPI::InternalWindow* window);
+		static void WindowPosCallback(const WindowingAPI::InternalWindow* window, int32_t x, int32_t y);
+		static void WindowSizeCallback(const WindowingAPI::InternalWindow* window, int32_t width, int32_t height);
 		static void CreateWindow(ImGuiViewport* viewport);
 		static void DestroyWindow(ImGuiViewport* viewport);
-#ifdef TRAP_PLATFORM_WINDOWS
-		static WNDPROC s_TRAPWndProc;
-		static LRESULT CALLBACK WndProcNoInputs(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-#endif
 		static void ShowWindow(ImGuiViewport* viewport);
 		static ImVec2 GetWindowPos(ImGuiViewport* viewport);
 		static void SetWindowPos(ImGuiViewport* viewport, ImVec2 pos);
@@ -77,7 +74,7 @@ namespace TRAP::INTERNAL
 		static void SetIMEInputPos(ImGuiViewport* viewport, ImVec2 pos);
 #endif
 		static int32_t CreateVkSurface(ImGuiViewport* viewport, ImU64 vkInstance, const void* vkAllocator, ImU64* outVkSurface);
-		static void MonitorCallback(const Ref<WindowingAPI::InternalMonitor>& unused1, bool unused2);
+		static void MonitorCallback(const WindowingAPI::InternalMonitor* unused1, bool unused2);
 	};
 }
 

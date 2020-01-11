@@ -42,7 +42,7 @@ namespace TRAP::Graphics::API
 
 		static void SetVSyncInterval(uint32_t interval);
 
-		static void Use(const Scope<Window>& window);
+		static void Use(const Window* window);
 
 		static RenderAPI s_newRenderAPI;
 	protected:
@@ -51,7 +51,7 @@ namespace TRAP::Graphics::API
 
 	private:
 		virtual void SetVSyncIntervalInternal(uint32_t interval = 0) = 0;
-		virtual void UseInternal(const Scope<Window>& window) = 0;
+		virtual void UseInternal(const Window* window) = 0;
 
 		static bool s_isD3D12Capable;
 		static bool s_isVulkanCapable;

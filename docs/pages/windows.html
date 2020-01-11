@@ -122,9 +122,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#setrawmouseinput">SetRawMouseInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#seticon">SetIcon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#seteventcallback">SetEventCallback</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setresizable">SetResizable</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ismaximized">IsMaximized</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#isminimized">IsMinimized</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#isresizable">IsResizable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#maximizewindow">MaximizeWindow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#minimizewindow">MinimizeWindow</a></li>
 </ul>
 </li>
 </ul>
@@ -262,16 +265,17 @@
 <div class="line-block">
 <div class="line">Window Properties</div>
 </div>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">WindowProps</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span><span class="p">,</span>
-                  <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">width</span><span class="p">,</span>
-                  <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">height</span><span class="p">,</span>
-                  <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">refreshRate</span><span class="p">,</span>
-                  <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">vsync</span><span class="p">,</span>
-                  <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">DisplayMode</span> <span class="n">displayMode</span><span class="p">,</span>
-                  <span class="k">const</span> <span class="kt">bool</span> <span class="n">maximized</span><span class="p">,</span>
-                  <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">monitor</span><span class="p">,</span>
-                  <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">CursorMode</span> <span class="n">cursorMode</span><span class="p">,</span>
-                  <span class="k">const</span> <span class="kt">bool</span> <span class="n">rawMouseInput</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">WindowProps</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;TRAP Engine&quot;</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">1280</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">720</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">refreshRate</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">vsync</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">DisplayMode</span> <span class="n">displayMode</span> <span class="o">=</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">DisplayMode</span><span class="o">::</span><span class="n">Windowed</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="kt">bool</span> <span class="n">maximized</span> <span class="o">=</span> <span class="nb">false</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="kt">bool</span> <span class="n">resizable</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">monitor</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">CursorMode</span> <span class="n">cursorMode</span> <span class="o">=</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">CursorMode</span><span class="o">::</span><span class="n">Normal</span><span class="p">,</span>
+                  <span class="k">const</span> <span class="kt">bool</span> <span class="n">rawMouseInput</span> <span class="o">=</span> <span class="nb">false</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
@@ -290,6 +294,7 @@
 <li><p><code class="code docutils literal notranslate"><span class="pre">vsync</span></code> Sets the VSync interval of TRAP::<a class="reference internal" href="#windowprops">WindowProps</a>. Default value: <code class="code docutils literal notranslate"><span class="pre">0</span></code></p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">displayMode</span></code> Sets the Display Mode of TRAP::<a class="reference internal" href="#windowprops">WindowProps</a>. Default value: <code class="code docutils literal notranslate"><span class="pre">TRAP::Window::DisplayMode::Windowed</span></code></p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">maximized</span></code> Sets maximized state of a TRAP::<a class="reference internal" href="#windowprops">WindowProps</a>. Default value: <code class="code docutils literal notranslate"><span class="pre">false</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">resizable</span></code> Sets resizability of a TRAP::<a class="reference internal" href="#windowprops">WindowProps</a>. Default value: <code class="code docutils literal notranslate"><span class="pre">true</span></code></p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">monitor</span></code> Sets the Monitor of TRAP::<a class="reference internal" href="#windowprops">WindowProps</a>. Default value: <code class="code docutils literal notranslate"><span class="pre">0</span></code></p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">cursorMode</span></code> Sets the TRAP::<a class="reference internal" href="#window">Window</a>::<a class="reference internal" href="#cursormode">CursorMode</a>. Default value: <code class="code docutils literal notranslate"><span class="pre">TRAP::Window::CursorMode::Normal</span></code></p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">rawMouseInput</span></code> Sets the Mouse Input. Default value: <code class="code docutils literal notranslate"><span class="pre">false</span></code></p></li>
@@ -704,7 +709,7 @@
 <div class="line"><strong>Description</strong></div>
 <div class="line">Sets the Icon of a TRAP::<a class="reference internal" href="#window">Window</a> to the default TRAP Engine Icon</div>
 </div>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">SetIcon</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;&amp;</span> <span class="n">image</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">SetIcon</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;&amp;</span> <span class="n">image</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 </pre></div>
 </div>
 <div class="line-block">
@@ -740,6 +745,22 @@
 <p><code class="code docutils literal notranslate"><span class="pre">EventCallbackFn</span></code> is the same as <code class="code docutils literal notranslate"><span class="pre">std::function&lt;void(Event&amp;)&gt;</span></code></p>
 </div>
 </div>
+<div class="section" id="setresizable">
+<h3>SetResizable<a class="headerlink" href="#setresizable" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">SetResizable</span><span class="p">(</span><span class="k">const</span> <span class="kt">bool</span> <span class="n">enabled</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Enables/Disables resizability of a TRAP::<a class="reference internal" href="#window">Window</a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">enabled</span></code> specifies if the resizability should be enabled or disabled</p></li>
+</ul>
+</div>
 <div class="section" id="ismaximized">
 <h3>IsMaximized<a class="headerlink" href="#ismaximized" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">IsMaximized</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
@@ -768,6 +789,30 @@
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
 <div class="line">Returns whether the TRAP::<a class="reference internal" href="#window">Window</a> is resizable or not</div>
+</div>
+</div>
+<div class="section" id="maximizewindow">
+<h3>MaximizeWindow<a class="headerlink" href="#maximizewindow" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">MaximizeWindow</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">INTERNAL</span><span class="o">::</span><span class="n">WindowingAPI</span><span class="o">::</span><span class="n">InternalWindow</span><span class="o">&gt;&amp;</span> <span class="n">window</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Maximizes the TRAP::<a class="reference internal" href="#window">Window</a></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Ignored if the TRAP::<a class="reference internal" href="#window">Window</a> doesnt use TRAP::<a class="reference internal" href="#window">Window</a>::<a class="reference internal" href="#displaymode">DisplayMode</a>::Windowed</p>
+</div>
+</div>
+<div class="section" id="minimizewindow">
+<h3>MinimizeWindow<a class="headerlink" href="#minimizewindow" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">MinimizeWindow</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Ref</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">INTERNAL</span><span class="o">::</span><span class="n">WindowingAPI</span><span class="o">::</span><span class="n">InternalWindow</span><span class="o">&gt;&amp;</span> <span class="n">window</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Minimizes the TRAP::<a class="reference internal" href="#window">Window</a></div>
 </div>
 </div>
 </div>

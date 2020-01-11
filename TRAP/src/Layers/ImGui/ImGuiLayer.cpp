@@ -44,7 +44,7 @@ void TRAP::ImGuiLayer::OnAttach()
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 	}
 
-	const Ref<INTERNAL::WindowingAPI::InternalWindow> window = Application::GetWindow()->GetInternalWindow();
+	INTERNAL::WindowingAPI::InternalWindow* window = static_cast<INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow());
 
 	//Setup Platform/Renderer bindings
 /*#ifdef TRAP_PLATFORM_WINDOWS
@@ -137,7 +137,7 @@ void TRAP::ImGuiLayer::End()
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
 
-		std::shared_ptr<INTERNAL::WindowingAPI::InternalWindow> backupCurrentContext = nullptr;
+		INTERNAL::WindowingAPI::InternalWindow* backupCurrentContext = nullptr;
 /*#ifdef TRAP_PLATFORM_WINDOWS
 		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::D3D12)
 		{

@@ -2,7 +2,6 @@
 #define _GAMESTRAP_SANDBOXLAYER_H_
 
 #include <TRAP.h>
-#include "Embed.h"
 
 class SandboxLayer final : public TRAP::Layer
 {

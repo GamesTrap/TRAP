@@ -42,7 +42,7 @@ void TRAP::Graphics::API::VulkanContext::Present(const Scope<Window>& window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanContext::UseInternal(const Scope<Window>& window)
+void TRAP::Graphics::API::VulkanContext::UseInternal(const Window* window)
 {	
 }
 
@@ -73,7 +73,8 @@ void TRAP::Graphics::API::VulkanContext::InitSurface()
 {
 	TP_DEBUG("[Renderer][Vulkan] Initializing Surface");
 
-	VkCall(INTERNAL::WindowingAPI::CreateWindowSurface(VulkanRenderer::Get()->GetInstance(), m_window->GetInternalWindow(), nullptr, m_surface));
+	VkCall(INTERNAL::WindowingAPI::CreateWindowSurface(VulkanRenderer::Get()->GetInstance(),
+		static_cast<INTERNAL::WindowingAPI::InternalWindow*>(m_window->GetInternalWindow()), nullptr, m_surface));
 	TRAP_RENDERER_ASSERT(m_surface, "[Renderer][Vulkan] Couldn't create Surface!");
 }
 
@@ -338,13 +339,13 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		INTERNAL::WindowingAPI::SetContextAPI(INTERNAL::WindowingAPI::ContextAPI::None);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
-		Ref<INTERNAL::WindowingAPI::InternalWindow> VulkanTestWindow = INTERNAL::WindowingAPI::CreateWindow(800, 600, "Vulkan Tester", nullptr, nullptr);
+		Scope<INTERNAL::WindowingAPI::InternalWindow> VulkanTestWindow = INTERNAL::WindowingAPI::CreateWindow(800, 600, "Vulkan Tester", nullptr, nullptr);
 		INTERNAL::WindowingAPI::DefaultWindowHints();
 		if (!VulkanTestWindow)
 			return false;
 
 		VkSurfaceKHR surface{};
-		VkCall(INTERNAL::WindowingAPI::CreateWindowSurface(instance, VulkanTestWindow, nullptr, surface));
+		VkCall(INTERNAL::WindowingAPI::CreateWindowSurface(instance, VulkanTestWindow.get(), nullptr, surface));
 
 		if(!surface)
 		{
@@ -468,7 +469,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			//Needs to be destroyed after testing
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 
-			INTERNAL::WindowingAPI::DestroyWindow(VulkanTestWindow);
+			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
 
 			//Needs to be destroyed after testing
 			vkDestroyInstance(instance, nullptr);
@@ -507,7 +508,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			//Needs to be destroyed after testing
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 
-			INTERNAL::WindowingAPI::DestroyWindow(VulkanTestWindow);
+			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
 
 			//Needs to be destroyed after testing
 			vkDestroyInstance(instance, nullptr);
@@ -528,7 +529,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			//Needs to be destroyed after testing
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 
-			INTERNAL::WindowingAPI::DestroyWindow(VulkanTestWindow);
+			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
 
 			//Needs to be destroyed after testing
 			vkDestroyInstance(instance, nullptr);
@@ -553,7 +554,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			//Needs to be destroyed after testing
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 
-			INTERNAL::WindowingAPI::DestroyWindow(VulkanTestWindow);
+			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
 
 			//Needs to be destroyed after testing
 			vkDestroyInstance(instance, nullptr);
@@ -569,7 +570,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			//Needs to be destroyed after testing
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 
-			INTERNAL::WindowingAPI::DestroyWindow(VulkanTestWindow);
+			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
 
 			//Needs to be destroyed after testing
 			vkDestroyInstance(instance, nullptr);
@@ -586,7 +587,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			//Needs to be destroyed after testing
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 
-			INTERNAL::WindowingAPI::DestroyWindow(VulkanTestWindow);
+			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
 
 			//Needs to be destroyed after testing
 			vkDestroyInstance(instance, nullptr);
@@ -599,7 +600,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			//Needs to be destroyed after testing
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 
-			INTERNAL::WindowingAPI::DestroyWindow(VulkanTestWindow);
+			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
 
 			//Needs to be destroyed after testing
 			vkDestroyInstance(instance, nullptr);
@@ -612,7 +613,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			//Needs to be destroyed after testing
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 
-			INTERNAL::WindowingAPI::DestroyWindow(VulkanTestWindow);
+			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
 
 			//Needs to be destroyed after testing
 			vkDestroyInstance(instance, nullptr);
@@ -623,7 +624,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		//Needs to be destroyed after testing
 		vkDestroySurfaceKHR(instance, surface, nullptr);
 
-		INTERNAL::WindowingAPI::DestroyWindow(VulkanTestWindow);
+		INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
 
 		//Needs to be destroyed after testing
 		vkDestroyInstance(instance, nullptr);

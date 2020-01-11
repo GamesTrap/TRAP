@@ -39,31 +39,31 @@ namespace TRAP::INTERNAL
 		//The function pointer type for error callbacks.
 		typedef void (*ErrorFunc)(Error error, const std::string& description);
 		//The function pointer type for window position callbacks.
-		typedef void (*WindowPositionFunc)(const Ref<InternalWindow>&, int32_t xPos, int32_t yPos);
+		typedef void (*WindowPositionFunc)(const InternalWindow*, int32_t xPos, int32_t yPos);
 		//The function pointer type for window size callbacks.
-		typedef void (*WindowSizeFunc)(const Ref<InternalWindow>&, int32_t width, int32_t height);
+		typedef void (*WindowSizeFunc)(const InternalWindow*, int32_t width, int32_t height);
 		//The function pointer type for window close callbacks.
-		typedef void (*WindowCloseFunc)(const Ref<InternalWindow>&);
+		typedef void (*WindowCloseFunc)(const InternalWindow*);
 		//The function pointer type for window focus callbacks.
-		typedef void (*WindowFocusFunc)(const Ref<InternalWindow>&, bool focused);
+		typedef void (*WindowFocusFunc)(const InternalWindow*, bool focused);
 		//The function pointer type for framebuffer size callbacks.
-		typedef void (*FrameBufferSizeFunc)(const Ref<InternalWindow>&, int32_t width, int32_t height);
+		typedef void (*FrameBufferSizeFunc)(const InternalWindow*, int32_t width, int32_t height);
 		//The function pointer type for window content scale callbacks.
-		typedef void (*WindowContentScaleFunc)(const Ref<InternalWindow>&, float xScale, float yScale);
+		typedef void (*WindowContentScaleFunc)(const InternalWindow*, float xScale, float yScale);
 		//The function pointer type for mouse button callbacks.
-		typedef void (*MouseButtonFunc)(const Ref<InternalWindow>&, Input::MouseButton mouseButton, bool pressed);
+		typedef void (*MouseButtonFunc)(const InternalWindow*, Input::MouseButton mouseButton, bool pressed);
 		//The function pointer type for cursor position callbacks.
-		typedef void (*CursorPositionFunc)(const Ref<InternalWindow>&, double xPos, double yPos);
+		typedef void (*CursorPositionFunc)(const InternalWindow*, double xPos, double yPos);
 		//The function pointer type for scroll callbacks.
-		typedef void (*ScrollFunc)(const Ref<InternalWindow>&, double xOffset, double yOffset);
+		typedef void (*ScrollFunc)(const InternalWindow*, double xOffset, double yOffset);
 		//The function pointer type for keyboard key callbacks.
-		typedef void (*KeyFunc)(const Ref<InternalWindow>&, Input::Key key, int32_t scanCode, bool pressed); //TODO parameter scanCode needed??
+		typedef void (*KeyFunc)(const InternalWindow*, Input::Key key, int32_t scanCode, bool pressed); //TODO parameter scanCode needed??
 		//The function pointer type for Unicode character callbacks.
-		typedef void (*CharFunc)(const Ref<InternalWindow>&, uint32_t codePoint);
+		typedef void (*CharFunc)(const InternalWindow*, uint32_t codePoint);
 		//The function pointer type for path drop callbacks.
-		typedef void (*DropFunc)(const Ref<InternalWindow>&, std::vector<std::string> paths);
+		typedef void (*DropFunc)(const InternalWindow*, std::vector<std::string> paths);
 		//The function pointer type for monitor configuration callbacks.
-		typedef void (*MonitorFunc)(const Ref<InternalMonitor>&, bool connected);
+		typedef void (*MonitorFunc)(const InternalMonitor*, bool connected);
 	private:
 		//--------------//
 		//OpenGL Context//
@@ -71,12 +71,12 @@ namespace TRAP::INTERNAL
 		//Generic function pointer used for returning client API function pointers
 		//without forcing a cast from a regular pointer.
 		typedef void (*GLProcess)();
-		typedef void (*MakeContextCurrentFunc)(const Ref<InternalWindow>& window);
-		typedef void (*SwapBuffersFunc)(const Ref<InternalWindow>& window);
+		typedef void (*MakeContextCurrentFunc)(InternalWindow* window);
+		typedef void (*SwapBuffersFunc)(const InternalWindow* window);
 		typedef void (*SwapIntervalFunc)(int32_t interval);
 		typedef bool (*ExtensionSupportedFunc)(const char* extension);
 		typedef GLProcess(*GetProcAddressFunc)(const char* process);
-		typedef void (*DestroyContextFunc)(const Ref<InternalWindow>& window);
+		typedef void (*DestroyContextFunc)(InternalWindow* window);
 		//--------------//
 		//Vulkan Surface//
 		//--------------//
@@ -153,7 +153,8 @@ namespace TRAP::INTERNAL
 			FocusOnShow,
 			Hovered,
 			Decorated,
-			Floating
+			Floating,
+			MousePassthrough
 			//Stereo //Used for 3D/VR
 		};
 		enum class ContextAPI
@@ -284,7 +285,7 @@ namespace TRAP::INTERNAL
 		//Per-thread error structure
 		struct WindowingError
 		{
-			Ref<WindowingError> Next = nullptr;
+			WindowingError* Next = nullptr;
 			Error ErrorCode = Error::No_Error;
 			std::string Description = "";
 		};
@@ -322,12 +323,13 @@ namespace TRAP::INTERNAL
 			bool Focused = false;
 			bool Floating = false;
 			bool FocusOnShow = true;
+			bool MousePassthrough = false;
 		};
 		//Context configuration
 		struct ContextConfig
 		{
 			ContextAPI Client = ContextAPI::None;
-			Ref<InternalWindow> Share = nullptr;
+			const InternalWindow* Share = nullptr;
 		};		
 		//Context structure
 		struct Context
@@ -364,11 +366,11 @@ namespace TRAP::INTERNAL
 				ContextConfig Context{};
 			} Hints{};
 
-			Ref<WindowingError> ErrorListHead = nullptr;
-			Ref<InternalWindow> WindowListHead = nullptr;
-			Ref<InternalCursor> CursorListHead = nullptr;
+			Scope<WindowingError> ErrorListHead = nullptr;
+			InternalWindow* WindowListHead = nullptr;
+			InternalCursor* CursorListHead = nullptr;
 
-			std::vector<Ref<InternalMonitor>> Monitors{};
+			std::vector<Scope<InternalMonitor>> Monitors{};
 
 			TLS ErrorSlot{};
 			TLS ContextSlot{};
@@ -407,7 +409,7 @@ namespace TRAP::INTERNAL
 			//Where to place the cursor when re-enabled
 			double RestoreCursorPosX = 0.0, RestoreCursorPosY = 0.0;
 			//The window whose disabled cursor mode is active
-			Ref<InternalWindow> DisabledCursorWindow = nullptr;
+			InternalWindow* DisabledCursorWindow = nullptr;
 			std::vector<RAWINPUT> RawInput{};
 			int32_t RawInputSize = 0;
 			UINT MouseTrailSize = 0;
@@ -495,7 +497,7 @@ namespace TRAP::INTERNAL
 			std::string Name{};
 
 			//The window whose video mode is current on this monitor
-			Ref<InternalWindow> Window = nullptr;
+			InternalWindow* Window = nullptr;
 
 			std::vector<VideoMode> Modes{};
 			VideoMode CurrentMode;
@@ -513,7 +515,7 @@ namespace TRAP::INTERNAL
 		//Cursor structure
 		struct InternalCursor
 		{
-			Ref<InternalCursor> Next = nullptr;
+			InternalCursor* Next = nullptr;
 
 #ifdef TRAP_PLATFORM_WINDOWS
 			HCURSOR Handle = nullptr;
@@ -522,7 +524,7 @@ namespace TRAP::INTERNAL
 		//Window and Context structure
 		struct InternalWindow
 		{
-			Ref<InternalWindow> Next = nullptr;
+			InternalWindow* Next = nullptr;
 			
 			//Window settings and state
 			bool Resizable = true;
@@ -530,11 +532,12 @@ namespace TRAP::INTERNAL
 			bool Floating = false;
 			bool ShouldClose = false;
 			bool FocusOnShow = true;
+			bool MousePassthrough = false;
 			bool BorderlessFullscreen = false;
 			void* UserPointer = nullptr;
 			VideoMode VideoMode{};
-			Ref<InternalMonitor> Monitor = nullptr;
-			Ref<InternalCursor> Cursor = nullptr;
+			InternalMonitor* Monitor = nullptr;
+			InternalCursor* Cursor = nullptr;
 
 			CursorMode CursorMode = CursorMode::Normal;
 			std::array<bool, 8> MouseButtons{};
@@ -594,9 +597,9 @@ namespace TRAP::INTERNAL
 		//Shuts down the Windowing API.
 		static void Shutdown();
 		//Destroys the specified window and its context.
-		static void DestroyWindow(Ref<InternalWindow>& window);
+		static void DestroyWindow(Scope<InternalWindow> window);
 		//Makes the context of the specified window current for the calling
-		static void MakeContextCurrent(const Ref<InternalWindow>& window);
+		static void MakeContextCurrent(InternalWindow* window);
 		//Resets all window hints to their default values.
 		static void DefaultWindowHints();
 		//Sets the specified window hint to the desired value.
@@ -604,163 +607,167 @@ namespace TRAP::INTERNAL
 		//Sets the specified sample count to the desired sample value.
 		static void SetSamples(uint32_t samples);
 		//Sets the specified window context API to the desired value
-		static void SetContextAPI(ContextAPI contextAPI);	
+		static void SetContextAPI(ContextAPI contextAPI);
 		//Returns the name of the specified monitor.
-		static std::string GetMonitorName(const Ref<InternalMonitor>& monitor);
+		static std::string GetMonitorName(const InternalMonitor* monitor);
 		//Returns the primary monitor.
-		static Ref<InternalMonitor> GetPrimaryMonitor();
+		static const Scope<InternalMonitor>& GetPrimaryMonitor();
 		//Returns the currently connected monitors.
-		static const std::vector<Ref<InternalMonitor>>& GetMonitors();
+		static std::vector<InternalMonitor*> GetMonitors();
 		//Returns the current mode of the specified monitor.
-		static const VideoMode& GetVideoMode(const Ref<InternalMonitor>& monitor);
+		static const VideoMode& GetVideoMode(InternalMonitor* monitor);
 		//Returns the available video modes for the specified monitor.
-		static std::vector<VideoMode> GetVideoModes(const Ref<InternalMonitor>& monitor);
+		static std::vector<VideoMode> GetVideoModes(InternalMonitor* monitor);
 		//Creates a window and its associated context.
-		static Ref<InternalWindow> CreateWindow(uint32_t width, uint32_t height, const std::string& title, const Ref<InternalMonitor>& monitor, const Ref<InternalWindow>& share);
+		static Scope<InternalWindow> CreateWindow(uint32_t width, uint32_t height, const std::string& title, InternalMonitor* monitor, const InternalWindow* share);
 		//Sets the close flag of the specified window.
-		static void SetWindowShouldClose(const Ref<InternalWindow>& window, bool value);
+		static void SetWindowShouldClose(InternalWindow* window, bool value);
 		//Sets the title of the specified window.
-		static void SetWindowTitle(const Ref<InternalWindow>& window, const std::string& title);
+		static void SetWindowTitle(const InternalWindow* window, const std::string& title);
 		//Retrieves the content scale for the specified monitor.
-		static void GetMonitorContentScale(const Ref<InternalMonitor>& monitor, float& xScale, float& yScale);
+		static void GetMonitorContentScale(const InternalMonitor* monitor, float& xScale, float& yScale);
 		//Destroys a cursor.
-		static void DestroyCursor(Ref<InternalCursor>& cursor);
+		static void DestroyCursor(Scope<InternalCursor> cursor);
 		//Creates a custom cursor.
-		static Ref<InternalCursor> CreateCursor(const Scope<Image>& image, int32_t xHotspot, int32_t yHotspot);
+		static Scope<InternalCursor> CreateCursor(const Scope<Image>& image, int32_t xHotspot, int32_t yHotspot);
 		//Creates a cursor with a standard shape.
-		static Ref<InternalCursor> CreateStandardCursor(const CursorType& type);
+		static Scope<InternalCursor> CreateStandardCursor(const CursorType& type);
 		//Sets the cursor for the window.
-		static void SetCursor(const Ref<InternalWindow>& window, const Ref<InternalCursor>& cursor);
+		static void SetCursor(InternalWindow* window, InternalCursor* cursor);
 		//Sets the icon for the specified window.
-		static void SetWindowIcon(const Ref<InternalWindow>& window, const Scope<Image>& image);
+		static void SetWindowIcon(InternalWindow* window, const Scope<Image>& image);
 		//Sets the position of the content area of the specified window.
-		static void SetWindowPos(const Ref<InternalWindow>& window, int32_t xPos, int32_t yPos);
+		static void SetWindowPos(const InternalWindow* window, int32_t xPos, int32_t yPos);
 		//Retrieves the position of the content area of the specified window.
-		static void GetWindowPos(const Ref<InternalWindow>& window, int32_t& xPos, int32_t& yPos);
+		static void GetWindowPos(const InternalWindow* window, int32_t& xPos, int32_t& yPos);
 		//Sets the size of the content area of the specified window.
-		static void SetWindowSize(const Ref<InternalWindow>& window, int32_t width, int32_t height);
+		static void SetWindowSize(InternalWindow* window, int32_t width, int32_t height);
 		//Retrieves the size of the content area of the specified window.
-		static void GetWindowSize(const Ref<InternalWindow>& window, int32_t& width, int32_t& height);
+		static void GetWindowSize(const InternalWindow* window, int32_t& width, int32_t& height);
 		//Retrieves the size of the framebuffer of the specified window.
-		static void GetFrameBufferSize(const Ref<InternalWindow>& window, int32_t& width, int32_t& height);
+		static void GetFrameBufferSize(const InternalWindow* window, int32_t& width, int32_t& height);
 		//Sets the opacity of the whole window.
-		static void SetWindowOpacity(const Ref<InternalWindow>& window, float opacity);
+		static void SetWindowOpacity(const InternalWindow* window, float opacity);
 		//Returns the opacity of the whole window.
-		static float GetWindowOpacity(const Ref<InternalWindow>& window);		
+		static float GetWindowOpacity(const InternalWindow* window);
 		//Retrieves the content scale for the specified window.
-		static void GetWindowContentScale(const Ref<InternalWindow>& window, float& xScale, float& yScale);
+		static void GetWindowContentScale(const InternalWindow* window, float& xScale, float& yScale);
 		//Sets an attribute for the specified window.
-		static void SetWindowAttrib(const Ref<InternalWindow>& window, Hint hint, bool value);
+		static void SetWindowAttrib(InternalWindow* window, Hint hint, bool value);
 		//Returns an attribute of the specified window.
-		static bool GetWindowAttrib(const Ref<InternalWindow>& window, Hint hint);
+		static bool GetWindowAttrib(const InternalWindow* window, Hint hint);
 		//Sets the mode, monitor, video mode and placement of a window.
-		static void SetWindowMonitor(const Ref<InternalWindow>& window,
-		                             const Ref<InternalMonitor>& monitor,
+		static void SetWindowMonitor(InternalWindow* window,
+		                             InternalMonitor* monitor,
 		                             int32_t xPos,
 		                             int32_t yPos,
 		                             int32_t width,
 		                             int32_t height,
 		                             int32_t refreshRate);
 		//Sets the mode, monitor and placement of a window.
-		static void SetWindowMonitorBorderless(const Ref<InternalWindow>& window, const Ref<InternalMonitor>& monitor);
+		static void SetWindowMonitorBorderless(InternalWindow* window, InternalMonitor* monitor);
 		//Sets the user pointer of the specified window.
-		static void SetWindowUserPointer(const Ref<InternalWindow>& window, void* pointer);
+		static void SetWindowUserPointer(InternalWindow* window, void* pointer);
 		//Returns the user pointer of the specified window.
-		static void* GetWindowUserPointer(const Ref<InternalWindow>& window);
+		static void* GetWindowUserPointer(const InternalWindow* window);
 		//Sets the error callback.
 		static void SetErrorCallback(ErrorFunc callback);
 		//Sets the monitor configuration callback.
 		static void SetMonitorCallback(MonitorFunc callback);
 		//Sets the position callback for the specified window.
-		static void SetWindowPosCallback(const Ref<InternalWindow>& window, WindowPositionFunc callback);
+		static void SetWindowPosCallback(InternalWindow* window, WindowPositionFunc callback);
 		//Sets the size callback for the specified window.
-		static void SetWindowSizeCallback(const Ref<InternalWindow>& window, WindowSizeFunc callback);
+		static void SetWindowSizeCallback(InternalWindow* window, WindowSizeFunc callback);
 		//Sets the close callback for the specified window.
-		static void SetWindowCloseCallback(const Ref<InternalWindow>& window, WindowCloseFunc callback);
+		static void SetWindowCloseCallback(InternalWindow* window, WindowCloseFunc callback);
 		//Sets the focus callback for the specified window.
-		static void SetWindowFocusCallback(const Ref<InternalWindow>& window, WindowFocusFunc callback);
+		static void SetWindowFocusCallback(InternalWindow* window, WindowFocusFunc callback);
 		//Sets the framebuffer resize callback for the specified window.
-		static void SetFrameBufferSizeCallback(const Ref<InternalWindow>& window, FrameBufferSizeFunc callback);
+		static void SetFrameBufferSizeCallback(InternalWindow* window, FrameBufferSizeFunc callback);
 		//Sets the window content scale callback for the specified window.
-		static void SetWindowContentScaleCallback(const Ref<InternalWindow>& window, WindowContentScaleFunc callback);
+		static void SetWindowContentScaleCallback(InternalWindow* window, WindowContentScaleFunc callback);
 		//Sets the key callback.
-		static void SetKeyCallback(const Ref<InternalWindow>& window, KeyFunc callback);
+		static void SetKeyCallback(InternalWindow* window, KeyFunc callback);
 		//Sets the Unicode character callback.
-		static void SetCharCallback(const Ref<InternalWindow>& window, CharFunc callback);
+		static void SetCharCallback(InternalWindow* window, CharFunc callback);
 		//Sets the mouse button callback.
-		static void SetMouseButtonCallback(const Ref<InternalWindow>& window, MouseButtonFunc callback);
+		static void SetMouseButtonCallback(InternalWindow* window, MouseButtonFunc callback);
 		//Sets the cursor position callback.
-		static void SetCursorPosCallback(const Ref<InternalWindow>& window, CursorPositionFunc callback);
+		static void SetCursorPosCallback(InternalWindow* window, CursorPositionFunc callback);
 		//Sets the scroll callback.
-		static void SetScrollCallback(const Ref<InternalWindow>& window, ScrollFunc callback);
+		static void SetScrollCallback(InternalWindow* window, ScrollFunc callback);
 		//Sets the path drop callback.
-		static void SetDropCallback(const Ref<InternalWindow>& window, DropFunc callback);
+		static void SetDropCallback(InternalWindow* window, DropFunc callback);
 		//Gets the error callback.
 		static ErrorFunc GetErrorCallback();
 		//Gets the monitor configuration callback.
 		static MonitorFunc GetMonitorCallback();
 		//Gets the position callback for the specified window.
-		static WindowPositionFunc GetWindowPosCallback(const Ref<InternalWindow>& window);
+		static WindowPositionFunc GetWindowPosCallback(const InternalWindow* window);
 		//Gets the size callback for the specified window.
-		static WindowSizeFunc GetWindowSizeCallback(const Ref<InternalWindow>& window);
+		static WindowSizeFunc GetWindowSizeCallback(const InternalWindow* window);
 		//Gets the close callback for the specified window.
-		static WindowCloseFunc GetWindowCloseCallback(const Ref<InternalWindow>& window);
+		static WindowCloseFunc GetWindowCloseCallback(const InternalWindow* window);
 		//Gets the focus callback for the specified window.
-		static WindowFocusFunc GetWindowFocusCallback(const Ref<InternalWindow>& window);
+		static WindowFocusFunc GetWindowFocusCallback(const InternalWindow* window);
 		//Gets the framebuffer resize callback for the specified window.
-		static FrameBufferSizeFunc GetFrameBufferSizeCallback(const Ref<InternalWindow>& window);
+		static FrameBufferSizeFunc GetFrameBufferSizeCallback(const InternalWindow* window);
 		//Gets the window content scale callback for the specified window.
-		static WindowContentScaleFunc GetWindowContentScaleCallback(const Ref<InternalWindow>& window);
+		static WindowContentScaleFunc GetWindowContentScaleCallback(const InternalWindow* window);
 		//Gets the key callback.
-		static KeyFunc GetKeyCallback(const Ref<InternalWindow>& window);
+		static KeyFunc GetKeyCallback(const InternalWindow* window);
 		//Gets the Unicode character callback.
-		static CharFunc GetCharCallback(const Ref<InternalWindow>& window);
+		static CharFunc GetCharCallback(const InternalWindow* window);
 		//Gets the mouse button callback.
-		static MouseButtonFunc GetMouseButtonCallback(const Ref<InternalWindow>& window);
+		static MouseButtonFunc GetMouseButtonCallback(const InternalWindow* window);
 		//Gets the cursor position callback.
-		static CursorPositionFunc GetCursorPosCallback(const Ref<InternalWindow>& window);
+		static CursorPositionFunc GetCursorPosCallback(const InternalWindow* window);
 		//Gets the scroll callback.
-		static ScrollFunc GetScrollCallback(const Ref<InternalWindow>& window);
+		static ScrollFunc GetScrollCallback(const InternalWindow* window);
 		//Gets the path drop callback.
-		static DropFunc GetDropCallback(const Ref<InternalWindow>& window);
+		static DropFunc GetDropCallback(const InternalWindow* window);
 		//Processes all pending events.
 		static void PollEvents();
 		//Sets the cursor mode for the specified window.
-		static void SetCursorMode(const Ref<InternalWindow>& window, CursorMode mode);
+		static void SetCursorMode(InternalWindow* window, CursorMode mode);
 		//Retrieves the cursor mode for the specified window.
-		static CursorMode GetCursorMode(const Ref<InternalWindow>& window);
+		static CursorMode GetCursorMode(const InternalWindow* window);
 		//Returns whether raw mouse motion is supported.
 		static bool RawMouseMotionSupported();
 		//Sets the raw mouse motion mode for the specified window.
-		static void SetRawMouseMotionMode(const Ref<InternalWindow>& window, bool enabled);
+		static void SetRawMouseMotionMode(InternalWindow* window, bool enabled);
 		//Retrvieves the raw mouse motion mode for the specified window.
-		static bool GetRawMouseMotionMode(const Ref<InternalWindow>& window);
+		static bool GetRawMouseMotionMode(const InternalWindow* window);
 		//Returns the layout-specific name of the specified printable key.
 		static const char* GetKeyName(Input::Key key, int32_t scanCode);
 		//Returns the last reported state of a keyboard key for the specified window.
-		static bool GetKey(const Ref<InternalWindow>& window, Input::Key key);
+		static bool GetKey(const InternalWindow* window, Input::Key key);
 		//Returns the last reported state of a mouse button for the specified window.
-		static bool GetMouseButton(const Ref<InternalWindow>& window, Input::MouseButton button);
+		static bool GetMouseButton(const InternalWindow* window, Input::MouseButton button);
 		//Sets the position of the cursor, relative to the content area of the window
-		static void SetCursorPos(const Ref<InternalWindow>& window, double xPos, double yPos);
+		static void SetCursorPos(InternalWindow* window, double xPos, double yPos);
 		//Retrieves the position of the cursor relative to the content area of the window.
-		static void GetCursorPos(const Ref<InternalWindow>& window, double& xPos, double& yPos);
+		static void GetCursorPos(const InternalWindow* window, double& xPos, double& yPos);
 		//Returns the position of the monitor's viewport on the virtual screen.
-		static void GetMonitorPos(const Ref<InternalMonitor>& monitor, int32_t& xPos, int32_t& yPos);
+		static void GetMonitorPos(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos);
 		//Retrieves the work area of the monitor.
-		static void GetMonitorWorkArea(const Ref<InternalMonitor>& monitor, int32_t& xPos, int32_t& yPos, int32_t& width, int32_t& height);
+		static void GetMonitorWorkArea(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos, int32_t& width, int32_t& height);
 		//Makes the specified window visible.
-		static void ShowWindow(const Ref<InternalWindow>& window);
+		static void ShowWindow(const InternalWindow* window);
 		//Brings the specified window to front and sets input focus.
-		static void FocusWindow(const Ref<InternalWindow>& window);
+		static void FocusWindow(const InternalWindow* window);
+		//Maximizes the specified window.
+		static void MaximizeWindow(const InternalWindow* window);
+		//Minimizes the specified window.
+		static void MinimizeWindow(const InternalWindow* window);
 		//Sets the clipboard to the specified string.
 		static void SetClipboardString(const std::string& string);
 		//Returns the contents of the clipboard as a string.
 		static std::string GetClipboardString();
 		//Returns the window whose context is current on the calling thread.
-		static Ref<InternalWindow> GetCurrentContext();
+		static InternalWindow* GetCurrentContext();
 		//Swaps the front and back buffers of the specified window.
-		static void SwapBuffers(const Ref<InternalWindow>& window);
+		static void SwapBuffers(InternalWindow* window);
 		//Sets the swap interval for the current context.
 		static void SwapInterval(int32_t interval);
 		//Returns whether the specified extension is available.
@@ -772,9 +779,9 @@ namespace TRAP::INTERNAL
 		//Returns the Vulkan instance extensions required by TRAP.
 		static std::array<std::string, 2> GetRequiredInstanceExtensions();
 		//Creates a Vulkan surface for the specified window.
-		static VkResult CreateWindowSurface(VkInstance instance, const Ref<InternalWindow>& window, const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
+		static VkResult CreateWindowSurface(VkInstance instance, const InternalWindow* window, const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
 #ifdef TRAP_PLATFORM_WINDOWS
-		static HWND GetWin32Window(const Ref<InternalWindow>& window);
+		static HWND GetWin32Window(const InternalWindow* window);
 #endif
 		//-------//
 		//Private//
@@ -783,7 +790,7 @@ namespace TRAP::INTERNAL
 		//Checks whether the desired context attributes are valid
 		static bool IsValidContextConfig(const ContextConfig& CTXConfig);
 		//Center the cursor in the content area of the specified window
-		static void CenterCursorInContentArea(const Ref<InternalWindow>& window);
+		static void CenterCursorInContentArea(InternalWindow* window);
 		//Notifies shared code of an error
 		static void InputError(Error code, const std::string& str);		
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -792,16 +799,16 @@ namespace TRAP::INTERNAL
 		//Create key code translation tables
 		static void CreateKeyTables();
 		
-		static void PlatformGetVideoMode(const Ref<InternalMonitor>& monitor, VideoMode& mode);
-		static void PlatformGetWindowSize(const Ref<InternalWindow>& window, int32_t& width, int32_t& height);
-		static void PlatformSetWindowPos(const Ref<InternalWindow>& window, int32_t xPos, int32_t yPos);
-		static void PlatformGetWindowFrameSize(const Ref<InternalWindow>& window,
+		static VideoMode PlatformGetVideoMode(const InternalMonitor* monitor);
+		static void PlatformGetWindowSize(const InternalWindow* window, int32_t& width, int32_t& height);
+		static void PlatformSetWindowPos(const InternalWindow* window, int32_t xPos, int32_t yPos);
+		static void PlatformGetWindowFrameSize(const InternalWindow* window,
 			                                   int32_t& left, int32_t& top,
 			                                   int32_t& right, int32_t& bottom);
-		static void PlatformSetWindowMonitor(const Ref<InternalWindow>& window, const Ref<InternalMonitor>& monitor,
+		static void PlatformSetWindowMonitor(InternalWindow* window, InternalMonitor* monitor,
 			                                 int32_t xPos, int32_t yPos, int32_t width, int32_t height, int32_t refreshRate);
-		static void PlatformSetWindowMonitorBorderless(const Ref<InternalWindow>& window, const Ref<InternalMonitor>& monitor);
-		static std::vector<VideoMode> PlatformGetVideoModes(const Ref<InternalMonitor>& monitor);
+		static void PlatformSetWindowMonitorBorderless(InternalWindow* window, InternalMonitor* monitor);
+		static std::vector<VideoMode> PlatformGetVideoModes(const InternalMonitor* monitor);
 		static bool PlatformInit();
 		static bool PlatformCreateMutex(Mutex& mutex); 
 		static bool PlatformCreateTLS(TLS& tls);
@@ -811,51 +818,53 @@ namespace TRAP::INTERNAL
 		static void PlatformDestroyMutex(Mutex& mutex);
 		static void PlatformLockMutex(Mutex& mutex);
 		static void PlatformUnlockMutex(Mutex& mutex);
-		static void PlatformDestroyWindow(const Ref<InternalWindow>& window);
+		static void PlatformDestroyWindow(InternalWindow* window);
 		static void PlatformShutdown();
-		static void PlatformGetMonitorContentScale(const Ref<InternalMonitor>& monitor, float& xScale, float& yScale);
-		static void PlatformGetMonitorPos(const Ref<InternalMonitor>& monitor, int32_t& xPos, int32_t& yPos);
-		static void PlatformShowWindow(const Ref<InternalWindow>& window);
-		static void PlatformFocusWindow(const Ref<InternalWindow>& window);
-		static bool PlatformCreateWindow(const Ref<InternalWindow>& window,
+		static void PlatformGetMonitorContentScale(const InternalMonitor* monitor, float& xScale, float& yScale);
+		static void PlatformGetMonitorPos(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos);
+		static void PlatformShowWindow(const InternalWindow* window);
+		static void PlatformFocusWindow(const InternalWindow* window);
+		static bool PlatformCreateWindow(InternalWindow* window,
 			                             const WindowConfig& WNDConfig,
 			                             const ContextConfig& CTXConfig,
 			                             const FrameBufferConfig& FBConfig);
-		static void PlatformSetWindowTitle(const Ref<InternalWindow>& window, const std::string& title);
-		static bool PlatformCreateCursor(const Ref<InternalCursor>& cursor, const Scope<Image>& image, int32_t xHotspot, int32_t yHotspot);
-		static bool PlatformCreateStandardCursor(const Ref<InternalCursor>& cursor, const CursorType& type);
-		static void PlatformDestroyCursor(const Ref<InternalCursor>& cursor);
-		static void PlatformSetCursor(const Ref<InternalWindow>& window, const Ref<InternalCursor>& cursor);
-		static void PlatformSetCursorMode(const Ref<InternalWindow>& window, CursorMode mode);
-		static void PlatformSetCursorPos(const Ref<InternalWindow>& window, double xPos, double yPos);
-		static void PlatformGetCursorPos(const Ref<InternalWindow>& window, double& xPos, double& yPos);
-		static void PlatformSetWindowIcon(const Ref<InternalWindow>& window, const Scope<Image>& image);
-		static void PlatformGetWindowPos(const Ref<InternalWindow>& window, int32_t& xPos, int32_t& yPos);
-		static void PlatformSetWindowSize(const Ref<InternalWindow>& window, int32_t width, int32_t height);
-		static void PlatformSetWindowResizable(const Ref<InternalWindow>& window, bool enabled);
-		static void PlatformSetWindowDecorated(const Ref<InternalWindow>& window, bool enabled);
-		static void PlatformSetWindowFloating(const Ref<InternalWindow>& window, bool enabled);
-		static void PlatformSetWindowOpacity(const Ref<InternalWindow>& window, float opacity);
-		static float PlatformGetWindowOpacity(const Ref<InternalWindow>& window);
-		static void PlatformGetFrameBufferSize(const Ref<InternalWindow>& window, int32_t& width, int32_t& height);
-		static void PlatformGetWindowContentScale(const Ref<InternalWindow>& window, float& xScale, float& yScale);
-		static void PlatformGetMonitorWorkArea(const Ref<InternalMonitor>& monitor, int32_t& xPos, int32_t& yPos, int32_t& width, int32_t& height);
-		static bool PlatformWindowVisible(const Ref<InternalWindow>& window);
-		static bool PlatformWindowMaximized(const Ref<InternalWindow>& window);
-		static bool PlatformWindowMinimized(const Ref<InternalWindow>& window);
+		static void PlatformSetWindowTitle(const InternalWindow* window, const std::string& title);
+		static bool PlatformCreateCursor(InternalCursor* cursor, const Scope<Image>& image, int32_t xHotspot, int32_t yHotspot);
+		static bool PlatformCreateStandardCursor(InternalCursor* cursor, const CursorType& type);
+		static void PlatformDestroyCursor(InternalCursor* cursor);
+		static void PlatformSetCursor(const InternalWindow* window, const InternalCursor* cursor);
+		static void PlatformSetCursorMode(InternalWindow* window, CursorMode mode);
+		static void PlatformSetCursorPos(InternalWindow* window, double xPos, double yPos);
+		static void PlatformGetCursorPos(const InternalWindow* window, double& xPos, double& yPos);
+		static void PlatformSetWindowIcon(InternalWindow* window, const Scope<Image>& image);
+		static void PlatformGetWindowPos(const InternalWindow* window, int32_t& xPos, int32_t& yPos);
+		static void PlatformSetWindowSize(InternalWindow* window, int32_t width, int32_t height);
+		static void PlatformSetWindowResizable(const InternalWindow* window, bool enabled);
+		static void PlatformSetWindowDecorated(const InternalWindow* window, bool enabled);
+		static void PlatformSetWindowFloating(const InternalWindow* window, bool enabled);
+		static void PlatformSetWindowOpacity(const InternalWindow* window, float opacity);
+		static void PlatformSetWindowMousePassthrough(InternalWindow* window, bool enabled);
+		static float PlatformGetWindowOpacity(const InternalWindow* window);
+		static void PlatformGetFrameBufferSize(const InternalWindow* window, int32_t& width, int32_t& height);
+		static void PlatformGetWindowContentScale(const InternalWindow* window, float& xScale, float& yScale);
+		static void PlatformGetMonitorWorkArea(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos, int32_t& width, int32_t& height);
+		static bool PlatformWindowVisible(const InternalWindow* window);
+		static bool PlatformWindowMaximized(const InternalWindow* window);
+		static bool PlatformWindowMinimized(const InternalWindow* window);
 		static void PlatformPollEvents();
-		static bool PlatformWindowFocused(const Ref<InternalWindow>& window);
-		static bool PlatformWindowHovered(const Ref<InternalWindow>& window);
+		static bool PlatformWindowFocused(const InternalWindow* window);
+		static bool PlatformWindowHovered(const InternalWindow* window);
 		static bool PlatformRawMouseMotionSupported();
-		static void PlatformSetRawMouseMotion(const Ref<InternalWindow>& window, bool enabled);
+		static void PlatformSetRawMouseMotion(const InternalWindow* window, bool enabled);
 		static int32_t PlatformGetKeyScanCode(Input::Key key);
 		static const char* PlatformGetScanCodeName(int32_t scanCode);
 		static void PlatformSetClipboardString(const std::string& string);
 		static std::string PlatformGetClipboardString();
 		static void PlatformGetRequiredInstanceExtensions(std::array<std::string, 2>& extensions);
-		static VkResult PlatformCreateWindowSurface(VkInstance instance, const Ref<InternalWindow>& window,
+		static VkResult PlatformCreateWindowSurface(VkInstance instance, const InternalWindow* window,
 			                                        const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
-		static void PlatformMinimizeWindow(const Ref<InternalWindow>& window);
+		static void PlatformMaximizeWindow(const InternalWindow* window);
+		static void PlatformMinimizeWindow(const InternalWindow* window);
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Single Platform Functions------------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -892,31 +901,31 @@ namespace TRAP::INTERNAL
 		//Reports the specified error, appending information about the last Win32 error
 		static void InputErrorWin32(Error error, std::string description);
 		//Notifies shared code of a mouse button click event
-		static void InputMouseClick(const Ref<InternalWindow>& window, Input::MouseButton button, bool pressed);
+		static void InputMouseClick(InternalWindow* window, Input::MouseButton button, bool pressed);
 		//Notifies shared code that a window has lost or received input focus
-		static void InputWindowFocus(const Ref<InternalWindow>& window, bool focused);
+		static void InputWindowFocus(InternalWindow* window, bool focused);
 		//Notifies shared code of a Unicode codepoint input event
 		//The 'plain' parameter determines whether to emit a regular character event
-		static void InputChar(const Ref<InternalWindow>& window, uint32_t codePoint);
+		static void InputChar(const InternalWindow* window, uint32_t codePoint);
 		//Notifies shared code of a cursor motion event
 		//The position is specified in content area relative screen coordinates
-		static void InputCursorPos(const Ref<InternalWindow>& window, double xPos, double yPos);
+		static void InputCursorPos(InternalWindow* window, double xPos, double yPos);
 		//Notifies shared code of a scroll event
-		static void InputScroll(const Ref<InternalWindow>& window, double xOffset, double yOffset);
+		static void InputScroll(const InternalWindow* window, double xOffset, double yOffset);
 		//Notifies shared code that a window framebuffer has been resized
 		//The size is specified in pixels
-		static void InputFrameBufferSize(const Ref<InternalWindow>& window, int32_t width, int32_t height); 
+		static void InputFrameBufferSize(const InternalWindow* window, int32_t width, int32_t height); 
 		//Notifies shared code that a window has been resized
 		//The size is specified in screen coordinates
-		static void InputWindowSize(const Ref<InternalWindow>& window, int32_t width, int32_t height);
+		static void InputWindowSize(const InternalWindow* window, int32_t width, int32_t height);
 		//Notifies shared code that a window has moved
 		//The position is specified in content area relative screen coordinates
-		static void InputWindowPos(const Ref<InternalWindow>& window, int32_t x, int32_t y);
+		static void InputWindowPos(const InternalWindow* window, int32_t x, int32_t y);
 		//Notifies shared code that a window content scale has changed
 		//The scale is specified as the ratio between the current and default DPI
-		static void InputWindowContentScale(const Ref<InternalWindow>& window, float xScale, float yScale);
+		static void InputWindowContentScale(const InternalWindow* window, float xScale, float yScale);
 		//Notifies shared code of files or directories dropped on a window
-		static void InputDrop(const Ref<InternalWindow>& window, const std::vector<std::string>& paths);
+		static void InputDrop(const InternalWindow* window, const std::vector<std::string>& paths);
 		//Translates a Windows key to the corresponding TRAP key
 		static Input::Key TranslateKey(WPARAM wParam, LPARAM lParam);
 		//Updates key names according to the current keyboard layout
@@ -930,35 +939,37 @@ namespace TRAP::INTERNAL
 		//Callback for EnumDisplayMonitors in createMonitor
 		static BOOL CALLBACK MonitorCallback(HMONITOR handle, HDC dc, RECT* rect, LPARAM data);
 		//Create monitor from an adapter and (optionally) a display
-		static Ref<InternalMonitor> CreateMonitor(DISPLAY_DEVICEW* adapter, DISPLAY_DEVICEW* display);
+		static Scope<InternalMonitor> CreateMonitor(DISPLAY_DEVICEW* adapter, DISPLAY_DEVICEW* display);
 		//Notifies shared code of a monitor connection or disconnection
-		static void InputMonitor(Ref<InternalMonitor>& monitor, bool connected, uint32_t placement);
+		static void InputMonitor(Scope<InternalMonitor> monitor, bool connected, uint32_t placement);
+		//Notifies shared code of a monitor connection or disconnection
+		static void InputMonitorDisconnect(uint32_t monitorIndex, uint32_t placement);
 		//Poll for changes in the set of connected monitors
 		static void PollMonitorsWin32();
 		//Make the specified window and its video mode active on its monitor
-		static void AcquireMonitor(const Ref<InternalWindow>& window);
+		static void AcquireMonitor(InternalWindow* window);
 		//Make the specified window active on its monitor
-		static void AcquireMonitorBorderless(const Ref<InternalWindow>& window);
+		static void AcquireMonitorBorderless(InternalWindow* window);
 		//Remove the window and restore the original video mode
-		static void ReleaseMonitor(const Ref<InternalWindow>& window);
-		static void FitToMonitor(const Ref<InternalWindow>& window);
+		static void ReleaseMonitor(const InternalWindow* window);
+		static void FitToMonitor(const InternalWindow* window);
 		//Lexically compare video modes, used by qsort
 		static int32_t CompareVideoModes(const void* fp, const void* sp);
 		//Retrieves the available modes for the specified monitor
-		static bool RefreshVideoModes(const Ref<InternalMonitor>& monitor);
+		static bool RefreshVideoModes(InternalMonitor* monitor);
 		//Chooses the video mode most closely matching the desired one
-		static VideoMode* ChooseVideoMode(const Ref<InternalMonitor>& monitor, const VideoMode& desired);
+		static VideoMode* ChooseVideoMode(InternalMonitor* monitor, const VideoMode& desired);
 		//Change the current video mode
-		static void SetVideoModeWin32(const Ref<InternalMonitor>& monitor, const VideoMode& desired);
+		static void SetVideoModeWin32(InternalMonitor* monitor, const VideoMode& desired);
 		static void GetMonitorContentScaleWin32(HMONITOR handle, float& xScale, float& yScale);
 		//Splits a color depth into red, green and blue bit depths
 		static void SplitBPP(int32_t bpp, int32_t& red, int32_t& green, int32_t& blue);
 		//Returns the window style for the specified window
-		static DWORD GetWindowStyle(const Ref<InternalWindow>& window);
+		static DWORD GetWindowStyle(const InternalWindow* window);
 		//Returns the extended window style for the specified window
-		static DWORD GetWindowExStyle(const Ref<InternalWindow>& window);
+		static DWORD GetWindowExStyle(const InternalWindow* window);
 		//Creates the TRAP window
-		static int32_t CreateNativeWindow(const Ref<InternalWindow>& window,
+		static int32_t CreateNativeWindow(InternalWindow* window,
 			                              const WindowConfig& WNDConfig,
 			                              const FrameBufferConfig& FBConfig);
 		//Creates a dummy window for behind-the-scenes work
@@ -971,12 +982,12 @@ namespace TRAP::INTERNAL
 		static bool InitWGL();
 		//Shutdown WGL
 		static void ShutdownWGL();
-		static bool CreateContextWGL(const Ref<InternalWindow>& window,
+		static bool CreateContextWGL(InternalWindow* window,
 			                         const ContextConfig& CTXConfig,
 			                         const FrameBufferConfig& FBConfig);
-		static void DestroyContextWGL(const Ref<InternalWindow>& window);
-		static void MakeContextCurrentWGL(const Ref<InternalWindow>& window);
-		static void SwapBuffersWGL(const Ref<InternalWindow>& window);
+		static void DestroyContextWGL( InternalWindow* window);
+		static void MakeContextCurrentWGL(InternalWindow* window);
+		static void SwapBuffersWGL(const InternalWindow* window);
 		static void SwapIntervalWGL(int32_t interval);
 		static GLProcess GetProcAddressWGL(const char* procName);
 		static bool ExtensionSupportedWGL(const char* extension);		
@@ -990,33 +1001,33 @@ namespace TRAP::INTERNAL
 		static const FrameBufferConfig* ChooseFBConfig(const FrameBufferConfig& desired,
 			                                           const std::vector<FrameBufferConfig>& alternatives);
 		//Returns a list of available and usable framebuffer configs
-		static int32_t ChoosePixelFormat(const Ref<InternalWindow>& window,
+		static int32_t ChoosePixelFormat(const InternalWindow* window,
 			                             const ContextConfig& CTXConfig,
 			                             const FrameBufferConfig& FBConfig);		
-		static bool RefreshContextAttribs(const Ref<InternalWindow>& window,
+		static bool RefreshContextAttribs(InternalWindow* window,
 			                              const ContextConfig& CTXConfig);
 		//Returns whether the cursor is in the content area of the specified window
-		static bool CursorInContentArea(const Ref<InternalWindow>& window);
+		static bool CursorInContentArea(const InternalWindow* window);
 		//Updates the cursor image according to its cursor mode
-		static void UpdateCursorImage(const Ref<InternalWindow>& window);
+		static void UpdateCursorImage(const InternalWindow* window);
 		//Creates an RGBA icon or cursor
 		static HICON CreateIcon(const Scope<Image>& image, int32_t xHot, int32_t yHot, bool icon);
 		//Notifies shared code that the user wishes to close a window
-		static void InputWindowCloseRequest(const Ref<InternalWindow>& window);
+		static void InputWindowCloseRequest(InternalWindow* window);
 		//Notifies shared code of a physical key event
-		static void InputKey(const Ref<InternalWindow>& window, Input::Key key, int32_t scancode, bool action);
+		static void InputKey(InternalWindow* window, Input::Key key, int32_t scancode, bool action);
 		//Updates the cursor clip rect
-		static void UpdateClipRect(const Ref<InternalWindow>& window);
+		static void UpdateClipRect(const InternalWindow* window);
 		//Enables WM_INPUT messages for the mouse for the specified window
-		static void EnableRawMouseMotion(const Ref<InternalWindow>& window);
+		static void EnableRawMouseMotion(const InternalWindow* window);
 		//Disables WM_INPUT messages for the mouse
-		static void DisableRawMouseMotion(const Ref<InternalWindow>& window);
+		static void DisableRawMouseMotion(const InternalWindow* window);
 		//Exit disabled cursor mode for the specified window
-		static void EnableCursor(const Ref<InternalWindow>& window);
+		static void EnableCursor(InternalWindow* window);
 		//Apply disabled cursor mode to a focused window
-		static void DisableCursor(const Ref<InternalWindow>& window);
+		static void DisableCursor(InternalWindow* window);
 		//Update native window styles to match attributes
-		static void UpdateWindowStyles(const Ref<InternalWindow>& window);
+		static void UpdateWindowStyles(const InternalWindow* window);
 		static bool InitVulkan(uint32_t mode);
 		static std::string GetVulkanResultString(VkResult result);
 #endif

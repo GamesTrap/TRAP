@@ -51,7 +51,6 @@ TRAP::Application::Application()
 	uint32_t fpsLimit = 0;
 	Window::DisplayMode displayMode = Window::DisplayMode::Windowed;
 	bool maximized = false;
-	bool resizable = true;
 	uint32_t monitor = 0;
 	Graphics::API::RenderAPI renderAPI = Graphics::API::RenderAPI::NONE;
 	Input::ControllerAPI controllerAPI = Input::ControllerAPI::Unknown;
@@ -69,7 +68,6 @@ TRAP::Application::Application()
 	m_config.Get("FPSLimit", fpsLimit);
 	m_config.Get("DisplayMode", displayMode);
 	m_config.Get("Maximized", maximized);
-	m_config.Get("Resizable", resizable);
 	m_config.Get("Monitor", monitor);
 	m_config.Get("RenderAPI", renderAPI);
 	m_config.Get("ControllerAPI", controllerAPI);
@@ -99,7 +97,7 @@ TRAP::Application::Application()
 				vsync,
 				displayMode,
 				maximized,
-				resizable,
+				true,
 				monitor
 			)
 			);
@@ -139,7 +137,6 @@ TRAP::Application::~Application()
 	m_config.Set("FPSLimit", m_fpsLimit);
 	m_config.Set("DisplayMode", m_window->GetDisplayMode());
 	m_config.Set("Maximized", m_window->IsMaximized());
-	m_config.Set("Resizable", m_window->IsResizable());
 	m_config.Set("Monitor", m_window->GetMonitor());
 	m_config.Set("RenderAPI", Graphics::API::Context::GetRenderAPI());
 	m_config.Set("ControllerAPI", Input::GetControllerAPI());
