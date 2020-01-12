@@ -38,11 +38,11 @@ TRAP::Window::Window(const WindowProps &props)
 	TP_INFO
 	(
 		"[Window] Initializing Window: \"", props.Title, "\" ", props.Width, "x", props.Height, "@", props.RefreshRate, "Hz VSync: ",
-		props.VSync > 0 ? "On" : "Off", "(", props.VSync, //Output VSync status
+		props.advanced.VSync > 0 ? "On" : "Off", "(", props.advanced.VSync, //Output VSync status
 		") DisplayMode: ", props.displayMode == DisplayMode::Windowed ? "Windowed" : props.displayMode == DisplayMode::Borderless ? "Borderless" : "Fullscreen", //Output DisplayMode
 		" Monitor: ", props.Monitor,
-		" CursorMode: ", props.cursorMode == CursorMode::Normal ? "Normal" : props.cursorMode == CursorMode::Hidden ? "Hidden" : "Disabled", //Output CursorMode
-		" RawMouseInput: ", props.rawMouseInput ? "Enabled" : "Disabled"
+		" CursorMode: ", props.advanced.CursorMode == CursorMode::Normal ? "Normal" : props.advanced.CursorMode == CursorMode::Hidden ? "Hidden" : "Disabled", //Output CursorMode
+		" RawMouseInput: ", props.advanced.RawMouseInput ? "Enabled" : "Disabled"
 	);
 	
 	Init(props);
@@ -213,7 +213,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w02a2]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][20w02a3]" + std::string(Graphics::Renderer::GetTitle());
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window.get(), newTitle);
 #else
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window, m_data.Title);
@@ -589,6 +589,26 @@ void TRAP::Window::SetResizable(const bool enabled) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Window::SetMinimumSize(const uint32_t minWidth, const uint32_t minHeight) const
+{
+	if (minWidth == 0 && minHeight == 0)
+		INTERNAL::WindowingAPI::SetWindowSizeLimits(m_window.get(), -1, -1, -1, -1);
+	else
+		INTERNAL::WindowingAPI::SetWindowSizeLimits(m_window.get(), minWidth, minHeight, -1, -1);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::SetMaximumSize(const uint32_t maxWidth, const uint32_t maxHeight) const
+{
+	if (maxWidth == 0 && maxHeight == 0)
+		INTERNAL::WindowingAPI::SetWindowSizeLimits(m_window.get(), -1, -1, -1, -1);
+	else
+		INTERNAL::WindowingAPI::SetWindowSizeLimits(m_window.get(), -1, -1, maxWidth, maxHeight);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::Window::IsMaximized() const
 {
 	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Maximized);
@@ -610,6 +630,27 @@ bool TRAP::Window::IsResizable() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+bool TRAP::Window::IsVisible() const
+{
+	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Visible);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Window::IsFocused() const
+{
+	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Focused);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Window::IsDecorated() const
+{
+	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Decorated);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Window::Maximize() const
 {
 	if(m_data.displayMode == DisplayMode::Windowed)
@@ -621,6 +662,41 @@ void TRAP::Window::Maximize() const
 void TRAP::Window::Minimize() const
 {
 	INTERNAL::WindowingAPI::MinimizeWindow(m_window.get());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::RequestAttention() const
+{	
+	INTERNAL::WindowingAPI::RequestWindowAttention(m_window.get());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::Focus() const
+{
+	INTERNAL::WindowingAPI::FocusWindow(m_window.get());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::Hide() const
+{
+	INTERNAL::WindowingAPI::HideWindow(m_window.get());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::Show() const
+{
+	INTERNAL::WindowingAPI::ShowWindow(m_window.get());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::Restore() const
+{
+	INTERNAL::WindowingAPI::RestoreWindow(m_window.get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -639,10 +715,10 @@ void TRAP::Window::Init(const WindowProps& props)
 	m_data.Width = props.Width;
 	m_data.Height = props.Height;
 	m_data.RefreshRate = props.RefreshRate;
-	m_data.VSync = props.VSync;
+	m_data.VSync = props.advanced.VSync;
 	m_data.Monitor = props.Monitor;
-	m_data.cursorMode = props.cursorMode;
-	m_data.RawMouseInput = props.rawMouseInput;
+	m_data.cursorMode = props.advanced.CursorMode;
+	m_data.RawMouseInput = props.advanced.RawMouseInput;
 	m_data.windowModeParams = &m_oldWindowedParams;
 
 	if (!s_WindowingAPIInitialized)
@@ -702,7 +778,7 @@ void TRAP::Window::Init(const WindowProps& props)
 				else
 				{
 					//All RenderAPIs are unsupported
-					Show("Every RenderAPI that TRAP Engine uses is unsupported on your device!\nDoes your system meet the minimum system requirements for running TRAP Engine?",
+					TRAP::Utils::MsgBox::Show("Every RenderAPI that TRAP Engine uses is unsupported on your device!\nDoes your system meet the minimum system requirements for running TRAP Engine?",
 						"Incompatible Device",
 						Utils::MsgBox::Style::Error,
 						Utils::MsgBox::Buttons::Quit);
@@ -718,17 +794,25 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	if (props.displayMode == DisplayMode::Windowed)
 	{
-		if(props.Maximized)
+		if(props.advanced.Maximized)
 			INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Maximized, true);
-		if (!props.Resizable)
+		if (!props.advanced.Resizable)
 			INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Resizable, false);
+		if (!props.advanced.Visible)
+			INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
+		if (!props.advanced.Decorated)
+			INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Decorated, false);
+		if (!props.advanced.Focused && !props.advanced.Visible)
+			INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
 	}
+	if (!props.advanced.FocusOnShow)
+		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::FocusOnShow, false);
 	
 	//Create Window
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w02a2]";
+		"[INDEV][20w02a3]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif
@@ -744,7 +828,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	if (!m_window)
 	{
 		TP_CRITICAL("[Window] Failed to create window");
-		Show("Failed to create Window!", "Failed to Create Window", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+		TRAP::Utils::MsgBox::Show("Failed to create Window!", "Failed to Create Window", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
 		exit(-1);
 	}
 
@@ -752,7 +836,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	{
 		//Create Context & Initialize Renderer
 		Graphics::API::Context::Create(this);
-		Graphics::API::Context::SetVSyncInterval(props.VSync);
+		Graphics::API::Context::SetVSyncInterval(props.advanced.VSync);
 		Graphics::API::RendererAPI::Init();
 	}
 
@@ -760,7 +844,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	if (s_windows > 1)
 	{
 		Graphics::API::Context::Use(this);
-		SetVSyncInterval(props.VSync);
+		SetVSyncInterval(props.advanced.VSync);
 	}
 
 	//Update Window Title
@@ -967,7 +1051,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		data.EventCallback(event);
 	});
 
-	INTERNAL::WindowingAPI::SetKeyCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const Input::Key key, int32_t scancode, const bool pressed)
+	INTERNAL::WindowingAPI::SetKeyCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const Input::Key key, const bool pressed)
 	{
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
@@ -1058,6 +1142,62 @@ void TRAP::Window::Init(const WindowProps& props)
 		data.EventCallback(event);
 	});
 
+	INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, int32_t width, int32_t height)
+	{
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
+
+		if (!data.EventCallback)
+			return;
+
+		//TODO
+		//FrameBufferResizeEvent event(width, height);
+		//data.EventCallback(event);
+	});
+
+	INTERNAL::WindowingAPI::SetWindowContentScaleCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, float xScale, float yScale)
+	{
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
+
+		if (!data.EventCallback)
+			return;
+
+		//TODO
+		//ContentScaleEvent event(xScale, yScale);
+		//data.EventCallback(event);
+	});
+
+	INTERNAL::WindowingAPI::SetCursorEnterCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, bool entered)
+	{
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
+
+		if (!data.EventCallback)
+			return;
+
+		//TODO
+		/*if (entered)
+		{
+			MouseEnteredEvent event();
+			data.EventCallback(event);
+		}
+		else
+		{
+			MouseLeavedEvent event();
+			data.EventCallback(event);
+		}*/
+	});
+
+	INTERNAL::WindowingAPI::SetDropCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, std::vector<std::string> paths)
+	{
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
+
+		if (!data.EventCallback)
+			return;
+
+		//TODO
+		//DropEvent event(paths);
+		//data.EventCallback(event);
+	});
+
 	if (s_windows > 1)
 		Use();
 }
@@ -1075,27 +1215,42 @@ void TRAP::Window::Shutdown()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::WindowProps::WindowProps(std::string title,
-	                           const uint32_t width,
-	                           const uint32_t height,
-	                           const uint32_t refreshRate,
-	                           const uint32_t vsync,
-	                           const Window::DisplayMode displayMode,
-							   const bool maximized,
-							   const bool resizable,
-	                           const uint32_t monitor,
-	                           const Window::CursorMode cursorMode,
-	                           const bool rawMouseInput)
+                               const uint32_t width,
+							   const uint32_t height,
+							   const uint32_t refreshRate,
+							   const Window::DisplayMode displayMode,
+							   Advanced advanced,
+							   const uint32_t monitor)
 	: Title(std::move(title)),
 	  Width(width),
 	  Height(height),
 	  RefreshRate(refreshRate),
-	  VSync(vsync),
 	  RenderAPI(Graphics::API::Context::GetRenderAPI()),
 	  displayMode(displayMode),
-	  Maximized(maximized),
-	  Resizable(resizable),
 	  Monitor(monitor),
-	  cursorMode(cursorMode),
-	  rawMouseInput(rawMouseInput)
+	  advanced{advanced}
 {
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::WindowProps::Advanced::Advanced(const uint32_t VSync,
+                                      const bool resizable,
+                                      const bool maximized,
+                                      const bool visible,
+                                      const bool focused,
+                                      const bool focusOnShow,
+                                      const bool decorated,
+                                      const bool rawMouseInput,
+                                      const Window::CursorMode cursorMode)
+	: VSync(VSync),
+	  Resizable(resizable),
+	  Maximized(maximized),
+	  Visible(visible),
+	  Focused(focused),
+	  FocusOnShow(focusOnShow),
+	  Decorated(decorated),
+	  RawMouseInput(rawMouseInput),
+	  CursorMode(cursorMode)
+{	
 }

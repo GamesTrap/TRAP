@@ -4,7 +4,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename ... Args>
-void TRAP::Log::Trace(const Args& ... args)
+void TRAP::Log::Trace(Args&& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Trace]";
@@ -22,8 +22,8 @@ void TRAP::Log::Trace(const Args& ... args)
 
 #ifdef TRAP_PLATFORM_WINDOWS
 template <typename ... Args>
-void TRAP::Log::Debug(const Args& ... args)
-{
+void TRAP::Log::Debug(Args&& ... args)
+{		
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Debug]";
 	using List = int32_t[];
@@ -41,7 +41,7 @@ void TRAP::Log::Debug(const Args& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename ... Args>
-void TRAP::Log::Info(const Args& ... args)
+void TRAP::Log::Info(Args&& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Info]";
@@ -60,7 +60,7 @@ void TRAP::Log::Info(const Args& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename ... Args>
-void TRAP::Log::Warn(const Args& ... args)
+void TRAP::Log::Warn(Args&& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Warn]";
@@ -79,7 +79,7 @@ void TRAP::Log::Warn(const Args& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename ... Args>
-void TRAP::Log::Error(const Args& ... args)
+void TRAP::Log::Error(Args&& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Error]";
@@ -98,7 +98,7 @@ void TRAP::Log::Error(const Args& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename ... Args>
-void TRAP::Log::Critical(const Args& ... args)
+void TRAP::Log::Critical(Args&& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Critical]";
@@ -118,7 +118,7 @@ void TRAP::Log::Critical(const Args& ... args)
 
 #else
 template<typename... Args>
-void TRAP::Log::Debug(const Args& ... args)
+void TRAP::Log::Debug(Args&& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Debug]";
@@ -135,7 +135,7 @@ void TRAP::Log::Debug(const Args& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename... Args>
-void TRAP::Log::Info(const Args& ... args)
+void TRAP::Log::Info(Args&& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Info]";
@@ -152,7 +152,7 @@ void TRAP::Log::Info(const Args& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename... Args>
-void TRAP::Log::Warn(const Args& ... args)
+void TRAP::Log::Warn(Args&& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Warn]";
@@ -169,7 +169,7 @@ void TRAP::Log::Warn(const Args& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename... Args>
-void TRAP::Log::Error(const Args& ... args)
+void TRAP::Log::Error(Args&& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Error]";
@@ -186,7 +186,7 @@ void TRAP::Log::Error(const Args& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename... Args>
-void TRAP::Log::Critical(const Args& ... args)
+void TRAP::Log::Critical(Args&& ... args)
 {
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Critical]";

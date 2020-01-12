@@ -736,3 +736,15 @@ SITREP 01/11/2020|20w02a3
     - Changed TRAP Engine version to 20w02a3(0.5.90)
     - Branch Window:
         - Changed WindowingAPI from Scopes to Refs ~>145 mins
+        - Added more WindowingAPI functions ~>40 mins
+        - Added GetControllerGUID to Input ~<10 mins
+        - Added new WindowingAPI functions to Window ~>30 mins
+        - Updated Docs ~<35 mins
+
+SITREP 01/12/2020|20w02a4
+    - Changed TRAP Engine version to 20w02a4(0.5.91)
+    - Branch Window:
+        - Added WindowingAPI functions to Window ~>30 mins
+        - Changed WindowProps constructor ~<20 mins
+        - Added clipboard functions to Input ~<10 mins
+        - Updated Docs ~>50 mins

@@ -413,10 +413,10 @@ void TRAP::INTERNAL::ImGuiWindowing::ScrollCallback(const WindowingAPI::Internal
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const WindowingAPI::InternalWindow* window, Input::Key key, const int32_t scanCode, const bool pressed)
+void TRAP::INTERNAL::ImGuiWindowing::KeyCallback(const WindowingAPI::InternalWindow* window, Input::Key key, const bool pressed)
 {
 	if (s_prevUserCallbackKey != nullptr && window == s_window)
-		s_prevUserCallbackKey(window, key, scanCode, pressed);
+		s_prevUserCallbackKey(window, key, pressed);
 
 	ImGuiIO& io = ImGui::GetIO();
 	if (pressed)

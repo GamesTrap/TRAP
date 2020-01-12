@@ -307,6 +307,19 @@ const TRAP::Input::ControllerStatus &TRAP::Input::GetControllerStatus(Controller
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::string TRAP::Input::GetControllerGUID(Controller controller)
+{
+	if (!IsControllerConnected(controller))
+	{
+		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
+		return "";
+	}
+
+	return s_controllerInternal[static_cast<uint8_t>(controller)].guid;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::vector<float> TRAP::Input::GetAllControllerAxes(Controller controller)
 {
 	if (!IsControllerConnected(controller))
@@ -370,6 +383,20 @@ void TRAP::Input::SetControllerVibration(Controller controller, const float left
 	PollController(controller, 0);
 
 	SetControllerVibrationInternal(controller, leftMotor, rightMotor);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Input::SetClipboard(const std::string& str)
+{
+	INTERNAL::WindowingAPI::SetClipboardString(str);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Input::GetClipboard()
+{
+	return INTERNAL::WindowingAPI::GetClipboardString();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

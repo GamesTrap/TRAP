@@ -483,6 +483,15 @@ void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow* window, const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Notifies shared code of a cursor enter/leave event
+void TRAP::INTERNAL::WindowingAPI::InputCursorEnter(InternalWindow* window, const bool entered)
+{
+	if (window->Callbacks.CursorEnter)
+		window->Callbacks.CursorEnter(window, entered);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Notifies shared code of a scroll event
 void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow* window, const double xOffset, const double yOffset)
 {
@@ -1018,6 +1027,18 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 				DPI = s_Data.User32.GetDPIForWindow(windowPtr->Handle);
 
 			GetFullWindowSize(GetWindowStyle(windowPtr), GetWindowExStyle(windowPtr), 0, 0, xOffset, yOffset, DPI);
+
+			if(windowPtr->MinWidth != -1 && windowPtr->MinHeight != -1)
+			{
+				mmi->ptMinTrackSize.x = windowPtr->MinWidth + xOffset;
+				mmi->ptMinTrackSize.y = windowPtr->MinHeight + yOffset;				
+			}
+
+			if(windowPtr->MaxWidth != -1 && windowPtr->MaxHeight != -1)
+			{
+				mmi->ptMaxTrackSize.x = windowPtr->MaxWidth + xOffset;
+				mmi->ptMaxTrackSize.y = windowPtr->MaxHeight + yOffset;				
+			}
 
 			if(!windowPtr->Decorated)
 			{
@@ -2913,7 +2934,7 @@ void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* window, Input::Key k
 	window->Keys[static_cast<uint32_t>(key)] = pressed;
 
 	if (window->Callbacks.Key)
-		window->Callbacks.Key(window, key, scancode, pressed);
+		window->Callbacks.Key(window, key, pressed);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4267,6 +4288,45 @@ void TRAP::INTERNAL::WindowingAPI::PlatformMaximizeWindow(const InternalWindow* 
 void TRAP::INTERNAL::WindowingAPI::PlatformMinimizeWindow(const InternalWindow* window)
 {
 	::ShowWindow(window->Handle, SW_MINIMIZE);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformRequestWindowAttention(const InternalWindow* window)
+{
+	FlashWindow(window->Handle, TRUE);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformHideWindow(const InternalWindow* window)
+{
+	::ShowWindow(window->Handle, SW_HIDE);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindow(const InternalWindow* window)
+{
+	::ShowWindow(window->Handle, SW_RESTORE);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(const InternalWindow* window,
+                                                               const int32_t minWidth,
+                                                               const int32_t minHeight,
+                                                               const int32_t maxWidth,
+                                                               const int32_t maxHeight)
+{
+	RECT area{};
+
+	if ((minWidth == -1 || minHeight == -1) &&
+		(maxWidth == -1 || maxHeight == -1))
+		return;
+
+	GetWindowRect(window->Handle, &area);
+	MoveWindow(window->Handle, area.left, area.top, area.right - area.left, area.bottom - area.top, TRUE);
 }
 
 #endif

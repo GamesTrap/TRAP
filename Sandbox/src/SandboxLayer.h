@@ -33,7 +33,9 @@ public:
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnAttach() override
-	{		
+	{
+		TRAP::Application::GetWindow()->SetTitle("Sandbox");
+		
 		//Mount & Load Shaders
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");

@@ -334,6 +334,11 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 	window->CursorMode = CursorMode::Normal;
 	window->BorderlessFullscreen = false;
 
+	window->MinWidth = -1;
+	window->MinHeight = -1;
+	window->MaxWidth = -1;
+	window->MaxHeight = -1;
+	
 	//Open the actual window and create its context
 	if (!PlatformCreateWindow(window.get(), WNDConfig, CTXConfig, FBConfig))
 	{
@@ -890,8 +895,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow* window,
                                                     const int32_t refreshRate)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
-	TRAP_WINDOW_ASSERT(width > 0, "[Window] width is smalles than or equal to 0!");
-	TRAP_WINDOW_ASSERT(height > 0, "[Window] height is smalles than or equal to 0!");
+	TRAP_WINDOW_ASSERT(width > 0, "[Window] width is smaller than or equal to 0!");
+	TRAP_WINDOW_ASSERT(height > 0, "[Window] height is smaller than or equal to 0!");
 
 	if (width <= 0 || height <= 0)
 	{
@@ -1068,6 +1073,16 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPosCallback(InternalWindow* window, 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Sets the cursor enter callback.
+void TRAP::INTERNAL::WindowingAPI::SetCursorEnterCallback(InternalWindow* window, const CursorEnterFunc callback)
+{
+	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
+
+	window->Callbacks.CursorEnter = callback;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Sets the scroll callback.
 void TRAP::INTERNAL::WindowingAPI::SetScrollCallback(InternalWindow* window, const ScrollFunc callback)
 {
@@ -1198,6 +1213,16 @@ TRAP::INTERNAL::WindowingAPI::CursorPositionFunc TRAP::INTERNAL::WindowingAPI::G
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
 	return window->Callbacks.CursorPos;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Gets the cursor enter callback.
+TRAP::INTERNAL::WindowingAPI::CursorEnterFunc TRAP::INTERNAL::WindowingAPI::GetCursorEnterCallback(const InternalWindow* window)
+{
+	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
+
+	return window->Callbacks.CursorEnter;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1435,6 +1460,7 @@ void TRAP::INTERNAL::WindowingAPI::FocusWindow(const InternalWindow* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Maximizes the specified window.
 void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(const InternalWindow* window)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
@@ -1447,11 +1473,83 @@ void TRAP::INTERNAL::WindowingAPI::MaximizeWindow(const InternalWindow* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Minimizes the specified window.
 void TRAP::INTERNAL::WindowingAPI::MinimizeWindow(const InternalWindow* window)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 	
 	PlatformMinimizeWindow(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Requests user attention to the specified window.
+void TRAP::INTERNAL::WindowingAPI::RequestWindowAttention(const InternalWindow* window)
+{
+	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
+
+	PlatformRequestWindowAttention(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Hides the specified window.
+void TRAP::INTERNAL::WindowingAPI::HideWindow(const InternalWindow* window)
+{
+	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
+
+	if (window->Monitor)
+		return;
+
+	PlatformHideWindow(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::RestoreWindow(const InternalWindow* window)
+{
+	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
+
+	PlatformRestoreWindow(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow* window,
+                                                       const int32_t minWidth,
+                                                       const int32_t minHeight,
+                                                       const int32_t maxWidth,
+                                                       const int32_t maxHeight)
+{
+	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
+
+	if(minWidth != -1 && minHeight != -1)
+	{
+		if(minWidth < 0 || minHeight < 0)
+		{
+			InputError(Error::Invalid_Value, " Invalid Minimum Window Size!");
+			return;
+		}
+	}
+
+	if(maxWidth != -1 || maxHeight != -1)
+	{
+		if(maxWidth < 0 || maxHeight < 0 || maxWidth < minWidth || maxHeight < minHeight)
+		{
+			InputError(Error::Invalid_Value, " Invalid Maximum Window Size!");
+			return;
+		}
+	}
+	
+	window->MinWidth = minWidth;
+	window->MinHeight = minHeight;
+	window->MaxWidth = maxWidth;
+	window->MaxHeight = maxHeight;
+
+	if (window->Monitor || !window->Resizable)
+		return;
+
+	PlatformSetWindowSizeLimits(window, minWidth, minHeight, maxWidth, maxHeight);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1618,7 +1716,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(VkInstance instance,
 
 	if (window->Context.Client != ContextAPI::None)
 	{
-		InputError(Error::Invalid_Value, "[Vulkan] Window surface creation requires the window to have the client API set to NO_API");
+		InputError(Error::Invalid_Value, "[Vulkan] Window surface creation requires the window to have the client API set to None");
 		return VK_ERROR_NATIVE_WINDOW_IN_USE_KHR;
 	}
 

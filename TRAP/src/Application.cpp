@@ -31,7 +31,7 @@ TRAP::Application::Application()
 
 	TRAP_CORE_ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
-	
+
 	//Check if machine is using little-endian or big-endian
 	int32_t intVal = 1;
 	uint8_t* uVal = reinterpret_cast<uint8_t*>(&intVal);
@@ -87,20 +87,28 @@ TRAP::Application::Application()
 
 	Graphics::API::Context::SetRenderAPI(renderAPI);
 	m_window = MakeScope<Window>
+	(
+		WindowProps
 		(
-			WindowProps
-			(
-				"Sandbox",
-				width,
-				height,
-				refreshRate,
+			"TRAP Engine",
+			width,
+			height,
+			refreshRate,
+			displayMode,
+			WindowProps::Advanced{
 				vsync,
-				displayMode,
+				true,
 				maximized,
 				true,
-				monitor
-			)
-			);
+				true,
+				true,
+				true,
+				false,
+				Window::CursorMode::Normal
+			},
+			monitor
+		)
+	);
 	m_window->SetEventCallback([this](Event& e) {OnEvent(e); });
 
 	//Always added as a fallback shader
@@ -430,17 +438,27 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 		layer->OnDetach();
 	Graphics::API::Context::SetRenderAPI(renderAPI);
 
-	WindowProps props{
+	WindowProps props
+	{
 		std::string(m_window->GetTitle()),
 		m_window->GetWidth(),
 		m_window->GetHeight(),
 		m_window->GetRefreshRate(),
-		m_window->GetVSyncInterval(),
 		m_window->GetDisplayMode(),
-		m_window->IsMaximized(),
-		m_window->IsResizable(),
+		WindowProps::Advanced
+		{
+			m_window->GetVSyncInterval(),
+			m_window->IsResizable(),
+			m_window->IsMaximized(),
+			true,
+			true,
+			true,
+			m_window->IsDecorated(),
+			m_window->GetRawMouseInput(),
+			m_window->GetCursorMode()
+		},
 		m_window->GetMonitor()
-	};
+	};	
 	m_window.reset();
 	m_window = std::make_unique<Window>(props);
 	m_window->SetEventCallback([this](Event& e) {OnEvent(e); });

@@ -54,16 +54,18 @@ namespace TRAP::INTERNAL
 		typedef void (*MouseButtonFunc)(const InternalWindow*, Input::MouseButton mouseButton, bool pressed);
 		//The function pointer type for cursor position callbacks.
 		typedef void (*CursorPositionFunc)(const InternalWindow*, double xPos, double yPos);
+		//The function pointer type for cursor enter callbacks.
+		typedef void (*CursorEnterFunc)(const InternalWindow*, bool entered);
 		//The function pointer type for scroll callbacks.
 		typedef void (*ScrollFunc)(const InternalWindow*, double xOffset, double yOffset);
 		//The function pointer type for keyboard key callbacks.
-		typedef void (*KeyFunc)(const InternalWindow*, Input::Key key, int32_t scanCode, bool pressed); //TODO parameter scanCode needed??
+		typedef void (*KeyFunc)(const InternalWindow*, Input::Key key, bool pressed);
 		//The function pointer type for Unicode character callbacks.
 		typedef void (*CharFunc)(const InternalWindow*, uint32_t codePoint);
 		//The function pointer type for path drop callbacks.
 		typedef void (*DropFunc)(const InternalWindow*, std::vector<std::string> paths);
 		//The function pointer type for monitor configuration callbacks.
-		typedef void (*MonitorFunc)(const InternalMonitor*, bool connected);
+		typedef void (*MonitorFunc)(const InternalMonitor*, bool connected); //TODO Implement Interface
 	private:
 		//--------------//
 		//OpenGL Context//
@@ -539,6 +541,9 @@ namespace TRAP::INTERNAL
 			InternalMonitor* Monitor = nullptr;
 			InternalCursor* Cursor = nullptr;
 
+			int32_t MinWidth = -1, MinHeight = -1;
+			int32_t MaxWidth = -1, MaxHeight = -1;
+
 			CursorMode CursorMode = CursorMode::Normal;
 			std::array<bool, 8> MouseButtons{};
 			std::array<bool, 349 + 1> Keys{};
@@ -558,6 +563,7 @@ namespace TRAP::INTERNAL
 				WindowContentScaleFunc Scale = nullptr;
 				MouseButtonFunc MouseButton = nullptr;
 				CursorPositionFunc CursorPos = nullptr;
+				CursorEnterFunc CursorEnter = nullptr;
 				ScrollFunc Scroll = nullptr;
 				KeyFunc Key = nullptr;
 				CharFunc Character = nullptr;
@@ -605,7 +611,7 @@ namespace TRAP::INTERNAL
 		//Sets the specified window hint to the desired value.
 		static void WindowHint(Hint hint, bool value);
 		//Sets the specified sample count to the desired sample value.
-		static void SetSamples(uint32_t samples);
+		static void SetSamples(uint32_t samples); //TODO Implement for OpenGL MSAA
 		//Sets the specified window context API to the desired value
 		static void SetContextAPI(ContextAPI contextAPI);
 		//Returns the name of the specified monitor.
@@ -619,6 +625,23 @@ namespace TRAP::INTERNAL
 		//Returns the available video modes for the specified monitor.
 		static std::vector<VideoMode> GetVideoModes(InternalMonitor* monitor);
 		//Creates a window and its associated context.
+		//
+		//Win32:   - Window creation will fail if the Microsoft GDI software OpenGL implementation is the only one available.
+		//         - If the executable has an icon resource named 'TRAP_ICON', it will be set as the initial icon for the window.
+		//           If no such icon is present, the 'IDI_APPLICATION' icon will be used instead.
+		//X11:     - Some window managers will not respect the placement of initially hidden windows.
+		//         - Due to the asynchronous nature of X11, it may take a moment for a window to reach its requested state.
+		//           This means you may not be able to query the final size, position or other attributes directly after window creation.
+		//         - The class part of the 'WM_CLASS' window property will by default be set to the window title passed to this function.
+		//           The instance part will use the contents of the 'RESOURCE_NAME' environment variable, if present and not empty, or
+		//           fall back to the window title.
+		//Wayland: - Compositors should implement the xdg-decoration protocol for the WindowingAPI to decorate the window properly.
+		//           If this protocol isn't supported, or if the compositor prefers client-side decorations, a very simple fallback
+		//           frame will be drawn using the wp_viewporter protocol.
+		//           A compositor can still emit close, maximize or fullscreen events, using for instance a keybind mechanism.
+		//           If neither of these protocls are supported, the window won't be decorated.
+		//         - A full screen window will not attempt to change the mode, no matter what the requested size or refresh rate.
+		//         - Screensaver inhibition requires the idle-inhibit protocol to be implemented in the user's compositor.
 		static Scope<InternalWindow> CreateWindow(uint32_t width, uint32_t height, const std::string& title, InternalMonitor* monitor, const InternalWindow* share);
 		//Sets the close flag of the specified window.
 		static void SetWindowShouldClose(InternalWindow* window, bool value);
@@ -635,12 +658,21 @@ namespace TRAP::INTERNAL
 		//Sets the cursor for the window.
 		static void SetCursor(InternalWindow* window, InternalCursor* cursor);
 		//Sets the icon for the specified window.
+		//
+		//Wayland: - There is no existing protocol to change an icon, the window will thus inherit the one defined in the
+		//           application's desktop file.
 		static void SetWindowIcon(InternalWindow* window, const Scope<Image>& image);
 		//Sets the position of the content area of the specified window.
+		//
+		//Wayland: - There is no way for an application to set the global position of its windows.
 		static void SetWindowPos(const InternalWindow* window, int32_t xPos, int32_t yPos);
 		//Retrieves the position of the content area of the specified window.
+		//
+		//Wayland: - There is no way for an application to retrieve the global position of its windows.
 		static void GetWindowPos(const InternalWindow* window, int32_t& xPos, int32_t& yPos);
 		//Sets the size of the content area of the specified window.
+		//
+		//Wayland: - A full screen window will not attempt to change the mode, no matter what the requested size.
 		static void SetWindowSize(InternalWindow* window, int32_t width, int32_t height);
 		//Retrieves the size of the content area of the specified window.
 		static void GetWindowSize(const InternalWindow* window, int32_t& width, int32_t& height);
@@ -657,6 +689,10 @@ namespace TRAP::INTERNAL
 		//Returns an attribute of the specified window.
 		static bool GetWindowAttrib(const InternalWindow* window, Hint hint);
 		//Sets the mode, monitor, video mode and placement of a window.
+		//
+		//Wayland: - The desired window position is ignored, as there is no way for an application to set this property.
+		//         - Setting the window to full screen will not attempt to change the mode, no matter what the
+		//           requested size or refresh rate.
 		static void SetWindowMonitor(InternalWindow* window,
 		                             InternalMonitor* monitor,
 		                             int32_t xPos,
@@ -675,6 +711,8 @@ namespace TRAP::INTERNAL
 		//Sets the monitor configuration callback.
 		static void SetMonitorCallback(MonitorFunc callback);
 		//Sets the position callback for the specified window.
+		//
+		//Wayland: - This callback will never be called, as there is no way for an application to know its global position.
 		static void SetWindowPosCallback(InternalWindow* window, WindowPositionFunc callback);
 		//Sets the size callback for the specified window.
 		static void SetWindowSizeCallback(InternalWindow* window, WindowSizeFunc callback);
@@ -694,6 +732,8 @@ namespace TRAP::INTERNAL
 		static void SetMouseButtonCallback(InternalWindow* window, MouseButtonFunc callback);
 		//Sets the cursor position callback.
 		static void SetCursorPosCallback(InternalWindow* window, CursorPositionFunc callback);
+		//Sets the cursor enter callback.
+		static void SetCursorEnterCallback(InternalWindow* window, CursorEnterFunc callback);
 		//Sets the scroll callback.
 		static void SetScrollCallback(InternalWindow* window, ScrollFunc callback);
 		//Sets the path drop callback.
@@ -722,6 +762,8 @@ namespace TRAP::INTERNAL
 		static MouseButtonFunc GetMouseButtonCallback(const InternalWindow* window);
 		//Gets the cursor position callback.
 		static CursorPositionFunc GetCursorPosCallback(const InternalWindow* window);
+		//Gets the cursor enter callback.
+		static CursorEnterFunc GetCursorEnterCallback(const InternalWindow* window);
 		//Gets the scroll callback.
 		static ScrollFunc GetScrollCallback(const InternalWindow* window);
 		//Gets the path drop callback.
@@ -745,6 +787,8 @@ namespace TRAP::INTERNAL
 		//Returns the last reported state of a mouse button for the specified window.
 		static bool GetMouseButton(const InternalWindow* window, Input::MouseButton button);
 		//Sets the position of the cursor, relative to the content area of the window
+		//
+		//Wayland: - This function will only work when the cursor mode is Disabled, otherwise it will do nothing.
 		static void SetCursorPos(InternalWindow* window, double xPos, double yPos);
 		//Retrieves the position of the cursor relative to the content area of the window.
 		static void GetCursorPos(const InternalWindow* window, double& xPos, double& yPos);
@@ -755,11 +799,26 @@ namespace TRAP::INTERNAL
 		//Makes the specified window visible.
 		static void ShowWindow(const InternalWindow* window);
 		//Brings the specified window to front and sets input focus.
+		//
+		//Wayland: - It is not possible for an application to bring its windows to front.
 		static void FocusWindow(const InternalWindow* window);
 		//Maximizes the specified window.
 		static void MaximizeWindow(const InternalWindow* window);
 		//Minimizes the specified window.
+		//
+		//Wayland: - Once a window is minimized, RestoreWindow won't be able to restore it.
+		//           This is a design decision of the xdg-shell protocol.
 		static void MinimizeWindow(const InternalWindow* window);
+		//Requests user attention to the specified window.
+		static void RequestWindowAttention(const InternalWindow* window);
+		//Hides the specified window.
+		static void HideWindow(const InternalWindow* window);
+		//Restores the specified window.
+		static void RestoreWindow(const InternalWindow* window);
+		//Sets the size limits of the specified window.
+		//
+		//Wayland: The size limits will not be applied until the window is actually resized, either by the user or by the compositor.
+		static void SetWindowSizeLimits(InternalWindow* window, int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight);
 		//Sets the clipboard to the specified string.
 		static void SetClipboardString(const std::string& string);
 		//Returns the contents of the clipboard as a string.
@@ -865,6 +924,10 @@ namespace TRAP::INTERNAL
 			                                        const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
 		static void PlatformMaximizeWindow(const InternalWindow* window);
 		static void PlatformMinimizeWindow(const InternalWindow* window);
+		static void PlatformRequestWindowAttention(const InternalWindow* window);
+		static void PlatformHideWindow(const InternalWindow* window);
+		static void PlatformRestoreWindow(const InternalWindow* window);
+		static void PlatformSetWindowSizeLimits(const InternalWindow* window, int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight);
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Single Platform Functions------------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -910,6 +973,8 @@ namespace TRAP::INTERNAL
 		//Notifies shared code of a cursor motion event
 		//The position is specified in content area relative screen coordinates
 		static void InputCursorPos(InternalWindow* window, double xPos, double yPos);
+		//Notified shared code of a cursor enter/leave event
+		static void InputCursorEnter(InternalWindow* window, bool entered);
 		//Notifies shared code of a scroll event
 		static void InputScroll(const InternalWindow* window, double xOffset, double yOffset);
 		//Notifies shared code that a window framebuffer has been resized

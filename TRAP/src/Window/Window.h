@@ -7,7 +7,6 @@
 
 #include "Event/Event.h"
 #include "ImageLoader/Image.h"
-#include <unordered_map>
 #include "Input/Input.h"
 #include "WindowingAPI.h"
 
@@ -95,13 +94,23 @@ namespace TRAP
 		void SetIcon(const Scope<Image>& image) const;
 		void SetEventCallback(const EventCallbackFn& callback);
 		void SetResizable(bool enabled) const;
+		void SetMinimumSize(uint32_t minWidth, uint32_t minHeight) const;
+		void SetMaximumSize(uint32_t maxWidth, uint32_t maxHeight) const;
 
 		bool IsMaximized() const;
 		bool IsMinimized() const;
 		bool IsResizable() const;
+		bool IsVisible() const;
+		bool IsFocused() const;
+		bool IsDecorated() const;
 
 		void Maximize() const;
 		void Minimize() const;
+		void RequestAttention() const;
+		void Focus() const;
+		void Hide() const;
+		void Show() const;
+		void Restore() const;
 
 	private:
 		void Init(const WindowProps& props);
@@ -144,27 +153,43 @@ namespace TRAP
 		uint32_t Width;
 		uint32_t Height;
 		uint32_t RefreshRate;
-		uint32_t VSync;
 		Graphics::API::RenderAPI RenderAPI;
 		Window::DisplayMode displayMode;
-		bool Maximized;
-		bool Resizable;
 		uint32_t Monitor;
-		Window::CursorMode cursorMode;
-		bool rawMouseInput;
+
+		struct Advanced
+		{			
+			uint32_t VSync = 0;
+			bool Resizable = true;
+			bool Maximized = false;
+			bool Visible = true;
+			bool Focused = true;
+			bool FocusOnShow = true;
+			bool Decorated = true;
+			//bool Stereo = false;
+			bool RawMouseInput = false;
+			Window::CursorMode CursorMode = Window::CursorMode::Normal;
+
+			explicit Advanced(uint32_t vSync = 0,
+			                  bool resizable = true,
+			                  bool maximized = false,
+			                  bool visible = true,
+			                  bool focused = true,
+			                  bool focusOnShow = true,
+			                  bool decorated = true,
+			                  bool rawMouseInput = false,
+			                  Window::CursorMode cursorMode = Window::CursorMode::Normal);
+			
+		} advanced{};
 
 		//Sets up properties for new window(s)
 		explicit WindowProps(std::string title = "TRAP Engine",
-		                     uint32_t width = 1280,
-		                     uint32_t height = 720,
-		                     uint32_t refreshRate = 60,
-		                     uint32_t vsync = 0,
-		                     Window::DisplayMode displayMode = Window::DisplayMode::Windowed,
-							 bool maximized = false,
-							 bool resizable = true,
-		                     uint32_t monitor = 0,
-		                     Window::CursorMode cursorMode = Window::CursorMode::Normal,
-		                     bool rawMouseInput = false);		
+							 uint32_t width = 1280,
+							 uint32_t height = 720,
+							 uint32_t refreshRate = 60,
+							 Window::DisplayMode displayMode = Window::DisplayMode::Windowed,
+							 Advanced advanced = Advanced{},
+		                     uint32_t monitor = 0);
 	};
 }
 

@@ -51,7 +51,7 @@ namespace TRAP::INTERNAL
 		static void SetClipboardText(void* userData, const char* text);
 		static void MouseButtonCallback(const WindowingAPI::InternalWindow* window, Input::MouseButton mouseButton, bool pressed);
 		static void ScrollCallback(const WindowingAPI::InternalWindow* window, double xOffset, double yOffset);
-		static void KeyCallback(const WindowingAPI::InternalWindow* window, Input::Key key, int32_t scanCode, bool pressed);
+		static void KeyCallback(const WindowingAPI::InternalWindow* window, Input::Key key, bool pressed);
 		static void CharCallback(const WindowingAPI::InternalWindow* window, uint32_t codePoint);
 		static void WindowCloseCallback(const WindowingAPI::InternalWindow* window);
 		static void WindowPosCallback(const WindowingAPI::InternalWindow* window, int32_t x, int32_t y);

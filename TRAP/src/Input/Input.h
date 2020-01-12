@@ -256,12 +256,16 @@ namespace TRAP
 		static ControllerDPad GetControllerDPad(Controller controller, uint32_t dpad);
 		static std::string GetControllerName(Controller controller);
 		static const ControllerStatus& GetControllerStatus(Controller controller);
+		static std::string GetControllerGUID(Controller controller);
 		static std::vector<float> GetAllControllerAxes(Controller controller);
 		static std::vector<bool> GetAllControllerButtons(Controller controller);
 		static std::vector<ControllerDPad> GetAllControllerDPads(Controller controller);
 		static const std::array<ControllerStatus, 4>& GetAllControllerStatuses();
 
 		static void SetControllerVibration(Controller controller, float leftMotor, float rightMotor);
+
+		static void SetClipboard(const std::string& str);
+		static std::string GetClipboard();
 		
 		using EventCallbackFn = std::function<void(Event&)>;
 		static void SetEventCallback(const EventCallbackFn& callback);
