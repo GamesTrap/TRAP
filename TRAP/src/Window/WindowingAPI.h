@@ -260,6 +260,7 @@ namespace TRAP::INTERNAL
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Structs------------------------------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
+#ifdef TRAP_PLATFORM_WINDOWS
 		struct VkWin32SurfaceCreateInfoKHR
 		{
 			VkStructureType sType;
@@ -268,6 +269,7 @@ namespace TRAP::INTERNAL
 			HINSTANCE hinstance;
 			HWND hwnd;
 		};
+#endif
 		//Thread local storage structure
 		struct TLS
 		{
@@ -537,21 +539,21 @@ namespace TRAP::INTERNAL
 			bool MousePassthrough = false;
 			bool BorderlessFullscreen = false;
 			void* UserPointer = nullptr;
-			VideoMode VideoMode{};
+			VideoMode videoMode{};
 			InternalMonitor* Monitor = nullptr;
 			InternalCursor* Cursor = nullptr;
 
 			int32_t MinWidth = -1, MinHeight = -1;
 			int32_t MaxWidth = -1, MaxHeight = -1;
 
-			CursorMode CursorMode = CursorMode::Normal;
+			CursorMode cursorMode = CursorMode::Normal;
 			std::array<bool, 8> MouseButtons{};
 			std::array<bool, 349 + 1> Keys{};
 			//Virtual Cursor position when Cursor is disabled
 			double VirtualCursorPosX = 0.0, VirtualCursorPosY = 0.0;
 			bool RawMouseMotion = false;
 
-			Context Context{};
+			Context context{};
 
 			struct
 			{

@@ -24,6 +24,14 @@ namespace TRAP
 			Little = 1,
 			Big = 0
 		};
+
+		enum class LinuxWindowManager
+		{
+			Unknown,
+			
+			X11,
+			Wayland
+		};
 		
 		Application();
 		Application(const Application&) = delete;
@@ -53,6 +61,7 @@ namespace TRAP
 		static const Scope<Window>& GetWindow();
 		static Utils::TimeStep GetTime();
 		static Endian GetEndian();
+		static LinuxWindowManager GetLinuxWindowManager();
 
 		static void SetClipboardString(const std::string& string);
 		static std::string GetClipboardString();
@@ -69,6 +78,8 @@ namespace TRAP
 		bool OnKeyPress(KeyPressedEvent& e) const;
 		bool OnWindowFocus(WindowFocusEvent& e);
 		bool OnWindowLostFocus(WindowLostFocusEvent& e);
+
+		void UpdateLinuxWindowManager();
 
 		Scope<Window> m_window;
 		std::unique_ptr<ImGuiLayer> m_ImGuiLayer;
@@ -88,6 +99,7 @@ namespace TRAP
 		uint32_t m_tickRate;
 
 		Endian m_endian;
+		LinuxWindowManager m_linuxWindowManager;
 		
 		static Application* s_Instance;
 	};

@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "MsgBox.h"
 
+#ifdef TRAP_PLATFORM_WINDOWS
+
 //Internal MsgBox Stuff
 namespace TRAP::Utils::MsgBox::INTERNAL
 {
@@ -80,3 +82,5 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::Show(const char* message,
 
 	return INTERNAL::GetSelection(MessageBoxA(nullptr, message, title, flags), buttons);
 }
+
+#endif

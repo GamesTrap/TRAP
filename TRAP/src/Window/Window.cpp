@@ -725,6 +725,8 @@ void TRAP::Window::Init(const WindowProps& props)
 	{
 		const int32_t success = INTERNAL::WindowingAPI::Init();
 		TRAP_CORE_ASSERT(success, "Could not initialize WindowingAPI!");
+		if (!success)
+			exit(-1);
 		INTERNAL::WindowingAPI::SetErrorCallback(WindowingAPIErrorCallback);
 		s_WindowingAPIInitialized = true;
 

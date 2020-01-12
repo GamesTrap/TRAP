@@ -72,8 +72,9 @@ project "TRAP"
 		"%{prj.name}/src/Log/ANSILog.cpp",
 		"%{prj.name}/src/Log/WindowsLog.cpp",
 		"%{prj.name}/src/Graphics/API/D3D12/**",
-		"%{prj.name}/src/Platform/**",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxWindows.cpp",
+		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinux.cpp",
+		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.h",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.cpp",
 		"%{prj.name}/src/Input/WindowsInput.cpp",
 		"%{prj.name}/src/Input/LinuxInput.cpp",
@@ -97,8 +98,6 @@ project "TRAP"
 		{
 			"%{prj.name}/src/Utils/Win.h",
 			"%{prj.name}/src/Log/WindowsLog.cpp",
-			"%{prj.name}/src/Platform/Windows/**.h",
-			"%{prj.name}/src/Platform/Windows/**.cpp",
 			"%{prj.name}/src/Graphics/API/D3D12/**",
 			"%{prj.name}/src/Utils/MsgBox/MsgBoxWindows.cpp",
 			"%{prj.name}/src/Input/WindowsInput.cpp",
@@ -126,27 +125,15 @@ project "TRAP"
 		}
 
 	filter "system:linux"
-	if os.getenv("WAYLAND_DISPLAY") and os.getenv("XDG_SESSION_TYPE") then
-		if os.getenv("XDG_SESSION_TYPE") == "wayland" then			
-			files
-			{
-				"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxWayland.cpp"
-			}
-		end
-	else		
-		files
-		{
-			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.cpp"
-		}
-	end
 
 		-- Add Linux-specific files
         files
         {
 			"%{prj.name}/src/Log/ANSILog.cpp",
-            "%{prj.name}/src/Platform/Linux/**.h",
-			"%{prj.name}/src/Platform/Linux/**.cpp",
-			"%{prj.name}/src/Input/LinuxInput.cpp"
+			"%{prj.name}/src/Input/LinuxInput.cpp",
+			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinux.cpp",
+			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.h",
+			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.cpp",
 		}
 
 		links

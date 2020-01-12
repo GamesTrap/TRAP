@@ -113,7 +113,7 @@ void TRAP::INTERNAL::WindowingAPI::MakeContextCurrent(InternalWindow* window)
 {
 	const auto previsouPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
 
-	if (window && window->Context.Client == ContextAPI::None)
+	if (window && window->context.Client == ContextAPI::None)
 	{
 		InputError(Error::No_Window_Context, " Cannot make current with a window that has no OpenGL context");
 		return;
@@ -122,11 +122,11 @@ void TRAP::INTERNAL::WindowingAPI::MakeContextCurrent(InternalWindow* window)
 	if (previsouPtr)
 	{
 		if (!window)
-			previsouPtr->Context.MakeCurrent(nullptr);
+			previsouPtr->context.MakeCurrent(nullptr);
 	}
 
 	if (window)
-		window->Context.MakeCurrent(window);
+		window->context.MakeCurrent(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -319,19 +319,19 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 	window->Next = s_Data.WindowListHead;
 	s_Data.WindowListHead = window.get();
 
-	window->VideoMode.Width = width;
-	window->VideoMode.Height = height;
-	window->VideoMode.RedBits = FBConfig.RedBits;
-	window->VideoMode.GreenBits = FBConfig.GreenBits;
-	window->VideoMode.BlueBits = FBConfig.BlueBits;
-	window->VideoMode.RefreshRate = -1;
+	window->videoMode.Width = width;
+	window->videoMode.Height = height;
+	window->videoMode.RedBits = FBConfig.RedBits;
+	window->videoMode.GreenBits = FBConfig.GreenBits;
+	window->videoMode.BlueBits = FBConfig.BlueBits;
+	window->videoMode.RefreshRate = -1;
 
 	window->Monitor = monitor;
 	window->Resizable = WNDConfig.Resizable;
 	window->Decorated = WNDConfig.Decorated;
 	window->Floating = WNDConfig.Floating;
 	window->FocusOnShow = WNDConfig.FocusOnShow;
-	window->CursorMode = CursorMode::Normal;
+	window->cursorMode = CursorMode::Normal;
 	window->BorderlessFullscreen = false;
 
 	window->MinWidth = -1;
@@ -404,7 +404,7 @@ bool TRAP::INTERNAL::WindowingAPI::IsValidContextConfig(const ContextConfig& CTX
 {
 	if (CTXConfig.Share)
 	{
-		if (CTXConfig.Client == ContextAPI::None || CTXConfig.Share->Context.Client == ContextAPI::None)
+		if (CTXConfig.Client == ContextAPI::None || CTXConfig.Share->context.Client == ContextAPI::None)
 		{
 			InputError(Error::No_Window_Context, "");
 			return false;
@@ -707,8 +707,8 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSize(InternalWindow* window, const i
 	TRAP_WINDOW_ASSERT(width > 0, "[Window] width is smaller than or equal to 0!");
 	TRAP_WINDOW_ASSERT(height > 0, "[Window] height is smaller than or equal to 0!");
 
-	window->VideoMode.Width = width;
-	window->VideoMode.Height = height;
+	window->videoMode.Width = width;
+	window->videoMode.Height = height;
 
 	PlatformSetWindowSize(window, width, height);
 }
@@ -910,9 +910,9 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitor(InternalWindow* window,
 		return;
 	}
 
-	window->VideoMode.Width = width;
-	window->VideoMode.Height = height;
-	window->VideoMode.RefreshRate = refreshRate;
+	window->videoMode.Width = width;
+	window->videoMode.Height = height;
+	window->videoMode.RefreshRate = refreshRate;
 
 	PlatformSetWindowMonitor(window, monitor,
 		xPos, yPos, width, height,
@@ -927,12 +927,12 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowMonitorBorderless(InternalWindow* wi
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 	TRAP_WINDOW_ASSERT(monitor, "[Window] window is nullptr!");
 
-	window->VideoMode.Width = monitor->CurrentMode.Width;
-	window->VideoMode.Height = monitor->CurrentMode.Height;
-	window->VideoMode.RefreshRate = monitor->CurrentMode.RefreshRate;
-	window->VideoMode.RedBits = monitor->CurrentMode.RedBits;
-	window->VideoMode.GreenBits = monitor->CurrentMode.GreenBits;
-	window->VideoMode.BlueBits = monitor->CurrentMode.BlueBits;
+	window->videoMode.Width = monitor->CurrentMode.Width;
+	window->videoMode.Height = monitor->CurrentMode.Height;
+	window->videoMode.RefreshRate = monitor->CurrentMode.RefreshRate;
+	window->videoMode.RedBits = monitor->CurrentMode.RedBits;
+	window->videoMode.GreenBits = monitor->CurrentMode.GreenBits;
+	window->videoMode.BlueBits = monitor->CurrentMode.BlueBits;
 
 	PlatformSetWindowMonitorBorderless(window, monitor);
 }
@@ -1260,10 +1260,10 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorMode(InternalWindow* window, const C
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 	
-	if (window->CursorMode == mode)
+	if (window->cursorMode == mode)
 		return;
 
-	window->CursorMode = mode;
+	window->cursorMode = mode;
 
 	PlatformGetCursorPos(window, window->VirtualCursorPosX, window->VirtualCursorPosY);
 	PlatformSetCursorMode(window, mode);
@@ -1276,7 +1276,7 @@ TRAP::INTERNAL::WindowingAPI::CursorMode TRAP::INTERNAL::WindowingAPI::GetCursor
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
-	return window->CursorMode;
+	return window->cursorMode;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1375,7 +1375,7 @@ void TRAP::INTERNAL::WindowingAPI::SetCursorPos(InternalWindow* window, const do
 	if (!PlatformWindowFocused(window))
 		return;
 
-	if (window->CursorMode == CursorMode::Disabled)
+	if (window->cursorMode == CursorMode::Disabled)
 	{
 		//Only update the accumulated position if the cursor is disabled
 		window->VirtualCursorPosX = xPos;
@@ -1396,7 +1396,7 @@ void TRAP::INTERNAL::WindowingAPI::GetCursorPos(const InternalWindow* window, do
 	xPos = 0.0;
 	yPos = 0.0;
 
-	if (window->CursorMode == CursorMode::Disabled)
+	if (window->cursorMode == CursorMode::Disabled)
 	{
 		xPos = window->VirtualCursorPosX;
 		yPos = window->VirtualCursorPosY;
@@ -1586,13 +1586,13 @@ void TRAP::INTERNAL::WindowingAPI::SwapBuffers(InternalWindow* window)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
-	if (window->Context.Client == ContextAPI::None)
+	if (window->context.Client == ContextAPI::None)
 	{
 		InputError(Error::No_Window_Context, " Cannot swap buffers of a window that has no OpenGL context!");
 		return;
 	}
 
-	window->Context.SwapBuffers(window);
+	window->context.SwapBuffers(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1608,7 +1608,7 @@ void TRAP::INTERNAL::WindowingAPI::SwapInterval(const int32_t interval)
 		return;
 	}
 
-	windowPtr->Context.SwapInterval(interval);
+	windowPtr->context.SwapInterval(interval);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1634,11 +1634,11 @@ bool TRAP::INTERNAL::WindowingAPI::ExtensionSupported(const std::string& extensi
 
 	//Check if extension is in the modern OpenGL extensions string list
 
-	windowPtr->Context.GetIntegerv(GL_NUM_EXTENSIONS, &count);
+	windowPtr->context.GetIntegerv(GL_NUM_EXTENSIONS, &count);
 
 	for (uint32_t i = 0; i < static_cast<uint32_t>(count); i++)
 	{
-		const char* en = reinterpret_cast<const char*>(windowPtr->Context.GetStringi(GL_EXTENSIONS, i));
+		const char* en = reinterpret_cast<const char*>(windowPtr->context.GetStringi(GL_EXTENSIONS, i));
 		if (!en)
 		{
 			InputError(Error::Platform_Error, " Extension string retrieval is broken");
@@ -1651,7 +1651,7 @@ bool TRAP::INTERNAL::WindowingAPI::ExtensionSupported(const std::string& extensi
 	}
 
 	//Check if extension is in the platform-specific string
-	return windowPtr->Context.ExtensionSupported(extension.data());
+	return windowPtr->context.ExtensionSupported(extension.data());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1669,7 +1669,7 @@ TRAP::INTERNAL::WindowingAPI::GLProcess TRAP::INTERNAL::WindowingAPI::GetProcAdd
 		return nullptr;
 	}
 
-	return windowPtr->Context.GetProcAddress(procName);
+	return windowPtr->context.GetProcAddress(procName);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1714,7 +1714,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(VkInstance instance,
 		return VK_ERROR_EXTENSION_NOT_PRESENT;
 	}
 
-	if (window->Context.Client != ContextAPI::None)
+	if (window->context.Client != ContextAPI::None)
 	{
 		InputError(Error::Invalid_Value, "[Vulkan] Window surface creation requires the window to have the client API set to None");
 		return VK_ERROR_NATIVE_WINDOW_IN_USE_KHR;

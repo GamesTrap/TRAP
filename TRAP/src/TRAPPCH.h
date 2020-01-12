@@ -56,6 +56,20 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <X11/Xlib.h>
+#include <X11/keysym.h>
+#include <X11/Xutil.h>
+
+#ifdef None
+	#undef None
+#endif
+#ifdef Bool
+	#undef Bool
+#endif
+#ifdef Always
+	#undef Always
+#endif
+
 #endif
 
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -79,17 +93,39 @@
 #endif
 #include <dinput.h>
 
-#undef far
-#undef min
-#undef max
-#undef CreateWindow
-#undef GetWindowStyle
-#undef GetWindowExStyle
-#undef IsMaximized
-#undef IsMinimized
-#undef IsRestored
-#undef near
-#undef DELETE
+#ifdef far
+	#undef far
+#endif
+#ifdef min
+	#undef min
+#endif
+#ifdef max
+	#undef max
+#endif
+#ifdef CreateWindow
+	#undef CreateWindow
+#endif
+#ifdef GetWindowStyle
+	#undef GetWindowStyle
+#endif
+#ifdef GetWindowExStyle
+	#undef GetWindowExStyle
+#endif
+#ifdef IsMaximized
+	#undef IsMaximized
+#endif
+#ifdef IsMinimized
+	#undef IsMinimized
+#endif
+#ifdef IsRestored
+	#undef IsRestored
+#endif
+#ifdef near
+	#undef near
+#endif
+#ifdef DELETE
+	#undef DELETE
+#endif
 #endif
 
 #endif /*_TRAP_TRAPPCH_H_*/

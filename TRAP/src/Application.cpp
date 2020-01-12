@@ -14,6 +14,7 @@
 #include "Core.h"
 #include "Graphics/Renderer.h"
 #include "Event/KeyEvent.h"
+#include "Utils/MsgBox/MsgBox.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
@@ -21,11 +22,12 @@ TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
 TRAP::Application::Application()
 	: m_timer(std::make_unique<Utils::Timer>()),
-	m_FramesPerSecond(0),
-	m_FrameTime(0.0f),
-	m_drawCalls(0),
-	m_fpsLimit(0),
-	m_tickRate(100)
+	  m_FramesPerSecond(0),
+	  m_FrameTime(0.0f),
+	  m_drawCalls(0),
+	  m_fpsLimit(0),
+	  m_tickRate(100),
+      m_linuxWindowManager(LinuxWindowManager::Unknown)
 {
 	TP_DEBUG("[Application] Initializing TRAP Modules...");
 
@@ -36,6 +38,8 @@ TRAP::Application::Application()
 	int32_t intVal = 1;
 	uint8_t* uVal = reinterpret_cast<uint8_t*>(&intVal);
 	m_endian = static_cast<Endian>(uVal[0] == 1);
+
+	UpdateLinuxWindowManager();
 
 	VFS::Init();
 	if (!m_config.LoadFromFile("Engine.cfg"))
@@ -418,6 +422,13 @@ TRAP::Application::Endian TRAP::Application::GetEndian()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Application::LinuxWindowManager TRAP::Application::GetLinuxWindowManager()
+{
+	return Get().m_linuxWindowManager;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Application::SetClipboardString(const std::string& string)
 {
 	INTERNAL::WindowingAPI::SetClipboardString(string);
@@ -500,6 +511,25 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI) const
 
 	for (const auto& layer : *m_layerStack)
 		layer->OnAttach();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::UpdateLinuxWindowManager()
+{	
+#ifdef TRAP_PLATFORM_LINUX
+	if (std::getenv("WAYLAND_DISPLAY"))
+		if(std::getenv("XDG_SESSION_TYPE") == "wayland")
+			m_linuxWindowManager = LinuxWindowManager::Wayland;
+	else if (std::getenv("DISPLAY"))
+			m_linuxWindowManager = LinuxWindowManager::X11;
+	else
+	{
+		TP_CRITICAL("[Engine][Linux] Unsupported Window Manager!");
+		Show("Window Manager is unsupported!\nTRAP Engine uses X11 or Wayland\nMake sure the appropriate environment variables are set!", "Unsupported Window Manager", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+		exit(-1);
+	}
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

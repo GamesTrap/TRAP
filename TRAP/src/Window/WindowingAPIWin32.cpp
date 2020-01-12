@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
+
 #include "WindowingAPI.h"
 #include "Utils/String.h"
+#include "Utils/MsgBox/MsgBox.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
@@ -181,7 +183,12 @@ bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 	if (s_Data.NTDLL.Instance)
 		s_Data.NTDLL.RtlVerifyVersionInfo = reinterpret_cast<PFN_RtlVerifyVersionInfo>(::GetProcAddress(s_Data.NTDLL.Instance, "RtlVerifyVersionInfo"));
 
-	return true;
+	if (IsWindows7OrGreaterWin32())
+		return true;
+	
+	TP_CRITICAL("[Engine][Windows] Unsupported Windows version!");
+	Show("Unsupported Windows Version!\nTRAP Engine needs Windows 7 or newer", "Unsupported Windows Version", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -665,7 +672,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 			//      completed or cancelled
 			if (lParam == 0 && windowPtr->FrameAction)
 			{
-				if (windowPtr->CursorMode == CursorMode::Disabled)
+				if (windowPtr->cursorMode == CursorMode::Disabled)
 					DisableCursor(windowPtr);
 
 				windowPtr->FrameAction = false;
@@ -683,7 +690,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 			if (windowPtr->FrameAction)
 				break;
 
-			if (windowPtr->CursorMode == CursorMode::Disabled)
+			if (windowPtr->cursorMode == CursorMode::Disabled)
 				DisableCursor(windowPtr);
 
 			return 0;
@@ -691,7 +698,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 
 		case WM_KILLFOCUS:
 		{
-			if (windowPtr->CursorMode == CursorMode::Disabled)
+			if (windowPtr->cursorMode == CursorMode::Disabled)
 				EnableCursor(windowPtr);
 
 			if (windowPtr->Monitor && !windowPtr->BorderlessFullscreen)
@@ -860,7 +867,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 				windowPtr->CursorTracked = true;
 			}
 
-			if (windowPtr->CursorMode == CursorMode::Disabled)
+			if (windowPtr->cursorMode == CursorMode::Disabled)
 			{
 				const int32_t dx = x - windowPtr->LastCursorPosX;
 				const int32_t dy = y - windowPtr->LastCursorPosY;
@@ -955,7 +962,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 
 			//HACK: Enable the cursor while the user is moving or
 			//      resizing the window or using the window menu
-			if (windowPtr->CursorMode == CursorMode::Disabled)
+			if (windowPtr->cursorMode == CursorMode::Disabled)
 				EnableCursor(windowPtr);
 
 			break;
@@ -969,7 +976,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 
 			//HACK: Disable the cursor once the user is done moving or
 			//      resizing the window or using the menu
-			if (windowPtr->CursorMode == CursorMode::Disabled)
+			if (windowPtr->cursorMode == CursorMode::Disabled)
 				DisableCursor(windowPtr);
 
 			break;
@@ -1487,7 +1494,7 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow* window)
 	if (!window->Monitor->Window)
 		s_Data.AcquiredMonitorCount++;
 
-	SetVideoModeWin32(window->Monitor, window->VideoMode);
+	SetVideoModeWin32(window->Monitor, window->videoMode);
 	window->Monitor->Window = window;
 }
 
@@ -2070,10 +2077,10 @@ bool TRAP::INTERNAL::WindowingAPI::CreateContextWGL(InternalWindow* window,
 	HGLRC share = nullptr;
 
 	if (CTXConfig.Share)
-		share = CTXConfig.Share->Context.Handle;
+		share = CTXConfig.Share->context.Handle;
 
-	window->Context.DC = GetDC(window->Handle);
-	if (!window->Context.DC)
+	window->context.DC = GetDC(window->Handle);
+	if (!window->context.DC)
 	{
 		InputError(Error::Platform_Error, "[WGL] Failed to retrieve DC for window");
 		return false;
@@ -2083,14 +2090,14 @@ bool TRAP::INTERNAL::WindowingAPI::CreateContextWGL(InternalWindow* window,
 	if (!pixelFormat)
 		return false;
 
-	if (!DescribePixelFormat(window->Context.DC,
+	if (!DescribePixelFormat(window->context.DC,
 		pixelFormat, sizeof(pfd), &pfd))
 	{
 		InputErrorWin32(Error::Platform_Error, "[WGL] Failed to retrieve PFD for selected pixel format");
 		return false;
 	}
 
-	if (!SetPixelFormat(window->Context.DC, pixelFormat, &pfd))
+	if (!SetPixelFormat(window->context.DC, pixelFormat, &pfd))
 	{
 		InputErrorWin32(Error::Platform_Error, "[WGL] Failed to set selected pixel format");
 		return false;
@@ -2142,9 +2149,9 @@ bool TRAP::INTERNAL::WindowingAPI::CreateContextWGL(InternalWindow* window,
 		attribs.emplace_back(0);
 		attribs.emplace_back(0);
 
-		window->Context.Handle =
-			s_Data.WGL.CreateContextAttribsARB(window->Context.DC, share, attribs.data());
-		if (!window->Context.Handle)
+		window->context.Handle =
+			s_Data.WGL.CreateContextAttribsARB(window->context.DC, share, attribs.data());
+		if (!window->context.Handle)
 		{
 			const DWORD error = GetLastError();
 
@@ -2168,8 +2175,8 @@ bool TRAP::INTERNAL::WindowingAPI::CreateContextWGL(InternalWindow* window,
 	}
 	else
 	{
-		window->Context.Handle = s_Data.WGL.CreateContext(window->Context.DC);
-		if (!window->Context.Handle)
+		window->context.Handle = s_Data.WGL.CreateContext(window->context.DC);
+		if (!window->context.Handle)
 		{
 			InputErrorWin32(Error::Version_Unavailable, "[WGL] Failed to create OpenGL context");
 			return false;
@@ -2177,7 +2184,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateContextWGL(InternalWindow* window,
 
 		if (share)
 		{
-			if (!s_Data.WGL.ShareLists(share, window->Context.Handle))
+			if (!s_Data.WGL.ShareLists(share, window->context.Handle))
 			{
 				InputErrorWin32(Error::Platform_Error, "[WGL] Failed to enable sharing with specified OpenGL context");
 				return false;
@@ -2185,12 +2192,12 @@ bool TRAP::INTERNAL::WindowingAPI::CreateContextWGL(InternalWindow* window,
 		}
 	}
 
-	window->Context.MakeCurrent = MakeContextCurrentWGL;
-	window->Context.SwapBuffers = SwapBuffersWGL;
-	window->Context.SwapInterval = SwapIntervalWGL;
-	window->Context.ExtensionSupported = ExtensionSupportedWGL;
-	window->Context.GetProcAddress = GetProcAddressWGL;
-	window->Context.Destroy = DestroyContextWGL;
+	window->context.MakeCurrent = MakeContextCurrentWGL;
+	window->context.SwapBuffers = SwapBuffersWGL;
+	window->context.SwapInterval = SwapIntervalWGL;
+	window->context.ExtensionSupported = ExtensionSupportedWGL;
+	window->context.GetProcAddress = GetProcAddressWGL;
+	window->context.Destroy = DestroyContextWGL;
 
 	return true;
 }
@@ -2199,10 +2206,10 @@ bool TRAP::INTERNAL::WindowingAPI::CreateContextWGL(InternalWindow* window,
 
 void TRAP::INTERNAL::WindowingAPI::DestroyContextWGL(InternalWindow* window)
 {
-	if (window->Context.Handle)
+	if (window->context.Handle)
 	{
-		s_Data.WGL.DeleteContext(window->Context.Handle);
-		window->Context.Handle = nullptr;
+		s_Data.WGL.DeleteContext(window->context.Handle);
+		window->context.Handle = nullptr;
 	}
 }
 
@@ -2212,7 +2219,7 @@ void TRAP::INTERNAL::WindowingAPI::MakeContextCurrentWGL(InternalWindow* window)
 {
 	if (window)
 	{
-		if (s_Data.WGL.MakeCurrent(window->Context.DC, window->Context.Handle))
+		if (s_Data.WGL.MakeCurrent(window->context.DC, window->context.Handle))
 			PlatformSetTLS(s_Data.ContextSlot, static_cast<void*>(window));
 		else
 		{
@@ -2244,14 +2251,14 @@ void TRAP::INTERNAL::WindowingAPI::SwapBuffersWGL(const InternalWindow* window)
 			if (enabled ||
 				(SUCCEEDED(s_Data.DWMAPI_.IsCompositionEnabled(&enabled)) && enabled))
 			{
-				int32_t count = Math::Abs(window->Context.Interval);
+				int32_t count = Math::Abs(window->context.Interval);
 				while (count--)
 					s_Data.DWMAPI_.Flush();
 			}
 		}
 	}
 
-	::SwapBuffers(window->Context.DC);
+	::SwapBuffers(window->context.DC);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2260,7 +2267,7 @@ void TRAP::INTERNAL::WindowingAPI::SwapIntervalWGL(int32_t interval)
 {
 	const auto windowPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
 
-	windowPtr->Context.Interval = interval;
+	windowPtr->context.Interval = interval;
 
 	if (!windowPtr->Monitor)
 	{
@@ -2527,7 +2534,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::ChoosePixelFormat(const InternalWindow* wi
 	{
 		const int32_t attrib = WGL_NUMBER_PIXEL_FORMATS_ARB;
 
-		if (!s_Data.WGL.GetPixelFormatAttribivARB(window->Context.DC,
+		if (!s_Data.WGL.GetPixelFormatAttribivARB(window->context.DC,
 			1, 0, 1, &attrib, &nativeCount))
 		{
 			InputErrorWin32(Error::Platform_Error, "[WGL] Failed to retrieve pixel format attribute");
@@ -2565,7 +2572,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::ChoosePixelFormat(const InternalWindow* wi
 	}
 	else
 	{
-		nativeCount = DescribePixelFormat(window->Context.DC,
+		nativeCount = DescribePixelFormat(window->context.DC,
 			1,
 			sizeof(PIXELFORMATDESCRIPTOR),
 			nullptr);
@@ -2583,7 +2590,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::ChoosePixelFormat(const InternalWindow* wi
 			//Get pixel format attributes through "modern" extension
 			values.resize(attribs.size());
 			
-			if (!s_Data.WGL.GetPixelFormatAttribivARB(window->Context.DC,
+			if (!s_Data.WGL.GetPixelFormatAttribivARB(window->context.DC,
 				pixelFormat, 0,
 				static_cast<uint32_t>(attribs.size()),
 				attribs.data(), values.data()))
@@ -2635,7 +2642,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::ChoosePixelFormat(const InternalWindow* wi
 
 			PIXELFORMATDESCRIPTOR pfd;
 
-			if (!DescribePixelFormat(window->Context.DC,
+			if (!DescribePixelFormat(window->context.DC,
 				pixelFormat,
 				sizeof(PIXELFORMATDESCRIPTOR),
 				&pfd))
@@ -2704,21 +2711,21 @@ int32_t TRAP::INTERNAL::WindowingAPI::ChoosePixelFormat(const InternalWindow* wi
 bool TRAP::INTERNAL::WindowingAPI::RefreshContextAttribs(InternalWindow* window,
 	                                                     const ContextConfig& CTXConfig)
 {
-	window->Context.Client = ContextAPI::OpenGL;
+	window->context.Client = ContextAPI::OpenGL;
 
 	const auto previousPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
 	MakeContextCurrent(window);
 
-	window->Context.GetIntegerv = reinterpret_cast<PFNGLGETINTEGERVPROC>(window->Context.GetProcAddress("glGetIntegerv"));
-	window->Context.GetString = reinterpret_cast<PFNGLGETSTRINGPROC>(window->Context.GetProcAddress("glGetString"));
-	if (!window->Context.GetIntegerv || !window->Context.GetString)
+	window->context.GetIntegerv = reinterpret_cast<PFNGLGETINTEGERVPROC>(window->context.GetProcAddress("glGetIntegerv"));
+	window->context.GetString = reinterpret_cast<PFNGLGETSTRINGPROC>(window->context.GetProcAddress("glGetString"));
+	if (!window->context.GetIntegerv || !window->context.GetString)
 	{
 		InputError(Error::Platform_Error, "[OpenGL] Entry point retrieval is broken");
 		MakeContextCurrent(previousPtr);
 		return false;
 	}
 
-	const char* version = reinterpret_cast<const char*>(window->Context.GetString(GL_VERSION));
+	const char* version = reinterpret_cast<const char*>(window->context.GetString(GL_VERSION));
 	if (!version)
 	{
 		if (CTXConfig.Client == ContextAPI::OpenGL)
@@ -2734,19 +2741,19 @@ bool TRAP::INTERNAL::WindowingAPI::RefreshContextAttribs(InternalWindow* window,
 
 	if (splittedVersion.empty() || splittedVersion.size() < 2)
 	{
-		if (window->Context.Client == ContextAPI::OpenGL)
+		if (window->context.Client == ContextAPI::OpenGL)
 			InputError(Error::Platform_Error, "[OpenGL] No version found in OpenGL version string");
 
 		MakeContextCurrent(previousPtr);
 		return false;
 	}
 
-	window->Context.Major = std::stoi(splittedVersion[0]);
-	window->Context.Minor = std::stoi(splittedVersion[1]);
+	window->context.Major = std::stoi(splittedVersion[0]);
+	window->context.Minor = std::stoi(splittedVersion[1]);
 
-	if (window->Context.Major < 4 ||
-		(window->Context.Major == 4 &&
-			window->Context.Minor < 6))
+	if (window->context.Major < 4 ||
+		(window->context.Major == 4 &&
+			window->context.Minor < 6))
 	{
 		//The desired OpenGL version is greater than the actual version
 		//This only happens if the machine lacks {GLX|WGL}_ARB_create_context
@@ -2755,8 +2762,8 @@ bool TRAP::INTERNAL::WindowingAPI::RefreshContextAttribs(InternalWindow* window,
 		//For API consistency, we emulate the behavior of the
 		//{GLX|WGL}_ARB_create_context extension and fail here
 
-		if (window->Context.Client == ContextAPI::OpenGL)
-			InputError(Error::Version_Unavailable, "[OpenGl] Requested OpenGL version 4.6, got version " + std::to_string(window->Context.Major) + "." + std::to_string(window->Context.Minor));
+		if (window->context.Client == ContextAPI::OpenGL)
+			InputError(Error::Version_Unavailable, "[OpenGl] Requested OpenGL version 4.6, got version " + std::to_string(window->context.Major) + "." + std::to_string(window->context.Minor));
 
 		MakeContextCurrent(previousPtr);
 		return false;
@@ -2766,30 +2773,30 @@ bool TRAP::INTERNAL::WindowingAPI::RefreshContextAttribs(InternalWindow* window,
 	//We cache it here instead of in ExtensionSupported mostly to alert
 	//users as early as possible that their build may be broken
 
-	window->Context.GetStringi = reinterpret_cast<PFNGLGETSTRINGIPROC>(window->Context.GetProcAddress("glGetStringi"));
-	if (!window->Context.GetStringi)
+	window->context.GetStringi = reinterpret_cast<PFNGLGETSTRINGIPROC>(window->context.GetProcAddress("glGetStringi"));
+	if (!window->context.GetStringi)
 	{
 		InputError(Error::Platform_Error, "[OpenGL] Entry point retrieval is broken");
 		MakeContextCurrent(previousPtr);
 		return false;
 	}
 
-	if (window->Context.Client == ContextAPI::OpenGL)
+	if (window->context.Client == ContextAPI::OpenGL)
 	{
 		GLint flags;
-		window->Context.GetIntegerv(GL_CONTEXT_FLAGS, &flags);
+		window->context.GetIntegerv(GL_CONTEXT_FLAGS, &flags);
 
 		//Read back OpenGL context profile (OpenGL 3.2 and above)
 		GLint mask;
-		window->Context.GetIntegerv(GL_CONTEXT_PROFILE_MASK, &mask);
+		window->context.GetIntegerv(GL_CONTEXT_PROFILE_MASK, &mask);
 	}
 
 	//Clearing the front buffer to black to avoid garbage pixels left over from
 	//previous uses of our bit of VRAM
 	{
-		const PFNGLCLEARPROC glClearWin = reinterpret_cast<PFNGLCLEARPROC>(window->Context.GetProcAddress("glClear"));
+		const PFNGLCLEARPROC glClearWin = reinterpret_cast<PFNGLCLEARPROC>(window->context.GetProcAddress("glClear"));
 		glClearWin(GL_COLOR_BUFFER_BIT);
-		window->Context.SwapBuffers(window);
+		window->context.SwapBuffers(window);
 	}
 
 	MakeContextCurrent(previousPtr);
@@ -2823,7 +2830,7 @@ bool TRAP::INTERNAL::WindowingAPI::CursorInContentArea(const InternalWindow* win
 //Updates the cursor image according to its cursor mode
 void TRAP::INTERNAL::WindowingAPI::UpdateCursorImage(const InternalWindow* window)
 {
-	if (window->CursorMode == CursorMode::Normal)
+	if (window->cursorMode == CursorMode::Normal)
 	{
 		if (window->Cursor)
 			::SetCursor(window->Cursor->Handle);
@@ -3275,7 +3282,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 		}
 
 		//Note: Set VSync interval again because DWM now doesnt apply here
-		SwapInterval(window->Context.Interval);
+		SwapInterval(window->context.Interval);
 
 		return;
 	}
@@ -3351,7 +3358,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 	}
 
 	//Note: Set VSync interval again because DWM now doesnt apply here
-	SwapInterval(window->Context.Interval);
+	SwapInterval(window->context.Interval);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3386,7 +3393,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 			flags);
 
 		//Note: Set VSync interval again because DWM now doesnt apply here
-		SwapInterval(window->Context.Interval);
+		SwapInterval(window->context.Interval);
 	}
 }
 
@@ -3586,8 +3593,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow* window)
 	if (window->Monitor)
 		ReleaseMonitor(window);
 
-	if (window->Context.Destroy)
-		window->Context.Destroy(window);
+	if (window->context.Destroy)
+		window->context.Destroy(window);
 
 	if (s_Data.DisabledCursorWindow == window)
 		s_Data.DisabledCursorWindow = nullptr;
