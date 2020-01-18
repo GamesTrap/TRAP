@@ -751,3 +751,9 @@ SITREP 01/12/2020|20w02a4
         - Added detection for X11 and Wayland on Engine startup ~<20 mins
         - Engine now only runs on Windows 7 or newer ~<10 mins
         - Made branch more linux compatible ~<15 mins
+
+SITREP 01/18/2020|20w03a1
+    - Changed TRAP Engine version to 20w03a1(0.5.92)
+    - Branch Window:
+        - Finished X11 Windowing ~>400 mins
+        - Fixed 2 small bugs ~<50 mins

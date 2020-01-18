@@ -425,7 +425,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetupInstanceLayersAndExtensions()
 	std::array<std::string, 2> requiredExtensions = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
 	const std::vector<VkExtensionProperties> availableInstanceExtensions = GetAvailableInstanceExtensions();
 	for (auto& requiredExtension : requiredExtensions)
-		AddInstanceExtension(availableInstanceExtensions, requiredExtension.c_str());
+		AddInstanceExtension(availableInstanceExtensions, requiredExtension);
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	AddInstanceExtension(availableInstanceExtensions, VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 #endif
@@ -500,8 +500,16 @@ void TRAP::Graphics::API::VulkanRenderer::InitInstance()
 		VK_MAKE_VERSION(1, 0, 0),
 		"TRAP Engine",
 		TRAP_VERSION,
-		VK_API_VERSION_1_1
+		VK_API_VERSION_1_1 //TODO Change to VK_API_VERSION_1_2
 	};
+	
+	std::vector<const char*> instanceLayersPtrs{};
+	for(const auto& instanceLayer : m_instanceLayers)
+		instanceLayersPtrs.emplace_back(instanceLayer.c_str());
+		
+	std::vector<const char*> instanceExtensionsPtrs{};
+	for(const auto& instanceExtension : m_instanceExtensions)
+		instanceExtensionsPtrs.emplace_back(instanceExtension.c_str());
 
 	VkInstanceCreateInfo instanceCreateInfo
 	{
@@ -509,10 +517,10 @@ void TRAP::Graphics::API::VulkanRenderer::InitInstance()
 		nullptr,
 		0,
 		&applicationInfo,
-		static_cast<uint32_t>(m_instanceLayers.size()),
-		!m_instanceLayers.empty() ? m_instanceLayers.data() : nullptr,
-		static_cast<uint32_t>(m_instanceExtensions.size()),
-		!m_instanceExtensions.empty() ? m_instanceExtensions.data() : nullptr
+		static_cast<uint32_t>(instanceLayersPtrs.size()),
+		!instanceLayersPtrs.empty() ? instanceLayersPtrs.data() : nullptr,
+		static_cast<uint32_t>(instanceExtensionsPtrs.size()),
+		!instanceExtensionsPtrs.empty() ? instanceExtensionsPtrs.data() : nullptr
 	};
 
 	VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &m_instance));
@@ -634,6 +642,14 @@ void TRAP::Graphics::API::VulkanRenderer::InitDevice()
 	deviceFeatures.tessellationShader = true;
 	deviceFeatures.fillModeNonSolid = true;
 
+	std::vector<const char*> deviceLayersPtrs{};
+	for(const auto& deviceLayer : m_deviceLayers)
+		deviceLayersPtrs.emplace_back(deviceLayer.c_str());
+		
+	std::vector<const char*> deviceExtensionsPtrs{};
+	for(const auto& deviceExtension : m_deviceExtensions)
+		deviceExtensionsPtrs.emplace_back(deviceExtension.c_str());
+	
 	VkDeviceCreateInfo deviceCreateInfo
 	{
 		VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
@@ -641,10 +657,10 @@ void TRAP::Graphics::API::VulkanRenderer::InitDevice()
 		0,
 		static_cast<uint32_t>(queueCreateInfos.size()),
 		!queueCreateInfos.empty() ? queueCreateInfos.data() : nullptr,
-		static_cast<uint32_t>(m_deviceLayers.size()),
-		!m_deviceLayers.empty() ? m_deviceLayers.data() : nullptr,
-		static_cast<uint32_t>(m_deviceExtensions.size()),
-		!m_deviceExtensions.empty() ? m_deviceExtensions.data() : nullptr,
+		static_cast<uint32_t>(deviceLayersPtrs.size()),
+		!deviceLayersPtrs.empty() ? deviceLayersPtrs.data() : nullptr,
+		static_cast<uint32_t>(deviceExtensionsPtrs.size()),
+		!deviceExtensionsPtrs.empty() ? deviceExtensionsPtrs.data() : nullptr,
 		&deviceFeatures
 	};
 
@@ -1035,22 +1051,22 @@ std::vector<VkQueueFamilyProperties> TRAP::Graphics::API::VulkanRenderer::GetAva
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::AddInstanceLayer(const std::vector<VkLayerProperties>& availableInstanceLayers, const char* layer)
+void TRAP::Graphics::API::VulkanRenderer::AddInstanceLayer(const std::vector<VkLayerProperties>& availableInstanceLayers, const std::string& layer)
 {
-	if (IsLayerSupported(availableInstanceLayers, layer))
+	if (IsLayerSupported(availableInstanceLayers, layer.c_str()))
 	{
-		m_instanceLayers.push_back(layer);
+		m_instanceLayers.emplace_back(layer);
 		TP_DEBUG("[Renderer][Vulkan] Loading Instance Layer: ", layer);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::AddInstanceExtension(const std::vector<VkExtensionProperties>& availableInstanceExtensions, const char* extension)
+void TRAP::Graphics::API::VulkanRenderer::AddInstanceExtension(const std::vector<VkExtensionProperties>& availableInstanceExtensions, const std::string& extension)
 {
-	if (IsExtensionSupported(availableInstanceExtensions, extension))
+	if (IsExtensionSupported(availableInstanceExtensions, extension.c_str()))
 	{
-		if (strcmp(extension, VK_EXT_DEBUG_UTILS_EXTENSION_NAME) == 0)
+		if (extension == VK_EXT_DEBUG_UTILS_EXTENSION_NAME)
 			m_debugCallbackSupported = true;
 
 		m_instanceExtensions.emplace_back(extension);
@@ -1060,22 +1076,22 @@ void TRAP::Graphics::API::VulkanRenderer::AddInstanceExtension(const std::vector
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::AddDeviceLayer(const std::vector<VkLayerProperties>& availableDeviceLayers, const char* layer)
+void TRAP::Graphics::API::VulkanRenderer::AddDeviceLayer(const std::vector<VkLayerProperties>& availableDeviceLayers, const std::string& layer)
 {
-	if (IsLayerSupported(availableDeviceLayers, layer))
+	if (IsLayerSupported(availableDeviceLayers, layer.c_str()))
 	{
-		m_deviceLayers.push_back(layer);
+		m_deviceLayers.emplace_back(layer);
 		TP_DEBUG("[Renderer][Vulkan] Loading Device Layer(Deprecated): ", layer);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::AddDeviceExtension(const std::vector<VkExtensionProperties>& availableDeviceExtensions, const char* extension)
+void TRAP::Graphics::API::VulkanRenderer::AddDeviceExtension(const std::vector<VkExtensionProperties>& availableDeviceExtensions, const std::string& extension)
 {
-	if (IsExtensionSupported(availableDeviceExtensions, extension))
+	if (IsExtensionSupported(availableDeviceExtensions, extension.c_str()))
 	{
-		m_deviceExtensions.push_back(extension);
+		m_deviceExtensions.emplace_back(extension);
 		TP_DEBUG("[Renderer][Vulkan] Loading Device Extension: ", extension);
 	}
 }

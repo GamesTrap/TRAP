@@ -110,7 +110,7 @@ public:
 		TRAP::Graphics::Renderer::BeginScene(m_cameraController.GetCamera());
 		{
 			if (m_usePassthrough)
-				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray);
+				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Fallback"), m_vertexArray);
 			else
 			{
 				TRAP::Graphics::TextureManager::Get2D("TRAP")->Bind(0);
@@ -160,7 +160,7 @@ public:
 		if (event.GetKeyCode() == TRAP::Input::Key::F3 && event.GetRepeatCount() < 1) //Switch to OpenGL
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::OpenGL);
 
-		if (event.GetKeyCode() == TRAP::Input::Key::F4 && event.GetRepeatCount() < 1) //Use Default/Passthrough Shader
+		if (event.GetKeyCode() == TRAP::Input::Key::F4 && event.GetRepeatCount() < 1) //Use Fallback Shader
 			m_usePassthrough = !m_usePassthrough;
 
 		if (event.GetKeyCode() == TRAP::Input::Key::F5 && event.GetRepeatCount() < 1) //Make Window windowed

@@ -129,6 +129,7 @@ void TRAP::Graphics::API::Context::SwitchRenderAPI(const RenderAPI api)
 	{
 		if (api == RenderAPI::D3D12)
 		{
+#ifdef TRAP_PLATFORM_WINDOWS
 			if (s_isD3D12Capable)
 			{
 				TP_WARN("[Context] Switching RenderAPI to D3D12");
@@ -138,6 +139,10 @@ void TRAP::Graphics::API::Context::SwitchRenderAPI(const RenderAPI api)
 			}
 
 			TP_ERROR("[Context][D3D12] This device doesn't support D3D12!");
+#elif defined(TRAP_PLATFORM_LINUX)
+			TP_ERROR("[Context][D3D12] Linux doesn't support D3D12! Ignoring switch...");
+			return;
+#endif
 			if (s_isVulkanCapable)
 			{
 				SwitchRenderAPI(RenderAPI::Vulkan);

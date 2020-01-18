@@ -89,7 +89,7 @@ namespace TRAP
 			End            = 269,
 			Caps_Lock      = 280,
 			Scroll_Lock    = 281,
-			NUM_Lock       = 282,
+			Num_Lock       = 282,
 			Print_Screen   = 283,
 			Pause          = 284,
 			F1             = 290,

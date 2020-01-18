@@ -22,12 +22,18 @@ namespace TRAP::INTERNAL
 		enum class Error;
 	private:
 		struct VkWin32SurfaceCreateInfoKHR;
+		struct VkXlibSurfaceCreateInfoKHR;
+		struct VkXcbSurfaceCreateInfoKHR;
 		//---------//
 		//Windows//
 		//---------//
 #ifdef TRAP_PLATFORM_WINDOWS
 		enum class Monitor_DPI_Type;
 		enum class Process_DPI_Awareness;
+#elif defined(TRAP_PLATFORM_LINUX)
+		typedef struct xcb_connection_t xcb_connection_t;
+		typedef XID xcb_window_t;
+		typedef XID xcb_visualid_t;
 #endif
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Typedefs-----------------------------------------------------------------------------------------------------------//
@@ -82,8 +88,15 @@ namespace TRAP::INTERNAL
 		//--------------//
 		//Vulkan Surface//
 		//--------------//
+#ifdef TRAP_PLATFORM_WINDOWS
 		typedef VkFlags VkWin32SurfaceCreateFlagsKHR;
 		typedef VkResult(*PFN_vkCreateWin32SurfaceKHR)(VkInstance, const VkWin32SurfaceCreateInfoKHR*, const VkAllocationCallbacks*, VkSurfaceKHR*);
+#elif defined(TRAP_PLATFORM_LINUX)
+		typedef VkResult (APIENTRY *PFN_vkCreateXlibSurfaceKHR)(VkInstance,const VkXlibSurfaceCreateInfoKHR*,const VkAllocationCallbacks*,VkSurfaceKHR*);
+		typedef VkBool32 (APIENTRY *PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR)(VkPhysicalDevice,uint32_t,Display*,VisualID);
+		typedef VkResult (APIENTRY *PFN_vkCreateXcbSurfaceKHR)(VkInstance,const VkXcbSurfaceCreateInfoKHR*,const VkAllocationCallbacks*,VkSurfaceKHR*);
+		typedef VkBool32 (APIENTRY *PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR)(VkPhysicalDevice,uint32_t,xcb_connection_t*,xcb_visualid_t);
+#endif
 		//-------//
 		//Windows//
 		//-------//
@@ -123,6 +136,85 @@ namespace TRAP::INTERNAL
 		typedef HGLRC(WINAPI* PFN_WGLGetCurrentContext)();
 		typedef BOOL(WINAPI* PFN_WGLMakeCurrent)(HDC, HGLRC);
 		typedef BOOL(WINAPI* PFN_WGLShareLists)(HGLRC, HGLRC);
+#elif defined(TRAP_PLATFORM_LINUX)
+		//----------//
+		//Linux(X11)//
+		//----------//
+		//GLX
+		typedef struct __GLXFBConfig* GLXFBConfig;
+		typedef struct __GLXcontext* GLXContext;
+		
+		//RandR
+		typedef void(*PFN_XRRFreeCrtcInfo)(XRRCrtcInfo*);
+		typedef void(*PFN_XRRFreeOutputInfo)(XRROutputInfo*);
+		typedef void(*PFN_XRRFreeScreenResources)(XRRScreenResources*);
+		typedef XRRCrtcInfo*(*PFN_XRRGetCrtcInfo)(Display*, XRRScreenResources*, RRCrtc);
+		typedef XRROutputInfo*(*PFN_XRRGetOutputInfo)(Display*, XRRScreenResources*, RROutput);
+		typedef RROutput(*PFN_XRRGetOutputPrimary)(Display*, ::Window);
+		typedef XRRScreenResources*(*PFN_XRRGetScreenResourcesCurrent)(Display*, ::Window);
+		typedef int32_t(*PFN_XRRQueryExtension)(Display*, int32_t*, int32_t*);
+		typedef Status(*PFN_XRRQueryVersion)(Display*, int32_t*, int32_t*);
+		typedef void(*PFN_XRRSelectInput)(Display*, ::Window, int32_t);
+		typedef Status(*PFN_XRRSetCrtcConfig)(Display*, XRRScreenResources*, RRCrtc, Time, int32_t, int32_t, RRMode, Rotation, RROutput*, int32_t);
+		typedef int32_t(*PFN_XRRUpdateConfiguration)(XEvent*);
+		
+		//XCursor
+		typedef XcursorImage*(*PFN_XcursorImageCreate)(int32_t, int32_t);
+		typedef void(*PFN_XcursorImageDestroy)(XcursorImage*);
+		typedef Cursor(*PFN_XcursorImageLoadCursor)(Display*, const XcursorImage*);
+		typedef char*(*PFN_XcursorGetTheme)(Display*);
+		typedef int32_t(*PFN_XcursorGetDefaultSize)(Display*);
+		typedef XcursorImage*(*PFN_XcursorLibraryLoadImage)(const char*, const char*, int32_t);
+		
+		//Xinerama
+		typedef int32_t (*PFN_XineramaIsActive)(Display*);
+		typedef int32_t(*PFN_XineramaQueryExtension)(Display*, int32_t*, int32_t*);
+		typedef XineramaScreenInfo*(*PFN_XineramaQueryScreens)(Display*, int32_t*);
+		
+		//XCB
+		typedef xcb_connection_t*(*PFN_XGetXCBConnection)(Display*);
+		
+		//XI
+		typedef Status(*PFN_XIQueryVersion)(Display*, int32_t*, int32_t*);
+		typedef int32_t(*PFN_XISelectEvents)(Display*, ::Window, XIEventMask*, int32_t);
+		
+		//XRender
+		typedef int32_t(*PFN_XRenderQueryExtension)(Display*,int32_t*, int32_t*);
+		typedef Status(*PFN_XRenderQueryVersion)(Display* dpy, int32_t*, int32_t*);
+		typedef XRenderPictFormat*(*PFN_XRenderFindVisualFormat)(Display*, Visual const*);
+		
+		//Vulkan
+		typedef VkFlags VkXlibSurfaceCreateFlagsKHR;
+		typedef VkFlags VkXcbSurfaceCreateFlagsKHR;
+		
+		//XShape
+		typedef int32_t (*PFN_XShapeQueryExtension)(Display*, int32_t*, int32_t*);
+		typedef Status (*PFN_XShapeQueryVersion)(Display* dpy, int32_t*, int32_t*);
+		typedef void(*PFN_XShapeCombineRegion)(Display*, ::Window, int32_t, int32_t, int32_t, Region, int32_t);
+		
+		//GLX
+		typedef XID GLXWindow;
+		typedef XID GLXDrawable;
+		typedef void(*__GLXextproc)(void);
+		typedef GLXFBConfig*(*PFNGLXGETFBCONFIGSPROC)(Display*, int32_t, int32_t*);
+		typedef int32_t(*PFNGLXGETFBCONFIGATTRIBPROC)(Display*, GLXFBConfig, int32_t, int32_t*);
+		typedef const char*(*PFNGLXGETCLIENTSTRINGPROC)(Display*, int32_t);
+		typedef int32_t (*PFNGLXQUERYEXTENSIONPROC)(Display*, int32_t*, int32_t*);
+		typedef int32_t (*PFNGLXQUERYVERSIONPROC)(Display*, int32_t*, int32_t*);
+		typedef void (*PFNGLXDESTROYCONTEXTPROC)(Display*, GLXContext);
+		typedef int32_t (*PFNGLXMAKECURRENTPROC)(Display*, GLXDrawable, GLXContext);
+		typedef void (*PFNGLXSWAPBUFFERSPROC)(Display*, GLXDrawable);
+		typedef const char* (*PFNGLXQUERYEXTENSIONSSTRINGPROC)(Display*, int32_t);
+		typedef GLXContext (*PFNGLXCREATENEWCONTEXTPROC)(Display*, GLXFBConfig, int32_t, GLXContext, int32_t);
+		typedef __GLXextproc (* PFNGLXGETPROCADDRESSPROC)(const GLubyte* procName);
+		typedef void (*PFNGLXSWAPINTERVALEXTPROC)(Display*, GLXDrawable, int32_t);
+		typedef XVisualInfo* (*PFNGLXGETVISUALFROMFBCONFIGPROC)(Display*, GLXFBConfig);
+		typedef GLXWindow (*PFNGLXCREATEWINDOWPROC)(Display*, GLXFBConfig, ::Window, const int32_t*);
+		typedef void (*PFNGLXDESTROYWINDOWPROC)(Display*, GLXWindow);
+		
+		typedef int (*PFNGLXSWAPINTERVALMESAPROC)(int32_t);
+		typedef int (*PFNGLXSWAPINTERVALSGIPROC)(int32_t);
+		typedef GLXContext (*PFNGLXCREATECONTEXTATTRIBSARBPROC)(Display*, GLXFBConfig, GLXContext, int32_t, const int32_t*);
 #endif
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Enums--------------------------------------------------------------------------------------------------------------//
@@ -172,16 +264,16 @@ namespace TRAP::INTERNAL
 		};
 		enum class CursorType
 		{
-			Arrow,
-			Input,
-			Crosshair,
-			PointingHand,
-			ResizeHorizontal,
-			ResizeVertical,
-			ResizeDiagonalTopLeftBottomRight,
-			ResizeDiagonalTopRightBottomLeft,
-			ResizeAll,
-			NotAllowed
+			Arrow = 0x00036001,
+			Input = 0x00036002,
+			Crosshair = 0x00036003,
+			PointingHand = 0x00036004,
+			ResizeHorizontal = 0x00036005,
+			ResizeVertical = 0x00036006,
+			ResizeDiagonalTopLeftBottomRight = 0x00036008,
+			ResizeDiagonalTopRightBottomLeft = 0x00036007,
+			ResizeAll = 0x00036009,
+			NotAllowed = 0x0003600A
 		};
 	private:
 		//-------//
@@ -256,6 +348,38 @@ namespace TRAP::INTERNAL
 		inline static constexpr uint32_t ERROR_INVALID_VERSION_ARB = 0x2095;
 		inline static constexpr uint32_t ERROR_INVALID_PROFILE_ARB = 0x2096;
 		inline static constexpr uint32_t ERROR_INCOMPATIBLE_DEVICE_CONTEXTS_ARB = 0x2054;
+#elif defined(TRAP_PLATFORM_LINUX)
+		//GLX
+		inline static constexpr uint32_t GLX_VENDOR = 1;
+		inline static constexpr uint32_t GLX_RENDER_TYPE = 0x8011;
+		inline static constexpr uint32_t GLX_RGBA_BIT = 0x00000001;
+		inline static constexpr uint32_t GLX_DRAWABLE_TYPE = 0x8010;
+		inline static constexpr uint32_t GLX_WINDOW_BIT = 0x00000001;
+		inline static constexpr uint32_t GLX_RED_SIZE = 8;
+		inline static constexpr uint32_t GLX_GREEN_SIZE = 9;
+		inline static constexpr uint32_t GLX_BLUE_SIZE = 10;
+		inline static constexpr uint32_t GLX_ALPHA_SIZE = 11;
+		inline static constexpr uint32_t GLX_DEPTH_SIZE = 12;
+		inline static constexpr uint32_t GLX_STENCIL_SIZE = 13;
+		inline static constexpr uint32_t GLX_ACCUM_RED_SIZE = 14;
+		inline static constexpr uint32_t GLX_ACCUM_GREEN_SIZE = 15;
+		inline static constexpr uint32_t GLX_ACCUM_BLUE_SIZE = 16;
+		inline static constexpr uint32_t GLX_ACCUM_ALPHA_SIZE = 17;
+		inline static constexpr uint32_t GLX_AUX_BUFFERS = 7;
+		inline static constexpr uint32_t GLX_STEREO = 6;
+		inline static constexpr uint32_t GLX_DOUBLEBUFFER = 5;
+		inline static constexpr uint32_t GLX_SAMPLES = 0x186A1;
+		inline static constexpr uint32_t GLX_FRAMEBUFFER_SRGB_CAPABLE_ARB = 0x20B2;
+		inline static constexpr uint32_t GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB = 0x00000002;
+		inline static constexpr uint32_t GLX_CONTEXT_CORE_PROFILE_BIT_ARB = 0x00000001;
+		inline static constexpr uint32_t GLX_CONTEXT_MAJOR_VERSION_ARB = 0x2091;
+		inline static constexpr uint32_t GLX_CONTEXT_MINOR_VERSION_ARB = 0x2092;
+		inline static constexpr uint32_t GLX_CONTEXT_PROFILE_MASK_ARB = 0x9126;
+		inline static constexpr uint32_t GLX_CONTEXT_FLAGS_ARB = 0x2094;
+		inline static constexpr uint32_t GLX_RGBA_TYPE = 0x8014;
+		
+		inline static constexpr uint32_t Button6 = 6;
+		inline static constexpr uint32_t Button7 = 7;
 #endif
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Structs------------------------------------------------------------------------------------------------------------//
@@ -269,21 +393,43 @@ namespace TRAP::INTERNAL
 			HINSTANCE hinstance;
 			HWND hwnd;
 		};
+#elif defined(TRAP_PLATFORM_LINUX)
+		struct VkXlibSurfaceCreateInfoKHR
+		{
+			VkStructureType sType;
+			const void* pNext;
+			VkXlibSurfaceCreateFlagsKHR flags;
+			Display* dpy;
+			::Window window;
+		};
+		
+		struct VkXcbSurfaceCreateInfoKHR
+		{
+			VkStructureType sType;
+			const void* pNext;
+			VkXcbSurfaceCreateFlagsKHR flags;
+			xcb_connection_t* connection;
+			xcb_window_t window;
+		};
 #endif
 		//Thread local storage structure
 		struct TLS
 		{
-#ifdef TRAP_PLATFORM_WINDOWS
 			bool Allocated = false;
+#ifdef TRAP_PLATFORM_WINDOWS			
 			DWORD Index = 0;
+#elif defined(TRAP_PLATFORM_LINUX)
+			pthread_key_t Key{};
 #endif
 		};
 		//Mutex structure
 		struct Mutex
 		{
-#ifdef TRAP_PLATFORM_WINDOWS
 			bool Allocated = false;
+#ifdef TRAP_PLATFORM_WINDOWS			
 			CRITICAL_SECTION Section{};
+#elif defined(TRAP_PLATFORM_LINUX)
+			pthread_mutex_t Handle{};
 #endif
 		};
 		//Per-thread error structure
@@ -356,6 +502,9 @@ namespace TRAP::INTERNAL
 			HDC DC = nullptr;
 			HGLRC Handle = nullptr;
 			int32_t Interval = 0;
+#elif defined(TRAP_PLATFORM_LINUX)
+			GLXContext Handle = nullptr;
+			GLXWindow Window = 0;
 #endif
 		};
 		//Global state
@@ -393,27 +542,28 @@ namespace TRAP::INTERNAL
 				bool KHR_Surface = false;
 #if defined(TRAP_PLATFORM_WINDOWS)
 				bool KHR_Win32_Surface = false;
-#elif defined(TRAP_PLATFORM_LINUX_X11)
+#elif defined(TRAP_PLATFORM_LINUX)
 				bool KHR_XLib_Surface = false;
 				bool KHR_XCB_Surface = false;
-#elif defined(TRAP_PLATFORM_LINUX_WAYLAND)
+#elif defined(TRAP_PLATFORM_LINUX)
 				bool KHR_Wayland_Surface = false;
 #endif
 			} VK{};
 
-#ifdef TRAP_PLATFORM_WINDOWS
-			HWND HelperWindowHandle = nullptr;
-			HDEVNOTIFY DeviceNotificationHandle = nullptr;
-			DWORD ForegroundLockTimeout = 0;
-			int32_t AcquiredMonitorCount = 0;
 			std::string ClipboardString{};
-			std::array<Input::Key, 512> KeyCodes{};
+			std::array<std::array<char, 5>, static_cast<uint32_t>(Input::Key::Menu) + 1> KeyNames{};			
 			std::array<int16_t, static_cast<uint32_t>(Input::Key::Menu) + 1> ScanCodes{};
-			std::array<std::array<char, 5>, static_cast<uint32_t>(Input::Key::Menu) + 1> KeyNames{};
 			//Where to place the cursor when re-enabled
 			double RestoreCursorPosX = 0.0, RestoreCursorPosY = 0.0;
 			//The window whose disabled cursor mode is active
 			InternalWindow* DisabledCursorWindow = nullptr;
+
+#ifdef TRAP_PLATFORM_WINDOWS
+			std::array<Input::Key, 512> KeyCodes{};
+			HWND HelperWindowHandle = nullptr;
+			HDEVNOTIFY DeviceNotificationHandle = nullptr;
+			DWORD ForegroundLockTimeout = 0;
+			int32_t AcquiredMonitorCount = 0;
 			std::vector<RAWINPUT> RawInput{};
 			int32_t RawInputSize = 0;
 			UINT MouseTrailSize = 0;
@@ -476,6 +626,241 @@ namespace TRAP::INTERNAL
 				bool ARB_create_context_profile = false;
 				bool ARB_context_flush_control = false;
 			} WGL;
+#elif defined(TRAP_PLATFORM_LINUX)
+			std::array<Input::Key, 256> KeyCodes{};
+			Display* display = nullptr;
+			int32_t Screen = 0;
+			::Window Root{};
+			
+			//System content scale
+			float ContentScaleX = 0, ContentScaleY = 0;
+			//Helper window for IPC
+			::Window HelperWindowHandle{};
+			//Invisible cursor for hidden cursor mode
+			Cursor HiddenCursorHandle{};
+			//Context for mapping window XIDs to InternalWindow pointers
+			XContext Context{};
+			//XIM input method
+			XIM IM{};
+			//Most recent error code received by X error handler
+			int32_t ErrorCode = 0;
+			//Primary selection string (while the primary selection is owned)
+			std::string PrimarySelectionString{};
+			
+			//Window manager atoms
+			Atom NET_SUPPORTED{};
+			Atom NET_SUPPORTING_WM_CHECK{};
+			Atom WM_PROTOCOLS{};
+			Atom WM_STATE{};
+			Atom WM_DELETE_WINDOW{};
+			Atom NET_WM_NAME{};
+			Atom NET_WM_ICON_NAME{};
+			Atom NET_WM_ICON{};
+			Atom NET_WM_PID{};
+			Atom NET_WM_PING{};
+			Atom NET_WM_WINDOW_TYPE{};
+			Atom NET_WM_WINDOW_TYPE_NORMAL{};
+			Atom NET_WM_STATE{};
+			Atom NET_WM_STATE_ABOVE{};
+			Atom NET_WM_STATE_FULLSCREEN{};
+			Atom NET_WM_STATE_MAXIMIZED_VERT{};
+			Atom NET_WM_STATE_MAXIMIZED_HORZ{};
+			Atom NET_WM_STATE_DEMANDS_ATTENTION{};
+			Atom NET_WM_BYPASS_COMPOSITOR{};
+			Atom NET_WM_FULLSCREEN_MONITORS{};
+			Atom NET_WM_WINDOW_OPACITY{};
+			Atom NET_WM_CM_Sx{};
+			Atom NET_WORKAREA{};
+			Atom NET_CURRENT_DESKTOP{};
+			Atom NET_ACTIVE_WINDOW{};
+			Atom NET_FRAME_EXTENTS{};
+			Atom NET_REQUEST_FRAME_EXTENTS{};
+			Atom MOTIF_WM_HINTS{};
+			
+			//Xdnd (drag and drop) atoms
+			Atom XDNDAware{};
+			Atom XDNDEnter{};
+			Atom XDNDPosition{};
+			Atom XDNDStatus{};
+			Atom XDNDActionCopy{};
+			Atom XDNDDrop{};
+			Atom XDNDFinished{};
+			Atom XDNDSelection{};
+			Atom XDNDTypeList{};
+			Atom text_uri_list{};
+			
+			//Selection (clipboard) atoms
+			Atom TARGETS{};
+			Atom MULTIPLE{};
+			Atom INCR{};
+			Atom CLIPBOARD{};
+			Atom PRIMARY{};
+			Atom CLIPBOARD_MANAGER{};
+			Atom SAVE_TARGETS{};
+			Atom NULL_{};
+			Atom UTF8_STRING{};
+			Atom COMPOUND_STRING{};
+			Atom ATOM_PAIR{};
+			Atom TRAP_SELECTION{};
+			
+			struct XSHAPE
+			{
+				bool Available = false;
+				void* Handle = nullptr;
+				int32_t Major = 0;
+				int32_t Minor = 0;
+				int32_t EventBase = 0;
+				int32_t ErrorBase = 0;
+				PFN_XShapeQueryExtension QueryExtension;
+				PFN_XShapeCombineRegion CombineRegion;
+				PFN_XShapeQueryVersion QueryVersion;
+			} XShape{};
+			
+			struct RANDR
+			{
+				bool Available = false;
+				void* Handle = nullptr;
+				bool MonitorBroken = false;
+				int32_t EventBase = 0;
+				int32_t ErrorBase = 0;
+				int32_t Major = 0;
+				int32_t Minor = 0;
+				PFN_XRRFreeCrtcInfo FreeCrtcInfo{};
+				PFN_XRRFreeOutputInfo FreeOutputInfo{};
+				PFN_XRRFreeScreenResources FreeScreenResources{};
+				PFN_XRRGetCrtcInfo GetCrtcInfo{};
+				PFN_XRRGetOutputInfo GetOutputInfo{};
+				PFN_XRRGetOutputPrimary GetOutputPrimary{};
+				PFN_XRRGetScreenResourcesCurrent GetScreenResourcesCurrent{};
+				PFN_XRRQueryExtension QueryExtension{};
+				PFN_XRRQueryVersion QueryVersion{};
+				PFN_XRRSelectInput SelectInput{};
+				PFN_XRRSetCrtcConfig SetCrtcConfig{};
+				PFN_XRRUpdateConfiguration UpdateConfiguration{};
+			} RandR{};
+			
+			struct xkb
+			{
+				bool Available = false;
+				bool Detectable = false;
+				int32_t MajorOPCode = 0;
+				int32_t EventBase = 0;
+				int32_t ErrorBase = 0;
+				int32_t Major = 0;
+				int32_t Minor = 0;
+				uint32_t Group = 0;
+			} XKB{};
+			
+			struct SAVER
+			{
+				int32_t Count = 0;
+				int32_t Timeout = 0;
+				int32_t Interval = 0;
+				int32_t Blanking = 0;
+				int32_t Exposure = 0;
+			} Saver{};
+			
+			struct xdnd
+			{
+				int32_t Version = 0;
+				::Window Source{};
+				Atom Format{};
+			} XDND{};
+			
+			struct XCURSOR
+			{
+				void* Handle = nullptr;
+				PFN_XcursorImageCreate ImageCreate{};
+				PFN_XcursorImageDestroy ImageDestroy{};
+				PFN_XcursorImageLoadCursor ImageLoadCursor{};
+				PFN_XcursorGetTheme GetTheme{};
+				PFN_XcursorGetDefaultSize GetDefaultSize{};
+				PFN_XcursorLibraryLoadImage LibraryLoadImage{};
+			} XCursor{};
+			
+			struct XINERAMA
+			{
+				bool Available = false;
+				void* Handle = nullptr;
+				int32_t Major = 0;
+				int32_t Minor = 0;
+				PFN_XineramaIsActive IsActive{};
+				PFN_XineramaQueryExtension QueryExtension{};
+				PFN_XineramaQueryScreens QueryScreens{};
+			} Xinerama{};
+			
+			struct xcb
+			{
+				void* Handle = nullptr;
+				PFN_XGetXCBConnection GetXCBConnection{};
+			} XCB{};
+			
+			struct xi
+			{
+				bool Available = false;
+				void* Handle = nullptr;
+				int32_t MajorOPCode = 0;
+				int32_t EventBase = 0;
+				int32_t ErrorBase = 0;
+				int32_t Major = 0;
+				int32_t Minor = 0;
+				PFN_XIQueryVersion QueryVersion{};
+				PFN_XISelectEvents SelectEvents{};
+			} XI{};
+			
+			struct XRENDER
+			{
+				bool Available = false;
+				void* Handle = nullptr;
+				int32_t Major = 0;
+				int32_t Minor = 0;
+				int32_t EventBase = 0;
+				int32_t ErrorBase = 0;
+				PFN_XRenderQueryExtension QueryExtension{};
+				PFN_XRenderQueryVersion QueryVersion{};
+				PFN_XRenderFindVisualFormat FindVisualFormat{};
+			} XRender{};
+			
+			struct glx
+			{
+				int32_t Major = 0;
+				int32_t Minor = 0;
+				int32_t EventBase = 0;
+				int32_t ErrorBase = 0;
+				
+				void* Handle = nullptr;
+				
+				//GLX 1.3 functions
+				PFNGLXGETFBCONFIGSPROC GetFBConfigs;
+				PFNGLXGETFBCONFIGATTRIBPROC GetFBConfigAttrib;
+				PFNGLXGETCLIENTSTRINGPROC GetClientString;
+				PFNGLXQUERYEXTENSIONPROC QueryExtension;
+				PFNGLXQUERYVERSIONPROC QueryVersion;
+				PFNGLXDESTROYCONTEXTPROC DestroyContext;
+				PFNGLXMAKECURRENTPROC MakeCurrent;
+				PFNGLXSWAPBUFFERSPROC SwapBuffers;
+				PFNGLXQUERYEXTENSIONSSTRINGPROC QueryExtensionsString;
+				PFNGLXCREATENEWCONTEXTPROC CreateNewContext;
+				PFNGLXGETVISUALFROMFBCONFIGPROC GetVisualFromFBConfig;
+				PFNGLXCREATEWINDOWPROC CreateWindow;
+				PFNGLXDESTROYWINDOWPROC DestroyWindow;
+				
+				//GLX 1.4 and extension functions
+				PFNGLXGETPROCADDRESSPROC GetProcAddress;
+				PFNGLXGETPROCADDRESSPROC GetProcAddressARB;
+				PFNGLXSWAPINTERVALSGIPROC SwapIntervalSGI;
+				PFNGLXSWAPINTERVALEXTPROC SwapIntervalEXT;
+				PFNGLXSWAPINTERVALMESAPROC SwapIntervalMESA;
+				PFNGLXCREATECONTEXTATTRIBSARBPROC CreateContextAttribsARB;
+				bool SGI_swap_control;
+				bool EXT_swap_control;
+				bool MESA_swap_control;
+				bool ARB_multisample;
+				bool ARB_framebuffer_sRGB;
+				bool EXT_framebuffer_sRGB;
+				bool ARB_create_context;
+				bool ARB_create_context_profile;
+			} GLX{};
 #endif
 		};
 	public:
@@ -514,6 +899,13 @@ namespace TRAP::INTERNAL
 			std::string PublicDisplayName{};
 			bool ModesPruned = false;
 			bool ModeChanged = false;
+#elif defined(TRAP_PLATFORM_LINUX)
+			RROutput Output = 0;
+			RRCrtc CRTC = 0;
+			RRMode OldMode = 0;
+			
+			//Index of corresponding Xinerama screen, for EWMH full screen window placement
+			int32_t Index = 0;
 #endif
 		};
 		//Cursor structure
@@ -523,6 +915,8 @@ namespace TRAP::INTERNAL
 
 #ifdef TRAP_PLATFORM_WINDOWS
 			HCURSOR Handle = nullptr;
+#elif defined(TRAP_PLATFORM_LINUX)
+			Cursor Handle = 0;
 #endif
 		};
 		//Window and Context structure
@@ -572,6 +966,12 @@ namespace TRAP::INTERNAL
 				DropFunc Drop = nullptr;
 			} Callbacks;
 
+			bool Minimized = false;
+			bool Maximized = false;
+			
+			//The last received cursor position, regardless of source
+			int32_t LastCursorPosX = 0, LastCursorPosY = 0;
+
 #ifdef TRAP_PLATFORM_WINDOWS
 			HWND Handle = nullptr;
 			HICON BigIcon = nullptr;
@@ -579,11 +979,23 @@ namespace TRAP::INTERNAL
 
 			bool CursorTracked = false;
 			bool FrameAction = false;
-			bool Minimized = false;
-			bool Maximized = false;
-
-			//The last received cursor position, regardless of source
-			int32_t LastCursorPosX = 0, LastCursorPosY = 0;
+#elif defined(TRAP_PLATFORM_LINUX)
+			//X11
+			Colormap colormap = 0;
+			::Window Handle = 0;
+			::Window Parent = 0;
+			XIC IC = nullptr;
+			bool OverrideRedirect = false;
+			//Whether the visual supports framebuffer transparency
+			bool Transparent = false;
+			//Cached position and size used to filter out duplicate events
+			int32_t Width = 0, Height = 0;
+			int32_t XPos = 0, YPos = 0;
+			//The last position the cursor was warped to by TRAP
+			int32_t WarpCursorPosX = 0, WarpCursorPosY = 0;
+			
+			//The time of the last KeyPress event
+			Time LastKeyTime;			
 #endif
 		};		
 	private:
@@ -799,7 +1211,7 @@ namespace TRAP::INTERNAL
 		//Retrieves the work area of the monitor.
 		static void GetMonitorWorkArea(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos, int32_t& width, int32_t& height);
 		//Makes the specified window visible.
-		static void ShowWindow(const InternalWindow* window);
+		static void ShowWindow(InternalWindow* window);
 		//Brings the specified window to front and sets input focus.
 		//
 		//Wayland: - It is not possible for an application to bring its windows to front.
@@ -816,7 +1228,7 @@ namespace TRAP::INTERNAL
 		//Hides the specified window.
 		static void HideWindow(const InternalWindow* window);
 		//Restores the specified window.
-		static void RestoreWindow(const InternalWindow* window);
+		static void RestoreWindow(InternalWindow* window);
 		//Sets the size limits of the specified window.
 		//
 		//Wayland: The size limits will not be applied until the window is actually resized, either by the user or by the compositor.
@@ -841,6 +1253,7 @@ namespace TRAP::INTERNAL
 		static std::array<std::string, 2> GetRequiredInstanceExtensions();
 		//Creates a Vulkan surface for the specified window.
 		static VkResult CreateWindowSurface(VkInstance instance, const InternalWindow* window, const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
+		static void HideWindowFromTaskbar(InternalWindow* window);
 #ifdef TRAP_PLATFORM_WINDOWS
 		static HWND GetWin32Window(const InternalWindow* window);
 #endif
@@ -883,7 +1296,7 @@ namespace TRAP::INTERNAL
 		static void PlatformShutdown();
 		static void PlatformGetMonitorContentScale(const InternalMonitor* monitor, float& xScale, float& yScale);
 		static void PlatformGetMonitorPos(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos);
-		static void PlatformShowWindow(const InternalWindow* window);
+		static void PlatformShowWindow(InternalWindow* window);
 		static void PlatformFocusWindow(const InternalWindow* window);
 		static bool PlatformCreateWindow(InternalWindow* window,
 			                             const WindowConfig& WNDConfig,
@@ -900,11 +1313,12 @@ namespace TRAP::INTERNAL
 		static void PlatformSetWindowIcon(InternalWindow* window, const Scope<Image>& image);
 		static void PlatformGetWindowPos(const InternalWindow* window, int32_t& xPos, int32_t& yPos);
 		static void PlatformSetWindowSize(InternalWindow* window, int32_t width, int32_t height);
-		static void PlatformSetWindowResizable(const InternalWindow* window, bool enabled);
+		static void PlatformSetWindowResizable(InternalWindow* window, bool enabled);
 		static void PlatformSetWindowDecorated(const InternalWindow* window, bool enabled);
 		static void PlatformSetWindowFloating(const InternalWindow* window, bool enabled);
 		static void PlatformSetWindowOpacity(const InternalWindow* window, float opacity);
 		static void PlatformSetWindowMousePassthrough(InternalWindow* window, bool enabled);
+		static void PlatformHideWindowFromTaskbar(InternalWindow* window);
 		static float PlatformGetWindowOpacity(const InternalWindow* window);
 		static void PlatformGetFrameBufferSize(const InternalWindow* window, int32_t& width, int32_t& height);
 		static void PlatformGetWindowContentScale(const InternalWindow* window, float& xScale, float& yScale);
@@ -928,11 +1342,80 @@ namespace TRAP::INTERNAL
 		static void PlatformMinimizeWindow(const InternalWindow* window);
 		static void PlatformRequestWindowAttention(const InternalWindow* window);
 		static void PlatformHideWindow(const InternalWindow* window);
-		static void PlatformRestoreWindow(const InternalWindow* window);
-		static void PlatformSetWindowSizeLimits(const InternalWindow* window, int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight);
+		static void PlatformRestoreWindow(InternalWindow* window);
+		static void PlatformSetWindowSizeLimits(InternalWindow* window, int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight);
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Single Platform Functions------------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
+		//---------//
+		//Universal//
+		//---------//
+		//Retrieves the available modes for the specified monitor
+		static bool RefreshVideoModes(InternalMonitor* monitor);
+		static bool RefreshContextAttribs(InternalWindow* window,
+										  const ContextConfig& CTXConfig);
+		static bool InitVulkan(uint32_t mode);
+		//Splits a color depth into red, green and blue bit depths
+		static void SplitBPP(int32_t bpp, int32_t& red, int32_t& green, int32_t& blue);
+		//Make the specified window and its video mode active on its monitor
+		static void AcquireMonitor(InternalWindow* window);
+		//Make the specified window active on its monitor
+		static void AcquireMonitorBorderless(InternalWindow* window);
+		//Remove the window and restore the original video mode
+		static void ReleaseMonitor(const InternalWindow* window);
+		//Lexically compare video modes, used by qsort
+		static int32_t CompareVideoModes(const void* fp, const void* sp);
+		//Searches an extension string for the specified extension
+		static bool StringInExtensionString(const char* string, const char* extensions);
+		//Chooses the framebuffer config that best matches the desired one
+		static const FrameBufferConfig* ChooseFBConfig(const FrameBufferConfig& desired,
+			                                           const std::vector<FrameBufferConfig>& alternatives);
+		//Updates the cursor image according to its cursor mode
+		static void UpdateCursorImage(const InternalWindow* window);		
+		//Exit disabled cursor mode for the specified window
+		static void EnableCursor(InternalWindow* window);
+		//Apply disabled cursor mode to a focused window
+		static void DisableCursor(InternalWindow* window);
+		//Enables raw messages for the mouse for the specified window
+		static void EnableRawMouseMotion(const InternalWindow* window);
+		//Disables raw messages for the mouse
+		static void DisableRawMouseMotion(const InternalWindow* window);
+		static std::string GetVulkanResultString(VkResult result);
+		//Notifies shared code of a cursor motion event
+		//The position is specified in content area relative screen coordinates
+		static void InputCursorPos(InternalWindow* window, double xPos, double yPos);
+		//Notifies shared code of a physical key event
+		static void InputKey(InternalWindow* window, Input::Key key, int32_t scancode, bool action);
+		//Notifies shared code of a Unicode codepoint input event
+		//The 'plain' parameter determines whether to emit a regular character event
+		static void InputChar(const InternalWindow* window, uint32_t codePoint);
+		//Notifies shared code of a mouse button click event
+		static void InputMouseClick(InternalWindow* window, Input::MouseButton button, bool pressed);
+		//Notifies shared code of a scroll event
+		static void InputScroll(const InternalWindow* window, double xOffset, double yOffset);
+		//Notified shared code of a cursor enter/leave event
+		static void InputCursorEnter(InternalWindow* window, bool entered);
+		//Notifies shared code that a window framebuffer has been resized
+		//The size is specified in pixels
+		static void InputFrameBufferSize(const InternalWindow* window, int32_t width, int32_t height);
+		//Notifies shared code that a window has been resized
+		//The size is specified in screen coordinates
+		static void InputWindowSize(const InternalWindow* window, int32_t width, int32_t height);
+		//Notifies shared code that a window has moved
+		//The position is specified in content area relative screen coordinates
+		static void InputWindowPos(const InternalWindow* window, int32_t x, int32_t y);
+		//Notifies shared code that the user wishes to close a window
+		static void InputWindowCloseRequest(InternalWindow* window);
+		//Notifies shared code of files or directories dropped on a window
+		static void InputDrop(const InternalWindow* window, const std::vector<std::string>& paths);
+		//Notifies shared code that a window has lost or received input focus
+		static void InputWindowFocus(InternalWindow* window, bool focused);
+		//Chooses the video mode most closely matching the desired one
+		static VideoMode* ChooseVideoMode(InternalMonitor* monitor, const VideoMode& desired);
+		//Notifies shared code of a monitor connection or disconnection
+		static void InputMonitor(Scope<InternalMonitor> monitor, bool connected, uint32_t placement);
+		//Notifies shared code of a monitor connection or disconnection
+		static void InputMonitorDisconnect(uint32_t monitorIndex, uint32_t placement);
 		//-------//
 		//Windows//
 		//-------//		
@@ -965,34 +1448,9 @@ namespace TRAP::INTERNAL
 		static void FreeLibraries();
 		//Reports the specified error, appending information about the last Win32 error
 		static void InputErrorWin32(Error error, std::string description);
-		//Notifies shared code of a mouse button click event
-		static void InputMouseClick(InternalWindow* window, Input::MouseButton button, bool pressed);
-		//Notifies shared code that a window has lost or received input focus
-		static void InputWindowFocus(InternalWindow* window, bool focused);
-		//Notifies shared code of a Unicode codepoint input event
-		//The 'plain' parameter determines whether to emit a regular character event
-		static void InputChar(const InternalWindow* window, uint32_t codePoint);
-		//Notifies shared code of a cursor motion event
-		//The position is specified in content area relative screen coordinates
-		static void InputCursorPos(InternalWindow* window, double xPos, double yPos);
-		//Notified shared code of a cursor enter/leave event
-		static void InputCursorEnter(InternalWindow* window, bool entered);
-		//Notifies shared code of a scroll event
-		static void InputScroll(const InternalWindow* window, double xOffset, double yOffset);
-		//Notifies shared code that a window framebuffer has been resized
-		//The size is specified in pixels
-		static void InputFrameBufferSize(const InternalWindow* window, int32_t width, int32_t height); 
-		//Notifies shared code that a window has been resized
-		//The size is specified in screen coordinates
-		static void InputWindowSize(const InternalWindow* window, int32_t width, int32_t height);
-		//Notifies shared code that a window has moved
-		//The position is specified in content area relative screen coordinates
-		static void InputWindowPos(const InternalWindow* window, int32_t x, int32_t y);
 		//Notifies shared code that a window content scale has changed
 		//The scale is specified as the ratio between the current and default DPI
 		static void InputWindowContentScale(const InternalWindow* window, float xScale, float yScale);
-		//Notifies shared code of files or directories dropped on a window
-		static void InputDrop(const InternalWindow* window, const std::vector<std::string>& paths);
 		//Translates a Windows key to the corresponding TRAP key
 		static Input::Key TranslateKey(WPARAM wParam, LPARAM lParam);
 		//Updates key names according to the current keyboard layout
@@ -1007,40 +1465,16 @@ namespace TRAP::INTERNAL
 		static BOOL CALLBACK MonitorCallback(HMONITOR handle, HDC dc, RECT* rect, LPARAM data);
 		//Create monitor from an adapter and (optionally) a display
 		static Scope<InternalMonitor> CreateMonitor(DISPLAY_DEVICEW* adapter, DISPLAY_DEVICEW* display);
-		//Notifies shared code of a monitor connection or disconnection
-		static void InputMonitor(Scope<InternalMonitor> monitor, bool connected, uint32_t placement);
-		//Notifies shared code of a monitor connection or disconnection
-		static void InputMonitorDisconnect(uint32_t monitorIndex, uint32_t placement);
 		//Poll for changes in the set of connected monitors
 		static void PollMonitorsWin32();
-		//Make the specified window and its video mode active on its monitor
-		static void AcquireMonitor(InternalWindow* window);
-		//Make the specified window active on its monitor
-		static void AcquireMonitorBorderless(InternalWindow* window);
-		//Remove the window and restore the original video mode
-		static void ReleaseMonitor(const InternalWindow* window);
 		static void FitToMonitor(const InternalWindow* window);
-		//Lexically compare video modes, used by qsort
-		static int32_t CompareVideoModes(const void* fp, const void* sp);
-		//Retrieves the available modes for the specified monitor
-		static bool RefreshVideoModes(InternalMonitor* monitor);
-		//Chooses the video mode most closely matching the desired one
-		static VideoMode* ChooseVideoMode(InternalMonitor* monitor, const VideoMode& desired);
 		//Change the current video mode
 		static void SetVideoModeWin32(InternalMonitor* monitor, const VideoMode& desired);
 		static void GetMonitorContentScaleWin32(HMONITOR handle, float& xScale, float& yScale);
-		//Splits a color depth into red, green and blue bit depths
-		static void SplitBPP(int32_t bpp, int32_t& red, int32_t& green, int32_t& blue);
 		//Returns the window style for the specified window
 		static DWORD GetWindowStyle(const InternalWindow* window);
 		//Returns the extended window style for the specified window
 		static DWORD GetWindowExStyle(const InternalWindow* window);
-		//Creates the TRAP window
-		static int32_t CreateNativeWindow(InternalWindow* window,
-			                              const WindowConfig& WNDConfig,
-			                              const FrameBufferConfig& FBConfig);
-		//Creates a dummy window for behind-the-scenes work
-		static bool CreateHelperWindow();
 		//Translate content area size to full window size according to styles and DPI
 		static void GetFullWindowSize(DWORD style, DWORD exStyle,
 			                          int32_t contentWidth, int32_t contentHeight,
@@ -1058,45 +1492,146 @@ namespace TRAP::INTERNAL
 		static void SwapIntervalWGL(int32_t interval);
 		static GLProcess GetProcAddressWGL(const char* procName);
 		static bool ExtensionSupportedWGL(const char* extension);		
-		//Searches an extension string for the specified extension
-		static bool StringInExtensionString(const char* string, const char* extensions);
 		//Return the value corresponding to the specified attribute
 		static int32_t FindPixelFormatAttribValue(const std::vector<int32_t>& attribs,
 			                                      const std::vector<int32_t>& values,
 			                                      int32_t attrib);
-		//Chooses the framebuffer config that best matches the desired one
-		static const FrameBufferConfig* ChooseFBConfig(const FrameBufferConfig& desired,
-			                                           const std::vector<FrameBufferConfig>& alternatives);
 		//Returns a list of available and usable framebuffer configs
 		static int32_t ChoosePixelFormat(const InternalWindow* window,
 			                             const ContextConfig& CTXConfig,
 			                             const FrameBufferConfig& FBConfig);		
-		static bool RefreshContextAttribs(InternalWindow* window,
-			                              const ContextConfig& CTXConfig);
 		//Returns whether the cursor is in the content area of the specified window
 		static bool CursorInContentArea(const InternalWindow* window);
-		//Updates the cursor image according to its cursor mode
-		static void UpdateCursorImage(const InternalWindow* window);
 		//Creates an RGBA icon or cursor
 		static HICON CreateIcon(const Scope<Image>& image, int32_t xHot, int32_t yHot, bool icon);
-		//Notifies shared code that the user wishes to close a window
-		static void InputWindowCloseRequest(InternalWindow* window);
-		//Notifies shared code of a physical key event
-		static void InputKey(InternalWindow* window, Input::Key key, int32_t scancode, bool action);
 		//Updates the cursor clip rect
 		static void UpdateClipRect(const InternalWindow* window);
-		//Enables WM_INPUT messages for the mouse for the specified window
-		static void EnableRawMouseMotion(const InternalWindow* window);
-		//Disables WM_INPUT messages for the mouse
-		static void DisableRawMouseMotion(const InternalWindow* window);
-		//Exit disabled cursor mode for the specified window
-		static void EnableCursor(InternalWindow* window);
-		//Apply disabled cursor mode to a focused window
-		static void DisableCursor(InternalWindow* window);
 		//Update native window styles to match attributes
 		static void UpdateWindowStyles(const InternalWindow* window);
-		static bool InitVulkan(uint32_t mode);
-		static std::string GetVulkanResultString(VkResult result);
+		//Creates a dummy window for behind-the-scenes work
+		static bool CreateHelperWindow();
+		//Creates the TRAP window
+		static int32_t CreateNativeWindow(InternalWindow* window,
+										  const WindowConfig& WNDConfig,
+										  const FrameBufferConfig& FBConfig);
+		//----------//
+		//Linux(X11)//
+		//----------//	
+#elif defined(TRAP_PLATFORM_LINUX)
+		//Calculates the refresh rate, in Hz, from the specified RandR mode info
+		static int32_t CalculateRefreshRate(const XRRModeInfo* mi);
+		static VideoMode VideoModeFromModeInfo(const XRRModeInfo* mi, const XRRCrtcInfo* ci);
+		//Sends an EWMH or ICCCM event to the window manager
+		static void SendEventToWM(const InternalWindow* window, Atom type, int32_t a, int32_t b, int32_t c, int32_t d, int32_t e);
+		//Returns whether it is a _NET_FRAME_EXTENTS event for the specified window
+		static int32_t IsFrameExtentsEvent(Display* display, XEvent* event, XPointer pointer);
+		//Wait for data to arrive using select
+		//This avoids blocking other threads via the per-display Xlib lock that also covers GLX functions
+		static bool WaitForEvent(double* timeout);
+		//Retrieve a single window property of the specified type
+		static uint32_t GetWindowPropertyX11(::Window window, Atom property, Atom type, uint8_t** value);
+		//Updates the normal hints according to the window settings
+		static void UpdateNormalHints(InternalWindow* window, int32_t width, int32_t height);
+		//Waits until a VisibilityNotify event arrives for the specified window or the timeout period elapses
+		static bool WaitForVisibilityNotify(InternalWindow* window);
+		//Updates the full screen status of the window
+		static void UpdateWindowMode(InternalWindow* window);
+		//Returns the mode info for a RandR mode XID
+		static const XRRModeInfo* GetModeInfo(const XRRScreenResources* sr, RRMode id);
+		//Retrieve system content scale via folklore heuristics
+		static void GetSystemContentScale(float& xScale, float& yScale);
+		//Look for and initialize supported X11 extensions
+		static bool InitExtensions();
+		//Check whether the running window manager is EMWH-compliant
+		static void DetectEWMH();
+		//Sets the X error handler callback
+		static void GrabErrorHandlerX11();
+		//X error handler
+		static int32_t ErrorHandler(Display* display, XErrorEvent* event);
+		//Clears the X error handler callback
+		static void ReleaseErrorHandlerX11();
+		//Check whether the specified atom is supported
+		static Atom GetSupportedAtom(Atom* supportedAtoms, uint32_t atomCount, const char* atomName);
+		//Create a blank cursor for hidden and disabled cursor modes
+		static Cursor CreateHiddenCursor();
+		//Check whether the IM has a usable style
+		static bool HasUsableInputMethodStyle();
+		//Poll for changes in the set of connected monitors
+		static void PollMonitorsX11();
+		//Returns whether the event is a selection event
+		static int32_t IsSelectionEvent(Display* display, XEvent* event, XPointer pointer);
+		//Set the specified property to the selection converted to the requested target
+		static Atom WriteTargetToProperty(const XSelectionRequestEvent* request);
+		static void HandleSelectionRequest(XEvent& event);
+		static void HandleSelectionClear(XEvent& event);
+		//Push contents of our selection to clipboard manager
+		static void PushSelectionToManagerX11();
+		//Shutdown GLX
+		static void ShutdownGLX();
+		//Initialize GLX
+		static bool InitGLX();
+		static bool ExtensionSupportedGLX(const char* extension);
+		//Returns the Visual and depth of the chosen GLXFBConfig
+		static bool ChooseVisualGLX(const WindowConfig& WNDConfig,
+		                            const ContextConfig& CTXConfig,
+                                    const FrameBufferConfig& FBConfig,
+                                    Visual** visual, 
+							        int32_t* depth);
+		static GLProcess GetProcAddressGLX(const char* procName);
+		//Return the GLXFBConfig most closely matching the specified hints
+		static bool ChooseGLXFBConfig(const FrameBufferConfig& desired, GLXFBConfig* result);
+		//Returns the specified attribute of the specified GLXFBConfig
+		static int32_t GetGLXFBConfigAttrib(GLXFBConfig fbconfig, int32_t attrib);
+		static bool IsVisualTransparentX11(Visual* visual);
+		//Create the X11 window (and its colormap)
+		static bool CreateNativeWindow(InternalWindow* window, const WindowConfig& WNDConfig, Visual* visual, int32_t depth);
+		//Creates a native cursor object from the specified image and hotspot
+		static Cursor CreateCursorX11(const Scope<TRAP::Image>& image, int32_t xHotSpot, int32_t yHotSpot);
+		//Returns whether the window is iconified
+		static int32_t GetWindowState(const InternalWindow* window);
+		//Convert XKB KeySym to Unicode
+		static int64_t KeySymToUnicode(uint32_t keySym);
+		struct CodePair 
+		{
+			uint16_t keySym;
+			uint16_t UCS;
+		};
+		static const std::array<CodePair, 828> KeySymTab;
+		//Encode a Unicode code point to a UTF-8 stream
+		static std::size_t EncodeUTF8(char* s, uint32_t ch);
+		static std::string GetSelectionString(Atom selection);
+		//Returns whether it is a property event for the specified selection transfer
+		static int32_t IsSelPropNewValueNotify(Display* display, XEvent* event, XPointer pointer);
+		//Convert the specified Latin-1 string to UTF-8
+		static std::string ConvertLatin1ToUTF8(const char* source);
+		//Create the OpenGL context
+		static bool CreateContextGLX(InternalWindow* window, const ContextConfig& CTXConfig, const FrameBufferConfig& FBConfig);
+		//Reports the specified error, appending information about the last X error
+		static void InputErrorX11(Error error, const char* message);
+		static void MakeContextCurrentGLX(InternalWindow* window);
+		static void SwapBuffersGLX(const InternalWindow* window);
+		static void SwapIntervalGLX(int32_t interval);
+		static void DestroyContextGLX(InternalWindow* window);
+		//Process the specified X event
+		static void ProcessEvent(XEvent& event);
+		//Translates an X11 key code to a TRAP key token
+		static Input::Key TranslateKey(int32_t scanCode);
+#ifdef X_HAVE_UTF8_STRING
+		//Decode a Unicode code point from a UTF-8 stream
+		static uint32_t DecodeUTF8(const char** s);
+#endif
+		//Splits and translates a text/uri-list into separate file paths
+		static std::vector<std::string> ParseUriList(char* text, int32_t& count);
+		//Set the current video mode for the specified monitor
+		static void SetVideoModeX11(InternalMonitor* monitor, const VideoMode& desired);
+		//Restore the saved(original) video mode for the specified monitor
+		static void RestoreVideoModeX11(InternalMonitor* monitor);
+		//Allocates and returns a monitor object with the specified name and dimensions
+		static Scope<InternalMonitor> CreateMonitor(std::string name);
+		//Creates a dummy window for behind-the-scenes work
+		static ::Window CreateHelperWindow();
+		//Translate an X11 key code to a TRAP key code.
+		static Input::Key TranslateKeyCode(int32_t scanCode);
 #endif
 	};
 }

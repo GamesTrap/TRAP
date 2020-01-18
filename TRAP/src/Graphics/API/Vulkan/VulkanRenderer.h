@@ -93,13 +93,13 @@ namespace TRAP::Graphics::API
 		std::vector<VkQueueFamilyProperties> GetAvailableQueueFamilies() const;
 		static std::vector<VkQueueFamilyProperties> GetAvailableQueueFamilies(VkPhysicalDevice physicalDevice);
 
-		void AddInstanceLayer(const std::vector<VkLayerProperties>& availableInstanceLayers, const char* layer);
-		void AddInstanceExtension(const std::vector<VkExtensionProperties>& availableInstanceExtensions, const char* extension);
-		void AddDeviceLayer(const std::vector<VkLayerProperties>& availableDeviceLayers, const char* layer);
-		void AddDeviceExtension(const std::vector<VkExtensionProperties>& availableDeviceExtensions, const char* extension);
+		void AddInstanceLayer(const std::vector<VkLayerProperties>& availableInstanceLayers, const std::string& layer);
+		void AddInstanceExtension(const std::vector<VkExtensionProperties>& availableInstanceExtensions, const std::string& extension);
+		void AddDeviceLayer(const std::vector<VkLayerProperties>& availableDeviceLayers, const std::string& layer);
+		void AddDeviceExtension(const std::vector<VkExtensionProperties>& availableDeviceExtensions, const std::string& extension);
 
-		std::vector<const char*> m_instanceExtensions;
-		std::vector<const char*> m_instanceLayers;
+		std::vector<std::string> m_instanceExtensions;
+		std::vector<std::string> m_instanceLayers;
 		VkInstance m_instance;
 
 		VkPhysicalDevice m_physicalDevice;
@@ -112,8 +112,8 @@ namespace TRAP::Graphics::API
 		std::optional<uint32_t> m_graphicsFamilyIndex;
 		std::optional<uint32_t> m_presentFamilyIndex;
 		
-		std::vector<const char*> m_deviceExtensions;
-		std::vector<const char*> m_deviceLayers; //Only for compatibility(Deprecated See Vulkan Specification)
+		std::vector<std::string> m_deviceExtensions;
+		std::vector<std::string> m_deviceLayers; //Only for compatibility(Deprecated See Vulkan Specification)
 		
 		bool m_debugCallbackSupported;
 		VkDebugUtilsMessengerEXT m_debugReport;

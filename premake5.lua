@@ -78,7 +78,8 @@ project "TRAP"
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.cpp",
 		"%{prj.name}/src/Input/WindowsInput.cpp",
 		"%{prj.name}/src/Input/LinuxInput.cpp",
-		"%{prj.name}/src/Window/WindowingAPIWin32.cpp"
+		"%{prj.name}/src/Window/WindowingAPIWin32.cpp",
+		"%{prj.name}/src/Window/WindowingAPILinuxX11.cpp"
 	}
 
 	includedirs
@@ -134,6 +135,7 @@ project "TRAP"
 			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinux.cpp",
 			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.h",
 			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.cpp",
+			"%{prj.name}/src/Window/WindowingAPILinuxX11.cpp"
 		}
 
 		links
@@ -146,8 +148,7 @@ project "TRAP"
 			"vulkan",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL",
-			"Imm32"
+			"SPIRV-Cross-HLSL"
 		}
 
 	filter "configurations:Debug"
@@ -217,8 +218,7 @@ project "Sandbox"
 			"OSDependent",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
-			"SPIRV-Cross-HLSL",
-			"Imm32"
+			"SPIRV-Cross-HLSL"
 		}
 
 	filter "configurations:Debug"

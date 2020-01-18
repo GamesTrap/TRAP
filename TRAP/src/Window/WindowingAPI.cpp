@@ -2,6 +2,7 @@
 
 #include "WindowingAPI.h"
 #include "Window.h"
+#include "Utils/String.h"
 
 TRAP::INTERNAL::WindowingAPI::Data TRAP::INTERNAL::WindowingAPI::s_Data{};
 
@@ -331,6 +332,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 	window->Decorated = WNDConfig.Decorated;
 	window->Floating = WNDConfig.Floating;
 	window->FocusOnShow = WNDConfig.FocusOnShow;
+	window->MousePassthrough = WNDConfig.MousePassthrough;
 	window->cursorMode = CursorMode::Normal;
 	window->BorderlessFullscreen = false;
 
@@ -813,6 +815,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowAttrib(InternalWindow* window, const
 			window->Decorated = value;
 			if (!window->Monitor)
 				PlatformSetWindowDecorated(window, value);
+			break;
 		}
 
 		case Hint::Floating:
@@ -823,6 +826,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowAttrib(InternalWindow* window, const
 			window->Floating = value;
 			if (!window->Monitor)
 				PlatformSetWindowFloating(window, value);
+			break;
 		}
 
 		case Hint::MousePassthrough:
@@ -1435,7 +1439,7 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorWorkArea(const InternalMonitor* mon
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Makes the specified window visible.
-void TRAP::INTERNAL::WindowingAPI::ShowWindow(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::ShowWindow(InternalWindow* window)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
@@ -1506,7 +1510,7 @@ void TRAP::INTERNAL::WindowingAPI::HideWindow(const InternalWindow* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::RestoreWindow(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::RestoreWindow(InternalWindow* window)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
@@ -1721,4 +1725,750 @@ VkResult TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(VkInstance instance,
 	}
 
 	return PlatformCreateWindowSurface(instance, window, allocator, surface);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Searches an extension string for the specified extension
+bool TRAP::INTERNAL::WindowingAPI::StringInExtensionString(const char* string, const char* extensions)
+{
+	const char* start = extensions;
+
+	for (;;)
+	{
+		const char* where = strstr(start, string);
+		if (!where)
+			return false;
+
+		const char* terminator = where + strlen(string);
+		if (where == start || *(where - 1) == ' ')
+		{
+			if (*terminator == ' ' || *terminator == '\0')
+				break;
+		}
+
+		start = terminator;
+	}
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Chooses the framebuffer config that best matches the desired one
+const TRAP::INTERNAL::WindowingAPI::FrameBufferConfig* TRAP::INTERNAL::WindowingAPI::ChooseFBConfig(const FrameBufferConfig& desired,
+	                                                                                                const std::vector<FrameBufferConfig>& alternatives)
+{
+	uint32_t missing, leastMissing = UINT_MAX;
+	uint32_t colorDiff, leastColorDiff = UINT_MAX;
+	uint32_t extraDiff, leastExtraDiff = UINT_MAX;
+	const FrameBufferConfig* closest = nullptr;
+
+	for (uint32_t i = 0; i < alternatives.size(); i++)
+	{
+		const FrameBufferConfig* current = &alternatives[i];
+
+		if (desired.Stereo != current->Stereo)
+			//Stereo is a hard constraint
+			continue;
+
+		if (desired.DoubleBuffer != current->DoubleBuffer)
+			//Double buffering is a hard constraint
+			continue;
+
+			//Count number of missing buffers
+		{
+			missing = 0;
+
+			if (desired.AlphaBits > 0 && current->AlphaBits == 0)
+				missing++;
+
+			if (desired.DepthBits > 0 && current->DepthBits == 0)
+				missing++;
+
+			if (desired.StencilBits > 0 && current->StencilBits == 0)
+				missing++;
+
+			if (desired.AuxBuffers > 0 && current->AuxBuffers < desired.AuxBuffers)
+				missing += desired.AuxBuffers - current->AuxBuffers;
+			
+			if (desired.Samples > 0 && current->Samples == 0)
+			{
+				//Technically, several multisampling buffers could be
+				//involved, but that's a lower level implementation detail and
+				//not important to us here, so we count them as one
+				missing++;
+			}
+
+			if (desired.Transparent != current->Transparent)
+				missing++;
+		}
+
+		//These polynomials make many small channel size differences matter
+		//less than one large channel size difference
+
+		//Calculate color channel size difference value
+		{
+			colorDiff = 0;
+
+			if (desired.RedBits != -1)
+			{
+				colorDiff += (desired.RedBits - current->RedBits) *
+					         (desired.RedBits - current->RedBits);
+			}
+
+			if (desired.GreenBits != -1)
+			{
+				colorDiff += (desired.GreenBits - current->GreenBits) *
+					         (desired.GreenBits - current->GreenBits);
+			}
+
+			if (desired.BlueBits != -1)
+			{
+				colorDiff += (desired.BlueBits - current->BlueBits) *
+					         (desired.BlueBits - current->BlueBits);
+			}
+		}
+
+		//Calculate non-color channel size difference value
+		{
+			extraDiff = 0;
+
+			if (desired.AlphaBits != -1)
+			{
+				extraDiff += (desired.AlphaBits - current->AlphaBits) *
+					         (desired.AlphaBits - current->AlphaBits);
+			}
+
+			if (desired.DepthBits != -1)
+			{
+				extraDiff += (desired.DepthBits - current->DepthBits) *
+					         (desired.DepthBits - current->DepthBits);
+			}
+
+			if (desired.StencilBits != -1)
+			{
+				extraDiff += (desired.StencilBits - current->StencilBits) *
+					         (desired.StencilBits - current->StencilBits);
+			}
+
+			if (desired.AccumRedBits != -1)
+			{
+				extraDiff += (desired.AccumRedBits - current->AccumRedBits) *
+					         (desired.AccumRedBits - current->AccumRedBits);
+			}
+
+			if (desired.AccumGreenBits != -1)
+			{
+				extraDiff += (desired.AccumGreenBits - current->AccumGreenBits) *
+					         (desired.AccumGreenBits - current->AccumGreenBits);
+			}
+
+			if (desired.AccumBlueBits != -1)
+			{
+				extraDiff += (desired.AccumBlueBits - current->AccumBlueBits) *
+					         (desired.AccumBlueBits - current->AccumBlueBits);
+			}
+
+			if (desired.AccumAlphaBits != -1)
+			{
+				extraDiff += (desired.AccumAlphaBits - current->AccumAlphaBits) *
+					         (desired.AccumAlphaBits - current->AccumAlphaBits);
+			}
+
+			if (desired.Samples != -1)
+			{
+				extraDiff += (desired.Samples - current->Samples) *
+					         (desired.Samples - current->Samples);
+			}
+
+			if (desired.SRGB && !current->SRGB)
+				extraDiff++;
+		}
+
+		//Figure out if the current one is better than the best one found so far
+		//Least number of missing buffers is the most important heuristic,
+		//then color buffer size match and lastly size match for other buffers
+
+		if (missing < leastMissing)
+			closest = current;
+		else if (missing == leastMissing)
+		{
+			if ((colorDiff < leastColorDiff) ||
+				(colorDiff == leastColorDiff && extraDiff < leastExtraDiff))
+			{
+				closest = current;
+			}
+		}
+
+		if (current == closest)
+		{
+			leastMissing = missing;
+			leastColorDiff = colorDiff;
+			leastExtraDiff = extraDiff;
+		}
+	}
+
+	return closest;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::INTERNAL::WindowingAPI::GetVulkanResultString(const VkResult result)
+{
+	switch (result)
+	{
+	case VK_SUCCESS:
+		return "Success";
+	case VK_NOT_READY:
+		return "A fence or query has not yet completed";
+	case VK_TIMEOUT:
+		return "A wait operation has not completed in the specified time";
+	case VK_EVENT_SET:
+		return "An event is signaled";
+	case VK_EVENT_RESET:
+		return "An event is unsignaled";
+	case VK_INCOMPLETE:
+		return "A return array was too small for the result";
+	case VK_ERROR_OUT_OF_HOST_MEMORY:
+		return "A host memory allocation has failed";
+	case VK_ERROR_OUT_OF_DEVICE_MEMORY:
+		return "A device memory allocation has failed";
+	case VK_ERROR_INITIALIZATION_FAILED:
+		return "Initialization of an object could not be completed for implementation-specific reasons";
+	case VK_ERROR_DEVICE_LOST:
+		return "The logical or physical device has been lost";
+	case VK_ERROR_MEMORY_MAP_FAILED:
+		return "Mapping of a memory object has failed";
+	case VK_ERROR_LAYER_NOT_PRESENT:
+		return "A requested layer is not present or could not be loaded";
+	case VK_ERROR_EXTENSION_NOT_PRESENT:
+		return "A requested extension is not supported";
+	case VK_ERROR_FEATURE_NOT_PRESENT:
+		return "A requested feature is not supported";
+	case VK_ERROR_INCOMPATIBLE_DRIVER:
+		return "The requested version of Vulkan is not supported by the driver or is otherwise incompatible";
+	case VK_ERROR_TOO_MANY_OBJECTS:
+		return "Too many objects of the type have already been created";
+	case VK_ERROR_FORMAT_NOT_SUPPORTED:
+		return "A requested format is not supported on this device";
+	case VK_ERROR_SURFACE_LOST_KHR:
+		return "A surface is no longer available";
+	case VK_SUBOPTIMAL_KHR:
+		return "A swapchain no longer matches the surface properties exactly, but can still be used";
+	case VK_ERROR_OUT_OF_DATE_KHR:
+		return "A surface has changed in such a way that it is no longer compatible with the swapchain";
+	case VK_ERROR_INCOMPATIBLE_DISPLAY_KHR:
+		return "The display used by a swapchain does not use the same presentable image layout";
+	case VK_ERROR_NATIVE_WINDOW_IN_USE_KHR:
+		return "The requested window is already connected to a VkSurfaceKHR, or to some other non-Vulkan API";
+	case VK_ERROR_VALIDATION_FAILED_EXT:
+		return "A validation layer found an error";
+	default:
+		return "UNKNOWN VULKAN ERROR";
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code of a cursor motion event
+//The position is specified in content area relative screen coordinates
+void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow* window, const double xPos, const double yPos)
+{
+	if (window->VirtualCursorPosX == xPos && window->VirtualCursorPosY == yPos)
+		return;
+
+	window->VirtualCursorPosX = xPos;
+	window->VirtualCursorPosY = yPos;
+
+	if (window->Callbacks.CursorPos)
+		window->Callbacks.CursorPos(window, xPos, yPos);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code of a physical key event
+void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* window, Input::Key key, const int32_t scancode, const bool pressed)
+{
+	if (!pressed && window->Keys[static_cast<uint32_t>(key)] == false)
+		return;
+
+	window->Keys[static_cast<uint32_t>(key)] = pressed;
+
+	if (window->Callbacks.Key)
+		window->Callbacks.Key(window, key, pressed);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code of a Unicode codepoint input event
+//The 'plain' parameter determines whether to emit a regular character event
+void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWindow* window, const uint32_t codePoint)
+{
+	if (codePoint < 32 || (codePoint > 126 && codePoint < 160))
+		return;
+
+	if (window->Callbacks.Character)
+		window->Callbacks.Character(window, codePoint);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code of a mouse button click event
+void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow* window, Input::MouseButton button, const bool pressed)
+{
+	window->MouseButtons[static_cast<uint32_t>(button)] = pressed;
+
+	if (window->Callbacks.MouseButton)
+		window->Callbacks.MouseButton(window, button, pressed);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code of a scroll event
+void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow* window, const double xOffset, const double yOffset)
+{
+	if (window->Callbacks.Scroll)
+		window->Callbacks.Scroll(window, xOffset, yOffset);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code of a cursor enter/leave event
+void TRAP::INTERNAL::WindowingAPI::InputCursorEnter(InternalWindow* window, const bool entered)
+{
+	if (window->Callbacks.CursorEnter)
+		window->Callbacks.CursorEnter(window, entered);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code that a window framebuffer has been resized
+//The size is specified in pixels
+void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow* window, const int32_t width, const int32_t height)
+{
+	if (window->Callbacks.FBSize)
+		window->Callbacks.FBSize(window, width, height);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code that a window has been resized
+//The size is specified in screen coordinates
+void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow* window, const int32_t width, const int32_t height)
+{
+	if (window->Callbacks.Size)
+		window->Callbacks.Size(window, width, height);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code that a window has moved
+//The position is specified in content area relative screen coordinates
+void TRAP::INTERNAL::WindowingAPI::InputWindowPos(const InternalWindow* window, const int32_t x, const int32_t y)
+{
+	if (window->Callbacks.Pos)
+		window->Callbacks.Pos(window, x, y);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code that the user wishes to close a window
+void TRAP::INTERNAL::WindowingAPI::InputWindowCloseRequest(InternalWindow* window)
+{
+	window->ShouldClose = true;
+
+	if (window->Callbacks.Close)
+		window->Callbacks.Close(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code of files or directories dropped on a window
+void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWindow* window, const std::vector<std::string>& paths)
+{
+	if (window->Callbacks.Drop)
+		window->Callbacks.Drop(window, paths);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code that a window has lost or received input focus
+void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow* window, const bool focused)
+{
+	if (window->Callbacks.Focus)
+		window->Callbacks.Focus(window, focused);
+
+	if (!focused)
+	{
+		for (uint32_t key = 0; key <= static_cast<uint32_t>(Input::Key::Menu); key++)
+			if (window->Keys[key] == true)
+			{
+				const int32_t scanCode = PlatformGetKeyScanCode(static_cast<Input::Key>(key));
+				InputKey(window, static_cast<Input::Key>(key), scanCode, false);
+			}
+
+		for (uint32_t button = 0; button <= static_cast<uint32_t>(Input::MouseButton::Eight); button++)
+			if (window->MouseButtons[button])
+				InputMouseClick(window, static_cast<Input::MouseButton>(button), false);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Retrieves the available modes for the specified monitor
+bool TRAP::INTERNAL::WindowingAPI::RefreshVideoModes(InternalMonitor* monitor)
+{
+	if (!monitor->Modes.empty())
+		return true;
+
+	std::vector<VideoMode> modes = PlatformGetVideoModes(monitor);
+	if (modes.empty())
+		return false;
+
+	std::qsort(modes.data(), modes.size(), sizeof(VideoMode), CompareVideoModes);
+
+	monitor->Modes = {};
+	monitor->Modes = modes;
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Retrieves the attributes of the current context
+bool TRAP::INTERNAL::WindowingAPI::RefreshContextAttribs(InternalWindow* window,
+	                                                     const ContextConfig& CTXConfig)
+{
+	window->context.Client = ContextAPI::OpenGL;
+
+	const auto previousPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
+	MakeContextCurrent(window);
+
+	window->context.GetIntegerv = reinterpret_cast<PFNGLGETINTEGERVPROC>(window->context.GetProcAddress("glGetIntegerv"));
+	window->context.GetString = reinterpret_cast<PFNGLGETSTRINGPROC>(window->context.GetProcAddress("glGetString"));
+	if (!window->context.GetIntegerv || !window->context.GetString)
+	{
+		InputError(Error::Platform_Error, "[OpenGL] Entry point retrieval is broken");
+		MakeContextCurrent(previousPtr);
+		return false;
+	}
+
+	const char* version = reinterpret_cast<const char*>(window->context.GetString(GL_VERSION));
+	if (!version)
+	{
+		if (CTXConfig.Client == ContextAPI::OpenGL)
+		{
+			InputError(Error::Platform_Error, "[OpenGL] version string retrieval is broken");
+		}
+
+		MakeContextCurrent(previousPtr);
+		return false;
+	}
+
+	std::vector<std::string> splittedVersion = Utils::String::SplitString(version, '.');
+
+	if (splittedVersion.empty() || splittedVersion.size() < 2)
+	{
+		if (window->context.Client == ContextAPI::OpenGL)
+			InputError(Error::Platform_Error, "[OpenGL] No version found in OpenGL version string");
+
+		MakeContextCurrent(previousPtr);
+		return false;
+	}
+
+	window->context.Major = std::stoi(splittedVersion[0]);
+	window->context.Minor = std::stoi(splittedVersion[1]);
+
+	if (window->context.Major < 4 ||
+		(window->context.Major == 4 &&
+			window->context.Minor < 6))
+	{
+		//The desired OpenGL version is greater than the actual version
+		//This only happens if the machine lacks {GLX|WGL}_ARB_create_context
+		//and the user has requested an OpenGL version greater than 1.0
+
+		//For API consistency, we emulate the behavior of the
+		//{GLX|WGL}_ARB_create_context extension and fail here
+
+		if (window->context.Client == ContextAPI::OpenGL)
+			InputError(Error::Version_Unavailable, "[OpenGl] Requested OpenGL version 4.6, got version " + std::to_string(window->context.Major) + "." + std::to_string(window->context.Minor));
+
+		MakeContextCurrent(previousPtr);
+		return false;
+	}
+
+	//OpenGL 3.0+ uses a different function for extension string retrieval
+	//We cache it here instead of in ExtensionSupported mostly to alert
+	//users as early as possible that their build may be broken
+
+	window->context.GetStringi = reinterpret_cast<PFNGLGETSTRINGIPROC>(window->context.GetProcAddress("glGetStringi"));
+	if (!window->context.GetStringi)
+	{
+		InputError(Error::Platform_Error, "[OpenGL] Entry point retrieval is broken");
+		MakeContextCurrent(previousPtr);
+		return false;
+	}
+
+	if (window->context.Client == ContextAPI::OpenGL)
+	{
+		GLint flags;
+		window->context.GetIntegerv(GL_CONTEXT_FLAGS, &flags);
+
+		//Read back OpenGL context profile (OpenGL 3.2 and above)
+		GLint mask;
+		window->context.GetIntegerv(GL_CONTEXT_PROFILE_MASK, &mask);
+	}
+
+	//Clearing the front buffer to black to avoid garbage pixels left over from
+	//previous uses of our bit of VRAM
+	{
+		const PFNGLCLEARPROC glClearWin = reinterpret_cast<PFNGLCLEARPROC>(window->context.GetProcAddress("glClear"));
+		glClearWin(GL_COLOR_BUFFER_BIT);
+		window->context.SwapBuffers(window);
+	}
+
+	MakeContextCurrent(previousPtr);
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const uint32_t mode)
+{
+	uint32_t count;
+
+	if (s_Data.VK.Available)
+		return true;
+
+	VkResult err = vkEnumerateInstanceExtensionProperties(nullptr, &count, nullptr);
+	if (err)
+	{
+		//NOTE: This happens on systems with a loader but without any Vulkan ICD
+		if (mode == 2)
+			InputError(Error::API_Unavailable, "[Vulkan] Failed to query instance extension count: " + GetVulkanResultString(err));
+
+		return false;
+	}
+
+	std::vector<VkExtensionProperties> ep(count);
+
+	err = vkEnumerateInstanceExtensionProperties(nullptr, &count, ep.data());
+	if (err)
+	{
+		InputError(Error::API_Unavailable, "[Vulkan] Failed to query instance extensions: " + GetVulkanResultString(err));
+		return false;
+	}
+
+	for (uint32_t i = 0; i < count; i++)
+	{
+		const std::string_view ext(ep[i].extensionName);
+		
+		if (ext == "VK_KHR_surface")
+			s_Data.VK.KHR_Surface = true;
+#if defined(TRAP_PLATFORM_WINDOWS)
+		else if (ext == "VK_KHR_win32_surface")
+			s_Data.VK.KHR_Win32_Surface = true;
+#elif defined(TRAP_PLATFORM_LINUX)
+		else if (ext == "VK_KHR_xlib_surface")
+			s_Data.VK.KHR_XLib_Surface = true;
+		else if (ext == "VK_KHR_xcb_surface")
+			s_Data.VK.KHR_XCB_Surface = true;
+#elif defined(TRAP_PLATFORM_LINUX)
+		else if (ext == "VK_KHR_wayland_surface")
+			s_Data.VK.KHR_Wayland_Surface = true;
+#endif
+	}
+
+	s_Data.VK.Available = true;
+
+	PlatformGetRequiredInstanceExtensions(s_Data.VK.Extensions);
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Lexically compare video modes, used by qsort
+int32_t TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const void* fp, const void* sp)
+{
+	const VideoMode* fm = static_cast<const VideoMode*>(fp);
+	const VideoMode* sm = static_cast<const VideoMode*>(sp);
+	const int32_t fbpp = fm->RedBits + fm->GreenBits + fm->BlueBits;
+	const int32_t sbpp = sm->RedBits + sm->GreenBits + sm->BlueBits;
+	const int32_t farea = fm->Width * fm->Height;
+	const int32_t sarea = sm->Width * sm->Height;
+
+	//First sort on color bits per pixel
+	if (fbpp != sbpp)
+		return fbpp - sbpp;
+
+	//Then sort on screen area
+	if (farea != sarea)
+		return farea - sarea;
+
+	//Then sort on width
+	if (fm->Width != sm->Width)
+		return fm->Width - sm->Width;
+
+	//Lastly sort on refresh rate
+	return fm->RefreshRate - sm->RefreshRate;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Splits a color depth into red, green and blue bit depths
+void TRAP::INTERNAL::WindowingAPI::SplitBPP(int32_t bpp, int32_t& red, int32_t& green, int32_t& blue)
+{
+	//We assume that by 32 the user really meant 24
+	if (bpp == 32)
+		bpp = 24;
+
+	//Convert "bits per pixel" to red, green & blue sizes
+
+	red = green = blue = bpp / 3;
+	const int32_t delta = bpp - (red * 3);
+	if (delta >= 1)
+		green = green + 1;
+
+	if (delta == 2)
+		red = red + 1;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Chooses the video mode most closely matching the desired one
+TRAP::INTERNAL::WindowingAPI::VideoMode* TRAP::INTERNAL::WindowingAPI::ChooseVideoMode(InternalMonitor* monitor, const VideoMode& desired)
+{
+	uint32_t leastSizeDiff = UINT_MAX;
+	uint32_t rateDiff, leastRateDiff = UINT_MAX;
+	uint32_t leastColorDiff = UINT_MAX;
+	VideoMode* closest = nullptr;
+
+	if (!RefreshVideoModes(monitor))
+		return nullptr;
+
+	for (uint32_t i = 0; i < monitor->Modes.size(); i++)
+	{
+		VideoMode* current = &monitor->Modes[i];
+
+		uint32_t colorDiff = 0;
+
+		if (desired.RedBits != -1)
+			colorDiff += abs(current->RedBits - desired.RedBits);
+		if (desired.GreenBits != -1)
+			colorDiff += abs(current->GreenBits - desired.GreenBits);
+		if (desired.BlueBits != -1)
+			colorDiff += abs(current->BlueBits - desired.BlueBits);
+
+		const uint32_t sizeDiff = abs((current->Width - desired.Width) *
+			(current->Width - desired.Width) +
+			(current->Height - desired.Height) *
+			(current->Height - desired.Height));
+
+		if (desired.RefreshRate != -1)
+			rateDiff = abs(current->RefreshRate - desired.RefreshRate);
+		else
+			rateDiff = UINT_MAX - current->RefreshRate;
+
+		if ((colorDiff < leastColorDiff) ||
+			(colorDiff == leastColorDiff && sizeDiff < leastSizeDiff) ||
+			(colorDiff == leastColorDiff && sizeDiff == leastSizeDiff && rateDiff < leastRateDiff))
+		{
+			closest = current;
+			leastSizeDiff = sizeDiff;
+			leastRateDiff = rateDiff;
+			leastColorDiff = colorDiff;
+		}
+	}
+
+	return closest;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code of a monitor connection or disconnection
+void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, const bool connected, const uint32_t placement)
+{
+	if (connected)
+	{
+		if (placement == 0)
+			s_Data.Monitors.insert(s_Data.Monitors.begin(), std::move(monitor));
+		else
+			s_Data.Monitors.push_back(std::move(monitor));
+	}
+	else
+	{
+		for (InternalWindow* window = s_Data.WindowListHead; window; window = window->Next)
+		{
+			if (window->Monitor == monitor.get())
+			{
+				int32_t width = 0, height = 0, xOff = 0, yOff = 0, unused = 0;
+				PlatformGetWindowSize(window, width, height);
+				PlatformSetWindowMonitor(window, nullptr, 0, 0, width, height, 0);
+				PlatformGetWindowFrameSize(window, xOff, yOff, unused, unused);
+				PlatformSetWindowPos(window, xOff, yOff);
+			}
+		}
+
+		for (uint32_t i = 0; i < s_Data.Monitors.size(); i++)
+		{
+			if (s_Data.Monitors[i] == monitor)
+			{
+				s_Data.Monitors.erase(s_Data.Monitors.begin() + i);
+				break;
+			}
+		}
+	}
+
+	if (s_Data.Callbacks.Monitor)
+		s_Data.Callbacks.Monitor(monitor.get(), connected);
+
+	if (!connected)
+		if (monitor)
+			monitor.reset();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code of a monitor disconnection
+void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitorIndex, const uint32_t placement)
+{
+	Scope<InternalMonitor>& monitor = s_Data.Monitors[monitorIndex];
+	
+	for (InternalWindow* window = s_Data.WindowListHead; window; window = window->Next)
+	{
+		if (window->Monitor == monitor.get())
+		{
+			int32_t width = 0, height = 0, xOff = 0, yOff = 0, unused = 0;
+			PlatformGetWindowSize(window, width, height);
+			PlatformSetWindowMonitor(window, nullptr, 0, 0, width, height, 0);
+			PlatformGetWindowFrameSize(window, xOff, yOff, unused, unused);
+			PlatformSetWindowPos(window, xOff, yOff);
+		}
+	}
+
+	for (uint32_t i = 0; i < s_Data.Monitors.size(); i++)
+	{
+		if (s_Data.Monitors[i] == monitor)
+		{
+			s_Data.Monitors.erase(s_Data.Monitors.begin() + i);
+			break;
+		}
+	}
+
+	if (s_Data.Callbacks.Monitor)
+		s_Data.Callbacks.Monitor(monitor.get(), false);
+
+	if (monitor)
+		monitor.reset();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::HideWindowFromTaskbar(InternalWindow* window)
+{
+	TRAP_WINDOW_ASSERT(window, " Window is nullptr!");
+	
+	PlatformHideWindowFromTaskbar(window);
 }

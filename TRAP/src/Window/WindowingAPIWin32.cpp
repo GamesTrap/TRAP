@@ -235,142 +235,6 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorWin32(const Error error, const std:
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Create key code translation tables
-void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
-{
-	std::fill(s_Data.KeyCodes.begin(), s_Data.KeyCodes.end(), Input::Key::Unknown);
-	std::fill(s_Data.ScanCodes.begin(), s_Data.ScanCodes.end(), -1);
-
-	s_Data.KeyCodes[0x00B] = Input::Key::Zero;
-	s_Data.KeyCodes[0x002] = Input::Key::One;
-	s_Data.KeyCodes[0x003] = Input::Key::Two;
-	s_Data.KeyCodes[0x004] = Input::Key::Three;
-	s_Data.KeyCodes[0x005] = Input::Key::Four;
-	s_Data.KeyCodes[0x006] = Input::Key::Five;
-	s_Data.KeyCodes[0x007] = Input::Key::Six;
-	s_Data.KeyCodes[0x008] = Input::Key::Seven;
-	s_Data.KeyCodes[0x009] = Input::Key::Eight;
-	s_Data.KeyCodes[0x00A] = Input::Key::Nine;
-	s_Data.KeyCodes[0x01E] = Input::Key::A;
-	s_Data.KeyCodes[0x030] = Input::Key::B;
-	s_Data.KeyCodes[0x02E] = Input::Key::C;
-	s_Data.KeyCodes[0x020] = Input::Key::D;
-	s_Data.KeyCodes[0x012] = Input::Key::E;
-	s_Data.KeyCodes[0x021] = Input::Key::F;
-	s_Data.KeyCodes[0x022] = Input::Key::G;
-	s_Data.KeyCodes[0x023] = Input::Key::H;
-	s_Data.KeyCodes[0x017] = Input::Key::I;
-	s_Data.KeyCodes[0x024] = Input::Key::J;
-	s_Data.KeyCodes[0x025] = Input::Key::K;
-	s_Data.KeyCodes[0x026] = Input::Key::L;
-	s_Data.KeyCodes[0x032] = Input::Key::M;
-	s_Data.KeyCodes[0x031] = Input::Key::N;
-	s_Data.KeyCodes[0x018] = Input::Key::O;
-	s_Data.KeyCodes[0x019] = Input::Key::P;
-	s_Data.KeyCodes[0x010] = Input::Key::Q;
-	s_Data.KeyCodes[0x013] = Input::Key::R;
-	s_Data.KeyCodes[0x01F] = Input::Key::S;
-	s_Data.KeyCodes[0x014] = Input::Key::T;
-	s_Data.KeyCodes[0x016] = Input::Key::U;
-	s_Data.KeyCodes[0x02F] = Input::Key::V;
-	s_Data.KeyCodes[0x011] = Input::Key::W;
-	s_Data.KeyCodes[0x02D] = Input::Key::X;
-	s_Data.KeyCodes[0x015] = Input::Key::Y;
-	s_Data.KeyCodes[0x02C] = Input::Key::Z;
-
-	s_Data.KeyCodes[0x028] = Input::Key::Apostrophe;
-	s_Data.KeyCodes[0x02B] = Input::Key::Backslash;
-	s_Data.KeyCodes[0x033] = Input::Key::Comma;
-	s_Data.KeyCodes[0x00D] = Input::Key::Equal;
-	s_Data.KeyCodes[0x029] = Input::Key::Grave_Accent;
-	s_Data.KeyCodes[0x01A] = Input::Key::Left_Bracket;
-	s_Data.KeyCodes[0x00C] = Input::Key::Minus;
-	s_Data.KeyCodes[0x034] = Input::Key::Period;
-	s_Data.KeyCodes[0x01B] = Input::Key::Right_Bracket;
-	s_Data.KeyCodes[0x027] = Input::Key::Semicolon;
-	s_Data.KeyCodes[0x035] = Input::Key::Slash;
-	s_Data.KeyCodes[0x056] = Input::Key::World_2;
-
-	s_Data.KeyCodes[0x00E] = Input::Key::Backspace;
-	s_Data.KeyCodes[0x153] = Input::Key::Delete;
-	s_Data.KeyCodes[0x14F] = Input::Key::End;
-	s_Data.KeyCodes[0x01C] = Input::Key::Enter;
-	s_Data.KeyCodes[0x001] = Input::Key::Escape;
-	s_Data.KeyCodes[0x147] = Input::Key::Home;
-	s_Data.KeyCodes[0x152] = Input::Key::Insert;
-	s_Data.KeyCodes[0x15D] = Input::Key::Menu;
-	s_Data.KeyCodes[0x151] = Input::Key::Page_Down;
-	s_Data.KeyCodes[0x149] = Input::Key::Page_Up;
-	s_Data.KeyCodes[0x045] = Input::Key::Pause;
-	s_Data.KeyCodes[0x146] = Input::Key::Pause;
-	s_Data.KeyCodes[0x039] = Input::Key::Space;
-	s_Data.KeyCodes[0x00F] = Input::Key::Tab;
-	s_Data.KeyCodes[0x03A] = Input::Key::Caps_Lock;
-	s_Data.KeyCodes[0x145] = Input::Key::NUM_Lock;
-	s_Data.KeyCodes[0x046] = Input::Key::Scroll_Lock;
-	s_Data.KeyCodes[0x03B] = Input::Key::F1;
-	s_Data.KeyCodes[0x03C] = Input::Key::F2;
-	s_Data.KeyCodes[0x03D] = Input::Key::F3;
-	s_Data.KeyCodes[0x03E] = Input::Key::F4;
-	s_Data.KeyCodes[0x03F] = Input::Key::F5;
-	s_Data.KeyCodes[0x040] = Input::Key::F6;
-	s_Data.KeyCodes[0x041] = Input::Key::F7;
-	s_Data.KeyCodes[0x042] = Input::Key::F8;
-	s_Data.KeyCodes[0x043] = Input::Key::F9;
-	s_Data.KeyCodes[0x044] = Input::Key::F10;
-	s_Data.KeyCodes[0x057] = Input::Key::F11;
-	s_Data.KeyCodes[0x058] = Input::Key::F12;
-	s_Data.KeyCodes[0x064] = Input::Key::F13;
-	s_Data.KeyCodes[0x065] = Input::Key::F14;
-	s_Data.KeyCodes[0x066] = Input::Key::F15;
-	s_Data.KeyCodes[0x067] = Input::Key::F16;
-	s_Data.KeyCodes[0x068] = Input::Key::F17;
-	s_Data.KeyCodes[0x069] = Input::Key::F18;
-	s_Data.KeyCodes[0x06A] = Input::Key::F19;
-	s_Data.KeyCodes[0x06B] = Input::Key::F20;
-	s_Data.KeyCodes[0x06C] = Input::Key::F21;
-	s_Data.KeyCodes[0x06D] = Input::Key::F22;
-	s_Data.KeyCodes[0x06E] = Input::Key::F23;
-	s_Data.KeyCodes[0x076] = Input::Key::F24;
-	s_Data.KeyCodes[0x038] = Input::Key::Left_ALT;
-	s_Data.KeyCodes[0x01D] = Input::Key::Left_Control;
-	s_Data.KeyCodes[0x02A] = Input::Key::Left_Shift;
-	s_Data.KeyCodes[0x15B] = Input::Key::Left_Super;
-	s_Data.KeyCodes[0x137] = Input::Key::Print_Screen;
-	s_Data.KeyCodes[0x138] = Input::Key::Right_ALT;
-	s_Data.KeyCodes[0x11D] = Input::Key::Right_Control;
-	s_Data.KeyCodes[0x036] = Input::Key::Right_Shift;
-	s_Data.KeyCodes[0x15C] = Input::Key::Right_Super;
-	s_Data.KeyCodes[0x150] = Input::Key::Down;
-	s_Data.KeyCodes[0x14B] = Input::Key::Left;
-	s_Data.KeyCodes[0x14D] = Input::Key::Right;
-	s_Data.KeyCodes[0x148] = Input::Key::Up;
-
-	s_Data.KeyCodes[0x052] = Input::Key::KP_0;
-	s_Data.KeyCodes[0x04F] = Input::Key::KP_1;
-	s_Data.KeyCodes[0x050] = Input::Key::KP_2;
-	s_Data.KeyCodes[0x051] = Input::Key::KP_3;
-	s_Data.KeyCodes[0x04B] = Input::Key::KP_4;
-	s_Data.KeyCodes[0x04C] = Input::Key::KP_5;
-	s_Data.KeyCodes[0x04D] = Input::Key::KP_6;
-	s_Data.KeyCodes[0x047] = Input::Key::KP_7;
-	s_Data.KeyCodes[0x048] = Input::Key::KP_8;
-	s_Data.KeyCodes[0x049] = Input::Key::KP_9;
-	s_Data.KeyCodes[0x04E] = Input::Key::KP_Add;
-	s_Data.KeyCodes[0x053] = Input::Key::KP_Decimal;
-	s_Data.KeyCodes[0x135] = Input::Key::KP_Divide;
-	s_Data.KeyCodes[0x11C] = Input::Key::KP_Enter;
-	s_Data.KeyCodes[0x059] = Input::Key::KP_Equal;
-	s_Data.KeyCodes[0x037] = Input::Key::KP_Multiply;
-	s_Data.KeyCodes[0x04A] = Input::Key::KP_Subtract;
-
-	for (uint32_t scanCode = 0; scanCode < 512; scanCode++)
-		if (static_cast<int32_t>(s_Data.KeyCodes[scanCode]) > 0)
-			s_Data.ScanCodes[static_cast<int32_t>(s_Data.KeyCodes[scanCode])] = scanCode;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Updates key names according to the current keyboard layout
 void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 {
@@ -427,132 +291,12 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Notifies shared code of a mouse button click event
-void TRAP::INTERNAL::WindowingAPI::InputMouseClick(InternalWindow* window, Input::MouseButton button, const bool pressed)
-{
-	window->MouseButtons[static_cast<uint32_t>(button)] = pressed;
-
-	if (window->Callbacks.MouseButton)
-		window->Callbacks.MouseButton(window, button, pressed);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code that a window has lost or received input focus
-void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow* window, const bool focused)
-{
-	if (window->Callbacks.Focus)
-		window->Callbacks.Focus(window, focused);
-
-	if (!focused)
-	{
-		for (uint32_t key = 0; key <= static_cast<uint32_t>(Input::Key::Menu); key++)
-			if (window->Keys[key] == true)
-			{
-				const int32_t scanCode = PlatformGetKeyScanCode(static_cast<Input::Key>(key));
-				InputKey(window, static_cast<Input::Key>(key), scanCode, false);
-			}
-
-		for (uint32_t button = 0; button <= static_cast<uint32_t>(Input::MouseButton::Eight); button++)
-			if (window->MouseButtons[button])
-				InputMouseClick(window, static_cast<Input::MouseButton>(button), false);
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code of a Unicode codepoint input event
-//The 'plain' parameter determines whether to emit a regular character event
-void TRAP::INTERNAL::WindowingAPI::InputChar(const InternalWindow* window, const uint32_t codePoint)
-{
-	if (codePoint < 32 || (codePoint > 126 && codePoint < 160))
-		return;
-
-	if (window->Callbacks.Character)
-		window->Callbacks.Character(window, codePoint);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code of a cursor motion event
-//The position is specified in content area relative screen coordinates
-void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow* window, const double xPos, const double yPos)
-{
-	if (window->VirtualCursorPosX == xPos && window->VirtualCursorPosY == yPos)
-		return;
-
-	window->VirtualCursorPosX = xPos;
-	window->VirtualCursorPosY = yPos;
-
-	if (window->Callbacks.CursorPos)
-		window->Callbacks.CursorPos(window, xPos, yPos);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code of a cursor enter/leave event
-void TRAP::INTERNAL::WindowingAPI::InputCursorEnter(InternalWindow* window, const bool entered)
-{
-	if (window->Callbacks.CursorEnter)
-		window->Callbacks.CursorEnter(window, entered);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code of a scroll event
-void TRAP::INTERNAL::WindowingAPI::InputScroll(const InternalWindow* window, const double xOffset, const double yOffset)
-{
-	if (window->Callbacks.Scroll)
-		window->Callbacks.Scroll(window, xOffset, yOffset);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code that a window framebuffer has been resized
-//The size is specified in pixels
-void TRAP::INTERNAL::WindowingAPI::InputFrameBufferSize(const InternalWindow* window, const int32_t width, const int32_t height)
-{
-	if (window->Callbacks.FBSize)
-		window->Callbacks.FBSize(window, width, height);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code that a window has been resized
-//The size is specified in screen coordinates
-void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow* window, const int32_t width, const int32_t height)
-{
-	if (window->Callbacks.Size)
-		window->Callbacks.Size(window, width, height);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code that a window has moved
-//The position is specified in content area relative screen coordinates
-void TRAP::INTERNAL::WindowingAPI::InputWindowPos(const InternalWindow* window, const int32_t x, const int32_t y)
-{
-	if (window->Callbacks.Pos)
-		window->Callbacks.Pos(window, x, y);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Notifies shared code that a window content scale has changed
 //The scale is specified as the ratio between the current and default DPI
 void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow* window, const float xScale, const float yScale)
 {
 	if (window->Callbacks.Scale)
 		window->Callbacks.Scale(window, xScale, yScale);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code of files or directories dropped on a window
-void TRAP::INTERNAL::WindowingAPI::InputDrop(const InternalWindow* window, const std::vector<std::string>& paths)
-{
-	if (window->Callbacks.Drop)
-		window->Callbacks.Drop(window, paths);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1306,85 +1050,6 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalMonitor> TRAP::INTERNAL::Windo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Notifies shared code of a monitor connection or disconnection
-void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, const bool connected, const uint32_t placement)
-{
-	if (connected)
-	{
-		if (placement == 0)
-			s_Data.Monitors.insert(s_Data.Monitors.begin(), std::move(monitor));
-		else
-			s_Data.Monitors.push_back(std::move(monitor));
-	}
-	else
-	{
-		for (InternalWindow* window = s_Data.WindowListHead; window; window = window->Next)
-		{
-			if (window->Monitor == monitor.get())
-			{
-				int32_t width = 0, height = 0, xOff = 0, yOff = 0, unused = 0;
-				PlatformGetWindowSize(window, width, height);
-				PlatformSetWindowMonitor(window, nullptr, 0, 0, width, height, 0);
-				PlatformGetWindowFrameSize(window, xOff, yOff, unused, unused);
-				PlatformSetWindowPos(window, xOff, yOff);
-			}
-		}
-
-		for (uint32_t i = 0; i < s_Data.Monitors.size(); i++)
-		{
-			if (s_Data.Monitors[i] == monitor)
-			{
-				s_Data.Monitors.erase(s_Data.Monitors.begin() + i);
-				break;
-			}
-		}
-	}
-
-	if (s_Data.Callbacks.Monitor)
-		s_Data.Callbacks.Monitor(monitor.get(), connected);
-
-	if (!connected)
-		if (monitor)
-			monitor.reset();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code of a monitor disconnection
-void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitorIndex, const uint32_t placement)
-{
-	Scope<InternalMonitor>& monitor = s_Data.Monitors[monitorIndex];
-	
-	for (InternalWindow* window = s_Data.WindowListHead; window; window = window->Next)
-	{
-		if (window->Monitor == monitor.get())
-		{
-			int32_t width = 0, height = 0, xOff = 0, yOff = 0, unused = 0;
-			PlatformGetWindowSize(window, width, height);
-			PlatformSetWindowMonitor(window, nullptr, 0, 0, width, height, 0);
-			PlatformGetWindowFrameSize(window, xOff, yOff, unused, unused);
-			PlatformSetWindowPos(window, xOff, yOff);
-		}
-	}
-
-	for (uint32_t i = 0; i < s_Data.Monitors.size(); i++)
-	{
-		if (s_Data.Monitors[i] == monitor)
-		{
-			s_Data.Monitors.erase(s_Data.Monitors.begin() + i);
-			break;
-		}
-	}
-
-	if (s_Data.Callbacks.Monitor)
-		s_Data.Callbacks.Monitor(monitor.get(), false);
-
-	if (monitor)
-		monitor.reset();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Poll for changes in the set of connected monitors
 void TRAP::INTERNAL::WindowingAPI::PollMonitorsWin32()
 {
@@ -1565,104 +1230,6 @@ void TRAP::INTERNAL::WindowingAPI::FitToMonitor(const InternalWindow* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Lexically compare video modes, used by qsort
-int32_t TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const void* fp, const void* sp)
-{
-	const VideoMode* fm = static_cast<const VideoMode*>(fp);
-	const VideoMode* sm = static_cast<const VideoMode*>(sp);
-	const int32_t fbpp = fm->RedBits + fm->GreenBits + fm->BlueBits;
-	const int32_t sbpp = sm->RedBits + sm->GreenBits + sm->BlueBits;
-	const int32_t farea = fm->Width * fm->Height;
-	const int32_t sarea = sm->Width * sm->Height;
-
-	//First sort on color bits per pixel
-	if (fbpp != sbpp)
-		return fbpp - sbpp;
-
-	//Then sort on screen area
-	if (farea != sarea)
-		return farea - sarea;
-
-	//Then sort on width
-	if (fm->Width != sm->Width)
-		return fm->Width - sm->Width;
-
-	//Lastly sort on refresh rate
-	return fm->RefreshRate - sm->RefreshRate;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Retrieves the available modes for the specified monitor
-bool TRAP::INTERNAL::WindowingAPI::RefreshVideoModes(InternalMonitor* monitor)
-{
-	if (!monitor->Modes.empty())
-		return true;
-
-	std::vector<VideoMode> modes = PlatformGetVideoModes(monitor);
-	if (modes.empty())
-		return false;
-
-	std::qsort(modes.data(), modes.size(), sizeof(VideoMode), CompareVideoModes);
-
-	monitor->Modes = {};
-	monitor->Modes = modes;
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Chooses the video mode most closely matching the desired one
-TRAP::INTERNAL::WindowingAPI::VideoMode* TRAP::INTERNAL::WindowingAPI::ChooseVideoMode(InternalMonitor* monitor, const VideoMode& desired)
-{
-	uint32_t leastSizeDiff = UINT_MAX;
-	uint32_t rateDiff, leastRateDiff = UINT_MAX;
-	uint32_t leastColorDiff = UINT_MAX;
-	VideoMode* closest = nullptr;
-
-	if (!RefreshVideoModes(monitor))
-		return nullptr;
-
-	for (uint32_t i = 0; i < monitor->Modes.size(); i++)
-	{
-		VideoMode* current = &monitor->Modes[i];
-
-		uint32_t colorDiff = 0;
-
-		if (desired.RedBits != -1)
-			colorDiff += abs(current->RedBits - desired.RedBits);
-		if (desired.GreenBits != -1)
-			colorDiff += abs(current->GreenBits - desired.GreenBits);
-		if (desired.BlueBits != -1)
-			colorDiff += abs(current->BlueBits - desired.BlueBits);
-
-		const uint32_t sizeDiff = abs((current->Width - desired.Width) *
-			(current->Width - desired.Width) +
-			(current->Height - desired.Height) *
-			(current->Height - desired.Height));
-
-		if (desired.RefreshRate != -1)
-			rateDiff = abs(current->RefreshRate - desired.RefreshRate);
-		else
-			rateDiff = UINT_MAX - current->RefreshRate;
-
-		if ((colorDiff < leastColorDiff) ||
-			(colorDiff == leastColorDiff && sizeDiff < leastSizeDiff) ||
-			(colorDiff == leastColorDiff && sizeDiff == leastSizeDiff && rateDiff < leastRateDiff))
-		{
-			closest = current;
-			leastSizeDiff = sizeDiff;
-			leastRateDiff = rateDiff;
-			leastColorDiff = colorDiff;
-		}
-	}
-
-	return closest;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Change the current video mode
 void TRAP::INTERNAL::WindowingAPI::SetVideoModeWin32(InternalMonitor* monitor, const VideoMode& desired)
 {
@@ -1731,26 +1298,6 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(const HMONITOR ha
 
 	xScale = xDPI / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
 	yScale = yDPI / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Splits a color depth into red, green and blue bit depths
-void TRAP::INTERNAL::WindowingAPI::SplitBPP(int32_t bpp, int32_t& red, int32_t& green, int32_t& blue)
-{
-	//We assume that by 32 the user really meant 24
-	if (bpp == 32)
-		bpp = 24;
-
-	//Convert "bits per pixel" to red, green & blue sizes
-
-	red = green = blue = bpp / 3;
-	const int32_t delta = bpp - (red * 3);
-	if (delta >= 1)
-		green = green + 1;
-
-	if (delta == 2)
-		red = red + 1;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2318,32 +1865,6 @@ bool TRAP::INTERNAL::WindowingAPI::ExtensionSupportedWGL(const char* extension)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Searches an extension string for the specified extension
-bool TRAP::INTERNAL::WindowingAPI::StringInExtensionString(const char* string, const char* extensions)
-{
-	const char* start = extensions;
-
-	for (;;)
-	{
-		const char* where = strstr(start, string);
-		if (!where)
-			return false;
-
-		const char* terminator = where + strlen(string);
-		if (where == start || *(where - 1) == ' ')
-		{
-			if (*terminator == ' ' || *terminator == '\0')
-				break;
-		}
-
-		start = terminator;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Return the value corresponding to the specified attribute
 int32_t TRAP::INTERNAL::WindowingAPI::FindPixelFormatAttribValue(const std::vector<int32_t>& attribs,
 	                                                             const std::vector<int32_t>& values,
@@ -2357,165 +1878,6 @@ int32_t TRAP::INTERNAL::WindowingAPI::FindPixelFormatAttribValue(const std::vect
 
 	InputErrorWin32(Error::Platform_Error, "[WGL] Unknown pixel format attribute requested");
 	return 0;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Chooses the framebuffer config that best matches the desired one
-const TRAP::INTERNAL::WindowingAPI::FrameBufferConfig* TRAP::INTERNAL::WindowingAPI::ChooseFBConfig(const FrameBufferConfig& desired,
-	                                                                                                const std::vector<FrameBufferConfig>& alternatives)
-{
-	uint32_t missing, leastMissing = UINT_MAX;
-	uint32_t colorDiff, leastColorDiff = UINT_MAX;
-	uint32_t extraDiff, leastExtraDiff = UINT_MAX;
-	const FrameBufferConfig* closest = nullptr;
-
-	for (uint32_t i = 0; i < alternatives.size(); i++)
-	{
-		const FrameBufferConfig* current = &alternatives[i];
-
-		if (desired.Stereo != current->Stereo)
-			//Stereo is a hard constraint
-			continue;
-
-		if (desired.DoubleBuffer != current->DoubleBuffer)
-			//Double buffering is a hard constraint
-			continue;
-
-			//Count number of missing buffers
-		{
-			missing = 0;
-
-			if (desired.AlphaBits > 0 && current->AlphaBits == 0)
-				missing++;
-
-			if (desired.DepthBits > 0 && current->DepthBits == 0)
-				missing++;
-
-			if (desired.StencilBits > 0 && current->StencilBits == 0)
-				missing++;
-
-			if (desired.AuxBuffers > 0 && current->AuxBuffers < desired.AuxBuffers)
-				missing += desired.AuxBuffers - current->AuxBuffers;
-			
-			if (desired.Samples > 0 && current->Samples == 0)
-			{
-				//Technically, several multisampling buffers could be
-				//involved, but that's a lower level implementation detail and
-				//not important to us here, so we count them as one
-				missing++;
-			}
-
-			if (desired.Transparent != current->Transparent)
-				missing++;
-		}
-
-		//These polynomials make many small channel size differences matter
-		//less than one large channel size difference
-
-		//Calculate color channel size difference value
-		{
-			colorDiff = 0;
-
-			if (desired.RedBits != -1)
-			{
-				colorDiff += (desired.RedBits - current->RedBits) *
-					         (desired.RedBits - current->RedBits);
-			}
-
-			if (desired.GreenBits != -1)
-			{
-				colorDiff += (desired.GreenBits - current->GreenBits) *
-					         (desired.GreenBits - current->GreenBits);
-			}
-
-			if (desired.BlueBits != -1)
-			{
-				colorDiff += (desired.BlueBits - current->BlueBits) *
-					         (desired.BlueBits - current->BlueBits);
-			}
-		}
-
-		//Calculate non-color channel size difference value
-		{
-			extraDiff = 0;
-
-			if (desired.AlphaBits != -1)
-			{
-				extraDiff += (desired.AlphaBits - current->AlphaBits) *
-					         (desired.AlphaBits - current->AlphaBits);
-			}
-
-			if (desired.DepthBits != -1)
-			{
-				extraDiff += (desired.DepthBits - current->DepthBits) *
-					         (desired.DepthBits - current->DepthBits);
-			}
-
-			if (desired.StencilBits != -1)
-			{
-				extraDiff += (desired.StencilBits - current->StencilBits) *
-					         (desired.StencilBits - current->StencilBits);
-			}
-
-			if (desired.AccumRedBits != -1)
-			{
-				extraDiff += (desired.AccumRedBits - current->AccumRedBits) *
-					         (desired.AccumRedBits - current->AccumRedBits);
-			}
-
-			if (desired.AccumGreenBits != -1)
-			{
-				extraDiff += (desired.AccumGreenBits - current->AccumGreenBits) *
-					         (desired.AccumGreenBits - current->AccumGreenBits);
-			}
-
-			if (desired.AccumBlueBits != -1)
-			{
-				extraDiff += (desired.AccumBlueBits - current->AccumBlueBits) *
-					         (desired.AccumBlueBits - current->AccumBlueBits);
-			}
-
-			if (desired.AccumAlphaBits != -1)
-			{
-				extraDiff += (desired.AccumAlphaBits - current->AccumAlphaBits) *
-					         (desired.AccumAlphaBits - current->AccumAlphaBits);
-			}
-
-			if (desired.Samples != -1)
-			{
-				extraDiff += (desired.Samples - current->Samples) *
-					         (desired.Samples - current->Samples);
-			}
-
-			if (desired.SRGB && !current->SRGB)
-				extraDiff++;
-		}
-
-		//Figure out if the current one is better than the best one found so far
-		//Least number of missing buffers is the most important heuristic,
-		//then color buffer size match and lastly size match for other buffers
-
-		if (missing < leastMissing)
-			closest = current;
-		else if (missing == leastMissing)
-		{
-			if ((colorDiff < leastColorDiff) ||
-				(colorDiff == leastColorDiff && extraDiff < leastExtraDiff))
-			{
-				closest = current;
-			}
-		}
-
-		if (current == closest)
-		{
-			leastMissing = missing;
-			leastColorDiff = colorDiff;
-			leastExtraDiff = extraDiff;
-		}
-	}
-
-	return closest;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2707,105 +2069,6 @@ int32_t TRAP::INTERNAL::WindowingAPI::ChoosePixelFormat(const InternalWindow* wi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Retrieves the attributes of the current context
-bool TRAP::INTERNAL::WindowingAPI::RefreshContextAttribs(InternalWindow* window,
-	                                                     const ContextConfig& CTXConfig)
-{
-	window->context.Client = ContextAPI::OpenGL;
-
-	const auto previousPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
-	MakeContextCurrent(window);
-
-	window->context.GetIntegerv = reinterpret_cast<PFNGLGETINTEGERVPROC>(window->context.GetProcAddress("glGetIntegerv"));
-	window->context.GetString = reinterpret_cast<PFNGLGETSTRINGPROC>(window->context.GetProcAddress("glGetString"));
-	if (!window->context.GetIntegerv || !window->context.GetString)
-	{
-		InputError(Error::Platform_Error, "[OpenGL] Entry point retrieval is broken");
-		MakeContextCurrent(previousPtr);
-		return false;
-	}
-
-	const char* version = reinterpret_cast<const char*>(window->context.GetString(GL_VERSION));
-	if (!version)
-	{
-		if (CTXConfig.Client == ContextAPI::OpenGL)
-		{
-			InputError(Error::Platform_Error, "[OpenGL] version string retrieval is broken");
-		}
-
-		MakeContextCurrent(previousPtr);
-		return false;
-	}
-
-	std::vector<std::string> splittedVersion = Utils::String::SplitString(version, '.');
-
-	if (splittedVersion.empty() || splittedVersion.size() < 2)
-	{
-		if (window->context.Client == ContextAPI::OpenGL)
-			InputError(Error::Platform_Error, "[OpenGL] No version found in OpenGL version string");
-
-		MakeContextCurrent(previousPtr);
-		return false;
-	}
-
-	window->context.Major = std::stoi(splittedVersion[0]);
-	window->context.Minor = std::stoi(splittedVersion[1]);
-
-	if (window->context.Major < 4 ||
-		(window->context.Major == 4 &&
-			window->context.Minor < 6))
-	{
-		//The desired OpenGL version is greater than the actual version
-		//This only happens if the machine lacks {GLX|WGL}_ARB_create_context
-		//and the user has requested an OpenGL version greater than 1.0
-
-		//For API consistency, we emulate the behavior of the
-		//{GLX|WGL}_ARB_create_context extension and fail here
-
-		if (window->context.Client == ContextAPI::OpenGL)
-			InputError(Error::Version_Unavailable, "[OpenGl] Requested OpenGL version 4.6, got version " + std::to_string(window->context.Major) + "." + std::to_string(window->context.Minor));
-
-		MakeContextCurrent(previousPtr);
-		return false;
-	}
-
-	//OpenGL 3.0+ uses a different function for extension string retrieval
-	//We cache it here instead of in ExtensionSupported mostly to alert
-	//users as early as possible that their build may be broken
-
-	window->context.GetStringi = reinterpret_cast<PFNGLGETSTRINGIPROC>(window->context.GetProcAddress("glGetStringi"));
-	if (!window->context.GetStringi)
-	{
-		InputError(Error::Platform_Error, "[OpenGL] Entry point retrieval is broken");
-		MakeContextCurrent(previousPtr);
-		return false;
-	}
-
-	if (window->context.Client == ContextAPI::OpenGL)
-	{
-		GLint flags;
-		window->context.GetIntegerv(GL_CONTEXT_FLAGS, &flags);
-
-		//Read back OpenGL context profile (OpenGL 3.2 and above)
-		GLint mask;
-		window->context.GetIntegerv(GL_CONTEXT_PROFILE_MASK, &mask);
-	}
-
-	//Clearing the front buffer to black to avoid garbage pixels left over from
-	//previous uses of our bit of VRAM
-	{
-		const PFNGLCLEARPROC glClearWin = reinterpret_cast<PFNGLCLEARPROC>(window->context.GetProcAddress("glClear"));
-		glClearWin(GL_COLOR_BUFFER_BIT);
-		window->context.SwapBuffers(window);
-	}
-
-	MakeContextCurrent(previousPtr);
-	return true;
-}
-
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Returns whether the cursor is in the content area of the specified window
 bool TRAP::INTERNAL::WindowingAPI::CursorInContentArea(const InternalWindow* window)
 {
@@ -2823,22 +2086,6 @@ bool TRAP::INTERNAL::WindowingAPI::CursorInContentArea(const InternalWindow* win
 	ClientToScreen(window->Handle, reinterpret_cast<POINT*>(&area.right));
 
 	return PtInRect(&area, pos);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Updates the cursor image according to its cursor mode
-void TRAP::INTERNAL::WindowingAPI::UpdateCursorImage(const InternalWindow* window)
-{
-	if (window->cursorMode == CursorMode::Normal)
-	{
-		if (window->Cursor)
-			::SetCursor(window->Cursor->Handle);
-		else
-			::SetCursor(LoadCursorW(nullptr, IDC_ARROW));
-	}
-	else
-		::SetCursor(nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2921,31 +2168,6 @@ HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Scope<Image>& image, const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Notifies shared code that the user wishes to close a window
-void TRAP::INTERNAL::WindowingAPI::InputWindowCloseRequest(InternalWindow* window)
-{
-	window->ShouldClose = true;
-
-	if (window->Callbacks.Close)
-		window->Callbacks.Close(window);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Notifies shared code of a physical key event
-void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* window, Input::Key key, const int32_t scancode, const bool pressed)
-{
-	if (!pressed && window->Keys[static_cast<uint32_t>(key)] == false)
-		return;
-
-	window->Keys[static_cast<uint32_t>(key)] = pressed;
-
-	if (window->Callbacks.Key)
-		window->Callbacks.Key(window, key, pressed);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Updates the cursor clip rect
 void TRAP::INTERNAL::WindowingAPI::UpdateClipRect(const InternalWindow* window)
 {
@@ -2985,35 +2207,6 @@ void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion(const InternalWindow* w
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Exit disabled cursor mode for the specified window
-void TRAP::INTERNAL::WindowingAPI::EnableCursor(InternalWindow* window)
-{
-	if (window->RawMouseMotion)
-		DisableRawMouseMotion(window);
-
-	s_Data.DisabledCursorWindow = nullptr;
-	UpdateClipRect(nullptr);
-	PlatformSetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
-	UpdateCursorImage(window);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Apply disabled cursor mode to a focused window
-void TRAP::INTERNAL::WindowingAPI::DisableCursor(InternalWindow* window)
-{
-	s_Data.DisabledCursorWindow = window;
-	PlatformGetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
-	UpdateCursorImage(window);
-	CenterCursorInContentArea(window);
-	UpdateClipRect(window);
-
-	if (window->RawMouseMotion)
-		EnableRawMouseMotion(window);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Update native window styles to match attributes
 void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const InternalWindow* window)
 {
@@ -3035,118 +2228,6 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const InternalWindow* wind
 	::SetWindowPos(window->Handle, HWND_TOP, rect.left, rect.top,
 		           rect.right - rect.left, rect.bottom - rect.top,
 		           SWP_FRAMECHANGED | SWP_NOACTIVATE | SWP_NOZORDER);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const uint32_t mode)
-{
-	uint32_t count;
-
-	if (s_Data.VK.Available)
-		return true;
-
-	VkResult err = vkEnumerateInstanceExtensionProperties(nullptr, &count, nullptr);
-	if (err)
-	{
-		//NOTE: This happens on systems with a loader but without any Vulkan ICD
-		if (mode == 2)
-			InputError(Error::API_Unavailable, "[Vulkan] Failed to query instance extension count: " + GetVulkanResultString(err));
-
-		return false;
-	}
-
-	std::vector<VkExtensionProperties> ep(count);
-
-	err = vkEnumerateInstanceExtensionProperties(nullptr, &count, ep.data());
-	if (err)
-	{
-		InputError(Error::API_Unavailable, "[Vulkan] Failed to query instance extensions: " + GetVulkanResultString(err));
-		return false;
-	}
-
-	for (uint32_t i = 0; i < count; i++)
-	{
-		const std::string_view ext(ep[i].extensionName);
-		
-		if (ext == "VK_KHR_surface")
-			s_Data.VK.KHR_Surface = true;
-#if defined(TRAP_PLATFORM_WINDOWS)
-		else if (ext == "VK_KHR_win32_surface")
-			s_Data.VK.KHR_Win32_Surface = true;
-#elif defined(TRAP_PLATFORM_LINUX_X11)
-		else if (ext == "VK_KHR_xlib_surface")
-			s_Data.VK.KHR_XLib_Surface = true;
-		else if (ext == "VK_KHR_xcb_surface")
-			s_Data.VK.KHR_XCB_Surface = true;
-#elif defined(TRAP_PLATFORM_LINUX_WAYLAND)
-		else if (ext == "VK_KHR_wayland_surface")
-			s_Data.VK.KHR_Wayland_Surface = true;
-#endif
-	}
-
-	s_Data.VK.Available = true;
-
-	PlatformGetRequiredInstanceExtensions(s_Data.VK.Extensions);
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string TRAP::INTERNAL::WindowingAPI::GetVulkanResultString(const VkResult result)
-{
-	switch (result)
-	{
-	case VK_SUCCESS:
-		return "Success";
-	case VK_NOT_READY:
-		return "A fence or query has not yet completed";
-	case VK_TIMEOUT:
-		return "A wait operation has not completed in the specified time";
-	case VK_EVENT_SET:
-		return "An event is signaled";
-	case VK_EVENT_RESET:
-		return "An event is unsignaled";
-	case VK_INCOMPLETE:
-		return "A return array was too small for the result";
-	case VK_ERROR_OUT_OF_HOST_MEMORY:
-		return "A host memory allocation has failed";
-	case VK_ERROR_OUT_OF_DEVICE_MEMORY:
-		return "A device memory allocation has failed";
-	case VK_ERROR_INITIALIZATION_FAILED:
-		return "Initialization of an object could not be completed for implementation-specific reasons";
-	case VK_ERROR_DEVICE_LOST:
-		return "The logical or physical device has been lost";
-	case VK_ERROR_MEMORY_MAP_FAILED:
-		return "Mapping of a memory object has failed";
-	case VK_ERROR_LAYER_NOT_PRESENT:
-		return "A requested layer is not present or could not be loaded";
-	case VK_ERROR_EXTENSION_NOT_PRESENT:
-		return "A requested extension is not supported";
-	case VK_ERROR_FEATURE_NOT_PRESENT:
-		return "A requested feature is not supported";
-	case VK_ERROR_INCOMPATIBLE_DRIVER:
-		return "The requested version of Vulkan is not supported by the driver or is otherwise incompatible";
-	case VK_ERROR_TOO_MANY_OBJECTS:
-		return "Too many objects of the type have already been created";
-	case VK_ERROR_FORMAT_NOT_SUPPORTED:
-		return "A requested format is not supported on this device";
-	case VK_ERROR_SURFACE_LOST_KHR:
-		return "A surface is no longer available";
-	case VK_SUBOPTIMAL_KHR:
-		return "A swapchain no longer matches the surface properties exactly, but can still be used";
-	case VK_ERROR_OUT_OF_DATE_KHR:
-		return "A surface has changed in such a way that it is no longer compatible with the swapchain";
-	case VK_ERROR_INCOMPATIBLE_DISPLAY_KHR:
-		return "The display used by a swapchain does not use the same presentable image layout";
-	case VK_ERROR_NATIVE_WINDOW_IN_USE_KHR:
-		return "The requested window is already connected to a VkSurfaceKHR, or to some other non-Vulkan API";
-	case VK_ERROR_VALIDATION_FAILED_EXT:
-		return "A validation layer found an error";
-	default:
-		return "UNKNOWN VULKAN ERROR";
-	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3664,7 +2745,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorPos(const InternalMonitor* 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformShowWindow(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::PlatformShowWindow(InternalWindow* window)
 {
 	::ShowWindow(window->Handle, SW_SHOWNA);
 }
@@ -3941,7 +3022,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSize(InternalWindow* window,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(const InternalWindow* window, const bool enabled)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(InternalWindow* window, const bool enabled)
 {
 	UpdateWindowStyles(window);
 }
@@ -4313,14 +3394,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindow(const InternalWindow* wind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindow(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindow(InternalWindow* window)
 {
 	::ShowWindow(window->Handle, SW_RESTORE);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(const InternalWindow* window,
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* window,
                                                                const int32_t minWidth,
                                                                const int32_t minHeight,
                                                                const int32_t maxWidth,
@@ -4334,6 +3415,197 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(const InternalWin
 
 	GetWindowRect(window->Handle, &area);
 	MoveWindow(window->Handle, area.left, area.top, area.right - area.left, area.bottom - area.top, TRUE);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Updates the cursor image according to its cursor mode
+void TRAP::INTERNAL::WindowingAPI::UpdateCursorImage(const InternalWindow* window)
+{
+	if (window->cursorMode == CursorMode::Normal)
+	{
+		if (window->Cursor)
+			::SetCursor(window->Cursor->Handle);
+		else
+			::SetCursor(LoadCursorW(nullptr, IDC_ARROW));
+	}
+	else
+		::SetCursor(nullptr);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Exit disabled cursor mode for the specified window
+void TRAP::INTERNAL::WindowingAPI::EnableCursor(InternalWindow* window)
+{
+	if (window->RawMouseMotion)
+		DisableRawMouseMotion(window);
+
+	s_Data.DisabledCursorWindow = nullptr;
+	UpdateClipRect(nullptr);
+	PlatformSetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
+	UpdateCursorImage(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Apply disabled cursor mode to a focused window
+void TRAP::INTERNAL::WindowingAPI::DisableCursor(InternalWindow* window)
+{
+	s_Data.DisabledCursorWindow = window;
+	PlatformGetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
+	UpdateCursorImage(window);
+	CenterCursorInContentArea(window);
+	UpdateClipRect(window);
+
+	if (window->RawMouseMotion)
+		EnableRawMouseMotion(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Create key code translation tables
+void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
+{
+	std::fill(s_Data.KeyCodes.begin(), s_Data.KeyCodes.end(), Input::Key::Unknown);
+	std::fill(s_Data.ScanCodes.begin(), s_Data.ScanCodes.end(), -1);
+
+	s_Data.KeyCodes[0x00B] = Input::Key::Zero;
+	s_Data.KeyCodes[0x002] = Input::Key::One;
+	s_Data.KeyCodes[0x003] = Input::Key::Two;
+	s_Data.KeyCodes[0x004] = Input::Key::Three;
+	s_Data.KeyCodes[0x005] = Input::Key::Four;
+	s_Data.KeyCodes[0x006] = Input::Key::Five;
+	s_Data.KeyCodes[0x007] = Input::Key::Six;
+	s_Data.KeyCodes[0x008] = Input::Key::Seven;
+	s_Data.KeyCodes[0x009] = Input::Key::Eight;
+	s_Data.KeyCodes[0x00A] = Input::Key::Nine;
+	s_Data.KeyCodes[0x01E] = Input::Key::A;
+	s_Data.KeyCodes[0x030] = Input::Key::B;
+	s_Data.KeyCodes[0x02E] = Input::Key::C;
+	s_Data.KeyCodes[0x020] = Input::Key::D;
+	s_Data.KeyCodes[0x012] = Input::Key::E;
+	s_Data.KeyCodes[0x021] = Input::Key::F;
+	s_Data.KeyCodes[0x022] = Input::Key::G;
+	s_Data.KeyCodes[0x023] = Input::Key::H;
+	s_Data.KeyCodes[0x017] = Input::Key::I;
+	s_Data.KeyCodes[0x024] = Input::Key::J;
+	s_Data.KeyCodes[0x025] = Input::Key::K;
+	s_Data.KeyCodes[0x026] = Input::Key::L;
+	s_Data.KeyCodes[0x032] = Input::Key::M;
+	s_Data.KeyCodes[0x031] = Input::Key::N;
+	s_Data.KeyCodes[0x018] = Input::Key::O;
+	s_Data.KeyCodes[0x019] = Input::Key::P;
+	s_Data.KeyCodes[0x010] = Input::Key::Q;
+	s_Data.KeyCodes[0x013] = Input::Key::R;
+	s_Data.KeyCodes[0x01F] = Input::Key::S;
+	s_Data.KeyCodes[0x014] = Input::Key::T;
+	s_Data.KeyCodes[0x016] = Input::Key::U;
+	s_Data.KeyCodes[0x02F] = Input::Key::V;
+	s_Data.KeyCodes[0x011] = Input::Key::W;
+	s_Data.KeyCodes[0x02D] = Input::Key::X;
+	s_Data.KeyCodes[0x015] = Input::Key::Y;
+	s_Data.KeyCodes[0x02C] = Input::Key::Z;
+
+	s_Data.KeyCodes[0x028] = Input::Key::Apostrophe;
+	s_Data.KeyCodes[0x02B] = Input::Key::Backslash;
+	s_Data.KeyCodes[0x033] = Input::Key::Comma;
+	s_Data.KeyCodes[0x00D] = Input::Key::Equal;
+	s_Data.KeyCodes[0x029] = Input::Key::Grave_Accent;
+	s_Data.KeyCodes[0x01A] = Input::Key::Left_Bracket;
+	s_Data.KeyCodes[0x00C] = Input::Key::Minus;
+	s_Data.KeyCodes[0x034] = Input::Key::Period;
+	s_Data.KeyCodes[0x01B] = Input::Key::Right_Bracket;
+	s_Data.KeyCodes[0x027] = Input::Key::Semicolon;
+	s_Data.KeyCodes[0x035] = Input::Key::Slash;
+	s_Data.KeyCodes[0x056] = Input::Key::World_2;
+
+	s_Data.KeyCodes[0x00E] = Input::Key::Backspace;
+	s_Data.KeyCodes[0x153] = Input::Key::Delete;
+	s_Data.KeyCodes[0x14F] = Input::Key::End;
+	s_Data.KeyCodes[0x01C] = Input::Key::Enter;
+	s_Data.KeyCodes[0x001] = Input::Key::Escape;
+	s_Data.KeyCodes[0x147] = Input::Key::Home;
+	s_Data.KeyCodes[0x152] = Input::Key::Insert;
+	s_Data.KeyCodes[0x15D] = Input::Key::Menu;
+	s_Data.KeyCodes[0x151] = Input::Key::Page_Down;
+	s_Data.KeyCodes[0x149] = Input::Key::Page_Up;
+	s_Data.KeyCodes[0x045] = Input::Key::Pause;
+	s_Data.KeyCodes[0x146] = Input::Key::Pause;
+	s_Data.KeyCodes[0x039] = Input::Key::Space;
+	s_Data.KeyCodes[0x00F] = Input::Key::Tab;
+	s_Data.KeyCodes[0x03A] = Input::Key::Caps_Lock;
+	s_Data.KeyCodes[0x145] = Input::Key::Num_Lock;
+	s_Data.KeyCodes[0x046] = Input::Key::Scroll_Lock;
+	s_Data.KeyCodes[0x03B] = Input::Key::F1;
+	s_Data.KeyCodes[0x03C] = Input::Key::F2;
+	s_Data.KeyCodes[0x03D] = Input::Key::F3;
+	s_Data.KeyCodes[0x03E] = Input::Key::F4;
+	s_Data.KeyCodes[0x03F] = Input::Key::F5;
+	s_Data.KeyCodes[0x040] = Input::Key::F6;
+	s_Data.KeyCodes[0x041] = Input::Key::F7;
+	s_Data.KeyCodes[0x042] = Input::Key::F8;
+	s_Data.KeyCodes[0x043] = Input::Key::F9;
+	s_Data.KeyCodes[0x044] = Input::Key::F10;
+	s_Data.KeyCodes[0x057] = Input::Key::F11;
+	s_Data.KeyCodes[0x058] = Input::Key::F12;
+	s_Data.KeyCodes[0x064] = Input::Key::F13;
+	s_Data.KeyCodes[0x065] = Input::Key::F14;
+	s_Data.KeyCodes[0x066] = Input::Key::F15;
+	s_Data.KeyCodes[0x067] = Input::Key::F16;
+	s_Data.KeyCodes[0x068] = Input::Key::F17;
+	s_Data.KeyCodes[0x069] = Input::Key::F18;
+	s_Data.KeyCodes[0x06A] = Input::Key::F19;
+	s_Data.KeyCodes[0x06B] = Input::Key::F20;
+	s_Data.KeyCodes[0x06C] = Input::Key::F21;
+	s_Data.KeyCodes[0x06D] = Input::Key::F22;
+	s_Data.KeyCodes[0x06E] = Input::Key::F23;
+	s_Data.KeyCodes[0x076] = Input::Key::F24;
+	s_Data.KeyCodes[0x038] = Input::Key::Left_ALT;
+	s_Data.KeyCodes[0x01D] = Input::Key::Left_Control;
+	s_Data.KeyCodes[0x02A] = Input::Key::Left_Shift;
+	s_Data.KeyCodes[0x15B] = Input::Key::Left_Super;
+	s_Data.KeyCodes[0x137] = Input::Key::Print_Screen;
+	s_Data.KeyCodes[0x138] = Input::Key::Right_ALT;
+	s_Data.KeyCodes[0x11D] = Input::Key::Right_Control;
+	s_Data.KeyCodes[0x036] = Input::Key::Right_Shift;
+	s_Data.KeyCodes[0x15C] = Input::Key::Right_Super;
+	s_Data.KeyCodes[0x150] = Input::Key::Down;
+	s_Data.KeyCodes[0x14B] = Input::Key::Left;
+	s_Data.KeyCodes[0x14D] = Input::Key::Right;
+	s_Data.KeyCodes[0x148] = Input::Key::Up;
+
+	s_Data.KeyCodes[0x052] = Input::Key::KP_0;
+	s_Data.KeyCodes[0x04F] = Input::Key::KP_1;
+	s_Data.KeyCodes[0x050] = Input::Key::KP_2;
+	s_Data.KeyCodes[0x051] = Input::Key::KP_3;
+	s_Data.KeyCodes[0x04B] = Input::Key::KP_4;
+	s_Data.KeyCodes[0x04C] = Input::Key::KP_5;
+	s_Data.KeyCodes[0x04D] = Input::Key::KP_6;
+	s_Data.KeyCodes[0x047] = Input::Key::KP_7;
+	s_Data.KeyCodes[0x048] = Input::Key::KP_8;
+	s_Data.KeyCodes[0x049] = Input::Key::KP_9;
+	s_Data.KeyCodes[0x04E] = Input::Key::KP_Add;
+	s_Data.KeyCodes[0x053] = Input::Key::KP_Decimal;
+	s_Data.KeyCodes[0x135] = Input::Key::KP_Divide;
+	s_Data.KeyCodes[0x11C] = Input::Key::KP_Enter;
+	s_Data.KeyCodes[0x059] = Input::Key::KP_Equal;
+	s_Data.KeyCodes[0x037] = Input::Key::KP_Multiply;
+	s_Data.KeyCodes[0x04A] = Input::Key::KP_Subtract;
+
+	for (uint32_t scanCode = 0; scanCode < 512; scanCode++)
+		if (static_cast<int32_t>(s_Data.KeyCodes[scanCode]) > 0)
+			s_Data.ScanCodes[static_cast<int32_t>(s_Data.KeyCodes[scanCode])] = scanCode;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar(InternalWindow* window)
+{
+	LONG exStyle = ::GetWindowLong(window->Handle, GWL_EXSTYLE);
+	exStyle &= ~WS_EX_APPWINDOW;
+	exStyle |= WS_EX_TOOLWINDOW;
+	::SetWindowLong(window->Handle, GWL_EXSTYLE, exStyle);
 }
 
 #endif

@@ -496,6 +496,7 @@ void TRAP::INTERNAL::ImGuiWindowing::CreateWindow(ImGuiViewport* viewport)
 	WindowingAPI::WindowHint(WindowingAPI::Hint::FocusOnShow, false);
 	WindowingAPI::WindowHint(WindowingAPI::Hint::Decorated, (viewport->Flags & ImGuiViewportFlags_NoDecoration) ? false : true);
 	WindowingAPI::WindowHint(WindowingAPI::Hint::Floating, (viewport->Flags & ImGuiViewportFlags_TopMost) ? true : false);
+	WindowingAPI::WindowHint(WindowingAPI::Hint::MousePassthrough, true);
 	const WindowingAPI::InternalWindow* shareWindow = (s_clientAPI == WindowingAPI::ContextAPI::OpenGL) ? s_window : nullptr;
 	data->Window = WindowingAPI::CreateWindow(static_cast<int32_t>(viewport->Size.x), static_cast<int32_t>(viewport->Size.y), "No Title Yet", nullptr, shareWindow);
 	data->WindowPtr = data->Window.get();
@@ -548,17 +549,8 @@ void TRAP::INTERNAL::ImGuiWindowing::ShowWindow(ImGuiViewport* viewport)
 {
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
-#ifdef TRAP_PLATFORM_WINDOWS
-	//TRAP hack: Hide icon from task bar
-	const HWND hwnd = static_cast<HWND>(viewport->PlatformHandleRaw);
 	if(viewport->Flags & ImGuiViewportFlags_NoTaskBarIcon)
-	{
-		LONG exStyle = ::GetWindowLong(hwnd, GWL_EXSTYLE);
-		exStyle &= ~WS_EX_APPWINDOW;
-		exStyle |= WS_EX_TOOLWINDOW;
-		::SetWindowLong(hwnd, GWL_EXSTYLE, exStyle);
-	}
-#endif
+		WindowingAPI::HideWindowFromTaskbar((WindowingAPI::InternalWindow*)viewport->PlatformHandle);
 	
 	WindowingAPI::ShowWindow(data->WindowPtr);
 }

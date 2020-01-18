@@ -29,6 +29,7 @@
 #include <future>
 #include <cctype>
 #include <any>
+#include <climits>
 
 //VulkanAPI
 #include <vulkan/vulkan.h>
@@ -53,12 +54,23 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/inotify.h>
+#include <sys/select.h>
 #include <fcntl.h>
 #include <dirent.h>
 #include <unistd.h>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include <X11/Xutil.h>
+#include <X11/Xatom.h>
+#include <X11/Xcursor/Xcursor.h>
+#include <X11/extensions/Xrandr.h>
+#include <X11/XKBlib.h>
+#include <X11/extensions/Xinerama.h>
+#include <X11/extensions/XInput2.h>
+#include <X11/Xresource.h>
+#include <X11/cursorfont.h>
+#include <X11/Xmd.h>
+#include <dlfcn.h>
 
 #ifdef None
 	#undef None
@@ -68,6 +80,12 @@
 #endif
 #ifdef Always
 	#undef Always
+#endif
+#ifdef True
+	#undef True
+#endif
+#ifdef False
+	#undef False
 #endif
 
 #endif

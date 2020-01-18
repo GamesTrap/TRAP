@@ -213,7 +213,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w02a3]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][20w03a1]" + std::string(Graphics::Renderer::GetTitle());
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window.get(), newTitle);
 #else
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window, m_data.Title);
@@ -814,7 +814,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w02a3]";
+		"[INDEV][20w03a1]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif
@@ -823,9 +823,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		static_cast<int32_t>(props.Height),
 		newTitle,
 		nullptr,
-		nullptr);
-
-	INTERNAL::WindowingAPI::GetWindowSize(m_window.get(), m_data.Width, m_data.Height);
+		nullptr);	
 
 	if (!m_window)
 	{
@@ -833,6 +831,8 @@ void TRAP::Window::Init(const WindowProps& props)
 		TRAP::Utils::MsgBox::Show("Failed to create Window!", "Failed to Create Window", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
 		exit(-1);
 	}
+	
+	INTERNAL::WindowingAPI::GetWindowSize(m_window.get(), m_data.Width, m_data.Height);
 
 	if (!s_windows)
 	{
@@ -1211,7 +1211,10 @@ void TRAP::Window::Shutdown()
 	INTERNAL::WindowingAPI::DestroyWindow(std::move(m_window));
 	m_window = nullptr;
 	if (!s_windows)
+	{
 		INTERNAL::WindowingAPI::Shutdown();
+		s_WindowingAPIInitialized = false;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

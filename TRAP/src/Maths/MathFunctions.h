@@ -49,6 +49,9 @@ namespace TRAP::Math
 
 	template<typename T>
 	constexpr bool IsPow2(T x);
+	
+	template<typename T>
+	T Round(const T& arg);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -187,6 +190,14 @@ template<typename T>
 constexpr bool TRAP::Math::IsPow2(const T x)
 {
 	return !(x == T(0)) && !(x & (x - T(1)));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+T TRAP::Math::Round(const T& arg)
+{
+	return std::round(arg);
 }
 
 #endif /*_TRAP_MATHSFUNC_H_*/

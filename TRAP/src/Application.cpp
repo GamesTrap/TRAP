@@ -40,6 +40,13 @@ TRAP::Application::Application()
 	m_endian = static_cast<Endian>(uVal[0] == 1);
 
 	UpdateLinuxWindowManager();
+	
+	//TODO Future Remove
+	if(GetLinuxWindowManager() == LinuxWindowManager::Wayland)
+	{
+		TP_CRITICAL("[Engine][Wayland] Wayland is currently not supported by TRAP! Please us X11 instead");
+		exit(-1);
+	}
 
 	VFS::Init();
 	if (!m_config.LoadFromFile("Engine.cfg"))
@@ -473,12 +480,13 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 	m_window.reset();
 	m_window = std::make_unique<Window>(props);
 	m_window->SetEventCallback([this](Event& e) {OnEvent(e); });
-	//Initialize Renderer
-	Graphics::Renderer::Init();
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
 	//Always added as a fallback texture
 	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
+	Graphics::TextureManager::Add(Graphics::TextureCube::Create());	
+	//Initialize Renderer
+	Graphics::Renderer::Init();
 
 	for (const auto& layer : *m_layerStack)
 		layer->OnAttach();
@@ -502,12 +510,13 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI) const
 	Graphics::API::Context::SetVSyncInterval(m_window->GetVSyncInterval());
 	Graphics::API::RendererAPI::Init();
 	m_window->SetTitle(std::string(m_window->GetTitle()));
-	//Initialize Renderer
-	Graphics::Renderer::Init();
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
 	//Always added as a fallback texture
 	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
+	Graphics::TextureManager::Add(Graphics::TextureCube::Create());	
+	//Initialize Renderer
+	Graphics::Renderer::Init();
 
 	for (const auto& layer : *m_layerStack)
 		layer->OnAttach();
@@ -518,11 +527,10 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI) const
 void TRAP::Application::UpdateLinuxWindowManager()
 {	
 #ifdef TRAP_PLATFORM_LINUX
-	if (std::getenv("WAYLAND_DISPLAY"))
-		if(std::getenv("XDG_SESSION_TYPE") == "wayland")
-			m_linuxWindowManager = LinuxWindowManager::Wayland;
-	else if (std::getenv("DISPLAY"))
-			m_linuxWindowManager = LinuxWindowManager::X11;
+	if (std::getenv("WAYLAND_DISPLAY") || std::getenv("XDG_SESSION_TYPE") == "wayland")
+		m_linuxWindowManager = LinuxWindowManager::Wayland;
+	else if (std::getenv("DISPLAY") || std::getenv("XDG_SESSION_TYPE") == "x11")
+		m_linuxWindowManager = LinuxWindowManager::X11;
 	else
 	{
 		TP_CRITICAL("[Engine][Linux] Unsupported Window Manager!");
