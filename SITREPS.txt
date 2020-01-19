@@ -769,3 +769,7 @@ SITREP 01/19/2020|20w03a2
         - Fixed Windows Frame/Window size callback called twice ~<30 mins
         - Fixed Windows Trying to set SwapInterval while not using OpenGL ~<30 mins
         - Added Cursor captured mode ~>25 mins
+
+SITREP 01/20/2020|20w04a1
+    - Changed TRAP Engine version to 20w04a1(0.6.01)
+    - Switched License from GPL 3.0 to Apache 2.0 ~<20 mins
