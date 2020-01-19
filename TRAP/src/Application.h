@@ -2,7 +2,7 @@
 #define _TRAP_APPLICATION_H_
 #include "TRAPPCH.h"
 
-#include "Layers/ImGuiLayer.h"
+#include "Layers/ImGui/ImGuiLayer.h"
 
 #include "Window/Window.h"
 #include "Config/Config.h"
@@ -14,6 +14,8 @@
 
 namespace TRAP
 {
+	class KeyPressedEvent;
+
 	class Application : public Singleton
 	{		
 	public:
@@ -21,6 +23,14 @@ namespace TRAP
 		{
 			Little = 1,
 			Big = 0
+		};
+
+		enum class LinuxWindowManager
+		{
+			Unknown,
+			
+			X11,
+			Wayland
 		};
 		
 		Application();
@@ -30,15 +40,13 @@ namespace TRAP
 		Application& operator=(Application&&) = delete;
 		virtual ~Application();
 
-		void Run();
+		void Run();		
 
-		void OnEvent(Event& e);
-
-		void PushLayer(Scope<Layer> layer);
-		void PushOverlay(Scope<Layer> overlay);
+		void PushLayer(Scope<Layer> layer) const;
+		void PushOverlay(Scope<Layer> overlay) const;
 
 		Utils::Config* GetConfig();
-		LayerStack& GetLayerStack();
+		LayerStack& GetLayerStack() const;
 
 		uint32_t GetFPS() const;
 		float GetFrameTime() const;		
@@ -50,27 +58,34 @@ namespace TRAP
 		static void Shutdown();
 
 		static Application& Get();
-		static const std::unique_ptr<Window>& GetWindow();
+		static const Scope<Window>& GetWindow();
 		static Utils::TimeStep GetTime();
 		static Endian GetEndian();
+		static LinuxWindowManager GetLinuxWindowManager();
+
+		static void SetClipboardString(const std::string& string);
+		static std::string GetClipboardString();
 
 		void ReCreateWindow(Graphics::API::RenderAPI renderAPI);
 		void ReCreate(Graphics::API::RenderAPI renderAPI) const;
 
-	private:
-#ifdef TRAP_PLATFORM_WINDOWS
-		void CheckIfWindows7OrNewer() const;
-#endif
-		
+	private:		
 		Utils::TimeStep GetTimeInternal() const;
-		
+
+		void OnEvent(Event& e);
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
+		bool OnKeyPress(KeyPressedEvent& e) const;
+		bool OnWindowFocus(WindowFocusEvent& e);
+		bool OnWindowLostFocus(WindowLostFocusEvent& e);
 
-		std::unique_ptr<Window> m_window;
+		void UpdateLinuxWindowManager();
+
+		Scope<Window> m_window;
 		std::unique_ptr<ImGuiLayer> m_ImGuiLayer;
 		bool m_running = true;
 		bool m_minimized = false;
+		bool m_focused = true;
 		std::unique_ptr<LayerStack> m_layerStack;
 
 		Utils::Config m_config;
@@ -84,6 +99,7 @@ namespace TRAP
 		uint32_t m_tickRate;
 
 		Endian m_endian;
+		LinuxWindowManager m_linuxWindowManager;
 		
 		static Application* s_Instance;
 	};

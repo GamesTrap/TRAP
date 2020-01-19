@@ -1,19 +1,17 @@
 #include "TRAPPCH.h"
 #include "ImGuiLayer.h"
 
-#include <examples/imgui_impl_glfw.h>
 #include <examples/imgui_impl_opengl3.h>
 #include <examples/imgui_impl_vulkan.h>
 #ifdef TRAP_PLATFORM_WINDOWS
 #include <examples/imgui_impl_win32.h>
 #include <examples/imgui_impl_dx12.h>
-
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3native.h>
 #endif
 
 #include "Application.h"
 #include "Graphics/API/Context.h"
+#include "Window/WindowingAPI.h"
+#include "ImGuiWindowing.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -31,13 +29,14 @@ void TRAP::ImGuiLayer::OnAttach()
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; //Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; //Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; //Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; //Enable Multi-Viewport / Platform Windows
 
 	//Setup Dear ImGui style
 	ImGui::StyleColorsDark();
 
-	//WHen viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to
+	//When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to
 	ImGuiStyle& style = ImGui::GetStyle();
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
@@ -45,7 +44,7 @@ void TRAP::ImGuiLayer::OnAttach()
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 	}
 
-	GLFWwindow* window = static_cast<GLFWwindow*>(Application::GetWindow()->GetNativeWindow());
+	INTERNAL::WindowingAPI::InternalWindow* window = static_cast<INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow());
 
 	//Setup Platform/Renderer bindings
 /*#ifdef TRAP_PLATFORM_WINDOWS
@@ -57,12 +56,12 @@ void TRAP::ImGuiLayer::OnAttach()
 #endif*/
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 	{
-		ImGui_ImplGlfw_InitForVulkan(window, false);
+		//ImGui_ImplGlfw_InitForVulkan(window, false);
 		//ImGui_ImplVulkan_Init();
 	}
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 	{
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		INTERNAL::ImGuiWindowing::InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init("#version 460 core");
 	}
 }
@@ -81,12 +80,12 @@ void TRAP::ImGuiLayer::OnDetach()
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 	{
 		ImGui_ImplVulkan_Shutdown();
-		ImGui_ImplGlfw_Shutdown();
+		INTERNAL::ImGuiWindowing::Shutdown();
 	}
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 	{
 		ImGui_ImplOpenGL3_Shutdown();
-		ImGui_ImplGlfw_Shutdown();
+		INTERNAL::ImGuiWindowing::Shutdown();
 	}
 
 	ImGui::DestroyContext();
@@ -106,12 +105,12 @@ void TRAP::ImGuiLayer::Begin()
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 	{
 		ImGui_ImplVulkan_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
+		INTERNAL::ImGuiWindowing::NewFrame();
 	}
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 	{
 		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
+		INTERNAL::ImGuiWindowing::NewFrame();
 	}
 
 	ImGui::NewFrame();
@@ -138,7 +137,7 @@ void TRAP::ImGuiLayer::End()
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
 
-		GLFWwindow* backupCurrentContext = nullptr;
+		INTERNAL::WindowingAPI::InternalWindow* backupCurrentContext = nullptr;
 /*#ifdef TRAP_PLATFORM_WINDOWS
 		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::D3D12)
 		{
@@ -150,7 +149,7 @@ void TRAP::ImGuiLayer::End()
 			//Save current context here
 		}
 		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
-			backupCurrentContext = glfwGetCurrentContext();
+			backupCurrentContext = INTERNAL::WindowingAPI::GetCurrentContext();
 
 		ImGui::UpdatePlatformWindows();
 		ImGui::RenderPlatformWindowsDefault();
@@ -166,6 +165,6 @@ void TRAP::ImGuiLayer::End()
 			//Load saved context here
 		}
 		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
-			glfwMakeContextCurrent(backupCurrentContext);
+			INTERNAL::WindowingAPI::MakeContextCurrent(backupCurrentContext);
 	}
 }

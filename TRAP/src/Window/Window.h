@@ -4,11 +4,10 @@
 #include "Graphics/API/Context.h"
 
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 #include "Event/Event.h"
 #include "ImageLoader/Image.h"
-#include <unordered_map>
+#include "WindowingAPI.h"
 
 namespace TRAP
 {
@@ -27,25 +26,23 @@ namespace TRAP
 		};
 
 		//Used to set Cursor mode of windows
-		enum class CursorMode
-		{
-			Normal,
-			Hidden,
-			Disabled
-		};
+		using CursorMode = INTERNAL::WindowingAPI::CursorMode;
+		
+		//Used to set Cursor type of windows
+		using CursorType = INTERNAL::WindowingAPI::CursorType;
 		
 		using EventCallbackFn = std::function<void(Event&)>;
 
 		explicit Window(const WindowProps& props);
-		Window(const Window&) = default;
-		Window& operator=(const Window&) = default;
+		Window(const Window&) = delete;
+		Window& operator=(const Window&) = delete;
 		Window(Window&&) = default;
 		Window& operator=(Window&&) = default;
 		~Window();
 
 		static void OnUpdate();
 		
-		static void Use(const std::unique_ptr<Window>& window);
+		static void Use(const Scope<Window>& window);
 		static void Use();
 		static uint32_t GetActiveWindows();
 		static uint32_t GetMonitors();
@@ -62,7 +59,7 @@ namespace TRAP
 		CursorMode GetCursorMode() const;
 		bool GetRawMouseInput() const;
 
-		void* GetNativeWindow() const;
+		void* GetInternalWindow() const;
 
 		void SetTitle(const std::string& title);
 		void SetDisplayMode(const DisplayMode& mode,
@@ -72,29 +69,49 @@ namespace TRAP
 		void SetMonitor(uint32_t monitor = 0);
 		void SetVSyncInterval(uint32_t interval);
 		void SetCursorMode(const CursorMode& mode);
+		void SetCursorType(const CursorType& cursor) const;
+		void SetCursorIcon(const Scope<Image>& image) const;
 		void SetRawMouseInput(bool enabled);
 		void SetIcon() const;
 		void SetIcon(const Scope<Image>& image) const;
 		void SetEventCallback(const EventCallbackFn& callback);
+		void SetResizable(bool enabled) const;
+		void SetMinimumSize(uint32_t minWidth, uint32_t minHeight) const;
+		void SetMaximumSize(uint32_t maxWidth, uint32_t maxHeight) const;
+
+		bool IsMaximized() const;
+		bool IsMinimized() const;
+		bool IsResizable() const;
+		bool IsVisible() const;
+		bool IsFocused() const;
+		bool IsDecorated() const;
+
+		void Maximize() const;
+		void Minimize() const;
+		void RequestAttention() const;
+		void Focus() const;
+		void Hide() const;
+		void Show() const;
+		void Restore() const;
 
 	private:
 		void Init(const WindowProps& props);
 		void Shutdown();
 		
-		GLFWwindow* m_window;
-		GLFWmonitor* m_useMonitor; //Stores a reference to the monitor
-		static std::unordered_map<uint32_t, GLFWvidmode> s_baseVideoModes; //Stores the underlying video mode being used by the OS for every monitor
+		Scope<INTERNAL::WindowingAPI::InternalWindow> m_window;
+		INTERNAL::WindowingAPI::InternalMonitor* m_useMonitor; //Stores a reference to the monitor
+		static std::unordered_map<uint32_t, INTERNAL::WindowingAPI::VideoMode> s_baseVideoModes; //Stores the underlying video mode being used by the OS for every monitor
 		
 		struct WindowedModeParams
 		{
-			uint32_t Width, Height, RefreshRate;
+			int32_t Width, Height, RefreshRate;
 			int32_t XPos, YPos;
 		} m_oldWindowedParams{};
 		
 		struct WindowData
 		{
 			std::string Title;
-			uint32_t Width{}, Height{}, RefreshRate{}, VSync{};
+			int32_t Width{}, Height{}, RefreshRate{}, VSync{};
 			DisplayMode displayMode{};
 			uint32_t Monitor{};
 			CursorMode cursorMode{};
@@ -107,8 +124,8 @@ namespace TRAP
 		} m_data;
 		
 		static uint32_t s_windows;
-		static bool s_GLFWInitialized;
-		static std::vector<Window*> s_fullscreenWindows;		
+		static bool s_WindowingAPIInitialized;
+		static std::vector<Window*> s_fullscreenWindows;
 	};
 
 	//Used to create new windows
@@ -118,23 +135,43 @@ namespace TRAP
 		uint32_t Width;
 		uint32_t Height;
 		uint32_t RefreshRate;
-		uint32_t VSync;
 		Graphics::API::RenderAPI RenderAPI;
 		Window::DisplayMode displayMode;
 		uint32_t Monitor;
-		Window::CursorMode cursorMode;
-		bool rawMouseInput;
+
+		struct Advanced
+		{			
+			uint32_t VSync = 0;
+			bool Resizable = true;
+			bool Maximized = false;
+			bool Visible = true;
+			bool Focused = true;
+			bool FocusOnShow = true;
+			bool Decorated = true;
+			//bool Stereo = false;
+			bool RawMouseInput = false;
+			Window::CursorMode CursorMode = Window::CursorMode::Normal;
+
+			explicit Advanced(uint32_t vSync = 0,
+			                  bool resizable = true,
+			                  bool maximized = false,
+			                  bool visible = true,
+			                  bool focused = true,
+			                  bool focusOnShow = true,
+			                  bool decorated = true,
+			                  bool rawMouseInput = false,
+			                  Window::CursorMode cursorMode = Window::CursorMode::Normal);
+			
+		} advanced{};
 
 		//Sets up properties for new window(s)
 		explicit WindowProps(std::string title = "TRAP Engine",
-		                     uint32_t width = 1280,
-		                     uint32_t height = 720,
-		                     uint32_t refreshRate = 60,
-		                     uint32_t vsync = 0,
-		                     Window::DisplayMode displayMode = Window::DisplayMode::Windowed,
-		                     uint32_t monitor = 0,
-		                     Window::CursorMode cursorMode = Window::CursorMode::Normal,
-		                     bool rawMouseInput = false);
+							 uint32_t width = 1280,
+							 uint32_t height = 720,
+							 uint32_t refreshRate = 60,
+							 Window::DisplayMode displayMode = Window::DisplayMode::Windowed,
+							 Advanced advanced = Advanced{},
+		                     uint32_t monitor = 0);
 	};
 }
 

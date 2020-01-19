@@ -36,13 +36,13 @@ void TRAP::Graphics::API::D3D12Context::SetVSyncIntervalInternal(uint32_t interv
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Context::Present(const std::unique_ptr<Window>& window)
+void TRAP::Graphics::API::D3D12Context::Present(const Scope<Window>& window)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Context::UseInternal(const std::unique_ptr<Window>& window)
+void TRAP::Graphics::API::D3D12Context::UseInternal(const Window* window)
 {
 }
 

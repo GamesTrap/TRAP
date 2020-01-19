@@ -4,9 +4,6 @@
 [submodule "Dependencies/ImGui"]
 	path = Dependencies/ImGui
 	url = https://github.com/GamesTrap/imgui.git
-[submodule "Dependencies/GLFW"]
-	path = Dependencies/GLFW
-	url = https://github.com/GamesTrap/glfw.git
 [submodule "Dependencies/SPIRV-Cross"]
 	path = Dependencies/SPIRV-Cross
 	url = https://github.com/GamesTrap/SPIRV-Cross.git

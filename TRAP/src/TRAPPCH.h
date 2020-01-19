@@ -28,6 +28,8 @@
 #include <deque>
 #include <future>
 #include <cctype>
+#include <any>
+#include <climits>
 
 //VulkanAPI
 #include <vulkan/vulkan.h>
@@ -38,8 +40,6 @@
 #include <StandAlone/DirStackFileIncluder.h>
 //GLAD
 #include <glad/glad.h>
-//GLFW
-#include <GLFW/glfw3.h>
 //SPIRV to GLSL
 #include <spirv_glsl.hpp>
 //ImGUI
@@ -54,15 +54,48 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/inotify.h>
+#include <sys/select.h>
 #include <fcntl.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <X11/Xlib.h>
+#include <X11/keysym.h>
+#include <X11/Xutil.h>
+#include <X11/Xatom.h>
+#include <X11/Xcursor/Xcursor.h>
+#include <X11/extensions/Xrandr.h>
+#include <X11/XKBlib.h>
+#include <X11/extensions/Xinerama.h>
+#include <X11/extensions/XInput2.h>
+#include <X11/Xresource.h>
+#include <X11/cursorfont.h>
+#include <X11/Xmd.h>
+#include <dlfcn.h>
+
+#ifdef None
+	#undef None
+#endif
+#ifdef Bool
+	#undef Bool
+#endif
+#ifdef Always
+	#undef Always
+#endif
+#ifdef True
+	#undef True
+#endif
+#ifdef False
+	#undef False
+#endif
+
 #endif
 
 #ifdef TRAP_PLATFORM_WINDOWS
 //WinAPI
 #include "Utils/Win.h"
-#include <VersionHelpers.h>
+#include <Dbt.h>
+#include <dwmapi.h>
+#include <imm.h>
 //DirectX
 #include <dxgiformat.h>
 #include <dxgi1_6.h>
@@ -70,11 +103,47 @@
 //XInput
 #include <Xinput.h>
 //DirectInput
+#ifndef DIDFT_OPTIONAL
+	#define DIDFT_OPTIONAL 0x80000000
+#endif
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0800
+#endif
 #include <dinput.h>
 
-#undef far
-#undef min
-#undef max
+#ifdef far
+	#undef far
+#endif
+#ifdef min
+	#undef min
+#endif
+#ifdef max
+	#undef max
+#endif
+#ifdef CreateWindow
+	#undef CreateWindow
+#endif
+#ifdef GetWindowStyle
+	#undef GetWindowStyle
+#endif
+#ifdef GetWindowExStyle
+	#undef GetWindowExStyle
+#endif
+#ifdef IsMaximized
+	#undef IsMaximized
+#endif
+#ifdef IsMinimized
+	#undef IsMinimized
+#endif
+#ifdef IsRestored
+	#undef IsRestored
+#endif
+#ifdef near
+	#undef near
+#endif
+#ifdef DELETE
+	#undef DELETE
+#endif
 #endif
 
 #endif /*_TRAP_TRAPPCH_H_*/

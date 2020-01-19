@@ -45,7 +45,7 @@ void TRAP::Graphics::API::D3D12Renderer::Clear(RendererBufferType buffer)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::Present(const std::unique_ptr<Window>& window)
+void TRAP::Graphics::API::D3D12Renderer::Present(const Scope<Window>& window)
 {
 	m_context->Present(window);
 }

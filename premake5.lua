@@ -18,7 +18,6 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 --Include directories relative to root folder(solution folder)
 IncludeDir = {}
-IncludeDir["GLFW"] = "Dependencies/GLFW/include"
 IncludeDir["GLAD"] = "Dependencies/GLAD/include"
 IncludeDir["IMGUI"] = "Dependencies/ImGui"
 IncludeDir["VULKAN"] = os.getenv("VULKAN_SDK")
@@ -31,7 +30,6 @@ IncludeDir["STANDALONE"] = "Dependencies/GLSLang/StandAlone"
 IncludeDir["SPIRVCROSS"] = "Dependencies/SPIRV-Cross"
 
 group "Dependencies"
-	include "Dependencies/GLFW"
 	include "Dependencies/GLAD"
 	include "Dependencies/ImGui"
 	group "Dependencies/GLSLang"
@@ -74,17 +72,19 @@ project "TRAP"
 		"%{prj.name}/src/Log/ANSILog.cpp",
 		"%{prj.name}/src/Log/WindowsLog.cpp",
 		"%{prj.name}/src/Graphics/API/D3D12/**",
-		"%{prj.name}/src/Platform/**",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxWindows.cpp",
+		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinux.cpp",
+		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.h",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.cpp",
 		"%{prj.name}/src/Input/WindowsInput.cpp",
-		"%{prj.name}/src/Input/LinuxInput.cpp"
+		"%{prj.name}/src/Input/LinuxInput.cpp",
+		"%{prj.name}/src/Window/WindowingAPIWin32.cpp",
+		"%{prj.name}/src/Window/WindowingAPILinuxX11.cpp"
 	}
 
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.VULKAN}/Include/",
@@ -99,21 +99,14 @@ project "TRAP"
 		{
 			"%{prj.name}/src/Utils/Win.h",
 			"%{prj.name}/src/Log/WindowsLog.cpp",
-			"%{prj.name}/src/Platform/Windows/**.h",
-			"%{prj.name}/src/Platform/Windows/**.cpp",
 			"%{prj.name}/src/Graphics/API/D3D12/**",
 			"%{prj.name}/src/Utils/MsgBox/MsgBoxWindows.cpp",
-			"%{prj.name}/src/Input/WindowsInput.cpp"
-		}
-
-		defines
-		{
-			"GLFW_INCLUDE_NONE"
+			"%{prj.name}/src/Input/WindowsInput.cpp",
+			"%{prj.name}/src/Window/WindowingAPIWin32.cpp"
 		}
 
 		links
 		{ 
-			"GLFW",
 			"GLAD",
 			"ImGui",
 			"D3D12",
@@ -128,42 +121,26 @@ project "TRAP"
 			"SPIRV-Cross-HLSL",
 			"DInput8",
 			"DXGUID",
-			"XInput"
+			"XInput",
+			"Imm32"
 		}
 
 	filter "system:linux"
-	if os.getenv("WAYLAND_DISPLAY") and os.getenv("XDG_SESSION_TYPE") then
-		if os.getenv("XDG_SESSION_TYPE") == "wayland" then			
-			files
-			{
-				"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxWayland.cpp"
-			}
-		end
-	else		
-		files
-		{
-			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.cpp"
-		}
-	end
 
 		-- Add Linux-specific files
         files
         {
 			"%{prj.name}/src/Log/ANSILog.cpp",
-            "%{prj.name}/src/Platform/Linux/**.h",
-			"%{prj.name}/src/Platform/Linux/**.cpp",
-			"%{prj.name}/src/Input/LinuxInput.cpp"
-		}
-
-		defines
-		{
-			"GLFW_INCLUDE_NONE"
+			"%{prj.name}/src/Input/LinuxInput.cpp",
+			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinux.cpp",
+			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.h",
+			"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.cpp",
+			"%{prj.name}/src/Window/WindowingAPILinuxX11.cpp"
 		}
 
 		links
 		{
 			"GLAD",
-			"GLFW",
 			"ImGui",
 			"GLSLang",
 			"SPIRV",
@@ -209,7 +186,6 @@ project "Sandbox"
 	includedirs
 	{
 		"TRAP/src",
-		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.GLSLANG}",
@@ -228,7 +204,6 @@ project "Sandbox"
 		links
 		{
 			"GLAD",
-			"GLFW",
 			"ImGui",
 			"GLSLang",
 			"SPIRV",

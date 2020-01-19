@@ -2,7 +2,15 @@
 
 ![TRAP](Branding/TRAP.gif?raw=true "TRAP")
 
-Status: [![Build Status](https://travis-ci.com/GamesTrap/TRAP.svg?branch=master)](https://travis-ci.com/GamesTrap/TRAP)
+[![Build Status](https://travis-ci.com/GamesTrap/TRAP.svg?branch=master)](https://travis-ci.com/GamesTrap/TRAP)
+[![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/GamesTrap/TRAP)](https://github.com/GamesTrap/TRAP)
+[![GitHub repo size](https://img.shields.io/github/repo-size/GamesTrap/TRAP)](https://github.com/GamesTrap/TRAP)
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/GamesTrap/TRAP?include_prereleases)](https://github.com/GamesTrap/TRAP/releases)
+[![GitHub All Releases](https://img.shields.io/github/downloads/GamesTrap/TRAP/total)](https://github.com/GamesTrap/TRAP/releases)
+[![GitHub issues](https://img.shields.io/github/issues/GamesTrap/TRAP)](https://github.com/GamesTrap/TRAP/issues?q=is%3Aopen+is%3Aissue)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/GamesTrap/TRAP)](https://github.com/GamesTrap/TRAP/pulls?q=is%3Aopen+is%3Apr)
+[![GitHub](https://img.shields.io/github/license/GamesTrap/TRAP)](https://github.com/GamesTrap/TRAP/blob/master/LICENSE)
+
 
 TRAP is a cross-platform, high performance game engine currently in development.  
 This README will be updated with more info eventually.
@@ -39,7 +47,6 @@ For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj
 
 ## 3rd Party Libraries used by TRAP Engine:
 
-- [GLFW](https://github.com/GamesTrap/glfw)
 - [GLAD](https://glad.dav1d.de/)
 - [ImGui](https://github.com/GamesTrap/imgui)
 - [VulkanSDK](https://vulkan.lunarg.com/sdk/home)
@@ -50,7 +57,7 @@ For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj
 
 ### Minimum System Requirements
 
-- OS: Windows 8/Ubuntu 18.04.2 or newer (64-Bit versions only)
+- OS: Windows 7/Ubuntu 18.04.2 or newer (64-Bit versions only)
 - Processor: TBD
 - Graphics Card: TBD
 - Memory: 4 GB RAM
@@ -63,7 +70,7 @@ For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj
 
 ### Recommended System Requirements
 
-- OS: Windows 8/Ubuntu 18.04.2 or newer (64-Bit versions only)
+- OS: Windows 7/Ubuntu 18.04.2 or newer (64-Bit versions only)
 - Processor: TBD
 - Graphics Card: TBD
 - Memory: 4 GB RAM

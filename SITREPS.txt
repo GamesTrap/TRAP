@@ -650,3 +650,122 @@ SITREP 12/01/2019|19w48a4
     - Changed TRAP Engine version to 19w48a4(0.5.74)
     - Replaced cstring functions from Controller Input with std::strings ~>40 mins
     - Merged some XInput functions with the other APIs ~>20 mins
+
+SITREP 12/04/2019|19w49a1
+    - Changed TRAP Engine version to 19w49a1(0.5.75)
+    - Branch Window:
+        - Started working on new Window API ~>40 mins
+        - Removed GLFW
+
+SITREP 12/20/2019-12/23/2019|19w51a4-19w52a1
+    - Changed TRAP Engine version to 19w52a1(0.5.80)
+    - Branch Window:
+        - Finished big parts of the new WindowingAPI ~>720 mins
+        - Current phase: Debugging of core features & Tidying up the API
+
+SITREP 12/25/2019|19w52a2
+    - Changed TRAP Engine version to 19w52a2(0.5.81)
+    - Branch Window:
+        - Updated Docs ~>20 mins
+        - Debugged and Fixed WindowingAPI ~>65 mins
+
+SITREP 12/26/2019|19w52a3
+    - Changed TRAP Engine version to 19w52a3(0.5.82)
+    - Branch Window:
+        - Finished Windows side of WindowingAPI ~>240 mins
+
+SITREP 12/27/2019|19w52a4
+    - Changed TRAP Engine version to 19w52a4(0.5.83)
+    - Branch Window:
+        - Added more Cursors ~>20 mins
+        - Updated ImGui submodule ~<10 mins
+
+SITREP 12/28/2019|19w52a5
+    - Changed TRAP Engine version to 19w52a5(0.5.84)
+    - Branch Window:
+        - Changed Borderless Fullscreen Window behaviour ~<25 mins
+        - Fixed: VSync setting gets ignored if switch to Fullscreen ~<20 mins
+        - Fixed: Input polling only used Main Render Window. Now it uses an optional parameter ~<30 mins
+        - Updated Docs ~>25 mins
+        - Fixed: Fullscreen Windows using wrong Viewport size ~<20 mins
+        - Updated Readme ~<20 mins
+
+SITREP 12/29/2019|19w52a6
+    - Changed TRAP Engine version to 19w52a6(0.5.85)
+    - Branch Window:
+        - Added Hotkey ALT+(KP)Enter to switch between Windowed and Fullscreen mode (Single-Window only!) ~<30 mins
+        - Fixed Minimizing the Main Window on Multi-Window programs also stopped Rendering on the other Windows ~<20 mins
+        - Added 30 FPS Lock if Main Window loses focus (Single-Window only!) ~<20 mins
+
+SITREP 01/04/2020|20w01a1
+    - Changed TRAP Engine version to 20w01a1(0.5.86)
+    - Branch Window:
+        - Added Main Window now keeps track of maximized status and saves it for next start ~>20 mins
+        - Added ability to set maximized state upon window creation ~>10 mins
+        - Added ability to set resizable state upon window creation ~<10 mins
+        - Added ability to set custom image as mouse cursor ~<20 mins
+        - Added ability to query maximized, minimized and resizable states from a window ~<30 mins
+        - Replaced every TRAP_BIND_EVENT_FN with lambdas <~20 mins
+        - Removed TRAP_BIND_EVENT_FN instead use lambdas now <~20 mins
+        - Fixed TRAP::Window crash if no EventCallbackFn was set ~<20 mins
+        - Updated Docs
+
+SITREP 01/05/2020|20w01a2
+    - Changed TRAP Engine version to 20w01a2(0.5.87)
+    - Branch Window:
+        - Added ImGui support ~>150 mins
+        - Fixed False triggering 30FPS lock if ImGui child window is focused outside Main Window ~<30 mins
+        - Moar references ~>40 mins
+
+SITREP 01/06/2020|20w02a1
+    - Changed TRAP Engine version to 20w02a1(0.5.88)
+    - Branch Window:
+        - Changed Context Use function to use raw pointer instead of const Scope reference ~<10 mins
+        - Removed pointer hack inside Window.cpp ~<10 mins
+        - Changed some Window functionality ~>30 mins
+
+SITREP 01/07/2020|20w02a2
+    - Changed TRAP Engine version to 20w02a2(0.5.89)
+    - Branch Window:
+        - Added 3 more functions to Window.cpp ~<30 mins
+        - Updated Docs ~<10 mins
+        - Removed some undefined behaviour ~>30 mins
+        - Removed some null deallocator smart pointer ~>30 mins
+
+SITREP 01/11/2020|20w02a3
+    - Changed TRAP Engine version to 20w02a3(0.5.90)
+    - Branch Window:
+        - Changed WindowingAPI from Scopes to Refs ~>145 mins
+        - Added more WindowingAPI functions ~>40 mins
+        - Added GetControllerGUID to Input ~<10 mins
+        - Added new WindowingAPI functions to Window ~>30 mins
+        - Updated Docs ~<35 mins
+
+SITREP 01/12/2020|20w02a4
+    - Changed TRAP Engine version to 20w02a4(0.5.91)
+    - Branch Window:
+        - Added WindowingAPI functions to Window ~>30 mins
+        - Changed WindowProps constructor ~<20 mins
+        - Added clipboard functions to Input ~<10 mins
+        - Updated Docs ~>50 mins
+        - Added detection for X11 and Wayland on Engine startup ~<20 mins
+        - Engine now only runs on Windows 7 or newer ~<10 mins
+        - Made branch more linux compatible ~<15 mins
+
+SITREP 01/18/2020|20w03a1
+    - Changed TRAP Engine version to 20w03a1(0.5.92)
+    - Branch Window:
+        - Finished X11 Windowing ~>400 mins
+        - Fixed 2 small bugs ~<50 mins
+        - Made Config files Cross-Platform compatible (read text files now always use LF) ~<20 mins
+
+SITREP 01/19/2020|20w03a2
+    - Changed TRAP Engine version to 20w03a2(0.5.93)
+    - Branch Window:
+        - Fixed X11 parent window initialization ~<10 mins
+        - Fixed Windows no Win key release event ~<20 mins
+        - Updated Docs ~<15 mins
+        - Fixed Windows synthetic key event used TRAP::Input::Key::Unknown ~<20 mins
+        - Fixed Windows Frame/Window size callback called twice ~<30 mins
+        - Fixed Windows Trying to set SwapInterval while not using OpenGL ~<30 mins
+        - Added Cursor captured mode ~>25 mins

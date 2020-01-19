@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "Core.h"
 
-
-
 //-------------------------------------------------------------------------------------------------------------------//
 
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)

@@ -29,22 +29,22 @@ namespace TRAP
 		Log& operator=(Log&&) = default;
 
 		template<typename... Args>
-		void Trace(const Args& ... args);
+		void Trace(Args&& ... args);
 
 		template<typename... Args>
-		void Debug(const Args& ... args);
+		void Debug(Args&& ... args);
 
 		template<typename... Args>
-		void Info(const Args& ... args);
+		void Info(Args&& ... args);
 
 		template<typename... Args>
-		void Warn(const Args& ... args);
+		void Warn(Args&& ... args);
 
 		template<typename... Args>
-		void Error(const Args& ... args);
+		void Error(Args&& ... args);
 
 		template<typename... Args>
-		void Critical(const Args& ... args);
+		void Critical(Args&& ... args);
 
 		void Save();
 

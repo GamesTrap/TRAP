@@ -4,6 +4,7 @@
 #include "Application.h"
 #include "Event/ControllerEvent.h"
 #include "Utils/String.h"
+#include "Window/WindowingAPI.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -87,20 +88,59 @@ void TRAP::Input::SetControllerAPI(const ControllerAPI controllerAPI)
 
 bool TRAP::Input::IsKeyPressed(const Key key)
 {
-	const auto window = static_cast<GLFWwindow *>(Application::GetWindow()->GetNativeWindow());
-	const auto state = glfwGetKey(window, static_cast<int32_t>(key));
+	if (key == Key::Unknown)
+	{
+		TP_WARN("[Input] Invalid Key provided!");
+		return false;
+	}
 
-	return state == GLFW_PRESS || state == GLFW_REPEAT;
+	const auto state = INTERNAL::WindowingAPI::GetKey(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow()), key);
+
+	return state;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Input::IsKeyPressed(const Key key, const Scope<Window>& window)
+{
+	if (key == Key::Unknown)
+	{
+		TP_WARN("[Input] Invalid Key provided!");
+		return false;
+	}
+	if(!window)
+	{
+		TP_WARN("[Input] Tried to pass nullptr to IsKeyPressed!");
+		return false;
+	}
+	
+	const auto state = INTERNAL::WindowingAPI::GetKey(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), key);
+
+	return state;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Input::IsMouseButtonPressed(const MouseButton button)
 {
-	const auto window = static_cast<GLFWwindow *>(Application::GetWindow()->GetNativeWindow());
-	const auto state = glfwGetMouseButton(window, static_cast<int32_t>(button));
+	const auto state = INTERNAL::WindowingAPI::GetMouseButton(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow()), button);
 
-	return state == GLFW_PRESS;
+	return state;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Input::IsMouseButtonPressed(const MouseButton button, const Scope<Window>& window)
+{
+	if (!window)
+	{
+		TP_WARN("[Input] Tried to pass nullptr to IsMouseButtonPressed!");
+		return false;
+	}
+	
+	const auto state = INTERNAL::WindowingAPI::GetMouseButton(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), button);
+
+	return state;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -118,6 +158,8 @@ bool TRAP::Input::IsGamepadButtonPressed(Controller controller, const Controller
 		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not a Gamepad!");
 		return false;
 	}
+
+	PollController(controller, 0);
 	
 	return IsMappedControllerButtonPressed(controller, button);
 }
@@ -126,15 +168,13 @@ bool TRAP::Input::IsGamepadButtonPressed(Controller controller, const Controller
 
 bool TRAP::Input::IsRawMouseInputSupported()
 {
-	return glfwRawMouseMotionSupported();
+	return INTERNAL::WindowingAPI::RawMouseMotionSupported();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Input::IsControllerConnected(const Controller controller)
-{
-	PollController(controller, 0);
-	
+{	
 	return s_controllerStatuses[static_cast<uint8_t>(controller)].Connected;
 }
 
@@ -158,11 +198,26 @@ bool TRAP::Input::IsControllerGamepad(Controller controller)
 
 TRAP::Math::Vec2 TRAP::Input::GetMousePosition()
 {
-	const auto window = static_cast<GLFWwindow *>(Application::GetWindow()->GetNativeWindow());
 	double xPos, yPos;
-	glfwGetCursorPos(window, &xPos, &yPos);
+	INTERNAL::WindowingAPI::GetCursorPos(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow()), xPos, yPos);
 
 	return {static_cast<float>(xPos), static_cast<float>(yPos)};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Math::Vec2 TRAP::Input::GetMousePosition(const Scope<Window>& window)
+{
+	if(!window)
+	{
+		TP_WARN("[Input] Tried to pass nullptr to GetMousePosition!");
+		return {0.0f, 0.0f};
+	}
+	
+	double xPos, yPos;
+	INTERNAL::WindowingAPI::GetCursorPos(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), xPos, yPos);
+
+	return { static_cast<float>(xPos), static_cast<float>(yPos) };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -187,8 +242,8 @@ float TRAP::Input::GetMouseY()
 
 std::string TRAP::Input::GetKeyName(const Key key)
 {
-	if (glfwGetKeyName(static_cast<int32_t>(key), 0))
-		return glfwGetKeyName(static_cast<int32_t>(key), 0);
+	if (INTERNAL::WindowingAPI::GetKeyName(key, 0))
+		return INTERNAL::WindowingAPI::GetKeyName(key, 0);	
 
 	TP_ERROR("[Input] Couldn't get name of Key: ", static_cast<uint32_t>(key), "!");
 	return "";
@@ -203,6 +258,8 @@ float TRAP::Input::GetControllerAxis(Controller controller, const ControllerAxis
 		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return 0.0f;
 	}
+
+	PollController(controller, 0);
 	
 	if (s_controllerAPI != ControllerAPI::Unknown)
 		return GetMappedControllerAxis(controller, axis);
@@ -219,6 +276,8 @@ TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(Controller controller
 		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return ControllerDPad::Centered;
 	}
+
+	PollController(controller, 0);
 	
 	if (s_controllerAPI != ControllerAPI::Unknown)
 		return GetMappedControllerDPad(controller, dpad);
@@ -248,26 +307,15 @@ const TRAP::Input::ControllerStatus &TRAP::Input::GetControllerStatus(Controller
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::ControllerBattery TRAP::Input::GetControllerBatteryStatus(Controller controller)
+std::string TRAP::Input::GetControllerGUID(Controller controller)
 {
-#ifdef TRAP_PLATFORM_WINDOWS
-	if (s_controllerAPI == ControllerAPI::XInput)
-		UpdateControllerBatteryAndConnectionTypeXInput(controller);
-#endif
+	if (!IsControllerConnected(controller))
+	{
+		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
+		return "";
+	}
 
-	return s_controllerStatuses[static_cast<uint8_t>(controller)].BatteryStatus;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Input::ControllerConnectionType TRAP::Input::GetControllerConnectionType(Controller controller)
-{
-#ifdef TRAP_PLATFORM_WINDOWS
-	if (s_controllerAPI == ControllerAPI::XInput)
-		UpdateControllerBatteryAndConnectionTypeXInput(controller);
-#endif
-
-	return s_controllerStatuses[static_cast<uint8_t>(controller)].ConnectionType;
+	return s_controllerInternal[static_cast<uint8_t>(controller)].guid;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -279,6 +327,8 @@ std::vector<float> TRAP::Input::GetAllControllerAxes(Controller controller)
 		TP_WARN("[Input][Controller] ID: ", static_cast<uint32_t>(controller), " is not connected!");
 		return {};
 	}
+
+	PollController(controller, 0);
 
 	return GetAllControllerAxesInternal(controller);
 }
@@ -293,6 +343,8 @@ std::vector<bool> TRAP::Input::GetAllControllerButtons(Controller controller)
 		return {};
 	}
 
+	PollController(controller, 0);
+
 	return GetAllControllerButtonsInternal(controller);
 }
 
@@ -306,6 +358,8 @@ std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(Cont
 		return {};
 	}
 
+	PollController(controller, 0);
+	
 	return GetAllControllerDPadsInternal(controller);
 }
 
@@ -326,7 +380,23 @@ void TRAP::Input::SetControllerVibration(Controller controller, const float left
 		return;
 	}
 
+	PollController(controller, 0);
+
 	SetControllerVibrationInternal(controller, leftMotor, rightMotor);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Input::SetClipboard(const std::string& str)
+{
+	INTERNAL::WindowingAPI::SetClipboardString(str);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Input::GetClipboard()
+{
+	return INTERNAL::WindowingAPI::GetClipboardString();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -364,24 +434,14 @@ void TRAP::Input::UpdateControllerMappings(const std::string& map)
 void TRAP::Input::OnEvent(Event &e)
 {
 	EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<ControllerConnectEvent>(TRAP_BIND_EVENT_FN(Input::OnControllerConnectEvent));
-	dispatcher.Dispatch<ControllerDisconnectEvent>(TRAP_BIND_EVENT_FN(Input::OnControllerDisconnectEvent));
+	dispatcher.Dispatch<ControllerConnectEvent>([](ControllerConnectEvent& e) {return OnControllerConnectEvent(e); });
+	dispatcher.Dispatch<ControllerDisconnectEvent>([](ControllerDisconnectEvent& e) {return OnControllerDisconnectEvent(e); });
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Input::OnControllerConnectEvent(ControllerConnectEvent &e)
 {
-#ifdef TRAP_PLATFORM_WINDOWS
-	if(s_controllerAPI == ControllerAPI::XInput)
-		UpdateControllerBatteryAndConnectionTypeXInput(e.GetController());
-	else
-#endif
-	{
-		s_controllerStatuses[static_cast<uint8_t>(e.GetController())].BatteryStatus = ControllerBattery::Unknown;
-		s_controllerStatuses[static_cast<uint8_t>(e.GetController())].ConnectionType = ControllerConnectionType::Unknown;
-	}
-
 	s_controllerStatuses[static_cast<uint8_t>(e.GetController())].Connected = true;
 
 	if (s_controllerStatuses[static_cast<uint8_t>(e.GetController())].Connected) //Connected

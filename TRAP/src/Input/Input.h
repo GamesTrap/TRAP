@@ -4,17 +4,22 @@
 #include "Utils/Singleton.h"
 #include "Maths/Math.h"
 #include "Event/Event.h"
+//#include "Application.h"
 
 namespace TRAP
 {
+	class Window;
 	class ControllerDisconnectEvent;
 	class ControllerConnectEvent;
 
 	class Input final : public Singleton
 	{
 	public:
+		
 		enum class Key
 		{
+			Unknown = -1,
+			
 			Space          = 32,
 			Apostrophe     = 39,
 			Comma          = 44,
@@ -83,7 +88,7 @@ namespace TRAP
 			End            = 269,
 			Caps_Lock      = 280,
 			Scroll_Lock    = 281,
-			NUM_Lock       = 282,
+			Num_Lock       = 282,
 			Print_Screen   = 283,
 			Pause          = 284,
 			F1             = 290,
@@ -210,27 +215,9 @@ namespace TRAP
 			Left_Down  = Left | Down
 		};
 
-		enum class ControllerBattery
-		{
-			Unknown,
-			Empty,
-			Low,
-			Medium,
-			Full
-		};
-
-		enum class ControllerConnectionType
-		{
-			Unknown,
-			Wired,
-			Wireless
-		};
-
 		struct ControllerStatus
 		{
 			bool Connected = false;
-			ControllerConnectionType ConnectionType = ControllerConnectionType::Unknown;
-			ControllerBattery BatteryStatus = ControllerBattery::Unknown;
 		};
 
 		//Used to determine which API to use(XInput or DirectInput)
@@ -251,13 +238,16 @@ namespace TRAP
 		static void SetControllerAPI(ControllerAPI controllerAPI);
 		
 		static bool IsKeyPressed(Key key);
+		static bool IsKeyPressed(Key key, const Scope<Window>& window);
 		static bool IsMouseButtonPressed(MouseButton button);
+		static bool IsMouseButtonPressed(MouseButton button, const Scope<Window>& window);
 		static bool IsGamepadButtonPressed(Controller controller, ControllerButton button);
 		static bool IsRawMouseInputSupported();
 		static bool IsControllerConnected(Controller controller);
 		static bool IsControllerGamepad(Controller controller);
 
 		static Math::Vec2 GetMousePosition();
+		static Math::Vec2 GetMousePosition(const Scope<Window>& window);
 		static float GetMouseX();
 		static float GetMouseY();
 		static std::string GetKeyName(Key key);
@@ -265,22 +255,28 @@ namespace TRAP
 		static ControllerDPad GetControllerDPad(Controller controller, uint32_t dpad);
 		static std::string GetControllerName(Controller controller);
 		static const ControllerStatus& GetControllerStatus(Controller controller);
-		static ControllerBattery GetControllerBatteryStatus(Controller controller);
-		static ControllerConnectionType GetControllerConnectionType(Controller controller);
+		static std::string GetControllerGUID(Controller controller);
 		static std::vector<float> GetAllControllerAxes(Controller controller);
 		static std::vector<bool> GetAllControllerButtons(Controller controller);
 		static std::vector<ControllerDPad> GetAllControllerDPads(Controller controller);
 		static const std::array<ControllerStatus, 4>& GetAllControllerStatuses();
 
 		static void SetControllerVibration(Controller controller, float leftMotor, float rightMotor);
+
+		static void SetClipboard(const std::string& str);
+		static std::string GetClipboard();
 		
 		using EventCallbackFn = std::function<void(Event&)>;
 		static void SetEventCallback(const EventCallbackFn& callback);
 		
 		static void UpdateControllerMappings(const std::string& map);
 
-		void OnEvent(Event& e);
+		static void OnEvent(Event& e);
 		
+		static void DetectControllerConnection();
+#ifdef TRAP_PLATFORM_WINDOWS
+		static void UpdateControllerConnectionWindows();
+#endif
 	private:
 		//Universal API Methods
 		static bool InitController();
@@ -290,18 +286,15 @@ namespace TRAP
 		static std::vector<bool> GetAllControllerButtonsInternal(Controller controller);
 		static std::vector<ControllerDPad> GetAllControllerDPadsInternal(Controller controller);
 		static void SetControllerVibrationInternal(Controller controller, float leftMotor, float rightMotor);
-		static bool PollController(Controller controller, int32_t mode);
-		static void DetectControllerConnection(); //TODO call inside window events & This needs to be called in X11 windows when polling for events!
-		static void CloseController(Controller controller);
+		static bool PollController(Controller controller, int32_t mode);		
+		static void CloseController(Controller controller);		
 		
 #ifdef TRAP_PLATFORM_WINDOWS
 		static constexpr const char* MappingName = "Windows";
-		static void UpdateControllerConnectionWindows(); //TODO call inside window events
 		static void UpdateControllerGUIDWindows(std::string& guid);
 		//////////
 		//XInput//
 		//////////
-		static void UpdateControllerBatteryAndConnectionTypeXInput(Controller controller);	
 		static int32_t ControllerButtonToXInput(ControllerButton button);		
 		static std::array<uint32_t, 4> s_lastXInputUpdate;
 		///////////////
@@ -363,8 +356,8 @@ namespace TRAP
 		};
 #endif
 
-		bool OnControllerConnectEvent(ControllerConnectEvent& e);
-		bool OnControllerDisconnectEvent(ControllerDisconnectEvent& e);
+		static bool OnControllerConnectEvent(ControllerConnectEvent& e);
+		static bool OnControllerDisconnectEvent(ControllerDisconnectEvent& e);
 		
 		static std::array<ControllerStatus, 4> s_controllerStatuses;
 		static EventCallbackFn s_eventCallback;

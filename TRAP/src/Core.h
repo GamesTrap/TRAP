@@ -51,7 +51,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 73);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 93);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -117,6 +117,17 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 5, 73);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+#define TRAP_WINDOW_ASSERT(x, ...)                                                                       \
+	{                                                                                                    \
+		if (!(x))                                                                                        \
+		{                                                                                                \
+			TP_ERROR("[Window] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
+			TRAP_DEBUG_BREAK();                                                                            \
+		}                                                                                                \
+	}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 #else
 template <typename T, typename... Args>
 constexpr void TRAP_ASSERT(T x, const Args &... args)
@@ -147,8 +158,6 @@ constexpr T BIT(T x)
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
-
-#define TRAP_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
 namespace TRAP
 {

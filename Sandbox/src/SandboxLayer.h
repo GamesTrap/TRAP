@@ -33,7 +33,9 @@ public:
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnAttach() override
-	{		
+	{
+		TRAP::Application::GetWindow()->SetTitle("Sandbox");
+		
 		//Mount & Load Shaders
 		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
@@ -47,8 +49,7 @@ public:
 
 		///////////////
 		//    Quad   //
-		///////////////
-		
+		///////////////		
 
 		//XYZ RGBA
 		std::array<float, 9 * 4> vertices //Quad
@@ -90,7 +91,7 @@ public:
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnDetach() override
-	{
+	{		
 		m_uniformBuffer->Unbind();
 		m_uniformBuffer.reset();
 		
@@ -101,7 +102,7 @@ public:
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override
-	{
+	{		
 		m_cameraController.OnUpdate(deltaTime);
 
 		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
@@ -109,7 +110,7 @@ public:
 		TRAP::Graphics::Renderer::BeginScene(m_cameraController.GetCamera());
 		{
 			if (m_usePassthrough)
-				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Passthrough"), m_vertexArray);
+				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Fallback"), m_vertexArray);
 			else
 			{
 				TRAP::Graphics::TextureManager::Get2D("TRAP")->Bind(0);
@@ -159,7 +160,7 @@ public:
 		if (event.GetKeyCode() == TRAP::Input::Key::F3 && event.GetRepeatCount() < 1) //Switch to OpenGL
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::OpenGL);
 
-		if (event.GetKeyCode() == TRAP::Input::Key::F4 && event.GetRepeatCount() < 1) //Use Default/Passthrough Shader
+		if (event.GetKeyCode() == TRAP::Input::Key::F4 && event.GetRepeatCount() < 1) //Use Fallback Shader
 			m_usePassthrough = !m_usePassthrough;
 
 		if (event.GetKeyCode() == TRAP::Input::Key::F5 && event.GetRepeatCount() < 1) //Make Window windowed
@@ -188,7 +189,7 @@ public:
 		m_cameraController.OnEvent(event);
 
 		TRAP::EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<TRAP::KeyPressedEvent>(TRAP_BIND_EVENT_FN(SandboxLayer::OnKeyPressed));
+		dispatcher.Dispatch<TRAP::KeyPressedEvent>([this](TRAP::KeyPressedEvent& e) { return OnKeyPressed(e); });
 	}
 
 private:
@@ -206,7 +207,7 @@ private:
 	struct UniformData
 	{
 		float Time{};
-	};	
+	};
 };
 
 #endif /*_GAMESTRAP_SANDBOXLAYER_H_*/
