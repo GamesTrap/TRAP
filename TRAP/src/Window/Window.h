@@ -7,7 +7,6 @@
 
 #include "Event/Event.h"
 #include "ImageLoader/Image.h"
-#include "Input/Input.h"
 #include "WindowingAPI.h"
 
 namespace TRAP
@@ -27,27 +26,10 @@ namespace TRAP
 		};
 
 		//Used to set Cursor mode of windows
-		enum class CursorMode
-		{
-			Normal,
-			Hidden,
-			Disabled
-		};
+		using CursorMode = INTERNAL::WindowingAPI::CursorMode;
 		
 		//Used to set Cursor type of windows
-		enum class CursorType
-		{
-			Arrow,
-			Input,
-			Crosshair,
-			PointingHand,
-			ResizeHorizontal,
-			ResizeVertical,
-			ResizeDiagonalTopLeftBottomRight,
-			ResizeDiagonalTopRightBottomLeft,
-			ResizeAll,
-			NotAllowed
-		};
+		using CursorType = INTERNAL::WindowingAPI::CursorType;
 		
 		using EventCallbackFn = std::function<void(Event&)>;
 

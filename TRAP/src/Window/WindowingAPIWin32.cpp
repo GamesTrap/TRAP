@@ -301,51 +301,6 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow*
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Translates a Windows key to the corresponding TRAP key
-TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKey(const WPARAM wParam, const LPARAM lParam)
-{
-	//The Ctrl keys require special handling
-	if (wParam == VK_CONTROL)
-	{
-		MSG next;
-
-		//Right side keys have the extended key bit set
-		if (HIWORD(lParam) & KF_EXTENDED)
-			return Input::Key::Right_Control;
-
-		//HACK: Alt Gr sends Left Ctrl and then Right Alt in close sequence
-		//      We only want the Right Alt message, so if the next message is
-		//      Right Alt we ignore this (synthetic) Left Ctrl message
-		const DWORD time = GetMessageTime();
-
-		if (PeekMessageW(&next, nullptr, 0, 0, PM_NOREMOVE))
-		{
-			if (next.message == WM_KEYDOWN || next.message == WM_SYSKEYDOWN ||
-				next.message == WM_KEYUP ||	next.message == WM_SYSKEYUP)
-			{
-				if (next.wParam == VK_MENU && (HIWORD(next.lParam) & KF_EXTENDED) && next.time == time)
-				{
-					//Next message is Right Alt down so discard this
-					return Input::Key::Invalid;
-				}
-			}
-		}
-
-		return Input::Key::Left_Control;
-	}
-
-	if (wParam == VK_PROCESSKEY)
-	{
-		//IME notifies that keys have been filtered by setting the virtual
-		//key-code to VK_PROCESSKEY
-		return Input::Key::Invalid;
-	}
-
-	return s_Data.KeyCodes[HIWORD(lParam) & 0x1FF];
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Window callback function (handles window messages)
 LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const UINT uMsg, const WPARAM wParam, const LPARAM lParam)
 {
@@ -418,6 +373,8 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 			{
 				if (windowPtr->cursorMode == CursorMode::Disabled)
 					DisableCursor(windowPtr);
+				else if (windowPtr->cursorMode == CursorMode::Captured)
+					CaptureCursor(windowPtr);
 
 				windowPtr->FrameAction = false;
 			}
@@ -436,6 +393,8 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 
 			if (windowPtr->cursorMode == CursorMode::Disabled)
 				DisableCursor(windowPtr);
+			else if (windowPtr->cursorMode == CursorMode::Captured)
+				CaptureCursor(windowPtr);
 
 			return 0;
 		}
@@ -444,6 +403,8 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 		{
 			if (windowPtr->cursorMode == CursorMode::Disabled)
 				EnableCursor(windowPtr);
+			else if (windowPtr->cursorMode == CursorMode::Captured)
+				ReleaseCursor();
 
 			if (windowPtr->Monitor && !windowPtr->BorderlessFullscreen)
 				PlatformMinimizeWindow(windowPtr);
@@ -515,12 +476,58 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
 		{
-			const Input::Key key = TranslateKey(wParam, lParam);
-			const int32_t scanCode = (HIWORD(lParam) & 0x1FF);
+			Input::Key key = Input::Key::Unknown;
+			int32_t scanCode = 0;
 			const bool action = (HIWORD(lParam) & KF_UP) ? false : true;
 
-			if (key == Input::Key::Invalid)
+			scanCode = (HIWORD(lParam) & (KF_EXTENDED | 0xFF));
+			if(!scanCode)
+			{
+				//NOTE: Some synthetic key messages have a scanCode of 0
+				//HACK: Map the virtual key back to a usable scanCode
+				scanCode = MapVirtualKeyW(static_cast<UINT>(wParam), MAPVK_VK_TO_VSC);
+			}
+
+			key = s_Data.KeyCodes[scanCode];
+
+			//The CTRL keys require special handling
+			if(wParam == VK_CONTROL)
+			{
+				if(HIWORD(lParam) & KF_EXTENDED)
+				{
+					//Right side keys have the extended key bit set
+					key = Input::Key::Right_Control;
+				}
+				else
+				{
+					//NOTE: ALT GR sends Left CTRL followed by Right ALT
+					//HACK: We only want one vent for ALT GR, so if we detect this sequence we discard this
+					//      Left CTRL message now and later report Right ALT normally
+					MSG next;
+					const DWORD time = GetMessageTime();
+
+					if(PeekMessageW(&next, nullptr, 0, 0, PM_NOREMOVE))
+					{
+						if(next.message == WM_KEYDOWN || next.message == WM_SYSKEYDOWN ||
+						   next.message == WM_KEYUP || next.message == WM_SYSKEYUP)
+						{
+							if(next.wParam == VK_MENU && (HIWORD(next.lParam) & KF_EXTENDED) && next.time == time)
+							{
+								//Next message is Right ALT down so discard this
+								break;
+							}
+						}
+					}
+
+					//This is a regular Left CTRL message
+					key = Input::Key::Left_Control;
+				}
+			}
+			else if(wParam == VK_PROCESSKEY)
+			{
+				//IME notifies that keys have been filtered by setting the virtual key-code to VK_PROCESSKEY
 				break;
+			}
 
 			if (!action && wParam == VK_SHIFT)
 			{
@@ -708,6 +715,8 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 			//      resizing the window or using the window menu
 			if (windowPtr->cursorMode == CursorMode::Disabled)
 				EnableCursor(windowPtr);
+			else if (windowPtr->cursorMode == CursorMode::Captured)
+				ReleaseCursor();
 
 			break;
 		}
@@ -722,6 +731,8 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 			//      resizing the window or using the menu
 			if (windowPtr->cursorMode == CursorMode::Disabled)
 				DisableCursor(windowPtr);
+			else if (windowPtr->cursorMode == CursorMode::Captured)
+				CaptureCursor(windowPtr);
 
 			break;
 		}
@@ -730,34 +741,44 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 		{
 			const bool minimized = wParam == SIZE_MINIMIZED;
 			const bool maximized = wParam == SIZE_MAXIMIZED || (windowPtr->Maximized && wParam != SIZE_RESTORED);
+			const int32_t width = LOWORD(lParam);
+			const int32_t height = HIWORD(lParam);
+			
+			if (s_Data.CapturedCursorWindow == windowPtr)
+				CaptureCursor(windowPtr);
 
-			if (s_Data.DisabledCursorWindow == windowPtr)
-				UpdateClipRect(windowPtr);
-
-			InputFrameBufferSize(windowPtr, LOWORD(lParam), HIWORD(lParam));
-			InputWindowSize(windowPtr, LOWORD(lParam), HIWORD(lParam));
-
+			if (windowPtr->Width != width || windowPtr->Height != height)
+			{
+				InputFrameBufferSize(windowPtr, width, height);
+				InputWindowSize(windowPtr, width, height);
+			}
+			
 			if (windowPtr->Monitor && windowPtr->Minimized != minimized)
 			{
 				if (minimized)
 					ReleaseMonitor(windowPtr);
 				else
 				{
-					AcquireMonitor(windowPtr);
+					if (windowPtr->BorderlessFullscreen)
+						AcquireMonitorBorderless(windowPtr);
+					else
+						AcquireMonitor(windowPtr);
 					FitToMonitor(windowPtr);
 				}
 			}
 
 			windowPtr->Minimized = minimized;
 			windowPtr->Maximized = maximized;
+			windowPtr->Width = width;
+			windowPtr->Height = height;
 
 			return 0;
 		}
 
 		case WM_MOVE:
 		{
-			if (s_Data.DisabledCursorWindow == windowPtr)
-				UpdateClipRect(windowPtr);
+			if (s_Data.CapturedCursorWindow == windowPtr)
+				CaptureCursor(windowPtr);
 
 			//NOTE: This cannot use LOWORD/HIWORD recommended by MSDN, as
 			//      those macros do not handle negative window positions correctly
@@ -858,14 +879,21 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 			//sent a WM_GETDPISCALEDSIZE before this
 			if (IsWindows10CreatorsUpdateOrGreaterWin32())
 			{
-				RECT* suggested = reinterpret_cast<RECT*>(lParam);
-				::SetWindowPos(windowPtr->Handle,
-					HWND_TOP,
-					suggested->left,
-					suggested->top,
-					suggested->right - suggested->left,
-					suggested->bottom - suggested->top,
-					SWP_NOACTIVATE | SWP_NOZORDER);
+				RECT windowArea, monitorArea;
+				GetWindowRect(windowPtr->Handle, &windowArea);
+				GetWindowRect(GetDesktopWindow(), &monitorArea);
+
+				if (!EqualRect(&windowArea, &monitorArea))
+				{
+					RECT* suggested = reinterpret_cast<RECT*>(lParam);
+					::SetWindowPos(windowPtr->Handle,
+						HWND_TOP,
+						suggested->left,
+						suggested->top,
+						suggested->right - suggested->left,
+						suggested->bottom - suggested->top,
+						SWP_NOACTIVATE | SWP_NOZORDER);
+				}
 			}
 
 			InputWindowContentScale(windowPtr, xScale, yScale);
@@ -2168,19 +2196,24 @@ HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Scope<Image>& image, const 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Updates the cursor clip rect
-void TRAP::INTERNAL::WindowingAPI::UpdateClipRect(const InternalWindow* window)
+//Sets the cursor clip rect to the window content area
+void TRAP::INTERNAL::WindowingAPI::CaptureCursor(InternalWindow* window)
 {
-	if (window)
-	{
-		RECT clipRect;
-		GetClientRect(window->Handle, &clipRect);
-		ClientToScreen(window->Handle, reinterpret_cast<POINT*>(&clipRect.left));
-		ClientToScreen(window->Handle, reinterpret_cast<POINT*>(&clipRect.right));
-		ClipCursor(&clipRect);
-	}
-	else
-		ClipCursor(nullptr);
+	RECT clipRect;
+	GetClientRect(window->Handle, &clipRect);
+	ClientToScreen(window->Handle, reinterpret_cast<POINT*>(&clipRect.left));
+	ClientToScreen(window->Handle, reinterpret_cast<POINT*>(&clipRect.right));
+	ClipCursor(&clipRect);
+	s_Data.CapturedCursorWindow = window;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Disabled clip cursor
+void TRAP::INTERNAL::WindowingAPI::ReleaseCursor()
+{
+	ClipCursor(nullptr);
+	s_Data.CapturedCursorWindow = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2363,7 +2396,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 		}
 
 		//Note: Set VSync interval again because DWM now doesnt apply here
-		SwapInterval(window->context.Interval);
+		if(window->context.Client == ContextAPI::OpenGL)
+			SwapInterval(window->context.Interval);
 
 		return;
 	}
@@ -2439,7 +2473,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 	}
 
 	//Note: Set VSync interval again because DWM now doesnt apply here
-	SwapInterval(window->context.Interval);
+	if (window->context.Client == ContextAPI::OpenGL)
+		SwapInterval(window->context.Interval);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2474,7 +2509,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 			flags);
 
 		//Note: Set VSync interval again because DWM now doesnt apply here
-		SwapInterval(window->context.Interval);
+		if (window->context.Client == ContextAPI::OpenGL)
+			SwapInterval(window->context.Interval);
 	}
 }
 
@@ -2678,7 +2714,10 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow* window)
 		window->context.Destroy(window);
 
 	if (s_Data.DisabledCursorWindow == window)
-		s_Data.DisabledCursorWindow = nullptr;
+		EnableCursor(window);
+
+	if (s_Data.CapturedCursorWindow == window)
+		ReleaseCursor();
 
 	if (window->Handle)
 	{
@@ -2901,15 +2940,37 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(const InternalWindow* windo
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorMode(InternalWindow* window, const CursorMode mode)
 {
-	if (mode == CursorMode::Disabled)
+	if (PlatformWindowFocused(window))
 	{
-		if (PlatformWindowFocused(window))
-			DisableCursor(window);
+		if (mode == CursorMode::Disabled)
+		{
+			PlatformGetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
+			CenterCursorInContentArea(window);
+			if (window->RawMouseMotion)
+				EnableRawMouseMotion(window);
+		}
+		else if (s_Data.DisabledCursorWindow == window)
+		{
+			if (window->RawMouseMotion)
+				DisableRawMouseMotion(window);
+		}
+
+		if (mode == CursorMode::Disabled || mode == CursorMode::Captured)
+			CaptureCursor(window);
+		else
+			ReleaseCursor();
+
+		if (mode == CursorMode::Disabled)
+			s_Data.DisabledCursorWindow = window;
+		else if (s_Data.DisabledCursorWindow == window)
+		{
+			s_Data.DisabledCursorWindow = nullptr;
+			PlatformSetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
+		}
 	}
-	else if (s_Data.DisabledCursorWindow == window)
-		EnableCursor(window);
-	else if (CursorInContentArea(window))
-		UpdateCursorImage(window);
+	
+	if (CursorInContentArea(window))
+		UpdateCursorImage(window);		
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3164,29 +3225,40 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 		}
 	}
 
+	//HACK: Release modifier keys that the system did not emit KEYUP for
+	//NOTE: Shift keys on Windows tend to "stick" when both are pressed as no key up message is generated
+	//      by the first key release
+	//NOTE: Windows key is not reported as released by the Win+V hot-key
+	//      Other Win hot-keys are handled implicitly by InputWindowFocus because they change the input focus
 	const HWND handle = GetActiveWindow();
 	if (handle)
 	{
-		//NOTE: Shift keys on Windows tend to "stick" when both are pressed as
-		//      no key up message is generated by the first key release
-		//      The other half of this is in the handling of WM_KEYUP
-		//HACK: Query actual key state and synthesize release events as needed
 		InternalWindow* windowPtr = static_cast<InternalWindow*>(GetPropW(handle, L"TRAP"));
 
 		if (windowPtr)
 		{
-			const bool leftShift = (GetAsyncKeyState(VK_LSHIFT) & 0x8000) != 0;
-			const bool rightShift = (GetAsyncKeyState(VK_RSHIFT) & 0x8000) != 0;
+			const std::array<std::array<int32_t, 2>, 4> keys =
+			{
+				{
+					{ VK_LSHIFT, static_cast<int32_t>(Input::Key::Left_Shift)},
+					{ VK_RSHIFT, static_cast<int32_t>(Input::Key::Right_Super)},
+					{ VK_LWIN, static_cast<int32_t>(Input::Key::Left_Super)},
+					{ VK_RWIN, static_cast<int32_t>(Input::Key::Right_Super)}
+				}
+			};
 
-			if (!leftShift && windowPtr->Keys[static_cast<uint32_t>(Input::Key::Left_Shift)] == true)
+			for(int32_t i = 0; i < 4; i++)
 			{
-				const uint32_t scanCode = s_Data.ScanCodes[static_cast<uint32_t>(Input::Key::Left_Shift)];
-				InputKey(windowPtr, Input::Key::Left_Shift, scanCode, false);
-			}
-			else if (!rightShift && windowPtr->Keys[static_cast<uint32_t>(Input::Key::Right_Shift)] == true)
-			{
-				const uint32_t scancode = s_Data.ScanCodes[static_cast<uint32_t>(Input::Key::Right_Shift)];
-				InputKey(windowPtr, Input::Key::Right_Shift, scancode, false);
+				const int32_t vk = keys[i][0];
+				const Input::Key key = static_cast<Input::Key>(keys[i][1]);
+				const int32_t scanCode = s_Data.ScanCodes[static_cast<int32_t>(key)];
+
+				if ((GetAsyncKeyState(vk) & 0x8000))
+					continue;
+				if (windowPtr->Keys[static_cast<int32_t>(key)] != true)
+					continue;
+
+				InputKey(windowPtr, key, scanCode, false);
 			}
 		}
 	}
@@ -3422,7 +3494,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* w
 //Updates the cursor image according to its cursor mode
 void TRAP::INTERNAL::WindowingAPI::UpdateCursorImage(const InternalWindow* window)
 {
-	if (window->cursorMode == CursorMode::Normal)
+	if (window->cursorMode == CursorMode::Normal || window->cursorMode == CursorMode::Captured)
 	{
 		if (window->Cursor)
 			::SetCursor(window->Cursor->Handle);
@@ -3442,7 +3514,7 @@ void TRAP::INTERNAL::WindowingAPI::EnableCursor(InternalWindow* window)
 		DisableRawMouseMotion(window);
 
 	s_Data.DisabledCursorWindow = nullptr;
-	UpdateClipRect(nullptr);
+	ReleaseCursor();
 	PlatformSetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
 	UpdateCursorImage(window);
 }
@@ -3456,7 +3528,7 @@ void TRAP::INTERNAL::WindowingAPI::DisableCursor(InternalWindow* window)
 	PlatformGetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
 	UpdateCursorImage(window);
 	CenterCursorInContentArea(window);
-	UpdateClipRect(window);
+	CaptureCursor(window);
 
 	if (window->RawMouseMotion)
 		EnableRawMouseMotion(window);

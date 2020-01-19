@@ -213,7 +213,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w03a1]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][20w03a2]" + std::string(Graphics::Renderer::GetTitle());
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window.get(), newTitle);
 #else
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window, m_data.Title);
@@ -424,7 +424,7 @@ void TRAP::Window::SetMonitor(const uint32_t monitor)
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Window::SetVSyncInterval(const uint32_t interval)
-{
+{	
 	Graphics::API::Context::SetVSyncInterval(interval);
 	m_data.VSync = interval;
 }
@@ -434,74 +434,23 @@ void TRAP::Window::SetVSyncInterval(const uint32_t interval)
 void TRAP::Window::SetCursorMode(const CursorMode& mode)
 {
 	if (mode == CursorMode::Normal)
-	{
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Normal");
-		INTERNAL::WindowingAPI::SetCursorMode(m_window.get(), INTERNAL::WindowingAPI::CursorMode::Normal);
-		m_data.cursorMode = mode;
-	}
 	else if (mode == CursorMode::Hidden)
-	{
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Hidden");
-		INTERNAL::WindowingAPI::SetCursorMode(m_window.get(), INTERNAL::WindowingAPI::CursorMode::Hidden);
-		m_data.cursorMode = mode;
-	}
 	else if (mode == CursorMode::Disabled)
-	{
 		TP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Disabled");
-		INTERNAL::WindowingAPI::SetCursorMode(m_window.get(), INTERNAL::WindowingAPI::CursorMode::Disabled);
-		m_data.cursorMode = mode;
-	}
+	else if(mode == CursorMode::Captured)
+		TP_DEBUG("[Window] \"", m_data.Title, "\" Set CursorMode: Captured");
+
+	INTERNAL::WindowingAPI::SetCursorMode(m_window.get(), mode);
+	m_data.cursorMode = mode;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Window::SetCursorType(const CursorType& cursor) const
 {
-	switch(cursor)
-	{
-	case CursorType::Arrow:		
-		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::Arrow).get());
-		break;
-
-	case CursorType::Input:
-		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::Input).get());
-		break;
-		
-	case CursorType::Crosshair:
-		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::Crosshair).get());
-		break;
-		
-	case CursorType::PointingHand:
-		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::PointingHand).get());
-		break;
-
-	case CursorType::ResizeHorizontal:
-		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::ResizeHorizontal).get());
-		break;
-
-	case CursorType::ResizeVertical:
-		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::ResizeVertical).get());
-		break;
-		
-	case CursorType::ResizeDiagonalTopLeftBottomRight:
-		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::ResizeDiagonalTopLeftBottomRight).get());
-		break;
-
-	case CursorType::ResizeDiagonalTopRightBottomLeft:
-		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::ResizeDiagonalTopRightBottomLeft).get());
-		break;
-		
-	case CursorType::ResizeAll:
-		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::ResizeAll).get());
-		break;
-		
-	case CursorType::NotAllowed:
-		INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(INTERNAL::WindowingAPI::CursorType::NotAllowed).get());
-		break;
-		
-	default:
-		break;
-	}
+	INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(cursor).get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -814,7 +763,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w03a1]";
+		"[INDEV][20w03a2]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif

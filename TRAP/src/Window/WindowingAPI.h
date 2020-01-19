@@ -71,7 +71,7 @@ namespace TRAP::INTERNAL
 		//The function pointer type for path drop callbacks.
 		typedef void (*DropFunc)(const InternalWindow*, std::vector<std::string> paths);
 		//The function pointer type for monitor configuration callbacks.
-		typedef void (*MonitorFunc)(const InternalMonitor*, bool connected); //TODO Implement Interface
+		typedef void (*MonitorFunc)(const InternalMonitor*, bool connected); //TODO Implement Interface | Handle Disconnect for Main window
 	private:
 		//--------------//
 		//OpenGL Context//
@@ -260,7 +260,8 @@ namespace TRAP::INTERNAL
 		{
 			Normal,
 			Hidden,
-			Disabled
+			Disabled,
+			Captured
 		};
 		enum class CursorType
 		{
@@ -557,6 +558,8 @@ namespace TRAP::INTERNAL
 			double RestoreCursorPosX = 0.0, RestoreCursorPosY = 0.0;
 			//The window whose disabled cursor mode is active
 			InternalWindow* DisabledCursorWindow = nullptr;
+			//The window the cursor is captured in
+			InternalWindow* CapturedCursorWindow = nullptr;
 
 #ifdef TRAP_PLATFORM_WINDOWS
 			std::array<Input::Key, 512> KeyCodes{};
@@ -972,6 +975,8 @@ namespace TRAP::INTERNAL
 			//The last received cursor position, regardless of source
 			int32_t LastCursorPosX = 0, LastCursorPosY = 0;
 
+			int32_t Width = 0, Height = 0;
+
 #ifdef TRAP_PLATFORM_WINDOWS
 			HWND Handle = nullptr;
 			HICON BigIcon = nullptr;
@@ -989,7 +994,6 @@ namespace TRAP::INTERNAL
 			//Whether the visual supports framebuffer transparency
 			bool Transparent = false;
 			//Cached position and size used to filter out duplicate events
-			int32_t Width = 0, Height = 0;
 			int32_t XPos = 0, YPos = 0;
 			//The last position the cursor was warped to by TRAP
 			int32_t WarpCursorPosX = 0, WarpCursorPosY = 0;
@@ -1385,7 +1389,7 @@ namespace TRAP::INTERNAL
 		//The position is specified in content area relative screen coordinates
 		static void InputCursorPos(InternalWindow* window, double xPos, double yPos);
 		//Notifies shared code of a physical key event
-		static void InputKey(InternalWindow* window, Input::Key key, int32_t scancode, bool action);
+		static void InputKey(InternalWindow* window, Input::Key key, int32_t scancode, bool pressed);
 		//Notifies shared code of a Unicode codepoint input event
 		//The 'plain' parameter determines whether to emit a regular character event
 		static void InputChar(const InternalWindow* window, uint32_t codePoint);
@@ -1416,6 +1420,10 @@ namespace TRAP::INTERNAL
 		static void InputMonitor(Scope<InternalMonitor> monitor, bool connected, uint32_t placement);
 		//Notifies shared code of a monitor connection or disconnection
 		static void InputMonitorDisconnect(uint32_t monitorIndex, uint32_t placement);
+		//Sets the cursor clip rect to the window content area
+		static void CaptureCursor(InternalWindow* window);
+		//Disables clip cursor
+		static void ReleaseCursor();
 		//-------//
 		//Windows//
 		//-------//		
@@ -1451,8 +1459,6 @@ namespace TRAP::INTERNAL
 		//Notifies shared code that a window content scale has changed
 		//The scale is specified as the ratio between the current and default DPI
 		static void InputWindowContentScale(const InternalWindow* window, float xScale, float yScale);
-		//Translates a Windows key to the corresponding TRAP key
-		static Input::Key TranslateKey(WPARAM wParam, LPARAM lParam);
 		//Updates key names according to the current keyboard layout
 		static void UpdateKeyNamesWin32();
 		//Window callback function (handles window messages)
@@ -1504,8 +1510,6 @@ namespace TRAP::INTERNAL
 		static bool CursorInContentArea(const InternalWindow* window);
 		//Creates an RGBA icon or cursor
 		static HICON CreateIcon(const Scope<Image>& image, int32_t xHot, int32_t yHot, bool icon);
-		//Updates the cursor clip rect
-		static void UpdateClipRect(const InternalWindow* window);
 		//Update native window styles to match attributes
 		static void UpdateWindowStyles(const InternalWindow* window);
 		//Creates a dummy window for behind-the-scenes work

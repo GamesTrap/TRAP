@@ -757,3 +757,15 @@ SITREP 01/18/2020|20w03a1
     - Branch Window:
         - Finished X11 Windowing ~>400 mins
         - Fixed 2 small bugs ~<50 mins
+        - Made Config files Cross-Platform compatible (read text files now always use LF) ~<20 mins
+
+SITREP 01/19/2020|20w03a2
+    - Changed TRAP Engine version to 20w03a2(0.5.93)
+    - Branch Window:
+        - Fixed X11 parent window initialization ~<10 mins
+        - Fixed Windows no Win key release event ~<20 mins
+        - Updated Docs ~<15 mins
+        - Fixed Windows synthetic key event used TRAP::Input::Key::Unknown ~<20 mins
+        - Fixed Windows Frame/Window size callback called twice ~<30 mins
+        - Fixed Windows Trying to set SwapInterval while not using OpenGL ~<30 mins
+        - Added Cursor captured mode ~>25 mins

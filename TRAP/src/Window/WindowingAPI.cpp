@@ -1323,7 +1323,7 @@ bool TRAP::INTERNAL::WindowingAPI::GetRawMouseMotionMode(const InternalWindow* w
 //Returns the layout-specific name of the specified printable key.
 const char* TRAP::INTERNAL::WindowingAPI::GetKeyName(const Input::Key key, int32_t scanCode)
 {
-	if (key != Input::Key::Unknown && key != Input::Key::Invalid)
+	if (key != Input::Key::Unknown)
 	{
 		if (key != Input::Key::KP_Equal &&
 			(key < Input::Key::KP_0 || key > Input::Key::KP_Add) &&

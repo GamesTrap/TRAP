@@ -88,7 +88,7 @@ void TRAP::Input::SetControllerAPI(const ControllerAPI controllerAPI)
 
 bool TRAP::Input::IsKeyPressed(const Key key)
 {
-	if (key == Key::Invalid || key == Key::Unknown)
+	if (key == Key::Unknown)
 	{
 		TP_WARN("[Input] Invalid Key provided!");
 		return false;
@@ -103,7 +103,7 @@ bool TRAP::Input::IsKeyPressed(const Key key)
 
 bool TRAP::Input::IsKeyPressed(const Key key, const Scope<Window>& window)
 {
-	if (key == Key::Invalid || key == Key::Unknown)
+	if (key == Key::Unknown)
 	{
 		TP_WARN("[Input] Invalid Key provided!");
 		return false;

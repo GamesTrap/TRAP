@@ -18,7 +18,6 @@ namespace TRAP
 		
 		enum class Key
 		{
-			Invalid = -2,
 			Unknown = -1,
 			
 			Space          = 32,

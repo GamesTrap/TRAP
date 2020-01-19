@@ -90,11 +90,17 @@ std::string TRAP::FileSystem::ReadTextFile(const std::filesystem::path& filePath
 		std::ifstream file(filePath);
 		if (file.is_open())
 		{
-			std::stringstream buffer;
-			buffer << file.rdbuf();
+			std::string line;
+			std::string result;
 
+			while (std::getline(file, line))
+			{
+				result += line;
+				result += '\n';
+			}
+			
 			file.close();
-			return buffer.str();
+			return result;
 		}
 
 		TP_ERROR("[FileSystem] Could not open File: ", filePath);
@@ -112,11 +118,17 @@ std::string TRAP::FileSystem::SilentReadTextFile(const std::filesystem::path& fi
 		std::ifstream file(filePath);
 		if (file.is_open())
 		{
-			std::stringstream buffer;
-			buffer << file.rdbuf();
+			std::string line;
+			std::string result;
+
+			while (std::getline(file, line))
+			{
+				result += line;
+				result += '\n';
+			}
 
 			file.close();
-			return buffer.str();
+			return result;
 		}
 	}
 

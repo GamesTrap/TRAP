@@ -1316,6 +1316,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 					
 	GrabErrorHandlerX11();
 	
+	window->Parent = s_Data.Root;
 	window->Handle = XCreateWindow(s_Data.display, s_Data.Root,
 	                               0, 0,
 								   width, height,
@@ -2941,8 +2942,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformUnlockMutex(Mutex& mutex)
 
 void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow* window)
 {
-	if(s_Data.DisabledCursorWindow == window)
-		s_Data.DisabledCursorWindow = nullptr;
+	if (s_Data.DisabledCursorWindow == window)
+		EnableCursor(window);
 		
 	if(window->Monitor)
 		ReleaseMonitor(window);
@@ -3323,16 +3324,36 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(const InternalWindow* windo
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetCursorMode(InternalWindow* window, CursorMode mode)
 {
-	if(mode == CursorMode::Disabled)
+	if (PlatformWindowFocused(window))
 	{
-		if(PlatformWindowFocused(window))
-			DisableCursor(window);
-	}
-	else if(s_Data.DisabledCursorWindow == window)
-		EnableCursor(window);
-	else
-		UpdateCursorImage(window);
+		if (mode == CursorMode::Disabled)
+		{
+			PlatformGetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
+			CenterCursorInContentArea(window);
+			if (window->RawMouseMotion)
+				EnableRawMouseMotion(window);
+		}
+		else if (s_Data.DisabledCursorWindow == window)
+		{
+			if (window->RawMouseMotion)
+				DisableRawMouseMotion(window);
+		}
 		
+		if (mode == CursorMode::Disabled || mode == CursorMode::Captured)
+			CaptureCursor(window);
+		else
+			ReleaseCursor();
+
+		if (mode == CursorMode::Disabled)
+			s_Data.DisabledCursorWindow = window;
+		else if (s_Data.DisabledCursorWindow == window)
+		{
+			s_Data.DisabledCursorWindow = nullptr;
+			PlatformSetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
+		}
+	}
+
+	UpdateCursorImage(window);
 	XFlush(s_Data.display);
 }
 
@@ -4381,6 +4402,12 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 		
 	switch(event.type)
 	{
+		case CreateNotify:
+		{
+			window->Parent = event.xcreatewindow.parent;
+			return;
+		}
+
 		case ReparentNotify:
 		{
 			window->Parent = event.xreparent.parent;
@@ -4803,8 +4830,10 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				return;
 			}
 			
-			if(window->cursorMode == CursorMode::Disabled)
+			if (window->cursorMode == CursorMode::Disabled)
 				DisableCursor(window);
+			else if (window->cursorMode == CursorMode::Captured)
+				CaptureCursor(window);
 				
 			if(window->IC)
 				XSetICFocus(window->IC);
@@ -4823,6 +4852,8 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			
 			if(window->cursorMode == CursorMode::Disabled)
 				EnableCursor(window);
+			else if (window->cursorMode == CursorMode::Captured)
+				ReleaseCursor();
 				
 			if(window->IC)
 				XUnsetICFocus(window->IC);
@@ -5169,8 +5200,7 @@ void TRAP::INTERNAL::WindowingAPI::DisableCursor(InternalWindow* window)
 	PlatformGetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
 	UpdateCursorImage(window);
 	CenterCursorInContentArea(window);
-	XGrabPointer(s_Data.display, window->Handle, 1, ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
-	             GrabModeAsync, GrabModeAsync, window->Handle, s_Data.HiddenCursorHandle, CurrentTime);
+	CaptureCursor(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5182,7 +5212,7 @@ void TRAP::INTERNAL::WindowingAPI::EnableCursor(InternalWindow* window)
 		DisableRawMouseMotion(window);
 		
 	s_Data.DisabledCursorWindow = nullptr;
-	XUngrabPointer(s_Data.display, CurrentTime);
+	ReleaseCursor();
 	PlatformSetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
 	UpdateCursorImage(window);
 }
@@ -5482,6 +5512,27 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 		if(static_cast<int32_t>(s_Data.KeyCodes[scanCode]) > 0)
 			s_Data.ScanCodes[static_cast<int32_t>(s_Data.KeyCodes[scanCode])] = scanCode;
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Grabs the cursor and confines it to the window
+void TRAP::INTERNAL::WindowingAPI::CaptureCursor(InternalWindow* window)
+{
+	XGrabPointer(s_Data.display, window->Handle, 1,
+				 ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
+				 GrabModeAsync, GrabModeAsync,
+				 window->Handle,
+				 0,
+				 CurrentTime);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Ungrabs the cursor
+void TRAP::INTERNAL::WindowingAPI::ReleaseCursor()
+{
+	XUngrabPointer(s_Data.display, CurrentTime);
 }
 
 #endif
