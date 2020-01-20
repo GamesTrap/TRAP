@@ -47,7 +47,6 @@ For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj
 
 ## 3rd Party Libraries used by TRAP Engine:
 
-- [GLAD](https://glad.dav1d.de/)
 - [ImGui](https://github.com/GamesTrap/imgui)
 - [VulkanSDK](https://vulkan.lunarg.com/sdk/home)
 - [GLSLang](https://github.com/GamesTrap/glslang)

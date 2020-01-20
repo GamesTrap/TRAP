@@ -3,8 +3,6 @@
 
 #include "Graphics/API/Context.h"
 
-#include <glad/glad.h>
-
 #include "Event/Event.h"
 #include "ImageLoader/Image.h"
 #include "WindowingAPI.h"

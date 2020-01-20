@@ -27,7 +27,7 @@ namespace TRAP::Graphics::API
 	private:
 		static bool IsExtensionSupported(const std::string& extension);
 		
-		static bool s_IsGladInitialized;
+		static bool s_IsOpenGLInitialized;
 	};
 }
 

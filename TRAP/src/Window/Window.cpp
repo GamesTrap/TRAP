@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "Window.h"
 
-#include <glad/glad.h>
-
 #include "Utils/MsgBox/MsgBox.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/Renderer.h"

@@ -7,7 +7,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::OpenGLContext::s_IsGladInitialized = false;
+bool TRAP::Graphics::API::OpenGLContext::s_IsOpenGLInitialized = false;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -16,10 +16,10 @@ TRAP::Graphics::API::OpenGLContext::OpenGLContext(Window* window)
 	
 	INTERNAL::WindowingAPI::MakeContextCurrent(static_cast<INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()));
 
-	if (!s_IsGladInitialized)
+	if (!s_IsOpenGLInitialized)
 	{
-		TRAP_RENDERER_ASSERT(gladLoadGLLoader(reinterpret_cast<GLADloadproc>(INTERNAL::WindowingAPI::GetProcAddress)), "Could not initialize GLAD");
-		s_IsGladInitialized = true;
+		TRAP_RENDERER_ASSERT(TRAPLoadOpenGLLoader(reinterpret_cast<TRAPLoadProc>(INTERNAL::WindowingAPI::GetProcAddress)), "Could not initialize OpenGL");
+		s_IsOpenGLInitialized = true;
 	}
 }
 
@@ -83,15 +83,15 @@ bool TRAP::Graphics::API::OpenGLContext::IsOpenGLCapable()
 	INTERNAL::WindowingAPI::MakeContextCurrent(OpenGLTestWindow.get());
 
 	//Check if OpenGL can be loaded
-	if (!s_IsGladInitialized)
+	if (!s_IsOpenGLInitialized)
 	{
-		if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(INTERNAL::WindowingAPI::GetProcAddress)))
+		if (!TRAPLoadOpenGLLoader(reinterpret_cast<TRAPLoadProc>(INTERNAL::WindowingAPI::GetProcAddress)))
 			return false;
-		s_IsGladInitialized = true;
+		s_IsOpenGLInitialized = true;
 	}
 
 	//Check if OpenGL Version is higher or equal to 4.6
-	const bool isOpenGLCapable = GLVersion.major >= 4 && GLVersion.minor >= 6;
+	const bool isOpenGLCapable = OpenGLVersion.Major >= 4 && OpenGLVersion.Minor >= 6;
 
 	//Now destroy the test window
 	INTERNAL::WindowingAPI::DestroyWindow(std::move(OpenGLTestWindow));

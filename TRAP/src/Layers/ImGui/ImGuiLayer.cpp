@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "ImGuiLayer.h"
 
-#include <examples/imgui_impl_opengl3.h>
+#include "ImGuiOpenGL4.h"
 #include <examples/imgui_impl_vulkan.h>
 #ifdef TRAP_PLATFORM_WINDOWS
 #include <examples/imgui_impl_win32.h>
@@ -62,7 +62,7 @@ void TRAP::ImGuiLayer::OnAttach()
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 	{
 		INTERNAL::ImGuiWindowing::InitForOpenGL(window, true);
-		ImGui_ImplOpenGL3_Init("#version 460 core");
+		ImGuiOpenGL4Init();
 	}
 }
 
@@ -84,7 +84,7 @@ void TRAP::ImGuiLayer::OnDetach()
 	}
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 	{
-		ImGui_ImplOpenGL3_Shutdown();
+		ImGuiOpenGL4Shutdown();
 		INTERNAL::ImGuiWindowing::Shutdown();
 	}
 
@@ -109,7 +109,7 @@ void TRAP::ImGuiLayer::Begin()
 	}
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 	{
-		ImGui_ImplOpenGL3_NewFrame();
+		ImGuiOpenGL4NewFrame();
 		INTERNAL::ImGuiWindowing::NewFrame();
 	}
 
@@ -132,7 +132,7 @@ void TRAP::ImGuiLayer::End()
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData());*/
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		ImGuiOpenGL4RenderDrawData(ImGui::GetDrawData());
 
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{

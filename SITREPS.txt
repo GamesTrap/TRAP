@@ -773,3 +773,6 @@ SITREP 01/19/2020|20w03a2
 SITREP 01/20/2020|20w04a1
     - Changed TRAP Engine version to 20w04a1(0.6.01)
     - Switched License from GPL 3.0 to Apache 2.0 ~<20 mins
+    - Replaced GLAD ~>300 mins
+    - Added custom ImGui OpenGL 4 implementation ~>40 mins
+    - Updated docs ~<20 mins

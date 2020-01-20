@@ -18,7 +18,6 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 --Include directories relative to root folder(solution folder)
 IncludeDir = {}
-IncludeDir["GLAD"] = "Dependencies/GLAD/include"
 IncludeDir["IMGUI"] = "Dependencies/ImGui"
 IncludeDir["VULKAN"] = os.getenv("VULKAN_SDK")
 IncludeDir["GLSLANG"] = "Dependencies/GLSLang"
@@ -30,7 +29,6 @@ IncludeDir["STANDALONE"] = "Dependencies/GLSLang/StandAlone"
 IncludeDir["SPIRVCROSS"] = "Dependencies/SPIRV-Cross"
 
 group "Dependencies"
-	include "Dependencies/GLAD"
 	include "Dependencies/ImGui"
 	group "Dependencies/GLSLang"
 		include "Dependencies/GLSLang/SPIRV"
@@ -85,7 +83,6 @@ project "TRAP"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.VULKAN}/Include/",
 		"%{IncludeDir.GLSLANG}",
@@ -106,8 +103,7 @@ project "TRAP"
 		}
 
 		links
-		{ 
-			"GLAD",
+		{
 			"ImGui",
 			"D3D12",
 			"DXGI",
@@ -140,7 +136,6 @@ project "TRAP"
 
 		links
 		{
-			"GLAD",
 			"ImGui",
 			"GLSLang",
 			"SPIRV",
@@ -186,7 +181,6 @@ project "Sandbox"
 	includedirs
 	{
 		"TRAP/src",
-		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
@@ -203,7 +197,6 @@ project "Sandbox"
 	filter "system:linux"
 		links
 		{
-			"GLAD",
 			"ImGui",
 			"GLSLang",
 			"SPIRV",

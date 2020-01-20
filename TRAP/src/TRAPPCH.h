@@ -31,6 +31,8 @@
 #include <any>
 #include <climits>
 
+//OpenGL
+#include "Graphics/API/OpenGL/Loader/OpenGLLoader.h"
 //VulkanAPI
 #include <vulkan/vulkan.h>
 //SPIRV
@@ -38,8 +40,6 @@
 #include <SPIRV/GlslangToSpv.h>
 #include <StandAlone/ResourceLimits.h>
 #include <StandAlone/DirStackFileIncluder.h>
-//GLAD
-#include <glad/glad.h>
 //SPIRV to GLSL
 #include <spirv_glsl.hpp>
 //ImGUI
