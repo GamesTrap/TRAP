@@ -670,8 +670,8 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::API::VulkanShader::PreProcess(cons
 
 	if (shader)
 	{
-		shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
-		shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3); //TODO Update to SPIRV 1.4
+		shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_2);
+		shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_5);
 		DirStackFileIncluder includer;
 		if (!shader->preprocess(&glslang::DefaultTBuiltInResource,
 			460,
@@ -763,6 +763,12 @@ std::vector<std::vector<uint32_t>> TRAP::Graphics::API::VulkanShader::ConvertToS
 	{
 		spv::SpvBuildLogger logger{};
 		glslang::SpvOptions spvOptions{};
+#ifdef TRAP_DEBUG
+		spvOptions.validate = true;
+#else
+		spvOptions.disableOptimizer = false;
+		spvOptions.optimizeSize = true;
+#endif		
 		GlslangToSpv(*program.getIntermediate(EShLangVertex), SPIRV[0], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
 			TP_ERROR("[Shader][Vulkan][SPIR-V] Vertex Shader: ", logger.getAllMessages());
@@ -772,6 +778,12 @@ std::vector<std::vector<uint32_t>> TRAP::Graphics::API::VulkanShader::ConvertToS
 	{
 		spv::SpvBuildLogger logger{};
 		glslang::SpvOptions spvOptions{};
+#ifdef TRAP_DEBUG
+		spvOptions.validate = true;
+#else
+		spvOptions.disableOptimizer = false;
+		spvOptions.optimizeSize = true;
+#endif		
 		GlslangToSpv(*program.getIntermediate(EShLangFragment), SPIRV[1], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
 			TP_ERROR("[Shader][Vulkan][SPIR-V] Fragment Shader: ", logger.getAllMessages());
@@ -781,6 +793,12 @@ std::vector<std::vector<uint32_t>> TRAP::Graphics::API::VulkanShader::ConvertToS
 	{
 		spv::SpvBuildLogger logger{};
 		glslang::SpvOptions spvOptions{};
+#ifdef TRAP_DEBUG
+		spvOptions.validate = true;
+#else
+		spvOptions.disableOptimizer = false;
+		spvOptions.optimizeSize = true;
+#endif		
 		GlslangToSpv(*program.getIntermediate(EShLangGeometry), SPIRV[2], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
 			TP_ERROR("[Shader][Vulkan][SPIR-V] Geometry Shader: ", logger.getAllMessages());
@@ -790,6 +808,12 @@ std::vector<std::vector<uint32_t>> TRAP::Graphics::API::VulkanShader::ConvertToS
 	{
 		spv::SpvBuildLogger logger{};
 		glslang::SpvOptions spvOptions{};
+#ifdef TRAP_DEBUG
+		spvOptions.validate = true;
+#else
+		spvOptions.disableOptimizer = false;
+		spvOptions.optimizeSize = true;
+#endif		
 		GlslangToSpv(*program.getIntermediate(EShLangTessControl), SPIRV[3], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
 			TP_ERROR("[Shader][Vulkan][SPIR-V] Tessellation Control Shader: ", logger.getAllMessages());
@@ -799,6 +823,12 @@ std::vector<std::vector<uint32_t>> TRAP::Graphics::API::VulkanShader::ConvertToS
 	{
 		spv::SpvBuildLogger logger{};
 		glslang::SpvOptions spvOptions{};
+#ifdef TRAP_DEBUG
+		spvOptions.validate = true;
+#else
+		spvOptions.disableOptimizer = false;
+		spvOptions.optimizeSize = true;
+#endif		
 		GlslangToSpv(*program.getIntermediate(EShLangTessEvaluation), SPIRV[4], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
 			TP_ERROR("[Shader][Vulkan][SPIR-V] Tessellation Evaluation Shader: ", logger.getAllMessages());
@@ -808,6 +838,12 @@ std::vector<std::vector<uint32_t>> TRAP::Graphics::API::VulkanShader::ConvertToS
 	{
 		spv::SpvBuildLogger logger{};
 		glslang::SpvOptions spvOptions{};
+#ifdef TRAP_DEBUG
+		spvOptions.validate = true;
+#else
+		spvOptions.disableOptimizer = false;
+		spvOptions.optimizeSize = true;
+#endif		
 		GlslangToSpv(*program.getIntermediate(EShLangCompute), SPIRV[5], &logger, &spvOptions);
 		if (logger.getAllMessages().length() > 0)
 			TP_ERROR("[Shader][Vulkan][SPIR-V] Compute Shader: ", logger.getAllMessages());

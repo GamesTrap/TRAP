@@ -784,3 +784,5 @@ SITREP 01/21/2020|20w04a2
 SITREP 01/26/2020|20w04a3
     - Changed TRAP Engine version to 20w04a3(0.6.03)
     - Reworked Math API (Vec1-4, Mat3-4, General)~>309 mins
+    - Updated GLSLang submodule ~<10 mins
+    - VulkanShader now convert GLSL to SPIRV 1.5 (Need Vulkan 1.2 SDK) ~<20 mins
