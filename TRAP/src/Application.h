@@ -14,7 +14,7 @@
 
 namespace TRAP
 {
-	class KeyPressedEvent;
+	class KeyPressEvent;
 
 	class Application : public Singleton
 	{		
@@ -75,7 +75,7 @@ namespace TRAP
 		void OnEvent(Event& e);
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
-		bool OnKeyPress(KeyPressedEvent& e) const;
+		bool OnKeyPress(KeyPressEvent& e) const;
 		bool OnWindowFocus(WindowFocusEvent& e);
 		bool OnWindowLostFocus(WindowLostFocusEvent& e);
 

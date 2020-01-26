@@ -24,146 +24,146 @@ TRAP::KeyEvent::KeyEvent(const Input::Key keyCode)
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::KeyPressedEvent::KeyPressedEvent(const Input::Key keyCode, const int32_t repeatCount, const std::string_view title)
+TRAP::KeyPressEvent::KeyPressEvent(const Input::Key keyCode, const int32_t repeatCount, const std::string_view title)
 	: KeyEvent(keyCode), m_repeatCount(repeatCount), m_title(title)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::KeyPressedEvent::GetRepeatCount() const
+int32_t TRAP::KeyPressEvent::GetRepeatCount() const
 {
 	return m_repeatCount;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::KeyPressedEvent::ToString() const
+std::string TRAP::KeyPressEvent::ToString() const
 {
 	std::stringstream ss;
-	ss << "KeyPressedEvent: " << static_cast<int32_t>(m_keyCode) << " (" << m_repeatCount << " repeats)";
+	ss << "KeyPressEvent: " << static_cast<int32_t>(m_keyCode) << " (" << m_repeatCount << " repeats)";
 
 	return ss.str();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::KeyPressedEvent::GetTitle() const
+std::string_view TRAP::KeyPressEvent::GetTitle() const
 {
 	return m_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::KeyPressedEvent::GetStaticType()
+TRAP::EventType TRAP::KeyPressEvent::GetStaticType()
 {
-	return EventType::KeyPressed;
+	return EventType::KeyPress;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::KeyPressedEvent::GetEventType() const
+TRAP::EventType TRAP::KeyPressEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::KeyPressedEvent::GetName() const
+const char* TRAP::KeyPressEvent::GetName() const
 {
-	return "KeyPressed";
+	return "KeyPress";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::KeyReleasedEvent::KeyReleasedEvent(const Input::Key keyCode, const std::string_view title)
+TRAP::KeyReleaseEvent::KeyReleaseEvent(const Input::Key keyCode, const std::string_view title)
 	: KeyEvent(keyCode), m_title(title)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::KeyReleasedEvent::ToString() const
+std::string TRAP::KeyReleaseEvent::ToString() const
 {
 	std::stringstream ss;
-	ss << "KeyReleasedEvent: " << static_cast<int32_t>(m_keyCode);
+	ss << "KeyReleaseEvent: " << static_cast<int32_t>(m_keyCode);
 
 	return ss.str();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::KeyReleasedEvent::GetTitle() const
+std::string_view TRAP::KeyReleaseEvent::GetTitle() const
 {
 	return m_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::KeyReleasedEvent::GetStaticType()
+TRAP::EventType TRAP::KeyReleaseEvent::GetStaticType()
 {
-	return EventType::KeyReleased;
+	return EventType::KeyRelease;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::KeyReleasedEvent::GetEventType() const
+TRAP::EventType TRAP::KeyReleaseEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::KeyReleasedEvent::GetName() const
+const char* TRAP::KeyReleaseEvent::GetName() const
 {
-	return "KeyReleased";
+	return "KeyRelease";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::KeyTypedEvent::KeyTypedEvent(const Input::Key keyCode, const std::string_view title)
+TRAP::KeyTypeEvent::KeyTypeEvent(const Input::Key keyCode, const std::string_view title)
 	: KeyEvent(keyCode), m_title(title)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::KeyTypedEvent::ToString() const
+std::string TRAP::KeyTypeEvent::ToString() const
 {
 	std::stringstream ss;
-	ss << "KeyTypedEvent: " << static_cast<int32_t>(m_keyCode);
+	ss << "KeyTypeEvent: " << static_cast<int32_t>(m_keyCode);
 
 	return ss.str();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::KeyTypedEvent::GetTitle() const
+std::string_view TRAP::KeyTypeEvent::GetTitle() const
 {
 	return m_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::KeyTypedEvent::GetStaticType()
+TRAP::EventType TRAP::KeyTypeEvent::GetStaticType()
 {
-	return EventType::KeyTyped;
+	return EventType::KeyType;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::KeyTypedEvent::GetEventType() const
+TRAP::EventType TRAP::KeyTypeEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::KeyTypedEvent::GetName() const
+const char* TRAP::KeyTypeEvent::GetName() const
 {
-	return "KeyTyped";
+	return "KeyType";
 }

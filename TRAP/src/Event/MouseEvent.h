@@ -6,10 +6,10 @@
 
 namespace TRAP
 {
-	class MouseMovedEvent final : public Event
+	class MouseMoveEvent final : public Event
 	{
 	public:
-		MouseMovedEvent(float x, float y, std::string_view title);
+		MouseMoveEvent(float x, float y, std::string_view title);
 
 		float GetX() const;
 		float GetY() const;
@@ -27,10 +27,10 @@ namespace TRAP
 		std::string_view m_title;
 	};
 
-	class MouseScrolledEvent final : public Event
+	class MouseScrollEvent final : public Event
 	{
 	public:
-		MouseScrolledEvent(float xOffset, float yOffset, std::string_view title);
+		MouseScrollEvent(float xOffset, float yOffset, std::string_view title);
 
 		float GetXOffset() const;
 		float GetYOffset() const;
@@ -61,10 +61,10 @@ namespace TRAP
 		Input::MouseButton m_button;
 	};
 
-	class MouseButtonPressedEvent final : public MouseButtonEvent
+	class MouseButtonPressEvent final : public MouseButtonEvent
 	{
 	public:
-		explicit MouseButtonPressedEvent(Input::MouseButton button, std::string_view title);
+		explicit MouseButtonPressEvent(Input::MouseButton button, std::string_view title);
 
 		std::string_view GetTitle() const;
 		
@@ -78,10 +78,10 @@ namespace TRAP
 		std::string_view m_title;
 	};
 
-	class MouseButtonReleasedEvent final : public MouseButtonEvent
+	class MouseButtonReleaseEvent final : public MouseButtonEvent
 	{
 	public:
-		explicit MouseButtonReleasedEvent(Input::MouseButton button, std::string_view title);
+		explicit MouseButtonReleaseEvent(Input::MouseButton button, std::string_view title);
 
 		std::string_view GetTitle() const;
 

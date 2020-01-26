@@ -10,11 +10,11 @@ namespace TRAP
 	enum class EventType
 	{
 		None = 0,
-		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
+		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMove,
 		AppTick, AppUpdate, AppRender,
-		KeyPressed, KeyReleased, KeyTyped,
-		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled,
-		ControllerConnected, ControlledDisconnected
+		KeyPress, KeyRelease, KeyType,
+		MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll,
+		ControllerConnect, ControlledDisconnect
 	};
 
 	enum class EventCategory

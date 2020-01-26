@@ -309,7 +309,7 @@ void TRAP::Application::OnEvent(Event& e)
 	EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) {return OnWindowClose(e); });
 	dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) {return OnWindowResize(e); });
-	dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent& e) {return OnKeyPress(e); });
+	dispatcher.Dispatch<KeyPressEvent>([this](KeyPressEvent& e) {return OnKeyPress(e); });
 	dispatcher.Dispatch<WindowFocusEvent>([this](WindowFocusEvent& e) {return OnWindowFocus(e); });
 	dispatcher.Dispatch<WindowLostFocusEvent>([this](WindowLostFocusEvent& e) {return OnWindowLostFocus(e); });
 
@@ -585,7 +585,7 @@ bool TRAP::Application::OnWindowResize(WindowResizeEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnKeyPress(KeyPressedEvent& e) const
+bool TRAP::Application::OnKeyPress(KeyPressEvent& e) const
 {
 	if (Window::GetActiveWindows() == 1)
 	{

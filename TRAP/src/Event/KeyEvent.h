@@ -19,10 +19,10 @@ namespace TRAP
 		Input::Key m_keyCode;
 	};
 
-	class KeyPressedEvent final : public KeyEvent
+	class KeyPressEvent final : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(Input::Key keyCode, int32_t repeatCount, std::string_view title);
+		KeyPressEvent(Input::Key keyCode, int32_t repeatCount, std::string_view title);
 
 		int32_t GetRepeatCount() const;
 
@@ -39,10 +39,10 @@ namespace TRAP
 		std::string_view m_title;
 	};
 
-	class KeyReleasedEvent final : public KeyEvent
+	class KeyReleaseEvent final : public KeyEvent
 	{
 	public:
-		explicit KeyReleasedEvent(Input::Key keyCode, std::string_view title);
+		explicit KeyReleaseEvent(Input::Key keyCode, std::string_view title);
 
 		std::string_view GetTitle() const;
 
@@ -56,10 +56,10 @@ namespace TRAP
 		std::string_view m_title;
 	};
 
-	class KeyTypedEvent final : public KeyEvent
+	class KeyTypeEvent final : public KeyEvent
 	{
 	public:
-		explicit KeyTypedEvent(Input::Key keyCode, std::string_view title);
+		explicit KeyTypeEvent(Input::Key keyCode, std::string_view title);
 
 		std::string_view GetTitle() const;
 

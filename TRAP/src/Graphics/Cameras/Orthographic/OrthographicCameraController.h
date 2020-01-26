@@ -31,8 +31,8 @@ namespace TRAP::Graphics
 		void SetZoomLevel(float zoomLevel);
 		
 	private:
-		bool OnMouseScrolled(MouseScrolledEvent& e);
-		bool OnWindowResized(WindowResizeEvent& e);
+		bool OnMouseScroll(MouseScrollEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
 		
 		float m_aspectRatio;
 		float m_zoomLevel = 1.0f;
@@ -42,7 +42,7 @@ namespace TRAP::Graphics
 		bool m_rotation;
 		bool m_useController;
 		Input::Controller m_controller;
-		const std::unique_ptr<Window>& m_window;
+		const Scope<Window>& m_window;
 
 		Math::Vec3 m_cameraPosition{ 0.0f };
 		Math::Vec3 m_cameraRotation{ 0.0f };

@@ -43,7 +43,7 @@ std::string TRAP::ControllerConnectEvent::ToString() const
 
 TRAP::EventType TRAP::ControllerConnectEvent::GetStaticType()
 {
-	return EventType::ControllerConnected;
+	return EventType::ControllerConnect;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -81,7 +81,7 @@ std::string TRAP::ControllerDisconnectEvent::ToString() const
 
 TRAP::EventType TRAP::ControllerDisconnectEvent::GetStaticType()
 {
-	return EventType::ControlledDisconnected;
+	return EventType::ControlledDisconnect;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

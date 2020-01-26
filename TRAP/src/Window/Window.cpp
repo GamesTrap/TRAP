@@ -966,7 +966,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		if (!data.EventCallback)
 			return;
 		
-		WindowMovedEvent event(x, y, data.Title);
+		WindowMoveEvent event(x, y, data.Title);
 		data.EventCallback(event);
 	});
 
@@ -1013,7 +1013,7 @@ void TRAP::Window::Init(const WindowProps& props)
 				if (!data.EventCallback)
 					return;
 				
-				KeyPressedEvent event(static_cast<Input::Key>(key), 0, data.Title);
+				KeyPressEvent event(static_cast<Input::Key>(key), 0, data.Title);
 				data.EventCallback(event);
 			}
 			else
@@ -1023,7 +1023,7 @@ void TRAP::Window::Init(const WindowProps& props)
 				if (!data.EventCallback)
 					return;
 				
-				KeyPressedEvent event(static_cast<Input::Key>(key), data.KeyRepeatCounts[static_cast<uint16_t>(key)], data.Title);
+				KeyPressEvent event(static_cast<Input::Key>(key), data.KeyRepeatCounts[static_cast<uint16_t>(key)], data.Title);
 				data.EventCallback(event);
 			}
 		}
@@ -1034,7 +1034,7 @@ void TRAP::Window::Init(const WindowProps& props)
 			if (!data.EventCallback)
 				return;
 			
-			KeyReleasedEvent event(static_cast<Input::Key>(key), data.Title);
+			KeyReleaseEvent event(static_cast<Input::Key>(key), data.Title);
 			data.EventCallback(event);
 		}
 	});
@@ -1046,7 +1046,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		if (!data.EventCallback)
 			return;
 		
-		KeyTypedEvent event(static_cast<Input::Key>(keycode), data.Title);
+		KeyTypeEvent event(static_cast<Input::Key>(keycode), data.Title);
 		data.EventCallback(event);
 	});
 
@@ -1059,12 +1059,12 @@ void TRAP::Window::Init(const WindowProps& props)
 		
 		if (pressed)
 		{
-			MouseButtonPressedEvent event(static_cast<Input::MouseButton>(button), data.Title);
+			MouseButtonPressEvent event(static_cast<Input::MouseButton>(button), data.Title);
 			data.EventCallback(event);
 		}
 		else
 		{
-			MouseButtonReleasedEvent event(static_cast<Input::MouseButton>(button), data.Title);
+			MouseButtonReleaseEvent event(static_cast<Input::MouseButton>(button), data.Title);
 			data.EventCallback(event);
 		}
 	});
@@ -1076,7 +1076,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		if (!data.EventCallback)
 			return;
 		
-		MouseScrolledEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset), data.Title);
+		MouseScrollEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset), data.Title);
 		data.EventCallback(event);
 	});
 
@@ -1087,7 +1087,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		if (!data.EventCallback)
 			return;
 		
-		MouseMovedEvent event(static_cast<float>(xPos), static_cast<float>(yPos), data.Title);
+		MouseMoveEvent event(static_cast<float>(xPos), static_cast<float>(yPos), data.Title);
 		data.EventCallback(event);
 	});
 

@@ -786,3 +786,5 @@ SITREP 01/26/2020|20w04a3
     - Reworked Math API (Vec1-4, Mat3-4, General)~>309 mins
     - Updated GLSLang submodule ~<10 mins
     - VulkanShader now convert GLSL to SPIRV 1.5 (Need Vulkan 1.2 SDK) ~<20 mins
+    - Renamed Events ~<20 mins
+    - Updated Docs ~<30 mins

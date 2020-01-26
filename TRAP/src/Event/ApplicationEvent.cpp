@@ -113,66 +113,66 @@ int32_t TRAP::WindowCloseEvent::GetCategoryFlags() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::WindowMovedEvent::WindowMovedEvent(const int32_t x, const int32_t y, const std::string_view title)
+TRAP::WindowMoveEvent::WindowMoveEvent(const int32_t x, const int32_t y, const std::string_view title)
 	: m_x(x), m_y(y), m_title(title)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::WindowMovedEvent::GetX() const
+int32_t TRAP::WindowMoveEvent::GetX() const
 {
 	return m_x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::WindowMovedEvent::GetY() const
+int32_t TRAP::WindowMoveEvent::GetY() const
 {
 	return m_y;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::WindowMovedEvent::GetTitle() const
+std::string_view TRAP::WindowMoveEvent::GetTitle() const
 {
 	return m_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::WindowMovedEvent::ToString() const
+std::string TRAP::WindowMoveEvent::ToString() const
 {
 	std::stringstream ss;
-	ss << "WindowMovedEvent: " << m_x << ", " << m_y;
+	ss << "WindowMoveEvent: " << m_x << ", " << m_y;
 
 	return ss.str();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::WindowMovedEvent::GetStaticType()
+TRAP::EventType TRAP::WindowMoveEvent::GetStaticType()
 {
-	return EventType::WindowMoved;
+	return EventType::WindowMove;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::WindowMovedEvent::GetEventType() const
+TRAP::EventType TRAP::WindowMoveEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::WindowMovedEvent::GetName() const
+const char* TRAP::WindowMoveEvent::GetName() const
 {
 	return "WindowMove";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::WindowMovedEvent::GetCategoryFlags() const
+int32_t TRAP::WindowMoveEvent::GetCategoryFlags() const
 {
 	return static_cast<int32_t>(EventCategory::Application);
 }

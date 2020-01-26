@@ -42,10 +42,10 @@ namespace TRAP
 		std::string_view m_title;
 	};
 
-	class WindowMovedEvent final : public Event
+	class WindowMoveEvent final : public Event
 	{
 	public:
-		WindowMovedEvent(int32_t x, int32_t y, std::string_view title);
+		WindowMoveEvent(int32_t x, int32_t y, std::string_view title);
 
 		int32_t GetX() const;
 		int32_t GetY() const;

@@ -8,7 +8,7 @@ TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(
 	const bool rotation,
 	const bool useController,
 	const Input::Controller controller,
-	const std::unique_ptr<Window>& window)
+	const Scope<Window>& window)
 	: m_aspectRatio(aspectRatio),
 	  m_camera(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel, -1.0f, 1.0f),
 	  m_rotation(rotation),
@@ -101,8 +101,8 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 void TRAP::Graphics::OrthographicCameraController::OnEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent& e) {return OnMouseScrolled(e); });
-	dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) {return OnWindowResized(e); });
+	dispatcher.Dispatch<MouseScrollEvent>([this](MouseScrollEvent& e) {return OnMouseScroll(e); });
+	dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) {return OnWindowResize(e); });
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -166,7 +166,7 @@ void TRAP::Graphics::OrthographicCameraController::SetZoomLevel(const float zoom
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
+bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(MouseScrollEvent& e)
 {
 	if (m_window && m_window->GetTitle() == e.GetTitle())
 	{
@@ -184,7 +184,7 @@ bool TRAP::Graphics::OrthographicCameraController::OnMouseScrolled(MouseScrolled
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::OrthographicCameraController::OnWindowResized(WindowResizeEvent& e)
+bool TRAP::Graphics::OrthographicCameraController::OnWindowResize(WindowResizeEvent& e)
 {
 	if (m_window && m_window->GetTitle() == e.GetTitle())
 	{
