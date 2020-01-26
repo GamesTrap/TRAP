@@ -29,8 +29,13 @@
 //----------------------
 
 //----MATHS-------------
-#include "Maths/MathFunctions.h"
 #include "Maths/Math.h"
+#include "Maths/Vec2.h"
+#include "Maths/Vec3.h"
+#include "Maths/Vec4.h"
+#include "Maths/Mat3.h"
+#include "Maths/Mat4.h"
+#include "Maths/Types.h"
 //----------------------
 
 //----RENDERER----------

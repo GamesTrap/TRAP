@@ -144,6 +144,15 @@
 #ifdef DELETE
 	#undef DELETE
 #endif
+#ifdef isnan
+	#undef isnan
+#endif
+#ifdef isinf
+	#undef isinf
+#endif
+#ifdef log2
+	#undef log2
+#endif
 #endif
 
 #endif /*_TRAP_TRAPPCH_H_*/

@@ -28,7 +28,7 @@ TRAP::Application::Application()
 	  m_fpsLimit(0),
 	  m_tickRate(100),
       m_linuxWindowManager(LinuxWindowManager::Unknown)
-{
+{	
 	TP_DEBUG("[Application] Initializing TRAP Modules...");
 
 	TRAP_CORE_ASSERT(!s_Instance, "Application already exists!");
@@ -37,7 +37,11 @@ TRAP::Application::Application()
 	//Check if machine is using little-endian or big-endian
 	int32_t intVal = 1;
 	uint8_t* uVal = reinterpret_cast<uint8_t*>(&intVal);
+#if __cplusplus > 201703L
+	m_endian = static_cast<Endian>(std::endian::native == std::endian::little);
+#else
 	m_endian = static_cast<Endian>(uVal[0] == 1);
+#endif
 
 	UpdateLinuxWindowManager();
 	

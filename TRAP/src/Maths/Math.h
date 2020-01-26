@@ -1,2824 +1,3631 @@
 #ifndef _TRAP_MATH_H_
 #define _TRAP_MATH_H_
 
-#include <string>
-#include "MathFunctions.h"
+#include "TRAPPCH.h"
+
+#include "Vec2.h"
+#include "Vec3.h"
+#include "Vec4.h"
+#include "Mat3.h"
+#include "Mat4.h"
 
 namespace TRAP::Math
 {
-template <class T>
-struct tVec2;
-template <class T>
-struct tVec3;
-template <class T>
-struct tVec4;
-struct Mat3;
-struct Mat4;
-
-typedef tVec2<float> Vec2;
-typedef tVec2<float> Vec2f;
-typedef tVec2<int32_t> Vec2i;
-typedef tVec2<uint32_t> Vec2ui;
-
-typedef tVec3<float> Vec3;
-typedef tVec3<float> Vec3f;
-typedef tVec3<int32_t> Vec3i;
-typedef tVec3<uint32_t> Vec3ui;
-
-typedef tVec4<float> Vec4;
-typedef tVec4<float> Vec4f;
-typedef tVec4<int32_t> Vec4i;
-typedef tVec4<uint32_t> Vec4ui;
-	
-////////////
-//Vector 2//
-////////////
-template <class T>
-struct tVec2
-{
-	T x, y;
-
-	tVec2<T>();
-	explicit tVec2(const T &scalar);
-	tVec2<T>(const T &x, const T &y);
-	explicit tVec2<T>(const tVec3<T> &vector);
-	explicit tVec2<T>(const tVec4<T> &vector);
-
-	tVec2<T> &Add(const tVec2<T> &other);
-	tVec2<T> &Subtract(const tVec2<T> &other);
-	tVec2<T> &Multiply(const tVec2<T> &other);
-	tVec2<T> &Divide(const tVec2<T> &other);
-
-	tVec2<T> &Add(const tVec3<T> &other);
-	tVec2<T> &Subtract(const tVec3<T> &other);
-	tVec2<T> &Multiply(const tVec3<T> &other);
-	tVec2<T> &Divide(const tVec3<T> &other);
-
-	tVec2<T> &Add(const tVec4<T> &other);
-	tVec2<T> &Subtract(const tVec4<T> &other);
-	tVec2<T> &Multiply(const tVec4<T> &other);
-	tVec2<T> &Divide(const tVec4<T> &other);
-
-	tVec2<T> &Add(const T &value);
-	tVec2<T> &Subtract(const T &value);
-	tVec2<T> &Multiply(const T &value);
-	tVec2<T> &Divide(const T &value);
-
-	tVec2<T> &Add(const T &x, const T &y);
-	tVec2<T> &Subtract(const T &x, const T &y);
-	tVec2<T> &Multiply(const T &x, const T &y);
-	tVec2<T> &Divide(const T &x, const T &y);
-
-	friend tVec2<T> operator+(tVec2<T> left, const tVec2<T> &right) { return left.Add(right); }
-	friend tVec2<T> operator-(tVec2<T> left, const tVec2<T> &right) { return left.Subtract(right); }
-	friend tVec2<T> operator*(tVec2<T> left, const tVec2<T> &right) { return left.Multiply(right); }
-	friend tVec2<T> operator/(tVec2<T> left, const tVec2<T> &right) { return left.Divide(right); }
-
-	friend tVec2<T> operator+(tVec2<T> left, const tVec3<T> &right) { return left.Add(right); }
-	friend tVec2<T> operator-(tVec2<T> left, const tVec3<T> &right) { return left.Subtract(right); }
-	friend tVec2<T> operator*(tVec2<T> left, const tVec3<T> &right) { return left.Multiply(right); }
-	friend tVec2<T> operator/(tVec2<T> left, const tVec3<T> &right) { return left.Divide(right); }
-
-	friend tVec2<T> operator+(tVec2<T> left, const tVec4<T> &right) { return left.Add(right); }
-	friend tVec2<T> operator-(tVec2<T> left, const tVec4<T> &right) { return left.Subtract(right); }
-	friend tVec2<T> operator*(tVec2<T> left, const tVec4<T> &right) { return left.Multiply(right); }
-	friend tVec2<T> operator/(tVec2<T> left, const tVec4<T> &right) { return left.Divide(right); }
-
-	friend tVec2<T> operator+(tVec2<T> left, T value) { return tVec2<T>(left.x + value, left.y + value); }
-	friend tVec2<T> operator-(tVec2<T> left, T value) { return tVec2<T>(left.x - value, left.y - value); }
-	friend tVec2<T> operator*(tVec2<T> left, T value) { return tVec2<T>(left.x * value, left.y * value); }
-	friend tVec2<T> operator/(tVec2<T> left, T value) { return tVec2<T>(left.x / value, left.y / value); }
-
-	bool operator==(const tVec2<T> &other) const;
-	bool operator!=(const tVec2<T> &other) const;
-
-	bool operator==(const tVec3<T> &other) const;
-	bool operator!=(const tVec3<T> &other) const;
-
-	bool operator==(const tVec4<T> &other) const;
-	bool operator!=(const tVec4<T> &other) const;
-
-	tVec2<T> &operator+=(const tVec2<T> &other);
-	tVec2<T> &operator-=(const tVec2<T> &other);
-	tVec2<T> &operator*=(const tVec2<T> &other);
-	tVec2<T> &operator/=(const tVec2<T> &other);
-
-	tVec2<T> &operator+=(const tVec3<T> &other);
-	tVec2<T> &operator-=(const tVec3<T> &other);
-	tVec2<T> &operator*=(const tVec3<T> &other);
-	tVec2<T> &operator/=(const tVec3<T> &other);
-
-	tVec2<T> &operator+=(const tVec4<T> &other);
-	tVec2<T> &operator-=(const tVec4<T> &other);
-	tVec2<T> &operator*=(const tVec4<T> &other);
-	tVec2<T> &operator/=(const tVec4<T> &other);
-
-	tVec2<T> &operator+=(T value);
-	tVec2<T> &operator-=(T value);
-	tVec2<T> &operator*=(T value);
-	tVec2<T> &operator/=(T value);
-
-	bool operator<(const tVec2<T> &other) const;
-	bool operator<=(const tVec2<T> &other) const;
-	bool operator>(const tVec2<T> &other) const;
-	bool operator>=(const tVec2<T> &other) const;
-
-	bool operator<(const tVec3<T> &other) const;
-	bool operator<=(const tVec3<T> &other) const;
-	bool operator>(const tVec3<T> &other) const;
-	bool operator>=(const tVec3<T> &other) const;
-
-	bool operator<(const tVec4<T> &other) const;
-	bool operator<=(const tVec4<T> &other) const;
-	bool operator>(const tVec4<T> &other) const;
-	bool operator>=(const tVec4<T> &other) const;
-
-	float Dot(const tVec2<T> &other) const;
-	float Dot(const tVec3<T> &other) const;
-	float Dot(const tVec4<T> &other) const;
-
-	float Magnitude() const;
-	tVec2<T> Normalize() const;
-	float Distance(const tVec2<T> &other) const;
-	float Distance(const tVec3<T> &other) const;
-	float Distance(const tVec4<T> &other) const;
-
-	std::string ToString() const;
-
-	friend std::ostream &operator<<(std::ostream &stream, const tVec2<T> &vector) { return stream << vector.ToString(); }
-};
-
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-
-////////////
-//Vector 3//
-////////////
-template <class T>
-struct tVec3
-{
-	T x, y, z;
-
-	tVec3<T>();
-	explicit tVec3<T>(const T &scalar);
-	tVec3<T>(const T &x, const T &y);
-	tVec3<T>(const T &x, const T &y, const T &z);
-	tVec3<T>(const tVec2<T> &xy, const T &z);
-	tVec3<T>(const T &x, const tVec2<T> &yz);
-	explicit tVec3<T>(const tVec4<T> &vector);
-
-	static tVec3<T> Up();
-	static tVec3<T> Down();
-	static tVec3<T> Left();
-	static tVec3<T> Right();
-	static tVec3<T> Zero();
-
-	static tVec3<T> XAxis();
-	static tVec3<T> YAxis();
-	static tVec3<T> ZAxis();
-
-	tVec3<T> &Add(const tVec2<T> &other);
-	tVec3<T> &Subtract(const tVec2<T> &other);
-	tVec3<T> &Multiply(const tVec2<T> &other);
-	tVec3<T> &Divide(const tVec2<T> &other);
-
-	tVec3<T> &Add(const tVec3<T> &other);
-	tVec3<T> &Subtract(const tVec3<T> &other);
-	tVec3<T> &Multiply(const tVec3<T> &other);
-	tVec3<T> &Divide(const tVec3<T> &other);
-
-	tVec3<T> &Add(const tVec4<T> &other);
-	tVec3<T> &Subtract(const tVec4<T> &other);
-	tVec3<T> &Multiply(const tVec4<T> &other);
-	tVec3<T> &Divide(const tVec4<T> &other);
-
-	tVec3<T> &Add(const T &value);
-	tVec3<T> &Subtract(const T &value);
-	tVec3<T> &Multiply(const T &value);
-	tVec3<T> &Divide(const T &value);
-
-	tVec3<T> &Add(const T &x, const T &y);
-	tVec3<T> &Subtract(const T &x, const T &y);
-	tVec3<T> &Multiply(const T &x, const T &y);
-	tVec3<T> &Divide(const T &x, const T &y);
-
-	tVec3<T> &Add(const T &x, const T &y, const T &z);
-	tVec3<T> &Subtract(const T &x, const T &y, const T &z);
-	tVec3<T> &Multiply(const T &x, const T &y, const T &z);
-	tVec3<T> &Divide(const T &x, const T &y, const T &z);
-
-	tVec3<T> Multiply(const Mat3 &transform) const;
-	tVec3<T> Multiply(const Mat4 &transform) const;
-
-	friend tVec3<T> operator+(tVec3<T> left, const tVec2<T> &right) { return left.Add(right); }
-	friend tVec3<T> operator-(tVec3<T> left, const tVec2<T> &right) { return left.Subtract(right); }
-	friend tVec3<T> operator*(tVec3<T> left, const tVec2<T> &right) { return left.Multiply(right); }
-	friend tVec3<T> operator/(tVec3<T> left, const tVec2<T> &right) { return left.Divide(right); }
-
-	friend tVec3<T> operator+(tVec3<T> left, const tVec3<T> &right) { return left.Add(right); };
-	friend tVec3<T> operator-(tVec3<T> left, const tVec3<T> &right) { return left.Subtract(right); };
-	friend tVec3<T> operator*(tVec3<T> left, const tVec3<T> &right) { return left.Multiply(right); };
-	friend tVec3<T> operator/(tVec3<T> left, const tVec3<T> &right) { return left.Divide(right); };
-
-	friend tVec3<T> operator+(tVec3<T> left, const tVec4<T> &right) { return left.Add(right); }
-	friend tVec3<T> operator-(tVec3<T> left, const tVec4<T> &right) { return left.Subtract(right); }
-	friend tVec3<T> operator*(tVec3<T> left, const tVec4<T> &right) { return left.Multiply(right); }
-	friend tVec3<T> operator/(tVec3<T> left, const tVec4<T> &right) { return left.Divide(right); }
-
-	friend tVec3<T> operator+(tVec3<T> left, T value) { return tVec3<T>(left.x + value, left.y + value, left.z + value); }
-	friend tVec3<T> operator-(tVec3<T> left, T value) { return tVec3<T>(left.x - value, left.y - value, left.z - value); }
-	friend tVec3<T> operator*(tVec3<T> left, T value) { return tVec3<T>(left.x * value, left.y * value, left.z * value); }
-	friend tVec3<T> operator/(tVec3<T> left, T value) { return tVec3<T>(left.x / value, left.y / value, left.z / value); }
-
-	bool operator==(const tVec2<T> &other) const;
-	bool operator!=(const tVec2<T> &other) const;
-
-	bool operator==(const tVec3<T> &other) const;
-	bool operator!=(const tVec3<T> &other) const;
-
-	bool operator==(const tVec4<T> &other) const;
-	bool operator!=(const tVec4<T> &other) const;
-
-	tVec3<T> &operator+=(const tVec2<T> &other);
-	tVec3<T> &operator-=(const tVec2<T> &other);
-	tVec3<T> &operator*=(const tVec2<T> &other);
-	tVec3<T> &operator/=(const tVec2<T> &other);
-
-	tVec3<T> &operator+=(const tVec3<T> &other);
-	tVec3<T> &operator-=(const tVec3<T> &other);
-	tVec3<T> &operator*=(const tVec3<T> &other);
-	tVec3<T> &operator/=(const tVec3<T> &other);
-
-	tVec3<T> &operator+=(const tVec4<T> &other);
-	tVec3<T> &operator-=(const tVec4<T> &other);
-	tVec3<T> &operator*=(const tVec4<T> &other);
-	tVec3<T> &operator/=(const tVec4<T> &other);
-
-	tVec3<T> &operator+=(T value);
-	tVec3<T> &operator-=(T value);
-	tVec3<T> &operator*=(T value);
-	tVec3<T> &operator/=(T value);
-
-	bool operator<(const tVec2<T> &other) const;
-	bool operator<=(const tVec2<T> &other) const;
-	bool operator>(const tVec2<T> &other) const;
-	bool operator>=(const tVec2<T> &other) const;
-
-	bool operator<(const tVec3<T> &other) const;
-	bool operator<=(const tVec3<T> &other) const;
-	bool operator>(const tVec3<T> &other) const;
-	bool operator>=(const tVec3<T> &other) const;
-
-	bool operator<(const tVec4<T> &other) const;
-	bool operator<=(const tVec4<T> &other) const;
-	bool operator>(const tVec4<T> &other) const;
-	bool operator>=(const tVec4<T> &other) const;
-
-	float Dot(const tVec2<T> &other) const;
-	float Dot(const tVec3<T> &other) const;
-	float Dot(const tVec4<T> &other) const;
-	tVec3<T> Cross(const tVec3<T> &other) const;
-
-	float Magnitude() const;
-	tVec3<T> Normalize() const;
-	float Distance(const tVec2<T> &other) const;
-	float Distance(const tVec3<T> &other) const;
-	float Distance(const tVec4<T> &other) const;
-
-	std::string ToString() const;
-
-	friend std::ostream &operator<<(std::ostream &stream, const tVec3<T> &vector) { return stream << vector.ToString(); }
-};
-
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-
-////////////
-//Vector 4//
-////////////
-template <class T>
-struct tVec4
-{
-	T x, y, z, w;
-
-	tVec4<T>();
-	explicit tVec4<T>(const T &scalar);
-	tVec4<T>(const T &x, const T &y);
-	tVec4<T>(const T &x, const T &y, const T &z);
-	tVec4<T>(const T &x, const T &y, const T &z, const T &w);
-	tVec4<T>(const tVec2<T> &xy, const T &z);
-	tVec4<T>(const T &x, const tVec2<T> &yz);
-	tVec4<T>(const tVec2<T> &xy, const T &z, const T &w);
-	tVec4<T>(const T &x, const T &y, const tVec2<T> &zw);
-	tVec4<T>(const tVec2<T> &xy, const tVec2<T> &zw);
-	tVec4<T>(const tVec3<T> &xyz, const T &w);
-	tVec4<T>(const T &x, const tVec3<T> &yzw);
-
-	tVec4<T> &Add(const tVec2<T> &other);
-	tVec4<T> &Subtract(const tVec2<T> &other);
-	tVec4<T> &Multiply(const tVec2<T> &other);
-	tVec4<T> &Divide(const tVec2<T> &other);
-
-	tVec4<T> &Add(const tVec3<T> &other);
-	tVec4<T> &Subtract(const tVec3<T> &other);
-	tVec4<T> &Multiply(const tVec3<T> &other);
-	tVec4<T> &Divide(const tVec3<T> &other);
-
-	tVec4<T> &Add(const tVec4<T> &other);
-	tVec4<T> &Subtract(const tVec4<T> &other);
-	tVec4<T> &Multiply(const tVec4<T> &other);
-	tVec4<T> &Divide(const tVec4<T> &other);
-
-	tVec4<T> &Add(const T &value);
-	tVec4<T> &Subtract(const T &value);
-	tVec4<T> &Multiply(const T &value);
-	tVec4<T> &Divide(const T &value);
-
-	tVec4<T> &Add(const T &x, const T &y);
-	tVec4<T> &Subtract(const T &x, const T &y);
-	tVec4<T> &Multiply(const T &x, const T &y);
-	tVec4<T> &Divide(const T &x, const T &y);
-
-	tVec4<T> &Add(const T &x, const T &y, const T &z);
-	tVec4<T> &Subtract(const T &x, const T &y, const T &z);
-	tVec4<T> &Multiply(const T &x, const T &y, const T &z);
-	tVec4<T> &Divide(const T &x, const T &y, const T &z);
-
-	tVec4<T> &Add(const T &x, const T &y, const T &z, const T &w);
-	tVec4<T> &Subtract(const T &x, const T &y, const T &z, const T &w);
-	tVec4<T> &Multiply(const T &x, const T &y, const T &z, const T &w);
-	tVec4<T> &Divide(const T &x, const T &y, const T &z, const T &w);
-
-	tVec4<T> Multiply(const Mat3 &transform) const;
-	tVec4<T> Multiply(const Mat4 &transform) const;
-
-	friend tVec4<T> operator+(tVec4<T> left, const tVec2<T> &right) { return left.Add(right); }
-	friend tVec4<T> operator-(tVec4<T> left, const tVec2<T> &right) { return left.Subtract(right); }
-	friend tVec4<T> operator*(tVec4<T> left, const tVec2<T> &right) { return left.Multiply(right); }
-	friend tVec4<T> operator/(tVec4<T> left, const tVec2<T> &right) { return left.Divide(right); }
-
-	friend tVec4<T> operator+(tVec4<T> left, const tVec3<T> &right) { return left.Add(right); }
-	friend tVec4<T> operator-(tVec4<T> left, const tVec3<T> &right) { return left.Subtract(right); }
-	friend tVec4<T> operator*(tVec4<T> left, const tVec3<T> &right) { return left.Multiply(right); }
-	friend tVec4<T> operator/(tVec4<T> left, const tVec3<T> &right) { return left.Divide(right); }
-
-	friend tVec4<T> operator+(tVec4<T> left, const tVec4<T> &right) { return left.Add(right); };
-	friend tVec4<T> operator-(tVec4<T> left, const tVec4<T> &right) { return left.Subtract(right); };
-	friend tVec4<T> operator*(tVec4<T> left, const tVec4<T> &right) { return left.Multiply(right); };
-	friend tVec4<T> operator/(tVec4<T> left, const tVec4<T> &right) { return left.Divide(right); };
-
-	friend tVec4<T> operator+(tVec4<T> left, T value) { return tVec4<T>(left.x + value, left.y + value, left.z + value, left.w + value); }
-	friend tVec4<T> operator-(tVec4<T> left, T value) { return tVec4<T>(left.x - value, left.y - value, left.z - value, left.w - value); }
-	friend tVec4<T> operator*(tVec4<T> left, T value) { return tVec4<T>(left.x * value, left.y * value, left.z * value, left.w * value); }
-	friend tVec4<T> operator/(tVec4<T> left, T value) { return tVec4<T>(left.x / value, left.y / value, left.z / value, left.w / value); }
-
-	bool operator==(const tVec2<T> &other) const;
-	bool operator!=(const tVec2<T> &other) const;
-
-	bool operator==(const tVec3<T> &other) const;
-	bool operator!=(const tVec3<T> &other) const;
-
-	bool operator==(const tVec4<T> &other) const;
-	bool operator!=(const tVec4<T> &other) const;
-
-	tVec4<T> &operator+=(const tVec2<T> &other);
-	tVec4<T> &operator-=(const tVec2<T> &other);
-	tVec4<T> &operator*=(const tVec2<T> &other);
-	tVec4<T> &operator/=(const tVec2<T> &other);
-
-	tVec4<T> &operator+=(const tVec3<T> &other);
-	tVec4<T> &operator-=(const tVec3<T> &other);
-	tVec4<T> &operator*=(const tVec3<T> &other);
-	tVec4<T> &operator/=(const tVec3<T> &other);
-
-	tVec4<T> &operator+=(const tVec4<T> &other);
-	tVec4<T> &operator-=(const tVec4<T> &other);
-	tVec4<T> &operator*=(const tVec4<T> &other);
-	tVec4<T> &operator/=(const tVec4<T> &other);
-
-	tVec4<T> &operator+=(T value);
-	tVec4<T> &operator-=(T value);
-	tVec4<T> &operator*=(T value);
-	tVec4<T> &operator/=(T value);
-
-	bool operator<(const tVec2<T> &other) const;
-	bool operator<=(const tVec2<T> &other) const;
-	bool operator>(const tVec2<T> &other) const;
-	bool operator>=(const tVec2<T> &other) const;
-
-	bool operator<(const tVec3<T> &other) const;
-	bool operator<=(const tVec3<T> &other) const;
-	bool operator>(const tVec3<T> &other) const;
-	bool operator>=(const tVec3<T> &other) const;
-
-	bool operator<(const tVec4<T> &other) const;
-	bool operator<=(const tVec4<T> &other) const;
-	bool operator>(const tVec4<T> &other) const;
-	bool operator>=(const tVec4<T> &other) const;
-
-	float Dot(const tVec2<T> &other) const;
-	float Dot(const tVec3<T> &other) const;
-	float Dot(const tVec4<T> &other) const;
-
-	float Magnitude() const;
-	tVec4<T> Normalize() const;
-	float Distance(const tVec2<T> &other) const;
-	float Distance(const tVec3<T> &other) const;
-	float Distance(const tVec4<T> &other) const;
-
-	std::string ToString() const;
-
-	friend std::ostream &operator<<(std::ostream &stream, const tVec4<T> &vector) { return stream << vector.ToString(); }
-};
-
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-
-////////////
-//Matrix 3//
-////////////
-struct Mat3
-{
-	union
+	//Constants
+	template<typename T>
+	constexpr T PI()
 	{
-		std::array<float, 3 * 3> elements{};
-		std::array<tVec3<float>, 3> rows;
-	};
+		return T(3.1415926535897932384626433832795);
+	}
+	template<typename T>
+	constexpr T TAU()
+	{
+		return T(6.2831853071795864769252867665581);
+	}
+	template<typename T>
+	constexpr T TwoPI()
+	{
+		return T(6.28318530717958647692528676655900576);
+	}
+	template<typename T>
+	constexpr T RootPI()
+	{
+		return T(1.772453850905516027);
+	}
+	template<typename T>
+	constexpr T HalfPI()
+	{
+		return T(1.57079632679489661923132169163975144);
+	}
+	template<typename T>
+	constexpr T ThreeOverTwoPI()
+	{
+		return T(4.71238898038468985769396507491925432);
+	}
+	template<typename T>
+	constexpr T QuarterPI()
+	{
+		return T(0.785398163397448309615660845819875721);
+	}
+	template<typename T>
+	constexpr T OneOverPI()
+	{
+		return T(0.318309886183790671537767526745028724);
+	}
+	template<typename T>
+	constexpr T OneOverTwoPI()
+	{
+		return T(0.159154943091895335768883763372514362);
+	}
+	template<typename T>
+	constexpr T TwoOverPI()
+	{
+		return T(0.636619772367581343075535053490057448);
+	}
+	template<typename T>
+	constexpr T FourOverPI()
+	{
+		return T(1.273239544735162686151070106980114898);
+	}
+	template<typename T>
+	constexpr T TwoOverRootPI()
+	{
+		return T(1.12837916709551257389615890312154517);
+	}
+	
+	template<typename T>
+	constexpr T OneOverRootTwo()
+	{
+		return T(0.707106781186547524400844362104849039);
+	}
+	template<typename T>
+	constexpr T RootHalfPI()
+	{
+		return T(1.253314137315500251);
+	}
+	template<typename T>
+	constexpr T RootTwoPI()
+	{
+		return T(2.506628274631000502);
+	}
+	template<typename T>
+	constexpr T RootLnFour()
+	{
+		return T(1.17741002251547469);
+	}
+	template<typename T>
+	constexpr T e()
+	{
+		return T(2.71828182845904523536);
+	}
+	template<typename T>
+	constexpr T Euler()
+	{
+		return T(0.577215664901532860606);
+	}
+	template<typename T>
+	constexpr T RootTwo()
+	{
+		return T(1.41421356237309504880168872420969808);
+	}
+	template<typename T>
+	constexpr T RootThree()
+	{
+		return T(1.73205080756887729352744634150587236);
+	}
+	template<typename T>
+	constexpr T RootFive()
+	{
+		return T(2.23606797749978969640917366873127623);
+	}
+	template<typename T>
+	constexpr T LnTwo()
+	{
+		return T(0.693147180559945309417232121458176568);
+	}
+	template<typename T>
+	constexpr T LnTen()
+	{
+		return T(2.30258509299404568401799145468436421);
+	}
+	template<typename T>
+	constexpr T LnLnTwo()
+	{
+		return T(-0.3665129205816643);
+	}
+	template<typename T>
+	constexpr T Third()
+	{
+		return T(0.3333333333333333333333333333333333333333);
+	}
+	template<typename T>
+	constexpr T TwoThirds()
+	{
+		return T(0.666666666666666666666666666666666666667);
+	}
+	template<typename T>
+	constexpr T GoldenRatio()
+	{
+		return T(1.61803398874989484820458683436563811);
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	//Common-------------------------------------------------------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genType>
+	constexpr genType Min(genType x, genType y);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename genType>
+	constexpr genType Max(genType x, genType y);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename genType>
+	genType Round(genType x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genType>
+	genType Trunc(genType x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genFIType>
+	constexpr genFIType Abs(genFIType x);
+
+	template<>
+	constexpr int Abs(int x);
+
+	template<typename T>
+	constexpr Vec<2, T> Abs(const Vec<2, T>& x);
+	template<typename T>
+	constexpr Vec<3, T> Abs(const Vec<3, T>& x);
+	template<typename T>
+	constexpr Vec<4, T> Abs(const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	//Fast and works for any type
+	template<typename genFIType>
+	genFIType Sign(genFIType x);
+
+	template<typename T>
+	Vec<2, T> Sign(const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> Sign(const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> Sign(const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T Floor(T x);
+
+	template<typename T>
+	Vec<2, T> Floor(const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> Floor(const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> Floor(const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	Vec<2, T> Trunc(const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> Trunc(const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> Trunc(const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	Vec<2, T> Round(const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> Round(const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> Round(const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename genType>
+	genType RoundEven(genType x);
+
+	template<typename T>
+	Vec<2, T> RoundEven(const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> RoundEven(const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> RoundEven(const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T Ceil(T x);
+
+	template<typename T>
+	Vec<2, T> Ceil(const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> Ceil(const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> Ceil(const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genType>
+	genType Fract(genType x);
+
+	template<typename T>
+	Vec<2, T> Fract(const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> Fract(const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> Fract(const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genType>
+	genType Mod(genType x, genType y);
+
+	template<typename T>
+	Vec<2, T> Mod(const Vec<2, T>& x, T y);
+	template<typename T>
+	Vec<3, T> Mod(const Vec<3, T>& x, T y);
+	template<typename T>
+	Vec<4, T> Mod(const Vec<4, T>& x, T y);
+
+	template<typename T>
+	Vec<2, T> Mod(const Vec<2, T>& x, const Vec<2, T>& y);
+	template<typename T>
+	Vec<3, T> Mod(const Vec<3, T>& x, const Vec<3, T>& y);
+	template<typename T>
+	Vec<4, T> Mod(const Vec<4, T>& x, const Vec<4, T>& y);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genType>
+	genType Modf(genType x, genType& i);
+
+	template<typename T>
+	Vec<1, T> Modf(const Vec<1, T>& x, Vec<1, T>& i);
+	template<typename T>
+	Vec<2, T> Modf(const Vec<2, T>& x, Vec<2, T>& i);
+	template<typename T>
+	Vec<3, T> Modf(const Vec<3, T>& x, Vec<3, T>& i);
+	template<typename T>
+	Vec<4, T> Modf(const Vec<4, T>& x, Vec<4, T>& i);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	constexpr Vec<2, T> Min(const Vec<2, T>& a, T b);
+	template<typename T>
+	constexpr Vec<3, T> Min(const Vec<3, T>& a, T b);
+	template<typename T>
+	constexpr Vec<4, T> Min(const Vec<4, T>& a, T b);
+
+	template<typename T>
+	constexpr Vec<2, T> Min(const Vec<2, T>& a, const Vec<2, T>& b);
+	template<typename T>
+	constexpr Vec<3, T> Min(const Vec<3, T>& a, const Vec<3, T>& b);
+	template<typename T>
+	constexpr Vec<4, T> Min(const Vec<4, T>& a, const Vec<4, T>& b);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	constexpr Vec<2, T> Max(const Vec<2, T>& a, T b);
+	template<typename T>
+	constexpr Vec<3, T> Max(const Vec<3, T>& a, T b);
+	template<typename T>
+	constexpr Vec<4, T> Max(const Vec<4, T>& a, T b);
+
+	template<typename T>
+	constexpr Vec<2, T> Max(const Vec<2, T>& a, const Vec<2, T>& b);
+	template<typename T>
+	constexpr Vec<3, T> Max(const Vec<3, T>& a, const Vec<3, T>& b);
+	template<typename T>
+	constexpr Vec<4, T> Max(const Vec<4, T>& a, const Vec<4, T>& b);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genType>
+	constexpr genType Clamp(genType x, genType minVal, genType maxVal);
+
+	template<typename T>
+	constexpr Vec<2, T> Clamp(const Vec<2, T>& x, T minVal, T maxVal);
+	template<typename T>
+	constexpr Vec<3, T> Clamp(const Vec<3, T>& x, T minVal, T maxVal);
+	template<typename T>
+	constexpr Vec<4, T> Clamp(const Vec<4, T>& x, T minVal, T maxVal);
+
+	template<typename T>
+	constexpr Vec<2, T> Clamp(const Vec<2, T>& x, const Vec<2, T>& minVal, const Vec<2, T>& maxVal);
+	template<typename T>
+	constexpr Vec<3, T> Clamp(const Vec<3, T>& x, const Vec<3, T>& minVal, const Vec<3, T>& maxVal);
+	template<typename T>
+	constexpr Vec<4, T> Clamp(const Vec<4, T>& x, const Vec<4, T>& minVal, const Vec<4, T>& maxVal);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genTypeT, typename genTypeU>
+	genTypeT Mix(genTypeT x, genTypeT y, genTypeU a);
+
+	template<typename T, typename U>
+	Vec<2, T> Mix(const Vec<2, T>& x, const Vec<2, T>& y, U a);
+	template<typename T, typename U>
+	Vec<3, T> Mix(const Vec<3, T>& x, const Vec<3, T>& y, U a);
+	template<typename T, typename U>
+	Vec<4, T> Mix(const Vec<4, T>& x, const Vec<4, T>& y, U a);
+
+	template<typename T, typename U>
+	Vec<2, T> Mix(const Vec<2, T>& x, const Vec<2, T>& y, const Vec<2, U>& a);
+	template<typename T, typename U>
+	Vec<3, T> Mix(const Vec<3, T>& x, const Vec<3, T>& y, const Vec<3, U>& a);
+	template<typename T, typename U>
+	Vec<4, T> Mix(const Vec<4, T>& x, const Vec<4, T>& y, const Vec<4, U>& a);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genType>
+	genType Step(genType edge, genType x);
+
+	template<typename T>
+	Vec<2, T> Step(T edge, const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> Step(T edge, const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> Step(T edge, const Vec<4, T>& x);
+
+	template<typename T>
+	Vec<2, T> Step(const Vec<2, T>& edge, const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> Step(const Vec<3, T>& edge, const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> Step(const Vec<4, T>& edge, const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genType>
+	genType SmoothStep(genType edge0, genType edge1, genType x);	
+
+	template<typename T>
+	Vec<2, T> SmoothStep(T edge0, T edge1, const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> SmoothStep(T edge0, T edge1, const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> SmoothStep(T edge0, T edge1, const Vec<4, T>& x);
+
+	template<typename T>
+	Vec<2, T> SmoothStep(const Vec<2, T>& edge0, const Vec<2, T>& edge1, const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> SmoothStep(const Vec<3, T>& edge0, const Vec<3, T>& edge1, const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> SmoothStep(const Vec<4, T>& edge0, const Vec<4, T>& edge1, const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genType>
+	bool IsNaN(genType x);
+
+	template<typename T>
+	Vec<2, bool> IsNaN(const Vec<2, T>& v);
+	template<typename T>
+	Vec<3, bool> IsNaN(const Vec<3, T>& v);
+	template<typename T>
+	Vec<4, bool> IsNaN(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genType>
+	bool IsInf(genType x);
+
+	template<typename T>
+	Vec<2, bool> IsInf(const Vec<2, T>& v);
+	template<typename T>
+	Vec<3, bool> IsInf(const Vec<3, T>& v);
+	template<typename T>
+	Vec<4, bool> IsInf(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genType>
+	genType FMA(const genType& a, const genType& b, const genType& c);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genType>
+	genType FrExp(genType x, int& exp);
+
+	template<typename T>
+	Vec<2, T> FrExp(const Vec<2, T>& v, const Vec<2, int>& exp);
+	template<typename T>
+	Vec<3, T> FrExp(const Vec<3, T>& v, const Vec<3, int>& exp);
+	template<typename T>
+	Vec<4, T> FrExp(const Vec<4, T>& v, const Vec<4, int>& exp);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genType>
+	genType LdExp(const genType& x, const int& exp);
+
+	template<typename T>
+	Vec<2, T> LdExp(const Vec<2, T>& v, const Vec<2, int>& exp);
+	template<typename T>
+	Vec<3, T> LdExp(const Vec<3, T>& v, const Vec<3, int>& exp);
+	template<typename T>
+	Vec<4, T> LdExp(const Vec<4, T>& v, const Vec<4, int>& exp);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename genType>
+	bool IsPowerOfTwo(genType value);
+
+	template<typename T>
+	Vec<2, bool> IsPowerOfTwo(const Vec<2, T>& v);
+	template<typename T>
+	Vec<3, bool> IsPowerOfTwo(const Vec<3, T>& v);
+	template<typename T>
+	Vec<4, bool> IsPowerOfTwo(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename genType>
+	genType FMod(genType x, genType y);
+
+	template<typename T>
+	Vec<2, T> FMod(const Vec<2, T>& x, T y);
+	template<typename T>
+	Vec<3, T> FMod(const Vec<3, T>& x, T y);
+	template<typename T>
+	Vec<4, T> FMod(const Vec<4, T>& x, T y);
+
+	template<typename T>
+	Vec<2, T> FMod(const Vec<2, T>& x, const Vec<2, T>& y);
+	template<typename T>
+	Vec<3, T> FMod(const Vec<3, T>& x, const Vec<3, T>& y);
+	template<typename T>
+	Vec<4, T> FMod(const Vec<4, T>& x, const Vec<4, T>& y);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T Lerp(T x, T y, T a);
+
+	template<typename T>
+	Vec<2, T> Lerp(const Vec<2, T>& x, const Vec<2, T>& y, T a);
+	template<typename T>
+	Vec<3, T> Lerp(const Vec<3, T>& x, const Vec<3, T>& y, T a);
+	template<typename T>
+	Vec<4, T> Lerp(const Vec<4, T>& x, const Vec<4, T>& y, T a);
+
+	template<typename T>
+	Vec<2, T> Lerp(const Vec<2, T>& x, const Vec<2, T>& y, const Vec<2, T>& a);
+	template<typename T>
+	Vec<3, T> Lerp(const Vec<3, T>& x, const Vec<3, T>& y, const Vec<3, T>& a);
+	template<typename T>
+	Vec<4, T> Lerp(const Vec<4, T>& x, const Vec<4, T>& y, const Vec<4, T>& a);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	//Exponential--------------------------------------------------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T Pow(T base, T exponent);
+	
+	template<typename T>
+	Vec<2, T> Pow(const Vec<2, T>& base, const Vec<2, T>& exponent);
+	template<typename T>
+	Vec<3, T> Pow(const Vec<3, T>& base, const Vec<3, T>& exponent);
+	template<typename T>
+	Vec<4, T> Pow(const Vec<4, T>& base, const Vec<4, T>& exponent);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T Exp(T x);
+	
+	template<typename T>
+	Vec<2, T> Exp(const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> Exp(const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> Exp(const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T Log(T x);
+	
+	template<typename T>
+	Vec<2, T> Log(const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> Log(const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> Log(const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename genType>
+	genType Exp2(genType x);
+
+	template<typename T>
+	Vec<2, T> Exp2(const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> Exp2(const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> Exp2(const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename genType>
+	genType Log2(genType x);
+
+	template<typename T>
+	Vec<2, T> Log2(const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> Log2(const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> Log2(const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T Sqrt(T x);
+	
+	template<typename T>
+	Vec<2, T> Sqrt(const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> Sqrt(const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> Sqrt(const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename genType>
+	genType InverseSqrt(genType x);
+
+	template<typename T>
+	Vec<2, T> InverseSqrt(const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> InverseSqrt(const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> InverseSqrt(const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	//Geometric----------------------------------------------------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genType>
+	genType Length(genType x);
+
+	template<typename T>
+	T Length(const Vec<2, T>& v);
+	template<typename T>
+	T Length(const Vec<3, T>& v);
+	template<typename T>
+	T Length(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename genType>
+	genType Distance(const genType& p0, const genType& p1);
+
+	template<typename T>
+	T Distance(const Vec<2, T>& p0, const Vec<2, T>& p1);
+	template<typename T>
+	T Distance(const Vec<3, T>& p0, const Vec<3, T>& p1);
+	template<typename T>
+	T Distance(const Vec<4, T>& p0, const Vec<4, T>& p1);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T Dot(T x, T y);
+
+	template<typename T>
+	T Dot(const Vec<2, T>& x, const Vec<2, T>& y);
+	template<typename T>
+	T Dot(const Vec<3, T>& x, const Vec<3, T>& y);
+	template<typename T>
+	T Dot(const Vec<4, T>& x, const Vec<4, T>& y);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	Vec<3, T> Cross(const Vec<3, T>& x, const Vec<3, T>& y);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	Vec<2, T> Normalize(const Vec<2, T>& x);
+	template<typename T>
+	Vec<3, T> Normalize(const Vec<3, T>& x);
+	template<typename T>
+	Vec<4, T> Normalize(const Vec<4, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename genType>
+	genType FaceForward(const genType& N, const genType& I, const genType& NRef);
+
+	template<typename T>
+	Vec<2, T> FaceForward(const Vec<2, T>& N, const Vec<2, T>& I, const Vec<2, T>& NRef);
+	template<typename T>
+	Vec<3, T> FaceForward(const Vec<3, T>& N, const Vec<3, T>& I, const Vec<3, T>& NRef);
+	template<typename T>
+	Vec<4, T> FaceForward(const Vec<4, T>& N, const Vec<4, T>& I, const Vec<4, T>& NRef);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename genType>
+	genType Reflect(const genType& I, const genType& N);
+
+	template<typename T>
+	Vec<2, T> Reflect(const Vec<2, T>& I, const Vec<2, T>& N);
+	template<typename T>
+	Vec<3, T> Reflect(const Vec<3, T>& I, const Vec<3, T>& N);
+	template<typename T>
+	Vec<4, T> Reflect(const Vec<4, T>& I, const Vec<4, T>& N);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename genType>
+	genType Refract(const genType& I, const genType& N, genType eta);
+
+	template<typename T>
+	Vec<2, T> Refract(const Vec<2, T>& I, const Vec<2, T>& N, T eta);
+	template<typename T>
+	Vec<3, T> Refract(const Vec<3, T>& I, const Vec<3, T>& N, T eta);
+	template<typename T>
+	Vec<4, T> Refract(const Vec<4, T>& I, const Vec<4, T>& N, T eta);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	//Matrix-------------------------------------------------------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename T>
+	Mat<3, 3, T> MatrixCompMult(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y);
+	template<typename T>
+	Mat<4, 4, T> MatrixCompMult(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	Mat<3, 3, T> OuterProduct(const Vec<3, T>& c, const Vec<3, T>& r);
+	template<typename T>
+	Mat<4, 4, T> OuterProduct(const Vec<4, T>& c, const Vec<4, T>& r);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	typename Mat<3, 3, T>::transposeType Transpose(const Mat<3, 3, T>& m);
+	template<typename T>
+	typename Mat<4, 4, T>::transposeType Transpose(const Mat<4, 4, T>& m);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T Determinant(const Mat<3, 3, T>& m);
+	template<typename T>
+	T Determinant(const Mat<4, 4, T>& m);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	Mat<3, 3, T> Inverse(const Mat<3, 3, T>& m);
+	template<typename T>
+	Mat<4, 4, T> Inverse(const Mat<4, 4, T>& m);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	Mat<4, 4, T> Orthographic(T left, T right, T bottom, T top);
+
+	template<typename T>
+	Mat<4, 4, T> Orthographic(T left, T right, T bottom, T top, T zNear, T zFar);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	Mat<4, 4, T> Frustum(T left, T right, T bottom, T top, T nearVal, T farVal);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	Mat<4, 4, T> Perspective(T fovY, T aspect, T zNear, T zFar);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	Mat<4, 4, T> PerspectiveFoV(T fov, T width, T height, T zNear, T zFar);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	Mat<4, 4, T> InfinitePerspective(T fovY, T aspect, T zNear);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T, typename U>
+	Mat<3, 3, T> Mix(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, const Mat<3, 3, U>& a);
+	template<typename T, typename U>
+	Mat<4, 4, T> Mix(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, const Mat<4, 4, U>& a);
+
+	template<typename T, typename U>
+	Mat<3, 3, T> Mix(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, U a);
+	template<typename T, typename U>
+	Mat<4, 4, T> Mix(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, U a);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	Mat<4, 4, T> Translate(const Mat<4, 4, T>& m, const Vec<3, T>& v);
+	
+	template<typename T>
+	Mat<4, 4, T> Translate(const Vec<3, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	Mat<4, 4, T> Rotate(const Mat<4, 4, T>& m, T angle, const Vec<3, T>& v);
+
+	template<typename T>
+	Mat<4, 4, T> Rotate(T angle, const Vec<3, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	Mat<4, 4, T> Scale(const Mat<4, 4, T>& m, const Vec<3, T>& v);
+
+	template<typename T>
+	Mat<4, 4, T> Scale(const Vec<3, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	Mat<4, 4, T> LookAt(const Vec<3, T>& eye, const Vec<3, T>& center, const Vec<3, T>& up);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+	//Vector-------------------------------------------------------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	constexpr Vec<3, T> XAxis();
+
+	template<typename T>
+	constexpr Vec<3, T> YAxis();
+
+	template<typename T>
+	constexpr Vec<3, T> ZAxis();
+	
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename T>
+	constexpr Vec<2, bool> LessThan(const Vec<2, T>& x, const Vec<2, T>& y);
+	template<typename T>
+	constexpr Vec<3, bool> LessThan(const Vec<3, T>& x, const Vec<3, T>& y);
+	template<typename T>
+	constexpr Vec<4, bool> LessThan(const Vec<4, T>& x, const Vec<4, T>& y);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	constexpr Vec<2, bool> LessThanEqual(const Vec<2, T>& x, const Vec<2, T>& y);
+	template<typename T>
+	constexpr Vec<3, bool> LessThanEqual(const Vec<3, T>& x, const Vec<3, T>& y);
+	template<typename T>
+	constexpr Vec<4, bool> LessThanEqual(const Vec<4, T>& x, const Vec<4, T>& y);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	constexpr Vec<2, bool> GreaterThan(const Vec<2, T>& x, const Vec<2, T>& y);
+	template<typename T>
+	constexpr Vec<3, bool> GreaterThan(const Vec<3, T>& x, const Vec<3, T>& y);
+	template<typename T>
+	constexpr Vec<4, bool> GreaterThan(const Vec<4, T>& x, const Vec<4, T>& y);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	constexpr Vec<2, bool> GreaterThanEqual(const Vec<2, T>& x, const Vec<2, T>& y);
+	template<typename T>
+	constexpr Vec<3, bool> GreaterThanEqual(const Vec<3, T>& x, const Vec<3, T>& y);
+	template<typename T>
+	constexpr Vec<4, bool> GreaterThanEqual(const Vec<4, T>& x, const Vec<4, T>& y);
+	
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	constexpr Vec<2, bool> Equal(const Vec<2, T>& x, const Vec<2, T>& y);
+	template<typename T>
+	constexpr Vec<3, bool> Equal(const Vec<3, T>& x, const Vec<3, T>& y);
+	template<typename T>
+	constexpr Vec<4, bool> Equal(const Vec<4, T>& x, const Vec<4, T>& y);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	constexpr Vec<2, bool> NotEqual(const Vec<2, T>& x, const Vec<2, T>& y);
+	template<typename T>
+	constexpr Vec<3, bool> NotEqual(const Vec<3, T>& x, const Vec<3, T>& y);
+	template<typename T>
+	constexpr Vec<4, bool> NotEqual(const Vec<4, T>& x, const Vec<4, T>& y);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	constexpr bool Any(const Vec<2, bool>& v);
+	constexpr bool Any(const Vec<3, bool>& v);
+	constexpr bool Any(const Vec<4, bool>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	constexpr bool All(const Vec<2, bool>& v);
+	constexpr bool All(const Vec<3, bool>& v);
+	constexpr bool All(const Vec<4, bool>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	constexpr Vec<2, bool> Not(const Vec<2, bool>& v);
+	constexpr Vec<3, bool> Not(const Vec<3, bool>& v);
+	constexpr Vec<4, bool> Not(const Vec<4, bool>& v);
+	
+	//-------------------------------------------------------------------------------------------------------------------//
+	//Trigonometric------------------------------------------------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------//
+	
+	template<typename genType>
+	constexpr genType Radians(genType degrees);
+
+	template<typename T>
+	constexpr Vec<2, T> Radians(const Vec<2, T>& v);
+	template<typename T>
+	constexpr Vec<3, T> Radians(const Vec<3, T>& v);
+	template<typename T>
+	constexpr Vec<4, T> Radians(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename genType>
+	constexpr genType Degrees(genType radians);
+
+	template<typename T>
+	constexpr Vec<2, T> Degrees(const Vec<2, T>& v);
+	template<typename T>
+	constexpr Vec<3, T> Degrees(const Vec<3, T>& v);
+	template<typename T>
+	constexpr Vec<4, T> Degrees(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T Sin(T x);
+	
+	template<typename T>
+	Vec<2, T> Sin(const Vec<2, T>& v);
+	template<typename T>
+	Vec<3, T> Sin(const Vec<3, T>& v);
+	template<typename T>
+	Vec<4, T> Sin(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T Cos(T x);
+
+	template<typename T>
+	Vec<2, T> Cos(const Vec<2, T>& v);
+	template<typename T>
+	Vec<3, T> Cos(const Vec<3, T>& v);
+	template<typename T>
+	Vec<4, T> Cos(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T Tan(T x);
+	
+	template<typename T>
+	Vec<2, T> Tan(const Vec<2, T>& v);
+	template<typename T>
+	Vec<3, T> Tan(const Vec<3, T>& v);
+	template<typename T>
+	Vec<4, T> Tan(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T ASin(T x);
+	
+	template<typename T>
+	Vec<2, T> ASin(const Vec<2, T>& v);
+	template<typename T>
+	Vec<3, T> ASin(const Vec<3, T>& v);
+	template<typename T>
+	Vec<4, T> ASin(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T ACos(T x);
+	
+	template<typename T>
+	Vec<2, T> ACos(const Vec<2, T>& v);
+	template<typename T>
+	Vec<3, T> ACos(const Vec<3, T>& v);
+	template<typename T>
+	Vec<4, T> ACos(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename genType>
+	genType ATan(genType y, genType x);
+
+	template<typename T>
+	Vec<2, T> ATan(const Vec<2, T>& a, const Vec<2, T>& b);
+	template<typename T>
+	Vec<3, T> ATan(const Vec<3, T>& a, const Vec<3, T>& b);
+	template<typename T>
+	Vec<4, T> ATan(const Vec<4, T>& a, const Vec<4, T>& b);
+
+	template<typename T>
+	T ATan(T x);
+	
+	template<typename T>
+	Vec<2, T> ATan(const Vec<2, T>& v);
+	template<typename T>
+	Vec<3, T> ATan(const Vec<3, T>& v);
+	template<typename T>
+	Vec<4, T> ATan(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T SinH(T x);
+	
+	template<typename T>
+	Vec<2, T> SinH(const Vec<2, T>& v);
+	template<typename T>
+	Vec<3, T> SinH(const Vec<3, T>& v);
+	template<typename T>
+	Vec<4, T> SinH(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T CosH(T x);
+	
+	template<typename T>
+	Vec<2, T> CosH(const Vec<2, T>& v);
+	template<typename T>
+	Vec<3, T> CosH(const Vec<3, T>& v);
+	template<typename T>
+	Vec<4, T> CosH(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T TanH(T x);
+	
+	template<typename T>
+	Vec<2, T> TanH(const Vec<2, T>& v);
+	template<typename T>
+	Vec<3, T> TanH(const Vec<3, T>& v);
+	template<typename T>
+	Vec<4, T> TanH(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T ASinH(T x);
+	
+	template<typename T>
+	Vec<2, T> ASinH(const Vec<2, T>& v);
+	template<typename T>
+	Vec<3, T> ASinH(const Vec<3, T>& v);
+	template<typename T>
+	Vec<4, T> ASinH(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T ACosH(T x);
+	
+	template<typename T>
+	Vec<2, T> ACosH(const Vec<2, T>& v);
+	template<typename T>
+	Vec<3, T> ACosH(const Vec<3, T>& v);
+	template<typename T>
+	Vec<4, T> ACosH(const Vec<4, T>& v);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	T ATanH(T x);
+	
+	template<typename T>
+	Vec<2, T> ATanH(const Vec<2, T>& v);
+	template<typename T>
+	Vec<3, T> ATanH(const Vec<3, T>& v);
+	template<typename T>
+	Vec<4, T> ATanH(const Vec<4, T>& v);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//Common-------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename genType>
+constexpr genType TRAP::Math::Min(genType x, genType y)
+{
+	static_assert(std::numeric_limits<genType>::is_iec559 || std::numeric_limits<genType>::is_integer, "'Min' only accepts floating-point or integer inputs");
+
+	return (y < x) ? y : x;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename genType>
+constexpr genType TRAP::Math::Max(genType x, genType y)
+{
+	static_assert(std::numeric_limits<genType>::is_iec559 || std::numeric_limits<genType>::is_integer, "'Max' only accepts floating-point or integer inputs");
+
+	return (x < y) ? y : x;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+constexpr int TRAP::Math::Abs(const int x)
+{
+	const int y = x >> (sizeof(int) * 8 - 1);
+
+	return (x ^ y) - y;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename genType>
+genType TRAP::Math::Round(genType x)
+{
+	return std::round(x);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename genType>
+genType TRAP::Math::Trunc(genType x)
+{
+	return std::trunc(x);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename genFIType>
+constexpr genFIType TRAP::Math::Abs(genFIType x)
+{
+	if constexpr (std::numeric_limits<genFIType>::is_signed)
+	{
+		static_assert(std::numeric_limits<genFIType>::is_iec559 || std::numeric_limits<genFIType>::is_signed, "'Abs' only accepts floating-point and integer scalar or vector inputs");
+
+		return x >= genFIType(0) ? x : -x;
+	}
+
+	return {};
+}
 
-	Mat3() = delete;
-	explicit Mat3(float diagonal);
-	explicit Mat3(float *elements);
-	Mat3(const tVec3<float> &row0, const tVec3<float> &row1, const tVec3<float> &row2);
+template<typename T>
+constexpr TRAP::Math::Vec<2, T> TRAP::Math::Abs(const Vec<2, T>& x)
+{
+	return Vec<2, T>(std::abs(x.x), std::abs(x.y));
+}
+template<typename T>
+constexpr TRAP::Math::Vec<3, T> TRAP::Math::Abs(const Vec<3, T>& x)
+{
+	return Vec<3, T>(std::abs(x.x), std::abs(x.y), std::abs(x.z));
+}
+template<typename T>
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::Abs(const Vec<4, T>& x)
+{
+	return Vec<4, T>(std::abs(x.x), std::abs(x.y), std::abs(x.z), std::abs(x.w));
+}
 
-	static Mat3 Identity();
+//-------------------------------------------------------------------------------------------------------------------//
 
-	Mat3 &Multiply(const Mat3 &other);
-	friend Mat3 operator*(Mat3 left, const Mat3 &right);
-	Mat3 &operator*=(const Mat3 &other);
+template<typename genFIType>
+genFIType TRAP::Math::Sign(genFIType x)
+{
+	static_assert(std::numeric_limits<genFIType>::is_iec559 || (std::numeric_limits<genFIType>::is_signed && std::numeric_limits<genFIType>::is_integer), "'Sign' only accepts signed inputs");
 
-	tVec3<float> Multiply(const tVec3<float> &other) const;
-	friend tVec3<float> operator*(const Mat3 &left, const tVec3<float> &right);
+	return Vec<1, genFIType>(LessThan(Vec<1, genFIType>(0), x)) - Vec<1, genFIType>(LessThan(x, Vec<1, genFIType>(0)));
+}
 
-	tVec4<float> Multiply(const tVec4<float> &other) const;
-	friend tVec4<float> operator*(const Mat3 &left, const tVec4<float> &right);
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Sign(const Vec<2, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559 || (std::numeric_limits<T>::is_signed && std::numeric_limits<T>::is_integer), "'Sign' only accepts signed inputs");
 
-	tVec3<float> GetColumn(int32_t index) const;
-	void SetColumn(uint32_t index, const tVec3<float> &column);
-	tVec3<float> GetPosition() const;
-	void SetPosition(const tVec3<float> &position);
+	return Vec<2, T>(LessThan(Vec<2, T>(0, 0), x)) - Vec<2, T>(LessThan(x, Vec<2, T>(0, 0)));
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Sign(const Vec<3, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559 || (std::numeric_limits<T>::is_signed && std::numeric_limits<T>::is_integer), "'Sign' only accepts signed inputs");
 
-	static Mat3 Transpose(const Mat3 &matrix);
+	return Vec<3, T>(LessThan(Vec<3, T>(0, 0, 0), x)) - Vec<3, T>(LessThan(x, Vec<3, T>(0, 0, 0)));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Sign(const Vec<4, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559 || (std::numeric_limits<T>::is_signed && std::numeric_limits<T>::is_integer), "'Sign' only accepts signed inputs");
 
-	std::string ToString() const;
-};
+	return Vec<4, T>(LessThan(Vec<4, T>(0, 0, 0, 0), x)) - Vec<4, T>(LessThan(x, Vec<4, T>(0, 0, 0, 0)));
+}
 
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
 
-////////////
-//Matrix 4//
-////////////
-struct Mat4
+template<typename T>
+T TRAP::Math::Floor(T x)
 {
-	union {
-		std::array<float, 4 * 4> elements{};
-		std::array<tVec4<float>, 4> rows;
-	};
+	return std::floor(x);
+}
 
-	Mat4() = delete;
-	explicit Mat4(float diagonal);
-	explicit Mat4(float *elements);
-	Mat4(const tVec4<float> &row0, const tVec4<float> &row1, const tVec4<float> &row2, const tVec4<float> &row3);
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Floor(const Vec<2, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Floor' only accepts floating-point inputs.");
 
-	static Mat4 Identity();
+	return Vec<2, T>(std::floor(x.x), std::floor(x.y));
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Floor(const Vec<3, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Floor' only accepts floating-point inputs.");
 
-	Mat4 &Multiply(const Mat4 &other);
-	friend Mat4 operator*(Mat4 left, const Mat4 &right);
-	Mat4 &operator*=(const Mat4 &other);
+	return Vec<3, T>(std::floor(x.x), std::floor(x.y), std::floor(x.z));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Floor(const Vec<4, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Floor' only accepts floating-point inputs.");
 
-	tVec3<float> Multiply(const tVec3<float> &other) const;
-	friend tVec3<float> operator*(const Mat4 &left, const tVec3<float> &right);
+	return Vec<4, T>(std::floor(x.x), std::floor(x.y), std::floor(x.z), std::floor(x.w));
+}
 
-	tVec4<float> Multiply(const tVec4<float> &other) const;
-	friend tVec4<float> operator*(const Mat4 &left, const tVec4<float> &right);
+//-------------------------------------------------------------------------------------------------------------------//
 
-	Mat4 &Invert();
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Trunc(const Vec<2, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Trunc' only accepts floating-point inputs.");
 
-	tVec4<float> GetColumn(int32_t index) const;
-	void SetColumn(uint32_t index, const tVec4<float> &column);
-	tVec3<float> GetPosition() const;
-	void SetPosition(const tVec3<float> &position);
+	return Vec<2, T>(std::trunc(x.x), std::trunc(x.y));
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Trunc(const Vec<3, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Trunc' only accepts floating-point inputs.");
 
-	static Mat4 Orthographic(float left, float right, float bottom, float top, float near, float far);
-	static Mat4 Perspective(float fov, float aspectRatio, float near, float far);
-	static Mat4 LookAt(const tVec3<float> &camera, const tVec3<float> &object, const tVec3<float> &up);
+	return Vec<3, T>(std::trunc(x.x), std::trunc(x.y), std::trunc(x.z));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Trunc(const Vec<4, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Trunc' only accepts floating-point inputs.");
 
-	static Mat4 Translate(const tVec3<float> &translation);
-	static Mat4 Rotate(float angle, const tVec3<float> &axis);
-	static Mat4 Scale(const tVec3<float> &scale);
-	static Mat4 Invert(const Mat4 &matrix);
+	return Vec<4, T>(std::trunc(x.x), std::trunc(x.y), std::trunc(x.z), std::trunc(x.w));
+}
 
-	static Mat4 Transpose(const Mat4 &matrix);
+//-------------------------------------------------------------------------------------------------------------------/
 
-	std::string ToString() const;
-};
-} // namespace TRAP::Math
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Round(const Vec<2, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Round' only accepts floating-point inputs.");
 
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
+	return Vec<2, T>(std::round(x.x), std::round(x.y));
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Round(const Vec<3, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Round' only accepts floating-point inputs.");
 
-////////////
-//Vector 2//
-////////////
-template <class T>
-TRAP::Math::tVec2<T>::tVec2()
-	: x(0), y(0)
+	return Vec<3, T>(std::round(x.x), std::round(x.y), std::round(x.z));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Round(const Vec<4, T>& x)
 {
+	static_assert(std::numeric_limits<T>::is_iec559, "'Round' only accepts floating-point inputs.");
+
+	return Vec<4, T>(std::round(x.x), std::round(x.y), std::round(x.z), std::round(x.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec2<T>::tVec2(const T &scalar)
-	: x(scalar), y(scalar)
+template<typename genType>
+genType TRAP::Math::RoundEven(genType x)
 {
-}
+	static_assert(std::numeric_limits<genType>::is_iec559, "'RoundEven' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	int integer = static_cast<int>(x);
+	genType integerPart = static_cast<genType>(integer);
+	genType fractionalPart = Fract(x);
 
-template <class T>
-TRAP::Math::tVec2<T>::tVec2(const T &x, const T &y)
-	: x(x), y(y)
-{
+	if (fractionalPart > static_cast<genType>(0.5) || fractionalPart < static_cast<genType>(0.5))
+		return std::round(x);
+	if ((integer % 2) == 0)
+		return integerPart;
+	if (x <= static_cast<genType>(0))
+		return integerPart - static_cast<genType>(1);
+
+	return integerPart + static_cast<genType>(1);
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::RoundEven(const Vec<2, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'RoundEven' only accepts floating-point inputs");
+
+	return Vec<2, T>(RoundEven(x.x), RoundEven(x.y));
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::RoundEven(const Vec<3, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'RoundEven' only accepts floating-point inputs");
 
-template <class T>
-TRAP::Math::tVec2<T>::tVec2(const tVec3<T> &vector)
-	: x(vector.x), y(vector.y)
+	return Vec<3, T>(RoundEven(x.x), RoundEven(x.y), RoundEven(x.z));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::RoundEven(const Vec<4, T>& x)
 {
+	static_assert(std::numeric_limits<T>::is_iec559, "'RoundEven' only accepts floating-point inputs");
+
+	return Vec<4, T>(RoundEven(x.x), RoundEven(x.y), RoundEven(x.z), RoundEven(x.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec2<T>::tVec2(const tVec4<T> &vector)
-	: x(vector.x), y(vector.y)
+template<typename T>
+T TRAP::Math::Ceil(T x)
 {
+	return std::ceil(x);
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Add(const tVec2<T> &other)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Ceil(const Vec<2, T>& x)
 {
-	x += other.x;
-	y += other.y;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Ceil' only accepts floating-point inputs");
 
-	return *this;
+	return Vec<2, T>(std::ceil(x.x), std::ceil(x.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Ceil(const Vec<3, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Ceil' only accepts floating-point inputs");
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Subtract(const tVec2<T> &other)
+	return Vec<3, T>(std::ceil(x.x), std::ceil(x.y), std::ceil(x.z));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Ceil(const Vec<4, T>& x)
 {
-	x -= other.x;
-	y -= other.y;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Ceil' only accepts floating-point inputs");
 
-	return *this;
+	return Vec<4, T>(std::ceil(x.x), std::ceil(x.y), std::ceil(x.z), std::ceil(x.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Multiply(const tVec2<T> &other)
+template<typename genType>
+genType TRAP::Math::Fract(genType x)
 {
-	x *= other.x;
-	y *= other.y;
-
-	return *this;
+	return x - Floor(x);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Divide(const tVec2<T> &other)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Fract(const Vec<2, T>& x)
 {
-	x /= other.x;
-	y /= other.y;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Fract' only accepts floating-point inputs");
 
-	return *this;
+	return x - Floor(x);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Fract(const Vec<3, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Fract' only accepts floating-point inputs");
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Add(const tVec3<T> &other)
+	return x - Floor(x);
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Fract(const Vec<4, T>& x)
 {
-	x += other.x;
-	y += other.y;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Fract' only accepts floating-point inputs");
 
-	return *this;
+	return x - Floor(x);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Subtract(const tVec3<T> &other)
+template<typename genType>
+genType TRAP::Math::Mod(genType x, genType y)
 {
-	x -= other.x;
-	y -= other.y;
-
-	return *this;
+	return x - y * Floor(x / y);
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Mod(const Vec<2, T>& x, T y)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Mod' only accepts floating-point inputs.");
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Multiply(const tVec3<T> &other)
+	return x - Vec<2, T>(y) * Floor(x / Vec<2, T>(y));
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Mod(const Vec<3, T>& x, T y)
 {
-	x *= other.x;
-	y *= other.y;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Mod' only accepts floating-point inputs.");
 
-	return *this;
+	return x - Vec<3, T>(y) * Floor(x / Vec<3, T>(y));
 }
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Mod(const Vec<4, T>& x, T y)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Mod' only accepts floating-point inputs.");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	return x - Vec<4, T>(y) * Floor(x / Vec<4, T>(y));
+}
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Divide(const tVec3<T> &other)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Mod(const Vec<2, T>& x, const Vec<2, T>& y)
 {
-	x /= other.x;
-	y /= other.y;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Mod' only accepts floating-point inputs.");
 
-	return *this;
+	return x - y * Floor(x / y);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Mod(const Vec<3, T>& x, const Vec<3, T>& y)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Mod' only accepts floating-point inputs.");
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Add(const tVec4<T> &other)
+	return x - y * Floor(x / y);
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Mod(const Vec<4, T>& x, const Vec<4, T>& y)
 {
-	x += other.x;
-	y += other.y;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Mod' only accepts floating-point inputs.");
 
-	return *this;
+	return x - y * Floor(x / y);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Subtract(const tVec4<T> &other)
+template<typename genType>
+genType TRAP::Math::Modf(genType x, genType& i)
 {
-	x -= other.x;
-	y -= other.y;
+	static_assert(std::numeric_limits<genType>::is_iec559, "'Modf' only accepts floating-point inputs");
 
-	return *this;
+	return std::modf(x, &i);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Multiply(const tVec4<T> &other)
+template<typename T>
+TRAP::Math::Vec<1, T> TRAP::Math::Modf(const Vec<1, T>& x, Vec<1, T>& i)
 {
-	x *= other.x;
-	y *= other.y;
-
-	return *this;
+	return Vec<1, T>(std::modf(x.x, i.x));
+}
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Modf(const Vec<2, T>& x, Vec<2, T>& i)
+{
+	return Vec<2, T>(std::modf(x.x, i.x), std::modf(x.y, i.y));
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Modf(const Vec<3, T>& x, Vec<3, T>& i)
+{
+	return Vec<3, T>(std::modf(x.x, i.x), std::modf(x.y, i.y), std::modf(x.z, i.z));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Modf(const Vec<4, T>& x, Vec<4, T>& i)
+{
+	return Vec<4, T>(std::modf(x.x, i.x), std::modf(x.y, i.y), std::modf(x.z, i.z), std::modf(x.w, i.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Divide(const tVec4<T> &other)
+template<typename T>
+constexpr TRAP::Math::Vec<2, T> TRAP::Math::Min(const Vec<2, T>& a, T b)
 {
-	x /= other.x;
-	y /= other.y;
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Min' only accepts floating-point or integer inputs");
 
-	return *this;
+	return Vec<2, T>(std::min(a.x, b), std::min(a.y, b));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Add(const T &value)
+template<typename T>
+constexpr TRAP::Math::Vec<3, T> TRAP::Math::Min(const Vec<3, T>& a, T b)
 {
-	x += value;
-	y += value;
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Min' only accepts floating-point or integer inputs");
 
-	return *this;
+	return Vec<3, T>(std::min(a.x, b), std::min(a.y, b), std::min(a.z, b));
 }
+template<typename T>
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::Min(const Vec<4, T>& a, T b)
+{
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Min' only accepts floating-point or integer inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	return Vec<4, T>(std::min(a.x, b), std::min(a.y, b), std::min(a.z, b), std::min(a.w, b));
+}
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Subtract(const T &value)
+template<typename T>
+constexpr TRAP::Math::Vec<2, T> TRAP::Math::Min(const Vec<2, T>& a, const Vec<2, T>& b)
 {
-	x -= value;
-	y -= value;
-
-	return *this;
+	return Vec<2, T>(std::min(a.x, b.x), std::min(a.y, b.y));
+}
+template<typename T>
+constexpr TRAP::Math::Vec<3, T> TRAP::Math::Min(const Vec<3, T>& a, const Vec<3, T>& b)
+{
+	return Vec<3, T>(std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z));
 }
+template<typename T>
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::Min(const Vec<4, T>& a, const Vec<4, T>& b)
+{
+	return Vec<4, T>(std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z), std::min(a.w, b.w));
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Multiply(const T &value)
+template<typename T>
+constexpr TRAP::Math::Vec<2, T> TRAP::Math::Max(const Vec<2, T>& a, T b)
 {
-	x *= value;
-	y *= value;
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Max' only accepts floating-point or integer inputs");
 
-	return *this;
+	return Vec<2, T>(std::max(a.x, b), std::max(a.y, b));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Divide(const T &value)
+template<typename T>
+constexpr TRAP::Math::Vec<3, T> TRAP::Math::Max(const Vec<3, T>& a, T b)
 {
-	x /= value;
-	y /= value;
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Max' only accepts floating-point or integer inputs");
 
-	return *this;
+	return Vec<3, T>(std::max(a.x, b), std::max(a.y, b), std::max(a.z, b));
 }
+template<typename T>
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::Max(const Vec<4, T>& a, T b)
+{
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Max' only accepts floating-point or integer inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	return Vec<4, T>(std::max(a.x, b), std::max(a.y, b), std::max(a.z, b), std::max(a.w, b));
+}
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Add(const T &x, const T &y)
+template<typename T>
+constexpr TRAP::Math::Vec<2, T> TRAP::Math::Max(const Vec<2, T>& a, const Vec<2, T>& b)
 {
-	this.x += x;
-	this.y += y;
-
-	return *this;
+	return Vec<2, T>(std::max(a.x, b.x), std::max(a.y, b.y));
+}
+template<typename T>
+constexpr TRAP::Math::Vec<3, T> TRAP::Math::Max(const Vec<3, T>& a, const Vec<3, T>& b)
+{
+	return Vec<3, T>(std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z));
+}
+template<typename T>
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::Max(const Vec<4, T>& a, const Vec<4, T>& b)
+{
+	return Vec<4, T>(std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z), std::max(a.w, b.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Subtract(const T &x, const T &y)
+template<typename genType>
+constexpr genType TRAP::Math::Clamp(genType x, genType minVal, genType maxVal)
 {
-	this.x -= x;
-	this.y -= y;
+	static_assert(std::numeric_limits<genType>::is_iec559 || std::numeric_limits<genType>::is_integer, "'Clamp' only accepts floating-point or integer inputs");
 
-	return *this;
+	return Min(Max(x, minVal), maxVal);
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
+template<typename T>
+constexpr TRAP::Math::Vec<2, T> TRAP::Math::Clamp(const Vec<2, T>& x, T minVal, T maxVal)
+{
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Clamp' only accepts floating-point or integer inputs");
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Multiply(const T &x, const T &y)
+	return Vec<2, T>(Min(Max(x, Vec<2, T>(minVal)), Vec<2, T>(maxVal)));
+}
+template<typename T>
+constexpr TRAP::Math::Vec<3, T> TRAP::Math::Clamp(const Vec<3, T>& x, T minVal, T maxVal)
 {
-	this.x *= x;
-	this.y *= y;
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Clamp' only accepts floating-point or integer inputs");
 
-	return *this;
+	return Vec<3, T>(Min(Max(x, Vec<3, T>(minVal)), Vec<3, T>(maxVal)));
 }
+template<typename T>
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::Clamp(const Vec<4, T>& x, T minVal, T maxVal)
+{
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Clamp' only accepts floating-point or integer inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	return Vec<4, T>(Min(Max(x, Vec<4, T>(minVal)), Vec<4, T>(maxVal)));
+}
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::Divide(const T &x, const T &y)
+template<typename T>
+constexpr TRAP::Math::Vec<2, T> TRAP::Math::Clamp(const Vec<2, T>& x, const Vec<2, T>& minVal, const Vec<2, T>& maxVal)
 {
-	this.x /= x;
-	this.y /= y;
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Clamp' only accepts floating-point or integer inputs");
 
-	return *this;
+	return Vec<2, T>(Min(Max(x, minVal), maxVal));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
+template<typename T>
+constexpr TRAP::Math::Vec<3, T> TRAP::Math::Clamp(const Vec<3, T>& x, const Vec<3, T>& minVal, const Vec<3, T>& maxVal)
+{
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Clamp' only accepts floating-point or integer inputs");
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator==(const tVec2<T> &other) const
+	return Vec<3, T>(Min(Max(x, minVal), maxVal));
+}
+template<typename T>
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::Clamp(const Vec<4, T>& x, const Vec<4, T>& minVal, const Vec<4, T>& maxVal)
 {
-	return x == other.x && y == other.y;
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Clamp' only accepts floating-point or integer inputs");
+
+	return Vec<4, T>(Min(Max(x, minVal), maxVal));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator!=(const tVec2<T> &other) const
+template<typename genTypeT, typename genTypeU>
+genTypeT TRAP::Math::Mix(genTypeT x, genTypeT y, genTypeU a)
 {
-	return !(*this == other);
+	static_assert(std::numeric_limits<genTypeU>::is_iec559, "'Mix' only accepts floating-point inputs for the interpolator a");
+
+	return static_cast<genTypeT>(static_cast<genTypeU>(x)* (static_cast<genTypeU>(1) - a) + static_cast<genTypeU>(y)* a);
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
+template<typename T, typename U>
+TRAP::Math::Vec<2, T> TRAP::Math::Mix(const Vec<2, T>& x, const Vec<2, T>& y, U a)
+{
+	static_assert(std::numeric_limits<U>::is_iec559, "'Mix' only accepts floating-point inputs for the interpolator a");
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator==(const tVec3<T> &other) const
+	return Vec<2, T>(Vec<2, U>(x) * (static_cast<U>(1) - a) + Vec<2, U>(y) * a);
+}
+template<typename T, typename U>
+TRAP::Math::Vec<3, T> TRAP::Math::Mix(const Vec<3, T>& x, const Vec<3, T>& y, U a)
 {
-	return x == other.x && y == other.y;
+	static_assert(std::numeric_limits<U>::is_iec559, "'Mix' only accepts floating-point inputs for the interpolator a");
+
+	return Vec<3, T>(Vec<3, U>(x) * (static_cast<U>(1) - a) + Vec<3, U>(y) * a);
 }
+template<typename T, typename U>
+TRAP::Math::Vec<4, T> TRAP::Math::Mix(const Vec<4, T>& x, const Vec<4, T>& y, U a)
+{
+	static_assert(std::numeric_limits<U>::is_iec559, "'Mix' only accepts floating-point inputs for the interpolator a");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	return Vec<4, T>(Vec<4, U>(x) * (static_cast<U>(1) - a) + Vec<4, U>(y) * a);
+}
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator!=(const tVec3<T> &other) const
+template<typename T, typename U>
+TRAP::Math::Vec<2, T> TRAP::Math::Mix(const Vec<2, T>& x, const Vec<2, T>& y, const Vec<2, U>& a)
 {
-	return !(*this == other);
-}
+	static_assert(std::numeric_limits<U>::is_iec559, "'Mix' only accepts floating-point inputs for the interpolator a");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	return Vec<2, T>(Vec<2, U>(x) * (static_cast<U>(1) - a) + Vec<2, U>(y) * a);
+}
+template<typename T, typename U>
+TRAP::Math::Vec<3, T> TRAP::Math::Mix(const Vec<3, T>& x, const Vec<3, T>& y, const Vec<3, U>& a)
+{
+	static_assert(std::numeric_limits<U>::is_iec559, "'Mix' only accepts floating-point inputs for the interpolator a");
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator==(const tVec4<T> &other) const
+	return Vec<3, T>(Vec<3, U>(x) * (static_cast<U>(1) - a) + Vec<3, U>(y) * a);
+}
+template<typename T, typename U>
+TRAP::Math::Vec<4, T> TRAP::Math::Mix(const Vec<4, T>& x, const Vec<4, T>& y, const Vec<4, U>& a)
 {
-	return x == other.x && y == other.y;
+	static_assert(std::numeric_limits<U>::is_iec559, "'Mix' only accepts floating-point inputs for the interpolator a");
+
+	return Vec<4, T>(Vec<4, U>(x) * (static_cast<U>(1) - a) + Vec<4, U>(y) * a);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator!=(const tVec4<T> &other) const
+template<typename genType>
+genType TRAP::Math::Step(genType edge, genType x)
 {
-	return !(*this == other);
+	return x < edge ? static_cast<genType>(0) : static_cast<genType>(1);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator+=(const tVec2<T> &other)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Step(T edge, const Vec<2, T>& x)
 {
-	return Add(other);
+	return LessThan(x, Vec<2, T>(edge)) ? Vec<2, T>(0) : Vec<2, T>(1);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator-=(const tVec2<T> &other)
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Step(T edge, const Vec<3, T>& x)
 {
-	return Subtract(other);
+	return LessThan(x, Vec<3, T>(edge)) ? Vec<3, T>(0) : Vec<3, T>(1);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator*=(const tVec2<T> &other)
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Step(T edge, const Vec<4, T>& x)
 {
-	return Multiply(other);
+	return LessThan(x, Vec<4, T>(edge)) ? Vec<4, T>(0) : Vec<4, T>(1);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator/=(const tVec2<T> &other)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Step(const Vec<2, T>& edge, const Vec<2, T>& x)
 {
-	return Divide(other);
+	return LessThan(x, edge) ? Vec<2, T>(0) : Vec<2, T>(1);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator+=(const tVec3<T> &other)
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Step(const Vec<3, T>& edge, const Vec<3, T>& x)
 {
-	return Add(other);
+	return LessThan(x, edge) ? Vec<3, T>(0) : Vec<3, T>(1);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator-=(const tVec3<T> &other)
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Step(const Vec<4, T>& edge, const Vec<4, T>& x)
 {
-	return Subtract(other);
+	return LessThan(x, edge) ? Vec<4, T>(0) : Vec<4, T>(1);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator*=(const tVec3<T> &other)
+template<typename genType>
+genType TRAP::Math::SmoothStep(genType edge0, genType edge1, genType x)
 {
-	return Multiply(other);
-}
+	static_assert(std::numeric_limits<genType>::is_iec559, "'SmoothStep' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	const genType tmp(Clamp((x - edge0) / (edge1 - edge0), genType(0), genType(1)));
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator/=(const tVec3<T> &other)
-{
-	return Divide(other);
+	return tmp * tmp * (genType(3) - genType(2) * tmp);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator+=(const tVec4<T> &other)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::SmoothStep(T edge0, T edge1, const Vec<2, T>& x)
 {
-	return Add(other);
-}
+	static_assert(std::numeric_limits<T>::is_iec559, "'SmoothStep' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	const Vec<2, T> tmp(Clamp((x - Vec<2, T>(edge0)) / (Vec<2, T>(edge1) - Vec<2, T>(edge0)), static_cast<T>(0), static_cast<T>(1)));
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator-=(const tVec4<T> &other)
-{
-	return Subtract(other);
+	return tmp * tmp * (static_cast<T>(3) - static_cast<T>(2)* tmp);
 }
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::SmoothStep(T edge0, T edge1, const Vec<3, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'SmoothStep' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	const Vec<3, T> tmp(Clamp((x - Vec<3, T>(edge0)) / (Vec<3, T>(edge1) - Vec<3, T>(edge0)), static_cast<T>(0), static_cast<T>(1)));
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator*=(const tVec4<T> &other)
-{
-	return Multiply(other);
+	return tmp * tmp * (static_cast<T>(3) - static_cast<T>(2)* tmp);
 }
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::SmoothStep(T edge0, T edge1, const Vec<4, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'SmoothStep' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	const Vec<4, T> tmp(Clamp((x - Vec<4, T>(edge0)) / (Vec<4, T>(edge1) - Vec<4, T>(edge0)), static_cast<T>(0), static_cast<T>(1)));
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator/=(const tVec4<T> &other)
-{
-	return Divide(other);
+	return tmp * tmp * (static_cast<T>(3) - static_cast<T>(2)* tmp);
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator+=(T value)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::SmoothStep(const Vec<2, T>& edge0, const Vec<2, T>& edge1, const Vec<2, T>& x)
 {
-	return Add(value);
-}
+	static_assert(std::numeric_limits<T>::is_iec559, "'SmoothStep' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	const Vec<2, T> tmp(Clamp((x - edge0) / (edge1 - edge0), static_cast<T>(0), static_cast<T>(1)));
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator-=(T value)
-{
-	return Subtract(value);
+	return tmp * tmp * (static_cast<T>(3) - static_cast<T>(2)* tmp);
 }
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::SmoothStep(const Vec<3, T>& edge0, const Vec<3, T>& edge1, const Vec<3, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'SmoothStep' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	const Vec<3, T> tmp(Clamp((x - edge0) / (edge1 - edge0), static_cast<T>(0), static_cast<T>(1)));
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator*=(T value)
-{
-	return Multiply(value);
+	return tmp * tmp * (static_cast<T>(3) - static_cast<T>(2)* tmp);
 }
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::SmoothStep(const Vec<4, T>& edge0, const Vec<4, T>& edge1, const Vec<4, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'SmoothStep' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	const Vec<4, T> tmp(Clamp((x - edge0) / (edge1 - edge0), static_cast<T>(0), static_cast<T>(1)));
 
-template <class T>
-TRAP::Math::tVec2<T> &TRAP::Math::tVec2<T>::operator/=(T value)
-{
-	return Divide(value);
+	return tmp * tmp * (static_cast<T>(3) - static_cast<T>(2)* tmp);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator<(const tVec2<T> &other) const
+template<typename genType>
+bool TRAP::Math::IsNaN(genType x)
 {
-	return x < other.x && y < other.y;
+	return std::isnan(x);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator<=(const tVec2<T> &other) const
+template<typename T>
+TRAP::Math::Vec<2, bool> TRAP::Math::IsNaN(const Vec<2, T>& v)
 {
-	return x <= other.x && y <= other.y;
-}
+	static_assert(std::numeric_limits<T>::is_iec559, "'IsNaN' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<2, bool> result;
+	for (int l = 0; l < v.Length(); ++l)
+		result[l] = std::isnan(v[l]);
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator>(const tVec2<T> &other) const
-{
-	return x > other.x && y > other.y;
+	return result;
 }
+template<typename T>
+TRAP::Math::Vec<3, bool> TRAP::Math::IsNaN(const Vec<3, T>& v)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'IsNaN' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<3, bool> result;
+	for (int l = 0; l < v.Length(); ++l)
+		result[l] = std::isnan(v[l]);
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator>=(const tVec2<T> &other) const
-{
-	return x >= other.x && y >= other.y;
+	return result;
 }
+template<typename T>
+TRAP::Math::Vec<4, bool> TRAP::Math::IsNaN(const Vec<4, T>& v)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'IsNaN' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<4, bool> result;
+	for (int l = 0; l < v.Length(); ++l)
+		result[l] = std::isnan(v[l]);
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator<(const tVec3<T> &other) const
-{
-	return x < other.x && y < other.y;
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator<=(const tVec3<T> &other) const
+template<typename genType>
+bool TRAP::Math::IsInf(genType x)
 {
-	return x <= other.x && y <= other.y;
+	return std::isinf(x);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator>(const tVec3<T> &other) const
+template<typename T>
+TRAP::Math::Vec<2, bool> TRAP::Math::IsInf(const Vec<2, T>& v)
 {
-	return x > other.x && y > other.y;
-}
+	static_assert(std::numeric_limits<T>::is_iec559, "'IsInf' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<2, bool> result;
+	for (int l = 0; l < v.Length(); ++l)
+		result[l] = std::isinf(v[l]);
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator>=(const tVec3<T> &other) const
-{
-	return x >= other.x && y >= other.y;
+	return result;
 }
+template<typename T>
+TRAP::Math::Vec<3, bool> TRAP::Math::IsInf(const Vec<3, T>& v)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'IsInf' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<3, bool> result;
+	for (int l = 0; l < v.Length(); ++l)
+		result[l] = std::isinf(v[l]);
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator<(const tVec4<T> &other) const
-{
-	return x < other.x && y < other.y;
+	return result;
 }
+template<typename T>
+TRAP::Math::Vec<4, bool> TRAP::Math::IsInf(const Vec<4, T>& v)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'IsInf' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<4, bool> result;
+	for (int l = 0; l < v.Length(); ++l)
+		result[l] = std::isinf(v[l]);
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator<=(const tVec4<T> &other) const
-{
-	return x <= other.x && y <= other.y;
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator>(const tVec4<T> &other) const
+template<typename genType>
+genType TRAP::Math::FMA(const genType& a, const genType& b, const genType& c)
 {
-	return x > other.x && y > other.y;
+	return std::fma(a, b, c);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec2<T>::operator>=(const tVec4<T> &other) const
+template<typename genType>
+genType TRAP::Math::FrExp(genType x, int& exp)
 {
-	return x >= other.x && y >= other.y;
-}
+	static_assert(std::numeric_limits<genType>::is_iec559, "'FrExp' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	return std::frexp(x, &exp);
+}
 
-template <class T>
-float TRAP::Math::tVec2<T>::Dot(const tVec2<T> &other) const
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::FrExp(const Vec<2, T>& v, const Vec<2, int>& exp)
 {
-	return x * other.x + y * other.y;
-}
+	static_assert(std::numeric_limits<T>::is_iec559, "'FrExp' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<2, T> result;
+	for (int l = 0; l < v.Length(); ++l)
+		result[l] = std::frexp(v[l], &exp[l]);
 
-template <class T>
-float TRAP::Math::tVec2<T>::Dot(const tVec3<T> &other) const
-{
-	return x * other.x + y * other.y;
+	return result;
 }
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::FrExp(const Vec<3, T>& v, const Vec<3, int>& exp)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'FrExp' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<3, T> result;
+	for (int l = 0; l < v.Length(); ++l)
+		result[l] = std::frexp(v[l], &exp[l]);
 
-template <class T>
-float TRAP::Math::tVec2<T>::Dot(const tVec4<T> &other) const
-{
-	return x * other.x + y * other.y;
+	return result;
 }
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::FrExp(const Vec<4, T>& v, const Vec<4, int>& exp)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'FrExp' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<4, T> result;
+	for (int l = 0; l < v.Length(); ++l)
+		result[l] = std::frexp(v[l], &exp[l]);
 
-template <class T>
-float TRAP::Math::tVec2<T>::Magnitude() const
-{
-	return Sqrt(x * x + y * y);
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec2<T> TRAP::Math::tVec2<T>::Normalize() const
+template<typename genType>
+genType TRAP::Math::LdExp(const genType& x, const int& exp)
 {
-	float length = Magnitude();
+	static_assert(std::numeric_limits<genType>::is_iec559, "'LdExp' only accepts floating-point inputs");
 
-	return tVec2<T>(x / length, y / length);
+	return std::ldexp(x, exp);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-float TRAP::Math::tVec2<T>::Distance(const tVec2<T> &other) const
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::LdExp(const Vec<2, T>& v, const Vec<2, int>& exp)
 {
-	const float a = x - other.x;
-	const float b = y - other.y;
+	static_assert(std::numeric_limits<T>::is_iec559, "'LdExp' only accepts floating-point inputs");
 
-	return Sqrt(a * a + b * b);
+	Vec<2, T> result;
+	for (int l = 0; l < v.Length(); ++l)
+		result[l] = std::ldexp(v[l], exp[l]);
+
+	return result;
 }
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::LdExp(const Vec<3, T>& v, const Vec<3, int>& exp)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'LdExp' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<3, T> result;
+	for (int l = 0; l < v.Length(); ++l)
+		result[l] = std::ldexp(v[l], exp[l]);
 
-template <class T>
-float TRAP::Math::tVec2<T>::Distance(const tVec3<T> &other) const
+	return result;
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::LdExp(const Vec<4, T>& v, const Vec<4, int>& exp)
 {
-	const float a = x - other.x;
-	const float b = y - other.y;
+	static_assert(std::numeric_limits<T>::is_iec559, "'LdExp' only accepts floating-point inputs");
+
+	Vec<4, T> result;
+	for (int l = 0; l < v.Length(); ++l)
+		result[l] = std::ldexp(v[l], exp[l]);
 
-	return Sqrt(a * a + b * b);
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-float TRAP::Math::tVec2<T>::Distance(const tVec4<T> &other) const
+template<typename genType>
+bool TRAP::Math::IsPowerOfTwo(genType value)
 {
-	const float a = x - other.x;
-	const float b = y - other.y;
+	static_assert(std::numeric_limits<genType>::is_integer, "'IsPowerOfTwo' only accepts integer inputs");
 
-	return Sqrt(a * a + b * b);
-}
+	const genType result = Abs(value);
 
-//-------------------------------------------------------------------------------------------------------------------//
+	return !(result & (result - 1));
+}
 
-template <class T>
-std::string TRAP::Math::tVec2<T>::ToString() const
+template<typename T>
+TRAP::Math::Vec<2, bool> TRAP::Math::IsPowerOfTwo(const Vec<2, T>& v)
 {
-	std::stringstream result;
-	result << x << ", " << y;
+	static_assert(std::numeric_limits<T>::is_integer, "'IsPowerOfTwo' only accepts integer inputs");
 
-	return result.str();
+	const Vec<2, T> result(Abs(v));
+
+	return Equal(result & (result - Vec<2, T>(1)), Vec<2, T>(0));
 }
+template<typename T>
+TRAP::Math::Vec<3, bool> TRAP::Math::IsPowerOfTwo(const Vec<3, T>& v)
+{
+	static_assert(std::numeric_limits<T>::is_integer, "'IsPowerOfTwo' only accepts integer inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
+	const Vec<3, T> result(Abs(v));
 
-////////////
-//Vector 3//
-////////////
-template <class T>
-TRAP::Math::tVec3<T>::tVec3()
-	: x(0), y(0), z(0)
-{
+	return Equal(result & (result - Vec<3, T>(1)), Vec<3, T>(0));
 }
+template<typename T>
+TRAP::Math::Vec<4, bool> TRAP::Math::IsPowerOfTwo(const Vec<4, T>& v)
+{
+	static_assert(std::numeric_limits<T>::is_integer, "'IsPowerOfTwo' only accepts integer inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	const Vec<4, T> result(Abs(v));
 
-template <class T>
-TRAP::Math::tVec3<T>::tVec3(const T &scalar)
-	: x(scalar), y(scalar), z(scalar)
-{
+	return Equal(result & (result - Vec<4, T>(1)), Vec<4, T>(0));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T>::tVec3(const T &x, const T &y)
-	: x(x), y(y), z(0)
+template<typename genType>
+genType TRAP::Math::FMod(genType x, genType y)
 {
+	return std::fmod(x, y);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T>::tVec3(const T &x, const T &y, const T &z)
-	: x(x), y(y), z(z)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::FMod(const Vec<2, T>& x, T y)
 {
+	return Vec<2, T>(std::fmod(x.x, y), std::fmod(x.y, y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec3<T>::tVec3(const tVec2<T> &xy, const T &z)
-	: x(xy.x), y(xy.y), z(z)
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::FMod(const Vec<3, T>& x, T y)
 {
+	return Vec<3, T>(std::fmod(x.x, y), std::fmod(x.y, y), std::fmod(x.z, y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec3<T>::tVec3(const T &x, const tVec2<T> &yz)
-	: x(x), y(yz.x), z(yz.y)
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::FMod(const Vec<4, T>& x, T y)
 {
+	return Vec<4, T>(std::fmod(x.x, y), std::fmod(x.y, y), std::fmod(x.z, y), std::fmod(x.w, y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T>::tVec3(const tVec4<T> &vector)
-	: x(vector.x), y(vector.y), z(vector.z)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::FMod(const Vec<2, T>& x, const Vec<2, T>& y)
 {
+	return Vec<2, T>(std::fmod(x.x, y.y), std::fmod(x.y, y.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Up()
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::FMod(const Vec<3, T>& x, const Vec<3, T>& y)
 {
-	return tVec3<T>(0.0f, 1.0f, 0.0f);
+	return Vec<3, T>(std::fmod(x.x, y.y), std::fmod(x.y, y.y), std::fmod(x.z, y.z));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Down()
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::FMod(const Vec<4, T>& x, const Vec<4, T>& y)
 {
-	return tVec3<T>(0.0f, -1.0f, 0.0f);
+	return Vec<3, T>(std::fmod(x.x, y.y), std::fmod(x.y, y.y), std::fmod(x.z, y.z), std::fmod(x.w, y.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Left()
+template<typename T>
+T TRAP::Math::Lerp(T x, T y, T a)
 {
-	return tVec3<T>(-1.0f, 0.0f, 0.0f);
+	return Mix(x, y, a);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Right()
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Lerp(const Vec<2, T>& x, const Vec<2, T>& y, T a)
 {
-	return tVec3<T>(1.0f, 1.0f, 0.0f);
+	return Mix(x, y, a);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Zero()
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Lerp(const Vec<3, T>& x, const Vec<3, T>& y, T a)
 {
-	return tVec3<T>(0.0f, 0.0f, 0.0f);
+	return Mix(x, y, a);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::XAxis()
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Lerp(const Vec<4, T>& x, const Vec<4, T>& y, T a)
 {
-	return tVec3<T>(1.0f, 0.0f, 0.0f);
+	return Mix(x, y, a);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::YAxis()
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Lerp(const Vec<2, T>& x, const Vec<2, T>& y, const Vec<2, T>& a)
 {
-	return tVec3<T>(0.0f, 1.0f, 0.0f);
+	return Mix(x, y, a);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::ZAxis()
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Lerp(const Vec<3, T>& x, const Vec<3, T>& y, const Vec<3, T>& a)
 {
-	return tVec3<T>(0.0f, 0.0f, 1.0f);
+	return Mix(x, y, a);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Add(const tVec2<T> &other)
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Lerp(const Vec<4, T>& x, const Vec<4, T>& y, const Vec<4, T>& a)
 {
-	x += other.x;
-	y += other.y;
-
-	return *this;
+	return Mix(x, y, a);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+//Exponential--------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Subtract(const tVec2<T> &other)
+template<typename T>
+T TRAP::Math::Pow(T base, T exponent)
 {
-	x -= other.x;
-	y -= other.y;
-
-	return *this;
+	return std::pow(base, exponent);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Multiply(const tVec2<T> &other)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Pow(const Vec<2, T>& base, const Vec<2, T>& exponent)
 {
-	x *= other.x;
-	y *= other.y;
-
-	return *this;
+	return Vec<2, T>(std::pow(base.x, exponent.x), std::pow(base.y, exponent.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Divide(const tVec2<T> &other)
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Pow(const Vec<3, T>& base, const Vec<3, T>& exponent)
 {
-	x /= other.x;
-	y /= other.y;
-
-	return *this;
+	return Vec<3, T>(std::pow(base.x, exponent.x), std::pow(base.y, exponent.y), std::pow(base.z, exponent.z));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Add(const tVec3<T> &other)
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Pow(const Vec<4, T>& base, const Vec<4, T>& exponent)
 {
-	x += other.x;
-	y += other.y;
-	z += other.z;
-
-	return *this;
+	return Vec<4, T>(std::pow(base.x, exponent.x), std::pow(base.y, exponent.y), std::pow(base.z, exponent.z), std::pow(base.w, exponent.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Subtract(const tVec3<T> &other)
+template<typename T>
+T TRAP::Math::Exp(T x)
 {
-	x -= other.x;
-	y -= other.y;
-	z -= other.z;
-
-	return *this;
+	return std::exp(x);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Multiply(const tVec3<T> &other)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Exp(const Vec<2, T>& x)
 {
-	x *= other.x;
-	y *= other.y;
-	z *= other.z;
-
-	return *this;
+	return Vec<2, T>(std::exp(x.x), std::exp(x.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Divide(const tVec3<T> &other)
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Exp(const Vec<3, T>& x)
 {
-	x /= other.x;
-	y /= other.y;
-	z /= other.z;
-
-	return *this;
+	return Vec<3, T>(std::exp(x.x), std::exp(x.y), std::exp(x.z));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Exp(const Vec<4, T>& x)
+{
+	return Vec<4, T>(std::exp(x.x), std::exp(x.y), std::exp(x.z), std::exp(x.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Add(const tVec4<T> &other)
+template<typename T>
+T TRAP::Math::Log(T x)
 {
-	x += other.x;
-	y += other.y;
-	z += other.z;
+	return std::log(x);
+}
 
-	return *this;
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Log(const Vec<2, T>& x)
+{
+	return Vec<2, T>(std::log(x.x), std::log(x.y));
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Log(const Vec<3, T>& x)
+{
+	return Vec<3, T>(std::log(x.x), std::log(x.y), std::log(x.z));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Log(const Vec<4, T>& x)
+{
+	return Vec<4, T>(std::log(x.x), std::log(x.y), std::log(x.z), std::log(x.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Subtract(const tVec4<T> &other)
+template<typename genType>
+genType TRAP::Math::Exp2(genType x)
 {
-	x -= other.x;
-	y -= other.y;
-	z -= other.z;
+	return std::exp2(x);
+}
 
-	return *this;
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Exp2(const Vec<2, T>& x)
+{
+	return Vec<2, T>(std::exp2(x.x), std::exp2(x.y));
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Exp2(const Vec<3, T>& x)
+{
+	return Vec<3, T>(std::exp2(x.x), std::exp2(x.y), std::exp2(x.z));
 }
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Exp2(const Vec<4, T>& x)
+{
+	return Vec<4, T>(std::exp2(x.x), std::exp2(x.y), std::exp2(x.z), std::exp2(x.w));
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Multiply(const tVec4<T> &other)
+template<typename genType>
+genType TRAP::Math::Log2(genType x)
 {
-	x *= other.x;
-	y *= other.y;
-	z *= other.z;
+	return std::log2(x);
+}
 
-	return *this;
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Log2(const Vec<2, T>& x)
+{
+	return Vec<2, T>(std::log2(x.x), std::log2(x.y));
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Log2(const Vec<3, T>& x)
+{
+	return Vec<3, T>(std::log2(x.x), std::log2(x.y), std::log2(x.z));
 }
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Log2(const Vec<4, T>& x)
+{
+	return Vec<4, T>(std::log2(x.x), std::log2(x.y), std::log2(x.z), std::log2(x.w));
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Divide(const tVec4<T> &other)
+template<typename T>
+T TRAP::Math::Sqrt(T x)
 {
-	x /= other.x;
-	y /= other.y;
-	z /= other.z;
-
-	return *this;
+	return std::sqrt(x);
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Add(const T &value)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Sqrt(const Vec<2, T>& x)
 {
-	x += value;
-	y += value;
-	z += value;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Sqrt' only accepts floating-point inputs");
 
-	return *this;
+	return Vec<2, T>(std::sqrt(x.x), std::sqrt(x.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Sqrt(const Vec<3, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Sqrt' only accepts floating-point inputs");
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Subtract(const T &value)
+	return Vec<3, T>(std::sqrt(x.x), std::sqrt(x.y), std::sqrt(x.z));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Sqrt(const Vec<4, T>& x)
 {
-	x -= value;
-	y -= value;
-	z -= value;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Sqrt' only accepts floating-point inputs");
 
-	return *this;
+	return Vec<4, T>(std::sqrt(x.x), std::sqrt(x.y), std::sqrt(x.z), std::sqrt(x.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Multiply(const T &value)
+template<typename genType>
+genType TRAP::Math::InverseSqrt(genType x)
 {
-	x *= value;
-	y *= value;
-	z *= value;
-
-	return *this;
+	return static_cast<genType>(1) / Sqrt(x);
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::InverseSqrt(const Vec<2, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'InverseSqrt' only accepts floating-point inputs");
+	
+	return Vec<2, T>(static_cast<T>(1) / Sqrt(x.x), static_cast<T>(1) / Sqrt(x.y));
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::InverseSqrt(const Vec<3, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'InverseSqrt' only accepts floating-point inputs");
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Divide(const T &value)
+	return Vec<3, T>(static_cast<T>(1) / Sqrt(x.x), static_cast<T>(1) / Sqrt(x.y), static_cast<T>(1) / Sqrt(x.z));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::InverseSqrt(const Vec<4, T>& x)
 {
-	x /= value;
-	y /= value;
-	z /= value;
+	static_assert(std::numeric_limits<T>::is_iec559, "'InverseSqrt' only accepts floating-point inputs");
 
-	return *this;
+	return Vec<4, T>(static_cast<T>(1) / Sqrt(x.x), static_cast<T>(1) / Sqrt(x.y), static_cast<T>(1) / Sqrt(x.z), static_cast<T>(1) / Sqrt(x.w));
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+//Geometric----------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Add(const T &x, const T &y)
+template<typename genType>
+genType TRAP::Math::Length(genType x)
 {
-	this.x += x;
-	this.y += y;
+	static_assert(std::numeric_limits<genType>::is_iec559, "'Length' accepts only floating-point inputs");
 
-	return *this;
+	return Abs(x);
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Subtract(const T &x, const T &y)
+template<typename T>
+T TRAP::Math::Length(const Vec<2, T>& v)
 {
-	this.x -= x;
-	this.y -= y;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Length' accepts only floating-point inputs");
 
-	return *this;
+	return Sqrt(Dot(v, v));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
+template<typename T>
+T TRAP::Math::Length(const Vec<3, T>& v)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Length' accepts only floating-point inputs");
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Multiply(const T &x, const T &y)
+	return Sqrt(Dot(v, v));
+}
+template<typename T>
+T TRAP::Math::Length(const Vec<4, T>& v)
 {
-	this.x *= x;
-	this.y *= y;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Length' accepts only floating-point inputs");
 
-	return *this;
+	return Sqrt(Dot(v, v));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Divide(const T &x, const T &y)
+template<typename genType>
+genType TRAP::Math::Distance(const genType& p0, const genType& p1)
 {
-	this.x /= x;
-	this.y /= y;
+	static_assert(std::numeric_limits<genType>::is_iec559, "'Distance' accepts only floating-point inputs");
 
-	return *this;
+	return Length(p1 - p0);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Add(const T &x, const T &y, const T &z)
+template<typename T>
+T TRAP::Math::Distance(const Vec<2, T>& p0, const Vec<2, T>& p1)
 {
-	this.x += x;
-	this.y += y;
-	this.z += z;
-
-	return *this;
+	return Length(p1 - p0);
+}
+template<typename T>
+T TRAP::Math::Distance(const Vec<3, T>& p0, const Vec<3, T>& p1)
+{
+	return Length(p1 - p0);
+}
+template<typename T>
+T TRAP::Math::Distance(const Vec<4, T>& p0, const Vec<4, T>& p1)
+{
+	return Length(p1 - p0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Subtract(const T &x, const T &y, const T &z)
+template<typename T>
+T TRAP::Math::Dot(T x, T y)
 {
-	this.x -= x;
-	this.y -= y;
-	this.z -= z;
-
-	return *this;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Dot' accepts only floating-point inputs");
+	
+	return x * y;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Multiply(const T &x, const T &y, const T &z)
+template<typename T>
+T TRAP::Math::Dot(const Vec<2, T>& x, const Vec<2, T>& y)
 {
-	this.x *= x;
-	this.y *= y;
-	this.z *= z;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Dot' accepts only floating-point inputs");
+
+	Vec<2, T> tmp(x * y);
 
-	return *this;
+	return tmp.x + tmp.y;
 }
+template<typename T>
+T TRAP::Math::Dot(const Vec<3, T>& x, const Vec<3, T>& y)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Dot' accepts only floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<3, T> tmp(x * y);
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::Divide(const T &x, const T &y, const T &z)
+	return tmp.x + tmp.y + tmp.z;
+}
+template<typename T>
+T TRAP::Math::Dot(const Vec<4, T>& x, const Vec<4, T>& y)
 {
-	this.x /= x;
-	this.y /= y;
-	this.z /= z;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Dot' accepts only floating-point inputs");
 
-	return *this;
+	Vec<4, T> tmp(x * y);
+
+	return (tmp.x + tmp.y) + (tmp.z + tmp.w);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Multiply(const Mat3 &transform) const
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Cross(const Vec<3, T>& x, const Vec<3, T>& y)
 {
-	return tVec3<T>(
-		transform.rows[0].x * x + transform.rows[0].y * y + transform.rows[0].z * z,
-		transform.rows[1].x * x + transform.rows[1].y * y + transform.rows[1].z * z,
-		transform.rows[2].x * x + transform.rows[2].y * y + transform.rows[2].z * z);
+	static_assert(std::numeric_limits<T>::is_iec559, "'Cross' accepts only floating-point inputs");
+
+	return Vec<3, T>(
+		x,y * y.z - y.y * x.z,
+		x.z * y.x - y.z * x.x,
+		x.x * y.y - y.x * x.y);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Multiply(const Mat4 &transform) const
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Normalize(const Vec<2, T>& x)
 {
-	return tVec3<T>(
-		transform.rows[0].x * x + transform.rows[0].y * y + transform.rows[0].z * z + transform.rows[0].w,
-		transform.rows[1].x * x + transform.rows[1].y * y + transform.rows[1].z * z + transform.rows[1].w,
-		transform.rows[2].x * x + transform.rows[2].y * y + transform.rows[2].z * z + transform.rows[2].w);
-}
+	static_assert(std::numeric_limits<T>::is_iec559, "'Normalize' accepts only floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	return x * InverseSqrt(Dot(x, x));
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Normalize(const Vec<3, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Normalize' accepts only floating-point inputs");
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator==(const tVec2<T> &other) const
+	return x * InverseSqrt(Dot(x, x));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Normalize(const Vec<4, T>& x)
 {
-	return x == other.x && y == other.y;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Normalize' accepts only floating-point inputs");
+
+	return x * InverseSqrt(Dot(x, x));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator!=(const tVec2<T> &other) const
+template<typename genType>
+genType TRAP::Math::FaceForward(const genType& N, const genType& I, const genType& NRef)
 {
-	return !(*this == other);
+	return Dot(NRef, I) < static_cast<genType>(0) ? N : -N;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator==(const tVec3<T> &other) const
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::FaceForward(const Vec<2, T>& N, const Vec<2, T>& I, const Vec<2, T>& NRef)
 {
-	return x == other.x && y == other.y && z == other.z;
-}
+	static_assert(std::numeric_limits<T>::is_iec559, "'Normalize' accepts only floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	return Dot(NRef, I) < static_cast<T>(0) ? N : -N;
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::FaceForward(const Vec<3, T>& N, const Vec<3, T>& I, const Vec<3, T>& NRef)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Normalize' accepts only floating-point inputs");
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator!=(const tVec3<T> &other) const
+	return Dot(NRef, I) < static_cast<T>(0) ? N : -N;
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::FaceForward(const Vec<4, T>& N, const Vec<4, T>& I, const Vec<4, T>& NRef)
 {
-	return !(*this == other);
+	static_assert(std::numeric_limits<T>::is_iec559, "'Normalize' accepts only floating-point inputs");
+
+	return Dot(NRef, I) < static_cast<T>(0) ? N : -N;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator==(const tVec4<T> &other) const
+template<typename genType>
+genType TRAP::Math::Reflect(const genType& I, const genType& N)
 {
-	return x == other.x && y == other.y && z == other.z;
+	return I - N * Dot(N, I) * genType(2);
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-bool TRAP::Math::tVec3<T>::operator!=(const tVec4<T> &other) const
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Reflect(const Vec<2, T>& I, const Vec<2, T>& N)
 {
-	return !(*this == other);
+	return I - N * Dot(N, I) * static_cast<T>(2);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator+=(const tVec2<T> &other)
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Reflect(const Vec<3, T>& I, const Vec<3, T>& N)
 {
-	return Add(other);
+	return I - N * Dot(N, I) * static_cast<T>(2);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator-=(const tVec2<T> &other)
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Reflect(const Vec<4, T>& I, const Vec<4, T>& N)
 {
-	return Subtract(other);
+	return I - N * Dot(N, I) * static_cast<T>(2);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator*=(const tVec2<T> &other)
+template<typename genType>
+genType TRAP::Math::Refract(const genType& I, const genType& N, genType eta)
 {
-	return Multiply(other);
-}
+	static_assert(std::numeric_limits<genType>::is_iec559, "'Refract' accepts only floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	const genType dotValue(Dot(N, I));
+	const genType k(static_cast<genType>(1) - eta * eta * (static_cast<genType>(1) - dotValue * dotValue));
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator/=(const tVec2<T> &other)
-{
-	return Divide(other);
+	return (eta * I - (eta * dotValue + Sqrt(k)) * N) * static_cast<genType>(k >= static_cast<genType>(0));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator+=(const tVec3<T> &other)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Refract(const Vec<2, T>& I, const Vec<2, T>& N, T eta)
 {
-	return Add(other);
-}
+	static_assert(std::numeric_limits<T>::is_iec559, "'Refract' accepts only floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	const T dotValue(Dot(N, I));
+	const T k(static_cast<T>(1) - eta * eta * (static_cast<T>(1) - dotValue * dotValue));
+	const Vec<2, T> result = (k >= static_cast<T>(0)) ? (eta * I - (eta * dotValue + std::sqrt(k)) * N) : Vec<2, T>(0);
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator-=(const tVec3<T> &other)
-{
-	return Subtract(other);
+	return result;
 }
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Refract(const Vec<3, T>& I, const Vec<3, T>& N, T eta)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Refract' accepts only floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	const T dotValue(Dot(N, I));
+	const T k(static_cast<T>(1) - eta * eta * (static_cast<T>(1) - dotValue * dotValue));
+	const Vec<3, T> result = (k >= static_cast<T>(0)) ? (eta * I - (eta * dotValue + std::sqrt(k)) * N) : Vec<3, T>(0);
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator*=(const tVec3<T> &other)
-{
-	return Multiply(other);
+	return result;
 }
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Refract(const Vec<4, T>& I, const Vec<4, T>& N, T eta)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Refract' accepts only floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	const T dotValue(Dot(N, I));
+	const T k(static_cast<T>(1) - eta * eta * (static_cast<T>(1) - dotValue * dotValue));
+	const Vec<4, T> result = (k >= static_cast<T>(0)) ? (eta * I - (eta * dotValue + std::sqrt(k)) * N) : Vec<4, T>(0);
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator/=(const tVec3<T> &other)
-{
-	return Divide(other);
+	return result;
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+//Matrix-------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator+=(const tVec4<T> &other)
+template<typename T>
+TRAP::Math::Mat<3, 3, T> TRAP::Math::MatrixCompMult(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y)
 {
-	return Add(other);
-}
+	static_assert(std::numeric_limits<T>::is_iec559, "'MatrixCompMult' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Mat<3, 3, T> result;
+	for (int i = 0; i < result.Length(); ++i)
+		result[i] = x[i] * y[i];
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator-=(const tVec4<T> &other)
-{
-	return Subtract(other);
+	return result;
 }
+template<typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::MatrixCompMult(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'MatrixCompMult' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Mat<4, 4, T> result;
+	for (int i = 0; i < result.Length(); ++i)
+		result[i] = x[i] * y[i];
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator*=(const tVec4<T> &other)
-{
-	return Multiply(other);
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator/=(const tVec4<T> &other)
+template<typename T>
+TRAP::Math::Mat<3, 3, T> TRAP::Math::OuterProduct(const Vec<3, T>& c, const Vec<3, T>& r)
 {
-	return Divide(other);
-}
+	static_assert(std::numeric_limits<T>::is_iec559, "'OuterProduct' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Mat<3, 3, T> m;
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator+=(T value)
-{
-	return Add(value);
+	for (int i = 0; i < m.Length(); ++i)
+		m[i] = c * r[i];
+
+	return m;
 }
+template<typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::OuterProduct(const Vec<4, T>& c, const Vec<4, T>& r)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'OuterProduct' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Mat<4, 4, T> m;
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator-=(T value)
-{
-	return Subtract(value);
+	for (int i = 0; i < m.Length(); ++i)
+		m[i] = c * r[i];
+
+	return m;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator*=(T value)
+template <typename T>
+typename TRAP::Math::Mat<3, 3, T>::transposeType TRAP::Math::Transpose(const Mat<3, 3, T>& m)
 {
-	return Multiply(value);
-}
+	static_assert(std::numeric_limits<T>::is_iec559, "'Transpose' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Mat<3, 3, T> result;
 
-template <class T>
-TRAP::Math::tVec3<T> &TRAP::Math::tVec3<T>::operator/=(T value)
-{
-	return Divide(value);
-}
+	result[0][0] = m[0][0];
+	result[0][1] = m[1][0];
+	result[0][2] = m[2][0];
 
-//-------------------------------------------------------------------------------------------------------------------//
+	result[1][0] = m[0][1];
+	result[1][1] = m[1][1];
+	result[1][2] = m[2][1];
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator<(const tVec2<T> &other) const
-{
-	return x < other.x && y < other.y;
+	result[2][0] = m[0][2];
+	result[2][1] = m[1][2];
+	result[2][2] = m[2][2];
+
+	return result;
 }
+template <typename T>
+typename TRAP::Math::Mat<4, 4, T>::transposeType TRAP::Math::Transpose(const Mat<4, 4, T>& m)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Transpose' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Mat<4, 4, T> result;
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator<=(const tVec2<T> &other) const
-{
-	return x <= other.x && y <= other.y;
-}
+	result[0][0] = m[0][0];
+	result[0][1] = m[1][0];
+	result[0][2] = m[2][0];
+	result[0][3] = m[3][0];
 
-//-------------------------------------------------------------------------------------------------------------------//
+	result[1][0] = m[0][1];
+	result[1][1] = m[1][1];
+	result[1][2] = m[2][1];
+	result[1][3] = m[3][1];
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator>(const tVec2<T> &other) const
-{
-	return x > other.x && y > other.y;
-}
+	result[2][0] = m[0][2];
+	result[2][1] = m[1][2];
+	result[2][2] = m[2][2];
+	result[2][3] = m[3][2];
 
-//-------------------------------------------------------------------------------------------------------------------//
+	result[3][0] = m[0][3];
+	result[3][1] = m[1][3];
+	result[3][2] = m[2][3];
+	result[3][3] = m[3][3];
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator>=(const tVec2<T> &other) const
-{
-	return x >= other.x && y >= other.y;
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator<(const tVec3<T> &other) const
+template<typename T>
+T TRAP::Math::Determinant(const Mat<3, 3, T>& m)
 {
-	return x < other.x && y < other.y && z < other.z;
+	static_assert(std::numeric_limits<T>::is_iec559, "'Determinant' only accepts floating-point inputs");
+
+	return + m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
+		   - m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2])
+		   + m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]);
 }
+template<typename T>
+T TRAP::Math::Determinant(const Mat<4, 4, T>& m)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Determinant' only accepts floating-point inputs");
+	
+	T subFactor00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
+	T subFactor01 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
+	T subFactor02 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
+	T subFactor03 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
+	T subFactor04 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
+	T subFactor05 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<4, T> detCof(+(m[1][1] * subFactor00 - m[1][2] * subFactor01 + m[1][3] * subFactor02),
+		             -(m[1][0] * subFactor00 - m[1][2] * subFactor03 + m[1][3] * subFactor04),
+		             +(m[1][0] * subFactor01 - m[1][1] * subFactor03 + m[1][3] * subFactor05),
+		             -(m[1][0] * subFactor02 - m[1][1] * subFactor04 + m[1][2] * subFactor05));
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator<=(const tVec3<T> &other) const
-{
-	return x <= other.x && y <= other.y && z <= other.z;
+	return m[0][0] * detCof[0] + m[0][1] * detCof[1] +
+		   m[0][2] * detCof[2] + m[0][3] * detCof[3];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator>(const tVec3<T> &other) const
+template<typename T>
+TRAP::Math::Mat<3, 3, T> TRAP::Math::Inverse(const Mat<3, 3, T>& m)
 {
-	return x > other.x && y > other.y && z > other.z;
-}
+	static_assert(std::numeric_limits<T>::is_iec559, "'Inverse' only accepts floating-points inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	T oneOverDeterminant = static_cast<T>(1) / (+m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
+		- m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2])
+		+ m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]));
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator>=(const tVec3<T> &other) const
-{
-	return x >= other.x && y >= other.y && y >= other.z;
+	Mat<3, 3, T> inverse;
+	inverse[0][0] = +(m[1][1] * m[2][2] - m[2][1] * m[1][2]) * oneOverDeterminant;
+	inverse[1][0] = -(m[1][0] * m[2][2] - m[2][0] * m[1][2]) * oneOverDeterminant;
+	inverse[2][0] = +(m[1][0] * m[2][1] - m[2][0] * m[1][1]) * oneOverDeterminant;
+	inverse[0][1] = -(m[0][1] * m[2][2] - m[2][1] * m[0][2]) * oneOverDeterminant;
+	inverse[1][1] = +(m[0][0] * m[2][2] - m[2][0] * m[0][2]) * oneOverDeterminant;
+	inverse[2][1] = -(m[0][0] * m[2][1] - m[2][0] * m[0][1]) * oneOverDeterminant;
+	inverse[0][2] = +(m[0][1] * m[1][2] - m[1][1] * m[0][2]) * oneOverDeterminant;
+	inverse[1][2] = -(m[0][0] * m[1][2] - m[1][0] * m[0][2]) * oneOverDeterminant;
+	inverse[2][2] = +(m[0][0] * m[1][1] - m[1][0] * m[0][1]) * oneOverDeterminant;
+
+	return inverse;
 }
+template<typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Inverse(const Mat<4, 4, T>& m)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'Inverse' only accepts floating-points inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	T coef00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
+	T coef02 = m[1][2] * m[3][3] - m[3][2] * m[1][3];
+	T coef03 = m[1][2] * m[2][3] - m[2][2] * m[1][3];
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator<(const tVec4<T> &other) const
-{
-	return x < other.x && y < other.y && z < other.z;
-}
+	T coef04 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
+	T coef06 = m[1][1] * m[3][3] - m[3][1] * m[1][3];
+	T coef07 = m[1][1] * m[2][3] - m[2][1] * m[1][3];
 
-//-------------------------------------------------------------------------------------------------------------------//
+	T coef08 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
+	T coef10 = m[1][1] * m[3][2] - m[3][1] * m[1][2];
+	T coef11 = m[1][1] * m[2][2] - m[2][1] * m[1][2];
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator<=(const tVec4<T> &other) const
-{
-	return x <= other.x && y <= other.y && z <= other.z;
-}
+	T coef12 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
+	T coef14 = m[1][0] * m[3][3] - m[3][0] * m[1][3];
+	T coef15 = m[1][0] * m[2][3] - m[2][0] * m[1][3];
 
-//-------------------------------------------------------------------------------------------------------------------//
+	T coef16 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
+	T coef18 = m[1][0] * m[3][2] - m[3][0] * m[1][2];
+	T coef19 = m[1][0] * m[2][2] - m[2][0] * m[1][2];
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator>(const tVec4<T> &other) const
-{
-	return x > other.x && y > other.y && z > other.z;
-}
+	T coef20 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
+	T coef22 = m[1][0] * m[3][1] - m[3][0] * m[1][1];
+	T coef23 = m[1][0] * m[2][1] - m[2][0] * m[1][1];
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<4, T> fac0(coef00, coef00, coef02, coef03);
+	Vec<4, T> fac1(coef04, coef04, coef06, coef07);
+	Vec<4, T> fac2(coef08, coef08, coef10, coef11);
+	Vec<4, T> fac3(coef12, coef12, coef14, coef15);
+	Vec<4, T> fac4(coef16, coef16, coef18, coef19);
+	Vec<4, T> fac5(coef20, coef20, coef22, coef23);
 
-template <class T>
-bool TRAP::Math::tVec3<T>::operator>=(const tVec4<T> &other) const
-{
-	return x >= other.x && y >= other.y && z >= other.z;
-}
+	Vec<4, T> vec0(m[1][0], m[0][0], m[0][0], m[0][0]);
+	Vec<4, T> vec1(m[1][1], m[0][1], m[0][1], m[0][1]);
+	Vec<4, T> vec2(m[1][2], m[0][2], m[0][2], m[0][2]);
+	Vec<4, T> vec3(m[1][3], m[0][3], m[0][3], m[0][3]);
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<4, T> inv0(vec1 * fac0 - vec2 * fac1 + vec3 * fac2);
+	Vec<4, T> inv1(vec0 * fac0 - vec2 * fac3 + vec3 * fac4);
+	Vec<4, T> inv2(vec0 * fac1 - vec1 * fac3 + vec3 * fac5);
+	Vec<4, T> inv3(vec0 * fac2 - vec1 * fac4 + vec2 * fac5);
 
-template <class T>
-float TRAP::Math::tVec3<T>::Dot(const tVec2<T> &other) const
-{
-	return x * other.x + y * other.y;
-}
+	Vec<4, T> signA(+1, -1, +1, -1);
+	Vec<4, T> signB(-1, +1, -1, +1);
+	Mat<4, 4, T> inverse(inv0 * signA, inv1 * signB, inv2 * signA, inv3 * signB);
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<4, T> row0(inverse[0][0], inverse[1][0], inverse[2][0], inverse[3][0]);
 
-template <class T>
-float TRAP::Math::tVec3<T>::Dot(const tVec3<T> &other) const
-{
-	return x * other.x + y * other.y + z * other.z;
-}
+	Vec<4, T> dot0(m[0] * row0);
+	T dot1 = (dot0.x + dot0.y) + (dot0.z + dot0.w);
 
-//-------------------------------------------------------------------------------------------------------------------//
+	T oneOverDeterminant = static_cast<T>(1) / dot1;
 
-template <class T>
-float TRAP::Math::tVec3<T>::Dot(const tVec4<T> &other) const
-{
-	return x * other.x + y * other.y + z * other.z;
+	return inverse * oneOverDeterminant;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Cross(const tVec3<T> &other) const
+template<typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(T left, T right, T bottom, T top)
 {
-	return tVec3<T>(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
-}
+	Mat<4, 4, T> result(static_cast<T>(1));
 
-//-------------------------------------------------------------------------------------------------------------------//
+	result[0][0] = static_cast<T>(2) / (right - left);
+	result[1][1] = static_cast<T>(2) / (top - bottom);
+	result[2][2] = -static_cast<T>(1);
+	result[3][0] = -(right + left) / (right - left);
+	result[3][1] = -(top + bottom) / (top - bottom);
 
-template <class T>
-float TRAP::Math::tVec3<T>::Magnitude() const
-{
-	return Sqrt(x * x + y * y + z * z);
+	return result;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec3<T> TRAP::Math::tVec3<T>::Normalize() const
+template<typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Orthographic(T left, T right, T bottom, T top, T zNear, T zFar)
 {
-	float length = Magnitude();
+	Mat<4, 4, T> result(static_cast<T>(1));
 
-	return tVec3<T>(x / length, y / length, z / length);
+	result[0][0] = static_cast<T>(2) / (right - left);
+	result[1][1] = static_cast<T>(2) / (top - bottom);
+	result[2][2] = -static_cast<T>(2) / (zFar - zNear);
+	result[3][0] = -(right + left) / (right - left);
+	result[3][1] = -(top + bottom) / (top - bottom);
+	result[3][2] = -(zFar + zNear) / (zFar - zNear);
+	
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-float TRAP::Math::tVec3<T>::Distance(const tVec2<T> &other) const
+template<typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Frustum(T left, T right, T bottom, T top, T nearVal, T farVal)
 {
-	const float a = x - other.x;
-	const float b = y - other.y;
+	Mat<4, 4, T> result(static_cast<T>(0));
 
-	return Sqrt(a * a + b * b);
+	result[0][0] = (static_cast<T>(2)* nearVal) / (right - left);
+	result[1][1] = (static_cast<T>(2)* nearVal) / (top - bottom);
+	result[2][0] = (right + left) / (right - left);
+	result[2][1] = (top + bottom) / (top - bottom);
+	result[2][2] = -(farVal + nearVal) / (farVal - nearVal);
+	result[2][3] = static_cast<T>(-1);
+	result[3][2] = -(static_cast<T>(2)* farVal* nearVal) / (farVal - nearVal);
+	
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-float TRAP::Math::tVec3<T>::Distance(const tVec3<T> &other) const
+template <typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Perspective(T fovY, T aspect, T zNear, T zFar)
 {
-	const float a = x - other.x;
-	const float b = y - other.y;
-	const float c = z - other.z;
+	assert(std::abs(aspect - std::numeric_limits<T>::epsilon()) > static_cast<T>(0));
+
+	T const tanHalfFoVY = std::tan(fovY / static_cast<T>(2));
 
-	return Sqrt(a * a + b * b + c * c);
+	Mat<4, 4, T> result(static_cast<T>(0));
+
+	result[0][0] = static_cast<T>(1) / (aspect * tanHalfFoVY);
+	result[1][1] = static_cast<T>(1) / (tanHalfFoVY);
+	result[2][2] = -(zFar + zNear) / (zFar - zNear);
+	result[2][3] = -static_cast<T>(1);
+	result[3][2] = -(static_cast<T>(2)* zFar* zNear) / (zFar - zNear);
+	
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-float TRAP::Math::tVec3<T>::Distance(const tVec4<T> &other) const
+template <typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::PerspectiveFoV(T fov, T width, T height, T zNear, T zFar)
 {
-	const float a = x - other.x;
-	const float b = y - other.y;
-	const float c = z - other.z;
+	assert(width > static_cast<T>(0));
+	assert(height > static_cast<T>(0));
+	assert(fov > static_cast<T>(0));
+
+	T const rad = fov;
+	T const h = Cos(static_cast<T>(0.5)* rad) / Sin(static_cast<T>(0.5)* rad);
+	T const w = h * height / width;
 
-	return Sqrt(a * a + b * b + c * c);
+	Mat<4, 4, T> result(static_cast<T>(0));
+	
+	result[0][0] = w;
+	result[1][1] = h;
+	result[2][2] = -(zFar + zNear) / (zFar - zNear);
+	result[2][3] = -static_cast<T>(1);
+	result[3][2] = -(static_cast<T>(2)* zFar* zNear) / (zFar - zNear);
+	
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-std::string TRAP::Math::tVec3<T>::ToString() const
+template <typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::InfinitePerspective(T fovY, T aspect, T zNear)
 {
-	std::stringstream result;
-	result << x << ", " << y << ", " << z;
+	T const range = std::tan(fovY / static_cast<T>(2))* zNear;
+	T const left = -range * aspect;
+	T const right = range * aspect;
+	T const bottom = -range;
+	T const top = range;
 
-	return result.str();
+	Mat<4, 4, T> result(static_cast<T>(0));
+	
+	result[0][0] = (static_cast<T>(2)* zNear) / (right - left);
+	result[1][1] = (static_cast<T>(2)* zNear) / (top - bottom);
+	result[2][2] = -static_cast<T>(1);
+	result[2][3] = -static_cast<T>(1);
+	result[3][2] = -static_cast<T>(2)* zNear;
+	
+	return result;
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
-//-------------------------------------------------------------------------------------------------------------------//
 
-////////////
-//Vector 4//
-////////////
-template <class T>
-TRAP::Math::tVec4<T>::tVec4()
-	: x(0), y(0), z(0), w(0)
+template<typename T, typename U>
+TRAP::Math::Mat<3, 3, T> TRAP::Math::Mix(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, U a)
 {
+	return Mat<3, 3, U>(x) * (static_cast<U>(1) - a) + Mat<3, 3, U>(y) * a;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec4<T>::tVec4(const T &scalar)
-	: x(scalar), y(scalar), z(scalar), w(scalar)
+template<typename T, typename U>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Mix(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, U a)
 {
+	return Mat<4, 4, U>(x) * (static_cast<U>(1) - a) + Mat<4, 4, U>(y) * a;
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec4<T>::tVec4(const T &x, const T &y)
-	: x(x), y(y), z(0), w(0)
+template<typename T, typename U>
+TRAP::Math::Mat<3, 3, T> TRAP::Math::Mix(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, const Mat<3, 3, U>& a)
 {
+	return MatrixCompMult(Mat<3, 3, U>(x), static_cast<U>(1) - a) + MatrixCompMult(Mat<3, 3, U>(y), a);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec4<T>::tVec4(const T &x, const T &y, const T &z)
-	: x(x), y(y), z(z), w(0)
+template<typename T, typename U>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Mix(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, const Mat<4, 4, U>& a)
 {
+	return MatrixCompMult(Mat<4, 4, U>(x), static_cast<U>(1) - a) + MatrixCompMult(Mat<4, 4, U>(y), a);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T>::tVec4(const T &x, const T &y, const T &z, const T &w)
-	: x(x), y(y), z(z), w(w)
+template <typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Translate(const Mat<4, 4, T>& m, const Vec<3, T>& v)
 {
-}
+	Mat<4, 4, T> result(m);
 
-//-------------------------------------------------------------------------------------------------------------------//
+	result[3] = m[0] * v[0] + m[1] * v[1] + m[2] * v[2] + m[3];
+	
+	return result;
+}
 
-template <class T>
-TRAP::Math::tVec4<T>::tVec4(const tVec2<T> &xy, const T &z)
-	: x(xy.x), y(xy, y), z(z), w(0)
+template <typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Translate(const Vec<3, T>& v)
 {
-}
+	Mat<4, 4, T> result(T(1.0));
 
-//-------------------------------------------------------------------------------------------------------------------//
+	result[3] = result[0] * v[0] + result[1] * v[1] + result[2] * v[2] + result[3];
 
-template <class T>
-TRAP::Math::tVec4<T>::tVec4(const T &x, const tVec2<T> &yz)
-	: x(x), y(yz.x), z(yz.y), w(0)
-{
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T>::tVec4(const tVec2<T> &xy, const T &z, const T &w)
-	: x(xy.x), y(xy.y), z(z), w(w)
+template<typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Rotate(const Mat<4, 4, T>& m, T angle, const Vec<3, T>& v)
 {
-}
+	const T a = angle;
+	const T c = std::cos(a);
+	const T s = std::sin(a);
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<3, T> axis(Normalize(v));
+	Vec<3, T> temp((T(1) - c) * axis);
 
-template <class T>
-TRAP::Math::tVec4<T>::tVec4(const T &x, const T &y, const tVec2<T> &zw)
-	: x(x), y(y), z(zw.x), w(zw.y)
-{
-}
+	Mat<4, 4, T> rotate;
+	
+	rotate[0][0] = c + temp[0] * axis[0];
+	rotate[0][1] = temp[0] * axis[1] + s * axis[2];
+	rotate[0][2] = temp[0] * axis[2] - s * axis[1];
 
-//-------------------------------------------------------------------------------------------------------------------//
+	rotate[1][0] = temp[1] * axis[0] - s * axis[2];
+	rotate[1][1] = c + temp[1] * axis[1];
+	rotate[1][2] = temp[1] * axis[2] + s * axis[0];
 
-template <class T>
-TRAP::Math::tVec4<T>::tVec4(const tVec2<T> &xy, const tVec2<T> &zw)
-	: x(xy.x), y(xy.y), z(zw.x), w(zw.y)
-{
-}
+	rotate[2][0] = temp[2] * axis[0] + s * axis[1];
+	rotate[2][1] = temp[2] * axis[1] - s * axis[0];
+	rotate[2][2] = c + temp[2] * axis[2];
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Mat<4, 4, T> result;
+	
+	result[0] = m[0] * rotate[0][0] + m[1] * rotate[0][1] + m[2] * rotate[0][2];
+	result[1] = m[0] * rotate[1][0] + m[1] * rotate[1][1] + m[2] * rotate[1][2];
+	result[2] = m[0] * rotate[2][0] + m[1] * rotate[2][1] + m[2] * rotate[2][2];
+	result[3] = m[3];
+	
+	return result;
+}
 
-template <class T>
-TRAP::Math::tVec4<T>::tVec4(const tVec3<T> &xyz, const T &w)
-	: x(xyz.x), y(xyz.y), z(xyz.z), w(w)
+template<typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Rotate(T angle, const Vec<3, T>& v)
 {
-}
+	const T a = angle;
+	const T c = std::cos(a);
+	const T s = std::sin(a);
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Vec<3, T> axis(Normalize(v));
+	Vec<3, T> temp((T(1) - c) * axis);
 
-template <class T>
-TRAP::Math::tVec4<T>::tVec4(const T &x, const tVec3<T> &yzw)
-	: x(x), y(yzw.x), z(yzw.y), w(yzw.z)
-{
-}
+	Mat<4, 4, T> rotate;
 
-//-------------------------------------------------------------------------------------------------------------------//
+	rotate[0][0] = c + temp[0] * axis[0];
+	rotate[0][1] = temp[0] * axis[1] + s * axis[2];
+	rotate[0][2] = temp[0] * axis[2] - s * axis[1];
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Add(const tVec2<T> &other)
-{
-	x += other.x;
-	y += other.y;
+	rotate[1][0] = temp[1] * axis[0] - s * axis[2];
+	rotate[1][1] = c + temp[1] * axis[1];
+	rotate[1][2] = temp[1] * axis[2] + s * axis[0];
 
-	return *this;
-}
+	rotate[2][0] = temp[2] * axis[0] + s * axis[1];
+	rotate[2][1] = temp[2] * axis[1] - s * axis[0];
+	rotate[2][2] = c + temp[2] * axis[2];
 
-//-------------------------------------------------------------------------------------------------------------------//
+	Mat<4, 4, T> identity(1.0f);
+	Mat<4, 4, T> result;
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Subtract(const tVec2<T> &other)
-{
-	x -= other.x;
-	y -= other.y;
+	result[0] = identity[0] * rotate[0][0] + identity[1] * rotate[0][1] + identity[2] * rotate[0][2];
+	result[1] = identity[0] * rotate[1][0] + identity[1] * rotate[1][1] + identity[2] * rotate[1][2];
+	result[2] = identity[0] * rotate[2][0] + identity[1] * rotate[2][1] + identity[2] * rotate[2][2];
+	result[3] = identity[3];
 
-	return *this;
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Multiply(const tVec2<T> &other)
+template <typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Scale(const Mat<4, 4, T>& m, const Vec<3, T>& v)
 {
-	x *= other.x;
-	y *= other.y;
-
-	return *this;
+	Mat<4, 4, T> result;
+	
+	result[0] = m[0] * v[0];
+	result[1] = m[1] * v[1];
+	result[2] = m[2] * v[2];
+	result[3] = m[3];
+	
+	return result;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Divide(const tVec2<T> &other)
+template <typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::Scale(const Vec<3, T>& v)
 {
-	x /= other.x;
-	y /= other.y;
+	Mat<4, 4, T> result(1.0f);
 
-	return *this;
+	result[0] *= v[0];
+	result[1] *= v[1];
+	result[2] *= v[2];
+
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Add(const tVec3<T> &other)
+template <typename T>
+TRAP::Math::Mat<4, 4, T> TRAP::Math::LookAt(const Vec<3, T>& eye, const Vec<3, T>& center, const Vec<3, T>& up)
 {
-	x += other.x;
-	y += other.y;
-	z += other.z;
+	const Vec<3, T> f(Normalize(center - eye));
+	const Vec<3, T> s(Normalize(Cross(f, up)));
+	const Vec<3, T> u(Cross(s, f));
 
-	return *this;
+	Mat<4, 4, T> result(1);
+	
+	result[0][0] = s.x;
+	result[1][0] = s.y;
+	result[2][0] = s.z;
+	result[0][1] = u.x;
+	result[1][1] = u.y;
+	result[2][1] = u.z;
+	result[0][2] = -f.x;
+	result[1][2] = -f.y;
+	result[2][2] = -f.z;
+	result[3][0] = -Dot(s, eye);
+	result[3][1] = -Dot(u, eye);
+	result[3][2] = Dot(f, eye);
+	
+	return result;
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+//Vector-------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Subtract(const tVec3<T> &other)
+template<typename T>
+constexpr TRAP::Math::Vec<3, T> TRAP::Math::XAxis()
 {
-	x -= other.x;
-	y -= other.y;
-	z -= other.z;
-
-	return *this;
+	return Vec<3, T>(T(1.0), T(0.0), T(0.0));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Multiply(const tVec3<T> &other)
+template<typename T>
+constexpr TRAP::Math::Vec<3, T> TRAP::Math::YAxis()
 {
-	x *= other.x;
-	y *= other.y;
-	z *= other.z;
+	return Vec<3, T>(T(0.0), T(1.0), T(0.0));
+}
 
-	return *this;
+template<typename T>
+constexpr TRAP::Math::Vec<3, T> TRAP::Math::ZAxis()
+{
+	return Vec<3, T>(T(0.0), T(0.0), T(1.0));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Divide(const tVec3<T> &other)
+template<typename T>
+constexpr TRAP::Math::Vec<2, bool> TRAP::Math::LessThan(const Vec<2, T>& x, const Vec<2, T>& y)
 {
-	x /= other.x;
-	y /= other.y;
-	z /= other.z;
+	Vec<2, bool> result(true);
+
+	for (int i = 0; i < 2; ++i)
+		result[i] = x[i] < y[i];
 
-	return *this;
+	return result;
 }
+template<typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::LessThan(const Vec<3, T>& x, const Vec<3, T>& y)
+{
+	Vec<3, bool> result(true);
 
-//-------------------------------------------------------------------------------------------------------------------//
+	for (int i = 0; i < 3; ++i)
+		result[i] = x[i] < y[i];
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Add(const tVec4<T> &other)
+	return result;
+}
+template<typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::LessThan(const Vec<4, T>& x, const Vec<4, T>& y)
 {
-	x += other.x;
-	y += other.y;
-	z += other.z;
-	w += other.w;
+	Vec<4, bool> result(true);
+
+	for (int i = 0; i < 4; ++i)
+		result[i] = x[i] < y[i];
 
-	return *this;
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Subtract(const tVec4<T> &other)
+template <typename T>
+constexpr TRAP::Math::Vec<2, bool> TRAP::Math::LessThanEqual(const Vec<2, T>& x, const Vec<2, T>& y)
 {
-	x -= other.x;
-	y -= other.y;
-	z -= other.z;
-	w -= other.w;
+	Vec<2, bool> result(true);
 
-	return *this;
+	for (int i = 0; i < 2; ++i)
+		result[i] = x[i] <= y[i];
+
+	return result;
 }
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::LessThanEqual(const Vec<3, T>& x, const Vec<3, T>& y)
+{
+	Vec<3, bool> result(true);
 
-//-------------------------------------------------------------------------------------------------------------------//
+	for (int i = 0; i < 3; ++i)
+		result[i] = x[i] <= y[i];
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Multiply(const tVec4<T> &other)
+	return result;
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::LessThanEqual(const Vec<4, T>& x, const Vec<4, T>& y)
 {
-	x *= other.x;
-	y *= other.y;
-	z *= other.z;
-	w *= other.w;
+	Vec<4, bool> result(true);
 
-	return *this;
+	for (int i = 0; i < 4; ++i)
+		result[i] = x[i] <= y[i];
+
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Divide(const tVec4<T> &other)
+template <typename T>
+constexpr TRAP::Math::Vec<2, bool> TRAP::Math::GreaterThan(const Vec<2, T>& x, const Vec<2, T>& y)
 {
-	x /= other.x;
-	y /= other.y;
-	z /= other.z;
-	w /= other.w;
+	Vec<2, bool> result(true);
+
+	for (int i = 0; i < 2; ++i)
+		result[i] = x[i] > y[i];
 
-	return *this;
+	return result;
 }
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::GreaterThan(const Vec<3, T>& x, const Vec<3, T>& y)
+{
+	Vec<3, bool> result(true);
 
-//-------------------------------------------------------------------------------------------------------------------//
+	for (int i = 0; i < 3; ++i)
+		result[i] = x[i] > y[i];
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Add(const T &value)
+	return result;
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThan(const Vec<4, T>& x, const Vec<4, T>& y)
 {
-	x += value;
-	y += value;
-	z += value;
-	w += value;
+	Vec<4, bool> result(true);
+
+	for (int i = 0; i < 4; ++i)
+		result[i] = x[i] > y[i];
 
-	return *this;
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Subtract(const T &value)
+template <typename T>
+constexpr TRAP::Math::Vec<2, bool> TRAP::Math::GreaterThanEqual(const Vec<2, T>& x, const Vec<2, T>& y)
 {
-	x -= value;
-	y -= value;
-	z -= value;
-	w -= value;
+	Vec<2, bool> result(true);
 
-	return *this;
+	for (int i = 0; i < 2; ++i)
+		result[i] = x[i] >= y[i];
+
+	return result;
 }
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::GreaterThanEqual(const Vec<3, T>& x, const Vec<3, T>& y)
+{
+	Vec<3, bool> result(true);
 
-//-------------------------------------------------------------------------------------------------------------------//
+	for (int i = 0; i < 3; ++i)
+		result[i] = x[i] >= y[i];
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Multiply(const T &value)
+	return result;
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThanEqual(const Vec<4, T>& x, const Vec<4, T>& y)
 {
-	x *= value;
-	y *= value;
-	z *= value;
-	w *= value;
+	Vec<4, bool> result(true);
 
-	return *this;
+	for (int i = 0; i < 4; ++i)
+		result[i] = x[i] >= y[i];
+
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Divide(const T &value)
+template <typename T>
+constexpr TRAP::Math::Vec<2, bool> TRAP::Math::Equal(const Vec<2, T>& x, const Vec<2, T>& y)
 {
-	x /= value;
-	y /= value;
-	z /= value;
-	w /= value;
+	Vec<2, bool> result(true);
+
+	for (int i = 0; i < 2; ++i)
+		result[i] = x[i] == y[i];
 
-	return *this;
+	return result;
 }
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::Equal(const Vec<3, T>& x, const Vec<3, T>& y)
+{
+	Vec<3, bool> result(true);
 
-//-------------------------------------------------------------------------------------------------------------------//
+	for (int i = 0; i < 3; ++i)
+		result[i] = x[i] == y[i];
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Add(const T &x, const T &y)
+	return result;
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const Vec<4, T>& x, const Vec<4, T>& y)
 {
-	this.x += x;
-	this.y += y;
+	Vec<4, bool> result(true);
+
+	for (int i = 0; i < 4; ++i)
+		result[i] = x[i] == y[i];
 
-	return *this;
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Subtract(const T &x, const T &y)
+template <typename T>
+constexpr TRAP::Math::Vec<2, bool> TRAP::Math::NotEqual(const Vec<2, T>& x, const Vec<2, T>& y)
 {
-	this.x -= x;
-	this.y -= y;
+	Vec<2, bool> result(true);
 
-	return *this;
+	for (int i = 0; i < 2; ++i)
+		result[i] = x[i] != y[i];
+
+	return result;
 }
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::NotEqual(const Vec<3, T>& x, const Vec<3, T>& y)
+{
+	Vec<3, bool> result(true);
 
-//-------------------------------------------------------------------------------------------------------------------//
+	for (int i = 0; i < 3; ++i)
+		result[i] = x[i] != y[i];
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Multiply(const T &x, const T &y)
+	return result;
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const Vec<4, T>& x, const Vec<4, T>& y)
 {
-	this.x *= x;
-	this.y *= y;
+	Vec<4, bool> result(true);
 
-	return *this;
+	for (int i = 0; i < 4; ++i)
+		result[i] = x[i] != y[i];
+
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Divide(const T &x, const T &y)
+constexpr bool TRAP::Math::Any(const Vec<2, bool>& v)
 {
-	this.x /= x;
-	this.y /= y;
+	bool result = false;
+
+	for (int i = 0; i < 2; ++i)
+		result = result || v[i];
 
-	return *this;
+	return result;
 }
+constexpr bool TRAP::Math::Any(const Vec<3, bool>& v)
+{
+	bool result = false;
 
-//-------------------------------------------------------------------------------------------------------------------//
+	for (int i = 0; i < 3; ++i)
+		result = result || v[i];
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Add(const T &x, const T &y, const T &z)
+	return result;
+}constexpr bool TRAP::Math::Any(const Vec<4, bool>& v)
 {
-	this.x += x;
-	this.y += y;
-	this.z += z;
+	bool result = false;
 
-	return *this;
+	for (int i = 0; i < 4; ++i)
+		result = result || v[i];
+
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Subtract(const T &x, const T &y, const T &z)
+constexpr bool TRAP::Math::All(const Vec<2, bool>& v)
 {
-	this.x -= x;
-	this.y -= y;
-	this.z -= z;
+	bool result = true;
+
+	for (int i = 0; i < 2; ++i)
+		result = result && v[i];
 
-	return *this;
+	return result;
 }
+constexpr bool TRAP::Math::All(const Vec<3, bool>& v)
+{
+	bool result = true;
 
-//-------------------------------------------------------------------------------------------------------------------//
+	for (int i = 0; i < 3; ++i)
+		result = result && v[i];
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Multiply(const T &x, const T &y, const T &z)
+	return result;
+}
+constexpr bool TRAP::Math::All(const Vec<4, bool>& v)
 {
-	this.x *= x;
-	this.y *= y;
-	this.z *= z;
+	bool result = true;
+
+	for (int i = 0; i < 4; ++i)
+		result = result && v[i];
 
-	return *this;
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Divide(const T &x, const T &y, const T &z)
+constexpr TRAP::Math::Vec<2, bool> TRAP::Math::Not(const Vec<2, bool>& v)
 {
-	this.x /= x;
-	this.y /= y;
-	this.z /= z;
+	Vec<2, bool> result(true);
 
-	return *this;
+	for (int i = 0; i < 2; ++i)
+		result[i] = !v[i];
+
+	return result;
 }
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::Not(const Vec<3, bool>& v)
+{
+	Vec<3, bool> result(true);
 
-//-------------------------------------------------------------------------------------------------------------------//
+	for (int i = 0; i < 3; ++i)
+		result[i] = !v[i];
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Add(const T &x, const T &y, const T &z, const T &w)
+	return result;
+}
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Not(const Vec<4, bool>& v)
 {
-	this.x += x;
-	this.y += y;
-	this.z += z;
-	this.w += w;
+	Vec<4, bool> result(true);
 
-	return *this;
+	for (int i = 0; i < 4; ++i)
+		result[i] = !v[i];
+
+	return result;
 }
 
+//-------------------------------------------------------------------------------------------------------------------//
+//Trigonometric------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Subtract(const T &x, const T &y, const T &z, const T &w)
+template<typename genType>
+constexpr genType TRAP::Math::Radians(genType degrees)
 {
-	this.x -= x;
-	this.y -= y;
-	this.z -= z;
-	this.w -= w;
+	static_assert(std::numeric_limits<genType>::is_iec559, "'Radians' only accepts floating-point inputs");
 
-	return *this;
+	return degrees * static_cast<genType>(0.01745329251994329576923690768489);
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Multiply(const T &x, const T &y, const T &z, const T &w)
+template<typename T>
+constexpr TRAP::Math::Vec<2, T> TRAP::Math::Radians(const Vec<2, T>& v)
 {
-	this.x *= x;
-	this.y *= y;
-	this.z *= z;
-	this.w *= w;
-
-	return *this;
+	return Vec<2, T>(Radians(v.x), Radians(v.y));
+}
+template<typename T>
+constexpr TRAP::Math::Vec<3, T> TRAP::Math::Radians(const Vec<3, T>& v)
+{
+	return Vec<3, T>(Radians(v.x), Radians(v.y), Radians(v.z));
+}
+template<typename T>
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::Radians(const Vec<4, T>& v)
+{
+	return Vec<4, T>(Radians(v.x), Radians(v.y), Radians(v.z), Radians(v.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::Divide(const T &x, const T &y, const T &z, const T &w)
+template<typename genType>
+constexpr genType TRAP::Math::Degrees(genType radians)
 {
-	this.x /= x;
-	this.y /= y;
-	this.z /= z;
-	this.w /= w;
+	static_assert(std::numeric_limits<genType>::is_iec559, "'Degrees' only accepts floating-point inputs");
 
-	return *this;
+	return radians * static_cast<genType>(57.295779513082320876798154814105);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> TRAP::Math::tVec4<T>::Multiply(const Mat3 &transform) const
+template<typename T>
+constexpr TRAP::Math::Vec<2, T> TRAP::Math::Degrees(const Vec<2, T>& v)
 {
-	return tVec4<T>(
-		transform.rows[0].x * x + transform.rows[0].y * y + transform.rows[0].z * z + w,
-		transform.rows[1].x * x + transform.rows[1].y * y + transform.rows[1].z * z + w,
-		transform.rows[2].x * x + transform.rows[2].y * y + transform.rows[2].z * z + w,
-		transform.rows[3].x * x + transform.rows[3].y * y + transform.rows[3].z * z + w);
+	return Vec<2, T>(Degrees(v.x), Degrees(v.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec4<T> TRAP::Math::tVec4<T>::Multiply(const Mat4 &transform) const
+template<typename T>
+constexpr TRAP::Math::Vec<3, T> TRAP::Math::Degrees(const Vec<3, T>& v)
 {
-	return tVec4<T>(
-		transform.rows[0].x * x + transform.rows[0].y * y + transform.rows[0].z * z + transform.rows[0].w * w,
-		transform.rows[1].x * x + transform.rows[1].y * y + transform.rows[1].z * z + transform.rows[1].w * w,
-		transform.rows[2].x * x + transform.rows[2].y * y + transform.rows[2].z * z + transform.rows[2].w * w,
-		transform.rows[3].x * x + transform.rows[3].y * y + transform.rows[3].z * z + transform.rows[3].w * w);
+	return Vec<3, T>(Degrees(v.x), Degrees(v.y), Degrees(v.z));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-bool TRAP::Math::tVec4<T>::operator==(const tVec2<T> &other) const
+template<typename T>
+constexpr TRAP::Math::Vec<4, T> TRAP::Math::Degrees(const Vec<4, T>& v)
 {
-	return x == other.x && y == other.y;
+	return Vec<4, T>(Degrees(v.x), Degrees(v.y), Degrees(v.z), Degrees(v.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec4<T>::operator!=(const tVec2<T> &other) const
+template<typename T>
+T TRAP::Math::Sin(T x)
 {
-	return !(*this == other);
+	return std::sin(x);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec4<T>::operator==(const tVec3<T> &other) const
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Sin(const Vec<2, T>& v)
 {
-	return x == other.x && y == other.y && z == other.z;
+	return Vec<2, T>(std::sin(v.x), std::sin(v.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-bool TRAP::Math::tVec4<T>::operator!=(const tVec3<T> &other) const
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Sin(const Vec<3, T>& v)
 {
-	return !(*this == other);
+	return Vec<3, T>(std::sin(v.x), std::sin(v.y), std::sin(v.z));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-bool TRAP::Math::tVec4<T>::operator==(const tVec4<T> &other) const
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Sin(const Vec<4, T>& v)
 {
-	return x == other.x && y == other.y && z == other.z && w == other.w;
+	return Vec<4, T>(std::sin(v.x), std::sin(v.y), std::sin(v.z), std::sin(v.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec4<T>::operator!=(const tVec4<T> &other) const
+template<typename T>
+T TRAP::Math::Cos(T x)
 {
-	return !(*this == other);
+	return std::cos(x);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator+=(const tVec2<T> &other)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Cos(const Vec<2, T>& v)
 {
-	return Add(other);
+	return Vec<2, T>(std::cos(v.x), std::cos(v.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator-=(const tVec2<T> &other)
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Cos(const Vec<3, T>& v)
 {
-	return Subtract(other);
+	return Vec<3, T>(std::cos(v.x), std::cos(v.y), std::cos(v.z));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator*=(const tVec2<T> &other)
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Cos(const Vec<4, T>& v)
 {
-	return Multiply(other);
+	return Vec<4, T>(std::cos(v.x), std::cos(v.y), std::cos(v.z), std::cos(v.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator/=(const tVec2<T> &other)
+template<typename T>
+T TRAP::Math::Tan(T x)
 {
-	return Divide(other);
+	return std::tan(x);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator+=(const tVec3<T> &other)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::Tan(const Vec<2, T>& v)
 {
-	return Add(other);
+	return Vec<2, T>(std::tan(v.x), std::tan(v.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator-=(const tVec3<T> &other)
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::Tan(const Vec<3, T>& v)
 {
-	return Subtract(other);
+	return Vec<3, T>(std::tan(v.x), std::tan(v.y), std::tan(v.z));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator*=(const tVec3<T> &other)
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::Tan(const Vec<4, T>& v)
 {
-	return Multiply(other);
+	return Vec<4, T>(std::tan(v.x), std::tan(v.y), std::tan(v.z), std::tan(v.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator/=(const tVec3<T> &other)
+template<typename T>
+T TRAP::Math::ASin(T x)
 {
-	return Divide(other);
+	return std::asin(x);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator+=(const tVec4<T> &other)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::ASin(const Vec<2, T>& v)
 {
-	return Add(other);
+	return Vec<2, T>(std::asin(v.x), std::asin(v.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator-=(const tVec4<T> &other)
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::ASin(const Vec<3, T>& v)
 {
-	return Subtract(other);
+	return Vec<3, T>(std::asin(v.x), std::asin(v.y), std::asin(v.z));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator*=(const tVec4<T> &other)
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::ASin(const Vec<4, T>& v)
 {
-	return Multiply(other);
+	return Vec<4, T>(std::asin(v.x), std::asin(v.y), std::asin(v.z), std::asin(v.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator/=(const tVec4<T> &other)
+template<typename T>
+T TRAP::Math::ACos(T x)
 {
-	return Divide(other);
+	return std::acos;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator+=(T value)
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::ACos(const Vec<2, T>& v)
 {
-	return Add(value);
+	return Vec<2, T>(std::acos(v.x), std::acos(v.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator-=(T value)
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::ACos(const Vec<3, T>& v)
 {
-	return Subtract(value);
+	return Vec<3, T>(std::acos(v.x), std::acos(v.y), std::acos(v.z));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator*=(T value)
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::ACos(const Vec<4, T>& v)
 {
-	return Multiply(value);
+	return Vec<4, T>(std::acos(v.x), std::acos(v.y), std::acos(v.z), std::acos(v.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> &TRAP::Math::tVec4<T>::operator/=(T value)
+template<typename genType>
+genType TRAP::Math::ATan(genType y, genType x)
 {
-	return Divide(value);
-}
+	static_assert(std::numeric_limits<genType>::is_iec559, "'ATan' only accepts floating-point inputs");
 
-//-------------------------------------------------------------------------------------------------------------------//
+	return std::atan2(y, x);
+}
 
-template <class T>
-bool TRAP::Math::tVec4<T>::operator<(const tVec2<T> &other) const
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::ATan(const Vec<2, T>& a, const Vec<2, T>& b)
 {
-	return x < other.x && y < other.y;
+	return Vec<2, T>(std::atan2(a.x, b.x), std::atan2(a.y, b.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-bool TRAP::Math::tVec4<T>::operator<=(const tVec2<T> &other) const
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::ATan(const Vec<3, T>& a, const Vec<3, T>& b)
 {
-	return x <= other.x && y <= other.y;
+	return Vec<3, T>(std::atan2(a.x, b.x), std::atan2(a.y, b.y), std::atan2(a.z, b.z));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-bool TRAP::Math::tVec4<T>::operator>(const tVec2<T> &other) const
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::ATan(const Vec<4, T>& a, const Vec<4, T>& b)
 {
-	return x > other.x && y > other.y;
+	return Vec<4, T>(std::atan2(a.x, b.x), std::atan2(a.y, b.y), std::atan2(a.z, b.z), std::atan2(a.w, b.w));
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-bool TRAP::Math::tVec4<T>::operator>=(const tVec2<T> &other) const
+template<typename T>
+T TRAP::Math::ATan(T x)
 {
-	return x >= other.x && y >= other.y;
+	return std::atan(x);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec4<T>::operator<(const tVec3<T> &other) const
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::ATan(const Vec<2, T>& v)
 {
-	return x < other.x && y < other.y && z < other.z;
+	return Vec<2, T>(std::atan(v.x), std::atan(v.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-bool TRAP::Math::tVec4<T>::operator<=(const tVec3<T> &other) const
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::ATan(const Vec<3, T>& v)
 {
-	return x <= other.x && y <= other.y && z <= other.z;
+	return Vec<3, T>(std::atan(v.x), std::atan(v.y), std::atan(v.z));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-bool TRAP::Math::tVec4<T>::operator>(const tVec3<T> &other) const
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::ATan(const Vec<4, T>& v)
 {
-	return x > other.x && y > other.y && z > other.z;
+	return Vec<4, T>(std::atan(v.x), std::atan(v.y), std::atan(v.z), std::atan(v.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec4<T>::operator>=(const tVec3<T> &other) const
+template<typename T>
+T TRAP::Math::SinH(T x)
 {
-	return x >= other.x && y >= other.y && y >= other.z;
+	return std::sinh(x);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec4<T>::operator<(const tVec4<T> &other) const
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::SinH(const Vec<2, T>& v)
 {
-	return x < other.x && y < other.y && z < other.z && w < other.w;
+	return Vec<2, T>(std::sinh(v.x), std::sinh(v.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-bool TRAP::Math::tVec4<T>::operator<=(const tVec4<T> &other) const
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::SinH(const Vec<3, T>& v)
 {
-	return x <= other.x && y <= other.y && z <= other.z && w <= other.w;
+	return Vec<3, T>(std::sinh(v.x), std::sinh(v.y), std::sinh(v.z));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-bool TRAP::Math::tVec4<T>::operator>(const tVec4<T> &other) const
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::SinH(const Vec<4, T>& v)
 {
-	return x > other.x && y > other.y && z > other.z && w > other.w;
+	return Vec<4, T>(std::sinh(v.x), std::sinh(v.y), std::sinh(v.z), std::sinh(v.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-bool TRAP::Math::tVec4<T>::operator>=(const tVec4<T> &other) const
+template<typename T>
+T TRAP::Math::CosH(T x)
 {
-	return x >= other.x && y >= other.y && z >= other.z && w >= other.w;
+	return std::cosh(x);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-float TRAP::Math::tVec4<T>::Dot(const tVec2<T> &other) const
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::CosH(const Vec<2, T>& v)
 {
-	return x * other.x + y * other.y;
+	return Vec<2, T>(std::cosh(v.x), std::cosh(v.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-float TRAP::Math::tVec4<T>::Dot(const tVec3<T> &other) const
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::CosH(const Vec<3, T>& v)
 {
-	return x * other.x + y * other.y + z * other.z;
+	return Vec<3, T>(std::cosh(v.x), std::cosh(v.y), std::cosh(v.z));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-float TRAP::Math::tVec4<T>::Dot(const tVec4<T> &other) const
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::CosH(const Vec<4, T>& v)
 {
-	return x * other.x + y * other.y + z * other.z + w * other.w;
+	return Vec<4, T>(std::cosh(v.x), std::cosh(v.y), std::cosh(v.z), std::cosh(v.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-float TRAP::Math::tVec4<T>::Magnitude() const
+template<typename T>
+T TRAP::Math::TanH(T x)
 {
-	return Sqrt(x * x + y * y + z * z + w * w);
+	return std::tanh(x);
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-TRAP::Math::tVec4<T> TRAP::Math::tVec4<T>::Normalize() const
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::TanH(const Vec<2, T>& v)
 {
-	float length = Magnitude();
-
-	return tVec4<T>(x / length, y / length, z / length, w / length);
+	return Vec<2, T>(std::tanh(v.x), std::tanh(v.y));
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <class T>
-float TRAP::Math::tVec4<T>::Distance(const tVec2<T> &other) const
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::TanH(const Vec<3, T>& v)
 {
-	const float a = x - other.x;
-	const float b = y - other.y;
-
-	return Sqrt(a * a + b * b);
+	return Vec<3, T>(std::tanh(v.x), std::tanh(v.y), std::tanh(v.z));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::TanH(const Vec<4, T>& v)
+{
+	return Vec<3, T>(std::tanh(v.x), std::tanh(v.y), std::tanh(v.z), std::tanh(v.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-float TRAP::Math::tVec4<T>::Distance(const tVec3<T> &other) const
+template<typename T>
+T TRAP::Math::ASinH(T x)
 {
-	const float a = x - other.x;
-	const float b = y - other.y;
-	const float c = z - other.z;
+	return std::asinh(x);
+}
 
-	return Sqrt(a * a + b * b + c * c);
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::ASinH(const Vec<2, T>& v)
+{
+	return Vec<2, T>(std::asinh(v.x), std::asinh(v.y));
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::ASinH(const Vec<3, T>& v)
+{
+	return Vec<3, T>(std::asinh(v.x), std::asinh(v.y), std::asinh(v.z));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::ASinH(const Vec<4, T>& v)
+{
+	return Vec<4, T>(std::asinh(v.x), std::asinh(v.y), std::asinh(v.z), std::asinh(v.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-float TRAP::Math::tVec4<T>::Distance(const tVec4<T> &other) const
+template<typename T>
+T TRAP::Math::ACosH(T x)
 {
-	const float a = x - other.x;
-	const float b = y - other.y;
-	const float c = z - other.z;
-	const float d = w - other.w;
+	return std::acosh(x);
+}
 
-	return Sqrt(a * a + b * b + c * c + d * d);
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::ACosH(const Vec<2, T>& v)
+{
+	return Vec<2, T>(std::acosh(v.x), std::acosh(v.y));
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::ACosH(const Vec<3, T>& v)
+{
+	return Vec<3, T>(std::acosh(v.x), std::acosh(v.y), std::acosh(v.z));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::ACosH(const Vec<4, T>& v)
+{
+	return Vec<4, T>(std::acosh(v.x), std::acosh(v.y), std::acosh(v.z), std::acosh(v.w));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <class T>
-std::string TRAP::Math::tVec4<T>::ToString() const
+template<typename T>
+T TRAP::Math::ATanH(T x)
 {
-	std::stringstream result;
-	result << x << ", " << y << ", " << z << ", " << w;
+	return std::atanh(x);
+}
 
-	return result.str();
+template<typename T>
+TRAP::Math::Vec<2, T> TRAP::Math::ATanH(const Vec<2, T>& v)
+{
+	return Vec<2, T>(std::atanh(v.x), std::atanh(v.y));
+}
+template<typename T>
+TRAP::Math::Vec<3, T> TRAP::Math::ATanH(const Vec<3, T>& v)
+{
+	return Vec<3, T>(std::atanh(v.x), std::atanh(v.y), std::atanh(v.z));
+}
+template<typename T>
+TRAP::Math::Vec<4, T> TRAP::Math::ATanH(const Vec<4, T>& v)
+{
+	return Vec<4, T>(std::atanh(v.x), std::atanh(v.y), std::atanh(v.z), std::atanh(v.w));
 }
 
 #endif /*_TRAP_MATH_H_*/

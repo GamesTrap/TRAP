@@ -66,8 +66,8 @@ void TRAP::Graphics::Renderer::SetTickRate(const uint32_t tickRate)
 
 void TRAP::Graphics::Renderer::BeginScene(Camera& camera)
 {
-	s_sceneData->m_projectionMatrix = Math::Mat4::Transpose(camera.GetProjectionMatrix());
-	s_sceneData->m_viewMatrix = Math::Mat4::Transpose(camera.GetViewMatrix());
+	s_sceneData->m_projectionMatrix =camera.GetProjectionMatrix();
+	s_sceneData->m_viewMatrix = camera.GetViewMatrix();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -82,7 +82,7 @@ void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<V
 {
 	Application::Get().AddSingleDrawCall();
 
-	s_sceneData->m_modelMatrix = Math::Mat4::Transpose(transform);
+	s_sceneData->m_modelMatrix = transform;
 	if(shader)
 	{
 		shader->Bind();

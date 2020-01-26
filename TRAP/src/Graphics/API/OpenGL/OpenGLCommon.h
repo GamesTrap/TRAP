@@ -16,9 +16,16 @@ namespace TRAP::Graphics::API
 namespace TRAP::Graphics
 {
 #ifdef TRAP_DEBUG
+#if __cplusplus > 201703L
+	#define OpenGLCall(x) std::source_location loc = std::source_location::current(); \
+					  ::TRAP::Graphics::API::OpenGLClearError(); \
+				      x; \
+					  ::TRAP::Graphics::API::OpenGLLogCall(#x, loc.file_name, loc.line);
+#else
 	#define OpenGLCall(x) ::TRAP::Graphics::API::OpenGLClearError(); \
 				      x; \
-					  ::TRAP::Graphics::API::OpenGLLogCall(#x, __FILE__, __LINE__)
+					  ::TRAP::Graphics::API::OpenGLLogCall(#x, __FILE__, __LINE__);
+#endif
 #else
 	#define OpenGLCall(x) x;
 #endif

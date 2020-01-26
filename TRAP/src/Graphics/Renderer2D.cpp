@@ -25,9 +25,9 @@ namespace TRAP::Graphics
 		Scope<UniformBuffer> CameraUniformBuffer;
 		struct UniformCamera
 		{
-			Math::Mat4 ProjectionMatrix = Math::Mat4::Identity();
-			Math::Mat4 ViewMatrix = Math::Mat4::Identity();
-			Math::Mat4 ModelMatrix = Math::Mat4::Identity();
+			Math::Mat4 ProjectionMatrix{ 1.0f };
+			Math::Mat4 ViewMatrix{ 1.0f };
+			Math::Mat4 ModelMatrix{ 1.0f };
 		} UniformCamera;
 	};
 
@@ -89,8 +89,8 @@ void TRAP::Graphics::Renderer2D::Shutdown()
 
 void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 {
-	s_data->UniformCamera.ProjectionMatrix = Math::Mat4::Transpose(camera.GetProjectionMatrix());
-	s_data->UniformCamera.ViewMatrix = Math::Mat4::Transpose(camera.GetViewMatrix());
+	s_data->UniformCamera.ProjectionMatrix = camera.GetProjectionMatrix();
+	s_data->UniformCamera.ViewMatrix = camera.GetViewMatrix();
 	
 	ShaderManager::Get("Renderer2D")->Bind();
 	s_data->DataUniformBuffer->Bind(1);
@@ -117,7 +117,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math
 	Application::Get().AddSingleDrawCall();
 
 	//Update CameraUniformBuffer
-	s_data->UniformCamera.ModelMatrix = Math::Mat4::Transpose(Math::Mat4::Translate(position) * Math::Mat4::Scale({ size.x, size.y, 1.0f })); //Position & Size
+	s_data->UniformCamera.ModelMatrix = Translate(position) * Scale(Math::Vec3{ size.x, size.y, 1.0f }); //Position & Size
 	s_data->CameraUniformBuffer->UpdateData(&s_data->UniformCamera);
 	s_data->CameraUniformBuffer->Bind(0);
 	
@@ -157,7 +157,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math
 	Application::Get().AddSingleDrawCall();
 
 	//Update CameraUniformBuffer
-	s_data->UniformCamera.ModelMatrix = Math::Mat4::Transpose(Math::Mat4::Translate(position) * Math::Mat4::Scale({ size.x, size.y, 1.0f })); //Position & Size
+	s_data->UniformCamera.ModelMatrix = Translate(position) * Scale(Math::Vec3{ size.x, size.y, 1.0f }); //Position & Size
 	s_data->CameraUniformBuffer->UpdateData(&s_data->UniformCamera);
 	s_data->CameraUniformBuffer->Bind(0);
 
@@ -197,7 +197,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math
 	Application::Get().AddSingleDrawCall();
 
 	//Update CameraUniformBuffer
-	s_data->UniformCamera.ModelMatrix = Math::Mat4::Transpose(Math::Mat4::Translate(position) * Math::Mat4::Scale({ size.x, size.y, 1.0f })); //Position & Size
+	s_data->UniformCamera.ModelMatrix = Translate(position) * Scale(Math::Vec3{ size.x, size.y, 1.0f }); //Position & Size
 	s_data->CameraUniformBuffer->UpdateData(&s_data->UniformCamera);
 	s_data->CameraUniformBuffer->Bind(0);
 

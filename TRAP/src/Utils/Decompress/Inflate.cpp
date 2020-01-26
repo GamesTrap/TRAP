@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "Inflate.h"
-#include "Maths/MathFunctions.h"
+
+#include "Maths/Math.h"
 
 TRAP::Utils::Decompress::INTERNAL::BitReader::BitReader(const uint8_t* data, const std::size_t size)
 	: Data(data), Size(size), BitSize(0), BP(0), Buffer(0)

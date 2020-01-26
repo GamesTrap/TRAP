@@ -261,7 +261,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross()
 	InitializeTexture();
 
 	//if (!std::ispow2(faceWidth) || !std::ispow2(faceHeight))
-	if (!Math::IsPow2(faceWidth) || !Math::IsPow2(faceHeight))
+	if (!Math::IsPowerOfTwo(faceWidth) || !Math::IsPowerOfTwo(faceHeight))
 	{
 		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 		resetPixelStore = true;
@@ -535,7 +535,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross()
 	InitializeTexture();
 
 	//if (!std::ispow2(faceWidth) || !std::ispow2(faceHeight))
-	if (!Math::IsPow2(faceWidth) || !Math::IsPow2(faceHeight))
+	if (!Math::IsPowerOfTwo(faceWidth) || !Math::IsPowerOfTwo(faceHeight))
 	{
 		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 		resetPixelStore = true;
@@ -812,7 +812,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadFiles()
 	InitializeTexture();
 
 	//if (!std::ispow2(faceWidth) || !std::ispow2(faceHeight))
-	if (!Math::IsPow2(width) || !Math::IsPow2(height))
+	if (!Math::IsPowerOfTwo(width) || !Math::IsPowerOfTwo(height))
 	{
 		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 		resetPixelStore = true;

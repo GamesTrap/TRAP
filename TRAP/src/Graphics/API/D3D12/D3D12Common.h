@@ -15,10 +15,14 @@ namespace TRAP::Graphics::API
 namespace TRAP::Graphics::API
 {
 #ifdef TRAP_DEBUG
-	#define DXCall(x) do { \
+#if _cplusplus > 201703L
+	#define DXCall(x) std::source_location loc = std::source_location::current();\
 					  HRESULT __hr = x; \
-     				  ::TRAP::Graphics::API::CheckD3D12Error(__hr, #x, __FILE__, __LINE__); \
-					  } while(false)
+     				  ::TRAP::Graphics::API::CheckD3D12Error(__hr, #x, loc.file_name, loc.line);
+#else
+	#define DXCall(x) HRESULT __hr = x; \
+     				  ::TRAP::Graphics::API::CheckD3D12Error(__hr, #x, __FILE__, __LINE__);
+#endif
 #else
 	#define DXCall(x) x
 #endif

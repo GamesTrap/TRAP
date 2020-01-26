@@ -7,8 +7,8 @@ TRAP::Graphics::OrthographicCamera::OrthographicCamera(const float left,
                                                        const float top,
                                                        const float near,
                                                        const float far)
-	: m_projectionMatrix(Math::Mat4::Orthographic(left, right, bottom, top, near, far)),
-	  m_viewMatrix(Math::Mat4::Identity()),
+	: m_projectionMatrix(Math::Orthographic(left, right, bottom, top, near, far)),
+	  m_viewMatrix(Math::Mat4(1.0f)),
 	  m_position(0.0f),
 	  m_rotation(0.0f)
 {
@@ -23,7 +23,7 @@ void TRAP::Graphics::OrthographicCamera::SetProjection(const float left,
                                                        const float near,
                                                        const float far)
 {
-	m_projectionMatrix = Math::Mat4::Orthographic(left, right, bottom, top, near, far);
+	m_projectionMatrix = Math::Orthographic(left, right, bottom, top, near, far);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -74,10 +74,10 @@ const TRAP::Math::Mat4& TRAP::Graphics::OrthographicCamera::GetViewMatrix() cons
 
 void TRAP::Graphics::OrthographicCamera::RecalculateViewMatrix()
 {	
-	const Math::Mat4 transform = Math::Mat4::Translate(m_position) *
-		                          Math::Mat4::Rotate(m_rotation.x, Math::Vec3::XAxis()) * 
-		                          Math::Mat4::Rotate(m_rotation.y, Math::Vec3::YAxis()) * 
-		                          Math::Mat4::Rotate(m_rotation.z, Math::Vec3::ZAxis());
+	const Math::Mat4 transform = Translate(m_position) *
+		                         Rotate(Math::Radians(m_rotation.x), Math::XAxis<float>()) * 
+		                         Rotate(Math::Radians(m_rotation.y), Math::YAxis<float>()) *
+		                         Rotate(Math::Radians(m_rotation.z), Math::ZAxis<float>());
 
-	m_viewMatrix = Math::Mat4::Invert(transform);
+	m_viewMatrix = Inverse(transform);
 }

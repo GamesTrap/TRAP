@@ -341,7 +341,7 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadTexture(const Scope<Image>& ima
 {
 	bool resetPixelStore = false;
 	//if(!std::ispow2(image->GetWidth() || !std::ispow2(image->GetHeight())	
-	if (!Math::IsPow2(image->GetWidth()) || !Math::IsPow2(image->GetHeight()))
+	if (!Math::IsPowerOfTwo(image->GetWidth()) || !Math::IsPowerOfTwo(image->GetHeight()))
 	{
 		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 		resetPixelStore = true;

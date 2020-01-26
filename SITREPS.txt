@@ -776,3 +776,11 @@ SITREP 01/20/2020|20w04a1
     - Replaced GLAD ~>300 mins
     - Added custom ImGui OpenGL 4 implementation ~>40 mins
     - Updated docs ~<20 mins
+
+SITREP 01/21/2020|20w04a2
+    - Changed TRAP Engine version to 20w04a2(0.6.02)
+    - Added optional C++20 features ~25 mins
+
+SITREP 01/26/2020|20w04a3
+    - Changed TRAP Engine version to 20w04a3(0.6.03)
+    - Reworked Math API (Vec1-4, Mat3-4, General)~>309 mins

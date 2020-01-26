@@ -1,193 +1,568 @@
-[23:55:47][Debug][Application] Initializing TRAP Modules...
-[23:55:47][Debug][VFS] Initializing Virtual File System
-[23:55:47][Info][Config] Loading File: "Engine.cfg"
-[23:55:47][Trace][Config] Width = 1280
-[23:55:47][Trace][Config] Height = 720
-[23:55:47][Trace][Config] RefreshRate = 0
-[23:55:47][Trace][Config] VSync = 0
-[23:55:47][Trace][Config] FPSLimit = 0
-[23:55:47][Trace][Config] DisplayMode = Windowed
-[23:55:47][Trace][Config] Maximized = FALSE
-[23:55:47][Trace][Config] Monitor = 0
-[23:55:47][Trace][Config] RenderAPI = OpenGL
-[23:55:47][Trace][Config] ControllerAPI = XInput
-[23:55:47][Trace][Config] HotShaderReloading = FALSE
-[23:55:47][Trace][Config] HotTextureReloading = FALSE
-[23:55:47][Trace][Config] Size: 12
-[23:55:47][Info][Window] Initializing Window: "TRAP Engine" 1280x720@0Hz VSync: Off(0) DisplayMode: Windowed Monitor: 0 CursorMode: Normal RawMouseInput: Disabled
-[23:55:47][Debug][Window] Storing underlying OS video mode: Monitor: 0 2560x1440@144Hz (R8G8B8)
-[23:55:47][Debug][Window] Storing underlying OS video mode: Monitor: 1 1920x1080@144Hz (R8G8B8)
-[23:55:47][Info][Context][OpenGL] Initializing Context
-[23:55:47][Info][Renderer][OpenGL] Initializing Renderer
-[23:55:47][Info][Renderer][OpenGL] ----------------------------------
-[23:55:47][Info][Renderer][OpenGL] OpenGL:
-[23:55:47][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 441.99
-[23:55:47][Info][Renderer][OpenGL] GLSL Version: 4.60 NVIDIA
-[23:55:47][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
-[23:55:47][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
-[23:55:47][Info][Renderer][OpenGL] ----------------------------------
-[23:55:47][Debug][Image][Custom] Loading a custom image
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling: "Fallback"
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[23:55:47][Debug][Texture2D][OpenGL] Loading Texture: "Fallback2D"
-[23:55:47][Debug][Image][Custom] Loading a custom image
-[23:55:47][Debug][TextureCube][OpenGL] Loading Texture: "FallbackCube"
-[23:55:47][Debug][Image][Custom] Loading a custom image
-[23:55:47][Debug][Renderer2D] Initializing
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling: "Renderer2D"
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[23:55:47][Debug][Texture2D][OpenGL] Loading Texture: "Renderer2DWhite"
-[23:55:47][Debug][Image][Custom] Loading a custom image
-[23:55:47][Debug][LayerStack] Pushing Overlay: ImGuiLayer
-[23:55:47][Debug][LayerStack] Pushing Layer: Sandbox
-[23:55:47][Debug][Window] "TRAP Engine" Set Title: "Sandbox"
-[23:55:47][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling: "Color"
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling: "Texture"
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling: "TextureColor"
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[23:55:47][Debug][Shader][OpenGL][SPIR-V] Converting: "TextureColorSPIRV" to GLSL
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling: "TextureColorSPIRV"
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[23:55:47][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[23:55:47][Info][VFS] Mounting VirtualPath: "/textures" to PhysicalPath: "Assets/Textures"
-[23:55:47][Debug][Texture2D][OpenGL] Loading Texture: "TRAP"
-[23:55:47][Debug][Image][PNG] Loading Image: "TRAPWhiteLogo2048x2048.png"
-[23:55:52][Info][Sandbox] DrawCall(s): 1
-[23:55:52][Info][Sandbox] FPS: 1624
-[23:55:52][Info][Sandbox] FrameTime: 0.51ms
-[23:55:57][Info][Sandbox] DrawCall(s): 1
-[23:55:57][Info][Sandbox] FPS: 1734
-[23:55:57][Info][Sandbox] FrameTime: 0.513ms
-[23:56:02][Info][Sandbox] DrawCall(s): 1
-[23:56:02][Info][Sandbox] FPS: 1721
-[23:56:02][Info][Sandbox] FrameTime: 0.5214ms
-[23:56:07][Info][Sandbox] DrawCall(s): 1
-[23:56:07][Info][Sandbox] FPS: 1800
-[23:56:07][Info][Sandbox] FrameTime: 0.5258ms
-[23:56:12][Info][Sandbox] DrawCall(s): 1
-[23:56:12][Info][Sandbox] FPS: 1813
-[23:56:12][Info][Sandbox] FrameTime: 0.5081ms
-[23:56:17][Info][Sandbox] DrawCall(s): 1
-[23:56:17][Info][Sandbox] FPS: 1767
-[23:56:17][Info][Sandbox] FrameTime: 0.513ms
-[23:56:22][Info][Sandbox] DrawCall(s): 1
-[23:56:22][Info][Sandbox] FPS: 1831
-[23:56:22][Info][Sandbox] FrameTime: 0.5209ms
-[23:56:27][Info][Sandbox] DrawCall(s): 1
-[23:56:27][Info][Sandbox] FPS: 1803
-[23:56:27][Info][Sandbox] FrameTime: 0.5523ms
-[23:56:32][Info][Sandbox] DrawCall(s): 1
-[23:56:32][Info][Sandbox] FPS: 1832
-[23:56:32][Info][Sandbox] FrameTime: 0.5137ms
-[23:56:37][Info][Sandbox] DrawCall(s): 1
-[23:56:37][Info][Sandbox] FPS: 1802
-[23:56:37][Info][Sandbox] FrameTime: 0.5012ms
-[23:56:42][Info][Sandbox] DrawCall(s): 1
-[23:56:42][Info][Sandbox] FPS: 1836
-[23:56:42][Info][Sandbox] FrameTime: 0.5046ms
-[23:56:47][Info][Sandbox] DrawCall(s): 1
-[23:56:47][Info][Sandbox] FPS: 1805
-[23:56:47][Info][Sandbox] FrameTime: 0.5049ms
-[23:56:52][Info][Sandbox] DrawCall(s): 1
-[23:56:52][Info][Sandbox] FPS: 1832
-[23:56:52][Info][Sandbox] FrameTime: 0.5007ms
-[23:56:57][Info][Sandbox] DrawCall(s): 1
-[23:56:57][Info][Sandbox] FPS: 1704
-[23:56:57][Info][Sandbox] FrameTime: 0.6323ms
-[23:57:02][Info][Sandbox] DrawCall(s): 1
-[23:57:02][Info][Sandbox] FPS: 1833
-[23:57:02][Info][Sandbox] FrameTime: 0.5229ms
-[23:57:07][Info][Sandbox] DrawCall(s): 1
-[23:57:07][Info][Sandbox] FPS: 1808
-[23:57:07][Info][Sandbox] FrameTime: 0.5066ms
-[23:57:12][Info][Sandbox] DrawCall(s): 1
-[23:57:12][Info][Sandbox] FPS: 1839
-[23:57:12][Info][Sandbox] FrameTime: 0.5208ms
-[23:57:17][Info][Sandbox] DrawCall(s): 1
-[23:57:17][Info][Sandbox] FPS: 1803
-[23:57:17][Info][Sandbox] FrameTime: 0.5061ms
-[23:57:22][Info][Sandbox] DrawCall(s): 1
-[23:57:22][Info][Sandbox] FPS: 1834
-[23:57:22][Info][Sandbox] FrameTime: 0.5948ms
-[23:57:27][Info][Sandbox] DrawCall(s): 1
-[23:57:27][Info][Sandbox] FPS: 1804
-[23:57:27][Info][Sandbox] FrameTime: 0.5114ms
-[23:57:32][Info][Sandbox] DrawCall(s): 1
-[23:57:32][Info][Sandbox] FPS: 1829
-[23:57:32][Info][Sandbox] FrameTime: 0.5486ms
-[23:57:37][Info][Sandbox] DrawCall(s): 1
-[23:57:37][Info][Sandbox] FPS: 1797
-[23:57:37][Info][Sandbox] FrameTime: 0.5109ms
-[23:57:42][Info][Sandbox] DrawCall(s): 1
-[23:57:42][Info][Sandbox] FPS: 1831
-[23:57:42][Info][Sandbox] FrameTime: 0.5025ms
-[23:57:47][Info][Sandbox] DrawCall(s): 1
-[23:57:47][Info][Sandbox] FPS: 1728
-[23:57:47][Info][Sandbox] FrameTime: 0.529ms
-[23:57:52][Info][Sandbox] DrawCall(s): 1
-[23:57:52][Info][Sandbox] FPS: 1835
-[23:57:52][Info][Sandbox] FrameTime: 0.5628ms
-[23:57:57][Info][Sandbox] DrawCall(s): 1
-[23:57:57][Info][Sandbox] FPS: 1801
-[23:57:57][Info][Sandbox] FrameTime: 0.5452ms
-[23:58:02][Info][Sandbox] DrawCall(s): 1
-[23:58:02][Info][Sandbox] FPS: 1838
-[23:58:02][Info][Sandbox] FrameTime: 0.5536ms
-[23:58:07][Info][Sandbox] DrawCall(s): 1
-[23:58:07][Info][Sandbox] FPS: 1807
-[23:58:07][Info][Sandbox] FrameTime: 0.5025ms
-[23:58:12][Info][Sandbox] DrawCall(s): 1
-[23:58:12][Info][Sandbox] FPS: 1831
-[23:58:12][Info][Sandbox] FrameTime: 0.5358ms
-[23:58:17][Info][Sandbox] DrawCall(s): 1
-[23:58:17][Info][Sandbox] FPS: 1800
-[23:58:17][Info][Sandbox] FrameTime: 0.5006ms
-[23:58:22][Info][Sandbox] DrawCall(s): 1
-[23:58:22][Info][Sandbox] FPS: 1829
-[23:58:22][Info][Sandbox] FrameTime: 0.5004ms
-[23:58:27][Info][Sandbox] DrawCall(s): 1
-[23:58:27][Info][Sandbox] FPS: 1793
-[23:58:27][Info][Sandbox] FrameTime: 0.5021ms
-[23:58:32][Debug][Application] Shutting down TRAP Modules...
-[23:58:32][Debug][LayerStack] Destroying Layer: Sandbox
-[23:58:32][Debug][LayerStack] Destroying Layer: ImGuiLayer
-[23:58:32][Trace][Config] Width = 1280
-[23:58:32][Trace][Config] Height = 720
-[23:58:32][Trace][Config] RefreshRate = 0
-[23:58:32][Trace][Config] VSync = 0
-[23:58:32][Trace][Config] FPSLimit = 0
-[23:58:32][Trace][Config] DisplayMode = Windowed
-[23:58:32][Trace][Config] Maximized = FALSE
-[23:58:32][Trace][Config] Monitor = 0
-[23:58:32][Trace][Config] RenderAPI = OpenGL
-[23:58:32][Trace][Config] ControllerAPI = XInput
-[23:58:32][Trace][Config] HotShaderReloading = FALSE
-[23:58:32][Trace][Config] HotTextureReloading = FALSE
-[23:58:32][Trace][Config] Size: 12
-[23:58:32][Info][Config] Saving: Engine.cfg
-[23:58:32][Debug][Renderer2D] Shutting down
-[23:58:32][Debug][TextureManager] Destroying Textures
-[23:58:32][Debug][Texture2D][OpenGL] Destroying Texture2D: "Renderer2DWhite"
-[23:58:32][Debug][Texture2D][OpenGL] Destroying Texture2D: "Fallback2D"
-[23:58:32][Debug][TextureCube][OpenGL] Destroying TextureCube: "FallbackCube"
-[23:58:32][Debug][Texture2D][OpenGL] Destroying Texture2D: "TRAP"
-[23:58:32][Debug][ShaderManager] Destroying Shaders
-[23:58:32][Debug][Shader][OpenGL] Destroying Shader: "TextureColor"
-[23:58:32][Debug][Shader][OpenGL] Destroying Shader: "Fallback"
-[23:58:32][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[23:58:32][Debug][Shader][OpenGL] Destroying Shader: "Renderer2D"
-[23:58:32][Debug][Shader][OpenGL] Destroying Shader: "Texture"
-[23:58:32][Debug][Shader][OpenGL] Destroying Shader: "TextureColorSPIRV"
-[23:58:32][Debug][Renderer][OpenGL] Destroying Renderer
-[23:58:32][Debug][Context][OpenGL] Destroying Context
-[23:58:32][Debug][Window] Destroying Window: "Sandbox"
-[23:58:32][Debug][VFS] Shutting down Virtual File System
-[23:58:32][Info][Logger] Saving Log.txt
+[17:11:58][Debug][Application] Initializing TRAP Modules...
+[17:11:58][Debug][VFS] Initializing Virtual File System
+[17:11:58][Info][Config] Loading File: "Engine.cfg"
+[17:11:58][Trace][Config] Width = 1280
+[17:11:58][Trace][Config] Height = 720
+[17:11:58][Trace][Config] RefreshRate = 0
+[17:11:58][Trace][Config] VSync = 0
+[17:11:58][Trace][Config] FPSLimit = 0
+[17:11:58][Trace][Config] DisplayMode = Windowed
+[17:11:58][Trace][Config] Maximized = FALSE
+[17:11:58][Trace][Config] Monitor = 0
+[17:11:58][Trace][Config] RenderAPI = OpenGL
+[17:11:58][Trace][Config] ControllerAPI = XInput
+[17:11:58][Trace][Config] HotShaderReloading = FALSE
+[17:11:58][Trace][Config] HotTextureReloading = FALSE
+[17:11:58][Trace][Config] Size: 12
+[17:11:58][Info][Window] Initializing Window: "TRAP Engine" 1280x720@0Hz VSync: Off(0) DisplayMode: Windowed Monitor: 0 CursorMode: Normal RawMouseInput: Disabled
+[17:11:59][Debug][Window] Storing underlying OS video mode: Monitor: 0 2560x1440@144Hz (R8G8B8)
+[17:11:59][Debug][Window] Storing underlying OS video mode: Monitor: 1 1920x1080@144Hz (R8G8B8)
+[17:11:59][Info][Context][OpenGL] Initializing Context
+[17:11:59][Info][Renderer][OpenGL] Initializing Renderer
+[17:11:59][Info][Renderer][OpenGL] ----------------------------------
+[17:11:59][Info][Renderer][OpenGL] OpenGL:
+[17:11:59][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 441.99
+[17:11:59][Info][Renderer][OpenGL] GLSL Version: 4.60 NVIDIA
+[17:11:59][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
+[17:11:59][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
+[17:11:59][Info][Renderer][OpenGL] ----------------------------------
+[17:11:59][Debug][Image][Custom] Loading a custom image
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling: "Fallback"
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[17:11:59][Debug][Texture2D][OpenGL] Loading Texture: "Fallback2D"
+[17:11:59][Debug][Image][Custom] Loading a custom image
+[17:11:59][Debug][TextureCube][OpenGL] Loading Texture: "FallbackCube"
+[17:11:59][Debug][Image][Custom] Loading a custom image
+[17:11:59][Debug][Renderer2D] Initializing
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling: "Renderer2D"
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[17:11:59][Debug][Texture2D][OpenGL] Loading Texture: "Renderer2DWhite"
+[17:11:59][Debug][Image][Custom] Loading a custom image
+[17:11:59][Debug][LayerStack] Pushing Overlay: ImGuiLayer
+[17:11:59][Debug][LayerStack] Pushing Layer: Sandbox
+[17:11:59][Debug][Window] "TRAP Engine" Set Title: "Sandbox"
+[17:11:59][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling: "Color"
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling: "Texture"
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling: "TextureColor"
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[17:11:59][Debug][Shader][OpenGL][SPIR-V] Converting: "TextureColorSPIRV" to GLSL
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling: "TextureColorSPIRV"
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[17:11:59][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[17:11:59][Info][VFS] Mounting VirtualPath: "/textures" to PhysicalPath: "Assets/Textures"
+[17:11:59][Debug][Texture2D][OpenGL] Loading Texture: "TRAP"
+[17:11:59][Debug][Image][PNG] Loading Image: "TRAPWhiteLogo2048x2048.png"
+[17:12:04][Info][Sandbox] DrawCall(s): 1
+[17:12:04][Info][Sandbox] FPS: 2628
+[17:12:04][Info][Sandbox] FrameTime: 0.3893ms
+[17:12:09][Info][Sandbox] DrawCall(s): 1
+[17:12:09][Info][Sandbox] FPS: 2786
+[17:12:09][Info][Sandbox] FrameTime: 0.3354ms
+[17:12:14][Info][Sandbox] DrawCall(s): 1
+[17:12:14][Info][Sandbox] FPS: 2703
+[17:12:14][Info][Sandbox] FrameTime: 0.3951ms
+[17:12:19][Info][Sandbox] DrawCall(s): 1
+[17:12:19][Info][Sandbox] FPS: 2768
+[17:12:19][Info][Sandbox] FrameTime: 0.3314ms
+[17:12:24][Info][Sandbox] DrawCall(s): 1
+[17:12:24][Info][Sandbox] FPS: 2783
+[17:12:24][Info][Sandbox] FrameTime: 0.4745ms
+[17:12:29][Info][Sandbox] DrawCall(s): 1
+[17:12:29][Info][Sandbox] FPS: 2757
+[17:12:29][Info][Sandbox] FrameTime: 0.3182ms
+[17:12:34][Info][Sandbox] DrawCall(s): 1
+[17:12:34][Info][Sandbox] FPS: 2769
+[17:12:34][Info][Sandbox] FrameTime: 0.3223ms
+[17:12:39][Info][Sandbox] DrawCall(s): 1
+[17:12:39][Info][Sandbox] FPS: 2789
+[17:12:39][Info][Sandbox] FrameTime: 0.3407ms
+[17:12:44][Info][Sandbox] DrawCall(s): 1
+[17:12:44][Info][Sandbox] FPS: 2763
+[17:12:44][Info][Sandbox] FrameTime: 0.3245ms
+[17:12:49][Info][Sandbox] DrawCall(s): 1
+[17:12:49][Info][Sandbox] FPS: 2770
+[17:12:49][Info][Sandbox] FrameTime: 0.3492ms
+[17:12:54][Info][Sandbox] DrawCall(s): 1
+[17:12:54][Info][Sandbox] FPS: 2756
+[17:12:54][Info][Sandbox] FrameTime: 0.4272ms
+[17:12:59][Info][Sandbox] DrawCall(s): 1
+[17:12:59][Info][Sandbox] FPS: 2796
+[17:12:59][Info][Sandbox] FrameTime: 0.3193ms
+[17:13:04][Info][Sandbox] DrawCall(s): 1
+[17:13:04][Info][Sandbox] FPS: 2612
+[17:13:04][Info][Sandbox] FrameTime: 0.3481ms
+[17:13:09][Info][Sandbox] DrawCall(s): 1
+[17:13:09][Info][Sandbox] FPS: 2763
+[17:13:09][Info][Sandbox] FrameTime: 0.3737ms
+[17:13:14][Info][Sandbox] DrawCall(s): 1
+[17:13:14][Info][Sandbox] FPS: 2763
+[17:13:14][Info][Sandbox] FrameTime: 0.3163ms
+[17:13:19][Info][Sandbox] DrawCall(s): 1
+[17:13:19][Info][Sandbox] FPS: 2777
+[17:13:19][Info][Sandbox] FrameTime: 0.4757ms
+[17:13:24][Info][Sandbox] DrawCall(s): 1
+[17:13:24][Info][Sandbox] FPS: 2762
+[17:13:24][Info][Sandbox] FrameTime: 0.3182ms
+[17:13:29][Info][Sandbox] DrawCall(s): 1
+[17:13:29][Info][Sandbox] FPS: 2779
+[17:13:29][Info][Sandbox] FrameTime: 0.6598ms
+[17:13:34][Info][Sandbox] DrawCall(s): 1
+[17:13:34][Info][Sandbox] FPS: 2727
+[17:13:34][Info][Sandbox] FrameTime: 0.3461ms
+[17:13:39][Info][Sandbox] DrawCall(s): 1
+[17:13:39][Info][Sandbox] FPS: 2788
+[17:13:39][Info][Sandbox] FrameTime: 0.3173ms
+[17:13:44][Info][Sandbox] DrawCall(s): 1
+[17:13:44][Info][Sandbox] FPS: 2787
+[17:13:44][Info][Sandbox] FrameTime: 0.335ms
+[17:13:49][Info][Sandbox] DrawCall(s): 1
+[17:13:49][Info][Sandbox] FPS: 2796
+[17:13:49][Info][Sandbox] FrameTime: 0.3725ms
+[17:13:54][Info][Sandbox] DrawCall(s): 1
+[17:13:54][Info][Sandbox] FPS: 2775
+[17:13:54][Info][Sandbox] FrameTime: 0.3525ms
+[17:13:59][Info][Sandbox] DrawCall(s): 1
+[17:13:59][Info][Sandbox] FPS: 2758
+[17:13:59][Info][Sandbox] FrameTime: 0.3593ms
+[17:14:04][Info][Sandbox] DrawCall(s): 1
+[17:14:04][Info][Sandbox] FPS: 2775
+[17:14:04][Info][Sandbox] FrameTime: 0.3613ms
+[17:14:09][Info][Sandbox] DrawCall(s): 1
+[17:14:09][Info][Sandbox] FPS: 2767
+[17:14:09][Info][Sandbox] FrameTime: 0.3576ms
+[17:14:14][Info][Sandbox] DrawCall(s): 1
+[17:14:14][Info][Sandbox] FPS: 2771
+[17:14:14][Info][Sandbox] FrameTime: 1.0138ms
+[17:14:19][Info][Sandbox] DrawCall(s): 1
+[17:14:19][Info][Sandbox] FPS: 2783
+[17:14:19][Info][Sandbox] FrameTime: 0.3483ms
+[17:14:24][Info][Sandbox] DrawCall(s): 1
+[17:14:24][Info][Sandbox] FPS: 2769
+[17:14:24][Info][Sandbox] FrameTime: 0.3161ms
+[17:14:29][Info][Sandbox] DrawCall(s): 1
+[17:14:29][Info][Sandbox] FPS: 2778
+[17:14:29][Info][Sandbox] FrameTime: 0.3365ms
+[17:14:34][Info][Sandbox] DrawCall(s): 1
+[17:14:34][Info][Sandbox] FPS: 2763
+[17:14:34][Info][Sandbox] FrameTime: 0.3168ms
+[17:14:39][Info][Sandbox] DrawCall(s): 1
+[17:14:39][Info][Sandbox] FPS: 2742
+[17:14:39][Info][Sandbox] FrameTime: 0.3177ms
+[17:14:44][Info][Sandbox] DrawCall(s): 1
+[17:14:44][Info][Sandbox] FPS: 2777
+[17:14:44][Info][Sandbox] FrameTime: 0.3282ms
+[17:14:49][Info][Sandbox] DrawCall(s): 1
+[17:14:49][Info][Sandbox] FPS: 2774
+[17:14:49][Info][Sandbox] FrameTime: 0.3259ms
+[17:14:54][Info][Sandbox] DrawCall(s): 1
+[17:14:54][Info][Sandbox] FPS: 2695
+[17:14:54][Info][Sandbox] FrameTime: 0.3611ms
+[17:14:59][Info][Sandbox] DrawCall(s): 1
+[17:14:59][Info][Sandbox] FPS: 2733
+[17:14:59][Info][Sandbox] FrameTime: 0.4419ms
+[17:15:04][Info][Sandbox] DrawCall(s): 1
+[17:15:04][Info][Sandbox] FPS: 2745
+[17:15:04][Info][Sandbox] FrameTime: 0.3562ms
+[17:15:09][Info][Sandbox] DrawCall(s): 1
+[17:15:09][Info][Sandbox] FPS: 2649
+[17:15:09][Info][Sandbox] FrameTime: 0.48ms
+[17:15:14][Info][Sandbox] DrawCall(s): 1
+[17:15:14][Info][Sandbox] FPS: 2653
+[17:15:14][Info][Sandbox] FrameTime: 0.317ms
+[17:15:19][Info][Sandbox] DrawCall(s): 1
+[17:15:19][Info][Sandbox] FPS: 2749
+[17:15:19][Info][Sandbox] FrameTime: 0.3436ms
+[17:15:24][Info][Sandbox] DrawCall(s): 1
+[17:15:24][Info][Sandbox] FPS: 2769
+[17:15:24][Info][Sandbox] FrameTime: 0.3504ms
+[17:15:29][Info][Sandbox] DrawCall(s): 1
+[17:15:29][Info][Sandbox] FPS: 2653
+[17:15:29][Info][Sandbox] FrameTime: 0.3711ms
+[17:15:34][Info][Sandbox] DrawCall(s): 1
+[17:15:34][Info][Sandbox] FPS: 2771
+[17:15:34][Info][Sandbox] FrameTime: 0.3228ms
+[17:15:39][Info][Sandbox] DrawCall(s): 1
+[17:15:39][Info][Sandbox] FPS: 2788
+[17:15:39][Info][Sandbox] FrameTime: 0.3407ms
+[17:15:44][Info][Sandbox] DrawCall(s): 1
+[17:15:44][Info][Sandbox] FPS: 2739
+[17:15:44][Info][Sandbox] FrameTime: 0.4127ms
+[17:15:49][Info][Sandbox] DrawCall(s): 1
+[17:15:49][Info][Sandbox] FPS: 2765
+[17:15:49][Info][Sandbox] FrameTime: 0.4255ms
+[17:15:54][Info][Sandbox] DrawCall(s): 1
+[17:15:54][Info][Sandbox] FPS: 2760
+[17:15:54][Info][Sandbox] FrameTime: 0.426ms
+[17:15:59][Info][Sandbox] DrawCall(s): 1
+[17:15:59][Info][Sandbox] FPS: 2788
+[17:15:59][Info][Sandbox] FrameTime: 0.3249ms
+[17:16:04][Info][Sandbox] DrawCall(s): 1
+[17:16:04][Info][Sandbox] FPS: 2785
+[17:16:04][Info][Sandbox] FrameTime: 0.4831ms
+[17:16:09][Info][Sandbox] DrawCall(s): 1
+[17:16:09][Info][Sandbox] FPS: 2789
+[17:16:09][Info][Sandbox] FrameTime: 0.3837ms
+[17:16:14][Info][Sandbox] DrawCall(s): 1
+[17:16:14][Info][Sandbox] FPS: 2789
+[17:16:14][Info][Sandbox] FrameTime: 0.4497ms
+[17:16:19][Info][Sandbox] DrawCall(s): 1
+[17:16:19][Info][Sandbox] FPS: 2791
+[17:16:19][Info][Sandbox] FrameTime: 0.323ms
+[17:16:24][Info][Sandbox] DrawCall(s): 1
+[17:16:24][Info][Sandbox] FPS: 2783
+[17:16:24][Info][Sandbox] FrameTime: 0.3367ms
+[17:16:29][Info][Sandbox] DrawCall(s): 1
+[17:16:29][Info][Sandbox] FPS: 2796
+[17:16:29][Info][Sandbox] FrameTime: 0.3573ms
+[17:16:34][Info][Sandbox] DrawCall(s): 1
+[17:16:34][Info][Sandbox] FPS: 2778
+[17:16:34][Info][Sandbox] FrameTime: 0.3305ms
+[17:16:39][Info][Sandbox] DrawCall(s): 1
+[17:16:39][Info][Sandbox] FPS: 2785
+[17:16:39][Info][Sandbox] FrameTime: 0.368ms
+[17:16:44][Info][Sandbox] DrawCall(s): 1
+[17:16:44][Info][Sandbox] FPS: 2804
+[17:16:44][Info][Sandbox] FrameTime: 0.3993ms
+[17:16:49][Info][Sandbox] DrawCall(s): 1
+[17:16:49][Info][Sandbox] FPS: 2548
+[17:16:49][Info][Sandbox] FrameTime: 1.0265ms
+[17:16:54][Info][Sandbox] DrawCall(s): 1
+[17:16:54][Info][Sandbox] FPS: 2601
+[17:16:54][Info][Sandbox] FrameTime: 0.4465ms
+[17:16:59][Info][Sandbox] DrawCall(s): 1
+[17:16:59][Info][Sandbox] FPS: 2813
+[17:16:59][Info][Sandbox] FrameTime: 0.3221ms
+[17:17:04][Info][Sandbox] DrawCall(s): 1
+[17:17:04][Info][Sandbox] FPS: 2784
+[17:17:04][Info][Sandbox] FrameTime: 0.3296ms
+[17:17:09][Info][Sandbox] DrawCall(s): 1
+[17:17:09][Info][Sandbox] FPS: 2742
+[17:17:09][Info][Sandbox] FrameTime: 0.3352ms
+[17:17:14][Info][Sandbox] DrawCall(s): 1
+[17:17:14][Info][Sandbox] FPS: 2616
+[17:17:14][Info][Sandbox] FrameTime: 0.3883ms
+[17:17:19][Info][Sandbox] DrawCall(s): 1
+[17:17:19][Info][Sandbox] FPS: 2601
+[17:17:19][Info][Sandbox] FrameTime: 0.5485ms
+[17:17:24][Info][Sandbox] DrawCall(s): 1
+[17:17:24][Info][Sandbox] FPS: 2642
+[17:17:24][Info][Sandbox] FrameTime: 0.3277ms
+[17:17:29][Info][Sandbox] DrawCall(s): 1
+[17:17:29][Info][Sandbox] FPS: 2626
+[17:17:29][Info][Sandbox] FrameTime: 0.3419ms
+[17:17:34][Info][Sandbox] DrawCall(s): 1
+[17:17:34][Info][Sandbox] FPS: 2786
+[17:17:34][Info][Sandbox] FrameTime: 0.3488ms
+[17:17:39][Info][Sandbox] DrawCall(s): 1
+[17:17:39][Info][Sandbox] FPS: 2792
+[17:17:39][Info][Sandbox] FrameTime: 0.3311ms
+[17:17:44][Info][Sandbox] DrawCall(s): 1
+[17:17:44][Info][Sandbox] FPS: 2796
+[17:17:44][Info][Sandbox] FrameTime: 0.6098ms
+[17:17:49][Info][Sandbox] DrawCall(s): 1
+[17:17:49][Info][Sandbox] FPS: 2786
+[17:17:49][Info][Sandbox] FrameTime: 0.3689ms
+[17:17:54][Info][Sandbox] DrawCall(s): 1
+[17:17:54][Info][Sandbox] FPS: 2657
+[17:17:54][Info][Sandbox] FrameTime: 0.3555ms
+[17:17:59][Info][Sandbox] DrawCall(s): 1
+[17:17:59][Info][Sandbox] FPS: 2771
+[17:17:59][Info][Sandbox] FrameTime: 0.456ms
+[17:18:04][Info][Sandbox] DrawCall(s): 1
+[17:18:04][Info][Sandbox] FPS: 2808
+[17:18:04][Info][Sandbox] FrameTime: 0.3908ms
+[17:18:09][Info][Sandbox] DrawCall(s): 1
+[17:18:09][Info][Sandbox] FPS: 2791
+[17:18:09][Info][Sandbox] FrameTime: 0.3307ms
+[17:18:14][Info][Sandbox] DrawCall(s): 1
+[17:18:14][Info][Sandbox] FPS: 2778
+[17:18:14][Info][Sandbox] FrameTime: 0.3236ms
+[17:18:19][Info][Sandbox] DrawCall(s): 1
+[17:18:19][Info][Sandbox] FPS: 2793
+[17:18:19][Info][Sandbox] FrameTime: 0.3302ms
+[17:18:24][Info][Sandbox] DrawCall(s): 1
+[17:18:24][Info][Sandbox] FPS: 2716
+[17:18:24][Info][Sandbox] FrameTime: 0.3313ms
+[17:18:29][Info][Sandbox] DrawCall(s): 1
+[17:18:29][Info][Sandbox] FPS: 2716
+[17:18:29][Info][Sandbox] FrameTime: 0.3745ms
+[17:18:34][Info][Sandbox] DrawCall(s): 1
+[17:18:34][Info][Sandbox] FPS: 2601
+[17:18:34][Info][Sandbox] FrameTime: 0.3502ms
+[17:18:39][Info][Sandbox] DrawCall(s): 1
+[17:18:39][Info][Sandbox] FPS: 2698
+[17:18:39][Info][Sandbox] FrameTime: 0.3186ms
+[17:18:44][Info][Sandbox] DrawCall(s): 1
+[17:18:44][Info][Sandbox] FPS: 2629
+[17:18:44][Info][Sandbox] FrameTime: 0.3363ms
+[17:18:49][Info][Sandbox] DrawCall(s): 1
+[17:18:49][Info][Sandbox] FPS: 2744
+[17:18:49][Info][Sandbox] FrameTime: 0.4403ms
+[17:18:54][Info][Sandbox] DrawCall(s): 1
+[17:18:54][Info][Sandbox] FPS: 2609
+[17:18:54][Info][Sandbox] FrameTime: 0.3181ms
+[17:18:59][Info][Sandbox] DrawCall(s): 1
+[17:18:59][Info][Sandbox] FPS: 2684
+[17:18:59][Info][Sandbox] FrameTime: 0.3437ms
+[17:19:04][Info][Sandbox] DrawCall(s): 1
+[17:19:04][Info][Sandbox] FPS: 2615
+[17:19:04][Info][Sandbox] FrameTime: 0.3846ms
+[17:19:09][Info][Sandbox] DrawCall(s): 1
+[17:19:09][Info][Sandbox] FPS: 2676
+[17:19:09][Info][Sandbox] FrameTime: 0.3735ms
+[17:19:14][Info][Sandbox] DrawCall(s): 1
+[17:19:14][Info][Sandbox] FPS: 2808
+[17:19:14][Info][Sandbox] FrameTime: 0.3172ms
+[17:19:19][Info][Sandbox] DrawCall(s): 1
+[17:19:19][Info][Sandbox] FPS: 2791
+[17:19:19][Info][Sandbox] FrameTime: 0.6679ms
+[17:19:24][Info][Sandbox] DrawCall(s): 1
+[17:19:24][Info][Sandbox] FPS: 2797
+[17:19:24][Info][Sandbox] FrameTime: 0.4866ms
+[17:19:29][Info][Sandbox] DrawCall(s): 1
+[17:19:29][Info][Sandbox] FPS: 2568
+[17:19:29][Info][Sandbox] FrameTime: 0.3759ms
+[17:19:34][Info][Sandbox] DrawCall(s): 1
+[17:19:34][Info][Sandbox] FPS: 2525
+[17:19:34][Info][Sandbox] FrameTime: 3.0947ms
+[17:19:39][Info][Sandbox] DrawCall(s): 1
+[17:19:39][Info][Sandbox] FPS: 2585
+[17:19:39][Info][Sandbox] FrameTime: 0.3408ms
+[17:19:44][Info][Sandbox] DrawCall(s): 1
+[17:19:44][Info][Sandbox] FPS: 2626
+[17:19:44][Info][Sandbox] FrameTime: 0.3392ms
+[17:19:49][Info][Sandbox] DrawCall(s): 1
+[17:19:49][Info][Sandbox] FPS: 2691
+[17:19:49][Info][Sandbox] FrameTime: 0.3775ms
+[17:19:54][Info][Sandbox] DrawCall(s): 1
+[17:19:54][Info][Sandbox] FPS: 2562
+[17:19:54][Info][Sandbox] FrameTime: 0.335ms
+[17:19:59][Info][Sandbox] DrawCall(s): 1
+[17:19:59][Info][Sandbox] FPS: 2795
+[17:19:59][Info][Sandbox] FrameTime: 0.3455ms
+[17:20:04][Info][Sandbox] DrawCall(s): 1
+[17:20:04][Info][Sandbox] FPS: 2785
+[17:20:04][Info][Sandbox] FrameTime: 0.3927ms
+[17:20:09][Info][Sandbox] DrawCall(s): 1
+[17:20:09][Info][Sandbox] FPS: 2688
+[17:20:09][Info][Sandbox] FrameTime: 0.3506ms
+[17:20:14][Info][Sandbox] DrawCall(s): 1
+[17:20:14][Info][Sandbox] FPS: 2756
+[17:20:14][Info][Sandbox] FrameTime: 0.3277ms
+[17:20:19][Info][Sandbox] DrawCall(s): 1
+[17:20:19][Info][Sandbox] FPS: 2657
+[17:20:19][Info][Sandbox] FrameTime: 0.3362ms
+[17:20:24][Info][Sandbox] DrawCall(s): 1
+[17:20:24][Info][Sandbox] FPS: 2667
+[17:20:24][Info][Sandbox] FrameTime: 0.3432ms
+[17:20:29][Info][Sandbox] DrawCall(s): 1
+[17:20:29][Info][Sandbox] FPS: 2610
+[17:20:29][Info][Sandbox] FrameTime: 0.3854ms
+[17:20:34][Info][Sandbox] DrawCall(s): 1
+[17:20:34][Info][Sandbox] FPS: 2765
+[17:20:34][Info][Sandbox] FrameTime: 0.355ms
+[17:20:39][Info][Sandbox] DrawCall(s): 1
+[17:20:39][Info][Sandbox] FPS: 2649
+[17:20:39][Info][Sandbox] FrameTime: 0.3931ms
+[17:20:44][Info][Sandbox] DrawCall(s): 1
+[17:20:44][Info][Sandbox] FPS: 2710
+[17:20:44][Info][Sandbox] FrameTime: 0.4714ms
+[17:20:49][Info][Sandbox] DrawCall(s): 1
+[17:20:49][Info][Sandbox] FPS: 2701
+[17:20:49][Info][Sandbox] FrameTime: 0.3208ms
+[17:20:54][Info][Sandbox] DrawCall(s): 1
+[17:20:54][Info][Sandbox] FPS: 2806
+[17:20:54][Info][Sandbox] FrameTime: 0.3404ms
+[17:20:59][Info][Sandbox] DrawCall(s): 1
+[17:20:59][Info][Sandbox] FPS: 2769
+[17:20:59][Info][Sandbox] FrameTime: 0.3224ms
+[17:21:04][Info][Sandbox] DrawCall(s): 1
+[17:21:04][Info][Sandbox] FPS: 2761
+[17:21:04][Info][Sandbox] FrameTime: 0.3488ms
+[17:21:09][Info][Sandbox] DrawCall(s): 1
+[17:21:09][Info][Sandbox] FPS: 2658
+[17:21:09][Info][Sandbox] FrameTime: 0.3179ms
+[17:21:14][Info][Sandbox] DrawCall(s): 1
+[17:21:14][Info][Sandbox] FPS: 2778
+[17:21:14][Info][Sandbox] FrameTime: 0.316ms
+[17:21:19][Info][Sandbox] DrawCall(s): 1
+[17:21:19][Info][Sandbox] FPS: 2641
+[17:21:19][Info][Sandbox] FrameTime: 0.5779ms
+[17:21:24][Info][Sandbox] DrawCall(s): 1
+[17:21:24][Info][Sandbox] FPS: 2784
+[17:21:24][Info][Sandbox] FrameTime: 0.9977ms
+[17:21:29][Info][Sandbox] DrawCall(s): 1
+[17:21:29][Info][Sandbox] FPS: 2799
+[17:21:29][Info][Sandbox] FrameTime: 0.3714ms
+[17:21:34][Info][Sandbox] DrawCall(s): 1
+[17:21:34][Info][Sandbox] FPS: 2812
+[17:21:34][Info][Sandbox] FrameTime: 0.4008ms
+[17:21:39][Info][Sandbox] DrawCall(s): 1
+[17:21:39][Info][Sandbox] FPS: 2639
+[17:21:39][Info][Sandbox] FrameTime: 0.318ms
+[17:21:44][Info][Sandbox] DrawCall(s): 1
+[17:21:44][Info][Sandbox] FPS: 2809
+[17:21:44][Info][Sandbox] FrameTime: 0.3426ms
+[17:21:49][Info][Sandbox] DrawCall(s): 1
+[17:21:49][Info][Sandbox] FPS: 2728
+[17:21:49][Info][Sandbox] FrameTime: 0.341ms
+[17:21:54][Info][Sandbox] DrawCall(s): 1
+[17:21:54][Info][Sandbox] FPS: 2651
+[17:21:54][Info][Sandbox] FrameTime: 0.3712ms
+[17:21:59][Info][Sandbox] DrawCall(s): 1
+[17:21:59][Info][Sandbox] FPS: 2673
+[17:21:59][Info][Sandbox] FrameTime: 0.3362ms
+[17:22:04][Info][Sandbox] DrawCall(s): 1
+[17:22:04][Info][Sandbox] FPS: 2751
+[17:22:04][Info][Sandbox] FrameTime: 0.3198ms
+[17:22:09][Info][Sandbox] DrawCall(s): 1
+[17:22:09][Info][Sandbox] FPS: 2629
+[17:22:09][Info][Sandbox] FrameTime: 0.34ms
+[17:22:14][Info][Sandbox] DrawCall(s): 1
+[17:22:14][Info][Sandbox] FPS: 2646
+[17:22:14][Info][Sandbox] FrameTime: 0.3506ms
+[17:22:19][Info][Sandbox] DrawCall(s): 1
+[17:22:19][Info][Sandbox] FPS: 2683
+[17:22:19][Info][Sandbox] FrameTime: 0.3411ms
+[17:22:24][Info][Sandbox] DrawCall(s): 1
+[17:22:24][Info][Sandbox] FPS: 2786
+[17:22:24][Info][Sandbox] FrameTime: 0.3523ms
+[17:22:29][Info][Sandbox] DrawCall(s): 1
+[17:22:29][Info][Sandbox] FPS: 2784
+[17:22:29][Info][Sandbox] FrameTime: 0.3377ms
+[17:22:34][Info][Sandbox] DrawCall(s): 1
+[17:22:34][Info][Sandbox] FPS: 2806
+[17:22:34][Info][Sandbox] FrameTime: 0.3257ms
+[17:22:39][Info][Sandbox] DrawCall(s): 1
+[17:22:39][Info][Sandbox] FPS: 2805
+[17:22:39][Info][Sandbox] FrameTime: 0.376ms
+[17:22:44][Info][Sandbox] DrawCall(s): 1
+[17:22:44][Info][Sandbox] FPS: 1826
+[17:22:44][Info][Sandbox] FrameTime: 0.4805ms
+[17:22:49][Info][Sandbox] DrawCall(s): 1
+[17:22:49][Info][Sandbox] FPS: 2804
+[17:22:49][Info][Sandbox] FrameTime: 0.3279ms
+[17:22:54][Info][Sandbox] DrawCall(s): 1
+[17:22:54][Info][Sandbox] FPS: 2777
+[17:22:54][Info][Sandbox] FrameTime: 0.3378ms
+[17:22:59][Info][Sandbox] DrawCall(s): 1
+[17:22:59][Info][Sandbox] FPS: 2796
+[17:22:59][Info][Sandbox] FrameTime: 0.3215ms
+[17:23:04][Info][Sandbox] DrawCall(s): 1
+[17:23:04][Info][Sandbox] FPS: 2801
+[17:23:04][Info][Sandbox] FrameTime: 0.3402ms
+[17:23:09][Info][Sandbox] DrawCall(s): 1
+[17:23:09][Info][Sandbox] FPS: 2811
+[17:23:09][Info][Sandbox] FrameTime: 0.3245ms
+[17:23:14][Info][Sandbox] DrawCall(s): 1
+[17:23:14][Info][Sandbox] FPS: 2756
+[17:23:14][Info][Sandbox] FrameTime: 0.334ms
+[17:23:19][Info][Sandbox] DrawCall(s): 1
+[17:23:19][Info][Sandbox] FPS: 2802
+[17:23:19][Info][Sandbox] FrameTime: 0.3197ms
+[17:23:24][Info][Sandbox] DrawCall(s): 1
+[17:23:24][Info][Sandbox] FPS: 2795
+[17:23:24][Info][Sandbox] FrameTime: 0.4089ms
+[17:23:29][Info][Sandbox] DrawCall(s): 1
+[17:23:29][Info][Sandbox] FPS: 2799
+[17:23:29][Info][Sandbox] FrameTime: 0.3449ms
+[17:23:34][Info][Sandbox] DrawCall(s): 1
+[17:23:34][Info][Sandbox] FPS: 2807
+[17:23:34][Info][Sandbox] FrameTime: 0.354ms
+[17:23:39][Info][Sandbox] DrawCall(s): 1
+[17:23:39][Info][Sandbox] FPS: 2793
+[17:23:39][Info][Sandbox] FrameTime: 0.3262ms
+[17:23:44][Info][Sandbox] DrawCall(s): 1
+[17:23:44][Info][Sandbox] FPS: 2782
+[17:23:44][Info][Sandbox] FrameTime: 0.3351ms
+[17:23:49][Info][Sandbox] DrawCall(s): 1
+[17:23:49][Info][Sandbox] FPS: 2795
+[17:23:49][Info][Sandbox] FrameTime: 0.315ms
+[17:23:54][Info][Sandbox] DrawCall(s): 1
+[17:23:54][Info][Sandbox] FPS: 2594
+[17:23:54][Info][Sandbox] FrameTime: 0.5096ms
+[17:23:59][Info][Sandbox] DrawCall(s): 1
+[17:23:59][Info][Sandbox] FPS: 2773
+[17:23:59][Info][Sandbox] FrameTime: 0.4001ms
+[17:24:04][Info][Sandbox] DrawCall(s): 1
+[17:24:04][Info][Sandbox] FPS: 2806
+[17:24:04][Info][Sandbox] FrameTime: 0.3547ms
+[17:24:09][Info][Sandbox] DrawCall(s): 1
+[17:24:09][Info][Sandbox] FPS: 2782
+[17:24:09][Info][Sandbox] FrameTime: 0.3527ms
+[17:24:14][Info][Sandbox] DrawCall(s): 1
+[17:24:14][Info][Sandbox] FPS: 2792
+[17:24:14][Info][Sandbox] FrameTime: 0.3262ms
+[17:24:19][Info][Sandbox] DrawCall(s): 1
+[17:24:19][Info][Sandbox] FPS: 2767
+[17:24:19][Info][Sandbox] FrameTime: 0.3837ms
+[17:24:24][Info][Sandbox] DrawCall(s): 1
+[17:24:24][Info][Sandbox] FPS: 2798
+[17:24:24][Info][Sandbox] FrameTime: 0.3165ms
+[17:24:29][Info][Sandbox] DrawCall(s): 1
+[17:24:29][Info][Sandbox] FPS: 2804
+[17:24:29][Info][Sandbox] FrameTime: 0.3976ms
+[17:24:34][Info][Sandbox] DrawCall(s): 1
+[17:24:34][Info][Sandbox] FPS: 2802
+[17:24:34][Info][Sandbox] FrameTime: 0.3258ms
+[17:24:39][Info][Sandbox] DrawCall(s): 1
+[17:24:39][Info][Sandbox] FPS: 2799
+[17:24:39][Info][Sandbox] FrameTime: 0.3285ms
+[17:24:44][Info][Sandbox] DrawCall(s): 1
+[17:24:44][Info][Sandbox] FPS: 2817
+[17:24:44][Info][Sandbox] FrameTime: 0.3253ms
+[17:24:49][Info][Sandbox] DrawCall(s): 1
+[17:24:49][Info][Sandbox] FPS: 2809
+[17:24:49][Info][Sandbox] FrameTime: 0.3267ms
+[17:24:54][Info][Sandbox] DrawCall(s): 1
+[17:24:54][Info][Sandbox] FPS: 2738
+[17:24:54][Info][Sandbox] FrameTime: 0.3445ms
+[17:24:59][Info][Sandbox] DrawCall(s): 1
+[17:24:59][Info][Sandbox] FPS: 2703
+[17:24:59][Info][Sandbox] FrameTime: 0.4291ms
+[17:25:04][Info][Sandbox] DrawCall(s): 1
+[17:25:04][Info][Sandbox] FPS: 2635
+[17:25:04][Info][Sandbox] FrameTime: 0.3189ms
+[17:25:09][Debug][Application] Shutting down TRAP Modules...
+[17:25:09][Debug][LayerStack] Destroying Layer: Sandbox
+[17:25:09][Debug][LayerStack] Destroying Layer: ImGuiLayer
+[17:25:09][Trace][Config] Width = 1280
+[17:25:09][Trace][Config] Height = 720
+[17:25:09][Trace][Config] RefreshRate = 0
+[17:25:09][Trace][Config] VSync = 0
+[17:25:09][Trace][Config] FPSLimit = 0
+[17:25:09][Trace][Config] DisplayMode = Windowed
+[17:25:09][Trace][Config] Maximized = FALSE
+[17:25:09][Trace][Config] Monitor = 0
+[17:25:09][Trace][Config] RenderAPI = OpenGL
+[17:25:09][Trace][Config] ControllerAPI = XInput
+[17:25:09][Trace][Config] HotShaderReloading = FALSE
+[17:25:09][Trace][Config] HotTextureReloading = FALSE
+[17:25:09][Trace][Config] Size: 12
+[17:25:09][Info][Config] Saving: Engine.cfg
+[17:25:09][Debug][Renderer2D] Shutting down
+[17:25:09][Debug][TextureManager] Destroying Textures
+[17:25:09][Debug][Texture2D][OpenGL] Destroying Texture2D: "Renderer2DWhite"
+[17:25:09][Debug][Texture2D][OpenGL] Destroying Texture2D: "Fallback2D"
+[17:25:09][Debug][TextureCube][OpenGL] Destroying TextureCube: "FallbackCube"
+[17:25:09][Debug][Texture2D][OpenGL] Destroying Texture2D: "TRAP"
+[17:25:09][Debug][ShaderManager] Destroying Shaders
+[17:25:09][Debug][Shader][OpenGL] Destroying Shader: "TextureColor"
+[17:25:09][Debug][Shader][OpenGL] Destroying Shader: "Fallback"
+[17:25:09][Debug][Shader][OpenGL] Destroying Shader: "Color"
+[17:25:09][Debug][Shader][OpenGL] Destroying Shader: "Renderer2D"
+[17:25:09][Debug][Shader][OpenGL] Destroying Shader: "Texture"
+[17:25:09][Debug][Shader][OpenGL] Destroying Shader: "TextureColorSPIRV"
+[17:25:09][Debug][Renderer][OpenGL] Destroying Renderer
+[17:25:09][Debug][Context][OpenGL] Destroying Context
+[17:25:09][Debug][Window] Destroying Window: "Sandbox"
+[17:25:09][Debug][VFS] Shutting down Virtual File System
+[17:25:09][Info][Logger] Saving Log.txt
