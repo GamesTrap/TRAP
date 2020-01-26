@@ -789,3 +789,6 @@ SITREP 01/26/2020|20w04a3
     - Renamed Events ~<20 mins
     - Updated Docs ~<30 mins
     - Splitted up WindowEvents from ApplicationEvents ~<20 mins
+    - Added FrameBufferResizeEvent ~<30 mins
+    - Switched WindowResizeEvent to FrameBufferResizeEvent ~<20 mins
+    - Updated Docs ~<25 mins

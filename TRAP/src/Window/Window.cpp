@@ -2,11 +2,11 @@
 #include "Window.h"
 
 #include "Utils/MsgBox/MsgBox.h"
-#include "Graphics/API/RendererAPI.h"
-#include "Graphics/Renderer.h"
-#include "Event/ApplicationEvent.h"
 #include "Event/KeyEvent.h"
 #include "Event/MouseEvent.h"
+#include "Event/WindowEvent.h"
+#include "Graphics/API/RendererAPI.h"
+#include "Graphics/Renderer.h"
 #include "Graphics/Shaders/ShaderManager.h"
 #include "Graphics/Textures/TextureManager.h"
 #include "Input/Input.h"
@@ -356,7 +356,9 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 	if (m_data.EventCallback)
 	{
 		WindowResizeEvent event(width, height, m_data.Title);
+		FrameBufferResizeEvent event1(width, height, m_data.Title);
 		m_data.EventCallback(event);
+		m_data.EventCallback(event1);
 	}
 
 	constexpr auto GetModeStr = [&](const DisplayMode displayMode)
@@ -1091,16 +1093,17 @@ void TRAP::Window::Init(const WindowProps& props)
 		data.EventCallback(event);
 	});
 
-	INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, int32_t width, int32_t height)
-	{
+	INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const int32_t width, const int32_t height)
+	{		
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
+		data.Width = width;
+		data.Height = height;
 
 		if (!data.EventCallback)
 			return;
 
-		//TODO
-		//FrameBufferResizeEvent event(width, height);
-		//data.EventCallback(event);
+		FrameBufferResizeEvent event(width, height, data.Title);
+		data.EventCallback(event);
 	});
 
 	INTERNAL::WindowingAPI::SetWindowContentScaleCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, float xScale, float yScale)

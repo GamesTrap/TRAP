@@ -264,3 +264,71 @@ int32_t TRAP::WindowLostFocusEvent::GetCategoryFlags() const
 {
 	return static_cast<int32_t>(EventCategory::Application);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::FrameBufferResizeEvent::FrameBufferResizeEvent(const uint32_t width, const uint32_t height, const std::string_view title)
+	: m_width(width), m_height(height), m_title(title)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::FrameBufferResizeEvent::GetWidth() const
+{
+	return m_width;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::FrameBufferResizeEvent::GetHeight() const
+{
+	return m_height;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string_view TRAP::FrameBufferResizeEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::FrameBufferResizeEvent::ToString() const
+{
+	std::stringstream ss;
+	ss << "FrameBufferResizeEvent: " << m_width << "x" << m_height;
+
+	return ss.str();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::FrameBufferResizeEvent::GetStaticType()
+{
+	return EventType::FrameBufferResize;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::FrameBufferResizeEvent::GetEventType() const
+{
+	return GetStaticType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const char* TRAP::FrameBufferResizeEvent::GetName() const
+{
+	return "FrameBufferResize";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::FrameBufferResizeEvent::GetCategoryFlags() const
+{
+	return static_cast<int32_t>(EventCategory::Application);
+}

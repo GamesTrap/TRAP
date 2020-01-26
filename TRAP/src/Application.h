@@ -8,12 +8,15 @@
 #include "Config/Config.h"
 #include "Layers/LayerStack.h"
 #include "Utils/Timer.h"
-#include "Event/ApplicationEvent.h"
 #include "Utils/Singleton.h"
 #include "Input/Input.h"
 
 namespace TRAP
 {
+	class WindowLostFocusEvent;
+	class WindowFocusEvent;
+	class FrameBufferResizeEvent;
+	class WindowCloseEvent;
 	class KeyPressEvent;
 
 	class Application : public Singleton
@@ -74,7 +77,7 @@ namespace TRAP
 
 		void OnEvent(Event& e);
 		bool OnWindowClose(WindowCloseEvent& e);
-		bool OnWindowResize(WindowResizeEvent& e);
+		bool OnFrameBufferResize(FrameBufferResizeEvent& e);
 		bool OnKeyPress(KeyPressEvent& e) const;
 		bool OnWindowFocus(WindowFocusEvent& e);
 		bool OnWindowLostFocus(WindowLostFocusEvent& e);

@@ -94,6 +94,27 @@ namespace TRAP
 	private:
 		std::string_view m_title;
 	};
+
+	class FrameBufferResizeEvent final : public Event
+	{
+	public:
+		FrameBufferResizeEvent(uint32_t width, uint32_t height, std::string_view title);
+
+		uint32_t GetWidth() const;
+		uint32_t GetHeight() const;
+		std::string_view GetTitle() const;
+
+		std::string ToString() const override;
+
+		static EventType GetStaticType();
+		EventType GetEventType() const override;
+		const char* GetName() const override;
+		int32_t GetCategoryFlags() const override;
+
+	private:
+		uint32_t m_width, m_height;
+		std::string_view m_title;
+	};
 }
 
 #endif /*_TRAP_WINDOWEVENT_H_*/

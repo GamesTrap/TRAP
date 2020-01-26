@@ -2,6 +2,7 @@
 #include "OrthographicCameraController.h"
 
 #include "Input/Input.h"
+#include "Event/WindowEvent.h"
 
 TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(
 	const float aspectRatio,
@@ -102,7 +103,7 @@ void TRAP::Graphics::OrthographicCameraController::OnEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<MouseScrollEvent>([this](MouseScrollEvent& e) {return OnMouseScroll(e); });
-	dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) {return OnWindowResize(e); });
+	dispatcher.Dispatch<FrameBufferResizeEvent>([this](FrameBufferResizeEvent& e) {return OnFrameBufferResize(e); });
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -184,7 +185,7 @@ bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(MouseScrollEven
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::OrthographicCameraController::OnWindowResize(WindowResizeEvent& e)
+bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(FrameBufferResizeEvent& e)
 {
 	if (m_window && m_window->GetTitle() == e.GetTitle())
 	{

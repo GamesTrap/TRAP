@@ -1,20 +1,21 @@
 #include "TRAPPCH.h"
 #include "Application.h"
 
+#include "Core.h"
 #include "VFS/VFS.h"
-#include "Graphics/Shaders/ShaderManager.h"
 #include "Embed.h"
 #include "Graphics/RenderCommand.h"
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/Shaders/ShaderManager.h"
 #include "Graphics/Textures/TextureManager.h"
 #include "Graphics/Textures/Texture2D.h"
 #include "Graphics/Textures/TextureCube.h"
+#include "Graphics/Renderer.h"
 #include "Input/Input.h"
 #include "Utils/String.h"
-#include "Core.h"
-#include "Graphics/Renderer.h"
-#include "Event/KeyEvent.h"
 #include "Utils/MsgBox/MsgBox.h"
+#include "Event/KeyEvent.h"
+#include "Event/WindowEvent.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
@@ -308,7 +309,7 @@ void TRAP::Application::OnEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) {return OnWindowClose(e); });
-	dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) {return OnWindowResize(e); });
+	dispatcher.Dispatch<FrameBufferResizeEvent>([this](FrameBufferResizeEvent& e) {return OnFrameBufferResize(e); });
 	dispatcher.Dispatch<KeyPressEvent>([this](KeyPressEvent& e) {return OnKeyPress(e); });
 	dispatcher.Dispatch<WindowFocusEvent>([this](WindowFocusEvent& e) {return OnWindowFocus(e); });
 	dispatcher.Dispatch<WindowLostFocusEvent>([this](WindowLostFocusEvent& e) {return OnWindowLostFocus(e); });
@@ -564,7 +565,7 @@ bool TRAP::Application::OnWindowClose(WindowCloseEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowResize(WindowResizeEvent& e)
+bool TRAP::Application::OnFrameBufferResize(FrameBufferResizeEvent& e)
 {
 	if (Window::GetActiveWindows() > 1)
 		Window::Use();

@@ -3,8 +3,6 @@
 
 #include "OrthographicCamera.h"
 #include "Utils/TimeStep.h"
-
-#include "Event/ApplicationEvent.h"
 #include "Event/MouseEvent.h"
 #include "Application.h"
 
@@ -32,7 +30,7 @@ namespace TRAP::Graphics
 		
 	private:
 		bool OnMouseScroll(MouseScrollEvent& e);
-		bool OnWindowResize(WindowResizeEvent& e);
+		bool OnFrameBufferResize(FrameBufferResizeEvent& e);
 		
 		float m_aspectRatio;
 		float m_zoomLevel = 1.0f;
