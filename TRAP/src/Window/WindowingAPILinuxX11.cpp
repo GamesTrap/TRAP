@@ -4321,7 +4321,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 	bool filtered = false;
 	
 	//HACK: Save scanCode as some IMs clear the field in XFilterEvent
-	if(event.type == KeyPress || event.type == KeyRelease)
+	if(event.type == 2 || event.type == 3)
 		keyCode = event.xkey.keycode;
 		
 	if(s_Data.IM)
@@ -4414,7 +4414,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			return;
 		}
 		
-		case KeyPress:
+		case 2:
 		{
 			const Input::Key key = TranslateKey(keyCode);
 			
@@ -4494,7 +4494,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			return;
 		}
 		
-		case KeyRelease:
+		case 3:
 		{
 			const Input::Key key = TranslateKey(keyCode);
 			
@@ -4507,7 +4507,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 					XEvent next;
 					XPeekEvent(s_Data.display, &next);
 					
-					if(next.type == KeyPress &&
+					if(next.type == 2 &&
 					   next.xkey.window == event.xkey.window &&
 					   next.xkey.keycode == keyCode)
 					{

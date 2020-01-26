@@ -87,6 +87,12 @@
 #ifdef False
 	#undef False
 #endif
+#ifdef KeyPress
+	#undef KeyPress
+#endif
+#ifdef KeyRelease
+	#undef KeyRelease
+#endif
 
 #endif
 
