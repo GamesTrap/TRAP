@@ -112,7 +112,7 @@ void TRAP::Utils::MsgBox::INTERNAL::X11::SingleButtonMsgBoxEventLoop(Display* di
 			XFlush(display);
 			break;
 
-		case KeyRelease:
+		case 3:
 			if (XLookupKeysym(&event.xkey, 0) == XK_Escape || XLookupKeysym(&event.xkey, 0) == XK_Return || XLookupKeysym(&event.xkey, 0) == XK_KP_Enter)
 				return;
 			break;
@@ -242,7 +242,7 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::DoubleButtonM
 			XFlush(display);
 			break;
 
-		case KeyRelease:
+		case 3:
 			if (XLookupKeysym(&event.xkey, 0) == XK_Escape || XLookupKeysym(&event.xkey, 0) == XK_Return || XLookupKeysym(&event.xkey, 0) == XK_KP_Enter)
 			{
 				if (!std::strcmp(btn1.Text, "No"))

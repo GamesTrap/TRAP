@@ -788,3 +788,4 @@ SITREP 01/26/2020|20w04a3
     - VulkanShader now convert GLSL to SPIRV 1.5 (Need Vulkan 1.2 SDK) ~<20 mins
     - Renamed Events ~<20 mins
     - Updated Docs ~<30 mins
+    - Splitted up WindowEvents from ApplicationEvents ~<20 mins
