@@ -144,7 +144,7 @@ uint32_t TRAP::Window::GetHeight() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint32_t TRAP::Window::GetRefreshRate() const
-{
+{	
 	return m_data.RefreshRate;
 }
 
@@ -211,7 +211,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w04a3]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][20w05a1]" + std::string(Graphics::Renderer::GetTitle());
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window.get(), newTitle);
 #else
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window, m_data.Title);
@@ -351,6 +351,13 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 	m_data.Width = width;
 	m_data.Height = height;
 	m_data.RefreshRate = refreshRate;
+
+	//Set Refresh Rate to the current used VideoMode to prevent RefreshRate = 0 inside Engine.cfg
+	if (m_data.displayMode == DisplayMode::Windowed)
+	{
+		const INTERNAL::WindowingAPI::VideoMode videoMode = INTERNAL::WindowingAPI::GetVideoMode(INTERNAL::WindowingAPI::GetMonitors()[m_data.Monitor]);
+		m_data.RefreshRate = videoMode.RefreshRate;
+	}
 
 	//Trigger resize event
 	if (m_data.EventCallback)
@@ -763,7 +770,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w04a3]";
+		"[INDEV][20w05a1]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif
@@ -841,7 +848,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		}
 	}
 	else if (props.displayMode == DisplayMode::Windowed)
-	{		
+	{
 		width = m_oldWindowedParams.Width;
 		height = m_oldWindowedParams.Height;
 		refreshRate = m_oldWindowedParams.RefreshRate;				
@@ -920,6 +927,14 @@ void TRAP::Window::Init(const WindowProps& props)
 	}
 
 	INTERNAL::WindowingAPI::GetFrameBufferSize(m_window.get(), width, height);
+
+	//Set Refresh Rate to the current used VideoMode to prevent RefreshRate = 0 inside Engine.cfg
+	if(m_data.displayMode == DisplayMode::Windowed)
+	{
+		const INTERNAL::WindowingAPI::VideoMode videoMode = INTERNAL::WindowingAPI::GetVideoMode(INTERNAL::WindowingAPI::GetMonitors()[m_data.Monitor]);
+		m_data.RefreshRate = videoMode.RefreshRate;
+	}
+	
 	Graphics::RenderCommand::SetViewport(0, 0, width, height);
 	
 	INTERNAL::WindowingAPI::SetWindowUserPointer(m_window.get(), &m_data);
@@ -1106,6 +1121,25 @@ void TRAP::Window::Init(const WindowProps& props)
 		data.EventCallback(event);
 	});
 
+	INTERNAL::WindowingAPI::SetCursorEnterCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const bool entered)
+	{
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
+
+		if (!data.EventCallback)
+			return;
+
+		if (entered)
+		{
+			MouseEnterEvent event(data.Title);
+			data.EventCallback(event);
+		}
+		else
+		{
+			MouseLeaveEvent event(data.Title);
+			data.EventCallback(event);
+		}
+	});
+
 	INTERNAL::WindowingAPI::SetWindowContentScaleCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, float xScale, float yScale)
 	{
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
@@ -1116,26 +1150,6 @@ void TRAP::Window::Init(const WindowProps& props)
 		//TODO
 		//ContentScaleEvent event(xScale, yScale);
 		//data.EventCallback(event);
-	});
-
-	INTERNAL::WindowingAPI::SetCursorEnterCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, bool entered)
-	{
-		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
-
-		if (!data.EventCallback)
-			return;
-
-		//TODO
-		/*if (entered)
-		{
-			MouseEnteredEvent event();
-			data.EventCallback(event);
-		}
-		else
-		{
-			MouseLeavedEvent event();
-			data.EventCallback(event);
-		}*/
 	});
 
 	INTERNAL::WindowingAPI::SetDropCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, std::vector<std::string> paths)

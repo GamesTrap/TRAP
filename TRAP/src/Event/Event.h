@@ -13,7 +13,7 @@ namespace TRAP
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMove, FrameBufferResize,
 		AppTick, AppUpdate, AppRender,
 		KeyPress, KeyRelease, KeyType,
-		MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll,
+		MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll, MouseEnter, MouseLeave,
 		ControllerConnect, ControlledDisconnect
 	};
 

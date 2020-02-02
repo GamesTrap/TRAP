@@ -7,7 +7,7 @@ layout(location = 2) in vec2 UV;
 layout(location = 3) out vec4 vColor;
 layout(location = 4) out vec2 vUV;
 
-layout(std140, set = 0, binding = 0) uniform MatrixBuffer
+layout(std140, binding = 0) uniform MatrixBuffer
 {
 	mat4 sys_ProjectionMatrix;
 	mat4 sys_ViewMatrix;

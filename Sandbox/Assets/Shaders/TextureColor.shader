@@ -6,7 +6,7 @@ layout(location = 1) in vec4 Color;
 layout(location = 2) in vec2 UV;
 layout(location = 4) out vec2 vUV;
 
-layout(std140, set = 0, binding = 0) uniform MatrixBuffer
+layout(std140, binding = 0) uniform MatrixBuffer
 {
 	mat4 sys_ProjectionMatrix;
 	mat4 sys_ViewMatrix;
@@ -27,7 +27,7 @@ layout(location = 4) in vec2 vUV;
 
 layout(binding = 0) uniform sampler2D Texture;
 
-layout(std140, set = 0, binding = 1) uniform DataBuffer
+layout(std140, binding = 1) uniform DataBuffer
 {
     float time;
 } Data;

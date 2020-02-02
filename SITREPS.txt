@@ -632,7 +632,7 @@ SITREP 11/24/2019|19w47a2
         - Added DirectInput as new Controller API ~>50 mins
         - Updated Docs ~<5 mins
     - Created new Branch for a new Windowing API for Windows(Win32) and Linux(X11) ~<20 mins
-    
+
 SITREP 11/26/2019|19w48a1
     - Changed TRAP Engine version to 19w48a1(0.5.71)
     - Fixed SandboxLayer not initializing VertexArray ~<5 mins
@@ -792,3 +792,9 @@ SITREP 01/26/2020|20w04a3
     - Added FrameBufferResizeEvent ~<30 mins
     - Switched WindowResizeEvent to FrameBufferResizeEvent ~<20 mins
     - Updated Docs ~<25 mins
+
+SITREP 02/02/2020|20w05a1
+    - Changed TRAP Engine version to 20w05a1(0.6.04)
+    - Fixed GLSL Shaders for AMD GPUs ~<20 mins
+    - Fixed Engine.cfg RefreshRate = 0 when invalid RefreshRate was used ~<15 mins
+    - Added MouseEnter & MouseLeave Events ~<20 mins

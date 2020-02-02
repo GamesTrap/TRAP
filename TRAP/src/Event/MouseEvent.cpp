@@ -249,3 +249,111 @@ const char* TRAP::MouseButtonReleaseEvent::GetName() const
 {
 	return "MouseButtonRelease";
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::MouseEnterEvent::MouseEnterEvent(const std::string_view title)
+	: m_title(title)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string_view TRAP::MouseEnterEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::MouseEnterEvent::ToString() const
+{
+	std::stringstream ss;
+	ss << "MouseEnterEvent";
+
+	return ss.str();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::MouseEnterEvent::GetStaticType()
+{
+	return EventType::MouseEnter;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::MouseEnterEvent::GetEventType() const
+{
+	return GetStaticType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const char* TRAP::MouseEnterEvent::GetName() const
+{
+	return "MouseEnter";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::MouseEnterEvent::GetCategoryFlags() const
+{
+	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::MouseLeaveEvent::MouseLeaveEvent(const std::string_view title)
+	: m_title(title)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string_view TRAP::MouseLeaveEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::MouseLeaveEvent::ToString() const
+{
+	std::stringstream ss;
+	ss << "MouseLaveEvent";
+
+	return ss.str();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::MouseLeaveEvent::GetStaticType()
+{
+	return EventType::MouseLeave;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::MouseLeaveEvent::GetEventType() const
+{
+	return GetStaticType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const char* TRAP::MouseLeaveEvent::GetName() const
+{
+	return "MouseLeave";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::MouseLeaveEvent::GetCategoryFlags() const
+{
+	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input);
+}

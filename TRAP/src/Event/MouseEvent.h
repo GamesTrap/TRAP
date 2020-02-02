@@ -94,6 +94,42 @@ namespace TRAP
 	private:
 		std::string_view m_title;
 	};
+
+	class MouseEnterEvent final : public Event
+	{
+	public:
+		explicit MouseEnterEvent(std::string_view title);
+
+		std::string_view GetTitle() const;
+
+		std::string ToString() const override;
+
+		static EventType GetStaticType();
+		EventType GetEventType() const override;
+		const char* GetName() const override;
+		int32_t GetCategoryFlags() const override;
+
+	private:
+		std::string_view m_title;
+	};
+
+	class MouseLeaveEvent final : public Event
+	{
+	public:
+		explicit MouseLeaveEvent(std::string_view title);
+
+		std::string_view GetTitle() const;
+
+		std::string ToString() const override;
+
+		static EventType GetStaticType();
+		EventType GetEventType() const override;
+		const char* GetName() const override;
+		int32_t GetCategoryFlags() const override;
+
+	private:
+		std::string_view m_title;
+	};
 }
 
 #endif /*_TRAP_MOUSEEVENT_H_*/
