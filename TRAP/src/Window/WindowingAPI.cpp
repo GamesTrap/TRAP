@@ -53,14 +53,6 @@ void TRAP::INTERNAL::WindowingAPI::Shutdown()
 
 	s_Data.Callbacks.Monitor = nullptr;
 
-	//Should always be empty
-	/*while (s_Data.WindowListHead)
-		DestroyWindow(s_Data.WindowListHead);
-
-	//Should always be empty
-	while (s_Data.CursorListHead)
-		DestroyCursor(s_Data.CursorListHead);*/
-
 	for (auto& Monitor : s_Data.Monitors)
 		if (Monitor)
 			Monitor.reset();
@@ -95,14 +87,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyWindow(Scope<InternalWindow> window)
 	PlatformDestroyWindow(window.get());
 
 	//Unlink window from global linked list
-	{
-		InternalWindow** prev = &s_Data.WindowListHead;
-
-		while (*prev != window.get())
-			prev = &((*prev)->Next);
-
-		*prev = window->Next;
-	}
+	s_Data.WindowList.remove(window.get());
 
 	window.reset();
 }
@@ -112,7 +97,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyWindow(Scope<InternalWindow> window)
 //Makes the context of the specified window current for the calling
 void TRAP::INTERNAL::WindowingAPI::MakeContextCurrent(InternalWindow* window)
 {
-	const auto previsouPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
+	const auto previousPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
 
 	if (window && window->context.Client == ContextAPI::None)
 	{
@@ -120,10 +105,10 @@ void TRAP::INTERNAL::WindowingAPI::MakeContextCurrent(InternalWindow* window)
 		return;
 	}
 
-	if (previsouPtr)
+	if (previousPtr)
 	{
 		if (!window)
-			previsouPtr->context.MakeCurrent(nullptr);
+			previousPtr->context.MakeCurrent(nullptr);
 	}
 
 	if (window)
@@ -317,8 +302,8 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 		return nullptr;
 
 	Scope<InternalWindow> window = MakeScope<InternalWindow>();
-	window->Next = s_Data.WindowListHead;
-	s_Data.WindowListHead = window.get();
+
+	s_Data.WindowList.emplace_front(window.get());
 
 	window->videoMode.Width = width;
 	window->videoMode.Height = height;
@@ -488,7 +473,8 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
 
 	//Make sure the cursor is not being used by any window
 	{
-		for (InternalWindow* window = s_Data.WindowListHead; window; window = window->Next)
+		//for (InternalWindow* window = s_Data.WindowListHead; window; window = window->Next)
+		for(InternalWindow* window : s_Data.WindowList)
 		{
 			if (window->Cursor == cursor.get())
 				SetCursor(window, nullptr);
@@ -498,14 +484,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
 	PlatformDestroyCursor(cursor.get());
 
 	//Unlink window from global linked list
-	{
-		InternalCursor** prev = &s_Data.CursorListHead;
-
-		while (*prev != cursor.get())
-			prev = &((*prev)->Next);
-
-		*prev = cursor->Next;
-	}
+	s_Data.CursorList.remove(cursor.get());
 
 	cursor.reset();
 }
@@ -562,8 +541,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 			const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(), 32, ImageFormat::RGBA, pixelDataRGBA);
 			
 			cursor = MakeScope<InternalCursor>();
-			cursor->Next = s_Data.CursorListHead;
-			s_Data.CursorListHead = cursor.get();
+			s_Data.CursorList.emplace_front(cursor.get());
 
 			if(!PlatformCreateCursor(cursor.get(), image, xHotspot, yHotspot))
 			{
@@ -576,9 +554,8 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 		if (image->GetFormat() == ImageFormat::RGBA)
 		{
 			cursor = MakeScope<InternalCursor>();
-			cursor->Next = s_Data.CursorListHead;
-			s_Data.CursorListHead = cursor.get();
-
+			s_Data.CursorList.emplace_front(cursor.get());
+			
 			if (!PlatformCreateCursor(cursor.get(), image, xHotspot, yHotspot))
 			{
 				DestroyCursor(std::move(cursor));
@@ -597,10 +574,9 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::WindowingAPI::CreateStandardCursor(const CursorType& type)
 {
 	Scope<InternalCursor> cursor = MakeScope<InternalCursor>();
-	
-	cursor->Next = s_Data.CursorListHead;
-	s_Data.CursorListHead = cursor.get();
 
+	s_Data.CursorList.emplace_front(cursor.get());
+	
 	if (!PlatformCreateStandardCursor(cursor.get(), type))
 	{
 		DestroyCursor(std::move(cursor));
@@ -2399,7 +2375,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 	}
 	else
 	{
-		for (InternalWindow* window = s_Data.WindowListHead; window; window = window->Next)
+		for(InternalWindow* window : s_Data.WindowList)
 		{
 			if (window->Monitor == monitor.get())
 			{
@@ -2436,7 +2412,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitor
 {
 	Scope<InternalMonitor>& monitor = s_Data.Monitors[monitorIndex];
 	
-	for (InternalWindow* window = s_Data.WindowListHead; window; window = window->Next)
+	for(InternalWindow* window : s_Data.WindowList)
 	{
 		if (window->Monitor == monitor.get())
 		{

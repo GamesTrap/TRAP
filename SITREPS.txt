@@ -798,3 +798,4 @@ SITREP 02/02/2020|20w05a1
     - Fixed GLSL Shaders for AMD GPUs ~<20 mins
     - Fixed Engine.cfg RefreshRate = 0 when invalid RefreshRate was used ~<15 mins
     - Added MouseEnter & MouseLeave Events ~<20 mins
+    - Replaced Single Linked Lists inside WindowingAPI with std::forward_list (This fixed a memory bug) ~>25 mins

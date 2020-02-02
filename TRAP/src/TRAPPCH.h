@@ -30,6 +30,7 @@
 #include <cctype>
 #include <any>
 #include <climits>
+#include <forward_list>
 
 //OpenGL
 #include "Graphics/API/OpenGL/Loader/OpenGLLoader.h"

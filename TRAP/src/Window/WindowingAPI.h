@@ -521,9 +521,10 @@ namespace TRAP::INTERNAL
 			} Hints{};
 
 			Scope<WindowingError> ErrorListHead = nullptr;
-			InternalWindow* WindowListHead = nullptr;
-			InternalCursor* CursorListHead = nullptr;
 
+			std::forward_list<InternalWindow*> WindowList{};
+			std::forward_list<InternalCursor*> CursorList{};
+			
 			std::vector<Scope<InternalMonitor>> Monitors{};
 
 			TLS ErrorSlot{};
@@ -914,8 +915,6 @@ namespace TRAP::INTERNAL
 		//Cursor structure
 		struct InternalCursor
 		{
-			InternalCursor* Next = nullptr;
-
 #ifdef TRAP_PLATFORM_WINDOWS
 			HCURSOR Handle = nullptr;
 #elif defined(TRAP_PLATFORM_LINUX)
@@ -924,9 +923,7 @@ namespace TRAP::INTERNAL
 		};
 		//Window and Context structure
 		struct InternalWindow
-		{
-			InternalWindow* Next = nullptr;
-			
+		{			
 			//Window settings and state
 			bool Resizable = true;
 			bool Decorated = true;

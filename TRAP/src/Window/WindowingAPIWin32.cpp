@@ -3201,7 +3201,6 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMinimized(const InternalWindow*
 void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 {
 	MSG msg;
-	InternalWindow* window;
 
 	while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE))
 	{
@@ -3211,12 +3210,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 			//      may post it to this one, for example Task Manager
 			//HACK: Treat WM_QUIT as a close on all windows
 
-			window = s_Data.WindowListHead;
-			while (window)
-			{
-				InputWindowCloseRequest(window);
-				window = window->Next;
-			}
+			for(InternalWindow* win : s_Data.WindowList)
+				InputWindowCloseRequest(win);
 		}
 		else
 		{
@@ -3263,7 +3258,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 		}
 	}
 
-	window = s_Data.DisabledCursorWindow;
+	InternalWindow* window = s_Data.DisabledCursorWindow;
 	if (window)
 	{
 		int32_t width, height;
