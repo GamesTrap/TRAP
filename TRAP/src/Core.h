@@ -51,7 +51,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 04);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 05);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -199,6 +199,13 @@ constexpr void TRAP_CORE_ASSERT(T x, const Args &... args)
 
 template <typename T, typename... Args>
 constexpr void TRAP_RENDERER_ASSERT(T x, const Args &... args)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T, typename... Args>
+constexpr void TRAP_WINDOW_ASSERT(T x, const Args&... args)
 {
 }
 #endif

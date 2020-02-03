@@ -498,7 +498,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 {
 	Scope<InternalCursor> cursor;
 
-	TRAP_WINDOW_ASSERT(image, "[Window] image is nullptr!");
+	TRAP_WINDOW_ASSERT(image.get(), "[Window] image is nullptr!");
 
 	if (image) //If image is not nullptr
 	{
