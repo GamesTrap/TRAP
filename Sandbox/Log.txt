@@ -1,100 +1,99 @@
-[21:07:48][Debug][Application] Initializing TRAP Modules...
-[21:07:48][Debug][VFS] Initializing Virtual File System
-[21:07:48][Info][Config] Loading File: "Engine.cfg"
-[21:07:48][Trace][Config] Width = 1280
-[21:07:48][Trace][Config] Height = 720
-[21:07:48][Trace][Config] RefreshRate = 144
-[21:07:48][Trace][Config] VSync = 0
-[21:07:48][Trace][Config] FPSLimit = 0
-[21:07:48][Trace][Config] DisplayMode = Windowed
-[21:07:48][Trace][Config] Maximized = FALSE
-[21:07:48][Trace][Config] Monitor = 0
-[21:07:48][Trace][Config] RenderAPI = OpenGL
-[21:07:48][Trace][Config] ControllerAPI = XInput
-[21:07:48][Trace][Config] HotShaderReloading = FALSE
-[21:07:48][Trace][Config] HotTextureReloading = FALSE
-[21:07:48][Trace][Config] Size: 12
-[21:07:48][Info][Window] Initializing Window: "TRAP Engine" 1280x720@144Hz VSync: Off(0) DisplayMode: Windowed Monitor: 0 CursorMode: Normal RawMouseInput: Disabled
-[21:07:48][Debug][Window] Storing underlying OS video mode: Monitor: 0 2560x1440@144Hz (R8G8B8)
-[21:07:48][Debug][Window] Storing underlying OS video mode: Monitor: 1 1920x1080@144Hz (R8G8B8)
-[21:07:48][Info][Context][OpenGL] Initializing Context
-[21:07:48][Info][Renderer][OpenGL] Initializing Renderer
-[21:07:48][Info][Renderer][OpenGL] ----------------------------------
-[21:07:48][Info][Renderer][OpenGL] OpenGL:
-[21:07:48][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 441.99
-[21:07:48][Info][Renderer][OpenGL] GLSL Version: 4.60 NVIDIA
-[21:07:48][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
-[21:07:48][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
-[21:07:48][Info][Renderer][OpenGL] ----------------------------------
-[21:07:48][Debug][Image][Custom] Loading a custom image
-[21:07:48][Debug][Shader][OpenGL][GLSL] Compiling: "Fallback"
-[21:07:48][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[21:07:48][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[21:07:48][Debug][Texture2D][OpenGL] Loading Texture: "Fallback2D"
-[21:07:48][Debug][Image][Custom] Loading a custom image
-[21:07:48][Debug][TextureCube][OpenGL] Loading Texture: "FallbackCube"
-[21:07:48][Debug][Image][Custom] Loading a custom image
-[21:07:48][Debug][Renderer2D] Initializing
-[21:07:48][Debug][Shader][OpenGL][GLSL] Compiling: "Renderer2D"
-[21:07:49][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[21:07:49][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[21:07:49][Debug][Texture2D][OpenGL] Loading Texture: "Renderer2DWhite"
-[21:07:49][Debug][Image][Custom] Loading a custom image
-[21:07:49][Debug][LayerStack] Pushing Overlay: ImGuiLayer
-[21:07:49][Debug][LayerStack] Pushing Layer: Sandbox
-[21:07:49][Debug][Window] "TRAP Engine" Set Title: "Sandbox"
-[21:07:49][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
-[21:07:49][Debug][Shader][OpenGL][GLSL] Compiling: "Color"
-[21:07:49][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[21:07:49][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[21:07:49][Debug][Shader][OpenGL][GLSL] Compiling: "Texture"
-[21:07:49][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[21:07:49][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[21:07:49][Debug][Shader][OpenGL][GLSL] Compiling: "TextureColor"
-[21:07:49][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[21:07:49][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[21:07:49][Debug][Shader][OpenGL][SPIR-V] Converting: "TextureColorSPIRV" to GLSL
-[21:07:49][Debug][Shader][OpenGL][GLSL] Compiling: "TextureColorSPIRV"
-[21:07:49][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[21:07:49][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[21:07:49][Info][VFS] Mounting VirtualPath: "/textures" to PhysicalPath: "Assets/Textures"
-[21:07:49][Debug][Texture2D][OpenGL] Loading Texture: "TRAP"
-[21:07:49][Debug][Image][PNG] Loading Image: "TRAPWhiteLogo2048x2048.png"
-[21:07:54][Info][Sandbox] DrawCall(s): 1
-[21:07:54][Info][Sandbox] FPS: 1552
-[21:07:54][Info][Sandbox] FrameTime: 1.0622ms
-[21:07:56][Debug][Application] Shutting down TRAP Modules...
-[21:07:56][Debug][LayerStack] Destroying Layer: Sandbox
-[21:07:56][Debug][LayerStack] Destroying Layer: ImGuiLayer
-[21:07:56][Trace][Config] Width = 1280
-[21:07:56][Trace][Config] Height = 720
-[21:07:56][Trace][Config] RefreshRate = 144
-[21:07:56][Trace][Config] VSync = 0
-[21:07:56][Trace][Config] FPSLimit = 0
-[21:07:56][Trace][Config] DisplayMode = Windowed
-[21:07:56][Trace][Config] Maximized = FALSE
-[21:07:56][Trace][Config] Monitor = 0
-[21:07:56][Trace][Config] RenderAPI = OpenGL
-[21:07:56][Trace][Config] ControllerAPI = XInput
-[21:07:56][Trace][Config] HotShaderReloading = FALSE
-[21:07:56][Trace][Config] HotTextureReloading = FALSE
-[21:07:56][Trace][Config] Size: 12
-[21:07:56][Info][Config] Saving: Engine.cfg
-[21:07:56][Debug][Renderer2D] Shutting down
-[21:07:56][Debug][TextureManager] Destroying Textures
-[21:07:56][Debug][Texture2D][OpenGL] Destroying Texture2D: "Renderer2DWhite"
-[21:07:56][Debug][Texture2D][OpenGL] Destroying Texture2D: "Fallback2D"
-[21:07:56][Debug][TextureCube][OpenGL] Destroying TextureCube: "FallbackCube"
-[21:07:56][Debug][Texture2D][OpenGL] Destroying Texture2D: "TRAP"
-[21:07:56][Debug][ShaderManager] Destroying Shaders
-[21:07:56][Debug][Shader][OpenGL] Destroying Shader: "TextureColor"
-[21:07:56][Debug][Shader][OpenGL] Destroying Shader: "Fallback"
-[21:07:56][Debug][Shader][OpenGL] Destroying Shader: "Color"
-[21:07:56][Debug][Shader][OpenGL] Destroying Shader: "Renderer2D"
-[21:07:56][Debug][Shader][OpenGL] Destroying Shader: "Texture"
-[21:07:56][Debug][Shader][OpenGL] Destroying Shader: "TextureColorSPIRV"
-[21:07:56][Debug][Renderer][OpenGL] Destroying Renderer
-[21:07:56][Debug][Context][OpenGL] Destroying Context
-[21:07:56][Debug][Window] Destroying Window: "Sandbox"
-[21:07:56][Debug][VFS] Shutting down Virtual File System
-[21:07:56][Info][Logger] Saving Log.txt
+[00:34:53][Debug][Application] Initializing TRAP Modules...
+[00:34:53][Debug][VFS] Initializing Virtual File System
+[00:34:53][Info][Config] Loading File: "Engine.cfg"
+[00:34:53][Trace][Config] Width = 1920
+[00:34:53][Trace][Config] Height = 1080
+[00:34:53][Trace][Config] RefreshRate = 144
+[00:34:53][Trace][Config] VSync = 0
+[00:34:53][Trace][Config] FPSLimit = 0
+[00:34:53][Trace][Config] DisplayMode = Borderless
+[00:34:53][Trace][Config] Maximized = FALSE
+[00:34:53][Trace][Config] Monitor = 2
+[00:34:53][Trace][Config] RenderAPI = OpenGL
+[00:34:53][Trace][Config] ControllerAPI = XInput
+[00:34:53][Trace][Config] HotShaderReloading = FALSE
+[00:34:53][Trace][Config] HotTextureReloading = FALSE
+[00:34:53][Trace][Config] Size: 12
+[00:34:53][Info][Window] Initializing Window: "TRAP Engine" 1920x1080@144Hz VSync: Off(0) DisplayMode: Borderless Monitor: 2 CursorMode: Normal RawMouseInput: Disabled
+[00:34:53][Error][Window] "TRAP Engine" Invalid Monitor!
+[00:34:53][Warn][Window] "TRAP Engine" Using Primary Monitor!
+[00:34:53][Debug][Window] Storing underlying OS video mode: Monitor: 0 2560x1440@144Hz (R8G8B8)
+[00:34:53][Debug][Window] Storing underlying OS video mode: Monitor: 1 1920x1080@144Hz (R8G8B8)
+[00:34:53][Info][Context][OpenGL] Initializing Context
+[00:34:53][Info][Renderer][OpenGL] Initializing Renderer
+[00:34:53][Info][Renderer][OpenGL] ----------------------------------
+[00:34:53][Info][Renderer][OpenGL] OpenGL:
+[00:34:53][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 441.99
+[00:34:53][Info][Renderer][OpenGL] GLSL Version: 4.60 NVIDIA
+[00:34:53][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
+[00:34:53][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
+[00:34:53][Info][Renderer][OpenGL] ----------------------------------
+[00:34:53][Debug][Image][Custom] Loading a custom image
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling: "Fallback"
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[00:34:53][Debug][Texture2D][OpenGL] Loading Texture: "Fallback2D"
+[00:34:53][Debug][Image][Custom] Loading a custom image
+[00:34:53][Debug][TextureCube][OpenGL] Loading Texture: "FallbackCube"
+[00:34:53][Debug][Image][Custom] Loading a custom image
+[00:34:53][Debug][Renderer2D] Initializing
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling: "Renderer2D"
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[00:34:53][Debug][Texture2D][OpenGL] Loading Texture: "Renderer2DWhite"
+[00:34:53][Debug][Image][Custom] Loading a custom image
+[00:34:53][Debug][LayerStack] Pushing Overlay: ImGuiLayer
+[00:34:53][Debug][LayerStack] Pushing Layer: Sandbox
+[00:34:53][Debug][Window] "TRAP Engine" Set Title: "Sandbox"
+[00:34:53][Info][VFS] Mounting VirtualPath: "/shaders" to PhysicalPath: "Assets/Shaders"
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling: "Color"
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling: "Texture"
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling: "TextureColor"
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[00:34:53][Debug][Shader][OpenGL][SPIR-V] Converting: "TextureColorSPIRV" to GLSL
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling: "TextureColorSPIRV"
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[00:34:53][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[00:34:53][Info][VFS] Mounting VirtualPath: "/textures" to PhysicalPath: "Assets/Textures"
+[00:34:53][Debug][Texture2D][OpenGL] Loading Texture: "TRAP"
+[00:34:53][Debug][Image][PNG] Loading Image: "TRAPWhiteLogo2048x2048.png"
+[00:34:55][Debug][Application] Shutting down TRAP Modules...
+[00:34:55][Debug][LayerStack] Destroying Layer: Sandbox
+[00:34:55][Debug][LayerStack] Destroying Layer: ImGuiLayer
+[00:34:55][Trace][Config] Width = 2560
+[00:34:55][Trace][Config] Height = 1440
+[00:34:55][Trace][Config] RefreshRate = 144
+[00:34:55][Trace][Config] VSync = 0
+[00:34:55][Trace][Config] FPSLimit = 0
+[00:34:55][Trace][Config] DisplayMode = Borderless
+[00:34:55][Trace][Config] Maximized = FALSE
+[00:34:55][Trace][Config] Monitor = 0
+[00:34:55][Trace][Config] RenderAPI = OpenGL
+[00:34:55][Trace][Config] ControllerAPI = XInput
+[00:34:55][Trace][Config] HotShaderReloading = FALSE
+[00:34:55][Trace][Config] HotTextureReloading = FALSE
+[00:34:55][Trace][Config] Size: 12
+[00:34:55][Info][Config] Saving: Engine.cfg
+[00:34:55][Debug][Renderer2D] Shutting down
+[00:34:55][Debug][TextureManager] Destroying Textures
+[00:34:55][Debug][Texture2D][OpenGL] Destroying Texture2D: "Renderer2DWhite"
+[00:34:55][Debug][Texture2D][OpenGL] Destroying Texture2D: "Fallback2D"
+[00:34:55][Debug][TextureCube][OpenGL] Destroying TextureCube: "FallbackCube"
+[00:34:55][Debug][Texture2D][OpenGL] Destroying Texture2D: "TRAP"
+[00:34:55][Debug][ShaderManager] Destroying Shaders
+[00:34:55][Debug][Shader][OpenGL] Destroying Shader: "TextureColor"
+[00:34:55][Debug][Shader][OpenGL] Destroying Shader: "Fallback"
+[00:34:55][Debug][Shader][OpenGL] Destroying Shader: "Color"
+[00:34:55][Debug][Shader][OpenGL] Destroying Shader: "Renderer2D"
+[00:34:55][Debug][Shader][OpenGL] Destroying Shader: "Texture"
+[00:34:55][Debug][Shader][OpenGL] Destroying Shader: "TextureColorSPIRV"
+[00:34:55][Debug][Renderer][OpenGL] Destroying Renderer
+[00:34:55][Debug][Context][OpenGL] Destroying Context
+[00:34:55][Debug][Window] Destroying Window: "Sandbox"
+[00:34:55][Debug][VFS] Shutting down Virtual File System
+[00:34:55][Info][Logger] Saving Log.txt

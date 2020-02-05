@@ -253,7 +253,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalMonitor*> TRAP::INTERNAL::Wind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::INTERNAL::WindowingAPI::VideoMode& TRAP::INTERNAL::WindowingAPI::GetVideoMode(InternalMonitor* monitor)
+const TRAP::VideoMode& TRAP::INTERNAL::WindowingAPI::GetVideoMode(InternalMonitor* monitor)
 {
 	monitor->CurrentMode = PlatformGetVideoMode(monitor);
 	return monitor->CurrentMode;
@@ -261,7 +261,7 @@ const TRAP::INTERNAL::WindowingAPI::VideoMode& TRAP::INTERNAL::WindowingAPI::Get
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::INTERNAL::WindowingAPI::VideoMode> TRAP::INTERNAL::WindowingAPI::GetVideoModes(InternalMonitor* monitor)
+std::vector<TRAP::VideoMode> TRAP::INTERNAL::WindowingAPI::GetVideoModes(InternalMonitor* monitor)
 {
 	if (!monitor)
 		return std::vector<VideoMode>{};
@@ -2314,7 +2314,7 @@ void TRAP::INTERNAL::WindowingAPI::SplitBPP(int32_t bpp, int32_t& red, int32_t& 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Chooses the video mode most closely matching the desired one
-TRAP::INTERNAL::WindowingAPI::VideoMode* TRAP::INTERNAL::WindowingAPI::ChooseVideoMode(InternalMonitor* monitor, const VideoMode& desired)
+TRAP::VideoMode* TRAP::INTERNAL::WindowingAPI::ChooseVideoMode(InternalMonitor* monitor, const VideoMode& desired)
 {
 	uint32_t leastSizeDiff = UINT_MAX;
 	uint32_t rateDiff, leastRateDiff = UINT_MAX;

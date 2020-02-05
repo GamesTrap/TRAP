@@ -6,6 +6,7 @@
 #include "Event/Event.h"
 #include "ImageLoader/Image.h"
 #include "WindowingAPI.h"
+#include "Monitor.h"
 
 namespace TRAP
 {
@@ -43,20 +44,21 @@ namespace TRAP
 		static void Use(const Scope<Window>& window);
 		static void Use();
 		static uint32_t GetActiveWindows();
-		static uint32_t GetMonitors();
-		static std::unordered_map<uint32_t, std::string> GetMonitorNames();
+		//static uint32_t GetMonitors();
+		//static std::unordered_map<uint32_t, std::string> GetMonitorNames();
 
 		std::string_view GetTitle() const;
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
 		uint32_t GetRefreshRate() const;
 		DisplayMode GetDisplayMode() const;
-		uint32_t GetMonitor() const;
-		std::string GetMonitorName() const;
+		//uint32_t GetMonitor() const;
+		Monitor GetMonitor() const;
+		//std::string GetMonitorName() const;
 		uint32_t GetVSyncInterval() const;
 		CursorMode GetCursorMode() const;
 		bool GetRawMouseInput() const;
-		TRAP::Math::Vec2 GetContentScale() const;
+		Math::Vec2 GetContentScale() const;
 
 		void* GetInternalWindow() const;
 
@@ -65,7 +67,8 @@ namespace TRAP
 			                uint32_t width = 0,
 			                uint32_t height = 0,
 			                uint32_t refreshRate = 0);
-		void SetMonitor(uint32_t monitor = 0);
+		//void SetMonitor(uint32_t monitor = 0);
+		void SetMonitor(Monitor& monitor);
 		void SetVSyncInterval(uint32_t interval);
 		void SetCursorMode(const CursorMode& mode);
 		void SetCursorType(const CursorType& cursor) const;
@@ -99,7 +102,7 @@ namespace TRAP
 		
 		Scope<INTERNAL::WindowingAPI::InternalWindow> m_window;
 		INTERNAL::WindowingAPI::InternalMonitor* m_useMonitor; //Stores a reference to the monitor
-		static std::unordered_map<uint32_t, INTERNAL::WindowingAPI::VideoMode> s_baseVideoModes; //Stores the underlying video mode being used by the OS for every monitor
+		static std::unordered_map<uint32_t, VideoMode> s_baseVideoModes; //Stores the underlying video mode being used by the OS for every monitor
 		
 		struct WindowedModeParams
 		{

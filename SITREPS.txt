@@ -811,3 +811,6 @@ SITREP 02/05/2020|20w06a2
     - Changed TRAP Engine version to 20w06a2(0.6.06)
     - Added WindowContentScaleEvent for OS DPI setting changes ~>20 mins
     - Added GetContentScale to TRAP::Window ~<15 mins
+    - Updated Docs ~<20 mins
+    - Added Monitor class ~>30 mins
+    - Moved VideoMode struct from TRAP::INTERNAL::WindowingAPI to TRAP:: ~<10 mins

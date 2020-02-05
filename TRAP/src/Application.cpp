@@ -161,7 +161,7 @@ TRAP::Application::~Application()
 	m_config.Set("FPSLimit", m_fpsLimit);
 	m_config.Set("DisplayMode", m_window->GetDisplayMode());
 	m_config.Set("Maximized", m_window->IsMaximized());
-	m_config.Set("Monitor", m_window->GetMonitor());
+	m_config.Set("Monitor", m_window->GetMonitor().GetID());
 	m_config.Set("RenderAPI", Graphics::API::Context::GetRenderAPI());
 	m_config.Set("ControllerAPI", Input::GetControllerAPI());
 	m_config.Set("HotShaderReloading", VFS::Get()->GetHotShaderReloading());
@@ -480,7 +480,7 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 			m_window->GetRawMouseInput(),
 			m_window->GetCursorMode()
 		},
-		m_window->GetMonitor()
+		m_window->GetMonitor().GetID()
 	};	
 	m_window.reset();
 	m_window = std::make_unique<Window>(props);

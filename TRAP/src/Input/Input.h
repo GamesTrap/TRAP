@@ -4,7 +4,6 @@
 #include "Utils/Singleton.h"
 #include "Maths/Math.h"
 #include "Event/Event.h"
-//#include "Application.h"
 
 namespace TRAP
 {

@@ -355,7 +355,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMonitors()
 		ImGuiPlatformMonitor monitor;
 		int32_t x, y;
 		WindowingAPI::GetMonitorPos(monitors[n], x, y);
-		const WindowingAPI::VideoMode videoMode = WindowingAPI::GetVideoMode(monitors[n]);
+		const VideoMode videoMode = WindowingAPI::GetVideoMode(monitors[n]);
 
 		monitor.MainPos = ImVec2(static_cast<float>(x), static_cast<float>(y));
 		monitor.MainSize = ImVec2(static_cast<float>(videoMode.Width), static_cast<float>(videoMode.Height));

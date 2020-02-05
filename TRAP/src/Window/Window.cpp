@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "Window.h"
 
-#include <utility>
-
 #include "Utils/MsgBox/MsgBox.h"
 #include "Event/KeyEvent.h"
 #include "Event/MouseEvent.h"
@@ -28,7 +26,7 @@ std::vector<TRAP::Window*> TRAP::Window::s_fullscreenWindows{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unordered_map<uint32_t, TRAP::INTERNAL::WindowingAPI::VideoMode> TRAP::Window::s_baseVideoModes{};
+std::unordered_map<uint32_t, TRAP::VideoMode> TRAP::Window::s_baseVideoModes{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -101,16 +99,16 @@ uint32_t TRAP::Window::GetActiveWindows()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Window::GetMonitors()
+/*uint32_t TRAP::Window::GetMonitors()
 {
 	const auto monitors = INTERNAL::WindowingAPI::GetMonitors();
 
 	return static_cast<uint32_t>(monitors.size());
-}
+}*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unordered_map<uint32_t, std::string> TRAP::Window::GetMonitorNames()
+/*std::unordered_map<uint32_t, std::string> TRAP::Window::GetMonitorNames()
 {
 	const auto monitors = INTERNAL::WindowingAPI::GetMonitors();
 
@@ -120,7 +118,7 @@ std::unordered_map<uint32_t, std::string> TRAP::Window::GetMonitorNames()
 		result.emplace(i, INTERNAL::WindowingAPI::GetMonitorName(monitors[i]));
 
 	return result;
-}
+}*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -159,17 +157,22 @@ TRAP::Window::DisplayMode TRAP::Window::GetDisplayMode() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Window::GetMonitor() const
+/*uint32_t TRAP::Window::GetMonitor() const
 {
 	return m_data.Monitor;
+}*/
+
+TRAP::Monitor TRAP::Window::GetMonitor() const
+{
+	return Monitor(m_useMonitor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Window::GetMonitorName() const
+/*std::string TRAP::Window::GetMonitorName() const
 {
 	return INTERNAL::WindowingAPI::GetMonitorName(m_useMonitor);
-}
+}*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -367,7 +370,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 	//Set Refresh Rate to the current used VideoMode to prevent RefreshRate = 0 inside Engine.cfg
 	if (m_data.displayMode == DisplayMode::Windowed)
 	{
-		const INTERNAL::WindowingAPI::VideoMode videoMode = INTERNAL::WindowingAPI::GetVideoMode(INTERNAL::WindowingAPI::GetMonitors()[m_data.Monitor]);
+		const VideoMode videoMode = INTERNAL::WindowingAPI::GetVideoMode(INTERNAL::WindowingAPI::GetMonitors()[m_data.Monitor]);
 		m_data.RefreshRate = videoMode.RefreshRate;
 	}
 
@@ -409,7 +412,7 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetMonitor(const uint32_t monitor)
+/*void TRAP::Window::SetMonitor(const uint32_t monitor)
 {
 	const uint32_t oldMonitor = m_data.Monitor;
 	const auto monitors = INTERNAL::WindowingAPI::GetMonitors();
@@ -438,9 +441,30 @@ void TRAP::Window::SetMonitor(const uint32_t monitor)
 		else
 			SetDisplayMode(m_data.displayMode, m_data.Width, m_data.Height, m_data.RefreshRate);
 	}
+}*/
+
+void TRAP::Window::SetMonitor(Monitor& monitor)
+{
+	const uint32_t oldMonitor = m_data.Monitor;
+	
+	TP_DEBUG("[Window] \"", m_data.Title, "\" Set Monitor: ", monitor.GetID(), " Name: ", monitor.GetName());
+	m_data.Monitor = monitor.GetID();
+	m_useMonitor = static_cast<INTERNAL::WindowingAPI::InternalMonitor*>(monitor.GetInternalMonitor());
+
+	if (m_data.displayMode != DisplayMode::Windowed)
+	{
+		s_fullscreenWindows[oldMonitor] = nullptr;
+		if (s_fullscreenWindows[m_data.Monitor]) //Monitor already has a Fullscreen/Borderless Window
+		{
+			TP_ERROR("[Window] Monitor: ", m_data.Monitor, "(", monitor.GetName(), ") is already used by another Window!");
+			SetDisplayMode(DisplayMode::Windowed, 800, 600, 0);
+		}
+		else
+			SetDisplayMode(m_data.displayMode, m_data.Width, m_data.Height, m_data.RefreshRate);
+	}
 }
 
-//-------------------------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Window::SetVSyncInterval(const uint32_t interval)
 {	
@@ -694,7 +718,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		const int32_t success = INTERNAL::WindowingAPI::Init();
 		TRAP_CORE_ASSERT(success, "Could not initialize WindowingAPI!");
 		if (!success)
-			exit(-1);
+			Utils::MsgBox::Show("Could not initialize WindowingAPI!", "Error WindowingAPI", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
 		INTERNAL::WindowingAPI::SetErrorCallback(WindowingAPIErrorCallback);
 		s_WindowingAPIInitialized = true;
 
@@ -943,7 +967,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	//Set Refresh Rate to the current used VideoMode to prevent RefreshRate = 0 inside Engine.cfg
 	if(m_data.displayMode == DisplayMode::Windowed)
 	{
-		const INTERNAL::WindowingAPI::VideoMode videoMode = INTERNAL::WindowingAPI::GetVideoMode(INTERNAL::WindowingAPI::GetMonitors()[m_data.Monitor]);
+		const VideoMode videoMode = INTERNAL::WindowingAPI::GetVideoMode(INTERNAL::WindowingAPI::GetMonitors()[m_data.Monitor]);
 		m_data.RefreshRate = videoMode.RefreshRate;
 	}
 	
