@@ -1004,7 +1004,7 @@ void TRAP::INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(InternalWindow* wi
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the window content scale callback for the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowContentScaleCallback(InternalWindow* window, const WindowContentScaleFunc callback)
+void TRAP::INTERNAL::WindowingAPI::SetContentScaleCallback(InternalWindow* window, const WindowContentScaleFunc callback)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 	

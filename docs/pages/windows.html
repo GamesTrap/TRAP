@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Windows &mdash; TRAP 0.6.01 documentation</title>
+  <title>Windows &mdash; TRAP 0.6.06 documentation</title>
   
 
   
@@ -32,7 +32,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within TRAP 0.6.01 documentation"
+          title="Search within TRAP 0.6.06 documentation"
           href="../_static/opensearch.xml"/>
 
   
@@ -127,6 +127,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#getvsyncinterval">GetVSyncInterval</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getcursormode">GetCursorMode</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getrawmouseinput">GetRawMouseInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getcontentscale">GetContentScale</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getinternalwindow">GetInternalWindow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#settitle">SetTitle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setdisplaymode">SetDisplayMode</a></li>
@@ -576,6 +577,16 @@
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
 <div class="line">Returns true if the TRAP::<a class="reference internal" href="#window">Window</a> uses Raw Mouse Input</div>
+</div>
+</div>
+<div class="section" id="getcontentscale">
+<h3>GetContentScale<a class="headerlink" href="#getcontentscale" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Math</span><span class="o">::</span><span class="n">Vec2</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">GetContentScale</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a TRAP::Math::Vec2 contaning the X and Y content scale</div>
 </div>
 </div>
 <div class="section" id="getinternalwindow">

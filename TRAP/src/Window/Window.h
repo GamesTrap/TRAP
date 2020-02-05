@@ -56,6 +56,7 @@ namespace TRAP
 		uint32_t GetVSyncInterval() const;
 		CursorMode GetCursorMode() const;
 		bool GetRawMouseInput() const;
+		TRAP::Math::Vec2 GetContentScale() const;
 
 		void* GetInternalWindow() const;
 

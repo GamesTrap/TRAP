@@ -1138,7 +1138,7 @@ namespace TRAP::INTERNAL
 		//Sets the framebuffer resize callback for the specified window.
 		static void SetFrameBufferSizeCallback(InternalWindow* window, FrameBufferSizeFunc callback);
 		//Sets the window content scale callback for the specified window.
-		static void SetWindowContentScaleCallback(InternalWindow* window, WindowContentScaleFunc callback);
+		static void SetContentScaleCallback(InternalWindow* window, WindowContentScaleFunc callback);
 		//Sets the key callback.
 		static void SetKeyCallback(InternalWindow* window, KeyFunc callback);
 		//Sets the Unicode character callback.

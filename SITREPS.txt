@@ -806,3 +806,8 @@ SITREP 02/03/2020|20w06a1
     - Updated Docs ~<20 mins
     - Added WindowDropEvent for Drag'n'Drop ~<25 mins
     - Updated Docs ~<20 mins
+
+SITREP 02/05/2020|20w06a2
+    - Changed TRAP Engine version to 20w06a2(0.6.06)
+    - Added WindowContentScaleEvent for OS DPI setting changes ~>20 mins
+    - Added GetContentScale to TRAP::Window ~<15 mins

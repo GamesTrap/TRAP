@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "Window.h"
 
+#include <utility>
+
 #include "Utils/MsgBox/MsgBox.h"
 #include "Event/KeyEvent.h"
 #include "Event/MouseEvent.h"
@@ -192,6 +194,16 @@ bool TRAP::Window::GetRawMouseInput() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Math::Vec2 TRAP::Window::GetContentScale() const
+{
+	Math::Vec2 contentScale{};
+	INTERNAL::WindowingAPI::GetWindowContentScale(m_window.get(), contentScale.x, contentScale.y);
+	
+	return contentScale;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void* TRAP::Window::GetInternalWindow() const
 {
 	return m_window.get();
@@ -211,7 +223,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w06a1]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][20w06a2]" + std::string(Graphics::Renderer::GetTitle());
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window.get(), newTitle);
 #else
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window.get(), m_data.Title);
@@ -770,7 +782,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w06a1]";
+		"[INDEV][20w06a2]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif
@@ -1147,20 +1159,19 @@ void TRAP::Window::Init(const WindowProps& props)
 		if (!data.EventCallback)
 			return;
 
-		WindowDropEvent event(paths, data.Title);
+		WindowDropEvent event(std::move(paths), data.Title);
 		data.EventCallback(event);
 	});
 
-	INTERNAL::WindowingAPI::SetWindowContentScaleCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, float xScale, float yScale)
+	INTERNAL::WindowingAPI::SetContentScaleCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const float xScale, const float yScale)
 	{
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
 		if (!data.EventCallback)
 			return;
 
-		//TODO
-		//ContentScaleEvent event(xScale, yScale);
-		//data.EventCallback(event);
+		WindowContentScaleEvent event(xScale, yScale, data.Title);
+		data.EventCallback(event);
 	});
 
 	if (s_windows > 1)

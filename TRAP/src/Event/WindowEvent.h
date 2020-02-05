@@ -115,6 +115,28 @@ namespace TRAP
 		std::string_view m_title;
 	};
 
+	class WindowContentScaleEvent final : public Event
+	{
+	public:
+		explicit WindowContentScaleEvent(float xScale, float yScale, std::string_view title);
+
+		float GetXScale() const;
+		float GetYScale() const;
+		std::string_view GetTitle() const;
+
+		std::string ToString() const override;
+
+		static EventType GetStaticType();
+		EventType GetEventType() const override;
+		const char* GetName() const override;
+		int32_t GetCategoryFlags() const override;
+
+	private:
+		float m_XScale;
+		float m_YScale;
+		std::string_view m_title;
+	};
+
 	class FrameBufferResizeEvent final : public Event
 	{
 	public:

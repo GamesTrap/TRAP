@@ -334,6 +334,74 @@ int32_t TRAP::WindowDropEvent::GetCategoryFlags() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::WindowContentScaleEvent::WindowContentScaleEvent(const float xScale, const float yScale, const std::string_view title)
+	: m_XScale(xScale), m_YScale(yScale), m_title(title)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::WindowContentScaleEvent::GetXScale() const
+{
+	return m_XScale;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::WindowContentScaleEvent::GetYScale() const
+{
+	return m_YScale;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string_view TRAP::WindowContentScaleEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::WindowContentScaleEvent::ToString() const
+{
+	std::stringstream ss;
+	ss << "WindowContentScaleEvent: " << m_XScale << "x" << m_YScale;
+
+	return ss.str();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::WindowContentScaleEvent::GetStaticType()
+{
+	return EventType::WindowContentScale;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::WindowContentScaleEvent::GetEventType() const
+{
+	return GetStaticType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const char* TRAP::WindowContentScaleEvent::GetName() const
+{
+	return "WindowContentScale";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::WindowContentScaleEvent::GetCategoryFlags() const
+{
+	return static_cast<int32_t>(EventCategory::Application);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::FrameBufferResizeEvent::FrameBufferResizeEvent(const uint32_t width, const uint32_t height, const std::string_view title)
 	: m_width(width), m_height(height), m_title(title)
 {
