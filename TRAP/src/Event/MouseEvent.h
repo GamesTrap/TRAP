@@ -102,8 +102,6 @@ namespace TRAP
 
 		std::string_view GetTitle() const;
 
-		std::string ToString() const override;
-
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
@@ -119,8 +117,6 @@ namespace TRAP
 		explicit MouseLeaveEvent(std::string_view title);
 
 		std::string_view GetTitle() const;
-
-		std::string ToString() const override;
 
 		static EventType GetStaticType();
 		EventType GetEventType() const override;

@@ -1140,6 +1140,17 @@ void TRAP::Window::Init(const WindowProps& props)
 		}
 	});
 
+	INTERNAL::WindowingAPI::SetDropCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, std::vector<std::string> paths)
+	{
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
+
+		if (!data.EventCallback)
+			return;
+
+		WindowDropEvent event(paths, data.Title);
+		data.EventCallback(event);
+	});
+
 	INTERNAL::WindowingAPI::SetWindowContentScaleCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, float xScale, float yScale)
 	{
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
@@ -1149,18 +1160,6 @@ void TRAP::Window::Init(const WindowProps& props)
 
 		//TODO
 		//ContentScaleEvent event(xScale, yScale);
-		//data.EventCallback(event);
-	});
-
-	INTERNAL::WindowingAPI::SetDropCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, std::vector<std::string> paths)
-	{
-		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
-
-		if (!data.EventCallback)
-			return;
-
-		//TODO
-		//DropEvent event(paths);
 		//data.EventCallback(event);
 	});
 

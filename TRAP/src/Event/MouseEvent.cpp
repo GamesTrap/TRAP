@@ -268,16 +268,6 @@ std::string_view TRAP::MouseEnterEvent::GetTitle() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::MouseEnterEvent::ToString() const
-{
-	std::stringstream ss;
-	ss << "MouseEnterEvent";
-
-	return ss.str();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::EventType TRAP::MouseEnterEvent::GetStaticType()
 {
 	return EventType::MouseEnter;
@@ -318,16 +308,6 @@ TRAP::MouseLeaveEvent::MouseLeaveEvent(const std::string_view title)
 std::string_view TRAP::MouseLeaveEvent::GetTitle() const
 {
 	return m_title;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string TRAP::MouseLeaveEvent::ToString() const
-{
-	std::stringstream ss;
-	ss << "MouseLaveEvent";
-
-	return ss.str();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

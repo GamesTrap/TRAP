@@ -95,6 +95,26 @@ namespace TRAP
 		std::string_view m_title;
 	};
 
+	class WindowDropEvent final : public Event
+	{
+	public:
+		explicit WindowDropEvent(std::vector<std::string> paths, std::string_view title);
+
+		std::vector<std::string> GetPaths() const;
+		std::string_view GetTitle() const;
+
+		std::string ToString() const override;
+
+		static EventType GetStaticType();
+		EventType GetEventType() const override;
+		const char* GetName() const override;
+		int32_t GetCategoryFlags() const override;
+
+	private:
+		std::vector<std::string> m_paths{};
+		std::string_view m_title;
+	};
+
 	class FrameBufferResizeEvent final : public Event
 	{
 	public:

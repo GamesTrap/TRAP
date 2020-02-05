@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "WindowEvent.h"
 
+#include <utility>
+
 TRAP::WindowResizeEvent::WindowResizeEvent(const uint32_t width, const uint32_t height, const std::string_view title)
 	: m_width(width), m_height(height), m_title(title)
 {
@@ -263,6 +265,69 @@ const char* TRAP::WindowLostFocusEvent::GetName() const
 int32_t TRAP::WindowLostFocusEvent::GetCategoryFlags() const
 {
 	return static_cast<int32_t>(EventCategory::Application);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::WindowDropEvent::WindowDropEvent(std::vector<std::string> paths, const std::string_view title)
+	: m_paths(std::move(paths)), m_title(title)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<std::string> TRAP::WindowDropEvent::GetPaths() const
+{
+	return m_paths;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string_view TRAP::WindowDropEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::WindowDropEvent::ToString() const
+{
+	std::stringstream ss;
+	ss << "WindowDropEvent: ";
+	for (uint32_t i = 0; i < m_paths.size(); i++)
+		ss << "Path " << i << ": " << m_paths[i] << " ";
+
+	return ss.str();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::WindowDropEvent::GetStaticType()
+{
+	return EventType::WindowDrop;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::WindowDropEvent::GetEventType() const
+{
+	return GetStaticType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const char* TRAP::WindowDropEvent::GetName() const
+{
+	return "WindowDrop";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::WindowDropEvent::GetCategoryFlags() const
+{
+	return static_cast<int32_t>(EventCategory::Application)  | static_cast<int32_t>(EventCategory::Input);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
