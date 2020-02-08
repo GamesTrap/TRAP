@@ -68,13 +68,19 @@ bool TRAP::Utils::Config::Read()
 
 	for (const auto& line : lines)
 	{
-		//Parse line
-		auto [key, value] = ParseLine(line);
-
-		if (!key.empty())
+		if (!line.empty())
 		{
-			//If the line is not empty or a comment save it to the vector
-			m_data.emplace_back(key, value);
+			if (line[0] != '#')
+			{
+				//Parse line
+				auto [key, value] = ParseLine(line);
+
+				if (!key.empty())
+				{
+					//If the line is not empty or a comment save it to the vector
+					m_data.emplace_back(key, value);
+				}
+			}
 		}
 	}
 

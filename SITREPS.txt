@@ -819,3 +819,12 @@ SITREP 02/08/2020|20w06a3
     - Changed TRAP Engine version to 20w06a3(0.6.07)
     - Moved TRAP::VideoMode struct to TRAP::Monitor ~<20 mins
     - Updated Docs ~>40 mins
+    - Replaced GetWindowLong with GetWindowLongPtr inside WindowingAPIWin32.cpp ~<10 mins
+    - Replaced SetWindowLong with SetWindowLongPtr inside WindowingAPIWin32.cpp ~<10 mins
+    - Removed TRAP::Application::Get() function ~<10 mins
+    - Made some TRAP::Application functions static ~<20 mins
+    - Added Single-Line Comments to Config files by using a '#' at the beginning of a line ~<20 mins
+
+SITREP 02/09/2020|20w06a4
+    - Changed TRAP Engine version to 20w06a4(0.6.08)
+    - Added Config class to Docs ~>30 mins

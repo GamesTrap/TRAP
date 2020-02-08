@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Windows &mdash; TRAP 0.6.07 documentation</title>
+  <title>Windows &mdash; TRAP 0.6.08 documentation</title>
   
 
   
@@ -32,7 +32,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within TRAP 0.6.07 documentation"
+          title="Search within TRAP 0.6.08 documentation"
           href="../_static/opensearch.xml"/>
 
   
@@ -42,8 +42,7 @@
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Monitors" href="monitors.html" />
-    <link rel="prev" title="Input" href="input.html" />
+    <link rel="prev" title="Monitors" href="monitors.html" />
     <link href="../_static/theme.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -96,10 +95,12 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../index.html">TRAP Engine</a></li>
 <li class="toctree-l1"><a class="reference internal" href="buildingtrap.html">Building TRAP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configs.html">Configs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="input.html">Input</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monitors.html">Monitors</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Windows</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#general">General</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#displaymode">DisplayMode</a></li>
@@ -111,7 +112,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#window">Window</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id3">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Constructor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#destructor">Destructor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#onupdate">OnUpdate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#use">Use</a></li>
@@ -139,7 +140,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#seteventcallback">SetEventCallback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setresizable">SetResizable</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setminimumsize">SetMinimumSize</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4">SetMinimumSize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">SetMinimumSize</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ismaximized">IsMaximized</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#isminimized">IsMinimized</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#isresizable">IsResizable</a></li>
@@ -157,7 +158,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="monitors.html">Monitors</a></li>
 </ul>
 
             
@@ -228,7 +228,7 @@
 </div>
 </div>
 <div class="section" id="displaymode">
-<h2>DisplayMode<a class="headerlink" href="#displaymode" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>DisplayMode<a class="headerlink" href="#displaymode" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">DisplayMode</span>
 <span class="p">{</span>
     <span class="n">Windowed</span><span class="p">,</span>
@@ -376,9 +376,9 @@
 </div>
 </div>
 <div class="section" id="window">
-<span id="id2"></span><h2>Window<a class="headerlink" href="#window" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id3">
-<h3>Constructor<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<span id="id3"></span><h2>Window<a class="headerlink" href="#window" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h3>Constructor<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="p">(</span><span class="k">const</span> <span class="n">WindowProps</span><span class="o">&amp;</span> <span class="n">props</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -705,13 +705,13 @@
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Sets the specified TRAP::<a href="#id5"><span class="problematic" id="id6">`Image`_</span></a> to use as mouse cursor by a TRAP::<a class="reference internal" href="#window">Window</a></div>
+<div class="line">Sets the specified TRAP::<a href="#id6"><span class="problematic" id="id7">`Image`_</span></a> to use as mouse cursor by a TRAP::<a class="reference internal" href="#window">Window</a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">image</span></code> specifies the TRAP::<a href="#id7"><span class="problematic" id="id8">`Image`_</span></a> to use.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">image</span></code> specifies the TRAP::<a href="#id8"><span class="problematic" id="id9">`Image`_</span></a> to use.</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -752,11 +752,11 @@
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Sets the Icon of a TRAP::<a class="reference internal" href="#window">Window</a> to the specified TRAP::<a href="#id9"><span class="problematic" id="id10">`Image`_</span></a></div>
+<div class="line">Sets the Icon of a TRAP::<a class="reference internal" href="#window">Window</a> to the specified TRAP::<a href="#id10"><span class="problematic" id="id11">`Image`_</span></a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
-<div class="line"><code class="code docutils literal notranslate"><span class="pre">image</span></code> Specifies the TRAP::<a href="#id11"><span class="problematic" id="id12">`Image`_</span></a> to be used as Icon</div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">image</span></code> Specifies the TRAP::<a href="#id12"><span class="problematic" id="id13">`Image`_</span></a> to be used as Icon</div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -820,8 +820,8 @@
 <p>Use <code class="code docutils literal notranslate"><span class="pre">0</span></code> to disable the minimum size limits</p>
 </div>
 </div>
-<div class="section" id="id4">
-<h3>SetMinimumSize<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id5">
+<h3>SetMinimumSize<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">SetMaximumSize</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">maxWidth</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">maxHeight</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 </pre></div>
 </div>

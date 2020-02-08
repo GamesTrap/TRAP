@@ -2244,7 +2244,7 @@ void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion(const InternalWindow* w
 void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const InternalWindow* window)
 {
 	RECT rect;
-	DWORD style = GetWindowLongW(window->Handle, GWL_STYLE);
+	DWORD style = static_cast<DWORD>(GetWindowLongPtrW(window->Handle, GWL_STYLE));
 	style &= ~(WS_OVERLAPPEDWINDOW | WS_POPUP);
 	style |= GetWindowStyle(window);
 
@@ -2257,7 +2257,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowStyles(const InternalWindow* wind
 
 	ClientToScreen(window->Handle, reinterpret_cast<POINT*>(&rect.left));
 	ClientToScreen(window->Handle, reinterpret_cast<POINT*>(&rect.right));
-	SetWindowLongW(window->Handle, GWL_STYLE, style);
+	SetWindowLongPtrW(window->Handle, GWL_STYLE, style);
 	::SetWindowPos(window->Handle, HWND_TOP, rect.left, rect.top,
 		           rect.right - rect.left, rect.bottom - rect.top,
 		           SWP_FRAMECHANGED | SWP_NOACTIVATE | SWP_NOZORDER);
@@ -2419,7 +2419,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 			DWORD style = static_cast<DWORD>(GetWindowLongPtrW(window->Handle, GWL_STYLE));
 			style &= ~WS_OVERLAPPEDWINDOW;
 			style |= GetWindowStyle(window);
-			SetWindowLongW(window->Handle, GWL_STYLE, style);
+			SetWindowLongPtrW(window->Handle, GWL_STYLE, style);
 			flags |= SWP_FRAMECHANGED;
 		}
 
@@ -2443,7 +2443,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
 		{
 			style &= ~WS_POPUP;
 			style |= GetWindowStyle(window);
-			SetWindowLongW(window->Handle, GWL_STYLE, style);
+			SetWindowLongPtrW(window->Handle, GWL_STYLE, style);
 
 			flags |= SWP_FRAMECHANGED;
 		}
@@ -2494,7 +2494,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 			DWORD style = static_cast<DWORD>(GetWindowLongPtrW(window->Handle, GWL_STYLE));
 			style &= ~WS_OVERLAPPEDWINDOW;
 			style |= GetWindowStyle(window);
-			SetWindowLongW(window->Handle, GWL_STYLE, style);
+			SetWindowLongPtrW(window->Handle, GWL_STYLE, style);
 			flags |= SWP_FRAMECHANGED;
 		}
 
@@ -3110,16 +3110,16 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacity(const InternalWindow
 	if(opacity < 1.0f)
 	{
 		const BYTE alpha = static_cast<BYTE>(255 * opacity);
-		DWORD style = GetWindowLongW(window->Handle, GWL_EXSTYLE);
+		DWORD style = static_cast<DWORD>(GetWindowLongPtrW(window->Handle, GWL_EXSTYLE));
 		style |= WS_EX_LAYERED;
-		SetWindowLongW(window->Handle, GWL_EXSTYLE, style);
+		SetWindowLongPtrW(window->Handle, GWL_EXSTYLE, style);
 		SetLayeredWindowAttributes(window->Handle, 0, alpha, LWA_ALPHA);
 	}
 	else
 	{
-		DWORD style = GetWindowLongW(window->Handle, GWL_EXSTYLE);
+		DWORD style = static_cast<DWORD>(GetWindowLongPtrW(window->Handle, GWL_EXSTYLE));
 		style &= ~WS_EX_LAYERED;
-		SetWindowLongW(window->Handle, GWL_EXSTYLE, style);
+		SetWindowLongPtrW(window->Handle, GWL_EXSTYLE, style);
 	}
 }
 
@@ -3137,7 +3137,7 @@ float TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacity(const InternalWindo
 	BYTE alpha;
 	DWORD flags;
 
-	if((GetWindowLongW(window->Handle, GWL_EXSTYLE) & WS_EX_LAYERED) &&
+	if((GetWindowLongPtrW(window->Handle, GWL_EXSTYLE) & WS_EX_LAYERED) &&
 		GetLayeredWindowAttributes(window->Handle, nullptr, &alpha, &flags))
 	{
 		if (flags & LWA_ALPHA)
@@ -3669,10 +3669,10 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 
 void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar(InternalWindow* window)
 {
-	LONG exStyle = ::GetWindowLong(window->Handle, GWL_EXSTYLE);
+	LONG exStyle = static_cast<LONG>(::GetWindowLongPtr(window->Handle, GWL_EXSTYLE));
 	exStyle &= ~WS_EX_APPWINDOW;
 	exStyle |= WS_EX_TOOLWINDOW;
-	::SetWindowLong(window->Handle, GWL_EXSTYLE, exStyle);
+	::SetWindowLongPtr(window->Handle, GWL_EXSTYLE, exStyle);
 }
 
 #endif

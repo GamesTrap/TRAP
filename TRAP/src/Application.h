@@ -51,16 +51,15 @@ namespace TRAP
 		Utils::Config* GetConfig();
 		LayerStack& GetLayerStack() const;
 
-		uint32_t GetFPS() const; //TODO Make Static
-		float GetFrameTime() const; //TODO Make Static
-		uint32_t GetDrawCalls() const; //TODO Make Static
-		void AddSingleDrawCall(); //TODO Make Static
-		uint32_t GetTickRate() const; //TODO Make Static
-		void SetTickRate(uint32_t); //TODO Make Static
+		static uint32_t GetFPS();
+		static float GetFrameTime();
+		static uint32_t GetDrawCalls();
+		static void AddSingleDrawCall();
+		static uint32_t GetTickRate();
+		static void SetTickRate(uint32_t);
 
 		static void Shutdown();
-
-		static Application& Get(); //TODO Remove
+		
 		static const Scope<Window>& GetWindow();
 		static Utils::TimeStep GetTime();
 		static Endian GetEndian();

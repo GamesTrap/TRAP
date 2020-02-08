@@ -87,8 +87,8 @@ TRAP::Application::Application()
 	m_config.Get("Monitor", monitor);
 	m_config.Get("RenderAPI", renderAPI);
 	m_config.Get("ControllerAPI", controllerAPI);
-	m_config.Get("HotShaderReloading", hotShaderReloading);
-	m_config.Get("HotTextureReloading", hotTextureReloading);
+	m_config.Get("HotShaderReloading", hotShaderReloading); //Deprecated
+	m_config.Get("HotTextureReloading", hotTextureReloading); //Deprecated
 
 	if (fpsLimit > 0)
 	{
@@ -357,86 +357,79 @@ TRAP::LayerStack& TRAP::Application::GetLayerStack() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Application::GetFPS() const
+uint32_t TRAP::Application::GetFPS()
 {
-	return m_FramesPerSecond;
+	return s_Instance->m_FramesPerSecond;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Application::GetFrameTime() const
+float TRAP::Application::GetFrameTime()
 {
-	return m_FrameTime;
+	return s_Instance->m_FrameTime;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Application::GetDrawCalls() const
+uint32_t TRAP::Application::GetDrawCalls()
 {
-	return m_drawCalls;
+	return s_Instance->m_drawCalls;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Application::AddSingleDrawCall()
 {
-	++m_drawCalls;
+	++(s_Instance->m_drawCalls);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Application::GetTickRate() const
+uint32_t TRAP::Application::GetTickRate()
 {
-	return m_tickRate;
+	return s_Instance->m_tickRate;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Application::SetTickRate(const uint32_t tickRate)
 {
-	m_tickRate = tickRate;
+	s_Instance->m_tickRate = tickRate;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Application::Shutdown()
 {
-	Get().m_running = false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Application& TRAP::Application::Get()
-{
-	return *s_Instance;
+	s_Instance->m_running = false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 const TRAP::Scope<TRAP::Window>& TRAP::Application::GetWindow()
 {
-	return Get().m_window;
+	return s_Instance->m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Utils::TimeStep TRAP::Application::GetTime()
 {
-	return Get().GetTimeInternal();
+	return s_Instance->GetTimeInternal();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Application::Endian TRAP::Application::GetEndian()
 {
-	return Get().m_endian;
+	return s_Instance->m_endian;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Application::LinuxWindowManager TRAP::Application::GetLinuxWindowManager()
 {
-	return Get().m_linuxWindowManager;
+	return s_Instance->m_linuxWindowManager;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

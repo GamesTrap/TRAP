@@ -31,35 +31,35 @@ std::string_view TRAP::Graphics::Renderer::GetTitle()
 
 uint32_t TRAP::Graphics::Renderer::GetDrawCalls()
 {
-	return Application::Get().GetDrawCalls();
+	return Application::GetDrawCalls();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint32_t TRAP::Graphics::Renderer::GetFPS()
 {
-	return Application::Get().GetFPS();
+	return Application::GetFPS();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 float TRAP::Graphics::Renderer::GetFrameTime()
 {
-	return Application::Get().GetFrameTime();
+	return Application::GetFrameTime();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint32_t TRAP::Graphics::Renderer::GetTickRate()
 {
-	return Application::Get().GetTickRate();
+	return Application::GetTickRate();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer::SetTickRate(const uint32_t tickRate)
 {
-	Application::Get().SetTickRate(tickRate);
+	Application::SetTickRate(tickRate);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -80,7 +80,7 @@ void TRAP::Graphics::Renderer::EndScene()
 
 void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<VertexArray>& vertexArray, const Math::Mat4& transform, const RendererPrimitive primitive)
 {
-	Application::Get().AddSingleDrawCall();
+	Application::AddSingleDrawCall();
 
 	s_sceneData->m_modelMatrix = transform;
 	if(shader)

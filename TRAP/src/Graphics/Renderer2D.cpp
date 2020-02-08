@@ -114,7 +114,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec2& position, const Math
 void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math::Vec2& size, const Math::Vec4& color)
 {
 	//For Draw call counter
-	Application::Get().AddSingleDrawCall();
+	Application::AddSingleDrawCall();
 
 	//Update CameraUniformBuffer
 	s_data->UniformCamera.ModelMatrix = Translate(position) * Scale(Math::Vec3{ size.x, size.y, 1.0f }); //Position & Size
@@ -154,7 +154,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec2& position, const Math
 void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math::Vec2& size, const Scope<Texture2D>& texture)
 {
 	//For Draw call counter
-	Application::Get().AddSingleDrawCall();
+	Application::AddSingleDrawCall();
 
 	//Update CameraUniformBuffer
 	s_data->UniformCamera.ModelMatrix = Translate(position) * Scale(Math::Vec3{ size.x, size.y, 1.0f }); //Position & Size
@@ -194,7 +194,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec2& position, const Math
 void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math::Vec2& size, const Math::Vec4& color, const Scope<Texture2D>& texture)
 {
 	//For Draw call counter
-	Application::Get().AddSingleDrawCall();
+	Application::AddSingleDrawCall();
 
 	//Update CameraUniformBuffer
 	s_data->UniformCamera.ModelMatrix = Translate(position) * Scale(Math::Vec3{ size.x, size.y, 1.0f }); //Position & Size
