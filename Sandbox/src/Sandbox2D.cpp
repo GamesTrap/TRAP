@@ -150,6 +150,8 @@ void Sandbox2D::OnImGuiRender()
 
 void Sandbox2D::OnAttach()
 {
+	TRAP::Application::SetHotShaderReloading(true);
+	TRAP::Application::SetHotTextureReloading(true);	
 	TRAP::Application::GetWindow()->SetTitle("Sandbox2D");
 	
 	//Mount & Load Textures

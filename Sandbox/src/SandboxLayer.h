@@ -34,6 +34,8 @@ public:
 
 	void OnAttach() override
 	{
+		TRAP::Application::SetHotShaderReloading(true);
+		TRAP::Application::SetHotTextureReloading(true);
 		TRAP::Application::GetWindow()->SetTitle("Sandbox");
 		
 		//Mount & Load Shaders

@@ -828,3 +828,6 @@ SITREP 02/08/2020|20w06a3
 SITREP 02/09/2020|20w06a4
     - Changed TRAP Engine version to 20w06a4(0.6.08)
     - Added Config class to Docs ~>30 mins
+    - Removed HotShader/TextureReloading from Engine.cfg ~<10 mins
+    - Added SetHotShader/TextureReloading() to TRAP::Application ~<15 mins
+    - Updated Docs ~<5 mins

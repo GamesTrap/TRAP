@@ -75,8 +75,6 @@ TRAP::Application::Application()
 #elif defined(TRAP_PLATFORM_LINUX)
 	controllerAPI = Input::ControllerAPI::Linux;
 #endif
-	bool hotShaderReloading = false;
-	bool hotTextureReloading = false;
 	m_config.Get("Width", width);
 	m_config.Get("Height", height);
 	m_config.Get("RefreshRate", refreshRate);
@@ -87,8 +85,6 @@ TRAP::Application::Application()
 	m_config.Get("Monitor", monitor);
 	m_config.Get("RenderAPI", renderAPI);
 	m_config.Get("ControllerAPI", controllerAPI);
-	m_config.Get("HotShaderReloading", hotShaderReloading); //Deprecated
-	m_config.Get("HotTextureReloading", hotTextureReloading); //Deprecated
 
 	if (fpsLimit > 0)
 	{
@@ -97,9 +93,6 @@ TRAP::Application::Application()
 		else
 			m_fpsLimit = 0;
 	}
-
-	VFS::Get()->SetHotShaderReloading(hotShaderReloading);
-	VFS::Get()->SetHotTextureReloading(hotTextureReloading);
 
 	Graphics::API::Context::SetRenderAPI(renderAPI);
 	m_window = MakeScope<Window>
@@ -164,8 +157,6 @@ TRAP::Application::~Application()
 	m_config.Set("Monitor", m_window->GetMonitor().GetID());
 	m_config.Set("RenderAPI", Graphics::API::Context::GetRenderAPI());
 	m_config.Set("ControllerAPI", Input::GetControllerAPI());
-	m_config.Set("HotShaderReloading", VFS::Get()->GetHotShaderReloading());
-	m_config.Set("HotTextureReloading", VFS::Get()->GetHotTextureReloading());
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	m_config.Print();
 #endif
@@ -398,6 +389,21 @@ void TRAP::Application::SetTickRate(const uint32_t tickRate)
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::SetHotShaderReloading(const bool enabled)
+{
+	VFS::Get()->SetHotShaderReloading(enabled);
+	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::SetHotTextureReloading(const bool enabled)
+{
+	VFS::Get()->SetHotTextureReloading(enabled);
+}
+
+//------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Application::Shutdown()
 {

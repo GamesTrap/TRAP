@@ -58,6 +58,9 @@ namespace TRAP
 		static uint32_t GetTickRate();
 		static void SetTickRate(uint32_t);
 
+		static void SetHotShaderReloading(bool enabled);
+		static void SetHotTextureReloading(bool enabled);
+
 		static void Shutdown();
 		
 		static const Scope<Window>& GetWindow();
