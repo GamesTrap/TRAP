@@ -1259,11 +1259,11 @@ void TRAP::INTERNAL::WindowingAPI::FitToMonitor(const InternalWindow* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Change the current video mode
-void TRAP::INTERNAL::WindowingAPI::SetVideoModeWin32(InternalMonitor* monitor, const VideoMode& desired)
+void TRAP::INTERNAL::WindowingAPI::SetVideoModeWin32(InternalMonitor* monitor, const InternalVideoMode& desired)
 {
 	DEVMODEW dm;
 
-	const VideoMode* best = ChooseVideoMode(monitor, desired);
+	const InternalVideoMode* best = ChooseVideoMode(monitor, desired);
 
 	ZeroMemory(&dm, sizeof(dm));
 	dm.dmSize = sizeof(dm);
@@ -1385,7 +1385,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window,
 		//      correct position and size cannot be known until the monitor
 		//      video mode has been picked in SetVideoModeWin32
 		PlatformGetMonitorPos(window->Monitor, xPos, yPos);
-		const VideoMode mode = PlatformGetVideoMode(window->Monitor);
+		const InternalVideoMode mode = PlatformGetVideoMode(window->Monitor);
 		fullWidth = mode.Width;
 		fullHeight = mode.Height;
 	}
@@ -2272,7 +2272,7 @@ HWND TRAP::INTERNAL::WindowingAPI::GetWin32Window(const InternalWindow* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::VideoMode TRAP::INTERNAL::WindowingAPI::PlatformGetVideoMode(const InternalMonitor* monitor)
+TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::PlatformGetVideoMode(const InternalMonitor* monitor)
 {
 	DEVMODEW dm;
 	ZeroMemory(&dm, sizeof(dm));
@@ -2280,7 +2280,7 @@ TRAP::VideoMode TRAP::INTERNAL::WindowingAPI::PlatformGetVideoMode(const Interna
 
 	EnumDisplaySettingsW(monitor->AdapterName.data(), ENUM_CURRENT_SETTINGS, &dm);
 
-	VideoMode mode{};
+	InternalVideoMode mode{};
 	mode.Width = dm.dmPelsWidth;
 	mode.Height = dm.dmPelsHeight;
 	mode.RefreshRate = dm.dmDisplayFrequency;
@@ -2516,15 +2516,15 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::VideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModes(const InternalMonitor* monitor)
+std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModes(const InternalMonitor* monitor)
 {
 	uint32_t modeIndex = 0, size = 0, count = 0;
-	std::vector<VideoMode> result{};
+	std::vector<InternalVideoMode> result{};
 
-	for (;;)
+	while(true)
 	{
 		uint32_t i;
-		VideoMode mode;
+		InternalVideoMode mode;
 		DEVMODEW dm;
 
 		ZeroMemory(&dm, sizeof(dm));

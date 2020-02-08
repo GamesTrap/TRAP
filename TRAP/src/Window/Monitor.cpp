@@ -25,21 +25,25 @@ std::string TRAP::Monitor::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::VideoMode> TRAP::Monitor::GetVideoModes() const
+std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 {
-	return m_handle->Modes;
+	std::vector<VideoMode> modes{};
+	for(const INTERNAL::WindowingAPI::InternalVideoMode mode : m_handle->Modes)
+		modes.push_back({ mode.Width, mode.Height, mode.RefreshRate });
+	
+	return modes;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::VideoMode TRAP::Monitor::GetCurrentMode() const
-{
-	return m_handle->CurrentMode;
+TRAP::Monitor::VideoMode TRAP::Monitor::GetCurrentVideoMode() const
+{	
+	return VideoMode{ m_handle->CurrentMode.Width, m_handle->CurrentMode.Height, m_handle->CurrentMode.RefreshRate };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Monitor::InUse() const
+bool TRAP::Monitor::IsInUse() const
 {
 	return m_handle->Window ? true : false;
 }
@@ -69,8 +73,8 @@ std::vector<TRAP::Monitor> TRAP::Monitor::GetAllMonitors()
 {
 	std::vector<Monitor> monitors;
 	std::vector<INTERNAL::WindowingAPI::InternalMonitor*> internalMonitors = INTERNAL::WindowingAPI::GetMonitors();
-	for(uint32_t i = 0; i < internalMonitors.size(); i++)
-		monitors.emplace_back(internalMonitors[i]);
+	for (auto& internalMonitor : internalMonitors)
+		monitors.emplace_back(internalMonitor);
 
 	return monitors;
 }

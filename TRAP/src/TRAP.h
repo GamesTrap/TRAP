@@ -41,6 +41,14 @@
 #include "Maths/Types.h"
 //----------------------
 
+//----WINDOWS-----------
+#include "Window/Window.h"
+//----------------------
+
+//----MONITORS----------
+#include "Window/Monitor.h"
+//----------------------
+
 //----RENDERER----------
 #include "Graphics/Renderer.h"
 #include "Graphics/RenderCommand.h"

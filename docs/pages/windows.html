@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Windows &mdash; TRAP 0.6.06 documentation</title>
+  <title>Windows &mdash; TRAP 0.6.07 documentation</title>
   
 
   
@@ -32,7 +32,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within TRAP 0.6.06 documentation"
+          title="Search within TRAP 0.6.07 documentation"
           href="../_static/opensearch.xml"/>
 
   
@@ -42,6 +42,7 @@
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Monitors" href="monitors.html" />
     <link rel="prev" title="Input" href="input.html" />
     <link href="../_static/theme.css" rel="stylesheet" type="text/css">
 
@@ -115,15 +116,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#onupdate">OnUpdate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#use">Use</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getactivewindows">GetActiveWindows</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#getmonitors">GetMonitors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#getmonitornames">GetMonitorNames</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gettitle">GetTitle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getwidth">GetWidth</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getheight">GetHeight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getrefreshrate">GetRefreshRate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getdisplaymode">GetDisplayMode</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getmonitor">GetMonitor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#getmonitorname">GetMonitorName</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getvsyncinterval">GetVSyncInterval</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getcursormode">GetCursorMode</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getrawmouseinput">GetRawMouseInput</a></li>
@@ -159,6 +157,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="monitors.html">Monitors</a></li>
 </ul>
 
             
@@ -459,26 +458,6 @@
 <div class="line">Returns the amount of open TRAP::<a class="reference internal" href="#window">Window</a>(s)</div>
 </div>
 </div>
-<div class="section" id="getmonitors">
-<h3>GetMonitors<a class="headerlink" href="#getmonitors" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">uint32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">GetMonitors</span><span class="p">();</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Returns the amount of connected Monitors</div>
-</div>
-</div>
-<div class="section" id="getmonitornames">
-<h3>GetMonitorNames<a class="headerlink" href="#getmonitornames" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">unordered_map</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">GetMonitorNames</span><span class="p">();</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Returns an <code class="code docutils literal notranslate"><span class="pre">std::unordered_map</span></code> containing the Monitor number as the key and the Name of the Monitor as mappedType</div>
-</div>
-</div>
 <div class="section" id="gettitle">
 <h3>GetTitle<a class="headerlink" href="#gettitle" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">GetTitle</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
@@ -531,22 +510,12 @@
 </div>
 <div class="section" id="getmonitor">
 <h3>GetMonitor<a class="headerlink" href="#getmonitor" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">GetMonitor</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">GetMonitor</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns the Monitor number of a TRAP::<a class="reference internal" href="#window">Window</a></div>
-</div>
-</div>
-<div class="section" id="getmonitorname">
-<h3>GetMonitorName<a class="headerlink" href="#getmonitorname" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">GetMonitorName</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Returns the Name of a Monitor of a TRAP::<a class="reference internal" href="#window">Window</a></div>
+<div class="line">Returns the TRAP::<a class="reference internal" href="monitors.html#monitor"><span class="std std-ref">Monitor</span></a> of a TRAP::<a class="reference internal" href="#window">Window</a></div>
 </div>
 </div>
 <div class="section" id="getvsyncinterval">
@@ -667,23 +636,19 @@
 </div>
 <div class="section" id="setmonitor">
 <h3>SetMonitor<a class="headerlink" href="#setmonitor" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">SetMonitor</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">monitor</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">SetMonitor</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span><span class="o">&amp;</span> <span class="n">monitor</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Sets the Monitor to use by a TRAP::<a class="reference internal" href="#window">Window</a></div>
+<div class="line">Sets the TRAP::<a class="reference internal" href="monitors.html#monitor"><span class="std std-ref">Monitor</span></a> to use by a TRAP::<a class="reference internal" href="#window">Window</a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">monitor</span></code> specifies the Monitor to use. Default value: <code class="code docutils literal notranslate"><span class="pre">0</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">monitor</span></code> Specifies the TRAP::<a class="reference internal" href="monitors.html#monitor"><span class="std std-ref">Monitor</span></a> to use. Default value: <code class="code docutils literal notranslate"><span class="pre">TRAP::Monitor::GetPrimaryMonitor()</span></code></p></li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If <code class="code docutils literal notranslate"><span class="pre">monitor</span></code> is an invalid Monitor then the TRAP::<a class="reference internal" href="#window">Window</a> will use the primary Monitor!</p>
-</div>
 </div>
 <div class="section" id="setvsyncinterval">
 <h3>SetVSyncInterval<a class="headerlink" href="#setvsyncinterval" title="Permalink to this headline">¶</a></h3>

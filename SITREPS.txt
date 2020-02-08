@@ -814,3 +814,8 @@ SITREP 02/05/2020|20w06a2
     - Updated Docs ~<20 mins
     - Added Monitor class ~>30 mins
     - Moved VideoMode struct from TRAP::INTERNAL::WindowingAPI to TRAP:: ~<10 mins
+
+SITREP 02/08/2020|20w06a3
+    - Changed TRAP Engine version to 20w06a3(0.6.07)
+    - Moved TRAP::VideoMode struct to TRAP::Monitor ~<20 mins
+    - Updated Docs ~>40 mins

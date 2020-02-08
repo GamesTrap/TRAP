@@ -253,7 +253,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalMonitor*> TRAP::INTERNAL::Wind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::VideoMode& TRAP::INTERNAL::WindowingAPI::GetVideoMode(InternalMonitor* monitor)
+const TRAP::INTERNAL::WindowingAPI::InternalVideoMode& TRAP::INTERNAL::WindowingAPI::GetVideoMode(InternalMonitor* monitor)
 {
 	monitor->CurrentMode = PlatformGetVideoMode(monitor);
 	return monitor->CurrentMode;
@@ -261,12 +261,12 @@ const TRAP::VideoMode& TRAP::INTERNAL::WindowingAPI::GetVideoMode(InternalMonito
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::VideoMode> TRAP::INTERNAL::WindowingAPI::GetVideoModes(InternalMonitor* monitor)
+std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::GetVideoModes(InternalMonitor* monitor)
 {
 	if (!monitor)
-		return std::vector<VideoMode>{};
+		return std::vector<InternalVideoMode>{};
 	if (!RefreshVideoModes(monitor))
-		return std::vector<VideoMode>{};
+		return std::vector<InternalVideoMode>{};
 
 	return monitor->Modes;
 }
@@ -2098,11 +2098,11 @@ bool TRAP::INTERNAL::WindowingAPI::RefreshVideoModes(InternalMonitor* monitor)
 	if (!monitor->Modes.empty())
 		return true;
 
-	std::vector<VideoMode> modes = PlatformGetVideoModes(monitor);
+	std::vector<InternalVideoMode> modes = PlatformGetVideoModes(monitor);
 	if (modes.empty())
 		return false;
 
-	std::qsort(modes.data(), modes.size(), sizeof(VideoMode), CompareVideoModes);
+	std::qsort(modes.data(), modes.size(), sizeof(InternalVideoMode), CompareVideoModes);
 
 	monitor->Modes = {};
 	monitor->Modes = modes;
@@ -2268,8 +2268,8 @@ bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const uint32_t mode)
 //Lexically compare video modes, used by qsort
 int32_t TRAP::INTERNAL::WindowingAPI::CompareVideoModes(const void* fp, const void* sp)
 {
-	const VideoMode* fm = static_cast<const VideoMode*>(fp);
-	const VideoMode* sm = static_cast<const VideoMode*>(sp);
+	const InternalVideoMode* fm = static_cast<const InternalVideoMode*>(fp);
+	const InternalVideoMode* sm = static_cast<const InternalVideoMode*>(sp);
 	const int32_t fbpp = fm->RedBits + fm->GreenBits + fm->BlueBits;
 	const int32_t sbpp = sm->RedBits + sm->GreenBits + sm->BlueBits;
 	const int32_t farea = fm->Width * fm->Height;
@@ -2314,19 +2314,19 @@ void TRAP::INTERNAL::WindowingAPI::SplitBPP(int32_t bpp, int32_t& red, int32_t& 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Chooses the video mode most closely matching the desired one
-TRAP::VideoMode* TRAP::INTERNAL::WindowingAPI::ChooseVideoMode(InternalMonitor* monitor, const VideoMode& desired)
+TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::ChooseVideoMode(InternalMonitor* monitor, const InternalVideoMode& desired)
 {
 	uint32_t leastSizeDiff = UINT_MAX;
 	uint32_t rateDiff, leastRateDiff = UINT_MAX;
 	uint32_t leastColorDiff = UINT_MAX;
-	VideoMode* closest = nullptr;
+	InternalVideoMode* closest = nullptr;
 
 	if (!RefreshVideoModes(monitor))
 		return nullptr;
 
 	for (uint32_t i = 0; i < monitor->Modes.size(); i++)
 	{
-		VideoMode* current = &monitor->Modes[i];
+		InternalVideoMode* current = &monitor->Modes[i];
 
 		uint32_t colorDiff = 0;
 

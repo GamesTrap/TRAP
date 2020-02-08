@@ -4,7 +4,6 @@
 #include "Utils/Singleton.h"
 #include "Input/Input.h"
 #include "ImageLoader/Image.h"
-#include "VideoMode.h"
 
 namespace TRAP::INTERNAL
 {	
@@ -869,6 +868,22 @@ namespace TRAP::INTERNAL
 #endif
 		};
 	public:
+		//This describes a single video mode.
+		struct InternalVideoMode
+		{
+			//The width, in screen coordinates, of the video mode.
+			int32_t Width = 0;
+			//The height, in screen coordinates, of the video mode.
+			int32_t Height = 0;
+			//The bit depth of the red channel of the video mode.
+			int32_t RedBits = 0;
+			//The bit depth of the green channel of the video mode.
+			int32_t GreenBits = 0;
+			//The bit depth of the blue channel of the video mode.
+			int32_t BlueBits = 0;
+			//The refresh rate, in Hz, of the video mode.
+			int32_t RefreshRate = 0;
+		};
 		//Monitor structure
 		struct InternalMonitor
 		{
@@ -877,8 +892,8 @@ namespace TRAP::INTERNAL
 			//The window whose video mode is current on this monitor
 			InternalWindow* Window = nullptr;
 
-			std::vector<VideoMode> Modes{};
-			VideoMode CurrentMode;
+			std::vector<InternalVideoMode> Modes{};
+			InternalVideoMode CurrentMode{};
 
 #ifdef TRAP_PLATFORM_WINDOWS
 			HMONITOR Handle = nullptr;
@@ -918,7 +933,7 @@ namespace TRAP::INTERNAL
 			bool MousePassthrough = false;
 			bool BorderlessFullscreen = false;
 			void* UserPointer = nullptr;
-			VideoMode videoMode{};
+			InternalVideoMode videoMode{};
 			InternalMonitor* Monitor = nullptr;
 			InternalCursor* Cursor = nullptr;
 
@@ -1021,9 +1036,9 @@ namespace TRAP::INTERNAL
 		//Returns the currently connected monitors.
 		static std::vector<InternalMonitor*> GetMonitors();
 		//Returns the current mode of the specified monitor.
-		static const VideoMode& GetVideoMode(InternalMonitor* monitor);
+		static const InternalVideoMode& GetVideoMode(InternalMonitor* monitor);
 		//Returns the available video modes for the specified monitor.
-		static std::vector<VideoMode> GetVideoModes(InternalMonitor* monitor);
+		static std::vector<InternalVideoMode> GetVideoModes(InternalMonitor* monitor);
 		//Creates a window and its associated context.
 		//
 		//Win32:   - Window creation will fail if the Microsoft GDI software OpenGL implementation is the only one available.
@@ -1259,7 +1274,7 @@ namespace TRAP::INTERNAL
 		//Create key code translation tables
 		static void CreateKeyTables();
 		
-		static VideoMode PlatformGetVideoMode(const InternalMonitor* monitor);
+		static InternalVideoMode PlatformGetVideoMode(const InternalMonitor* monitor);
 		static void PlatformGetWindowSize(const InternalWindow* window, int32_t& width, int32_t& height);
 		static void PlatformSetWindowPos(const InternalWindow* window, int32_t xPos, int32_t yPos);
 		static void PlatformGetWindowFrameSize(const InternalWindow* window,
@@ -1268,7 +1283,7 @@ namespace TRAP::INTERNAL
 		static void PlatformSetWindowMonitor(InternalWindow* window, InternalMonitor* monitor,
 			                                 int32_t xPos, int32_t yPos, int32_t width, int32_t height, int32_t refreshRate);
 		static void PlatformSetWindowMonitorBorderless(InternalWindow* window, InternalMonitor* monitor);
-		static std::vector<VideoMode> PlatformGetVideoModes(const InternalMonitor* monitor);
+		static std::vector<InternalVideoMode> PlatformGetVideoModes(const InternalMonitor* monitor);
 		static bool PlatformInit();
 		static bool PlatformCreateMutex(Mutex& mutex); 
 		static bool PlatformCreateTLS(TLS& tls);
@@ -1397,7 +1412,7 @@ namespace TRAP::INTERNAL
 		//Notifies shared code that a window has lost or received input focus
 		static void InputWindowFocus(InternalWindow* window, bool focused);
 		//Chooses the video mode most closely matching the desired one
-		static VideoMode* ChooseVideoMode(InternalMonitor* monitor, const VideoMode& desired);
+		static InternalVideoMode* ChooseVideoMode(InternalMonitor* monitor, const InternalVideoMode& desired);
 		//Notifies shared code of a monitor connection or disconnection
 		static void InputMonitor(Scope<InternalMonitor> monitor, bool connected, uint32_t placement);
 		//Notifies shared code of a monitor connection or disconnection
@@ -1457,7 +1472,7 @@ namespace TRAP::INTERNAL
 		static void PollMonitorsWin32();
 		static void FitToMonitor(const InternalWindow* window);
 		//Change the current video mode
-		static void SetVideoModeWin32(InternalMonitor* monitor, const VideoMode& desired);
+		static void SetVideoModeWin32(InternalMonitor* monitor, const InternalVideoMode& desired);
 		static void GetMonitorContentScaleWin32(HMONITOR handle, float& xScale, float& yScale);
 		//Returns the window style for the specified window
 		static DWORD GetWindowStyle(const InternalWindow* window);
@@ -1506,7 +1521,7 @@ namespace TRAP::INTERNAL
 #elif defined(TRAP_PLATFORM_LINUX)
 		//Calculates the refresh rate, in Hz, from the specified RandR mode info
 		static int32_t CalculateRefreshRate(const XRRModeInfo* mi);
-		static VideoMode VideoModeFromModeInfo(const XRRModeInfo* mi, const XRRCrtcInfo* ci);
+		static InternalVideoMode VideoModeFromModeInfo(const XRRModeInfo* mi, const XRRCrtcInfo* ci);
 		//Sends an EWMH or ICCCM event to the window manager
 		static void SendEventToWM(const InternalWindow* window, Atom type, int32_t a, int32_t b, int32_t c, int32_t d, int32_t e);
 		//Returns whether it is a _NET_FRAME_EXTENTS event for the specified window
@@ -1609,7 +1624,7 @@ namespace TRAP::INTERNAL
 		//Splits and translates a text/uri-list into separate file paths
 		static std::vector<std::string> ParseUriList(char* text, int32_t& count);
 		//Set the current video mode for the specified monitor
-		static void SetVideoModeX11(InternalMonitor* monitor, const VideoMode& desired);
+		static void SetVideoModeX11(InternalMonitor* monitor, const InternalVideoMode& desired);
 		//Restore the saved(original) video mode for the specified monitor
 		static void RestoreVideoModeX11(InternalMonitor* monitor);
 		//Allocates and returns a monitor object with the specified name and dimensions

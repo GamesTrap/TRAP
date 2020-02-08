@@ -16,9 +16,9 @@ int32_t TRAP::INTERNAL::WindowingAPI::CalculateRefreshRate(const XRRModeInfo* mi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::VideoMode TRAP::INTERNAL::WindowingAPI::VideoModeFromModeInfo(const XRRModeInfo* mi, const XRRCrtcInfo* ci)
+TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::VideoModeFromModeInfo(const XRRModeInfo* mi, const XRRCrtcInfo* ci)
 {
-	VideoMode mode{};
+	InternalVideoMode mode{};
 	
 	if(ci->rotation == RR_Rotate_90 || ci->rotation == RR_Rotate_270)
 	{
@@ -2552,9 +2552,9 @@ std::string TRAP::INTERNAL::WindowingAPI::ConvertLatin1ToUTF8(const char* source
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::VideoMode TRAP::INTERNAL::WindowingAPI::PlatformGetVideoMode(const InternalMonitor* monitor)
+TRAP::INTERNAL::WindowingAPI::InternalVideoMode TRAP::INTERNAL::WindowingAPI::PlatformGetVideoMode(const InternalMonitor* monitor)
 {
-	VideoMode mode{};
+	InternalVideoMode mode{};
 	
 	if(s_Data.RandR.Available && !s_Data.RandR.MonitorBroken)
 	{
@@ -2744,9 +2744,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitorBorderless(InternalWi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::VideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModes(const InternalMonitor* monitor)
+std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModes(const InternalMonitor* monitor)
 {
-	std::vector<VideoMode> result{};
+	std::vector<InternalVideoMode> result{};
 	uint32_t count = 0;
 	
 	if(s_Data.RandR.Available && !s_Data.RandR.MonitorBroken)
@@ -2763,7 +2763,7 @@ std::vector<TRAP::VideoMode> TRAP::INTERNAL::WindowingAPI::PlatformGetVideoModes
 			if(!static_cast<bool>((mi->modeFlags & RR_Interlace) == 0))
 				continue;
 				
-			VideoMode mode = VideoModeFromModeInfo(mi, ci);
+			InternalVideoMode mode = VideoModeFromModeInfo(mi, ci);
 			uint32_t j;
 			
 			for(j = 0; j < count; j++)
@@ -5029,7 +5029,7 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow* window)
 	if(window->OverrideRedirect)
 	{
 		int32_t xPos, yPos;
-		VideoMode mode;
+		InternalVideoMode mode;
 		
 		//Manually position the window over its monitor
 		PlatformGetMonitorPos(window->Monitor, xPos, yPos);
@@ -5064,14 +5064,14 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseMonitor(const InternalWindow* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Set the current video mode for the specified monitor
-void TRAP::INTERNAL::WindowingAPI::SetVideoModeX11(InternalMonitor* monitor, const VideoMode& desired)
+void TRAP::INTERNAL::WindowingAPI::SetVideoModeX11(InternalMonitor* monitor, const InternalVideoMode& desired)
 {
 	if(s_Data.RandR.Available)
 	{
-		VideoMode current;
+		InternalVideoMode current;
 		RRMode native = 0;
 		
-		const VideoMode* best = ChooseVideoMode(monitor, desired);
+		const InternalVideoMode* best = ChooseVideoMode(monitor, desired);
 		current = PlatformGetVideoMode(monitor);
 		
 		XRRScreenResources* sr = s_Data.RandR.GetScreenResourcesCurrent(s_Data.display, s_Data.Root);
@@ -5084,7 +5084,7 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeX11(InternalMonitor* monitor, con
 			if(!((mi->modeFlags & RR_Interlace) == 0))
 				continue;
 				
-			const VideoMode mode = VideoModeFromModeInfo(mi, ci);
+			const InternalVideoMode mode = VideoModeFromModeInfo(mi, ci);
 			if(CompareVideoModes(best, &mode) == 0)
 			{
 				native = mi->id;
@@ -5148,7 +5148,7 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow* wind
 	if(window->OverrideRedirect)
 	{
 		int32_t xPos, yPos;
-		VideoMode mode;
+		InternalVideoMode mode;
 		
 		//Manually position the window over its monitor
 		PlatformGetMonitorPos(window->Monitor, xPos, yPos);
