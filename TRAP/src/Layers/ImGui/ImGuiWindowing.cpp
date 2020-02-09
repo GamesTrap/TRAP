@@ -185,7 +185,6 @@ void TRAP::INTERNAL::ImGuiWindowing::InitPlatformInterface()
 #endif
 
 	UpdateMonitors();
-	WindowingAPI::SetMonitorCallback(MonitorCallback);
 
 	//Register main window handle (which is owned by the main application, not by us)
 	ImGuiViewport* main_viewport = ImGui::GetMainViewport();
@@ -350,24 +349,24 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMonitors()
 	ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
 	const auto& monitors = WindowingAPI::GetMonitors();
 	platformIO.Monitors.resize(0);
-	for (uint32_t n = 0; n < monitors.size(); n++)
+	for (const auto& n : monitors)
 	{
 		ImGuiPlatformMonitor monitor;
 		int32_t x, y;
-		WindowingAPI::GetMonitorPos(monitors[n], x, y);
-		const WindowingAPI::InternalVideoMode videoMode = WindowingAPI::GetVideoMode(monitors[n]);
+		WindowingAPI::GetMonitorPos(n, x, y);
+		const WindowingAPI::InternalVideoMode videoMode = WindowingAPI::GetVideoMode(n);
 
 		monitor.MainPos = ImVec2(static_cast<float>(x), static_cast<float>(y));
 		monitor.MainSize = ImVec2(static_cast<float>(videoMode.Width), static_cast<float>(videoMode.Height));
 		int32_t width, height;
-		WindowingAPI::GetMonitorWorkArea(monitors[n], x, y, width, height);
+		WindowingAPI::GetMonitorWorkArea(n, x, y, width, height);
 		monitor.WorkPos = ImVec2(static_cast<float>(x), static_cast<float>(y));
 		monitor.WorkSize = ImVec2(static_cast<float>(width), static_cast<float>(height));
 
 		//Warning: The validity of monitor DPI information on Windows depends on the application DPI awareness settings,
 		//which generally needs to be set in the manifest or at runtime.
 		float xScale, yScale;
-		WindowingAPI::GetMonitorContentScale(monitors[n], xScale, yScale);
+		WindowingAPI::GetMonitorContentScale(n, xScale, yScale);
 		monitor.DpiScale = xScale;
 		platformIO.Monitors.push_back(monitor);
 	}

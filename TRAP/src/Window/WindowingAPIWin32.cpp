@@ -754,18 +754,8 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 			}
 			
 			if (windowPtr->Monitor && windowPtr->Minimized != minimized)
-			{
-				if (minimized)
-					ReleaseMonitor(windowPtr);
-				else
-				{
-					if (windowPtr->BorderlessFullscreen)
-						AcquireMonitorBorderless(windowPtr);
-					else
-						AcquireMonitor(windowPtr);
+				if (!minimized)
 					FitToMonitor(windowPtr);
-				}
-			}
 
 			windowPtr->Minimized = minimized;
 			windowPtr->Maximized = maximized;
@@ -1006,7 +996,7 @@ void TRAP::INTERNAL::WindowingAPI::UnregisterWindowClassWin32()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Callback for EnumDisplayMonitors in createMonitor
-BOOL CALLBACK TRAP::INTERNAL::WindowingAPI::MonitorCallback(const HMONITOR handle, HDC dc, RECT* rect, LPARAM data)
+BOOL CALLBACK TRAP::INTERNAL::WindowingAPI::MonitorCallback(const HMONITOR handle, HDC dc, RECT* rect, const LPARAM data)
 {
 	MONITORINFOEXW mi;
 	ZeroMemory(&mi, sizeof(mi));
@@ -1082,7 +1072,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalMonitor> TRAP::INTERNAL::Windo
 void TRAP::INTERNAL::WindowingAPI::PollMonitorsWin32()
 {
 	uint32_t i;
-	std::vector<uint32_t> disconnected(s_Data.Monitors.size(), 1);
+	std::vector<bool> disconnected(s_Data.Monitors.size(), true);
 	DWORD displayIndex;
 	DISPLAY_DEVICEW adapter, display;
 	Scope<InternalMonitor> monitor;
@@ -1118,7 +1108,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsWin32()
 			{
 				if (s_Data.Monitors[i] && wcscmp(s_Data.Monitors[i]->DisplayName.data(), display.DeviceName) == 0)
 				{
-					disconnected[i] = 0;
+					disconnected[i] = false;
 					break;
 				}
 			}
@@ -1143,7 +1133,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsWin32()
 			{
 				if (s_Data.Monitors[i] && wcscmp(s_Data.Monitors[i]->AdapterName.data(), adapter.DeviceName) == 0)
 				{
-					disconnected[i] = 0;
+					disconnected[i] = false;
 					break;
 				}
 			}
@@ -1163,6 +1153,24 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsWin32()
 	{
 		if (disconnected[i])
 			InputMonitorDisconnect(i, 0);
+	}
+
+	//Update HMonitor Handles
+	for (i = 0; i < s_Data.Monitors.size(); i++)
+	{
+		DEVMODEW dm{};
+		RECT rect;
+
+		ZeroMemory(&dm, sizeof(dm));
+		dm.dmSize = sizeof(dm);
+		EnumDisplaySettingsW(s_Data.Monitors[i]->AdapterName.data(), ENUM_CURRENT_SETTINGS, &dm);
+		
+		rect.left = dm.dmPosition.x;
+		rect.top = dm.dmPosition.y;
+		rect.right = dm.dmPosition.x + dm.dmPelsWidth;
+		rect.bottom = dm.dmPosition.y + dm.dmPelsHeight;
+
+		EnumDisplayMonitors(nullptr, &rect, MonitorCallback, reinterpret_cast<LPARAM>(s_Data.Monitors[i].get()));
 	}
 }
 
@@ -3166,9 +3174,9 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScale(const InternalW
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkArea(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos, int32_t& width, int32_t& height)
 {
-	MONITORINFO mi = { sizeof(mi) };
-	GetMonitorInfo(monitor->Handle, &mi);
-
+	MONITORINFO mi = { sizeof(MONITORINFO) };
+	GetMonitorInfoW(monitor->Handle, &mi);
+	
 	xPos = mi.rcWork.left;
 	yPos = mi.rcWork.top;
 	width = mi.rcWork.right - mi.rcWork.left;

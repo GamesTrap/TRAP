@@ -835,3 +835,7 @@ SITREP 02/09/2020|20w06a4
     - Removed TRAP::Log::Get() function ~<20 mins
     - Added TRAP::Log::GetBuffer() function ~<10 mins
     - Added TRAP::Log to Docs ~>30 mins
+    - Added MonitorConnectEvent ~<30mins
+    - Added MonitorDisconnectEvent ~<20 mins
+    - Fixed PollMonitorsWin32 not updating Monitor Handles ~>25 mins
+    - Added Monitor(Dis)ConnectEvent to Docs ~<30 mins

@@ -14,7 +14,8 @@ namespace TRAP
 		AppTick, AppUpdate, AppRender,
 		KeyPress, KeyRelease, KeyType,
 		MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll, MouseEnter, MouseLeave,
-		ControllerConnect, ControlledDisconnect
+		ControllerConnect, ControlledDisconnect,
+		MonitorConnect, MonitorDisconnect
 	};
 
 	enum class EventCategory

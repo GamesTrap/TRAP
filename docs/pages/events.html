@@ -347,6 +347,28 @@
 <li class="toctree-l3"><a class="reference internal" href="#id146">GetName</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#monitorevent">MonitorEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id147">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getmonitor">GetMonitor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id148">GetCategoryFlags</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#monitorconnectevent">MonitorConnectEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id149">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id150">ToString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id151">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id152">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id153">GetName</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#monitordisconnectevent">MonitorDisconnectEvent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id154">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id155">ToString</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id156">GetStaticType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id157">GetEventType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id158">GetName</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
@@ -429,7 +451,8 @@
     <span class="n">AppTick</span><span class="p">,</span> <span class="n">AppUpdate</span><span class="p">,</span> <span class="n">AppRender</span><span class="p">,</span>
     <span class="n">KeyPress</span><span class="p">,</span> <span class="n">KeyRelease</span><span class="p">,</span> <span class="n">KeyType</span><span class="p">,</span>
     <span class="n">MouseButtonPress</span><span class="p">,</span> <span class="n">MouseButtonRelease</span><span class="p">,</span> <span class="n">MouseMove</span><span class="p">,</span> <span class="n">MouseScroll</span><span class="p">,</span> <span class="n">MouseEnter</span><span class="p">,</span> <span class="n">MouseLeave</span><span class="p">,</span>
-    <span class="n">ControllerConnect</span><span class="p">,</span> <span class="n">ControllerDisconnect</span>
+    <span class="n">ControllerConnect</span><span class="p">,</span> <span class="n">ControllerDisconnect</span><span class="p">,</span>
+    <span class="n">MonitorConnect</span><span class="p">,</span> <span class="n">MonitorDisconnect</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -2354,7 +2377,7 @@ Example: <code class="code docutils literal notranslate"><span class="pre">Dispa
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::ControllerConnected</div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::ControllerConnect</div>
 </div>
 </div>
 <div class="section" id="id140">
@@ -2364,7 +2387,7 @@ Example: <code class="code docutils literal notranslate"><span class="pre">Dispa
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::ControllerConnected</div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::ControllerConnect</div>
 </div>
 </div>
 <div class="section" id="id141">
@@ -2436,6 +2459,170 @@ Example: <code class="code docutils literal notranslate"><span class="pre">Dispa
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
 <div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;ControllerDisconnect&quot;</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="monitorevent">
+<h2>MonitorEvent<a class="headerlink" href="#monitorevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#monitorevent">MonitorEvent</a> inherits from TRAP::<a class="reference internal" href="#event">Event</a></p>
+</div>
+<div class="section" id="id147">
+<h3>Constructor<a class="headerlink" href="#id147" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">protected</span><span class="o">:</span>
+    <span class="n">TRAP</span><span class="o">::</span><span class="n">MonitorEvent</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span> <span class="n">monitor</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#monitorevent">MonitorEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">monitor</span></code> Specifies the TRAP::<a class="reference internal" href="monitors.html#monitor"><span class="std std-ref">Monitor</span></a> for the TRAP::<a class="reference internal" href="#monitorevent">MonitorEvent</a></div>
+</div>
+</div>
+<div class="section" id="getmonitor">
+<h3>GetMonitor<a class="headerlink" href="#getmonitor" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MonitorEvent</span><span class="o">::</span><span class="n">GetMonitor</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This returns the TRAP::<a class="reference internal" href="monitors.html#monitor"><span class="std std-ref">Monitor</span></a> of the TRAP::<a class="reference internal" href="#monitorevent">MonitorEvent</a></div>
+</div>
+</div>
+<div class="section" id="id148">
+<h3>GetCategoryFlags<a class="headerlink" href="#id148" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MonitorEvent</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventcategory">EventCategory</a>::Application casted to an <code class="code docutils literal notranslate"><span class="pre">int32_t</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="monitorconnectevent">
+<h2>MonitorConnectEvent<a class="headerlink" href="#monitorconnectevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#monitorconnectevent">MonitorConnectEvent</a> inherits from TRAP::<a class="reference internal" href="#monitorevent">MonitorEvent</a></p>
+</div>
+<div class="section" id="id149">
+<h3>Constructor<a class="headerlink" href="#id149" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">MonitorConnectEvent</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span> <span class="n">monitor</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#monitorconnectevent">MonitorConnectEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">monitor</span></code> Specifies the TRAP::<a class="reference internal" href="monitors.html#monitor"><span class="std std-ref">Monitor</span></a> for the TRAP::<a class="reference internal" href="#monitorconnectevent">MonitorConnectEvent</a></div>
+</div>
+</div>
+<div class="section" id="id150">
+<h3>ToString<a class="headerlink" href="#id150" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MonitorConnectEvent</span><span class="o">::</span><span class="n">ToString</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;MonitorConnectEvent:</span> <span class="pre">&quot;</span> <span class="pre">+</span> <span class="pre">m_monitor.GetName()</span> <span class="pre">+</span> <span class="pre">&quot;</span> <span class="pre">(&quot;</span> <span class="pre">+</span> <span class="pre">m_monitor.GetID()</span> <span class="pre">+</span> <span class="pre">&quot;)&quot;</span></code></div>
+</div>
+</div>
+<div class="section" id="id151">
+<h3>GetStaticType<a class="headerlink" href="#id151" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MonitorConnectEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::MonitorConnect</div>
+</div>
+</div>
+<div class="section" id="id152">
+<h3>GetEventType<a class="headerlink" href="#id152" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MonitorConnectEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::MonitorConnect</div>
+</div>
+</div>
+<div class="section" id="id153">
+<h3>GetName<a class="headerlink" href="#id153" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MonitorConnectEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;MonitorConnect&quot;</span></code></div>
+</div>
+</div>
+</div>
+<div class="section" id="monitordisconnectevent">
+<h2>MonitorDisconnectEvent<a class="headerlink" href="#monitordisconnectevent" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TRAP::<a class="reference internal" href="#monitordisconnectevent">MonitorDisconnectEvent</a> inherits from TRAP::<a class="reference internal" href="#monitorevent">MonitorEvent</a></p>
+</div>
+<div class="section" id="id154">
+<h3>Constructor<a class="headerlink" href="#id154" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">MonitorDisconnectEvent</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span> <span class="n">monitor</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This is used to create new TRAP::<a class="reference internal" href="#monitordisconnectevent">MonitorDisconnectEvent</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">monitor</span></code> Specifies the TRAP::<a class="reference internal" href="monitors.html#monitor"><span class="std std-ref">Monitor</span></a> for the TRAP::<a class="reference internal" href="#monitordisconnectevent">MonitorDisconnectEvent</a></div>
+</div>
+</div>
+<div class="section" id="id155">
+<h3>ToString<a class="headerlink" href="#id155" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MonitorDisconnectEvent</span><span class="o">::</span><span class="n">ToString</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;MonitorDisconnectEvent:</span> <span class="pre">&quot;</span> <span class="pre">+</span> <span class="pre">m_monitor.GetName()</span> <span class="pre">+</span> <span class="pre">&quot;</span> <span class="pre">(&quot;</span> <span class="pre">+</span> <span class="pre">m_monitor.GetID()</span> <span class="pre">+</span> <span class="pre">&quot;)&quot;</span></code></div>
+</div>
+</div>
+<div class="section" id="id156">
+<h3>GetStaticType<a class="headerlink" href="#id156" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MonitorDisconnectEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::MonitorDisconnect</div>
+</div>
+</div>
+<div class="section" id="id157">
+<h3>GetEventType<a class="headerlink" href="#id157" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MonitorDisconnectEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="#eventtype">EventType</a>::MonitorDisconnect</div>
+</div>
+</div>
+<div class="section" id="id158">
+<h3>GetName<a class="headerlink" href="#id158" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MonitorDisconnectEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;MonitorDisconnect&quot;</span></code></div>
 </div>
 </div>
 </div>

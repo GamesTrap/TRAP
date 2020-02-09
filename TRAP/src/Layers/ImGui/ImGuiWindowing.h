@@ -12,6 +12,7 @@ namespace TRAP::INTERNAL
 		static void Shutdown();
 		static void NewFrame();
 
+		static void MonitorCallback(const WindowingAPI::InternalMonitor* unused1, bool unused2);
 	private:
 		static WindowingAPI::InternalWindow* s_window; //Main Window
 		static WindowingAPI::ContextAPI s_clientAPI;
@@ -74,7 +75,6 @@ namespace TRAP::INTERNAL
 		static void SetIMEInputPos(ImGuiViewport* viewport, ImVec2 pos);
 #endif
 		static int32_t CreateVkSurface(ImGuiViewport* viewport, ImU64 vkInstance, const void* vkAllocator, ImU64* outVkSurface);
-		static void MonitorCallback(const WindowingAPI::InternalMonitor* unused1, bool unused2);
 	};
 }
 

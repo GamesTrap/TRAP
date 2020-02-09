@@ -5,6 +5,7 @@
 #include "Event/KeyEvent.h"
 #include "Event/MouseEvent.h"
 #include "Event/WindowEvent.h"
+#include "Event/MonitorEvent.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/Renderer.h"
 #include "Graphics/Shaders/ShaderManager.h"
@@ -385,9 +386,9 @@ void TRAP::Window::SetMonitor(Monitor& monitor)
 	m_data.Monitor = monitor.GetID();
 	m_useMonitor = static_cast<INTERNAL::WindowingAPI::InternalMonitor*>(monitor.GetInternalMonitor());
 
+	s_fullscreenWindows[oldMonitor] = nullptr;
 	if (m_data.displayMode != DisplayMode::Windowed)
 	{
-		s_fullscreenWindows[oldMonitor] = nullptr;
 		if (s_fullscreenWindows[m_data.Monitor]) //Monitor already has a Fullscreen/Borderless Window
 		{
 			TP_ERROR("[Window] Monitor: ", m_data.Monitor, "(", monitor.GetName(), ") is already used by another Window!");
@@ -1130,6 +1131,59 @@ void TRAP::Window::Init(const WindowProps& props)
 
 		WindowContentScaleEvent event(xScale, yScale, data.Title);
 		data.EventCallback(event);
+	});
+
+	INTERNAL::WindowingAPI::SetMonitorCallback([](const INTERNAL::WindowingAPI::InternalMonitor* monitor, const bool connected)
+	{
+		if(!connected && Monitor::GetAllMonitors().size() == 1)
+		{
+			TP_ERROR("No Monitor Found!");
+			std::exit(0);
+		}
+		
+		if (monitor->Window)
+		{
+			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(monitor->Window));
+
+			for (const auto& win : s_fullscreenWindows)
+			{
+				if (win)
+				{
+					Window& window = *win;
+					if (window.m_useMonitor == monitor)
+					{
+						s_fullscreenWindows.erase(s_fullscreenWindows.begin() + window.m_data.Monitor);
+						window.m_data.Monitor = 0;
+						window.m_useMonitor = static_cast<INTERNAL::WindowingAPI::InternalMonitor*>(Monitor::GetPrimaryMonitor().GetInternalMonitor());
+						window.Restore();
+						window.SetDisplayMode(DisplayMode::Windowed, window.GetWidth(), window.GetHeight(), window.GetRefreshRate());
+						break;
+					}
+				}
+			}
+
+			if (!data.EventCallback)
+				return;
+
+			for (const auto& mon : Monitor::GetAllMonitors())
+			{
+				if (monitor == mon.GetInternalMonitor())
+				{
+					if (connected)
+					{
+						MonitorConnectEvent event(mon);
+						data.EventCallback(event);
+					}
+					else
+					{
+						MonitorDisconnectEvent event(mon);
+						data.EventCallback(event);
+					}
+
+					return;
+				}
+			}
+		}
 	});
 
 	if (s_windows > 1)

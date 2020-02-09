@@ -3,6 +3,7 @@
 #include "WindowingAPI.h"
 #include "Window.h"
 #include "Utils/String.h"
+#include "Layers/ImGui/ImGuiWindowing.h"
 
 TRAP::INTERNAL::WindowingAPI::Data TRAP::INTERNAL::WindowingAPI::s_Data{};
 
@@ -2365,28 +2366,33 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::C
 
 //Notifies shared code of a monitor connection or disconnection
 void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, const bool connected, const uint32_t placement)
-{
+{	
 	if (connected)
 	{
 		if (placement == 0)
+		{
 			s_Data.Monitors.insert(s_Data.Monitors.begin(), std::move(monitor));
+
+			if (s_Data.Callbacks.Monitor)
+				s_Data.Callbacks.Monitor(s_Data.Monitors.front().get(), connected);
+
+			ImGuiWindowing::MonitorCallback(s_Data.Monitors.front().get(), true);
+		}
 		else
+		{
 			s_Data.Monitors.push_back(std::move(monitor));
+			
+			if (s_Data.Callbacks.Monitor)
+				s_Data.Callbacks.Monitor(s_Data.Monitors.back().get(), connected);
+
+			ImGuiWindowing::MonitorCallback(s_Data.Monitors.back().get(), true);
+		}		
 	}
 	else
 	{
-		for(InternalWindow* window : s_Data.WindowList)
-		{
-			if (window->Monitor == monitor.get())
-			{
-				int32_t width = 0, height = 0, xOff = 0, yOff = 0, unused = 0;
-				PlatformGetWindowSize(window, width, height);
-				PlatformSetWindowMonitor(window, nullptr, 0, 0, width, height, 0);
-				PlatformGetWindowFrameSize(window, xOff, yOff, unused, unused);
-				PlatformSetWindowPos(window, xOff, yOff);
-			}
-		}
-
+		if (s_Data.Callbacks.Monitor)
+			s_Data.Callbacks.Monitor(monitor.get(), connected);
+		
 		for (uint32_t i = 0; i < s_Data.Monitors.size(); i++)
 		{
 			if (s_Data.Monitors[i] == monitor)
@@ -2395,14 +2401,9 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 				break;
 			}
 		}
+		
+		ImGuiWindowing::MonitorCallback(monitor.get(), false);
 	}
-
-	if (s_Data.Callbacks.Monitor)
-		s_Data.Callbacks.Monitor(monitor.get(), connected);
-
-	if (!connected)
-		if (monitor)
-			monitor.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2411,19 +2412,10 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitorIndex, const uint32_t placement)
 {
 	Scope<InternalMonitor>& monitor = s_Data.Monitors[monitorIndex];
-	
-	for(InternalWindow* window : s_Data.WindowList)
-	{
-		if (window->Monitor == monitor.get())
-		{
-			int32_t width = 0, height = 0, xOff = 0, yOff = 0, unused = 0;
-			PlatformGetWindowSize(window, width, height);
-			PlatformSetWindowMonitor(window, nullptr, 0, 0, width, height, 0);
-			PlatformGetWindowFrameSize(window, xOff, yOff, unused, unused);
-			PlatformSetWindowPos(window, xOff, yOff);
-		}
-	}
 
+	if (s_Data.Callbacks.Monitor)
+		s_Data.Callbacks.Monitor(monitor.get(), false);
+	
 	for (uint32_t i = 0; i < s_Data.Monitors.size(); i++)
 	{
 		if (s_Data.Monitors[i] == monitor)
@@ -2432,12 +2424,8 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitor
 			break;
 		}
 	}
-
-	if (s_Data.Callbacks.Monitor)
-		s_Data.Callbacks.Monitor(monitor.get(), false);
-
-	if (monitor)
-		monitor.reset();
+	
+	ImGuiWindowing::MonitorCallback(monitor.get(), false);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
