@@ -16,6 +16,13 @@ TRAP::Log::~Log()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffer()
+{
+	return s_Instance->m_buffer;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Log::Save()
 {
 	TP_INFO("[Logger] Saving Log.txt");
@@ -23,7 +30,7 @@ void TRAP::Log::Save()
 	std::ofstream file("Log.txt");
 	if (file.is_open())
 	{
-		for (const auto& [level, message] : m_buffer)
+		for (const auto& [level, message] : s_Instance->m_buffer)
 			file << message << '\n';
 
 		file.close();
@@ -32,9 +39,11 @@ void TRAP::Log::Save()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Log& TRAP::Log::Get()
+void TRAP::Log::Clear()
 {
-	return *s_Instance;
+	Save();
+	s_Instance->m_buffer.clear();
+	s_Instance->m_buffer.reserve(256);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

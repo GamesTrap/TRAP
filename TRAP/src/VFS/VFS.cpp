@@ -26,7 +26,7 @@ void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physica
 
 			return physicalPath;
 		}(), "\"");
-	m_mountPoints[virtualPathLower].emplace_back([&]()
+	s_Instance->m_mountPoints[virtualPathLower].emplace_back([&]()
 		{
 			if (*(physicalPath.end() - 1) == '/')
 				return std::string(physicalPath.begin(), physicalPath.end() - 1);
@@ -34,15 +34,15 @@ void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physica
 			return physicalPath;
 		}());
 
-	if (m_hotShaderReloading)
+	if (s_Instance->m_hotShaderReloading)
 		if (virtualPathLower == "/shaders")
 			//Create a ShaderFileWatcher instance that will check the mounted folders for changes every second				
-			m_shaderFileWatcher = MakeScope<FileWatcher>("/shaders", 1000.0f);
+			s_Instance->m_shaderFileWatcher = MakeScope<FileWatcher>("/shaders", 1000.0f);
 
-	if (m_hotTextureReloading)
+	if (s_Instance->m_hotTextureReloading)
 		if (virtualPathLower == "/textures")
 			//Create a TextureFileWatcher instance that will check the mounted folder for changes every second
-			m_textureFileWatcher = MakeScope<FileWatcher>("/textures", 1000.0f);
+			s_Instance->m_textureFileWatcher = MakeScope<FileWatcher>("/textures", 1000.0f);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -66,15 +66,15 @@ void TRAP::VFS::Unmount(const std::string& path)
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	TP_INFO("[VFS] Unmounting VirtualPath: \"", path, "\"");
 	const std::string pathLower = Utils::String::ToLower(path);
-	m_mountPoints[pathLower].clear();
+	s_Instance->m_mountPoints[pathLower].clear();
 
-	if (m_hotShaderReloading && m_shaderFileWatcher)
+	if (s_Instance->m_hotShaderReloading && s_Instance->m_shaderFileWatcher)
 		if (pathLower == "/shaders")
-			m_shaderFileWatcher.reset();
+			s_Instance->m_shaderFileWatcher.reset();
 
-	if (m_hotTextureReloading && m_textureFileWatcher)
+	if (s_Instance->m_hotTextureReloading && s_Instance->m_textureFileWatcher)
 		if (pathLower == "/textures")
-			m_textureFileWatcher.reset();
+			s_Instance->m_textureFileWatcher.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -92,11 +92,11 @@ bool TRAP::VFS::ResolveReadPhysicalPath(const std::string& path, std::filesystem
 	std::string virtualDir = dirs.front();
 	virtualDir = Utils::String::ToLower(virtualDir);
 
-	if (m_mountPoints.find('/' + virtualDir) == m_mountPoints.end() || m_mountPoints['/' + virtualDir].empty())
+	if (s_Instance->m_mountPoints.find('/' + virtualDir) == s_Instance->m_mountPoints.end() || s_Instance->m_mountPoints['/' + virtualDir].empty())
 		return false;
 
 	const std::string remainder = path.substr(virtualDir.size() + 1, path.size() - virtualDir.size());
-	for (const std::string& physicalPath : m_mountPoints['/' + virtualDir])
+	for (const std::string& physicalPath : s_Instance->m_mountPoints['/' + virtualDir])
 	{
 		std::string newPath = physicalPath + remainder;
 		if (FileSystem::FileOrFolderExists(newPath))
@@ -125,11 +125,11 @@ bool TRAP::VFS::SilentResolveReadPhysicalPath(const std::string& path, std::file
 	std::string virtualDir = dirs.front();
 	virtualDir = Utils::String::ToLower(virtualDir);
 
-	if (m_mountPoints.find('/' + virtualDir) == m_mountPoints.end() || m_mountPoints['/' + virtualDir].empty())
+	if (s_Instance->m_mountPoints.find('/' + virtualDir) == s_Instance->m_mountPoints.end() || s_Instance->m_mountPoints['/' + virtualDir].empty())
 		return false;
 
 	const std::string remainder = path.substr(virtualDir.size() + 1, path.size() - virtualDir.size());
-	for (const std::string& physicalPath : m_mountPoints['/' + virtualDir])
+	for (const std::string& physicalPath : s_Instance->m_mountPoints['/' + virtualDir])
 	{
 		std::string newPath = physicalPath + remainder;
 		if (!FileSystem::SilentFileOrFolderExists(newPath))
@@ -158,11 +158,11 @@ bool TRAP::VFS::ResolveWritePhysicalPath(const std::string& path, std::filesyste
 	std::string virtualDir = dirs.front();
 	virtualDir = Utils::String::ToLower(virtualDir);
 
-	if (m_mountPoints.find('/' + virtualDir) == m_mountPoints.end() || m_mountPoints['/' + virtualDir].empty())
+	if (s_Instance->m_mountPoints.find('/' + virtualDir) == s_Instance->m_mountPoints.end() || s_Instance->m_mountPoints['/' + virtualDir].empty())
 		return false;
 
 	const std::string remainder = path.substr(virtualDir.size() + 1, path.size() - virtualDir.size());
-	for (const std::string& physicalPath : m_mountPoints['/' + virtualDir])
+	for (const std::string& physicalPath : s_Instance->m_mountPoints['/' + virtualDir])
 	{
 		const std::string newPath = physicalPath + remainder;
 		outPhysicalPath = newPath;
@@ -182,11 +182,11 @@ std::vector<std::filesystem::path> TRAP::VFS::ResolveToPhysicalPaths(const std::
 
 	const std::string virtualPathLower = Utils::String::ToLower(virtualPath);
 
-	if (m_mountPoints.find(virtualPathLower) == m_mountPoints.end() || m_mountPoints[virtualPathLower].empty())
+	if (s_Instance->m_mountPoints.find(virtualPathLower) == s_Instance->m_mountPoints.end() || s_Instance->m_mountPoints[virtualPathLower].empty())
 		return std::vector<std::filesystem::path>();
 
-	return std::vector<std::filesystem::path>(m_mountPoints[virtualPathLower].begin(),
-		m_mountPoints[virtualPathLower].end());
+	return std::vector<std::filesystem::path>(s_Instance->m_mountPoints[virtualPathLower].begin(),
+		s_Instance->m_mountPoints[virtualPathLower].end());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -266,51 +266,44 @@ void TRAP::VFS::Shutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::VFS::GetHotShaderReloading() const
+bool TRAP::VFS::GetHotShaderReloading()
 {
-	return m_hotShaderReloading;
+	return s_Instance->m_hotShaderReloading;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::VFS::SetHotShaderReloading(const bool enabled)
 {
-	m_hotShaderReloading = enabled;
+	s_Instance->m_hotShaderReloading = enabled;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FileWatcher* TRAP::VFS::GetShaderFileWatcher() const
+TRAP::FileWatcher* TRAP::VFS::GetShaderFileWatcher()
 {
-	return m_shaderFileWatcher.get();
+	return s_Instance->m_shaderFileWatcher.get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::VFS::GetHotTextureReloading() const
+bool TRAP::VFS::GetHotTextureReloading()
 {
-	return m_hotTextureReloading;
+	return s_Instance->m_hotTextureReloading;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::VFS::SetHotTextureReloading(const bool enabled)
 {
-	m_hotTextureReloading = enabled;
+	s_Instance->m_hotTextureReloading = enabled;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FileWatcher* TRAP::VFS::GetTextureFileWatcher() const
+TRAP::FileWatcher* TRAP::VFS::GetTextureFileWatcher()
 {
-	return m_textureFileWatcher.get();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::VFS* TRAP::VFS::Get()
-{
-	return s_Instance.get();
+	return s_Instance->m_textureFileWatcher.get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -12,7 +12,7 @@ TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, const float updat
 {
 	m_timer.Reset();
 	const std::string virtualPathLower = Utils::String::ToLower(virtualPath);
-	m_physicalPathsToWatch = VFS::Get()->ResolveToPhysicalPaths(virtualPathLower);
+	m_physicalPathsToWatch = VFS::ResolveToPhysicalPaths(virtualPathLower);
 
 	for (const auto& path : m_physicalPathsToWatch)
 	{

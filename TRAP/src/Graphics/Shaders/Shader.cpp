@@ -39,9 +39,9 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		isSPIRV = CheckSPIRVMagicNumber(filePath);
 		
 		if (!isSPIRV)
-			source = VFS::Get()->SilentReadTextFile(filePath);
+			source = VFS::SilentReadTextFile(filePath);
 		else
-			SPIRVSource = Convert8To32(VFS::Get()->SilentReadFile(filePath));
+			SPIRVSource = Convert8To32(VFS::SilentReadFile(filePath));
 
 		VFSFilePath = VFS::MakeVirtualPathCompatible(filePath);
 	}
@@ -127,9 +127,9 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		isSPIRV = CheckSPIRVMagicNumber(filePath);
 
 		if (!isSPIRV)
-			source = VFS::Get()->SilentReadTextFile(filePath);
+			source = VFS::SilentReadTextFile(filePath);
 		else
-			SPIRVSource = Convert8To32(VFS::Get()->SilentReadFile(filePath));
+			SPIRVSource = Convert8To32(VFS::SilentReadFile(filePath));
 		
 		VFSFilePath = VFS::MakeVirtualPathCompatible(filePath);
 		name = VFS::GetFileName(VFSFilePath);
@@ -252,7 +252,7 @@ bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::string& filePath)
 {	
 	//Check SPIRV Magic Number
 	std::filesystem::path physicalPath;
-	if (VFS::Get()->SilentResolveReadPhysicalPath(filePath, physicalPath))
+	if (VFS::SilentResolveReadPhysicalPath(filePath, physicalPath))
 	{
 		if (!FileSystem::SilentFileOrFolderExists(physicalPath))
 		{

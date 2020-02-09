@@ -3,47 +3,47 @@
 
 #include "FileWatcher.h"
 
+#include "Utils/Singleton.h"
+
 namespace TRAP
 {
-	class VFS final
+	class VFS final : public Singleton
 	{
 	public:
-		void Mount(const std::string& virtualPath, const std::string& physicalPath);
-		void MountShaders(const std::string& physicalPath);
-		void MountTextures(const std::string& physicalPath);
-		void Unmount(const std::string& path);
-		bool ResolveReadPhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath);
-		bool SilentResolveReadPhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath);
-		bool ResolveWritePhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath);
-		std::vector<std::filesystem::path> ResolveToPhysicalPaths(const std::string& virtualPath);
+		static void Mount(const std::string& virtualPath, const std::string& physicalPath);
+		static void MountShaders(const std::string& physicalPath);
+		static void MountTextures(const std::string& physicalPath);
+		static void Unmount(const std::string& path);
+		static bool ResolveReadPhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath);
+		static bool SilentResolveReadPhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath);
+		static bool ResolveWritePhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath);
+		static std::vector<std::filesystem::path> ResolveToPhysicalPaths(const std::string& virtualPath);
 
-		std::vector<std::byte> ReadFile(const std::string& path);
-		std::vector<std::byte> SilentReadFile(const std::string& path);
-		std::string ReadTextFile(const std::string& path);
-		std::string SilentReadTextFile(const std::string& path);
+		static std::vector<std::byte> ReadFile(const std::string& path);
+		static std::vector<std::byte> SilentReadFile(const std::string& path);
+		static std::string ReadTextFile(const std::string& path);
+		static std::string SilentReadTextFile(const std::string& path);
 
-		bool WriteFile(const std::string& path, std::vector<std::byte>& buffer);
-		bool WriteTextFile(const std::string& path, const std::string& text);
+		static bool WriteFile(const std::string& path, std::vector<std::byte>& buffer);
+		static bool WriteTextFile(const std::string& path, const std::string& text);
 
 		static void Init();
 		static void Shutdown();
 
-		bool GetHotShaderReloading() const;
-		void SetHotShaderReloading(bool enabled);
-		FileWatcher* GetShaderFileWatcher() const;
+		static bool GetHotShaderReloading();
+		static void SetHotShaderReloading(bool enabled);
+		static FileWatcher* GetShaderFileWatcher();
 
-		bool GetHotTextureReloading() const;
-		void SetHotTextureReloading(bool enabled);
-		FileWatcher* GetTextureFileWatcher() const;
-
-		static VFS* Get();
+		static bool GetHotTextureReloading();
+		static void SetHotTextureReloading(bool enabled);
+		static FileWatcher* GetTextureFileWatcher();
 
 		static std::string MakeVirtualPathCompatible(const std::string& virtualPath);
 		static std::string GetFileName(const std::string& virtualPath);
 
 	private:
 		static Scope<VFS> s_Instance;
-
+		
 		std::unordered_map<std::string, std::vector<std::string>> m_mountPoints;
 
 		bool m_hotShaderReloading = false;

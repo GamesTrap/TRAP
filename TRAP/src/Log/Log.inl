@@ -15,7 +15,7 @@ void TRAP::Log::Trace(Args&& ... args)
 
 	//Standard White
 	std::cout << stream.str() << '\n';
-	m_buffer.emplace_back(Level::Trace, stream.str());
+	s_Instance->m_buffer.emplace_back(Level::Trace, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -35,7 +35,7 @@ void TRAP::Log::Debug(Args&& ... args)
 	SetColor(FOREGROUND_GREEN | FOREGROUND_BLUE);
 	std::cout << stream.str() << '\n';
 	ResetColor();
-	m_buffer.emplace_back(Level::Debug, stream.str());
+	s_Instance->m_buffer.emplace_back(Level::Debug, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -54,7 +54,7 @@ void TRAP::Log::Info(Args&& ... args)
 	SetColor(FOREGROUND_GREEN);
 	std::cout << stream.str() << '\n';
 	ResetColor();
-	m_buffer.emplace_back(Level::Info, stream.str());
+	s_Instance->m_buffer.emplace_back(Level::Info, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -73,7 +73,7 @@ void TRAP::Log::Warn(Args&& ... args)
 	SetColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	std::cout << stream.str() << '\n';
 	ResetColor();
-	m_buffer.emplace_back(Level::Warn, stream.str());
+	s_Instance->m_buffer.emplace_back(Level::Warn, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -92,7 +92,7 @@ void TRAP::Log::Error(Args&& ... args)
 	SetColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
 	std::cout << stream.str() << '\n';
 	ResetColor();
-	m_buffer.emplace_back(Level::Error, stream.str());
+	s_Instance->m_buffer.emplace_back(Level::Error, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -111,7 +111,7 @@ void TRAP::Log::Critical(Args&& ... args)
 	SetColor(BACKGROUND_RED | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 	std::cout << stream.str() << '\n';
 	ResetColor();
-	m_buffer.emplace_back(Level::Critical, stream.str());
+	s_Instance->m_buffer.emplace_back(Level::Critical, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -129,7 +129,7 @@ void TRAP::Log::Debug(Args&& ... args)
 
 	//Standard Cyan
 	std::cout << "\033[36m" << stream.str() << "\033[m" << '\n';
-	m_buffer.emplace_back(Level::Debug, stream.str());
+	s_Instance->m_buffer.emplace_back(Level::Debug, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -146,7 +146,7 @@ void TRAP::Log::Info(Args&& ... args)
 
 	//Standard Green
 	std::cout << "\033[32m" << stream.str() << "\033[m" << '\n';
-	m_buffer.emplace_back(Level::Info, stream.str());
+	s_Instance->m_buffer.emplace_back(Level::Info, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -163,7 +163,7 @@ void TRAP::Log::Warn(Args&& ... args)
 
 	//Bold Yellow
 	std::cout << "\033[33m" << "\033[1m" << stream.str() << "\033[m" << '\n';
-	m_buffer.emplace_back(Level::Warn, stream.str());
+	s_Instance->m_buffer.emplace_back(Level::Warn, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -180,7 +180,7 @@ void TRAP::Log::Error(Args&& ... args)
 
 	//Bold Red
 	std::cout << "\033[31m" << "\033[1m" << stream.str() << "\033[m" << '\n';
-	m_buffer.emplace_back(Level::Error, stream.str());
+	s_Instance->m_buffer.emplace_back(Level::Error, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -197,7 +197,7 @@ void TRAP::Log::Critical(Args&& ... args)
 
 	//Bold White on Red
 	std::cout << "\033[41m" << "\033[1m" << stream.str() << "\033[m" << '\n';
-	m_buffer.emplace_back(Level::Critical, stream.str());
+	s_Instance->m_buffer.emplace_back(Level::Critical, stream.str());
 }
 #endif
 

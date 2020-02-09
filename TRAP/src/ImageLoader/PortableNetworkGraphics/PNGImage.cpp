@@ -20,7 +20,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 	TP_DEBUG("[Image][PNG] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
-	if (!VFS::Get()->SilentResolveReadPhysicalPath(m_filepath, physicalPath))
+	if (!VFS::SilentResolveReadPhysicalPath(m_filepath, physicalPath))
 	{
 		TP_ERROR("[Image][PNG] Couldn't resolve FilePath: ", m_filepath, "!");
 		TP_WARN("[Image][PNG] Using Default Image!");

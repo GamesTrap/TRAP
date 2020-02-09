@@ -1,54 +1,56 @@
 #ifndef _TRAP_LOG_H_
 #define _TRAP_LOG_H_
 
-//#include "TRAPPCH.h" //Doesnt work anymore
 #ifdef TRAP_PLATFORM_WINDOWS
-#include "Utils/Win.h"
+	#include "Utils/Win.h"
 #endif
+
+#include "Utils/Singleton.h"
 
 namespace TRAP
 {
-	enum class Level
-	{
-		Trace,
-		Debug,
-		Info,
-		Warn,
-		Error,
-		Critical
-	};
-
-	class Log
+	class Log final : public Singleton
 	{
 	public:
+		enum class Level
+		{
+			Trace,
+			Debug,
+			Info,
+			Warn,
+			Error,
+			Critical
+		};
+		
 		Log();
 		~Log();
-		Log(const Log&) = default;
-		Log& operator=(const Log&) = default;
-		Log(Log&&) = default;
-		Log& operator=(Log&&) = default;
+		Log(const Log&) = delete;
+		Log& operator=(const Log&) = delete;
+		Log(Log&&) = delete;
+		Log& operator=(Log&&) = delete;
 
 		template<typename... Args>
-		void Trace(Args&& ... args);
+		static void Trace(Args&& ... args);
 
 		template<typename... Args>
-		void Debug(Args&& ... args);
+		static void Debug(Args&& ... args);
 
 		template<typename... Args>
-		void Info(Args&& ... args);
+		static void Info(Args&& ... args);
 
 		template<typename... Args>
-		void Warn(Args&& ... args);
+		static void Warn(Args&& ... args);
 
 		template<typename... Args>
-		void Error(Args&& ... args);
+		static void Error(Args&& ... args);
 
 		template<typename... Args>
-		void Critical(Args&& ... args);
+		static void Critical(Args&& ... args);
 
-		void Save();
+		static const std::vector<std::pair<Level, std::string>>& GetBuffer();
 
-		static Log& Get();
+		static void Save();
+		static void Clear();
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	private:
@@ -79,7 +81,7 @@ namespace TRAP
 template<typename... Args>
 constexpr void TP_TRACE(const Args& ... args)
 {
-	::TRAP::Log::Get().Trace(args...);
+	::TRAP::Log::Trace(args...);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -88,7 +90,7 @@ constexpr void TP_TRACE(const Args& ... args)
 template<typename... Args>
 constexpr void TP_DEBUG(const Args& ... args)
 {
-	::TRAP::Log::Get().Debug(args...);
+	::TRAP::Log::Debug(args...);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -105,7 +107,7 @@ constexpr void TP_DEBUG(const Args& ... args)
 template<typename... Args>
 constexpr void TP_INFO(const Args& ... args)
 {
-	::TRAP::Log::Get().Info(args...);
+	::TRAP::Log::Info(args...);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -113,7 +115,7 @@ constexpr void TP_INFO(const Args& ... args)
 template<typename... Args>
 constexpr void TP_WARN(const Args& ... args)
 {
-	::TRAP::Log::Get().Warn(args...);
+	::TRAP::Log::Warn(args...);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -121,7 +123,7 @@ constexpr void TP_WARN(const Args& ... args)
 template<typename... Args>
 constexpr void TP_ERROR(const Args& ... args)
 {
-	::TRAP::Log::Get().Error(args...);
+	::TRAP::Log::Error(args...);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -129,7 +131,7 @@ constexpr void TP_ERROR(const Args& ... args)
 template<typename... Args>
 constexpr void TP_CRITICAL(const Args& ... args)
 {
-	::TRAP::Log::Get().Critical(args...);
+	::TRAP::Log::Critical(args...);
 }
 
 #endif /*_TRAP_LOG_H_*/

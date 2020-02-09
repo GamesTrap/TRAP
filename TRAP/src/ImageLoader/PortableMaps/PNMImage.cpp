@@ -13,7 +13,7 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 	TP_DEBUG("[Image][PNM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
-	if (!VFS::Get()->SilentResolveReadPhysicalPath(m_filepath, physicalPath))
+	if (!VFS::SilentResolveReadPhysicalPath(m_filepath, physicalPath))
 	{
 		TP_ERROR("[Image][PNM] Couldn't resolve FilePath: ", m_filepath, "!");
 		TP_WARN("[Image][PNM] Using Default Image!");

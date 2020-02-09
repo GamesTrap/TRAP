@@ -831,3 +831,7 @@ SITREP 02/09/2020|20w06a4
     - Removed HotShader/TextureReloading from Engine.cfg ~<10 mins
     - Added SetHotShader/TextureReloading() to TRAP::Application ~<15 mins
     - Updated Docs ~<5 mins
+    - Removed TRAP::VFS::Get() function ~<20 mins
+    - Removed TRAP::Log::Get() function ~<20 mins
+    - Added TRAP::Log::GetBuffer() function ~<10 mins
+    - Added TRAP::Log to Docs ~>30 mins

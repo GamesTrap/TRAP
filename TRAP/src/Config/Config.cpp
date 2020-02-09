@@ -59,7 +59,7 @@ void TRAP::Utils::Config::Print() const
 
 bool TRAP::Utils::Config::Read()
 {
-	const std::string input = VFS::Get()->ReadTextFile(m_filename);
+	const std::string input = VFS::ReadTextFile(m_filename);
 	if (input.empty())
 		return false;
 
@@ -70,16 +70,13 @@ bool TRAP::Utils::Config::Read()
 	{
 		if (!line.empty())
 		{
-			if (line[0] != '#')
-			{
-				//Parse line
-				auto [key, value] = ParseLine(line);
+			//Parse line
+			auto [key, value] = ParseLine(line);
 
-				if (!key.empty())
-				{
-					//If the line is not empty or a comment save it to the vector
-					m_data.emplace_back(key, value);
-				}
+			if (!key.empty())
+			{
+				//If the line is not empty or a comment save it to the vector
+				m_data.emplace_back(key, value);
 			}
 		}
 	}
@@ -95,7 +92,7 @@ bool TRAP::Utils::Config::Write() const
 	std::vector<std::pair<std::string, std::string>> fileContents;
 
 	//Read the file into a vector and replace the values of the keys that match with our map
-	const std::string input = VFS::Get()->ReadTextFile(m_filename);
+	const std::string input = VFS::ReadTextFile(m_filename);
 	if (!input.empty())
 	{
 		std::vector<std::string> lines = String::SplitString(input, '\n');
@@ -140,7 +137,7 @@ bool TRAP::Utils::Config::Write() const
 		ss << '\n';
 	}
 
-	return VFS::Get()->WriteTextFile(m_filename, ss.str());
+	return VFS::WriteTextFile(m_filename, ss.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -216,11 +216,11 @@ void TRAP::Application::Run()
 		m_window->OnUpdate();
 
 		//Update Shaders if needed
-		if (VFS::Get()->GetHotShaderReloading() && VFS::Get()->GetShaderFileWatcher())
+		if (VFS::GetHotShaderReloading() && VFS::GetShaderFileWatcher())
 		{
 			//Check monitoring shader folders for changes and
 			//in case of changes run ShaderManager::Reload(virtualPath)
-			VFS::Get()->GetShaderFileWatcher()->Check([](const std::filesystem::path& physicalPath,
+			VFS::GetShaderFileWatcher()->Check([](const std::filesystem::path& physicalPath,
 				const std::string& virtualPath,
 				const FileStatus status) -> void
 				{
@@ -241,11 +241,11 @@ void TRAP::Application::Run()
 				});
 		}
 		//Update Textures if needed
-		if (VFS::Get()->GetHotTextureReloading() && VFS::Get()->GetTextureFileWatcher())
+		if (VFS::GetHotTextureReloading() && VFS::GetTextureFileWatcher())
 		{
 			//Check monitoring texture folders for changes and
 			//in case of changes run TextureManager::Reload(virtualPath)
-			VFS::Get()->GetTextureFileWatcher()->Check([](const std::filesystem::path& physicalPath,
+			VFS::GetTextureFileWatcher()->Check([](const std::filesystem::path& physicalPath,
 				const std::string& virtualPath,
 				const FileStatus status) -> void
 				{
@@ -392,7 +392,7 @@ void TRAP::Application::SetTickRate(const uint32_t tickRate)
 
 void TRAP::Application::SetHotShaderReloading(const bool enabled)
 {
-	VFS::Get()->SetHotShaderReloading(enabled);
+	VFS::SetHotShaderReloading(enabled);
 	
 }
 
@@ -400,7 +400,7 @@ void TRAP::Application::SetHotShaderReloading(const bool enabled)
 
 void TRAP::Application::SetHotTextureReloading(const bool enabled)
 {
-	VFS::Get()->SetHotTextureReloading(enabled);
+	VFS::SetHotTextureReloading(enabled);
 }
 
 //------------------------------------------------------------------------------------------------------------------//

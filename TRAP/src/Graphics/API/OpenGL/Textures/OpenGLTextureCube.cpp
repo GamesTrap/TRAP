@@ -234,7 +234,7 @@ std::array<std::string, 6> TRAP::Graphics::API::OpenGLTextureCube::GetFilePaths(
 void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross()
 {
 	std::filesystem::path physicalPath;
-	if (!VFS::Get()->SilentResolveReadPhysicalPath(m_filePaths[0], physicalPath))
+	if (!VFS::SilentResolveReadPhysicalPath(m_filePaths[0], physicalPath))
 	{
 		TP_ERROR("[TextureCube][OpenGL] Couldn't resolve FilePath: ", m_filePaths[0], "!");
 		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map!");
@@ -508,7 +508,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross()
 void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross()
 {
 	std::filesystem::path physicalPath;
-	if (!VFS::Get()->SilentResolveReadPhysicalPath(m_filePaths[0], physicalPath))
+	if (!VFS::SilentResolveReadPhysicalPath(m_filePaths[0], physicalPath))
 	{
 		TP_ERROR("[TextureCube][OpenGL] Couldn't resolve FilePath: ", m_filePaths[0], "!");
 		TP_WARN("[TextureCube][OpenGL] Using Default Cube Map!");
@@ -773,7 +773,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadFiles()
 	for (uint32_t i = 0; i < m_filePaths.size(); i++)
 	{
 		std::filesystem::path physicalPath;
-		if (!VFS::Get()->SilentResolveReadPhysicalPath(m_filePaths[i], physicalPath))
+		if (!VFS::SilentResolveReadPhysicalPath(m_filePaths[i], physicalPath))
 		{
 			TP_ERROR("[TextureCube][OpenGL] Couldn't resolve FilePath: ", m_filePaths[i], "!");
 			TP_WARN("[TextureCube][OpenGL] Using Default Cube Map!");

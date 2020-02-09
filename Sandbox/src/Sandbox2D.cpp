@@ -155,7 +155,7 @@ void Sandbox2D::OnAttach()
 	TRAP::Application::GetWindow()->SetTitle("Sandbox2D");
 	
 	//Mount & Load Textures
-	TRAP::VFS::Get()->MountTextures("Assets/Textures");
+	TRAP::VFS::MountTextures("Assets/Textures");
 	TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png");
 }
 

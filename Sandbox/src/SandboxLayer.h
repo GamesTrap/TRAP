@@ -39,14 +39,14 @@ public:
 		TRAP::Application::GetWindow()->SetTitle("Sandbox");
 		
 		//Mount & Load Shaders
-		TRAP::VFS::Get()->MountShaders("Assets/Shaders");
+		TRAP::VFS::MountShaders("Assets/Shaders");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/Texture.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColor.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColorSPIRV.spirv");
 		
 		//Mount & Load Textures
-		TRAP::VFS::Get()->MountTextures("Assets/Textures");
+		TRAP::VFS::MountTextures("Assets/Textures");
 		TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png");
 
 		///////////////
