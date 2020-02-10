@@ -297,11 +297,33 @@ namespace TRAP
 			PFN_DirectInput8Create Create{};
 			IDirectInput8W* API = nullptr;
 		} inline static dinput8{};
-		
+
+		//////////
+		//XInput//
+		//////////
+		//xinput.dll function pointer typedefs
+		static constexpr uint32_t TRAP_XINPUT_CAPS_WIRELESS = 0x0002;
+		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_WHEEL = 0x02;
+		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_ARCADE_STICK = 0x03;
+		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_FLIGHT_STICK = 0x04;
+		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_DANCE_PAD = 0x05;
+		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_GUITAR = 0x06;
+		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_DRUM_KIT = 0x08;
+		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_ARCADE_PAD = 0x13;
+		static constexpr uint32_t TRAP_XUSER_MAX_COUNT = 4;
+		typedef DWORD(WINAPI* PFN_XInputGetCapabilities)(DWORD, DWORD, XINPUT_CAPABILITIES*);
+		typedef DWORD(WINAPI* PFN_XInputGetState)(DWORD, XINPUT_STATE*);		
 		static BOOL CALLBACK DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* doi, void* user);
 		static int CompareControllerObjects(const void* first, const void* second);
 		static BOOL CALLBACK DeviceCallback(const DIDEVICEINSTANCE* deviceInstance, void* user);
 		static bool SupportsXInput(const GUID* guid);
+		static std::string GetDeviceDescription(const XINPUT_CAPABILITIES* xic);
+		struct XInput
+		{
+			HINSTANCE Instance{};
+			PFN_XInputGetCapabilities GetCapabilities{};
+			PFN_XInputGetState GetState{};
+		} inline static xinput{};
 		
 		struct Object
 		{
@@ -315,6 +337,7 @@ namespace TRAP
 			IDirectInputDevice8W* Device = nullptr;
 			DWORD Index = 0;
 			GUID guid{};
+			bool XInput = false;
 		};
 		struct ObjectEnum
 		{
@@ -384,19 +407,18 @@ namespace TRAP
 			std::string guid{};
 			Mapping* mapping = nullptr;
 			bool Connected = false;
-			bool XInput = false;
 			
 #ifdef TRAP_PLATFORM_WINDOWS
-			ControllerWindows wsjs;
+			ControllerWindows WinCon;
 #elif defined(TRAP_PLATFORM_LINUX)
-			ControllerLinux linjs;
+			ControllerLinux LinuxCon;
 #endif
 		};
 		static std::array<ControllerInternal, 16> s_controllerInternal;
 		static ControllerInternal* AddInternalController(const std::string& name, const std::string& guid, int32_t axisCount, int32_t buttonCount, int32_t dpadCount);
-		static void InternalInputControllerDPad(ControllerInternal* js, int32_t dpad, uint8_t value);
-		static void InternalInputControllerAxis(ControllerInternal* js, int32_t axis, float value);
-		static void InternalInputControllerButton(ControllerInternal* js, int32_t button, bool pressed);
+		static void InternalInputControllerDPad(ControllerInternal* con, int32_t dpad, uint8_t value);
+		static void InternalInputControllerAxis(ControllerInternal* con, int32_t axis, float value);
+		static void InternalInputControllerButton(ControllerInternal* con, int32_t button, bool pressed);
 		
 		///////////
 		//Mapping//
@@ -405,8 +427,8 @@ namespace TRAP
 		
 		static bool ParseMapping(Mapping& mapping, const std::string& str);
 		static Mapping* FindMapping(const std::string& guid);
-		static Mapping* FindValidMapping(const ControllerInternal* js);
-		static bool IsValidElementForController(const MapElement* e, const ControllerInternal* js);
+		static Mapping* FindValidMapping(const ControllerInternal* con);
+		static bool IsValidElementForController(const MapElement* e, const ControllerInternal* con);
 		static bool GetMappedControllerButton(Controller controller, ControllerButton button);
 		static float GetMappedControllerAxis(Controller controller, ControllerAxis axis);
 		static ControllerDPad GetMappedControllerDPad(Controller controller, uint32_t dpad);

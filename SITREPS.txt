@@ -846,3 +846,8 @@ SITREP 02/10/2020|20w07a1
     - Changed Controller API (Temporarily removed XInput) ~>40 mins
     - Added support for up to 16 Controllers simoultaneously ~>20 mins
     - Fixed CRLF endings for Linux ~<10 mins
+    - Readded XInput support ~>40 mins
+    - Removed ControllerAPI from Engine.cfg ~<20 mins
+    - Finished combining DirectInput and XInput APIs ~>25 mins
+    - Added XInput entries to ControllerMapping ~<20 mins
+    - Fixed OrthographicCameraController not zooming until Controller trigger > 0.0 ~<10 mins

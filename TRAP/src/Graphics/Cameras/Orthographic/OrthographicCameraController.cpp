@@ -35,7 +35,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 			if (LeftYAxis < -0.1f || LeftYAxis > 0.1f)
 				m_cameraPosition.y -= LeftYAxis * m_cameraTranslationSpeed * deltaTime;
 
-			const float RightTrigger = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Right_Trigger);
+			const float RightTrigger = (Input::GetControllerAxis(m_controller, Input::ControllerAxis::Right_Trigger) + 1) / 2;
 			if (RightTrigger > 0.0f)
 			{
 				m_zoomLevel -= RightTrigger * 0.002f;
@@ -43,7 +43,7 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 				m_cameraTranslationSpeed = m_zoomLevel;
 				m_camera.SetProjection(-m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel, -1.0f, 1.0f);
 			}
-			const float LeftTrigger = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_Trigger);
+			const float LeftTrigger = (Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_Trigger) + 1) / 2;
 			if (LeftTrigger > 0.0f)
 			{
 				m_zoomLevel += LeftTrigger * 0.002f;

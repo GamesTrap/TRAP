@@ -116,7 +116,6 @@ project "TRAP"
 			"SPIRV-Cross-GLSL",
 			"SPIRV-Cross-HLSL",
 			"DXGUID",
-			"XInput",
 			"Imm32"
 		}
 

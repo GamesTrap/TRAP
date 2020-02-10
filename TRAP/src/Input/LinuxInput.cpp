@@ -67,7 +67,7 @@ void TRAP::Input::ShutdownController()
 {
 	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
 	{
-		if(s_controllerInternal[cID].linjs.CurrentVibration != -1)
+		if(s_controllerInternal[cID].LinuxCon.CurrentVibration != -1)
 			SetControllerVibration(static_cast<Controller>(cID), 0.0f, 0.0f);
 		if (s_controllerInternal[cID].Connected)
 			CloseController(static_cast<Controller>(cID));
@@ -93,22 +93,22 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, float le
 	if(!PollController(controller, 0))
 		return;
 		
-	ControllerInternal* js = &s_controllerInternal[static_cast<uint8_t>(controller)];
-	if(js->linjs.VibrationSupported)
+	ControllerInternal* con = &s_controllerInternal[static_cast<uint8_t>(controller)];
+	if(con->LinuxCon.VibrationSupported)
 	{
 		struct input_event play;
 		//Delete any existing effect
-		if(js->linjs.CurrentVibration != -1)
+		if(con->LinuxCon.CurrentVibration != -1)
 		{
 			//Stop the effect
 			play.type = EV_FF;
-			play.code = js->linjs.CurrentVibration;
+			play.code = con->LinuxCon.CurrentVibration;
 			play.value = 0;
 		
-			write(js->linjs.FD, (const void*)&play, sizeof(play));
+			write(con->LinuxCon.FD, (const void*)&play, sizeof(play));
 		
 			//Delete the effect
-			ioctl(js->linjs.FD, EVIOCRMFF, js->linjs.CurrentVibration);
+			ioctl(con->LinuxCon.FD, EVIOCRMFF, con->LinuxCon.CurrentVibration);
 		}
 	
 		//If VibrationSupported is true, start the new effect
@@ -125,15 +125,15 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, float le
 			ff.replay.delay = 0;
 		
 			//Upload the effect
-			if(ioctl(js->linjs.FD, EVIOCSFF, &ff) != -1)
-				js->linjs.CurrentVibration = ff.id;
+			if(ioctl(con->LinuxCon.FD, EVIOCSFF, &ff) != -1)
+				con->LinuxCon.CurrentVibration = ff.id;
 			
 			//Play the effect
 			play.type = EV_FF;
-			play.code = js->linjs.CurrentVibration;
+			play.code = con->LinuxCon.CurrentVibration;
 			play.value = 1;
 		
-			write(js->linjs.FD, (const void*)&play, sizeof(play));
+			write(con->LinuxCon.FD, (const void*)&play, sizeof(play));
 		}
 	}
 }
@@ -147,19 +147,19 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 	{
 		if (!s_controllerInternal[cID].Connected)
 			continue;
-		if (s_controllerInternal[cID].linjs.Path == path)
+		if (s_controllerInternal[cID].LinuxCon.Path == path)
 			return false;
 	}
 
-	ControllerLinux linjs = {};
-	linjs.FD = open(path.data(), O_RDWR | O_NONBLOCK); //O_RDWR is needed for vibrations
-	if(linjs.FD != -1)
-		linjs.VibrationSupported = true;
+	ControllerLinux LinuxCon = {};
+	LinuxCon.FD = open(path.data(), O_RDWR | O_NONBLOCK); //O_RDWR is needed for vibrations
+	if(LinuxCon.FD != -1)
+		LinuxCon.VibrationSupported = true;
 		
 	if(errno == EACCES)
-		linjs.FD = open(path.data(), O_RDONLY | O_NONBLOCK);
+		LinuxCon.FD = open(path.data(), O_RDONLY | O_NONBLOCK);
 	
-	if (linjs.FD == -1)
+	if (LinuxCon.FD == -1)
 		return false;
 
 	std::array<char, (EV_CNT + 7) / 8> EVBits{};
@@ -167,26 +167,26 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 	std::array<char, (ABS_CNT + 7) / 8> ABSBits{};
 	struct input_id ID;
 
-	if (ioctl(linjs.FD, EVIOCGBIT(0, EVBits.size()), EVBits.data()) < 0 ||
-		ioctl(linjs.FD, EVIOCGBIT(EV_KEY, keyBits.size()), keyBits.data()) < 0 ||
-		ioctl(linjs.FD, EVIOCGBIT(EV_ABS, ABSBits.size()), ABSBits.data()) < 0 ||
-		ioctl(linjs.FD, EVIOCGID, &ID) < 0)
+	if (ioctl(LinuxCon.FD, EVIOCGBIT(0, EVBits.size()), EVBits.data()) < 0 ||
+		ioctl(LinuxCon.FD, EVIOCGBIT(EV_KEY, keyBits.size()), keyBits.data()) < 0 ||
+		ioctl(LinuxCon.FD, EVIOCGBIT(EV_ABS, ABSBits.size()), ABSBits.data()) < 0 ||
+		ioctl(LinuxCon.FD, EVIOCGID, &ID) < 0)
 	{
 		TP_ERROR("[Input][Controller][Linux] Could not query input device: ", strerror(errno), "!");
-		close(linjs.FD);
+		close(LinuxCon.FD);
 		return false;
 	}
 
 	//Ensure this device supports the events expected of a controller
 	if(!(EVBits[EV_KEY / 8] & (1 << (EV_KEY % 8))) || !(EVBits[EV_ABS / 8] & (1 << (EV_ABS % 8))))
 	{
-		close(linjs.FD);
+		close(LinuxCon.FD);
 		return false;
 	}
 
 	std::string name;
 	name.resize(256);
-	if (ioctl(linjs.FD, EVIOCGNAME(name.size()), name.data()) < 0)
+	if (ioctl(LinuxCon.FD, EVIOCGNAME(name.size()), name.data()) < 0)
 		name = "Unknown";
 
 	std::string guid;
@@ -215,44 +215,44 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 		if(!(keyBits[code / 8] & (1 << (code % 8))))
 			continue;
 
-		linjs.KeyMap[code - BTN_MISC] = buttonCount;
+		LinuxCon.KeyMap[code - BTN_MISC] = buttonCount;
 		buttonCount++;
 	}
 
 	for(int32_t code = 0; code < ABS_CNT; code++)
 	{
-		linjs.ABSMap[code] = -1;
+		LinuxCon.ABSMap[code] = -1;
 		if(!(ABSBits[code / 8] & (1 << (code % 8))))
 			continue;
 
 		if(code >= ABS_HAT0X && code <= ABS_HAT3Y)
 		{
-			linjs.ABSMap[code] = dpadCount;
+			LinuxCon.ABSMap[code] = dpadCount;
 			dpadCount++;
 			//Skip the Y axis
 			code++;
 		}
 		else
 		{
-			if (ioctl(linjs.FD, EVIOCGABS(code), &linjs.ABSInfo[code]) < 0)
+			if (ioctl(LinuxCon.FD, EVIOCGABS(code), &LinuxCon.ABSInfo[code]) < 0)
 				continue;
 
-			linjs.ABSMap[code] = axisCount;
+			LinuxCon.ABSMap[code] = axisCount;
 			axisCount++;
 		}
 	}
 
-	ControllerInternal* js = AddInternalController(name, guid, axisCount, buttonCount, dpadCount);
-	if(!js)
+	ControllerInternal* con = AddInternalController(name, guid, axisCount, buttonCount, dpadCount);
+	if(!con)
 	{
-		close(linjs.FD);
+		close(LinuxCon.FD);
 		return false;
 	}
 
-	linjs.Path = path;
-	std::memcpy(&js->linjs, &linjs, sizeof(linjs));
+	LinuxCon.Path = path;
+	std::memcpy(&con->LinuxCon, &LinuxCon, sizeof(LinuxCon));
 
-	PollABSStateLinux(js);
+	PollABSStateLinux(con);
 
 	uint8_t cID;
 	int8_t cIDUsable = -1;
@@ -284,7 +284,7 @@ void TRAP::Input::CloseController(Controller controller)
 {
 	ControllerInternal* con = &s_controllerInternal[static_cast<uint8_t>(controller)];
 	
-	close(con->linjs.FD);
+	close(con->LinuxCon.FD);
 
 	TP_INFO("[Input][Controller] Controller: ",
 		(con->mapping
@@ -331,7 +331,7 @@ void TRAP::Input::DetectControllerConnectionLinux()
 		{
 			for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
 			{
-				if(s_controllerInternal[cID].linjs.Path == path)
+				if(s_controllerInternal[cID].LinuxCon.Path == path)
 				{
 					CloseController(static_cast<Controller>(cID));
 					break;
@@ -347,7 +347,7 @@ bool TRAP::Input::PollController(Controller controller, int32_t mode)
 {
 	if(s_controllerInternal[static_cast<uint8_t>(controller)].Connected)
 	{
-		ControllerInternal* js = &s_controllerInternal[static_cast<uint8_t>(controller)];
+		ControllerInternal* con = &s_controllerInternal[static_cast<uint8_t>(controller)];
 	
 		//Read all queued events (non-blocking)
 		for(;;)
@@ -355,7 +355,7 @@ bool TRAP::Input::PollController(Controller controller, int32_t mode)
 			struct input_event e;
 
 			errno = 0;
-			if(read(js->linjs.FD, &e, sizeof(e)) < 0)
+			if(read(con->LinuxCon.FD, &e, sizeof(e)) < 0)
 			{
 				//Reset the controller slot if the device was disconnected
 				if (errno == ENODEV)
@@ -371,7 +371,7 @@ bool TRAP::Input::PollController(Controller controller, int32_t mode)
 				else if(e.code == SYN_REPORT)
 				{
 					s_linuxController.Dropped = false;
-					PollABSStateLinux(js);
+					PollABSStateLinux(con);
 				}
 			}
 
@@ -379,9 +379,9 @@ bool TRAP::Input::PollController(Controller controller, int32_t mode)
 				continue;
 
 			if (e.type == EV_KEY)
-				HandleKeyEventLinux(js, e.code, e.value);
+				HandleKeyEventLinux(con, e.code, e.value);
 			else if (e.type == EV_ABS)
-				HandleABSEventLinux(js, e.code, e.value);
+				HandleABSEventLinux(con, e.code, e.value);
 		}
 	}
 
@@ -391,28 +391,28 @@ bool TRAP::Input::PollController(Controller controller, int32_t mode)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Poll state of absolute axes
-void TRAP::Input::PollABSStateLinux(ControllerInternal* js)
+void TRAP::Input::PollABSStateLinux(ControllerInternal* con)
 {
 	for (int32_t code = 0; code < ABS_CNT; code++)
 	{
-		if (js->linjs.ABSMap[code] < 0)
+		if (con->LinuxCon.ABSMap[code] < 0)
 			continue;
 
-		struct input_absinfo* info = &js->linjs.ABSInfo[code];
+		struct input_absinfo* info = &con->LinuxCon.ABSInfo[code];
 
-		if (ioctl(js->linjs.FD, EVIOCGABS(code), info) < 0)
+		if (ioctl(con->LinuxCon.FD, EVIOCGABS(code), info) < 0)
 			continue;
 
-		HandleABSEventLinux(js, code, info->value);
+		HandleABSEventLinux(con, code, info->value);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Apply an EV_ABS event to the specified controller
-void TRAP::Input::HandleABSEventLinux(ControllerInternal* js, int32_t code, int32_t value)
+void TRAP::Input::HandleABSEventLinux(ControllerInternal* con, int32_t code, int32_t value)
 {
-	const int32_t index = js->linjs.ABSMap[code];
+	const int32_t index = con->LinuxCon.ABSMap[code];
 
 	if (code >= ABS_HAT0X && code <= ABS_HAT3Y)
 	{
@@ -439,7 +439,7 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* js, int32_t code, int3
 
 		const int32_t dpad = (code - ABS_HAT0X) / 2;
 		const int32_t axis = (code - ABS_HAT0X) % 2;
-		int32_t* state = js->linjs.DPads[dpad].data();
+		int32_t* state = con->LinuxCon.DPads[dpad].data();
 
 		//NOTE: Looking at several input drivers, it seems all DPad events use
 		//-1 for left / up, 0 for centered and 1 for right / down
@@ -450,11 +450,11 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* js, int32_t code, int3
 		else if (value > 0)
 			state[axis] = 2;
 
-		InternalInputControllerDPad(js, index, stateMap[state[0]][state[1]]);
+		InternalInputControllerDPad(con, index, stateMap[state[0]][state[1]]);
 	}
 	else
 	{
-		const struct input_absinfo* info = &js->linjs.ABSInfo[code];
+		const struct input_absinfo* info = &con->LinuxCon.ABSInfo[code];
 		float normalized = value;
 
 		const int range = info->maximum - info->minimum;
@@ -466,16 +466,16 @@ void TRAP::Input::HandleABSEventLinux(ControllerInternal* js, int32_t code, int3
 			normalized = normalized * 2.0f - 1.0f;
 		}
 
-		InternalInputControllerAxis(js, index, normalized);
+		InternalInputControllerAxis(con, index, normalized);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::HandleKeyEventLinux(ControllerInternal* js, int32_t code, int32_t value)
+void TRAP::Input::HandleKeyEventLinux(ControllerInternal* con, int32_t code, int32_t value)
 {
 	if(code - BTN_MISC >= 0)
-		InternalInputControllerButton(js, js->linjs.KeyMap[code - BTN_MISC], value ? true : false);
+		InternalInputControllerButton(con, con->LinuxCon.KeyMap[code - BTN_MISC], value ? true : false);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

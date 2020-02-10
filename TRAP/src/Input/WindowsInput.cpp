@@ -10,9 +10,6 @@
 
 bool TRAP::Input::InitController()
 {
-	for (const auto& map : Embed::ControllerMappings)
-		UpdateControllerMappings(map);
-	
 	dinput8.Instance = LoadLibraryA("dinput8.dll");
 	if (dinput8.Instance)
 		dinput8.Create = reinterpret_cast<PFN_DirectInput8Create>(GetProcAddress(dinput8.Instance, "DirectInput8Create"));
@@ -21,10 +18,47 @@ bool TRAP::Input::InitController()
 	{
 		if (FAILED(dinput8.Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8W, reinterpret_cast<void**>(&dinput8.API), nullptr)))
 		{
-			TP_ERROR("[Input][Controller][DirectInput] Failed to create interface!");
+			TP_ERROR("[Input][Controller][DirectInput] Failed to create interface for DirectInput!");
 			return false;
 		}
 	}
+	else
+	{
+		TP_ERROR("[Input][Controller][XInput] Failed to create interface for XInput!");
+		return false;
+	}
+
+	{
+		std::array<std::string, 5> names =
+		{
+			"xinput1_4.dll",
+			"xinput1_3.dll",
+			"xinput9_1_0.dll",
+			"xinput1_2.dll",
+			"xinput1_1.dll"
+		};
+
+		for(const std::string& dll : names)
+		{
+			xinput.Instance = LoadLibraryA(dll.c_str());
+			if(xinput.Instance)
+			{
+				xinput.GetCapabilities = reinterpret_cast<PFN_XInputGetCapabilities>(GetProcAddress(xinput.Instance, "XInputGetCapabilities"));
+				xinput.GetState = reinterpret_cast<PFN_XInputGetState>(GetProcAddress(xinput.Instance, "XInputGetState"));
+				
+				break;
+			}
+		}
+
+		if(!xinput.Instance)
+		{
+			TP_ERROR("[Input][Controller][XInput] Failed to create interface for XInput!");
+			return false;
+		}
+	}
+	
+	for (const auto& map : Embed::ControllerMappings)
+		UpdateControllerMappings(map);
 
 	DetectControllerConnectionWin32();
 
@@ -58,6 +92,48 @@ void TRAP::Input::UpdateControllerGUID(std::string& guid)
 
 void TRAP::Input::DetectControllerConnectionWin32()
 {
+	if(xinput.Instance)
+	{
+		for(DWORD index = 0; index < TRAP_XUSER_MAX_COUNT; index++)
+		{
+			uint32_t cID;
+			std::string guid;
+			guid.resize(33);
+			XINPUT_CAPABILITIES xic;
+
+			for(cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
+			{
+				if (s_controllerInternal[cID].Connected &&
+					s_controllerInternal[cID].WinCon.Device == nullptr &&
+					s_controllerInternal[cID].WinCon.Index == index)
+					break;
+			}
+
+			if (cID <= static_cast<uint32_t>(Controller::Sixteen))
+				continue;
+
+			if (xinput.GetCapabilities(index, 0, &xic) != ERROR_SUCCESS)
+				continue;
+
+			//Generate a Controller GUID that matches the SDL 2.0.5+ one
+			sprintf_s(guid.data(), guid.size(), "78696e707574%02x000000000000000000",
+				      xic.SubType & 0xff);
+
+			ControllerInternal* con = AddInternalController(GetDeviceDescription(&xic), guid, 6, 10, 1);
+			if (!con)
+				continue;
+
+			con->WinCon.Index = index;
+			con->WinCon.XInput = true;
+
+			if (!s_eventCallback)
+				continue;
+
+			ControllerConnectEvent event(static_cast<Controller>(cID));
+			s_eventCallback(event);
+		}
+	}
+	
 	if (dinput8.API)
 		if (FAILED(IDirectInput8_EnumDevices(dinput8.API, DI8DEVCLASS_GAMECTRL, DeviceCallback, nullptr, DIEDFL_ALLDEVICES)))
 			TP_ERROR("[Input][Controller][DirectInput] Failed to enumerate DirectInput devices!");
@@ -76,7 +152,7 @@ void TRAP::Input::DetectControllerDisconnectionWin32()
 
 void TRAP::Input::SetControllerVibrationInternal(Controller controller, const float leftMotor, const float rightMotor)
 {
-	if (s_controllerInternal[static_cast<uint32_t>(controller)].XInput)
+	if (s_controllerInternal[static_cast<uint32_t>(controller)].WinCon.XInput)
 	{
 		const uint16_t left = static_cast<uint16_t>(static_cast<float>(65535)* leftMotor);
 		const uint16_t right = static_cast<uint16_t>(static_cast<float>(65535)* rightMotor);
@@ -91,20 +167,20 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 
 bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 {
-	ControllerInternal* js = &s_controllerInternal[static_cast<uint32_t>(controller)];
-	if (js->wsjs.Device)
+	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	if (con->WinCon.Device)
 	{
 		int ai = 0, bi = 0, pi = 0;
 		DIJOYSTATE state{};
 
-		IDirectInputDevice8_Poll(js->wsjs.Device);
-		HRESULT result = IDirectInputDevice8_GetDeviceState(js->wsjs.Device, sizeof(state), &state);
+		IDirectInputDevice8_Poll(con->WinCon.Device);
+		HRESULT result = IDirectInputDevice8_GetDeviceState(con->WinCon.Device, sizeof(state), &state);
 
 		if (result == DIERR_NOTACQUIRED || result == DIERR_INPUTLOST)
 		{
-			IDirectInputDevice8_Acquire(js->wsjs.Device);
-			IDirectInputDevice8_Poll(js->wsjs.Device);
-			result = IDirectInputDevice8_GetDeviceState(js->wsjs.Device, sizeof(state), &state);
+			IDirectInputDevice8_Acquire(con->WinCon.Device);
+			IDirectInputDevice8_Poll(con->WinCon.Device);
+			result = IDirectInputDevice8_GetDeviceState(con->WinCon.Device, sizeof(state), &state);
 		}
 
 		if (FAILED(result))
@@ -116,17 +192,17 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 		if (mode == Poll_Presence)
 			return true;
 
-		for (int32_t i = 0; i < js->wsjs.ObjectCount; i++)
+		for (int32_t i = 0; i < con->WinCon.ObjectCount; i++)
 		{
-			void* data = reinterpret_cast<char*>(&state) + js->wsjs.Objects[i].Offset;
+			void* data = reinterpret_cast<char*>(&state) + con->WinCon.Objects[i].Offset;
 
-			switch (js->wsjs.Objects[i].Type)
+			switch (con->WinCon.Objects[i].Type)
 			{
 			case 0:
 			case 1:
 				{
 					const float value = (*static_cast<LONG*>(data) + 0.5f) / 32767.5f;
-					InternalInputControllerAxis(js, ai, value);
+					InternalInputControllerAxis(con, ai, value);
 					ai++;
 					break;
 				}
@@ -134,7 +210,7 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 			case 2:
 				{
 					const char value = (*static_cast<BYTE*>(data) & 0x80) != 0;
-					InternalInputControllerButton(js, bi, value);
+					InternalInputControllerButton(con, bi, value);
 					bi++;
 					break;
 				}
@@ -159,7 +235,7 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 					if (status < 0 || status > 8)
 						status = 8;
 
-					InternalInputControllerDPad(js, pi, states[status]);
+					InternalInputControllerDPad(con, pi, states[status]);
 					pi++;
 					break;
 				}
@@ -169,6 +245,60 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 			}
 		}
 	}
+	else
+	{
+		uint32_t dpad = 0;
+		XINPUT_STATE xis;
+		const std::array<WORD, 10> buttons =
+		{
+			XINPUT_GAMEPAD_A,
+			XINPUT_GAMEPAD_B,
+			XINPUT_GAMEPAD_X,
+			XINPUT_GAMEPAD_Y,
+			XINPUT_GAMEPAD_LEFT_SHOULDER,
+			XINPUT_GAMEPAD_RIGHT_SHOULDER,
+			XINPUT_GAMEPAD_BACK,
+			XINPUT_GAMEPAD_START,
+			XINPUT_GAMEPAD_LEFT_THUMB,
+			XINPUT_GAMEPAD_RIGHT_THUMB
+		};
+
+		const DWORD result = XInputGetState(con->WinCon.Index, &xis);
+		if(result != ERROR_SUCCESS)
+		{
+			if (result == ERROR_DEVICE_NOT_CONNECTED)
+				CloseController(controller);
+
+			return false;
+		}
+
+		if (mode == Poll_Presence)
+			return true;
+
+		InternalInputControllerAxis(con, 0, (xis.Gamepad.sThumbLX + 0.5f) / 32767.5f);
+		InternalInputControllerAxis(con, 1, -(xis.Gamepad.sThumbLY + 0.5f) / 32767.5f);
+		InternalInputControllerAxis(con, 2, (xis.Gamepad.sThumbRX + 0.5f) / 32767.5f);
+		InternalInputControllerAxis(con, 3, -(xis.Gamepad.sThumbRY + 0.5f) / 32767.5f);
+		InternalInputControllerAxis(con, 4, xis.Gamepad.bLeftTrigger / 127.5f - 1.f);
+		InternalInputControllerAxis(con, 5, xis.Gamepad.bRightTrigger / 127.5f - 1.f);
+
+		for(uint32_t i = 0; i < 10; i++)
+		{
+			const bool value = (xis.Gamepad.wButtons & buttons[i]) ? true : false;
+			InternalInputControllerButton(con, i, value);
+		}
+
+		if (xis.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_UP)
+			dpad |= static_cast<uint32_t>(ControllerDPad::Up);
+		if (xis.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT)
+			dpad |= static_cast<uint32_t>(ControllerDPad::Right);
+		if (xis.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_DOWN)
+			dpad |= static_cast<uint32_t>(ControllerDPad::Down);
+		if (xis.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT)
+			dpad |= static_cast<uint32_t>(ControllerDPad::Left);
+		
+		InternalInputControllerDPad(con, 0, dpad);
+	}
 
 	return true;
 }
@@ -177,10 +307,10 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 
 void TRAP::Input::CloseController(Controller controller)
 {
-	if (s_controllerInternal[static_cast<uint32_t>(controller)].wsjs.Device)
+	if (s_controllerInternal[static_cast<uint32_t>(controller)].WinCon.Device)
 	{
-		IDirectInputDevice8_Unacquire(s_controllerInternal[static_cast<uint32_t>(controller)].wsjs.Device);
-		IDirectInputDevice8_Release(s_controllerInternal[static_cast<uint32_t>(controller)].wsjs.Device);
+		IDirectInputDevice8_Unacquire(s_controllerInternal[static_cast<uint32_t>(controller)].WinCon.Device);
+		IDirectInputDevice8_Release(s_controllerInternal[static_cast<uint32_t>(controller)].WinCon.Device);
 	}
 
 	TP_INFO("[Input][Controller] Controller: ",
@@ -322,6 +452,38 @@ bool TRAP::Input::SupportsXInput(const GUID* guid)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Returns a description fitting the specified XInput capabilities
+std::string TRAP::Input::GetDeviceDescription(const XINPUT_CAPABILITIES* xic)
+{
+	switch (xic->SubType)
+	{
+		case TRAP_XINPUT_DEVSUBTYPE_WHEEL:
+			return "XInput Wheel";
+		case TRAP_XINPUT_DEVSUBTYPE_ARCADE_STICK:
+			return "XInput Arcade Stick";
+		case TRAP_XINPUT_DEVSUBTYPE_FLIGHT_STICK:
+			return "XInput Flight Stick";
+		case TRAP_XINPUT_DEVSUBTYPE_DANCE_PAD:
+			return "XInput Dance Pad";
+		case TRAP_XINPUT_DEVSUBTYPE_GUITAR:
+			return "XInput Guitar";
+		case TRAP_XINPUT_DEVSUBTYPE_DRUM_KIT:
+			return "XInput Drum Kit";
+		case XINPUT_DEVSUBTYPE_GAMEPAD:
+		{
+			if (xic->Flags & TRAP_XINPUT_CAPS_WIRELESS)
+				return "Wireless Xbox Controller";
+			
+			return "Xbox Controller";
+		}
+
+		default:
+			return "Unknown XInput Device";
+	}	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Lexically compare device objects
 int TRAP::Input::CompareControllerObjects(const void* first, const void* second)
 {
@@ -354,7 +516,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 		controller = &s_controllerInternal[cID];
 		if (s_controllerInternal[cID].Connected)
 		{
-			if (std::memcmp(&controller->wsjs.guid, &deviceInstance->guidInstance, sizeof(GUID)) == 0)
+			if (std::memcmp(&controller->WinCon.guid, &deviceInstance->guidInstance, sizeof(GUID)) == 0)
 				return DIENUM_CONTINUE;
 		}
 	}
@@ -442,10 +604,10 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 		return DIENUM_STOP;
 	}
 
-	controller->wsjs.Device = device;
-	controller->wsjs.guid = deviceInstance->guidInstance;
-	controller->wsjs.Objects = data.Objects;
-	controller->wsjs.ObjectCount = data.ObjectCount;
+	controller->WinCon.Device = device;
+	controller->WinCon.guid = deviceInstance->guidInstance;
+	controller->WinCon.Objects = data.Objects;
+	controller->WinCon.ObjectCount = data.ObjectCount;
 
 	int8_t cIDUsable = -1;
 	for (uint32_t cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)

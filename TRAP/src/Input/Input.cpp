@@ -174,9 +174,6 @@ float TRAP::Input::GetControllerAxis(Controller controller, const ControllerAxis
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return 0.0f;
 
-	if (!s_controllerInternal[static_cast<uint32_t>(controller)].mapping)
-		return 0.0f;
-
 	return GetMappedControllerAxis(controller, axis);
 }
 
@@ -187,9 +184,6 @@ TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(Controller controller
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return ControllerDPad::Centered;
 
-	if (!s_controllerInternal[static_cast<uint32_t>(controller)].mapping)
-		return ControllerDPad::Centered;
-
 	return GetMappedControllerDPad(controller, dpad);
 }
 
@@ -198,9 +192,6 @@ TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(Controller controller
 bool TRAP::Input::GetControllerButton(Controller controller, const ControllerButton button)
 {
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
-		return false;
-
-	if (!s_controllerInternal[static_cast<uint32_t>(controller)].mapping)
 		return false;
 
 	return GetMappedControllerButton(controller, button);
@@ -284,8 +275,7 @@ void TRAP::Input::SetControllerVibration(Controller controller, const float left
 	if (!PollController(controller, Poll_Presence))
 		return;
 
-	if(s_controllerInternal[static_cast<uint32_t>(controller)].XInput)
-		SetControllerVibrationInternal(controller, leftMotor, rightMotor);	
+	SetControllerVibrationInternal(controller, leftMotor, rightMotor);	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -326,9 +316,9 @@ void TRAP::Input::UpdateControllerMappings(const std::string& map)
 	
 	for(uint32_t cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
 	{
-		ControllerInternal* js = &s_controllerInternal[cID];
+		ControllerInternal* con = &s_controllerInternal[cID];
 		if(s_controllerInternal[cID].Connected)
-			js->mapping = FindValidMapping(js);
+			con->mapping = FindValidMapping(con);
 	}
 }
 
@@ -346,67 +336,67 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(const std::s
 	if (cID > static_cast<uint32_t>(Controller::Sixteen))
 		return nullptr;
 	
-	ControllerInternal* js = &s_controllerInternal[cID];
-	js->Connected = true;
-	js->Name = name;
-	js->guid = guid;
-	js->Axes.resize(axisCount);
-	js->Buttons.resize(buttonCount + dpadCount * 4);
-	js->DPads.resize(dpadCount);
-	js->ButtonCount = buttonCount;
-	js->mapping = FindValidMapping(js);
+	ControllerInternal* con = &s_controllerInternal[cID];
+	con->Connected = true;
+	con->Name = name;
+	con->guid = guid;
+	con->Axes.resize(axisCount);
+	con->Buttons.resize(buttonCount + dpadCount * 4);
+	con->DPads.resize(dpadCount);
+	con->ButtonCount = buttonCount;
+	con->mapping = FindValidMapping(con);
 
-	TP_INFO("[Input][Controller] Controller: ", (js->mapping ? js->mapping->Name : js->Name), " (", cID, ") Connected!");
+	TP_INFO("[Input][Controller] Controller: ", (con->mapping ? con->mapping->Name : con->Name), " (", cID, ") Connected!");
 	
-	return js;
+	return con;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of the new value of a controller DPad
-void TRAP::Input::InternalInputControllerDPad(ControllerInternal* js, const int32_t dpad, const uint8_t value)
+void TRAP::Input::InternalInputControllerDPad(ControllerInternal* con, const int32_t dpad, const uint8_t value)
 {
-	const int32_t base = js->ButtonCount + dpad * 4;
+	const int32_t base = con->ButtonCount + dpad * 4;
 
-	js->Buttons[base + 0] = (value & 0x01) ? true : false; //Up
-	js->Buttons[base + 1] = (value & 0x02) ? true : false; //Right
-	js->Buttons[base + 2] = (value & 0x04) ? true : false; //Down
-	js->Buttons[base + 3] = (value & 0x08) ? true : false; //Left
+	con->Buttons[base + 0] = (value & 0x01) ? true : false; //Up
+	con->Buttons[base + 1] = (value & 0x02) ? true : false; //Right
+	con->Buttons[base + 2] = (value & 0x04) ? true : false; //Down
+	con->Buttons[base + 3] = (value & 0x08) ? true : false; //Left
 
-	if (js->Buttons[base + 1] && js->Buttons[base + 0])
-		js->DPads[dpad] = ControllerDPad::Right_Up;
-	else if (js->Buttons[base + 1] && js->Buttons[base + 2])
-		js->DPads[dpad] = ControllerDPad::Right_Down;
-	else if (js->Buttons[base + 3] && js->Buttons[base + 0])
-		js->DPads[dpad] = ControllerDPad::Left_Up;
-	else if (js->Buttons[base + 3] && js->Buttons[base + 2])
-		js->DPads[dpad] = ControllerDPad::Left_Down;
-	else if (js->Buttons[base + 0])
-		js->DPads[dpad] = ControllerDPad::Up;
-	else if (js->Buttons[base + 1])
-		js->DPads[dpad] = ControllerDPad::Right;
-	else if (js->Buttons[base + 2])
-		js->DPads[dpad] = ControllerDPad::Down;
-	else if (js->Buttons[base + 3])
-		js->DPads[dpad] = ControllerDPad::Left;
+	if (con->Buttons[base + 1] && con->Buttons[base + 0])
+		con->DPads[dpad] = ControllerDPad::Right_Up;
+	else if (con->Buttons[base + 1] && con->Buttons[base + 2])
+		con->DPads[dpad] = ControllerDPad::Right_Down;
+	else if (con->Buttons[base + 3] && con->Buttons[base + 0])
+		con->DPads[dpad] = ControllerDPad::Left_Up;
+	else if (con->Buttons[base + 3] && con->Buttons[base + 2])
+		con->DPads[dpad] = ControllerDPad::Left_Down;
+	else if (con->Buttons[base + 0])
+		con->DPads[dpad] = ControllerDPad::Up;
+	else if (con->Buttons[base + 1])
+		con->DPads[dpad] = ControllerDPad::Right;
+	else if (con->Buttons[base + 2])
+		con->DPads[dpad] = ControllerDPad::Down;
+	else if (con->Buttons[base + 3])
+		con->DPads[dpad] = ControllerDPad::Left;
 	else
-		js->DPads[dpad] = ControllerDPad::Centered;	
+		con->DPads[dpad] = ControllerDPad::Centered;	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of the new value of a controller axis
-void TRAP::Input::InternalInputControllerAxis(ControllerInternal* js, const int32_t axis, const float value)
+void TRAP::Input::InternalInputControllerAxis(ControllerInternal* con, const int32_t axis, const float value)
 {
-	js->Axes[axis] = value;
+	con->Axes[axis] = value;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of the new value of a controller button
-void TRAP::Input::InternalInputControllerButton(ControllerInternal* js, const int32_t button, const bool pressed)
+void TRAP::Input::InternalInputControllerButton(ControllerInternal* con, const int32_t button, const bool pressed)
 {
-	js->Buttons[button] = pressed;
+	con->Buttons[button] = pressed;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -587,16 +577,16 @@ TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string& guid)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Finds a mapping based on controller GUID and verifies element indices
-TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* js)
+TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* con)
 {
-	Mapping* mapping = FindMapping(js->guid);
+	Mapping* mapping = FindMapping(con->guid);
 	if(mapping)
 	{
 		uint8_t i;
 		
 		for(i = 0; i <= static_cast<uint8_t>(ControllerButton::DPad_Left); i++)
 		{
-			if(!IsValidElementForController(&mapping->Buttons[i], js))
+			if(!IsValidElementForController(&mapping->Buttons[i], con))
 			{
 				TP_ERROR("[Input][Controller] Invalid button in Controller mapping: ", mapping->guid, " ", mapping->Name);
 				return nullptr;
@@ -605,7 +595,7 @@ TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* js
 		
 		for(i = 0; i <= static_cast<uint8_t>(ControllerAxis::Right_Trigger); i++)
 		{
-			if(!IsValidElementForController(&mapping->Axes[i], js))
+			if(!IsValidElementForController(&mapping->Axes[i], con))
 			{
 				TP_ERROR("[Input][Controller] Invalid axis in Controller mapping: ", mapping->guid, " ", mapping->Name);
 				return nullptr;
@@ -619,13 +609,13 @@ TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* js
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Checks whether a controller mapping element is present in the hardware
-bool TRAP::Input::IsValidElementForController(const MapElement* e, const ControllerInternal* js)
+bool TRAP::Input::IsValidElementForController(const MapElement* e, const ControllerInternal* con)
 {
-	if(e->Type == 3 && (e->Index >> 4) >= (js->DPads.size() + 1))
+	if(e->Type == 3 && (e->Index >> 4) >= (con->DPads.size() + 1))
 		return false;
-	if(e->Type == 2 && e->Index >= (js->Buttons.size() + 1))
+	if(e->Type == 2 && e->Index >= (con->Buttons.size() + 1))
 		return false;
-	if(e->Type == 1 && e->Index >= (js->Axes.size() + 1))
+	if(e->Type == 1 && e->Index >= (con->Axes.size() + 1))
 		return false;
 		
 	return true;
@@ -635,21 +625,21 @@ bool TRAP::Input::IsValidElementForController(const MapElement* e, const Control
 
 bool TRAP::Input::GetMappedControllerButton(Controller controller, ControllerButton button)
 {
-	if (!PollController(controller, 2))
+	if (!PollController(controller, Poll_Buttons))
 		return false;
 
-	ControllerInternal* js = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 
-	if (!js->mapping)
+	if (!con->mapping)
 		return false;
 
-	const MapElement* e = &js->mapping->Buttons[static_cast<uint8_t>(button)];
-	if (e->Index < js->ButtonCount)
+	const MapElement* e = &con->mapping->Buttons[static_cast<uint8_t>(button)];
+	if (e->Index < con->ButtonCount)
 		if (e->Type == 2) //Button
-			return js->Buttons[e->Index];
+			return con->Buttons[e->Index];
 	if (e->Type == 1) //Axis
 	{
-		const float value = js->Axes[e->Index] * static_cast<float>(e->AxisScale) + static_cast<float>(e->AxisOffset);
+		const float value = con->Axes[e->Index] * static_cast<float>(e->AxisScale) + static_cast<float>(e->AxisOffset);
 		if (e->AxisOffset < 0 || (e->AxisOffset == 0 && e->AxisScale > 0))
 		{
 			if (value >= 0.0f)
@@ -663,7 +653,7 @@ bool TRAP::Input::GetMappedControllerButton(Controller controller, ControllerBut
 	}
 	else if (e->Type == 3) //DPad
 	{
-		if (js->Buttons[e->Index >> 4])
+		if (con->Buttons[e->Index >> 4])
 			return true;
 	}
 
@@ -674,25 +664,25 @@ bool TRAP::Input::GetMappedControllerButton(Controller controller, ControllerBut
 
 float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis axis)
 {	
-	if(!PollController(controller, 1))
+	if(!PollController(controller, Poll_Axes))
 		return 0.0f;
 		
-	ControllerInternal* js = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 		
-	if(!js->mapping)
+	if(!con->mapping)
 		return 0.0f;
 		
-	const MapElement* e = &js->mapping->Axes[static_cast<uint8_t>(axis)];
+	const MapElement* e = &con->mapping->Axes[static_cast<uint8_t>(axis)];
 	if(e->Type == 1) //Axis
 	{
-		const float value = js->Axes[e->Index] * static_cast<float>(e->AxisScale) + static_cast<float>(e->AxisOffset);
+		const float value = con->Axes[e->Index] * static_cast<float>(e->AxisScale) + static_cast<float>(e->AxisOffset);
 		return Math::Min(Math::Max(value, -1.0f), 1.0f);
 	}
 	if(e->Type == 2) //Button
-		return js->Buttons[e->Index] ? 1.0f : -1.0f;
+		return con->Buttons[e->Index] ? 1.0f : -1.0f;
 	if(e->Type == 3) //DPad
 	{
-		if(js->Buttons[e->Index >>  4])
+		if(con->Buttons[e->Index >>  4])
 			return 1.0f;
 		
 		return -1.0f;
@@ -705,17 +695,17 @@ float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis
 
 TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(Controller controller, const uint32_t dpad)
 {	
-	if(!PollController(controller, 3))
+	if(!PollController(controller, Poll_All))
 		return ControllerDPad::Centered;
 		
-	ControllerInternal* js = &s_controllerInternal[static_cast<uint32_t>(controller)];
+	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 		
-	if(!js->mapping)
+	if (!con->mapping)
 		return ControllerDPad::Centered;
 		
-	const MapElement* e = &js->mapping->Buttons[11 + (dpad * 4)];
+	const MapElement* e = &con->mapping->Buttons[11 + (dpad * 4)];
 	if(e->Type == 3)
-		return js->DPads[e->Index >> 4];
+		return con->DPads[e->Index >> 4];
 		
 	return ControllerDPad::Centered;
 }
