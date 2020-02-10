@@ -15,7 +15,6 @@ namespace TRAP
 			int32_t RefreshRate = 0;
 		};
 		
-		explicit Monitor(INTERNAL::WindowingAPI::InternalMonitor* monitor);
 		explicit Monitor(uint32_t monitor);
 		
 		~Monitor() = default;

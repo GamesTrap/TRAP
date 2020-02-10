@@ -3755,7 +3755,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformWindowMinimized(const InternalWindow*
 void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 {
 #ifdef TRAP_PLATFORM_LINUX
-	Input::DetectControllerConnection();
+	Input::DetectControllerConnectionLinux();
 #endif
 	
 	XPending(s_Data.display);

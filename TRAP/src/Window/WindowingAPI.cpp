@@ -1967,13 +1967,16 @@ void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow* window, const 
 //Notifies shared code of a physical key event
 void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* window, Input::Key key, const int32_t scancode, const bool pressed)
 {
-	if (!pressed && window->Keys[static_cast<uint32_t>(key)] == false)
-		return;
+	if (key != Input::Key::Unknown)
+	{
+		if (!pressed && window->Keys[static_cast<uint32_t>(key)] == false)
+			return;
 
-	window->Keys[static_cast<uint32_t>(key)] = pressed;
+		window->Keys[static_cast<uint32_t>(key)] = pressed;
 
-	if (window->Callbacks.Key)
-		window->Callbacks.Key(window, key, pressed);
+		if (window->Callbacks.Key)
+			window->Callbacks.Key(window, key, pressed);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

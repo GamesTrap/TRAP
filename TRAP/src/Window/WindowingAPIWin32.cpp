@@ -333,13 +333,13 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 				{
 					DEV_BROADCAST_HDR* dbh = reinterpret_cast<DEV_BROADCAST_HDR*>(lParam);
 					if (dbh && dbh->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
-						Input::UpdateControllerConnectionWindows();
+						Input::DetectControllerConnectionWin32();
 				}
 				else if (wParam == DBT_DEVICEREMOVECOMPLETE)
 				{
 					DEV_BROADCAST_HDR* dbh = reinterpret_cast<DEV_BROADCAST_HDR*>(lParam);
 					if (dbh && dbh->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
-						Input::DetectControllerConnection();
+						Input::DetectControllerDisconnectionWin32();
 				}
 
 				break;

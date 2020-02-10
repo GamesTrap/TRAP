@@ -839,3 +839,10 @@ SITREP 02/09/2020|20w06a4
     - Added MonitorDisconnectEvent ~<20 mins
     - Fixed PollMonitorsWin32 not updating Monitor Handles ~>25 mins
     - Added Monitor(Dis)ConnectEvent to Docs ~<30 mins
+    - Added automatic handling of Windows on Monitors that got disconnected ~>50 mins
+
+SITREP 02/10/2020|20w07a1
+    - Changed TRAP Engine version to 20w07a1(0.6.09)
+    - Changed Controller API (Temporarily removed XInput) ~>40 mins
+    - Added support for up to 16 Controllers simoultaneously ~>20 mins
+    - Fixed CRLF endings for Linux ~<10 mins

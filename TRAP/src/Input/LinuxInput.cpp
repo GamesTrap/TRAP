@@ -65,15 +65,13 @@ bool TRAP::Input::InitController()
 
 void TRAP::Input::ShutdownController()
 {
-	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Four); cID++)
+	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
 	{
 		if(s_controllerInternal[cID].linjs.CurrentVibration != -1)
 			SetControllerVibration(static_cast<Controller>(cID), 0.0f, 0.0f);
-		if (s_controllerStatuses[cID].Connected)
+		if (s_controllerInternal[cID].Connected)
 			CloseController(static_cast<Controller>(cID));
 	}
-	
-	s_controllerStatuses = {};
 
 	regfree(&s_linuxController.Regex);
 
@@ -86,49 +84,6 @@ void TRAP::Input::ShutdownController()
 	}
 	
 	s_controllerInternal = {};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string TRAP::Input::GetControllerNameInternal(Controller controller)
-{
-	if (!PollController(controller, 0))
-		return "";
-
-	if (s_controllerInternal[static_cast<uint8_t>(controller)].mapping)
-		return s_controllerInternal[static_cast<uint8_t>(controller)].mapping->Name;
-	
-	return s_controllerInternal[static_cast<uint8_t>(controller)].Name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<float> TRAP::Input::GetAllControllerAxesInternal(Controller controller)
-{
-	if (!PollController(controller, 0))
-		return {};
-
-	return s_controllerInternal[static_cast<uint8_t>(controller)].Axes;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<bool> TRAP::Input::GetAllControllerButtonsInternal(Controller controller)
-{
-	if (!PollController(controller, 0))
-		return {};
-
-	return s_controllerInternal[static_cast<uint8_t>(controller)].Buttons;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPadsInternal(Controller controller)
-{
-	if (!PollController(controller, 0))
-		return {};
-
-	return s_controllerInternal[static_cast<uint8_t>(controller)].DPads;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -188,9 +143,9 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, float le
 //Attempt to open the specified controller device
 bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 {
-	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Four); cID++)
+	for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
 	{
-		if (!s_controllerStatuses[cID].Connected)
+		if (!s_controllerInternal[cID].Connected)
 			continue;
 		if (s_controllerInternal[cID].linjs.Path == path)
 			return false;
@@ -301,8 +256,8 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 
 	uint8_t cID;
 	int8_t cIDUsable = -1;
-	for (cID = 0; cID <= static_cast<uint8_t>(Controller::Four); cID++)
-		if (!s_controllerStatuses[cID].Connected)
+	for (cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
+		if (!s_controllerInternal[cID].Connected)
 		{
 			cIDUsable = cID;
 			break;
@@ -310,6 +265,9 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 
 	if(cIDUsable != -1)
 	{
+		if (!s_eventCallback)
+			return false;
+
 		ControllerConnectEvent event(static_cast<Controller>(cIDUsable));
 		s_eventCallback(event);
 		
@@ -327,7 +285,17 @@ void TRAP::Input::CloseController(Controller controller)
 	ControllerInternal* con = &s_controllerInternal[static_cast<uint8_t>(controller)];
 	
 	close(con->linjs.FD);
+
+	TP_INFO("[Input][Controller] Controller: ",
+		(con->mapping
+			? con->mapping->Name
+			: con->Name),
+		" (", static_cast<uint32_t>(controller), ") Disconnected!");
+
 	*con = {};
+	
+	if (!s_eventCallback)
+		return;
 
 	ControllerDisconnectEvent event(static_cast<Controller>(controller));
 	s_eventCallback(event);
@@ -335,7 +303,7 @@ void TRAP::Input::CloseController(Controller controller)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::DetectControllerConnection()
+void TRAP::Input::DetectControllerConnectionLinux()
 {
 	if (s_linuxController.INotify <= 0)
 		return;
@@ -361,7 +329,7 @@ void TRAP::Input::DetectControllerConnection()
 			OpenControllerDeviceLinux(path);
 		else if(e->mask & IN_DELETE)
 		{
-			for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Four); cID++)
+			for(uint8_t cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
 			{
 				if(s_controllerInternal[cID].linjs.Path == path)
 				{
@@ -377,7 +345,7 @@ void TRAP::Input::DetectControllerConnection()
 
 bool TRAP::Input::PollController(Controller controller, int32_t mode)
 {
-	if(s_controllerStatuses[static_cast<uint8_t>(controller)].Connected)
+	if(s_controllerInternal[static_cast<uint8_t>(controller)].Connected)
 	{
 		ControllerInternal* js = &s_controllerInternal[static_cast<uint8_t>(controller)];
 	
@@ -417,7 +385,7 @@ bool TRAP::Input::PollController(Controller controller, int32_t mode)
 		}
 	}
 
-	return s_controllerStatuses[static_cast<uint8_t>(controller)].Connected;
+	return s_controllerInternal[static_cast<uint8_t>(controller)].Connected;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -508,6 +476,12 @@ void TRAP::Input::HandleKeyEventLinux(ControllerInternal* js, int32_t code, int3
 {
 	if(code - BTN_MISC >= 0)
 		InternalInputControllerButton(js, js->linjs.KeyMap[code - BTN_MISC], value ? true : false);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Input::UpdateControllerGUID(std::string& guid)
+{
 }
 
 #endif

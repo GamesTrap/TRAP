@@ -6,7 +6,10 @@
 #include "Event/Event.h"
 
 namespace TRAP
-{
+{namespace INTERNAL {
+		class WindowingAPI;
+	}
+
 	class Window;
 	class ControllerDisconnectEvent;
 	class ControllerConnectEvent;
@@ -158,14 +161,24 @@ namespace TRAP
 			Middle = Three
 		};
 
-		//This is Microsoft's fault btw :C
-		//XInput only supports 4 controllers at a time
 		enum class Controller
 		{
-			One   = 0,
-			Two   = 1,
-			Three = 2,
-			Four  = 3
+			One      = 0,
+			Two      = 1,
+			Three    = 2,
+			Four     = 3,
+			Five     = 4,
+			Six      = 5,
+			Seven    = 6,
+			Eight    = 7,
+			Nine     = 8,
+			Ten      = 9,
+			Eleven   = 10,
+			Twelve   = 11,
+			Thirteen = 12,
+			Fourteen = 13,
+			Fifteen  = 14,
+			Sixteen  = 15
 		};
 
 		enum class ControllerAxis
@@ -213,34 +226,14 @@ namespace TRAP
 			Left_Up    = Left | Up,
 			Left_Down  = Left | Down
 		};
-
-		struct ControllerStatus
-		{
-			bool Connected = false;
-		};
-
-		//Used to determine which API to use(XInput or DirectInput)
-		//This is only used for windows
-		enum class ControllerAPI
-		{
-			Unknown,
-			
-			XInput,
-			DirectInput,
-			Linux
-		};
 		
-		static void Init(ControllerAPI controllerAPI);
+		static void Init();
 		static void Shutdown();
-
-		static ControllerAPI GetControllerAPI();
-		static void SetControllerAPI(ControllerAPI controllerAPI);
 		
 		static bool IsKeyPressed(Key key);
 		static bool IsKeyPressed(Key key, const Scope<Window>& window);
 		static bool IsMouseButtonPressed(MouseButton button);
 		static bool IsMouseButtonPressed(MouseButton button, const Scope<Window>& window);
-		static bool IsGamepadButtonPressed(Controller controller, ControllerButton button);
 		static bool IsRawMouseInputSupported();
 		static bool IsControllerConnected(Controller controller);
 		static bool IsControllerGamepad(Controller controller);
@@ -252,13 +245,12 @@ namespace TRAP
 		static std::string GetKeyName(Key key);
 		static float GetControllerAxis(Controller controller, ControllerAxis axis);
 		static ControllerDPad GetControllerDPad(Controller controller, uint32_t dpad);
+		static bool GetControllerButton(Controller controller, ControllerButton button);
 		static std::string GetControllerName(Controller controller);
-		static const ControllerStatus& GetControllerStatus(Controller controller);
 		static std::string GetControllerGUID(Controller controller);
 		static std::vector<float> GetAllControllerAxes(Controller controller);
 		static std::vector<bool> GetAllControllerButtons(Controller controller);
 		static std::vector<ControllerDPad> GetAllControllerDPads(Controller controller);
-		static const std::array<ControllerStatus, 4>& GetAllControllerStatuses();
 
 		static void SetControllerVibration(Controller controller, float leftMotor, float rightMotor);
 
@@ -270,40 +262,47 @@ namespace TRAP
 		
 		static void UpdateControllerMappings(const std::string& map);
 
-		static void OnEvent(Event& e);
-		
-		static void DetectControllerConnection();
-#ifdef TRAP_PLATFORM_WINDOWS
-		static void UpdateControllerConnectionWindows();
-#endif
 	private:
+#ifdef TRAP_PLATFORM_WINDOWS
+		static void DetectControllerConnectionWin32();
+		static void DetectControllerDisconnectionWin32();
+#elif defined(TRAP_PLATFORM_LINUX)
+		static void DetectControllerConnectionLinux();
+#endif
+		friend class TRAP::INTERNAL::WindowingAPI;
+		
+		static constexpr uint32_t Poll_Presence = 0;
+		static constexpr uint32_t Poll_Axes = 1;
+		static constexpr uint32_t Poll_Buttons = 2;
+		static constexpr uint32_t Poll_All = (Poll_Axes | Poll_Buttons);
+		
 		//Universal API Methods
 		static bool InitController();
 		static void ShutdownController();
-		static std::string GetControllerNameInternal(Controller controller);
-		static std::vector<float> GetAllControllerAxesInternal(Controller controller);
-		static std::vector<bool> GetAllControllerButtonsInternal(Controller controller);
-		static std::vector<ControllerDPad> GetAllControllerDPadsInternal(Controller controller);
 		static void SetControllerVibrationInternal(Controller controller, float leftMotor, float rightMotor);
 		static bool PollController(Controller controller, int32_t mode);		
-		static void CloseController(Controller controller);		
+		static void CloseController(Controller controller);
+		static void UpdateControllerGUID(std::string& guid);
 		
 #ifdef TRAP_PLATFORM_WINDOWS
-		static constexpr const char* MappingName = "Windows";
-		static void UpdateControllerGUIDWindows(std::string& guid);
-		//////////
-		//XInput//
-		//////////
-		static int32_t ControllerButtonToXInput(ControllerButton button);		
-		static std::array<uint32_t, 4> s_lastXInputUpdate;
+		static constexpr std::string_view MappingName = "Windows";
 		///////////////
 		//DirectInput//
 		///////////////
+		//dinput8.dll function pointer typedefs
+		typedef HRESULT(WINAPI* PFN_DirectInput8Create)(HINSTANCE, DWORD, REFIID, LPVOID*, LPUNKNOWN);
+		struct DInput8
+		{
+			HINSTANCE Instance{};
+			PFN_DirectInput8Create Create{};
+			IDirectInput8W* API = nullptr;
+		} inline static dinput8{};
+		
 		static BOOL CALLBACK DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* doi, void* user);
-		static bool SupportsXInput(const GUID* guid);
 		static int CompareControllerObjects(const void* first, const void* second);
-		static BOOL CALLBACK DeviceCallback(const DIDEVICEINSTANCE* deviceInstance, void* user);		
-		static IDirectInput8W* API;		
+		static BOOL CALLBACK DeviceCallback(const DIDEVICEINSTANCE* deviceInstance, void* user);
+		static bool SupportsXInput(const GUID* guid);
+		
 		struct Object
 		{
 			int32_t Offset = 0;
@@ -328,12 +327,12 @@ namespace TRAP
 			int32_t PoVCount = 0;
 		};
 #elif defined(TRAP_PLATFORM_LINUX)
-		static constexpr const char* MappingName = "Linux";
+		static constexpr std::string_view MappingName = "Linux";
 		struct ControllerInternal;
 		static bool OpenControllerDeviceLinux(const std::string& path);
 		static void PollABSStateLinux(ControllerInternal* js);
 		static void HandleABSEventLinux(ControllerInternal* js, int32_t code, int32_t value);
-		static void HandleKeyEventLinux(ControllerInternal* js, int32_t code, int32_t value);		
+		static void HandleKeyEventLinux(ControllerInternal* js, int32_t code, int32_t value);
 		struct ControllerLinuxLibrary
 		{
 			int32_t INotify = 0;
@@ -354,13 +353,8 @@ namespace TRAP
 			std::array<std::array<int32_t, 4>, 2> DPads{};
 		};
 #endif
-
-		static bool OnControllerConnectEvent(ControllerConnectEvent& e);
-		static bool OnControllerDisconnectEvent(ControllerDisconnectEvent& e);
 		
-		static std::array<ControllerStatus, 4> s_controllerStatuses;
 		static EventCallbackFn s_eventCallback;
-		static ControllerAPI s_controllerAPI;
 
 		//Controller mapping element
 		struct MapElement
@@ -389,6 +383,8 @@ namespace TRAP
 			void* UserPointer = nullptr;
 			std::string guid{};
 			Mapping* mapping = nullptr;
+			bool Connected = false;
+			bool XInput = false;
 			
 #ifdef TRAP_PLATFORM_WINDOWS
 			ControllerWindows wsjs;
@@ -396,7 +392,7 @@ namespace TRAP
 			ControllerLinux linjs;
 #endif
 		};
-		static std::array<ControllerInternal, 4> s_controllerInternal;
+		static std::array<ControllerInternal, 16> s_controllerInternal;
 		static ControllerInternal* AddInternalController(const std::string& name, const std::string& guid, int32_t axisCount, int32_t buttonCount, int32_t dpadCount);
 		static void InternalInputControllerDPad(ControllerInternal* js, int32_t dpad, uint8_t value);
 		static void InternalInputControllerAxis(ControllerInternal* js, int32_t axis, float value);
@@ -411,7 +407,7 @@ namespace TRAP
 		static Mapping* FindMapping(const std::string& guid);
 		static Mapping* FindValidMapping(const ControllerInternal* js);
 		static bool IsValidElementForController(const MapElement* e, const ControllerInternal* js);
-		static bool IsMappedControllerButtonPressed(Controller controller, ControllerButton button);
+		static bool GetMappedControllerButton(Controller controller, ControllerButton button);
 		static float GetMappedControllerAxis(Controller controller, ControllerAxis axis);
 		static ControllerDPad GetMappedControllerDPad(Controller controller, uint32_t dpad);
 	};

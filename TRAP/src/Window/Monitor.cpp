@@ -3,13 +3,6 @@
 
 #include "WindowingAPI.h"
 
-TRAP::Monitor::Monitor(INTERNAL::WindowingAPI::InternalMonitor* monitor)
-	: m_handle(monitor)
-{	
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Monitor::Monitor(const uint32_t monitor)
 {
 	std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
@@ -72,9 +65,9 @@ void* TRAP::Monitor::GetInternalMonitor() const
 std::vector<TRAP::Monitor> TRAP::Monitor::GetAllMonitors()
 {
 	std::vector<Monitor> monitors;
-	std::vector<INTERNAL::WindowingAPI::InternalMonitor*> internalMonitors = INTERNAL::WindowingAPI::GetMonitors();
-	for (auto& internalMonitor : internalMonitors)
-		monitors.emplace_back(internalMonitor);
+	const uint32_t internalMonitorsSize = static_cast<uint32_t>(INTERNAL::WindowingAPI::GetMonitors().size());
+	for (uint32_t i = 0; i < internalMonitorsSize; i++)
+		monitors.emplace_back(i);
 
 	return monitors;
 }
@@ -83,5 +76,5 @@ std::vector<TRAP::Monitor> TRAP::Monitor::GetAllMonitors()
 
 TRAP::Monitor TRAP::Monitor::GetPrimaryMonitor()
 {	
-	return Monitor(INTERNAL::WindowingAPI::GetPrimaryMonitor().get());
+	return Monitor(0);
 }

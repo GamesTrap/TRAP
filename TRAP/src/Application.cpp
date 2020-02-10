@@ -69,12 +69,6 @@ TRAP::Application::Application()
 	bool maximized = false;
 	uint32_t monitor = 0;
 	Graphics::API::RenderAPI renderAPI = Graphics::API::RenderAPI::NONE;
-	Input::ControllerAPI controllerAPI = Input::ControllerAPI::Unknown;
-#ifdef TRAP_PLATFORM_WINDOWS
-	controllerAPI = Input::ControllerAPI::XInput;
-#elif defined(TRAP_PLATFORM_LINUX)
-	controllerAPI = Input::ControllerAPI::Linux;
-#endif
 	m_config.Get("Width", width);
 	m_config.Get("Height", height);
 	m_config.Get("RefreshRate", refreshRate);
@@ -84,7 +78,6 @@ TRAP::Application::Application()
 	m_config.Get("Maximized", maximized);
 	m_config.Get("Monitor", monitor);
 	m_config.Get("RenderAPI", renderAPI);
-	m_config.Get("ControllerAPI", controllerAPI);
 
 	if (fpsLimit > 0)
 	{
@@ -134,7 +127,7 @@ TRAP::Application::Application()
 	//Initialize Input for Joysticks
 	m_input = std::make_unique<Input>();
 	Input::SetEventCallback([this](Event& e) {OnEvent(e); });
-	Input::Init(controllerAPI);
+	Input::Init();
 
 	m_ImGuiLayer = std::make_unique<ImGuiLayer>();
 	PushOverlay(std::move(m_ImGuiLayer));
@@ -156,7 +149,6 @@ TRAP::Application::~Application()
 	m_config.Set("Maximized", m_window->IsMaximized());
 	m_config.Set("Monitor", m_window->GetMonitor().GetID());
 	m_config.Set("RenderAPI", Graphics::API::Context::GetRenderAPI());
-	m_config.Set("ControllerAPI", Input::GetControllerAPI());
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	m_config.Print();
 #endif
@@ -304,8 +296,6 @@ void TRAP::Application::OnEvent(Event& e)
 	dispatcher.Dispatch<KeyPressEvent>([this](KeyPressEvent& e) {return OnKeyPress(e); });
 	dispatcher.Dispatch<WindowFocusEvent>([this](WindowFocusEvent& e) {return OnWindowFocus(e); });
 	dispatcher.Dispatch<WindowLostFocusEvent>([this](WindowLostFocusEvent& e) {return OnWindowLostFocus(e); });
-
-	m_input->OnEvent(e); //Controller Connect/Disconnect Events
 
 	if (m_layerStack)
 	{

@@ -2,7 +2,7 @@
 
 Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D"),
-	m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight())/*, false, true, TRAP::Input::Controller::One*/),
+	m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()), false, true, TRAP::Input::Controller::One),
 	m_frameTimeHistory()
 {
 	//TODO
@@ -10,26 +10,6 @@ Sandbox2D::Sandbox2D()
 	//If controller disconnect switch to mouse/keyboard
 	
 	//TODO ControllerAPI validation tests
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string ControllerAPIToString(const TRAP::Input::ControllerAPI controllerAPI)
-{
-	switch(controllerAPI)
-	{
-	case TRAP::Input::ControllerAPI::XInput:
-		return "XInput";
-		
-	case TRAP::Input::ControllerAPI::DirectInput:
-		return "DirectInput";
-
-	case TRAP::Input::ControllerAPI::Linux:
-		return "Linux";
-		
-	default:
-		return "Unknown";
-	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -89,7 +69,6 @@ void Sandbox2D::OnImGuiRender()
 			ImGui::Begin("Controller 1:");
 			ImGui::Separator();
 			ImGui::Text("Infos");
-			ImGui::Text("API: %s", ControllerAPIToString(TRAP::Input::GetControllerAPI()).c_str());
 			ImGui::Text("Name: %s", TRAP::Input::GetControllerName(TRAP::Input::Controller::One).c_str());
 			ImGui::Text("Status: %s", TRAP::Input::IsControllerConnected(TRAP::Input::Controller::One) ? "Connected" : "Disconnected");
 			ImGui::Text("Gamepad: %s", TRAP::Input::IsControllerGamepad(TRAP::Input::Controller::One) ? "True" : "False");
@@ -106,41 +85,44 @@ void Sandbox2D::OnImGuiRender()
 			ImGui::Text("DPad: %s", DPadToString(TRAP::Input::GetControllerDPad(TRAP::Input::Controller::One, 0)).c_str());
 			ImGui::Separator();
 			ImGui::Text("Buttons");
-			ImGui::Text("A / Cross: %s", TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::A) ? "True" : "False");
-			ImGui::Text("B / Circle: %s", TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::B) ? "True" : "False");
-			ImGui::Text("X / Square: %s", TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::X) ? "True" : "False");
-			ImGui::Text("Y / Triangle: %s", TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Y) ? "True" : "False");
-			ImGui::Text("Left Bumper: %s", TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Left_Bumper) ? "True" : "False");
-			ImGui::Text("Right Bumper: %s", TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Right_Bumper) ? "True" : "False");
-			ImGui::Text("Back: %s", TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Back) ? "True" : "False");
-			ImGui::Text("Start: %s", TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Start) ? "True" : "False");
-			ImGui::Text("Guide: %s", TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Guide) ? "True" : "False");
-			ImGui::Text("Left Thumb: %s", TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Left_Thumb) ? "True" : "False");
-			ImGui::Text("Right Thumb: %s", TRAP::Input::IsGamepadButtonPressed(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Right_Thumb) ? "True" : "False");
+			ImGui::Text("A / Cross: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::A) ? "True" : "False");
+			ImGui::Text("B / Circle: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::B) ? "True" : "False");
+			ImGui::Text("X / Square: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::X) ? "True" : "False");
+			ImGui::Text("Y / Triangle: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Y) ? "True" : "False");
+			ImGui::Text("Left Bumper: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Left_Bumper) ? "True" : "False");
+			ImGui::Text("Right Bumper: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Right_Bumper) ? "True" : "False");
+			ImGui::Text("Back: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Back) ? "True" : "False");
+			ImGui::Text("Start: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Start) ? "True" : "False");
+			ImGui::Text("Guide: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Guide) ? "True" : "False");
+			ImGui::Text("Left Thumb: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Left_Thumb) ? "True" : "False");
+			ImGui::Text("Right Thumb: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Right_Thumb) ? "True" : "False");
 			ImGui::End();
 		}
 		else
 		{
+			std::vector<float> axes = TRAP::Input::GetAllControllerAxes(TRAP::Input::Controller::One);
+			std::vector<TRAP::Input::ControllerDPad> dpads = TRAP::Input::GetAllControllerDPads(TRAP::Input::Controller::One);
+			std::vector<bool> buttons = TRAP::Input::GetAllControllerButtons(TRAP::Input::Controller::One);
+			
 			ImGui::SetNextWindowBgAlpha(0.3f);
 			ImGui::Begin("Controller 1:");
 			ImGui::Separator();
 			ImGui::Text("Infos");
-			ImGui::Text("API: %s", ControllerAPIToString(TRAP::Input::GetControllerAPI()).c_str());
 			ImGui::Text("Name: %s", TRAP::Input::GetControllerName(TRAP::Input::Controller::One).c_str());
 			ImGui::Text("Status: %s", TRAP::Input::IsControllerConnected(TRAP::Input::Controller::One) ? "Connected" : "Disconnected");
 			ImGui::Text("Gamepad: %s", TRAP::Input::IsControllerGamepad(TRAP::Input::Controller::One) ? "True" : "False");
 			ImGui::Separator();
 			ImGui::Text("Axes");
-			for(uint32_t i = 0; i < TRAP::Input::GetAllControllerAxes(TRAP::Input::Controller::One).size(); i++)
-				ImGui::Text("%i: %f", i, TRAP::Input::GetAllControllerAxes(TRAP::Input::Controller::One)[i]);
+			for(uint32_t i = 0; i < axes.size(); i++)
+				ImGui::Text("%i: %f", i, axes[i]);
 			ImGui::Separator();
 			ImGui::Text("DPad");
-			for(uint32_t i = 0; i < TRAP::Input::GetAllControllerDPads(TRAP::Input::Controller::One).size(); i++)
-				ImGui::Text("%i: %s", i, DPadToString(TRAP::Input::GetAllControllerDPads(TRAP::Input::Controller::One)[i]).c_str());
+			for(uint32_t i = 0; i < dpads.size(); i++)
+				ImGui::Text("%i: %s", i, DPadToString(dpads[i]).c_str());
 			ImGui::Separator();
 			ImGui::Text("Buttons");
-			for(uint32_t i = 0; i < TRAP::Input::GetAllControllerButtons(TRAP::Input::Controller::One).size(); i++)
-				ImGui::Text("%i: %s", i, TRAP::Input::GetAllControllerButtons(TRAP::Input::Controller::One)[i] ? "True" : "False");
+			for(uint32_t i = 0; i < buttons.size(); i++)
+				ImGui::Text("%i: %s", i, buttons[i] ? "True" : "False");
 			ImGui::End();
 		}
 	}
