@@ -851,3 +851,4 @@ SITREP 02/10/2020|20w07a1
     - Finished combining DirectInput and XInput APIs ~>25 mins
     - Added XInput entries to ControllerMapping ~<20 mins
     - Fixed OrthographicCameraController not zooming until Controller trigger > 0.0 ~<10 mins
+    - Fixed Windows builds ~>15 mins

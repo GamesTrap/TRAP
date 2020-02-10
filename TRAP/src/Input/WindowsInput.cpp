@@ -16,7 +16,7 @@ bool TRAP::Input::InitController()
 	
 	if (dinput8.Instance)
 	{
-		if (FAILED(dinput8.Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8W, reinterpret_cast<void**>(&dinput8.API), nullptr)))
+		if (FAILED(dinput8.Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, TRAP_IID_IDirectInput8W, reinterpret_cast<void**>(&dinput8.API), nullptr)))
 		{
 			TP_ERROR("[Input][Controller][DirectInput] Failed to create interface for DirectInput!");
 			return false;
@@ -45,6 +45,7 @@ bool TRAP::Input::InitController()
 			{
 				xinput.GetCapabilities = reinterpret_cast<PFN_XInputGetCapabilities>(GetProcAddress(xinput.Instance, "XInputGetCapabilities"));
 				xinput.GetState = reinterpret_cast<PFN_XInputGetState>(GetProcAddress(xinput.Instance, "XInputGetState"));
+				xinput.SetState = reinterpret_cast<PFN_XInputSetState>(GetProcAddress(xinput.Instance, "XInputSetState"));
 				
 				break;
 			}
@@ -157,7 +158,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 		const uint16_t left = static_cast<uint16_t>(static_cast<float>(65535)* leftMotor);
 		const uint16_t right = static_cast<uint16_t>(static_cast<float>(65535)* rightMotor);
 		XINPUT_VIBRATION vibration{ left, right };
-		const uint32_t result = XInputSetState(static_cast<DWORD>(controller), &vibration);
+		const uint32_t result = xinput.SetState(static_cast<DWORD>(controller), &vibration);
 		if (result != ERROR_SUCCESS)
 			TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while setting vibration!");
 	}
@@ -198,8 +199,8 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 
 			switch (con->WinCon.Objects[i].Type)
 			{
-			case 0:
-			case 1:
+			case TRAP_TYPE_AXIS:
+			case TRAP_TYPE_SLIDER:
 				{
 					const float value = (*static_cast<LONG*>(data) + 0.5f) / 32767.5f;
 					InternalInputControllerAxis(con, ai, value);
@@ -207,7 +208,7 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 					break;
 				}
 
-			case 2:
+			case TRAP_TYPE_BUTTON:
 				{
 					const char value = (*static_cast<BYTE*>(data) & 0x80) != 0;
 					InternalInputControllerButton(con, bi, value);
@@ -215,7 +216,7 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 					break;
 				}
 
-			case 3:
+			case TRAP_TYPE_DPAD:
 				{
 					const std::array<uint8_t, 9> states =
 					{
@@ -263,7 +264,7 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 			XINPUT_GAMEPAD_RIGHT_THUMB
 		};
 
-		const DWORD result = XInputGetState(con->WinCon.Index, &xis);
+		const DWORD result = xinput.GetState(con->WinCon.Index, &xis);
 		if(result != ERROR_SUCCESS)
 		{
 			if (result == ERROR_DEVICE_NOT_CONNECTED)
@@ -340,19 +341,19 @@ BOOL CALLBACK TRAP::Input::DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* d
 	{
 		DIPROPRANGE dipr;
 
-		if (std::memcmp(&doi->guidType, &GUID_Slider, sizeof(GUID)) == 0)
+		if (std::memcmp(&doi->guidType, &TRAP_GUID_Slider, sizeof(GUID)) == 0)
 			object->Offset = DIJOFS_SLIDER(data->SliderCount);
-		else if (std::memcmp(&doi->guidType, &GUID_XAxis, sizeof(GUID)) == 0)
+		else if (std::memcmp(&doi->guidType, &TRAP_GUID_XAxis, sizeof(GUID)) == 0)
 			object->Offset = DIJOFS_X;
-		else if (std::memcmp(&doi->guidType, &GUID_YAxis, sizeof(GUID)) == 0)
+		else if (std::memcmp(&doi->guidType, &TRAP_GUID_YAxis, sizeof(GUID)) == 0)
 			object->Offset = DIJOFS_Y;
-		else if (std::memcmp(&doi->guidType, &GUID_ZAxis, sizeof(GUID)) == 0)
+		else if (std::memcmp(&doi->guidType, &TRAP_GUID_ZAxis, sizeof(GUID)) == 0)
 			object->Offset = DIJOFS_Z;
-		else if (std::memcmp(&doi->guidType, &GUID_RxAxis, sizeof(GUID)) == 0)
+		else if (std::memcmp(&doi->guidType, &TRAP_GUID_RxAxis, sizeof(GUID)) == 0)
 			object->Offset = DIJOFS_RX;
-		else if (std::memcmp(&doi->guidType, &GUID_RyAxis, sizeof(GUID)) == 0)
+		else if (std::memcmp(&doi->guidType, &TRAP_GUID_RyAxis, sizeof(GUID)) == 0)
 			object->Offset = DIJOFS_RY;
-		else if (std::memcmp(&doi->guidType, &GUID_RzAxis, sizeof(GUID)) == 0)
+		else if (std::memcmp(&doi->guidType, &TRAP_GUID_RzAxis, sizeof(GUID)) == 0)
 			object->Offset = DIJOFS_RZ;
 		else
 			return DIENUM_CONTINUE;
@@ -367,27 +368,27 @@ BOOL CALLBACK TRAP::Input::DeviceObjectCallback(const DIDEVICEOBJECTINSTANCEW* d
 		if (FAILED(IDirectInputDevice8_SetProperty(data->Device, DIPROP_RANGE, &dipr.diph)))
 			return DIENUM_CONTINUE;
 
-		if (std::memcmp(&doi->guidType, &GUID_Slider, sizeof(GUID)) == 0)
+		if (std::memcmp(&doi->guidType, &TRAP_GUID_Slider, sizeof(GUID)) == 0)
 		{
-			object->Type = 1;
+			object->Type = TRAP_TYPE_SLIDER;
 			data->SliderCount++;
 		}
 		else
 		{
-			object->Type = 0;
+			object->Type = TRAP_TYPE_AXIS;
 			data->AxisCount++;
 		}
 	}
 	else if (DIDFT_GETTYPE(doi->dwType) & DIDFT_BUTTON)
 	{
 		object->Offset = DIJOFS_BUTTON(data->ButtonCount);
-		object->Type = 2;
+		object->Type = TRAP_TYPE_BUTTON;
 		data->ButtonCount++;
 	}
 	else if (DIDFT_GETTYPE(doi->dwType) & DIDFT_POV)
 	{
 		object->Offset = DIJOFS_POV(data->PoVCount);
-		object->Type = 3;
+		object->Type = TRAP_TYPE_DPAD;
 		data->PoVCount++;
 	}
 
@@ -530,7 +531,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 		return DIENUM_CONTINUE;
 	}
 
-	if (FAILED(IDirectInputDevice8_SetDataFormat(device, &c_dfDIJoystick)))
+	if (FAILED(IDirectInputDevice8_SetDataFormat(device, &TRAPDataFormat)))
 	{
 		TP_ERROR("[Input][Controller][DirectInput] Failed to set device data format!");
 		IDirectInputDevice8_Release(device);
