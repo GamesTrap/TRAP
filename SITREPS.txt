@@ -863,3 +863,7 @@ SITREP 02/11/2020|20w07a2
     - Added missing iterators to LayerStack ~<20 mins
     - Validated Cursor functionality on Windows ~>30 mins
     - Fixed ImGui overwriting Cursor the by Client ~>30 mins
+
+SITREP 02/15/2020|20w07a3
+    - Changed TRAP Engine version to 20w07a3(0.6.11)
+    - Updated Travis.yml ~<15 mins
