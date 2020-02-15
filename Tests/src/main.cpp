@@ -1,7 +1,7 @@
 #include <TRAP.h>
 
-#include "Clipboard/Clipboard.h"
-#include "Cursor/Cursor.h"
+#include "Clipboard/ClipboardTests.h"
+#include "Cursor/CursorTests.h"
 
 class Tests final : public TRAP::Application
 {
@@ -9,7 +9,7 @@ public:
 	Tests()
 	{
 		//PushLayer(TRAP::MakeScope<Clipboard>());
-		PushLayer(TRAP::MakeScope<Cursor>());
+		PushLayer(TRAP::MakeScope<CursorTests>());
 	}
 };
 

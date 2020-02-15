@@ -3,10 +3,10 @@
 
 #include <TRAP.h>
 
-class Cursor final : public TRAP::Layer
+class CursorTests final : public TRAP::Layer
 {
 public:
-	Cursor();
+	CursorTests();
 
 	void OnAttach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;

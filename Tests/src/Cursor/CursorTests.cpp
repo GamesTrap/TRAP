@@ -1,6 +1,6 @@
-#include "Cursor.h"
+#include "CursorTests.h"
 
-float Cursor::Star(const int32_t x, const int32_t y, const float t) const
+float CursorTests::Star(const int32_t x, const int32_t y, const float t) const
 {
 	constexpr float c = 64.0f / 2.0f;
 
@@ -19,7 +19,7 @@ float Cursor::Star(const int32_t x, const int32_t y, const float t) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Image> Cursor::CreateCursorFrame(const float t) const
+TRAP::Scope<TRAP::Image> CursorTests::CreateCursorFrame(const float t) const
 {
 	int32_t i = 0;
 	std::vector<uint8_t> buffer(64 * 64 * 4, 0);
@@ -40,7 +40,7 @@ TRAP::Scope<TRAP::Image> Cursor::CreateCursorFrame(const float t) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-Cursor::Cursor()
+CursorTests::CursorTests()
 	: Layer("Cursor"),
 	  m_cursorX(0.0f),
 	  m_cursorY(0.0f),
@@ -51,7 +51,7 @@ Cursor::Cursor()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void Cursor::OnAttach()
+void CursorTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Cursor");
 
@@ -62,7 +62,7 @@ void Cursor::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void Cursor::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void CursorTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
 	//Render
 	TRAP::Graphics::RenderCommand::SetClearColor();
@@ -84,7 +84,7 @@ void Cursor::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void Cursor::OnEvent(TRAP::Event& event)
+void CursorTests::OnEvent(TRAP::Event& event)
 {
 	TRAP::EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<TRAP::KeyPressEvent>([this](TRAP::KeyPressEvent& e) { return OnKeyPress(e); });
@@ -93,7 +93,7 @@ void Cursor::OnEvent(TRAP::Event& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool Cursor::OnKeyPress(TRAP::KeyPressEvent& event)
+bool CursorTests::OnKeyPress(TRAP::KeyPressEvent& event)
 {
 	if (event.GetRepeatCount() == 0)
 	{
@@ -248,7 +248,7 @@ bool Cursor::OnKeyPress(TRAP::KeyPressEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool Cursor::OnMouseMove(TRAP::MouseMoveEvent& event)
+bool CursorTests::OnMouseMove(TRAP::MouseMoveEvent& event)
 {
 	TP_INFO("[Cursor] Position: ", event.GetX(), " ", event.GetY(), " (", event.GetX() - m_cursorX, " ", event.GetY() - m_cursorY, ")");
 	

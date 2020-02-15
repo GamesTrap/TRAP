@@ -3,10 +3,10 @@
 
 #include <TRAP.h>
 
-class Clipboard final : public TRAP::Layer
+class ClipboardTests final : public TRAP::Layer
 {
 public:
-	Clipboard();
+	ClipboardTests();
 
 	void OnAttach() override;
 	void OnImGuiRender() override;

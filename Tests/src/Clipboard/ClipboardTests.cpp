@@ -1,13 +1,13 @@
-#include "Clipboard.h"
+#include "ClipboardTests.h"
 
-Clipboard::Clipboard()
+ClipboardTests::ClipboardTests()
 	: Layer("Clipboard")
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void Clipboard::OnAttach()
+void ClipboardTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Clipboard");
 	TRAP::Application::GetWindow()->SetVSyncInterval(1);
@@ -15,7 +15,7 @@ void Clipboard::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void Clipboard::OnImGuiRender()
+void ClipboardTests::OnImGuiRender()
 {
 	ImGui::SetNextWindowBgAlpha(0.3f);
 	ImGui::Begin("Clipboard", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
@@ -28,7 +28,7 @@ void Clipboard::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void Clipboard::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void ClipboardTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
 	//Render
 	TRAP::Graphics::RenderCommand::SetClearColor();
@@ -37,7 +37,7 @@ void Clipboard::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void Clipboard::OnEvent(TRAP::Event& event)
+void ClipboardTests::OnEvent(TRAP::Event& event)
 {
 	TRAP::EventDispatcher dispatcher(event);
 	dispatcher.Dispatch<TRAP::KeyPressEvent>([this](TRAP::KeyPressEvent& e) { return OnKeyPress(e); });
@@ -45,7 +45,7 @@ void Clipboard::OnEvent(TRAP::Event& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool Clipboard::OnKeyPress(TRAP::KeyPressEvent& event)
+bool ClipboardTests::OnKeyPress(TRAP::KeyPressEvent& event)
 {
 	switch(event.GetKeyCode())
 	{
