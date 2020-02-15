@@ -866,4 +866,7 @@ SITREP 02/11/2020|20w07a2
 
 SITREP 02/15/2020|20w07a3
     - Changed TRAP Engine version to 20w07a3(0.6.11)
-    - Updated Travis.yml ~<15 mins
+    - Updated Travis.yml. Now uses Vulkan 1.2.131.2 SDK ~<15 mins
+    - Fixed Linux (XKB) Keyboard not working properly ~>20 mins
+    - Validated Clipboard functionality on Linux(X11) ~<20 mins
+    - Fixed and Validated Cursor functionality on Linux(X11) ~>50 mins

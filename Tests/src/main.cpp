@@ -8,7 +8,7 @@ class Tests final : public TRAP::Application
 public:
 	Tests()
 	{
-		//PushLayer(TRAP::MakeScope<Clipboard>());
+		//PushLayer(TRAP::MakeScope<ClipboardTests>());
 		PushLayer(TRAP::MakeScope<CursorTests>());
 	}
 };

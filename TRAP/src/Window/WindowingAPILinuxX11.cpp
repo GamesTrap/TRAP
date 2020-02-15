@@ -5177,7 +5177,7 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow* wind
 //Updates the cursor image according to its cursor mode
 void TRAP::INTERNAL::WindowingAPI::UpdateCursorImage(const InternalWindow* window)
 {
-	if(window->cursorMode == CursorMode::Normal)
+	if(window->cursorMode == CursorMode::Normal || window->cursorMode == CursorMode::Captured)
 	{
 		if(window->Cursor)
 			XDefineCursor(s_Data.display, window->Handle, window->Cursor->Handle);
@@ -5252,6 +5252,9 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 		for(scanCode = desc->min_key_code; scanCode <= desc->max_key_code; scanCode++)
 		{
 			name = desc->names->keys[scanCode].name;
+
+			if (name.size() > 4)
+				name = std::string(desc->names->keys[scanCode].name, desc->names->keys[scanCode].name + XkbKeyNameLength);
 			
 			//Map the key name to a TRAP key code.
 			//Note: We use the US keyboard layout.

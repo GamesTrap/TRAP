@@ -302,10 +302,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 				if(s_customCursor)
 					WindowingAPI::SetCursor(windowPtr, s_customCursor.get());
 				else
-				{
 					WindowingAPI::SetCursor(windowPtr, s_mouseCursors[ImGuiMouseCursor_Arrow].get());
-					WindowingAPI::SetCursorMode(windowPtr, WindowingAPI::CursorMode::Normal);					
-				}
 			}
 		}
 	}
