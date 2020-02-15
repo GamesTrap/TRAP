@@ -76,7 +76,7 @@ void TRAP::Graphics::API::Context::AutoSelectRenderAPI()
 		SetRenderAPI(RenderAPI::Vulkan);
 		return;
 	}
-	TP_DEBUG("[Context][Vulkan] Device isn't Vulkan 1.1 capable!");
+	TP_DEBUG("[Context][Vulkan] Device isn't Vulkan 1.2 capable!");
 
 
 	if (s_isOpenGLCapable)
@@ -100,7 +100,7 @@ void TRAP::Graphics::API::Context::CheckAllRenderAPIs()
 	s_isD3D12Capable = false;
 #endif
 
-	//Check if Vulkan 1.1 capable
+	//Check if Vulkan 1.2 capable
 	s_isVulkanCapable = VulkanContext::IsVulkanCapable();
 
 	//Check if OpenGL 4.6 capable
@@ -162,13 +162,13 @@ void TRAP::Graphics::API::Context::SwitchRenderAPI(const RenderAPI api)
 		{
 			if (s_isVulkanCapable)
 			{
-				TP_WARN("[Context] Switching RenderAPI to Vulkan 1.1");
+				TP_WARN("[Context] Switching RenderAPI to Vulkan 1.2");
 				s_newRenderAPI = RenderAPI::Vulkan;
 
 				return;
 			}
 
-			TP_ERROR("[Context][Vulkan] This device doesn't support Vulkan 1.1!");
+			TP_ERROR("[Context][Vulkan] This device doesn't support Vulkan 1.2!");
 			if (s_isD3D12Capable)
 			{
 				SwitchRenderAPI(RenderAPI::D3D12);

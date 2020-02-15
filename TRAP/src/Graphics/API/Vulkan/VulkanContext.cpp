@@ -315,7 +315,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			VK_MAKE_VERSION(1, 0, 0),
 			"TRAP Engine",
 			TRAP_VERSION,
-			VK_API_VERSION_1_1
+			VK_API_VERSION_1_2
 		};
 
 		VkInstanceCreateInfo instanceCreateInfo
@@ -335,7 +335,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		if (!instance)
 			return false;
 
-		//Create Vulkan 1.1 Test window
+		//Create Vulkan 1.2 Test window
 		INTERNAL::WindowingAPI::SetContextAPI(INTERNAL::WindowingAPI::ContextAPI::None);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
@@ -386,8 +386,8 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			else if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
 				score += 250;
 
-			//Check if Physical device is Vulkan 1.1 capable
-			if (deviceProperties.apiVersion >= VK_VERSION_1_1)
+			//Check if Physical device is Vulkan 1.2 capable
+			if (deviceProperties.apiVersion >= VK_VERSION_1_2)
 				score += 1000;
 
 			VkPhysicalDeviceFeatures deviceFeatures{};
@@ -562,10 +562,10 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 			return false;
 		}
 
-		//Check if Physical device is Vulkan 1.1 capable
+		//Check if Physical device is Vulkan 1.2 capable
 		VkPhysicalDeviceProperties deviceProperties{};
 		vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
-		if (deviceProperties.apiVersion < VK_VERSION_1_1)
+		if (deviceProperties.apiVersion < VK_VERSION_1_2)
 		{
 			//Needs to be destroyed after testing
 			vkDestroySurfaceKHR(instance, surface, nullptr);

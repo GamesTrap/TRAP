@@ -265,16 +265,16 @@ namespace TRAP::INTERNAL
 		};
 		enum class CursorType
 		{
-			Arrow = 0x00036001,
-			Input = 0x00036002,
-			Crosshair = 0x00036003,
-			PointingHand = 0x00036004,
-			ResizeHorizontal = 0x00036005,
-			ResizeVertical = 0x00036006,
-			ResizeDiagonalTopLeftBottomRight = 0x00036008,
-			ResizeDiagonalTopRightBottomLeft = 0x00036007,
-			ResizeAll = 0x00036009,
-			NotAllowed = 0x0003600A
+			Arrow = 0,
+			Input = 1,
+			Crosshair = 2,
+			PointingHand = 3,
+			ResizeHorizontal = 4,
+			ResizeVertical = 5,
+			ResizeDiagonalTopLeftBottomRight = 6,
+			ResizeDiagonalTopRightBottomLeft = 7,
+			ResizeAll = 8,
+			NotAllowed = 9
 		};
 	private:
 		//-------//

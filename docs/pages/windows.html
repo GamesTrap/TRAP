@@ -701,7 +701,7 @@
 </div>
 <div class="section" id="setcursoricon">
 <h3>SetCursorIcon<a class="headerlink" href="#setcursoricon" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">SetCursorIcon</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">ImageWindow</span><span class="o">&gt;&amp;</span> <span class="n">image</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">SetCursorIcon</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">ImageWindow</span><span class="o">&gt;&amp;</span> <span class="n">image</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int32_t</span> <span class="n">xHotspot</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int32_t</span> <span class="n">yHotspot</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 </pre></div>
 </div>
 <div class="line-block">
@@ -713,6 +713,8 @@
 </div>
 <ul class="simple">
 <li><p><code class="code docutils literal notranslate"><span class="pre">image</span></code> specifies the TRAP::<a href="#id8"><span class="problematic" id="id9">`Image`_</span></a> to use.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">xHotspot</span></code> specifies where the middle of the TRAP::<a href="#id10"><span class="problematic" id="id11">`Image`_</span></a> is located on the x axis. Default value is <code class="code docutils literal notranslate"><span class="pre">0</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">yHotspot</span></code> specifies where the middle of the TRAP::<a href="#id12"><span class="problematic" id="id13">`Image`_</span></a> is located on the y axis. Defautl value is <code class="code docutils literal notranslate"><span class="pre">0</span></code></p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -753,11 +755,11 @@
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Sets the Icon of a TRAP::<a class="reference internal" href="#window">Window</a> to the specified TRAP::<a href="#id10"><span class="problematic" id="id11">`Image`_</span></a></div>
+<div class="line">Sets the Icon of a TRAP::<a class="reference internal" href="#window">Window</a> to the specified TRAP::<a href="#id14"><span class="problematic" id="id15">`Image`_</span></a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
-<div class="line"><code class="code docutils literal notranslate"><span class="pre">image</span></code> Specifies the TRAP::<a href="#id12"><span class="problematic" id="id13">`Image`_</span></a> to be used as Icon</div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">image</span></code> Specifies the TRAP::<a href="#id16"><span class="problematic" id="id17">`Image`_</span></a> to be used as Icon</div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>

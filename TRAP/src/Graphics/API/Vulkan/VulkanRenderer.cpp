@@ -500,7 +500,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInstance()
 		VK_MAKE_VERSION(1, 0, 0),
 		"TRAP Engine",
 		TRAP_VERSION,
-		VK_API_VERSION_1_1 //TODO Change to VK_API_VERSION_1_2
+		VK_API_VERSION_1_2
 	};
 	
 	std::vector<const char*> instanceLayersPtrs{};
@@ -839,8 +839,8 @@ int32_t TRAP::Graphics::API::VulkanRenderer::RateDeviceSuitability(VkPhysicalDev
 	else if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
 		score += 250;
 
-	//Check if Physical device is Vulkan 1.1 capable
-	if (deviceProperties.apiVersion >= VK_VERSION_1_1)
+	//Check if Physical device is Vulkan 1.2 capable
+	if (deviceProperties.apiVersion >= VK_VERSION_1_2)
 		score += 1000;
 
 	VkPhysicalDeviceFeatures deviceFeatures{};

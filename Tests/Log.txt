@@ -1,0 +1,650 @@
+[01:26:13][Debug][Application] Initializing TRAP Modules...
+[01:26:13][Debug][VFS] Initializing Virtual File System
+[01:26:13][Info][Config] Loading File: "Engine.cfg"
+[01:26:13][Trace][Config] Width = 800
+[01:26:13][Trace][Config] Height = 600
+[01:26:13][Trace][Config] RefreshRate = 144
+[01:26:13][Trace][Config] VSync = 1
+[01:26:13][Trace][Config] FPSLimit = 0
+[01:26:13][Trace][Config] DisplayMode = Windowed
+[01:26:13][Trace][Config] Maximized = FALSE
+[01:26:13][Trace][Config] Monitor = 0
+[01:26:13][Trace][Config] RenderAPI = OpenGL
+[01:26:13][Trace][Config] Size: 9
+[01:26:13][Info][Window] Initializing Window: "TRAP Engine" 800x600@144Hz VSync: On(1) DisplayMode: Windowed Monitor: 0 CursorMode: Normal RawMouseInput: Disabled
+[01:26:14][Debug][Window] Storing underlying OS video mode: Monitor: 0 2560x1440@144Hz (R8G8B8)
+[01:26:14][Debug][Window] Storing underlying OS video mode: Monitor: 1 1920x1080@144Hz (R8G8B8)
+[01:26:14][Info][Context][OpenGL] Initializing Context
+[01:26:14][Info][Renderer][OpenGL] Initializing Renderer
+[01:26:14][Info][Renderer][OpenGL] ----------------------------------
+[01:26:14][Info][Renderer][OpenGL] OpenGL:
+[01:26:14][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 441.99
+[01:26:14][Info][Renderer][OpenGL] GLSL Version: 4.60 NVIDIA
+[01:26:14][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
+[01:26:14][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
+[01:26:14][Info][Renderer][OpenGL] ----------------------------------
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Shader][OpenGL][GLSL] Compiling: "Fallback"
+[01:26:14][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[01:26:14][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[01:26:14][Debug][Texture2D][OpenGL] Loading Texture: "Fallback2D"
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][TextureCube][OpenGL] Loading Texture: "FallbackCube"
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Renderer2D] Initializing
+[01:26:14][Debug][Shader][OpenGL][GLSL] Compiling: "Renderer2D"
+[01:26:14][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[01:26:14][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[01:26:14][Debug][Texture2D][OpenGL] Loading Texture: "Renderer2DWhite"
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][LayerStack] Pushing Overlay: ImGuiLayer
+[01:26:14][Debug][LayerStack] Pushing Layer: Cursor
+[01:26:14][Debug][Window] "TRAP Engine" Set Title: "Cursor"
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Debug][Image][Custom] Loading a custom image
+[01:26:14][Info][Cursor] Position: 477 321 (477 321)
+[01:26:14][Info][Cursor] Position: 477 322 (0 1)
+[01:26:14][Info][Cursor] Position: 476 322 (-1 0)
+[01:26:14][Info][Cursor] Position: 475 323 (-1 1)
+[01:26:14][Info][Cursor] Position: 474 323 (-1 0)
+[01:26:14][Info][Cursor] Position: 473 324 (-1 1)
+[01:26:14][Info][Cursor] Position: 472 324 (-1 0)
+[01:26:14][Info][Cursor] Position: 471 325 (-1 1)
+[01:26:14][Info][Cursor] Position: 470 325 (-1 0)
+[01:26:14][Info][Cursor] Position: 469 325 (-1 0)
+[01:26:14][Info][Cursor] Position: 468 326 (-1 1)
+[01:26:14][Info][Cursor] Position: 467 326 (-1 0)
+[01:26:14][Info][Cursor] Position: 466 326 (-1 0)
+[01:26:14][Info][Cursor] Position: 465 326 (-1 0)
+[01:26:14][Info][Cursor] Position: 464 326 (-1 0)
+[01:26:15][Info][Cursor] Position: 463 326 (-1 0)
+[01:26:15][Info][Cursor] Position: 462 326 (-1 0)
+[01:26:15][Info][Cursor] Position: 461 326 (-1 0)
+[01:26:15][Info][Cursor] Position: 460 326 (-1 0)
+[01:26:15][Info][Cursor] Position: 459 326 (-1 0)
+[01:26:15][Info][Cursor] Position: 458 326 (-1 0)
+[01:26:15][Info][Cursor] Position: 457 327 (-1 1)
+[01:26:15][Info][Cursor] Position: 456 327 (-1 0)
+[01:26:15][Info][Cursor] Position: 455 327 (-1 0)
+[01:26:15][Info][Cursor] Position: 454 327 (-1 0)
+[01:26:15][Info][Cursor] Position: 453 327 (-1 0)
+[01:26:15][Info][Cursor] Position: 452 327 (-1 0)
+[01:26:15][Info][Cursor] Position: 451 327 (-1 0)
+[01:26:15][Info][Cursor] Position: 450 327 (-1 0)
+[01:26:15][Info][Cursor] Position: 449 327 (-1 0)
+[01:26:15][Info][Cursor] Position: 448 327 (-1 0)
+[01:26:15][Info][Cursor] Position: 447 328 (-1 1)
+[01:26:15][Info][Cursor] Position: 446 328 (-1 0)
+[01:26:15][Info][Cursor] Position: 445 328 (-1 0)
+[01:26:15][Info][Cursor] Position: 444 328 (-1 0)
+[01:26:15][Info][Cursor] Position: 443 328 (-1 0)
+[01:26:15][Info][Cursor] Position: 442 328 (-1 0)
+[01:26:15][Info][Cursor] Position: 441 328 (-1 0)
+[01:26:15][Info][Cursor] Position: 440 328 (-1 0)
+[01:26:15][Info][Cursor] Position: 439 328 (-1 0)
+[01:26:15][Info][Cursor] Position: 439 329 (0 1)
+[01:26:15][Info][Cursor] Position: 438 329 (-1 0)
+[01:26:15][Info][Cursor] Position: 437 329 (-1 0)
+[01:26:15][Info][Cursor] Position: 436 329 (-1 0)
+[01:26:15][Info][Cursor] Position: 435 329 (-1 0)
+[01:26:16][Info][Cursor] Position: 434 329 (-1 0)
+[01:26:16][Info][Cursor] Position: 433 329 (-1 0)
+[01:26:19][Info][Cursor] Position: 433 330 (0 1)
+[01:26:19][Info][Cursor] Position: 432 330 (-1 0)
+[01:26:19][Info][Cursor] Position: 431 331 (-1 1)
+[01:26:19][Info][Cursor] Position: 430 331 (-1 0)
+[01:26:19][Info][Cursor] Position: 429 331 (-1 0)
+[01:26:19][Info][Cursor] Position: 428 332 (-1 1)
+[01:26:19][Info][Cursor] Position: 427 332 (-1 0)
+[01:26:19][Info][Cursor] Position: 426 332 (-1 0)
+[01:26:19][Info][Cursor] Position: 425 333 (-1 1)
+[01:26:19][Info][Cursor] Position: 424 333 (-1 0)
+[01:26:19][Info][Cursor] Position: 423 333 (-1 0)
+[01:26:19][Info][Cursor] Position: 422 333 (-1 0)
+[01:26:19][Info][Cursor] Position: 420 334 (-2 1)
+[01:26:19][Info][Cursor] Position: 419 334 (-1 0)
+[01:26:19][Info][Cursor] Position: 417 334 (-2 0)
+[01:26:19][Info][Cursor] Position: 415 334 (-2 0)
+[01:26:19][Info][Cursor] Position: 414 334 (-1 0)
+[01:26:19][Info][Cursor] Position: 412 334 (-2 0)
+[01:26:19][Info][Cursor] Position: 412 335 (0 1)
+[01:26:19][Info][Cursor] Position: 410 335 (-2 0)
+[01:26:19][Info][Cursor] Position: 407 335 (-3 0)
+[01:26:19][Info][Cursor] Position: 405 335 (-2 0)
+[01:26:19][Info][Cursor] Position: 404 335 (-1 0)
+[01:26:19][Info][Cursor] Position: 402 335 (-2 0)
+[01:26:19][Info][Cursor] Position: 399 335 (-3 0)
+[01:26:19][Info][Cursor] Position: 396 335 (-3 0)
+[01:26:19][Info][Cursor] Position: 394 335 (-2 0)
+[01:26:19][Info][Cursor] Position: 393 335 (-1 0)
+[01:26:19][Info][Cursor] Position: 391 335 (-2 0)
+[01:26:19][Info][Cursor] Position: 390 335 (-1 0)
+[01:26:19][Info][Cursor] Position: 388 335 (-2 0)
+[01:26:19][Info][Cursor] Position: 385 335 (-3 0)
+[01:26:19][Info][Cursor] Position: 383 335 (-2 0)
+[01:26:19][Info][Cursor] Position: 382 335 (-1 0)
+[01:26:19][Info][Cursor] Position: 380 334 (-2 -1)
+[01:26:19][Info][Cursor] Position: 378 334 (-2 0)
+[01:26:19][Info][Cursor] Position: 376 334 (-2 0)
+[01:26:19][Info][Cursor] Position: 375 334 (-1 0)
+[01:26:19][Info][Cursor] Position: 374 333 (-1 -1)
+[01:26:19][Info][Cursor] Position: 373 333 (-1 0)
+[01:26:19][Info][Cursor] Position: 372 333 (-1 0)
+[01:26:19][Info][Cursor] Position: 371 333 (-1 0)
+[01:26:19][Info][Cursor] Position: 370 333 (-1 0)
+[01:26:21][Info][Cursor] Position: 370 334 (0 1)
+[01:26:21][Info][Cursor] Position: 370 335 (0 1)
+[01:26:21][Info][Cursor] Position: 371 336 (1 1)
+[01:26:21][Info][Cursor] Position: 371 337 (0 1)
+[01:26:21][Info][Cursor] Position: 372 337 (1 0)
+[01:26:21][Info][Cursor] Position: 372 338 (0 1)
+[01:26:21][Info][Cursor] Position: 373 338 (1 0)
+[01:26:21][Info][Cursor] Position: 373 339 (0 1)
+[01:26:21][Info][Cursor] Position: 374 339 (1 0)
+[01:26:21][Info][Cursor] Position: 374 340 (0 1)
+[01:26:21][Info][Cursor] Position: 375 340 (1 0)
+[01:26:21][Info][Cursor] Position: 375 341 (0 1)
+[01:26:21][Info][Cursor] Position: 376 341 (1 0)
+[01:26:21][Info][Cursor] Position: 376 342 (0 1)
+[01:26:21][Info][Cursor] Position: 377 342 (1 0)
+[01:26:21][Info][Cursor] Position: 377 343 (0 1)
+[01:26:21][Info][Cursor] Position: 378 343 (1 0)
+[01:26:21][Info][Cursor] Position: 378 344 (0 1)
+[01:26:21][Info][Cursor] Position: 379 345 (1 1)
+[01:26:21][Info][Cursor] Position: 379 346 (0 1)
+[01:26:21][Info][Cursor] Position: 380 347 (1 1)
+[01:26:21][Info][Cursor] Position: 380 348 (0 1)
+[01:26:21][Info][Cursor] Position: 380 349 (0 1)
+[01:26:21][Info][Cursor] Position: 381 349 (1 0)
+[01:26:21][Info][Cursor] Position: 381 350 (0 1)
+[01:26:21][Info][Cursor] Position: 381 351 (0 1)
+[01:26:21][Info][Cursor] Position: 382 352 (1 1)
+[01:26:21][Info][Cursor] Position: 382 353 (0 1)
+[01:26:21][Info][Cursor] Position: 382 354 (0 1)
+[01:26:21][Info][Cursor] Position: 383 354 (1 0)
+[01:26:21][Info][Cursor] Position: 383 355 (0 1)
+[01:26:21][Info][Cursor] Position: 384 356 (1 1)
+[01:26:21][Info][Cursor] Position: 384 357 (0 1)
+[01:26:21][Info][Cursor] Position: 384 358 (0 1)
+[01:26:21][Info][Cursor] Position: 385 358 (1 0)
+[01:26:21][Info][Cursor] Position: 385 359 (0 1)
+[01:26:21][Info][Cursor] Position: 386 360 (1 1)
+[01:26:21][Info][Cursor] Position: 387 361 (1 1)
+[01:26:21][Info][Cursor] Position: 387 362 (0 1)
+[01:26:21][Info][Cursor] Position: 388 362 (1 0)
+[01:26:21][Info][Cursor] Position: 389 363 (1 1)
+[01:26:21][Info][Cursor] Position: 389 364 (0 1)
+[01:26:21][Info][Cursor] Position: 390 364 (1 0)
+[01:26:21][Info][Cursor] Position: 391 366 (1 2)
+[01:26:21][Info][Cursor] Position: 393 367 (2 1)
+[01:26:21][Info][Cursor] Position: 394 368 (1 1)
+[01:26:21][Info][Cursor] Position: 396 369 (2 1)
+[01:26:21][Info][Cursor] Position: 398 371 (2 2)
+[01:26:21][Info][Cursor] Position: 400 372 (2 1)
+[01:26:21][Info][Cursor] Position: 401 372 (1 0)
+[01:26:21][Info][Cursor] Position: 401 373 (0 1)
+[01:26:21][Info][Cursor] Position: 403 374 (2 1)
+[01:26:21][Info][Cursor] Position: 405 375 (2 1)
+[01:26:21][Info][Cursor] Position: 408 376 (3 1)
+[01:26:21][Info][Cursor] Position: 410 378 (2 2)
+[01:26:21][Info][Cursor] Position: 411 378 (1 0)
+[01:26:21][Info][Cursor] Position: 413 379 (2 1)
+[01:26:21][Info][Cursor] Position: 415 380 (2 1)
+[01:26:21][Info][Cursor] Position: 416 380 (1 0)
+[01:26:21][Info][Cursor] Position: 416 381 (0 1)
+[01:26:21][Info][Cursor] Position: 418 382 (2 1)
+[01:26:21][Info][Cursor] Position: 420 383 (2 1)
+[01:26:21][Info][Cursor] Position: 421 383 (1 0)
+[01:26:21][Info][Cursor] Position: 423 385 (2 2)
+[01:26:21][Info][Cursor] Position: 424 385 (1 0)
+[01:26:21][Info][Cursor] Position: 426 386 (2 1)
+[01:26:21][Info][Cursor] Position: 429 388 (3 2)
+[01:26:21][Info][Cursor] Position: 432 390 (3 2)
+[01:26:21][Info][Cursor] Position: 435 391 (3 1)
+[01:26:21][Info][Cursor] Position: 435 392 (0 1)
+[01:26:21][Info][Cursor] Position: 436 392 (1 0)
+[01:26:21][Info][Cursor] Position: 438 393 (2 1)
+[01:26:21][Info][Cursor] Position: 441 394 (3 1)
+[01:26:21][Info][Cursor] Position: 443 396 (2 2)
+[01:26:21][Info][Cursor] Position: 446 397 (3 1)
+[01:26:21][Info][Cursor] Position: 448 398 (2 1)
+[01:26:21][Info][Cursor] Position: 450 399 (2 1)
+[01:26:21][Info][Cursor] Position: 452 401 (2 2)
+[01:26:21][Info][Cursor] Position: 454 401 (2 0)
+[01:26:21][Info][Cursor] Position: 454 402 (0 1)
+[01:26:21][Info][Cursor] Position: 456 402 (2 0)
+[01:26:21][Info][Cursor] Position: 457 403 (1 1)
+[01:26:21][Info][Cursor] Position: 458 404 (1 1)
+[01:26:21][Info][Cursor] Position: 459 404 (1 0)
+[01:26:21][Info][Cursor] Position: 460 405 (1 1)
+[01:26:21][Info][Cursor] Position: 461 405 (1 0)
+[01:26:21][Info][Cursor] Position: 462 406 (1 1)
+[01:26:21][Info][Cursor] Position: 463 406 (1 0)
+[01:26:21][Info][Cursor] Position: 464 407 (1 1)
+[01:26:21][Info][Cursor] Position: 465 407 (1 0)
+[01:26:23][Info][Cursor] Position: 466 407 (1 0)
+[01:26:23][Info][Cursor] Position: 468 407 (2 0)
+[01:26:23][Info][Cursor] Position: 470 407 (2 0)
+[01:26:23][Info][Cursor] Position: 473 407 (3 0)
+[01:26:23][Info][Cursor] Position: 474 407 (1 0)
+[01:26:23][Info][Cursor] Position: 477 406 (3 -1)
+[01:26:23][Info][Cursor] Position: 481 406 (4 0)
+[01:26:23][Info][Cursor] Position: 482 405 (1 -1)
+[01:26:23][Info][Cursor] Position: 483 405 (1 0)
+[01:26:23][Info][Cursor] Position: 487 405 (4 0)
+[01:26:23][Info][Cursor] Position: 488 405 (1 0)
+[01:26:23][Info][Cursor] Position: 493 404 (5 -1)
+[01:26:23][Info][Cursor] Position: 499 403 (6 -1)
+[01:26:23][Info][Cursor] Position: 507 403 (8 0)
+[01:26:23][Info][Cursor] Position: 508 403 (1 0)
+[01:26:23][Info][Cursor] Position: 509 403 (1 0)
+[01:26:23][Info][Cursor] Position: 510 402 (1 -1)
+[01:26:23][Info][Cursor] Position: 515 402 (5 0)
+[01:26:23][Info][Cursor] Position: 523 402 (8 0)
+[01:26:23][Info][Cursor] Position: 531 401 (8 -1)
+[01:26:23][Info][Cursor] Position: 540 401 (9 0)
+[01:26:23][Info][Cursor] Position: 548 401 (8 0)
+[01:26:23][Info][Cursor] Position: 556 400 (8 -1)
+[01:26:23][Info][Cursor] Position: 557 400 (1 0)
+[01:26:23][Info][Cursor] Position: 558 400 (1 0)
+[01:26:23][Info][Cursor] Position: 565 400 (7 0)
+[01:26:23][Info][Cursor] Position: 572 400 (7 0)
+[01:26:23][Info][Cursor] Position: 574 400 (2 0)
+[01:26:23][Info][Cursor] Position: 575 400 (1 0)
+[01:26:23][Info][Cursor] Position: 582 400 (7 0)
+[01:26:23][Info][Cursor] Position: 583 400 (1 0)
+[01:26:23][Info][Cursor] Position: 584 400 (1 0)
+[01:26:23][Info][Cursor] Position: 589 399 (5 -1)
+[01:26:23][Info][Cursor] Position: 590 399 (1 0)
+[01:26:23][Info][Cursor] Position: 591 399 (1 0)
+[01:26:23][Info][Cursor] Position: 598 399 (7 0)
+[01:26:23][Info][Cursor] Position: 599 399 (1 0)
+[01:26:23][Info][Cursor] Position: 600 399 (1 0)
+[01:26:23][Info][Cursor] Position: 601 399 (1 0)
+[01:26:23][Info][Cursor] Position: 602 399 (1 0)
+[01:26:23][Info][Cursor] Position: 606 399 (4 0)
+[01:26:23][Info][Cursor] Position: 607 399 (1 0)
+[01:26:23][Info][Cursor] Position: 608 399 (1 0)
+[01:26:23][Info][Cursor] Position: 614 399 (6 0)
+[01:26:23][Info][Cursor] Position: 615 399 (1 0)
+[01:26:23][Info][Cursor] Position: 616 399 (1 0)
+[01:26:23][Info][Cursor] Position: 622 399 (6 0)
+[01:26:23][Info][Cursor] Position: 623 399 (1 0)
+[01:26:23][Info][Cursor] Position: 625 399 (2 0)
+[01:26:23][Info][Cursor] Position: 629 399 (4 0)
+[01:26:23][Info][Cursor] Position: 630 399 (1 0)
+[01:26:23][Info][Cursor] Position: 631 399 (1 0)
+[01:26:23][Info][Cursor] Position: 635 399 (4 0)
+[01:26:23][Info][Cursor] Position: 636 399 (1 0)
+[01:26:23][Info][Cursor] Position: 642 399 (6 0)
+[01:26:23][Info][Cursor] Position: 647 399 (5 0)
+[01:26:23][Info][Cursor] Position: 648 399 (1 0)
+[01:26:23][Info][Cursor] Position: 649 399 (1 0)
+[01:26:23][Info][Cursor] Position: 652 399 (3 0)
+[01:26:23][Info][Cursor] Position: 657 399 (5 0)
+[01:26:23][Info][Cursor] Position: 658 399 (1 0)
+[01:26:23][Info][Cursor] Position: 662 399 (4 0)
+[01:26:23][Info][Cursor] Position: 667 399 (5 0)
+[01:26:23][Info][Cursor] Position: 668 399 (1 0)
+[01:26:23][Info][Cursor] Position: 669 399 (1 0)
+[01:26:23][Info][Cursor] Position: 672 399 (3 0)
+[01:26:23][Info][Cursor] Position: 677 399 (5 0)
+[01:26:23][Info][Cursor] Position: 683 398 (6 -1)
+[01:26:23][Info][Cursor] Position: 688 398 (5 0)
+[01:26:23][Info][Cursor] Position: 692 397 (4 -1)
+[01:26:23][Info][Cursor] Position: 693 397 (1 0)
+[01:26:23][Info][Cursor] Position: 694 397 (1 0)
+[01:26:23][Info][Cursor] Position: 695 397 (1 0)
+[01:26:23][Info][Cursor] Position: 698 397 (3 0)
+[01:26:23][Info][Cursor] Position: 699 397 (1 0)
+[01:26:23][Info][Cursor] Position: 703 397 (4 0)
+[01:26:23][Info][Cursor] Position: 704 397 (1 0)
+[01:26:23][Info][Cursor] Position: 705 397 (1 0)
+[01:26:23][Info][Cursor] Position: 709 396 (4 -1)
+[01:26:23][Info][Cursor] Position: 714 396 (5 0)
+[01:26:23][Info][Cursor] Position: 715 396 (1 0)
+[01:26:23][Info][Cursor] Position: 719 396 (4 0)
+[01:26:23][Info][Cursor] Position: 723 396 (4 0)
+[01:26:23][Info][Cursor] Position: 724 396 (1 0)
+[01:26:23][Info][Cursor] Position: 728 395 (4 -1)
+[01:26:23][Info][Cursor] Position: 729 395 (1 0)
+[01:26:23][Info][Cursor] Position: 732 395 (3 0)
+[01:26:23][Info][Cursor] Position: 733 395 (1 0)
+[01:26:23][Info][Cursor] Position: 736 395 (3 0)
+[01:26:23][Info][Cursor] Position: 737 395 (1 0)
+[01:26:23][Info][Cursor] Position: 741 395 (4 0)
+[01:26:24][Info][Cursor] Position: 745 395 (4 0)
+[01:26:24][Info][Cursor] Position: 746 395 (1 0)
+[01:26:24][Info][Cursor] Position: 749 395 (3 0)
+[01:26:24][Info][Cursor] Position: 750 395 (1 0)
+[01:26:24][Info][Cursor] Position: 754 395 (4 0)
+[01:26:24][Info][Cursor] Position: 758 395 (4 0)
+[01:26:24][Info][Cursor] Position: 759 395 (1 0)
+[01:26:24][Info][Cursor] Position: 762 395 (3 0)
+[01:26:24][Info][Cursor] Position: 763 395 (1 0)
+[01:26:24][Info][Cursor] Position: 764 395 (1 0)
+[01:26:24][Info][Cursor] Position: 767 395 (3 0)
+[01:26:24][Info][Cursor] Position: 771 395 (4 0)
+[01:26:24][Info][Cursor] Position: 774 394 (3 -1)
+[01:26:24][Info][Cursor] Position: 775 394 (1 0)
+[01:26:24][Info][Cursor] Position: 778 394 (3 0)
+[01:26:24][Info][Cursor] Position: 780 394 (2 0)
+[01:26:24][Info][Cursor] Position: 782 394 (2 0)
+[01:26:24][Info][Cursor] Position: 783 394 (1 0)
+[01:26:24][Info][Cursor] Position: 784 394 (1 0)
+[01:26:24][Info][Cursor] Position: 785 394 (1 0)
+[01:26:24][Info][Cursor] Position: 786 394 (1 0)
+[01:26:24][Info][Cursor] Position: 787 394 (1 0)
+[01:26:24][Info][Cursor] Position: 788 394 (1 0)
+[01:26:24][Info][Cursor] Position: 789 394 (1 0)
+[01:26:24][Info][Cursor] Position: 789 393 (0 -1)
+[01:26:24][Info][Cursor] Position: 790 393 (1 0)
+[01:26:24][Info][Cursor] Position: 791 393 (1 0)
+[01:26:24][Info][Cursor] Position: 792 393 (1 0)
+[01:26:24][Info][Cursor] Position: 793 393 (1 0)
+[01:26:24][Info][Cursor] Position: 794 393 (1 0)
+[01:26:24][Info][Cursor] Position: 795 393 (1 0)
+[01:26:24][Info][Cursor] Position: 796 393 (1 0)
+[01:26:24][Info][Cursor] Position: 797 393 (1 0)
+[01:26:24][Info][Cursor] Position: 798 393 (1 0)
+[01:26:24][Info][Cursor] Position: 799 393 (1 0)
+[01:26:25][Info][Cursor] Position: 799 390 (0 -3)
+[01:26:25][Info][Cursor] Position: 798 390 (-1 0)
+[01:26:25][Info][Cursor] Position: 798 389 (0 -1)
+[01:26:25][Info][Cursor] Position: 797 389 (-1 0)
+[01:26:25][Info][Cursor] Position: 796 389 (-1 0)
+[01:26:25][Info][Cursor] Position: 795 389 (-1 0)
+[01:26:26][Info][Cursor] Position: 794 389 (-1 0)
+[01:26:26][Info][Cursor] Position: 794 388 (0 -1)
+[01:26:26][Info][Cursor] Position: 793 388 (-1 0)
+[01:26:26][Info][Cursor] Position: 792 388 (-1 0)
+[01:26:26][Info][Cursor] Position: 792 387 (0 -1)
+[01:26:26][Info][Cursor] Position: 791 387 (-1 0)
+[01:26:26][Info][Cursor] Position: 790 387 (-1 0)
+[01:26:26][Info][Cursor] Position: 789 386 (-1 -1)
+[01:26:26][Info][Cursor] Position: 788 386 (-1 0)
+[01:26:26][Info][Cursor] Position: 787 386 (-1 0)
+[01:26:26][Info][Cursor] Position: 786 385 (-1 -1)
+[01:26:26][Info][Cursor] Position: 785 385 (-1 0)
+[01:26:26][Info][Cursor] Position: 784 385 (-1 0)
+[01:26:26][Info][Cursor] Position: 784 384 (0 -1)
+[01:26:26][Info][Cursor] Position: 783 384 (-1 0)
+[01:26:26][Info][Cursor] Position: 782 384 (-1 0)
+[01:26:26][Info][Cursor] Position: 781 383 (-1 -1)
+[01:26:26][Info][Cursor] Position: 780 383 (-1 0)
+[01:26:26][Info][Cursor] Position: 779 383 (-1 0)
+[01:26:26][Info][Cursor] Position: 778 382 (-1 -1)
+[01:26:26][Info][Cursor] Position: 777 382 (-1 0)
+[01:26:26][Info][Cursor] Position: 776 382 (-1 0)
+[01:26:26][Info][Cursor] Position: 776 381 (0 -1)
+[01:26:26][Info][Cursor] Position: 775 381 (-1 0)
+[01:26:26][Info][Cursor] Position: 774 381 (-1 0)
+[01:26:26][Info][Cursor] Position: 773 381 (-1 0)
+[01:26:26][Info][Cursor] Position: 773 380 (0 -1)
+[01:26:26][Info][Cursor] Position: 772 380 (-1 0)
+[01:26:26][Info][Cursor] Position: 771 380 (-1 0)
+[01:26:26][Info][Cursor] Position: 770 380 (-1 0)
+[01:26:26][Info][Cursor] Position: 769 379 (-1 -1)
+[01:26:26][Info][Cursor] Position: 768 379 (-1 0)
+[01:26:26][Info][Cursor] Position: 767 379 (-1 0)
+[01:26:26][Info][Cursor] Position: 766 378 (-1 -1)
+[01:26:26][Info][Cursor] Position: 765 378 (-1 0)
+[01:26:26][Info][Cursor] Position: 764 378 (-1 0)
+[01:26:26][Info][Cursor] Position: 763 378 (-1 0)
+[01:26:26][Info][Cursor] Position: 763 377 (0 -1)
+[01:26:26][Info][Cursor] Position: 762 377 (-1 0)
+[01:26:26][Info][Cursor] Position: 761 377 (-1 0)
+[01:26:26][Info][Cursor] Position: 760 377 (-1 0)
+[01:26:26][Info][Cursor] Position: 759 376 (-1 -1)
+[01:26:26][Info][Cursor] Position: 758 376 (-1 0)
+[01:26:26][Info][Cursor] Position: 757 376 (-1 0)
+[01:26:26][Info][Cursor] Position: 756 376 (-1 0)
+[01:26:26][Info][Cursor] Position: 756 375 (0 -1)
+[01:26:26][Info][Cursor] Position: 755 375 (-1 0)
+[01:26:26][Info][Cursor] Position: 754 375 (-1 0)
+[01:26:26][Info][Cursor] Position: 753 375 (-1 0)
+[01:26:26][Info][Cursor] Position: 752 374 (-1 -1)
+[01:26:26][Info][Cursor] Position: 751 374 (-1 0)
+[01:26:26][Info][Cursor] Position: 750 374 (-1 0)
+[01:26:26][Info][Cursor] Position: 749 374 (-1 0)
+[01:26:26][Info][Cursor] Position: 748 373 (-1 -1)
+[01:26:26][Info][Cursor] Position: 747 373 (-1 0)
+[01:26:26][Info][Cursor] Position: 746 373 (-1 0)
+[01:26:26][Info][Cursor] Position: 744 372 (-2 -1)
+[01:26:26][Info][Cursor] Position: 742 372 (-2 0)
+[01:26:26][Info][Cursor] Position: 741 371 (-1 -1)
+[01:26:26][Info][Cursor] Position: 740 371 (-1 0)
+[01:26:26][Info][Cursor] Position: 738 370 (-2 -1)
+[01:26:26][Info][Cursor] Position: 737 370 (-1 0)
+[01:26:26][Info][Cursor] Position: 735 369 (-2 -1)
+[01:26:26][Info][Cursor] Position: 733 369 (-2 0)
+[01:26:26][Info][Cursor] Position: 730 368 (-3 -1)
+[01:26:26][Info][Cursor] Position: 728 367 (-2 -1)
+[01:26:26][Info][Cursor] Position: 727 367 (-1 0)
+[01:26:26][Info][Cursor] Position: 725 366 (-2 -1)
+[01:26:26][Info][Cursor] Position: 724 366 (-1 0)
+[01:26:26][Info][Cursor] Position: 721 365 (-3 -1)
+[01:26:26][Info][Cursor] Position: 720 365 (-1 0)
+[01:26:26][Info][Cursor] Position: 717 364 (-3 -1)
+[01:26:26][Info][Cursor] Position: 716 364 (-1 0)
+[01:26:26][Info][Cursor] Position: 715 363 (-1 -1)
+[01:26:26][Info][Cursor] Position: 712 362 (-3 -1)
+[01:26:26][Info][Cursor] Position: 711 362 (-1 0)
+[01:26:26][Info][Cursor] Position: 710 362 (-1 0)
+[01:26:26][Info][Cursor] Position: 710 361 (0 -1)
+[01:26:26][Info][Cursor] Position: 709 361 (-1 0)
+[01:26:26][Info][Cursor] Position: 706 360 (-3 -1)
+[01:26:26][Info][Cursor] Position: 705 360 (-1 0)
+[01:26:26][Info][Cursor] Position: 700 359 (-5 -1)
+[01:26:26][Info][Cursor] Position: 694 357 (-6 -2)
+[01:26:26][Info][Cursor] Position: 687 355 (-7 -2)
+[01:26:26][Info][Cursor] Position: 686 355 (-1 0)
+[01:26:26][Info][Cursor] Position: 681 353 (-5 -2)
+[01:26:26][Info][Cursor] Position: 680 353 (-1 0)
+[01:26:26][Info][Cursor] Position: 679 353 (-1 0)
+[01:26:26][Info][Cursor] Position: 678 352 (-1 -1)
+[01:26:26][Info][Cursor] Position: 677 352 (-1 0)
+[01:26:26][Info][Cursor] Position: 674 351 (-3 -1)
+[01:26:26][Info][Cursor] Position: 673 351 (-1 0)
+[01:26:26][Info][Cursor] Position: 672 351 (-1 0)
+[01:26:26][Info][Cursor] Position: 666 349 (-6 -2)
+[01:26:26][Info][Cursor] Position: 665 349 (-1 0)
+[01:26:26][Info][Cursor] Position: 659 347 (-6 -2)
+[01:26:26][Info][Cursor] Position: 658 347 (-1 0)
+[01:26:26][Info][Cursor] Position: 651 345 (-7 -2)
+[01:26:26][Info][Cursor] Position: 650 345 (-1 0)
+[01:26:26][Info][Cursor] Position: 643 343 (-7 -2)
+[01:26:26][Info][Cursor] Position: 641 343 (-2 0)
+[01:26:26][Info][Cursor] Position: 634 341 (-7 -2)
+[01:26:26][Info][Cursor] Position: 633 340 (-1 -1)
+[01:26:27][Info][Cursor] Position: 626 338 (-7 -2)
+[01:26:27][Info][Cursor] Position: 625 338 (-1 0)
+[01:26:27][Info][Cursor] Position: 617 336 (-8 -2)
+[01:26:27][Info][Cursor] Position: 616 336 (-1 0)
+[01:26:27][Info][Cursor] Position: 615 335 (-1 -1)
+[01:26:27][Info][Cursor] Position: 608 334 (-7 -1)
+[01:26:27][Info][Cursor] Position: 607 333 (-1 -1)
+[01:26:27][Info][Cursor] Position: 600 331 (-7 -2)
+[01:26:27][Info][Cursor] Position: 591 329 (-9 -2)
+[01:26:27][Info][Cursor] Position: 590 329 (-1 0)
+[01:26:27][Info][Cursor] Position: 588 328 (-2 -1)
+[01:26:27][Info][Cursor] Position: 582 327 (-6 -1)
+[01:26:27][Info][Cursor] Position: 581 326 (-1 -1)
+[01:26:27][Info][Cursor] Position: 573 324 (-8 -2)
+[01:26:27][Info][Cursor] Position: 564 321 (-9 -3)
+[01:26:27][Info][Cursor] Position: 555 319 (-9 -2)
+[01:26:27][Info][Cursor] Position: 546 317 (-9 -2)
+[01:26:27][Info][Cursor] Position: 545 316 (-1 -1)
+[01:26:27][Info][Cursor] Position: 543 316 (-2 0)
+[01:26:27][Info][Cursor] Position: 538 315 (-5 -1)
+[01:26:27][Info][Cursor] Position: 537 314 (-1 -1)
+[01:26:27][Info][Cursor] Position: 536 314 (-1 0)
+[01:26:27][Info][Cursor] Position: 535 314 (-1 0)
+[01:26:27][Info][Cursor] Position: 530 312 (-5 -2)
+[01:26:27][Info][Cursor] Position: 528 312 (-2 0)
+[01:26:27][Info][Cursor] Position: 527 312 (-1 0)
+[01:26:27][Info][Cursor] Position: 520 309 (-7 -3)
+[01:26:27][Info][Cursor] Position: 519 309 (-1 0)
+[01:26:27][Info][Cursor] Position: 511 307 (-8 -2)
+[01:26:27][Info][Cursor] Position: 502 305 (-9 -2)
+[01:26:27][Info][Cursor] Position: 501 304 (-1 -1)
+[01:26:27][Info][Cursor] Position: 494 303 (-7 -1)
+[01:26:27][Info][Cursor] Position: 493 302 (-1 -1)
+[01:26:27][Info][Cursor] Position: 492 302 (-1 0)
+[01:26:27][Info][Cursor] Position: 490 302 (-2 0)
+[01:26:27][Info][Cursor] Position: 489 301 (-1 -1)
+[01:26:27][Info][Cursor] Position: 488 301 (-1 0)
+[01:26:27][Info][Cursor] Position: 486 301 (-2 0)
+[01:26:27][Info][Cursor] Position: 476 298 (-10 -3)
+[01:26:27][Info][Cursor] Position: 474 297 (-2 -1)
+[01:26:27][Info][Cursor] Position: 473 297 (-1 0)
+[01:26:27][Info][Cursor] Position: 466 295 (-7 -2)
+[01:26:27][Info][Cursor] Position: 464 295 (-2 0)
+[01:26:27][Info][Cursor] Position: 463 295 (-1 0)
+[01:26:27][Info][Cursor] Position: 456 293 (-7 -2)
+[01:26:27][Info][Cursor] Position: 454 292 (-2 -1)
+[01:26:27][Info][Cursor] Position: 445 290 (-9 -2)
+[01:26:27][Info][Cursor] Position: 444 290 (-1 0)
+[01:26:27][Info][Cursor] Position: 435 288 (-9 -2)
+[01:26:27][Info][Cursor] Position: 433 287 (-2 -1)
+[01:26:27][Info][Cursor] Position: 424 285 (-9 -2)
+[01:26:27][Info][Cursor] Position: 423 285 (-1 0)
+[01:26:27][Info][Cursor] Position: 414 283 (-9 -2)
+[01:26:27][Info][Cursor] Position: 404 281 (-10 -2)
+[01:26:27][Info][Cursor] Position: 395 278 (-9 -3)
+[01:26:27][Info][Cursor] Position: 386 276 (-9 -2)
+[01:26:27][Info][Cursor] Position: 377 274 (-9 -2)
+[01:26:27][Info][Cursor] Position: 376 274 (-1 0)
+[01:26:27][Info][Cursor] Position: 375 274 (-1 0)
+[01:26:27][Info][Cursor] Position: 374 274 (-1 0)
+[01:26:27][Info][Cursor] Position: 373 273 (-1 -1)
+[01:26:27][Info][Cursor] Position: 369 273 (-4 0)
+[01:26:27][Info][Cursor] Position: 362 271 (-7 -2)
+[01:26:27][Info][Cursor] Position: 356 269 (-6 -2)
+[01:26:27][Info][Cursor] Position: 355 269 (-1 0)
+[01:26:27][Info][Cursor] Position: 354 269 (-1 0)
+[01:26:27][Info][Cursor] Position: 349 268 (-5 -1)
+[01:26:27][Info][Cursor] Position: 347 267 (-2 -1)
+[01:26:27][Info][Cursor] Position: 343 266 (-4 -1)
+[01:26:27][Info][Cursor] Position: 342 266 (-1 0)
+[01:26:27][Info][Cursor] Position: 338 264 (-4 -2)
+[01:26:27][Info][Cursor] Position: 337 264 (-1 0)
+[01:26:27][Info][Cursor] Position: 332 263 (-5 -1)
+[01:26:27][Info][Cursor] Position: 328 262 (-4 -1)
+[01:26:27][Info][Cursor] Position: 327 261 (-1 -1)
+[01:26:27][Info][Cursor] Position: 326 261 (-1 0)
+[01:26:27][Info][Cursor] Position: 323 260 (-3 -1)
+[01:26:27][Info][Cursor] Position: 319 259 (-4 -1)
+[01:26:27][Info][Cursor] Position: 316 258 (-3 -1)
+[01:26:27][Info][Cursor] Position: 313 257 (-3 -1)
+[01:26:27][Info][Cursor] Position: 311 257 (-2 0)
+[01:26:27][Info][Cursor] Position: 310 257 (-1 0)
+[01:26:27][Info][Cursor] Position: 308 256 (-2 -1)
+[01:26:27][Info][Cursor] Position: 307 256 (-1 0)
+[01:26:27][Info][Cursor] Position: 306 255 (-1 -1)
+[01:26:27][Info][Cursor] Position: 305 255 (-1 0)
+[01:26:27][Info][Cursor] Position: 304 255 (-1 0)
+[01:26:27][Info][Cursor] Position: 304 254 (0 -1)
+[01:26:27][Info][Cursor] Position: 303 254 (-1 0)
+[01:26:28][Debug][Application] Shutting down TRAP Modules...
+[01:26:28][Info][Input][Controller] Controller:  (0) Disconnected!
+[01:26:28][Info][Input][Controller] Controller:  (1) Disconnected!
+[01:26:28][Info][Input][Controller] Controller:  (2) Disconnected!
+[01:26:28][Info][Input][Controller] Controller:  (3) Disconnected!
+[01:26:28][Info][Input][Controller] Controller:  (4) Disconnected!
+[01:26:28][Info][Input][Controller] Controller:  (5) Disconnected!
+[01:26:28][Info][Input][Controller] Controller:  (6) Disconnected!
+[01:26:28][Info][Input][Controller] Controller:  (7) Disconnected!
+[01:26:28][Info][Input][Controller] Controller:  (8) Disconnected!
+[01:26:28][Info][Input][Controller] Controller:  (9) Disconnected!
+[01:26:28][Info][Input][Controller] Controller:  (10) Disconnected!
+[01:26:28][Info][Input][Controller] Controller:  (11) Disconnected!
+[01:26:28][Info][Input][Controller] Controller:  (12) Disconnected!
+[01:26:28][Info][Input][Controller] Controller:  (13) Disconnected!
+[01:26:28][Info][Input][Controller] Controller:  (14) Disconnected!
+[01:26:28][Info][Input][Controller] Controller:  (15) Disconnected!
+[01:26:28][Debug][LayerStack] Destroying Layer: Cursor
+[01:26:28][Debug][LayerStack] Destroying Layer: ImGuiLayer
+[01:26:28][Trace][Config] Width = 800
+[01:26:28][Trace][Config] Height = 600
+[01:26:28][Trace][Config] RefreshRate = 144
+[01:26:28][Trace][Config] VSync = 1
+[01:26:28][Trace][Config] FPSLimit = 0
+[01:26:28][Trace][Config] DisplayMode = Windowed
+[01:26:28][Trace][Config] Maximized = FALSE
+[01:26:28][Trace][Config] Monitor = 0
+[01:26:28][Trace][Config] RenderAPI = OpenGL
+[01:26:28][Trace][Config] Size: 9
+[01:26:28][Info][Config] Saving: Engine.cfg
+[01:26:28][Debug][Renderer2D] Shutting down
+[01:26:28][Debug][TextureManager] Destroying Textures
+[01:26:28][Debug][Texture2D][OpenGL] Destroying Texture2D: "Renderer2DWhite"
+[01:26:28][Debug][Texture2D][OpenGL] Destroying Texture2D: "Fallback2D"
+[01:26:28][Debug][TextureCube][OpenGL] Destroying TextureCube: "FallbackCube"
+[01:26:28][Debug][ShaderManager] Destroying Shaders
+[01:26:28][Debug][Shader][OpenGL] Destroying Shader: "Fallback"
+[01:26:28][Debug][Shader][OpenGL] Destroying Shader: "Renderer2D"
+[01:26:28][Debug][Renderer][OpenGL] Destroying Renderer
+[01:26:28][Debug][Context][OpenGL] Destroying Context
+[01:26:28][Debug][Window] Destroying Window: "Cursor"
+[01:26:28][Debug][VFS] Shutting down Virtual File System
+[01:26:28][Info][Logger] Saving Log.txt

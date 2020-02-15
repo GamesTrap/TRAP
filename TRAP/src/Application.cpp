@@ -97,7 +97,8 @@ TRAP::Application::Application()
 			height,
 			refreshRate,
 			displayMode,
-			WindowProps::Advanced{
+			WindowProps::Advanced
+			{
 				vsync,
 				true,
 				maximized,
@@ -111,7 +112,7 @@ TRAP::Application::Application()
 			monitor
 		)
 	);
-	m_window->SetEventCallback([this](Event& e) {OnEvent(e); });
+	m_window->SetEventCallback([this](Event& e) { OnEvent(e); });
 
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
@@ -324,16 +325,16 @@ void TRAP::Application::PushOverlay(Scope<Layer> overlay) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::Config* TRAP::Application::GetConfig()
+const TRAP::Utils::Config& TRAP::Application::GetConfig()
 {
-	return &m_config;
+	return s_Instance->m_config;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::LayerStack& TRAP::Application::GetLayerStack() const
-{
-	return *m_layerStack;
+TRAP::LayerStack& TRAP::Application::GetLayerStack()
+{	
+	return *s_Instance->m_layerStack;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

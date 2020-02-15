@@ -110,11 +110,20 @@ std::string ReadTextFile(const std::filesystem::path& filePath)
 	std::ifstream file(filePath);
 	if (file.is_open())
 	{
-		std::stringstream buffer;
-		buffer << file.rdbuf();
+		std::string line;
+		std::string result;
+
+		while (std::getline(file, line))
+		{
+			if (line.back() == '\r')
+				line.pop_back();
+
+			result += line;
+			result += '\n';
+		}
 
 		file.close();
-		return buffer.str();
+		return result;
 	}
 
 	std::cout << "Could not open File: " << filePath << '\n';
@@ -589,8 +598,8 @@ std::unique_ptr<glslang::TShader> PreProcessGLSLForSPIRV(const char* source, con
 		shader->setEnvInput(glslang::EShSourceGlsl, EShLangCompute, glslang::EShClientVulkan, 460);
 	}
 
-	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_1);
-	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_3); //TODO Update to SPIRV 1.4
+	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_2);
+	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_5);
 	DirStackFileIncluder includer;
 	if (!shader->preprocess(&glslang::DefaultTBuiltInResource,
 		460,

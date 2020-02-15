@@ -136,7 +136,6 @@ void TRAP::ImGuiLayer::End()
 
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
-
 		INTERNAL::WindowingAPI::InternalWindow* backupCurrentContext = nullptr;
 /*#ifdef TRAP_PLATFORM_WINDOWS
 		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::D3D12)

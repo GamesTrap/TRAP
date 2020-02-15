@@ -95,8 +95,9 @@ std::string TRAP::FileSystem::ReadTextFile(const std::filesystem::path& filePath
 
 			while (std::getline(file, line))
 			{
-				if (line.back() == '\r')
-					line.pop_back();
+				if(!line.empty())
+					if (line.back() == '\r')
+						line.pop_back();
 				
 				result += line;
 				result += '\n';
@@ -126,8 +127,9 @@ std::string TRAP::FileSystem::SilentReadTextFile(const std::filesystem::path& fi
 
 			while (std::getline(file, line))
 			{
-				if (line.back() == '\r')
-					line.pop_back();
+				if(!line.empty())
+					if (line.back() == '\r')
+						line.pop_back();
 				
 				result += line;
 				result += '\n';

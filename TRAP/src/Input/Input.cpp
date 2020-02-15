@@ -280,6 +280,26 @@ void TRAP::Input::SetControllerVibration(Controller controller, const float left
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Input::SetMousePosition(const float x, const float y)
+{
+	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow()), x, y);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Input::SetMousePosition(const float x, const float y, const Scope<Window>& window)
+{
+	if (!window)
+	{
+		TP_WARN("[Input] Tried to pass nullptr to SetMousePosition!");
+		return;
+	}
+
+	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), x, y);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Input::SetClipboard(const std::string& str)
 {
 	INTERNAL::WindowingAPI::SetClipboardString(str);

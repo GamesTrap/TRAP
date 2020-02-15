@@ -128,6 +128,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#getallcontrollerbuttons">GetAllControllerButtons</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getallcontrollerdpads">GetAllControllerDPads</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#setcontrollervibration">SetControllerVibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setmouseposition">SetMousePosition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#setclipboard">SetClipboard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getclipboard">GetClipboard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#seteventcallback">SetEventCallback</a></li>
@@ -797,6 +798,24 @@
 <p class="admonition-title">Warning</p>
 <p>This function only works on Windows with Controllers that are XInput capable</p>
 </div>
+</div>
+<div class="section" id="setmouseposition">
+<h2>SetMousePosition<a class="headerlink" href="#setmouseposition" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">SetMousePosition</span><span class="p">(</span><span class="k">const</span> <span class="kt">float</span> <span class="n">x</span><span class="p">,</span> <span class="k">const</span> <span class="kt">float</span> <span class="n">y</span><span class="p">,</span> <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">&gt;&amp;</span> <span class="n">window</span> <span class="o">=</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Application</span><span class="o">::</span><span class="n">GetWindow</span><span class="p">());</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Sets the position(x, y) of the Mouse for the specified TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">x</span></code> Specifies the x coordinate to set the Mouse to</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">y</span></code> Specifies the y coordinate to set the Mouse to</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">window</span></code> Specifies the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> to set the Mouse position for</p></li>
+</ul>
 </div>
 <div class="section" id="setclipboard">
 <h2>SetClipboard<a class="headerlink" href="#setclipboard" title="Permalink to this headline">¶</a></h2>

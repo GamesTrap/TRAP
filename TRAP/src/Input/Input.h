@@ -254,6 +254,9 @@ namespace TRAP
 
 		static void SetControllerVibration(Controller controller, float leftMotor, float rightMotor);
 
+		static void SetMousePosition(float x, float y);
+		static void SetMousePosition(float x, float y, const Scope<Window>& window);
+		
 		static void SetClipboard(const std::string& str);
 		static std::string GetClipboard();
 		

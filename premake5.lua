@@ -223,7 +223,75 @@ project "Sandbox"
 		optimize "On"
 
 	filter "configurations:RelWithDebInfo"
-		defines "TRAP_RelWithDebInfo"
+		defines "TRAP_RELWITHDEBINFO"
+		runtime "Release"
+		optimize "On"
+
+project "Tests"
+	location "Tests"
+	kind "ConsoleApp"
+	language "C++"
+	staticruntime "on"
+	cppdialect "C++17"
+	systemversion "latest"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+
+	includedirs
+	{
+		"TRAP/src",
+		"%{IncludeDir.IMGUI}",
+		"%{IncludeDir.GLSLANG}",
+		"%{IncludeDir.SPIRV}",
+		"%{IncludeDir.STANDALONE}",
+		"%{IncludeDir.VULKAN}/Include/",
+		"%{IncludeDir.SPIRVCROSS}"
+	}
+
+	links
+	{
+		"TRAP"
+	}
+
+	filter "system:linux"
+		links
+		{
+			"ImGui",
+			"GLSLang",
+			"SPIRV",
+			"StandAlone",
+			"vulkan",
+
+			"dl",
+			"pthread",
+			"X11",
+			"HLSL",
+			"OGLCompiler",
+			"OSDependent",
+			"SPIRV-Cross-Core",
+			"SPIRV-Cross-GLSL",
+			"SPIRV-Cross-HLSL"
+		}
+
+	filter "configurations:Debug"
+		defines "TRAP_DEBUG"
+		runtime "Debug"
+		symbols "On"
+
+	filter "configurations:Release"
+		defines "TRAP_RELEASE"
+		runtime "Release"
+		optimize "On"
+
+	filter "configurations:RelWithDebInfo"
+		defines "TRAP_RELWITHDEBINFO"
 		runtime "Release"
 		optimize "On"
 
@@ -234,16 +302,16 @@ project "ConvertToSPIRV"
 	staticruntime "on"
 	cppdialect "C++17"
 	systemversion "latest"
-	
+
 	targetdir ("bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
-	
+
 	files
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"
 	}
-	
+
 	includedirs
 	{
 		"%{IncludeDir.GLSLANG}",
@@ -258,7 +326,7 @@ project "ConvertToSPIRV"
 			"SPIRV",
 			"StandAlone"
 		}
-	
+
 	filter "system:linux"
 		links
 		{
@@ -272,25 +340,25 @@ project "ConvertToSPIRV"
 			"OGLCompiler",
 			"OSDependent"
 		}
-	
+
 	filter "system:macosx"
 		links
 		{
 			"GLSLang",
 			"SPIRV",
 			"StandAlone",
-	
+
 			"c++fs"
 		}
-	
+
 		filter "configurations:Debug"
 			runtime "Debug"
 			symbols "On"
-	
+
 		filter "configurations:Release"
 			runtime "Release"
 			optimize "On"
-	
+
 		filter "configurations:RelWithDebInfo"
 			runtime "Release"
 			optimize "On"

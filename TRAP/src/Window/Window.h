@@ -67,7 +67,7 @@ namespace TRAP
 		void SetVSyncInterval(uint32_t interval);
 		void SetCursorMode(const CursorMode& mode);
 		void SetCursorType(const CursorType& cursor) const;
-		void SetCursorIcon(const Scope<Image>& image) const;
+		void SetCursorIcon(const Scope<Image>& image, int32_t xHotspot = 0, int32_t yHotspot = 0) const;
 		void SetRawMouseInput(bool enabled);
 		void SetIcon() const;
 		void SetIcon(const Scope<Image>& image) const;

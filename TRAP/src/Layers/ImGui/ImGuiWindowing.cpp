@@ -9,6 +9,7 @@ std::array<bool, 5> TRAP::INTERNAL::ImGuiWindowing::s_mouseJustPressed{};
 std::array<TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor>, ImGuiMouseCursor_COUNT> TRAP::INTERNAL::ImGuiWindowing::s_mouseCursors{};
 bool TRAP::INTERNAL::ImGuiWindowing::s_installedCallbacks = false;
 bool TRAP::INTERNAL::ImGuiWindowing::s_wantUpdateMonitors = true;
+TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::ImGuiWindowing::s_customCursor{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -72,6 +73,13 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 
 	//Update game controller (if enabled and available)
 	UpdateGamepads();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::ImGuiWindowing::SetCustomCursor(Scope<WindowingAPI::InternalCursor>& cursor)
+{
+	s_customCursor = std::move(cursor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -263,7 +271,8 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMousePosAndButtons()
 void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 {
 	ImGuiIO& io = ImGui::GetIO();
-	if ((io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) || WindowingAPI::GetCursorMode(s_window) == WindowingAPI::CursorMode::Disabled)
+	if ((io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) || (WindowingAPI::GetCursorMode(s_window) == WindowingAPI::CursorMode::Disabled ||
+		                                                            WindowingAPI::GetCursorMode(s_window) == WindowingAPI::CursorMode::Hidden))
 		return;
 
 	const ImGuiMouseCursor imguiCursor = ImGui::GetMouseCursor();
@@ -282,9 +291,22 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMouseCursor()
 		}
 		else
 		{
-			//Show OS mouse cursor
-			WindowingAPI::SetCursor(windowPtr, s_mouseCursors[imguiCursor] ? s_mouseCursors[imguiCursor].get() : s_mouseCursors[ImGuiMouseCursor_Arrow].get());
-			WindowingAPI::SetCursorMode(windowPtr, WindowingAPI::CursorMode::Normal);
+			if (imguiCursor != ImGuiMouseCursor_Arrow)
+			{
+				//Show OS mouse cursor
+				WindowingAPI::SetCursor(windowPtr, s_mouseCursors[imguiCursor] ? s_mouseCursors[imguiCursor].get() : s_mouseCursors[ImGuiMouseCursor_Arrow].get());
+				WindowingAPI::SetCursorMode(windowPtr, WindowingAPI::CursorMode::Normal);
+			}
+			else
+			{
+				if(s_customCursor)
+					WindowingAPI::SetCursor(windowPtr, s_customCursor.get());
+				else
+				{
+					WindowingAPI::SetCursor(windowPtr, s_mouseCursors[ImGuiMouseCursor_Arrow].get());
+					WindowingAPI::SetCursorMode(windowPtr, WindowingAPI::CursorMode::Normal);					
+				}
+			}
 		}
 	}
 }

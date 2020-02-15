@@ -48,8 +48,8 @@ namespace TRAP
 		void PushLayer(Scope<Layer> layer) const;
 		void PushOverlay(Scope<Layer> overlay) const;
 
-		Utils::Config* GetConfig();
-		LayerStack& GetLayerStack() const;
+		static const Utils::Config& GetConfig();
+		static LayerStack& GetLayerStack();
 
 		static uint32_t GetFPS();
 		static float GetFrameTime();

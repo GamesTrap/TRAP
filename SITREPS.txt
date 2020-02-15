@@ -852,3 +852,14 @@ SITREP 02/10/2020|20w07a1
     - Added XInput entries to ControllerMapping ~<20 mins
     - Fixed OrthographicCameraController not zooming until Controller trigger > 0.0 ~<10 mins
     - Fixed Windows builds ~>15 mins
+
+SITREP 02/11/2020|20w07a2
+    - Changed TRAP Engine version to 20w07a2(0.6.10)
+    - Updated ConvertToSPIRV tool for Vulkan 1.2 and SPIRV 1.5 ~<10 mins
+    - Really Fixed CRLF endings for Linux ~<10 mins
+    - Added Tests project. Used for future tests ~<20mins
+    - Validated Clipboard functionality on Windows ~<20 mins
+    - Fixed TRAP_RELWITHDEBINFO preprocessor in Sandbox & Tests ~<10 mins
+    - Added missing iterators to LayerStack ~<20 mins
+    - Validated Cursor functionality on Windows ~>30 mins
+    - Fixed ImGui overwriting Cursor the by Client ~>30 mins

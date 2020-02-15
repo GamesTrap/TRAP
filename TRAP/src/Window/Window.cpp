@@ -12,6 +12,7 @@
 #include "Graphics/Textures/TextureManager.h"
 #include "Input/Input.h"
 #include "Embed.h"
+#include "Layers/ImGui/ImGuiWindowing.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -192,7 +193,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w07a1]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][20w07a2]" + std::string(Graphics::Renderer::GetTitle());
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window.get(), newTitle);
 #else
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window.get(), m_data.Title);
@@ -210,15 +211,18 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 	//Only change windowed mode if resolution and refresh rate changed
 	if(m_data.displayMode == DisplayMode::Windowed && mode == DisplayMode::Windowed)
 	{
-		//Only update refresh rate used for Borderless or Fullscreen
-		if(m_data.RefreshRate != static_cast<int32_t>(refreshRate)) 
+		if (m_data.Width == static_cast<int32_t>(width) && m_data.Height == static_cast<int32_t>(height))
 		{
-			m_oldWindowedParams.RefreshRate = m_data.RefreshRate;
-			m_data.RefreshRate = refreshRate;
-		}
+			//Only update refresh rate used for Borderless or Fullscreen
+			if (m_data.RefreshRate != static_cast<int32_t>(refreshRate))
+			{
+				m_oldWindowedParams.RefreshRate = m_data.RefreshRate;
+				m_data.RefreshRate = refreshRate;
+			}
 
-		TP_WARN("[Window] \"", m_data.Title, "\" already uses DisplayMode Windowed!");
-		return;
+			TP_WARN("[Window] \"", m_data.Title, "\" already uses DisplayMode Windowed!");
+			return;
+		}
 	}
 	
 	//If currently windowed, stash the current size and position of the window
@@ -428,14 +432,18 @@ void TRAP::Window::SetCursorMode(const CursorMode& mode)
 
 void TRAP::Window::SetCursorType(const CursorType& cursor) const
 {
-	INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateStandardCursor(cursor).get());
+	Scope<INTERNAL::WindowingAPI::InternalCursor> internalCursor = INTERNAL::WindowingAPI::CreateStandardCursor(cursor);
+	INTERNAL::WindowingAPI::SetCursor(m_window.get(), internalCursor.get());
+	INTERNAL::ImGuiWindowing::SetCustomCursor(internalCursor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Window::SetCursorIcon(const Scope<Image>& image) const
+void TRAP::Window::SetCursorIcon(const Scope<Image>& image, const int32_t xHotspot, const int32_t yHotspot) const
 {
-	INTERNAL::WindowingAPI::SetCursor(m_window.get(), INTERNAL::WindowingAPI::CreateCursor(image, 0, 0).get());
+	Scope<INTERNAL::WindowingAPI::InternalCursor> cursor = INTERNAL::WindowingAPI::CreateCursor(image, xHotspot, yHotspot);
+	INTERNAL::WindowingAPI::SetCursor(m_window.get(), cursor.get());
+	INTERNAL::ImGuiWindowing::SetCustomCursor(cursor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -741,7 +749,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w07a1]";
+		"[INDEV][20w07a2]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif

@@ -11,6 +11,7 @@ namespace TRAP::INTERNAL
 		static bool InitForOpenGL(WindowingAPI::InternalWindow* window, bool installCallbacks);
 		static void Shutdown();
 		static void NewFrame();
+		static void SetCustomCursor(Scope<WindowingAPI::InternalCursor>& cursor);
 
 		static void MonitorCallback(const WindowingAPI::InternalMonitor* unused1, bool unused2);
 	private:
@@ -21,6 +22,7 @@ namespace TRAP::INTERNAL
 		static std::array<Scope<WindowingAPI::InternalCursor>, ImGuiMouseCursor_COUNT> s_mouseCursors;
 		static bool s_installedCallbacks;
 		static bool s_wantUpdateMonitors;
+		static Scope<WindowingAPI::InternalCursor> s_customCursor;
 
 		//Chain WindowingAPI callbacks for main viewport: our callbacks will call the user's previously installed callbacks, if any.
 		static WindowingAPI::MouseButtonFunc s_prevUserCallbackMouseButton;

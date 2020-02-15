@@ -72,3 +72,45 @@ std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::end()
 {
 	return m_layers.end();
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<std::unique_ptr<TRAP::Layer>>::reverse_iterator TRAP::LayerStack::rbegin()
+{
+	return m_layers.rbegin();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<std::unique_ptr<TRAP::Layer>>::reverse_iterator TRAP::LayerStack::rend()
+{
+	return m_layers.rend();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<std::unique_ptr<TRAP::Layer>>::const_iterator TRAP::LayerStack::begin() const
+{
+	return m_layers.begin();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<std::unique_ptr<TRAP::Layer>>::const_iterator TRAP::LayerStack::end() const
+{
+	return m_layers.end();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<std::unique_ptr<TRAP::Layer>>::const_reverse_iterator TRAP::LayerStack::rbegin() const
+{
+	return m_layers.rbegin();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<std::unique_ptr<TRAP::Layer>>::const_reverse_iterator TRAP::LayerStack::rend() const
+{
+	return m_layers.rend();
+}

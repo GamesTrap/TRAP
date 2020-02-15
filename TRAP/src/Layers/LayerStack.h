@@ -22,6 +22,13 @@ namespace TRAP
 
 		std::vector<std::unique_ptr<Layer>>::iterator begin();
 		std::vector<std::unique_ptr<Layer>>::iterator end();
+		std::vector<std::unique_ptr<Layer>>::reverse_iterator rbegin();
+		std::vector<std::unique_ptr<Layer>>::reverse_iterator rend();
+
+		std::vector<std::unique_ptr<Layer>>::const_iterator begin() const;
+		std::vector<std::unique_ptr<Layer>>::const_iterator end()	const;
+		std::vector<std::unique_ptr<Layer>>::const_reverse_iterator rbegin() const;
+		std::vector<std::unique_ptr<Layer>>::const_reverse_iterator rend() const;
 
 	private:
 		std::vector<std::unique_ptr<Layer>> m_layers;
