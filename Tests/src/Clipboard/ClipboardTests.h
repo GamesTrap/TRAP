@@ -1,5 +1,5 @@
-#ifndef _GAMESTRAP_CLIPBOARD_H_
-#define _GAMESTRAP_CLIPBOARD_H_
+#ifndef _GAMESTRAP_CLIPBOARDTESTS_H_
+#define _GAMESTRAP_CLIPBOARDTESTS_H_
 
 #include <TRAP.h>
 
@@ -19,4 +19,4 @@ private:
 	std::string m_clipboard;
 };
 
-#endif /*_GAMESTRAP_CLIPBOARD_H_*/
+#endif /*_GAMESTRAP_CLIPBOARDTESTS_H_*/

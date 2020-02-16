@@ -157,6 +157,41 @@ TRAP::MouseButtonEvent::MouseButtonEvent(const Input::MouseButton button)
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::MouseButtonEvent::MouseButtonToString(const Input::MouseButton button)
+{
+	switch(button)
+	{
+	case Input::MouseButton::One:
+		return "Left";
+
+	case Input::MouseButton::Two:
+		return "Right";
+
+	case Input::MouseButton::Three:
+		return "Middle";
+
+	case Input::MouseButton::Four:
+		return "4";
+		
+	case Input::MouseButton::Five:
+		return "5";
+
+	case Input::MouseButton::Six:
+		return "6";
+
+	case Input::MouseButton::Seven:
+		return "7";
+
+	case Input::MouseButton::Eight:
+		return "8";
+		
+	default:
+		return "";
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -170,7 +205,7 @@ TRAP::MouseButtonPressEvent::MouseButtonPressEvent(const Input::MouseButton butt
 std::string TRAP::MouseButtonPressEvent::ToString() const
 {
 	std::stringstream ss;
-	ss << "MouseButtonPressEvent: " << static_cast<int32_t>(m_button);
+	ss << "MouseButtonPressEvent: " << MouseButtonToString(m_button) << "(" << static_cast<int32_t>(m_button) << ")";
 
 	return ss.str();
 }
@@ -217,7 +252,7 @@ TRAP::MouseButtonReleaseEvent::MouseButtonReleaseEvent(const Input::MouseButton 
 std::string TRAP::MouseButtonReleaseEvent::ToString() const
 {
 	std::stringstream ss;
-	ss << "MouseButtonReleaseEvent: " << static_cast<int32_t>(m_button);
+	ss << "MouseButtonReleaseEvent: " << MouseButtonToString(m_button) << "(" << static_cast<int32_t>(m_button) << ")";
 
 	return ss.str();
 }

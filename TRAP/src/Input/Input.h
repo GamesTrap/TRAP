@@ -6,7 +6,9 @@
 #include "Event/Event.h"
 
 namespace TRAP
-{namespace INTERNAL {
+{
+	namespace INTERNAL
+	{
 		class WindowingAPI;
 	}
 

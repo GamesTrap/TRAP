@@ -58,6 +58,8 @@ namespace TRAP
 	protected:
 		explicit MouseButtonEvent(Input::MouseButton button);
 
+		static std::string MouseButtonToString(Input::MouseButton button);
+
 		Input::MouseButton m_button;
 	};
 

@@ -245,7 +245,8 @@ void TRAP::INTERNAL::WindowingAPI::UpdateKeyNamesWin32()
 	for (uint32_t key = static_cast<uint32_t>(Input::Key::Space); key <= static_cast<uint32_t>(Input::Key::Menu); key++)
 	{
 		uint32_t virtualKey;
-		std::array<WCHAR, 16> chars{};
+		std::wstring chars{};
+		chars.resize(16);
 
 		const int32_t scanCode = s_Data.ScanCodes[key];
 		if (scanCode == -1)
@@ -616,6 +617,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 				TrackMouseEvent(&tme);
 
 				windowPtr->CursorTracked = true;
+				InputCursorEnter(windowPtr, true);
 			}
 
 			if (windowPtr->cursorMode == CursorMode::Disabled)
@@ -688,6 +690,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 		case WM_MOUSELEAVE:
 		{
 			windowPtr->CursorTracked = false;
+			InputCursorEnter(windowPtr, false);
 			return 0;
 		}
 

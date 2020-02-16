@@ -870,3 +870,7 @@ SITREP 02/15/2020|20w07a3
     - Fixed Linux (XKB) Keyboard not working properly ~>20 mins
     - Validated Clipboard functionality on Linux(X11) ~<20 mins
     - Fixed and Validated Cursor functionality on Linux(X11) ~>50 mins
+    - Changed ToString functions in KeyPress/Release/TypeEvent & MouseButtonPress/ReleaseEvent & ControllerDis/ConnectEvent ~>25 mins
+    - Fixed missing InputCursorEnter calls in WindowingAPIWin32 ~<10 mins
+    - Validated Events functionality on Windows ~<30 mins
+    - Updated Docs ~<30 mins

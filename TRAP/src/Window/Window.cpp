@@ -1035,14 +1035,14 @@ void TRAP::Window::Init(const WindowProps& props)
 		}
 	});
 
-	INTERNAL::WindowingAPI::SetCharCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const uint32_t keycode)
+	INTERNAL::WindowingAPI::SetCharCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const uint32_t codePoint)
 	{
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
 
 		if (!data.EventCallback)
 			return;
 		
-		KeyTypeEvent event(static_cast<Input::Key>(keycode), data.Title);
+		KeyTypeEvent event(codePoint, data.Title);
 		data.EventCallback(event);
 	});
 

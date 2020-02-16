@@ -16,6 +16,8 @@ namespace TRAP
 	protected:
 		explicit KeyEvent(Input::Key keyCode);
 
+		static std::string NonPrintableKeyToString(Input::Key keyCode);
+
 		Input::Key m_keyCode;
 	};
 
@@ -56,21 +58,26 @@ namespace TRAP
 		std::string_view m_title;
 	};
 
-	class KeyTypeEvent final : public KeyEvent
+	class KeyTypeEvent final : public Event
 	{
 	public:
-		explicit KeyTypeEvent(Input::Key keyCode, std::string_view title);
+		explicit KeyTypeEvent(uint32_t codePoint, std::string_view title);
 
 		std::string_view GetTitle() const;
+		uint32_t GetCodePoint() const;
 
 		std::string ToString() const override;
 
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
 		const char* GetName() const override;
-
+		int32_t GetCategoryFlags() const override;
+		
 	private:
+		static std::string EncodeUTF8(uint32_t codePoint);
+		
 		std::string_view m_title;
+		uint32_t m_codePoint;
 	};
 }
 
