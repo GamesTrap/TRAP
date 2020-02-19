@@ -1,275 +1,69 @@
-[21:21:54][Debug][Application] Initializing TRAP Modules...
-[21:21:54][Debug][VFS] Initializing Virtual File System
-[21:21:54][Info][Config] Loading File: "Engine.cfg"
-[21:21:54][Trace][Config] Width = 800
-[21:21:54][Trace][Config] Height = 600
-[21:21:54][Trace][Config] RefreshRate = 144
-[21:21:54][Trace][Config] VSync = 1
-[21:21:54][Trace][Config] FPSLimit = 0
-[21:21:54][Trace][Config] DisplayMode = Windowed
-[21:21:54][Trace][Config] Maximized = FALSE
-[21:21:54][Trace][Config] Monitor = 0
-[21:21:54][Trace][Config] RenderAPI = OpenGL
-[21:21:54][Trace][Config] Size: 9
-[21:21:54][Info][Window] Initializing Window: "TRAP Engine" 800x600@144Hz VSync: On(1) DisplayMode: Windowed Monitor: 0 CursorMode: Normal RawMouseInput: Disabled
-[21:21:54][Debug][Window] Storing underlying OS video mode: Monitor: 0 2560x1440@144Hz (R8G8B8)
-[21:21:54][Debug][Window] Storing underlying OS video mode: Monitor: 1 1920x1080@144Hz (R8G8B8)
-[21:21:55][Info][Context][OpenGL] Initializing Context
-[21:21:55][Info][Renderer][OpenGL] Initializing Renderer
-[21:21:55][Info][Renderer][OpenGL] ----------------------------------
-[21:21:55][Info][Renderer][OpenGL] OpenGL:
-[21:21:55][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 441.99
-[21:21:55][Info][Renderer][OpenGL] GLSL Version: 4.60 NVIDIA
-[21:21:55][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
-[21:21:55][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
-[21:21:55][Info][Renderer][OpenGL] ----------------------------------
-[21:21:55][Debug][Image][Custom] Loading a custom image
-[21:21:55][Debug][Shader][OpenGL][GLSL] Compiling: "Fallback"
-[21:21:55][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[21:21:55][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[21:21:55][Debug][Texture2D][OpenGL] Loading Texture: "Fallback2D"
-[21:21:55][Debug][Image][Custom] Loading a custom image
-[21:21:55][Debug][TextureCube][OpenGL] Loading Texture: "FallbackCube"
-[21:21:55][Debug][Image][Custom] Loading a custom image
-[21:21:55][Debug][Renderer2D] Initializing
-[21:21:55][Debug][Shader][OpenGL][GLSL] Compiling: "Renderer2D"
-[21:21:55][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[21:21:55][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[21:21:55][Debug][Texture2D][OpenGL] Loading Texture: "Renderer2DWhite"
-[21:21:55][Debug][Image][Custom] Loading a custom image
-[21:21:55][Debug][LayerStack] Pushing Overlay: ImGuiLayer
-[21:21:55][Debug][LayerStack] Pushing Layer: Events
-[21:21:55][Debug][Window] "TRAP Engine" Set Title: "Events"
-[21:21:56][Trace]MouseMoveEvent: 798, 225
-[21:21:56][Trace]MouseMoveEvent: 796, 225
-[21:21:56][Trace]MouseMoveEvent: 790, 225
-[21:21:56][Trace]MouseMoveEvent: 788, 225
-[21:21:56][Trace]MouseMoveEvent: 785, 225
-[21:21:56][Trace]MouseMoveEvent: 763, 225
-[21:21:56][Trace]MouseMoveEvent: 759, 225
-[21:21:56][Trace]MouseMoveEvent: 754, 225
-[21:21:56][Trace]MouseMoveEvent: 747, 226
-[21:21:56][Trace]MouseMoveEvent: 743, 226
-[21:21:56][Trace]MouseMoveEvent: 737, 226
-[21:21:56][Trace]MouseMoveEvent: 719, 226
-[21:21:56][Trace]MouseMoveEvent: 717, 226
-[21:21:56][Trace]MouseMoveEvent: 716, 226
-[21:21:56][Trace]MouseMoveEvent: 707, 226
-[21:21:56][Trace]MouseMoveEvent: 697, 227
-[21:21:56][Trace]MouseMoveEvent: 687, 227
-[21:21:56][Trace]MouseMoveEvent: 686, 227
-[21:21:56][Trace]MouseMoveEvent: 684, 227
-[21:21:56][Trace]MouseMoveEvent: 678, 227
-[21:21:56][Trace]MouseMoveEvent: 677, 227
-[21:21:56][Trace]MouseMoveEvent: 676, 227
-[21:21:56][Trace]MouseMoveEvent: 670, 227
-[21:21:56][Trace]MouseMoveEvent: 663, 227
-[21:21:56][Trace]MouseMoveEvent: 657, 228
-[21:21:56][Trace]MouseMoveEvent: 655, 228
-[21:21:56][Trace]MouseMoveEvent: 653, 228
-[21:21:56][Trace]MouseMoveEvent: 650, 228
-[21:21:56][Trace]MouseMoveEvent: 648, 228
-[21:21:56][Trace]MouseMoveEvent: 647, 228
-[21:21:56][Trace]MouseMoveEvent: 646, 228
-[21:21:56][Trace]MouseMoveEvent: 645, 228
-[21:21:56][Trace]MouseMoveEvent: 643, 229
-[21:21:56][Trace]MouseMoveEvent: 642, 229
-[21:21:56][Trace]MouseMoveEvent: 639, 229
-[21:21:56][Trace]MouseMoveEvent: 636, 229
-[21:21:56][Trace]MouseMoveEvent: 636, 230
-[21:21:56][Trace]MouseMoveEvent: 633, 230
-[21:21:56][Trace]MouseMoveEvent: 631, 230
-[21:21:56][Trace]MouseMoveEvent: 630, 230
-[21:21:56][Trace]MouseButtonPressEvent: Left(0)
-[21:21:56][Trace]MouseButtonReleaseEvent: Left(0)
-[21:21:57][Trace]KeyPressEvent: k(75) (0 repeats)
-[21:21:57][Trace]KeyTypeEvent: k(107)
-[21:21:57][Trace]KeyReleaseEvent: k(75)
-[21:22:00][Trace]KeyPressEvent: Enter(257) (0 repeats)
-[21:22:00][Trace]KeyReleaseEvent: Enter(257)
-[21:22:06][Trace]KeyPressEvent: Numpad Enter(335) (0 repeats)
-[21:22:06][Trace]KeyReleaseEvent: Numpad Enter(335)
-[21:22:14][Trace]KeyPressEvent: +(334) (0 repeats)
-[21:22:14][Trace]KeyTypeEvent: +(43)
-[21:22:14][Trace]KeyReleaseEvent: +(334)
-[21:22:15][Trace]KeyPressEvent: 5(325) (0 repeats)
-[21:22:15][Trace]KeyTypeEvent: 5(53)
-[21:22:15][Trace]KeyReleaseEvent: 5(325)
-[21:22:16][Trace]KeyPressEvent: 6(326) (0 repeats)
-[21:22:16][Trace]KeyTypeEvent: 6(54)
-[21:22:16][Trace]KeyReleaseEvent: 6(326)
-[21:22:18][Trace]KeyPressEvent: Escape(256) (0 repeats)
-[21:22:18][Trace]KeyReleaseEvent: Escape(256)
-[21:22:20][Trace]MouseMoveEvent: 629, 227
-[21:22:20][Trace]MouseMoveEvent: 629, 225
-[21:22:20][Trace]MouseMoveEvent: 628, 223
-[21:22:20][Trace]MouseMoveEvent: 628, 221
-[21:22:20][Trace]MouseMoveEvent: 628, 219
-[21:22:20][Trace]MouseMoveEvent: 628, 217
-[21:22:20][Trace]MouseMoveEvent: 628, 216
-[21:22:20][Trace]MouseMoveEvent: 628, 214
-[21:22:20][Trace]MouseMoveEvent: 628, 212
-[21:22:20][Trace]MouseMoveEvent: 628, 210
-[21:22:20][Trace]MouseMoveEvent: 628, 208
-[21:22:20][Trace]MouseMoveEvent: 628, 207
-[21:22:20][Trace]MouseMoveEvent: 628, 206
-[21:22:20][Trace]MouseMoveEvent: 628, 205
-[21:22:20][Trace]MouseMoveEvent: 627, 204
-[21:22:20][Trace]MouseMoveEvent: 627, 206
-[21:22:20][Trace]MouseMoveEvent: 628, 207
-[21:22:20][Trace]MouseMoveEvent: 629, 209
-[21:22:20][Trace]MouseMoveEvent: 629, 211
-[21:22:20][Trace]MouseMoveEvent: 630, 213
-[21:22:20][Trace]MouseMoveEvent: 630, 214
-[21:22:20][Trace]MouseButtonPressEvent: Left(0)
-[21:22:20][Trace]MouseButtonReleaseEvent: Left(0)
-[21:22:22][Trace]KeyPressEvent: Escape(256) (0 repeats)
-[21:22:22][Trace]KeyReleaseEvent: Escape(256)
-[21:22:22][Trace]KeyPressEvent: Escape(256) (0 repeats)
-[21:22:22][Trace]KeyReleaseEvent: Escape(256)
-[21:22:22][Trace]KeyPressEvent: Escape(256) (0 repeats)
-[21:22:22][Trace]KeyReleaseEvent: Escape(256)
-[21:22:24][Trace]MouseMoveEvent: 631, 214
-[21:22:24][Trace]MouseMoveEvent: 631, 215
-[21:22:24][Trace]MouseMoveEvent: 633, 216
-[21:22:24][Trace]MouseMoveEvent: 634, 218
-[21:22:24][Trace]MouseMoveEvent: 636, 220
-[21:22:24][Trace]MouseMoveEvent: 636, 221
-[21:22:24][Trace]MouseMoveEvent: 638, 223
-[21:22:24][Trace]MouseMoveEvent: 640, 226
-[21:22:24][Trace]MouseMoveEvent: 641, 227
-[21:22:24][Trace]MouseMoveEvent: 641, 228
-[21:22:24][Trace]MouseMoveEvent: 642, 228
-[21:22:24][Trace]MouseMoveEvent: 641, 227
-[21:22:24][Trace]MouseMoveEvent: 640, 226
-[21:22:24][Trace]MouseMoveEvent: 640, 225
-[21:22:24][Trace]MouseMoveEvent: 639, 224
-[21:22:24][Trace]MouseMoveEvent: 639, 223
-[21:22:24][Trace]MouseMoveEvent: 638, 222
-[21:22:24][Trace]MouseMoveEvent: 637, 221
-[21:22:24][Trace]MouseMoveEvent: 636, 220
-[21:22:24][Trace]MouseMoveEvent: 635, 220
-[21:22:24][Trace]MouseMoveEvent: 633, 219
-[21:22:24][Trace]MouseMoveEvent: 632, 219
-[21:22:24][Trace]MouseMoveEvent: 630, 219
-[21:22:24][Trace]MouseMoveEvent: 629, 219
-[21:22:24][Trace]MouseMoveEvent: 628, 219
-[21:22:24][Trace]MouseMoveEvent: 628, 218
-[21:22:24][Trace]MouseMoveEvent: 627, 218
-[21:22:24][Trace]MouseMoveEvent: 627, 217
-[21:22:24][Trace]MouseMoveEvent: 626, 215
-[21:22:24][Trace]MouseMoveEvent: 626, 214
-[21:22:24][Trace]MouseMoveEvent: 626, 212
-[21:22:24][Trace]MouseMoveEvent: 626, 209
-[21:22:24][Trace]MouseMoveEvent: 627, 207
-[21:22:24][Trace]MouseMoveEvent: 628, 203
-[21:22:24][Trace]MouseMoveEvent: 629, 200
-[21:22:24][Trace]MouseMoveEvent: 630, 197
-[21:22:24][Trace]MouseMoveEvent: 630, 196
-[21:22:24][Trace]MouseMoveEvent: 631, 193
-[21:22:24][Trace]MouseMoveEvent: 631, 192
-[21:22:24][Trace]MouseMoveEvent: 633, 189
-[21:22:24][Trace]MouseMoveEvent: 633, 188
-[21:22:24][Trace]MouseMoveEvent: 635, 183
-[21:22:24][Trace]MouseMoveEvent: 637, 178
-[21:22:24][Trace]MouseMoveEvent: 637, 177
-[21:22:24][Trace]MouseMoveEvent: 639, 172
-[21:22:24][Trace]MouseMoveEvent: 642, 165
-[21:22:24][Trace]MouseMoveEvent: 646, 158
-[21:22:24][Trace]MouseMoveEvent: 650, 151
-[21:22:24][Trace]MouseMoveEvent: 654, 143
-[21:22:24][Trace]MouseMoveEvent: 655, 142
-[21:22:24][Trace]MouseMoveEvent: 659, 136
-[21:22:24][Trace]MouseMoveEvent: 664, 129
-[21:22:24][Trace]MouseMoveEvent: 665, 128
-[21:22:24][Trace]MouseMoveEvent: 670, 121
-[21:22:24][Trace]MouseMoveEvent: 675, 114
-[21:22:24][Trace]MouseMoveEvent: 676, 113
-[21:22:24][Trace]MouseMoveEvent: 681, 107
-[21:22:24][Trace]MouseMoveEvent: 686, 99
-[21:22:24][Trace]MouseMoveEvent: 692, 92
-[21:22:24][Trace]MouseMoveEvent: 698, 85
-[21:22:24][Trace]MouseMoveEvent: 703, 78
-[21:22:24][Trace]MouseMoveEvent: 709, 71
-[21:22:24][Trace]MouseMoveEvent: 715, 64
-[21:22:24][Trace]MouseMoveEvent: 719, 58
-[21:22:24][Trace]MouseMoveEvent: 720, 57
-[21:22:24][Trace]MouseMoveEvent: 721, 56
-[21:22:24][Trace]MouseMoveEvent: 724, 52
-[21:22:24][Trace]MouseMoveEvent: 725, 51
-[21:22:24][Trace]MouseMoveEvent: 729, 45
-[21:22:24][Trace]MouseMoveEvent: 730, 45
-[21:22:24][Trace]MouseMoveEvent: 733, 40
-[21:22:24][Trace]MouseMoveEvent: 734, 39
-[21:22:24][Trace]MouseMoveEvent: 737, 34
-[21:22:24][Trace]MouseMoveEvent: 738, 34
-[21:22:24][Trace]MouseMoveEvent: 741, 29
-[21:22:24][Trace]MouseMoveEvent: 742, 29
-[21:22:24][Trace]MouseMoveEvent: 744, 25
-[21:22:24][Trace]MouseMoveEvent: 747, 20
-[21:22:24][Trace]MouseMoveEvent: 750, 17
-[21:22:24][Trace]MouseMoveEvent: 753, 13
-[21:22:24][Trace]MouseMoveEvent: 756, 10
-[21:22:24][Trace]MouseMoveEvent: 758, 8
-[21:22:24][Trace]MouseMoveEvent: 760, 5
-[21:22:24][Trace]MouseMoveEvent: 763, 3
-[21:22:24][Trace]MouseMoveEvent: 765, 1
-[21:22:25][Debug][Application] Shutting down TRAP Modules...
-[21:22:25][Info][Input][Controller] Controller:  (0) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 1
-[21:22:25][Info][Input][Controller] Controller:  (1) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 2
-[21:22:25][Info][Input][Controller] Controller:  (2) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 3
-[21:22:25][Info][Input][Controller] Controller:  (3) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 4
-[21:22:25][Info][Input][Controller] Controller:  (4) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 5
-[21:22:25][Info][Input][Controller] Controller:  (5) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 6
-[21:22:25][Info][Input][Controller] Controller:  (6) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 7
-[21:22:25][Info][Input][Controller] Controller:  (7) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 8
-[21:22:25][Info][Input][Controller] Controller:  (8) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 9
-[21:22:25][Info][Input][Controller] Controller:  (9) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 10
-[21:22:25][Info][Input][Controller] Controller:  (10) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 11
-[21:22:25][Info][Input][Controller] Controller:  (11) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 12
-[21:22:25][Info][Input][Controller] Controller:  (12) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 13
-[21:22:25][Info][Input][Controller] Controller:  (13) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 14
-[21:22:25][Info][Input][Controller] Controller:  (14) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 15
-[21:22:25][Info][Input][Controller] Controller:  (15) Disconnected!
-[21:22:25][Trace]ControllerDisconnectEvent: 16
-[21:22:25][Debug][LayerStack] Destroying Layer: Events
-[21:22:25][Debug][LayerStack] Destroying Layer: ImGuiLayer
-[21:22:25][Trace][Config] Width = 800
-[21:22:25][Trace][Config] Height = 600
-[21:22:25][Trace][Config] RefreshRate = 144
-[21:22:25][Trace][Config] VSync = 1
-[21:22:25][Trace][Config] FPSLimit = 0
-[21:22:25][Trace][Config] DisplayMode = Windowed
-[21:22:25][Trace][Config] Maximized = FALSE
-[21:22:25][Trace][Config] Monitor = 0
-[21:22:25][Trace][Config] RenderAPI = OpenGL
-[21:22:25][Trace][Config] Size: 9
-[21:22:25][Info][Config] Saving: Engine.cfg
-[21:22:25][Debug][Renderer2D] Shutting down
-[21:22:25][Debug][TextureManager] Destroying Textures
-[21:22:25][Debug][Texture2D][OpenGL] Destroying Texture2D: "Renderer2DWhite"
-[21:22:25][Debug][Texture2D][OpenGL] Destroying Texture2D: "Fallback2D"
-[21:22:25][Debug][TextureCube][OpenGL] Destroying TextureCube: "FallbackCube"
-[21:22:25][Debug][ShaderManager] Destroying Shaders
-[21:22:25][Debug][Shader][OpenGL] Destroying Shader: "Fallback"
-[21:22:25][Debug][Shader][OpenGL] Destroying Shader: "Renderer2D"
-[21:22:25][Debug][Renderer][OpenGL] Destroying Renderer
-[21:22:25][Debug][Context][OpenGL] Destroying Context
-[21:22:25][Debug][Window] Destroying Window: "Events"
-[21:22:25][Debug][VFS] Shutting down Virtual File System
-[21:22:25][Info][Logger] Saving Log.txt
+[22:06:39][Debug][Application] Initializing TRAP Modules...
+[22:06:39][Debug][VFS] Initializing Virtual File System
+[22:06:39][Info][Config] Loading File: "Engine.cfg"
+[22:06:39][Trace][Config] Width = 800
+[22:06:39][Trace][Config] Height = 600
+[22:06:39][Trace][Config] RefreshRate = 144
+[22:06:39][Trace][Config] VSync = 1
+[22:06:39][Trace][Config] FPSLimit = 0
+[22:06:39][Trace][Config] DisplayMode = Windowed
+[22:06:39][Trace][Config] Maximized = FALSE
+[22:06:39][Trace][Config] Monitor = 0
+[22:06:39][Trace][Config] RenderAPI = OpenGL
+[22:06:39][Trace][Config] Size: 9
+[22:06:39][Info][Window] Initializing Window: "TRAP Engine" 800x600@144Hz VSync: On(1) DisplayMode: Windowed Monitor: 0 CursorMode: Normal RawMouseInput: Disabled
+[22:06:39][Debug][Window] Storing underlying OS video mode: Monitor: 0 2560x1440@144Hz (R8G8B8)
+[22:06:39][Debug][Window] Storing underlying OS video mode: Monitor: 1 1920x1080@144Hz (R8G8B8)
+[22:06:39][Info][Context][OpenGL] Initializing Context
+[22:06:39][Info][Renderer][OpenGL] Initializing Renderer
+[22:06:39][Info][Renderer][OpenGL] ----------------------------------
+[22:06:39][Info][Renderer][OpenGL] OpenGL:
+[22:06:39][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 442.36
+[22:06:39][Info][Renderer][OpenGL] GLSL Version: 4.60 NVIDIA
+[22:06:39][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
+[22:06:39][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
+[22:06:39][Info][Renderer][OpenGL] ----------------------------------
+[22:06:39][Debug][Image][Custom] Loading a custom image
+[22:06:39][Debug][Shader][OpenGL][GLSL] Compiling: "Fallback"
+[22:06:39][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[22:06:39][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[22:06:39][Debug][Texture2D][OpenGL] Loading Texture: "Fallback2D"
+[22:06:39][Debug][Image][Custom] Loading a custom image
+[22:06:39][Debug][TextureCube][OpenGL] Loading Texture: "FallbackCube"
+[22:06:39][Debug][Image][Custom] Loading a custom image
+[22:06:39][Debug][Renderer2D] Initializing
+[22:06:39][Debug][Shader][OpenGL][GLSL] Compiling: "Renderer2D"
+[22:06:39][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[22:06:39][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[22:06:39][Debug][Texture2D][OpenGL] Loading Texture: "Renderer2DWhite"
+[22:06:39][Debug][Image][Custom] Loading a custom image
+[22:06:40][Debug][LayerStack] Pushing Overlay: ImGuiLayer
+[22:06:40][Debug][LayerStack] Pushing Layer: Controllers
+[22:06:40][Debug][Window] "TRAP Engine" Set Title: "Controllers"
+[22:06:47][Debug][Application] Shutting down TRAP Modules...
+[22:06:47][Debug][LayerStack] Destroying Layer: Controllers
+[22:06:47][Debug][LayerStack] Destroying Layer: ImGuiLayer
+[22:06:48][Trace][Config] Width = 800
+[22:06:48][Trace][Config] Height = 600
+[22:06:48][Trace][Config] RefreshRate = 144
+[22:06:48][Trace][Config] VSync = 1
+[22:06:48][Trace][Config] FPSLimit = 0
+[22:06:48][Trace][Config] DisplayMode = Windowed
+[22:06:48][Trace][Config] Maximized = FALSE
+[22:06:48][Trace][Config] Monitor = 0
+[22:06:48][Trace][Config] RenderAPI = OpenGL
+[22:06:48][Trace][Config] Size: 9
+[22:06:48][Info][Config] Saving: Engine.cfg
+[22:06:48][Debug][Renderer2D] Shutting down
+[22:06:48][Debug][TextureManager] Destroying Textures
+[22:06:48][Debug][Texture2D][OpenGL] Destroying Texture2D: "Renderer2DWhite"
+[22:06:48][Debug][Texture2D][OpenGL] Destroying Texture2D: "Fallback2D"
+[22:06:48][Debug][TextureCube][OpenGL] Destroying TextureCube: "FallbackCube"
+[22:06:48][Debug][ShaderManager] Destroying Shaders
+[22:06:48][Debug][Shader][OpenGL] Destroying Shader: "Fallback"
+[22:06:48][Debug][Shader][OpenGL] Destroying Shader: "Renderer2D"
+[22:06:48][Debug][Renderer][OpenGL] Destroying Renderer
+[22:06:48][Debug][Context][OpenGL] Destroying Context
+[22:06:48][Debug][Window] Destroying Window: "Controllers"
+[22:06:48][Debug][VFS] Shutting down Virtual File System
+[22:06:48][Info][Logger] Saving Log.txt

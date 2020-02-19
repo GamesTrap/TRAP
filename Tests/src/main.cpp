@@ -3,6 +3,8 @@
 #include "Clipboard/ClipboardTests.h"
 #include "Cursor/CursorTests.h"
 #include "Events/EventTests.h"
+#include "Minimize/MinimizeTests.h"
+#include "Controllers/ControllerTests.h"
 
 class Tests final : public TRAP::Application
 {
@@ -11,7 +13,9 @@ public:
 	{
 		//PushLayer(TRAP::MakeScope<ClipboardTests>());
 		//PushLayer(TRAP::MakeScope<CursorTests>());
-		PushLayer(TRAP::MakeScope<EventTests>());
+		//PushLayer(TRAP::MakeScope<EventTests>());
+		//PushLayer(TRAP::MakeScope<MinimizeTests>());
+		PushLayer(TRAP::MakeScope<ControllerTests>());
 	}
 };
 

@@ -314,19 +314,25 @@ void TRAP::Input::CloseController(Controller controller)
 		IDirectInputDevice8_Release(s_controllerInternal[static_cast<uint32_t>(controller)].WinCon.Device);
 	}
 
-	TP_INFO("[Input][Controller] Controller: ",
-	        (s_controllerInternal[static_cast<uint32_t>(controller)].mapping
-		         ? s_controllerInternal[static_cast<uint32_t>(controller)].mapping->Name
-		         : s_controllerInternal[static_cast<uint32_t>(controller)].Name),
-	        " (", static_cast<uint32_t>(controller), ") Disconnected!");
+	const bool connected = s_controllerInternal[static_cast<uint32_t>(controller)].Connected;
+	
+	if(connected)
+		TP_INFO("[Input][Controller] Controller: ",
+	            (s_controllerInternal[static_cast<uint32_t>(controller)].mapping
+		            ? s_controllerInternal[static_cast<uint32_t>(controller)].mapping->Name
+		            : s_controllerInternal[static_cast<uint32_t>(controller)].Name),
+	            " (", static_cast<uint32_t>(controller), ") Disconnected!");
 
 	s_controllerInternal[static_cast<uint32_t>(controller)] = {};
 
 	if (!s_eventCallback)
 		return;
 
-	ControllerDisconnectEvent event(controller);	
-	s_eventCallback(event);
+	if(connected)
+	{
+		ControllerDisconnectEvent event(controller);	
+		s_eventCallback(event);		
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

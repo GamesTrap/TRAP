@@ -17,7 +17,6 @@ void ClipboardTests::OnAttach()
 
 void ClipboardTests::OnImGuiRender()
 {
-	ImGui::SetNextWindowBgAlpha(0.3f);
 	ImGui::Begin("Clipboard", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
 	if (!m_clipboard.empty())
 		ImGui::Text("Clipboard contains: %s", m_clipboard.c_str());

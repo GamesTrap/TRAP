@@ -25,7 +25,5 @@ void EventTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 void EventTests::OnEvent(TRAP::Event& event)
 {
-	TRAP::EventDispatcher dispatcher(event);
-
 	TP_TRACE(event.ToString());
 }

@@ -22,6 +22,13 @@ float TRAP::MouseMoveEvent::GetY() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Math::Vec2 TRAP::MouseMoveEvent::GetPosition() const
+{
+	return { m_mouseX, m_mouseY };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string_view TRAP::MouseMoveEvent::GetTitle() const
 {
 	return m_title;
@@ -86,6 +93,13 @@ float TRAP::MouseScrollEvent::GetXOffset() const
 float TRAP::MouseScrollEvent::GetYOffset() const
 {
 	return m_yOffset;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Math::Vec2 TRAP::MouseScrollEvent::GetOffset() const
+{
+	return { m_xOffset, m_yOffset };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -48,6 +48,7 @@ namespace TRAP
 		std::string_view GetTitle() const;
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
+		Math::Vec2ui GetSize() const;
 		uint32_t GetRefreshRate() const;
 		DisplayMode GetDisplayMode() const;
 		Monitor GetMonitor() const;

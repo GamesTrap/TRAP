@@ -24,6 +24,13 @@ uint32_t TRAP::WindowResizeEvent::GetHeight() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Math::Vec2ui TRAP::WindowResizeEvent::GetSize() const
+{
+	return { m_width, m_height };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string_view TRAP::WindowResizeEvent::GetTitle() const
 {
 	return m_title;
@@ -132,6 +139,13 @@ int32_t TRAP::WindowMoveEvent::GetX() const
 int32_t TRAP::WindowMoveEvent::GetY() const
 {
 	return m_y;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Math::Vec2i TRAP::WindowMoveEvent::GetPosition() const
+{
+	return { m_x, m_y };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -355,6 +369,13 @@ float TRAP::WindowContentScaleEvent::GetYScale() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Math::Vec2 TRAP::WindowContentScaleEvent::GetScale() const
+{
+	return { m_XScale, m_YScale };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string_view TRAP::WindowContentScaleEvent::GetTitle() const
 {
 	return m_title;
@@ -419,6 +440,13 @@ uint32_t TRAP::FrameBufferResizeEvent::GetWidth() const
 uint32_t TRAP::FrameBufferResizeEvent::GetHeight() const
 {
 	return m_height;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Math::Vec2 TRAP::FrameBufferResizeEvent::GetFrameBufferSize() const
+{
+	return { m_width, m_height };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

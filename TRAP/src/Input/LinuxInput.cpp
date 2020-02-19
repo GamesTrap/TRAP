@@ -286,19 +286,25 @@ void TRAP::Input::CloseController(Controller controller)
 	
 	close(con->LinuxCon.FD);
 
-	TP_INFO("[Input][Controller] Controller: ",
-		(con->mapping
-			? con->mapping->Name
-			: con->Name),
-		" (", static_cast<uint32_t>(controller), ") Disconnected!");
+	bool connected = con->Connected;
+
+	if(connected)
+		TP_INFO("[Input][Controller] Controller: ",
+		        (con->mapping
+			        ? con->mapping->Name
+			        : con->Name),
+		        " (", static_cast<uint32_t>(controller), ") Disconnected!");
 
 	*con = {};
 	
 	if (!s_eventCallback)
 		return;
 
-	ControllerDisconnectEvent event(static_cast<Controller>(controller));
-	s_eventCallback(event);
+	if (connected)
+	{
+		ControllerDisconnectEvent event(static_cast<Controller>(controller));
+		s_eventCallback(event);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

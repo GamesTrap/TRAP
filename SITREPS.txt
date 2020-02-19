@@ -874,3 +874,11 @@ SITREP 02/15/2020|20w07a3
     - Fixed missing InputCursorEnter calls in WindowingAPIWin32 ~<10 mins
     - Validated Events functionality on Windows ~<30 mins
     - Updated Docs ~<30 mins
+
+SITREP 02/19/2020|20w08a1
+    - Changed TRAP Engine version to 20w08a1(0.6.12)
+    - Added Utility functions using TRAP::Math::Vec ~<20 mins
+    - Validated Controller functionality on Windows ~<30 mins
+    - Validated Window Minimize functionality on Windows ~<30 mins
+    - CloseController now only sends ControllerDisconnectEvents if the Controller was connected ~<10 mins
+    - Updated Docs ~<30 mins

@@ -13,6 +13,7 @@ namespace TRAP
 
 		float GetX() const;
 		float GetY() const;
+		Math::Vec2 GetPosition() const;
 		std::string_view GetTitle() const;
 
 		std::string ToString() const override;
@@ -34,6 +35,7 @@ namespace TRAP
 
 		float GetXOffset() const;
 		float GetYOffset() const;
+		Math::Vec2 GetOffset() const;
 		std::string_view GetTitle() const;
 
 		std::string ToString() const override;
