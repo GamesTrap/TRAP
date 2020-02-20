@@ -974,6 +974,26 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeCallback(InternalWindow* window,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+//Sets the minimize callback for the specified window.
+void TRAP::INTERNAL::WindowingAPI::SetWindowMinimizeCallback(InternalWindow* window, const WindowMinimizeFunc callback)
+{
+	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
+
+	window->Callbacks.Minimize = callback;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Sets the maximize callback for the specified window.
+void TRAP::INTERNAL::WindowingAPI::SetWindowMaximizeCallback(InternalWindow* window, const WindowMaximizeFunc callback)
+{
+	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
+
+	window->Callbacks.Maximize = callback;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Sets the close callback for the specified window.
 void TRAP::INTERNAL::WindowingAPI::SetWindowCloseCallback(InternalWindow* window, const WindowCloseFunc callback)
 {
@@ -2039,6 +2059,24 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow* window,
 {
 	if (window->Callbacks.Size)
 		window->Callbacks.Size(window, width, height);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code that a window has been minimized
+void TRAP::INTERNAL::WindowingAPI::InputWindowMinimize(const InternalWindow* window, const bool restored)
+{
+	if (window->Callbacks.Minimize)
+		window->Callbacks.Minimize(window, restored);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code that a window has been maximized
+void TRAP::INTERNAL::WindowingAPI::InputWindowMaximize(const InternalWindow* window, const bool restored)
+{
+	if (window->Callbacks.Maximize)
+		window->Callbacks.Maximize(window, restored);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

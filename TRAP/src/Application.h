@@ -13,6 +13,8 @@
 
 namespace TRAP
 {
+	class WindowRestoreEvent;
+	class WindowMinimizeEvent;
 	class WindowLostFocusEvent;
 	class WindowFocusEvent;
 	class FrameBufferResizeEvent;
@@ -83,6 +85,8 @@ namespace TRAP
 		bool OnKeyPress(KeyPressEvent& e) const;
 		bool OnWindowFocus(WindowFocusEvent& e);
 		bool OnWindowLostFocus(WindowLostFocusEvent& e);
+		bool OnWindowMinimize(WindowMinimizeEvent& e);
+		bool OnWindowRestore(WindowRestoreEvent& e);
 
 		void UpdateLinuxWindowManager();
 

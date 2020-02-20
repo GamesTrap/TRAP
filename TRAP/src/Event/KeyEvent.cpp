@@ -3,9 +3,9 @@
 
 #include "Window/WindowingAPI.h"
 
-TRAP::Input::Key TRAP::KeyEvent::GetKeyCode() const
+TRAP::Input::Key TRAP::KeyEvent::GetKey() const
 {
-	return m_keyCode;
+	return m_key;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -17,16 +17,16 @@ int32_t TRAP::KeyEvent::GetCategoryFlags() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::KeyEvent::KeyEvent(const Input::Key keyCode)
-	: m_keyCode(keyCode)
+TRAP::KeyEvent::KeyEvent(const Input::Key key)
+	: m_key(key)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::KeyEvent::NonPrintableKeyToString(const Input::Key keyCode)
+std::string TRAP::KeyEvent::NonPrintableKeyToString(const Input::Key key)
 {
-	switch(keyCode)
+	switch(key)
 	{
 	case Input::Key::Unknown:
 		return "ERROR Unknown";
@@ -208,8 +208,8 @@ std::string TRAP::KeyEvent::NonPrintableKeyToString(const Input::Key keyCode)
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::KeyPressEvent::KeyPressEvent(const Input::Key keyCode, const int32_t repeatCount, const std::string_view title)
-	: KeyEvent(keyCode), m_repeatCount(repeatCount), m_title(title)
+TRAP::KeyPressEvent::KeyPressEvent(const Input::Key key, const int32_t repeatCount, const std::string_view title)
+	: KeyEvent(key), m_repeatCount(repeatCount), m_title(title)
 {
 }
 
@@ -224,7 +224,7 @@ int32_t TRAP::KeyPressEvent::GetRepeatCount() const
 
 std::string TRAP::KeyPressEvent::ToString() const
 {
-	const char* name = INTERNAL::WindowingAPI::GetKeyName(m_keyCode, 0);
+	const char* name = INTERNAL::WindowingAPI::GetKeyName(m_key, 0);
 	
 	std::stringstream ss;
 	ss << "KeyPressEvent: ";
@@ -232,9 +232,9 @@ std::string TRAP::KeyPressEvent::ToString() const
 	if(name)
 		ss << name;
 	else
-		ss << NonPrintableKeyToString(m_keyCode);
+		ss << NonPrintableKeyToString(m_key);
 	
-	ss << "(" << static_cast<int32_t>(m_keyCode) << ")" << " (" << m_repeatCount << " repeats)";
+	ss << "(" << static_cast<int32_t>(m_key) << ")" << " (" << m_repeatCount << " repeats)";
 
 	return ss.str();
 }
@@ -271,8 +271,8 @@ const char* TRAP::KeyPressEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::KeyReleaseEvent::KeyReleaseEvent(const Input::Key keyCode, const std::string_view title)
-	: KeyEvent(keyCode), m_title(title)
+TRAP::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, const std::string_view title)
+	: KeyEvent(key), m_title(title)
 {
 }
 
@@ -280,7 +280,7 @@ TRAP::KeyReleaseEvent::KeyReleaseEvent(const Input::Key keyCode, const std::stri
 
 std::string TRAP::KeyReleaseEvent::ToString() const
 {
-	const char* name = INTERNAL::WindowingAPI::GetKeyName(m_keyCode, 0);
+	const char* name = INTERNAL::WindowingAPI::GetKeyName(m_key, 0);
 	
 	std::stringstream ss;	
 	ss << "KeyReleaseEvent: ";
@@ -288,9 +288,9 @@ std::string TRAP::KeyReleaseEvent::ToString() const
 	if (name)
 		ss << name;
 	else
-		ss << NonPrintableKeyToString(m_keyCode);
+		ss << NonPrintableKeyToString(m_key);
 
-	ss << "(" << static_cast<int32_t>(m_keyCode) << ")";
+	ss << "(" << static_cast<int32_t>(m_key) << ")";
 
 	return ss.str();
 }

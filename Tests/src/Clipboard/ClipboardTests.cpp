@@ -46,7 +46,7 @@ void ClipboardTests::OnEvent(TRAP::Event& event)
 
 bool ClipboardTests::OnKeyPress(TRAP::KeyPressEvent& event)
 {
-	switch(event.GetKeyCode())
+	switch(event.GetKey())
 	{
 	case TRAP::Input::Key::Escape:
 		TRAP::Application::Shutdown();

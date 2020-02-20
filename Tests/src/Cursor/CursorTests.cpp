@@ -97,7 +97,7 @@ bool CursorTests::OnKeyPress(TRAP::KeyPressEvent& event)
 {
 	if (event.GetRepeatCount() == 0)
 	{
-		switch (event.GetKeyCode())
+		switch (event.GetKey())
 		{
 		case TRAP::Input::Key::A:
 		{
@@ -228,7 +228,7 @@ bool CursorTests::OnKeyPress(TRAP::KeyPressEvent& event)
 		case TRAP::Input::Key::Eight:
 		case TRAP::Input::Key::Nine:
 		{
-			int32_t index = static_cast<int32_t>(event.GetKeyCode()) - static_cast<int32_t>(TRAP::Input::Key::One);
+			int32_t index = static_cast<int32_t>(event.GetKey()) - static_cast<int32_t>(TRAP::Input::Key::One);
 			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift) || TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Shift))
 				index += 9;
 

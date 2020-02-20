@@ -750,6 +750,12 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 			if (s_Data.CapturedCursorWindow == windowPtr)
 				CaptureCursor(windowPtr);
 
+			if (windowPtr->Minimized != minimized)
+				InputWindowMinimize(windowPtr, minimized);
+
+			if (windowPtr->Maximized != maximized)
+				InputWindowMaximize(windowPtr, maximized);
+
 			if (windowPtr->Width != width || windowPtr->Height != height)
 			{
 				InputFrameBufferSize(windowPtr, width, height);

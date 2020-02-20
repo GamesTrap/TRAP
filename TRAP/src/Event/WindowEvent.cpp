@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "WindowEvent.h"
 
-#include <utility>
-
 TRAP::WindowResizeEvent::WindowResizeEvent(const uint32_t width, const uint32_t height, const std::string_view title)
 	: m_width(width), m_height(height), m_title(title)
 {
@@ -20,13 +18,6 @@ uint32_t TRAP::WindowResizeEvent::GetWidth() const
 uint32_t TRAP::WindowResizeEvent::GetHeight() const
 {
 	return m_height;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Math::Vec2ui TRAP::WindowResizeEvent::GetSize() const
-{
-	return { m_width, m_height };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -70,6 +61,168 @@ const char* TRAP::WindowResizeEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 
 int32_t TRAP::WindowResizeEvent::GetCategoryFlags() const
+{
+	return static_cast<int32_t>(EventCategory::Application);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::WindowMinimizeEvent::WindowMinimizeEvent(const std::string_view title)
+	: m_title(title)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string_view TRAP::WindowMinimizeEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::WindowMinimizeEvent::ToString() const
+{
+	std::stringstream ss;
+	ss << "WindowMinimizeEvent";
+
+	return ss.str();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::WindowMinimizeEvent::GetStaticType()
+{
+	return EventType::WindowMinimize;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::WindowMinimizeEvent::GetEventType() const
+{
+	return GetStaticType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const char* TRAP::WindowMinimizeEvent::GetName() const
+{
+	return "WindowMinimize";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::WindowMinimizeEvent::GetCategoryFlags() const
+{
+	return static_cast<int32_t>(EventCategory::Application);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::WindowMaximizeEvent::WindowMaximizeEvent(const std::string_view title)
+	: m_title(title)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string_view TRAP::WindowMaximizeEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::WindowMaximizeEvent::ToString() const
+{
+	std::stringstream ss;
+	ss << "WindowMaximizeEvent";
+
+	return ss.str();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::WindowMaximizeEvent::GetStaticType()
+{
+	return EventType::WindowMaximize;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::WindowMaximizeEvent::GetEventType() const
+{
+	return GetStaticType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const char* TRAP::WindowMaximizeEvent::GetName() const
+{
+	return "WindowMaximize";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::WindowMaximizeEvent::GetCategoryFlags() const
+{
+	return static_cast<int32_t>(EventCategory::Application);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::WindowRestoreEvent::WindowRestoreEvent(const std::string_view title)
+	: m_title(title)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string_view TRAP::WindowRestoreEvent::GetTitle() const
+{
+	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::WindowRestoreEvent::ToString() const
+{
+	std::stringstream ss;
+	ss << "WindowRestoreEvent";
+
+	return ss.str();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::WindowRestoreEvent::GetStaticType()
+{
+	return EventType::WindowRestore;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EventType TRAP::WindowRestoreEvent::GetEventType() const
+{
+	return GetStaticType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const char* TRAP::WindowRestoreEvent::GetName() const
+{
+	return "WindowRestoreEvent";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::WindowRestoreEvent::GetCategoryFlags() const
 {
 	return static_cast<int32_t>(EventCategory::Application);
 }
@@ -139,13 +292,6 @@ int32_t TRAP::WindowMoveEvent::GetX() const
 int32_t TRAP::WindowMoveEvent::GetY() const
 {
 	return m_y;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Math::Vec2i TRAP::WindowMoveEvent::GetPosition() const
-{
-	return { m_x, m_y };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -369,13 +515,6 @@ float TRAP::WindowContentScaleEvent::GetYScale() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2 TRAP::WindowContentScaleEvent::GetScale() const
-{
-	return { m_XScale, m_YScale };
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 std::string_view TRAP::WindowContentScaleEvent::GetTitle() const
 {
 	return m_title;
@@ -440,13 +579,6 @@ uint32_t TRAP::FrameBufferResizeEvent::GetWidth() const
 uint32_t TRAP::FrameBufferResizeEvent::GetHeight() const
 {
 	return m_height;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Math::Vec2 TRAP::FrameBufferResizeEvent::GetFrameBufferSize() const
-{
-	return { m_width, m_height };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

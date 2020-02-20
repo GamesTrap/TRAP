@@ -200,7 +200,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w08a1]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][20w08a2]" + std::string(Graphics::Renderer::GetTitle());
 #ifdef TRAP_PLATFORM_LINUX
 	if (Application::GetLinuxWindowManager() == Application::LinuxWindowManager::Wayland)
 		newTitle += "[Wayland]";
@@ -764,7 +764,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w08a1]";
+		"[INDEV][20w08a2]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif
@@ -970,6 +970,44 @@ void TRAP::Window::Init(const WindowProps& props)
 
 		WindowResizeEvent event(width, height, data.Title);
 		data.EventCallback(event);
+	});
+
+	INTERNAL::WindowingAPI::SetWindowMinimizeCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, bool restored)
+	{
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
+
+		if (!data.EventCallback)
+			return;
+
+		if (restored)
+		{
+			WindowRestoreEvent event(data.Title);
+			data.EventCallback(event);
+		}
+		else
+		{
+			WindowMinimizeEvent event(data.Title);
+			data.EventCallback(event);
+		}
+	});
+
+	INTERNAL::WindowingAPI::SetWindowMaximizeCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, bool restored)
+	{
+		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
+
+		if (!data.EventCallback)
+			return;
+
+		if (restored)
+		{
+			WindowRestoreEvent event(data.Title);
+			data.EventCallback(event);
+		}
+		else
+		{
+			WindowMaximizeEvent event(data.Title);
+			data.EventCallback(event);
+		}
 	});
 
 	INTERNAL::WindowingAPI::SetWindowPosCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const int32_t x, const int32_t y)

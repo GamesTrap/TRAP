@@ -48,6 +48,10 @@ namespace TRAP::INTERNAL
 		typedef void (*WindowPositionFunc)(const InternalWindow*, int32_t xPos, int32_t yPos);
 		//The function pointer type for window size callbacks.
 		typedef void (*WindowSizeFunc)(const InternalWindow*, int32_t width, int32_t height);
+		//The function pointer type for window minimize callbacks.
+		typedef void (*WindowMinimizeFunc)(const InternalWindow*, bool restored);
+		//The function pointer type for window maximize callbacks.
+		typedef void (*WindowMaximizeFunc)(const InternalWindow*, bool restored);
 		//The function pointer type for window close callbacks.
 		typedef void (*WindowCloseFunc)(const InternalWindow*);
 		//The function pointer type for window focus callbacks.
@@ -953,6 +957,8 @@ namespace TRAP::INTERNAL
 			{
 				WindowPositionFunc Pos = nullptr;
 				WindowSizeFunc Size = nullptr;
+				WindowMinimizeFunc Minimize = nullptr;
+				WindowMaximizeFunc Maximize = nullptr;
 				WindowCloseFunc Close = nullptr;
 				WindowFocusFunc Focus = nullptr;
 				FrameBufferSizeFunc FBSize = nullptr;
@@ -1131,6 +1137,10 @@ namespace TRAP::INTERNAL
 		static void SetWindowPosCallback(InternalWindow* window, WindowPositionFunc callback);
 		//Sets the size callback for the specified window.
 		static void SetWindowSizeCallback(InternalWindow* window, WindowSizeFunc callback);
+		//Sets the minimize callback for the specified window.
+		static void SetWindowMinimizeCallback(InternalWindow* window, WindowMinimizeFunc callback);
+		//Sets the maximize callback for the specified window.
+		static void SetWindowMaximizeCallback(InternalWindow* window, WindowMaximizeFunc callback);
 		//Sets the close callback for the specified window.
 		static void SetWindowCloseCallback(InternalWindow* window, WindowCloseFunc callback);
 		//Sets the focus callback for the specified window.
@@ -1402,6 +1412,10 @@ namespace TRAP::INTERNAL
 		//Notifies shared code that a window has been resized
 		//The size is specified in screen coordinates
 		static void InputWindowSize(const InternalWindow* window, int32_t width, int32_t height);
+		//Notifies shared code that a window has been minimized
+		static void InputWindowMinimize(const InternalWindow* window, bool restored);
+		//Notifies shared code that a window has been maximized
+		static void InputWindowMaximize(const InternalWindow* window, bool restored);
 		//Notifies shared code that a window has moved
 		//The position is specified in content area relative screen coordinates
 		static void InputWindowPos(const InternalWindow* window, int32_t x, int32_t y);

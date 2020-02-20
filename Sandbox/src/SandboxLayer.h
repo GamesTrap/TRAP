@@ -152,33 +152,33 @@ public:
 
 	bool OnKeyPress(TRAP::KeyPressEvent& event)
 	{
-		if (event.GetKeyCode() == TRAP::Input::Key::Escape)
+		if (event.GetKey() == TRAP::Input::Key::Escape)
 			TRAP::Application::Shutdown();
 
-		if (event.GetKeyCode() == TRAP::Input::Key::F1 && event.GetRepeatCount() < 1) //Switch to D3D12
+		if (event.GetKey() == TRAP::Input::Key::F1 && event.GetRepeatCount() < 1) //Switch to D3D12
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::D3D12);
-		if (event.GetKeyCode() == TRAP::Input::Key::F2 && event.GetRepeatCount() < 1) //Switch to Vulkan
+		if (event.GetKey() == TRAP::Input::Key::F2 && event.GetRepeatCount() < 1) //Switch to Vulkan
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::Vulkan);
-		if (event.GetKeyCode() == TRAP::Input::Key::F3 && event.GetRepeatCount() < 1) //Switch to OpenGL
+		if (event.GetKey() == TRAP::Input::Key::F3 && event.GetRepeatCount() < 1) //Switch to OpenGL
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::OpenGL);
 
-		if (event.GetKeyCode() == TRAP::Input::Key::F4 && event.GetRepeatCount() < 1) //Use Fallback Shader
+		if (event.GetKey() == TRAP::Input::Key::F4 && event.GetRepeatCount() < 1) //Use Fallback Shader
 			m_usePassthrough = !m_usePassthrough;
 
-		if (event.GetKeyCode() == TRAP::Input::Key::F5 && event.GetRepeatCount() < 1) //Make Window windowed
+		if (event.GetKey() == TRAP::Input::Key::F5 && event.GetRepeatCount() < 1) //Make Window windowed
 			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Windowed);
-		if (event.GetKeyCode() == TRAP::Input::Key::F6 && event.GetRepeatCount() < 1) //Make Window Borderless Fullscreen
+		if (event.GetKey() == TRAP::Input::Key::F6 && event.GetRepeatCount() < 1) //Make Window Borderless Fullscreen
 			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Borderless);
-		if (event.GetKeyCode() == TRAP::Input::Key::F7 && event.GetRepeatCount() < 1) //Make Window Exclusive Fullscreen
+		if (event.GetKey() == TRAP::Input::Key::F7 && event.GetRepeatCount() < 1) //Make Window Exclusive Fullscreen
 			TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Fullscreen);
 
-		if (event.GetKeyCode() == TRAP::Input::Key::F10 && event.GetRepeatCount() < 1) //Enable/Disable WireFrame Mode
+		if (event.GetKey() == TRAP::Input::Key::F10 && event.GetRepeatCount() < 1) //Enable/Disable WireFrame Mode
 		{
 			m_wireFrame = !m_wireFrame;
 			TRAP::Graphics::RenderCommand::SetWireFrame(m_wireFrame);
 		}
 
-		if (event.GetKeyCode() == TRAP::Input::Key::F11 && event.GetRepeatCount() < 1)
+		if (event.GetKey() == TRAP::Input::Key::F11 && event.GetRepeatCount() < 1)
 			TRAP::Utils::MsgBox::Show("Just a prank bro!", "Critical Error");
 
 		return true;

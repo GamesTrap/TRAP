@@ -32,6 +32,9 @@ void MinimizeTests::OnEvent(TRAP::Event& event)
 	dispatcher.Dispatch<TRAP::FrameBufferResizeEvent>([this](TRAP::FrameBufferResizeEvent& e) {return OnFrameBufferResize(e); });
 	dispatcher.Dispatch<TRAP::WindowFocusEvent>([this](TRAP::WindowFocusEvent& e) {return OnWindowFocus(e); });
 	dispatcher.Dispatch<TRAP::WindowLostFocusEvent>([this](TRAP::WindowLostFocusEvent& e) {return OnWindowLostFocus(e); });
+	dispatcher.Dispatch<TRAP::WindowMinimizeEvent>([this](TRAP::WindowMinimizeEvent& e) {return OnWindowMinimize(e); });
+	dispatcher.Dispatch<TRAP::WindowMaximizeEvent>([this](TRAP::WindowMaximizeEvent& e) {return OnWindowMaximize(e); });
+	dispatcher.Dispatch<TRAP::WindowRestoreEvent>([this](TRAP::WindowRestoreEvent& e) {return OnWindowRestore(e); });
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -43,7 +46,7 @@ bool MinimizeTests::OnKeyPress(const TRAP::KeyPressEvent& event)
 	if (event.GetRepeatCount() > 0)
 		return true;
 
-	switch(event.GetKeyCode())
+	switch(event.GetKey())
 	{
 	case TRAP::Input::Key::I:
 		TRAP::Application::GetWindow()->Minimize();
@@ -102,6 +105,33 @@ bool MinimizeTests::OnWindowFocus(const TRAP::WindowFocusEvent& event)
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool MinimizeTests::OnWindowLostFocus(const TRAP::WindowLostFocusEvent& event)
+{
+	TP_TRACE(event.ToString());
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool MinimizeTests::OnWindowMinimize(const TRAP::WindowMinimizeEvent& event)
+{
+	TP_TRACE(event.ToString());
+	
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool MinimizeTests::OnWindowMaximize(const TRAP::WindowMaximizeEvent& event)
+{
+	TP_TRACE(event.ToString());
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool MinimizeTests::OnWindowRestore(const TRAP::WindowRestoreEvent& event)
 {
 	TP_TRACE(event.ToString());
 

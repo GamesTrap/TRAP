@@ -2,7 +2,6 @@
 #define _TRAP_WINDOWEVENT_H_
 
 #include "Event.h"
-#include "Maths/Vec2.h"
 
 namespace TRAP
 {
@@ -13,7 +12,6 @@ namespace TRAP
 
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
-		Math::Vec2ui GetSize() const;
 		std::string_view GetTitle() const;
 
 		std::string ToString() const override;
@@ -25,6 +23,60 @@ namespace TRAP
 
 	private:
 		uint32_t m_width, m_height;
+		std::string_view m_title;
+	};
+
+	class WindowMinimizeEvent final : public Event
+	{
+	public:
+		WindowMinimizeEvent(std::string_view title);
+
+		std::string_view GetTitle() const;
+
+		std::string ToString() const override;
+
+		static EventType GetStaticType();
+		EventType GetEventType() const override;
+		const char* GetName() const override;
+		int32_t GetCategoryFlags() const override;
+
+	private:
+		std::string_view m_title;
+	};
+
+	class WindowMaximizeEvent final : public Event
+	{
+	public:
+		WindowMaximizeEvent(std::string_view title);
+
+		std::string_view GetTitle() const;
+
+		std::string ToString() const override;
+
+		static EventType GetStaticType();
+		EventType GetEventType() const override;
+		const char* GetName() const override;
+		int32_t GetCategoryFlags() const override;
+
+	private:
+		std::string_view m_title;
+	};
+
+	class WindowRestoreEvent final : public Event
+	{
+	public:
+		WindowRestoreEvent(std::string_view title);
+
+		std::string_view GetTitle() const;
+
+		std::string ToString() const override;
+
+		static EventType GetStaticType();
+		EventType GetEventType() const override;
+		const char* GetName() const override;
+		int32_t GetCategoryFlags() const override;
+
+	private:
 		std::string_view m_title;
 	};
 
@@ -51,7 +103,6 @@ namespace TRAP
 
 		int32_t GetX() const;
 		int32_t GetY() const;
-		Math::Vec2i GetPosition() const;
 		std::string_view GetTitle() const;
 
 		std::string ToString() const override;
@@ -125,7 +176,6 @@ namespace TRAP
 
 		float GetXScale() const;
 		float GetYScale() const;
-		Math::Vec2 GetScale() const;
 		std::string_view GetTitle() const;
 
 		std::string ToString() const override;
@@ -148,7 +198,6 @@ namespace TRAP
 
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
-		Math::Vec2 GetFrameBufferSize() const;
 		std::string_view GetTitle() const;
 
 		std::string ToString() const override;

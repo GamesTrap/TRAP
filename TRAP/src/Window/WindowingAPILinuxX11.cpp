@@ -4894,17 +4894,21 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 								AcquireMonitorBorderless(window);
 							else
 								AcquireMonitor(window);
-						}					
+						}
 					}
-					
+
 					window->Minimized = minimized;
+					InputWindowMinimize(window, minimized);
 				}
 			}
 			else if(event.xproperty.atom == s_Data.NET_WM_STATE)
 			{
 				const bool maximized = PlatformWindowMaximized(window);
-				if(window->Maximized != maximized)
+				if (window->Maximized != maximized)
+				{
 					window->Maximized = maximized;
+					InputWindowMaximize(window, maximized);
+				}
 			}
 			
 			return;

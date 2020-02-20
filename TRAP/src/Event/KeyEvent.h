@@ -9,22 +9,22 @@ namespace TRAP
 	class KeyEvent : public Event
 	{
 	public:
-		Input::Key GetKeyCode() const;
+		Input::Key GetKey() const;
 
 		int32_t GetCategoryFlags() const override;
 
 	protected:
-		explicit KeyEvent(Input::Key keyCode);
+		explicit KeyEvent(Input::Key key);
 
-		static std::string NonPrintableKeyToString(Input::Key keyCode);
+		static std::string NonPrintableKeyToString(Input::Key key);
 
-		Input::Key m_keyCode;
+		Input::Key m_key;
 	};
 
 	class KeyPressEvent final : public KeyEvent
 	{
 	public:
-		KeyPressEvent(Input::Key keyCode, int32_t repeatCount, std::string_view title);
+		KeyPressEvent(Input::Key key, int32_t repeatCount, std::string_view title);
 
 		int32_t GetRepeatCount() const;
 
@@ -44,7 +44,7 @@ namespace TRAP
 	class KeyReleaseEvent final : public KeyEvent
 	{
 	public:
-		explicit KeyReleaseEvent(Input::Key keyCode, std::string_view title);
+		explicit KeyReleaseEvent(Input::Key key, std::string_view title);
 
 		std::string_view GetTitle() const;
 

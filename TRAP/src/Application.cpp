@@ -297,6 +297,8 @@ void TRAP::Application::OnEvent(Event& e)
 	dispatcher.Dispatch<KeyPressEvent>([this](KeyPressEvent& e) {return OnKeyPress(e); });
 	dispatcher.Dispatch<WindowFocusEvent>([this](WindowFocusEvent& e) {return OnWindowFocus(e); });
 	dispatcher.Dispatch<WindowLostFocusEvent>([this](WindowLostFocusEvent& e) {return OnWindowLostFocus(e); });
+	dispatcher.Dispatch<WindowMinimizeEvent>([this](WindowMinimizeEvent& e) {return OnWindowMinimize(e); });
+	dispatcher.Dispatch<WindowRestoreEvent>([this](WindowRestoreEvent& e) {return OnWindowRestore(e); });
 
 	if (m_layerStack)
 	{
@@ -560,16 +562,7 @@ bool TRAP::Application::OnFrameBufferResize(FrameBufferResizeEvent& e)
 	if (Window::GetActiveWindows() > 1)
 		Window::Use();
 
-	if ((e.GetWidth() == 0 || e.GetHeight() == 0) && Window::GetActiveWindows() == 1)
-	{
-		m_minimized = true;
-
-		return false;
-	}
-
 	Graphics::RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
-
-	m_minimized = false;
 
 	return false;
 }
@@ -580,7 +573,7 @@ bool TRAP::Application::OnKeyPress(KeyPressEvent& e) const
 {
 	if (Window::GetActiveWindows() == 1)
 	{
-		if ((e.GetKeyCode() == Input::Key::Enter || e.GetKeyCode() == Input::Key::KP_Enter) && Input::IsKeyPressed(Input::Key::Left_ALT) && e.GetRepeatCount() < 1)
+		if ((e.GetKey() == Input::Key::Enter || e.GetKey() == Input::Key::KP_Enter) && Input::IsKeyPressed(Input::Key::Left_ALT) && e.GetRepeatCount() < 1)
 		{
 			if (m_window->GetDisplayMode() == Window::DisplayMode::Windowed ||
 				m_window->GetDisplayMode() == Window::DisplayMode::Borderless)
@@ -609,5 +602,24 @@ bool TRAP::Application::OnWindowLostFocus(WindowLostFocusEvent& e)
 	if (Window::GetActiveWindows() == 1)
 		m_focused = false;
 	
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Application::OnWindowMinimize(WindowMinimizeEvent& e)
+{
+	if(Window::GetActiveWindows() == 1)
+		m_minimized = true;
+
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Application::OnWindowRestore(WindowRestoreEvent& e)
+{
+	m_minimized = false;
+
 	return false;
 }

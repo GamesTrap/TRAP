@@ -18,6 +18,9 @@ private:
 	bool OnFrameBufferResize(const TRAP::FrameBufferResizeEvent& event);
 	bool OnWindowFocus(const TRAP::WindowFocusEvent& event);
 	bool OnWindowLostFocus(const TRAP::WindowLostFocusEvent& event);
+	bool OnWindowMinimize(const TRAP::WindowMinimizeEvent& event);
+	bool OnWindowMaximize(const TRAP::WindowMaximizeEvent& event);
+	bool OnWindowRestore(const TRAP::WindowRestoreEvent& event);
 };
 
 #endif /*_GAMESTRAP_MINIMIZETESTS_H_*/
