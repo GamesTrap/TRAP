@@ -5,6 +5,8 @@
 #include "Events/EventTests.h"
 #include "Minimize/MinimizeTests.h"
 #include "Controllers/ControllerTests.h"
+#include "Icon/IconTests.h"
+#include "Monitors/MonitorTests.h"
 
 class Tests final : public TRAP::Application
 {
@@ -15,7 +17,9 @@ public:
 		//PushLayer(TRAP::MakeScope<CursorTests>());
 		//PushLayer(TRAP::MakeScope<EventTests>());
 		//PushLayer(TRAP::MakeScope<MinimizeTests>());
-		PushLayer(TRAP::MakeScope<ControllerTests>());
+		//PushLayer(TRAP::MakeScope<ControllerTests>());
+		//PushLayer(TRAP::MakeScope<IconTests>());
+		PushLayer(TRAP::MakeScope<MonitorTests>());
 	}
 };
 

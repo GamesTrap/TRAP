@@ -887,3 +887,7 @@ SITREP 02/20/2020|20w08a2
     - Changed TRAP Engine version to 20w08a2(0.6.13)
     - Added WindowMinimize/Maximize/RestoreEvents ~<40 mins
     - Updated Docs ~<30 mins
+    - Validated Window Icon functionality on Windows ~<20 mins
+    - Added more queries to TRAP::Monitor ~<30 mins
+    - Updated Docs ~>30 mins
+    - Validated Monitor functionality on Windows ~<20 mins

@@ -109,6 +109,17 @@
 <li class="toctree-l3"><a class="reference internal" href="#getname">GetName</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getvideomodes">GetVideoModes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getcurrentvideomode">GetCurrentVideoMode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getcontentscale">GetContentScale</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getcontentscalex">GetContentScaleX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getcontentscaley">GetContentScaleY</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getposition">GetPosition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getpositionx">GetPositionX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getpositiony">GetPositionY</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getworkarea">GetWorkArea</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getworkareax">GetWorkAreaX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getworkareay">GetWorkAreaY</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getworkareawidth">GetWorkAreaWidth</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getworkareaheight">GetWorkAreaHeight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#isinuse">IsInUse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getid">GetID</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getinternalmonitor">GetInternalMonitor</a></li>
@@ -233,12 +244,122 @@
 </div>
 <div class="section" id="getcurrentvideomode">
 <h3>GetCurrentVideoMode<a class="headerlink" href="#getcurrentvideomode" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span><span class="o">::</span><span class="n">VideoMode</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">MonitorGetCurrentVideoMode</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span><span class="o">::</span><span class="n">VideoMode</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span><span class="o">::</span><span class="n">GetCurrentVideoMode</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
 <div class="line">Returns the currently used TRAP::<a class="reference internal" href="#monitor">Monitor</a>::<a class="reference internal" href="#videomode">VideoMode</a> from the Monitor inside TRAP::<a class="reference internal" href="#monitor">Monitor</a>.</div>
+</div>
+</div>
+<div class="section" id="getcontentscale">
+<h3>GetContentScale<a class="headerlink" href="#getcontentscale" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Math</span><span class="o">::</span><span class="n">Vec2</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span><span class="o">::</span><span class="n">GetContentScale</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the x and y content scale from the TRAP::<a class="reference internal" href="#monitor">Monitor</a> in a TRAP::<span class="xref std std-ref">Math</span>::<span class="xref std std-ref">Vec2</span>.</div>
+</div>
+</div>
+<div class="section" id="getcontentscalex">
+<h3>GetContentScaleX<a class="headerlink" href="#getcontentscalex" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span><span class="o">::</span><span class="n">GetContentScaleX</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the x content scale from the TRAP::<a class="reference internal" href="#monitor">Monitor</a>.</div>
+</div>
+</div>
+<div class="section" id="getcontentscaley">
+<h3>GetContentScaleY<a class="headerlink" href="#getcontentscaley" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span><span class="o">::</span><span class="n">GetContentScaleY</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the y content scale from the TRAP::<a class="reference internal" href="#monitor">Monitor</a>.</div>
+</div>
+</div>
+<div class="section" id="getposition">
+<h3>GetPosition<a class="headerlink" href="#getposition" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Math</span><span class="o">::</span><span class="n">Vec2i</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span><span class="o">::</span><span class="n">GetPosition</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the x and y position from the TRAP::<a class="reference internal" href="#monitor">Monitor</a> in a TRAP::<span class="xref std std-ref">Math</span>::<span class="xref std std-ref">Vec2i</span>.</div>
+</div>
+</div>
+<div class="section" id="getpositionx">
+<h3>GetPositionX<a class="headerlink" href="#getpositionx" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span><span class="o">::</span><span class="n">GetPositionX</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the x position from the TRAP::<a class="reference internal" href="#monitor">Monitor</a>.</div>
+</div>
+</div>
+<div class="section" id="getpositiony">
+<h3>GetPositionY<a class="headerlink" href="#getpositiony" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span><span class="o">::</span><span class="n">GetPositionY</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the y position from the TRAP::<a class="reference internal" href="#monitor">Monitor</a>.</div>
+</div>
+</div>
+<div class="section" id="getworkarea">
+<h3>GetWorkArea<a class="headerlink" href="#getworkarea" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Math</span><span class="o">::</span><span class="n">Vec4i</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span><span class="o">::</span><span class="n">GetWorkArea</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the x and y position &amp; the width and height from the TRAP::<a class="reference internal" href="#monitor">Monitor</a> in a TRAP::<span class="xref std std-ref">Math</span>::<span class="xref std std-ref">Vec4i</span>.</div>
+</div>
+</div>
+<div class="section" id="getworkareax">
+<h3>GetWorkAreaX<a class="headerlink" href="#getworkareax" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span><span class="o">::</span><span class="n">GetWorkAreaX</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the x position from the TRAP::<a class="reference internal" href="#monitor">Monitor</a>.</div>
+</div>
+</div>
+<div class="section" id="getworkareay">
+<h3>GetWorkAreaY<a class="headerlink" href="#getworkareay" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span><span class="o">::</span><span class="n">GetWorkAreaY</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the y position from the TRAP::<a class="reference internal" href="#monitor">Monitor</a>.</div>
+</div>
+</div>
+<div class="section" id="getworkareawidth">
+<h3>GetWorkAreaWidth<a class="headerlink" href="#getworkareawidth" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span><span class="o">::</span><span class="n">GetWorkAreaWidth</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the width from the TRAP::<a class="reference internal" href="#monitor">Monitor</a>.</div>
+</div>
+</div>
+<div class="section" id="getworkareaheight">
+<h3>GetWorkAreaHeight<a class="headerlink" href="#getworkareaheight" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Monitor</span><span class="o">::</span><span class="n">GetWorkAreaHeight</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the height from the TRAP::<a class="reference internal" href="#monitor">Monitor</a>.</div>
 </div>
 </div>
 <div class="section" id="isinuse">

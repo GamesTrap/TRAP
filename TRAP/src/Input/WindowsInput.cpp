@@ -10,7 +10,8 @@
 
 bool TRAP::Input::InitController()
 {
-	dinput8.Instance = LoadLibraryA("dinput8.dll");
+	if(!dinput8.Instance)
+		dinput8.Instance = LoadLibraryA("dinput8.dll");
 	if (dinput8.Instance)
 		dinput8.Create = reinterpret_cast<PFN_DirectInput8Create>(GetProcAddress(dinput8.Instance, "DirectInput8Create"));
 	
@@ -29,25 +30,28 @@ bool TRAP::Input::InitController()
 	}
 
 	{
-		std::array<std::string, 5> names =
+		if (!xinput.Instance)
 		{
-			"xinput1_4.dll",
-			"xinput1_3.dll",
-			"xinput9_1_0.dll",
-			"xinput1_2.dll",
-			"xinput1_1.dll"
-		};
-
-		for(const std::string& dll : names)
-		{
-			xinput.Instance = LoadLibraryA(dll.c_str());
-			if(xinput.Instance)
+			std::array<std::string, 5> names =
 			{
-				xinput.GetCapabilities = reinterpret_cast<PFN_XInputGetCapabilities>(GetProcAddress(xinput.Instance, "XInputGetCapabilities"));
-				xinput.GetState = reinterpret_cast<PFN_XInputGetState>(GetProcAddress(xinput.Instance, "XInputGetState"));
-				xinput.SetState = reinterpret_cast<PFN_XInputSetState>(GetProcAddress(xinput.Instance, "XInputSetState"));
-				
-				break;
+				"xinput1_4.dll",
+				"xinput1_3.dll",
+				"xinput9_1_0.dll",
+				"xinput1_2.dll",
+				"xinput1_1.dll"
+			};
+
+			for (const std::string& dll : names)
+			{
+				xinput.Instance = LoadLibraryA(dll.c_str());
+				if (xinput.Instance)
+				{
+					xinput.GetCapabilities = reinterpret_cast<PFN_XInputGetCapabilities>(GetProcAddress(xinput.Instance, "XInputGetCapabilities"));
+					xinput.GetState = reinterpret_cast<PFN_XInputGetState>(GetProcAddress(xinput.Instance, "XInputGetState"));
+					xinput.SetState = reinterpret_cast<PFN_XInputSetState>(GetProcAddress(xinput.Instance, "XInputSetState"));
+
+					break;
+				}
 			}
 		}
 

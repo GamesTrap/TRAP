@@ -26,6 +26,17 @@ namespace TRAP
 		std::string GetName() const;
 		std::vector<VideoMode> GetVideoModes() const;
 		VideoMode GetCurrentVideoMode() const;
+		Math::Vec2 GetContentScale() const;
+		float GetContentScaleX() const;
+		float GetContentScaleY() const;
+		Math::Vec2i GetPosition() const;
+		int32_t GetPositionX() const;
+		int32_t GetPositionY() const;
+		Math::Vec4i GetWorkArea() const;
+		int32_t GetWorkAreaX() const;
+		int32_t GetWorkAreaY() const;
+		int32_t GetWorkAreaWidth() const;
+		int32_t GetWorkAreaHeight() const;
 		bool IsInUse() const;
 		uint32_t GetID() const;
 		void* GetInternalMonitor() const;

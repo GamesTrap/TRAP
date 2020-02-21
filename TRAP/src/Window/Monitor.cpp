@@ -21,7 +21,8 @@ std::string TRAP::Monitor::GetName() const
 std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 {
 	std::vector<VideoMode> modes{};
-	for(const INTERNAL::WindowingAPI::InternalVideoMode mode : m_handle->Modes)
+
+	for(const INTERNAL::WindowingAPI::InternalVideoMode mode : INTERNAL::WindowingAPI::GetVideoModes(m_handle))
 		modes.push_back({ mode.Width, mode.Height, mode.RefreshRate });
 	
 	return modes;
@@ -32,6 +33,116 @@ std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 TRAP::Monitor::VideoMode TRAP::Monitor::GetCurrentVideoMode() const
 {	
 	return VideoMode{ m_handle->CurrentMode.Width, m_handle->CurrentMode.Height, m_handle->CurrentMode.RefreshRate };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Math::Vec2 TRAP::Monitor::GetContentScale() const
+{
+	float xScale, yScale;
+	INTERNAL::WindowingAPI::GetMonitorContentScale(m_handle, xScale, yScale);
+	
+	return { xScale, yScale };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Monitor::GetContentScaleX() const
+{
+	float xScale, yScale;
+	INTERNAL::WindowingAPI::GetMonitorContentScale(m_handle, xScale, yScale);
+
+	return xScale;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Monitor::GetContentScaleY() const
+{
+	float xScale, yScale;
+	INTERNAL::WindowingAPI::GetMonitorContentScale(m_handle, xScale, yScale);
+
+	return yScale;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Math::Vec2i TRAP::Monitor::GetPosition() const
+{
+	int32_t xPos, yPos;
+	INTERNAL::WindowingAPI::GetMonitorPos(m_handle, xPos, yPos);
+
+	return { xPos, yPos };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::Monitor::GetPositionX() const
+{
+	int32_t xPos, yPos;
+	INTERNAL::WindowingAPI::GetMonitorPos(m_handle, xPos, yPos);
+
+	return xPos;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::Monitor::GetPositionY() const
+{
+	int32_t xPos, yPos;
+	INTERNAL::WindowingAPI::GetMonitorPos(m_handle, xPos, yPos);
+
+	return yPos;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Math::Vec4i TRAP::Monitor::GetWorkArea() const
+{
+	int32_t xPos, yPos, width, height;
+	INTERNAL::WindowingAPI::GetMonitorWorkArea(m_handle, xPos, yPos, width, height);
+
+	return { xPos, yPos, width, height };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::Monitor::GetWorkAreaWidth() const
+{
+	int32_t xPos, yPos, width, height;
+	INTERNAL::WindowingAPI::GetMonitorWorkArea(m_handle, xPos, yPos, width, height);
+
+	return width;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::Monitor::GetWorkAreaHeight() const
+{
+	int32_t xPos, yPos, width, height;
+	INTERNAL::WindowingAPI::GetMonitorWorkArea(m_handle, xPos, yPos, width, height);
+
+	return height;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::Monitor::GetWorkAreaX() const
+{
+	int32_t xPos, yPos, width, height;
+	INTERNAL::WindowingAPI::GetMonitorWorkArea(m_handle, xPos, yPos, width, height);
+
+	return xPos;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::Monitor::GetWorkAreaY() const
+{
+	int32_t xPos, yPos, width, height;
+	INTERNAL::WindowingAPI::GetMonitorWorkArea(m_handle, xPos, yPos, width, height);
+
+	return yPos;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
