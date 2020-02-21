@@ -56,6 +56,7 @@ namespace TRAP
 		CursorMode GetCursorMode() const;
 		bool GetRawMouseInput() const;
 		Math::Vec2 GetContentScale() const;
+		float GetOpacity() const;
 
 		void* GetInternalWindow() const;
 
@@ -76,6 +77,7 @@ namespace TRAP
 		void SetResizable(bool enabled) const;
 		void SetMinimumSize(uint32_t minWidth, uint32_t minHeight) const;
 		void SetMaximumSize(uint32_t maxWidth, uint32_t maxHeight) const;
+		void SetOpacity(float opacity) const;
 
 		bool IsMaximized() const;
 		bool IsMinimized() const;

@@ -181,6 +181,13 @@ TRAP::Math::Vec2 TRAP::Window::GetContentScale() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+float TRAP::Window::GetOpacity() const
+{
+	return INTERNAL::WindowingAPI::GetWindowOpacity(m_window.get());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void* TRAP::Window::GetInternalWindow() const
 {
 	return m_window.get();
@@ -198,9 +205,9 @@ void TRAP::Window::SetTitle(const std::string& title)
 		m_data.Title = "TRAP Engine";
 
 #ifndef TRAP_RELEASE
-	const std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
+	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w08a2]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][20w08a3]" + std::string(Graphics::Renderer::GetTitle());
 #ifdef TRAP_PLATFORM_LINUX
 	if (Application::GetLinuxWindowManager() == Application::LinuxWindowManager::Wayland)
 		newTitle += "[Wayland]";
@@ -559,6 +566,20 @@ void TRAP::Window::SetMaximumSize(const uint32_t maxWidth, const uint32_t maxHei
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Window::SetOpacity(const float opacity) const
+{
+	if(opacity >= 0.0f || opacity <= 1.0f)
+	{
+		INTERNAL::WindowingAPI::SetWindowOpacity(m_window.get(), opacity);		
+	}
+	else
+	{
+		TP_ERROR("[Window] Invalid Window Opacity: ", opacity, "! Valid Range: 0.0 - 1.0f");
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::Window::IsMaximized() const
 {
 	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Maximized);
@@ -764,7 +785,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w08a2]";
+		"[INDEV][20w08a3]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif

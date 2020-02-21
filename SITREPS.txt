@@ -891,3 +891,9 @@ SITREP 02/20/2020|20w08a2
     - Added more queries to TRAP::Monitor ~<30 mins
     - Updated Docs ~>30 mins
     - Validated Monitor functionality on Windows ~<20 mins
+
+SITREP 02/21/2020|20w08a3
+    - Changed TRAP Engine version to 20w08a3(0.6.14)
+    - Added support for translucent windows ~<20 mins
+    - Updated Docs ~<20 mins
+    - Validated Window Opacity functionality on Windows ~<20 mins

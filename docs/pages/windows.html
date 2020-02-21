@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Windows &mdash; TRAP 0.6.11 documentation</title>
+  <title>Windows &mdash; TRAP 0.6.14 documentation</title>
   
 
   
@@ -32,7 +32,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within TRAP 0.6.11 documentation"
+          title="Search within TRAP 0.6.14 documentation"
           href="../_static/opensearch.xml"/>
 
   
@@ -129,6 +129,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#getcursormode">GetCursorMode</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getrawmouseinput">GetRawMouseInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getcontentscale">GetContentScale</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getopacity">GetOpacity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getinternalwindow">GetInternalWindow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#settitle">SetTitle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setdisplaymode">SetDisplayMode</a></li>
@@ -143,6 +144,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#setresizable">SetResizable</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setminimumsize">SetMinimumSize</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id5">SetMinimumSize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setopacity">SetOpacity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ismaximized">IsMaximized</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#isminimized">IsMinimized</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#isresizable">IsResizable</a></li>
@@ -570,6 +572,16 @@
 <div class="line">Returns a TRAP::Math::Vec2 contaning the X and Y content scale</div>
 </div>
 </div>
+<div class="section" id="getopacity">
+<h3>GetOpacity<a class="headerlink" href="#getopacity" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">float</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">GetOpacity</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the opacity of the TRAP::<a class="reference internal" href="#window">Window</a></div>
+</div>
+</div>
 <div class="section" id="getinternalwindow">
 <h3>GetInternalWindow<a class="headerlink" href="#getinternalwindow" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">GetInternalWindow</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
@@ -854,6 +866,22 @@
 <p class="admonition-title">Note</p>
 <p>Use <code class="code docutils literal notranslate"><span class="pre">0</span></code> to disable the maximum size limits</p>
 </div>
+</div>
+<div class="section" id="setopacity">
+<h3>SetOpacity<a class="headerlink" href="#setopacity" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">::</span><span class="n">SetOpacity</span><span class="p">(</span><span class="kt">float</span> <span class="n">opacity</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Sets the opacity for the TRAP::<a class="reference internal" href="#window">Window</a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">opacity</span></code> specifies the opacity. Valid Range: 0.0 - 1.0</p></li>
+</ul>
 </div>
 <div class="section" id="ismaximized">
 <h3>IsMaximized<a class="headerlink" href="#ismaximized" title="Permalink to this headline">¶</a></h3>
