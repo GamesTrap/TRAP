@@ -207,7 +207,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w08a3]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][20w08a4]" + std::string(Graphics::Renderer::GetTitle());
 #ifdef TRAP_PLATFORM_LINUX
 	if (Application::GetLinuxWindowManager() == Application::LinuxWindowManager::Wayland)
 		newTitle += "[Wayland]";
@@ -220,7 +220,6 @@ void TRAP::Window::SetTitle(const std::string& title)
 #else
 	INTERNAL::WindowingAPI::SetWindowTitle(m_window.get(), m_data.Title);
 #endif
-	TP_DEBUG("[Window] \"", oldTitle, "\" Set Title: \"", m_data.Title, "\"");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -785,7 +784,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w08a3]";
+		"[INDEV][20w08a4]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif

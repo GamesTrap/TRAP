@@ -8,6 +8,7 @@
 #include "Icon/IconTests.h"
 #include "Monitors/MonitorTests.h"
 #include "Opacity/OpacityTests.h"
+#include "Title/TitleTests.h"
 
 class Tests final : public TRAP::Application
 {
@@ -21,7 +22,8 @@ public:
 		//PushLayer(TRAP::MakeScope<ControllerTests>());
 		//PushLayer(TRAP::MakeScope<IconTests>());
 		//PushLayer(TRAP::MakeScope<MonitorTests>());
-		PushLayer(TRAP::MakeScope<OpacityTests>());
+		//PushLayer(TRAP::MakeScope<OpacityTests>());
+		PushLayer(TRAP::MakeScope<TitleTests>());
 	}
 };
 
