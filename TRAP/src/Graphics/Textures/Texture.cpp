@@ -83,6 +83,7 @@ uint32_t TRAP::Graphics::Texture::TRAPImageFormatToOpenGLPrecise(const ImageForm
 		if (bytesPerPixel == 12)
 			return GL_RGB32F;
 
+		return 0;
 	}
 
 	case ImageFormat::RGBA:
@@ -93,6 +94,8 @@ uint32_t TRAP::Graphics::Texture::TRAPImageFormatToOpenGLPrecise(const ImageForm
 			return GL_RGBA16;
 		if (bytesPerPixel == 16)
 			return GL_RGBA32F;
+
+		return 0;
 	}
 
 	case ImageFormat::Gray_Scale:
@@ -103,6 +106,8 @@ uint32_t TRAP::Graphics::Texture::TRAPImageFormatToOpenGLPrecise(const ImageForm
 			return GL_R16;
 		if (bytesPerPixel == 4)
 			return GL_R32F;
+
+		return 0;
 	}
 
 	case ImageFormat::Gray_Scale_Alpha:
@@ -113,6 +118,8 @@ uint32_t TRAP::Graphics::Texture::TRAPImageFormatToOpenGLPrecise(const ImageForm
 			return GL_RG16;
 		if (bytesPerPixel == 8)
 			return GL_RG32F;
+
+		return 0;
 	}
 
 	default:

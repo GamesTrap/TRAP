@@ -275,7 +275,13 @@ void TRAP::Input::SetControllerVibration(Controller controller, const float left
 	if (!PollController(controller, Poll_Presence))
 		return;
 
-	SetControllerVibrationInternal(controller, leftMotor, rightMotor);	
+	if (leftMotor != s_controllerInternal[static_cast<uint32_t>(controller)].LeftMotor ||
+		rightMotor != s_controllerInternal[static_cast<uint32_t>(controller)].RightMotor)
+	{
+		s_controllerInternal[static_cast<uint32_t>(controller)].LeftMotor = leftMotor;
+		s_controllerInternal[static_cast<uint32_t>(controller)].RightMotor = rightMotor;
+		SetControllerVibrationInternal(controller, leftMotor, rightMotor);	
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -631,7 +637,7 @@ TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* co
 //Checks whether a controller mapping element is present in the hardware
 bool TRAP::Input::IsValidElementForController(const MapElement* e, const ControllerInternal* con)
 {
-	if(e->Type == 3 && (e->Index >> 4) >= (con->DPads.size() + 1))
+	if(e->Type == 3 && (e->Index >> 4) >= static_cast<int32_t>(con->DPads.size() + 1))
 		return false;
 	if(e->Type == 2 && e->Index >= (con->Buttons.size() + 1))
 		return false;

@@ -1,69 +1,520 @@
-[00:11:51][Debug][Application] Initializing TRAP Modules...
-[00:11:51][Debug][VFS] Initializing Virtual File System
-[00:11:51][Info][Config] Loading File: "Engine.cfg"
-[00:11:51][Trace][Config] Width = 800
-[00:11:51][Trace][Config] Height = 600
-[00:11:51][Trace][Config] RefreshRate = 144
-[00:11:51][Trace][Config] VSync = 1
-[00:11:51][Trace][Config] FPSLimit = 0
-[00:11:51][Trace][Config] DisplayMode = Windowed
-[00:11:51][Trace][Config] Maximized = FALSE
-[00:11:51][Trace][Config] Monitor = 0
-[00:11:51][Trace][Config] RenderAPI = OpenGL
-[00:11:51][Trace][Config] Size: 9
-[00:11:51][Info][Window] Initializing Window: "TRAP Engine" 800x600@144Hz VSync: On(1) DisplayMode: Windowed Monitor: 0 CursorMode: Normal RawMouseInput: Disabled
-[00:11:52][Debug][Window] Storing underlying OS video mode: Monitor: 0 2560x1440@144Hz (R8G8B8)
-[00:11:52][Debug][Window] Storing underlying OS video mode: Monitor: 1 1920x1080@144Hz (R8G8B8)
-[00:11:52][Info][Context][OpenGL] Initializing Context
-[00:11:52][Info][Renderer][OpenGL] Initializing Renderer
-[00:11:52][Info][Renderer][OpenGL] ----------------------------------
-[00:11:52][Info][Renderer][OpenGL] OpenGL:
-[00:11:52][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 442.36
-[00:11:52][Info][Renderer][OpenGL] GLSL Version: 4.60 NVIDIA
-[00:11:52][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
-[00:11:52][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
-[00:11:52][Info][Renderer][OpenGL] ----------------------------------
-[00:11:52][Debug][Image][Custom] Loading a custom image
-[00:11:52][Debug][Shader][OpenGL][GLSL] Compiling: "Fallback"
-[00:11:52][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[00:11:52][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[00:11:52][Debug][Texture2D][OpenGL] Loading Texture: "Fallback2D"
-[00:11:52][Debug][Image][Custom] Loading a custom image
-[00:11:52][Debug][TextureCube][OpenGL] Loading Texture: "FallbackCube"
-[00:11:52][Debug][Image][Custom] Loading a custom image
-[00:11:52][Debug][Renderer2D] Initializing
-[00:11:52][Debug][Shader][OpenGL][GLSL] Compiling: "Renderer2D"
-[00:11:52][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
-[00:11:52][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
-[00:11:52][Debug][Texture2D][OpenGL] Loading Texture: "Renderer2DWhite"
-[00:11:52][Debug][Image][Custom] Loading a custom image
-[00:11:52][Debug][LayerStack] Pushing Overlay: ImGuiLayer
-[00:11:52][Debug][LayerStack] Pushing Layer: Title
-[00:11:52][Debug][Window] "TRAP Engine" Set Title: "English 日本語 русский язык 官話"
-[00:13:07][Debug][Application] Shutting down TRAP Modules...
-[00:13:07][Debug][LayerStack] Destroying Layer: Title
-[00:13:07][Debug][LayerStack] Destroying Layer: ImGuiLayer
-[00:13:07][Trace][Config] Width = 800
-[00:13:07][Trace][Config] Height = 600
-[00:13:07][Trace][Config] RefreshRate = 144
-[00:13:07][Trace][Config] VSync = 1
-[00:13:07][Trace][Config] FPSLimit = 0
-[00:13:07][Trace][Config] DisplayMode = Windowed
-[00:13:07][Trace][Config] Maximized = FALSE
-[00:13:07][Trace][Config] Monitor = 0
-[00:13:07][Trace][Config] RenderAPI = OpenGL
-[00:13:07][Trace][Config] Size: 9
-[00:13:07][Info][Config] Saving: Engine.cfg
-[00:13:07][Debug][Renderer2D] Shutting down
-[00:13:07][Debug][TextureManager] Destroying Textures
-[00:13:07][Debug][Texture2D][OpenGL] Destroying Texture2D: "Renderer2DWhite"
-[00:13:07][Debug][Texture2D][OpenGL] Destroying Texture2D: "Fallback2D"
-[00:13:07][Debug][TextureCube][OpenGL] Destroying TextureCube: "FallbackCube"
-[00:13:07][Debug][ShaderManager] Destroying Shaders
-[00:13:07][Debug][Shader][OpenGL] Destroying Shader: "Fallback"
-[00:13:07][Debug][Shader][OpenGL] Destroying Shader: "Renderer2D"
-[00:13:07][Debug][Renderer][OpenGL] Destroying Renderer
-[00:13:07][Debug][Context][OpenGL] Destroying Context
-[00:13:07][Debug][Window] Destroying Window: "English 日本語 русский язык 官話"
-[00:13:07][Debug][VFS] Shutting down Virtual File System
-[00:13:07][Info][Logger] Saving Log.txt
+[14:37:07][Debug][Application] Initializing TRAP Modules...
+[14:37:07][Debug][VFS] Initializing Virtual File System
+[14:37:07][Info][Config] Loading File: "Engine.cfg"
+[14:37:07][Trace][Config] Width = 800
+[14:37:07][Trace][Config] Height = 600
+[14:37:07][Trace][Config] RefreshRate = 144
+[14:37:07][Trace][Config] VSync = 1
+[14:37:07][Trace][Config] FPSLimit = 0
+[14:37:07][Trace][Config] DisplayMode = Windowed
+[14:37:07][Trace][Config] Maximized = FALSE
+[14:37:07][Trace][Config] Monitor = 0
+[14:37:07][Trace][Config] RenderAPI = OpenGL
+[14:37:07][Trace][Config] Size: 9
+[14:37:07][Info][Window] Initializing Window: "TRAP Engine" 800x600@144Hz VSync: On(1) DisplayMode: Windowed Monitor: 0 CursorMode: Normal RawMouseInput: Disabled
+[14:37:07][Debug][Window] Storing underlying OS video mode: Monitor: 0 2560x1440@144Hz (R8G8B8)
+[14:37:07][Debug][Window] Storing underlying OS video mode: Monitor: 1 1920x1080@144Hz (R8G8B8)
+[14:37:07][Info][Context][OpenGL] Initializing Context
+[14:37:07][Info][Renderer][OpenGL] Initializing Renderer
+[14:37:07][Info][Renderer][OpenGL] ----------------------------------
+[14:37:07][Info][Renderer][OpenGL] OpenGL:
+[14:37:07][Info][Renderer][OpenGL] Version:  4.6.0 NVIDIA 442.36
+[14:37:07][Info][Renderer][OpenGL] GLSL Version: 4.60 NVIDIA
+[14:37:07][Info][Renderer][OpenGL] Vendor:   NVIDIA Corporation
+[14:37:07][Info][Renderer][OpenGL] Renderer: GeForce RTX 2080/PCIe/SSE2
+[14:37:07][Info][Renderer][OpenGL] ----------------------------------
+[14:37:07][Debug][Image][Custom] Loading a custom image
+[14:37:07][Debug][Shader][OpenGL][GLSL] Compiling: "Fallback"
+[14:37:07][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[14:37:07][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[14:37:07][Debug][Texture2D][OpenGL] Loading Texture: "Fallback2D"
+[14:37:07][Debug][Image][Custom] Loading a custom image
+[14:37:07][Debug][TextureCube][OpenGL] Loading Texture: "FallbackCube"
+[14:37:07][Debug][Image][Custom] Loading a custom image
+[14:37:07][Debug][Renderer2D] Initializing
+[14:37:07][Debug][Shader][OpenGL][GLSL] Compiling: "Renderer2D"
+[14:37:07][Debug][Shader][OpenGL][GLSL] Compiling VertexShader
+[14:37:07][Debug][Shader][OpenGL][GLSL] Compiling FragmentShader
+[14:37:07][Debug][Texture2D][OpenGL] Loading Texture: "Renderer2DWhite"
+[14:37:07][Debug][Image][Custom] Loading a custom image
+[14:37:08][Debug][LayerStack] Pushing Overlay: ImGuiLayer
+[14:37:08][Debug][LayerStack] Pushing Layer: Events
+[14:37:08][Trace]MouseEnter
+[14:37:08][Trace]MouseMoveEvent: 610, 149
+[14:37:08][Trace]MouseMoveEvent: 609, 149
+[14:37:08][Trace]MouseMoveEvent: 608, 147
+[14:37:08][Trace]MouseMoveEvent: 605, 145
+[14:37:08][Trace]MouseMoveEvent: 602, 142
+[14:37:08][Trace]MouseMoveEvent: 598, 138
+[14:37:08][Trace]MouseMoveEvent: 594, 134
+[14:37:08][Trace]MouseMoveEvent: 590, 130
+[14:37:08][Trace]MouseMoveEvent: 586, 126
+[14:37:08][Trace]MouseMoveEvent: 583, 122
+[14:37:08][Trace]MouseMoveEvent: 582, 122
+[14:37:08][Trace]MouseMoveEvent: 579, 118
+[14:37:08][Trace]MouseMoveEvent: 579, 117
+[14:37:08][Trace]MouseMoveEvent: 578, 117
+[14:37:08][Trace]MouseMoveEvent: 578, 116
+[14:37:08][Trace]MouseMoveEvent: 575, 113
+[14:37:08][Trace]MouseMoveEvent: 575, 112
+[14:37:08][Trace]MouseMoveEvent: 571, 107
+[14:37:08][Trace]MouseMoveEvent: 570, 105
+[14:37:08][Trace]MouseMoveEvent: 565, 99
+[14:37:08][Trace]MouseMoveEvent: 564, 98
+[14:37:08][Trace]MouseMoveEvent: 559, 91
+[14:37:08][Trace]MouseMoveEvent: 558, 90
+[14:37:08][Trace]MouseMoveEvent: 557, 89
+[14:37:08][Trace]MouseMoveEvent: 552, 83
+[14:37:08][Trace]MouseMoveEvent: 551, 81
+[14:37:08][Trace]MouseMoveEvent: 545, 74
+[14:37:08][Trace]MouseMoveEvent: 543, 72
+[14:37:08][Trace]MouseMoveEvent: 537, 65
+[14:37:08][Trace]MouseMoveEvent: 536, 63
+[14:37:08][Trace]MouseMoveEvent: 535, 62
+[14:37:08][Trace]MouseMoveEvent: 529, 56
+[14:37:08][Trace]MouseMoveEvent: 528, 54
+[14:37:08][Trace]MouseMoveEvent: 527, 53
+[14:37:08][Trace]MouseMoveEvent: 521, 47
+[14:37:08][Trace]MouseMoveEvent: 513, 38
+[14:37:08][Trace]MouseMoveEvent: 512, 37
+[14:37:08][Trace]MouseMoveEvent: 504, 30
+[14:37:08][Trace]MouseMoveEvent: 496, 22
+[14:37:08][Trace]MouseMoveEvent: 488, 14
+[14:37:08][Trace]MouseMoveEvent: 487, 13
+[14:37:08][Trace]MouseMoveEvent: 486, 12
+[14:37:08][Trace]MouseMoveEvent: 481, 8
+[14:37:08][Trace]MouseMoveEvent: 474, 2
+[14:37:08][Trace]MouseLeave
+[14:37:09][Trace]WindowMoveEvent: 116, 137
+[14:37:09][Trace]WindowMoveEvent: 117, 137
+[14:37:09][Trace]WindowMoveEvent: 118, 137
+[14:37:09][Trace]WindowMoveEvent: 119, 137
+[14:37:09][Trace]WindowMoveEvent: 120, 137
+[14:37:09][Trace]WindowMoveEvent: 120, 138
+[14:37:09][Trace]WindowMoveEvent: 121, 138
+[14:37:09][Trace]WindowMoveEvent: 123, 138
+[14:37:09][Trace]WindowMoveEvent: 124, 138
+[14:37:09][Trace]WindowMoveEvent: 125, 139
+[14:37:09][Trace]WindowMoveEvent: 126, 139
+[14:37:09][Trace]WindowMoveEvent: 127, 139
+[14:37:09][Trace]WindowMoveEvent: 128, 139
+[14:37:09][Trace]WindowMoveEvent: 130, 139
+[14:37:09][Trace]WindowMoveEvent: 131, 140
+[14:37:09][Trace]WindowMoveEvent: 133, 140
+[14:37:09][Trace]WindowMoveEvent: 135, 140
+[14:37:09][Trace]WindowMoveEvent: 136, 141
+[14:37:09][Trace]WindowMoveEvent: 137, 141
+[14:37:09][Trace]WindowMoveEvent: 139, 141
+[14:37:09][Trace]WindowMoveEvent: 140, 141
+[14:37:09][Trace]WindowMoveEvent: 143, 142
+[14:37:09][Trace]WindowMoveEvent: 144, 142
+[14:37:09][Trace]WindowMoveEvent: 146, 142
+[14:37:09][Trace]WindowMoveEvent: 147, 142
+[14:37:09][Trace]WindowMoveEvent: 150, 143
+[14:37:09][Trace]WindowMoveEvent: 151, 143
+[14:37:09][Trace]WindowMoveEvent: 154, 143
+[14:37:09][Trace]WindowMoveEvent: 156, 144
+[14:37:09][Trace]WindowMoveEvent: 158, 144
+[14:37:09][Trace]WindowMoveEvent: 159, 144
+[14:37:09][Trace]WindowMoveEvent: 162, 145
+[14:37:09][Trace]WindowMoveEvent: 165, 145
+[14:37:09][Trace]WindowMoveEvent: 167, 145
+[14:37:09][Trace]WindowMoveEvent: 169, 145
+[14:37:09][Trace]WindowMoveEvent: 170, 146
+[14:37:09][Trace]WindowMoveEvent: 174, 146
+[14:37:09][Trace]WindowMoveEvent: 176, 146
+[14:37:09][Trace]WindowMoveEvent: 181, 147
+[14:37:09][Trace]WindowMoveEvent: 185, 148
+[14:37:09][Trace]WindowMoveEvent: 187, 148
+[14:37:09][Trace]WindowMoveEvent: 189, 148
+[14:37:09][Trace]WindowMoveEvent: 193, 149
+[14:37:09][Trace]WindowMoveEvent: 195, 149
+[14:37:09][Trace]WindowMoveEvent: 199, 150
+[14:37:09][Trace]WindowMoveEvent: 201, 150
+[14:37:09][Trace]WindowMoveEvent: 205, 151
+[14:37:09][Trace]WindowMoveEvent: 208, 151
+[14:37:09][Trace]WindowMoveEvent: 210, 151
+[14:37:09][Trace]WindowMoveEvent: 215, 152
+[14:37:09][Trace]WindowMoveEvent: 217, 152
+[14:37:09][Trace]WindowMoveEvent: 222, 153
+[14:37:09][Trace]WindowMoveEvent: 227, 154
+[14:37:09][Trace]WindowMoveEvent: 229, 154
+[14:37:09][Trace]WindowMoveEvent: 232, 154
+[14:37:09][Trace]WindowMoveEvent: 237, 155
+[14:37:09][Trace]WindowMoveEvent: 240, 155
+[14:37:09][Trace]WindowMoveEvent: 248, 157
+[14:37:09][Trace]WindowMoveEvent: 251, 157
+[14:37:09][Trace]WindowMoveEvent: 256, 158
+[14:37:09][Trace]WindowMoveEvent: 259, 158
+[14:37:09][Trace]WindowMoveEvent: 262, 158
+[14:37:09][Trace]WindowMoveEvent: 269, 159
+[14:37:09][Trace]WindowMoveEvent: 275, 160
+[14:37:09][Trace]WindowMoveEvent: 281, 161
+[14:37:09][Trace]WindowMoveEvent: 285, 161
+[14:37:09][Trace]WindowMoveEvent: 291, 162
+[14:37:09][Trace]WindowMoveEvent: 295, 162
+[14:37:09][Trace]WindowMoveEvent: 298, 163
+[14:37:09][Trace]WindowMoveEvent: 301, 163
+[14:37:09][Trace]WindowMoveEvent: 312, 165
+[14:37:09][Trace]WindowMoveEvent: 315, 165
+[14:37:09][Trace]WindowMoveEvent: 323, 166
+[14:37:09][Trace]WindowMoveEvent: 329, 167
+[14:37:09][Trace]WindowMoveEvent: 333, 167
+[14:37:09][Trace]WindowMoveEvent: 341, 168
+[14:37:09][Trace]WindowMoveEvent: 348, 169
+[14:37:09][Trace]WindowMoveEvent: 352, 170
+[14:37:09][Trace]WindowMoveEvent: 360, 171
+[14:37:09][Trace]WindowMoveEvent: 364, 171
+[14:37:09][Trace]WindowMoveEvent: 372, 172
+[14:37:09][Trace]WindowMoveEvent: 379, 173
+[14:37:09][Trace]WindowMoveEvent: 387, 174
+[14:37:09][Trace]WindowMoveEvent: 392, 174
+[14:37:09][Trace]WindowMoveEvent: 396, 175
+[14:37:09][Trace]WindowMoveEvent: 404, 176
+[14:37:09][Trace]WindowMoveEvent: 408, 176
+[14:37:09][Trace]WindowMoveEvent: 416, 177
+[14:37:09][Trace]WindowMoveEvent: 428, 178
+[14:37:09][Trace]WindowMoveEvent: 432, 179
+[14:37:09][Trace]WindowMoveEvent: 441, 180
+[14:37:09][Trace]WindowMoveEvent: 445, 180
+[14:37:09][Trace]WindowMoveEvent: 453, 181
+[14:37:09][Trace]WindowMoveEvent: 457, 181
+[14:37:09][Trace]WindowMoveEvent: 465, 182
+[14:37:09][Trace]WindowMoveEvent: 473, 183
+[14:37:09][Trace]WindowMoveEvent: 481, 183
+[14:37:09][Trace]WindowMoveEvent: 489, 184
+[14:37:09][Trace]WindowMoveEvent: 497, 185
+[14:37:09][Trace]WindowMoveEvent: 505, 186
+[14:37:09][Trace]WindowMoveEvent: 513, 186
+[14:37:09][Trace]WindowMoveEvent: 517, 187
+[14:37:09][Trace]WindowMoveEvent: 521, 187
+[14:37:09][Trace]WindowMoveEvent: 524, 187
+[14:37:09][Trace]WindowMoveEvent: 532, 188
+[14:37:09][Trace]WindowMoveEvent: 540, 188
+[14:37:09][Trace]WindowMoveEvent: 548, 189
+[14:37:09][Trace]WindowMoveEvent: 555, 189
+[14:37:09][Trace]WindowMoveEvent: 563, 190
+[14:37:09][Trace]WindowMoveEvent: 570, 190
+[14:37:09][Trace]WindowMoveEvent: 577, 191
+[14:37:09][Trace]WindowMoveEvent: 581, 191
+[14:37:09][Trace]WindowMoveEvent: 588, 192
+[14:37:09][Trace]WindowMoveEvent: 592, 192
+[14:37:09][Trace]WindowMoveEvent: 599, 192
+[14:37:09][Trace]WindowMoveEvent: 606, 193
+[14:37:09][Trace]WindowMoveEvent: 617, 193
+[14:37:09][Trace]WindowMoveEvent: 624, 193
+[14:37:09][Trace]WindowMoveEvent: 628, 194
+[14:37:09][Trace]WindowMoveEvent: 635, 194
+[14:37:09][Trace]WindowMoveEvent: 638, 194
+[14:37:09][Trace]WindowMoveEvent: 646, 194
+[14:37:09][Trace]WindowMoveEvent: 653, 195
+[14:37:09][Trace]WindowMoveEvent: 663, 195
+[14:37:09][Trace]WindowMoveEvent: 670, 196
+[14:37:09][Trace]WindowMoveEvent: 673, 196
+[14:37:09][Trace]WindowMoveEvent: 680, 196
+[14:37:09][Trace]WindowMoveEvent: 687, 197
+[14:37:09][Trace]WindowMoveEvent: 694, 197
+[14:37:09][Trace]WindowMoveEvent: 697, 197
+[14:37:09][Trace]WindowMoveEvent: 701, 198
+[14:37:09][Trace]WindowMoveEvent: 711, 198
+[14:37:09][Trace]WindowMoveEvent: 715, 198
+[14:37:09][Trace]WindowMoveEvent: 725, 199
+[14:37:09][Trace]WindowMoveEvent: 729, 199
+[14:37:09][Trace]WindowMoveEvent: 736, 200
+[14:37:09][Trace]WindowMoveEvent: 739, 200
+[14:37:09][Trace]WindowMoveEvent: 743, 200
+[14:37:09][Trace]WindowMoveEvent: 750, 201
+[14:37:09][Trace]WindowMoveEvent: 756, 201
+[14:37:09][Trace]WindowMoveEvent: 763, 201
+[14:37:09][Trace]WindowMoveEvent: 767, 202
+[14:37:09][Trace]WindowMoveEvent: 774, 202
+[14:37:09][Trace]WindowMoveEvent: 777, 202
+[14:37:09][Trace]WindowMoveEvent: 784, 202
+[14:37:09][Trace]WindowMoveEvent: 791, 203
+[14:37:09][Trace]WindowMoveEvent: 797, 203
+[14:37:09][Trace]WindowMoveEvent: 804, 203
+[14:37:09][Trace]WindowMoveEvent: 807, 203
+[14:37:09][Trace]WindowMoveEvent: 813, 204
+[14:37:09][Trace]WindowMoveEvent: 820, 204
+[14:37:09][Trace]WindowMoveEvent: 826, 204
+[14:37:09][Trace]WindowMoveEvent: 833, 204
+[14:37:09][Trace]WindowMoveEvent: 835, 205
+[14:37:09][Trace]WindowMoveEvent: 839, 205
+[14:37:09][Trace]WindowMoveEvent: 842, 205
+[14:37:09][Trace]WindowMoveEvent: 848, 205
+[14:37:09][Trace]WindowMoveEvent: 854, 205
+[14:37:09][Trace]WindowMoveEvent: 860, 205
+[14:37:09][Trace]WindowMoveEvent: 863, 205
+[14:37:09][Trace]WindowMoveEvent: 870, 206
+[14:37:09][Trace]WindowMoveEvent: 873, 206
+[14:37:09][Trace]WindowMoveEvent: 876, 206
+[14:37:09][Trace]WindowMoveEvent: 879, 206
+[14:37:09][Trace]WindowMoveEvent: 882, 206
+[14:37:09][Trace]WindowMoveEvent: 888, 206
+[14:37:09][Trace]WindowMoveEvent: 894, 207
+[14:37:09][Trace]WindowMoveEvent: 900, 207
+[14:37:09][Trace]WindowMoveEvent: 904, 207
+[14:37:09][Trace]WindowMoveEvent: 910, 207
+[14:37:09][Trace]WindowMoveEvent: 916, 207
+[14:37:09][Trace]WindowMoveEvent: 919, 207
+[14:37:09][Trace]WindowMoveEvent: 922, 207
+[14:37:09][Trace]WindowMoveEvent: 928, 208
+[14:37:09][Trace]WindowMoveEvent: 933, 208
+[14:37:09][Trace]WindowMoveEvent: 936, 208
+[14:37:09][Trace]WindowMoveEvent: 939, 208
+[14:37:09][Trace]WindowMoveEvent: 947, 208
+[14:37:09][Trace]WindowMoveEvent: 950, 208
+[14:37:09][Trace]WindowMoveEvent: 956, 208
+[14:37:09][Trace]WindowMoveEvent: 958, 208
+[14:37:09][Trace]WindowMoveEvent: 964, 209
+[14:37:09][Trace]WindowMoveEvent: 967, 209
+[14:37:09][Trace]WindowMoveEvent: 975, 209
+[14:37:09][Trace]WindowMoveEvent: 977, 209
+[14:37:09][Trace]WindowMoveEvent: 980, 209
+[14:37:09][Trace]WindowMoveEvent: 985, 209
+[14:37:09][Trace]WindowMoveEvent: 988, 209
+[14:37:09][Trace]WindowMoveEvent: 993, 209
+[14:37:09][Trace]WindowMoveEvent: 996, 209
+[14:37:09][Trace]WindowMoveEvent: 1001, 209
+[14:37:09][Trace]WindowMoveEvent: 1004, 209
+[14:37:09][Trace]WindowMoveEvent: 1009, 209
+[14:37:09][Trace]WindowMoveEvent: 1014, 210
+[14:37:09][Trace]WindowMoveEvent: 1017, 210
+[14:37:09][Trace]WindowMoveEvent: 1022, 210
+[14:37:09][Trace]WindowMoveEvent: 1024, 210
+[14:37:09][Trace]WindowMoveEvent: 1029, 210
+[14:37:09][Trace]WindowMoveEvent: 1032, 210
+[14:37:09][Trace]WindowMoveEvent: 1035, 210
+[14:37:09][Trace]WindowMoveEvent: 1040, 210
+[14:37:09][Trace]WindowMoveEvent: 1043, 210
+[14:37:09][Trace]WindowMoveEvent: 1045, 210
+[14:37:09][Trace]WindowMoveEvent: 1048, 210
+[14:37:09][Trace]WindowMoveEvent: 1056, 211
+[14:37:09][Trace]WindowMoveEvent: 1059, 211
+[14:37:09][Trace]WindowMoveEvent: 1062, 211
+[14:37:09][Trace]WindowMoveEvent: 1067, 211
+[14:37:09][Trace]WindowMoveEvent: 1073, 211
+[14:37:09][Trace]WindowMoveEvent: 1076, 211
+[14:37:09][Trace]WindowMoveEvent: 1082, 211
+[14:37:09][Trace]WindowMoveEvent: 1088, 212
+[14:37:09][Trace]WindowMoveEvent: 1091, 212
+[14:37:09][Trace]WindowMoveEvent: 1097, 212
+[14:37:09][Trace]WindowMoveEvent: 1103, 212
+[14:37:09][Trace]WindowMoveEvent: 1106, 212
+[14:37:09][Trace]WindowMoveEvent: 1112, 212
+[14:37:09][Trace]WindowMoveEvent: 1118, 213
+[14:37:09][Trace]WindowMoveEvent: 1121, 213
+[14:37:09][Trace]WindowMoveEvent: 1124, 213
+[14:37:09][Trace]WindowMoveEvent: 1127, 213
+[14:37:09][Trace]WindowMoveEvent: 1133, 213
+[14:37:09][Trace]WindowMoveEvent: 1139, 213
+[14:37:09][Trace]WindowMoveEvent: 1142, 213
+[14:37:09][Trace]WindowMoveEvent: 1149, 213
+[14:37:09][Trace]WindowMoveEvent: 1152, 213
+[14:37:09][Trace]WindowMoveEvent: 1158, 214
+[14:37:09][Trace]WindowMoveEvent: 1161, 214
+[14:37:09][Trace]WindowMoveEvent: 1167, 214
+[14:37:09][Trace]WindowMoveEvent: 1170, 214
+[14:37:09][Trace]WindowMoveEvent: 1173, 214
+[14:37:09][Trace]WindowMoveEvent: 1179, 214
+[14:37:09][Trace]WindowMoveEvent: 1182, 214
+[14:37:09][Trace]WindowMoveEvent: 1185, 214
+[14:37:09][Trace]WindowMoveEvent: 1191, 214
+[14:37:09][Trace]WindowMoveEvent: 1199, 214
+[14:37:09][Trace]WindowMoveEvent: 1202, 214
+[14:37:09][Trace]WindowMoveEvent: 1205, 214
+[14:37:09][Trace]WindowMoveEvent: 1211, 214
+[14:37:09][Trace]WindowMoveEvent: 1213, 214
+[14:37:09][Trace]WindowMoveEvent: 1216, 214
+[14:37:09][Trace]WindowMoveEvent: 1221, 214
+[14:37:09][Trace]WindowMoveEvent: 1227, 214
+[14:37:09][Trace]WindowMoveEvent: 1229, 214
+[14:37:09][Trace]WindowMoveEvent: 1235, 214
+[14:37:09][Trace]WindowMoveEvent: 1237, 214
+[14:37:09][Trace]WindowMoveEvent: 1240, 214
+[14:37:09][Trace]WindowMoveEvent: 1245, 214
+[14:37:09][Trace]WindowMoveEvent: 1250, 214
+[14:37:09][Trace]WindowMoveEvent: 1255, 214
+[14:37:09][Trace]WindowMoveEvent: 1258, 214
+[14:37:09][Trace]WindowMoveEvent: 1262, 214
+[14:37:09][Trace]WindowMoveEvent: 1267, 214
+[14:37:09][Trace]WindowMoveEvent: 1269, 214
+[14:37:09][Trace]WindowMoveEvent: 1274, 214
+[14:37:09][Trace]WindowMoveEvent: 1278, 214
+[14:37:09][Trace]WindowMoveEvent: 1281, 214
+[14:37:09][Trace]WindowMoveEvent: 1285, 214
+[14:37:09][Trace]WindowMoveEvent: 1287, 214
+[14:37:09][Trace]WindowMoveEvent: 1291, 213
+[14:37:09][Trace]WindowMoveEvent: 1295, 213
+[14:37:09][Trace]WindowMoveEvent: 1297, 213
+[14:37:09][Trace]WindowMoveEvent: 1301, 213
+[14:37:09][Trace]WindowMoveEvent: 1302, 213
+[14:37:09][Trace]WindowMoveEvent: 1304, 213
+[14:37:09][Trace]WindowMoveEvent: 1306, 213
+[14:37:09][Trace]WindowMoveEvent: 1308, 213
+[14:37:09][Trace]WindowMoveEvent: 1311, 213
+[14:37:09][Trace]WindowMoveEvent: 1313, 212
+[14:37:09][Trace]WindowMoveEvent: 1315, 212
+[14:37:09][Trace]WindowMoveEvent: 1319, 212
+[14:37:09][Trace]WindowMoveEvent: 1321, 212
+[14:37:09][Trace]WindowMoveEvent: 1322, 212
+[14:37:09][Trace]WindowMoveEvent: 1325, 212
+[14:37:09][Trace]WindowMoveEvent: 1328, 212
+[14:37:09][Trace]WindowMoveEvent: 1329, 211
+[14:37:09][Trace]WindowMoveEvent: 1332, 211
+[14:37:09][Trace]WindowMoveEvent: 1333, 211
+[14:37:09][Trace]WindowMoveEvent: 1335, 211
+[14:37:09][Trace]WindowMoveEvent: 1336, 211
+[14:37:09][Trace]WindowMoveEvent: 1339, 211
+[14:37:09][Trace]WindowMoveEvent: 1340, 211
+[14:37:09][Trace]WindowMoveEvent: 1342, 210
+[14:37:09][Trace]WindowMoveEvent: 1344, 210
+[14:37:09][Trace]WindowMoveEvent: 1345, 210
+[14:37:09][Trace]WindowMoveEvent: 1346, 210
+[14:37:09][Trace]WindowMoveEvent: 1347, 210
+[14:37:09][Trace]WindowMoveEvent: 1349, 209
+[14:37:09][Trace]WindowMoveEvent: 1350, 209
+[14:37:09][Trace]WindowMoveEvent: 1352, 209
+[14:37:09][Trace]WindowMoveEvent: 1353, 209
+[14:37:09][Trace]WindowMoveEvent: 1354, 209
+[14:37:09][Trace]WindowMoveEvent: 1355, 209
+[14:37:09][Trace]WindowMoveEvent: 1356, 208
+[14:37:09][Trace]WindowMoveEvent: 1357, 208
+[14:37:09][Trace]WindowMoveEvent: 1358, 208
+[14:37:09][Trace]WindowMoveEvent: 1359, 208
+[14:37:09][Trace]WindowMoveEvent: 1360, 208
+[14:37:09][Trace]WindowMoveEvent: 1361, 208
+[14:37:09][Trace]WindowMoveEvent: 1362, 207
+[14:37:09][Trace]WindowMoveEvent: 1363, 207
+[14:37:09][Trace]WindowMoveEvent: 1364, 207
+[14:37:09][Trace]WindowMoveEvent: 1365, 207
+[14:37:09][Trace]WindowMoveEvent: 1366, 207
+[14:37:09][Trace]WindowMoveEvent: 1367, 207
+[14:37:09][Trace]WindowMoveEvent: 1368, 207
+[14:37:09][Trace]WindowMoveEvent: 1369, 206
+[14:37:09][Trace]WindowMoveEvent: 1370, 206
+[14:37:09][Trace]WindowMoveEvent: 1371, 206
+[14:37:09][Trace]WindowMoveEvent: 1372, 206
+[14:37:09][Trace]WindowMoveEvent: 1373, 206
+[14:37:09][Trace]WindowMoveEvent: 1374, 206
+[14:37:09][Trace]WindowMoveEvent: 1375, 206
+[14:37:09][Trace]WindowMoveEvent: 1376, 206
+[14:37:10][Trace]WindowLostFocus
+[14:37:10][Trace]WindowMoveEvent: -32000, -32000
+[14:37:10][Trace]WindowMinimizeEvent
+[14:37:10][Trace]FrameBufferResizeEvent: 0x0
+[14:37:10][Trace]WindowResizeEvent: 0x0
+[14:37:14][Trace]WindowMoveEvent: 1376, 206
+[14:37:14][Trace]WindowRestoreEvent
+[14:37:14][Trace]FrameBufferResizeEvent: 800x600
+[14:37:14][Trace]WindowResizeEvent: 800x600
+[14:37:14][Trace]WindowFocus
+[14:37:18][Trace]MouseEnter
+[14:37:18][Trace]MouseMoveEvent: 27, 597
+[14:37:18][Trace]MouseMoveEvent: 29, 596
+[14:37:18][Trace]MouseMoveEvent: 32, 594
+[14:37:18][Trace]MouseMoveEvent: 44, 587
+[14:37:18][Trace]MouseMoveEvent: 62, 577
+[14:37:18][Trace]MouseMoveEvent: 80, 567
+[14:37:18][Trace]MouseMoveEvent: 98, 557
+[14:37:18][Trace]MouseMoveEvent: 116, 548
+[14:37:18][Trace]MouseMoveEvent: 133, 539
+[14:37:18][Trace]MouseMoveEvent: 136, 537
+[14:37:18][Trace]MouseMoveEvent: 151, 530
+[14:37:18][Trace]MouseMoveEvent: 168, 521
+[14:37:18][Trace]MouseMoveEvent: 184, 512
+[14:37:18][Trace]MouseMoveEvent: 199, 504
+[14:37:18][Trace]MouseMoveEvent: 213, 496
+[14:37:18][Trace]MouseMoveEvent: 227, 488
+[14:37:18][Trace]MouseMoveEvent: 240, 480
+[14:37:18][Trace]MouseMoveEvent: 251, 474
+[14:37:18][Trace]MouseMoveEvent: 253, 472
+[14:37:18][Trace]MouseMoveEvent: 265, 464
+[14:37:18][Trace]MouseMoveEvent: 276, 458
+[14:37:18][Trace]MouseMoveEvent: 278, 456
+[14:37:18][Trace]MouseMoveEvent: 289, 449
+[14:37:18][Trace]MouseMoveEvent: 291, 448
+[14:37:18][Trace]MouseMoveEvent: 302, 441
+[14:37:18][Trace]MouseMoveEvent: 304, 440
+[14:37:18][Trace]MouseMoveEvent: 315, 433
+[14:37:18][Trace]MouseMoveEvent: 317, 432
+[14:37:18][Trace]MouseMoveEvent: 329, 424
+[14:37:18][Trace]MouseMoveEvent: 331, 423
+[14:37:18][Trace]MouseMoveEvent: 342, 416
+[14:37:18][Trace]MouseMoveEvent: 344, 414
+[14:37:18][Trace]MouseMoveEvent: 355, 407
+[14:37:18][Trace]MouseMoveEvent: 357, 406
+[14:37:18][Trace]MouseMoveEvent: 359, 404
+[14:37:18][Trace]MouseMoveEvent: 369, 398
+[14:37:18][Trace]MouseMoveEvent: 382, 389
+[14:37:18][Trace]MouseMoveEvent: 396, 380
+[14:37:18][Trace]MouseMoveEvent: 409, 371
+[14:37:18][Trace]MouseMoveEvent: 422, 362
+[14:37:18][Trace]MouseMoveEvent: 424, 361
+[14:37:18][Trace]MouseMoveEvent: 435, 353
+[14:37:18][Trace]MouseMoveEvent: 448, 345
+[14:37:18][Trace]MouseMoveEvent: 462, 336
+[14:37:18][Trace]MouseMoveEvent: 473, 328
+[14:37:18][Trace]MouseMoveEvent: 475, 327
+[14:37:18][Trace]MouseMoveEvent: 488, 317
+[14:37:18][Trace]MouseMoveEvent: 502, 309
+[14:37:18][Trace]MouseMoveEvent: 515, 300
+[14:37:18][Trace]MouseMoveEvent: 527, 292
+[14:37:18][Trace]MouseMoveEvent: 529, 291
+[14:37:18][Trace]MouseMoveEvent: 531, 290
+[14:37:18][Trace]MouseMoveEvent: 541, 284
+[14:37:18][Trace]MouseMoveEvent: 543, 283
+[14:37:18][Trace]MouseMoveEvent: 557, 275
+[14:37:18][Trace]MouseMoveEvent: 569, 268
+[14:37:18][Trace]MouseMoveEvent: 571, 267
+[14:37:18][Trace]MouseMoveEvent: 583, 261
+[14:37:18][Trace]MouseMoveEvent: 585, 260
+[14:37:18][Trace]MouseMoveEvent: 587, 259
+[14:37:18][Trace]MouseMoveEvent: 597, 254
+[14:37:18][Trace]MouseMoveEvent: 610, 247
+[14:37:18][Trace]MouseMoveEvent: 623, 240
+[14:37:18][Trace]MouseMoveEvent: 636, 234
+[14:37:18][Trace]MouseMoveEvent: 638, 233
+[14:37:18][Trace]MouseMoveEvent: 650, 228
+[14:37:18][Trace]MouseMoveEvent: 663, 222
+[14:37:18][Trace]MouseMoveEvent: 676, 216
+[14:37:18][Trace]MouseMoveEvent: 689, 210
+[14:37:18][Trace]MouseMoveEvent: 702, 205
+[14:37:18][Trace]MouseMoveEvent: 704, 204
+[14:37:18][Trace]MouseMoveEvent: 715, 199
+[14:37:18][Trace]MouseMoveEvent: 728, 194
+[14:37:18][Trace]MouseMoveEvent: 741, 188
+[14:37:18][Trace]MouseMoveEvent: 754, 183
+[14:37:18][Trace]MouseMoveEvent: 766, 178
+[14:37:18][Trace]MouseMoveEvent: 778, 173
+[14:37:18][Trace]MouseMoveEvent: 788, 168
+[14:37:18][Trace]MouseMoveEvent: 790, 168
+[14:37:18][Trace]MouseMoveEvent: 799, 163
+[14:37:18][Trace]MouseLeave
+[14:37:19][Debug][Application] Shutting down TRAP Modules...
+[14:37:19][Debug][LayerStack] Destroying Layer: Events
+[14:37:19][Debug][LayerStack] Destroying Layer: ImGuiLayer
+[14:37:19][Trace][Config] Width = 800
+[14:37:19][Trace][Config] Height = 600
+[14:37:19][Trace][Config] RefreshRate = 144
+[14:37:19][Trace][Config] VSync = 1
+[14:37:19][Trace][Config] FPSLimit = 0
+[14:37:19][Trace][Config] DisplayMode = Windowed
+[14:37:19][Trace][Config] Maximized = FALSE
+[14:37:19][Trace][Config] Monitor = 0
+[14:37:19][Trace][Config] RenderAPI = OpenGL
+[14:37:19][Trace][Config] Size: 9
+[14:37:19][Info][Config] Saving: Engine.cfg
+[14:37:19][Debug][Renderer2D] Shutting down
+[14:37:19][Debug][TextureManager] Destroying Textures
+[14:37:19][Debug][Texture2D][OpenGL] Destroying Texture2D: "Renderer2DWhite"
+[14:37:19][Debug][Texture2D][OpenGL] Destroying Texture2D: "Fallback2D"
+[14:37:19][Debug][TextureCube][OpenGL] Destroying TextureCube: "FallbackCube"
+[14:37:19][Debug][ShaderManager] Destroying Shaders
+[14:37:19][Debug][Shader][OpenGL] Destroying Shader: "Fallback"
+[14:37:19][Debug][Shader][OpenGL] Destroying Shader: "Renderer2D"
+[14:37:19][Debug][Renderer][OpenGL] Destroying Renderer
+[14:37:19][Debug][Context][OpenGL] Destroying Context
+[14:37:19][Debug][Window] Destroying Window: "Events"
+[14:37:19][Debug][VFS] Shutting down Virtual File System
+[14:37:19][Info][Logger] Saving Log.txt

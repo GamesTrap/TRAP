@@ -75,44 +75,55 @@ void ControllerTests::OnImGuiRender()
 		
 		if (TRAP::Input::IsControllerGamepad(controller))
 		{
-			static constexpr std::array<const char*, static_cast<uint32_t>(TRAP::Input::ControllerButton::DPad_Left) - 4> buttonNames =
-			{
-				"A", "B", "X", "Y",
-				"LB", "RB",
-				"Back", "Start",
-				"LT", "RT"
-			};
-			static constexpr std::array<const char*, static_cast<uint32_t>(TRAP::Input::ControllerAxis::Right_Trigger) + 1> axesNames =
-			{
-				"Left X", "Left Y",
-				"Right X", "Right Y",
-				"Left Trigger", "Right Trigger"
-			};
+			ImGui::NewLine();
+			ImGui::Text("Mapped State: %s", TRAP::Input::GetControllerName(controller).c_str());
 
-			ImGui::Text(("Gamepad State: " + TRAP::Input::GetControllerName(controller)).c_str());
+			float leftX = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Left_X);
+			float leftY = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Left_Y);
+			float rightX = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Right_X);
+			float rightY = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Right_Y);
+			float leftTrigger = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Left_Trigger);
+			float rightTrigger = TRAP::Input::GetControllerAxis(controller, TRAP::Input::ControllerAxis::Right_Trigger);
 
-			for (uint32_t i = 0; i < axes.size(); i++)
-			{
-				float axisCpy = axes[i];
-				ImGui::SliderFloat(axesNames[i], &axisCpy, -1.0f, 1.0f);
-			}
+			ImGui::SliderFloat("Left X", &leftX, -1.0f, 1.0f);
+			ImGui::SliderFloat("Left Y", &leftY, -1.0f, 1.0f);
+			ImGui::SliderFloat("Right X", &rightX, -1.0f, 1.0f);
+			ImGui::SliderFloat("Right Y", &rightY, -1.0f, 1.0f);
+			ImGui::SliderFloat("Left Trigger", &leftTrigger, -1.0f, 1.0f);
+			ImGui::SliderFloat("Right Trigger", &rightTrigger, -1.0f, 1.0f);
 
-			for (uint32_t i = 0; i < buttons.size() - dpad.size() * 4; i++)
-			{
-				bool cpy = buttons[i];
-				ImGui::Checkbox(buttonNames[i], &cpy);
-				if (i % 2 == 0)
-					ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
-			}
+			bool a = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::A);
+			bool b = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::B);
+			bool x = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::X);
+			bool y = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::Y);
+			bool lb = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::Left_Bumper);
+			bool rb = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::Right_Bumper);
+			bool back = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::Back);
+			bool start = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::Start);
+			bool lt = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::Left_Thumb);
+			bool rt = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::Right_Thumb);
 
-			if(!dpad.empty())
-			{
-				std::string dpadText = "DPad: ";
-				dpadText += GetDPadDirection(dpad[0]);
-				bool dpadPressed = static_cast<bool>(dpad[0]);
-				ImGui::Checkbox(dpadText.c_str(), &dpadPressed);
-			}
-			
+			ImGui::Checkbox("A", &a);
+			ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
+			ImGui::Checkbox("B", &b);
+			ImGui::Checkbox("X", &x);
+			ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
+			ImGui::Checkbox("Y", &y);
+			ImGui::Checkbox("Left Bumper", &lb);
+			ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
+			ImGui::Checkbox("Right Bumper", &rb);
+			ImGui::Checkbox("Back", &back);
+			ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
+			ImGui::Checkbox("Start", &start);
+			ImGui::Checkbox("Left Thumb", &lt);
+			ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);
+			ImGui::Checkbox("Right Thumb", &rt);
+
+			TRAP::Input::ControllerDPad dpad = TRAP::Input::GetControllerDPad(controller, 0);
+			std::string dpadText = "DPad: " + GetDPadDirection(dpad);
+			bool dpadPressed = static_cast<bool>(dpad);
+			ImGui::Checkbox(dpadText.c_str(), &dpadPressed);
+
 			ImGui::NewLine();
 			static bool vibration = false;
 			ImGui::Checkbox("Vibration Test", &vibration);

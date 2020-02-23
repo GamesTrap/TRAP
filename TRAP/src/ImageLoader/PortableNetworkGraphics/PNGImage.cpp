@@ -1499,7 +1499,7 @@ bool TRAP::INTERNAL::PNGImage::tIMECheck(const tIMEChunk& timeChunk)
 	}
 
 	//Check Hour validity
-	if (timeChunk.Hour < 0 || timeChunk.Hour > 23)
+	if (timeChunk.Hour > 23)
 	{
 		TP_ERROR("[Image][PNG] Time stamp Hour: ", static_cast<uint32_t>(timeChunk.Hour), " is invalid!");
 		TP_WARN("[Image][PNG] Using Default Image!");
@@ -1507,7 +1507,7 @@ bool TRAP::INTERNAL::PNGImage::tIMECheck(const tIMEChunk& timeChunk)
 	}
 
 	//Check Minute validity
-	if (timeChunk.Minute < 0 || timeChunk.Minute > 59)
+	if (timeChunk.Minute > 59)
 	{
 		TP_ERROR("[Image][PNG] Time stamp Minute: ", static_cast<uint32_t>(timeChunk.Minute), " is invalid!");
 		TP_WARN("[Image][PNG] Using Default Image!");
@@ -1515,7 +1515,7 @@ bool TRAP::INTERNAL::PNGImage::tIMECheck(const tIMEChunk& timeChunk)
 	}
 
 	//Check Second validity
-	if (timeChunk.Second < 0 || timeChunk.Second > 60)
+	if (timeChunk.Second > 60)
 	{
 		TP_ERROR("[Image][PNG] Time stamp Second: ", timeChunk.Second, " is invalid!");
 		TP_WARN("[Image][PNG] Using Default Image!");

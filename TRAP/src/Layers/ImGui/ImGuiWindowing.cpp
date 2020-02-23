@@ -413,7 +413,7 @@ void TRAP::INTERNAL::ImGuiWindowing::MouseButtonCallback(const WindowingAPI::Int
 	if (s_prevUserCallbackMouseButton != nullptr && window == s_window)
 		s_prevUserCallbackMouseButton(window, mouseButton, pressed);
 
-	if (pressed && static_cast<uint32_t>(mouseButton) >= 0 && static_cast<uint32_t>(mouseButton) < s_mouseJustPressed.size())
+	if (pressed && static_cast<uint32_t>(mouseButton) < s_mouseJustPressed.size())
 		s_mouseJustPressed[static_cast<uint32_t>(mouseButton)] = true;
 }
 

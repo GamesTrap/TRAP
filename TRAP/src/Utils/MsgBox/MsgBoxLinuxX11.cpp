@@ -94,6 +94,7 @@ void TRAP::Utils::MsgBox::INTERNAL::X11::SingleButtonMsgBoxEventLoop(Display* di
 			}
 			else
 				btn.Clicked = false;
+			break;
 
 		case Expose:
 		case MapNotify:
@@ -223,6 +224,7 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::DoubleButtonM
 				btn1.Clicked = false;
 				btn2.Clicked = false;
 			}
+			break;
 
 		case Expose:
 		case MapNotify:

@@ -12,7 +12,7 @@ TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};
 
 bool TRAP::Input::InitController()
 {
-	for (int32_t i = 0; i < TRAP::Embed::ControllerMappings.size(); i++)
+	for (uint32_t i = 0; i < TRAP::Embed::ControllerMappings.size(); i++)
 		UpdateControllerMappings(TRAP::Embed::ControllerMappings[i]);
 
 	const char* dirName = "/dev/input";
@@ -250,29 +250,21 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 	}
 
 	LinuxCon.Path = path;
-	std::memcpy(&con->LinuxCon, &LinuxCon, sizeof(LinuxCon));
+	con->LinuxCon = LinuxCon;
 
 	PollABSStateLinux(con);
 
-	uint8_t cID;
-	int8_t cIDUsable = -1;
-	for (cID = 0; cID <= static_cast<uint8_t>(Controller::Sixteen); cID++)
-		if (!s_controllerInternal[cID].Connected)
-		{
-			cIDUsable = cID;
-			break;
-		}
-
-	if(cIDUsable != -1)
-	{
-		if (!s_eventCallback)
-			return false;
-
-		ControllerConnectEvent event(static_cast<Controller>(cIDUsable));
-		s_eventCallback(event);
-		
+	if (!s_eventCallback)
 		return false;
-	}
+
+	//Get index of our ControllerInternal
+	uint8_t index;
+	for (index = 0; index <= static_cast<uint8_t>(Controller::Sixteen); index++)
+		if (&s_controllerInternal[index] == con)
+			break;
+
+	ControllerConnectEvent event(static_cast<Controller>(index));
+	s_eventCallback(event);
 	
 	return true;
 }

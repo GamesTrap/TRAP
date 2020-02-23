@@ -497,6 +497,8 @@ namespace TRAP
 			std::string guid{};
 			Mapping* mapping = nullptr;
 			bool Connected = false;
+			float LeftMotor = 0.0f;
+			float RightMotor = 0.0f;
 			
 #ifdef TRAP_PLATFORM_WINDOWS
 			ControllerWindows WinCon;

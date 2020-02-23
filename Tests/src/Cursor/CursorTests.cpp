@@ -111,12 +111,9 @@ bool CursorTests::OnKeyPress(TRAP::KeyPressEvent& event)
 		case TRAP::Input::Key::Escape:
 		{
 			if (TRAP::Application::GetWindow()->GetCursorMode() != TRAP::Window::CursorMode::Disabled)
-			{
 				TRAP::Application::Shutdown();
-				break;
-			}
 
-			//FALLTHROUGH
+			break;
 		}
 
 		case TRAP::Input::Key::N:

@@ -2067,7 +2067,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowSize(const InternalWindow* window,
 void TRAP::INTERNAL::WindowingAPI::InputWindowMinimize(const InternalWindow* window, const bool restored)
 {
 	if (window->Callbacks.Minimize)
-		window->Callbacks.Minimize(window, restored);
+		window->Callbacks.Minimize(window, !restored);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2076,7 +2076,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowMinimize(const InternalWindow* win
 void TRAP::INTERNAL::WindowingAPI::InputWindowMaximize(const InternalWindow* window, const bool restored)
 {
 	if (window->Callbacks.Maximize)
-		window->Callbacks.Maximize(window, restored);
+		window->Callbacks.Maximize(window, !restored);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

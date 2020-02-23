@@ -901,3 +901,16 @@ SITREP 02/21/2020|20w08a3
 SITREP 02/22/2020|20w08a4
     - Changed TRAP Engine version to 20w08a4(0.6.15)
     - Validated Window Title UTF-8 support on Windows ~<20 mins
+    - Validated Events on Linux X11 ~<30 mins
+    - Validated Window Minimize functionality on Linux X11 ~<20 mins
+    - Validated Window Icon functionality on Linux X11 ~<20 mins
+    - Validated Monitor functionality on Linux X11 ~<20 mins
+    - Validated Window Opacity functionality on Linux X11 ~<20 mins
+    - Validated Window Title UTF-8 support on Linux X11 ~<20 mins
+    - Controller vibrations now only get set if they differ from current (Fixes Linux bug with repeated calls) ~<20 mins
+    - Fixed compiler warnings on Linux X11 ~>30 mins
+
+SITREP 02/23/2020|20w08a5
+    - Changed TRAP Engine version to 20w08a5(0.6.16)
+    - Fixed Heap corruption on Linux X11 ~>50 mins
+    - Validated Controller functionality on Linux X11 ~<20 mins

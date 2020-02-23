@@ -274,7 +274,7 @@ void TRAP::INTERNAL::WindowingAPI::UpdateWindowMode(InternalWindow* window)
 //Returns the mode info for a RandR mode XID
 const XRRModeInfo* TRAP::INTERNAL::WindowingAPI::GetModeInfo(const XRRScreenResources* sr, RRMode id)
 {
-	for(uint32_t i = 0; i < sr->nmode; i++)
+	for(uint32_t i = 0; i < static_cast<uint32_t>(sr->nmode); i++)
 	{
 		if(sr->modes[i].id == id)
 			return sr->modes + i;
@@ -725,7 +725,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 		if(disconnectedCount)
 		{
 			disconnected.resize(s_Data.Monitors.size());
-			for(int32_t i = 0; i < s_Data.Monitors.size(); i++)
+			for(uint32_t i = 0; i < s_Data.Monitors.size(); i++)
 				disconnected[i] = s_Data.Monitors[i].get();
 		}
 		
@@ -764,7 +764,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 			for(j = 0; j < screenCount; j++)
 			{
 				if(screens[j].x_org == ci->x && screens[j].y_org == ci->y &&
-				   screens[j].width == ci->width && screens[j].height == ci->height)
+				   static_cast<uint32_t>(screens[j].width) == ci->width && static_cast<uint32_t>(screens[j].height) == ci->height)
 				{
 					monitor->Index = j;
 					break;
@@ -818,7 +818,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::IsSelectionEvent(Display* display, XEvent*
 //Set the specified property to the selection converted to the requested target
 Atom TRAP::INTERNAL::WindowingAPI::WriteTargetToProperty(const XSelectionRequestEvent* request)
 {
-	int32_t i;
+	uint32_t i;
 	std::string selectionString{};
 	const std::array<Atom, 2> formats{s_Data.UTF8_STRING, XA_STRING};
 	
@@ -856,7 +856,7 @@ Atom TRAP::INTERNAL::WindowingAPI::WriteTargetToProperty(const XSelectionRequest
 		
 		for(i = 0; i < count; i += 2)
 		{
-			int j;
+			uint32_t j;
 			
 			for(j = 0; j < formats.size(); j++)
 				if(targets[i] == formats[j])
@@ -1307,7 +1307,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 	
 	window->Transparent = IsVisualTransparentX11(visual);
 	
-	XSetWindowAttributes wa = {0};
+	XSetWindowAttributes wa = {};
 	wa.colormap = window->colormap;
 	wa.event_mask = StructureNotifyMask | KeyPressMask | KeyReleaseMask |
 	                PointerMotionMask | ButtonPressMask | ButtonReleaseMask |
@@ -1463,9 +1463,6 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 //Creates a native cursor object from the specified image and hotspot
 Cursor TRAP::INTERNAL::WindowingAPI::CreateCursorX11(const Scope<TRAP::Image>& image, int32_t xHotSpot, int32_t yHotSpot)
 {
-	int32_t i;
-	Cursor cursor;
-	
 	if(!s_Data.XCursor.Handle)
 		return 0;
 		
@@ -1479,7 +1476,7 @@ Cursor TRAP::INTERNAL::WindowingAPI::CreateCursorX11(const Scope<TRAP::Image>& i
 	uint8_t* source = (uint8_t*)image->GetPixelData();
 	XcursorPixel* target = native->pixels;
 	
-	for(i = 0; i < image->GetWidth() * image->GetHeight(); i++, target++, source += 4)
+	for(uint32_t i = 0; i < image->GetWidth() * image->GetHeight(); i++, target++, source += 4)
 	{
 		uint32_t alpha = source[3];
 		
@@ -1489,7 +1486,7 @@ Cursor TRAP::INTERNAL::WindowingAPI::CreateCursorX11(const Scope<TRAP::Image>& i
 				  ((uint8_t)((source[2] * alpha) / 255) << 0);
 	}
 	
-	cursor = s_Data.XCursor.ImageLoadCursor(s_Data.display, native);
+	Cursor cursor = s_Data.XCursor.ImageLoadCursor(s_Data.display, native);
 	s_Data.XCursor.ImageDestroy(native);
 	
 	return cursor;
@@ -2647,7 +2644,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowFrameSize(const InternalWind
 		//      failed to send the reply. They have been fixed but broken versions are still in the wild.
 		//      If you are affected by this and your window manager is NOT listed above, PLEASE report it to their
 		//      and our issue trackers
-		while(!XCheckIfEvent(s_Data.display, &event, IsFrameExtentsEvent, (XPointer)window));
+		while(!XCheckIfEvent(s_Data.display, &event, IsFrameExtentsEvent, (XPointer)window))
 		{
 			if(!WaitForEvent(&timeout))
 			{
@@ -2757,7 +2754,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 		
 		result.reserve(oi->nmode);
 		
-		for(uint32_t i = 0; i< oi->nmode; i++)
+		for(uint32_t i = 0; i < static_cast<uint32_t>(oi->nmode); i++)
 		{
 			const XRRModeInfo* mi = GetModeInfo(sr, oi->modes[i]);
 			if(!static_cast<bool>((mi->modeFlags & RR_Interlace) == 0))
@@ -4509,7 +4506,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 					
 					if(next.type == 2 &&
 					   next.xkey.window == event.xkey.window &&
-					   next.xkey.keycode == keyCode)
+					   next.xkey.keycode == static_cast<uint32_t>(keyCode))
 					{
 						//HACK: The time of repeat events sometimes doesn't match that of the press event, so add an epsilon
 						if((next.xkey.time - event.xkey.time) < 20)
@@ -4709,7 +4706,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				{
 					if(formats[i] == s_Data.text_uri_list)
 					{
-						s_Data.XDND.Format == s_Data.text_uri_list;
+						s_Data.XDND.Format = s_Data.text_uri_list;
 						break;
 					}
 				}
@@ -4795,7 +4792,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				
 				if(result)
 				{
-					int32_t i, count;
+					int32_t count;
 					std::vector<std::string> paths = ParseUriList(data, count);
 					
 					InputDrop(window, paths);
@@ -5082,7 +5079,7 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeX11(InternalMonitor* monitor, con
 		XRRCrtcInfo* ci = s_Data.RandR.GetCrtcInfo(s_Data.display, sr, monitor->CRTC);
 		XRROutputInfo* oi = s_Data.RandR.GetOutputInfo(s_Data.display, sr, monitor->Output);
 		
-		for(uint32_t i = 0; i < oi->nmode; i++)
+		for(uint32_t i = 0; i < static_cast<uint32_t>(oi->nmode); i++)
 		{
 			const XRRModeInfo* mi = GetModeInfo(sr, oi->modes[i]);
 			if(!((mi->modeFlags & RR_Interlace) == 0))
