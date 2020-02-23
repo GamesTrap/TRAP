@@ -620,26 +620,19 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	controller->WinCon.Objects = data.Objects;
 	controller->WinCon.ObjectCount = data.ObjectCount;
 
-	int8_t cIDUsable = -1;
-	for (uint32_t cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
-		if (!s_controllerInternal[cID].Connected)
-		{
-			cIDUsable = cID;
-			break;
-		}
-
-	if(cIDUsable != -1)
-	{
-		if (!s_eventCallback)
-			return DIENUM_STOP;
-		
-		ControllerConnectEvent event(static_cast<Controller>(cIDUsable));
-		s_eventCallback(event);
-
+	if (!s_eventCallback)
 		return DIENUM_STOP;
-	}	
 
-	return DIENUM_CONTINUE;
+	//Get index of our ControllerInternal
+	uint8_t index;
+	for (index = 0; index <= static_cast<uint8_t>(Controller::Sixteen); index++)
+		if (&s_controllerInternal[index] == controller)
+			break;
+	
+	ControllerConnectEvent event(static_cast<Controller>(index));
+	s_eventCallback(event);
+
+	return DIENUM_STOP;
 }
 
 #endif

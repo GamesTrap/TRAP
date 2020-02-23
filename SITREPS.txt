@@ -914,3 +914,4 @@ SITREP 02/23/2020|20w08a5
     - Changed TRAP Engine version to 20w08a5(0.6.16)
     - Fixed Heap corruption on Linux X11 ~>50 mins
     - Validated Controller functionality on Linux X11 ~<20 mins
+    - Fixed Controller bugs when Connected while TRAP is running on Windows ~<20 mins
