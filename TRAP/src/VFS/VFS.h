@@ -3,13 +3,19 @@
 
 #include "FileWatcher.h"
 
-#include "Utils/Singleton.h"
-
 namespace TRAP
 {
-	class VFS final : public Singleton
+	class VFS final
 	{
 	public:
+		VFS() = default;
+		~VFS() = default;		
+
+		VFS(const VFS&) = delete;
+		VFS& operator=(const VFS&) = delete;
+		VFS(VFS&&) = delete;
+		VFS& operator=(VFS&&) = delete;
+		
 		static void Mount(const std::string& virtualPath, const std::string& physicalPath);
 		static void MountShaders(const std::string& physicalPath);
 		static void MountTextures(const std::string& physicalPath);

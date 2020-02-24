@@ -1,7 +1,6 @@
 #ifndef _TRAP_INPUT_H_
 #define _TRAP_INPUT_H_
 
-#include "Utils/Singleton.h"
 #include "Maths/Math.h"
 #include "Event/Event.h"
 
@@ -16,9 +15,16 @@ namespace TRAP
 	class ControllerDisconnectEvent;
 	class ControllerConnectEvent;
 
-	class Input final : public Singleton
+	class Input final
 	{
 	public:
+		Input() = default;
+		~Input() = default;		
+
+		Input(const Input&) = delete;
+		Input& operator=(const Input&) = delete;
+		Input(Input&&) = delete;
+		Input& operator=(Input&&) = delete;
 		
 		enum class Key
 		{

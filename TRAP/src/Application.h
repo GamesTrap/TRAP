@@ -8,8 +8,9 @@
 #include "Config/Config.h"
 #include "Layers/LayerStack.h"
 #include "Utils/Timer.h"
-#include "Utils/Singleton.h"
 #include "Input/Input.h"
+
+int main();
 
 namespace TRAP
 {
@@ -21,7 +22,7 @@ namespace TRAP
 	class WindowCloseEvent;
 	class KeyPressEvent;
 
-	class Application : public Singleton
+	class Application
 	{		
 	public:
 		enum class Endian
@@ -37,15 +38,14 @@ namespace TRAP
 			X11,
 			Wayland
 		};
-		
+
 		Application();
+		virtual ~Application();
+
 		Application(const Application&) = delete;
 		Application& operator=(const Application&) = delete;
 		Application(Application&&) = delete;
-		Application& operator=(Application&&) = delete;
-		virtual ~Application();
-
-		void Run();		
+		Application& operator=(Application&&) = delete;	
 
 		void PushLayer(Scope<Layer> layer) const;
 		void PushOverlay(Scope<Layer> overlay) const;
@@ -75,8 +75,10 @@ namespace TRAP
 
 		void ReCreateWindow(Graphics::API::RenderAPI renderAPI);
 		void ReCreate(Graphics::API::RenderAPI renderAPI) const;
-
-	private:		
+		
+	private:
+		void Run();
+		
 		Utils::TimeStep GetTimeInternal() const;
 
 		void OnEvent(Event& e);
@@ -111,6 +113,7 @@ namespace TRAP
 		LinuxWindowManager m_linuxWindowManager;
 		
 		static Application* s_Instance;
+		friend int ::main();
 	};
 
 	//To be defined in CLIENT

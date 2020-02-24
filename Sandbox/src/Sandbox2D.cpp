@@ -2,14 +2,9 @@
 
 Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D"),
-	m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()), false, true, TRAP::Input::Controller::One),
+	m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
 	m_frameTimeHistory()
 {
-	//TODO
-	//If controller connects switch to it
-	//If controller disconnect switch to mouse/keyboard
-	
-	//TODO ControllerAPI validation tests
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -51,6 +46,8 @@ std::string DPadToString(const TRAP::Input::ControllerDPad dpad)
 
 void Sandbox2D::OnImGuiRender()
 {
+	TP_PROFILE_FUNCTION();
+	
 	ImGui::SetNextWindowBgAlpha(0.3f);
 	ImGui::Begin("Performance", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
 	ImGui::Text("Performance");
@@ -60,124 +57,86 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
 	ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
 	ImGui::End();
-
-	if(TRAP::Input::IsControllerConnected(TRAP::Input::Controller::One))
-	{
-		if(TRAP::Input::IsControllerGamepad(TRAP::Input::Controller::One))
-		{
-			ImGui::SetNextWindowBgAlpha(0.3f);
-			ImGui::Begin("Controller 1:");
-			ImGui::Separator();
-			ImGui::Text("Infos");
-			ImGui::Text("Name: %s", TRAP::Input::GetControllerName(TRAP::Input::Controller::One).c_str());
-			ImGui::Text("Status: %s", TRAP::Input::IsControllerConnected(TRAP::Input::Controller::One) ? "Connected" : "Disconnected");
-			ImGui::Text("Gamepad: %s", TRAP::Input::IsControllerGamepad(TRAP::Input::Controller::One) ? "True" : "False");
-			ImGui::Separator();
-			ImGui::Text("Axes");
-			ImGui::Text("Left X: %f", TRAP::Input::GetControllerAxis(TRAP::Input::Controller::One, TRAP::Input::ControllerAxis::Left_X));
-			ImGui::Text("Left Y: %f", TRAP::Input::GetControllerAxis(TRAP::Input::Controller::One, TRAP::Input::ControllerAxis::Left_Y));
-			ImGui::Text("Right X: %f", TRAP::Input::GetControllerAxis(TRAP::Input::Controller::One, TRAP::Input::ControllerAxis::Right_X));
-			ImGui::Text("Right Y: %f", TRAP::Input::GetControllerAxis(TRAP::Input::Controller::One, TRAP::Input::ControllerAxis::Right_Y));
-			ImGui::Text("Left Trigger: %f", TRAP::Input::GetControllerAxis(TRAP::Input::Controller::One, TRAP::Input::ControllerAxis::Left_Trigger));
-			ImGui::Text("Right Trigger: %f", TRAP::Input::GetControllerAxis(TRAP::Input::Controller::One, TRAP::Input::ControllerAxis::Right_Trigger));
-			ImGui::Separator();
-			ImGui::Text("DPad");
-			ImGui::Text("DPad: %s", DPadToString(TRAP::Input::GetControllerDPad(TRAP::Input::Controller::One, 0)).c_str());
-			ImGui::Separator();
-			ImGui::Text("Buttons");
-			ImGui::Text("A / Cross: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::A) ? "True" : "False");
-			ImGui::Text("B / Circle: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::B) ? "True" : "False");
-			ImGui::Text("X / Square: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::X) ? "True" : "False");
-			ImGui::Text("Y / Triangle: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Y) ? "True" : "False");
-			ImGui::Text("Left Bumper: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Left_Bumper) ? "True" : "False");
-			ImGui::Text("Right Bumper: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Right_Bumper) ? "True" : "False");
-			ImGui::Text("Back: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Back) ? "True" : "False");
-			ImGui::Text("Start: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Start) ? "True" : "False");
-			ImGui::Text("Guide: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Guide) ? "True" : "False");
-			ImGui::Text("Left Thumb: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Left_Thumb) ? "True" : "False");
-			ImGui::Text("Right Thumb: %s", TRAP::Input::GetControllerButton(TRAP::Input::Controller::One, TRAP::Input::ControllerButton::Right_Thumb) ? "True" : "False");
-			ImGui::End();
-		}
-		else
-		{
-			std::vector<float> axes = TRAP::Input::GetAllControllerAxes(TRAP::Input::Controller::One);
-			std::vector<TRAP::Input::ControllerDPad> dpads = TRAP::Input::GetAllControllerDPads(TRAP::Input::Controller::One);
-			std::vector<bool> buttons = TRAP::Input::GetAllControllerButtons(TRAP::Input::Controller::One);
-			
-			ImGui::SetNextWindowBgAlpha(0.3f);
-			ImGui::Begin("Controller 1:");
-			ImGui::Separator();
-			ImGui::Text("Infos");
-			ImGui::Text("Name: %s", TRAP::Input::GetControllerName(TRAP::Input::Controller::One).c_str());
-			ImGui::Text("Status: %s", TRAP::Input::IsControllerConnected(TRAP::Input::Controller::One) ? "Connected" : "Disconnected");
-			ImGui::Text("Gamepad: %s", TRAP::Input::IsControllerGamepad(TRAP::Input::Controller::One) ? "True" : "False");
-			ImGui::Separator();
-			ImGui::Text("Axes");
-			for(uint32_t i = 0; i < axes.size(); i++)
-				ImGui::Text("%i: %f", i, axes[i]);
-			ImGui::Separator();
-			ImGui::Text("DPad");
-			for(uint32_t i = 0; i < dpads.size(); i++)
-				ImGui::Text("%i: %s", i, DPadToString(dpads[i]).c_str());
-			ImGui::Separator();
-			ImGui::Text("Buttons");
-			for(uint32_t i = 0; i < buttons.size(); i++)
-				ImGui::Text("%i: %s", i, buttons[i] ? "True" : "False");
-			ImGui::End();
-		}
-	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void Sandbox2D::OnAttach()
 {
-	TRAP::Application::SetHotShaderReloading(true);
-	TRAP::Application::SetHotTextureReloading(true);	
-	TRAP::Application::GetWindow()->SetTitle("Sandbox2D");
+	TP_PROFILE_FUNCTION();
+
+	{
+		TP_PROFILE_SCOPE("Changing settings of TRAP");
+		
+		TRAP::Application::SetHotShaderReloading(true);
+		TRAP::Application::SetHotTextureReloading(true);
+		TRAP::Application::GetWindow()->SetTitle("Sandbox2D");
+	}
 	
 	//Mount & Load Textures
-	TRAP::VFS::MountTextures("Assets/Textures");
-	TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png");
+	{
+		TP_PROFILE_SCOPE("Mounting & Loading Textures");
+		
+		TRAP::VFS::MountTextures("Assets/Textures");
+		TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png");
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void Sandbox2D::OnDetach()
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
-{	
+{
+	TP_PROFILE_FUNCTION();
+
 	//Update
-	m_cameraController.OnUpdate(deltaTime);
+	{
+		TP_PROFILE_SCOPE("CameraController::OnUpdate");
+		m_cameraController.OnUpdate(deltaTime);
+	}
 
 	//Render
-	TRAP::Graphics::RenderCommand::SetClearColor();
-	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
+	{
+		TP_PROFILE_SCOPE("Renderer Prep");
+		
+		TRAP::Graphics::RenderCommand::SetClearColor();
+		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
+	}
 
-	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());	
-	TRAP::Graphics::Renderer2D::DrawQuad(TRAP::Math::Vec2(-1.0f, 0.0f), TRAP::Math::Vec2(0.8f, 0.8f), TRAP::Math::Vec4(0.8f, 0.2f, 0.3f, 1.0f));
-	TRAP::Graphics::Renderer2D::DrawQuad(TRAP::Math::Vec2(0.5f, -0.5f), TRAP::Math::Vec2(0.5f, 0.75f), TRAP::Math::Vec4(0.2f, 0.3f, 0.8f, 1.0f));
-	TRAP::Graphics::Renderer2D::DrawQuad(TRAP::Math::Vec2(0.2f, 0.5f), TRAP::Math::Vec2(0.5f, 0.5f), TRAP::Math::Vec4(0.2f, 0.3f, 0.8f, 1.0f), TRAP::Graphics::TextureManager::Get2D("TRAP"));
-	TRAP::Graphics::Renderer2D::EndScene();
+	{
+		TP_PROFILE_SCOPE("Renderer Draw");
+		
+		TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
+		TRAP::Graphics::Renderer2D::DrawQuad(TRAP::Math::Vec2(-1.0f, 0.0f), TRAP::Math::Vec2(0.8f, 0.8f), TRAP::Math::Vec4(0.8f, 0.2f, 0.3f, 1.0f));
+		TRAP::Graphics::Renderer2D::DrawQuad(TRAP::Math::Vec2(0.5f, -0.5f), TRAP::Math::Vec2(0.5f, 0.75f), TRAP::Math::Vec4(0.2f, 0.3f, 0.8f, 1.0f));
+		TRAP::Graphics::Renderer2D::DrawQuad(TRAP::Math::Vec2(0.2f, 0.5f), TRAP::Math::Vec2(0.5f, 0.5f), TRAP::Math::Vec4(0.2f, 0.3f, 0.8f, 1.0f), TRAP::Graphics::TextureManager::Get2D("TRAP"));
+		TRAP::Graphics::Renderer2D::EndScene();
+	}
 	
-	//FPS & FrameTime
+	//Update FPS & FrameTIme history
 	if (m_updateFPSTimer.Elapsed() >= 0.025f)
 	{
-		m_updateFPSTimer.Reset();
-		static int frameTimeIndex = 0;
-		if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
+		TP_PROFILE_SCOPE("Updateing FPS & FrameTime history");
+
 		{
-			m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
-			frameTimeIndex++;
-		}
-		else
-		{
-			std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
-			m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
+			m_updateFPSTimer.Reset();
+			static int frameTimeIndex = 0;
+			if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
+			{
+				m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
+				frameTimeIndex++;
+			}
+			else
+			{
+				std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
+				m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
+			}
 		}
 	}
 }

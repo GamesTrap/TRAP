@@ -4,13 +4,21 @@
 #include "Texture.h"
 #include "Texture2D.h"
 #include "TextureCube.h"
-#include "Utils/Singleton.h"
 
 namespace TRAP::Graphics
 {
-	class TextureManager : public Singleton
+	class TextureManager
 	{
+	private:
+		TextureManager() = default;
+		~TextureManager() = default;
+		
 	public:
+		TextureManager(const TextureManager&) = delete;
+		TextureManager& operator=(const TextureManager&) = delete;
+		TextureManager(TextureManager&&) = delete;
+		TextureManager& operator=(TextureManager&&) = delete;
+		
 		static const Scope<Texture>& Load(const std::string& filepath, TextureParameters parameters = TextureParameters());
 		static const Scope<Texture>& Load(const std::string& name, const std::string& filepath, TextureParameters parameters = TextureParameters());
 		static const Scope<Texture2D>& Load(const std::string& name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<uint8_t>& pixelData, TextureParameters parameters = TextureParameters());
@@ -36,9 +44,6 @@ namespace TRAP::Graphics
 
 		static bool Exists(const std::string& name);
 		static bool ExistsVirtualPath(const std::string& virtualPath);
-		
-	private:
-		TextureManager() = default;
 
 		static std::unordered_map<std::string, Scope<Texture>> s_Textures;
 	};

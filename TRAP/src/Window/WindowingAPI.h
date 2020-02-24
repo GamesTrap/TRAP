@@ -1,15 +1,23 @@
 #ifndef _TRAP_WINDOWINGAPI_H_
 #define _TRAP_WINDOWINGAPI_H_
 
-#include "Utils/Singleton.h"
 #include "Input/Input.h"
 #include "ImageLoader/Image.h"
 
 namespace TRAP::INTERNAL
 {	
-	class WindowingAPI final : public Singleton
+	class WindowingAPI final
 	{
-	public:	
+	private:
+		WindowingAPI() = default;
+		~WindowingAPI() = default;
+		
+	public:
+		WindowingAPI(const WindowingAPI&) = delete;
+		WindowingAPI& operator=(const WindowingAPI&) = delete;
+		WindowingAPI(WindowingAPI&&) = delete;
+		WindowingAPI& operator=(WindowingAPI&&) = delete;
+		
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Forward Declarations-----------------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//

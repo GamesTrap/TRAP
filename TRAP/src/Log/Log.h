@@ -5,13 +5,18 @@
 	#include "Utils/Win.h"
 #endif
 
-#include "Utils/Singleton.h"
-
 namespace TRAP
 {
-	class Log final : public Singleton
+	class Log final
 	{
 	public:
+		Log();
+		~Log();
+		Log(const Log&) = delete;
+		Log& operator=(const Log&) = delete;
+		Log(Log&&) = delete;
+		Log& operator=(Log&&) = delete;
+		
 		enum class Level
 		{
 			Trace,
@@ -21,13 +26,6 @@ namespace TRAP
 			Error,
 			Critical
 		};
-		
-		Log();
-		~Log();
-		Log(const Log&) = delete;
-		Log& operator=(const Log&) = delete;
-		Log(Log&&) = delete;
-		Log& operator=(Log&&) = delete;
 
 		template<typename... Args>
 		static void Trace(Args&& ... args);

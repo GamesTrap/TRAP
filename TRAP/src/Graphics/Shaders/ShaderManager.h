@@ -2,13 +2,21 @@
 #define _TRAP_SHADERMANAGER_H_
 
 #include "Shader.h"
-#include "Utils/Singleton.h"
 
 namespace TRAP::Graphics
 {
-	class ShaderManager : public Singleton
+	class ShaderManager
 	{
+	private:
+		ShaderManager() = default;
+		~ShaderManager() = default;
+		
 	public:
+		ShaderManager(const ShaderManager&) = delete;
+		ShaderManager& operator=(const ShaderManager&) = delete;
+		ShaderManager(ShaderManager&&) = delete;
+		ShaderManager& operator=(ShaderManager&&) = delete;
+		
 		static const Scope<Shader>& Load(const std::string& filepath);
 		static const Scope<Shader>& Load(const std::string& name, const std::string& filepath);
 		static const Scope<Shader>& Load(const std::string& name,
@@ -36,8 +44,6 @@ namespace TRAP::Graphics
 		static bool ExistsVirtualPath(const std::string& virtualPath);
 		
 	private:
-		ShaderManager() = default;
-
 		static std::unordered_map<std::string, Scope<Shader>> s_Shaders;
 	};
 }

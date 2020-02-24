@@ -138,6 +138,8 @@ TRAP::Application::Application()
 
 TRAP::Application::~Application()
 {
+	TP_PROFILE_BEGIN_SESSION("Shutdown", "TRAPProfile-Shutdown.json");
+	
 	TP_DEBUG("[Application] Shutting down TRAP Modules...");
 	m_input->Shutdown();
 	m_layerStack.reset();
@@ -156,6 +158,8 @@ TRAP::Application::~Application()
 	m_config.SaveToFile("Engine.cfg");
 	m_window.reset();
 	VFS::Shutdown();
+
+	TP_PROFILE_END_SESSION();
 };
 
 //-------------------------------------------------------------------------------------------------------------------//

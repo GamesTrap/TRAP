@@ -915,3 +915,11 @@ SITREP 02/23/2020|20w08a5
     - Fixed Heap corruption on Linux X11 ~>50 mins
     - Validated Controller functionality on Linux X11 ~<20 mins
     - Fixed Controller bugs when Connected while TRAP is running on Windows ~<20 mins
+    - Removed Singleton class ~<20 mins
+
+SITREP 02/24/2020|20w09a1
+    - Changed TRAP Engine version to 20w09a1(0.6.17)
+    - TRAP::Application::Run is now only accessible by the engine ~<10 mins
+    - Added JSON based Performance Profiler ~>30 mins
+    - Added Profiling to SandboxLayer & Sandbox2D ~<20 mins
+    

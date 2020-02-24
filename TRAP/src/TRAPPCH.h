@@ -47,6 +47,8 @@
 #include <imgui.h>
 //TRAP Engine
 #include "Core.h"
+#include "Log/Log.h"
+#include "Utils/Debug/Instrumentor.h"
 
 #ifdef TRAP_PLATFORM_LINUX
 #include <linux/input.h>
