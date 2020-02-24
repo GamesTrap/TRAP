@@ -10,6 +10,8 @@
 TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, const float updateTimeInMilliseconds)
 	: m_virtualPathToWatch(virtualPath), m_delay(updateTimeInMilliseconds)
 {
+	TP_PROFILE_FUNCTION();
+
 	m_timer.Reset();
 	const std::string virtualPathLower = Utils::String::ToLower(virtualPath);
 	m_physicalPathsToWatch = VFS::ResolveToPhysicalPaths(virtualPathLower);
@@ -49,6 +51,8 @@ TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, const float updat
 
 void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, std::string, FileStatus)>& action)
 {
+	TP_PROFILE_FUNCTION();
+
 	//Check if Files have changed
 	if (m_timer.ElapsedMilliseconds() >= m_delay)
 	{

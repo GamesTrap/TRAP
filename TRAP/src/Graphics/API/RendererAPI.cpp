@@ -14,6 +14,8 @@ TRAP::Scope<TRAP::Graphics::API::RendererAPI> TRAP::Graphics::API::RendererAPI::
 
 void TRAP::Graphics::API::RendererAPI::Init()
 {
+	TP_PROFILE_FUNCTION();
+	
 	switch (Context::GetRenderAPI())
 	{
 	case RenderAPI::OpenGL:
@@ -46,6 +48,8 @@ void TRAP::Graphics::API::RendererAPI::Init()
 
 void TRAP::Graphics::API::RendererAPI::Shutdown()
 {
+	TP_PROFILE_FUNCTION();
+
 	s_Renderer.reset();
 	s_Renderer = nullptr;
 }
@@ -54,5 +58,7 @@ void TRAP::Graphics::API::RendererAPI::Shutdown()
 
 TRAP::Graphics::API::RendererAPI* TRAP::Graphics::API::RendererAPI::GetRenderer()
 {
+	TP_PROFILE_FUNCTION();
+
 	return s_Renderer.get();
 }

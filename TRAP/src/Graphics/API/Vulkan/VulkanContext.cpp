@@ -18,12 +18,15 @@ TRAP::Graphics::API::VulkanContext::VulkanContext(Window* window)
 	m_window(window),
 	m_vsync(false)
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanContext::~VulkanContext()
 {
+	TP_PROFILE_FUNCTION();
+	
 	TP_DEBUG("[Context][Vulkan] Destroying Context");
 }
 
@@ -31,6 +34,8 @@ TRAP::Graphics::API::VulkanContext::~VulkanContext()
 
 void TRAP::Graphics::API::VulkanContext::SetVSyncIntervalInternal(const uint32_t interval)
 {
+	TP_PROFILE_FUNCTION();
+
 	m_vsync = interval;
 }
 
@@ -38,18 +43,24 @@ void TRAP::Graphics::API::VulkanContext::SetVSyncIntervalInternal(const uint32_t
 
 void TRAP::Graphics::API::VulkanContext::Present(const Scope<Window>& window)
 {
+	TP_PROFILE_FUNCTION();
+
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanContext::UseInternal(const Window* window)
-{	
+{
+	TP_PROFILE_FUNCTION();
+
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanContext* TRAP::Graphics::API::VulkanContext::Get()
 {
+	TP_PROFILE_FUNCTION();
+
 	return dynamic_cast<VulkanContext*>(s_Context.get());
 }
 
@@ -57,6 +68,8 @@ TRAP::Graphics::API::VulkanContext* TRAP::Graphics::API::VulkanContext::Get()
 
 VkSurfaceKHR& TRAP::Graphics::API::VulkanContext::GetSurface()
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_surface;
 }
 
@@ -64,6 +77,8 @@ VkSurfaceKHR& TRAP::Graphics::API::VulkanContext::GetSurface()
 
 TRAP::Window* TRAP::Graphics::API::VulkanContext::GetWindow() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_window;
 }
 
@@ -71,6 +86,8 @@ TRAP::Window* TRAP::Graphics::API::VulkanContext::GetWindow() const
 
 void TRAP::Graphics::API::VulkanContext::InitSurface()
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[Renderer][Vulkan] Initializing Surface");
 
 	VkCall(INTERNAL::WindowingAPI::CreateWindowSurface(VulkanRenderer::Get()->GetInstance(),
@@ -82,6 +99,8 @@ void TRAP::Graphics::API::VulkanContext::InitSurface()
 
 void TRAP::Graphics::API::VulkanContext::DeInitSurface(VkInstance instance)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (m_surface)
 	{
 		TP_DEBUG("[Renderer][Vulkan] Destroying Surface");
@@ -94,6 +113,8 @@ void TRAP::Graphics::API::VulkanContext::DeInitSurface(VkInstance instance)
 
 void TRAP::Graphics::API::VulkanContext::SetupSwapchain()
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[Renderer][Vulkan] Setting up Swapchain");
 
 	const std::vector<VkSurfaceFormatKHR> availableSurfaceFormats = GetAvailableSurfaceFormats(VulkanRenderer::Get()->GetPhysicalDevice());
@@ -116,6 +137,8 @@ void TRAP::Graphics::API::VulkanContext::SetupSwapchain()
 
 void TRAP::Graphics::API::VulkanContext::InitSwapchain()
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[Renderer][Vulkan] Initializing Swapchain");
 
 	uint32_t imageCount = m_capabilities.minImageCount + 1;
@@ -168,6 +191,8 @@ void TRAP::Graphics::API::VulkanContext::InitSwapchain()
 
 void TRAP::Graphics::API::VulkanContext::DeInitSwapchain(VkDevice device)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (m_swapchain)
 	{
 		TP_DEBUG("[Renderer][Vulkan] Destroying Swapchain");
@@ -180,6 +205,8 @@ void TRAP::Graphics::API::VulkanContext::DeInitSwapchain(VkDevice device)
 
 void TRAP::Graphics::API::VulkanContext::InitImageViews()
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[Renderer][Vulkan] Initializing Swapchain Image Views");
 
 	m_swapchainImageViews.resize(m_swapchainImages.size());
@@ -217,6 +244,8 @@ void TRAP::Graphics::API::VulkanContext::InitImageViews()
 
 void TRAP::Graphics::API::VulkanContext::DeInitImageViews(VkDevice device)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (!m_swapchainImageViews.empty())
 		TP_DEBUG("[Renderer][Vulkan] Destroying Swapchain Image Views");
 
@@ -228,6 +257,8 @@ void TRAP::Graphics::API::VulkanContext::DeInitImageViews(VkDevice device)
 
 std::vector<VkSurfaceFormatKHR> TRAP::Graphics::API::VulkanContext::GetAvailableSurfaceFormats(VkPhysicalDevice physicalDevice) const
 {
+	TP_PROFILE_FUNCTION();
+
 	uint32_t surfaceFormatCount = 0;
 	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, m_surface, &surfaceFormatCount, nullptr));
 	std::vector<VkSurfaceFormatKHR> availableSurfaceFormats{ surfaceFormatCount };
@@ -241,6 +272,8 @@ std::vector<VkSurfaceFormatKHR> TRAP::Graphics::API::VulkanContext::GetAvailable
 
 std::vector<VkPresentModeKHR> TRAP::Graphics::API::VulkanContext::GetAvailableSurfacePresentModes(VkPhysicalDevice physicalDevice) const
 {
+	TP_PROFILE_FUNCTION();
+
 	uint32_t surfacePresentModeCount = 0;
 	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, m_surface, &surfacePresentModeCount, nullptr));
 	std::vector<VkPresentModeKHR> surfacePresentModes{ surfacePresentModeCount };
@@ -254,6 +287,8 @@ std::vector<VkPresentModeKHR> TRAP::Graphics::API::VulkanContext::GetAvailableSu
 
 VkExtent2D TRAP::Graphics::API::VulkanContext::GetSwapchainExtent() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_extent;
 }
 
@@ -261,6 +296,8 @@ VkExtent2D TRAP::Graphics::API::VulkanContext::GetSwapchainExtent() const
 
 VkFormat TRAP::Graphics::API::VulkanContext::GetSwapchainImageFormat() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_format.format;
 }
 
@@ -269,6 +306,8 @@ VkFormat TRAP::Graphics::API::VulkanContext::GetSwapchainImageFormat() const
 //I know i know it's a heavy function but I don't want to use the VulkanRenderer/Context functions because this should execute silently
 bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 {
+	TP_PROFILE_FUNCTION();
+
 	if (INTERNAL::WindowingAPI::VulkanSupported())
 	{
 		//Instance Extensions

@@ -174,3 +174,6 @@ docs/_build/
 *.project
 *.workspace
 *.DotSettings
+Tests/*.json
+Sandbox/*.json
+TRAP/*.json

@@ -16,6 +16,8 @@ std::unordered_map<uint32_t, const TRAP::Graphics::API::OpenGLTextureCube*> TRAP
 TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(const TextureParameters parameters)
 	: m_handle(0), m_name("FallbackCube"), m_parameters(parameters), m_inputFormat(InputFormat::NONE)
 {
+	TP_PROFILE_FUNCTION();
+	
 	TP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
 	if (s_maxCombinedTextureUnits == 0)
 	{
@@ -66,6 +68,8 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 	  m_parameters(parameters),
 	  m_inputFormat(InputFormat::NONE)
 {
+	TP_PROFILE_FUNCTION();
+	
 	TP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
 	if (s_maxCombinedTextureUnits == 0)
 	{
@@ -92,6 +96,8 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, const std::string& filepath, const InputFormat format, const TextureParameters parameters)
 	: m_handle(0), m_name(std::move(name)), m_filePaths{ VFS::MakeVirtualPathCompatible(filepath) }, m_parameters(parameters), m_inputFormat(format)
 {
+	TP_PROFILE_FUNCTION();
+	
 	TP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
 	if (s_maxCombinedTextureUnits == 0)
 	{
@@ -125,6 +131,8 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 
 TRAP::Graphics::API::OpenGLTextureCube::~OpenGLTextureCube()
 {
+	TP_PROFILE_FUNCTION();
+	
 	TP_DEBUG("[TextureCube][OpenGL] Destroying TextureCube: \"", m_name, "\"");
 	
 	if(m_handle)
@@ -136,7 +144,9 @@ TRAP::Graphics::API::OpenGLTextureCube::~OpenGLTextureCube()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLTextureCube::Bind(const uint32_t slot) const
-{	
+{
+	TP_PROFILE_FUNCTION();
+	
 	if (s_boundCubeTextures[slot] != this)
 	{
 		if (slot < s_maxCombinedTextureUnits)
@@ -159,6 +169,8 @@ void TRAP::Graphics::API::OpenGLTextureCube::Bind(const uint32_t slot) const
 
 void TRAP::Graphics::API::OpenGLTextureCube::Unbind(const uint32_t slot) const
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (slot < s_maxCombinedTextureUnits)
 	{
 		OpenGLCall(glBindTextureUnit(slot, 0));
@@ -172,6 +184,8 @@ void TRAP::Graphics::API::OpenGLTextureCube::Unbind(const uint32_t slot) const
 
 uint32_t TRAP::Graphics::API::OpenGLTextureCube::GetHandle() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_handle;
 }
 
@@ -179,6 +193,8 @@ uint32_t TRAP::Graphics::API::OpenGLTextureCube::GetHandle() const
 
 std::string_view TRAP::Graphics::API::OpenGLTextureCube::GetName() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_name;
 }
 
@@ -186,6 +202,8 @@ std::string_view TRAP::Graphics::API::OpenGLTextureCube::GetName() const
 
 std::string_view TRAP::Graphics::API::OpenGLTextureCube::GetFilePath() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_filePaths[0];
 }
 
@@ -193,6 +211,8 @@ std::string_view TRAP::Graphics::API::OpenGLTextureCube::GetFilePath() const
 
 TRAP::Graphics::TextureParameters TRAP::Graphics::API::OpenGLTextureCube::GetParameters()
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_parameters;
 }
 
@@ -200,6 +220,8 @@ TRAP::Graphics::TextureParameters TRAP::Graphics::API::OpenGLTextureCube::GetPar
 
 void TRAP::Graphics::API::OpenGLTextureCube::SetWrap(const TextureWrap wrap)
 {
+	TP_PROFILE_FUNCTION();
+	
 	m_parameters.Wrap = wrap;
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(wrap)));
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_T, TRAPTextureWrapToOpenGL(wrap)));
@@ -210,6 +232,8 @@ void TRAP::Graphics::API::OpenGLTextureCube::SetWrap(const TextureWrap wrap)
 
 void TRAP::Graphics::API::OpenGLTextureCube::SetFilter(const TextureFilter filter)
 {
+	TP_PROFILE_FUNCTION();
+	
 	m_parameters.Filter = filter;
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));
@@ -219,6 +243,8 @@ void TRAP::Graphics::API::OpenGLTextureCube::SetFilter(const TextureFilter filte
 
 TRAP::Graphics::InputFormat TRAP::Graphics::API::OpenGLTextureCube::GetInputFormat() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_inputFormat;
 }
 
@@ -226,6 +252,8 @@ TRAP::Graphics::InputFormat TRAP::Graphics::API::OpenGLTextureCube::GetInputForm
 
 std::array<std::string, 6> TRAP::Graphics::API::OpenGLTextureCube::GetFilePaths() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_filePaths;
 }
 

@@ -24,7 +24,6 @@ namespace TRAP::Graphics::API
 		VulkanShader(VulkanShader&&) = default;
 		VulkanShader& operator=(VulkanShader&&) = default;
 		~VulkanShader();
-
 		
 		void Shutdown() const;
 

@@ -18,12 +18,15 @@
 TRAP::ImGuiLayer::ImGuiLayer()
 	: Layer("ImGuiLayer")
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::ImGuiLayer::OnAttach()
 {
+	TP_PROFILE_FUNCTION();
+
 	//Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -70,6 +73,8 @@ void TRAP::ImGuiLayer::OnAttach()
 
 void TRAP::ImGuiLayer::OnDetach()
 {
+	TP_PROFILE_FUNCTION();
+
 /*#ifdef TRAP_PLATFORM_WINDOWS
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::D3D12)
 	{
@@ -95,6 +100,8 @@ void TRAP::ImGuiLayer::OnDetach()
 
 void TRAP::ImGuiLayer::Begin()
 {
+	TP_PROFILE_FUNCTION();
+
 /*#ifdef TRAP_PLATFORM_WINDOWS
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::D3D12)
 	{
@@ -120,6 +127,8 @@ void TRAP::ImGuiLayer::Begin()
 
 void TRAP::ImGuiLayer::End()
 {
+	TP_PROFILE_FUNCTION();
+
 	ImGuiIO& io = ImGui::GetIO();
 	io.DisplaySize = ImVec2(static_cast<float>(Application::GetWindow()->GetWidth()), static_cast<float>(Application::GetWindow()->GetHeight()));
 

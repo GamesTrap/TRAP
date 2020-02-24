@@ -10,6 +10,8 @@
 TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_width(0), m_height(0), m_format(ImageFormat::NONE)
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[Image][PAM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;

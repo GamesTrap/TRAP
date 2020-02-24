@@ -10,6 +10,8 @@
 TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_width(0), m_height(0)
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[Image][PPM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;

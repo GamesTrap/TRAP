@@ -8,6 +8,8 @@
 
 TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const char* name, uint32_t size, BufferUsage usage)
 {
+	TP_PROFILE_FUNCTION();
+
 	switch (API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -31,6 +33,8 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 
 TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const char* name, void* data, uint32_t size, BufferUsage usage)
 {
+	TP_PROFILE_FUNCTION();
+
 	switch (API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS

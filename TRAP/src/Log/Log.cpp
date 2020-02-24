@@ -3,6 +3,8 @@
 
 TRAP::Log::Log()
 {
+	TP_PROFILE_FUNCTION();
+
 	m_buffer.reserve(256);
 	s_Instance = this;
 }
@@ -11,6 +13,8 @@ TRAP::Log::Log()
 
 TRAP::Log::~Log()
 {
+	TP_PROFILE_FUNCTION();
+	
 	Save();
 }
 
@@ -25,6 +29,8 @@ const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffe
 
 void TRAP::Log::Save()
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_INFO("[Logger] Saving Log.txt");
 
 	std::ofstream file("Log.txt");
@@ -41,6 +47,8 @@ void TRAP::Log::Save()
 
 void TRAP::Log::Clear()
 {
+	TP_PROFILE_FUNCTION();
+
 	Save();
 	s_Instance->m_buffer.clear();
 	s_Instance->m_buffer.reserve(256);

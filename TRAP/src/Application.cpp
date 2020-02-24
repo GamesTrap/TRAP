@@ -29,7 +29,9 @@ TRAP::Application::Application()
 	  m_fpsLimit(0),
 	  m_tickRate(100),
       m_linuxWindowManager(LinuxWindowManager::Unknown)
-{	
+{
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[Application] Initializing TRAP Modules...");
 
 	TRAP_CORE_ASSERT(!s_Instance, "Application already exists!");
@@ -139,6 +141,8 @@ TRAP::Application::Application()
 TRAP::Application::~Application()
 {
 	TP_PROFILE_BEGIN_SESSION("Shutdown", "TRAPProfile-Shutdown.json");
+
+	TP_PROFILE_FUNCTION();
 	
 	TP_DEBUG("[Application] Shutting down TRAP Modules...");
 	m_input->Shutdown();
@@ -166,6 +170,8 @@ TRAP::Application::~Application()
 
 void TRAP::Application::Run()
 {
+	TP_PROFILE_FUNCTION();
+
 	float lastFrameTime = 0.0f;
 	std::deque<Utils::Timer> framesPerSecond;
 	auto nextFrame = std::chrono::steady_clock::now();
@@ -173,6 +179,8 @@ void TRAP::Application::Run()
 	
 	while (m_running)
 	{
+		TP_PROFILE_SCOPE("RunLoop");
+		
 		if (m_fpsLimit)
 			nextFrame += std::chrono::milliseconds(1000 / m_fpsLimit);
 		if (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
@@ -187,14 +195,22 @@ void TRAP::Application::Run()
 
 		if (!m_minimized)
 		{
-			for (const auto& layer : *m_layerStack)
-				layer->OnUpdate(deltaTime);
+			{
+				TP_PROFILE_SCOPE("LayerStack OnUpdate");
+				
+				for (const auto& layer : *m_layerStack)
+					layer->OnUpdate(deltaTime);
+			}
 
 			if (tickTimer.ElapsedMilliseconds() > 1000.0f / static_cast<float>(m_tickRate))
 			{
-				for (const auto& layer : *m_layerStack)
-					layer->OnTick();
-
+				{
+					TP_PROFILE_SCOPE("LayerStack OnTick");
+					
+					for (const auto& layer : *m_layerStack)
+						layer->OnTick();
+				}
+				
 				tickTimer.Reset();
 			}
 		}
@@ -203,8 +219,12 @@ void TRAP::Application::Run()
 		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 		{
 			ImGuiLayer::Begin();
-			for (const auto& layer : *m_layerStack)
-				layer->OnImGuiRender();
+			{
+				TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
+				
+				for (const auto& layer : *m_layerStack)
+					layer->OnImGuiRender();
+			}
 			ImGuiLayer::End();
 		}
 
@@ -295,6 +315,8 @@ void TRAP::Application::Run()
 
 void TRAP::Application::OnEvent(Event& e)
 {
+	TP_PROFILE_FUNCTION();
+
 	EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) {return OnWindowClose(e); });
 	dispatcher.Dispatch<FrameBufferResizeEvent>([this](FrameBufferResizeEvent& e) {return OnFrameBufferResize(e); });
@@ -389,8 +411,7 @@ void TRAP::Application::SetTickRate(const uint32_t tickRate)
 
 void TRAP::Application::SetHotShaderReloading(const bool enabled)
 {
-	VFS::SetHotShaderReloading(enabled);
-	
+	VFS::SetHotShaderReloading(enabled);	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -439,6 +460,8 @@ TRAP::Application::LinuxWindowManager TRAP::Application::GetLinuxWindowManager()
 
 void TRAP::Application::SetClipboardString(const std::string& string)
 {
+	TP_PROFILE_FUNCTION();
+
 	INTERNAL::WindowingAPI::SetClipboardString(string);
 }
 
@@ -446,6 +469,8 @@ void TRAP::Application::SetClipboardString(const std::string& string)
 
 std::string TRAP::Application::GetClipboardString()
 {
+	TP_PROFILE_FUNCTION();
+
 	return INTERNAL::WindowingAPI::GetClipboardString();
 }
 
@@ -453,6 +478,8 @@ std::string TRAP::Application::GetClipboardString()
 
 void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 {
+	TP_PROFILE_FUNCTION();
+
 	for (const auto& layer : *m_layerStack)
 		layer->OnDetach();
 	Graphics::API::Context::SetRenderAPI(renderAPI);
@@ -497,6 +524,8 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 
 void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI) const
 {
+	TP_PROFILE_FUNCTION();
+
 	for (const auto& layer : *m_layerStack)
 		layer->OnDetach();
 	Graphics::API::Context::SetRenderAPI(renderAPI);
@@ -563,6 +592,8 @@ bool TRAP::Application::OnWindowClose(WindowCloseEvent& e)
 
 bool TRAP::Application::OnFrameBufferResize(FrameBufferResizeEvent& e)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (Window::GetActiveWindows() > 1)
 		Window::Use();
 

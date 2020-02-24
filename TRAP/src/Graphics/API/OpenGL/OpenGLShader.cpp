@@ -10,6 +10,8 @@
 TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, const std::string& source)
 	: m_handle(0), m_name(std::move(name))
 {
+	TP_PROFILE_FUNCTION();
+	
 	InitGLSL(source);
 }
 
@@ -18,6 +20,8 @@ TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, const std::str
 TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, std::vector<uint32_t>& source)
 	: m_handle(0), m_name(std::move(name))
 {
+	TP_PROFILE_FUNCTION();
+	
 	InitSPIRV(source);
 }
 
@@ -26,6 +30,8 @@ TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, std::vector<ui
 TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource)
 	: m_handle(0), m_name(std::move(name))
 {
+	TP_PROFILE_FUNCTION();
+	
 	InitGLSL(std::move(VSSource), std::move(FSSource), std::move(GSSource), std::move(TCSSource), std::move(TESSource), std::move(CSSource));
 }
 
@@ -33,6 +39,8 @@ TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, std::string VS
 
 TRAP::Graphics::API::OpenGLShader::~OpenGLShader()
 {
+	TP_PROFILE_FUNCTION();
+	
 	TP_DEBUG("[Shader][OpenGL] Destroying Shader: \"", m_name, "\"");
 	Shutdown();
 }
@@ -41,6 +49,8 @@ TRAP::Graphics::API::OpenGLShader::~OpenGLShader()
 
 void TRAP::Graphics::API::OpenGLShader::Shutdown() const
 {
+	TP_PROFILE_FUNCTION();
+
 	if (m_handle)
 	{
 		OpenGLCall(glDeleteProgram(m_handle));
@@ -51,6 +61,8 @@ void TRAP::Graphics::API::OpenGLShader::Shutdown() const
 
 void TRAP::Graphics::API::OpenGLShader::Bind() const
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (s_CurrentlyBound != this)
 	{
 		if (m_handle)
@@ -67,6 +79,8 @@ void TRAP::Graphics::API::OpenGLShader::Bind() const
 
 void TRAP::Graphics::API::OpenGLShader::Unbind() const
 {
+	TP_PROFILE_FUNCTION();
+	
 	OpenGLCall(glUseProgram(0));
 	s_CurrentlyBound = nullptr;
 }
@@ -75,6 +89,8 @@ void TRAP::Graphics::API::OpenGLShader::Unbind() const
 
 std::string_view TRAP::Graphics::API::OpenGLShader::GetName() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_name;
 }
 
@@ -82,6 +98,8 @@ std::string_view TRAP::Graphics::API::OpenGLShader::GetName() const
 
 std::string_view TRAP::Graphics::API::OpenGLShader::GetFilePath() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_filepath;
 }
 
@@ -89,6 +107,8 @@ std::string_view TRAP::Graphics::API::OpenGLShader::GetFilePath() const
 
 uint32_t TRAP::Graphics::API::OpenGLShader::GetHandle() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_handle;
 }
 
@@ -581,7 +601,7 @@ void TRAP::Graphics::API::OpenGLShader::CheckForUniforms()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, std::array<std::string, 6>& shaders)
-{	
+{
 	ShaderType type = ShaderType::Unknown;
 
 	std::vector<std::string> lines = Utils::String::GetLines(source);

@@ -31,8 +31,7 @@ namespace TRAP::Graphics::API
 		InputFormat GetInputFormat() const override;
 		std::array<std::string, 6> GetFilePaths() const override;
 		
-	private:
-		
+	private:		
 		void LoadVerticalCross();
 		void LoadHorizontalCross();
 		void LoadFiles();

@@ -6,6 +6,8 @@
 TRAP::Graphics::API::D3D12TextureCube::D3D12TextureCube(const TextureParameters parameters)
 	: m_name("FallbackCube"), m_parameters(parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_WARN("[TextureCube][D3D12] WIP");
 }
 
@@ -14,6 +16,8 @@ TRAP::Graphics::API::D3D12TextureCube::D3D12TextureCube(const TextureParameters 
 TRAP::Graphics::API::D3D12TextureCube::D3D12TextureCube(std::string name, const std::string& filepath, InputFormat format, const TextureParameters parameters)
 	: m_name(std::move(name)), m_filePaths{ VFS::MakeVirtualPathCompatible(filepath) }, m_parameters(parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_WARN("[TextureCube][D3D12] WIP");
 }
 
@@ -31,29 +35,38 @@ TRAP::Graphics::API::D3D12TextureCube::D3D12TextureCube(std::string name, const 
 	  },
 	  m_parameters(parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_WARN("[TextureCube][D3D12] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::D3D12TextureCube::~D3D12TextureCube() = default;
+TRAP::Graphics::API::D3D12TextureCube::~D3D12TextureCube()
+{
+	TP_PROFILE_FUNCTION();
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::D3D12TextureCube::Bind(uint32_t slot) const
-{	
+{
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::D3D12TextureCube::Unbind(uint32_t slot) const
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string_view TRAP::Graphics::API::D3D12TextureCube::GetName() const
 {
+	TP_PROFILE_FUNCTION();
+	
 	return m_name;
 }
 
@@ -61,6 +74,8 @@ std::string_view TRAP::Graphics::API::D3D12TextureCube::GetName() const
 
 std::string_view TRAP::Graphics::API::D3D12TextureCube::GetFilePath() const
 {
+	TP_PROFILE_FUNCTION();
+	
 	return m_filePaths[0];
 }
 
@@ -68,6 +83,8 @@ std::string_view TRAP::Graphics::API::D3D12TextureCube::GetFilePath() const
 
 TRAP::Graphics::TextureParameters TRAP::Graphics::API::D3D12TextureCube::GetParameters()
 {
+	TP_PROFILE_FUNCTION();
+	
 	return m_parameters;
 }
 
@@ -75,18 +92,22 @@ TRAP::Graphics::TextureParameters TRAP::Graphics::API::D3D12TextureCube::GetPara
 
 void TRAP::Graphics::API::D3D12TextureCube::SetWrap(const TextureWrap wrap)
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::D3D12TextureCube::SetFilter(const TextureFilter filter)
-{	
+{
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::InputFormat TRAP::Graphics::API::D3D12TextureCube::GetInputFormat() const
 {
+	TP_PROFILE_FUNCTION();
+	
 	return InputFormat::NONE;
 }
 
@@ -94,5 +115,7 @@ TRAP::Graphics::InputFormat TRAP::Graphics::API::D3D12TextureCube::GetInputForma
 
 std::array<std::string, 6> TRAP::Graphics::API::D3D12TextureCube::GetFilePaths() const
 {
+	TP_PROFILE_FUNCTION();
+	
 	return m_filePaths;
 }

@@ -14,6 +14,8 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 	m_height(0),
 	m_imageFormat(ImageFormat::NONE)
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[Image][TGA] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;

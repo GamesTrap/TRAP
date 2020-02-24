@@ -9,41 +9,6 @@ Sandbox2D::Sandbox2D()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string DPadToString(const TRAP::Input::ControllerDPad dpad)
-{
-	switch(dpad)
-	{
-	case TRAP::Input::ControllerDPad::Up:
-		return "Up";
-
-	case TRAP::Input::ControllerDPad::Right:
-		return "Right";
-
-	case TRAP::Input::ControllerDPad::Down:
-		return "Down";
-
-	case TRAP::Input::ControllerDPad::Left:
-		return "Left";
-		
-	case TRAP::Input::ControllerDPad::Right_Up:
-		return "Right Up";
-	
-	case TRAP::Input::ControllerDPad::Right_Down:
-		return "Right Down";
-
-	case TRAP::Input::ControllerDPad::Left_Down:
-		return "Left Down";
-
-	case TRAP::Input::ControllerDPad::Left_Up:
-		return "Left Up";
-		
-	default:
-		return "Centered";
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void Sandbox2D::OnImGuiRender()
 {
 	TP_PROFILE_FUNCTION();
@@ -65,21 +30,13 @@ void Sandbox2D::OnAttach()
 {
 	TP_PROFILE_FUNCTION();
 
-	{
-		TP_PROFILE_SCOPE("Changing settings of TRAP");
-		
-		TRAP::Application::SetHotShaderReloading(true);
-		TRAP::Application::SetHotTextureReloading(true);
-		TRAP::Application::GetWindow()->SetTitle("Sandbox2D");
-	}
+	TRAP::Application::SetHotShaderReloading(true);
+	TRAP::Application::SetHotTextureReloading(true);
+	TRAP::Application::GetWindow()->SetTitle("Sandbox2D");
 	
 	//Mount & Load Textures
-	{
-		TP_PROFILE_SCOPE("Mounting & Loading Textures");
-		
-		TRAP::VFS::MountTextures("Assets/Textures");
-		TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png");
-	}
+	TRAP::VFS::MountTextures("Assets/Textures");
+	TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -96,47 +53,32 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	TP_PROFILE_FUNCTION();
 
 	//Update
-	{
-		TP_PROFILE_SCOPE("CameraController::OnUpdate");
-		m_cameraController.OnUpdate(deltaTime);
-	}
+	m_cameraController.OnUpdate(deltaTime);
 
 	//Render
-	{
-		TP_PROFILE_SCOPE("Renderer Prep");
-		
-		TRAP::Graphics::RenderCommand::SetClearColor();
-		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
-	}
+	TRAP::Graphics::RenderCommand::SetClearColor();
+	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
 
-	{
-		TP_PROFILE_SCOPE("Renderer Draw");
-		
-		TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
-		TRAP::Graphics::Renderer2D::DrawQuad(TRAP::Math::Vec2(-1.0f, 0.0f), TRAP::Math::Vec2(0.8f, 0.8f), TRAP::Math::Vec4(0.8f, 0.2f, 0.3f, 1.0f));
-		TRAP::Graphics::Renderer2D::DrawQuad(TRAP::Math::Vec2(0.5f, -0.5f), TRAP::Math::Vec2(0.5f, 0.75f), TRAP::Math::Vec4(0.2f, 0.3f, 0.8f, 1.0f));
-		TRAP::Graphics::Renderer2D::DrawQuad(TRAP::Math::Vec2(0.2f, 0.5f), TRAP::Math::Vec2(0.5f, 0.5f), TRAP::Math::Vec4(0.2f, 0.3f, 0.8f, 1.0f), TRAP::Graphics::TextureManager::Get2D("TRAP"));
-		TRAP::Graphics::Renderer2D::EndScene();
-	}
+	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
+	TRAP::Graphics::Renderer2D::DrawQuad(TRAP::Math::Vec2(-1.0f, 0.0f), TRAP::Math::Vec2(0.8f, 0.8f), TRAP::Math::Vec4(0.8f, 0.2f, 0.3f, 1.0f));
+	TRAP::Graphics::Renderer2D::DrawQuad(TRAP::Math::Vec2(0.5f, -0.5f), TRAP::Math::Vec2(0.5f, 0.75f), TRAP::Math::Vec4(0.2f, 0.3f, 0.8f, 1.0f));
+	TRAP::Graphics::Renderer2D::DrawQuad(TRAP::Math::Vec2(0.2f, 0.5f), TRAP::Math::Vec2(0.5f, 0.5f), TRAP::Math::Vec4(0.2f, 0.3f, 0.8f, 1.0f), TRAP::Graphics::TextureManager::Get2D("TRAP"));
+	TRAP::Graphics::Renderer2D::EndScene();
 	
 	//Update FPS & FrameTIme history
 	if (m_updateFPSTimer.Elapsed() >= 0.025f)
 	{
-		TP_PROFILE_SCOPE("Updateing FPS & FrameTime history");
-
+		m_updateFPSTimer.Reset();
+		static int frameTimeIndex = 0;
+		if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
 		{
-			m_updateFPSTimer.Reset();
-			static int frameTimeIndex = 0;
-			if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
-			{
-				m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
-				frameTimeIndex++;
-			}
-			else
-			{
-				std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
-				m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
-			}
+			m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
+			frameTimeIndex++;
+		}
+		else
+		{
+			std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
+			m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
 		}
 	}
 }

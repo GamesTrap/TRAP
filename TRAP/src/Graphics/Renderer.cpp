@@ -17,6 +17,8 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Renderer::s_uniformBu
 
 void TRAP::Graphics::Renderer::Init()
 {
+	TP_PROFILE_FUNCTION();
+
 	Renderer2D::Init();
 }
 
@@ -66,6 +68,8 @@ void TRAP::Graphics::Renderer::SetTickRate(const uint32_t tickRate)
 
 void TRAP::Graphics::Renderer::BeginScene(Camera& camera)
 {
+	TP_PROFILE_FUNCTION();
+
 	s_sceneData->m_projectionMatrix =camera.GetProjectionMatrix();
 	s_sceneData->m_viewMatrix = camera.GetViewMatrix();
 }
@@ -74,12 +78,15 @@ void TRAP::Graphics::Renderer::BeginScene(Camera& camera)
 
 void TRAP::Graphics::Renderer::EndScene()
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<VertexArray>& vertexArray, const Math::Mat4& transform, const RendererPrimitive primitive)
 {
+	TP_PROFILE_FUNCTION();
+
 	Application::AddSingleDrawCall();
 
 	s_sceneData->m_modelMatrix = transform;
@@ -106,6 +113,8 @@ void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<V
 
 void TRAP::Graphics::Renderer::Shutdown()
 {
+	TP_PROFILE_FUNCTION();
+
 	Renderer2D::Shutdown();
 	
 	if(s_uniformBuffer)

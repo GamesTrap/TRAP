@@ -17,6 +17,8 @@ static void* GetProc(const char* names);
 
 	static bool OpenGL()
 	{
+		TP_PROFILE_FUNCTION();
+		
 		libGL = LoadLibraryW(L"opengl32.dll");
 		if(libGL != nullptr)
 		{
@@ -32,6 +34,8 @@ static void* GetProc(const char* names);
 
 	static void CloseGL()
 	{
+		TP_PROFILE_FUNCTION();
+		
 		if(libGL != nullptr)
 		{
 			FreeLibrary(static_cast<HMODULE>(libGL));
@@ -50,6 +54,8 @@ static void* GetProc(const char* names);
 
 	static bool OpenGL()
 	{
+		TP_PROFILE_FUNCTION();
+		
 		static const std::array<std::string, 2> NAMES = { "libGL.so.1", "libGL.so" };
 
 		uint32_t index = 0;
@@ -71,6 +77,8 @@ static void* GetProc(const char* names);
 
 	static void CloseGL()
 	{
+		TP_PROFILE_FUNCTION();
+		
 		if(libGL != nullptr)
 		{
 			dlclose(libGL);
@@ -83,6 +91,8 @@ static void* GetProc(const char* names);
 
 static void* GetProc(const char* names)
 {
+	TP_PROFILE_FUNCTION();
+		
 	void* result = nullptr;
 	if (libGL == nullptr)
 		return nullptr;
@@ -107,6 +117,8 @@ static void* GetProc(const char* names)
 
 bool TRAPLoadOpenGL()
 {
+	TP_PROFILE_FUNCTION();
+		
 	bool status = false;
 	if(OpenGL())
 	{
@@ -131,6 +143,8 @@ static const char* Extensions = nullptr;
 
 static bool GetExtensions()
 {
+	TP_PROFILE_FUNCTION();
+	
 	if(MaxLoadedMajor < 3)
 		Extensions = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
 	else
@@ -152,6 +166,8 @@ static bool GetExtensions()
 
 static bool HasExtension(const std::string& extension)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if(MaxLoadedMajor < 3)
 	{
 		const char* localExtensions = Extensions;
@@ -905,6 +921,8 @@ PFNGLWAITSYNCPROC glWaitSync = nullptr;
 
 static void LoadOpenGLVersion1_0(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (!TRAP_OpenGL_VERSION_1_0)
 		return;
 
@@ -962,6 +980,8 @@ static void LoadOpenGLVersion1_0(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion1_1(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (!TRAP_OpenGL_VERSION_1_1)
 		return;
 
@@ -984,6 +1004,8 @@ static void LoadOpenGLVersion1_1(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion1_2(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (!TRAP_OpenGL_VERSION_1_2)
 		return;
 
@@ -997,6 +1019,8 @@ static void LoadOpenGLVersion1_2(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion1_3(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (!TRAP_OpenGL_VERSION_1_3)
 		return;
 
@@ -1015,6 +1039,8 @@ static void LoadOpenGLVersion1_3(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion1_4(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (!TRAP_OpenGL_VERSION_1_4)
 		return;
 
@@ -1033,6 +1059,8 @@ static void LoadOpenGLVersion1_4(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion1_5(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (!TRAP_OpenGL_VERSION_1_5)
 		return;
 
@@ -1061,6 +1089,8 @@ static void LoadOpenGLVersion1_5(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion2_0(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (!TRAP_OpenGL_VERSION_2_0)
 		return;
 
@@ -1163,6 +1193,8 @@ static void LoadOpenGLVersion2_0(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion2_1(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (!TRAP_OpenGL_VERSION_2_1)
 		return;
 
@@ -1178,6 +1210,8 @@ static void LoadOpenGLVersion2_1(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion3_0(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (!TRAP_OpenGL_VERSION_3_0)
 		return;
 
@@ -1271,6 +1305,8 @@ static void LoadOpenGLVersion3_0(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion3_1(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (!TRAP_OpenGL_VERSION_3_1)
 		return;
 
@@ -1295,6 +1331,8 @@ static void LoadOpenGLVersion3_1(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion3_2(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (!TRAP_OpenGL_VERSION_3_2)
 		return;
 
@@ -1323,6 +1361,8 @@ static void LoadOpenGLVersion3_2(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion3_3(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (!TRAP_OpenGL_VERSION_3_3)
 		return;
 
@@ -1390,6 +1430,8 @@ static void LoadOpenGLVersion3_3(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion4_0(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (!TRAP_OpenGL_VERSION_4_0)
 		return;
 
@@ -1445,6 +1487,8 @@ static void LoadOpenGLVersion4_0(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion4_1(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (!TRAP_OpenGL_VERSION_4_1)
 		return;
 
@@ -1543,6 +1587,8 @@ static void LoadOpenGLVersion4_1(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion4_2(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (!TRAP_OpenGL_VERSION_4_2)
 		return;
 
@@ -1564,6 +1610,8 @@ static void LoadOpenGLVersion4_2(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion4_3(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (!TRAP_OpenGL_VERSION_4_3)
 		return;
 
@@ -1617,6 +1665,8 @@ static void LoadOpenGLVersion4_3(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion4_4(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (!TRAP_OpenGL_VERSION_4_4)
 		return;
 
@@ -1635,6 +1685,8 @@ static void LoadOpenGLVersion4_4(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion4_5(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (!TRAP_OpenGL_VERSION_4_5)
 		return;
 
@@ -1766,6 +1818,8 @@ static void LoadOpenGLVersion4_5(const TRAPLoadProc load)
 
 static void LoadOpenGLVersion4_6(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (!TRAP_OpenGL_VERSION_4_6)
 		return;
 
@@ -1779,6 +1833,8 @@ static void LoadOpenGLVersion4_6(const TRAPLoadProc load)
 
 static bool FindExtensionsOpenGL()
 {
+	TP_PROFILE_FUNCTION();
+
 	if (!GetExtensions())
 		return false;
 	(void)&HasExtension;
@@ -1790,6 +1846,8 @@ static bool FindExtensionsOpenGL()
 
 static void FindCoreOpenGL()
 {
+	TP_PROFILE_FUNCTION();
+
 	const std::string version(reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 	if (version.empty())
 		return;
@@ -1841,6 +1899,8 @@ static void FindCoreOpenGL()
 
 bool TRAPLoadOpenGLLoader(const TRAPLoadProc load)
 {
+	TP_PROFILE_FUNCTION();
+
 	OpenGLVersion.Major = 0;
 	OpenGLVersion.Minor = 0;
 	glGetString = reinterpret_cast<PFNGLGETSTRINGPROC>(load("glGetString"));

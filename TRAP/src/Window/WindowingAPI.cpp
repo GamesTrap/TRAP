@@ -18,7 +18,7 @@ TRAP::INTERNAL::WindowingAPI::ErrorFunc TRAP::INTERNAL::WindowingAPI::s_ErrorCal
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::INTERNAL::WindowingAPI::Init()
-{	
+{
 	if (s_Data.Initialized)
 		return true;
 
@@ -48,7 +48,7 @@ bool TRAP::INTERNAL::WindowingAPI::Init()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::Shutdown()
-{
+{	
 	if (!s_Data.Initialized)
 		return;
 

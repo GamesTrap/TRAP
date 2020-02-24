@@ -922,4 +922,4 @@ SITREP 02/24/2020|20w09a1
     - TRAP::Application::Run is now only accessible by the engine ~<10 mins
     - Added JSON based Performance Profiler ~>30 mins
     - Added Profiling to SandboxLayer & Sandbox2D ~<20 mins
-    
+    - Added Profiling to whole engine ~>60 mins

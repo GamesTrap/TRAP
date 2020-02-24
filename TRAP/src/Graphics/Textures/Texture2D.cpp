@@ -15,6 +15,8 @@ uint32_t TRAP::Graphics::Texture2D::s_maxTextureSize = 0;
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string& name, const std::string& filepath, TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	if(name.empty())
 	{
 		TP_WARN("[Texture2D] Name is empty! Using Filename as Texture2D Name!");
@@ -43,6 +45,8 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string& filepath, TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	std::string name = VFS::GetFileName(VFS::MakeVirtualPathCompatible(filepath));
 	
 	switch (API::Context::GetRenderAPI())
@@ -69,6 +73,8 @@ std::unique_ptr<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFrom
                                                                                        const std::vector<uint8_t>&
                                                                                        pixelData, TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	switch (API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -93,6 +99,8 @@ std::unique_ptr<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFrom
                                                                                        const std::vector<uint16_t>&
                                                                                        pixelData, TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	switch (API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -117,6 +125,8 @@ std::unique_ptr<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFrom
                                                                                        const std::vector<float>&
                                                                                        pixelData, TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	switch (API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -139,6 +149,8 @@ std::unique_ptr<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFrom
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	switch (API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -161,6 +173,8 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ui
 
 TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::Create(TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	switch (API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS

@@ -38,75 +38,59 @@ public:
 	{
 		TP_PROFILE_FUNCTION();
 
-		{
-			TP_PROFILE_SCOPE("Changing settings of TRAP");
-			
-			TRAP::Application::SetHotShaderReloading(true);
-			TRAP::Application::SetHotTextureReloading(true);
-			TRAP::Application::GetWindow()->SetTitle("Sandbox");
-		}
+		TRAP::Application::SetHotShaderReloading(true);
+		TRAP::Application::SetHotTextureReloading(true);
+		TRAP::Application::GetWindow()->SetTitle("Sandbox");
 		
 		//Mount & Load Shaders
-		{
-			TP_PROFILE_SCOPE("Mounting & Loading Shaders");
-			
-			TRAP::VFS::MountShaders("Assets/Shaders");
-			TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
-			TRAP::Graphics::ShaderManager::Load("/Shaders/Texture.shader");
-			TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColor.shader");
-			TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColorSPIRV.spirv");
-		}
+		TRAP::VFS::MountShaders("Assets/Shaders");
+		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
+		TRAP::Graphics::ShaderManager::Load("/Shaders/Texture.shader");
+		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColor.shader");
+		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColorSPIRV.spirv");
 		
 		//Mount & Load Textures
-		{
-			TP_PROFILE_SCOPE("Mounting & Loading Textures");
-			
-			TRAP::VFS::MountTextures("Assets/Textures");
-			TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png");
-		}
+		TRAP::VFS::MountTextures("Assets/Textures");
+		TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png");
 
 		///////////////
 		//    Quad   //
 		///////////////
+		//XYZ RGBA
+		std::array<float, 9 * 4> vertices //Quad
 		{
-			TP_PROFILE_SCOPE("Setting up Quad");
-			
-			//XYZ RGBA
-			std::array<float, 9 * 4> vertices //Quad
-			{
-				-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 0.0f,
-				 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,    1.0f, 0.0f,
-				 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,    1.0f, 1.0f,
-				-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f,    0.0f, 1.0f
-			};
-			TRAP::Scope<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()));
-			const TRAP::Graphics::BufferLayout layout =
-			{
-				{TRAP::Graphics::ShaderDataType::Float3, "Position"},
-				{TRAP::Graphics::ShaderDataType::Float4, "Color"},
-				{TRAP::Graphics::ShaderDataType::Float2, "UV"}
-			};
-			vertexBuffer->SetLayout(layout);
-			m_vertexArray = TRAP::Graphics::VertexArray::Create();
-			m_vertexArray->AddVertexBuffer(vertexBuffer);
+			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,    1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,    1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f,    0.0f, 1.0f
+		};
+		TRAP::Scope<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()));
+		const TRAP::Graphics::BufferLayout layout =
+		{
+			{TRAP::Graphics::ShaderDataType::Float3, "Position"},
+			{TRAP::Graphics::ShaderDataType::Float4, "Color"},
+			{TRAP::Graphics::ShaderDataType::Float2, "UV"}
+		};
+		vertexBuffer->SetLayout(layout);
+		m_vertexArray = TRAP::Graphics::VertexArray::Create();
+		m_vertexArray->AddVertexBuffer(vertexBuffer);
 
-			std::array<uint32_t, 6> indices //Quad
-			{
-				0, 1, 2, 2, 3, 0
-			};
-			TRAP::Scope<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size()));
-			m_vertexArray->SetIndexBuffer(indexBuffer);
+		std::array<uint32_t, 6> indices //Quad
+		{
+			0, 1, 2, 2, 3, 0
+		};
+		TRAP::Scope<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size()));
+		m_vertexArray->SetIndexBuffer(indexBuffer);
 
-			TRAP::Graphics::RenderCommand::SetClearColor();
-			TRAP::Graphics::RenderCommand::SetCull(false);
-			TRAP::Graphics::RenderCommand::SetBlend(true);
-			TRAP::Graphics::RenderCommand::SetBlendFunction(TRAP::Graphics::RendererBlendFunction::Source_Alpha, TRAP::Graphics::RendererBlendFunction::One_Minus_Source_Alpha);
+		TRAP::Graphics::RenderCommand::SetClearColor();
+		TRAP::Graphics::RenderCommand::SetCull(false);
+		TRAP::Graphics::RenderCommand::SetBlend(true);
+		TRAP::Graphics::RenderCommand::SetBlendFunction(TRAP::Graphics::RendererBlendFunction::Source_Alpha, TRAP::Graphics::RendererBlendFunction::One_Minus_Source_Alpha);
 
-			UniformData data{ TRAP::Application::GetTime() };
-			m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("ColorBuffer", &data, sizeof(UniformData), TRAP::Graphics::BufferUsage::Dynamic);
+		UniformData data{ TRAP::Application::GetTime() };
+		m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("ColorBuffer", &data, sizeof(UniformData), TRAP::Graphics::BufferUsage::Dynamic);
 
-			m_uniformBuffer->Bind(1);
-		}
+		m_uniformBuffer->Bind(1);
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------//
@@ -129,65 +113,47 @@ public:
 		TP_PROFILE_FUNCTION();
 
 		//Update
-		{
-			TP_PROFILE_SCOPE("CameraController::OnUpdate");
-			m_cameraController.OnUpdate(deltaTime);
-		}
+		m_cameraController.OnUpdate(deltaTime);
 
 		//Render
-		{
-			TP_PROFILE_SCOPE("Renderer Prep");
-			TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);			
-		}
+		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);			
 		
+		TRAP::Graphics::Renderer::BeginScene(m_cameraController.GetCamera());
 		{
-			TP_PROFILE_SCOPE("Renderer Draw");
-			
-			TRAP::Graphics::Renderer::BeginScene(m_cameraController.GetCamera());
+			if (m_usePassthrough)
+				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Fallback"), m_vertexArray);
+			else
 			{
-				if (m_usePassthrough)
-					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Fallback"), m_vertexArray);
-				else
-				{
-					TRAP::Graphics::TextureManager::Get2D("TRAP")->Bind(0);
-					float time = TRAP::Application::GetTime();
-					m_uniformBuffer->UpdateData(&time);
-					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColor"), m_vertexArray);
-				}
+				TRAP::Graphics::TextureManager::Get2D("TRAP")->Bind(0);
+				float time = TRAP::Application::GetTime();
+				m_uniformBuffer->UpdateData(&time);
+				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColor"), m_vertexArray);
 			}
-			TRAP::Graphics::Renderer::EndScene();
 		}
+		TRAP::Graphics::Renderer::EndScene();
 
 		//Update FPS & FrameTIme history
 		if (m_titleTimer.Elapsed() >= 0.025f)
 		{
-			TP_PROFILE_SCOPE("Updateing FPS & FrameTime history");
-
+			m_titleTimer.Reset();
+			static int frameTimeIndex = 0;
+			if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
 			{
-				m_titleTimer.Reset();
-				static int frameTimeIndex = 0;
-				if (frameTimeIndex < static_cast<int>(m_frameTimeHistory.size() - 1))
-				{
-					m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
-					frameTimeIndex++;
-				}
-				else
-				{
-					std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
-					m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
-				}
+				m_frameTimeHistory[frameTimeIndex] = TRAP::Graphics::Renderer::GetFrameTime();
+				frameTimeIndex++;
+			}
+			else
+			{
+				std::move(m_frameTimeHistory.begin() + 1, m_frameTimeHistory.end(), m_frameTimeHistory.begin());
+				m_frameTimeHistory[m_frameTimeHistory.size() - 1] = TRAP::Graphics::Renderer::GetFrameTime();
 			}
 		}
 		if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 		{
-			{
-				TP_PROFILE_SCOPE("Print current FPS & FrameTime");
-
-				TP_INFO("[Sandbox] DrawCall(s): ", TRAP::Graphics::Renderer::GetDrawCalls());
-				TP_INFO("[Sandbox] FPS: ", TRAP::Graphics::Renderer::GetFPS());
-				TP_INFO("[Sandbox] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
-				m_fpsTimer.Reset();
-			}
+			TP_INFO("[Sandbox] DrawCall(s): ", TRAP::Graphics::Renderer::GetDrawCalls());
+			TP_INFO("[Sandbox] FPS: ", TRAP::Graphics::Renderer::GetFPS());
+			TP_INFO("[Sandbox] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
+			m_fpsTimer.Reset();
 		}
 	}
 

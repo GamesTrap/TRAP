@@ -15,6 +15,8 @@ static void ImGuiOpenGL4ShutdownPlatformInterface();
 //Functions
 bool ImGuiOpenGL4Init()
 {
+	TP_PROFILE_FUNCTION();
+
 	//Setup back-end capabilities flags
 	ImGuiIO& io = ImGui::GetIO();
 	io.BackendRendererName = "TRAP_OpenGL4";
@@ -37,6 +39,8 @@ bool ImGuiOpenGL4Init()
 
 void ImGuiOpenGL4Shutdown()
 {
+	TP_PROFILE_FUNCTION();
+
 	ImGuiOpenGL4ShutdownPlatformInterface();
 	ImGuiOpenGL4DestroyDeviceObjects();
 }
@@ -45,6 +49,8 @@ void ImGuiOpenGL4Shutdown()
 
 void ImGuiOpenGL4NewFrame()
 {
+	TP_PROFILE_FUNCTION();
+
 	if (!g_ShaderHandle)
 		ImGuiOpenGL4CreateDeviceObjects();
 }
@@ -53,6 +59,8 @@ void ImGuiOpenGL4NewFrame()
 
 static void ImGuiOpenGL4SetupRenderState(ImDrawData* drawData, const int32_t fbWidth, const int32_t fbHeight, GLuint vertexArrayObject)
 {
+	TP_PROFILE_FUNCTION();
+
 	//Setup render state: alpha-blending enabled, no face culling, no depth testing, scissor enabled, polygon fill
 	glEnable(GL_BLEND);
 	glBlendEquation(GL_FUNC_ADD);
@@ -104,6 +112,8 @@ static void ImGuiOpenGL4SetupRenderState(ImDrawData* drawData, const int32_t fbW
 //Note that this implementation is little overcomplicated because we are saving/setting up/restoring every OpenGL state explicitly, in order to be able to run within any OpnGL engine that doesn't do so.
 void ImGuiOpenGL4RenderDrawData(ImDrawData* drawData)
 {
+	TP_PROFILE_FUNCTION();
+
 	//Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
 	const int32_t fbWidth = static_cast<int32_t>(drawData->DisplaySize.x * drawData->FramebufferScale.x);
 	const int32_t fbHeight = static_cast<int32_t>(drawData->DisplaySize.y * drawData->FramebufferScale.y);
@@ -235,6 +245,8 @@ void ImGuiOpenGL4RenderDrawData(ImDrawData* drawData)
 
 bool ImGuiOpenGL4CreateFontsTexture()
 {
+	TP_PROFILE_FUNCTION();
+
 	//Build texture atlas
 	ImGuiIO& io = ImGui::GetIO();
 	uint8_t* pixels;
@@ -266,6 +278,8 @@ bool ImGuiOpenGL4CreateFontsTexture()
 
 void ImGuiOpenGL4DestroyFontsTexture()
 {
+	TP_PROFILE_FUNCTION();
+
 	if(g_FontTexture)
 	{
 		ImGuiIO& io = ImGui::GetIO();
@@ -279,6 +293,8 @@ void ImGuiOpenGL4DestroyFontsTexture()
 
 static bool CheckShader(const GLuint handle, const char* desc)
 {
+	TP_PROFILE_FUNCTION();
+
 	GLint status = 0, logLength = 0;
 	glGetShaderiv(handle, GL_COMPILE_STATUS, &status);
 	glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &logLength);
@@ -299,6 +315,8 @@ static bool CheckShader(const GLuint handle, const char* desc)
 
 static bool CheckProgram(const GLuint handle, const char* desc)
 {
+	TP_PROFILE_FUNCTION();
+
 	GLint status = 0, logLength = 0;
 	glGetProgramiv(handle, GL_LINK_STATUS, &status);
 	glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &logLength);
@@ -319,6 +337,8 @@ static bool CheckProgram(const GLuint handle, const char* desc)
 
 bool ImGuiOpenGL4CreateDeviceObjects()
 {
+	TP_PROFILE_FUNCTION();
+
 	//Backup OpenGL state
 	GLint lastTexture, lastArrayBuffer;
 	glGetIntegerv(GL_TEXTURE_BINDING_2D, &lastTexture);
@@ -390,6 +410,8 @@ bool ImGuiOpenGL4CreateDeviceObjects()
 
 void ImGuiOpenGL4DestroyDeviceObjects()
 {
+	TP_PROFILE_FUNCTION();
+
 	if(g_VboHandle)
 	{
 		glDeleteBuffers(1, &g_VboHandle);
@@ -431,6 +453,8 @@ void ImGuiOpenGL4DestroyDeviceObjects()
 
 static void ImGuiOpenGL4RenderWindow(ImGuiViewport* viewport, void*)
 {
+	TP_PROFILE_FUNCTION();
+
 	if(!(viewport->Flags & ImGuiViewportFlags_NoRendererClear))
 	{
 		const ImVec4 clearColor = ImVec4{ 0.0f, 0.0f, 0.0f, 1.0f };
@@ -445,6 +469,8 @@ static void ImGuiOpenGL4RenderWindow(ImGuiViewport* viewport, void*)
 
 static void ImGuiOpenGL4InitPlatformInterface()
 {
+	TP_PROFILE_FUNCTION();
+
 	ImGuiPlatformIO& platformIO = ImGui::GetPlatformIO();
 	platformIO.Renderer_RenderWindow = ImGuiOpenGL4RenderWindow;
 }
@@ -453,5 +479,7 @@ static void ImGuiOpenGL4InitPlatformInterface()
 
 static void ImGuiOpenGL4ShutdownPlatformInterface()
 {
+	TP_PROFILE_FUNCTION();
+
 	ImGui::DestroyPlatformWindows();
 }

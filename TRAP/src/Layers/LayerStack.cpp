@@ -5,6 +5,8 @@
 
 TRAP::LayerStack::~LayerStack()
 {
+	TP_PROFILE_FUNCTION();
+
 	for(auto& layer : m_layers)
 	{
 		TP_DEBUG("[LayerStack] Destroying Layer: ", layer->GetName());
@@ -17,6 +19,8 @@ TRAP::LayerStack::~LayerStack()
 
 void TRAP::LayerStack::PushLayer(std::unique_ptr<Layer> layer)
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[LayerStack] Pushing Layer: ", layer->GetName());
 	layer->OnAttach();
 	m_layers.insert(m_layers.begin() + m_layerInsertIndex, std::move(layer));
@@ -27,6 +31,8 @@ void TRAP::LayerStack::PushLayer(std::unique_ptr<Layer> layer)
 
 void TRAP::LayerStack::PushOverlay(std::unique_ptr<Layer> overlay)
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[LayerStack] Pushing Overlay: ", overlay->GetName());
 	overlay->OnAttach();
 	m_layers.push_back(std::move(overlay));
@@ -36,6 +42,8 @@ void TRAP::LayerStack::PushOverlay(std::unique_ptr<Layer> overlay)
 
 void TRAP::LayerStack::PopLayer(const std::unique_ptr<Layer>& layer)
 {
+	TP_PROFILE_FUNCTION();
+
 	const auto it = std::find(m_layers.begin(), m_layers.begin() + m_layerInsertIndex, layer);
 	if (it != m_layers.end())
 	{
@@ -50,6 +58,8 @@ void TRAP::LayerStack::PopLayer(const std::unique_ptr<Layer>& layer)
 
 void TRAP::LayerStack::PopOverlay(const std::unique_ptr<Layer>& overlay)
 {
+	TP_PROFILE_FUNCTION();
+
 	const auto it = std::find(m_layers.begin() + m_layerInsertIndex, m_layers.end(), overlay);
 	if (it != m_layers.end())
 	{
@@ -105,6 +115,7 @@ std::vector<std::unique_ptr<TRAP::Layer>>::const_iterator TRAP::LayerStack::end(
 
 std::vector<std::unique_ptr<TRAP::Layer>>::const_reverse_iterator TRAP::LayerStack::rbegin() const
 {
+
 	return m_layers.rbegin();
 }
 

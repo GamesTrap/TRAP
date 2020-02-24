@@ -22,6 +22,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::str
 	m_CShaderModule(nullptr),
 	m_computeShaderStage()
 {
+	TP_PROFILE_FUNCTION();
+	
 	InitGLSL(source);
 }
 
@@ -37,6 +39,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::vector<ui
 	  m_CShaderModule(nullptr),
 	  m_computeShaderStage()
 {
+	TP_PROFILE_FUNCTION();
+	
 	InitSPIRV(source);
 }
 
@@ -52,6 +56,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::string VS
 	  m_CShaderModule(nullptr),
 	  m_computeShaderStage()
 {
+	TP_PROFILE_FUNCTION();
+	
 	InitGLSL(std::move(VSSource), std::move(FSSource), std::move(GSSource), std::move(TCSSource), std::move(TESSource), std::move(CSSource));
 }
 
@@ -59,6 +65,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::string VS
 
 TRAP::Graphics::API::VulkanShader::~VulkanShader()
 {
+	TP_PROFILE_FUNCTION();
+	
 	TP_DEBUG("[Shader][Vulkan] Destroying Shader: \"", m_name, "\"");
 	Shutdown();
 }
@@ -67,6 +75,8 @@ TRAP::Graphics::API::VulkanShader::~VulkanShader()
 
 void TRAP::Graphics::API::VulkanShader::Shutdown() const
 {
+	TP_PROFILE_FUNCTION();
+
 	if (m_VShaderModule)
 		vkDestroyShaderModule(VulkanRenderer::Get()->GetDevice(), m_VShaderModule, nullptr);
 	if (m_FShaderModule)
@@ -85,6 +95,8 @@ void TRAP::Graphics::API::VulkanShader::Shutdown() const
 
 void TRAP::Graphics::API::VulkanShader::Bind() const
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (s_CurrentlyBound != this)
 	{
 		if (!m_graphicsShaderStages.empty())
@@ -101,6 +113,8 @@ void TRAP::Graphics::API::VulkanShader::Bind() const
 
 void TRAP::Graphics::API::VulkanShader::Unbind() const
 {
+	TP_PROFILE_FUNCTION();
+	
 	s_CurrentlyBound = nullptr;
 }
 
@@ -108,6 +122,8 @@ void TRAP::Graphics::API::VulkanShader::Unbind() const
 
 std::string_view TRAP::Graphics::API::VulkanShader::GetName() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_name;
 }
 
@@ -115,6 +131,8 @@ std::string_view TRAP::Graphics::API::VulkanShader::GetName() const
 
 std::string_view TRAP::Graphics::API::VulkanShader::GetFilePath() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_filepath;
 }
 

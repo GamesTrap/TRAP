@@ -5,17 +5,24 @@
 
 TRAP::Graphics::API::D3D12VertexBuffer::D3D12VertexBuffer(float* vertices, uint32_t size)
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_WARN("[VertexBuffer][D3D12] WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::D3D12VertexBuffer::~D3D12VertexBuffer() = default;
+TRAP::Graphics::API::D3D12VertexBuffer::~D3D12VertexBuffer()
+{
+	TP_PROFILE_FUNCTION();
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 const TRAP::Graphics::BufferLayout& TRAP::Graphics::API::D3D12VertexBuffer::GetLayout() const
 {
+	TP_PROFILE_FUNCTION();
+	
 	return m_layout;
 }
 
@@ -23,6 +30,8 @@ const TRAP::Graphics::BufferLayout& TRAP::Graphics::API::D3D12VertexBuffer::GetL
 
 void TRAP::Graphics::API::D3D12VertexBuffer::SetLayout(const BufferLayout& layout)
 {
+	TP_PROFILE_FUNCTION();
+	
 	m_layout = layout;
 }
 
@@ -30,6 +39,8 @@ void TRAP::Graphics::API::D3D12VertexBuffer::SetLayout(const BufferLayout& layou
 
 uint32_t TRAP::Graphics::API::D3D12VertexBuffer::GetVertexCount() const
 {
+	TP_PROFILE_FUNCTION();
+	
 	return 0;
 }
 

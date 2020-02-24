@@ -17,6 +17,8 @@
 
 std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
+	TP_PROFILE_FUNCTION();
+
 	std::vector<uint8_t> data{};
 	data.resize(width * height * 3);
 
@@ -35,6 +37,8 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR16ToRGB24(std::vector<uint8_t>& s
 
 std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR24ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
+	TP_PROFILE_FUNCTION();
+
 	for (uint32_t i = 0; i < width * height * 3; i += 3)
 		source[i] ^= source[i + 2] ^= source[i] ^= source[i + 2];
 
@@ -44,7 +48,9 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR24ToRGB24(std::vector<uint8_t>& s
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::vector<uint8_t> TRAP::INTERNAL::ConvertBGRA32ToRGBA32(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
-{	
+{
+	TP_PROFILE_FUNCTION();
+
 	for (uint32_t i = 0; i < width * height * 4; i += 4)
 		source[i] ^= source[i + 2] ^= source[i] ^= source[i + 2];
 
@@ -55,6 +61,8 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertBGRA32ToRGBA32(std::vector<uint8_t>&
 
 std::vector<uint8_t> TRAP::INTERNAL::DecodeBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
 {
+	TP_PROFILE_FUNCTION();
+
 	std::vector<uint8_t> data{};
 	data.resize(width * height * channels);
 
@@ -91,6 +99,8 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeBGRAMap(std::vector<uint8_t>& source,
 
 std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
 {
+	TP_PROFILE_FUNCTION();
+
 	std::vector<uint8_t> data{};
 	data.resize(width * height * channels);
 
@@ -154,6 +164,8 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEBGRAMap(std::vector<uint8_t>& sour
 
 std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEGrayScale(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
+	TP_PROFILE_FUNCTION();
+
 	std::vector<uint8_t> data{};
 	data.resize(width * height);
 
@@ -193,6 +205,8 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEGrayScale(std::vector<uint8_t>& so
 
 std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
+	TP_PROFILE_FUNCTION();
+
 	std::vector<uint8_t> data{};
 	data.resize(width * height * 3);
 
@@ -233,6 +247,8 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>
 
 std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
+	TP_PROFILE_FUNCTION();
+
 	std::vector<uint8_t> data{};
 	data.resize(width * height * 3);
 
@@ -273,6 +289,8 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>
 
 std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
+	TP_PROFILE_FUNCTION();
+
 	std::vector<uint8_t> data{};
 	data.resize(width * height * 4);
 
@@ -316,6 +334,8 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>
 
 TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
 {
+	TP_PROFILE_FUNCTION();
+
 	std::string virtualFilePath = VFS::MakeVirtualPathCompatible(filepath);
 	const std::string fileFormat = Utils::String::GetSuffix(Utils::String::ToLower(virtualFilePath));
 
@@ -355,6 +375,8 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
 
 std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, std::vector<uint8_t> pixelData)
 {
+	TP_PROFILE_FUNCTION();
+
 	return MakeScope<INTERNAL::CustomImage>("", width, height, bitsPerPixel, format, pixelData);
 }
 
@@ -362,6 +384,8 @@ std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_
 
 std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, std::vector<uint16_t> pixelData)
 {
+	TP_PROFILE_FUNCTION();
+
 	return MakeScope<INTERNAL::CustomImage>("", width, height, bitsPerPixel, format, pixelData);
 }
 
@@ -369,6 +393,8 @@ std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_
 
 std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, std::vector<float> pixelData)
 {
+	TP_PROFILE_FUNCTION();
+
 	return MakeScope<INTERNAL::CustomImage>("", width, height, bitsPerPixel, format, pixelData);
 }
 
@@ -376,6 +402,8 @@ std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_
 
 TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
 {
+	TP_PROFILE_FUNCTION();
+
 	return MakeScope<INTERNAL::CustomImage>("", 32, 32, 32, ImageFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 }
 

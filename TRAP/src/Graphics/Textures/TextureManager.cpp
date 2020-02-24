@@ -9,6 +9,8 @@ std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Texture>> TRAP::Grap
 
 const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load(const std::string& filepath, const TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	Scope<Texture> texture = Texture2D::CreateFromFile(filepath, parameters);
 	if(texture)
 	{
@@ -26,6 +28,8 @@ const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load
 
 const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load(const std::string& name, const std::string& filepath, const TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	Scope<Texture> texture = Texture2D::CreateFromFile(name, filepath, parameters);
 
 	if(texture)
@@ -49,6 +53,8 @@ const std::unique_ptr<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager
 	const std::vector<uint8_t>& pixelData,
 	const TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	Scope<Texture> texture = Texture2D::CreateFromMemory(name, width, height, bitsPerPixel, format, pixelData, parameters);
 
 	if (texture)
@@ -72,6 +78,8 @@ const std::unique_ptr<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager
 	const std::vector<uint16_t>& pixelData,
 	const TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	Scope<Texture> texture = Texture2D::CreateFromMemory(name, width, height, bitsPerPixel, format, pixelData, parameters);
 
 	if (texture)
@@ -95,6 +103,8 @@ const std::unique_ptr<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager
 	const std::vector<float>& pixelData,
 	const TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	Scope<Texture> texture = Texture2D::CreateFromMemory(name, width, height, bitsPerPixel, format, pixelData, parameters);
 
 	if (texture)
@@ -111,6 +121,8 @@ const std::unique_ptr<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager
 
 const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load(const std::string& name, const std::string& filepath, const InputFormat format, const TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	Scope<Texture> texture = TextureCube::CreateFromCross(name, filepath, format, parameters);
 
 	if(texture)
@@ -127,6 +139,8 @@ const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load
 
 const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load(const std::string& filepath, const InputFormat format, const TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	Scope<Texture> texture = TextureCube::CreateFromCross(filepath, format, parameters);
 
 	if(texture)
@@ -145,6 +159,8 @@ const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load
 
 const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load(const std::string& name, const std::array<std::string, 6> & filepaths, const TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	Scope<Texture> texture = TextureCube::CreateFromFiles(name, filepaths, parameters);
 
 	if(texture)
@@ -161,6 +177,8 @@ const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Load
 
 void TRAP::Graphics::TextureManager::Add(Scope<Texture> texture)
 {
+	TP_PROFILE_FUNCTION();
+
 	if(texture)
 	{
 		if (!Exists(std::string(texture->GetName())))
@@ -174,6 +192,8 @@ void TRAP::Graphics::TextureManager::Add(Scope<Texture> texture)
 
 void TRAP::Graphics::TextureManager::Remove(const Scope<Texture>& texture)
 {
+	TP_PROFILE_FUNCTION();
+
 	if(texture)
 	{
 		if (Exists(std::string(texture->GetName())))
@@ -187,6 +207,8 @@ void TRAP::Graphics::TextureManager::Remove(const Scope<Texture>& texture)
 
 void TRAP::Graphics::TextureManager::Remove(const std::string_view name)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (Exists(std::string(name)))
 		s_Textures.erase(std::string(name));
 	else
@@ -197,6 +219,8 @@ void TRAP::Graphics::TextureManager::Remove(const std::string_view name)
 
 const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Get(const std::string& name, const TextureType textureType)
 {
+	TP_PROFILE_FUNCTION();
+
 	if(Exists(name))
 		if (s_Textures[name]->GetType() == textureType)
 				return s_Textures[name];
@@ -211,6 +235,8 @@ const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Get(
 
 const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Get2D(const std::string& name)
 {
+	TP_PROFILE_FUNCTION();
+
 	return reinterpret_cast<const Scope<Texture2D>&>(Get(name, TextureType::Texture2D));
 }
 
@@ -218,6 +244,8 @@ const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Ge
 
 const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::GetCube(const std::string& name)
 {
+	TP_PROFILE_FUNCTION();
+
 	return reinterpret_cast<const Scope<TextureCube>&>(Get(name, TextureType::TextureCube));
 }
 
@@ -232,6 +260,8 @@ void TRAP::Graphics::TextureManager::Clean()
 
 void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath)
 {
+	TP_PROFILE_FUNCTION();
+
 	//Name
 	if (nameOrVirtualPath[0] != '/')
 	{
@@ -308,6 +338,8 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 
 void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 {
+	TP_PROFILE_FUNCTION();
+
 	if(Exists(std::string(texture->GetName())))
 	{
 		const std::string name = std::string(texture->GetName());
@@ -357,6 +389,8 @@ void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 
 void TRAP::Graphics::TextureManager::ReloadAll()
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_INFO("[TextureManager] Reloading all may take a while...");
 	for (auto& [name, texture] : s_Textures)
 		Reload(texture);
@@ -366,6 +400,8 @@ void TRAP::Graphics::TextureManager::ReloadAll()
 
 void TRAP::Graphics::TextureManager::Shutdown()
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[TextureManager] Destroying Textures");
 	Clean();
 }

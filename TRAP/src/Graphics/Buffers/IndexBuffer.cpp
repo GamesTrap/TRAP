@@ -8,6 +8,8 @@
 
 TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uint32_t* indices, uint32_t size)
 {
+	TP_PROFILE_FUNCTION();
+
 	switch(API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS

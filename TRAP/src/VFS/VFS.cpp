@@ -10,6 +10,8 @@ TRAP::Scope<TRAP::VFS> TRAP::VFS::s_Instance = nullptr;
 
 void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physicalPath)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (virtualPath.empty() || physicalPath.empty())
 	{
 		TP_ERROR("[VFS] Virtual or Physical path is empty!");
@@ -63,6 +65,8 @@ void TRAP::VFS::MountTextures(const std::string& physicalPath)
 
 void TRAP::VFS::Unmount(const std::string& path)
 {
+	TP_PROFILE_FUNCTION();
+
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	TP_INFO("[VFS] Unmounting VirtualPath: \"", path, "\"");
 	const std::string pathLower = Utils::String::ToLower(path);
@@ -193,6 +197,8 @@ std::vector<std::filesystem::path> TRAP::VFS::ResolveToPhysicalPaths(const std::
 
 std::vector<std::byte> TRAP::VFS::ReadFile(const std::string& path)
 {
+	TP_PROFILE_FUNCTION();
+
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
@@ -203,6 +209,8 @@ std::vector<std::byte> TRAP::VFS::ReadFile(const std::string& path)
 
 std::vector<std::byte> TRAP::VFS::SilentReadFile(const std::string& path)
 {
+	TP_PROFILE_FUNCTION();
+
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
@@ -213,6 +221,8 @@ std::vector<std::byte> TRAP::VFS::SilentReadFile(const std::string& path)
 
 std::string TRAP::VFS::ReadTextFile(const std::string& path)
 {
+	TP_PROFILE_FUNCTION();
+
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
@@ -223,6 +233,8 @@ std::string TRAP::VFS::ReadTextFile(const std::string& path)
 
 std::string TRAP::VFS::SilentReadTextFile(const std::string& path)
 {
+	TP_PROFILE_FUNCTION();
+
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
@@ -233,6 +245,8 @@ std::string TRAP::VFS::SilentReadTextFile(const std::string& path)
 
 bool TRAP::VFS::WriteFile(const std::string& path, std::vector<std::byte>& buffer)
 {
+	TP_PROFILE_FUNCTION();
+
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
@@ -243,6 +257,8 @@ bool TRAP::VFS::WriteFile(const std::string& path, std::vector<std::byte>& buffe
 
 bool TRAP::VFS::WriteTextFile(const std::string& path, const std::string& text)
 {
+	TP_PROFILE_FUNCTION();
+
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
@@ -253,6 +269,8 @@ bool TRAP::VFS::WriteTextFile(const std::string& path, const std::string& text)
 
 void TRAP::VFS::Init()
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[VFS] Initializing Virtual File System");
 	s_Instance = MakeScope<VFS>();
 }
@@ -261,6 +279,8 @@ void TRAP::VFS::Init()
 
 void TRAP::VFS::Shutdown()
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[VFS] Shutting down Virtual File System");
 }
 

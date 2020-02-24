@@ -17,6 +17,8 @@ const TRAP::Graphics::Shader* TRAP::Graphics::Shader::s_CurrentlyBound = nullptr
 
 TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name, const std::string& filePath)
 {
+	TP_PROFILE_FUNCTION();
+
 	if(name.empty())
 	{
 		TP_WARN("[Shader] Name is empty! Using Filename as Shader Name!");
@@ -110,6 +112,8 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& filePath)
 {
+	TP_PROFILE_FUNCTION();
+
 	std::string source;
 	std::string VFSFilePath;
 	std::string name;
@@ -199,6 +203,8 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const std::string& name, const std::string& VSSource, const std::string& FSSource, const std::string& GSSource, const std::string& TCSSource, const std::string& TESSource, const std::string& CSSource)
 {
+	TP_PROFILE_FUNCTION();
+
 	switch (API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -249,7 +255,7 @@ std::string TRAP::Graphics::Shader::ShaderTypeToString(const ShaderType type)
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::string& filePath)
-{	
+{
 	//Check SPIRV Magic Number
 	std::filesystem::path physicalPath;
 	if (VFS::SilentResolveReadPhysicalPath(filePath, physicalPath))

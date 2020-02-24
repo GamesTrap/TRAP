@@ -17,6 +17,8 @@ std::unordered_map<uint32_t, const TRAP::Graphics::API::OpenGLTexture2D*> TRAP::
 TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const TextureParameters parameters)
 	: m_name("Fallback2D"), m_parameters(parameters), m_handle(0)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if(s_maxCombinedTextureUnits == 0)
 	{
 		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits)));
@@ -30,6 +32,8 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const TextureParameters pa
 TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const uint32_t width, const uint32_t height, const uint32_t bitsPerPixel, const ImageFormat format, const TextureParameters parameters)
 	: m_name("Empty"), m_parameters(parameters), m_handle(0)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (s_maxCombinedTextureUnits == 0)
 	{
 		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits)));
@@ -84,6 +88,8 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name,
                                                       const TextureParameters parameters)
 	: m_filePath(""), m_name(std::move(name)), m_parameters(parameters), m_handle(0)
 {
+	TP_PROFILE_FUNCTION();
+	
 	TP_DEBUG("[Texture2D][OpenGL] Loading Texture: \"", m_name, "\"");
 	Scope<Image> image = Image::LoadFromMemory(width, height, bitsPerPixel, format, pixelData);
 	
@@ -119,6 +125,8 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name,
                                                       const TextureParameters parameters)
 	: m_filePath(""), m_name(std::move(name)), m_parameters(parameters), m_handle(0)
 {
+	TP_PROFILE_FUNCTION();
+	
 	TP_DEBUG("[Texture2D][OpenGL] Loading Texture: \"", m_name, "\"");
 	Scope<Image> image = Image::LoadFromMemory(width, height, bitsPerPixel, format, pixelData);
 
@@ -154,6 +162,8 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name,
                                                       const TextureParameters parameters)
 	: m_filePath(""), m_name(std::move(name)), m_parameters(parameters), m_handle(0)
 {
+	TP_PROFILE_FUNCTION();
+	
 	TP_DEBUG("[Texture2D][OpenGL] Loading Texture: \"", m_name, "\"");
 	Scope<Image> image = Image::LoadFromMemory(width, height, bitsPerPixel, format, pixelData);
 
@@ -183,6 +193,8 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name,
 TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const std::string& filepath, const TextureParameters parameters)
 	: m_filePath(VFS::MakeVirtualPathCompatible(filepath)), m_name(std::move(name)), m_parameters(parameters), m_handle(0)
 {
+	TP_PROFILE_FUNCTION();
+	
 	Load();
 }
 
@@ -190,6 +202,8 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const st
 
 TRAP::Graphics::API::OpenGLTexture2D::~OpenGLTexture2D()
 {
+	TP_PROFILE_FUNCTION();
+	
 	TP_DEBUG("[Texture2D][OpenGL] Destroying Texture2D: \"", m_name, "\"");
 	
 	if(m_handle)
@@ -201,7 +215,9 @@ TRAP::Graphics::API::OpenGLTexture2D::~OpenGLTexture2D()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLTexture2D::Bind(const uint32_t slot) const
-{	
+{
+	TP_PROFILE_FUNCTION();
+	
 	if (s_bound2DTextures[slot] != this)
 	{
 		if (slot < s_maxCombinedTextureUnits)
@@ -224,6 +240,8 @@ void TRAP::Graphics::API::OpenGLTexture2D::Bind(const uint32_t slot) const
 
 void TRAP::Graphics::API::OpenGLTexture2D::Unbind(const uint32_t slot) const
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (slot < s_maxCombinedTextureUnits)
 	{
 		OpenGLCall(glBindTextureUnit(slot, 0));
@@ -237,6 +255,8 @@ void TRAP::Graphics::API::OpenGLTexture2D::Unbind(const uint32_t slot) const
 
 uint32_t TRAP::Graphics::API::OpenGLTexture2D::GetHandle() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_handle;
 }
 
@@ -244,6 +264,8 @@ uint32_t TRAP::Graphics::API::OpenGLTexture2D::GetHandle() const
 
 std::string_view TRAP::Graphics::API::OpenGLTexture2D::GetName() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_name;
 }
 
@@ -251,6 +273,8 @@ std::string_view TRAP::Graphics::API::OpenGLTexture2D::GetName() const
 
 std::string_view TRAP::Graphics::API::OpenGLTexture2D::GetFilePath() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_filePath;
 }
 
@@ -258,6 +282,8 @@ std::string_view TRAP::Graphics::API::OpenGLTexture2D::GetFilePath() const
 
 TRAP::Graphics::TextureParameters TRAP::Graphics::API::OpenGLTexture2D::GetParameters()
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_parameters;
 }
 
@@ -265,6 +291,8 @@ TRAP::Graphics::TextureParameters TRAP::Graphics::API::OpenGLTexture2D::GetParam
 
 void TRAP::Graphics::API::OpenGLTexture2D::SetWrap(const TextureWrap wrap)
 {
+	TP_PROFILE_FUNCTION();
+	
 	m_parameters.Wrap = wrap;
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(wrap)));
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_T, TRAPTextureWrapToOpenGL(wrap)));
@@ -275,6 +303,8 @@ void TRAP::Graphics::API::OpenGLTexture2D::SetWrap(const TextureWrap wrap)
 
 void TRAP::Graphics::API::OpenGLTexture2D::SetFilter(const TextureFilter filter)
 {
+	TP_PROFILE_FUNCTION();
+	
 	m_parameters.Filter = filter;
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));
 	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_parameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));

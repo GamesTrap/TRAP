@@ -20,6 +20,8 @@ bool TRAP::Graphics::API::Context::s_isOpenGLCapable = false;
 
 void TRAP::Graphics::API::Context::Create(Window* window)
 {
+	TP_PROFILE_FUNCTION();
+
 	switch (GetRenderAPI())
 	{
 	case RenderAPI::OpenGL:
@@ -51,6 +53,8 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 
 void TRAP::Graphics::API::Context::Shutdown()
 {
+	TP_PROFILE_FUNCTION();
+
 	s_Context.reset();
 	s_Context = nullptr;
 }
@@ -59,6 +63,8 @@ void TRAP::Graphics::API::Context::Shutdown()
 
 void TRAP::Graphics::API::Context::AutoSelectRenderAPI()
 {
+	TP_PROFILE_FUNCTION();
+	
 	TP_INFO("[Context] Auto selecting RenderAPI");
 #ifdef TRAP_PLATFORM_WINDOWS
 	if (s_isD3D12Capable)
@@ -93,6 +99,8 @@ void TRAP::Graphics::API::Context::AutoSelectRenderAPI()
 
 void TRAP::Graphics::API::Context::CheckAllRenderAPIs()
 {
+	TP_PROFILE_FUNCTION();
+	
 #ifdef TRAP_PLATFORM_WINDOWS
 	//Check if D3D12 capable
 	s_isD3D12Capable = D3D12Context::IsD3D12Capable();
@@ -111,6 +119,8 @@ void TRAP::Graphics::API::Context::CheckAllRenderAPIs()
 
 TRAP::Graphics::API::RenderAPI TRAP::Graphics::API::Context::GetRenderAPI()
 {
+	TP_PROFILE_FUNCTION();
+
 	return s_RenderAPI;
 }
 
@@ -118,6 +128,8 @@ TRAP::Graphics::API::RenderAPI TRAP::Graphics::API::Context::GetRenderAPI()
 
 void TRAP::Graphics::API::Context::SetRenderAPI(const RenderAPI api)
 {
+	TP_PROFILE_FUNCTION();
+
 	s_RenderAPI = api;
 }
 
@@ -125,6 +137,8 @@ void TRAP::Graphics::API::Context::SetRenderAPI(const RenderAPI api)
 
 void TRAP::Graphics::API::Context::SwitchRenderAPI(const RenderAPI api)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (api != s_RenderAPI)
 	{
 		if (api == RenderAPI::D3D12)
@@ -211,6 +225,8 @@ void TRAP::Graphics::API::Context::SwitchRenderAPI(const RenderAPI api)
 
 bool TRAP::Graphics::API::Context::IsSupported(const RenderAPI api)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (api == RenderAPI::D3D12)
 		if (s_isD3D12Capable)
 			return true;
@@ -230,6 +246,8 @@ bool TRAP::Graphics::API::Context::IsSupported(const RenderAPI api)
 
 bool TRAP::Graphics::API::Context::IsD3D12Capable()
 {
+	TP_PROFILE_FUNCTION();
+
 	return s_isD3D12Capable;
 }
 
@@ -237,6 +255,8 @@ bool TRAP::Graphics::API::Context::IsD3D12Capable()
 
 bool TRAP::Graphics::API::Context::IsVulkanCapable()
 {
+	TP_PROFILE_FUNCTION();
+
 	return s_isVulkanCapable;
 }
 
@@ -244,6 +264,8 @@ bool TRAP::Graphics::API::Context::IsVulkanCapable()
 
 bool TRAP::Graphics::API::Context::IsOpenGLCapable()
 {
+	TP_PROFILE_FUNCTION();
+
 	return s_isOpenGLCapable;
 }
 
@@ -251,6 +273,8 @@ bool TRAP::Graphics::API::Context::IsOpenGLCapable()
 
 void TRAP::Graphics::API::Context::SetVSyncInterval(const uint32_t interval)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (s_Context) 
 		s_Context->SetVSyncIntervalInternal(interval);
 }
@@ -259,6 +283,8 @@ void TRAP::Graphics::API::Context::SetVSyncInterval(const uint32_t interval)
 
 void TRAP::Graphics::API::Context::Use(const Window* window)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (s_Context)
 		if (window)
 			s_Context->UseInternal(window);

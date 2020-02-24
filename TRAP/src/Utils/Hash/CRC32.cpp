@@ -558,6 +558,8 @@ const std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
 
 uint32_t TRAP::Utils::Hash::CRC32(const void* data, std::size_t length, const uint32_t previousCRC32)
 {
+	TP_PROFILE_FUNCTION();
+
 	uint32_t crc = ~previousCRC32; //Same as previousCRC32 ^ 0xFFFFFFFF
 	const uint32_t* current = static_cast<const uint32_t*>(data);
 

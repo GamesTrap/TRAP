@@ -24,6 +24,8 @@ TRAP::Graphics::OrthographicCameraController::OrthographicCameraController(
 
 void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeStep& deltaTime)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (m_useController)
 	{
 		if (Input::IsControllerConnected(m_controller)) //Controller
@@ -101,6 +103,8 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 
 void TRAP::Graphics::OrthographicCameraController::OnEvent(Event& e)
 {
+	TP_PROFILE_FUNCTION();
+	
 	EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<MouseScrollEvent>([this](MouseScrollEvent& e) {return OnMouseScroll(e); });
 	dispatcher.Dispatch<FrameBufferResizeEvent>([this](FrameBufferResizeEvent& e) {return OnFrameBufferResize(e); });
@@ -159,6 +163,8 @@ float TRAP::Graphics::OrthographicCameraController::GetZoomLevel() const
 
 void TRAP::Graphics::OrthographicCameraController::SetZoomLevel(const float zoomLevel)
 {
+	TP_PROFILE_FUNCTION();
+
 	m_zoomLevel = zoomLevel;
 	m_zoomLevel = Math::Max(m_zoomLevel, 0.25f);
 	m_cameraTranslationSpeed = m_zoomLevel;
@@ -169,6 +175,8 @@ void TRAP::Graphics::OrthographicCameraController::SetZoomLevel(const float zoom
 
 bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(MouseScrollEvent& e)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (m_window && m_window->GetTitle() == e.GetTitle())
 	{
 		if (!Input::IsControllerConnected(Input::Controller::One))
@@ -187,6 +195,8 @@ bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(MouseScrollEven
 
 bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(FrameBufferResizeEvent& e)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (m_window && m_window->GetTitle() == e.GetTitle())
 	{
 		m_aspectRatio = static_cast<float>(e.GetWidth()) / static_cast<float>(e.GetHeight());

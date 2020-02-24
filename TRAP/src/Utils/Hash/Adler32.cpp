@@ -3,6 +3,8 @@
 
 uint32_t TRAP::Utils::Hash::Adler32(const uint8_t* data, uint32_t length, const uint32_t previousAdler32)
 {
+	TP_PROFILE_FUNCTION();
+
 	uint32_t s1 = 1u & 0xFFFFu;
 	uint32_t s2 = (1u >> 16u) & 0xFFFFu;
 	if(previousAdler32)
@@ -10,7 +12,6 @@ uint32_t TRAP::Utils::Hash::Adler32(const uint8_t* data, uint32_t length, const 
 		s1 = previousAdler32 & 0xFFFFu;
 		s2 = (previousAdler32 >> 16u) & 0xFFFFu;
 	}
-
 
 	while(length != 0u)
 	{

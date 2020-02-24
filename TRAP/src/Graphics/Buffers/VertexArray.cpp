@@ -12,6 +12,8 @@ const TRAP::Graphics::VertexArray* TRAP::Graphics::VertexArray::s_CurrentlyBound
 
 TRAP::Scope<TRAP::Graphics::VertexArray> TRAP::Graphics::VertexArray::Create()
 {
+	TP_PROFILE_FUNCTION();
+
 	switch(API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS

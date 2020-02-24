@@ -5,6 +5,8 @@
 TRAP::INTERNAL::CustomImage::CustomImage(std::string filepath, const uint32_t width, const uint32_t height, const uint32_t bitsPerPixel, const ImageFormat format, const std::vector<uint8_t> pixelData)
 	: m_data(pixelData), m_width(width), m_height(height), m_bitsPerPixel(bitsPerPixel), m_format(format), m_filepath(std::move(filepath))
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[Image][Custom] Loading a custom image");
 }
 
@@ -13,6 +15,8 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::string filepath, const uint32_t wi
 TRAP::INTERNAL::CustomImage::CustomImage(std::string filepath, const uint32_t width, const uint32_t height, const uint32_t bitsPerPixel, const ImageFormat format, const std::vector<uint16_t> pixelData)
 	: m_data2Byte(pixelData), m_width(width), m_height(height), m_bitsPerPixel(bitsPerPixel), m_format(format), m_filepath(std::move(filepath))
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[Image][Custom] Loading a custom image");
 }
 
@@ -21,6 +25,8 @@ TRAP::INTERNAL::CustomImage::CustomImage(std::string filepath, const uint32_t wi
 TRAP::INTERNAL::CustomImage::CustomImage(std::string filepath, const uint32_t width, const uint32_t height, const uint32_t bitsPerPixel, const ImageFormat format, const std::vector<float> pixelData)
 	: m_dataHDR(pixelData), m_width(width), m_height(height), m_bitsPerPixel(bitsPerPixel), m_format(format), m_filepath(std::move(filepath))
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[Image][Custom] Loading a custom image");
 }
 

@@ -16,6 +16,8 @@ std::unordered_map<uint32_t, const TRAP::Graphics::API::OpenGLUniformBuffer*> TR
 TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(std::string name, const void* data, const uint32_t size, const BufferUsage usage)
 	: m_handle(0), m_name(std::move(name)), m_size(size), m_usage(usage)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if(s_maxUniformBufferBindingPoints == 0)
 	{
 		OpenGLCall(glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int32_t*>(&s_maxUniformBufferBindingPoints)));
@@ -41,6 +43,8 @@ TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(std::string name, 
 TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(std::string name, const uint32_t size, const BufferUsage usage)
 	: m_handle(0), m_name(std::move(name)), m_size(size), m_usage(usage)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (s_maxUniformBufferBindingPoints == 0)
 	{
 		OpenGLCall(glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int32_t*>(&s_maxUniformBufferBindingPoints)));
@@ -65,6 +69,8 @@ TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(std::string name, 
 
 TRAP::Graphics::API::OpenGLUniformBuffer::~OpenGLUniformBuffer()
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (m_handle)
 	{
 		OpenGLCall(glDeleteBuffers(1, &m_handle));
@@ -75,6 +81,8 @@ TRAP::Graphics::API::OpenGLUniformBuffer::~OpenGLUniformBuffer()
 
 void TRAP::Graphics::API::OpenGLUniformBuffer::Bind(const uint32_t bindingPoint) const
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (bindingPoint < s_maxUniformBufferBindingPoints)
 	{
 		if (s_boundUniformBuffers[bindingPoint] != this)
@@ -105,6 +113,8 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::Bind(const uint32_t bindingPoint)
 
 void TRAP::Graphics::API::OpenGLUniformBuffer::Unbind(const uint32_t bindingPoint) const
 {
+	TP_PROFILE_FUNCTION();
+	
 	if(bindingPoint < s_maxUniformBufferBindingPoints)
 	{
 		OpenGLCall(glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, 0));
@@ -117,7 +127,9 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::Unbind(const uint32_t bindingPoin
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLUniformBuffer::UpdateData(const void* data)
-{	
+{
+	TP_PROFILE_FUNCTION();
+	
 	if (m_usage != BufferUsage::Static)
 	{
 		if (m_usage == BufferUsage::Dynamic)
@@ -137,6 +149,8 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::UpdateData(const void* data)
 
 void TRAP::Graphics::API::OpenGLUniformBuffer::UpdateSubData(const void* data, const uint32_t size, const uint32_t offset)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (m_usage == BufferUsage::Dynamic)
 	{
 		if (size == 0)
@@ -165,6 +179,8 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::UpdateSubData(const void* data, c
 
 std::string_view TRAP::Graphics::API::OpenGLUniformBuffer::GetName() const
 {
+	TP_PROFILE_FUNCTION();
+	
 	return m_name;
 }
 
@@ -172,6 +188,8 @@ std::string_view TRAP::Graphics::API::OpenGLUniformBuffer::GetName() const
 
 uint32_t TRAP::Graphics::API::OpenGLUniformBuffer::GetSize() const
 {
+	TP_PROFILE_FUNCTION();
+	
 	return m_size;
 }
 
@@ -179,5 +197,7 @@ uint32_t TRAP::Graphics::API::OpenGLUniformBuffer::GetSize() const
 
 TRAP::Graphics::BufferUsage TRAP::Graphics::API::OpenGLUniformBuffer::GetUsage() const
 {
+	TP_PROFILE_FUNCTION();
+	
 	return m_usage;
 }

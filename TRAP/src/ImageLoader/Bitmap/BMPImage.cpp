@@ -15,6 +15,8 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 	m_height(0),
 	m_format(ImageFormat::NONE)
 {
+	TP_PROFILE_FUNCTION();
+	
 	TP_DEBUG("[Image][BMP] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;

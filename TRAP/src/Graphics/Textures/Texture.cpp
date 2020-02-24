@@ -6,6 +6,8 @@
 TRAP::Graphics::TextureParameters::TextureParameters()
 	: Filter(TextureFilter::Nearest), Wrap(TextureWrap::Clamp_To_Edge)
 {
+	TP_PROFILE_FUNCTION();
+
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -13,6 +15,8 @@ TRAP::Graphics::TextureParameters::TextureParameters()
 TRAP::Graphics::TextureParameters::TextureParameters(const TextureFilter filter)
 	: Filter(filter), Wrap(TextureWrap::Clamp_To_Edge)
 {
+	TP_PROFILE_FUNCTION();
+
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -20,6 +24,8 @@ TRAP::Graphics::TextureParameters::TextureParameters(const TextureFilter filter)
 TRAP::Graphics::TextureParameters::TextureParameters(const TextureFilter filter, const TextureWrap wrap)
 	: Filter(filter), Wrap(wrap)
 {
+	TP_PROFILE_FUNCTION();
+
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -2,7 +2,6 @@
 #define _TRAP_CONFIG_H_
 
 #include "Window/Window.h"
-#include "Input/Input.h"
 
 namespace TRAP::Utils
 {
@@ -57,6 +56,8 @@ namespace TRAP::Utils
 template<typename T>
 void TRAP::Utils::Config::Get(const std::string& key, T& value) const
 {
+	TP_PROFILE_FUNCTION();
+	
 	const auto it = std::find_if(m_data.begin(), m_data.end(), [&key](const std::pair<std::string, std::string>& element) {return element.first == key; });
 	if (it != m_data.end())
 		value = ConvertToType<T>(it->second);
@@ -70,6 +71,8 @@ void TRAP::Utils::Config::Get(const std::string& key, T& value) const
 template<typename T>
 void TRAP::Utils::Config::Get(const std::string& key, std::vector<T>& value) const
 {
+	TP_PROFILE_FUNCTION();
+	
 	constexpr auto it = std::find_if(m_data.begin(), m_data.end(), [&key](const std::pair<std::string, std::string>& element) {return element.first == key; });
 	if (it != m_data.end())
 	{
@@ -89,6 +92,8 @@ void TRAP::Utils::Config::Get(const std::string& key, std::vector<T>& value) con
 template<typename T>
 void TRAP::Utils::Config::Set(const std::string& key, const T value)
 {
+	TP_PROFILE_FUNCTION();
+	
 	//The [] operator replaces the value if the key is found
 	m_isChanged = true;
 	for (auto& [elementKey, elementValue] : m_data)
@@ -110,6 +115,8 @@ void TRAP::Utils::Config::Set(const std::string& key, const T value)
 template<typename T>
 void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& value)
 {
+	TP_PROFILE_FUNCTION();
+	
 	//Transform the vector into a string that separates the elements with a comma
 	const std::string valueAsString;
 	for (std::size_t i = 0; i < value.size() - 1; ++i)

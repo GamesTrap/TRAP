@@ -17,6 +17,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 	m_height(0),
 	m_format(ImageFormat::NONE)
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[Image][PNG] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
@@ -379,7 +381,6 @@ std::string_view TRAP::INTERNAL::PNGImage::GetFilePath() const
 TRAP::ImageFormat TRAP::INTERNAL::PNGImage::GetFormat() const
 {
 	return m_format;
-
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

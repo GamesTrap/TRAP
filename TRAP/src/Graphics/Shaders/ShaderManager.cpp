@@ -9,6 +9,8 @@ std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Shader>> TRAP::Graph
 
 const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(const std::string& filepath)
 {
+	TP_PROFILE_FUNCTION();
+
 	Scope<Shader> shader = Shader::CreateFromFile(filepath);
 	if(shader)
 	{
@@ -26,6 +28,8 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(c
 
 const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(const std::string& name, const std::string& filepath)
 {
+	TP_PROFILE_FUNCTION();
+
 	Scope<Shader> shader = Shader::CreateFromFile(name, filepath);
 
 	if(shader)
@@ -42,6 +46,8 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(c
 
 const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(const std::string& name, const std::string& VSSource, const std::string& FSSource, const std::string& GSSource, const std::string& TCSSource, const std::string& TESSource, const std::string& CSSSource)
 {
+	TP_PROFILE_FUNCTION();
+
 	Scope<Shader> shader = Shader::CreateFromSource(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSSource);
 
 	if(shader)
@@ -58,6 +64,8 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(c
 
 void TRAP::Graphics::ShaderManager::Add(Scope<Shader> shader)
 {
+	TP_PROFILE_FUNCTION();
+
 	if (shader)
 	{
 		if(!Exists(std::string(shader->GetName())))
@@ -71,6 +79,8 @@ void TRAP::Graphics::ShaderManager::Add(Scope<Shader> shader)
 
 void TRAP::Graphics::ShaderManager::Remove(const Scope<Shader>& shader)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if(shader)
 	{
 		if (Exists(std::string(shader->GetName())))
@@ -84,6 +94,8 @@ void TRAP::Graphics::ShaderManager::Remove(const Scope<Shader>& shader)
 
 void TRAP::Graphics::ShaderManager::Remove(const std::string_view name)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (Exists(std::string(name)))
 		s_Shaders.erase(std::string(name));
 	else
@@ -94,6 +106,8 @@ void TRAP::Graphics::ShaderManager::Remove(const std::string_view name)
 
 const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Get(const std::string& name)
 {
+	TP_PROFILE_FUNCTION();
+
 	if(Exists(name))
 			return s_Shaders[name];
 
@@ -114,7 +128,7 @@ const std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Shader>>& TRAP
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::ShaderManager::Clean()
-{
+{	
 	s_Shaders.clear();
 }
 
@@ -122,6 +136,8 @@ void TRAP::Graphics::ShaderManager::Clean()
 
 void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 {
+	TP_PROFILE_FUNCTION();
+	
 	//Name
 	if (nameOrVirtualPath[0] != '/')
 	{
@@ -157,6 +173,8 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 
 void TRAP::Graphics::ShaderManager::Reload(const Scope<Shader>& shader)
 {
+	TP_PROFILE_FUNCTION();
+	
 	if(Exists(std::string(shader->GetName())))
 	{
 		const std::string name = std::string(shader->GetName());
@@ -178,6 +196,8 @@ void TRAP::Graphics::ShaderManager::Reload(const Scope<Shader>& shader)
 
 void TRAP::Graphics::ShaderManager::ReloadAll()
 {
+	TP_PROFILE_FUNCTION();
+	
 	TP_INFO("[ShaderManager] Reloading all may take a while...");
 	for (auto& [name, shader] : s_Shaders)
 		Reload(shader);
@@ -187,6 +207,8 @@ void TRAP::Graphics::ShaderManager::ReloadAll()
 
 void TRAP::Graphics::ShaderManager::Shutdown()
 {
+	TP_PROFILE_FUNCTION();
+	
 	if (Shader::s_CurrentlyBound)
 		Shader::s_CurrentlyBound->Unbind();
 

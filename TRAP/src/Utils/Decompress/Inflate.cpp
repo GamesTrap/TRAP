@@ -176,7 +176,7 @@ bool TRAP::Utils::Decompress::INTERNAL::BitReader::AddOverflow(const std::size_t
 
 TRAP::Utils::Decompress::INTERNAL::HuffmanTree::HuffmanTree()
 	: MaxBitLength(0), NumCodes(0)
-{	
+{
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -617,6 +617,8 @@ uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::ReverseBits(const uint3
 
 bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(std::vector<uint8_t>& out, std::size_t& pos, BitReader& reader)
 {
+	TP_PROFILE_FUNCTION();
+
 	const std::size_t size = reader.Size;
 
 	//Go to first boundary of byte
@@ -653,6 +655,8 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(std::vector<uint8_t
 
 bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>& out, std::size_t& pos, BitReader& reader, const uint32_t btype)
 {
+	TP_PROFILE_FUNCTION();
+
 	HuffmanTree treeLL; //The Huffman tree for literal and length codes
 	HuffmanTree treeD; //The Huffman tree for distance codes
 
@@ -757,6 +761,8 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 
 bool TRAP::Utils::Decompress::Inflate(const uint8_t* source, const std::size_t sourceLength, uint8_t* destination, const std::size_t destinationLength)
 {
+	TP_PROFILE_FUNCTION();
+
 	std::vector<uint8_t> result(destinationLength, 0);
 
 	uint32_t BFINAL = 0;

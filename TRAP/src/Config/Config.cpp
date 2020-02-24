@@ -9,12 +9,15 @@
 TRAP::Utils::Config::Config()
 	: m_isChanged(false)
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Utils::Config::LoadFromFile(const std::string& filename)
 {
+	TP_PROFILE_FUNCTION();
+	
 	m_data.clear();
 	m_filename = filename;
 
@@ -25,6 +28,8 @@ bool TRAP::Utils::Config::LoadFromFile(const std::string& filename)
 
 bool TRAP::Utils::Config::SaveToFile(const std::string& filename)
 {
+	TP_PROFILE_FUNCTION();
+	
 	m_filename = filename;
 	
 	if (m_isChanged)
@@ -42,6 +47,8 @@ bool TRAP::Utils::Config::SaveToFile(const std::string& filename)
 
 bool TRAP::Utils::Config::IsChanged() const
 {
+	TP_PROFILE_FUNCTION();
+	
 	return m_isChanged;
 }
 
@@ -49,6 +56,8 @@ bool TRAP::Utils::Config::IsChanged() const
 
 void TRAP::Utils::Config::Print() const
 {
+	TP_PROFILE_FUNCTION();
+	
 	for (auto& [key, value] : m_data)
 		TP_TRACE("[Config] ", key, " = ", value);
 
@@ -88,7 +97,7 @@ bool TRAP::Utils::Config::Read()
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Utils::Config::Write() const
-{
+{	
 	std::vector<std::pair<std::string, std::string>> fileContents;
 
 	//Read the file into a vector and replace the values of the keys that match with our map
@@ -145,7 +154,7 @@ bool TRAP::Utils::Config::Write() const
 //This method parses a line from out format("key = value") into a std::pair<std::string, std::string> containing the key and the value.
 //If the line is empty or a comment(starts with a '#') an empty pair is returned.
 std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::string_view& line) const
-{
+{	
 	if (!line.empty() && line[0] != '#')
 	{
 		std::size_t index = 0;

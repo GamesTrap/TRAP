@@ -36,6 +36,8 @@ namespace TRAP::Graphics
 
 void TRAP::Graphics::Renderer2D::Init()
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[Renderer2D] Initializing");
 	
 	s_data = MakeScope<Renderer2DStorage>();
@@ -81,6 +83,8 @@ void TRAP::Graphics::Renderer2D::Init()
 
 void TRAP::Graphics::Renderer2D::Shutdown()
 {
+	TP_PROFILE_FUNCTION();
+
 	TP_DEBUG("[Renderer2D] Shutting down");
 	s_data.reset();
 }
@@ -89,6 +93,8 @@ void TRAP::Graphics::Renderer2D::Shutdown()
 
 void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 {
+	TP_PROFILE_FUNCTION();
+
 	s_data->UniformCamera.ProjectionMatrix = camera.GetProjectionMatrix();
 	s_data->UniformCamera.ViewMatrix = camera.GetViewMatrix();
 	
@@ -99,7 +105,8 @@ void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::EndScene()
-{	
+{
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -113,6 +120,8 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec2& position, const Math
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math::Vec2& size, const Math::Vec4& color)
 {
+	TP_PROFILE_FUNCTION();
+
 	//For Draw call counter
 	Application::AddSingleDrawCall();
 
@@ -153,6 +162,8 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec2& position, const Math
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math::Vec2& size, const Scope<Texture2D>& texture)
 {
+	TP_PROFILE_FUNCTION();
+
 	//For Draw call counter
 	Application::AddSingleDrawCall();
 
@@ -193,6 +204,8 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec2& position, const Math
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math::Vec2& size, const Math::Vec4& color, const Scope<Texture2D>& texture)
 {
+	TP_PROFILE_FUNCTION();
+
 	//For Draw call counter
 	Application::AddSingleDrawCall();
 

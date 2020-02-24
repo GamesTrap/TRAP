@@ -15,6 +15,8 @@ uint32_t TRAP::Graphics::TextureCube::s_maxCubeTextureSize = 0;
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFiles(const std::string& name, const std::array<std::string, 6>& filepaths, TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	if(name.empty())
 	{
 		TP_ERROR("[TextureCube] Invalid Name!");
@@ -43,6 +45,8 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromCross(const std::string& name, const std::string& filepath, InputFormat format, TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	if(name.empty())
 	{
 		TP_WARN("[TextureCube] Name is empty! Using Filename as TextureCube Name!");
@@ -71,6 +75,8 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromCross(const std::string& filepath, InputFormat format, TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	std::string name = VFS::GetFileName(VFS::MakeVirtualPathCompatible(filepath));
 	
 	switch (API::Context::GetRenderAPI())
@@ -95,6 +101,8 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create(TextureParameters parameters)
 {
+	TP_PROFILE_FUNCTION();
+
 	switch (API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS

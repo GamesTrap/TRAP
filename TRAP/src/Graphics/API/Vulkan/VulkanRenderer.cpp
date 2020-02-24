@@ -23,12 +23,15 @@ TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
 	m_graphicsPipeline(nullptr),
 	m_context(VulkanContext::Get())
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 {
+	TP_PROFILE_FUNCTION();
+	
 	TP_DEBUG("[Renderer][Vulkan] Destroying Renderer");
 	DeInitGraphicsPipeline();
 	DeInitRenderPass();
@@ -44,6 +47,8 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 
 void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 {
+	TP_PROFILE_FUNCTION();
+	
 	SetupInstanceLayersAndExtensions();
 	InitInstance();
 	m_context->InitSurface();
@@ -76,73 +81,86 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 
 void TRAP::Graphics::API::VulkanRenderer::Clear(RendererBufferType buffer)
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::Present(const Scope<Window>& window)
 {
+	TP_PROFILE_FUNCTION();
+
 	m_context->Present(window);
 }
 
 //------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Math::Vec4& color)
-{	
+{
+	TP_PROFILE_FUNCTION();
 }
 
 //------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(bool enabled)
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetDepthMasking(bool enabled)
-{	
+{
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetDepthFunction(RendererDepthFunction function)
-{	
+{
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetBlend(const bool enabled)
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetCull(const bool enabled)
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetFrontFace(const RendererFrontFace frontFace)
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetWireFrame(const bool enabled)
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetBlendFunction(const RendererBlendFunction source, const RendererBlendFunction destination)
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -152,42 +170,50 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendFunctionSeparate(RendererBlend
 	                                                               RendererBlendFunction destinationRGB,
 	                                                               RendererBlendFunction destinationAlpha)
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetBlendEquation(RendererBlendEquation blendEquation)
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB, RendererBlendEquation blendEquationAlpha)
-{	
+{
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const RendererCullMode cullMode)
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
-{	
+{
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::Draw(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {
+	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string_view TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_rendererTitle;
 }
 
@@ -195,6 +221,8 @@ std::string_view TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::Get()
 {
+	TP_PROFILE_FUNCTION();
+
 	return dynamic_cast<VulkanRenderer*>(s_Renderer.get());
 }
 
@@ -202,6 +230,8 @@ TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::Get()
 
 VkInstance& TRAP::Graphics::API::VulkanRenderer::GetInstance()
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_instance;
 }
 
@@ -209,6 +239,8 @@ VkInstance& TRAP::Graphics::API::VulkanRenderer::GetInstance()
 
 VkPhysicalDevice& TRAP::Graphics::API::VulkanRenderer::GetPhysicalDevice()
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_physicalDevice;
 }
 
@@ -216,6 +248,8 @@ VkPhysicalDevice& TRAP::Graphics::API::VulkanRenderer::GetPhysicalDevice()
 
 std::optional<uint32_t>& TRAP::Graphics::API::VulkanRenderer::GetGraphicsQueueFamilyIndex()
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_graphicsFamilyIndex;
 }
 
@@ -223,6 +257,8 @@ std::optional<uint32_t>& TRAP::Graphics::API::VulkanRenderer::GetGraphicsQueueFa
 
 std::optional<uint32_t>& TRAP::Graphics::API::VulkanRenderer::GetPresentQueueFamilyIndex()
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_presentFamilyIndex;
 }
 
@@ -230,6 +266,8 @@ std::optional<uint32_t>& TRAP::Graphics::API::VulkanRenderer::GetPresentQueueFam
 
 VkDevice& TRAP::Graphics::API::VulkanRenderer::GetDevice()
 {
+	TP_PROFILE_FUNCTION();
+
 	return m_device;
 }
 
@@ -237,6 +275,8 @@ VkDevice& TRAP::Graphics::API::VulkanRenderer::GetDevice()
 
 void TRAP::Graphics::API::VulkanRenderer::InitGraphicsPipeline(const std::vector<VkPipelineShaderStageCreateInfo>& shaderStages)
 {
+	TP_PROFILE_FUNCTION();
+
 	DeInitGraphicsPipeline(); //Delete old Graphics Pipeline if it exists
 
 	TP_DEBUG("[Renderer][Vulkan] Initializing Graphics Pipeline");
@@ -399,6 +439,8 @@ void TRAP::Graphics::API::VulkanRenderer::InitGraphicsPipeline(const std::vector
 
 void TRAP::Graphics::API::VulkanRenderer::DeInitGraphicsPipeline()
 {
+	TP_PROFILE_FUNCTION();
+
 	if (m_graphicsPipeline)
 	{
 		TP_DEBUG("[Renderer][Vulkan] Destroying Graphics Pipeline");

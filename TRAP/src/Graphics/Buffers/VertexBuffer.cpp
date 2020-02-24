@@ -8,6 +8,8 @@
 
 TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(float* vertices, uint32_t size)
 {
+	TP_PROFILE_FUNCTION();
+
 	switch(API::Context::GetRenderAPI())
 	{
 #ifdef TRAP_PLATFORM_WINDOWS

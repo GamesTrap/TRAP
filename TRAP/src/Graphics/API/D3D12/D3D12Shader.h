@@ -32,6 +32,12 @@ namespace TRAP::Graphics::API
 		friend class ::TRAP::Graphics::ShaderManager;
 
 		std::string m_name, m_filepath;
+		std::string vsSource;
+		std::string fsSource;
+		std::string gsSource;
+		std::string tcsSource;
+		std::string tesSource;
+		std::string csSource;
 	};
 }
 
