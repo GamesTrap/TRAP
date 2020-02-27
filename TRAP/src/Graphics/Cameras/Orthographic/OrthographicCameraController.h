@@ -2,7 +2,7 @@
 #define _TRAP_ORTHOGRAPHICCAMERACONTROLLER_H_
 
 #include "OrthographicCamera.h"
-#include "Utils/TimeStep.h"
+#include "Utils/Time/TimeStep.h"
 #include "Event/MouseEvent.h"
 #include "Application.h"
 

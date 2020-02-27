@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "FileWatcher.h"
 
-#include "Utils/String.h"
+#include "Utils/String/String.h"
 #include "FileSystem.h"
 #include "VFS.h"
 

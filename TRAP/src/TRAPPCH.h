@@ -31,6 +31,7 @@
 #include <any>
 #include <climits>
 #include <forward_list>
+#include <random>
 
 //OpenGL
 #include "Graphics/API/OpenGL/Loader/OpenGLLoader.h"
@@ -48,7 +49,7 @@
 //TRAP Engine
 #include "Core.h"
 #include "Log/Log.h"
-#include "Utils/Debug/Instrumentor.h"
+#include "Utils/Profiler/Instrumentor.h"
 
 #ifdef TRAP_PLATFORM_LINUX
 #include <linux/input.h>

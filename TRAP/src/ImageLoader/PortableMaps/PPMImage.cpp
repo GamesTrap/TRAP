@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "PPMImage.h"
 
-#include "Utils/String.h"
+#include "Utils/String/String.h"
 #include "VFS/VFS.h"
 #include "VFS/FileSystem.h"
 #include "Application.h"

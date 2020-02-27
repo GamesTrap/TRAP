@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "VFS.h"
 
-#include "Utils/String.h"
+#include "Utils/String/String.h"
 #include "FileSystem.h"
 
 TRAP::Scope<TRAP::VFS> TRAP::VFS::s_Instance = nullptr;

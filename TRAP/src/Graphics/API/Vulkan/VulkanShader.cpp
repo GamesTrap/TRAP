@@ -3,7 +3,7 @@
 
 #include "VulkanCommon.h"
 #include "VulkanRenderer.h"
-#include "Utils/String.h"
+#include "Utils/String/String.h"
 #include "Embed.h"
 
 //-------------------------------------------------------------------------------------------------------------------//

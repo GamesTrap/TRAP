@@ -1,6 +1,6 @@
 #include "TRAPPCH.h"
 #include "OpenGLLoader.h"
-#include "Utils/String.h"
+#include "Utils/String/String.h"
 
 static void* GetProc(const char* names);
 

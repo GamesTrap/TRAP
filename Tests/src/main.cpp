@@ -19,11 +19,11 @@ public:
 		//PushLayer(TRAP::MakeScope<CursorTests>());
 		//PushLayer(TRAP::MakeScope<EventTests>());
 		//PushLayer(TRAP::MakeScope<MinimizeTests>());
-		PushLayer(TRAP::MakeScope<ControllerTests>());
+		//PushLayer(TRAP::MakeScope<ControllerTests>());
 		//PushLayer(TRAP::MakeScope<IconTests>());
 		//PushLayer(TRAP::MakeScope<MonitorTests>());
 		//PushLayer(TRAP::MakeScope<OpacityTests>());
-		//PushLayer(TRAP::MakeScope<TitleTests>());
+		PushLayer(TRAP::MakeScope<TitleTests>());
 	}
 };
 

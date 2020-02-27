@@ -2,7 +2,7 @@
 #include "OpenGLShader.h"
 
 #include "OpenGLCommon.h"
-#include "Utils/String.h"
+#include "Utils/String/String.h"
 #include "Embed.h"
 
 //-------------------------------------------------------------------------------------------------------------------//

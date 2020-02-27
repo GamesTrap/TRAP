@@ -7,7 +7,7 @@
 #include "Graphics/API/OpenGL/OpenGLShader.h"
 #include "Graphics/API/Vulkan/VulkanShader.h"
 #include "VFS/FileSystem.h"
-#include "Utils/String.h"
+#include "Utils/String/String.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 

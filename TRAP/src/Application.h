@@ -7,7 +7,7 @@
 #include "Window/Window.h"
 #include "Config/Config.h"
 #include "Layers/LayerStack.h"
-#include "Utils/Timer.h"
+#include "Utils/Time/Timer.h"
 #include "Input/Input.h"
 
 int main();

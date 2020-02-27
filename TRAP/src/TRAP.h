@@ -33,13 +33,14 @@
 
 //----UTILS--------------
 #include "Utils/MsgBox/MsgBox.h"
-#include "Utils/TimeStep.h"
-#include "Utils/Timer.h"
-#include "Utils/String.h"
+#include "Utils/Time/TimeStep.h"
+#include "Utils/Time/Timer.h"
+#include "Utils/String/String.h"
+#include "Utils/Random/Random.h"
 //-----------------------
 
 //----DEBUG--------------
-#include "Utils/Debug/Instrumentor.h"
+#include "Utils/Profiler/Instrumentor.h"
 //-----------------------
 
 //----MATHS--------------

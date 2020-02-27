@@ -2,7 +2,7 @@
 
 #include "WindowingAPI.h"
 #include "Window.h"
-#include "Utils/String.h"
+#include "Utils/String/String.h"
 #include "Layers/ImGui/ImGuiWindowing.h"
 
 TRAP::INTERNAL::WindowingAPI::Data TRAP::INTERNAL::WindowingAPI::s_Data{};

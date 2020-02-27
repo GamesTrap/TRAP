@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 
 #include "WindowingAPI.h"
-#include "Utils/String.h"
+#include "Utils/String/String.h"
 #include "Utils/MsgBox/MsgBox.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS

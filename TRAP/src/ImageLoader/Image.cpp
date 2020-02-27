@@ -2,7 +2,7 @@
 #include "Image.h"
 
 #include "VFS/VFS.h"
-#include "Utils/String.h"
+#include "Utils/String/String.h"
 
 #include "PortableMaps/PGMImage.h"
 #include "PortableMaps/PPMImage.h"

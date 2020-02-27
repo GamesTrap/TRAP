@@ -2,7 +2,7 @@
 #include "Input.h"
 
 #include "Application.h"
-#include "Utils/String.h"
+#include "Utils/String/String.h"
 #include "Window/WindowingAPI.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
