@@ -58,7 +58,7 @@ namespace TRAP::Utils::Debug
 	private:
 		const char* m_name = nullptr;
 
-		std::chrono::time_point<std::chrono::high_resolution_clock> m_startTimePoint;
+		std::chrono::time_point<std::chrono::steady_clock> m_startTimePoint;
 		bool m_stopped;
 	};
 }
