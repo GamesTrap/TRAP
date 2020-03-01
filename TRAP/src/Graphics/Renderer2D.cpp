@@ -111,69 +111,29 @@ void TRAP::Graphics::Renderer2D::EndScene()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec2& position, const Math::Vec2& size, const Math::Vec4& color)
-{
-	DrawQuad({ position.x, position.y, 0.0f }, size, color);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math::Vec2& size, const Math::Vec4& color)
+void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color)
 {
 	TP_PROFILE_FUNCTION();
 
-	//For Draw call counter
-	Application::AddSingleDrawCall();
-
-	//Update CameraUniformBuffer
-	s_data->UniformCamera.ModelMatrix = Translate(position) * Scale(Math::Vec3{ size.x, size.y, 1.0f }); //Position & Size
-	s_data->CameraUniformBuffer->UpdateData(&s_data->UniformCamera);
-	s_data->CameraUniformBuffer->Bind(0);
-	
-	//Bind Shader
-	ShaderManager::Get("Renderer2D")->Bind();
-
-	//Bind White Texture
-	TextureManager::Get2D("Renderer2DWhite")->Bind(0);
-
 	//Bind and Update DataUniformBuffer if color changed
 	s_data->DataUniformBuffer->Bind(1);
-	if(s_data->UniformData.Color != color)
+	if (s_data->UniformData.Color != color)
 	{
 		s_data->UniformData.Color = color;
 		s_data->DataUniformBuffer->UpdateData(&s_data->UniformData);
 	}
 
-	//Bind Vertex Array
-	s_data->QuadVertexArray->Bind();
-	
-	//Render the Quad
-	RenderCommand::DrawIndexed(s_data->QuadVertexArray);
+	//Bind White Texture
+	TextureManager::Get2D("Renderer2DWhite")->Bind(0);
+
+	DrawQuad(transform);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec2& position, const Math::Vec2& size, const Scope<Texture2D>& texture)
-{
-	DrawQuad({ position.x, position.y, 0.0f }, size, texture);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math::Vec2& size, const Scope<Texture2D>& texture)
+void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Scope<Texture2D>& texture)
 {
 	TP_PROFILE_FUNCTION();
-
-	//For Draw call counter
-	Application::AddSingleDrawCall();
-
-	//Update CameraUniformBuffer
-	s_data->UniformCamera.ModelMatrix = Translate(position) * Scale(Math::Vec3{ size.x, size.y, 1.0f }); //Position & Size
-	s_data->CameraUniformBuffer->UpdateData(&s_data->UniformCamera);
-	s_data->CameraUniformBuffer->Bind(0);
-
-	//Bind Shader
-	ShaderManager::Get("Renderer2D")->Bind();
 
 	//Bind Texture
 	texture->Bind(0);
@@ -186,39 +146,14 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math
 		s_data->DataUniformBuffer->UpdateData(&s_data->UniformData);
 	}
 
-	//Bind Vertex Array
-	s_data->QuadVertexArray->Bind();
-
-	//Render the Quad
-	RenderCommand::DrawIndexed(s_data->QuadVertexArray);
+	DrawQuad(transform);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec2& position, const Math::Vec2& size, const Math::Vec4& color, const Scope<Texture2D>& texture)
-{
-	DrawQuad({ position.x, position.y, 1.0f }, size, color, texture);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math::Vec2& size, const Math::Vec4& color, const Scope<Texture2D>& texture)
+void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color, const Scope<Texture2D>& texture)
 {
 	TP_PROFILE_FUNCTION();
-
-	//For Draw call counter
-	Application::AddSingleDrawCall();
-
-	//Update CameraUniformBuffer
-	s_data->UniformCamera.ModelMatrix = Translate(position) * Scale(Math::Vec3{ size.x, size.y, 1.0f }); //Position & Size
-	s_data->CameraUniformBuffer->UpdateData(&s_data->UniformCamera);
-	s_data->CameraUniformBuffer->Bind(0);
-
-	//Bind Shader
-	ShaderManager::Get("Renderer2D")->Bind();
-
-	//Bind Texture
-	texture->Bind(0);
 
 	//Bind and Update DataUniformBuffer if color changed
 	s_data->DataUniformBuffer->Bind(1);
@@ -228,6 +163,31 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Vec3& position, const Math
 		s_data->DataUniformBuffer->UpdateData(&s_data->UniformData);
 	}
 
+	DrawQuad(transform, texture);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform)
+{
+	TP_PROFILE_FUNCTION();
+
+	//For Draw call counter
+	Application::AddSingleDrawCall();
+
+	//Update CameraUniformBuffer
+	//Position & Size & Rotation
+	s_data->UniformCamera.ModelMatrix = Translate(transform.Position) *
+		                                Math::Rotate(Math::Radians(transform.Rotation.x), {1.0f, 0.0f, 0.0f}) *
+		                                Math::Rotate(Math::Radians(transform.Rotation.y), {0.0f, 1.0f, 0.0f}) *
+		                                Math::Rotate(Math::Radians(transform.Rotation.z), {0.0f, 0.0f, 1.0f}) *
+		                                Scale(transform.Scale); 
+	s_data->CameraUniformBuffer->UpdateData(&s_data->UniformCamera);
+	s_data->CameraUniformBuffer->Bind(0);
+
+	//Bind Shader
+	ShaderManager::Get("Renderer2D")->Bind();
+	
 	//Bind Vertex Array
 	s_data->QuadVertexArray->Bind();
 

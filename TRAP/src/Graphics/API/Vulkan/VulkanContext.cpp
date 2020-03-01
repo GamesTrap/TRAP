@@ -10,13 +10,17 @@
 
 TRAP::Graphics::API::VulkanContext::VulkanContext(Window* window)
 	: m_swapchain(),
-	m_extent(),
-	m_capabilities(),
-	m_format(),
-	m_presentMode(),
-	m_surface(),
-	m_window(window),
-	m_vsync(false)
+	  m_extent(),
+	  m_capabilities(),
+	  m_format(),
+	  m_presentMode(),
+	  m_surface(),
+	  m_window(window),
+	  m_imageAvailableSemaphores(),
+	  m_renderFinishedSemaphores(),
+	  m_inFlightFences(),
+	  m_currentFrame(0),
+	  m_vsync(false)
 {
 	TP_PROFILE_FUNCTION();
 }
@@ -43,8 +47,52 @@ void TRAP::Graphics::API::VulkanContext::SetVSyncIntervalInternal(const uint32_t
 
 void TRAP::Graphics::API::VulkanContext::Present(const Scope<Window>& window)
 {
-	TP_PROFILE_FUNCTION();
+	uint32_t imageIndex;
+	VkCall(vkAcquireNextImageKHR(VulkanRenderer::Get()->GetDevice(), m_swapchain, std::numeric_limits<uint64_t>::max(), m_imageAvailableSemaphores[m_currentFrame], nullptr, &imageIndex));
 
+	//Check if a previous frame is using this image (i.e. there is its fence to wait on)
+	if(m_imagesInFlight[imageIndex] != nullptr)
+		VkCall(vkWaitForFences(VulkanRenderer::Get()->GetDevice(), 1, &m_imagesInFlight[imageIndex], VK_TRUE, std::numeric_limits<uint64_t>::max()));
+
+	//Mark the image as now being in use by this frame
+	m_imagesInFlight[imageIndex] = m_inFlightFences[m_currentFrame];
+	
+	std::array<VkPipelineStageFlags, 1> waitStages = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+	
+	VkSubmitInfo submitInfo
+	{
+		VK_STRUCTURE_TYPE_SUBMIT_INFO,
+		nullptr,
+		1,
+		&m_imageAvailableSemaphores[m_currentFrame],
+		waitStages.data(),
+		1,
+		&VulkanRenderer::Get()->GetCommandBuffers()[imageIndex],
+		1,
+		&m_renderFinishedSemaphores[m_currentFrame]
+	};
+
+	VkCall(vkResetFences(VulkanRenderer::Get()->GetDevice(), 1, &m_inFlightFences[m_currentFrame]));
+	
+	VkCall(vkQueueSubmit(VulkanRenderer::Get()->GetGraphicsQueue(), 1, &submitInfo, m_inFlightFences[m_currentFrame]));
+
+	VkCall(vkWaitForFences(VulkanRenderer::Get()->GetDevice(), 1, &m_inFlightFences[m_currentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max()));
+
+	VkPresentInfoKHR presentInfo
+	{
+		VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+		nullptr,
+		1,
+		&m_renderFinishedSemaphores[m_currentFrame],
+		1,
+		&m_swapchain,
+		&imageIndex,
+		nullptr
+	};
+
+	VkCall(vkQueuePresentKHR(VulkanRenderer::Get()->GetPresentQueue(), &presentInfo));
+
+	m_currentFrame = (m_currentFrame + 1) % 2;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -68,8 +116,6 @@ TRAP::Graphics::API::VulkanContext* TRAP::Graphics::API::VulkanContext::Get()
 
 VkSurfaceKHR& TRAP::Graphics::API::VulkanContext::GetSurface()
 {
-	TP_PROFILE_FUNCTION();
-
 	return m_surface;
 }
 
@@ -77,8 +123,6 @@ VkSurfaceKHR& TRAP::Graphics::API::VulkanContext::GetSurface()
 
 TRAP::Window* TRAP::Graphics::API::VulkanContext::GetWindow() const
 {
-	TP_PROFILE_FUNCTION();
-
 	return m_window;
 }
 
@@ -245,12 +289,114 @@ void TRAP::Graphics::API::VulkanContext::InitImageViews()
 void TRAP::Graphics::API::VulkanContext::DeInitImageViews(VkDevice device)
 {
 	TP_PROFILE_FUNCTION();
-
+	
 	if (!m_swapchainImageViews.empty())
 		TP_DEBUG("[Renderer][Vulkan] Destroying Swapchain Image Views");
 
 	for (VkImageView imageView : m_swapchainImageViews)
 		vkDestroyImageView(device, imageView, nullptr);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanContext::InitFrameBuffers(VkDevice device, VkRenderPass renderPass)
+{
+	TP_PROFILE_FUNCTION();
+
+	TP_DEBUG("[Renderer][Vulkan] Initializing Swapchain Frame BuffersGetSwapchainImageFormat");
+	
+	m_swapchainFrameBuffers.resize(m_swapchainImageViews.size());
+
+	for(uint32_t i = 0; i < m_swapchainImageViews.size(); i++)
+	{
+		VkFramebufferCreateInfo framebufferCreateInfo
+		{
+			VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
+			nullptr,
+			0,
+			renderPass,
+			1,
+			&m_swapchainImageViews[i],
+			m_extent.width,
+			m_extent.height,
+			1
+		};
+
+		VkCall(vkCreateFramebuffer(device, &framebufferCreateInfo, nullptr, &m_swapchainFrameBuffers[i]));
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanContext::DeInitFrameBuffers(VkDevice device)
+{
+	TP_PROFILE_FUNCTION();
+	
+	if(!m_swapchainFrameBuffers.empty())
+		TP_DEBUG("[Renderer][Vulkan] Destroying Swapchain Frame Buffers");
+	
+	for(VkFramebuffer frameBuffer : m_swapchainFrameBuffers)
+		vkDestroyFramebuffer(device, frameBuffer, nullptr);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanContext::InitSyncObjects(VkDevice device)
+{
+	TP_PROFILE_FUNCTION();
+
+	TP_DEBUG("[Renderer][Vulkan] Initializing Sync Objects");
+
+	m_imagesInFlight.resize(m_swapchainImages.size(), nullptr);
+	
+	VkSemaphoreCreateInfo semaphoreCreateInfo
+	{
+		VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
+		nullptr,
+		0
+	};
+
+	VkFenceCreateInfo fenceCreateInfo
+	{
+		VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+		nullptr,
+		VK_FENCE_CREATE_SIGNALED_BIT
+	};
+
+	VkFenceCreateInfo fenceCreateInfo2
+	{
+		VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+		nullptr,
+		0
+	};
+	
+	for(uint32_t i = 0; i < 2; i++)
+	{
+		VkCall(vkCreateSemaphore(device, &semaphoreCreateInfo, nullptr, &m_imageAvailableSemaphores[i]));
+		VkCall(vkCreateSemaphore(device, &semaphoreCreateInfo, nullptr, &m_renderFinishedSemaphores[i]));
+		VkCall(vkCreateFence(device, &fenceCreateInfo, nullptr, &m_inFlightFences[i]));
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanContext::DeInitSyncObjects(VkDevice device) const
+{
+	TP_PROFILE_FUNCTION();
+
+	TP_DEBUG("[Renderer][Vulkan] Destroying Sync Objects");
+
+	for(uint32_t i = 0; i < 2; i++)
+	{
+		if (m_renderFinishedSemaphores[i])
+			vkDestroySemaphore(device, m_renderFinishedSemaphores[i], nullptr);
+		
+		if (m_imageAvailableSemaphores[i])
+			vkDestroySemaphore(device, m_imageAvailableSemaphores[i], nullptr);
+
+		if (m_inFlightFences[i])
+			vkDestroyFence(device, m_inFlightFences[i], nullptr);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -287,8 +433,6 @@ std::vector<VkPresentModeKHR> TRAP::Graphics::API::VulkanContext::GetAvailableSu
 
 VkExtent2D TRAP::Graphics::API::VulkanContext::GetSwapchainExtent() const
 {
-	TP_PROFILE_FUNCTION();
-
 	return m_extent;
 }
 
@@ -296,9 +440,21 @@ VkExtent2D TRAP::Graphics::API::VulkanContext::GetSwapchainExtent() const
 
 VkFormat TRAP::Graphics::API::VulkanContext::GetSwapchainImageFormat() const
 {
-	TP_PROFILE_FUNCTION();
-
 	return m_format.format;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::VulkanContext::GetSwapchainFrameBuffersSize() const
+{	
+	return static_cast<uint32_t>(m_swapchainFrameBuffers.size());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<VkFramebuffer>& TRAP::Graphics::API::VulkanContext::GetSwapchainFrameBuffers()
+{
+	return m_swapchainFrameBuffers;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -308,6 +464,10 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 {
 	TP_PROFILE_FUNCTION();
 
+#ifndef TRAP_EXPERIMENTAL_VULKAN
+	return false;
+#endif
+	
 	if (INTERNAL::WindowingAPI::VulkanSupported())
 	{
 		//Instance Extensions

@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "VulkanRenderer.h"
 
+
+#include "Application.h"
 #include "Graphics/RenderCommand.h"
 #include "VulkanCommon.h"
 #include "Window/Window.h"
@@ -21,7 +23,9 @@ TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
 	m_renderPass(nullptr),
 	m_pipelineLayout(nullptr),
 	m_graphicsPipeline(nullptr),
-	m_context(VulkanContext::Get())
+	m_commandPool(nullptr),
+	m_context(VulkanContext::Get()),
+    m_clearColor({ {{0.1f, 0.1f, 0.1f, 1.0f}} })
 {
 	TP_PROFILE_FUNCTION();
 }
@@ -33,6 +37,13 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 	TP_PROFILE_FUNCTION();
 	
 	TP_DEBUG("[Renderer][Vulkan] Destroying Renderer");
+
+	VkCall(vkDeviceWaitIdle(m_device));
+	
+	m_context->DeInitSyncObjects(m_device);
+	DeInitCommandBuffers();
+	DeInitCommandPool();
+	m_context->DeInitFrameBuffers(m_device);
 	DeInitGraphicsPipeline();
 	DeInitRenderPass();
 	m_context->DeInitImageViews(m_device);
@@ -60,6 +71,12 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 	m_context->InitSwapchain();
 	m_context->InitImageViews();
 	InitRenderPass();
+	m_context->InitFrameBuffers(m_device, m_renderPass);
+	InitCommandPool();
+	InitCommandBuffers();
+	m_context->InitSyncObjects(m_device);
+	StartRecording();
+	StartRenderPass();
 
 	//Do Pipeline Stuff here(blending, depth testing, see below)
 	SetDepthTesting(true);
@@ -88,9 +105,13 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(RendererBufferType buffer)
 
 void TRAP::Graphics::API::VulkanRenderer::Present(const Scope<Window>& window)
 {
-	TP_PROFILE_FUNCTION();
-
+	StopRenderPass();
+	StopRecording();
+	
 	m_context->Present(window);
+
+	StartRecording();
+	StartRenderPass();
 }
 
 //------------------------------------------------------------------------------------------------------------------//
@@ -98,6 +119,8 @@ void TRAP::Graphics::API::VulkanRenderer::Present(const Scope<Window>& window)
 void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Math::Vec4& color)
 {
 	TP_PROFILE_FUNCTION();
+
+	m_clearColor = VkClearValue{ {{color.x, color.y, color.z, color.w}} };
 }
 
 //------------------------------------------------------------------------------------------------------------------//
@@ -212,8 +235,6 @@ void TRAP::Graphics::API::VulkanRenderer::Draw(const Scope<VertexArray>& vertexA
 
 std::string_view TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 {
-	TP_PROFILE_FUNCTION();
-
 	return m_rendererTitle;
 }
 
@@ -221,8 +242,6 @@ std::string_view TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::Get()
 {
-	TP_PROFILE_FUNCTION();
-
 	return dynamic_cast<VulkanRenderer*>(s_Renderer.get());
 }
 
@@ -230,8 +249,6 @@ TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::Get()
 
 VkInstance& TRAP::Graphics::API::VulkanRenderer::GetInstance()
 {
-	TP_PROFILE_FUNCTION();
-
 	return m_instance;
 }
 
@@ -239,8 +256,6 @@ VkInstance& TRAP::Graphics::API::VulkanRenderer::GetInstance()
 
 VkPhysicalDevice& TRAP::Graphics::API::VulkanRenderer::GetPhysicalDevice()
 {
-	TP_PROFILE_FUNCTION();
-
 	return m_physicalDevice;
 }
 
@@ -248,8 +263,6 @@ VkPhysicalDevice& TRAP::Graphics::API::VulkanRenderer::GetPhysicalDevice()
 
 std::optional<uint32_t>& TRAP::Graphics::API::VulkanRenderer::GetGraphicsQueueFamilyIndex()
 {
-	TP_PROFILE_FUNCTION();
-
 	return m_graphicsFamilyIndex;
 }
 
@@ -257,8 +270,6 @@ std::optional<uint32_t>& TRAP::Graphics::API::VulkanRenderer::GetGraphicsQueueFa
 
 std::optional<uint32_t>& TRAP::Graphics::API::VulkanRenderer::GetPresentQueueFamilyIndex()
 {
-	TP_PROFILE_FUNCTION();
-
 	return m_presentFamilyIndex;
 }
 
@@ -266,9 +277,28 @@ std::optional<uint32_t>& TRAP::Graphics::API::VulkanRenderer::GetPresentQueueFam
 
 VkDevice& TRAP::Graphics::API::VulkanRenderer::GetDevice()
 {
-	TP_PROFILE_FUNCTION();
-
 	return m_device;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<VkCommandBuffer>& TRAP::Graphics::API::VulkanRenderer::GetCommandBuffers()
+{	
+	return m_commandBuffers;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkQueue TRAP::Graphics::API::VulkanRenderer::GetGraphicsQueue() const
+{	
+	return m_graphicsQueue;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkQueue TRAP::Graphics::API::VulkanRenderer::GetPresentQueue() const
+{
+	return m_presentQueue;	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -453,6 +483,15 @@ void TRAP::Graphics::API::VulkanRenderer::DeInitGraphicsPipeline()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::BindGraphicsPipeline()
+{
+	if(m_graphicsPipeline)
+		for (auto& m_commandBuffer : m_commandBuffers)
+			vkCmdBindPipeline(m_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::SetupInstanceLayersAndExtensions()
 {
 	TP_DEBUG("[Renderer][Vulkan] Setting up Instance Layers and Extensions");
@@ -518,14 +557,18 @@ void TRAP::Graphics::API::VulkanRenderer::SetupQueues()
 
 	std::vector<VkQueueFamilyProperties> availableQueueFamilies = GetAvailableQueueFamilies();
 	for (uint32_t i = 0; i < availableQueueFamilies.size(); i++)
-		if (availableQueueFamilies[i].queueCount > 0 && availableQueueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+	{
+		if (availableQueueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
 			m_graphicsFamilyIndex = i;
-
-	VkBool32 presentSupport = false;
-	VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(m_physicalDevice, m_graphicsFamilyIndex.value(), m_context->GetSurface(), &presentSupport));
-	for (uint32_t i = 0; i < availableQueueFamilies.size(); i++)
-		if (availableQueueFamilies[i].queueCount > 0 && presentSupport)
+		
+		VkBool32 presentSupport = false;
+		VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(m_physicalDevice, i, m_context->GetSurface(), &presentSupport));
+		if (presentSupport)
 			m_presentFamilyIndex = i;
+
+		if (m_graphicsFamilyIndex.has_value() && m_presentFamilyIndex.has_value())
+			break;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -759,12 +802,23 @@ void TRAP::Graphics::API::VulkanRenderer::InitRenderPass()
 		nullptr,
 		1,
 		&colorAttachmentRef,
-		0,
+		nullptr,
 		nullptr,
 		0,
 		nullptr
 	};
 
+	VkSubpassDependency dependency
+	{
+		VK_SUBPASS_EXTERNAL,
+		0,
+		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		0,
+		VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+		0
+	};
+	
 	VkRenderPassCreateInfo renderPassCreateInfo
 	{
 		VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
@@ -774,8 +828,8 @@ void TRAP::Graphics::API::VulkanRenderer::InitRenderPass()
 		&colorAttachment,
 		1,
 		&subPass,
-		0,
-		nullptr
+		1,
+		&dependency
 	};
 
 	VkCall(vkCreateRenderPass(m_device, &renderPassCreateInfo, nullptr, &m_renderPass));
@@ -797,6 +851,8 @@ void TRAP::Graphics::API::VulkanRenderer::DeInitRenderPass()
 
 void TRAP::Graphics::API::VulkanRenderer::InitPipelineLayout()
 {
+	TP_DEBUG("[Renderer][Vulkan] Initializing Pipeline Layout");
+	
 	VkPipelineLayoutCreateInfo layoutCreateInfo
 	{
 		VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
@@ -821,6 +877,119 @@ void TRAP::Graphics::API::VulkanRenderer::DeInitPipelineLayout()
 		vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
 		m_pipelineLayout = nullptr;
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::InitCommandPool()
+{
+	TP_DEBUG("[Renderer][Vulkan] Initializing Command Pool");
+	
+	VkCommandPoolCreateInfo poolCreateInfo
+	{
+		VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+		nullptr,
+		VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+		m_graphicsFamilyIndex.value()
+	};
+
+	VkCall(vkCreateCommandPool(m_device, &poolCreateInfo, nullptr, &m_commandPool));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::DeInitCommandPool()
+{
+	if(m_commandPool)
+	{
+		TP_DEBUG("[Renderer][Vulkan] Destroying Command Pool");
+		
+		vkDestroyCommandPool(m_device, m_commandPool, nullptr);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::InitCommandBuffers()
+{
+	TP_DEBUG("[Renderer][Vulkan] Initializing Command Buffers");
+
+	m_commandBuffers.resize(m_context->GetSwapchainFrameBuffersSize());
+
+	VkCommandBufferAllocateInfo commandBufferAllocateInfo
+	{
+		VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+		nullptr,
+		m_commandPool,
+		VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+		static_cast<uint32_t>(m_commandBuffers.size())
+	};
+
+	VkCall(vkAllocateCommandBuffers(m_device, &commandBufferAllocateInfo, m_commandBuffers.data()));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::DeInitCommandBuffers()
+{
+	TP_DEBUG("[Renderer][Vulkan] Destroying Command Buffers");
+
+	vkFreeCommandBuffers(m_device, m_commandPool, static_cast<uint32_t>(m_commandBuffers.size()), m_commandBuffers.data());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::StartRecording()
+{
+	for (auto& m_commandBuffer : m_commandBuffers)
+	{
+		VkCommandBufferBeginInfo commandBufferBeginInfo
+		{
+			VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+			nullptr,
+			VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
+			nullptr
+		};
+		
+		VkCall(vkBeginCommandBuffer(m_commandBuffer, &commandBufferBeginInfo));
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::StartRenderPass()
+{
+	for(uint32_t i = 0; i < m_commandBuffers.size(); i++)
+	{
+		VkRenderPassBeginInfo renderPassBeginInfo
+		{
+			VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+			nullptr,
+			m_renderPass,
+			m_context->GetSwapchainFrameBuffers()[i],
+		{{0, 0}, m_context->GetSwapchainExtent()},
+			1,
+			&m_clearColor
+		};
+
+		vkCmdBeginRenderPass(m_commandBuffers[i], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::StopRenderPass()
+{
+	for (VkCommandBuffer& commandBuffer : m_commandBuffers)
+		vkCmdEndRenderPass(commandBuffer);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::StopRecording()
+{
+	for (VkCommandBuffer& commandBuffer : m_commandBuffers)
+		VkCall(vkEndCommandBuffer(commandBuffer));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

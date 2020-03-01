@@ -928,3 +928,14 @@ SITREP 02/27/2020|20w09a2
     - Changed TRAP Engine version to 20w09a2(0.6.18)
     - Added Random generator using mt19937_64 ~>50 mins
     - Validated Random generator ~<40 mins
+
+SITREP 02/29/2020|20w09a3
+    - Changed TRAP Engine version to 20w09a3(0.6.19)
+    - Renderer2D Added Rotation support ~<20 mins
+    - Working on Vulkan ~>70 mins
+
+SITREP 03/01/2020|20w09a4
+    - Changed TRAP Engine version to 20w09a4(0.6.20)
+    - Fixed Vulkan Present Queue ~<20 mins
+    - Added Command Buffer Submit synchronization ~<20 mins
+    - Added macro "TRAP_EXPERIMENTAL_VULKAN" to allow experimental usage of Vulkan API ~<20 mins

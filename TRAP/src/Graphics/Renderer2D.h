@@ -13,15 +13,23 @@ namespace TRAP::Graphics
 		static void Shutdown();
 		
 		static void BeginScene(const OrthographicCamera& camera);
-		static void EndScene();
+		static void EndScene();		
+
+		//First Component
+		struct Transform
+		{
+			Math::Vec3 Position = {0.0f, 0.0f, 0.0f};
+			Math::Vec3 Rotation = {0.0f, 0.0f, 0.0f};
+			Math::Vec3 Scale = {1.0f, 1.0f, 1.0f};
+		};
 
 		//Primitives
-		static void DrawQuad(const Math::Vec2& position, const Math::Vec2& size, const Math::Vec4& color); //TODO Rotation
-		static void DrawQuad(const Math::Vec3& position, const Math::Vec2& size, const Math::Vec4& color); //TODO Rotation
-		static void DrawQuad(const Math::Vec2& position, const Math::Vec2& size, const Scope<Texture2D>& texture); //TODO Rotation
-		static void DrawQuad(const Math::Vec3& position, const Math::Vec2& size, const Scope<Texture2D>& texture); //TODO Rotation
-		static void DrawQuad(const Math::Vec2& position, const Math::Vec2& size, const Math::Vec4& color, const Scope<Texture2D>& texture); //TODO Rotation
-		static void DrawQuad(const Math::Vec3& position, const Math::Vec2& size, const Math::Vec4& color, const Scope<Texture2D>& texture); //TODO Rotation
+		static void DrawQuad(const Transform& transform, const Math::Vec4& color);
+		static void DrawQuad(const Transform& transform, const Scope<Texture2D>& texture);
+		static void DrawQuad(const Transform& transform, const Math::Vec4& color, const Scope<Texture2D>& texture);
+
+	private:
+		static void DrawQuad(const Transform& transform);
 	};
 }
 

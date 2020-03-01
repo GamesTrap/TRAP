@@ -34,12 +34,20 @@ namespace TRAP::Graphics::API
 		void InitImageViews();
 		void DeInitImageViews(VkDevice device);
 
+		void InitFrameBuffers(VkDevice device, VkRenderPass renderPass);
+		void DeInitFrameBuffers(VkDevice device);
+
+		void InitSyncObjects(VkDevice device);
+		void DeInitSyncObjects(VkDevice device) const;
+
 		std::vector<VkSurfaceFormatKHR> GetAvailableSurfaceFormats(VkPhysicalDevice physicalDevice) const;
 		std::vector<VkPresentModeKHR> GetAvailableSurfacePresentModes(VkPhysicalDevice physicalDevice) const;
 		
 		VkExtent2D GetSwapchainExtent() const;
 
 		VkFormat GetSwapchainImageFormat() const;
+		uint32_t GetSwapchainFrameBuffersSize() const;
+		std::vector<VkFramebuffer>& GetSwapchainFrameBuffers();
 		
 		static bool IsVulkanCapable();
 
@@ -52,6 +60,7 @@ namespace TRAP::Graphics::API
 
 		std::vector<VkImageView> m_swapchainImageViews;
 		std::vector<VkImage> m_swapchainImages;
+		std::vector<VkFramebuffer> m_swapchainFrameBuffers;
 		VkSwapchainKHR m_swapchain;
 		VkExtent2D m_extent;
 		VkSurfaceCapabilitiesKHR m_capabilities;
@@ -59,6 +68,11 @@ namespace TRAP::Graphics::API
 		VkPresentModeKHR m_presentMode;
 		VkSurfaceKHR m_surface;
 		Window* m_window;
+		std::array<VkSemaphore, 2> m_imageAvailableSemaphores;
+		std::array<VkSemaphore, 2> m_renderFinishedSemaphores;
+		std::array<VkFence, 2> m_inFlightFences;
+		std::vector<VkFence> m_imagesInFlight;
+		uint32_t m_currentFrame;
 
 		bool m_vsync;
 	};

@@ -58,11 +58,14 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	//Render
 	TRAP::Graphics::RenderCommand::SetClearColor();
 	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
+	TRAP::Graphics::RenderCommand::SetCull(false);
 
 	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
-	TRAP::Graphics::Renderer2D::DrawQuad(TRAP::Math::Vec2(-1.0f, 0.0f), TRAP::Math::Vec2(0.8f, 0.8f), TRAP::Math::Vec4(0.8f, 0.2f, 0.3f, 1.0f));
-	TRAP::Graphics::Renderer2D::DrawQuad(TRAP::Math::Vec2(0.5f, -0.5f), TRAP::Math::Vec2(0.5f, 0.75f), TRAP::Math::Vec4(0.2f, 0.3f, 0.8f, 1.0f));
-	TRAP::Graphics::Renderer2D::DrawQuad(TRAP::Math::Vec2(0.2f, 0.5f), TRAP::Math::Vec2(0.5f, 0.5f), TRAP::Math::Vec4(0.2f, 0.3f, 0.8f, 1.0f), TRAP::Graphics::TextureManager::Get2D("TRAP"));
+	TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.8f, 0.8f, 1.0f} }, { 0.8f, 0.2f, 0.3f, 1.0f });
+	TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, -0.5f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.5f, 0.75f, 1.0f} }, { 0.2f, 0.3f, 0.8f, 1.0f });
+	TRAP::Graphics::Renderer2D::DrawQuad({ {0.2f, 0.5f, 0.0f}, {TRAP::Application::GetTime() * 25.0f, TRAP::Application::GetTime() * 50.0f, 0.0f }, {0.5f, 0.5f, 1.0f} },
+	                                     {0.2f, 0.3f, 0.8f, 1.0f},
+	                                     TRAP::Graphics::TextureManager::Get2D("TRAP"));
 	TRAP::Graphics::Renderer2D::EndScene();
 	
 	//Update FPS & FrameTIme history

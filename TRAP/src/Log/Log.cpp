@@ -31,9 +31,9 @@ void TRAP::Log::Save()
 {
 	TP_PROFILE_FUNCTION();
 
-	TP_INFO("[Logger] Saving Log.txt");
+	TP_INFO("[Logger] Saving TRAP.Log");
 
-	std::ofstream file("Log.txt");
+	std::ofstream file("TRAP.Log");
 	if (file.is_open())
 	{
 		for (const auto& [level, message] : s_Instance->m_buffer)

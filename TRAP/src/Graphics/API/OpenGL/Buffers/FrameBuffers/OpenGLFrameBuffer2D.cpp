@@ -160,7 +160,7 @@ void TRAP::Graphics::API::OpenGLFrameBuffer2D::Init()
 	{
 		OpenGLCall(glNamedFramebufferTexture(m_frameBufferHandle, GL_COLOR_ATTACHMENT0, (dynamic_cast<OpenGLTexture2D*>(m_texture.get()))->GetHandle(), 0));
 
-		OpenGLCall(glNamedRenderbufferStorage(m_depthBufferHandle, GL_DEPTH_COMPONENT16, m_width, m_height));
+		OpenGLCall(glNamedRenderbufferStorage(m_depthBufferHandle, GL_DEPTH_COMPONENT24, m_width, m_height));
 		OpenGLCall(glNamedFramebufferRenderbuffer(m_frameBufferHandle, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBufferHandle));
 
 		OpenGLCall(glCheckNamedFramebufferStatus(m_frameBufferHandle, GL_FRAMEBUFFER));

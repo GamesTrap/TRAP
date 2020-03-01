@@ -63,7 +63,7 @@ namespace TRAP::Utils::Debug
 	};
 }
 
-#define TRAP_PROFILE
+//#define TRAP_PROFILE
 
 #ifdef TRAP_PROFILE
 	//Resolve which function signature macro will be used.

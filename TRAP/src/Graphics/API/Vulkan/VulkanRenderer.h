@@ -53,9 +53,13 @@ namespace TRAP::Graphics::API
 		std::optional<uint32_t>& GetGraphicsQueueFamilyIndex();
 		std::optional<uint32_t>& GetPresentQueueFamilyIndex();
 		VkDevice& GetDevice();
+		std::vector<VkCommandBuffer>& GetCommandBuffers();
+		VkQueue GetGraphicsQueue() const;
+		VkQueue GetPresentQueue() const;
 
 		void InitGraphicsPipeline(const std::vector<VkPipelineShaderStageCreateInfo>& shaderStages);
 		void DeInitGraphicsPipeline();
+		void BindGraphicsPipeline();
 
 	private:
 		void SetupInstanceLayersAndExtensions();
@@ -77,6 +81,17 @@ namespace TRAP::Graphics::API
 		
 		void InitPipelineLayout();
 		void DeInitPipelineLayout();
+
+		void InitCommandPool();
+		void DeInitCommandPool();
+
+		void InitCommandBuffers();
+		void DeInitCommandBuffers();
+		
+		void StartRecording();
+		void StartRenderPass();
+		void StopRenderPass();
+		void StopRecording();
 
 		void PickPhysicalDevice(std::vector<VkPhysicalDevice>& availablePhysicalDevices);
 		int32_t RateDeviceSuitability(VkPhysicalDevice physicalDevice) const;
@@ -122,8 +137,13 @@ namespace TRAP::Graphics::API
 		VkPipelineLayout m_pipelineLayout;
 		VkPipeline m_graphicsPipeline;
 
+		VkCommandPool m_commandPool;
+		std::vector<VkCommandBuffer> m_commandBuffers;
+
 		VulkanContext* m_context;
 		std::string m_rendererTitle;
+
+		VkClearValue m_clearColor;
 	};
 }
 

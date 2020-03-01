@@ -107,6 +107,8 @@ void TRAP::Graphics::API::VulkanShader::Bind() const
 		else
 			ShaderManager::Get("Fallback")->Bind();
 	}
+	
+	VulkanRenderer::Get()->BindGraphicsPipeline();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
