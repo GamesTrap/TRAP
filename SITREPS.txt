@@ -944,3 +944,10 @@ SITREP 03/04/2020|20w10a1
     - Changed TRAP Engine version to 20w10a1(0.6.21)
     - Added Quaternions ~>50 mins
     - Replaced Matrix Rotations with Quaternions (thus fixing Gimbal Locking) ~<20 mins
+    - Added Missing GLM license notice in TRAP::Math ~<10 mins
+    - Added Missing GLAD license notice in OpenGLLoader ~<10 mins
+    - Added Missing GLFW license notice in TRAP::Input & TRAP::INTERNAL::WindowingAPI ~<10 mins
+    - Added Missing ImGui license notice in ImGui Layer ~<10 mins
+    - Added Missing GLSLang license ~<10 mins
+    - Added Missing SPIRV-Cross license ~<10 mins
+    - Added Missing Premake5 license ~<10 mins
