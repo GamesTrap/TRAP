@@ -2,7 +2,7 @@
 
 Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D"),
-	m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
+	m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()), true),
 	m_frameTimeHistory()
 {
 }

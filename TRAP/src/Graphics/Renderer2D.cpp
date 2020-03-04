@@ -177,11 +177,8 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform)
 
 	//Update CameraUniformBuffer
 	//Position & Size & Rotation
-	s_data->UniformCamera.ModelMatrix = Translate(transform.Position) *
-		                                Math::Rotate(Math::Radians(transform.Rotation.x), {1.0f, 0.0f, 0.0f}) *
-		                                Math::Rotate(Math::Radians(transform.Rotation.y), {0.0f, 1.0f, 0.0f}) *
-		                                Math::Rotate(Math::Radians(transform.Rotation.z), {0.0f, 0.0f, 1.0f}) *
-		                                Scale(transform.Scale); 
+	s_data->UniformCamera.ModelMatrix = Translate(transform.Position) * Mat4Cast(Math::Quaternion(Radians(transform.Rotation))) *
+	                                    Scale(transform.Scale); 
 	s_data->CameraUniformBuffer->UpdateData(&s_data->UniformCamera);
 	s_data->CameraUniformBuffer->Bind(0);
 

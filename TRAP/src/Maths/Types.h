@@ -5,13 +5,14 @@ namespace TRAP::Math
 {
 	template<int L, typename T> struct Vec;
 	template<int C, int R, typename T> struct Mat;
+	template<typename T> struct tQuaternion;
 
 	template <typename T> using tVec2 = Vec<2, T>;
 	template <typename T> using tVec3 = Vec<3, T>;
 	template <typename T> using tVec4 = Vec<4, T>;
 	template <typename T> using tMat3 = Mat<3, 3, T>;
 	template <typename T> using tMat4 = Mat<4, 4, T>;
-
+	
 	using Vec2    = Vec<2, float>;
 	using Vec2f   = Vec<2, float>;
 	using Vec2d   = Vec<2, double>;
@@ -52,6 +53,10 @@ namespace TRAP::Math
 	using Mat4  = Mat<4, 4, float>;
 	using Mat4f = Mat<4, 4, float>;
 	using Mat4d = Mat<4, 4, double>;
+
+	using Quaternion = tQuaternion<float>;
+	using Quaternionf = tQuaternion<float>;
+	using Quaterniond = tQuaternion<double>;	
 }
 
 #endif /*_TRAP_TYPES_H_*/

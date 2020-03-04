@@ -50,6 +50,7 @@
 #include "Maths/Vec4.h"
 #include "Maths/Mat3.h"
 #include "Maths/Mat4.h"
+#include "Maths/Quaternion.h"
 #include "Maths/Types.h"
 //-----------------------
 

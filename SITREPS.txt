@@ -939,3 +939,8 @@ SITREP 03/01/2020|20w09a4
     - Fixed Vulkan Present Queue ~<20 mins
     - Added Command Buffer Submit synchronization ~<20 mins
     - Added macro "TRAP_EXPERIMENTAL_VULKAN" to allow experimental usage of Vulkan API ~<20 mins
+
+SITREP 03/04/2020|20w10a1
+    - Changed TRAP Engine version to 20w10a1(0.6.21)
+    - Added Quaternions ~>50 mins
+    - Replaced Matrix Rotations with Quaternions (thus fixing Gimbal Locking) ~<20 mins
