@@ -84,7 +84,7 @@ namespace TRAP::INTERNAL
 			uint8_t CompressionMethod = 0;
 			uint8_t FilterMethod = 0;
 			uint8_t InterlaceMethod = 0;
-			uint32_t CRC = 0;
+			std::array<uint8_t, 4> CRC{};
 		};
 		struct tIMEChunk
 		{
@@ -97,23 +97,23 @@ namespace TRAP::INTERNAL
 		};
 
 		static bool ProcessIHDR(std::ifstream& file, Data& data, bool needSwap);
-		static bool ProcesscHRM(std::ifstream& file, bool needSwap);
-		static bool ProcessgAMA(std::ifstream& file, bool needSwap);
-		static bool ProcessiCCP(std::ifstream& file, uint32_t length, bool needSwap);
-		static bool ProcesssBIT(std::ifstream& file, const Data& data, bool needSwap);
-		static bool ProcesssRGB(std::ifstream& file, bool needSwap);
+		static bool ProcesscHRM(std::ifstream& file);
+		static bool ProcessgAMA(std::ifstream& file);
+		static bool ProcessiCCP(std::ifstream& file, uint32_t length);
+		static bool ProcesssBIT(std::ifstream& file, const Data& date);
+		static bool ProcesssRGB(std::ifstream& file);
 		static bool ProcessbKGD(std::ifstream& file, const Data& data, bool needSwap);
-		static bool ProcesshIST(std::ifstream& file, uint32_t length, bool needSwap);
-		static bool ProcesstRNS(std::ifstream& file, uint32_t length, Data& data, bool needSwap);
-		static bool ProcesspHYs(std::ifstream& file, bool needSwap);
-		static bool ProcesssPLT(std::ifstream& file, uint32_t length, bool needSwap);
+		static bool ProcesshIST(std::ifstream& file, uint32_t length);
+		static bool ProcesstRNS(std::ifstream& file, uint32_t length, Data& data);
+		static bool ProcesspHYs(std::ifstream& file);
+		static bool ProcesssPLT(std::ifstream& file, uint32_t length);
 		static bool ProcesstIME(std::ifstream& file, bool needSwap);
-		static bool ProcessiTXt(std::ifstream& file, uint32_t length, bool needSwap);
-		static bool ProcesstEXt(std::ifstream& file, uint32_t length, bool needSwap);
-		static bool ProcesszTXt(std::ifstream& file, uint32_t length, bool needSwap);
-		static bool ProcessPLTE(std::ifstream& file, Data& data, uint32_t length, bool needSwap);
-		static bool ProcessIDAT(std::ifstream& file, Data& data, uint32_t length, bool needSwap);
-		static bool ProcesseXIf(std::ifstream& file, uint32_t length, bool needSwap);
+		static bool ProcessiTXt(std::ifstream& file, uint32_t length);
+		static bool ProcesstEXt(std::ifstream& file, uint32_t length);
+		static bool ProcesszTXt(std::ifstream& file, uint32_t length);
+		static bool ProcessPLTE(std::ifstream& file, Data& data, uint32_t length);
+		static bool ProcessIDAT(std::ifstream& file, Data& data, uint32_t length);
+		static bool ProcesseXIf(std::ifstream& file, uint32_t length);
 		static bool IHDRCheck(const IHDRChunk& ihdrChunk);
 		static bool tIMECheck(const tIMEChunk& timeChunk);
 

@@ -37,6 +37,11 @@
 #include "Utils/Time/Timer.h"
 #include "Utils/String/String.h"
 #include "Utils/Random/Random.h"
+#include "Utils/Hash/Adler32.h"
+#include "Utils/Hash/CRC32.h"
+#include "Utils/Hash/SHA-2.h"
+#include "Utils/Hash/SHA-3.h"
+#include "Utils/Hash/ConvertHashToString.h"
 //-----------------------
 
 //----DEBUG--------------

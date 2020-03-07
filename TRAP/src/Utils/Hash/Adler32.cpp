@@ -1,31 +1,43 @@
 #include "TRAPPCH.h"
 #include "Adler32.h"
 
-uint32_t TRAP::Utils::Hash::Adler32(const uint8_t* data, uint32_t length, const uint32_t previousAdler32)
-{
+#include "Utils/ByteSwap.h"
+
+std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const void* data, uint64_t length)
+{	
 	TP_PROFILE_FUNCTION();
+
+	const uint8_t* dataPtr = static_cast<const uint8_t*>(data);
 
 	uint32_t s1 = 1u & 0xFFFFu;
 	uint32_t s2 = (1u >> 16u) & 0xFFFFu;
-	if(previousAdler32)
-	{
-		s1 = previousAdler32 & 0xFFFFu;
-		s2 = (previousAdler32 >> 16u) & 0xFFFFu;
-	}
 
-	while(length != 0u)
+	while (length != 0u)
 	{
 		//At least 5552 sums can be done before the sums overflow, saving a lot of module divisions
-		const uint32_t amount = length > 5552u ? 5552u : length;
+		const uint64_t amount = length > 5552u ? 5552u : length;
 		length -= amount;
-		for(uint32_t i = 0; i != amount; ++i)
+		for (uint64_t i = 0; i != amount; ++i)
 		{
-			s1 += (*data++);
+			s1 += (*dataPtr++);
 			s2 += s1;
 		}
 		s1 %= 65521u;
 		s2 %= 65521u;
 	}
 
-	return (s2 << 16u) | s1;
+	uint32_t adler32 = (s2 << 16u) | s1;
+	Memory::SwapBytes(adler32);
+
+	std::array<uint8_t, 4> result{};
+	memcpy(result.data(), &adler32, result.size());
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const std::string& str)
+{	
+	return Adler32(str.data(), str.length());
 }

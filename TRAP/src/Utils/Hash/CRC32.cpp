@@ -556,11 +556,11 @@ const std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Utils::Hash::CRC32(const void* data, std::size_t length, const uint32_t previousCRC32)
+std::array<uint8_t, 4> TRAP::Utils::Hash::CRC32(const void* data, uint64_t length)
 {
 	TP_PROFILE_FUNCTION();
 
-	uint32_t crc = ~previousCRC32; //Same as previousCRC32 ^ 0xFFFFFFFF
+	uint32_t crc = ~0; //Same as previousCRC32 ^ 0xFFFFFFFF
 	const uint32_t* current = static_cast<const uint32_t*>(data);
 
 	//Enabling optimization (at least -O2) automatically unrolls the inner for-loop
@@ -628,5 +628,18 @@ uint32_t TRAP::Utils::Hash::CRC32(const void* data, std::size_t length, const ui
 	while (length-- != 0)
 		crc = (crc >> 8) ^ CRC32Lookup[0][(crc & 0xFF) ^ *currentChar++];
 
-	return ~crc; //Same as crc ^ 0xFFFFFFFF
+	crc = ~crc; //Same as crc ^ 0xFFFFFFFF
+	Memory::SwapBytes(crc);
+	
+	std::array<uint8_t, 4> result{};
+	memcpy(result.data(), &crc, result.size());
+	
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::array<uint8_t, 4> TRAP::Utils::Hash::CRC32(const std::string& str)
+{
+	return CRC32(str.data(), str.length());
 }

@@ -951,3 +951,10 @@ SITREP 03/04/2020|20w10a1
     - Added Missing GLSLang license ~<10 mins
     - Added Missing SPIRV-Cross license ~<10 mins
     - Added Missing Premake5 license ~<10 mins
+
+SITREP 03/07/2020|20w10a2
+    - Changed TRAP Engine version to 20w10a2(0.6.22)
+    - Enabled AVX2 compilation(CPU Requirement) ~<10 mins
+    - Added SHA2 hash functions ~>20 mins
+    - Changed Adler32 and CRC32 interface ~<20 mins
+    - Added SHA3 hash functions ~>20 mins

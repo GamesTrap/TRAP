@@ -3,7 +3,8 @@
 
 namespace TRAP::Utils::Hash
 {
-	uint32_t CRC32(const void* data, std::size_t length, uint32_t previousCRC32 = 0);
+	std::array<uint8_t, 4> CRC32(const void* data, uint64_t length);
+	std::array<uint8_t, 4> CRC32(const std::string& str);
 }
 
 #endif /*_TRAP_CRC32_H_*/

@@ -48,6 +48,7 @@ project "TRAP"
 	staticruntime "on"
 	cppdialect "C++17"
 	systemversion "latest"
+	vectorextensions "AVX2"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -166,6 +167,7 @@ project "Sandbox"
 	staticruntime "on"
 	cppdialect "C++17"
 	systemversion "latest"
+	vectorextensions "AVX2"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -234,6 +236,7 @@ project "Tests"
 	staticruntime "on"
 	cppdialect "C++17"
 	systemversion "latest"
+	vectorextensions "AVX2"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")
@@ -302,6 +305,7 @@ project "ConvertToSPIRV"
 	staticruntime "on"
 	cppdialect "C++17"
 	systemversion "latest"
+	vectorextensions "AVX2"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")

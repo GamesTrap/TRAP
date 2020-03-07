@@ -43,12 +43,33 @@ constexpr void TRAP::Utils::Memory::SwapBytes<uint32_t>(uint32_t& t)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//TODO I dont know if this function is working properly
 template<>
 constexpr void TRAP::Utils::Memory::SwapBytes<int32_t>(int32_t& t)
 {
-	t = (((t & 0xFF000000) >> 24) | ((t & 0x00FF0000) >> 8) |
-		((t & 0x0000FF00) << 8) | ((t & 0x000000FF) << 24));
+	t = ((t << 8) & 0xFF00FF00) | ((t >> 8) & 0xFF00FF);
+	t = (t << 16) | ((t >> 16) & 0xFFFF);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+constexpr void TRAP::Utils::Memory::SwapBytes<uint64_t>(uint64_t& t)
+{
+	t = ((t << 8) & 0xFF00FF00FF00FF00ULL) | ((t >> 8) & 0x00FF00FF00FF00FFULL);
+	t = ((t << 16) & 0xFFFF0000FFFF0000ULL) | ((t >> 16) & 0x0000FFFF0000FFFFULL);
+	
+	t = (t << 32) | (t >> 32);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<>
+constexpr void TRAP::Utils::Memory::SwapBytes<int64_t>(int64_t& t)
+{
+	t = ((t << 8) & 0xFF00FF00FF00FF00ULL) | ((t >> 8) & 0x00FF00FF00FF00FFULL);
+	t = ((t << 16) & 0xFFFF0000FFFF0000ULL) | ((t >> 16) & 0x0000FFFF0000FFFFULL);
+	
+	t = (t << 32) | ((t >> 32) & 0xFFFFFFFFULL);
 }
 
 #endif /*_TRAP_BYTESWAP_H_*/
