@@ -1,7 +1,7 @@
 /*
 Copyright (c) 2002-2006 Marcus Geelnard
 
-Copyright (c) 2006-2019 Camilla Löwy
+Copyright (c) 2006-2019 Camilla Loewy
 
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
@@ -22,7 +22,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source
    distribution.
 
-Modified by: Jan "GamesTrap" Schürkamp
+Modified by: Jan "GamesTrap" Schuerkamp
 */
 
 #include "TRAPPCH.h"
@@ -161,7 +161,7 @@ void TRAP::Input::DetectControllerConnectionWin32()
 			if (!s_eventCallback)
 				continue;
 
-			ControllerConnectEvent event(static_cast<Controller>(cID));
+			Events::ControllerConnectEvent event(static_cast<Controller>(cID));
 			s_eventCallback(event);
 		}
 	}
@@ -361,7 +361,7 @@ void TRAP::Input::CloseController(Controller controller)
 
 	if(connected)
 	{
-		ControllerDisconnectEvent event(controller);	
+		Events::ControllerDisconnectEvent event(controller);
 		s_eventCallback(event);		
 	}
 }
@@ -656,7 +656,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 		if (&s_controllerInternal[index] == controller)
 			break;
 	
-	ControllerConnectEvent event(static_cast<Controller>(index));
+	Events::ControllerConnectEvent event(static_cast<Controller>(index));
 	s_eventCallback(event);
 
 	return DIENUM_STOP;

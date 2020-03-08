@@ -159,7 +159,7 @@ public:
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	bool OnKeyPress(TRAP::KeyPressEvent& event)
+	bool OnKeyPress(TRAP::Events::KeyPressEvent& event)
 	{
 		if (event.GetKey() == TRAP::Input::Key::Escape)
 			TRAP::Application::Shutdown();
@@ -195,12 +195,12 @@ public:
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	void OnEvent(TRAP::Event& event) override
+	void OnEvent(TRAP::Events::Event& event) override
 	{
 		m_cameraController.OnEvent(event);
 
-		TRAP::EventDispatcher dispatcher(event);
-		dispatcher.Dispatch<TRAP::KeyPressEvent>([this](TRAP::KeyPressEvent& e) { return OnKeyPress(e); });
+		TRAP::Events::EventDispatcher dispatcher(event);
+		dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) { return OnKeyPress(e); });
 	}
 
 private:

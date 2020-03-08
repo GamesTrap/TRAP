@@ -4,7 +4,7 @@
 #include "Event.h"
 #include "Window/Monitor.h"
 
-namespace TRAP
+namespace TRAP::Events
 {	
 	class MonitorEvent : public Event
 	{

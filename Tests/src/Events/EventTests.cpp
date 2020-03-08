@@ -23,7 +23,7 @@ void EventTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void EventTests::OnEvent(TRAP::Event& event)
+void EventTests::OnEvent(TRAP::Events::Event& event)
 {
 	TP_TRACE(event.ToString());
 }

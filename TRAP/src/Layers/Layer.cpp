@@ -40,7 +40,7 @@ void TRAP::Layer::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Layer::OnEvent(Event& event)
+void TRAP::Layer::OnEvent(Events::Event& event)
 {
 }
 

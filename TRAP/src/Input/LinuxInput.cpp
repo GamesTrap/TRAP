@@ -1,7 +1,7 @@
 /*
 Copyright (c) 2002-2006 Marcus Geelnard
 
-Copyright (c) 2006-2019 Camilla Löwy
+Copyright (c) 2006-2019 Camilla Loewy
 
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
@@ -22,7 +22,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source
    distribution.
 
-Modified by: Jan "GamesTrap" Schürkamp
+Modified by: Jan "GamesTrap" Schuerkamp
 */
 
 #include "TRAPPCH.h"
@@ -290,7 +290,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 		if (&s_controllerInternal[index] == con)
 			break;
 
-	ControllerConnectEvent event(static_cast<Controller>(index));
+	Events::ControllerConnectEvent event(static_cast<Controller>(index));
 	s_eventCallback(event);
 	
 	return true;
@@ -321,7 +321,7 @@ void TRAP::Input::CloseController(Controller controller)
 
 	if (connected)
 	{
-		ControllerDisconnectEvent event(static_cast<Controller>(controller));
+		Events::ControllerDisconnectEvent event(static_cast<Controller>(controller));
 		s_eventCallback(event);
 	}
 }

@@ -11,12 +11,12 @@ public:
 	void OnAttach() override;
 	void OnImGuiRender() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
-	void OnEvent(TRAP::Event& event) override;
+	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
-	bool OnControllerConnect(const TRAP::ControllerConnectEvent& event);
-	bool OnControllerDisconnect(const TRAP::ControllerDisconnectEvent& event);
-	bool OnWindowDrop(const TRAP::WindowDropEvent& event);
+	bool OnControllerConnect(const TRAP::Events::ControllerConnectEvent& event);
+	bool OnControllerDisconnect(const TRAP::Events::ControllerDisconnectEvent& event);
+	bool OnWindowDrop(const TRAP::Events::WindowDropEvent& event);
 
 	static std::string GetDPadDirection(const TRAP::Input::ControllerDPad& dpad);
 	

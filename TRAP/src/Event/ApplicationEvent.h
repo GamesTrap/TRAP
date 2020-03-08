@@ -3,7 +3,7 @@
 
 #include "Event.h"
 
-namespace TRAP
+namespace TRAP::Events
 {
 	//Unused for now
 	class AppTickEvent final : public Event

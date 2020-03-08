@@ -10,17 +10,17 @@ public:
 
 	void OnAttach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
-	void OnEvent(TRAP::Event& event) override;
+	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
-	bool OnKeyPress(const TRAP::KeyPressEvent& event);
-	bool OnWindowResize(const TRAP::WindowResizeEvent& event);
-	bool OnFrameBufferResize(const TRAP::FrameBufferResizeEvent& event);
-	bool OnWindowFocus(const TRAP::WindowFocusEvent& event);
-	bool OnWindowLostFocus(const TRAP::WindowLostFocusEvent& event);
-	bool OnWindowMinimize(const TRAP::WindowMinimizeEvent& event);
-	bool OnWindowMaximize(const TRAP::WindowMaximizeEvent& event);
-	bool OnWindowRestore(const TRAP::WindowRestoreEvent& event);
+	bool OnKeyPress(const TRAP::Events::KeyPressEvent& event);
+	bool OnWindowResize(const TRAP::Events::WindowResizeEvent& event);
+	bool OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event);
+	bool OnWindowFocus(const TRAP::Events::WindowFocusEvent& event);
+	bool OnWindowLostFocus(const TRAP::Events::WindowLostFocusEvent& event);
+	bool OnWindowMinimize(const TRAP::Events::WindowMinimizeEvent& event);
+	bool OnWindowMaximize(const TRAP::Events::WindowMaximizeEvent& event);
+	bool OnWindowRestore(const TRAP::Events::WindowRestoreEvent& event);
 };
 
 #endif /*_GAMESTRAP_MINIMIZETESTS_H_*/

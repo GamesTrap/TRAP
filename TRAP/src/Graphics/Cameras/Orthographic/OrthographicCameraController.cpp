@@ -101,13 +101,13 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::OrthographicCameraController::OnEvent(Event& e)
+void TRAP::Graphics::OrthographicCameraController::OnEvent(Events::Event& e)
 {
 	TP_PROFILE_FUNCTION();
 	
-	EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<MouseScrollEvent>([this](MouseScrollEvent& e) {return OnMouseScroll(e); });
-	dispatcher.Dispatch<FrameBufferResizeEvent>([this](FrameBufferResizeEvent& e) {return OnFrameBufferResize(e); });
+	Events::EventDispatcher dispatcher(e);
+	dispatcher.Dispatch<Events::MouseScrollEvent>([this](Events::MouseScrollEvent& e) {return OnMouseScroll(e); });
+	dispatcher.Dispatch<Events::FrameBufferResizeEvent>([this](Events::FrameBufferResizeEvent& e) {return OnFrameBufferResize(e); });
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -173,7 +173,7 @@ void TRAP::Graphics::OrthographicCameraController::SetZoomLevel(const float zoom
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(MouseScrollEvent& e)
+bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(Events::MouseScrollEvent& e)
 {
 	TP_PROFILE_FUNCTION();
 	
@@ -193,7 +193,7 @@ bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(MouseScrollEven
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(FrameBufferResizeEvent& e)
+bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
 {
 	TP_PROFILE_FUNCTION();
 	

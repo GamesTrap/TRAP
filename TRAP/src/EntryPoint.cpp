@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "EntryPoint.h"
 
-int32_t main()
+int main()
 {
 	TP_PROFILE_BEGIN_SESSION("Startup", "TRAPProfile-Startup.json");	
 	const auto app = TRAP::CreateApplication();

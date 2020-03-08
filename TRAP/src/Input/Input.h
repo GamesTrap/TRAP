@@ -1,7 +1,7 @@
 /*
 Copyright (c) 2002-2006 Marcus Geelnard
 
-Copyright (c) 2006-2019 Camilla Löwy
+Copyright (c) 2006-2019 Camilla Loewy
 
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
@@ -22,7 +22,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source
    distribution.
 
-Modified by: Jan "GamesTrap" Schürkamp
+Modified by: Jan "GamesTrap" Schuerkamp
 The above license only applies to some of the Controller specific parts of this file!
 */
 
@@ -296,7 +296,7 @@ namespace TRAP
 		static void SetClipboard(const std::string& str);
 		static std::string GetClipboard();
 		
-		using EventCallbackFn = std::function<void(Event&)>;
+		using EventCallbackFn = std::function<void(Events::Event&)>;
 		static void SetEventCallback(const EventCallbackFn& callback);
 		
 		static void UpdateControllerMappings(const std::string& map);

@@ -24,81 +24,81 @@ template<class T> T Rotatel64(T x, int64_t y)
 
 void DoTransform(std::array<uint64_t, 25>& A)
 {
-	for (int round = 0; round < 24; round++)
+	for (uint32_t round = 0; round < 24; round++)
 	{
-		std::array<uint64_t, 5> C{};
-		std::array<uint64_t, 5> D{};
-		C[0] = A[0 * 5 + 0] ^ A[1 * 5 + 0] ^ A[2 * 5 + 0] ^ A[3 * 5 + 0] ^ A[4 * 5 + 0];
-		C[1] = A[0 * 5 + 1] ^ A[1 * 5 + 1] ^ A[2 * 5 + 1] ^ A[3 * 5 + 1] ^ A[4 * 5 + 1];
-		C[2] = A[0 * 5 + 2] ^ A[1 * 5 + 2] ^ A[2 * 5 + 2] ^ A[3 * 5 + 2] ^ A[4 * 5 + 2];
-		C[3] = A[0 * 5 + 3] ^ A[1 * 5 + 3] ^ A[2 * 5 + 3] ^ A[3 * 5 + 3] ^ A[4 * 5 + 3];
-		C[4] = A[0 * 5 + 4] ^ A[1 * 5 + 4] ^ A[2 * 5 + 4] ^ A[3 * 5 + 4] ^ A[4 * 5 + 4];
+		std::array<uint64_t, 5> c{};
+		std::array<uint64_t, 5> d{};
+		c[0] = A[0 * 5 + 0] ^ A[1 * 5 + 0] ^ A[2 * 5 + 0] ^ A[3 * 5 + 0] ^ A[4 * 5 + 0];
+		c[1] = A[0 * 5 + 1] ^ A[1 * 5 + 1] ^ A[2 * 5 + 1] ^ A[3 * 5 + 1] ^ A[4 * 5 + 1];
+		c[2] = A[0 * 5 + 2] ^ A[1 * 5 + 2] ^ A[2 * 5 + 2] ^ A[3 * 5 + 2] ^ A[4 * 5 + 2];
+		c[3] = A[0 * 5 + 3] ^ A[1 * 5 + 3] ^ A[2 * 5 + 3] ^ A[3 * 5 + 3] ^ A[4 * 5 + 3];
+		c[4] = A[0 * 5 + 4] ^ A[1 * 5 + 4] ^ A[2 * 5 + 4] ^ A[3 * 5 + 4] ^ A[4 * 5 + 4];
 
-		D[0] = C[4] ^ Rotatel64(C[1], 1);
-		D[1] = C[0] ^ Rotatel64(C[2], 1);
-		D[2] = C[1] ^ Rotatel64(C[3], 1);
-		D[3] = C[2] ^ Rotatel64(C[4], 1);
-		D[4] = C[3] ^ Rotatel64(C[0], 1);
+		d[0] = c[4] ^ Rotatel64(c[1], 1);
+		d[1] = c[0] ^ Rotatel64(c[2], 1);
+		d[2] = c[1] ^ Rotatel64(c[3], 1);
+		d[3] = c[2] ^ Rotatel64(c[4], 1);
+		d[4] = c[3] ^ Rotatel64(c[0], 1);
 
-		const uint64_t B0 = A[0 * 5 + 0] ^ D[0];
-		const uint64_t B10 = Rotatel64(A[0 * 5 + 1] ^ D[1], 1);
-		const uint64_t B20 = Rotatel64(A[0 * 5 + 2] ^ D[2], 62);
-		const uint64_t B5 = Rotatel64(A[0 * 5 + 3] ^ D[3], 28);
-		const uint64_t B15 = Rotatel64(A[0 * 5 + 4] ^ D[4], 27);
+		const uint64_t b0 = A[0 * 5 + 0] ^ d[0];
+		const uint64_t b10 = Rotatel64(A[0 * 5 + 1] ^ d[1], 1);
+		const uint64_t b20 = Rotatel64(A[0 * 5 + 2] ^ d[2], 62);
+		const uint64_t b5 = Rotatel64(A[0 * 5 + 3] ^ d[3], 28);
+		const uint64_t b15 = Rotatel64(A[0 * 5 + 4] ^ d[4], 27);
 
-		const uint64_t B16 = Rotatel64(A[1 * 5 + 0] ^ D[0], 36);
-		const uint64_t B1 = Rotatel64(A[1 * 5 + 1] ^ D[1], 44);
-		const uint64_t B11 = Rotatel64(A[1 * 5 + 2] ^ D[2], 6);
-		const uint64_t B21 = Rotatel64(A[1 * 5 + 3] ^ D[3], 55);
-		const uint64_t B6 = Rotatel64(A[1 * 5 + 4] ^ D[4], 20);
+		const uint64_t b16 = Rotatel64(A[1 * 5 + 0] ^ d[0], 36);
+		const uint64_t b1 = Rotatel64(A[1 * 5 + 1] ^ d[1], 44);
+		const uint64_t b11 = Rotatel64(A[1 * 5 + 2] ^ d[2], 6);
+		const uint64_t b21 = Rotatel64(A[1 * 5 + 3] ^ d[3], 55);
+		const uint64_t b6 = Rotatel64(A[1 * 5 + 4] ^ d[4], 20);
 
-		const uint64_t B7 = Rotatel64(A[2 * 5 + 0] ^ D[0], 3);
-		const uint64_t B17 = Rotatel64(A[2 * 5 + 1] ^ D[1], 10);
-		const uint64_t B2 = Rotatel64(A[2 * 5 + 2] ^ D[2], 43);
-		const uint64_t B12 = Rotatel64(A[2 * 5 + 3] ^ D[3], 25);
-		const uint64_t B22 = Rotatel64(A[2 * 5 + 4] ^ D[4], 39);
+		const uint64_t b7 = Rotatel64(A[2 * 5 + 0] ^ d[0], 3);
+		const uint64_t b17 = Rotatel64(A[2 * 5 + 1] ^ d[1], 10);
+		const uint64_t b2 = Rotatel64(A[2 * 5 + 2] ^ d[2], 43);
+		const uint64_t b12 = Rotatel64(A[2 * 5 + 3] ^ d[3], 25);
+		const uint64_t b22 = Rotatel64(A[2 * 5 + 4] ^ d[4], 39);
 
-		const uint64_t B23 = Rotatel64(A[3 * 5 + 0] ^ D[0], 41);
-		const uint64_t B8 = Rotatel64(A[3 * 5 + 1] ^ D[1], 45);
-		const uint64_t B18 = Rotatel64(A[3 * 5 + 2] ^ D[2], 15);
-		const uint64_t B3 = Rotatel64(A[3 * 5 + 3] ^ D[3], 21);
-		const uint64_t B13 = Rotatel64(A[3 * 5 + 4] ^ D[4], 8);
+		const uint64_t b23 = Rotatel64(A[3 * 5 + 0] ^ d[0], 41);
+		const uint64_t b8 = Rotatel64(A[3 * 5 + 1] ^ d[1], 45);
+		const uint64_t b18 = Rotatel64(A[3 * 5 + 2] ^ d[2], 15);
+		const uint64_t b3 = Rotatel64(A[3 * 5 + 3] ^ d[3], 21);
+		const uint64_t b13 = Rotatel64(A[3 * 5 + 4] ^ d[4], 8);
 
-		const uint64_t B14 = Rotatel64(A[4 * 5 + 0] ^ D[0], 18);
-		const uint64_t B24 = Rotatel64(A[4 * 5 + 1] ^ D[1], 2);
-		const uint64_t B9 = Rotatel64(A[4 * 5 + 2] ^ D[2], 61);
-		const uint64_t B19 = Rotatel64(A[4 * 5 + 3] ^ D[3], 56);
-		const uint64_t B4 = Rotatel64(A[4 * 5 + 4] ^ D[4], 14);
+		const uint64_t b14 = Rotatel64(A[4 * 5 + 0] ^ d[0], 18);
+		const uint64_t b24 = Rotatel64(A[4 * 5 + 1] ^ d[1], 2);
+		const uint64_t b9 = Rotatel64(A[4 * 5 + 2] ^ d[2], 61);
+		const uint64_t b19 = Rotatel64(A[4 * 5 + 3] ^ d[3], 56);
+		const uint64_t b4 = Rotatel64(A[4 * 5 + 4] ^ d[4], 14);
 
-		A[0 * 5 + 0] = B0 ^ ((~B1) & B2);
-		A[0 * 5 + 1] = B1 ^ ((~B2) & B3);
-		A[0 * 5 + 2] = B2 ^ ((~B3) & B4);
-		A[0 * 5 + 3] = B3 ^ ((~B4) & B0);
-		A[0 * 5 + 4] = B4 ^ ((~B0) & B1);
+		A[0 * 5 + 0] = b0 ^ ((~b1) & b2);
+		A[0 * 5 + 1] = b1 ^ ((~b2) & b3);
+		A[0 * 5 + 2] = b2 ^ ((~b3) & b4);
+		A[0 * 5 + 3] = b3 ^ ((~b4) & b0);
+		A[0 * 5 + 4] = b4 ^ ((~b0) & b1);
 
-		A[1 * 5 + 0] = B5 ^ ((~B6) & B7);
-		A[1 * 5 + 1] = B6 ^ ((~B7) & B8);
-		A[1 * 5 + 2] = B7 ^ ((~B8) & B9);
-		A[1 * 5 + 3] = B8 ^ ((~B9) & B5);
-		A[1 * 5 + 4] = B9 ^ ((~B5) & B6);
+		A[1 * 5 + 0] = b5 ^ ((~b6) & b7);
+		A[1 * 5 + 1] = b6 ^ ((~b7) & b8);
+		A[1 * 5 + 2] = b7 ^ ((~b8) & b9);
+		A[1 * 5 + 3] = b8 ^ ((~b9) & b5);
+		A[1 * 5 + 4] = b9 ^ ((~b5) & b6);
 
-		A[2 * 5 + 0] = B10 ^ ((~B11) & B12);
-		A[2 * 5 + 1] = B11 ^ ((~B12) & B13);
-		A[2 * 5 + 2] = B12 ^ ((~B13) & B14);
-		A[2 * 5 + 3] = B13 ^ ((~B14) & B10);
-		A[2 * 5 + 4] = B14 ^ ((~B10) & B11);
+		A[2 * 5 + 0] = b10 ^ ((~b11) & b12);
+		A[2 * 5 + 1] = b11 ^ ((~b12) & b13);
+		A[2 * 5 + 2] = b12 ^ ((~b13) & b14);
+		A[2 * 5 + 3] = b13 ^ ((~b14) & b10);
+		A[2 * 5 + 4] = b14 ^ ((~b10) & b11);
 
-		A[3 * 5 + 0] = B15 ^ ((~B16) & B17);
-		A[3 * 5 + 1] = B16 ^ ((~B17) & B18);
-		A[3 * 5 + 2] = B17 ^ ((~B18) & B19);
-		A[3 * 5 + 3] = B18 ^ ((~B19) & B15);
-		A[3 * 5 + 4] = B19 ^ ((~B15) & B16);
+		A[3 * 5 + 0] = b15 ^ ((~b16) & b17);
+		A[3 * 5 + 1] = b16 ^ ((~b17) & b18);
+		A[3 * 5 + 2] = b17 ^ ((~b18) & b19);
+		A[3 * 5 + 3] = b18 ^ ((~b19) & b15);
+		A[3 * 5 + 4] = b19 ^ ((~b15) & b16);
 
-		A[4 * 5 + 0] = B20 ^ ((~B21) & B22);
-		A[4 * 5 + 1] = B21 ^ ((~B22) & B23);
-		A[4 * 5 + 2] = B22 ^ ((~B23) & B24);
-		A[4 * 5 + 3] = B23 ^ ((~B24) & B20);
-		A[4 * 5 + 4] = B24 ^ ((~B20) & B21);
+		A[4 * 5 + 0] = b20 ^ ((~b21) & b22);
+		A[4 * 5 + 1] = b21 ^ ((~b22) & b23);
+		A[4 * 5 + 2] = b22 ^ ((~b23) & b24);
+		A[4 * 5 + 3] = b23 ^ ((~b24) & b20);
+		A[4 * 5 + 4] = b24 ^ ((~b20) & b21);
 
 		A[0] ^= RC[round];
 	}

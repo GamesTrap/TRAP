@@ -4,7 +4,7 @@
 #include "Event.h"
 #include "Input/Input.h"
 
-namespace TRAP
+namespace TRAP::Events
 {
 	class ControllerEvent : public Event
 	{

@@ -1,42 +1,42 @@
 #include "TRAPPCH.h"
 #include "MouseEvent.h"
 
-TRAP::MouseMoveEvent::MouseMoveEvent(const float x, const float y, const std::string_view title)
+TRAP::Events::MouseMoveEvent::MouseMoveEvent(const float x, const float y, const std::string_view title)
 	: m_mouseX(x), m_mouseY(y), m_title(title)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::MouseMoveEvent::GetX() const
+float TRAP::Events::MouseMoveEvent::GetX() const
 {
 	return m_mouseX;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::MouseMoveEvent::GetY() const
+float TRAP::Events::MouseMoveEvent::GetY() const
 {
 	return m_mouseY;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2 TRAP::MouseMoveEvent::GetPosition() const
+TRAP::Math::Vec2 TRAP::Events::MouseMoveEvent::GetPosition() const
 {
 	return { m_mouseX, m_mouseY };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::MouseMoveEvent::GetTitle() const
+std::string_view TRAP::Events::MouseMoveEvent::GetTitle() const
 {
 	return m_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::MouseMoveEvent::ToString() const
+std::string TRAP::Events::MouseMoveEvent::ToString() const
 {
 	std::stringstream ss;
 	ss << "MouseMoveEvent: " << m_mouseX << ", " << m_mouseY;
@@ -46,28 +46,28 @@ std::string TRAP::MouseMoveEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MouseMoveEvent::GetStaticType()
+TRAP::Events::EventType TRAP::Events::MouseMoveEvent::GetStaticType()
 {
 	return EventType::MouseMove;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MouseMoveEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::MouseMoveEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::MouseMoveEvent::GetName() const
+const char* TRAP::Events::MouseMoveEvent::GetName() const
 {
 	return "MouseMove";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::MouseMoveEvent::GetCategoryFlags() const
+int32_t TRAP::Events::MouseMoveEvent::GetCategoryFlags() const
 {
 	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input);
 }
@@ -76,42 +76,42 @@ int32_t TRAP::MouseMoveEvent::GetCategoryFlags() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::MouseScrollEvent::MouseScrollEvent(const float xOffset, const float yOffset, const std::string_view title)
+TRAP::Events::MouseScrollEvent::MouseScrollEvent(const float xOffset, const float yOffset, const std::string_view title)
 	: m_xOffset(xOffset), m_yOffset(yOffset), m_title(title)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::MouseScrollEvent::GetXOffset() const
+float TRAP::Events::MouseScrollEvent::GetXOffset() const
 {
 	return m_xOffset;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::MouseScrollEvent::GetYOffset() const
+float TRAP::Events::MouseScrollEvent::GetYOffset() const
 {
 	return m_yOffset;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Math::Vec2 TRAP::MouseScrollEvent::GetOffset() const
+TRAP::Math::Vec2 TRAP::Events::MouseScrollEvent::GetOffset() const
 {
 	return { m_xOffset, m_yOffset };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::MouseScrollEvent::GetTitle() const
+std::string_view TRAP::Events::MouseScrollEvent::GetTitle() const
 {
 	return m_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::MouseScrollEvent::ToString() const
+std::string TRAP::Events::MouseScrollEvent::ToString() const
 {
 	std::stringstream ss;
 	ss << "MouseScrollEvent: " << GetXOffset() << ", " << GetYOffset();
@@ -121,28 +121,28 @@ std::string TRAP::MouseScrollEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MouseScrollEvent::GetStaticType()
+TRAP::Events::EventType TRAP::Events::MouseScrollEvent::GetStaticType()
 {
 	return EventType::MouseScroll;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MouseScrollEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::MouseScrollEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::MouseScrollEvent::GetName() const
+const char* TRAP::Events::MouseScrollEvent::GetName() const
 {
 	return "MouseScroll";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::MouseScrollEvent::GetCategoryFlags() const
+int32_t TRAP::Events::MouseScrollEvent::GetCategoryFlags() const
 {
 	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input);
 }
@@ -151,28 +151,28 @@ int32_t TRAP::MouseScrollEvent::GetCategoryFlags() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::MouseButton TRAP::MouseButtonEvent::GetMouseButton() const
+TRAP::Input::MouseButton TRAP::Events::MouseButtonEvent::GetMouseButton() const
 {
 	return m_button;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::MouseButtonEvent::GetCategoryFlags() const
+int32_t TRAP::Events::MouseButtonEvent::GetCategoryFlags() const
 {
 	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::MouseButtonEvent::MouseButtonEvent(const Input::MouseButton button)
+TRAP::Events::MouseButtonEvent::MouseButtonEvent(const Input::MouseButton button)
 	: m_button(button)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::MouseButtonEvent::MouseButtonToString(const Input::MouseButton button)
+std::string TRAP::Events::MouseButtonEvent::MouseButtonToString(const Input::MouseButton button)
 {
 	switch(button)
 	{
@@ -209,14 +209,14 @@ std::string TRAP::MouseButtonEvent::MouseButtonToString(const Input::MouseButton
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::MouseButtonPressEvent::MouseButtonPressEvent(const Input::MouseButton button, const std::string_view title)
+TRAP::Events::MouseButtonPressEvent::MouseButtonPressEvent(const Input::MouseButton button, const std::string_view title)
 	: MouseButtonEvent(button), m_title(title)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::MouseButtonPressEvent::ToString() const
+std::string TRAP::Events::MouseButtonPressEvent::ToString() const
 {
 	std::stringstream ss;
 	ss << "MouseButtonPressEvent: " << MouseButtonToString(m_button) << "(" << static_cast<int32_t>(m_button) << ")";
@@ -226,28 +226,28 @@ std::string TRAP::MouseButtonPressEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::MouseButtonPressEvent::GetTitle() const
+std::string_view TRAP::Events::MouseButtonPressEvent::GetTitle() const
 {
 	return m_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MouseButtonPressEvent::GetStaticType()
+TRAP::Events::EventType TRAP::Events::MouseButtonPressEvent::GetStaticType()
 {
 	return EventType::MouseButtonPress;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MouseButtonPressEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::MouseButtonPressEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::MouseButtonPressEvent::GetName() const
+const char* TRAP::Events::MouseButtonPressEvent::GetName() const
 {
 	return "MouseButtonPress";
 }
@@ -256,14 +256,14 @@ const char* TRAP::MouseButtonPressEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::MouseButtonReleaseEvent::MouseButtonReleaseEvent(const Input::MouseButton button, const std::string_view title)
+TRAP::Events::MouseButtonReleaseEvent::MouseButtonReleaseEvent(const Input::MouseButton button, const std::string_view title)
 	: MouseButtonEvent(button), m_title(title)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::MouseButtonReleaseEvent::ToString() const
+std::string TRAP::Events::MouseButtonReleaseEvent::ToString() const
 {
 	std::stringstream ss;
 	ss << "MouseButtonReleaseEvent: " << MouseButtonToString(m_button) << "(" << static_cast<int32_t>(m_button) << ")";
@@ -273,28 +273,28 @@ std::string TRAP::MouseButtonReleaseEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::MouseButtonReleaseEvent::GetTitle() const
+std::string_view TRAP::Events::MouseButtonReleaseEvent::GetTitle() const
 {
 	return m_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MouseButtonReleaseEvent::GetStaticType()
+TRAP::Events::EventType TRAP::Events::MouseButtonReleaseEvent::GetStaticType()
 {
 	return EventType::MouseButtonRelease;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MouseButtonReleaseEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::MouseButtonReleaseEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::MouseButtonReleaseEvent::GetName() const
+const char* TRAP::Events::MouseButtonReleaseEvent::GetName() const
 {
 	return "MouseButtonRelease";
 }
@@ -303,42 +303,42 @@ const char* TRAP::MouseButtonReleaseEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::MouseEnterEvent::MouseEnterEvent(const std::string_view title)
+TRAP::Events::MouseEnterEvent::MouseEnterEvent(const std::string_view title)
 	: m_title(title)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::MouseEnterEvent::GetTitle() const
+std::string_view TRAP::Events::MouseEnterEvent::GetTitle() const
 {
 	return m_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MouseEnterEvent::GetStaticType()
+TRAP::Events::EventType TRAP::Events::MouseEnterEvent::GetStaticType()
 {
 	return EventType::MouseEnter;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MouseEnterEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::MouseEnterEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::MouseEnterEvent::GetName() const
+const char* TRAP::Events::MouseEnterEvent::GetName() const
 {
 	return "MouseEnter";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::MouseEnterEvent::GetCategoryFlags() const
+int32_t TRAP::Events::MouseEnterEvent::GetCategoryFlags() const
 {
 	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input);
 }
@@ -347,42 +347,42 @@ int32_t TRAP::MouseEnterEvent::GetCategoryFlags() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::MouseLeaveEvent::MouseLeaveEvent(const std::string_view title)
+TRAP::Events::MouseLeaveEvent::MouseLeaveEvent(const std::string_view title)
 	: m_title(title)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::MouseLeaveEvent::GetTitle() const
+std::string_view TRAP::Events::MouseLeaveEvent::GetTitle() const
 {
 	return m_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MouseLeaveEvent::GetStaticType()
+TRAP::Events::EventType TRAP::Events::MouseLeaveEvent::GetStaticType()
 {
 	return EventType::MouseLeave;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MouseLeaveEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::MouseLeaveEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::MouseLeaveEvent::GetName() const
+const char* TRAP::Events::MouseLeaveEvent::GetName() const
 {
 	return "MouseLeave";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::MouseLeaveEvent::GetCategoryFlags() const
+int32_t TRAP::Events::MouseLeaveEvent::GetCategoryFlags() const
 {
 	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input);
 }

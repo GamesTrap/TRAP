@@ -65,11 +65,11 @@ void IconTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void IconTests::OnEvent(TRAP::Event& event)
+void IconTests::OnEvent(TRAP::Events::Event& event)
 {
-	TRAP::EventDispatcher dispatcher(event);
+	TRAP::Events::EventDispatcher dispatcher(event);
 
-	dispatcher.Dispatch<TRAP::KeyPressEvent>([this](TRAP::KeyPressEvent& e) {return OnKeyPress(e); });
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) {return OnKeyPress(e); });
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -98,7 +98,7 @@ void IconTests::SetIcon(const TRAP::Scope<TRAP::Window>& window, const int32_t i
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool IconTests::OnKeyPress(TRAP::KeyPressEvent& event)
+bool IconTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 {
 	if (event.GetRepeatCount() > 0)
 		return true;

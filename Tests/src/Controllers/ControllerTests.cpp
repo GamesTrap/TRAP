@@ -150,17 +150,17 @@ void ControllerTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ControllerTests::OnEvent(TRAP::Event& event)
+void ControllerTests::OnEvent(TRAP::Events::Event& event)
 {
-	TRAP::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::ControllerConnectEvent>([this](TRAP::ControllerConnectEvent& e) { return OnControllerConnect(e); });
-	dispatcher.Dispatch<TRAP::ControllerDisconnectEvent>([this](TRAP::ControllerDisconnectEvent& e) { return OnControllerDisconnect(e); });
-	dispatcher.Dispatch<TRAP::WindowDropEvent>([this](TRAP::WindowDropEvent& e) { return OnWindowDrop(e); });
+	TRAP::Events::EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<TRAP::Events::ControllerConnectEvent>([this](TRAP::Events::ControllerConnectEvent& e) { return OnControllerConnect(e); });
+	dispatcher.Dispatch<TRAP::Events::ControllerDisconnectEvent>([this](TRAP::Events::ControllerDisconnectEvent& e) { return OnControllerDisconnect(e); });
+	dispatcher.Dispatch<TRAP::Events::WindowDropEvent>([this](TRAP::Events::WindowDropEvent& e) { return OnWindowDrop(e); });
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ControllerTests::OnControllerConnect(const TRAP::ControllerConnectEvent& event)
+bool ControllerTests::OnControllerConnect(const TRAP::Events::ControllerConnectEvent& event)
 {
 	s_controllers.push_back(event.GetController());
 	
@@ -172,7 +172,7 @@ bool ControllerTests::OnControllerConnect(const TRAP::ControllerConnectEvent& ev
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ControllerTests::OnControllerDisconnect(const TRAP::ControllerDisconnectEvent& event)
+bool ControllerTests::OnControllerDisconnect(const TRAP::Events::ControllerDisconnectEvent& event)
 {
 	for(uint32_t i = 0; i < s_controllers.size(); i++)
 	{
@@ -191,7 +191,7 @@ bool ControllerTests::OnControllerDisconnect(const TRAP::ControllerDisconnectEve
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ControllerTests::OnWindowDrop(const TRAP::WindowDropEvent& event)
+bool ControllerTests::OnWindowDrop(const TRAP::Events::WindowDropEvent& event)
 {
 	std::vector<std::string> paths = event.GetPaths();
 	

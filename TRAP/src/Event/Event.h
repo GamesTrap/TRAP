@@ -1,7 +1,7 @@
 #ifndef _TRAP_EVENT_H_
 #define _TRAP_EVENT_H_
 
-namespace TRAP
+namespace TRAP::Events
 {
 	//TODO
 	//Events in TRAP are currently blocking, meaning when an event occurs it immediately gets dispatched and must be dealt with right then and there.
@@ -74,7 +74,8 @@ namespace TRAP
 		return false;
 	}
 
-	std::ostream& operator<<(std::ostream& os, const Event& e);
 }
+
+std::ostream& operator<<(std::ostream& os, const TRAP::Events::Event& e);
 
 #endif /*_TRAP_EVENT_H_*/

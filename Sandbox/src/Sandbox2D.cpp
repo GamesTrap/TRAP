@@ -88,7 +88,7 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void Sandbox2D::OnEvent(TRAP::Event& event)
+void Sandbox2D::OnEvent(TRAP::Events::Event& event)
 {
 	m_cameraController.OnEvent(event);
 }

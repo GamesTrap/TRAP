@@ -84,16 +84,16 @@ void CursorTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void CursorTests::OnEvent(TRAP::Event& event)
+void CursorTests::OnEvent(TRAP::Events::Event& event)
 {
-	TRAP::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::KeyPressEvent>([this](TRAP::KeyPressEvent& e) { return OnKeyPress(e); });
-	dispatcher.Dispatch<TRAP::MouseMoveEvent>([this](TRAP::MouseMoveEvent& e) { return OnMouseMove(e); });
+	TRAP::Events::EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) { return OnKeyPress(e); });
+	dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>([this](TRAP::Events::MouseMoveEvent& e) { return OnMouseMove(e); });
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool CursorTests::OnKeyPress(TRAP::KeyPressEvent& event)
+bool CursorTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 {
 	if (event.GetRepeatCount() == 0)
 	{
@@ -245,7 +245,7 @@ bool CursorTests::OnKeyPress(TRAP::KeyPressEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool CursorTests::OnMouseMove(TRAP::MouseMoveEvent& event)
+bool CursorTests::OnMouseMove(TRAP::Events::MouseMoveEvent& event)
 {
 	TP_INFO("[Cursor] Position: ", event.GetX(), " ", event.GetY(), " (", event.GetX() - m_cursorX, " ", event.GetY() - m_cursorY, ")");
 	

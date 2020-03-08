@@ -3,7 +3,7 @@
 
 #include "Event.h"
 
-namespace TRAP
+namespace TRAP::Events
 {
 	class WindowResizeEvent final : public Event
 	{

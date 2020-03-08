@@ -10,10 +10,10 @@ public:
 
 	void OnAttach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
-	void OnEvent(TRAP::Event& event) override;
+	void OnEvent(TRAP::Events::Event& event) override;
 
-	bool OnKeyPress(TRAP::KeyPressEvent& event);
-	bool OnMouseMove(TRAP::MouseMoveEvent& event);
+	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
+	bool OnMouseMove(TRAP::Events::MouseMoveEvent& event);
 	
 private:
 	float Star(int32_t x, int32_t y, float t) const;

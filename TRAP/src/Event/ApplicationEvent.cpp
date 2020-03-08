@@ -1,28 +1,28 @@
 #include "TRAPPCH.h"
 #include "ApplicationEvent.h"
 
-TRAP::EventType TRAP::AppTickEvent::GetStaticType()
+TRAP::Events::EventType TRAP::Events::AppTickEvent::GetStaticType()
 {
 	return EventType::AppTick;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::AppTickEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::AppTickEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::AppTickEvent::GetName() const
+const char* TRAP::Events::AppTickEvent::GetName() const
 {
 	return "AppTick";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::AppTickEvent::GetCategoryFlags() const
+int32_t TRAP::Events::AppTickEvent::GetCategoryFlags() const
 {
 	return static_cast<int32_t>(EventCategory::Application);
 }
@@ -31,28 +31,28 @@ int32_t TRAP::AppTickEvent::GetCategoryFlags() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::AppUpdateEvent::GetStaticType()
+TRAP::Events::EventType TRAP::Events::AppUpdateEvent::GetStaticType()
 {
 	return EventType::AppUpdate;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::AppUpdateEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::AppUpdateEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::AppUpdateEvent::GetName() const
+const char* TRAP::Events::AppUpdateEvent::GetName() const
 {
 	return "AppUpdate";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::AppUpdateEvent::GetCategoryFlags() const
+int32_t TRAP::Events::AppUpdateEvent::GetCategoryFlags() const
 {
 	return static_cast<int32_t>(EventCategory::Application);
 }
@@ -61,28 +61,28 @@ int32_t TRAP::AppUpdateEvent::GetCategoryFlags() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::AppRenderEvent::GetStaticType()
+TRAP::Events::EventType TRAP::Events::AppRenderEvent::GetStaticType()
 {
 	return EventType::AppRender;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::AppRenderEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::AppRenderEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::AppRenderEvent::GetName() const
+const char* TRAP::Events::AppRenderEvent::GetName() const
 {
 	return "AppRender";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::AppRenderEvent::GetCategoryFlags() const
+int32_t TRAP::Events::AppRenderEvent::GetCategoryFlags() const
 {
 	return static_cast<int32_t>(EventCategory::Application);
 }

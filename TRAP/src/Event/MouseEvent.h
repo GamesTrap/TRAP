@@ -4,7 +4,7 @@
 #include "Input/Input.h"
 #include "Event.h"
 
-namespace TRAP
+namespace TRAP::Events
 {
 	class MouseMoveEvent final : public Event
 	{

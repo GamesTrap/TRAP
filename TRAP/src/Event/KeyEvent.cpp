@@ -3,28 +3,28 @@
 
 #include "Window/WindowingAPI.h"
 
-TRAP::Input::Key TRAP::KeyEvent::GetKey() const
+TRAP::Input::Key TRAP::Events::KeyEvent::GetKey() const
 {
 	return m_key;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::KeyEvent::GetCategoryFlags() const
+int32_t TRAP::Events::KeyEvent::GetCategoryFlags() const
 {
 	return static_cast<int32_t>(EventCategory::Keyboard) | static_cast<int32_t>(EventCategory::Input);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::KeyEvent::KeyEvent(const Input::Key key)
+TRAP::Events::KeyEvent::KeyEvent(const Input::Key key)
 	: m_key(key)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::KeyEvent::NonPrintableKeyToString(const Input::Key key)
+std::string TRAP::Events::KeyEvent::NonPrintableKeyToString(const Input::Key key)
 {
 	switch(key)
 	{
@@ -208,21 +208,21 @@ std::string TRAP::KeyEvent::NonPrintableKeyToString(const Input::Key key)
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::KeyPressEvent::KeyPressEvent(const Input::Key key, const int32_t repeatCount, const std::string_view title)
+TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const int32_t repeatCount, const std::string_view title)
 	: KeyEvent(key), m_repeatCount(repeatCount), m_title(title)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::KeyPressEvent::GetRepeatCount() const
+int32_t TRAP::Events::KeyPressEvent::GetRepeatCount() const
 {
 	return m_repeatCount;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::KeyPressEvent::ToString() const
+std::string TRAP::Events::KeyPressEvent::ToString() const
 {
 	const char* name = INTERNAL::WindowingAPI::GetKeyName(m_key, 0);
 	
@@ -241,28 +241,28 @@ std::string TRAP::KeyPressEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::KeyPressEvent::GetTitle() const
+std::string_view TRAP::Events::KeyPressEvent::GetTitle() const
 {
 	return m_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::KeyPressEvent::GetStaticType()
+TRAP::Events::EventType TRAP::Events::KeyPressEvent::GetStaticType()
 {
 	return EventType::KeyPress;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::KeyPressEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::KeyPressEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::KeyPressEvent::GetName() const
+const char* TRAP::Events::KeyPressEvent::GetName() const
 {
 	return "KeyPress";
 }
@@ -271,14 +271,14 @@ const char* TRAP::KeyPressEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, const std::string_view title)
+TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, const std::string_view title)
 	: KeyEvent(key), m_title(title)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::KeyReleaseEvent::ToString() const
+std::string TRAP::Events::KeyReleaseEvent::ToString() const
 {
 	const char* name = INTERNAL::WindowingAPI::GetKeyName(m_key, 0);
 	
@@ -297,28 +297,28 @@ std::string TRAP::KeyReleaseEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::KeyReleaseEvent::GetTitle() const
+std::string_view TRAP::Events::KeyReleaseEvent::GetTitle() const
 {
 	return m_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::KeyReleaseEvent::GetStaticType()
+TRAP::Events::EventType TRAP::Events::KeyReleaseEvent::GetStaticType()
 {
 	return EventType::KeyRelease;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::KeyReleaseEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::KeyReleaseEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::KeyReleaseEvent::GetName() const
+const char* TRAP::Events::KeyReleaseEvent::GetName() const
 {
 	return "KeyRelease";
 }
@@ -327,14 +327,14 @@ const char* TRAP::KeyReleaseEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::KeyTypeEvent::KeyTypeEvent(const uint32_t codePoint, const std::string_view title)
+TRAP::Events::KeyTypeEvent::KeyTypeEvent(const uint32_t codePoint, const std::string_view title)
 	: m_title(title), m_codePoint(codePoint)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::KeyTypeEvent::ToString() const
+std::string TRAP::Events::KeyTypeEvent::ToString() const
 {
 	std::stringstream ss;
 	
@@ -345,49 +345,49 @@ std::string TRAP::KeyTypeEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::KeyTypeEvent::GetTitle() const
+std::string_view TRAP::Events::KeyTypeEvent::GetTitle() const
 {
 	return m_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::KeyTypeEvent::GetCodePoint() const
+uint32_t TRAP::Events::KeyTypeEvent::GetCodePoint() const
 {
 	return m_codePoint;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::KeyTypeEvent::GetStaticType()
+TRAP::Events::EventType TRAP::Events::KeyTypeEvent::GetStaticType()
 {
 	return EventType::KeyType;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::KeyTypeEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::KeyTypeEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::KeyTypeEvent::GetName() const
+const char* TRAP::Events::KeyTypeEvent::GetName() const
 {
 	return "KeyType";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::KeyTypeEvent::GetCategoryFlags() const
+int32_t TRAP::Events::KeyTypeEvent::GetCategoryFlags() const
 {
 	return static_cast<int32_t>(EventCategory::Keyboard) | static_cast<int32_t>(EventCategory::Input);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::KeyTypeEvent::EncodeUTF8(const uint32_t codePoint)
+std::string TRAP::Events::KeyTypeEvent::EncodeUTF8(const uint32_t codePoint)
 {
 	std::string result{};
 

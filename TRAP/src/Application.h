@@ -14,13 +14,16 @@ int main();
 
 namespace TRAP
 {
-	class WindowRestoreEvent;
-	class WindowMinimizeEvent;
-	class WindowLostFocusEvent;
-	class WindowFocusEvent;
-	class FrameBufferResizeEvent;
-	class WindowCloseEvent;
-	class KeyPressEvent;
+	namespace Events
+	{
+		class WindowRestoreEvent;
+		class WindowMinimizeEvent;
+		class WindowLostFocusEvent;
+		class WindowFocusEvent;
+		class FrameBufferResizeEvent;
+		class WindowCloseEvent;
+		class KeyPressEvent;
+	}
 
 	class Application
 	{		
@@ -81,14 +84,14 @@ namespace TRAP
 		
 		Utils::TimeStep GetTimeInternal() const;
 
-		void OnEvent(Event& e);
-		bool OnWindowClose(WindowCloseEvent& e);
-		bool OnFrameBufferResize(FrameBufferResizeEvent& e);
-		bool OnKeyPress(KeyPressEvent& e) const;
-		bool OnWindowFocus(WindowFocusEvent& e);
-		bool OnWindowLostFocus(WindowLostFocusEvent& e);
-		bool OnWindowMinimize(WindowMinimizeEvent& e);
-		bool OnWindowRestore(WindowRestoreEvent& e);
+		void OnEvent(Events::Event& e);
+		bool OnWindowClose(Events::WindowCloseEvent& e);
+		bool OnFrameBufferResize(Events::FrameBufferResizeEvent& e);
+		bool OnKeyPress(Events::KeyPressEvent& e) const;
+		bool OnWindowFocus(Events::WindowFocusEvent& e);
+		bool OnWindowLostFocus(Events::WindowLostFocusEvent& e);
+		bool OnWindowMinimize(Events::WindowMinimizeEvent& e);
+		bool OnWindowRestore(Events::WindowRestoreEvent& e);
 
 		void UpdateLinuxWindowManager();
 

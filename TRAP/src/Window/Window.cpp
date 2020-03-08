@@ -219,7 +219,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w10a2]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][20w10a3]" + std::string(Graphics::Renderer::GetTitle());
 #ifdef TRAP_PLATFORM_LINUX
 	if (Application::GetLinuxWindowManager() == Application::LinuxWindowManager::Wayland)
 		newTitle += "[Wayland]";
@@ -382,8 +382,8 @@ void TRAP::Window::SetDisplayMode(const DisplayMode& mode,
 	//Trigger resize event
 	if (m_data.EventCallback)
 	{
-		WindowResizeEvent event(width, height, m_data.Title);
-		FrameBufferResizeEvent event1(width, height, m_data.Title);
+		Events::WindowResizeEvent event(width, height, m_data.Title);
+		Events::FrameBufferResizeEvent event1(width, height, m_data.Title);
 		m_data.EventCallback(event);
 		m_data.EventCallback(event1);
 	}
@@ -844,7 +844,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w10a2]";
+		"[INDEV][20w10a3]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif
@@ -1048,7 +1048,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		if (!data.EventCallback)
 			return;
 
-		WindowResizeEvent event(width, height, data.Title);
+		Events::WindowResizeEvent event(width, height, data.Title);
 		data.EventCallback(event);
 	});
 
@@ -1061,12 +1061,12 @@ void TRAP::Window::Init(const WindowProps& props)
 
 		if (restored)
 		{
-			WindowRestoreEvent event(data.Title);
+			Events::WindowRestoreEvent event(data.Title);
 			data.EventCallback(event);
 		}
 		else
 		{
-			WindowMinimizeEvent event(data.Title);
+			Events::WindowMinimizeEvent event(data.Title);
 			data.EventCallback(event);
 		}
 	});
@@ -1080,12 +1080,12 @@ void TRAP::Window::Init(const WindowProps& props)
 
 		if (restored)
 		{
-			WindowRestoreEvent event(data.Title);
+			Events::WindowRestoreEvent event(data.Title);
 			data.EventCallback(event);
 		}
 		else
 		{
-			WindowMaximizeEvent event(data.Title);
+			Events::WindowMaximizeEvent event(data.Title);
 			data.EventCallback(event);
 		}
 	});
@@ -1103,7 +1103,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		if (!data.EventCallback)
 			return;
 		
-		WindowMoveEvent event(x, y, data.Title);
+		Events::WindowMoveEvent event(x, y, data.Title);
 		data.EventCallback(event);
 	});
 
@@ -1116,12 +1116,12 @@ void TRAP::Window::Init(const WindowProps& props)
 		
 		if (focused)
 		{
-			WindowFocusEvent event(data.Title);
+			Events::WindowFocusEvent event(data.Title);
 			data.EventCallback(event);
 		}
 		else
 		{
-			WindowLostFocusEvent event(data.Title);
+			Events::WindowLostFocusEvent event(data.Title);
 			data.EventCallback(event);
 		}
 	});
@@ -1133,7 +1133,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		if (!data.EventCallback)
 			return;
 		
-		WindowCloseEvent event(data.Title);
+		Events::WindowCloseEvent event(data.Title);
 		data.EventCallback(event);
 	});
 
@@ -1150,7 +1150,7 @@ void TRAP::Window::Init(const WindowProps& props)
 				if (!data.EventCallback)
 					return;
 				
-				KeyPressEvent event(static_cast<Input::Key>(key), 0, data.Title);
+				Events::KeyPressEvent event(static_cast<Input::Key>(key), 0, data.Title);
 				data.EventCallback(event);
 			}
 			else
@@ -1160,7 +1160,7 @@ void TRAP::Window::Init(const WindowProps& props)
 				if (!data.EventCallback)
 					return;
 				
-				KeyPressEvent event(static_cast<Input::Key>(key), data.KeyRepeatCounts[static_cast<uint16_t>(key)], data.Title);
+				Events::KeyPressEvent event(static_cast<Input::Key>(key), data.KeyRepeatCounts[static_cast<uint16_t>(key)], data.Title);
 				data.EventCallback(event);
 			}
 		}
@@ -1171,7 +1171,7 @@ void TRAP::Window::Init(const WindowProps& props)
 			if (!data.EventCallback)
 				return;
 			
-			KeyReleaseEvent event(static_cast<Input::Key>(key), data.Title);
+			Events::KeyReleaseEvent event(static_cast<Input::Key>(key), data.Title);
 			data.EventCallback(event);
 		}
 	});
@@ -1183,7 +1183,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		if (!data.EventCallback)
 			return;
 		
-		KeyTypeEvent event(codePoint, data.Title);
+		Events::KeyTypeEvent event(codePoint, data.Title);
 		data.EventCallback(event);
 	});
 
@@ -1196,12 +1196,12 @@ void TRAP::Window::Init(const WindowProps& props)
 		
 		if (pressed)
 		{
-			MouseButtonPressEvent event(static_cast<Input::MouseButton>(button), data.Title);
+			Events::MouseButtonPressEvent event(static_cast<Input::MouseButton>(button), data.Title);
 			data.EventCallback(event);
 		}
 		else
 		{
-			MouseButtonReleaseEvent event(static_cast<Input::MouseButton>(button), data.Title);
+			Events::MouseButtonReleaseEvent event(static_cast<Input::MouseButton>(button), data.Title);
 			data.EventCallback(event);
 		}
 	});
@@ -1213,7 +1213,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		if (!data.EventCallback)
 			return;
 		
-		MouseScrollEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset), data.Title);
+		Events::MouseScrollEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset), data.Title);
 		data.EventCallback(event);
 	});
 
@@ -1224,7 +1224,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		if (!data.EventCallback)
 			return;
 		
-		MouseMoveEvent event(static_cast<float>(xPos), static_cast<float>(yPos), data.Title);
+		Events::MouseMoveEvent event(static_cast<float>(xPos), static_cast<float>(yPos), data.Title);
 		data.EventCallback(event);
 	});
 
@@ -1237,7 +1237,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		if (!data.EventCallback)
 			return;
 
-		FrameBufferResizeEvent event(width, height, data.Title);
+		Events::FrameBufferResizeEvent event(width, height, data.Title);
 		data.EventCallback(event);
 	});
 
@@ -1250,12 +1250,12 @@ void TRAP::Window::Init(const WindowProps& props)
 
 		if (entered)
 		{
-			MouseEnterEvent event(data.Title);
+			Events::MouseEnterEvent event(data.Title);
 			data.EventCallback(event);
 		}
 		else
 		{
-			MouseLeaveEvent event(data.Title);
+			Events::MouseLeaveEvent event(data.Title);
 			data.EventCallback(event);
 		}
 	});
@@ -1267,7 +1267,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		if (!data.EventCallback)
 			return;
 
-		WindowDropEvent event(std::move(paths), data.Title);
+		Events::WindowDropEvent event(std::move(paths), data.Title);
 		data.EventCallback(event);
 	});
 
@@ -1278,7 +1278,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		if (!data.EventCallback)
 			return;
 
-		WindowContentScaleEvent event(xScale, yScale, data.Title);
+		Events::WindowContentScaleEvent event(xScale, yScale, data.Title);
 		data.EventCallback(event);
 	});
 
@@ -1320,12 +1320,12 @@ void TRAP::Window::Init(const WindowProps& props)
 				{
 					if (connected)
 					{
-						MonitorConnectEvent event(mon);
+						Events::MonitorConnectEvent event(mon);
 						data.EventCallback(event);
 					}
 					else
 					{
-						MonitorDisconnectEvent event(mon);
+						Events::MonitorDisconnectEvent event(mon);
 						data.EventCallback(event);
 					}
 

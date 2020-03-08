@@ -958,3 +958,9 @@ SITREP 03/07/2020|20w10a2
     - Added SHA2 hash functions ~>20 mins
     - Changed Adler32 and CRC32 interface ~<20 mins
     - Added SHA3 hash functions ~>20 mins
+    - Fixed SHA2 on Linux ~<10 mins
+
+SITREP 03/08/2020|20w10a3
+    - Docs now use Dark theme by default ~<20 mins
+    - Moved Event stuff from TRAP namespace to TRAP::Events ~<30 mins
+    - Restructured Events in Docs ~>40 mins

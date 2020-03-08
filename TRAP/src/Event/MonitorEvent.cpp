@@ -1,21 +1,21 @@
 #include "TRAPPCH.h"
 #include "MonitorEvent.h"
 
-TRAP::Monitor TRAP::MonitorEvent::GetMonitor() const
+TRAP::Monitor TRAP::Events::MonitorEvent::GetMonitor() const
 {
 	return m_monitor;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::MonitorEvent::GetCategoryFlags() const
+int32_t TRAP::Events::MonitorEvent::GetCategoryFlags() const
 {
 	return static_cast<int32_t>(EventCategory::Application);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::MonitorEvent::MonitorEvent(const Monitor monitor)
+TRAP::Events::MonitorEvent::MonitorEvent(const Monitor monitor)
 	: m_monitor(monitor)
 {
 }
@@ -24,14 +24,14 @@ TRAP::MonitorEvent::MonitorEvent(const Monitor monitor)
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::MonitorConnectEvent::MonitorConnectEvent(const Monitor monitor)
+TRAP::Events::MonitorConnectEvent::MonitorConnectEvent(const Monitor monitor)
 	: MonitorEvent(monitor)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::MonitorConnectEvent::ToString() const
+std::string TRAP::Events::MonitorConnectEvent::ToString() const
 {
 	std::stringstream ss;
 	ss << "MonitorConnectEvent: " << m_monitor.GetName() << " (" << m_monitor.GetID() << ")";
@@ -41,35 +41,35 @@ std::string TRAP::MonitorConnectEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MonitorConnectEvent::GetStaticType()
+TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetStaticType()
 {
 	return EventType::MonitorConnect;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MonitorConnectEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::MonitorConnectEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::MonitorConnectEvent::GetName() const
+const char* TRAP::Events::MonitorConnectEvent::GetName() const
 {
 	return "MonitorConnect";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::MonitorDisconnectEvent::MonitorDisconnectEvent(const Monitor monitor)
+TRAP::Events::MonitorDisconnectEvent::MonitorDisconnectEvent(const Monitor monitor)
 	: MonitorEvent(monitor)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::MonitorDisconnectEvent::ToString() const
+std::string TRAP::Events::MonitorDisconnectEvent::ToString() const
 {
 	std::stringstream ss;
 	ss << "MonitorDisconnectEvent: " << m_monitor.GetName() << " (" << m_monitor.GetID() << ")";
@@ -79,21 +79,21 @@ std::string TRAP::MonitorDisconnectEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MonitorDisconnectEvent::GetStaticType()
+TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetStaticType()
 {
 	return EventType::MonitorDisconnect;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EventType TRAP::MonitorDisconnectEvent::GetEventType() const
+TRAP::Events::EventType TRAP::Events::MonitorDisconnectEvent::GetEventType() const
 {
 	return GetStaticType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::MonitorDisconnectEvent::GetName() const
+const char* TRAP::Events::MonitorDisconnectEvent::GetName() const
 {
 	return "MonitorDisconnect";
 }

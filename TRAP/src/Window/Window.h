@@ -30,7 +30,7 @@ namespace TRAP
 		//Used to set Cursor type of windows
 		using CursorType = INTERNAL::WindowingAPI::CursorType;
 		
-		using EventCallbackFn = std::function<void(Event&)>;
+		using EventCallbackFn = std::function<void(Events::Event&)>;
 
 		explicit Window(const WindowProps& props);
 		Window(const Window&) = delete;

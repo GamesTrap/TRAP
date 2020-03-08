@@ -114,7 +114,7 @@ TRAP::Application::Application()
 			monitor
 		)
 	);
-	m_window->SetEventCallback([this](Event& e) { OnEvent(e); });
+	m_window->SetEventCallback([this](Events::Event& e) { OnEvent(e); });
 
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
@@ -129,7 +129,7 @@ TRAP::Application::Application()
 
 	//Initialize Input for Joysticks
 	m_input = std::make_unique<Input>();
-	Input::SetEventCallback([this](Event& e) {OnEvent(e); });
+	Input::SetEventCallback([this](Events::Event& e) {OnEvent(e); });
 	Input::Init();
 
 	m_ImGuiLayer = std::make_unique<ImGuiLayer>();
@@ -313,18 +313,18 @@ void TRAP::Application::Run()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::OnEvent(Event& e)
+void TRAP::Application::OnEvent(Events::Event& e)
 {
 	TP_PROFILE_FUNCTION();
 
-	EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) {return OnWindowClose(e); });
-	dispatcher.Dispatch<FrameBufferResizeEvent>([this](FrameBufferResizeEvent& e) {return OnFrameBufferResize(e); });
-	dispatcher.Dispatch<KeyPressEvent>([this](KeyPressEvent& e) {return OnKeyPress(e); });
-	dispatcher.Dispatch<WindowFocusEvent>([this](WindowFocusEvent& e) {return OnWindowFocus(e); });
-	dispatcher.Dispatch<WindowLostFocusEvent>([this](WindowLostFocusEvent& e) {return OnWindowLostFocus(e); });
-	dispatcher.Dispatch<WindowMinimizeEvent>([this](WindowMinimizeEvent& e) {return OnWindowMinimize(e); });
-	dispatcher.Dispatch<WindowRestoreEvent>([this](WindowRestoreEvent& e) {return OnWindowRestore(e); });
+	Events::EventDispatcher dispatcher(e);
+	dispatcher.Dispatch<Events::WindowCloseEvent>([this](Events::WindowCloseEvent& e) {return OnWindowClose(e); });
+	dispatcher.Dispatch<Events::FrameBufferResizeEvent>([this](Events::FrameBufferResizeEvent& e) {return OnFrameBufferResize(e); });
+	dispatcher.Dispatch<Events::KeyPressEvent>([this](Events::KeyPressEvent& e) {return OnKeyPress(e); });
+	dispatcher.Dispatch<Events::WindowFocusEvent>([this](Events::WindowFocusEvent& e) {return OnWindowFocus(e); });
+	dispatcher.Dispatch<Events::WindowLostFocusEvent>([this](Events::WindowLostFocusEvent& e) {return OnWindowLostFocus(e); });
+	dispatcher.Dispatch<Events::WindowMinimizeEvent>([this](Events::WindowMinimizeEvent& e) {return OnWindowMinimize(e); });
+	dispatcher.Dispatch<Events::WindowRestoreEvent>([this](Events::WindowRestoreEvent& e) {return OnWindowRestore(e); });
 
 	if (m_layerStack)
 	{
@@ -507,7 +507,7 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 	};	
 	m_window.reset();
 	m_window = std::make_unique<Window>(props);
-	m_window->SetEventCallback([this](Event& e) {OnEvent(e); });
+	m_window->SetEventCallback([this](Events::Event& e) {OnEvent(e); });
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
 	//Always added as a fallback texture
@@ -581,7 +581,7 @@ TRAP::Utils::TimeStep TRAP::Application::GetTimeInternal() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowClose(WindowCloseEvent& e)
+bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& e)
 {
 	m_running = false;
 
@@ -590,7 +590,7 @@ bool TRAP::Application::OnWindowClose(WindowCloseEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnFrameBufferResize(FrameBufferResizeEvent& e)
+bool TRAP::Application::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -604,7 +604,7 @@ bool TRAP::Application::OnFrameBufferResize(FrameBufferResizeEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnKeyPress(KeyPressEvent& e) const
+bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 {
 	if (Window::GetActiveWindows() == 1)
 	{
@@ -623,7 +623,7 @@ bool TRAP::Application::OnKeyPress(KeyPressEvent& e) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowFocus(WindowFocusEvent& e)
+bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent& e)
 {
 	m_focused = true;
 
@@ -632,7 +632,7 @@ bool TRAP::Application::OnWindowFocus(WindowFocusEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowLostFocus(WindowLostFocusEvent& e)
+bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent& e)
 {
 	if (Window::GetActiveWindows() == 1)
 		m_focused = false;
@@ -642,7 +642,7 @@ bool TRAP::Application::OnWindowLostFocus(WindowLostFocusEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowMinimize(WindowMinimizeEvent& e)
+bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent& e)
 {
 	if(Window::GetActiveWindows() == 1)
 		m_minimized = true;
@@ -652,7 +652,7 @@ bool TRAP::Application::OnWindowMinimize(WindowMinimizeEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowRestore(WindowRestoreEvent& e)
+bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent& e)
 {
 	m_minimized = false;
 

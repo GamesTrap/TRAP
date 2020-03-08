@@ -21,7 +21,7 @@ namespace TRAP {
 		virtual void OnUpdate(const Utils::TimeStep& deltaTime);
 		virtual void OnTick();
 		virtual void OnImGuiRender();
-		virtual void OnEvent(Event& event);
+		virtual void OnEvent(Events::Event& event);
 
 		std::string_view GetName() const;
 		

@@ -36,15 +36,15 @@ void ClipboardTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ClipboardTests::OnEvent(TRAP::Event& event)
+void ClipboardTests::OnEvent(TRAP::Events::Event& event)
 {
-	TRAP::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::KeyPressEvent>([this](TRAP::KeyPressEvent& e) { return OnKeyPress(e); });
+	TRAP::Events::EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) { return OnKeyPress(e); });
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool ClipboardTests::OnKeyPress(TRAP::KeyPressEvent& event)
+bool ClipboardTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 {
 	switch(event.GetKey())
 	{

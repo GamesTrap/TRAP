@@ -15,6 +15,6 @@ inline std::unique_ptr<TRAP::Log> logger = std::make_unique<TRAP::Log>();
 
 extern std::unique_ptr<TRAP::Application> TRAP::CreateApplication();
 
-int32_t main();
+int main();
 
 #endif /*_TRAP_ENTRYPOINT_H_*/
