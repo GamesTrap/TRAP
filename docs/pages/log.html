@@ -101,29 +101,30 @@
 <li class="toctree-l1"><a class="reference internal" href="configs.html">Configs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="input.html">Input</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Log</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#quick-access">Quick Access</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#tp-trace">TP_TRACE</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#tp-debug">TP_DEBUG</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#tp-info">TP_INFO</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#tp-warn">TP_WARN</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#tp-error">TP_ERROR</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#tp-critical">TP_CRITICAL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tp-debug">TP_DEBUG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tp-error">TP_ERROR</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tp-info">TP_INFO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tp-trace">TP_TRACE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tp-warn">TP_WARN</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#level">Level</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#constructor">Constructor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#destructor">Destructor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#trace">Trace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#debug">Debug</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#info">Info</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#warn">Warn</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#error">Error</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#critical">Critical</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getbuffer">GetBuffer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#save">Save</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#clear">Clear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#critical">Critical</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#debug">Debug</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#error">Error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getbuffer">GetBuffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#info">Info</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#save">Save</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#trace">Trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#warn">Warn</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="monitors.html">Monitors</a></li>
@@ -189,15 +190,15 @@
 <span id="id1"></span><h1>Log<a class="headerlink" href="#log" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="quick-access">
 <h2>Quick Access<a class="headerlink" href="#quick-access" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="tp-trace">
-<span id="tptrace"></span><h3>TP_TRACE<a class="headerlink" href="#tp-trace" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="tp-critical">
+<span id="tpcritical"></span><h3>TP_CRITICAL<a class="headerlink" href="#tp-critical" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
-<span class="k">constexpr</span> <span class="kt">void</span> <span class="n">TP_TRACE</span><span class="p">(</span><span class="k">const</span> <span class="n">Args</span><span class="o">&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">)</span>
+<span class="k">constexpr</span> <span class="kt">void</span> <span class="n">TP_CRITICAL</span><span class="p">(</span><span class="k">const</span> <span class="n">Args</span><span class="o">&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Does the same as TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#trace">Trace</a></div>
+<div class="line">Does the same as TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#critical">Critical</a></div>
 </div>
 </div>
 <div class="section" id="tp-debug">
@@ -215,28 +216,6 @@
 <p>Debug messages are disabled for Release builds!</p>
 </div>
 </div>
-<div class="section" id="tp-info">
-<span id="tpinfo"></span><h3>TP_INFO<a class="headerlink" href="#tp-info" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
-<span class="k">constexpr</span> <span class="kt">void</span> <span class="n">TP_INFO</span><span class="p">(</span><span class="k">const</span> <span class="n">Args</span><span class="o">&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Does the same as TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#info">Info</a></div>
-</div>
-</div>
-<div class="section" id="tp-warn">
-<span id="tpwarn"></span><h3>TP_WARN<a class="headerlink" href="#tp-warn" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
-<span class="k">constexpr</span> <span class="kt">void</span> <span class="n">TP_WARN</span><span class="p">(</span><span class="k">const</span> <span class="n">Args</span><span class="o">&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Does the same as TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#warn">Warn</a></div>
-</div>
-</div>
 <div class="section" id="tp-error">
 <span id="tperror"></span><h3>TP_ERROR<a class="headerlink" href="#tp-error" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
@@ -248,15 +227,37 @@
 <div class="line">Does the same as TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#error">Error</a></div>
 </div>
 </div>
-<div class="section" id="tp-critical">
-<span id="tpcritical"></span><h3>TP_CRITICAL<a class="headerlink" href="#tp-critical" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="tp-info">
+<span id="tpinfo"></span><h3>TP_INFO<a class="headerlink" href="#tp-info" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
-<span class="k">constexpr</span> <span class="kt">void</span> <span class="n">TP_CRITICAL</span><span class="p">(</span><span class="k">const</span> <span class="n">Args</span><span class="o">&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">)</span>
+<span class="k">constexpr</span> <span class="kt">void</span> <span class="n">TP_INFO</span><span class="p">(</span><span class="k">const</span> <span class="n">Args</span><span class="o">&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Does the same as TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#critical">Critical</a></div>
+<div class="line">Does the same as TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#info">Info</a></div>
+</div>
+</div>
+<div class="section" id="tp-trace">
+<span id="tptrace"></span><h3>TP_TRACE<a class="headerlink" href="#tp-trace" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+<span class="k">constexpr</span> <span class="kt">void</span> <span class="n">TP_TRACE</span><span class="p">(</span><span class="k">const</span> <span class="n">Args</span><span class="o">&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Does the same as TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#trace">Trace</a></div>
+</div>
+</div>
+<div class="section" id="tp-warn">
+<span id="tpwarn"></span><h3>TP_WARN<a class="headerlink" href="#tp-warn" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+<span class="k">constexpr</span> <span class="kt">void</span> <span class="n">TP_WARN</span><span class="p">(</span><span class="k">const</span> <span class="n">Args</span><span class="o">&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Does the same as TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#warn">Warn</a></div>
 </div>
 </div>
 </div>
@@ -295,18 +296,28 @@
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Destructs TRAP::<a class="reference internal" href="#log">Log</a> and saves every message in the internal buffer.</div>
+<div class="line">Destructs TRAP::<a class="reference internal" href="#log">Log</a> and saves every message from the internal buffer.</div>
 </div>
 </div>
-<div class="section" id="trace">
-<h2>Trace<a class="headerlink" href="#trace" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
-<span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">::</span><span class="n">Trace</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span>
+<div class="section" id="clear">
+<h2>Clear<a class="headerlink" href="#clear" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">::</span><span class="n">Clear</span><span class="p">();</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Creates a message from the variadic list with TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#level">Level</a>::Trace.</div>
+<div class="line">Saves and then clears the content of the internal buffer.</div>
+</div>
+</div>
+<div class="section" id="critical">
+<h2>Critical<a class="headerlink" href="#critical" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">::</span><span class="n">Critical</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Creates a message from the variadic list with TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#level">Level</a>::Critical.</div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
@@ -332,6 +343,33 @@
 <li><p><code class="code docutils literal notranslate"><span class="pre">args</span></code> Specifies a variadic list that gets processed to a message and then used by TRAP::<a class="reference internal" href="#log">Log</a>.</p></li>
 </ul>
 </div>
+<div class="section" id="error">
+<h2>Error<a class="headerlink" href="#error" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">::</span><span class="n">Error</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Creates a message from the variadic list with TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#level">Level</a>::Error.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">args</span></code> Specifies a variadic list that gets processed to a message and then used by TRAP::<a class="reference internal" href="#log">Log</a>.</p></li>
+</ul>
+</div>
+<div class="section" id="getbuffer">
+<h2>GetBuffer<a class="headerlink" href="#getbuffer" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">::</span><span class="n">Level</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;&gt;&amp;</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">::</span><span class="n">GetBuffer</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a vector containing pairs that contain the TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#level">Level</a> and a message.</div>
+</div>
+</div>
 <div class="section" id="info">
 <h2>Info<a class="headerlink" href="#info" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
@@ -341,6 +379,33 @@
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
 <div class="line">Creates a message from the variadic list with TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#level">Level</a>::Info.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">args</span></code> Specifies a variadic list that gets processed to a message and then used by TRAP::<a class="reference internal" href="#log">Log</a>.</p></li>
+</ul>
+</div>
+<div class="section" id="save">
+<h2>Save<a class="headerlink" href="#save" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">::</span><span class="n">Save</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Saves the current content of the internal buffer into the Log.txt file.</div>
+</div>
+</div>
+<div class="section" id="trace">
+<h2>Trace<a class="headerlink" href="#trace" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">::</span><span class="n">Trace</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Creates a message from the variadic list with TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#level">Level</a>::Trace.</div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
@@ -365,70 +430,6 @@
 <ul class="simple">
 <li><p><code class="code docutils literal notranslate"><span class="pre">args</span></code> Specifies a variadic list that gets processed to a message and then used by TRAP::<a class="reference internal" href="#log">Log</a>.</p></li>
 </ul>
-</div>
-<div class="section" id="error">
-<h2>Error<a class="headerlink" href="#error" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
-<span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">::</span><span class="n">Error</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Creates a message from the variadic list with TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#level">Level</a>::Error.</div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">args</span></code> Specifies a variadic list that gets processed to a message and then used by TRAP::<a class="reference internal" href="#log">Log</a>.</p></li>
-</ul>
-</div>
-<div class="section" id="critical">
-<h2>Critical<a class="headerlink" href="#critical" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
-<span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">::</span><span class="n">Critical</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span> <span class="p">...</span> <span class="n">args</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Creates a message from the variadic list with TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#level">Level</a>::Critical.</div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">args</span></code> Specifies a variadic list that gets processed to a message and then used by TRAP::<a class="reference internal" href="#log">Log</a>.</p></li>
-</ul>
-</div>
-<div class="section" id="getbuffer">
-<h2>GetBuffer<a class="headerlink" href="#getbuffer" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">::</span><span class="n">Level</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;&gt;&amp;</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">::</span><span class="n">GetBuffer</span><span class="p">();</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Returns a vector containing pairs that contain the TRAP::<a class="reference internal" href="#log">Log</a>::<a class="reference internal" href="#level">Level</a> and a message.</div>
-</div>
-</div>
-<div class="section" id="save">
-<h2>Save<a class="headerlink" href="#save" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">::</span><span class="n">Save</span><span class="p">();</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Saves the current content of the internal buffer into the Log.txt file.</div>
-</div>
-</div>
-<div class="section" id="clear">
-<h2>Clear<a class="headerlink" href="#clear" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">::</span><span class="n">Clear</span><span class="p">();</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Saves and then clears the content of the internal buffer.</div>
-</div>
 </div>
 </div>
 

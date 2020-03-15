@@ -8,9 +8,11 @@
 #include "Utils/ByteSwap.h"
 
 TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
-	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_width(0), m_height(0), m_format(ImageFormat::NONE)
 {
 	TP_PROFILE_FUNCTION();
+
+	m_filepath = std::move(filepath);
+	m_isHDR = true;
 
 	TP_DEBUG("[Image][PFM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
@@ -77,7 +79,7 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 		if (header.MagicNumber == "PF")
 		{
 			//RGB
-			m_format = ImageFormat::RGB;
+			m_colorFormat = ColorFormat::RGB;
 			m_bitsPerPixel = 96;
 			m_data.resize(m_width * m_height * 3);
 			if (!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * 3 * sizeof(float)))
@@ -96,7 +98,7 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 		else if(header.MagicNumber == "Pf")
 		{
 			//GrayScale
-			m_format = ImageFormat::Gray_Scale;
+			m_colorFormat = ColorFormat::GrayScale;
 			m_bitsPerPixel = 32;
 			m_data.resize(m_width* m_height);
 			if (!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * sizeof(float)))
@@ -119,7 +121,7 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void* TRAP::INTERNAL::PFMImage::GetPixelData()
+const void* TRAP::INTERNAL::PFMImage::GetPixelData() const
 {
 	return m_data.data();
 }
@@ -129,74 +131,4 @@ void* TRAP::INTERNAL::PFMImage::GetPixelData()
 uint32_t TRAP::INTERNAL::PFMImage::GetPixelDataSize() const
 {
 	return static_cast<uint32_t>(m_data.size());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PFMImage::GetBitsPerPixel() const
-{
-	return m_bitsPerPixel;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PFMImage::GetBytesPerPixel() const
-{
-	return m_bitsPerPixel / 8;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PFMImage::GetWidth() const
-{
-	return m_width;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PFMImage::GetHeight() const
-{
-	return m_height;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PFMImage::HasAlphaChannel() const
-{
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PFMImage::IsImageGrayScale() const
-{
-	return IsGrayScale(m_format);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PFMImage::IsImageColored() const
-{
-	return IsColored(m_format);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PFMImage::IsHDR() const
-{
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string_view TRAP::INTERNAL::PFMImage::GetFilePath() const
-{
-	return m_filepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::ImageFormat TRAP::INTERNAL::PFMImage::GetFormat() const
-{
-	return m_format;
 }

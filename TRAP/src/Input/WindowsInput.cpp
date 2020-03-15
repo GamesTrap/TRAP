@@ -37,14 +37,14 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 bool TRAP::Input::InitController()
 {
-	if(!dinput8.Instance)
-		dinput8.Instance = LoadLibraryA("dinput8.dll");
-	if (dinput8.Instance)
-		dinput8.Create = reinterpret_cast<PFN_DirectInput8Create>(GetProcAddress(dinput8.Instance, "DirectInput8Create"));
+	if(!s_dinput8.Instance)
+		s_dinput8.Instance = LoadLibraryA("dinput8.dll");
+	if (s_dinput8.Instance)
+		s_dinput8.Create = reinterpret_cast<PFN_DirectInput8Create>(GetProcAddress(s_dinput8.Instance, "DirectInput8Create"));
 	
-	if (dinput8.Instance)
+	if (s_dinput8.Instance)
 	{
-		if (FAILED(dinput8.Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, TRAP_IID_IDirectInput8W, reinterpret_cast<void**>(&dinput8.API), nullptr)))
+		if (FAILED(s_dinput8.Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, TRAP_IID_IDirectInput8W, reinterpret_cast<void**>(&s_dinput8.API), nullptr)))
 		{
 			TP_ERROR("[Input][Controller][DirectInput] Failed to create interface for DirectInput!");
 			return false;
@@ -57,7 +57,7 @@ bool TRAP::Input::InitController()
 	}
 
 	{
-		if (!xinput.Instance)
+		if (!s_xinput.Instance)
 		{
 			std::array<std::string, 5> names =
 			{
@@ -70,19 +70,19 @@ bool TRAP::Input::InitController()
 
 			for (const std::string& dll : names)
 			{
-				xinput.Instance = LoadLibraryA(dll.c_str());
-				if (xinput.Instance)
+				s_xinput.Instance = LoadLibraryA(dll.c_str());
+				if (s_xinput.Instance)
 				{
-					xinput.GetCapabilities = reinterpret_cast<PFN_XInputGetCapabilities>(GetProcAddress(xinput.Instance, "XInputGetCapabilities"));
-					xinput.GetState = reinterpret_cast<PFN_XInputGetState>(GetProcAddress(xinput.Instance, "XInputGetState"));
-					xinput.SetState = reinterpret_cast<PFN_XInputSetState>(GetProcAddress(xinput.Instance, "XInputSetState"));
+					s_xinput.GetCapabilities = reinterpret_cast<PFN_XInputGetCapabilities>(GetProcAddress(s_xinput.Instance, "XInputGetCapabilities"));
+					s_xinput.GetState = reinterpret_cast<PFN_XInputGetState>(GetProcAddress(s_xinput.Instance, "XInputGetState"));
+					s_xinput.SetState = reinterpret_cast<PFN_XInputSetState>(GetProcAddress(s_xinput.Instance, "XInputSetState"));
 
 					break;
 				}
 			}
 		}
 
-		if(!xinput.Instance)
+		if(!s_xinput.Instance)
 		{
 			TP_ERROR("[Input][Controller][XInput] Failed to create interface for XInput!");
 			return false;
@@ -104,8 +104,8 @@ void TRAP::Input::ShutdownController()
 	for (uint32_t cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
 			CloseController(static_cast<Controller>(cID));
 
-	if (dinput8.API)
-		IDirectInput8_Release(dinput8.API);
+	if (s_dinput8.API)
+		IDirectInput8_Release(s_dinput8.API);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -124,7 +124,7 @@ void TRAP::Input::UpdateControllerGUID(std::string& guid)
 
 void TRAP::Input::DetectControllerConnectionWin32()
 {
-	if(xinput.Instance)
+	if(s_xinput.Instance)
 	{
 		for(DWORD index = 0; index < TRAP_XUSER_MAX_COUNT; index++)
 		{
@@ -144,7 +144,7 @@ void TRAP::Input::DetectControllerConnectionWin32()
 			if (cID <= static_cast<uint32_t>(Controller::Sixteen))
 				continue;
 
-			if (xinput.GetCapabilities(index, 0, &xic) != ERROR_SUCCESS)
+			if (s_xinput.GetCapabilities(index, 0, &xic) != ERROR_SUCCESS)
 				continue;
 
 			//Generate a Controller GUID that matches the SDL 2.0.5+ one
@@ -166,8 +166,8 @@ void TRAP::Input::DetectControllerConnectionWin32()
 		}
 	}
 	
-	if (dinput8.API)
-		if (FAILED(IDirectInput8_EnumDevices(dinput8.API, DI8DEVCLASS_GAMECTRL, DeviceCallback, nullptr, DIEDFL_ALLDEVICES)))
+	if (s_dinput8.API)
+		if (FAILED(IDirectInput8_EnumDevices(s_dinput8.API, DI8DEVCLASS_GAMECTRL, DeviceCallback, nullptr, DIEDFL_ALLDEVICES)))
 			TP_ERROR("[Input][Controller][DirectInput] Failed to enumerate DirectInput devices!");
 }
 
@@ -189,7 +189,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 		const uint16_t left = static_cast<uint16_t>(static_cast<float>(65535)* leftMotor);
 		const uint16_t right = static_cast<uint16_t>(static_cast<float>(65535)* rightMotor);
 		XINPUT_VIBRATION vibration{ left, right };
-		const uint32_t result = xinput.SetState(static_cast<DWORD>(controller), &vibration);
+		const uint32_t result = s_xinput.SetState(static_cast<DWORD>(controller), &vibration);
 		if (result != ERROR_SUCCESS)
 			TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while setting vibration!");
 	}
@@ -295,7 +295,7 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 			XINPUT_GAMEPAD_RIGHT_THUMB
 		};
 
-		const DWORD result = xinput.GetState(con->WinCon.Index, &xis);
+		const DWORD result = s_xinput.GetState(con->WinCon.Index, &xis);
 		if(result != ERROR_SUCCESS)
 		{
 			if (result == ERROR_DEVICE_NOT_CONNECTED)
@@ -562,7 +562,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	if (SupportsXInput(&deviceInstance->guidProduct))
 		return DIENUM_CONTINUE;
 
-	if (FAILED(IDirectInput8_CreateDevice(dinput8.API, deviceInstance->guidInstance, &device, nullptr)))
+	if (FAILED(IDirectInput8_CreateDevice(s_dinput8.API, deviceInstance->guidInstance, &device, nullptr)))
 	{
 		TP_ERROR("[Input][Controller][DirectInput] Failed to create device!");
 		return DIENUM_CONTINUE;

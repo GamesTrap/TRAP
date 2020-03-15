@@ -105,20 +105,19 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#config">Config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#constructor">Constructor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#loadfromfile">LoadFromFile</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#savetofile">SaveToFile</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ischanged">IsChanged</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get">Get</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">Get</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#set">Set</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4">Set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ischanged">IsChanged</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#loadfromfile">LoadFromFile</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#print">Print</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#savetofile">SaveToFile</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#set">Set</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="input.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="log.html">Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitors.html">Monitors</a></li>
@@ -236,48 +235,6 @@
 <div class="line">Creates a new instance of TRAP::Utils::<a class="reference internal" href="#config">Config</a>.</div>
 </div>
 </div>
-<div class="section" id="loadfromfile">
-<h3>LoadFromFile<a class="headerlink" href="#loadfromfile" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Utils</span><span class="o">::</span><span class="n">Config</span><span class="o">::</span><span class="n">LoadFromFile</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">filename</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Loads the values of the Config file into the TRAP::Utils::<a class="reference internal" href="#config">Config</a> instance.</div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">filename</span></code> Specifies the file name (and path) to load data from.</p></li>
-</ul>
-</div>
-<div class="section" id="savetofile">
-<h3>SaveToFile<a class="headerlink" href="#savetofile" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Utils</span><span class="o">::</span><span class="n">Config</span><span class="o">::</span><span class="n">SaveToFile</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">filename</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Saves/Updates the specified Config file with the current values of the TRAP::Utils::<a class="reference internal" href="#config">Config</a> instance.</div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">filename</span></code> Specifies the file name (and path) to save data in.</p></li>
-</ul>
-</div>
-<div class="section" id="ischanged">
-<h3>IsChanged<a class="headerlink" href="#ischanged" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Utils</span><span class="o">::</span><span class="n">Config</span><span class="o">::</span><span class="n">IsChanged</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Returns true if the values in the TRAP::Utils::<a class="reference internal" href="#config">Config</a> instance were changed since last loading.</div>
-</div>
-</div>
 <div class="section" id="get">
 <h3>Get<a class="headerlink" href="#get" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
@@ -295,9 +252,6 @@
 <li><p><code class="code docutils literal notranslate"><span class="pre">key</span></code> Specifies the string to get data from.</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">value</span></code> Specifies the variable to output the data converted to the type T found from the specified key.</p></li>
 </ul>
-</div>
-<div class="section" id="id3">
-<h3>Get<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
 <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Utils</span><span class="o">::</span><span class="n">Config</span><span class="o">::</span><span class="n">Get</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">key</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span> <span class="n">value</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 </pre></div>
@@ -309,6 +263,58 @@
 <ul class="simple">
 <li><p><code class="code docutils literal notranslate"><span class="pre">key</span></code> Specifies the string to get data from.</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">value</span></code> Specifies the vector to output the data converted to the type T found from the specified key.</p></li>
+</ul>
+</div>
+<div class="section" id="ischanged">
+<h3>IsChanged<a class="headerlink" href="#ischanged" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Utils</span><span class="o">::</span><span class="n">Config</span><span class="o">::</span><span class="n">IsChanged</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns true if the values in the TRAP::Utils::<a class="reference internal" href="#config">Config</a> instance were changed since last loading.</div>
+</div>
+</div>
+<div class="section" id="loadfromfile">
+<h3>LoadFromFile<a class="headerlink" href="#loadfromfile" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Utils</span><span class="o">::</span><span class="n">Config</span><span class="o">::</span><span class="n">LoadFromFile</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">filename</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Loads the values of the Config file into the TRAP::Utils::<a class="reference internal" href="#config">Config</a> instance.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">filename</span></code> Specifies the file name (and path) to load data from.</p></li>
+</ul>
+</div>
+<div class="section" id="print">
+<h3>Print<a class="headerlink" href="#print" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Utils</span><span class="o">::</span><span class="n">Config</span><span class="o">::</span><span class="n">Print</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Outputs every string with its assigned value. Last output is the total amount of every element in the loaded Config file.</div>
+</div>
+</div>
+<div class="section" id="savetofile">
+<h3>SaveToFile<a class="headerlink" href="#savetofile" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Utils</span><span class="o">::</span><span class="n">Config</span><span class="o">::</span><span class="n">SaveToFile</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">filename</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Saves/Updates the specified Config file with the current values of the TRAP::Utils::<a class="reference internal" href="#config">Config</a> instance.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">filename</span></code> Specifies the file name (and path) to save data in.</p></li>
 </ul>
 </div>
 <div class="section" id="set">
@@ -325,9 +331,6 @@
 <li><p><code class="code docutils literal notranslate"><span class="pre">key</span></code> Specifies the string to set data to.</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">value</span></code> Specifies the data to set for the specified key.</p></li>
 </ul>
-</div>
-<div class="section" id="id4">
-<h3>Set<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
 <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Utils</span><span class="o">::</span><span class="n">Config</span><span class="o">::</span><span class="n">Set</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">key</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span> <span class="n">value</span><span class="p">);</span>
 </pre></div>
@@ -340,16 +343,6 @@
 <li><p><code class="code docutils literal notranslate"><span class="pre">key</span></code> Specifies the string to set data to.</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">value</span></code> Specifies the vector data to set for the specified key.</p></li>
 </ul>
-</div>
-<div class="section" id="print">
-<h3>Print<a class="headerlink" href="#print" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Utils</span><span class="o">::</span><span class="n">Config</span><span class="o">::</span><span class="n">Print</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Outputs every string with its assigned value. Last output is the total amount of every element in the loaded Config file.</div>
-</div>
 </div>
 </div>
 </div>

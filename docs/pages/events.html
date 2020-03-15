@@ -102,22 +102,21 @@
 <li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Events</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#general">General</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#eventtype">EventType</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#eventcategory">EventCategory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#event">Event</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#getcategoryflags">GetCategoryFlags</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#geteventtype">GetEventType</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getname">GetName</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#getcategoryflags">GetCategoryFlags</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#tostring">ToString</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#isincategory">IsInCategory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tostring">ToString</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#eventcategory">EventCategory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#eventdispatcher">EventDispatcher</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#constructor">Constructor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#dispatch">Dispatch</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id5">Events</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id4">Events</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="events/application/apprenderevent.html">AppRenderEvent</a></li>
 <li class="toctree-l3"><a class="reference internal" href="events/application/apptickevent.html">AppTickEvent</a></li>
 <li class="toctree-l3"><a class="reference internal" href="events/application/appupdateevent.html">AppUpdateEvent</a></li>
@@ -151,8 +150,10 @@
 <li class="toctree-l3"><a class="reference internal" href="events/window/windowrestoreevent.html">WindowRestoreEvent</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#eventtype">EventType</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="input.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="log.html">Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitors.html">Monitors</a></li>
@@ -223,27 +224,69 @@
 <p><a class="reference internal" href="#events">Events</a> in <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a> are currently blocking, meaning when an event occurs it immediately gets dispatched and must be dealt with right then and there!</p>
 </div>
 </div>
-<div class="section" id="eventtype">
-<span id="id2"></span><h2>EventType<a class="headerlink" href="#eventtype" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">EventType</span>
-<span class="p">{</span>
-    <span class="n">None</span><span class="p">,</span>
-    <span class="n">WindowClose</span><span class="p">,</span> <span class="n">WindowResize</span><span class="p">,</span> <span class="n">WindowMinimize</span><span class="p">,</span> <span class="n">WindowMaximize</span><span class="p">,</span> <span class="n">WindowRestore</span><span class="p">,</span> <span class="n">WindowFocus</span><span class="p">,</span> <span class="n">WindowLostFocus</span><span class="p">,</span> <span class="n">WindowMove</span><span class="p">,</span> <span class="n">WindowDrop</span><span class="p">,</span> <span class="n">WindowContentScale</span><span class="p">,</span> <span class="n">FrameBufferResize</span>
-    <span class="n">AppTick</span><span class="p">,</span> <span class="n">AppUpdate</span><span class="p">,</span> <span class="n">AppRender</span><span class="p">,</span>
-    <span class="n">KeyPress</span><span class="p">,</span> <span class="n">KeyRelease</span><span class="p">,</span> <span class="n">KeyType</span><span class="p">,</span>
-    <span class="n">MouseButtonPress</span><span class="p">,</span> <span class="n">MouseButtonRelease</span><span class="p">,</span> <span class="n">MouseMove</span><span class="p">,</span> <span class="n">MouseScroll</span><span class="p">,</span> <span class="n">MouseEnter</span><span class="p">,</span> <span class="n">MouseLeave</span><span class="p">,</span>
-    <span class="n">ControllerConnect</span><span class="p">,</span> <span class="n">ControllerDisconnect</span><span class="p">,</span>
-    <span class="n">MonitorConnect</span><span class="p">,</span> <span class="n">MonitorDisconnect</span>
-<span class="p">};</span>
+<div class="section" id="event">
+<span id="id2"></span><h2>Event<a class="headerlink" href="#event" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#event">Event</a> is used as a base class for every event type in TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventtype">EventType</a></div>
+</div>
+<div class="section" id="getcategoryflags">
+<h3>GetCategoryFlags<a class="headerlink" href="#getcategoryflags" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventtype">EventType</a> is used to specifiy the type of a TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#event">Event</a></div>
+<div class="line">This function returns an int32_t containing the category flags of a TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#event">Event</a></div>
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventtype">EventType</a>::AppTick, TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventtype">EventType</a>::AppUpdate and TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventtype">EventType</a>::AppRender are currently unused by <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a>!</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventcategory">EventCategory</a></p>
+</div>
+</div>
+<div class="section" id="geteventtype">
+<h3>GetEventType<a class="headerlink" href="#geteventtype" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This function returns the type(in form of TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventtype">EventType</a>) of a TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#event">Event</a></div>
+</div>
+</div>
+<div class="section" id="getname">
+<h3>GetName<a class="headerlink" href="#getname" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This function returns a c-string containing the name of a TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#event">Event</a></div>
+</div>
+</div>
+<div class="section" id="isincategory">
+<h3>IsInCategory<a class="headerlink" href="#isincategory" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="n">IsInCategory</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">EventCategory</span> <span class="n">category</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This functions returns whether the TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#event">Event</a> is in the specified TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventcategory">EventCategory</a> or not</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">category</span></code> Specifies the TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventcategory">EventCategory</a> to check</div>
+</div>
+</div>
+<div class="section" id="tostring">
+<h3>ToString<a class="headerlink" href="#tostring" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="n">ToString</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This function returns a std::string containing the name and values of a TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#event">Event</a></div>
+</div>
 </div>
 </div>
 <div class="section" id="eventcategory">
@@ -267,71 +310,6 @@
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="core.html#core-bit"><span class="std std-ref">BIT</span></a></p>
-</div>
-</div>
-<div class="section" id="event">
-<span id="id4"></span><h2>Event<a class="headerlink" href="#event" title="Permalink to this headline">¶</a></h2>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#event">Event</a> is used as a base class for every event type in TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventtype">EventType</a></div>
-</div>
-<div class="section" id="geteventtype">
-<h3>GetEventType<a class="headerlink" href="#geteventtype" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">This function returns the type(in form of TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventtype">EventType</a>) of a TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#event">Event</a></div>
-</div>
-</div>
-<div class="section" id="getname">
-<h3>GetName<a class="headerlink" href="#getname" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">This function returns a c-string containing the name of a TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#event">Event</a></div>
-</div>
-</div>
-<div class="section" id="getcategoryflags">
-<h3>GetCategoryFlags<a class="headerlink" href="#getcategoryflags" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">This function returns an int32_t containing the category flags of a TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#event">Event</a></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventcategory">EventCategory</a></p>
-</div>
-</div>
-<div class="section" id="tostring">
-<h3>ToString<a class="headerlink" href="#tostring" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">virtual</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="n">ToString</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">This function returns a std::string containing the name and values of a TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#event">Event</a></div>
-</div>
-</div>
-<div class="section" id="isincategory">
-<h3>IsInCategory<a class="headerlink" href="#isincategory" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">Event</span><span class="o">::</span><span class="n">IsInCategory</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">EventCategory</span> <span class="n">category</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">This functions returns whether the TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#event">Event</a> is in the specified TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventcategory">EventCategory</a> or not</div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-<div class="line"><code class="code docutils literal notranslate"><span class="pre">category</span></code> Specifies the TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventcategory">EventCategory</a> to check</div>
-</div>
 </div>
 </div>
 <div class="section" id="eventdispatcher">
@@ -376,8 +354,8 @@ Example: <code class="code docutils literal notranslate"><span class="pre">Dispa
 </div>
 </div>
 </div>
-<div class="section" id="id5">
-<h2>Events<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>Events<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><dl class="simple">
 <dt>Application Events</dt><dd><ul>
@@ -436,6 +414,29 @@ Example: <code class="code docutils literal notranslate"><span class="pre">Dispa
 </li>
 </ul>
 <div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="eventtype">
+<span id="id5"></span><h2>EventType<a class="headerlink" href="#eventtype" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">EventType</span>
+<span class="p">{</span>
+    <span class="n">None</span><span class="p">,</span>
+    <span class="n">WindowClose</span><span class="p">,</span> <span class="n">WindowResize</span><span class="p">,</span> <span class="n">WindowMinimize</span><span class="p">,</span> <span class="n">WindowMaximize</span><span class="p">,</span> <span class="n">WindowRestore</span><span class="p">,</span> <span class="n">WindowFocus</span><span class="p">,</span> <span class="n">WindowLostFocus</span><span class="p">,</span> <span class="n">WindowMove</span><span class="p">,</span> <span class="n">WindowDrop</span><span class="p">,</span> <span class="n">WindowContentScale</span><span class="p">,</span> <span class="n">FrameBufferResize</span>
+    <span class="n">AppTick</span><span class="p">,</span> <span class="n">AppUpdate</span><span class="p">,</span> <span class="n">AppRender</span><span class="p">,</span>
+    <span class="n">KeyPress</span><span class="p">,</span> <span class="n">KeyRelease</span><span class="p">,</span> <span class="n">KeyType</span><span class="p">,</span>
+    <span class="n">MouseButtonPress</span><span class="p">,</span> <span class="n">MouseButtonRelease</span><span class="p">,</span> <span class="n">MouseMove</span><span class="p">,</span> <span class="n">MouseScroll</span><span class="p">,</span> <span class="n">MouseEnter</span><span class="p">,</span> <span class="n">MouseLeave</span><span class="p">,</span>
+    <span class="n">ControllerConnect</span><span class="p">,</span> <span class="n">ControllerDisconnect</span><span class="p">,</span>
+    <span class="n">MonitorConnect</span><span class="p">,</span> <span class="n">MonitorDisconnect</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventtype">EventType</a> is used to specifiy the type of a TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#event">Event</a></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventtype">EventType</a>::AppTick, TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventtype">EventType</a>::AppUpdate and TRAP::<a class="reference internal" href="#events">Events</a>::<a class="reference internal" href="#eventtype">EventType</a>::AppRender are currently unused by <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a>!</p>
 </div>
 </div>
 </div>

@@ -2168,7 +2168,7 @@ HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Scope<Image>& image, const 
 	BITMAPV5HEADER bi;
 	ICONINFO ii;
 	uint8_t* target = nullptr;
-	uint8_t* source = static_cast<uint8_t*>(image->GetPixelData());
+	const uint8_t* source = static_cast<const uint8_t*>(image->GetPixelData());
 
 	ZeroMemory(&bi, sizeof(bi));
 	bi.bV5Size = sizeof(bi);

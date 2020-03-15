@@ -15,6 +15,24 @@ const TRAP::Graphics::Shader* TRAP::Graphics::Shader::s_CurrentlyBound = nullptr
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::string_view TRAP::Graphics::Shader::GetName() const
+{
+	TP_PROFILE_FUNCTION();
+
+	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string_view TRAP::Graphics::Shader::GetFilePath() const
+{
+	TP_PROFILE_FUNCTION();
+
+	return m_filepath;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name, const std::string& filePath)
 {
 	TP_PROFILE_FUNCTION();

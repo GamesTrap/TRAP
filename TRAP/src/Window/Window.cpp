@@ -219,7 +219,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w10a3]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][20w11a2]" + std::string(Graphics::Renderer::GetTitle());
 #ifdef TRAP_PLATFORM_LINUX
 	if (Application::GetLinuxWindowManager() == Application::LinuxWindowManager::Wayland)
 		newTitle += "[Wayland]";
@@ -517,7 +517,7 @@ void TRAP::Window::SetIcon() const
 	TP_PROFILE_FUNCTION();
 
 	const std::vector<uint8_t> TRAPLogo{ Embed::TRAPLogo.begin(), Embed::TRAPLogo.end() };
-	INTERNAL::WindowingAPI::SetWindowIcon(m_window.get(), Image::LoadFromMemory(32, 32, 32, ImageFormat::RGBA, TRAPLogo));
+	INTERNAL::WindowingAPI::SetWindowIcon(m_window.get(), Image::LoadFromMemory(32, 32, 32, Image::ColorFormat::RGBA, TRAPLogo));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -548,7 +548,7 @@ void TRAP::Window::SetIcon(const Scope<Image>& image) const
 		SetIcon();
 		return;
 	}
-	if (image->GetFormat() != ImageFormat::RGBA)
+	if (image->GetColorFormat() != Image::ColorFormat::RGBA)
 	{
 		TP_ERROR("[Window][Icon] \"", m_data.Title, "\" Only RGBA Images are supported for window icons!");
 		TP_WARN("[Window][Icon] \"", m_data.Title, "\" Using Default Icon!");
@@ -844,7 +844,7 @@ void TRAP::Window::Init(const WindowProps& props)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w10a3]";
+		"[INDEV][20w11a2]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif

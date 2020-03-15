@@ -23,15 +23,10 @@ namespace TRAP::Graphics::API
 		void Bind() const override;
 		void Unbind() const override;
 
-		std::string_view GetName() const override;
-		
-		std::string_view GetFilePath() const override;
-
 	private:
 		friend class ::TRAP::Graphics::Shader;
 		friend class ::TRAP::Graphics::ShaderManager;
 
-		std::string m_name, m_filepath;
 		std::string vsSource;
 		std::string fsSource;
 		std::string gsSource;

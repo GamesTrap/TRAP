@@ -13,6 +13,28 @@ uint32_t TRAP::Graphics::TextureCube::s_maxCubeTextureSize = 0;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::TextureCube::TextureCube()
+	: m_inputFormat(InputFormat::NONE)
+{
+	m_textureType = TextureType::TextureCube;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::array<std::string, 6> TRAP::Graphics::TextureCube::GetFilePaths() const
+{
+	return m_filepaths;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::InputFormat TRAP::Graphics::TextureCube::GetInputFormat() const
+{
+	return m_inputFormat;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromFiles(const std::string& name, const std::array<std::string, 6>& filepaths, TextureParameters parameters)
 {
 	TP_PROFILE_FUNCTION();
@@ -99,6 +121,30 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFromCrossImage(const std::string& name, const Scope<Image>& img, InputFormat format, TextureParameters parameters)
+{
+	TP_PROFILE_FUNCTION();
+
+	switch(API::Context::GetRenderAPI())
+	{
+#ifdef TRAP_PLATFORM_WINDOWS
+	case API::RenderAPI::D3D12:
+		return MakeScope<API::D3D12TextureCube>(name, img, format, parameters);
+#endif
+
+	case API::RenderAPI::OpenGL:
+		return MakeScope<API::OpenGLTextureCube>(name, img, format, parameters);
+
+	case API::RenderAPI::Vulkan:
+		return MakeScope<API::VulkanTextureCube>(name, img, format, parameters);
+		
+	default:
+		return nullptr;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create(TextureParameters parameters)
 {
 	TP_PROFILE_FUNCTION();
@@ -119,11 +165,4 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create(Tex
 	default:
 		return nullptr;
 	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::TextureType TRAP::Graphics::TextureCube::GetType() const
-{
-	return TextureType::TextureCube;
 }

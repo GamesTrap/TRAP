@@ -8,13 +8,10 @@
 #include "Utils/ByteSwap.h"
 
 TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
-	: m_filepath(std::move(filepath)),
-	m_bitsPerPixel(0),
-	m_width(0),
-	m_height(0),
-	m_imageFormat(ImageFormat::NONE)
 {
 	TP_PROFILE_FUNCTION();
+
+	m_filepath = std::move(filepath);
 
 	TP_DEBUG("[Image][TGA] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
@@ -184,13 +181,13 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 				m_bitsPerPixel = header.ColorMapDepth;
 				if(m_bitsPerPixel == 16)
 				{
-					m_imageFormat = ImageFormat::RGB;
+					m_colorFormat = ColorFormat::RGB;
 					m_bitsPerPixel = 24;
 				}
 				else if (m_bitsPerPixel == 24)
-					m_imageFormat = ImageFormat::RGB;					
+					m_colorFormat = ColorFormat::RGB;
 				else if (m_bitsPerPixel == 32)
-					m_imageFormat = ImageFormat::RGBA;
+					m_colorFormat = ColorFormat::RGBA;
 				break;
 			}
 			break;
@@ -211,20 +208,20 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 				m_bitsPerPixel = header.ColorMapDepth;
 				if(m_bitsPerPixel == 16)
 				{
-					m_imageFormat = ImageFormat::RGB;
+					m_colorFormat = ColorFormat::RGB;
 					m_bitsPerPixel = 24;
 				}
 				if (m_bitsPerPixel == 24)
-					m_imageFormat = ImageFormat::RGB;
+					m_colorFormat = ColorFormat::RGB;
 				else if (m_bitsPerPixel == 32)
-					m_imageFormat = ImageFormat::RGBA;
+					m_colorFormat = ColorFormat::RGBA;
 			}
 			break;
 		}
 
 		case 3:
 		{
-			m_imageFormat = ImageFormat::Gray_Scale;
+			m_colorFormat = ColorFormat::GrayScale;
 			if (header.BitsPerPixel == 8)
 				m_data = colorMapData.ImageData;
 			if (header.BitsPerPixel > 8)
@@ -239,7 +236,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 
 		case 11:
 		{
-			m_imageFormat = ImageFormat::Gray_Scale;
+			m_colorFormat = ColorFormat::GrayScale;
 			if (header.BitsPerPixel == 8)
 				m_data = DecodeRLEGrayScale(colorMapData.ImageData, header.Width, header.Height);
 			if (header.BitsPerPixel > 8)
@@ -258,7 +255,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			{
 			case 16:
 			{
-				m_imageFormat = ImageFormat::RGB;
+				m_colorFormat = ColorFormat::RGB;
 				m_bitsPerPixel = 24;
 				m_data = ConvertBGR16ToRGB24(colorMapData.ImageData, m_width, m_height);
 				break;
@@ -266,14 +263,14 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 
 			case 24:
 			{
-				m_imageFormat = ImageFormat::RGB;
+				m_colorFormat = ColorFormat::RGB;
 				m_data = ConvertBGR24ToRGB24(colorMapData.ImageData, m_width, m_height);
 				break;
 			}
 
 			case 32:
 			{
-				m_imageFormat = ImageFormat::RGBA;
+				m_colorFormat = ColorFormat::RGBA;
 				m_data = ConvertBGRA32ToRGBA32(colorMapData.ImageData, m_width, m_height);
 				break;
 			}
@@ -293,7 +290,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			{
 			case 16:
 			{
-				m_imageFormat = ImageFormat::RGB;
+				m_colorFormat = ColorFormat::RGB;
 				m_bitsPerPixel = 24;
 				m_data = ConvertRLEBGR16ToRGB24(colorMapData.ImageData, m_width, m_height);
 				break;
@@ -301,14 +298,14 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 
 			case 24:
 			{
-				m_imageFormat = ImageFormat::RGB;
+				m_colorFormat = ColorFormat::RGB;
 				m_data = ConvertRLEBGR24ToRGB24(colorMapData.ImageData, m_width, m_height);
 				break;
 			}
 
 			case 32:
 			{
-				m_imageFormat = ImageFormat::RGBA;
+				m_colorFormat = ColorFormat::RGBA;
 				m_data = ConvertRLEBGRA32ToRGBA(colorMapData.ImageData, m_width, m_height);
 				break;
 			}
@@ -336,9 +333,9 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 		}
 
 		if (needXFlip)
-			m_data = FlipX(m_width, m_height, m_imageFormat, m_data.data());
+			m_data = FlipX(m_width, m_height, m_colorFormat, m_data.data());
 		if (needYFlip)
-			m_data = FlipY(m_width, m_height, m_imageFormat, m_data.data());
+			m_data = FlipY(m_width, m_height, m_colorFormat, m_data.data());
 
 		file.close();
 	}
@@ -346,7 +343,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void* TRAP::INTERNAL::TGAImage::GetPixelData()
+const void* TRAP::INTERNAL::TGAImage::GetPixelData() const
 {
 	return m_data.data();
 }
@@ -356,74 +353,4 @@ void* TRAP::INTERNAL::TGAImage::GetPixelData()
 uint32_t TRAP::INTERNAL::TGAImage::GetPixelDataSize() const
 {
 	return static_cast<uint32_t>(m_data.size());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::TGAImage::GetBitsPerPixel() const
-{
-	return m_bitsPerPixel;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::TGAImage::GetBytesPerPixel() const
-{
-	return m_bitsPerPixel / 8;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::TGAImage::GetWidth() const
-{
-	return m_width;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::TGAImage::GetHeight() const
-{
-	return m_height;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::TGAImage::HasAlphaChannel() const
-{
-	return HasAlpha(m_imageFormat);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::TGAImage::IsImageGrayScale() const
-{
-	return IsGrayScale(m_imageFormat);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::TGAImage::IsImageColored() const
-{
-	return IsColored(m_imageFormat);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::TGAImage::IsHDR() const
-{
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string_view TRAP::INTERNAL::TGAImage::GetFilePath() const
-{
-	return m_filepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::ImageFormat TRAP::INTERNAL::TGAImage::GetFormat() const
-{
-	return m_imageFormat;
 }

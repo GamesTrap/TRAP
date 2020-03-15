@@ -6,9 +6,10 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::D3D12Shader::D3D12Shader(std::string name, std::string source)
-	: m_name(std::move(name))
 {
 	TP_PROFILE_FUNCTION();
+
+	m_name = std::move(name);
 
 	TP_WARN("[Shader][D3D12] WIP");
 }
@@ -16,9 +17,10 @@ TRAP::Graphics::API::D3D12Shader::D3D12Shader(std::string name, std::string sour
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::D3D12Shader::D3D12Shader(std::string name, std::vector<uint32_t>& source)
-	: m_name(std::move(name))
 {
 	TP_PROFILE_FUNCTION();
+
+	m_name = std::move(name);
 
 	TP_WARN("[Shader][D3D12] WIP");
 }
@@ -26,8 +28,7 @@ TRAP::Graphics::API::D3D12Shader::D3D12Shader(std::string name, std::vector<uint
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::D3D12Shader::D3D12Shader(std::string name, std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource)
-	: m_name(std::move(name)),
-	  vsSource(std::move(VSSource)),
+	: vsSource(std::move(VSSource)),
 	  fsSource(std::move(FSSource)),
 	  gsSource(std::move(GSSource)),
 	  tcsSource(std::move(TCSSource)),
@@ -35,6 +36,8 @@ TRAP::Graphics::API::D3D12Shader::D3D12Shader(std::string name, std::string VSSo
 	  csSource(std::move(CSSource))
 {
 	TP_PROFILE_FUNCTION();
+
+	m_name = std::move(name);
 
 	TP_WARN("[Shader][D3D12] WIP");
 }
@@ -58,24 +61,6 @@ void TRAP::Graphics::API::D3D12Shader::Bind() const
 void TRAP::Graphics::API::D3D12Shader::Unbind() const
 {
 	TP_PROFILE_FUNCTION();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string_view TRAP::Graphics::API::D3D12Shader::GetName() const
-{
-	TP_PROFILE_FUNCTION();
-	
-	return m_name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string_view TRAP::Graphics::API::D3D12Shader::GetFilePath() const
-{
-	TP_PROFILE_FUNCTION();
-	
-	return m_filepath;
 }
 
 #endif

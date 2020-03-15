@@ -16,26 +16,11 @@ namespace TRAP::INTERNAL
 		PFMImage& operator=(PFMImage&&) = default;
 		~PFMImage() = default;
 
-		void* GetPixelData() override;
+		const void* GetPixelData() const override;
 		uint32_t GetPixelDataSize() const override;
-		uint32_t GetBitsPerPixel() const override;
-		uint32_t GetBytesPerPixel() const override;
-		uint32_t GetWidth() const override;
-		uint32_t GetHeight() const override;
-		bool HasAlphaChannel() const override;
-		bool IsImageGrayScale() const override;
-		bool IsImageColored() const override;
-		bool IsHDR() const override;
-		std::string_view GetFilePath() const override;
-		ImageFormat GetFormat() const override;
 
 	private:
-		std::string m_filepath;
-		uint32_t m_bitsPerPixel;
-		uint32_t m_width;
-		uint32_t m_height;
 		std::vector<float> m_data;
-		ImageFormat m_format;
 	};
 }
 

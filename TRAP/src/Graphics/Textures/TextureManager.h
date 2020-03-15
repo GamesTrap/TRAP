@@ -18,15 +18,14 @@ namespace TRAP::Graphics
 		TextureManager& operator=(const TextureManager&) = delete;
 		TextureManager(TextureManager&&) = delete;
 		TextureManager& operator=(TextureManager&&) = delete;
-		
-		static const Scope<Texture>& Load(const std::string& filepath, TextureParameters parameters = TextureParameters());
-		static const Scope<Texture>& Load(const std::string& name, const std::string& filepath, TextureParameters parameters = TextureParameters());
-		static const Scope<Texture2D>& Load(const std::string& name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<uint8_t>& pixelData, TextureParameters parameters = TextureParameters());
-		static const Scope<Texture2D>& Load(const std::string& name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<uint16_t>& pixelData, TextureParameters parameters = TextureParameters());
-		static const Scope<Texture2D>& Load(const std::string& name, uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, const std::vector<float>& pixelData, TextureParameters parameters = TextureParameters());
-		static const Scope<Texture>& Load(const std::string& name, const std::string& filepath, InputFormat format, TextureParameters parameters = TextureParameters());
-		static const Scope<Texture>& Load(const std::string& filepath, InputFormat format, TextureParameters parameters = TextureParameters());
-		static const Scope<Texture>& Load(const std::string& name, const std::array<std::string, 6>& filepaths, TextureParameters parameters = TextureParameters());
+
+		static const Scope<Texture2D>& Load(const std::string& filepath, TextureParameters parameters = TextureParameters());
+		static const Scope<Texture2D>& Load(const std::string& name, const std::string& filepath, TextureParameters parameters = TextureParameters());
+		static const Scope<Texture2D>& Load(const std::string& name, const Scope<Image>& img, TextureParameters parameters = TextureParameters());
+		static const Scope<TextureCube>& Load(const std::string& name, const std::string& filepath, InputFormat format, TextureParameters parameters = TextureParameters());
+		static const Scope<TextureCube>& Load(const std::string& filepath, InputFormat format, TextureParameters parameters = TextureParameters());
+		static const Scope<TextureCube>& Load(const std::string& name, const std::array<std::string, 6>& filepaths, TextureParameters parameters = TextureParameters());
+		static const Scope<TextureCube>& Load(const std::string& name, const Scope<Image>& img, InputFormat format, TextureParameters parameters = TextureParameters());
 		
 		static void Add(Scope<Texture> texture);
 		static void Remove(const Scope<Texture>& texture);

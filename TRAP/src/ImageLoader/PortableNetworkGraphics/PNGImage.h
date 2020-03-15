@@ -16,18 +16,8 @@ namespace TRAP::INTERNAL
 		PNGImage& operator=(PNGImage&&) = default;
 		~PNGImage() = default;
 
-		void* GetPixelData() override;
+		const void* GetPixelData() const override;
 		uint32_t GetPixelDataSize() const override;
-		uint32_t GetBitsPerPixel() const override;
-		uint32_t GetBytesPerPixel() const override;
-		uint32_t GetWidth() const override;
-		uint32_t GetHeight() const override;
-		bool HasAlphaChannel() const override;
-		bool IsImageGrayScale() const override;
-		bool IsImageColored() const override;
-		bool IsHDR() const override;
-		std::string_view GetFilePath() const override;
-		ImageFormat GetFormat() const override;
 
 	private:
 		struct RGBA
@@ -117,13 +107,8 @@ namespace TRAP::INTERNAL
 		static bool IHDRCheck(const IHDRChunk& ihdrChunk);
 		static bool tIMECheck(const tIMEChunk& timeChunk);
 
-		std::string m_filepath;
-		uint32_t m_bitsPerPixel;
-		uint32_t m_width;
-		uint32_t m_height;
 		std::vector<uint8_t> m_data;
 		std::vector<uint16_t> m_data2Byte;
-		ImageFormat m_format;
 
 		static bool DecompressData(uint8_t* source, int sourceLength, uint8_t* destination, int destinationLength, bool needSwap);
 		static bool UnFilterScanline(uint8_t* recon, const uint8_t* scanline, const uint8_t* precon, std::size_t byteWidth, uint8_t filterType, std::size_t length);

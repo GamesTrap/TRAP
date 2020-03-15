@@ -102,11 +102,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../core.html">Core</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../events.html">Events</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../events.html#general">General</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../events.html#eventtype">EventType</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../events.html#eventcategory">EventCategory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../events.html#event">Event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../events.html#eventcategory">EventCategory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../events.html#eventdispatcher">EventDispatcher</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../../events.html#id5">Events</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../events.html#id4">Events</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../application/apprenderevent.html">AppRenderEvent</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../application/apptickevent.html">AppTickEvent</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../application/appupdateevent.html">AppUpdateEvent</a></li>
@@ -116,12 +115,12 @@
 <li class="toctree-l3"><a class="reference internal" href="keyevent.html">KeyEvent</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">KeyPressEvent</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#constructor">Constructor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#getrepeatcount">GetRepeatCount</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#gettitle">GetTitle</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#tostring">ToString</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#getstatictype">GetStaticType</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#geteventtype">GetEventType</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#getname">GetName</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#getrepeatcount">GetRepeatCount</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#getstatictype">GetStaticType</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gettitle">GetTitle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tostring">ToString</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="keyreleaseevent.html">KeyReleaseEvent</a></li>
@@ -149,8 +148,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../window/windowrestoreevent.html">WindowRestoreEvent</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../events.html#eventtype">EventType</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../input.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../log.html">Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../monitors.html">Monitors</a></li>
@@ -236,6 +237,26 @@
 <div class="line"><code class="code docutils literal notranslate"><span class="pre">title</span></code> Specifies the title of the TRAP::<a class="reference internal" href="../../windows.html#window"><span class="std std-ref">Window</span></a> the TRAP::<a class="reference internal" href="../../events.html#events"><span class="std std-ref">Events</span></a>::<a class="reference internal" href="#keypressevent">KeyPressEvent</a> is for</div>
 </div>
 </div>
+<div class="section" id="geteventtype">
+<h2>GetEventType<a class="headerlink" href="#geteventtype" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">KeyPressEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="../../events.html#events"><span class="std std-ref">Events</span></a>::<a class="reference internal" href="../../events.html#eventtype"><span class="std std-ref">EventType</span></a>::KeyPress</div>
+</div>
+</div>
+<div class="section" id="getname">
+<h2>GetName<a class="headerlink" href="#getname" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">KeyPressEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;KeyPress&quot;</span></code></div>
+</div>
+</div>
 <div class="section" id="getrepeatcount">
 <h2>GetRepeatCount<a class="headerlink" href="#getrepeatcount" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">KeyPressEvent</span><span class="o">::</span><span class="n">GetRepeatCount</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
@@ -244,6 +265,16 @@
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
 <div class="line">Returns the amount of repeats of the TRAP::<a class="reference internal" href="../../input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="../../input.html#key"><span class="std std-ref">Key</span></a> from the TRAP::<a class="reference internal" href="../../events.html#events"><span class="std std-ref">Events</span></a>::<a class="reference internal" href="#keypressevent">KeyPressEvent</a></div>
+</div>
+</div>
+<div class="section" id="getstatictype">
+<h2>GetStaticType<a class="headerlink" href="#getstatictype" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">KeyPressEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="../../events.html#events"><span class="std std-ref">Events</span></a>::<a class="reference internal" href="../../events.html#eventtype"><span class="std std-ref">EventType</span></a>::KeyPress</div>
 </div>
 </div>
 <div class="section" id="gettitle">
@@ -264,36 +295,6 @@
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
 <div class="line">Returns a string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;KeyPressEvent:</span> <span class="pre">&quot;</span> <span class="pre">+</span> <span class="pre">key</span> <span class="pre">+</span> <span class="pre">&quot;</span> <span class="pre">(&quot;</span> <span class="pre">+</span> <span class="pre">repeatCount</span> <span class="pre">+</span> <span class="pre">&quot;</span> <span class="pre">repeats)&quot;</span></code></div>
-</div>
-</div>
-<div class="section" id="getstatictype">
-<h2>GetStaticType<a class="headerlink" href="#getstatictype" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">KeyPressEvent</span><span class="o">::</span><span class="n">GetStaticType</span><span class="p">();</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Returns TRAP::<a class="reference internal" href="../../events.html#events"><span class="std std-ref">Events</span></a>::<a class="reference internal" href="../../events.html#eventtype"><span class="std std-ref">EventType</span></a>::KeyPress</div>
-</div>
-</div>
-<div class="section" id="geteventtype">
-<h2>GetEventType<a class="headerlink" href="#geteventtype" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">EventType</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">KeyPressEvent</span><span class="o">::</span><span class="n">GetEventType</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Returns TRAP::<a class="reference internal" href="../../events.html#events"><span class="std std-ref">Events</span></a>::<a class="reference internal" href="../../events.html#eventtype"><span class="std std-ref">EventType</span></a>::KeyPress</div>
-</div>
-</div>
-<div class="section" id="getname">
-<h2>GetName<a class="headerlink" href="#getname" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">KeyPressEvent</span><span class="o">::</span><span class="n">GetName</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Returns a c-string containing: <code class="code docutils literal notranslate"><span class="pre">&quot;KeyPress&quot;</span></code></div>
 </div>
 </div>
 </div>

@@ -12,13 +12,10 @@
 #include "Utils/Hash/ConvertHashToString.h"
 
 TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
-	: m_filepath(std::move(filepath)),
-	m_bitsPerPixel(0),
-	m_width(0),
-	m_height(0),
-	m_format(ImageFormat::NONE)
 {
 	TP_PROFILE_FUNCTION();
+
+	m_filepath = std::move(filepath);
 
 	TP_DEBUG("[Image][PNG] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
@@ -232,7 +229,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 		switch (data.ColorType)
 		{
 		case 0: //GrayScale
-			m_format = ImageFormat::Gray_Scale;
+			m_colorFormat = ColorFormat::GrayScale;
 			if (data.BitDepth == 8)
 				m_data = raw;
 			else
@@ -240,7 +237,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			break;
 
 		case 2: //TrueColor
-			m_format = ImageFormat::RGB;
+			m_colorFormat = ColorFormat::RGB;
 			if (data.BitDepth == 8)
 				m_data = raw;
 			else
@@ -248,7 +245,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			break;
 
 		case 3: //Indexed Color
-			m_format = ImageFormat::RGBA;
+			m_colorFormat = ColorFormat::RGBA;
 			m_bitsPerPixel = 32;
 			if(data.Palette.empty())
 			{
@@ -271,7 +268,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			break;
 
 		case 4: //GrayScale Alpha
-			m_format = ImageFormat::Gray_Scale_Alpha;
+			m_colorFormat = ColorFormat::GrayScaleAlpha;
 			if (data.BitDepth == 8)
 				m_data = raw;
 			else
@@ -279,7 +276,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			break;
 
 		case 6: //TrueColor Alpha
-			m_format = ImageFormat::RGBA;
+			m_colorFormat = ColorFormat::RGBA;
 			if (data.BitDepth == 8)
 				m_data = raw;
 			else
@@ -296,7 +293,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void* TRAP::INTERNAL::PNGImage::GetPixelData()
+const void* TRAP::INTERNAL::PNGImage::GetPixelData() const
 {
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
@@ -312,76 +309,6 @@ uint32_t TRAP::INTERNAL::PNGImage::GetPixelDataSize() const
 		return static_cast<uint32_t>(m_data2Byte.size());
 
 	return static_cast<uint32_t>(m_data.size());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PNGImage::GetBitsPerPixel() const
-{
-	return m_bitsPerPixel;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PNGImage::GetBytesPerPixel() const
-{
-	return m_bitsPerPixel / 8;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PNGImage::GetWidth() const
-{
-	return m_width;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PNGImage::GetHeight() const
-{
-	return m_height;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNGImage::HasAlphaChannel() const
-{
-	return HasAlpha(m_format);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNGImage::IsImageGrayScale() const
-{
-	return IsGrayScale(m_format);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNGImage::IsImageColored() const
-{
-	return IsColored(m_format);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNGImage::IsHDR() const
-{
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string_view TRAP::INTERNAL::PNGImage::GetFilePath() const
-{
-	return m_filepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::ImageFormat TRAP::INTERNAL::PNGImage::GetFormat() const
-{
-	return m_format;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

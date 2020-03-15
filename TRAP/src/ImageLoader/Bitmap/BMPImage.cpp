@@ -9,13 +9,10 @@
 #include "Utils/ByteSwap.h"
 
 TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
-	: m_filepath(std::move(filepath)),
-	m_bitsPerPixel(0),
-	m_width(0),
-	m_height(0),
-	m_format(ImageFormat::NONE)
 {
 	TP_PROFILE_FUNCTION();
+	
+	m_filepath = std::move(filepath);
 	
 	TP_DEBUG("[Image][BMP] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
@@ -258,25 +255,25 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 
 			if (m_bitsPerPixel == 8) //Color Table
 			{
-				m_format = ImageFormat::RGBA;
+				m_colorFormat = ColorFormat::RGBA;
 				m_bitsPerPixel = 32;
 				
 				m_data = DecodeBGRAMap(imageData, m_width, m_height, 4, colorTable);
 			}
 			else if (m_bitsPerPixel == 16) //RGB
 			{				
-				m_format = ImageFormat::RGB;
+				m_colorFormat = ColorFormat::RGB;
 				m_bitsPerPixel = 24;
 				m_data = ConvertBGR16ToRGB24(imageData, m_width, m_height);
 			}
 			else if (m_bitsPerPixel == 24) //RGB
 			{				
-				m_format = ImageFormat::RGB;
+				m_colorFormat = ColorFormat::RGB;
 				m_data = ConvertBGR24ToRGB24(imageData, m_width, m_height);
 			}
 			else if (m_bitsPerPixel == 32) //RGBA
 			{
-				m_format = ImageFormat::RGBA;
+				m_colorFormat = ColorFormat::RGBA;
 
 				//Check if alpha is used
 				bool alphaUsed = false;
@@ -311,7 +308,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		}
 		else if (infoHeader.Compression == 3) //BitFields
 		{
-			m_format = ImageFormat::RGBA;
+			m_colorFormat = ColorFormat::RGBA;
 
 			std::array<BitField, 4> bitFields{};
 
@@ -393,7 +390,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		}
 
 		if (needYFlip)
-			m_data = FlipY(m_width, m_height, m_format, m_data.data());
+			m_data = FlipY(m_width, m_height, m_colorFormat, m_data.data());
 
 		file.close();
 	}
@@ -401,7 +398,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void* TRAP::INTERNAL::BMPImage::GetPixelData()
+const void* TRAP::INTERNAL::BMPImage::GetPixelData() const
 {
 	return m_data.data();
 }
@@ -411,76 +408,6 @@ void* TRAP::INTERNAL::BMPImage::GetPixelData()
 uint32_t TRAP::INTERNAL::BMPImage::GetPixelDataSize() const
 {
 	return static_cast<uint32_t>(m_data.size());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::BMPImage::GetBitsPerPixel() const
-{
-	return m_bitsPerPixel;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::BMPImage::GetBytesPerPixel() const
-{
-	return m_bitsPerPixel / 8;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::BMPImage::GetWidth() const
-{
-	return m_width;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::BMPImage::GetHeight() const
-{
-	return m_height;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::BMPImage::HasAlphaChannel() const
-{
-	return HasAlpha(m_format);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::BMPImage::IsImageGrayScale() const
-{
-	return IsGrayScale(m_format);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::BMPImage::IsImageColored() const
-{
-	return IsColored(m_format);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::BMPImage::IsHDR() const
-{
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string_view TRAP::INTERNAL::BMPImage::GetFilePath() const
-{
-	return m_filepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::ImageFormat TRAP::INTERNAL::BMPImage::GetFormat() const
-{
-	return m_format;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

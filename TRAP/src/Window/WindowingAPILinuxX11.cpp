@@ -705,7 +705,7 @@ Atom TRAP::INTERNAL::WindowingAPI::GetSupportedAtom(Atom* supportedAtoms, uint32
 Cursor TRAP::INTERNAL::WindowingAPI::CreateHiddenCursor()
 {
 	std::array<uint8_t, 16 * 16 * 4> pixels = {0};	
-	return CreateCursorX11(std::move(TRAP::Image::LoadFromMemory(16, 16, 32, TRAP::ImageFormat::RGBA, std::vector<uint8_t>(pixels.begin(), pixels.end()))), 0, 0);
+	return CreateCursorX11(std::move(TRAP::Image::LoadFromMemory(16, 16, 32, TRAP::Image::ColorFormat::RGBA, std::vector<uint8_t>(pixels.begin(), pixels.end()))), 0, 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

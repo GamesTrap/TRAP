@@ -16,8 +16,9 @@ namespace TRAP::Graphics
 
 	class Shader
 	{
-	public:
+	protected:
 		Shader() = default;
+	public:
 		Shader(const Shader&) = default;
 		Shader& operator=(const Shader&) = default;
 		Shader(Shader&&) = default;
@@ -29,9 +30,9 @@ namespace TRAP::Graphics
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		virtual std::string_view GetName() const = 0;
+		std::string_view GetName() const;
 
-		virtual std::string_view GetFilePath() const = 0;
+		std::string_view GetFilePath() const;
 
 		static Scope<Shader> CreateFromFile(const std::string& name, const std::string& filePath);
 		static Scope<Shader> CreateFromFile(const std::string& filepath);
@@ -45,6 +46,10 @@ namespace TRAP::Graphics
 
 		static std::string ShaderTypeToString(ShaderType type);
 
+	protected:
+		std::string m_name;
+		std::string m_filepath;
+		
 	private:
 		static bool CheckSPIRVMagicNumber(const std::string& filePath);
 		static std::vector<uint32_t> Convert8To32(const std::vector<std::byte>& source);

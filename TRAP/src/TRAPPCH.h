@@ -97,6 +97,9 @@
 #ifdef KeyRelease
 	#undef KeyRelease
 #endif
+#ifdef GrayScale
+	#undef GrayScale
+#endif
 
 #endif
 

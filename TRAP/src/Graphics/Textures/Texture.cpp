@@ -30,20 +30,48 @@ TRAP::Graphics::TextureParameters::TextureParameters(const TextureFilter filter,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::Texture::GetStrideFromFormat(const ImageFormat format)
+TRAP::Graphics::Texture::Texture()
+	: m_textureType(TextureType::Texture2D)
+{	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string_view TRAP::Graphics::Texture::GetName() const
+{
+	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::TextureType TRAP::Graphics::Texture::GetType() const
+{
+	return m_textureType;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::TextureParameters TRAP::Graphics::Texture::GetParameters() const
+{
+	return m_textureParameters;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint8_t TRAP::Graphics::Texture::GetStrideFromFormat(const Image::ColorFormat format)
 {
 	switch(format)
 	{
-	case ImageFormat::RGB:
+	case Image::ColorFormat::RGB:
 		return 3;
 
-	case ImageFormat::RGBA:
+	case Image::ColorFormat::RGBA:
 		return 4;
 
-	case ImageFormat::Gray_Scale:
+	case Image::ColorFormat::GrayScale:
 		return 1;
 
-	case ImageFormat::Gray_Scale_Alpha:
+	case Image::ColorFormat::GrayScaleAlpha:
 		return 2;
 
 	default:
@@ -53,20 +81,20 @@ uint8_t TRAP::Graphics::Texture::GetStrideFromFormat(const ImageFormat format)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::TRAPImageFormatToOpenGL(const ImageFormat format)
+uint32_t TRAP::Graphics::Texture::TRAPImageFormatToOpenGL(const Image::ColorFormat format)
 {
 	switch (format)
 	{
-	case ImageFormat::RGB:
+	case Image::ColorFormat::RGB:
 		return GL_RGB;
 
-	case ImageFormat::RGBA:
+	case Image::ColorFormat::RGBA:
 		return GL_RGBA;
 
-	case ImageFormat::Gray_Scale:
+	case Image::ColorFormat::GrayScale:
 		return GL_RED;
 
-	case ImageFormat::Gray_Scale_Alpha:
+	case Image::ColorFormat::GrayScaleAlpha:
 		return GL_RG;
 
 	default:
@@ -76,11 +104,11 @@ uint32_t TRAP::Graphics::Texture::TRAPImageFormatToOpenGL(const ImageFormat form
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Texture::TRAPImageFormatToOpenGLPrecise(const ImageFormat format, const uint32_t bytesPerPixel)
+uint32_t TRAP::Graphics::Texture::TRAPImageFormatToOpenGLPrecise(const Image::ColorFormat format, const uint32_t bytesPerPixel)
 {
 	switch (format)
 	{
-	case ImageFormat::RGB:
+	case Image::ColorFormat::RGB:
 	{
 		if (bytesPerPixel == 3)
 			return GL_RGB8;
@@ -92,7 +120,7 @@ uint32_t TRAP::Graphics::Texture::TRAPImageFormatToOpenGLPrecise(const ImageForm
 		return 0;
 	}
 
-	case ImageFormat::RGBA:
+	case Image::ColorFormat::RGBA:
 	{
 		if (bytesPerPixel == 4)
 			return GL_RGBA8;
@@ -104,7 +132,7 @@ uint32_t TRAP::Graphics::Texture::TRAPImageFormatToOpenGLPrecise(const ImageForm
 		return 0;
 	}
 
-	case ImageFormat::Gray_Scale:
+	case Image::ColorFormat::GrayScale:
 	{
 		if (bytesPerPixel == 1)
 			return GL_R8;
@@ -116,7 +144,7 @@ uint32_t TRAP::Graphics::Texture::TRAPImageFormatToOpenGLPrecise(const ImageForm
 		return 0;
 	}
 
-	case ImageFormat::Gray_Scale_Alpha:
+	case Image::ColorFormat::GrayScaleAlpha:
 	{
 		if (bytesPerPixel == 2)
 			return GL_RG8;

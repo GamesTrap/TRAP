@@ -37,13 +37,15 @@ The above license only applies to some of the Controller specific parts of this 
 
 TRAP::Input::EventCallbackFn TRAP::Input::s_eventCallback{};
 std::array<TRAP::Input::ControllerInternal, 16> TRAP::Input::s_controllerInternal{};
-std::vector<TRAP::Input::Mapping> TRAP::Input::Mappings{};
+std::vector<TRAP::Input::Mapping> TRAP::Input::s_mappings{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Input::Init()
 {
 	TP_PROFILE_FUNCTION();
+
+	TP_DEBUG("[Input] Initializing");
 
 	if(!InitController())
 		TP_ERROR("[Input][Controller] Failed to initialize Controller support!");
@@ -55,6 +57,8 @@ void TRAP::Input::Shutdown()
 {
 	TP_PROFILE_FUNCTION();
 
+	TP_DEBUG("[Input] Shutting down Input");
+	
 	ShutdownController();
 }
 
@@ -143,7 +147,7 @@ bool TRAP::Input::IsControllerConnected(const Controller controller)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::IsControllerGamepad(Controller controller)
+bool TRAP::Input::IsControllerGamepad(const Controller controller)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -223,7 +227,7 @@ std::string TRAP::Input::GetKeyName(const Key key)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-float TRAP::Input::GetControllerAxis(Controller controller, const ControllerAxis axis)
+float TRAP::Input::GetControllerAxis(const Controller controller, const ControllerAxis axis)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -235,7 +239,7 @@ float TRAP::Input::GetControllerAxis(Controller controller, const ControllerAxis
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(Controller controller, const uint32_t dpad)
+TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(const Controller controller, const uint32_t dpad)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -247,7 +251,7 @@ TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(Controller controller
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::GetControllerButton(Controller controller, const ControllerButton button)
+bool TRAP::Input::GetControllerButton(const Controller controller, const ControllerButton button)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -259,7 +263,7 @@ bool TRAP::Input::GetControllerButton(Controller controller, const ControllerBut
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Input::GetControllerName(Controller controller)
+std::string TRAP::Input::GetControllerName(const Controller controller)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -277,7 +281,7 @@ std::string TRAP::Input::GetControllerName(Controller controller)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Input::GetControllerGUID(Controller controller)
+std::string TRAP::Input::GetControllerGUID(const Controller controller)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -292,7 +296,7 @@ std::string TRAP::Input::GetControllerGUID(Controller controller)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<float> TRAP::Input::GetAllControllerAxes(Controller controller)
+std::vector<float> TRAP::Input::GetAllControllerAxes(const Controller controller)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -307,7 +311,7 @@ std::vector<float> TRAP::Input::GetAllControllerAxes(Controller controller)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<bool> TRAP::Input::GetAllControllerButtons(Controller controller)
+std::vector<bool> TRAP::Input::GetAllControllerButtons(const Controller controller)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -322,7 +326,7 @@ std::vector<bool> TRAP::Input::GetAllControllerButtons(Controller controller)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(Controller controller)
+std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(const Controller controller)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -337,7 +341,7 @@ std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(Cont
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::SetControllerVibration(Controller controller, const float leftMotor, const float rightMotor)
+void TRAP::Input::SetControllerVibration(const Controller controller, const float leftMotor, const float rightMotor)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -419,7 +423,7 @@ void TRAP::Input::UpdateControllerMappings(const std::string& map)
 		if (previous)
 			*previous = mapping;
 		else
-			Mappings.push_back(mapping);
+			s_mappings.push_back(mapping);
 	}
 	
 	for(uint32_t cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
@@ -675,7 +679,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 //Find a mapping based on controller GUID
 TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string& guid)
 {
-	for (auto& Mapping : Mappings)
+	for (auto& Mapping : s_mappings)
 		if(Mapping.guid == guid)
 			return &Mapping;
 	

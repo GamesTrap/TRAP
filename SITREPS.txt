@@ -961,6 +961,24 @@ SITREP 03/07/2020|20w10a2
     - Fixed SHA2 on Linux ~<10 mins
 
 SITREP 03/08/2020|20w10a3
+    - Changed TRAP Engine version to 20w10a3(0.6.23)
     - Docs now use Dark theme by default ~<20 mins
     - Moved Event stuff from TRAP namespace to TRAP::Events ~<30 mins
+    - Updated Event Docs ~>25 mins
     - Restructured Events in Docs ~>40 mins
+    - Made TRAP::Input class static ~<30 mins
+    - Updated Input Docs ~>25 mins
+    - Worked on Image Docs ~>40 mins
+
+SITREP 03/12/2020|20w11a1
+    - Changed TRAP Engine version to 20w11a1(0.6.24)
+    - Worked on Docs ~>60 mins
+    - Added ability to create texture via name and a TRAP::Image ~<30 mins
+    - Removed redundancy in Texture classes ~>40 mins
+    - Removed redundancy in Shader classes ~<30 mins
+
+SITREP 03/14/2020|20w11a2
+    - Changed TRAP Engine version to 20w11a2(0.6.25)
+    - 2D Textures now can only be loaded directly from memory via a TRAP::Image ~>25 mins
+    - Cube Texture can now be loaded via a TRAP::Image ~>30 mins
+    - FPS now get calculated via the frametime ~<10 mins

@@ -102,11 +102,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../core.html">Core</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../events.html">Events</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../events.html#general">General</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../events.html#eventtype">EventType</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../events.html#eventcategory">EventCategory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../events.html#event">Event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../events.html#eventcategory">EventCategory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../events.html#eventdispatcher">EventDispatcher</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../../events.html#id5">Events</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../events.html#id4">Events</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../application/apprenderevent.html">AppRenderEvent</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../application/apptickevent.html">AppTickEvent</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../application/appupdateevent.html">AppUpdateEvent</a></li>
@@ -115,9 +114,9 @@
 <li class="toctree-l3"><a class="reference internal" href="controllerevent.html">ControllerEvent</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">KeyEvent</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#constructor">Constructor</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#nonprintablekeytostring">NonPrintableKeyToString</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#getkey">GetKey</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#getcategoryflags">GetCategoryFlags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#getkey">GetKey</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nonprintablekeytostring">NonPrintableKeyToString</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="keypressevent.html">KeyPressEvent</a></li>
@@ -146,8 +145,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../window/windowrestoreevent.html">WindowRestoreEvent</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../events.html#eventtype">EventType</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../input.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../log.html">Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../monitors.html">Monitors</a></li>
@@ -232,6 +233,26 @@
 <div class="line"><code class="code docutils literal notranslate"><span class="pre">key</span></code> Specifies the TRAP::<a class="reference internal" href="../../input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="../../input.html#key"><span class="std std-ref">Key</span></a> for the TRAP::<a class="reference internal" href="../../events.html#events"><span class="std std-ref">Events</span></a>::<a class="reference internal" href="#keyevent">KeyEvent</a></div>
 </div>
 </div>
+<div class="section" id="getcategoryflags">
+<h2>GetCategoryFlags<a class="headerlink" href="#getcategoryflags" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">KeyEvent</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns TRAP::<a class="reference internal" href="../../events.html#events"><span class="std std-ref">Events</span></a>::<a class="reference internal" href="../../events.html#eventcategory"><span class="std std-ref">EventCategory</span></a>::Keyboard | TRAP::<a class="reference internal" href="../../events.html#events"><span class="std std-ref">Events</span></a>::<a class="reference internal" href="../../events.html#eventcategory"><span class="std std-ref">EventCategory</span></a>::Input casted to an <code class="code docutils literal notranslate"><span class="pre">int32_t</span></code></div>
+</div>
+</div>
+<div class="section" id="getkey">
+<h2>GetKey<a class="headerlink" href="#getkey" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">KeyEvent</span><span class="o">::</span><span class="n">GetKey</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This returns the TRAP::<a class="reference internal" href="../../input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="../../input.html#key"><span class="std std-ref">Key</span></a> of the TRAP::<a class="reference internal" href="../../events.html#events"><span class="std std-ref">Events</span></a>::<a class="reference internal" href="#keyevent">KeyEvent</a></div>
+</div>
+</div>
 <div class="section" id="nonprintablekeytostring">
 <h2>NonPrintableKeyToString<a class="headerlink" href="#nonprintablekeytostring" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">protected</span><span class="o">:</span>
@@ -245,26 +266,6 @@
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 <div class="line"><code class="code docutils literal notranslate"><span class="pre">key</span></code> Specifies the TRAP::<a class="reference internal" href="../../input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="../../input.html#key"><span class="std std-ref">Key</span></a> to get the name from</div>
-</div>
-</div>
-<div class="section" id="getkey">
-<h2>GetKey<a class="headerlink" href="#getkey" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">KeyEvent</span><span class="o">::</span><span class="n">GetKey</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">This returns the TRAP::<a class="reference internal" href="../../input.html#input"><span class="std std-ref">Input</span></a>::<a class="reference internal" href="../../input.html#key"><span class="std std-ref">Key</span></a> of the TRAP::<a class="reference internal" href="../../events.html#events"><span class="std std-ref">Events</span></a>::<a class="reference internal" href="#keyevent">KeyEvent</a></div>
-</div>
-</div>
-<div class="section" id="getcategoryflags">
-<h2>GetCategoryFlags<a class="headerlink" href="#getcategoryflags" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int32_t</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Events</span><span class="o">::</span><span class="n">KeyEvent</span><span class="o">::</span><span class="n">GetCategoryFlags</span><span class="p">()</span> <span class="k">const</span> <span class="k">override</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Returns TRAP::<a class="reference internal" href="../../events.html#events"><span class="std std-ref">Events</span></a>::<a class="reference internal" href="../../events.html#eventcategory"><span class="std std-ref">EventCategory</span></a>::Keyboard | TRAP::<a class="reference internal" href="../../events.html#events"><span class="std std-ref">Events</span></a>::<a class="reference internal" href="../../events.html#eventcategory"><span class="std std-ref">EventCategory</span></a>::Input casted to an <code class="code docutils literal notranslate"><span class="pre">int32_t</span></code></div>
 </div>
 </div>
 </div>

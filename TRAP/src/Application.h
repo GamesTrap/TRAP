@@ -4,16 +4,14 @@
 
 #include "Layers/ImGui/ImGuiLayer.h"
 
-#include "Window/Window.h"
 #include "Config/Config.h"
 #include "Layers/LayerStack.h"
 #include "Utils/Time/Timer.h"
-#include "Input/Input.h"
 
 int main();
 
 namespace TRAP
-{
+{	
 	namespace Events
 	{
 		class WindowRestoreEvent;
@@ -103,7 +101,6 @@ namespace TRAP
 		std::unique_ptr<LayerStack> m_layerStack;
 
 		Utils::Config m_config;
-		std::unique_ptr<Input> m_input;
 
 		std::unique_ptr<Utils::Timer> m_timer;
 		uint32_t m_FramesPerSecond;

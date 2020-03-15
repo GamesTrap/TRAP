@@ -101,24 +101,25 @@
 <li class="toctree-l1"><a class="reference internal" href="configs.html">Configs</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Core</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#general">General</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bit">BIT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#makeref">MakeRef</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#makescope">MakeScope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ref">Ref</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scope">Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#trap-assert">TRAP_ASSERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#trap-core-assert">TRAP_CORE_ASSERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#trap-debug-break">TRAP_DEBUG_BREAK</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#trap-enable-asserts">TRAP_ENABLE_ASSERTS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#trap-make-version">TRAP_MAKE_VERSION</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#trap-renderer-assert">TRAP_RENDERER_ASSERT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#trap-version">TRAP_VERSION</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#trap-version-major">TRAP_VERSION_MAJOR</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#trap-version-minor">TRAP_VERSION_MINOR</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#trap-version-patch">TRAP_VERSION_PATCH</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#trap-version">TRAP_VERSION</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#trap-debug-break">TRAP_DEBUG_BREAK</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#trap-enable-asserts">TRAP_ENABLE_ASSERTS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#trap-assert">TRAP_ASSERT</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#trap-core-assert">TRAP_CORE_ASSERT</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#trap-renderer-assert">TRAP_RENDERER_ASSERT</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#bit">BIT</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#scope">Scope</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#makescope">MakeScope</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ref">Ref</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">MakeScope</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="input.html">Input</a></li>
 <li class="toctree-l1"><a class="reference internal" href="log.html">Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitors.html">Monitors</a></li>
@@ -189,175 +190,6 @@
 <p>This File sets the target operating system to build for!</p>
 </div>
 </div>
-<div class="section" id="trap-make-version">
-<h2>TRAP_MAKE_VERSION<a class="headerlink" href="#trap-make-version" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">constexpr</span> <span class="kt">uint32_t</span> <span class="nf">TRAP_MAKE_VERSION</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">major</span><span class="p">,</span>
-                                     <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">minor</span><span class="p">,</span>
-                                     <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">patch</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Constructs a packed version number</div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">major</span></code> Specifies the major version number</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">minor</span></code> Specifies the minor version number</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">patch</span></code> Specifies the patch version number</p></li>
-</ul>
-</div>
-<div class="section" id="trap-version-major">
-<h2>TRAP_VERSION_MAJOR<a class="headerlink" href="#trap-version-major" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">constexpr</span> <span class="kt">uint32_t</span> <span class="nf">TRAP_VERSION_MAJOR</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">version</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Extracts and returns the major version number from a packed version number</div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">version</span></code> Specifies the packed version number</p></li>
-</ul>
-</div>
-<div class="section" id="trap-version-minor">
-<h2>TRAP_VERSION_MINOR<a class="headerlink" href="#trap-version-minor" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">constexpr</span> <span class="kt">uint32_t</span> <span class="nf">TRAP_VERSION_MINOR</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">version</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Extracts and returns the minor version number from a packed version number</div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">version</span></code> Specifies the packed version number</p></li>
-</ul>
-</div>
-<div class="section" id="trap-version-patch">
-<h2>TRAP_VERSION_PATCH<a class="headerlink" href="#trap-version-patch" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">constexpr</span> <span class="kt">uint32_t</span> <span class="nf">TRAP_VERSION_PATCH</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">version</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Extracts and returns the patch version number from a packed version number</div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">version</span></code> Specifies the packed version number</p></li>
-</ul>
-</div>
-<div class="section" id="trap-version">
-<h2>TRAP_VERSION<a class="headerlink" href="#trap-version" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">constexpr</span> <span class="kt">uint32_t</span> <span class="n">TRAP_VERSION</span><span class="p">;</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Contains the current packed version number of <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a></div>
-</div>
-</div>
-<div class="section" id="trap-debug-break">
-<h2>TRAP_DEBUG_BREAK<a class="headerlink" href="#trap-debug-break" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">TRAP_DEBUG_BREAK</span><span class="p">();</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Invokes a break</div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>If <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a> gets build in Release mode this function will do nothing!</p>
-</div>
-</div>
-<div class="section" id="trap-enable-asserts">
-<h2>TRAP_ENABLE_ASSERTS<a class="headerlink" href="#trap-enable-asserts" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP_ENABLE_ASSERTS</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">This macro specifies if asserts should be used or not</div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p><code class="code docutils literal notranslate"><span class="pre">TRAP_ENABLE_ASSERTS</span></code> only gets defined if <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a> gets build in Debug or “Release with Debug info” mode!</p>
-</div>
-</div>
-<div class="section" id="trap-assert">
-<h2>TRAP_ASSERT<a class="headerlink" href="#trap-assert" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP_ASSERT</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">...)</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">If <code class="code docutils literal notranslate"><span class="pre">x</span></code> is false this will trigger a <a class="reference internal" href="log.html#tperror"><span class="std std-ref">TP_ERROR</span></a> with the message <code class="code docutils literal notranslate"><span class="pre">&quot;Assertion</span> <span class="pre">Failed:</span></code> + contents from <code class="code docutils literal notranslate"><span class="pre">...</span></code>  + <code class="code docutils literal notranslate"><span class="pre">&quot;</span> <span class="pre">&#64;[__FILE__:__LINE__]&quot;</span></code> and then breaks the engine with <a class="reference internal" href="#trap-debug-break">TRAP_DEBUG_BREAK</a></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">x</span></code> Specifies the value to check</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">...</span></code> Specifies the message to print if the assertion gets triggered</p></li>
-</ul>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This macro won’t do anything if <code class="code docutils literal notranslate"><span class="pre">TRAP_ENABLE_ASSERTS</span></code> is not defined!</p>
-</div>
-</div>
-<div class="section" id="trap-core-assert">
-<h2>TRAP_CORE_ASSERT<a class="headerlink" href="#trap-core-assert" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP_CORE_ASSERT</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">...)</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">If <code class="code docutils literal notranslate"><span class="pre">x</span></code> is false this will trigger a <a class="reference internal" href="log.html#tperror"><span class="std std-ref">TP_ERROR</span></a> with the message <code class="code docutils literal notranslate"><span class="pre">&quot;[Core]</span> <span class="pre">Assertion</span> <span class="pre">Failed:</span></code> + contents from <code class="code docutils literal notranslate"><span class="pre">...</span></code>  + <code class="code docutils literal notranslate"><span class="pre">&quot;</span> <span class="pre">&#64;[__FILE__:__LINE__]&quot;</span></code> and then breaks the engine with <a class="reference internal" href="#trap-debug-break">TRAP_DEBUG_BREAK</a></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">x</span></code> Specifies the value to check</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">...</span></code> Specifies the message to print if the assertion gets triggered</p></li>
-</ul>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This macro won’t do anything if <code class="code docutils literal notranslate"><span class="pre">TRAP_ENABLE_ASSERTS</span></code> is not defined!</p>
-</div>
-</div>
-<div class="section" id="trap-renderer-assert">
-<h2>TRAP_RENDERER_ASSERT<a class="headerlink" href="#trap-renderer-assert" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP_RENDERER_ASSERT</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">...)</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">If <code class="code docutils literal notranslate"><span class="pre">x</span></code> is false this will trigger a <a class="reference internal" href="log.html#tperror"><span class="std std-ref">TP_ERROR</span></a> with the message <code class="code docutils literal notranslate"><span class="pre">&quot;[Renderer]</span> <span class="pre">Assertion</span> <span class="pre">Failed:</span></code> + contents from <code class="code docutils literal notranslate"><span class="pre">...</span></code>  + <code class="code docutils literal notranslate"><span class="pre">&quot;</span> <span class="pre">&#64;[__FILE__:__LINE__]&quot;</span></code> and then breaks the engine with <a class="reference internal" href="#trap-debug-break">TRAP_DEBUG_BREAK</a></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">x</span></code> Specifies the value to check</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">...</span></code> Specifies the message to print if the assertion gets triggered</p></li>
-</ul>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This macro won’t do anything if <code class="code docutils literal notranslate"><span class="pre">TRAP_ENABLE_ASSERTS</span></code> is not defined!</p>
-</div>
-</div>
 <div class="section" id="bit">
 <span id="core-bit"></span><h2>BIT<a class="headerlink" href="#bit" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
@@ -375,21 +207,22 @@
 <li><p><code class="code docutils literal notranslate"><span class="pre">x</span></code> Specifies the amount to shift</p></li>
 </ul>
 </div>
-<div class="section" id="scope">
-<h2>Scope<a class="headerlink" href="#scope" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
-<span class="k">using</span> <span class="n">Scope</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
+<div class="section" id="makeref">
+<h2>MakeRef<a class="headerlink" href="#makeref" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+<span class="k">constexpr</span> <span class="n">Ref</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">MakeRef</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span><span class="p">...</span> <span class="n">args</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line"><code class="code docutils literal notranslate"><span class="pre">Scope</span></code> is used as a scoped pointer</div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">MakeRef</span></code> is used to create a reference pointer</div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">T</span></code> Specifies the object that the scoped pointer should use</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">T</span></code> Specifies the object that the reference pointer should use</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">Args</span></code> Specifies the parameters needed by the object <code class="code docutils literal notranslate"><span class="pre">T</span></code> to initialize/construct</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -439,27 +272,195 @@
 <p>This may change in the future when memory management gets added</p>
 </div>
 </div>
-<div class="section" id="id3">
-<h2>MakeScope<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
-<span class="k">constexpr</span> <span class="n">Ref</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">MakeRef</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span><span class="p">...</span> <span class="n">args</span><span class="p">);</span>
+<div class="section" id="scope">
+<h2>Scope<a class="headerlink" href="#scope" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+<span class="k">using</span> <span class="n">Scope</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line"><code class="code docutils literal notranslate"><span class="pre">MakeRef</span></code> is used to create a reference pointer</div>
+<div class="line"><code class="code docutils literal notranslate"><span class="pre">Scope</span></code> is used as a scoped pointer</div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">T</span></code> Specifies the object that the reference pointer should use</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">Args</span></code> Specifies the parameters needed by the object <code class="code docutils literal notranslate"><span class="pre">T</span></code> to initialize/construct</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">T</span></code> Specifies the object that the scoped pointer should use</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This may change in the future when memory management gets added</p>
 </div>
+</div>
+<div class="section" id="trap-assert">
+<h2>TRAP_ASSERT<a class="headerlink" href="#trap-assert" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP_ASSERT</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">...)</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">If <code class="code docutils literal notranslate"><span class="pre">x</span></code> is false this will trigger a <a class="reference internal" href="log.html#tperror"><span class="std std-ref">TP_ERROR</span></a> with the message <code class="code docutils literal notranslate"><span class="pre">&quot;Assertion</span> <span class="pre">Failed:</span></code> + contents from <code class="code docutils literal notranslate"><span class="pre">...</span></code>  + <code class="code docutils literal notranslate"><span class="pre">&quot;</span> <span class="pre">&#64;[__FILE__:__LINE__]&quot;</span></code> and then breaks the engine with <a class="reference internal" href="#trap-debug-break">TRAP_DEBUG_BREAK</a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">x</span></code> Specifies the value to check</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">...</span></code> Specifies the message to print if the assertion gets triggered</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This macro won’t do anything if <code class="code docutils literal notranslate"><span class="pre">TRAP_ENABLE_ASSERTS</span></code> is not defined!</p>
+</div>
+</div>
+<div class="section" id="trap-core-assert">
+<h2>TRAP_CORE_ASSERT<a class="headerlink" href="#trap-core-assert" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP_CORE_ASSERT</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">...)</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">If <code class="code docutils literal notranslate"><span class="pre">x</span></code> is false this will trigger a <a class="reference internal" href="log.html#tperror"><span class="std std-ref">TP_ERROR</span></a> with the message <code class="code docutils literal notranslate"><span class="pre">&quot;[Core]</span> <span class="pre">Assertion</span> <span class="pre">Failed:</span></code> + contents from <code class="code docutils literal notranslate"><span class="pre">...</span></code>  + <code class="code docutils literal notranslate"><span class="pre">&quot;</span> <span class="pre">&#64;[__FILE__:__LINE__]&quot;</span></code> and then breaks the engine with <a class="reference internal" href="#trap-debug-break">TRAP_DEBUG_BREAK</a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">x</span></code> Specifies the value to check</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">...</span></code> Specifies the message to print if the assertion gets triggered</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This macro won’t do anything if <code class="code docutils literal notranslate"><span class="pre">TRAP_ENABLE_ASSERTS</span></code> is not defined!</p>
+</div>
+</div>
+<div class="section" id="trap-debug-break">
+<h2>TRAP_DEBUG_BREAK<a class="headerlink" href="#trap-debug-break" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">TRAP_DEBUG_BREAK</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Invokes a break</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a> gets build in Release mode this function will do nothing!</p>
+</div>
+</div>
+<div class="section" id="trap-enable-asserts">
+<h2>TRAP_ENABLE_ASSERTS<a class="headerlink" href="#trap-enable-asserts" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP_ENABLE_ASSERTS</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">This macro specifies if asserts should be used or not</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code class="code docutils literal notranslate"><span class="pre">TRAP_ENABLE_ASSERTS</span></code> only gets defined if <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a> gets build in Debug or “Release with Debug info” mode!</p>
+</div>
+</div>
+<div class="section" id="trap-make-version">
+<h2>TRAP_MAKE_VERSION<a class="headerlink" href="#trap-make-version" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">constexpr</span> <span class="kt">uint32_t</span> <span class="nf">TRAP_MAKE_VERSION</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">major</span><span class="p">,</span>
+                                     <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">minor</span><span class="p">,</span>
+                                     <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">patch</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Constructs a packed version number</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">major</span></code> Specifies the major version number</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">minor</span></code> Specifies the minor version number</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">patch</span></code> Specifies the patch version number</p></li>
+</ul>
+</div>
+<div class="section" id="trap-renderer-assert">
+<h2>TRAP_RENDERER_ASSERT<a class="headerlink" href="#trap-renderer-assert" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP_RENDERER_ASSERT</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">...)</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">If <code class="code docutils literal notranslate"><span class="pre">x</span></code> is false this will trigger a <a class="reference internal" href="log.html#tperror"><span class="std std-ref">TP_ERROR</span></a> with the message <code class="code docutils literal notranslate"><span class="pre">&quot;[Renderer]</span> <span class="pre">Assertion</span> <span class="pre">Failed:</span></code> + contents from <code class="code docutils literal notranslate"><span class="pre">...</span></code>  + <code class="code docutils literal notranslate"><span class="pre">&quot;</span> <span class="pre">&#64;[__FILE__:__LINE__]&quot;</span></code> and then breaks the engine with <a class="reference internal" href="#trap-debug-break">TRAP_DEBUG_BREAK</a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">x</span></code> Specifies the value to check</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">...</span></code> Specifies the message to print if the assertion gets triggered</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This macro won’t do anything if <code class="code docutils literal notranslate"><span class="pre">TRAP_ENABLE_ASSERTS</span></code> is not defined!</p>
+</div>
+</div>
+<div class="section" id="trap-version">
+<h2>TRAP_VERSION<a class="headerlink" href="#trap-version" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">constexpr</span> <span class="kt">uint32_t</span> <span class="n">TRAP_VERSION</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Contains the current packed version number of <a class="reference internal" href="../index.html#trap-engine"><span class="std std-ref">TRAP Engine</span></a></div>
+</div>
+</div>
+<div class="section" id="trap-version-major">
+<h2>TRAP_VERSION_MAJOR<a class="headerlink" href="#trap-version-major" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">constexpr</span> <span class="kt">uint32_t</span> <span class="nf">TRAP_VERSION_MAJOR</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">version</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Extracts and returns the major version number from a packed version number</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">version</span></code> Specifies the packed version number</p></li>
+</ul>
+</div>
+<div class="section" id="trap-version-minor">
+<h2>TRAP_VERSION_MINOR<a class="headerlink" href="#trap-version-minor" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">constexpr</span> <span class="kt">uint32_t</span> <span class="nf">TRAP_VERSION_MINOR</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">version</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Extracts and returns the minor version number from a packed version number</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">version</span></code> Specifies the packed version number</p></li>
+</ul>
+</div>
+<div class="section" id="trap-version-patch">
+<h2>TRAP_VERSION_PATCH<a class="headerlink" href="#trap-version-patch" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">constexpr</span> <span class="kt">uint32_t</span> <span class="nf">TRAP_VERSION_PATCH</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">version</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Extracts and returns the patch version number from a packed version number</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">version</span></code> Specifies the packed version number</p></li>
+</ul>
 </div>
 </div>
 

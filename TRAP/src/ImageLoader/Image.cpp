@@ -15,7 +15,91 @@
 #include "CustomImage.h"
 #include "Embed.h"
 
-std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+TRAP::Image::Image()
+	: m_width(0), m_height(0), m_isHDR(false), m_colorFormat(ColorFormat::NONE), m_filepath(""), m_bitsPerPixel(0)
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Image::GetBitsPerPixel() const
+{
+	return m_bitsPerPixel;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Image::GetBytesPerPixel() const
+{
+	return m_bitsPerPixel / 8;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Image::GetWidth() const
+{
+	return m_width;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Image::GetHeight() const
+{
+	return m_height;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Math::Vec2ui TRAP::Image::GetSize() const
+{
+	return Math::Vec2ui{ m_width, m_height };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Image::HasAlphaChannel() const
+{
+	return HasAlpha(m_colorFormat);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Image::IsImageGrayScale() const
+{
+	return IsGrayScale(m_colorFormat);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Image::IsImageColored() const
+{
+	return IsColored(m_colorFormat);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Image::IsHDR() const
+{
+	return m_isHDR;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string_view TRAP::Image::GetFilePath() const
+{
+	return m_filepath;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Image::ColorFormat TRAP::Image::GetColorFormat() const
+{
+	return m_colorFormat;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<uint8_t> TRAP::Image::ConvertBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -35,7 +119,7 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR16ToRGB24(std::vector<uint8_t>& s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR24ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+std::vector<uint8_t> TRAP::Image::ConvertBGR24ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -47,7 +131,7 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertBGR24ToRGB24(std::vector<uint8_t>& s
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::ConvertBGRA32ToRGBA32(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+std::vector<uint8_t> TRAP::Image::ConvertBGRA32ToRGBA32(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -59,7 +143,7 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertBGRA32ToRGBA32(std::vector<uint8_t>&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::DecodeBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
+std::vector<uint8_t> TRAP::Image::DecodeBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -97,7 +181,7 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeBGRAMap(std::vector<uint8_t>& source,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
+std::vector<uint8_t> TRAP::Image::DecodeRLEBGRAMap(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height, const uint32_t channels, std::vector<uint8_t>& colorMap)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -162,7 +246,7 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEBGRAMap(std::vector<uint8_t>& sour
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEGrayScale(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+std::vector<uint8_t> TRAP::Image::DecodeRLEGrayScale(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -203,7 +287,7 @@ std::vector<uint8_t> TRAP::INTERNAL::DecodeRLEGrayScale(std::vector<uint8_t>& so
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+std::vector<uint8_t> TRAP::Image::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -245,7 +329,7 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR16ToRGB24(std::vector<uint8_t>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+std::vector<uint8_t> TRAP::Image::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -287,7 +371,7 @@ std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGR24ToRGB24(std::vector<uint8_t>
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::INTERNAL::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
+std::vector<uint8_t> TRAP::Image::ConvertRLEBGRA32ToRGBA(std::vector<uint8_t>& source, const uint32_t width, const uint32_t height)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -361,19 +445,19 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
 	{
 		TP_ERROR("[Image] Unsupported or unknown Image Format!");
 		TP_WARN("[Image] Using Default Image!");
-		return MakeScope<INTERNAL::CustomImage>(virtualFilePath, 32, 32, 32, ImageFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
+		return MakeScope<INTERNAL::CustomImage>(virtualFilePath, 32, 32, 32, ColorFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 	}
 
 	//Test for Errors
-	if (result->GetPixelDataSize() == 0 || result->GetFormat() == ImageFormat::NONE)
-		result = MakeScope<INTERNAL::CustomImage>(virtualFilePath, 32, 32, 32, ImageFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
+	if (result->GetPixelDataSize() == 0 || result->GetColorFormat() == ColorFormat::NONE)
+		result = MakeScope<INTERNAL::CustomImage>(virtualFilePath, 32, 32, 32, ColorFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 
 	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, std::vector<uint8_t> pixelData)
+std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ColorFormat format, const std::vector<uint8_t>& pixelData)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -382,7 +466,7 @@ std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, std::vector<uint16_t> pixelData)
+std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ColorFormat format, const std::vector<uint16_t>& pixelData)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -391,7 +475,7 @@ std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ImageFormat format, std::vector<float> pixelData)
+std::unique_ptr<TRAP::Image> TRAP::Image::LoadFromMemory(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ColorFormat format, const std::vector<float>& pixelData)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -404,25 +488,25 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
 {
 	TP_PROFILE_FUNCTION();
 
-	return MakeScope<INTERNAL::CustomImage>("", 32, 32, 32, ImageFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
+	return MakeScope<INTERNAL::CustomImage>("", 32, 32, 32, ColorFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::IsGrayScale(const ImageFormat format)
+bool TRAP::Image::IsGrayScale(const ColorFormat format)
 {
 	switch(format)
 	{
-	case ImageFormat::Gray_Scale:
+	case ColorFormat::GrayScale:
 		return true;
 
-	case ImageFormat::Gray_Scale_Alpha:
+	case ColorFormat::GrayScaleAlpha:
 		return true;
 
-	case ImageFormat::RGB:
+	case ColorFormat::RGB:
 		return false;
 
-	case ImageFormat::RGBA:
+	case ColorFormat::RGBA:
 		return false;
 		
 	default:
@@ -432,20 +516,20 @@ bool TRAP::INTERNAL::IsGrayScale(const ImageFormat format)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::IsColored(const ImageFormat format)
+bool TRAP::Image::IsColored(const ColorFormat format)
 {
 	switch (format)
 	{
-	case ImageFormat::Gray_Scale:
+	case ColorFormat::GrayScale:
 		return false;
 
-	case ImageFormat::Gray_Scale_Alpha:
+	case ColorFormat::GrayScaleAlpha:
 		return false;
 
-	case ImageFormat::RGB:
+	case ColorFormat::RGB:
 		return true;
 
-	case ImageFormat::RGBA:
+	case ColorFormat::RGBA:
 		return true;
 
 	default:
@@ -455,20 +539,20 @@ bool TRAP::INTERNAL::IsColored(const ImageFormat format)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::HasAlpha(const ImageFormat format)
+bool TRAP::Image::HasAlpha(const ColorFormat format)
 {
 	switch (format)
 	{
-	case ImageFormat::Gray_Scale:
+	case ColorFormat::GrayScale:
 		return false;
 
-	case ImageFormat::Gray_Scale_Alpha:
+	case ColorFormat::GrayScaleAlpha:
 		return true;
 
-	case ImageFormat::RGB:
+	case ColorFormat::RGB:
 		return false;
 
-	case ImageFormat::RGBA:
+	case ColorFormat::RGBA:
 		return true;
 
 	default:

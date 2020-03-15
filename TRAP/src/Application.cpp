@@ -11,11 +11,11 @@
 #include "Graphics/Textures/Texture2D.h"
 #include "Graphics/Textures/TextureCube.h"
 #include "Graphics/Renderer.h"
-#include "Input/Input.h"
 #include "Utils/String/String.h"
 #include "Utils/MsgBox/MsgBox.h"
 #include "Event/KeyEvent.h"
 #include "Event/WindowEvent.h"
+#include "Input/Input.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
@@ -128,7 +128,6 @@ TRAP::Application::Application()
 	m_layerStack = std::make_unique<LayerStack>();
 
 	//Initialize Input for Joysticks
-	m_input = std::make_unique<Input>();
 	Input::SetEventCallback([this](Events::Event& e) {OnEvent(e); });
 	Input::Init();
 
@@ -145,7 +144,7 @@ TRAP::Application::~Application()
 	TP_PROFILE_FUNCTION();
 	
 	TP_DEBUG("[Application] Shutting down TRAP Modules...");
-	m_input->Shutdown();
+	Input::Shutdown();
 	m_layerStack.reset();
 	m_config.Set("Width", m_window->GetWidth());
 	m_config.Set("Height", m_window->GetHeight());
@@ -173,7 +172,6 @@ void TRAP::Application::Run()
 	TP_PROFILE_FUNCTION();
 
 	float lastFrameTime = 0.0f;
-	std::deque<Utils::Timer> framesPerSecond;
 	auto nextFrame = std::chrono::steady_clock::now();
 	Utils::Timer tickTimer;	
 	
@@ -299,10 +297,7 @@ void TRAP::Application::Run()
 		if (!m_minimized)
 		{
 			m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
-			m_FramesPerSecond = static_cast<uint32_t>(framesPerSecond.size());
-			framesPerSecond.emplace_back();
-			while (framesPerSecond.front().ElapsedMilliseconds() >= 1000.0f)
-				framesPerSecond.pop_front();
+			m_FramesPerSecond = static_cast<uint32_t>(1000.0f / m_FrameTime);
 		}
 
 		//FPSLimiter

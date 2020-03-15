@@ -16,18 +16,8 @@ namespace TRAP::INTERNAL
 		BMPImage& operator=(BMPImage&&) = default;
 		~BMPImage() = default;
 
-		void* GetPixelData() override;
+		const void* GetPixelData() const override;
 		uint32_t GetPixelDataSize() const override;
-		uint32_t GetBitsPerPixel() const override;
-		uint32_t GetBytesPerPixel() const override;
-		uint32_t GetWidth() const override;
-		uint32_t GetHeight() const override;
-		bool HasAlphaChannel() const override;
-		bool IsImageGrayScale() const override;
-		bool IsImageColored() const override;
-		bool IsHDR() const override;
-		std::string_view GetFilePath() const override;
-		ImageFormat GetFormat() const override;
 
 	private:
 		typedef struct Bitfield
@@ -41,12 +31,7 @@ namespace TRAP::INTERNAL
 		static uint32_t ApplyBitField(uint32_t x, BitField& bitField);
 		static uint32_t ApplyBitField(uint16_t x, BitField& bitField);
 		
-		std::string m_filepath;
-		uint32_t m_bitsPerPixel;
-		uint32_t m_width;
-		uint32_t m_height;
 		std::vector<uint8_t> m_data;
-		ImageFormat m_format;
 	};
 }
 

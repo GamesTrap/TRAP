@@ -13,8 +13,7 @@ bool TRAP::Graphics::API::VulkanShader::s_glslangInitialized = false;
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::string& source)
-	: m_name(std::move(name)),
-	m_VShaderModule(nullptr),
+	: m_VShaderModule(nullptr),
 	m_FShaderModule(nullptr),
 	m_GShaderModule(nullptr),
 	m_TCShaderModule(nullptr),
@@ -23,6 +22,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::str
 	m_computeShaderStage()
 {
 	TP_PROFILE_FUNCTION();
+
+	m_name = std::move(name);
 	
 	InitGLSL(source);
 }
@@ -30,8 +31,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::str
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::vector<uint32_t>& source)
-	: m_name(std::move(name)),
-	  m_VShaderModule(nullptr),
+	: m_VShaderModule(nullptr),
 	  m_FShaderModule(nullptr),
 	  m_GShaderModule(nullptr),
 	  m_TCShaderModule(nullptr),
@@ -40,6 +40,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::vector<ui
 	  m_computeShaderStage()
 {
 	TP_PROFILE_FUNCTION();
+
+	m_name = std::move(name);
 	
 	InitSPIRV(source);
 }
@@ -47,8 +49,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::vector<ui
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource)
-	: m_name(std::move(name)),
-	  m_VShaderModule(nullptr),
+	: m_VShaderModule(nullptr),
 	  m_FShaderModule(nullptr),
 	  m_GShaderModule(nullptr),
 	  m_TCShaderModule(nullptr),
@@ -57,6 +58,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::string VS
 	  m_computeShaderStage()
 {
 	TP_PROFILE_FUNCTION();
+
+	m_name = std::move(name);
 	
 	InitGLSL(std::move(VSSource), std::move(FSSource), std::move(GSSource), std::move(TCSSource), std::move(TESSource), std::move(CSSource));
 }
@@ -118,24 +121,6 @@ void TRAP::Graphics::API::VulkanShader::Unbind() const
 	TP_PROFILE_FUNCTION();
 	
 	s_CurrentlyBound = nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string_view TRAP::Graphics::API::VulkanShader::GetName() const
-{
-	TP_PROFILE_FUNCTION();
-
-	return m_name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string_view TRAP::Graphics::API::VulkanShader::GetFilePath() const
-{
-	TP_PROFILE_FUNCTION();
-
-	return m_filepath;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

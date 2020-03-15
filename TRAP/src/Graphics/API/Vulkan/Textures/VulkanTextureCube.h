@@ -11,6 +11,7 @@ namespace TRAP::Graphics::API
 		explicit VulkanTextureCube(TextureParameters parameters);
 		VulkanTextureCube(std::string name, const std::array<std::string, 6>& filepaths, TextureParameters parameters);
 		VulkanTextureCube(std::string name, const std::string& filepath, InputFormat format, TextureParameters parameters);
+		VulkanTextureCube(std::string name, const Scope<Image>& img, InputFormat format, TextureParameters parameters);
 		~VulkanTextureCube();
 		VulkanTextureCube(const VulkanTextureCube&) = default;
 		VulkanTextureCube& operator=(const VulkanTextureCube&) = default;
@@ -20,20 +21,8 @@ namespace TRAP::Graphics::API
 		void Bind(uint32_t slot) const override;
 		void Unbind(uint32_t slot) const override;
 
-		std::string_view GetName() const override;
-		std::string_view GetFilePath() const override;
-		TextureParameters GetParameters() override;
-
 		void SetWrap(TextureWrap wrap) override;
 		void SetFilter(TextureFilter filter) override;
-
-		InputFormat GetInputFormat() const override;
-		std::array<std::string, 6> GetFilePaths() const override;
-
-	private:
-		std::string m_name;
-		std::array<std::string, 6> m_filePaths;
-		TextureParameters m_parameters;
 	};
 }
 

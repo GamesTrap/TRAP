@@ -34,26 +34,26 @@ The above license only applies to some of the Controller specific parts of this 
 
 namespace TRAP
 {
+	class Application;
+
 	namespace INTERNAL
 	{
 		class WindowingAPI;
 	}
 
 	class Window;
-	class ControllerDisconnectEvent;
-	class ControllerConnectEvent;
 
 	class Input final
 	{
-	public:
-		Input() = default;
-		~Input() = default;		
+	public:		
+		Input() = delete;
+		~Input() = default;
 
 		Input(const Input&) = delete;
 		Input& operator=(const Input&) = delete;
 		Input(Input&&) = delete;
 		Input& operator=(Input&&) = delete;
-		
+	
 		enum class Key
 		{
 			Unknown = -1,
@@ -263,9 +263,6 @@ namespace TRAP
 			Left_Down  = Left | Down
 		};
 		
-		static void Init();
-		static void Shutdown();
-		
 		static bool IsKeyPressed(Key key);
 		static bool IsKeyPressed(Key key, const Scope<Window>& window);
 		static bool IsMouseButtonPressed(MouseButton button);
@@ -302,6 +299,10 @@ namespace TRAP
 		static void UpdateControllerMappings(const std::string& map);
 
 	private:
+		static void Init();
+		static void Shutdown();
+		friend class TRAP::Application;
+		
 #ifdef TRAP_PLATFORM_WINDOWS
 		static void DetectControllerConnectionWin32();
 		static void DetectControllerDisconnectionWin32();
@@ -418,7 +419,7 @@ namespace TRAP
 			HINSTANCE Instance{};
 			PFN_DirectInput8Create Create{};
 			IDirectInput8W* API = nullptr;
-		} inline static dinput8{};
+		} inline static s_dinput8{};
 
 		//////////
 		//XInput//
@@ -447,7 +448,7 @@ namespace TRAP
 			PFN_XInputGetCapabilities GetCapabilities{};
 			PFN_XInputGetState GetState{};
 			PFN_XInputSetState SetState{};
-		} inline static xinput{};
+		} inline static s_xinput{};
 		
 		struct Object
 		{
@@ -511,6 +512,7 @@ namespace TRAP
 			int8_t AxisScale = 0;
 			int8_t AxisOffset = 0;
 		};
+		
 		//Controller mapping
 		struct Mapping
 		{
@@ -549,7 +551,7 @@ namespace TRAP
 		///////////
 		//Mapping//
 		///////////	
-		static std::vector<Mapping> Mappings;
+		static std::vector<Mapping> s_mappings;
 		
 		static bool ParseMapping(Mapping& mapping, const std::string& str);
 		static Mapping* FindMapping(const std::string& guid);

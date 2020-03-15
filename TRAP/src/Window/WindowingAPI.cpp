@@ -542,16 +542,16 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 			return nullptr;
 		}
 
-		if (!((image->GetFormat() == ImageFormat::RGB && image->GetBitsPerPixel() == 24) || (image->GetFormat() == ImageFormat::RGBA && image->GetBitsPerPixel() == 32)))
+		if (!((image->GetColorFormat() == Image::ColorFormat::RGB && image->GetBitsPerPixel() == 24) || (image->GetColorFormat() == Image::ColorFormat::RGBA && image->GetBitsPerPixel() == 32)))
 		{
 			InputError(Error::Invalid_Value, "[Cursor] Unsupported BPP or format used!");
 			return nullptr;
 		}
 
 		//Convert to RGBA 32BPP
-		if (image->GetFormat() == ImageFormat::RGB)
+		if (image->GetColorFormat() == Image::ColorFormat::RGB)
 		{
-			std::vector<uint8_t> pixelData(static_cast<uint8_t*>(image->GetPixelData()), static_cast<uint8_t*>(image->GetPixelData()) + image->GetPixelDataSize());
+			std::vector<uint8_t> pixelData(static_cast<const uint8_t*>(image->GetPixelData()), static_cast<const uint8_t*>(image->GetPixelData()) + image->GetPixelDataSize());
 			const uint32_t newSize = static_cast<uint32_t>(pixelData.size()) + (image->GetWidth() * image->GetHeight());
 			std::vector<uint8_t> pixelDataRGBA(newSize, 0);
 			uint32_t pixelCount = 0;
@@ -566,7 +566,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 				pixelDataRGBA[pixelCount] = 255;
 			}			
 
-			const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(), 32, ImageFormat::RGBA, pixelDataRGBA);
+			const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(), 32, Image::ColorFormat::RGBA, pixelDataRGBA);
 			
 			cursor = MakeScope<InternalCursor>();
 			s_Data.CursorList.emplace_front(cursor.get());
@@ -579,7 +579,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 
 			return cursor;
 		}
-		if (image->GetFormat() == ImageFormat::RGBA)
+		if (image->GetColorFormat() == Image::ColorFormat::RGBA)
 		{
 			cursor = MakeScope<InternalCursor>();
 			s_Data.CursorList.emplace_front(cursor.get());
@@ -645,16 +645,16 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const S
 			return;
 		}
 
-		if(!((image->GetFormat() == ImageFormat::RGB && image->GetBitsPerPixel() == 24) || (image->GetFormat() == ImageFormat::RGBA && image->GetBitsPerPixel() == 32)))
+		if(!((image->GetColorFormat() == Image::ColorFormat::RGB && image->GetBitsPerPixel() == 24) || (image->GetColorFormat() == Image::ColorFormat::RGBA && image->GetBitsPerPixel() == 32)))
 		{
 			InputError(Error::Invalid_Value, "[Icon] Unsupported BPP or format used!");
 			return;			
 		}
 
 		//Convert to RGBA 32BPP
-		if (image->GetFormat() == ImageFormat::RGB)
+		if (image->GetColorFormat() == Image::ColorFormat::RGB)
 		{
-			std::vector<uint8_t> pixelData(static_cast<uint8_t*>(image->GetPixelData()), static_cast<uint8_t*>(image->GetPixelData()) + image->GetPixelDataSize());
+			std::vector<uint8_t> pixelData(static_cast<const uint8_t*>(image->GetPixelData()), static_cast<const uint8_t*>(image->GetPixelData()) + image->GetPixelDataSize());
 			const uint32_t newSize = static_cast<uint32_t>(pixelData.size()) + (image->GetWidth() * image->GetHeight());
 			std::vector<uint8_t> pixelDataRGBA(newSize, 0);
 			uint32_t pixelCount = 0;
@@ -669,10 +669,10 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const S
 				pixelDataRGBA[pixelCount] = 255;
 			}
 
-			const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(), 32, ImageFormat::RGBA, pixelDataRGBA);
+			const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(), 32, Image::ColorFormat::RGBA, pixelDataRGBA);
 			PlatformSetWindowIcon(window, iconImage);
 		}
-		else if (image->GetFormat() == ImageFormat::RGBA)
+		else if (image->GetColorFormat() == Image::ColorFormat::RGBA)
 			PlatformSetWindowIcon(window, image);
 	}
 	else

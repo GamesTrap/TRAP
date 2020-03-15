@@ -8,9 +8,11 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, const std::string& source)
-	: m_handle(0), m_name(std::move(name))
+	: m_handle(0)
 {
 	TP_PROFILE_FUNCTION();
+
+	m_name = std::move(name);
 	
 	InitGLSL(source);
 }
@@ -18,9 +20,11 @@ TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, const std::str
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, std::vector<uint32_t>& source)
-	: m_handle(0), m_name(std::move(name))
+	: m_handle(0)
 {
 	TP_PROFILE_FUNCTION();
+
+	m_name = std::move(name);
 	
 	InitSPIRV(source);
 }
@@ -28,9 +32,11 @@ TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, std::vector<ui
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource)
-	: m_handle(0), m_name(std::move(name))
+	: m_handle(0)
 {
 	TP_PROFILE_FUNCTION();
+
+	m_name = std::move(name);
 	
 	InitGLSL(std::move(VSSource), std::move(FSSource), std::move(GSSource), std::move(TCSSource), std::move(TESSource), std::move(CSSource));
 }
@@ -83,24 +89,6 @@ void TRAP::Graphics::API::OpenGLShader::Unbind() const
 	
 	OpenGLCall(glUseProgram(0));
 	s_CurrentlyBound = nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string_view TRAP::Graphics::API::OpenGLShader::GetName() const
-{
-	TP_PROFILE_FUNCTION();
-
-	return m_name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string_view TRAP::Graphics::API::OpenGLShader::GetFilePath() const
-{
-	TP_PROFILE_FUNCTION();
-
-	return m_filepath;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -92,7 +92,7 @@ void IconTests::SetIcon(const TRAP::Scope<TRAP::Window>& window, const int32_t i
 		}
 	}
 
-	const TRAP::Scope<TRAP::Image> image = TRAP::Image::LoadFromMemory(16, 16, 32, TRAP::ImageFormat::RGBA, pixels);
+	const TRAP::Scope<TRAP::Image> image = TRAP::Image::LoadFromMemory(16, 16, 32, TRAP::Image::ColorFormat::RGBA, pixels);
 	window->SetIcon(image);
 }
 

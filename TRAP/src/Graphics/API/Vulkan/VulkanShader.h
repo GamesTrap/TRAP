@@ -30,10 +30,6 @@ namespace TRAP::Graphics::API
 		void Bind() const override;
 		void Unbind() const override;
 
-		std::string_view GetName() const override;
-		
-		std::string_view GetFilePath() const override;
-
 	private:
 		void InitSPIRV(std::vector<uint32_t>& source);
 		void InitGLSL(const std::string& source);
@@ -50,8 +46,6 @@ namespace TRAP::Graphics::API
 
 		friend class ::TRAP::Graphics::Shader;
 		friend class ::TRAP::Graphics::ShaderManager;
-
-		std::string m_name, m_filepath;
 
 		static bool s_glslangInitialized;
 

@@ -44,7 +44,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Log" href="log.html" />
-    <link rel="prev" title="WindowRestoreEvent" href="events/window/windowrestoreevent.html" />
+    <link rel="prev" title="Image" href="image.html" />
     <link href="../_static/theme.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -101,38 +101,37 @@
 <li class="toctree-l1"><a class="reference internal" href="configs.html">Configs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core.html">Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="events.html">Events</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Input</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#general">General</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#key">Key</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#mousebutton">MouseButton</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#controller">Controller</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#controlleraxis">ControllerAxis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#controllerbutton">ControllerButton</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#controllerdpad">ControllerDPad</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#init">Init</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#shutdown">Shutdown</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#iskeypressed">IsKeyPressed</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ismousebuttonpressed">IsMouseButtonPressed</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#israwmouseinputsupported">IsRawMouseInputSupported</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#iscontrollerconnected">IsControllerConnected</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#iscontrollergamepad">IsControllerGamepad</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getmouseposition">GetMousePosition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getmousex">GetMouseX</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getmousey">GetMouseY</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getkeyname">GetKeyName</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getcontrolleraxis">GetControllerAxis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getcontrollerdpad">GetControllerDPad</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getcontrollerbutton">GetControllerButton</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getcontrollername">GetControllerName</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#getcontrollerguid">GetControllerGUID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key">Key</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mousebutton">MouseButton</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getallcontrolleraxes">GetAllControllerAxes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getallcontrollerbuttons">GetAllControllerButtons</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getallcontrollerdpads">GetAllControllerDPads</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#setcontrollervibration">SetControllerVibration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#setmouseposition">SetMousePosition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#setclipboard">SetClipboard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getclipboard">GetClipboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getcontrolleraxis">GetControllerAxis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getcontrollerbutton">GetControllerButton</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getcontrollerdpad">GetControllerDPad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getcontrollerguid">GetControllerGUID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getcontrollername">GetControllerName</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getkeyname">GetKeyName</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getmouseposition">GetMousePosition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getmousex">GetMouseX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getmousey">GetMouseY</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#iscontrollerconnected">IsControllerConnected</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#iscontrollergamepad">IsControllerGamepad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#iskeypressed">IsKeyPressed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ismousebuttonpressed">IsMouseButtonPressed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#israwmouseinputsupported">IsRawMouseInputSupported</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setclipboard">SetClipboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setcontrollervibration">SetControllerVibration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#seteventcallback">SetEventCallback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setmouseposition">SetMousePosition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#updatecontrollermappings">UpdateControllerMappings</a></li>
 </ul>
 </li>
@@ -208,8 +207,106 @@
 <p>For <a class="reference internal" href="events.html#event"><span class="std std-ref">Event</span></a> based Mouse &amp; Keyboard input see TRAP::<a class="reference internal" href="events.html#events"><span class="std std-ref">Events</span></a></p>
 </div>
 </div>
+<div class="section" id="controller">
+<span id="id2"></span><h2>Controller<a class="headerlink" href="#controller" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span>
+<span class="p">{</span>
+    <span class="n">One</span>      <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">Two</span>      <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">Three</span>    <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">Four</span>     <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="n">Five</span>     <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="n">Six</span>      <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="n">Seven</span>    <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>
+    <span class="n">Eight</span>    <span class="o">=</span> <span class="mi">7</span><span class="p">,</span>
+    <span class="n">Nine</span>     <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="n">Ten</span>      <span class="o">=</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="n">Eleven</span>   <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">Twelve</span>   <span class="o">=</span> <span class="mi">11</span><span class="p">,</span>
+    <span class="n">Thirteen</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span>
+    <span class="n">Fourteen</span> <span class="o">=</span> <span class="mi">13</span><span class="p">,</span>
+    <span class="n">Fifteen</span>  <span class="o">=</span> <span class="mi">14</span><span class="p">,</span>
+    <span class="n">Sixteen</span>  <span class="o">=</span> <span class="mi">15</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> is used to specify a Joystick/Gamepad/Controller etc.</div>
+</div>
+</div>
+<div class="section" id="controlleraxis">
+<h2>ControllerAxis<a class="headerlink" href="#controlleraxis" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerAxis</span>
+<span class="p">{</span>
+    <span class="n">Left_X</span>        <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">Left_Y</span>        <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">Right_X</span>       <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">Right_Y</span>       <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="n">Left_Trigger</span>  <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="n">Right_Trigger</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controlleraxis">ControllerAxis</a> is used to specify an Axis of a Joystick/Gamepad/Controller etc.</div>
+</div>
+</div>
+<div class="section" id="controllerbutton">
+<h2>ControllerButton<a class="headerlink" href="#controllerbutton" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerButton</span>
+<span class="p">{</span>
+    <span class="n">A</span>            <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">B</span>            <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">X</span>            <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">Y</span>            <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="n">Left_Bumper</span>  <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="n">Right_Bumper</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="n">Back</span>         <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>
+    <span class="n">Start</span>        <span class="o">=</span> <span class="mi">7</span><span class="p">,</span>
+    <span class="n">Guide</span>        <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="n">Left_Thumb</span>   <span class="o">=</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="n">Right_Thumb</span>  <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">DPad_Up</span>      <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">DPad_Right</span>   <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">DPad_Down</span>    <span class="o">=</span> <span class="mi">13</span>
+    <span class="n">DPad_Left</span>    <span class="o">=</span> <span class="mi">14</span>
+    <span class="n">Cross</span>        <span class="o">=</span> <span class="n">A</span><span class="p">,</span>
+    <span class="n">Circle</span>       <span class="o">=</span> <span class="n">B</span><span class="p">,</span>
+    <span class="n">Square</span>       <span class="o">=</span> <span class="n">X</span><span class="p">,</span>
+    <span class="n">Triangle</span>     <span class="o">=</span> <span class="n">Y</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerbutton">ControllerButton</a> is used to specify a Button of a Gamepad/Controller etc.</div>
+</div>
+</div>
+<div class="section" id="controllerdpad">
+<h2>ControllerDPad<a class="headerlink" href="#controllerdpad" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerDPad</span>
+<span class="p">{</span>
+    <span class="n">Centered</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">Up</span>         <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">Right</span>      <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">Down</span>       <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="n">Left</span>       <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="n">Right_Up</span>   <span class="o">=</span> <span class="n">Right</span> <span class="o">|</span> <span class="n">Up</span><span class="p">,</span>
+    <span class="n">Right_Down</span> <span class="o">=</span> <span class="n">Right</span> <span class="o">|</span> <span class="n">Down</span><span class="p">,</span>
+    <span class="n">Left_Up</span>    <span class="o">=</span> <span class="n">Left</span> <span class="o">|</span> <span class="n">Up</span><span class="p">,</span>
+    <span class="n">Left_Down</span>  <span class="o">=</span> <span class="n">Left</span> <span class="o">|</span> <span class="n">Down</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerdpad">ControllerDPad</a> is used to specify the direction of a Controller directional pad</div>
+</div>
+</div>
 <div class="section" id="key">
-<span id="id2"></span><h2>Key<a class="headerlink" href="#key" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2>Key<a class="headerlink" href="#key" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span>
 <span class="p">{</span>
     <span class="n">Unknown</span>        <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
@@ -367,216 +464,205 @@
 <div class="line">TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#mousebutton">MouseButton</a> is used to specify a Button on the Mouse</div>
 </div>
 </div>
-<div class="section" id="controller">
-<span id="id3"></span><h2>Controller<a class="headerlink" href="#controller" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span>
-<span class="p">{</span>
-    <span class="n">One</span>      <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">Two</span>      <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="n">Three</span>    <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="n">Four</span>     <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="n">Five</span>     <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
-    <span class="n">Six</span>      <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="n">Seven</span>    <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>
-    <span class="n">Eight</span>    <span class="o">=</span> <span class="mi">7</span><span class="p">,</span>
-    <span class="n">Nine</span>     <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
-    <span class="n">Ten</span>      <span class="o">=</span> <span class="mi">9</span><span class="p">,</span>
-    <span class="n">Eleven</span>   <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-    <span class="n">Twelve</span>   <span class="o">=</span> <span class="mi">11</span><span class="p">,</span>
-    <span class="n">Thirteen</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span>
-    <span class="n">Fourteen</span> <span class="o">=</span> <span class="mi">13</span><span class="p">,</span>
-    <span class="n">Fifteen</span>  <span class="o">=</span> <span class="mi">14</span><span class="p">,</span>
-    <span class="n">Sixteen</span>  <span class="o">=</span> <span class="mi">15</span>
-<span class="p">};</span>
+<div class="section" id="getallcontrolleraxes">
+<h2>GetAllControllerAxes<a class="headerlink" href="#getallcontrolleraxes" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetAllControllerAxes</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> is used to specify a Joystick/Gamepad/Controller etc.</div>
-</div>
-</div>
-<div class="section" id="controlleraxis">
-<h2>ControllerAxis<a class="headerlink" href="#controlleraxis" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerAxis</span>
-<span class="p">{</span>
-    <span class="n">Left_X</span>        <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">Left_Y</span>        <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="n">Right_X</span>       <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="n">Right_Y</span>       <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="n">Left_Trigger</span>  <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
-    <span class="n">Right_Trigger</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="p">};</span>
-</pre></div>
+<div class="line">Returns a vector containing all current axis positions of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a></div>
 </div>
 <div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controlleraxis">ControllerAxis</a> is used to specify an Axis of a Joystick/Gamepad/Controller etc.</div>
+<div class="line"><strong>Parameters</strong></div>
 </div>
-</div>
-<div class="section" id="controllerbutton">
-<h2>ControllerButton<a class="headerlink" href="#controllerbutton" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerButton</span>
-<span class="p">{</span>
-    <span class="n">A</span>            <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">B</span>            <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="n">X</span>            <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="n">Y</span>            <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="n">Left_Bumper</span>  <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
-    <span class="n">Right_Bumper</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="n">Back</span>         <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>
-    <span class="n">Start</span>        <span class="o">=</span> <span class="mi">7</span><span class="p">,</span>
-    <span class="n">Guide</span>        <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
-    <span class="n">Left_Thumb</span>   <span class="o">=</span> <span class="mi">9</span><span class="p">,</span>
-    <span class="n">Right_Thumb</span>  <span class="o">=</span> <span class="mi">10</span>
-    <span class="n">DPad_Up</span>      <span class="o">=</span> <span class="mi">11</span>
-    <span class="n">DPad_Right</span>   <span class="o">=</span> <span class="mi">12</span>
-    <span class="n">DPad_Down</span>    <span class="o">=</span> <span class="mi">13</span>
-    <span class="n">DPad_Left</span>    <span class="o">=</span> <span class="mi">14</span>
-    <span class="n">Cross</span>        <span class="o">=</span> <span class="n">A</span><span class="p">,</span>
-    <span class="n">Circle</span>       <span class="o">=</span> <span class="n">B</span><span class="p">,</span>
-    <span class="n">Square</span>       <span class="o">=</span> <span class="n">X</span><span class="p">,</span>
-    <span class="n">Triangle</span>     <span class="o">=</span> <span class="n">Y</span>
-<span class="p">};</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerbutton">ControllerButton</a> is used to specify a Button of a Gamepad/Controller etc.</div>
-</div>
-</div>
-<div class="section" id="controllerdpad">
-<h2>ControllerDPad<a class="headerlink" href="#controllerdpad" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="k">class</span> <span class="nc">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerDPad</span>
-<span class="p">{</span>
-    <span class="n">Centered</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">Up</span>         <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="n">Right</span>      <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="n">Down</span>       <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
-    <span class="n">Left</span>       <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
-    <span class="n">Right_Up</span>   <span class="o">=</span> <span class="n">Right</span> <span class="o">|</span> <span class="n">Up</span><span class="p">,</span>
-    <span class="n">Right_Down</span> <span class="o">=</span> <span class="n">Right</span> <span class="o">|</span> <span class="n">Down</span><span class="p">,</span>
-    <span class="n">Left_Up</span>    <span class="o">=</span> <span class="n">Left</span> <span class="o">|</span> <span class="n">Up</span><span class="p">,</span>
-    <span class="n">Left_Down</span>  <span class="o">=</span> <span class="n">Left</span> <span class="o">|</span> <span class="n">Down</span>
-<span class="p">};</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerdpad">ControllerDPad</a> is used to specify the direction of a Controller directional pad</div>
-</div>
-</div>
-<div class="section" id="init">
-<h2>Init<a class="headerlink" href="#init" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Init</span><span class="p">();</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Used to initialize all TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a>s</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get axis positions from</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function only returns axes that actually exist on the physical device</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This function gets called at the start of TRAP Engine</p>
+<p>This function can also contain axes that are not specified in TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controlleraxis">ControllerAxis</a></p>
 </div>
 </div>
-<div class="section" id="shutdown">
-<h2>Shutdown<a class="headerlink" href="#shutdown" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Shutdown</span><span class="p">();</span>
+<div class="section" id="getallcontrollerbuttons">
+<h2>GetAllControllerButtons<a class="headerlink" href="#getallcontrollerbuttons" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetAllControllerButtons</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Used to shutdown Controller Input</div>
+<div class="line">Returns a vector containing all current pressed or released buttons of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get buttons from</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function only returns buttons that actually exist on the physical device</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This function gets called while TRAP Engine shuts down</p>
+<p>This function can also contain buttons that are not specified in TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerbutton">ControllerButton</a></p>
 </div>
 </div>
-<div class="section" id="iskeypressed">
-<h2>IsKeyPressed<a class="headerlink" href="#iskeypressed" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsKeyPressed</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span> <span class="n">key</span><span class="p">,</span> <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">&gt;&amp;</span> <span class="n">window</span> <span class="o">=</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Application</span><span class="o">::</span><span class="n">GetWindow</span><span class="p">());</span>
+<div class="section" id="getallcontrollerdpads">
+<h2>GetAllControllerDPads<a class="headerlink" href="#getallcontrollerdpads" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerDPad</span><span class="o">&gt;</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetAllControllerDPads</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns whether the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#key">Key</a> is pressed or released from the specified TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
+<div class="line">Returns a vector containing all DPads current direction(in form of TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerdpad">ControllerDPad</a>) of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">key</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#key">Key</a> to check for</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">window</span></code> Specifies the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> to check from</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get DPads from</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function only returns DPads that actually exist on the physical device</p>
+</div>
+</div>
+<div class="section" id="getclipboard">
+<h2>GetClipboard<a class="headerlink" href="#getclipboard" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetClipboard</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Gets the contents of the clipboard from the operating system</div>
+</div>
+</div>
+<div class="section" id="getcontrolleraxis">
+<h2>GetControllerAxis<a class="headerlink" href="#getcontrolleraxis" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">float</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetControllerAxis</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">,</span>
+                                            <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerAxis</span> <span class="n">axis</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the current axis position of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controlleraxis">ControllerAxis</a> from TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get axis from</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">axis</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controlleraxis">ControllerAxis</a> to get position from</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function also returns a value if the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controlleraxis">ControllerAxis</a> doesn’t exist on the actual physical device.</p>
+</div>
+</div>
+<div class="section" id="getcontrollerbutton">
+<h2>GetControllerButton<a class="headerlink" href="#getcontrollerbutton" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetControllerButton</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">,</span>
+                                             <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerButton</span> <span class="n">button</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the whether the specified button is pressed or not from the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a>s</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get the Button status from</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">button</span></code> Specifies which TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerbutton">ControllerButton</a> status to get</p></li>
 </ul>
 </div>
-<div class="section" id="ismousebuttonpressed">
-<h2>IsMouseButtonPressed<a class="headerlink" href="#ismousebuttonpressed" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsMouseButtonPressed</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">MouseButton</span> <span class="n">button</span><span class="p">,</span> <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">&gt;&amp;</span> <span class="n">window</span> <span class="o">=</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Application</span><span class="o">::</span><span class="n">GetWindow</span><span class="p">());</span>
+<div class="section" id="getcontrollerdpad">
+<h2>GetControllerDPad<a class="headerlink" href="#getcontrollerdpad" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerDPad</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetControllerDPad</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">,</span>
+                                                                  <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">dpad</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns whether the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#mousebutton">MouseButton</a> is pressed or released from the specified TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
+<div class="line">Returns the current direction(in form of TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerdpad">ControllerDPad</a>) from the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a>s <code class="code docutils literal notranslate"><span class="pre">dpad</span></code></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">button</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#mousebutton">MouseButton</a> to check for</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">window</span></code> Specifies the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> to check from</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get the DPad direction from</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">dpad</span></code> Specifies which DPads direction to get</p></li>
 </ul>
 </div>
-<div class="section" id="israwmouseinputsupported">
-<span id="id4"></span><h2>IsRawMouseInputSupported<a class="headerlink" href="#israwmouseinputsupported" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsRawMouseInputSupported</span><span class="p">();</span>
+<div class="section" id="getcontrollerguid">
+<h2>GetControllerGUID<a class="headerlink" href="#getcontrollerguid" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetControllerGUID</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns whether raw mouse input is supported or not</div>
-</div>
-</div>
-<div class="section" id="iscontrollerconnected">
-<h2>IsControllerConnected<a class="headerlink" href="#iscontrollerconnected" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsControllerConnected</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Returns whether the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> is connected or not</div>
+<div class="line">Returns the GUID of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to check</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get GUID from</p></li>
 </ul>
 </div>
-<div class="section" id="iscontrollergamepad">
-<h2>IsControllerGamepad<a class="headerlink" href="#iscontrollergamepad" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsControllerGamepad</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
+<div class="section" id="getcontrollername">
+<h2>GetControllerName<a class="headerlink" href="#getcontrollername" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetControllerName</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns whether the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> is a Gamepad or not.</div>
+<div class="line">Returns the name of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to check.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get name from</p></li>
+</ul>
+</div>
+<div class="section" id="getkeyname">
+<h2>GetKeyName<a class="headerlink" href="#getkeyname" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetKeyName</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span> <span class="n">key</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the name of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#key">Key</a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">key</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<cite>Key</cite> to get the name for</p></li>
 </ul>
 </div>
 <div class="section" id="getmouseposition">
 <h2>GetMousePosition<a class="headerlink" href="#getmouseposition" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Math</span><span class="o">::</span><span class="n">Vec2</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetMousePosition</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">&gt;&amp;</span> <span class="n">window</span> <span class="o">=</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Application</span><span class="o">::</span><span class="n">GetWindow</span><span class="p">());</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Math</span><span class="o">::</span><span class="n">Vec2</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetMousePosition</span><span class="p">();</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns a TRAP::<a href="#id5"><span class="problematic" id="id6">`Math`_</span></a>::<a href="#id7"><span class="problematic" id="id8">`Vec2`_</span></a> containing the current mouse position from the specified TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
+<div class="line">Returns a TRAP::<a href="#id5"><span class="problematic" id="id6">`Math`_</span></a>::<a href="#id7"><span class="problematic" id="id8">`Vec2`_</span></a> containing the current mouse position from the Main TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Math</span><span class="o">::</span><span class="n">Vec2</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetMousePosition</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">&gt;&amp;</span> <span class="n">window</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns a TRAP::<a href="#id9"><span class="problematic" id="id10">`Math`_</span></a>::<a href="#id11"><span class="problematic" id="id12">`Vec2`_</span></a> containing the current mouse position from the specified TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
@@ -605,218 +691,107 @@
 <div class="line">Returns the current mouse position of the Y axis</div>
 </div>
 </div>
-<div class="section" id="getkeyname">
-<h2>GetKeyName<a class="headerlink" href="#getkeyname" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetKeyName</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span> <span class="n">key</span><span class="p">);</span>
+<div class="section" id="iscontrollerconnected">
+<h2>IsControllerConnected<a class="headerlink" href="#iscontrollerconnected" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsControllerConnected</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns the name of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#key">Key</a></div>
+<div class="line">Returns whether the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> is connected or not</div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">key</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<cite>Key</cite> to get the name for</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to check</p></li>
 </ul>
 </div>
-<div class="section" id="getcontrolleraxis">
-<h2>GetControllerAxis<a class="headerlink" href="#getcontrolleraxis" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">float</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetControllerAxis</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">,</span>
-                                            <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerAxis</span> <span class="n">axis</span><span class="p">);</span>
+<div class="section" id="iscontrollergamepad">
+<h2>IsControllerGamepad<a class="headerlink" href="#iscontrollergamepad" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsControllerGamepad</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns the current axis position of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controlleraxis">ControllerAxis</a> from TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a></div>
+<div class="line">Returns whether the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> is a Gamepad or not.</div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get axis from</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">axis</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controlleraxis">ControllerAxis</a> to get position from</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to check.</p></li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This function also returns a value if the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controlleraxis">ControllerAxis</a> doesn’t exist on the actual physical device.</p>
 </div>
-</div>
-<div class="section" id="getcontrollerdpad">
-<h2>GetControllerDPad<a class="headerlink" href="#getcontrollerdpad" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerDPad</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetControllerDPad</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">,</span>
-                                                                  <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">dpad</span><span class="p">);</span>
+<div class="section" id="iskeypressed">
+<h2>IsKeyPressed<a class="headerlink" href="#iskeypressed" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsKeyPressed</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span> <span class="n">key</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns the current direction(in form of TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerdpad">ControllerDPad</a>) from the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a>s <code class="code docutils literal notranslate"><span class="pre">dpad</span></code></div>
+<div class="line">Returns whether the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#key">Key</a> is pressed or released from the Main TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get the DPad direction from</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">dpad</span></code> Specifies which DPads direction to get</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">key</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#key">Key</a> to check for</p></li>
 </ul>
-</div>
-<div class="section" id="getcontrollerbutton">
-<h2>GetControllerButton<a class="headerlink" href="#getcontrollerbutton" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetControllerButton</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">,</span>
-                                             <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerButton</span> <span class="n">button</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsKeyPressed</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Key</span> <span class="n">key</span><span class="p">,</span> <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">&gt;&amp;</span> <span class="n">window</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns the whether the specified button is pressed or not from the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a>s</div>
+<div class="line">Returns whether the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#key">Key</a> is pressed or released from the specified TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get the Button status from</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">button</span></code> Specifies which TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerbutton">ControllerButton</a> status to get</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">key</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#key">Key</a> to check for</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">window</span></code> Specifies the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> to check from</p></li>
 </ul>
 </div>
-<div class="section" id="getcontrollername">
-<h2>GetControllerName<a class="headerlink" href="#getcontrollername" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetControllerName</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
+<div class="section" id="ismousebuttonpressed">
+<h2>IsMouseButtonPressed<a class="headerlink" href="#ismousebuttonpressed" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsMouseButtonPressed</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">MouseButton</span> <span class="n">button</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns the name of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a></div>
+<div class="line">Returns whether the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#mousebutton">MouseButton</a> is pressed or released from the Main TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get name from</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">button</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#mousebutton">MouseButton</a> to check for</p></li>
 </ul>
-</div>
-<div class="section" id="getcontrollerguid">
-<h2>GetControllerGUID<a class="headerlink" href="#getcontrollerguid" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetControllerGUID</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsMouseButtonPressed</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">MouseButton</span> <span class="n">button</span><span class="p">,</span> <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">&gt;&amp;</span> <span class="n">window</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns the GUID of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a></div>
+<div class="line">Returns whether the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#mousebutton">MouseButton</a> is pressed or released from the specified TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Parameters</strong></div>
 </div>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get GUID from</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">button</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#mousebutton">MouseButton</a> to check for</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">window</span></code> Specifies the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> to check from</p></li>
 </ul>
 </div>
-<div class="section" id="getallcontrolleraxes">
-<h2>GetAllControllerAxes<a class="headerlink" href="#getallcontrolleraxes" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetAllControllerAxes</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
+<div class="section" id="israwmouseinputsupported">
+<span id="id4"></span><h2>IsRawMouseInputSupported<a class="headerlink" href="#israwmouseinputsupported" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">IsRawMouseInputSupported</span><span class="p">();</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Returns a vector containing all current axis positions of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a></div>
+<div class="line">Returns whether raw mouse input is supported or not</div>
 </div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get axis positions from</p></li>
-</ul>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function only returns axes that actually exist on the physical device</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This function can also contain axes that are not specified in TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controlleraxis">ControllerAxis</a></p>
-</div>
-</div>
-<div class="section" id="getallcontrollerbuttons">
-<h2>GetAllControllerButtons<a class="headerlink" href="#getallcontrollerbuttons" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetAllControllerButtons</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Returns a vector containing all current pressed or released buttons of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get buttons from</p></li>
-</ul>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function only returns buttons that actually exist on the physical device</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This function can also contain buttons that are not specified in TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerbutton">ControllerButton</a></p>
-</div>
-</div>
-<div class="section" id="getallcontrollerdpads">
-<h2>GetAllControllerDPads<a class="headerlink" href="#getallcontrollerdpads" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">ControllerDPad</span><span class="o">&gt;</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetAllControllerDPads</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Returns a vector containing all DPads current direction(in form of TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controllerdpad">ControllerDPad</a>) of the specified TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">controller</span></code> Specifies the TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a> to get DPads from</p></li>
-</ul>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function only returns DPads that actually exist on the physical device</p>
-</div>
-</div>
-<div class="section" id="setcontrollervibration">
-<h2>SetControllerVibration<a class="headerlink" href="#setcontrollervibration" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">SetControllerVibration</span><span class="p">(</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">,</span> <span class="k">const</span> <span class="kt">float</span> <span class="n">leftMotor</span><span class="p">,</span> <span class="k">const</span> <span class="kt">float</span> <span class="n">rightMotor</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Sets the vibration strength of the specified motors of a of a TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">leftMotor</span></code> Specifies the left vibration motor of a Controller</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">rightMotor</span></code> Specifies the right vibration motor of a Controller</p></li>
-</ul>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function only works on Windows with Controllers that are XInput capable</p>
-</div>
-</div>
-<div class="section" id="setmouseposition">
-<h2>SetMousePosition<a class="headerlink" href="#setmouseposition" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">SetMousePosition</span><span class="p">(</span><span class="k">const</span> <span class="kt">float</span> <span class="n">x</span><span class="p">,</span> <span class="k">const</span> <span class="kt">float</span> <span class="n">y</span><span class="p">,</span> <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">&gt;&amp;</span> <span class="n">window</span> <span class="o">=</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Application</span><span class="o">::</span><span class="n">GetWindow</span><span class="p">());</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Description</strong></div>
-<div class="line">Sets the position(x, y) of the Mouse for the specified TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
-</div>
-<div class="line-block">
-<div class="line"><strong>Parameters</strong></div>
-</div>
-<ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">x</span></code> Specifies the x coordinate to set the Mouse to</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">y</span></code> Specifies the y coordinate to set the Mouse to</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">window</span></code> Specifies the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> to set the Mouse position for</p></li>
-</ul>
 </div>
 <div class="section" id="setclipboard">
 <h2>SetClipboard<a class="headerlink" href="#setclipboard" title="Permalink to this headline">¶</a></h2>
@@ -834,14 +809,25 @@
 <li><p><code class="code docutils literal notranslate"><span class="pre">str</span></code> Specifies the string to set the clipboard to</p></li>
 </ul>
 </div>
-<div class="section" id="getclipboard">
-<h2>GetClipboard<a class="headerlink" href="#getclipboard" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">GetClipboard</span><span class="p">()</span>
+<div class="section" id="setcontrollervibration">
+<h2>SetControllerVibration<a class="headerlink" href="#setcontrollervibration" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">SetControllerVibration</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">Controller</span> <span class="n">controller</span><span class="p">,</span> <span class="k">const</span> <span class="kt">float</span> <span class="n">leftMotor</span><span class="p">,</span> <span class="k">const</span> <span class="kt">float</span> <span class="n">rightMotor</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
-<div class="line">Gets the contents of the clipboard from the operating system</div>
+<div class="line">Sets the vibration strength of the specified motors of a of a TRAP::<a class="reference internal" href="#input">Input</a>::<a class="reference internal" href="#controller">Controller</a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">leftMotor</span></code> Specifies the left vibration motor of a Controller</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">rightMotor</span></code> Specifies the right vibration motor of a Controller</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function only works on Windows with Controllers that are XInput capable</p>
 </div>
 </div>
 <div class="section" id="seteventcallback">
@@ -863,6 +849,38 @@
 <p class="admonition-title">Note</p>
 <p><code class="code docutils literal notranslate"><span class="pre">EventCallbackFn</span></code> is the same as <code class="code docutils literal notranslate"><span class="pre">std::function&lt;void(Event&amp;)&gt;</span></code></p>
 </div>
+</div>
+<div class="section" id="setmouseposition">
+<h2>SetMousePosition<a class="headerlink" href="#setmouseposition" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">SetMousePosition</span><span class="p">(</span><span class="k">const</span> <span class="kt">float</span> <span class="n">x</span><span class="p">,</span> <span class="k">const</span> <span class="kt">float</span> <span class="n">y</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Sets the position(x, y) of the Mouse for the Main TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">x</span></code> Specifies the x coordinate to set the Mouse to</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">y</span></code> Specifies the y coordinate to set the Mouse to</p></li>
+</ul>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Input</span><span class="o">::</span><span class="n">SetMousePosition</span><span class="p">(</span><span class="k">const</span> <span class="kt">float</span> <span class="n">x</span><span class="p">,</span> <span class="k">const</span> <span class="kt">float</span> <span class="n">y</span><span class="p">,</span> <span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Window</span><span class="o">&gt;&amp;</span> <span class="n">window</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Sets the position(x, y) of the Mouse for the specified TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Parameters</strong></div>
+</div>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">x</span></code> Specifies the x coordinate to set the Mouse to</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">y</span></code> Specifies the y coordinate to set the Mouse to</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">window</span></code> Specifies the TRAP::<a class="reference internal" href="windows.html#window"><span class="std std-ref">Window</span></a> to set the Mouse position for</p></li>
+</ul>
 </div>
 <div class="section" id="updatecontrollermappings">
 <h2>UpdateControllerMappings<a class="headerlink" href="#updatecontrollermappings" title="Permalink to this headline">¶</a></h2>
@@ -890,10 +908,6 @@
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This functions gets used internally to add a predefined list of mappings for Windows and Linux Controllers</p>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>ControllerMappings.h</p>
 </div>
 </div>
 </div>

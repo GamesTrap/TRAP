@@ -17,8 +17,8 @@ pre {
 }
 
 .wy-nav-content {
-	background: #3c3c3c;
-	color: aliceblue;
+	background: #3c3c3c !important;
+	color: aliceblue !important;
 }
 
 .method dt, .class dt, .data dt, .attribute dt, .function dt,

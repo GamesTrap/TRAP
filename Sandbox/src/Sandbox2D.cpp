@@ -68,7 +68,7 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	                                     TRAP::Graphics::TextureManager::Get2D("TRAP"));
 	TRAP::Graphics::Renderer2D::EndScene();
 	
-	//Update FPS & FrameTIme history
+	//Update FPS & FrameTime history
 	if (m_updateFPSTimer.Elapsed() >= 0.025f)
 	{
 		m_updateFPSTimer.Reset();

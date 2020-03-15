@@ -8,9 +8,10 @@
 #include "Utils/ByteSwap.h"
 
 TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
-	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_width(0), m_height(0), m_format(ImageFormat::NONE)
 {
 	TP_PROFILE_FUNCTION();
+
+	m_filepath = std::move(filepath);
 
 	TP_DEBUG("[Image][PAM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
@@ -91,25 +92,25 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 			{
 				//GrayScale
 				m_bitsPerPixel = 16;
-				m_format = ImageFormat::Gray_Scale;
+				m_colorFormat = ColorFormat::GrayScale;
 			}
 			else if (header.TuplType == "RGB" && header.Depth == 3)
 			{
 				//RGB
 				m_bitsPerPixel = 48;
-				m_format = ImageFormat::RGB;
+				m_colorFormat = ColorFormat::RGB;
 			}
 			else if (header.TuplType == "GRAYSCALE_ALPHA" && header.Depth == 2)
 			{
 				//GrayScaleAlpha
 				m_bitsPerPixel = 32;
-				m_format = ImageFormat::Gray_Scale_Alpha;
+				m_colorFormat = ColorFormat::GrayScaleAlpha;
 			}
 			else if (header.TuplType == "RGB_ALPHA" && header.Depth == 4)
 			{
 				//RGBA
 				m_bitsPerPixel = 64;
-				m_format = ImageFormat::RGBA;
+				m_colorFormat = ColorFormat::RGBA;
 			}
 
 			m_data2Byte.resize(m_width * m_height * header.Depth);
@@ -135,25 +136,25 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 			{
 				//GrayScale
 				m_bitsPerPixel = 8;
-				m_format = ImageFormat::Gray_Scale;
+				m_colorFormat = ColorFormat::GrayScale;
 			}
 			else if (header.TuplType == "RGB" && header.Depth == 3)
 			{
 				//RGB
 				m_bitsPerPixel = 24;
-				m_format = ImageFormat::RGB;
+				m_colorFormat = ColorFormat::RGB;
 			}
 			else if (header.TuplType == "GRAYSCALE_ALPHA" && header.Depth == 2)
 			{
 				//GrayScaleAlpha
 				m_bitsPerPixel = 16;
-				m_format = ImageFormat::Gray_Scale_Alpha;
+				m_colorFormat = ColorFormat::GrayScaleAlpha;
 			}
 			else if (header.TuplType == "RGB_ALPHA" && header.Depth == 4)
 			{
 				//RGBA
 				m_bitsPerPixel = 32;
-				m_format = ImageFormat::RGBA;
+				m_colorFormat = ColorFormat::RGBA;
 			}
 
 			m_data.resize(m_width * m_height * header.Depth);
@@ -173,7 +174,7 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void* TRAP::INTERNAL::PAMImage::GetPixelData()
+const void* TRAP::INTERNAL::PAMImage::GetPixelData() const
 {
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
@@ -189,74 +190,4 @@ uint32_t TRAP::INTERNAL::PAMImage::GetPixelDataSize() const
 		return static_cast<uint32_t>(m_data2Byte.size());
 
 	return static_cast<uint32_t>(m_data.size());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PAMImage::GetBitsPerPixel() const
-{
-	return m_bitsPerPixel;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PAMImage::GetBytesPerPixel() const
-{
-	return m_bitsPerPixel / 8;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PAMImage::GetWidth() const
-{
-	return m_width;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PAMImage::GetHeight() const
-{
-	return m_height;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PAMImage::HasAlphaChannel() const
-{
-	return HasAlpha(m_format);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PAMImage::IsImageGrayScale() const
-{
-	return IsGrayScale(m_format);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PAMImage::IsImageColored() const
-{
-	return IsColored(m_format);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PAMImage::IsHDR() const
-{
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string_view TRAP::INTERNAL::PAMImage::GetFilePath() const
-{
-	return m_filepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::ImageFormat TRAP::INTERNAL::PAMImage::GetFormat() const
-{
-	return m_format;
 }

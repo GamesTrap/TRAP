@@ -11,6 +11,7 @@ namespace TRAP::Graphics::API
 		explicit OpenGLTextureCube(TextureParameters parameters);
 		OpenGLTextureCube(std::string name, const std::array<std::string, 6>& filepaths, TextureParameters parameters);
 		OpenGLTextureCube(std::string name, const std::string& filepath, InputFormat format, TextureParameters parameters);
+		OpenGLTextureCube(std::string name, const Scope<Image>& img, InputFormat format, TextureParameters parameters);
 		~OpenGLTextureCube();
 		OpenGLTextureCube(const OpenGLTextureCube&) = delete;
 		OpenGLTextureCube& operator=(const OpenGLTextureCube&) = delete;
@@ -21,29 +22,21 @@ namespace TRAP::Graphics::API
 		void Unbind(uint32_t slot) const override;
 
 		uint32_t GetHandle() const;
-		std::string_view GetName() const override;
-		std::string_view GetFilePath() const override;
-		TextureParameters GetParameters() override;
 
 		void SetWrap(TextureWrap wrap) override;
-		void SetFilter(TextureFilter filter) override;		
-
-		InputFormat GetInputFormat() const override;
-		std::array<std::string, 6> GetFilePaths() const override;
+		void SetFilter(TextureFilter filter) override;
 		
-	private:		
-		void LoadVerticalCross();
-		void LoadHorizontalCross();
+	private:
+		void SetupVerticalCross();
+		void SetupHorizontalCross();
+		void LoadVerticalCross(const Scope<Image>& img);
+		void LoadHorizontalCross(const Scope<Image>& img);
 		void LoadFiles();
 
 		bool CheckImageSize(const Scope<Image>& image) const;
 		void InitializeTexture();
 
 		uint32_t m_handle;
-		std::string m_name;
-		std::array<std::string, 6> m_filePaths;
-		TextureParameters m_parameters;
-		InputFormat m_inputFormat;
 
 		static uint32_t s_maxCombinedTextureUnits;
 		static std::unordered_map<uint32_t, const OpenGLTextureCube*> s_boundCubeTextures;

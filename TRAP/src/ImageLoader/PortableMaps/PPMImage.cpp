@@ -8,9 +8,11 @@
 #include "Utils/ByteSwap.h"
 
 TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
-	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_width(0), m_height(0)
 {
 	TP_PROFILE_FUNCTION();
+
+	m_filepath = std::move(filepath);
+	m_colorFormat = ColorFormat::RGB;
 
 	TP_DEBUG("[Image][PPM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
@@ -113,7 +115,7 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void* TRAP::INTERNAL::PPMImage::GetPixelData()
+const void* TRAP::INTERNAL::PPMImage::GetPixelData() const
 {
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
@@ -129,74 +131,4 @@ uint32_t TRAP::INTERNAL::PPMImage::GetPixelDataSize() const
 		return static_cast<uint32_t>(m_data2Byte.size());
 	
 	return static_cast<uint32_t>(m_data.size());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PPMImage::GetBitsPerPixel() const
-{
-	return m_bitsPerPixel;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PPMImage::GetBytesPerPixel() const
-{
-	return m_bitsPerPixel / 8;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PPMImage::GetWidth() const
-{
-	return m_width;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PPMImage::GetHeight() const
-{
-	return m_height;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PPMImage::HasAlphaChannel() const
-{
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PPMImage::IsImageGrayScale() const
-{
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PPMImage::IsImageColored() const
-{
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PPMImage::IsHDR() const
-{
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string_view TRAP::INTERNAL::PPMImage::GetFilePath() const
-{
-	return m_filepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::ImageFormat TRAP::INTERNAL::PPMImage::GetFormat() const
-{
-	return ImageFormat::RGB;
 }

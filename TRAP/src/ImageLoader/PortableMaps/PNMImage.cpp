@@ -8,9 +8,10 @@
 #include "Utils/ByteSwap.h"
 
 TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
-	: m_filepath(std::move(filepath)), m_bitsPerPixel(0), m_width(0), m_height(0), m_format(ImageFormat::NONE)
 {
 	TP_PROFILE_FUNCTION();
+
+	m_filepath = std::move(filepath);
 
 	TP_DEBUG("[Image][PNM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
@@ -80,7 +81,7 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 			if (header.MagicNumber == "P2" || header.MagicNumber == "P5")
 			{
 				//GrayScale
-				m_format = ImageFormat::Gray_Scale;
+				m_colorFormat = ColorFormat::GrayScale;
 				m_bitsPerPixel = 16;
 				m_data2Byte.resize(m_width * m_height);
 				if(!file.read(reinterpret_cast<char*>(m_data2Byte.data()), m_width * m_height * sizeof(uint16_t)))
@@ -94,7 +95,7 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 			else if (header.MagicNumber == "P3" || header.MagicNumber == "P6")
 			{
 				//RGB
-				m_format = ImageFormat::RGB;
+				m_colorFormat = ColorFormat::RGB;
 				m_bitsPerPixel = 48;
 				m_data2Byte.resize(m_width * m_height * 3);
 				if (!file.read(reinterpret_cast<char*>(m_data2Byte.data()), m_width * m_height * 3 * sizeof(uint16_t)))
@@ -118,7 +119,7 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 			if (header.MagicNumber == "P2" || header.MagicNumber == "P5")
 			{
 				//GrayScale
-				m_format = ImageFormat::Gray_Scale;
+				m_colorFormat = ColorFormat::GrayScale;
 				m_bitsPerPixel = 8;
 				m_data.resize(m_width * m_height);
 				if(!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height))
@@ -132,7 +133,7 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 			else if (header.MagicNumber == "P3" || header.MagicNumber == "P6")
 			{
 				//RGB
-				m_format = ImageFormat::RGB;
+				m_colorFormat = ColorFormat::RGB;
 				m_bitsPerPixel = 24;
 				m_data.resize(m_width * m_height * 3);
 				if (!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * 3))
@@ -151,7 +152,7 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void* TRAP::INTERNAL::PNMImage::GetPixelData()
+const void* TRAP::INTERNAL::PNMImage::GetPixelData() const
 {
 	if (!m_data2Byte.empty())
 		return m_data2Byte.data();
@@ -167,74 +168,4 @@ uint32_t TRAP::INTERNAL::PNMImage::GetPixelDataSize() const
 		return static_cast<uint32_t>(m_data2Byte.size());
 
 	return static_cast<uint32_t>(m_data.size());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PNMImage::GetBitsPerPixel() const
-{
-	return m_bitsPerPixel;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PNMImage::GetBytesPerPixel() const
-{
-	return m_bitsPerPixel / 8;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PNMImage::GetWidth() const
-{
-	return m_width;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::INTERNAL::PNMImage::GetHeight() const
-{
-	return m_height;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNMImage::HasAlphaChannel() const
-{
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNMImage::IsImageGrayScale() const
-{
-	return IsGrayScale(m_format);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNMImage::IsImageColored() const
-{
-	return IsColored(m_format);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::PNMImage::IsHDR() const
-{
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::string_view TRAP::INTERNAL::PNMImage::GetFilePath() const
-{
-	return m_filepath;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::ImageFormat TRAP::INTERNAL::PNMImage::GetFormat() const
-{
-	return m_format;
 }

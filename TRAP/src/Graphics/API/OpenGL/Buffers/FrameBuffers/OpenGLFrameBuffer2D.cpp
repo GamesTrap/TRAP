@@ -155,7 +155,7 @@ void TRAP::Graphics::API::OpenGLFrameBuffer2D::Init()
 	OpenGLCall(glCreateFramebuffers(1, &m_frameBufferHandle));
 	OpenGLCall(glCreateRenderbuffers(1, &m_depthBufferHandle));
 
-	m_texture = Texture2D::CreateEmpty(m_width, m_height, 32, ImageFormat::RGBA, { TextureFilter::Linear, TextureWrap::Clamp_To_Edge });
+	m_texture = Texture2D::CreateEmpty(m_width, m_height, 32, Image::ColorFormat::RGBA, { TextureFilter::Linear, TextureWrap::Clamp_To_Edge });
 	if (m_texture)
 	{
 		OpenGLCall(glNamedFramebufferTexture(m_frameBufferHandle, GL_COLOR_ATTACHMENT0, (dynamic_cast<OpenGLTexture2D*>(m_texture.get()))->GetHandle(), 0));
