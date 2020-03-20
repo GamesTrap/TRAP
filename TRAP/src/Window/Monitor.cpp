@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "Monitor.h"
 
-#include "WindowingAPI.h"
-
 TRAP::Monitor::Monitor(const uint32_t monitor)
 {
 	TP_PROFILE_FUNCTION();
@@ -26,16 +24,19 @@ std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 
 	std::vector<VideoMode> modes{};
 
-	for(const INTERNAL::WindowingAPI::InternalVideoMode mode : INTERNAL::WindowingAPI::GetVideoModes(m_handle))
+	for (const INTERNAL::WindowingAPI::InternalVideoMode mode : INTERNAL::WindowingAPI::GetVideoModes(m_handle))
+	{
 		modes.push_back({ mode.Width, mode.Height, mode.RefreshRate });
-	
+	}
+		
 	return modes;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Monitor::VideoMode TRAP::Monitor::GetCurrentVideoMode() const
-{	
+{
+	
 	return VideoMode{ m_handle->CurrentMode.Width, m_handle->CurrentMode.Height, m_handle->CurrentMode.RefreshRate };
 }
 

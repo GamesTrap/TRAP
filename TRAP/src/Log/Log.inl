@@ -13,9 +13,11 @@ void TRAP::Log::Trace(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+#if !defined(TRAP_RELEASE)
 	//Standard White
 	std::cout << stream.str() << '\n';
-	s_Instance->m_buffer.emplace_back(Level::Trace, stream.str());
+#endif
+	Get().m_buffer.emplace_back(Level::Trace, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -31,11 +33,13 @@ void TRAP::Log::Debug(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+#if !defined(TRAP_RELEASE)
 	//Standard Cyan
 	SetColor(FOREGROUND_GREEN | FOREGROUND_BLUE);
 	std::cout << stream.str() << '\n';
 	ResetColor();
-	s_Instance->m_buffer.emplace_back(Level::Debug, stream.str());
+#endif
+	Get().m_buffer.emplace_back(Level::Debug, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -50,11 +54,13 @@ void TRAP::Log::Info(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+#if !defined(TRAP_RELEASE)
 	//Standard Green
 	SetColor(FOREGROUND_GREEN);
 	std::cout << stream.str() << '\n';
 	ResetColor();
-	s_Instance->m_buffer.emplace_back(Level::Info, stream.str());
+#endif
+	Get().m_buffer.emplace_back(Level::Info, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -69,11 +75,13 @@ void TRAP::Log::Warn(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+#if !defined(TRAP_RELEASE)
 	//Bold Yellow
 	SetColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	std::cout << stream.str() << '\n';
 	ResetColor();
-	s_Instance->m_buffer.emplace_back(Level::Warn, stream.str());
+#endif
+	Get().m_buffer.emplace_back(Level::Warn, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -88,11 +96,13 @@ void TRAP::Log::Error(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+#if !defined(TRAP_RELEASE)
 	//Bold Red
 	SetColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
 	std::cout << stream.str() << '\n';
 	ResetColor();
-	s_Instance->m_buffer.emplace_back(Level::Error, stream.str());
+#endif
+	Get().m_buffer.emplace_back(Level::Error, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -107,11 +117,13 @@ void TRAP::Log::Critical(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+#if !defined(TRAP_RELEASE)
 	//Bold White on Red
 	SetColor(BACKGROUND_RED | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 	std::cout << stream.str() << '\n';
 	ResetColor();
-	s_Instance->m_buffer.emplace_back(Level::Critical, stream.str());
+#endif
+	Get().m_buffer.emplace_back(Level::Critical, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -129,7 +141,7 @@ void TRAP::Log::Debug(Args&& ... args)
 
 	//Standard Cyan
 	std::cout << "\033[36m" << stream.str() << "\033[m" << '\n';
-	s_Instance->m_buffer.emplace_back(Level::Debug, stream.str());
+	Get().m_buffer.emplace_back(Level::Debug, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -146,7 +158,7 @@ void TRAP::Log::Info(Args&& ... args)
 
 	//Standard Green
 	std::cout << "\033[32m" << stream.str() << "\033[m" << '\n';
-	s_Instance->m_buffer.emplace_back(Level::Info, stream.str());
+	Get().m_buffer.emplace_back(Level::Info, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -163,7 +175,7 @@ void TRAP::Log::Warn(Args&& ... args)
 
 	//Bold Yellow
 	std::cout << "\033[33m" << "\033[1m" << stream.str() << "\033[m" << '\n';
-	s_Instance->m_buffer.emplace_back(Level::Warn, stream.str());
+	Get().m_buffer.emplace_back(Level::Warn, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -180,7 +192,7 @@ void TRAP::Log::Error(Args&& ... args)
 
 	//Bold Red
 	std::cout << "\033[31m" << "\033[1m" << stream.str() << "\033[m" << '\n';
-	s_Instance->m_buffer.emplace_back(Level::Error, stream.str());
+	Get().m_buffer.emplace_back(Level::Error, stream.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -197,7 +209,7 @@ void TRAP::Log::Critical(Args&& ... args)
 
 	//Bold White on Red
 	std::cout << "\033[41m" << "\033[1m" << stream.str() << "\033[m" << '\n';
-	s_Instance->m_buffer.emplace_back(Level::Critical, stream.str());
+	Get().m_buffer.emplace_back(Level::Critical, stream.str());
 }
 #endif
 

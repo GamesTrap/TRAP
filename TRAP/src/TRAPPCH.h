@@ -32,6 +32,8 @@
 #include <climits>
 #include <forward_list>
 #include <random>
+#include <queue>
+#include <tuple>
 
 //OpenGL
 #include "Graphics/API/OpenGL/Loader/OpenGLLoader.h"

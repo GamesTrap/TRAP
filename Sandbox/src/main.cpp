@@ -2,6 +2,7 @@
 
 #include "SandboxLayer.h"
 #include "Sandbox2D.h"
+#include "ParticleSystem2D/ParticleSystem2DLayer.h"
 
 class Sandbox final : public TRAP::Application
 {
@@ -10,6 +11,7 @@ public:
 	{		
 		//PushLayer(std::make_unique<SandboxLayer>());
 		PushLayer(std::make_unique<Sandbox2D>());
+		//PushLayer(std::make_unique<ParticleSystem2DLayer>());
 	}
 };
 

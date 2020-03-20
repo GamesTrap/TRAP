@@ -3,6 +3,8 @@
 
 int main()
 {
+	TRAP::Log::Get();
+	
 	TP_PROFILE_BEGIN_SESSION("Startup", "TRAPProfile-Startup.json");	
 	const auto app = TRAP::CreateApplication();
 	TP_PROFILE_END_SESSION();

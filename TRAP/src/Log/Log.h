@@ -9,8 +9,9 @@ namespace TRAP
 {
 	class Log final
 	{
-	public:
+	private:
 		Log();
+	public:
 		~Log();
 		Log(const Log&) = delete;
 		Log& operator=(const Log&) = delete;
@@ -26,6 +27,8 @@ namespace TRAP
 			Error,
 			Critical
 		};
+
+		static Log& Get();
 
 		template<typename... Args>
 		static void Trace(Args&& ... args);
@@ -65,8 +68,6 @@ namespace TRAP
 		static std::string GetTimeStamp();
 
 		std::vector<std::pair<Level, std::string>> m_buffer{};
-
-		inline static Log* s_Instance = nullptr;
 	};
 }
 

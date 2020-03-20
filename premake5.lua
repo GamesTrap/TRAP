@@ -60,6 +60,7 @@ project "TRAP"
 	files
 	{
 		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.hpp",
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/src/**.inl"
 	}
@@ -223,6 +224,8 @@ project "Sandbox"
 		defines "TRAP_RELEASE"
 		runtime "Release"
 		optimize "On"
+		entrypoint "mainCRTStartup"
+		kind "WindowedApp"
 
 	filter "configurations:RelWithDebInfo"
 		defines "TRAP_RELWITHDEBINFO"
@@ -292,6 +295,8 @@ project "Tests"
 		defines "TRAP_RELEASE"
 		runtime "Release"
 		optimize "On"
+		entrypoint "mainCRTStartup"
+		kind "WindowedApp"
 
 	filter "configurations:RelWithDebInfo"
 		defines "TRAP_RELWITHDEBINFO"
@@ -343,16 +348,6 @@ project "ConvertToSPIRV"
 			"HLSL",
 			"OGLCompiler",
 			"OSDependent"
-		}
-
-	filter "system:macosx"
-		links
-		{
-			"GLSLang",
-			"SPIRV",
-			"StandAlone",
-
-			"c++fs"
 		}
 
 		filter "configurations:Debug"

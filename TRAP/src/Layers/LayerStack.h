@@ -34,7 +34,6 @@ namespace TRAP
 		std::vector<std::unique_ptr<Layer>> m_layers;
 		uint32_t m_layerInsertIndex = 0;
 	};
-
 }
 
 #endif /*_TRAP_LAYERSTACK_H_*/

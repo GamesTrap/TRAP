@@ -982,3 +982,14 @@ SITREP 03/14/2020|20w11a2
     - 2D Textures now can only be loaded directly from memory via a TRAP::Image ~>25 mins
     - Cube Texture can now be loaded via a TRAP::Image ~>30 mins
     - FPS now get calculated via the frametime ~<10 mins
+
+SITREP 03/16/2020|20w12a1
+    - Changed TRAP Engine version to 20w12a1(0.6.26)
+    - Made TRAP::Log singleton ~<20 mins
+    - Updated TRAP::Log Docs ~<10 mins
+    - Added experimental ThreadPool (Dont use it for now) ~>30 mins
+    - Added a small 2D particle system example ~<70 mins
+
+SITREP 03/20/2020|20w12a2
+    - Changed TRAP Engine version to 20w12a2(0.6.27)
+    - Added Triangle as Renderer2D primitive ~<20 mins

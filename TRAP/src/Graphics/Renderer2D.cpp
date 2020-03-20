@@ -15,6 +15,7 @@ namespace TRAP::Graphics
 	struct Renderer2DStorage
 	{		
 		Scope<VertexArray> QuadVertexArray;
+		Scope<VertexArray> TriangleVertexArray;
 
 		Scope<UniformBuffer> DataUniformBuffer;
 		struct UniformData
@@ -42,34 +43,56 @@ void TRAP::Graphics::Renderer2D::Init()
 	
 	s_data = MakeScope<Renderer2DStorage>();
 	s_data->QuadVertexArray = VertexArray::Create();
+	s_data->TriangleVertexArray = VertexArray::Create();
 
 	///////////////
 	//    Quad   //
 	///////////////
-	//XYZ RGBA
-	std::array<float, 5 * 4> vertices //Quad
+	//XYZ UV
+	std::array<float, 5 * 4> quadVertices
 	{
 		-0.5f, -0.5f, 0.0f,    0.0f, 0.0f,
 		 0.5f, -0.5f, 0.0f,    1.0f, 0.0f,
 		 0.5f,  0.5f, 0.0f,    1.0f, 1.0f,
 		-0.5f,  0.5f, 0.0f,    0.0f, 1.0f
 	};
-	Scope<VertexBuffer> vertexBuffer = VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()));
+	Scope<VertexBuffer> quadVertexBuffer = VertexBuffer::Create(quadVertices.data(), static_cast<uint32_t>(quadVertices.size()));
 	const BufferLayout layout =
 	{
 		{ShaderDataType::Float3, "Position"},
 		{ShaderDataType::Float2, "UV"}
 	};
-	vertexBuffer->SetLayout(layout);
-	s_data->QuadVertexArray->AddVertexBuffer(vertexBuffer);
+	quadVertexBuffer->SetLayout(layout);
+	s_data->QuadVertexArray->AddVertexBuffer(quadVertexBuffer);
 
-	std::array<uint32_t, 6> indices //Quad
+	std::array<uint32_t, 6> quadIndices
 	{
 		0, 1, 2, 2, 3, 0
 	};
-	Scope<IndexBuffer> indexBuffer = IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size()));
-	s_data->QuadVertexArray->SetIndexBuffer(indexBuffer);
+	Scope<IndexBuffer> quadIndexBuffer = IndexBuffer::Create(quadIndices.data(), static_cast<uint32_t>(quadIndices.size()));
+	s_data->QuadVertexArray->SetIndexBuffer(quadIndexBuffer);
 
+	///////////////
+	//    Quad   //
+	///////////////
+	//XYZ UV
+	std::array<float, 5 * 3> triangleVertices
+	{
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+		0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.5f, 0.0f, 0.5f, 1.0f
+	};
+	Scope<VertexBuffer> triangleVertexBuffer = VertexBuffer::Create(triangleVertices.data(), static_cast<uint32_t>(triangleVertices.size()));
+	triangleVertexBuffer->SetLayout(layout);
+	s_data->TriangleVertexArray->AddVertexBuffer(triangleVertexBuffer);
+
+	std::array<uint32_t, 3> triangleIndices
+	{
+		0, 1, 2
+	};
+	Scope<IndexBuffer> triangleIndexBuffer = IndexBuffer::Create(triangleIndices.data(), static_cast<uint32_t>(triangleIndices.size()));
+	s_data->TriangleVertexArray->SetIndexBuffer(triangleIndexBuffer);
+	
 	s_data->CameraUniformBuffer = UniformBuffer::Create("CameraBuffer", &s_data->UniformCamera, sizeof(Renderer2DStorage::UniformCamera), BufferUsage::Stream);
 	s_data->DataUniformBuffer = UniformBuffer::Create("DataBuffer", &s_data->UniformData, sizeof(Renderer2DStorage::UniformData), BufferUsage::Dynamic);
 
@@ -169,12 +192,66 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform)
+void TRAP::Graphics::Renderer2D::DrawTriangle(const Transform& transform, const Math::Vec4& color)
 {
 	TP_PROFILE_FUNCTION();
 
-	//For Draw call counter
-	Application::AddSingleDrawCall();
+	//Bind and Update DataUniformBuffer if color changed
+	s_data->DataUniformBuffer->Bind(1);
+	if (s_data->UniformData.Color != color)
+	{
+		s_data->UniformData.Color = color;
+		s_data->DataUniformBuffer->UpdateData(&s_data->UniformData);
+	}
+
+	//Bind White Texture
+	TextureManager::Get2D("Renderer2DWhite")->Bind(0);
+
+	DrawTriangle(transform);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::DrawTriangle(const Transform& transform, const Scope<Texture2D>& texture)
+{
+	TP_PROFILE_FUNCTION();
+
+	//Bind Texture
+	texture->Bind(0);
+
+	//Bind and Update DataUniformBuffer if color changed
+	s_data->DataUniformBuffer->Bind(1);
+	if (s_data->UniformData.Color != Math::Vec4(1.0f))
+	{
+		s_data->UniformData.Color = Math::Vec4(1.0f);
+		s_data->DataUniformBuffer->UpdateData(&s_data->UniformData);
+	}
+
+	DrawTriangle(transform);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::DrawTriangle(const Transform& transform, const Math::Vec4& color, const Scope<Texture2D>& texture)
+{
+	TP_PROFILE_FUNCTION();
+
+	//Bind and Update DataUniformBuffer if color changed
+	s_data->DataUniformBuffer->Bind(1);
+	if (s_data->UniformData.Color != color)
+	{
+		s_data->UniformData.Color = color;
+		s_data->DataUniformBuffer->UpdateData(&s_data->UniformData);
+	}
+
+	DrawTriangle(transform, texture);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform)
+{
+	TP_PROFILE_FUNCTION();
 
 	//Update CameraUniformBuffer
 	//Position & Size & Rotation
@@ -191,4 +268,27 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform)
 
 	//Render the Quad
 	RenderCommand::DrawIndexed(s_data->QuadVertexArray);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::DrawTriangle(const Transform& transform)
+{
+	TP_PROFILE_FUNCTION();
+
+	//Update CameraUniformBuffer
+	//Position & Size & Rotation
+	s_data->UniformCamera.ModelMatrix = Translate(transform.Position) * Mat4Cast(Math::Quaternion(Radians(transform.Rotation))) *
+		Scale(transform.Scale);
+	s_data->CameraUniformBuffer->UpdateData(&s_data->UniformCamera);
+	s_data->CameraUniformBuffer->Bind(0);
+
+	//Bind Shader
+	ShaderManager::Get("Renderer2D")->Bind();
+
+	//Bind Vertex Array
+	s_data->TriangleVertexArray->Bind();
+
+	//Render the Quad
+	RenderCommand::DrawIndexed(s_data->TriangleVertexArray);
 }

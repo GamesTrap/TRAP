@@ -11,8 +11,6 @@ extern "C"
 }
 #endif
 
-inline std::unique_ptr<TRAP::Log> logger = std::make_unique<TRAP::Log>();
-
 extern std::unique_ptr<TRAP::Application> TRAP::CreateApplication();
 
 int main();

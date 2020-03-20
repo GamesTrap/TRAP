@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "RenderCommand.h"
 
+#include "Application.h"
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::RenderCommand::Clear(const RendererBufferType buffer)
@@ -120,6 +122,8 @@ void TRAP::Graphics::RenderCommand::SetCullMode(const RendererCullMode cullMode)
 
 void TRAP::Graphics::RenderCommand::DrawIndexed(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {
+	Application::AddSingleDrawCall();
+	
 	API::RendererAPI::GetRenderer()->DrawIndexed(vertexArray, primitive);
 }
 
@@ -127,5 +131,7 @@ void TRAP::Graphics::RenderCommand::DrawIndexed(const Scope<VertexArray>& vertex
 
 void TRAP::Graphics::RenderCommand::Draw(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
 {
+	Application::AddSingleDrawCall();
+	
 	API::RendererAPI::GetRenderer()->Draw(vertexArray, primitive);
 }

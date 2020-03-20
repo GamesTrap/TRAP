@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "Log.h"
 
-//-------------------------------------------------------------------------------------------------------------------//
-
 HANDLE TRAP::Log::m_handleConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 CONSOLE_SCREEN_BUFFER_INFO TRAP::Log::m_csbi;
 

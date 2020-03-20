@@ -116,6 +116,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#level">Level</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#constructor">Constructor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#destructor">Destructor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get">Get</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#clear">Clear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#critical">Critical</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#debug">Debug</a></li>
@@ -281,9 +282,13 @@
 </div>
 <div class="section" id="constructor">
 <h2>Constructor<a class="headerlink" href="#constructor" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="p">();</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
+<dl class="simple">
+<dt>private:</dt><dd><p>TRAP::Log();</p>
+</dd>
+</dl>
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
 <div class="line">Creates an instance of TRAP::<a class="reference internal" href="#log">Log</a>.</div>
@@ -297,6 +302,16 @@
 <div class="line-block">
 <div class="line"><strong>Description</strong></div>
 <div class="line">Destructs TRAP::<a class="reference internal" href="#log">Log</a> and saves every message from the internal buffer.</div>
+</div>
+</div>
+<div class="section" id="get">
+<h2>Get<a class="headerlink" href="#get" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">&amp;</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Log</span><span class="o">::</span><span class="n">Get</span><span class="p">();</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Description</strong></div>
+<div class="line">Returns the a reference to the singleotn TRAP::<a class="reference internal" href="#log">Log</a> instance.</div>
 </div>
 </div>
 <div class="section" id="clear">

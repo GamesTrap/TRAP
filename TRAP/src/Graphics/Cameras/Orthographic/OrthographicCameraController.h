@@ -8,6 +8,15 @@
 
 namespace TRAP::Graphics
 {
+	struct OrthographicCameraBounds
+	{
+		float Left, Right;
+		float Bottom, Top;
+
+		float GetWidth() const;
+		float GetHeight() const;
+	};
+	
 	class OrthographicCameraController
 	{
 	public:
@@ -27,6 +36,8 @@ namespace TRAP::Graphics
 		
 		float GetZoomLevel() const;
 		void SetZoomLevel(float zoomLevel);
+
+		const OrthographicCameraBounds& GetBounds() const;
 		
 	private:
 		bool OnMouseScroll(Events::MouseScrollEvent& e);
@@ -34,7 +45,8 @@ namespace TRAP::Graphics
 		
 		float m_aspectRatio;
 		float m_zoomLevel = 1.0f;
-		
+
+		OrthographicCameraBounds m_bounds;
 		OrthographicCamera m_camera;
 
 		bool m_rotation;

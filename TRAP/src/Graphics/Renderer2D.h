@@ -28,8 +28,13 @@ namespace TRAP::Graphics
 		static void DrawQuad(const Transform& transform, const Scope<Texture2D>& texture);
 		static void DrawQuad(const Transform& transform, const Math::Vec4& color, const Scope<Texture2D>& texture);
 
+		static void DrawTriangle(const Transform& transform, const Math::Vec4& color);
+		static void DrawTriangle(const Transform& transform, const Scope<Texture2D>& texture);
+		static void DrawTriangle(const Transform& transform, const Math::Vec4& color, const Scope<Texture2D>& texture);
+
 	private:
 		static void DrawQuad(const Transform& transform);
+		static void DrawTriangle(const Transform& transform);
 	};
 }
 

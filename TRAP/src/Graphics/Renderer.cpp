@@ -87,8 +87,6 @@ void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<V
 {
 	TP_PROFILE_FUNCTION();
 
-	Application::AddSingleDrawCall();
-
 	s_sceneData->m_modelMatrix = transform;
 	if(shader)
 	{

@@ -31,12 +31,13 @@ namespace TRAP::Events
 
 	class Event
 	{
-	public:
+	protected:
 		Event() = default;
 		Event(const Event&) = default;
 		Event& operator=(const Event&) = default;
 		Event(Event&&) = default;
 		Event& operator=(Event&&) = default;
+	public:
 		virtual ~Event() = default;
 
 		bool Handled = false;

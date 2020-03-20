@@ -3,26 +3,30 @@
 
 TRAP::Log::Log()
 {
-	TP_PROFILE_FUNCTION();
-
 	m_buffer.reserve(256);
-	s_Instance = this;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Log::~Log()
-{
-	TP_PROFILE_FUNCTION();
-	
+{	
 	Save();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Log& TRAP::Log::Get()
+{
+	static std::unique_ptr<Log> logger(new Log());
+	
+	return *logger;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffer()
 {
-	return s_Instance->m_buffer;
+	return Get().m_buffer;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -36,7 +40,7 @@ void TRAP::Log::Save()
 	std::ofstream file("TRAP.Log");
 	if (file.is_open())
 	{
-		for (const auto& [level, message] : s_Instance->m_buffer)
+		for (const auto& [level, message] : Get().m_buffer)
 			file << message << '\n';
 
 		file.close();
@@ -50,8 +54,8 @@ void TRAP::Log::Clear()
 	TP_PROFILE_FUNCTION();
 
 	Save();
-	s_Instance->m_buffer.clear();
-	s_Instance->m_buffer.reserve(256);
+	Get().m_buffer.clear();
+	Get().m_buffer.reserve(256);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
