@@ -5,6 +5,12 @@
 #include "Graphics/RenderCommand.h"
 #include "Graphics/Buffers/VertexArray.h"
 #include "Graphics/Buffers/IndexBuffer.h"
+#include "Graphics/Textures/Texture.h"
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::OpenGLRenderer::s_maxCombinedTextureUnits = 0;
+std::unordered_map<uint32_t, const TRAP::Graphics::Texture*> TRAP::Graphics::API::OpenGLRenderer::s_boundTextures{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -439,6 +445,25 @@ uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererDepthFunctionToOpenGL(
 	default:
 		return 0;
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::OpenGLRenderer::GetMaxTextureUnits()
+{
+	if(s_maxCombinedTextureUnits == 0)
+	{
+		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits)));
+	}
+
+	return s_maxCombinedTextureUnits;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::unordered_map<uint32_t, const TRAP::Graphics::Texture*>& TRAP::Graphics::API::OpenGLRenderer::GetBoundTextures()
+{
+	return s_boundTextures;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

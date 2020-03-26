@@ -2,17 +2,10 @@
 #include "OpenGLTextureCube.h"
 
 #include "Graphics/API/OpenGL/OpenGLCommon.h"
+#include "Graphics/API/OpenGL/OpenGLRenderer.h"
 #include "Graphics/Textures/TextureManager.h"
 #include "VFS/VFS.h"
 #include "Maths/Math.h"
-
-uint32_t TRAP::Graphics::API::OpenGLTextureCube::s_maxCombinedTextureUnits = 0;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::unordered_map<uint32_t, const TRAP::Graphics::API::OpenGLTextureCube*> TRAP::Graphics::API::OpenGLTextureCube::s_boundCubeTextures{};
-
-//-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(const TextureParameters parameters)
 	: m_handle(0)
@@ -24,10 +17,6 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(const TextureParameter
 	m_inputFormat = InputFormat::NONE;
 	
 	TP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
-	if (s_maxCombinedTextureUnits == 0)
-	{
-		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits)));
-	}
 	if (s_maxCubeTextureSize == 0) //Only load maximum available texture size once
 	{
 		OpenGLCall(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize)));
@@ -79,10 +68,6 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 	m_inputFormat = InputFormat::NONE;
 	
 	TP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
-	if (s_maxCombinedTextureUnits == 0)
-	{
-		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits)));
-	}
 	if (s_maxCubeTextureSize == 0) //Only load maximum available texture size once
 	{
 		OpenGLCall(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize)));
@@ -112,10 +97,6 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 	m_inputFormat = format;
 	
 	TP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
-	if (s_maxCombinedTextureUnits == 0)
-	{
-		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits)));
-	}
 	if (s_maxCubeTextureSize == 0) //Only load maximum available texture size once
 	{
 		OpenGLCall(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize)));
@@ -156,10 +137,6 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 		m_filepaths[0] = VFS::MakeVirtualPathCompatible(std::string(img->GetFilePath()));
 
 		TP_DEBUG("[TextureCube][OpenGL] Loading Texture: \"", m_name, "\"");
-		if (s_maxCombinedTextureUnits == 0)
-		{
-			OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits)));
-		}
 		if (s_maxCubeTextureSize == 0) //Only load maximum available texture size once
 		{
 			OpenGLCall(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize)));
@@ -222,10 +199,10 @@ TRAP::Graphics::API::OpenGLTextureCube::~OpenGLTextureCube()
 void TRAP::Graphics::API::OpenGLTextureCube::Bind(const uint32_t slot) const
 {
 	TP_PROFILE_FUNCTION();
-	
-	if (s_boundCubeTextures[slot] != this)
+
+	if(OpenGLRenderer::GetBoundTextures()[slot] != this)
 	{
-		if (slot < s_maxCombinedTextureUnits)
+		if (slot < OpenGLRenderer::GetMaxTextureUnits())
 		{
 			if (m_handle)
 			{
@@ -234,7 +211,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::Bind(const uint32_t slot) const
 			else
 				TextureManager::Get("FallbackCube", TextureType::TextureCube)->Bind(slot);
 
-			s_boundCubeTextures[slot] = this;
+			OpenGLRenderer::GetBoundTextures()[slot] = this;
 		}
 		else
 			TP_ERROR("[TextureCube][OpenGL] Couldn't bind Texture: \"", m_name, "\" to slot: ", slot, "! Out of range");
@@ -247,10 +224,10 @@ void TRAP::Graphics::API::OpenGLTextureCube::Unbind(const uint32_t slot) const
 {
 	TP_PROFILE_FUNCTION();
 	
-	if (slot < s_maxCombinedTextureUnits)
+	if (slot < OpenGLRenderer::GetMaxTextureUnits())
 	{
 		OpenGLCall(glBindTextureUnit(slot, 0));
-		s_boundCubeTextures[slot] = nullptr;
+		OpenGLRenderer::GetBoundTextures()[slot] = nullptr;
 	}
 	else
 		TP_ERROR("[TextureCube][OpenGL] Couldn't unbind Texture: \"", m_name, "\" from slot: ", slot, "! Out of range");

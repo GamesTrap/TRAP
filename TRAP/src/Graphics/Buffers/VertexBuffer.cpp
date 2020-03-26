@@ -28,3 +28,28 @@ TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(f
 		return nullptr;
 	}
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(uint32_t size)
+{
+	TP_PROFILE_FUNCTION();
+
+	switch (API::Context::GetRenderAPI())
+	{
+#ifdef TRAP_PLATFORM_WINDOWS
+	case API::RenderAPI::D3D12:
+		return MakeScope<API::D3D12VertexBuffer>(size);
+#endif
+
+	case API::RenderAPI::Vulkan:
+		return MakeScope<API::VulkanVertexBuffer>(size);
+
+	case API::RenderAPI::OpenGL:
+		return MakeScope<API::OpenGLVertexBuffer>(size);
+
+	default:
+		//Shouldn't be reached
+		return nullptr;
+	}
+}

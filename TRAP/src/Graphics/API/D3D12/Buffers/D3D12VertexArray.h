@@ -14,7 +14,7 @@ namespace TRAP::Graphics::API
 		D3D12VertexArray(const D3D12VertexArray&) = delete;
 		D3D12VertexArray& operator=(const D3D12VertexArray&) = delete;
 		D3D12VertexArray(D3D12VertexArray&&) = default;
-		D3D12VertexArray& operator=(D3D12VertexArray&&) = default;
+		D3D12VertexArray& operator=(D3D12VertexArray&&) = delete;
 		~D3D12VertexArray();
 
 		void AddVertexBuffer(Scope<VertexBuffer>& buffer) override;

@@ -6,7 +6,7 @@
 #include "Graphics/API/Vulkan/Buffers/VulkanIndexBuffer.h"
 #include "Graphics/API/OpenGL/Buffers/OpenGLIndexBuffer.h"
 
-TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uint32_t* indices, uint32_t size)
+TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uint32_t* indices, uint32_t count)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -14,14 +14,14 @@ TRAP::Scope<TRAP::Graphics::IndexBuffer> TRAP::Graphics::IndexBuffer::Create(uin
 	{
 #ifdef TRAP_PLATFORM_WINDOWS
 	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12IndexBuffer>(indices, size);
+		return MakeScope<API::D3D12IndexBuffer>(indices, count);
 #endif
 
 	case API::RenderAPI::Vulkan:
-		return MakeScope<API::VulkanIndexBuffer>(indices, size);
+		return MakeScope<API::VulkanIndexBuffer>(indices, count);
 
 	case API::RenderAPI::OpenGL:
-		return MakeScope<API::OpenGLIndexBuffer>(indices, size);
+		return MakeScope<API::OpenGLIndexBuffer>(indices, count);
 
 	default:
 		//Shouldn't be reached

@@ -2,17 +2,10 @@
 #include "OpenGLTexture2D.h"
 
 #include "Graphics/API/OpenGL/OpenGLCommon.h"
+#include "Graphics/API/OpenGL/OpenGLRenderer.h"
 #include "Maths/Math.h"
 #include "Graphics/Textures/TextureManager.h"
 #include "VFS/VFS.h"
-
-uint32_t TRAP::Graphics::API::OpenGLTexture2D::s_maxCombinedTextureUnits = 0;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::unordered_map<uint32_t, const TRAP::Graphics::API::OpenGLTexture2D*> TRAP::Graphics::API::OpenGLTexture2D::s_bound2DTextures{};
-
-//-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const TextureParameters parameters)
 	: m_handle(0)
@@ -21,11 +14,6 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const TextureParameters pa
 
 	m_name = "Fallback2D";
 	m_textureParameters = parameters;
-	
-	if(s_maxCombinedTextureUnits == 0)
-	{
-		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits)));
-	}
 	
 	Load();
 }
@@ -39,11 +27,7 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const uint32_t width, cons
 
 	m_name = "Empty";
 	m_textureParameters = parameters;
-	
-	if (s_maxCombinedTextureUnits == 0)
-	{
-		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits)));
-	}
+
 	if (s_maxTextureSize == 0) //Only load maximum available texture size once
 	{
 		OpenGLCall(glGetIntegerv(GL_MAX_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxTextureSize)));
@@ -100,10 +84,6 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const Sc
 		//Basically a version of Load() without actually Loading an TRAP::Image
 		TP_DEBUG("[Texture2D][OpenGL] Loading Texture: \"", m_name, "\"");
 
-		if (s_maxCombinedTextureUnits == 0)
-		{
-			OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits)));
-		}
 		if (s_maxTextureSize == 0) //Only load maximum available texture size once
 		{
 			OpenGLCall(glGetIntegerv(GL_MAX_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxTextureSize)));
@@ -171,9 +151,9 @@ void TRAP::Graphics::API::OpenGLTexture2D::Bind(const uint32_t slot) const
 {
 	TP_PROFILE_FUNCTION();
 	
-	if (s_bound2DTextures[slot] != this)
+	if (OpenGLRenderer::GetBoundTextures()[slot] != this)
 	{
-		if (slot < s_maxCombinedTextureUnits)
+		if (slot < OpenGLRenderer::GetMaxTextureUnits())
 		{
 			if (m_handle)
 			{
@@ -182,7 +162,7 @@ void TRAP::Graphics::API::OpenGLTexture2D::Bind(const uint32_t slot) const
 			else
 				TextureManager::Get("Fallback", TextureType::Texture2D)->Bind(slot);
 
-			s_bound2DTextures[slot] = this;
+			OpenGLRenderer::GetBoundTextures()[slot] = this;
 		}
 		else
 			TP_ERROR("[Texture2D][OpenGL] Couldn't bind Texture: \"", m_name, "\" to slot: ", slot, "! Out of range");
@@ -195,10 +175,10 @@ void TRAP::Graphics::API::OpenGLTexture2D::Unbind(const uint32_t slot) const
 {
 	TP_PROFILE_FUNCTION();
 	
-	if (slot < s_maxCombinedTextureUnits)
+	if (slot < OpenGLRenderer::GetMaxTextureUnits())
 	{
 		OpenGLCall(glBindTextureUnit(slot, 0));
-		s_bound2DTextures[slot] = nullptr;
+		OpenGLRenderer::GetBoundTextures()[slot] = nullptr;
 	}
 	else
 		TP_ERROR("[Texture2D][OpenGL] Couldn't unbind Texture: \"", m_name, "\" from slot: ", slot, "! Out of range");
@@ -260,10 +240,6 @@ void TRAP::Graphics::API::OpenGLTexture2D::Load()
 	else
 		image = Image::LoadFallback();
 
-	if (s_maxCombinedTextureUnits == 0)
-	{
-		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits)));
-	}
 	if (s_maxTextureSize == 0) //Only load maximum available texture size once
 	{
 		OpenGLCall(glGetIntegerv(GL_MAX_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxTextureSize)));

@@ -5,6 +5,11 @@
 #include "Maths/Math.h"
 #include "OpenGLContext.h"
 
+namespace TRAP::Graphics
+{
+	class Texture;
+}
+
 namespace TRAP::Graphics::API
 {
 	class OpenGLRenderer final : public RendererAPI
@@ -58,12 +63,18 @@ namespace TRAP::Graphics::API
 		static uint32_t TRAPRendererPrimitiveToOpenGL(RendererPrimitive primitive);
 		static uint32_t TRAPRendererDepthFunctionToOpenGL(RendererDepthFunction function);
 
+		static uint32_t GetMaxTextureUnits();
+		static std::unordered_map<uint32_t, const Texture*>& GetBoundTextures();
+		
 	private:
 		static void GLAPIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 		static void InitDebug();
 
 		API::OpenGLContext* m_context;
 		std::string m_rendererTitle;
+
+		static uint32_t s_maxCombinedTextureUnits;
+		static std::unordered_map<uint32_t, const Texture*> s_boundTextures;
 	};
 }
 

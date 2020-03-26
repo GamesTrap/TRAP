@@ -37,9 +37,6 @@ namespace TRAP::Graphics::API
 		void InitializeTexture();
 
 		uint32_t m_handle;
-
-		static uint32_t s_maxCombinedTextureUnits;
-		static std::unordered_map<uint32_t, const OpenGLTextureCube*> s_boundCubeTextures;
 	};
 }
 

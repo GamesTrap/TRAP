@@ -10,6 +10,15 @@ TRAP::Graphics::API::VulkanVertexBuffer::VulkanVertexBuffer(float* vertices, uin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::API::VulkanVertexBuffer::VulkanVertexBuffer(uint32_t size)
+{
+	TP_PROFILE_FUNCTION();
+
+	TP_WARN("[VertexBuffer][Vulkan] WIP");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::API::VulkanVertexBuffer::~VulkanVertexBuffer()
 {
 	TP_PROFILE_FUNCTION();
@@ -40,4 +49,11 @@ uint32_t TRAP::Graphics::API::VulkanVertexBuffer::GetVertexCount() const
 	TP_PROFILE_FUNCTION();
 
 	return 0;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanVertexBuffer::SetData(const void* data, uint32_t size)
+{
+	TP_PROFILE_FUNCTION();
 }

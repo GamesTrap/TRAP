@@ -10,6 +10,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		VulkanVertexBuffer(float* vertices, uint32_t size);
+		explicit VulkanVertexBuffer(uint32_t size);
 		VulkanVertexBuffer(const VulkanVertexBuffer&) = default;
 		VulkanVertexBuffer& operator=(const VulkanVertexBuffer&) = default;
 		VulkanVertexBuffer(VulkanVertexBuffer&&) = default;
@@ -19,6 +20,7 @@ namespace TRAP::Graphics::API
 		const BufferLayout& GetLayout() const override;
 		void SetLayout(const BufferLayout& layout) override;
 		uint32_t GetVertexCount() const override;
+		void SetData(const void* data, uint32_t size) override;
 
 	private:
 		BufferLayout m_layout;

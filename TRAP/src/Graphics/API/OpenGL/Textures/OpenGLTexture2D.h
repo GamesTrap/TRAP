@@ -42,9 +42,6 @@ namespace TRAP::Graphics::API
 		void UploadData(const Scope<Image>& image, uint32_t numMipMapLevels, PixelDataType type) const;
 
 		uint32_t m_handle;
-
-		static uint32_t s_maxCombinedTextureUnits;
-		static std::unordered_map<uint32_t, const OpenGLTexture2D*> s_bound2DTextures;
 	};
 }
 

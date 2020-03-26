@@ -12,7 +12,7 @@ namespace TRAP::Graphics::API
 		OpenGLVertexArray(const OpenGLVertexArray&) = delete;
 		OpenGLVertexArray& operator=(const OpenGLVertexArray&) = delete;
 		OpenGLVertexArray(OpenGLVertexArray&&) = default;
-		OpenGLVertexArray& operator=(OpenGLVertexArray&&) = default;
+		OpenGLVertexArray& operator=(OpenGLVertexArray&&) = delete;
 		~OpenGLVertexArray();
 
 		void AddVertexBuffer(Scope<VertexBuffer>& buffer) override;

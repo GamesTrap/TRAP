@@ -12,7 +12,7 @@ namespace TRAP::Graphics::API
 		VulkanVertexArray(const VulkanVertexArray&) = delete;
 		VulkanVertexArray& operator=(const VulkanVertexArray&) = delete;
 		VulkanVertexArray(VulkanVertexArray&&) = default;
-		VulkanVertexArray& operator=(VulkanVertexArray&&) = default;
+		VulkanVertexArray& operator=(VulkanVertexArray&&) = delete;
 		~VulkanVertexArray();
 
 		void AddVertexBuffer(Scope<VertexBuffer>& buffer) override;

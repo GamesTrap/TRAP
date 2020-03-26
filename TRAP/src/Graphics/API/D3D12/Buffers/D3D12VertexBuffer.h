@@ -12,6 +12,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		D3D12VertexBuffer(float* vertices, uint32_t size);
+		explicit D3D12VertexBuffer(uint32_t size);
 		D3D12VertexBuffer(const D3D12VertexBuffer&) = default;
 		D3D12VertexBuffer& operator=(const D3D12VertexBuffer&) = default;
 		D3D12VertexBuffer(D3D12VertexBuffer&&) = default;
@@ -21,6 +22,7 @@ namespace TRAP::Graphics::API
 		const BufferLayout& GetLayout() const override;
 		void SetLayout(const BufferLayout& layout) override;
 		uint32_t GetVertexCount() const override;
+		void SetData(const void* data, uint32_t size) override;
 
 	private:
 		BufferLayout m_layout;

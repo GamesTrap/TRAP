@@ -10,6 +10,7 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		OpenGLVertexBuffer(float* vertices, uint32_t size);
+		explicit OpenGLVertexBuffer(uint32_t size);
 		OpenGLVertexBuffer(const OpenGLVertexBuffer&) = default;
 		OpenGLVertexBuffer& operator=(const OpenGLVertexBuffer&) = default;
 		OpenGLVertexBuffer(OpenGLVertexBuffer&&) = default;
@@ -19,6 +20,7 @@ namespace TRAP::Graphics::API
 		const BufferLayout& GetLayout() const override;
 		void SetLayout(const BufferLayout& layout) override;
 		uint32_t GetVertexCount() const override;
+		void SetData(const void* data, uint32_t size) override;
 		
 		uint32_t GetHandle() const;		
 
