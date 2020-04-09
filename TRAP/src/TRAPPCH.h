@@ -110,9 +110,6 @@
 #include <dwmapi.h>
 #include <imm.h>
 //DirectX
-#include <dxgiformat.h>
-#include <dxgi1_6.h>
-#include <d3d12.h>
 //XInput
 #include <Xinput.h>
 //DirectInput

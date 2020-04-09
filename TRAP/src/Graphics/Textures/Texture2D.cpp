@@ -5,9 +5,6 @@
 #include "Graphics/API/OpenGL/Textures/OpenGLTexture2D.h"
 #include "Graphics/API/Vulkan/Textures/VulkanTexture2D.h"
 #include "VFS/VFS.h"
-#ifdef TRAP_PLATFORM_WINDOWS
-#include "Graphics/API/D3D12/Textures/D3D12Texture2D.h"
-#endif
 
 uint32_t TRAP::Graphics::Texture2D::s_maxTextureSize = 0;
 
@@ -39,11 +36,6 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 	
 	switch(API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12Texture2D>(name, filepath, parameters);
-#endif
-
 	case API::RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTexture2D>(name, filepath, parameters);
 
@@ -65,11 +57,6 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 	
 	switch (API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12Texture2D>(name, filepath, parameters);
-#endif
-
 	case API::RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTexture2D>(name, filepath, parameters);
 
@@ -89,11 +76,6 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImag
 
 	switch(API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12Texture2D>(name, img, parameters);
-#endif
-
 	case API::RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTexture2D>(name, img, parameters);
 
@@ -113,11 +95,6 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ui
 
 	switch (API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12Texture2D>(width, height, bitsPerPixel, format, parameters);
-#endif
-
 	case API::RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTexture2D>(width, height, bitsPerPixel, format, parameters);
 
@@ -137,11 +114,6 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::Create(Texture
 
 	switch (API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12Texture2D>(parameters);
-#endif
-
 	case API::RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTexture2D>(parameters);
 

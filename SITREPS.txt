@@ -1003,3 +1003,4 @@ SITREP 04/09/2020|20w15a1
     - Changed TRAP Engine version to 20w15a1(0.6.29)
     - Updated Travis.yml ~<5 mins
     - Removed Standalone sub project ~<10 mins
+    - Dropped DirectX 12 support ~<20 mins

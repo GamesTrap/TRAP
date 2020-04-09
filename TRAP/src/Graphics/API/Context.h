@@ -12,7 +12,6 @@ namespace TRAP::Graphics::API
 	{
 		NONE = 0,
 		OpenGL,
-		D3D12,
 		Vulkan
 	};
 
@@ -36,7 +35,6 @@ namespace TRAP::Graphics::API
 		static void SwitchRenderAPI(RenderAPI api);
 
 		static bool IsSupported(RenderAPI api);
-		static bool IsD3D12Capable();
 		static bool IsVulkanCapable();
 		static bool IsOpenGLCapable();
 
@@ -53,7 +51,6 @@ namespace TRAP::Graphics::API
 		virtual void SetVSyncIntervalInternal(uint32_t interval = 0) = 0;
 		virtual void UseInternal(const Window* window) = 0;
 
-		static bool s_isD3D12Capable;
 		static bool s_isVulkanCapable;
 		static bool s_isOpenGLCapable;
 	};

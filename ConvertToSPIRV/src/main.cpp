@@ -4,9 +4,9 @@
 #include <sstream>
 #include <array>
 
-#include "glslang/MachineIndependent/Initialize.h"
-#include "Logger.h"
-#include "GlslangToSpv.h"
+#include <glslang/Public/ShaderLang.h>
+#include <GlslangToSpv.h>
+#include <Logger.h>
 
 enum class ShaderType
 {

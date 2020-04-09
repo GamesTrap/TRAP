@@ -5,9 +5,6 @@
 #include "Graphics/API/OpenGL/Textures/OpenGLTextureCube.h"
 #include "Graphics/API/Vulkan/Textures/VulkanTextureCube.h"
 #include "VFS/VFS.h"
-#ifdef TRAP_PLATFORM_WINDOWS
-#include "Graphics/API/D3D12/Textures/D3D12TextureCube.h"
-#endif
 
 uint32_t TRAP::Graphics::TextureCube::s_maxCubeTextureSize = 0;
 
@@ -47,11 +44,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 	
 	switch (API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12TextureCube>(name, filepaths, parameters);
-#endif
-
 	case API::RenderAPI::OpenGL:
 		return MakeScope<API::OpenGLTextureCube>(name, filepaths, parameters);
 
@@ -77,11 +69,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 	
 	switch (API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12TextureCube>(name, filepath, format, parameters);
-#endif
-
 	case API::RenderAPI::OpenGL:
 		return MakeScope<API::OpenGLTextureCube>(name, filepath, format, parameters);
 
@@ -103,11 +90,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 	
 	switch (API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12TextureCube>(name, filepath, format, parameters);
-#endif
-
 	case API::RenderAPI::OpenGL:
 		return MakeScope<API::OpenGLTextureCube>(name, filepath, format, parameters);
 
@@ -127,11 +109,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 	switch(API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12TextureCube>(name, img, format, parameters);
-#endif
-
 	case API::RenderAPI::OpenGL:
 		return MakeScope<API::OpenGLTextureCube>(name, img, format, parameters);
 
@@ -151,11 +128,6 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create(Tex
 
 	switch (API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12TextureCube>(parameters);
-#endif
-
 	case API::RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTextureCube>(parameters);
 

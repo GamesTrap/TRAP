@@ -95,7 +95,6 @@ project "TRAP"
 		{
 			"%{prj.name}/src/Utils/Win.h",
 			"%{prj.name}/src/Log/WindowsLog.cpp",
-			"%{prj.name}/src/Graphics/API/D3D12/**",
 			"%{prj.name}/src/Utils/MsgBox/MsgBoxWindows.cpp",
 			"%{prj.name}/src/Input/WindowsInput.cpp",
 			"%{prj.name}/src/Window/WindowingAPIWin32.cpp"
@@ -104,16 +103,12 @@ project "TRAP"
 		links
 		{
 			"ImGui",
-			"D3D12",
-			"DXGI",
-			"D3DCOMPILER",
 			"%{IncludeDir.VULKAN}/Lib/vulkan-1",
 			"GLSLang",
 			"SPIRV",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
 			"SPIRV-Cross-HLSL",
-			"DXGUID",
 			"Imm32"
 		}
 

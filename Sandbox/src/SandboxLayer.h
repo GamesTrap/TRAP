@@ -163,12 +163,10 @@ public:
 	{
 		if (event.GetKey() == TRAP::Input::Key::Escape)
 			TRAP::Application::Shutdown();
-
-		if (event.GetKey() == TRAP::Input::Key::F1 && event.GetRepeatCount() < 1) //Switch to D3D12
-			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::D3D12);
-		if (event.GetKey() == TRAP::Input::Key::F2 && event.GetRepeatCount() < 1) //Switch to Vulkan
+		
+		if (event.GetKey() == TRAP::Input::Key::F1 && event.GetRepeatCount() < 1) //Switch to Vulkan
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::Vulkan);
-		if (event.GetKey() == TRAP::Input::Key::F3 && event.GetRepeatCount() < 1) //Switch to OpenGL
+		if (event.GetKey() == TRAP::Input::Key::F2 && event.GetRepeatCount() < 1) //Switch to OpenGL
 			TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::OpenGL);
 
 		if (event.GetKey() == TRAP::Input::Key::F4 && event.GetRepeatCount() < 1) //Use Fallback Shader

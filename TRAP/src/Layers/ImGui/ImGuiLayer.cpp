@@ -50,13 +50,6 @@ void TRAP::ImGuiLayer::OnAttach()
 	INTERNAL::WindowingAPI::InternalWindow* window = static_cast<INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow());
 
 	//Setup Platform/Renderer bindings
-/*#ifdef TRAP_PLATFORM_WINDOWS
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::D3D12)
-	{
-		ImGui_ImplWin32_Init(glfwGetWin32Window(window));
-		//ImGui_ImplDX12_Init();
-	}
-#endif*/
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 	{
 		//ImGui_ImplGlfw_InitForVulkan(window, false);
@@ -75,13 +68,6 @@ void TRAP::ImGuiLayer::OnDetach()
 {
 	TP_PROFILE_FUNCTION();
 
-/*#ifdef TRAP_PLATFORM_WINDOWS
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::D3D12)
-	{
-		ImGui_ImplDX12_Shutdown();
-		ImGui_ImplWin32_Shutdown();
-	}
-#endif*/
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 	{
 		ImGui_ImplVulkan_Shutdown();
@@ -102,13 +88,6 @@ void TRAP::ImGuiLayer::Begin()
 {
 	TP_PROFILE_FUNCTION();
 
-/*#ifdef TRAP_PLATFORM_WINDOWS
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::D3D12)
-	{
-		ImGui_ImplDX12_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-	}
-#endif*/
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 	{
 		ImGui_ImplVulkan_NewFrame();
@@ -134,11 +113,7 @@ void TRAP::ImGuiLayer::End()
 
 	//Rendering
 	ImGui::Render();
-/*#ifdef TRAP_PLATFORM_WINDOWS
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::D3D12)
-		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData());
-#endif
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
+	/*if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData());*/
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 		ImGuiOpenGL4RenderDrawData(ImGui::GetDrawData());
@@ -146,12 +121,6 @@ void TRAP::ImGuiLayer::End()
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
 		INTERNAL::WindowingAPI::InternalWindow* backupCurrentContext = nullptr;
-/*#ifdef TRAP_PLATFORM_WINDOWS
-		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::D3D12)
-		{
-			//Save current context here
-		}
-#endif*/
 		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 		{
 			//Save current context here
@@ -162,12 +131,6 @@ void TRAP::ImGuiLayer::End()
 		ImGui::UpdatePlatformWindows();
 		ImGui::RenderPlatformWindowsDefault();
 
-/*#ifdef TRAP_PLATFORM_WINDOWS
-		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::D3D12)
-		{
-			//Load saved context here
-		}
-#endif*/
 		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 		{
 			//Load saved context here

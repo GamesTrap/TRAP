@@ -2,7 +2,6 @@
 #include "UniformBuffer.h"
 
 #include "Graphics/API/Context.h"
-#include "Graphics/API/D3D12/Buffers/D3D12UniformBuffer.h"
 #include "Graphics/API/Vulkan/Buffers/VulkanUniformBuffer.h"
 #include "Graphics/API/OpenGL/Buffers/OpenGLUniformBuffer.h"
 
@@ -12,11 +11,6 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 
 	switch (API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12UniformBuffer>(name, size, usage);
-#endif
-
 	case API::RenderAPI::Vulkan:
 		return MakeScope<API::VulkanUniformBuffer>(name, size, usage);
 
@@ -37,10 +31,6 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 
 	switch (API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12UniformBuffer>(name, data, size, usage);
-#endif
 
 	case API::RenderAPI::Vulkan:
 		return MakeScope<API::VulkanUniformBuffer>(name, data, size, usage);

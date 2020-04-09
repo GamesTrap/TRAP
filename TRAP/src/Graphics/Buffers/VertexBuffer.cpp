@@ -2,7 +2,6 @@
 #include "VertexBuffer.h"
 
 #include "Graphics/API/Context.h"
-#include "Graphics/API/D3D12/Buffers/D3D12VertexBuffer.h"
 #include "Graphics/API/Vulkan/Buffers/VulkanVertexBuffer.h"
 #include "Graphics/API/OpenGL/Buffers/OpenGLVertexBuffer.h"
 
@@ -12,11 +11,6 @@ TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(f
 
 	switch(API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12VertexBuffer>(vertices, size);
-#endif
-
 	case API::RenderAPI::Vulkan:
 		return MakeScope<API::VulkanVertexBuffer>(vertices, size);
 
@@ -37,10 +31,6 @@ TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(u
 
 	switch (API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12VertexBuffer>(size);
-#endif
 
 	case API::RenderAPI::Vulkan:
 		return MakeScope<API::VulkanVertexBuffer>(size);

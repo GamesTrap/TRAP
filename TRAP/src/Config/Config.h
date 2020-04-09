@@ -262,8 +262,6 @@ inline TRAP::Graphics::API::RenderAPI TRAP::Utils::Config::ConvertToType<TRAP::G
 {
 	if (input == "Vulkan")
 		return Graphics::API::RenderAPI::Vulkan;
-	if (input == "D3D12")
-		return Graphics::API::RenderAPI::D3D12;
 	if (input == "OpenGL")
 		return Graphics::API::RenderAPI::OpenGL;
 
@@ -410,9 +408,6 @@ inline std::string TRAP::Utils::Config::ConvertToString<TRAP::Graphics::API::Ren
 	{
 	case Graphics::API::RenderAPI::Vulkan:
 		return "Vulkan";
-
-	case Graphics::API::RenderAPI::D3D12:
-		return "D3D12";
 
 	case Graphics::API::RenderAPI::OpenGL:
 		return "OpenGL";

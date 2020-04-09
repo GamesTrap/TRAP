@@ -801,9 +801,7 @@ void TRAP::Window::Init(const WindowProps& props)
 				Graphics::API::Context::SetRenderAPI(props.RenderAPI);
 			else
 			{
-				if (Graphics::API::Context::IsD3D12Capable())
-					Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::D3D12);
-				else if (Graphics::API::Context::IsVulkanCapable())
+				if (Graphics::API::Context::IsVulkanCapable())
 					Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::Vulkan);
 				else if (Graphics::API::Context::IsOpenGLCapable())
 					Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::OpenGL);

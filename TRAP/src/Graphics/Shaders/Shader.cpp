@@ -3,7 +3,6 @@
 
 #include "VFS/VFS.h"
 #include "Graphics/API/Context.h"
-#include "Graphics/API/D3D12/D3D12Shader.h"
 #include "Graphics/API/OpenGL/OpenGLShader.h"
 #include "Graphics/API/Vulkan/VulkanShader.h"
 #include "VFS/FileSystem.h"
@@ -83,20 +82,6 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 	switch (API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-	{
-		Scope<API::D3D12Shader> result;
-		if (isSPIRV)
-			result = MakeScope<API::D3D12Shader>(name, SPIRVSource);
-		else
-			result = MakeScope<API::D3D12Shader>(name, source);
-			
-		result->m_filepath = VFSFilePath;
-		return result;
-	}
-#endif
-
 	case API::RenderAPI::Vulkan:
 	{
 		Scope<API::VulkanShader> result;
@@ -174,20 +159,6 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 	switch (API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-	{
-		Scope<API::D3D12Shader> result;
-		if (isSPIRV)
-			result = MakeScope<API::D3D12Shader>(name, SPIRVSource);
-		else
-			result = MakeScope<API::D3D12Shader>(name, source);
-
-		result->m_filepath = VFSFilePath;
-		return result;
-	}
-#endif
-
 	case API::RenderAPI::Vulkan:
 	{
 		Scope<API::VulkanShader> result;
@@ -225,11 +196,6 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(con
 
 	switch (API::Context::GetRenderAPI())
 	{
-#ifdef TRAP_PLATFORM_WINDOWS
-	case API::RenderAPI::D3D12:
-		return MakeScope<API::D3D12Shader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
-#endif
-
 	case API::RenderAPI::Vulkan:
 		return MakeScope<API::VulkanShader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
 

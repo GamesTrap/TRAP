@@ -2,7 +2,6 @@
 #include "RendererAPI.h"
 
 #include "OpenGL/OpenGLRenderer.h"
-#include "D3D12/D3D12Renderer.h"
 #include "Vulkan/VulkanRenderer.h"
 #include "Utils/MsgBox/MsgBox.h"
 
@@ -22,13 +21,6 @@ void TRAP::Graphics::API::RendererAPI::Init()
 		TP_INFO("[Renderer][OpenGL] Initializing Renderer");
 		s_Renderer = MakeScope<OpenGLRenderer>();
 		break;
-
-#ifdef TRAP_PLATFORM_WINDOWS
-	case RenderAPI::D3D12:
-		TP_INFO("[Renderer][D3D12] Initializing Renderer");
-		s_Renderer = MakeScope<D3D12Renderer>();
-		break;
-#endif
 
 	case RenderAPI::Vulkan:
 		TP_INFO("[Renderer][Vulkan] Initializing Renderer");

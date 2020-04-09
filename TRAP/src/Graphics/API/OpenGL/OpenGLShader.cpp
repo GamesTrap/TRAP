@@ -439,20 +439,10 @@ std::array<std::string, 6> TRAP::Graphics::API::OpenGLShader::ConvertSPIRVToGLSL
 		{
 			spirv_cross::CompilerGLSL glsl(SPIRVShaders[i]);
 
-			glsl.set_common_options({
-				                        460,
-				                        false,
-				                        false,
-				                        false,
-				                        false,
-				                        false,
-				                        true,
-				                        false,
-				                        false,
-				                        false,
-				                        {false, false, true},
-				                        {spirv_cross::CompilerGLSL::Options::Precision::Mediump, spirv_cross::CompilerGLSL::Options::Precision::Highp}
-			});
+			spirv_cross::CompilerGLSL::Options options;
+			options.version = 460;
+			 
+			glsl.set_common_options(options);
 
 			GLSLShaders[i] = glsl.compile();
 		}

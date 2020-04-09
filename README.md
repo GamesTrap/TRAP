@@ -20,7 +20,7 @@ This README will be updated with more info eventually.
 ### Requirements
 
 TRAP Engine requires the [VulkanSDK](https://vulkan.lunarg.com/sdk/home)  
-TRAP Engine requires a GPU that is DirectX 12, Vulkan 1.2, OpenGL 4.6 or newer compatible.
+TRAP Engine requires a GPU that is Vulkan 1.2, OpenGL 4.6 or newer compatible.
 
 First clone the repository with `git clone --recursive https://github.com/GamesTrap/TRAP`.
 
@@ -40,11 +40,6 @@ For example, run `premake vs2019` to generate the `.sln` and `.vcxproj` files fo
 Premake can generate makefile project files.
 For example, run `premake gmake2` to generate the `Makefile` files.
 
-### Mac OS X (Untested)
-
-Premake can generate project files for XCode4.
-For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj` files for XCode 4.
-
 ## 3rd Party Libraries used by TRAP Engine:
 
 - [ImGui](https://github.com/GamesTrap/imgui)
@@ -62,7 +57,6 @@ For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj
 - Memory: 4 GB RAM
 - Storage: 5+ GB available space
 - Any of these RenderAPIs
-  - DirectX(Windows only): Version 12
   - Vulkan: Version 1.2
   - OpenGL: Version 4.6
 - Additional Notes: -
@@ -75,7 +69,6 @@ For example, run `premake xcode4` to generate the `.xcworkspace` and `.xcodeproj
 - Memory: 4 GB RAM
 - Storage: 10+ GB available space
 - Any of these RenderAPIs
-  - DirectX(Windows only): Version 12
   - Vulkan: Version 1.2
   - OpenGL: Version 4.6
 - Additional Notes: -
