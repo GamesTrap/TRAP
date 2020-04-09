@@ -63,7 +63,7 @@ namespace TRAP::Graphics::API
 
 		virtual void SetCullMode(RendererCullMode cullMode) = 0;
 
-		virtual void DrawIndexed(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive) = 0;
+		virtual void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount, RendererPrimitive primitive) = 0;
 		virtual void Draw(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive) = 0;
 
 		virtual std::string_view GetTitle() const = 0;

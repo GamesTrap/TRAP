@@ -22,7 +22,7 @@ namespace TRAP::Graphics::API
 		uint32_t GetVertexCount() const override;
 		void SetData(const void* data, uint32_t size) override;
 		
-		uint32_t GetHandle() const;		
+		uint32_t GetHandle() const;
 
 	private:
 		uint32_t m_handle;

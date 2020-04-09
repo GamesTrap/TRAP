@@ -62,7 +62,7 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
 	TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.8f, 0.8f, 1.0f} }, { 0.8f, 0.2f, 0.3f, 1.0f });
-	TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, -0.5f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.5f, 0.75f, 1.0f} }, { 0.2f, 0.3f, 0.8f, 1.0f });
+	TRAP::Graphics::Renderer2D::DrawTriangle({ {0.5f, -0.5f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.5f, 0.75f, 1.0f} }, { 0.2f, 0.3f, 0.8f, 1.0f });
 	TRAP::Graphics::Renderer2D::DrawQuad({ {0.2f, 0.5f, 0.0f}, {TRAP::Application::GetTime() * 25.0f, TRAP::Application::GetTime() * 50.0f, 0.0f }, {0.5f, 0.5f, 1.0f} },
 	                                     {0.2f, 0.3f, 0.8f, 1.0f},
 	                                     TRAP::Graphics::TextureManager::Get2D("TRAP"));

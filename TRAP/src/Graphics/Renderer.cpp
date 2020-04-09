@@ -102,7 +102,7 @@ void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<V
 
 	vertexArray->Bind();
 	if (vertexArray->GetIndexBuffer())
-		RenderCommand::DrawIndexed(vertexArray, primitive);
+		RenderCommand::DrawIndexed(vertexArray, 0, primitive);
 	else
 		RenderCommand::Draw(vertexArray, primitive);
 }

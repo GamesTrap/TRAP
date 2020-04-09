@@ -29,6 +29,8 @@ namespace TRAP::Graphics::API
 		std::vector<Scope<VertexBuffer>> m_vertexBuffers;
 		Scope<IndexBuffer> m_indexBuffer;
 		uint32_t m_indexCount;
+		uint32_t m_attribIndex;
+		uint32_t m_bindingIndex;
 
 		uint32_t m_handle;
 	};

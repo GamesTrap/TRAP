@@ -296,7 +296,12 @@ void TRAP::Application::Run()
 
 		if (!m_minimized)
 		{
-			m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
+			//Correct FrameTime when not Focused
+			if (m_fpsLimit || (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow)))
+				m_FrameTime = static_cast<float>(std::chrono::milliseconds(1000 / 30).count());
+			else
+				m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
+			
 			m_FramesPerSecond = static_cast<uint32_t>(1000.0f / m_FrameTime);
 		}
 

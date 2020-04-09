@@ -160,7 +160,7 @@ void TRAP::Graphics::API::D3D12Renderer::SetCullMode(RendererCullMode cullMode)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::D3D12Renderer::DrawIndexed(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
+void TRAP::Graphics::API::D3D12Renderer::DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount, const RendererPrimitive primitive)
 {
 	TP_PROFILE_FUNCTION();
 }

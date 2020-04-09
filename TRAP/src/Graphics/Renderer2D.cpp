@@ -12,7 +12,7 @@
 
 namespace TRAP::Graphics
 {
-	struct Renderer2DStorage
+	struct Renderer2DData
 	{		
 		Scope<VertexArray> QuadVertexArray;
 		Scope<VertexArray> TriangleVertexArray;
@@ -32,7 +32,7 @@ namespace TRAP::Graphics
 		} UniformCamera;
 	};
 
-	static Scope<Renderer2DStorage> s_data;
+	static Scope<Renderer2DData> s_data;
 }
 
 void TRAP::Graphics::Renderer2D::Init()
@@ -41,7 +41,7 @@ void TRAP::Graphics::Renderer2D::Init()
 
 	TP_DEBUG("[Renderer2D] Initializing");
 	
-	s_data = MakeScope<Renderer2DStorage>();
+	s_data = MakeScope<Renderer2DData>();
 	s_data->QuadVertexArray = VertexArray::Create();
 	s_data->TriangleVertexArray = VertexArray::Create();
 
@@ -56,7 +56,7 @@ void TRAP::Graphics::Renderer2D::Init()
 		 0.5f,  0.5f, 0.0f,    1.0f, 1.0f,
 		-0.5f,  0.5f, 0.0f,    0.0f, 1.0f
 	};
-	Scope<VertexBuffer> quadVertexBuffer = VertexBuffer::Create(quadVertices.data(), static_cast<uint32_t>(quadVertices.size()));
+	Scope<VertexBuffer> quadVertexBuffer = VertexBuffer::Create(quadVertices.data(), static_cast<uint32_t>(quadVertices.size()) * sizeof(uint32_t));
 	const BufferLayout layout =
 	{
 		{ShaderDataType::Float3, "Position"},
@@ -82,7 +82,7 @@ void TRAP::Graphics::Renderer2D::Init()
 		0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
 		0.0f, 0.5f, 0.0f, 0.5f, 1.0f
 	};
-	Scope<VertexBuffer> triangleVertexBuffer = VertexBuffer::Create(triangleVertices.data(), static_cast<uint32_t>(triangleVertices.size()));
+	Scope<VertexBuffer> triangleVertexBuffer = VertexBuffer::Create(triangleVertices.data(), static_cast<uint32_t>(triangleVertices.size()) * sizeof(uint32_t));
 	triangleVertexBuffer->SetLayout(layout);
 	s_data->TriangleVertexArray->AddVertexBuffer(triangleVertexBuffer);
 
@@ -93,8 +93,8 @@ void TRAP::Graphics::Renderer2D::Init()
 	Scope<IndexBuffer> triangleIndexBuffer = IndexBuffer::Create(triangleIndices.data(), static_cast<uint32_t>(triangleIndices.size()));
 	s_data->TriangleVertexArray->SetIndexBuffer(triangleIndexBuffer);
 	
-	s_data->CameraUniformBuffer = UniformBuffer::Create("CameraBuffer", &s_data->UniformCamera, sizeof(Renderer2DStorage::UniformCamera), BufferUsage::Stream);
-	s_data->DataUniformBuffer = UniformBuffer::Create("DataBuffer", &s_data->UniformData, sizeof(Renderer2DStorage::UniformData), BufferUsage::Dynamic);
+	s_data->CameraUniformBuffer = UniformBuffer::Create("CameraBuffer", &s_data->UniformCamera, sizeof(Renderer2DData::UniformCamera), BufferUsage::Stream);
+	s_data->DataUniformBuffer = UniformBuffer::Create("DataBuffer", &s_data->UniformData, sizeof(Renderer2DData::UniformData), BufferUsage::Dynamic);
 
 	ShaderManager::Load("Renderer2D", Embed::Renderer2DVS, Embed::Renderer2DFS);
 	const Scope<Image> whiteImage = Image::LoadFromMemory(1, 1, 32, Image::ColorFormat::RGBA, std::vector<uint8_t>{255, 255, 255, 255});

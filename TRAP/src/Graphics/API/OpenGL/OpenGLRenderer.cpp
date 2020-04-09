@@ -239,11 +239,12 @@ void TRAP::Graphics::API::OpenGLRenderer::SetWireFrame(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::DrawIndexed(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
+void TRAP::Graphics::API::OpenGLRenderer::DrawIndexed(const Scope<VertexArray>& vertexArray, const uint32_t indexCount, const RendererPrimitive primitive)
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glDrawElementsBaseVertex(TRAPRendererPrimitiveToOpenGL(primitive), vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr, 0));
+	const uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
+	OpenGLCall(glDrawElementsBaseVertex(TRAPRendererPrimitiveToOpenGL(primitive), count, GL_UNSIGNED_INT, nullptr, 0));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

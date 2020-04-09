@@ -9,7 +9,7 @@
 #include "OpenGLIndexBuffer.h"
 
 TRAP::Graphics::API::OpenGLVertexArray::OpenGLVertexArray()
-	: m_indexCount(0), m_handle(0)
+	: m_indexCount(0), m_attribIndex(0), m_bindingIndex(0), m_handle(0)
 {
 	TP_PROFILE_FUNCTION();
 	
@@ -36,24 +36,25 @@ void TRAP::Graphics::API::OpenGLVertexArray::AddVertexBuffer(Scope<VertexBuffer>
 	
 	TP_PROFILE_FUNCTION();
 	
-	OpenGLCall(glVertexArrayVertexBuffer(m_handle, 0, dynamic_cast<OpenGLVertexBuffer*>(buffer.get())->GetHandle(), 0, buffer->GetLayout().GetStride()));
+	OpenGLCall(glVertexArrayVertexBuffer(m_handle, m_bindingIndex, dynamic_cast<OpenGLVertexBuffer*>(buffer.get())->GetHandle(), 0, buffer->GetLayout().GetStride()));
 
 	uint32_t components = 0;
-	uint32_t index = 0;
 	const auto& layout = buffer->GetLayout();
 	for (const auto& element : layout)
 	{
-		OpenGLCall(glEnableVertexArrayAttrib(m_handle, index));
-		OpenGLCall(glVertexArrayAttribFormat(m_handle, index, element.GetComponentCount(), TRAP::Graphics::API::ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized, static_cast<intptr_t>(element.Offset)));
-		OpenGLCall(glVertexArrayAttribBinding(m_handle, index, 0));
+		OpenGLCall(glEnableVertexArrayAttrib(m_handle, m_attribIndex));
+		OpenGLCall(glVertexArrayAttribFormat(m_handle, m_attribIndex, element.GetComponentCount(), TRAP::Graphics::API::ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized, static_cast<intptr_t>(element.Offset)));
+		OpenGLCall(glVertexArrayAttribBinding(m_handle, m_attribIndex, m_bindingIndex));
 		components += element.GetComponentCount();
 		
-		index++;
+		m_attribIndex++;
 	}
 
 	m_indexCount += buffer->GetVertexCount() / components;
 
 	m_vertexBuffers.emplace_back(std::move(buffer));
+
+	m_bindingIndex++;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -85,7 +86,7 @@ void TRAP::Graphics::API::OpenGLVertexArray::Unbind() const
 {
 	TP_PROFILE_FUNCTION();
 	
-	OpenGLCall(glBindVertexArray(m_handle));
+	OpenGLCall(glBindVertexArray(0));
 	s_CurrentlyBound = nullptr;
 }
 

@@ -219,7 +219,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const RendererCullMode cul
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
+void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount, const RendererPrimitive primitive)
 {
 	TP_PROFILE_FUNCTION();
 }

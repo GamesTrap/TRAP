@@ -93,7 +93,7 @@ namespace TRAP::Graphics
 
 		static void SetCullMode(RendererCullMode cullMode = RendererCullMode::Back);
 
-		static void DrawIndexed(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive = RendererPrimitive::Triangle);
+		static void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount = 0, RendererPrimitive primitive = RendererPrimitive::Triangle);
 		static void Draw(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive = RendererPrimitive::Triangle);
 	};
 }

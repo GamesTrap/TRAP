@@ -13,7 +13,7 @@ namespace TRAP::Graphics
 		static void Shutdown();
 		
 		static void BeginScene(const OrthographicCamera& camera);
-		static void EndScene();		
+		static void EndScene();
 
 		//First Component
 		struct Transform
