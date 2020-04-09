@@ -25,14 +25,12 @@ IncludeDir["OGLCOMPILER"] = "Dependencies/GLSLang/OGLCompilersDLL"
 IncludeDir["OSDEPENDENT"] = "Dependencies/GLSLang/glslang/OSDependent"
 IncludeDir["HLSL"] = "Dependencies/GLSLang/hlsl"
 IncludeDir["SPIRV"] = "Dependencies/GLSLang/SPIRV"
-IncludeDir["STANDALONE"] = "Dependencies/GLSLang/StandAlone"
 IncludeDir["SPIRVCROSS"] = "Dependencies/SPIRV-Cross"
 
 group "Dependencies"
 	include "Dependencies/ImGui"
 	group "Dependencies/GLSLang"
 		include "Dependencies/GLSLang/SPIRV"
-		include "Dependencies/GLSLang/StandAlone"
 		include "Dependencies/GLSLang/glslang"
 	group "Dependencies/SPIRV-Cross"
 		include "Dependencies/SPIRV-Cross/SPIRV-Cross-Core"
@@ -89,7 +87,6 @@ project "TRAP"
 		"%{IncludeDir.VULKAN}/Include/",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
-		"%{IncludeDir.STANDALONE}",
 		"%{IncludeDir.SPIRVCROSS}"
 	}
 
@@ -113,7 +110,6 @@ project "TRAP"
 			"%{IncludeDir.VULKAN}/Lib/vulkan-1",
 			"GLSLang",
 			"SPIRV",
-			"StandAlone",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
 			"SPIRV-Cross-HLSL",
@@ -139,7 +135,6 @@ project "TRAP"
 			"ImGui",
 			"GLSLang",
 			"SPIRV",
-			"StandAlone",
 			"vulkan",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
@@ -185,7 +180,6 @@ project "Sandbox"
 		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
-		"%{IncludeDir.STANDALONE}",
 		"%{IncludeDir.VULKAN}/Include/",
 		"%{IncludeDir.SPIRVCROSS}"
 	}
@@ -201,7 +195,6 @@ project "Sandbox"
 			"ImGui",
 			"GLSLang",
 			"SPIRV",
-			"StandAlone",
 			"vulkan",
 
 			"dl",
@@ -256,7 +249,6 @@ project "Tests"
 		"%{IncludeDir.IMGUI}",
 		"%{IncludeDir.GLSLANG}",
 		"%{IncludeDir.SPIRV}",
-		"%{IncludeDir.STANDALONE}",
 		"%{IncludeDir.VULKAN}/Include/",
 		"%{IncludeDir.SPIRVCROSS}"
 	}
@@ -272,7 +264,6 @@ project "Tests"
 			"ImGui",
 			"GLSLang",
 			"SPIRV",
-			"StandAlone",
 			"vulkan",
 
 			"dl",
@@ -324,8 +315,7 @@ project "ConvertToSPIRV"
 	includedirs
 	{
 		"%{IncludeDir.GLSLANG}",
-		"%{IncludeDir.SPIRV}",
-		"%{IncludeDir.STANDALONE}"
+		"%{IncludeDir.SPIRV}"
 	}
 
 	filter "system:windows"
@@ -341,7 +331,6 @@ project "ConvertToSPIRV"
 		{
 			"GLSLang",
 			"SPIRV",
-			"StandAlone",
 
 			"dl",
 			"pthread",

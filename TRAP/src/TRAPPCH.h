@@ -42,8 +42,6 @@
 //SPIRV
 #include <glslang/Public/ShaderLang.h>
 #include <SPIRV/GlslangToSpv.h>
-#include <StandAlone/ResourceLimits.h>
-#include <StandAlone/DirStackFileIncluder.h>
 //SPIRV to GLSL
 #include <spirv_glsl.hpp>
 //ImGUI

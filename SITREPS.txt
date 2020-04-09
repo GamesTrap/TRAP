@@ -998,3 +998,8 @@ SITREP 03/26/2020|20w13a1
     - Changed TRAP Engine version to 20w13a1(0.6.28)
     - Moved OpenGL Max Texture Units from Texture2D/Cube to OpenGLRenderer ~<10 mins
     - Fixed FrameTime when out of Focus ~<20 mins
+
+SITREP 04/09/2020|20w15a1
+    - Changed TRAP Engine version to 20w15a1(0.6.29)
+    - Updated Travis.yml ~<5 mins
+    - Removed Standalone sub project ~<10 mins
