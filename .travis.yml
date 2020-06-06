@@ -26,9 +26,9 @@ matrix:
       sudo: required
       filter_secrets: false
       before_install:
-        - curl -L -O https://vulkan.lunarg.com/sdk/download/1.2.141.0/windows/VulkanSDK-1.2.141.0-Installer.exe?Human=true
-        - chmod +x VulkanSDK-1.2.141.0-Installer.exe
-        - PowerShell -Command 'Start-Process -Wait -FilePath "VulkanSDK-1.2.141.0-Installer.exe" -ArgumentList "/S" -PassThru'
+        - curl -L --silent --show-error --output VulkanSDK.exe https://vulkan.lunarg.com/sdk/download/1.2.141.0/windows/VulkanSDK-1.2.141.0-Installer.exe?Human=true
+        - chmod +x VulkanSDK.exe
+        - PowerShell -Command 'Start-Process -Wait -FilePath "VulkanSDK.exe" -ArgumentList "/S" -PassThru'
       env: 
         - LABEL="windows-msvc" 
         - MSBUILD_PATH="/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin"
