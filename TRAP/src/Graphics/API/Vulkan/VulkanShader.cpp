@@ -5,6 +5,9 @@
 #include "VulkanRenderer.h"
 #include "Utils/String/String.h"
 #include "Embed.h"
+#include "Internals/Objects/VulkanDevice.h"
+#include "Internals/Objects/VulkanSwapchain.h"
+#include "Internals/Objects/VulkanPipeline.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -81,17 +84,17 @@ void TRAP::Graphics::API::VulkanShader::Shutdown() const
 	TP_PROFILE_FUNCTION();
 
 	if (m_VShaderModule)
-		vkDestroyShaderModule(VulkanRenderer::Get()->GetDevice(), m_VShaderModule, nullptr);
+		vkDestroyShaderModule(VulkanRenderer::GetDevice().GetDevice(), m_VShaderModule, nullptr);
 	if (m_FShaderModule)
-		vkDestroyShaderModule(VulkanRenderer::Get()->GetDevice(), m_FShaderModule, nullptr);
+		vkDestroyShaderModule(VulkanRenderer::GetDevice().GetDevice(), m_FShaderModule, nullptr);
 	if (m_GShaderModule)
-		vkDestroyShaderModule(VulkanRenderer::Get()->GetDevice(), m_GShaderModule, nullptr);
+		vkDestroyShaderModule(VulkanRenderer::GetDevice().GetDevice(), m_GShaderModule, nullptr);
 	if (m_TCShaderModule)
-		vkDestroyShaderModule(VulkanRenderer::Get()->GetDevice(), m_TCShaderModule, nullptr);
+		vkDestroyShaderModule(VulkanRenderer::GetDevice().GetDevice(), m_TCShaderModule, nullptr);
 	if (m_TEShaderModule)
-		vkDestroyShaderModule(VulkanRenderer::Get()->GetDevice(), m_TEShaderModule, nullptr);
+		vkDestroyShaderModule(VulkanRenderer::GetDevice().GetDevice(), m_TEShaderModule, nullptr);
 	if (m_CShaderModule)
-		vkDestroyShaderModule(VulkanRenderer::Get()->GetDevice(), m_CShaderModule, nullptr);
+		vkDestroyShaderModule(VulkanRenderer::GetDevice().GetDevice(), m_CShaderModule, nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -100,18 +103,31 @@ void TRAP::Graphics::API::VulkanShader::Bind() const
 {
 	TP_PROFILE_FUNCTION();
 	
-	if (s_CurrentlyBound != this)
+	bool isSameShader = true;
+	auto currentShaders = VulkanRenderer::GetCurrentSwapchain().GetPipeline().GetShaders();
+	if (currentShaders.size() == m_graphicsShaderStages.size())
 	{
-		if (!m_graphicsShaderStages.empty())
+		for (uint32_t i = 0; i < m_graphicsShaderStages.size(); i++)
 		{
-			s_CurrentlyBound = this;
-			VulkanRenderer::Get()->InitGraphicsPipeline(m_graphicsShaderStages);
+			if (m_graphicsShaderStages[i].module != currentShaders[i].module)
+			{
+				isSameShader = false;
+				break;
+			}
 		}
-		else
-			ShaderManager::Get("Fallback")->Bind();
 	}
-	
-	VulkanRenderer::Get()->BindGraphicsPipeline();
+	else
+		isSameShader = false;
+
+	if(isSameShader)
+		return;
+
+	if (!m_graphicsShaderStages.empty())
+		VulkanRenderer::GetCurrentSwapchain().GetPipeline().SetShaders(m_graphicsShaderStages);
+	else
+		ShaderManager::Get("Fallback")->Bind();
+
+	VulkanRenderer::BindGraphicsPipeline();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -119,8 +135,6 @@ void TRAP::Graphics::API::VulkanShader::Bind() const
 void TRAP::Graphics::API::VulkanShader::Unbind() const
 {
 	TP_PROFILE_FUNCTION();
-	
-	s_CurrentlyBound = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -773,18 +787,16 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::API::VulkanShader::PreProcess(cons
 			/* .maxTaskWorkGroupSizeZ_NV = */ 1,
 			/* .maxMeshViewCountNV = */ 4,
 
-			/* .limits = */
-			{
-				/* .nonInductiveForLoops = */ 1,
-				/* .whileLoops = */ 1,
-				/* .doWhileLoops = */ 1,
-				/* .generalUniformIndexing = */ 1,
-				/* .generalAttributeMatrixVectorIndexing = */ 1,
-				/* .generalVaryingIndexing = */ 1,
-				/* .generalSamplerIndexing = */ 1,
-				/* .generalVariableIndexing = */ 1,
-				/* .generalConstantMatrixVectorIndexing = */ 1,
-			}
+			/* TLimits */
+			/* .nonInductiveForLoops = */ true,
+			/* .whileLoops = */ true,
+			/* .doWhileLoops = */ true,
+			/* .generalUniformIndexing = */ true,
+			/* .generalAttributeMatrixVectorIndexing = */ true,
+			/* .generalVaryingIndexing = */ true,
+			/* .generalSamplerIndexing = */ true,
+			/* .generalVariableIndexing = */ true,
+			/* .generalConstantMatrixVectorIndexing = */ true
 		};
 		if (!shader->preprocess(&DefaultTBuiltInResource,
 			460,
@@ -907,18 +919,16 @@ bool TRAP::Graphics::API::VulkanShader::Parse(glslang::TShader* shader)
 		/* .maxTaskWorkGroupSizeZ_NV = */ 1,
 		/* .maxMeshViewCountNV = */ 4,
 
-		/* .limits = */
-		{
-			/* .nonInductiveForLoops = */ 1,
-			/* .whileLoops = */ 1,
-			/* .doWhileLoops = */ 1,
-			/* .generalUniformIndexing = */ 1,
-			/* .generalAttributeMatrixVectorIndexing = */ 1,
-			/* .generalVaryingIndexing = */ 1,
-			/* .generalSamplerIndexing = */ 1,
-			/* .generalVariableIndexing = */ 1,
-			/* .generalConstantMatrixVectorIndexing = */ 1,
-		}
+		/* TLimits */
+		/* .nonInductiveForLoops = */ true,
+		/* .whileLoops = */ true,
+		/* .doWhileLoops = */ true,
+		/* .generalUniformIndexing = */ true,
+		/* .generalAttributeMatrixVectorIndexing = */ true,
+		/* .generalVaryingIndexing = */ true,
+		/* .generalSamplerIndexing = */ true,
+		/* .generalVariableIndexing = */ true,
+		/* .generalConstantMatrixVectorIndexing = */ true
 	};
 	
 	if (!shader->parse(&DefaultTBuiltInResource, 460, true, static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
@@ -1088,7 +1098,7 @@ bool TRAP::Graphics::API::VulkanShader::CreateShaderModule(VkShaderModule& shade
 	};
 
 	VkResult success;
-	VkCall(success = vkCreateShaderModule(Graphics::API::VulkanRenderer::Get()->GetDevice(), &shaderModuleCreateInfo, nullptr, &shaderModule));
+	VkCall(success = vkCreateShaderModule(Graphics::API::VulkanRenderer::GetDevice().GetDevice(), &shaderModuleCreateInfo, nullptr, &shaderModule));
 	
 	return success == VK_SUCCESS;
 }

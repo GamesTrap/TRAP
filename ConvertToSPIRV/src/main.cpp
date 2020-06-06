@@ -6,7 +6,6 @@
 
 #include <glslang/Public/ShaderLang.h>
 #include <GlslangToSpv.h>
-#include <Logger.h>
 
 enum class ShaderType
 {
@@ -694,18 +693,16 @@ std::unique_ptr<glslang::TShader> PreProcessGLSLForSPIRV(const char* source, con
 		/* .maxTaskWorkGroupSizeZ_NV = */ 1,
 		/* .maxMeshViewCountNV = */ 4,
 
-		/* .limits = */
-		{
-			/* .nonInductiveForLoops = */ 1,
-			/* .whileLoops = */ 1,
-			/* .doWhileLoops = */ 1,
-			/* .generalUniformIndexing = */ 1,
-			/* .generalAttributeMatrixVectorIndexing = */ 1,
-			/* .generalVaryingIndexing = */ 1,
-			/* .generalSamplerIndexing = */ 1,
-			/* .generalVariableIndexing = */ 1,
-			/* .generalConstantMatrixVectorIndexing = */ 1,
-		}
+		/* TLimits */
+		/* .nonInductiveForLoops = */ true,
+		/* .whileLoops = */ true,
+		/* .doWhileLoops = */ true,
+		/* .generalUniformIndexing = */ true,
+		/* .generalAttributeMatrixVectorIndexing = */ true,
+		/* .generalVaryingIndexing = */ true,
+		/* .generalSamplerIndexing = */ true,
+		/* .generalVariableIndexing = */ true,
+		/* .generalConstantMatrixVectorIndexing = */ true
 	};
 	if (!shader->preprocess(&DefaultTBuiltInResource,
 		460,
@@ -825,18 +822,16 @@ bool ParseGLSL(glslang::TShader* shader)
 		/* .maxTaskWorkGroupSizeZ_NV = */ 1,
 		/* .maxMeshViewCountNV = */ 4,
 
-		/* .limits = */
-		{
-			/* .nonInductiveForLoops = */ 1,
-			/* .whileLoops = */ 1,
-			/* .doWhileLoops = */ 1,
-			/* .generalUniformIndexing = */ 1,
-			/* .generalAttributeMatrixVectorIndexing = */ 1,
-			/* .generalVaryingIndexing = */ 1,
-			/* .generalSamplerIndexing = */ 1,
-			/* .generalVariableIndexing = */ 1,
-			/* .generalConstantMatrixVectorIndexing = */ 1,
-		}
+		/* TLimits */
+		/* .nonInductiveForLoops = */ true,
+		/* .whileLoops = */ true,
+		/* .doWhileLoops = */ true,
+		/* .generalUniformIndexing = */ true,
+		/* .generalAttributeMatrixVectorIndexing = */ true,
+		/* .generalVaryingIndexing = */ true,
+		/* .generalSamplerIndexing = */ true,
+		/* .generalVariableIndexing = */ true,
+		/* .generalConstantMatrixVectorIndexing = */ true
 	};
 	
 	if (!shader->parse(&DefaultTBuiltInResource, 460, true, static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))

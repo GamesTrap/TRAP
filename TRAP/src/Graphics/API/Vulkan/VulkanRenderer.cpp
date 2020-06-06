@@ -2,32 +2,34 @@
 #include "VulkanRenderer.h"
 
 
-#include "Application.h"
-#include "Graphics/RenderCommand.h"
 #include "VulkanCommon.h"
+#include "Graphics/RenderCommand.h"
 #include "Window/Window.h"
 #include "Window/WindowingAPI.h"
+
+#include "VulkanContext.h"
+#include "Internals/VulkanInitializers.h"
+#include "Internals/Objects/VulkanInstance.h"
+#include "Internals/Objects/VulkanPhysicalDevice.h"
+#include "Internals/Objects/VulkanDebug.h"
+#include "Internals/Objects/VulkanSurface.h"
+#include "Internals/Objects/VulkanDevice.h"
+#include "Internals/Objects/VulkanSwapchain.h"
+#include "Internals/Objects/VulkanRenderPass.h"
+#include "Internals/Objects/VulkanFence.h"
+#include "Internals/Objects/VulkanSemaphore.h"
+#include "Internals/Objects/VulkanCommandBuffer.h"
+
+TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
+TRAP::Graphics::API::Vulkan::Swapchain* TRAP::Graphics::API::VulkanRenderer::s_currentSwapchain = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
-	: m_instance(nullptr),
-	m_physicalDevice(nullptr),
-	m_physicalDeviceProperties(),
-	m_physicalDeviceMemoryProperties(),
-	m_device(nullptr),
-	m_graphicsQueue(nullptr),
-	m_presentQueue(nullptr),
-	m_debugCallbackSupported(false),
-	m_debugReport(),
-	m_renderPass(nullptr),
-	m_pipelineLayout(nullptr),
-	m_graphicsPipeline(nullptr),
-	m_commandPool(nullptr),
-	m_context(VulkanContext::Get()),
-    m_clearColor({ {{0.1f, 0.1f, 0.1f, 1.0f}} })
+	: m_debugCallbackSupported(false), m_debug(nullptr)
 {
 	TP_PROFILE_FUNCTION();
+	s_renderer = this;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -38,20 +40,10 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 	
 	TP_DEBUG("[Renderer][Vulkan] Destroying Renderer");
 
-	VkCall(vkDeviceWaitIdle(m_device));
-	
-	m_context->DeInitSyncObjects(m_device);
-	DeInitCommandBuffers();
-	DeInitCommandPool();
-	m_context->DeInitFrameBuffers(m_device);
-	DeInitGraphicsPipeline();
-	DeInitRenderPass();
-	m_context->DeInitImageViews(m_device);
-	m_context->DeInitSwapchain(m_device);
-	DeInitDevice();
-	DeInitDebug();
-	m_context->DeInitSurface(m_instance);
-	DeInitInstance();
+	m_device->WaitIdle();
+
+	//Free everything in order
+	//Should happen automagically through Scope deconstructors
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -60,25 +52,46 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 {
 	TP_PROFILE_FUNCTION();
 	
-	SetupInstanceLayersAndExtensions();
-	InitInstance();
-	m_context->InitSurface();
-	InitDebug();
-	SetupPhysicalDevice();
-	SetupDeviceLayersAndExtensions();
-	InitDevice();
-	m_context->SetupSwapchain();
-	m_context->InitSwapchain();
-	m_context->InitImageViews();
-	InitRenderPass();
-	m_context->InitFrameBuffers(m_device, m_renderPass);
-	InitCommandPool();
-	InitCommandBuffers();
-	m_context->InitSyncObjects(m_device);
-	StartRecording();
-	StartRenderPass();
+	//Instance Stuff
+	std::array<std::vector<std::string>, 2> instanceLayersAndExtensions = SetupInstanceLayersAndExtensions();
+	m_instance = MakeScope<Vulkan::Instance>(VulkanContext::GetAppName().data(), VK_MAKE_VERSION(1, 0, 0), instanceLayersAndExtensions[0], instanceLayersAndExtensions[1]);
 
-	//Do Pipeline Stuff here(blending, depth testing, see below)
+	//Debug Stuff
+#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
+	if(m_debugCallbackSupported)
+		m_debug = MakeScope<Vulkan::Debug>(m_instance);
+#endif
+	
+	//Physical Device Stuff
+	std::multimap<int32_t, Vulkan::PhysicalDevice> physicalDevices = Vulkan::PhysicalDevice::GetAllAvailableGraphicPhysicalDevices(
+				m_instance, VulkanContext::GetCurrentWindow());
+	auto lastPhysicalDevice = (--physicalDevices.end())->second;
+	m_physicalDevice = MakeScope<Vulkan::PhysicalDevice>(std::move(lastPhysicalDevice));
+
+	//Device
+	std::vector<std::string> deviceExtensions = SetupDeviceExtensions(m_physicalDevice);
+	m_device = MakeScope<Vulkan::Device>(m_physicalDevice, deviceExtensions);
+	
+	//Main Window Surface
+	Scope<Vulkan::Surface> surface = MakeScope<Vulkan::Surface>(m_instance, *m_physicalDevice, VulkanContext::GetCurrentWindow());
+	
+	//Main Window Swapchain
+	m_swapchains.emplace_back(MakeScope<Vulkan::Swapchain>(VulkanContext::GetCurrentWindow(), surface, m_device));
+	s_currentSwapchain = m_swapchains[0].get();
+	s_currentSwapchain->CreateSwapchain();
+
+	//Prepare next frame
+	s_currentSwapchain->PrepareNextFrame();
+	
+	//Start CommandBuffers recording & Start RenderPass
+	s_currentSwapchain->StartGraphicCommandBuffersAndRenderPass();
+
+	//Set Viewport and scissor
+	VkViewport viewport{ 0.0f, 0.0f, static_cast<float>(VulkanContext::GetCurrentWindow()->Width), static_cast<float>(VulkanContext::GetCurrentWindow()->Height), 0.0f, 1.0f };
+	VkRect2D scissor{ {0, 0}, {static_cast<uint32_t>(VulkanContext::GetCurrentWindow()->Width), static_cast<uint32_t>(VulkanContext::GetCurrentWindow()->Height)} };
+	s_currentSwapchain->GetGraphicsCommandBuffer().SetViewport(viewport);
+	s_currentSwapchain->GetGraphicsCommandBuffer().SetScissor(scissor);
+	
 	SetDepthTesting(true);
 	SetBlend(true);
 	SetBlendFunction(RendererBlendFunction::Source_Alpha, RendererBlendFunction::One_Minus_Source_Alpha);
@@ -86,12 +99,12 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 
 	TP_INFO("[Renderer][Vulkan] ----------------------------------");
 	TP_INFO("[Renderer][Vulkan] Vulkan:");
-	TP_INFO("[Renderer][Vulkan] Version:  ", VK_VERSION_MAJOR(m_physicalDeviceProperties.apiVersion), '.', VK_VERSION_MINOR(m_physicalDeviceProperties.apiVersion), '.', VK_VERSION_PATCH(m_physicalDeviceProperties.apiVersion));
-	TP_INFO("[Renderer][Vulkan] Renderer: ", m_physicalDeviceProperties.deviceName);
-	TP_INFO("[Renderer][Vulkan] Driver:   ", VK_VERSION_MAJOR(m_physicalDeviceProperties.driverVersion), '.', VK_VERSION_MINOR(m_physicalDeviceProperties.driverVersion), '.', VK_VERSION_PATCH(m_physicalDeviceProperties.driverVersion));
+	TP_INFO("[Renderer][Vulkan] Version:  ", VK_VERSION_MAJOR(m_physicalDevice->GetPhysicalDeviceProperties().apiVersion), '.', VK_VERSION_MINOR(m_physicalDevice->GetPhysicalDeviceProperties().apiVersion), '.', VK_VERSION_PATCH(m_physicalDevice->GetPhysicalDeviceProperties().apiVersion));
+	TP_INFO("[Renderer][Vulkan] Renderer: ", m_physicalDevice->GetPhysicalDeviceName());
+	TP_INFO("[Renderer][Vulkan] Driver:   ", VK_VERSION_MAJOR(m_physicalDevice->GetPhysicalDeviceProperties().driverVersion), '.', VK_VERSION_MINOR(m_physicalDevice->GetPhysicalDeviceProperties().driverVersion), '.', VK_VERSION_PATCH(m_physicalDevice->GetPhysicalDeviceProperties().driverVersion));
 	TP_INFO("[Renderer][Vulkan] ----------------------------------");
 
-	m_rendererTitle = "[Vulkan " + std::to_string(VK_VERSION_MAJOR(m_physicalDeviceProperties.apiVersion)) + '.' + std::to_string(VK_VERSION_MINOR(m_physicalDeviceProperties.apiVersion)) + '.' + std::to_string(VK_VERSION_PATCH(m_physicalDeviceProperties.apiVersion)) + ']';
+	m_rendererTitle = "[Vulkan " + std::to_string(VK_VERSION_MAJOR(m_physicalDevice->GetPhysicalDeviceProperties().apiVersion)) + '.' + std::to_string(VK_VERSION_MINOR(m_physicalDevice->GetPhysicalDeviceProperties().apiVersion)) + '.' + std::to_string(VK_VERSION_PATCH(m_physicalDevice->GetPhysicalDeviceProperties().apiVersion)) + ']';
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -105,13 +118,128 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(RendererBufferType buffer)
 
 void TRAP::Graphics::API::VulkanRenderer::Present(const Scope<Window>& window)
 {
-	StopRenderPass();
-	StopRecording();
-	
-	m_context->Present(window);
+	if (!window->IsMinimized())
+	{
+		if (window->GetInternalWindow() == VulkanContext::GetCurrentWindow())
+		{
+			//Ending recording CommandBuffers & RenderPass
+			s_currentSwapchain->EndGraphicsCommandBufferAndRenderPass();
 
-	StartRecording();
-	StartRenderPass();
+			//////////////
+			//Presenting//
+			//////////////
+			//Pipeline stage at which the queue submission will wait (via pWaitSemaphores)
+			VkPipelineStageFlags waitStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+
+			VkSubmitInfo submitInfo = Vulkan::Initializers::SubmitInfo(s_currentSwapchain->GetPresentSemaphore()->GetSemaphore(),
+				waitStageMask,
+				s_currentSwapchain->GetGraphicsCommandBuffer().GetCommandBuffer(),
+				s_currentSwapchain->GetRenderSemaphore()->GetSemaphore());
+
+			//Submit queue
+			vkQueueSubmit(m_device->GetGraphicsQueue(), 1, &submitInfo, s_currentSwapchain->GetWaitFence()->GetFence());
+
+			//Present
+			const VkResult present = s_currentSwapchain->QueuePresent(m_device->GetPresentQueue(), s_currentSwapchain->GetRenderSemaphore());
+			if (!((present == VK_SUCCESS) || (present == VK_SUBOPTIMAL_KHR)))
+			{
+				if (present == VK_ERROR_OUT_OF_DATE_KHR)
+					s_currentSwapchain->RecreateSwapchain();
+				else
+				{
+					VkCall(present);
+				}
+			}
+			//////////////
+
+			//Prepare next frame
+			s_currentSwapchain->PrepareNextFrame();
+
+			//Start CommandBuffer recording & Start RenderPass
+			s_currentSwapchain->StartGraphicCommandBuffersAndRenderPass();
+		}
+		else
+		{			
+			//Use swapchain associated with the window for this time
+			INTERNAL::WindowingAPI::InternalWindow* internalWindow = static_cast<INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow());
+
+			//Search for swapchain associated with the window
+			int32_t index = -1;
+			for (uint32_t i = 0; i < m_swapchains.size(); i++)
+			{
+				if (m_swapchains[i]->GetBoundWindow() == internalWindow)
+				{
+					index = i;
+					break;
+				}
+			}
+
+			//No Swapchain found with this window currently bound so create one
+			if (index == -1)
+			{
+				//No swapchain was found :C
+				Vulkan::Swapchain* swapchain = CreateWindowSwapchain(internalWindow);
+
+				//Start CommandBuffer recording & Start RenderPass
+				if (!m_swapchains[index]->GetGraphicsCommandBuffer().IsRecording())
+				{
+					m_swapchains[index]->GetGraphicsCommandBuffer().StartRecording();
+					m_swapchains[index]->GetRenderPass().StartRenderPass(m_swapchains[index], m_swapchains[index]->GetGraphicsCommandBuffer());
+				}
+
+				//Set Viewport and scissor
+				VkViewport viewport{ 0.0f, 0.0f, static_cast<float>(VulkanContext::GetCurrentWindow()->Width), static_cast<float>(VulkanContext::GetCurrentWindow()->Height), 0.0f, 1.0f };
+				VkRect2D scissor{ {0, 0}, {static_cast<uint32_t>(VulkanContext::GetCurrentWindow()->Width), static_cast<uint32_t>(VulkanContext::GetCurrentWindow()->Height)} };
+				swapchain->GetGraphicsCommandBuffer().SetViewport(viewport);
+				swapchain->GetGraphicsCommandBuffer().SetScissor(scissor);
+
+				index = static_cast<int32_t>(m_swapchains.size()) - 1;
+			}
+
+			//Present
+			if (m_swapchains[index]->GetBoundWindow() == internalWindow)
+			{
+				//Ending recording CommandBuffers & RenderPass
+				m_swapchains[index]->EndGraphicsCommandBufferAndRenderPass();
+
+				//////////////
+				//Presenting//
+				//////////////
+				//Pipeline stage at which the queue submission will wait (via pWaitSemaphores)
+				VkPipelineStageFlags waitStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+
+				VkSubmitInfo submitInfo = Vulkan::Initializers::SubmitInfo(m_swapchains[index]->GetPresentSemaphore()->GetSemaphore(),
+					waitStageMask,
+					m_swapchains[index]->GetGraphicsCommandBuffer().GetCommandBuffer(),
+					m_swapchains[index]->GetRenderSemaphore()->GetSemaphore());
+
+				//Submit queue
+				vkQueueSubmit(m_device->GetGraphicsQueue(), 1, &submitInfo, m_swapchains[index]->GetWaitFence()->GetFence());
+
+				//Present
+				const VkResult present = m_swapchains[index]->QueuePresent(m_device->GetPresentQueue(), m_swapchains[index]->GetRenderSemaphore());
+				if (!((present == VK_SUCCESS) || (present == VK_SUBOPTIMAL_KHR)))
+				{
+					if (present == VK_ERROR_OUT_OF_DATE_KHR)
+						m_swapchains[index]->RecreateSwapchain();
+					else
+					{
+						VkCall(present);
+					}
+				}
+				//////////////
+
+				//Prepare next frame
+				m_swapchains[index]->PrepareNextFrame();
+
+				if (!m_swapchains[index]->GetGraphicsCommandBuffer().IsRecording())
+				{
+					m_swapchains[index]->GetGraphicsCommandBuffer().StartRecording();
+					m_swapchains[index]->GetRenderPass().StartRenderPass(m_swapchains[index], m_swapchains[index]->GetGraphicsCommandBuffer());
+				}
+			}
+		}
+	}
 }
 
 //------------------------------------------------------------------------------------------------------------------//
@@ -120,7 +248,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Math::Vec4& color)
 {
 	TP_PROFILE_FUNCTION();
 
-	m_clearColor = VkClearValue{ {{color.x, color.y, color.z, color.w}} };
+	s_currentSwapchain->GetRenderPass().SetClearColor({{color[0], color[1], color[2], color[3]}});
 }
 
 //------------------------------------------------------------------------------------------------------------------//
@@ -174,9 +302,19 @@ void TRAP::Graphics::API::VulkanRenderer::SetWireFrame(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height)
 {
 	TP_PROFILE_FUNCTION();
+
+	//Only set if width and height are bigger than 0
+	if (width == 0 || height == 0)
+		return;
+
+	//Set Viewport and scissor
+	VkViewport viewport{ static_cast<float>(x), static_cast<float>(y), static_cast<float>(width), static_cast<float>(height), 0.0f, 1.0f };
+	VkRect2D scissor{ {0, 0}, {static_cast<uint32_t>(width), static_cast<uint32_t>(height)} };
+	s_currentSwapchain->GetGraphicsCommandBuffer().SetViewport(viewport);
+	s_currentSwapchain->GetGraphicsCommandBuffer().SetScissor(scissor);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -242,1067 +380,129 @@ std::string_view TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::Get()
 {
-	return dynamic_cast<VulkanRenderer*>(s_Renderer.get());
+	return s_renderer;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkInstance& TRAP::Graphics::API::VulkanRenderer::GetInstance()
+void TRAP::Graphics::API::VulkanRenderer::SetVSyncIntervalInternal(const uint32_t interval)
 {
-	return m_instance;
+	s_currentSwapchain->SetVsync(interval == 0 ? false : true);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPhysicalDevice& TRAP::Graphics::API::VulkanRenderer::GetPhysicalDevice()
+const std::vector<std::unique_ptr<TRAP::Graphics::API::Vulkan::Swapchain>>& TRAP::Graphics::API::VulkanRenderer::GetAllSwapchains()
 {
-	return m_physicalDevice;
+	return Get()->m_swapchains;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<uint32_t>& TRAP::Graphics::API::VulkanRenderer::GetGraphicsQueueFamilyIndex()
+void TRAP::Graphics::API::VulkanRenderer::SetCurrentSwapchain(Vulkan::Swapchain* swapchain)
 {
-	return m_graphicsFamilyIndex;
+	s_currentSwapchain = swapchain;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::optional<uint32_t>& TRAP::Graphics::API::VulkanRenderer::GetPresentQueueFamilyIndex()
+TRAP::Graphics::API::Vulkan::Device& TRAP::Graphics::API::VulkanRenderer::GetDevice()
 {
-	return m_presentFamilyIndex;
+	return *Get()->m_device;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDevice& TRAP::Graphics::API::VulkanRenderer::GetDevice()
+TRAP::Graphics::API::Vulkan::Swapchain& TRAP::Graphics::API::VulkanRenderer::GetCurrentSwapchain()
 {
-	return m_device;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<VkCommandBuffer>& TRAP::Graphics::API::VulkanRenderer::GetCommandBuffers()
-{	
-	return m_commandBuffers;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkQueue TRAP::Graphics::API::VulkanRenderer::GetGraphicsQueue() const
-{	
-	return m_graphicsQueue;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkQueue TRAP::Graphics::API::VulkanRenderer::GetPresentQueue() const
-{
-	return m_presentQueue;	
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::InitGraphicsPipeline(const std::vector<VkPipelineShaderStageCreateInfo>& shaderStages)
-{
-	TP_PROFILE_FUNCTION();
-
-	DeInitGraphicsPipeline(); //Delete old Graphics Pipeline if it exists
-
-	TP_DEBUG("[Renderer][Vulkan] Initializing Graphics Pipeline");
-
-	VkPipelineVertexInputStateCreateInfo vertexInputStateCreateInfo
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		0,
-		nullptr,
-		0,
-		nullptr
-	};
-
-	VkPipelineInputAssemblyStateCreateInfo inputAssembly
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,
-		false
-	};
-
-	VkViewport viewport
-	{
-		0.0f,
-		0.0f,
-		static_cast<float>(m_context->GetSwapchainExtent().width),
-		static_cast<float>(m_context->GetSwapchainExtent().height),
-		0.0f,
-		1.0f
-	};
-
-	VkRect2D scissor
-	{
-		{0, 0},
-		m_context->GetSwapchainExtent()
-	};
-
-	VkPipelineViewportStateCreateInfo viewportStateCreateInfo
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		1,
-		&viewport,
-		1,
-		&scissor
-	};
-
-	VkPipelineRasterizationStateCreateInfo rasterizationStateCreateInfo
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		false,
-		false,
-		VK_POLYGON_MODE_FILL, //TODO Wireframe? & RendererPrimitive?
-		VK_CULL_MODE_BACK_BIT, //TODO Set Culling from Renderer
-		VK_FRONT_FACE_COUNTER_CLOCKWISE, //TODO Set Front Face from Renderer
-		false,
-		0.0f,
-		0.0f,
-		0.0f,
-		1.0f
-	};
-
-	VkPipelineMultisampleStateCreateInfo multisampleStateCreateInfo //TODO Multisampling...
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		VK_SAMPLE_COUNT_1_BIT,
-		false,
-		1.0f,
-		nullptr,
-		false,
-		false
-	};
-
-	/*VkPipelineDepthStencilStateCreateInfo depthStencilStateCreateInfo //TODO Depth And Stencil...
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		false, //TODO Set Depth Test from Rendere
-		false,
-	};*/
-
-	//TODO Colorblending...
-	VkPipelineColorBlendAttachmentState colorBlendAttachmentState
-	{
-		false, //Blending enabled
-		VK_BLEND_FACTOR_ONE, //SRC Factor
-		VK_BLEND_FACTOR_ZERO, //DST Factor
-		VK_BLEND_OP_ADD, //Blending Operation
-		VK_BLEND_FACTOR_ONE, //SRC Alpha Factor
-		VK_BLEND_FACTOR_ZERO, //DST Alpha Factor
-		VK_BLEND_OP_ADD, //Blending Alpha Operation
-		VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT
-	};
-
-	VkPipelineColorBlendStateCreateInfo colorBlending
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		false,
-		VK_LOGIC_OP_COPY,
-		1,
-		&colorBlendAttachmentState,
-	{0.0f, 0.0f, 0.0f, 0.0f}
-	};
-
-	//Make Viewport Size and blend constants dynamically changeable
-	std::array<VkDynamicState, 2> dynamicStates
-	{
-		VK_DYNAMIC_STATE_VIEWPORT,
-		VK_DYNAMIC_STATE_BLEND_CONSTANTS
-	};
-	VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
-		nullptr,
-		0,
-		static_cast<uint32_t>(dynamicStates.size()),
-		dynamicStates.data()
-	};
-
-	InitPipelineLayout();
-
-	VkGraphicsPipelineCreateInfo pipelineCreateInfo
-	{
-		VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
-		nullptr,
-		0,
-		static_cast<uint32_t>(shaderStages.size()),
-		shaderStages.data(),
-		& vertexInputStateCreateInfo,
-		& inputAssembly,
-		nullptr,
-		& viewportStateCreateInfo,
-		& rasterizationStateCreateInfo,
-		& multisampleStateCreateInfo,
-		nullptr,
-		& colorBlending,
-		& dynamicStateCreateInfo,
-		m_pipelineLayout,
-		m_renderPass,
-		0,
-		nullptr,
-		-1
-	};
-
-	VkCall(vkCreateGraphicsPipelines(m_device, nullptr, 1, &pipelineCreateInfo, nullptr, &m_graphicsPipeline));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::DeInitGraphicsPipeline()
-{
-	TP_PROFILE_FUNCTION();
-
-	if (m_graphicsPipeline)
-	{
-		TP_DEBUG("[Renderer][Vulkan] Destroying Graphics Pipeline");
-		vkDestroyPipeline(m_device, m_graphicsPipeline, nullptr);
-		m_graphicsPipeline = nullptr;
-
-		DeInitPipelineLayout();
-	}
+	return *s_currentSwapchain;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::BindGraphicsPipeline()
 {
-	if(m_graphicsPipeline)
-		for (auto& m_commandBuffer : m_commandBuffers)
-			vkCmdBindPipeline(m_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
+	s_currentSwapchain->GetGraphicsCommandBuffer().BindPipeline(s_currentSwapchain->GetPipeline(), VK_PIPELINE_BIND_POINT_GRAPHICS);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetupInstanceLayersAndExtensions()
+TRAP::Graphics::API::Vulkan::Swapchain* TRAP::Graphics::API::VulkanRenderer::CreateWindowSwapchain(INTERNAL::WindowingAPI::InternalWindow* window)
 {
-	TP_DEBUG("[Renderer][Vulkan] Setting up Instance Layers and Extensions");
-
-	//Instance Layers
-	const std::vector<VkLayerProperties> availableInstanceLayers = GetAvailableInstanceLayers();
-#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
-	AddInstanceLayer(availableInstanceLayers, "VK_LAYER_KHRONOS_validation");
-#endif
-
-	//Instance Extensions
-	std::array<std::string, 2> requiredExtensions = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
-	const std::vector<VkExtensionProperties> availableInstanceExtensions = GetAvailableInstanceExtensions();
-	for (auto& requiredExtension : requiredExtensions)
-		AddInstanceExtension(availableInstanceExtensions, requiredExtension);
-#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
-	AddInstanceExtension(availableInstanceExtensions, VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-#endif
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetupDeviceLayersAndExtensions()
-{
-	TP_DEBUG("[Renderer][Vulkan] Setting up Device Layers and Extensions");
-
-	//Device Layers only for compatibility(Deprecated See Vulkan Specification)
-	const std::vector<VkLayerProperties> availableDeviceLayers = GetAvailableDeviceLayers();
-#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
-	AddDeviceLayer(availableDeviceLayers, "VK_LAYER_KHRONOS_validation");
-#endif
-
-	//Device Extensions
-	const std::vector<VkExtensionProperties> availableDeviceExtensions = GetAvailableDeviceExtensions();
-	AddDeviceExtension(availableDeviceExtensions, VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetupPhysicalDevice()
-{
-	TP_DEBUG("[Renderer][Vulkan] Setting up Physical Device");
-
-	//Physical Devices
-	std::vector<VkPhysicalDevice> physicalDevices = GetAvailablePhysicalDevices();
-#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
-	for (const auto& physicalDevice : physicalDevices)
-	{
-		VkPhysicalDeviceProperties physicalDeviceProps;
-		vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProps);
-		TP_DEBUG("[Renderer][Vulkan] Found Physical Device: ", physicalDeviceProps.deviceName);
-	}
-#endif
-
-	PickPhysicalDevice(physicalDevices);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetupQueues()
-{
-	TP_DEBUG("[Renderer][Vulkan] Setting up Graphics and Present Queue Family");
-
-	std::vector<VkQueueFamilyProperties> availableQueueFamilies = GetAvailableQueueFamilies();
-	for (uint32_t i = 0; i < availableQueueFamilies.size(); i++)
-	{
-		if (availableQueueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-			m_graphicsFamilyIndex = i;
-		
-		VkBool32 presentSupport = false;
-		VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(m_physicalDevice, i, m_context->GetSurface(), &presentSupport));
-		if (presentSupport)
-			m_presentFamilyIndex = i;
-
-		if (m_graphicsFamilyIndex.has_value() && m_presentFamilyIndex.has_value())
-			break;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::InitInstance()
-{
-	TP_DEBUG("[Renderer][Vulkan] Initializing Instance");
-
-	VkApplicationInfo applicationInfo
-	{
-		VK_STRUCTURE_TYPE_APPLICATION_INFO,
-		nullptr,
-		m_context->GetWindow()->GetTitle().data(),
-		VK_MAKE_VERSION(1, 0, 0),
-		"TRAP Engine",
-		TRAP_VERSION,
-		VK_API_VERSION_1_2
-	};
+	//Window Surface
+	Scope<Vulkan::Surface> surface = MakeScope<Vulkan::Surface>(Get()->m_instance, *(Get()->m_physicalDevice), window);
 	
-	std::vector<const char*> instanceLayersPtrs{};
-	for(const auto& instanceLayer : m_instanceLayers)
-		instanceLayersPtrs.emplace_back(instanceLayer.c_str());
-		
-	std::vector<const char*> instanceExtensionsPtrs{};
-	for(const auto& instanceExtension : m_instanceExtensions)
-		instanceExtensionsPtrs.emplace_back(instanceExtension.c_str());
+	//Window Swapchain
+	Get()->m_swapchains.emplace_back(MakeScope<Vulkan::Swapchain>(window, surface, Get()->m_device));
 
-	VkInstanceCreateInfo instanceCreateInfo
-	{
-		VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-		nullptr,
-		0,
-		&applicationInfo,
-		static_cast<uint32_t>(instanceLayersPtrs.size()),
-		!instanceLayersPtrs.empty() ? instanceLayersPtrs.data() : nullptr,
-		static_cast<uint32_t>(instanceExtensionsPtrs.size()),
-		!instanceExtensionsPtrs.empty() ? instanceExtensionsPtrs.data() : nullptr
-	};
+	//Create Swapchain
+	Get()->m_swapchains.back()->CreateSwapchain();
 
-	VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &m_instance));
+	//Prepare next frame
+	Get()->m_swapchains.back()->PrepareNextFrame();
+	
+	return Get()->m_swapchains.back().get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::DeInitInstance()
+void TRAP::Graphics::API::VulkanRenderer::DeleteWindowSwapchain(INTERNAL::WindowingAPI::InternalWindow* window)
 {
-	if (m_instance)
+	for (uint32_t index = 0; index < Get()->m_swapchains.size(); index++)
 	{
-		TP_DEBUG("[Renderer][Vulkan] Destroying Instance");
-		vkDestroyInstance(m_instance, nullptr);
-		m_instance = nullptr;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
-PFN_vkCreateDebugUtilsMessengerEXT fvkCreateDebugUtilsMessengerEXT = nullptr;
-PFN_vkDestroyDebugUtilsMessengerEXT fvkDestroyDebugUtilsMessengerEXT = nullptr;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VKAPI_ATTR VkBool32 VKAPI_CALL VulkanDebugCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, const VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* callbackData, void* userData)
-{
-	std::ostringstream stream;
-
-	stream << "[Renderer][Vulkan]";
-	if (messageType == VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT)
-		stream << "[Violation] ";
-	else if (messageType == VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
-		stream << "[Performance] ";
-	else
-		stream << ' ';
-	stream << callbackData->messageIdNumber << '(' << callbackData->pMessageIdName << ") " << callbackData->pMessage;
-	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
-		TP_DEBUG(stream.str());
-	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
-		TP_INFO(stream.str());
-	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-		TP_WARN(stream.str());
-	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
-		TP_ERROR(stream.str());
-
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::InitDebug()
-{
-	if (m_debugCallbackSupported)
-	{
-		TP_DEBUG("[Renderer][Vulkan] Initializing Debug Callback");
-
-		fvkCreateDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(m_instance, "vkCreateDebugUtilsMessengerEXT"));
-		fvkDestroyDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(m_instance, "vkDestroyDebugUtilsMessengerEXT"));
-
-		if (fvkCreateDebugUtilsMessengerEXT == nullptr || fvkDestroyDebugUtilsMessengerEXT == nullptr)
+		if (Get()->m_swapchains[index]->GetBoundWindow() == window)
 		{
-			TP_ERROR("[Renderer][Vulkan] Couldn't fetch debug function pointers!");
+			Get()->m_swapchains[index].reset();
+			Get()->m_swapchains[index] = std::move(Get()->m_swapchains.back());
+			Get()->m_swapchains.pop_back();
+
 			return;
 		}
-
-		VkDebugUtilsMessengerCreateInfoEXT debugCallbackCreateInfo
-		{
-			VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
-			nullptr,
-			0,
-			VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-			VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT,
-			VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT |
-			VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT,
-			VulkanDebugCallback,
-			nullptr
-		};
-
-		VkCall(fvkCreateDebugUtilsMessengerEXT(m_instance, &debugCallbackCreateInfo, nullptr, &m_debugReport));
-		TRAP_RENDERER_ASSERT(m_debugReport, "[Renderer][Vulkan] Couldn't create Debug Utils Messenger!");
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::DeInitDebug()
+std::array<std::vector<std::string>, 2> TRAP::Graphics::API::VulkanRenderer::SetupInstanceLayersAndExtensions()
 {
-	if (m_debugReport && m_debugCallbackSupported)
-	{
-		TP_DEBUG("[Renderer][Vulkan] Destroying Debug Callback");
-		fvkDestroyDebugUtilsMessengerEXT(m_instance, m_debugReport, nullptr);
-		m_debugReport = nullptr;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#else
-void TRAP::Graphics::API::VulkanRenderer::InitDebug() {}
-void TRAP::Graphics::API::VulkanRenderer::DeInitDebug() {}
+	std::vector<std::string> instanceLayers{};
+#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
+	if (Vulkan::Instance::IsLayerSupported("VK_LAYER_KHRONOS_validation"))
+		instanceLayers.emplace_back("VK_LAYER_KHRONOS_validation");
 #endif
 
+	std::array<std::string, 2> requiredInstanceExtensions = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
+	std::vector<std::string> instanceExtensions{ requiredInstanceExtensions[0], requiredInstanceExtensions[1] };
+#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
+	if (Vulkan::Instance::IsExtensionSupported(VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
+	{
+		instanceExtensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		m_debugCallbackSupported = true;
+	}
+#endif
+
+	return { instanceLayers, instanceExtensions };
+}
+
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::InitDevice()
+std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensions(const Scope<Vulkan::PhysicalDevice>& physicalDevice)
 {
-	TP_DEBUG("[Renderer][Vulkan] Initializing Device");
+	std::vector<std::string> deviceExtensions{};
 
-	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-	std::set<uint32_t> uniqueQueueFamilies = { m_graphicsFamilyIndex.value(), m_presentFamilyIndex.value() };
-	float queuePriority = 1.0f;
-	for (uint32_t queueFamily : uniqueQueueFamilies)
-		queueCreateInfos.emplace_back(VkDeviceQueueCreateInfo{ VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO, nullptr, 0, queueFamily, 1, &queuePriority });
+	//Swapchain
+	//Must be supported or Engine would already have stopped
+	if(physicalDevice->IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME))
+		deviceExtensions.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
-	//Enable Device Features here if needed
-	VkPhysicalDeviceFeatures deviceFeatures{};
-	deviceFeatures.geometryShader = true;
-	deviceFeatures.tessellationShader = true;
-	deviceFeatures.fillModeNonSolid = true;
-
-	std::vector<const char*> deviceLayersPtrs{};
-	for(const auto& deviceLayer : m_deviceLayers)
-		deviceLayersPtrs.emplace_back(deviceLayer.c_str());
-		
-	std::vector<const char*> deviceExtensionsPtrs{};
-	for(const auto& deviceExtension : m_deviceExtensions)
-		deviceExtensionsPtrs.emplace_back(deviceExtension.c_str());
+	//RayTracing
+	//Nice addition :D
+	if(physicalDevice->IsRayTracingSupported())
+	{
+		deviceExtensions.emplace_back("VK_KHR_ray_tracing");
+		deviceExtensions.emplace_back("VK_KHR_deferred_host_operations");
+		deviceExtensions.emplace_back("VK_KHR_pipeline_library");
+	}
 	
-	VkDeviceCreateInfo deviceCreateInfo
-	{
-		VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-		nullptr,
-		0,
-		static_cast<uint32_t>(queueCreateInfos.size()),
-		!queueCreateInfos.empty() ? queueCreateInfos.data() : nullptr,
-		static_cast<uint32_t>(deviceLayersPtrs.size()),
-		!deviceLayersPtrs.empty() ? deviceLayersPtrs.data() : nullptr,
-		static_cast<uint32_t>(deviceExtensionsPtrs.size()),
-		!deviceExtensionsPtrs.empty() ? deviceExtensionsPtrs.data() : nullptr,
-		&deviceFeatures
-	};
-
-	VkCall(vkCreateDevice(m_physicalDevice, &deviceCreateInfo, nullptr, &m_device));
-	TRAP_RENDERER_ASSERT(m_device, "[Renderer][Vulkan] Couldn't create Logical Device!");
-
-	vkGetDeviceQueue(m_device, m_graphicsFamilyIndex.value(), 0, &m_graphicsQueue);
-
-	vkGetDeviceQueue(m_device, m_presentFamilyIndex.value(), 0, &m_presentQueue);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::DeInitDevice()
-{
-	if (m_device)
-	{
-		TP_DEBUG("[Renderer][Vulkan] Destroying Device");
-		vkDestroyDevice(m_device, nullptr);
-		m_device = nullptr;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::InitRenderPass()
-{
-	TP_DEBUG("[Renderer][Vulkan] Initializing Render Pass");
-
-	VkAttachmentDescription colorAttachment
-	{
-		0,
-		m_context->GetSwapchainImageFormat(),
-		VK_SAMPLE_COUNT_1_BIT,
-		VK_ATTACHMENT_LOAD_OP_CLEAR,
-		VK_ATTACHMENT_STORE_OP_STORE,
-		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-		VK_ATTACHMENT_STORE_OP_DONT_CARE,
-		VK_IMAGE_LAYOUT_UNDEFINED,
-		VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
-	};
-
-	VkAttachmentReference colorAttachmentRef
-	{
-		0,
-		VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
-	};
-
-	VkSubpassDescription subPass
-	{
-		0,
-		VK_PIPELINE_BIND_POINT_GRAPHICS,
-		0,
-		nullptr,
-		1,
-		&colorAttachmentRef,
-		nullptr,
-		nullptr,
-		0,
-		nullptr
-	};
-
-	VkSubpassDependency dependency
-	{
-		VK_SUBPASS_EXTERNAL,
-		0,
-		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-		VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-		0,
-		VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-		0
-	};
-	
-	VkRenderPassCreateInfo renderPassCreateInfo
-	{
-		VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
-		nullptr,
-		0,
-		1,
-		&colorAttachment,
-		1,
-		&subPass,
-		1,
-		&dependency
-	};
-
-	VkCall(vkCreateRenderPass(m_device, &renderPassCreateInfo, nullptr, &m_renderPass));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::DeInitRenderPass()
-{
-	if(m_renderPass)
-	{
-		TP_DEBUG("[Renderer][Vulkan] Destroying Render Pass");
-		vkDestroyRenderPass(m_device, m_renderPass, nullptr);
-		m_renderPass = nullptr;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::InitPipelineLayout()
-{
-	TP_DEBUG("[Renderer][Vulkan] Initializing Pipeline Layout");
-	
-	VkPipelineLayoutCreateInfo layoutCreateInfo
-	{
-		VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
-		nullptr,
-		0,
-		0,
-		nullptr,
-		0,
-		nullptr
-	};
-
-	VkCall(vkCreatePipelineLayout(m_device, &layoutCreateInfo, nullptr, &m_pipelineLayout));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::DeInitPipelineLayout()
-{
-	if (m_pipelineLayout)
-	{
-		TP_DEBUG("[Renderer][Vulkan] Destroying Pipeline Layout");
-		vkDestroyPipelineLayout(m_device, m_pipelineLayout, nullptr);
-		m_pipelineLayout = nullptr;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::InitCommandPool()
-{
-	TP_DEBUG("[Renderer][Vulkan] Initializing Command Pool");
-	
-	VkCommandPoolCreateInfo poolCreateInfo
-	{
-		VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
-		nullptr,
-		VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
-		m_graphicsFamilyIndex.value()
-	};
-
-	VkCall(vkCreateCommandPool(m_device, &poolCreateInfo, nullptr, &m_commandPool));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::DeInitCommandPool()
-{
-	if(m_commandPool)
-	{
-		TP_DEBUG("[Renderer][Vulkan] Destroying Command Pool");
-		
-		vkDestroyCommandPool(m_device, m_commandPool, nullptr);
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::InitCommandBuffers()
-{
-	TP_DEBUG("[Renderer][Vulkan] Initializing Command Buffers");
-
-	m_commandBuffers.resize(m_context->GetSwapchainFrameBuffersSize());
-
-	VkCommandBufferAllocateInfo commandBufferAllocateInfo
-	{
-		VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-		nullptr,
-		m_commandPool,
-		VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-		static_cast<uint32_t>(m_commandBuffers.size())
-	};
-
-	VkCall(vkAllocateCommandBuffers(m_device, &commandBufferAllocateInfo, m_commandBuffers.data()));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::DeInitCommandBuffers()
-{
-	TP_DEBUG("[Renderer][Vulkan] Destroying Command Buffers");
-
-	vkFreeCommandBuffers(m_device, m_commandPool, static_cast<uint32_t>(m_commandBuffers.size()), m_commandBuffers.data());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::StartRecording()
-{
-	for (auto& m_commandBuffer : m_commandBuffers)
-	{
-		VkCommandBufferBeginInfo commandBufferBeginInfo
-		{
-			VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-			nullptr,
-			VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT,
-			nullptr
-		};
-		
-		VkCall(vkBeginCommandBuffer(m_commandBuffer, &commandBufferBeginInfo));
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::StartRenderPass()
-{
-	for(uint32_t i = 0; i < m_commandBuffers.size(); i++)
-	{
-		VkRenderPassBeginInfo renderPassBeginInfo
-		{
-			VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-			nullptr,
-			m_renderPass,
-			m_context->GetSwapchainFrameBuffers()[i],
-		{{0, 0}, m_context->GetSwapchainExtent()},
-			1,
-			&m_clearColor
-		};
-
-		vkCmdBeginRenderPass(m_commandBuffers[i], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::StopRenderPass()
-{
-	for (VkCommandBuffer& commandBuffer : m_commandBuffers)
-		vkCmdEndRenderPass(commandBuffer);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::StopRecording()
-{
-	for (VkCommandBuffer& commandBuffer : m_commandBuffers)
-		VkCall(vkEndCommandBuffer(commandBuffer));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::PickPhysicalDevice(std::vector<VkPhysicalDevice>& availablePhysicalDevices)
-{
-	TP_DEBUG("[Renderer][Vulkan] Selecting Physical Device");
-
-	std::multimap<int32_t, VkPhysicalDevice> candidates{};
-
-	int32_t highestScore = 0;
-	int32_t score = 0;
-	for (const auto& device : availablePhysicalDevices)
-	{
-		score = RateDeviceSuitability(device);
-		if (score > highestScore)
-			highestScore = score;
-
-		candidates.insert(std::make_pair(score, device));
-	}
-
-	if (!candidates.empty())
-	{
-		//Use first physical Device with highest score
-		for (const auto& [key, value] : candidates)
-			if (key == highestScore)
-			{
-				m_physicalDevice = value;
-				break;
-			}
-		vkGetPhysicalDeviceProperties(m_physicalDevice, &m_physicalDeviceProperties);
-		vkGetPhysicalDeviceMemoryProperties(m_physicalDevice, &m_physicalDeviceMemoryProperties);
-		TP_DEBUG("[Renderer][Vulkan] Selected Physical Device: ", m_physicalDeviceProperties.deviceName, "(Score: ", candidates.begin()->first, ')');
-
-		SetupQueues();
-	}
-	else
-	{
-		TP_CRITICAL("[Renderer][Vulkan] Could not find a suitable Physical Device");
-		TP_CRITICAL("[Renderer][Vulkan] Vulkan is unsupported!");
-		TP_CRITICAL("[Renderer][Vulkan] Shutting down!");
-		exit(-1);
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-int32_t TRAP::Graphics::API::VulkanRenderer::RateDeviceSuitability(VkPhysicalDevice physicalDevice) const
-{
-	int32_t score = 0;
-
-	VkPhysicalDeviceProperties deviceProperties{};
-	vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
-
-	//Discrete GPUs have a significant performance advantage
-	if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-		score += 1000;
-	else if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
-		score += 250;
-
-	//Check if Physical device is Vulkan 1.2 capable
-	if (deviceProperties.apiVersion >= VK_VERSION_1_2)
-		score += 1000;
-
-	VkPhysicalDeviceFeatures deviceFeatures{};
-	vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
-
-	//Check if Physical device has geometry shader compatibility
-	if (deviceFeatures.geometryShader)
-		score += 1000;
-	//Check if Physical device has tessellation shader compatibility
-	if (deviceFeatures.tessellationShader)
-		score += 1000;
-	//Check if Physical device has WireFrame compatibility
-	if (deviceFeatures.fillModeNonSolid)
-		score += 1000;
-
-	//Make sure GPU has a Graphics Queue
-	uint32_t graphicsFamilyIndex = 0;
-	std::vector<VkQueueFamilyProperties> availableQueueFamilies = GetAvailableQueueFamilies(physicalDevice);
-	for (uint32_t i = 0; i < availableQueueFamilies.size(); i++)
-		if (availableQueueFamilies[i].queueCount > 0 && availableQueueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-		{
-			graphicsFamilyIndex = i;
-			score += 1000;
-		}
-
-	//Make sure GPU has Present support and a Present Queue
-	VkBool32 presentSupport = false;
-	VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, graphicsFamilyIndex, m_context->GetSurface(), &presentSupport));
-	for (auto& queueFamilyProperty : availableQueueFamilies)
-		if (queueFamilyProperty.queueCount > 0 && presentSupport)
-			score += 1000;
-
-	//Maximum possible size of textures affects graphics quality
-	score += deviceProperties.limits.maxImageDimension2D;
-
-	//Make sure GPU has Swapchain support
-	for (auto& availableExtension : GetAvailableDeviceExtensions(physicalDevice))
-		if (strcmp(availableExtension.extensionName, VK_KHR_SWAPCHAIN_EXTENSION_NAME) == 0)
-		{
-			//GPU Supports Swapchains
-			score += 1000;
-
-			//Double Check to make sure GPU really has Swapchain support :D
-			if (!m_context->GetAvailableSurfaceFormats(physicalDevice).empty())
-				score += 1000;
-
-			if (!m_context->GetAvailableSurfacePresentModes(physicalDevice).empty())
-				score += 1000;
-		}
-
-	TP_DEBUG("[Renderer][Vulkan] Physical Device: ", deviceProperties.deviceName, " Score: ", score);
-
-	return score;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Graphics::API::VulkanRenderer::IsLayerSupported(const std::vector<VkLayerProperties>& availableLayers, const char* layer)
-{
-	for (auto& availableLayer : availableLayers)
-		if (strcmp(availableLayer.layerName, layer) == 0)
-			return true;
-
-	if (strcmp(layer, "VK_LAYER_KHRONOS_validation") == 0)
-		TP_WARN("[Renderer][Vulkan] Layer ", layer, " is not supported(Vulkan SDK installed?)");
-	else
-		TP_WARN("[Renderer][Vulkan] Layer ", layer, " is not supported");
-
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Graphics::API::VulkanRenderer::IsExtensionSupported(const std::vector<VkExtensionProperties>& availableExtensions, const char* extension)
-{
-	for (auto& availableExtension : availableExtensions)
-		if (strcmp(availableExtension.extensionName, extension) == 0)
-			return true;
-
-	if (strcmp(extension, VK_EXT_DEBUG_UTILS_EXTENSION_NAME) == 0)
-		TP_WARN("[Renderer][Vulkan] Extension ", extension, " is not supported(Vulkan SDK installed?)");
-	else
-		TP_WARN("[Renderer][Vulkan] Extension ", extension, " is not supported");
-	if (strcmp(extension, VK_KHR_SWAPCHAIN_EXTENSION_NAME) == 0)
-	{
-		TP_CRITICAL("[Renderer][Vulkan] Extension ", extension, " is not supported!");
-		TP_CRITICAL("[Renderer][Vulkan] Vulkan is unsupported!");
-		TP_CRITICAL("[Renderer][Vulkan] Shutting down!");
-		exit(-1);
-	}
-
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<VkPhysicalDevice> TRAP::Graphics::API::VulkanRenderer::GetAvailablePhysicalDevices() const
-{
-	TP_DEBUG("[Renderer][Vulkan] Getting available Physical Devices");
-
-	uint32_t physicalDevicesCount = 0;
-	VkCall(vkEnumeratePhysicalDevices(m_instance, &physicalDevicesCount, nullptr));
-	std::vector<VkPhysicalDevice> physicalDevicesList(physicalDevicesCount);
-	VkCall(vkEnumeratePhysicalDevices(m_instance, &physicalDevicesCount, physicalDevicesList.data()));
-	TRAP_RENDERER_ASSERT(!physicalDevicesList.empty(), "[Renderer][Vulkan] Couldn't find a Physical Device!");
-
-	return physicalDevicesList;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<VkLayerProperties> TRAP::Graphics::API::VulkanRenderer::GetAvailableInstanceLayers()
-{
-	TP_DEBUG("[Renderer][Vulkan] Getting available Instance Layers");
-
-	uint32_t layersCount = 0;
-	VkCall(vkEnumerateInstanceLayerProperties(&layersCount, nullptr));
-	std::vector<VkLayerProperties> availableInstanceLayers(layersCount);
-	VkCall(vkEnumerateInstanceLayerProperties(&layersCount, availableInstanceLayers.data()));
-
-	return availableInstanceLayers;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<VkExtensionProperties> TRAP::Graphics::API::VulkanRenderer::GetAvailableInstanceExtensions()
-{
-	TP_DEBUG("[Renderer][Vulkan] Getting available Instance Extensions");
-
-	uint32_t extensionsCount = 0;
-	VkCall(vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, nullptr));
-	std::vector<VkExtensionProperties> availableInstanceExtensions(extensionsCount);
-	VkCall(vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, availableInstanceExtensions.data()));
-	TRAP_RENDERER_ASSERT(!availableInstanceExtensions.empty(), "[Renderer][Vulkan] Couldn't get Instance Extensions");
-
-	return availableInstanceExtensions;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<VkLayerProperties> TRAP::Graphics::API::VulkanRenderer::GetAvailableDeviceLayers()
-{
-	TP_DEBUG("[Renderer][Vulkan] Getting available Device Layers(Deprecated)");
-
-	uint32_t layerCount = 0;
-	VkCall(vkEnumerateInstanceLayerProperties(&layerCount, nullptr));
-	std::vector<VkLayerProperties> availableDeviceLayers(layerCount);
-	VkCall(vkEnumerateInstanceLayerProperties(&layerCount, availableDeviceLayers.data()));
-
-	return availableDeviceLayers;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<VkExtensionProperties> TRAP::Graphics::API::VulkanRenderer::GetAvailableDeviceExtensions() const
-{
-	TP_DEBUG("[Renderer][Vulkan] Getting available Device Extensions");
-
-	uint32_t extensionCount = 0;
-	VkCall(vkEnumerateDeviceExtensionProperties(m_physicalDevice, nullptr, &extensionCount, nullptr));
-	std::vector<VkExtensionProperties> availableDeviceExtensions(extensionCount);
-	VkCall(vkEnumerateDeviceExtensionProperties(m_physicalDevice, nullptr, &extensionCount, availableDeviceExtensions.data()));
-	TRAP_RENDERER_ASSERT(!availableDeviceExtensions.empty(), "[Renderer][Vulkan] Couldn't get Device Extensions!");
-
-	return availableDeviceExtensions;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<VkExtensionProperties> TRAP::Graphics::API::VulkanRenderer::GetAvailableDeviceExtensions(VkPhysicalDevice physicalDevice)
-{
-	uint32_t extensionCount = 0;
-	VkCall(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr));
-	std::vector<VkExtensionProperties> availableDeviceExtensions(extensionCount);
-	VkCall(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, availableDeviceExtensions.data()));
-
-	return availableDeviceExtensions;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<VkQueueFamilyProperties> TRAP::Graphics::API::VulkanRenderer::GetAvailableQueueFamilies() const
-{
-	TP_DEBUG("[Renderer][Vulkan] Getting available Queue Families");
-
-	uint32_t queueFamilyCount = 0;
-	vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyCount, nullptr);
-	std::vector<VkQueueFamilyProperties> availableQueueFamilies(queueFamilyCount);
-	vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyCount, availableQueueFamilies.data());
-	TRAP_RENDERER_ASSERT(!availableQueueFamilies.empty(), "[Renderer][Vulkan] Couldn't get Queue Families!");
-
-	return availableQueueFamilies;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<VkQueueFamilyProperties> TRAP::Graphics::API::VulkanRenderer::GetAvailableQueueFamilies(VkPhysicalDevice physicalDevice)
-{
-	uint32_t queueFamilyCount = 0;
-	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
-	TRAP_RENDERER_ASSERT(queueFamilyCount, "Could not get the number of queue families");
-	std::vector<VkQueueFamilyProperties> availableQueueFamilies(queueFamilyCount);
-	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, availableQueueFamilies.data());
-	TRAP_RENDERER_ASSERT(!availableQueueFamilies.empty(), "Could not enumerate queue families");
-
-	return availableQueueFamilies;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::AddInstanceLayer(const std::vector<VkLayerProperties>& availableInstanceLayers, const std::string& layer)
-{
-	if (IsLayerSupported(availableInstanceLayers, layer.c_str()))
-	{
-		m_instanceLayers.emplace_back(layer);
-		TP_DEBUG("[Renderer][Vulkan] Loading Instance Layer: ", layer);
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::AddInstanceExtension(const std::vector<VkExtensionProperties>& availableInstanceExtensions, const std::string& extension)
-{
-	if (IsExtensionSupported(availableInstanceExtensions, extension.c_str()))
-	{
-		if (extension == VK_EXT_DEBUG_UTILS_EXTENSION_NAME)
-			m_debugCallbackSupported = true;
-
-		m_instanceExtensions.emplace_back(extension);
-		TP_DEBUG("[Renderer][Vulkan] Loading Instance Extension: ", extension);
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::AddDeviceLayer(const std::vector<VkLayerProperties>& availableDeviceLayers, const std::string& layer)
-{
-	if (IsLayerSupported(availableDeviceLayers, layer.c_str()))
-	{
-		m_deviceLayers.emplace_back(layer);
-		TP_DEBUG("[Renderer][Vulkan] Loading Device Layer(Deprecated): ", layer);
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::AddDeviceExtension(const std::vector<VkExtensionProperties>& availableDeviceExtensions, const std::string& extension)
-{
-	if (IsExtensionSupported(availableDeviceExtensions, extension.c_str()))
-	{
-		m_deviceExtensions.emplace_back(extension);
-		TP_DEBUG("[Renderer][Vulkan] Loading Device Extension: ", extension);
-	}
+	return deviceExtensions;
 }

@@ -1004,3 +1004,37 @@ SITREP 04/09/2020|20w15a1
     - Updated Travis.yml ~<5 mins
     - Removed Standalone sub project ~<10 mins
     - Dropped DirectX 12 support ~<20 mins
+
+SITREP 04/10/2020|20w15a2
+    - Changed TRAP Engine version to 20w15a2(0.6.30)
+    - Added TimeScale feature ~<10 mins
+
+SITREP 04/16/2020|20w16a1
+    - Changed TRAP Engine version to 20w16a1(0.6.31)
+    - Started working on Vulkan rewrite ~>60 mins
+    - Fixed IsVulkanCapable using wrong Vulkan API version define ~<20 mins
+    - Removed Deprecated Vulkan Device Layers ~<20 mins
+
+SITREP 04/20/2020|20w17a1
+    - Changed TRAP Engine version to 20w17a1(0.6.32)
+    - Added macro TRAP_DEBUG_CONFIGS to allow tracing of config file values ~<10 mins
+
+SITREP 20w19 & 20w20
+    - Worked on new Vulkan implementation ~>1800 mins
+
+SITREP 05/15/2020|20w20a1
+    - Updated Premake 5 to Alpha 15 ~<5 mins
+
+SITREP 05/28/2020|20w22a1
+    - Changed TRAP Engine version to 20w22a1(0.6.33)
+    - Finished big VulkanAPI rework(replaced old implementation) ~>360 mins
+
+SITREP 05/31/2020|20w23a1
+    - Changed TRAP Engine version to 20w23a1(0.6.34)
+    - Fixed SandboxLayer not rendering the quad ~<5 mins
+
+SITREP 06/06/2020|20w23a2
+    - Changed TRAP Engine version to 20w23a2(0.6.35)
+    - Vulkan added support for multiple windows ~>90 mins
+    - Fixed remaining Vulkan errors ~<40 mins
+    - Validated Vulkan functionality on Ubuntu 20.04 LTS using NVIDIA 440.66.15 ~<30 mins

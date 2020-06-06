@@ -94,20 +94,17 @@ void TRAP::Utils::Config::Set(const std::string& key, const T value)
 {
 	TP_PROFILE_FUNCTION();
 	
-	//The [] operator replaces the value if the key is found
+	//Replaces the value if the key is found
 	m_isChanged = true;
-	for (auto& [elementKey, elementValue] : m_data)
+	auto elementIterator = std::find_if(m_data.begin(), m_data.end(),
+		[key](const std::pair<std::string, std::string>& test) {return test.first == key ? true : false; });
+	if(elementIterator != m_data.end())
+		elementIterator->second = ConvertToString<T>(value);
+	else
 	{
-		if (elementKey == key)
-		{
-			elementValue = ConvertToString<T>(value);
-
-			return;
-		}
+		//If not it creates a new element
+		m_data.push_back({ key, ConvertToString<T>(value) });
 	}
-
-	//If not it creates a new element
-	m_data.push_back(std::make_pair(key, ConvertToString<T>(value)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -123,20 +120,17 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 		valueAsString += ConvertToString<T>(value[i]) + ',';
 	valueAsString += ConvertToString<T>(value.back());
 
-	//The [] operator replaces the value if the key is found, if not it creates a new element
+	//Replace the value if the key is found
 	m_isChanged = true;
-	for (auto& [elementKey, elementValue] : m_data)
+	auto elementIterator = std::find_if(m_data.begin(), m_data.end(),
+		[key](const std::pair<std::string, std::string>& test) {return test.first == key ? true : false; });
+	if (elementIterator != m_data.end())
+		elementIterator->second = valueAsString;
+	else
 	{
-		if (elementKey == key)
-		{
-			elementValue = valueAsString;
-
-			return;
-		}
+		//If not it creates a new element
+		m_data.push_back({ key, valueAsString });
 	}
-
-	//If not it creates a new element
-	m_data.push_back(std::make_pair(key, valueAsString));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

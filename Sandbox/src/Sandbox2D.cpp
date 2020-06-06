@@ -2,6 +2,7 @@
 
 Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D"),
+	m_wireFrame(false),
 	m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()), true),
 	m_frameTimeHistory()
 {
@@ -53,7 +54,7 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	TP_PROFILE_FUNCTION();
 
 	//Update
-	m_cameraController.OnUpdate(deltaTime);
+	m_cameraController.OnUpdate(deltaTime);	
 
 	//Render
 	TRAP::Graphics::RenderCommand::SetClearColor();
@@ -91,4 +92,38 @@ void Sandbox2D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 void Sandbox2D::OnEvent(TRAP::Events::Event& event)
 {
 	m_cameraController.OnEvent(event);
+
+	TRAP::Events::EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) { return OnKeyPress(e); });
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool Sandbox2D::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+{
+	if (event.GetKey() == TRAP::Input::Key::Escape)
+		TRAP::Application::Shutdown();
+
+	if (event.GetKey() == TRAP::Input::Key::F1 && event.GetRepeatCount() < 1) //Switch to Vulkan
+		TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::Vulkan);
+	if (event.GetKey() == TRAP::Input::Key::F2 && event.GetRepeatCount() < 1) //Switch to OpenGL
+		TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::OpenGL);
+
+	if (event.GetKey() == TRAP::Input::Key::F5 && event.GetRepeatCount() < 1) //Make Window windowed
+		TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Windowed);
+	if (event.GetKey() == TRAP::Input::Key::F6 && event.GetRepeatCount() < 1) //Make Window Borderless Fullscreen
+		TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Borderless);
+	if (event.GetKey() == TRAP::Input::Key::F7 && event.GetRepeatCount() < 1) //Make Window Exclusive Fullscreen
+		TRAP::Application::GetWindow()->SetDisplayMode(TRAP::Window::DisplayMode::Fullscreen);
+
+	if (event.GetKey() == TRAP::Input::Key::F10 && event.GetRepeatCount() < 1) //Enable/Disable WireFrame Mode
+	{
+		m_wireFrame = !m_wireFrame;
+		TRAP::Graphics::RenderCommand::SetWireFrame(m_wireFrame);
+	}
+
+	if (event.GetKey() == TRAP::Input::Key::F11 && event.GetRepeatCount() < 1)
+		TRAP::Utils::MsgBox::Show("Just a prank bro!", "Critical Error");
+
+	return true;
 }

@@ -28,7 +28,8 @@ TRAP::Application::Application()
 	  m_drawCalls(0),
 	  m_fpsLimit(0),
 	  m_tickRate(100),
-      m_linuxWindowManager(LinuxWindowManager::Unknown)
+      m_timeScale(1.0f),
+	  m_linuxWindowManager(LinuxWindowManager::Unknown)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -188,7 +189,7 @@ void TRAP::Application::Run()
 
 		Utils::Timer FrameTimeTimer;
 		const float time = m_timer->Elapsed();
-		const Utils::TimeStep deltaTime{ time - lastFrameTime };
+		const Utils::TimeStep deltaTime{ (time - lastFrameTime) * m_timeScale };
 		lastFrameTime = time;
 
 		if (!m_minimized)
@@ -381,6 +382,13 @@ float TRAP::Application::GetFrameTime()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+float TRAP::Application::GetTimeScale()
+{
+	return s_Instance->m_timeScale;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 uint32_t TRAP::Application::GetDrawCalls()
 {
 	return s_Instance->m_drawCalls;
@@ -405,6 +413,13 @@ uint32_t TRAP::Application::GetTickRate()
 void TRAP::Application::SetTickRate(const uint32_t tickRate)
 {
 	s_Instance->m_tickRate = tickRate;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::SetTimeScale(const float timeScale)
+{
+	s_Instance->m_timeScale = timeScale;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

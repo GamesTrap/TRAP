@@ -70,7 +70,7 @@ void TRAP::Graphics::Renderer::BeginScene(Camera& camera)
 {
 	TP_PROFILE_FUNCTION();
 
-	s_sceneData->m_projectionMatrix =camera.GetProjectionMatrix();
+	s_sceneData->m_projectionMatrix = camera.GetProjectionMatrix();
 	s_sceneData->m_viewMatrix = camera.GetViewMatrix();
 }
 

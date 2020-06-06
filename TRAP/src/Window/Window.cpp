@@ -12,6 +12,7 @@
 #include "Graphics/Textures/TextureManager.h"
 #include "Input/Input.h"
 #include "Embed.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Layers/ImGui/ImGuiWindowing.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -57,7 +58,11 @@ TRAP::Window::~Window()
 	TP_PROFILE_FUNCTION();
 
 	if (s_windows > 1)
+	{
 		Use();
+		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
+			Graphics::API::VulkanRenderer::DeleteWindowSwapchain(m_window.get());
+	}
 	s_windows--;
 
 	if(!s_windows)
@@ -219,7 +224,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w13a1]" + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV][20w23a2]" + std::string(Graphics::Renderer::GetTitle());
 #ifdef TRAP_PLATFORM_LINUX
 	if (Application::GetLinuxWindowManager() == Application::LinuxWindowManager::Wayland)
 		newTitle += "[Wayland]";
@@ -837,12 +842,15 @@ void TRAP::Window::Init(const WindowProps& props)
 	}
 	if (!props.advanced.FocusOnShow)
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::FocusOnShow, false);
+
+	if(s_windows >= 1 && Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
+		INTERNAL::WindowingAPI::SetContextAPI(INTERNAL::WindowingAPI::ContextAPI::None);
 	
 	//Create Window
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV][20w13a1]";
+		"[INDEV][20w23a2]";
 #else
 	const std::string newTitle = m_data.Title;
 #endif
@@ -866,8 +874,8 @@ void TRAP::Window::Init(const WindowProps& props)
 	{
 		//Create Context & Initialize Renderer
 		Graphics::API::Context::Create(this);
-		Graphics::API::Context::SetVSyncInterval(props.advanced.VSync);
 		Graphics::API::RendererAPI::Init();
+		Graphics::API::Context::SetVSyncInterval(props.advanced.VSync);
 	}
 
 	s_windows++;
@@ -1299,7 +1307,13 @@ void TRAP::Window::Init(const WindowProps& props)
 					Window& window = *win;
 					if (window.m_useMonitor == monitor)
 					{
-						s_fullscreenWindows.erase(s_fullscreenWindows.begin() + window.m_data.Monitor);
+						const auto removeWindowIterator = s_fullscreenWindows.begin() + window.m_data.Monitor;
+						if(removeWindowIterator != std::end(s_fullscreenWindows))
+						{
+							*removeWindowIterator = s_fullscreenWindows.back();
+							s_fullscreenWindows.pop_back();
+						}
+						
 						window.m_data.Monitor = 0;
 						window.m_useMonitor = static_cast<INTERNAL::WindowingAPI::InternalMonitor*>(Monitor::GetPrimaryMonitor().GetInternalMonitor());
 						window.Restore();

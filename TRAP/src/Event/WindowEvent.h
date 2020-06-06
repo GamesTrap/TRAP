@@ -85,7 +85,7 @@ namespace TRAP::Events
 	public:
 		explicit WindowCloseEvent(std::string_view title);
 
-		std::string_view GetTitle() const;
+		std::string_view GetWindowTitle() const;
 
 		static EventType GetStaticType();
 		EventType GetEventType() const override;

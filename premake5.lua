@@ -69,7 +69,6 @@ project "TRAP"
 		"%{prj.name}/src/Utils/Win.h",
 		"%{prj.name}/src/Log/ANSILog.cpp",
 		"%{prj.name}/src/Log/WindowsLog.cpp",
-		"%{prj.name}/src/Graphics/API/D3D12/**",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxWindows.cpp",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinux.cpp",
 		"%{prj.name}/src/Utils/MsgBox/MsgBoxLinuxX11.h",
@@ -317,8 +316,7 @@ project "ConvertToSPIRV"
 		links
 		{
 			"GLSLang",
-			"SPIRV",
-			"StandAlone"
+			"SPIRV"
 		}
 
 	filter "system:linux"

@@ -57,11 +57,13 @@ bool TRAP::Utils::Config::IsChanged() const
 void TRAP::Utils::Config::Print() const
 {
 	TP_PROFILE_FUNCTION();
-	
+
+#ifdef TRAP_DEBUG_CONFIGS	
 	for (auto& [key, value] : m_data)
 		TP_TRACE("[Config] ", key, " = ", value);
 
 	TP_TRACE("[Config] Size: ", m_data.size());
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -175,9 +177,9 @@ std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::st
 		const std::string value(line.data() + index, line.size() - index);
 
 		//Return the key value pair
-		return std::make_pair(key, value);
+		return { key, value };
 	}
 
 	//If this line is empty or a comment, return an empty pair
-	return std::make_pair("", "");
+	return { "", "" };
 }

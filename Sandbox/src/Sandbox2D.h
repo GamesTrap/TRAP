@@ -15,6 +15,10 @@ public:
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
+	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
+
+	bool m_wireFrame;
+	
 	TRAP::Graphics::OrthographicCameraController m_cameraController;
 
 	std::array<float, 50> m_frameTimeHistory;

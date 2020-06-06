@@ -42,14 +42,11 @@ public:
 		TRAP::Application::SetHotTextureReloading(true);
 		TRAP::Application::GetWindow()->SetTitle("Sandbox");
 		
-		//Mount & Load Shaders
+		//Mount & Load Shader
 		TRAP::VFS::MountShaders("Assets/Shaders");
-		TRAP::Graphics::ShaderManager::Load("/Shaders/Color.shader");
-		TRAP::Graphics::ShaderManager::Load("/Shaders/Texture.shader");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColor.shader");
-		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColorSPIRV.spirv");
 		
-		//Mount & Load Textures
+		//Mount & Load Texture
 		TRAP::VFS::MountTextures("Assets/Textures");
 		TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png");
 
@@ -64,7 +61,7 @@ public:
 			 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,    1.0f, 1.0f,
 			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f,    0.0f, 1.0f
 		};
-		TRAP::Scope<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()));
+		TRAP::Scope<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()) * sizeof(uint32_t));
 		const TRAP::Graphics::BufferLayout layout =
 		{
 			{TRAP::Graphics::ShaderDataType::Float3, "Position"},
@@ -116,12 +113,12 @@ public:
 		m_cameraController.OnUpdate(deltaTime);
 
 		//Render
-		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);			
+		TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);		
 		
 		TRAP::Graphics::Renderer::BeginScene(m_cameraController.GetCamera());
 		{
 			if (m_usePassthrough)
-				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Fallback"), m_vertexArray);
+ 				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Fallback"), m_vertexArray);
 			else
 			{
 				TRAP::Graphics::TextureManager::Get2D("TRAP")->Bind(0);

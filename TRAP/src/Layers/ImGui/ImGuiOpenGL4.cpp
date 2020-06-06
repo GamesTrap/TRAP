@@ -51,7 +51,7 @@ bool ImGuiOpenGL4Init()
 	//Make a dummy OpenGL call (we don't actually need the result)
 	//IF YOU GET A CRASH HERE: it probably means that you haven't initialized the OpenGL function loader used by this code.
 	//Desktop OpenGL 3/4 needs a function loader.
-	GLint currentTexture;
+	GLint currentTexture = 0;
 	glGetIntegerv(GL_TEXTURE_BINDING_2D, &currentTexture);
 
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -146,22 +146,22 @@ void ImGuiOpenGL4RenderDrawData(ImDrawData* drawData)
 		return;
 
 	//Backup OpenGL state
-	GLenum lastActiveTexture; glGetIntegerv(GL_ACTIVE_TEXTURE, reinterpret_cast<GLint*>(&lastActiveTexture));
+	GLenum lastActiveTexture = 0; glGetIntegerv(GL_ACTIVE_TEXTURE, reinterpret_cast<GLint*>(&lastActiveTexture));
 	glActiveTexture(GL_TEXTURE0);
-	GLint lastProgram; glGetIntegerv(GL_CURRENT_PROGRAM, &lastProgram);
-	GLint lastTexture; glGetIntegerv(GL_TEXTURE_BINDING_2D, &lastTexture);
-	GLint lastSampler; glGetIntegerv(GL_SAMPLER_BINDING, &lastSampler);
-	GLint lastArrayBuffer; glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &lastArrayBuffer);
-	GLint lastVertexArrayObject; glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &lastVertexArrayObject);
+	GLint lastProgram = 0; glGetIntegerv(GL_CURRENT_PROGRAM, &lastProgram);
+	GLint lastTexture = 0; glGetIntegerv(GL_TEXTURE_BINDING_2D, &lastTexture);
+	GLint lastSampler = 0; glGetIntegerv(GL_SAMPLER_BINDING, &lastSampler);
+	GLint lastArrayBuffer = 0; glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &lastArrayBuffer);
+	GLint lastVertexArrayObject = 0; glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &lastVertexArrayObject);
 	std::array<GLint, 2> lastPolygonMode{0, 0}; glGetIntegerv(GL_POLYGON_MODE, lastPolygonMode.data());
 	std::array<GLint, 4> lastViewport{ 0, 0, 0, 0 }; glGetIntegerv(GL_VIEWPORT, lastViewport.data());
 	std::array<GLint, 4> lastScissorBox{ 0, 0, 0, 0 }; glGetIntegerv(GL_SCISSOR_BOX, lastScissorBox.data());
-	GLenum lastBlendSRCRGB; glGetIntegerv(GL_BLEND_SRC_RGB, reinterpret_cast<GLint*>(&lastBlendSRCRGB));
-	GLenum lastBlendDSTRGB; glGetIntegerv(GL_BLEND_DST_RGB, reinterpret_cast<GLint*>(&lastBlendDSTRGB));
-	GLenum lastBlendSRCAlpha; glGetIntegerv(GL_BLEND_SRC_ALPHA, reinterpret_cast<GLint*>(&lastBlendSRCAlpha));
-	GLenum lastBlendDSTAlpha; glGetIntegerv(GL_BLEND_DST_ALPHA, reinterpret_cast<GLint*>(&lastBlendDSTAlpha));
-	GLenum lastBlendEquationRGB; glGetIntegerv(GL_BLEND_EQUATION_RGB, reinterpret_cast<GLint*>(&lastBlendEquationRGB));
-	GLenum lastBlendEquationAlpha; glGetIntegerv(GL_BLEND_EQUATION_ALPHA, reinterpret_cast<GLint*>(&lastBlendEquationAlpha));
+	GLenum lastBlendSRCRGB = 0; glGetIntegerv(GL_BLEND_SRC_RGB, reinterpret_cast<GLint*>(&lastBlendSRCRGB));
+	GLenum lastBlendDSTRGB = 0; glGetIntegerv(GL_BLEND_DST_RGB, reinterpret_cast<GLint*>(&lastBlendDSTRGB));
+	GLenum lastBlendSRCAlpha = 0; glGetIntegerv(GL_BLEND_SRC_ALPHA, reinterpret_cast<GLint*>(&lastBlendSRCAlpha));
+	GLenum lastBlendDSTAlpha = 0; glGetIntegerv(GL_BLEND_DST_ALPHA, reinterpret_cast<GLint*>(&lastBlendDSTAlpha));
+	GLenum lastBlendEquationRGB = 0; glGetIntegerv(GL_BLEND_EQUATION_RGB, reinterpret_cast<GLint*>(&lastBlendEquationRGB));
+	GLenum lastBlendEquationAlpha = 0; glGetIntegerv(GL_BLEND_EQUATION_ALPHA, reinterpret_cast<GLint*>(&lastBlendEquationAlpha));
 	const GLboolean lastEnableBlend = glIsEnabled(GL_BLEND);
 	const GLboolean lastEnableCullFace = glIsEnabled(GL_CULL_FACE);
 	const GLboolean lastEnableDepthTest = glIsEnabled(GL_DEPTH_TEST);
@@ -274,14 +274,14 @@ bool ImGuiOpenGL4CreateFontsTexture()
 
 	//Build texture atlas
 	ImGuiIO& io = ImGui::GetIO();
-	uint8_t* pixels;
-	int32_t width, height;
+	uint8_t* pixels = nullptr;
+	int32_t width = 0, height = 0;
 	//Load as RGBA 32-bit (75% of the memory is wasted, but default font is so small) because it is more likely to be compatible with user's existing shaders.
 	//If your ImTextureId represent a higher-level concept than just an OpenGL texture id, consider calling GetTexDataAsAlpha8() instead to save on GPU memory
 	io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
 
 	//Upload texture to graphics system
-	GLint lastTexture;
+	GLint lastTexture = 0;
 	glGetIntegerv(GL_TEXTURE_BINDING_2D, &lastTexture);
 	glGenTextures(1, &g_FontTexture);
 	glBindTexture(GL_TEXTURE_2D, g_FontTexture);
@@ -309,7 +309,7 @@ void ImGuiOpenGL4DestroyFontsTexture()
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		glDeleteTextures(1, &g_FontTexture);
-		io.Fonts->TexID = 0;
+		io.Fonts->TexID = nullptr;
 		g_FontTexture = 0;
 	}
 }
@@ -364,11 +364,11 @@ bool ImGuiOpenGL4CreateDeviceObjects()
 {
 	TP_PROFILE_FUNCTION();
 
-	//Backup OpenGL state
-	GLint lastTexture, lastArrayBuffer;
+	GLint lastTexture = 0;
+	GLint lastArrayBuffer = 0;
 	glGetIntegerv(GL_TEXTURE_BINDING_2D, &lastTexture);
 	glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &lastArrayBuffer);
-	GLint lastVertexArray;
+	GLint lastVertexArray = 0;
 	glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &lastVertexArray);
 
 	const GLchar* vertexShader = "#version 460 core\n"

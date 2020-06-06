@@ -109,7 +109,7 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Get(co
 	TP_PROFILE_FUNCTION();
 
 	if(Exists(name))
-			return s_Shaders[name];
+		return s_Shaders[name];
 
 	TP_ERROR("[ShaderManager] Couldn't find Shader: ", name, "!");
 	TP_WARN("[ShaderManager] Using Fallback Shader!");
@@ -157,7 +157,7 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 			TP_WARN("[ShaderManager] Could not find Shader: \"", nameOrVirtualPath, "\" to reload.");
 	}
 	else //Virtual Path
-	{
+	{		
 		for (const auto& [name, shader] : s_Shaders)
 			if (nameOrVirtualPath == shader->GetFilePath())
 			{

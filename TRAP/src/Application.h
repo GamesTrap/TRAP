@@ -56,10 +56,12 @@ namespace TRAP
 
 		static uint32_t GetFPS();
 		static float GetFrameTime();
+		static float GetTimeScale();
 		static uint32_t GetDrawCalls();
 		static void AddSingleDrawCall();
 		static uint32_t GetTickRate();
-		static void SetTickRate(uint32_t);
+		static void SetTickRate(uint32_t tickRate);
+		static void SetTimeScale(float timeScale);
 
 		static void SetHotShaderReloading(bool enabled);
 		static void SetHotTextureReloading(bool enabled);
@@ -108,6 +110,7 @@ namespace TRAP
 		uint32_t m_drawCalls;
 		uint32_t m_fpsLimit;
 		uint32_t m_tickRate;
+		float m_timeScale;
 
 		Endian m_endian;
 		LinuxWindowManager m_linuxWindowManager;

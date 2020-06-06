@@ -238,7 +238,7 @@ TRAP::Events::WindowCloseEvent::WindowCloseEvent(const std::string_view title)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Events::WindowCloseEvent::GetTitle() const
+std::string_view TRAP::Events::WindowCloseEvent::GetWindowTitle() const
 {
 	return m_title;
 }

@@ -200,11 +200,10 @@ void TRAP::Graphics::API::Context::SetVSyncInterval(const uint32_t interval)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::Context::Use(const Window* window)
+void TRAP::Graphics::API::Context::Use(Window* window)
 {
 	TP_PROFILE_FUNCTION();
 
-	if (s_Context)
-		if (window)
-			s_Context->UseInternal(window);
+	if (s_Context && window)
+		s_Context->UseInternal(window);
 }

@@ -4,19 +4,19 @@
 #include "BlockingQueue.h"
 
 TRAP::EXPERIMENTAL::ThreadPool::ThreadPool(const uint32_t threads)
-	: m_queues(threads), m_count(threads)
+	: m_queues(threads), m_maxThreadsCount(threads)
 {
-	if (!threads)
-		throw std::invalid_argument("Invalid thread count!");
+	if (!m_maxThreadsCount)
+		m_maxThreadsCount = 4; //Fallback to using 4 threads
 
 	auto worker = [this](auto i)
 	{
 		while (true)
 		{
 			Proc f;
-			for (uint32_t n = 0; n < m_count * K; ++n)
+			for (uint32_t n = 0; n < m_maxThreadsCount * K; ++n)
 			{
-				if (m_queues[(i + n) % m_count].TryPop(f))
+				if (m_queues[(i + n) % m_maxThreadsCount].TryPop(f))
 					break;
 			}
 			
@@ -47,19 +47,19 @@ TRAP::EXPERIMENTAL::ThreadPool::~ThreadPool() noexcept
 template <typename F, typename ... Args>
 void TRAP::EXPERIMENTAL::ThreadPool::EnqueueWork(F&& f, Args&&... args)
 {
-	auto work = [p = std::forward<F>(f), t = std::make_tuple(std::forward<Args>(args)...)]()
+	auto work = [p = std::forward<F>(f), t = { std::forward<Args>(args)... }]()
 	{
 		std::apply(p, t);
 	};
 	const auto i = m_index++;
 
-	for(uint32_t n = 0; n < m_count * K; ++n)
+	for(uint32_t n = 0; n < m_maxThreadsCount * K; ++n)
 	{
-		if (m_queues[(i + n) % m_count].TryPush(work))
+		if (m_queues[(i + n) % m_maxThreadsCount].TryPush(work))
 			return;
 	}
 
-	m_queues[i % m_count].Push(std::move(work));
+	m_queues[i % m_maxThreadsCount].Push(std::move(work));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -78,13 +78,13 @@ auto TRAP::EXPERIMENTAL::ThreadPool::EnqueueTask(F&& f, Args&&... args) -> std::
 	auto result = task->get_future();
 	const auto i = m_index++;
 
-	for(uint32_t n = 0; n < m_count * K; ++n)
+	for(uint32_t n = 0; n < m_maxThreadsCount * K; ++n)
 	{
-		if (m_queues[(i + n) % m_count].TryPush(work))
+		if (m_queues[(i + n) % m_maxThreadsCount].TryPush(work))
 			return result;
 	}
 
-	m_queues[i % m_count].Push(std::move(work));
+	m_queues[i % m_maxThreadsCount].Push(std::move(work));
 
 	return result;
 }

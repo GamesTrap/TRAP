@@ -1,28 +1,34 @@
 #include "TRAPPCH.h"
 #include "VulkanContext.h"
 
+#include "Window/Window.h"
+#include "Internals/Objects/VulkanInstance.h"
+#include "Internals/Objects/VulkanPhysicalDevice.h"
 #include "VulkanCommon.h"
 #include "VulkanRenderer.h"
-#include "Window/Window.h"
-#include "Window/WindowingAPI.h"
+#include "Internals/Objects/VulkanSwapchain.h"
+#include "Internals/Objects/VulkanCommandBuffer.h"
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+PFN_vkEnumerateInstanceVersion TRAP::Graphics::API::VulkanContext::s_vkEnumerateInstanceVersion = nullptr;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::INTERNAL::WindowingAPI::InternalWindow* TRAP::Graphics::API::VulkanContext::s_currentWindow = nullptr;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string_view TRAP::Graphics::API::VulkanContext::s_appName;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanContext::VulkanContext(Window* window)
-	: m_swapchain(),
-	  m_extent(),
-	  m_capabilities(),
-	  m_format(),
-	  m_presentMode(),
-	  m_surface(),
-	  m_window(window),
-	  m_imageAvailableSemaphores(),
-	  m_renderFinishedSemaphores(),
-	  m_inFlightFences(),
-	  m_currentFrame(0),
-	  m_vsync(false)
 {
 	TP_PROFILE_FUNCTION();
+
+	s_currentWindow = static_cast<INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow());
+	s_appName = window->GetTitle();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -40,895 +46,135 @@ void TRAP::Graphics::API::VulkanContext::SetVSyncIntervalInternal(const uint32_t
 {
 	TP_PROFILE_FUNCTION();
 
-	m_vsync = interval;
+	if(s_currentWindow)
+		VulkanRenderer::SetVSyncIntervalInternal(interval);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanContext::Present(const Scope<Window>& window)
-{
-	uint32_t imageIndex;
-	VkCall(vkAcquireNextImageKHR(VulkanRenderer::Get()->GetDevice(), m_swapchain, std::numeric_limits<uint64_t>::max(), m_imageAvailableSemaphores[m_currentFrame], nullptr, &imageIndex));
-
-	//Check if a previous frame is using this image (i.e. there is its fence to wait on)
-	if(m_imagesInFlight[imageIndex] != nullptr)
-		VkCall(vkWaitForFences(VulkanRenderer::Get()->GetDevice(), 1, &m_imagesInFlight[imageIndex], VK_TRUE, std::numeric_limits<uint64_t>::max()));
-
-	//Mark the image as now being in use by this frame
-	m_imagesInFlight[imageIndex] = m_inFlightFences[m_currentFrame];
-	
-	std::array<VkPipelineStageFlags, 1> waitStages = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-	
-	VkSubmitInfo submitInfo
-	{
-		VK_STRUCTURE_TYPE_SUBMIT_INFO,
-		nullptr,
-		1,
-		&m_imageAvailableSemaphores[m_currentFrame],
-		waitStages.data(),
-		1,
-		&VulkanRenderer::Get()->GetCommandBuffers()[imageIndex],
-		1,
-		&m_renderFinishedSemaphores[m_currentFrame]
-	};
-
-	VkCall(vkResetFences(VulkanRenderer::Get()->GetDevice(), 1, &m_inFlightFences[m_currentFrame]));
-	
-	VkCall(vkQueueSubmit(VulkanRenderer::Get()->GetGraphicsQueue(), 1, &submitInfo, m_inFlightFences[m_currentFrame]));
-
-	VkCall(vkWaitForFences(VulkanRenderer::Get()->GetDevice(), 1, &m_inFlightFences[m_currentFrame], VK_TRUE, std::numeric_limits<uint64_t>::max()));
-
-	VkPresentInfoKHR presentInfo
-	{
-		VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
-		nullptr,
-		1,
-		&m_renderFinishedSemaphores[m_currentFrame],
-		1,
-		&m_swapchain,
-		&imageIndex,
-		nullptr
-	};
-
-	VkCall(vkQueuePresentKHR(VulkanRenderer::Get()->GetPresentQueue(), &presentInfo));
-
-	m_currentFrame = (m_currentFrame + 1) % 2;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanContext::UseInternal(const Window* window)
+void TRAP::Graphics::API::VulkanContext::UseInternal(Window* window)
 {
 	TP_PROFILE_FUNCTION();
 
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::API::VulkanContext* TRAP::Graphics::API::VulkanContext::Get()
-{
-	TP_PROFILE_FUNCTION();
-
-	return dynamic_cast<VulkanContext*>(s_Context.get());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkSurfaceKHR& TRAP::Graphics::API::VulkanContext::GetSurface()
-{
-	return m_surface;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Window* TRAP::Graphics::API::VulkanContext::GetWindow() const
-{
-	return m_window;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanContext::InitSurface()
-{
-	TP_PROFILE_FUNCTION();
-
-	TP_DEBUG("[Renderer][Vulkan] Initializing Surface");
-
-	VkCall(INTERNAL::WindowingAPI::CreateWindowSurface(VulkanRenderer::Get()->GetInstance(),
-		static_cast<INTERNAL::WindowingAPI::InternalWindow*>(m_window->GetInternalWindow()), nullptr, m_surface));
-	TRAP_RENDERER_ASSERT(m_surface, "[Renderer][Vulkan] Couldn't create Surface!");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanContext::DeInitSurface(VkInstance instance)
-{
-	TP_PROFILE_FUNCTION();
-
-	if (m_surface)
+	if(window->GetInternalWindow() != s_currentWindow)
 	{
-		TP_DEBUG("[Renderer][Vulkan] Destroying Surface");
-		vkDestroySurfaceKHR(instance, m_surface, nullptr);
-		m_surface = nullptr;
-	}
-}
+		//Switch swapchains to the new Window
+		s_currentWindow = static_cast<INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow());
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanContext::SetupSwapchain()
-{
-	TP_PROFILE_FUNCTION();
-
-	TP_DEBUG("[Renderer][Vulkan] Setting up Swapchain");
-
-	const std::vector<VkSurfaceFormatKHR> availableSurfaceFormats = GetAvailableSurfaceFormats(VulkanRenderer::Get()->GetPhysicalDevice());
-	m_format = ChooseSwapchainSurfaceFormat(availableSurfaceFormats);
-
-	if (!m_vsync)
-	{
-		const std::vector<VkPresentModeKHR> availableSurfacePresentModes = GetAvailableSurfacePresentModes(VulkanRenderer::Get()->GetPhysicalDevice());
-		m_presentMode = ChooseSwapchainSurfacePresentMode(availableSurfacePresentModes);
-	}
-	else
-		m_presentMode = VK_PRESENT_MODE_FIFO_KHR;
-
-	VkCall(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(VulkanRenderer::Get()->GetPhysicalDevice(), m_surface, &m_capabilities));
-
-	m_extent = ChooseSwapchainExtent();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanContext::InitSwapchain()
-{
-	TP_PROFILE_FUNCTION();
-
-	TP_DEBUG("[Renderer][Vulkan] Initializing Swapchain");
-
-	uint32_t imageCount = m_capabilities.minImageCount + 1;
-	if (m_capabilities.maxImageCount > 0 && imageCount > m_capabilities.maxImageCount)
-		imageCount = m_capabilities.maxImageCount;
-
-	VkSwapchainCreateInfoKHR createInfo;
-	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	createInfo.pNext = nullptr;
-	createInfo.flags = 0;
-	createInfo.surface = m_surface;
-	createInfo.minImageCount = imageCount;
-	createInfo.imageFormat = m_format.format;
-	createInfo.imageColorSpace = m_format.colorSpace;
-	createInfo.imageExtent = m_extent;
-	createInfo.imageArrayLayers = 1;
-	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-
-	uint32_t queueFamilyIndexes[] = { VulkanRenderer::Get()->GetGraphicsQueueFamilyIndex().value(), VulkanRenderer::Get()->GetPresentQueueFamilyIndex().value() };
-
-	if (queueFamilyIndexes[0] != queueFamilyIndexes[1])
-	{
-		createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		createInfo.queueFamilyIndexCount = 2;
-		createInfo.pQueueFamilyIndices = queueFamilyIndexes;
-	}
-	else
-	{
-		createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		createInfo.queueFamilyIndexCount = 0; //Optional
-		createInfo.pQueueFamilyIndices = nullptr; //Optional
-	}
-
-	createInfo.preTransform = m_capabilities.currentTransform;
-	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR; //Blending ???
-	createInfo.presentMode = m_presentMode;
-	createInfo.clipped = true;
-	createInfo.oldSwapchain = nullptr;
-
-	VkCall(vkCreateSwapchainKHR(VulkanRenderer::Get()->GetDevice(), &createInfo, nullptr, &m_swapchain));
-	TRAP_RENDERER_ASSERT(m_swapchain, "[Renderer][Vulkan] Couldn't create Swapchain!");
-
-	VkCall(vkGetSwapchainImagesKHR(VulkanRenderer::Get()->GetDevice(), m_swapchain, &imageCount, nullptr));
-	m_swapchainImages.resize(imageCount);
-	VkCall(vkGetSwapchainImagesKHR(VulkanRenderer::Get()->GetDevice(), m_swapchain, &imageCount, m_swapchainImages.data()));
-	TRAP_RENDERER_ASSERT(!m_swapchainImages.empty(), "[Renderer][Vulkan] Couldn't get Swapchain Images!");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanContext::DeInitSwapchain(VkDevice device)
-{
-	TP_PROFILE_FUNCTION();
-
-	if (m_swapchain)
-	{
-		TP_DEBUG("[Renderer][Vulkan] Destroying Swapchain");
-		vkDestroySwapchainKHR(device, m_swapchain, nullptr);
-		m_swapchain = nullptr;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanContext::InitImageViews()
-{
-	TP_PROFILE_FUNCTION();
-
-	TP_DEBUG("[Renderer][Vulkan] Initializing Swapchain Image Views");
-
-	m_swapchainImageViews.resize(m_swapchainImages.size());
-	for (std::size_t i = 0; i < m_swapchainImages.size(); i++)
-	{
-		VkImageViewCreateInfo createInfo
+		for(const Scope<Vulkan::Swapchain>& swapchain : VulkanRenderer::GetAllSwapchains())
 		{
-			VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-			nullptr,
-			0,
-			m_swapchainImages[i],
-			VK_IMAGE_VIEW_TYPE_2D,
-			m_format.format,
+			if (swapchain->GetBoundWindow() == window->GetInternalWindow())
 			{
-				VK_COMPONENT_SWIZZLE_IDENTITY,
-				VK_COMPONENT_SWIZZLE_IDENTITY,
-				VK_COMPONENT_SWIZZLE_IDENTITY,
-				VK_COMPONENT_SWIZZLE_IDENTITY
-			},
-			{
-				VK_IMAGE_ASPECT_COLOR_BIT,
-				0,
-				1,
-				0,
-				1
+				VulkanRenderer::SetCurrentSwapchain(swapchain.get());
+				return;
 			}
-		};
+		}
 
-		VkCall(vkCreateImageView(VulkanRenderer::Get()->GetDevice(), &createInfo, nullptr, &m_swapchainImageViews[i]));
-	}
-	TRAP_RENDERER_ASSERT(!m_swapchainImageViews.empty(), "[Renderer][Vulkan] Couldn't create Image Views!");
-}
+		//No swapchain was found :C
+		Vulkan::Swapchain* swapchain = VulkanRenderer::CreateWindowSwapchain(s_currentWindow);
+		VulkanRenderer::SetCurrentSwapchain(swapchain);
 
-//-------------------------------------------------------------------------------------------------------------------//
+		//Start Recording
+		VulkanRenderer::GetCurrentSwapchain().StartGraphicCommandBuffersAndRenderPass();
 
-void TRAP::Graphics::API::VulkanContext::DeInitImageViews(VkDevice device)
-{
-	TP_PROFILE_FUNCTION();
-	
-	if (!m_swapchainImageViews.empty())
-		TP_DEBUG("[Renderer][Vulkan] Destroying Swapchain Image Views");
-
-	for (VkImageView imageView : m_swapchainImageViews)
-		vkDestroyImageView(device, imageView, nullptr);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanContext::InitFrameBuffers(VkDevice device, VkRenderPass renderPass)
-{
-	TP_PROFILE_FUNCTION();
-
-	TP_DEBUG("[Renderer][Vulkan] Initializing Swapchain Frame BuffersGetSwapchainImageFormat");
-	
-	m_swapchainFrameBuffers.resize(m_swapchainImageViews.size());
-
-	for(uint32_t i = 0; i < m_swapchainImageViews.size(); i++)
-	{
-		VkFramebufferCreateInfo framebufferCreateInfo
-		{
-			VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-			nullptr,
-			0,
-			renderPass,
-			1,
-			&m_swapchainImageViews[i],
-			m_extent.width,
-			m_extent.height,
-			1
-		};
-
-		VkCall(vkCreateFramebuffer(device, &framebufferCreateInfo, nullptr, &m_swapchainFrameBuffers[i]));
+		//Set Viewport and scissor
+		VkViewport viewport{ 0.0f, 0.0f, static_cast<float>(s_currentWindow->Width), static_cast<float>(s_currentWindow->Height), 0.0f, 1.0f };
+		VkRect2D scissor{ {0, 0}, {static_cast<uint32_t>(s_currentWindow->Width), static_cast<uint32_t>(s_currentWindow->Height)} };
+		VulkanRenderer::GetCurrentSwapchain().GetGraphicsCommandBuffer().SetViewport(viewport);
+		VulkanRenderer::GetCurrentSwapchain().GetGraphicsCommandBuffer().SetScissor(scissor);
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanContext::DeInitFrameBuffers(VkDevice device)
-{
-	TP_PROFILE_FUNCTION();
-	
-	if(!m_swapchainFrameBuffers.empty())
-		TP_DEBUG("[Renderer][Vulkan] Destroying Swapchain Frame Buffers");
-	
-	for(VkFramebuffer frameBuffer : m_swapchainFrameBuffers)
-		vkDestroyFramebuffer(device, frameBuffer, nullptr);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanContext::InitSyncObjects(VkDevice device)
-{
-	TP_PROFILE_FUNCTION();
-
-	TP_DEBUG("[Renderer][Vulkan] Initializing Sync Objects");
-
-	m_imagesInFlight.resize(m_swapchainImages.size(), nullptr);
-	
-	VkSemaphoreCreateInfo semaphoreCreateInfo
-	{
-		VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
-		nullptr,
-		0
-	};
-
-	VkFenceCreateInfo fenceCreateInfo
-	{
-		VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
-		nullptr,
-		VK_FENCE_CREATE_SIGNALED_BIT
-	};
-
-	VkFenceCreateInfo fenceCreateInfo2
-	{
-		VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
-		nullptr,
-		0
-	};
-	
-	for(uint32_t i = 0; i < 2; i++)
-	{
-		VkCall(vkCreateSemaphore(device, &semaphoreCreateInfo, nullptr, &m_imageAvailableSemaphores[i]));
-		VkCall(vkCreateSemaphore(device, &semaphoreCreateInfo, nullptr, &m_renderFinishedSemaphores[i]));
-		VkCall(vkCreateFence(device, &fenceCreateInfo, nullptr, &m_inFlightFences[i]));
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanContext::DeInitSyncObjects(VkDevice device) const
-{
-	TP_PROFILE_FUNCTION();
-
-	TP_DEBUG("[Renderer][Vulkan] Destroying Sync Objects");
-
-	for(uint32_t i = 0; i < 2; i++)
-	{
-		if (m_renderFinishedSemaphores[i])
-			vkDestroySemaphore(device, m_renderFinishedSemaphores[i], nullptr);
-		
-		if (m_imageAvailableSemaphores[i])
-			vkDestroySemaphore(device, m_imageAvailableSemaphores[i], nullptr);
-
-		if (m_inFlightFences[i])
-			vkDestroyFence(device, m_inFlightFences[i], nullptr);
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<VkSurfaceFormatKHR> TRAP::Graphics::API::VulkanContext::GetAvailableSurfaceFormats(VkPhysicalDevice physicalDevice) const
-{
-	TP_PROFILE_FUNCTION();
-
-	uint32_t surfaceFormatCount = 0;
-	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, m_surface, &surfaceFormatCount, nullptr));
-	std::vector<VkSurfaceFormatKHR> availableSurfaceFormats{ surfaceFormatCount };
-	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, m_surface, &surfaceFormatCount, availableSurfaceFormats.data()));
-	TRAP_RENDERER_ASSERT(!availableSurfaceFormats.empty(), "[Renderer][Vulkan] Couldn't get available Surface Formats!");
-
-	return availableSurfaceFormats;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<VkPresentModeKHR> TRAP::Graphics::API::VulkanContext::GetAvailableSurfacePresentModes(VkPhysicalDevice physicalDevice) const
-{
-	TP_PROFILE_FUNCTION();
-
-	uint32_t surfacePresentModeCount = 0;
-	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, m_surface, &surfacePresentModeCount, nullptr));
-	std::vector<VkPresentModeKHR> surfacePresentModes{ surfacePresentModeCount };
-	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, m_surface, &surfacePresentModeCount, surfacePresentModes.data()));
-	TRAP_RENDERER_ASSERT(!surfacePresentModes.empty(), "[Renderer][Vulkan] Couldn't get available Surface Present Modes!");
-
-	return surfacePresentModes;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkExtent2D TRAP::Graphics::API::VulkanContext::GetSwapchainExtent() const
-{
-	return m_extent;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkFormat TRAP::Graphics::API::VulkanContext::GetSwapchainImageFormat() const
-{
-	return m_format.format;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::API::VulkanContext::GetSwapchainFrameBuffersSize() const
-{	
-	return static_cast<uint32_t>(m_swapchainFrameBuffers.size());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::vector<VkFramebuffer>& TRAP::Graphics::API::VulkanContext::GetSwapchainFrameBuffers()
-{
-	return m_swapchainFrameBuffers;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//I know i know it's a heavy function but I don't want to use the VulkanRenderer/Context functions because this should execute silently
 bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 {
 	TP_PROFILE_FUNCTION();
-
+	
+#define TRAP_EXPERIMENTAL_VULKAN
+	
 #ifndef TRAP_EXPERIMENTAL_VULKAN
 	return false;
 #endif
-	
+
+	TP_INFO("[Context][Vulkan] -------------------------");
+	TP_INFO("[Context][Vulkan] Running Vulkan 1.2 Tester");
 	if (INTERNAL::WindowingAPI::VulkanSupported())
 	{
-		//Instance Extensions
-		//Get Required Instance Extensions from WindowingAPI
+		//Validate that Vulkan Instance version is Vulkan 1.2 or newer
+		s_vkEnumerateInstanceVersion = reinterpret_cast<PFN_vkEnumerateInstanceVersion>(vkGetInstanceProcAddr(nullptr, "vkEnumerateInstanceVersion"));
+		uint32_t instanceVersion = 0;
+		VkCall(s_vkEnumerateInstanceVersion(&instanceVersion));
+		if (instanceVersion < VK_API_VERSION_1_2)
+		{
+			TP_CRITICAL("[Context][Vulkan] Instance Version Does Not Support Vulkan 1.2 Instances!");
+			return false;
+		}
+		
+		//Get Required and Available Extensions
 		std::array<std::string, 2> requiredExtensions = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
-
-		//Get Instance Extensions
-		uint32_t extensionsCount = 0;
-		VkCall(vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, nullptr));
-		std::vector<VkExtensionProperties> availableInstanceExtensions(extensionsCount);
-		VkCall(vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, availableInstanceExtensions.data()));
-
-		//No Instance Extensions found
-		if (extensionsCount == 0 || availableInstanceExtensions.empty())
-			return false; 
-
-		//Check if required Instance Extensions are available
-		std::vector<const char*> instanceExtensions;
-		for (auto& requiredExtension : requiredExtensions)
+		for(const std::string& str : requiredExtensions)
 		{
-			for (auto& availableExtension : availableInstanceExtensions)
-				if (availableExtension.extensionName == requiredExtension)
-					instanceExtensions.emplace_back(requiredExtension.c_str());
+			if (!Vulkan::Instance::IsExtensionSupported(str.c_str()))
+			{
+				TP_CRITICAL("[Context][Vulkan] Required Instance Extension: \"", str, "\" Is NOT Supported!");
+				return false;
+			}
 		}
 
-		if (instanceExtensions.empty())
-			return false;
-
-		//Check if a required Instance Extension is unsupported
-		for (const auto& requiredExtension : requiredExtensions)
+		//Test if Vulkan is able to create an instance
+		std::vector<std::string> layers{};
+		std::vector<std::string> extensions{ requiredExtensions[0], requiredExtensions[1]};
+		Scope<Vulkan::Instance> instance = MakeScope<Vulkan::Instance>("TRAP Vulkan Capability Tester", TRAP_VERSION, layers, extensions);
+		if (!instance->GetInstance())
 		{
-			auto extension = std::find(instanceExtensions.begin(), instanceExtensions.end(), requiredExtension);
-			if (extension == instanceExtensions.end())
-				return false;			
+			TP_CRITICAL("[Context][Vulkan] Failed To Create Vulkan 1.2 Instance!");
+			return false;
 		}
-		//All required Instance Extensions are available
 
-		//Check if instance can be created
-		VkApplicationInfo applicationInfo
-		{
-			VK_STRUCTURE_TYPE_APPLICATION_INFO,
-			nullptr,
-			"Vulkan capability test",
-			VK_MAKE_VERSION(1, 0, 0),
-			"TRAP Engine",
-			TRAP_VERSION,
-			VK_API_VERSION_1_2
-		};
-
-		VkInstanceCreateInfo instanceCreateInfo
-		{
-			VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-			nullptr,
-			0,
-			&applicationInfo,
-			0,
-			nullptr,
-			static_cast<uint32_t>(instanceExtensions.size()),
-			instanceExtensions.data()
-		};
-
-		VkInstance instance{};
-		VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &instance));
-		if (!instance)
-			return false;
-
-		//Create Vulkan 1.2 Test window
+		//Create Vulkan 1.2 Test Window
 		INTERNAL::WindowingAPI::SetContextAPI(INTERNAL::WindowingAPI::ContextAPI::None);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
-		Scope<INTERNAL::WindowingAPI::InternalWindow> VulkanTestWindow = INTERNAL::WindowingAPI::CreateWindow(800, 600, "Vulkan Tester", nullptr, nullptr);
+		Scope<INTERNAL::WindowingAPI::InternalWindow> vulkanTestWindow = INTERNAL::WindowingAPI::CreateWindow(400, 400, "TRAP Vulkan Capability Tester", nullptr, nullptr);
 		INTERNAL::WindowingAPI::DefaultWindowHints();
-		if (!VulkanTestWindow)
-			return false;
-
-		VkSurfaceKHR surface{};
-		VkCall(INTERNAL::WindowingAPI::CreateWindowSurface(instance, VulkanTestWindow.get(), nullptr, surface));
-
-		if(!surface)
+		if (!vulkanTestWindow)
 		{
-			//Needs to be destroyed after testing
-			vkDestroyInstance(instance, nullptr);
-
+			TP_CRITICAL("[Context][Vulkan] Failed to create Vulkan 1.2 Test Window!");
 			return false;
 		}
 
-		//Get Physical Devices
-		uint32_t physicalDevicesCount = 0;
-		VkCall(vkEnumeratePhysicalDevices(instance, &physicalDevicesCount, nullptr));
-		std::vector<VkPhysicalDevice> physicalDevicesList(physicalDevicesCount);
-		VkCall(vkEnumeratePhysicalDevices(instance, &physicalDevicesCount, physicalDevicesList.data()));
-
-		//No physical Devices found
-		if(physicalDevicesCount == 0 || physicalDevicesList.empty())
+		//Get All Available Graphic Physical Devices and check if it is empty
+		const auto& physicalDevices = Vulkan::PhysicalDevice::GetAllAvailableGraphicPhysicalDevices(instance, vulkanTestWindow.get());
+		if (physicalDevices.empty())
 		{
-			//Needs to be destroyed after testing
-			vkDestroyInstance(instance, nullptr);
+			INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 
+			TP_CRITICAL("[Context][Vulkan] Failed To Find a Suitable GPU Meeting All Requirements!");
 			return false;
 		}
 
-		//Check physical Devices for features
-		std::multimap<int32_t, VkPhysicalDevice> candidates{};
+		INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 
-		int32_t highestScore = 0;
-		int32_t score = 0;
-		for (const auto& physicalDevice : physicalDevicesList)
-		{
-			VkPhysicalDeviceProperties deviceProperties{};
-			vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
-
-			//Discrete GPUs have a significant performance advantage
-			if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-				score += 1000;
-			else if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
-				score += 250;
-
-			//Check if Physical device is Vulkan 1.2 capable
-			if (deviceProperties.apiVersion >= VK_VERSION_1_2)
-				score += 1000;
-
-			VkPhysicalDeviceFeatures deviceFeatures{};
-			vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
-
-			//Check if Physical device has geometry shader compatibility
-			if (deviceFeatures.geometryShader)
-				score += 1000;
-			//Check if Physical device has tessellation shader compatibility
-			if (deviceFeatures.tessellationShader)
-				score += 1000;
-
-			//Make sure GPU has a Graphics Queue
-			uint32_t graphicsFamilyIndex = 0;
-
-			//Get Queue Families
-			uint32_t queueFamilyCount = 0;
-			vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
-			std::vector<VkQueueFamilyProperties> availableQueueFamilies(queueFamilyCount);
-			vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, availableQueueFamilies.data());
-
-			//Check if physical device support Graphics Queue Family
-			for (uint32_t i = 0; i < availableQueueFamilies.size(); i++)
-				if (availableQueueFamilies[i].queueCount > 0 && availableQueueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-				{
-					graphicsFamilyIndex = i;
-					score += 1000;
-				}
-
-			//Make sure GPU has Present support and a Present Queue
-			VkBool32 presentSupport = false;
-			VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, graphicsFamilyIndex, surface, &presentSupport));
-			for (auto& queueFamilyProperty : availableQueueFamilies)
-				if (queueFamilyProperty.queueCount > 0 && presentSupport)
-					score += 1000;
-
-			//Maximum possible size of textures affects graphics quality
-			score += deviceProperties.limits.maxImageDimension2D;
-
-			//Get available Device Extensions
-			uint32_t extensionCount = 0;
-			VkCall(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr));
-			std::vector<VkExtensionProperties> availableDeviceExtensions(extensionCount);
-			VkCall(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, availableDeviceExtensions.data()));
-
-			//Make sure GPU has Swapchain support
-			for (auto& availableExtension : availableDeviceExtensions)
-				if (strcmp(availableExtension.extensionName, VK_KHR_SWAPCHAIN_EXTENSION_NAME) == 0)
-				{
-					//GPU Supports Swapchains
-					score += 1000;
-
-					//Double Check to make sure GPU really has Swapchain support :D
-
-					//Get available surface formats
-					uint32_t surfaceFormatCount = 0;
-					std::vector<VkSurfaceFormatKHR> surfaceFormats(surfaceFormatCount);
-					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatCount, nullptr));
-					VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &surfaceFormatCount, surfaceFormats.data()));
-					if (!surfaceFormats.empty())
-						score += 1000;
-
-					//Get Available surface present modes
-					uint32_t surfacePresentModeCount = 0;
-					std::vector<VkPresentModeKHR> presentModes(surfacePresentModeCount);
-					VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &surfacePresentModeCount, nullptr));
-					VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &surfacePresentModeCount, presentModes.data()));
-					if (!presentModes.empty())
-						score += 1000;
-				}
-			if (score > highestScore)
-				highestScore = score;
-
-			candidates.insert(std::make_pair(score, physicalDevice));
-		}
-
-		if(candidates.empty())
-		{
-			//Needs to be destroyed after testing
-			vkDestroySurfaceKHR(instance, surface, nullptr);
-
-			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
-
-			//Needs to be destroyed after testing
-			vkDestroyInstance(instance, nullptr);
-
-			return false;
-		}
-
-		//Use first physical Device with highest score
-		VkPhysicalDevice physicalDevice{};
-		for (const auto& [key, value] : candidates)
-			if (key == highestScore)
-			{
-				physicalDevice = value;
-				break;
-			}
-
-		//Get Queue Families
-		uint32_t queueFamilyCount = 0;
-		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
-		std::vector<VkQueueFamilyProperties> availableQueueFamilies(queueFamilyCount);
-		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, availableQueueFamilies.data());
-
-		//Check if best physical Device supports Graphics Queue Family
-		bool supportsGraphicsQueueFamily = false;
-		uint32_t graphicsFamilyIndex = 0;
-		for (uint32_t i = 0; i < availableQueueFamilies.size(); i++)
-			if (availableQueueFamilies[i].queueCount > 0 && availableQueueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-			{
-				graphicsFamilyIndex = i;
-				supportsGraphicsQueueFamily = true;
-				break;
-			}
-
-		if(!supportsGraphicsQueueFamily)
-		{
-			//Needs to be destroyed after testing
-			vkDestroySurfaceKHR(instance, surface, nullptr);
-
-			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
-
-			//Needs to be destroyed after testing
-			vkDestroyInstance(instance, nullptr);
-
-			return false;
-		}
-
-		//Check if physical Device supports presenting and has a present Queue
-		bool presentQueue = false;
-		VkBool32 presentSupport = false;
-		VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, graphicsFamilyIndex, surface, &presentSupport));
-		for (auto& queueFamilyProperty : availableQueueFamilies)
-			if (queueFamilyProperty.queueCount > 0 && presentSupport)
-				presentQueue = true;
-
-		if(!presentQueue || !presentSupport)
-		{
-			//Needs to be destroyed after testing
-			vkDestroySurfaceKHR(instance, surface, nullptr);
-
-			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
-
-			//Needs to be destroyed after testing
-			vkDestroyInstance(instance, nullptr);
-
-			return false;
-		}
-
-		//Get available Device Extensions
-		uint32_t extensionCount = 0;
-		VkCall(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr));
-		std::vector<VkExtensionProperties> availableDeviceExtensions(extensionCount);
-		VkCall(vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, availableDeviceExtensions.data()));
-
-		//Check if physical Device has Swapchain support
-		bool swapchainSupported = false;
-		for (auto& availableExtension : availableDeviceExtensions)
-			if (strcmp(availableExtension.extensionName, VK_KHR_SWAPCHAIN_EXTENSION_NAME) == 0)
-				swapchainSupported = true;
-
-		if (!swapchainSupported)
-		{
-			//Needs to be destroyed after testing
-			vkDestroySurfaceKHR(instance, surface, nullptr);
-
-			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
-
-			//Needs to be destroyed after testing
-			vkDestroyInstance(instance, nullptr);
-
-			return false;
-		}
-
-		//Check if Physical device is Vulkan 1.2 capable
-		VkPhysicalDeviceProperties deviceProperties{};
-		vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
-		if (deviceProperties.apiVersion < VK_VERSION_1_2)
-		{
-			//Needs to be destroyed after testing
-			vkDestroySurfaceKHR(instance, surface, nullptr);
-
-			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
-
-			//Needs to be destroyed after testing
-			vkDestroyInstance(instance, nullptr);
-
-			return false;
-		}
-
-		//Check if Physical device supports Geometry and Tessellation Shaders and WireFrame
-		VkPhysicalDeviceFeatures deviceFeatures{};
-		vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
-		//Geometry Shaders
-		if(!deviceFeatures.geometryShader)
-		{
-			//Needs to be destroyed after testing
-			vkDestroySurfaceKHR(instance, surface, nullptr);
-
-			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
-
-			//Needs to be destroyed after testing
-			vkDestroyInstance(instance, nullptr);
-
-			return false;
-		}
-		//Tessellation Shaders
-		if(!deviceFeatures.tessellationShader)
-		{
-			//Needs to be destroyed after testing
-			vkDestroySurfaceKHR(instance, surface, nullptr);
-
-			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
-
-			//Needs to be destroyed after testing
-			vkDestroyInstance(instance, nullptr);
-
-			return false;
-		}
-		//WireFrame
-		if(!deviceFeatures.fillModeNonSolid)
-		{
-			//Needs to be destroyed after testing
-			vkDestroySurfaceKHR(instance, surface, nullptr);
-
-			INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
-
-			//Needs to be destroyed after testing
-			vkDestroyInstance(instance, nullptr);
-
-			return false;
-		}
-
-		//Needs to be destroyed after testing
-		vkDestroySurfaceKHR(instance, surface, nullptr);
-
-		INTERNAL::WindowingAPI::DestroyWindow(std::move(VulkanTestWindow));
-
-		//Needs to be destroyed after testing
-		vkDestroyInstance(instance, nullptr);
-
+		TP_INFO("[Context][Vulkan] Passed Vulkan 1.2 Tester");
+		TP_INFO("[Context][Vulkan] ------------------------");
 		return true;
 	}
 
+	TP_CRITICAL("[Context][Vulkan] Failed Vulkan 1.2 Support Checks!");
 	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<VkSurfaceFormatKHR> TRAP::Graphics::API::VulkanContext::GetAvailableSurfaceFormats() const
+TRAP::INTERNAL::WindowingAPI::InternalWindow* TRAP::Graphics::API::VulkanContext::GetCurrentWindow()
 {
-	TP_DEBUG("[Renderer][Vulkan] Getting available Surface Formats");
-
-	uint32_t surfaceFormatCount = 0;
-	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(VulkanRenderer::Get()->GetPhysicalDevice(), m_surface, &surfaceFormatCount, nullptr));
-	std::vector<VkSurfaceFormatKHR> availableSurfaceFormats{ surfaceFormatCount };
-	VkCall(vkGetPhysicalDeviceSurfaceFormatsKHR(VulkanRenderer::Get()->GetPhysicalDevice(), m_surface, &surfaceFormatCount, availableSurfaceFormats.data()));
-	TRAP_RENDERER_ASSERT(!availableSurfaceFormats.empty(), "[Renderer][Vulkan] Couldn't get available Surface Formats!");
-
-	return availableSurfaceFormats;
+	return s_currentWindow;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<VkPresentModeKHR> TRAP::Graphics::API::VulkanContext::GetAvailableSurfacePresentModes() const
+std::string_view TRAP::Graphics::API::VulkanContext::GetAppName()
 {
-	TP_DEBUG("[Renderer][Vulkan] Getting available Surface Present Modes");
-
-	uint32_t surfacePresentModeCount = 0;
-	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(VulkanRenderer::Get()->GetPhysicalDevice(), m_surface, &surfacePresentModeCount, nullptr));
-	std::vector<VkPresentModeKHR> surfacePresentModes{ surfacePresentModeCount };
-	VkCall(vkGetPhysicalDeviceSurfacePresentModesKHR(VulkanRenderer::Get()->GetPhysicalDevice(), m_surface, &surfacePresentModeCount, surfacePresentModes.data()));
-	TRAP_RENDERER_ASSERT(!surfacePresentModes.empty(), "[Renderer][Vulkan] Couldn't get available Surface Present Modes!");
-
-	return surfacePresentModes;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkSurfaceFormatKHR TRAP::Graphics::API::VulkanContext::ChooseSwapchainSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableSurfaceFormats)
-{
-	TP_DEBUG("[Renderer][Vulkan] Choosing Swapchain Surface Format");
-
-	if (availableSurfaceFormats.size() == 1 && availableSurfaceFormats[0].format == VK_FORMAT_UNDEFINED)
-	{
-		TP_DEBUG("[Renderer][Vulkan] Using Surface Format: VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR");
-		return { VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR };
-	}
-
-	for (const auto& availableSurfaceFormat : availableSurfaceFormats)
-		if (availableSurfaceFormat.format == VK_FORMAT_B8G8R8A8_UNORM && availableSurfaceFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
-		{
-			TP_DEBUG("[Renderer][Vulkan] Using Surface Format: VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR");
-			return availableSurfaceFormat;
-		}
-
-	TP_DEBUG("[Renderer][Vulkan] Using Surface Format: Physical Device Default Format, Physical Device Default Color Space");
-	return availableSurfaceFormats[0];
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkPresentModeKHR TRAP::Graphics::API::VulkanContext::ChooseSwapchainSurfacePresentMode(const std::vector<VkPresentModeKHR>& availableSurfacePresentModes)
-{
-	TP_DEBUG("[Renderer][Vulkan] Choosing Swapchain Surface Present Mode");
-
-	for (const auto& availableSurfacePresentMode : availableSurfacePresentModes)
-	{
-		if (availableSurfacePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
-		{
-			TP_DEBUG("[Renderer][Vulkan] Using Surface Present Mode: VK_PRESENT_MODE_MAILBOX_KHR(Triple Buffered)");
-			return availableSurfacePresentMode;
-		}
-		if (availableSurfacePresentMode == VK_PRESENT_MODE_IMMEDIATE_KHR)
-		{
-			TP_DEBUG("[Renderer][Vulkan] Using Surface Present Mode: VK_PRESENT_MODE_IMMEDIATE_KHR");
-			return availableSurfacePresentMode; //Immediate Swaps High Tearing(Preferred over VSync because of driver incompatibilities)
-		}
-	}
-
-	TP_DEBUG("[Renderer][Vulkan] Using Surface Present Mode: VK_PRESENT_MOE_FIFO_KHR(VSync Double Buffered");
-	return VK_PRESENT_MODE_FIFO_KHR; //VSync mode(Required to be available by Vulkan Specification)
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkExtent2D TRAP::Graphics::API::VulkanContext::ChooseSwapchainExtent() const
-{
-	TP_DEBUG("[Renderer][Vulkan] Choosing Swapchain Extent");
-
-	if (m_capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
-	{
-		TP_DEBUG("[Renderer][Vulkan] Using Swapchain Extent: ", m_capabilities.currentExtent.width, 'x', m_capabilities.currentExtent.height);
-		return m_capabilities.currentExtent;
-	}
-
-	VkExtent2D actualExtent = { m_window->GetWidth(), m_window->GetHeight() };
-
-	actualExtent.width = std::max(m_capabilities.minImageExtent.width, std::min(m_capabilities.maxImageExtent.width, actualExtent.width));
-	actualExtent.height = std::max(m_capabilities.minImageExtent.height, std::min(m_capabilities.maxImageExtent.height, actualExtent.height));
-
-	TP_DEBUG("[Renderer][Vulkan] Using Swapchain Extent: ", actualExtent.width, 'x', actualExtent.height);
-
-	return actualExtent;
+	return s_appName;
 }

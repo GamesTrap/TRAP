@@ -56,7 +56,7 @@ void TRAP::Graphics::API::OpenGLContext::Present(const Scope<Window>& window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLContext::UseInternal(const Window* window)
+void TRAP::Graphics::API::OpenGLContext::UseInternal(Window* window)
 {
 	TP_PROFILE_FUNCTION();
 
