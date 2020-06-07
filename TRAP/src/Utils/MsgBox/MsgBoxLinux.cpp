@@ -17,7 +17,7 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::Show(const char* message,
 		return INTERNAL::X11::ShowX11(message, title, style, buttons);
 	if (Application::GetLinuxWindowManager() == Application::LinuxWindowManager::Wayland)
 	{
-		//TODO
+		//TODO Implement
 		return Selection::None;
 	}
 	

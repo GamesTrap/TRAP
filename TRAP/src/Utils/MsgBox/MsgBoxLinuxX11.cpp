@@ -395,7 +395,6 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::ShowX11(const
 	int white = WhitePixel(display, DefaultScreen(display));
 
 	//Create a window with the specified title
-	//::Window window = XCreateSimpleWindow(display, DefaultRootWindow(display), 0, 0, 100, 100, 0, white, white);
 	::Window window = XCreateSimpleWindow(display, DefaultRootWindow(display), 0, 0, 100, 100, 0, white, white);
 
 	XSelectInput(display, window, ExposureMask | StructureNotifyMask | KeyReleaseMask | PointerMotionMask | ButtonPressMask | ButtonReleaseMask);

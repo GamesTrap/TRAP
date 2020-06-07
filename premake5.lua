@@ -193,6 +193,7 @@ project "Sandbox"
 
 			"dl",
 			"pthread",
+			"X11",
 			"HLSL",
 			"OGLCompiler",
 			"OSDependent",
@@ -261,6 +262,7 @@ project "Tests"
 
 			"dl",
 			"pthread",
+			"X11",
 			"HLSL",
 			"OGLCompiler",
 			"OSDependent",

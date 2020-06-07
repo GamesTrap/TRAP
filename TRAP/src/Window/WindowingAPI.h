@@ -312,6 +312,7 @@ namespace TRAP::INTERNAL
 		typedef int (*PFN_XQueryExtension)(Display*, const char*, int*, int*, int*);
 		typedef int (*PFN_XQueryPointer)(Display*, ::Window, ::Window*, ::Window*, int*, int*, int*, int*, unsigned int*);
 		typedef int (*PFN_XRaiseWindow)(Display*, ::Window);
+		typedef int (*PFN_XRegisterIMInstantiateCallback)(Display*, void*, char*, char*, XIDProc, XPointer);
 		typedef int (*PFN_XResizeWindow)(Display*, ::Window, unsigned int, unsigned int);
 		typedef char* (*PFN_XResourceManagerString)(Display*);
 		typedef int (*PFN_XSaveContext)(Display*, XID, XContext, const char*);
@@ -320,6 +321,7 @@ namespace TRAP::INTERNAL
 		typedef int (*PFN_XSetClassHint)(Display*, ::Window, XClassHint*);
 		typedef XErrorHandler (*PFN_XSetErrorHandler)(XErrorHandler);
 		typedef void (*PFN_XSetICFocus)(XIC);
+		typedef char* (*PFN_XSetIMValues)(XIM, ...);
 		typedef int (*PFN_XSetInputFocus)(Display*, ::Window, int, Time);
 		typedef char* (*PFN_XSetLocaleModifiers)(const char*);
 		typedef int (*PFN_XSetScreenSaver)(Display*, int, int, int, int);
@@ -356,6 +358,7 @@ namespace TRAP::INTERNAL
 		typedef XrmDatabase (*PFN_XrmGetStringDatabase)(const char*);
 		typedef void (*PFN_XrmInitialize)();
 		typedef XrmQuark (*PFN_XrmUniqueQuark)();
+		typedef int (*PFN_XUnregisterIMInstantiateCallback)(Display*, void*, char*, char*, XIDProc, XPointer);
 #endif
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Enums--------------------------------------------------------------------------------------------------------------//
@@ -1075,6 +1078,7 @@ namespace TRAP::INTERNAL
 				PFN_XQueryExtension QueryExtension{};
 				PFN_XQueryPointer QueryPointer{};
 				PFN_XRaiseWindow RaiseWindow{};
+				PFN_XRegisterIMInstantiateCallback RegisterIMInstantiateCallback{};
 				PFN_XResizeWindow ResizeWindow{};
 				PFN_XResourceManagerString ResourceManagerString{};
 				PFN_XSaveContext SaveContext{};
@@ -1083,6 +1087,7 @@ namespace TRAP::INTERNAL
 				PFN_XSetClassHint SetClassHint{};
 				PFN_XSetErrorHandler SetErrorHandler{};
 				PFN_XSetICFocus SetICFocus{};
+				PFN_XSetIMValues SetIMValues{};
 				PFN_XSetInputFocus SetInputFocus{};
 				PFN_XSetLocaleModifiers SetLocaleModifiers{};
 				PFN_XSetScreenSaver SetScreenSaver{};
@@ -1099,6 +1104,7 @@ namespace TRAP::INTERNAL
 				PFN_XUnsetICFocus UnsetICFocus{};
 				PFN_XVisualIDFromVisual VisualIDFromVisual{};
 				PFN_XWarpPointer WarpPointer{};
+				PFN_XUnregisterIMInstantiateCallback UnregisterIMInstantiateCallback{};
 				PFN_Xutf8LookupString UTF8LookupString{};
 				PFN_Xutf8SetWMProperties UTF8SetWMProperties{};
 			} XLIB{};
@@ -1813,6 +1819,8 @@ namespace TRAP::INTERNAL
 		static Cursor CreateHiddenCursor();
 		//Check whether the IM has a usable style
 		static bool HasUsableInputMethodStyle();
+		static void InputMethodDestroyCallback(XIM im, XPointer clientData, XPointer callData);
+		static void InputMethodInstantiateCallback(Display* display, XPointer clientData, XPointer callData);
 		//Poll for changes in the set of connected monitors
 		static void PollMonitorsX11();
 		//Returns whether the event is a selection event
@@ -1823,6 +1831,7 @@ namespace TRAP::INTERNAL
 		static void HandleSelectionClear(XEvent& event);
 		//Push contents of our selection to clipboard manager
 		static void PushSelectionToManagerX11();
+		static void CreateInputContextX11(InternalWindow* window);
 		//Shutdown GLX
 		static void ShutdownGLX();
 		//Initialize GLX
@@ -1889,6 +1898,8 @@ namespace TRAP::INTERNAL
 		static ::Window CreateHelperWindow();
 		//Translate an X11 key code to a TRAP key code.
 		static Input::Key TranslateKeyCode(int32_t scanCode);
+		//Clear its handle when the input context has been destroyed
+		static void InputContextDestroyCallback(XIC ic, XPointer clientData, XPointer callData);
 #endif
 	};
 }

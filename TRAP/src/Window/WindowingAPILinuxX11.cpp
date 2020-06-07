@@ -734,6 +734,42 @@ bool TRAP::INTERNAL::WindowingAPI::HasUsableInputMethodStyle()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::INTERNAL::WindowingAPI::InputMethodDestroyCallback(XIM im, XPointer clientData, XPointer callData)
+{
+	s_Data.IM = nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::InputMethodInstantiateCallback(Display* display, XPointer clientData, XPointer callData)
+{
+	if(s_Data.IM)
+		return;
+
+	s_Data.IM = s_Data.XLIB.OpenIM(s_Data.display, 0, nullptr, nullptr);
+	if(s_Data.IM)
+	{
+		if(!HasUsableInputMethodStyle())
+		{
+			s_Data.XLIB.CloseIM(s_Data.IM);
+			s_Data.IM = nullptr;
+		}
+	}
+
+	if(s_Data.IM)
+	{
+		XIMCallback callback{};
+		callback.callback = (XIMProc)InputMethodDestroyCallback;
+		callback.client_data = nullptr;
+		s_Data.XLIB.SetIMValues(s_Data.IM, XNDestroyCallback, &callback, nullptr);
+
+		for(InternalWindow* window  : s_Data.WindowList)
+			CreateInputContextX11(window);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 //Poll for changes in the set of connected monitors
 void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 {
@@ -1001,6 +1037,36 @@ void TRAP::INTERNAL::WindowingAPI::PushSelectionToManagerX11()
 		}
 		
 		WaitForEvent(nullptr);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow* window)
+{
+	XIMCallback callback;
+	callback.callback = (XIMProc)InputContextDestroyCallback;
+	callback.client_data = (XPointer)window;
+
+	window->IC = s_Data.XLIB.CreateIC(s_Data.IM,
+		XNInputStyle,
+		XIMPreeditNothing | XIMStatusNothing,
+		XNClientWindow,
+		window->Handle,
+		XNFocusWindow,
+		window->Handle,
+		XNDestroyCallback,
+		&callback,
+		nullptr);
+	
+	if(window->IC)
+	{
+		XWindowAttributes attribs;
+		s_Data.XLIB.GetWindowAttributes(s_Data.display, window->Handle, &attribs);
+
+		unsigned long filter = 0;
+		if(s_Data.XLIB.GetICValues(window->IC, XNFilterEvents, &filter, nullptr) == nullptr)
+			s_Data.XLIB.SelectInput(s_Data.display, window->Handle, attribs.your_event_mask | filter);
 	}
 }
 
@@ -1458,27 +1524,10 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 		                PropModeReplace, (uint8_t*)&version, 1);
 	}
 	
-	PlatformSetWindowTitle(window, WNDConfig.Title);
-	
 	if(s_Data.IM)
-	{
-		window->IC = s_Data.XLIB.CreateIC(s_Data.IM,
-		                       XNInputStyle,
-							   XIMPreeditNothing | XIMStatusNothing,
-							   XNClientWindow,
-							   window->Handle,
-							   XNFocusWindow,
-							   window->Handle,
-							   nullptr);
-	}
+		CreateInputContextX11(window);
 	
-	if(window->IC)
-	{
-		uint32_t filter = 0;
-		if(s_Data.XLIB.GetICValues(window->IC, XNFilterEvents, &filter, nullptr) == nullptr)
-			s_Data.XLIB.SelectInput(s_Data.display, window->Handle, wa.event_mask | filter);
-	}
-	
+	PlatformSetWindowTitle(window, WNDConfig.Title);
 	PlatformGetWindowPos(window, window->XPos, window->YPos);
 	PlatformGetWindowSize(window, window->Width, window->Height);
 	
@@ -2898,6 +2947,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	s_Data.XLIB.QueryExtension = (PFN_XQueryExtension)dlsym(s_Data.XLIB.Handle, "XQueryExtension");
 	s_Data.XLIB.QueryPointer = (PFN_XQueryPointer)dlsym(s_Data.XLIB.Handle, "XQueryPointer");
 	s_Data.XLIB.RaiseWindow = (PFN_XRaiseWindow)dlsym(s_Data.XLIB.Handle, "XRaiseWindow");
+	s_Data.XLIB.RegisterIMInstantiateCallback = (PFN_XRegisterIMInstantiateCallback)dlsym(s_Data.XLIB.Handle, "XRegisterIMInstantiateCallback");
 	s_Data.XLIB.ResizeWindow = (PFN_XResizeWindow)dlsym(s_Data.XLIB.Handle, "XResizeWindow");
 	s_Data.XLIB.ResourceManagerString = (PFN_XResourceManagerString)dlsym(s_Data.XLIB.Handle, "XResourceManagerString");
 	s_Data.XLIB.SaveContext = (PFN_XSaveContext)dlsym(s_Data.XLIB.Handle, "XSaveContext");
@@ -2906,6 +2956,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	s_Data.XLIB.SetClassHint = (PFN_XSetClassHint)dlsym(s_Data.XLIB.Handle, "XSetClassHint");
 	s_Data.XLIB.SetErrorHandler = (PFN_XSetErrorHandler)dlsym(s_Data.XLIB.Handle, "XSetErrorHandler");
 	s_Data.XLIB.SetICFocus = (PFN_XSetICFocus)dlsym(s_Data.XLIB.Handle, "XSetICFocus");
+	s_Data.XLIB.SetIMValues = (PFN_XSetIMValues)dlsym(s_Data.XLIB.Handle, "XSetIMValues");
 	s_Data.XLIB.SetInputFocus = (PFN_XSetInputFocus)dlsym(s_Data.XLIB.Handle, "XSetInputFocus");
 	s_Data.XLIB.SetLocaleModifiers = (PFN_XSetLocaleModifiers)dlsym(s_Data.XLIB.Handle, "XSetLocaleModifiers");
 	s_Data.XLIB.SetScreenSaver = (PFN_XSetScreenSaver)dlsym(s_Data.XLIB.Handle, "XSetScreenSaver");
@@ -2922,6 +2973,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	s_Data.XLIB.UnsetICFocus = (PFN_XUnsetICFocus)dlsym(s_Data.XLIB.Handle, "XUnsetICFocus");
 	s_Data.XLIB.VisualIDFromVisual = (PFN_XVisualIDFromVisual)dlsym(s_Data.XLIB.Handle, "XVisualIDFromVisual");
 	s_Data.XLIB.WarpPointer = (PFN_XWarpPointer)dlsym(s_Data.XLIB.Handle, "XWarpPointer");
+	s_Data.XLIB.UnregisterIMInstantiateCallback = (PFN_XUnregisterIMInstantiateCallback)dlsym(s_Data.XLIB.Handle, "XUnregisterIMInstantiateCallback");
 	s_Data.XLIB.UTF8LookupString = (PFN_Xutf8LookupString)dlsym(s_Data.XLIB.Handle, "Xutf8LookupString");
 	s_Data.XLIB.UTF8SetWMProperties = (PFN_Xutf8SetWMProperties)dlsym(s_Data.XLIB.Handle, "Xutf8SetWMProperties");
 	s_Data.XKB.FreeKeyboard = (PFN_XkbFreeKeyboard)dlsym(s_Data.XLIB.Handle, "XkbFreeKeyboard");
@@ -2970,15 +3022,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	{
 		s_Data.XLIB.SetLocaleModifiers("");
 		
-		s_Data.IM = s_Data.XLIB.OpenIM(s_Data.display, 0, nullptr, nullptr);
-		if(s_Data.IM)
-		{
-			if(!HasUsableInputMethodStyle())
-			{
-				s_Data.XLIB.CloseIM(s_Data.IM);
-				s_Data.IM = nullptr;
-			}
-		}
+		//If an IM is already present our callback will be called right away
+		s_Data.XLIB.RegisterIMInstantiateCallback(s_Data.display, nullptr, nullptr, nullptr, InputMethodInstantiateCallback, nullptr);
 	}
 	
 	PollMonitorsX11();
@@ -3125,6 +3170,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 		s_Data.XLIB.FreeCursor(s_Data.display, s_Data.HiddenCursorHandle);
 		s_Data.HiddenCursorHandle = 0;
 	}
+
+	s_Data.XLIB.UnregisterIMInstantiateCallback(s_Data.display, nullptr, nullptr, nullptr, InputMethodInstantiateCallback, nullptr);
 	
 	if(s_Data.IM)
 	{
@@ -4463,8 +4510,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 	if(event.type == 2 || event.type == 3)
 		keyCode = event.xkey.keycode;
 		
-	if(s_Data.IM)
-		filtered = s_Data.XLIB.FilterEvent(&event, 0);
+	filtered = s_Data.XLIB.FilterEvent(&event, 0);
 		
 	if(s_Data.RandR.Available)
 	{
@@ -5358,6 +5404,16 @@ void TRAP::INTERNAL::WindowingAPI::EnableCursor(InternalWindow* window)
 	ReleaseCursor();
 	PlatformSetCursorPos(window, s_Data.RestoreCursorPosX, s_Data.RestoreCursorPosY);
 	UpdateCursorImage(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Clear its handle when the input context has been destroyed
+void TRAP::INTERNAL::WindowingAPI::InputContextDestroyCallback(XIC ic, XPointer clientData, XPointer callData)
+{
+	InternalWindow* window = (InternalWindow*)clientData;
+
+	window->IC = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
