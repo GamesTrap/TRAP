@@ -481,10 +481,9 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 		s_Data.XKB.Group = 0;
 		XkbStateRec state;
 		if(s_Data.XKB.GetState(s_Data.display, XkbUseCoreKbd, &state) == Success)
-		{
-			s_Data.XKB.SelectEventDetails(s_Data.display, XkbUseCoreKbd, XkbStateNotify, XkbAllStateComponentsMask, XkbGroupStateMask);
 			s_Data.XKB.Group = static_cast<uint32_t>(state.group);
-		}
+
+		s_Data.XKB.SelectEventDetails(s_Data.display, XkbUseCoreKbd, XkbStateNotify, XkbGroupStateMask, XkbGroupStateMask);
 	}
 	
 #if defined(__CYGWIN__)
@@ -636,20 +635,20 @@ void TRAP::INTERNAL::WindowingAPI::DetectEWMH()
 	
 	//See which of the atoms we support that are supported by the WM
 	
-	s_Data.NET_WM_STATE = GetSupportedAtom(supportedAtoms, atomCount, "_NET_WM_STATE");
-    s_Data.NET_WM_STATE_ABOVE = GetSupportedAtom(supportedAtoms, atomCount, "_NET_WM_STATE_ABOVE");
-    s_Data.NET_WM_STATE_FULLSCREEN = GetSupportedAtom(supportedAtoms, atomCount, "_NET_WM_STATE_FULLSCREEN");
-    s_Data.NET_WM_STATE_MAXIMIZED_VERT = GetSupportedAtom(supportedAtoms, atomCount, "_NET_WM_STATE_MAXIMIZED_VERT");
-    s_Data.NET_WM_STATE_MAXIMIZED_HORZ = GetSupportedAtom(supportedAtoms, atomCount, "_NET_WM_STATE_MAXIMIZED_HORZ");
-    s_Data.NET_WM_STATE_DEMANDS_ATTENTION = GetSupportedAtom(supportedAtoms, atomCount, "_NET_WM_STATE_DEMANDS_ATTENTION");
-    s_Data.NET_WM_FULLSCREEN_MONITORS = GetSupportedAtom(supportedAtoms, atomCount, "_NET_WM_FULLSCREEN_MONITORS");
-    s_Data.NET_WM_WINDOW_TYPE = GetSupportedAtom(supportedAtoms, atomCount, "_NET_WM_WINDOW_TYPE");
-    s_Data.NET_WM_WINDOW_TYPE_NORMAL = GetSupportedAtom(supportedAtoms, atomCount, "_NET_WM_WINDOW_TYPE_NORMAL");
-    s_Data.NET_WORKAREA = GetSupportedAtom(supportedAtoms, atomCount, "_NET_WORKAREA");
-    s_Data.NET_CURRENT_DESKTOP = GetSupportedAtom(supportedAtoms, atomCount, "_NET_CURRENT_DESKTOP");
-    s_Data.NET_ACTIVE_WINDOW = GetSupportedAtom(supportedAtoms, atomCount, "_NET_ACTIVE_WINDOW");
-    s_Data.NET_FRAME_EXTENTS = GetSupportedAtom(supportedAtoms, atomCount, "_NET_FRAME_EXTENTS");
-    s_Data.NET_REQUEST_FRAME_EXTENTS = GetSupportedAtom(supportedAtoms, atomCount, "_NET_REQUEST_FRAME_EXTENTS");
+	s_Data.NET_WM_STATE = GetAtomIfSupported(supportedAtoms, atomCount, "_NET_WM_STATE");
+    s_Data.NET_WM_STATE_ABOVE = GetAtomIfSupported(supportedAtoms, atomCount, "_NET_WM_STATE_ABOVE");
+    s_Data.NET_WM_STATE_FULLSCREEN = GetAtomIfSupported(supportedAtoms, atomCount, "_NET_WM_STATE_FULLSCREEN");
+    s_Data.NET_WM_STATE_MAXIMIZED_VERT = GetAtomIfSupported(supportedAtoms, atomCount, "_NET_WM_STATE_MAXIMIZED_VERT");
+    s_Data.NET_WM_STATE_MAXIMIZED_HORZ = GetAtomIfSupported(supportedAtoms, atomCount, "_NET_WM_STATE_MAXIMIZED_HORZ");
+    s_Data.NET_WM_STATE_DEMANDS_ATTENTION = GetAtomIfSupported(supportedAtoms, atomCount, "_NET_WM_STATE_DEMANDS_ATTENTION");
+    s_Data.NET_WM_FULLSCREEN_MONITORS = GetAtomIfSupported(supportedAtoms, atomCount, "_NET_WM_FULLSCREEN_MONITORS");
+    s_Data.NET_WM_WINDOW_TYPE = GetAtomIfSupported(supportedAtoms, atomCount, "_NET_WM_WINDOW_TYPE");
+    s_Data.NET_WM_WINDOW_TYPE_NORMAL = GetAtomIfSupported(supportedAtoms, atomCount, "_NET_WM_WINDOW_TYPE_NORMAL");
+    s_Data.NET_WORKAREA = GetAtomIfSupported(supportedAtoms, atomCount, "_NET_WORKAREA");
+    s_Data.NET_CURRENT_DESKTOP = GetAtomIfSupported(supportedAtoms, atomCount, "_NET_CURRENT_DESKTOP");
+    s_Data.NET_ACTIVE_WINDOW = GetAtomIfSupported(supportedAtoms, atomCount, "_NET_ACTIVE_WINDOW");
+    s_Data.NET_FRAME_EXTENTS = GetAtomIfSupported(supportedAtoms, atomCount, "_NET_FRAME_EXTENTS");
+    s_Data.NET_REQUEST_FRAME_EXTENTS = GetAtomIfSupported(supportedAtoms, atomCount, "_NET_REQUEST_FRAME_EXTENTS");
 	
 	if(supportedAtoms)
 		s_Data.XLIB.Free(supportedAtoms);
@@ -669,6 +668,9 @@ void TRAP::INTERNAL::WindowingAPI::GrabErrorHandlerX11()
 //X error handler
 int32_t TRAP::INTERNAL::WindowingAPI::ErrorHandler(Display* display, XErrorEvent* event)
 {
+	if(s_Data.display != display)
+		return 0;
+
 	s_Data.ErrorCode = event->error_code;
 	return 0;
 }
@@ -685,8 +687,8 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseErrorHandlerX11()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Check whether the specified atom is supported
-Atom TRAP::INTERNAL::WindowingAPI::GetSupportedAtom(Atom* supportedAtoms, uint32_t atomCount, const char* atomName)
+//Return the atom ID only if it is listed in the specified array
+Atom TRAP::INTERNAL::WindowingAPI::GetAtomIfSupported(Atom* supportedAtoms, uint32_t atomCount, const char* atomName)
 {
 	const Atom atom = s_Data.XLIB.InternAtom(s_Data.display, atomName, 0);
 	
@@ -2910,6 +2912,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	s_Data.XLIB.DeleteProperty = (PFN_XDeleteProperty)dlsym(s_Data.XLIB.Handle, "XDeleteProperty");
 	s_Data.XLIB.DestroyIC = (PFN_XDestroyIC)dlsym(s_Data.XLIB.Handle, "XDestroyIC");
 	s_Data.XLIB.DestroyWindow = (PFN_XDestroyWindow)dlsym(s_Data.XLIB.Handle, "XDestroyWindow");
+	s_Data.XLIB.DisplayKeycodes = (PFN_XDisplayKeycodes)dlsym(s_Data.XLIB.Handle, "XDisplayKeycodes");
 	s_Data.XLIB.EventsQueued = (PFN_XEventsQueued)dlsym(s_Data.XLIB.Handle, "XEventsQueued");
 	s_Data.XLIB.FilterEvent = (PFN_XFilterEvent)dlsym(s_Data.XLIB.Handle, "XFilterEvent");
 	s_Data.XLIB.FindContext = (PFN_XFindContext)dlsym(s_Data.XLIB.Handle, "XFindContext");
@@ -3293,7 +3296,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window,
 			                                            const ContextConfig& CTXConfig,
 			                                            const FrameBufferConfig& FBConfig)
 {
-	Visual* visual;
+	Visual* visual = nullptr;
 	int32_t depth;
 	
 	if(CTXConfig.Client != ContextAPI::None)
@@ -3304,7 +3307,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window,
 			return false;
 	}
 		
-	if(CTXConfig.Client == ContextAPI::None)
+	if(!visual)
 	{
 		visual = DefaultVisual(s_Data.display, s_Data.Screen);
 		depth = DefaultDepth(s_Data.display, s_Data.Screen);
@@ -4531,6 +4534,8 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			{
 				s_Data.XKB.Group = ((XkbEvent*)&event)->state.group;
 			}
+
+			return;
 		}
 	}
 	
@@ -5433,8 +5438,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalMonitor> TRAP::INTERNAL::Windo
 //Create key code translation tables
 void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 {
-	int32_t scanCode;
-	Input::Key key;
+	int32_t scanCode, scanCodeMin, scanCodeMax;
 	
 	std::fill(s_Data.KeyCodes.begin(), s_Data.KeyCodes.end(), Input::Key::Unknown);
 	std::fill(s_Data.ScanCodes.begin(), s_Data.ScanCodes.end(), -1);
@@ -5443,277 +5447,209 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 	{
 		//Use XKB to determine physical key locations independently of the current keyboard layout
 		
-		std::string name{};
 		XkbDescPtr desc = s_Data.XKB.GetMap(s_Data.display, 0, XkbUseCoreKbd);
-		s_Data.XKB.GetNames(s_Data.display, XkbKeyNamesMask, desc);
+		s_Data.XKB.GetNames(s_Data.display, XkbKeyNamesMask | XkbKeyAliasesMask, desc);
+
+		scanCodeMin = desc->min_key_code;
+		scanCodeMax = desc->max_key_code;
+
+		struct Keys
+		{
+			TRAP::Input::Key Key = TRAP::Input::Key::Unknown;
+			std::string Name = nullptr;
+		};
+        
+		std::array<Keys, 121> KeyMap =
+		{
+            {
+                { TRAP::Input::Key::Grave_Accent, "TLDE"},
+                { TRAP::Input::Key::One, "AE01"},
+                { TRAP::Input::Key::Two, "AE02"},
+                { TRAP::Input::Key::Three, "AE03"},
+                { TRAP::Input::Key::Four, "AE04"},
+                { TRAP::Input::Key::Five, "AE05"},
+                { TRAP::Input::Key::Six, "AE06"},
+                { TRAP::Input::Key::Seven, "AE07"},
+                { TRAP::Input::Key::Eight, "AE08"},
+                { TRAP::Input::Key::Nine, "AE09"},
+                { TRAP::Input::Key::Zero, "AE10"},
+                { TRAP::Input::Key::Minus, "AE11"},
+                { TRAP::Input::Key::Equal, "AE12"},
+                { TRAP::Input::Key::Q, "AD01"},
+                { TRAP::Input::Key::W, "AD02"},
+                { TRAP::Input::Key::E, "AD03"},
+                { TRAP::Input::Key::R, "AD04"},
+                { TRAP::Input::Key::T, "AD05"},
+                { TRAP::Input::Key::Y, "AD06"},
+                { TRAP::Input::Key::U, "AD07"},
+                { TRAP::Input::Key::I, "AD08"},
+                { TRAP::Input::Key::O, "AD09"},
+                { TRAP::Input::Key::P, "AD10"},
+                { TRAP::Input::Key::Left_Bracket, "AD11"},
+                { TRAP::Input::Key::Right_Bracket, "AD12"},
+                { TRAP::Input::Key::A, "AC01"},
+                { TRAP::Input::Key::S, "AC02"},
+                { TRAP::Input::Key::D, "AC03"},
+                { TRAP::Input::Key::F, "AC04"},
+                { TRAP::Input::Key::G, "AC05"},
+                { TRAP::Input::Key::H, "AC06"},
+                { TRAP::Input::Key::J, "AC07"},
+                { TRAP::Input::Key::K, "AC08"},
+                { TRAP::Input::Key::L, "AC09"},
+                { TRAP::Input::Key::Semicolon, "AC10"},
+                { TRAP::Input::Key::Apostrophe, "AC11"},
+                { TRAP::Input::Key::Z, "AB01"},
+                { TRAP::Input::Key::X, "AB02"},
+                { TRAP::Input::Key::C, "AB03"},
+                { TRAP::Input::Key::V, "AB04"},
+                { TRAP::Input::Key::B, "AB05"},
+                { TRAP::Input::Key::N, "AB06"},
+                { TRAP::Input::Key::M, "AB07"},
+                { TRAP::Input::Key::Comma, "AB08"},
+                { TRAP::Input::Key::Period, "AB09"},
+                { TRAP::Input::Key::Slash, "AB10"},
+                { TRAP::Input::Key::Backslash, "BKSL"},
+                { TRAP::Input::Key::World_1, "LSGT"},
+                { TRAP::Input::Key::Space, "SPCE"},
+                { TRAP::Input::Key::Escape, "ESC"},
+                { TRAP::Input::Key::Enter, "RTRN"},
+                { TRAP::Input::Key::Tab, "TAB"},
+                { TRAP::Input::Key::Backspace, "BKSP"},
+                { TRAP::Input::Key::Insert, "INS"},
+                { TRAP::Input::Key::Delete, "DELE"},
+                { TRAP::Input::Key::Right, "RGHT"},
+                { TRAP::Input::Key::Left, "LEFT"},
+                { TRAP::Input::Key::Down, "DOWN"},
+                { TRAP::Input::Key::Up, "UP"},
+                { TRAP::Input::Key::Page_Up, "PGUP"},
+                { TRAP::Input::Key::Page_Down, "PGDN"},
+                { TRAP::Input::Key::Home, "HOME"},
+                { TRAP::Input::Key::End, "END"},
+                { TRAP::Input::Key::Caps_Lock, "CAPS"},
+                { TRAP::Input::Key::Scroll_Lock, "SCLK"},
+                { TRAP::Input::Key::Num_Lock, "NMLK"},
+                { TRAP::Input::Key::Print_Screen, "PRSC"},
+                { TRAP::Input::Key::Pause, "PAUS"},
+                { TRAP::Input::Key::F1, "FK01"},
+                { TRAP::Input::Key::F2, "FK02"},
+                { TRAP::Input::Key::F3, "FK03"},
+                { TRAP::Input::Key::F4, "FK04"},
+                { TRAP::Input::Key::F5, "FK05"},
+                { TRAP::Input::Key::F6, "FK06"},
+                { TRAP::Input::Key::F7, "FK07"},
+                { TRAP::Input::Key::F8, "FK08"},
+                { TRAP::Input::Key::F9, "FK09"},
+                { TRAP::Input::Key::F10, "FK10"},
+                { TRAP::Input::Key::F11, "FK11"},
+                { TRAP::Input::Key::F12, "FK12"},
+                { TRAP::Input::Key::F13, "FK13"},
+                { TRAP::Input::Key::F14, "FK14"},
+                { TRAP::Input::Key::F15, "FK15"},
+                { TRAP::Input::Key::F16, "FK16"},
+                { TRAP::Input::Key::F17, "FK17"},
+                { TRAP::Input::Key::F18, "FK18"},
+                { TRAP::Input::Key::F19, "FK19"},
+                { TRAP::Input::Key::F20, "FK20"},
+                { TRAP::Input::Key::F21, "FK21"},
+                { TRAP::Input::Key::F22, "FK22"},
+                { TRAP::Input::Key::F23, "FK23"},
+                { TRAP::Input::Key::F24, "FK24"},
+                { TRAP::Input::Key::F25, "FK25"},
+                { TRAP::Input::Key::KP_0, "KP0"},
+                { TRAP::Input::Key::KP_1, "KP1"},
+                { TRAP::Input::Key::KP_2, "KP2"},
+                { TRAP::Input::Key::KP_3, "KP3"},
+                { TRAP::Input::Key::KP_4, "KP4"},
+                { TRAP::Input::Key::KP_5, "KP5"},
+                { TRAP::Input::Key::KP_6, "KP6"},
+                { TRAP::Input::Key::KP_7, "KP7"},
+                { TRAP::Input::Key::KP_8, "KP8"},
+                { TRAP::Input::Key::KP_9, "KP9"},
+                { TRAP::Input::Key::KP_Decimal, "KPDL"},
+                { TRAP::Input::Key::KP_Divide, "KPDV"},
+                { TRAP::Input::Key::KP_Multiply, "KPMU"},
+                { TRAP::Input::Key::KP_Subtract, "KPSU"},
+                { TRAP::Input::Key::KP_Add, "KPAD"},
+                { TRAP::Input::Key::KP_Enter, "KPEN"},
+                { TRAP::Input::Key::KP_Equal, "KPEQ"},
+                { TRAP::Input::Key::Left_Shift, "LFSH"},
+                { TRAP::Input::Key::Left_Control, "LCTL"},
+                { TRAP::Input::Key::Left_ALT, "LALT"},
+                { TRAP::Input::Key::Left_Super, "LWIN"},
+                { TRAP::Input::Key::Right_Shift, "RTSH"},
+                { TRAP::Input::Key::Right_Control, "RCTL"},
+                { TRAP::Input::Key::Right_ALT, "RALT"},
+				{ TRAP::Input::Key::Right_ALT, "LVL3"},
+				{ TRAP::Input::Key::Right_ALT, "MDSW"},
+                { TRAP::Input::Key::Right_Super, "RWIN"},
+                { TRAP::Input::Key::Menu, "MENU"}
+            }
+		};
 		
 		//Find the X11 key code -> TRAP key code mapping
-		for(scanCode = desc->min_key_code; scanCode <= desc->max_key_code; scanCode++)
+		for(scanCode = scanCodeMin; scanCode <= scanCodeMax; scanCode++)
 		{
-			name = desc->names->keys[scanCode].name;
-
-			if (name.size() > 4)
-				name = std::string(desc->names->keys[scanCode].name, desc->names->keys[scanCode].name + XkbKeyNameLength);
+			TRAP::Input::Key key = TRAP::Input::Key::Unknown;
 			
 			//Map the key name to a TRAP key code.
 			//Note: We use the US keyboard layout.
 			//Because function keys aren't mapped correctly when using traditional KeySym translations,
 			//they are mapped here instead.
-			if(name == "TLDE")
-				key = Input::Key::Grave_Accent;
-			else if(name == "AE01")
-				key = Input::Key::One;
-			else if(name == "AE02")
-				key = Input::Key::Two;
-			else if(name == "AE03")
-				key = Input::Key::Three;
-			else if(name == "AE04")
-				key = Input::Key::Four;
-			else if(name == "AE05")
-				key = Input::Key::Five;
-			else if(name == "AE06")
-				key = Input::Key::Six;
-			else if(name == "AE07")
-				key = Input::Key::Seven;
-			else if(name == "AE08")
-				key = Input::Key::Eight;
-			else if(name == "AE09")
-				key = Input::Key::Nine;
-			else if(name == "AE10")
-				key = Input::Key::Zero;
-			else if(name == "AE11")
-				key = Input::Key::Minus;
-			else if(name == "AE12")
-				key = Input::Key::Equal;
-			else if(name == "AD01")
-				key = Input::Key::Q;
-			else if(name == "AD02")
-				key = Input::Key::W;
-			else if(name == "AD03")
-				key = Input::Key::E;
-			else if(name == "AD04")
-				key = Input::Key::R;
-			else if(name == "AD05")
-				key = Input::Key::T;
-			else if(name == "AD06")
-				key = Input::Key::Y;
-			else if(name == "AD07")
-				key = Input::Key::U;
-			else if(name == "AD08")
-				key = Input::Key::I;
-			else if(name == "AD09")
-				key = Input::Key::O;
-			else if(name == "AD10")
-				key = Input::Key::P;
-			else if(name == "AD11")
-				key = Input::Key::Left_Bracket;
-			else if(name == "AD12")
-				key = Input::Key::Right_Bracket;
-			else if(name == "AC01")
-				key = Input::Key::A;
-			else if(name == "AC02")
-				key = Input::Key::S;
-			else if(name == "AC03")
-				key = Input::Key::D;
-			else if(name == "AC04")
-				key = Input::Key::F;
-			else if(name == "AC05")
-				key = Input::Key::G;
-			else if(name == "AC06")
-				key = Input::Key::H;
-			else if(name == "AC07")
-				key = Input::Key::J;
-			else if(name == "AC08")
-				key = Input::Key::K;
-			else if(name == "AC09")
-				key = Input::Key::L;
-			else if(name == "AC10")
-				key = Input::Key::Semicolon;
-			else if(name == "AC11")
-				key = Input::Key::Apostrophe;
-			else if(name == "AB01")
-				key = Input::Key::Z;
-			else if(name == "AB02")
-				key = Input::Key::X;
-			else if(name == "AB03")
-				key = Input::Key::C;
-			else if(name == "AB04")
-				key = Input::Key::V;
-			else if(name == "AB05")
-				key = Input::Key::B;
-			else if(name == "AB06")
-				key = Input::Key::N;
-			else if(name == "AB07")
-				key = Input::Key::M;
-			else if(name == "AB08")
-				key = Input::Key::Comma;
-			else if(name == "AB09")
-				key = Input::Key::Period;
-			else if(name == "AB10")
-				key = Input::Key::Slash;
-			else if(name == "BKSL")
-				key = Input::Key::Backslash;
-			else if(name == "LSGT")
-				key = Input::Key::World_1;
-			else if(name == "SPCE")
-				key = Input::Key::Space;
-			else if(name == "ESC")
-				key = Input::Key::Escape;
-			else if(name == "RTRN")
-				key = Input::Key::Enter;
-			else if(name == "TAB")
-				key = Input::Key::Tab;
-			else if(name == "BKSP")
-				key = Input::Key::Backspace;
-			else if(name == "INS")
-				key = Input::Key::Insert;
-			else if(name == "DELE")
-				key = Input::Key::Delete;
-			else if(name == "RGHT")
-				key = Input::Key::Right;
-			else if(name == "LEFT")
-				key = Input::Key::Left;
-			else if(name == "DOWN")
-				key = Input::Key::Down;
-			else if(name == "UP")
-				key = Input::Key::Up;
-			else if(name == "PGUP")
-				key = Input::Key::Page_Up;
-			else if(name == "PGDN")
-				key = Input::Key::Page_Down;
-			else if(name == "HOME")
-				key = Input::Key::Home;
-			else if(name == "END")
-				key = Input::Key::End;
-			else if(name == "CAPS")
-				key = Input::Key::Caps_Lock;
-			else if(name == "SCLK")
-				key = Input::Key::Scroll_Lock;
-			else if(name == "NMLK")
-				key = Input::Key::Num_Lock;
-			else if(name == "PRSC")
-				key = Input::Key::Print_Screen;
-			else if(name == "PAUS")
-				key = Input::Key::Pause;
-			else if(name == "FK01")
-				key = Input::Key::F1;
-			else if(name == "FK02")
-				key = Input::Key::F2;
-			else if(name == "FK03")
-				key = Input::Key::F3;
-			else if(name == "FK04")
-				key = Input::Key::F4;
-			else if(name == "FK05")
-				key = Input::Key::F5;
-			else if(name == "FK06")
-				key = Input::Key::F6;
-			else if(name == "FK07")
-				key = Input::Key::F7;
-			else if(name == "FK08")
-				key = Input::Key::F8;
-			else if(name == "FK09")
-				key = Input::Key::F9;
-			else if(name == "FK10")
-				key = Input::Key::F10;
-			else if(name == "FK11")
-				key = Input::Key::F11;
-			else if(name == "FK12")
-				key = Input::Key::F12;
-			else if(name == "FK13")
-				key = Input::Key::F13;
-			else if(name == "FK14")
-				key = Input::Key::F14;
-			else if(name == "FK15")
-				key = Input::Key::F15;
-			else if(name == "FK16")
-				key = Input::Key::F16;
-			else if(name == "FK17")
-				key = Input::Key::F17;
-			else if(name == "FK18")
-				key = Input::Key::F18;
-			else if(name == "FK19")
-				key = Input::Key::F19;
-			else if(name == "FK20")
-				key = Input::Key::F20;
-			else if(name == "FK21")
-				key = Input::Key::F21;
-			else if(name == "FK22")
-				key = Input::Key::F22;
-			else if(name == "FK23")
-				key = Input::Key::F23;
-			else if(name == "FK24")
-				key = Input::Key::F24;
-			else if(name == "FK25")
-				key = Input::Key::F25;
-			else if(name == "KP0")
-				key = Input::Key::KP_0;
-			else if(name == "KP1")
-				key = Input::Key::KP_1;
-			else if(name == "KP2")
-				key = Input::Key::KP_2;
-			else if(name == "KP3")
-				key = Input::Key::KP_3;
-			else if(name == "KP4")
-				key = Input::Key::KP_4;
-			else if(name == "KP5")
-				key = Input::Key::KP_5;
-			else if(name == "KP6")
-				key = Input::Key::KP_6;
-			else if(name == "KP7")
-				key = Input::Key::KP_7;
-			else if(name == "KP8")
-				key = Input::Key::KP_8;
-			else if(name == "KP9")
-				key = Input::Key::KP_9;
-			else if(name == "KPDL")
-				key = Input::Key::KP_Decimal;
-			else if(name == "KPDV")
-				key = Input::Key::KP_Divide;
-			else if(name == "KPMU")
-				key = Input::Key::KP_Multiply;
-			else if(name == "KPSU")
-				key = Input::Key::KP_Subtract;
-			else if(name == "KPAD")
-				key = Input::Key::KP_Add;
-			else if(name == "KPEN")
-				key = Input::Key::KP_Enter;
-			else if(name == "KPEQ")
-				key = Input::Key::KP_Equal;
-			else if(name == "LFSH")
-				key = Input::Key::Left_Shift;
-			else if(name == "LCTL")
-				key = Input::Key::Left_Control;
-			else if(name == "LALT")
-				key = Input::Key::Left_ALT;
-			else if(name == "LWIN")
-				key = Input::Key::Left_Super;
-			else if(name == "RTSH")
-				key = Input::Key::Right_Shift;
-			else if(name == "RCTL")
-				key = Input::Key::Right_Control;
-			else if(name == "RALT")
-				key = Input::Key::Right_ALT;
-			else if(name == "RWIN")
-				key = Input::Key::Right_Super;
-			else if(name == "COMP")
-				key = Input::Key::Menu;
-			else
-				key = Input::Key::Unknown;
+			for(Keys keyMapKey : KeyMap)
+			{
+				if(strncmp(desc->names->keys[scanCode].name, keyMapKey.Name.c_str(), XkbKeyNameLength) == 0)
+				{
+					key = keyMapKey.Key;
+					break;
+				}
+			}
+
+			//Fall back to key aliases in case the key name did not match
+			for(uint32_t i = 0; i < desc->names->num_key_aliases; i++)
+			{
+				if(key != TRAP::Input::Key::Unknown)
+					break;
+
+				if(strncmp(desc->names->key_aliases[i].real, desc->names->keys[scanCode].name, XkbKeyNameLength) != 0)
+					continue;
 				
-			if((scanCode >= 0) && (scanCode < 256))
-				s_Data.KeyCodes[scanCode] = key;
+				for(Keys keyMapKey : KeyMap)
+				{
+					if(strncmp(desc->names->key_aliases[i].alias, keyMapKey.Name.c_str(), XkbKeyNameLength) == 0)
+					{
+						key = keyMapKey.Key;
+						break;
+					}
+				}
+			}
+				
+			s_Data.KeyCodes[scanCode] = key;
 		}
 		
 		s_Data.XKB.FreeNames(desc, XkbKeyNamesMask, 1);
 		s_Data.XKB.FreeKeyboard(desc, 0, 1);
 	}
+	else
+		s_Data.XLIB.DisplayKeycodes(s_Data.display, &scanCodeMin, &scanCodeMax);
+
+	int32_t width;
+	KeySym* keySyms = s_Data.XLIB.GetKeyboardMapping(s_Data.display, scanCodeMin, scanCodeMax - scanCodeMin + 1, &width);
 	
-	for(scanCode = 0; scanCode < 256; scanCode++)
-	{			
+	for(scanCode = scanCodeMin; scanCode <= scanCodeMax; scanCode++)
+	{
+		//Translate the un-translated key codes using traditional X11 KeySym lookups
+		if(static_cast<int32_t>(s_Data.KeyCodes[scanCode]) < 0)
+		{
+			const std::size_t base = (scanCode - scanCodeMin) * width;
+			s_Data.KeyCodes[scanCode] = TranslateKeySyms(&keySyms[base], width);
+		}
+
 		//Store the reverse translation for faster key name lookup
 		if(static_cast<int32_t>(s_Data.KeyCodes[scanCode]) > 0)
 			s_Data.ScanCodes[static_cast<int32_t>(s_Data.KeyCodes[scanCode])] = scanCode;
 	}
+
+	s_Data.XLIB.Free(keySyms);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5735,6 +5671,174 @@ void TRAP::INTERNAL::WindowingAPI::CaptureCursor(InternalWindow* window)
 void TRAP::INTERNAL::WindowingAPI::ReleaseCursor()
 {
 	s_Data.XLIB.UngrabPointer(s_Data.display, CurrentTime);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Translate the X11 KeySyms for a key to a TRAP key
+//NOTE: This is only used as a fallback, in case the XKB method fails
+//      It is layout-dependent and will fail partially on most non-US layouts
+TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKeySyms(const KeySym* keySyms, int32_t width)
+{
+	if(width > 1)
+	{
+		switch(keySyms[1])
+		{
+			case XK_KP_0: return TRAP::Input::Key::KP_0;
+			case XK_KP_1: return TRAP::Input::Key::KP_1;
+			case XK_KP_2: return TRAP::Input::Key::KP_2;
+			case XK_KP_3: return TRAP::Input::Key::KP_3;
+			case XK_KP_4: return TRAP::Input::Key::KP_4;
+			case XK_KP_5: return TRAP::Input::Key::KP_5;
+			case XK_KP_6: return TRAP::Input::Key::KP_6;
+			case XK_KP_7: return TRAP::Input::Key::KP_7;
+			case XK_KP_8: return TRAP::Input::Key::KP_8;
+			case XK_KP_9: return TRAP::Input::Key::KP_9;
+			case XK_KP_Separator:
+			case XK_KP_Decimal: return TRAP::Input::Key::KP_Decimal;
+			case XK_KP_Equal: return TRAP::Input::Key::KP_Equal;
+			case XK_KP_Enter: return TRAP::Input::Key::KP_Enter;
+			default: break;
+		}
+	}
+
+	switch(keySyms[0])
+	{
+		case XK_Escape: return TRAP::Input::Key::Escape;
+		case XK_Tab: return TRAP::Input::Key::Tab;
+		case XK_Shift_L: return TRAP::Input::Key::Left_Shift;
+		case XK_Shift_R: return TRAP::Input::Key::Right_Shift;
+		case XK_Control_L: return TRAP::Input::Key::Left_Control;
+		case XK_Control_R: return TRAP::Input::Key::Right_Control;
+		case XK_Meta_L:
+		case XK_Alt_L: return TRAP::Input::Key::Left_ALT;
+		case XK_Mode_switch: //Mapped to Alt_R on many keyboards
+		case XK_ISO_Level3_Shift: //AltGr on at least some machines
+		case XK_Meta_R:
+		case XK_Alt_R: return TRAP::Input::Key::Right_ALT;
+		case XK_Super_L: return TRAP::Input::Key::Left_Super;
+		case XK_Super_R: return TRAP::Input::Key::Right_Super;
+		case XK_Menu: return TRAP::Input::Key::Menu;
+		case XK_Num_Lock: return TRAP::Input::Key::Num_Lock;
+		case XK_Caps_Lock: return TRAP::Input::Key::Caps_Lock;
+		case XK_Print: return TRAP::Input::Key::Print_Screen;
+		case XK_Scroll_Lock: return TRAP::Input::Key::Scroll_Lock;
+		case XK_Pause: return TRAP::Input::Key::Pause;
+		case XK_Delete: return TRAP::Input::Key::Delete;
+		case XK_BackSpace: return TRAP::Input::Key::Backspace;
+		case XK_Return: return TRAP::Input::Key::Enter;
+		case XK_Home: return TRAP::Input::Key::Home;
+		case XK_End: return TRAP::Input::Key::End;
+		case XK_Page_Up: return TRAP::Input::Key::Page_Up;
+		case XK_Page_Down: return TRAP::Input::Key::Page_Down;
+		case XK_Insert: return TRAP::Input::Key::Insert;
+		case XK_Left: return TRAP::Input::Key::Left;
+		case XK_Right: return TRAP::Input::Key::Right;
+		case XK_Down: return TRAP::Input::Key::Down;
+		case XK_Up: return TRAP::Input::Key::Up;
+		case XK_F1: return TRAP::Input::Key::F1;
+		case XK_F2: return TRAP::Input::Key::F2;
+		case XK_F3: return TRAP::Input::Key::F3;
+		case XK_F4: return TRAP::Input::Key::F4;
+		case XK_F5: return TRAP::Input::Key::F5;
+		case XK_F6: return TRAP::Input::Key::F6;
+		case XK_F7: return TRAP::Input::Key::F7;
+		case XK_F8: return TRAP::Input::Key::F8;
+		case XK_F9: return TRAP::Input::Key::F9;
+		case XK_F10: return TRAP::Input::Key::F10;
+		case XK_F11: return TRAP::Input::Key::F11;
+		case XK_F12: return TRAP::Input::Key::F12;
+		case XK_F13: return TRAP::Input::Key::F13;
+		case XK_F14: return TRAP::Input::Key::F14;
+		case XK_F15: return TRAP::Input::Key::F15;
+		case XK_F16: return TRAP::Input::Key::F16;
+		case XK_F17: return TRAP::Input::Key::F17;
+		case XK_F18: return TRAP::Input::Key::F18;
+		case XK_F19: return TRAP::Input::Key::F19;
+		case XK_F20: return TRAP::Input::Key::F20;
+		case XK_F21: return TRAP::Input::Key::F21;
+		case XK_F22: return TRAP::Input::Key::F22;
+		case XK_F23: return TRAP::Input::Key::F23;
+		case XK_F24: return TRAP::Input::Key::F24;
+		case XK_F25: return TRAP::Input::Key::F25;
+
+		//Numeric keypad
+		case XK_KP_Divide: return TRAP::Input::Key::KP_Divide;
+		case XK_KP_Multiply: return TRAP::Input::Key::KP_Multiply;
+		case XK_KP_Subtract: return TRAP::Input::Key::KP_Subtract;
+		case XK_KP_Add: return TRAP::Input::Key::KP_Add;
+
+		//These should have been detected in seconday keysym test above!
+		case XK_KP_Insert: return TRAP::Input::Key::KP_0;
+		case XK_KP_End: return TRAP::Input::Key::KP_1;
+		case XK_KP_Down: return TRAP::Input::Key::KP_2;
+		case XK_KP_Page_Down: return TRAP::Input::Key::KP_3;
+		case XK_KP_Left: return TRAP::Input::Key::KP_4;
+		case XK_KP_Right: return TRAP::Input::Key::KP_6;
+		case XK_KP_Home: return TRAP::Input::Key::KP_7;
+		case XK_KP_Up: return TRAP::Input::Key::KP_8;
+		case XK_KP_Page_Up: return TRAP::Input::Key::KP_9;
+		case XK_KP_Delete: return TRAP::Input::Key::KP_Decimal;
+		case XK_KP_Equal: return TRAP::Input::Key::KP_Equal;
+		case XK_KP_Enter: return TRAP::Input::Key::KP_Enter;
+
+		//Last resor: Check for printable keys (should not happen if the XKB extension is available).
+		//This will give a layout dependent mapping (which is wrong, and we may miss some keys,
+		//especially on non-US keyboards), but it is better than nothing...
+		case XK_a: return TRAP::Input::Key::A;
+		case XK_b: return TRAP::Input::Key::B;
+		case XK_c: return TRAP::Input::Key::C;
+		case XK_d: return TRAP::Input::Key::D;
+		case XK_e: return TRAP::Input::Key::E;
+		case XK_f: return TRAP::Input::Key::F;
+		case XK_g: return TRAP::Input::Key::G;
+		case XK_h: return TRAP::Input::Key::H;
+		case XK_i: return TRAP::Input::Key::I;
+		case XK_j: return TRAP::Input::Key::J;
+		case XK_k: return TRAP::Input::Key::K;
+		case XK_l: return TRAP::Input::Key::L;
+		case XK_m: return TRAP::Input::Key::M;
+		case XK_n: return TRAP::Input::Key::N;
+		case XK_o: return TRAP::Input::Key::O;
+		case XK_p: return TRAP::Input::Key::P;
+		case XK_q: return TRAP::Input::Key::Q;
+		case XK_r: return TRAP::Input::Key::R;
+		case XK_s: return TRAP::Input::Key::S;
+		case XK_t: return TRAP::Input::Key::T;
+		case XK_u: return TRAP::Input::Key::U;
+		case XK_v: return TRAP::Input::Key::V;
+		case XK_w: return TRAP::Input::Key::W;
+		case XK_x: return TRAP::Input::Key::X;
+		case XK_y: return TRAP::Input::Key::Y;
+		case XK_z: return TRAP::Input::Key::Z;
+		case XK_1: return TRAP::Input::Key::One;
+		case XK_2: return TRAP::Input::Key::Two;
+		case XK_3: return TRAP::Input::Key::Three;
+		case XK_4: return TRAP::Input::Key::Four;
+		case XK_5: return TRAP::Input::Key::Five;
+		case XK_6: return TRAP::Input::Key::Six;
+		case XK_7: return TRAP::Input::Key::Seven;
+		case XK_8: return TRAP::Input::Key::Eight;
+		case XK_9: return TRAP::Input::Key::Nine;
+		case XK_0: return TRAP::Input::Key::Zero;
+		case XK_space: return TRAP::Input::Key::Space;
+		case XK_minus: return TRAP::Input::Key::Minus;
+		case XK_equal: return TRAP::Input::Key::Equal;
+		case XK_bracketleft: return TRAP::Input::Key::Left_Bracket;
+		case XK_bracketright: return TRAP::Input::Key::Right_Bracket;
+		case XK_backslash: return TRAP::Input::Key::Backslash;
+		case XK_semicolon: return TRAP::Input::Key::Semicolon;
+		case XK_apostrophe: return TRAP::Input::Key::Apostrophe;
+		case XK_grave: return TRAP::Input::Key::Grave_Accent;
+		case XK_comma: return TRAP::Input::Key::Comma;
+		case XK_period: return TRAP::Input::Key::Period;
+		case XK_slash: return TRAP::Input::Key::Slash;
+		case XK_less: return TRAP::Input::Key::World_1; //At least in some layouts...
+		default: break;
+	}
+
+	//No matching translation was found
+	return TRAP::Input::Key::Unknown;
 }
 
 #endif

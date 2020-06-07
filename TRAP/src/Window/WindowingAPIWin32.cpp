@@ -117,15 +117,6 @@ BOOL TRAP::INTERNAL::WindowingAPI::IsWindowsVistaOrGreaterWin32()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Checks whether we are on at least Windows XP
-BOOL TRAP::INTERNAL::WindowingAPI::IsWindowsXPOrGreaterWin32()
-{
-	return IsWindowsVersionOrGreaterWin32(HIBYTE(_WIN32_WINNT_WINXP),
-		LOBYTE(_WIN32_WINNT_WINXP), 0);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Returns an UTF-8 string version of the specified wide string
 std::string TRAP::INTERNAL::WindowingAPI::CreateUTF8StringFromWideStringWin32(const std::wstring& wStr)
 {
@@ -1221,11 +1212,8 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitor(InternalWindow* window)
 
 		//HACK: When mouse trails are enabled the cursor becomes invisible when
 		//      the OpenGL ICD switches to page flipping
-		if (IsWindowsXPOrGreaterWin32())
-		{
-			SystemParametersInfo(SPI_GETMOUSETRAILS, 0, &s_Data.MouseTrailSize, 0);
-			SystemParametersInfo(SPI_SETMOUSETRAILS, 0, nullptr, 0);
-		}
+		SystemParametersInfo(SPI_GETMOUSETRAILS, 0, &s_Data.MouseTrailSize, 0);
+		SystemParametersInfo(SPI_SETMOUSETRAILS, 0, nullptr, 0);
 	}
 
 	if (!window->Monitor->Window)
@@ -1246,11 +1234,8 @@ void TRAP::INTERNAL::WindowingAPI::AcquireMonitorBorderless(InternalWindow* wind
 
 		//HACK: When mouse trails are enabled the cursor becomes invisible when
 		//      the OpenGL ICD switches to page flipping
-		if (IsWindowsXPOrGreaterWin32())
-		{
-			SystemParametersInfo(SPI_GETMOUSETRAILS, 0, &s_Data.MouseTrailSize, 0);
-			SystemParametersInfo(SPI_SETMOUSETRAILS, 0, nullptr, 0);
-		}
+		SystemParametersInfo(SPI_GETMOUSETRAILS, 0, &s_Data.MouseTrailSize, 0);
+		SystemParametersInfo(SPI_SETMOUSETRAILS, 0, nullptr, 0);
 	}
 
 	if (!window->Monitor->Window)
@@ -1273,8 +1258,7 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseMonitor(const InternalWindow* window)
 		SetThreadExecutionState(ES_CONTINUOUS);
 
 		//HACK: Restore mouse trail length saved in acquireMonitor
-		if (IsWindowsXPOrGreaterWin32())
-			SystemParametersInfo(SPI_SETMOUSETRAILS, s_Data.MouseTrailSize, nullptr, 0);
+		SystemParametersInfo(SPI_SETMOUSETRAILS, s_Data.MouseTrailSize, nullptr, 0);
 	}
 
 	window->Monitor->Window = nullptr;

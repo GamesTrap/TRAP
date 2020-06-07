@@ -275,6 +275,7 @@ namespace TRAP::INTERNAL
 		typedef int (*PFN_XDeleteProperty)(Display*, ::Window, Atom);
 		typedef void (*PFN_XDestroyIC)(XIC);
 		typedef int (*PFN_XDestroyWindow)(Display*, ::Window);
+		typedef int (*PFN_XDisplayKeycodes)(Display*, int*, int*);
 		typedef int (*PFN_XEventsQueued)(Display*, int);
 		typedef int (*PFN_XFilterEvent)(XEvent*, ::Window);
 		typedef int (*PFN_XFindContext)(Display*, XID, XContext, XPointer*);
@@ -1041,6 +1042,7 @@ namespace TRAP::INTERNAL
 				PFN_XDeleteProperty DeleteProperty{};
 				PFN_XDestroyIC DestroyIC{};
 				PFN_XDestroyWindow DestroyWindow{};
+				PFN_XDisplayKeycodes DisplayKeycodes{};
 				PFN_XEventsQueued EventsQueued{};
 				PFN_XFilterEvent FilterEvent{};
 				PFN_XFindContext FindContext{};
@@ -1703,8 +1705,6 @@ namespace TRAP::INTERNAL
 		static BOOL IsWindows7OrGreaterWin32();
 		//Checks whether we are on at least Windows Vista
 		static BOOL IsWindowsVistaOrGreaterWin32();
-		//Checks whether we are on at least Windows XP
-		static BOOL IsWindowsXPOrGreaterWin32();
 		//Returns an UTF-8 string version of the specified wide string
 		static std::string CreateUTF8StringFromWideStringWin32(const std::wstring& wStr);
 		//Returns a wide string string version of the specified UTF-8 string
@@ -1814,7 +1814,7 @@ namespace TRAP::INTERNAL
 		//Clears the X error handler callback
 		static void ReleaseErrorHandlerX11();
 		//Check whether the specified atom is supported
-		static Atom GetSupportedAtom(Atom* supportedAtoms, uint32_t atomCount, const char* atomName);
+		static Atom GetAtomIfSupported(Atom* supportedAtoms, uint32_t atomCount, const char* atomName);
 		//Create a blank cursor for hidden and disabled cursor modes
 		static Cursor CreateHiddenCursor();
 		//Check whether the IM has a usable style
@@ -1896,10 +1896,11 @@ namespace TRAP::INTERNAL
 		static Scope<InternalMonitor> CreateMonitor(std::string name);
 		//Creates a dummy window for behind-the-scenes work
 		static ::Window CreateHelperWindow();
-		//Translate an X11 key code to a TRAP key code.
-		static Input::Key TranslateKeyCode(int32_t scanCode);
+		//Translate the X11 KeySyms for a key to a TRAP key
+		static Input::Key TranslateKeySyms(const KeySym* keySyms, int32_t width);
 		//Clear its handle when the input context has been destroyed
 		static void InputContextDestroyCallback(XIC ic, XPointer clientData, XPointer callData);
+		//Translate an X11 key code to a TRAP key
 #endif
 	};
 }

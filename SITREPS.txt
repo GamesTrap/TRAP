@@ -1042,5 +1042,8 @@ SITREP 06/06/2020|20w23a2
 SITREP 06/07/2020|20w23a3
     - Changed TRAP Engine version to 20w23a3(0.6.36)
     - Vulkan fixed validation errors inside PrepareNextFrame when swapchain is out of date or suboptimal ~<20 mins
-    - Linux X11/XLib is now loaded dynamically (doesnt apply for MsgBoxes) ~>35 mins
-    - Linux X11 Added XIM callbacks (Fixed segfault) ~<30 mins
+    - WindowingAPI Linux X11/XLib is now loaded dynamically (doesnt apply for MsgBoxes) ~>35 mins
+    - WindowingAPI Linux X11 Added XIM callbacks (Fixed segfault) ~<30 mins
+    - WindowingAPI Linux X11 Filtered error from other connections ~<10 mins
+    - WindowingAPI Linux X11 XKB now also checks key aliases ~>25 mins
+    - WindowingAPI WinAPI Removed pre Windows XP checks ~>20 mins
