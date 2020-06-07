@@ -291,11 +291,14 @@ void TRAP::Graphics::API::Vulkan::Swapchain::PrepareNextFrame()
 {
 	const VkResult acquire = AcquireNextImage(m_presentCompleteSemaphore);
 	if ((acquire == VK_ERROR_OUT_OF_DATE_KHR) || (acquire == VK_SUBOPTIMAL_KHR))
-		RecreateSwapchain();
-	else
 	{
-		VkCall(acquire)
+		RecreateSwapchain();
+		PrepareNextFrame();
+		
+		return;
 	}
+
+	VkCall(acquire)
 
 	//Sync
 	VkCall(vkWaitForFences(m_device->GetDevice(), 1, &m_waitFence->GetFence(), VK_TRUE, std::numeric_limits<uint64_t>::max()));

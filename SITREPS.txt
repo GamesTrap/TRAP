@@ -1038,3 +1038,7 @@ SITREP 06/06/2020|20w23a2
     - Vulkan added support for multiple windows ~>90 mins
     - Fixed remaining Vulkan errors ~<40 mins
     - Validated Vulkan functionality on Ubuntu 20.04 LTS using NVIDIA 440.66.15 ~<30 mins
+
+SITREP 06/07/2020|20w23a3
+    - Changed TRAP Engine version to 20w23a3(0.6.36)
+    - Vulkan fixed validation errors inside PrepareNextFrame when swapchain is out of date or suboptimal ~<20 mins
