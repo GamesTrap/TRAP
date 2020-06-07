@@ -1042,3 +1042,4 @@ SITREP 06/06/2020|20w23a2
 SITREP 06/07/2020|20w23a3
     - Changed TRAP Engine version to 20w23a3(0.6.36)
     - Vulkan fixed validation errors inside PrepareNextFrame when swapchain is out of date or suboptimal ~<20 mins
+    - Linux X11/XLib is now loaded dynamically ~>35 mins

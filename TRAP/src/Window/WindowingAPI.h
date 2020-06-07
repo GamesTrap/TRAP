@@ -254,6 +254,108 @@ namespace TRAP::INTERNAL
 		typedef int (*PFNGLXSWAPINTERVALMESAPROC)(int32_t);
 		typedef int (*PFNGLXSWAPINTERVALSGIPROC)(int32_t);
 		typedef GLXContext (*PFNGLXCREATECONTEXTATTRIBSARBPROC)(Display*, GLXFBConfig, GLXContext, int32_t, const int32_t*);
+
+		//XLib
+		typedef XClassHint* (*PFN_XAllocClassHint)();
+		typedef XSizeHints* (*PFN_XAllocSizeHints)();
+		typedef XWMHints* (*PFN_XAllocWMHints)();
+		typedef int (*PFN_XChangeProperty)(Display*, ::Window, Atom, Atom, int, int, const unsigned char*, int);
+		typedef int (*PFN_XChangeWindowAttributes)(Display*, ::Window, unsigned long, XSetWindowAttributes*);
+		typedef int (*PFN_XCheckIfEvent)(Display*, XEvent*, int(*)(Display*, XEvent*, XPointer), XPointer);
+		typedef int (*PFN_XCheckTypedWindowEvent)(Display*, ::Window, int, XEvent*);
+		typedef int (*PFN_XCloseDisplay)(Display*);
+		typedef Status (*PFN_XCloseIM)(XIM);
+		typedef int (*PFN_XConvertSelection)(Display*, Atom, Atom, Atom, ::Window, Time);
+		typedef Colormap (*PFN_XCreateColormap)(Display*, ::Window, Visual*, int);
+		typedef Cursor (*PFN_XCreateFontCursor)(Display*, unsigned int);
+		typedef XIC (*PFN_XCreateIC)(XIM, ...);
+		typedef ::Window (*PFN_XCreateWindow)(Display*, ::Window, int, int, unsigned int, unsigned int, unsigned int, int, unsigned int, Visual*, unsigned long, XSetWindowAttributes*);
+		typedef int (*PFN_XDefineCursor)(Display*, ::Window, Cursor);
+		typedef int (*PFN_XDeleteContext)(Display*, XID, XContext);
+		typedef int (*PFN_XDeleteProperty)(Display*, ::Window, Atom);
+		typedef void (*PFN_XDestroyIC)(XIC);
+		typedef int (*PFN_XDestroyWindow)(Display*, ::Window);
+		typedef int (*PFN_XEventsQueued)(Display*, int);
+		typedef int (*PFN_XFilterEvent)(XEvent*, ::Window);
+		typedef int (*PFN_XFindContext)(Display*, XID, XContext, XPointer*);
+		typedef int (*PFN_XFlush)(Display*);
+		typedef int (*PFN_XFree)(void*);
+		typedef int (*PFN_XFreeColormap)(Display*, Colormap);
+		typedef int (*PFN_XFreeCursor)(Display*, Cursor);
+		typedef void (*PFN_XFreeEventData)(Display*, XGenericEventCookie*);
+		typedef int (*PFN_XGetErrorText)(Display*, int, char*, int);
+		typedef int (*PFN_XGetEventData)(Display*, XGenericEventCookie*);
+		typedef char* (*PFN_XGetICValues)(XIC, ...);
+		typedef char* (*PFN_XGetIMValues)(XIM, ...);
+		typedef int (*PFN_XGetInputFocus)(Display*, ::Window*, int*);
+		typedef KeySym* (*PFN_XGetKeyboardMapping)(Display*, KeyCode, int, int*);
+		typedef int (*PFN_XGetScreenSaver)(Display*, int*, int*, int*, int*);
+		typedef ::Window (*PFN_XGetSelectionOwner)(Display*, Atom);
+		typedef XVisualInfo* (*PFN_XGetVisualInfo)(Display*, long, XVisualInfo*, int*);
+		typedef Status (*PFN_XGetWMNormalHints)(Display*, ::Window, XSizeHints*, long*);
+		typedef Status (*PFN_XGetWindowAttributes)(Display*, ::Window, XWindowAttributes*);
+		typedef int (*PFN_XGetWindowProperty)(Display*, ::Window, Atom, long, long, int, Atom, Atom*, int*, unsigned long*, unsigned long*, unsigned char**);
+		typedef int (*PFN_XGrabPointer)(Display*, ::Window, int, unsigned int, int, int, ::Window, Cursor, Time);
+		typedef Status (*PFN_XIconifyWindow)(Display*, ::Window, int);
+		typedef Status (*PFN_XInitThreads)();
+		typedef Atom (*PFN_XInternAtom)(Display*, const char*, int);
+		typedef int (*PFN_XLookupString)(XKeyEvent*, char*, int, KeySym*, XComposeStatus*);
+		typedef int (*PFN_XMapRaised)(Display*, ::Window);
+		typedef int (*PFN_XMapWindow)(Display*, ::Window);
+		typedef int (*PFN_XMoveResizeWindow)(Display*, ::Window, int, int, unsigned int, unsigned int);
+		typedef int (*PFN_XMoveWindow)(Display*, ::Window, int, int);
+		typedef int (*PFN_XNextEvent)(Display*, XEvent*);
+		typedef Display* (*PFN_XOpenDisplay)(const char*);
+		typedef XIM (*PFN_XOpenIM)(Display*, XrmDatabase*, char*, char*);
+		typedef int (*PFN_XPeekEvent)(Display*, XEvent*);
+		typedef int (*PFN_XPending)(Display*);
+		typedef int (*PFN_XQueryExtension)(Display*, const char*, int*, int*, int*);
+		typedef int (*PFN_XQueryPointer)(Display*, ::Window, ::Window*, ::Window*, int*, int*, int*, int*, unsigned int*);
+		typedef int (*PFN_XRaiseWindow)(Display*, ::Window);
+		typedef int (*PFN_XResizeWindow)(Display*, ::Window, unsigned int, unsigned int);
+		typedef char* (*PFN_XResourceManagerString)(Display*);
+		typedef int (*PFN_XSaveContext)(Display*, XID, XContext, const char*);
+		typedef int (*PFN_XSelectInput)(Display*, ::Window, long);
+		typedef Status (*PFN_XSendEvent)(Display*, ::Window, int, long, XEvent*);
+		typedef int (*PFN_XSetClassHint)(Display*, ::Window, XClassHint*);
+		typedef XErrorHandler (*PFN_XSetErrorHandler)(XErrorHandler);
+		typedef void (*PFN_XSetICFocus)(XIC);
+		typedef int (*PFN_XSetInputFocus)(Display*, ::Window, int, Time);
+		typedef char* (*PFN_XSetLocaleModifiers)(const char*);
+		typedef int (*PFN_XSetScreenSaver)(Display*, int, int, int, int);
+		typedef int (*PFN_XSetSelectionOwner)(Display*, Atom, ::Window, Time);
+		typedef int (*PFN_XSetWMHints)(Display*, ::Window, XWMHints*);
+		typedef void (*PFN_XSetWMNormalHints)(Display*, ::Window, XSizeHints*);
+		typedef Status (*PFN_XSetWMProtocols)(Display*, ::Window, Atom*, int);
+		typedef int (*PFN_XSupportsLocale)();
+		typedef int (*PFN_XSync)(Display*, int);
+		typedef int (*PFN_XTranslateCoordinates)(Display*, ::Window, ::Window, int, int, int*, int*, ::Window*);
+		typedef int (*PFN_XUndefineCursor)(Display*, ::Window);
+		typedef int (*PFN_XUngrabPointer)(Display*, Time);
+		typedef int (*PFN_XUnmapWindow)(Display*, ::Window);
+		typedef void (*PFN_XUnsetICFocus)(XIC);
+		typedef VisualID (*PFN_XVisualIDFromVisual)(Visual*);
+		typedef int (*PFN_XWarpPointer)(Display*, ::Window, ::Window, int, int, unsigned int, unsigned int, int, int);
+
+		//XKB
+		typedef void (*PFN_XkbFreeKeyboard)(XkbDescPtr, unsigned int, int);
+		typedef void (*PFN_XkbFreeNames)(XkbDescPtr, unsigned int, int);
+		typedef XkbDescPtr (*PFN_XkbGetMap)(Display*, unsigned int, unsigned int);
+		typedef Status (*PFN_XkbGetNames)(Display*, unsigned int, XkbDescPtr);
+		typedef Status (*PFN_XkbGetState)(Display*, unsigned int, XkbStatePtr);
+		typedef KeySym (*PFN_XkbKeycodeToKeysym)(Display*, KeyCode, int, int);
+		typedef int (*PFN_XkbQueryExtension)(Display*, int*, int*, int*, int*, int*);
+		typedef int (*PFN_XkbSelectEventDetails)(Display*, unsigned int, unsigned int, unsigned long, unsigned long);
+		typedef int (*PFN_XkbSetDetectableAutoRepeat)(Display*, int, int*);
+		typedef int (*PFN_Xutf8LookupString)(XIC, XKeyPressedEvent*, char*, int, KeySym*, Status*);
+		typedef void (*PFN_Xutf8SetWMProperties)(Display*, ::Window, const char*, const char*, char**, int, XSizeHints*, XWMHints*, XClassHint*);
+
+		//XRM
+		typedef void (*PFN_XrmDestroyDatabase)(XrmDatabase);
+		typedef int (*PFN_XrmGetResource)(XrmDatabase, const char*, const char*, char**, XrmValue*);
+		typedef XrmDatabase (*PFN_XrmGetStringDatabase)(const char*);
+		typedef void (*PFN_XrmInitialize)();
+		typedef XrmQuark (*PFN_XrmUniqueQuark)();
 #endif
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Enums--------------------------------------------------------------------------------------------------------------//
@@ -792,6 +894,15 @@ namespace TRAP::INTERNAL
 				int32_t Major = 0;
 				int32_t Minor = 0;
 				uint32_t Group = 0;
+				PFN_XkbFreeKeyboard FreeKeyboard{};
+				PFN_XkbFreeNames FreeNames{};
+				PFN_XkbGetMap GetMap{};
+				PFN_XkbGetNames GetNames{};
+				PFN_XkbGetState GetState{};
+				PFN_XkbKeycodeToKeysym KeycodeToKeysym{};
+				PFN_XkbQueryExtension QueryExtension{};
+				PFN_XkbSelectEventDetails SelectEventDetails{};
+				PFN_XkbSetDetectableAutoRepeat SetDetectableAutoRepeat{};
 			} XKB{};
 			
 			struct SAVER
@@ -904,6 +1015,102 @@ namespace TRAP::INTERNAL
 				bool ARB_create_context;
 				bool ARB_create_context_profile;
 			} GLX{};
+
+			struct xlib
+			{
+				void* Handle = nullptr;
+				PFN_XAllocClassHint AllocClassHint{};
+				PFN_XAllocSizeHints AllocSizeHints{};
+				PFN_XAllocWMHints AllocWMHints{};
+				PFN_XChangeProperty ChangeProperty{};
+				PFN_XChangeWindowAttributes ChangeWindowAttributes{};
+				PFN_XCheckIfEvent CheckIfEvent{};
+				PFN_XCheckTypedWindowEvent CheckTypedWindowEvent;
+				PFN_XCloseDisplay CloseDisplay{};
+				PFN_XCloseIM CloseIM{};
+				PFN_XConvertSelection ConvertSelection{};
+				PFN_XCreateColormap CreateColormap{};
+				PFN_XCreateFontCursor CreateFontCursor{};
+				PFN_XCreateIC CreateIC{};
+				PFN_XCreateWindow CreateWindow{};
+				PFN_XDefineCursor DefineCursor{};
+				PFN_XDeleteContext DeleteContext{};
+				PFN_XDeleteProperty DeleteProperty{};
+				PFN_XDestroyIC DestroyIC{};
+				PFN_XDestroyWindow DestroyWindow{};
+				PFN_XEventsQueued EventsQueued{};
+				PFN_XFilterEvent FilterEvent{};
+				PFN_XFindContext FindContext{};
+				PFN_XFlush Flush{};
+				PFN_XFree Free{};
+				PFN_XFreeColormap FreeColormap{};
+				PFN_XFreeCursor FreeCursor{};
+				PFN_XFreeEventData FreeEventData{};
+				PFN_XGetErrorText GetErrorText{};
+				PFN_XGetEventData GetEventData{};
+				PFN_XGetICValues GetICValues{};
+				PFN_XGetIMValues GetIMValues{};
+				PFN_XGetInputFocus GetInputFocus{};
+				PFN_XGetKeyboardMapping GetKeyboardMapping{};
+				PFN_XGetScreenSaver GetScreenSaver{};
+				PFN_XGetSelectionOwner GetSelectionOwner{};
+				PFN_XGetVisualInfo GetVisualInfo{};
+				PFN_XGetWMNormalHints GetWMNormalHints{};
+				PFN_XGetWindowAttributes GetWindowAttributes{};
+				PFN_XGetWindowProperty GetWindowProperty{};
+				PFN_XGrabPointer GrabPointer{};
+				PFN_XIconifyWindow IconifyWindow{};
+				PFN_XInitThreads InitThreads{};
+				PFN_XInternAtom InternAtom{};
+				PFN_XLookupString LookupString{};
+				PFN_XMapRaised MapRaised{};
+				PFN_XMapWindow MapWindow{};
+				PFN_XMoveResizeWindow MoveResizeWindow{};
+				PFN_XMoveWindow MoveWindow{};
+				PFN_XNextEvent NextEvent{};
+				PFN_XOpenDisplay OpenDisplay{};
+				PFN_XOpenIM OpenIM{};
+				PFN_XPeekEvent PeekEvent{};
+				PFN_XPending Pending{};
+				PFN_XQueryExtension QueryExtension{};
+				PFN_XQueryPointer QueryPointer{};
+				PFN_XRaiseWindow RaiseWindow{};
+				PFN_XResizeWindow ResizeWindow{};
+				PFN_XResourceManagerString ResourceManagerString{};
+				PFN_XSaveContext SaveContext{};
+				PFN_XSelectInput SelectInput{};
+				PFN_XSendEvent SendEvent{};
+				PFN_XSetClassHint SetClassHint{};
+				PFN_XSetErrorHandler SetErrorHandler{};
+				PFN_XSetICFocus SetICFocus{};
+				PFN_XSetInputFocus SetInputFocus{};
+				PFN_XSetLocaleModifiers SetLocaleModifiers{};
+				PFN_XSetScreenSaver SetScreenSaver{};
+				PFN_XSetSelectionOwner SetSelectionOwner{};
+				PFN_XSetWMHints SetWMHints{};
+				PFN_XSetWMNormalHints SetWMNormalHints{};
+				PFN_XSetWMProtocols SetWMProtocols{};
+				PFN_XSupportsLocale SupportsLocale{};
+				PFN_XSync Sync{};
+				PFN_XTranslateCoordinates TranslateCoordinates{};
+				PFN_XUndefineCursor UndefineCursor{};
+				PFN_XUngrabPointer UngrabPointer{};
+				PFN_XUnmapWindow UnmapWindow{};
+				PFN_XUnsetICFocus UnsetICFocus{};
+				PFN_XVisualIDFromVisual VisualIDFromVisual{};
+				PFN_XWarpPointer WarpPointer{};
+				PFN_Xutf8LookupString UTF8LookupString{};
+				PFN_Xutf8SetWMProperties UTF8SetWMProperties{};
+			} XLIB{};
+
+			struct xrm
+			{
+				PFN_XrmDestroyDatabase DestroyDatabase{};
+				PFN_XrmGetResource GetResource{};
+				PFN_XrmGetStringDatabase GetStringDatabase{};
+				PFN_XrmInitialize Initialize{};
+				PFN_XrmUniqueQuark UniqueQuark{};
+			} XRM{};
 #endif
 		};
 	public:
