@@ -8,15 +8,21 @@ namespace TRAP::Utils::Debug
 	struct ProfileResult
 	{
 		std::string Name;
-		
+
 		FloatingPointMicroseconds Start;
 		std::chrono::microseconds ElapsedTime;
 		std::thread::id ThreadID;
 	};
 
+	struct InstrumentationSession
+	{
+		std::string Name;
+	};
+
 	class Instrumentor
 	{
 	public:
+		Instrumentor();
 		~Instrumentor();
 		
 		Instrumentor(const Instrumentor&) = delete;
@@ -30,16 +36,15 @@ namespace TRAP::Utils::Debug
 		void EndSession();
 
 		void WriteProfile(const ProfileResult& result);
-		void WriteHeader();
-		void WriteFooter();
 		
 	private:
-		Instrumentor();		
-
-		std::string m_sessionName;
+		void WriteHeader();
+		void WriteFooter();
+		void InternalEndSession();
+		
+		std::mutex m_mutex;
+		InstrumentationSession* m_currentSession;
 		std::ofstream m_outputStream;
-		std::mutex m_lock;
-		bool m_activeSession;
 	};
 
 	class InstrumentationTimer
@@ -57,10 +62,39 @@ namespace TRAP::Utils::Debug
 		
 	private:
 		const char* m_name = nullptr;
-
 		std::chrono::time_point<std::chrono::steady_clock> m_startTimePoint;
 		bool m_stopped;
 	};
+
+	namespace InstrumentorUtils
+	{
+		template<std::size_t N>
+		struct ChangeResult
+		{
+			char Data[N];
+		};
+
+		template<std::size_t N, std::size_t K>
+		constexpr auto CleanupOutputString(const char(&expr)[N], const char(&remove)[K])
+		{
+			ChangeResult<N> result = {};
+
+			std::size_t srcIndex = 0;
+			std::size_t dstIndex = 0;
+			while(srcIndex < N)
+			{
+				std::size_t matchIndex = 0;
+				while (matchIndex < K - 1 && srcIndex + matchIndex < N - 1 && expr[srcIndex + matchIndex] == remove[matchIndex])
+					matchIndex++;
+				if (matchIndex == K - 1)
+					srcIndex += matchIndex;
+				result.Data[dstIndex++] = expr[srcIndex] == '"' ? '\'' : expr[srcIndex];
+				srcIndex++;
+			}
+
+			return result;
+		}
+	}
 }
 
 //#define TRAP_PROFILE
@@ -95,7 +129,8 @@ namespace TRAP::Utils::Debug
 	{
 		::TRAP::Utils::Debug::Instrumentor::Get().EndSession();
 	}
-	#define TP_PROFILE_SCOPE(name) ::TRAP::Utils::Debug::InstrumentationTimer timer##__LINE__(name);
+	#define TP_PROFILE_SCOPE(name) constexpr auto fixedName = ::TRAP::Utils::Debug::InstrumentorUtils::CleanupOutputString(name, "__cdecl ");\
+		::TRAP::Utils::Debug::InstrumentationTimer timer##__LINE__(fixedName.Data);
 	#define TP_PROFILE_FUNCTION() TP_PROFILE_SCOPE(TP_FUNC_SIG)
 #else
 	constexpr void TP_PROFILE_BEGIN_SESSION(const std::string& name, const std::string& filePath) {}

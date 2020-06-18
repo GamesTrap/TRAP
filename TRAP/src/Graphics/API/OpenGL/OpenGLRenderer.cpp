@@ -253,7 +253,12 @@ void TRAP::Graphics::API::OpenGLRenderer::Draw(const Scope<VertexArray>& vertexA
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glDrawArrays(TRAPRendererPrimitiveToOpenGL(primitive), 0, vertexArray->GetIndexCount()));
+	uint32_t count = 0;
+	for (const Scope<VertexBuffer>& vertexBuffer : vertexArray->GetVertexBuffers())
+		//Amount of indices = Total Vertex count divided by the stride of the data layout
+		count += vertexBuffer->GetVertexCount() / vertexBuffer->GetLayout().GetStride();
+	
+	OpenGLCall(glDrawArrays(TRAPRendererPrimitiveToOpenGL(primitive), 0, count));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

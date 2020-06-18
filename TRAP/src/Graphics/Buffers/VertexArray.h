@@ -26,7 +26,6 @@ namespace TRAP::Graphics
 		
 		virtual std::vector<Scope<VertexBuffer>>& GetVertexBuffers() = 0;
 		virtual const Scope<IndexBuffer>& GetIndexBuffer() = 0;
-		virtual uint32_t GetIndexCount() const = 0;
 
 	protected:
 		const static VertexArray* s_CurrentlyBound;

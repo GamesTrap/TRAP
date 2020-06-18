@@ -329,11 +329,11 @@ void TRAP::Application::OnEvent(Events::Event& e)
 
 	if (m_layerStack)
 	{
-		for (auto it = m_layerStack->end(); it != m_layerStack->begin();)
+		for (auto it = m_layerStack->rbegin(); it != m_layerStack->rend(); ++it)
 		{
-			(*--it)->OnEvent(e);
 			if (e.Handled)
 				break;
+			(*it)->OnEvent(e);
 		}
 	}
 }

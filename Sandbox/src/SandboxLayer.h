@@ -11,6 +11,7 @@ public:
 		m_frameTimeHistory(),
 		m_usePassthrough(false),
 		m_wireFrame(false),
+		m_indexedDrawing(true),
 		m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()))
 	{
 	}
@@ -29,6 +30,10 @@ public:
 		ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
 		ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
 		ImGui::PlotLines("", m_frameTimeHistory.data(), static_cast<int>(m_frameTimeHistory.size()), 0, nullptr, 0, 33, ImVec2(200, 50));
+		ImGui::End();
+
+		ImGui::Begin("Properties", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoNav);
+		ImGui::Checkbox("Indexed Drawing", &m_indexedDrawing);
 		ImGui::End();
 	}
 
@@ -50,34 +55,54 @@ public:
 		TRAP::VFS::MountTextures("Assets/Textures");
 		TRAP::Graphics::TextureManager::Load("TRAP", "/Textures/TRAPWhiteLogo2048x2048.png");
 
+		//Indexed
 		///////////////
 		//    Quad   //
 		///////////////
 		//XYZ RGBA
-		std::array<float, 9 * 4> vertices //Quad
+		std::array<float, 9 * 4> indexedVertices //Quad
 		{
 			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 0.0f,
 			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,    1.0f, 0.0f,
 			 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,    1.0f, 1.0f,
 			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f,    0.0f, 1.0f
 		};
-		TRAP::Scope<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()) * sizeof(uint32_t));
+		TRAP::Scope<TRAP::Graphics::VertexBuffer> indexedVertexBuffer = TRAP::Graphics::VertexBuffer::Create(indexedVertices.data(), static_cast<uint32_t>(indexedVertices.size()) * sizeof(uint32_t));
 		const TRAP::Graphics::BufferLayout layout =
 		{
 			{TRAP::Graphics::ShaderDataType::Float3, "Position"},
 			{TRAP::Graphics::ShaderDataType::Float4, "Color"},
 			{TRAP::Graphics::ShaderDataType::Float2, "UV"}
 		};
-		vertexBuffer->SetLayout(layout);
-		m_vertexArray = TRAP::Graphics::VertexArray::Create();
-		m_vertexArray->AddVertexBuffer(vertexBuffer);
+		indexedVertexBuffer->SetLayout(layout);
+		m_indexedVertexArray = TRAP::Graphics::VertexArray::Create();
+		m_indexedVertexArray->AddVertexBuffer(indexedVertexBuffer);
 
 		std::array<uint32_t, 6> indices //Quad
 		{
 			0, 1, 2, 2, 3, 0
 		};
 		TRAP::Scope<TRAP::Graphics::IndexBuffer> indexBuffer = TRAP::Graphics::IndexBuffer::Create(indices.data(), static_cast<uint32_t>(indices.size()));
-		m_vertexArray->SetIndexBuffer(indexBuffer);
+		m_indexedVertexArray->SetIndexBuffer(indexBuffer);
+
+		//Non-Indexed
+		///////////////
+		//    Quad   //
+		///////////////
+		//XYZ RGBA
+		std::array<float, 9 * 6> vertices //Quad
+		{
+			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f, 1.0f,    1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,    1.0f, 1.0f,
+			0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f, 1.0f,    1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f, 1.0f,    0.0f, 1.0f,
+			-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f, 1.0f,    0.0f, 0.0f
+		};
+		TRAP::Scope<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()) * sizeof(uint32_t));
+		vertexBuffer->SetLayout(layout);		
+		m_vertexArray = TRAP::Graphics::VertexArray::Create();
+		m_vertexArray->AddVertexBuffer(vertexBuffer);
 
 		TRAP::Graphics::RenderCommand::SetClearColor();
 		TRAP::Graphics::RenderCommand::SetCull(false);
@@ -99,6 +124,9 @@ public:
 		m_uniformBuffer->Unbind();
 		m_uniformBuffer.reset();
 		
+		m_indexedVertexArray->Unbind();
+		m_indexedVertexArray.reset();
+
 		m_vertexArray->Unbind();
 		m_vertexArray.reset();
 	}
@@ -118,13 +146,21 @@ public:
 		TRAP::Graphics::Renderer::BeginScene(m_cameraController.GetCamera());
 		{
 			if (m_usePassthrough)
- 				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Fallback"), m_vertexArray);
+			{
+				if (m_indexedDrawing)
+	 				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Fallback"), m_indexedVertexArray);
+				else
+	 				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("Fallback"), m_vertexArray);
+			}
 			else
 			{
 				TRAP::Graphics::TextureManager::Get2D("TRAP")->Bind(0);
 				float time = TRAP::Application::GetTime();
 				m_uniformBuffer->UpdateData(&time);
-				TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColor"), m_vertexArray);
+				if (m_indexedDrawing)
+					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColor"), m_indexedVertexArray);
+				else
+					TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get("TextureColor"), m_vertexArray);
 			}
 		}
 		TRAP::Graphics::Renderer::EndScene();
@@ -204,9 +240,11 @@ private:
 	TRAP::Utils::Timer m_titleTimer;
 	bool m_usePassthrough;
 	bool m_wireFrame;
+	bool m_indexedDrawing;
 
 	TRAP::Graphics::OrthographicCameraController m_cameraController;
 
+	TRAP::Scope<TRAP::Graphics::VertexArray> m_indexedVertexArray{};
 	TRAP::Scope<TRAP::Graphics::VertexArray> m_vertexArray{};
 
 	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_uniformBuffer{};

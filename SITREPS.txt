@@ -1047,3 +1047,7 @@ SITREP 06/07/2020|20w23a3
     - WindowingAPI Linux X11 Filtered error from other connections ~<10 mins
     - WindowingAPI Linux X11 XKB now also checks key aliases ~>25 mins
     - WindowingAPI WinAPI Removed pre Windows XP checks ~>20 mins
+
+SITREP 06/08/2020|20w24a1
+    - Changed TRAP Engine version to 20w24a1(0.6.37)
+    - Changed Instrumentor & made it thread safe ~<30 mins

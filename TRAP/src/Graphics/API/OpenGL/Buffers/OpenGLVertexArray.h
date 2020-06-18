@@ -23,12 +23,10 @@ namespace TRAP::Graphics::API
 		
 		std::vector<Scope<VertexBuffer>>& GetVertexBuffers() override;
 		const Scope<IndexBuffer>& GetIndexBuffer() override;
-		uint32_t GetIndexCount() const override;
 
 	private:
 		std::vector<Scope<VertexBuffer>> m_vertexBuffers;
 		Scope<IndexBuffer> m_indexBuffer;
-		uint32_t m_indexCount;
 		uint32_t m_attribIndex;
 		uint32_t m_bindingIndex;
 

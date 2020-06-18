@@ -60,12 +60,3 @@ const TRAP::Scope<TRAP::Graphics::IndexBuffer>& TRAP::Graphics::API::VulkanVerte
 
 	return m_indexBuffer;
 }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint32_t TRAP::Graphics::API::VulkanVertexArray::GetIndexCount() const
-{
-	TP_PROFILE_FUNCTION();
-
-	return 0;
-}
