@@ -337,7 +337,9 @@ std::string TRAP::VFS::MakeVirtualPathCompatible(const std::string& virtualPath)
 	std::string virtualDir = dirs.front();
 	virtualDir = Utils::String::ToLower(virtualDir);
 
-	const std::string remainder = virtualPath.substr(virtualDir.size() + 1, virtualPath.size() - virtualDir.size());
+	std::string remainder = "";
+	if(dirs.size() > 1)
+		remainder = virtualPath.substr(virtualDir.size() + 1, virtualPath.size() - virtualDir.size());
 
 	return '/' + virtualDir + remainder;
 }

@@ -15,6 +15,8 @@ namespace TRAP::Graphics
 		static Scope<Texture2D> Create(TextureParameters parameters = TextureParameters());
 
 		std::string_view GetFilePath() const;
+
+		virtual void UploadImage(const TRAP::Scope<TRAP::Image>& image) = 0;
 		
 	protected:
 		Texture2D();

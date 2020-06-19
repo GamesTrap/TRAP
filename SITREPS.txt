@@ -1051,3 +1051,10 @@ SITREP 06/07/2020|20w23a3
 SITREP 06/08/2020|20w24a1
     - Changed TRAP Engine version to 20w24a1(0.6.37)
     - Changed Instrumentor & made it thread safe ~<30 mins
+
+SITREÜ 06/19/2020|20w25a1
+    - Changed TRAP Engine version to 20w25a1(0.6.38)
+    - Refactored OpenGLTexture2D ~<40 mins
+    - Added UploadImage to Texture2D(OpenGLTexture2D) ~<30 mins
+    - Updated VulkanSDK version for Travis CI on Windows ~<5 mins
+    - Fixed a bug in VFS::MakeVirtualPathCompatible ~<10 mins

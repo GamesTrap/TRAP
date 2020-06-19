@@ -93,3 +93,10 @@ void TRAP::Graphics::API::VulkanTexture2D::SetFilter(const TextureFilter filter)
 	
 	m_textureParameters.Filter = filter;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanTexture2D::UploadImage(const TRAP::Scope<TRAP::Image>& image)
+{
+	
+}

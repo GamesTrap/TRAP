@@ -24,7 +24,9 @@ namespace TRAP::Graphics::API
 		uint32_t GetHandle() const;
 
 		void SetWrap(TextureWrap wrap) override;
-		void SetFilter(TextureFilter filter) override;		
+		void SetFilter(TextureFilter filter) override;
+
+		void UploadImage(const TRAP::Scope<TRAP::Image>& image) override;
 
 	private:
 		enum class PixelDataType
@@ -38,10 +40,15 @@ namespace TRAP::Graphics::API
 		void Load();
 
 		void InitializeTexture();
-		void UploadTexture(const Scope<Image>& image) const;
-		void UploadData(const Scope<Image>& image, uint32_t numMipMapLevels, PixelDataType type) const;
+		void UploadTexture(const Scope<Image>& image, bool exists) const;
+		void UploadData(const Scope<Image>& image, PixelDataType type) const;
+
+		void UploadFallback();
+		bool CheckLimits(uint32_t width, uint32_t height);
 
 		uint32_t m_handle;
+		uint32_t m_width, m_height, m_bitsPerPixel;
+		Image::ColorFormat m_colorFormat;
 	};
 }
 

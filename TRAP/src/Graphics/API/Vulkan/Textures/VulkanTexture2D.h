@@ -23,6 +23,8 @@ namespace TRAP::Graphics::API
 
 		void SetWrap(TextureWrap wrap) override;
 		void SetFilter(TextureFilter filter) override;
+
+		void UploadImage(const TRAP::Scope<TRAP::Image>& image) override;
 	};
 }
 
