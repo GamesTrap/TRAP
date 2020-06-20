@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
   <ShortName>TRAP</ShortName>
-  <Description>Search TRAP 0.6.21 documentation</Description>
+  <Description>Search TRAP 0.6.38 documentation</Description>
   <InputEncoding>utf-8</InputEncoding>
   <Url type="text/html" method="get"
        template="https://gamestrap.github.io/TRAP//search.html?q={searchTerms}"/>
-  <LongName>TRAP 0.6.21 documentation</LongName>
+  <LongName>TRAP 0.6.38 documentation</LongName>
   <Image height="16" width="16" type="image/x-icon">https://gamestrap.github.io/TRAP//_static/TRAPWhiteLogo64x64.ico</Image>
   
 </OpenSearchDescription>

@@ -1,0 +1,277 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>File Core.h &mdash; TRAP 0.6.38 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists\js\CollapsibleLists.compressed.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists\js\apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within TRAP 0.6.38 documentation"
+          href="../_static/opensearch.xml"/>
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/rtd_dark.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists\css\tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link href="../_static/theme.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/TRAPWhiteLogo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">TRAP:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">TRAP Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pages/buildingtrap.html">Building TRAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pages/gettingstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trapdocs.html">TRAP Docs</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TRAP</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>File Core.h</li>
+    
+    
+
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="file-core-h">
+<span id="file-trap-src-core-h"></span><h1>File Core.h<a class="headerlink" href="#file-core-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="dir_TRAP_src.html#dir-trap-src"><span class="std std-ref">Parent directory</span></a> (<code class="docutils literal notranslate"><span class="pre">TRAP\src</span></code>)</p>
+<div class="contents local topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#definition-trap-src-core-h" id="id1">Definition (<code class="docutils literal notranslate"><span class="pre">TRAP\src\Core.h</span></code>)</a></p></li>
+<li><p><a class="reference internal" href="#includes" id="id2">Includes</a></p></li>
+<li><p><a class="reference internal" href="#namespaces" id="id3">Namespaces</a></p></li>
+<li><p><a class="reference internal" href="#functions" id="id4">Functions</a></p></li>
+<li><p><a class="reference internal" href="#typedefs" id="id5">Typedefs</a></p></li>
+<li><p><a class="reference internal" href="#variables" id="id6">Variables</a></p></li>
+</ul>
+</div>
+<div class="section" id="definition-trap-src-core-h">
+<h2>Definition (<code class="docutils literal notranslate"><span class="pre">TRAP\src\Core.h</span></code>)<a class="headerlink" href="#definition-trap-src-core-h" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="program_listing_file_TRAP_src_Core.h.html">Program Listing for File Core.h</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="includes">
+<h2>Includes<a class="headerlink" href="#includes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Log/Log.h</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="namespaces">
+<h2>Namespaces<a class="headerlink" href="#namespaces" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="namespace_TRAP.html#namespace-trap"><span class="std std-ref">Namespace TRAP</span></a></p></li>
+</ul>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="function__core_8h_1a9ab1f816a713a1875bc915a9b4dde3ee.html#exhale-function-core-8h-1a9ab1f816a713a1875bc915a9b4dde3ee"><span class="std std-ref">Template Function BIT</span></a></p></li>
+<li><p><a class="reference internal" href="function__core_8h_1a5c8414c3c59e470c09aaad9966727d8b.html#exhale-function-core-8h-1a5c8414c3c59e470c09aaad9966727d8b"><span class="std std-ref">Template Function TRAP::MakeRef</span></a></p></li>
+<li><p><a class="reference internal" href="function__core_8h_1a86a8bd08e2a16582a2a18a77a855ad0b.html#exhale-function-core-8h-1a86a8bd08e2a16582a2a18a77a855ad0b"><span class="std std-ref">Template Function TRAP::MakeScope</span></a></p></li>
+<li><p><a class="reference internal" href="function__core_8h_1aafcd44a6ed82377d289e2addd3576a77.html#exhale-function-core-8h-1aafcd44a6ed82377d289e2addd3576a77"><span class="std std-ref">Template Function TRAP_ASSERT</span></a></p></li>
+<li><p><a class="reference internal" href="function__core_8h_1a18123ac2eff57b8181fd3e2154ee1dae.html#exhale-function-core-8h-1a18123ac2eff57b8181fd3e2154ee1dae"><span class="std std-ref">Template Function TRAP_CORE_ASSERT</span></a></p></li>
+<li><p><a class="reference internal" href="function__core_8h_1a981f8cc16d97bf050011529c588b2cd8.html#exhale-function-core-8h-1a981f8cc16d97bf050011529c588b2cd8"><span class="std std-ref">Function TRAP_DEBUG_BREAK</span></a></p></li>
+<li><p><a class="reference internal" href="function__core_8h_1ad027a2e0dd04ad71575861cd134734d2.html#exhale-function-core-8h-1ad027a2e0dd04ad71575861cd134734d2"><span class="std std-ref">Function TRAP_MAKE_VERSION</span></a></p></li>
+<li><p><a class="reference internal" href="function__core_8h_1af2eba878b7da1627817a5adc85d4f3c6.html#exhale-function-core-8h-1af2eba878b7da1627817a5adc85d4f3c6"><span class="std std-ref">Template Function TRAP_RENDERER_ASSERT</span></a></p></li>
+<li><p><a class="reference internal" href="function__core_8h_1a32a53c620c66e5078ca15b38bbbf9696.html#exhale-function-core-8h-1a32a53c620c66e5078ca15b38bbbf9696"><span class="std std-ref">Function TRAP_VERSION_MAJOR</span></a></p></li>
+<li><p><a class="reference internal" href="function__core_8h_1a902051830b6c0db197c2e85d45a7071d.html#exhale-function-core-8h-1a902051830b6c0db197c2e85d45a7071d"><span class="std std-ref">Function TRAP_VERSION_MINOR</span></a></p></li>
+<li><p><a class="reference internal" href="function__core_8h_1ac7c31b086906690a02fc259efd359e9b.html#exhale-function-core-8h-1ac7c31b086906690a02fc259efd359e9b"><span class="std std-ref">Function TRAP_VERSION_PATCH</span></a></p></li>
+<li><p><a class="reference internal" href="function__core_8h_1a1fe394c47e57558d785665ba57265151.html#exhale-function-core-8h-1a1fe394c47e57558d785665ba57265151"><span class="std std-ref">Template Function TRAP_WINDOW_ASSERT</span></a></p></li>
+</ul>
+</div>
+<div class="section" id="typedefs">
+<h2>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="typedef__core_8h_1a689f16f15d04794fc0f00d9847bb7aad.html#exhale-typedef-core-8h-1a689f16f15d04794fc0f00d9847bb7aad"><span class="std std-ref">Typedef TRAP::Ref</span></a></p></li>
+<li><p><a class="reference internal" href="typedef__core_8h_1a2db5e63ad48f48221f6cf4c77eb34d77.html#exhale-typedef-core-8h-1a2db5e63ad48f48221f6cf4c77eb34d77"><span class="std std-ref">Typedef TRAP::Scope</span></a></p></li>
+</ul>
+</div>
+<div class="section" id="variables">
+<h2>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="variable__core_8h_1a320950fed6e83354e84eaedd12fcbc34.html#exhale-variable-core-8h-1a320950fed6e83354e84eaedd12fcbc34"><span class="std std-ref">Variable TRAP_VERSION</span></a></p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019-2020 Jan &#34;GamesTrap&#34; Schürkamp All Rights Reserved
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-154200595-2', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>

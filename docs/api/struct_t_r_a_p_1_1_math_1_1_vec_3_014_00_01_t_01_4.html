@@ -1,0 +1,828 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Template Struct Vec&lt; 4, T &gt; &mdash; TRAP 0.6.38 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/TRAPWhiteLogo64x64.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists\js\CollapsibleLists.compressed.js"></script>
+        <script type="text/javascript" src="../_static/collapsible-lists\js\apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within TRAP 0.6.38 documentation"
+          href="../_static/opensearch.xml"/>
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/rtd_dark.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists\css\tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link href="../_static/theme.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/TRAPWhiteLogo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">TRAP:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">TRAP Engine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pages/buildingtrap.html">Building TRAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pages/gettingstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trapdocs.html">TRAP Docs</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TRAP</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Template Struct Vec&lt; 4, T &gt;</li>
+    
+    
+
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="template-struct-vec-4-t">
+<span id="exhale-struct-struct-t-r-a-p-1-1-math-1-1-vec-3-014-00-01-t-01-4"></span><h1>Template Struct Vec&lt; 4, T &gt;<a class="headerlink" href="#template-struct-vec-4-t" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file_TRAP_src_Maths_Vec4.h.html#file-trap-src-maths-vec4-h"><span class="std std-ref">File Vec4.h</span></a></p></li>
+</ul>
+<div class="section" id="struct-documentation">
+<h2>Struct Documentation<a class="headerlink" href="#struct-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="_CPPv4I0EN4TRAP4Math3VecIXL4EE1TEE">
+<span id="_CPPv3I0EN4TRAP4Math3VecIXL4EE1TEE"></span><span id="_CPPv2I0EN4TRAP4Math3VecIX4E1TEE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br /><em class="property">struct </em><code class="sig-name descname">Vec</code>&lt;4, <a class="reference internal" href="#_CPPv4I0EN4TRAP4Math3VecIXL4EE1TEE" title="TRAP::Math::Vec&lt;4, T&gt;::T">T</a>&gt;<a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecIXL4EE1TEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Types</p>
+<dl class="type">
+<dt id="_CPPv4N4TRAP4Math3Vec9valueTypeE">
+<span id="_CPPv3N4TRAP4Math3Vec9valueTypeE"></span><span id="_CPPv2N4TRAP4Math3Vec9valueTypeE"></span><span id="TRAP::Math::Vec::valueType"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a2feb8d188c4d263398a97400d32493f4"></span><em class="property">typedef </em>T <code class="sig-name descname">valueType</code><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv4N4TRAP4Math3Vec4typeE">
+<span id="_CPPv3N4TRAP4Math3Vec4typeE"></span><span id="_CPPv2N4TRAP4Math3Vec4typeE"></span><span id="TRAP::Math::Vec::type"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a06b7087e5e2b77da74b90a38c523ee09"></span><em class="property">typedef </em>Vec&lt;4, T&gt; <code class="sig-name descname">type</code><br /></dt>
+<dd></dd></dl>
+
+<dl class="type">
+<dt id="_CPPv4N4TRAP4Math3Vec8boolTypeE">
+<span id="_CPPv3N4TRAP4Math3Vec8boolTypeE"></span><span id="_CPPv2N4TRAP4Math3Vec8boolTypeE"></span><span id="TRAP::Math::Vec::boolType"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a2d75e1538a9e7c55fb235e62da40c7a8"></span><em class="property">typedef </em>Vec&lt;4, bool&gt; <code class="sig-name descname">boolType</code><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv4N4TRAP4Math3Vec3VecEv">
+<span id="_CPPv3N4TRAP4Math3Vec3VecEv"></span><span id="_CPPv2N4TRAP4Math3Vec3VecEv"></span><span id="TRAP::Math::Vec::VecCE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a6392f428971c1521b3a390c7a70dffe1"></span><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4TRAP4Math3Vec3VecERK3VecIXL4EE1TE">
+<span id="_CPPv3N4TRAP4Math3Vec3VecERK3VecIXL4EE1TE"></span><span id="_CPPv2N4TRAP4Math3Vec3VecERK3VecIX4E1TE"></span><span id="TRAP::Math::Vec::Vec__Vec:4.T:CRCE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a035635d9320a5b863472f0545edc0581"></span><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4N4TRAP4Math3Vec3VecEv" title="TRAP::Math::Vec::Vec">Vec</a>&lt;4, T&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP4Math3Vec3VecERK3VecIXL4EE1TE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4TRAP4Math3Vec3VecE1T">
+<span id="_CPPv3N4TRAP4Math3Vec3VecE1T"></span><span id="_CPPv2N4TRAP4Math3Vec3VecE1T"></span><span id="TRAP::Math::Vec::Vec__TCE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a23111603fbec0fcf53d2ef2588c4ece7"></span><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span>T <em>scalar</em><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4TRAP4Math3Vec3VecE1T1T1T1T">
+<span id="_CPPv3N4TRAP4Math3Vec3VecE1T1T1T1T"></span><span id="_CPPv2N4TRAP4Math3Vec3VecE1T1T1T1T"></span><span id="TRAP::Math::Vec::Vec__T.T.T.TCE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a5ac967e5ffdfbd35f82a4ace375ead72"></span><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span>T <em>x</em>, T <em>y</em>, T <em>z</em>, T <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP4Math3Vec3VecE1T1T1T1T" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3Vec3VecERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3Vec3VecERK3VecIXL1EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3Vec3VecERK3VecIX1E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a28807aed28da7fbc6c66e1fe3013d6d1"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3Vec3VecERK3VecIXL1EE1UE" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3Vec3VecERK3VecIXL1EE1UE" title="TRAP::Math::Vec::Vec::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W">
+<span id="_CPPv3I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W"></span><span id="_CPPv2I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1aaa887f4a9bf785f2f138fc74db289fbd"></span>template&lt;typename <code class="sig-name descname">X</code>, typename <code class="sig-name descname">Y</code>, typename <code class="sig-name descname">Z</code>, typename <code class="sig-name descname">W</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::X">X</a> <em>x</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Y">Y</a> <em>y</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Z">Z</a> <em>z</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::W">W</a> <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XE1Y1Z1W">
+<span id="_CPPv3I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XE1Y1Z1W"></span><span id="_CPPv2I0000EN4TRAP4Math3Vec3VecERK3VecIX1E1XE1Y1Z1W"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a2627fe3532efffe14a0a2faa3ec084fc"></span>template&lt;typename <code class="sig-name descname">X</code>, typename <code class="sig-name descname">Y</code>, typename <code class="sig-name descname">Z</code>, typename <code class="sig-name descname">W</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::X">X</a>&gt; &amp;<em>x</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Y">Y</a> <em>y</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Z">Z</a> <em>z</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::W">W</a> <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XE1Y1Z1W" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0000EN4TRAP4Math3Vec3VecE1XRK3VecIXL1EE1YE1Z1W">
+<span id="_CPPv3I0000EN4TRAP4Math3Vec3VecE1XRK3VecIXL1EE1YE1Z1W"></span><span id="_CPPv2I0000EN4TRAP4Math3Vec3VecE1XRK3VecIX1E1YE1Z1W"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a491b25726950498848354051e395fdc2"></span>template&lt;typename <code class="sig-name descname">X</code>, typename <code class="sig-name descname">Y</code>, typename <code class="sig-name descname">Z</code>, typename <code class="sig-name descname">W</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::X">X</a> <em>x</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Y">Y</a>&gt; &amp;<em>y</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Z">Z</a> <em>z</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::W">W</a> <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1XRK3VecIXL1EE1YE1Z1W" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XERK3VecIXL1EE1YE1Z1W">
+<span id="_CPPv3I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XERK3VecIXL1EE1YE1Z1W"></span><span id="_CPPv2I0000EN4TRAP4Math3Vec3VecERK3VecIX1E1XERK3VecIX1E1YE1Z1W"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1ab00802fe653b0fdc927afe2f02b3c500"></span>template&lt;typename <code class="sig-name descname">X</code>, typename <code class="sig-name descname">Y</code>, typename <code class="sig-name descname">Z</code>, typename <code class="sig-name descname">W</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::X">X</a>&gt; &amp;<em>x</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Y">Y</a>&gt; &amp;<em>y</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Z">Z</a> <em>z</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::W">W</a> <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XERK3VecIXL1EE1YE1Z1W" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1YRK3VecIXL1EE1ZE1W">
+<span id="_CPPv3I0000EN4TRAP4Math3Vec3VecE1X1YRK3VecIXL1EE1ZE1W"></span><span id="_CPPv2I0000EN4TRAP4Math3Vec3VecE1X1YRK3VecIX1E1ZE1W"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1ab6330ca38826aee6a77d289e424d4583"></span>template&lt;typename <code class="sig-name descname">X</code>, typename <code class="sig-name descname">Y</code>, typename <code class="sig-name descname">Z</code>, typename <code class="sig-name descname">W</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::X">X</a> <em>x</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Y">Y</a> <em>y</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Z">Z</a>&gt; &amp;<em>z</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::W">W</a> <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1YRK3VecIXL1EE1ZE1W" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XE1YRK3VecIXL1EE1ZE1W">
+<span id="_CPPv3I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XE1YRK3VecIXL1EE1ZE1W"></span><span id="_CPPv2I0000EN4TRAP4Math3Vec3VecERK3VecIX1E1XE1YRK3VecIX1E1ZE1W"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a89608f18da5792c7c9e6fecb6c3f75be"></span>template&lt;typename <code class="sig-name descname">X</code>, typename <code class="sig-name descname">Y</code>, typename <code class="sig-name descname">Z</code>, typename <code class="sig-name descname">W</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::X">X</a>&gt; &amp;<em>x</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Y">Y</a> <em>y</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Z">Z</a>&gt; &amp;<em>z</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::W">W</a> <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XE1YRK3VecIXL1EE1ZE1W" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0000EN4TRAP4Math3Vec3VecE1XRK3VecIXL1EE1YERK3VecIXL1EE1ZE1W">
+<span id="_CPPv3I0000EN4TRAP4Math3Vec3VecE1XRK3VecIXL1EE1YERK3VecIXL1EE1ZE1W"></span><span id="_CPPv2I0000EN4TRAP4Math3Vec3VecE1XRK3VecIX1E1YERK3VecIX1E1ZE1W"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a4d4ff2e4e34c25fcc69028774c0fe40e"></span>template&lt;typename <code class="sig-name descname">X</code>, typename <code class="sig-name descname">Y</code>, typename <code class="sig-name descname">Z</code>, typename <code class="sig-name descname">W</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::X">X</a> <em>x</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Y">Y</a>&gt; &amp;<em>y</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Z">Z</a>&gt; &amp;<em>z</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::W">W</a> <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1XRK3VecIXL1EE1YERK3VecIXL1EE1ZE1W" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XERK3VecIXL1EE1YERK3VecIXL1EE1ZE1W">
+<span id="_CPPv3I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XERK3VecIXL1EE1YERK3VecIXL1EE1ZE1W"></span><span id="_CPPv2I0000EN4TRAP4Math3Vec3VecERK3VecIX1E1XERK3VecIX1E1YERK3VecIX1E1ZE1W"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a3ef809544b1899722a33baef5cd1b988"></span>template&lt;typename <code class="sig-name descname">X</code>, typename <code class="sig-name descname">Y</code>, typename <code class="sig-name descname">Z</code>, typename <code class="sig-name descname">W</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::X">X</a>&gt; &amp;<em>x</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Y">Y</a>&gt; &amp;<em>y</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Z">Z</a>&gt; &amp;<em>z</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::W">W</a> <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XERK3VecIXL1EE1YERK3VecIXL1EE1ZE1W" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XE1Y1ZRK3VecIXL1EE1WE">
+<span id="_CPPv3I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XE1Y1ZRK3VecIXL1EE1WE"></span><span id="_CPPv2I0000EN4TRAP4Math3Vec3VecERK3VecIX1E1XE1Y1ZRK3VecIX1E1WE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a5a99b7f2469ddfa8ceb9693762dff821"></span>template&lt;typename <code class="sig-name descname">X</code>, typename <code class="sig-name descname">Y</code>, typename <code class="sig-name descname">Z</code>, typename <code class="sig-name descname">W</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::X">X</a>&gt; &amp;<em>x</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Y">Y</a> <em>y</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Z">Z</a> <em>z</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::W">W</a>&gt; &amp;<em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XE1Y1ZRK3VecIXL1EE1WE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0000EN4TRAP4Math3Vec3VecE1XRK3VecIXL1EE1YE1ZRK3VecIXL1EE1WE">
+<span id="_CPPv3I0000EN4TRAP4Math3Vec3VecE1XRK3VecIXL1EE1YE1ZRK3VecIXL1EE1WE"></span><span id="_CPPv2I0000EN4TRAP4Math3Vec3VecE1XRK3VecIX1E1YE1ZRK3VecIX1E1WE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1abc8653d9a149ca597dcbcf6bc573abe8"></span>template&lt;typename <code class="sig-name descname">X</code>, typename <code class="sig-name descname">Y</code>, typename <code class="sig-name descname">Z</code>, typename <code class="sig-name descname">W</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::X">X</a> <em>x</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Y">Y</a>&gt; &amp;<em>y</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Z">Z</a> <em>z</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::W">W</a>&gt; &amp;<em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1XRK3VecIXL1EE1YE1ZRK3VecIXL1EE1WE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XERK3VecIXL1EE1YE1ZRK3VecIXL1EE1WE">
+<span id="_CPPv3I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XERK3VecIXL1EE1YE1ZRK3VecIXL1EE1WE"></span><span id="_CPPv2I0000EN4TRAP4Math3Vec3VecERK3VecIX1E1XERK3VecIX1E1YE1ZRK3VecIX1E1WE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1af4db507043bf76dc253c095251091cc7"></span>template&lt;typename <code class="sig-name descname">X</code>, typename <code class="sig-name descname">Y</code>, typename <code class="sig-name descname">Z</code>, typename <code class="sig-name descname">W</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::X">X</a>&gt; &amp;<em>x</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Y">Y</a>&gt; &amp;<em>y</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Z">Z</a> <em>z</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::W">W</a>&gt; &amp;<em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XERK3VecIXL1EE1YE1ZRK3VecIXL1EE1WE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1YRK3VecIXL1EE1ZERK3VecIXL1EE1WE">
+<span id="_CPPv3I0000EN4TRAP4Math3Vec3VecE1X1YRK3VecIXL1EE1ZERK3VecIXL1EE1WE"></span><span id="_CPPv2I0000EN4TRAP4Math3Vec3VecE1X1YRK3VecIX1E1ZERK3VecIX1E1WE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a618f1339b2013ab5daa938c53f8fe59b"></span>template&lt;typename <code class="sig-name descname">X</code>, typename <code class="sig-name descname">Y</code>, typename <code class="sig-name descname">Z</code>, typename <code class="sig-name descname">W</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::X">X</a> <em>x</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Y">Y</a> <em>y</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Z">Z</a>&gt; &amp;<em>z</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::W">W</a>&gt; &amp;<em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1YRK3VecIXL1EE1ZERK3VecIXL1EE1WE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XE1YRK3VecIXL1EE1ZERK3VecIXL1EE1WE">
+<span id="_CPPv3I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XE1YRK3VecIXL1EE1ZERK3VecIXL1EE1WE"></span><span id="_CPPv2I0000EN4TRAP4Math3Vec3VecERK3VecIX1E1XE1YRK3VecIX1E1ZERK3VecIX1E1WE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a711958f04b3a082886bc05368650519e"></span>template&lt;typename <code class="sig-name descname">X</code>, typename <code class="sig-name descname">Y</code>, typename <code class="sig-name descname">Z</code>, typename <code class="sig-name descname">W</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::X">X</a>&gt; &amp;<em>x</em>, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Y">Y</a> <em>y</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Z">Z</a>&gt; &amp;<em>z</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::W">W</a>&gt; &amp;<em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XE1YRK3VecIXL1EE1ZERK3VecIXL1EE1WE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0000EN4TRAP4Math3Vec3VecE1XRK3VecIXL1EE1YERK3VecIXL1EE1ZERK3VecIXL1EE1WE">
+<span id="_CPPv3I0000EN4TRAP4Math3Vec3VecE1XRK3VecIXL1EE1YERK3VecIXL1EE1ZERK3VecIXL1EE1WE"></span><span id="_CPPv2I0000EN4TRAP4Math3Vec3VecE1XRK3VecIX1E1YERK3VecIX1E1ZERK3VecIX1E1WE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1ac97efbf12b4d43cd48e23eb21e1dd5a3"></span>template&lt;typename <code class="sig-name descname">X</code>, typename <code class="sig-name descname">Y</code>, typename <code class="sig-name descname">Z</code>, typename <code class="sig-name descname">W</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::X">X</a> <em>x</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Y">Y</a>&gt; &amp;<em>y</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Z">Z</a>&gt; &amp;<em>z</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::W">W</a>&gt; &amp;<em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1XRK3VecIXL1EE1YERK3VecIXL1EE1ZERK3VecIXL1EE1WE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XERK3VecIXL1EE1YERK3VecIXL1EE1ZERK3VecIXL1EE1WE">
+<span id="_CPPv3I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XERK3VecIXL1EE1YERK3VecIXL1EE1ZERK3VecIXL1EE1WE"></span><span id="_CPPv2I0000EN4TRAP4Math3Vec3VecERK3VecIX1E1XERK3VecIX1E1YERK3VecIX1E1ZERK3VecIX1E1WE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1aa84637ee58a338cc40df6ef02504d008"></span>template&lt;typename <code class="sig-name descname">X</code>, typename <code class="sig-name descname">Y</code>, typename <code class="sig-name descname">Z</code>, typename <code class="sig-name descname">W</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::X">X</a>&gt; &amp;<em>x</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Y">Y</a>&gt; &amp;<em>y</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::Z">Z</a>&gt; &amp;<em>z</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecE1X1Y1Z1W" title="TRAP::Math::Vec::Vec::W">W</a>&gt; &amp;<em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1XERK3VecIXL1EE1YERK3VecIXL1EE1ZERK3VecIXL1EE1WE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C">
+<span id="_CPPv3I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C"></span><span id="_CPPv2I000EN4TRAP4Math3Vec3VecERK3VecIX2E1AE1B1C"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a827bfd8486558e51205be39ce55f6113"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>, typename <code class="sig-name descname">C</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;2, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::A">A</a>&gt; &amp;<em>xy</em>, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::B">B</a> <em>z</em>, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::C">C</a> <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AERK3VecIXL1EE1BE1C">
+<span id="_CPPv3I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AERK3VecIXL1EE1BE1C"></span><span id="_CPPv2I000EN4TRAP4Math3Vec3VecERK3VecIX2E1AERK3VecIX1E1BE1C"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a61ab971e57a8e067516747f477bce523"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>, typename <code class="sig-name descname">C</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;2, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::A">A</a>&gt; &amp;<em>xy</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::B">B</a>&gt; &amp;<em>z</em>, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::C">C</a> <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AERK3VecIXL1EE1BE1C" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1BRK3VecIXL1EE1CE">
+<span id="_CPPv3I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1BRK3VecIXL1EE1CE"></span><span id="_CPPv2I000EN4TRAP4Math3Vec3VecERK3VecIX2E1AE1BRK3VecIX1E1CE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a04f48f0a64f54ed6fe8e2cf096dc548d"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>, typename <code class="sig-name descname">C</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;2, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::A">A</a>&gt; &amp;<em>xy</em>, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::B">B</a> <em>z</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::C">C</a>&gt; &amp;<em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1BRK3VecIXL1EE1CE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AERK3VecIXL1EE1BERK3VecIXL1EE1CE">
+<span id="_CPPv3I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AERK3VecIXL1EE1BERK3VecIXL1EE1CE"></span><span id="_CPPv2I000EN4TRAP4Math3Vec3VecERK3VecIX2E1AERK3VecIX1E1BERK3VecIX1E1CE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1af2da52e17d63d1a414a4a2d16c6bdb15"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>, typename <code class="sig-name descname">C</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;2, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::A">A</a>&gt; &amp;<em>xy</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::B">B</a>&gt; &amp;<em>z</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::C">C</a>&gt; &amp;<em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AERK3VecIXL1EE1BERK3VecIXL1EE1CE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I000EN4TRAP4Math3Vec3VecE1ARK3VecIXL2EE1BE1C">
+<span id="_CPPv3I000EN4TRAP4Math3Vec3VecE1ARK3VecIXL2EE1BE1C"></span><span id="_CPPv2I000EN4TRAP4Math3Vec3VecE1ARK3VecIX2E1BE1C"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a77593310aba0f7260015d3caec14e18a"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>, typename <code class="sig-name descname">C</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::A">A</a> <em>x</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;2, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::B">B</a>&gt; &amp;<em>yz</em>, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::C">C</a> <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000EN4TRAP4Math3Vec3VecE1ARK3VecIXL2EE1BE1C" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1AERK3VecIXL2EE1BE1C">
+<span id="_CPPv3I000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1AERK3VecIXL2EE1BE1C"></span><span id="_CPPv2I000EN4TRAP4Math3Vec3VecERK3VecIX1E1AERK3VecIX2E1BE1C"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a6f2915803c05ed5cdf602ca483fbdcf2"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>, typename <code class="sig-name descname">C</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::A">A</a>&gt; &amp;<em>x</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;2, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::B">B</a>&gt; &amp;<em>yz</em>, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::C">C</a> <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1AERK3VecIXL2EE1BE1C" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I000EN4TRAP4Math3Vec3VecE1ARK3VecIXL2EE1BERK3VecIXL1EE1CE">
+<span id="_CPPv3I000EN4TRAP4Math3Vec3VecE1ARK3VecIXL2EE1BERK3VecIXL1EE1CE"></span><span id="_CPPv2I000EN4TRAP4Math3Vec3VecE1ARK3VecIX2E1BERK3VecIX1E1CE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a4f4507c7c8d4992eb25bc6219b47a49b"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>, typename <code class="sig-name descname">C</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::A">A</a> <em>x</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;2, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::B">B</a>&gt; &amp;<em>yz</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::C">C</a>&gt; &amp;<em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000EN4TRAP4Math3Vec3VecE1ARK3VecIXL2EE1BERK3VecIXL1EE1CE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1AERK3VecIXL2EE1BERK3VecIXL1EE1CE">
+<span id="_CPPv3I000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1AERK3VecIXL2EE1BERK3VecIXL1EE1CE"></span><span id="_CPPv2I000EN4TRAP4Math3Vec3VecERK3VecIX1E1AERK3VecIX2E1BERK3VecIX1E1CE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a503a33174a31a2198ae346f472aad9c6"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>, typename <code class="sig-name descname">C</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::A">A</a>&gt; &amp;<em>x</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;2, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::B">B</a>&gt; &amp;<em>yz</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::C">C</a>&gt; &amp;<em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1AERK3VecIXL2EE1BERK3VecIXL1EE1CE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I000EN4TRAP4Math3Vec3VecE1A1BRK3VecIXL2EE1CE">
+<span id="_CPPv3I000EN4TRAP4Math3Vec3VecE1A1BRK3VecIXL2EE1CE"></span><span id="_CPPv2I000EN4TRAP4Math3Vec3VecE1A1BRK3VecIX2E1CE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a25f8da788c6bcb464e3d3a0e78f559ef"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>, typename <code class="sig-name descname">C</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::A">A</a> <em>x</em>, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::B">B</a> <em>y</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;2, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::C">C</a>&gt; &amp;<em>zw</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000EN4TRAP4Math3Vec3VecE1A1BRK3VecIXL2EE1CE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1AE1BRK3VecIXL2EE1CE">
+<span id="_CPPv3I000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1AE1BRK3VecIXL2EE1CE"></span><span id="_CPPv2I000EN4TRAP4Math3Vec3VecERK3VecIX1E1AE1BRK3VecIX2E1CE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1aa9b1a036db51cd790629efde63d59934"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>, typename <code class="sig-name descname">C</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::A">A</a>&gt; &amp;<em>x</em>, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::B">B</a> <em>y</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;2, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::C">C</a>&gt; &amp;<em>zw</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1AE1BRK3VecIXL2EE1CE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I000EN4TRAP4Math3Vec3VecE1ARK3VecIXL1EE1BERK3VecIXL2EE1CE">
+<span id="_CPPv3I000EN4TRAP4Math3Vec3VecE1ARK3VecIXL1EE1BERK3VecIXL2EE1CE"></span><span id="_CPPv2I000EN4TRAP4Math3Vec3VecE1ARK3VecIX1E1BERK3VecIX2E1CE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a087f7ce9fb126656dee2c5235e52c56f"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>, typename <code class="sig-name descname">C</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::A">A</a> <em>x</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::B">B</a>&gt; &amp;<em>y</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;2, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::C">C</a>&gt; &amp;<em>zw</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000EN4TRAP4Math3Vec3VecE1ARK3VecIXL1EE1BERK3VecIXL2EE1CE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1AERK3VecIXL1EE1BERK3VecIXL2EE1CE">
+<span id="_CPPv3I000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1AERK3VecIXL1EE1BERK3VecIXL2EE1CE"></span><span id="_CPPv2I000EN4TRAP4Math3Vec3VecERK3VecIX1E1AERK3VecIX1E1BERK3VecIX2E1CE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1aa752c0b5d115b78e1e9bacd725eefe27"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>, typename <code class="sig-name descname">C</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::A">A</a>&gt; &amp;<em>x</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::B">B</a>&gt; &amp;<em>y</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec">Vec</a>&lt;2, <a class="reference internal" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AE1B1C" title="TRAP::Math::Vec::Vec::C">C</a>&gt; &amp;<em>zw</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I000EN4TRAP4Math3Vec3VecERK3VecIXL1EE1AERK3VecIXL1EE1BERK3VecIXL2EE1CE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I00EN4TRAP4Math3Vec3VecERK3VecIXL3EE1AE1B">
+<span id="_CPPv3I00EN4TRAP4Math3Vec3VecERK3VecIXL3EE1AE1B"></span><span id="_CPPv2I00EN4TRAP4Math3Vec3VecERK3VecIX3E1AE1B"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a2c61799497723c2896b561835d0d69fb"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec">Vec</a>&lt;3, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec::A">A</a>&gt; &amp;<em>xyz</em>, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec::B">B</a> <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN4TRAP4Math3Vec3VecERK3VecIXL3EE1AE1B" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I00EN4TRAP4Math3Vec3VecERK3VecIXL3EE1AERK3VecIXL1EE1BE">
+<span id="_CPPv3I00EN4TRAP4Math3Vec3VecERK3VecIXL3EE1AERK3VecIXL1EE1BE"></span><span id="_CPPv2I00EN4TRAP4Math3Vec3VecERK3VecIX3E1AERK3VecIX1E1BE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1ac453676b4e0c0bdf950b628f06ee8295"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec">Vec</a>&lt;3, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec::A">A</a>&gt; &amp;<em>xyz</em>, <em class="property">const</em> <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec::B">B</a>&gt; &amp;<em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN4TRAP4Math3Vec3VecERK3VecIXL3EE1AERK3VecIXL1EE1BE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I00EN4TRAP4Math3Vec3VecE1ARK3VecIXL3EE1BE">
+<span id="_CPPv3I00EN4TRAP4Math3Vec3VecE1ARK3VecIXL3EE1BE"></span><span id="_CPPv2I00EN4TRAP4Math3Vec3VecE1ARK3VecIX3E1BE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a178091106e56d3a884023ab58b9dd3e5"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec::A">A</a> <em>x</em>, <em class="property">const</em> <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec">Vec</a>&lt;3, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec::B">B</a>&gt; &amp;<em>yzw</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN4TRAP4Math3Vec3VecE1ARK3VecIXL3EE1BE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I00EN4TRAP4Math3Vec3VecERK3VecIXL1EE1AERK3VecIXL3EE1BE">
+<span id="_CPPv3I00EN4TRAP4Math3Vec3VecERK3VecIXL1EE1AERK3VecIXL3EE1BE"></span><span id="_CPPv2I00EN4TRAP4Math3Vec3VecERK3VecIX1E1AERK3VecIX3E1BE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1af5d25d10b6850069642a026d98b4e977"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec">Vec</a>&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec::A">A</a>&gt; &amp;<em>x</em>, <em class="property">const</em> <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec">Vec</a>&lt;3, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec::B">B</a>&gt; &amp;<em>yzw</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN4TRAP4Math3Vec3VecERK3VecIXL1EE1AERK3VecIXL3EE1BE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I00EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AERK3VecIXL2EE1BE">
+<span id="_CPPv3I00EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AERK3VecIXL2EE1BE"></span><span id="_CPPv2I00EN4TRAP4Math3Vec3VecERK3VecIX2E1AERK3VecIX2E1BE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1acf8b259d3ee087821af5175ddcea75e0"></span>template&lt;typename <code class="sig-name descname">A</code>, typename <code class="sig-name descname">B</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec">Vec</a>&lt;2, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec::A">A</a>&gt; &amp;<em>xy</em>, <em class="property">const</em> <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec">Vec</a>&lt;2, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I00EN4TRAP4Math3Vec3VecE1A1B" title="TRAP::Math::Vec::Vec::B">B</a>&gt; &amp;<em>zw</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN4TRAP4Math3Vec3VecERK3VecIXL2EE1AERK3VecIXL2EE1BE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3Vec3VecERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3Vec3VecERK3VecIXL4EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3Vec3VecERK3VecIX4E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a0a6920383ea34f3dce2216d0588d28c9"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3Vec3VecERK3VecIXL1EE1UE" title="TRAP::Math::Vec::Vec">Vec</a>&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3Vec3VecERK3VecIXL1EE1UE" title="TRAP::Math::Vec::Vec::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4TRAP4Math3Vec3VecERR3Vec">
+<span id="_CPPv3N4TRAP4Math3Vec3VecERR3Vec"></span><span id="_CPPv2N4TRAP4Math3Vec3VecERR3Vec"></span><span id="TRAP::Math::Vec::Vec__VecRRCE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1ab449c38acdfd63c564b1a882f37ae61f"></span><em class="property">constexpr</em> <code class="sig-name descname">Vec</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4N4TRAP4Math3Vec3VecEv" title="TRAP::Math::Vec::Vec">Vec</a>&amp;&amp;<span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4TRAP4Math3VecD0Ev">
+<span id="_CPPv3N4TRAP4Math3VecD0Ev"></span><span id="_CPPv2N4TRAP4Math3VecD0Ev"></span><span id="TRAP::Math::Vec::~Vec"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a2f68bef8b4fd5e12d0387658f3e07137"></span><code class="sig-name descname">~Vec</code><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4TRAP4Math3VecaSERR3Vec">
+<span id="_CPPv3N4TRAP4Math3VecaSERR3Vec"></span><span id="_CPPv2N4TRAP4Math3VecaSERR3Vec"></span><span id="TRAP::Math::Vec::assign-operator__VecRRCE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a7280c79ab594a1860052a8b1e8772879"></span><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator=</code><span class="sig-paren">(</span>Vec&amp;&amp;<span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4TRAP4Math3VecixEi">
+<span id="_CPPv3N4TRAP4Math3VecixEi"></span><span id="_CPPv2N4TRAP4Math3VecixEi"></span><span id="TRAP::Math::Vec::subscript-operator__iCE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a8fd0db08c968584a3f80d709b5657a5e"></span><em class="property">constexpr</em> T &amp;<code class="sig-name descname">operator[]</code><span class="sig-paren">(</span>int <em>i</em><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4NK4TRAP4Math3VecixEi">
+<span id="_CPPv3NK4TRAP4Math3VecixEi"></span><span id="_CPPv2NK4TRAP4Math3VecixEi"></span><span id="TRAP::Math::Vec::subscript-operator__iCCE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a68ddeee2a246d79cdeec6fca2f186aeb"></span><em class="property">constexpr</em> <em class="property">const</em> T &amp;<code class="sig-name descname">operator[]</code><span class="sig-paren">(</span>int <em>i</em><span class="sig-paren">)</span> <em class="property">const</em><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4TRAP4Math3VecaSERK3VecIXL4EE1TE">
+<span id="_CPPv3N4TRAP4Math3VecaSERK3VecIXL4EE1TE"></span><span id="_CPPv2N4TRAP4Math3VecaSERK3VecIX4E1TE"></span><span id="TRAP::Math::Vec::assign-operator__Vec:4.T:CRCE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1ad391187db4226b68c0ab9da342b03e56"></span><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, T&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP4Math3VecaSERK3VecIXL4EE1TE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecaSER3VecIXL4EE1TERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecaSERK3VecIXL4EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecaSERK3VecIX4E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1aebdb18745758c2d9ad67906e5737817a"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecaSER3VecIXL2EE1TERK3VecIXL2EE1UE" title="TRAP::Math::Vec::operator=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecaSER3VecIXL4EE1TERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecpLER3VecIXL4EE1TE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecpLE1U"></span><span id="_CPPv2I0EN4TRAP4Math3VecpLE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a448f6cb1a083bf893a40dc07ec407528"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator+=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecpLER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator+=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecpLER3VecIXL4EE1TE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecpLER3VecIXL4EE1TERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecpLERK3VecIXL1EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecpLERK3VecIX1E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a2ac3df2eb068a8612584080e1b253d5b"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator+=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecpLER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator+=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecpLER3VecIXL4EE1TERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecpLER3VecIXL4EE1TERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecpLERK3VecIXL4EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecpLERK3VecIX4E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1ac504f6f927239e32af3edb93820a6fd8"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator+=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecpLER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator+=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecpLER3VecIXL4EE1TERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecmIER3VecIXL4EE1TE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecmIE1U"></span><span id="_CPPv2I0EN4TRAP4Math3VecmIE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a32585134b7518930e99722648c7bdeaf"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator-=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecmIER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator-=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecmIER3VecIXL4EE1TE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecmIER3VecIXL4EE1TERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecmIERK3VecIXL1EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecmIERK3VecIX1E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a366b2ed1947a9fa07a99e5e887c467ad"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator-=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecmIER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator-=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecmIER3VecIXL4EE1TERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecmIER3VecIXL4EE1TERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecmIERK3VecIXL4EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecmIERK3VecIX4E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a998eb9d6e14dfdd87d122f7679c66bdb"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator-=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecmIER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator-=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecmIER3VecIXL4EE1TERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecmLER3VecIXL4EE1TE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecmLE1U"></span><span id="_CPPv2I0EN4TRAP4Math3VecmLE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a6088fb0fa46de385d650187507fb6160"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator*=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecmLER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator*=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecmLER3VecIXL4EE1TE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecmLER3VecIXL4EE1TERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecmLERK3VecIXL1EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecmLERK3VecIX1E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a0e61373d88c95903e62912954859b9d5"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator*=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecmLER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator*=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecmLER3VecIXL4EE1TERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecmLER3VecIXL4EE1TERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecmLERK3VecIXL4EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecmLERK3VecIX4E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a230d81934a864d51427f878f60320642"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator*=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecmLER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator*=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecmLER3VecIXL4EE1TERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecdVER3VecIXL4EE1TE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecdVE1U"></span><span id="_CPPv2I0EN4TRAP4Math3VecdVE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1ab622473369f4ca0d996bf6f59311fa7b"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator/=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecdVER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator/=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecdVER3VecIXL4EE1TE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecdVER3VecIXL4EE1TERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecdVERK3VecIXL1EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecdVERK3VecIX1E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a0ea76a1f00d20e9e086d59fe82499379"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator/=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecdVER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator/=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecdVER3VecIXL4EE1TERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecdVER3VecIXL4EE1TERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecdVERK3VecIXL4EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecdVERK3VecIX4E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a91b8c718424185b04fa6fd5ff298e1ca"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator/=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecdVER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator/=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecdVER3VecIXL4EE1TERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4TRAP4Math3VecppEv">
+<span id="_CPPv3N4TRAP4Math3VecppEv"></span><span id="_CPPv2N4TRAP4Math3VecppEv"></span><span id="TRAP::Math::Vec::inc-operatorCE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1af6c4c21b72ef4dbccebffb9d4bb1cc74"></span><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator++</code><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4TRAP4Math3VecmmEv">
+<span id="_CPPv3N4TRAP4Math3VecmmEv"></span><span id="_CPPv2N4TRAP4Math3VecmmEv"></span><span id="TRAP::Math::Vec::dec-operatorCE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1adc1e6260a75b6b9c9fc5b6d7850dba11"></span><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator--</code><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4TRAP4Math3VecppEi">
+<span id="_CPPv3N4TRAP4Math3VecppEi"></span><span id="_CPPv2N4TRAP4Math3VecppEi"></span><span id="TRAP::Math::Vec::inc-operator__iCE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a12813669bdcbfccb2b2e34f67d8e0b34"></span><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; <code class="sig-name descname">operator++</code><span class="sig-paren">(</span>int<span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N4TRAP4Math3VecmmEi">
+<span id="_CPPv3N4TRAP4Math3VecmmEi"></span><span id="_CPPv2N4TRAP4Math3VecmmEi"></span><span id="TRAP::Math::Vec::dec-operator__iCE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a20bcfdd3abc38d374ab10984f477c4be"></span><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; <code class="sig-name descname">operator--</code><span class="sig-paren">(</span>int<span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecrMER3VecIXL4EE1TE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecrME1U"></span><span id="_CPPv2I0EN4TRAP4Math3VecrME1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a3464af43663089d7e33ce427a8281fe7"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator%=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecrMER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator%=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecrMER3VecIXL4EE1TE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecrMER3VecIXL4EE1TERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecrMERK3VecIXL1EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecrMERK3VecIX1E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a58b3fd717e1befa22f27d78a338a76c0"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator%=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecrMER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator%=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecrMER3VecIXL4EE1TERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecrMER3VecIXL4EE1TERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecrMERK3VecIXL4EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecrMERK3VecIX4E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a83eedbf767d9a549c121bc14bfed2b87"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator%=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecrMER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator%=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecrMER3VecIXL4EE1TERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecaNER3VecIXL4EE1TE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecaNE1U"></span><span id="_CPPv2I0EN4TRAP4Math3VecaNE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a3452165451c94929623b8a8282b3b7cc"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator&amp;=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecaNER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&amp;=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecaNER3VecIXL4EE1TE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecaNER3VecIXL4EE1TERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecaNERK3VecIXL1EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecaNERK3VecIX1E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1aaf07e52d020d522f655b7a2d213a8d34"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator&amp;=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecaNER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&amp;=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecaNER3VecIXL4EE1TERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecaNER3VecIXL4EE1TERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecaNERK3VecIXL4EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecaNERK3VecIX4E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1af22ee053135940cf65bd8dcd422cb2ac"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator&amp;=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecaNER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&amp;=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecaNER3VecIXL4EE1TERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecoRER3VecIXL4EE1TE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecoRE1U"></span><span id="_CPPv2I0EN4TRAP4Math3VecoRE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a48bd50f4b59e50fd27cab39aabec48c5"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator|=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecoRER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator|=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecoRER3VecIXL4EE1TE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecoRER3VecIXL4EE1TERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecoRERK3VecIXL1EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecoRERK3VecIX1E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1aa41599f672b19a324a6d6ea4185b5149"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator|=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecoRER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator|=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecoRER3VecIXL4EE1TERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecoRER3VecIXL4EE1TERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecoRERK3VecIXL4EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecoRERK3VecIX4E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a6e3fcc2a270e6a61211633193443faf5"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator|=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecoRER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator|=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecoRER3VecIXL4EE1TERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VeceOER3VecIXL4EE1TE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VeceOE1U"></span><span id="_CPPv2I0EN4TRAP4Math3VeceOE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a4a20eb8d6edb1ed67e5d32fa36aa9270"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator^=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VeceOER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator^=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VeceOER3VecIXL4EE1TE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VeceOER3VecIXL4EE1TERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VeceOERK3VecIXL1EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VeceOERK3VecIX1E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1aac74a5c85553676ce78ac0124aac1f2e"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator^=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VeceOER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator^=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VeceOER3VecIXL4EE1TERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VeceOER3VecIXL4EE1TERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VeceOERK3VecIXL4EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VeceOERK3VecIX4E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1aa1e68429a53c0fbc6f6b2d811bb4e4f5"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator^=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VeceOER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator^=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VeceOER3VecIXL4EE1TERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VeclSER3VecIXL4EE1TE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VeclSE1U"></span><span id="_CPPv2I0EN4TRAP4Math3VeclSE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1ac8225fcf4b55605c5482a892581070d5"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator&lt;&lt;=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VeclSER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&lt;&lt;=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VeclSER3VecIXL4EE1TE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VeclSER3VecIXL4EE1TERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VeclSERK3VecIXL1EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VeclSERK3VecIX1E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a2cf23112d9451248b85ea2df0949146f"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator&lt;&lt;=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VeclSER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&lt;&lt;=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VeclSER3VecIXL4EE1TERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VeclSER3VecIXL4EE1TERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VeclSERK3VecIXL4EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VeclSERK3VecIX4E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1af3b6e0877aac97c93cbe9a9750b5a05a"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator&lt;&lt;=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VeclSER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&lt;&lt;=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VeclSER3VecIXL4EE1TERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecrSER3VecIXL4EE1TE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecrSE1U"></span><span id="_CPPv2I0EN4TRAP4Math3VecrSE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a4d9de4e685e85f4af9cb92465abbd4b4"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator&gt;&gt;=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecrSER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&gt;&gt;=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecrSER3VecIXL4EE1TE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecrSER3VecIXL4EE1TERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecrSERK3VecIXL1EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecrSERK3VecIX1E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a6d2307b22d286be2b5460c5a4c9e0230"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator&gt;&gt;=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecrSER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&gt;&gt;=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecrSER3VecIXL4EE1TERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecrSER3VecIXL4EE1TERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecrSERK3VecIXL4EE1UE"></span><span id="_CPPv2I0EN4TRAP4Math3VecrSERK3VecIX4E1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1adb0d3d87fe5665cfb0b965cd1ced3137"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> Vec&lt;4, T&gt; &amp;<code class="sig-name descname">operator&gt;&gt;=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecrSER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&gt;&gt;=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecrSER3VecIXL4EE1TERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecaSERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecaSERK3VecIXL4EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1ad82a8eddc5bedf777b143a8b4525cd5c"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecaSER3VecIXL2EE1TERK3VecIXL2EE1UE" title="TRAP::Math::Vec::operator=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecaSERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecpLERN4TRAP4Math3VecIXL4EE1TEE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecpLE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1ae64afd5bf34323f9ac9bffb4eabf9344"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator+=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecpLER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator+=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecpLERN4TRAP4Math3VecIXL4EE1TEE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecpLERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecpLERK3VecIXL1EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1ad0639f60cffd0acce510bf51e064c720"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator+=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecpLER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator+=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecpLERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecpLERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecpLERK3VecIXL4EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a17518ec9079e030b3816a5d6214e687d"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator+=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecpLER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator+=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecpLERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecmIERN4TRAP4Math3VecIXL4EE1TEE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecmIE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a9e81d74614cdcce9987513bffc9ca1c3"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator-=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecmIER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator-=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecmIERN4TRAP4Math3VecIXL4EE1TEE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecmIERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecmIERK3VecIXL1EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a91f06b6168dbd9e1101fa0e088f36a26"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator-=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecmIER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator-=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecmIERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecmIERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecmIERK3VecIXL4EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a15b69af487d4969fd17623956f13ab04"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator-=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecmIER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator-=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecmIERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecmLERN4TRAP4Math3VecIXL4EE1TEE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecmLE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a2346e5ceca01199911f03b3c0ad7d315"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator*=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecmLER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator*=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecmLERN4TRAP4Math3VecIXL4EE1TEE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecmLERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecmLERK3VecIXL1EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1ac3b75b9111f047c17c6b611874748f34"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator*=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecmLER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator*=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecmLERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecmLERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecmLERK3VecIXL4EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a79e3084bb6dd7e468bef3e7ea93ee21b"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator*=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecmLER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator*=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecmLERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecdVERN4TRAP4Math3VecIXL4EE1TEE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecdVE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1aaad9cd440ac91744a6db181ccfe450e6"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator/=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecdVER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator/=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecdVERN4TRAP4Math3VecIXL4EE1TEE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecdVERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecdVERK3VecIXL1EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a66459edc54e20b06a26d9b27ccb2bcc9"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator/=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecdVER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator/=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecdVERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecdVERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecdVERK3VecIXL4EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1afd5a8f78e43cf963a39812ef0647c645"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator/=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecdVER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator/=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecdVERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecrMERN4TRAP4Math3VecIXL4EE1TEE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecrME1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a4bd743640fc46aa550693ccb0dc5b6e4"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator%=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecrMER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator%=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecrMERN4TRAP4Math3VecIXL4EE1TEE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecrMERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecrMERK3VecIXL1EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a71fafa4ab23a245f136580ed7df1c282"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator%=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecrMER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator%=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecrMERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecrMERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecrMERK3VecIXL4EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1affa75723dd33bf89a9aae7a9f547ab0f"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator%=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecrMER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator%=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecrMERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecaNERN4TRAP4Math3VecIXL4EE1TEE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecaNE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1af229b6332ec6854103442f2a31018d7a"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator&amp;=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecaNER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&amp;=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecaNERN4TRAP4Math3VecIXL4EE1TEE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecaNERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecaNERK3VecIXL1EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a57c3885a896c7a1c4b6aa1921fe98312"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator&amp;=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecaNER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&amp;=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecaNERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecaNERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecaNERK3VecIXL4EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a6f4aa760fe5126ab1b3f862b9827a190"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator&amp;=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecaNER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&amp;=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecaNERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecoRERN4TRAP4Math3VecIXL4EE1TEE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecoRE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a7a93b6d8fd0ea753c9ea3469bf4a54c3"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator|=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecoRER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator|=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecoRERN4TRAP4Math3VecIXL4EE1TEE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecoRERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecoRERK3VecIXL1EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1aea2d5cf3725319f59465d768884b7096"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator|=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecoRER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator|=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecoRERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecoRERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecoRERK3VecIXL4EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a476b04433566eb41a5e015913bd5b80c"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator|=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecoRER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator|=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecoRERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VeceOERN4TRAP4Math3VecIXL4EE1TEE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VeceOE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a815d741ba236fe719b64b19fe4500776"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator^=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VeceOER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator^=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VeceOERN4TRAP4Math3VecIXL4EE1TEE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VeceOERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VeceOERK3VecIXL1EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1aad785b7dfa02d18e19ec25174f940a77"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator^=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VeceOER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator^=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VeceOERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VeceOERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VeceOERK3VecIXL4EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a2638cd9227fa8ff8d2f16cca4a7ebd07"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator^=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VeceOER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator^=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VeceOERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VeclSERN4TRAP4Math3VecIXL4EE1TEE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VeclSE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a7a2fb553d28bd92d1fd43c35ba70693e"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator&lt;&lt;=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VeclSER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&lt;&lt;=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VeclSERN4TRAP4Math3VecIXL4EE1TEE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VeclSERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VeclSERK3VecIXL1EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a493d3c26a6c77251263bc352f5c53535"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator&lt;&lt;=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VeclSER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&lt;&lt;=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VeclSERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VeclSERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VeclSERK3VecIXL4EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1ae419260e4e2f7d3e7d9f19142c71c1b0"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator&lt;&lt;=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VeclSER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&lt;&lt;=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VeclSERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecrSERN4TRAP4Math3VecIXL4EE1TEE1U">
+<span id="_CPPv3I0EN4TRAP4Math3VecrSE1U"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a7bc272936cf97e79ba5a762d66740d3b"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator&gt;&gt;=</code><span class="sig-paren">(</span><a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecrSER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&gt;&gt;=::U">U</a> <em>scalar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecrSERN4TRAP4Math3VecIXL4EE1TEE1U" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecrSERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecrSERK3VecIXL1EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1acbbb6b6e3b80736ea121c47a77459c63"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator&gt;&gt;=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;1, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecrSER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&gt;&gt;=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecrSERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL1EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4I0EN4TRAP4Math3VecrSERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE">
+<span id="_CPPv3I0EN4TRAP4Math3VecrSERK3VecIXL4EE1UE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a7f95a26978b0bdf875136fefefacb061"></span>template&lt;typename <code class="sig-name descname">U</code>&gt;<br /><em class="property">constexpr</em> TRAP::Math::<a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec.html#_CPPv4I_i0EN4TRAP4Math3VecE" title="TRAP::Math::Vec">Vec</a>&lt;4, T&gt; &amp;<code class="sig-name descname">operator&gt;&gt;=</code><span class="sig-paren">(</span><em class="property">const</em> Vec&lt;4, <a class="reference internal" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#_CPPv4I0EN4TRAP4Math3VecrSER3VecIXL2EE1TE1U" title="TRAP::Math::Vec::operator&gt;&gt;=::U">U</a>&gt; &amp;<em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4TRAP4Math3VecrSERN4TRAP4Math3VecIXL4EE1TEERK3VecIXL4EE1UE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="member">
+<dt id="_CPPv4N4TRAP4Math3Vec1xE">
+<span id="_CPPv3N4TRAP4Math3Vec1xE"></span><span id="_CPPv2N4TRAP4Math3Vec1xE"></span><span id="TRAP::Math::Vec::x__T"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a9c50716e05b4bcc4f4857feb74f1cd93"></span>T <code class="sig-name descname">x</code><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N4TRAP4Math3Vec1yE">
+<span id="_CPPv3N4TRAP4Math3Vec1yE"></span><span id="_CPPv2N4TRAP4Math3Vec1yE"></span><span id="TRAP::Math::Vec::y__T"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1aba0e45c63dd38d7235176644c735d09c"></span>T <code class="sig-name descname">y</code><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N4TRAP4Math3Vec1zE">
+<span id="_CPPv3N4TRAP4Math3Vec1zE"></span><span id="_CPPv2N4TRAP4Math3Vec1zE"></span><span id="TRAP::Math::Vec::z__T"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1abea4a5c6c692d6380404f7e2f9be0b0c"></span>T <code class="sig-name descname">z</code><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N4TRAP4Math3Vec1wE">
+<span id="_CPPv3N4TRAP4Math3Vec1wE"></span><span id="_CPPv2N4TRAP4Math3Vec1wE"></span><span id="TRAP::Math::Vec::w__T"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a062676ddd2c5bf27fd6df1222ff6a8c3"></span>T <code class="sig-name descname">w</code><a class="headerlink" href="#_CPPv4N4TRAP4Math3Vec1wE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="function">
+<dt id="_CPPv4N4TRAP4Math3Vec6LengthEv">
+<span id="_CPPv3N4TRAP4Math3Vec6LengthEv"></span><span id="_CPPv2N4TRAP4Math3Vec6LengthEv"></span><span id="TRAP::Math::Vec::LengthCE"></span><span class="target" id="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4_1a510c474b2cc3bd69954e3fd1d0f55a88"></span><em class="property">constexpr</em> int <code class="sig-name descname">Length</code><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019-2020 Jan &#34;GamesTrap&#34; Schürkamp All Rights Reserved
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-154200595-2', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
