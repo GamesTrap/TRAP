@@ -30,6 +30,7 @@ namespace TRAP::INTERNAL
 		static uint8_t Make8Bits(uint32_t value, uint32_t bitSpan);
 		static uint32_t ApplyBitField(uint32_t x, BitField& bitField);
 		static uint32_t ApplyBitField(uint16_t x, BitField& bitField);
+		void DecodeRLE8(std::vector<uint8_t>& compressedImageData, std::vector<uint8_t>* colorTable);
 		
 		std::vector<uint8_t> m_data;
 	};

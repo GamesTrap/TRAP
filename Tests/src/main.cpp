@@ -10,6 +10,7 @@
 #include "Opacity/OpacityTests.h"
 #include "Title/TitleTests.h"
 #include "Vulkan/VulkanTests.h"
+#include "ImageLoader/ImageLoaderTests.h"
 
 class Tests final : public TRAP::Application
 {
@@ -25,7 +26,8 @@ public:
 		//PushLayer(TRAP::MakeScope<MonitorTests>());
 		//PushLayer(TRAP::MakeScope<OpacityTests>());
 		//PushLayer(TRAP::MakeScope<TitleTests>());
-		PushLayer(TRAP::MakeScope<VulkanTests>());
+		//PushLayer(TRAP::MakeScope<VulkanTests>());
+		PushLayer(TRAP::MakeScope<ImageLoaderTests>());
 	}
 };
 

@@ -99,6 +99,14 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			Utils::Memory::SwapBytes(infoHeader.SizeImage);
 			Utils::Memory::SwapBytes(infoHeader.CLRUsed);
 		}
+
+		if(infoHeader.Size == 12)
+		{
+			file.close();
+			TP_ERROR("[Image][BMP] OS/2 1.x BMPs are unsupported!");
+			TP_WARN("[Image][BMP] Using Default Image!");
+			return;
+		}
 		
 		std::array<uint32_t, 4> masks{};
 		if(infoHeader.Compression == 3) //BitFields
@@ -151,23 +159,16 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		m_width = infoHeader.Width;
 		m_bitsPerPixel = infoHeader.BitsPerPixel;
 
-		if (m_bitsPerPixel <= 8 && !infoHeader.CLRUsed)
+		if(m_bitsPerPixel <= 4)
 		{
 			file.close();
-			TP_ERROR("[Image][BMP] No color stored in color table!");
-			TP_WARN("[Image][BMP] Using Default Image!");
-			return;
-		}
-		if (m_bitsPerPixel == 1)
-		{
-			file.close();
-			TP_ERROR("[Image][BMP] BitsPerPixel is invalid/unsupported!");
+			TP_ERROR("[Image][BMP] BitsPerPixel ", m_bitsPerPixel, " is unsupported!");
 			TP_WARN("[Image][BMP] Using Default Image!");
 			return;
 		}
 
 		std::vector<uint8_t> colorTable{};
-		if (m_bitsPerPixel <= 8)
+		if (m_bitsPerPixel <= 8 && infoHeader.CLRUsed)
 		{
 			colorTable.resize(4 * infoHeader.CLRUsed);
 			if(!file.read(reinterpret_cast<char*>(colorTable.data()), 4 * infoHeader.CLRUsed))
@@ -253,12 +254,19 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 				return;
 			}
 
-			if (m_bitsPerPixel == 8) //Color Table
+			if (m_bitsPerPixel == 8 && infoHeader.CLRUsed) //Color Table
 			{
 				m_colorFormat = ColorFormat::RGBA;
 				m_bitsPerPixel = 32;
 				
 				m_data = DecodeBGRAMap(imageData, m_width, m_height, 4, colorTable);
+			}
+			else if(m_bitsPerPixel == 8 && !infoHeader.CLRUsed) //Grayscale
+			{
+				m_colorFormat = ColorFormat::GrayScale;
+				m_bitsPerPixel = 8;
+
+				m_data = imageData;
 			}
 			else if (m_bitsPerPixel == 16) //RGB
 			{				
@@ -294,10 +302,26 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		}
 		else if (infoHeader.Compression == 1) //Microsoft RLE 8
 		{
-			file.close();
-			TP_ERROR("[Image][BMP] RLE 8 is unsupported!");
-			TP_WARN("[Image][BMP] Using Default Image!");
-			return;
+			if(!infoHeader.CLRUsed)
+			{
+				//Compressed Grayscale
+				m_colorFormat = ColorFormat::GrayScale;
+				m_bitsPerPixel = 8;
+				m_data.resize(m_width * m_height);
+				
+				//Decode Single Channel RLE 8
+				DecodeRLE8(imageData, nullptr);
+			}
+			else
+			{
+				//Compressed Palette
+				m_colorFormat = ColorFormat::RGBA;
+				m_bitsPerPixel = 32;
+				m_data.resize(m_width* m_height * 4);
+
+				//Decode Multi Channel RLE 8
+				DecodeRLE8(imageData, &colorTable);
+			}
 		}
 		else if (infoHeader.Compression == 2) //Microsoft RLE 4
 		{
@@ -504,4 +528,121 @@ uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint16_t x, BitField& bit
 uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint32_t x, BitField& bitField)
 {
 	return static_cast<uint32_t>(x >> bitField.Start & ((uint32_t(1) << bitField.Span) - 1));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<uint8_t>& compressedImageData, std::vector<uint8_t>* colorTable)
+{
+	int32_t x = 0, y = 0;
+	uint8_t t, r;
+
+	uint32_t dataIndex = 0;
+	
+	if(colorTable)
+	{
+		//Compressed RGBA
+		while (true)
+		{
+			uint8_t color = compressedImageData[dataIndex++];
+
+			if (color != 0)
+			{
+				r = compressedImageData[dataIndex++] * 4;
+
+				for (t = 0; t < color; t++)
+				{
+					m_data[((y * m_width + x) * 4) + 0] = (*colorTable)[r + 2];
+					m_data[((y * m_width + x) * 4) + 1] = (*colorTable)[r + 1];
+					m_data[((y * m_width + x) * 4) + 2] = (*colorTable)[r + 0];
+					m_data[((y * m_width + x) * 4) + 3] = (*colorTable)[r + 3];
+					x++;
+				}
+			}
+			else
+			{
+				r = compressedImageData[dataIndex++];
+
+				if (r == 0)
+				{
+					x = 0;
+					y++;
+					continue;
+				}
+				if (r == 1)
+					return;
+				if (r == 2)
+				{
+					x = x + compressedImageData[dataIndex++];
+					y = y + compressedImageData[dataIndex++];
+					continue;
+				}
+
+				for (t = 0; t < r; t++)
+				{
+					color = compressedImageData[dataIndex++] * 4;
+					m_data[((y * m_width + x) * 4) + 0] = (*colorTable)[color + 2];
+					m_data[((y * m_width + x) * 4) + 1] = (*colorTable)[color + 1];
+					m_data[((y * m_width + x) * 4) + 2] = (*colorTable)[color + 0];
+					m_data[((y * m_width + x) * 4) + 3] = (*colorTable)[color + 3];
+					x++;
+				}
+
+				color = r % 2;
+
+				if (color != 0)
+					compressedImageData[dataIndex++];
+			}
+		}
+	}
+	else
+	{
+		//Compressed Grayscale
+		while (true)
+		{
+			uint8_t color = compressedImageData[dataIndex++];
+
+			if (color != 0)
+			{
+				r = compressedImageData[dataIndex++];
+
+				for (t = 0; t < color; t++)
+				{
+					m_data[x + (y * m_width)] = r;
+					x++;
+				}
+			}
+			else
+			{
+				r = compressedImageData[dataIndex++];
+
+				if (r == 0)
+				{
+					x = 0;
+					y++;
+					continue;
+				}
+				if (r == 1)
+					return;
+				if (r == 2)
+				{
+					x = x + compressedImageData[dataIndex++];
+					y = y + compressedImageData[dataIndex++];
+					continue;
+				}
+
+				for (t = 0; t < r; t++)
+				{
+					color = compressedImageData[dataIndex++];
+					m_data[x + (y * m_width)] = color;
+					x++;
+				}
+
+				color = r % 2;
+
+				if (color != 0)
+					compressedImageData[dataIndex++];
+			}
+		}
+	}
 }

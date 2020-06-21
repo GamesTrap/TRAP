@@ -1058,7 +1058,11 @@ SITREP 06/19/2020|20w25a1
     - Added UploadImage to Texture2D(OpenGLTexture2D) ~<30 mins
     - Updated VulkanSDK version for Travis CI on Windows ~<5 mins
     - Fixed a bug in VFS::MakeVirtualPathCompatible ~<10 mins
-    - Added new Documentation via Sphinx + Doxygen + Breathe + Exhale ~>50 mins
 
-SITREP 06/20/2020|20w25a2
+SITREP 06/21/2020|20w25a2
     - Changed TRAP Engine version to 20w25a2(0.6.39)
+    - Added new Documentation via Sphinx + Doxygen + Breathe + Exhale ~>50 mins
+    - Added ImageLoaderTests ~<60 mins
+    - BMP loader added error message for OS/2 images ~<15 mins
+    - BMP loader added grayscale support ~>20 mins
+    - BMP loader added grayscale and RGBA RLE 8 decoding support ~>60 mins
