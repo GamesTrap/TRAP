@@ -1066,3 +1066,7 @@ SITREP 06/21/2020|20w25a2
     - BMP loader added error message for OS/2 images ~<15 mins
     - BMP loader added grayscale support ~>20 mins
     - BMP loader added grayscale and RGBA RLE 8 decoding support ~>60 mins
+
+SITREP 06/25/2020|20w26a1
+    - Changed TRAP Engine version to 20w26a1(0.6.40)
+    - Moved some functions from Image to TGAImage ~<20 mins
