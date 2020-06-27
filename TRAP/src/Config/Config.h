@@ -73,7 +73,7 @@ void TRAP::Utils::Config::Get(const std::string& key, std::vector<T>& value) con
 {
 	TP_PROFILE_FUNCTION();
 	
-	constexpr auto it = std::find_if(m_data.begin(), m_data.end(), [&key](const std::pair<std::string, std::string>& element) {return element.first == key; });
+	const auto it = std::find_if(m_data.begin(), m_data.end(), [&key](const std::pair<std::string, std::string>& element) {return element.first == key; });
 	if (it != m_data.end())
 	{
 		std::string output;
@@ -115,7 +115,7 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 	TP_PROFILE_FUNCTION();
 	
 	//Transform the vector into a string that separates the elements with a comma
-	const std::string valueAsString;
+	std::string valueAsString;
 	for (std::size_t i = 0; i < value.size() - 1; ++i)
 		valueAsString += ConvertToString<T>(value[i]) + ',';
 	valueAsString += ConvertToString<T>(value.back());

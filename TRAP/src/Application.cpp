@@ -16,6 +16,7 @@
 #include "Event/KeyEvent.h"
 #include "Event/WindowEvent.h"
 #include "Input/Input.h"
+#include "Utils/Utils.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 
@@ -81,7 +82,7 @@ TRAP::Application::Application()
 	m_config.Get("Maximized", maximized);
 	m_config.Get("Monitor", monitor);
 	m_config.Get("RenderAPI", renderAPI);
-
+	
 	if (fpsLimit > 0)
 	{
 		if (fpsLimit >= 25 && fpsLimit <= 500)
@@ -156,9 +157,17 @@ TRAP::Application::~Application()
 	m_config.Set("Maximized", m_window->IsMaximized());
 	m_config.Set("Monitor", m_window->GetMonitor().GetID());
 	m_config.Set("RenderAPI", Graphics::API::Context::GetRenderAPI());
-#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
+	const std::vector<uint8_t> VulkanGPUUUID = Graphics::API::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
+	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan && !VulkanGPUUUID.empty())
+		m_config.Set("VulkanGPU", Utils::UUIDToString(VulkanGPUUUID));
+	else
+	{
+		std::string uuid;
+		m_config.Get("VulkanGPU", uuid);
+		if (uuid.empty())
+			m_config.Set("VulkanGPU", "");
+	}
 	m_config.Print();
-#endif
 	m_config.SaveToFile("Engine.cfg");
 	m_window.reset();
 	VFS::Shutdown();
@@ -287,10 +296,10 @@ void TRAP::Application::Run()
 
 		if (Graphics::API::Context::s_newRenderAPI != Graphics::API::RenderAPI::NONE && Graphics::API::Context::s_newRenderAPI != Graphics::API::Context::GetRenderAPI())
 		{
-			if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL || Graphics::API::Context::s_newRenderAPI == Graphics::API::RenderAPI::OpenGL)
+			//if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL || Graphics::API::Context::s_newRenderAPI == Graphics::API::RenderAPI::OpenGL)
 				ReCreateWindow(Graphics::API::Context::s_newRenderAPI);
-			else
-				ReCreate(Graphics::API::Context::s_newRenderAPI);
+			/*else
+				ReCreate(Graphics::API::Context::s_newRenderAPI);*/
 
 			Graphics::API::Context::SetRenderAPI(Graphics::API::Context::s_newRenderAPI);
 		}
@@ -537,7 +546,7 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI) const
+/*void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI) const
 {
 	TP_PROFILE_FUNCTION();
 
@@ -565,7 +574,7 @@ void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI) const
 
 	for (const auto& layer : *m_layerStack)
 		layer->OnAttach();
-}
+}*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

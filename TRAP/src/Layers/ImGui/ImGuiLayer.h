@@ -17,6 +17,7 @@ namespace TRAP
 
 		void OnAttach() override;
 		void OnDetach() override;
+		void OnEvent(Events::Event& event) override;
 
 		static void Begin();
 		static void End();

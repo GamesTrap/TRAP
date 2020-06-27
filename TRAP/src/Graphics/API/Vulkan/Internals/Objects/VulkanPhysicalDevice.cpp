@@ -20,13 +20,23 @@ TRAP::Graphics::API::Vulkan::PhysicalDevice::PhysicalDevice(VkPhysicalDevice dev
 	vkGetPhysicalDeviceMemoryProperties(m_device, &m_deviceMemoryProperties);
 
 	m_deviceProperties11.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_PROPERTIES;
-	VkPhysicalDeviceProperties2 props2{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2, &m_deviceProperties11 };
-	vkGetPhysicalDeviceProperties2(device, &props2);	
+	VkPhysicalDeviceProperties2 props2{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2, &m_deviceProperties11, {} };
+	vkGetPhysicalDeviceProperties2(device, &props2);
 
 	uint32_t extensionCount = 0;
 	VkCall(vkEnumerateDeviceExtensionProperties(m_device, nullptr, &extensionCount, nullptr));
 	m_deviceExtensions.resize(extensionCount);
 	VkCall(vkEnumerateDeviceExtensionProperties(m_device, nullptr, &extensionCount, m_deviceExtensions.data()));
+
+	//Get GPU UUID
+	VkPhysicalDeviceIDProperties propID;
+	propID.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES;
+	propID.pNext = nullptr;
+	VkPhysicalDeviceProperties2 props21{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2, &propID, {} };
+	vkGetPhysicalDeviceProperties2(device, &props21);
+	m_deviceUUID.resize(16, 0);
+	for(uint8_t i = 0; i < 16; i++)
+		m_deviceUUID[i] = propID.deviceUUID[i];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -97,6 +107,13 @@ std::string TRAP::Graphics::API::Vulkan::PhysicalDevice::GetPhysicalDeviceName()
 const std::vector<VkExtensionProperties>& TRAP::Graphics::API::Vulkan::PhysicalDevice::GetAvailableExtensions() const
 {
 	return m_deviceExtensions;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<uint8_t> TRAP::Graphics::API::Vulkan::PhysicalDevice::GetUUID() const
+{
+	return m_deviceUUID;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

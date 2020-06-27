@@ -3,10 +3,6 @@
 
 #include "ImGuiOpenGL4.h"
 #include <examples/imgui_impl_vulkan.h>
-#ifdef TRAP_PLATFORM_WINDOWS
-#include <examples/imgui_impl_win32.h>
-#include <examples/imgui_impl_dx12.h>
-#endif
 
 #include "Application.h"
 #include "Graphics/API/Context.h"
@@ -80,6 +76,15 @@ void TRAP::ImGuiLayer::OnDetach()
 	}
 
 	ImGui::DestroyContext();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::ImGuiLayer::OnEvent(Events::Event& event)
+{
+	ImGuiIO& io = ImGui::GetIO();
+	event.Handled |= event.IsInCategory(Events::EventCategory::Mouse) & io.WantCaptureMouse;
+	event.Handled |= event.IsInCategory(Events::EventCategory::Keyboard) & io.WantCaptureKeyboard;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

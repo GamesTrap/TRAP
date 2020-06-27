@@ -53,6 +53,8 @@ namespace TRAP::Graphics::API
 
 		std::string_view GetTitle() const override;
 
+		std::vector<uint8_t> GetCurrentGPUUUID() override;
+
 		static OpenGLRenderer* Get();
 
 		static uint32_t TRAPRendererBufferToOpenGL(RendererBufferType buffer);

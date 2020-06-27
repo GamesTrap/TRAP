@@ -272,6 +272,13 @@ std::string_view TRAP::Graphics::API::OpenGLRenderer::GetTitle() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::vector<uint8_t> TRAP::Graphics::API::OpenGLRenderer::GetCurrentGPUUUID()
+{
+	return {};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::API::OpenGLRenderer* TRAP::Graphics::API::OpenGLRenderer::Get()
 {
 	TP_PROFILE_FUNCTION();

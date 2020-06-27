@@ -53,7 +53,7 @@ VKAPI_ATTR VkBool32 TRAP::Graphics::API::Vulkan::Debug::VulkanDebugCallback(
 		stream << ' ';
 	stream << callbackData->messageIdNumber << '(' << callbackData->pMessageIdName << ") " << callbackData->pMessage;
 	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
-		TP_DEBUG(stream.str());
+		return false;
 	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
 		TP_INFO(stream.str());
 	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)

@@ -171,7 +171,14 @@ std::pair<std::string, std::string> TRAP::Utils::Config::ParseLine(const std::st
 
 		//Skip the assignment
 		while (std::isspace(line[index], m_locale) || line[index] == '=')
+		{
 			index++;
+			if(index >= line.size())
+			{
+				//Out of range so line only contains key
+				return { key, "" };
+			}
+		}
 
 		//Get the value string
 		const std::string value(line.data() + index, line.size() - index);

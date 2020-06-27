@@ -13,6 +13,9 @@ namespace TRAP::Utils
 		//Compiler doesnt support std::is_constant_evaluated()
 		return false;
 	}
+
+	std::string UUIDToString(const std::vector<uint8_t>& uuid);
+	std::vector<uint8_t> UUIDFromString(const std::string& uuid);
 }
 
 #endif /*_TRAP_UTILS_H_*/

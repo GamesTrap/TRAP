@@ -1070,9 +1070,14 @@ SITREP 06/21/2020|20w25a2
 SITREP 06/25/2020|20w26a1
     - Changed TRAP Engine version to 20w26a1(0.6.40)
     - Moved some functions from Image to TGAImage ~<20 mins
-    - Changed VSF std::byte to uint8_t data type ~<10 mins
+    - Changed VFS std::byte to uint8_t data type ~<10 mins
 
 SITREP 06/27/2020|20w26a2
     - Changed TRAP Engine version to 20w26a2(0.6.41)
     - Changed folder structure ~>25 mins
     - Modularized remaining premake5 scripts ~<30 mins
+    - Config Fixed an out of range error when only the key exists without any value ~<10 mins
+    - Utils Added UUIDToString and UUIDFromString functions ~<20 mins
+    - Added VulkanGPU UUID entry to Engine.cfg ~<15 mins
+    - Vulkan Added Saving/Loading of a GPU UUID ~>30 mins
+    - Vulkan Removed Verbose debug messages ~<10 mins

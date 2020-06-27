@@ -27,7 +27,7 @@ namespace TRAP::Graphics::API
 	class VulkanRenderer final : public RendererAPI
 	{
 	public:
-		VulkanRenderer();
+		explicit VulkanRenderer();
 		~VulkanRenderer();
 		
 		VulkanRenderer(const VulkanRenderer&) = delete;
@@ -64,6 +64,8 @@ namespace TRAP::Graphics::API
 		void Draw(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive) override;
 
 		std::string_view GetTitle() const override;
+
+		std::vector<uint8_t> GetCurrentGPUUUID() override;
 
 		//VulkanRenderer specific
 		static void SetVSyncIntervalInternal(uint32_t interval);
