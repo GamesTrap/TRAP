@@ -25,12 +25,12 @@ namespace TRAP
 		static bool ResolveWritePhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath);
 		static std::vector<std::filesystem::path> ResolveToPhysicalPaths(const std::string& virtualPath);
 
-		static std::vector<std::byte> ReadFile(const std::string& path);
-		static std::vector<std::byte> SilentReadFile(const std::string& path);
+		static std::vector<uint8_t> ReadFile(const std::string& path);
+		static std::vector<uint8_t> SilentReadFile(const std::string& path);
 		static std::string ReadTextFile(const std::string& path);
 		static std::string SilentReadTextFile(const std::string& path);
 
-		static bool WriteFile(const std::string& path, std::vector<std::byte>& buffer);
+		static bool WriteFile(const std::string& path, std::vector<uint8_t>& buffer);
 		static bool WriteTextFile(const std::string& path, const std::string& text);
 
 		static void Init();

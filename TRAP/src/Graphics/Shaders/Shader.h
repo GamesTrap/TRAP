@@ -52,7 +52,7 @@ namespace TRAP::Graphics
 		
 	private:
 		static bool CheckSPIRVMagicNumber(const std::string& filePath);
-		static std::vector<uint32_t> Convert8To32(const std::vector<std::byte>& source);
+		static std::vector<uint32_t> Convert8To32(const std::vector<uint8_t>& source);
 	};
 }
 

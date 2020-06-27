@@ -37,7 +37,7 @@ std::filesystem::file_time_type TRAP::FileSystem::GetLastWriteTime(const std::fi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::byte> TRAP::FileSystem::ReadFile(const std::filesystem::path& filePath)
+std::vector<uint8_t> TRAP::FileSystem::ReadFile(const std::filesystem::path& filePath)
 {
 	if (FileOrFolderExists(filePath))
 	{
@@ -46,7 +46,7 @@ std::vector<std::byte> TRAP::FileSystem::ReadFile(const std::filesystem::path& f
 		{
 			const uint32_t length = static_cast<uint32_t>(file.tellg());
 			file.seekg(0);
-			std::vector<std::byte> buffer{ length };
+			std::vector<uint8_t> buffer(length);
 			file.read(reinterpret_cast<char*>(buffer.data()), length);
 
 			file.close();
@@ -56,12 +56,12 @@ std::vector<std::byte> TRAP::FileSystem::ReadFile(const std::filesystem::path& f
 		TP_ERROR("[FileSystem] Could not open File: ", filePath);
 	}
 
-	return std::vector<std::byte>();
+	return std::vector<uint8_t>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::byte> TRAP::FileSystem::SilentReadFile(const std::filesystem::path& filePath)
+std::vector<uint8_t> TRAP::FileSystem::SilentReadFile(const std::filesystem::path& filePath)
 {
 	if (!SilentFileOrFolderExists(filePath))
 	{
@@ -70,7 +70,7 @@ std::vector<std::byte> TRAP::FileSystem::SilentReadFile(const std::filesystem::p
 		{
 			const uint32_t length = static_cast<uint32_t>(file.tellg());
 			file.seekg(0);
-			std::vector<std::byte> buffer{ length };
+			std::vector<uint8_t> buffer(length);
 			file.read(reinterpret_cast<char*>(buffer.data()), length);
 
 			file.close();
@@ -78,7 +78,7 @@ std::vector<std::byte> TRAP::FileSystem::SilentReadFile(const std::filesystem::p
 		}
 	}
 
-	return std::vector<std::byte>();
+	return std::vector<uint8_t>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -145,7 +145,7 @@ std::string TRAP::FileSystem::SilentReadTextFile(const std::filesystem::path& fi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::WriteFile(const std::filesystem::path& filePath, std::vector<std::byte>& buffer)
+bool TRAP::FileSystem::WriteFile(const std::filesystem::path& filePath, std::vector<uint8_t>& buffer)
 {
 	std::ofstream file(filePath, std::ios::binary);
 	if (file.is_open())

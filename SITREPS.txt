@@ -1070,3 +1070,9 @@ SITREP 06/21/2020|20w25a2
 SITREP 06/25/2020|20w26a1
     - Changed TRAP Engine version to 20w26a1(0.6.40)
     - Moved some functions from Image to TGAImage ~<20 mins
+    - Changed VSF std::byte to uint8_t data type ~<10 mins
+
+SITREP 06/27/2020|20w26a2
+    - Changed TRAP Engine version to 20w26a2(0.6.41)
+    - Changed folder structure ~>25 mins
+    - Modularized remaining premake5 scripts ~<30 mins

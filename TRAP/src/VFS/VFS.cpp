@@ -195,26 +195,26 @@ std::vector<std::filesystem::path> TRAP::VFS::ResolveToPhysicalPaths(const std::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::byte> TRAP::VFS::ReadFile(const std::string& path)
+std::vector<uint8_t> TRAP::VFS::ReadFile(const std::string& path)
 {
 	TP_PROFILE_FUNCTION();
 
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
-	return ResolveReadPhysicalPath(path, physicalPath) ? FileSystem::ReadFile(physicalPath) : std::vector<std::byte>();
+	return ResolveReadPhysicalPath(path, physicalPath) ? FileSystem::ReadFile(physicalPath) : std::vector<uint8_t>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::byte> TRAP::VFS::SilentReadFile(const std::string& path)
+std::vector<uint8_t> TRAP::VFS::SilentReadFile(const std::string& path)
 {
 	TP_PROFILE_FUNCTION();
 
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
-	return SilentResolveReadPhysicalPath(path, physicalPath) ? FileSystem::SilentReadFile(physicalPath) : std::vector<std::byte>();
+	return SilentResolveReadPhysicalPath(path, physicalPath) ? FileSystem::SilentReadFile(physicalPath) : std::vector<uint8_t>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -243,7 +243,7 @@ std::string TRAP::VFS::SilentReadTextFile(const std::string& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::VFS::WriteFile(const std::string& path, std::vector<std::byte>& buffer)
+bool TRAP::VFS::WriteFile(const std::string& path, std::vector<uint8_t>& buffer)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -337,7 +337,7 @@ std::string TRAP::VFS::MakeVirtualPathCompatible(const std::string& virtualPath)
 	std::string virtualDir = dirs.front();
 	virtualDir = Utils::String::ToLower(virtualDir);
 
-	std::string remainder = "";
+	std::string remainder;
 	if(dirs.size() > 1)
 		remainder = virtualPath.substr(virtualDir.size() + 1, virtualPath.size() - virtualDir.size());
 

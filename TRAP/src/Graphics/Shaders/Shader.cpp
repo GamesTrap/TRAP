@@ -274,7 +274,7 @@ bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::string& filePath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint32_t> TRAP::Graphics::Shader::Convert8To32(const std::vector<std::byte>& source)
+std::vector<uint32_t> TRAP::Graphics::Shader::Convert8To32(const std::vector<uint8_t>& source)
 {
 	std::vector<uint32_t> data{};
 	data.resize(source.size() / 4);
@@ -282,10 +282,10 @@ std::vector<uint32_t> TRAP::Graphics::Shader::Convert8To32(const std::vector<std
 	uint32_t j = 0;
 	for(uint32_t i = 0; i < source.size(); i += 4)
 	{
-		const uint32_t val = static_cast<uint8_t>(source[i]) |
-			                 (static_cast<uint8_t>(source[i + 1]) << 8) |
-			                 (static_cast<uint8_t>(source[i + 2]) << 16) |
-			                 (static_cast<uint8_t>(source[i + 3]) << 24);
+		const uint32_t val = source[i] |
+			                 (source[i + 1] << 8) |
+			                 (source[i + 2] << 16) |
+			                 (source[i + 3] << 24);
 		data[j++] = val;
 	}
 	

@@ -591,7 +591,7 @@ void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<uint8_t>& compressedImageD
 				color = r % 2;
 
 				if (color != 0)
-					compressedImageData[dataIndex++];
+					dataIndex++;
 			}
 		}
 	}
@@ -641,7 +641,7 @@ void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<uint8_t>& compressedImageD
 				color = r % 2;
 
 				if (color != 0)
-					compressedImageData[dataIndex++];
+					dataIndex++;
 			}
 		}
 	}
