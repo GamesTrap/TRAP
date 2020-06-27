@@ -21,6 +21,7 @@ namespace TRAP::Graphics
 		static uint32_t GetFPS();
 		static float GetFrameTime();
 		static uint32_t GetTickRate();
+		static std::string GetCurrentGPUName();
 
 		static void SetTickRate(uint32_t tickRate);
 

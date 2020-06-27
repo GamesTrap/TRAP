@@ -1081,3 +1081,5 @@ SITREP 06/27/2020|20w26a2
     - Added VulkanGPU UUID entry to Engine.cfg ~<15 mins
     - Vulkan Added Saving/Loading of a GPU UUID ~>30 mins
     - Vulkan Removed Verbose debug messages ~<10 mins
+    - Added Query to get current GPU name ~<20 mins
+    - Added Stencil function ~>60 mins

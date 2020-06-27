@@ -10,13 +10,14 @@ namespace TRAP
 
 namespace TRAP::Graphics 
 {
+	enum class RendererOperation;
 	class VertexArray;
 	enum class RendererPrimitive;
-	enum class RendererCullMode;
+	enum class RendererFaceMode;
 	enum class RendererBlendEquation;
 	enum class RendererBlendFunction;
 	enum class RendererFrontFace;
-	enum class RendererDepthFunction;
+	enum class RendererFunction;
 	enum class RendererBufferType;
 }
 
@@ -45,7 +46,14 @@ namespace TRAP::Graphics::API
 		virtual void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) = 0;
 		virtual void SetDepthTesting(bool enabled) = 0;
 		virtual void SetDepthMasking(bool enabled) = 0;
-		virtual void SetDepthFunction(RendererDepthFunction function) = 0;
+		virtual void SetDepthFunction(RendererFunction function) = 0;
+		virtual void SetStencilTesting(bool enabled) = 0;
+		virtual void SetStencilMasking(uint32_t mask) = 0;
+		virtual void SetStencilMaskingSeparate(RendererFaceMode face, uint32_t mask) = 0;
+		virtual void SetStencilFunction(RendererFunction function, int32_t reference, uint32_t mask) = 0;
+		virtual void SetStencilFunctionSeparate(RendererFaceMode face, RendererFunction function, int32_t reference, uint32_t mask) = 0;
+		virtual void SetStencilOperation(RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass) = 0;
+		virtual void SetStencilOperationSeparate(RendererFaceMode face, RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass) = 0;
 		virtual void SetBlend(bool enabled) = 0;
 		virtual void SetCull(bool enabled) = 0;
 		virtual void SetFrontFace(RendererFrontFace frontFace) = 0;
@@ -61,7 +69,7 @@ namespace TRAP::Graphics::API
 		virtual void SetBlendEquation(RendererBlendEquation blendEquation) = 0;
 		virtual void SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB, RendererBlendEquation blendEquationAlpha) = 0;
 
-		virtual void SetCullMode(RendererCullMode cullMode) = 0;
+		virtual void SetCullMode(RendererFaceMode cullMode) = 0;
 
 		virtual void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount, RendererPrimitive primitive) = 0;
 		virtual void Draw(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive) = 0;
@@ -69,6 +77,7 @@ namespace TRAP::Graphics::API
 		virtual std::string_view GetTitle() const = 0;
 
 		virtual std::vector<uint8_t> GetCurrentGPUUUID() = 0;
+		virtual std::string GetCurrentGPUName() = 0;
 
 	protected:
 		static Scope<RendererAPI> s_Renderer;

@@ -45,7 +45,7 @@ void TRAP::Graphics::API::OpenGLRenderer::InitInternal()
 	SetBlendFunction(RendererBlendFunction::Source_Alpha, RendererBlendFunction::One_Minus_Source_Alpha);
 	SetCull(true);
 	SetFrontFace(RendererFrontFace::Counter_Clockwise);
-	SetCullMode(RendererCullMode::Back);
+	SetCullMode(RendererFaceMode::Back);
 
 	TP_INFO("[Renderer][OpenGL] ----------------------------------");
 	TP_INFO("[Renderer][OpenGL] OpenGL:");
@@ -112,11 +112,81 @@ void TRAP::Graphics::API::OpenGLRenderer::SetDepthMasking(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetDepthFunction(const RendererDepthFunction function)
+void TRAP::Graphics::API::OpenGLRenderer::SetDepthFunction(const RendererFunction function)
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glDepthFunc(TRAPRendererDepthFunctionToOpenGL(function)));
+	OpenGLCall(glDepthFunc(TRAPRendererFunctionToOpenGL(function)));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLRenderer::SetStencilTesting(const bool enabled)
+{
+	TP_PROFILE_FUNCTION();
+
+	if(enabled)
+	{
+		OpenGLCall(glEnable(GL_STENCIL_TEST));
+	}
+	else
+	{
+		OpenGLCall(glDisable(GL_STENCIL_TEST));
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLRenderer::SetStencilMasking(const uint32_t mask)
+{
+	TP_PROFILE_FUNCTION();
+
+	OpenGLCall(glStencilMask(mask));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLRenderer::SetStencilMaskingSeparate(const RendererFaceMode face, const uint32_t mask)
+{
+	TP_PROFILE_FUNCTION();
+
+	OpenGLCall(glStencilMaskSeparate(TRAPRendererFaceModeToOpenGL(face), mask));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLRenderer::SetStencilFunction(const RendererFunction function, const int32_t reference, const uint32_t mask)
+{
+	TP_PROFILE_FUNCTION();
+
+	OpenGLCall(glStencilFunc(TRAPRendererFunctionToOpenGL(function), reference, mask));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLRenderer::SetStencilFunctionSeparate(const RendererFaceMode face, const RendererFunction function, const int32_t reference, const uint32_t mask)
+{
+	TP_PROFILE_FUNCTION();
+
+	OpenGLCall(glStencilFuncSeparate(TRAPRendererFaceModeToOpenGL(face), TRAPRendererFunctionToOpenGL(function), reference, mask));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLRenderer::SetStencilOperation(const RendererOperation stencilFail, const RendererOperation depthFail, const RendererOperation pass)
+{
+	TP_PROFILE_FUNCTION();
+
+	OpenGLCall(glStencilOp(TRAPRendererOperationToOpenGL(stencilFail), TRAPRendererOperationToOpenGL(depthFail), TRAPRendererOperationToOpenGL(pass)));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLRenderer::SetStencilOperationSeparate(const RendererFaceMode face, const RendererOperation stencilFail, const RendererOperation depthFail, const RendererOperation pass)
+{
+	TP_PROFILE_FUNCTION();
+	
+	OpenGLCall(glStencilOpSeparate(TRAPRendererFaceModeToOpenGL(face), TRAPRendererOperationToOpenGL(stencilFail), TRAPRendererOperationToOpenGL(depthFail), TRAPRendererOperationToOpenGL(pass)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -214,11 +284,11 @@ void TRAP::Graphics::API::OpenGLRenderer::SetBlendEquationSeparate(const Rendere
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLRenderer::SetCullMode(const RendererCullMode cullMode)
+void TRAP::Graphics::API::OpenGLRenderer::SetCullMode(const RendererFaceMode cullMode)
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glCullFace(TRAPRendererCullModeToOpenGL(cullMode)));
+	OpenGLCall(glCullFace(TRAPRendererFaceModeToOpenGL(cullMode)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -276,6 +346,17 @@ std::vector<uint8_t> TRAP::Graphics::API::OpenGLRenderer::GetCurrentGPUUUID()
 {
 	return {};
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Graphics::API::OpenGLRenderer::GetCurrentGPUName()
+{
+	TP_PROFILE_FUNCTION();
+
+	OpenGLCall(const GLubyte* renderer = glGetString(GL_RENDERER));
+	return std::string(reinterpret_cast<const char*>(renderer));
+}
+
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -359,19 +440,19 @@ uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererBlendEquationToOpenGL(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererCullModeToOpenGL(const RendererCullMode cullMode)
+uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererFaceModeToOpenGL(const RendererFaceMode cullMode)
 {
 	TP_PROFILE_FUNCTION();
 
 	switch(cullMode)
 	{
-	case RendererCullMode::Front:
+	case RendererFaceMode::Front:
 		return GL_FRONT;
 
-	case RendererCullMode::Back:
+	case RendererFaceMode::Back:
 		return GL_BACK;
 
-	case RendererCullMode::Front_And_Back:
+	case RendererFaceMode::Front_And_Back:
 		return GL_FRONT_AND_BACK;
 
 	default:
@@ -425,35 +506,72 @@ uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererPrimitiveToOpenGL(cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererDepthFunctionToOpenGL(const RendererDepthFunction function)
+uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererFunctionToOpenGL(const RendererFunction function)
 {
 	TP_PROFILE_FUNCTION();
 
 	switch(function)
 	{
-	case RendererDepthFunction::Always:
+	case RendererFunction::Always:
 		return GL_ALWAYS;
 
-	case RendererDepthFunction::Never:
+	case RendererFunction::Never:
 		return GL_NEVER;
 
-	case RendererDepthFunction::Less:
+	case RendererFunction::Less:
 		return GL_LESS;
 
-	case RendererDepthFunction::Equal:
+	case RendererFunction::Equal:
 		return GL_EQUAL;
 
-	case RendererDepthFunction::Less_Equal:
+	case RendererFunction::Less_Equal:
 		return GL_LEQUAL;
 
-	case RendererDepthFunction::Greater:
+	case RendererFunction::Greater:
 		return GL_GREATER;
 
-	case RendererDepthFunction::Not_Equal:
+	case RendererFunction::Not_Equal:
 		return GL_NOTEQUAL;
 
-	case RendererDepthFunction::Greater_Equal:
+	case RendererFunction::Greater_Equal:
 		return GL_GEQUAL;
+		
+	default:
+		return 0;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererOperationToOpenGL(RendererOperation operation)
+{
+	TP_PROFILE_FUNCTION();
+
+	switch(operation)
+	{
+	case RendererOperation::Keep:
+		return GL_KEEP;
+
+	case RendererOperation::Zero:
+		return GL_ZERO;
+
+	case RendererOperation::Replace:
+		return GL_REPLACE;
+
+	case RendererOperation::Increment:
+		return GL_INCR;
+
+	case RendererOperation::Increment_Wrap:
+		return GL_INCR_WRAP;
+
+	case RendererOperation::Decrement:
+		return GL_DECR;
+
+	case RendererOperation::Decrement_Wrap:
+		return GL_DECR_WRAP;
+
+	case RendererOperation::Invert:
+		return GL_INVERT;
 		
 	default:
 		return 0;

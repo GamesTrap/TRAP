@@ -33,7 +33,7 @@ namespace TRAP::Graphics
 		Subtract
 	};
 
-	enum class RendererCullMode
+	enum class RendererFaceMode
 	{
 		Front,
 		Back,
@@ -54,7 +54,7 @@ namespace TRAP::Graphics
 		Patch
 	};
 
-	enum class RendererDepthFunction
+	enum class RendererFunction
 	{
 		Always,
 		Never,
@@ -66,6 +66,18 @@ namespace TRAP::Graphics
 		Greater_Equal
 	};
 
+	enum class RendererOperation
+	{
+		Keep,
+		Zero,
+		Replace,
+		Increment,
+		Increment_Wrap,
+		Decrement,
+		Decrement_Wrap,
+		Invert
+	};
+
 	class RenderCommand
 	{
 	public:
@@ -75,7 +87,14 @@ namespace TRAP::Graphics
 		static void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f });
 		static void SetDepthTesting(bool enabled);
 		static void SetDepthMasking(bool enabled);
-		static void SetDepthFunction(RendererDepthFunction function = RendererDepthFunction::Less);
+		static void SetDepthFunction(RendererFunction function = RendererFunction::Less);
+		static void SetStencilTesting(bool enabled);
+		static void SetStencilMasking(uint32_t mask);
+		static void SetStencilMaskingSeparate(RendererFaceMode face = RendererFaceMode::Front_And_Back, uint32_t mask = 0xFF);
+		static void SetStencilFunction(RendererFunction function, int32_t reference, uint32_t mask);
+		static void SetStencilFunctionSeparate(RendererFaceMode face, RendererFunction function, int32_t reference, uint32_t mask);
+		static void SetStencilOperation(RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass);
+		static void SetStencilOperationSeparate(RendererFaceMode face, RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass);
 		static void SetBlend(bool enabled);
 		static void SetCull(bool enabled);
 		static void SetFrontFace(RendererFrontFace frontFace = RendererFrontFace::Counter_Clockwise);
@@ -91,7 +110,7 @@ namespace TRAP::Graphics
 		static void SetBlendEquation(RendererBlendEquation blendEquation = RendererBlendEquation::Add);
 		static void SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB = RendererBlendEquation::Add, RendererBlendEquation blendEquationAlpha = RendererBlendEquation::Add);
 
-		static void SetCullMode(RendererCullMode cullMode = RendererCullMode::Back);
+		static void SetCullMode(RendererFaceMode cullMode = RendererFaceMode::Back);
 
 		static void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount = 0, RendererPrimitive primitive = RendererPrimitive::Triangle);
 		static void Draw(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive = RendererPrimitive::Triangle);

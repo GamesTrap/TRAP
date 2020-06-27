@@ -43,7 +43,14 @@ namespace TRAP::Graphics::API
 		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) override;
 		void SetDepthTesting(bool enabled) override;
 		void SetDepthMasking(bool enabled) override;
-		void SetDepthFunction(RendererDepthFunction function) override;
+		void SetDepthFunction(RendererFunction function) override;
+		void SetStencilTesting(bool enabled) override;
+		void SetStencilMasking(uint32_t mask) override;
+		void SetStencilMaskingSeparate(RendererFaceMode face, uint32_t mask) override;
+		void SetStencilFunction(RendererFunction function, int32_t reference, uint32_t mask) override;
+		void SetStencilFunctionSeparate(RendererFaceMode face, RendererFunction function, int32_t reference, uint32_t mask) override;
+		void SetStencilOperation(RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass) override;
+		void SetStencilOperationSeparate(RendererFaceMode face, RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass) override;
 		void SetBlend(bool enabled) override;
 		void SetCull(bool enabled) override;
 		void SetFrontFace(RendererFrontFace frontFace) override;
@@ -58,7 +65,7 @@ namespace TRAP::Graphics::API
 		void SetBlendEquation(RendererBlendEquation blendEquation) override;
 		void SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB, RendererBlendEquation blendEquationAlpha) override;
 
-		void SetCullMode(RendererCullMode cullMode) override;
+		void SetCullMode(RendererFaceMode cullMode) override;
 
 		void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount, RendererPrimitive primitive) override;
 		void Draw(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive) override;
@@ -66,6 +73,7 @@ namespace TRAP::Graphics::API
 		std::string_view GetTitle() const override;
 
 		std::vector<uint8_t> GetCurrentGPUUUID() override;
+		std::string GetCurrentGPUName() override;
 
 		//VulkanRenderer specific
 		static void SetVSyncIntervalInternal(uint32_t interval);

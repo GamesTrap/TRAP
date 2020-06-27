@@ -40,7 +40,7 @@ void TRAP::Graphics::RenderCommand::SetDepthMasking(const bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetDepthFunction(const RendererDepthFunction function)
+void TRAP::Graphics::RenderCommand::SetDepthFunction(const RendererFunction function)
 {
 	API::RendererAPI::GetRenderer()->SetDepthFunction(function);
 }
@@ -50,6 +50,55 @@ void TRAP::Graphics::RenderCommand::SetDepthFunction(const RendererDepthFunction
 void TRAP::Graphics::RenderCommand::SetBlend(const bool enabled)
 {
 	API::RendererAPI::GetRenderer()->SetBlend(enabled);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::SetStencilTesting(const bool enabled)
+{
+	API::RendererAPI::GetRenderer()->SetStencilTesting(enabled);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::SetStencilMasking(const uint32_t mask)
+{
+	API::RendererAPI::GetRenderer()->SetStencilMasking(mask);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::SetStencilMaskingSeparate(const RendererFaceMode face, const uint32_t mask)
+{
+	API::RendererAPI::GetRenderer()->SetStencilMaskingSeparate(face, mask);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::SetStencilFunction(const RendererFunction function, const int32_t reference, const uint32_t mask)
+{
+	API::RendererAPI::GetRenderer()->SetStencilFunction(function, reference, mask);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::SetStencilFunctionSeparate(const RendererFaceMode face, const RendererFunction function, const int32_t reference, const uint32_t mask)
+{
+	API::RendererAPI::GetRenderer()->SetStencilFunctionSeparate(face, function, reference, mask);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::SetStencilOperation(const RendererOperation stencilFail, const RendererOperation depthFail, const RendererOperation pass)
+{
+	API::RendererAPI::GetRenderer()->SetStencilOperation(stencilFail, depthFail, pass);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RenderCommand::SetStencilOperationSeparate(const RendererFaceMode face, const RendererOperation stencilFail, const RendererOperation depthFail, const RendererOperation pass)
+{
+	API::RendererAPI::GetRenderer()->SetStencilOperationSeparate(face, stencilFail, depthFail, pass);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -113,7 +162,7 @@ void TRAP::Graphics::RenderCommand::SetBlendEquationSeparate(const RendererBlend
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetCullMode(const RendererCullMode cullMode)
+void TRAP::Graphics::RenderCommand::SetCullMode(const RendererFaceMode cullMode)
 {
 	API::RendererAPI::GetRenderer()->SetCullMode(cullMode);
 }

@@ -309,9 +309,58 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthMasking(bool enabled)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetDepthFunction(RendererDepthFunction function)
+void TRAP::Graphics::API::VulkanRenderer::SetDepthFunction(RendererFunction function)
 {
 	TP_PROFILE_FUNCTION();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetStencilTesting(bool enabled)
+{
+	TP_PROFILE_FUNCTION();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetStencilMasking(uint32_t mask)
+{
+	TP_PROFILE_FUNCTION();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetStencilMaskingSeparate(RendererFaceMode face, uint32_t mask)
+{
+	TP_PROFILE_FUNCTION();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetStencilFunction(RendererFunction function, int32_t reference, uint32_t mask)
+{
+	TP_PROFILE_FUNCTION();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetStencilFunctionSeparate(RendererFaceMode face, RendererFunction function, int32_t reference, uint32_t mask)
+{
+	TP_PROFILE_FUNCTION();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetStencilOperation(RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass)
+{
+	TP_PROFILE_FUNCTION();	
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetStencilOperationSeparate(RendererFaceMode face, RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass)
+{
+	TP_PROFILE_FUNCTION();		
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -392,7 +441,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendEquationSeparate(RendererBlend
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const RendererCullMode cullMode)
+void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const RendererFaceMode cullMode)
 {
 	TP_PROFILE_FUNCTION();
 }
@@ -423,6 +472,13 @@ std::string_view TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 std::vector<uint8_t> TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUUUID()
 {
 	return m_physicalDevice->GetUUID();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUName()
+{
+	return m_physicalDevice->GetPhysicalDeviceName();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -30,7 +30,14 @@ namespace TRAP::Graphics::API
 		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) override;
 		void SetDepthTesting(bool enabled) override;
 		void SetDepthMasking(bool enabled) override;
-		void SetDepthFunction(RendererDepthFunction function) override;
+		void SetDepthFunction(RendererFunction function) override;
+		void SetStencilTesting(bool enabled) override;
+		void SetStencilMasking(uint32_t mask) override;
+		void SetStencilMaskingSeparate(RendererFaceMode face, uint32_t mask) override;
+		void SetStencilFunction(RendererFunction function, int32_t reference, uint32_t mask) override;
+		void SetStencilFunctionSeparate(RendererFaceMode face, RendererFunction function, int32_t reference, uint32_t mask) override;
+		void SetStencilOperation(RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass) override;
+		void SetStencilOperationSeparate(RendererFaceMode face, RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass) override;
 		void SetBlend(bool enabled) override;
 		void SetCull(bool enabled) override;
 		void SetFrontFace(RendererFrontFace frontFace) override;
@@ -44,7 +51,7 @@ namespace TRAP::Graphics::API
 		void SetBlendEquation(RendererBlendEquation blendEquation) override;
 		void SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB, RendererBlendEquation blendEquationAlpha) override;
 
-		void SetCullMode(RendererCullMode cullMode) override;
+		void SetCullMode(RendererFaceMode cullMode) override;
 
 		void SetWireFrame(bool enabled) override;
 
@@ -54,21 +61,22 @@ namespace TRAP::Graphics::API
 		std::string_view GetTitle() const override;
 
 		std::vector<uint8_t> GetCurrentGPUUUID() override;
-
-		static OpenGLRenderer* Get();
+		std::string GetCurrentGPUName() override;
 
 		static uint32_t TRAPRendererBufferToOpenGL(RendererBufferType buffer);
 		static uint32_t TRAPRendererBlendFunctionToOpenGL(RendererBlendFunction function);
 		static uint32_t TRAPRendererBlendEquationToOpenGL(RendererBlendEquation blendEquation);
-		static uint32_t TRAPRendererCullModeToOpenGL(RendererCullMode cullMode);
+		static uint32_t TRAPRendererFaceModeToOpenGL(RendererFaceMode faceMode);
 		static uint32_t TRAPRendererFrontFaceToOpenGL(RendererFrontFace frontFace);
 		static uint32_t TRAPRendererPrimitiveToOpenGL(RendererPrimitive primitive);
-		static uint32_t TRAPRendererDepthFunctionToOpenGL(RendererDepthFunction function);
+		static uint32_t TRAPRendererFunctionToOpenGL(RendererFunction function);
+		static uint32_t TRAPRendererOperationToOpenGL(RendererOperation operation);
 
 		static uint32_t GetMaxTextureUnits();
 		static std::unordered_map<uint32_t, const Texture*>& GetBoundTextures();
 		
 	private:
+		static OpenGLRenderer* Get();
 		static void GLAPIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 		static void InitDebug();
 

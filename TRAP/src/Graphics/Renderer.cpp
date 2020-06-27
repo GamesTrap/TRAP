@@ -59,6 +59,13 @@ uint32_t TRAP::Graphics::Renderer::GetTickRate()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::string TRAP::Graphics::Renderer::GetCurrentGPUName()
+{
+	return API::RendererAPI::GetRenderer()->GetCurrentGPUName();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::Renderer::SetTickRate(const uint32_t tickRate)
 {
 	Application::SetTickRate(tickRate);

@@ -18,6 +18,7 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::Begin("Performance", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
 	ImGui::Text("Performance");
 	ImGui::Separator();
+	ImGui::Text("GPU: %s", TRAP::Graphics::API::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
 	ImGui::Text("DrawCalls: %u", TRAP::Graphics::Renderer::GetDrawCalls());
 	ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
 	ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
