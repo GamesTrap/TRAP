@@ -97,6 +97,13 @@ VkFormatProperties TRAP::Graphics::API::Vulkan::PhysicalDevice::GetPhysicalDevic
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkPhysicalDeviceLimits TRAP::Graphics::API::Vulkan::PhysicalDevice::GetPhysicalDeviceLimits() const
+{
+	return m_deviceProperties.limits;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::Graphics::API::Vulkan::PhysicalDevice::GetPhysicalDeviceName() const
 {
 	return std::string(m_deviceProperties.deviceName);
@@ -215,6 +222,20 @@ std::multimap<int32_t, TRAP::Graphics::API::Vulkan::PhysicalDevice> TRAP::Graphi
 				continue;
 			}
 
+			//Required: Check If Physical Device supports compute queue
+			if(dev.GetQueueFamilyIndices().ComputeIndices == std::numeric_limits<uint32_t>::max())
+			{
+				TP_ERROR("[Context][Vulkan] Failed GPU Compute Queue Check!");
+				continue;
+			}
+
+			//Required: Check if Physical Device supports transfer queue
+			if(dev.GetQueueFamilyIndices().TransferIndices == std::numeric_limits<uint32_t>::max())
+			{
+				TP_ERROR("[Context][Vulkan] Failed GPU Transfer Queue Check!");
+				continue;
+			}
+
 			//Required: Check If Surface contains formats
 			if (surface.GetSurfaceFormats().empty())
 			{
@@ -228,7 +249,7 @@ std::multimap<int32_t, TRAP::Graphics::API::Vulkan::PhysicalDevice> TRAP::Graphi
 				TP_ERROR("[Context][Vulkan] Failed GPU Present Mode Check!");
 				continue;
 			}
-
+			
 			//Optionally: Check if Physical Device supports optimal surface format
 			if (surface.GetOptimalSurfaceFormat().format == VK_FORMAT_B8G8R8A8_UNORM &&
 				surface.GetOptimalSurfaceFormat().colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)

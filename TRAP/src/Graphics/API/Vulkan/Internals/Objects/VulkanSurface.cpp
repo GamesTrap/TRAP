@@ -7,7 +7,7 @@
 #include "Graphics/API/Vulkan/Internals/VulkanQueueFamilyIndices.h"
 
 TRAP::Graphics::API::Vulkan::Surface::Surface(const Scope<Instance>& instance, PhysicalDevice& device, INTERNAL::WindowingAPI::InternalWindow* window)
-	: m_surface(nullptr), m_surfaceCapabilities(), m_instance(instance.get()), m_usedSurfaceFormat(), m_usedPresentMode(), m_supportDepthStencil(false), m_device(&device)
+	: m_device(&device), m_surface(nullptr), m_surfaceCapabilities(), m_instance(instance.get()), m_usedSurfaceFormat(), m_usedPresentMode(), m_supportDepthStencil(false)
 {	
 	VkCall(INTERNAL::WindowingAPI::CreateWindowSurface(instance->GetInstance(), window, nullptr, m_surface));
 
@@ -32,6 +32,8 @@ TRAP::Graphics::API::Vulkan::Surface::Surface(const Scope<Instance>& instance, P
 	//Reset QueueFamilyIndices
 	device.GetQueueFamilyIndices().GraphicsIndices = std::numeric_limits<uint32_t>::max();
 	device.GetQueueFamilyIndices().PresentIndices = std::numeric_limits<uint32_t>::max();
+	device.GetQueueFamilyIndices().ComputeIndices = std::numeric_limits<uint32_t>::max();
+	device.GetQueueFamilyIndices().TransferIndices = std::numeric_limits<uint32_t>::max();
 
 	//Get new QueueFamilyIndices
 	for (uint32_t i = 0; i < availableQueueFamilies.size(); i++)
@@ -39,12 +41,21 @@ TRAP::Graphics::API::Vulkan::Surface::Surface(const Scope<Instance>& instance, P
 		if (availableQueueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
 			device.GetQueueFamilyIndices().GraphicsIndices = i;
 
+		if (availableQueueFamilies[i].queueFlags & VK_QUEUE_COMPUTE_BIT)
+			device.GetQueueFamilyIndices().ComputeIndices = i;
+
+		if (availableQueueFamilies[i].queueFlags & VK_QUEUE_TRANSFER_BIT && !(availableQueueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT))
+			device.GetQueueFamilyIndices().TransferIndices = i;
+
 		VkBool32 presentSupport = false;
 		VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(device.GetPhysicalDevice(), i, m_surface, &presentSupport));
 		if (presentSupport)
 			device.GetQueueFamilyIndices().PresentIndices = i;
 
-		if (device.GetQueueFamilyIndices().GraphicsIndices != std::numeric_limits<uint32_t>::max() && device.GetQueueFamilyIndices().PresentIndices != std::numeric_limits<uint32_t>::max())
+		if (device.GetQueueFamilyIndices().GraphicsIndices != std::numeric_limits<uint32_t>::max() &&
+			device.GetQueueFamilyIndices().PresentIndices != std::numeric_limits<uint32_t>::max() &&
+			device.GetQueueFamilyIndices().ComputeIndices != std::numeric_limits<uint32_t>::max() &&
+			device.GetQueueFamilyIndices().TransferIndices != std::numeric_limits<uint32_t>::max())
 			break;
 	}
 

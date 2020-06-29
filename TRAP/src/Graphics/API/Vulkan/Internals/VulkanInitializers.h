@@ -52,7 +52,11 @@ namespace TRAP::Graphics::API::Vulkan::Initializers
 	VkCommandBufferBeginInfo CommandBufferBeginInfo();
 	VkRenderPassBeginInfo RenderPassBeginInfo(VkRenderPass& renderPass, VkFramebuffer& frameBuffer, uint32_t width, uint32_t height, std::vector<VkClearValue>& clearValues);
 	VkSubmitInfo SubmitInfo(VkSemaphore& waitSemaphore, VkPipelineStageFlags& waitMask, VkCommandBuffer& commandBuffer, VkSemaphore& signalSemaphore);
+	VkSubmitInfo SubmitInfo(VkCommandBuffer& commandBuffer);
 	VkPresentInfoKHR PresentInfo(VkSemaphore& waitSemaphore, VkSwapchainKHR& swapchain, uint32_t& imageIndex);
+	VkBufferCreateInfo BufferCreateInfo(VkDeviceSize size, VkBufferUsageFlags usage, std::vector<uint32_t>& queueFamilyIndices);
+	VkBufferCreateInfo BufferCreateInfo(VkDeviceSize size, VkBufferUsageFlags usage);
+	VkMemoryAllocateInfo MemoryAllocateInfo(VkDeviceSize size, uint32_t memoryTypeIndex);
 }
 
 #endif /*_TRAP_VULKANINITIALIZERS_H_*/

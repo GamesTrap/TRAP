@@ -256,7 +256,10 @@ bool ImageLoaderTests::OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent&
 
 bool ImageLoaderTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 {
-	if(event.GetKey() == TRAP::Input::Key::One || event.GetKey() == TRAP::Input::Key::Two || event.GetKey() == TRAP::Input::Key::Three || event.GetKey() == TRAP::Input::Key::Four)
+	if (event.GetKey() == TRAP::Input::Key::One || 
+		event.GetKey() == TRAP::Input::Key::Two || 
+		event.GetKey() == TRAP::Input::Key::Three || 
+		event.GetKey() == TRAP::Input::Key::Four)
 	{
 		m_tga = false;
 		m_png = false;

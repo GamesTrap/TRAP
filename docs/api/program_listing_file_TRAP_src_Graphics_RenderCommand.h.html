@@ -195,7 +195,7 @@
         <span class="n">Subtract</span>
     <span class="p">};</span>
 
-    <span class="k">enum</span> <span class="k">class</span> <span class="nc">RendererCullMode</span>
+    <span class="k">enum</span> <span class="k">class</span> <span class="nc">RendererFaceMode</span>
     <span class="p">{</span>
         <span class="n">Front</span><span class="p">,</span>
         <span class="n">Back</span><span class="p">,</span>
@@ -216,7 +216,7 @@
         <span class="n">Patch</span>
     <span class="p">};</span>
 
-    <span class="k">enum</span> <span class="k">class</span> <span class="nc">RendererDepthFunction</span>
+    <span class="k">enum</span> <span class="k">class</span> <span class="nc">RendererFunction</span>
     <span class="p">{</span>
         <span class="n">Always</span><span class="p">,</span>
         <span class="n">Never</span><span class="p">,</span>
@@ -228,6 +228,18 @@
         <span class="n">Greater_Equal</span>
     <span class="p">};</span>
 
+    <span class="k">enum</span> <span class="k">class</span> <span class="nc">RendererOperation</span>
+    <span class="p">{</span>
+        <span class="n">Keep</span><span class="p">,</span>
+        <span class="n">Zero</span><span class="p">,</span>
+        <span class="n">Replace</span><span class="p">,</span>
+        <span class="n">Increment</span><span class="p">,</span>
+        <span class="n">Increment_Wrap</span><span class="p">,</span>
+        <span class="n">Decrement</span><span class="p">,</span>
+        <span class="n">Decrement_Wrap</span><span class="p">,</span>
+        <span class="n">Invert</span>
+    <span class="p">};</span>
+
     <span class="k">class</span> <span class="nc">RenderCommand</span>
     <span class="p">{</span>
     <span class="k">public</span><span class="o">:</span>
@@ -237,7 +249,14 @@
         <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetClearColor</span><span class="p">(</span><span class="k">const</span> <span class="n">Math</span><span class="o">::</span><span class="n">Vec4</span><span class="o">&amp;</span> <span class="n">color</span> <span class="o">=</span> <span class="p">{</span> <span class="mf">0.1f</span><span class="p">,</span> <span class="mf">0.1f</span><span class="p">,</span> <span class="mf">0.1f</span><span class="p">,</span> <span class="mf">1.0f</span> <span class="p">});</span>
         <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetDepthTesting</span><span class="p">(</span><span class="kt">bool</span> <span class="n">enabled</span><span class="p">);</span>
         <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetDepthMasking</span><span class="p">(</span><span class="kt">bool</span> <span class="n">enabled</span><span class="p">);</span>
-        <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetDepthFunction</span><span class="p">(</span><span class="n">RendererDepthFunction</span> <span class="n">function</span> <span class="o">=</span> <span class="n">RendererDepthFunction</span><span class="o">::</span><span class="n">Less</span><span class="p">);</span>
+        <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetDepthFunction</span><span class="p">(</span><span class="n">RendererFunction</span> <span class="n">function</span> <span class="o">=</span> <span class="n">RendererFunction</span><span class="o">::</span><span class="n">Less</span><span class="p">);</span>
+        <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetStencilTesting</span><span class="p">(</span><span class="kt">bool</span> <span class="n">enabled</span><span class="p">);</span>
+        <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetStencilMasking</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">mask</span><span class="p">);</span>
+        <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetStencilMaskingSeparate</span><span class="p">(</span><span class="n">RendererFaceMode</span> <span class="n">face</span> <span class="o">=</span> <span class="n">RendererFaceMode</span><span class="o">::</span><span class="n">Front_And_Back</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">mask</span> <span class="o">=</span> <span class="mh">0xFF</span><span class="p">);</span>
+        <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetStencilFunction</span><span class="p">(</span><span class="n">RendererFunction</span> <span class="n">function</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="n">reference</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">mask</span><span class="p">);</span>
+        <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetStencilFunctionSeparate</span><span class="p">(</span><span class="n">RendererFaceMode</span> <span class="n">face</span><span class="p">,</span> <span class="n">RendererFunction</span> <span class="n">function</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="n">reference</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">mask</span><span class="p">);</span>
+        <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetStencilOperation</span><span class="p">(</span><span class="n">RendererOperation</span> <span class="n">stencilFail</span><span class="p">,</span> <span class="n">RendererOperation</span> <span class="n">depthFail</span><span class="p">,</span> <span class="n">RendererOperation</span> <span class="n">pass</span><span class="p">);</span>
+        <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetStencilOperationSeparate</span><span class="p">(</span><span class="n">RendererFaceMode</span> <span class="n">face</span><span class="p">,</span> <span class="n">RendererOperation</span> <span class="n">stencilFail</span><span class="p">,</span> <span class="n">RendererOperation</span> <span class="n">depthFail</span><span class="p">,</span> <span class="n">RendererOperation</span> <span class="n">pass</span><span class="p">);</span>
         <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetBlend</span><span class="p">(</span><span class="kt">bool</span> <span class="n">enabled</span><span class="p">);</span>
         <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetCull</span><span class="p">(</span><span class="kt">bool</span> <span class="n">enabled</span><span class="p">);</span>
         <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetFrontFace</span><span class="p">(</span><span class="n">RendererFrontFace</span> <span class="n">frontFace</span> <span class="o">=</span> <span class="n">RendererFrontFace</span><span class="o">::</span><span class="n">Counter_Clockwise</span><span class="p">);</span>
@@ -253,7 +272,7 @@
         <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetBlendEquation</span><span class="p">(</span><span class="n">RendererBlendEquation</span> <span class="n">blendEquation</span> <span class="o">=</span> <span class="n">RendererBlendEquation</span><span class="o">::</span><span class="n">Add</span><span class="p">);</span>
         <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetBlendEquationSeparate</span><span class="p">(</span><span class="n">RendererBlendEquation</span> <span class="n">blendEquationRGB</span> <span class="o">=</span> <span class="n">RendererBlendEquation</span><span class="o">::</span><span class="n">Add</span><span class="p">,</span> <span class="n">RendererBlendEquation</span> <span class="n">blendEquationAlpha</span> <span class="o">=</span> <span class="n">RendererBlendEquation</span><span class="o">::</span><span class="n">Add</span><span class="p">);</span>
 
-        <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetCullMode</span><span class="p">(</span><span class="n">RendererCullMode</span> <span class="n">cullMode</span> <span class="o">=</span> <span class="n">RendererCullMode</span><span class="o">::</span><span class="n">Back</span><span class="p">);</span>
+        <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetCullMode</span><span class="p">(</span><span class="n">RendererFaceMode</span> <span class="n">cullMode</span> <span class="o">=</span> <span class="n">RendererFaceMode</span><span class="o">::</span><span class="n">Back</span><span class="p">);</span>
 
         <span class="k">static</span> <span class="kt">void</span> <span class="nf">DrawIndexed</span><span class="p">(</span><span class="k">const</span> <span class="n">Scope</span><span class="o">&lt;</span><span class="n">VertexArray</span><span class="o">&gt;&amp;</span> <span class="n">vertexArray</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">indexCount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">RendererPrimitive</span> <span class="n">primitive</span> <span class="o">=</span> <span class="n">RendererPrimitive</span><span class="o">::</span><span class="n">Triangle</span><span class="p">);</span>
         <span class="k">static</span> <span class="kt">void</span> <span class="nf">Draw</span><span class="p">(</span><span class="k">const</span> <span class="n">Scope</span><span class="o">&lt;</span><span class="n">VertexArray</span><span class="o">&gt;&amp;</span> <span class="n">vertexArray</span><span class="p">,</span> <span class="n">RendererPrimitive</span> <span class="n">primitive</span> <span class="o">=</span> <span class="n">RendererPrimitive</span><span class="o">::</span><span class="n">Triangle</span><span class="p">);</span>

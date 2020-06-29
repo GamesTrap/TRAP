@@ -48,6 +48,8 @@ TRAP::Graphics::API::Vulkan::Swapchain::Swapchain(INTERNAL::WindowingAPI::Intern
 	m_renderCompleteSemaphore = MakeScope<Semaphore>(m_device);
 
 	m_graphicsCommandPool = MakeScope<CommandPool>(device, device->GetQueueFamilyIndices().GraphicsIndices);
+	m_computeCommandPool = MakeScope<CommandPool>(device, device->GetQueueFamilyIndices().ComputeIndices);
+	m_transferCommandPool = MakeScope<CommandPool>(device, device->GetQueueFamilyIndices().TransferIndices);
 	
 	m_renderPass = MakeScope<RenderPass>(device, *m_surface);
 	
@@ -168,6 +170,20 @@ VkExtent2D TRAP::Graphics::API::Vulkan::Swapchain::GetExtent() const
 TRAP::Graphics::API::Vulkan::CommandPool& TRAP::Graphics::API::Vulkan::Swapchain::GetGraphicsCommandPool() const
 {
 	return *m_graphicsCommandPool;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::Vulkan::CommandPool& TRAP::Graphics::API::Vulkan::Swapchain::GetComputeCommandPool() const
+{
+	return *m_computeCommandPool;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::Vulkan::CommandPool& TRAP::Graphics::API::Vulkan::Swapchain::GetTransferCommandPool() const
+{
+	return *m_transferCommandPool;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

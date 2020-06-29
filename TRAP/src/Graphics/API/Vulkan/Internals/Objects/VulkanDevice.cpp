@@ -10,7 +10,7 @@ TRAP::Graphics::API::Vulkan::Device::Device(const Scope<PhysicalDevice>& physica
 	: m_device(), m_graphicsQueue(), m_presentQueue(), m_queueFamilyIndices(physicalDevice->GetQueueFamilyIndices())
 {	
 	float priority = 1.0f;
-	std::set<uint32_t> uniqueQueueFamilies = { m_queueFamilyIndices.GraphicsIndices, m_queueFamilyIndices.PresentIndices };
+	std::set<uint32_t> uniqueQueueFamilies = { m_queueFamilyIndices.GraphicsIndices, m_queueFamilyIndices.PresentIndices, m_queueFamilyIndices.ComputeIndices, m_queueFamilyIndices.TransferIndices };
 	std::vector<VkDeviceQueueCreateInfo> queueInfo;
 	for (uint32_t queueFamily : uniqueQueueFamilies)
 		queueInfo.emplace_back(Initializers::DeviceQueueCreateInfo(queueFamily, &priority));
@@ -21,6 +21,8 @@ TRAP::Graphics::API::Vulkan::Device::Device(const Scope<PhysicalDevice>& physica
 
 	vkGetDeviceQueue(m_device, m_queueFamilyIndices.GraphicsIndices, 0, &m_graphicsQueue);
 	vkGetDeviceQueue(m_device, m_queueFamilyIndices.PresentIndices, 0, &m_presentQueue);
+	vkGetDeviceQueue(m_device, m_queueFamilyIndices.ComputeIndices, 0, &m_computeQueue);
+	vkGetDeviceQueue(m_device, m_queueFamilyIndices.TransferIndices, 0, &m_transferQueue);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -29,7 +31,7 @@ TRAP::Graphics::API::Vulkan::Device::Device(const Scope<PhysicalDevice>& physica
 	: m_device(), m_deviceExtensions(physicalDeviceExtensions), m_graphicsQueue(), m_presentQueue(), m_queueFamilyIndices(physicalDevice->GetQueueFamilyIndices())
 {	
 	float priority = 1.0f;
-	std::set<uint32_t> uniqueQueueFamilies = { m_queueFamilyIndices.GraphicsIndices, m_queueFamilyIndices.PresentIndices };
+	std::set<uint32_t> uniqueQueueFamilies = { m_queueFamilyIndices.GraphicsIndices, m_queueFamilyIndices.PresentIndices, m_queueFamilyIndices.ComputeIndices, m_queueFamilyIndices.TransferIndices };
 	std::vector<VkDeviceQueueCreateInfo> queueInfo;
 	for (uint32_t queueFamily : uniqueQueueFamilies)
 		queueInfo.emplace_back(Initializers::DeviceQueueCreateInfo(queueFamily, &priority));
@@ -43,6 +45,8 @@ TRAP::Graphics::API::Vulkan::Device::Device(const Scope<PhysicalDevice>& physica
 
 	vkGetDeviceQueue(m_device, m_queueFamilyIndices.GraphicsIndices, 0, &m_graphicsQueue);
 	vkGetDeviceQueue(m_device, m_queueFamilyIndices.PresentIndices, 0, &m_presentQueue);
+	vkGetDeviceQueue(m_device, m_queueFamilyIndices.ComputeIndices, 0, &m_computeQueue);
+	vkGetDeviceQueue(m_device, m_queueFamilyIndices.TransferIndices, 0, &m_transferQueue);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -82,6 +86,20 @@ VkQueue& TRAP::Graphics::API::Vulkan::Device::GetGraphicsQueue()
 VkQueue& TRAP::Graphics::API::Vulkan::Device::GetPresentQueue()
 {
 	return m_presentQueue;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkQueue& TRAP::Graphics::API::Vulkan::Device::GetComputeQueue()
+{
+	return m_computeQueue;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkQueue& TRAP::Graphics::API::Vulkan::Device::GetTransferQueue()
+{
+	return m_transferQueue;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

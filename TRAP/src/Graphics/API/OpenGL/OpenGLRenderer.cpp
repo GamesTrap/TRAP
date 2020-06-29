@@ -360,6 +360,18 @@ std::string TRAP::Graphics::API::OpenGLRenderer::GetCurrentGPUName()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::vector<std::pair<std::string, std::vector<uint8_t>>> TRAP::Graphics::API::OpenGLRenderer::GetAllGPUs()
+{
+	TP_PROFILE_FUNCTION();
+
+	OpenGLCall(const GLubyte * renderer = glGetString(GL_RENDERER));
+
+	//Return current GPU name and no UUID
+	return { {GetCurrentGPUName(), {}} };
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::API::OpenGLRenderer* TRAP::Graphics::API::OpenGLRenderer::Get()
 {
 	TP_PROFILE_FUNCTION();

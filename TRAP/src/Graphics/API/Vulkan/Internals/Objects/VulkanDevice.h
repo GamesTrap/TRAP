@@ -24,6 +24,8 @@ namespace TRAP::Graphics::API::Vulkan
 		const std::vector<std::string>& GetUsedExtensions() const;
 		VkQueue& GetGraphicsQueue();
 		VkQueue& GetPresentQueue();
+		VkQueue& GetComputeQueue();
+		VkQueue& GetTransferQueue();
 		const QueueFamilyIndices& GetQueueFamilyIndices() const;
 
 		void WaitIdle() const;
@@ -33,6 +35,8 @@ namespace TRAP::Graphics::API::Vulkan
 		std::vector<std::string> m_deviceExtensions;
 		VkQueue m_graphicsQueue;
 		VkQueue m_presentQueue;
+		VkQueue m_computeQueue;
+		VkQueue m_transferQueue;
 		QueueFamilyIndices m_queueFamilyIndices;
 	};
 }

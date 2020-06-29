@@ -34,6 +34,8 @@ namespace TRAP::Graphics::API::Vulkan
 		std::vector<VkFramebuffer>& GetFrameBuffers();
 		VkExtent2D GetExtent() const;
 		CommandPool& GetGraphicsCommandPool() const;
+		CommandPool& GetComputeCommandPool() const;
+		CommandPool& GetTransferCommandPool() const;
 		CommandBuffer& GetGraphicsCommandBuffer() const;
 
 		VkResult AcquireNextImage(const Scope<Semaphore>& presentCompleteSemaphore);
@@ -66,6 +68,8 @@ namespace TRAP::Graphics::API::Vulkan
 		Scope<Pipeline> m_pipeline;
 		VkSwapchainKHR m_oldSwapchain;
 		Scope<CommandPool> m_graphicsCommandPool;
+		Scope<CommandPool> m_computeCommandPool;
+		Scope<CommandPool> m_transferCommandPool;
 		Scope<CommandBuffer> m_graphicsCommandBuffer;
 
 		Scope<Fence> m_waitFence;

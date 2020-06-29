@@ -699,6 +699,24 @@ VkSubmitInfo TRAP::Graphics::API::Vulkan::Initializers::SubmitInfo(VkSemaphore& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkSubmitInfo TRAP::Graphics::API::Vulkan::Initializers::SubmitInfo(VkCommandBuffer& commandBuffer)
+{
+	return VkSubmitInfo
+	{
+		VK_STRUCTURE_TYPE_SUBMIT_INFO,
+		nullptr,
+		0,
+		nullptr,
+		nullptr,
+		1,
+		&commandBuffer,
+		0,
+		nullptr
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkPresentInfoKHR TRAP::Graphics::API::Vulkan::Initializers::PresentInfo(VkSemaphore& waitSemaphore, VkSwapchainKHR& swapchain, uint32_t& imageIndex)
 {
 	return VkPresentInfoKHR
@@ -711,5 +729,52 @@ VkPresentInfoKHR TRAP::Graphics::API::Vulkan::Initializers::PresentInfo(VkSemaph
 		&swapchain,
 		&imageIndex,
 		nullptr
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkBufferCreateInfo TRAP::Graphics::API::Vulkan::Initializers::BufferCreateInfo(const VkDeviceSize size, const VkBufferUsageFlags usage, std::vector<uint32_t>& queueFamilyIndices)
+{
+	return VkBufferCreateInfo
+	{
+		VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+		nullptr,
+		0,
+		size,
+		usage,
+		queueFamilyIndices.empty() ? VK_SHARING_MODE_EXCLUSIVE : VK_SHARING_MODE_CONCURRENT,
+		static_cast<uint32_t>(queueFamilyIndices.size()),
+		queueFamilyIndices.empty() ? nullptr : queueFamilyIndices.data()
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkBufferCreateInfo TRAP::Graphics::API::Vulkan::Initializers::BufferCreateInfo(const VkDeviceSize size, const VkBufferUsageFlags usage)
+{
+	return VkBufferCreateInfo
+	{
+		VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+		nullptr,
+		0,
+		size,
+		usage,
+		VK_SHARING_MODE_EXCLUSIVE,
+		0,
+		nullptr
+	};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkMemoryAllocateInfo TRAP::Graphics::API::Vulkan::Initializers::MemoryAllocateInfo(const VkDeviceSize size, const uint32_t memoryTypeIndex)
+{
+	return VkMemoryAllocateInfo
+	{
+		VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+		nullptr,
+		size,
+		memoryTypeIndex
 	};
 }

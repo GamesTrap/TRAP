@@ -87,7 +87,7 @@ TRAP::Graphics::API::Vulkan::Pipeline::~Pipeline()
 void TRAP::Graphics::API::Vulkan::Pipeline::SetShaders(const std::vector<VkPipelineShaderStageCreateInfo>& shaderStageCreateInfos)
 {
 	m_shaderStageCreateInfos = shaderStageCreateInfos;
-	RecreatePipeline();
+	RecreatePipeline(); //TODO Move this to draw call because this needs all bindings
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

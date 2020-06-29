@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "VulkanRenderer.h"
 
-
-
 #include "Application.h"
 #include "VulkanCommon.h"
 #include "Graphics/RenderCommand.h"
@@ -68,11 +66,20 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 	//Physical Device Stuff
 	std::multimap<int32_t, Vulkan::PhysicalDevice> physicalDevices = Vulkan::PhysicalDevice::GetAllAvailableGraphicPhysicalDevices(
 				m_instance, VulkanContext::GetCurrentWindow());
+	for(auto& device : physicalDevices)
+		m_deviceNamesAndUUIDs.emplace_back(device.second.GetPhysicalDeviceName(), device.second.GetUUID());
 	std::string GPUUUIDString;
 	Application::GetConfig().Get("VulkanGPU", GPUUUIDString);
 	const std::vector<uint8_t> GPUUUID = Utils::UUIDFromString(GPUUUIDString);
 	if(GPUUUID.empty())
 	{
+		auto lastPhysicalDevice = (--physicalDevices.end())->second;
+		m_physicalDevice = MakeScope<Vulkan::PhysicalDevice>(std::move(lastPhysicalDevice));
+	}
+	else if(GPUUUID.size() != 16)
+	{
+		TP_ERROR("[Renderer][Vulkan] Invalid GPU UUID: \"", GPUUUIDString, "\"!");
+		TP_ERROR("[Renderer][Vulkan] Falling back to score based system");
 		auto lastPhysicalDevice = (--physicalDevices.end())->second;
 		m_physicalDevice = MakeScope<Vulkan::PhysicalDevice>(std::move(lastPhysicalDevice));
 	}
@@ -483,6 +490,13 @@ std::string TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUName()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::vector<std::pair<std::string, std::vector<uint8_t>>> TRAP::Graphics::API::VulkanRenderer::GetAllGPUs()
+{
+	return m_deviceNamesAndUUIDs;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::Get()
 {
 	return s_renderer;
@@ -521,6 +535,13 @@ TRAP::Graphics::API::Vulkan::Device& TRAP::Graphics::API::VulkanRenderer::GetDev
 TRAP::Graphics::API::Vulkan::Swapchain& TRAP::Graphics::API::VulkanRenderer::GetCurrentSwapchain()
 {
 	return *s_currentSwapchain;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::Vulkan::PhysicalDevice& TRAP::Graphics::API::VulkanRenderer::GetPhysicalDevice()
+{
+	return *Get()->m_physicalDevice;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

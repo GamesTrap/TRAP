@@ -62,7 +62,8 @@ namespace TRAP::Graphics::API
 
 		std::vector<uint8_t> GetCurrentGPUUUID() override;
 		std::string GetCurrentGPUName() override;
-
+		std::vector<std::pair<std::string, std::vector<uint8_t>>> GetAllGPUs() override;
+		
 		static uint32_t TRAPRendererBufferToOpenGL(RendererBufferType buffer);
 		static uint32_t TRAPRendererBlendFunctionToOpenGL(RendererBlendFunction function);
 		static uint32_t TRAPRendererBlendEquationToOpenGL(RendererBlendEquation blendEquation);

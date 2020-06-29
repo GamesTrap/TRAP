@@ -75,7 +75,7 @@ namespace TRAP
 
 		static void SetClipboardString(const std::string& string);
 		static std::string GetClipboardString();
-
+		
 		void ReCreateWindow(Graphics::API::RenderAPI renderAPI);
 		/*void ReCreate(Graphics::API::RenderAPI renderAPI) const;*/
 		

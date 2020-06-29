@@ -1083,3 +1083,12 @@ SITREP 06/27/2020|20w26a2
     - Vulkan Removed Verbose debug messages ~<10 mins
     - Added Query to get current GPU name ~<20 mins
     - Added Stencil function ~>60 mins
+
+SITREP 06/28/2020|20w26a3
+    - Changed TRAP Engine version to 20w26a3(0.6.42)
+    - Added GetAllGPUs function which returns every GPU name and its UUID(VulkanAPI) ~<20 min
+    - Updated docs ~<10 mins
+
+SITREP 06/29/2020|20w27a1
+    - Changed TRAP Engine version to 20w27a1(0.6.43)
+    - Implemeted VulkanVertexBuffer ~>130 mins

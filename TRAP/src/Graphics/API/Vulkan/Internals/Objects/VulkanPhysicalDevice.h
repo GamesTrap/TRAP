@@ -26,6 +26,7 @@ namespace TRAP::Graphics::API::Vulkan
 		VkPhysicalDeviceFeatures& GetPhysicalDeviceFeatures();
 		VkPhysicalDeviceMemoryProperties& GetPhysicalDeviceMemoryProperties();
 		VkFormatProperties GetPhysicalDeviceFormatProperties(VkFormat format) const;
+		VkPhysicalDeviceLimits GetPhysicalDeviceLimits() const;
 		std::string GetPhysicalDeviceName() const;
 		const std::vector<VkExtensionProperties>& GetAvailableExtensions() const;
 		std::vector<uint8_t> GetUUID() const;
