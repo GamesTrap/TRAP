@@ -1,4 +1,4 @@
-project "TRAP Editor"
+project "TRAP-Editor"
 	location "."
 	kind "ConsoleApp"
 	language "C++"

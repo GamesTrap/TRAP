@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Program Listing for File Application.h &mdash; TRAP 0.6.38 documentation</title>
+  <title>Program Listing for File Application.h &mdash; TRAP 0.6.44 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within TRAP 0.6.38 documentation"
+          title="Search within TRAP 0.6.44 documentation"
           href="../_static/opensearch.xml"/>
 
   
@@ -168,6 +168,7 @@
 
 <span class="cp">#include</span> <span class="cpf">&quot;Config/Config.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;Layers/LayerStack.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;ThreadPool/ThreadPool.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;Utils/Time/Timer.h&quot;</span><span class="cp"></span>
 
 <span class="kt">int</span> <span class="nf">main</span><span class="p">();</span>
@@ -234,6 +235,7 @@
         <span class="k">static</span> <span class="n">Utils</span><span class="o">::</span><span class="n">TimeStep</span> <span class="n">GetTime</span><span class="p">();</span>
         <span class="k">static</span> <span class="n">Endian</span> <span class="nf">GetEndian</span><span class="p">();</span>
         <span class="k">static</span> <span class="n">LinuxWindowManager</span> <span class="nf">GetLinuxWindowManager</span><span class="p">();</span>
+        <span class="k">static</span> <span class="n">EXPERIMENTAL</span><span class="o">::</span><span class="n">ThreadPool</span><span class="o">&amp;</span> <span class="n">GetThreadPool</span><span class="p">();</span>
 
         <span class="k">static</span> <span class="kt">void</span> <span class="nf">SetClipboardString</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">string</span><span class="p">);</span>
         <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">GetClipboardString</span><span class="p">();</span>
@@ -276,6 +278,8 @@
 
         <span class="n">Endian</span> <span class="n">m_endian</span><span class="p">;</span>
         <span class="n">LinuxWindowManager</span> <span class="n">m_linuxWindowManager</span><span class="p">;</span>
+
+        <span class="n">EXPERIMENTAL</span><span class="o">::</span><span class="n">ThreadPool</span> <span class="n">m_threadPool</span><span class="p">;</span>
 
         <span class="k">static</span> <span class="n">Application</span><span class="o">*</span> <span class="n">s_Instance</span><span class="p">;</span>
         <span class="k">friend</span> <span class="kt">int</span> <span class="o">::</span><span class="n">main</span><span class="p">();</span>

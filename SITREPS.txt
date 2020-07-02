@@ -1093,6 +1093,8 @@ SITREP 06/29/2020|20w27a1
     - Changed TRAP Engine version to 20w27a1(0.6.43)
     - Implemented VulkanVertexBuffer ~>130 mins
     - Implemented VulkanIndexBuffer ~>40 mins
+    - Added TRAP Editor project ~<40 mins
+    - Changed FrameBuffer API ~<50 mins
 
 SITREP 07/02/2020|20w27a2
     - Changed TRAP Engine version to 20w27a2(0.6.44)
@@ -1100,3 +1102,5 @@ SITREP 07/02/2020|20w27a2
     - Added multithreading inside OpenGLTexture2D when loading an Image from filepath (STILL EXPERIMENTAL) ~>30 mins
     - Removed Load() function from OpenGLTexture2D as it was only used by one of the constructors ~<10 mins
     - Made Logging thread safe ~<20 mins
+    - Renamed TRAP Editor to TRAP-Editor (fixes Linux CI bug) ~<5 mins
+    - Added TRAP::Window documentation ~<40 mins

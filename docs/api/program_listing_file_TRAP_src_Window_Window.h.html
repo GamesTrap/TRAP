@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Program Listing for File Window.h &mdash; TRAP 0.6.38 documentation</title>
+  <title>Program Listing for File Window.h &mdash; TRAP 0.6.44 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within TRAP 0.6.38 documentation"
+          title="Search within TRAP 0.6.44 documentation"
           href="../_static/opensearch.xml"/>
 
   
@@ -174,11 +174,9 @@
 <span class="p">{</span>
     <span class="k">struct</span> <span class="n">WindowProps</span><span class="p">;</span>
 
-    <span class="c1">//Interface representing a desktop system based window</span>
     <span class="k">class</span> <span class="nc">Window</span> <span class="k">final</span>
     <span class="p">{</span>
     <span class="k">public</span><span class="o">:</span>
-        <span class="c1">//Used to set Display modes of windows</span>
         <span class="k">enum</span> <span class="k">class</span> <span class="nc">DisplayMode</span>
         <span class="p">{</span>
             <span class="n">Windowed</span><span class="p">,</span>
@@ -186,10 +184,8 @@
             <span class="n">Borderless</span>
         <span class="p">};</span>
 
-        <span class="c1">//Used to set Cursor mode of windows</span>
         <span class="k">using</span> <span class="n">CursorMode</span> <span class="o">=</span> <span class="n">INTERNAL</span><span class="o">::</span><span class="n">WindowingAPI</span><span class="o">::</span><span class="n">CursorMode</span><span class="p">;</span>
 
-        <span class="c1">//Used to set Cursor type of windows</span>
         <span class="k">using</span> <span class="n">CursorType</span> <span class="o">=</span> <span class="n">INTERNAL</span><span class="o">::</span><span class="n">WindowingAPI</span><span class="o">::</span><span class="n">CursorType</span><span class="p">;</span>
 
         <span class="k">using</span> <span class="n">EventCallbackFn</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="n">Events</span><span class="o">::</span><span class="n">Event</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
@@ -234,6 +230,7 @@
         <span class="kt">void</span> <span class="nf">SetCursorIcon</span><span class="p">(</span><span class="k">const</span> <span class="n">Scope</span><span class="o">&lt;</span><span class="n">Image</span><span class="o">&gt;&amp;</span> <span class="n">image</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="n">xHotspot</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">int32_t</span> <span class="n">yHotspot</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
         <span class="kt">void</span> <span class="nf">SetRawMouseInput</span><span class="p">(</span><span class="kt">bool</span> <span class="n">enabled</span><span class="p">);</span>
         <span class="kt">void</span> <span class="nf">SetIcon</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+        <span class="c1">//TODO API consistency should also allow non HDR RGB 24BPP images like SetCursorIcon does!</span>
         <span class="kt">void</span> <span class="nf">SetIcon</span><span class="p">(</span><span class="k">const</span> <span class="n">Scope</span><span class="o">&lt;</span><span class="n">Image</span><span class="o">&gt;&amp;</span> <span class="n">image</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
         <span class="kt">void</span> <span class="nf">SetEventCallback</span><span class="p">(</span><span class="k">const</span> <span class="n">EventCallbackFn</span><span class="o">&amp;</span> <span class="n">callback</span><span class="p">);</span>
         <span class="kt">void</span> <span class="nf">SetResizable</span><span class="p">(</span><span class="kt">bool</span> <span class="n">enabled</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>

@@ -238,7 +238,7 @@ void TRAP::Application::Run()
 
 		if (!m_minimized)
 			Graphics::RenderCommand::Present(m_window);
-		m_window->OnUpdate();
+		TRAP::Window::OnUpdate();
 
 		Graphics::Texture2D::UpdateLoadingTextures();
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Program Listing for File Texture2D.h &mdash; TRAP 0.6.38 documentation</title>
+  <title>Program Listing for File Texture2D.h &mdash; TRAP 0.6.44 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within TRAP 0.6.38 documentation"
+          title="Search within TRAP 0.6.44 documentation"
           href="../_static/opensearch.xml"/>
 
   
@@ -180,12 +180,16 @@
 
         <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">UploadImage</span><span class="p">(</span><span class="k">const</span> <span class="n">TRAP</span><span class="o">::</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">TRAP</span><span class="o">::</span><span class="n">Image</span><span class="o">&gt;&amp;</span> <span class="n">image</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
+        <span class="k">static</span> <span class="kt">void</span> <span class="nf">UpdateLoadingTextures</span><span class="p">();</span>
+
     <span class="k">protected</span><span class="o">:</span>
         <span class="n">Texture2D</span><span class="p">();</span>
 
         <span class="k">static</span> <span class="kt">uint32_t</span> <span class="n">s_maxTextureSize</span><span class="p">;</span>
 
         <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">m_filepath</span><span class="p">;</span>
+
+        <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">Texture2D</span><span class="o">*</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">future</span><span class="o">&lt;</span><span class="n">Scope</span><span class="o">&lt;</span><span class="n">Image</span><span class="o">&gt;&gt;&gt;&gt;</span> <span class="n">m_loadingTextures</span><span class="p">;</span>
     <span class="p">};</span>
 <span class="p">}</span>
 

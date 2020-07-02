@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Program Listing for File OrthographicCameraController.h &mdash; TRAP 0.6.38 documentation</title>
+  <title>Program Listing for File OrthographicCameraController.h &mdash; TRAP 0.6.44 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within TRAP 0.6.38 documentation"
+          title="Search within TRAP 0.6.44 documentation"
           href="../_static/opensearch.xml"/>
 
   
@@ -186,6 +186,8 @@
 
         <span class="kt">void</span> <span class="nf">OnUpdate</span><span class="p">(</span><span class="k">const</span> <span class="n">Utils</span><span class="o">::</span><span class="n">TimeStep</span><span class="o">&amp;</span> <span class="n">deltaTime</span><span class="p">);</span>
         <span class="kt">void</span> <span class="nf">OnEvent</span><span class="p">(</span><span class="n">Events</span><span class="o">::</span><span class="n">Event</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">);</span>
+
+        <span class="kt">void</span> <span class="nf">OnResize</span><span class="p">(</span><span class="kt">float</span> <span class="n">width</span><span class="p">,</span> <span class="kt">float</span> <span class="n">height</span><span class="p">);</span>
 
         <span class="n">OrthographicCamera</span><span class="o">&amp;</span> <span class="n">GetCamera</span><span class="p">();</span>
         <span class="k">const</span> <span class="n">OrthographicCamera</span><span class="o">&amp;</span> <span class="n">GetCamera</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>

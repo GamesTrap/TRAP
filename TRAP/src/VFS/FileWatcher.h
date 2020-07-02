@@ -5,7 +5,9 @@
 
 namespace TRAP
 {
-	//Define available file changes
+	/// <summary>
+	/// Specifies the status of a file
+	/// </summary>
 	enum class FileStatus
 	{
 		Created,

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Class Window &mdash; TRAP 0.6.38 documentation</title>
+  <title>Class Window &mdash; TRAP 0.6.44 documentation</title>
   
 
   
@@ -34,7 +34,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within TRAP 0.6.38 documentation"
+          title="Search within TRAP 0.6.44 documentation"
           href="../_static/opensearch.xml"/>
 
   
@@ -162,27 +162,19 @@
 <ul class="simple">
 <li><p>Defined in <a class="reference internal" href="file_TRAP_src_Window_Window.h.html#file-trap-src-window-window-h"><span class="std std-ref">File Window.h</span></a></p></li>
 </ul>
-<div class="section" id="nested-relationships">
-<h2>Nested Relationships<a class="headerlink" href="#nested-relationships" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="nested-types">
-<h3>Nested Types<a class="headerlink" href="#nested-types" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p><a class="reference internal" href="struct_t_r_a_p_1_1_window_1_1_window_data.html#exhale-struct-struct-t-r-a-p-1-1-window-1-1-window-data"><span class="std std-ref">Struct Window::WindowData</span></a></p></li>
-<li><p><a class="reference internal" href="struct_t_r_a_p_1_1_window_1_1_windowed_mode_params.html#exhale-struct-struct-t-r-a-p-1-1-window-1-1-windowed-mode-params"><span class="std std-ref">Struct Window::WindowedModeParams</span></a></p></li>
-</ul>
-</div>
-</div>
 <div class="section" id="class-documentation">
 <h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="_CPPv4N4TRAP6WindowE">
 <span id="_CPPv3N4TRAP6WindowE"></span><span id="_CPPv2N4TRAP6WindowE"></span><span id="TRAP::Window"></span><span class="target" id="class_t_r_a_p_1_1_window"></span><em class="property">class </em><code class="sig-name descname">Window</code><a class="headerlink" href="#_CPPv4N4TRAP6WindowE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><div class="breathe-sectiondef docutils container">
+<dd><p>Interface representing a desktop system based <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Types</p>
 <dl class="enum">
 <dt id="_CPPv4N4TRAP6Window11DisplayModeE">
 <span id="_CPPv3N4TRAP6Window11DisplayModeE"></span><span id="_CPPv2N4TRAP6Window11DisplayModeE"></span><span class="target" id="class_t_r_a_p_1_1_window_1ac8a81beca739a13e6db84df2fd967b3b"></span><em class="property">enum </em><code class="sig-name descname">DisplayMode</code><a class="headerlink" href="#_CPPv4N4TRAP6Window11DisplayModeE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p><em>Values:</em></p>
+<dd><p>Specifies the display mode of a <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><em>Values:</em></p>
 <dl class="enumerator">
 <dt id="_CPPv4N4TRAP6Window8WindowedE">
 <span id="_CPPv3N4TRAP6Window8WindowedE"></span><span id="_CPPv2N4TRAP6Window8WindowedE"></span><span class="target" id="class_t_r_a_p_1_1_window_1ac8a81beca739a13e6db84df2fd967b3bab13311ab51c4c34757f67f26580018dd"></span><code class="sig-name descname">Windowed</code><a class="headerlink" href="#_CPPv4N4TRAP6Window8WindowedE" title="Permalink to this definition">¶</a><br /></dt>
@@ -203,12 +195,14 @@
 <dl class="type">
 <dt id="_CPPv4N4TRAP6Window10CursorModeE">
 <span id="_CPPv3N4TRAP6Window10CursorModeE"></span><span id="_CPPv2N4TRAP6Window10CursorModeE"></span><span class="target" id="class_t_r_a_p_1_1_window_1a4ac27cab0cf24b0ecab2b0ba47ab2b5e"></span><em class="property">using </em><code class="sig-name descname">CursorMode</code> = INTERNAL::WindowingAPI::CursorMode<a class="headerlink" href="#_CPPv4N4TRAP6Window10CursorModeE" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Same as: enum class CursorMode { Normal, Hidden, Disabled, Captured }; Specifies the cursor mode of a <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+</dd></dl>
 
 <dl class="type">
 <dt id="_CPPv4N4TRAP6Window10CursorTypeE">
 <span id="_CPPv3N4TRAP6Window10CursorTypeE"></span><span id="_CPPv2N4TRAP6Window10CursorTypeE"></span><span class="target" id="class_t_r_a_p_1_1_window_1a58b36740dcdc5de9b711b0bb4afd1a1f"></span><em class="property">using </em><code class="sig-name descname">CursorType</code> = INTERNAL::WindowingAPI::CursorType<a class="headerlink" href="#_CPPv4N4TRAP6Window10CursorTypeE" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Same as: enum class CursorType { Arrow = 0, <a class="reference internal" href="class_t_r_a_p_1_1_input.html#class_t_r_a_p_1_1_input"><span class="std std-ref">Input</span></a> = 1, Crosshair = 2, PointingHand = 3, ResizeHorizontal = 4, ResizeVertical = 5, ResizeDiagonalTopLeftBottomRight = 6, ResizeDiagonalTopRightBottomLeft = 7, ResizeAll = 8, NotAllowed = 9 }; Specifies the cursor type (visual appearance) of a <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+</dd></dl>
 
 <dl class="type">
 <dt id="_CPPv4N4TRAP6Window15EventCallbackFnE">
@@ -221,7 +215,17 @@
 <dl class="function">
 <dt id="_CPPv4N4TRAP6Window6WindowERK11WindowProps">
 <span id="_CPPv3N4TRAP6Window6WindowERK11WindowProps"></span><span id="_CPPv2N4TRAP6Window6WindowERK11WindowProps"></span><span id="TRAP::Window::Window__WindowPropsCR"></span><span class="target" id="class_t_r_a_p_1_1_window_1aea1f8414a5d5b813a82a23fb904e6ea0"></span><code class="sig-name descname">Window</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="struct_t_r_a_p_1_1_window_props.html#_CPPv4N4TRAP11WindowPropsE" title="TRAP::WindowProps">WindowProps</a> &amp;<em>props</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window6WindowERK11WindowProps" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p><a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> constructor </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>New <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> object</p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">props</span></code>: Properties to be applied to the new <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N4TRAP6Window6WindowERK6Window">
@@ -251,207 +255,448 @@
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window8GetTitleEv">
 <span id="_CPPv3NK4TRAP6Window8GetTitleEv"></span><span id="_CPPv2NK4TRAP6Window8GetTitleEv"></span><span id="TRAP::Window::GetTitleC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a1c1a96844e67055e8cc342b085298d27"></span>std::string_view <code class="sig-name descname">GetTitle</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window8GetTitleEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Get the current title of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Title of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a></p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window8GetWidthEv">
 <span id="_CPPv3NK4TRAP6Window8GetWidthEv"></span><span id="_CPPv2NK4TRAP6Window8GetWidthEv"></span><span id="TRAP::Window::GetWidthC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a9b68763bbcf071488fb09ac522ebed28"></span>uint32_t <code class="sig-name descname">GetWidth</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window8GetWidthEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Get the current width of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Width of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a></p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window9GetHeightEv">
 <span id="_CPPv3NK4TRAP6Window9GetHeightEv"></span><span id="_CPPv2NK4TRAP6Window9GetHeightEv"></span><span id="TRAP::Window::GetHeightC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a7e56c2a1b4dc0f125c1226ff9479e2f8"></span>uint32_t <code class="sig-name descname">GetHeight</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window9GetHeightEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Get the current height of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Height of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a></p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window7GetSizeEv">
 <span id="_CPPv3NK4TRAP6Window7GetSizeEv"></span><span id="_CPPv2NK4TRAP6Window7GetSizeEv"></span><span id="TRAP::Window::GetSizeC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a07e26bb88be2e74895ef17f3d4a7a1da"></span>Math::<a class="reference internal" href="typedef__types_8h_1ab7e284fee572756ce3bc890e059b3337.html#_CPPv4N4TRAP4Math6Vec2uiE" title="TRAP::Math::Vec2ui">Vec2ui</a> <code class="sig-name descname">GetSize</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window7GetSizeEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Get the current width and height of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Vec2ui containing the width and height of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a></p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window14GetRefreshRateEv">
 <span id="_CPPv3NK4TRAP6Window14GetRefreshRateEv"></span><span id="_CPPv2NK4TRAP6Window14GetRefreshRateEv"></span><span id="TRAP::Window::GetRefreshRateC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a4a50da09d2b2a21650dfc06da4853c92"></span>uint32_t <code class="sig-name descname">GetRefreshRate</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window14GetRefreshRateEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Get the current refresh rate of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Refresh rate of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a></p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window14GetDisplayModeEv">
 <span id="_CPPv3NK4TRAP6Window14GetDisplayModeEv"></span><span id="_CPPv2NK4TRAP6Window14GetDisplayModeEv"></span><span id="TRAP::Window::GetDisplayModeC"></span><span class="target" id="class_t_r_a_p_1_1_window_1af8a24e4e09ddeee9022014e4b4531315"></span><a class="reference internal" href="#_CPPv4N4TRAP6Window11DisplayModeE" title="TRAP::Window::DisplayMode">DisplayMode</a> <code class="sig-name descname">GetDisplayMode</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window14GetDisplayModeEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Get the current DisplayMode of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>DisplayMode of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a></p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window10GetMonitorEv">
 <span id="_CPPv3NK4TRAP6Window10GetMonitorEv"></span><span id="_CPPv2NK4TRAP6Window10GetMonitorEv"></span><span id="TRAP::Window::GetMonitorC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a92ed57d2f247ca4b897fa3cf73b3c0be"></span><a class="reference internal" href="class_t_r_a_p_1_1_monitor.html#_CPPv4N4TRAP7MonitorE" title="TRAP::Monitor">Monitor</a> <code class="sig-name descname">GetMonitor</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window10GetMonitorEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Get the current <a class="reference internal" href="class_t_r_a_p_1_1_monitor.html#class_t_r_a_p_1_1_monitor"><span class="std std-ref">Monitor</span></a> used by the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> (only in DisplayMode Fullscreen and Borderless) </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Object of <a class="reference internal" href="class_t_r_a_p_1_1_monitor.html#class_t_r_a_p_1_1_monitor"><span class="std std-ref">Monitor</span></a> class used by the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a></p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window16GetVSyncIntervalEv">
 <span id="_CPPv3NK4TRAP6Window16GetVSyncIntervalEv"></span><span id="_CPPv2NK4TRAP6Window16GetVSyncIntervalEv"></span><span id="TRAP::Window::GetVSyncIntervalC"></span><span class="target" id="class_t_r_a_p_1_1_window_1ac77cd0b59a53b045f8683e4affef6689"></span>uint32_t <code class="sig-name descname">GetVSyncInterval</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window16GetVSyncIntervalEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Get the current VSync interval used by the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>VSync interval of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a></p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window13GetCursorModeEv">
 <span id="_CPPv3NK4TRAP6Window13GetCursorModeEv"></span><span id="_CPPv2NK4TRAP6Window13GetCursorModeEv"></span><span id="TRAP::Window::GetCursorModeC"></span><span class="target" id="class_t_r_a_p_1_1_window_1acc8cbb69f1def98c325275fce5a28cf2"></span><a class="reference internal" href="#_CPPv4N4TRAP6Window10CursorModeE" title="TRAP::Window::CursorMode">CursorMode</a> <code class="sig-name descname">GetCursorMode</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window13GetCursorModeEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Get the current CursorMode of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>CursorMode of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a></p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window16GetRawMouseInputEv">
 <span id="_CPPv3NK4TRAP6Window16GetRawMouseInputEv"></span><span id="_CPPv2NK4TRAP6Window16GetRawMouseInputEv"></span><span id="TRAP::Window::GetRawMouseInputC"></span><span class="target" id="class_t_r_a_p_1_1_window_1aa7c2cc921e827f72079344f90a3e7c71"></span>bool <code class="sig-name descname">GetRawMouseInput</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window16GetRawMouseInputEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Get the current raw mouse input (false = off, true = on) usage of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Raw mouse input status of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a></p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window15GetContentScaleEv">
 <span id="_CPPv3NK4TRAP6Window15GetContentScaleEv"></span><span id="_CPPv2NK4TRAP6Window15GetContentScaleEv"></span><span id="TRAP::Window::GetContentScaleC"></span><span class="target" id="class_t_r_a_p_1_1_window_1aaaa106157d8e07227904c58d4dfe372f"></span>Math::<a class="reference internal" href="typedef__types_8h_1adbc6a9559125a98c485dfcbd60d01fa5.html#_CPPv4N4TRAP4Math4Vec2E" title="TRAP::Math::Vec2">Vec2</a> <code class="sig-name descname">GetContentScale</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window15GetContentScaleEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Get the ratio between the current DPI and the platforms DPI </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Vec2 containing the x and y scale</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window10GetOpacityEv">
 <span id="_CPPv3NK4TRAP6Window10GetOpacityEv"></span><span id="_CPPv2NK4TRAP6Window10GetOpacityEv"></span><span id="TRAP::Window::GetOpacityC"></span><span class="target" id="class_t_r_a_p_1_1_window_1ab7676ac80499be1abf444f06a8cc3c8a"></span>float <code class="sig-name descname">GetOpacity</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window10GetOpacityEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Get the current opacity of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Opacity of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a></p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window17GetInternalWindowEv">
 <span id="_CPPv3NK4TRAP6Window17GetInternalWindowEv"></span><span id="_CPPv2NK4TRAP6Window17GetInternalWindowEv"></span><span id="TRAP::Window::GetInternalWindowC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a3ec3e102f89b0b6347184512d21e12fc"></span>void *<code class="sig-name descname">GetInternalWindow</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window17GetInternalWindowEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Get the internal handle of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Pointer to the TRAP::INTERNAL::WindowingAPI::InternalWindow handle</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N4TRAP6Window8SetTitleERKNSt6stringE">
 <span id="_CPPv3N4TRAP6Window8SetTitleERKNSt6stringE"></span><span id="_CPPv2N4TRAP6Window8SetTitleERKNSt6stringE"></span><span id="TRAP::Window::SetTitle__ssCR"></span><span class="target" id="class_t_r_a_p_1_1_window_1a6558c07f0e759a301a026acef6a8c8fd"></span>void <code class="sig-name descname">SetTitle</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>title</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window8SetTitleERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Set a new title for the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code>: New <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> title</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N4TRAP6Window14SetDisplayModeERK11DisplayMode8uint32_t8uint32_t8uint32_t">
 <span id="_CPPv3N4TRAP6Window14SetDisplayModeERK11DisplayMode8uint32_t8uint32_t8uint32_t"></span><span id="_CPPv2N4TRAP6Window14SetDisplayModeERK11DisplayMode8uint32_t8uint32_t8uint32_t"></span><span id="TRAP::Window::SetDisplayMode__DisplayModeCR.uint32_t.uint32_t.uint32_t"></span><span class="target" id="class_t_r_a_p_1_1_window_1af694cbc2af0298888fc6bcd05eed56ba"></span>void <code class="sig-name descname">SetDisplayMode</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N4TRAP6Window11DisplayModeE" title="TRAP::Window::DisplayMode">DisplayMode</a> &amp;<em>mode</em>, uint32_t <em>width</em> = 0, uint32_t <em>height</em> = 0, uint32_t <em>refreshRate</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window14SetDisplayModeERK11DisplayMode8uint32_t8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Set a new DisplayMode and or a new size/refresh rate for the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mode</span></code>: New DisplayMode for the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code>: New width (ignored when used with DisplayMode Borderless)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">height</span></code>: New height (ignored when used with DisplayMode Borderless)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">refreshRate</span></code>: New refresh rate (ignored when used with DisplayMode Borderless, Windowed)</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N4TRAP6Window10SetMonitorER7Monitor">
 <span id="_CPPv3N4TRAP6Window10SetMonitorER7Monitor"></span><span id="_CPPv2N4TRAP6Window10SetMonitorER7Monitor"></span><span id="TRAP::Window::SetMonitor__MonitorR"></span><span class="target" id="class_t_r_a_p_1_1_window_1a3251d39967a79e61e332c3c21e1e6e52"></span>void <code class="sig-name descname">SetMonitor</code><span class="sig-paren">(</span><a class="reference internal" href="class_t_r_a_p_1_1_monitor.html#_CPPv4N4TRAP7MonitorE" title="TRAP::Monitor">Monitor</a> &amp;<em>monitor</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window10SetMonitorER7Monitor" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Set a new <a class="reference internal" href="class_t_r_a_p_1_1_monitor.html#class_t_r_a_p_1_1_monitor"><span class="std std-ref">Monitor</span></a> for the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">monitor</span></code>: <a class="reference internal" href="class_t_r_a_p_1_1_monitor.html#class_t_r_a_p_1_1_monitor"><span class="std std-ref">Monitor</span></a> object to be used from now on</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N4TRAP6Window16SetVSyncIntervalE8uint32_t">
 <span id="_CPPv3N4TRAP6Window16SetVSyncIntervalE8uint32_t"></span><span id="_CPPv2N4TRAP6Window16SetVSyncIntervalE8uint32_t"></span><span id="TRAP::Window::SetVSyncInterval__uint32_t"></span><span class="target" id="class_t_r_a_p_1_1_window_1af882eec1230dc80c8d9130d7b520c32b"></span>void <code class="sig-name descname">SetVSyncInterval</code><span class="sig-paren">(</span>uint32_t <em>interval</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window16SetVSyncIntervalE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Set the VSync interval (0 = No VSync) </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">interval</span></code>: New VSync interval</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N4TRAP6Window13SetCursorModeERK10CursorMode">
 <span id="_CPPv3N4TRAP6Window13SetCursorModeERK10CursorMode"></span><span id="_CPPv2N4TRAP6Window13SetCursorModeERK10CursorMode"></span><span id="TRAP::Window::SetCursorMode__CursorModeCR"></span><span class="target" id="class_t_r_a_p_1_1_window_1a62e0a9e296ad0b84fbe3a69b4dfdd531"></span>void <code class="sig-name descname">SetCursorMode</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N4TRAP6Window10CursorModeE" title="TRAP::Window::CursorMode">CursorMode</a> &amp;<em>mode</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window13SetCursorModeERK10CursorMode" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Set the CursorMode for the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mode</span></code>: New CursorMode</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window13SetCursorTypeERK10CursorType">
 <span id="_CPPv3NK4TRAP6Window13SetCursorTypeERK10CursorType"></span><span id="_CPPv2NK4TRAP6Window13SetCursorTypeERK10CursorType"></span><span id="TRAP::Window::SetCursorType__CursorTypeCRC"></span><span class="target" id="class_t_r_a_p_1_1_window_1aa93b626832ac68f6b887227acdc6cfef"></span>void <code class="sig-name descname">SetCursorType</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N4TRAP6Window10CursorTypeE" title="TRAP::Window::CursorType">CursorType</a> &amp;<em>cursor</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window13SetCursorTypeERK10CursorType" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Set the CursorType for the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cursor</span></code>: New CursorType</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window13SetCursorIconERK5ScopeI5ImageE7int32_t7int32_t">
 <span id="_CPPv3NK4TRAP6Window13SetCursorIconERK5ScopeI5ImageE7int32_t7int32_t"></span><span id="_CPPv2NK4TRAP6Window13SetCursorIconERK5ScopeI5ImageE7int32_t7int32_t"></span><span id="TRAP::Window::SetCursorIcon__Scope:Image:CR.int32_t.int32_tC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a88e26eb6600ee22e99fdf4461aaae597"></span>void <code class="sig-name descname">SetCursorIcon</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="typedef__core_8h_1a2db5e63ad48f48221f6cf4c77eb34d77.html#_CPPv4I0EN4TRAP5ScopeE" title="TRAP::Scope">Scope</a>&lt;<a class="reference internal" href="class_t_r_a_p_1_1_image.html#_CPPv4N4TRAP5ImageE" title="TRAP::Image">Image</a>&gt; &amp;<em>image</em>, int32_t <em>xHotspot</em> = 0, int32_t <em>yHotspot</em> = 0<span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window13SetCursorIconERK5ScopeI5ImageE7int32_t7int32_t" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Set the cursor to a custom <a class="reference internal" href="class_t_r_a_p_1_1_image.html#class_t_r_a_p_1_1_image"><span class="std std-ref">Image</span></a> (<a class="reference internal" href="class_t_r_a_p_1_1_image.html#class_t_r_a_p_1_1_image"><span class="std std-ref">Image</span></a> must be non HDR RGB/RGBA with 24/32 bits per pixel) </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">image</span></code>: <a class="reference internal" href="class_t_r_a_p_1_1_image.html#class_t_r_a_p_1_1_image"><span class="std std-ref">Image</span></a> to be used as a cursor</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xHotspot</span></code>: X hotspot of the <a class="reference internal" href="class_t_r_a_p_1_1_image.html#class_t_r_a_p_1_1_image"><span class="std std-ref">Image</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">yHotspot</span></code>: Y hotspot of the <a class="reference internal" href="class_t_r_a_p_1_1_image.html#class_t_r_a_p_1_1_image"><span class="std std-ref">Image</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N4TRAP6Window16SetRawMouseInputEb">
 <span id="_CPPv3N4TRAP6Window16SetRawMouseInputEb"></span><span id="_CPPv2N4TRAP6Window16SetRawMouseInputEb"></span><span id="TRAP::Window::SetRawMouseInput__b"></span><span class="target" id="class_t_r_a_p_1_1_window_1aa6fa966786dfe81fe6562f7e055335e4"></span>void <code class="sig-name descname">SetRawMouseInput</code><span class="sig-paren">(</span>bool <em>enabled</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window16SetRawMouseInputEb" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Set if raw mouse input should be used </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">enabled</span></code>: New status for raw mouse input</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window7SetIconEv">
 <span id="_CPPv3NK4TRAP6Window7SetIconEv"></span><span id="_CPPv2NK4TRAP6Window7SetIconEv"></span><span id="TRAP::Window::SetIconC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a2221c4be2e229cd9fb8f37105002ac96"></span>void <code class="sig-name descname">SetIcon</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window7SetIconEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Resets the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> icon to the TRAP logo </p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window7SetIconERK5ScopeI5ImageE">
 <span id="_CPPv3NK4TRAP6Window7SetIconERK5ScopeI5ImageE"></span><span id="_CPPv2NK4TRAP6Window7SetIconERK5ScopeI5ImageE"></span><span id="TRAP::Window::SetIcon__Scope:Image:CRC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a8374c6feec002fa1bad84996674a3e86"></span>void <code class="sig-name descname">SetIcon</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="typedef__core_8h_1a2db5e63ad48f48221f6cf4c77eb34d77.html#_CPPv4I0EN4TRAP5ScopeE" title="TRAP::Scope">Scope</a>&lt;<a class="reference internal" href="class_t_r_a_p_1_1_image.html#_CPPv4N4TRAP5ImageE" title="TRAP::Image">Image</a>&gt; &amp;<em>image</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window7SetIconERK5ScopeI5ImageE" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Set a custom logo as <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> icon (<a class="reference internal" href="class_t_r_a_p_1_1_image.html#class_t_r_a_p_1_1_image"><span class="std std-ref">Image</span></a> must be non HDR RGBA 32 bits per pixel)(nullptr also resets to the TRAP logo) </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">image</span></code>: New logo to be used by the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a></p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N4TRAP6Window16SetEventCallbackERK15EventCallbackFn">
 <span id="_CPPv3N4TRAP6Window16SetEventCallbackERK15EventCallbackFn"></span><span id="_CPPv2N4TRAP6Window16SetEventCallbackERK15EventCallbackFn"></span><span id="TRAP::Window::SetEventCallback__EventCallbackFnCR"></span><span class="target" id="class_t_r_a_p_1_1_window_1ac542967a06b5acaf5084c361039b47fe"></span>void <code class="sig-name descname">SetEventCallback</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N4TRAP6Window15EventCallbackFnE" title="TRAP::Window::EventCallbackFn">EventCallbackFn</a> &amp;<em>callback</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window16SetEventCallbackERK15EventCallbackFn" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Set the function where events should be reported to from the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">callback</span></code>: Callback function used to report events to</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window12SetResizableEb">
 <span id="_CPPv3NK4TRAP6Window12SetResizableEb"></span><span id="_CPPv2NK4TRAP6Window12SetResizableEb"></span><span id="TRAP::Window::SetResizable__bC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a28f1370ae185a365ee0665512fbe1cb3"></span>void <code class="sig-name descname">SetResizable</code><span class="sig-paren">(</span>bool <em>enabled</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window12SetResizableEb" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Set whether resizing of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> should be allowed </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">enabled</span></code>: Set resizable or non resizable</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window14SetMinimumSizeE8uint32_t8uint32_t">
 <span id="_CPPv3NK4TRAP6Window14SetMinimumSizeE8uint32_t8uint32_t"></span><span id="_CPPv2NK4TRAP6Window14SetMinimumSizeE8uint32_t8uint32_t"></span><span id="TRAP::Window::SetMinimumSize__uint32_t.uint32_tC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a9f9237420469600df32997791ec7cc8a"></span>void <code class="sig-name descname">SetMinimumSize</code><span class="sig-paren">(</span>uint32_t <em>minWidth</em>, uint32_t <em>minHeight</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window14SetMinimumSizeE8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Limit the minimum size of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">minWidth</span></code>: Min width</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">minHeight</span></code>: Min height</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window14SetMaximumSizeE8uint32_t8uint32_t">
 <span id="_CPPv3NK4TRAP6Window14SetMaximumSizeE8uint32_t8uint32_t"></span><span id="_CPPv2NK4TRAP6Window14SetMaximumSizeE8uint32_t8uint32_t"></span><span id="TRAP::Window::SetMaximumSize__uint32_t.uint32_tC"></span><span class="target" id="class_t_r_a_p_1_1_window_1ae8023e77a5a20daeef8515915abd5a88"></span>void <code class="sig-name descname">SetMaximumSize</code><span class="sig-paren">(</span>uint32_t <em>maxWidth</em>, uint32_t <em>maxHeight</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window14SetMaximumSizeE8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Limit the maximum size of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">maxWidth</span></code>: Max width</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">maxHeight</span></code>: Max height</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window10SetOpacityEf">
 <span id="_CPPv3NK4TRAP6Window10SetOpacityEf"></span><span id="_CPPv2NK4TRAP6Window10SetOpacityEf"></span><span id="TRAP::Window::SetOpacity__floatC"></span><span class="target" id="class_t_r_a_p_1_1_window_1afd6ede0bc20de12a6beab079c7802fc0"></span>void <code class="sig-name descname">SetOpacity</code><span class="sig-paren">(</span>float <em>opacity</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window10SetOpacityEf" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Set the opacity of the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> (1.0f = Fully opaque, 0.0f = Fully transparent) </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">opacity</span></code>: Opacity strength</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window11IsMaximizedEv">
 <span id="_CPPv3NK4TRAP6Window11IsMaximizedEv"></span><span id="_CPPv2NK4TRAP6Window11IsMaximizedEv"></span><span id="TRAP::Window::IsMaximizedC"></span><span class="target" id="class_t_r_a_p_1_1_window_1ac322c2439a11891117b24e78a0fc36ea"></span>bool <code class="sig-name descname">IsMaximized</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window11IsMaximizedEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Query whether the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> is maximized or not </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> maximization status</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window11IsMinimizedEv">
 <span id="_CPPv3NK4TRAP6Window11IsMinimizedEv"></span><span id="_CPPv2NK4TRAP6Window11IsMinimizedEv"></span><span id="TRAP::Window::IsMinimizedC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a5eeb583ad0cb916ced46864b8d722089"></span>bool <code class="sig-name descname">IsMinimized</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window11IsMinimizedEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Query whether the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> is minimized or not </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> minimization status</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window11IsResizableEv">
 <span id="_CPPv3NK4TRAP6Window11IsResizableEv"></span><span id="_CPPv2NK4TRAP6Window11IsResizableEv"></span><span id="TRAP::Window::IsResizableC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a538b445f54729e08f5ecd9bf9af3ac9f"></span>bool <code class="sig-name descname">IsResizable</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window11IsResizableEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Query whether the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> is resizable or not </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> resizable status</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window9IsVisibleEv">
 <span id="_CPPv3NK4TRAP6Window9IsVisibleEv"></span><span id="_CPPv2NK4TRAP6Window9IsVisibleEv"></span><span id="TRAP::Window::IsVisibleC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a78c874e885c9b8271620faa00a003db3"></span>bool <code class="sig-name descname">IsVisible</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window9IsVisibleEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Query whether the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> is visible or not </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> visibility status</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window9IsFocusedEv">
 <span id="_CPPv3NK4TRAP6Window9IsFocusedEv"></span><span id="_CPPv2NK4TRAP6Window9IsFocusedEv"></span><span id="TRAP::Window::IsFocusedC"></span><span class="target" id="class_t_r_a_p_1_1_window_1af7df0446104880f0915a7c0a4a8dc3e0"></span>bool <code class="sig-name descname">IsFocused</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window9IsFocusedEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Query whether the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> is focused or not </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> focus status</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window11IsDecoratedEv">
 <span id="_CPPv3NK4TRAP6Window11IsDecoratedEv"></span><span id="_CPPv2NK4TRAP6Window11IsDecoratedEv"></span><span id="TRAP::Window::IsDecoratedC"></span><span class="target" id="class_t_r_a_p_1_1_window_1afefd3233e0aaf9632403ebc369240f36"></span>bool <code class="sig-name descname">IsDecorated</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window11IsDecoratedEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Query whether the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> is decorated or not </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> decoration status</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window8MaximizeEv">
 <span id="_CPPv3NK4TRAP6Window8MaximizeEv"></span><span id="_CPPv2NK4TRAP6Window8MaximizeEv"></span><span id="TRAP::Window::MaximizeC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a9c3c7c8877bbacb2ccfffce521434870"></span>void <code class="sig-name descname">Maximize</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window8MaximizeEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Maximize the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window8MinimizeEv">
 <span id="_CPPv3NK4TRAP6Window8MinimizeEv"></span><span id="_CPPv2NK4TRAP6Window8MinimizeEv"></span><span id="TRAP::Window::MinimizeC"></span><span class="target" id="class_t_r_a_p_1_1_window_1aa0b5b770700bd8d6b5a6d248ba0cd2f7"></span>void <code class="sig-name descname">Minimize</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window8MinimizeEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Minimize the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window16RequestAttentionEv">
 <span id="_CPPv3NK4TRAP6Window16RequestAttentionEv"></span><span id="_CPPv2NK4TRAP6Window16RequestAttentionEv"></span><span id="TRAP::Window::RequestAttentionC"></span><span class="target" id="class_t_r_a_p_1_1_window_1ac066ce312c9920cb51c231c81e937d3a"></span>void <code class="sig-name descname">RequestAttention</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window16RequestAttentionEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Request attention/focus for the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window5FocusEv">
 <span id="_CPPv3NK4TRAP6Window5FocusEv"></span><span id="_CPPv2NK4TRAP6Window5FocusEv"></span><span id="TRAP::Window::FocusC"></span><span class="target" id="class_t_r_a_p_1_1_window_1adb74e8c3d1deebecaf646f4da75e0117"></span>void <code class="sig-name descname">Focus</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window5FocusEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Focus the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window4HideEv">
 <span id="_CPPv3NK4TRAP6Window4HideEv"></span><span id="_CPPv2NK4TRAP6Window4HideEv"></span><span id="TRAP::Window::HideC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a87e2ba198f191ddd8ea2071142b4560f"></span>void <code class="sig-name descname">Hide</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window4HideEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Hide the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window4ShowEv">
 <span id="_CPPv3NK4TRAP6Window4ShowEv"></span><span id="_CPPv2NK4TRAP6Window4ShowEv"></span><span id="TRAP::Window::ShowC"></span><span class="target" id="class_t_r_a_p_1_1_window_1a69489852408b882f10e611c8f875fec9"></span>void <code class="sig-name descname">Show</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window4ShowEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Show the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4NK4TRAP6Window7RestoreEv">
 <span id="_CPPv3NK4TRAP6Window7RestoreEv"></span><span id="_CPPv2NK4TRAP6Window7RestoreEv"></span><span id="TRAP::Window::RestoreC"></span><span class="target" id="class_t_r_a_p_1_1_window_1ab6c0f8407dcb67f6424fd474a619ed9c"></span>void <code class="sig-name descname">Restore</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4TRAP6Window7RestoreEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Restore/Show the <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> </p>
+</dd></dl>
 
 </div>
 <div class="breathe-sectiondef docutils container">
@@ -459,22 +704,38 @@
 <dl class="function">
 <dt id="_CPPv4N4TRAP6Window8OnUpdateEv">
 <span id="_CPPv3N4TRAP6Window8OnUpdateEv"></span><span id="_CPPv2N4TRAP6Window8OnUpdateEv"></span><span id="TRAP::Window::OnUpdate"></span><span class="target" id="class_t_r_a_p_1_1_window_1a19dddb280ec158117b8946d6983725d5"></span><em class="property">static</em> void <code class="sig-name descname">OnUpdate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window8OnUpdateEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Updates all Windows (polls events from OS etc.) </p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N4TRAP6Window3UseERK5ScopeI6WindowE">
 <span id="_CPPv3N4TRAP6Window3UseERK5ScopeI6WindowE"></span><span id="_CPPv2N4TRAP6Window3UseERK5ScopeI6WindowE"></span><span id="TRAP::Window::Use__Scope:Window:CR"></span><span class="target" id="class_t_r_a_p_1_1_window_1a813959f960789f5f93fc72ca9f468f01"></span><em class="property">static</em> void <code class="sig-name descname">Use</code><span class="sig-paren">(</span><em class="property">const</em> <a class="reference internal" href="typedef__core_8h_1a2db5e63ad48f48221f6cf4c77eb34d77.html#_CPPv4I0EN4TRAP5ScopeE" title="TRAP::Scope">Scope</a>&lt;<a class="reference internal" href="#_CPPv4N4TRAP6WindowE" title="TRAP::Window">Window</a>&gt; &amp;<em>window</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window3UseERK5ScopeI6WindowE" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Select the given <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> for all following rendering commands </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">window</span></code>: <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> that should be used for rendering</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N4TRAP6Window3UseEv">
 <span id="_CPPv3N4TRAP6Window3UseEv"></span><span id="_CPPv2N4TRAP6Window3UseEv"></span><span id="TRAP::Window::Use"></span><span class="target" id="class_t_r_a_p_1_1_window_1a3f11eb8a48f467887b326a530e460e42"></span><em class="property">static</em> void <code class="sig-name descname">Use</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window3UseEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Selects the “Main” <a class="reference internal" href="#class_t_r_a_p_1_1_window"><span class="std std-ref">Window</span></a> for all following rendering commands </p>
+</dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N4TRAP6Window16GetActiveWindowsEv">
 <span id="_CPPv3N4TRAP6Window16GetActiveWindowsEv"></span><span id="_CPPv2N4TRAP6Window16GetActiveWindowsEv"></span><span id="TRAP::Window::GetActiveWindows"></span><span class="target" id="class_t_r_a_p_1_1_window_1a502649e0f4a3bd8f2b900ce00fd2516b"></span><em class="property">static</em> uint32_t <code class="sig-name descname">GetActiveWindows</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TRAP6Window16GetActiveWindowsEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Get the amount of all active Windows </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Total amount of active Windows</p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 </div>
 </dd></dl>

@@ -12,11 +12,15 @@ namespace TRAP
 {
 	struct WindowProps;
 
-	//Interface representing a desktop system based window
+	/// <summary>
+	/// Interface representing a desktop system based Window
+	/// </summary>
 	class Window final
 	{
 	public:
-		//Used to set Display modes of windows
+		/// <summary>
+		/// Specifies the display mode of a Window
+		/// </summary>
 		enum class DisplayMode
 		{
 			Windowed,
@@ -24,14 +28,45 @@ namespace TRAP
 			Borderless
 		};
 
-		//Used to set Cursor mode of windows
+		/// <summary>
+		/// Same as:
+		/// enum class CursorMode
+		/// {
+		///	    Normal,
+		///     Hidden,
+		///     Disabled,
+		///     Captured
+		/// };
+		/// Specifies the cursor mode of a Window
+		/// </summary>
 		using CursorMode = INTERNAL::WindowingAPI::CursorMode;
-		
-		//Used to set Cursor type of windows
+
+		/// <summary>
+		/// Same as:
+		/// enum class CursorType
+		/// {
+		///     Arrow = 0,
+		///		Input = 1,
+		///		Crosshair = 2,
+		///		PointingHand = 3,
+		///		ResizeHorizontal = 4,
+		///		ResizeVertical = 5,
+		///		ResizeDiagonalTopLeftBottomRight = 6,
+		///		ResizeDiagonalTopRightBottomLeft = 7,
+		///		ResizeAll = 8,
+		///		NotAllowed = 9
+		/// };
+		/// Specifies the cursor type (visual appearance) of a Window
+		/// </summary>
 		using CursorType = INTERNAL::WindowingAPI::CursorType;
 		
 		using EventCallbackFn = std::function<void(Events::Event&)>;
 
+		/// <summary>
+		/// Window constructor
+		/// </summary>
+		/// <param name="props">Properties to be applied to the new Window</param>
+		/// <returns>New Window object</returns>
 		explicit Window(const WindowProps& props);
 		Window(const Window&) = delete;
 		Window& operator=(const Window&) = delete;
@@ -39,59 +74,237 @@ namespace TRAP
 		Window& operator=(Window&&) = default;
 		~Window();
 
+		/// <summary>
+		/// Updates all Windows (polls events from OS etc.)
+		/// </summary>
 		static void OnUpdate();
-		
+
+		/// <summary>
+		/// Select the given Window for all following rendering commands
+		/// </summary>
+		/// <param name="window">Window that should be used for rendering</param>
 		static void Use(const Scope<Window>& window);
+		/// <summary>
+		/// Selects the "Main" Window for all following rendering commands
+		/// </summary>
 		static void Use();
+		/// <summary>
+		/// Get the amount of all active Windows
+		/// </summary>
+		/// <returns>Total amount of active Windows</returns>
 		static uint32_t GetActiveWindows();
 
+		/// <summary>
+		/// Get the current title of the Window
+		/// </summary>
+		/// <returns>Title of the Window</returns>
 		std::string_view GetTitle() const;
+		/// <summary>
+		/// Get the current width of the Window
+		/// </summary>
+		/// <returns>Width of the Window</returns>
 		uint32_t GetWidth() const;
+		/// <summary>
+		/// Get the current height of the Window
+		/// </summary>
+		/// <returns>Height of the Window</returns>
 		uint32_t GetHeight() const;
+		/// <summary>
+		/// Get the current width and height of the Window
+		/// </summary>
+		/// <returns>Vec2ui containing the width and height of the Window</returns>
 		Math::Vec2ui GetSize() const;
+		/// <summary>
+		/// Get the current refresh rate of the Window
+		/// </summary>
+		/// <returns>Refresh rate of the Window</returns>
 		uint32_t GetRefreshRate() const;
+		/// <summary>
+		/// Get the current DisplayMode of the Window
+		/// </summary>
+		/// <returns>DisplayMode of the Window</returns>
 		DisplayMode GetDisplayMode() const;
+		/// <summary>
+		/// Get the current Monitor used by the Window (only in DisplayMode Fullscreen and Borderless)
+		/// </summary>
+		/// <returns>Object of Monitor class used by the Window</returns>
 		Monitor GetMonitor() const;
+		/// <summary>
+		/// Get the current VSync interval used by the Window
+		/// </summary>
+		/// <returns>VSync interval of the Window</returns>
 		uint32_t GetVSyncInterval() const;
+		/// <summary>
+		/// Get the current CursorMode of the Window
+		/// </summary>
+		/// <returns>CursorMode of the Window</returns>
 		CursorMode GetCursorMode() const;
+		/// <summary>
+		/// Get the current raw mouse input (false = off, true = on) usage of the Window
+		/// </summary>
+		/// <returns>Raw mouse input status of the Window</returns>
 		bool GetRawMouseInput() const;
+		/// <summary>
+		/// Get the ratio between the current DPI and the platforms DPI
+		/// </summary>
+		/// <returns>Vec2 containing the x and y scale</returns>
 		Math::Vec2 GetContentScale() const;
+		/// <summary>
+		/// Get the current opacity of the Window
+		/// </summary>
+		/// <returns>Opacity of the Window</returns>
 		float GetOpacity() const;
 
+		/// <summary>
+		/// Get the internal handle of the Window
+		/// </summary>
+		/// <returns>Pointer to the TRAP::INTERNAL::WindowingAPI::InternalWindow handle</returns>
 		void* GetInternalWindow() const;
 
+		/// <summary>
+		/// Set a new title for the Window
+		/// </summary>
+		/// <param name="title">New Window title</param>
 		void SetTitle(const std::string& title);
+		/// <summary>
+		/// Set a new DisplayMode and or a new size/refresh rate for the Window
+		/// </summary>
+		/// <param name="mode">New DisplayMode for the Window</param>
+		/// <param name="width">New width (ignored when used with DisplayMode Borderless)</param>
+		/// <param name="height">New height (ignored when used with DisplayMode Borderless)</param>
+		/// <param name="refreshRate">New refresh rate (ignored when used with DisplayMode Borderless, Windowed)</param>
 		void SetDisplayMode(const DisplayMode& mode,
 			                uint32_t width = 0,
 			                uint32_t height = 0,
 			                uint32_t refreshRate = 0);
+		/// <summary>
+		/// Set a new Monitor for the Window
+		/// </summary>
+		/// <param name="monitor">Monitor object to be used from now on</param>
 		void SetMonitor(Monitor& monitor);
+		/// <summary>
+		/// Set the VSync interval (0 = No VSync)
+		/// </summary>
+		/// <param name="interval">New VSync interval</param>
 		void SetVSyncInterval(uint32_t interval);
+		/// <summary>
+		/// Set the CursorMode for the Window
+		/// </summary>
+		/// <param name="mode">New CursorMode</param>
 		void SetCursorMode(const CursorMode& mode);
+		/// <summary>
+		/// Set the CursorType for the Window
+		/// </summary>
+		/// <param name="cursor">New CursorType</param>
 		void SetCursorType(const CursorType& cursor) const;
+		/// <summary>
+		/// Set the cursor to a custom Image (Image must be non HDR RGB/RGBA with 24/32 bits per pixel)
+		/// </summary>
+		/// <param name="image">Image to be used as a cursor</param>
+		/// <param name="xHotspot">X hotspot of the Image</param>
+		/// <param name="yHotspot">Y hotspot of the Image</param>
 		void SetCursorIcon(const Scope<Image>& image, int32_t xHotspot = 0, int32_t yHotspot = 0) const;
+		/// <summary>
+		/// Set if raw mouse input should be used
+		/// </summary>
+		/// <param name="enabled">New status for raw mouse input</param>
 		void SetRawMouseInput(bool enabled);
+		/// <summary>
+		/// Resets the Window icon to the TRAP logo
+		/// </summary>
 		void SetIcon() const;
+		/// <summary>
+		/// Set a custom logo as Window icon (Image must be non HDR RGBA 32 bits per pixel)(nullptr also resets to the TRAP logo)
+		/// </summary>
+		/// <param name="image">New logo to be used by the Window</param>
+		//TODO API consistency should also allow non HDR RGB 24BPP images like SetCursorIcon does!
 		void SetIcon(const Scope<Image>& image) const;
+		/// <summary>
+		/// Set the function where events should be reported to from the Window
+		/// </summary>
+		/// <param name="callback">Callback function used to report events to</param>
 		void SetEventCallback(const EventCallbackFn& callback);
+		/// <summary>
+		/// Set whether resizing of the Window should be allowed
+		/// </summary>
+		/// <param name="enabled">Set resizable or non resizable</param>
 		void SetResizable(bool enabled) const;
+		/// <summary>
+		/// Limit the minimum size of the Window
+		/// </summary>
+		/// <param name="minWidth">Min width</param>
+		/// <param name="minHeight">Min height</param>
 		void SetMinimumSize(uint32_t minWidth, uint32_t minHeight) const;
+		/// <summary>
+		/// Limit the maximum size of the Window
+		/// </summary>
+		/// <param name="maxWidth">Max width</param>
+		/// <param name="maxHeight">Max height</param>
 		void SetMaximumSize(uint32_t maxWidth, uint32_t maxHeight) const;
+		/// <summary>
+		/// Set the opacity of the Window (1.0f = Fully opaque, 0.0f = Fully transparent)
+		/// </summary>
+		/// <param name="opacity">Opacity strength</param>
 		void SetOpacity(float opacity) const;
 
+		/// <summary>
+		/// Query whether the Window is maximized or not
+		/// </summary>
+		/// <returns>Window maximization status</returns>
 		bool IsMaximized() const;
+		/// <summary>
+		/// Query whether the Window is minimized or not
+		/// </summary>
+		/// <returns>Window minimization status</returns>
 		bool IsMinimized() const;
+		/// <summary>
+		/// Query whether the Window is resizable or not
+		/// </summary>
+		/// <returns>Window resizable status</returns>
 		bool IsResizable() const;
+		/// <summary>
+		/// Query whether the Window is visible or not
+		/// </summary>
+		/// <returns>Window visibility status</returns>
 		bool IsVisible() const;
+		/// <summary>
+		/// Query whether the Window is focused or not
+		/// </summary>
+		/// <returns>Window focus status</returns>
 		bool IsFocused() const;
+		/// <summary>
+		/// Query whether the Window is decorated or not
+		/// </summary>
+		/// <returns>Window decoration status</returns>
 		bool IsDecorated() const;
 
+		/// <summary>
+		/// Maximize the Window
+		/// </summary>
 		void Maximize() const;
+		/// <summary>
+		/// Minimize the Window
+		/// </summary>
 		void Minimize() const;
+		/// <summary>
+		/// Request attention/focus for the Window
+		/// </summary>
 		void RequestAttention() const;
+		/// <summary>
+		/// Focus the Window
+		/// </summary>
 		void Focus() const;
+		/// <summary>
+		/// Hide the Window
+		/// </summary>
 		void Hide() const;
+		/// <summary>
+		/// Show the Window
+		/// </summary>
 		void Show() const;
+		/// <summary>
+		/// Restore/Show the Window
+		/// </summary>
 		void Restore() const;
 
 	private:

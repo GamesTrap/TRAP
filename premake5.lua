@@ -43,7 +43,7 @@ group "Dependencies"
 group "Games"
 	include "Games/Sandbox"
 	include "Games/Tests"
-	include "Games/TRAP Editor"
+	include "Games/TRAP-Editor"
 
 group "Utility"
 	include "Utility/ConvertToSPIRV"
