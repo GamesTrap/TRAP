@@ -1104,3 +1104,5 @@ SITREP 07/02/2020|20w27a2
     - Made Logging thread safe ~<20 mins
     - Renamed TRAP Editor to TRAP-Editor (fixes Linux CI bug) ~<5 mins
     - Added TRAP::Window documentation ~<40 mins
+    - Added PNG images to HotTextureReloading list ~<10 mins
+    - Added SPIRV shaders to HotShaderReloading list ~<10 mins

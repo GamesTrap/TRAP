@@ -74,14 +74,11 @@ void TRAPEditorLayer::OnImGuiRender()
 		ImGui::EndMenuBar();
 	}
 
-	ImGui::Begin("Settings");
-	ImGui::Text("Placeholder..");
-	ImGui::Text("Placeholder..");
-	ImGui::Text("Placeholder..");
-	ImGui::Separator();
-	ImGui::Text("Placeholder..");
-	ImGui::Text("Placeholder..");
-	ImGui::Text("Placeholder..");
+	ImGui::Begin("Performance");
+	ImGui::Text("GPU: %s", TRAP::Graphics::API::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
+	ImGui::Text("DrawCalls: %u", TRAP::Graphics::Renderer::GetDrawCalls());
+	ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
+	ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
 	ImGui::End();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });
