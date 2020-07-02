@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "OpenGLTexture2D.h"
 
+
+#include "Application.h"
 #include "Graphics/API/OpenGL/OpenGLCommon.h"
 #include "Graphics/API/OpenGL/OpenGLRenderer.h"
 #include "Maths/Math.h"
@@ -15,7 +17,27 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const TextureParameters pa
 	m_name = "Fallback2D";
 	m_textureParameters = parameters;
 	
-	Load();
+	TP_DEBUG("[Texture2D][OpenGL] Loading Texture: \"", m_name, "\"");
+	Scope<Image> image;
+	if (!m_filepath.empty())
+	{
+		image = Image::LoadFromFile(m_filepath);
+		m_width = image->GetWidth();
+		m_height = image->GetHeight();
+		m_bitsPerPixel = image->GetBitsPerPixel();
+		m_colorFormat = image->GetColorFormat();
+
+		if (!CheckLimits(image->GetWidth(), image->GetHeight()))
+			return;
+
+		InitializeTexture();
+		UploadTexture(image, false);
+	}
+	else
+	{
+		image = Image::LoadFallback();
+		UploadFallback();
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -54,7 +76,6 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const Sc
 		m_colorFormat = img->GetColorFormat();
 		m_filepath = VFS::MakeVirtualPathCompatible(std::string(img->GetFilePath()));
 
-		//Basically a version of Load() without actually Loading an TRAP::Image
 		TP_DEBUG("[Texture2D][OpenGL] Loading Texture: \"", m_name, "\"");
 
 		if (!CheckLimits(img->GetWidth(), img->GetHeight()))
@@ -80,8 +101,17 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const st
 	m_name = std::move(name);
 	m_filepath = VFS::MakeVirtualPathCompatible(filepath);
 	m_textureParameters = parameters;
-	
-	Load();
+
+	TP_DEBUG("[Texture2D][OpenGL] Initializing Texture: \"", m_name, "\"");
+	InitializeTexture();
+
+	if (!m_filepath.empty())
+		m_loadingTextures.emplace_back(this, Application::GetThreadPool().EnqueueTask(Image::LoadFromFile, m_filepath));
+	else
+	{
+		Scope<Image> image = Image::LoadFallback();
+		UploadFallback();
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -176,7 +206,24 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadImage(const TRAP::Scope<TRAP::I
 {
 	if (image)
 	{
-		if (m_width != image->GetWidth() || m_height != image->GetHeight() || m_bitsPerPixel != image->GetBitsPerPixel() || m_colorFormat != image->GetColorFormat())
+		//Check if multi threaded loading finished
+		if (m_handle && m_filepath == image->GetFilePath() && m_width == 0 && m_height == 0 && m_bitsPerPixel == 0 && m_colorFormat == Image::ColorFormat::NONE)
+		{
+			TP_DEBUG("[Texture2D][OpenGL] Uploading Texture: \"", m_name, "\"");
+			m_width = image->GetWidth();
+			m_height = image->GetHeight();
+			m_bitsPerPixel = image->GetBitsPerPixel();
+			m_colorFormat = image->GetColorFormat();
+
+			if (!CheckLimits(image->GetWidth(), image->GetHeight()))
+				return;
+
+			UploadTexture(image, false);
+
+			return;
+		}
+
+		if ((m_width != image->GetWidth() || m_height != image->GetHeight() || m_bitsPerPixel != image->GetBitsPerPixel() || m_colorFormat != image->GetColorFormat()) && m_handle)
 		{
 			//Performace warning because texture gets recreated
 			TP_WARN("[Texture2D][OpenGL][Performance] Texture: \"", m_name, "\" image upload uses mismatching width, height, bits per pixel and/or color format!");
@@ -217,33 +264,6 @@ GLenum TRAP::Graphics::API::OpenGLTexture2D::PixelDataTypeToOpenGL(const PixelDa
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLTexture2D::Load()
-{
-	TP_DEBUG("[Texture2D][OpenGL] Loading Texture: \"", m_name, "\"");
-	Scope<Image> image;
-	if (!m_filepath.empty())
-	{
-		image = Image::LoadFromFile(m_filepath);
-		m_width = image->GetWidth();
-		m_height = image->GetHeight();
-		m_bitsPerPixel = image->GetBitsPerPixel();
-		m_colorFormat = image->GetColorFormat();
-		
-		if (!CheckLimits(image->GetWidth(), image->GetHeight()))
-			return;
-
-		InitializeTexture();
-		UploadTexture(image, false);
-	}
-	else
-	{
-		image = Image::LoadFallback();
-		UploadFallback();
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::OpenGLTexture2D::InitializeTexture()
 {
 	OpenGLCall(glCreateTextures(GL_TEXTURE_2D, 1, &m_handle));
@@ -255,7 +275,7 @@ void TRAP::Graphics::API::OpenGLTexture2D::InitializeTexture()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLTexture2D::UploadTexture(const Scope<Image>& image, bool exists) const
+void TRAP::Graphics::API::OpenGLTexture2D::UploadTexture(const Scope<Image>& image, const bool exists) const
 {
 	bool resetPixelStore = false;
 	//if(!std::ispow2(image->GetWidth() || !std::ispow2(image->GetHeight())	

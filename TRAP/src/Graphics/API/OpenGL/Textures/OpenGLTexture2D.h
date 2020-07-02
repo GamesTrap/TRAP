@@ -36,8 +36,6 @@ namespace TRAP::Graphics::API
 			Unsigned_Byte
 		};
 		static GLenum PixelDataTypeToOpenGL(PixelDataType type);
-		
-		void Load();
 
 		void InitializeTexture();
 		void UploadTexture(const Scope<Image>& image, bool exists) const;

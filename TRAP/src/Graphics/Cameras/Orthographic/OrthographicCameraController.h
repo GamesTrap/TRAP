@@ -25,6 +25,8 @@ namespace TRAP::Graphics
 		void OnUpdate(const Utils::TimeStep& deltaTime);
 		void OnEvent(Events::Event& e);
 
+		void OnResize(float width, float height);
+
 		OrthographicCamera& GetCamera();
 		const OrthographicCamera& GetCamera() const;
 

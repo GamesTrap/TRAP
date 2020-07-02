@@ -80,8 +80,7 @@
 #include "../src/Graphics/Buffers/VertexArray.h"
 #include "../src/Graphics/Buffers/VertexBuffer.h"
 #include "../src/Graphics/Buffers/UniformBuffer.h"
-#include "../src/Graphics/Buffers/FrameBuffers/FrameBuffer.h"
-#include "../src/Graphics/Buffers/FrameBuffers/FrameBuffer2D.h"
+#include "../src/Graphics/Buffers/FrameBuffer.h"
 //-----------------------
 
 //----SHADERS------------

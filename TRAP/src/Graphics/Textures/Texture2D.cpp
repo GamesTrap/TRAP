@@ -10,6 +10,10 @@ uint32_t TRAP::Graphics::Texture2D::s_maxTextureSize = 0;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::vector<std::pair<TRAP::Graphics::Texture2D*, std::future<TRAP::Scope<TRAP::Image>>>> TRAP::Graphics::Texture2D::m_loadingTextures{};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::Texture2D::Texture2D()
 {
 	m_textureType = TextureType::Texture2D;
@@ -122,5 +126,28 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::Create(Texture
 
 	default:
 		return nullptr;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Texture2D::UpdateLoadingTextures()
+{
+	for (uint32_t i = 0; i < m_loadingTextures.size(); i++)
+	{
+		auto& [texturePtr, image] = m_loadingTextures[i];
+		if (texturePtr && image.valid())
+		{
+			if (image.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready)
+			{
+				//Image finished loading
+				texturePtr->UploadImage(image.get());
+
+				//Image isn't needed anymore so remove it from vector
+				//O(1) way of removing from an unsorted vector like this :D
+				m_loadingTextures[i] = std::move(m_loadingTextures.back());
+				m_loadingTextures.pop_back();
+			}
+		}
 	}
 }

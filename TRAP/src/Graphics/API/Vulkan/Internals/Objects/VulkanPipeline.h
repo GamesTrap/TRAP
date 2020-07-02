@@ -1,6 +1,11 @@
 #ifndef _TRAP_VULKANPIPELINE_H_
 #define _TRAP_VULKANPIPELINE_H_
 
+namespace TRAP
+{
+	class BufferLayout;
+}
+
 namespace TRAP::Graphics::API::Vulkan
 {
 	class RenderPass;

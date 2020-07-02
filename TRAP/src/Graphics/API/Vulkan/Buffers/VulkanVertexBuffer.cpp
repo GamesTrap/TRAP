@@ -40,6 +40,13 @@ TRAP::Graphics::API::VulkanVertexBuffer::~VulkanVertexBuffer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkBuffer& TRAP::Graphics::API::VulkanVertexBuffer::GetHandle()
+{
+	return m_vertexBuffer;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 const TRAP::Graphics::BufferLayout& TRAP::Graphics::API::VulkanVertexBuffer::GetLayout() const
 {
 	TP_PROFILE_FUNCTION();

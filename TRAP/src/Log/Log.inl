@@ -6,6 +6,7 @@
 template <typename ... Args>
 void TRAP::Log::Trace(Args&& ... args)
 {
+	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Trace]";
 	using List = int32_t[];
@@ -25,7 +26,8 @@ void TRAP::Log::Trace(Args&& ... args)
 #ifdef TRAP_PLATFORM_WINDOWS
 template <typename ... Args>
 void TRAP::Log::Debug(Args&& ... args)
-{		
+{
+	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Debug]";
 	using List = int32_t[];
@@ -47,6 +49,7 @@ void TRAP::Log::Debug(Args&& ... args)
 template <typename ... Args>
 void TRAP::Log::Info(Args&& ... args)
 {
+	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Info]";
 	using List = int32_t[];
@@ -68,6 +71,7 @@ void TRAP::Log::Info(Args&& ... args)
 template <typename ... Args>
 void TRAP::Log::Warn(Args&& ... args)
 {
+	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Warn]";
 	using List = int32_t[];
@@ -89,6 +93,7 @@ void TRAP::Log::Warn(Args&& ... args)
 template <typename ... Args>
 void TRAP::Log::Error(Args&& ... args)
 {
+	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Error]";
 	using List = int32_t[];
@@ -110,6 +115,7 @@ void TRAP::Log::Error(Args&& ... args)
 template <typename ... Args>
 void TRAP::Log::Critical(Args&& ... args)
 {
+	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Critical]";
 	using List = int32_t[];
@@ -132,6 +138,7 @@ void TRAP::Log::Critical(Args&& ... args)
 template<typename... Args>
 void TRAP::Log::Debug(Args&& ... args)
 {
+	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Debug]";
 	using List = int32_t[];
@@ -149,6 +156,7 @@ void TRAP::Log::Debug(Args&& ... args)
 template<typename... Args>
 void TRAP::Log::Info(Args&& ... args)
 {
+	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Info]";
 	using List = int32_t[];
@@ -166,6 +174,7 @@ void TRAP::Log::Info(Args&& ... args)
 template<typename... Args>
 void TRAP::Log::Warn(Args&& ... args)
 {
+	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Warn]";
 	using List = int32_t[];
@@ -183,6 +192,7 @@ void TRAP::Log::Warn(Args&& ... args)
 template<typename... Args>
 void TRAP::Log::Error(Args&& ... args)
 {
+	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Error]";
 	using List = int32_t[];
@@ -200,6 +210,7 @@ void TRAP::Log::Error(Args&& ... args)
 template<typename... Args>
 void TRAP::Log::Critical(Args&& ... args)
 {
+	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Critical]";
 	using List = int32_t[];

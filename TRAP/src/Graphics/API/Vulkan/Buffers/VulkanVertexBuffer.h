@@ -17,6 +17,8 @@ namespace TRAP::Graphics::API
 		VulkanVertexBuffer& operator=(VulkanVertexBuffer&&) = default;
 		~VulkanVertexBuffer();
 
+		VkBuffer& GetHandle();
+
 		const BufferLayout& GetLayout() const override;
 		void SetLayout(const BufferLayout& layout) override;
 		uint32_t GetVertexCount() const override;

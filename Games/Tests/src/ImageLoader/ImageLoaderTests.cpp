@@ -97,6 +97,7 @@ void ImageLoaderTests::OnAttach()
 	TRAP::VFS::MountTextures("Assets/Textures");
 
 	//Load Textures
+	TRAP::Utils::Timer loadingTimer;
 	//TGA
 	TRAP::Graphics::TextureManager::Load("TGATest16BPP", "/Textures/TGA/Test16BPP.tga");
 	TRAP::Graphics::TextureManager::Load("TGATest16BPPRLE", "/Textures/TGA/Test16BPPRLE.tga");
@@ -152,6 +153,8 @@ void ImageLoaderTests::OnAttach()
 	TRAP::Graphics::TextureManager::Load("PMTest48BPP", "/Textures/PM/Test48BPP.ppm");
 	TRAP::Graphics::TextureManager::Load("PMTestGrayscaleHDR", "/Textures/PM/TestGrayscaleHDR.pfm");
 	TRAP::Graphics::TextureManager::Load("PMTestHDR", "/Textures/PM/TestHDR.pfm");
+
+	TP_TRACE("Initializing of all TRAP::Images took: ", loadingTimer.ElapsedMilliseconds(), "ms!");
 	
 	TRAP::Graphics::RenderCommand::SetClearColor();
 }

@@ -68,6 +68,8 @@ namespace TRAP
 		static std::string GetTimeStamp();
 
 		std::vector<std::pair<Level, std::string>> m_buffer{};
+
+		static std::mutex m_mtx;
 	};
 }
 

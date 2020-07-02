@@ -240,6 +240,8 @@ void TRAP::Application::Run()
 			Graphics::RenderCommand::Present(m_window);
 		m_window->OnUpdate();
 
+		Graphics::Texture2D::UpdateLoadingTextures();
+
 		//Update Shaders if needed
 		if (VFS::GetHotShaderReloading() && VFS::GetShaderFileWatcher())
 		{
@@ -478,6 +480,13 @@ TRAP::Application::Endian TRAP::Application::GetEndian()
 TRAP::Application::LinuxWindowManager TRAP::Application::GetLinuxWindowManager()
 {
 	return s_Instance->m_linuxWindowManager;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::EXPERIMENTAL::ThreadPool& TRAP::Application::GetThreadPool()
+{
+	return s_Instance->m_threadPool;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

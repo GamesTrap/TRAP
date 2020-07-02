@@ -127,6 +127,17 @@ void TRAP::Graphics::OrthographicCameraController::OnEvent(Events::Event& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::OrthographicCameraController::OnResize(const float width, const float height)
+{
+	TP_PROFILE_FUNCTION();
+
+	m_aspectRatio = width / height;
+	m_bounds = { -m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel };
+	m_camera.SetProjection(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, -1.0f, 1.0f);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::OrthographicCamera& TRAP::Graphics::OrthographicCameraController::GetCamera()
 {
 	return m_camera;
@@ -221,11 +232,7 @@ bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(Events::F
 	TP_PROFILE_FUNCTION();
 	
 	if (m_window && m_window->GetTitle() == e.GetTitle())
-	{
-		m_aspectRatio = static_cast<float>(e.GetWidth()) / static_cast<float>(e.GetHeight());
-		m_bounds = { -m_aspectRatio * m_zoomLevel, m_aspectRatio * m_zoomLevel, -m_zoomLevel, m_zoomLevel };
-		m_camera.SetProjection(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, -1.0f, 1.0f);
-	}
+		OnResize(static_cast<float>(e.GetWidth()), static_cast<float>(e.GetHeight()));
 	
 	return false;
 }

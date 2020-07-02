@@ -15,10 +15,23 @@ namespace TRAP::Graphics::API
 		VulkanIndexBuffer& operator=(VulkanIndexBuffer&&) = default;
 		virtual ~VulkanIndexBuffer();
 
+		VkBuffer& GetHandle();
+		
 		uint32_t GetCount() const override;
 
 	private:
+		static uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags props);
+		static void CreateBuffer(VkDeviceSize size,
+			                     VkBufferUsageFlags usage,
+			                     VkMemoryPropertyFlags properties,
+			                     VkBuffer& buffer,
+			                     VkDeviceMemory& bufferMemory);
+		
 		uint32_t m_count;
+
+		//Internal
+		VkBuffer m_indexBuffer;
+		VkDeviceMemory m_indexBufferMemory;
 	};
 }
 

@@ -17,6 +17,8 @@ namespace TRAP::Graphics
 		std::string_view GetFilePath() const;
 
 		virtual void UploadImage(const TRAP::Scope<TRAP::Image>& image) = 0;
+
+		static void UpdateLoadingTextures();
 		
 	protected:
 		Texture2D();
@@ -24,6 +26,8 @@ namespace TRAP::Graphics
 		static uint32_t s_maxTextureSize;
 
 		std::string m_filepath;
+
+		static std::vector<std::pair<Texture2D*, std::future<Scope<Image>>>> m_loadingTextures;
 	};
 }
 
