@@ -1106,3 +1106,7 @@ SITREP 07/02/2020|20w27a2
     - Added TRAP::Window documentation ~<40 mins
     - Added PNG images to HotTextureReloading list ~<10 mins
     - Added SPIRV shaders to HotShaderReloading list ~<10 mins
+
+SITREP 07/03/2020|20w27a3
+    - Changed TRAP Engine version to 20w27a3(0.6.45)
+    - Removed multiple VBO support inside a single VAO ~<20 mins

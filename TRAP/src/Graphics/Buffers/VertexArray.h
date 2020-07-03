@@ -18,13 +18,13 @@ namespace TRAP::Graphics
 
 		static Scope<VertexArray> Create();
 
-		virtual void AddVertexBuffer(Scope<VertexBuffer>& buffer) = 0;
+		virtual void SetVertexBuffer(Scope<VertexBuffer>& buffer) = 0;
 		virtual void SetIndexBuffer(Scope<IndexBuffer>& buffer) = 0;
 
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 		
-		virtual std::vector<Scope<VertexBuffer>>& GetVertexBuffers() = 0;
+		virtual const Scope<VertexBuffer>& GetVertexBuffer() = 0;
 		virtual const Scope<IndexBuffer>& GetIndexBuffer() = 0;
 
 	protected:

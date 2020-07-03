@@ -15,17 +15,17 @@ namespace TRAP::Graphics::API
 		VulkanVertexArray& operator=(VulkanVertexArray&&) = delete;
 		~VulkanVertexArray();
 
-		void AddVertexBuffer(Scope<VertexBuffer>& buffer) override;
+		void SetVertexBuffer(Scope<VertexBuffer>& buffer) override;
 		void SetIndexBuffer(Scope<IndexBuffer>& buffer) override;
 
 		void Bind() const override;
 		void Unbind() const override;
 		
-		std::vector<Scope<VertexBuffer>>& GetVertexBuffers() override;
+		const Scope<VertexBuffer>& GetVertexBuffer() override;
 		const Scope<IndexBuffer>& GetIndexBuffer() override;
 
 	private:
-		std::vector<Scope<VertexBuffer>> m_vertexBuffers;
+		Scope<VertexBuffer> m_vertexBuffer;
 		Scope<IndexBuffer> m_indexBuffer;
 	};
 }

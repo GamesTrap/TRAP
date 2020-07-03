@@ -22,13 +22,13 @@ TRAP::Graphics::API::VulkanVertexArray::~VulkanVertexArray()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanVertexArray::AddVertexBuffer(Scope<VertexBuffer>& buffer)
+void TRAP::Graphics::API::VulkanVertexArray::SetVertexBuffer(Scope<VertexBuffer>& buffer)
 {
 	TP_PROFILE_FUNCTION();
 
 	TRAP_CORE_ASSERT(buffer->GetLayout().GetElements().size(), "[VBO][OpenGL] VertexBuffer has no layout!");
 
-	m_vertexBuffers.emplace_back(std::move(buffer));
+	m_vertexBuffer = std::move(buffer);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -48,10 +48,7 @@ void TRAP::Graphics::API::VulkanVertexArray::Bind() const
 
 	//Bind VertexBuffers
 	VkDeviceSize offset{ 0 };
-	std::vector<VkBuffer> vertexBuffers{};
-	for (const auto& vertexBuffer : m_vertexBuffers)
-		vertexBuffers.emplace_back(dynamic_cast<VulkanVertexBuffer*>(vertexBuffer.get())->GetHandle());
-	vkCmdBindVertexBuffers(VulkanRenderer::GetCurrentSwapchain().GetGraphicsCommandBuffer().GetCommandBuffer(), 0, 1, vertexBuffers.data(), &offset);
+	vkCmdBindVertexBuffers(VulkanRenderer::GetCurrentSwapchain().GetGraphicsCommandBuffer().GetCommandBuffer(), 0, 1, &dynamic_cast<VulkanVertexBuffer*>(m_vertexBuffer.get())->GetHandle(), &offset);
 	
 	//Bind IndexBuffers
 	if (m_indexBuffer)
@@ -72,11 +69,11 @@ void TRAP::Graphics::API::VulkanVertexArray::Unbind() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<TRAP::Scope<TRAP::Graphics::VertexBuffer>>& TRAP::Graphics::API::VulkanVertexArray::GetVertexBuffers()
+const TRAP::Scope<TRAP::Graphics::VertexBuffer>& TRAP::Graphics::API::VulkanVertexArray::GetVertexBuffer()
 {
 	TP_PROFILE_FUNCTION();
 
-	return m_vertexBuffers;
+	return m_vertexBuffer;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

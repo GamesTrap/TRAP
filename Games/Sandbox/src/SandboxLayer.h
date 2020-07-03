@@ -77,7 +77,7 @@ public:
 		};
 		indexedVertexBuffer->SetLayout(layout);
 		m_indexedVertexArray = TRAP::Graphics::VertexArray::Create();
-		m_indexedVertexArray->AddVertexBuffer(indexedVertexBuffer);
+		m_indexedVertexArray->SetVertexBuffer(indexedVertexBuffer);
 
 		std::array<uint32_t, 6> indices //Quad
 		{
@@ -103,7 +103,7 @@ public:
 		TRAP::Scope<TRAP::Graphics::VertexBuffer> vertexBuffer = TRAP::Graphics::VertexBuffer::Create(vertices.data(), static_cast<uint32_t>(vertices.size()) * sizeof(uint32_t));
 		vertexBuffer->SetLayout(layout);		
 		m_vertexArray = TRAP::Graphics::VertexArray::Create();
-		m_vertexArray->AddVertexBuffer(vertexBuffer);
+		m_vertexArray->SetVertexBuffer(vertexBuffer);
 
 		TRAP::Graphics::RenderCommand::SetClearColor();
 		TRAP::Graphics::RenderCommand::SetCull(false);

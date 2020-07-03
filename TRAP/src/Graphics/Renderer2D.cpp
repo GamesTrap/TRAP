@@ -63,7 +63,7 @@ void TRAP::Graphics::Renderer2D::Init()
 		{ShaderDataType::Float2, "UV"}
 	};
 	quadVertexBuffer->SetLayout(layout);
-	s_data->QuadVertexArray->AddVertexBuffer(quadVertexBuffer);
+	s_data->QuadVertexArray->SetVertexBuffer(quadVertexBuffer);
 
 	std::array<uint32_t, 6> quadIndices
 	{
@@ -84,7 +84,7 @@ void TRAP::Graphics::Renderer2D::Init()
 	};
 	Scope<VertexBuffer> triangleVertexBuffer = VertexBuffer::Create(triangleVertices.data(), static_cast<uint32_t>(triangleVertices.size()) * sizeof(uint32_t));
 	triangleVertexBuffer->SetLayout(layout);
-	s_data->TriangleVertexArray->AddVertexBuffer(triangleVertexBuffer);
+	s_data->TriangleVertexArray->SetVertexBuffer(triangleVertexBuffer);
 
 	std::array<uint32_t, 3> triangleIndices
 	{
