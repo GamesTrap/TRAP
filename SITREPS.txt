@@ -1110,3 +1110,8 @@ SITREP 07/02/2020|20w27a2
 SITREP 07/03/2020|20w27a3
     - Changed TRAP Engine version to 20w27a3(0.6.45)
     - Removed multiple VBO support inside a single VAO ~<20 mins
+
+SITREP 07/08/2020|20w28a1
+    - Changed TRAP Engine version to 20w28a1(0.6.46)
+    - Removed deprecated sudo from Travis CI ~<20 mins
+    - WindowingAPI updates ~<40 mins

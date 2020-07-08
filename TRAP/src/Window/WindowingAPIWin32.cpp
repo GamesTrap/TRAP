@@ -475,18 +475,42 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 
 		case WM_CHAR:
 		case WM_SYSCHAR:
+		{
+			if (wParam >= 0xD800 && wParam <= 0xDBFF)
+				windowPtr->HighSurrogate = static_cast<WCHAR>(wParam);
+			else
+			{
+				uint32_t codePoint = 0;
+
+				if (wParam >= 0xDC00 && wParam <= 0xDFFF)
+				{
+					if (windowPtr->HighSurrogate)
+					{
+						codePoint += (windowPtr->HighSurrogate - 0xD800) << 10;
+						codePoint += static_cast<WCHAR>(wParam) - 0xDC00;
+						codePoint += 0x10000;
+					}
+				}
+				else
+					codePoint = static_cast<WCHAR>(wParam);
+
+				windowPtr->HighSurrogate = 0;
+				InputChar(windowPtr, static_cast<uint32_t>(codePoint));
+			}
+
+			return 0;
+		}
+
 		case WM_UNICHAR:
 		{
-			if (uMsg == WM_UNICHAR && wParam == UNICODE_NOCHAR)
+			if(wParam == UNICODE_NOCHAR)
 			{
-				//WM_UNICHAR is not sent by Windows, but is sent by some
-				//3rd party input method engine
-				//Returning TRUE here announces support for this message
-				return TRUE;
+				//WM_UNICHAR is not sent by Windows, but is sent by some third-party input method engine
+				//Returning TRUE(1) here announces support for this message
+				return 1;
 			}
 
 			InputChar(windowPtr, static_cast<uint32_t>(wParam));
-
 			return 0;
 		}
 

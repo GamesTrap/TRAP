@@ -1109,6 +1109,8 @@ namespace TRAP::INTERNAL
 				PFN_XUnregisterIMInstantiateCallback UnregisterIMInstantiateCallback{};
 				PFN_Xutf8LookupString UTF8LookupString{};
 				PFN_Xutf8SetWMProperties UTF8SetWMProperties{};
+
+				bool UTF8 = false;
 			} XLIB{};
 
 			struct xrm
@@ -1237,6 +1239,9 @@ namespace TRAP::INTERNAL
 
 			bool CursorTracked = false;
 			bool FrameAction = false;
+
+			//The last received high surrogate when decoding pairs of UTF-16 messages
+			WCHAR HighSurrogate{};
 #elif defined(TRAP_PLATFORM_LINUX)
 			//X11
 			Colormap colormap = 0;
@@ -1250,9 +1255,10 @@ namespace TRAP::INTERNAL
 			int32_t XPos = 0, YPos = 0;
 			//The last position the cursor was warped to by TRAP
 			int32_t WarpCursorPosX = 0, WarpCursorPosY = 0;
-			
-			//The time of the last KeyPress event
-			Time LastKeyTime;			
+
+			//The time of the last KeyPress event per keycode, for discarding
+			//duplicate key events generated from some keys by ibus
+			std::array<Time, 256> KeyPressTimes;
 #endif
 		};		
 	private:

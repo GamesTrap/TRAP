@@ -125,7 +125,7 @@ void TRAP::INTERNAL::WindowingAPI::DestroyWindow(Scope<InternalWindow> window)
 //Makes the context of the specified window current for the calling
 void TRAP::INTERNAL::WindowingAPI::MakeContextCurrent(InternalWindow* window)
 {
-	const auto previousPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
+	auto* const previousPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
 
 	if (window && window->context.Client == ContextAPI::None)
 	{
