@@ -34,6 +34,7 @@
 #include <random>
 #include <queue>
 #include <tuple>
+#include <cassert>
 
 //OpenGL
 #include "Graphics/API/OpenGL/Loader/OpenGLLoader.h"

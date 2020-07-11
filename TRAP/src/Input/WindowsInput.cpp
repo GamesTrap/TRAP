@@ -30,7 +30,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
-#include "Event/ControllerEvent.h"
+#include "Events/ControllerEvent.h"
 #include "Utils/ControllerMappings.h"
 
 //-------------------------------------------------------------------------------------------------------------------//

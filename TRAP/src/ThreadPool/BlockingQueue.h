@@ -1,8 +1,6 @@
 #ifndef _TRAP_BLOCKINGQUEUE_H_
 #define _TRAP_BLOCKINGQUEUE_H_
 
-#include <type_traits>
-
 namespace TRAP::EXPERIMENTAL::INTERNAL
 {
 	template<typename T>

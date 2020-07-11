@@ -3,7 +3,7 @@
 
 #include "Graphics/API/Context.h"
 
-#include "Event/Event.h"
+#include "Events/Event.h"
 #include "ImageLoader/Image.h"
 #include "WindowingAPI.h"
 #include "Monitor.h"

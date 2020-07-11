@@ -15,12 +15,12 @@
 //-----------------------
 
 //----EVENTS-------------
-#include "../src/Event/Event.h"
-#include "../src/Event/WindowEvent.h"
-#include "../src/Event/ApplicationEvent.h"
-#include "../src/Event/KeyEvent.h"
-#include "../src/Event/MouseEvent.h"
-#include "../src/Event/ControllerEvent.h"
+#include "../src/Events/Event.h"
+#include "../src/Events/WindowEvent.h"
+#include "../src/Events/ApplicationEvent.h"
+#include "../src/Events/KeyEvent.h"
+#include "../src/Events/MouseEvent.h"
+#include "../src/Events/ControllerEvent.h"
 //-----------------------
 
 //----LAYERS-------------

@@ -5,6 +5,7 @@
 #include "VFS/VFS.h"
 #include "VFS/FileSystem.h"
 #include "Application.h"
+#include "Maths/Math.h"
 #include "Utils/ByteSwap.h"
 #include "Utils/Hash/CRC32.h"
 #include "Utils/Decompress/Inflate.h"

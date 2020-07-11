@@ -2,7 +2,7 @@
 #include "OrthographicCameraController.h"
 
 #include "Input/Input.h"
-#include "Event/WindowEvent.h"
+#include "Events/WindowEvent.h"
 
 float TRAP::Graphics::OrthographicCameraBounds::GetWidth() const
 {

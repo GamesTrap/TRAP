@@ -1115,3 +1115,4 @@ SITREP 07/08/2020|20w28a1
     - Changed TRAP Engine version to 20w28a1(0.6.46)
     - Removed deprecated sudo from Travis CI ~<20 mins
     - WindowingAPI updates ~<40 mins
+    - Renamed Event folder to Events (naming consistency) ~<5 mins

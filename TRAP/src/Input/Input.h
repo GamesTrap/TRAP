@@ -30,7 +30,7 @@ The above license only applies to some of the Controller specific parts of this 
 #define _TRAP_INPUT_H_
 
 #include "Maths/Math.h"
-#include "Event/Event.h"
+#include "Events/Event.h"
 
 namespace TRAP
 {

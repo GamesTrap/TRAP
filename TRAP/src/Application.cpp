@@ -13,8 +13,8 @@
 #include "Graphics/Renderer.h"
 #include "Utils/String/String.h"
 #include "Utils/MsgBox/MsgBox.h"
-#include "Event/KeyEvent.h"
-#include "Event/WindowEvent.h"
+#include "Events/KeyEvent.h"
+#include "Events/WindowEvent.h"
 #include "Input/Input.h"
 #include "Utils/Utils.h"
 
