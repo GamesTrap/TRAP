@@ -1,7 +1,7 @@
 #ifndef _TRAP_BLOCKINGQUEUE_H_
 #define _TRAP_BLOCKINGQUEUE_H_
 
-namespace TRAP::EXPERIMENTAL::INTERNAL
+namespace TRAP
 {
 	template<typename T>
 	class BlockingQueue
@@ -57,7 +57,7 @@ namespace TRAP::EXPERIMENTAL::INTERNAL
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_copy_constructible<Q>::value, void>::type TRAP::EXPERIMENTAL::INTERNAL::BlockingQueue<T>::Push(const T& item)
+typename std::enable_if<std::is_copy_constructible<Q>::value, void>::type TRAP::BlockingQueue<T>::Push(const T& item)
 {
 	{
 		std::unique_lock lock(m_mutex);
@@ -71,7 +71,7 @@ typename std::enable_if<std::is_copy_constructible<Q>::value, void>::type TRAP::
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_move_constructible<Q>::value, void>::type TRAP::EXPERIMENTAL::INTERNAL::BlockingQueue<T>::Push(T&& item)
+typename std::enable_if<std::is_move_constructible<Q>::value, void>::type TRAP::BlockingQueue<T>::Push(T&& item)
 {
 	{
 		std::unique_lock lock(m_mutex);
@@ -85,7 +85,7 @@ typename std::enable_if<std::is_move_constructible<Q>::value, void>::type TRAP::
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_copy_constructible<Q>::value, bool>::type TRAP::EXPERIMENTAL::INTERNAL::BlockingQueue<T>::TryPush(const T& item)
+typename std::enable_if<std::is_copy_constructible<Q>::value, bool>::type TRAP::BlockingQueue<T>::TryPush(const T& item)
 {
 	{
 		const std::unique_lock lock(m_mutex, std::try_to_lock);
@@ -103,7 +103,7 @@ typename std::enable_if<std::is_copy_constructible<Q>::value, bool>::type TRAP::
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_move_constructible<Q>::value, bool>::type TRAP::EXPERIMENTAL::INTERNAL::BlockingQueue<T>::TryPush(T&& item)
+typename std::enable_if<std::is_move_constructible<Q>::value, bool>::type TRAP::BlockingQueue<T>::TryPush(T&& item)
 {
 	{
 		const std::unique_lock lock(m_mutex, std::try_to_lock);
@@ -121,7 +121,7 @@ typename std::enable_if<std::is_move_constructible<Q>::value, bool>::type TRAP::
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type TRAP::EXPERIMENTAL::INTERNAL::BlockingQueue<T>::Pop(T& item)
+typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type TRAP::BlockingQueue<T>::Pop(T& item)
 {
 	std::unique_lock lock(m_mutex);
 	while (m_queue.empty() && !m_done)
@@ -140,7 +140,7 @@ typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assig
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type TRAP::EXPERIMENTAL::INTERNAL::BlockingQueue<T>::Pop(T& item)
+typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type TRAP::BlockingQueue<T>::Pop(T& item)
 {
 	std::unique_lock lock(m_mutex);
 	while (m_queue.empty() && !m_done)
@@ -159,7 +159,7 @@ typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type TRAP::EXP
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type TRAP::EXPERIMENTAL::INTERNAL::BlockingQueue<T>::TryPop(T& item)
+typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type TRAP::BlockingQueue<T>::TryPop(T& item)
 {
 	const std::unique_lock lock(m_mutex, std::try_to_lock);
 	if (!lock || m_queue.empty())
@@ -174,7 +174,7 @@ typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assig
 
 template <typename T>
 template <typename Q>
-typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type TRAP::EXPERIMENTAL::INTERNAL::BlockingQueue<T>::TryPop(T& item)
+typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type TRAP::BlockingQueue<T>::TryPop(T& item)
 {
 	const std::unique_lock lock(m_mutex, std::try_to_lock);
 	if (!lock || m_queue.empty())
@@ -189,7 +189,7 @@ typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type TRAP::EXP
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-void TRAP::EXPERIMENTAL::INTERNAL::BlockingQueue<T>::Done() noexcept
+void TRAP::BlockingQueue<T>::Done() noexcept
 {
 	{
 		std::unique_lock lock(m_mutex);
@@ -202,7 +202,7 @@ void TRAP::EXPERIMENTAL::INTERNAL::BlockingQueue<T>::Done() noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-void TRAP::EXPERIMENTAL::INTERNAL::BlockingQueue<T>::Empty() const noexcept
+void TRAP::BlockingQueue<T>::Empty() const noexcept
 {
 	std::scoped_lock lock(m_mutex);
 	return m_queue.empty();
@@ -211,7 +211,7 @@ void TRAP::EXPERIMENTAL::INTERNAL::BlockingQueue<T>::Empty() const noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-uint32_t TRAP::EXPERIMENTAL::INTERNAL::BlockingQueue<T>::Size() const noexcept
+uint32_t TRAP::BlockingQueue<T>::Size() const noexcept
 {
 	std::scoped_lock lock(m_mutex);
 	return m_queue.size();

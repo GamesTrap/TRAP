@@ -521,7 +521,7 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 	{
 		s_Data.XShape.QueryExtension = (PFN_XShapeQueryExtension)dlsym(s_Data.XShape.Handle, "XShapeQueryExtension");
 		s_Data.XShape.CombineRegion = (PFN_XShapeCombineRegion)dlsym(s_Data.XShape.Handle, "XShapeCombineRegion");
-		s_Data.XShape.CombineRegionMask = (PFN_XShapeCombineMask)dlsym(s_Data.XShape.Handle, "XShapeCombineMask");
+		s_Data.XShape.CombineMask = (PFN_XShapeCombineMask)dlsym(s_Data.XShape.Handle, "XShapeCombineMask");
 		s_Data.XShape.QueryVersion = (PFN_XShapeQueryVersion)dlsym(s_Data.XShape.Handle, "XShapeQueryVersion");
 		
 		if(s_Data.XShape.QueryExtension(s_Data.display, &s_Data.XShape.ErrorBase, &s_Data.XShape.EventBase))

@@ -3,7 +3,7 @@
 
 #include "BlockingQueue.h"
 
-namespace TRAP::EXPERIMENTAL
+namespace TRAP
 {	
 	class ThreadPool
 	{
@@ -24,7 +24,7 @@ namespace TRAP::EXPERIMENTAL
 
 	private:
 		using Proc = std::function<void()>;
-		using Queue = INTERNAL::BlockingQueue<Proc>;
+		using Queue = BlockingQueue<Proc>;
 		using Queues = std::vector<Queue>;
 		Queues m_queues;
 
@@ -41,7 +41,7 @@ namespace TRAP::EXPERIMENTAL
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename F, typename ... Args>
-void TRAP::EXPERIMENTAL::ThreadPool::EnqueueWork(F&& f, Args&&... args)
+void TRAP::ThreadPool::EnqueueWork(F&& f, Args&&... args)
 {
 	auto work = [p = std::forward<F>(f), t = { std::forward<Args>(args)... }]()
 	{
@@ -61,7 +61,7 @@ void TRAP::EXPERIMENTAL::ThreadPool::EnqueueWork(F&& f, Args&&... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename F, typename ... Args>
-auto TRAP::EXPERIMENTAL::ThreadPool::EnqueueTask(F&& f, Args&&... args) -> std::future<std::invoke_result_t<F, Args...>>
+auto TRAP::ThreadPool::EnqueueTask(F&& f, Args&&... args) -> std::future<std::invoke_result_t<F, Args...>>
 {
 	using TaskReturnType = std::invoke_result_t<F, Args...>;
 	using TaskType = std::packaged_task<TaskReturnType()>;

@@ -3,7 +3,7 @@
 
 #include "BlockingQueue.h"
 
-TRAP::EXPERIMENTAL::ThreadPool::ThreadPool(const uint32_t threads)
+TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 	: m_queues(threads), m_maxThreadsCount(threads)
 {
 	if (!m_maxThreadsCount)
@@ -36,7 +36,7 @@ TRAP::EXPERIMENTAL::ThreadPool::ThreadPool(const uint32_t threads)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EXPERIMENTAL::ThreadPool::~ThreadPool() noexcept
+TRAP::ThreadPool::~ThreadPool() noexcept
 {
 	for (Queue& queue : m_queues)
 		queue.Done();

@@ -73,7 +73,7 @@ namespace TRAP
 		static Utils::TimeStep GetTime();
 		static Endian GetEndian();
 		static LinuxWindowManager GetLinuxWindowManager();
-		static EXPERIMENTAL::ThreadPool& GetThreadPool();
+		static ThreadPool& GetThreadPool();
 
 		static void SetClipboardString(const std::string& string);
 		static std::string GetClipboardString();
@@ -117,7 +117,7 @@ namespace TRAP
 		Endian m_endian;
 		LinuxWindowManager m_linuxWindowManager;
 
-		EXPERIMENTAL::ThreadPool m_threadPool;
+		ThreadPool m_threadPool;
 		
 		static Application* s_Instance;
 		friend int ::main();

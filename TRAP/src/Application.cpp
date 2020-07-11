@@ -485,7 +485,7 @@ TRAP::Application::LinuxWindowManager TRAP::Application::GetLinuxWindowManager()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::EXPERIMENTAL::ThreadPool& TRAP::Application::GetThreadPool()
+TRAP::ThreadPool& TRAP::Application::GetThreadPool()
 {
 	return s_Instance->m_threadPool;
 }

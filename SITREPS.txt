@@ -1121,3 +1121,4 @@ SITREP 07/11/2020|20w28a2
     - Changed TRAP Engine version to 20w28a2(0.6.47)
     - WindowingAPI fixed 2 bugs in X11 ~<20 mins
     - Changed Window mouse event transparency inside WindowingAPI ~>30 mins
+    - Moved BlockingQueue & ThreadPool into TRAP namespace ~<10 mins
