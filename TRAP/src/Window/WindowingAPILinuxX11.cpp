@@ -521,6 +521,7 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 	{
 		s_Data.XShape.QueryExtension = (PFN_XShapeQueryExtension)dlsym(s_Data.XShape.Handle, "XShapeQueryExtension");
 		s_Data.XShape.CombineRegion = (PFN_XShapeCombineRegion)dlsym(s_Data.XShape.Handle, "XShapeCombineRegion");
+		s_Data.XShape.CombineRegionMask = (PFN_XShapeCombineMask)dlsym(s_Data.XShape.Handle, "XShapeCombineMask");
 		s_Data.XShape.QueryVersion = (PFN_XShapeQueryVersion)dlsym(s_Data.XShape.Handle, "XShapeQueryVersion");
 		
 		if(s_Data.XShape.QueryExtension(s_Data.display, &s_Data.XShape.ErrorBase, &s_Data.XShape.EventBase))
@@ -2979,6 +2980,8 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	s_Data.XLIB.UnregisterIMInstantiateCallback = (PFN_XUnregisterIMInstantiateCallback)dlsym(s_Data.XLIB.Handle, "XUnregisterIMInstantiateCallback");
 	s_Data.XLIB.UTF8LookupString = (PFN_Xutf8LookupString)dlsym(s_Data.XLIB.Handle, "Xutf8LookupString");
 	s_Data.XLIB.UTF8SetWMProperties = (PFN_Xutf8SetWMProperties)dlsym(s_Data.XLIB.Handle, "Xutf8SetWMProperties");
+	s_Data.XLIB.CreateRegion = (PFN_XCreateRegion)dlsym(s_Data.XLIB.Handle, "XCreateRegion");
+	s_Data.XLIB.DestroyRegion = (PFN_XDestroyRegion)dlsym(s_Data.XLIB.Handle, "XDestroyRegion");
 	s_Data.XKB.FreeKeyboard = (PFN_XkbFreeKeyboard)dlsym(s_Data.XLIB.Handle, "XkbFreeKeyboard");
 	s_Data.XKB.FreeNames = (PFN_XkbFreeNames)dlsym(s_Data.XLIB.Handle, "XkbFreeNames");
 	s_Data.XKB.GetMap = (PFN_XkbGetMap)dlsym(s_Data.XLIB.Handle, "XkbGetMap");
@@ -3738,25 +3741,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWin
 	if(!s_Data.XShape.Available)
 		return;
 		
-	if(enabled == window->MousePassthrough)
-		return;
-		
-	int32_t width = 0;
-	int32_t height = 0;
-	if(!enabled)
-		PlatformGetWindowSize(window, width, height);
-		
-	XRectangle rect;
-	rect.x = 0;
-	rect.y = 0;
-	rect.width = static_cast<uint16_t>(width);
-	rect.height = static_cast<uint16_t>(height);
-	
-	Region region = XCreateRegion();
-	XUnionRectWithRegion(&rect, region, region);
-	s_Data.XShape.CombineRegion(s_Data.display, window->Handle, 2, 0, 0, region, 0);
-	XDestroyRegion(region);
-	window->MousePassthrough = enabled;
+	if (enabled)
+	{
+		Region region = s_Data.XLIB.CreateRegion();
+		s_Data.XShape.CombineRegion(s_Data.display, window->Handle, 2, 0, 0, region, 0);
+		s_Data.XLIB.DestroyRegion(region);
+	}
+	else
+		s_Data.XShape.CombineMask(s_Data.display, window->Handle, 2, 0, 0, 0, 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3986,10 +3978,17 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformWindowHovered(const InternalWindow* w
 		int32_t rootX, rootY, childX, childY;
 		uint32_t mask;
 		
-		if(!s_Data.XLIB.QueryPointer(s_Data.display, w, &root, &w, &rootX, &rootY, &childX, &childY, &mask))
+		GrabErrorHandlerX11();
+
+		const int32_t result = s_Data.XLIB.QueryPointer(s_Data.display, w, &root, &w, &rootX, &rootY, &childX, &childY, &mask);
+
+		ReleaseErrorHandlerX11();
+
+		if (s_Data.ErrorCode == BadWindow)
+			w = s_Data.Root;
+		else if(!result)
 			return false;
-			
-		if(w == window->Handle)
+		else if(w == window->Handle)
 			return true;
 	}
 	

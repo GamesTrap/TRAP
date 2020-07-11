@@ -1116,3 +1116,8 @@ SITREP 07/08/2020|20w28a1
     - Removed deprecated sudo from Travis CI ~<20 mins
     - WindowingAPI updates ~<40 mins
     - Renamed Event folder to Events (naming consistency) ~<5 mins
+
+SITREP 07/11/2020|20w28a2
+    - Changed TRAP Engine version to 20w28a2(0.6.47)
+    - WindowingAPI fixed 2 bugs in X11 ~<20 mins
+    - Changed Window mouse event transparency inside WindowingAPI ~>30 mins

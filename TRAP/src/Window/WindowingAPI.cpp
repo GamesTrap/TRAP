@@ -370,6 +370,9 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 		}
 	}
 
+	if (WNDConfig.MousePassthrough)
+		PlatformSetWindowMousePassthrough(window.get(), true);
+
 	if (window->Monitor)
 		CenterCursorInContentArea(window.get());
 	else
@@ -835,6 +838,10 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowAttrib(InternalWindow* window, const
 
 		case Hint::MousePassthrough:
 		{
+			if (window->MousePassthrough == value)
+				return;
+
+			window->MousePassthrough = value;
 			PlatformSetWindowMousePassthrough(window, value);
 			break;
 		}

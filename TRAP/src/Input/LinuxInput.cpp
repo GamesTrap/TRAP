@@ -30,7 +30,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #ifdef TRAP_PLATFORM_LINUX
 
-#include "Event/ControllerEvent.h"
+#include "Events/ControllerEvent.h"
 #include "Utils/ControllerMappings.h"
 
 TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};

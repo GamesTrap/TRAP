@@ -230,6 +230,7 @@ namespace TRAP::INTERNAL
 		typedef int32_t (*PFN_XShapeQueryExtension)(Display*, int32_t*, int32_t*);
 		typedef Status (*PFN_XShapeQueryVersion)(Display* dpy, int32_t*, int32_t*);
 		typedef void(*PFN_XShapeCombineRegion)(Display*, ::Window, int32_t, int32_t, int32_t, Region, int32_t);
+		typedef void(*PFN_XShapeCombineMask)(Display*, XID, int32_t, int32_t, int32_t, Pixmap, int32_t);
 		
 		//GLX
 		typedef XID GLXWindow;
@@ -339,6 +340,8 @@ namespace TRAP::INTERNAL
 		typedef void (*PFN_XUnsetICFocus)(XIC);
 		typedef VisualID (*PFN_XVisualIDFromVisual)(Visual*);
 		typedef int (*PFN_XWarpPointer)(Display*, ::Window, ::Window, int, int, unsigned int, unsigned int, int, int);
+		typedef Region(*PFN_XCreateRegion)();
+		typedef int32_t (*PFN_XDestroyRegion)(Region);
 
 		//XKB
 		typedef void (*PFN_XkbFreeKeyboard)(XkbDescPtr, unsigned int, int);
@@ -862,6 +865,7 @@ namespace TRAP::INTERNAL
 				int32_t ErrorBase = 0;
 				PFN_XShapeQueryExtension QueryExtension;
 				PFN_XShapeCombineRegion CombineRegion;
+				PFN_XShapeCombineMask CombineMask;
 				PFN_XShapeQueryVersion QueryVersion;
 			} XShape{};
 			
@@ -1109,6 +1113,8 @@ namespace TRAP::INTERNAL
 				PFN_XUnregisterIMInstantiateCallback UnregisterIMInstantiateCallback{};
 				PFN_Xutf8LookupString UTF8LookupString{};
 				PFN_Xutf8SetWMProperties UTF8SetWMProperties{};
+				PFN_XCreateRegion CreateRegion{};
+				PFN_XDestroyRegion DestroyRegion{};
 
 				bool UTF8 = false;
 			} XLIB{};

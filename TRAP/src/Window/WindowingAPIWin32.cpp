@@ -980,13 +980,6 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 			return 0;
 		}
 
-		case WM_NCHITTEST:
-		{
-			if (windowPtr->MousePassthrough)
-				return HTTRANSPARENT;
-			break;
-		}
-
 		default:
 			break;
 	}
@@ -3179,6 +3172,33 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacity(const InternalWindow
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWindow* window, const bool enabled)
 {
+	COLORREF key = 0;
+	BYTE alpha = 0;
+	DWORD flags = 0;
+	DWORD exStyle = static_cast<DWORD>(GetWindowLongPtrW(window->Handle, GWL_EXSTYLE));
+
+	if (exStyle & WS_EX_LAYERED)
+		GetLayeredWindowAttributes(window->Handle, &key, &alpha, &flags);
+
+	if (enabled)
+		exStyle |= (WS_EX_TRANSPARENT | WS_EX_LAYERED);
+	else
+	{
+		exStyle &= ~WS_EX_TRANSPARENT;
+		//Note: Window opacity and framebuffer transparency also need to
+		//      control the layered style so avoid stepping on their feet
+		if(exStyle & WS_EX_LAYERED)
+		{
+			if (!(flags & (LWA_ALPHA | LWA_COLORKEY)))
+				exStyle &= ~WS_EX_LAYERED;
+		}
+	}
+
+	SetWindowLongPtrW(window->Handle, GWL_EXSTYLE, exStyle);
+
+	if (enabled)
+		SetLayeredWindowAttributes(window->Handle, key, alpha, flags);
+
 	window->MousePassthrough = enabled;
 }
 
