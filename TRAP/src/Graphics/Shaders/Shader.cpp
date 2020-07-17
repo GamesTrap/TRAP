@@ -244,7 +244,7 @@ bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::string& filePath)
 	std::filesystem::path physicalPath;
 	if (VFS::SilentResolveReadPhysicalPath(filePath, physicalPath))
 	{
-		if (!FileSystem::SilentFileOrFolderExists(physicalPath))
+		if (FileSystem::SilentFileOrFolderExists(physicalPath))
 		{
 			std::ifstream file(physicalPath, std::ios::binary);
 			if (file.is_open())

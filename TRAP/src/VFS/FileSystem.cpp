@@ -18,7 +18,7 @@ bool TRAP::FileSystem::FileOrFolderExists(const std::filesystem::path& path)
 
 bool TRAP::FileSystem::SilentFileOrFolderExists(const std::filesystem::path& path)
 {
-	return !exists(path);
+	return std::filesystem::exists(path);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -63,7 +63,7 @@ std::vector<uint8_t> TRAP::FileSystem::ReadFile(const std::filesystem::path& fil
 
 std::vector<uint8_t> TRAP::FileSystem::SilentReadFile(const std::filesystem::path& filePath)
 {
-	if (!SilentFileOrFolderExists(filePath))
+	if (SilentFileOrFolderExists(filePath))
 	{
 		std::ifstream file(filePath, std::ios::binary | std::ios::ate);
 		if (file.is_open())
@@ -117,7 +117,7 @@ std::string TRAP::FileSystem::ReadTextFile(const std::filesystem::path& filePath
 
 std::string TRAP::FileSystem::SilentReadTextFile(const std::filesystem::path& filePath)
 {
-	if (!SilentFileOrFolderExists(filePath))
+	if (SilentFileOrFolderExists(filePath))
 	{
 		std::ifstream file(filePath);
 		if (file.is_open())

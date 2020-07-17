@@ -257,7 +257,7 @@ void TRAP::Application::Run()
 					if (status == FileStatus::Created || status == FileStatus::Erased)
 						return;
 
-					const std::string suffix = Utils::String::ToLower(Utils::String::GetSuffix(virtualPath));
+					const std::string suffix = Utils::String::GetSuffix(virtualPath);
 					if (suffix == "shader" || suffix == "spirv")
 					{
 						if (Graphics::ShaderManager::ExistsVirtualPath(virtualPath))
@@ -283,7 +283,7 @@ void TRAP::Application::Run()
 					if (status == FileStatus::Created || status == FileStatus::Erased)
 						return;
 
-					const std::string suffix = Utils::String::ToLower(Utils::String::GetSuffix(virtualPath));
+					const std::string suffix = Utils::String::GetSuffix(virtualPath);
 					if (suffix == "pgm" || suffix == "ppm" || suffix == "pnm" || suffix == "pam" || suffix == "pfm" ||
 						suffix == "tga" || suffix == "icb" || suffix == "vda" || suffix == "vst" || suffix == "bmp" ||
 						suffix == "dib" || suffix == "png")

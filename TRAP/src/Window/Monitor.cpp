@@ -23,11 +23,11 @@ std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 	TP_PROFILE_FUNCTION();
 
 	std::vector<VideoMode> modes{};
+	const std::vector<INTERNAL::WindowingAPI::InternalVideoMode>& internalModes = INTERNAL::WindowingAPI::GetVideoModes(m_handle);
 
-	for (const INTERNAL::WindowingAPI::InternalVideoMode mode : INTERNAL::WindowingAPI::GetVideoModes(m_handle))
-	{
-		modes.push_back({ mode.Width, mode.Height, mode.RefreshRate });
-	}
+	//for (const INTERNAL::WindowingAPI::InternalVideoMode mode : INTERNAL::WindowingAPI::GetVideoModes(m_handle))
+	for(auto i = internalModes.rbegin(); i != internalModes.rend(); ++i)
+		modes.push_back({ i->Width, i->Height, i->RefreshRate });
 		
 	return modes;
 }

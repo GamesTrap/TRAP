@@ -136,7 +136,7 @@ bool TRAP::VFS::SilentResolveReadPhysicalPath(const std::string& path, std::file
 	for (const std::string& physicalPath : s_Instance->m_mountPoints['/' + virtualDir])
 	{
 		std::string newPath = physicalPath + remainder;
-		if (!FileSystem::SilentFileOrFolderExists(newPath))
+		if (FileSystem::SilentFileOrFolderExists(newPath))
 		{
 			outPhysicalPath = newPath;
 

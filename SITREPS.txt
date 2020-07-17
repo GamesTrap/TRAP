@@ -1122,3 +1122,15 @@ SITREP 07/11/2020|20w28a2
     - WindowingAPI fixed 2 bugs in X11 ~<20 mins
     - Changed Window mouse event transparency inside WindowingAPI ~>30 mins
     - Moved BlockingQueue & ThreadPool into TRAP namespace ~<10 mins
+
+SITREP 07/16/2020|20w29a1
+    - Changed TRAP Engine version to 20w29a1(0.6.48)
+    - Fixed a bug in TRAP::Math ~<10 mins
+    - Added Tests3D Project for 3D testing ~>40 mins
+    - Added Cube to Tests3D ~<20 mins
+    - Added an FPS Camera (like Minecraft Creative mode) to Tests3D ~>30 mins
+    - Fixed multiple bugs in FileWatcher (HotReloading System) ~>30 mins
+
+SITREP 07/17/2020|20w29a2
+    - Changed TRAP Engine version to 20w29a2(0.6.49)
+    - Made Test3D cube indexed and added normals ~<30 mins

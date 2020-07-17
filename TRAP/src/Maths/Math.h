@@ -2644,7 +2644,7 @@ TRAP::Math::Vec<3, T> TRAP::Math::Cross(const Vec<3, T>& x, const Vec<3, T>& y)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'Cross' accepts only floating-point inputs");
 
-	return Vec<3, T>(x,y * y.z - y.y * x.z,
+	return Vec<3, T>(x.y * y.z - y.y * x.z,
 					 x.z * y.x - y.z * x.x,
 					 x.x * y.y - y.x * x.y);
 }

@@ -19,9 +19,9 @@ void ClipboardTests::OnImGuiRender()
 {
 	ImGui::Begin("Clipboard", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
 	if (!m_clipboard.empty())
-		ImGui::Text("Clipboard contains: %s", m_clipboard.c_str());
+		ImGui::Text("Pasted from Clipboard: %s", m_clipboard.c_str());
 	else
-		ImGui::Text("Clipboard is currently empty");
+		ImGui::Text("Nothing pasted yet");
 	ImGui::End();
 }
 
