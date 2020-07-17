@@ -371,7 +371,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 	}
 
 	if (WNDConfig.MousePassthrough)
-		PlatformSetWindowMousePassthrough(window.get(), true);
+		PlatformSetWindowMousePassthrough(window.get(), WNDConfig.MousePassthrough);
 
 	if (window->Monitor)
 		CenterCursorInContentArea(window.get());
@@ -384,8 +384,6 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalWindow> TRAP::INTERNAL::Window
 				PlatformFocusWindow(window.get());
 		}
 	}
-
-	PlatformSetWindowMousePassthrough(window.get(), WNDConfig.MousePassthrough);
 
 	return window;
 }

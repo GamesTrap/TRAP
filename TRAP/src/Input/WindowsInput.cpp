@@ -44,7 +44,7 @@ bool TRAP::Input::InitController()
 	
 	if (s_dinput8.Instance)
 	{
-		if (FAILED(s_dinput8.Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, TRAP_IID_IDirectInput8W, reinterpret_cast<void**>(&s_dinput8.API), nullptr)))
+		if (!s_dinput8.Create || FAILED(s_dinput8.Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, TRAP_IID_IDirectInput8W, reinterpret_cast<void**>(&s_dinput8.API), nullptr)))
 		{
 			TP_ERROR("[Input][Controller][DirectInput] Failed to create interface for DirectInput!");
 			return false;
@@ -52,7 +52,7 @@ bool TRAP::Input::InitController()
 	}
 	else
 	{
-		TP_ERROR("[Input][Controller][XInput] Failed to create interface for XInput!");
+		TP_ERROR("[Input][Controller][DirectInput] Failed to open dinput8.dll!");
 		return false;
 	}
 

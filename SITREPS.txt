@@ -1134,3 +1134,4 @@ SITREP 07/16/2020|20w29a1
 SITREP 07/17/2020|20w29a2
     - Changed TRAP Engine version to 20w29a2(0.6.49)
     - Made Test3D cube indexed and added normals ~<30 mins
+    - Small changes to WindowingAPI ~<20 mins

@@ -3152,19 +3152,20 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindo
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacity(const InternalWindow* window, const float opacity)
 {
-	if(opacity < 1.0f)
+	LONG exStyle = GetWindowLongPtrW(window->Handle, GWL_EXSTYLE);
+	if (opacity < 1.0f || (exStyle & WS_EX_TRANSPARENT))
 	{
 		const BYTE alpha = static_cast<BYTE>(255 * opacity);
-		DWORD style = static_cast<DWORD>(GetWindowLongPtrW(window->Handle, GWL_EXSTYLE));
-		style |= WS_EX_LAYERED;
-		SetWindowLongPtrW(window->Handle, GWL_EXSTYLE, style);
+		exStyle |= WS_EX_LAYERED;
+		SetWindowLongPtrW(window->Handle, GWL_EXSTYLE, exStyle);
 		SetLayeredWindowAttributes(window->Handle, 0, alpha, LWA_ALPHA);
 	}
+	else if (exStyle & WS_EX_TRANSPARENT)
+		SetLayeredWindowAttributes(window->Handle, 0, 0, 0);
 	else
 	{
-		DWORD style = static_cast<DWORD>(GetWindowLongPtrW(window->Handle, GWL_EXSTYLE));
-		style &= ~WS_EX_LAYERED;
-		SetWindowLongPtrW(window->Handle, GWL_EXSTYLE, style);
+		exStyle &= ~WS_EX_LAYERED;
+		SetWindowLongPtrW(window->Handle, GWL_EXSTYLE, exStyle);
 	}
 }
 
@@ -3198,8 +3199,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWin
 
 	if (enabled)
 		SetLayeredWindowAttributes(window->Handle, key, alpha, flags);
-
-	window->MousePassthrough = enabled;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -3213,7 +3212,7 @@ float TRAP::INTERNAL::WindowingAPI::PlatformGetWindowOpacity(const InternalWindo
 		GetLayeredWindowAttributes(window->Handle, nullptr, &alpha, &flags))
 	{
 		if (flags & LWA_ALPHA)
-			return alpha / 255.0f;
+			return static_cast<float>(alpha) / 255.0f;
 	}
 
 	return 1.0f;
