@@ -1135,3 +1135,12 @@ SITREP 07/17/2020|20w29a2
     - Changed TRAP Engine version to 20w29a2(0.6.49)
     - Made Test3D cube indexed and added normals ~<30 mins
     - Small changes to WindowingAPI ~<20 mins
+    - HotReloading is now multithreaded and instant reloads(15ms instead of 1000ms delay) ~>40 mins
+    - Added Runtime CPU detection (Detects AMD & Intel) ~>45 mins
+
+SITREP 07/19/2020|20w29a3
+    - Changed TRAP Engine version to 20w29a3(0.6.50)
+    - Test3D Added Skybox ~<30 mins
+    - Test3D Added Environment Mapped Reflection ~<40 mins
+    - Fixed Bug in Test3D PerspectiveCameraController when x rotation is bigger than 90° or smaller than -90° ~<10 mins
+    - Fixed Bug when Camera gets an OnFrameBufferResizeEvent where width or/and height is 0 ~<10 mins

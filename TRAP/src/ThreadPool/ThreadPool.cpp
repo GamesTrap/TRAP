@@ -17,7 +17,7 @@ TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 		while (true)
 		{
 			Proc f;
-			for (uint32_t n = 0; n < m_maxThreadsCount * HyperThreading; ++n)
+			for (uint32_t n = 0; n < m_maxThreadsCount; ++n)
 			{
 				if (m_queues[(i + n) % m_maxThreadsCount].TryPop(f))
 					break;

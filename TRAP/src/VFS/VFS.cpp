@@ -38,13 +38,13 @@ void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physica
 
 	if (s_Instance->m_hotShaderReloading)
 		if (virtualPathLower == "/shaders")
-			//Create a ShaderFileWatcher instance that will check the mounted folders for changes every second				
-			s_Instance->m_shaderFileWatcher = MakeScope<FileWatcher>("/shaders", 1000.0f);
+			//Create a ShaderFileWatcher instance that will check the mounted folders for changes
+			s_Instance->m_shaderFileWatcher = MakeScope<FileWatcher>("/shaders", 15.0f);
 
 	if (s_Instance->m_hotTextureReloading)
 		if (virtualPathLower == "/textures")
-			//Create a TextureFileWatcher instance that will check the mounted folder for changes every second
-			s_Instance->m_textureFileWatcher = MakeScope<FileWatcher>("/textures", 1000.0f);
+			//Create a TextureFileWatcher instance that will check the mounted folder for changes
+			s_Instance->m_textureFileWatcher = MakeScope<FileWatcher>("/textures", 15.0f);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

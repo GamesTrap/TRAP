@@ -75,6 +75,7 @@ void TRAPEditorLayer::OnImGuiRender()
 	}
 
 	ImGui::Begin("Performance");
+	ImGui::Text("CPU: %ix %s", TRAP::Application::GetCPUInfo().LogicalCores, TRAP::Application::GetCPUInfo().Model.c_str());
 	ImGui::Text("GPU: %s", TRAP::Graphics::API::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
 	ImGui::Text("DrawCalls: %u", TRAP::Graphics::Renderer::GetDrawCalls());
 	ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());

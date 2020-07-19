@@ -5,34 +5,62 @@
 
 bool TRAP::FileSystem::FileOrFolderExists(const std::filesystem::path& path)
 {
-	if (!exists(path))
+	try
 	{
-		TP_WARN("[FileSystem] File/Folder: ", path, " doesn't exist!");
+		if (!exists(path))
+		{
+			TP_WARN("[FileSystem] File/Folder: ", path, " doesn't exist!");
+			return false;
+		}
+
+		return true;
+	}
+	catch(std::exception&)
+	{
 		return false;
 	}
-
-	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::FileSystem::SilentFileOrFolderExists(const std::filesystem::path& path)
 {
-	return std::filesystem::exists(path);
+	try
+	{
+		return std::filesystem::exists(path);
+	}
+	catch(std::exception&)
+	{
+		return false;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uintmax_t TRAP::FileSystem::GetFileOrFolderSize(const std::filesystem::path& path)
 {
-	return file_size(path);
+	try
+	{
+		return file_size(path);
+	}
+	catch(std::exception&)
+	{
+		return 0;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::filesystem::file_time_type TRAP::FileSystem::GetLastWriteTime(const std::filesystem::path& path)
 {
-	return last_write_time(path);
+	try
+	{
+		return last_write_time(path);
+	}
+	catch(std::exception&)
+	{
+		return std::filesystem::file_time_type::min();
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

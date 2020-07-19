@@ -128,8 +128,6 @@ bool PerspectiveCameraController::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 			m_firstMouse = true;
 			TRAP::Application::GetWindow()->SetCursorMode(TRAP::Window::CursorMode::Normal);
 		}
-		
-		return true;
 	}
 
 	return false;
@@ -163,9 +161,9 @@ bool PerspectiveCameraController::OnMouseMove(TRAP::Events::MouseMoveEvent& e)
 
 		//Limit pitch movement
 		if (m_cameraRotation.x > 89.0f)
-			m_cameraRotation.x = 90.0f;
+			m_cameraRotation.x = 89.0f;
 		if (m_cameraRotation.x < -89.0f)
-			m_cameraRotation.x = -90.0f;
+			m_cameraRotation.x = -89.0f;
 
 		m_camera.SetRotation(m_cameraRotation);
 
@@ -179,7 +177,7 @@ bool PerspectiveCameraController::OnMouseMove(TRAP::Events::MouseMoveEvent& e)
 
 bool PerspectiveCameraController::OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& e)
 {
-	if (m_window && m_window->GetTitle() == e.GetTitle())
+	if (m_window && m_window->GetTitle() == e.GetTitle() && e.GetWidth() > 0 && e.GetHeight() > 0)
 		OnResize(static_cast<float>(e.GetWidth()), static_cast<float>(e.GetHeight()));
 
 	return false;

@@ -20,7 +20,36 @@ public:
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
 	
 private:
-	TRAP::Scope<TRAP::Graphics::VertexArray> m_vertexArray;
+	TRAP::Scope<TRAP::Graphics::VertexArray> m_cubeVertexArray;
+	TRAP::Scope<TRAP::Graphics::VertexArray> m_skyBoxVertexArray;
+
+	struct DiffuseReflectionDataBuffer
+	{
+		TRAP::Math::Vec4 LightPosition;
+		TRAP::Math::Vec3 LightSourceIntensity;
+		float UNUSED;
+		TRAP::Math::Vec3 DiffuseReflectivity;
+	} m_diffuseReflectionDataBuffer;
+	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_diffuseReflectionUniformBuffer;
+	
+	struct PhongLightningDataBuffer
+	{
+		TRAP::Math::Vec4 LightPosition;
+		TRAP::Math::Vec3 LightLa;
+		float UNUSED;
+		TRAP::Math::Vec3 LightLd;
+		float UNUSED1;
+		TRAP::Math::Vec3 LightLs;
+		float UNUSED2;
+		TRAP::Math::Vec3 MaterialKa;
+		float UNUSED3;
+		TRAP::Math::Vec3 MaterialKd;
+		float UNUSED4;
+		TRAP::Math::Vec3 MaterialKs;
+		float MaterialShininess;
+	} m_phongLightningDataBuffer;
+	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_phongLightningUniformBuffer;
+	TRAP::Math::Vec4 m_lightPosition = TRAP::Math::Vec4(5.0f, 5.0f, 2.0f, 1.0f);
 	
 	PerspectiveCameraController m_camera;
 	
@@ -36,6 +65,7 @@ private:
 	std::vector<std::string> m_shaderNames;
 	uint32_t m_currentShader;
 	bool m_wireFrame;
+	bool m_drawSkyBox;
 };
 
 #endif /*_GAMESTRAP_TITLETESTS_H_*/

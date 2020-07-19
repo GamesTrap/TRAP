@@ -33,8 +33,6 @@ namespace TRAP
 
 		uint32_t m_maxThreadsCount;
 		std::atomic_uint m_index = 0;
-
-		inline static const uint32_t HyperThreading = 2;
 	};
 }
 
@@ -49,7 +47,7 @@ void TRAP::ThreadPool::EnqueueWork(F&& f, Args&&... args)
 	};
 	const auto i = m_index++;
 
-	for (uint32_t n = 0; n < m_maxThreadsCount * HyperThreading; ++n)
+	for (uint32_t n = 0; n < m_maxThreadsCount; ++n)
 	{
 		if (m_queues[(i + n) % m_maxThreadsCount].TryPush(work))
 			return;
@@ -74,7 +72,7 @@ auto TRAP::ThreadPool::EnqueueTask(F&& f, Args&&... args) -> std::future<std::in
 	auto result = task->get_future();
 	const auto i = m_index++;
 
-	for (uint32_t n = 0; n < m_maxThreadsCount * HyperThreading; ++n)
+	for (uint32_t n = 0; n < m_maxThreadsCount; ++n)
 	{
 		if (m_queues[(i + n) % m_maxThreadsCount].TryPush(work))
 			return result;

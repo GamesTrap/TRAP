@@ -3152,7 +3152,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindo
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowOpacity(const InternalWindow* window, const float opacity)
 {
-	LONG exStyle = GetWindowLongPtrW(window->Handle, GWL_EXSTYLE);
+	LONG exStyle = GetWindowLongW(window->Handle, GWL_EXSTYLE);
 	if (opacity < 1.0f || (exStyle & WS_EX_TRANSPARENT))
 	{
 		const BYTE alpha = static_cast<BYTE>(255 * opacity);

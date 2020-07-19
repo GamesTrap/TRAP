@@ -12,7 +12,7 @@ TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, const float updat
 {
 	TP_PROFILE_FUNCTION();
 
-	auto VirtualFilepathFormatter = [](const std::string& virtualPathLower, const std::filesystem::directory_entry& file,
+	static auto VirtualFilepathFormatter = [](const std::string& virtualPathLower, const std::filesystem::directory_entry& file,
 	                            const std::filesystem::path& path)
 	{
 		std::string result = virtualPathLower + '/';
@@ -29,7 +29,7 @@ TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, const float updat
 
 		return Utils::String::ToLower(result);
 	};
-	auto FilepathFormatter = [](const std::filesystem::directory_entry& file,
+	static auto FilepathFormatter = [](const std::filesystem::directory_entry& file,
 		const std::filesystem::path& path)
 	{
 		std::string result = path.string() + '/';
@@ -57,10 +57,10 @@ TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, const float updat
 		{
 			for (const auto& file : std::filesystem::recursive_directory_iterator(path))
 			{
-				if(!std::filesystem::is_directory(file))
+				if (!std::filesystem::is_directory(file))
 				{
 					std::string formattedPath = FilepathFormatter(file, path);
-					m_physicalPaths[formattedPath] = FileSystem::GetLastWriteTime(file);
+					m_physicalPaths[formattedPath] = FileSystem::GetLastWriteTime(formattedPath);
 					m_virtualPaths[formattedPath] = VirtualFilepathFormatter(virtualPathLower, file, path);
 				}
 			}
@@ -72,7 +72,7 @@ TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, const float updat
 
 void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, std::string, FileStatus)>& action)
 {
-	auto VirtualFilepathFormatter = [](const std::string& virtualPathLower, const std::filesystem::directory_entry& file,
+	static auto VirtualFilepathFormatter = [](const std::string& virtualPathLower, const std::filesystem::directory_entry& file,
 		const std::filesystem::path& path)
 	{
 		std::string result = virtualPathLower + '/';
@@ -89,7 +89,7 @@ void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, st
 
 		return Utils::String::ToLower(result);
 	};
-	auto FilepathFormatter = [](const std::filesystem::directory_entry& file,
+	static auto FilepathFormatter = [](const std::filesystem::directory_entry& file,
 		const std::filesystem::path& path)
 	{
 		std::string result = path.string() + '/';
@@ -142,23 +142,33 @@ void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, st
 			{
 				for (const auto& file : std::filesystem::recursive_directory_iterator(path))
 				{
-					auto currentFileLastWriteTime = FileSystem::GetLastWriteTime(file);
 					std::string formattedPath = FilepathFormatter(file, path);
-
-					//File creation
-					if (m_physicalPaths.find(formattedPath) == m_physicalPaths.end())
+					auto currentFileLastWriteTime = FileSystem::GetLastWriteTime(formattedPath);
+					if (currentFileLastWriteTime != std::filesystem::file_time_type::min())
 					{
-						m_physicalPaths[formattedPath] = currentFileLastWriteTime;
-						m_virtualPaths[formattedPath] = VirtualFilepathFormatter(Utils::String::ToLower(m_virtualPathToWatch) + '/', file, path);
-						action(formattedPath, m_virtualPaths[formattedPath], FileStatus::Created);
-					}
-					else //File modification
-					{
-						if (m_physicalPaths[formattedPath] != currentFileLastWriteTime)
+						//File creation
+						if (m_physicalPaths.find(formattedPath) == m_physicalPaths.end())
 						{
 							m_physicalPaths[formattedPath] = currentFileLastWriteTime;
-							action(formattedPath, m_virtualPaths[formattedPath], FileStatus::Modified);
+							m_virtualPaths[formattedPath] = VirtualFilepathFormatter(Utils::String::ToLower(m_virtualPathToWatch), file, path);
+							action(formattedPath, m_virtualPaths[formattedPath], FileStatus::Created);
 						}
+						else //File modification
+						{
+							if (m_physicalPaths[formattedPath] != currentFileLastWriteTime)
+							{
+								m_physicalPaths[formattedPath] = currentFileLastWriteTime;
+								action(formattedPath, m_virtualPaths[formattedPath], FileStatus::Modified);
+							}
+						}
+					}
+					else
+					{
+						//File erased
+						const auto virtualIt = m_virtualPaths.find(formattedPath);
+						action(std::filesystem::path(formattedPath), virtualIt->second, FileStatus::Erased);
+						m_physicalPaths.erase(formattedPath);
+						m_virtualPaths.erase(virtualIt);
 					}
 				}
 			}

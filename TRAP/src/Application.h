@@ -12,7 +12,7 @@
 int main();
 
 namespace TRAP
-{	
+{
 	namespace Events
 	{
 		class WindowRestoreEvent;
@@ -24,8 +24,16 @@ namespace TRAP
 		class KeyPressEvent;
 	}
 
+	struct CPUInfo
+	{
+		std::string Model = "";
+		uint32_t Cores = 0;
+		uint32_t LogicalCores = 0;
+		bool HyperThreaded = false;
+	};
+
 	class Application
-	{		
+	{
 	public:
 		enum class Endian
 		{
@@ -36,7 +44,7 @@ namespace TRAP
 		enum class LinuxWindowManager
 		{
 			Unknown,
-			
+
 			X11,
 			Wayland
 		};
@@ -47,7 +55,7 @@ namespace TRAP
 		Application(const Application&) = delete;
 		Application& operator=(const Application&) = delete;
 		Application(Application&&) = delete;
-		Application& operator=(Application&&) = delete;	
+		Application& operator=(Application&&) = delete;
 
 		void PushLayer(Scope<Layer> layer) const;
 		void PushOverlay(Scope<Layer> overlay) const;
@@ -68,7 +76,7 @@ namespace TRAP
 		static void SetHotTextureReloading(bool enabled);
 
 		static void Shutdown();
-		
+
 		static const Scope<Window>& GetWindow();
 		static Utils::TimeStep GetTime();
 		static Endian GetEndian();
@@ -77,13 +85,15 @@ namespace TRAP
 
 		static void SetClipboardString(const std::string& string);
 		static std::string GetClipboardString();
-		
+
+		static const CPUInfo& GetCPUInfo();
+
 		void ReCreateWindow(Graphics::API::RenderAPI renderAPI);
 		/*void ReCreate(Graphics::API::RenderAPI renderAPI) const;*/
-		
+
 	private:
 		void Run();
-		
+
 		Utils::TimeStep GetTimeInternal() const;
 
 		void OnEvent(Events::Event& e);
@@ -96,6 +106,13 @@ namespace TRAP
 		bool OnWindowRestore(Events::WindowRestoreEvent& e);
 
 		void UpdateLinuxWindowManager();
+
+		static void ProcessHotReloading(std::vector<std::string>& shaders, std::vector<std::string>& textures, const bool& running);
+		void UpdateHotReloading();
+		Scope<std::thread> m_hotReloadingThread;
+		std::vector<std::string> m_hotReloadingShaderPaths;
+		std::vector<std::string> m_hotReloadingTexturePaths;
+		static std::mutex s_hotReloadingMutex;
 
 		Scope<Window> m_window;
 		std::unique_ptr<ImGuiLayer> m_ImGuiLayer;
@@ -118,7 +135,8 @@ namespace TRAP
 		LinuxWindowManager m_linuxWindowManager;
 
 		ThreadPool m_threadPool;
-		
+
+		static CPUInfo s_CPU;
 		static Application* s_Instance;
 		friend int ::main();
 	};

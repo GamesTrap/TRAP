@@ -19,18 +19,21 @@
 #include "Utils/Utils.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
+std::mutex TRAP::Application::s_hotReloadingMutex;
+TRAP::CPUInfo TRAP::Application::s_CPU{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Application::Application()
 	: m_timer(std::make_unique<Utils::Timer>()),
-	  m_FramesPerSecond(0),
-	  m_FrameTime(0.0f),
-	  m_drawCalls(0),
-	  m_fpsLimit(0),
-	  m_tickRate(100),
-      m_timeScale(1.0f),
-	  m_linuxWindowManager(LinuxWindowManager::Unknown)
+	m_FramesPerSecond(0),
+	m_FrameTime(0.0f),
+	m_drawCalls(0),
+	m_fpsLimit(0),
+	m_tickRate(100),
+	m_timeScale(1.0f),
+	m_linuxWindowManager(LinuxWindowManager::Unknown),
+	m_threadPool(GetCPUInfo().LogicalCores > 1 ? GetCPUInfo().LogicalCores : std::thread::hardware_concurrency())
 {
 	TP_PROFILE_FUNCTION();
 
@@ -38,6 +41,8 @@ TRAP::Application::Application()
 
 	TRAP_CORE_ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
+
+	TP_INFO("[Application] CPU: ", GetCPUInfo().LogicalCores, "x ", GetCPUInfo().Model);
 
 	//Check if machine is using little-endian or big-endian
 	int32_t intVal = 1;
@@ -49,9 +54,9 @@ TRAP::Application::Application()
 #endif
 
 	UpdateLinuxWindowManager();
-	
+
 	//TODO Future Remove
-	if(GetLinuxWindowManager() == LinuxWindowManager::Wayland)
+	if (GetLinuxWindowManager() == LinuxWindowManager::Wayland)
 	{
 		TP_CRITICAL("[Engine][Wayland] Wayland is currently not supported by TRAP! Please use X11 instead");
 		exit(-1);
@@ -82,7 +87,7 @@ TRAP::Application::Application()
 	m_config.Get("Maximized", maximized);
 	m_config.Get("Monitor", monitor);
 	m_config.Get("RenderAPI", renderAPI);
-	
+
 	if (fpsLimit > 0)
 	{
 		if (fpsLimit >= 25 && fpsLimit <= 500)
@@ -93,29 +98,29 @@ TRAP::Application::Application()
 
 	Graphics::API::Context::SetRenderAPI(renderAPI);
 	m_window = MakeScope<Window>
-	(
-		WindowProps
 		(
-			"TRAP Engine",
-			width,
-			height,
-			refreshRate,
-			displayMode,
-			WindowProps::Advanced
-			{
-				vsync,
-				true,
-				maximized,
-				true,
-				true,
-				true,
-				true,
-				false,
-				Window::CursorMode::Normal
-			},
-			monitor
-		)
-	);
+			WindowProps
+			(
+				"TRAP Engine",
+				width,
+				height,
+				refreshRate,
+				displayMode,
+				WindowProps::Advanced
+				{
+					vsync,
+					true,
+					maximized,
+					true,
+					true,
+					true,
+					true,
+					false,
+					Window::CursorMode::Normal
+				},
+				monitor
+			)
+			);
 	m_window->SetEventCallback([this](Events::Event& e) { OnEvent(e); });
 
 	//Always added as a fallback shader
@@ -144,8 +149,10 @@ TRAP::Application::~Application()
 	TP_PROFILE_BEGIN_SESSION("Shutdown", "TRAPProfile-Shutdown.json");
 
 	TP_PROFILE_FUNCTION();
-	
+
 	TP_DEBUG("[Application] Shutting down TRAP Modules...");
+	m_hotReloadingThread->join();
+	m_hotReloadingThread.reset();
 	Input::Shutdown();
 	m_layerStack.reset();
 	m_config.Set("Width", m_window->GetWidth());
@@ -183,17 +190,17 @@ void TRAP::Application::Run()
 
 	float lastFrameTime = 0.0f;
 	auto nextFrame = std::chrono::steady_clock::now();
-	Utils::Timer tickTimer;	
-	
+	Utils::Timer tickTimer;
+
 	while (m_running)
 	{
 		TP_PROFILE_SCOPE("RunLoop");
-		
+
 		if (m_fpsLimit)
 			nextFrame += std::chrono::milliseconds(1000 / m_fpsLimit);
 		if (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
 			nextFrame += std::chrono::milliseconds(1000 / 30); //30 FPS
-		
+
 		m_drawCalls = 0;
 
 		Utils::Timer FrameTimeTimer;
@@ -205,7 +212,7 @@ void TRAP::Application::Run()
 		{
 			{
 				TP_PROFILE_SCOPE("LayerStack OnUpdate");
-				
+
 				for (const auto& layer : *m_layerStack)
 					layer->OnUpdate(deltaTime);
 			}
@@ -214,11 +221,11 @@ void TRAP::Application::Run()
 			{
 				{
 					TP_PROFILE_SCOPE("LayerStack OnTick");
-					
+
 					for (const auto& layer : *m_layerStack)
 						layer->OnTick();
 				}
-				
+
 				tickTimer.Reset();
 			}
 		}
@@ -229,7 +236,7 @@ void TRAP::Application::Run()
 			ImGuiLayer::Begin();
 			{
 				TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
-				
+
 				for (const auto& layer : *m_layerStack)
 					layer->OnImGuiRender();
 			}
@@ -242,65 +249,14 @@ void TRAP::Application::Run()
 
 		Graphics::Texture2D::UpdateLoadingTextures();
 
-		//Update Shaders if needed
-		if (VFS::GetHotShaderReloading() && VFS::GetShaderFileWatcher())
-		{
-			//Check monitoring shader folders for changes and
-			//in case of changes run ShaderManager::Reload(virtualPath)
-			VFS::GetShaderFileWatcher()->Check([](const std::filesystem::path& physicalPath,
-				const std::string& virtualPath,
-				const FileStatus status) -> void
-				{
-					//Process only regular files and FileStatus::Modified
-					if (!is_regular_file(physicalPath))
-						return;
-					if (status == FileStatus::Created || status == FileStatus::Erased)
-						return;
-
-					const std::string suffix = Utils::String::GetSuffix(virtualPath);
-					if (suffix == "shader" || suffix == "spirv")
-					{
-						if (Graphics::ShaderManager::ExistsVirtualPath(virtualPath))
-						{
-							TP_INFO("[ShaderManager] Shader Modified Reloading...");
-							Graphics::ShaderManager::Reload(virtualPath);
-						}
-					}
-				});
-		}
-		//Update Textures if needed
-		if (VFS::GetHotTextureReloading() && VFS::GetTextureFileWatcher())
-		{
-			//Check monitoring texture folders for changes and
-			//in case of changes run TextureManager::Reload(virtualPath)
-			VFS::GetTextureFileWatcher()->Check([](const std::filesystem::path& physicalPath,
-				const std::string& virtualPath,
-				const FileStatus status) -> void
-				{
-					//Process only regular files and FileStatus::Modified
-					if (!is_regular_file(physicalPath))
-						return;
-					if (status == FileStatus::Created || status == FileStatus::Erased)
-						return;
-
-					const std::string suffix = Utils::String::GetSuffix(virtualPath);
-					if (suffix == "pgm" || suffix == "ppm" || suffix == "pnm" || suffix == "pam" || suffix == "pfm" ||
-						suffix == "tga" || suffix == "icb" || suffix == "vda" || suffix == "vst" || suffix == "bmp" ||
-						suffix == "dib" || suffix == "png")
-					{
-						if (Graphics::TextureManager::ExistsVirtualPath(virtualPath))
-						{
-							TP_INFO("[TextureManager] Texture Modified Reloading...");
-							Graphics::TextureManager::Reload(virtualPath);
-						}
-					}
-				});
-		}
+		if (!m_hotReloadingThread && (VFS::GetHotShaderReloading() || VFS::GetHotTextureReloading()))
+			m_hotReloadingThread = TRAP::MakeScope<std::thread>(ProcessHotReloading, std::ref(m_hotReloadingShaderPaths), std::ref(m_hotReloadingTexturePaths), std::ref(m_running));
+		UpdateHotReloading();
 
 		if (Graphics::API::Context::s_newRenderAPI != Graphics::API::RenderAPI::NONE && Graphics::API::Context::s_newRenderAPI != Graphics::API::Context::GetRenderAPI())
 		{
 			//if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL || Graphics::API::Context::s_newRenderAPI == Graphics::API::RenderAPI::OpenGL)
-				ReCreateWindow(Graphics::API::Context::s_newRenderAPI);
+			ReCreateWindow(Graphics::API::Context::s_newRenderAPI);
 			/*else
 				ReCreate(Graphics::API::Context::s_newRenderAPI);*/
 
@@ -314,7 +270,7 @@ void TRAP::Application::Run()
 				m_FrameTime = static_cast<float>(std::chrono::milliseconds(1000 / 30).count());
 			else
 				m_FrameTime = FrameTimeTimer.ElapsedMilliseconds();
-			
+
 			m_FramesPerSecond = static_cast<uint32_t>(1000.0f / m_FrameTime);
 		}
 
@@ -374,7 +330,7 @@ const TRAP::Utils::Config& TRAP::Application::GetConfig()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::LayerStack& TRAP::Application::GetLayerStack()
-{	
+{
 	return *s_Instance->m_layerStack;
 }
 
@@ -438,7 +394,7 @@ void TRAP::Application::SetTimeScale(const float timeScale)
 
 void TRAP::Application::SetHotShaderReloading(const bool enabled)
 {
-	VFS::SetHotShaderReloading(enabled);	
+	VFS::SetHotShaderReloading(enabled);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -510,6 +466,147 @@ std::string TRAP::Application::GetClipboardString()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+const TRAP::CPUInfo& TRAP::Application::GetCPUInfo()
+{
+	if (s_CPU.Model.empty())
+	{
+		auto CPUID = [](const uint32_t funcID, const uint32_t subFuncID)->std::array <uint32_t, 4>
+		{
+			std::array<uint32_t, 4> regs{};
+		#ifdef TRAP_PLATFORM_WINDOWS
+			__cpuidex(reinterpret_cast<int32_t*>(regs.data()), static_cast<int32_t>(funcID), static_cast<int32_t>(subFuncID));
+		#else
+			asm volatile
+				("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3])
+					: "a" (funcID), "c" (subFuncID));
+		#endif
+
+			return regs;
+		};
+
+		std::array<uint32_t, 4> regs = CPUID(0, 0);
+		const uint32_t HFS = regs[0];
+		//Get Vendor
+		const std::string vendorID = std::string(reinterpret_cast<const char*>(&regs[1]), 4) +
+			std::string(reinterpret_cast<const char*>(&regs[3]), 4) +
+			std::string(reinterpret_cast<const char*>(&regs[2]), 4);
+		regs = CPUID(1, 0);
+		s_CPU.HyperThreaded = regs[3] & 0x10000000; //Get Hyper-threading
+
+		std::string upVendorID = vendorID;
+		std::for_each(upVendorID.begin(), upVendorID.end(), [](char& in) {in = static_cast<char>(std::toupper(static_cast<char>(in))); });
+		//Get Number of cores
+		constexpr int32_t MAX_INTEL_TOP_LVL = 4;
+		constexpr uint32_t LVL_TYPE = 0x0000FF00;
+		constexpr uint32_t LVL_CORES = 0x0000FFFF;
+		if (upVendorID.find("INTEL") != std::string::npos)
+		{
+			if (HFS >= 11)
+			{
+				int32_t numSMT = 0;
+				for (int32_t lvl = 0; lvl < MAX_INTEL_TOP_LVL; ++lvl)
+				{
+					std::array<uint32_t, 4> regs1 = CPUID(0x0B, lvl);
+					const uint32_t currentLevel = (LVL_TYPE & regs1[2]) >> 8;
+					switch (currentLevel)
+					{
+					case 0x01:
+						numSMT = LVL_CORES & regs1[1];
+						break;
+
+					case 0x02:
+						s_CPU.LogicalCores = LVL_CORES & regs1[1];
+						break;
+
+					default:
+						break;
+					}
+				}
+				s_CPU.Cores = s_CPU.LogicalCores / numSMT;
+			}
+			else
+			{
+				if (HFS >= 1)
+				{
+					s_CPU.LogicalCores = (regs[1] >> 16) & 0xFF;
+					if (HFS >= 4)
+					{
+						std::array<uint32_t, 4> regs1 = CPUID(4, 0);
+						s_CPU.Cores = 1 + (regs1[0] >> 26) & 0x3F;
+					}
+				}
+				if (s_CPU.HyperThreaded)
+				{
+					if (!(s_CPU.Cores > 1))
+					{
+						s_CPU.Cores = 1;
+						s_CPU.LogicalCores = (s_CPU.LogicalCores >= 2 ? s_CPU.LogicalCores : 2);
+					}
+				}
+				else
+					s_CPU.Cores = s_CPU.LogicalCores = 1;
+			}
+		}
+		else if (upVendorID.find("AMD") != std::string::npos)
+		{
+			uint32_t extFamily;
+			if (((regs[0] >> 8) & 0xF) < 0xF)
+				extFamily = (regs[0] >> 8) & 0xF;
+			else
+				extFamily = ((regs[0] >> 8) & 0xF) + ((regs[0] >> 20) & 0xFF);
+
+			if (HFS >= 1)
+			{
+				s_CPU.LogicalCores = (regs[1] >> 16) & 0xFF;
+				std::array<uint32_t, 4> regs1 = CPUID(0x80000000, 0);
+				if (regs1[0] >= 8)
+				{
+					regs1 = CPUID(0x80000008, 0);
+					s_CPU.Cores = 1 + (regs1[2] & 0xFF);
+				}
+			}
+			if (s_CPU.HyperThreaded)
+			{
+				if (!(s_CPU.Cores > 1))
+				{
+					s_CPU.Cores = 1;
+					s_CPU.LogicalCores = (s_CPU.LogicalCores >= 2 ? s_CPU.LogicalCores : 2);
+				}
+				else if (s_CPU.Cores > 1)
+				{
+					//Ryzen 3 has SMT flag, but in fact cores count is equal to threads count.
+					//Ryzen 5/7 reports twice as many "real" cores (e.g. 16 cores instead of 8) because of SMT.
+					//On PPR 17h, page 82:
+					//CPUID_Fn8000001E_EBX [Core Identifiers][15:8] is ThreadsPerCore
+					//ThreadsPerCore: [...] The number of threads per core is ThreadsPerCore + 1
+					std::array<uint32_t, 4> regs1 = CPUID(0x80000000, 0);
+					if ((extFamily >= 23) && (regs1[0] >= 30))
+					{
+						regs1 = CPUID(0x8000001E, 0);
+						s_CPU.Cores /= ((regs1[1] >> 8) & 0xFF) + 1;
+					}
+				}
+			}
+			else
+				s_CPU.Cores = s_CPU.LogicalCores = 1;
+		}
+
+		//Get CPU brand string
+		for (uint32_t i = 0x80000002; i < 0x80000005; ++i)
+		{
+			std::array<uint32_t, 4> regs1 = CPUID(i, 0);
+			s_CPU.Model += std::string(reinterpret_cast<const char*>(&regs1[0]), 4);
+			s_CPU.Model += std::string(reinterpret_cast<const char*>(&regs1[1]), 4);
+			s_CPU.Model += std::string(reinterpret_cast<const char*>(&regs1[2]), 4);
+			s_CPU.Model += std::string(reinterpret_cast<const char*>(&regs1[3]), 4);
+		}
+	}
+
+	return s_CPU;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 {
 	TP_PROFILE_FUNCTION();
@@ -538,7 +635,7 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 			m_window->GetCursorMode()
 		},
 		m_window->GetMonitor().GetID()
-	};	
+	};
 	m_window.reset();
 	m_window = std::make_unique<Window>(props);
 	m_window->SetEventCallback([this](Events::Event& e) {OnEvent(e); });
@@ -546,7 +643,7 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
 	//Always added as a fallback texture
 	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
-	Graphics::TextureManager::Add(Graphics::TextureCube::Create());	
+	Graphics::TextureManager::Add(Graphics::TextureCube::Create());
 	//Initialize Renderer
 	Graphics::Renderer::Init();
 
@@ -578,7 +675,7 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
 	//Always added as a fallback texture
 	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
-	Graphics::TextureManager::Add(Graphics::TextureCube::Create());	
+	Graphics::TextureManager::Add(Graphics::TextureCube::Create());
 	//Initialize Renderer
 	Graphics::Renderer::Init();
 
@@ -589,7 +686,7 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Application::UpdateLinuxWindowManager()
-{	
+{
 #ifdef TRAP_PLATFORM_LINUX
 	if (std::getenv("WAYLAND_DISPLAY") || strcmp(std::getenv("XDG_SESSION_TYPE"), "wayland") == 0)
 		m_linuxWindowManager = LinuxWindowManager::Wayland;
@@ -651,7 +748,7 @@ bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 				m_window->SetDisplayMode(Window::DisplayMode::Windowed, 0, 0, 0);
 		}
 	}
-	
+
 	return false;
 }
 
@@ -670,7 +767,7 @@ bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent& e)
 {
 	if (Window::GetActiveWindows() == 1)
 		m_focused = false;
-	
+
 	return false;
 }
 
@@ -678,7 +775,7 @@ bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent& e)
 
 bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent& e)
 {
-	if(Window::GetActiveWindows() == 1)
+	if (Window::GetActiveWindows() == 1)
 		m_minimized = true;
 
 	return false;
@@ -691,4 +788,94 @@ bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent& e)
 	m_minimized = false;
 
 	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, std::vector<std::string>& textures, const bool& running)
+{
+	while (running)
+	{
+		//Update Shaders if needed
+		if (VFS::GetHotShaderReloading() && VFS::GetShaderFileWatcher())
+		{
+			//Check monitoring shader folders for changes and
+			//in case of changes run ShaderManager::Reload(virtualPath) (deferred into main thread)
+			VFS::GetShaderFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
+				const std::string& virtualPath,
+				const FileStatus status) -> void
+				{
+					//Process only regular files and FileStatus::Modified
+					if (!is_regular_file(physicalPath))
+						return;
+					if (status == FileStatus::Erased)
+						return;
+
+					const std::string suffix = Utils::String::GetSuffix(virtualPath);
+					if (suffix == "shader" || suffix == "spirv")
+					{
+						if (std::find(shaders.begin(), shaders.end(), virtualPath) == shaders.end())
+						{
+							std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
+							shaders.emplace_back(virtualPath);
+						}
+					}
+				});
+		}
+		//Update Textures if needed
+		if (VFS::GetHotTextureReloading() && VFS::GetTextureFileWatcher())
+		{
+			//Check monitoring texture folders for changes and
+			//in case of changes run TextureManager::Reload(virtualPath) (deferred into main thread)
+			VFS::GetTextureFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
+				const std::string& virtualPath,
+				const FileStatus status) -> void
+				{
+					//Process only regular files and FileStatus::Modified
+					if (!is_regular_file(physicalPath))
+						return;
+					if (status == FileStatus::Erased)
+						return;
+
+					const std::string suffix = Utils::String::GetSuffix(virtualPath);
+					if (suffix == "pgm" || suffix == "ppm" || suffix == "pnm" || suffix == "pam" || suffix == "pfm" ||
+						suffix == "tga" || suffix == "icb" || suffix == "vda" || suffix == "vst" || suffix == "bmp" ||
+						suffix == "dib" || suffix == "png")
+					{
+						if (std::find(textures.begin(), textures.end(), virtualPath) == textures.end())
+						{
+							std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
+							textures.emplace_back(virtualPath);
+						}
+					}
+				});
+		}
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Application::UpdateHotReloading()
+{
+	//Shader Reloading
+	for (const std::string& virtualPath : m_hotReloadingShaderPaths)
+	{
+		if (Graphics::ShaderManager::ExistsVirtualPath(virtualPath))
+		{
+			TP_INFO("[ShaderManager] Shader Modified Reloading...");
+			Graphics::ShaderManager::Reload(virtualPath);
+		}
+	}
+	m_hotReloadingShaderPaths.clear();
+
+	//Texture Reloading
+	for (const std::string& virtualPath : m_hotReloadingTexturePaths)
+	{
+		if (Graphics::TextureManager::ExistsVirtualPath(virtualPath))
+		{
+			TP_INFO("[TextureManager] Texture Modified Reloading...");
+			Graphics::TextureManager::Reload(virtualPath);
+		}
+	}
+	m_hotReloadingTexturePaths.clear();
 }

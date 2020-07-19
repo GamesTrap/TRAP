@@ -231,7 +231,7 @@ bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(Events::F
 {
 	TP_PROFILE_FUNCTION();
 	
-	if (m_window && m_window->GetTitle() == e.GetTitle())
+	if (m_window && m_window->GetTitle() == e.GetTitle() && e.GetWidth() > 0 && e.GetHeight() > 0)
 		OnResize(static_cast<float>(e.GetWidth()), static_cast<float>(e.GetHeight()));
 	
 	return false;
