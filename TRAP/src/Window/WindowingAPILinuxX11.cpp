@@ -2922,6 +2922,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	s_Data.XLIB.FreeColormap = (PFN_XFreeColormap)dlsym(s_Data.XLIB.Handle, "XFreeColormap");
 	s_Data.XLIB.FreeCursor = (PFN_XFreeCursor)dlsym(s_Data.XLIB.Handle, "XFreeCursor");
 	s_Data.XLIB.FreeEventData = (PFN_XFreeEventData)dlsym(s_Data.XLIB.Handle, "XFreeEventData");
+	s_Data.XLIB.GetAtomName = (PFN_XGetAtomName)dlsym(s_Data.XLIB.Handle, "XGetAtomName");
 	s_Data.XLIB.GetErrorText = (PFN_XGetErrorText)dlsym(s_Data.XLIB.Handle, "XGetErrorText");
 	s_Data.XLIB.GetEventData = (PFN_XGetEventData)dlsym(s_Data.XLIB.Handle, "XGetEventData");
 	s_Data.XLIB.GetICValues = (PFN_XGetICValues)dlsym(s_Data.XLIB.Handle, "XGetICValues");
@@ -2982,6 +2983,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	s_Data.XLIB.UTF8SetWMProperties = (PFN_Xutf8SetWMProperties)dlsym(s_Data.XLIB.Handle, "Xutf8SetWMProperties");
 	s_Data.XLIB.CreateRegion = (PFN_XCreateRegion)dlsym(s_Data.XLIB.Handle, "XCreateRegion");
 	s_Data.XLIB.DestroyRegion = (PFN_XDestroyRegion)dlsym(s_Data.XLIB.Handle, "XDestroyRegion");
+	s_Data.XKB.AllocKeyboard = (PFN_XkbAllocKeyboard)dlsym(s_Data.XLIB.Handle, "XkbAllocKeyboard");
 	s_Data.XKB.FreeKeyboard = (PFN_XkbFreeKeyboard)dlsym(s_Data.XLIB.Handle, "XkbFreeKeyboard");
 	s_Data.XKB.FreeNames = (PFN_XkbFreeNames)dlsym(s_Data.XLIB.Handle, "XkbFreeNames");
 	s_Data.XKB.GetMap = (PFN_XkbGetMap)dlsym(s_Data.XLIB.Handle, "XkbGetMap");
@@ -4525,6 +4527,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 			   (((XkbEvent*)&event)->state.changed & XkbGroupStateMask))
 			{
 				s_Data.XKB.Group = ((XkbEvent*)&event)->state.group;
+				InputKeyboardLayout();
 			}
 
 			return;
@@ -5812,6 +5815,39 @@ TRAP::Input::Key TRAP::INTERNAL::WindowingAPI::TranslateKeySyms(const KeySym* ke
 
 	//No matching translation was found
 	return TRAP::Input::Key::Unknown;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::INTERNAL::WindowingAPI::GetX11KeyboardLayoutName()
+{
+	if (!s_Data.XKB.Available)
+	{
+		TP_ERROR("[Input][X11] XKB extension required for keyboard layout names");
+		return "";
+	}
+
+	XkbStateRec state = { 0 };
+	s_Data.XKB.GetState(s_Data.display, XkbUseCoreKbd, &state);
+
+	XkbDescPtr desc = s_Data.XKB.AllocKeyboard();
+	if (s_Data.XKB.GetNames(s_Data.display, XkbGroupNamesMask, desc) != Success)
+	{
+		s_Data.XKB.FreeKeyboard(desc, 0, 1);
+		TP_ERROR("[Input][X11] Failed to retrieve keyboard layout names");
+		return "";
+	}
+
+	const Atom atom = desc->names->groups[state.group];
+	s_Data.XKB.FreeKeyboard(desc, 0, 1);
+
+	if (atom == 0)
+	{
+		TP_ERROR("[Input][X11] Name missing for current keyboard layout");
+		return "";
+	}
+
+	return s_Data.XLIB.GetAtomName(s_Data.display, atom);
 }
 
 #endif

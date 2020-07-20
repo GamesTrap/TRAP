@@ -26,6 +26,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 */
 
 #include "TRAPPCH.h"
+
 #include "Input/Input.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -192,6 +193,11 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 		const uint32_t result = s_xinput.SetState(static_cast<DWORD>(controller), &vibration);
 		if (result != ERROR_SUCCESS)
 			TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while setting vibration!");
+	}
+	else
+	{
+		//TODO DirectInput8 Force Feedback
+		//WIP
 	}
 }
 
@@ -584,6 +590,25 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 		return DIENUM_CONTINUE;
 	}
 
+	//bool forceFeedback = false;
+	if(dc.dwFlags & DIDC_FORCEFEEDBACK)
+	{
+		//This device supports Force Feedback
+		/*LPDIRECTINPUTDEVICE2 lpDirectInputJoystick;
+		device->QueryInterface(TRAP_GUID_IID_IDirectInputDevice2W, reinterpret_cast<LPVOID*>(&lpDirectInputJoystick));
+		//Try to use it
+		if (FAILED(lpDirectInputJoystick->SetCooperativeLevel(static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(TRAP::Application::GetWindow()->GetInternalWindow())->Handle, DISCL_BACKGROUND | DISCL_EXCLUSIVE)))
+			TP_ERROR("[Input][Controller][DirectInput] Failed to set cooperation level to exclusive! Ignoring Force Feedback feature");
+		else
+		{
+			forceFeedback = true;
+			TP_TRACE("[Input][Controller][DirectInput] Force Feedback enabled!");
+		}
+
+		lpDirectInputJoystick->Release();*/
+		TP_DEBUG("[Input][Controller][DirectInput] Controller supports Force Feedback!\nThis feature is not implemented because all my controllers do not set this flag\nPls help thx");
+	}
+
 	dipd.diph.dwSize = sizeof(dipd);
 	dipd.diph.dwHeaderSize = sizeof(dipd.diph);
 	dipd.diph.dwHow = DIPH_DEVICE;
@@ -646,6 +671,8 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	controller->WinCon.guid = deviceInstance->guidInstance;
 	controller->WinCon.Objects = data.Objects;
 	controller->WinCon.ObjectCount = data.ObjectCount;
+	/*if (forceFeedback)
+		controller->WinCon.ForceFeedback = true;*/
 
 	if (!s_eventCallback)
 		return DIENUM_STOP;
@@ -660,6 +687,56 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 	s_eventCallback(event);
 
 	return DIENUM_STOP;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Input::GetKeyboardLayoutName()
+{
+	std::array<WCHAR, KL_NAMELENGTH> keyboardLayoutID{};
+
+	if(!GetKeyboardLayoutNameW(keyboardLayoutID.data()))
+	{
+		TP_ERROR("[Input][WinAPI] Failed to retrieve keyboard layout name");
+		return "";
+	}
+
+	//NOTE: Only care about the language part of the keyboard layout ID
+	const LCID lcID = MAKELCID(LANGIDFROMLCID(wcstoul(keyboardLayoutID.data(), nullptr, 16)), 0);
+
+	const uint32_t size = GetLocaleInfoW(lcID, LOCALE_SLANGUAGE, nullptr, 0);
+	if(!size)
+	{
+		TP_ERROR("[Input][WinAPI] Failed to retrieve keyboard layout name length");
+		return "";
+	}
+
+	std::wstring language(size, 0);
+
+	if(!GetLocaleInfoW(lcID, LOCALE_SLANGUAGE, language.data(), size))
+	{
+		TP_ERROR("[Input][WinAPI] Failed to translate keyboard layout name");
+		return "";
+	}
+
+	//WString to UTF8 string
+	std::string result{};
+
+	const int32_t sizeUTF8 = WideCharToMultiByte(CP_UTF8, 0, language.data(), -1, nullptr, 0, nullptr, nullptr);
+	if (!sizeUTF8)
+	{
+		TP_ERROR("[Input][WinAPI] Failed to convert string to UTF-8");
+		return "";
+	}
+
+	result.resize(sizeUTF8);
+	if (!WideCharToMultiByte(CP_UTF8, 0, language.data(), -1, result.data(), sizeUTF8, nullptr, nullptr))
+	{
+		TP_ERROR("[Input][WinAPI] Failed to convert string to UTF-8");
+		return "";
+	}
+
+	return result;
 }
 
 #endif

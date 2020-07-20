@@ -32,6 +32,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Events/ControllerEvent.h"
 #include "Utils/ControllerMappings.h"
+#include "Window/WindowingAPI.h"
 
 TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};
 
@@ -507,6 +508,13 @@ void TRAP::Input::HandleKeyEventLinux(ControllerInternal* con, int32_t code, int
 
 void TRAP::Input::UpdateControllerGUID(std::string& guid)
 {
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Input::GetKeyboardLayoutName()
+{
+	return TRAP::INTERNAL::WindowingAPI::GetX11KeyboardLayoutName();
 }
 
 #endif

@@ -12,7 +12,7 @@ namespace TRAP::Events
 		None = 0,
 		WindowClose, WindowResize, WindowMinimize, WindowMaximize, WindowRestore, WindowFocus, WindowLostFocus, WindowMove, WindowDrop, WindowContentScale, FrameBufferResize,
 		AppTick, AppUpdate, AppRender,
-		KeyPress, KeyRelease, KeyType,
+		KeyPress, KeyRelease, KeyType, KeyLayout,
 		MouseButtonPress, MouseButtonRelease, MouseMove, MouseScroll, MouseEnter, MouseLeave,
 		ControllerConnect, ControlledDisconnect,
 		MonitorConnect, MonitorDisconnect

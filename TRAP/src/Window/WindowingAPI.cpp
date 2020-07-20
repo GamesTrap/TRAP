@@ -29,6 +29,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "WindowingAPI.h"
 #include "Window.h"
+#include "Events/KeyEvent.h"
 #include "Utils/String/String.h"
 #include "Layers/ImGui/ImGuiWindowing.h"
 
@@ -2161,6 +2162,21 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowFocus(InternalWindow* window, cons
 		for (uint32_t button = 0; button <= static_cast<uint32_t>(Input::MouseButton::Eight); button++)
 			if (window->MouseButtons[button])
 				InputMouseClick(window, static_cast<Input::MouseButton>(button), false);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Notifies shared code that a the keyboard layout has changed
+void TRAP::INTERNAL::WindowingAPI::InputKeyboardLayout()
+{
+	//This function is not window specific because you can only have 1 keyboard layout selected and not multiple!
+	//So apply this globally
+	//This event gets redirected to the TRAP::Input callback
+	if(TRAP::Input::s_eventCallback)
+	{
+		TRAP::Events::KeyLayoutEvent event(TRAP::Input::GetKeyboardLayoutName());
+		TRAP::Input::s_eventCallback(event);
 	}
 }
 

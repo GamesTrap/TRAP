@@ -285,6 +285,8 @@ namespace TRAP
 		static std::vector<bool> GetAllControllerButtons(Controller controller);
 		static std::vector<ControllerDPad> GetAllControllerDPads(Controller controller);
 
+		static std::string GetKeyboardLayoutName();
+
 		static void SetControllerVibration(Controller controller, float leftMotor, float rightMotor);
 
 		static void SetMousePosition(float x, float y);
@@ -353,6 +355,8 @@ namespace TRAP
 		{ 0xa36d02e4,0xc9f3,0x11cf,{0xbf,0xc7,0x44,0x45,0x53,0x54,0x00,0x00} };
 		static constexpr GUID TRAP_GUID_DPad =
 		{ 0xa36d02f2,0xc9f3,0x11cf,{0xbf,0xc7,0x44,0x45,0x53,0x54,0x00,0x00} };
+		static constexpr GUID TRAP_GUID_IID_IDirectInputDevice2W =
+		{ 0x5944E683,0xC92E,0x11CF,{0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00} };
 		//Object data array for our clone of c_dfDIJoystick
 		inline static std::array<DIOBJECTDATAFORMAT, 44> TRAPObjectDataFormats =
 		{
@@ -463,6 +467,7 @@ namespace TRAP
 			DWORD Index = 0;
 			GUID guid{};
 			bool XInput = false;
+			bool ForceFeedback = false;
 		};
 		struct ObjectEnum
 		{

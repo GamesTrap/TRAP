@@ -470,6 +470,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 		case WM_INPUTLANGCHANGE:
 		{
 			UpdateKeyNamesWin32();
+			InputKeyboardLayout();
 			break;
 		}
 

@@ -165,6 +165,9 @@
 #ifdef log2
 	#undef log2
 #endif
+#ifdef GetKeyboardLayoutName
+	#undef GetKeyboardLayoutName
+#endif
 #endif
 
 #endif /*_TRAP_TRAPPCH_H_*/

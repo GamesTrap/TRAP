@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "KeyEvent.h"
 
+#include <utility>
+
 #include "Window/WindowingAPI.h"
 
 TRAP::Input::Key TRAP::Events::KeyEvent::GetKey() const
@@ -413,4 +415,57 @@ std::string TRAP::Events::KeyTypeEvent::EncodeUTF8(const uint32_t codePoint)
 	}
 
 	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::KeyLayoutEvent::KeyLayoutEvent(std::string layout)
+	: m_layout(std::move(layout))
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Events::KeyLayoutEvent::GetLayout() const
+{
+	return m_layout;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Events::KeyLayoutEvent::ToString() const
+{
+	std::stringstream ss;
+
+	ss << "KeyLayoutEvent: " << m_layout;
+
+	return ss.str();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::EventType TRAP::Events::KeyLayoutEvent::GetStaticType()
+{
+	return EventType::KeyLayout;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Events::EventType TRAP::Events::KeyLayoutEvent::GetEventType() const
+{
+	return GetStaticType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const char* TRAP::Events::KeyLayoutEvent::GetName() const
+{
+	return "KeyLayout";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+int32_t TRAP::Events::KeyLayoutEvent::GetCategoryFlags() const
+{
+	return static_cast<int32_t>(EventCategory::Keyboard) | static_cast<int32_t>(EventCategory::Input);
 }

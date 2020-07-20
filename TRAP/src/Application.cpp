@@ -77,6 +77,7 @@ TRAP::Application::Application()
 	Window::DisplayMode displayMode = Window::DisplayMode::Windowed;
 	bool maximized = false;
 	uint32_t monitor = 0;
+	bool rawInput = false;
 	Graphics::API::RenderAPI renderAPI = Graphics::API::RenderAPI::NONE;
 	m_config.Get("Width", width);
 	m_config.Get("Height", height);
@@ -86,6 +87,7 @@ TRAP::Application::Application()
 	m_config.Get("DisplayMode", displayMode);
 	m_config.Get("Maximized", maximized);
 	m_config.Get("Monitor", monitor);
+	m_config.Get("RawMouseInput", rawInput);
 	m_config.Get("RenderAPI", renderAPI);
 
 	if (fpsLimit > 0)
@@ -115,7 +117,7 @@ TRAP::Application::Application()
 					true,
 					true,
 					true,
-					false,
+					rawInput,
 					Window::CursorMode::Normal
 				},
 				monitor
@@ -151,8 +153,11 @@ TRAP::Application::~Application()
 	TP_PROFILE_FUNCTION();
 
 	TP_DEBUG("[Application] Shutting down TRAP Modules...");
-	m_hotReloadingThread->join();
-	m_hotReloadingThread.reset();
+	if(m_hotReloadingThread)
+	{
+		m_hotReloadingThread->join();
+		m_hotReloadingThread.reset();
+	}
 	Input::Shutdown();
 	m_layerStack.reset();
 	m_config.Set("Width", m_window->GetWidth());
@@ -163,6 +168,7 @@ TRAP::Application::~Application()
 	m_config.Set("DisplayMode", m_window->GetDisplayMode());
 	m_config.Set("Maximized", m_window->IsMaximized());
 	m_config.Set("Monitor", m_window->GetMonitor().GetID());
+	m_config.Set("RawMouseInput", m_window->GetRawMouseInput());
 	m_config.Set("RenderAPI", Graphics::API::Context::GetRenderAPI());
 	const std::vector<uint8_t> VulkanGPUUUID = Graphics::API::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
 	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan && !VulkanGPUUUID.empty())

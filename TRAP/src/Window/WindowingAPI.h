@@ -285,6 +285,7 @@ namespace TRAP::INTERNAL
 		typedef int (*PFN_XFreeColormap)(Display*, Colormap);
 		typedef int (*PFN_XFreeCursor)(Display*, Cursor);
 		typedef void (*PFN_XFreeEventData)(Display*, XGenericEventCookie*);
+		typedef char* (*PFN_XGetAtomName)(Display*, Atom);
 		typedef int (*PFN_XGetErrorText)(Display*, int, char*, int);
 		typedef int (*PFN_XGetEventData)(Display*, XGenericEventCookie*);
 		typedef char* (*PFN_XGetICValues)(XIC, ...);
@@ -344,6 +345,7 @@ namespace TRAP::INTERNAL
 		typedef int32_t (*PFN_XDestroyRegion)(Region);
 
 		//XKB
+		typedef XkbDescPtr (*PFN_XkbAllocKeyboard)();
 		typedef void (*PFN_XkbFreeKeyboard)(XkbDescPtr, unsigned int, int);
 		typedef void (*PFN_XkbFreeNames)(XkbDescPtr, unsigned int, int);
 		typedef XkbDescPtr (*PFN_XkbGetMap)(Display*, unsigned int, unsigned int);
@@ -902,6 +904,7 @@ namespace TRAP::INTERNAL
 				int32_t Major = 0;
 				int32_t Minor = 0;
 				uint32_t Group = 0;
+				PFN_XkbAllocKeyboard AllocKeyboard{};
 				PFN_XkbFreeKeyboard FreeKeyboard{};
 				PFN_XkbFreeNames FreeNames{};
 				PFN_XkbGetMap GetMap{};
@@ -1055,6 +1058,7 @@ namespace TRAP::INTERNAL
 				PFN_XFreeColormap FreeColormap{};
 				PFN_XFreeCursor FreeCursor{};
 				PFN_XFreeEventData FreeEventData{};
+				PFN_XGetAtomName GetAtomName{};
 				PFN_XGetErrorText GetErrorText{};
 				PFN_XGetEventData GetEventData{};
 				PFN_XGetICValues GetICValues{};
@@ -1687,6 +1691,8 @@ namespace TRAP::INTERNAL
 		static void InputDrop(const InternalWindow* window, const std::vector<std::string>& paths);
 		//Notifies shared code that a window has lost or received input focus
 		static void InputWindowFocus(InternalWindow* window, bool focused);
+		//Notifies shared code of a keyboard layout change
+		static void InputKeyboardLayout();
 		//Chooses the video mode most closely matching the desired one
 		static InternalVideoMode* ChooseVideoMode(InternalMonitor* monitor, const InternalVideoMode& desired);
 		//Notifies shared code of a monitor connection or disconnection
@@ -1913,6 +1919,9 @@ namespace TRAP::INTERNAL
 		//Clear its handle when the input context has been destroyed
 		static void InputContextDestroyCallback(XIC ic, XPointer clientData, XPointer callData);
 		//Translate an X11 key code to a TRAP key
+
+		friend std::string TRAP::Input::GetKeyboardLayoutName();
+		static std::string GetX11KeyboardLayoutName();
 #endif
 	};
 }

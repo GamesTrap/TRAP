@@ -1141,6 +1141,14 @@ SITREP 07/17/2020|20w29a2
 SITREP 07/19/2020|20w29a3
     - Changed TRAP Engine version to 20w29a3(0.6.50)
     - Test3D Added Skybox ~<30 mins
-    - Test3D Added Environment Mapped Reflection ~<40 mins
     - Fixed Bug in Test3D PerspectiveCameraController when x rotation is bigger than 90° or smaller than -90° ~<10 mins
     - Fixed Bug when Camera gets an OnFrameBufferResizeEvent where width or/and height is 0 ~<10 mins
+    - Added RawMouseInput entry to Engine.cfg ~<20 mins
+    - Tried to implement DirectInput rumble via Force Feedback but all my controller do not report the needed
+      Force Feedback flag so I can't test this feature properly! Help wanted :O ~>30 mins
+
+SITREP 07/20/2020|20w30a1
+    - Changed TRAP Engine version to 20w30a1(0.6.51)
+    - Fixed crash on shutdown when not using HotReloading (tried to join a nullptr thread xD) ~<10 mins
+    - Added GetKeyboardLayoutName() to TRAP::Input ~>20 mins
+    - Added KeyLayout Event to TRAP::Input Callback ~>45 mins

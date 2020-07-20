@@ -79,6 +79,24 @@ namespace TRAP::Events
 		std::string_view m_title;
 		uint32_t m_codePoint;
 	};
+
+	class KeyLayoutEvent final : public Event
+	{
+	public:
+		explicit KeyLayoutEvent(std::string layout);
+
+		std::string GetLayout() const;
+
+		std::string ToString() const override;
+
+		static EventType GetStaticType();
+		EventType GetEventType() const override;
+		const char* GetName() const override;
+		int32_t GetCategoryFlags() const override;
+
+	private:
+		std::string m_layout;
+	};
 }
 
 #endif /*_TRAP_KEYEVENT_H_*/

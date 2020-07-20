@@ -10,6 +10,7 @@ EventTests::EventTests()
 void EventTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Events");
+	TP_TRACE(TRAP::Input::GetKeyboardLayoutName());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
