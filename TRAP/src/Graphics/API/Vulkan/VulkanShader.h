@@ -44,9 +44,6 @@ namespace TRAP::Graphics::API
 		static std::vector<std::vector<uint32_t>> ConvertToSPIRV(glslang::TShader* VShader, glslang::TShader* FShader, glslang::TShader* GShader, glslang::TShader* TCShader, glslang::TShader* TEShader, glslang::TShader* CShader, glslang::TProgram& program);
 		static bool CreateShaderModule(VkShaderModule& shaderModule, std::vector<uint32_t>& SPIRVCode);
 
-		friend class ::TRAP::Graphics::Shader;
-		friend class ::TRAP::Graphics::ShaderManager;
-
 		static bool s_glslangInitialized;
 
 		VkShaderModule m_VShaderModule;

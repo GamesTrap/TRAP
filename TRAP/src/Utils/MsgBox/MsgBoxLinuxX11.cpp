@@ -7,24 +7,24 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Utils::MsgBox::INTERNAL::X11::DrawButton(Button* b, int fg, int bg, Display* dpy, ::Window w, GC gc)
+void TRAP::Utils::MsgBox::INTERNAL::X11::DrawButton(Button* b, Display* dpy, ::Window w, GC gc)
 {
 	if (b->Mouseover)
 	{
+		XSetForeground(dpy, gc, ButtonBackgroundColor);
+		XSetBackground(dpy, gc, ButtonBorderColor);
 		XFillRectangle(dpy, w, gc, b->Clicked + b->X, b->Clicked + b->Y, b->Width, b->Height);
-		XSetForeground(dpy, gc, bg);
-		XSetBackground(dpy, gc, fg);
 	}
 	else
 	{
-		XSetForeground(dpy, gc, fg);
-		XSetBackground(dpy, gc, bg);
+		XSetForeground(dpy, gc, ButtonBorderColor);
+		XSetBackground(dpy, gc, ButtonBackgroundColor);
 		XDrawRectangle(dpy, w, gc, b->X, b->Y, b->Width, b->Height);
 	}
 
+	XSetForeground(dpy, gc, TextColor);
+	XSetBackground(dpy, gc, ButtonBackgroundColor);
 	XDrawString(dpy, w, gc, b->Clicked + b->TextX, b->Clicked + b->TextY, b->Text, std::strlen(b->Text));
-	XSetForeground(dpy, gc, fg);
-	XSetBackground(dpy, gc, bg);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -45,7 +45,7 @@ void TRAP::Utils::MsgBox::INTERNAL::X11::Cleanup(Display* display, ::Window& win
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Utils::MsgBox::INTERNAL::X11::SingleButtonMsgBoxEventLoop(Display* display, ::Window& window, Button& btn, const char* message, int& height, int& black, int& white, GC& gc)
+void TRAP::Utils::MsgBox::INTERNAL::X11::SingleButtonMsgBoxEventLoop(Display* display, ::Window& window, Button& btn, const char* message, int& height, GC& gc)
 {
 	XEvent event;
 	const char* temp, * end;
@@ -109,7 +109,7 @@ void TRAP::Utils::MsgBox::INTERNAL::X11::SingleButtonMsgBoxEventLoop(Display* di
 			}
 
 			//Draw Button
-			X11::DrawButton(&btn, black, white, display, window, gc);
+			X11::DrawButton(&btn, display, window, gc);
 			XFlush(display);
 			break;
 
@@ -139,7 +139,7 @@ void TRAP::Utils::MsgBox::INTERNAL::X11::SingleButtonMsgBoxEventLoop(Display* di
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::DoubleButtonMsgBoxEventLoop(Display* display, ::Window& window, Button& btn1, Button& btn2, const char* message, int& height, int& black, int& white, GC& gc)
+TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::DoubleButtonMsgBoxEventLoop(Display* display, ::Window& window, Button& btn1, Button& btn2, const char* message, int& height, GC& gc)
 {
 	XEvent event;
 	const char* temp, * end;
@@ -239,8 +239,8 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::DoubleButtonM
 			}
 
 			//Draw Buttons
-			X11::DrawButton(&btn1, black, white, display, window, gc);
-			X11::DrawButton(&btn2, black, white, display, window, gc);
+			X11::DrawButton(&btn1, display, window, gc);
+			X11::DrawButton(&btn2, display, window, gc);
 			XFlush(display);
 			break;
 
@@ -390,12 +390,8 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::ShowX11(const
 		return Selection::Error;
 	}
 
-	//White and Black color
-	int black = BlackPixel(display, DefaultScreen(display));
-	int white = WhitePixel(display, DefaultScreen(display));
-
 	//Create a window with the specified title
-	::Window window = XCreateSimpleWindow(display, DefaultRootWindow(display), 0, 0, 100, 100, 0, white, white);
+	::Window window = XCreateSimpleWindow(display, DefaultRootWindow(display), 0, 0, 100, 100, 0, BackgroundColor, BackgroundColor);
 
 	XSelectInput(display, window, ExposureMask | StructureNotifyMask | KeyReleaseMask | PointerMotionMask | ButtonPressMask | ButtonReleaseMask);
 	XMapWindow(display, window);
@@ -431,12 +427,14 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::ShowX11(const
 	//Create a graphics context for the window
 	GC gc = XCreateGC(display, window, 0, 0);
 
-	XSetForeground(display, gc, white);
-	XSetBackground(display, gc, black);
+	XSetForeground(display, gc, BackgroundColor);
 
 	//Compute the printed width and height of the text
 	if (!((font = XQueryFont(display, XGContextFromGC(gc)))))
+	{
 		X11::Cleanup(display, window, gc);
+		return TRAP::Utils::MsgBox::Selection::Error;
+	}
 
 	for (const char* temp = message; temp; temp = end ? (end + 1) : nullptr, ++lines)
 	{
@@ -470,7 +468,7 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::ShowX11(const
 	{
 		Button ok;
 		X11::SingleButtonMsgBox("OK", font, direction, ascent, descent, overall, W, H, height, X, Y, ok);
-		X11::SingleButtonMsgBoxEventLoop(display, window, ok, message, height, black, white, gc);
+		X11::SingleButtonMsgBoxEventLoop(display, window, ok, message, height, gc);
 
 		X11::Cleanup(display, window, gc);
 
@@ -480,7 +478,7 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::ShowX11(const
 	{
 		Button quit;
 		X11::SingleButtonMsgBox("Quit", font, direction, ascent, descent, overall, W, H, height, X, Y, quit);
-		X11::SingleButtonMsgBoxEventLoop(display, window, quit, message, height, black, white, gc);
+		X11::SingleButtonMsgBoxEventLoop(display, window, quit, message, height, gc);
 
 		X11::Cleanup(display, window, gc);
 
@@ -491,7 +489,7 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::ShowX11(const
 		Button yes;
 		Button no;
 		X11::DoubleButtonMsgBox("Yes", "No", font, direction, ascent, descent, overall, W, H, height, X, Y, yes, no);
-		const Selection selection = INTERNAL::X11::DoubleButtonMsgBoxEventLoop(display, window, yes, no, message, height, black, white, gc);
+		const Selection selection = INTERNAL::X11::DoubleButtonMsgBoxEventLoop(display, window, yes, no, message, height, gc);
 
 		X11::Cleanup(display, window, gc);
 
@@ -502,7 +500,7 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::ShowX11(const
 		Button ok;
 		Button cancel;
 		X11::DoubleButtonMsgBox("OK", "Cancel", font, direction, ascent, descent, overall, W, H, height, X, Y, ok, cancel);
-		Selection selection = INTERNAL::X11::DoubleButtonMsgBoxEventLoop(display, window, ok, cancel, message, height, black, white, gc);
+		Selection selection = INTERNAL::X11::DoubleButtonMsgBoxEventLoop(display, window, ok, cancel, message, height, gc);
 
 		X11::Cleanup(display, window, gc);
 

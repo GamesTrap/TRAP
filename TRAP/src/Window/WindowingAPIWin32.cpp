@@ -1040,8 +1040,8 @@ void TRAP::INTERNAL::WindowingAPI::UnregisterWindowClassWin32()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Callback for EnumDisplayMonitors in createMonitor
-BOOL CALLBACK TRAP::INTERNAL::WindowingAPI::MonitorCallback(const HMONITOR handle, HDC dc, RECT* rect, const LPARAM data)
+//Callback for EnumDisplayMonitors in CreateMonitor
+BOOL CALLBACK TRAP::INTERNAL::WindowingAPI::MonitorCallback(HMONITOR handle, HDC dc, RECT* rect, const LPARAM data)
 {
 	MONITORINFOEXW mi;
 	ZeroMemory(&mi, sizeof(mi));
@@ -2603,7 +2603,8 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 		if (i < count)
 			continue;
 
-		if (monitor->ModesPruned)
+		//I do not see any difference with this enabled other than WinAPI lagging while doing this call
+		/*if (monitor->ModesPruned)
 		{
 			//Skip modes not supported by the connected displays
 			if (ChangeDisplaySettingsExW(monitor->AdapterName.data(),
@@ -2614,7 +2615,7 @@ std::vector<TRAP::INTERNAL::WindowingAPI::InternalVideoMode> TRAP::INTERNAL::Win
 			{
 				continue;
 			}
-		}
+		}*/
 
 		if (count == size)
 		{

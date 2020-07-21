@@ -27,6 +27,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 
+
+//#include "Application.h"
 #include "Input/Input.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -573,6 +575,14 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 		TP_ERROR("[Input][Controller][DirectInput] Failed to create device!");
 		return DIENUM_CONTINUE;
 	}
+
+	/*if(FAILED(IDirectInputDevice8_SetCooperativeLevel(device, static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(TRAP::Application::GetWindow()->GetInternalWindow())->Handle,
+		DISCL_EXCLUSIVE | DISCL_BACKGROUND)))
+	{
+		TP_ERROR("[Input][Controller][DirectInput] Failed to set cooperative level!");
+		IDirectInputDevice8_Release(device);
+		return DIENUM_CONTINUE;
+	}*/
 
 	if (FAILED(IDirectInputDevice8_SetDataFormat(device, &TRAPDataFormat)))
 	{

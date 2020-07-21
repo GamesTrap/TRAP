@@ -22,9 +22,18 @@ namespace TRAP::Utils::MsgBox::INTERNAL::X11
 		const char* Text = nullptr;
 	};
 
+	constexpr uint32_t MakeRGB(uint8_t R, uint8_t G, uint8_t B)
+	{
+		return (static_cast<uint32_t>(R) << 16) | (static_cast<uint32_t>(G) << 8) | (static_cast<uint32_t>(B));
+	}
+	constexpr uint32_t BackgroundColor = MakeRGB(56, 54, 53);
+	constexpr uint32_t TextColor = MakeRGB(209, 207, 205);
+	constexpr uint32_t ButtonBorderColor = MakeRGB(140, 135, 129);
+	constexpr uint32_t ButtonBackgroundColor = MakeRGB(105, 102, 99);
+
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	static void DrawButton(Button* b, int fg, int bg, Display* dpy, ::Window w, GC gc);
+	static void DrawButton(Button* b, Display* dpy, ::Window w, GC gc);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -36,11 +45,11 @@ namespace TRAP::Utils::MsgBox::INTERNAL::X11
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	static void SingleButtonMsgBoxEventLoop(Display* display, ::Window& window, Button& btn, const char* message, int& height, int& black, int& white, GC& gc);
+	static void SingleButtonMsgBoxEventLoop(Display* display, ::Window& window, Button& btn, const char* message, int& height, GC& gc);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	static Selection DoubleButtonMsgBoxEventLoop(Display* display, ::Window& window, Button& btn1, Button& btn2, const char* message, int& height, int& black, int& white, GC& gc);
+	static Selection DoubleButtonMsgBoxEventLoop(Display* display, ::Window& window, Button& btn1, Button& btn2, const char* message, int& height, GC& gc);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 

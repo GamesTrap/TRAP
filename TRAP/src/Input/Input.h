@@ -413,7 +413,7 @@ namespace TRAP
 			sizeof(DIDATAFORMAT),
 			sizeof(DIOBJECTDATAFORMAT),
 			DIDFT_ABSAXIS,
-			sizeof(DIJOYSTATE),
+			sizeof(DIJOYSTATE2),
 			static_cast<DWORD>(TRAPObjectDataFormats.size()),
 			const_cast<DIOBJECTDATAFORMAT*>(TRAPObjectDataFormats.data())
 		};

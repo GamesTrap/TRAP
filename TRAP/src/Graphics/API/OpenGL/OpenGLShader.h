@@ -60,9 +60,6 @@ namespace TRAP::Graphics::API
 
 		static void PreProcess(const std::string& source, std::array<std::string, 6>& shaders);
 
-		friend class ::TRAP::Graphics::Shader;
-		friend class ::TRAP::Graphics::ShaderManager;
-
 		uint32_t m_handle;
 	};
 }
