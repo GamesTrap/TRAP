@@ -117,17 +117,23 @@ static void ImGuiOpenGL4SetupRenderState(ImDrawData* drawData, const int32_t fbW
 	glBindSampler(0, 0); //We use combined texture/sampler state. Applications using OpenGL 3.3 may set that otherwise.
 
 	(void)vertexArrayObject;
-	glBindVertexArray(vertexArrayObject);
 
 	//Bind vertex/index buffers and setup attributes for ImDrawVert
-	glBindBuffer(GL_ARRAY_BUFFER, g_VboHandle);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, g_ElementsHandle);
-	glEnableVertexAttribArray(g_AttribLocationVtxPos);
-	glEnableVertexAttribArray(g_AttribLocationVtxUV);
-	glEnableVertexAttribArray(g_AttribLocationVtxColor);
-	glVertexAttribPointer(g_AttribLocationVtxPos, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), reinterpret_cast<GLvoid*>(IM_OFFSETOF(ImDrawVert, pos)));
-	glVertexAttribPointer(g_AttribLocationVtxUV, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), reinterpret_cast<GLvoid*>(IM_OFFSETOF(ImDrawVert, uv)));
-	glVertexAttribPointer(g_AttribLocationVtxColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(ImDrawVert), reinterpret_cast<GLvoid*>(IM_OFFSETOF(ImDrawVert, col)));
+	glVertexArrayVertexBuffer(vertexArrayObject, 0, g_VboHandle, 0, sizeof(ImDrawVert));
+	
+	glEnableVertexArrayAttrib(vertexArrayObject, g_AttribLocationVtxPos);
+	glVertexArrayAttribFormat(vertexArrayObject, g_AttribLocationVtxPos, 2, GL_FLOAT, GL_FALSE, static_cast<GLintptr>(IM_OFFSETOF(ImDrawVert, pos)));
+	glVertexArrayAttribBinding(vertexArrayObject, g_AttribLocationVtxPos, 0);
+	
+	glEnableVertexArrayAttrib(vertexArrayObject, g_AttribLocationVtxUV);
+	glVertexArrayAttribFormat(vertexArrayObject, g_AttribLocationVtxUV, 2, GL_FLOAT, GL_FALSE, static_cast<GLintptr>(IM_OFFSETOF(ImDrawVert, uv)));
+	glVertexArrayAttribBinding(vertexArrayObject, g_AttribLocationVtxUV, 0);
+	
+	glEnableVertexArrayAttrib(vertexArrayObject, g_AttribLocationVtxColor);
+	glVertexArrayAttribFormat(vertexArrayObject, g_AttribLocationVtxColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, static_cast<GLintptr>(IM_OFFSETOF(ImDrawVert, col)));
+	glVertexArrayAttribBinding(vertexArrayObject, g_AttribLocationVtxColor, 0);
+	
+	glVertexArrayElementBuffer(vertexArrayObject, g_ElementsHandle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -175,7 +181,7 @@ void ImGuiOpenGL4RenderDrawData(ImDrawData* drawData)
 	//Recreate the VAO every time (this is to easily allow multiple OpenGL contexts to be rendered to. VAO are not shared among OpenGL contexts)
 	//The renderer would actually work without any VAO bound, but then our VertexAttrib calls would overwrite the default one currently bound.
 	GLuint vertexArrayObject = 0;
-	glGenVertexArrays(1, &vertexArrayObject);
+	glCreateVertexArrays(1, &vertexArrayObject);
 	ImGuiOpenGL4SetupRenderState(drawData, fbWidth, fbHeight, vertexArrayObject);
 
 	//Will project scissor/clipping rectangles into framebuffer space
@@ -188,8 +194,8 @@ void ImGuiOpenGL4RenderDrawData(ImDrawData* drawData)
 		const ImDrawList* cmdList = drawData->CmdLists[n];
 
 		//Upload vertex/index buffers
-		glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(cmdList->VtxBuffer.Size) * sizeof(ImDrawVert), static_cast<const GLvoid*>(cmdList->VtxBuffer.Data), GL_STREAM_DRAW);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(cmdList->IdxBuffer.Size) * sizeof(ImDrawIdx), static_cast<const GLvoid*>(cmdList->IdxBuffer.Data), GL_STREAM_DRAW);
+		glNamedBufferData(g_VboHandle, static_cast<GLsizeiptr>(cmdList->VtxBuffer.Size) * sizeof(ImDrawVert), static_cast<const GLvoid*>(cmdList->VtxBuffer.Data), GL_STREAM_DRAW);
+		glNamedBufferData(g_ElementsHandle, static_cast<GLsizeiptr>(cmdList->IdxBuffer.Size) * sizeof(ImDrawIdx), static_cast<const GLvoid*>(cmdList->IdxBuffer.Data), GL_STREAM_DRAW);
 
 		for(int32_t cmdI = 0; cmdI < cmdList->CmdBuffer.Size; cmdI++)
 		{
@@ -220,7 +226,8 @@ void ImGuiOpenGL4RenderDrawData(ImDrawData* drawData)
 					else
 						glScissor(static_cast<int32_t>(clipRect.x), static_cast<int32_t>(clipRect.y), static_cast<int32_t>(clipRect.z), static_cast<int32_t>(clipRect.w)); //Support for OpenGL 4.5 rarely used glClipControl(GL_UPPER_LEFT);
 
-					//Bind texture, Draw
+					//Bind VAO, texture, Draw
+					glBindVertexArray(vertexArrayObject);
 					glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(reinterpret_cast<intptr_t>(pcmd->TextureId)));
 					glDrawElementsBaseVertex(GL_TRIANGLES,
 					                         static_cast<GLsizei>(pcmd->ElemCount),
@@ -283,18 +290,15 @@ bool ImGuiOpenGL4CreateFontsTexture()
 	//Upload texture to graphics system
 	GLint lastTexture = 0;
 	glGetIntegerv(GL_TEXTURE_BINDING_2D, &lastTexture);
-	glGenTextures(1, &g_FontTexture);
-	glBindTexture(GL_TEXTURE_2D, g_FontTexture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glCreateTextures(GL_TEXTURE_2D, 1, &g_FontTexture);
+	glTextureParameteri(g_FontTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTextureParameteri(g_FontTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	glTextureStorage2D(g_FontTexture, 1, GL_RGBA8, width, height);
+	glTextureSubImage2D(g_FontTexture, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
 	//Store our identifier
 	io.Fonts->TexID = reinterpret_cast<ImTextureID>(static_cast<intptr_t>(g_FontTexture));
-
-	//Restore state
-	glBindTexture(GL_TEXTURE_2D, lastTexture);
 
 	return true;
 }
@@ -418,15 +422,10 @@ bool ImGuiOpenGL4CreateDeviceObjects()
 	g_AttribLocationVtxColor = glGetAttribLocation(g_ShaderHandle, "Color");
 
 	//Create buffers
-	glGenBuffers(1, &g_VboHandle);
-	glGenBuffers(1, &g_ElementsHandle);
+	glCreateBuffers(1, &g_VboHandle);
+	glCreateBuffers(1, &g_ElementsHandle);
 
 	ImGuiOpenGL4CreateFontsTexture();
-
-	//Restore modified OpenGL state
-	glBindTexture(GL_TEXTURE_2D, lastTexture);
-	glBindBuffer(GL_ARRAY_BUFFER, lastArrayBuffer);
-	glBindVertexArray(lastVertexArray);
 
 	return true;
 }

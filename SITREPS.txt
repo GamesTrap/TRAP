@@ -1154,3 +1154,9 @@ SITREP 07/20/2020|20w30a1
     - Added KeyLayout Event to TRAP::Input Callback ~>45 mins
     - Made X11 MsgBoxes prettier ~<20 mins
     - Removed unused friend classes in OpenGLShader & VulkanShader ~<10 mins
+
+SITREP 07/22/2020|20w30a2
+    - Changed TRAP Engine version to 20w30a2(0.6.52)
+    - OpenGLLoader Removed some non Direct State Access (DSA) functions ~>120 mins
+    - ImGuiOpenGL4 replaced non-DSA functions with DSA functions ~<40 mins
+    - ImGuiOpenGL4 removed unnecessary bindings thx to DSA :D ~<10 mins
