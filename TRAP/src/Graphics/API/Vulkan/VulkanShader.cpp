@@ -8,10 +8,20 @@
 #include "Internals/Objects/VulkanDevice.h"
 #include "Internals/Objects/VulkanSwapchain.h"
 #include "Internals/Objects/VulkanPipeline.h"
+#include "Graphics/Shaders/ShaderManager.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Graphics::API::VulkanShader::s_glslangInitialized = false;
+const std::map<spv::ExecutionModel, VkShaderStageFlagBits> s_model2Stage =
+{
+	{spv::ExecutionModelVertex, VK_SHADER_STAGE_VERTEX_BIT},
+	{spv::ExecutionModelFragment, VK_SHADER_STAGE_FRAGMENT_BIT},
+	{spv::ExecutionModelGeometry, VK_SHADER_STAGE_GEOMETRY_BIT},
+	{spv::ExecutionModelTessellationControl, VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT},
+	{spv::ExecutionModelTessellationEvaluation, VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT},
+	{spv::ExecutionModelGLCompute, VK_SHADER_STAGE_COMPUTE_BIT}
+};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -22,7 +32,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::str
 	m_TCShaderModule(nullptr),
 	m_TEShaderModule(nullptr),
 	m_CShaderModule(nullptr),
-	m_computeShaderStage()
+	m_computeShaderStage(),
+	m_stride(0)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -40,7 +51,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::vector<ui
 	  m_TCShaderModule(nullptr),
 	  m_TEShaderModule(nullptr),
 	  m_CShaderModule(nullptr),
-	  m_computeShaderStage()
+	  m_computeShaderStage(),
+	  m_stride(0)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -58,7 +70,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::string VS
 	  m_TCShaderModule(nullptr),
 	  m_TEShaderModule(nullptr),
 	  m_CShaderModule(nullptr),
-	  m_computeShaderStage()
+	  m_computeShaderStage(),
+	  m_stride(0)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -123,7 +136,7 @@ void TRAP::Graphics::API::VulkanShader::Bind() const
 		return;
 
 	if (!m_graphicsShaderStages.empty())
-		VulkanRenderer::GetCurrentSwapchain().GetPipeline().SetShaders(m_graphicsShaderStages);
+		VulkanRenderer::GetCurrentSwapchain().GetPipeline().SetShaders(m_graphicsShaderStages, m_attributeDescriptions, m_stride);
 	else
 		ShaderManager::Get("Fallback")->Bind();
 
@@ -185,8 +198,8 @@ void TRAP::Graphics::API::VulkanShader::InitSPIRV(std::vector<uint32_t>& source)
 	}
 
 	VulkanShaderErrorInfo error;
-	TP_DEBUG("[Shader][Vulkan][SPIR-V] Compiling: \"", m_name, "\"");
-	CompileSPIRV(shaders, error);
+	TP_DEBUG("[Shader][Vulkan][SPIR-V] Loading: \"", m_name, "\"");
+	LoadSPIRV(shaders, error);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -375,7 +388,7 @@ void TRAP::Graphics::API::VulkanShader::CompileGLSL(std::array<std::string, 6> &
 
 	if (!SPIRV[0].empty())
 	{
-		if (!CreateShaderModule(m_VShaderModule, SPIRV[0]))
+		if (!CreateShaderModule(m_VShaderModule, SPIRV[0], VK_SHADER_STAGE_VERTEX_BIT))
 			return;
 
 		VkPipelineShaderStageCreateInfo shaderStageInfo
@@ -392,7 +405,7 @@ void TRAP::Graphics::API::VulkanShader::CompileGLSL(std::array<std::string, 6> &
 	}
 	if(!SPIRV[1].empty())
 	{
-		if (!CreateShaderModule(m_FShaderModule, SPIRV[1]))
+		if (!CreateShaderModule(m_FShaderModule, SPIRV[1], VK_SHADER_STAGE_FRAGMENT_BIT))
 			return;
 
 		VkPipelineShaderStageCreateInfo shaderStageInfo
@@ -409,7 +422,7 @@ void TRAP::Graphics::API::VulkanShader::CompileGLSL(std::array<std::string, 6> &
 	}
 	if(!SPIRV[2].empty())
 	{
-		if (!CreateShaderModule(m_GShaderModule, SPIRV[2]))
+		if (!CreateShaderModule(m_GShaderModule, SPIRV[2], VK_SHADER_STAGE_GEOMETRY_BIT))
 			return;
 
 		VkPipelineShaderStageCreateInfo shaderStageInfo
@@ -426,7 +439,7 @@ void TRAP::Graphics::API::VulkanShader::CompileGLSL(std::array<std::string, 6> &
 	}
 	if(!SPIRV[3].empty())
 	{
-		if (!CreateShaderModule(m_TCShaderModule, SPIRV[3]))
+		if (!CreateShaderModule(m_TCShaderModule, SPIRV[3], VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT))
 			return;
 
 		VkPipelineShaderStageCreateInfo shaderStageInfo
@@ -443,7 +456,7 @@ void TRAP::Graphics::API::VulkanShader::CompileGLSL(std::array<std::string, 6> &
 	}
 	if(!SPIRV[4].empty())
 	{
-		if (!CreateShaderModule(m_TEShaderModule, SPIRV[4]))
+		if (!CreateShaderModule(m_TEShaderModule, SPIRV[4], VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT))
 			return;
 
 		VkPipelineShaderStageCreateInfo shaderStageInfo
@@ -460,7 +473,7 @@ void TRAP::Graphics::API::VulkanShader::CompileGLSL(std::array<std::string, 6> &
 	}
 	if (!SPIRV[5].empty())
 	{
-		if (!CreateShaderModule(m_CShaderModule, SPIRV[5]))
+		if (!CreateShaderModule(m_CShaderModule, SPIRV[5], VK_SHADER_STAGE_COMPUTE_BIT))
 			return;
 
 		VkPipelineShaderStageCreateInfo shaderStageInfo
@@ -479,12 +492,12 @@ void TRAP::Graphics::API::VulkanShader::CompileGLSL(std::array<std::string, 6> &
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::CompileSPIRV(std::array<std::vector<uint32_t>, 6>& shaders, VulkanShaderErrorInfo& info)
+void TRAP::Graphics::API::VulkanShader::LoadSPIRV(std::array<std::vector<uint32_t>, 6>& shaders, VulkanShaderErrorInfo& info)
 {
 	if (!shaders[0].empty())
 	{
 		TP_DEBUG("[Shader][Vulkan][SPIR-V] Loading Vertex Shader");
-		if (!CreateShaderModule(m_VShaderModule, shaders[0]))
+		if (!CreateShaderModule(m_VShaderModule, shaders[0], VK_SHADER_STAGE_VERTEX_BIT))
 			return;
 
 		const VkPipelineShaderStageCreateInfo shaderStageInfo
@@ -502,7 +515,7 @@ void TRAP::Graphics::API::VulkanShader::CompileSPIRV(std::array<std::vector<uint
 	if (!shaders[1].empty())
 	{
 		TP_DEBUG("[Shader][Vulkan][SPIR-V] Loading Fragment Shader");
-		if (!CreateShaderModule(m_FShaderModule, shaders[1]))
+		if (!CreateShaderModule(m_FShaderModule, shaders[1], VK_SHADER_STAGE_FRAGMENT_BIT))
 			return;
 
 		const VkPipelineShaderStageCreateInfo shaderStageInfo
@@ -520,7 +533,7 @@ void TRAP::Graphics::API::VulkanShader::CompileSPIRV(std::array<std::vector<uint
 	if (!shaders[2].empty())
 	{
 		TP_DEBUG("[Shader][Vulkan][SPIR-V] Loading Geometry Shader");
-		if (!CreateShaderModule(m_GShaderModule, shaders[2]))
+		if (!CreateShaderModule(m_GShaderModule, shaders[2], VK_SHADER_STAGE_GEOMETRY_BIT))
 			return;
 
 		const VkPipelineShaderStageCreateInfo shaderStageInfo
@@ -538,7 +551,7 @@ void TRAP::Graphics::API::VulkanShader::CompileSPIRV(std::array<std::vector<uint
 	if (!shaders[3].empty())
 	{
 		TP_DEBUG("[Shader][Vulkan][SPIR-V] Loading Tessellation Control Shader");
-		if (!CreateShaderModule(m_TCShaderModule, shaders[3]))
+		if (!CreateShaderModule(m_TCShaderModule, shaders[3], VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT))
 			return;
 
 		const VkPipelineShaderStageCreateInfo shaderStageInfo
@@ -556,7 +569,7 @@ void TRAP::Graphics::API::VulkanShader::CompileSPIRV(std::array<std::vector<uint
 	if (!shaders[4].empty())
 	{
 		TP_DEBUG("[Shader][Vulkan][SPIR-V] Loading Tessellation Evaluation Shader");
-		if (!CreateShaderModule(m_TEShaderModule, shaders[4]))
+		if (!CreateShaderModule(m_TEShaderModule, shaders[4], VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT))
 			return;
 
 		const VkPipelineShaderStageCreateInfo shaderStageInfo
@@ -574,7 +587,7 @@ void TRAP::Graphics::API::VulkanShader::CompileSPIRV(std::array<std::vector<uint
 	if (!shaders[5].empty())
 	{
 		TP_DEBUG("[Shader][Vulkan][SPIR-V] Loading Compute Shader");
-		if (!CreateShaderModule(m_CShaderModule, shaders[5]))
+		if (!CreateShaderModule(m_CShaderModule, shaders[5], VK_SHADER_STAGE_COMPUTE_BIT))
 			return;
 
 		const VkPipelineShaderStageCreateInfo shaderStageInfo
@@ -1086,7 +1099,7 @@ std::vector<std::vector<uint32_t>> TRAP::Graphics::API::VulkanShader::ConvertToS
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanShader::CreateShaderModule(VkShaderModule& shaderModule, std::vector<uint32_t>& SPIRVCode)
+bool TRAP::Graphics::API::VulkanShader::CreateShaderModule(VkShaderModule& shaderModule, std::vector<uint32_t>& SPIRVCode, VkShaderStageFlagBits stage)
 {
 	VkShaderModuleCreateInfo shaderModuleCreateInfo
 	{
@@ -1099,6 +1112,134 @@ bool TRAP::Graphics::API::VulkanShader::CreateShaderModule(VkShaderModule& shade
 
 	VkResult success;
 	VkCall(success = vkCreateShaderModule(Graphics::API::VulkanRenderer::GetDevice().GetDevice(), &shaderModuleCreateInfo, nullptr, &shaderModule));
+
+	if(success == VK_SUCCESS)
+	{
+		Reflect(SPIRVCode, stage);
+		
+		return true;
+	}
 	
-	return success == VK_SUCCESS;
+	return false;;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanShader::Reflect(const std::vector<uint32_t>& SPIRVCode, const VkShaderStageFlagBits stage)
+{
+	//TODO Get VkVertexAttributeBindingDescriptions and stride
+
+	spirv_cross::CompilerGLSL compiler(SPIRVCode);
+	const spirv_cross::SmallVector<spirv_cross::EntryPoint> eps = compiler.get_entry_points_and_stages();
+	if(eps.empty())
+	{
+		//TODO Entry point not found! Use Fallback Shader
+		TP_ERROR("[Shader][Vulkan][SPIR-V] ", VkShaderStageFlagBitsToString(stage), ": Couldn't find \"main\" function!");
+		return;
+	}
+	//Use reflection to read the shader layouts
+	const spirv_cross::ShaderResources resources = compiler.get_shader_resources();
+#ifdef TRAP_DEBUG_SHADERS
+	TP_DEBUG("[Shader][Vulkan][SPIR-V] ", VkShaderStageFlagBitsToString(stage), ": Reflecting...");
+	PrintResources("Uniform Buffers", resources.uniform_buffers, compiler);
+	PrintResources("Storage Buffers", resources.storage_buffers, compiler);
+	PrintResources("Storage Images", resources.storage_images, compiler);
+	PrintResources("Samples Images", resources.sampled_images, compiler);
+	PrintResources("Push Constant Buffers", resources.push_constant_buffers, compiler);
+	PrintResources("Atomic Counters", resources.atomic_counters, compiler);
+	PrintResources("Separate Images", resources.separate_images, compiler);
+	PrintResources("Separate Samplers", resources.separate_samplers, compiler);
+#endif
+
+	std::vector<VulkanShaderResourceTypeMap> resourceTypeMap
+	{
+		{VK_DESCRIPTOR_TYPE_SAMPLER, resources.separate_samplers},
+		{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, resources.sampled_images},
+		{VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, resources.separate_images},
+		{VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, resources.storage_images},
+		//{VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, ?}, //No matching vector
+		//{VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, ?}, //No matching vector
+		{VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, resources.uniform_buffers},
+		{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, resources.storage_buffers},
+		//VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC and VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC are only created if
+		//your application want to enable a dynamic uniform or storage buffer for a particular buffer.
+		//{VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, ? } //Not applicable
+	};
+	for(auto& r : resourceTypeMap)
+	{
+		if(!ReflectResource(stage, compiler, r))
+		{
+			//TODO Failed don't use shader!
+			TP_ERROR("[Shader][Vulkan][SPIR-V] ReflectResource(", VkDescriptorTypeToString(r.DescriptorType), " (", static_cast<uint32_t>(r.DescriptorType), ")) failed!");
+			return;
+		}
+	}
+
+	//TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanShader::PrintResources(const std::string& typeName, const spirv_cross::SmallVector<spirv_cross::Resource>& resources, spirv_cross::CompilerGLSL& compiler)
+{
+	for(uint32_t i = 0; i < resources.size(); i++)
+	{
+		TP_TRACE("[Shader][Vulkan][SPIR-V] " + typeName + "[" + std::to_string(i) + "]:");
+		PrintResource(compiler, resources[i]);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanShader::PrintResource(spirv_cross::CompilerGLSL& compiler, const spirv_cross::Resource& res)
+{
+	TP_TRACE("[Shader][Vulkan][SPIR-V]     ID = ", res.id, " BaseTypeID = ", res.base_type_id);
+	std::stringstream out;
+	PrintType(out, compiler, compiler.get_type(res.base_type_id));
+	std::vector<std::string> strs = TRAP::Utils::String::SplitString(out.str(), '\n');
+	for(const std::string& str : strs)
+		TP_TRACE("[Shader][Vulkan][SPIR-V] ", str);
+	const spv::StorageClass sc = compiler.get_storage_class(res.id);
+	TP_TRACE("[Shader][Vulkan][SPIR-V]     ID = ", res.id, " StorageClass = ", static_cast<uint32_t>(sc), " (", StorageClassToString(sc), ")");
+	std::string str = "    ";
+	compiler.get_decoration_bitset(res.id).for_each_bit([&](const uint32_t dec)
+	{
+		const spv::Decoration d = static_cast<decltype(d)>(dec);
+		str += DecorationToString(d) + " = " + std::to_string(compiler.get_decoration(res.id, d)) + " ";
+	});
+	TP_TRACE("[Shader][Vulkan][SPIR-V] ", str);
+	TP_TRACE("[Shader][Vulkan][SPIR-V]     Name = \"", res.name, "\"");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanShader::PrintType(std::stringstream& out, spirv_cross::CompilerGLSL& compiler, const spirv_cross::SPIRType& type)
+{
+	out << '(' << BaseTypeToString(type.basetype) << ") sizeof = ";
+	out << type.width << " x " << type.vecsize << " x " << type.columns;
+	if (type.basetype == spirv_cross::SPIRType::Image || type.basetype == spirv_cross::SPIRType::SampledImage)
+		out << " (Image" << (static_cast<uint32_t>(type.image.dim) + 1) << "D)";
+	else if(type.basetype == spirv_cross::SPIRType::Struct)
+	{
+		for(std::size_t i = 0; i < type.member_types.size(); i++)
+		{
+			out << "\n    m[" << i << "]: ";
+			PrintType(out, compiler, compiler.get_type(type.member_types[i]));
+		}
+	}
+
+	if(type.type_alias)
+	{
+		out << "\n    alias = " << type.type_alias << ": ";
+		PrintType(out, compiler, compiler.get_type(type.type_alias));
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::API::VulkanShader::ReflectResource(VkShaderStageFlagBits stage, spirv_cross::CompilerGLSL& compiler, VulkanShaderResourceTypeMap& rtm)
+{
+	return true; //TODO
+	
+	return false;
 }

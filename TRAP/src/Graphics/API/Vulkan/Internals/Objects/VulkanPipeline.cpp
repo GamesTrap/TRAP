@@ -28,7 +28,8 @@ TRAP::Graphics::API::Vulkan::Pipeline::Pipeline(const Scope<Device>& device, Ren
 	  m_depthOp(VK_COMPARE_OP_LESS_OR_EQUAL),
 	  m_viewportCount(1),
 	  m_scissorCount(1),
-	  m_multiSampleCount(VK_SAMPLE_COUNT_1_BIT)
+	  m_multiSampleCount(VK_SAMPLE_COUNT_1_BIT),
+	  m_vertexInputBindingDescriptions(1, {0, 0, VK_VERTEX_INPUT_RATE_VERTEX})
 {
 }
 
@@ -61,8 +62,10 @@ TRAP::Graphics::API::Vulkan::Pipeline::Pipeline(const Scope<Device>& device,
 	  m_depthOp(VK_COMPARE_OP_LESS_OR_EQUAL),
 	  m_viewportCount(1),
 	  m_scissorCount(1),
-	  m_multiSampleCount(VK_SAMPLE_COUNT_1_BIT)
+	  m_multiSampleCount(VK_SAMPLE_COUNT_1_BIT),
+	  m_vertexInputBindingDescriptions(1, { 0, 0, VK_VERTEX_INPUT_RATE_VERTEX })
 {
+	//TODO Unused
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -84,9 +87,21 @@ TRAP::Graphics::API::Vulkan::Pipeline::~Pipeline()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::Vulkan::Pipeline::SetShaders(const std::vector<VkPipelineShaderStageCreateInfo>& shaderStageCreateInfos)
+void TRAP::Graphics::API::Vulkan::Pipeline::SetShaders(const std::vector<VkPipelineShaderStageCreateInfo>& shaderStageCreateInfos,
+	const std::vector<VkVertexInputAttributeDescription>& attributeDescriptions,
+	const uint32_t stride)
 {
 	m_shaderStageCreateInfos = shaderStageCreateInfos;
+
+	for(const auto& i : m_shaderStageCreateInfos)
+	{
+		if(i.stage == VK_SHADER_STAGE_VERTEX_BIT)
+		{
+			m_vertexInputBindingDescriptions[0].stride = stride;
+			m_vertexInputAttributeDescriptions = attributeDescriptions;
+			break;
+		}
+	}
 	RecreatePipeline(); //TODO Move this to draw call because this needs all bindings
 }
 
@@ -108,6 +123,8 @@ VkPipeline& TRAP::Graphics::API::Vulkan::Pipeline::GetPipeline()
 
 void TRAP::Graphics::API::Vulkan::Pipeline::RecreatePipeline()
 {
+	//TODO Optimization instead of deleting pipeline save it in a std::map after creation and use a struct containing all its properties as key to be able to reuse it
+	
 	//Delete old Pipeline if exists
 	if(m_pipeline)
 	{
@@ -144,7 +161,7 @@ void TRAP::Graphics::API::Vulkan::Pipeline::RecreatePipeline()
 	VkPipelineMultisampleStateCreateInfo multisampleStateCreateInfo = Initializers::PipelineMultisampleStateCreateInfo(m_multiSampleCount);
 	std::vector<VkDynamicState> dynamicStates = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
 	VkPipelineDynamicStateCreateInfo dynamicStateCreateInfo = Initializers::PipelineDynamicStateCreateInfo(dynamicStates);
-	VkPipelineVertexInputStateCreateInfo vertexInputStateCreateInfo = Initializers::PipelineVertexInputStateCreateInfo(); //TODO VULKAN Empty Vertex Data for now
+	VkPipelineVertexInputStateCreateInfo vertexInputStateCreateInfo = Initializers::PipelineVertexInputStateCreateInfo(m_vertexInputBindingDescriptions, m_vertexInputAttributeDescriptions);
 
 	//TODO VULKAN Tessellation Shaders are ignored for now
 	//VkPipelineTessellationStateCreateInfo x = {};

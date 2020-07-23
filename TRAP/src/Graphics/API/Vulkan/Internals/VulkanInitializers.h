@@ -44,7 +44,8 @@ namespace TRAP::Graphics::API::Vulkan::Initializers
 	VkPipelineDynamicStateCreateInfo PipelineDynamicStateCreateInfo(std::vector<VkDynamicState>& dynamicStates);
 	VkPipelineVertexInputStateCreateInfo PipelineVertexInputStateCreateInfo(std::vector<VkVertexInputBindingDescription>& vertexInputBindingDescriptions,
 		std::vector<VkVertexInputAttributeDescription>& vertexInputAttributeDescriptions);
-	VkPipelineVertexInputStateCreateInfo PipelineVertexInputStateCreateInfo();
+	VkPipelineVertexInputStateCreateInfo PipelineVertexInputStateCreateInfo(const std::vector<VkVertexInputBindingDescription>& bindingDescriptions,
+		const std::vector<VkVertexInputAttributeDescription>& attributeDescriptions);
 	VkGraphicsPipelineCreateInfo GraphicsPipelineCreateInfo(std::vector<VkPipelineShaderStageCreateInfo>& shaderStageCreateInfos, VkPipelineVertexInputStateCreateInfo& vertexInputStateCreateInfo,
 		VkPipelineInputAssemblyStateCreateInfo& inputAssemblyStateCreateInfo, VkPipelineViewportStateCreateInfo& viewportStateCreateInfo, VkPipelineRasterizationStateCreateInfo& rasterizationStateCreateInfo,
 		VkPipelineMultisampleStateCreateInfo& multisampleStateCreateInfo, VkPipelineDepthStencilStateCreateInfo& depthStencilStateCreateInfo, VkPipelineColorBlendStateCreateInfo& colorBlendStateCreateInfo,

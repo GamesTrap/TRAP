@@ -58,7 +58,7 @@ namespace TRAP::Graphics::API
 
 		void CheckForUniforms();
 
-		static void PreProcess(const std::string& source, std::array<std::string, 6>& shaders);
+		static bool PreProcess(const std::string& source, std::array<std::string, 6>& shaders);
 
 		uint32_t m_handle;
 	};

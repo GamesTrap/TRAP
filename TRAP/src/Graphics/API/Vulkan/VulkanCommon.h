@@ -6,6 +6,11 @@
 namespace TRAP::Graphics::API
 {
 	bool ErrorCheck(VkResult result, const char* function, const char* file, int32_t line);
+	std::string VkShaderStageFlagBitsToString(VkShaderStageFlagBits stage);
+	std::string BaseTypeToString(spirv_cross::SPIRType::BaseType type);
+	std::string StorageClassToString(spv::StorageClass sc);
+	std::string DecorationToString(spv::Decoration dec);
+	std::string VkDescriptorTypeToString(VkDescriptorType type);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

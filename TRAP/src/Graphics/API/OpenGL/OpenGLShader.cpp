@@ -108,7 +108,13 @@ void TRAP::Graphics::API::OpenGLShader::InitGLSL(const std::string& source)
 	
 	std::array<std::string, 6> shaders{};
 	if (!source.empty())
-		PreProcess(source, shaders);
+	{
+		if(!PreProcess(source, shaders))
+		{
+			TP_WARN("[Shader][OpenGL][GLSL] Shader: \"", m_name, "\" using fallback Shader: \"Fallback\"");
+				return;
+		}		
+	}
 	
 	bool isEmpty = true;
 	for(const auto& shaderSource : shaders)
@@ -250,7 +256,7 @@ uint32_t TRAP::Graphics::API::OpenGLShader::CompileGLSL(std::array<std::string, 
 	LinkGLSLProgram(linkResult, validateResult, program);
 
 	DeleteGLSLShaders(shaders, vertex, fragment, geometry, tessControl, tessEval, compute, program);
-
+	
 	if (!linkResult || !validateResult)
 	{
 		OpenGLCall(glDeleteProgram(program));
@@ -578,7 +584,7 @@ void TRAP::Graphics::API::OpenGLShader::CheckForUniforms()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, std::array<std::string, 6>& shaders)
+bool TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, std::array<std::string, 6>& shaders)
 {
 	ShaderType type = ShaderType::Unknown;
 
@@ -636,9 +642,13 @@ void TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, st
 			{				
 				TP_ERROR("[Shader][OpenGL][GLSL] ", ShaderTypeToString(static_cast<ShaderType>(i + 1)), ": Couldn't find \"main\" function!");
 				shaders[i] = "";
+				return false;
 			}
-			else //Found main function
-				shaders[i] = "#version 460 core\n" + shaders[i];
+			
+			//Found main function
+			shaders[i] = "#version 460 core\n" + shaders[i];
 		}
 	}
+
+	return true;
 }

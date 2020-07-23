@@ -175,7 +175,7 @@ void Cube3D::OnAttach()
     m_phongLightningDataBuffer.MaterialKs = { 0.8f, 0.8f, 0.8f };
     m_phongLightningDataBuffer.MaterialShininess = 100.0f;
     m_phongLightningUniformBuffer = TRAP::Graphics::UniformBuffer::Create("DataBuffer", &m_phongLightningDataBuffer, sizeof(PhongLightningDataBuffer), TRAP::Graphics::BufferUsage::Dynamic);
-
+	
     TRAP::Graphics::RenderCommand::SetClearColor();
     TRAP::Graphics::RenderCommand::SetCull(true);
     TRAP::Graphics::RenderCommand::SetBlend(true);
@@ -288,12 +288,10 @@ void Cube3D::OnImGuiRender()
 		}
     }
     ImGui::Text("Press F1 to switch Shaders");
-    ImGui::Text("Press F2 for WireFrame");
-    ImGui::Text("Press F3 to toggle SkyBox");
     ImGui::Text("Current Shader:");
     ImGui::Text("%s", m_shaderNames[m_currentShader].c_str());
-    ImGui::Text("Wireframe: %s", m_wireFrame ? "Enabled" : "Disabled");
-    ImGui::Text("SkyBox: %s", m_drawSkyBox ? "Enabled" : "Disabled");
+    ImGui::Checkbox("WireFrame", &m_wireFrame);
+    ImGui::Checkbox("Skybox", &m_drawSkyBox);
     ImGui::End();
 
     if (fov != fovCopy)
@@ -312,6 +310,9 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	
 	//Render
 	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
+
+    TRAP::Graphics::RenderCommand::SetWireFrame(m_wireFrame);
+    TRAP::Graphics::RenderCommand::SetDepthTesting(!m_wireFrame);
 
     TRAP::Graphics::Renderer::BeginScene(m_camera.GetCamera());
 	{
@@ -401,8 +402,6 @@ bool Cube3D::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 	if(event.GetKey() == TRAP::Input::Key::F2 && event.GetRepeatCount() == 0)
 	{
         m_wireFrame = !m_wireFrame;
-        TRAP::Graphics::RenderCommand::SetWireFrame(m_wireFrame);
-        TRAP::Graphics::RenderCommand::SetDepthTesting(!m_wireFrame);
         return true;
 	}
 

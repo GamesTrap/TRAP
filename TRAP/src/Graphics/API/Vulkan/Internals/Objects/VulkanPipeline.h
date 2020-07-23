@@ -22,7 +22,8 @@ namespace TRAP::Graphics::API::Vulkan
 		Pipeline(Pipeline&&) = default;
 		Pipeline& operator=(Pipeline&&) = default;
 
-		void SetShaders(const std::vector<VkPipelineShaderStageCreateInfo>& shaderStageCreateInfos);
+		void SetShaders(const std::vector<VkPipelineShaderStageCreateInfo>& shaderStageCreateInfos,
+			const std::vector<VkVertexInputAttributeDescription>& attributeDescriptions, uint32_t stride);
 		std::vector<VkPipelineShaderStageCreateInfo>& GetShaders();
 		VkPipeline& GetPipeline();
 		
@@ -58,6 +59,8 @@ namespace TRAP::Graphics::API::Vulkan
 		uint32_t m_scissorCount;
 		VkSampleCountFlagBits m_multiSampleCount;
 		std::vector<VkPipelineShaderStageCreateInfo> m_shaderStageCreateInfos;
+		std::vector<VkVertexInputBindingDescription> m_vertexInputBindingDescriptions;
+		std::vector<VkVertexInputAttributeDescription> m_vertexInputAttributeDescriptions;
 	};
 }
 

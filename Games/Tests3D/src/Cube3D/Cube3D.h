@@ -18,6 +18,7 @@ public:
 	void OnEvent(TRAP::Events::Event& event) override;
 
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
+	bool OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event);
 	
 private:
 	TRAP::Scope<TRAP::Graphics::VertexArray> m_cubeVertexArray;

@@ -1160,3 +1160,8 @@ SITREP 07/22/2020|20w30a2
     - OpenGLLoader Removed some non Direct State Access (DSA) functions ~>120 mins
     - ImGuiOpenGL4 replaced non-DSA functions with DSA functions ~<40 mins
     - ImGuiOpenGL4 removed unnecessary bindings thx to DSA :D ~<10 mins
+
+SITREP 07/23/2020|20w30a3
+    - Changed TRAP Engine version to 20w30a3(0.6.53)
+    - OpenGLShader if Fragment/Vertex shader does not contain entry point "main" the Fallback shader will be used ~<20 mins
+    - VulkanShader Added Debugging Reflection (enable via TRAP_DEBUG_SHADERS macro) ~>65 mins

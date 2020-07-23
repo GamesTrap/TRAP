@@ -593,17 +593,18 @@ VkPipelineVertexInputStateCreateInfo TRAP::Graphics::API::Vulkan::Initializers::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineVertexInputStateCreateInfo TRAP::Graphics::API::Vulkan::Initializers::PipelineVertexInputStateCreateInfo()
+VkPipelineVertexInputStateCreateInfo TRAP::Graphics::API::Vulkan::Initializers::PipelineVertexInputStateCreateInfo(const std::vector<VkVertexInputBindingDescription>& bindingDescriptions,
+	const std::vector<VkVertexInputAttributeDescription>& attributeDescriptions)
 {
 	return VkPipelineVertexInputStateCreateInfo
 	{
 		VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
 		nullptr,
 		0,
-		0,
-		nullptr,
-		0,
-		nullptr
+		static_cast<uint32_t>(bindingDescriptions.size()),
+		bindingDescriptions.data(),
+		static_cast<uint32_t>(attributeDescriptions.size()),
+		attributeDescriptions.data()
 	};
 }
 
