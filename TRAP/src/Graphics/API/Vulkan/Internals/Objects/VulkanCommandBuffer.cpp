@@ -21,7 +21,7 @@ void TRAP::Graphics::API::Vulkan::CommandBuffer::BindPipeline(Pipeline& pipeline
 	if (pipeline.GetPipeline())
 		vkCmdBindPipeline(m_commandBuffer, bindPoint, pipeline.GetPipeline());
 	else
-		TP_CRITICAL("[Renderer][Vulkan] Graphics Pipeline is nullptr!");
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Graphics Pipeline is nullptr!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

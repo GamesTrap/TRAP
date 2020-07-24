@@ -145,7 +145,7 @@ void TRAP::Graphics::TextureManager::Add(Scope<Texture> texture)
 		if (!Exists(std::string(texture->GetName())))
 			s_Textures[std::string(texture->GetName())] = std::move(texture);
 		else
-			TP_ERROR("[TextureManager] Texture with Name: \"", texture->GetName(), "\" already exists! Ignoring new Texture");
+			TP_ERROR(Log::TextureManagerPrefix, "Texture with Name: \"", texture->GetName(), "\" already exists! Ignoring new Texture");
 	}
 }
 
@@ -160,7 +160,7 @@ void TRAP::Graphics::TextureManager::Remove(const Scope<Texture>& texture)
 		if (Exists(std::string(texture->GetName())))
 			s_Textures.erase(std::string(texture->GetName()));
 		else
-			TP_ERROR("[TextureManager] Could not find Texture with Name: \"", texture->GetName(), "\"!");
+			TP_ERROR(Log::TextureManagerPrefix, "Could not find Texture with Name: \"", texture->GetName(), "\"!");
 	}
 }
 
@@ -173,7 +173,7 @@ void TRAP::Graphics::TextureManager::Remove(const std::string_view name)
 	if (Exists(std::string(name)))
 		s_Textures.erase(std::string(name));
 	else
-		TP_ERROR("[TextureManager] Could not find Texture with Name: \"", name, "\"!");
+		TP_ERROR(Log::TextureManagerPrefix, "Could not find Texture with Name: \"", name, "\"!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -237,7 +237,7 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 
 			if (filePath.empty())
 			{
-				TP_WARN("[TextureManager] Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
+				TP_WARN(Log::TextureManagerPrefix, "Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
 				return;
 			}
 
@@ -248,7 +248,7 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 			{
 				s_Textures[nameOrVirtualPath].reset();
 				s_Textures[nameOrVirtualPath] = Texture2D::CreateFromFile(name, filePath, textureParameters);
-				TP_INFO("[TextureManager][Texture2D] Reloaded: \"", nameOrVirtualPath, "\"");
+				TP_INFO(Log::TextureManagerTexture2DPrefix, "Reloaded: \"", nameOrVirtualPath, "\"");
 			}
 			else if (textureType == TextureType::TextureCube)
 			{
@@ -266,15 +266,15 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 					else
 						s_Textures[nameOrVirtualPath] = TextureCube::CreateFromFiles(name, filePaths, textureParameters);
 
-					TP_INFO("[TextureManager][TextureCube] Reloaded: \"", nameOrVirtualPath, "\"");
+					TP_INFO(Log::TextureManagerTextureCubePrefix, "Reloaded: \"", nameOrVirtualPath, "\"");
 				}
 			}
 			else
 				//Shouldn't be reached
-				TP_WARN("[TextureManager] Unknown TextureType: \"", nameOrVirtualPath, "\"");
+				TP_WARN(Log::TextureManagerPrefix, "Unknown TextureType: \"", nameOrVirtualPath, "\"");
 		}
 		else
-			TP_WARN("[TextureManager] Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
+			TP_WARN(Log::TextureManagerPrefix, "Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
 	}
 	else //Virtual Path
 	{
@@ -296,7 +296,7 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 							return;
 						}
 		
-		TP_WARN("[TextureManager] Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
+		TP_WARN(Log::TextureManagerPrefix, "Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
 	}
 }
 
@@ -317,7 +317,7 @@ void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 			filePath = std::string(dynamic_cast<TextureCube*>(s_Textures[name].get())->GetFilePaths()[0]);
 		if (filePath.empty())
 		{
-			TP_WARN("[TextureManager] Could not find Texture: \"", name, "\" to reload.");
+			TP_WARN(Log::TextureManagerPrefix, "Could not find Texture: \"", name, "\" to reload.");
 			return;
 		}
 
@@ -327,7 +327,7 @@ void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 		{
 			s_Textures[name].reset();
 			s_Textures[name] = Texture2D::CreateFromFile(name, filePath, textureParameters);
-			TP_INFO("[TextureManager][Texture2D] Reloaded: \"", name, "\"");
+			TP_INFO(Log::TextureManagerTexture2DPrefix, "Reloaded: \"", name, "\"");
 		}
 		else if (textureType == TextureType::TextureCube)
 		{
@@ -345,14 +345,14 @@ void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 				else
 					s_Textures[name] = TextureCube::CreateFromFiles(name, filePaths, textureParameters);
 
-				TP_INFO("[TextureManager][TextureCube] Reloaded: \"", name, "\"");
+				TP_INFO(Log::TextureManagerTextureCubePrefix, "Reloaded: \"", name, "\"");
 			}
 		}
 		else
-			TP_WARN("[TextureManager] Unknown TextureType: \"", name, "\"");
+			TP_WARN(Log::TextureManagerPrefix, "Unknown TextureType: \"", name, "\"");
 	}
 	else
-		TP_WARN("[TextureManager] Could not find Texture: \"", texture->GetName(), "\" to reload.");
+		TP_WARN(Log::TextureManagerPrefix, "Could not find Texture: \"", texture->GetName(), "\" to reload.");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -361,7 +361,7 @@ void TRAP::Graphics::TextureManager::ReloadAll()
 {
 	TP_PROFILE_FUNCTION();
 
-	TP_INFO("[TextureManager] Reloading all may take a while...");
+	TP_INFO(Log::TextureManagerPrefix, "Reloading all may take a while...");
 	for (auto& [name, texture] : s_Textures)
 		Reload(texture);
 }
@@ -372,7 +372,7 @@ void TRAP::Graphics::TextureManager::Shutdown()
 {
 	TP_PROFILE_FUNCTION();
 
-	TP_DEBUG("[TextureManager] Destroying Textures");
+	TP_DEBUG(Log::TextureManagerPrefix, "Destroying Textures");
 	Clean();
 }
 

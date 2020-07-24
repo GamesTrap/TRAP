@@ -38,7 +38,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 	if(name.empty())
 	{
-		TP_WARN("[Shader] Name is empty! Using Filename as Shader Name!");
+		TP_WARN(Log::ShaderPrefix, "Name is empty! Using Filename as Shader Name!");
 		return CreateFromFile(filePath);
 	}
 	
@@ -50,8 +50,8 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	{
 		if (Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "spirv" && Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "shader")
 		{
-			TP_ERROR("[Shader] File: \"", filePath, "\" suffix is not \"*.spirv\" or \"*.shader\"!");
-			TP_WARN("[Shader] Shader using fallback Shader: \"Fallback\"");
+			TP_ERROR(Log::ShaderPrefix, "File: \"", filePath, "\" suffix is not \"*.spirv\" or \"*.shader\"!");
+			TP_WARN(Log::ShaderPrefix, "Shader using fallback Shader: \"Fallback\"");
 			return nullptr;
 		}
 		
@@ -68,15 +68,15 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	if(isSPIRV)
 	{
 		if(!filePath.empty() && SPIRVSource.empty())
-			TP_ERROR("[Shader][SPIR-V] Couldn't load Shader: \"", name, "\"!");
+			TP_ERROR(Log::ShaderSPIRVPrefix, "Couldn't load Shader: \"", name, "\"!");
 	}
 	else
 		if (!filePath.empty() && source.empty())
-			TP_ERROR("[Shader] Couldn't load Shader: \"", name, "\"!");
+			TP_ERROR(Log::ShaderPrefix, "Couldn't load Shader: \"", name, "\"!");
 
 	if ((source.empty() && !isSPIRV) || (SPIRVSource.empty() && isSPIRV))
 	{
-		TP_WARN("[Shader] Shader using fallback Shader: \"Fallback\"");
+		TP_WARN(Log::ShaderPrefix, "Shader using fallback Shader: \"Fallback\"");
 		return nullptr;
 	}
 
@@ -126,8 +126,8 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	{
 		if (Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "spirv" && Utils::String::ToLower(Utils::String::GetSuffix(filePath)) != "shader")
 		{
-			TP_ERROR("[Shader] File: \"", filePath, "\" suffix is not \"*.spirv\" or \"*.shader\"!");
-			TP_WARN("[Shader] Shader using fallback Shader: \"Fallback\"");
+			TP_ERROR(Log::ShaderPrefix, "File: \"", filePath, "\" suffix is not \"*.spirv\" or \"*.shader\"!");
+			TP_WARN(Log::ShaderPrefix, "Shader using fallback Shader: \"Fallback\"");
 			return nullptr;
 		}
 		
@@ -145,15 +145,15 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	if (isSPIRV)
 	{
 		if (!filePath.empty() && SPIRVSource.empty())
-			TP_ERROR("[Shader][SPIR-V] Couldn't load Shader: \"", name, "\"!");
+			TP_ERROR(Log::ShaderSPIRVPrefix, "Couldn't load Shader: \"", name, "\"!");
 	}
 	else
 		if (!filePath.empty() && source.empty())
-			TP_ERROR("[Shader] Couldn't load Shader: \"", name, "\"!");
+			TP_ERROR(Log::ShaderPrefix, "Couldn't load Shader: \"", name, "\"!");
 
 	if ((source.empty() && !isSPIRV) || (SPIRVSource.empty() && isSPIRV))
 	{
-		TP_WARN("[Shader] Shader using fallback Shader: \"Fallback\"");
+		TP_WARN(Log::ShaderPrefix, "Shader using fallback Shader: \"Fallback\"");
 		return nullptr;
 	}
 
@@ -265,7 +265,7 @@ bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::string& filePath)
 				return false;
 			}
 
-			TP_ERROR("[FileSystem] Could not open File: ", physicalPath);
+			TP_ERROR(Log::FileSystemPrefix, "Could not open File: ", physicalPath);
 		}
 	}
 

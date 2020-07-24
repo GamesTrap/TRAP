@@ -23,7 +23,7 @@ void TRAP::Utils::Debug::Instrumentor::BeginSession(const std::string& name, con
 		//If there is already a current session, then close it before beginning a new one.
 		//Subsequent profiling output meant for the original session will end up in the newly opened session instead.
 		//That is better than having badly formatted profiling output.
-		TP_ERROR("[Instrumentor] Instrumentor::BeginSession('", name, "') when session '", m_currentSession->Name, "' already open!");
+		TP_ERROR(Log::InstrumentorPrefix, "Instrumentor::BeginSession('", name, "') when session '", m_currentSession->Name, "' already open!");
 		InternalEndSession();
 	}
 	m_outputStream.open(filePath);
@@ -34,7 +34,7 @@ void TRAP::Utils::Debug::Instrumentor::BeginSession(const std::string& name, con
 		WriteHeader();
 	}
 	else
-		TP_ERROR("[Instrumentor] Could not open results file '", filePath, "'!");
+		TP_ERROR(Log::InstrumentorPrefix, "Could not open results file '", filePath, "'!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

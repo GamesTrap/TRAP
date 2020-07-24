@@ -328,7 +328,7 @@ static bool CheckShader(const GLuint handle, const char* desc)
 	glGetShaderiv(handle, GL_COMPILE_STATUS, &status);
 	glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &logLength);
 	if (static_cast<GLboolean>(status) == GL_FALSE)
-		TP_ERROR("[ImGui][OpenGL] Failed to compile shader: ", desc);
+		TP_ERROR(TRAP::Log::ImGuiOpenGLPrefix, "Failed to compile shader: ", desc);
 	if(logLength > 1)
 	{
 		ImVector<char> buf;
@@ -350,7 +350,7 @@ static bool CheckProgram(const GLuint handle, const char* desc)
 	glGetProgramiv(handle, GL_LINK_STATUS, &status);
 	glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &logLength);
 	if (static_cast<GLboolean>(status) == GL_FALSE)
-		TP_ERROR("[ImGui][OpenGL] Failed to link program: ", desc);
+		TP_ERROR(TRAP::Log::ImGuiOpenGLPrefix, "Failed to link program: ", desc);
 	if (logLength > 1)
 	{
 		ImVector<char> buf;

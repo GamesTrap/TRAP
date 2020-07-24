@@ -18,17 +18,17 @@ void TRAP::Graphics::API::RendererAPI::Init()
 	switch (Context::GetRenderAPI())
 	{
 	case RenderAPI::OpenGL:
-		TP_INFO("[Renderer][OpenGL] Initializing Renderer");
+		TP_INFO(Log::RendererOpenGLPrefix, "Initializing Renderer");
 		s_Renderer = MakeScope<OpenGLRenderer>();
 		break;
 
 	case RenderAPI::Vulkan:
-		TP_INFO("[Renderer][Vulkan] Initializing Renderer");
+		TP_INFO(Log::RendererVulkanPrefix, "Initializing Renderer");
 		s_Renderer = MakeScope<VulkanRenderer>();
 		break;
 
 	default:
-		TP_CRITICAL("[Renderer] Unsupported Device!");
+		TP_CRITICAL(Log::RendererPrefix, "Unsupported Device!");
 		Show("Device is unsupported!\n No RenderAPI selected!", "Unsupported Device", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
 		exit(-1);
 	}

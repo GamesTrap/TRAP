@@ -6,7 +6,7 @@ TRAP::Graphics::API::VulkanUniformBuffer::VulkanUniformBuffer(std::string name, 
 {
 	TP_PROFILE_FUNCTION();
 	
-	TP_WARN("[UniformBuffer][Vulkan] WIP");
+	TP_WARN(Log::UniformBufferVulkanPrefix, "WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -16,7 +16,7 @@ TRAP::Graphics::API::VulkanUniformBuffer::VulkanUniformBuffer(std::string name, 
 {
 	TP_PROFILE_FUNCTION();
 	
-	TP_WARN("[UniformBuffer][Vulkan] WIP");
+	TP_WARN(Log::UniformBufferVulkanPrefix, "WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

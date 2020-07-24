@@ -34,7 +34,7 @@ bool TRAP::Utils::Config::SaveToFile(const std::string& filename)
 	
 	if (m_isChanged)
 	{
-		TP_INFO("[Config] Saving: ", m_filename);
+		TP_INFO(TRAP::Log::ConfigPrefix, "Saving: ", m_filename);
 		m_isChanged = false;
 
 		return Write();
@@ -60,9 +60,9 @@ void TRAP::Utils::Config::Print() const
 
 #ifdef TRAP_DEBUG_CONFIGS	
 	for (auto& [key, value] : m_data)
-		TP_TRACE("[Config] ", key, " = ", value);
+		TP_TRACE(ConfigPrefix, key, " = ", value);
 
-	TP_TRACE("[Config] Size: ", m_data.size());
+	TP_TRACE(ConfigPrefix, "Size: ", m_data.size());
 #endif
 }
 
@@ -74,7 +74,7 @@ bool TRAP::Utils::Config::Read()
 	if (input.empty())
 		return false;
 
-	TP_INFO("[Config] Loading File: \"", m_filename, "\"");
+	TP_INFO(TRAP::Log::ConfigPrefix, "Loading File: \"", m_filename, "\"");
 	std::vector<std::string_view> lines = String::SplitStringView(input, '\n');
 
 	for (const auto& line : lines)

@@ -37,12 +37,12 @@ TRAP::Application::Application()
 {
 	TP_PROFILE_FUNCTION();
 
-	TP_DEBUG("[Application] Initializing TRAP Modules...");
+	TP_DEBUG(Log::ApplicationPrefix, "Initializing TRAP Modules...");
 
 	TRAP_CORE_ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
 
-	TP_INFO("[Application] CPU: ", GetCPUInfo().LogicalCores, "x ", GetCPUInfo().Model);
+	TP_INFO(Log::ApplicationPrefix, "CPU: ", GetCPUInfo().LogicalCores, "x ", GetCPUInfo().Model);
 
 	//Check if machine is using little-endian or big-endian
 	int32_t intVal = 1;
@@ -58,13 +58,13 @@ TRAP::Application::Application()
 	//TODO Future Remove
 	if (GetLinuxWindowManager() == LinuxWindowManager::Wayland)
 	{
-		TP_CRITICAL("[Engine][Wayland] Wayland is currently not supported by TRAP! Please use X11 instead");
+		TP_CRITICAL(Log::EngineLinuxWaylandPrefix, "Wayland is currently not supported by TRAP! Please use X11 instead");
 		exit(-1);
 	}
 
 	VFS::Init();
 	if (!m_config.LoadFromFile("Engine.cfg"))
-		TP_INFO("[Config] Using default values");
+		TP_INFO(Log::ConfigPrefix, "Using default values");
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
 	m_config.Print();
 #endif
@@ -152,7 +152,7 @@ TRAP::Application::~Application()
 
 	TP_PROFILE_FUNCTION();
 
-	TP_DEBUG("[Application] Shutting down TRAP Modules...");
+	TP_DEBUG(Log::ApplicationPrefix, "Shutting down TRAP Modules...");
 	if(m_hotReloadingThread)
 	{
 		m_hotReloadingThread->join();
@@ -700,7 +700,7 @@ void TRAP::Application::UpdateLinuxWindowManager()
 		m_linuxWindowManager = LinuxWindowManager::X11;
 	else
 	{
-		TP_CRITICAL("[Engine][Linux] Unsupported Window Manager!");
+		TP_CRITICAL(Log::EngineLinuxPrefix, "Unsupported Window Manager!");
 		Show("Window Manager is unsupported!\nTRAP Engine uses X11 or Wayland\nMake sure the appropriate environment variables are set!", "Unsupported Window Manager", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
 		exit(-1);
 	}
@@ -868,7 +868,7 @@ void TRAP::Application::UpdateHotReloading()
 	{
 		if (Graphics::ShaderManager::ExistsVirtualPath(virtualPath))
 		{
-			TP_INFO("[ShaderManager] Shader Modified Reloading...");
+			TP_INFO(Log::ShaderManagerPrefix, "Shader Modified Reloading...");
 			Graphics::ShaderManager::Reload(virtualPath);
 		}
 	}
@@ -879,7 +879,7 @@ void TRAP::Application::UpdateHotReloading()
 	{
 		if (Graphics::TextureManager::ExistsVirtualPath(virtualPath))
 		{
-			TP_INFO("[TextureManager] Texture Modified Reloading...");
+			TP_INFO(Log::ShaderManagerPrefix, "Texture Modified Reloading...");
 			Graphics::TextureManager::Reload(virtualPath);
 		}
 	}

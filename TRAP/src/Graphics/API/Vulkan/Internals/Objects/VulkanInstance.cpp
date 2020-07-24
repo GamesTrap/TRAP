@@ -121,9 +121,9 @@ bool TRAP::Graphics::API::Vulkan::Instance::IsLayerSupported(const char* layer)
 	if (layerResult == s_availableLayers.end())
 	{
 		if (strcmp(layer, "VK_LAYER_KHRONOS_validation") == 0)
-			TP_WARN("[Renderer][Vulkan][Instance] Layer ", layer, " is not supported(Vulkan SDK installed?)");
+			TP_WARN(Log::RendererVulkanInstancePrefix, "Layer ", layer, " is not supported(Vulkan SDK installed?)");
 		else
-			TP_WARN("[Renderer][Vulkan][Instance] Layer ", layer, " is not supported");
+			TP_WARN(Log::RendererVulkanInstancePrefix, "Layer ", layer, " is not supported");
 		
 		return false;
 	}
@@ -148,9 +148,9 @@ bool TRAP::Graphics::API::Vulkan::Instance::IsExtensionSupported(const char* ext
 	if (extensionResult == s_availableExtensions.end())
 	{
 		if (strcmp(extension, VK_EXT_DEBUG_UTILS_EXTENSION_NAME) == 0)
-			TP_WARN("[Renderer][Vulkan] Extension ", extension, " is not supported(Vulkan SDK installed?)");
+			TP_WARN(Log::RendererVulkanInstancePrefix, "Extension ", extension, " is not supported(Vulkan SDK installed?)");
 		else
-			TP_WARN("[Renderer][Vulkan] Extension ", extension, " is not supported");
+			TP_WARN(Log::RendererVulkanInstancePrefix, "Extension ", extension, " is not supported");
 		
 		return false;
 	}

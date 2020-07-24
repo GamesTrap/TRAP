@@ -13,13 +13,13 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 
 	m_filepath = std::move(filepath);
 
-	TP_DEBUG("[Image][PNM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
+	TP_DEBUG(Log::ImagePNMPrefix, "Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
 	if (!VFS::SilentResolveReadPhysicalPath(m_filepath, physicalPath))
 	{
-		TP_ERROR("[Image][PNM] Couldn't resolve FilePath: ", m_filepath, "!");
-		TP_WARN("[Image][PNM] Using Default Image!");
+		TP_ERROR(Log::ImagePNMPrefix, "Couldn't resolve FilePath: ", m_filepath, "!");
+		TP_WARN(Log::ImagePNMPrefix, "Using Default Image!");
 		return;
 	}
 
@@ -28,8 +28,8 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 		std::ifstream file(physicalPath, std::ios::binary);
 		if (!file.is_open())
 		{
-			TP_ERROR("[Image][PNM] Couldn't open FilePath: ", m_filepath, "!");
-			TP_WARN("[Image][PNM] Using Default Image!");
+			TP_ERROR(Log::ImagePNMPrefix, "Couldn't open FilePath: ", m_filepath, "!");
+			TP_WARN(Log::ImagePNMPrefix, "Using Default Image!");
 			return;
 		}
 
@@ -45,29 +45,29 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 		if (!(header.MagicNumber == "P2" || header.MagicNumber == "P5" || header.MagicNumber == "P3" || header.MagicNumber == "P6"))
 		{
 			file.close();
-			TP_ERROR("[Image][PNM] Unsupported Format or invalid Magic Number!");
-			TP_WARN("[Image][PNM] Using Default Image!");
+			TP_ERROR(Log::ImagePNMPrefix, "Unsupported Format or invalid Magic Number!");
+			TP_WARN(Log::ImagePNMPrefix, "Using Default Image!");
 			return;
 		}
 		if (header.Width < 1)
 		{
 			file.close();
-			TP_ERROR("[Image][PNM] Width is < 1!");
-			TP_WARN("[Image][PNM] Using Default Image!");
+			TP_ERROR(Log::ImagePNMPrefix, "Width is < 1!");
+			TP_WARN(Log::ImagePNMPrefix, "Using Default Image!");
 			return;
 		}
 		if (header.Height < 1)
 		{
 			file.close();
-			TP_ERROR("[Image][PNM] Height is < 1!");
-			TP_WARN("[Image][PNM] Using Default Image!");
+			TP_ERROR(Log::ImagePNMPrefix, "Height is < 1!");
+			TP_WARN(Log::ImagePNMPrefix, "Using Default Image!");
 			return;
 		}
 		if (header.MaxValue < 1 || header.MaxValue > 65535)
 		{
 			file.close();
-			TP_ERROR("[Image][PNM] Max Value is unsupported/invalid!");
-			TP_WARN("[Image][PNM] Using Default Image!");
+			TP_ERROR(Log::ImagePNMPrefix, "Max Value is unsupported/invalid!");
+			TP_WARN(Log::ImagePNMPrefix, "Using Default Image!");
 			return;
 		}
 
@@ -87,8 +87,8 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 				if(!file.read(reinterpret_cast<char*>(m_data2Byte.data()), m_width * m_height * sizeof(uint16_t)))
 				{
 					file.close();
-					TP_ERROR("[Image][PNM] Couldn't load pixel data!");
-					TP_WARN("[Image][PNM] Using Default Image!");
+					TP_ERROR(Log::ImagePNMPrefix, "Couldn't load pixel data!");
+					TP_WARN(Log::ImagePNMPrefix, "Using Default Image!");
 					return;
 				}
 			}
@@ -101,8 +101,8 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 				if (!file.read(reinterpret_cast<char*>(m_data2Byte.data()), m_width * m_height * 3 * sizeof(uint16_t)))
 				{
 					file.close();
-					TP_ERROR("[Image][PNM] Couldn't load pixel data!");
-					TP_WARN("[Image][PNM] Using Default Image!");
+					TP_ERROR(Log::ImagePNMPrefix, "Couldn't load pixel data!");
+					TP_WARN(Log::ImagePNMPrefix, "Using Default Image!");
 					return;
 				}
 			}
@@ -125,8 +125,8 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 				if(!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height))
 				{
 					file.close();
-					TP_ERROR("[Image][PNM] Couldn't load pixel data!");
-					TP_WARN("[Image][PNM] Using Default Image!");
+					TP_ERROR(Log::ImagePNMPrefix, "Couldn't load pixel data!");
+					TP_WARN(Log::ImagePNMPrefix, "Using Default Image!");
 					return;
 				}
 			}
@@ -139,8 +139,8 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 				if (!file.read(reinterpret_cast<char*>(m_data.data()), m_width * m_height * 3))
 				{
 					file.close();
-					TP_ERROR("[Image][PNM] Couldn't load pixel data!");
-					TP_WARN("[Image][PNM] Using Default Image!");
+					TP_ERROR(Log::ImagePNMPrefix, "Couldn't load pixel data!");
+					TP_WARN(Log::ImagePNMPrefix, "Using Default Image!");
 					return;
 				}
 			}

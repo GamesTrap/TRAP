@@ -13,7 +13,7 @@ TRAP::Graphics::API::Vulkan::Debug::Debug(const Scope<Instance>& instance)
 
 	if(m_fvkCreateDebugUtilsMessengerEXT == nullptr || m_fvkDestroyDebugUtilsMessengerEXT == nullptr)
 	{
-		TP_ERROR("[Renderer][Vulkan] Couldn't fetch debug function pointers!");
+		TP_ERROR(Log::RendererVulkanPrefix, "Couldn't fetch debug function pointers!");
 		return;
 	}
 

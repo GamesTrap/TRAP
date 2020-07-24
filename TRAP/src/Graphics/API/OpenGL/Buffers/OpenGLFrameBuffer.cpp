@@ -56,8 +56,8 @@ void TRAP::Graphics::API::OpenGLFrameBuffer::Invalidate()
 
 	if (m_props.Width > s_maxRenderBufferSize || m_props.Height > s_maxRenderBufferSize)
 	{
-		TP_ERROR("[FrameBuffer2D][OpenGL] Couldn't create FrameBuffer!");
-		TP_ERROR("[FrameBuffer2D][OpenGL] Width: ", m_props.Width, " or Height: ", m_props.Height, " is bigger than the maximum render buffer size: ", s_maxRenderBufferSize, "!");
+		TP_ERROR(Log::FrameBufferOpenGLPrefix, "Couldn't create FrameBuffer!");
+		TP_ERROR(Log::FrameBufferOpenGLPrefix, "Width: ", m_props.Width, " or Height: ", m_props.Height, " is bigger than the maximum render buffer size: ", s_maxRenderBufferSize, "!");
 		return;
 	}
 

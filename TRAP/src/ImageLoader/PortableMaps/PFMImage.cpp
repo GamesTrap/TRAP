@@ -14,13 +14,13 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 	m_filepath = std::move(filepath);
 	m_isHDR = true;
 
-	TP_DEBUG("[Image][PFM] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
+	TP_DEBUG(Log::ImagePFMPrefix, "Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
 	if (!VFS::SilentResolveReadPhysicalPath(m_filepath, physicalPath))
 	{
-		TP_ERROR("[Image][PFM] Couldn't resolve FilePath: ", m_filepath, "!");
-		TP_WARN("[Image][PFM] Using Default Image!");
+		TP_ERROR(Log::ImagePFMPrefix, "Couldn't resolve FilePath: ", m_filepath, "!");
+		TP_WARN(Log::ImagePFMPrefix, "Using Default Image!");
 		return;
 	}
 
@@ -29,8 +29,8 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 		std::ifstream file(physicalPath, std::ios::binary);
 		if (!file.is_open())
 		{
-			TP_ERROR("[Image][PFM] Couldn't open FilePath: ", m_filepath, "!");
-			TP_WARN("[Image][PFM] Using Default Image!");
+			TP_ERROR(Log::ImagePFMPrefix, "Couldn't open FilePath: ", m_filepath, "!");
+			TP_WARN(Log::ImagePFMPrefix, "Using Default Image!");
 			return;
 		}
 
@@ -48,22 +48,22 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 		if (header.MagicNumber != "PF" && header.MagicNumber != "Pf")
 		{
 			file.close();
-			TP_ERROR("[Image][PFM] Invalid Magic Number!");
-			TP_WARN("[Image][PFM] Using Default Image!");
+			TP_ERROR(Log::ImagePFMPrefix, "Invalid Magic Number!");
+			TP_WARN(Log::ImagePFMPrefix, "Using Default Image!");
 			return;
 		}
 		if (header.Width < 1)
 		{
 			file.close();
-			TP_ERROR("[Image][PFM] Width is < 1!");
-			TP_WARN("[Image][PFM] Using Default Image!");
+			TP_ERROR(Log::ImagePFMPrefix, "Width is < 1!");
+			TP_WARN(Log::ImagePFMPrefix, "Using Default Image!");
 			return;
 		}
 		if (header.Height < 1)
 		{
 			file.close();
-			TP_ERROR("[Image][PFM] Height is < 1!");
-			TP_WARN("[Image][PFM] Using Default Image!");
+			TP_ERROR(Log::ImagePFMPrefix, "Height is < 1!");
+			TP_WARN(Log::ImagePFMPrefix, "Using Default Image!");
 			return;
 		}
 
@@ -86,8 +86,8 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 			{
 				file.close();
 				m_data.clear();
-				TP_ERROR("[Image][PFM] Couldn't load pixel data!");
-				TP_WARN("[Image][PFM] Using Default Image!");
+				TP_ERROR(Log::ImagePFMPrefix, "Couldn't load pixel data!");
+				TP_WARN(Log::ImagePFMPrefix, "Using Default Image!");
 				return;
 			}
 
@@ -105,8 +105,8 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 			{
 				file.close();
 				m_data.clear();
-				TP_ERROR("[Image][PFM] Couldn't load pixel data!");
-				TP_WARN("[Image][PFM] Using Default Image!");
+				TP_ERROR(Log::ImagePFMPrefix, "Couldn't load pixel data!");
+				TP_WARN(Log::ImagePFMPrefix, "Using Default Image!");
 				return;
 			}
 

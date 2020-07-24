@@ -386,7 +386,7 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::ShowX11(const
 	//Open a display
 	if (!((display = XOpenDisplay(0))))
 	{
-		TP_ERROR("[MsgBox][X11] Couldn't open display!");
+		TP_ERROR(Log::MsgBoxLinuxX11Prefix, "Couldn't open display!");
 		return Selection::Error;
 	}
 

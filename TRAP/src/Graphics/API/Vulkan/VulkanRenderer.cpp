@@ -39,7 +39,7 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 {
 	TP_PROFILE_FUNCTION();
 	
-	TP_DEBUG("[Renderer][Vulkan] Destroying Renderer");
+	TP_DEBUG(Log::RendererVulkanPrefix, "Destroying Renderer");
 
 	m_device->WaitIdle();
 
@@ -78,8 +78,8 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 	}
 	else if(GPUUUID.size() != 16)
 	{
-		TP_ERROR("[Renderer][Vulkan] Invalid GPU UUID: \"", GPUUUIDString, "\"!");
-		TP_ERROR("[Renderer][Vulkan] Falling back to score based system");
+		TP_ERROR(Log::RendererVulkanPrefix, "Invalid GPU UUID: \"", GPUUUIDString, "\"!");
+		TP_ERROR(Log::RendererVulkanPrefix, "Falling back to score based system");
 		auto lastPhysicalDevice = (--physicalDevices.end())->second;
 		m_physicalDevice = MakeScope<Vulkan::PhysicalDevice>(std::move(lastPhysicalDevice));
 	}
@@ -110,8 +110,8 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 
 		if(!m_physicalDevice) //Fall back to scoring system if m_physicalDevice is still nullptr
 		{
-			TP_ERROR("[Renderer][Vulkan] Could not find a GPU with UUID: \"", GPUUUIDString, "\"!");
-			TP_ERROR("[Renderer][Vulkan] Falling back to score based system");
+			TP_ERROR(Log::RendererVulkanPrefix, "Could not find a GPU with UUID: \"", GPUUUIDString, "\"!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Falling back to score based system");
 			auto lastPhysicalDevice = (--physicalDevices.end())->second;
 			m_physicalDevice = MakeScope<Vulkan::PhysicalDevice>(std::move(lastPhysicalDevice));
 		}
@@ -146,12 +146,12 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 	SetBlendFunction(RendererBlendFunction::Source_Alpha, RendererBlendFunction::One_Minus_Source_Alpha);
 	//////////////////
 
-	TP_INFO("[Renderer][Vulkan] ----------------------------------");
-	TP_INFO("[Renderer][Vulkan] Vulkan:");
-	TP_INFO("[Renderer][Vulkan] Version:  ", VK_VERSION_MAJOR(m_physicalDevice->GetPhysicalDeviceProperties().apiVersion), '.', VK_VERSION_MINOR(m_physicalDevice->GetPhysicalDeviceProperties().apiVersion), '.', VK_VERSION_PATCH(m_physicalDevice->GetPhysicalDeviceProperties().apiVersion));
-	TP_INFO("[Renderer][Vulkan] Renderer: ", m_physicalDevice->GetPhysicalDeviceName());
-	TP_INFO("[Renderer][Vulkan] Driver:   ", VK_VERSION_MAJOR(m_physicalDevice->GetPhysicalDeviceProperties().driverVersion), '.', VK_VERSION_MINOR(m_physicalDevice->GetPhysicalDeviceProperties().driverVersion), '.', VK_VERSION_PATCH(m_physicalDevice->GetPhysicalDeviceProperties().driverVersion));
-	TP_INFO("[Renderer][Vulkan] ----------------------------------");
+	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");
+	TP_INFO(Log::RendererVulkanPrefix, "Vulkan:");
+	TP_INFO(Log::RendererVulkanPrefix, "Version:  ", VK_VERSION_MAJOR(m_physicalDevice->GetPhysicalDeviceProperties().apiVersion), '.', VK_VERSION_MINOR(m_physicalDevice->GetPhysicalDeviceProperties().apiVersion), '.', VK_VERSION_PATCH(m_physicalDevice->GetPhysicalDeviceProperties().apiVersion));
+	TP_INFO(Log::RendererVulkanPrefix, "Renderer: ", m_physicalDevice->GetPhysicalDeviceName());
+	TP_INFO(Log::RendererVulkanPrefix, "Driver:   ", VK_VERSION_MAJOR(m_physicalDevice->GetPhysicalDeviceProperties().driverVersion), '.', VK_VERSION_MINOR(m_physicalDevice->GetPhysicalDeviceProperties().driverVersion), '.', VK_VERSION_PATCH(m_physicalDevice->GetPhysicalDeviceProperties().driverVersion));
+	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");
 
 	m_rendererTitle = "[Vulkan " + std::to_string(VK_VERSION_MAJOR(m_physicalDevice->GetPhysicalDeviceProperties().apiVersion)) + '.' + std::to_string(VK_VERSION_MINOR(m_physicalDevice->GetPhysicalDeviceProperties().apiVersion)) + '.' + std::to_string(VK_VERSION_PATCH(m_physicalDevice->GetPhysicalDeviceProperties().apiVersion)) + ']';
 }

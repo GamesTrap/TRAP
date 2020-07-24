@@ -45,10 +45,10 @@ void TRAP::Input::Init()
 {
 	TP_PROFILE_FUNCTION();
 
-	TP_DEBUG("[Input] Initializing");
+	TP_DEBUG(Log::InputPrefix, "Initializing");
 
 	if(!InitController())
-		TP_ERROR("[Input][Controller] Failed to initialize Controller support!");
+		TP_ERROR(Log::InputControllerPrefix, "Failed to initialize Controller support!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -57,7 +57,7 @@ void TRAP::Input::Shutdown()
 {
 	TP_PROFILE_FUNCTION();
 
-	TP_DEBUG("[Input] Shutting down Input");
+	TP_DEBUG(Log::InputPrefix, "Shutting down Input");
 	
 	ShutdownController();
 }
@@ -70,7 +70,7 @@ bool TRAP::Input::IsKeyPressed(const Key key)
 
 	if (key == Key::Unknown)
 	{
-		TP_WARN("[Input] Invalid Key provided!");
+		TP_WARN(Log::InputPrefix, "Invalid Key provided!");
 		return false;
 	}
 
@@ -87,12 +87,12 @@ bool TRAP::Input::IsKeyPressed(const Key key, const Scope<Window>& window)
 
 	if (key == Key::Unknown)
 	{
-		TP_WARN("[Input] Invalid Key provided!");
+		TP_WARN(Log::InputPrefix, "Invalid Key provided!");
 		return false;
 	}
 	if(!window)
 	{
-		TP_WARN("[Input] Tried to pass nullptr to IsKeyPressed!");
+		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to IsKeyPressed!");
 		return false;
 	}
 	
@@ -120,7 +120,7 @@ bool TRAP::Input::IsMouseButtonPressed(const MouseButton button, const Scope<Win
 
 	if (!window)
 	{
-		TP_WARN("[Input] Tried to pass nullptr to IsMouseButtonPressed!");
+		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to IsMouseButtonPressed!");
 		return false;
 	}
 	
@@ -180,7 +180,7 @@ TRAP::Math::Vec2 TRAP::Input::GetMousePosition(const Scope<Window>& window)
 
 	if(!window)
 	{
-		TP_WARN("[Input] Tried to pass nullptr to GetMousePosition!");
+		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to GetMousePosition!");
 		return {0.0f, 0.0f};
 	}
 	
@@ -221,7 +221,7 @@ std::string TRAP::Input::GetKeyName(const Key key)
 	if (INTERNAL::WindowingAPI::GetKeyName(key, 0))
 		return INTERNAL::WindowingAPI::GetKeyName(key, 0);	
 
-	TP_ERROR("[Input] Couldn't get name of Key: ", static_cast<uint32_t>(key), "!");
+	TP_ERROR(Log::InputPrefix, "Couldn't get name of Key: ", static_cast<uint32_t>(key), "!");
 	return "";
 }
 
@@ -377,7 +377,7 @@ void TRAP::Input::SetMousePosition(const float x, const float y, const Scope<Win
 
 	if (!window)
 	{
-		TP_WARN("[Input] Tried to pass nullptr to SetMousePosition!");
+		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to SetMousePosition!");
 		return;
 	}
 
@@ -458,7 +458,7 @@ TRAP::Input::ControllerInternal* TRAP::Input::AddInternalController(const std::s
 	con->ButtonCount = buttonCount;
 	con->mapping = FindValidMapping(con);
 
-	TP_INFO("[Input][Controller] Controller: ", (con->mapping ? con->mapping->Name : con->Name), " (", cID, ") Connected!");
+	TP_INFO(Log::InputControllerPrefix, "Controller: ", (con->mapping ? con->mapping->Name : con->Name), " (", cID, ") Connected!");
 	
 	return con;
 }
@@ -553,31 +553,31 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 
 	if(splittedString.empty())
 	{
-		TP_ERROR("[Input][Controller] Map is empty!");
+		TP_ERROR(Log::InputControllerPrefix, "Map is empty!");
 		return false;
 	}
 	if (splittedString.size() > 24)
 	{
-		TP_ERROR("[Input][Controller] Map has too many elements! There must be less than 24 elements!");
+		TP_ERROR(Log::InputControllerPrefix, "Map has too many elements! There must be less than 24 elements!");
 		return false;
 	}
 
 	if(splittedString[0].size() != 32)
 	{
-		TP_ERROR("[Input][Controller] Invalid GUID size! Must be 32 bytes long");
+		TP_ERROR(Log::InputControllerPrefix, "Invalid GUID size! Must be 32 bytes long");
 		return false;
 	}
 
 	if (splittedString[0].empty())
 	{
-		TP_ERROR("[Input][Controller] Mapping GUID can't be empty!");
+		TP_ERROR(Log::InputControllerPrefix, "Mapping GUID can't be empty!");
 		return false;
 	}
 	mapping.guid = splittedString[0] + '\0';
 	
 	if(splittedString[1].empty())
 	{
-		TP_ERROR("[Input][Controller] Mapping Name can't be empty!");
+		TP_ERROR(Log::InputControllerPrefix, "Mapping Name can't be empty!");
 		return false;
 	}
 	mapping.Name = splittedString[1] + '\0';
@@ -587,24 +587,24 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 		std::vector<std::string> splittedField = Utils::String::SplitString(splittedString[i] + ':', ':');
 		if (splittedField.empty())
 		{
-			TP_ERROR("[Input][Controller] Field can't be empty!");
+			TP_ERROR(Log::InputControllerPrefix, "Field can't be empty!");
 			return false;
 		}
 		if (splittedField.size() < 2)
 		{
-			TP_ERROR("[Input][Controller] Too few elements inside field: ", i, "!");
+			TP_ERROR(Log::InputControllerPrefix, "Too few elements inside field: ", i, "!");
 			return false;
 		}
 		if (splittedField.size() > 2)
 		{
-			TP_ERROR("[Input][Controller] Too many elements inside field: ", i, "!");
+			TP_ERROR(Log::InputControllerPrefix, "Too many elements inside field: ", i, "!");
 			return false;
 		}
 
 		for (const auto& c : splittedField[0])
 			if (!std::isalnum(static_cast<int8_t>(c)))
 			{
-				TP_ERROR("[Input][Controller] Invalid char inside field: ", i, "!");
+				TP_ERROR(Log::InputControllerPrefix, "Invalid char inside field: ", i, "!");
 				return false;
 			}
 
@@ -700,7 +700,7 @@ TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* co
 		{
 			if(!IsValidElementForController(&mapping->Buttons[i], con))
 			{
-				TP_ERROR("[Input][Controller] Invalid button in Controller mapping: ", mapping->guid, " ", mapping->Name);
+				TP_ERROR(Log::InputControllerPrefix, "Invalid button in Controller mapping: ", mapping->guid, " ", mapping->Name);
 				return nullptr;
 			}
 		}
@@ -709,7 +709,7 @@ TRAP::Input::Mapping* TRAP::Input::FindValidMapping(const ControllerInternal* co
 		{
 			if(!IsValidElementForController(&mapping->Axes[i], con))
 			{
-				TP_ERROR("[Input][Controller] Invalid axis in Controller mapping: ", mapping->guid, " ", mapping->Name);
+				TP_ERROR(Log::InputControllerPrefix, "Invalid axis in Controller mapping: ", mapping->guid, " ", mapping->Name);
 				return nullptr;
 			}
 		}

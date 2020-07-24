@@ -132,9 +132,9 @@ bool TRAP::Graphics::API::Vulkan::PhysicalDevice::IsExtensionSupported(const cha
 	if (layerResult == m_deviceExtensions.end())
 	{
 		if (strcmp(extension, VK_EXT_DEBUG_UTILS_EXTENSION_NAME) == 0)
-			TP_WARN("[Renderer][Vulkan][PhysicalDevice] Extension ", extension, " is not supported(Vulkan SDK installed?)");
+			TP_WARN(Log::RendererVulkanPhysicalDevicePrefix, "Extension ", extension, " is not supported(Vulkan SDK installed?)");
 		else
-			TP_WARN("[Renderer][Vulkan][PhysicalDevice] Extension ", extension, " is not supported");
+			TP_WARN(Log::RendererVulkanPhysicalDevicePrefix, "Extension ", extension, " is not supported");
 
 		return false;
 	}
@@ -182,21 +182,21 @@ std::multimap<int32_t, TRAP::Graphics::API::Vulkan::PhysicalDevice> TRAP::Graphi
 				score += 2500;
 			else
 			{
-				TP_ERROR("[Context][Vulkan] Failed Dedicated/Internal GPU Check!");
+				TP_ERROR(Log::ContextVulkanPrefix, "Failed Dedicated/Internal GPU Check!");
 				continue;
 			}
 
 			//Required: Check If Physical Device is Vulkan 1.2+ capable
 			if (dev.m_deviceProperties.apiVersion < VK_API_VERSION_1_2)
 			{
-				TP_ERROR("[Context][Vulkan] Failed GPU Vulkan 1.2 Version Check!");
+				TP_ERROR(Log::ContextVulkanPrefix, "Failed GPU Vulkan 1.2 Version Check!");
 				continue;
 			}
 
 			//Required: Check If Physical Device supports swapchains
 			if (!dev.IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME))
 			{
-				TP_ERROR("[Context][Vulkan] Failed GPU Swapchain Extension Check!");
+				TP_ERROR(Log::ContextVulkanPrefix, "Failed GPU Swapchain Extension Check!");
 				continue;
 			}
 
@@ -204,49 +204,49 @@ std::multimap<int32_t, TRAP::Graphics::API::Vulkan::PhysicalDevice> TRAP::Graphi
 			Surface surface(instance, dev, window);
 			if (!surface.GetSurface())
 			{
-				TP_ERROR("[Context][Vulkan] Failed GPU Surface Creation Check!");
+				TP_ERROR(Log::ContextVulkanPrefix, "Failed GPU Surface Creation Check!");
 				continue;
 			}
 
 			//Required: Check If Physical Device supports graphics queue
 			if (dev.GetQueueFamilyIndices().GraphicsIndices == std::numeric_limits<uint32_t>::max())
 			{
-				TP_ERROR("[Context][Vulkan] Failed GPU Graphics Queue Check!");
+				TP_ERROR(Log::ContextVulkanPrefix, "Failed GPU Graphics Queue Check!");
 				continue;
 			}
 			
 			//Required: Check If Physical Device supports presenting
 			if (dev.GetQueueFamilyIndices().PresentIndices == std::numeric_limits<uint32_t>::max())
 			{
-				TP_ERROR("[Context][Vulkan] Failed GPU Present Queue Check!");
+				TP_ERROR(Log::ContextVulkanPrefix, "Failed GPU Present Queue Check!");
 				continue;
 			}
 
 			//Required: Check If Physical Device supports compute queue
 			if(dev.GetQueueFamilyIndices().ComputeIndices == std::numeric_limits<uint32_t>::max())
 			{
-				TP_ERROR("[Context][Vulkan] Failed GPU Compute Queue Check!");
+				TP_ERROR(Log::ContextVulkanPrefix, "Failed GPU Compute Queue Check!");
 				continue;
 			}
 
 			//Required: Check if Physical Device supports transfer queue
 			if(dev.GetQueueFamilyIndices().TransferIndices == std::numeric_limits<uint32_t>::max())
 			{
-				TP_ERROR("[Context][Vulkan] Failed GPU Transfer Queue Check!");
+				TP_ERROR(Log::ContextVulkanPrefix, "Failed GPU Transfer Queue Check!");
 				continue;
 			}
 
 			//Required: Check If Surface contains formats
 			if (surface.GetSurfaceFormats().empty())
 			{
-				TP_ERROR("[Context][Vulkan] Failed GPU Surface Format Check!");
+				TP_ERROR(Log::ContextVulkanPrefix, "Failed GPU Surface Format Check!");
 				continue;
 			}
 			
 			//Required: Check If Surface contains present modes
 			if (surface.GetPresentModes().empty())
 			{
-				TP_ERROR("[Context][Vulkan] Failed GPU Present Mode Check!");
+				TP_ERROR(Log::ContextVulkanPrefix, "Failed GPU Present Mode Check!");
 				continue;
 			}
 			
@@ -255,7 +255,7 @@ std::multimap<int32_t, TRAP::Graphics::API::Vulkan::PhysicalDevice> TRAP::Graphi
 				surface.GetOptimalSurfaceFormat().colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 				score += 100;
 			else
-				TP_WARN("[Context][Vulkan] Surface doesnt support optimal format!");
+				TP_WARN(Log::ContextVulkanPrefix, "Surface doesnt support optimal format!");
 
 			//Optionally: Check if Physical Device supports ray tracing
 			if (dev.IsExtensionSupported("VK_KHR_ray_tracing") && dev.IsExtensionSupported("VK_KHR_deferred_host_operations") &&
@@ -265,7 +265,7 @@ std::multimap<int32_t, TRAP::Graphics::API::Vulkan::PhysicalDevice> TRAP::Graphi
 				dev.m_rayTracing = true;
 			}
 			else
-				TP_WARN("[Context][Vulkan] GPU Does Not Support RayTracing!");
+				TP_WARN(Log::ContextVulkanPrefix, "GPU Does Not Support RayTracing!");
 
 			//Optionally: Check VRAM size (1e+9 == Bytes to Gigabytes)
 			for (uint32_t i = 0; i < dev.m_deviceMemoryProperties.memoryHeapCount; i++)
@@ -279,28 +279,28 @@ std::multimap<int32_t, TRAP::Graphics::API::Vulkan::PhysicalDevice> TRAP::Graphi
 			if (dev.m_deviceFeatures.fillModeNonSolid)
 				score += 1000;
 			else
-				TP_WARN("[Context][Vulkan] GPU Does Not Support WireFrame!");
+				TP_WARN(Log::ContextVulkanPrefix, "GPU Does Not Support WireFrame!");
 
 			//Optionally: Check if Physical Device has geometry shader capability
 			if (dev.m_deviceFeatures.geometryShader)
 				score += 1000;
 			else
-				TP_WARN("[Context][Vulkan] GPU Does Not Support Geometry Shaders!");
+				TP_WARN(Log::ContextVulkanPrefix, "GPU Does Not Support Geometry Shaders!");
 
 			//Optionally: Check if Physical Device has tessellation shader capability
 			if (dev.m_deviceFeatures.tessellationShader)
 				score += 1000;
 			else
-				TP_WARN("[Context][Vulkan] GPU Does Not Support Tessellation Shaders");
+				TP_WARN(Log::ContextVulkanPrefix, "GPU Does Not Support Tessellation Shaders");
 
 			//Optionally: Check if Physical Device has Anisotropy Filtering capability
 			if(dev.m_deviceFeatures.samplerAnisotropy)
 				score += 1000;
 			else
-				TP_WARN("[Context][Vulkan] GPU Does Not Support Anisotropic Filtering");
+				TP_WARN(Log::ContextVulkanPrefix, "GPU Does Not Support Anisotropic Filtering");
 
 			if(testMessages)
-				TP_DEBUG("[Context][Vulkan] Found GPU: \"", dev.GetPhysicalDeviceName(), "\" Score: ", score);
+				TP_DEBUG(Log::ContextVulkanPrefix, "Found GPU: \"", dev.GetPhysicalDeviceName(), "\" Score: ", score);
 			s_availableGraphicPhysicalDevices.insert({ score, std::move(dev) });
 			score = 0;
 		}

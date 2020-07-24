@@ -17,7 +17,7 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const TextureParameters pa
 	m_name = "Fallback2D";
 	m_textureParameters = parameters;
 	
-	TP_DEBUG("[Texture2D][OpenGL] Loading Texture: \"", m_name, "\"");
+	TP_DEBUG(Log::Texture2DOpenGLPrefix, "Loading Texture: \"", m_name, "\"");
 	Scope<Image> image;
 	if (!m_filepath.empty())
 	{
@@ -76,7 +76,7 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const Sc
 		m_colorFormat = img->GetColorFormat();
 		m_filepath = VFS::MakeVirtualPathCompatible(std::string(img->GetFilePath()));
 
-		TP_DEBUG("[Texture2D][OpenGL] Loading Texture: \"", m_name, "\"");
+		TP_DEBUG(Log::Texture2DOpenGLPrefix, "Loading Texture: \"", m_name, "\"");
 
 		if (!CheckLimits(img->GetWidth(), img->GetHeight()))
 			return;
@@ -87,7 +87,7 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const Sc
 		return;
 	}
 
-	TP_CRITICAL("[Texture2D][OpenGL] Texture: Provided TRAP::Image is a nullptr!");
+	TP_CRITICAL(Log::Texture2DOpenGLPrefix, "Texture: Provided TRAP::Image is a nullptr!");
 	UploadFallback();
 }
 
@@ -102,7 +102,7 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const st
 	m_filepath = VFS::MakeVirtualPathCompatible(filepath);
 	m_textureParameters = parameters;
 
-	TP_DEBUG("[Texture2D][OpenGL] Initializing Texture: \"", m_name, "\"");
+	TP_DEBUG(Log::Texture2DOpenGLPrefix, "Initializing Texture: \"", m_name, "\"");
 	InitializeTexture();
 
 	if (!m_filepath.empty())
@@ -120,7 +120,7 @@ TRAP::Graphics::API::OpenGLTexture2D::~OpenGLTexture2D()
 {
 	TP_PROFILE_FUNCTION();
 	
-	TP_DEBUG("[Texture2D][OpenGL] Destroying Texture2D: \"", m_name, "\"");
+	TP_DEBUG(Log::Texture2DOpenGLPrefix, "Destroying Texture2D: \"", m_name, "\"");
 	
 	if(m_handle)
 	{
@@ -148,7 +148,7 @@ void TRAP::Graphics::API::OpenGLTexture2D::Bind(const uint32_t slot) const
 			OpenGLRenderer::GetBoundTextures()[slot] = this;
 		}
 		else
-			TP_ERROR("[Texture2D][OpenGL] Couldn't bind Texture: \"", m_name, "\" to slot: ", slot, "! Out of range");
+			TP_ERROR(Log::Texture2DOpenGLPrefix, "Couldn't bind Texture: \"", m_name, "\" to slot: ", slot, "! Out of range");
 	}
 }
 
@@ -164,7 +164,7 @@ void TRAP::Graphics::API::OpenGLTexture2D::Unbind(const uint32_t slot) const
 		OpenGLRenderer::GetBoundTextures()[slot] = nullptr;
 	}
 	else
-		TP_ERROR("[Texture2D][OpenGL] Couldn't unbind Texture: \"", m_name, "\" from slot: ", slot, "! Out of range");
+		TP_ERROR(Log::Texture2DOpenGLPrefix, "Couldn't unbind Texture: \"", m_name, "\" from slot: ", slot, "! Out of range");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -209,7 +209,7 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadImage(const TRAP::Scope<TRAP::I
 		//Check if multi threaded loading finished
 		if (m_handle && m_filepath == image->GetFilePath() && m_width == 0 && m_height == 0 && m_bitsPerPixel == 0 && m_colorFormat == Image::ColorFormat::NONE)
 		{
-			TP_DEBUG("[Texture2D][OpenGL] Uploading Texture: \"", m_name, "\"");
+			TP_DEBUG(Log::Texture2DOpenGLPrefix, "Uploading Texture: \"", m_name, "\"");
 			m_width = image->GetWidth();
 			m_height = image->GetHeight();
 			m_bitsPerPixel = image->GetBitsPerPixel();
@@ -226,7 +226,7 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadImage(const TRAP::Scope<TRAP::I
 		if ((m_width != image->GetWidth() || m_height != image->GetHeight() || m_bitsPerPixel != image->GetBitsPerPixel() || m_colorFormat != image->GetColorFormat()) && m_handle)
 		{
 			//Performace warning because texture gets recreated
-			TP_WARN("[Texture2D][OpenGL][Performance] Texture: \"", m_name, "\" image upload uses mismatching width, height, bits per pixel and/or color format!");
+			TP_WARN(Log::Texture2DOpenGLPerformancePrefix, "Texture: \"", m_name, "\" image upload uses mismatching width, height, bits per pixel and/or color format!");
 			
 			//Delete current texture if exists
 			if (m_handle)
@@ -348,7 +348,7 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadData(const Scope<Image>& image,
 
 void TRAP::Graphics::API::OpenGLTexture2D::UploadFallback()
 {
-	TP_WARN("[Texture2D][OpenGL] Using Default Image!");
+	TP_WARN(Log::Texture2DOpenGLPrefix, "Using Default Image!");
 	const Scope<Image> image = Image::LoadFallback();
 	m_width = image->GetWidth();
 	m_height = image->GetHeight();
@@ -371,7 +371,7 @@ bool TRAP::Graphics::API::OpenGLTexture2D::CheckLimits(const uint32_t width, con
 
 	if (width > s_maxTextureSize || height > s_maxTextureSize)
 	{
-		TP_CRITICAL("[Texture2D][OpenGL] Texture: \"", m_name, "\" Width: ", width, " or Height: ", height, " is bigger than the maximum allowed texture size(", s_maxTextureSize, ")!");
+		TP_CRITICAL(Log::Texture2DOpenGLPrefix, "Texture: \"", m_name, "\" Width: ", width, " or Height: ", height, " is bigger than the maximum allowed texture size(", s_maxTextureSize, ")!");
 		UploadFallback();
 		return false;
 	}

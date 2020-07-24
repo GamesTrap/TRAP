@@ -8,11 +8,11 @@ void TRAP::Graphics::API::OpenGLClearError()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::OpenGLLogCall(const char* function, const char* file, int32_t line)
+bool TRAP::Graphics::API::OpenGLLogCall(const char* function, const char* file, const int32_t line)
 {
 	while (const GLenum error = glGetError())
 	{
-		TP_ERROR("[Renderer][OpenGL] ", error, ": ", function, " @[", file, ':', line, ']');
+		TP_ERROR(Log::RendererOpenGLPrefix, error, ": ", function, " @[", file, ':', line, ']');
 
 		return false;
 	}

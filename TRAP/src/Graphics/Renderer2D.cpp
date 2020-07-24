@@ -39,7 +39,7 @@ void TRAP::Graphics::Renderer2D::Init()
 {
 	TP_PROFILE_FUNCTION();
 
-	TP_DEBUG("[Renderer2D] Initializing");
+	TP_DEBUG(Log::Renderer2DPrefix, "Initializing");
 	
 	s_data = MakeScope<Renderer2DData>();
 	s_data->QuadVertexArray = VertexArray::Create();
@@ -109,7 +109,7 @@ void TRAP::Graphics::Renderer2D::Shutdown()
 {
 	TP_PROFILE_FUNCTION();
 
-	TP_DEBUG("[Renderer2D] Shutting down");
+	TP_DEBUG(Log::Renderer2DPrefix, "Shutting down");
 	s_data.reset();
 }
 

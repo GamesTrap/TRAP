@@ -1737,7 +1737,7 @@ static void FindCoreOpenGL()
 
 	if (splittedVersion.empty() || splittedVersion.size() < 2)
 	{
-		TP_ERROR("[Core][OpenGL] Failed to split version string!");
+		TP_ERROR(TRAP::Log::ContextOpenGLPrefix, "Failed to split version string!");
 		return;
 	}
 

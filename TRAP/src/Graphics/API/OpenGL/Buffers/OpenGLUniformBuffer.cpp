@@ -106,7 +106,7 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::Bind(const uint32_t bindingPoint)
 		}
 	}
 	else
-		TP_ERROR("[UniformBuffer][OpenGL] Couldn't bind UniformBuffer: \"", m_name, "\" to binding point: ", bindingPoint, "! Out of range");
+		TP_ERROR(Log::UniformBufferOpenGLPrefix, "Couldn't bind UniformBuffer: \"", m_name, "\" to binding point: ", bindingPoint, "! Out of range");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -121,7 +121,7 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::Unbind(const uint32_t bindingPoin
 		s_boundUniformBuffers[bindingPoint] = nullptr;
 	}
 	else
-		TP_ERROR("[UniformBuffer][OpenGL] Couldn't unbind UniformBuffer: \"", m_name, "\" from binding point: ", bindingPoint, "! Out of range");
+		TP_ERROR(Log::UniformBufferOpenGLPrefix, "Couldn't unbind UniformBuffer: \"", m_name, "\" from binding point: ", bindingPoint, "! Out of range");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -142,7 +142,7 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::UpdateData(const void* data)
 		}
 	}
 	else
-		TP_ERROR("[UniformBuffer][OpenGL] Static UniformBuffer: \"", m_name, "\" tried to update data!");
+		TP_ERROR(Log::UniformBufferOpenGLPrefix, "Static UniformBuffer: \"", m_name, "\" tried to update data!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -155,12 +155,12 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::UpdateSubData(const void* data, c
 	{
 		if (size == 0)
 		{
-			TP_ERROR("[UniformBuffer][OpenGL] UniformBuffer: \"", m_name, "\" update Size: ", size, " cant be 0!");
+			TP_ERROR(Log::UniformBufferOpenGLPrefix, "UniformBuffer: \"", m_name, "\" update Size: ", size, " cant be 0!");
 			return;
 		}
 		if (offset + size > m_size)
 		{
-			TP_ERROR("[UniformBuffer][OpenGL] Dynamic UniformBuffer: \"", m_name, "\" update Size: ", size, " with Offset: ", offset, " is bigger than the current UniformBuffer Size: ", m_size, "!");
+			TP_ERROR(Log::UniformBufferOpenGLPrefix, "Dynamic UniformBuffer: \"", m_name, "\" update Size: ", size, " with Offset: ", offset, " is bigger than the current UniformBuffer Size: ", m_size, "!");
 			return;
 		}
 		
@@ -169,9 +169,9 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::UpdateSubData(const void* data, c
 	else
 	{
 		if(m_usage == BufferUsage::Static)
-			TP_ERROR("[UniformBuffer][OpenGL] Static UniformBuffer: \"", m_name, "\" tried to update sub data!");
+			TP_ERROR(Log::UniformBufferOpenGLPrefix, "Static UniformBuffer: \"", m_name, "\" tried to update sub data!");
 		else
-			TP_ERROR("[UniformBuffer][OpenGL] Stream UniformBuffer: \"", m_name, "\" tried to update sub data!");
+			TP_ERROR(Log::UniformBufferOpenGLPrefix, "Stream UniformBuffer: \"", m_name, "\" tried to update sub data!");
 	}
 }
 

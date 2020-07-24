@@ -10,7 +10,7 @@ TRAP::Graphics::API::VulkanTexture2D::VulkanTexture2D(const TextureParameters pa
 	m_name = "Fallback2D";
 	m_textureParameters = parameters;
 	
-	TP_WARN("[Texture2D][Vulkan] WIP");
+	TP_WARN(Log::Texture2DVulkanPrefix, "WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -22,7 +22,7 @@ TRAP::Graphics::API::VulkanTexture2D::VulkanTexture2D(const uint32_t width, cons
 	m_name = "Empty";
 	m_textureParameters = parameters;
 	
-	TP_WARN("[Texture2D][Vulkan] WIP");
+	TP_WARN(Log::Texture2DVulkanPrefix, "WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -39,7 +39,7 @@ TRAP::Graphics::API::VulkanTexture2D::VulkanTexture2D(std::string name, const Sc
 		m_filepath = VFS::MakeVirtualPathCompatible(std::string(img->GetFilePath()));		
 	}
 
-	TP_WARN("[Texture2D][Vulkan] WIP");
+	TP_WARN(Log::Texture2DVulkanPrefix, "WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -52,7 +52,7 @@ TRAP::Graphics::API::VulkanTexture2D::VulkanTexture2D(std::string name, const st
 	m_filepath = VFS::MakeVirtualPathCompatible(filepath);
 	m_textureParameters = parameters;
 	
-	TP_WARN("[Texture2D][Vulkan] WIP");
+	TP_WARN(Log::Texture2DVulkanPrefix, "WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

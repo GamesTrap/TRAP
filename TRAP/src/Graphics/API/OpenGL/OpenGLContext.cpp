@@ -30,7 +30,7 @@ TRAP::Graphics::API::OpenGLContext::~OpenGLContext()
 {
 	TP_PROFILE_FUNCTION();
 	
-	TP_DEBUG("[Context][OpenGL] Destroying Context");
+	TP_DEBUG(Log::ContextOpenGLPrefix, "Destroying Context");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -51,7 +51,7 @@ void TRAP::Graphics::API::OpenGLContext::Present(const Scope<Window>& window)
 	if (window)
 		INTERNAL::WindowingAPI::SwapBuffers(static_cast<INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()));
 	else
-		TP_WARN("[Context][OpenGL] Tried to pass nullptr to Present!");
+		TP_WARN(Log::ContextOpenGLPrefix, "Tried to pass nullptr to Present!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

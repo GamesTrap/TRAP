@@ -37,7 +37,7 @@ TRAP::Graphics::API::VulkanContext::~VulkanContext()
 {
 	TP_PROFILE_FUNCTION();
 	
-	TP_DEBUG("[Context][Vulkan] Destroying Context");
+	TP_DEBUG(Log::ContextVulkanPrefix, "Destroying Context");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -97,8 +97,8 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 	return false;
 #endif
 
-	TP_INFO("[Context][Vulkan] -------------------------");
-	TP_INFO("[Context][Vulkan] Running Vulkan 1.2 Tester");
+	TP_INFO(Log::ContextVulkanPrefix, "-------------------------");
+	TP_INFO(Log::ContextVulkanPrefix, "Running Vulkan 1.2 Tester");
 	if (INTERNAL::WindowingAPI::VulkanSupported())
 	{
 		//Validate that Vulkan Instance version is Vulkan 1.2 or newer
@@ -107,7 +107,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		VkCall(s_vkEnumerateInstanceVersion(&instanceVersion));
 		if (instanceVersion < VK_API_VERSION_1_2)
 		{
-			TP_CRITICAL("[Context][Vulkan] Instance Version Does Not Support Vulkan 1.2 Instances!");
+			TP_CRITICAL(Log::ContextVulkanPrefix, "Instance Version Does Not Support Vulkan 1.2 Instances!");
 			return false;
 		}
 		
@@ -117,7 +117,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		{
 			if (!Vulkan::Instance::IsExtensionSupported(str.c_str()))
 			{
-				TP_CRITICAL("[Context][Vulkan] Required Instance Extension: \"", str, "\" Is NOT Supported!");
+				TP_CRITICAL(Log::ContextVulkanPrefix, "Required Instance Extension: \"", str, "\" Is NOT Supported!");
 				return false;
 			}
 		}
@@ -128,7 +128,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		Scope<Vulkan::Instance> instance = MakeScope<Vulkan::Instance>("TRAP Vulkan Capability Tester", TRAP_VERSION, layers, extensions);
 		if (!instance->GetInstance())
 		{
-			TP_CRITICAL("[Context][Vulkan] Failed To Create Vulkan 1.2 Instance!");
+			TP_CRITICAL(Log::ContextVulkanPrefix, "Failed To Create Vulkan 1.2 Instance!");
 			return false;
 		}
 
@@ -140,7 +140,7 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		INTERNAL::WindowingAPI::DefaultWindowHints();
 		if (!vulkanTestWindow)
 		{
-			TP_CRITICAL("[Context][Vulkan] Failed to create Vulkan 1.2 Test Window!");
+			TP_CRITICAL(Log::ContextVulkanPrefix, "Failed to create Vulkan 1.2 Test Window!");
 			return false;
 		}
 
@@ -150,18 +150,18 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		{
 			INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 
-			TP_CRITICAL("[Context][Vulkan] Failed To Find a Suitable GPU Meeting All Requirements!");
+			TP_CRITICAL(Log::ContextVulkanPrefix, "Failed To Find a Suitable GPU Meeting All Requirements!");
 			return false;
 		}
 
 		INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 
-		TP_INFO("[Context][Vulkan] Passed Vulkan 1.2 Tester");
-		TP_INFO("[Context][Vulkan] ------------------------");
+		TP_INFO(Log::ContextVulkanPrefix, "Passed Vulkan 1.2 Tester");
+		TP_INFO(Log::ContextVulkanPrefix, "------------------------");
 		return true;
 	}
 
-	TP_CRITICAL("[Context][Vulkan] Failed Vulkan 1.2 Support Checks!");
+	TP_CRITICAL(Log::ContextVulkanPrefix, "Failed Vulkan 1.2 Support Checks!");
 	return false;
 }
 

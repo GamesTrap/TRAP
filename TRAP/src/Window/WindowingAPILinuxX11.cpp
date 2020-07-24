@@ -5823,7 +5823,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetX11KeyboardLayoutName()
 {
 	if (!s_Data.XKB.Available)
 	{
-		TP_ERROR("[Input][X11] XKB extension required for keyboard layout names");
+		InputError(Error::API_Unavailable, "[Input][X11] XKB extension required for keyboard layout names");
 		return "";
 	}
 
@@ -5834,7 +5834,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetX11KeyboardLayoutName()
 	if (s_Data.XKB.GetNames(s_Data.display, XkbGroupNamesMask, desc) != Success)
 	{
 		s_Data.XKB.FreeKeyboard(desc, 0, 1);
-		TP_ERROR("[Input][X11] Failed to retrieve keyboard layout names");
+		InputError(Error::Platform_Error, "[Input][X11] Failed to retrieve keyboard layout names");
 		return "";
 	}
 
@@ -5843,7 +5843,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetX11KeyboardLayoutName()
 
 	if (atom == 0)
 	{
-		TP_ERROR("[Input][X11] Name missing for current keyboard layout");
+		InputError(Error::Platform_Error, "[Input][X11] Name missing for current keyboard layout");
 		return "";
 	}
 

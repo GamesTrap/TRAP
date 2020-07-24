@@ -1165,3 +1165,4 @@ SITREP 07/23/2020|20w30a3
     - Changed TRAP Engine version to 20w30a3(0.6.53)
     - OpenGLShader if Fragment/Vertex shader does not contain entry point "main" the Fallback shader will be used ~<20 mins
     - VulkanShader Added Debugging Reflection (enable via TRAP_DEBUG_SHADERS macro) ~>65 mins
+    - Replaced all logging prefixes with constant expressions inside TRAP::Log namespace ~>120 mins

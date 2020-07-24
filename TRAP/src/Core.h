@@ -90,7 +90,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 53);
 	{                                                                                              \
 		if (!(x))                                                                                  \
 		{																					       \
-			std::source_location loc = std::source_location::current();                             \
+			std::source_location loc = std::source_location::current();                            \
 			TP_ERROR("Assertion Failed: ", __VA_ARGS__, " @[", loc.file_name, ':', loc.line, ']'); \
 			TRAP_DEBUG_BREAK();                                                                    \
 		}                                                                                          \
@@ -102,7 +102,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 53);
 	{                                                                                                     \
 		if (!(x))                                                                                         \
 		{																					              \
-			std::source_location loc = std::source_location::current();                                    \
+			std::source_location loc = std::source_location::current();                                   \
 			TP_ERROR("[Core] Assertion Failed: ", __VA_ARGS__, " @[", loc.file_name, ':', loc.line, ']'); \
 			TRAP_DEBUG_BREAK();                                                                           \
 		}                                                                                                 \
@@ -114,7 +114,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 53);
 	{                                                                                                         \
 		if (!(x))                                                                                             \
 		{																					                  \
-			std::source_location loc = std::source_location::current();                                        \
+			std::source_location loc = std::source_location::current();                                       \
 			TP_ERROR("[Renderer] Assertion Failed: ", __VA_ARGS__, " @[", loc.file_name, ':', loc.line, ']'); \
 			TRAP_DEBUG_BREAK();                                                                               \
 		}                                                                                                     \
@@ -126,7 +126,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 53);
 	{                                                                                                       \
 		if (!(x))                                                                                           \
 		{																					                \
-			std::source_location loc = std::source_location::current();                                      \
+			std::source_location loc = std::source_location::current();                                     \
 			TP_ERROR("[WIndow] Assertion Failed: ", __VA_ARGS__, " @[", loc.file_name, ':', loc.line, ']'); \
 			TRAP_DEBUG_BREAK();                                                                             \
 		}                                                                                                   \
@@ -136,34 +136,34 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 53);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#define TRAP_ASSERT(x, ...)                                                                     \
+#define TRAP_ASSERT(x, ...)                                                                   \
 	{                                                                                         \
 		if (!(x))                                                                             \
 		{                                                                                     \
 			TP_ERROR("Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
-			TRAP_DEBUG_BREAK();                                                                 \
+			TRAP_DEBUG_BREAK();                                                               \
 		}                                                                                     \
 	}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#define TRAP_CORE_ASSERT(x, ...)                                                                       \
+#define TRAP_CORE_ASSERT(x, ...)                                                                     \
 	{                                                                                                \
 		if (!(x))                                                                                    \
 		{                                                                                            \
 			TP_ERROR("[Core] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
-			TRAP_DEBUG_BREAK();                                                                        \
+			TRAP_DEBUG_BREAK();                                                                      \
 		}                                                                                            \
 	}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#define TRAP_RENDERER_ASSERT(x, ...)                                                                       \
+#define TRAP_RENDERER_ASSERT(x, ...)                                                                     \
 	{                                                                                                    \
 		if (!(x))                                                                                        \
 		{                                                                                                \
 			TP_ERROR("[Renderer] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
-			TRAP_DEBUG_BREAK();                                                                            \
+			TRAP_DEBUG_BREAK();                                                                          \
 		}                                                                                                \
 	}
 
@@ -173,8 +173,8 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 53);
 	{                                                                                                    \
 		if (!(x))                                                                                        \
 		{                                                                                                \
-			TP_ERROR("[Window] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
-			TRAP_DEBUG_BREAK();                                                                            \
+			TP_ERROR("[Window] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']');   \
+			TRAP_DEBUG_BREAK();                                                                          \
 		}                                                                                                \
 	}
 

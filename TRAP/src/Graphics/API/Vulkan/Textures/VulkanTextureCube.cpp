@@ -10,7 +10,7 @@ TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(const TextureParameter
 	m_name = "FallbackCube";
 	m_textureParameters = parameters;
 	
-	TP_WARN("[TextureCube][Vulkan] WIP");
+	TP_WARN(Log::TextureCubeVulkanPrefix, "WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -24,7 +24,7 @@ TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, cons
 	m_textureParameters = parameters;
 	m_inputFormat = format;
 	
-	TP_WARN("[TextureCube][Vulkan] WIP");
+	TP_WARN(Log::TextureCubeVulkanPrefix, "WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -45,7 +45,7 @@ TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, cons
 	};
 	m_textureParameters = parameters;
 	
-	TP_WARN("[TextureCube][Vulkan] WIP");
+	TP_WARN(Log::TextureCubeVulkanPrefix, "WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -63,7 +63,7 @@ TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, cons
 		m_filepaths[0] = VFS::MakeVirtualPathCompatible(std::string(img->GetFilePath()));		
 	}
 
-	TP_WARN("[TextureCube][Vulkan] WIP");
+	TP_WARN(Log::TextureCubeVulkanPrefix, "WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

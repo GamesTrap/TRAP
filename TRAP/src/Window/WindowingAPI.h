@@ -1732,7 +1732,7 @@ namespace TRAP::INTERNAL
 		//Unload used libraries (DLLs)
 		static void FreeLibraries();
 		//Reports the specified error, appending information about the last Win32 error
-		static void InputErrorWin32(Error error, std::string description);
+		static void InputErrorWin32(Error error, const std::string& description);
 		//Notifies shared code that a window content scale has changed
 		//The scale is specified as the ratio between the current and default DPI
 		static void InputWindowContentScale(const InternalWindow* window, float xScale, float yScale);

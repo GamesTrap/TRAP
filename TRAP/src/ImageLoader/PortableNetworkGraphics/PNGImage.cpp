@@ -18,13 +18,13 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 
 	m_filepath = std::move(filepath);
 
-	TP_DEBUG("[Image][PNG] Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
+	TP_DEBUG(Log::ImagePNGPrefix, "Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
 	if (!VFS::SilentResolveReadPhysicalPath(m_filepath, physicalPath))
 	{
-		TP_ERROR("[Image][PNG] Couldn't resolve FilePath: ", m_filepath, "!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Couldn't resolve FilePath: ", m_filepath, "!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return;
 	}
 
@@ -33,8 +33,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 		std::ifstream file(physicalPath, std::ios::binary);
 		if (!file.is_open())
 		{
-			TP_ERROR("[Image][PNG] Couldn't open FilePath: ", m_filepath, "!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			TP_ERROR(Log::ImagePNGPrefix, "Couldn't open FilePath: ", m_filepath, "!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return;
 		}
 
@@ -47,8 +47,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			MagicNumber[4] != 0x0D || MagicNumber[5] != 0x0A || MagicNumber[6] != 0x1A || MagicNumber[7] != 0x0A)
 		{
 			file.close();
-			TP_ERROR("[Image][PNG] Magic number is invalid!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			TP_ERROR(Log::ImagePNGPrefix, "Magic number is invalid!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return;
 		}
 
@@ -70,8 +70,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 				if (nextChunk.Length > 2147483647)
 				{
 					file.close();
-					TP_ERROR("[Image][PNG] Chunk Length is invalid!");
-					TP_WARN("[Image][PNG] Using Default Image!");
+					TP_ERROR(Log::ImagePNGPrefix, "Chunk Length is invalid!");
+					TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 					return;
 				}
 
@@ -84,8 +84,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			if (nextChunk.Length > 2147483647)
 			{
 				file.close();
-				TP_ERROR("[Image][PNG] Chunk Length is invalid!");
-				TP_WARN("[Image][PNG] Using Default Image!");
+				TP_ERROR(Log::ImagePNGPrefix, "Chunk Length is invalid!");
+				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 				return;
 			}
 		}
@@ -95,8 +95,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 
 		if (data.CompressionMethod != 0)
 		{
-			TP_ERROR("[Image][PNG] Compression Method is invalid!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			TP_ERROR(Log::ImagePNGPrefix, "Compression Method is invalid!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return;
 		}
 
@@ -106,18 +106,18 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			switch (data.BitDepth)
 			{
 			case 1:
-				TP_ERROR("[Image][PNG] Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				TP_WARN("[Image][PNG] Using Default Image!");
+				TP_ERROR(Log::ImagePNGPrefix, "Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
+				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 				return;
 
 			case 2:
-				TP_ERROR("[Image][PNG] Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				TP_WARN("[Image][PNG] Using Default Image!");
+				TP_ERROR(Log::ImagePNGPrefix, "Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
+				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 				return;
 
 			case 4:
-				TP_ERROR("[Image][PNG] Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				TP_WARN("[Image][PNG] Using Default Image!");
+				TP_ERROR(Log::ImagePNGPrefix, "Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
+				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 				return;
 
 			case 8:
@@ -144,18 +144,18 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			switch (data.BitDepth)
 			{
 			case 1:
-				TP_ERROR("[Image][PNG] Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				TP_WARN("[Image][PNG] Using Default Image!");
+				TP_ERROR(Log::ImagePNGPrefix, "Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
+				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 				return;
 
 			case 2:
-				TP_ERROR("[Image][PNG] Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				TP_WARN("[Image][PNG] Using Default Image!");
+				TP_ERROR(Log::ImagePNGPrefix, "Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
+				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 				return;
 
 			case 4:
-				TP_ERROR("[Image][PNG] Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				TP_WARN("[Image][PNG] Using Default Image!");
+				TP_ERROR(Log::ImagePNGPrefix, "Bit Depth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
+				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 				return;
 
 			case 8:
@@ -187,8 +187,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 
 		if (!(data.InterlaceMethod == 0 || data.InterlaceMethod == 1))
 		{
-			TP_ERROR("[Image][PNG] Interlace method is invalid!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			TP_ERROR(Log::ImagePNGPrefix, "Interlace method is invalid!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return;
 		}
 		std::vector<uint8_t> decompressedData{};
@@ -222,8 +222,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 		std::vector<uint8_t> raw(GetRawSize(m_width, m_height, m_bitsPerPixel), 0);
 		if (!PostProcessScanlines(raw.data(), decompressedData.data(), m_width, m_height, m_bitsPerPixel, data.InterlaceMethod))
 		{
-			TP_ERROR("[Image][PNG] DeInterlacing Failed!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			TP_ERROR(Log::ImagePNGPrefix, "DeInterlacing Failed!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return;
 		}
 
@@ -250,8 +250,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			m_bitsPerPixel = 32;
 			if(data.Palette.empty())
 			{
-				TP_ERROR("[Image][PNG] Indexed missing Palette!");
-				TP_WARN("[Image][PNG] Using Default Image!");
+				TP_ERROR(Log::ImagePNGPrefix, "Indexed missing Palette!");
+				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 				return;
 			}
 			
@@ -260,10 +260,10 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			else
 			{
 				if (data.BitDepth > 8)
-					TP_ERROR("[Image][PNG] Indexed with BitDepth: ", static_cast<uint32_t>(data.BitDepth), " is invalid!");
+					TP_ERROR(Log::ImagePNGPrefix, "Indexed with BitDepth: ", static_cast<uint32_t>(data.BitDepth), " is invalid!");
 				else
-					TP_ERROR("[Image][PNG] Indexed with BitDepth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
-				TP_WARN("[Image][PNG] Using Default Image!");
+					TP_ERROR(Log::ImagePNGPrefix, "Indexed with BitDepth: ", static_cast<uint32_t>(data.BitDepth), " is unsupported!");
+				TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 				return;
 			}
 			break;
@@ -421,8 +421,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessChunk(NextChunk& nextChunk, std::ifstream&
 				return true;
 	}
 
-	TP_ERROR("[Image][PNG] Invalid or Multiple Usage of Chunk Magic Number: ", nextChunk.MagicNumber[0], nextChunk.MagicNumber[1], nextChunk.MagicNumber[2], nextChunk.MagicNumber[3], "!");
-	TP_WARN("[Image][PNG] Using Default Image!");
+	TP_ERROR(Log::ImagePNGPrefix, "Invalid or Multiple Usage of Chunk Magic Number: ", nextChunk.MagicNumber[0], nextChunk.MagicNumber[1], nextChunk.MagicNumber[2], nextChunk.MagicNumber[3], "!");
+	TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 	return false;
 }
 
@@ -475,8 +475,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessIHDR(std::ifstream& file, Data& data, cons
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != ihdrChunk.CRC[0] && crc[1] != ihdrChunk.CRC[1] && crc[2] != ihdrChunk.CRC[2] && crc[3] != ihdrChunk.CRC[3])
 	{
-		TP_ERROR("[Image][PNG] IHDR CRC: ", Utils::Hash::ConvertHashToString(ihdrChunk.CRC), " is wrong!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "IHDR CRC: ", Utils::Hash::ConvertHashToString(ihdrChunk.CRC), " is wrong!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 	
@@ -549,8 +549,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesscHRM(std::ifstream& file)
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
-		TP_ERROR("[Image][PNG] cHRM CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "cHRM CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -584,8 +584,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessgAMA(std::ifstream& file)
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
-		TP_ERROR("[Image][PNG] gAMA CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "gAMA CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -615,8 +615,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessiCCP(std::ifstream& file, const uint32_t l
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
-		TP_ERROR("[Image][PNG] iCCP CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "iCCP CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -627,7 +627,6 @@ bool TRAP::INTERNAL::PNGImage::ProcessiCCP(std::ifstream& file, const uint32_t l
 
 bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data)
 {
-	//TODO Use this for decoding? Spec states that it should simplify decoding... 11.3.3.4
 	switch (data.ColorType)
 	{
 	case 0:
@@ -645,8 +644,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 		{
-			TP_ERROR("[Image][PNG] sBIT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			TP_ERROR(Log::ImagePNGPrefix, "sBIT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return false;
 		}
 
@@ -669,8 +668,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 		{
-			TP_ERROR("[Image][PNG] sBIT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			TP_ERROR(Log::ImagePNGPrefix, "sBIT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return false;
 		}
 
@@ -692,8 +691,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 		{
-			TP_ERROR("[Image][PNG] sBIT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			TP_ERROR(Log::ImagePNGPrefix, "sBIT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return false;
 		}
 
@@ -725,8 +724,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesssBIT(std::ifstream& file, const Data& data
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 		{
-			TP_ERROR("[Image][PNG] sBIT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			TP_ERROR(Log::ImagePNGPrefix, "sBIT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return false;
 		}
 
@@ -755,8 +754,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesssRGB(std::ifstream& file)
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
-		TP_ERROR("[Image][PNG] sRGB CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "sRGB CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -789,8 +788,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 		{
-			TP_ERROR("[Image][PNG] bKGD CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			TP_ERROR(Log::ImagePNGPrefix, "bKGD CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return false;
 		}
 
@@ -837,8 +836,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 		{
-			TP_ERROR("[Image][PNG] bKGD CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			TP_ERROR(Log::ImagePNGPrefix, "bKGD CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return false;
 		}
 
@@ -867,8 +866,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessbKGD(std::ifstream& file, const Data& data
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 		{
-			TP_ERROR("[Image][PNG] bKGD CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			TP_ERROR(Log::ImagePNGPrefix, "bKGD CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return false;
 		}
 
@@ -903,8 +902,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesshIST(std::ifstream& file, const uint32_t l
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
-		TP_ERROR("[Image][PNG] hIST CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "hIST CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -934,8 +933,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 		{
-			TP_ERROR("[Image][PNG] tRNS CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			TP_ERROR(Log::ImagePNGPrefix, "tRNS CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return false;
 		}
 
@@ -979,8 +978,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 		{
-			TP_ERROR("[Image][PNG] tRNS CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			TP_ERROR(Log::ImagePNGPrefix, "tRNS CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return false;
 		}
 
@@ -1008,8 +1007,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesstRNS(std::ifstream& file, const uint32_t l
 		std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 		if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 		{
-			TP_ERROR("[Image][PNG] tRNS CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-			TP_WARN("[Image][PNG] Using Default Image!");
+			TP_ERROR(Log::ImagePNGPrefix, "tRNS CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+			TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 			return false;
 		}
 
@@ -1047,8 +1046,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesspHYs(std::ifstream& file)
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
-		TP_ERROR("[Image][PNG] pHYs CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "pHYs CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -1078,8 +1077,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesssPLT(std::ifstream& file, const uint32_t l
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
-		TP_ERROR("[Image][PNG] sPLT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "sPLT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -1126,8 +1125,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesstIME(std::ifstream& file, const bool needS
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
-		TP_ERROR("[Image][PNG] tIME CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "tIME CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -1160,8 +1159,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessiTXt(std::ifstream& file, const uint32_t l
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
-		TP_ERROR("[Image][PNG] iTXt CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "iTXt CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -1191,8 +1190,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesstEXt(std::ifstream& file, const uint32_t l
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
-		TP_ERROR("[Image][PNG] tEXt CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "tEXt CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -1222,8 +1221,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesszTXt(std::ifstream& file, const uint32_t l
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
-		TP_ERROR("[Image][PNG] zTXt CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "zTXt CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -1236,14 +1235,14 @@ bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, cons
 {
 	if (length % 3 != 0)
 	{
-		TP_ERROR("[Image][PNG] PLTE Length is not divisible by 3!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "PLTE Length is not divisible by 3!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 	if (data.ColorType == 0 || data.ColorType == 4)
 	{
-		TP_ERROR("[Image][PNG] PLTE Invalid usage! This chunk should not appear with Color Type: ", static_cast<uint32_t>(data.ColorType), "!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "PLTE Invalid usage! This chunk should not appear with Color Type: ", static_cast<uint32_t>(data.ColorType), "!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -1282,8 +1281,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessPLTE(std::ifstream& file, Data& data, cons
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
-		TP_ERROR("[Image][PNG] PLTE CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "PLTE CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -1315,8 +1314,8 @@ bool TRAP::INTERNAL::PNGImage::ProcessIDAT(std::ifstream& file, Data& data, cons
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
-		TP_ERROR("[Image][PNG] IDAT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "IDAT CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -1348,8 +1347,8 @@ bool TRAP::INTERNAL::PNGImage::ProcesseXIf(std::ifstream& file, const uint32_t l
 	std::array<uint8_t, 4> crc = Utils::Hash::CRC32(CRCData.data(), CRCData.size());
 	if (crc[0] != CRC[0] && crc[1] != CRC[1] && crc[2] != CRC[2] && crc[3] != CRC[3])
 	{
-		TP_ERROR("[Image][PNG] eXIf CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "eXIf CRC: ", Utils::Hash::ConvertHashToString(CRC), " is wrong!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -1363,74 +1362,74 @@ bool TRAP::INTERNAL::PNGImage::IHDRCheck(const IHDRChunk& ihdrChunk)
 	//Check if Width and or Height are (in)valid
 	if (!ihdrChunk.Width || !ihdrChunk.Height)
 	{
-		TP_ERROR("[Image][PNG] Width and or Height are invalid!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Width and or Height are invalid!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
 	//Check if Bit Depth is a valid number
 	if (ihdrChunk.BitDepth != 1 && ihdrChunk.BitDepth != 2 && ihdrChunk.BitDepth != 4 && ihdrChunk.BitDepth != 8 && ihdrChunk.BitDepth != 16)
 	{
-		TP_ERROR("[Image][PNG] Bit Depth is invalid!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Bit Depth is invalid!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
 	//Check if Color Type is a valid number
 	if (ihdrChunk.ColorType != 0 && ihdrChunk.ColorType != 2 && ihdrChunk.ColorType != 3 && ihdrChunk.ColorType != 4 && ihdrChunk.ColorType != 6)
 	{
-		TP_ERROR("[Image][PNG] Color Type is invalid!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Color Type is invalid!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
 	//Check if Color Type matches Bit Depth
 	if (ihdrChunk.ColorType == 2 && (ihdrChunk.BitDepth != 8 && ihdrChunk.BitDepth != 16))
 	{
-		TP_ERROR("[Image][PNG] Color Type: TrueColor(", static_cast<uint32_t>(ihdrChunk.ColorType), ") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Color Type: TrueColor(", static_cast<uint32_t>(ihdrChunk.ColorType), ") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 	if (ihdrChunk.ColorType == 3 && (ihdrChunk.BitDepth != 1 && ihdrChunk.BitDepth != 2 && ihdrChunk.BitDepth != 4 && ihdrChunk.BitDepth != 8))
 	{
-		TP_ERROR("[Image][PNG] Color Type: Indexed-Color(", static_cast<uint32_t>(ihdrChunk.ColorType), ") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Color Type: Indexed-Color(", static_cast<uint32_t>(ihdrChunk.ColorType), ") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 	if (ihdrChunk.ColorType == 4 && (ihdrChunk.BitDepth != 8 && ihdrChunk.BitDepth != 16))
 	{
-		TP_ERROR("[Image][PNG] Color Type: GrayScale Alpha(", static_cast<uint32_t>(ihdrChunk.ColorType), ") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Color Type: GrayScale Alpha(", static_cast<uint32_t>(ihdrChunk.ColorType), ") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 	if (ihdrChunk.ColorType == 6 && (ihdrChunk.BitDepth != 8 && ihdrChunk.BitDepth != 16))
 	{
-		TP_ERROR("[Image][PNG] Color Type: TrueColor Alpha(", static_cast<uint32_t>(ihdrChunk.ColorType), ") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Color Type: TrueColor Alpha(", static_cast<uint32_t>(ihdrChunk.ColorType), ") doesnt allow a bit depth of ", static_cast<uint32_t>(ihdrChunk.BitDepth), "!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
 	//Only Deflate/Inflate Compression Method is defined by the ISO
 	if (ihdrChunk.CompressionMethod != 0)
 	{
-		TP_ERROR("[Image][PNG] Compression Method: ", static_cast<uint32_t>(ihdrChunk.CompressionMethod), " is unsupported!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Compression Method: ", static_cast<uint32_t>(ihdrChunk.CompressionMethod), " is unsupported!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
 	//Only Adaptive filtering with 5 basic filter types is defined by the ISO
 	if (ihdrChunk.FilterMethod != 0)
 	{
-		TP_ERROR("[Image][PNG] Filter Method: ", static_cast<uint32_t>(ihdrChunk.CompressionMethod), " is unsupported!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Filter Method: ", static_cast<uint32_t>(ihdrChunk.CompressionMethod), " is unsupported!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
 	//Only No Interlace and Adam7 Interlace are defined by the ISO
 	if (ihdrChunk.InterlaceMethod != 0 && ihdrChunk.InterlaceMethod != 1)
 	{
-		TP_ERROR("[Image][PNG] Interlace Method: ", static_cast<uint32_t>(ihdrChunk.InterlaceMethod), " is unsupported!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Interlace Method: ", static_cast<uint32_t>(ihdrChunk.InterlaceMethod), " is unsupported!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -1444,40 +1443,40 @@ bool TRAP::INTERNAL::PNGImage::tIMECheck(const tIMEChunk& timeChunk)
 	//Check Month validity
 	if (timeChunk.Month < 1 || timeChunk.Month > 12)
 	{
-		TP_ERROR("[Image][PNG] Time stamp Month: ", static_cast<uint32_t>(timeChunk.Month), " is invalid!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Time stamp Month: ", static_cast<uint32_t>(timeChunk.Month), " is invalid!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
 	//Check Day validity
 	if (timeChunk.Day < 1 || timeChunk.Day > 31)
 	{
-		TP_ERROR("[Image][PNG] Time stamp Day: ", static_cast<uint32_t>(timeChunk.Day), " is invalid!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Time stamp Day: ", static_cast<uint32_t>(timeChunk.Day), " is invalid!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
 	//Check Hour validity
 	if (timeChunk.Hour > 23)
 	{
-		TP_ERROR("[Image][PNG] Time stamp Hour: ", static_cast<uint32_t>(timeChunk.Hour), " is invalid!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Time stamp Hour: ", static_cast<uint32_t>(timeChunk.Hour), " is invalid!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
 	//Check Minute validity
 	if (timeChunk.Minute > 59)
 	{
-		TP_ERROR("[Image][PNG] Time stamp Minute: ", static_cast<uint32_t>(timeChunk.Minute), " is invalid!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Time stamp Minute: ", static_cast<uint32_t>(timeChunk.Minute), " is invalid!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
 	//Check Second validity
 	if (timeChunk.Second > 60)
 	{
-		TP_ERROR("[Image][PNG] Time stamp Second: ", timeChunk.Second, " is invalid!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Time stamp Second: ", timeChunk.Second, " is invalid!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -1488,14 +1487,14 @@ bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceL
 {
 	if (sourceLength < 2)
 	{
-		TP_ERROR("[Image][PNG] Compressed zlib data is too small!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Compressed zlib data is too small!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false; //Error, size of zlib data too small
 	}
 	if ((source[0] * 256 + source[1]) % 31 != 0)
 	{
-		TP_ERROR("[Image][PNG] Decompression Failed! 256 * source[0](", source[0], ") + source[1](", source[1], ") must be a multiple of 31(", static_cast<uint32_t>(source[0] * 256 + source[1]), ")!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Decompression Failed! 256 * source[0](", source[0], ") + source[1](", source[1], ") must be a multiple of 31(", static_cast<uint32_t>(source[0] * 256 + source[1]), ")!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false; //Error: 256 * source[0] + source[1] must be a multiple of 31, the FCHECK value is supposed to be made this way
 	}
 
@@ -1507,21 +1506,21 @@ bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceL
 
 	if (CM != 8 || CINFO > 7)
 	{
-		TP_ERROR("[Image][PNG] Decompression Failed! Only Compression Method 8(De/Inflate) with sliding window of 32K is supported by the PNG Specification!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Decompression Failed! Only Compression Method 8(De/Inflate) with sliding window of 32K is supported by the PNG Specification!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false; //Error: Only compression method 8: inflate with sliding window of 32K is supported by the PNG specification
 	}
 	if(FDICT != 0)
 	{
-		TP_ERROR("[Image][PNG] Decompression Failed! Additional Flags should not specify a preset dictionary!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Decompression Failed! Additional Flags should not specify a preset dictionary!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false; //Error: The PNG specification says that the zlib stream should not specify a preset dictionary in the additional flags!
 	}
 
 	if (!Utils::Decompress::Inflate(source + 2, sourceLength - 2, destination, destinationLength))
 	{
-		TP_ERROR("[Image][PNG] Decompression Failed! Inflate Error!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Decompression Failed! Inflate Error!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false;
 	}
 
@@ -1537,8 +1536,8 @@ bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceL
 
 	if (checksum[0] != adler32[0] && checksum[1] != adler32[1] && checksum[2] != adler32[2] && checksum[3] != adler32[3])
 	{
-		TP_ERROR("[Image][PNG] Decompression Failed! Adler32 Checksum: ", Utils::Hash::ConvertHashToString(adler32), " doesnt match Checksum: ", Utils::Hash::ConvertHashToString(checksum), "!");
-		TP_WARN("[Image][PNG] Using Default Image!");
+		TP_ERROR(Log::ImagePNGPrefix, "Decompression Failed! Adler32 Checksum: ", Utils::Hash::ConvertHashToString(adler32), " doesnt match Checksum: ", Utils::Hash::ConvertHashToString(checksum), "!");
+		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return false; //Error: Adler checksum not correct, data must be corrupt
 	}
 

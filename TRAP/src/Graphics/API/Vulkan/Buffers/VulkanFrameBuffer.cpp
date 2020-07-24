@@ -7,7 +7,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(const FrameBufferProps
 {
 	TP_PROFILE_FUNCTION();
 
-	TP_WARN("[FrameBuffer2D][Vulkan] WIP");
+	TP_WARN(Log::FrameBufferVulkanPrefix, "WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

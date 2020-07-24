@@ -56,7 +56,7 @@ bool TRAP::Input::InitController()
 	//Continue without device connection notifications if inotify fails
 	if(regcomp(&s_linuxController.Regex, "^event[0-9]\\+$", 0) != 0)
 	{
-		TP_ERROR("[Input][Controller][Linux] Could not compile regex!");
+		TP_ERROR(Log::InputControllerLinuxPrefix, "Could not compile regex!");
 		return false;
 	}
 
@@ -200,7 +200,7 @@ bool TRAP::Input::OpenControllerDeviceLinux(const std::string& path)
 		ioctl(LinuxCon.FD, EVIOCGBIT(EV_ABS, ABSBits.size()), ABSBits.data()) < 0 ||
 		ioctl(LinuxCon.FD, EVIOCGID, &ID) < 0)
 	{
-		TP_ERROR("[Input][Controller][Linux] Could not query input device: ", strerror(errno), "!");
+		TP_ERROR(Log::InputControllerLinuxPrefix, "Could not query input device: ", strerror(errno), "!");
 		close(LinuxCon.FD);
 		return false;
 	}
@@ -309,7 +309,7 @@ void TRAP::Input::CloseController(Controller controller)
 	bool connected = con->Connected;
 
 	if(connected)
-		TP_INFO("[Input][Controller] Controller: ",
+		TP_INFO(InputControllerPrefix, "Controller: ",
 		        (con->mapping
 			        ? con->mapping->Name
 			        : con->Name),

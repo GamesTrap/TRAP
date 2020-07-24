@@ -39,7 +39,7 @@ void TRAP::Log::Save()
 {
 	TP_PROFILE_FUNCTION();
 
-	TP_INFO("[Logger] Saving TRAP.Log");
+	TP_INFO(LoggerPrefix, "Saving TRAP.Log");
 
 	std::ofstream file("TRAP.Log");
 	if (file.is_open())

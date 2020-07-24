@@ -125,14 +125,14 @@ std::string TRAP::INTERNAL::WindowingAPI::CreateUTF8StringFromWideStringWin32(co
 	const int32_t size = WideCharToMultiByte(CP_UTF8, 0, wStr.data(), -1, nullptr, 0, nullptr, nullptr);
 	if (!size)
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to convert string to UTF-8");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to convert string to UTF-8");
 		return {};
 	}
 
 	result.resize(size);
 	if (!WideCharToMultiByte(CP_UTF8, 0, wStr.data(), -1, result.data(), size, nullptr, nullptr))
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to convert string to UTF-8");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to convert string to UTF-8");
 		return {};
 	}
 
@@ -148,7 +148,7 @@ std::wstring TRAP::INTERNAL::WindowingAPI::CreateWideStringFromUTF8StringWin32(c
 	const int32_t count = MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, nullptr, 0);
 	if (!count)
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to convert string from UTF-8");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to convert string from UTF-8");
 		return {};
 	}
 
@@ -156,7 +156,7 @@ std::wstring TRAP::INTERNAL::WindowingAPI::CreateWideStringFromUTF8StringWin32(c
 
 	if (!MultiByteToWideChar(CP_UTF8, 0, str.data(), -1, result.data(), count))
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to convert string from UTF-8");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to convert string from UTF-8");
 		return {};
 	}
 
@@ -171,7 +171,7 @@ bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 	s_Data.User32.Instance = LoadLibraryA("user32.dll");
 	if (!s_Data.User32.Instance)
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to load user32.dll");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to load user32.dll");
 		return false;
 	}
 
@@ -204,7 +204,7 @@ bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 	if (IsWindows7OrGreaterWin32())
 		return true;
 	
-	TP_CRITICAL("[Engine][Windows] Unsupported Windows version!");
+	TP_CRITICAL(Log::EngineWindowsPrefix, "Unsupported Windows version!");
 	Show("Unsupported Windows Version!\nTRAP Engine needs Windows 7 or newer", "Unsupported Windows Version", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
 	return false;
 }
@@ -230,7 +230,7 @@ void TRAP::INTERNAL::WindowingAPI::FreeLibraries()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Reports the specified error, appending information about the last Win32 error
-void TRAP::INTERNAL::WindowingAPI::InputErrorWin32(const Error error, const std::string description)
+void TRAP::INTERNAL::WindowingAPI::InputErrorWin32(const Error error, const std::string& description)
 {
 	std::wstring buffer{};
 	buffer.resize(1024);
@@ -706,7 +706,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 			size = s_Data.RawInputSize;
 			if (GetRawInputData(ri, RID_INPUT, s_Data.RawInput.data(), &size, sizeof(RAWINPUTHEADER)) == static_cast<UINT>(-1))
 			{
-				InputError(Error::Platform_Error, "[Win32] Failed to retrieve raw input data!");
+				InputError(Error::Platform_Error, "[WinAPI] Failed to retrieve raw input data!");
 				break;
 			}
 
@@ -1023,7 +1023,7 @@ bool TRAP::INTERNAL::WindowingAPI::RegisterWindowClassWin32()
 
 	if (!RegisterClassExW(&wc))
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to register window class");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to register window class");
 		return false;
 	}
 
@@ -1349,7 +1349,7 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeWin32(InternalMonitor* monitor, c
 		else if (result == DISP_CHANGE_RESTART)
 			description = "Computer restart required";
 
-		InputError(Error::Platform_Error, "[Win32] Failed to set video mode: " + description);
+		InputError(Error::Platform_Error, "[WinAPI] Failed to set video mode: " + description);
 	}
 }
 
@@ -1467,7 +1467,7 @@ int32_t TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window,
 
 	if (!window->Handle)
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to create window");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to create window");
 		return false;
 	}
 
@@ -1531,7 +1531,7 @@ bool TRAP::INTERNAL::WindowingAPI::CreateHelperWindow()
 
 	if (!s_Data.HelperWindowHandle)
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to create helper window");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to create helper window");
 		return false;
 	}
 
@@ -2195,14 +2195,14 @@ HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Scope<Image>& image, const 
 
 	if (!color)
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to create RGBA bitmap");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to create RGBA bitmap");
 		return nullptr;
 	}
 
 	const HBITMAP mask = CreateBitmap(image->GetWidth(), image->GetHeight(), 1, 1, nullptr);
 	if (!mask)
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to create mask bitmap");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to create mask bitmap");
 		DeleteObject(color);
 		return nullptr;
 	}
@@ -2232,9 +2232,9 @@ HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Scope<Image>& image, const 
 	if (!handle)
 	{
 		if (icon)
-			InputErrorWin32(Error::Platform_Error, "[Win32] Failed to create icon");
+			InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to create icon");
 		else
-			InputErrorWin32(Error::Platform_Error, "[Win32] Failed to create cursor");
+			InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to create cursor");
 	}
 
 	return handle;
@@ -2270,7 +2270,7 @@ void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow* wi
 	const RAWINPUTDEVICE rid = { 0x01, 0x02, 0, window->Handle };
 
 	if (!RegisterRawInputDevices(&rid, 1, sizeof(rid)))
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to register raw input device");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to register raw input device");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2281,7 +2281,7 @@ void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion(const InternalWindow* w
 	const RAWINPUTDEVICE rid = { 0x01, 0x02, RIDEV_REMOVE, nullptr };
 
 	if (!RegisterRawInputDevices(&rid, 1, sizeof(rid)))
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to remove raw input device");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to remove raw input device");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2692,7 +2692,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateTLS(TLS& tls)
 	tls.Index = TlsAlloc();
 	if (tls.Index == TLS_OUT_OF_INDEXES)
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to allocate TLS index");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to allocate TLS index");
 		return false;
 	}
 
@@ -2960,7 +2960,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursor(InternalCursor* 
 		LR_DEFAULTSIZE | LR_SHARED));
 	if (!cursor->Handle)
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to create standard cursor");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to create standard cursor");
 		return false;
 	}
 
@@ -3402,14 +3402,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string&
 	const HANDLE object = GlobalAlloc(GMEM_MOVEABLE, characterCount * sizeof(WCHAR));
 	if (!object)
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to allocate global handle for clipboard");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to allocate global handle for clipboard");
 		return;
 	}
 
 	WCHAR* buffer = static_cast<WCHAR*>(GlobalLock(object));
 	if (!buffer)
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to lock global handle");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to lock global handle");
 		GlobalFree(object);
 		return;
 	}
@@ -3419,7 +3419,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string&
 
 	if (!OpenClipboard(s_Data.HelperWindowHandle))
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to open clipboard");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to open clipboard");
 		GlobalFree(object);
 		return;
 	}
@@ -3435,14 +3435,14 @@ std::string TRAP::INTERNAL::WindowingAPI::PlatformGetClipboardString()
 {
 	if (!OpenClipboard(s_Data.HelperWindowHandle))
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to open clipboard");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to open clipboard");
 		return {};
 	}
 
 	const HANDLE object = GetClipboardData(CF_UNICODETEXT);
 	if (!object)
 	{
-		InputErrorWin32(Error::Format_Unavailable, "[Win32] Failed to convert clipboard to string");
+		InputErrorWin32(Error::Format_Unavailable, "[WinAPI] Failed to convert clipboard to string");
 		CloseClipboard();
 		return {};
 	}
@@ -3450,7 +3450,7 @@ std::string TRAP::INTERNAL::WindowingAPI::PlatformGetClipboardString()
 	WCHAR* buffer = static_cast<WCHAR*>(GlobalLock(object));
 	if (!buffer)
 	{
-		InputErrorWin32(Error::Platform_Error, "[Win32] Failed to lock global handle");
+		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to lock global handle");
 		CloseClipboard();
 		return {};
 	}
@@ -3484,7 +3484,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(const VkInsta
 
 	if (!vkCreateWin32SurfaceKHR)
 	{
-		InputError(Error::API_Unavailable, "[Win32] Vulkan instance missing VK_KHR_win32_surface extension");
+		InputError(Error::API_Unavailable, "[WinAPI] Vulkan instance missing VK_KHR_win32_surface extension");
 		return VK_ERROR_EXTENSION_NOT_PRESENT;
 	}
 
@@ -3499,7 +3499,7 @@ VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(const VkInsta
 
 	const VkResult err = vkCreateWin32SurfaceKHR(instance, &sci, allocator, &surface);
 	if (err)
-		InputError(Error::Platform_Error, "[Win32] Failed to create Vulkan surface: " + GetVulkanResultString(err));
+		InputError(Error::Platform_Error, "[WinAPI] Failed to create Vulkan surface: " + GetVulkanResultString(err));
 
 	return err;
 }

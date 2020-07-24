@@ -138,7 +138,7 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 template<typename T>
 T TRAP::Utils::Config::ConvertToType(const std::string& input) const
 {
-	TP_ERROR("[Config] Unconvertable type encountered, please use a different type, or define the handle case in Config.h");
+	TP_ERROR(TRAP::Log::ConfigPrefix, "Unconvertable type encountered, please use a different type, or define the handle case in Config.h");
 	throw "[Config] Unconvertable type encountered, please use a different type, or define the handle case in Config.h";
 }
 
@@ -267,7 +267,7 @@ inline TRAP::Graphics::API::RenderAPI TRAP::Utils::Config::ConvertToType<TRAP::G
 template<typename T>
 std::string TRAP::Utils::Config::ConvertToString(T value) const
 {
-	TP_ERROR("[Config] Unsupported type supplied, either change types, or write a correct conversion function for the template type.");
+	TP_ERROR(TRAP::Log::ConfigPrefix, "Unsupported type supplied, either change types, or write a correct conversion function for the template type.");
 	throw "[Config] Unsupported type supplied, either change types, or write a correct conversion function for the template type.";
 }
 

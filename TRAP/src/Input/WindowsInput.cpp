@@ -49,13 +49,13 @@ bool TRAP::Input::InitController()
 	{
 		if (!s_dinput8.Create || FAILED(s_dinput8.Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, TRAP_IID_IDirectInput8W, reinterpret_cast<void**>(&s_dinput8.API), nullptr)))
 		{
-			TP_ERROR("[Input][Controller][DirectInput] Failed to create interface for DirectInput!");
+			TP_ERROR(Log::InputControllerDirectInputPrefix, "Failed to create interface for DirectInput!");
 			return false;
 		}
 	}
 	else
 	{
-		TP_ERROR("[Input][Controller][DirectInput] Failed to open dinput8.dll!");
+		TP_ERROR(Log::InputControllerDirectInputPrefix, "Failed to open dinput8.dll!");
 		return false;
 	}
 
@@ -87,7 +87,7 @@ bool TRAP::Input::InitController()
 
 		if(!s_xinput.Instance)
 		{
-			TP_ERROR("[Input][Controller][XInput] Failed to create interface for XInput!");
+			TP_ERROR(Log::InputControllerXInputPrefix, "Failed to create interface for XInput!");
 			return false;
 		}
 	}
@@ -171,7 +171,7 @@ void TRAP::Input::DetectControllerConnectionWin32()
 	
 	if (s_dinput8.API)
 		if (FAILED(IDirectInput8_EnumDevices(s_dinput8.API, DI8DEVCLASS_GAMECTRL, DeviceCallback, nullptr, DIEDFL_ALLDEVICES)))
-			TP_ERROR("[Input][Controller][DirectInput] Failed to enumerate DirectInput devices!");
+			TP_ERROR(Log::InputControllerDirectInputPrefix, "Failed to enumerate DirectInput devices!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -194,12 +194,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 		XINPUT_VIBRATION vibration{ left, right };
 		const uint32_t result = s_xinput.SetState(static_cast<DWORD>(controller), &vibration);
 		if (result != ERROR_SUCCESS)
-			TP_ERROR("[Input][Controller][XInput] ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while setting vibration!");
-	}
-	else
-	{
-		//TODO DirectInput8 Force Feedback
-		//WIP
+			TP_ERROR(Log::InputControllerXInputPrefix, "ID: ", static_cast<uint32_t>(controller), " Error: ", result, " while setting vibration!");
 	}
 }
 
@@ -356,11 +351,11 @@ void TRAP::Input::CloseController(Controller controller)
 	const bool connected = s_controllerInternal[static_cast<uint32_t>(controller)].Connected;
 	
 	if(connected)
-		TP_INFO("[Input][Controller] Controller: ",
-	            (s_controllerInternal[static_cast<uint32_t>(controller)].mapping
-		            ? s_controllerInternal[static_cast<uint32_t>(controller)].mapping->Name
-		            : s_controllerInternal[static_cast<uint32_t>(controller)].Name),
-	            " (", static_cast<uint32_t>(controller), ") Disconnected!");
+		TP_INFO(Log::InputControllerPrefix, "Controller: ",
+		        (s_controllerInternal[static_cast<uint32_t>(controller)].mapping
+			         ? s_controllerInternal[static_cast<uint32_t>(controller)].mapping->Name
+			         : s_controllerInternal[static_cast<uint32_t>(controller)].Name),
+		        " (", static_cast<uint32_t>(controller), ") Disconnected!");
 
 	s_controllerInternal[static_cast<uint32_t>(controller)] = {};
 
@@ -572,21 +567,21 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 	if (FAILED(IDirectInput8_CreateDevice(s_dinput8.API, deviceInstance->guidInstance, &device, nullptr)))
 	{
-		TP_ERROR("[Input][Controller][DirectInput] Failed to create device!");
+		TP_ERROR(Log::InputControllerDirectInputPrefix, "Failed to create device!");
 		return DIENUM_CONTINUE;
 	}
 
 	/*if(FAILED(IDirectInputDevice8_SetCooperativeLevel(device, static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(TRAP::Application::GetWindow()->GetInternalWindow())->Handle,
 		DISCL_EXCLUSIVE | DISCL_BACKGROUND)))
 	{
-		TP_ERROR("[Input][Controller][DirectInput] Failed to set cooperative level!");
+		TP_ERROR(Log::InputControllerDirectInputPrefix, "Failed to set cooperative level!");
 		IDirectInputDevice8_Release(device);
 		return DIENUM_CONTINUE;
 	}*/
 
 	if (FAILED(IDirectInputDevice8_SetDataFormat(device, &TRAPDataFormat)))
 	{
-		TP_ERROR("[Input][Controller][DirectInput] Failed to set device data format!");
+		TP_ERROR(Log::InputControllerDirectInputPrefix, "Failed to set device data format!");
 		IDirectInputDevice8_Release(device);
 		return DIENUM_CONTINUE;
 	}
@@ -595,7 +590,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 	if (FAILED(IDirectInputDevice8_GetCapabilities(device, &dc)))
 	{
-		TP_ERROR("[Input][Controller][DirectInput] Failed to query device capabilities!");
+		TP_ERROR(Log::InputControllerDirectInputPrefix, "Failed to query device capabilities!");
 		IDirectInputDevice8_Release(device);
 		return DIENUM_CONTINUE;
 	}
@@ -608,15 +603,15 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 		device->QueryInterface(TRAP_GUID_IID_IDirectInputDevice2W, reinterpret_cast<LPVOID*>(&lpDirectInputJoystick));
 		//Try to use it
 		if (FAILED(lpDirectInputJoystick->SetCooperativeLevel(static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(TRAP::Application::GetWindow()->GetInternalWindow())->Handle, DISCL_BACKGROUND | DISCL_EXCLUSIVE)))
-			TP_ERROR("[Input][Controller][DirectInput] Failed to set cooperation level to exclusive! Ignoring Force Feedback feature");
+			TP_ERROR(Log::InputControllerDirectInputPrefix, "Failed to set cooperation level to exclusive! Ignoring Force Feedback feature");
 		else
 		{
 			forceFeedback = true;
-			TP_TRACE("[Input][Controller][DirectInput] Force Feedback enabled!");
+			TP_TRACE(Log::InputControllerDirectInputPrefix, "Force Feedback enabled!");
 		}
 
 		lpDirectInputJoystick->Release();*/
-		TP_DEBUG("[Input][Controller][DirectInput] Controller supports Force Feedback!\nThis feature is not implemented because all my controllers do not set this flag\nPls help thx");
+		TP_DEBUG(Log::InputControllerDirectInputPrefix, "Controller supports Force Feedback!\nThis feature is not implemented because all my controllers do not set this flag\nPls help thx");
 	}
 
 	dipd.diph.dwSize = sizeof(dipd);
@@ -626,7 +621,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 	if (FAILED(IDirectInputDevice8_SetProperty(device, DIPROP_AXISMODE, &dipd.diph)))
 	{
-		TP_ERROR("[Input][Controller][DirectInput] Failed to set device axis mode!");
+		TP_ERROR(Log::InputControllerDirectInputPrefix, "Failed to set device axis mode!");
 		IDirectInputDevice8_Release(device);
 		return DIENUM_CONTINUE;
 	}
@@ -636,7 +631,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 	if (FAILED(IDirectInputDevice8_EnumObjects(device, DeviceObjectCallback, &data, DIDFT_AXIS | DIDFT_BUTTON | DIDFT_POV)))
 	{
-		TP_ERROR("[Input][Controller][DirectInput] Failed to enumerate device objects!");
+		TP_ERROR(Log::InputControllerDirectInputPrefix, "Failed to enumerate device objects!");
 		IDirectInputDevice8_Release(device);
 		return DIENUM_CONTINUE;
 	}
@@ -645,7 +640,7 @@ BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance
 
 	if (!WideCharToMultiByte(CP_UTF8, 0, deviceInstance->tszInstanceName, -1, name.data(), static_cast<int32_t>(name.size()), nullptr, nullptr))
 	{
-		TP_ERROR("[Input][Controller][DirectInput] Failed to convert Controller name to UTF-8");
+		TP_ERROR(Log::InputControllerDirectInputPrefix, "Failed to convert Controller name to UTF-8");
 		IDirectInputDevice8_Release(device);
 		return DIENUM_STOP;
 	}
@@ -707,7 +702,7 @@ std::string TRAP::Input::GetKeyboardLayoutName()
 
 	if(!GetKeyboardLayoutNameW(keyboardLayoutID.data()))
 	{
-		TP_ERROR("[Input][WinAPI] Failed to retrieve keyboard layout name");
+		TP_ERROR(Log::InputWinAPIPrefix, "Failed to retrieve keyboard layout name");
 		return "";
 	}
 
@@ -717,7 +712,7 @@ std::string TRAP::Input::GetKeyboardLayoutName()
 	const uint32_t size = GetLocaleInfoW(lcID, LOCALE_SLANGUAGE, nullptr, 0);
 	if(!size)
 	{
-		TP_ERROR("[Input][WinAPI] Failed to retrieve keyboard layout name length");
+		TP_ERROR(Log::InputWinAPIPrefix, "Failed to retrieve keyboard layout name length");
 		return "";
 	}
 
@@ -725,7 +720,7 @@ std::string TRAP::Input::GetKeyboardLayoutName()
 
 	if(!GetLocaleInfoW(lcID, LOCALE_SLANGUAGE, language.data(), size))
 	{
-		TP_ERROR("[Input][WinAPI] Failed to translate keyboard layout name");
+		TP_ERROR(Log::InputWinAPIPrefix, "Failed to translate keyboard layout name");
 		return "";
 	}
 
@@ -735,14 +730,14 @@ std::string TRAP::Input::GetKeyboardLayoutName()
 	const int32_t sizeUTF8 = WideCharToMultiByte(CP_UTF8, 0, language.data(), -1, nullptr, 0, nullptr, nullptr);
 	if (!sizeUTF8)
 	{
-		TP_ERROR("[Input][WinAPI] Failed to convert string to UTF-8");
+		TP_ERROR(Log::InputWinAPIPrefix, "Failed to convert string to UTF-8");
 		return "";
 	}
 
 	result.resize(sizeUTF8);
 	if (!WideCharToMultiByte(CP_UTF8, 0, language.data(), -1, result.data(), sizeUTF8, nullptr, nullptr))
 	{
-		TP_ERROR("[Input][WinAPI] Failed to convert string to UTF-8");
+		TP_ERROR(Log::InputWinAPIPrefix, "Failed to convert string to UTF-8");
 		return "";
 	}
 
