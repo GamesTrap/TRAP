@@ -3,13 +3,13 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::FileOrFolderExists(const std::filesystem::path& path)
+bool TRAP::FileSystem::PhysicalFileOrFolderExists(const std::filesystem::path& physicalPath)
 {
 	try
 	{
-		if (!exists(path))
+		if (!exists(physicalPath))
 		{
-			TP_WARN(Log::FileSystemPrefix, "File/Folder: ", path, " doesn't exist!");
+			TP_WARN(Log::FileSystemPrefix, "File/Folder: ", physicalPath, " doesn't exist!");
 			return false;
 		}
 
@@ -23,11 +23,11 @@ bool TRAP::FileSystem::FileOrFolderExists(const std::filesystem::path& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::SilentFileOrFolderExists(const std::filesystem::path& path)
+bool TRAP::FileSystem::SilentPhysicalFileOrFolderExists(const std::filesystem::path& physicalPath)
 {
 	try
 	{
-		return std::filesystem::exists(path);
+		return std::filesystem::exists(physicalPath);
 	}
 	catch(std::exception&)
 	{
@@ -37,11 +37,11 @@ bool TRAP::FileSystem::SilentFileOrFolderExists(const std::filesystem::path& pat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uintmax_t TRAP::FileSystem::GetFileOrFolderSize(const std::filesystem::path& path)
+uintmax_t TRAP::FileSystem::GetPhysicalFileOrFolderSize(const std::filesystem::path& physicalPath)
 {
 	try
 	{
-		return file_size(path);
+		return file_size(physicalPath);
 	}
 	catch(std::exception&)
 	{
@@ -51,11 +51,11 @@ uintmax_t TRAP::FileSystem::GetFileOrFolderSize(const std::filesystem::path& pat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::filesystem::file_time_type TRAP::FileSystem::GetLastWriteTime(const std::filesystem::path& path)
+std::filesystem::file_time_type TRAP::FileSystem::GetPhysicalLastWriteTime(const std::filesystem::path& physicalPath)
 {
 	try
 	{
-		return last_write_time(path);
+		return last_write_time(physicalPath);
 	}
 	catch(std::exception&)
 	{
@@ -65,11 +65,11 @@ std::filesystem::file_time_type TRAP::FileSystem::GetLastWriteTime(const std::fi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::FileSystem::ReadFile(const std::filesystem::path& filePath)
+std::vector<uint8_t> TRAP::FileSystem::ReadPhysicalFile(const std::filesystem::path& physicalFilePath)
 {
-	if (FileOrFolderExists(filePath))
+	if (PhysicalFileOrFolderExists(physicalFilePath))
 	{
-		std::ifstream file(filePath, std::ios::binary | std::ios::ate);
+		std::ifstream file(physicalFilePath, std::ios::binary | std::ios::ate);
 		if (file.is_open())
 		{
 			const uint32_t length = static_cast<uint32_t>(file.tellg());
@@ -81,7 +81,7 @@ std::vector<uint8_t> TRAP::FileSystem::ReadFile(const std::filesystem::path& fil
 			return buffer;
 		}
 
-		TP_ERROR(Log::FileSystemPrefix, "Could not open File: ", filePath);
+		TP_ERROR(Log::FileSystemPrefix, "Could not open File: ", physicalFilePath);
 	}
 
 	return std::vector<uint8_t>();
@@ -89,11 +89,11 @@ std::vector<uint8_t> TRAP::FileSystem::ReadFile(const std::filesystem::path& fil
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::FileSystem::SilentReadFile(const std::filesystem::path& filePath)
+std::vector<uint8_t> TRAP::FileSystem::SilentReadPhysicalFile(const std::filesystem::path& physicalFilePath)
 {
-	if (SilentFileOrFolderExists(filePath))
+	if (SilentPhysicalFileOrFolderExists(physicalFilePath))
 	{
-		std::ifstream file(filePath, std::ios::binary | std::ios::ate);
+		std::ifstream file(physicalFilePath, std::ios::binary | std::ios::ate);
 		if (file.is_open())
 		{
 			const uint32_t length = static_cast<uint32_t>(file.tellg());
@@ -111,11 +111,11 @@ std::vector<uint8_t> TRAP::FileSystem::SilentReadFile(const std::filesystem::pat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::FileSystem::ReadTextFile(const std::filesystem::path& filePath)
+std::string TRAP::FileSystem::ReadPhysicalTextFile(const std::filesystem::path& physicalFilePath)
 {
-	if (FileOrFolderExists(filePath))
+	if (PhysicalFileOrFolderExists(physicalFilePath))
 	{
-		std::ifstream file(filePath);
+		std::ifstream file(physicalFilePath);
 		if (file.is_open())
 		{
 			std::string line;
@@ -135,7 +135,7 @@ std::string TRAP::FileSystem::ReadTextFile(const std::filesystem::path& filePath
 			return result;
 		}
 
-		TP_ERROR(Log::FileSystemPrefix, "Could not open File: ", filePath);
+		TP_ERROR(Log::FileSystemPrefix, "Could not open File: ", physicalFilePath);
 	}
 
 	return "";
@@ -143,11 +143,11 @@ std::string TRAP::FileSystem::ReadTextFile(const std::filesystem::path& filePath
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::FileSystem::SilentReadTextFile(const std::filesystem::path& filePath)
+std::string TRAP::FileSystem::SilentReadPhysicalTextFile(const std::filesystem::path& physicalFilePath)
 {
-	if (SilentFileOrFolderExists(filePath))
+	if (SilentPhysicalFileOrFolderExists(physicalFilePath))
 	{
-		std::ifstream file(filePath);
+		std::ifstream file(physicalFilePath);
 		if (file.is_open())
 		{
 			std::string line;

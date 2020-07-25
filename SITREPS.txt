@@ -1166,3 +1166,7 @@ SITREP 07/23/2020|20w30a3
     - OpenGLShader if Fragment/Vertex shader does not contain entry point "main" the Fallback shader will be used ~<20 mins
     - VulkanShader Added Debugging Reflection (enable via TRAP_DEBUG_SHADERS macro) ~>65 mins
     - Replaced all logging prefixes with constant expressions inside TRAP::Log namespace ~>120 mins
+    - More documentation ~>120 mins
+
+SITREP 07/25/2020|20w30a4
+    - Completely overhauled documentation generation ~>120 mins

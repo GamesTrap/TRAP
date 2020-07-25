@@ -1,16 +1,21 @@
 #include "TRAPPCH.h"
 #include "FileWatcher.h"
 
+#include <utility>
+
 #include "Utils/String/String.h"
 #include "FileSystem.h"
 #include "VFS.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, const float updateTimeInMilliseconds)
-	: m_virtualPathToWatch(virtualPath), m_delay(updateTimeInMilliseconds)
+TRAP::FileWatcher::FileWatcher(std::string virtualPath, const float updateTimeInMilliseconds)
+	: m_virtualPathToWatch(std::move(virtualPath)), m_delay(updateTimeInMilliseconds)
 {
 	TP_PROFILE_FUNCTION();
+
+	if (m_delay < 15.0f)
+		m_delay = 15.0f; //Prevent issues with programs that first delete a file and then recreate it
 
 	static auto VirtualFilepathFormatter = [](const std::string& virtualPathLower, const std::filesystem::directory_entry& file,
 	                            const std::filesystem::path& path)
@@ -48,19 +53,19 @@ TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, const float updat
 	};
 
 	m_timer.Reset();
-	const std::string virtualPathLower = Utils::String::ToLower(virtualPath);
+	const std::string virtualPathLower = Utils::String::ToLower(m_virtualPathToWatch);
 	m_physicalPathsToWatch = VFS::ResolveToPhysicalPaths(virtualPathLower);
 
 	for (const auto& path : m_physicalPathsToWatch)
 	{
-		if (FileSystem::SilentFileOrFolderExists(path))
+		if (FileSystem::SilentPhysicalFileOrFolderExists(path))
 		{
 			for (const auto& file : std::filesystem::recursive_directory_iterator(path))
 			{
 				if (!std::filesystem::is_directory(file))
 				{
 					std::string formattedPath = FilepathFormatter(file, path);
-					m_physicalPaths[formattedPath] = FileSystem::GetLastWriteTime(formattedPath);
+					m_physicalPaths[formattedPath] = FileSystem::GetPhysicalLastWriteTime(formattedPath);
 					m_virtualPaths[formattedPath] = VirtualFilepathFormatter(virtualPathLower, file, path);
 				}
 			}
@@ -71,7 +76,7 @@ TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, const float updat
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, std::string, FileStatus)>& action)
-{
+{	
 	static auto VirtualFilepathFormatter = [](const std::string& virtualPathLower, const std::filesystem::directory_entry& file,
 		const std::filesystem::path& path)
 	{
@@ -115,7 +120,7 @@ void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, st
 		auto it = m_physicalPaths.begin();
 		while (it != m_physicalPaths.end())
 		{
-			if (!FileSystem::SilentFileOrFolderExists(it->first))
+			if (!FileSystem::SilentPhysicalFileOrFolderExists(it->first))
 			{
 				auto virtualIt = m_virtualPaths.find(it->first);
 				if (virtualIt != m_virtualPaths.end())
@@ -138,12 +143,12 @@ void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, st
 		//Check if a file was created or modified
 		for (const auto& path : m_physicalPathsToWatch)
 		{
-			if (FileSystem::SilentFileOrFolderExists(path))
+			if (FileSystem::SilentPhysicalFileOrFolderExists(path))
 			{
 				for (const auto& file : std::filesystem::recursive_directory_iterator(path))
 				{
 					std::string formattedPath = FilepathFormatter(file, path);
-					auto currentFileLastWriteTime = FileSystem::GetLastWriteTime(formattedPath);
+					auto currentFileLastWriteTime = FileSystem::GetPhysicalLastWriteTime(formattedPath);
 					if (currentFileLastWriteTime != std::filesystem::file_time_type::min())
 					{
 						//File creation

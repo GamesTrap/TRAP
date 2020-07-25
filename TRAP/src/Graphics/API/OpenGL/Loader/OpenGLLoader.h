@@ -48,11 +48,23 @@ Modified by: Jan "GamesTrap" Schuerkamp
 	#define GLAPIENTRY APIENTRY
 #endif
 
-struct TRAPOpenGLVersionStruct
+namespace TRAP
 {
-	int32_t Major = 0;
-	int32_t Minor = 0;
-};
+	/// <summary>
+	/// Struct containing the Major and Minor version of OpenGL
+	/// </summary>
+	struct OpenGLVersionStruct
+	{
+		/// <summary>
+		/// Major version of OpenGL
+		/// </summary>
+		int32_t Major = 0;
+		/// <summary>
+		/// Minor version of OpenGL
+		/// </summary>
+		int32_t Minor = 0;
+	};
+}
 
 typedef void* (*TRAPLoadProc)(const char* name);
 
@@ -60,7 +72,7 @@ typedef void* (*TRAPLoadProc)(const char* name);
 	#define GLAPI extern
 #endif
 
-GLAPI struct TRAPOpenGLVersionStruct OpenGLVersion;
+GLAPI struct TRAP::OpenGLVersionStruct OpenGLVersion;
 GLAPI bool TRAPLoadOpenGL();
 GLAPI bool TRAPLoadOpenGLLoader(TRAPLoadProc);
 

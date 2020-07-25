@@ -33,6 +33,8 @@ namespace TRAP
 
 		uint32_t m_maxThreadsCount;
 		std::atomic_uint m_index = 0;
+
+		inline static constexpr uint32_t K = 3;
 	};
 }
 
@@ -45,15 +47,15 @@ void TRAP::ThreadPool::EnqueueWork(F&& f, Args&&... args)
 	{
 		std::apply(p, t);
 	};
-	const auto i = m_index++;
+	const uint32_t i = m_index++;
 
-	for (uint32_t n = 0; n < m_maxThreadsCount; ++n)
+	for (uint32_t n = 0; n < m_maxThreadsCount * K; ++n)
 	{
-		if (m_queues[(i + n) % m_maxThreadsCount].TryPush(work))
+		if (m_queues[(i + n) % m_maxThreadsCount].TryPush(std::move(work)))
 			return;
 	}
 
-	m_queues[i % m_maxThreadsCount].Push(std::move(work));
+	m_queues[i % m_maxThreadsCount].Push(work);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -63,16 +65,17 @@ auto TRAP::ThreadPool::EnqueueTask(F&& f, Args&&... args) -> std::future<std::in
 {
 	using TaskReturnType = std::invoke_result_t<F, Args...>;
 	using TaskType = std::packaged_task<TaskReturnType()>;
-
+	
 	auto task = std::make_shared<TaskType>(std::bind(std::forward<F>(f), std::forward<Args>(args)...));
+	std::future<TaskReturnType> result = task->get_future();
+	
 	auto work = [task]()
 	{
 		(*task)();
 	};
-	auto result = task->get_future();
-	const auto i = m_index++;
+	const uint32_t i = m_index++;
 
-	for (uint32_t n = 0; n < m_maxThreadsCount; ++n)
+	for (uint32_t n = 0; n < m_maxThreadsCount * K; ++n)
 	{
 		if (m_queues[(i + n) % m_maxThreadsCount].TryPush(work))
 			return result;

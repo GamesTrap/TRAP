@@ -809,12 +809,12 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 			//in case of changes run ShaderManager::Reload(virtualPath) (deferred into main thread)
 			VFS::GetShaderFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
 				const std::string& virtualPath,
-				const FileStatus status) -> void
+				const FileWatcher::FileStatus status) -> void
 				{
 					//Process only regular files and FileStatus::Modified
 					if (!is_regular_file(physicalPath))
 						return;
-					if (status == FileStatus::Erased)
+					if (status == FileWatcher::FileStatus::Erased)
 						return;
 
 					const std::string suffix = Utils::String::GetSuffix(virtualPath);
@@ -822,8 +822,10 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 					{
 						if (std::find(shaders.begin(), shaders.end(), virtualPath) == shaders.end())
 						{
-							std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
-							shaders.emplace_back(virtualPath);
+							{
+								std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
+								shaders.emplace_back(virtualPath);
+							}
 						}
 					}
 				});
@@ -835,12 +837,12 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 			//in case of changes run TextureManager::Reload(virtualPath) (deferred into main thread)
 			VFS::GetTextureFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
 				const std::string& virtualPath,
-				const FileStatus status) -> void
+				const FileWatcher::FileStatus status) -> void
 				{
 					//Process only regular files and FileStatus::Modified
 					if (!is_regular_file(physicalPath))
 						return;
-					if (status == FileStatus::Erased)
+					if (status == FileWatcher::FileStatus::Erased)
 						return;
 
 					const std::string suffix = Utils::String::GetSuffix(virtualPath);
@@ -850,8 +852,10 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 					{
 						if (std::find(textures.begin(), textures.end(), virtualPath) == textures.end())
 						{
-							std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
-							textures.emplace_back(virtualPath);
+							{
+								std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
+								textures.emplace_back(virtualPath);
+							}
 						}
 					}
 				});

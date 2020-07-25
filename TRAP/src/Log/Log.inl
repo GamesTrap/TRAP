@@ -6,7 +6,6 @@
 template <typename ... Args>
 void TRAP::Log::Trace(Args&& ... args)
 {
-	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Trace]";
 	using List = int32_t[];
@@ -14,6 +13,7 @@ void TRAP::Log::Trace(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+	std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
 	//Standard White
 	std::cout << stream.str() << '\n';
@@ -27,7 +27,6 @@ void TRAP::Log::Trace(Args&& ... args)
 template <typename ... Args>
 void TRAP::Log::Debug(Args&& ... args)
 {
-	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Debug]";
 	using List = int32_t[];
@@ -35,6 +34,7 @@ void TRAP::Log::Debug(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+	std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
 	//Standard Cyan
 	SetColor(FOREGROUND_GREEN | FOREGROUND_BLUE);
@@ -49,7 +49,6 @@ void TRAP::Log::Debug(Args&& ... args)
 template <typename ... Args>
 void TRAP::Log::Info(Args&& ... args)
 {
-	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Info]";
 	using List = int32_t[];
@@ -57,6 +56,7 @@ void TRAP::Log::Info(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+	std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
 	//Standard Green
 	SetColor(FOREGROUND_GREEN);
@@ -71,7 +71,6 @@ void TRAP::Log::Info(Args&& ... args)
 template <typename ... Args>
 void TRAP::Log::Warn(Args&& ... args)
 {
-	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Warn]";
 	using List = int32_t[];
@@ -79,6 +78,7 @@ void TRAP::Log::Warn(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+	std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
 	//Bold Yellow
 	SetColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
@@ -93,7 +93,6 @@ void TRAP::Log::Warn(Args&& ... args)
 template <typename ... Args>
 void TRAP::Log::Error(Args&& ... args)
 {
-	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Error]";
 	using List = int32_t[];
@@ -101,6 +100,7 @@ void TRAP::Log::Error(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+	std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
 	//Bold Red
 	SetColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
@@ -115,7 +115,6 @@ void TRAP::Log::Error(Args&& ... args)
 template <typename ... Args>
 void TRAP::Log::Critical(Args&& ... args)
 {
-	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Critical]";
 	using List = int32_t[];
@@ -123,6 +122,7 @@ void TRAP::Log::Critical(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+	std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
 	//Bold White on Red
 	SetColor(BACKGROUND_RED | FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
@@ -138,7 +138,6 @@ void TRAP::Log::Critical(Args&& ... args)
 template<typename... Args>
 void TRAP::Log::Debug(Args&& ... args)
 {
-	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Debug]";
 	using List = int32_t[];
@@ -146,6 +145,7 @@ void TRAP::Log::Debug(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+	std::lock_guard<std::mutex> lock(m_mtx);
 	//Standard Cyan
 	std::cout << "\033[36m" << stream.str() << "\033[m" << '\n';
 	Get().m_buffer.emplace_back(Level::Debug, stream.str());
@@ -156,7 +156,6 @@ void TRAP::Log::Debug(Args&& ... args)
 template<typename... Args>
 void TRAP::Log::Info(Args&& ... args)
 {
-	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Info]";
 	using List = int32_t[];
@@ -164,6 +163,7 @@ void TRAP::Log::Info(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+	std::lock_guard<std::mutex> lock(m_mtx);
 	//Standard Green
 	std::cout << "\033[32m" << stream.str() << "\033[m" << '\n';
 	Get().m_buffer.emplace_back(Level::Info, stream.str());
@@ -174,7 +174,6 @@ void TRAP::Log::Info(Args&& ... args)
 template<typename... Args>
 void TRAP::Log::Warn(Args&& ... args)
 {
-	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Warn]";
 	using List = int32_t[];
@@ -182,6 +181,7 @@ void TRAP::Log::Warn(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+	std::lock_guard<std::mutex> lock(m_mtx);
 	//Bold Yellow
 	std::cout << "\033[33m" << "\033[1m" << stream.str() << "\033[m" << '\n';
 	Get().m_buffer.emplace_back(Level::Warn, stream.str());
@@ -192,7 +192,6 @@ void TRAP::Log::Warn(Args&& ... args)
 template<typename... Args>
 void TRAP::Log::Error(Args&& ... args)
 {
-	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Error]";
 	using List = int32_t[];
@@ -200,6 +199,7 @@ void TRAP::Log::Error(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+	std::lock_guard<std::mutex> lock(m_mtx);
 	//Bold Red
 	std::cout << "\033[31m" << "\033[1m" << stream.str() << "\033[m" << '\n';
 	Get().m_buffer.emplace_back(Level::Error, stream.str());
@@ -210,7 +210,6 @@ void TRAP::Log::Error(Args&& ... args)
 template<typename... Args>
 void TRAP::Log::Critical(Args&& ... args)
 {
-	std::lock_guard<std::mutex> lock(m_mtx);
 	std::ostringstream stream;
 	stream << GetTimeStamp() << "[Critical]";
 	using List = int32_t[];
@@ -218,6 +217,7 @@ void TRAP::Log::Critical(Args&& ... args)
 		0, ((void)(stream << args), 0)...
 	};
 
+	std::lock_guard<std::mutex> lock(m_mtx);
 	//Bold White on Red
 	std::cout << "\033[41m" << "\033[1m" << stream.str() << "\033[m" << '\n';
 	Get().m_buffer.emplace_back(Level::Critical, stream.str());

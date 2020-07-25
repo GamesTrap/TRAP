@@ -29,12 +29,12 @@ void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physica
 		return physicalPath;
 	}(), "\"");
 	s_Instance->m_mountPoints[virtualPathLower].emplace_back([&]()
-		{
-			if (*(physicalPath.end() - 1) == '/')
-				return std::string(physicalPath.begin(), physicalPath.end() - 1);
+	{
+		if (*(physicalPath.end() - 1) == '/')
+			return std::string(physicalPath.begin(), physicalPath.end() - 1);
 
-			return physicalPath;
-		}());
+		return physicalPath;
+	}());
 
 	if (s_Instance->m_hotShaderReloading)
 		if (virtualPathLower == "/shaders")
@@ -63,13 +63,13 @@ void TRAP::VFS::MountTextures(const std::string& physicalPath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::VFS::Unmount(const std::string& path)
+void TRAP::VFS::Unmount(const std::string& virtualPath)
 {
 	TP_PROFILE_FUNCTION();
 
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
-	TP_INFO(Log::VFSPrefix, "Unmounting VirtualPath: \"", path, "\"");
-	const std::string pathLower = Utils::String::ToLower(path);
+	TP_INFO(Log::VFSPrefix, "Unmounting VirtualPath: \"", virtualPath, "\"");
+	const std::string pathLower = Utils::String::ToLower(virtualPath);
 	s_Instance->m_mountPoints[pathLower].clear();
 
 	if (s_Instance->m_hotShaderReloading && s_Instance->m_shaderFileWatcher)
@@ -89,7 +89,7 @@ bool TRAP::VFS::ResolveReadPhysicalPath(const std::string& path, std::filesystem
 	{
 		outPhysicalPath = path;
 
-		return FileSystem::FileOrFolderExists(path);
+		return FileSystem::PhysicalFileOrFolderExists(path);
 	}
 
 	std::vector<std::string> dirs = Utils::String::SplitString(path, '/');
@@ -103,7 +103,7 @@ bool TRAP::VFS::ResolveReadPhysicalPath(const std::string& path, std::filesystem
 	for (const std::string& physicalPath : s_Instance->m_mountPoints['/' + virtualDir])
 	{
 		std::string newPath = physicalPath + remainder;
-		if (FileSystem::FileOrFolderExists(newPath))
+		if (FileSystem::PhysicalFileOrFolderExists(newPath))
 		{
 			outPhysicalPath = newPath;
 
@@ -122,7 +122,7 @@ bool TRAP::VFS::SilentResolveReadPhysicalPath(const std::string& path, std::file
 	{
 		outPhysicalPath = path;
 
-		return FileSystem::SilentFileOrFolderExists(path);
+		return FileSystem::SilentPhysicalFileOrFolderExists(path);
 	}
 
 	std::vector<std::string> dirs = Utils::String::SplitString(path, '/');
@@ -136,7 +136,7 @@ bool TRAP::VFS::SilentResolveReadPhysicalPath(const std::string& path, std::file
 	for (const std::string& physicalPath : s_Instance->m_mountPoints['/' + virtualDir])
 	{
 		std::string newPath = physicalPath + remainder;
-		if (FileSystem::SilentFileOrFolderExists(newPath))
+		if (FileSystem::SilentPhysicalFileOrFolderExists(newPath))
 		{
 			outPhysicalPath = newPath;
 
@@ -202,7 +202,7 @@ std::vector<uint8_t> TRAP::VFS::ReadFile(const std::string& path)
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
-	return ResolveReadPhysicalPath(path, physicalPath) ? FileSystem::ReadFile(physicalPath) : std::vector<uint8_t>();
+	return ResolveReadPhysicalPath(path, physicalPath) ? FileSystem::ReadPhysicalFile(physicalPath) : std::vector<uint8_t>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -214,7 +214,7 @@ std::vector<uint8_t> TRAP::VFS::SilentReadFile(const std::string& path)
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
-	return SilentResolveReadPhysicalPath(path, physicalPath) ? FileSystem::SilentReadFile(physicalPath) : std::vector<uint8_t>();
+	return SilentResolveReadPhysicalPath(path, physicalPath) ? FileSystem::SilentReadPhysicalFile(physicalPath) : std::vector<uint8_t>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -226,7 +226,7 @@ std::string TRAP::VFS::ReadTextFile(const std::string& path)
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
-	return ResolveReadPhysicalPath(path, physicalPath) ? FileSystem::ReadTextFile(physicalPath) : "";
+	return ResolveReadPhysicalPath(path, physicalPath) ? FileSystem::ReadPhysicalTextFile(physicalPath) : "";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -238,7 +238,7 @@ std::string TRAP::VFS::SilentReadTextFile(const std::string& path)
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
-	return SilentResolveReadPhysicalPath(path, physicalPath) ? FileSystem::SilentReadTextFile(physicalPath) : "";
+	return SilentResolveReadPhysicalPath(path, physicalPath) ? FileSystem::SilentReadPhysicalTextFile(physicalPath) : "";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

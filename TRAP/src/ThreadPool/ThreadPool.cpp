@@ -12,7 +12,7 @@ TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 		m_queues = Queues(4);
 	}
 
-	auto worker = [this](auto i)
+	auto worker = [&](const uint32_t i)
 	{
 		while (true)
 		{

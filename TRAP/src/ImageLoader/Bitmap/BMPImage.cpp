@@ -24,7 +24,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		return;
 	}
 
-	if (FileSystem::FileOrFolderExists(physicalPath))
+	if (FileSystem::PhysicalFileOrFolderExists(physicalPath))
 	{
 		std::ifstream file(physicalPath, std::ios::binary);
 		if (!file.is_open())

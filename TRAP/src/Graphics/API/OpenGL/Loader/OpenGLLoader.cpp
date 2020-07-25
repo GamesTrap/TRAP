@@ -156,7 +156,7 @@ bool TRAPLoadOpenGL()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-struct TRAPOpenGLVersionStruct OpenGLVersion { 0, 0 };
+struct TRAP::OpenGLVersionStruct OpenGLVersion { 0, 0 };
 
 static int32_t MaxLoadedMajor;
 static int32_t MaxLoadedMinor;
