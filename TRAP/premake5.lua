@@ -42,10 +42,10 @@ project "TRAP"
 	{
 		"src",
 		"../%{IncludeDir.IMGUI}",
-		"../%{IncludeDir.VULKAN}/Include/",
 		"../%{IncludeDir.GLSLANG}",
 		"../%{IncludeDir.SPIRV}",
-		"../%{IncludeDir.SPIRVCROSS}"
+		"../%{IncludeDir.SPIRVCROSS}",
+		"../%{IncludeDir.VULKAN}/include/"
 	}
 
 	filter "system:windows"

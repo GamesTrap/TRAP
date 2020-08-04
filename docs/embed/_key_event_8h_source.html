@@ -8,7 +8,7 @@
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
         <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <title>TRAP: TRAP/src/Event/KeyEvent.h Source File</title>
+        <title>TRAP: TRAP/src/Events/KeyEvent.h Source File</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
@@ -68,7 +68,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_db0d50ba87e7db56c462954dd1d7bc7a.html">TRAP</a></li><li class="navelem"><a class="el" href="dir_df455e78fdc54c42281a50e9859a4a43.html">src</a></li><li class="navelem"><a class="el" href="dir_6ca7757ae3fdbf86dc3a9fcc51cd97bb.html">Event</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_db0d50ba87e7db56c462954dd1d7bc7a.html">TRAP</a></li><li class="navelem"><a class="el" href="dir_df455e78fdc54c42281a50e9859a4a43.html">src</a></li><li class="navelem"><a class="el" href="dir_ef9ebe3c57cf83629e930fab302184e3.html">Events</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -157,13 +157,32 @@ $(function() {
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        std::string_view m_title;</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        uint32_t m_codePoint;</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    };</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_KEYEVENT_H_*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_events_1_1_key_layout_event.html">   83</a></span>&#160;    <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_events_1_1_key_layout_event.html">KeyLayoutEvent</a> final : <span class="keyword">public</span> <a class="code" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    {</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="class_t_r_a_p_1_1_events_1_1_key_layout_event.html">KeyLayoutEvent</a>(std::string layout);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        std::string GetLayout() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        std::string ToString() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keyword">static</span> EventType GetStaticType();</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        EventType GetEventType() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* GetName() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        int32_t GetCategoryFlags() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        std::string m_layout;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    };</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;}</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_KEYEVENT_H_*/</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_key_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_key_event.html">TRAP::Events::KeyEvent</a></div><div class="ttdef"><b>Definition:</b> KeyEvent.h:9</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_key_press_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_key_press_event.html">TRAP::Events::KeyPressEvent</a></div><div class="ttdef"><b>Definition:</b> KeyEvent.h:24</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_key_release_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_key_release_event.html">TRAP::Events::KeyReleaseEvent</a></div><div class="ttdef"><b>Definition:</b> KeyEvent.h:44</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_key_layout_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_key_layout_event.html">TRAP::Events::KeyLayoutEvent</a></div><div class="ttdef"><b>Definition:</b> KeyEvent.h:83</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_event.html">TRAP::Events::Event</a></div><div class="ttdef"><b>Definition:</b> Event.h:32</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_key_type_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_key_type_event.html">TRAP::Events::KeyTypeEvent</a></div><div class="ttdef"><b>Definition:</b> KeyEvent.h:61</div></div>
 <!-- HTML footer for doxygen 1.8.8-->

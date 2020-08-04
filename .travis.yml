@@ -11,8 +11,6 @@ matrix:
           update: true
           sources:
           - ubuntu-toolchain-r-test
-          - sourceline: 'deb https://packages.lunarg.com/vulkan bionic main'
-            key_url: 'https://packages.lunarg.com/lunarg-signing-key-pub.asc'
           packages:
           - g++-9
           - gcc-9
@@ -31,6 +29,11 @@ matrix:
           - vulkan-sdk
       install: if [[ "$COMPILER" == "g++-9" ]]; then export CXX="g++-9" CC="gcc-9"; fi
       script:
+        - mkdir vulkan
+        - wget -c https://vulkan.lunarg.com/sdk/download/1.2.148.0/linux/vulkansdk-linux-x86_64-1.2.148.0.tar.gz?Human=true -O vulkan.tar.gz
+        - tar -xzf vulkan.tar.gz -vC vulkan
+        - chmod +x vulkan/1.2.148.0/setup-env.sh
+        - source vulkan/1.2.148.0/setup-env.sh
         - chmod +x libs/premake5/linux/premake5
         - libs/premake5/linux/premake5 gmake2
         - make
