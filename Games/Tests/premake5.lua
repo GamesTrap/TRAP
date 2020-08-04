@@ -22,7 +22,7 @@ project "Tests"
 		"../../%{IncludeDir.IMGUI}",
 		"../../%{IncludeDir.GLSLANG}",
 		"../../%{IncludeDir.SPIRV}",
-		"../../%{IncludeDir.VULKAN}/Include/",
+		"../../%{IncludeDir.VULKAN}/include/",
 		"../../%{IncludeDir.SPIRVCROSS}"
 	}
 
