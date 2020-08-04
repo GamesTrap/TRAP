@@ -26,7 +26,6 @@ matrix:
           - libmirclient-dev
           - libwayland-dev
           - libxrandr-dev
-          - vulkan-sdk
       install: if [[ "$COMPILER" == "g++-9" ]]; then export CXX="g++-9" CC="gcc-9"; fi
       script:
         - mkdir vulkan
