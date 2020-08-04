@@ -88,7 +88,7 @@ project "TRAP"
 			"ImGui",
 			"GLSLang",
 			"SPIRV",
-			"vulkan",
+			"../%{IncludeDir.VULKAN}/lib/vulkan"
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
 			"SPIRV-Cross-HLSL"

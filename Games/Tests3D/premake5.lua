@@ -37,7 +37,7 @@ project "Tests3D"
 			"ImGui",
 			"GLSLang",
 			"SPIRV",
-			"vulkan",
+			"../../%{IncludeDir.VULKAN}/lib/vulkan",
 
 			"dl",
 			"pthread",

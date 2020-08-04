@@ -30,7 +30,7 @@ matrix:
       script:
         - mkdir vulkan
         - wget -c https://vulkan.lunarg.com/sdk/download/1.2.148.0/linux/vulkansdk-linux-x86_64-1.2.148.0.tar.gz?Human=true -O vulkan.tar.gz
-        - tar -xzf vulkan.tar.gz -vC vulkan
+        - tar -xzf vulkan.tar.gz -C vulkan
         - chmod +x vulkan/1.2.148.0/setup-env.sh
         - source vulkan/1.2.148.0/setup-env.sh
         - chmod +x libs/premake5/linux/premake5
