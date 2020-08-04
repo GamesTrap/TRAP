@@ -7,9 +7,9 @@ bool TRAP::FileSystem::PhysicalFileOrFolderExists(const std::filesystem::path& p
 {
 	try
 	{
-		if (!exists(physicalPath))
+		if (!std::filesystem::exists(physicalPath))
 		{
-			TP_WARN(Log::FileSystemPrefix, "File/Folder: ", physicalPath, " doesn't exist!");
+			TP_WARN(Log::FileSystemPrefix, "File/Folder: \"", physicalPath, "\" doesn't exist!");
 			return false;
 		}
 
@@ -39,28 +39,38 @@ bool TRAP::FileSystem::SilentPhysicalFileOrFolderExists(const std::filesystem::p
 
 uintmax_t TRAP::FileSystem::GetPhysicalFileOrFolderSize(const std::filesystem::path& physicalPath)
 {
-	try
+	if (PhysicalFileOrFolderExists(physicalPath))
 	{
-		return file_size(physicalPath);
+		try
+		{
+			return std::filesystem::file_size(physicalPath);
+		}
+		catch (std::exception&)
+		{
+			return 0;
+		}
 	}
-	catch(std::exception&)
-	{
-		return 0;
-	}
+
+	return 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::filesystem::file_time_type TRAP::FileSystem::GetPhysicalLastWriteTime(const std::filesystem::path& physicalPath)
 {
-	try
+	if (PhysicalFileOrFolderExists(physicalPath))
 	{
-		return last_write_time(physicalPath);
+		try
+		{
+			return std::filesystem::last_write_time(physicalPath);
+		}
+		catch (std::exception&)
+		{
+			return std::filesystem::file_time_type::min();
+		}
 	}
-	catch(std::exception&)
-	{
-		return std::filesystem::file_time_type::min();
-	}
+	
+	return std::filesystem::file_time_type::min();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -72,7 +82,7 @@ std::vector<uint8_t> TRAP::FileSystem::ReadPhysicalFile(const std::filesystem::p
 		std::ifstream file(physicalFilePath, std::ios::binary | std::ios::ate);
 		if (file.is_open())
 		{
-			const uint32_t length = static_cast<uint32_t>(file.tellg());
+			const uintmax_t length = file.tellg();
 			file.seekg(0);
 			std::vector<uint8_t> buffer(length);
 			file.read(reinterpret_cast<char*>(buffer.data()), length);
@@ -81,7 +91,7 @@ std::vector<uint8_t> TRAP::FileSystem::ReadPhysicalFile(const std::filesystem::p
 			return buffer;
 		}
 
-		TP_ERROR(Log::FileSystemPrefix, "Could not open File: ", physicalFilePath);
+		TP_ERROR(Log::FileSystemPrefix, "Could not open File: \"", physicalFilePath, "\"");
 	}
 
 	return std::vector<uint8_t>();
@@ -96,7 +106,7 @@ std::vector<uint8_t> TRAP::FileSystem::SilentReadPhysicalFile(const std::filesys
 		std::ifstream file(physicalFilePath, std::ios::binary | std::ios::ate);
 		if (file.is_open())
 		{
-			const uint32_t length = static_cast<uint32_t>(file.tellg());
+			const uintmax_t length = file.tellg();
 			file.seekg(0);
 			std::vector<uint8_t> buffer(length);
 			file.read(reinterpret_cast<char*>(buffer.data()), length);
@@ -121,7 +131,7 @@ std::string TRAP::FileSystem::ReadPhysicalTextFile(const std::filesystem::path& 
 			std::string line;
 			std::string result;
 
-			while (std::getline(file, line))
+			while (file.good() && std::getline(file, line))
 			{
 				if(!line.empty())
 					if (line.back() == '\r')
@@ -135,7 +145,7 @@ std::string TRAP::FileSystem::ReadPhysicalTextFile(const std::filesystem::path& 
 			return result;
 		}
 
-		TP_ERROR(Log::FileSystemPrefix, "Could not open File: ", physicalFilePath);
+		TP_ERROR(Log::FileSystemPrefix, "Could not open File: \"", physicalFilePath, "\"");
 	}
 
 	return "";
@@ -153,7 +163,7 @@ std::string TRAP::FileSystem::SilentReadPhysicalTextFile(const std::filesystem::
 			std::string line;
 			std::string result;
 
-			while (std::getline(file, line))
+			while (file.good() && std::getline(file, line))
 			{
 				if(!line.empty())
 					if (line.back() == '\r')
@@ -173,36 +183,46 @@ std::string TRAP::FileSystem::SilentReadPhysicalTextFile(const std::filesystem::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::WriteFile(const std::filesystem::path& filePath, std::vector<uint8_t>& buffer)
+bool TRAP::FileSystem::WritePhysicalFile(const std::filesystem::path& physicalFilePath, std::vector<uint8_t>& buffer)
 {
-	std::ofstream file(filePath, std::ios::binary);
-	if (file.is_open())
+	if (!physicalFilePath.empty() && !buffer.empty())
 	{
-		file.write(reinterpret_cast<char*>(buffer.data()), buffer.size());
+		std::ofstream file(physicalFilePath, std::ios::binary);
+		if (file.is_open() && file.good())
+		{
+			file.write(reinterpret_cast<char*>(buffer.data()), buffer.size());
 
-		file.close();
-		return true;
+			file.close();
+			return true;
+		}
+
+		TP_ERROR(Log::FileSystemPrefix, "Could not write File: \"", physicalFilePath, "\"");
 	}
-
-	TP_ERROR(Log::FileSystemPrefix, "Could not write File: ", filePath);
+	else
+		TP_ERROR(Log::FileSystemPrefix, "Could not write File because physical file path and/or data was empty!");
 
 	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::WriteTextFile(const std::filesystem::path& filePath, const std::string_view text)
+bool TRAP::FileSystem::WritePhysicalTextFile(const std::filesystem::path& physicalFilePath, const std::string_view text)
 {
-	std::ofstream file(filePath);
-	if (file.is_open())
+	if (!physicalFilePath.empty() && !text.empty())
 	{
-		file << text;
+		std::ofstream file(physicalFilePath);
+		if (file.is_open() && file.good())
+		{
+			file << text;
 
-		file.close();
-		return true;
+			file.close();
+			return true;
+		}
+
+		TP_ERROR(Log::FileSystemPrefix, "Could not write File: ", physicalFilePath);
 	}
-
-	TP_ERROR(Log::FileSystemPrefix, "Could not write File: ", filePath);
+	else
+		TP_ERROR(Log::FileSystemPrefix, "Could not write File because physical file path and/or data was empty!");
 
 	return false;
 }

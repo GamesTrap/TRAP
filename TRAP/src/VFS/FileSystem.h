@@ -7,7 +7,7 @@ namespace TRAP
 	{
 	public:
 		/// <summary>
-		/// Check if a physical file or folder exists.
+		/// Check if a physical file or folder exists.<br>
 		/// <br>
 		/// Prints a warning if the physical file or folder doesn't exist.
 		/// </summary>
@@ -23,8 +23,8 @@ namespace TRAP
 		/// </summary>
 		/// <param name="physicalPath">Physical path to a folder or a file</param>
 		/// <returns>
-		/// True if physical file or folder exists.
-		/// <para>False if physical file or folder doesn't exist.</para>
+		/// True if physical file or folder exists.<br>
+		/// False if physical file or folder doesn't exist.
 		/// </returns>
 		static bool SilentPhysicalFileOrFolderExists(const std::filesystem::path& physicalPath);
 		/// <summary>
@@ -32,8 +32,8 @@ namespace TRAP
 		/// </summary>
 		/// <param name="physicalPath">Physical path to a file or folder</param>
 		/// <returns>
-		/// Physical file or folder size in bytes.
-		/// <para>0 if an error has occurred.</para>
+		/// Physical file or folder size in bytes.<br>
+		/// 0 if an error has occurred.
 		/// </returns>
 		static uintmax_t GetPhysicalFileOrFolderSize(const std::filesystem::path& physicalPath);
 		/// <summary>
@@ -41,21 +41,21 @@ namespace TRAP
 		/// </summary>
 		/// <param name="physicalPath">Physical path to a file or folder</param>
 		/// <returns>
-		/// Last write time of the physical file or folder.
-		/// <para>std::filesystem::file_time_type::min() if an error has occurred.</para>
+		/// Last write time of the physical file or folder.<br>
+		/// std::filesystem::file_time_type::min() if an error has occurred.
 		/// </returns>
 		static std::filesystem::file_time_type GetPhysicalLastWriteTime(const std::filesystem::path& physicalPath);
 
 		/// <summary>
-		/// Read the given physical file.
-		/// <para></para>
-		/// <para>Prints an error when file couldn't be opened.</para>
-		/// <para>Prints an error when physicalFilePath doesn't exist.</para>
+		/// Read the given physical file.<br>
+		/// <br>
+		/// Prints an error when file couldn't be opened.<br>
+		/// Prints an error when physicalFilePath doesn't exist.
 		/// </summary>
 		/// <param name="physicalFilePath">Physical file path</param>
 		/// <returns>
-		/// Vector filled with the file content.
-		/// <para>Empty vector if an error has occurred.</para>
+		/// Vector filled with the file content.<br>
+		/// Empty vector if an error has occurred.
 		/// </returns>
 		static std::vector<uint8_t> ReadPhysicalFile(const std::filesystem::path& physicalFilePath);
 		/// <summary>
@@ -63,20 +63,20 @@ namespace TRAP
 		/// </summary>
 		/// <param name="physicalFilePath">Physical file path</param>
 		/// <returns>
-		/// Vector filled with the file content.
-		/// <para>Empty vector if an error has occurred.</para>
+		/// Vector filled with the file content.<br>
+		/// Empty vector if an error has occurred.
 		/// </returns>
 		static std::vector<uint8_t> SilentReadPhysicalFile(const std::filesystem::path& physicalFilePath);
 		/// <summary>
-		/// Read the given physical file as text.
-		/// <para></para>
-		/// <para>Prints an error if physicalFilePath doesn't exist.</para>
-		/// <para>Prints an error if physicalFilePath couldn't be opened.</para>
+		/// Read the given physical file as text.<br>
+		/// <br>
+		/// Prints an error if physicalFilePath doesn't exist.<br>
+		/// Prints an error if physicalFilePath couldn't be opened.
 		/// </summary>
 		/// <param name="physicalFilePath">Physical file path</param>
 		/// <returns>
-		/// String filled with the file content.
-		/// <para>Empty string if an error has occurred.</para>
+		/// String filled with the file content.<br>
+		/// Empty string if an error has occurred.
 		/// </returns>
 		static std::string ReadPhysicalTextFile(const std::filesystem::path& physicalFilePath);
 		/// <summary>
@@ -84,27 +84,37 @@ namespace TRAP
 		/// </summary>
 		/// <param name="physicalFilePath">Physical file path</param>
 		/// <returns>
-		/// String filled with the file content.
-		/// <para>Empty string if an error has occurred.</para>
+		/// String filled with the file content.<br>
+		/// Empty string if an error has occurred.
 		/// </returns>
 		static std::string SilentReadPhysicalTextFile(const std::filesystem::path& physicalFilePath);
 
 		/// <summary>
-		/// Write the given data to the given file path.<br>
-		/// Only for non virtual paths
+		/// Write the given data to the given physical file path.<br>
+		/// <br>
+		/// Prints an error if physicalFilePath and/or buffer is empty.<br>
+		/// Prints an error if file couldn't be written.
 		/// </summary>
-		/// <param name="filePath">File path to be written to</param>
+		/// <param name="physicalFilePath">Physical file path to be written to</param>
 		/// <param name="buffer">Data to be written</param>
-		/// <returns>True on success or false and an error if it couldn't be written</returns>
-		static bool WriteFile(const std::filesystem::path& filePath, std::vector<uint8_t>& buffer);
+		/// <returns>
+		/// True if file was successfully written.<br>
+		/// False if an error has occurred.
+		/// </returns>
+		static bool WritePhysicalFile(const std::filesystem::path& physicalFilePath, std::vector<uint8_t>& buffer);
 		/// <summary>
-		/// Write the given text to the given file path.
-		/// Only for non virtual paths
+		/// Write the given text to the given physical file path.<br>
+		/// <br>
+		/// Prints an error if physicalFilePath and/or text is empty.<br>
+		/// Prints an error if file couldn't be written.
 		/// </summary>
-		/// <param name="filePath">File path to be written to</param>
+		/// <param name="physicalFilePath">Physical file path to be written to</param>
 		/// <param name="text">Text to be written</param>
-		/// <returns>True on success or false and an error if it couldn't be written</returns>
-		static bool WriteTextFile(const std::filesystem::path& filePath, std::string_view text);
+		/// <returns>
+		/// True if file was successfully written.<br>
+		/// False if an error has occurred.
+		/// </returns>
+		static bool WritePhysicalTextFile(const std::filesystem::path& physicalFilePath, std::string_view text);
 	};
 }
 

@@ -1170,3 +1170,13 @@ SITREP 07/23/2020|20w30a3
 
 SITREP 07/25/2020|20w30a4
     - Completely overhauled documentation generation ~>120 mins
+    - Changed TRAP Engine version to 20w30a4(0.6.54)
+    - TRAP::FileSystem added additional checks for empty paths and/or data ~<25 mins
+
+SITREP 07/29/2020|20w31a1
+    - Changed TRAP Engine version to 20w31a1(0.6.55)
+    - TRAP::FileWatcher moved lambda functions into own function ~<20 mins
+
+SITREP 08/02/2020|20w31a2
+    - Changed TRAP Engine version to 20w31a1(0.6.56)
+    - WindowingAPI Replaced manuall Mutex with std::mutex ~>20 mins

@@ -309,7 +309,7 @@ void TRAP::Input::CloseController(Controller controller)
 	bool connected = con->Connected;
 
 	if(connected)
-		TP_INFO(InputControllerPrefix, "Controller: ",
+		TP_INFO(Log::InputControllerPrefix, "Controller: ",
 		        (con->mapping
 			        ? con->mapping->Name
 			        : con->Name),

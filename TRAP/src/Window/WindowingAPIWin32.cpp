@@ -2674,17 +2674,6 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformCreateMutex(Mutex& mutex)
-{
-	TRAP_WINDOW_ASSERT(!mutex.Allocated, "[Window] Mutex is already in use!");
-	InitializeCriticalSection(&mutex.Section);
-	mutex.Allocated = true;
-	
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateTLS(TLS& tls)
 {
 	TRAP_WINDOW_ASSERT(!tls.Allocated, "[Window] Tls is already in use!");
@@ -2723,31 +2712,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyTLS(TLS& tls)
 	if (tls.Allocated)
 		TlsFree(tls.Index);
 	tls = {};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::PlatformDestroyMutex(Mutex& mutex)
-{
-	if (mutex.Allocated)
-		DeleteCriticalSection(&mutex.Section);
-	mutex = {};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::PlatformLockMutex(Mutex& mutex)
-{
-	TRAP_WINDOW_ASSERT(mutex.Allocated, "[Window] Mutex is not allocated!");
-	EnterCriticalSection(&mutex.Section);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::PlatformUnlockMutex(Mutex& mutex)
-{
-	TRAP_WINDOW_ASSERT(mutex.Allocated, "[Window] Mutex is not allocated!");
-	LeaveCriticalSection(&mutex.Section);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

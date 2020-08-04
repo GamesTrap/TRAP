@@ -108,7 +108,28 @@ EventType&#160;</td><td class="memItemRight" valign="bottom"><b>GetEventType</b>
 <tr class="memitem:af3770194c1c31042747179cbb5081c17"><td class="memItemLeft" align="right" valign="top"><a id="af3770194c1c31042747179cbb5081c17"></a>
 const char *&#160;</td><td class="memItemRight" valign="bottom"><b>GetName</b> () const override</td></tr>
 <tr class="separator:af3770194c1c31042747179cbb5081c17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6be6ab8d3b102a5a756c2d4ef8dde1a1"><td class="memItemLeft" align="right" valign="top"><a id="a6be6ab8d3b102a5a756c2d4ef8dde1a1"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>MouseButtonReleaseEvent</b> (Input::MouseButton button, std::string_view title)</td></tr>
+<tr class="separator:a6be6ab8d3b102a5a756c2d4ef8dde1a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a525968e1132e3174d439ad0fd1b32fc8"><td class="memItemLeft" align="right" valign="top"><a id="a525968e1132e3174d439ad0fd1b32fc8"></a>
+std::string_view&#160;</td><td class="memItemRight" valign="bottom"><b>GetTitle</b> () const</td></tr>
+<tr class="separator:a525968e1132e3174d439ad0fd1b32fc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6a1e9ef0a69934437b698f9a194c67a"><td class="memItemLeft" align="right" valign="top"><a id="af6a1e9ef0a69934437b698f9a194c67a"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>ToString</b> () const override</td></tr>
+<tr class="separator:af6a1e9ef0a69934437b698f9a194c67a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75c3c897ef32fe87c7c58212db73eb23"><td class="memItemLeft" align="right" valign="top"><a id="a75c3c897ef32fe87c7c58212db73eb23"></a>
+EventType&#160;</td><td class="memItemRight" valign="bottom"><b>GetEventType</b> () const override</td></tr>
+<tr class="separator:a75c3c897ef32fe87c7c58212db73eb23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3770194c1c31042747179cbb5081c17"><td class="memItemLeft" align="right" valign="top"><a id="af3770194c1c31042747179cbb5081c17"></a>
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>GetName</b> () const override</td></tr>
+<tr class="separator:af3770194c1c31042747179cbb5081c17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html">TRAP::Events::MouseButtonEvent</a></td></tr>
+<tr class="memitem:a05a4bdafee0f1f100a6dbbcfbfec086f inherit pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top"><a id="a05a4bdafee0f1f100a6dbbcfbfec086f"></a>
+Input::MouseButton&#160;</td><td class="memItemRight" valign="bottom"><b>GetMouseButton</b> () const</td></tr>
+<tr class="separator:a05a4bdafee0f1f100a6dbbcfbfec086f inherit pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0370c3a6684c9987e04eef4526d8fde1 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top"><a id="a0370c3a6684c9987e04eef4526d8fde1"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetCategoryFlags</b> () const override</td></tr>
+<tr class="separator:a0370c3a6684c9987e04eef4526d8fde1 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05a4bdafee0f1f100a6dbbcfbfec086f inherit pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top"><a id="a05a4bdafee0f1f100a6dbbcfbfec086f"></a>
 Input::MouseButton&#160;</td><td class="memItemRight" valign="bottom"><b>GetMouseButton</b> () const</td></tr>
 <tr class="separator:a05a4bdafee0f1f100a6dbbcfbfec086f inherit pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -119,9 +140,15 @@ int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetCategoryFlags</
 <tr class="memitem:ae75af1e048b84b7c73341623ee8d8716 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top"><a id="ae75af1e048b84b7c73341623ee8d8716"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>IsInCategory</b> (EventCategory category) const</td></tr>
 <tr class="separator:ae75af1e048b84b7c73341623ee8d8716 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae75af1e048b84b7c73341623ee8d8716 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top"><a id="ae75af1e048b84b7c73341623ee8d8716"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>IsInCategory</b> (EventCategory category) const</td></tr>
+<tr class="separator:ae75af1e048b84b7c73341623ee8d8716 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a2d9947e08a9791f5cafb34363e637979"><td class="memItemLeft" align="right" valign="top"><a id="a2d9947e08a9791f5cafb34363e637979"></a>
+static EventType&#160;</td><td class="memItemRight" valign="bottom"><b>GetStaticType</b> ()</td></tr>
+<tr class="separator:a2d9947e08a9791f5cafb34363e637979"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d9947e08a9791f5cafb34363e637979"><td class="memItemLeft" align="right" valign="top"><a id="a2d9947e08a9791f5cafb34363e637979"></a>
 static EventType&#160;</td><td class="memItemRight" valign="bottom"><b>GetStaticType</b> ()</td></tr>
 <tr class="separator:a2d9947e08a9791f5cafb34363e637979"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -133,6 +160,9 @@ Additional Inherited Members</h2></td></tr>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>Handled</b> = false</td></tr>
 <tr class="separator:a40822802ebedc36775ea7c734e491ff3 inherit pub_attribs_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html">TRAP::Events::MouseButtonEvent</a></td></tr>
+<tr class="memitem:a9b2145e2346d80a7a346c67de1d29727 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top"><a id="a9b2145e2346d80a7a346c67de1d29727"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>MouseButtonEvent</b> (Input::MouseButton button)</td></tr>
+<tr class="separator:a9b2145e2346d80a7a346c67de1d29727 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b2145e2346d80a7a346c67de1d29727 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top"><a id="a9b2145e2346d80a7a346c67de1d29727"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>MouseButtonEvent</b> (Input::MouseButton button)</td></tr>
 <tr class="separator:a9b2145e2346d80a7a346c67de1d29727 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -149,7 +179,22 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>Handled</b> = false</
 <tr class="memitem:a9457f13995ce9600c22f079e1b6d2d62 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top"><a id="a9457f13995ce9600c22f079e1b6d2d62"></a>
 <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;&amp;)=default</td></tr>
 <tr class="separator:a9457f13995ce9600c22f079e1b6d2d62 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8284c5591ba8f0ea70e911832edcbe43 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top"><a id="a8284c5591ba8f0ea70e911832edcbe43"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Event</b> (const <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;)=default</td></tr>
+<tr class="separator:a8284c5591ba8f0ea70e911832edcbe43 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a873f097c65dd5d39375dd8351a649835 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top"><a id="a873f097c65dd5d39375dd8351a649835"></a>
+<a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;)=default</td></tr>
+<tr class="separator:a873f097c65dd5d39375dd8351a649835 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2ac1bf9bf2f1a4a90892d040e33cae6 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top"><a id="ab2ac1bf9bf2f1a4a90892d040e33cae6"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Event</b> (<a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;&amp;)=default</td></tr>
+<tr class="separator:ab2ac1bf9bf2f1a4a90892d040e33cae6 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9457f13995ce9600c22f079e1b6d2d62 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top"><a id="a9457f13995ce9600c22f079e1b6d2d62"></a>
+<a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;&amp;)=default</td></tr>
+<tr class="separator:a9457f13995ce9600c22f079e1b6d2d62 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_static_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html">TRAP::Events::MouseButtonEvent</a></td></tr>
+<tr class="memitem:a01ed5b2ae9276ec6f2c025e53808e8d0 inherit pro_static_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top"><a id="a01ed5b2ae9276ec6f2c025e53808e8d0"></a>
+static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>MouseButtonToString</b> (Input::MouseButton button)</td></tr>
+<tr class="separator:a01ed5b2ae9276ec6f2c025e53808e8d0 inherit pro_static_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01ed5b2ae9276ec6f2c025e53808e8d0 inherit pro_static_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top"><a id="a01ed5b2ae9276ec6f2c025e53808e8d0"></a>
 static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>MouseButtonToString</b> (Input::MouseButton button)</td></tr>
 <tr class="separator:a01ed5b2ae9276ec6f2c025e53808e8d0 inherit pro_static_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -159,7 +204,7 @@ Input::MouseButton&#160;</td><td class="memItemRight" valign="bottom"><b>m_butto
 <tr class="separator:afd6448175c329584b9c4bada8ad977b3 inherit pro_attribs_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>TRAP/src/Events/<a class="el" href="_mouse_event_8h_source.html">MouseEvent.h</a></li>
+<li>TRAP/src/Event/<a class="el" href="_mouse_event_8h_source.html">MouseEvent.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->

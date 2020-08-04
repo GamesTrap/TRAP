@@ -99,40 +99,71 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aa15a10131b15e226f6bb09ac6e22fa63"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#aa15a10131b15e226f6bb09ac6e22fa63">Mount</a> (const std::string &amp;virtualPath, const std::string &amp;physicalPath)</td></tr>
-<tr class="memdesc:aa15a10131b15e226f6bb09ac6e22fa63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mount a physical folder path to a virtual folder path. NOTE: Virtual file paths always use lowercase.  <a href="class_t_r_a_p_1_1_v_f_s.html#aa15a10131b15e226f6bb09ac6e22fa63">More...</a><br /></td></tr>
+<tr class="memdesc:aa15a10131b15e226f6bb09ac6e22fa63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mount a physical folder path to a virtual folder path.<br  />
+ Subfolders need to be mounted separately.<br  />
+ NOTE: Physical path should use forward slashes and not back slashes! NOTE: Virtual file paths always use lowercase (except for the filename and its ending).<br  />
+ <br  />
+ If HotShaderReloading is enabled and the virtualPath is "/shaders" then this also instantiates the Shader <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a>.<br  />
+ If HotTextureReloading is enabled and the virtualPath is "/textures" then this also instantiates the Texture <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a>.<br  />
+ <br  />
+ Prints an error if either virtualPath or physicalPath is empty or invalid.  <a href="class_t_r_a_p_1_1_v_f_s.html#aa15a10131b15e226f6bb09ac6e22fa63">More...</a><br /></td></tr>
 <tr class="separator:aa15a10131b15e226f6bb09ac6e22fa63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b2c9156ecf45aff9fc2d62aa439e0cb"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a0b2c9156ecf45aff9fc2d62aa439e0cb">MountShaders</a> (const std::string &amp;physicalPath)</td></tr>
-<tr class="memdesc:a0b2c9156ecf45aff9fc2d62aa439e0cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mount a physical folder path to the virtual folder path "/shaders".  <a href="class_t_r_a_p_1_1_v_f_s.html#a0b2c9156ecf45aff9fc2d62aa439e0cb">More...</a><br /></td></tr>
+<tr class="memdesc:a0b2c9156ecf45aff9fc2d62aa439e0cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mount a physical folder path to the virtual folder path "/shaders".<br  />
+ <br  />
+ If HotShaderReloading is enabled and the virtualPath is "/shaders" then this also instantiates the Shader <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a>.<br  />
+ <br  />
+ Prints an error if physicalPath is empty.  <a href="class_t_r_a_p_1_1_v_f_s.html#a0b2c9156ecf45aff9fc2d62aa439e0cb">More...</a><br /></td></tr>
 <tr class="separator:a0b2c9156ecf45aff9fc2d62aa439e0cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a879cecbedf25a70b07c11fa972737867"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a879cecbedf25a70b07c11fa972737867">MountTextures</a> (const std::string &amp;physicalPath)</td></tr>
-<tr class="memdesc:a879cecbedf25a70b07c11fa972737867"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mount a physical folder path to the virtual folder path "/textures".  <a href="class_t_r_a_p_1_1_v_f_s.html#a879cecbedf25a70b07c11fa972737867">More...</a><br /></td></tr>
+<tr class="memdesc:a879cecbedf25a70b07c11fa972737867"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mount a physical folder path to the virtual folder path "/textures".<br  />
+ <br  />
+ If HotTextureReloading is enabled and the virtualPath is "/textures" then this also instantiates the Texture <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a>.<br  />
+ <br  />
+ Prints an error if physicalPath is empty.  <a href="class_t_r_a_p_1_1_v_f_s.html#a879cecbedf25a70b07c11fa972737867">More...</a><br /></td></tr>
 <tr class="separator:a879cecbedf25a70b07c11fa972737867"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6eb97b1fa0c70d6c895795153009013d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a6eb97b1fa0c70d6c895795153009013d">Unmount</a> (const std::string &amp;virtualPath)</td></tr>
-<tr class="memdesc:a6eb97b1fa0c70d6c895795153009013d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unmount a virtual folder path.  <a href="class_t_r_a_p_1_1_v_f_s.html#a6eb97b1fa0c70d6c895795153009013d">More...</a><br /></td></tr>
+<tr class="memdesc:a6eb97b1fa0c70d6c895795153009013d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unmount a virtual folder path.<br  />
+ <br  />
+ Prints an error if virtualPath is empty.<br  />
+ <br  />
+ If virtualPath is "/shaders" and HotShaderReloading is enabled and the Shader <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a> is already instantiated then this also stops it.<br  />
+ If virtualPath is "/textures" and HotTextureReloading is enabled and the Texture <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a> is already instantiated then this also stops it.<br  />
+  <a href="class_t_r_a_p_1_1_v_f_s.html#a6eb97b1fa0c70d6c895795153009013d">More...</a><br /></td></tr>
 <tr class="separator:a6eb97b1fa0c70d6c895795153009013d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52aebfbc54dc3ecba45e950f2ad7cb59"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a52aebfbc54dc3ecba45e950f2ad7cb59">ResolveReadPhysicalPath</a> (const std::string &amp;path, std::filesystem::path &amp;outPhysicalPath)</td></tr>
-<tr class="memdesc:a52aebfbc54dc3ecba45e950f2ad7cb59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve a virtual file or folder path to its physical file or folder path.  <a href="class_t_r_a_p_1_1_v_f_s.html#a52aebfbc54dc3ecba45e950f2ad7cb59">More...</a><br /></td></tr>
+<tr class="memdesc:a52aebfbc54dc3ecba45e950f2ad7cb59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve a virtual file or folder path to its physical file or folder path.<br  />
+ <br  />
+ Prints an error if path is empty, wasn't found or doesn't exist.  <a href="class_t_r_a_p_1_1_v_f_s.html#a52aebfbc54dc3ecba45e950f2ad7cb59">More...</a><br /></td></tr>
 <tr class="separator:a52aebfbc54dc3ecba45e950f2ad7cb59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add355c0e2814938e788c6f98462f3815"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#add355c0e2814938e788c6f98462f3815">SilentResolveReadPhysicalPath</a> (const std::string &amp;path, std::filesystem::path &amp;outPhysicalPath)</td></tr>
-<tr class="memdesc:add355c0e2814938e788c6f98462f3815"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve a virtual file or folder path to its physical file or folder path silently  <a href="class_t_r_a_p_1_1_v_f_s.html#add355c0e2814938e788c6f98462f3815">More...</a><br /></td></tr>
+<tr class="memdesc:add355c0e2814938e788c6f98462f3815"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve a virtual file or folder path to its physical file or folder path silently.  <a href="class_t_r_a_p_1_1_v_f_s.html#add355c0e2814938e788c6f98462f3815">More...</a><br /></td></tr>
 <tr class="separator:add355c0e2814938e788c6f98462f3815"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5a5988dd3bb5adfecd197e82686861e"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#af5a5988dd3bb5adfecd197e82686861e">ResolveWritePhysicalPath</a> (const std::string &amp;path, std::filesystem::path &amp;outPhysicalPath)</td></tr>
-<tr class="memdesc:af5a5988dd3bb5adfecd197e82686861e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve a virtual file or folder path to its physical file or folder path.  <a href="class_t_r_a_p_1_1_v_f_s.html#af5a5988dd3bb5adfecd197e82686861e">More...</a><br /></td></tr>
+<tr class="memdesc:af5a5988dd3bb5adfecd197e82686861e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve a virtual file or folder path to its physical file or folder path.<br  />
+ <br  />
+ If path already is a physical path then it will just be written to outPhysicalPath without changes.<br  />
+ Prints an error if path is empty.  <a href="class_t_r_a_p_1_1_v_f_s.html#af5a5988dd3bb5adfecd197e82686861e">More...</a><br /></td></tr>
 <tr class="separator:af5a5988dd3bb5adfecd197e82686861e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a398371f581bb7ac4741d37ea7a33af3e"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; std::filesystem::path &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a398371f581bb7ac4741d37ea7a33af3e">ResolveToPhysicalPaths</a> (const std::string &amp;virtualPath)</td></tr>
-<tr class="memdesc:a398371f581bb7ac4741d37ea7a33af3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve a virtual file or folder path to its (multiple) physical file or folder path(s)  <a href="class_t_r_a_p_1_1_v_f_s.html#a398371f581bb7ac4741d37ea7a33af3e">More...</a><br /></td></tr>
+<tr class="memdesc:a398371f581bb7ac4741d37ea7a33af3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve a virtual file or folder path to its (possibly multiple) physical file or folder path(s).  <a href="class_t_r_a_p_1_1_v_f_s.html#a398371f581bb7ac4741d37ea7a33af3e">More...</a><br /></td></tr>
 <tr class="separator:a398371f581bb7ac4741d37ea7a33af3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19d5acf9c1360e1c02b8f474c1d39838"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a19d5acf9c1360e1c02b8f474c1d39838">ReadFile</a> (const std::string &amp;path)</td></tr>
-<tr class="memdesc:a19d5acf9c1360e1c02b8f474c1d39838"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given file. Can be a virtual or a physical file path  <a href="class_t_r_a_p_1_1_v_f_s.html#a19d5acf9c1360e1c02b8f474c1d39838">More...</a><br /></td></tr>
+<tr class="memdesc:a19d5acf9c1360e1c02b8f474c1d39838"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given file.<br  />
+ <br  />
+ Prints an error if path is empty, wasn't found, doesn't exist or couldn't be opened.  <a href="class_t_r_a_p_1_1_v_f_s.html#a19d5acf9c1360e1c02b8f474c1d39838">More...</a><br /></td></tr>
 <tr class="separator:a19d5acf9c1360e1c02b8f474c1d39838"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a807aada29ab643886582175027c34f94"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a807aada29ab643886582175027c34f94">SilentReadFile</a> (const std::string &amp;path)</td></tr>
-<tr class="memdesc:a807aada29ab643886582175027c34f94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given file silently. Can be a virtual or a physical file path  <a href="class_t_r_a_p_1_1_v_f_s.html#a807aada29ab643886582175027c34f94">More...</a><br /></td></tr>
+<tr class="memdesc:a807aada29ab643886582175027c34f94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given file silently.  <a href="class_t_r_a_p_1_1_v_f_s.html#a807aada29ab643886582175027c34f94">More...</a><br /></td></tr>
 <tr class="separator:a807aada29ab643886582175027c34f94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a452e72abecae7041ece3760fd38ef90f"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a452e72abecae7041ece3760fd38ef90f">ReadTextFile</a> (const std::string &amp;path)</td></tr>
-<tr class="memdesc:a452e72abecae7041ece3760fd38ef90f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given text file. Can be a virtual or a physical file path  <a href="class_t_r_a_p_1_1_v_f_s.html#a452e72abecae7041ece3760fd38ef90f">More...</a><br /></td></tr>
+<tr class="memdesc:a452e72abecae7041ece3760fd38ef90f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given text file.<br  />
+ <br  />
+ Prints an error if path is empty.<br  />
+  <a href="class_t_r_a_p_1_1_v_f_s.html#a452e72abecae7041ece3760fd38ef90f">More...</a><br /></td></tr>
 <tr class="separator:a452e72abecae7041ece3760fd38ef90f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb935a4952bf2b6596d08c07a87f8533"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#abb935a4952bf2b6596d08c07a87f8533">SilentReadTextFile</a> (const std::string &amp;path)</td></tr>
-<tr class="memdesc:abb935a4952bf2b6596d08c07a87f8533"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given text file silently. Can be a virtual or a physical file path  <a href="class_t_r_a_p_1_1_v_f_s.html#abb935a4952bf2b6596d08c07a87f8533">More...</a><br /></td></tr>
+<tr class="memdesc:abb935a4952bf2b6596d08c07a87f8533"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given text file silently.  <a href="class_t_r_a_p_1_1_v_f_s.html#abb935a4952bf2b6596d08c07a87f8533">More...</a><br /></td></tr>
 <tr class="separator:abb935a4952bf2b6596d08c07a87f8533"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe70432da37a400306a7e030b8e557fc"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#abe70432da37a400306a7e030b8e557fc">WriteFile</a> (const std::string &amp;path, std::vector&lt; uint8_t &gt; &amp;buffer)</td></tr>
 <tr class="memdesc:abe70432da37a400306a7e030b8e557fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the given data to the given file path. Can be a virtual or a physical file path  <a href="class_t_r_a_p_1_1_v_f_s.html#abe70432da37a400306a7e030b8e557fc">More...</a><br /></td></tr>
@@ -206,13 +237,18 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </table>
 </div><div class="memdoc">
 
-<p>Mount a physical folder path to a virtual folder path. NOTE: Virtual file paths always use lowercase. </p>
-<p>If HotShaderReloading is enabled and the virtualPath is "/shaders" then this also instantiates the Shader <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a>. If HotTextureReloading is enabled and the virtualPath is "/textures" then this also instantiates the Texture <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a>.</p>
-<p>Prints an error if either virtualPath or physicalPath is empty</p>
+<p>Mount a physical folder path to a virtual folder path.<br  />
+ Subfolders need to be mounted separately.<br  />
+ NOTE: Physical path should use forward slashes and not back slashes! NOTE: Virtual file paths always use lowercase (except for the filename and its ending).<br  />
+ <br  />
+ If HotShaderReloading is enabled and the virtualPath is "/shaders" then this also instantiates the Shader <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a>.<br  />
+ If HotTextureReloading is enabled and the virtualPath is "/textures" then this also instantiates the Texture <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a>.<br  />
+ <br  />
+ Prints an error if either virtualPath or physicalPath is empty or invalid. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">virtualPath</td><td>Virtual folder path to be bound to</td></tr>
-    <tr><td class="paramname">physicalPath</td><td>Physical folder path</td></tr>
+    <tr><td class="paramname">virtualPath</td><td>Virtual folder path to be bound to.</td></tr>
+    <tr><td class="paramname">physicalPath</td><td>Physical folder path.</td></tr>
   </table>
   </dd>
 </dl>
@@ -243,11 +279,14 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </table>
 </div><div class="memdoc">
 
-<p>Mount a physical folder path to the virtual folder path "/shaders". </p>
-<p>If HotShaderReloading is enabled and the virtualPath is "/shaders" then this also instantiates the Shader <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a></p>
+<p>Mount a physical folder path to the virtual folder path "/shaders".<br  />
+ <br  />
+ If HotShaderReloading is enabled and the virtualPath is "/shaders" then this also instantiates the Shader <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a>.<br  />
+ <br  />
+ Prints an error if physicalPath is empty. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">physicalPath</td><td>Physical folder path</td></tr>
+    <tr><td class="paramname">physicalPath</td><td>Physical folder path.</td></tr>
   </table>
   </dd>
 </dl>
@@ -278,11 +317,14 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </table>
 </div><div class="memdoc">
 
-<p>Mount a physical folder path to the virtual folder path "/textures". </p>
-<p>If HotTextureReloading is enabled and the virtualPath is "/textures" then this also instantiates the Texture <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a></p>
+<p>Mount a physical folder path to the virtual folder path "/textures".<br  />
+ <br  />
+ If HotTextureReloading is enabled and the virtualPath is "/textures" then this also instantiates the Texture <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a>.<br  />
+ <br  />
+ Prints an error if physicalPath is empty. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">physicalPath</td><td>Physical folder path</td></tr>
+    <tr><td class="paramname">physicalPath</td><td>Physical folder path.</td></tr>
   </table>
   </dd>
 </dl>
@@ -313,14 +355,17 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </table>
 </div><div class="memdoc">
 
-<p>Read the given file. Can be a virtual or a physical file path </p>
+<p>Read the given file.<br  />
+ <br  />
+ Prints an error if path is empty, wasn't found, doesn't exist or couldn't be opened. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">path</td><td>Virtual or physical file path</td></tr>
+    <tr><td class="paramname">path</td><td>Virtual or physical file path.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>If path could be resolved a vector with the file content else an error and an empty vector</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Vector with file content on success.<br  />
+ Empty vector if an error has occurred. </dd></dl>
 
 </div>
 </div>
@@ -348,14 +393,18 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </table>
 </div><div class="memdoc">
 
-<p>Read the given text file. Can be a virtual or a physical file path </p>
+<p>Read the given text file.<br  />
+ <br  />
+ Prints an error if path is empty.<br  />
+ </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">path</td><td>Virtual or physical file path</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>If path could be resolved a string with the file content else an error and an empty string</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>String with file content on success.<br  />
+ Empty string if an error has occurred.</dd></dl>
 
 </div>
 </div>
@@ -393,16 +442,19 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </table>
 </div><div class="memdoc">
 
-<p>Resolve a virtual file or folder path to its physical file or folder path. </p>
-<p>Prints an error if path wasn't found or doesn't exist</p>
+<p>Resolve a virtual file or folder path to its physical file or folder path.<br  />
+ <br  />
+ Prints an error if path is empty, wasn't found or doesn't exist. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">path</td><td>Virtual or physical file or folder path to resolve</td></tr>
-    <tr><td class="paramname">outPhysicalPath</td><td>Output physical path. Unchanged if path couldn't be resolved</td></tr>
+    <tr><td class="paramname">path</td><td>Virtual or physical file or folder path to resolve.</td></tr>
+    <tr><td class="paramname">outPhysicalPath</td><td>Output physical path. Unchanged if path couldn't be resolved.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>True if file or folder was found. False if it wasn't found doesn't exist </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if file or folder was found.<br  />
+ False if it wasn't found doesn't exist.<br  />
+ </dd></dl>
 
 </div>
 </div>
@@ -430,14 +482,14 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </table>
 </div><div class="memdoc">
 
-<p>Resolve a virtual file or folder path to its (multiple) physical file or folder path(s) </p>
+<p>Resolve a virtual file or folder path to its (possibly multiple) physical file or folder path(s). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">virtualPath</td><td>Virtual file or folder path to resolve</td></tr>
+    <tr><td class="paramname">virtualPath</td><td>Virtual file or folder path to resolve.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Vector filled with all paths mounted to the virtualPath</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Vector filled with all paths mounted to the virtualPath.</dd></dl>
 
 </div>
 </div>
@@ -475,16 +527,20 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </table>
 </div><div class="memdoc">
 
-<p>Resolve a virtual file or folder path to its physical file or folder path. </p>
-<p>If path already is a physical path then it will just be written to outPhysicalPath without changes</p>
+<p>Resolve a virtual file or folder path to its physical file or folder path.<br  />
+ <br  />
+ If path already is a physical path then it will just be written to outPhysicalPath without changes.<br  />
+ Prints an error if path is empty. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">path</td><td>Virtual or physical file or folder path to resolve</td></tr>
-    <tr><td class="paramname">outPhysicalPath</td><td>Output physical path. Unchanged if path couldn't be resolved</td></tr>
+    <tr><td class="paramname">path</td><td>Virtual or physical file or folder path to resolve.</td></tr>
+    <tr><td class="paramname">outPhysicalPath</td><td>Output physical path.<br  />
+ Unchanged if path couldn't be resolved. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>True if file or folder was found. False if it wasn't found </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if file or folder was found.<br  />
+ False if it wasn't found. </dd></dl>
 
 </div>
 </div>
@@ -512,14 +568,15 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </table>
 </div><div class="memdoc">
 
-<p>Read the given file silently. Can be a virtual or a physical file path </p>
+<p>Read the given file silently. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">path</td><td>Virtual or physical file path</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>If path could be resolved a vector with the file content else an empty vector</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Vector with file content on success.<br  />
+ Empty vector if an error has occurred. </dd></dl>
 
 </div>
 </div>
@@ -547,14 +604,15 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </table>
 </div><div class="memdoc">
 
-<p>Read the given text file silently. Can be a virtual or a physical file path </p>
+<p>Read the given text file silently. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">path</td><td>Virtual or physical file path</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>If path could be resolved a string with the file content else an empty string</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>String with file content on success.<br  />
+ Empty string if an error has occurred.</dd></dl>
 
 </div>
 </div>
@@ -592,15 +650,16 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </table>
 </div><div class="memdoc">
 
-<p>Resolve a virtual file or folder path to its physical file or folder path silently </p>
+<p>Resolve a virtual file or folder path to its physical file or folder path silently. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">path</td><td>Virtual or physical file or folder path to resolve</td></tr>
-    <tr><td class="paramname">outPhysicalPath</td><td>Output physical path. Unchanged if path couldn't be resolved</td></tr>
+    <tr><td class="paramname">path</td><td>Virtual or physical file or folder path to resolve.</td></tr>
+    <tr><td class="paramname">outPhysicalPath</td><td>Output physical path.&lt;br Unchanged if path couldn't be resolved. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>True if file or folder was found. False if it wasn't found or doesn't exist </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if file or folder was found.<br  />
+ False if it wasn't found or doesn't exist. </dd></dl>
 
 </div>
 </div>
@@ -628,11 +687,16 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </table>
 </div><div class="memdoc">
 
-<p>Unmount a virtual folder path. </p>
-<p>If virtualPath is "/shaders" and HotShaderReloading is enabled and the Shader <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a> is already instantiated then this also stops it. If virtualPath is "/textures" and HotTextureReloading is enabled and the Texture <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a> is already instantiated then this also stops it.</p>
+<p>Unmount a virtual folder path.<br  />
+ <br  />
+ Prints an error if virtualPath is empty.<br  />
+ <br  />
+ If virtualPath is "/shaders" and HotShaderReloading is enabled and the Shader <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a> is already instantiated then this also stops it.<br  />
+ If virtualPath is "/textures" and HotTextureReloading is enabled and the Texture <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a> is already instantiated then this also stops it.<br  />
+ </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">virtualPath</td><td>Virtual folder path to unmount</td></tr>
+    <tr><td class="paramname">virtualPath</td><td>Virtual folder path to unmount.</td></tr>
   </table>
   </dd>
 </dl>

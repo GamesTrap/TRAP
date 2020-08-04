@@ -17,34 +17,44 @@ void TRAP::VFS::Mount(const std::string& virtualPath, const std::string& physica
 		TP_ERROR(Log::VFSPrefix, "Virtual or Physical path is empty!");
 		return;
 	}
+	if(virtualPath[0] != '/')
+	{
+		TP_ERROR(Log::VFSPrefix, "Virtual path: \"", virtualPath, R"(" doesnt start with "/"!)");
+		return;
+	}
+	if(physicalPath[0] == '/')
+	{
+		TP_ERROR(Log::VFSPrefix, "Physical path: \"", physicalPath, R"(" must not start with "/"!)");
+		return;
+	}
 
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 
+	constexpr auto RemoveSlash = [](const std::string& pPath)
+	{
+		if (*(pPath.end() - 1) == '/')
+			return std::string(pPath.begin(), pPath.end() - 1);
+		
+		return pPath;
+	};
+
 	const std::string virtualPathLower = Utils::String::ToLower(virtualPath);
-	TP_INFO(Log::VFSPrefix, "Mounting VirtualPath: \"", virtualPath, "\" to PhysicalPath: \"", [&]()
-	{
-		if (*(physicalPath.end() - 1) == '/')
-			return std::string(physicalPath.begin(), physicalPath.end() - 1);
-
-		return physicalPath;
-	}(), "\"");
-	s_Instance->m_mountPoints[virtualPathLower].emplace_back([&]()
-	{
-		if (*(physicalPath.end() - 1) == '/')
-			return std::string(physicalPath.begin(), physicalPath.end() - 1);
-
-		return physicalPath;
-	}());
+	TP_INFO(Log::VFSPrefix, "Mounting VirtualPath: \"", virtualPath, "\" to PhysicalPath: \"", RemoveSlash(physicalPath), "\"");
+	s_Instance->m_mountPoints[virtualPathLower].emplace_back(RemoveSlash(physicalPath));
 
 	if (s_Instance->m_hotShaderReloading)
+	{
 		if (virtualPathLower == "/shaders")
 			//Create a ShaderFileWatcher instance that will check the mounted folders for changes
-			s_Instance->m_shaderFileWatcher = MakeScope<FileWatcher>("/shaders", 15.0f);
+			s_Instance->m_shaderFileWatcher = MakeScope<FileWatcher>("/shaders");
+	}
 
 	if (s_Instance->m_hotTextureReloading)
+	{
 		if (virtualPathLower == "/textures")
 			//Create a TextureFileWatcher instance that will check the mounted folder for changes
-			s_Instance->m_textureFileWatcher = MakeScope<FileWatcher>("/textures", 15.0f);
+			s_Instance->m_textureFileWatcher = MakeScope<FileWatcher>("/textures");
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -68,9 +78,17 @@ void TRAP::VFS::Unmount(const std::string& virtualPath)
 	TP_PROFILE_FUNCTION();
 
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
+
+	if(virtualPath.empty())
+	{
+		TP_ERROR(Log::VFSPrefix, "Can't unmount empty virtual path!");
+		return;
+	}
+	
 	TP_INFO(Log::VFSPrefix, "Unmounting VirtualPath: \"", virtualPath, "\"");
 	const std::string pathLower = Utils::String::ToLower(virtualPath);
-	s_Instance->m_mountPoints[pathLower].clear();
+	if(s_Instance->m_mountPoints.find(pathLower) != s_Instance->m_mountPoints.end())
+		s_Instance->m_mountPoints[pathLower].clear();
 
 	if (s_Instance->m_hotShaderReloading && s_Instance->m_shaderFileWatcher)
 		if (pathLower == "/shaders")
@@ -85,6 +103,12 @@ void TRAP::VFS::Unmount(const std::string& virtualPath)
 
 bool TRAP::VFS::ResolveReadPhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath)
 {
+	if(path.empty())
+	{
+		TP_ERROR("[VFS] Path couldn't be resolved because it is empty!");
+		return false;
+	}
+	
 	if (path[0] != '/')
 	{
 		outPhysicalPath = path;
@@ -151,6 +175,12 @@ bool TRAP::VFS::SilentResolveReadPhysicalPath(const std::string& path, std::file
 
 bool TRAP::VFS::ResolveWritePhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath)
 {
+	if(path.empty())
+	{
+		TP_ERROR("[VFS] Path couldn't be resolved because it is empty!");
+		return false;
+	}
+	
 	if (path[0] != '/')
 	{
 		outPhysicalPath = path;
@@ -181,6 +211,9 @@ bool TRAP::VFS::ResolveWritePhysicalPath(const std::string& path, std::filesyste
 
 std::vector<std::filesystem::path> TRAP::VFS::ResolveToPhysicalPaths(const std::string& virtualPath)
 {
+	if (virtualPath.empty())
+		return std::vector<std::filesystem::path>();
+	
 	if (virtualPath[0] != '/')
 		return std::vector<std::filesystem::path>();
 
@@ -250,7 +283,7 @@ bool TRAP::VFS::WriteFile(const std::string& path, std::vector<uint8_t>& buffer)
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
-	return ResolveWritePhysicalPath(path, physicalPath) ? FileSystem::WriteFile(physicalPath, buffer) : false;
+	return ResolveWritePhysicalPath(path, physicalPath) ? FileSystem::WritePhysicalFile(physicalPath, buffer) : false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -262,7 +295,7 @@ bool TRAP::VFS::WriteTextFile(const std::string& path, const std::string& text)
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
-	return ResolveWritePhysicalPath(path, physicalPath) ? FileSystem::WriteTextFile(physicalPath, text) : false;
+	return ResolveWritePhysicalPath(path, physicalPath) ? FileSystem::WritePhysicalTextFile(physicalPath, text) : false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

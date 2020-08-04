@@ -88,39 +88,48 @@ $(function() {
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83">   14</a></span>&#160;        <span class="keyword">enum class</span> <a class="code" href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83">FileStatus</a></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            Created,</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            Modified,</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            Erased</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        };</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_file_watcher.html#adec3bb89dee0e2520875b736932ab1a0">FileWatcher</a>(std::string virtualPath, <span class="keywordtype">float</span> updateTimeInMilliseconds);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_file_watcher.html#a4a1dcf77208fd779680abc47155eaaea">Check</a>(<span class="keyword">const</span> std::function&lt;<span class="keywordtype">void</span>(std::filesystem::path, std::string, <a class="code" href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83">FileStatus</a>)&gt;&amp; action);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="comment">//Virtual folder to monitor</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        std::string m_virtualPathToWatch;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="comment">//All Physical paths corresponding to the virtualPath that should be monitored</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        std::vector&lt;std::filesystem::path&gt; m_physicalPathsToWatch;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="comment">//Physical paths bound to the Virtual path and the last written file time</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        std::unordered_map&lt;std::string, std::filesystem::file_time_type&gt; m_physicalPaths;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="comment">//Physical file list with corresponding virtual file</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        std::unordered_map&lt;std::string, std::string&gt; m_virtualPaths;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83a0eceeb45861f9585dd7a97a3e36f85c6">Created</a>,</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83a35e0c8c0b180c95d4e122e55ed62cc64">Modified</a>,</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83abf0adaf97ee2347ae783cc6d56f88d67">Erased</a></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        };</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="class_t_r_a_p_1_1_file_watcher.html#a997c034a81ccae2a946016f5ea80bce2">FileWatcher</a>(std::string virtualPath, <span class="keywordtype">float</span> updateTimeInMilliseconds = 15.0f);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_file_watcher.html#a4a1dcf77208fd779680abc47155eaaea">Check</a>(<span class="keyword">const</span> std::function&lt;<span class="keywordtype">void</span>(std::filesystem::path, std::string, <a class="code" href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83">FileStatus</a>)&gt;&amp; action);</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="comment">//Used for delaying next check</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordtype">float</span> m_delay;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_utils_1_1_timer.html">Utils::Timer</a> m_timer;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    };</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_FILEWATCHER_H_*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="comment">//TODO Document</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        std::string VirtualFilePathFormatter(<span class="keyword">const</span> std::string&amp; virtualPath, <span class="keyword">const</span> std::filesystem::directory_entry&amp; physicalFilePath,</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            <span class="keyword">const</span> std::filesystem::path&amp; physicalFolderPath) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        std::string PhysicalFilePathFormatter(<span class="keyword">const</span> std::filesystem::directory_entry&amp; physicalFilePath, <span class="keyword">const</span> std::filesystem::path&amp; physicalPath) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="comment">//Virtual folder to monitor</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        std::string m_virtualPathToWatch;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="comment">//All Physical paths corresponding to the virtualPath that should be monitored</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        std::vector&lt;std::filesystem::path&gt; m_physicalPathsToWatch;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="comment">//Physical paths bound to the Virtual path and the last written file time</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        std::unordered_map&lt;std::string, std::filesystem::file_time_type&gt; m_physicalPaths;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="comment">//Physical file list with corresponding virtual file</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        std::unordered_map&lt;std::string, std::string&gt; m_virtualPaths;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="comment">//Used for delaying next check</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordtype">float</span> m_delay;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_utils_1_1_timer.html">Utils::Timer</a> m_timer;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    };</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_FILEWATCHER_H_*/</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclass_t_r_a_p_1_1_file_watcher_html_ab54629edb3fbb8a9e0c8ee078eb35f83"><div class="ttname"><a href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83">TRAP::FileWatcher::FileStatus</a></div><div class="ttdeci">FileStatus</div><div class="ttdoc">Specifies the status of a file</div><div class="ttdef"><b>Definition:</b> FileWatcher.h:14</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_file_watcher_html_ab54629edb3fbb8a9e0c8ee078eb35f83a0eceeb45861f9585dd7a97a3e36f85c6"><div class="ttname"><a href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83a0eceeb45861f9585dd7a97a3e36f85c6">TRAP::FileWatcher::FileStatus::Created</a></div><div class="ttdeci">@ Created</div><div class="ttdoc">Indicates a file creation</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_file_watcher_html_ab54629edb3fbb8a9e0c8ee078eb35f83"><div class="ttname"><a href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83">TRAP::FileWatcher::FileStatus</a></div><div class="ttdeci">FileStatus</div><div class="ttdoc">Specifies the status of a file.</div><div class="ttdef"><b>Definition:</b> FileWatcher.h:14</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_file_watcher_html_ab54629edb3fbb8a9e0c8ee078eb35f83a35e0c8c0b180c95d4e122e55ed62cc64"><div class="ttname"><a href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83a35e0c8c0b180c95d4e122e55ed62cc64">TRAP::FileWatcher::FileStatus::Modified</a></div><div class="ttdeci">@ Modified</div><div class="ttdoc">Indicates a file modification</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_file_watcher_html_ab54629edb3fbb8a9e0c8ee078eb35f83abf0adaf97ee2347ae783cc6d56f88d67"><div class="ttname"><a href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83abf0adaf97ee2347ae783cc6d56f88d67">TRAP::FileWatcher::FileStatus::Erased</a></div><div class="ttdeci">@ Erased</div><div class="ttdoc">Indicates a file deletion</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_utils_1_1_timer_html"><div class="ttname"><a href="class_t_r_a_p_1_1_utils_1_1_timer.html">TRAP::Utils::Timer</a></div><div class="ttdef"><b>Definition:</b> Timer.h:8</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_file_watcher_html"><div class="ttname"><a href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a></div><div class="ttdef"><b>Definition:</b> FileWatcher.h:8</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_file_watcher_html_adec3bb89dee0e2520875b736932ab1a0"><div class="ttname"><a href="class_t_r_a_p_1_1_file_watcher.html#adec3bb89dee0e2520875b736932ab1a0">TRAP::FileWatcher::FileWatcher</a></div><div class="ttdeci">FileWatcher(std::string virtualPath, float updateTimeInMilliseconds)</div><div class="ttdoc">Keeps a record of files from every physicalPath inside the virtualPath and their last modification ti...</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_file_watcher_html_a4a1dcf77208fd779680abc47155eaaea"><div class="ttname"><a href="class_t_r_a_p_1_1_file_watcher.html#a4a1dcf77208fd779680abc47155eaaea">TRAP::FileWatcher::Check</a></div><div class="ttdeci">void Check(const std::function&lt; void(std::filesystem::path, std::string, FileStatus)&gt; &amp;action)</div><div class="ttdoc">Check every file mounted to the virtualPath for changes and if so call the given action function TODO...</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_file_watcher_html_a997c034a81ccae2a946016f5ea80bce2"><div class="ttname"><a href="class_t_r_a_p_1_1_file_watcher.html#a997c034a81ccae2a946016f5ea80bce2">TRAP::FileWatcher::FileWatcher</a></div><div class="ttdeci">FileWatcher(std::string virtualPath, float updateTimeInMilliseconds=15.0f)</div><div class="ttdoc">Keeps a record of files from every physicalPath inside the virtualPath and their last modification ti...</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_file_watcher_html_a4a1dcf77208fd779680abc47155eaaea"><div class="ttname"><a href="class_t_r_a_p_1_1_file_watcher.html#a4a1dcf77208fd779680abc47155eaaea">TRAP::FileWatcher::Check</a></div><div class="ttdeci">void Check(const std::function&lt; void(std::filesystem::path, std::string, FileStatus)&gt; &amp;action)</div><div class="ttdoc">Check every file mounted to the virtualPath for changes and if so call the given action function....</div></div>
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->
 </div>

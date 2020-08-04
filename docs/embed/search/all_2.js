@@ -10,6 +10,7 @@ var searchData=
   ['controllerdisconnectevent_19',['ControllerDisconnectEvent',['../class_t_r_a_p_1_1_events_1_1_controller_disconnect_event.html',1,'TRAP::Events']]],
   ['controllerevent_20',['ControllerEvent',['../class_t_r_a_p_1_1_events_1_1_controller_event.html',1,'TRAP::Events']]],
   ['cpuinfo_21',['CPUInfo',['../struct_t_r_a_p_1_1_c_p_u_info.html',1,'TRAP']]],
-  ['cursormode_22',['CursorMode',['../class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e',1,'TRAP::Window']]],
-  ['cursortype_23',['CursorType',['../class_t_r_a_p_1_1_window.html#a58b36740dcdc5de9b711b0bb4afd1a1f',1,'TRAP::Window']]]
+  ['created_22',['Created',['../class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83a0eceeb45861f9585dd7a97a3e36f85c6',1,'TRAP::FileWatcher']]],
+  ['cursormode_23',['CursorMode',['../class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e',1,'TRAP::Window']]],
+  ['cursortype_24',['CursorType',['../class_t_r_a_p_1_1_window.html#a58b36740dcdc5de9b711b0bb4afd1a1f',1,'TRAP::Window']]]
 ];

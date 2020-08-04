@@ -573,16 +573,6 @@ namespace TRAP::INTERNAL
 			pthread_key_t Key{};
 #endif
 		};
-		//Mutex structure
-		struct Mutex
-		{
-			bool Allocated = false;
-#ifdef TRAP_PLATFORM_WINDOWS			
-			CRITICAL_SECTION Section{};
-#elif defined(TRAP_PLATFORM_LINUX)
-			pthread_mutex_t Handle{};
-#endif
-		};
 		//Per-thread error structure
 		struct WindowingError
 		{
@@ -679,7 +669,6 @@ namespace TRAP::INTERNAL
 
 			TLS ErrorSlot{};
 			TLS ContextSlot{};
-			Mutex ErrorLock{};
 
 			struct
 			{
@@ -1277,7 +1266,8 @@ namespace TRAP::INTERNAL
 		//-------------------------------------------------------------------------------------------------------------------//
 		static WindowingError s_MainThreadError;
 		static ErrorFunc s_ErrorCallback;
-		static Data s_Data;		
+		static Data s_Data;
+		static std::mutex s_ErrorLock;
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Platform Independent Functions-------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -1561,14 +1551,10 @@ namespace TRAP::INTERNAL
 		static void PlatformSetWindowMonitorBorderless(InternalWindow* window, InternalMonitor* monitor);
 		static std::vector<InternalVideoMode> PlatformGetVideoModes(const InternalMonitor* monitor);
 		static bool PlatformInit();
-		static bool PlatformCreateMutex(Mutex& mutex); 
 		static bool PlatformCreateTLS(TLS& tls);
 		static void PlatformSetTLS(TLS& tls, void* value);
 		static void* PlatformGetTLS(TLS& tls);
 		static void PlatformDestroyTLS(TLS& tls);
-		static void PlatformDestroyMutex(Mutex& mutex);
-		static void PlatformLockMutex(Mutex& mutex);
-		static void PlatformUnlockMutex(Mutex& mutex);
 		static void PlatformDestroyWindow(InternalWindow* window);
 		static void PlatformShutdown();
 		static void PlatformGetMonitorContentScale(const InternalMonitor* monitor, float& xScale, float& yScale);

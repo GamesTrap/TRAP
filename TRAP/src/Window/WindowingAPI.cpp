@@ -45,6 +45,10 @@ TRAP::INTERNAL::WindowingAPI::ErrorFunc TRAP::INTERNAL::WindowingAPI::s_ErrorCal
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::mutex TRAP::INTERNAL::WindowingAPI::s_ErrorLock{};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::INTERNAL::WindowingAPI::Init()
 {
 	if (s_Data.Initialized)
@@ -58,7 +62,7 @@ bool TRAP::INTERNAL::WindowingAPI::Init()
 		return false;
 	}
 
-	if(!PlatformCreateMutex(s_Data.ErrorLock) || !PlatformCreateTLS(s_Data.ErrorSlot) || !PlatformCreateTLS(s_Data.ContextSlot))
+	if(!PlatformCreateTLS(s_Data.ErrorSlot) || !PlatformCreateTLS(s_Data.ContextSlot))
 	{
 		Shutdown();
 		return false;
@@ -94,7 +98,6 @@ void TRAP::INTERNAL::WindowingAPI::Shutdown()
 
 	PlatformDestroyTLS(s_Data.ContextSlot);
 	PlatformDestroyTLS(s_Data.ErrorSlot);
-	PlatformDestroyMutex(s_Data.ErrorLock);
 
 	s_Data = {};
 }
@@ -482,10 +485,11 @@ void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::strin
 	{			
 		error = MakeScope<WindowingError>();
 		PlatformSetTLS(s_Data.ErrorSlot, error.get());
-		PlatformLockMutex(s_Data.ErrorLock);
-		error->Next = s_Data.ErrorListHead.get();
-		s_Data.ErrorListHead = std::move(error);
-		PlatformUnlockMutex(s_Data.ErrorLock);
+		{
+			std::lock_guard<std::mutex> lock(s_ErrorLock);
+			error->Next = s_Data.ErrorListHead.get();
+			s_Data.ErrorListHead = std::move(error);
+		}
 		s_Data.ErrorListHead->ErrorCode = code;
 		s_Data.ErrorListHead->Description = description;
 	}
@@ -503,7 +507,6 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
 
 	//Make sure the cursor is not being used by any window
 	{
-		//for (InternalWindow* window = s_Data.WindowListHead; window; window = window->Next)
 		for(InternalWindow* window : s_Data.WindowList)
 		{
 			if (window->Cursor == cursor.get())

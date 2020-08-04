@@ -3044,21 +3044,6 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::WindowingAPI::PlatformCreateMutex(Mutex& mutex)
-{
-	TRAP_ASSERT(!mutex.Allocated, "Mutex is already allocated!");
-	
-	if(pthread_mutex_init(&mutex.Handle, nullptr) != 0)
-	{
-		InputError(Error::Platform_Error, "[POSIX] Failed to create mutex!");
-		return false;
-	}
-	
-	return mutex.Allocated = true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateTLS(TLS& tls)
 {
 	TRAP_ASSERT(!tls.Allocated, "TLS is already allocated!");
@@ -3098,33 +3083,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyTLS(TLS& tls)
 	if(tls.Allocated)
 		pthread_key_delete(tls.Key);
 	tls = {};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::PlatformDestroyMutex(Mutex& mutex)
-{
-	if(mutex.Allocated)
-		pthread_mutex_destroy(&mutex.Handle);
-	mutex = {};
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::PlatformLockMutex(Mutex& mutex)
-{
-	TRAP_ASSERT(mutex.Allocated, "Mutex doesn't contain data!");
-	
-	pthread_mutex_lock(&mutex.Handle);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::PlatformUnlockMutex(Mutex& mutex)
-{
-	TRAP_ASSERT(mutex.Allocated, "Mutex doesn't contain data!");
-	
-	pthread_mutex_unlock(&mutex.Handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

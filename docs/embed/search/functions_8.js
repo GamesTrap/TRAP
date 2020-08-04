@@ -1,12 +1,21 @@
 var searchData=
 [
-  ['readfile_313',['ReadFile',['../class_t_r_a_p_1_1_v_f_s.html#a19d5acf9c1360e1c02b8f474c1d39838',1,'TRAP::VFS']]],
-  ['readphysicalfile_314',['ReadPhysicalFile',['../class_t_r_a_p_1_1_file_system.html#a7be04ba08200457e0db56c24986f1f43',1,'TRAP::FileSystem']]],
-  ['readphysicaltextfile_315',['ReadPhysicalTextFile',['../class_t_r_a_p_1_1_file_system.html#a6d4d91bc0d3294ab324bc9a172eb6a06',1,'TRAP::FileSystem']]],
-  ['readtextfile_316',['ReadTextFile',['../class_t_r_a_p_1_1_v_f_s.html#a452e72abecae7041ece3760fd38ef90f',1,'TRAP::VFS']]],
-  ['requestattention_317',['RequestAttention',['../class_t_r_a_p_1_1_window.html#ac066ce312c9920cb51c231c81e937d3a',1,'TRAP::Window']]],
-  ['resolvereadphysicalpath_318',['ResolveReadPhysicalPath',['../class_t_r_a_p_1_1_v_f_s.html#a52aebfbc54dc3ecba45e950f2ad7cb59',1,'TRAP::VFS']]],
-  ['resolvetophysicalpaths_319',['ResolveToPhysicalPaths',['../class_t_r_a_p_1_1_v_f_s.html#a398371f581bb7ac4741d37ea7a33af3e',1,'TRAP::VFS']]],
-  ['resolvewritephysicalpath_320',['ResolveWritePhysicalPath',['../class_t_r_a_p_1_1_v_f_s.html#af5a5988dd3bb5adfecd197e82686861e',1,'TRAP::VFS']]],
-  ['restore_321',['Restore',['../class_t_r_a_p_1_1_window.html#ab6c0f8407dcb67f6424fd474a619ed9c',1,'TRAP::Window']]]
+  ['setcursoricon_309',['SetCursorIcon',['../class_t_r_a_p_1_1_window.html#a88e26eb6600ee22e99fdf4461aaae597',1,'TRAP::Window']]],
+  ['setcursormode_310',['SetCursorMode',['../class_t_r_a_p_1_1_window.html#a62e0a9e296ad0b84fbe3a69b4dfdd531',1,'TRAP::Window']]],
+  ['setcursortype_311',['SetCursorType',['../class_t_r_a_p_1_1_window.html#aa93b626832ac68f6b887227acdc6cfef',1,'TRAP::Window']]],
+  ['setdisplaymode_312',['SetDisplayMode',['../class_t_r_a_p_1_1_window.html#af694cbc2af0298888fc6bcd05eed56ba',1,'TRAP::Window']]],
+  ['seteventcallback_313',['SetEventCallback',['../class_t_r_a_p_1_1_window.html#ac542967a06b5acaf5084c361039b47fe',1,'TRAP::Window']]],
+  ['seticon_314',['SetIcon',['../class_t_r_a_p_1_1_window.html#a2221c4be2e229cd9fb8f37105002ac96',1,'TRAP::Window::SetIcon() const'],['../class_t_r_a_p_1_1_window.html#a8374c6feec002fa1bad84996674a3e86',1,'TRAP::Window::SetIcon(const Scope&lt; Image &gt; &amp;image) const']]],
+  ['setmaximumsize_315',['SetMaximumSize',['../class_t_r_a_p_1_1_window.html#ae8023e77a5a20daeef8515915abd5a88',1,'TRAP::Window']]],
+  ['setminimumsize_316',['SetMinimumSize',['../class_t_r_a_p_1_1_window.html#a9f9237420469600df32997791ec7cc8a',1,'TRAP::Window']]],
+  ['setmonitor_317',['SetMonitor',['../class_t_r_a_p_1_1_window.html#a3251d39967a79e61e332c3c21e1e6e52',1,'TRAP::Window']]],
+  ['setopacity_318',['SetOpacity',['../class_t_r_a_p_1_1_window.html#afd6ede0bc20de12a6beab079c7802fc0',1,'TRAP::Window']]],
+  ['setrawmouseinput_319',['SetRawMouseInput',['../class_t_r_a_p_1_1_window.html#aa6fa966786dfe81fe6562f7e055335e4',1,'TRAP::Window']]],
+  ['setresizable_320',['SetResizable',['../class_t_r_a_p_1_1_window.html#a28f1370ae185a365ee0665512fbe1cb3',1,'TRAP::Window']]],
+  ['settitle_321',['SetTitle',['../class_t_r_a_p_1_1_window.html#a6558c07f0e759a301a026acef6a8c8fd',1,'TRAP::Window']]],
+  ['setvsyncinterval_322',['SetVSyncInterval',['../class_t_r_a_p_1_1_window.html#af882eec1230dc80c8d9130d7b520c32b',1,'TRAP::Window']]],
+  ['show_323',['Show',['../class_t_r_a_p_1_1_window.html#a69489852408b882f10e611c8f875fec9',1,'TRAP::Window']]],
+  ['silentreadfile_324',['SilentReadFile',['../class_t_r_a_p_1_1_v_f_s.html#a807aada29ab643886582175027c34f94',1,'TRAP::VFS']]],
+  ['silentreadtextfile_325',['SilentReadTextFile',['../class_t_r_a_p_1_1_v_f_s.html#abb935a4952bf2b6596d08c07a87f8533',1,'TRAP::VFS']]],
+  ['silentresolvereadphysicalpath_326',['SilentResolveReadPhysicalPath',['../class_t_r_a_p_1_1_v_f_s.html#add355c0e2814938e788c6f98462f3815',1,'TRAP::VFS']]]
 ];

@@ -1,10 +1,11 @@
 var searchData=
 [
-  ['mat_78',['Mat',['../struct_t_r_a_p_1_1_math_1_1_mat.html',1,'TRAP::Math']]],
-  ['mat_3c_203_2c_203_2c_20t_20_3e_79',['Mat&lt; 3, 3, T &gt;',['../struct_t_r_a_p_1_1_math_1_1_mat_3_013_00_013_00_01_t_01_4.html',1,'TRAP::Math']]],
-  ['mat_3c_204_2c_204_2c_20t_20_3e_80',['Mat&lt; 4, 4, T &gt;',['../struct_t_r_a_p_1_1_math_1_1_mat_3_014_00_014_00_01_t_01_4.html',1,'TRAP::Math']]],
-  ['maximize_81',['Maximize',['../class_t_r_a_p_1_1_window.html#a9c3c7c8877bbacb2ccfffce521434870',1,'TRAP::Window']]],
-  ['minimize_82',['Minimize',['../class_t_r_a_p_1_1_window.html#aa0b5b770700bd8d6b5a6d248ba0cd2f7',1,'TRAP::Window']]],
+  ['mat_77',['Mat',['../struct_t_r_a_p_1_1_math_1_1_mat.html',1,'TRAP::Math']]],
+  ['mat_3c_203_2c_203_2c_20t_20_3e_78',['Mat&lt; 3, 3, T &gt;',['../struct_t_r_a_p_1_1_math_1_1_mat_3_013_00_013_00_01_t_01_4.html',1,'TRAP::Math']]],
+  ['mat_3c_204_2c_204_2c_20t_20_3e_79',['Mat&lt; 4, 4, T &gt;',['../struct_t_r_a_p_1_1_math_1_1_mat_3_014_00_014_00_01_t_01_4.html',1,'TRAP::Math']]],
+  ['maximize_80',['Maximize',['../class_t_r_a_p_1_1_window.html#a9c3c7c8877bbacb2ccfffce521434870',1,'TRAP::Window']]],
+  ['minimize_81',['Minimize',['../class_t_r_a_p_1_1_window.html#aa0b5b770700bd8d6b5a6d248ba0cd2f7',1,'TRAP::Window']]],
+  ['modified_82',['Modified',['../class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83a35e0c8c0b180c95d4e122e55ed62cc64',1,'TRAP::FileWatcher']]],
   ['monitor_83',['Monitor',['../class_t_r_a_p_1_1_monitor.html',1,'TRAP']]],
   ['monitorconnectevent_84',['MonitorConnectEvent',['../class_t_r_a_p_1_1_events_1_1_monitor_connect_event.html',1,'TRAP::Events']]],
   ['monitordisconnectevent_85',['MonitorDisconnectEvent',['../class_t_r_a_p_1_1_events_1_1_monitor_disconnect_event.html',1,'TRAP::Events']]],

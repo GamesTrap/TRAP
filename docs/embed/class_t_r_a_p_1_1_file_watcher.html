@@ -83,20 +83,21 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:ab54629edb3fbb8a9e0c8ee078eb35f83"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83">FileStatus</a> { <b>Created</b>, 
-<b>Modified</b>, 
-<b>Erased</b>
+<tr class="memitem:ab54629edb3fbb8a9e0c8ee078eb35f83"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83">FileStatus</a> { <a class="el" href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83a0eceeb45861f9585dd7a97a3e36f85c6">FileStatus::Created</a>, 
+<a class="el" href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83a35e0c8c0b180c95d4e122e55ed62cc64">FileStatus::Modified</a>, 
+<a class="el" href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83abf0adaf97ee2347ae783cc6d56f88d67">FileStatus::Erased</a>
  }</td></tr>
-<tr class="memdesc:ab54629edb3fbb8a9e0c8ee078eb35f83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specifies the status of a file  <a href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83">More...</a><br /></td></tr>
+<tr class="memdesc:ab54629edb3fbb8a9e0c8ee078eb35f83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specifies the status of a file.  <a href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83">More...</a><br /></td></tr>
 <tr class="separator:ab54629edb3fbb8a9e0c8ee078eb35f83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:adec3bb89dee0e2520875b736932ab1a0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_file_watcher.html#adec3bb89dee0e2520875b736932ab1a0">FileWatcher</a> (std::string virtualPath, float updateTimeInMilliseconds)</td></tr>
-<tr class="memdesc:adec3bb89dee0e2520875b736932ab1a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keeps a record of files from every physicalPath inside the virtualPath and their last modification time  <a href="class_t_r_a_p_1_1_file_watcher.html#adec3bb89dee0e2520875b736932ab1a0">More...</a><br /></td></tr>
-<tr class="separator:adec3bb89dee0e2520875b736932ab1a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a997c034a81ccae2a946016f5ea80bce2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_file_watcher.html#a997c034a81ccae2a946016f5ea80bce2">FileWatcher</a> (std::string virtualPath, float updateTimeInMilliseconds=15.0f)</td></tr>
+<tr class="memdesc:a997c034a81ccae2a946016f5ea80bce2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keeps a record of files from every physicalPath inside the virtualPath and their last modification time.  <a href="class_t_r_a_p_1_1_file_watcher.html#a997c034a81ccae2a946016f5ea80bce2">More...</a><br /></td></tr>
+<tr class="separator:a997c034a81ccae2a946016f5ea80bce2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a1dcf77208fd779680abc47155eaaea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_file_watcher.html#a4a1dcf77208fd779680abc47155eaaea">Check</a> (const std::function&lt; void(std::filesystem::path, std::string, <a class="el" href="class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83">FileStatus</a>)&gt; &amp;action)</td></tr>
-<tr class="memdesc:a4a1dcf77208fd779680abc47155eaaea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check every file mounted to the virtualPath for changes and if so call the given action function TODO Updating of physical (sub)folders that are mounted to the virtualPath  <a href="class_t_r_a_p_1_1_file_watcher.html#a4a1dcf77208fd779680abc47155eaaea">More...</a><br /></td></tr>
+<tr class="memdesc:a4a1dcf77208fd779680abc47155eaaea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check every file mounted to the virtualPath for changes and if so call the given action function.<br  />
+ TODO Updating of physical (sub)folders that are mounted to the virtualPath.  <a href="class_t_r_a_p_1_1_file_watcher.html#a4a1dcf77208fd779680abc47155eaaea">More...</a><br /></td></tr>
 <tr class="separator:a4a1dcf77208fd779680abc47155eaaea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Enumeration Documentation</h2>
@@ -120,16 +121,27 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Specifies the status of a file </p>
+<p>Specifies the status of a file. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab54629edb3fbb8a9e0c8ee078eb35f83a0eceeb45861f9585dd7a97a3e36f85c6"></a>Created&#160;</td><td class="fielddoc"><p>Indicates a file creation </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab54629edb3fbb8a9e0c8ee078eb35f83a35e0c8c0b180c95d4e122e55ed62cc64"></a>Modified&#160;</td><td class="fielddoc"><p>Indicates a file modification </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ab54629edb3fbb8a9e0c8ee078eb35f83abf0adaf97ee2347ae783cc6d56f88d67"></a>Erased&#160;</td><td class="fielddoc"><p>Indicates a file deletion </p>
+</td></tr>
+</table>
 
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="adec3bb89dee0e2520875b736932ab1a0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adec3bb89dee0e2520875b736932ab1a0">&#9670;&nbsp;</a></span>FileWatcher()</h2>
+<a id="a997c034a81ccae2a946016f5ea80bce2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a997c034a81ccae2a946016f5ea80bce2">&#9670;&nbsp;</a></span>FileWatcher()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">TRAP::FileWatcher::FileWatcher </td>
@@ -141,7 +153,7 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>updateTimeInMilliseconds</em>&#160;</td>
+          <td class="paramname"><em>updateTimeInMilliseconds</em> = <code>15.0f</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -149,17 +161,23 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Keeps a record of files from every physicalPath inside the virtualPath and their last modification time </p>
+<p>Keeps a record of files from every physicalPath inside the virtualPath and their last modification time. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">virtualPath</td><td>Path to track</td></tr>
-    <tr><td class="paramname">updateTimeInMilliseconds</td><td>Time in Milliseconds between file checks. Minimum is 15ms (this prevents issues with programs that recreate files instead of updating them </td></tr>
+    <tr><td class="paramname">virtualPath</td><td>Path to track.</td></tr>
+    <tr><td class="paramname">updateTimeInMilliseconds</td><td>Time in Milliseconds between file checks.<br  />
+ Minimum is 15ms (this prevents issues with programs that recreate files instead of updating them). </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>New <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a> instance</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A New <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a> instance.</dd></dl>
 
 </div>
 </div>
@@ -180,10 +198,11 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Check every file mounted to the virtualPath for changes and if so call the given action function TODO Updating of physical (sub)folders that are mounted to the virtualPath </p>
+<p>Check every file mounted to the virtualPath for changes and if so call the given action function.<br  />
+ TODO Updating of physical (sub)folders that are mounted to the virtualPath. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">action</td><td>Function to be called each time when a file has been changed</td></tr>
+    <tr><td class="paramname">action</td><td>Function to be called each time when a file has been changed.</td></tr>
   </table>
   </dd>
 </dl>
