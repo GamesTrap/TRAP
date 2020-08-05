@@ -1178,5 +1178,12 @@ SITREP 07/29/2020|20w31a1
     - TRAP::FileWatcher moved lambda functions into own function ~<20 mins
 
 SITREP 08/02/2020|20w31a2
-    - Changed TRAP Engine version to 20w31a1(0.6.56)
+    - Changed TRAP Engine version to 20w31a2(0.6.56)
     - WindowingAPI Replaced manuall Mutex with std::mutex ~>20 mins
+
+SITREP 08/05/2020|20w32a1
+    - Changed TRAP Engine version to 20w32a1(0.6.57)
+    - TravisCI updated Windows VulkanSDK to 1.2.148.0 ~<5 mins
+    - Updated ImGui Docking submodule ~<10 mins
+    - Updated SPIRV-Cross submodule ~<15 mins
+    - Updated GLSLang submodule ~>60 mins

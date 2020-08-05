@@ -39,16 +39,16 @@ matrix:
     - os: windows
       filter_secrets: false
       before_install:
-        - curl -L --silent --show-error --output VulkanSDK.exe https://vulkan.lunarg.com/sdk/download/1.2.141.2/windows/VulkanSDK-1.2.141.2-Installer.exe?Human=true
+        - curl -L --silent --show-error --output VulkanSDK.exe https://vulkan.lunarg.com/sdk/download/1.2.148.0/windows/VulkanSDK-1.2.148.0-Installer.exe?Human=true
         - chmod +x VulkanSDK.exe
         - PowerShell -Command 'Start-Process -Wait -FilePath "VulkanSDK.exe" -ArgumentList "/S" -PassThru'
       env: 
         - LABEL="windows-msvc" 
         - MSBUILD_PATH="/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin"
-        - VULKAN_SDK="/C/VulkanSDK/1.2.141.2"
+        - VULKAN_SDK="/C/VulkanSDK/1.2.148.0"
       script:
-        - setx VULKAN_SDK "C:\VulkanSDK\1.2.141.2"
-        - set VULKAN_SDK "C:\VulkanSDK\1.2.141.2"
+        - setx VULKAN_SDK "C:\VulkanSDK\1.2.148.0"
+        - set VULKAN_SDK "C:\VulkanSDK\1.2.148.0"
         - libs/premake5/windows/premake5.exe vs2017 
         - export PATH=$MSBUILD_PATH:$PATH 
         - MSBuild.exe TRAP.sln //t:Build
