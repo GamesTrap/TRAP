@@ -35,7 +35,11 @@ project "TRAP"
 		"src/Input/WindowsInput.cpp",
 		"src/Input/LinuxInput.cpp",
 		"src/Window/WindowingAPIWin32.cpp",
-		"src/Window/WindowingAPILinuxX11.cpp"
+		"src/Window/WindowingAPILinuxX11.cpp",
+		"src/Network/Sockets/Platform/SocketImplLinux.h",
+		"src/Network/Sockets/Platform/SocketImplLinux.cpp",
+		"src/Network/Sockets/Platform/SocketImplWinAPI.h",
+		"src/Network/Sockets/Platform/SocketImplWinAPI.cpp"
 	}
 
 	includedirs
@@ -55,7 +59,9 @@ project "TRAP"
 			"src/Log/WindowsLog.cpp",
 			"src/Utils/MsgBox/MsgBoxWindows.cpp",
 			"src/Input/WindowsInput.cpp",
-			"src/Window/WindowingAPIWin32.cpp"
+			"src/Window/WindowingAPIWin32.cpp",
+			"src/Network/Sockets/Platform/SocketImplWinAPI.h",
+			"src/Network/Sockets/Platform/SocketImplWinAPI.cpp"
 		}
 
 		links
@@ -67,7 +73,8 @@ project "TRAP"
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
 			"SPIRV-Cross-HLSL",
-			"Imm32"
+			"Imm32",
+			"ws2_32"
 		}
 
 	filter "system:linux"
@@ -80,7 +87,9 @@ project "TRAP"
 			"src/Utils/MsgBox/MsgBoxLinux.cpp",
 			"src/Utils/MsgBox/MsgBoxLinuxX11.h",
 			"src/Utils/MsgBox/MsgBoxLinuxX11.cpp",
-			"src/Window/WindowingAPILinuxX11.cpp"
+			"src/Window/WindowingAPILinuxX11.cpp",
+			"src/Network/Sockets/Platform/SocketImplLinux.h",
+			"src/Network/Sockets/Platform/SocketImplLinux.cpp"
 		}
 
 		links

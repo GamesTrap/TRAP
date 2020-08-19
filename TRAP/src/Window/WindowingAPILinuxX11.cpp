@@ -4582,7 +4582,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				if(!filtered)
 				{
 					int32_t count;
-					Status status;
+					int32_t status;
 
 					std::string buffer{};
 					buffer.resize(100);

@@ -192,9 +192,9 @@ namespace TRAP::INTERNAL
 		typedef RROutput(*PFN_XRRGetOutputPrimary)(Display*, ::Window);
 		typedef XRRScreenResources*(*PFN_XRRGetScreenResourcesCurrent)(Display*, ::Window);
 		typedef int32_t(*PFN_XRRQueryExtension)(Display*, int32_t*, int32_t*);
-		typedef Status(*PFN_XRRQueryVersion)(Display*, int32_t*, int32_t*);
+		typedef int32_t(*PFN_XRRQueryVersion)(Display*, int32_t*, int32_t*);
 		typedef void(*PFN_XRRSelectInput)(Display*, ::Window, int32_t);
-		typedef Status(*PFN_XRRSetCrtcConfig)(Display*, XRRScreenResources*, RRCrtc, Time, int32_t, int32_t, RRMode, Rotation, RROutput*, int32_t);
+		typedef int32_t(*PFN_XRRSetCrtcConfig)(Display*, XRRScreenResources*, RRCrtc, Time, int32_t, int32_t, RRMode, Rotation, RROutput*, int32_t);
 		typedef int32_t(*PFN_XRRUpdateConfiguration)(XEvent*);
 		
 		//XCursor
@@ -214,12 +214,12 @@ namespace TRAP::INTERNAL
 		typedef xcb_connection_t*(*PFN_XGetXCBConnection)(Display*);
 		
 		//XI
-		typedef Status(*PFN_XIQueryVersion)(Display*, int32_t*, int32_t*);
+		typedef int32_t(*PFN_XIQueryVersion)(Display*, int32_t*, int32_t*);
 		typedef int32_t(*PFN_XISelectEvents)(Display*, ::Window, XIEventMask*, int32_t);
 		
 		//XRender
 		typedef int32_t(*PFN_XRenderQueryExtension)(Display*,int32_t*, int32_t*);
-		typedef Status(*PFN_XRenderQueryVersion)(Display* dpy, int32_t*, int32_t*);
+		typedef int32_t(*PFN_XRenderQueryVersion)(Display* dpy, int32_t*, int32_t*);
 		typedef XRenderPictFormat*(*PFN_XRenderFindVisualFormat)(Display*, Visual const*);
 		
 		//Vulkan
@@ -228,7 +228,7 @@ namespace TRAP::INTERNAL
 		
 		//XShape
 		typedef int32_t (*PFN_XShapeQueryExtension)(Display*, int32_t*, int32_t*);
-		typedef Status (*PFN_XShapeQueryVersion)(Display* dpy, int32_t*, int32_t*);
+		typedef int32_t(*PFN_XShapeQueryVersion)(Display* dpy, int32_t*, int32_t*);
 		typedef void(*PFN_XShapeCombineRegion)(Display*, ::Window, int32_t, int32_t, int32_t, Region, int32_t);
 		typedef void(*PFN_XShapeCombineMask)(Display*, XID, int32_t, int32_t, int32_t, Pixmap, int32_t);
 		
@@ -265,7 +265,7 @@ namespace TRAP::INTERNAL
 		typedef int (*PFN_XCheckIfEvent)(Display*, XEvent*, int(*)(Display*, XEvent*, XPointer), XPointer);
 		typedef int (*PFN_XCheckTypedWindowEvent)(Display*, ::Window, int, XEvent*);
 		typedef int (*PFN_XCloseDisplay)(Display*);
-		typedef Status (*PFN_XCloseIM)(XIM);
+		typedef int32_t(*PFN_XCloseIM)(XIM);
 		typedef int (*PFN_XConvertSelection)(Display*, Atom, Atom, Atom, ::Window, Time);
 		typedef Colormap (*PFN_XCreateColormap)(Display*, ::Window, Visual*, int);
 		typedef Cursor (*PFN_XCreateFontCursor)(Display*, unsigned int);
@@ -295,12 +295,12 @@ namespace TRAP::INTERNAL
 		typedef int (*PFN_XGetScreenSaver)(Display*, int*, int*, int*, int*);
 		typedef ::Window (*PFN_XGetSelectionOwner)(Display*, Atom);
 		typedef XVisualInfo* (*PFN_XGetVisualInfo)(Display*, long, XVisualInfo*, int*);
-		typedef Status (*PFN_XGetWMNormalHints)(Display*, ::Window, XSizeHints*, long*);
-		typedef Status (*PFN_XGetWindowAttributes)(Display*, ::Window, XWindowAttributes*);
+		typedef int32_t(*PFN_XGetWMNormalHints)(Display*, ::Window, XSizeHints*, long*);
+		typedef int32_t(*PFN_XGetWindowAttributes)(Display*, ::Window, XWindowAttributes*);
 		typedef int (*PFN_XGetWindowProperty)(Display*, ::Window, Atom, long, long, int, Atom, Atom*, int*, unsigned long*, unsigned long*, unsigned char**);
 		typedef int (*PFN_XGrabPointer)(Display*, ::Window, int, unsigned int, int, int, ::Window, Cursor, Time);
-		typedef Status (*PFN_XIconifyWindow)(Display*, ::Window, int);
-		typedef Status (*PFN_XInitThreads)();
+		typedef int32_t(*PFN_XIconifyWindow)(Display*, ::Window, int);
+		typedef int32_t(*PFN_XInitThreads)();
 		typedef Atom (*PFN_XInternAtom)(Display*, const char*, int);
 		typedef int (*PFN_XLookupString)(XKeyEvent*, char*, int, KeySym*, XComposeStatus*);
 		typedef int (*PFN_XMapRaised)(Display*, ::Window);
@@ -320,7 +320,7 @@ namespace TRAP::INTERNAL
 		typedef char* (*PFN_XResourceManagerString)(Display*);
 		typedef int (*PFN_XSaveContext)(Display*, XID, XContext, const char*);
 		typedef int (*PFN_XSelectInput)(Display*, ::Window, long);
-		typedef Status (*PFN_XSendEvent)(Display*, ::Window, int, long, XEvent*);
+		typedef int32_t(*PFN_XSendEvent)(Display*, ::Window, int, long, XEvent*);
 		typedef int (*PFN_XSetClassHint)(Display*, ::Window, XClassHint*);
 		typedef XErrorHandler (*PFN_XSetErrorHandler)(XErrorHandler);
 		typedef void (*PFN_XSetICFocus)(XIC);
@@ -331,7 +331,7 @@ namespace TRAP::INTERNAL
 		typedef int (*PFN_XSetSelectionOwner)(Display*, Atom, ::Window, Time);
 		typedef int (*PFN_XSetWMHints)(Display*, ::Window, XWMHints*);
 		typedef void (*PFN_XSetWMNormalHints)(Display*, ::Window, XSizeHints*);
-		typedef Status (*PFN_XSetWMProtocols)(Display*, ::Window, Atom*, int);
+		typedef int32_t(*PFN_XSetWMProtocols)(Display*, ::Window, Atom*, int);
 		typedef int (*PFN_XSupportsLocale)();
 		typedef int (*PFN_XSync)(Display*, int);
 		typedef int (*PFN_XTranslateCoordinates)(Display*, ::Window, ::Window, int, int, int*, int*, ::Window*);
@@ -349,13 +349,13 @@ namespace TRAP::INTERNAL
 		typedef void (*PFN_XkbFreeKeyboard)(XkbDescPtr, unsigned int, int);
 		typedef void (*PFN_XkbFreeNames)(XkbDescPtr, unsigned int, int);
 		typedef XkbDescPtr (*PFN_XkbGetMap)(Display*, unsigned int, unsigned int);
-		typedef Status (*PFN_XkbGetNames)(Display*, unsigned int, XkbDescPtr);
-		typedef Status (*PFN_XkbGetState)(Display*, unsigned int, XkbStatePtr);
+		typedef int32_t(*PFN_XkbGetNames)(Display*, unsigned int, XkbDescPtr);
+		typedef int32_t(*PFN_XkbGetState)(Display*, unsigned int, XkbStatePtr);
 		typedef KeySym (*PFN_XkbKeycodeToKeysym)(Display*, KeyCode, int, int);
 		typedef int (*PFN_XkbQueryExtension)(Display*, int*, int*, int*, int*, int*);
 		typedef int (*PFN_XkbSelectEventDetails)(Display*, unsigned int, unsigned int, unsigned long, unsigned long);
 		typedef int (*PFN_XkbSetDetectableAutoRepeat)(Display*, int, int*);
-		typedef int (*PFN_Xutf8LookupString)(XIC, XKeyPressedEvent*, char*, int, KeySym*, Status*);
+		typedef int (*PFN_Xutf8LookupString)(XIC, XKeyPressedEvent*, char*, int, KeySym*, int32_t*);
 		typedef void (*PFN_Xutf8SetWMProperties)(Display*, ::Window, const char*, const char*, char**, int, XSizeHints*, XWMHints*, XClassHint*);
 
 		//XRM

@@ -53,7 +53,7 @@ namespace TRAP
 		static void Save();
 		static void Clear();
 
-		inline static constexpr auto WindowVersion = "[20w32a1]";
+		inline static constexpr auto WindowVersion = "[20w34a2]";
 		inline static constexpr auto WindowPrefix = "[Window] ";
 		inline static constexpr auto WindowInternalPrefix = "[Window][Internal] ";
 		inline static constexpr auto WindowIconPrefix = "[Window][Icon] ";
@@ -119,6 +119,13 @@ namespace TRAP
 		inline static constexpr auto UniformBufferOpenGLPrefix = "[UniformBuffer][OpenGL] ";
 		inline static constexpr auto FrameBufferVulkanPrefix = "[FrameBuffer][Vulkan] ";
 		inline static constexpr auto FrameBufferOpenGLPrefix = "[FrameBuffer][OpenGL] ";
+		inline static constexpr auto NetworkSocketPrefix = "[Network][Socket] ";
+		inline static constexpr auto NetworkFTPPrefix = "[Network][FTP] ";
+		inline static constexpr auto NetworkHTTPPrefix = "[Network][HTTP] ";
+		inline static constexpr auto NetworkTCPListenerPrefix = "[Network][TCPListener] ";
+		inline static constexpr auto NetworkTCPSocketPrefix = "[Network][TCPSocket] ";
+		inline static constexpr auto NetworkUDPSocketPrefix = "[Network][UDPSocket] ";
+		inline static constexpr auto NetworkSocketUnixPrefix = "[Network][Socket][Unix] ";
 		
 #ifdef TRAP_PLATFORM_WINDOWS
 	private:

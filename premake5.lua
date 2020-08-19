@@ -44,6 +44,7 @@ group "Games"
 	include "Games/Sandbox"
 	include "Games/Tests"
 	include "Games/Tests3D"
+	include "Games/TestsNetwork"
 	include "Games/TRAP-Editor"
 
 group "Utility"

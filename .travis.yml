@@ -29,26 +29,26 @@ matrix:
       install: if [[ "$COMPILER" == "g++-9" ]]; then export CXX="g++-9" CC="gcc-9"; fi
       script:
         - mkdir vulkan
-        - wget -c https://vulkan.lunarg.com/sdk/download/1.2.148.0/linux/vulkansdk-linux-x86_64-1.2.148.0.tar.gz?Human=true -O vulkan.tar.gz
+        - wget -c https://vulkan.lunarg.com/sdk/download/1.2.148.1/linux/vulkansdk-linux-x86_64-1.2.148.1.tar.gz?Human=true -O vulkan.tar.gz
         - tar -xzf vulkan.tar.gz -C vulkan
-        - chmod +x vulkan/1.2.148.0/setup-env.sh
-        - source vulkan/1.2.148.0/setup-env.sh
+        - chmod +x vulkan/1.2.148.1/setup-env.sh
+        - source vulkan/1.2.148.1/setup-env.sh
         - chmod +x libs/premake5/linux/premake5
         - libs/premake5/linux/premake5 gmake2
         - make
     - os: windows
       filter_secrets: false
       before_install:
-        - curl -L --silent --show-error --output VulkanSDK.exe https://vulkan.lunarg.com/sdk/download/1.2.148.0/windows/VulkanSDK-1.2.148.0-Installer.exe?Human=true
+        - curl -L --silent --show-error --output VulkanSDK.exe https://vulkan.lunarg.com/sdk/download/1.2.148.1/windows/VulkanSDK-1.2.148.1-Installer.exe?Human=true
         - chmod +x VulkanSDK.exe
         - PowerShell -Command 'Start-Process -Wait -FilePath "VulkanSDK.exe" -ArgumentList "/S" -PassThru'
       env: 
         - LABEL="windows-msvc" 
         - MSBUILD_PATH="/C/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin"
-        - VULKAN_SDK="/C/VulkanSDK/1.2.148.0"
+        - VULKAN_SDK="/C/VulkanSDK/1.2.148.1"
       script:
-        - setx VULKAN_SDK "C:\VulkanSDK\1.2.148.0"
-        - set VULKAN_SDK "C:\VulkanSDK\1.2.148.0"
+        - setx VULKAN_SDK "C:\VulkanSDK\1.2.148.1"
+        - set VULKAN_SDK "C:\VulkanSDK\1.2.148.1"
         - libs/premake5/windows/premake5.exe vs2017 
         - export PATH=$MSBUILD_PATH:$PATH 
         - MSBuild.exe TRAP.sln //t:Build

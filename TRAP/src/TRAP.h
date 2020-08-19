@@ -102,4 +102,8 @@
 #include "../src/Graphics/Cameras/Orthographic/OrthographicCameraController.h"
 //-----------------------
 
+//----NETWORK------------
+#include "../src/Network/Network.h"
+//-----------------------
+
 #endif /*_TRAP_TRAP_H_*/

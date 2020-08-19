@@ -77,6 +77,7 @@
 #include <X11/cursorfont.h>
 #include <X11/Xmd.h>
 #include <dlfcn.h>
+#include <arpa/inet.h>
 
 #ifdef None
 	#undef None
@@ -102,6 +103,12 @@
 #ifdef GrayScale
 	#undef GrayScale
 #endif
+#ifdef Status
+	#undef Status
+#endif
+#ifdef BadRequest
+	#undef BadRequest
+#endif
 
 #endif
 
@@ -121,7 +128,12 @@
 #ifndef DIRECTINPUT_VERSION
 	#define DIRECTINPUT_VERSION 0x0800
 #endif
+#include <basetsd.h>
 #include <dinput.h>
+#include <winsock2.h>
+#include <winsock.h>
+#include <ws2tcpip.h>
+#include <shellapi.h>
 
 #ifdef far
 	#undef far
@@ -167,6 +179,15 @@
 #endif
 #ifdef GetKeyboardLayoutName
 	#undef GetKeyboardLayoutName
+#endif
+#ifdef GetMessage
+	#undef GetMessage
+#endif
+#ifdef CreateDirectory
+	#undef CreateDirectory
+#endif
+#ifdef DeleteFile
+	#undef DeleteFile
 #endif
 #endif
 

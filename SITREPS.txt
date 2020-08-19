@@ -1187,3 +1187,12 @@ SITREP 08/05/2020|20w32a1
     - Updated ImGui Docking submodule ~<10 mins
     - Updated SPIRV-Cross submodule ~<15 mins
     - Updated GLSLang submodule ~>60 mins
+
+SITREP 08/18/2020|20w34a1
+    - Changed TRAP Engine version to 20w34a1(0.6.58)
+    - Added Networking stuff (FTP, HTTP, TCPSocket, UDPSocket, Packet, IPv4Address) ~>660 mins
+
+SITREP 08/19/2020|20w34a2
+    - Changed TRAP Engine version to 20w34a2(0.6.59)
+    - Added TCP/UDP Client/Server test ~>40 mins
+    - Added FTP Client test ~<40 mins
