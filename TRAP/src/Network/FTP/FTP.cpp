@@ -31,6 +31,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Network/IP/IPv4Address.h"
 #include "Utils/Time/TimeStep.h"
+#include "VFS/FileSystem.h"
+#include "VFS/VFS.h"
 
 namespace TRAP::Network
 {
@@ -265,8 +267,8 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DeleteFile(const std::string& n
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::string& remoteFile, const std::string& localPath, const TransferMode mode)
-{
+TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::string& remoteFile, const std::string& localVirtualOrPhysicalPath, const TransferMode mode)
+{	
 	//Open a data channel using the given transfer mode
 	DataChannel data(*this);
 	Response response = data.Open(mode);
@@ -283,12 +285,19 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::string& rem
 				filename = filename.substr(pos + 1);
 
 			//Make sure the destination path ends with a slash
-			std::string path = localPath;
+			std::string path = localVirtualOrPhysicalPath;
 			if (!path.empty() && (path[path.size() - 1] != '\\') && (path[path.size() - 1] != '/'))
 				path += '/';
 
+			std::filesystem::path physicalPath;
+			if (!VFS::SilentResolveReadPhysicalPath(path, physicalPath))
+			{
+				TP_ERROR(Log::NetworkFTPPrefix, "Couldn't resolve FolderPath: ", path, "!");
+				return Response(Response::Status::InvalidFile);
+			}
+			
 			//Create the file and truncate it if necessary
-			std::ofstream file((path + filename).c_str(), std::ios::binary | std::ios::trunc);
+			std::ofstream file((physicalPath.string() + filename).c_str(), std::ios::binary | std::ios::trunc);
 			if (!file)
 				return Response(Response::Status::InvalidFile);
 
@@ -312,42 +321,57 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::string& rem
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::string& localFile, const std::string& remotePath, TransferMode mode, bool append)
+TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::string& localVirtualOrPhysicalFile, const std::string& remotePath, TransferMode mode, bool append)
 {
-	//Get the contents of the file to send
-	std::ifstream file(localFile.c_str(), std::ios::binary);
-	if (!file)
-		return Response(Response::Status::InvalidFile);
-
-	//Extract the filename from the file path
-	std::string filename = localFile;
-	const std::string::size_type pos = filename.find_last_of("/\\");
-	if (pos != std::string::npos)
-		filename = filename.substr(pos + 1);
-
-	//Make sure the destination path ends with a slash
-	std::string path = remotePath;
-	if (!path.empty() && (path[path.size() - 1] != '\\') && (path[path.size() - 1] != '/'))
-		path += '/';
-
-	//Open a data channel using the given transfer mode
-	DataChannel data(*this);
-	Response response = data.Open(mode);
-	if(response.IsOK())
+	std::filesystem::path physicalPath;
+	if (!VFS::SilentResolveReadPhysicalPath(localVirtualOrPhysicalFile, physicalPath))
 	{
-		//Tell the server to start the transfer
-		response = SendCommand(append ? "APPE" : "STOR", path + filename);
-		if(response.IsOK())
-		{
-			//Send the file data
-			data.Send(file);
-
-			//Get the response from the server
-			response = GetResponse();
-		}
+		TP_ERROR(Log::NetworkFTPPrefix, "Couldn't resolve FilePath: ", localVirtualOrPhysicalFile, "!");
+		return Response(Response::Status::InvalidFile);
 	}
 
-	return response;
+	if (FileSystem::PhysicalFileOrFolderExists(physicalPath))
+	{
+		//Get the contents of the file to send
+		std::ifstream file(physicalPath, std::ios::binary);
+		if (!file.is_open())
+		{
+			TP_ERROR(Log::NetworkFTPPrefix, "Couldn't open FilePath: ", localVirtualOrPhysicalFile, "!");
+			return Response(Response::Status::InvalidFile);
+		}
+
+		//Extract the filename from the file path
+		std::string filename = localVirtualOrPhysicalFile;
+		const std::string::size_type pos = filename.find_last_of("/\\");
+		if (pos != std::string::npos)
+			filename = filename.substr(pos + 1);
+
+		//Make sure the destination path ends with a slash
+		std::string path = remotePath;
+		if (!path.empty() && (path[path.size() - 1] != '\\') && (path[path.size() - 1] != '/'))
+			path += '/';
+
+		//Open a data channel using the given transfer mode
+		DataChannel data(*this);
+		Response response = data.Open(mode);
+		if (response.IsOK())
+		{
+			//Tell the server to start the transfer
+			response = SendCommand(append ? "APPE" : "STOR", path + filename);
+			if (response.IsOK())
+			{
+				//Send the file data
+				data.Send(file);
+
+				//Get the response from the server
+				response = GetResponse();
+			}
+		}
+		
+		return response;
+	}
+
+	return Response(Response::Status::InvalidFile);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
