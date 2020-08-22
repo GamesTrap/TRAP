@@ -1186,6 +1186,7 @@ namespace TRAP::INTERNAL
 			bool ShouldClose = false;
 			bool FocusOnShow = true;
 			bool MousePassthrough = false;
+			bool DragAndDrop = false;
 			bool BorderlessFullscreen = false;
 			void* UserPointer = nullptr;
 			InternalVideoMode videoMode{};
@@ -1521,6 +1522,8 @@ namespace TRAP::INTERNAL
 		//Creates a Vulkan surface for the specified window.
 		static VkResult CreateWindowSurface(VkInstance instance, const InternalWindow* window, const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
 		static void HideWindowFromTaskbar(InternalWindow* window);
+		//Enable/Disable Drag and Drop feature for the specified window.
+		static void SetDragAndDrop(InternalWindow* window, bool value);
 #ifdef TRAP_PLATFORM_WINDOWS
 		static HWND GetWin32Window(const InternalWindow* window);
 #endif
@@ -1607,6 +1610,7 @@ namespace TRAP::INTERNAL
 		static void PlatformHideWindow(const InternalWindow* window);
 		static void PlatformRestoreWindow(InternalWindow* window);
 		static void PlatformSetWindowSizeLimits(InternalWindow* window, int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight);
+		static void PlatformSetDragAndDrop(InternalWindow* window, bool value);
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Single Platform Functions------------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//

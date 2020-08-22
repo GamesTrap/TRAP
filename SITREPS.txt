@@ -1198,5 +1198,11 @@ SITREP 08/19/2020|20w34a2
     - Added FTP Client test ~<40 mins
 
 SITREP 08/20/2020|20w34a3
-    - Changed TRAP Engine version to 20w34a4(0.6.60)
+    - Changed TRAP Engine version to 20w34a3(0.6.60)
     - Made FTP Download/Upload virtual file path compatible ~<15 mins
+
+SITREP 08/22/2020|20w34a4
+    - Changed TRAP Engine version to 20w34a4(0.6.61)
+    - Made DragAndDrop non default ~<10 mins
+    - Added SetDragAndDrop to TRAP::Window ~<20 mins
+    - Added DragAndDrop Tests ~<30 mins

@@ -32,6 +32,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Network/Sockets/Socket.h"
 #include "Network/Sockets/SocketHandle.h"
 
+#ifdef TRAP_PLATFORM_WINDOWS
+
 namespace TRAP::INTERNAL::Network
 {
 	/// <summary>
@@ -80,5 +82,7 @@ namespace TRAP::INTERNAL::Network
 		static TRAP::Network::Socket::Status GetErrorStatus();
 	};
 }
+
+#endif
 
 #endif /*_TRAP_NETWORK_SOCKETIMPLWINAPI_H_*/

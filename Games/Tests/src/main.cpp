@@ -11,6 +11,7 @@
 #include "Title/TitleTests.h"
 #include "Vulkan/VulkanTests.h"
 #include "ImageLoader/ImageLoaderTests.h"
+#include "DragAndDrop/DragAndDropTests.h"
 
 class Tests final : public TRAP::Application
 {
@@ -19,7 +20,7 @@ public:
 	{
 		//PushLayer(TRAP::MakeScope<ClipboardTests>());
 		//PushLayer(TRAP::MakeScope<CursorTests>());
-		PushLayer(TRAP::MakeScope<EventTests>());
+		//PushLayer(TRAP::MakeScope<EventTests>());
 		//PushLayer(TRAP::MakeScope<MinimizeTests>());
 		//PushLayer(TRAP::MakeScope<ControllerTests>());
 		//PushLayer(TRAP::MakeScope<IconTests>());
@@ -28,6 +29,7 @@ public:
 		//PushLayer(TRAP::MakeScope<TitleTests>());
 		//PushLayer(TRAP::MakeScope<VulkanTests>());
 		//PushLayer(TRAP::MakeScope<ImageLoaderTests>());
+		PushLayer(TRAP::MakeScope<DragAndDropTests>());
 	}
 };
 

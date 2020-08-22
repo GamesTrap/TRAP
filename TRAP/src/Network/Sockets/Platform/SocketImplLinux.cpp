@@ -33,6 +33,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include <fcntl.h>
 #include <cstring>
 
+#ifdef TRAP_PLATFORM_LINUX
+
 sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(uint32_t address, uint16_t port)
 {
 	sockaddr_in addr;
@@ -112,3 +114,5 @@ TRAP::Network::Socket::Status TRAP::INTERNAL::Network::SocketImpl::GetErrorStatu
 		return TRAP::Network::Socket::Status::Error;
 	}
 }
+
+#endif

@@ -894,7 +894,7 @@ bool TRAP::INTERNAL::WindowingAPI::GetWindowAttrib(const InternalWindow* window,
 
 	case Hint::MousePassthrough:
 		return window->MousePassthrough;
-
+		
 	default:
 		return false;
 	}
@@ -2527,4 +2527,13 @@ void TRAP::INTERNAL::WindowingAPI::HideWindowFromTaskbar(InternalWindow* window)
 	TRAP_WINDOW_ASSERT(window, " Window is nullptr!");
 	
 	PlatformHideWindowFromTaskbar(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::SetDragAndDrop(InternalWindow* window, const bool value)
+{
+	TRAP_WINDOW_ASSERT(window, " Window is nullptr!");
+
+	PlatformSetDragAndDrop(window, value);
 }

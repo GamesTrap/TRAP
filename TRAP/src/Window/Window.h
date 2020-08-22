@@ -246,6 +246,11 @@ namespace TRAP
 		/// </summary>
 		/// <param name="opacity">Opacity strength</param>
 		void SetOpacity(float opacity) const;
+		/// <summary>
+		/// Enable or Disable Drag and Drop feature for the Window
+		/// </summary>
+		/// <param name="enabled">True to enable, false otherwise</param>
+		void SetDragAndDrop(bool enabled) const;
 
 		/// <summary>
 		/// Query whether the Window is maximized or not

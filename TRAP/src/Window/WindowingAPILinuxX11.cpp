@@ -1520,13 +1520,6 @@ bool TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window, co
 		s_Data.XLIB.Free(hint);
 	}
 	
-	//Announce support for Xdnd (drag and drop)
-	{
-		const Atom version = 5;
-		s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.XDNDAware, XA_ATOM, 32,
-		                PropModeReplace, (uint8_t*)&version, 1);
-	}
-	
 	if(s_Data.IM)
 		CreateInputContextX11(window);
 	
@@ -5806,6 +5799,21 @@ std::string TRAP::INTERNAL::WindowingAPI::GetX11KeyboardLayoutName()
 	}
 
 	return s_Data.XLIB.GetAtomName(s_Data.display, atom);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow* window, bool value)
+{
+	if(value)
+	{
+		//Announce support for Xdnd (drag and drop)
+		const Atom version = 5;
+		s_Data.XLIB.ChangeProperty(s_Data.display, window->Handle, s_Data.XDNDAware, XA_ATOM, 32,
+			PropModeReplace, (uint8_t*)&version, 1);
+	}
+	else
+		s_Data.XLIB.DeleteProperty(s_Data.display, window->Handle, s_Data.XDNDAware);
 }
 
 #endif

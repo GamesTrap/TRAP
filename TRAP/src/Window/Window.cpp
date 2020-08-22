@@ -618,6 +618,15 @@ void TRAP::Window::SetOpacity(const float opacity) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Window::SetDragAndDrop(bool enabled) const
+{
+	TP_PROFILE_FUNCTION();
+
+	INTERNAL::WindowingAPI::SetDragAndDrop(m_window.get(), enabled);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::Window::IsMaximized() const
 {
 	TP_PROFILE_FUNCTION();

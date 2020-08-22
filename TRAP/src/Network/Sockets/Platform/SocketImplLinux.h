@@ -38,6 +38,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include <netdb.h>
 #include <unistd.h>
 
+#ifdef TRAP_PLATFORM_LINUX
+
 namespace TRAP::INTERNAL::Network
 {
 	/// <summary>
@@ -86,5 +88,7 @@ namespace TRAP::INTERNAL::Network
 		static TRAP::Network::Socket::Status GetErrorStatus();
 	};
 }
+
+#endif
 
 #endif /*_TRAP_NETWORK_SOCKETIMPLLINUX_H_*/

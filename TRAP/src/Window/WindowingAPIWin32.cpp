@@ -1509,8 +1509,6 @@ int32_t TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window,
 		SetWindowPlacement(window->Handle, &wp);
 	}
 
-	DragAcceptFiles(window->Handle, TRUE);
-
 	return true;
 }
 
@@ -3710,6 +3708,13 @@ void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar(InternalWindow*
 	exStyle &= ~WS_EX_APPWINDOW;
 	exStyle |= WS_EX_TOOLWINDOW;
 	::SetWindowLongPtr(window->Handle, GWL_EXSTYLE, exStyle);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::INTERNAL::WindowingAPI::PlatformSetDragAndDrop(InternalWindow* window, const bool value)
+{
+	DragAcceptFiles(window->Handle, value);
 }
 
 #endif
