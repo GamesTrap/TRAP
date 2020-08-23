@@ -27,10 +27,10 @@ Modified by: Jan "GamesTrap" Schuerkamp
 */
 
 #include "TRAPPCH.h"
-#include "TCPSocket.h"
+#include "TCPSocketIPv6.h"
 
 #include "Network/Packet.h"
-#include "Network/IP/IPv4Address.h"
+#include "Network/IP/IPv6Address.h"
 #include "SocketImpl.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -49,22 +49,22 @@ namespace
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::TCPSocket::TCPSocket()
+TRAP::Network::TCPSocketIPv6::TCPSocketIPv6()
 	: Socket(Type::TCP)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
+uint16_t TRAP::Network::TCPSocketIPv6::GetLocalPort() const
 {
 	if(GetHandle() != INTERNAL::Network::SocketImpl::InvalidSocket())
 	{
 		//Retrieve information about the local end of the socket
-		sockaddr_in address{};
+		sockaddr_in6 address{};
 		INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 		if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-			return ntohs(address.sin_port);
+			return ntohs(address.sin6_port);
 	}
 
 	//We failed to retrieve the port
@@ -73,32 +73,36 @@ uint16_t TRAP::Network::TCPSocket::GetLocalPort() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv4Address TRAP::Network::TCPSocket::GetRemoteAddress() const
+TRAP::Network::IPv6Address TRAP::Network::TCPSocketIPv6::GetRemoteAddress() const
 {
 	if(GetHandle() != INTERNAL::Network::SocketImpl::InvalidSocket())
 	{
 		//Retrieve information about the remote end of the socket
-		sockaddr_in address{};
+		sockaddr_in6 address{};
 		INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 		if (getpeername(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-			return IPv4Address(ntohl(address.sin_addr.s_addr));
+		{
+			std::array<uint8_t, 16> addr{};
+			std::memcpy(addr.data(), address.sin6_addr.u.Byte, addr.size());
+			return IPv6Address(addr);
+		}
 	}
 
 	//We failed to retrieve the address
-	return IPv4Address::None;
+	return IPv6Address::None;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint16_t TRAP::Network::TCPSocket::GetRemotePort() const
+uint16_t TRAP::Network::TCPSocketIPv6::GetRemotePort() const
 {
 	if(GetHandle() != INTERNAL::Network::SocketImpl::InvalidSocket())
 	{
 		//Retrieve information about the remote end of the socket
-		sockaddr_in address{};
+		sockaddr_in6 address{};
 		INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 		if (getpeername(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-			return ntohs(address.sin_port);
+			return ntohs(address.sin6_port);
 	}
 
 	//We failed to retrieve the port
@@ -107,16 +111,16 @@ uint16_t TRAP::Network::TCPSocket::GetRemotePort() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Address& remoteAddress, const uint16_t remotePort, Utils::TimeStep timeout)
+TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Connect(const IPv6Address& remoteAddress, uint16_t remotePort, Utils::TimeStep timeout)
 {
 	//Disconnect the socket if it is already connected
 	Disconnect();
 
 	//Create the internal socket if it doesn't exist
-	CreateIPv4();
+	CreateIPv6();
 
 	//Create the remote address
-	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToInteger(), remotePort);
+	sockaddr_in6 address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToArray(), remotePort);
 
 	if(timeout <= Utils::TimeStep(0.0f))
 	{
@@ -173,7 +177,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 			{
 				//At this point the connection may have been either accepted or refused.
 				//To know whether it's a success or a failure, we must check the address of the connected peer
-				if(GetRemoteAddress() != IPv4Address::None)
+				if(GetRemoteAddress() != IPv6Address::None)
 				{
 					//Connection accepted
 					status = Status::Done;
@@ -200,7 +204,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::TCPSocket::Disconnect()
+void TRAP::Network::TCPSocketIPv6::Disconnect()
 {
 	//Close the socket
 	Close();
@@ -211,7 +215,7 @@ void TRAP::Network::TCPSocket::Disconnect()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* data, const std::size_t size) const
+TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* data, const std::size_t size) const
 {
 	if (!IsBlocking())
 		TP_WARN(Log::NetworkTCPSocketPrefix, "Partial sends might not be handled properly.");
@@ -223,7 +227,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* data, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* data, const std::size_t size, std::size_t& sent) const
+TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(const void* data, const std::size_t size, std::size_t& sent) const
 {
 	//Check the parameters
 	if(!data || (size == 0))
@@ -256,7 +260,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(const void* data, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* data, const std::size_t size, std::size_t& received) const
+TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(void* data, const std::size_t size, std::size_t& received) const
 {
 	//First clear the variables to fill
 	received = 0;
@@ -285,7 +289,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(void* data, cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) const
+TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Send(Packet& packet) const
 {
 	//TCP is a stream protocol, it doesn't preserve messages boundaries.
 	//This means that we have to send the packet size first, so that the
@@ -326,7 +330,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Send(Packet& packet) con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
+TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& packet)
 {
 	//First clear the variables to fill
 	packet.Clear();
@@ -388,7 +392,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Receive(Packet& packet)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::TCPSocket::PendingPacket::PendingPacket()
+TRAP::Network::TCPSocketIPv6::PendingPacket::PendingPacket()
 	: Size(0), SizeReceived(0)
 {
 }

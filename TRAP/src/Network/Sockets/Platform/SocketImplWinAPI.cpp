@@ -33,11 +33,24 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 sockaddr_in TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const uint32_t address, const uint16_t port)
 {
-	sockaddr_in addr;
+	sockaddr_in addr{};
 	std::memset(&addr, 0, sizeof(addr));
 	addr.sin_addr.s_addr = htonl(address);
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(port);
+
+	return addr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array<uint8_t, 16>& address, const uint16_t port)
+{
+	sockaddr_in6 addr{};
+	std::memset(&addr, 0, sizeof(addr));
+	std::memcpy(addr.sin6_addr.u.Byte, address.data(), address.size());
+	addr.sin6_family = AF_INET6;
+	addr.sin6_port = htons(port);
 
 	return addr;
 }

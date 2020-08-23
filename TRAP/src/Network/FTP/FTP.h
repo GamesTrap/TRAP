@@ -37,7 +37,8 @@ namespace TRAP::Network
 	class IPv4Address;
 
 	/// <summary>
-	/// A FTP client
+	/// A FTP client.<br>
+	/// Only supports IPv4
 	/// </summary>
 	class FTP
 	{

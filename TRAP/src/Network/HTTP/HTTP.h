@@ -31,12 +31,14 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Network/IP/IPv4Address.h"
 #include "Network/Sockets/TCPSocket.h"
+#include "Network/Sockets/TCPSocketIPv6.h"
 #include "Utils/Time/TimeStep.h"
 
 namespace TRAP::Network
 {
 	/// <summary>
-	/// A HTTP client
+	/// A HTTP client.<br>
+	/// Priorities IPv6 over IPv4
 	/// </summary>
 	class HTTP
 	{
@@ -336,7 +338,9 @@ namespace TRAP::Network
 
 	private:
 		TCPSocket m_connection; //Connection to the host
+		TCPSocketIPv6 m_connectionIPv6; //Connection to the host
 		IPv4Address m_host; //Web host address
+		IPv6Address m_hostIPv6; //Web host address
 		std::string m_hostName; //Web host name
 		uint16_t m_port; //Port used for connection with host
 	};

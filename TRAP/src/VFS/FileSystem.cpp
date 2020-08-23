@@ -9,7 +9,7 @@ bool TRAP::FileSystem::PhysicalFileOrFolderExists(const std::filesystem::path& p
 	{
 		if (!std::filesystem::exists(physicalPath))
 		{
-			TP_WARN(Log::FileSystemPrefix, "File/Folder: \"", physicalPath, "\" doesn't exist!");
+			TP_WARN(Log::FileSystemPrefix, "File/Folder: ", physicalPath, " doesn't exist!");
 			return false;
 		}
 

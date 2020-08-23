@@ -117,8 +117,8 @@ std::string TRAP::Network::HTTP::Request::Prepare() const
 	out << "HTTP/" << m_majorVersion << '.' << m_minorVersion << "\r\n";
 
 	//Write fields
-	for (FieldTable::const_iterator i = m_fields.begin(); i != m_fields.end(); ++i)
-		out << i->first << ": " << i->second << "\r\n";
+	for (const auto& m_field : m_fields)
+		out << m_field.first << ": " << m_field.second << "\r\n";
 
 	//Use an extra \r\n to separate the header from the body
 	out << "\r\n";
@@ -153,7 +153,7 @@ const std::string& TRAP::Network::HTTP::Response::GetField(const std::string& fi
 	if (it != m_fields.end())
 		return it->second;
 	
-	static const std::string empty = "";
+	static const std::string empty;
 	return empty;
 }
 
@@ -330,6 +330,7 @@ void TRAP::Network::HTTP::SetHost(const std::string& host, const uint16_t port)
 	if (!m_hostName.empty() && (*m_hostName.rbegin() == '/'))
 		m_hostName.erase(m_hostName.size() - 1);
 
+	m_hostIPv6 = IPv6Address(m_hostName);
 	m_host = IPv4Address(m_hostName);
 }
 
@@ -361,7 +362,32 @@ TRAP::Network::HTTP::Response TRAP::Network::HTTP::SendRequest(const Request& re
 	Response received;
 
 	//Connect the socket to the host
-	if(m_connection.Connect(m_host, m_port, timeout) == Socket::Status::Done)
+	if(m_connectionIPv6.Connect(m_hostIPv6, m_port, timeout) == Socket::Status::Done)
+	{
+		//Convert the request to string and send it through the connected socket
+		std::string requestStr = toSend.Prepare();
+
+		if (!requestStr.empty())
+		{
+			//Send it through the socket
+			if (m_connectionIPv6.Send(requestStr.c_str(), requestStr.size()) == Socket::Status::Done)
+			{
+				//Wait for the server's response
+				std::string receivedStr;
+				std::size_t size = 0;
+				std::array<char, 1024> buffer{};
+				while (m_connectionIPv6.Receive(buffer.data(), buffer.size(), size) == Socket::Status::Done)
+					receivedStr.append(buffer.data(), buffer.data() + size);
+
+				//Build the Response object from the received data
+				received.Parse(receivedStr);
+			}
+		}
+
+		//Close the connection
+		m_connectionIPv6.Disconnect();
+	}
+	else if(m_connection.Connect(m_host, m_port, timeout) == Socket::Status::Done)
 	{
 		//Convert the request to string and send it through the connected socket
 		std::string requestStr = toSend.Prepare();

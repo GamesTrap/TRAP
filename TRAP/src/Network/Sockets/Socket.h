@@ -122,7 +122,14 @@ namespace TRAP::Network
 		/// <br>
 		/// This function can only be accessed by derived classes.
 		/// </summary>
-		void Create();
+		void CreateIPv4();
+
+		/// <summary>
+		/// Create the internal representation of the socket.<br>
+		/// <br>
+		/// This function can only be accessed by derived classes.
+		/// </summary>
+		void CreateIPv6();
 
 		/// <summary>
 		/// Create the internal representation of the socket

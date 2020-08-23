@@ -27,29 +27,29 @@ Modified by: Jan "GamesTrap" Schuerkamp
 */
 
 #include "TRAPPCH.h"
-#include "TCPListener.h"
+#include "TCPListenerIPv6.h"
 
-#include "IP/IPv4Address.h"
+#include "IP/IPv6Address.h"
 #include "Sockets/Socket.h"
-#include "Sockets/TCPSocket.h"
+#include "Sockets/TCPSocketIPv6.h"
 #include "Sockets/SocketImpl.h"
 
-TRAP::Network::TCPListener::TCPListener()
+TRAP::Network::TCPListenerIPv6::TCPListenerIPv6()
 	: Socket(Type::TCP)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint16_t TRAP::Network::TCPListener::GetLocalPort() const
+uint16_t TRAP::Network::TCPListenerIPv6::GetLocalPort() const
 {
 	if(GetHandle() != INTERNAL::Network::SocketImpl::InvalidSocket())
 	{
 		//Retrieve information about the local end of the socket
-		sockaddr_in address{};
+		sockaddr_in6 address{};
 		INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 		if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-			return ntohs(address.sin_port);
+			return ntohs(address.sin6_port);
 	}
 
 	//We failed to retrieve the port
@@ -58,20 +58,20 @@ uint16_t TRAP::Network::TCPListener::GetLocalPort() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPListener::Listen(const uint16_t port, const IPv4Address& address)
+TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Listen(const uint16_t port, const IPv6Address& address)
 {
 	//Close the socket if it is already bound
 	Close();
 
 	//Create the internal socket if it doesn't exist
-	CreateIPv4();
+	CreateIPv6();
 
 	//Check if the address is valid
-	if ((address == IPv4Address::None) || (address == IPv4Address::Broadcast))
+	if ((address == IPv6Address::None))
 		return Status::Error;
 
 	//Bind the socket to the specified port
-	sockaddr_in addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToInteger(), port);
+	sockaddr_in6 addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToArray(), port);
 	if(bind(GetHandle(), reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == -1)
 	{
 		//Not likely to happen, but...
@@ -92,7 +92,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPListener::Listen(const uint16_t 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::TCPListener::Close()
+void TRAP::Network::TCPListenerIPv6::Close()
 {
 	//Simply close the socket
 	Socket::Close();
@@ -100,7 +100,7 @@ void TRAP::Network::TCPListener::Close()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::TCPListener::Accept(TCPSocket& socket) const
+TRAP::Network::Socket::Status TRAP::Network::TCPListenerIPv6::Accept(TCPSocketIPv6& socket) const
 {
 	//Make sure that we're listening
 	if(GetHandle() == INTERNAL::Network::SocketImpl::InvalidSocket())
@@ -110,7 +110,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPListener::Accept(TCPSocket& sock
 	}
 
 	//Accept a new connection
-	sockaddr_in address{};
+	sockaddr_in6 address{};
 	INTERNAL::Network::SocketImpl::AddressLength length = sizeof(address);
 	const SocketHandle remote = ::accept(GetHandle(), reinterpret_cast<sockaddr*>(&address), &length);
 

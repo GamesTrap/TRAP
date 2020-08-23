@@ -27,27 +27,27 @@ Modified by: Jan "GamesTrap" Schuerkamp
 */
 
 #include "TRAPPCH.h"
-#include "UDPSocket.h"
+#include "UDPSocketIPv6.h"
 
 #include "Network/Packet.h"
 #include "SocketImpl.h"
 
-TRAP::Network::UDPSocket::UDPSocket()
+TRAP::Network::UDPSocketIPv6::UDPSocketIPv6()
 	: Socket(Type::UDP), m_buffer(MaxDatagramSize)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint16_t TRAP::Network::UDPSocket::GetLocalPort() const
+uint16_t TRAP::Network::UDPSocketIPv6::GetLocalPort() const
 {
 	if(GetHandle() != INTERNAL::Network::SocketImpl::InvalidSocket())
 	{
 		//Retrieve information about the local end of the socket
-		sockaddr_in address{};
+		sockaddr_in6 address{};
 		INTERNAL::Network::SocketImpl::AddressLength size = sizeof(address);
 		if (getsockname(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
-			return ntohs(address.sin_port);
+			return ntohs(address.sin6_port);
 	}
 
 	//We failed to retrieve the port
@@ -56,20 +56,20 @@ uint16_t TRAP::Network::UDPSocket::GetLocalPort() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Bind(const uint16_t port, const IPv4Address& address)
+TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Bind(const uint16_t port, const IPv6Address& address)
 {
 	//Close the socket if it is already bound
 	Close();
 
 	//Create the internal socket if it doesn't exist
-	CreateIPv4();
+	CreateIPv6();
 
 	//Check if the address is valid
-	if ((address == IPv4Address::None) || (address == IPv4Address::Broadcast))
+	if ((address == IPv6Address::None))
 		return Status::Error;
 
 	//Bind the socket
-	sockaddr_in addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToInteger(), port);
+	sockaddr_in6 addr = INTERNAL::Network::SocketImpl::CreateAddress(address.ToArray(), port);
 	if(::bind(GetHandle(), reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == -1)
 	{
 		TP_ERROR(Log::NetworkUDPSocketPrefix, "Failed to bind socket to port");
@@ -81,7 +81,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Bind(const uint16_t port
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::UDPSocket::Unbind()
+void TRAP::Network::UDPSocketIPv6::Unbind()
 {
 	//Simply close the socket
 	Close();
@@ -89,10 +89,10 @@ void TRAP::Network::UDPSocket::Unbind()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* data, const std::size_t size, const IPv4Address& remoteAddress, uint16_t remotePort)
+TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(const void* data, const std::size_t size, const IPv6Address& remoteAddress, uint16_t remotePort)
 {
 	//Create the internal socket if it doesn't exist
-	CreateIPv4();
+	CreateIPv6();
 
 	//Make sure that all the data will fit in one datagram
 	if(size > MaxDatagramSize)
@@ -103,7 +103,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* data, c
 	}
 
 	//Build the target address
-	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToInteger(), remotePort);
+	sockaddr_in6 address = INTERNAL::Network::SocketImpl::CreateAddress(remoteAddress.ToArray(), remotePort);
 
 	//Send the data (unlike TCP, all the data is always sent in one call)
 	const int32_t sent = sendto(GetHandle(), static_cast<const char*>(data), static_cast<int32_t>(size), 0, reinterpret_cast<sockaddr*>(&address), sizeof(address));
@@ -117,11 +117,11 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(const void* data, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* data, const std::size_t size, std::size_t& received, IPv4Address& remoteAddress, uint16_t& remotePort) const
+TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* data, const std::size_t size, std::size_t& received, IPv6Address& remoteAddress, uint16_t& remotePort) const
 {
 	//First clear the variables to fill
 	received = 0;
-	remoteAddress = IPv4Address();
+	remoteAddress = IPv6Address();
 	remotePort = 0;
 
 	//Check the destination buffer
@@ -132,7 +132,9 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* data, cons
 	}
 
 	//Data that will be filled with the other computer's address
-	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(INADDR_ANY, 0);
+	std::array<uint8_t, 16> addr{};
+	std::memcpy(addr.data(), in6addr_any.u.Byte, addr.size());
+	sockaddr_in6 address = INTERNAL::Network::SocketImpl::CreateAddress(addr, 0);
 
 	//Receive a chunk of bytes
 	INTERNAL::Network::SocketImpl::AddressLength addressSize = sizeof(address);
@@ -144,15 +146,17 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(void* data, cons
 
 	//Fill the sender information
 	received = static_cast<std::size_t>(sizeReceived);
-	remoteAddress = IPv4Address(ntohl(address.sin_addr.s_addr));
-	remotePort = ntohs(address.sin_port);
+	addr = {};
+	std::memcpy(addr.data(), address.sin6_addr.u.Byte, addr.size());
+	remoteAddress = IPv6Address(addr);
+	remotePort = ntohs(address.sin6_port);
 
 	return Status::Done;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(Packet& packet, const IPv4Address& remoteAddress, const uint16_t remotePort)
+TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Send(Packet& packet, const IPv6Address& remoteAddress, const uint16_t remotePort)
 {
 	//UDP is a datagram-oriented protocol (as opposed to TCP which is a stream protocol).
 	//Sending one datagram is almost safe: it may be lost but if it's received, then its data
@@ -173,7 +177,7 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Send(Packet& packet, con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::Socket::Status TRAP::Network::UDPSocket::Receive(Packet& packet, IPv4Address& remoteAddress, uint16_t& remotePort)
+TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(Packet& packet, IPv6Address& remoteAddress, uint16_t& remotePort)
 {
 	//See the detailed comment in Send(Packet) above.
 

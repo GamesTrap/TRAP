@@ -14,10 +14,15 @@ public:
 private:
 	static void Sockets();
 	
-	static void RunTCPServer(uint16_t port);
-	static void RunTCPClient(uint16_t port);
-	static void RunUDPServer(uint16_t port);
-	static void RunUDPClient(uint16_t port);
+	static void RunTCPServerIPv4(uint16_t port);
+	static void RunTCPClientIPv4(uint16_t port);
+	static void RunUDPServerIPv4(uint16_t port);
+	static void RunUDPClientIPv4(uint16_t port);
+
+	static void RunTCPServerIPv6(uint16_t port);
+	static void RunTCPClientIPv6(uint16_t port);
+	static void RunUDPServerIPv6(uint16_t port);
+	static void RunUDPClientIPv6(uint16_t port);
 	
 	TRAP::Scope<std::thread> m_socketThread;
 };

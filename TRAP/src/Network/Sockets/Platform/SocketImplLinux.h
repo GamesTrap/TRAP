@@ -63,6 +63,14 @@ namespace TRAP::INTERNAL::Network
 		static sockaddr_in CreateAddress(uint32_t address, uint16_t port);
 
 		/// <summary>
+		/// Create an internal sockaddr_in address
+		/// </summary>
+		/// <param name="address">Target address</param>
+		/// <param name="port">Target port</param>
+		/// <returns>sockaddr_in6 ready to be used by socket functions</returns>
+		static sockaddr_in6 CreateAddress(const std::array<uint8_t, 16>& address, uint16_t port);
+
+		/// <summary>
 		/// Return the value of the invalid socket
 		/// </summary>
 		/// <returns>Special value of the invalid socket</returns>

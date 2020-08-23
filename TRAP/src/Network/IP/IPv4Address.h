@@ -26,8 +26,8 @@
 Modified by: Jan "GamesTrap" Schuerkamp
 */
 
-#ifndef _TRAP_IPADDRESS_H_
-#define _TRAP_IPADDRESS_H_
+#ifndef _TRAP_IPV4ADDRESS_H_
+#define _TRAP_IPV4ADDRESS_H_
 
 #include "Utils/Time/TimeStep.h"
 
@@ -36,9 +36,7 @@ namespace TRAP::Network
 	/// <summary>
 	/// TRAP::Network::IPv4Address is a utility class for manipulating network addresses.<br>
 	/// It provides a set of implicit constructors and conversion functions to easily build or transform
-	/// an IP address from/to various representations.<br>
-	/// <br>
-	/// Note: TRAP::Network::IPv4Address currently doesn't support IPv6 nor other types of network addresses.
+	/// an IPv4 address from/to various representations.
 	/// </summary>
 	class IPv4Address
 	{
@@ -73,7 +71,7 @@ namespace TRAP::Network
 		/// Construct the address from 4 bytes.<br>
 		/// <br>
 		/// Calling IPv4Address(a, b, c, d) is equivalent to calling
-		/// IPAddress("a.b.c.d"), but safer as it doesn't have to
+		/// IPv4Address("a.b.c.d"), but safer as it doesn't have to
 		/// parse a string to get the address components.
 		/// </summary>
 		/// <param name="byte0">First byte of the address</param>
@@ -83,7 +81,7 @@ namespace TRAP::Network
 		IPv4Address(uint8_t byte0, uint8_t byte1, uint8_t byte2, uint8_t byte3);
 
 		/// <summary>
-		/// Construct the address form a 32 Bit integer.<br>
+		/// Construct the address from a 32 Bit integer.<br>
 		/// <br>
 		/// This constructor uses the internal representation of
 		/// the address directly.<br>
@@ -97,7 +95,7 @@ namespace TRAP::Network
 		/// Get a string representation of the address.<br>
 		/// <br>
 		/// The returned string is the decimal representation of the
-		/// IP address (like "192.168.1.180"), even if it was constructed
+		/// IPv4 address (like "192.168.1.180"), even if it was constructed
 		/// from a host name.
 		/// </summary>
 		/// <returns>String representation of the address</returns>
@@ -123,7 +121,7 @@ namespace TRAP::Network
 		/// It is meaningful only for communications over the local network.<br>
 		/// Unlike GetPublicAddress, this function is fast and may be used safely anywhere.
 		/// </summary>
-		/// <returns>Local IP address of the computer</returns>
+		/// <returns>Local IPv4 address of the computer</returns>
 		static IPv4Address GetLocalAddress();
 
 		/// <summary>
@@ -177,7 +175,7 @@ namespace TRAP::Network
 	/// </summary>
 	/// <param name="left">Left operand (a IP address)</param>
 	/// <param name="right">Right operand (a IP address)</param>
-	/// <returns></returns>
+	/// <returns>True if both addresses are not equal</returns>
 	bool operator!=(const IPv4Address& left, const IPv4Address& right);
 
 	/// <summary>

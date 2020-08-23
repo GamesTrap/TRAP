@@ -32,12 +32,16 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "FTP/FTP.h"
 #include "HTTP/HTTP.h"
 #include "IP/IPv4Address.h"
+#include "IP/IPv6Address.h"
 #include "Packet.h"
 #include "Sockets/Socket.h"
 #include "Sockets/SocketHandle.h"
 #include "Sockets/SocketSelector.h"
 #include "TCPListener.h"
+#include "TCPListenerIPv6.h"
 #include "Sockets/TCPSocket.h"
+#include "Sockets/TCPSocketIPv6.h"
 #include "Sockets/UDPSocket.h"
+#include "Sockets/UDPSocketIPv6.h"
 
 #endif /*_TRAP_NETWORK_H_*/

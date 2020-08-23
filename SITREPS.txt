@@ -1206,3 +1206,9 @@ SITREP 08/22/2020|20w34a4
     - Made DragAndDrop non default ~<10 mins
     - Added SetDragAndDrop to TRAP::Window ~<20 mins
     - Added DragAndDrop Tests ~<30 mins
+
+SITREP 08/23/2020|20w34a5
+    - Changed TRAP Engine version to 20w34a5(0.6.62)
+    - Added IPv6Address ~<30 mins
+    - Added IPv6 support ~>300 mins
+    - HTTP added automatic prioritising of IPv6 over IPv4 ~<20 mins

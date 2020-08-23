@@ -71,7 +71,7 @@ TRAP::Network::SocketHandle TRAP::Network::Socket::GetHandle() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::Socket::Create()
+void TRAP::Network::Socket::CreateIPv4()
 {
 	//Don't create the socket if it already exists
 	if(m_socket == INTERNAL::Network::SocketImpl::InvalidSocket())
@@ -79,6 +79,25 @@ void TRAP::Network::Socket::Create()
 		const SocketHandle handle = socket(PF_INET, m_type == Type::TCP ? SOCK_STREAM : SOCK_DGRAM, 0);
 
 		if(handle == INTERNAL::Network::SocketImpl::InvalidSocket())
+		{
+			TP_ERROR(Log::NetworkSocketPrefix, "Failed to create socket");
+			return;
+		}
+
+		Create(handle);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Network::Socket::CreateIPv6()
+{
+	//Don't create the socket if it already exists
+	if (m_socket == INTERNAL::Network::SocketImpl::InvalidSocket())
+	{
+		const SocketHandle handle = socket(PF_INET6, m_type == Type::TCP ? SOCK_STREAM : SOCK_DGRAM, 0);
+
+		if (handle == INTERNAL::Network::SocketImpl::InvalidSocket())
 		{
 			TP_ERROR(Log::NetworkSocketPrefix, "Failed to create socket");
 			return;

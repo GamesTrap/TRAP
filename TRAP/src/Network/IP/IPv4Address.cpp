@@ -63,7 +63,7 @@ TRAP::Network::IPv4Address::IPv4Address(const char* address)
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Network::IPv4Address::IPv4Address(const uint8_t byte0, const uint8_t byte1, const uint8_t byte2, const uint8_t byte3)
-	: m_address(htonl((byte0 << 24)| (byte1 << 16) | (byte2 << 8) | byte3)), m_valid(true)
+	: m_address(htonl((byte0 << 24) | (byte1 << 16) | (byte2 << 8) | byte3)), m_valid(true)
 {
 }
 
@@ -106,7 +106,7 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 	if (sock == INTERNAL::Network::SocketImpl::InvalidSocket())
 		return IPv4Address();
 
-	//Connect the socket to localhost on ay port
+	//Connect the socket to localhost on any port
 	sockaddr_in address = INTERNAL::Network::SocketImpl::CreateAddress(ntohl(INADDR_LOOPBACK), 9);
 	if (connect(sock, reinterpret_cast<sockaddr*>(&address), sizeof(address)) == -1)
 	{
@@ -134,10 +134,10 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetLocalAddress()
 TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetPublicAddress(const Utils::TimeStep timeout)
 {
 	//The trick here is more complicated, because the only way
-	//to get our public IP address is to get it from a distant computer.
+	//to get our public IPv4 address is to get it from a distant computer.
 	//Here we get the web page from http://www.sfml-dev.org/ip-provider.php
 	//and parse the result to extract our IP address
-	//(not very hard: the web page contains only our IP address).
+	//(not very hard: the web page contains only our IPv4 address).
 
 	HTTP server("www.sfml-dev.org");
 	const HTTP::Request request("/ip-provider.php", HTTP::Request::Method::GET);
@@ -170,7 +170,7 @@ void TRAP::Network::IPv4Address::Resolve(const std::string& address)
 	}
 	else
 	{
-		//Try to convert the address a a byte representation ("xxx.xxx.xxx.xxx")
+		//Try to convert the address as a byte representation ("xxx.xxx.xxx.xxx")
 		uint32_t ip{};
 		if(inet_pton(AF_INET, address.c_str(), &ip) && ip != INADDR_NONE)
 		{

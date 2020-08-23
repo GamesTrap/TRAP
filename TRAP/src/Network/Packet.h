@@ -33,6 +33,8 @@ namespace TRAP::Network
 {
 	class TCPSocket;
 	class UDPSocket;
+	class TCPSocketIPv6;
+	class UDPSocketIPv6;
 
 	/// <summary>
 	/// Utility class to build blocks of data to transfer
@@ -170,6 +172,8 @@ namespace TRAP::Network
 	protected:
 		friend class TCPSocket;
 		friend class UDPSocket;
+		friend class TCPSocketIPv6;
+		friend class UDPSocketIPv6;
 
 		/// <summary>
 		/// Called before the packet is sent over the network.<br>
