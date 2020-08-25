@@ -1212,3 +1212,8 @@ SITREP 08/23/2020|20w34a5
     - Added IPv6Address ~<30 mins
     - Added IPv6 support ~>300 mins
     - HTTP added automatic prioritising of IPv6 over IPv4 ~<20 mins
+
+SITREP 08/25/2020|20w35a1
+    - Changed TRAP Engine version to 20w35a1(0.6.63)
+    - FileSystem added append mode for file writes ~<20 mins
+    - VFS added append mode for file writes ~<10 mins

@@ -1,14 +1,19 @@
 var searchData=
 [
-  ['readfile_102',['ReadFile',['../class_t_r_a_p_1_1_v_f_s.html#a19d5acf9c1360e1c02b8f474c1d39838',1,'TRAP::VFS']]],
-  ['readtextfile_103',['ReadTextFile',['../class_t_r_a_p_1_1_v_f_s.html#a452e72abecae7041ece3760fd38ef90f',1,'TRAP::VFS']]],
-  ['rendercommand_104',['RenderCommand',['../class_t_r_a_p_1_1_graphics_1_1_render_command.html',1,'TRAP::Graphics']]],
-  ['renderer_105',['Renderer',['../class_t_r_a_p_1_1_graphics_1_1_renderer.html',1,'TRAP::Graphics']]],
-  ['renderer2d_106',['Renderer2D',['../class_t_r_a_p_1_1_graphics_1_1_renderer2_d.html',1,'TRAP::Graphics']]],
-  ['rendererapi_107',['RendererAPI',['../class_t_r_a_p_1_1_graphics_1_1_a_p_i_1_1_renderer_a_p_i.html',1,'TRAP::Graphics::API']]],
-  ['requestattention_108',['RequestAttention',['../class_t_r_a_p_1_1_window.html#ac066ce312c9920cb51c231c81e937d3a',1,'TRAP::Window']]],
-  ['resolvereadphysicalpath_109',['ResolveReadPhysicalPath',['../class_t_r_a_p_1_1_v_f_s.html#a52aebfbc54dc3ecba45e950f2ad7cb59',1,'TRAP::VFS']]],
-  ['resolvetophysicalpaths_110',['ResolveToPhysicalPaths',['../class_t_r_a_p_1_1_v_f_s.html#a398371f581bb7ac4741d37ea7a33af3e',1,'TRAP::VFS']]],
-  ['resolvewritephysicalpath_111',['ResolveWritePhysicalPath',['../class_t_r_a_p_1_1_v_f_s.html#af5a5988dd3bb5adfecd197e82686861e',1,'TRAP::VFS']]],
-  ['restore_112',['Restore',['../class_t_r_a_p_1_1_window.html#ab6c0f8407dcb67f6424fd474a619ed9c',1,'TRAP::Window']]]
+  ['readfile_160',['ReadFile',['../class_t_r_a_p_1_1_v_f_s.html#a19d5acf9c1360e1c02b8f474c1d39838',1,'TRAP::VFS']]],
+  ['readtextfile_161',['ReadTextFile',['../class_t_r_a_p_1_1_v_f_s.html#a452e72abecae7041ece3760fd38ef90f',1,'TRAP::VFS']]],
+  ['receive_162',['Receive',['../class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html#a3a173d1c79ea9dcf5e920b9c599ca79e',1,'TRAP::Network::TCPSocket::Receive(void *data, std::size_t size, std::size_t &amp;received) const'],['../class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html#a187736f96c33f4f0a309aeb1f8e5e40b',1,'TRAP::Network::TCPSocket::Receive(Packet &amp;packet)'],['../class_t_r_a_p_1_1_network_1_1_t_c_p_socket_i_pv6.html#a1afd8f9f9b57229b649d27893661c4a1',1,'TRAP::Network::TCPSocketIPv6::Receive(void *data, std::size_t size, std::size_t &amp;received) const'],['../class_t_r_a_p_1_1_network_1_1_t_c_p_socket_i_pv6.html#a7a2b8dfb463963c912804cac25b96e4f',1,'TRAP::Network::TCPSocketIPv6::Receive(Packet &amp;packet)'],['../class_t_r_a_p_1_1_network_1_1_u_d_p_socket.html#a8cb373a7f0017fe6eefb2ce7c7e9dad5',1,'TRAP::Network::UDPSocket::Receive(void *data, std::size_t size, std::size_t &amp;received, IPv4Address &amp;remoteAddress, uint16_t &amp;remotePort) const'],['../class_t_r_a_p_1_1_network_1_1_u_d_p_socket.html#a1b542fe5e77b3709b2d81b20838c962e',1,'TRAP::Network::UDPSocket::Receive(Packet &amp;packet, IPv4Address &amp;remoteAddress, uint16_t &amp;remotePort)'],['../class_t_r_a_p_1_1_network_1_1_u_d_p_socket_i_pv6.html#ae78330a85be04db2d572becd2f4a765c',1,'TRAP::Network::UDPSocketIPv6::Receive(void *data, std::size_t size, std::size_t &amp;received, IPv6Address &amp;remoteAddress, uint16_t &amp;remotePort) const'],['../class_t_r_a_p_1_1_network_1_1_u_d_p_socket_i_pv6.html#a62115857c7a5ea437ff546e77948d235',1,'TRAP::Network::UDPSocketIPv6::Receive(Packet &amp;packet, IPv6Address &amp;remoteAddress, uint16_t &amp;remotePort)']]],
+  ['remove_163',['Remove',['../class_t_r_a_p_1_1_network_1_1_socket_selector.html#ac8df3095ded27e2c2d3514107f4d5b6b',1,'TRAP::Network::SocketSelector']]],
+  ['renamefile_164',['RenameFile',['../class_t_r_a_p_1_1_network_1_1_f_t_p.html#abe3dcf24f3591e1115bb4a2dc1c8a3c0',1,'TRAP::Network::FTP']]],
+  ['rendercommand_165',['RenderCommand',['../class_t_r_a_p_1_1_graphics_1_1_render_command.html',1,'TRAP::Graphics']]],
+  ['renderer_166',['Renderer',['../class_t_r_a_p_1_1_graphics_1_1_renderer.html',1,'TRAP::Graphics']]],
+  ['renderer2d_167',['Renderer2D',['../class_t_r_a_p_1_1_graphics_1_1_renderer2_d.html',1,'TRAP::Graphics']]],
+  ['rendererapi_168',['RendererAPI',['../class_t_r_a_p_1_1_graphics_1_1_a_p_i_1_1_renderer_a_p_i.html',1,'TRAP::Graphics::API']]],
+  ['request_169',['Request',['../class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html',1,'TRAP::Network::HTTP::Request'],['../class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a282944b9c5de1e0f294914ea2818f990',1,'TRAP::Network::HTTP::Request::Request()']]],
+  ['requestattention_170',['RequestAttention',['../class_t_r_a_p_1_1_window.html#ac066ce312c9920cb51c231c81e937d3a',1,'TRAP::Window']]],
+  ['resolvereadphysicalpath_171',['ResolveReadPhysicalPath',['../class_t_r_a_p_1_1_v_f_s.html#a52aebfbc54dc3ecba45e950f2ad7cb59',1,'TRAP::VFS']]],
+  ['resolvetophysicalpaths_172',['ResolveToPhysicalPaths',['../class_t_r_a_p_1_1_v_f_s.html#a398371f581bb7ac4741d37ea7a33af3e',1,'TRAP::VFS']]],
+  ['resolvewritephysicalpath_173',['ResolveWritePhysicalPath',['../class_t_r_a_p_1_1_v_f_s.html#af5a5988dd3bb5adfecd197e82686861e',1,'TRAP::VFS']]],
+  ['response_174',['Response',['../class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html',1,'TRAP::Network::FTP::Response'],['../class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html',1,'TRAP::Network::HTTP::Response'],['../class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#a56642a1f0a93e964e38cbd484640cea0',1,'TRAP::Network::FTP::Response::Response()'],['../class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#ac93f6b67eb7e68c987156257f545895e',1,'TRAP::Network::HTTP::Response::Response()']]],
+  ['restore_175',['Restore',['../class_t_r_a_p_1_1_window.html#ab6c0f8407dcb67f6424fd474a619ed9c',1,'TRAP::Window']]]
 ];

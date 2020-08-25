@@ -6,6 +6,12 @@ namespace TRAP
 	class FileSystem final
 	{
 	public:
+		enum class WriteMode
+		{
+			Overwrite,
+			Append
+		};
+		
 		/// <summary>
 		/// Check if a physical file or folder exists.<br>
 		/// <br>
@@ -97,11 +103,12 @@ namespace TRAP
 		/// </summary>
 		/// <param name="physicalFilePath">Physical file path to be written to</param>
 		/// <param name="buffer">Data to be written</param>
+		/// <param name="mode">WriteMode to be used (Overwrite or Append)</param>
 		/// <returns>
 		/// True if file was successfully written.<br>
 		/// False if an error has occurred.
 		/// </returns>
-		static bool WritePhysicalFile(const std::filesystem::path& physicalFilePath, std::vector<uint8_t>& buffer);
+		static bool WritePhysicalFile(const std::filesystem::path& physicalFilePath, std::vector<uint8_t>& buffer, WriteMode mode = WriteMode::Overwrite);
 		/// <summary>
 		/// Write the given text to the given physical file path.<br>
 		/// <br>
@@ -110,11 +117,12 @@ namespace TRAP
 		/// </summary>
 		/// <param name="physicalFilePath">Physical file path to be written to</param>
 		/// <param name="text">Text to be written</param>
+		/// <param name="mode">WriteMode to be used (Overwrite or Append)</param>
 		/// <returns>
 		/// True if file was successfully written.<br>
 		/// False if an error has occurred.
 		/// </returns>
-		static bool WritePhysicalTextFile(const std::filesystem::path& physicalFilePath, std::string_view text);
+		static bool WritePhysicalTextFile(const std::filesystem::path& physicalFilePath, std::string_view text, WriteMode mode = WriteMode::Overwrite);
 	};
 }
 

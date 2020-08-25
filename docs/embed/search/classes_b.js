@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['profileresult_233',['ProfileResult',['../struct_t_r_a_p_1_1_utils_1_1_debug_1_1_profile_result.html',1,'TRAP::Utils::Debug']]]
+  ['orthographiccamera_332',['OrthographicCamera',['../class_t_r_a_p_1_1_graphics_1_1_orthographic_camera.html',1,'TRAP::Graphics']]],
+  ['orthographiccamerabounds_333',['OrthographicCameraBounds',['../struct_t_r_a_p_1_1_graphics_1_1_orthographic_camera_bounds.html',1,'TRAP::Graphics']]],
+  ['orthographiccameracontroller_334',['OrthographicCameraController',['../class_t_r_a_p_1_1_graphics_1_1_orthographic_camera_controller.html',1,'TRAP::Graphics']]]
 ];

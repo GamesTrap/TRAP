@@ -1,6 +1,7 @@
 #ifndef _TRAP_VFS_H_
 #define _TRAP_VFS_H_
 
+#include "FileSystem.h"
 #include "FileWatcher.h"
 
 namespace TRAP
@@ -129,8 +130,7 @@ namespace TRAP
 		/// <summary>
 		/// Read the given text file.<br>
 		/// <br>
-		/// Prints an error if path is empty.<br>
-		/// 
+		/// Prints an error if path is empty
 		/// </summary>
 		/// <param name="path">Virtual or physical file path</param>
 		/// <returns>
@@ -147,14 +147,23 @@ namespace TRAP
 		static std::string SilentReadTextFile(const std::string& path);
 
 		/// <summary>
-		/// Write the given data to the given file path.
+		/// Write the given data to the given file path.<br>
 		/// Can be a virtual or a physical file path
 		/// </summary>
 		/// <param name="path">Virtual or physical file path</param>
 		/// <param name="buffer">Data to be written</param>
-		/// <returns>If path could be resolved and data </returns>
-		static bool WriteFile(const std::string& path, std::vector<uint8_t>& buffer);
-		static bool WriteTextFile(const std::string& path, const std::string& text);
+		/// <param name="mode">WriteMode to use</param>
+		/// <returns>If path could be resolved and data has been written true, false otherwise</returns>
+		static bool WriteFile(const std::string& path, std::vector<uint8_t>& buffer, FileSystem::WriteMode mode = FileSystem::WriteMode::Overwrite);
+		/// <summary>
+		/// Write the given text to the given file path.<br>
+		/// Can be a virtual or a physical file path
+		/// </summary>
+		/// <param name="path">Virtual or physical file path</param>
+		/// <param name="text">Text to be written</param>
+		/// <param name="mode">WriteMode to use</param>
+		/// <returns>If path could be resolved and text has been written true, false otherwise</returns>
+		static bool WriteTextFile(const std::string& path, const std::string& text, FileSystem::WriteMode mode = FileSystem::WriteMode::Overwrite);
 
 		static void Init();
 		static void Shutdown();

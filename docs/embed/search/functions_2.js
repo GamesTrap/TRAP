@@ -1,17 +1,12 @@
 var searchData=
 [
-  ['getactivewindows_275',['GetActiveWindows',['../class_t_r_a_p_1_1_window.html#a502649e0f4a3bd8f2b900ce00fd2516b',1,'TRAP::Window']]],
-  ['getcontentscale_276',['GetContentScale',['../class_t_r_a_p_1_1_window.html#aaaa106157d8e07227904c58d4dfe372f',1,'TRAP::Window']]],
-  ['getcursormode_277',['GetCursorMode',['../class_t_r_a_p_1_1_window.html#acc8cbb69f1def98c325275fce5a28cf2',1,'TRAP::Window']]],
-  ['getdisplaymode_278',['GetDisplayMode',['../class_t_r_a_p_1_1_window.html#af8a24e4e09ddeee9022014e4b4531315',1,'TRAP::Window']]],
-  ['getheight_279',['GetHeight',['../class_t_r_a_p_1_1_window.html#a7e56c2a1b4dc0f125c1226ff9479e2f8',1,'TRAP::Window']]],
-  ['getinternalwindow_280',['GetInternalWindow',['../class_t_r_a_p_1_1_window.html#a3ec3e102f89b0b6347184512d21e12fc',1,'TRAP::Window']]],
-  ['getmonitor_281',['GetMonitor',['../class_t_r_a_p_1_1_window.html#a92ed57d2f247ca4b897fa3cf73b3c0be',1,'TRAP::Window']]],
-  ['getopacity_282',['GetOpacity',['../class_t_r_a_p_1_1_window.html#ab7676ac80499be1abf444f06a8cc3c8a',1,'TRAP::Window']]],
-  ['getrawmouseinput_283',['GetRawMouseInput',['../class_t_r_a_p_1_1_window.html#aa7c2cc921e827f72079344f90a3e7c71',1,'TRAP::Window']]],
-  ['getrefreshrate_284',['GetRefreshRate',['../class_t_r_a_p_1_1_window.html#a4a50da09d2b2a21650dfc06da4853c92',1,'TRAP::Window']]],
-  ['getsize_285',['GetSize',['../class_t_r_a_p_1_1_window.html#a07e26bb88be2e74895ef17f3d4a7a1da',1,'TRAP::Window']]],
-  ['gettitle_286',['GetTitle',['../class_t_r_a_p_1_1_window.html#a1c1a96844e67055e8cc342b085298d27',1,'TRAP::Window']]],
-  ['getvsyncinterval_287',['GetVSyncInterval',['../class_t_r_a_p_1_1_window.html#ac77cd0b59a53b045f8683e4affef6689',1,'TRAP::Window']]],
-  ['getwidth_288',['GetWidth',['../class_t_r_a_p_1_1_window.html#a9b68763bbcf071488fb09ac522ebed28',1,'TRAP::Window']]]
+  ['changedirectory_389',['ChangeDirectory',['../class_t_r_a_p_1_1_network_1_1_f_t_p.html#adc7c27c97da93d4135b140e1448398a1',1,'TRAP::Network::FTP']]],
+  ['check_390',['Check',['../class_t_r_a_p_1_1_file_watcher.html#a4a1dcf77208fd779680abc47155eaaea',1,'TRAP::FileWatcher']]],
+  ['clear_391',['Clear',['../class_t_r_a_p_1_1_network_1_1_packet.html#a9257e209dfecf35ca390e75932cf9994',1,'TRAP::Network::Packet::Clear()'],['../class_t_r_a_p_1_1_network_1_1_socket_selector.html#a0b4bc95015bc893bbb0853936f6b0770',1,'TRAP::Network::SocketSelector::Clear()']]],
+  ['close_392',['Close',['../class_t_r_a_p_1_1_network_1_1_socket.html#a0fc4685298f38dc4a6007c7349795877',1,'TRAP::Network::Socket::Close()'],['../class_t_r_a_p_1_1_network_1_1_t_c_p_listener.html#a0261e9b9b388b96751a1e908004dc109',1,'TRAP::Network::TCPListener::Close()'],['../class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a7efb89dcd0d2bcbe75e21669e42addb2',1,'TRAP::Network::TCPListenerIPv6::Close()']]],
+  ['connect_393',['Connect',['../class_t_r_a_p_1_1_network_1_1_f_t_p.html#ae33d842a757ea77c7f642c7e69fe72a6',1,'TRAP::Network::FTP::Connect()'],['../class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html#a54c629e3c804472b7b23ecc8688c0933',1,'TRAP::Network::TCPSocket::Connect()'],['../class_t_r_a_p_1_1_network_1_1_t_c_p_socket_i_pv6.html#a117a0fa57e18e7e366e73ceb750d8500',1,'TRAP::Network::TCPSocketIPv6::Connect()']]],
+  ['create_394',['Create',['../class_t_r_a_p_1_1_network_1_1_socket.html#abf81905bb86c14d7f7dc236ccccc06d0',1,'TRAP::Network::Socket']]],
+  ['createdirectory_395',['CreateDirectory',['../class_t_r_a_p_1_1_network_1_1_f_t_p.html#a91db6f8ef14f491ae1766be9049c52ea',1,'TRAP::Network::FTP']]],
+  ['createipv4_396',['CreateIPv4',['../class_t_r_a_p_1_1_network_1_1_socket.html#a22d2cb0119a0f531a5c357d3c03ca9db',1,'TRAP::Network::Socket']]],
+  ['createipv6_397',['CreateIPv6',['../class_t_r_a_p_1_1_network_1_1_socket.html#a5a2fcad39f71492d85057c448f282aa5',1,'TRAP::Network::Socket']]]
 ];

@@ -1,4 +1,8 @@
 var searchData=
 [
-  ['huffmantree_195',['HuffmanTree',['../struct_t_r_a_p_1_1_utils_1_1_decompress_1_1_i_n_t_e_r_n_a_l_1_1_huffman_tree.html',1,'TRAP::Utils::Decompress::INTERNAL']]]
+  ['filewatcher_288',['FileWatcher',['../class_t_r_a_p_1_1_file_watcher.html',1,'TRAP']]],
+  ['framebuffer_289',['FrameBuffer',['../class_t_r_a_p_1_1_graphics_1_1_frame_buffer.html',1,'TRAP::Graphics']]],
+  ['framebufferprops_290',['FrameBufferProps',['../struct_t_r_a_p_1_1_graphics_1_1_frame_buffer_props.html',1,'TRAP::Graphics']]],
+  ['framebufferresizeevent_291',['FrameBufferResizeEvent',['../class_t_r_a_p_1_1_events_1_1_frame_buffer_resize_event.html',1,'TRAP::Events']]],
+  ['ftp_292',['FTP',['../class_t_r_a_p_1_1_network_1_1_f_t_p.html',1,'TRAP::Network']]]
 ];

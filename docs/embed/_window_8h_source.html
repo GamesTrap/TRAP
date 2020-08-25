@@ -153,104 +153,105 @@ $(function() {
 <div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#a9f9237420469600df32997791ec7cc8a">SetMinimumSize</a>(uint32_t minWidth, uint32_t minHeight) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#ae8023e77a5a20daeef8515915abd5a88">SetMaximumSize</a>(uint32_t maxWidth, uint32_t maxHeight) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#afd6ede0bc20de12a6beab079c7802fc0">SetOpacity</a>(<span class="keywordtype">float</span> opacity) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160; </div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_window.html#ac322c2439a11891117b24e78a0fc36ea">IsMaximized</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_window.html#a5eeb583ad0cb916ced46864b8d722089">IsMinimized</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_window.html#a538b445f54729e08f5ecd9bf9af3ac9f">IsResizable</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_window.html#a78c874e885c9b8271620faa00a003db3">IsVisible</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_window.html#af7df0446104880f0915a7c0a4a8dc3e0">IsFocused</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_window.html#afefd3233e0aaf9632403ebc369240f36">IsDecorated</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160; </div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#a9c3c7c8877bbacb2ccfffce521434870">Maximize</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#aa0b5b770700bd8d6b5a6d248ba0cd2f7">Minimize</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#ac066ce312c9920cb51c231c81e937d3a">RequestAttention</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#adb74e8c3d1deebecaf646f4da75e0117">Focus</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#a87e2ba198f191ddd8ea2071142b4560f">Hide</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#a69489852408b882f10e611c8f875fec9">Show</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#ab6c0f8407dcb67f6424fd474a619ed9c">Restore</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160; </div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;        <span class="keywordtype">void</span> Init(<span class="keyword">const</span> <a class="code" href="struct_t_r_a_p_1_1_window_props.html">WindowProps</a>&amp; props);</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;        <span class="keywordtype">void</span> Shutdown();</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;        </div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;        Scope&lt;INTERNAL::WindowingAPI::InternalWindow&gt; m_window;</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        INTERNAL::WindowingAPI::InternalMonitor* m_useMonitor; <span class="comment">//Stores a reference to the monitor</span></div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        <span class="keyword">static</span> std::unordered_map&lt;uint32_t, INTERNAL::WindowingAPI::InternalVideoMode&gt; s_baseVideoModes; <span class="comment">//Stores the underlying video mode being used by the OS for every monitor</span></div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        </div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        <span class="keyword">struct </span>WindowedModeParams</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        {</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;            int32_t Width, Height, RefreshRate;</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;            int32_t XPos, YPos;</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;        } m_oldWindowedParams{};</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;        </div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;        <span class="keyword">struct </span>WindowData</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;        {</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;            std::string Title;</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;            int32_t Width{}, Height{}, RefreshRate{}, VSync{};</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b">DisplayMode</a> displayMode{};</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;            uint32_t Monitor{};</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e">CursorMode</a> cursorMode{};</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;            <span class="keywordtype">bool</span> RawMouseInput{};</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;            std::unordered_map&lt;uint16_t, uint32_t&gt; KeyRepeatCounts;</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160; </div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;            EventCallbackFn EventCallback;</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160; </div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;            WindowedModeParams* windowModeParams = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;        } m_data;</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;        </div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;        <span class="keyword">static</span> uint32_t s_windows;</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">bool</span> s_WindowingAPIInitialized;</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;        <span class="keyword">static</span> std::vector&lt;Window*&gt; s_fullscreenWindows;</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    };</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160; </div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    <span class="comment">//Used to create new windows</span></div>
-<div class="line"><a name="l00345"></a><span class="lineno"><a class="line" href="struct_t_r_a_p_1_1_window_props.html">  345</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="struct_t_r_a_p_1_1_window_props.html">WindowProps</a></div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    {</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;        std::string Title;</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;        uint32_t Width;</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;        uint32_t Height;</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;        uint32_t RefreshRate;</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;        Graphics::API::RenderAPI RenderAPI;</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b">Window::DisplayMode</a> displayMode;</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;        uint32_t <a class="code" href="class_t_r_a_p_1_1_monitor.html">Monitor</a>;</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160; </div>
-<div class="line"><a name="l00355"></a><span class="lineno"><a class="line" href="struct_t_r_a_p_1_1_window_props_1_1_advanced.html">  355</a></span>&#160;        <span class="keyword">struct </span><a class="code" href="struct_t_r_a_p_1_1_window_props_1_1_advanced.html">Advanced</a></div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;        {           </div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;            uint32_t VSync = 0;</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;            <span class="keywordtype">bool</span> Resizable = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;            <span class="keywordtype">bool</span> Maximized = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;            <span class="keywordtype">bool</span> Visible = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;            <span class="keywordtype">bool</span> Focused = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;            <span class="keywordtype">bool</span> FocusOnShow = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;            <span class="keywordtype">bool</span> Decorated = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;            <span class="comment">//bool Stereo = false;</span></div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;            <span class="keywordtype">bool</span> RawMouseInput = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e">Window::CursorMode</a> CursorMode = Window::CursorMode::Normal;</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160; </div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;            <span class="keyword">explicit</span> <a class="code" href="struct_t_r_a_p_1_1_window_props_1_1_advanced.html">Advanced</a>(uint32_t vSync = 0,</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;                              <span class="keywordtype">bool</span> resizable = <span class="keyword">true</span>,</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;                              <span class="keywordtype">bool</span> maximized = <span class="keyword">false</span>,</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;                              <span class="keywordtype">bool</span> visible = <span class="keyword">true</span>,</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;                              <span class="keywordtype">bool</span> focused = <span class="keyword">true</span>,</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;                              <span class="keywordtype">bool</span> focusOnShow = <span class="keyword">true</span>,</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;                              <span class="keywordtype">bool</span> decorated = <span class="keyword">true</span>,</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;                              <span class="keywordtype">bool</span> rawMouseInput = <span class="keyword">false</span>,</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;                              <a class="code" href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e">Window::CursorMode</a> cursorMode = Window::CursorMode::Normal);</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;            </div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;        } advanced{};</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160; </div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;        <span class="comment">//Sets up properties for new window(s)</span></div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="struct_t_r_a_p_1_1_window_props.html">WindowProps</a>(std::string title = <span class="stringliteral">&quot;TRAP Engine&quot;</span>,</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;                             uint32_t width = 1280,</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;                             uint32_t height = 720,</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;                             uint32_t refreshRate = 60,</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;                             <a class="code" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b">Window::DisplayMode</a> displayMode = Window::DisplayMode::Windowed,</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;                             Advanced advanced = Advanced{},</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;                             uint32_t monitor = 0);</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    };</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;}</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160; </div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_WINDOW_H_*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#af7b5d7641fb13df9dde0ba3ce03f3a2a">SetDragAndDrop</a>(<span class="keywordtype">bool</span> enabled) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160; </div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_window.html#ac322c2439a11891117b24e78a0fc36ea">IsMaximized</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_window.html#a5eeb583ad0cb916ced46864b8d722089">IsMinimized</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_window.html#a538b445f54729e08f5ecd9bf9af3ac9f">IsResizable</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_window.html#a78c874e885c9b8271620faa00a003db3">IsVisible</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_window.html#af7df0446104880f0915a7c0a4a8dc3e0">IsFocused</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_window.html#afefd3233e0aaf9632403ebc369240f36">IsDecorated</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160; </div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#a9c3c7c8877bbacb2ccfffce521434870">Maximize</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#aa0b5b770700bd8d6b5a6d248ba0cd2f7">Minimize</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#ac066ce312c9920cb51c231c81e937d3a">RequestAttention</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#adb74e8c3d1deebecaf646f4da75e0117">Focus</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#a87e2ba198f191ddd8ea2071142b4560f">Hide</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#a69489852408b882f10e611c8f875fec9">Show</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_window.html#ab6c0f8407dcb67f6424fd474a619ed9c">Restore</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160; </div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        <span class="keywordtype">void</span> Init(<span class="keyword">const</span> <a class="code" href="struct_t_r_a_p_1_1_window_props.html">WindowProps</a>&amp; props);</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        <span class="keywordtype">void</span> Shutdown();</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        </div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        Scope&lt;INTERNAL::WindowingAPI::InternalWindow&gt; m_window;</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        INTERNAL::WindowingAPI::InternalMonitor* m_useMonitor; <span class="comment">//Stores a reference to the monitor</span></div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;        <span class="keyword">static</span> std::unordered_map&lt;uint32_t, INTERNAL::WindowingAPI::InternalVideoMode&gt; s_baseVideoModes; <span class="comment">//Stores the underlying video mode being used by the OS for every monitor</span></div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;        </div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;        <span class="keyword">struct </span>WindowedModeParams</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;        {</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;            int32_t Width, Height, RefreshRate;</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;            int32_t XPos, YPos;</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;        } m_oldWindowedParams{};</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;        </div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;        <span class="keyword">struct </span>WindowData</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;        {</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;            std::string Title;</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;            int32_t Width{}, Height{}, RefreshRate{}, VSync{};</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b">DisplayMode</a> displayMode{};</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;            uint32_t Monitor{};</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e">CursorMode</a> cursorMode{};</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;            <span class="keywordtype">bool</span> RawMouseInput{};</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;            std::unordered_map&lt;uint16_t, uint32_t&gt; KeyRepeatCounts;</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160; </div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;            EventCallbackFn EventCallback;</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160; </div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;            WindowedModeParams* windowModeParams = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;        } m_data;</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        </div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;        <span class="keyword">static</span> uint32_t s_windows;</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">bool</span> s_WindowingAPIInitialized;</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;        <span class="keyword">static</span> std::vector&lt;Window*&gt; s_fullscreenWindows;</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;    };</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160; </div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    <span class="comment">//Used to create new windows</span></div>
+<div class="line"><a name="l00350"></a><span class="lineno"><a class="line" href="struct_t_r_a_p_1_1_window_props.html">  350</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="struct_t_r_a_p_1_1_window_props.html">WindowProps</a></div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    {</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;        std::string Title;</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;        uint32_t Width;</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;        uint32_t Height;</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;        uint32_t RefreshRate;</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;        Graphics::API::RenderAPI RenderAPI;</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b">Window::DisplayMode</a> displayMode;</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;        uint32_t <a class="code" href="class_t_r_a_p_1_1_monitor.html">Monitor</a>;</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160; </div>
+<div class="line"><a name="l00360"></a><span class="lineno"><a class="line" href="struct_t_r_a_p_1_1_window_props_1_1_advanced.html">  360</a></span>&#160;        <span class="keyword">struct </span><a class="code" href="struct_t_r_a_p_1_1_window_props_1_1_advanced.html">Advanced</a></div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;        {           </div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;            uint32_t VSync = 0;</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;            <span class="keywordtype">bool</span> Resizable = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;            <span class="keywordtype">bool</span> Maximized = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;            <span class="keywordtype">bool</span> Visible = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;            <span class="keywordtype">bool</span> Focused = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;            <span class="keywordtype">bool</span> FocusOnShow = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;            <span class="keywordtype">bool</span> Decorated = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;            <span class="comment">//bool Stereo = false;</span></div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;            <span class="keywordtype">bool</span> RawMouseInput = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e">Window::CursorMode</a> CursorMode = Window::CursorMode::Normal;</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160; </div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;            <span class="keyword">explicit</span> <a class="code" href="struct_t_r_a_p_1_1_window_props_1_1_advanced.html">Advanced</a>(uint32_t vSync = 0,</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;                              <span class="keywordtype">bool</span> resizable = <span class="keyword">true</span>,</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;                              <span class="keywordtype">bool</span> maximized = <span class="keyword">false</span>,</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;                              <span class="keywordtype">bool</span> visible = <span class="keyword">true</span>,</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;                              <span class="keywordtype">bool</span> focused = <span class="keyword">true</span>,</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;                              <span class="keywordtype">bool</span> focusOnShow = <span class="keyword">true</span>,</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;                              <span class="keywordtype">bool</span> decorated = <span class="keyword">true</span>,</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;                              <span class="keywordtype">bool</span> rawMouseInput = <span class="keyword">false</span>,</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;                              <a class="code" href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e">Window::CursorMode</a> cursorMode = Window::CursorMode::Normal);</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;            </div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;        } advanced{};</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160; </div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;        <span class="comment">//Sets up properties for new window(s)</span></div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="struct_t_r_a_p_1_1_window_props.html">WindowProps</a>(std::string title = <span class="stringliteral">&quot;TRAP Engine&quot;</span>,</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;                             uint32_t width = 1280,</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;                             uint32_t height = 720,</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;                             uint32_t refreshRate = 60,</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;                             <a class="code" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b">Window::DisplayMode</a> displayMode = Window::DisplayMode::Windowed,</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;                             Advanced advanced = Advanced{},</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;                             uint32_t monitor = 0);</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;    };</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;}</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160; </div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_WINDOW_H_*/</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_t_r_a_p_1_1_window_html_a502649e0f4a3bd8f2b900ce00fd2516b"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#a502649e0f4a3bd8f2b900ce00fd2516b">TRAP::Window::GetActiveWindows</a></div><div class="ttdeci">static uint32_t GetActiveWindows()</div><div class="ttdoc">Get the amount of all active Windows</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_window_html_a28f1370ae185a365ee0665512fbe1cb3"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#a28f1370ae185a365ee0665512fbe1cb3">TRAP::Window::SetResizable</a></div><div class="ttdeci">void SetResizable(bool enabled) const</div><div class="ttdoc">Set whether resizing of the Window should be allowed</div></div>
@@ -263,13 +264,13 @@ $(function() {
 <div class="ttc" id="aclass_t_r_a_p_1_1_window_html_ab6c0f8407dcb67f6424fd474a619ed9c"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#ab6c0f8407dcb67f6424fd474a619ed9c">TRAP::Window::Restore</a></div><div class="ttdeci">void Restore() const</div><div class="ttdoc">Restore/Show the Window</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_window_html_a3f11eb8a48f467887b326a530e460e42"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#a3f11eb8a48f467887b326a530e460e42">TRAP::Window::Use</a></div><div class="ttdeci">static void Use()</div><div class="ttdoc">Selects the &quot;Main&quot; Window for all following rendering commands</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_window_html_afefd3233e0aaf9632403ebc369240f36"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#afefd3233e0aaf9632403ebc369240f36">TRAP::Window::IsDecorated</a></div><div class="ttdeci">bool IsDecorated() const</div><div class="ttdoc">Query whether the Window is decorated or not</div></div>
-<div class="ttc" id="astruct_t_r_a_p_1_1_window_props_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_window_props.html">TRAP::WindowProps</a></div><div class="ttdef"><b>Definition:</b> Window.h:345</div></div>
+<div class="ttc" id="astruct_t_r_a_p_1_1_window_props_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_window_props.html">TRAP::WindowProps</a></div><div class="ttdef"><b>Definition:</b> Window.h:350</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_window_html_a87e2ba198f191ddd8ea2071142b4560f"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#a87e2ba198f191ddd8ea2071142b4560f">TRAP::Window::Hide</a></div><div class="ttdeci">void Hide() const</div><div class="ttdoc">Hide the Window</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_window_html_aa93b626832ac68f6b887227acdc6cfef"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#aa93b626832ac68f6b887227acdc6cfef">TRAP::Window::SetCursorType</a></div><div class="ttdeci">void SetCursorType(const CursorType &amp;cursor) const</div><div class="ttdoc">Set the CursorType for the Window</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_window_html_a2221c4be2e229cd9fb8f37105002ac96"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#a2221c4be2e229cd9fb8f37105002ac96">TRAP::Window::SetIcon</a></div><div class="ttdeci">void SetIcon() const</div><div class="ttdoc">Resets the Window icon to the TRAP logo</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_window_html_ac066ce312c9920cb51c231c81e937d3a"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#ac066ce312c9920cb51c231c81e937d3a">TRAP::Window::RequestAttention</a></div><div class="ttdeci">void RequestAttention() const</div><div class="ttdoc">Request attention/focus for the Window</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_window_html_aea1f8414a5d5b813a82a23fb904e6ea0"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#aea1f8414a5d5b813a82a23fb904e6ea0">TRAP::Window::Window</a></div><div class="ttdeci">Window(const WindowProps &amp;props)</div><div class="ttdoc">Window constructor</div></div>
-<div class="ttc" id="astruct_t_r_a_p_1_1_window_props_1_1_advanced_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_window_props_1_1_advanced.html">TRAP::WindowProps::Advanced</a></div><div class="ttdef"><b>Definition:</b> Window.h:355</div></div>
+<div class="ttc" id="astruct_t_r_a_p_1_1_window_props_1_1_advanced_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_window_props_1_1_advanced.html">TRAP::WindowProps::Advanced</a></div><div class="ttdef"><b>Definition:</b> Window.h:360</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_window_html_a9c3c7c8877bbacb2ccfffce521434870"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#a9c3c7c8877bbacb2ccfffce521434870">TRAP::Window::Maximize</a></div><div class="ttdeci">void Maximize() const</div><div class="ttdoc">Maximize the Window</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_window_html_a4ac27cab0cf24b0ecab2b0ba47ab2b5e"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e">TRAP::Window::CursorMode</a></div><div class="ttdeci">INTERNAL::WindowingAPI::CursorMode CursorMode</div><div class="ttdoc">Same as: enum class CursorMode { Normal, Hidden, Disabled, Captured }; Specifies the cursor mode of a...</div><div class="ttdef"><b>Definition:</b> Window.h:42</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_monitor_html"><div class="ttname"><a href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></div><div class="ttdef"><b>Definition:</b> Monitor.h:8</div></div>
@@ -305,6 +306,7 @@ $(function() {
 <div class="ttc" id="aclass_t_r_a_p_1_1_window_html_af882eec1230dc80c8d9130d7b520c32b"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#af882eec1230dc80c8d9130d7b520c32b">TRAP::Window::SetVSyncInterval</a></div><div class="ttdeci">void SetVSyncInterval(uint32_t interval)</div><div class="ttdoc">Set the VSync interval (0 = No VSync)</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_window_html_a1c1a96844e67055e8cc342b085298d27"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#a1c1a96844e67055e8cc342b085298d27">TRAP::Window::GetTitle</a></div><div class="ttdeci">std::string_view GetTitle() const</div><div class="ttdoc">Get the current title of the Window</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_window_html_a88e26eb6600ee22e99fdf4461aaae597"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#a88e26eb6600ee22e99fdf4461aaae597">TRAP::Window::SetCursorIcon</a></div><div class="ttdeci">void SetCursorIcon(const Scope&lt; Image &gt; &amp;image, int32_t xHotspot=0, int32_t yHotspot=0) const</div><div class="ttdoc">Set the cursor to a custom Image (Image must be non HDR RGB/RGBA with 24/32 bits per pixel)</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_window_html_af7b5d7641fb13df9dde0ba3ce03f3a2a"><div class="ttname"><a href="class_t_r_a_p_1_1_window.html#af7b5d7641fb13df9dde0ba3ce03f3a2a">TRAP::Window::SetDragAndDrop</a></div><div class="ttdeci">void SetDragAndDrop(bool enabled) const</div><div class="ttdoc">Enable or Disable Drag and Drop feature for the Window</div></div>
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->
 </div>

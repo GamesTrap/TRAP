@@ -276,26 +276,26 @@ std::string TRAP::VFS::SilentReadTextFile(const std::string& path)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::VFS::WriteFile(const std::string& path, std::vector<uint8_t>& buffer)
+bool TRAP::VFS::WriteFile(const std::string& path, std::vector<uint8_t>& buffer, const FileSystem::WriteMode mode)
 {
 	TP_PROFILE_FUNCTION();
 
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
-	return ResolveWritePhysicalPath(path, physicalPath) ? FileSystem::WritePhysicalFile(physicalPath, buffer) : false;
+	return ResolveWritePhysicalPath(path, physicalPath) ? FileSystem::WritePhysicalFile(physicalPath, buffer, mode) : false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::VFS::WriteTextFile(const std::string& path, const std::string& text)
+bool TRAP::VFS::WriteTextFile(const std::string& path, const std::string& text, const FileSystem::WriteMode mode)
 {
 	TP_PROFILE_FUNCTION();
 
 	TRAP_ASSERT(s_Instance.get(), "s_Instance is nullptr!");
 	std::filesystem::path physicalPath;
 
-	return ResolveWritePhysicalPath(path, physicalPath) ? FileSystem::WritePhysicalTextFile(physicalPath, text) : false;
+	return ResolveWritePhysicalPath(path, physicalPath) ? FileSystem::WritePhysicalTextFile(physicalPath, text, mode) : false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -131,7 +131,7 @@ $(function() {
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> Save();</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> Clear();</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> WindowVersion = <span class="stringliteral">&quot;[20w31a2]&quot;</span>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> WindowVersion = <span class="stringliteral">&quot;[20w35a1]&quot;</span>;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> WindowPrefix = <span class="stringliteral">&quot;[Window] &quot;</span>;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> WindowInternalPrefix = <span class="stringliteral">&quot;[Window][Internal] &quot;</span>;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> WindowIconPrefix = <span class="stringliteral">&quot;[Window][Icon] &quot;</span>;</div>
@@ -197,90 +197,97 @@ $(function() {
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> UniformBufferOpenGLPrefix = <span class="stringliteral">&quot;[UniformBuffer][OpenGL] &quot;</span>;</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> FrameBufferVulkanPrefix = <span class="stringliteral">&quot;[FrameBuffer][Vulkan] &quot;</span>;</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> FrameBufferOpenGLPrefix = <span class="stringliteral">&quot;[FrameBuffer][OpenGL] &quot;</span>;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        </div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="preprocessor">#ifdef TRAP_PLATFORM_WINDOWS</span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> GetInfo() { GetConsoleScreenBufferInfo(m_handleConsole, &amp;m_csbi); }</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> SetColor(WORD wRGBI);</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> ResetColor() { SetColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); }</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        <span class="keyword">static</span> HANDLE m_handleConsole;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <span class="keyword">static</span> CONSOLE_SCREEN_BUFFER_INFO m_csbi;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">bool</span> IsColorTerminal() noexcept;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <span class="keyword">static</span> std::string GetTimeStamp();</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        std::vector&lt;std::pair&lt;Level, std::string&gt;&gt; m_buffer{};</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        <span class="keyword">static</span> std::mutex m_mtx;</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    };</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;}</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160; </div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="preprocessor">#include &quot;Log.inl&quot;</span></div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;constexpr <span class="keywordtype">void</span> TP_TRACE(<span class="keyword">const</span> Args&amp; ... args)</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;{</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    ::TRAP::Log::Trace(args...);</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;}</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="preprocessor">#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)</span></div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;constexpr <span class="keywordtype">void</span> TP_DEBUG(<span class="keyword">const</span> Args&amp; ... args)</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;{</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    ::TRAP::Log::Debug(args...);</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;}</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkSocketPrefix = <span class="stringliteral">&quot;[Network][Socket] &quot;</span>;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkFTPPrefix = <span class="stringliteral">&quot;[Network][FTP] &quot;</span>;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkHTTPPrefix = <span class="stringliteral">&quot;[Network][HTTP] &quot;</span>;</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkTCPListenerPrefix = <span class="stringliteral">&quot;[Network][TCPListener] &quot;</span>;</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkTCPSocketPrefix = <span class="stringliteral">&quot;[Network][TCPSocket] &quot;</span>;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkUDPSocketPrefix = <span class="stringliteral">&quot;[Network][UDPSocket] &quot;</span>;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkSocketUnixPrefix = <span class="stringliteral">&quot;[Network][Socket][Unix] &quot;</span>;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        </div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="preprocessor">#ifdef TRAP_PLATFORM_WINDOWS</span></div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> GetInfo() { GetConsoleScreenBufferInfo(m_handleConsole, &amp;m_csbi); }</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> SetColor(WORD wRGBI);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> ResetColor() { SetColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); }</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        <span class="keyword">static</span> HANDLE m_handleConsole;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        <span class="keyword">static</span> CONSOLE_SCREEN_BUFFER_INFO m_csbi;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">bool</span> IsColorTerminal() noexcept;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="keyword">static</span> std::string GetTimeStamp();</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        std::vector&lt;std::pair&lt;Level, std::string&gt;&gt; m_buffer{};</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        <span class="keyword">static</span> std::mutex m_mtx;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    };</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;}</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="preprocessor">#include &quot;Log.inl&quot;</span></div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;constexpr <span class="keywordtype">void</span> TP_TRACE(<span class="keyword">const</span> Args&amp; ... args)</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;{</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    ::TRAP::Log::Trace(args...);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;}</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;constexpr <span class="keywordtype">void</span> TP_DEBUG(<span class="keyword">const</span> Args&amp; ... args)</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;{</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;}</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="preprocessor">#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)</span></div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;constexpr <span class="keywordtype">void</span> TP_DEBUG(<span class="keyword">const</span> Args&amp; ... args)</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;{</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    ::TRAP::Log::Debug(args...);</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;}</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;constexpr <span class="keywordtype">void</span> TP_INFO(<span class="keyword">const</span> Args&amp; ... args)</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;{</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    ::TRAP::Log::Info(args...);</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;}</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;constexpr <span class="keywordtype">void</span> TP_WARN(<span class="keyword">const</span> Args&amp; ... args)</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;{</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    ::TRAP::Log::Warn(args...);</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;}</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160; </div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;constexpr <span class="keywordtype">void</span> TP_ERROR(<span class="keyword">const</span> Args&amp; ... args)</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;{</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    ::TRAP::Log::Error(args...);</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;}</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160; </div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;constexpr <span class="keywordtype">void</span> TP_CRITICAL(<span class="keyword">const</span> Args&amp; ... args)</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;{</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    ::TRAP::Log::Critical(args...);</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;}</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_LOG_H_*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;constexpr <span class="keywordtype">void</span> TP_DEBUG(<span class="keyword">const</span> Args&amp; ... args)</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;{</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;}</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;constexpr <span class="keywordtype">void</span> TP_INFO(<span class="keyword">const</span> Args&amp; ... args)</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;{</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    ::TRAP::Log::Info(args...);</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;}</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160; </div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160; </div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;constexpr <span class="keywordtype">void</span> TP_WARN(<span class="keyword">const</span> Args&amp; ... args)</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;{</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    ::TRAP::Log::Warn(args...);</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;}</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160; </div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;constexpr <span class="keywordtype">void</span> TP_ERROR(<span class="keyword">const</span> Args&amp; ... args)</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;{</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    ::TRAP::Log::Error(args...);</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;}</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160; </div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;constexpr <span class="keywordtype">void</span> TP_CRITICAL(<span class="keyword">const</span> Args&amp; ... args)</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;{</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    ::TRAP::Log::Critical(args...);</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;}</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_LOG_H_*/</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_t_r_a_p_1_1_log_html"><div class="ttname"><a href="class_t_r_a_p_1_1_log.html">TRAP::Log</a></div><div class="ttdef"><b>Definition:</b> Log.h:10</div></div>
 <!-- HTML footer for doxygen 1.8.8-->

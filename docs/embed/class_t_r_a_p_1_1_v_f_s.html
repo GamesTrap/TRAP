@@ -159,18 +159,19 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a452e72abecae7041ece3760fd38ef90f"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a452e72abecae7041ece3760fd38ef90f">ReadTextFile</a> (const std::string &amp;path)</td></tr>
 <tr class="memdesc:a452e72abecae7041ece3760fd38ef90f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given text file.<br  />
  <br  />
- Prints an error if path is empty.<br  />
-  <a href="class_t_r_a_p_1_1_v_f_s.html#a452e72abecae7041ece3760fd38ef90f">More...</a><br /></td></tr>
+ Prints an error if path is empty  <a href="class_t_r_a_p_1_1_v_f_s.html#a452e72abecae7041ece3760fd38ef90f">More...</a><br /></td></tr>
 <tr class="separator:a452e72abecae7041ece3760fd38ef90f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb935a4952bf2b6596d08c07a87f8533"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#abb935a4952bf2b6596d08c07a87f8533">SilentReadTextFile</a> (const std::string &amp;path)</td></tr>
 <tr class="memdesc:abb935a4952bf2b6596d08c07a87f8533"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given text file silently.  <a href="class_t_r_a_p_1_1_v_f_s.html#abb935a4952bf2b6596d08c07a87f8533">More...</a><br /></td></tr>
 <tr class="separator:abb935a4952bf2b6596d08c07a87f8533"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe70432da37a400306a7e030b8e557fc"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#abe70432da37a400306a7e030b8e557fc">WriteFile</a> (const std::string &amp;path, std::vector&lt; uint8_t &gt; &amp;buffer)</td></tr>
-<tr class="memdesc:abe70432da37a400306a7e030b8e557fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the given data to the given file path. Can be a virtual or a physical file path  <a href="class_t_r_a_p_1_1_v_f_s.html#abe70432da37a400306a7e030b8e557fc">More...</a><br /></td></tr>
-<tr class="separator:abe70432da37a400306a7e030b8e557fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4fbbb9b10aafac0adb15fc7679ef106a"><td class="memItemLeft" align="right" valign="top"><a id="a4fbbb9b10aafac0adb15fc7679ef106a"></a>
-static bool&#160;</td><td class="memItemRight" valign="bottom"><b>WriteTextFile</b> (const std::string &amp;path, const std::string &amp;text)</td></tr>
-<tr class="separator:a4fbbb9b10aafac0adb15fc7679ef106a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9837f653ad5c440cb0f0217011ff2a17"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a9837f653ad5c440cb0f0217011ff2a17">WriteFile</a> (const std::string &amp;path, std::vector&lt; uint8_t &gt; &amp;buffer, FileSystem::WriteMode mode=FileSystem::WriteMode::Overwrite)</td></tr>
+<tr class="memdesc:a9837f653ad5c440cb0f0217011ff2a17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the given data to the given file path.<br  />
+ Can be a virtual or a physical file path  <a href="class_t_r_a_p_1_1_v_f_s.html#a9837f653ad5c440cb0f0217011ff2a17">More...</a><br /></td></tr>
+<tr class="separator:a9837f653ad5c440cb0f0217011ff2a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a160150a24b705e165955e2e408bba955"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a160150a24b705e165955e2e408bba955">WriteTextFile</a> (const std::string &amp;path, const std::string &amp;text, FileSystem::WriteMode mode=FileSystem::WriteMode::Overwrite)</td></tr>
+<tr class="memdesc:a160150a24b705e165955e2e408bba955"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the given text to the given file path.<br  />
+ Can be a virtual or a physical file path  <a href="class_t_r_a_p_1_1_v_f_s.html#a160150a24b705e165955e2e408bba955">More...</a><br /></td></tr>
+<tr class="separator:a160150a24b705e165955e2e408bba955"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec34065a481d93cf5f12f172406f4584"><td class="memItemLeft" align="right" valign="top"><a id="aec34065a481d93cf5f12f172406f4584"></a>
 static void&#160;</td><td class="memItemRight" valign="bottom"><b>Init</b> ()</td></tr>
 <tr class="separator:aec34065a481d93cf5f12f172406f4584"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -395,8 +396,7 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 
 <p>Read the given text file.<br  />
  <br  />
- Prints an error if path is empty.<br  />
- </p>
+ Prints an error if path is empty </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">path</td><td>Virtual or physical file path</td></tr>
@@ -703,8 +703,8 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 
 </div>
 </div>
-<a id="abe70432da37a400306a7e030b8e557fc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe70432da37a400306a7e030b8e557fc">&#9670;&nbsp;</a></span>WriteFile()</h2>
+<a id="a9837f653ad5c440cb0f0217011ff2a17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9837f653ad5c440cb0f0217011ff2a17">&#9670;&nbsp;</a></span>WriteFile()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -722,7 +722,13 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::vector&lt; uint8_t &gt; &amp;&#160;</td>
-          <td class="paramname"><em>buffer</em>&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">FileSystem::WriteMode&#160;</td>
+          <td class="paramname"><em>mode</em> = <code>FileSystem::WriteMode::Overwrite</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -737,15 +743,71 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </table>
 </div><div class="memdoc">
 
-<p>Write the given data to the given file path. Can be a virtual or a physical file path </p>
+<p>Write the given data to the given file path.<br  />
+ Can be a virtual or a physical file path </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">path</td><td>Virtual or physical file path</td></tr>
     <tr><td class="paramname">buffer</td><td>Data to be written</td></tr>
+    <tr><td class="paramname">mode</td><td>WriteMode to use</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>If path could be resolved and data </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>If path could be resolved and data has been written true, false otherwise</dd></dl>
+
+</div>
+</div>
+<a id="a160150a24b705e165955e2e408bba955"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a160150a24b705e165955e2e408bba955">&#9670;&nbsp;</a></span>WriteTextFile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool TRAP::VFS::WriteTextFile </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>text</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">FileSystem::WriteMode&#160;</td>
+          <td class="paramname"><em>mode</em> = <code>FileSystem::WriteMode::Overwrite</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Write the given text to the given file path.<br  />
+ Can be a virtual or a physical file path </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Virtual or physical file path</td></tr>
+    <tr><td class="paramname">text</td><td>Text to be written</td></tr>
+    <tr><td class="paramname">mode</td><td>WriteMode to use</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>If path could be resolved and text has been written true, false otherwise</dd></dl>
 
 </div>
 </div>

@@ -1,21 +1,14 @@
 var searchData=
 [
-  ['setcursoricon_309',['SetCursorIcon',['../class_t_r_a_p_1_1_window.html#a88e26eb6600ee22e99fdf4461aaae597',1,'TRAP::Window']]],
-  ['setcursormode_310',['SetCursorMode',['../class_t_r_a_p_1_1_window.html#a62e0a9e296ad0b84fbe3a69b4dfdd531',1,'TRAP::Window']]],
-  ['setcursortype_311',['SetCursorType',['../class_t_r_a_p_1_1_window.html#aa93b626832ac68f6b887227acdc6cfef',1,'TRAP::Window']]],
-  ['setdisplaymode_312',['SetDisplayMode',['../class_t_r_a_p_1_1_window.html#af694cbc2af0298888fc6bcd05eed56ba',1,'TRAP::Window']]],
-  ['seteventcallback_313',['SetEventCallback',['../class_t_r_a_p_1_1_window.html#ac542967a06b5acaf5084c361039b47fe',1,'TRAP::Window']]],
-  ['seticon_314',['SetIcon',['../class_t_r_a_p_1_1_window.html#a2221c4be2e229cd9fb8f37105002ac96',1,'TRAP::Window::SetIcon() const'],['../class_t_r_a_p_1_1_window.html#a8374c6feec002fa1bad84996674a3e86',1,'TRAP::Window::SetIcon(const Scope&lt; Image &gt; &amp;image) const']]],
-  ['setmaximumsize_315',['SetMaximumSize',['../class_t_r_a_p_1_1_window.html#ae8023e77a5a20daeef8515915abd5a88',1,'TRAP::Window']]],
-  ['setminimumsize_316',['SetMinimumSize',['../class_t_r_a_p_1_1_window.html#a9f9237420469600df32997791ec7cc8a',1,'TRAP::Window']]],
-  ['setmonitor_317',['SetMonitor',['../class_t_r_a_p_1_1_window.html#a3251d39967a79e61e332c3c21e1e6e52',1,'TRAP::Window']]],
-  ['setopacity_318',['SetOpacity',['../class_t_r_a_p_1_1_window.html#afd6ede0bc20de12a6beab079c7802fc0',1,'TRAP::Window']]],
-  ['setrawmouseinput_319',['SetRawMouseInput',['../class_t_r_a_p_1_1_window.html#aa6fa966786dfe81fe6562f7e055335e4',1,'TRAP::Window']]],
-  ['setresizable_320',['SetResizable',['../class_t_r_a_p_1_1_window.html#a28f1370ae185a365ee0665512fbe1cb3',1,'TRAP::Window']]],
-  ['settitle_321',['SetTitle',['../class_t_r_a_p_1_1_window.html#a6558c07f0e759a301a026acef6a8c8fd',1,'TRAP::Window']]],
-  ['setvsyncinterval_322',['SetVSyncInterval',['../class_t_r_a_p_1_1_window.html#af882eec1230dc80c8d9130d7b520c32b',1,'TRAP::Window']]],
-  ['show_323',['Show',['../class_t_r_a_p_1_1_window.html#a69489852408b882f10e611c8f875fec9',1,'TRAP::Window']]],
-  ['silentreadfile_324',['SilentReadFile',['../class_t_r_a_p_1_1_v_f_s.html#a807aada29ab643886582175027c34f94',1,'TRAP::VFS']]],
-  ['silentreadtextfile_325',['SilentReadTextFile',['../class_t_r_a_p_1_1_v_f_s.html#abb935a4952bf2b6596d08c07a87f8533',1,'TRAP::VFS']]],
-  ['silentresolvereadphysicalpath_326',['SilentResolveReadPhysicalPath',['../class_t_r_a_p_1_1_v_f_s.html#add355c0e2814938e788c6f98462f3815',1,'TRAP::VFS']]]
+  ['ipv4address_442',['IPv4Address',['../class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#ac2183b4f4c59280b231624c4145dd3ca',1,'TRAP::Network::IPv4Address::IPv4Address()'],['../class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#a0dcf2e6497ba73a5a6e9d670b953f3b8',1,'TRAP::Network::IPv4Address::IPv4Address(const std::string &amp;address)'],['../class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#ab09abc36b09bed6cade15a8064c022cc',1,'TRAP::Network::IPv4Address::IPv4Address(const char *address)'],['../class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#a424993ac3f4eb508e7496cbe9ae44a32',1,'TRAP::Network::IPv4Address::IPv4Address(uint8_t byte0, uint8_t byte1, uint8_t byte2, uint8_t byte3)'],['../class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#af1698274401878433677d926d6fcfd9d',1,'TRAP::Network::IPv4Address::IPv4Address(uint32_t address)']]],
+  ['ipv6address_443',['IPv6Address',['../class_t_r_a_p_1_1_network_1_1_i_pv6_address.html#a9f7c004498e93140d46b27e6a150e99a',1,'TRAP::Network::IPv6Address::IPv6Address()'],['../class_t_r_a_p_1_1_network_1_1_i_pv6_address.html#aa0cbf94261078e3787367b93995a6571',1,'TRAP::Network::IPv6Address::IPv6Address(const std::string &amp;address)'],['../class_t_r_a_p_1_1_network_1_1_i_pv6_address.html#a836e09271cef44cceda9197999025088',1,'TRAP::Network::IPv6Address::IPv6Address(const char *address)'],['../class_t_r_a_p_1_1_network_1_1_i_pv6_address.html#aea7ad6c852c027452b9d5ed228a8d58e',1,'TRAP::Network::IPv6Address::IPv6Address(const std::array&lt; uint8_t, 16 &gt; &amp;addressBytes)']]],
+  ['isblocking_444',['IsBlocking',['../class_t_r_a_p_1_1_network_1_1_socket.html#aab97946284a9e629ed8c476635fba2e5',1,'TRAP::Network::Socket']]],
+  ['isdecorated_445',['IsDecorated',['../class_t_r_a_p_1_1_window.html#afefd3233e0aaf9632403ebc369240f36',1,'TRAP::Window']]],
+  ['isfocused_446',['IsFocused',['../class_t_r_a_p_1_1_window.html#af7df0446104880f0915a7c0a4a8dc3e0',1,'TRAP::Window']]],
+  ['ismaximized_447',['IsMaximized',['../class_t_r_a_p_1_1_window.html#ac322c2439a11891117b24e78a0fc36ea',1,'TRAP::Window']]],
+  ['isminimized_448',['IsMinimized',['../class_t_r_a_p_1_1_window.html#a5eeb583ad0cb916ced46864b8d722089',1,'TRAP::Window']]],
+  ['isok_449',['IsOK',['../class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#ae4b4eea56a71c4c6e825e92d9de07e15',1,'TRAP::Network::FTP::Response']]],
+  ['isready_450',['IsReady',['../class_t_r_a_p_1_1_network_1_1_socket_selector.html#a88042536c0944e507288af1460c2ac37',1,'TRAP::Network::SocketSelector']]],
+  ['isresizable_451',['IsResizable',['../class_t_r_a_p_1_1_window.html#a538b445f54729e08f5ecd9bf9af3ac9f',1,'TRAP::Window']]],
+  ['isvisible_452',['IsVisible',['../class_t_r_a_p_1_1_window.html#a78c874e885c9b8271620faa00a003db3',1,'TRAP::Window']]]
 ];

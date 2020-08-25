@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['unmount_327',['Unmount',['../class_t_r_a_p_1_1_v_f_s.html#a6eb97b1fa0c70d6c895795153009013d',1,'TRAP::VFS']]],
-  ['use_328',['Use',['../class_t_r_a_p_1_1_window.html#a813959f960789f5f93fc72ca9f468f01',1,'TRAP::Window::Use(const Scope&lt; Window &gt; &amp;window)'],['../class_t_r_a_p_1_1_window.html#a3f11eb8a48f467887b326a530e460e42',1,'TRAP::Window::Use()']]]
+  ['keepalive_453',['KeepAlive',['../class_t_r_a_p_1_1_network_1_1_f_t_p.html#a763e61e448dd39f3dd1e53be387367c0',1,'TRAP::Network::FTP']]]
 ];

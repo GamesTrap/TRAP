@@ -183,11 +183,11 @@ std::string TRAP::FileSystem::SilentReadPhysicalTextFile(const std::filesystem::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::WritePhysicalFile(const std::filesystem::path& physicalFilePath, std::vector<uint8_t>& buffer)
+bool TRAP::FileSystem::WritePhysicalFile(const std::filesystem::path& physicalFilePath, std::vector<uint8_t>& buffer, const WriteMode mode)
 {
 	if (!physicalFilePath.empty() && !buffer.empty())
 	{
-		std::ofstream file(physicalFilePath, std::ios::binary);
+		std::ofstream file(physicalFilePath, mode == WriteMode::Overwrite ? std::ios::binary : (std::ios::binary | std::ios::ate));
 		if (file.is_open() && file.good())
 		{
 			file.write(reinterpret_cast<char*>(buffer.data()), buffer.size());
@@ -206,11 +206,15 @@ bool TRAP::FileSystem::WritePhysicalFile(const std::filesystem::path& physicalFi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::FileSystem::WritePhysicalTextFile(const std::filesystem::path& physicalFilePath, const std::string_view text)
+bool TRAP::FileSystem::WritePhysicalTextFile(const std::filesystem::path& physicalFilePath, const std::string_view text, WriteMode mode)
 {
 	if (!physicalFilePath.empty() && !text.empty())
 	{
-		std::ofstream file(physicalFilePath);
+		std::ofstream file;
+		if (mode == WriteMode::Append)
+			file = std::ofstream(physicalFilePath, std::ios::ate);
+		else
+			file = std::ofstream(physicalFilePath);
 		if (file.is_open() && file.good())
 		{
 			file << text;
