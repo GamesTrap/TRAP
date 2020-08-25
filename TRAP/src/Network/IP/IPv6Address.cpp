@@ -49,7 +49,11 @@ TRAP::Network::IPv6Address::IPv6Address(const std::array<uint8_t, 16>& addressBy
 std::string TRAP::Network::IPv6Address::ToString() const
 {
 	in6_addr address{};
+#ifdef TRAP_PLATFORM_WINDOWS
 	std::memcpy(address.u.Byte, m_address.data(), m_address.size());
+#else
+	std::memcpy(address.s6_addr, m_address.data(), m_address.size());
+#endif
 
 	//8 * 4 = 8 Blocks 4 Values each | 7 = 7 times ':'
 	std::string str(8 * 4 + 7, 0);
@@ -79,7 +83,11 @@ TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetLocalAddress()
 
 	//Connect the socket to localhost on any port
 	std::array<uint8_t, 16> loopback{};
+#ifdef TRAP_PLATFORM_WINDOWS
 	std::memcpy(loopback.data(), in6addr_loopback.u.Byte, loopback.size());
+#else
+	std::memcpy(loopback.data(), in6addr_loopback.s6_addr, loopback.size());
+#endif
 	sockaddr_in6 address = INTERNAL::Network::SocketImpl::CreateAddress(loopback, 9);
 	if(connect(sock, reinterpret_cast<sockaddr*>(&address), sizeof(address)) == -1)
 	{
@@ -100,7 +108,11 @@ TRAP::Network::IPv6Address TRAP::Network::IPv6Address::GetLocalAddress()
 
 	//Finally build the IP address
 	std::array<uint8_t, 16> addr{};
+#ifdef TRAP_PLATFORM_WINDOWS
 	std::memcpy(addr.data(), address.sin6_addr.u.Byte, addr.size());
+#else
+	std::memcpy(addr.data(), address.sin6_addr.s6_addr, addr.size());
+#endif
 	return IPv6Address(addr);
 }
 
@@ -134,7 +146,11 @@ void TRAP::Network::IPv6Address::Resolve(const std::string& address)
 		if (address == "::" || address == "0:0:0:0:0:0:0:0" ||
 			address == "0000:0000:0000:0000:0000:0000:0000:0000")
 		{
+#ifdef TRAP_PLATFORM_WINDOWS
 			std::memcpy(m_address.data(), in6addr_any.u.Byte, m_address.size());
+#else
+			std::memcpy(m_address.data(), in6addr_any.s6_addr, m_address.size());
+#endif
 			m_valid = true;
 		}
 		else

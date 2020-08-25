@@ -1217,3 +1217,4 @@ SITREP 08/25/2020|20w35a1
     - Changed TRAP Engine version to 20w35a1(0.6.63)
     - FileSystem added append mode for file writes ~<20 mins
     - VFS added append mode for file writes ~<10 mins
+    - Linux IPv6 compatibility ~<20 mins
