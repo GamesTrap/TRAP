@@ -83,7 +83,11 @@ TRAP::Network::IPv6Address TRAP::Network::TCPSocketIPv6::GetRemoteAddress() cons
 		if (getpeername(GetHandle(), reinterpret_cast<sockaddr*>(&address), &size) != -1)
 		{
 			std::array<uint8_t, 16> addr{};
+#ifdef TRAP_PLATFORM_WINDOWS
 			std::memcpy(addr.data(), address.sin6_addr.u.Byte, addr.size());
+#else
+			std::memcpy(addr.data(), address.sin6_addr.s6_addr, addr.size());
+#endif
 			return IPv6Address(addr);
 		}
 	}

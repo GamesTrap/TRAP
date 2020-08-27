@@ -133,7 +133,11 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* data, 
 
 	//Data that will be filled with the other computer's address
 	std::array<uint8_t, 16> addr{};
+#ifdef TRAP_PLATFORM_WINDOWS
 	std::memcpy(addr.data(), in6addr_any.u.Byte, addr.size());
+#else
+	std::memcpy(addr.data(), in6addr_any.s6_addr, addr.size());
+#endif
 	sockaddr_in6 address = INTERNAL::Network::SocketImpl::CreateAddress(addr, 0);
 
 	//Receive a chunk of bytes
@@ -147,7 +151,11 @@ TRAP::Network::Socket::Status TRAP::Network::UDPSocketIPv6::Receive(void* data, 
 	//Fill the sender information
 	received = static_cast<std::size_t>(sizeReceived);
 	addr = {};
+#ifdef TRAP_PLATFORM_WINDOWS
 	std::memcpy(addr.data(), address.sin6_addr.u.Byte, addr.size());
+#else
+	std::memcpy(addr.data(), address.sin6_addr.s6_addr, addr.size());
+#endif
 	remoteAddress = IPv6Address(addr);
 	remotePort = ntohs(address.sin6_port);
 
