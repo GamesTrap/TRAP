@@ -38,8 +38,6 @@
 
 //OpenGL
 #include "Graphics/API/OpenGL/Loader/OpenGLLoader.h"
-//VulkanAPI
-#include <vulkan/vulkan.h>
 //SPIRV
 #include <glslang/Public/ShaderLang.h>
 #include <SPIRV/GlslangToSpv.h>
@@ -190,5 +188,8 @@
 	#undef DeleteFile
 #endif
 #endif
+
+//VulkanAPI
+#include "Graphics/API/Vulkan/Loader/VulkanLoader.h"
 
 #endif /*_TRAP_TRAPPCH_H_*/

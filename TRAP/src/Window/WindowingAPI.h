@@ -658,7 +658,7 @@ namespace TRAP::INTERNAL
 				FrameBufferConfig FrameBuffer{};
 				WindowConfig Window{};
 				ContextConfig Context{};
-			} Hints{};
+			} Hints;
 
 			Scope<WindowingError> ErrorListHead = nullptr;
 

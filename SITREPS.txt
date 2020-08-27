@@ -1218,3 +1218,8 @@ SITREP 08/25/2020|20w35a1
     - FileSystem added append mode for file writes ~<20 mins
     - VFS added append mode for file writes ~<10 mins
     - Linux IPv6 compatibility ~<20 mins
+
+SITREP 08/27/2020|20w35a2
+    - Changed TRAP Engine version to 20w35a2(0.6.64)
+    - Added custom VulkanAPI meta loader (Based on Volk) ~<60 mins
+    - Fixed a missing s6_addr in SocketImplLinux ~<10 mins

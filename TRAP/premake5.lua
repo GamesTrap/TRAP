@@ -67,7 +67,6 @@ project "TRAP"
 		links
 		{
 			"ImGui",
-			"%{IncludeDir.VULKAN}/Lib/vulkan-1",
 			"GLSLang",
 			"SPIRV",
 			"SPIRV-Cross-Core",
@@ -97,7 +96,6 @@ project "TRAP"
 			"ImGui",
 			"GLSLang",
 			"SPIRV",
-			"../%{IncludeDir.VULKAN}/lib/vulkan",
 			"SPIRV-Cross-Core",
 			"SPIRV-Cross-GLSL",
 			"SPIRV-Cross-HLSL"

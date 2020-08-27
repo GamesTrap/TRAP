@@ -52,7 +52,7 @@ sockaddr_in6 TRAP::INTERNAL::Network::SocketImpl::CreateAddress(const std::array
 {
 	sockaddr_in6 addr{};
 	std::memset(&addr, 0, sizeof(addr));
-	std::memcpy(addr.sin6_addr.u.Byte, address.data(), address.size());
+	std::memcpy(addr.sin6_addr.s6_addr, address.data(), address.size());
 	addr.sin6_family = AF_INET6;
 	addr.sin6_port = htons(port);
 

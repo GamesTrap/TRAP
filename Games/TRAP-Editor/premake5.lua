@@ -37,7 +37,6 @@ project "TRAP-Editor"
 			"ImGui",
 			"GLSLang",
 			"SPIRV",
-			"../../%{IncludeDir.VULKAN}/lib/vulkan",
 
 			"dl",
 			"pthread",

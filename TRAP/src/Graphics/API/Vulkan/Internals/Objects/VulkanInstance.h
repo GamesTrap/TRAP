@@ -29,6 +29,8 @@ namespace TRAP::Graphics::API::Vulkan
 
 		static std::vector<VkLayerProperties> s_availableLayers;
 		static std::vector<VkExtensionProperties> s_availableExtensions;
+
+		static bool s_metaLoaderInitialized;
 	};
 }
 

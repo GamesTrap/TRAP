@@ -2310,7 +2310,15 @@ bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const uint32_t mode)
 	if (s_Data.VK.Available)
 		return true;
 
-	VkResult err = vkEnumerateInstanceExtensionProperties(nullptr, &count, nullptr);
+	//Initialize Vulkan Meta Loader
+	VkResult err = VkInitialize();
+	if(err != VK_SUCCESS)
+	{
+		InputError(Error::API_Unavailable, "[Vulkan][Loader] Failed to load function pointers!");
+		return false;
+	}
+
+	err = vkEnumerateInstanceExtensionProperties(nullptr, &count, nullptr);
 	if (err)
 	{
 		//NOTE: This happens on systems with a loader but without any Vulkan ICD

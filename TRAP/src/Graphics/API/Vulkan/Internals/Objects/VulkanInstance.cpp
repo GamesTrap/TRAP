@@ -5,6 +5,7 @@
 
 std::vector<VkLayerProperties> TRAP::Graphics::API::Vulkan::Instance::s_availableLayers{};
 std::vector<VkExtensionProperties> TRAP::Graphics::API::Vulkan::Instance::s_availableExtensions{};
+bool TRAP::Graphics::API::Vulkan::Instance::s_metaLoaderInitialized = false;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -15,6 +16,12 @@ TRAP::Graphics::API::Vulkan::Instance::Instance(const char* gameName, const uint
 	VkInstanceCreateInfo instanceInfo = Initializers::InstanceCreateInfo(appInfo);
 
 	VkCall(vkCreateInstance(&instanceInfo, nullptr, &m_instance));
+
+	if(!s_metaLoaderInitialized)
+	{
+		VkLoadInstance(m_instance);
+		s_metaLoaderInitialized = true;
+	}
 
 	//Get All Available Layers
 	uint32_t layersCount = 0;
@@ -45,6 +52,12 @@ TRAP::Graphics::API::Vulkan::Instance::Instance(const char* gameName, const uint
 
 	VkCall(vkCreateInstance(&instanceInfo, nullptr, &m_instance));
 
+	if (!s_metaLoaderInitialized)
+	{
+		VkLoadInstance(m_instance);
+		s_metaLoaderInitialized = true;
+	}
+	
 	//Get All Available Layers
 	uint32_t layersCount = 0;
 	VkCall(vkEnumerateInstanceLayerProperties(&layersCount, nullptr));

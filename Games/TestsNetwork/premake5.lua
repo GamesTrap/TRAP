@@ -37,7 +37,6 @@ project "TestsNetwork"
 			"ImGui",
 			"GLSLang",
 			"SPIRV",
-			"../../%{IncludeDir.VULKAN}/lib/vulkan",
 
 			"dl",
 			"pthread",
