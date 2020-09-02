@@ -81,8 +81,7 @@ namespace TRAP
 		/// True if file or folder was found.<br>
 		/// False if it wasn't found doesn't exist.<br>
 		/// </returns>
-		//TODO Replace ResolveReadPhysicalPath & ResolveWritePhysicalPath with ResolvePhysicalPath
-		static bool ResolveReadPhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath, bool silent = false); //TODO same as ResolveWritePhysicalPath?!
+		static bool ResolveReadPhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath, bool silent = false);
 		/// <summary>
 		/// Resolve a virtual file or folder path to its physical file or folder path.<br>
 		/// <br>

@@ -251,7 +251,27 @@ bool TRAP::VFS::FileOrFolderExists(const std::filesystem::path& path, const bool
 
 	if(path.c_str()[0] == '/')
 	{
-		//TODO Implement Virtual path support
+		std::filesystem::path pPath;
+		if (ResolveReadPhysicalPath(path.string(), pPath, silent))
+		{
+			try
+			{
+				if (!std::filesystem::exists(pPath))
+				{
+					if (!silent)
+						TP_WARN(Log::FileSystemPrefix, "File/Folder: ", pPath, " doesn't exist!");
+
+					return false;
+				}
+
+				return true;
+			}
+			catch (std::exception&)
+			{
+				return false;
+			}
+		}
+		
 		return false;
 	}
 	
@@ -281,12 +301,46 @@ uintmax_t TRAP::VFS::GetFileOrFolderSize(const std::filesystem::path& path)
 	{
 		if(path.c_str()[0] == '/')
 		{
-			//TODO Implement Virtual path support
+			std::filesystem::path pPath;
+			if(ResolveReadPhysicalPath(path.string(), pPath))
+			{
+				try
+				{
+					if (std::filesystem::is_directory(pPath))
+					{
+						uintmax_t size = 0;
+						for(const auto& entry : std::filesystem::recursive_directory_iterator(pPath))
+						{
+							if (!entry.is_directory() && entry.is_regular_file())
+								size += entry.file_size();
+						}						
+						return size;
+					}
+					
+					return std::filesystem::file_size(pPath);
+				}
+				catch (std::exception&)
+				{
+					return 0;
+				}
+			}
+			
 			return 0;
 		}
-		
+
 		try
 		{
+			if(std::filesystem::is_directory(path))
+			{
+				uintmax_t size = 0;
+				for (const auto& entry : std::filesystem::recursive_directory_iterator(path))
+				{
+					if (!entry.is_directory() && entry.is_regular_file())
+						size += entry.file_size();
+				}
+				return size;
+			}
+			
 			return std::filesystem::file_size(path);
 		}
 		catch (std::exception&)
@@ -306,7 +360,19 @@ std::filesystem::file_time_type TRAP::VFS::GetLastWriteTime(const std::filesyste
 	{
 		if(path.c_str()[0] == '/')
 		{
-			//TODO Implement Virtual path support
+			std::filesystem::path pPath;
+			if(ResolveReadPhysicalPath(path.string(), pPath))
+			{
+				try
+				{
+					return std::filesystem::last_write_time(pPath);
+				}
+				catch (std::exception&)
+				{
+					return std::filesystem::file_time_type::min();
+				}
+			}
+			
 			return std::filesystem::file_time_type::min();
 		}
 		

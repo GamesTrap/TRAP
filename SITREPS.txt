@@ -1230,3 +1230,7 @@ SITREP 09/02/2020|20w36a1
     - Added bool silent = false to every Silent*** counter function ~<20 mins
     - Removed every Silent*** function ~<20 mins
     - Migrated TRAP::FileSystem to TRAP::VFS ~<40 mins
+    - Added Virtual path supprot to TRAP::VFS::FileOrFolderExists ~<20 mins
+    - Added Virtual path support to TRAP::VFS::GetFileOrFolderSize ~<20 mins
+    - Added Virtual path support to TRAP::VFS::GetLastWriteTime ~<20 mins
+    - Fixed getting 0 from TRAP::VFS::GetFileOrFolderSize if a folder was supplied ~<20 mins

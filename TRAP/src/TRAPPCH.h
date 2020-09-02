@@ -35,6 +35,7 @@
 #include <queue>
 #include <tuple>
 #include <cassert>
+#include <numeric>
 
 //OpenGL
 #include "Graphics/API/OpenGL/Loader/OpenGLLoader.h"
