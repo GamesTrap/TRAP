@@ -5,7 +5,6 @@
 #include "Graphics/API/Context.h"
 #include "Graphics/API/OpenGL/OpenGLShader.h"
 #include "Graphics/API/Vulkan/VulkanShader.h"
-#include "VFS/FileSystem.h"
 #include "Utils/String/String.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -58,9 +57,9 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		isSPIRV = CheckSPIRVMagicNumber(filePath);
 		
 		if (!isSPIRV)
-			source = VFS::SilentReadTextFile(filePath);
+			source = VFS::ReadTextFile(filePath, true);
 		else
-			SPIRVSource = Convert8To32(VFS::SilentReadFile(filePath));
+			SPIRVSource = Convert8To32(VFS::ReadFile(filePath, true));
 
 		VFSFilePath = VFS::MakeVirtualPathCompatible(filePath);
 	}
@@ -134,9 +133,9 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		isSPIRV = CheckSPIRVMagicNumber(filePath);
 
 		if (!isSPIRV)
-			source = VFS::SilentReadTextFile(filePath);
+			source = VFS::ReadTextFile(filePath, true);
 		else
-			SPIRVSource = Convert8To32(VFS::SilentReadFile(filePath));
+			SPIRVSource = Convert8To32(VFS::ReadFile(filePath, true));
 		
 		VFSFilePath = VFS::MakeVirtualPathCompatible(filePath);
 		name = VFS::GetFileName(VFSFilePath);
@@ -242,9 +241,9 @@ bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::string& filePath)
 {
 	//Check SPIRV Magic Number
 	std::filesystem::path physicalPath;
-	if (VFS::SilentResolveReadPhysicalPath(filePath, physicalPath))
+	if (VFS::ResolveReadPhysicalPath(filePath, physicalPath, true))
 	{
-		if (FileSystem::SilentPhysicalFileOrFolderExists(physicalPath))
+		if (VFS::FileOrFolderExists(physicalPath, true))
 		{
 			std::ifstream file(physicalPath, std::ios::binary);
 			if (file.is_open())

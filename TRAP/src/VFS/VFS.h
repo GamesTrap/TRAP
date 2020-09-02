@@ -1,7 +1,6 @@
 #ifndef _TRAP_VFS_H_
 #define _TRAP_VFS_H_
 
-#include "FileSystem.h"
 #include "FileWatcher.h"
 
 namespace TRAP
@@ -16,6 +15,15 @@ namespace TRAP
 		VFS& operator=(const VFS&) = delete;
 		VFS(VFS&&) = delete;
 		VFS& operator=(VFS&&) = delete;
+
+		/// <summary>
+		/// WriteMode to be used by writing operations
+		/// </summary>
+		enum class WriteMode
+		{
+			Overwrite,
+			Append
+		};
 
 		/// <summary>
 		/// Mount a physical folder path to a virtual folder path.<br>
@@ -65,25 +73,16 @@ namespace TRAP
 		/// Prints an error if path is empty, wasn't found or doesn't exist.
 		/// </summary>
 		/// <param name="path">Virtual or physical file or folder path to resolve.</param>
-		/// <param name="outPhysicalPath">Output physical path. Unchanged if path couldn't be resolved.</param>
+		/// <param name="outPhysicalPath">
+		/// Output physical path.<br>
+		/// Unchanged if path couldn't be resolved.</param>
+		/// <param name="silent">If set to false no error messages will be logged</param>
 		/// <returns>
 		/// True if file or folder was found.<br>
 		/// False if it wasn't found doesn't exist.<br>
 		/// </returns>
-		static bool ResolveReadPhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath);
-		/// <summary>
-		/// Resolve a virtual file or folder path to its physical file or folder path silently.
-		/// </summary>
-		/// <param name="path">Virtual or physical file or folder path to resolve.</param>
-		/// <param name="outPhysicalPath">
-		/// Output physical path.<br
-		/// Unchanged if path couldn't be resolved.
-		/// </param>
-		/// <returns>
-		/// True if file or folder was found.<br>
-		/// False if it wasn't found or doesn't exist.
-		/// </returns>
-		static bool SilentResolveReadPhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath);
+		//TODO Replace ResolveReadPhysicalPath & ResolveWritePhysicalPath with ResolvePhysicalPath
+		static bool ResolveReadPhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath, bool silent = false); //TODO same as ResolveWritePhysicalPath?!
 		/// <summary>
 		/// Resolve a virtual file or folder path to its physical file or folder path.<br>
 		/// <br>
@@ -113,38 +112,24 @@ namespace TRAP
 		/// Prints an error if path is empty, wasn't found, doesn't exist or couldn't be opened.
 		/// </summary>
 		/// <param name="path">Virtual or physical file path.</param>
+		/// <param name="silent">If set to false no error messages will be logged</param>
 		/// <returns>
 		/// Vector with file content on success.<br>
 		/// Empty vector if an error has occurred.
 		/// </returns>
-		static std::vector<uint8_t> ReadFile(const std::string& path);
-		/// <summary>
-		/// Read the given file silently.
-		/// </summary>
-		/// <param name="path">Virtual or physical file path</param>
-		/// <returns>
-		/// Vector with file content on success.<br>
-		/// Empty vector if an error has occurred.
-		/// </returns>
-		static std::vector<uint8_t> SilentReadFile(const std::string& path);
+		static std::vector<uint8_t> ReadFile(const std::string& path, bool silent = false);
 		/// <summary>
 		/// Read the given text file.<br>
 		/// <br>
 		/// Prints an error if path is empty
 		/// </summary>
 		/// <param name="path">Virtual or physical file path</param>
+		/// <param name="silent">If set to false no error messages will be logged</param>
 		/// <returns>
 		/// String with file content on success.<br>
-		/// Empty string if an error has occurred.</returns>
-		static std::string ReadTextFile(const std::string& path);
-		/// <summary>
-		/// Read the given text file silently.
-		/// </summary>
-		/// <param name="path">Virtual or physical file path</param>
-		/// <returns>
-		/// String with file content on success.<br>
-		/// Empty string if an error has occurred.</returns>
-		static std::string SilentReadTextFile(const std::string& path);
+		/// Empty string if an error has occurred.
+		/// </returns>
+		static std::string ReadTextFile(const std::string& path, bool silent = false);
 
 		/// <summary>
 		/// Write the given data to the given file path.<br>
@@ -154,7 +139,7 @@ namespace TRAP
 		/// <param name="buffer">Data to be written</param>
 		/// <param name="mode">WriteMode to use</param>
 		/// <returns>If path could be resolved and data has been written true, false otherwise</returns>
-		static bool WriteFile(const std::string& path, std::vector<uint8_t>& buffer, FileSystem::WriteMode mode = FileSystem::WriteMode::Overwrite);
+		static bool WriteFile(const std::string& path, std::vector<uint8_t>& buffer, WriteMode mode = WriteMode::Overwrite);
 		/// <summary>
 		/// Write the given text to the given file path.<br>
 		/// Can be a virtual or a physical file path
@@ -163,7 +148,50 @@ namespace TRAP
 		/// <param name="text">Text to be written</param>
 		/// <param name="mode">WriteMode to use</param>
 		/// <returns>If path could be resolved and text has been written true, false otherwise</returns>
-		static bool WriteTextFile(const std::string& path, const std::string& text, FileSystem::WriteMode mode = FileSystem::WriteMode::Overwrite);
+		static bool WriteTextFile(const std::string& path, const std::string& text, WriteMode mode = WriteMode::Overwrite);
+
+		/// <summary>
+		/// Check if a file or folder exists.<br>
+		/// Can be a virtual or a physical file or folder path.<br>
+		/// <br>
+		/// Note: If a virtual path is provided every mounted physical path to it gets checked!
+		/// <br>
+		/// Prints a warning if the file or folder doesn't exist.
+		/// </summary>
+		/// <param name="path">Virtual or physical path to a folder or a file</param>
+		/// <param name="silent">If set to false no error messages will be logged</param>
+		/// <returns>
+		/// True if file or folder exists.<br>
+		/// False if file or folder doesn't exist.<br>
+		/// False if an error has occurred.
+		/// </returns>
+		static bool FileOrFolderExists(const std::filesystem::path& path, bool silent = false);
+		/// <summary>
+		/// Get the size of an physical file or folder in bytes.<br>
+		/// Can be a virtual or a physical file or folder path.<br>
+		/// <br>
+		/// Note: If a virtual folder path is provided only the size of the first mounted folder gets returned!<br>
+		/// Note: If a virtual file path is provided every mounted physical folder path to it gets checked!
+		/// </summary>
+		/// <param name="path">Virtual or physical path to a file or folder</param>
+		/// <returns>
+		/// File or folder size in bytes.<br>
+		/// 0 if an error has occurred.
+		/// </returns>
+		static uintmax_t GetFileOrFolderSize(const std::filesystem::path& path);
+		/// <summary>
+		/// Get the last write time of a file or folder.<br>
+		/// Can be a virtual or a physical file or folder path.<br>
+		/// <br>
+		/// Note: If a virtual folder path is provided only the last write time of the first mounted folder gets returned!<br>
+		/// Note: If a virtual file path is provided every mounted physical folder path to it gets checked!
+		/// </summary>
+		/// <param name="path">Virtual or physical path to a file or folder</param>
+		/// <returns>
+		/// Last write time of the file or folder.<br>
+		/// std::filesystem::file_time_type::min() if an error has occurred.
+		/// </returns>
+		static std::filesystem::file_time_type GetLastWriteTime(const std::filesystem::path& path);
 
 		static void Init();
 		static void Shutdown();
@@ -180,6 +208,63 @@ namespace TRAP
 		static std::string GetFileName(const std::string& virtualPath);
 
 	private:
+		/// <summary>
+		/// Read the given physical file.<br>
+		/// <br>
+		/// Prints an error when file couldn't be opened.<br>
+		/// Prints an error when physicalFilePath doesn't exist.
+		/// </summary>
+		/// <param name="physicalFilePath">Physical file path</param>
+		/// <param name="silent">If set to false no error messages will be logged</param>
+		/// <returns>
+		/// Vector filled with the file content.<br>
+		/// Empty vector if an error has occurred.
+		/// </returns>
+		static std::vector<uint8_t> ReadPhysicalFile(const std::filesystem::path& physicalFilePath, bool silent = false);
+		
+		/// <summary>
+		/// Read the given physical file as text.<br>
+		/// <br>
+		/// Prints an error if physicalFilePath doesn't exist.<br>
+		/// Prints an error if physicalFilePath couldn't be opened.
+		/// </summary>
+		/// <param name="physicalFilePath">Physical file path</param>
+		/// <param name="silent">If set to false no error messages will be logged</param>
+		/// <returns>
+		/// String filled with the file content.<br>
+		/// Empty string if an error has occurred.
+		/// </returns>
+		static std::string ReadPhysicalTextFile(const std::filesystem::path& physicalFilePath, bool silent = false);
+
+		/// <summary>
+		/// Write the given data to the given physical file path.<br>
+		/// <br>
+		/// Prints an error if physicalFilePath and/or buffer is empty.<br>
+		/// Prints an error if file couldn't be written.
+		/// </summary>
+		/// <param name="physicalFilePath">Physical file path to be written to</param>
+		/// <param name="buffer">Data to be written</param>
+		/// <param name="mode">WriteMode to be used (Overwrite or Append)</param>
+		/// <returns>
+		/// True if file was successfully written.<br>
+		/// False if an error has occurred.
+		/// </returns>
+		static bool WritePhysicalFile(const std::filesystem::path& physicalFilePath, std::vector<uint8_t>& buffer, WriteMode mode = WriteMode::Overwrite);
+		/// <summary>
+		/// Write the given text to the given physical file path.<br>
+		/// <br>
+		/// Prints an error if physicalFilePath and/or text is empty.<br>
+		/// Prints an error if file couldn't be written.
+		/// </summary>
+		/// <param name="physicalFilePath">Physical file path to be written to</param>
+		/// <param name="text">Text to be written</param>
+		/// <param name="mode">WriteMode to be used (Overwrite or Append)</param>
+		/// <returns>
+		/// True if file was successfully written.<br>
+		/// False if an error has occurred.
+		/// </returns>
+		static bool WritePhysicalTextFile(const std::filesystem::path& physicalFilePath, std::string_view text, WriteMode mode = WriteMode::Overwrite);
+		
 		static Scope<VFS> s_Instance;
 		
 		std::unordered_map<std::string, std::vector<std::string>> m_mountPoints;

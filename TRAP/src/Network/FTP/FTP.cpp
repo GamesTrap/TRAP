@@ -31,7 +31,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Network/IP/IPv4Address.h"
 #include "Utils/Time/TimeStep.h"
-#include "VFS/FileSystem.h"
 #include "VFS/VFS.h"
 
 namespace TRAP::Network
@@ -290,7 +289,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::string& rem
 				path += '/';
 
 			std::filesystem::path physicalPath;
-			if (!VFS::SilentResolveReadPhysicalPath(path, physicalPath))
+			if (!VFS::ResolveReadPhysicalPath(path, physicalPath, true))
 			{
 				TP_ERROR(Log::NetworkFTPPrefix, "Couldn't resolve FolderPath: ", path, "!");
 				return Response(Response::Status::InvalidFile);
@@ -324,13 +323,13 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::Download(const std::string& rem
 TRAP::Network::FTP::Response TRAP::Network::FTP::Upload(const std::string& localVirtualOrPhysicalFile, const std::string& remotePath, TransferMode mode, bool append)
 {
 	std::filesystem::path physicalPath;
-	if (!VFS::SilentResolveReadPhysicalPath(localVirtualOrPhysicalFile, physicalPath))
+	if (!VFS::ResolveReadPhysicalPath(localVirtualOrPhysicalFile, physicalPath, true))
 	{
 		TP_ERROR(Log::NetworkFTPPrefix, "Couldn't resolve FilePath: ", localVirtualOrPhysicalFile, "!");
 		return Response(Response::Status::InvalidFile);
 	}
 
-	if (FileSystem::PhysicalFileOrFolderExists(physicalPath))
+	if (VFS::FileOrFolderExists(physicalPath, true))
 	{
 		//Get the contents of the file to send
 		std::ifstream file(physicalPath, std::ios::binary);

@@ -9,8 +9,8 @@ class TestsNetwork final : public TRAP::Application
 public:
 	TestsNetwork()
 	{
-		PushLayer(TRAP::MakeScope<FTPTests>());
-		//PushLayer(TRAP::MakeScope<SocketTests>());
+		//PushLayer(TRAP::MakeScope<FTPTests>());
+		PushLayer(TRAP::MakeScope<SocketTests>());
 		//PushLayer(TRAP::MakeScope<IPv6Tests>());
 	}
 };

@@ -3,7 +3,6 @@
 
 #include "Utils/String/String.h"
 #include "VFS/VFS.h"
-#include "VFS/FileSystem.h"
 #include "Application.h"
 #include "Maths/Math.h"
 #include "Utils/ByteSwap.h"
@@ -21,14 +20,14 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 	TP_DEBUG(Log::ImagePNGPrefix, "Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
-	if (!VFS::SilentResolveReadPhysicalPath(m_filepath, physicalPath))
+	if (!VFS::ResolveReadPhysicalPath(m_filepath, physicalPath, true))
 	{
 		TP_ERROR(Log::ImagePNGPrefix, "Couldn't resolve FilePath: ", m_filepath, "!");
 		TP_WARN(Log::ImagePNGPrefix, "Using Default Image!");
 		return;
 	}
 
-	if (FileSystem::PhysicalFileOrFolderExists(physicalPath))
+	if (VFS::FileOrFolderExists(physicalPath))
 	{
 		std::ifstream file(physicalPath, std::ios::binary);
 		if (!file.is_open())

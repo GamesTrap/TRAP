@@ -1224,3 +1224,9 @@ SITREP 08/27/2020|20w35a2
     - Added custom VulkanAPI meta loader (Based on Volk) ~<60 mins
     - Fixed a missing s6_addr in SocketImplLinux ~<10 mins
     - Fixed VulkanSDK download on TravisCI on Windows ~<10 mins
+
+SITREP 09/02/2020|20w36a1
+    - Changed TRAP Engine version to 20w36a1(0.6.65)
+    - Added bool silent = false to every Silent*** counter function ~<20 mins
+    - Removed every Silent*** function ~<20 mins
+    - Migrated TRAP::FileSystem to TRAP::VFS ~<40 mins

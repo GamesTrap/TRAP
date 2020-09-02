@@ -1,10 +1,7 @@
 #include "TRAPPCH.h"
 #include "FileWatcher.h"
 
-#include <utility>
-
 #include "Utils/String/String.h"
-#include "FileSystem.h"
 #include "VFS.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -23,14 +20,14 @@ TRAP::FileWatcher::FileWatcher(std::string virtualPath, const float updateTimeIn
 
 	for (const auto& path : m_physicalPathsToWatch)
 	{
-		if (FileSystem::SilentPhysicalFileOrFolderExists(path))
+		if (VFS::FileOrFolderExists(path, true))
 		{
 			for (const auto& file : std::filesystem::recursive_directory_iterator(path))
 			{
 				if (!std::filesystem::is_directory(file))
 				{
 					std::string formattedPath = PhysicalFilePathFormatter(file, path);
-					m_physicalPaths[formattedPath] = FileSystem::GetPhysicalLastWriteTime(formattedPath);
+					m_physicalPaths[formattedPath] = VFS::GetLastWriteTime(formattedPath);
 					m_virtualPaths[formattedPath] = VirtualFilePathFormatter(virtualPathLower, file, path);
 				}
 			}
@@ -50,7 +47,7 @@ void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, st
 		auto it = m_physicalPaths.begin();
 		while (it != m_physicalPaths.end())
 		{
-			if (!FileSystem::SilentPhysicalFileOrFolderExists(it->first))
+			if (!VFS::FileOrFolderExists(it->first, true))
 			{
 				auto virtualIt = m_virtualPaths.find(it->first);
 				if (virtualIt != m_virtualPaths.end())
@@ -73,12 +70,12 @@ void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, st
 		//Check if a file was created or modified
 		for (const auto& path : m_physicalPathsToWatch)
 		{
-			if (FileSystem::SilentPhysicalFileOrFolderExists(path))
+			if (VFS::FileOrFolderExists(path, true))
 			{
 				for (const auto& file : std::filesystem::recursive_directory_iterator(path))
 				{
 					std::string formattedPath = PhysicalFilePathFormatter(file, path);
-					auto currentFileLastWriteTime = FileSystem::GetPhysicalLastWriteTime(formattedPath);
+					auto currentFileLastWriteTime = VFS::GetLastWriteTime(formattedPath);
 					if (currentFileLastWriteTime != std::filesystem::file_time_type::min())
 					{
 						//File creation

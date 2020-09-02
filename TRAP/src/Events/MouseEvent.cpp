@@ -160,7 +160,7 @@ TRAP::Input::MouseButton TRAP::Events::MouseButtonEvent::GetMouseButton() const
 
 int32_t TRAP::Events::MouseButtonEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input);
+	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input) | static_cast<int32_t>(EventCategory::MouseButton);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
