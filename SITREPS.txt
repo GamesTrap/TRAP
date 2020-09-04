@@ -1234,3 +1234,13 @@ SITREP 09/02/2020|20w36a1
     - Added Virtual path support to TRAP::VFS::GetFileOrFolderSize ~<20 mins
     - Added Virtual path support to TRAP::VFS::GetLastWriteTime ~<20 mins
     - Fixed getting 0 from TRAP::VFS::GetFileOrFolderSize if a folder was supplied ~<20 mins
+
+SITREP 09/04/2020|20w36a2
+    - Changed TRAP Engine version to 20w36a2(0.6.66)
+    - Config Added Get & GetVector functions with non void return type ~<20 mins
+    - Config Reordered ConvertToType functions and added more primitive data types ~<25 mins
+    - Config Reordered ConvertToString functions and added more primitve data types ~<25 mins
+    - Config optimized ConvertToType & ConvertToString functions (removed stringstreams) ~<25 mins
+    - String added CompareAnyCase functions ~<10 mins
+    - Config made values case insensitive ~<10 mins
+    - String added several string_view functions ~<45 mins

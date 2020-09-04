@@ -72,23 +72,16 @@ TRAP::Application::Application()
 	uint32_t width = 1280;
 	uint32_t height = 720;
 	uint32_t refreshRate = 60;
-	uint32_t vsync = 0;
-	uint32_t fpsLimit = 0;
-	Window::DisplayMode displayMode = Window::DisplayMode::Windowed;
-	bool maximized = false;
-	uint32_t monitor = 0;
-	bool rawInput = false;
-	Graphics::API::RenderAPI renderAPI = Graphics::API::RenderAPI::NONE;
 	m_config.Get("Width", width);
 	m_config.Get("Height", height);
 	m_config.Get("RefreshRate", refreshRate);
-	m_config.Get("VSync", vsync);
-	m_config.Get("FPSLimit", fpsLimit);
-	m_config.Get("DisplayMode", displayMode);
-	m_config.Get("Maximized", maximized);
-	m_config.Get("Monitor", monitor);
-	m_config.Get("RawMouseInput", rawInput);
-	m_config.Get("RenderAPI", renderAPI);
+	const uint32_t vsync = m_config.Get<uint32_t>("VSync");
+	const uint32_t fpsLimit = m_config.Get<uint32_t>("FPSLimit");
+	const Window::DisplayMode displayMode = m_config.Get<Window::DisplayMode>("DisplayMode");
+	const bool maximized = m_config.Get<bool>("Maximized");
+	const uint32_t monitor = m_config.Get<uint32_t>("Monitor");
+	const bool rawInput = m_config.Get<bool>("RawMouseInput");
+	const Graphics::API::RenderAPI renderAPI = m_config.Get<Graphics::API::RenderAPI>("RenderAPI");
 
 	if (fpsLimit > 0)
 	{
@@ -175,9 +168,7 @@ TRAP::Application::~Application()
 		m_config.Set("VulkanGPU", Utils::UUIDToString(VulkanGPUUUID));
 	else
 	{
-		std::string uuid;
-		m_config.Get("VulkanGPU", uuid);
-		if (uuid.empty())
+		if (m_config.Get<std::string_view>("VulkanGPU").empty())
 			m_config.Set("VulkanGPU", "");
 	}
 	m_config.Print();

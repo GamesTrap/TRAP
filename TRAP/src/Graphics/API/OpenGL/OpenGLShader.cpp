@@ -559,7 +559,7 @@ void TRAP::Graphics::API::OpenGLShader::CheckForUniforms()
 		{
 			OpenGLCall(glGetActiveUniform(m_handle, i, static_cast<int32_t>(maxNameLength), reinterpret_cast<int32_t*>(&length), reinterpret_cast<int32_t*>(&count), &type, uniformName.get()));
 
-			if (Utils::String::GetCount(uniformName.get(), '.') == 0) //Ignore if UBO
+			if (Utils::String::GetCount(std::string_view(uniformName.get()), '.') == 0) //Ignore if UBO
 			{
 				if (!IsTypeOpaque(type)) //Check if is Non-Opaque type
 				{
