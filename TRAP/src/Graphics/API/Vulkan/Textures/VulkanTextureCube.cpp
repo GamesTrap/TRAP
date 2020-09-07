@@ -15,7 +15,7 @@ TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(const TextureParameter
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, const std::string& filepath, InputFormat format, const TextureParameters parameters)
+TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, const std::string_view filepath, InputFormat format, const TextureParameters parameters)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -29,7 +29,7 @@ TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, const std::array<std::string, 6>& filepaths, const TextureParameters parameters)
+TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, const std::array<std::string_view, 6>& filepaths, const TextureParameters parameters)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -60,7 +60,7 @@ TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, cons
 
 	if(img)
 	{
-		m_filepaths[0] = VFS::MakeVirtualPathCompatible(std::string(img->GetFilePath()));		
+		m_filepaths[0] = VFS::MakeVirtualPathCompatible(img->GetFilePath());
 	}
 
 	TP_WARN(Log::TextureCubeVulkanPrefix, "WIP");

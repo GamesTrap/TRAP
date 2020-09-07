@@ -177,7 +177,7 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::UpdateSubData(const void* data, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Graphics::API::OpenGLUniformBuffer::GetName() const
+const std::string& TRAP::Graphics::API::OpenGLUniformBuffer::GetName() const
 {
 	TP_PROFILE_FUNCTION();
 	

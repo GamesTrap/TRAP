@@ -49,7 +49,7 @@ void TRAP::Graphics::API::VulkanUniformBuffer::UpdateSubData(const void* data, u
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Graphics::API::VulkanUniformBuffer::GetName() const
+const std::string& TRAP::Graphics::API::VulkanUniformBuffer::GetName() const
 {
 	TP_PROFILE_FUNCTION();
 

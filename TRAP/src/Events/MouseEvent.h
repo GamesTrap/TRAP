@@ -9,12 +9,12 @@ namespace TRAP::Events
 	class MouseMoveEvent final : public Event
 	{
 	public:
-		MouseMoveEvent(float x, float y, std::string_view title);
+		MouseMoveEvent(float x, float y, std::string title);
 
 		float GetX() const;
 		float GetY() const;
 		Math::Vec2 GetPosition() const;
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		std::string ToString() const override;
 
@@ -25,18 +25,18 @@ namespace TRAP::Events
 
 	private:
 		float m_mouseX, m_mouseY;
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class MouseScrollEvent final : public Event
 	{
 	public:
-		MouseScrollEvent(float xOffset, float yOffset, std::string_view title);
+		MouseScrollEvent(float xOffset, float yOffset, std::string title);
 
 		float GetXOffset() const;
 		float GetYOffset() const;
 		Math::Vec2 GetOffset() const;
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		std::string ToString() const override;
 
@@ -47,7 +47,7 @@ namespace TRAP::Events
 
 	private:
 		float m_xOffset, m_yOffset;
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class MouseButtonEvent : public Event
@@ -68,9 +68,9 @@ namespace TRAP::Events
 	class MouseButtonPressEvent final : public MouseButtonEvent
 	{
 	public:
-		explicit MouseButtonPressEvent(Input::MouseButton button, std::string_view title);
+		explicit MouseButtonPressEvent(Input::MouseButton button, std::string title);
 
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 		
 		std::string ToString() const override;
 
@@ -79,15 +79,15 @@ namespace TRAP::Events
 		const char* GetName() const override;
 
 	private:
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class MouseButtonReleaseEvent final : public MouseButtonEvent
 	{
 	public:
-		explicit MouseButtonReleaseEvent(Input::MouseButton button, std::string_view title);
+		explicit MouseButtonReleaseEvent(Input::MouseButton button, std::string title);
 
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		std::string ToString() const override;
 
@@ -96,15 +96,15 @@ namespace TRAP::Events
 		const char* GetName() const override;
 
 	private:
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class MouseEnterEvent final : public Event
 	{
 	public:
-		explicit MouseEnterEvent(std::string_view title);
+		explicit MouseEnterEvent(std::string title);
 
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
@@ -112,15 +112,15 @@ namespace TRAP::Events
 		int32_t GetCategoryFlags() const override;
 
 	private:
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class MouseLeaveEvent final : public Event
 	{
 	public:
-		explicit MouseLeaveEvent(std::string_view title);
+		explicit MouseLeaveEvent(std::string title);
 
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
@@ -128,7 +128,7 @@ namespace TRAP::Events
 		int32_t GetCategoryFlags() const override;
 
 	private:
-		std::string_view m_title;
+		std::string m_title;
 	};
 }
 

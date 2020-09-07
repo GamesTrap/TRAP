@@ -49,7 +49,7 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(const TextureParameter
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, const std::array<std::string, 6>& filepaths, const TextureParameters parameters)
+TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, const std::array<std::string_view, 6>& filepaths, const TextureParameters parameters)
 	: m_handle(0)
 {
 	TP_PROFILE_FUNCTION();
@@ -86,7 +86,7 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, const std::string& filepath, const InputFormat format, const TextureParameters parameters)
+TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, const std::string_view filepath, const InputFormat format, const TextureParameters parameters)
 	: m_handle(0)
 {
 	TP_PROFILE_FUNCTION();
@@ -134,7 +134,7 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 
 	if (img)
 	{
-		m_filepaths[0] = VFS::MakeVirtualPathCompatible(std::string(img->GetFilePath()));
+		m_filepaths[0] = VFS::MakeVirtualPathCompatible(img->GetFilePath());
 
 		TP_DEBUG(Log::TextureCubeOpenGLPrefix, "Loading Texture: \"", m_name, "\"");
 		if (s_maxCubeTextureSize == 0) //Only load maximum available texture size once

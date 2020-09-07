@@ -18,6 +18,10 @@ void ClipboardTests::OnAttach()
 void ClipboardTests::OnImGuiRender()
 {
 	ImGui::Begin("Clipboard", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	ImGui::Text("Press ESC to close");
+	ImGui::Text("Press CTRL+C to copy example text from engine");
+	ImGui::Text("Press CTRL+V to paste clipboard contents to the engine");
+	ImGui::Separator();
 	if (!m_clipboard.empty())
 		ImGui::Text("Pasted from Clipboard: %s", m_clipboard.c_str());
 	else

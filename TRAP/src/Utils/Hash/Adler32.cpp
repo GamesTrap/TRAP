@@ -37,7 +37,7 @@ std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const void* data, uint64_t len
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const std::string& str)
+std::array<uint8_t, 4> TRAP::Utils::Hash::Adler32(const std::string_view str)
 {	
 	return Adler32(str.data(), str.length());
 }

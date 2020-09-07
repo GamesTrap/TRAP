@@ -4,7 +4,7 @@
 namespace TRAP::Utils::Hash
 {
 	std::array<uint8_t, 4> Adler32(const void* data, uint64_t length);
-	std::array<uint8_t, 4> Adler32(const std::string& str);
+	std::array<uint8_t, 4> Adler32(std::string_view str);
 }
 
 #endif /*_TRAP_ADLER32_H_*/

@@ -46,7 +46,7 @@ TRAP::Network::IPv4Address::IPv4Address()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Network::IPv4Address::IPv4Address(const std::string& address)
+TRAP::Network::IPv4Address::IPv4Address(const std::string_view address)
 	: m_address(0), m_valid(false)
 {
 	Resolve(address);
@@ -151,7 +151,7 @@ TRAP::Network::IPv4Address TRAP::Network::IPv4Address::GetPublicAddress(const Ut
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Network::IPv4Address::Resolve(const std::string& address)
+void TRAP::Network::IPv4Address::Resolve(const std::string_view address)
 {
 	m_address = 0;
 	m_valid = false;
@@ -172,7 +172,7 @@ void TRAP::Network::IPv4Address::Resolve(const std::string& address)
 	{
 		//Try to convert the address as a byte representation ("xxx.xxx.xxx.xxx")
 		uint32_t ip{};
-		if(inet_pton(AF_INET, address.c_str(), &ip) && ip != INADDR_NONE)
+		if(inet_pton(AF_INET, address.data(), &ip) && ip != INADDR_NONE)
 		{
 			m_address = ip;
 			m_valid = true;
@@ -184,7 +184,7 @@ void TRAP::Network::IPv4Address::Resolve(const std::string& address)
 			std::memset(&hints, 0, sizeof(hints));
 			hints.ai_family = AF_INET;
 			addrinfo* result = nullptr;
-			if(getaddrinfo(address.c_str(), nullptr, &hints, &result) == 0)
+			if(getaddrinfo(address.data(), nullptr, &hints, &result) == 0)
 			{
 				if(result)
 				{

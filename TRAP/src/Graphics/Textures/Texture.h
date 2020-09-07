@@ -52,7 +52,7 @@ namespace TRAP::Graphics
 		virtual void Bind(uint32_t slot) const = 0;
 		virtual void Unbind(uint32_t slot) const = 0;
 
-		std::string_view GetName() const;
+		const std::string& GetName() const;
 		TextureType GetType() const;
 		TextureParameters GetParameters() const;
 

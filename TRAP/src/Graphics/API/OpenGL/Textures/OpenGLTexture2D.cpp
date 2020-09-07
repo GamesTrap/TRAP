@@ -74,7 +74,7 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const Sc
 		m_height = img->GetHeight();
 		m_bitsPerPixel = img->GetBitsPerPixel();
 		m_colorFormat = img->GetColorFormat();
-		m_filepath = VFS::MakeVirtualPathCompatible(std::string(img->GetFilePath()));
+		m_filepath = VFS::MakeVirtualPathCompatible(img->GetFilePath());
 
 		TP_DEBUG(Log::Texture2DOpenGLPrefix, "Loading Texture: \"", m_name, "\"");
 
@@ -93,7 +93,7 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const Sc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const std::string& filepath, const TextureParameters parameters)
+TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const std::string_view filepath, const TextureParameters parameters)
 	: m_handle(0), m_width(0), m_height(0), m_bitsPerPixel(0), m_colorFormat(Image::ColorFormat::NONE)
 {
 	TP_PROFILE_FUNCTION();
@@ -106,7 +106,7 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const st
 	InitializeTexture();
 
 	if (!m_filepath.empty())
-		m_loadingTextures.emplace_back(this, Application::GetThreadPool().EnqueueTask(Image::LoadFromFile, m_filepath));
+		m_loadingTextures.emplace_back(this, Application::GetThreadPool().EnqueueTask(Image::LoadFromFile, std::string(m_filepath)));
 	else
 	{
 		Scope<Image> image = Image::LoadFallback();

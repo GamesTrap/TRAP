@@ -112,7 +112,7 @@ uint32_t TRAP::Window::GetActiveWindows()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Window::GetTitle() const
+const std::string& TRAP::Window::GetTitle() const
 {
 	return m_data.Title;
 }
@@ -224,7 +224,7 @@ void TRAP::Window::SetTitle(const std::string& title)
 #ifndef TRAP_RELEASE
 	std::string newTitle = m_data.Title + " - TRAP Engine V" + std::to_string(TRAP_VERSION_MAJOR(TRAP_VERSION)) + "." +
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
-		"[INDEV]" + Log::WindowVersion + std::string(Graphics::Renderer::GetTitle());
+		"[INDEV]" + Log::WindowVersion + Graphics::Renderer::GetTitle();
 #ifdef TRAP_PLATFORM_LINUX
 	if (Application::GetLinuxWindowManager() == Application::LinuxWindowManager::Wayland)
 		newTitle += "[Wayland]";

@@ -9,6 +9,7 @@ public:
 	DragAndDropTests();
 
 	void OnImGuiRender() override;
+	void OnAttach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnEvent(TRAP::Events::Event& event) override;
 

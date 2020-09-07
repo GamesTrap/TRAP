@@ -73,7 +73,7 @@ namespace TRAP::Network
 			/// <param name="uri">Target URI</param>
 			/// <param name="method">Method to use for the request</param>
 			/// <param name="body">Content of the request's body</param>
-			explicit Request(const std::string& uri = "/", Method method = Method::GET, const std::string& body = "");
+			explicit Request(const std::string& uri = "/", Method method = Method::GET, std::string body = "");
 
 			/// <summary>
 			/// Set the value of a field.<br>

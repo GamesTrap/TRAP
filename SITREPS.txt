@@ -1244,3 +1244,9 @@ SITREP 09/04/2020|20w36a2
     - String added CompareAnyCase functions ~<10 mins
     - Config made values case insensitive ~<10 mins
     - String added several string_view functions ~<45 mins
+
+SITREP 09/06/2020|20w36a4
+    - Changed TRAP Engine version to 20w36a4(0.6.68)
+    - Changed lots of string stuff ~>400 mins
+    - Renamed MinimizeTests to WindowStateTests ~<5 mins
+    - Added ImGui instructions to tests ~<60 mins

@@ -25,7 +25,7 @@ const std::map<spv::ExecutionModel, VkShaderStageFlagBits> s_model2Stage =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::string& source)
+TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::string_view source)
 	: m_VShaderModule(nullptr),
 	m_FShaderModule(nullptr),
 	m_GShaderModule(nullptr),
@@ -44,7 +44,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::str
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::vector<uint32_t>& source)
+TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::vector<uint32_t>& source)
 	: m_VShaderModule(nullptr),
 	  m_FShaderModule(nullptr),
 	  m_GShaderModule(nullptr),
@@ -63,7 +63,13 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::vector<ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource)
+TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name,
+                                                const std::string_view VSSource,
+                                                const std::string_view FSSource,
+                                                const std::string_view GSSource,
+                                                const std::string_view TCSSource,
+                                                const std::string_view TESSource,
+                                                const std::string_view CSSource)
 	: m_VShaderModule(nullptr),
 	  m_FShaderModule(nullptr),
 	  m_GShaderModule(nullptr),
@@ -77,7 +83,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, std::string VS
 
 	m_name = std::move(name);
 	
-	InitGLSL(std::move(VSSource), std::move(FSSource), std::move(GSSource), std::move(TCSSource), std::move(TESSource), std::move(CSSource));
+	InitGLSL(VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -152,7 +158,7 @@ void TRAP::Graphics::API::VulkanShader::Unbind() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::InitSPIRV(std::vector<uint32_t>& source)
+void TRAP::Graphics::API::VulkanShader::InitSPIRV(const std::vector<uint32_t>& source)
 {
 	std::array<std::vector<uint32_t>, 6> shaders{};
 	uint32_t index = 0;
@@ -199,12 +205,12 @@ void TRAP::Graphics::API::VulkanShader::InitSPIRV(std::vector<uint32_t>& source)
 
 	VulkanShaderErrorInfo error;
 	TP_DEBUG(Log::ShaderVulkanSPIRVPrefix, "Loading: \"", m_name, "\"");
-	LoadSPIRV(shaders, error);
+	LoadSPIRV(shaders);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::InitGLSL(const std::string& source)
+void TRAP::Graphics::API::VulkanShader::InitGLSL(const std::string_view source)
 {
 	TP_DEBUG(Log::ShaderVulkanGLSLPrefix, "Compiling: \"", m_name, "\"");
 	
@@ -229,21 +235,26 @@ void TRAP::Graphics::API::VulkanShader::InitGLSL(const std::string& source)
 		return;
 	}	
 	
-	CompileGLSL(shaders, error);
+	CompileGLSL({shaders[0], shaders[1], shaders[2], shaders[3], shaders[4], shaders[5]});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::InitGLSL(std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource)
+void TRAP::Graphics::API::VulkanShader::InitGLSL(const std::string_view VSSource,
+                                                 const std::string_view FSSource,
+                                                 const std::string_view GSSource,
+                                                 const std::string_view TCSSource,
+                                                 const std::string_view TESSource,
+                                                 const std::string_view CSSource)
 {
 	TP_DEBUG(Log::ShaderVulkanGLSLPrefix, "Compiling: \"", m_name, "\"");
 	
-	std::array<std::string, 6> shaders{ std::move(VSSource),
-	                                    std::move(FSSource),
-	                                    std::move(GSSource),
-	                                    std::move(TCSSource),
-	                                    std::move(TESSource),
-	                                    std::move(CSSource)
+	std::array<std::string_view, 6> shaders{ VSSource,
+	                                    FSSource,
+	                                    GSSource,
+	                                    TCSSource,
+	                                    TESSource,
+	                                    CSSource
 	};
 	VulkanShaderErrorInfo error{};
 
@@ -262,12 +273,12 @@ void TRAP::Graphics::API::VulkanShader::InitGLSL(std::string VSSource, std::stri
 		return;
 	}
 	
-	CompileGLSL(shaders, error);
+	CompileGLSL(shaders);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::CompileGLSL(std::array<std::string, 6> & shaders, VulkanShaderErrorInfo& info)
+void TRAP::Graphics::API::VulkanShader::CompileGLSL(const std::array<std::string_view, 6>& shaders)
 {
 	if (!s_glslangInitialized)
 	{
@@ -285,7 +296,7 @@ void TRAP::Graphics::API::VulkanShader::CompileGLSL(std::array<std::string, 6> &
 
 	if (!shaders[0].empty())
 	{
-		const char* VSSource = shaders[0].c_str();
+		const char* VSSource = shaders[0].data();
 		TP_DEBUG(Log::ShaderVulkanGLSLPrefix, "Pre-Processing Vertex Shader");
 		std::string preProcessedSource;
 		VShader = PreProcess(VSSource, 0, preProcessedSource);
@@ -301,7 +312,7 @@ void TRAP::Graphics::API::VulkanShader::CompileGLSL(std::array<std::string, 6> &
 
 	if (!shaders[1].empty())
 	{
-		const char* FSSource = shaders[1].c_str();
+		const char* FSSource = shaders[1].data();
 		TP_DEBUG(Log::ShaderVulkanGLSLPrefix, "Pre-Processing Fragment Shader");
 		std::string preProcessedSource;
 		FShader = PreProcess(FSSource, 1, preProcessedSource);
@@ -317,7 +328,7 @@ void TRAP::Graphics::API::VulkanShader::CompileGLSL(std::array<std::string, 6> &
 
 	if (!shaders[2].empty())
 	{
-		const char* GSSource = shaders[2].c_str();
+		const char* GSSource = shaders[2].data();
 		TP_DEBUG(Log::ShaderVulkanGLSLPrefix, "Pre-Processing Geometry Shader");
 		std::string preProcessedSource;
 		GShader = PreProcess(GSSource, 2, preProcessedSource);
@@ -333,7 +344,7 @@ void TRAP::Graphics::API::VulkanShader::CompileGLSL(std::array<std::string, 6> &
 
 	if (!shaders[3].empty())
 	{
-		const char* TCSSource = shaders[3].c_str();
+		const char* TCSSource = shaders[3].data();
 		TP_DEBUG(Log::ShaderVulkanGLSLPrefix, "Pre-Processing Tessellation Control Shader");
 		std::string preProcessedSource;
 		TCShader = PreProcess(TCSSource, 3, preProcessedSource);
@@ -349,7 +360,7 @@ void TRAP::Graphics::API::VulkanShader::CompileGLSL(std::array<std::string, 6> &
 
 	if (!shaders[4].empty())
 	{
-		const char* TESSource = shaders[4].c_str();
+		const char* TESSource = shaders[4].data();
 		TP_DEBUG(Log::ShaderVulkanGLSLPrefix, "Pre-Processing Tessellation Evaluation Shader");
 		std::string preProcessedSource;
 		TEShader = PreProcess(TESSource, 4, preProcessedSource);
@@ -365,7 +376,7 @@ void TRAP::Graphics::API::VulkanShader::CompileGLSL(std::array<std::string, 6> &
 
 	if (!shaders[5].empty())
 	{
-		const char* CSSource = shaders[5].c_str();
+		const char* CSSource = shaders[5].data();
 		TP_DEBUG(Log::ShaderVulkanGLSLPrefix, "Pre-Processing Compute Shader");
 		std::string preProcessedSource;
 		CShader = PreProcess(CSSource, 5, preProcessedSource);
@@ -492,7 +503,7 @@ void TRAP::Graphics::API::VulkanShader::CompileGLSL(std::array<std::string, 6> &
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::LoadSPIRV(std::array<std::vector<uint32_t>, 6>& shaders, VulkanShaderErrorInfo& info)
+void TRAP::Graphics::API::VulkanShader::LoadSPIRV(const std::array<std::vector<uint32_t>, 6>& shaders)
 {
 	if (!shaders[0].empty())
 	{
@@ -606,7 +617,7 @@ void TRAP::Graphics::API::VulkanShader::LoadSPIRV(std::array<std::vector<uint32_
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::PreProcessGLSL(const std::string& source, std::array<std::string, 6>& shaders)
+void TRAP::Graphics::API::VulkanShader::PreProcessGLSL(const std::string_view source, std::array<std::string, 6>& shaders)
 {
 	ShaderType type = ShaderType::Unknown;
 
@@ -1099,7 +1110,7 @@ std::vector<std::vector<uint32_t>> TRAP::Graphics::API::VulkanShader::ConvertToS
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanShader::CreateShaderModule(VkShaderModule& shaderModule, std::vector<uint32_t>& SPIRVCode, VkShaderStageFlagBits stage)
+bool TRAP::Graphics::API::VulkanShader::CreateShaderModule(VkShaderModule& shaderModule, const std::vector<uint32_t>& SPIRVCode, const VkShaderStageFlagBits stage)
 {
 	VkShaderModuleCreateInfo shaderModuleCreateInfo
 	{
@@ -1180,7 +1191,7 @@ void TRAP::Graphics::API::VulkanShader::Reflect(const std::vector<uint32_t>& SPI
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::PrintResources(const std::string& typeName, const spirv_cross::SmallVector<spirv_cross::Resource>& resources, spirv_cross::CompilerGLSL& compiler)
+void TRAP::Graphics::API::VulkanShader::PrintResources(const std::string_view typeName, const spirv_cross::SmallVector<spirv_cross::Resource>& resources, spirv_cross::CompilerGLSL& compiler)
 {
 	for(uint32_t i = 0; i < resources.size(); i++)
 	{
@@ -1196,8 +1207,8 @@ void TRAP::Graphics::API::VulkanShader::PrintResource(spirv_cross::CompilerGLSL&
 	TP_TRACE(Log::ShaderVulkanSPIRVPrefix, "    ID = ", res.id, " BaseTypeID = ", res.base_type_id);
 	std::stringstream out;
 	PrintType(out, compiler, compiler.get_type(res.base_type_id));
-	std::vector<std::string> strs = TRAP::Utils::String::SplitString(out.str(), '\n');
-	for(const std::string& str : strs)
+	std::vector<std::string_view> strs = TRAP::Utils::String::SplitStringView(out.str(), '\n');
+	for(std::string_view str : strs)
 		TP_TRACE(Log::ShaderVulkanSPIRVPrefix, str);
 	const spv::StorageClass sc = compiler.get_storage_class(res.id);
 	TP_TRACE(Log::ShaderVulkanSPIRVPrefix, "    ID = ", res.id, " StorageClass = ", static_cast<uint32_t>(sc), " (", StorageClassToString(sc), ")");

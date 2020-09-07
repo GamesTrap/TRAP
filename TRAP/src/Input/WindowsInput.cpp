@@ -71,9 +71,9 @@ bool TRAP::Input::InitController()
 				"xinput1_1.dll"
 			};
 
-			for (const std::string& dll : names)
+			for (std::string_view dll : names)
 			{
-				s_xinput.Instance = LoadLibraryA(dll.c_str());
+				s_xinput.Instance = LoadLibraryA(dll.data());
 				if (s_xinput.Instance)
 				{
 					s_xinput.GetCapabilities = reinterpret_cast<PFN_XInputGetCapabilities>(GetProcAddress(s_xinput.Instance, "XInputGetCapabilities"));
@@ -510,7 +510,7 @@ std::string TRAP::Input::GetDeviceDescription(const XINPUT_CAPABILITIES* xic)
 			return "XInput Guitar";
 		case TRAP_XINPUT_DEVSUBTYPE_DRUM_KIT:
 			return "XInput Drum Kit";
-		case XINPUT_DEVSUBTYPE_GAMEPAD:
+		case TRAP_XINPUT_DEVSUBTYPE_GAMEPAD:
 		{
 			if (xic->Flags & TRAP_XINPUT_CAPS_WIRELESS)
 				return "Wireless Xbox Controller";

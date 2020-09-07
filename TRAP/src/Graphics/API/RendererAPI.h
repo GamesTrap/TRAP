@@ -74,7 +74,7 @@ namespace TRAP::Graphics::API
 		virtual void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount, RendererPrimitive primitive) = 0;
 		virtual void Draw(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive) = 0;
 
-		virtual std::string_view GetTitle() const = 0;
+		virtual const std::string& GetTitle() const = 0;
 
 		virtual std::vector<uint8_t> GetCurrentGPUUUID() = 0;
 		virtual std::string GetCurrentGPUName() = 0;

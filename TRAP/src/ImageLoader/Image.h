@@ -37,7 +37,7 @@ namespace TRAP
 		bool IsImageGrayScale() const;
 		bool IsImageColored() const;
 		bool IsHDR() const;
-		std::string_view GetFilePath() const;
+		const std::string& GetFilePath() const;
 		ColorFormat GetColorFormat() const;
 
 		static Scope<Image> LoadFromFile(const std::string& filepath);

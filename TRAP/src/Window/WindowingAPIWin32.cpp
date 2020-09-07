@@ -28,7 +28,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 
 #include "WindowingAPI.h"
-#include "Utils/String/String.h"
 #include "Utils/MsgBox/MsgBox.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -1154,6 +1153,8 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsWin32()
 				if (s_Data.Monitors[i] && wcscmp(s_Data.Monitors[i]->DisplayName.data(), display.DeviceName) == 0)
 				{
 					disconnected[i] = false;
+					//Handle may have changed, update
+					EnumDisplayMonitors(nullptr, nullptr, MonitorCallback, reinterpret_cast<LPARAM>(s_Data.Monitors[i]->Handle));
 					break;
 				}
 			}
@@ -3355,7 +3356,7 @@ const char* TRAP::INTERNAL::WindowingAPI::PlatformGetScanCodeName(const int32_t 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string& string)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string_view string)
 {
 	const int32_t characterCount = MultiByteToWideChar(CP_UTF8, 0, string.data(), -1, nullptr, 0);
 	if (!characterCount)

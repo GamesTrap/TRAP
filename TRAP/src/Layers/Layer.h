@@ -9,7 +9,7 @@ namespace TRAP {
 	class Layer
 	{
 	public:
-		explicit Layer(std::string name = "Layer");
+		explicit Layer(std::string debugName = "Layer");
 		Layer(const Layer&) = default;
 		Layer& operator=(const Layer&) = default;
 		Layer(Layer&&) = default;
@@ -23,7 +23,7 @@ namespace TRAP {
 		virtual void OnImGuiRender();
 		virtual void OnEvent(Events::Event& event);
 
-		std::string_view GetName() const;
+		const std::string& GetName() const;
 		
 	protected:
 		std::string m_DebugName;

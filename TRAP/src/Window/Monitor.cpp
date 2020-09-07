@@ -11,7 +11,7 @@ TRAP::Monitor::Monitor(const uint32_t monitor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Monitor::GetName() const
+const std::string& TRAP::Monitor::GetName() const
 {
 	return m_handle->Name;
 }

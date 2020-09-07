@@ -14,7 +14,7 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(c
 	Scope<Shader> shader = Shader::CreateFromFile(filepath);
 	if(shader)
 	{
-		const std::string name = std::string(shader->GetName());
+		const std::string name = shader->GetName();
 		
 		Add(std::move(shader));
 		
@@ -44,7 +44,13 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(const std::string& name, const std::string& VSSource, const std::string& FSSource, const std::string& GSSource, const std::string& TCSSource, const std::string& TESSource, const std::string& CSSSource)
+const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(const std::string& name,
+																			   const std::string_view VSSource,
+																			   const std::string_view FSSource,
+																			   const std::string_view GSSource,
+																			   const std::string_view TCSSource,
+																			   const std::string_view TESSource,
+																			   const std::string_view CSSSource)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -68,8 +74,8 @@ void TRAP::Graphics::ShaderManager::Add(Scope<Shader> shader)
 
 	if (shader)
 	{
-		if(!Exists(std::string(shader->GetName())))
-			s_Shaders[std::string(shader->GetName())] = std::move(shader);			
+		if(!Exists(shader->GetName()))
+			s_Shaders[shader->GetName()] = std::move(shader);			
 		else
 			TP_ERROR(Log::ShaderManagerPrefix, "Shader with Name: \"", shader->GetName(), "\" already exists! Ignoring new Shader");
 	}
@@ -83,8 +89,8 @@ void TRAP::Graphics::ShaderManager::Remove(const Scope<Shader>& shader)
 	
 	if(shader)
 	{
-		if (Exists(std::string(shader->GetName())))
-			s_Shaders.erase(std::string(shader->GetName()));
+		if (Exists(shader->GetName()))
+			s_Shaders.erase(shader->GetName());
 		else
 			TP_ERROR(Log::ShaderManagerPrefix, "Could not find Shader with Name: \"", shader->GetName(), "\"!");
 	}
@@ -92,12 +98,12 @@ void TRAP::Graphics::ShaderManager::Remove(const Scope<Shader>& shader)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::ShaderManager::Remove(const std::string_view name)
+void TRAP::Graphics::ShaderManager::Remove(const std::string& name)
 {
 	TP_PROFILE_FUNCTION();
 	
-	if (Exists(std::string(name)))
-		s_Shaders.erase(std::string(name));
+	if (Exists(name))
+		s_Shaders.erase(name);
 	else
 		TP_ERROR(Log::ShaderManagerPrefix, "Could not find Shader with Name: \"", name, "\"!");
 }
@@ -143,7 +149,7 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 	{
 		if(Exists(nameOrVirtualPath))
 		{
-			const std::string path = std::string(s_Shaders[nameOrVirtualPath]->GetFilePath());
+			const std::string path = s_Shaders[nameOrVirtualPath]->GetFilePath();
 			std::string error;
 			if (!path.empty())
 			{
@@ -175,10 +181,10 @@ void TRAP::Graphics::ShaderManager::Reload(const Scope<Shader>& shader)
 {
 	TP_PROFILE_FUNCTION();
 	
-	if(Exists(std::string(shader->GetName())))
+	if(Exists(shader->GetName()))
 	{
-		const std::string name = std::string(shader->GetName());
-		const std::string path = std::string(shader->GetFilePath());
+		const std::string name = shader->GetName();
+		const std::string path = shader->GetFilePath();
 		std::string error;
 		if (!path.empty())
 		{
@@ -225,7 +231,7 @@ bool TRAP::Graphics::ShaderManager::Exists(const std::string& name)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::ShaderManager::ExistsVirtualPath(const std::string& virtualPath)
+bool TRAP::Graphics::ShaderManager::ExistsVirtualPath(const std::string_view virtualPath)
 {
 	for(const auto& [name, shader] : s_Shaders)
 		if (shader->GetFilePath() == virtualPath)

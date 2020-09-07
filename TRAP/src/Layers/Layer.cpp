@@ -46,7 +46,7 @@ void TRAP::Layer::OnEvent(Events::Event& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Layer::GetName() const
+const std::string& TRAP::Layer::GetName() const
 {
 	return m_DebugName;
 }

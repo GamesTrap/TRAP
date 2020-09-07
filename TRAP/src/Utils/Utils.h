@@ -15,7 +15,7 @@ namespace TRAP::Utils
 	}
 
 	std::string UUIDToString(const std::vector<uint8_t>& uuid);
-	std::vector<uint8_t> UUIDFromString(const std::string& uuid);
+	std::vector<uint8_t> UUIDFromString(std::string_view uuid);
 }
 
 #endif /*_TRAP_UTILS_H_*/

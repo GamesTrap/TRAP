@@ -16,20 +16,20 @@ namespace TRAP::Utils
 		Config& operator=(const Config&) = delete;
 		Config& operator=(Config&&) = delete;
 
-		bool LoadFromFile(const std::string& filename);
-		bool SaveToFile(const std::string& filename);
+		bool LoadFromFile(std::string_view filename);
+		bool SaveToFile(std::string_view filename);
 
 		bool IsChanged() const;
 
 		template<typename T>
-		void Get(const std::string& key, T& value) const;
+		void Get(std::string_view key, T& value) const;
 		template<typename T>
-		void Get(const std::string& key, std::vector<T>& value) const;
+		void Get(std::string_view key, std::vector<T>& value) const;
 
 		template<typename T>
-		T Get(const std::string& key);
+		T Get(std::string_view key) const;
 		template<typename T>
-		std::vector<T> GetVector(const std::string& key);
+		std::vector<T> GetVector(std::string_view key) const;
 
 		template<typename T>
 		void Set(const std::string& key, T value);
@@ -46,12 +46,11 @@ namespace TRAP::Utils
 		template<typename T>
 		std::string ConvertToString(T value) const;
 
-		bool Read();
-		bool Write() const;
+		bool Read(std::string_view filename);
+		bool Write(std::string_view filename) const;
 		std::pair<std::string, std::string> ParseLine(const std::string_view& line) const;
 
 		bool m_isChanged;
-		std::string m_filename;
 		std::vector<std::pair<std::string, std::string>> m_data;
 		const std::locale m_locale;
 	};	
@@ -60,11 +59,15 @@ namespace TRAP::Utils
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-void TRAP::Utils::Config::Get(const std::string& key, T& value) const
+void TRAP::Utils::Config::Get(const std::string_view key, T& value) const
 {
 	TP_PROFILE_FUNCTION();
 	
-	const auto it = std::find_if(m_data.begin(), m_data.end(), [&key](const std::pair<std::string, std::string>& element) {return element.first == key; });
+	const auto it = std::find_if(m_data.begin(), m_data.end(), 
+		[&key](const std::pair<std::string, std::string>& element)
+		{
+			return Utils::String::CompareAnyCase(element.first, key);
+		});
 	if (it != m_data.end())
 		value = ConvertToType<T>(it->second);
 }
@@ -75,32 +78,37 @@ void TRAP::Utils::Config::Get(const std::string& key, T& value) const
 //The values have to be separated by comma.
 //The vector is cleared before it it filled.
 template<typename T>
-void TRAP::Utils::Config::Get(const std::string& key, std::vector<T>& value) const
+void TRAP::Utils::Config::Get(const std::string_view key, std::vector<T>& value) const
 {
 	TP_PROFILE_FUNCTION();
 	
-	const auto it = std::find_if(m_data.begin(), m_data.end(), [&key](const std::pair<std::string, std::string>& element) {return element.first == key; });
+	const auto it = std::find_if(m_data.begin(), m_data.end(), 
+		[&key](const std::pair<std::string, std::string>& element)
+		{
+			return Utils::String::CompareAnyCase(element.first, key);
+		});
 	if (it != m_data.end())
 	{
-		std::string output;
-		std::istringstream parser(it->second);
-
 		value.clear();
 
 		//Split by comma
-		while (getline(parser, output, ','))
-			value.push_back(ConvertToType<T>(output));
+		for (const std::string& str : Utils::String::SplitString(it->second, ','))
+			value.push_back(ConvertToType<T>(str));
 	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Utils::Config::Get(const std::string& key)
+T TRAP::Utils::Config::Get(const std::string_view key) const
 {
 	TP_PROFILE_FUNCTION();
 
-	const auto it = std::find_if(m_data.begin(), m_data.end(), [&key](const std::pair<std::string, std::string>& element) {return element.first == key; });
+	const auto it = std::find_if(m_data.begin(), m_data.end(), 
+		[&key](const std::pair<std::string, std::string>& element)
+		{
+			return Utils::String::CompareAnyCase(element.first, key);
+		});
 	if (it != m_data.end())
 		return ConvertToType<T>(it->second);
 
@@ -115,23 +123,18 @@ T TRAP::Utils::Config::Get(const std::string& key)
 //The values have to be separated by comma.
 //The vector is cleared before it it filled.
 template<typename T>
-std::vector<T> TRAP::Utils::Config::GetVector(const std::string& key)
+std::vector<T> TRAP::Utils::Config::GetVector(const std::string_view key) const
 {
 	TP_PROFILE_FUNCTION();
 
 	const auto it = std::find_if(m_data.begin(), m_data.end(), [&key](const std::pair<std::string, std::string>& element) {return element.first == key; });
 	if (it != m_data.end())
 	{
-		std::string output;
-		std::istringstream parser(it->second);
-
 		std::vector<T> data{};
 
 		//Split by comma
-		while (getline(parser, output, ','))
-			data.push_back(ConvertToType<T>(output));
-
-		return data;
+		for (const std::string& str : Utils::String::SplitString(it->second, ','))
+			data.push_back(ConvertToType<T>(str));
 	}
 
 	TRAP_ASSERT(false, "Unconvertable type encountered, please use a different type, or define the handle case in Config.h");
@@ -149,7 +152,10 @@ void TRAP::Utils::Config::Set(const std::string& key, const T value)
 	//Replaces the value if the key is found
 	m_isChanged = true;
 	auto elementIterator = std::find_if(m_data.begin(), m_data.end(),
-		[key](const std::pair<std::string, std::string>& test) {return test.first == key ? true : false; });
+		[key](const std::pair<std::string, std::string>& test)
+		{
+			return Utils::String::CompareAnyCase(test.first, key);
+		});
 	if(elementIterator != m_data.end())
 		elementIterator->second = ConvertToString<T>(value);
 	else
@@ -175,7 +181,10 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 	//Replace the value if the key is found
 	m_isChanged = true;
 	auto elementIterator = std::find_if(m_data.begin(), m_data.end(),
-		[key](const std::pair<std::string, std::string>& test) {return test.first == key ? true : false; });
+		[key](const std::pair<std::string, std::string>& test)
+		{
+			return Utils::String::CompareAnyCase(test.first, key);
+		});
 	if (elementIterator != m_data.end())
 		elementIterator->second = valueAsString;
 	else
@@ -190,7 +199,7 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 template<typename T>
 T TRAP::Utils::Config::ConvertToType(const std::string&) const
 {
-	static_assert(false, "Unconvertable type encountered, please use a different type, or define the handle case in Config.h");
+	TRAP_ASSERT(false, "Unconvertable type encountered, please use a different type, or define the handle case in Config.h")
 	TP_ERROR(TRAP::Log::ConfigPrefix, "Unconvertable type encountered, please use a different type, or define the handle case in Config.h");
 	return T();
 }

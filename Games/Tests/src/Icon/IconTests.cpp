@@ -47,6 +47,17 @@ IconTests::IconTests()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void IconTests::OnImGuiRender()
+{
+	ImGui::Begin("IconTests", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	ImGui::Text("Press ESC to close");
+	ImGui::Text("Press Space to cycle through Window Icons");
+	ImGui::Text("Press X to reset Window Icon");
+	ImGui::End();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void IconTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Icon");

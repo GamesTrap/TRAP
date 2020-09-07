@@ -33,7 +33,7 @@ std::string TRAP::Utils::UUIDToString(const std::vector<uint8_t>& uuid)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::Utils::UUIDFromString(const std::string& uuid)
+std::vector<uint8_t> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 {
 	uint8_t digit = 0;
 	bool firstDigit = true;

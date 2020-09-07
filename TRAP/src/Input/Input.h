@@ -292,13 +292,13 @@ namespace TRAP
 		static void SetMousePosition(float x, float y);
 		static void SetMousePosition(float x, float y, const Scope<Window>& window);
 		
-		static void SetClipboard(const std::string& str);
+		static void SetClipboard(std::string_view str);
 		static std::string GetClipboard();
 		
 		using EventCallbackFn = std::function<void(Events::Event&)>;
 		static void SetEventCallback(const EventCallbackFn& callback);
 		
-		static void UpdateControllerMappings(const std::string& map);
+		static void UpdateControllerMappings(std::string_view map);
 
 	private:
 		static void Init();
@@ -430,6 +430,7 @@ namespace TRAP
 		//////////
 		//xinput.dll function pointer typedefs
 		static constexpr uint32_t TRAP_XINPUT_CAPS_WIRELESS = 0x0002;
+		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_GAMEPAD = 0x01;
 		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_WHEEL = 0x02;
 		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_ARCADE_STICK = 0x03;
 		static constexpr uint32_t TRAP_XINPUT_DEVSUBTYPE_FLIGHT_STICK = 0x04;
@@ -558,8 +559,8 @@ namespace TRAP
 		///////////	
 		static std::vector<Mapping> s_mappings;
 		
-		static bool ParseMapping(Mapping& mapping, const std::string& str);
-		static Mapping* FindMapping(const std::string& guid);
+		static bool ParseMapping(Mapping& mapping, std::string_view str);
+		static Mapping* FindMapping(std::string_view guid);
 		static Mapping* FindValidMapping(const ControllerInternal* con);
 		static bool IsValidElementForController(const MapElement* e, const ControllerInternal* con);
 		static bool GetMappedControllerButton(Controller controller, ControllerButton button);

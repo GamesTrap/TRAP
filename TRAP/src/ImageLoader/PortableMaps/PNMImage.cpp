@@ -12,7 +12,7 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 
 	m_filepath = std::move(filepath);
 
-	TP_DEBUG(Log::ImagePNMPrefix, "Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
+	TP_DEBUG(Log::ImagePNMPrefix, "Loading Image: \"", Utils::String::SplitStringView(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
 	if (!VFS::ResolveReadPhysicalPath(m_filepath, physicalPath, true))

@@ -23,7 +23,7 @@ namespace TRAP
 		Monitor& operator=(const Monitor&) = default;
 		Monitor& operator=(Monitor&&) = default;
 
-		std::string GetName() const;
+		const std::string& GetName() const;
 		std::vector<VideoMode> GetVideoModes() const;
 		VideoMode GetCurrentVideoMode() const;
 		Math::Vec2 GetContentScale() const;

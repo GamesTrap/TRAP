@@ -12,7 +12,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 
 	m_filepath = std::move(filepath);
 
-	TP_DEBUG(Log::ImageTGAPrefix, "Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
+	TP_DEBUG(Log::ImageTGAPrefix, "Loading Image: \"", Utils::String::SplitStringView(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
 	if (!VFS::ResolveReadPhysicalPath(m_filepath, physicalPath, true))
@@ -133,7 +133,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 			file.seekg(0, std::ios::end); //Go to the end of file
 			uint32_t pixelDataSize = static_cast<uint32_t>(file.tellg()) - currentPosition;
 			file.seekg(-18, std::ios::end); //Check if there is a footer
-			std::string offsetCheck{16, '\0'};
+			std::string offsetCheck(16, '\0');
 			file.read(offsetCheck.data(), 16);
 			if (offsetCheck == "TRUEVISION-XFILE")
 				pixelDataSize -= 26; //If a footer was found subtract the 26 bytes from pixelDataSize

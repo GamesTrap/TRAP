@@ -156,7 +156,7 @@ std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const void* data, uint64_t l
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const std::string& str)
+std::array<uint8_t, 32> TRAP::Utils::Hash::SHA3_256(const std::string_view str)
 {
 	return SHA3_256(str.data(), str.length());
 }
@@ -198,7 +198,7 @@ std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const void* data, uint64_t l
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const std::string& str)
+std::array<uint8_t, 64> TRAP::Utils::Hash::SHA3_512(const std::string_view str)
 {
 	return SHA3_512(str.data(), str.length());
 }

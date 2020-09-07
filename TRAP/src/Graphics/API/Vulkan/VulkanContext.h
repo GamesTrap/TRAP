@@ -23,13 +23,13 @@ namespace TRAP::Graphics::API
 		static bool IsVulkanCapable();
 
 		static INTERNAL::WindowingAPI::InternalWindow* GetCurrentWindow();
-		static std::string_view GetAppName();
+		static const std::string& GetAppName();
 
 	private:
 		static PFN_vkEnumerateInstanceVersion s_vkEnumerateInstanceVersion;
 
 		static INTERNAL::WindowingAPI::InternalWindow* s_currentWindow;
-		static std::string_view s_appName;
+		static std::string s_appName;
 	};
 }
 

@@ -24,11 +24,11 @@ namespace TRAP::Events
 	class KeyPressEvent final : public KeyEvent
 	{
 	public:
-		KeyPressEvent(Input::Key key, int32_t repeatCount, std::string_view title);
+		KeyPressEvent(Input::Key key, int32_t repeatCount, std::string title);
 
 		int32_t GetRepeatCount() const;
 
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		std::string ToString() const override;
 
@@ -38,15 +38,15 @@ namespace TRAP::Events
 
 	private:
 		int32_t m_repeatCount;
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class KeyReleaseEvent final : public KeyEvent
 	{
 	public:
-		explicit KeyReleaseEvent(Input::Key key, std::string_view title);
+		explicit KeyReleaseEvent(Input::Key key, std::string title);
 
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		std::string ToString() const override;
 
@@ -55,15 +55,15 @@ namespace TRAP::Events
 		const char* GetName() const override;
 
 	private:
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class KeyTypeEvent final : public Event
 	{
 	public:
-		explicit KeyTypeEvent(uint32_t codePoint, std::string_view title);
+		explicit KeyTypeEvent(uint32_t codePoint, std::string title);
 
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 		uint32_t GetCodePoint() const;
 
 		std::string ToString() const override;
@@ -76,7 +76,7 @@ namespace TRAP::Events
 	private:
 		static std::string EncodeUTF8(uint32_t codePoint);
 		
-		std::string_view m_title;
+		std::string m_title;
 		uint32_t m_codePoint;
 	};
 
@@ -85,7 +85,7 @@ namespace TRAP::Events
 	public:
 		explicit KeyLayoutEvent(std::string layout);
 
-		std::string GetLayout() const;
+		const std::string& GetLayout() const;
 
 		std::string ToString() const override;
 

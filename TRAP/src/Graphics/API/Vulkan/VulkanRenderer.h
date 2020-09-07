@@ -70,7 +70,7 @@ namespace TRAP::Graphics::API
 		void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount, RendererPrimitive primitive) override;
 		void Draw(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive) override;
 
-		std::string_view GetTitle() const override;
+		const std::string& GetTitle() const override;
 
 		std::vector<uint8_t> GetCurrentGPUUUID() override;
 		std::string GetCurrentGPUName() override;

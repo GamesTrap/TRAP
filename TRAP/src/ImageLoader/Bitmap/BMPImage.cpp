@@ -13,7 +13,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 	
 	m_filepath = std::move(filepath);
 	
-	TP_DEBUG(Log::ImageBMPPrefix, "Loading Image: \"", Utils::String::SplitString(m_filepath, '/').back(), "\"");
+	TP_DEBUG(Log::ImageBMPPrefix, "Loading Image: \"", Utils::String::SplitStringView(m_filepath, '/').back(), "\"");
 
 	std::filesystem::path physicalPath;
 	if (!VFS::ResolveReadPhysicalPath(m_filepath, physicalPath, true))

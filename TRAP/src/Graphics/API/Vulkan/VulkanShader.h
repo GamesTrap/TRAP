@@ -1,6 +1,11 @@
 #ifndef _TRAP_VULKANSHADER_H_
 #define _TRAP_VULKANSHADER_H_
 
+#include <algorithm>
+#include <algorithm>
+#include <algorithm>
+#include <algorithm>
+
 #include "Graphics/Shaders/Shader.h"
 
 namespace TRAP::Graphics::API
@@ -21,9 +26,9 @@ namespace TRAP::Graphics::API
 	class VulkanShader final : public Shader
 	{
 	public:
-		VulkanShader(std::string name, const std::string& source);
-		VulkanShader(std::string name, std::vector<uint32_t>& source);
-		VulkanShader(std::string name, std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource);
+		VulkanShader(std::string name, std::string_view source);
+		VulkanShader(std::string name, const std::vector<uint32_t>& source);
+		VulkanShader(std::string name, std::string_view VSSource, std::string_view FSSource, std::string_view GSSource, std::string_view TCSSource, std::string_view TESSource, std::string_view CSSource);
 		VulkanShader(const VulkanShader&) = default;
 		VulkanShader& operator=(const VulkanShader&) = default;
 		VulkanShader(VulkanShader&&) = default;
@@ -36,21 +41,21 @@ namespace TRAP::Graphics::API
 		void Unbind() const override;
 
 	private:
-		void InitSPIRV(std::vector<uint32_t>& source);
-		void InitGLSL(const std::string& source);
-		void InitGLSL(std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource);
+		void InitSPIRV(const std::vector<uint32_t>& source);
+		void InitGLSL(std::string_view source);
+		void InitGLSL(std::string_view VSSource, std::string_view FSSource, std::string_view GSSource, std::string_view TCSSource, std::string_view TESSource, std::string_view CSSource);
 		
-		void CompileGLSL(std::array<std::string, 6> & shaders, VulkanShaderErrorInfo& info);
-		void LoadSPIRV(std::array<std::vector<uint32_t>, 6>& shaders, VulkanShaderErrorInfo& info);
-		static void PreProcessGLSL(const std::string& source, std::array<std::string, 6>& shaders);
+		void CompileGLSL(const std::array<std::string_view, 6>& shaders);
+		void LoadSPIRV(const std::array<std::vector<uint32_t>, 6>& shaders);
+		static void PreProcessGLSL(std::string_view source, std::array<std::string, 6>& shaders);
 		static Scope<glslang::TShader> PreProcess(const char* source, uint32_t shaderType, std::string& preProcessedSource);
 		static bool Parse(glslang::TShader* shader);
 		static bool Link(glslang::TShader* VShader, glslang::TShader* FShader, glslang::TShader* GShader, glslang::TShader* TCShader, glslang::TShader* TEShader, glslang::TShader* CShader, glslang::TProgram& program);
 		static std::vector<std::vector<uint32_t>> ConvertToSPIRV(glslang::TShader* VShader, glslang::TShader* FShader, glslang::TShader* GShader, glslang::TShader* TCShader, glslang::TShader* TEShader, glslang::TShader* CShader, glslang::TProgram& program);
-		bool CreateShaderModule(VkShaderModule& shaderModule, std::vector<uint32_t>& SPIRVCode, VkShaderStageFlagBits stage);
+		bool CreateShaderModule(VkShaderModule& shaderModule, const std::vector<uint32_t>& SPIRVCode, VkShaderStageFlagBits stage);
 
 		void Reflect(const std::vector<uint32_t>& SPIRVCode, VkShaderStageFlagBits stage);
-		static void PrintResources(const std::string& typeName, const spirv_cross::SmallVector<spirv_cross::Resource>& resources, spirv_cross::CompilerGLSL& compiler);
+		static void PrintResources(std::string_view typeName, const spirv_cross::SmallVector<spirv_cross::Resource>& resources, spirv_cross::CompilerGLSL& compiler);
 		static void PrintResource(spirv_cross::CompilerGLSL& compiler, const spirv_cross::Resource& res);
 		static void PrintType(std::stringstream& out, spirv_cross::CompilerGLSL& compiler, const spirv_cross::SPIRType& type);
 		static bool ReflectResource(VkShaderStageFlagBits stage, spirv_cross::CompilerGLSL& compiler, VulkanShaderResourceTypeMap& rtm);

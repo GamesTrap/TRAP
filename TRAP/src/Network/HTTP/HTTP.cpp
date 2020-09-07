@@ -29,10 +29,12 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "HTTP.h"
 
+#include <utility>
+
 #include "Utils/String/String.h"
 
-TRAP::Network::HTTP::Request::Request(const std::string& uri, const Method method, const std::string& body)
-	: m_method(method), m_majorVersion(1), m_minorVersion(0), m_body(body)
+TRAP::Network::HTTP::Request::Request(const std::string& uri, const Method method, std::string body)
+	: m_method(method), m_majorVersion(1), m_minorVersion(0), m_body(std::move(body))
 {
 	SetURI(uri);
 }

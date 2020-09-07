@@ -386,7 +386,7 @@ void TRAP::Input::SetMousePosition(const float x, const float y, const Scope<Win
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::SetClipboard(const std::string& str)
+void TRAP::Input::SetClipboard(const std::string_view str)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -411,7 +411,7 @@ void TRAP::Input::SetEventCallback(const EventCallbackFn &callback)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::UpdateControllerMappings(const std::string& map)
+void TRAP::Input::UpdateControllerMappings(const std::string_view map)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -514,7 +514,7 @@ void TRAP::Input::InternalInputControllerButton(ControllerInternal* con, const i
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Parse an SDL_GameControllerDB line and adds it to the mapping list
-bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
+bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 {
 	struct Fields
 	{
@@ -677,7 +677,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string& str)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Find a mapping based on controller GUID
-TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string& guid)
+TRAP::Input::Mapping* TRAP::Input::FindMapping(const std::string_view guid)
 {
 	for (auto& Mapping : s_mappings)
 		if(Mapping.guid == guid)

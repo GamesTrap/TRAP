@@ -210,8 +210,8 @@ std::string TRAP::Events::KeyEvent::NonPrintableKeyToString(const Input::Key key
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const int32_t repeatCount, const std::string_view title)
-	: KeyEvent(key), m_repeatCount(repeatCount), m_title(title)
+TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const int32_t repeatCount, std::string title)
+	: KeyEvent(key), m_repeatCount(repeatCount), m_title(std::move(title))
 {
 }
 
@@ -227,23 +227,14 @@ int32_t TRAP::Events::KeyPressEvent::GetRepeatCount() const
 std::string TRAP::Events::KeyPressEvent::ToString() const
 {
 	const char* name = INTERNAL::WindowingAPI::GetKeyName(m_key, 0);
-	
-	std::stringstream ss;
-	ss << "KeyPressEvent: ";
-	
-	if(name)
-		ss << name;
-	else
-		ss << NonPrintableKeyToString(m_key);
-	
-	ss << "(" << static_cast<int32_t>(m_key) << ")" << " (" << m_repeatCount << " repeats)";
 
-	return ss.str();
+	return "KeyPressEvent: " + (name ? name : NonPrintableKeyToString(m_key)) + 
+		   "(" + std::to_string(static_cast<int32_t>(m_key)) + ") (" + std::to_string(m_repeatCount) + " repeats)";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Events::KeyPressEvent::GetTitle() const
+const std::string& TRAP::Events::KeyPressEvent::GetTitle() const
 {
 	return m_title;
 }
@@ -273,8 +264,8 @@ const char* TRAP::Events::KeyPressEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, const std::string_view title)
-	: KeyEvent(key), m_title(title)
+TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, std::string title)
+	: KeyEvent(key), m_title(std::move(title))
 {
 }
 
@@ -283,23 +274,14 @@ TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, const std::
 std::string TRAP::Events::KeyReleaseEvent::ToString() const
 {
 	const char* name = INTERNAL::WindowingAPI::GetKeyName(m_key, 0);
-	
-	std::stringstream ss;	
-	ss << "KeyReleaseEvent: ";
 
-	if (name)
-		ss << name;
-	else
-		ss << NonPrintableKeyToString(m_key);
-
-	ss << "(" << static_cast<int32_t>(m_key) << ")";
-
-	return ss.str();
+	return "KeyReleaseEvent: " + (name ? name : NonPrintableKeyToString(m_key)) + "(" + 
+		   std::to_string(static_cast<int32_t>(m_key)) + ")";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Events::KeyReleaseEvent::GetTitle() const
+const std::string& TRAP::Events::KeyReleaseEvent::GetTitle() const
 {
 	return m_title;
 }
@@ -329,8 +311,8 @@ const char* TRAP::Events::KeyReleaseEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::KeyTypeEvent::KeyTypeEvent(const uint32_t codePoint, const std::string_view title)
-	: m_title(title), m_codePoint(codePoint)
+TRAP::Events::KeyTypeEvent::KeyTypeEvent(const uint32_t codePoint, std::string title)
+	: m_title(std::move(title)), m_codePoint(codePoint)
 {
 }
 
@@ -338,16 +320,12 @@ TRAP::Events::KeyTypeEvent::KeyTypeEvent(const uint32_t codePoint, const std::st
 
 std::string TRAP::Events::KeyTypeEvent::ToString() const
 {
-	std::stringstream ss;
-	
-	ss << "KeyTypeEvent: " << EncodeUTF8(m_codePoint) << "(" << m_codePoint << ")";
-
-	return ss.str();
+	return "KeyTypeEvent: " + EncodeUTF8(m_codePoint) + "(" + std::to_string(m_codePoint) + ")";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Events::KeyTypeEvent::GetTitle() const
+const std::string& TRAP::Events::KeyTypeEvent::GetTitle() const
 {
 	return m_title;
 }
@@ -426,7 +404,7 @@ TRAP::Events::KeyLayoutEvent::KeyLayoutEvent(std::string layout)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Events::KeyLayoutEvent::GetLayout() const
+const std::string& TRAP::Events::KeyLayoutEvent::GetLayout() const
 {
 	return m_layout;
 }
@@ -435,11 +413,7 @@ std::string TRAP::Events::KeyLayoutEvent::GetLayout() const
 
 std::string TRAP::Events::KeyLayoutEvent::ToString() const
 {
-	std::stringstream ss;
-
-	ss << "KeyLayoutEvent: " << m_layout;
-
-	return ss.str();
+	return "KeyLayoutEvent: " + m_layout;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -20,16 +20,16 @@ namespace TRAP::Graphics
 		static const Scope<Shader>& Load(const std::string& filepath);
 		static const Scope<Shader>& Load(const std::string& name, const std::string& filepath);
 		static const Scope<Shader>& Load(const std::string& name,
-		                                 const std::string& VSSource,
-		                                 const std::string& FSSource,
-		                                 const std::string& GSSource = "",
-		                                 const std::string& TCSSource = "",
-		                                 const std::string& TESSource = "",
-		                                 const std::string& CSSSource = "");
+		                                 std::string_view VSSource,
+		                                 std::string_view FSSource,
+		                                 std::string_view GSSource = "",
+		                                 std::string_view TCSSource = "",
+		                                 std::string_view TESSource = "",
+		                                 std::string_view CSSSource = "");
 		
 		static void Add(Scope<Shader> shader);
 		static void Remove(const Scope<Shader>& shader);
-		static void Remove(std::string_view name);
+		static void Remove(const std::string& name);
 		static const Scope<Shader>& Get(const std::string& name);
 		static const std::unordered_map<std::string, Scope<Shader>>& GetShaders();
 		static void Clean();
@@ -41,7 +41,7 @@ namespace TRAP::Graphics
 		static void Shutdown();		
 
 		static bool Exists(const std::string& name);
-		static bool ExistsVirtualPath(const std::string& virtualPath);
+		static bool ExistsVirtualPath(std::string_view virtualPath);
 		
 	private:
 		static std::unordered_map<std::string, Scope<Shader>> s_Shaders;

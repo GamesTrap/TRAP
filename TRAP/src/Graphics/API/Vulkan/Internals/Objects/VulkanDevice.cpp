@@ -27,7 +27,7 @@ TRAP::Graphics::API::Vulkan::Device::Device(const Scope<PhysicalDevice>& physica
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::Vulkan::Device::Device(const Scope<PhysicalDevice>& physicalDevice, std::vector<std::string>& physicalDeviceExtensions)
+TRAP::Graphics::API::Vulkan::Device::Device(const Scope<PhysicalDevice>& physicalDevice, const std::vector<std::string>& physicalDeviceExtensions)
 	: m_device(), m_deviceExtensions(physicalDeviceExtensions), m_graphicsQueue(), m_presentQueue(), m_queueFamilyIndices(physicalDevice->GetQueueFamilyIndices())
 {	
 	float priority = 1.0f;
@@ -37,7 +37,7 @@ TRAP::Graphics::API::Vulkan::Device::Device(const Scope<PhysicalDevice>& physica
 		queueInfo.emplace_back(Initializers::DeviceQueueCreateInfo(queueFamily, &priority));
 
 	std::vector<const char*> extensions(physicalDeviceExtensions.size());
-	std::transform(physicalDeviceExtensions.begin(), physicalDeviceExtensions.end(), extensions.begin(), [](const std::string& s) {return s.c_str(); });
+	std::transform(physicalDeviceExtensions.begin(), physicalDeviceExtensions.end(), extensions.begin(), [](const std::string_view s) {return s.data(); });
 
 	VkDeviceCreateInfo info = Initializers::DeviceCreateInfo(queueInfo, physicalDevice->GetPhysicalDeviceFeatures(), extensions);
 

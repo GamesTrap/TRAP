@@ -126,7 +126,7 @@ std::string TRAP::FileWatcher::VirtualFilePathFormatter(const std::string& virtu
 #endif
 	for (uint32_t i = Utils::String::GetCount(physicalFolderPath.string(), '/') + 1; i < dirs.size() - 1; i++)
 		result += dirs[i] + '/';
-	TRAP::Utils::String::ToLower(result);
+	result = TRAP::Utils::String::ToLower(result);
 	result += dirs[dirs.size() - 1];
 
 	return result;

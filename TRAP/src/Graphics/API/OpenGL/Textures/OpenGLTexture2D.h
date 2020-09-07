@@ -11,7 +11,7 @@ namespace TRAP::Graphics::API
 		explicit OpenGLTexture2D(TextureParameters parameters);
 		OpenGLTexture2D(uint32_t width, uint32_t height, uint32_t bitsPerPixel, Image::ColorFormat format, TextureParameters parameters);
 		OpenGLTexture2D(std::string name, const Scope<Image>& img, TextureParameters parameters);
-		OpenGLTexture2D(std::string name, const std::string& filepath, TextureParameters parameters);
+		OpenGLTexture2D(std::string name, std::string_view filepath, TextureParameters parameters);
 		~OpenGLTexture2D();
 		OpenGLTexture2D(const OpenGLTexture2D&) = delete;
 		OpenGLTexture2D& operator=(const OpenGLTexture2D&) = delete;

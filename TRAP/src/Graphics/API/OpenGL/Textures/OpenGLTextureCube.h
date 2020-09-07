@@ -9,8 +9,8 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		explicit OpenGLTextureCube(TextureParameters parameters);
-		OpenGLTextureCube(std::string name, const std::array<std::string, 6>& filepaths, TextureParameters parameters);
-		OpenGLTextureCube(std::string name, const std::string& filepath, InputFormat format, TextureParameters parameters);
+		OpenGLTextureCube(std::string name, const std::array<std::string_view, 6>& filepaths, TextureParameters parameters);
+		OpenGLTextureCube(std::string name, std::string_view filepath, InputFormat format, TextureParameters parameters);
 		OpenGLTextureCube(std::string name, const Scope<Image>& img, InputFormat format, TextureParameters parameters);
 		~OpenGLTextureCube();
 		OpenGLTextureCube(const OpenGLTextureCube&) = delete;

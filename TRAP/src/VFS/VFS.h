@@ -81,7 +81,7 @@ namespace TRAP
 		/// True if file or folder was found.<br>
 		/// False if it wasn't found doesn't exist.<br>
 		/// </returns>
-		static bool ResolveReadPhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath, bool silent = false);
+		static bool ResolveReadPhysicalPath(std::string_view path, std::filesystem::path& outPhysicalPath, bool silent = false);
 		/// <summary>
 		/// Resolve a virtual file or folder path to its physical file or folder path.<br>
 		/// <br>
@@ -97,7 +97,7 @@ namespace TRAP
 		/// True if file or folder was found.<br>
 		/// False if it wasn't found.
 		/// </returns>
-		static bool ResolveWritePhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath);
+		static bool ResolveWritePhysicalPath(std::string_view path, std::filesystem::path& outPhysicalPath);
 		/// <summary>
 		/// Resolve a virtual file or folder path to its (possibly multiple) physical file or folder path(s).
 		/// </summary>
@@ -128,7 +128,7 @@ namespace TRAP
 		/// String with file content on success.<br>
 		/// Empty string if an error has occurred.
 		/// </returns>
-		static std::string ReadTextFile(const std::string& path, bool silent = false);
+		static std::string ReadTextFile(std::string_view path, bool silent = false);
 
 		/// <summary>
 		/// Write the given data to the given file path.<br>
@@ -147,7 +147,7 @@ namespace TRAP
 		/// <param name="text">Text to be written</param>
 		/// <param name="mode">WriteMode to use</param>
 		/// <returns>If path could be resolved and text has been written true, false otherwise</returns>
-		static bool WriteTextFile(const std::string& path, const std::string& text, WriteMode mode = WriteMode::Overwrite);
+		static bool WriteTextFile(std::string_view path, const std::string& text, WriteMode mode = WriteMode::Overwrite);
 
 		/// <summary>
 		/// Check if a file or folder exists.<br>
@@ -203,7 +203,7 @@ namespace TRAP
 		static void SetHotTextureReloading(bool enabled);
 		static FileWatcher* GetTextureFileWatcher();
 
-		static std::string MakeVirtualPathCompatible(const std::string& virtualPath);
+		static std::string MakeVirtualPathCompatible(std::string_view virtualPath);
 		static std::string GetFileName(const std::string& virtualPath);
 
 	private:

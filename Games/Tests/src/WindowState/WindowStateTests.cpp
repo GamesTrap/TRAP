@@ -1,20 +1,33 @@
-#include "MinimizeTests.h"
+#include "WindowStateTests.h"
 
-MinimizeTests::MinimizeTests()
-	: Layer("Minimize")
+WindowStateTests::WindowStateTests()
+	: Layer("WindowState")
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void MinimizeTests::OnAttach()
+void WindowStateTests::OnImGuiRender()
 {
-	TRAP::Application::GetWindow()->SetTitle("Minimize");
+	ImGui::Begin("WindowState", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	ImGui::Text("Press ESC to close");
+	ImGui::Text("Press I to minimize window");
+	ImGui::Text("Press M to maximize window");
+	ImGui::Text("Press R to restore window");
+	ImGui::Text("Press B to enable/disable window resizability");
+	ImGui::End();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void MinimizeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void WindowStateTests::OnAttach()
+{
+	TRAP::Application::GetWindow()->SetTitle("WindowState");
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void WindowStateTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
 	//Render
 	TRAP::Graphics::RenderCommand::SetClearColor();
@@ -23,7 +36,7 @@ void MinimizeTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void MinimizeTests::OnEvent(TRAP::Events::Event& event)
+void WindowStateTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
 
@@ -39,7 +52,7 @@ void MinimizeTests::OnEvent(TRAP::Events::Event& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool MinimizeTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
+bool WindowStateTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 {
 	TP_TRACE(event.ToString());
 
@@ -77,7 +90,7 @@ bool MinimizeTests::OnKeyPress(const TRAP::Events::KeyPressEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool MinimizeTests::OnWindowResize(const TRAP::Events::WindowResizeEvent& event)
+bool WindowStateTests::OnWindowResize(const TRAP::Events::WindowResizeEvent& event)
 {
 	TP_TRACE(event.ToString());
 	
@@ -86,7 +99,7 @@ bool MinimizeTests::OnWindowResize(const TRAP::Events::WindowResizeEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool MinimizeTests::OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event)
+bool WindowStateTests::OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEvent& event)
 {
 	TP_TRACE(event.ToString());
 	
@@ -95,7 +108,7 @@ bool MinimizeTests::OnFrameBufferResize(const TRAP::Events::FrameBufferResizeEve
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool MinimizeTests::OnWindowFocus(const TRAP::Events::WindowFocusEvent& event)
+bool WindowStateTests::OnWindowFocus(const TRAP::Events::WindowFocusEvent& event)
 {
 	TP_TRACE(event.ToString());
 	
@@ -104,7 +117,7 @@ bool MinimizeTests::OnWindowFocus(const TRAP::Events::WindowFocusEvent& event)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool MinimizeTests::OnWindowLostFocus(const TRAP::Events::WindowLostFocusEvent& event)
+bool WindowStateTests::OnWindowLostFocus(const TRAP::Events::WindowLostFocusEvent& event)
 {
 	TP_TRACE(event.ToString());
 
@@ -113,7 +126,7 @@ bool MinimizeTests::OnWindowLostFocus(const TRAP::Events::WindowLostFocusEvent& 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool MinimizeTests::OnWindowMinimize(const TRAP::Events::WindowMinimizeEvent& event)
+bool WindowStateTests::OnWindowMinimize(const TRAP::Events::WindowMinimizeEvent& event)
 {
 	TP_TRACE(event.ToString());
 	
@@ -122,7 +135,7 @@ bool MinimizeTests::OnWindowMinimize(const TRAP::Events::WindowMinimizeEvent& ev
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool MinimizeTests::OnWindowMaximize(const TRAP::Events::WindowMaximizeEvent& event)
+bool WindowStateTests::OnWindowMaximize(const TRAP::Events::WindowMaximizeEvent& event)
 {
 	TP_TRACE(event.ToString());
 
@@ -131,7 +144,7 @@ bool MinimizeTests::OnWindowMaximize(const TRAP::Events::WindowMaximizeEvent& ev
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool MinimizeTests::OnWindowRestore(const TRAP::Events::WindowRestoreEvent& event)
+bool WindowStateTests::OnWindowRestore(const TRAP::Events::WindowRestoreEvent& event)
 {
 	TP_TRACE(event.ToString());
 

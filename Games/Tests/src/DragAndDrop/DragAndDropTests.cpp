@@ -1,7 +1,7 @@
 #include "DragAndDropTests.h"
 
 DragAndDropTests::DragAndDropTests()
-	: Layer("DragAndDrop"), m_dragAndDrop(false)
+	: Layer("DragAndDrop"), m_dragAndDrop(true)
 {
 }
 
@@ -9,7 +9,8 @@ DragAndDropTests::DragAndDropTests()
 
 void DragAndDropTests::OnImGuiRender()
 {
-	ImGui::Begin("Drag And Drop", nullptr);
+	ImGui::Begin("Drag And Drop", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	ImGui::Text("Press D to enable/disable Drag And Drop");
 	if(m_dragAndDrop)
 		ImGui::Text("Drag And Drop: Enabled");
 	else
@@ -19,6 +20,13 @@ void DragAndDropTests::OnImGuiRender()
 	for (const std::string& str : m_dropData)
 		ImGui::Text("%s", str.c_str());
 	ImGui::End();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void DragAndDropTests::OnAttach()
+{
+	TRAP::Application::GetWindow()->SetDragAndDrop(true);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

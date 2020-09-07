@@ -53,7 +53,7 @@ namespace TRAP::Network
 		/// network name (ex: "localhost").
 		/// </summary>
 		/// <param name="address">IPv4 address or network name</param>
-		IPv4Address(const std::string& address);
+		IPv4Address(std::string_view address);
 
 		/// <summary>
 		/// Construct the address from a string.<br>
@@ -156,7 +156,7 @@ namespace TRAP::Network
 		/// Resolve the given address string
 		/// </summary>
 		/// <param name="address">Address string</param>
-		void Resolve(const std::string& address);
+		void Resolve(std::string_view address);
 
 		uint32_t m_address; //Address stored as an unsigned 32 Bit integer
 		bool m_valid; //Is the address valid?

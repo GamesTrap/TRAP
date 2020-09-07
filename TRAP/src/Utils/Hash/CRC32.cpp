@@ -639,7 +639,7 @@ std::array<uint8_t, 4> TRAP::Utils::Hash::CRC32(const void* data, uint64_t lengt
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<uint8_t, 4> TRAP::Utils::Hash::CRC32(const std::string& str)
+std::array<uint8_t, 4> TRAP::Utils::Hash::CRC32(const std::string_view str)
 {
 	return CRC32(str.data(), str.length());
 }

@@ -3,11 +3,12 @@
 
 #include <TRAP.h>
 
-class MinimizeTests final : public TRAP::Layer
+class WindowStateTests final : public TRAP::Layer
 {
 public:
-	MinimizeTests();
+	WindowStateTests();
 
+	void OnImGuiRender() override;
 	void OnAttach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnEvent(TRAP::Events::Event& event) override;

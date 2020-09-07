@@ -16,7 +16,7 @@ namespace TRAP::Graphics
 	public:
 		static void Init();
 		
-		static std::string_view GetTitle();
+		static const std::string& GetTitle();
 		static uint32_t GetDrawCalls();
 		static uint32_t GetFPS();
 		static float GetFrameTime();

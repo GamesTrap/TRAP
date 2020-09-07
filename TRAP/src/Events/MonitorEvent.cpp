@@ -33,10 +33,7 @@ TRAP::Events::MonitorConnectEvent::MonitorConnectEvent(const Monitor monitor)
 
 std::string TRAP::Events::MonitorConnectEvent::ToString() const
 {
-	std::stringstream ss;
-	ss << "MonitorConnectEvent: " << m_monitor.GetName() << " (" << m_monitor.GetID() << ")";
-
-	return ss.str();
+	return "MonitorConnectEvent: " + m_monitor.GetName() + " (" + std::to_string(m_monitor.GetID()) + ')';
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -71,10 +68,7 @@ TRAP::Events::MonitorDisconnectEvent::MonitorDisconnectEvent(const Monitor monit
 
 std::string TRAP::Events::MonitorDisconnectEvent::ToString() const
 {
-	std::stringstream ss;
-	ss << "MonitorDisconnectEvent: " << m_monitor.GetName() << " (" << m_monitor.GetID() << ")";
-
-	return ss.str();
+	return "MonitorDisconnectEvent: " + m_monitor.GetName() + " (" + std::to_string(m_monitor.GetID()) + ')';
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

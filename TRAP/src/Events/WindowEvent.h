@@ -8,11 +8,11 @@ namespace TRAP::Events
 	class WindowResizeEvent final : public Event
 	{
 	public:
-		WindowResizeEvent(uint32_t width, uint32_t height, std::string_view title);
+		WindowResizeEvent(uint32_t width, uint32_t height, std::string title);
 
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		std::string ToString() const override;
 
@@ -23,15 +23,15 @@ namespace TRAP::Events
 
 	private:
 		uint32_t m_width, m_height;
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class WindowMinimizeEvent final : public Event
 	{
 	public:
-		WindowMinimizeEvent(std::string_view title);
+		explicit WindowMinimizeEvent(std::string title);
 
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		std::string ToString() const override;
 
@@ -41,15 +41,15 @@ namespace TRAP::Events
 		int32_t GetCategoryFlags() const override;
 
 	private:
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class WindowMaximizeEvent final : public Event
 	{
 	public:
-		WindowMaximizeEvent(std::string_view title);
+		explicit WindowMaximizeEvent(std::string title);
 
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		std::string ToString() const override;
 
@@ -59,15 +59,15 @@ namespace TRAP::Events
 		int32_t GetCategoryFlags() const override;
 
 	private:
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class WindowRestoreEvent final : public Event
 	{
 	public:
-		WindowRestoreEvent(std::string_view title);
+		explicit WindowRestoreEvent(std::string title);
 
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		std::string ToString() const override;
 
@@ -77,15 +77,15 @@ namespace TRAP::Events
 		int32_t GetCategoryFlags() const override;
 
 	private:
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class WindowCloseEvent final : public Event
 	{
 	public:
-		explicit WindowCloseEvent(std::string_view title);
+		explicit WindowCloseEvent(std::string title);
 
-		std::string_view GetWindowTitle() const;
+		const std::string& GetWindowTitle() const;
 
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
@@ -93,17 +93,17 @@ namespace TRAP::Events
 		int32_t GetCategoryFlags() const override;
 
 	private:
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class WindowMoveEvent final : public Event
 	{
 	public:
-		WindowMoveEvent(int32_t x, int32_t y, std::string_view title);
+		WindowMoveEvent(int32_t x, int32_t y, std::string title);
 
 		int32_t GetX() const;
 		int32_t GetY() const;
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		std::string ToString() const override;
 
@@ -114,15 +114,15 @@ namespace TRAP::Events
 
 	private:
 		int32_t m_x, m_y;
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class WindowFocusEvent final : public Event
 	{
 	public:
-		explicit WindowFocusEvent(std::string_view title);
+		explicit WindowFocusEvent(std::string title);
 
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
@@ -130,15 +130,15 @@ namespace TRAP::Events
 		int32_t GetCategoryFlags() const override;
 
 	private:
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class WindowLostFocusEvent final : public Event
 	{
 	public:
-		explicit WindowLostFocusEvent(std::string_view title);
+		explicit WindowLostFocusEvent(std::string title);
 
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		static EventType GetStaticType();
 		EventType GetEventType() const override;
@@ -146,16 +146,16 @@ namespace TRAP::Events
 		int32_t GetCategoryFlags() const override;
 
 	private:
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class WindowDropEvent final : public Event
 	{
 	public:
-		explicit WindowDropEvent(std::vector<std::string> paths, std::string_view title);
+		explicit WindowDropEvent(std::vector<std::string> paths, std::string title);
 
-		std::vector<std::string> GetPaths() const;
-		std::string_view GetTitle() const;
+		const std::vector<std::string>& GetPaths() const;
+		const std::string& GetTitle() const;
 
 		std::string ToString() const override;
 
@@ -166,17 +166,17 @@ namespace TRAP::Events
 
 	private:
 		std::vector<std::string> m_paths{};
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class WindowContentScaleEvent final : public Event
 	{
 	public:
-		explicit WindowContentScaleEvent(float xScale, float yScale, std::string_view title);
+		explicit WindowContentScaleEvent(float xScale, float yScale, std::string title);
 
 		float GetXScale() const;
 		float GetYScale() const;
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		std::string ToString() const override;
 
@@ -188,17 +188,17 @@ namespace TRAP::Events
 	private:
 		float m_XScale;
 		float m_YScale;
-		std::string_view m_title;
+		std::string m_title;
 	};
 
 	class FrameBufferResizeEvent final : public Event
 	{
 	public:
-		FrameBufferResizeEvent(uint32_t width, uint32_t height, std::string_view title);
+		FrameBufferResizeEvent(uint32_t width, uint32_t height, std::string title);
 
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 
 		std::string ToString() const override;
 
@@ -209,7 +209,7 @@ namespace TRAP::Events
 
 	private:
 		uint32_t m_width, m_height;
-		std::string_view m_title;
+		std::string m_title;
 	};
 }
 

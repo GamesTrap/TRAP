@@ -21,14 +21,14 @@ TRAP::Graphics::Texture2D::Texture2D()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Graphics::Texture2D::GetFilePath() const
+const std::string& TRAP::Graphics::Texture2D::GetFilePath() const
 {
 	return m_filepath;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string& name, const std::string& filepath, TextureParameters parameters)
+TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string& name, const std::string_view filepath, TextureParameters parameters)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -53,7 +53,7 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string& filepath, TextureParameters parameters)
+TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string_view filepath, TextureParameters parameters)
 {
 	TP_PROFILE_FUNCTION();
 

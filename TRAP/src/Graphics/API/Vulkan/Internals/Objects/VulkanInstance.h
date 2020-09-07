@@ -7,7 +7,7 @@ namespace TRAP::Graphics::API::Vulkan
 	{
 	public:
 		Instance(const char* gameName, uint32_t gameVersion);
-		Instance(const char* gameName, uint32_t gameVersion, std::vector<std::string>& instanceLayers, std::vector<std::string>& instanceExtensions);
+		Instance(const char* gameName, uint32_t gameVersion, const std::vector<std::string>& instanceLayers, const std::vector<std::string>& instanceExtensions);
 		~Instance();
 		Instance(const Instance&) = default;
 		Instance& operator=(const Instance&) = default;

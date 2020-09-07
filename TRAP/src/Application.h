@@ -83,7 +83,7 @@ namespace TRAP
 		static LinuxWindowManager GetLinuxWindowManager();
 		static ThreadPool& GetThreadPool();
 
-		static void SetClipboardString(const std::string& string);
+		static void SetClipboardString(std::string_view string);
 		static std::string GetClipboardString();
 
 		static const CPUInfo& GetCPUInfo();

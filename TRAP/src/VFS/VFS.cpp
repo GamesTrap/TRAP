@@ -100,7 +100,7 @@ void TRAP::VFS::Unmount(const std::string& virtualPath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::VFS::ResolveReadPhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath, const bool silent)
+bool TRAP::VFS::ResolveReadPhysicalPath(const std::string_view path, std::filesystem::path& outPhysicalPath, const bool silent)
 {
 	if(path.empty())
 	{
@@ -117,14 +117,12 @@ bool TRAP::VFS::ResolveReadPhysicalPath(const std::string& path, std::filesystem
 		return FileOrFolderExists(path, silent);
 	}
 
-	std::vector<std::string> dirs = Utils::String::SplitString(path, '/');
-	std::string virtualDir = dirs.front();
-	virtualDir = Utils::String::ToLower(virtualDir);
+	const std::string virtualDir = Utils::String::ToLower(Utils::String::SplitString(path, '/').front());
 
 	if (s_Instance->m_mountPoints.find('/' + virtualDir) == s_Instance->m_mountPoints.end() || s_Instance->m_mountPoints['/' + virtualDir].empty())
 		return false;
 
-	const std::string remainder = path.substr(virtualDir.size() + 1, path.size() - virtualDir.size());
+	const std::string remainder = std::string(path.substr(virtualDir.size() + 1, path.size() - virtualDir.size()));
 	for (const std::string& physicalPath : s_Instance->m_mountPoints['/' + virtualDir])
 	{
 		std::string newPath = physicalPath + remainder;
@@ -141,7 +139,7 @@ bool TRAP::VFS::ResolveReadPhysicalPath(const std::string& path, std::filesystem
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::VFS::ResolveWritePhysicalPath(const std::string& path, std::filesystem::path& outPhysicalPath)
+bool TRAP::VFS::ResolveWritePhysicalPath(const std::string_view path, std::filesystem::path& outPhysicalPath)
 {
 	if(path.empty())
 	{
@@ -156,14 +154,12 @@ bool TRAP::VFS::ResolveWritePhysicalPath(const std::string& path, std::filesyste
 		return true;
 	}
 
-	std::vector<std::string> dirs = Utils::String::SplitString(path, '/');
-	std::string virtualDir = dirs.front();
-	virtualDir = Utils::String::ToLower(virtualDir);
+	const std::string virtualDir = Utils::String::ToLower(Utils::String::SplitString(path, '/').front());
 
 	if (s_Instance->m_mountPoints.find('/' + virtualDir) == s_Instance->m_mountPoints.end() || s_Instance->m_mountPoints['/' + virtualDir].empty())
 		return false;
 
-	const std::string remainder = path.substr(virtualDir.size() + 1, path.size() - virtualDir.size());
+	const std::string remainder = std::string(path.substr(virtualDir.size() + 1, path.size() - virtualDir.size()));
 	for (const std::string& physicalPath : s_Instance->m_mountPoints['/' + virtualDir])
 	{
 		const std::string newPath = physicalPath + remainder;
@@ -196,7 +192,7 @@ std::vector<std::filesystem::path> TRAP::VFS::ResolveToPhysicalPaths(const std::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::VFS::ReadFile(const std::string& path, bool silent)
+std::vector<uint8_t> TRAP::VFS::ReadFile(const std::string& path, const bool silent)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -208,7 +204,7 @@ std::vector<uint8_t> TRAP::VFS::ReadFile(const std::string& path, bool silent)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::VFS::ReadTextFile(const std::string& path, bool silent)
+std::string TRAP::VFS::ReadTextFile(const std::string_view path, const bool silent)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -232,7 +228,7 @@ bool TRAP::VFS::WriteFile(const std::string& path, std::vector<uint8_t>& buffer,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::VFS::WriteTextFile(const std::string& path, const std::string& text, const WriteMode mode)
+bool TRAP::VFS::WriteTextFile(const std::string_view path, const std::string& text, const WriteMode mode)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -560,14 +556,13 @@ TRAP::FileWatcher* TRAP::VFS::GetTextureFileWatcher()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::VFS::MakeVirtualPathCompatible(const std::string& virtualPath)
+std::string TRAP::VFS::MakeVirtualPathCompatible(const std::string_view virtualPath)
 {
 	if (virtualPath.empty())
 		return {};
 	
 	std::vector<std::string> dirs = Utils::String::SplitString(virtualPath, '/');
-	std::string virtualDir = dirs.front();
-	virtualDir = Utils::String::ToLower(virtualDir);
+	const std::string virtualDir = Utils::String::ToLower(dirs.front());
 
 	std::string remainder;
 	if(dirs.size() > 1)
@@ -580,8 +575,7 @@ std::string TRAP::VFS::MakeVirtualPathCompatible(const std::string& virtualPath)
 
 std::string TRAP::VFS::GetFileName(const std::string& virtualPath)
 {
-	std::string result = Utils::String::SplitString(virtualPath, '/').back();
-	result = result.substr(0, result.size() - (Utils::String::GetSuffix(result).size() + 1));
+	const std::string result = Utils::String::SplitString(virtualPath, '/').back();
 
-	return result;
+	return result.substr(0, result.size() - (Utils::String::GetSuffixStringView(result).size() + 1));
 }

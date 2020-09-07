@@ -36,7 +36,7 @@ TRAP::Graphics::API::VulkanTexture2D::VulkanTexture2D(std::string name, const Sc
 
 	if(img)
 	{
-		m_filepath = VFS::MakeVirtualPathCompatible(std::string(img->GetFilePath()));		
+		m_filepath = VFS::MakeVirtualPathCompatible(img->GetFilePath());
 	}
 
 	TP_WARN(Log::Texture2DVulkanPrefix, "WIP");
@@ -44,7 +44,7 @@ TRAP::Graphics::API::VulkanTexture2D::VulkanTexture2D(std::string name, const Sc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanTexture2D::VulkanTexture2D(std::string name, const std::string& filepath, const TextureParameters parameters)
+TRAP::Graphics::API::VulkanTexture2D::VulkanTexture2D(std::string name, const std::string_view filepath, const TextureParameters parameters)
 {
 	TP_PROFILE_FUNCTION();
 

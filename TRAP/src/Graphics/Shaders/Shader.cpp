@@ -13,7 +13,7 @@ const TRAP::Graphics::Shader* TRAP::Graphics::Shader::s_CurrentlyBound = nullptr
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Graphics::Shader::GetName() const
+const std::string& TRAP::Graphics::Shader::GetName() const
 {
 	TP_PROFILE_FUNCTION();
 
@@ -22,7 +22,7 @@ std::string_view TRAP::Graphics::Shader::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Graphics::Shader::GetFilePath() const
+const std::string& TRAP::Graphics::Shader::GetFilePath() const
 {
 	TP_PROFILE_FUNCTION();
 
@@ -189,7 +189,13 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const std::string& name, const std::string& VSSource, const std::string& FSSource, const std::string& GSSource, const std::string& TCSSource, const std::string& TESSource, const std::string& CSSource)
+TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const std::string& name,
+																			 const std::string_view VSSource,
+																			 const std::string_view FSSource,
+																			 const std::string_view GSSource,
+																			 const std::string_view TCSSource,
+																			 const std::string_view TESSource,
+																			 const std::string_view CSSource)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -237,7 +243,7 @@ std::string TRAP::Graphics::Shader::ShaderTypeToString(const ShaderType type)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::string& filePath)
+bool TRAP::Graphics::Shader::CheckSPIRVMagicNumber(const std::string_view filePath)
 {
 	//Check SPIRV Magic Number
 	std::filesystem::path physicalPath;

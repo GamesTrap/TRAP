@@ -24,7 +24,7 @@ namespace TRAP::Graphics
 		virtual void UpdateData(const void* data) = 0;
 		virtual void UpdateSubData(const void* data, uint32_t size, uint32_t offset) = 0;
 
-		virtual std::string_view GetName() const = 0;
+		virtual const std::string& GetName() const = 0;
 		virtual uint32_t GetSize() const = 0;
 		virtual BufferUsage GetUsage() const = 0;
 	};

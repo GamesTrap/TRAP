@@ -38,15 +38,18 @@ TRAP::Graphics::API::Vulkan::Instance::Instance(const char* gameName, const uint
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::Vulkan::Instance::Instance(const char* gameName, const uint32_t gameVersion, std::vector<std::string>& instanceLayers, std::vector<std::string>& instanceExtensions)
+TRAP::Graphics::API::Vulkan::Instance::Instance(const char* gameName,
+                                                const uint32_t gameVersion,
+                                                const std::vector<std::string>& instanceLayers,
+                                                const std::vector<std::string>& instanceExtensions)
 	: m_instance(nullptr), m_layers(instanceLayers), m_extensions(instanceExtensions)
 {	
 	VkApplicationInfo appInfo = Initializers::ApplicationInfo(gameName, gameVersion);
 
 	std::vector<const char*> layers(instanceLayers.size());
 	std::vector<const char*> extensions(instanceExtensions.size());
-	std::transform(instanceLayers.begin(), instanceLayers.end(), layers.begin(), [](const std::string& s) {return s.c_str(); });
-	std::transform(instanceExtensions.begin(), instanceExtensions.end(), extensions.begin(), [](const std::string& s) {return s.c_str(); });
+	std::transform(instanceLayers.begin(), instanceLayers.end(), layers.begin(), [](const std::string_view s) {return s.data(); });
+	std::transform(instanceExtensions.begin(), instanceExtensions.end(), extensions.begin(), [](const std::string_view s) {return s.data(); });
 	
 	VkInstanceCreateInfo instanceInfo = Initializers::InstanceCreateInfo(appInfo, layers, extensions);
 

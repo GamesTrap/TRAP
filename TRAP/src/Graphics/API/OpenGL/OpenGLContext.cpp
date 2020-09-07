@@ -115,7 +115,7 @@ bool TRAP::Graphics::API::OpenGLContext::IsOpenGLCapable()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::OpenGLContext::IsExtensionSupported(const std::string& extension)
+bool TRAP::Graphics::API::OpenGLContext::IsExtensionSupported(const std::string_view extension)
 {
 	uint32_t numExtensions = 0;
 
@@ -124,7 +124,7 @@ bool TRAP::Graphics::API::OpenGLContext::IsExtensionSupported(const std::string&
 	for (uint32_t i = 0; i < numExtensions; i++)
 	{
 		OpenGLCall(const uint8_t* e = glGetStringi(GL_EXTENSIONS, i));
-		if (!strcmp(reinterpret_cast<const char*>(e), extension.c_str()))
+		if (!strcmp(reinterpret_cast<const char*>(e), extension.data()))
 			return true;
 	}
 

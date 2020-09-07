@@ -1293,7 +1293,7 @@ namespace TRAP::INTERNAL
 		//Sets the specified window context API to the desired value
 		static void SetContextAPI(ContextAPI contextAPI);
 		//Returns the name of the specified monitor.
-		static std::string GetMonitorName(const InternalMonitor* monitor);
+		static const std::string& GetMonitorName(const InternalMonitor* monitor);
 		//Returns the primary monitor.
 		static const Scope<InternalMonitor>& GetPrimaryMonitor();
 		//Returns the currently connected monitors.
@@ -1502,7 +1502,7 @@ namespace TRAP::INTERNAL
 		//Wayland: The size limits will not be applied until the window is actually resized, either by the user or by the compositor.
 		static void SetWindowSizeLimits(InternalWindow* window, int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight);
 		//Sets the clipboard to the specified string.
-		static void SetClipboardString(const std::string& string);
+		static void SetClipboardString(std::string_view string);
 		//Returns the contents of the clipboard as a string.
 		static std::string GetClipboardString();
 		//Returns the window whose context is current on the calling thread.
@@ -1512,7 +1512,7 @@ namespace TRAP::INTERNAL
 		//Sets the swap interval for the current context.
 		static void SwapInterval(int32_t interval);
 		//Returns whether the specified extension is available.
-		static bool ExtensionSupported(const std::string& extension);
+		static bool ExtensionSupported(std::string_view extension);
 		//Returns the address of the specified function for the current context.
 		static GLProcess GetProcAddress(const char* procName);
 		//Returns whether the Vulkan loader and an ICD have been found.
@@ -1599,7 +1599,7 @@ namespace TRAP::INTERNAL
 		static void PlatformSetRawMouseMotion(const InternalWindow* window, bool enabled);
 		static int32_t PlatformGetKeyScanCode(Input::Key key);
 		static const char* PlatformGetScanCodeName(int32_t scanCode);
-		static void PlatformSetClipboardString(const std::string& string);
+		static void PlatformSetClipboardString(std::string_view string);
 		static std::string PlatformGetClipboardString();
 		static void PlatformGetRequiredInstanceExtensions(std::array<std::string, 2>& extensions);
 		static VkResult PlatformCreateWindowSurface(VkInstance instance, const InternalWindow* window,

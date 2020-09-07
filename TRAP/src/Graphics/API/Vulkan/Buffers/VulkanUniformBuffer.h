@@ -22,7 +22,7 @@ namespace TRAP::Graphics::API
 		void UpdateData(const void* data) override;
 		void UpdateSubData(const void* data, uint32_t size, uint32_t offset) override;
 
-		std::string_view GetName() const override;
+		const std::string& GetName() const override;
 		uint32_t GetSize() const override;
 		BufferUsage GetUsage() const override;
 

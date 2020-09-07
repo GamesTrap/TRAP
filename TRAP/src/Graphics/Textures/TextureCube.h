@@ -15,9 +15,9 @@ namespace TRAP::Graphics
 	class TextureCube : public Texture
 	{
 	public:
-		static Scope<TextureCube> CreateFromFiles(const std::string& name, const std::array<std::string, 6>& filepaths, TextureParameters parameters = TextureParameters());
-		static Scope<TextureCube> CreateFromCross(const std::string& name, const std::string& filepath, InputFormat format, TextureParameters parameters = TextureParameters());
-		static Scope<TextureCube> CreateFromCross(const std::string& filepath, InputFormat format, TextureParameters parameters = TextureParameters());
+		static Scope<TextureCube> CreateFromFiles(const std::string& name, const std::array<std::string_view, 6>& filepaths, TextureParameters parameters = TextureParameters());
+		static Scope<TextureCube> CreateFromCross(const std::string& name, std::string_view filepath, InputFormat format, TextureParameters parameters = TextureParameters());
+		static Scope<TextureCube> CreateFromCross(std::string_view filepath, InputFormat format, TextureParameters parameters = TextureParameters());
 		static Scope<TextureCube> CreateFromCrossImage(const std::string& name, const Scope<Image>& img, InputFormat format, TextureParameters parameters = TextureParameters());
 		static Scope<TextureCube> Create(TextureParameters parameters = TextureParameters());
 

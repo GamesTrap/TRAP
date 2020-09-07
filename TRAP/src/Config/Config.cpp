@@ -14,30 +14,25 @@ TRAP::Utils::Config::Config()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Config::LoadFromFile(const std::string& filename)
+bool TRAP::Utils::Config::LoadFromFile(const std::string_view filename)
 {
 	TP_PROFILE_FUNCTION();
 	
 	m_data.clear();
-	m_filename = filename;
 
-	return Read();
+	return Read(filename);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Config::SaveToFile(const std::string& filename)
+bool TRAP::Utils::Config::SaveToFile(const std::string_view filename)
 {
 	TP_PROFILE_FUNCTION();
 	
-	m_filename = filename;
-	
 	if (m_isChanged)
 	{
-		TP_INFO(TRAP::Log::ConfigPrefix, "Saving: ", m_filename);
 		m_isChanged = false;
-
-		return Write();
+		return Write(filename);
 	}
 
 	return true;
@@ -68,13 +63,13 @@ void TRAP::Utils::Config::Print() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Config::Read()
+bool TRAP::Utils::Config::Read(const std::string_view filename)
 {
-	const std::string input = VFS::ReadTextFile(m_filename);
+	const std::string input = VFS::ReadTextFile(filename);
 	if (input.empty())
 		return false;
 
-	TP_INFO(TRAP::Log::ConfigPrefix, "Loading File: \"", m_filename, "\"");
+	TP_INFO(TRAP::Log::ConfigPrefix, "Loading File: \"", filename, "\"");
 	std::vector<std::string_view> lines = String::SplitStringView(input, '\n');
 
 	for (const auto& line : lines)
@@ -98,12 +93,14 @@ bool TRAP::Utils::Config::Read()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Config::Write() const
+bool TRAP::Utils::Config::Write(const std::string_view filename) const
 {	
 	std::vector<std::pair<std::string, std::string>> fileContents;
 
+	TP_INFO(TRAP::Log::ConfigPrefix, "Saving File: \"", filename, "\"");
+	
 	//Read the file into a vector and replace the values of the keys that match with our map
-	const std::string input = VFS::ReadTextFile(m_filename);
+	const std::string input = VFS::ReadTextFile(filename);
 	if (!input.empty())
 	{
 		std::vector<std::string> lines = String::SplitString(input, '\n');
@@ -111,15 +108,22 @@ bool TRAP::Utils::Config::Write() const
 		for (const auto& line : lines)
 		{
 			//Parse line
-			auto [key, value] = ParseLine(line);
+			auto pLine = ParseLine(line);
+			auto& [key, value] = pLine;
 
 			if (!key.empty())
 			{
 				//Check if the key is found in the vector
-				const auto it = std::find_if(m_data.begin(), m_data.end(), [&key](const std::pair<std::string, std::string>& element) {return element.first == key; });
+				const auto it = std::find_if(m_data.begin(), m_data.end(),
+					[&pLine](const std::pair<std::string, std::string>& element)
+					{
+						return Utils::String::CompareAnyCase(element.first, pLine.first);
+					});
 				if (it != m_data.end())
+				{
 					//If so take it's value, otherwise the value from the file is kept
 					value = it->second;
+				}
 			}
 			else
 			{
@@ -148,7 +152,7 @@ bool TRAP::Utils::Config::Write() const
 		ss << '\n';
 	}
 
-	return VFS::WriteTextFile(m_filename, ss.str());
+	return VFS::WriteTextFile(filename, ss.str());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

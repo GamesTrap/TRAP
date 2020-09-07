@@ -85,7 +85,7 @@ bool TRAP::Image::IsHDR() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Image::GetFilePath() const
+const std::string& TRAP::Image::GetFilePath() const
 {
 	return m_filepath;
 }

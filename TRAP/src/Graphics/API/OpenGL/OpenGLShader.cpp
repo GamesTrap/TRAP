@@ -7,7 +7,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, const std::string& source)
+TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, const std::string_view source)
 	: m_handle(0)
 {
 	TP_PROFILE_FUNCTION();
@@ -19,7 +19,7 @@ TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, const std::str
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, std::vector<uint32_t>& source)
+TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, const std::vector<uint32_t>& source)
 	: m_handle(0)
 {
 	TP_PROFILE_FUNCTION();
@@ -31,14 +31,20 @@ TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, std::vector<ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name, std::string VSSource, std::string FSSource, std::string GSSource, std::string TCSSource, std::string TESSource, std::string CSSource)
+TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name,
+                                                const std::string_view VSSource,
+                                                const std::string_view FSSource,
+                                                const std::string_view GSSource,
+                                                const std::string_view TCSSource,
+                                                const std::string_view TESSource,
+                                                const std::string_view CSSource)
 	: m_handle(0)
 {
 	TP_PROFILE_FUNCTION();
 
 	m_name = std::move(name);
 	
-	InitGLSL(std::move(VSSource), std::move(FSSource), std::move(GSSource), std::move(TCSSource), std::move(TESSource), std::move(CSSource));
+	InitGLSL(VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -102,7 +108,7 @@ uint32_t TRAP::Graphics::API::OpenGLShader::GetHandle() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::InitGLSL(const std::string& source)
+void TRAP::Graphics::API::OpenGLShader::InitGLSL(const std::string_view source)
 {
 	TP_DEBUG(Log::ShaderOpenGLGLSLPrefix, "Compiling: \"", m_name, "\"");
 	
@@ -131,7 +137,7 @@ void TRAP::Graphics::API::OpenGLShader::InitGLSL(const std::string& source)
 		return;
 	}
 	
-	m_handle = CompileGLSL(shaders);
+	m_handle = CompileGLSL({shaders[0],shaders[1], shaders[2], shaders[3], shaders[4], shaders[5]});
 	if (!m_handle)
 	{
 		TP_WARN(Log::ShaderOpenGLGLSLPrefix, "Shader: \"", m_name, "\" using fallback Shader: \"Fallback\"");
@@ -142,21 +148,21 @@ void TRAP::Graphics::API::OpenGLShader::InitGLSL(const std::string& source)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::InitGLSL(std::string VSSource,
-                                                 std::string FSSource,
-                                                 std::string GSSource,
-                                                 std::string TCSSource,
-                                                 std::string TESSource,
-                                                 std::string CSSource)
+void TRAP::Graphics::API::OpenGLShader::InitGLSL(const std::string_view VSSource,
+                                                 const std::string_view FSSource,
+                                                 const std::string_view GSSource,
+                                                 const std::string_view TCSSource,
+                                                 const std::string_view TESSource,
+                                                 const std::string_view CSSource)
 {
 	TP_DEBUG(Log::ShaderOpenGLGLSLPrefix, "Compiling: \"", m_name, "\"");
 	
-	std::array<std::string, 6> shaders{ std::move(VSSource),
-										std::move(FSSource),
-										std::move(GSSource),
-										std::move(TCSSource),
-										std::move(TESSource),
-										std::move(CSSource)
+	std::array<std::string_view, 6> shaders{ VSSource,
+											 FSSource,
+											 GSSource,
+											 TCSSource,
+											 TESSource,
+											 CSSource
 	};	
 
 	bool isEmpty = true;
@@ -185,7 +191,7 @@ void TRAP::Graphics::API::OpenGLShader::InitGLSL(std::string VSSource,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::InitSPIRV(std::vector<uint32_t>& source)
+void TRAP::Graphics::API::OpenGLShader::InitSPIRV(const std::vector<uint32_t>& source)
 {
 	std::array<std::vector<uint32_t>, 6> SPIRVShaders{};
 	uint32_t index = 0;
@@ -196,7 +202,7 @@ void TRAP::Graphics::API::OpenGLShader::InitSPIRV(std::vector<uint32_t>& source)
 		const uint32_t SPIRVSize = source[index++];
 		uint32_t shaderType = source[index++];
 
-		const std::vector<uint32_t> tempSPIRV = std::vector<uint32_t>(source.begin() + index, source.begin() + index + SPIRVSize);
+		const std::vector<uint32_t> tempSPIRV(source.begin() + index, source.begin() + index + SPIRVSize);
 		index += SPIRVSize;
 
 		switch(static_cast<ShaderType>(shaderType))
@@ -231,9 +237,9 @@ void TRAP::Graphics::API::OpenGLShader::InitSPIRV(std::vector<uint32_t>& source)
 	}
 
 	TP_DEBUG(Log::ShaderOpenGLSPIRVPrefix, "Converting: \"", m_name, "\" to GLSL");
-	std::array<std::string, 6> GLSLShaders = ConvertSPIRVToGLSL(SPIRVShaders);
+	const std::array<std::string, 6> GLSLShaders = ConvertSPIRVToGLSL(SPIRVShaders);
 	TP_DEBUG(Log::ShaderOpenGLGLSLPrefix, "Compiling: \"", m_name, "\"");
-	m_handle = CompileGLSL(GLSLShaders);
+	m_handle = CompileGLSL({GLSLShaders[0], GLSLShaders[1], GLSLShaders[2], GLSLShaders[3], GLSLShaders[4], GLSLShaders[5]});
 	if (!m_handle)
 	{
 		TP_WARN(Log::ShaderOpenGLGLSLPrefix, "Shader: \"", m_name, "\" using fallback Shader: \"Fallback\"");
@@ -244,7 +250,7 @@ void TRAP::Graphics::API::OpenGLShader::InitSPIRV(std::vector<uint32_t>& source)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::OpenGLShader::CompileGLSL(std::array<std::string, 6>& shaders)
+uint32_t TRAP::Graphics::API::OpenGLShader::CompileGLSL(const std::array<std::string_view, 6>& shaders)
 {
 	uint32_t program = 0;
 	uint32_t vertex = 0, fragment = 0, geometry = 0, tessControl = 0, tessEval = 0, compute = 0;
@@ -284,7 +290,7 @@ bool TRAP::Graphics::API::OpenGLShader::CompileGLSLShader(const ShaderType type,
 		OpenGLCall(glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &length));
 		std::vector<char> error(length);
 		OpenGLCall(glGetShaderInfoLog(handle, length, &length, error.data()));
-		const std::string errorMessage(error.data(), length - 1);
+		const std::string_view errorMessage(error.data(), length - 1);
 		TP_ERROR("[Shader][OpenGL][GLSL][", ShaderTypeToString(type), "] Failed to compile Shader!");
 		TP_ERROR("[Shader][OpenGL][GLSL][", ShaderTypeToString(type), "] ", errorMessage);
 		OpenGLCall(glDeleteShader(handle));
@@ -297,7 +303,7 @@ bool TRAP::Graphics::API::OpenGLShader::CompileGLSLShader(const ShaderType type,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(std::array<std::string, 6>& shaders,
+bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(const std::array<std::string_view, 6>& shaders,
 	uint32_t& vertex,
 	uint32_t& fragment,
 	uint32_t& geometry,
@@ -310,7 +316,7 @@ bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(std::array<std::string
 
 	if (!shaders[0].empty())
 	{
-		if (!CompileGLSLShader(ShaderType::Vertex, shaders[0].c_str(), vertex))
+		if (!CompileGLSLShader(ShaderType::Vertex, shaders[0].data(), vertex))
 			return false;
 
 		OpenGLCall(glAttachShader(handle, vertex));
@@ -318,7 +324,7 @@ bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(std::array<std::string
 
 	if (!shaders[1].empty())
 	{
-		if (!CompileGLSLShader(ShaderType::Fragment, shaders[1].c_str(), fragment))
+		if (!CompileGLSLShader(ShaderType::Fragment, shaders[1].data(), fragment))
 			return false;
 
 		OpenGLCall(glAttachShader(handle, fragment));
@@ -326,7 +332,7 @@ bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(std::array<std::string
 
 	if (!shaders[2].empty())
 	{
-		if (!CompileGLSLShader(ShaderType::Geometry, shaders[2].c_str(), geometry))
+		if (!CompileGLSLShader(ShaderType::Geometry, shaders[2].data(), geometry))
 			return false;
 
 		OpenGLCall(glAttachShader(handle, geometry));
@@ -334,7 +340,7 @@ bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(std::array<std::string
 
 	if (!shaders[3].empty())
 	{
-		if (!CompileGLSLShader(ShaderType::Tessellation_Control, shaders[3].c_str(), tessControl))
+		if (!CompileGLSLShader(ShaderType::Tessellation_Control, shaders[3].data(), tessControl))
 			return false;
 
 		OpenGLCall(glAttachShader(handle, tessControl));
@@ -342,7 +348,7 @@ bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(std::array<std::string
 
 	if (!shaders[4].empty())
 	{
-		if (!CompileGLSLShader(ShaderType::Tessellation_Evaluation, shaders[4].c_str(), tessEval))
+		if (!CompileGLSLShader(ShaderType::Tessellation_Evaluation, shaders[4].data(), tessEval))
 			return false;
 
 		OpenGLCall(glAttachShader(handle, tessEval));
@@ -350,7 +356,7 @@ bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(std::array<std::string
 
 	if (!shaders[5].empty())
 	{
-		if (!CompileGLSLShader(ShaderType::Compute, shaders[5].c_str(), compute))
+		if (!CompileGLSLShader(ShaderType::Compute, shaders[5].data(), compute))
 			return false;
 
 		OpenGLCall(glAttachShader(handle, compute));
@@ -371,7 +377,7 @@ void TRAP::Graphics::API::OpenGLShader::LinkGLSLProgram(int32_t& linkResult, int
 		OpenGLCall(glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length));
 		std::vector<char> error(length);
 		OpenGLCall(glGetProgramInfoLog(handle, length, &length, error.data()));
-		const std::string errorMessage(error.data(), length - 1);
+		const std::string_view errorMessage(error.data(), length - 1);
 		TP_ERROR(Log::ShaderOpenGLGLSLProgramPrefix, "Failed to link Program!");
 		TP_ERROR(Log::ShaderOpenGLGLSLProgramPrefix, errorMessage);
 	}
@@ -387,7 +393,7 @@ void TRAP::Graphics::API::OpenGLShader::LinkGLSLProgram(int32_t& linkResult, int
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::DeleteGLSLShaders(std::array<std::string, 6>& shaders,
+void TRAP::Graphics::API::OpenGLShader::DeleteGLSLShaders(const std::array<std::string_view, 6>& shaders,
 	const uint32_t& vertex,
 	const uint32_t& fragment,
 	const uint32_t& geometry,
@@ -435,7 +441,7 @@ void TRAP::Graphics::API::OpenGLShader::DeleteGLSLShaders(std::array<std::string
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<std::string, 6> TRAP::Graphics::API::OpenGLShader::ConvertSPIRVToGLSL(std::array<std::vector<uint32_t>, 6>& SPIRVShaders)
+std::array<std::string, 6> TRAP::Graphics::API::OpenGLShader::ConvertSPIRVToGLSL(const std::array<std::vector<uint32_t>, 6>& SPIRVShaders)
 {
 	std::array<std::string, 6> GLSLShaders{};
 	
@@ -584,7 +590,7 @@ void TRAP::Graphics::API::OpenGLShader::CheckForUniforms()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, std::array<std::string, 6>& shaders)
+bool TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string_view source, std::array<std::string, 6>& shaders)
 {
 	ShaderType type = ShaderType::Unknown;
 
@@ -596,37 +602,23 @@ bool TRAP::Graphics::API::OpenGLShader::PreProcess(const std::string& source, st
 		if (Utils::String::StartsWith(Utils::String::ToLower(lines[i]), "#shader"))
 		{
 			if (Utils::String::FindToken(Utils::String::ToLower(lines[i]), "vertex"))
-			{
 				type = ShaderType::Vertex;
-			}
 			else if (Utils::String::FindToken(Utils::String::ToLower(lines[i]), "fragment"))
-			{
 				type = ShaderType::Fragment;
-			}
 			else if (Utils::String::FindToken(Utils::String::ToLower(lines[i]), "geometry"))
-			{
 				type = ShaderType::Geometry;
-			}
 			else if (Utils::String::FindToken(Utils::String::ToLower(lines[i]), "tessellation"))
 			{
 				if (Utils::String::FindToken(Utils::String::ToLower(lines[i]), "control"))
-				{
 					type = ShaderType::Tessellation_Control;
-				}
 				else if (Utils::String::FindToken(Utils::String::ToLower(lines[i]), "evaluation"))
-				{
 					type = ShaderType::Tessellation_Evaluation;
-				}
 			}
 			else if (Utils::String::FindToken(Utils::String::ToLower(lines[i]), "compute"))
-			{
 				type = ShaderType::Compute;				
-			}
 		}
 		else if(Utils::String::StartsWith(Utils::String::ToLower(lines[i]), "#version"))
-		{
 			TP_WARN(Log::ShaderOpenGLGLSLPrefix, "Found Tag: \"", lines[i], "\" this is unnecessary! Skipping Line: ", i);
-		}
 		else if (type != ShaderType::Unknown)
 		{
 			shaders[static_cast<int32_t>(type) - 1].append(lines[i]);

@@ -37,7 +37,7 @@ TRAP::Graphics::Texture::Texture()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Graphics::Texture::GetName() const
+const std::string& TRAP::Graphics::Texture::GetName() const
 {
 	return m_name;
 }

@@ -25,7 +25,7 @@ namespace TRAP::Graphics::API
 		static bool IsOpenGLCapable();
 
 	private:
-		static bool IsExtensionSupported(const std::string& extension);
+		static bool IsExtensionSupported(std::string_view extension);
 		
 		static bool s_IsOpenGLInitialized;
 	};

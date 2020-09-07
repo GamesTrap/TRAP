@@ -224,20 +224,22 @@ std::string TRAP::Utils::String::GetSuffix(const std::string_view name)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Utils::String::ToLower(std::string string)
+std::string TRAP::Utils::String::ToLower(const std::string& string)
 {
-	std::transform(string.begin(), string.end(), string.begin(), ::tolower);
+	std::string result(string);
+	std::transform(result.begin(), result.end(), result.begin(), ::tolower);
 
-	return string;
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::Utils::String::ToUpper(std::string string)
+std::string TRAP::Utils::String::ToUpper(const std::string& string)
 {
-	std::transform(string.begin(), string.end(), string.begin(), ::toupper);
+	std::string result(string);
+	std::transform(result.begin(), result.end(), result.begin(), ::toupper);
 
-	return string;
+	return result;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

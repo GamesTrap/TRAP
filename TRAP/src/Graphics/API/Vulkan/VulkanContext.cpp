@@ -19,7 +19,7 @@ TRAP::INTERNAL::WindowingAPI::InternalWindow* TRAP::Graphics::API::VulkanContext
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Graphics::API::VulkanContext::s_appName;
+std::string TRAP::Graphics::API::VulkanContext::s_appName;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -113,9 +113,9 @@ bool TRAP::Graphics::API::VulkanContext::IsVulkanCapable()
 		
 		//Get Required and Available Extensions
 		std::array<std::string, 2> requiredExtensions = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
-		for(const std::string& str : requiredExtensions)
+		for(std::string_view str : requiredExtensions)
 		{
-			if (!Vulkan::Instance::IsExtensionSupported(str.c_str()))
+			if (!Vulkan::Instance::IsExtensionSupported(str.data()))
 			{
 				TP_CRITICAL(Log::ContextVulkanPrefix, "Required Instance Extension: \"", str, "\" Is NOT Supported!");
 				return false;
@@ -174,7 +174,7 @@ TRAP::INTERNAL::WindowingAPI::InternalWindow* TRAP::Graphics::API::VulkanContext
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Graphics::API::VulkanContext::GetAppName()
+const std::string& TRAP::Graphics::API::VulkanContext::GetAppName()
 {
 	return s_appName;
 }

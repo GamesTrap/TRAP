@@ -550,7 +550,7 @@ TRAP::Network::FTP::Response TRAP::Network::FTP::DataChannel::Open(const Transfe
 		if(begin != std::string::npos)
 		{
 			std::array<uint8_t, 6> data{};
-			std::string str = response.GetMessage().substr(begin);
+			const std::string str = response.GetMessage().substr(begin);
 			std::size_t index = 0;
 			for (uint8_t& i : data)
 			{

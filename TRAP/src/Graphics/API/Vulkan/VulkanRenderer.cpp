@@ -68,8 +68,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 				m_instance, VulkanContext::GetCurrentWindow());
 	for(auto& device : physicalDevices)
 		m_deviceNamesAndUUIDs.emplace_back(device.second.GetPhysicalDeviceName(), device.second.GetUUID());
-	std::string GPUUUIDString;
-	Application::GetConfig().Get("VulkanGPU", GPUUUIDString);
+	const std::string_view GPUUUIDString = Application::GetConfig().Get<std::string_view>("VulkanGPU");
 	const std::vector<uint8_t> GPUUUID = Utils::UUIDFromString(GPUUUIDString);
 	if(GPUUUID.empty())
 	{
@@ -469,7 +468,7 @@ void TRAP::Graphics::API::VulkanRenderer::Draw(const Scope<VertexArray>& vertexA
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Graphics::API::VulkanRenderer::GetTitle() const
+const std::string& TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 {
 	return m_rendererTitle;
 }

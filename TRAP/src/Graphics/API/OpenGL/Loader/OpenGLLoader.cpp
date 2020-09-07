@@ -189,7 +189,7 @@ static bool GetExtensions()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-static bool HasExtension(const std::string& extension)
+static bool HasExtension(const std::string_view extension)
 {
 	TP_PROFILE_FUNCTION();
 	
@@ -201,11 +201,11 @@ static bool HasExtension(const std::string& extension)
 
 		while(true)
 		{
-			const char* loc = std::strstr(localExtensions, extension.c_str());
+			const char* loc = std::strstr(localExtensions, extension.data());
 			if (loc == nullptr)
 				return false;
 
-			const char* terminator = loc + std::strlen(extension.c_str());
+			const char* terminator = loc + std::strlen(extension.data());
 			if ((loc == localExtensions || *(loc - 1) == ' ') && (*terminator == ' ' || *terminator == '\0'))
 				return true;
 			localExtensions = terminator;
@@ -1729,11 +1729,11 @@ static void FindCoreOpenGL()
 {
 	TP_PROFILE_FUNCTION();
 
-	const std::string version(reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+	const std::string_view version(reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 	if (version.empty())
 		return;
 
-	std::vector<std::string> splittedVersion = TRAP::Utils::String::SplitString(version, '.');
+	const std::vector<std::string> splittedVersion = TRAP::Utils::String::SplitString(version, '.');
 
 	if (splittedVersion.empty() || splittedVersion.size() < 2)
 	{

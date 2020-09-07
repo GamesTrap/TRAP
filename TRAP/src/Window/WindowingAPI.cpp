@@ -259,7 +259,7 @@ void TRAP::INTERNAL::WindowingAPI::SetContextAPI(const ContextAPI contextAPI)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::INTERNAL::WindowingAPI::GetMonitorName(const InternalMonitor* monitor)
+const std::string& TRAP::INTERNAL::WindowingAPI::GetMonitorName(const InternalMonitor* monitor)
 {
 	return monitor->Name;
 }
@@ -1592,7 +1592,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowSizeLimits(InternalWindow* window,
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets the clipboard to the specified string.
-void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string& string)
+void TRAP::INTERNAL::WindowingAPI::SetClipboardString(const std::string_view string)
 {	
 	PlatformSetClipboardString(string);
 }
@@ -1651,7 +1651,7 @@ void TRAP::INTERNAL::WindowingAPI::SwapInterval(const int32_t interval)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns whether the specified extension is available.
-bool TRAP::INTERNAL::WindowingAPI::ExtensionSupported(const std::string& extension)
+bool TRAP::INTERNAL::WindowingAPI::ExtensionSupported(const std::string_view extension)
 {
 	const auto windowPtr = static_cast<InternalWindow*>(PlatformGetTLS(s_Data.ContextSlot));
 	

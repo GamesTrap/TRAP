@@ -12,7 +12,7 @@ namespace TRAP::Graphics::API::Vulkan
 	{
 	public:
 		explicit Device(const Scope<PhysicalDevice>& physicalDevice);
-		Device(const Scope<PhysicalDevice>& physicalDevice, std::vector<std::string>& physicalDeviceExtensions);
+		Device(const Scope<PhysicalDevice>& physicalDevice, const std::vector<std::string>& physicalDeviceExtensions);
 		~Device();
 		Device(const Device&) = default;
 		Device& operator=(const Device&) = default;

@@ -51,6 +51,24 @@ CursorTests::CursorTests()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void CursorTests::OnImGuiRender()
+{
+	ImGui::Begin("CursorTest", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+	ImGui::Text("Press ESC to close");
+	ImGui::Text("Press A to enable/disable Cursor animation");
+	ImGui::Text("Press N to set Cursor mode to normal");
+	ImGui::Text("Press D to set Cursor mode to disabled");
+	ImGui::Text("Press H to set Cursor mode to hidden");
+	ImGui::Text("Press C to set Cursor mode to captured");
+	ImGui::Text("Press R to set enable/disable Raw Mouse Input (if available)");
+	ImGui::Text("Press Up to set mouse position to top left");
+	ImGui::Text("Press Down to set mouse position to bottom right");
+	ImGui::Text("Press (Shift+)0-9 to cycle through available mouse cursors");
+	ImGui::End();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void CursorTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Cursor");

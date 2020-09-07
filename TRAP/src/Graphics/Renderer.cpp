@@ -24,7 +24,7 @@ void TRAP::Graphics::Renderer::Init()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string_view TRAP::Graphics::Renderer::GetTitle()
+const std::string& TRAP::Graphics::Renderer::GetTitle()
 {
 	return API::RendererAPI::GetRenderer()->GetTitle();
 }

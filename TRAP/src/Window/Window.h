@@ -98,7 +98,7 @@ namespace TRAP
 		/// Get the current title of the Window
 		/// </summary>
 		/// <returns>Title of the Window</returns>
-		std::string_view GetTitle() const;
+		const std::string& GetTitle() const;
 		/// <summary>
 		/// Get the current width of the Window
 		/// </summary>
