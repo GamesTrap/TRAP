@@ -53,7 +53,7 @@ namespace TRAP
 		static void Save();
 		static void Clear();
 
-		inline static constexpr auto WindowVersion = "[20w36a4]";
+		inline static constexpr auto WindowVersion = "[20w38a1]";
 		inline static constexpr auto WindowPrefix = "[Window] ";
 		inline static constexpr auto WindowInternalPrefix = "[Window][Internal] ";
 		inline static constexpr auto WindowIconPrefix = "[Window][Icon] ";
@@ -106,6 +106,7 @@ namespace TRAP
 		inline static constexpr auto ImagePFMPrefix = "[Image][PFM] ";
 		inline static constexpr auto ImagePAMPrefix = "[Image][PAM] ";
 		inline static constexpr auto ImageBMPPrefix = "[Image][BMP] ";
+		inline static constexpr auto ImageRadiancePrefix = "[Image][Radiance] ";
 		inline static constexpr auto RendererPrefix = "[Renderer] ";
 		inline static constexpr auto RendererVulkanPrefix = "[Renderer][Vulkan] ";
 		inline static constexpr auto RendererVulkanPhysicalDevicePrefix = "[Renderer][Vulkan][PhysicalDevice] ";

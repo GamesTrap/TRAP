@@ -284,13 +284,13 @@ void TRAP::Application::OnEvent(Events::Event& e)
 	TP_PROFILE_FUNCTION();
 
 	Events::EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<Events::WindowCloseEvent>([this](Events::WindowCloseEvent& e) {return OnWindowClose(e); });
-	dispatcher.Dispatch<Events::FrameBufferResizeEvent>([this](Events::FrameBufferResizeEvent& e) {return OnFrameBufferResize(e); });
-	dispatcher.Dispatch<Events::KeyPressEvent>([this](Events::KeyPressEvent& e) {return OnKeyPress(e); });
-	dispatcher.Dispatch<Events::WindowFocusEvent>([this](Events::WindowFocusEvent& e) {return OnWindowFocus(e); });
-	dispatcher.Dispatch<Events::WindowLostFocusEvent>([this](Events::WindowLostFocusEvent& e) {return OnWindowLostFocus(e); });
-	dispatcher.Dispatch<Events::WindowMinimizeEvent>([this](Events::WindowMinimizeEvent& e) {return OnWindowMinimize(e); });
-	dispatcher.Dispatch<Events::WindowRestoreEvent>([this](Events::WindowRestoreEvent& e) {return OnWindowRestore(e); });
+	dispatcher.Dispatch<Events::WindowCloseEvent>([this](Events::WindowCloseEvent& event) {return OnWindowClose(event); });
+	dispatcher.Dispatch<Events::FrameBufferResizeEvent>([this](Events::FrameBufferResizeEvent& event) {return OnFrameBufferResize(event); });
+	dispatcher.Dispatch<Events::KeyPressEvent>([this](Events::KeyPressEvent& event) {return OnKeyPress(event); });
+	dispatcher.Dispatch<Events::WindowFocusEvent>([this](Events::WindowFocusEvent& event) {return OnWindowFocus(event); });
+	dispatcher.Dispatch<Events::WindowLostFocusEvent>([this](Events::WindowLostFocusEvent& event) {return OnWindowLostFocus(event); });
+	dispatcher.Dispatch<Events::WindowMinimizeEvent>([this](Events::WindowMinimizeEvent& event) {return OnWindowMinimize(event); });
+	dispatcher.Dispatch<Events::WindowRestoreEvent>([this](Events::WindowRestoreEvent& event) {return OnWindowRestore(event); });
 
 	if (m_layerStack)
 	{
@@ -838,7 +838,7 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 				const std::string_view suffix = Utils::String::GetSuffixStringView(virtualPath);
 				if (suffix == "pgm" || suffix == "ppm" || suffix == "pnm" || suffix == "pam" || suffix == "pfm" ||
 					suffix == "tga" || suffix == "icb" || suffix == "vda" || suffix == "vst" || suffix == "bmp" ||
-					suffix == "dib" || suffix == "png")
+					suffix == "dib" || suffix == "png" || suffix == "hdr" || suffix == "pic")
 				{
 					if (std::find(textures.begin(), textures.end(), virtualPath) == textures.end())
 					{

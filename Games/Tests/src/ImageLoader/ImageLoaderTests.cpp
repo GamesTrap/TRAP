@@ -11,7 +11,8 @@ ImageLoaderTests::ImageLoaderTests()
       m_png(false),
       m_tga(true),
       m_bmp(false),
-      m_pm(false)
+      m_pm(false),
+	  m_radiance(false)
 {
 }
 
@@ -20,7 +21,7 @@ ImageLoaderTests::ImageLoaderTests()
 void ImageLoaderTests::OnImGuiRender()
 {
 	ImGui::Begin("Images", nullptr);
-	ImGui::Text("Keys: 1(TGA), 2(PNG), 3(BMP), 4(PM)");
+	ImGui::Text("Keys: 1(TGA), 2(PNG), 3(BMP), 4(PM), 5(Radiance)");
 	if(m_tga)
 	{
 		ImGui::Text("Current: TGA");
@@ -85,6 +86,11 @@ void ImageLoaderTests::OnImGuiRender()
 		ImGui::Text("5. TestGrayscaleHDR");
 		ImGui::Text("6. TestHDR");
 	}
+	else if(m_radiance)
+	{
+		ImGui::Text("Current: Radiance");
+		ImGui::Text("1. TestHDR");
+	}
 	ImGui::End();
 }
 
@@ -93,11 +99,12 @@ void ImageLoaderTests::OnImGuiRender()
 void ImageLoaderTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("ImageLoader");
+	TRAP::VFS::SetHotTextureReloading(true);
 
 	TRAP::VFS::MountTextures("Assets/Textures");
 
 	//Load Textures
-	TRAP::Utils::Timer loadingTimer;
+	const TRAP::Utils::Timer loadingTimer;
 	//TGA
 	TRAP::Graphics::TextureManager::Load("TGATest16BPP", "/Textures/TGA/Test16BPP.tga");
 	TRAP::Graphics::TextureManager::Load("TGATest16BPPRLE", "/Textures/TGA/Test16BPPRLE.tga");
@@ -153,6 +160,9 @@ void ImageLoaderTests::OnAttach()
 	TRAP::Graphics::TextureManager::Load("PMTest48BPP", "/Textures/PM/Test48BPP.ppm");
 	TRAP::Graphics::TextureManager::Load("PMTestGrayscaleHDR", "/Textures/PM/TestGrayscaleHDR.pfm");
 	TRAP::Graphics::TextureManager::Load("PMTestHDR", "/Textures/PM/TestHDR.pfm");
+
+	//Radiance
+	TRAP::Graphics::TextureManager::Load("RadianceTestHDR", "/Textures/Radiance/TestHDR.hdr");
 
 	TP_TRACE("Initializing of all TRAP::Images took: ", loadingTimer.ElapsedMilliseconds(), "ms!");
 	
@@ -232,6 +242,10 @@ void ImageLoaderTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		TRAP::Graphics::Renderer2D::DrawQuad({ {-0.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PMTestGrayscaleHDR"));
 		TRAP::Graphics::Renderer2D::DrawQuad({ {0.0f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("PMTestHDR"));
 	}
+	else if(m_radiance)
+	{
+		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.25f, 0.25f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.25f, 0.25f, 0.25f} }, TRAP::Graphics::TextureManager::Get2D("RadianceTestHDR"));
+	}
 	TRAP::Graphics::Renderer2D::EndScene();
 }
 
@@ -262,12 +276,14 @@ bool ImageLoaderTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 	if (event.GetKey() == TRAP::Input::Key::One || 
 		event.GetKey() == TRAP::Input::Key::Two || 
 		event.GetKey() == TRAP::Input::Key::Three || 
-		event.GetKey() == TRAP::Input::Key::Four)
+		event.GetKey() == TRAP::Input::Key::Four ||
+		event.GetKey() == TRAP::Input::Key::Five)
 	{
 		m_tga = false;
 		m_png = false;
 		m_bmp = false;
 		m_pm = false;
+		m_radiance = false;
 	}
 	
 	if (event.GetKey() == TRAP::Input::Key::One)
@@ -278,6 +294,8 @@ bool ImageLoaderTests::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 		m_bmp = true;
 	else if (event.GetKey() == TRAP::Input::Key::Four)
 		m_pm = true;
+	else if (event.GetKey() == TRAP::Input::Key::Five)
+		m_radiance = true;
 
 	return true;
 }

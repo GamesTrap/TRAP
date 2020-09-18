@@ -199,9 +199,6 @@ void Cube3D::OnImGuiRender()
     float fov = m_camera.GetFoV();
     float sensitivity = m_camera.GetMouseSensitivity();
     float movement = m_camera.GetTranslationSpeed();
-	const float fovCopy = fov;
-    const float sensitivityCopy = sensitivity;
-    const float movementCopy = movement;
 
     ImGuiWindowFlags flags;
 
@@ -224,9 +221,12 @@ void Cube3D::OnImGuiRender()
     ImGui::Text("Camera");
     ImGui::Text("Camera Position: %f %f %f", pos.x, pos.y, pos.z);
     ImGui::Text("Camera Rotation: %f %f %f", rot.x, rot.y, rot.z);
-    ImGui::SliderFloat("Camera FoV", &fov, 1.0f, 100.0f);
-    ImGui::SliderFloat("Camera Sensitivity", &sensitivity, 0.01f, 50.0f);
-    ImGui::SliderFloat("Camera Movement", &movement, 0.25f, 100.0f);
+    if(ImGui::SliderFloat("Camera FoV", &fov, 1.0f, 100.0f))
+        m_camera.SetFoV(fov);
+    if(ImGui::SliderFloat("Camera Sensitivity", &sensitivity, 0.01f, 50.0f))
+        m_camera.SetMouseSensitivity(sensitivity);
+    if(ImGui::SliderFloat("Camera Movement", &movement, 0.25f, 100.0f))
+        m_camera.SetTranslationSpeed(movement);
     ImGui::Text("Press ALT to toggle Mouse Movement");
     ImGui::Separator();
     ImGui::Text("Cube");
@@ -293,13 +293,6 @@ void Cube3D::OnImGuiRender()
     ImGui::Checkbox("WireFrame", &m_wireFrame);
     ImGui::Checkbox("Skybox", &m_drawSkyBox);
     ImGui::End();
-
-    if (fov != fovCopy)
-        m_camera.SetFoV(fov);
-    if (sensitivity != sensitivityCopy)
-        m_camera.SetMouseSensitivity(sensitivity);
-    if (movement != movementCopy)
-        m_camera.SetTranslationSpeed(movement);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

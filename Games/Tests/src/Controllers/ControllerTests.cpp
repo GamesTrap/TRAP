@@ -126,11 +126,13 @@ void ControllerTests::OnImGuiRender()
 
 			ImGui::NewLine();
 			static bool vibration = false;
-			ImGui::Checkbox("Vibration Test", &vibration);
-			if (vibration)
-				TRAP::Input::SetControllerVibration(controller, 1.0f, 1.0f);
-			else
-				TRAP::Input::SetControllerVibration(controller, 0.0f, 0.0f);
+			if(ImGui::Checkbox("Vibration Test", &vibration))
+			{
+				if (vibration)
+					TRAP::Input::SetControllerVibration(controller, 1.0f, 1.0f);
+				else
+					TRAP::Input::SetControllerVibration(controller, 0.0f, 0.0f);
+			}
 		}
 		else
 			ImGui::Text("Controller has no Gamepad mapping!");

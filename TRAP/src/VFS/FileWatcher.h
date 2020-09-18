@@ -36,11 +36,10 @@ namespace TRAP
 		/// Minimum is 15ms (this prevents issues with programs that recreate files instead of updating them).
 		/// </param>
 		/// <returns>A New TRAP::FileWatcher instance.</returns>
-		explicit FileWatcher(std::string virtualPath, float updateTimeInMilliseconds = 15.0f);
+		explicit FileWatcher(const std::string& virtualPath, float updateTimeInMilliseconds = 15.0f);
 
 		/// <summary>
 		/// Check every file mounted to the virtualPath for changes and if so call the given action function.<br>
-		/// TODO Updating of physical (sub)folders that are mounted to the virtualPath.
 		/// </summary>
 		/// <param name="action">Function to be called each time when a file has been changed.</param>
 		void Check(const std::function<void(std::filesystem::path, std::string, FileStatus)>& action);

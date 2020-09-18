@@ -169,22 +169,22 @@ std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, c
 	uint32_t stride = 0;
 	if (format == ColorFormat::GrayScale)
 	{
-		newData.assign(data, data + width * height);
+		newData.assign(data, data + static_cast<uint64_t>(width) * static_cast<uint64_t>(height));
 		stride = height;
 	}
 	else if (format == ColorFormat::GrayScaleAlpha)
 	{
-		newData.assign(data, data + width * height * 2);
+		newData.assign(data, data + static_cast<uint64_t>(width) * static_cast<uint64_t>(height) * 2);
 		stride = height * 2;
 	}
 	else if (format == ColorFormat::RGB)
 	{
-		newData.assign(data, data + width * height * 3);
+		newData.assign(data, data + static_cast<uint64_t>(width) * static_cast<uint64_t>(height) * 3);
 		stride = height * 3;
 	}
 	else if (format == ColorFormat::RGBA)
 	{
-		newData.assign(data, data + width * height * 4);
+		newData.assign(data, data + static_cast<uint64_t>(width) * static_cast<uint64_t>(height) * 4);
 		stride = height * 4;
 	}
 
@@ -220,22 +220,22 @@ std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, c
 	uint32_t stride = 0;
 	if (format == ColorFormat::GrayScale)
 	{
-		newData.assign(data, data + width * height);
+		newData.assign(data, data + static_cast<uint64_t>(width) * static_cast<uint64_t>(height));
 		stride = width;
 	}
 	else if (format == ColorFormat::GrayScaleAlpha)
 	{
-		newData.assign(data, data + width * height * 2);
+		newData.assign(data, data + static_cast<uint64_t>(width) * static_cast<uint64_t>(height) * 2);
 		stride = width * 2;
 	}
 	else if (format == ColorFormat::RGB)
 	{
-		newData.assign(data, data + width * height * 3);
+		newData.assign(data, data + static_cast<uint64_t>(width) * static_cast<uint64_t>(height) * 3);
 		stride = width * 3;
 	}
 	else if (format == ColorFormat::RGBA)
 	{
-		newData.assign(data, data + width * height * 4);
+		newData.assign(data, data + static_cast<uint64_t>(width) * static_cast<uint64_t>(height) * 4);
 		stride = width * 4;
 	}
 

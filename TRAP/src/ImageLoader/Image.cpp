@@ -12,6 +12,7 @@
 #include "TARGA/TGAImage.h"
 #include "Bitmap/BMPImage.h"
 #include "PortableNetworkGraphics/PNGImage.h"
+#include "RadianceHDR/RadianceImage.h"
 #include "CustomImage.h"
 #include "Embed.h"
 
@@ -441,6 +442,8 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFromFile(const std::string& filepath)
 		result = MakeScope<INTERNAL::BMPImage>(virtualFilePath);
 	else if (fileFormat == "png")
 		result = MakeScope<INTERNAL::PNGImage>(virtualFilePath);
+	else if (fileFormat == "hdr" || fileFormat == "pic")
+		result = MakeScope<INTERNAL::RadianceImage>(virtualFilePath);
 	else
 	{
 		TP_ERROR(Log::ImagePrefix, "Unsupported or unknown Image Format!");
@@ -498,17 +501,14 @@ bool TRAP::Image::IsGrayScale(const ColorFormat format)
 	switch(format)
 	{
 	case ColorFormat::GrayScale:
-		return true;
-
 	case ColorFormat::GrayScaleAlpha:
 		return true;
 
 	case ColorFormat::RGB:
+	case ColorFormat::RGBA:
+	case ColorFormat::NONE:
 		return false;
 
-	case ColorFormat::RGBA:
-		return false;
-		
 	default:
 		return false;
 	}
@@ -521,16 +521,15 @@ bool TRAP::Image::IsColored(const ColorFormat format)
 	switch (format)
 	{
 	case ColorFormat::GrayScale:
-		return false;
-
 	case ColorFormat::GrayScaleAlpha:
 		return false;
 
 	case ColorFormat::RGB:
-		return true;
-
 	case ColorFormat::RGBA:
 		return true;
+
+	case ColorFormat::NONE:
+		return false;
 
 	default:
 		return false;
@@ -554,6 +553,9 @@ bool TRAP::Image::HasAlpha(const ColorFormat format)
 
 	case ColorFormat::RGBA:
 		return true;
+
+	case ColorFormat::NONE:
+		return false;
 
 	default:
 		return false;

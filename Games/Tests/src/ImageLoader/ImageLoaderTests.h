@@ -22,6 +22,7 @@ private:
 	bool m_tga;
 	bool m_bmp;
 	bool m_pm;
+	bool m_radiance;
 };
 
 #endif /*_GAMESTRAP_IMAGELOADERTESTS_H_*/

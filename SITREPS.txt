@@ -1250,3 +1250,12 @@ SITREP 09/06/2020|20w36a4
     - Changed lots of string stuff ~>400 mins
     - Renamed MinimizeTests to WindowStateTests ~<5 mins
     - Added ImGui instructions to tests ~<60 mins
+
+SITREP 09/11/2020|20w37a1
+    - Changed TRAP Engine version to 20w37a1(0.6.69)
+    - FileWatcher now also refreshes search list every check ~<10 mins
+
+SITREP 09/18/2020|20w38a1
+    - Changed TRAP Engine version to 20w38a1(0.6.70)
+    - Added Radiance(HDR) Image Format Loader ~>45 mins
+    - Added Radiance(HDR) Image to ImageLoaderTests ~<10 mins
