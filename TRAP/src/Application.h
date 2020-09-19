@@ -13,6 +13,8 @@ int main();
 
 namespace TRAP
 {
+	class VFS;
+
 	namespace Events
 	{
 		class WindowRestoreEvent;
@@ -94,6 +96,8 @@ namespace TRAP
 	private:
 		void Run();
 
+		friend class TRAP::VFS;
+		
 		Utils::TimeStep GetTimeInternal() const;
 
 		void OnEvent(Events::Event& e);

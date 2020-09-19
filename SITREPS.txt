@@ -1260,3 +1260,9 @@ SITREP 09/18/2020|20w38a1
     - Added Radiance(HDR) Image Format Loader ~>45 mins
     - Added Radiance(HDR) Image to ImageLoaderTests ~<10 mins
     - Fixed Bug for RGB Images when set as Window or Mouse Icon ~<10 mins
+
+SITREP 09/19/2020|20w38a2
+    - Changed TRAP Engine version to 20w38a2(0.6.71)
+    - Fixed missing last element in SplitStringView ~<20 mins
+    - VFS is now actually lowercase except filename ~<20 mins
+    - Some documentation stuff in TRAP::VFS ~<20 mins

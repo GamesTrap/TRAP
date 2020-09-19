@@ -1,6 +1,7 @@
 #ifndef _TRAP_VFS_H_
 #define _TRAP_VFS_H_
 
+#include "Application.h"
 #include "FileWatcher.h"
 
 namespace TRAP
@@ -192,21 +193,67 @@ namespace TRAP
 		/// </returns>
 		static std::filesystem::file_time_type GetLastWriteTime(const std::filesystem::path& path);
 
-		static void Init();
-		static void Shutdown();
-
+		/// <summary>
+		/// Get status of hot shader reloading.
+		/// </summary>
+		/// <returns>True if hot shader reloading is enabled, False otherwise.</returns>
 		static bool GetHotShaderReloading();
+		/// <summary>
+		/// Set status of hot shader reloading.
+		/// </summary>
+		/// <param name="enabled">Whether to enable or disable hot shader reloading.</param>
 		static void SetHotShaderReloading(bool enabled);
-		static FileWatcher* GetShaderFileWatcher();
 
+		/// <summary>
+		/// Get status of hot texture reloading.
+		/// </summary>
+		/// <returns>True if hot texture reloading is enabled, False otherwise.</returns>
 		static bool GetHotTextureReloading();
+		/// <summary>
+		/// Set status of hot texture reloading.
+		/// </summary>
+		/// <param name="enabled">Whether to enable or disable hot texture reloading.</param>
 		static void SetHotTextureReloading(bool enabled);
-		static FileWatcher* GetTextureFileWatcher();
 
+		/// <summary>
+		/// Makes user written virtual paths compatible with the Virtual File System<br>
+		/// <br>
+		/// NOTE: Physical path won't be affected by this and just return the same as virtualPath.
+		/// </summary>
+		/// <param name="virtualPath">Path to make compatible</param>
+		/// <returns>String with a compatible path for the Virtual File System</returns>
 		static std::string MakeVirtualPathCompatible(std::string_view virtualPath);
-		static std::string GetFileName(const std::string& virtualPath);
+		/// <summary>
+		/// Get only the filename without its file ending from a virtual or physical file path.
+		/// </summary>
+		/// <param name="virtualOrPhysicalPath">Virtual or Physical file path.</param>
+		/// <returns>String only containing the filename without its file ending.</returns>
+		static std::string GetFileName(const std::string& virtualOrPhysicalPath);
 
 	private:
+		/// <summary>
+		/// Initializes the Virtual File System
+		/// </summary>
+		static void Init();
+		/// <summary>
+		/// Shuts down the Virtual File System
+		/// </summary>
+		static void Shutdown();
+		friend TRAP::Application::Application();
+		friend TRAP::Application::~Application();
+
+		/// <summary>
+		/// Get a pointer to the FileWatcher instance used for hot shader reloading.
+		/// </summary>
+		/// <returns>Pointer to the hot shader reloading FileWatcher.</returns>
+		static FileWatcher* GetShaderFileWatcher();
+		/// <summary>
+		/// Get a pointer to the FileWatcher instance used for hot texture reloading.
+		/// </summary>
+		/// <returns>Pointer to the hot texture reloading FileWatcher.</returns>
+		static FileWatcher* GetTextureFileWatcher();
+		friend static void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, std::vector<std::string>& textures, const bool& running);
+		
 		/// <summary>
 		/// Read the given physical file.<br>
 		/// <br>

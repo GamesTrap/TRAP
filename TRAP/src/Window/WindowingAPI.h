@@ -110,7 +110,7 @@ namespace TRAP::INTERNAL
 		//The function pointer type for path drop callbacks.
 		typedef void (*DropFunc)(const InternalWindow*, std::vector<std::string> paths);
 		//The function pointer type for monitor configuration callbacks.
-		typedef void (*MonitorFunc)(const InternalMonitor*, bool connected); //TODO Implement Interface | Handle Disconnect for Main window
+		typedef void (*MonitorFunc)(const InternalMonitor*, bool connected);
 	private:
 		//--------------//
 		//OpenGL Context//

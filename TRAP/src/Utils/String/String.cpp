@@ -9,15 +9,19 @@ std::vector<std::string_view> TRAP::Utils::String::SplitStringView(const std::st
 	std::size_t end = string.find_first_of(delimiters);
 
 	std::vector<std::string_view> result;
-
-	while (end < std::string::npos)
+	
+	while (end <= std::string_view::npos && start < string.size())
 	{
-		std::string_view token(string.data() + start, end - start);
+		std::string_view token;
+		if (end != std::string_view::npos)
+			token = std::string_view(string.data() + start, end - start);
+		else
+			token = std::string_view(string.data() + start, string.size() - start);
 
 		if (!token.empty())
 			result.push_back(token);
 
-		if (end == std::string::npos)
+		if (end == std::string_view::npos)
 			break;
 
 		start = end + 1;

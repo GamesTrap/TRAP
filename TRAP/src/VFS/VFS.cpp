@@ -509,6 +509,9 @@ void TRAP::VFS::Shutdown()
 {
 	TP_PROFILE_FUNCTION();
 
+	s_Instance.reset();
+	s_Instance = nullptr;
+	
 	TP_DEBUG(Log::VFSPrefix, "Shutting down Virtual File System");
 }
 
@@ -565,20 +568,19 @@ std::string TRAP::VFS::MakeVirtualPathCompatible(const std::string_view virtualP
 		return std::string(virtualPath);
 	
 	std::vector<std::string> dirs = Utils::String::SplitString(virtualPath, '/');
-	const std::string virtualDir = Utils::String::ToLower(dirs.front());
+	const std::string virtualDirOffset = Utils::String::ToLower(dirs.front());
+	std::string virtualDir;
+	for (uint32_t i = 0; i < dirs.size() - 1; i++)
+		virtualDir += Utils::String::ToLower(dirs[i]) + '/';
 
-	std::string remainder;
-	if(dirs.size() > 1)
-		remainder = virtualPath.substr(virtualDir.size() + 1, virtualPath.size() - virtualDir.size());
-
-	return '/' + virtualDir + remainder;
+	return '/' + virtualDir + dirs.back();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::string TRAP::VFS::GetFileName(const std::string& virtualPath)
+std::string TRAP::VFS::GetFileName(const std::string& virtualOrPhysicalPath)
 {
-	const std::string result = Utils::String::SplitString(virtualPath, '/').back();
+	const std::string result = Utils::String::SplitString(virtualOrPhysicalPath, '/').back();
 
 	return result.substr(0, result.size() - (Utils::String::GetSuffixStringView(result).size() + 1));
 }
