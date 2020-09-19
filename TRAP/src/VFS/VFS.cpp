@@ -560,6 +560,9 @@ std::string TRAP::VFS::MakeVirtualPathCompatible(const std::string_view virtualP
 {
 	if (virtualPath.empty())
 		return {};
+
+	if (virtualPath[0] != '/')
+		return std::string(virtualPath);
 	
 	std::vector<std::string> dirs = Utils::String::SplitString(virtualPath, '/');
 	const std::string virtualDir = Utils::String::ToLower(dirs.front());

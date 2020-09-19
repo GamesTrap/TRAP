@@ -178,7 +178,7 @@ bool TRAP::INTERNAL::RadianceImage::Decrunch(std::vector<std::array<uint8_t, 4>>
 	int32_t i = static_cast<int32_t>(file.get());
 	if(i != 2)
 	{
-		file.seekg(-1, SEEK_CUR);
+		file.seekg(-1, file.cur);
 		return OldDecrunch(scanline, scanlineIndex, length, file);
 	}
 

@@ -1259,3 +1259,4 @@ SITREP 09/18/2020|20w38a1
     - Changed TRAP Engine version to 20w38a1(0.6.70)
     - Added Radiance(HDR) Image Format Loader ~>45 mins
     - Added Radiance(HDR) Image to ImageLoaderTests ~<10 mins
+    - Fixed Bug for RGB Images when set as Window or Mouse Icon ~<10 mins

@@ -553,7 +553,7 @@ void TRAP::Window::SetIcon(const Scope<Image>& image) const
 		SetIcon();
 		return;
 	}
-	if (image->GetColorFormat() != Image::ColorFormat::RGBA)
+	if (image->GetColorFormat() != Image::ColorFormat::RGBA && image->GetColorFormat() != Image::ColorFormat::RGB)
 	{
 		TP_ERROR(Log::WindowIconPrefix, "\"", m_data.Title, "\" Only RGBA Images are supported for window icons!");
 		TP_WARN(Log::WindowIconPrefix, "\"", m_data.Title, "\" Using Default Icon!");

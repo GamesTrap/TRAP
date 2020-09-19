@@ -217,7 +217,6 @@ namespace TRAP
 		/// Set a custom logo as Window icon (Image must be non HDR RGBA 32 bits per pixel)(nullptr also resets to the TRAP logo)
 		/// </summary>
 		/// <param name="image">New logo to be used by the Window</param>
-		//TODO API consistency should also allow non HDR RGB 24BPP images like SetCursorIcon does!
 		void SetIcon(const Scope<Image>& image) const;
 		/// <summary>
 		/// Set the function where events should be reported to from the Window

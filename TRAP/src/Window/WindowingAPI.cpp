@@ -569,6 +569,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 				pixelDataRGBA[pixelCount] = pixelData[i];
 				pixelCount++;
 				pixelDataRGBA[pixelCount] = 255;
+				pixelCount++;
 			}			
 
 			const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(), 32, Image::ColorFormat::RGBA, pixelDataRGBA);
@@ -672,6 +673,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const S
 				pixelDataRGBA[pixelCount] = pixelData[i];
 				pixelCount++;
 				pixelDataRGBA[pixelCount] = 255;
+				pixelCount++;
 			}
 
 			const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(), 32, Image::ColorFormat::RGBA, pixelDataRGBA);
