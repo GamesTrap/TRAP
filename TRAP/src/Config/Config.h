@@ -200,8 +200,6 @@ T TRAP::Utils::Config::Get(const std::string_view key) const
 	if (it != m_data.end())
 		return ConvertToType<T>(it->second);
 
-	TRAP_ASSERT(false, "Unconvertable type encountered, please use a different type, or define the handle case in Config.h");
-	TP_ERROR(TRAP::Log::ConfigPrefix, "Unconvertable type encountered, please use a different type, or define the handle case in Config.h");
 	return T();
 }
 
@@ -225,9 +223,7 @@ std::vector<T> TRAP::Utils::Config::GetVector(const std::string_view key) const
 			data.push_back(ConvertToType<T>(str));
 	}
 
-	TRAP_ASSERT(false, "Unconvertable type encountered, please use a different type, or define the handle case in Config.h");
-	TP_ERROR(TRAP::Log::ConfigPrefix, "Unconvertable type encountered, please use a different type, or define the handle case in Config.h");
-	return T();
+	return std::vector<T>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -1270,3 +1270,4 @@ SITREP 09/19/2020|20w38a2
 SITREP 10/12/2020|20w42a1
     - Changed TRAP Engine version to 20w42a1(0.6.72)
     - Complete Reference overhaul ~>Multiple weeks
+    - Fixed crash(assert) when no Engine.cfg exists ~<5 mins
