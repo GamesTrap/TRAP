@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: Member List</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -79,31 +117,31 @@ $(function() {
 
 <p>This is the complete list of members for <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>, including all inherited members.</p>
 <table class="directory">
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>GetAllMonitors</b>() (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>GetContentScale</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>GetContentScaleX</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>GetContentScaleY</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>GetCurrentVideoMode</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>GetID</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>GetInternalMonitor</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>GetName</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>GetPosition</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>GetPositionX</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>GetPositionY</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>GetPrimaryMonitor</b>() (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>GetVideoModes</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>GetWorkArea</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>GetWorkAreaHeight</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>GetWorkAreaWidth</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>GetWorkAreaX</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>GetWorkAreaY</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>IsInUse</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>Monitor</b>(uint32_t monitor) (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"><span class="mlabel">explicit</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>Monitor</b>(const Monitor &amp;)=default (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>Monitor</b>(Monitor &amp;&amp;)=default (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>operator=</b>(const Monitor &amp;)=default (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>operator=</b>(Monitor &amp;&amp;)=default (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>~Monitor</b>()=default (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a19a72be1881b6a276dd234a02407415f">GetAllMonitors</a>()</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a2f037b5d0044513bc37ce5049b737abd">GetContentScale</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a53258c58adf2ca39bbb2755f962ea404">GetContentScaleX</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a2e8a5f30af2af8edfd7f80e6704d6b5b">GetContentScaleY</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a2c8dab903cbe47badaea487d99916553">GetCurrentVideoMode</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a716768e830adb1ad792c6f967967555d">GetID</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a573a2c2abdb3c74226809bc1278f55d4">GetInternalMonitor</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a95dcd2e9e310925b9c86cf4a39895e97">GetName</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a67124cf4f6fcad202810f4e4eb3369cd">GetPosition</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#aa83415e09971278d56353914362fdc5b">GetPositionX</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a4a52dc15869c0afc9c7d54376d2604c1">GetPositionY</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a16d50477c87ba1227e18c57874e965bb">GetPrimaryMonitor</a>()</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a089ddadca327dc017b1cc50611207f08">GetVideoModes</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a6010b20723fa627959b5b447160afe3b">GetWorkArea</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#ae0cd85b841e6d2c7e6641e6264154933">GetWorkAreaHeight</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a122ae2fb793b4153b75d9d67dd984447">GetWorkAreaWidth</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#abdea6be512443420d106a0dc282ac87d">GetWorkAreaX</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#ac5289d2e6a4ce08a72fa6a5870295322">GetWorkAreaY</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#afeb7e926881b4bf10297c610fbf0878e">IsInUse</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#ac9771f13de588cdef72a1afd7ea49b59">Monitor</a>(const Monitor &amp;)=default</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#ac68fa4f0b16e6a74e3e47b46f6ad060d">Monitor</a>(Monitor &amp;&amp;)=default</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#abc4737b144679c6f62b0474fd8014258">operator=</a>(const Monitor &amp;)=default</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a7e0a128720d9f64c57e6783d028d3634">operator=</a>(Monitor &amp;&amp;)=default</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>TRAP::Window::GetMonitor</b> (defined in <a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"><span class="mlabel">friend</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html#a2058172a1d357e14cb836473e17689f7">~Monitor</a>()=default</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_monitor.html">TRAP::Monitor</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->

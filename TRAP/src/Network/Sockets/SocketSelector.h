@@ -39,24 +39,23 @@ namespace TRAP::Network
 	class Socket;
 
 	/// <summary>
-	/// Multiplexer that allows to read form multiple sockets
+	/// Multiplexer that allows to read form multiple sockets.
 	/// </summary>
 	class SocketSelector
 	{
 	public:
 		/// <summary>
-		/// Default constructor
+		/// Constructor.
 		/// </summary>
 		SocketSelector();
 
 		/// <summary>
-		/// Copy constructor
+		/// Copy constructor.
 		/// </summary>
-		/// <param name="copy"></param>
 		SocketSelector(const SocketSelector& copy);
 
 		/// <summary>
-		/// Destructor
+		/// Destructor.
 		/// </summary>
 		~SocketSelector();
 
@@ -68,7 +67,7 @@ namespace TRAP::Network
 		/// while it is stored in the selector.<br>
 		/// This function does nothing if the socket is not valid.
 		/// </summary>
-		/// <param name="socket">Reference to the socket to add</param>
+		/// <param name="socket">Reference to the socket to add.</param>
 		void Add(Socket& socket);
 
 		/// <summary>
@@ -77,7 +76,7 @@ namespace TRAP::Network
 		/// This function doesn't destroy the socket, it simply
 		/// removes the reference that the selector has to it.
 		/// </summary>
-		/// <param name="socket">Reference to the socket to remove</param>
+		/// <param name="socket">Reference to the socket to remove.</param>
 		void Remove(Socket& socket) const;
 
 		/// <summary>
@@ -98,8 +97,8 @@ namespace TRAP::Network
 		/// If you use a timeout and no socket is ready before the timeout
 		/// is over, the function returns false.
 		/// </summary>
-		/// <param name="timeout">Maximum time to wait, (use TRAP::Utils::TimeStep(0.0f) for infinity)</param>
-		/// <returns>True if there are sockets ready, false otherwise</returns>
+		/// <param name="timeout">Maximum time to wait, (use TRAP::Utils::TimeStep(0.0f) for infinity).</param>
+		/// <returns>True if there are sockets ready, false otherwise.</returns>
 		bool Wait(Utils::TimeStep timeout) const;
 
 		/// <summary>
@@ -112,15 +111,15 @@ namespace TRAP::Network
 		/// Note that if this function returns true for a TCPListener,
 		/// this means that it is ready to accept a new connection.
 		/// </summary>
-		/// <param name="socket">Socket to test</param>
-		/// <returns>True if the socket is ready to read, false otherwise</returns>
+		/// <param name="socket">Socket to test.</param>
+		/// <returns>True if the socket is ready to read, false otherwise.</returns>
 		bool IsReady(Socket& socket) const;
 
 		/// <summary>
-		/// Overload of assignment operator
+		/// Overload of assignment operator.
 		/// </summary>
-		/// <param name="right">Instance to assign</param>
-		/// <returns>Reference to self</returns>
+		/// <param name="right">Instance to assign.</param>
+		/// <returns>Reference to self.</returns>
 		SocketSelector& operator=(const SocketSelector& right);
 
 	private:

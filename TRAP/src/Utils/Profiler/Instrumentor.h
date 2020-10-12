@@ -3,8 +3,14 @@
 
 namespace TRAP::Utils::Debug
 {
+	/// <summary>
+	/// Duration type for microseconds.
+	/// </summary>
 	using FloatingPointMicroseconds = std::chrono::duration<double, std::micro>;
-	
+
+	/// <summary>
+	/// Profiling results.
+	/// </summary>
 	struct ProfileResult
 	{
 		std::string Name;
@@ -14,32 +20,81 @@ namespace TRAP::Utils::Debug
 		std::thread::id ThreadID;
 	};
 
+	/// <summary>
+	/// Profiling session.
+	/// </summary>
 	struct InstrumentationSession
 	{
 		std::string Name;
 	};
 
+	/// <summary>
+	/// Basic profiler.
+	/// </summary>
 	class Instrumentor
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
 		Instrumentor();
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~Instrumentor();
-		
+
+		/// <summary>
+		/// Deleted Copy Constructor.
+		/// </summary>
 		Instrumentor(const Instrumentor&) = delete;
+		/// <summary>
+		/// Deleted Copy Assignment Operator.
+		/// </summary>
 		Instrumentor& operator=(const Instrumentor&) = delete;
+		/// <summary>
+		/// Deleted Move Constructor.
+		/// </summary>
 		Instrumentor(Instrumentor&&) = delete;
+		/// <summary>
+		/// Deleted Move Assignment Operator.
+		/// </summary>
 		Instrumentor& operator=(Instrumentor&&) = delete;
-		
+
+		/// <summary>
+		/// Retrieve reference to the Instrumentor instance.
+		/// </summary>
+		/// <returns>Instrumentor instance.</returns>
 		static Instrumentor& Get();
 
+		/// <summary>
+		/// Begin a new profiling session.
+		/// </summary>
+		/// <param name="name">Name for the new session.</param>
+		/// <param name="filePath">Non-VFS file path for the new session.</param>
 		void BeginSession(const std::string& name, const std::string& filePath = "results.json");
+		/// <summary>
+		/// End current profiling session.
+		/// </summary>
 		void EndSession();
 
+		/// <summary>
+		/// Write profiling profile to file.
+		/// </summary>
+		/// <param name="result">Profiling result.</param>
 		void WriteProfile(const ProfileResult& result);
 		
 	private:
+		/// <summary>
+		/// Write header of profiler.
+		/// </summary>
 		void WriteHeader();
+		/// <summary>
+		/// Write footer of profiler.
+		/// </summary>
 		void WriteFooter();
+		/// <summary>
+		/// End session and close file.
+		/// </summary>
 		void InternalEndSession();
 		
 		std::mutex m_mutex;
@@ -47,17 +102,43 @@ namespace TRAP::Utils::Debug
 		std::ofstream m_outputStream;
 	};
 
+	/// <summary>
+	/// Profiling timer to profile how long something took.
+	/// </summary>
 	class InstrumentationTimer
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="name">Name of the function... to profile.</param>
 		explicit InstrumentationTimer(const char* name);
+
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~InstrumentationTimer();
 
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
 		InstrumentationTimer(const InstrumentationTimer&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
 		InstrumentationTimer& operator=(const InstrumentationTimer&) = delete;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
 		InstrumentationTimer(InstrumentationTimer&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
 		InstrumentationTimer& operator=(InstrumentationTimer&&) = delete;
 
+		/// <summary>
+		/// Stop the time and write to profiler.
+		/// </summary>
 		void Stop();
 		
 	private:
@@ -120,11 +201,20 @@ namespace TRAP::Utils::Debug
 		#define TP_FUNC_SIG "TP_FUNC_SIG unknown!"
 	#endif
 
+	/// <summary>
+	/// Begin a new profiler session.<br>
+	/// Note: Only one session at a time is allowed!
+	/// </summary>
+	/// <param name="name">Name for the session.</param>
+	/// <param name="filePath">Physical file path where to store session.</param>
 	inline void TP_PROFILE_BEGIN_SESSION(const std::string& name, const std::string& filePath)
 	{
 		::TRAP::Utils::Debug::Instrumentor::Get().BeginSession(name, filePath);
 	}
 
+	/// <summary>
+	/// End the current active profiler session.
+	/// </summary>
 	inline void TP_PROFILE_END_SESSION()
 	{
 		::TRAP::Utils::Debug::Instrumentor::Get().EndSession();
@@ -133,7 +223,16 @@ namespace TRAP::Utils::Debug
 		::TRAP::Utils::Debug::InstrumentationTimer timer##__LINE__(fixedName.Data);
 	#define TP_PROFILE_FUNCTION() TP_PROFILE_SCOPE(TP_FUNC_SIG)
 #else
+	/// <summary>
+	/// Begin a new profiler session.<br>
+	/// Note: Only one session at a time is allowed!
+	/// </summary>
+	/// <param name="name">Name for the session.</param>
+	/// <param name="filePath">Physical file path where to store session.</param>
 	constexpr void TP_PROFILE_BEGIN_SESSION(const std::string& name, const std::string& filePath) {}
+	/// <summary>
+	/// End the current active profiler session.
+	/// </summary>
 	constexpr void TP_PROFILE_END_SESSION() {}
 	#define TP_PROFILE_SCOPE(name)
 	#define TP_PROFILE_FUNCTION()

@@ -119,11 +119,11 @@ bool TRAP::Graphics::API::OpenGLContext::IsExtensionSupported(const std::string_
 {
 	uint32_t numExtensions = 0;
 
-	OpenGLCall(glGetIntegerv(GL_NUM_EXTENSIONS, reinterpret_cast<int32_t*>(&numExtensions)));
+	glGetIntegerv(GL_NUM_EXTENSIONS, reinterpret_cast<int32_t*>(&numExtensions));
 
 	for (uint32_t i = 0; i < numExtensions; i++)
 	{
-		OpenGLCall(const uint8_t* e = glGetStringi(GL_EXTENSIONS, i));
+		const uint8_t* e = glGetStringi(GL_EXTENSIONS, i);
 		if (!strcmp(reinterpret_cast<const char*>(e), extension.data()))
 			return true;
 	}

@@ -18,7 +18,7 @@ void VulkanTests::OnAttach()
 		200,
 		60,
 		TRAP::Window::DisplayMode::Windowed,
-		TRAP::WindowProps::Advanced
+		TRAP::WindowProps::AdvancedProps
 		{
 			0,
 			true,
@@ -86,7 +86,7 @@ void VulkanTests::OnEvent(TRAP::Events::Event& event)
 
 bool VulkanTests::OnWindowClose(TRAP::Events::WindowCloseEvent& e)
 {
-	if (e.GetWindowTitle() == m_window->GetTitle())
+	if (e.GetTitle() == m_window->GetTitle())
 		m_window.reset();
 	
 	return true;

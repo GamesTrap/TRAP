@@ -1,27 +1,6 @@
 #include "TRAPPCH.h"
 #include "OpenGLCommon.h"
 
-void TRAP::Graphics::API::OpenGLClearError()
-{
-	while (glGetError() != GL_NO_ERROR);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Graphics::API::OpenGLLogCall(const char* function, const char* file, const int32_t line)
-{
-	while (const GLenum error = glGetError())
-	{
-		TP_ERROR(Log::RendererOpenGLPrefix, error, ": ", function, " @[", file, ':', line, ']');
-
-		return false;
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 GLenum TRAP::Graphics::API::ShaderDataTypeToOpenGLBaseType(const ShaderDataType type)
 {
 	switch (type)

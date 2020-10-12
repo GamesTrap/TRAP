@@ -17,6 +17,7 @@
 #include "Events/WindowEvent.h"
 #include "Input/Input.h"
 #include "Utils/Utils.h"
+#include "Window/Monitor.h"
 
 TRAP::Application* TRAP::Application::s_Instance = nullptr;
 std::mutex TRAP::Application::s_hotReloadingMutex;
@@ -65,7 +66,7 @@ TRAP::Application::Application()
 	VFS::Init();
 	if (!m_config.LoadFromFile("Engine.cfg"))
 		TP_INFO(Log::ConfigPrefix, "Using default values");
-#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
+#if defined(TRAP_DEBUG_CONFIGS)
 	m_config.Print();
 #endif
 
@@ -93,29 +94,29 @@ TRAP::Application::Application()
 
 	Graphics::API::Context::SetRenderAPI(renderAPI);
 	m_window = MakeScope<Window>
+	(
+		WindowProps
 		(
-			WindowProps
-			(
-				"TRAP Engine",
-				width,
-				height,
-				refreshRate,
-				displayMode,
-				WindowProps::Advanced
-				{
-					vsync,
-					true,
-					maximized,
-					true,
-					true,
-					true,
-					true,
-					rawInput,
-					Window::CursorMode::Normal
-				},
-				monitor
-			)
-			);
+			"TRAP Engine",
+			width,
+			height,
+			refreshRate,
+			displayMode,
+			WindowProps::AdvancedProps
+			{
+				vsync,
+				true,
+				maximized,
+				true,
+				true,
+				true,
+				true,
+				rawInput,
+				Window::CursorMode::Normal
+			},
+			monitor
+		)
+	);
 	m_window->SetEventCallback([this](Events::Event& e) { OnEvent(e); });
 
 	//Always added as a fallback shader
@@ -134,7 +135,7 @@ TRAP::Application::Application()
 	Input::Init();
 
 	m_ImGuiLayer = std::make_unique<ImGuiLayer>();
-	PushOverlay(std::move(m_ImGuiLayer));
+	m_layerStack->PushOverlay(std::move(m_ImGuiLayer));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -163,15 +164,17 @@ TRAP::Application::~Application()
 	m_config.Set("Monitor", m_window->GetMonitor().GetID());
 	m_config.Set("RawMouseInput", m_window->GetRawMouseInput());
 	m_config.Set("RenderAPI", Graphics::API::Context::GetRenderAPI());
-	const std::vector<uint8_t> VulkanGPUUUID = Graphics::API::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan && !VulkanGPUUUID.empty())
+	const std::array<uint8_t, 16> VulkanGPUUUID = Graphics::API::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
+	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
 		m_config.Set("VulkanGPU", Utils::UUIDToString(VulkanGPUUUID));
 	else
 	{
 		if (m_config.Get<std::string_view>("VulkanGPU").empty())
 			m_config.Set("VulkanGPU", "");
 	}
+#if defined(TRAP_DEBUG_CONFIGS)
 	m_config.Print();
+#endif
 	m_config.SaveToFile("Engine.cfg");
 	m_window.reset();
 	VFS::Shutdown();
@@ -419,7 +422,9 @@ const TRAP::Scope<TRAP::Window>& TRAP::Application::GetWindow()
 
 TRAP::Utils::TimeStep TRAP::Application::GetTime()
 {
-	return s_Instance->GetTimeInternal();
+	const Utils::TimeStep timeStep(s_Instance->m_timer->Elapsed());
+
+	return timeStep;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -618,7 +623,7 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 		m_window->GetHeight(),
 		m_window->GetRefreshRate(),
 		m_window->GetDisplayMode(),
-		WindowProps::Advanced
+		WindowProps::AdvancedProps
 		{
 			m_window->GetVSyncInterval(),
 			m_window->IsResizable(),
@@ -695,15 +700,6 @@ void TRAP::Application::UpdateLinuxWindowManager()
 		exit(-1);
 	}
 #endif
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Utils::TimeStep TRAP::Application::GetTimeInternal() const
-{
-	const Utils::TimeStep timeStep(m_timer->Elapsed());
-
-	return timeStep;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -788,9 +784,9 @@ bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, std::vector<std::string>& textures, const bool& running)
+void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, std::vector<std::string>& textures, const bool& run)
 {
-	while (running)
+	while (run)
 	{
 		//Update Shaders if needed
 		if (VFS::GetHotShaderReloading() && VFS::GetShaderFileWatcher())
@@ -798,27 +794,27 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 			//Check monitoring shader folders for changes and
 			//in case of changes run ShaderManager::Reload(virtualPath) (deferred into main thread)
 			VFS::GetShaderFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
-												   const std::string& virtualPath,
-												   const FileWatcher::FileStatus status) -> void
-			{
-				//Process only regular files and FileStatus::Modified
-				if (!std::filesystem::is_regular_file(physicalPath))
-					return;
-				if (status == FileWatcher::FileStatus::Erased)
-					return;
-
-				const std::string_view suffix = Utils::String::GetSuffixStringView(virtualPath);
-				if (suffix == "shader" || suffix == "spirv")
+				const std::string& virtualPath,
+				const FileWatcher::FileStatus status) -> void
 				{
-					if (std::find(shaders.begin(), shaders.end(), virtualPath) == shaders.end())
+					//Process only regular files and FileStatus::Modified
+					if (!std::filesystem::is_regular_file(physicalPath))
+						return;
+					if (status == FileWatcher::FileStatus::Erased)
+						return;
+
+					const std::string_view suffix = Utils::String::GetSuffixStringView(virtualPath);
+					if (suffix == "shader" || suffix == "spirv")
 					{
+						if (std::find(shaders.begin(), shaders.end(), virtualPath) == shaders.end())
 						{
-							std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
-							shaders.emplace_back(virtualPath);
+							{
+								std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
+								shaders.emplace_back(virtualPath);
+							}
 						}
 					}
-				}
-			});
+				});
 		}
 		//Update Textures if needed
 		if (VFS::GetHotTextureReloading() && VFS::GetTextureFileWatcher())
@@ -826,29 +822,29 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 			//Check monitoring texture folders for changes and
 			//in case of changes run TextureManager::Reload(virtualPath) (deferred into main thread)
 			VFS::GetTextureFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
-													const std::string& virtualPath,
-													const FileWatcher::FileStatus status) -> void
-			{
-				//Process only regular files and FileStatus::Modified
-				if (!std::filesystem::is_regular_file(physicalPath))
-					return;
-				if (status == FileWatcher::FileStatus::Erased)
-					return;
-
-				const std::string_view suffix = Utils::String::GetSuffixStringView(virtualPath);
-				if (suffix == "pgm" || suffix == "ppm" || suffix == "pnm" || suffix == "pam" || suffix == "pfm" ||
-					suffix == "tga" || suffix == "icb" || suffix == "vda" || suffix == "vst" || suffix == "bmp" ||
-					suffix == "dib" || suffix == "png" || suffix == "hdr" || suffix == "pic")
+				const std::string& virtualPath,
+				const FileWatcher::FileStatus status) -> void
 				{
-					if (std::find(textures.begin(), textures.end(), virtualPath) == textures.end())
+					//Process only regular files and FileStatus::Modified
+					if (!std::filesystem::is_regular_file(physicalPath))
+						return;
+					if (status == FileWatcher::FileStatus::Erased)
+						return;
+
+					const std::string_view suffix = Utils::String::GetSuffixStringView(virtualPath);
+					if (suffix == "pgm" || suffix == "ppm" || suffix == "pnm" || suffix == "pam" || suffix == "pfm" ||
+						suffix == "tga" || suffix == "icb" || suffix == "vda" || suffix == "vst" || suffix == "bmp" ||
+						suffix == "dib" || suffix == "png" || suffix == "hdr" || suffix == "pic")
 					{
+						if (std::find(textures.begin(), textures.end(), virtualPath) == textures.end())
 						{
-							std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
-							textures.emplace_back(virtualPath);
+							{
+								std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
+								textures.emplace_back(virtualPath);
+							}
 						}
 					}
-				}
-			});
+				});
 		}
 	}
 }

@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['_7eftp_531',['~FTP',['../class_t_r_a_p_1_1_network_1_1_f_t_p.html#a5eba89030a11823abd27e69e59490a72',1,'TRAP::Network::FTP']]],
-  ['_7epacket_532',['~Packet',['../class_t_r_a_p_1_1_network_1_1_packet.html#a390684a92973bc91d07f03a168be2f4f',1,'TRAP::Network::Packet']]],
-  ['_7esocket_533',['~Socket',['../class_t_r_a_p_1_1_network_1_1_socket.html#a0ef440a21a8b7d07705a14b20a54ffff',1,'TRAP::Network::Socket']]],
-  ['_7esocketselector_534',['~SocketSelector',['../class_t_r_a_p_1_1_network_1_1_socket_selector.html#a794d85e25a7b7ebfcf9b71ea022320ca',1,'TRAP::Network::SocketSelector']]]
+  ['vfs_915',['VFS',['../class_t_r_a_p_1_1_v_f_s.html#aaaefe3dd9e0a8f1e50cf3f2c9e62846f',1,'TRAP::VFS::VFS()=default'],['../class_t_r_a_p_1_1_v_f_s.html#aeb30cc6ca00d01a481640c9959408ed8',1,'TRAP::VFS::VFS(const VFS &amp;)=delete'],['../class_t_r_a_p_1_1_v_f_s.html#a24bc6255db3bee3d1329bbf60dbe23b2',1,'TRAP::VFS::VFS(VFS &amp;&amp;)=delete']]],
+  ['videomode_916',['VideoMode',['../struct_t_r_a_p_1_1_monitor_1_1_video_mode.html#ab27e6eef5125560abf0cd8b9f8060bfe',1,'TRAP::Monitor::VideoMode']]]
 ];

@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::Graphics::Texture Class Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -112,9 +150,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>Bind</b> (uin
 <tr class="memitem:ae5319c839a7564d3e2775807a0c14fb4"><td class="memItemLeft" align="right" valign="top"><a id="ae5319c839a7564d3e2775807a0c14fb4"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>Unbind</b> (uint32_t slot) const =0</td></tr>
 <tr class="separator:ae5319c839a7564d3e2775807a0c14fb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53cbb7aaa7119a19407904af79ffe66e"><td class="memItemLeft" align="right" valign="top"><a id="a53cbb7aaa7119a19407904af79ffe66e"></a>
-std::string_view&#160;</td><td class="memItemRight" valign="bottom"><b>GetName</b> () const</td></tr>
-<tr class="separator:a53cbb7aaa7119a19407904af79ffe66e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf84829881b7b9343f2afa82b20e0085"><td class="memItemLeft" align="right" valign="top"><a id="aaf84829881b7b9343f2afa82b20e0085"></a>
+const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>GetName</b> () const</td></tr>
+<tr class="separator:aaf84829881b7b9343f2afa82b20e0085"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39695b32e4d1376273162af107f730d9"><td class="memItemLeft" align="right" valign="top"><a id="a39695b32e4d1376273162af107f730d9"></a>
 TextureType&#160;</td><td class="memItemRight" valign="bottom"><b>GetType</b> () const</td></tr>
 <tr class="separator:a39695b32e4d1376273162af107f730d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -131,13 +169,13 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>SetFilter</b>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a672817de0b6844c15db65f65dd68728f"><td class="memItemLeft" align="right" valign="top"><a id="a672817de0b6844c15db65f65dd68728f"></a>
-static uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetStrideFromFormat</b> (Image::ColorFormat format)</td></tr>
+static uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetStrideFromFormat</b> (<a class="el" href="class_t_r_a_p_1_1_image.html#a5bee5d4520506ffc6702eaec782a5011">Image::ColorFormat</a> format)</td></tr>
 <tr class="separator:a672817de0b6844c15db65f65dd68728f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5777b03a09b12152884ca3ba000c467"><td class="memItemLeft" align="right" valign="top"><a id="af5777b03a09b12152884ca3ba000c467"></a>
-static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>TRAPImageFormatToOpenGL</b> (Image::ColorFormat format)</td></tr>
+static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>TRAPImageFormatToOpenGL</b> (<a class="el" href="class_t_r_a_p_1_1_image.html#a5bee5d4520506ffc6702eaec782a5011">Image::ColorFormat</a> format)</td></tr>
 <tr class="separator:af5777b03a09b12152884ca3ba000c467"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0714a6f81a16dd8e2c4cdf15301fd681"><td class="memItemLeft" align="right" valign="top"><a id="a0714a6f81a16dd8e2c4cdf15301fd681"></a>
-static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>TRAPImageFormatToOpenGLPrecise</b> (Image::ColorFormat format, uint32_t bytesPerPixel)</td></tr>
+static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>TRAPImageFormatToOpenGLPrecise</b> (<a class="el" href="class_t_r_a_p_1_1_image.html#a5bee5d4520506ffc6702eaec782a5011">Image::ColorFormat</a> format, uint32_t bytesPerPixel)</td></tr>
 <tr class="separator:a0714a6f81a16dd8e2c4cdf15301fd681"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e141e0838dcb6f232c2ee7ae2016fe0"><td class="memItemLeft" align="right" valign="top"><a id="a8e141e0838dcb6f232c2ee7ae2016fe0"></a>
 static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>TRAPTextureWrapToOpenGL</b> (TextureWrap wrap)</td></tr>

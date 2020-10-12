@@ -36,13 +36,32 @@ namespace TRAP::INTERNAL
 	class WindowingAPI final
 	{
 	private:
+
+		/// <summary>
+		/// Private Constructor.
+		/// </summary>
 		WindowingAPI() = default;
+		/// <summary>
+		/// Private Destructor.
+		/// </summary>
 		~WindowingAPI() = default;
 		
 	public:
+		/// <summary>
+		/// Deleted Copy Constructor.
+		/// </summary>
 		WindowingAPI(const WindowingAPI&) = delete;
+		/// <summary>
+		/// Deleted Copy Assignment Operator.
+		/// </summary>
 		WindowingAPI& operator=(const WindowingAPI&) = delete;
+		/// <summary>
+		/// Deleted Move Constructor.
+		/// </summary>
 		WindowingAPI(WindowingAPI&&) = delete;
+		/// <summary>
+		/// Deleted Move Assignment Operator.
+		/// </summary>
 		WindowingAPI& operator=(WindowingAPI&&) = delete;
 		
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -372,7 +391,10 @@ namespace TRAP::INTERNAL
 		//---------//
 		//Universal//
 		//---------//
-	public:		
+	public:
+		/// <summary>
+		/// Error codes.
+		/// </summary>
 		enum class Error
 		{
 			No_Error,
@@ -387,6 +409,10 @@ namespace TRAP::INTERNAL
 			No_Window_Context,
 			Cursor_Unavailable
 		};
+
+		/// <summary>
+		/// Hints for window creation and runtime changes.
+		/// </summary>
 		enum class Hint
 		{
 			Resizable,
@@ -401,11 +427,19 @@ namespace TRAP::INTERNAL
 			MousePassthrough
 			//Stereo //Used for 3D/VR
 		};
+
+		/// <summary>
+		/// Create OpenGL context or not.
+		/// </summary>
 		enum class ContextAPI
 		{
 			None,
 			OpenGL
 		};
+
+		/// <summary>
+		/// Cursor modes that can be used.
+		/// </summary>
 		enum class CursorMode
 		{
 			Normal,
@@ -413,6 +447,10 @@ namespace TRAP::INTERNAL
 			Disabled,
 			Captured
 		};
+
+		/// <summary>
+		/// Cursor types that can be used.
+		/// </summary>
 		enum class CursorType
 		{
 			Arrow = 0,
@@ -563,7 +601,10 @@ namespace TRAP::INTERNAL
 			xcb_window_t window;
 		};
 #endif
-		//Thread local storage structure
+		
+		/// <summary>
+		/// Thread local storage structure.
+		/// </summary>
 		struct TLS
 		{
 			bool Allocated = false;
@@ -573,14 +614,20 @@ namespace TRAP::INTERNAL
 			pthread_key_t Key{};
 #endif
 		};
-		//Per-thread error structure
+		
+		/// <summary>
+		/// Per-thread error structure.
+		/// </summary>
 		struct WindowingError
 		{
 			WindowingError* Next = nullptr;
 			Error ErrorCode = Error::No_Error;
 			std::string Description = "";
 		};
-		//Framebuffer configuration
+
+		/// <summary>
+		/// Framebuffer configuration.
+		/// </summary>
 		struct FrameBufferConfig
 		{
 			int32_t RedBits = 0;
@@ -601,7 +648,10 @@ namespace TRAP::INTERNAL
 			bool Transparent = false;
 			uintptr_t Handle = 0;
 		};
-		//Window configuration
+		
+		/// <summary>
+		/// Window configuration.
+		/// </summary>
 		struct WindowConfig
 		{
 			uint32_t Width = 0;
@@ -616,13 +666,19 @@ namespace TRAP::INTERNAL
 			bool FocusOnShow = true;
 			bool MousePassthrough = false;
 		};
-		//Context configuration
+		
+		/// <summary>
+		/// Context configuration.
+		/// </summary>
 		struct ContextConfig
 		{
 			ContextAPI Client = ContextAPI::None;
 			const InternalWindow* Share = nullptr;
-		};		
-		//Context structure
+		};
+
+		/// <summary>
+		/// Context structure.
+		/// </summary>
 		struct Context
 		{
 			ContextAPI Client = ContextAPI::None;
@@ -648,7 +704,10 @@ namespace TRAP::INTERNAL
 			GLXWindow Window = 0;
 #endif
 		};
-		//Global state
+
+		/// <summary>
+		/// Global state.
+		/// </summary>
 		struct Data
 		{
 			bool Initialized = false;
@@ -1123,7 +1182,9 @@ namespace TRAP::INTERNAL
 #endif
 		};
 	public:
-		//This describes a single video mode.
+		/// <summary>
+		/// This describes a single video mode.
+		/// </summary>
 		struct InternalVideoMode
 		{
 			//The width, in screen coordinates, of the video mode.
@@ -1139,7 +1200,10 @@ namespace TRAP::INTERNAL
 			//The refresh rate, in Hz, of the video mode.
 			int32_t RefreshRate = 0;
 		};
-		//Monitor structure
+
+		/// <summary>
+		/// Monitor structure.
+		/// </summary>
 		struct InternalMonitor
 		{
 			std::string Name{};
@@ -1167,7 +1231,10 @@ namespace TRAP::INTERNAL
 			int32_t Index = 0;
 #endif
 		};
-		//Cursor structure
+
+		/// <summary>
+		/// Cursor structure.
+		/// </summary>
 		struct InternalCursor
 		{
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -1176,7 +1243,10 @@ namespace TRAP::INTERNAL
 			Cursor Handle = 0;
 #endif
 		};
-		//Window and Context structure
+
+		/// <summary>
+		/// Window and Context structure.
+		/// </summary>
 		struct InternalWindow
 		{			
 			//Window settings and state
@@ -1276,101 +1346,251 @@ namespace TRAP::INTERNAL
 		//Public//
 		//------//
 	public:
-		//Initializes the Windowing API.
+		/// <summary>
+		/// Initializes the Windowing API.
+		/// </summary>
+		/// <returns>True if Windowing API was successfully initialized, false otherwise.</returns>
 		static bool Init();
-		//Shuts down the Windowing API.
+		/// <summary>
+		/// Shuts down the Windowing API.
+		/// </summary>
 		static void Shutdown();
-		//Destroys the specified window and its context.
+		/// <summary>
+		/// Destroys the specified window and its context.
+		/// </summary>
+		/// <param name="window">InternalWindow to destroy.</param>
 		static void DestroyWindow(Scope<InternalWindow> window);
-		//Makes the context of the specified window current for the calling
+		/// <summary>
+		/// Makes the context of the specified window current for the calling.<br>
+		/// Note: Only use for Windows with OpenGL context!
+		/// </summary>
+		/// <param name="window">InternalWindow to make the context current.</param>
 		static void MakeContextCurrent(InternalWindow* window);
-		//Resets all window hints to their default values.
+		/// <summary>
+		/// Resets all window hints to their default values.
+		/// </summary>
 		static void DefaultWindowHints();
-		//Sets the specified window hint to the desired value.
+		/// <summary>
+		/// Sets the specified window hint to the desired value.
+		/// </summary>
+		/// <param name="hint">Hint to set.</param>
+		/// <param name="value">value to set for the Hint.</param>
 		static void WindowHint(Hint hint, bool value);
-		//Sets the specified sample count to the desired sample value.
-		static void SetSamples(uint32_t samples); //TODO Implement for OpenGL MSAA
-		//Sets the specified window context API to the desired value
+		/// <summary>
+		/// Sets the specified sample count to the desired sample value for use by MSAA.<br>
+		/// Note: Only affects Windows with OpenGL context!
+		/// </summary>
+		/// <param name="samples">
+		/// Amount of samples to use.<br>
+		/// Valid values are: 0, 1, 2, 4, 8.<br>
+		/// Use 0 to disable MSAA.
+		/// </param>
+		static void SetSamples(uint32_t samples);
+		/// <summary>
+		/// Sets the specified window context API to the desired value.
+		/// </summary>
+		/// <param name="contextAPI">ContextAPI to set.</param>
 		static void SetContextAPI(ContextAPI contextAPI);
-		//Returns the name of the specified monitor.
+		/// <summary>
+		/// Returns the name of the specified monitor.
+		/// </summary>
+		/// <param name="monitor">InternalMonitor to query name from.</param>
+		/// <returns>Name of the provided monitor.</returns>
 		static const std::string& GetMonitorName(const InternalMonitor* monitor);
-		//Returns the primary monitor.
+		/// <summary>
+		/// Returns the primary monitor.
+		/// </summary>
+		/// <returns>Primary InternalMonitor.</returns>
 		static const Scope<InternalMonitor>& GetPrimaryMonitor();
-		//Returns the currently connected monitors.
+		/// <summary>
+		/// Returns the currently connected monitors.
+		/// </summary>
+		/// <returns>Vector of all connected InternalMonitors.</returns>
 		static std::vector<InternalMonitor*> GetMonitors();
-		//Returns the current mode of the specified monitor.
+		/// <summary>
+		/// Get the current video mode of the specified monitor.
+		/// </summary>
+		/// <param name="monitor">InternalMonitor to get InternalVideoMode from.</param>
+		/// <returns>Current video mode of the specified monitor.</returns>
 		static const InternalVideoMode& GetVideoMode(InternalMonitor* monitor);
-		//Returns the available video modes for the specified monitor.
+		/// <summary>
+		/// Get the available video modes for the specified monitor.
+		/// </summary>
+		/// <param name="monitor">InternalMonitor to get all InternalVideoModes from.</param>
+		/// <returns>Vector with all available video modes of the specified monitor.</returns>
 		static std::vector<InternalVideoMode> GetVideoModes(InternalMonitor* monitor);
-		//Creates a window and its associated context.
-		//
-		//Win32:   - Window creation will fail if the Microsoft GDI software OpenGL implementation is the only one available.
-		//         - If the executable has an icon resource named 'TRAP_ICON', it will be set as the initial icon for the window.
-		//           If no such icon is present, the 'IDI_APPLICATION' icon will be used instead.
-		//X11:     - Some window managers will not respect the placement of initially hidden windows.
-		//         - Due to the asynchronous nature of X11, it may take a moment for a window to reach its requested state.
-		//           This means you may not be able to query the final size, position or other attributes directly after window creation.
-		//         - The class part of the 'WM_CLASS' window property will by default be set to the window title passed to this function.
-		//           The instance part will use the contents of the 'RESOURCE_NAME' environment variable, if present and not empty, or
-		//           fall back to the window title.
-		//Wayland: - Compositors should implement the xdg-decoration protocol for the WindowingAPI to decorate the window properly.
-		//           If this protocol isn't supported, or if the compositor prefers client-side decorations, a very simple fallback
-		//           frame will be drawn using the wp_viewporter protocol.
-		//           A compositor can still emit close, maximize or fullscreen events, using for instance a keybind mechanism.
-		//           If neither of these protocls are supported, the window won't be decorated.
-		//         - A full screen window will not attempt to change the mode, no matter what the requested size or refresh rate.
-		//         - Screensaver inhibition requires the idle-inhibit protocol to be implemented in the user's compositor.
+		/// <summary>
+		/// Creates a window and its associated context.<br>
+		/// <br>
+		///	Win32:   - Window creation will fail if the Microsoft GDI software OpenGL implementation is the only one available.<br>
+		///	         - If the executable has an icon resource named 'TRAP_ICON', it will be set as the initial icon for the window.<br>
+		///	           If no such icon is present, the 'IDI_APPLICATION' icon will be used instead.<br>
+		///	X11:     - Some window managers will not respect the placement of initially hidden windows.<br>
+		///	         - Due to the asynchronous nature of X11, it may take a moment for a window to reach its requested state.<br>
+		///	           This means you may not be able to query the final size, position or other attributes directly after window creation.<br>
+		///	         - The class part of the 'WM_CLASS' window property will by default be set to the window title passed to this function.<br>
+		///	           The instance part will use the contents of the 'RESOURCE_NAME' environment variable, if present and not empty, or
+		///	           fall back to the window title.<br>
+		///	NOTE: WAYLAND IS CURRENTLY UNSUPPORTED!!!<br>
+		///	Wayland: - Compositors should implement the xdg-decoration protocol for the WindowingAPI to decorate the window properly.<br>
+		///	           If this protocol isn't supported, or if the compositor prefers client-side decorations, a very simple fallback
+		///	           frame will be drawn using the wp_viewporter protocol.<br>
+		///	           A compositor can still emit close, maximize or fullscreen events, using for instance a keybind mechanism.<br>
+		///	           If neither of these protocols are supported, the window won't be decorated.<br>
+		///	         - A full screen window will not attempt to change the mode, no matter what the requested size or refresh rate.<br>
+		///	         - Screensaver inhibition requires the idle-inhibit protocol to be implemented in the user's compositor.
+		/// </summary>
+		/// <param name="width">Width for the new Window.</param>
+		/// <param name="height">Height for the new Window.</param>
+		/// <param name="title">Title for the new Window.</param>
+		/// <param name="monitor">Optional Monitor to use for the new Window.</param>
+		/// <param name="share">Optional Context sharing with another Window.</param>
+		/// <returns>On success a new InternalWindow, nullptr otherwise.</returns>
 		static Scope<InternalWindow> CreateWindow(uint32_t width, uint32_t height, const std::string& title, InternalMonitor* monitor, const InternalWindow* share);
-		//Sets the close flag of the specified window.
+		/// <summary>
+		/// Sets the close flag of the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow.</param>
+		/// <param name="value">Whether to close the Window or not.</param>
 		static void SetWindowShouldClose(InternalWindow* window, bool value);
-		//Sets the title of the specified window.
+		/// <summary>
+		/// Sets the title of the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow.</param>
+		/// <param name="title">New title for the Window</param>
 		static void SetWindowTitle(const InternalWindow* window, const std::string& title);
-		//Retrieves the content scale for the specified monitor.
+		/// <summary>
+		/// Retrieves the content scale for the specified monitor.
+		/// </summary>
+		/// <param name="monitor">InternalMonitor.</param>
+		/// <param name="xScale">Output variable for the X scale of the provided monitor.</param>
+		/// <param name="yScale">Output variable for the Y scale of the provided monitor.</param>
 		static void GetMonitorContentScale(const InternalMonitor* monitor, float& xScale, float& yScale);
-		//Destroys a cursor.
+		/// <summary>
+		/// Destroys a cursor.
+		/// </summary>
+		/// <param name="cursor">InternalCursor to be destroyed.</param>
 		static void DestroyCursor(Scope<InternalCursor> cursor);
-		//Creates a custom cursor.
+		/// <summary>
+		/// Creates a custom cursor.
+		/// </summary>
+		/// <param name="image">Non HDR RGB 24BPP or RGBA 32 BPP Image.</param>
+		/// <param name="xHotspot">Center X coordinate of the Image.</param>
+		/// <param name="yHotspot">Center Y coordinate of the Image.</param>
+		/// <returns>On success new InternalCursor, nullptr otherwise.</returns>
 		static Scope<InternalCursor> CreateCursor(const Scope<Image>& image, int32_t xHotspot, int32_t yHotspot);
-		//Creates a cursor with a standard shape.
+		/// <summary>
+		/// Creates a cursor with a standard shape.
+		/// </summary>
+		/// <param name="type">CursorType to get.</param>
+		/// <returns>On success new InternalCursor, nullptr otherwise.</returns>
 		static Scope<InternalCursor> CreateStandardCursor(const CursorType& type);
-		//Sets the cursor for the window.
+		/// <summary>
+		/// Sets the cursor for the window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the cursor for.</param>
+		/// <param name="cursor">InternalCursor to set.</param>
 		static void SetCursor(InternalWindow* window, InternalCursor* cursor);
-		//Sets the icon for the specified window.
-		//
-		//Wayland: - There is no existing protocol to change an icon, the window will thus inherit the one defined in the
-		//           application's desktop file.
+		/// <summary>
+		/// Sets the icon for the specified window.<br>
+		/// <br>
+		/// Wayland: - There is no existing protocol to change an icon, the window will thus inherit the one defined in the
+		///            application's desktop file.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the Window Icon for.</param>
+		/// <param name="image">
+		/// Image to be set as Window Icon.<br>
+		/// Must be non HDR and RGB 24BPP or RGBA 32BPP!
+		/// </param>
 		static void SetWindowIcon(InternalWindow* window, const Scope<Image>& image);
-		//Sets the position of the content area of the specified window.
-		//
-		//Wayland: - There is no way for an application to set the global position of its windows.
+		/// <summary>
+		/// Sets the position of the content area of the specified window.<br>
+		/// <br>
+		/// Wayland: - There is no way for an application to set the global position of its windows.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the position for.</param>
+		/// <param name="xPos">X position to be set.</param>
+		/// <param name="yPos">Y position to be set.</param>
 		static void SetWindowPos(const InternalWindow* window, int32_t xPos, int32_t yPos);
-		//Retrieves the position of the content area of the specified window.
-		//
-		//Wayland: - There is no way for an application to retrieve the global position of its windows.
+		/// <summary>
+		/// Retrieves the position of the content area of the specified window.<br>
+		/// <br>
+		/// Wayland: - There is no way for an application to retrieve the global position of its windows. 
+		/// </summary>
+		/// <param name="window">InternalWindow to get the current position from.</param>
+		/// <param name="xPos">Output variable for the current X position of the InternalWindow.</param>
+		/// <param name="yPos">Output variable for the current Y position of the InternalWindow.</param>
 		static void GetWindowPos(const InternalWindow* window, int32_t& xPos, int32_t& yPos);
-		//Sets the size of the content area of the specified window.
-		//
-		//Wayland: - A full screen window will not attempt to change the mode, no matter what the requested size.
+		/// <summary>
+		/// Sets the size of the content area of the specified window.<br>
+		/// <br>
+		/// Wayland: - A full screen window will not attempt to change the mode, no matter what the requested size.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the size for.</param>
+		/// <param name="width">New width for the InternalWindow.</param>
+		/// <param name="height">New height for the InternalWindow.</param>
 		static void SetWindowSize(InternalWindow* window, int32_t width, int32_t height);
-		//Retrieves the size of the content area of the specified window.
+		/// <summary>
+		/// Retrieves the size of the content area of the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to get the size from.</param>
+		/// <param name="width">Output variable for the InternalWindows current width.</param>
+		/// <param name="height">Output variable for the InternalWindows current height.</param>
 		static void GetWindowSize(const InternalWindow* window, int32_t& width, int32_t& height);
-		//Retrieves the size of the framebuffer of the specified window.
+		/// <summary>
+		/// Retrieves the size of the framebuffer of the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to get the framebuffer size from.</param>
+		/// <param name="width">Output variable for the InternalWindows current framebuffer width.</param>
+		/// <param name="height">Output variable for the InternalWindows current framebuffer height.</param>
 		static void GetFrameBufferSize(const InternalWindow* window, int32_t& width, int32_t& height);
-		//Sets the opacity of the whole window.
+		/// <summary>
+		/// Sets the opacity of the whole window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set opacity for.</param>
+		/// <param name="opacity">Opacity ranging from 0.0f-1.0f.</param>
 		static void SetWindowOpacity(const InternalWindow* window, float opacity);
-		//Returns the opacity of the whole window.
+		/// <summary>
+		/// Returns the opacity of the whole window.
+		/// </summary>
+		/// <param name="window">InternalWindow to get the opacity from.</param>
+		/// <returns>Opacity of the given InternalWindow.</returns>
 		static float GetWindowOpacity(const InternalWindow* window);
-		//Retrieves the content scale for the specified window.
+		/// <summary>
+		/// Retrieves the content scale for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to get the content scale from.</param>
+		/// <param name="xScale">Output variable for the InternalWindows content scale X.</param>
+		/// <param name="yScale">Output variable for the InternalWindows content scale Y.</param>
 		static void GetWindowContentScale(const InternalWindow* window, float& xScale, float& yScale);
-		//Sets an attribute for the specified window.
-		static void SetWindowAttrib(InternalWindow* window, Hint hint, bool value);
-		//Returns an attribute of the specified window.
-		static bool GetWindowAttrib(const InternalWindow* window, Hint hint);
-		//Sets the mode, monitor, video mode and placement of a window.
-		//
-		//Wayland: - The desired window position is ignored, as there is no way for an application to set this property.
-		//         - Setting the window to full screen will not attempt to change the mode, no matter what the
-		//           requested size or refresh rate.
+		/// <summary>
+		/// Sets an Hint for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the Hint for.</param>
+		/// <param name="hint">Hint to be set.</param>
+		/// <param name="value">Value for the Hint.</param>
+		static void SetWindowHint(InternalWindow* window, Hint hint, bool value);
+		/// <summary>
+		/// Returns an Hint of the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to get the Hint from.</param>
+		/// <param name="hint">Hint to query.</param>
+		/// <returns>True if Hint is enabled, false otherwise.</returns>
+		static bool GetWindowHint(const InternalWindow* window, Hint hint);
+		/// <summary>
+		/// Sets the mode, monitor, video mode and placement of a window.<br>
+		/// <br>
+		///	Wayland: - The desired window position is ignored, as there is no way for an application to set this property.<br>
+		///	         - Setting the window to full screen will not attempt to change the mode, no matter what the
+		///            requested size or refresh rate.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the monitor for.</param>
+		/// <param name="monitor">InternalMonitor to use or nullptr.</param>
+		/// <param name="xPos">New X position for the window.</param>
+		/// <param name="yPos">New Y position for the window.</param>
+		/// <param name="width">New width for the window.</param>
+		/// <param name="height">New height for the window.</param>
+		/// <param name="refreshRate">New refresh rate for the window.</param>
 		static void SetWindowMonitor(InternalWindow* window,
 		                             InternalMonitor* monitor,
 		                             int32_t xPos,
@@ -1378,169 +1598,461 @@ namespace TRAP::INTERNAL
 		                             int32_t width,
 		                             int32_t height,
 		                             int32_t refreshRate);
-		//Sets the mode, monitor and placement of a window.
+		/// <summary>
+		/// Sets the monitor of a window for borderless fullscreen.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the monitor for.</param>
+		/// <param name="monitor">InternalMonitor to use.</param>
 		static void SetWindowMonitorBorderless(InternalWindow* window, InternalMonitor* monitor);
-		//Sets the user pointer of the specified window.
+		/// <summary>
+		/// Sets the user pointer of the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the user pointer for.</param>
+		/// <param name="pointer">Data to be stored with the window.</param>
 		static void SetWindowUserPointer(InternalWindow* window, void* pointer);
-		//Returns the user pointer of the specified window.
+		/// <summary>
+		/// Returns the user pointer of the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to get the user pointer from.</param>
+		/// <returns>Data stored with the window.</returns>
 		static void* GetWindowUserPointer(const InternalWindow* window);
-		//Sets the error callback.
+		/// <summary>
+		/// Sets the error callback.
+		/// </summary>
+		/// <param name="callback">Function to call when an error occurs.</param>
 		static void SetErrorCallback(ErrorFunc callback);
-		//Sets the monitor configuration callback.
+		/// <summary>
+		/// Sets the monitor configuration callback.
+		/// </summary>
+		/// <param name="callback">Function to call when a monitor event occurs.</param>
 		static void SetMonitorCallback(MonitorFunc callback);
-		//Sets the position callback for the specified window.
-		//
-		//Wayland: - This callback will never be called, as there is no way for an application to know its global position.
+		/// <summary>
+		///	Sets the position callback for the specified window.<br>
+		///	<br>
+		///	Wayland: - This callback will never be called, as there is no way for an application to know its global position. 
+		/// </summary>
+		/// <param name="window">InternalWindow to set the callback for.</param>
+		/// <param name="callback">Function to call when a position event occurs.</param>
 		static void SetWindowPosCallback(InternalWindow* window, WindowPositionFunc callback);
-		//Sets the size callback for the specified window.
+		/// <summary>
+		/// Sets the size callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the callback for.</param>
+		/// <param name="callback">Function to call when a size event occurs.</param>
 		static void SetWindowSizeCallback(InternalWindow* window, WindowSizeFunc callback);
-		//Sets the minimize callback for the specified window.
+		/// <summary>
+		/// Sets the minimize callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the callback for.</param>
+		/// <param name="callback">Function to call when a minimize event occurs.</param>
 		static void SetWindowMinimizeCallback(InternalWindow* window, WindowMinimizeFunc callback);
-		//Sets the maximize callback for the specified window.
+		/// <summary>
+		/// Sets the maximize callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the callback for.</param>
+		/// <param name="callback">Function to call when a maximize event occurs.</param>
 		static void SetWindowMaximizeCallback(InternalWindow* window, WindowMaximizeFunc callback);
-		//Sets the close callback for the specified window.
+		/// <summary>
+		/// Sets the close callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the callback for.</param>
+		/// <param name="callback">Function to call when a close event occurs.</param>
 		static void SetWindowCloseCallback(InternalWindow* window, WindowCloseFunc callback);
-		//Sets the focus callback for the specified window.
+		/// <summary>
+		/// Sets the focus callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the callback for.</param>
+		/// <param name="callback">Function to call when a focus event occurs.</param>
 		static void SetWindowFocusCallback(InternalWindow* window, WindowFocusFunc callback);
-		//Sets the framebuffer resize callback for the specified window.
+		/// <summary>
+		/// Sets the framebuffer resize callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the callback for.</param>
+		/// <param name="callback">Function to call when a framebuffer size event occurs.</param>
 		static void SetFrameBufferSizeCallback(InternalWindow* window, FrameBufferSizeFunc callback);
-		//Sets the window content scale callback for the specified window.
+		/// <summary>
+		/// Sets the window content scale callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the callback for.</param>
+		/// <param name="callback">Function to call when a content scale event occurs.</param>
 		static void SetContentScaleCallback(InternalWindow* window, WindowContentScaleFunc callback);
-		//Sets the key callback.
+		/// <summary>
+		/// Sets the key callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the callback for.</param>
+		/// <param name="callback">Function to call when a key event occurs.</param>
 		static void SetKeyCallback(InternalWindow* window, KeyFunc callback);
-		//Sets the Unicode character callback.
+		/// <summary>
+		/// Sets the Unicode character callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the callback for.</param>
+		/// <param name="callback">Function to call when a char event occurs.</param>
 		static void SetCharCallback(InternalWindow* window, CharFunc callback);
-		//Sets the mouse button callback.
+		/// <summary>
+		/// Sets the mouse button callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the callback for.</param>
+		/// <param name="callback">Function to call when a mouse button event occurs.</param>
 		static void SetMouseButtonCallback(InternalWindow* window, MouseButtonFunc callback);
-		//Sets the cursor position callback.
+		/// <summary>
+		/// Sets the cursor position callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the callback for.</param>
+		/// <param name="callback">Function to call when a cursor position event occurs.</param>
 		static void SetCursorPosCallback(InternalWindow* window, CursorPositionFunc callback);
-		//Sets the cursor enter callback.
+		/// <summary>
+		/// Sets the cursor enter callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the callback for.</param>
+		/// <param name="callback">Function to call when a cursor enter event occurs.</param>
 		static void SetCursorEnterCallback(InternalWindow* window, CursorEnterFunc callback);
-		//Sets the scroll callback.
+		/// <summary>
+		/// Sets the scroll callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the callback for.</param>
+		/// <param name="callback">Function to call when a scroll event occurs.</param>
 		static void SetScrollCallback(InternalWindow* window, ScrollFunc callback);
-		//Sets the path drop callback.
+		/// <summary>
+		/// Sets the path drop callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the callback for.</param>
+		/// <param name="callback">Function to call when a drop even occurs.</param>
 		static void SetDropCallback(InternalWindow* window, DropFunc callback);
-		//Gets the error callback.
+		/// <summary>
+		/// Gets the error callback.
+		/// </summary>
+		/// <returns>Function that gets called when an error occurs.</returns>
 		static ErrorFunc GetErrorCallback();
-		//Gets the monitor configuration callback.
+		/// <summary>
+		/// Gets the monitor configuration callback.
+		/// </summary>
+		/// <returns>Function that gets called when a monitor event occurs.</returns>
 		static MonitorFunc GetMonitorCallback();
-		//Gets the position callback for the specified window.
+		/// <summary>
+		/// Gets the position callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow from which to query the callback from.</param>
+		/// <returns>Function that gets called when a position event occurs.</returns>
 		static WindowPositionFunc GetWindowPosCallback(const InternalWindow* window);
-		//Gets the size callback for the specified window.
+		/// <summary>
+		/// Gets the size callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow from which to query the callback from.</param>
+		/// <returns>Function that gets called when a size event occurs.</returns>
 		static WindowSizeFunc GetWindowSizeCallback(const InternalWindow* window);
-		//Gets the close callback for the specified window.
+		/// <summary>
+		/// Gets the close callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow from which to query the callback from.</param>
+		/// <returns>Function that gets called when a close event occurs.</returns>
 		static WindowCloseFunc GetWindowCloseCallback(const InternalWindow* window);
-		//Gets the focus callback for the specified window.
+		/// <summary>
+		/// Gets the focus callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow from which to query the callback from.</param>
+		/// <returns>Function that gets called when a focus event occurs.</returns>
 		static WindowFocusFunc GetWindowFocusCallback(const InternalWindow* window);
-		//Gets the framebuffer resize callback for the specified window.
+		/// <summary>
+		/// Gets the framebuffer resize callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow from which to query the callback from.</param>
+		/// <returns>Function that gets called when a framebuffer size event occurs.</returns>
 		static FrameBufferSizeFunc GetFrameBufferSizeCallback(const InternalWindow* window);
-		//Gets the window content scale callback for the specified window.
+		/// <summary>
+		/// Gets the window content scale callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow from which to query the callback from.</param>
+		/// <returns>Function that gets called when a content scale event occurs.</returns>
 		static WindowContentScaleFunc GetWindowContentScaleCallback(const InternalWindow* window);
-		//Gets the key callback.
+		/// <summary>
+		/// Gets the key callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow from which to query the callback from.</param>
+		/// <returns>Function that gets called when a key event occurs.</returns>
 		static KeyFunc GetKeyCallback(const InternalWindow* window);
-		//Gets the Unicode character callback.
+		/// <summary>
+		/// Gets the Unicode character callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow from which to query the callback from.</param>
+		/// <returns>Function that gets called when a char event occurs.</returns>
 		static CharFunc GetCharCallback(const InternalWindow* window);
-		//Gets the mouse button callback.
+		/// <summary>
+		/// Gets the mouse button callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow from which to query the callback from.</param>
+		/// <returns>Function that gets called when a mouse button event occurs.</returns>
 		static MouseButtonFunc GetMouseButtonCallback(const InternalWindow* window);
-		//Gets the cursor position callback.
+		/// <summary>
+		/// Gets the cursor position callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow from which to query the callback from.</param>
+		/// <returns>Function that gets called when a cursor position event occurs.</returns>
 		static CursorPositionFunc GetCursorPosCallback(const InternalWindow* window);
-		//Gets the cursor enter callback.
+		/// <summary>
+		/// Gets the cursor enter callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow from which to query the callback from.</param>
+		/// <returns>Function that gets called when a cursor enter event occurs.</returns>
 		static CursorEnterFunc GetCursorEnterCallback(const InternalWindow* window);
-		//Gets the scroll callback.
+		/// <summary>
+		/// Gets the scroll callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow from which to query the callback from.</param>
+		/// <returns>Function that gets called when a scroll event occurs.</returns>
 		static ScrollFunc GetScrollCallback(const InternalWindow* window);
-		//Gets the path drop callback.
+		/// <summary>
+		/// Gets the path drop callback for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow from which to query the callback from.</param>
+		/// <returns>Function that gets called when a drop event occurs.</returns>
 		static DropFunc GetDropCallback(const InternalWindow* window);
-		//Processes all pending events.
+		/// <summary>
+		/// Processes all pending events.
+		/// </summary>
 		static void PollEvents();
-		//Sets the cursor mode for the specified window.
+		/// <summary>
+		/// Sets the cursor mode for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the cursor mode for.</param>
+		/// <param name="mode">CursorMode to be set.</param>
 		static void SetCursorMode(InternalWindow* window, CursorMode mode);
-		//Retrieves the cursor mode for the specified window.
+		/// <summary>
+		/// Retrieves the cursor mode from the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to query the cursor mode from.</param>
+		/// <returns>CursorMode used by the InternalWindow.</returns>
 		static CursorMode GetCursorMode(const InternalWindow* window);
-		//Returns whether raw mouse motion is supported.
+		/// <summary>
+		/// Returns whether raw mouse motion is supported.
+		/// </summary>
+		/// <returns>True if raw mouse input is supported, false otherwise.</returns>
 		static bool RawMouseMotionSupported();
-		//Sets the raw mouse motion mode for the specified window.
+		/// <summary>
+		/// Sets the raw mouse motion mode for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to set raw mouse input for.</param>
+		/// <param name="enabled">Whether to enable or disable raw mouse input.</param>
 		static void SetRawMouseMotionMode(InternalWindow* window, bool enabled);
-		//Retrvieves the raw mouse motion mode for the specified window.
+		/// <summary>
+		/// Retrieves the raw mouse motion mode for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to query.</param>
+		/// <returns>True if raw mouse motion mode is enabled, false otherwise.</returns>
 		static bool GetRawMouseMotionMode(const InternalWindow* window);
-		//Returns the layout-specific name of the specified printable key.
+		/// <summary>
+		/// Returns the layout-specific name of the specified printable key.
+		/// </summary>
+		/// <param name="key">Key to get layout-specific name from.</param>
+		/// <param name="scanCode">Optional scan code to get layout-specific name from.</param>
+		/// <returns>Layout-specific name of the given key.</returns>
 		static const char* GetKeyName(Input::Key key, int32_t scanCode);
-		//Returns the last reported state of a keyboard key for the specified window.
+		/// <summary>
+		/// Returns the last reported state of a keyboard key for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to query.</param>
+		/// <param name="key">Key to get last reported state from.</param>
+		/// <returns>Last reported state of the specified key.</returns>
 		static bool GetKey(const InternalWindow* window, Input::Key key);
-		//Returns the last reported state of a mouse button for the specified window.
+		/// <summary>
+		/// Returns the last reported state of a mouse button for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to query.</param>
+		/// <param name="button">Mouse button to get last reported state from.</param>
+		/// <returns>Last reported state of the specified mouse button.</returns>
 		static bool GetMouseButton(const InternalWindow* window, Input::MouseButton button);
-		//Sets the position of the cursor, relative to the content area of the window
-		//
-		//Wayland: - This function will only work when the cursor mode is Disabled, otherwise it will do nothing.
+		/// <summary>
+		///	Sets the position of the cursor, relative to the content area of the window.<br>
+		///	<br>
+		///	Wayland: - This function will only work when the cursor mode is Disabled, otherwise it will do nothing.
+		/// </summary>
+		/// <param name="window">InternalWindow to set the cursor position for.</param>
+		/// <param name="xPos">New X position for the cursor.</param>
+		/// <param name="yPos">New Y position for the cursor.</param>
 		static void SetCursorPos(InternalWindow* window, double xPos, double yPos);
-		//Retrieves the position of the cursor relative to the content area of the window.
+		/// <summary>
+		/// Retrieves the position of the cursor relative to the content area of the window.
+		/// </summary>
+		/// <param name="window">InternalWindow from which to get the current cursor position.</param>
+		/// <param name="xPos">Output variable for the current X position of the cursor.</param>
+		/// <param name="yPos">Output variable for the current Y position of the cursor.</param>
 		static void GetCursorPos(const InternalWindow* window, double& xPos, double& yPos);
-		//Returns the position of the monitor's viewport on the virtual screen.
+		/// <summary>
+		/// Returns the position of the monitor's viewport on the virtual screen.
+		/// </summary>
+		/// <param name="monitor">InternalMonitor to query.</param>
+		/// <param name="xPos">Output variable for the X position of the monitor.</param>
+		/// <param name="yPos">Output variable for the Y position of the monitor.</param>
 		static void GetMonitorPos(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos);
-		//Retrieves the work area of the monitor.
+		/// <summary>
+		/// Retrieves the work area of the monitor.
+		/// </summary>
+		/// <param name="monitor">InternalMonitor to query.</param>
+		/// <param name="xPos">Output variable for the X position of the monitor.</param>
+		/// <param name="yPos">Output variable for the Y position of the monitor.</param>
+		/// <param name="width">Output variable for the width of the monitor.</param>
+		/// <param name="height">Output variable for the height of the monitor.</param>
 		static void GetMonitorWorkArea(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos, int32_t& width, int32_t& height);
-		//Makes the specified window visible.
+		/// <summary>
+		/// Makes the specified window visible.
+		/// </summary>
+		/// <param name="window">InternalWindow to display.</param>
 		static void ShowWindow(InternalWindow* window);
-		//Brings the specified window to front and sets input focus.
-		//
-		//Wayland: - It is not possible for an application to bring its windows to front.
+		/// <summary>
+		/// Brings the specified window to front and sets input focus.<br>
+		/// <br>
+		/// Wayland: - It is not possible for an application to bring its windows to front.
+		/// </summary>
+		/// <param name="window">InternalWindow to focus.</param>
 		static void FocusWindow(const InternalWindow* window);
-		//Maximizes the specified window.
+		/// <summary>
+		/// Maximizes the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to maximize.</param>
 		static void MaximizeWindow(const InternalWindow* window);
-		//Minimizes the specified window.
-		//
-		//Wayland: - Once a window is minimized, RestoreWindow won't be able to restore it.
-		//           This is a design decision of the xdg-shell protocol.
+		/// <summary>
+		/// Minimizes the specified window.<br>
+		/// <br>
+		///	Wayland: - Once a window is minimized, RestoreWindow won't be able to restore it.<br>
+		///            This is a design decision of the xdg-shell protocol.
+		/// </summary>
+		/// <param name="window">InternalWindow to minimize.</param>
 		static void MinimizeWindow(const InternalWindow* window);
-		//Requests user attention to the specified window.
+		/// <summary>
+		/// Requests user attention to the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to request user attention for.</param>
 		static void RequestWindowAttention(const InternalWindow* window);
-		//Hides the specified window.
+		/// <summary>
+		/// Hides the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to be hidden.</param>
 		static void HideWindow(const InternalWindow* window);
-		//Restores the specified window.
+		/// <summary>
+		/// Restores the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to be restored.</param>
 		static void RestoreWindow(InternalWindow* window);
-		//Sets the size limits of the specified window.
-		//
-		//Wayland: The size limits will not be applied until the window is actually resized, either by the user or by the compositor.
+		/// <summary>
+		/// Sets the size limits of the specified window.<br>
+		/// <br>
+		/// Wayland: The size limits will not be applied until the window is actually resized, either by the user or by the compositor.
+		/// </summary>
+		/// <param name="window">InternalWindow to set size limits for.</param>
+		/// <param name="minWidth">New minimum window width.</param>
+		/// <param name="minHeight">New minimum window height.</param>
+		/// <param name="maxWidth">New maximum window width.</param>
+		/// <param name="maxHeight">New maximum window height.</param>
 		static void SetWindowSizeLimits(InternalWindow* window, int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight);
-		//Sets the clipboard to the specified string.
+		/// <summary>
+		/// Sets the clipboard to the specified string.
+		/// </summary>
+		/// <param name="string">String to be set for the clipboard.</param>
 		static void SetClipboardString(std::string_view string);
-		//Returns the contents of the clipboard as a string.
+		/// <summary>
+		/// Returns the contents of the clipboard as a string.
+		/// </summary>
+		/// <returns>String containing clipboard contents.</returns>
 		static std::string GetClipboardString();
-		//Returns the window whose context is current on the calling thread.
+		/// <summary>
+		/// Returns the window whose context is current on the calling thread.<br>
+		/// <br>
+		/// Note: Only works with InternalWindows that have a context attached to it.
+		/// </summary>
+		/// <returns>InternalWindow which has the current context.</returns>
 		static InternalWindow* GetCurrentContext();
-		//Swaps the front and back buffers of the specified window.
+		/// <summary>
+		/// Swaps the front and back buffers of the specified window.<br>
+		/// <br>
+		/// Note: Only works with InternalWindows that have a context attached to it.
+		/// </summary>
+		/// <param name="window">InternalWindow to swap buffers for.</param>
 		static void SwapBuffers(InternalWindow* window);
-		//Sets the swap interval for the current context.
+		/// <summary>
+		/// Sets the swap interval for the current context.<br>
+		/// <br>
+		/// Note: Only works with InternalWindows that have a context attached to it.
+		/// </summary>
+		/// <param name="interval">New swap interval.</param>
 		static void SwapInterval(int32_t interval);
-		//Returns whether the specified extension is available.
+		/// <summary>
+		/// Returns whether the specified extension is available.<br>
+		/// <br>
+		/// Note: Only works with InternalWindows that have a context attached to it.
+		/// </summary>
+		/// <param name="extension">Extension to be checked.</param>
+		/// <returns>True if extension is supported, false otherwise.</returns>
 		static bool ExtensionSupported(std::string_view extension);
-		//Returns the address of the specified function for the current context.
+		/// <summary>
+		/// Returns the address of the specified function for the current context.
+		/// </summary>
+		/// <param name="procName">Process name.</param>
+		/// <returns>Address of the specified function for the current context as a GLProcess.</returns>
 		static GLProcess GetProcAddress(const char* procName);
-		//Returns whether the Vulkan loader and an ICD have been found.
+		/// <summary>
+		/// Returns whether the Vulkan loader and an ICD have been found.
+		/// </summary>
+		/// <returns>True if Vulkan API is supported, false otherwise.</returns>
 		static bool VulkanSupported();
-		//Returns the Vulkan instance extensions required by TRAP.
+		/// <summary>
+		/// Returns the Vulkan instance extensions required by TRAP.
+		/// </summary>
+		/// <returns>Array containing the required instance extensions.</returns>
 		static std::array<std::string, 2> GetRequiredInstanceExtensions();
-		//Creates a Vulkan surface for the specified window.
+		/// <summary>
+		/// Creates a Vulkan surface for the specified window.
+		/// </summary>
+		/// <param name="instance">Vulkan instance.</param>
+		/// <param name="window">InternalWindow for which to create the surface for.</param>
+		/// <param name="allocator">Optional allocator.</param>
+		/// <param name="surface">Output variable for the new Vulkan Surface.</param>
+		/// <returns>Vulkan Result of the creation.</returns>
 		static VkResult CreateWindowSurface(VkInstance instance, const InternalWindow* window, const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface);
+		/// <summary>
+		/// Hides the specified window from the taskbar.
+		/// </summary>
+		/// <param name="window">InternalWindow to hide from the taskbar.</param>
 		static void HideWindowFromTaskbar(InternalWindow* window);
-		//Enable/Disable Drag and Drop feature for the specified window.
+		/// <summary>
+		/// Enable/Disable Drag and Drop feature for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow for which to set drag and drop.</param>
+		/// <param name="value">Whether to enable or disable drag and drop.</param>
 		static void SetDragAndDrop(InternalWindow* window, bool value);
 #ifdef TRAP_PLATFORM_WINDOWS
+		/// <summary>
+		/// Returns the HWND handle of the InternalWindow.
+		/// </summary>
+		/// <param name="window">InternalWindow from which to get the HWND from.</param>
+		/// <returns>HWND of the specified window.</returns>
 		static HWND GetWin32Window(const InternalWindow* window);
 #endif
 		//-------//
 		//Private//
 		//-------//
 	private:
-		//Checks whether the desired context attributes are valid
+		/// <summary>
+		/// Checks whether the desired context attributes are valid.
+		/// </summary>
+		/// <param name="CTXConfig">ContextConfig to check.</param>
+		/// <returns>True if specified ContextConfig is valid, false otherwise.</returns>
 		static bool IsValidContextConfig(const ContextConfig& CTXConfig);
-		//Center the cursor in the content area of the specified window
+		/// <summary>
+		/// Center the cursor in the content area of the specified windows.
+		/// </summary>
+		/// <param name="window">InternalWindow which to center the cursor for.</param>
 		static void CenterCursorInContentArea(InternalWindow* window);
-		//Notifies shared code of an error
+		/// <summary>
+		/// Notifies shared code of an error.
+		/// </summary>
+		/// <param name="code">Error code.</param>
+		/// <param name="str">Description of the occurred error.</param>
 		static void InputError(Error code, const std::string& str);		
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Platform Specific Functions----------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
-		//Create key code translation tables
+		/// <summary>
+		/// Create key code translation tables.
+		/// </summary>
 		static void CreateKeyTables();
 		
 		static InternalVideoMode PlatformGetVideoMode(const InternalMonitor* monitor);
@@ -1617,253 +2129,629 @@ namespace TRAP::INTERNAL
 		//---------//
 		//Universal//
 		//---------//
-		//Retrieves the available modes for the specified monitor
+		/// <summary>
+		/// Retrieves the available modes for the specified monitor.
+		/// </summary>
+		/// <param name="monitor">InternalMonitor to refresh VideoModes for.</param>
+		/// <returns>True if VideoModes were successfully updated, false otherwise.</returns>
 		static bool RefreshVideoModes(InternalMonitor* monitor);
+		/// <summary>
+		/// Retrieves the available context attributes for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to refresh attributes for.</param>
+		/// <param name="CTXConfig">ContextConfig.</param>
+		/// <returns>True when successfully updated, false otherwise.</returns>
 		static bool RefreshContextAttribs(InternalWindow* window,
 										  const ContextConfig& CTXConfig);
+		/// <summary>
+		/// Initialized Vulkan API for further use.
+		/// </summary>
+		/// <param name="mode">Mode to use.</param>
+		/// <returns>True when successfully initialized, false otherwise.</returns>
 		static bool InitVulkan(uint32_t mode);
-		//Splits a color depth into red, green and blue bit depths
+		/// <summary>
+		/// Splits a color depth into red, green and blue bit depths.
+		/// </summary>
+		/// <param name="bpp">Bits per pixel depth to split.</param>
+		/// <param name="red">Output variable for the red channel.</param>
+		/// <param name="green">Output variable for the green channel.</param>
+		/// <param name="blue">Output variable for the blue channel.</param>
 		static void SplitBPP(int32_t bpp, int32_t& red, int32_t& green, int32_t& blue);
-		//Make the specified window and its video mode active on its monitor
+		/// <summary>
+		/// Make the specified window and its video mode active on its monitor.
+		/// </summary>
+		/// <param name="window">InternalWindow to make active on the given monitor.</param>
 		static void AcquireMonitor(InternalWindow* window);
-		//Make the specified window active on its monitor
+		/// <summary>
+		/// Make the specified window active on its monitor.
+		/// </summary>
+		/// <param name="window">InternalWindow to make active on the given monitor.</param>
 		static void AcquireMonitorBorderless(InternalWindow* window);
-		//Remove the window and restore the original video mode
+		/// <summary>
+		/// Remove the window and restore the original video mode.
+		/// </summary>
+		/// <param name="window">InternalWindow which to release from current aquired monitor.</param>
 		static void ReleaseMonitor(const InternalWindow* window);
-		//Lexically compare video modes, used by qsort
+		/// <summary>
+		/// Lexically compare video modes, used by qsort.
+		/// </summary>
+		/// <param name="fp">InternalVideoMode to sort.</param>
+		/// <param name="sp">InternalVideoMode to sort.</param>
+		/// <returns>Index for the sorted InternalVideoMode.</returns>
 		static int32_t CompareVideoModes(const void* fp, const void* sp);
-		//Searches an extension string for the specified extension
+		/// <summary>
+		/// Searches an extension string for the specified extension.
+		/// </summary>
+		/// <param name="string">String to search in given extension.</param>
+		/// <param name="extensions">Extension to test.</param>
+		/// <returns>True if given string is inside the given extension.</returns>
 		static bool StringInExtensionString(const char* string, const char* extensions);
-		//Chooses the framebuffer config that best matches the desired one
+		/// <summary>
+		/// Chooses the framebuffer config that best matches the desired one.
+		/// </summary>
+		/// <param name="desired">FrameBufferConfig that is the most wanted to be used.</param>
+		/// <param name="alternatives">Alternative FrameBufferConfigs used when the most wanted FrameBufferConfig is not available.</param>
+		/// <returns>FrameBufferConfig which should be used.</returns>
 		static const FrameBufferConfig* ChooseFBConfig(const FrameBufferConfig& desired,
 			                                           const std::vector<FrameBufferConfig>& alternatives);
-		//Updates the cursor image according to its cursor mode
+		/// <summary>
+		/// Updates the cursor image according to its cursor mode.
+		/// </summary>
+		/// <param name="window">InternalWindow to update.</param>
 		static void UpdateCursorImage(const InternalWindow* window);		
-		//Exit disabled cursor mode for the specified window
+		/// <summary>
+		/// Exit disabled cursor mode for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow for which to enable Cursor.</param>
 		static void EnableCursor(InternalWindow* window);
-		//Apply disabled cursor mode to a focused window
+		/// <summary>
+		/// Apply disabled cursor mode to a focused window.
+		/// </summary>
+		/// <param name="window">InternalWindow for which to disable Cursor.</param>
 		static void DisableCursor(InternalWindow* window);
-		//Enables raw messages for the mouse for the specified window
+		/// <summary>
+		/// Enables raw messages for the mouse for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow for which to enable raw mouse motion.</param>
 		static void EnableRawMouseMotion(const InternalWindow* window);
-		//Disables raw messages for the mouse
+		/// <summary>
+		/// Disables raw messages for the mouse.
+		/// </summary>
+		/// <param name="window">InternalWindow for which to disable raw mouse motion.</param>
 		static void DisableRawMouseMotion(const InternalWindow* window);
+		/// <summary>
+		/// Get a string representation of a VkResult.
+		/// </summary>
+		/// <param name="result">VkResult to convert.</param>
+		/// <returns>Description of the given VkResult.</returns>
 		static std::string GetVulkanResultString(VkResult result);
-		//Notifies shared code of a cursor motion event
-		//The position is specified in content area relative screen coordinates
+		/// <summary>
+		/// Notifies shared code of a cursor motion event.
+		/// The position is specified in content area relative screen coordinates.
+		/// </summary>
+		/// <param name="window">InternalWindow which is meant.</param>
+		/// <param name="xPos">X position of the cursor.</param>
+		/// <param name="yPos">Y position of the cursor.</param>
 		static void InputCursorPos(InternalWindow* window, double xPos, double yPos);
-		//Notifies shared code of a physical key event
+		/// <summary>
+		/// Notifies shared code of a physical key event.
+		/// </summary>
+		/// <param name="window">InternalWindow which is meant.</param>
+		/// <param name="key">Key that is pressed or released.</param>
+		/// <param name="scancode">Scan code of the key which is pressed or released.</param>
+		/// <param name="pressed">Whether the given Key is pressed or released.</param>
 		static void InputKey(InternalWindow* window, Input::Key key, int32_t scancode, bool pressed);
-		//Notifies shared code of a Unicode codepoint input event
-		//The 'plain' parameter determines whether to emit a regular character event
+		/// <summary>
+		/// Notifies shared code of a Unicode codepoint input event.
+		/// The 'plain' parameter determines whether to emit a regular character event.
+		/// </summary>
+		/// <param name="window">InternalWindow which is meant.</param>
+		/// <param name="codePoint">Code point of the typed char.</param>
 		static void InputChar(const InternalWindow* window, uint32_t codePoint);
-		//Notifies shared code of a mouse button click event
+		/// <summary>
+		/// Notifies shared code of a mouse button click event.
+		/// </summary>
+		/// <param name="window">InternalWindow which is meant.</param>
+		/// <param name="button">Mouse button that is pressed or released.</param>
+		/// <param name="pressed">Whether the mouse button is pressed or released.</param>
 		static void InputMouseClick(InternalWindow* window, Input::MouseButton button, bool pressed);
-		//Notifies shared code of a scroll event
+		/// <summary>
+		/// Notifies shared code of a scroll event.
+		/// </summary>
+		/// <param name="window">InternalWindow which is meant.</param>
+		/// <param name="xOffset">X offset of the scroll wheel.</param>
+		/// <param name="yOffset">Y offset of the scroll wheel.</param>
 		static void InputScroll(const InternalWindow* window, double xOffset, double yOffset);
-		//Notified shared code of a cursor enter/leave event
+		/// <summary>
+		/// Notified shared code of a cursor enter/leave event.
+		/// </summary>
+		/// <param name="window">InternalWindow which is meant.</param>
+		/// <param name="entered">Whether the cursor entered or leaved the window.</param>
 		static void InputCursorEnter(InternalWindow* window, bool entered);
-		//Notifies shared code that a window framebuffer has been resized
-		//The size is specified in pixels
+		/// <summary>
+		/// Notifies shared code that a window framebuffer has been resized.
+		/// The size is specified in pixels.
+		/// </summary>
+		/// <param name="window">InternalWindow which is meant.</param>
+		/// <param name="width">New Framebuffer width.</param>
+		/// <param name="height">New Framebuffer height.</param>
 		static void InputFrameBufferSize(const InternalWindow* window, int32_t width, int32_t height);
-		//Notifies shared code that a window has been resized
-		//The size is specified in screen coordinates
+		/// <summary>
+		/// Notifies shared code that a window has been resized.
+		/// The size is specified in screen coordinates.
+		/// </summary>
+		/// <param name="window">InternalWindow which is meant.</param>
+		/// <param name="width">New Window width.</param>
+		/// <param name="height">New Window height.</param>
 		static void InputWindowSize(const InternalWindow* window, int32_t width, int32_t height);
-		//Notifies shared code that a window has been minimized
+		/// <summary>
+		/// Notifies shared code that a window has been minimized.
+		/// </summary>
+		/// <param name="window">InternalWindow which is meant.</param>
+		/// <param name="restored">Whether window was minimized or restored.</param>
 		static void InputWindowMinimize(const InternalWindow* window, bool restored);
-		//Notifies shared code that a window has been maximized
+		/// <summary>
+		/// Notifies shared code that a window has been maximized.
+		/// </summary>
+		/// <param name="window">InternalWindow which is meant.</param>
+		/// <param name="restored">Whether window was maximized or restored.</param>
 		static void InputWindowMaximize(const InternalWindow* window, bool restored);
-		//Notifies shared code that a window has moved
-		//The position is specified in content area relative screen coordinates
+		/// <summary>
+		/// Notifies shared code that a window has moved.
+		/// The position is specified in content area relative screen coordinates.
+		/// </summary>
+		/// <param name="window">InternalWindow which is meant.</param>
+		/// <param name="x">X position of the window.</param>
+		/// <param name="y">Y position of the window.</param>
 		static void InputWindowPos(const InternalWindow* window, int32_t x, int32_t y);
-		//Notifies shared code that the user wishes to close a window
+		/// <summary>
+		/// Notifies shared code that the user wishes to close a window.
+		/// </summary>
+		/// <param name="window">InternalWindow which is meant.</param>
 		static void InputWindowCloseRequest(InternalWindow* window);
-		//Notifies shared code of files or directories dropped on a window
+		/// <summary>
+		/// Notifies shared code of files or directories dropped on a window.
+		/// </summary>
+		/// <param name="window">InternalWindow which is meant.</param>
+		/// <param name="paths">All dropped paths.</param>
 		static void InputDrop(const InternalWindow* window, const std::vector<std::string>& paths);
-		//Notifies shared code that a window has lost or received input focus
+		/// <summary>
+		/// Notifies shared code that a window has lost or received input focus.
+		/// </summary>
+		/// <param name="window">InternalWindow which is meant.</param>
+		/// <param name="focused">Whether window is focused or not.</param>
 		static void InputWindowFocus(InternalWindow* window, bool focused);
-		//Notifies shared code of a keyboard layout change
+		/// <summary>
+		/// Notifies shared code of a keyboard layout change.
+		/// </summary>
 		static void InputKeyboardLayout();
-		//Chooses the video mode most closely matching the desired one
+		/// <summary>
+		/// Chooses the video mode most closely matching the desired one.
+		/// </summary>
+		/// <param name="monitor">InternalMonitor to query.</param>
+		/// <param name="desired">Desired InternalVideoMode.</param>
+		/// <returns>Closest matching InternalVideoMode from the desired one.</returns>
 		static InternalVideoMode* ChooseVideoMode(InternalMonitor* monitor, const InternalVideoMode& desired);
-		//Notifies shared code of a monitor connection or disconnection
+		/// <summary>
+		/// Notifies shared code of a monitor connection or disconnection.
+		/// </summary>
+		/// <param name="monitor">InternalMonitor that was connected or disconnected.</param>
+		/// <param name="connected">Whether the monitor was connected or disconnected.</param>
+		/// <param name="placement">Placement of the monitor.</param>
 		static void InputMonitor(Scope<InternalMonitor> monitor, bool connected, uint32_t placement);
-		//Notifies shared code of a monitor connection or disconnection
+		/// <summary>
+		/// Notifies shared code of a monitor connection or disconnection.
+		/// </summary>
+		/// <param name="monitorIndex">Index of the monitor which got disconnected.</param>
+		/// <param name="placement">Placement of the monitor.</param>
 		static void InputMonitorDisconnect(uint32_t monitorIndex, uint32_t placement);
-		//Sets the cursor clip rect to the window content area
+		/// <summary>
+		/// Sets the cursor clip rect to the window content area.
+		/// </summary>
+		/// <param name="window">InternalWindow for which to capture the cursor.</param>
 		static void CaptureCursor(InternalWindow* window);
-		//Disables clip cursor
+		/// <summary>
+		/// Disables clip cursor
+		/// </summary>
 		static void ReleaseCursor();
 		//-------//
 		//Windows//
 		//-------//		
 #ifdef TRAP_PLATFORM_WINDOWS
-		//Replacement for IsWindowsVersionOrGreater as MinGW lacks versionhelpers.h
+		/// <summary>
+		/// Replacement for IsWindowsVersionOrGreater as MinGW lacks versionhelpers.h.
+		/// </summary>
+		/// <param name="major">Major Windows version.</param>
+		/// <param name="minor">Minor Windows version.</param>
+		/// <param name="sp">Service pack.</param>
+		/// <returns>Whether Windows version is given version or newer.</returns>
 		static BOOL IsWindowsVersionOrGreaterWin32(WORD major, WORD minor, WORD sp);
-		//Checks whether we are on at least the specified build of Windows 10
+		/// <summary>
+		/// Checks whether we are on at least the specified build of Windows 10.
+		/// </summary>
+		/// <param name="build">Build number.</param>
+		/// <returns>Whether Windows 10 version is given build or newer.</returns>
 		static BOOL IsWindows10BuildOrGreaterWin32(WORD build);
-		//Checks whether we are on at least Windows 10 Anniversary Update
+		/// <summary>
+		/// Checks whether we are on at least Windows 10 Anniversary Update.
+		/// </summary>
+		/// <returns>Whether Windows 10 Anniversary version or newer.</returns>
 		static BOOL IsWindows10AnniversaryUpdateOrGreaterWin32();
-		//Checks whether we are on at least Windows 10 Creators Update
+		/// <summary>
+		/// Checks whether we are on at least Windows 10 Creators Update.
+		/// </summary>
+		/// <returns>Whether Window 10 Creators version or newer.</returns>
 		static BOOL IsWindows10CreatorsUpdateOrGreaterWin32();
-		//Checks whether we are on at least Windows 8.1
+		/// <summary>
+		/// Checks whether we are on at least Windows 8.1.
+		/// </summary>
+		/// <returns>Whether Windows 8.1 version or newer.</returns>
 		static BOOL IsWindows8Point1OrGreaterWin32();
-		//Checks whether we are on at least Windows 8
+		/// <summary>
+		/// Checks whether we are on at least Windows 8.
+		/// </summary>
+		/// <returns>Whether Windows 8 version or newer.</returns>
 		static BOOL IsWindows8OrGreaterWin32();
-		//Checks whether we are on at least Windows 7
+		/// <summary>
+		/// Checks whether we are on at least Windows 7.
+		/// </summary>
+		/// <returns>Whether Windows 7 version or newer.</returns>
 		static BOOL IsWindows7OrGreaterWin32();
-		//Checks whether we are on at least Windows Vista
+		/// <summary>
+		/// Checks whether we are on at least Windows Vista.
+		/// </summary>
+		/// <returns>Whether Windows Vista version or newer.</returns>
 		static BOOL IsWindowsVistaOrGreaterWin32();
-		//Returns an UTF-8 string version of the specified wide string
+		/// <summary>
+		/// Returns an UTF-8 string version of the specified wide string.
+		/// </summary>
+		/// <param name="wStr">Wide string representation.</param>
+		/// <returns>UTF-8 string representation of the given wide string.</returns>
 		static std::string CreateUTF8StringFromWideStringWin32(const std::wstring& wStr);
-		//Returns a wide string string version of the specified UTF-8 string
+		/// <summary>
+		/// Returns a wide string string version of the specified UTF-8 string.
+		/// </summary>
+		/// <param name="str">UTF-8 representation.</param>
+		/// <returns>Wide string representation of the given UTF-8 string.</returns>
 		static std::wstring CreateWideStringFromUTF8StringWin32(const std::string& str);
-		//Load necessary libraries (DLLs)
+		/// <summary>
+		/// Load necessary libraries (DLLs).
+		/// </summary>
+		/// <returns>True if loading of libraries was successful, false otherwise.</returns>
 		static bool LoadLibraries();
-		//Unload used libraries (DLLs)
+		/// <summary>
+		/// Unload used libraries (DLLs).
+		/// </summary>
 		static void FreeLibraries();
-		//Reports the specified error, appending information about the last Win32 error
+		/// <summary>
+		/// Reports the specified error, appending information about the last Win32 error.
+		/// </summary>
+		/// <param name="error">Error that occurred.</param>
+		/// <param name="description">Description of the error.</param>
 		static void InputErrorWin32(Error error, const std::string& description);
-		//Notifies shared code that a window content scale has changed
-		//The scale is specified as the ratio between the current and default DPI
+		/// <summary>
+		/// Notifies shared code that a window content scale has changed.
+		/// The scale is specified as the ratio between the current and default DPI.
+		/// </summary>
+		/// <param name="window">InternalWindow which is meant.</param>
+		/// <param name="xScale">New X content scale.</param>
+		/// <param name="yScale">New Y content scale.</param>
 		static void InputWindowContentScale(const InternalWindow* window, float xScale, float yScale);
-		//Updates key names according to the current keyboard layout
+		/// <summary>
+		/// Updates key names according to the current keyboard layout.
+		/// </summary>
 		static void UpdateKeyNamesWin32();
-		//Window callback function (handles window messages)
+		/// <summary>
+		/// Window callback function (handles window messages).
+		/// </summary>
 		static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-		//Registers the TRAP window class
+		/// <summary>
+		/// Registers the TRAP window class.
+		/// </summary>
+		/// <returns>True if registration was successful, false otherwise.</returns>
 		static bool RegisterWindowClassWin32();
-		//Unregisters the TRAP window class
+		/// <summary>
+		/// Unregisters the TRAP window class.
+		/// </summary>
 		static void UnregisterWindowClassWin32();
-		//Callback for EnumDisplayMonitors in createMonitor
+		/// <summary>
+		/// Callback for EnumDisplayMonitors in CreateMonitor.
+		/// </summary>
 		static BOOL CALLBACK MonitorCallback(HMONITOR handle, HDC dc, RECT* rect, LPARAM data);
-		//Create monitor from an adapter and (optionally) a display
+		/// <summary>
+		/// Create monitor from an adapter and (optionally) a display.
+		/// </summary>
+		/// <returns>New InternalMonitor.</returns>
 		static Scope<InternalMonitor> CreateMonitor(DISPLAY_DEVICEW* adapter, DISPLAY_DEVICEW* display);
-		//Poll for changes in the set of connected monitors
+		/// <summary>
+		/// Poll for changes in the set of connected monitors.
+		/// </summary>
 		static void PollMonitorsWin32();
+		/// <summary>
+		/// Fit the InternalWindow to the monitor.
+		/// </summary>
+		/// <param name="window">InternalWindow to fit.</param>
 		static void FitToMonitor(const InternalWindow* window);
-		//Change the current video mode
+		/// <summary>
+		/// Change the current video mode.
+		/// </summary>
+		/// <param name="monitor">InternalMonitor to set InternalVideoMode for.</param>
+		/// <param name="desired">Desire InternalVideoMode for the monitor.</param>
 		static void SetVideoModeWin32(InternalMonitor* monitor, const InternalVideoMode& desired);
+		/// <summary>
+		/// Retrieve the content scale of the given monitor.
+		/// </summary>
+		/// <param name="handle">Monitor handle.</param>
+		/// <param name="xScale">X monitor content scale.</param>
+		/// <param name="yScale">Y monitor content scale.</param>
 		static void GetMonitorContentScaleWin32(HMONITOR handle, float& xScale, float& yScale);
-		//Returns the window style for the specified window
+		/// <summary>
+		/// Returns the window style for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to query.</param>
+		/// <returns>Window style as a DWORD.</returns>
 		static DWORD GetWindowStyle(const InternalWindow* window);
-		//Returns the extended window style for the specified window
+		/// <summary>
+		/// Returns the extended window style for the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to query.</param>
+		/// <returns>Window Ex style as a DWORD.</returns>
 		static DWORD GetWindowExStyle(const InternalWindow* window);
-		//Translate content area size to full window size according to styles and DPI
+		/// <summary>
+		/// Translate content area size to full window size according to styles and DPI.
+		/// </summary>
 		static void GetFullWindowSize(DWORD style, DWORD exStyle,
-			                          int32_t contentWidth, int32_t contentHeight,
-			                          int32_t& fullWidth, int32_t& fullHeight,
-			                          UINT dpi);		
+			int32_t contentWidth, int32_t contentHeight,
+			int32_t& fullWidth, int32_t& fullHeight,
+			UINT dpi);
+		/// <summary>
+		/// Initialize WGL.
+		/// </summary>
+		/// <returns>True on success, false otherwise.</returns>
 		static bool InitWGL();
-		//Shutdown WGL
+		/// <summary>
+		/// Shutdown WGL.
+		/// </summary>
 		static void ShutdownWGL();
+		/// <summary>
+		/// Create a WGL context.
+		/// </summary>
+		/// <param name="window">InternalWindow for which to create the context for.</param>
+		/// <param name="CTXConfig">Context config for the new context.</param>
+		/// <param name="FBConfig">Framebuffer config for the new context.</param>
+		/// <returns>True on success, false otherwise.</returns>
 		static bool CreateContextWGL(InternalWindow* window,
 			                         const ContextConfig& CTXConfig,
 			                         const FrameBufferConfig& FBConfig);
-		static void DestroyContextWGL( InternalWindow* window);
+		/// <summary>
+		/// Destroy a WGL context.
+		/// </summary>
+		/// <param name="window">InternalWindow which contains the context to be destroyed.</param>
+		static void DestroyContextWGL(InternalWindow* window);
+		/// <summary>
+		/// Make a WGL context the current one.
+		/// </summary>
+		/// <param name="window">InternalWindow containing the WGL context.</param>
 		static void MakeContextCurrentWGL(InternalWindow* window);
+		/// <summary>
+		/// Swap WGL buffers.
+		/// </summary>
+		/// <param name="window">InternalWindow containing the WGL context.</param>
 		static void SwapBuffersWGL(const InternalWindow* window);
+		/// <summary>
+		/// Set the WGL swap interval.
+		/// </summary>
+		/// <param name="interval">Interval to use</param>
 		static void SwapIntervalWGL(int32_t interval);
+		/// <summary>
+		/// Retrieve the address of a WGL function.
+		/// </summary>
+		/// <param name="procName">Function to get.</param>
+		/// <returns>Address of the WGL function as a GLProcess.</returns>
 		static GLProcess GetProcAddressWGL(const char* procName);
+		/// <summary>
+		/// Check if the given extension is supported by WGL.
+		/// </summary>
+		/// <param name="extension">Extension to check</param>
+		/// <returns>True if extension is supported, false otherwise.</returns>
 		static bool ExtensionSupportedWGL(const char* extension);		
-		//Return the value corresponding to the specified attribute
+		/// <summary>
+		/// Return the value corresponding to the specified attribute.
+		/// </summary>
 		static int32_t FindPixelFormatAttribValue(const std::vector<int32_t>& attribs,
-			                                      const std::vector<int32_t>& values,
-			                                      int32_t attrib);
-		//Returns a list of available and usable framebuffer configs
+			const std::vector<int32_t>& values,
+			int32_t attrib);
+		/// <summary>
+		/// Returns a list of available and usable framebuffer configs.
+		/// </summary>
+		/// <returns>Pixel format.</returns>
 		static int32_t ChoosePixelFormat(const InternalWindow* window,
-			                             const ContextConfig& CTXConfig,
-			                             const FrameBufferConfig& FBConfig);		
-		//Returns whether the cursor is in the content area of the specified window
+			const ContextConfig& CTXConfig,
+			const FrameBufferConfig& FBConfig);
+		/// <summary>
+		/// Returns whether the cursor is in the content area of the specified window.
+		/// </summary>
+		/// <param name="window">InternalWindow to check</param>
+		/// <returns>True if cursor is inside the given windows content area, false otherwise.</returns>
 		static bool CursorInContentArea(const InternalWindow* window);
-		//Creates an RGBA icon or cursor
+		/// <summary>
+		/// Creates an RGBA icon or cursor,
+		/// </summary>
+		/// <param name="image">Image to use.</param>
+		/// <param name="xHot">Center X coordinate of the image.</param>
+		/// <param name="yHot">Center Y coordinate of the image.</param>
+		/// <param name="icon">Whether it is an icon or a cursor.</param>
+		/// <returns>Handle to the icon.</returns>
 		static HICON CreateIcon(const Scope<Image>& image, int32_t xHot, int32_t yHot, bool icon);
-		//Update native window styles to match attributes
+		/// <summary>
+		/// Update native window styles to match attributes.
+		/// </summary>
+		/// <param name="window">InternalWindow to update window style for.</param>
 		static void UpdateWindowStyles(const InternalWindow* window);
-		//Creates a dummy window for behind-the-scenes work
+		/// <summary>
+		/// Creates a dummy window for behind-the-scenes work.
+		/// </summary>
+		/// <returns>True if creation was successful, false otherwise.</returns>
 		static bool CreateHelperWindow();
-		//Creates the TRAP window
+		/// <summary>
+		/// Creates the TRAP window.
+		/// </summary>
 		static int32_t CreateNativeWindow(InternalWindow* window,
-										  const WindowConfig& WNDConfig,
-										  const FrameBufferConfig& FBConfig);
+			const WindowConfig& WNDConfig,
+			const FrameBufferConfig& FBConfig);
 		//----------//
 		//Linux(X11)//
 		//----------//	
 #elif defined(TRAP_PLATFORM_LINUX)
-		//Calculates the refresh rate, in Hz, from the specified RandR mode info
+		/// <summary>
+		/// Calculates the refresh rate, in Hz, from the specified RandR mode info.
+		/// </summary>
+		/// <returns>Refresh rate.</returns>
 		static int32_t CalculateRefreshRate(const XRRModeInfo* mi);
 		static InternalVideoMode VideoModeFromModeInfo(const XRRModeInfo* mi, const XRRCrtcInfo* ci);
-		//Sends an EWMH or ICCCM event to the window manager
+		/// <summary>
+		/// Sends an EWMH or ICCCM event to the window manager.
+		/// </summary>
 		static void SendEventToWM(const InternalWindow* window, Atom type, int32_t a, int32_t b, int32_t c, int32_t d, int32_t e);
-		//Returns whether it is a _NET_FRAME_EXTENTS event for the specified window
+		/// <summary>
+		/// Returns whether it is a _NET_FRAME_EXTENTS event for the specified window.
+		/// </summary>
 		static int32_t IsFrameExtentsEvent(Display* display, XEvent* event, XPointer pointer);
-		//Wait for data to arrive using select
-		//This avoids blocking other threads via the per-display Xlib lock that also covers GLX functions
+		/// <summary>
+		/// Wait for data to arrive using select.
+		/// This avoids blocking other threads via the per-display XLib lock that also covers GLX functions.
+		/// </summary>
+		/// <param name="timeout">Time out in seconds.</param>
 		static bool WaitForEvent(double* timeout);
-		//Retrieve a single window property of the specified type
+		/// <summary>
+		/// Retrieve a single window property of the specified type.
+		/// </summary>
 		static uint32_t GetWindowPropertyX11(::Window window, Atom property, Atom type, uint8_t** value);
-		//Updates the normal hints according to the window settings
+		/// <summary>
+		/// Updates the normal hints according to the window settings.
+		/// </summary>
 		static void UpdateNormalHints(InternalWindow* window, int32_t width, int32_t height);
-		//Waits until a VisibilityNotify event arrives for the specified window or the timeout period elapses
+		/// <summary>
+		/// Waits until a VisibilityNotify event arrives for the specified window or the timeout period elapses.
+		/// </summary>
 		static bool WaitForVisibilityNotify(InternalWindow* window);
-		//Updates the full screen status of the window
+		/// <summary>
+		/// Updates the full screen status of the window.
+		/// </summary>
 		static void UpdateWindowMode(InternalWindow* window);
-		//Returns the mode info for a RandR mode XID
+		/// <summary>
+		/// Returns the mode info for a RandR mode XID.
+		/// </summary>
 		static const XRRModeInfo* GetModeInfo(const XRRScreenResources* sr, RRMode id);
-		//Retrieve system content scale via folklore heuristics
+		/// <summary>
+		/// Retrieve system content scale via folklore heuristics.
+		/// </summary>
+		/// <param name="xScale">Output variable for X system content scale.</param>
+		/// <param name="yScale">Output variable for Y system content scale.</param>
 		static void GetSystemContentScale(float& xScale, float& yScale);
-		//Look for and initialize supported X11 extensions
+		/// <summary>
+		/// Look for and initialize supported X11 extensions.
+		/// </summary>
+		/// <returns>True on success, false otherwise.</returns>
 		static bool InitExtensions();
-		//Check whether the running window manager is EMWH-compliant
+		/// <summary>
+		/// Check whether the running window manager is EMWH-compliant.
+		/// </summary>
 		static void DetectEWMH();
-		//Sets the X error handler callback
+		/// <summary>
+		/// Sets the X error handler callback.
+		/// </summary>
 		static void GrabErrorHandlerX11();
-		//X error handler
+		/// <summary>
+		/// X error handler.
+		/// </summary>
 		static int32_t ErrorHandler(Display* display, XErrorEvent* event);
-		//Clears the X error handler callback
+		/// <summary>
+		/// Clears the X error handler callback.
+		/// </summary>
 		static void ReleaseErrorHandlerX11();
-		//Check whether the specified atom is supported
+		/// <summary>
+		/// Check whether the specified atom is supported.
+		/// </summary>
 		static Atom GetAtomIfSupported(Atom* supportedAtoms, uint32_t atomCount, const char* atomName);
-		//Create a blank cursor for hidden and disabled cursor modes
+		/// <summary>
+		/// Create a blank cursor for hidden and disabled cursor modes.
+		/// </summary>
+		/// <returns>Newly created Cursor.</returns>
 		static Cursor CreateHiddenCursor();
-		//Check whether the IM has a usable style
+		/// <summary>
+		/// Check whether the IM has a usable style.
+		/// </summary>
+		/// <returns>True if an input method was found, false otherwise.</returns>
 		static bool HasUsableInputMethodStyle();
 		static void InputMethodDestroyCallback(XIM im, XPointer clientData, XPointer callData);
 		static void InputMethodInstantiateCallback(Display* display, XPointer clientData, XPointer callData);
-		//Poll for changes in the set of connected monitors
+		/// <summary>
+		/// Poll for changes in the set of connected monitors.
+		/// </summary>
 		static void PollMonitorsX11();
-		//Returns whether the event is a selection event
+		/// <summary>
+		/// Returns whether the event is a selection event.
+		/// </summary>
 		static int32_t IsSelectionEvent(Display* display, XEvent* event, XPointer pointer);
-		//Set the specified property to the selection converted to the requested target
+		/// <summary>
+		/// Set the specified property to the selection converted to the requested target.
+		/// </summary>
 		static Atom WriteTargetToProperty(const XSelectionRequestEvent* request);
 		static void HandleSelectionRequest(XEvent& event);
 		static void HandleSelectionClear(XEvent& event);
-		//Push contents of our selection to clipboard manager
+		/// <summary>
+		/// Push contents of our selection to clipboard manager.
+		/// </summary>
 		static void PushSelectionToManagerX11();
 		static void CreateInputContextX11(InternalWindow* window);
-		//Shutdown GLX
+		/// <summary>
+		/// Shutdown GLX.
+		/// </summary>
 		static void ShutdownGLX();
-		//Initialize GLX
+		/// <summary>
+		/// Initialize GLX.
+		/// </summary>
+		/// <returns>True on success, false otherwise.</returns>
 		static bool InitGLX();
 		static bool ExtensionSupportedGLX(const char* extension);
-		//Returns the Visual and depth of the chosen GLXFBConfig
+		/// <summary>
+		/// Returns the Visual and depth of the chosen GLXFBConfig
+		/// </summary>
 		static bool ChooseVisualGLX(const WindowConfig& WNDConfig,
 		                            const ContextConfig& CTXConfig,
                                     const FrameBufferConfig& FBConfig,
                                     Visual** visual, 
 							        int32_t* depth);
 		static GLProcess GetProcAddressGLX(const char* procName);
-		//Return the GLXFBConfig most closely matching the specified hints
+		/// <summary>
+		/// Return the GLXFBConfig most closely matching the specified hints.
+		/// </summary>
 		static bool ChooseGLXFBConfig(const FrameBufferConfig& desired, GLXFBConfig* result);
-		//Returns the specified attribute of the specified GLXFBConfig
+		/// <summary>
+		/// Returns the specified attribute of the specified GLXFBConfig.
+		/// </summary>
 		static int32_t GetGLXFBConfigAttrib(GLXFBConfig fbconfig, int32_t attrib);
 		static bool IsVisualTransparentX11(Visual* visual);
-		//Create the X11 window (and its colormap)
+		/// <summary>
+		/// Create the X11 window (and its colormap).
+		/// </summary>
 		static bool CreateNativeWindow(InternalWindow* window, const WindowConfig& WNDConfig, Visual* visual, int32_t depth);
-		//Creates a native cursor object from the specified image and hotspot
+		/// <summary>
+		/// Creates a native cursor object from the specified image and hotspot.
+		/// </summary>
+		/// <param name="image">Image to use.</param>
+		/// <param name="xHotSpot">X center coordinate of the given image.</param>
+		/// <param name="yHotSpot">Y center coordinate of the given image.</param>
+		/// <returns>Newly created Cursor.</returns>
 		static Cursor CreateCursorX11(const Scope<TRAP::Image>& image, int32_t xHotSpot, int32_t yHotSpot);
-		//Returns whether the window is iconified
+		/// <summary>
+		/// Returns whether the window is iconified/minimized
+		/// </summary>
 		static int32_t GetWindowState(const InternalWindow* window);
-		//Convert XKB KeySym to Unicode
+		/// <summary>
+		/// Convert XKB KeySym to Unicode.
+		/// </summary>
 		static int64_t KeySymToUnicode(uint32_t keySym);
 		struct CodePair 
 		{
@@ -1871,47 +2759,81 @@ namespace TRAP::INTERNAL
 			uint16_t UCS;
 		};
 		static const std::array<CodePair, 828> KeySymTab;
-		//Encode a Unicode code point to a UTF-8 stream
+		/// <summary>
+		/// Encode a Unicode code point to a UTF-8 stream.
+		/// </summary>
 		static std::size_t EncodeUTF8(char* s, uint32_t ch);
 		static std::string GetSelectionString(Atom selection);
-		//Returns whether it is a property event for the specified selection transfer
+		/// <summary>
+		/// Returns whether it is a property event for the specified selection transfer.
+		/// </summary>
 		static int32_t IsSelPropNewValueNotify(Display* display, XEvent* event, XPointer pointer);
-		//Convert the specified Latin-1 string to UTF-8
+		/// <summary>
+		/// Convert the specified Latin-1 string to UTF-8.
+		/// </summary>
 		static std::string ConvertLatin1ToUTF8(const char* source);
-		//Create the OpenGL context
+		/// <summary>
+		/// Create the OpenGL context.
+		/// </summary>
 		static bool CreateContextGLX(InternalWindow* window, const ContextConfig& CTXConfig, const FrameBufferConfig& FBConfig);
-		//Reports the specified error, appending information about the last X error
+		/// <summary>
+		/// Reports the specified error, appending information about the last X error.
+		/// </summary>
+		/// <param name="error">Error code.</param>
+		/// <param name="message">Description of error.</param>
 		static void InputErrorX11(Error error, const char* message);
 		static void MakeContextCurrentGLX(InternalWindow* window);
 		static void SwapBuffersGLX(const InternalWindow* window);
 		static void SwapIntervalGLX(int32_t interval);
 		static void DestroyContextGLX(InternalWindow* window);
-		//Process the specified X event
+		/// <summary>
+		/// Process the specified X event.
+		/// </summary>
 		static void ProcessEvent(XEvent& event);
-		//Translates an X11 key code to a TRAP key token
+		/// <summary>
+		/// Translates an X11 key code to a TRAP key token.
+		/// </summary>
 		static Input::Key TranslateKey(int32_t scanCode);
 #ifdef X_HAVE_UTF8_STRING
-		//Decode a Unicode code point from a UTF-8 stream
+		/// <summary>
+		/// Decode a Unicode code point from a UTF-8 stream.
+		/// </summary>
 		static uint32_t DecodeUTF8(const char** s);
 #endif
-		//Splits and translates a text/uri-list into separate file paths
+		/// <summary>
+		/// Splits and translates a text/uri-list into separate file paths.
+		/// </summary>
 		static std::vector<std::string> ParseUriList(char* text, int32_t& count);
-		//Set the current video mode for the specified monitor
+		/// <summary>
+		/// Set the current video mode for the specified monitor.
+		/// </summary>
 		static void SetVideoModeX11(InternalMonitor* monitor, const InternalVideoMode& desired);
-		//Restore the saved(original) video mode for the specified monitor
+		/// <summary>
+		/// Restore the saved(original) video mode for the specified monitor.
+		/// </summary>
 		static void RestoreVideoModeX11(InternalMonitor* monitor);
-		//Allocates and returns a monitor object with the specified name and dimensions
+		/// <summary>
+		/// Allocates and returns a monitor object with the specified name and dimensions.
+		/// </summary>
 		static Scope<InternalMonitor> CreateMonitor(std::string name);
-		//Creates a dummy window for behind-the-scenes work
+		/// <summary>
+		/// Creates a dummy window for behind-the-scenes work.
+		/// </summary>
 		static ::Window CreateHelperWindow();
-		//Translate the X11 KeySyms for a key to a TRAP key
+		/// <summary>
+		/// Translate the X11 KeySyms for a key to a TRAP key.
+		/// </summary>
 		static Input::Key TranslateKeySyms(const KeySym* keySyms, int32_t width);
-		//Clear its handle when the input context has been destroyed
+		/// <summary>
+		/// Clear its handle when the input context has been destroyed.
+		/// </summary>
 		static void InputContextDestroyCallback(XIC ic, XPointer clientData, XPointer callData);
-		//Translate an X11 key code to a TRAP key
+		/// <summary>
+		/// Translate an X11 key code to a TRAP key.
+		/// </summary>
+		static std::string GetX11KeyboardLayoutName();
 
 		friend std::string TRAP::Input::GetKeyboardLayoutName();
-		static std::string GetX11KeyboardLayoutName();
 #endif
 	};
 }

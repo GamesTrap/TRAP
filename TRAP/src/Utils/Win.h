@@ -3,7 +3,7 @@
 
 //Target Windows 8 or later
 #ifndef _WIN32_WINNT
-	#define _WIN32_WINNT 0x0601
+	#define _WIN32_WINNT 0x0602
 #endif
 #include <sdkddkver.h>
 
@@ -44,7 +44,7 @@
 	#define DISPLAY_DEVICE_ACTIVE 0x00000001
 #endif
 #ifndef _WIN32_WINNT_WINBLUE
-	#define _WIN32_WINNT_WINBLUE 0x0602
+	#define _WIN32_WINNT_WINBLUE 0x0603
 #endif
 #ifndef _WIN32_WINNT_WIN8
 	#define _WIN32_WINNT_WIN8 0x0602

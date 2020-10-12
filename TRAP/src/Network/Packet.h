@@ -37,47 +37,44 @@ namespace TRAP::Network
 	class UDPSocketIPv6;
 
 	/// <summary>
-	/// Utility class to build blocks of data to transfer
+	/// Utility class to build blocks of data to transfer.
 	/// over the network
 	/// </summary>
 	class Packet
 	{
 		/// <summary>
-		/// A bool-like type that cannot be converted to integer or pointer types
+		/// A bool-like type that cannot be converted to integer or pointer types.
 		/// </summary>
 		typedef bool (Packet::*BoolType)(std::size_t);
 
 	public:
 		/// <summary>
-		/// Default constructor.<br>
-		/// <br>
+		/// Constructor.<br>
 		/// Creates an empty packet.
 		/// </summary>
 		Packet();
 
 		/// <summary>
-		/// Virtual destructor
+		/// Default virtual destructor.
 		/// </summary>
 		virtual ~Packet() = default;
 
 		/// <summary>
-		/// Append data to the end of the packet
+		/// Append data to the end of the packet.
 		/// </summary>
-		/// <param name="data">Pointer to the sequence of bytes to append</param>
-		/// <param name="sizeInBytes">Number of bytes to append</param>
+		/// <param name="data">Pointer to the sequence of bytes to append.</param>
+		/// <param name="sizeInBytes">Number of bytes to append.</param>
 		void Append(const void* data, std::size_t sizeInBytes);
 
 		/// <summary>
 		/// Get the current reading position in the packet.<br>
-		/// <br>
-		/// The next read operation will read data from this position
+		/// The next read operation will read data from this position.
 		/// </summary>
-		/// <returns>The bytes offset of the current read position</returns>
+		/// <returns>The bytes offset of the current read position.</returns>
 		std::size_t GetReadPosition() const;
 
 		/// <summary>
 		/// Clear the packet.<br>
-		/// <br>
 		/// After calling Clear, the packet is empty.
 		/// </summary>
 		void Clear();
@@ -90,7 +87,7 @@ namespace TRAP::Network
 		/// be stored.<br>
 		/// The return pointer is nullptr if the packet is empty.
 		/// </summary>
-		/// <returns>Pointer to the data</returns>
+		/// <returns>Pointer to the data.</returns>
 		const void* GetData() const;
 
 		/// <summary>
@@ -99,7 +96,7 @@ namespace TRAP::Network
 		/// This function returns the number of bytes pointer to by
 		/// what GetData returns.
 		/// </summary>
-		/// <returns>Data size, in bytes</returns>
+		/// <returns>Data size, in bytes.</returns>
 		std::size_t GetDataSize() const;
 
 		/// <summary>
@@ -109,7 +106,7 @@ namespace TRAP::Network
 		/// This function is useful to know if there is some data
 		/// left to be read, without actually reading it.
 		/// </summary>
-		/// <returns>True if all data was read, false otherwise</returns>
+		/// <returns>True if all data was read, false otherwise.</returns>
 		bool EndOfPacket() const;
 
 	public:
@@ -128,11 +125,11 @@ namespace TRAP::Network
 		/// it disallows unwanted implicit conversions to integer or
 		/// pointer types.
 		/// </summary>
-		/// <returns>True if last data extraction from packet was successful</returns>
+		/// <returns>True if last data extraction from packet was successful.</returns>
 		operator BoolType() const;
 
 		/// <summary>
-		/// Overload of operator >> to read data from the packet
+		/// Overload of operator >> to read data from the packet.
 		/// </summary>
 		Packet& operator>>(bool& data);
 		Packet& operator>>(int8_t& data);
@@ -151,7 +148,7 @@ namespace TRAP::Network
 		Packet& operator>>(std::wstring& data);
 
 		/// <summary>
-		/// Overload of operator << to write data into the packet
+		/// Overload of operator << to write data into the packet.
 		/// </summary>
 		Packet& operator<<(bool data);
 		Packet& operator<<(int8_t data);
@@ -186,8 +183,8 @@ namespace TRAP::Network
 		/// The default implementation provides the packet's data
 		/// without transforming it.
 		/// </summary>
-		/// <param name="size">Variable to fill with the size of data to send</param>
-		/// <returns>Pointer to the array of bytes to send</returns>
+		/// <param name="size">Variable to fill with the size of data to send.</param>
+		/// <returns>Pointer to the array of bytes to send.</returns>
 		virtual const void* OnSend(std::size_t& size);
 
 		/// <summary>
@@ -201,15 +198,18 @@ namespace TRAP::Network
 		/// The default implementation fills the packet directly
 		/// without transforming the data.
 		/// </summary>
-		/// <param name="data">Pointer to the received bytes</param>
-		/// <param name="size">Number of bytes</param>
+		/// <param name="data">Pointer to the received bytes.</param>
+		/// <param name="size">Number of bytes.</param>
 		virtual void OnReceive(const void* data, std::size_t size);
 
 	private:
 		/// <summary>
-		/// Disallow comparisons between packets
+		/// Disallow comparisons between packets.
 		/// </summary>
 		bool operator==(const Packet& right) const = delete;
+		/// <summary>
+		/// Disallow comparisons between packets.
+		/// </summary>
 		bool operator!=(const Packet & right) const = delete;
 
 		/// <summary>
@@ -217,8 +217,8 @@ namespace TRAP::Network
 		/// <br>
 		/// This function updates accordingly the state of the packet.
 		/// </summary>
-		/// <param name="size">Size to check</param>
-		/// <returns>True if size bytes can be read from the packet</returns>
+		/// <param name="size">Size to check.</param>
+		/// <returns>True if size bytes can be read from the packet.</returns>
 		bool CheckSize(std::size_t size);
 
 		std::vector<char> m_data; //Data stored in the packet

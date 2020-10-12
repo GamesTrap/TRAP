@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::VFS Class Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -73,27 +111,43 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="class_t_r_a_p_1_1_v_f_s-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">TRAP::VFS Class Reference<span class="mlabels"><span class="mlabel">final</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a5ef4a2c32007ba1fc6d0a3bc6b42c380"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a5ef4a2c32007ba1fc6d0a3bc6b42c380">WriteMode</a> { <b>Overwrite</b>, 
+<b>Append</b>
+ }</td></tr>
+<tr class="memdesc:a5ef4a2c32007ba1fc6d0a3bc6b42c380"><td class="mdescLeft">&#160;</td><td class="mdescRight">WriteMode to be used by writing operations.  <a href="class_t_r_a_p_1_1_v_f_s.html#a5ef4a2c32007ba1fc6d0a3bc6b42c380">More...</a><br /></td></tr>
+<tr class="separator:a5ef4a2c32007ba1fc6d0a3bc6b42c380"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aeb30cc6ca00d01a481640c9959408ed8"><td class="memItemLeft" align="right" valign="top"><a id="aeb30cc6ca00d01a481640c9959408ed8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>VFS</b> (const <a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;)=delete</td></tr>
+<tr class="memitem:aaaefe3dd9e0a8f1e50cf3f2c9e62846f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#aaaefe3dd9e0a8f1e50cf3f2c9e62846f">VFS</a> ()=default</td></tr>
+<tr class="memdesc:aaaefe3dd9e0a8f1e50cf3f2c9e62846f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Constructor.  <a href="class_t_r_a_p_1_1_v_f_s.html#aaaefe3dd9e0a8f1e50cf3f2c9e62846f">More...</a><br /></td></tr>
+<tr class="separator:aaaefe3dd9e0a8f1e50cf3f2c9e62846f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3f57e2c2a9d2210cfdac19f60e31c42"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#af3f57e2c2a9d2210cfdac19f60e31c42">~VFS</a> ()=default</td></tr>
+<tr class="memdesc:af3f57e2c2a9d2210cfdac19f60e31c42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Destructor.  <a href="class_t_r_a_p_1_1_v_f_s.html#af3f57e2c2a9d2210cfdac19f60e31c42">More...</a><br /></td></tr>
+<tr class="separator:af3f57e2c2a9d2210cfdac19f60e31c42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb30cc6ca00d01a481640c9959408ed8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#aeb30cc6ca00d01a481640c9959408ed8">VFS</a> (const <a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;)=delete</td></tr>
+<tr class="memdesc:aeb30cc6ca00d01a481640c9959408ed8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Copy Constructor.  <a href="class_t_r_a_p_1_1_v_f_s.html#aeb30cc6ca00d01a481640c9959408ed8">More...</a><br /></td></tr>
 <tr class="separator:aeb30cc6ca00d01a481640c9959408ed8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5b50e966ff970085c0c9650c89ec890a"><td class="memItemLeft" align="right" valign="top"><a id="a5b50e966ff970085c0c9650c89ec890a"></a>
-<a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;)=delete</td></tr>
+<tr class="memitem:a5b50e966ff970085c0c9650c89ec890a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a5b50e966ff970085c0c9650c89ec890a">operator=</a> (const <a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;)=delete</td></tr>
+<tr class="memdesc:a5b50e966ff970085c0c9650c89ec890a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Copy Assignment Operator.  <a href="class_t_r_a_p_1_1_v_f_s.html#a5b50e966ff970085c0c9650c89ec890a">More...</a><br /></td></tr>
 <tr class="separator:a5b50e966ff970085c0c9650c89ec890a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24bc6255db3bee3d1329bbf60dbe23b2"><td class="memItemLeft" align="right" valign="top"><a id="a24bc6255db3bee3d1329bbf60dbe23b2"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>VFS</b> (<a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;&amp;)=delete</td></tr>
+<tr class="memitem:a24bc6255db3bee3d1329bbf60dbe23b2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a24bc6255db3bee3d1329bbf60dbe23b2">VFS</a> (<a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;&amp;)=delete</td></tr>
+<tr class="memdesc:a24bc6255db3bee3d1329bbf60dbe23b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Move Constructor.  <a href="class_t_r_a_p_1_1_v_f_s.html#a24bc6255db3bee3d1329bbf60dbe23b2">More...</a><br /></td></tr>
 <tr class="separator:a24bc6255db3bee3d1329bbf60dbe23b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e7c58fb09b37c740b809df33264012b"><td class="memItemLeft" align="right" valign="top"><a id="a2e7c58fb09b37c740b809df33264012b"></a>
-<a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;&amp;)=delete</td></tr>
+<tr class="memitem:a2e7c58fb09b37c740b809df33264012b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a2e7c58fb09b37c740b809df33264012b">operator=</a> (<a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;&amp;)=delete</td></tr>
+<tr class="memdesc:a2e7c58fb09b37c740b809df33264012b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Move Assignment Operator.  <a href="class_t_r_a_p_1_1_v_f_s.html#a2e7c58fb09b37c740b809df33264012b">More...</a><br /></td></tr>
 <tr class="separator:a2e7c58fb09b37c740b809df33264012b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
@@ -101,7 +155,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aa15a10131b15e226f6bb09ac6e22fa63"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#aa15a10131b15e226f6bb09ac6e22fa63">Mount</a> (const std::string &amp;virtualPath, const std::string &amp;physicalPath)</td></tr>
 <tr class="memdesc:aa15a10131b15e226f6bb09ac6e22fa63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mount a physical folder path to a virtual folder path.<br  />
  Subfolders need to be mounted separately.<br  />
- NOTE: Physical path should use forward slashes and not back slashes! NOTE: Virtual file paths always use lowercase (except for the filename and its ending).<br  />
+ NOTE: Physical path should use forward slashes and not back slashes!<br  />
+ NOTE: Virtual file paths always use lowercase (except for the filename and its ending).<br  />
  <br  />
  If HotShaderReloading is enabled and the virtualPath is "/shaders" then this also instantiates the Shader <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a>.<br  />
  If HotTextureReloading is enabled and the virtualPath is "/textures" then this also instantiates the Texture <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a>.<br  />
@@ -128,82 +183,485 @@ Static Public Member Functions</h2></td></tr>
  Prints an error if virtualPath is empty.<br  />
  <br  />
  If virtualPath is "/shaders" and HotShaderReloading is enabled and the Shader <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a> is already instantiated then this also stops it.<br  />
- If virtualPath is "/textures" and HotTextureReloading is enabled and the Texture <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a> is already instantiated then this also stops it.<br  />
-  <a href="class_t_r_a_p_1_1_v_f_s.html#a6eb97b1fa0c70d6c895795153009013d">More...</a><br /></td></tr>
+ If virtualPath is "/textures" and HotTextureReloading is enabled and the Texture <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a> is already instantiated then this also stops it.  <a href="class_t_r_a_p_1_1_v_f_s.html#a6eb97b1fa0c70d6c895795153009013d">More...</a><br /></td></tr>
 <tr class="separator:a6eb97b1fa0c70d6c895795153009013d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a52aebfbc54dc3ecba45e950f2ad7cb59"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a52aebfbc54dc3ecba45e950f2ad7cb59">ResolveReadPhysicalPath</a> (const std::string &amp;path, std::filesystem::path &amp;outPhysicalPath)</td></tr>
-<tr class="memdesc:a52aebfbc54dc3ecba45e950f2ad7cb59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve a virtual file or folder path to its physical file or folder path.<br  />
+<tr class="memitem:ac647c91349342f4438bb3a409a32753b"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#ac647c91349342f4438bb3a409a32753b">ResolveReadPhysicalPath</a> (std::string_view path, std::filesystem::path &amp;outPhysicalPath, bool silent=false)</td></tr>
+<tr class="memdesc:ac647c91349342f4438bb3a409a32753b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve a virtual file or folder path to its physical file or folder path.<br  />
  <br  />
- Prints an error if path is empty, wasn't found or doesn't exist.  <a href="class_t_r_a_p_1_1_v_f_s.html#a52aebfbc54dc3ecba45e950f2ad7cb59">More...</a><br /></td></tr>
-<tr class="separator:a52aebfbc54dc3ecba45e950f2ad7cb59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add355c0e2814938e788c6f98462f3815"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#add355c0e2814938e788c6f98462f3815">SilentResolveReadPhysicalPath</a> (const std::string &amp;path, std::filesystem::path &amp;outPhysicalPath)</td></tr>
-<tr class="memdesc:add355c0e2814938e788c6f98462f3815"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve a virtual file or folder path to its physical file or folder path silently.  <a href="class_t_r_a_p_1_1_v_f_s.html#add355c0e2814938e788c6f98462f3815">More...</a><br /></td></tr>
-<tr class="separator:add355c0e2814938e788c6f98462f3815"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5a5988dd3bb5adfecd197e82686861e"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#af5a5988dd3bb5adfecd197e82686861e">ResolveWritePhysicalPath</a> (const std::string &amp;path, std::filesystem::path &amp;outPhysicalPath)</td></tr>
-<tr class="memdesc:af5a5988dd3bb5adfecd197e82686861e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve a virtual file or folder path to its physical file or folder path.<br  />
+ Prints an error if path is empty, wasn't found or doesn't exist.  <a href="class_t_r_a_p_1_1_v_f_s.html#ac647c91349342f4438bb3a409a32753b">More...</a><br /></td></tr>
+<tr class="separator:ac647c91349342f4438bb3a409a32753b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3c8eef07299539b6427365c0386288a"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#ac3c8eef07299539b6427365c0386288a">ResolveWritePhysicalPath</a> (std::string_view path, std::filesystem::path &amp;outPhysicalPath)</td></tr>
+<tr class="memdesc:ac3c8eef07299539b6427365c0386288a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve a virtual file or folder path to its physical file or folder path.<br  />
  <br  />
  If path already is a physical path then it will just be written to outPhysicalPath without changes.<br  />
- Prints an error if path is empty.  <a href="class_t_r_a_p_1_1_v_f_s.html#af5a5988dd3bb5adfecd197e82686861e">More...</a><br /></td></tr>
-<tr class="separator:af5a5988dd3bb5adfecd197e82686861e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+ Prints an error if path is empty.  <a href="class_t_r_a_p_1_1_v_f_s.html#ac3c8eef07299539b6427365c0386288a">More...</a><br /></td></tr>
+<tr class="separator:ac3c8eef07299539b6427365c0386288a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a398371f581bb7ac4741d37ea7a33af3e"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; std::filesystem::path &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a398371f581bb7ac4741d37ea7a33af3e">ResolveToPhysicalPaths</a> (const std::string &amp;virtualPath)</td></tr>
 <tr class="memdesc:a398371f581bb7ac4741d37ea7a33af3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resolve a virtual file or folder path to its (possibly multiple) physical file or folder path(s).  <a href="class_t_r_a_p_1_1_v_f_s.html#a398371f581bb7ac4741d37ea7a33af3e">More...</a><br /></td></tr>
 <tr class="separator:a398371f581bb7ac4741d37ea7a33af3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19d5acf9c1360e1c02b8f474c1d39838"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a19d5acf9c1360e1c02b8f474c1d39838">ReadFile</a> (const std::string &amp;path)</td></tr>
-<tr class="memdesc:a19d5acf9c1360e1c02b8f474c1d39838"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given file.<br  />
+<tr class="memitem:a9b8dcfd6faa40439f533d5e584000dfd"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a9b8dcfd6faa40439f533d5e584000dfd">ReadFile</a> (const std::string &amp;path, bool silent=false)</td></tr>
+<tr class="memdesc:a9b8dcfd6faa40439f533d5e584000dfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given file.<br  />
  <br  />
- Prints an error if path is empty, wasn't found, doesn't exist or couldn't be opened.  <a href="class_t_r_a_p_1_1_v_f_s.html#a19d5acf9c1360e1c02b8f474c1d39838">More...</a><br /></td></tr>
-<tr class="separator:a19d5acf9c1360e1c02b8f474c1d39838"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a807aada29ab643886582175027c34f94"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a807aada29ab643886582175027c34f94">SilentReadFile</a> (const std::string &amp;path)</td></tr>
-<tr class="memdesc:a807aada29ab643886582175027c34f94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given file silently.  <a href="class_t_r_a_p_1_1_v_f_s.html#a807aada29ab643886582175027c34f94">More...</a><br /></td></tr>
-<tr class="separator:a807aada29ab643886582175027c34f94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a452e72abecae7041ece3760fd38ef90f"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a452e72abecae7041ece3760fd38ef90f">ReadTextFile</a> (const std::string &amp;path)</td></tr>
-<tr class="memdesc:a452e72abecae7041ece3760fd38ef90f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given text file.<br  />
+ Prints an error if path is empty, wasn't found, doesn't exist or couldn't be opened.  <a href="class_t_r_a_p_1_1_v_f_s.html#a9b8dcfd6faa40439f533d5e584000dfd">More...</a><br /></td></tr>
+<tr class="separator:a9b8dcfd6faa40439f533d5e584000dfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62cce4de3faa834299bc13e7e09df6c1"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a62cce4de3faa834299bc13e7e09df6c1">ReadTextFile</a> (std::string_view path, bool silent=false)</td></tr>
+<tr class="memdesc:a62cce4de3faa834299bc13e7e09df6c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given text file.<br  />
  <br  />
- Prints an error if path is empty  <a href="class_t_r_a_p_1_1_v_f_s.html#a452e72abecae7041ece3760fd38ef90f">More...</a><br /></td></tr>
-<tr class="separator:a452e72abecae7041ece3760fd38ef90f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb935a4952bf2b6596d08c07a87f8533"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#abb935a4952bf2b6596d08c07a87f8533">SilentReadTextFile</a> (const std::string &amp;path)</td></tr>
-<tr class="memdesc:abb935a4952bf2b6596d08c07a87f8533"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the given text file silently.  <a href="class_t_r_a_p_1_1_v_f_s.html#abb935a4952bf2b6596d08c07a87f8533">More...</a><br /></td></tr>
-<tr class="separator:abb935a4952bf2b6596d08c07a87f8533"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9837f653ad5c440cb0f0217011ff2a17"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a9837f653ad5c440cb0f0217011ff2a17">WriteFile</a> (const std::string &amp;path, std::vector&lt; uint8_t &gt; &amp;buffer, FileSystem::WriteMode mode=FileSystem::WriteMode::Overwrite)</td></tr>
-<tr class="memdesc:a9837f653ad5c440cb0f0217011ff2a17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the given data to the given file path.<br  />
- Can be a virtual or a physical file path  <a href="class_t_r_a_p_1_1_v_f_s.html#a9837f653ad5c440cb0f0217011ff2a17">More...</a><br /></td></tr>
-<tr class="separator:a9837f653ad5c440cb0f0217011ff2a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a160150a24b705e165955e2e408bba955"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a160150a24b705e165955e2e408bba955">WriteTextFile</a> (const std::string &amp;path, const std::string &amp;text, FileSystem::WriteMode mode=FileSystem::WriteMode::Overwrite)</td></tr>
-<tr class="memdesc:a160150a24b705e165955e2e408bba955"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the given text to the given file path.<br  />
- Can be a virtual or a physical file path  <a href="class_t_r_a_p_1_1_v_f_s.html#a160150a24b705e165955e2e408bba955">More...</a><br /></td></tr>
-<tr class="separator:a160150a24b705e165955e2e408bba955"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec34065a481d93cf5f12f172406f4584"><td class="memItemLeft" align="right" valign="top"><a id="aec34065a481d93cf5f12f172406f4584"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>Init</b> ()</td></tr>
-<tr class="separator:aec34065a481d93cf5f12f172406f4584"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abafbdeb5dfeed95b99ede068b3a83b06"><td class="memItemLeft" align="right" valign="top"><a id="abafbdeb5dfeed95b99ede068b3a83b06"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>Shutdown</b> ()</td></tr>
-<tr class="separator:abafbdeb5dfeed95b99ede068b3a83b06"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a077096615af483d6d61187210f0f5b5b"><td class="memItemLeft" align="right" valign="top"><a id="a077096615af483d6d61187210f0f5b5b"></a>
-static bool&#160;</td><td class="memItemRight" valign="bottom"><b>GetHotShaderReloading</b> ()</td></tr>
+ Prints an error if path is empty.  <a href="class_t_r_a_p_1_1_v_f_s.html#a62cce4de3faa834299bc13e7e09df6c1">More...</a><br /></td></tr>
+<tr class="separator:a62cce4de3faa834299bc13e7e09df6c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b88f517e3ae8217768099369213930d"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a5b88f517e3ae8217768099369213930d">WriteFile</a> (const std::string &amp;path, std::vector&lt; uint8_t &gt; &amp;buffer, <a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a5ef4a2c32007ba1fc6d0a3bc6b42c380">WriteMode</a> mode=WriteMode::Overwrite)</td></tr>
+<tr class="memdesc:a5b88f517e3ae8217768099369213930d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the given data to the given file path.<br  />
+ Can be a virtual or a physical file path.  <a href="class_t_r_a_p_1_1_v_f_s.html#a5b88f517e3ae8217768099369213930d">More...</a><br /></td></tr>
+<tr class="separator:a5b88f517e3ae8217768099369213930d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adebc8d9bac2a8a7d4ebea85a4d875336"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#adebc8d9bac2a8a7d4ebea85a4d875336">WriteTextFile</a> (std::string_view path, const std::string &amp;text, <a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a5ef4a2c32007ba1fc6d0a3bc6b42c380">WriteMode</a> mode=WriteMode::Overwrite)</td></tr>
+<tr class="memdesc:adebc8d9bac2a8a7d4ebea85a4d875336"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the given text to the given file path.<br  />
+ Can be a virtual or a physical file path.  <a href="class_t_r_a_p_1_1_v_f_s.html#adebc8d9bac2a8a7d4ebea85a4d875336">More...</a><br /></td></tr>
+<tr class="separator:adebc8d9bac2a8a7d4ebea85a4d875336"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f3ef918c76f5ccd2e35475bcc6bd00f"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a0f3ef918c76f5ccd2e35475bcc6bd00f">FileOrFolderExists</a> (const std::filesystem::path &amp;path, bool silent=false)</td></tr>
+<tr class="memdesc:a0f3ef918c76f5ccd2e35475bcc6bd00f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a file or folder exists.<br  />
+ Can be a virtual or a physical file or folder path.<br  />
+ <br  />
+ Note: If a virtual path is provided every mounted physical path to it gets checked! <br  />
+ Prints a warning if the file or folder doesn't exist.  <a href="class_t_r_a_p_1_1_v_f_s.html#a0f3ef918c76f5ccd2e35475bcc6bd00f">More...</a><br /></td></tr>
+<tr class="separator:a0f3ef918c76f5ccd2e35475bcc6bd00f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41e0f2ab6fc1decc526a40f7053e8418"><td class="memItemLeft" align="right" valign="top">static uintmax_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a41e0f2ab6fc1decc526a40f7053e8418">GetFileOrFolderSize</a> (const std::filesystem::path &amp;path)</td></tr>
+<tr class="memdesc:a41e0f2ab6fc1decc526a40f7053e8418"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the size of an physical file or folder in bytes.<br  />
+ Can be a virtual or a physical file or folder path.<br  />
+ <br  />
+ Note: If a virtual folder path is provided only the size of the first mounted folder gets returned!<br  />
+ Note: If a virtual file path is provided every mounted physical folder path to it gets checked!  <a href="class_t_r_a_p_1_1_v_f_s.html#a41e0f2ab6fc1decc526a40f7053e8418">More...</a><br /></td></tr>
+<tr class="separator:a41e0f2ab6fc1decc526a40f7053e8418"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d4584325ab3327c097c5e71b59bf46c"><td class="memItemLeft" align="right" valign="top">static std::filesystem::file_time_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a3d4584325ab3327c097c5e71b59bf46c">GetLastWriteTime</a> (const std::filesystem::path &amp;path)</td></tr>
+<tr class="memdesc:a3d4584325ab3327c097c5e71b59bf46c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the last write time of a file or folder.<br  />
+ Can be a virtual or a physical file or folder path.<br  />
+ <br  />
+ Note: If a virtual folder path is provided only the last write time of the first mounted folder gets returned!<br  />
+ Note: If a virtual file path is provided every mounted physical folder path to it gets checked!  <a href="class_t_r_a_p_1_1_v_f_s.html#a3d4584325ab3327c097c5e71b59bf46c">More...</a><br /></td></tr>
+<tr class="separator:a3d4584325ab3327c097c5e71b59bf46c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a077096615af483d6d61187210f0f5b5b"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a077096615af483d6d61187210f0f5b5b">GetHotShaderReloading</a> ()</td></tr>
+<tr class="memdesc:a077096615af483d6d61187210f0f5b5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get status of hot shader reloading.  <a href="class_t_r_a_p_1_1_v_f_s.html#a077096615af483d6d61187210f0f5b5b">More...</a><br /></td></tr>
 <tr class="separator:a077096615af483d6d61187210f0f5b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afaa8e14ccc25c0e3b2e20b627403fa95"><td class="memItemLeft" align="right" valign="top"><a id="afaa8e14ccc25c0e3b2e20b627403fa95"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>SetHotShaderReloading</b> (bool enabled)</td></tr>
+<tr class="memitem:afaa8e14ccc25c0e3b2e20b627403fa95"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#afaa8e14ccc25c0e3b2e20b627403fa95">SetHotShaderReloading</a> (bool enabled)</td></tr>
+<tr class="memdesc:afaa8e14ccc25c0e3b2e20b627403fa95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set status of hot shader reloading.  <a href="class_t_r_a_p_1_1_v_f_s.html#afaa8e14ccc25c0e3b2e20b627403fa95">More...</a><br /></td></tr>
 <tr class="separator:afaa8e14ccc25c0e3b2e20b627403fa95"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a21cc707f17816a0f0142eb02a4a41439"><td class="memItemLeft" align="right" valign="top"><a id="a21cc707f17816a0f0142eb02a4a41439"></a>
-static <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">FileWatcher</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>GetShaderFileWatcher</b> ()</td></tr>
-<tr class="separator:a21cc707f17816a0f0142eb02a4a41439"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aabb166ec9ccacc4c68a70a075cbafe5b"><td class="memItemLeft" align="right" valign="top"><a id="aabb166ec9ccacc4c68a70a075cbafe5b"></a>
-static bool&#160;</td><td class="memItemRight" valign="bottom"><b>GetHotTextureReloading</b> ()</td></tr>
+<tr class="memitem:aabb166ec9ccacc4c68a70a075cbafe5b"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#aabb166ec9ccacc4c68a70a075cbafe5b">GetHotTextureReloading</a> ()</td></tr>
+<tr class="memdesc:aabb166ec9ccacc4c68a70a075cbafe5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get status of hot texture reloading.  <a href="class_t_r_a_p_1_1_v_f_s.html#aabb166ec9ccacc4c68a70a075cbafe5b">More...</a><br /></td></tr>
 <tr class="separator:aabb166ec9ccacc4c68a70a075cbafe5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61f5a5b9c3d770415a25d245f1edf891"><td class="memItemLeft" align="right" valign="top"><a id="a61f5a5b9c3d770415a25d245f1edf891"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>SetHotTextureReloading</b> (bool enabled)</td></tr>
+<tr class="memitem:a61f5a5b9c3d770415a25d245f1edf891"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a61f5a5b9c3d770415a25d245f1edf891">SetHotTextureReloading</a> (bool enabled)</td></tr>
+<tr class="memdesc:a61f5a5b9c3d770415a25d245f1edf891"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set status of hot texture reloading.  <a href="class_t_r_a_p_1_1_v_f_s.html#a61f5a5b9c3d770415a25d245f1edf891">More...</a><br /></td></tr>
 <tr class="separator:a61f5a5b9c3d770415a25d245f1edf891"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac49bb30694db0cbab58fd801d42518f4"><td class="memItemLeft" align="right" valign="top"><a id="ac49bb30694db0cbab58fd801d42518f4"></a>
-static <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">FileWatcher</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>GetTextureFileWatcher</b> ()</td></tr>
-<tr class="separator:ac49bb30694db0cbab58fd801d42518f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c767481ad3bcda6fb4a7793b3dbe9b0"><td class="memItemLeft" align="right" valign="top"><a id="a3c767481ad3bcda6fb4a7793b3dbe9b0"></a>
-static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>MakeVirtualPathCompatible</b> (const std::string &amp;virtualPath)</td></tr>
-<tr class="separator:a3c767481ad3bcda6fb4a7793b3dbe9b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0efd58b6fd9ac1659033f64dde6d509"><td class="memItemLeft" align="right" valign="top"><a id="ac0efd58b6fd9ac1659033f64dde6d509"></a>
-static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFileName</b> (const std::string &amp;virtualPath)</td></tr>
-<tr class="separator:ac0efd58b6fd9ac1659033f64dde6d509"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade1e2cc974c516f4adaacbca905e71b9"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#ade1e2cc974c516f4adaacbca905e71b9">MakeVirtualPathCompatible</a> (std::string_view virtualPath)</td></tr>
+<tr class="memdesc:ade1e2cc974c516f4adaacbca905e71b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes user written virtual paths compatible with the Virtual File System.<br  />
+ <br  />
+ NOTE: Physical path won't be affected by this and just return the same as virtualPath.  <a href="class_t_r_a_p_1_1_v_f_s.html#ade1e2cc974c516f4adaacbca905e71b9">More...</a><br /></td></tr>
+<tr class="separator:ade1e2cc974c516f4adaacbca905e71b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d9f2acf379c46b7019ed922adcdddab"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a6d9f2acf379c46b7019ed922adcdddab">GetFileName</a> (const std::string &amp;virtualOrPhysicalPath)</td></tr>
+<tr class="memdesc:a6d9f2acf379c46b7019ed922adcdddab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get only the filename without its file ending from a virtual or physical file path.  <a href="class_t_r_a_p_1_1_v_f_s.html#a6d9f2acf379c46b7019ed922adcdddab">More...</a><br /></td></tr>
+<tr class="separator:a6d9f2acf379c46b7019ed922adcdddab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a50cca5a2fe3be2e063dc06c670f60838"><td class="memItemLeft" align="right" valign="top"><a id="a50cca5a2fe3be2e063dc06c670f60838"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>TRAP::Application::ProcessHotReloading</b> (std::vector&lt; std::string &gt; &amp;shaders, std::vector&lt; std::string &gt; &amp;textures, const bool &amp;run)</td></tr>
+<tr class="separator:a50cca5a2fe3be2e063dc06c670f60838"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a5ef4a2c32007ba1fc6d0a3bc6b42c380"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ef4a2c32007ba1fc6d0a3bc6b42c380">&#9670;&nbsp;</a></span>WriteMode</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a5ef4a2c32007ba1fc6d0a3bc6b42c380">TRAP::VFS::WriteMode</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>WriteMode to be used by writing operations. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="aaaefe3dd9e0a8f1e50cf3f2c9e62846f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaaefe3dd9e0a8f1e50cf3f2c9e62846f">&#9670;&nbsp;</a></span>VFS() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TRAP::VFS::VFS </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Default Constructor. </p>
+
+</div>
+</div>
+<a id="af3f57e2c2a9d2210cfdac19f60e31c42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3f57e2c2a9d2210cfdac19f60e31c42">&#9670;&nbsp;</a></span>~VFS()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TRAP::VFS::~VFS </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Default Destructor. </p>
+
+</div>
+</div>
+<a id="aeb30cc6ca00d01a481640c9959408ed8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb30cc6ca00d01a481640c9959408ed8">&#9670;&nbsp;</a></span>VFS() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TRAP::VFS::VFS </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Copy Constructor. </p>
+
+</div>
+</div>
+<a id="a24bc6255db3bee3d1329bbf60dbe23b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24bc6255db3bee3d1329bbf60dbe23b2">&#9670;&nbsp;</a></span>VFS() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TRAP::VFS::VFS </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;&amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Move Constructor. </p>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a0f3ef918c76f5ccd2e35475bcc6bd00f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f3ef918c76f5ccd2e35475bcc6bd00f">&#9670;&nbsp;</a></span>FileOrFolderExists()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool TRAP::VFS::FileOrFolderExists </td>
+          <td>(</td>
+          <td class="paramtype">const std::filesystem::path &amp;&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>silent</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Check if a file or folder exists.<br  />
+ Can be a virtual or a physical file or folder path.<br  />
+ <br  />
+ Note: If a virtual path is provided every mounted physical path to it gets checked! <br  />
+ Prints a warning if the file or folder doesn't exist. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Virtual or physical path to a folder or a file.</td></tr>
+    <tr><td class="paramname">silent</td><td>If set to false no error messages will be logged.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if file or folder exists.<br  />
+ False if file or folder doesn't exist.<br  />
+ False if an error has occurred. </dd></dl>
+
+</div>
+</div>
+<a id="a6d9f2acf379c46b7019ed922adcdddab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d9f2acf379c46b7019ed922adcdddab">&#9670;&nbsp;</a></span>GetFileName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::string TRAP::VFS::GetFileName </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>virtualOrPhysicalPath</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get only the filename without its file ending from a virtual or physical file path. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">virtualOrPhysicalPath</td><td>Virtual or Physical file path.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>String only containing the filename without its file ending.</dd></dl>
+
+</div>
+</div>
+<a id="a41e0f2ab6fc1decc526a40f7053e8418"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41e0f2ab6fc1decc526a40f7053e8418">&#9670;&nbsp;</a></span>GetFileOrFolderSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static uintmax_t TRAP::VFS::GetFileOrFolderSize </td>
+          <td>(</td>
+          <td class="paramtype">const std::filesystem::path &amp;&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the size of an physical file or folder in bytes.<br  />
+ Can be a virtual or a physical file or folder path.<br  />
+ <br  />
+ Note: If a virtual folder path is provided only the size of the first mounted folder gets returned!<br  />
+ Note: If a virtual file path is provided every mounted physical folder path to it gets checked! </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Virtual or physical path to a file or folder.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>File or folder size in bytes.<br  />
+ 0 if an error has occurred. </dd></dl>
+
+</div>
+</div>
+<a id="a077096615af483d6d61187210f0f5b5b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a077096615af483d6d61187210f0f5b5b">&#9670;&nbsp;</a></span>GetHotShaderReloading()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool TRAP::VFS::GetHotShaderReloading </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get status of hot shader reloading. </p>
+<dl class="section return"><dt>Returns</dt><dd>True if hot shader reloading is enabled, False otherwise.</dd></dl>
+
+</div>
+</div>
+<a id="aabb166ec9ccacc4c68a70a075cbafe5b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aabb166ec9ccacc4c68a70a075cbafe5b">&#9670;&nbsp;</a></span>GetHotTextureReloading()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool TRAP::VFS::GetHotTextureReloading </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get status of hot texture reloading. </p>
+<dl class="section return"><dt>Returns</dt><dd>True if hot texture reloading is enabled, False otherwise.</dd></dl>
+
+</div>
+</div>
+<a id="a3d4584325ab3327c097c5e71b59bf46c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d4584325ab3327c097c5e71b59bf46c">&#9670;&nbsp;</a></span>GetLastWriteTime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::filesystem::file_time_type TRAP::VFS::GetLastWriteTime </td>
+          <td>(</td>
+          <td class="paramtype">const std::filesystem::path &amp;&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the last write time of a file or folder.<br  />
+ Can be a virtual or a physical file or folder path.<br  />
+ <br  />
+ Note: If a virtual folder path is provided only the last write time of the first mounted folder gets returned!<br  />
+ Note: If a virtual file path is provided every mounted physical folder path to it gets checked! </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Virtual or physical path to a file or folder.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Last write time of the file or folder.<br  />
+ std::filesystem::file_time_type::min() if an error has occurred. </dd></dl>
+
+</div>
+</div>
+<a id="ade1e2cc974c516f4adaacbca905e71b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade1e2cc974c516f4adaacbca905e71b9">&#9670;&nbsp;</a></span>MakeVirtualPathCompatible()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::string TRAP::VFS::MakeVirtualPathCompatible </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>virtualPath</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Makes user written virtual paths compatible with the Virtual File System.<br  />
+ <br  />
+ NOTE: Physical path won't be affected by this and just return the same as virtualPath. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">virtualPath</td><td>Path to make compatible.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>String with a compatible path for the Virtual File System.</dd></dl>
+
+</div>
+</div>
 <a id="aa15a10131b15e226f6bb09ac6e22fa63"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa15a10131b15e226f6bb09ac6e22fa63">&#9670;&nbsp;</a></span>Mount()</h2>
 
@@ -240,7 +698,8 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 
 <p>Mount a physical folder path to a virtual folder path.<br  />
  Subfolders need to be mounted separately.<br  />
- NOTE: Physical path should use forward slashes and not back slashes! NOTE: Virtual file paths always use lowercase (except for the filename and its ending).<br  />
+ NOTE: Physical path should use forward slashes and not back slashes!<br  />
+ NOTE: Virtual file paths always use lowercase (except for the filename and its ending).<br  />
  <br  />
  If HotShaderReloading is enabled and the virtualPath is "/shaders" then this also instantiates the Shader <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a>.<br  />
  If HotTextureReloading is enabled and the virtualPath is "/textures" then this also instantiates the Texture <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a>.<br  />
@@ -332,8 +791,64 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 
 </div>
 </div>
-<a id="a19d5acf9c1360e1c02b8f474c1d39838"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19d5acf9c1360e1c02b8f474c1d39838">&#9670;&nbsp;</a></span>ReadFile()</h2>
+<a id="a5b50e966ff970085c0c9650c89ec890a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b50e966ff970085c0c9650c89ec890a">&#9670;&nbsp;</a></span>operator=() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a>&amp; TRAP::VFS::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Copy Assignment Operator. </p>
+
+</div>
+</div>
+<a id="a2e7c58fb09b37c740b809df33264012b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e7c58fb09b37c740b809df33264012b">&#9670;&nbsp;</a></span>operator=() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a>&amp; TRAP::VFS::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html">VFS</a> &amp;&amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Move Assignment Operator. </p>
+
+</div>
+</div>
+<a id="a9b8dcfd6faa40439f533d5e584000dfd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b8dcfd6faa40439f533d5e584000dfd">&#9670;&nbsp;</a></span>ReadFile()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -345,8 +860,18 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
           <td class="memname">static std::vector&lt;uint8_t&gt; TRAP::VFS::ReadFile </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>path</em></td><td>)</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>silent</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -362,6 +887,7 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">path</td><td>Virtual or physical file path.</td></tr>
+    <tr><td class="paramname">silent</td><td>If set to false no error messages will be logged.</td></tr>
   </table>
   </dd>
 </dl>
@@ -370,8 +896,8 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 
 </div>
 </div>
-<a id="a452e72abecae7041ece3760fd38ef90f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a452e72abecae7041ece3760fd38ef90f">&#9670;&nbsp;</a></span>ReadTextFile()</h2>
+<a id="a62cce4de3faa834299bc13e7e09df6c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62cce4de3faa834299bc13e7e09df6c1">&#9670;&nbsp;</a></span>ReadTextFile()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -382,9 +908,19 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
         <tr>
           <td class="memname">static std::string TRAP::VFS::ReadTextFile </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>path</em></td><td>)</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>silent</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -396,20 +932,21 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 
 <p>Read the given text file.<br  />
  <br  />
- Prints an error if path is empty </p>
+ Prints an error if path is empty. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">path</td><td>Virtual or physical file path</td></tr>
+    <tr><td class="paramname">path</td><td>Virtual or physical file path.</td></tr>
+    <tr><td class="paramname">silent</td><td>If set to false no error messages will be logged.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String with file content on success.<br  />
- Empty string if an error has occurred.</dd></dl>
+ Empty string if an error has occurred. </dd></dl>
 
 </div>
 </div>
-<a id="a52aebfbc54dc3ecba45e950f2ad7cb59"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a52aebfbc54dc3ecba45e950f2ad7cb59">&#9670;&nbsp;</a></span>ResolveReadPhysicalPath()</h2>
+<a id="ac647c91349342f4438bb3a409a32753b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac647c91349342f4438bb3a409a32753b">&#9670;&nbsp;</a></span>ResolveReadPhysicalPath()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -420,14 +957,20 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
         <tr>
           <td class="memname">static bool TRAP::VFS::ResolveReadPhysicalPath </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>path</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::filesystem::path &amp;&#160;</td>
-          <td class="paramname"><em>outPhysicalPath</em>&#160;</td>
+          <td class="paramname"><em>outPhysicalPath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>silent</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -448,13 +991,14 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">path</td><td>Virtual or physical file or folder path to resolve.</td></tr>
-    <tr><td class="paramname">outPhysicalPath</td><td>Output physical path. Unchanged if path couldn't be resolved.</td></tr>
+    <tr><td class="paramname">outPhysicalPath</td><td>Output physical path.<br  />
+ Unchanged if path couldn't be resolved.</td></tr>
+    <tr><td class="paramname">silent</td><td>If set to false no error messages will be logged.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if file or folder was found.<br  />
- False if it wasn't found doesn't exist.<br  />
- </dd></dl>
+ False if it wasn't found doesn't exist. </dd></dl>
 
 </div>
 </div>
@@ -493,8 +1037,8 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 
 </div>
 </div>
-<a id="af5a5988dd3bb5adfecd197e82686861e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af5a5988dd3bb5adfecd197e82686861e">&#9670;&nbsp;</a></span>ResolveWritePhysicalPath()</h2>
+<a id="ac3c8eef07299539b6427365c0386288a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3c8eef07299539b6427365c0386288a">&#9670;&nbsp;</a></span>ResolveWritePhysicalPath()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -505,7 +1049,7 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
         <tr>
           <td class="memname">static bool TRAP::VFS::ResolveWritePhysicalPath </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>path</em>, </td>
         </tr>
         <tr>
@@ -544,8 +1088,8 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 
 </div>
 </div>
-<a id="a807aada29ab643886582175027c34f94"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a807aada29ab643886582175027c34f94">&#9670;&nbsp;</a></span>SilentReadFile()</h2>
+<a id="afaa8e14ccc25c0e3b2e20b627403fa95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afaa8e14ccc25c0e3b2e20b627403fa95">&#9670;&nbsp;</a></span>SetHotShaderReloading()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -554,10 +1098,10 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static std::vector&lt;uint8_t&gt; TRAP::VFS::SilentReadFile </td>
+          <td class="memname">static void TRAP::VFS::SetHotShaderReloading </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>path</em></td><td>)</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enabled</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -568,20 +1112,18 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </table>
 </div><div class="memdoc">
 
-<p>Read the given file silently. </p>
+<p>Set status of hot shader reloading. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">path</td><td>Virtual or physical file path</td></tr>
+    <tr><td class="paramname">enabled</td><td>Whether to enable or disable hot shader reloading.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Vector with file content on success.<br  />
- Empty vector if an error has occurred. </dd></dl>
 
 </div>
 </div>
-<a id="abb935a4952bf2b6596d08c07a87f8533"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abb935a4952bf2b6596d08c07a87f8533">&#9670;&nbsp;</a></span>SilentReadTextFile()</h2>
+<a id="a61f5a5b9c3d770415a25d245f1edf891"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61f5a5b9c3d770415a25d245f1edf891">&#9670;&nbsp;</a></span>SetHotTextureReloading()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -590,10 +1132,10 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static std::string TRAP::VFS::SilentReadTextFile </td>
+          <td class="memname">static void TRAP::VFS::SetHotTextureReloading </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>path</em></td><td>)</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enabled</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -604,62 +1146,13 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </table>
 </div><div class="memdoc">
 
-<p>Read the given text file silently. </p>
+<p>Set status of hot texture reloading. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">path</td><td>Virtual or physical file path</td></tr>
+    <tr><td class="paramname">enabled</td><td>Whether to enable or disable hot texture reloading.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>String with file content on success.<br  />
- Empty string if an error has occurred.</dd></dl>
-
-</div>
-</div>
-<a id="add355c0e2814938e788c6f98462f3815"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#add355c0e2814938e788c6f98462f3815">&#9670;&nbsp;</a></span>SilentResolveReadPhysicalPath()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static bool TRAP::VFS::SilentResolveReadPhysicalPath </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>path</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::filesystem::path &amp;&#160;</td>
-          <td class="paramname"><em>outPhysicalPath</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Resolve a virtual file or folder path to its physical file or folder path silently. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">path</td><td>Virtual or physical file or folder path to resolve.</td></tr>
-    <tr><td class="paramname">outPhysicalPath</td><td>Output physical path.&lt;br Unchanged if path couldn't be resolved. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>True if file or folder was found.<br  />
- False if it wasn't found or doesn't exist. </dd></dl>
 
 </div>
 </div>
@@ -692,8 +1185,7 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
  Prints an error if virtualPath is empty.<br  />
  <br  />
  If virtualPath is "/shaders" and HotShaderReloading is enabled and the Shader <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a> is already instantiated then this also stops it.<br  />
- If virtualPath is "/textures" and HotTextureReloading is enabled and the Texture <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a> is already instantiated then this also stops it.<br  />
- </p>
+ If virtualPath is "/textures" and HotTextureReloading is enabled and the Texture <a class="el" href="class_t_r_a_p_1_1_file_watcher.html">TRAP::FileWatcher</a> is already instantiated then this also stops it. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">virtualPath</td><td>Virtual folder path to unmount.</td></tr>
@@ -703,8 +1195,8 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 
 </div>
 </div>
-<a id="a9837f653ad5c440cb0f0217011ff2a17"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9837f653ad5c440cb0f0217011ff2a17">&#9670;&nbsp;</a></span>WriteFile()</h2>
+<a id="a5b88f517e3ae8217768099369213930d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b88f517e3ae8217768099369213930d">&#9670;&nbsp;</a></span>WriteFile()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -727,8 +1219,8 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">FileSystem::WriteMode&#160;</td>
-          <td class="paramname"><em>mode</em> = <code>FileSystem::WriteMode::Overwrite</code>&#160;</td>
+          <td class="paramtype"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a5ef4a2c32007ba1fc6d0a3bc6b42c380">WriteMode</a>&#160;</td>
+          <td class="paramname"><em>mode</em> = <code>WriteMode::Overwrite</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -744,21 +1236,21 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </div><div class="memdoc">
 
 <p>Write the given data to the given file path.<br  />
- Can be a virtual or a physical file path </p>
+ Can be a virtual or a physical file path. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">path</td><td>Virtual or physical file path</td></tr>
-    <tr><td class="paramname">buffer</td><td>Data to be written</td></tr>
-    <tr><td class="paramname">mode</td><td>WriteMode to use</td></tr>
+    <tr><td class="paramname">path</td><td>Virtual or physical file path.</td></tr>
+    <tr><td class="paramname">buffer</td><td>Data to be written.</td></tr>
+    <tr><td class="paramname">mode</td><td>WriteMode to use.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>If path could be resolved and data has been written true, false otherwise</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>If path could be resolved and data has been written true, false otherwise.</dd></dl>
 
 </div>
 </div>
-<a id="a160150a24b705e165955e2e408bba955"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a160150a24b705e165955e2e408bba955">&#9670;&nbsp;</a></span>WriteTextFile()</h2>
+<a id="adebc8d9bac2a8a7d4ebea85a4d875336"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adebc8d9bac2a8a7d4ebea85a4d875336">&#9670;&nbsp;</a></span>WriteTextFile()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -769,7 +1261,7 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
         <tr>
           <td class="memname">static bool TRAP::VFS::WriteTextFile </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>path</em>, </td>
         </tr>
         <tr>
@@ -781,8 +1273,8 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">FileSystem::WriteMode&#160;</td>
-          <td class="paramname"><em>mode</em> = <code>FileSystem::WriteMode::Overwrite</code>&#160;</td>
+          <td class="paramtype"><a class="el" href="class_t_r_a_p_1_1_v_f_s.html#a5ef4a2c32007ba1fc6d0a3bc6b42c380">WriteMode</a>&#160;</td>
+          <td class="paramname"><em>mode</em> = <code>WriteMode::Overwrite</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -798,16 +1290,16 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetFile
 </div><div class="memdoc">
 
 <p>Write the given text to the given file path.<br  />
- Can be a virtual or a physical file path </p>
+ Can be a virtual or a physical file path. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">path</td><td>Virtual or physical file path</td></tr>
-    <tr><td class="paramname">text</td><td>Text to be written</td></tr>
-    <tr><td class="paramname">mode</td><td>WriteMode to use</td></tr>
+    <tr><td class="paramname">path</td><td>Virtual or physical file path.</td></tr>
+    <tr><td class="paramname">text</td><td>Text to be written.</td></tr>
+    <tr><td class="paramname">mode</td><td>WriteMode to use.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>If path could be resolved and text has been written true, false otherwise</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>If path could be resolved and text has been written true, false otherwise.</dd></dl>
 
 </div>
 </div>

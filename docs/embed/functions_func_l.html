@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: Class Members - Functions</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,73 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li class="current"><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow3" class="tabs2">
+    <ul class="tablist">
+      <li><a href="functions.html"><span>All</span></a></li>
+      <li class="current"><a href="functions_func.html"><span>Functions</span></a></li>
+      <li><a href="functions_vars.html"><span>Variables</span></a></li>
+      <li><a href="functions_type.html"><span>Typedefs</span></a></li>
+      <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="functions_rela.html"><span>Related&#160;Functions</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow4" class="tabs3">
+    <ul class="tablist">
+      <li><a href="functions_func.html#index_a"><span>a</span></a></li>
+      <li><a href="functions_func_b.html#index_b"><span>b</span></a></li>
+      <li><a href="functions_func_c.html#index_c"><span>c</span></a></li>
+      <li><a href="functions_func_d.html#index_d"><span>d</span></a></li>
+      <li><a href="functions_func_e.html#index_e"><span>e</span></a></li>
+      <li><a href="functions_func_f.html#index_f"><span>f</span></a></li>
+      <li><a href="functions_func_g.html#index_g"><span>g</span></a></li>
+      <li><a href="functions_func_h.html#index_h"><span>h</span></a></li>
+      <li><a href="functions_func_i.html#index_i"><span>i</span></a></li>
+      <li><a href="functions_func_k.html#index_k"><span>k</span></a></li>
+      <li class="current"><a href="functions_func_l.html#index_l"><span>l</span></a></li>
+      <li><a href="functions_func_m.html#index_m"><span>m</span></a></li>
+      <li><a href="functions_func_n.html#index_n"><span>n</span></a></li>
+      <li><a href="functions_func_o.html#index_o"><span>o</span></a></li>
+      <li><a href="functions_func_p.html#index_p"><span>p</span></a></li>
+      <li><a href="functions_func_r.html#index_r"><span>r</span></a></li>
+      <li><a href="functions_func_s.html#index_s"><span>s</span></a></li>
+      <li><a href="functions_func_t.html#index_t"><span>t</span></a></li>
+      <li><a href="functions_func_u.html#index_u"><span>u</span></a></li>
+      <li><a href="functions_func_v.html#index_v"><span>v</span></a></li>
+      <li><a href="functions_func_w.html#index_w"><span>w</span></a></li>
+      <li><a href="functions_func_~.html#index__7E"><span>~</span></a></li>
+    </ul>
+  </div>
 </div><!-- top -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -71,12 +145,39 @@ $(function() {
 &#160;
 
 <h3><a id="index_l"></a>- l -</h3><ul>
+<li>Layer()
+: <a class="el" href="class_t_r_a_p_1_1_layer.html#ae52e100ed195083883f740d6b5741bce">TRAP::Layer</a>
+</li>
+<li>LayerStack()
+: <a class="el" href="class_t_r_a_p_1_1_layer_stack.html#ad6ed62978f2e97dadea4a15913809757">TRAP::LayerStack</a>
+</li>
+<li>Length()
+: <a class="el" href="struct_t_r_a_p_1_1_math_1_1_mat_3_013_00_013_00_01_t_01_4.html#a84851e13a74a0c969cea85e4af0da5ef">TRAP::Math::Mat&lt; 3, 3, T &gt;</a>
+, <a class="el" href="struct_t_r_a_p_1_1_math_1_1_mat_3_014_00_014_00_01_t_01_4.html#a5a1403564fc359181f611fc04283c75c">TRAP::Math::Mat&lt; 4, 4, T &gt;</a>
+, <a class="el" href="struct_t_r_a_p_1_1_math_1_1t_quaternion.html#a87525044cd0680c47ff320dcaee5169a">TRAP::Math::tQuaternion&lt; T &gt;</a>
+, <a class="el" href="struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html#a6450c2feab6c55c0f5fbeca9349aff14">TRAP::Math::Vec&lt; 2, T &gt;</a>
+, <a class="el" href="struct_t_r_a_p_1_1_math_1_1_vec_3_013_00_01_t_01_4.html#ab0326f93c7b5327852b1d90a39b89d64">TRAP::Math::Vec&lt; 3, T &gt;</a>
+, <a class="el" href="struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4.html#a510c474b2cc3bd69954e3fd1d0f55a88">TRAP::Math::Vec&lt; 4, T &gt;</a>
+</li>
 <li>Listen()
 : <a class="el" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener.html#a64abae63653db17860f72f0870e422f9">TRAP::Network::TCPListener</a>
 , <a class="el" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#ab970df2d38bba68393ecafe24cd67dd4">TRAP::Network::TCPListenerIPv6</a>
 </li>
 <li>ListingResponse()
 : <a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_listing_response.html#a703a5aa0655f60c85c20d4108b009b02">TRAP::Network::FTP::ListingResponse</a>
+</li>
+<li>LoadFallback()
+: <a class="el" href="class_t_r_a_p_1_1_image.html#a4f40578a6a79726ce7b08475f7bdafc0">TRAP::Image</a>
+</li>
+<li>LoadFromFile()
+: <a class="el" href="class_t_r_a_p_1_1_image.html#a8147097ce5e2e7e53504fdc59cab7b08">TRAP::Image</a>
+, <a class="el" href="class_t_r_a_p_1_1_utils_1_1_config.html#a855fddffc55710e7289bb011fbfd1f82">TRAP::Utils::Config</a>
+</li>
+<li>LoadFromMemory()
+: <a class="el" href="class_t_r_a_p_1_1_image.html#a6bc92abbc2f2018a1cf25e62d0a08909">TRAP::Image</a>
+</li>
+<li>Log()
+: <a class="el" href="class_t_r_a_p_1_1_log.html#aa6789b311e6b9695571c696cf9121a06">TRAP::Log</a>
 </li>
 <li>Login()
 : <a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p.html#ac9ed105852046f181067178641f2f7b4">TRAP::Network::FTP</a>

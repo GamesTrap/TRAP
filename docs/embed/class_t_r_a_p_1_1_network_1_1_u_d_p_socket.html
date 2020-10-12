@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::Network::UDPSocket Class Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -94,7 +132,7 @@ Inheritance diagram for TRAP::Network::UDPSocket:</div>
 Public Types</h2></td></tr>
 <tr class="memitem:a51c6ed86366c894aee89fb5f0bb05b7d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <b>MaxDatagramSize</b> = 65507
  }</td></tr>
-<tr class="memdesc:a51c6ed86366c894aee89fb5f0bb05b7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constants  <a href="class_t_r_a_p_1_1_network_1_1_u_d_p_socket.html#a51c6ed86366c894aee89fb5f0bb05b7d">More...</a><br /></td></tr>
+<tr class="memdesc:a51c6ed86366c894aee89fb5f0bb05b7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constants.  <a href="class_t_r_a_p_1_1_network_1_1_u_d_p_socket.html#a51c6ed86366c894aee89fb5f0bb05b7d">More...</a><br /></td></tr>
 <tr class="separator:a51c6ed86366c894aee89fb5f0bb05b7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_types_class_t_r_a_p_1_1_network_1_1_socket"><td colspan="2" onclick="javascript:toggleInherit('pub_types_class_t_r_a_p_1_1_network_1_1_socket')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td></tr>
 <tr class="memitem:a5b9431e417a9ed2b13b121462e9f0f77 inherit pub_types_class_t_r_a_p_1_1_network_1_1_socket"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a5b9431e417a9ed2b13b121462e9f0f77">Status</a> { <br />
@@ -106,17 +144,17 @@ Public Types</h2></td></tr>
 &#160;&#160;<b>Error</b>
 <br />
  }</td></tr>
-<tr class="memdesc:a5b9431e417a9ed2b13b121462e9f0f77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Status codes that may be returned by socket functions  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#a5b9431e417a9ed2b13b121462e9f0f77">More...</a><br /></td></tr>
+<tr class="memdesc:a5b9431e417a9ed2b13b121462e9f0f77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Status codes that may be returned by socket functions.  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#a5b9431e417a9ed2b13b121462e9f0f77">More...</a><br /></td></tr>
 <tr class="separator:a5b9431e417a9ed2b13b121462e9f0f77 inherit pub_types_class_t_r_a_p_1_1_network_1_1_socket"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aabc19d03ea8285282eae32e9e68ea6b1 inherit pub_types_class_t_r_a_p_1_1_network_1_1_socket"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <b>AnyPort</b> = 0
  }</td></tr>
-<tr class="memdesc:aabc19d03ea8285282eae32e9e68ea6b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Some special values used by sockets  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#aabc19d03ea8285282eae32e9e68ea6b1">More...</a><br /></td></tr>
+<tr class="memdesc:aabc19d03ea8285282eae32e9e68ea6b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Some special values used by sockets.  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#aabc19d03ea8285282eae32e9e68ea6b1">More...</a><br /></td></tr>
 <tr class="separator:aabc19d03ea8285282eae32e9e68ea6b1 inherit pub_types_class_t_r_a_p_1_1_network_1_1_socket"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa768f5fd18875a767316facca33d6754"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_u_d_p_socket.html#aa768f5fd18875a767316facca33d6754">UDPSocket</a> ()</td></tr>
-<tr class="memdesc:aa768f5fd18875a767316facca33d6754"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor  <a href="class_t_r_a_p_1_1_network_1_1_u_d_p_socket.html#aa768f5fd18875a767316facca33d6754">More...</a><br /></td></tr>
+<tr class="memdesc:aa768f5fd18875a767316facca33d6754"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="class_t_r_a_p_1_1_network_1_1_u_d_p_socket.html#aa768f5fd18875a767316facca33d6754">More...</a><br /></td></tr>
 <tr class="separator:aa768f5fd18875a767316facca33d6754"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac687602fb2be85eaa23fc24a393180a2"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_u_d_p_socket.html#ac687602fb2be85eaa23fc24a393180a2">GetLocalPort</a> () const</td></tr>
 <tr class="memdesc:ac687602fb2be85eaa23fc24a393180a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the port to which the socket is bound locally.<br  />
@@ -161,14 +199,23 @@ Public Member Functions</h2></td></tr>
  In blocking mode, this function will wait until the whole packet has been received.  <a href="class_t_r_a_p_1_1_network_1_1_u_d_p_socket.html#a1b542fe5e77b3709b2d81b20838c962e">More...</a><br /></td></tr>
 <tr class="separator:a1b542fe5e77b3709b2d81b20838c962e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_t_r_a_p_1_1_network_1_1_socket')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td></tr>
-<tr class="memitem:af8dffa45f208e99cbb6169bc7144e830 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memItemLeft" align="right" valign="top"><a id="af8dffa45f208e99cbb6169bc7144e830"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Socket</b> (const <a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a> &amp;)=delete</td></tr>
+<tr class="memitem:aece3d111294650cdea6fb3fcb6b5ce3e inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#aece3d111294650cdea6fb3fcb6b5ce3e">Socket</a> ()=default</td></tr>
+<tr class="memdesc:aece3d111294650cdea6fb3fcb6b5ce3e inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Constructor.  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#aece3d111294650cdea6fb3fcb6b5ce3e">More...</a><br /></td></tr>
+<tr class="separator:aece3d111294650cdea6fb3fcb6b5ce3e inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22b381f8a00921be09fff5fd66145399 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a22b381f8a00921be09fff5fd66145399">Socket</a> (<a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a> &amp;&amp;)=default</td></tr>
+<tr class="memdesc:a22b381f8a00921be09fff5fd66145399 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Move Constructor.  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#a22b381f8a00921be09fff5fd66145399">More...</a><br /></td></tr>
+<tr class="separator:a22b381f8a00921be09fff5fd66145399 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40307326e001f7492184ca13f64773d7 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a40307326e001f7492184ca13f64773d7">operator=</a> (<a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a> &amp;&amp;)=default</td></tr>
+<tr class="memdesc:a40307326e001f7492184ca13f64773d7 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Move Assignment Operator.  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#a40307326e001f7492184ca13f64773d7">More...</a><br /></td></tr>
+<tr class="separator:a40307326e001f7492184ca13f64773d7 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8dffa45f208e99cbb6169bc7144e830 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#af8dffa45f208e99cbb6169bc7144e830">Socket</a> (const <a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a> &amp;)=delete</td></tr>
+<tr class="memdesc:af8dffa45f208e99cbb6169bc7144e830 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Copy Constructor.  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#af8dffa45f208e99cbb6169bc7144e830">More...</a><br /></td></tr>
 <tr class="separator:af8dffa45f208e99cbb6169bc7144e830 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fcf22142fee2f1c88d80ddc445eb4f6 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memItemLeft" align="right" valign="top"><a id="a7fcf22142fee2f1c88d80ddc445eb4f6"></a>
-<a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a> &amp;)=delete</td></tr>
+<tr class="memitem:a7fcf22142fee2f1c88d80ddc445eb4f6 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a7fcf22142fee2f1c88d80ddc445eb4f6">operator=</a> (const <a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a> &amp;)=delete</td></tr>
+<tr class="memdesc:a7fcf22142fee2f1c88d80ddc445eb4f6 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Copy Assignment Operator.  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#a7fcf22142fee2f1c88d80ddc445eb4f6">More...</a><br /></td></tr>
 <tr class="separator:a7fcf22142fee2f1c88d80ddc445eb4f6 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ef440a21a8b7d07705a14b20a54ffff inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a0ef440a21a8b7d07705a14b20a54ffff">~Socket</a> ()</td></tr>
-<tr class="memdesc:a0ef440a21a8b7d07705a14b20a54ffff inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#a0ef440a21a8b7d07705a14b20a54ffff">More...</a><br /></td></tr>
+<tr class="memdesc:a0ef440a21a8b7d07705a14b20a54ffff inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#a0ef440a21a8b7d07705a14b20a54ffff">More...</a><br /></td></tr>
 <tr class="separator:a0ef440a21a8b7d07705a14b20a54ffff inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74bc5397a1e40a6db8bf7763cb7ef0b1 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a74bc5397a1e40a6db8bf7763cb7ef0b1">SetBlocking</a> (bool blocking)</td></tr>
 <tr class="memdesc:a74bc5397a1e40a6db8bf7763cb7ef0b1 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the blocking state of the socket.<br  />
@@ -179,7 +226,7 @@ Public Member Functions</h2></td></tr>
  By default, all sockets are blocking.  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#a74bc5397a1e40a6db8bf7763cb7ef0b1">More...</a><br /></td></tr>
 <tr class="separator:a74bc5397a1e40a6db8bf7763cb7ef0b1 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab97946284a9e629ed8c476635fba2e5 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#aab97946284a9e629ed8c476635fba2e5">IsBlocking</a> () const</td></tr>
-<tr class="memdesc:aab97946284a9e629ed8c476635fba2e5 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tell whether the socket is in blocking or non-blocking mode  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#aab97946284a9e629ed8c476635fba2e5">More...</a><br /></td></tr>
+<tr class="memdesc:aab97946284a9e629ed8c476635fba2e5 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tell whether the socket is in blocking or non-blocking mode.  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#aab97946284a9e629ed8c476635fba2e5">More...</a><br /></td></tr>
 <tr class="separator:aab97946284a9e629ed8c476635fba2e5 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
@@ -188,7 +235,7 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a0bf42978715a480dfdec1f8256aa378f inherit pro_types_class_t_r_a_p_1_1_network_1_1_socket"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a0bf42978715a480dfdec1f8256aa378f">Type</a> { <b>TCP</b>, 
 <b>UDP</b>
  }</td></tr>
-<tr class="memdesc:a0bf42978715a480dfdec1f8256aa378f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Types of protocols that the socket can use  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#a0bf42978715a480dfdec1f8256aa378f">More...</a><br /></td></tr>
+<tr class="memdesc:a0bf42978715a480dfdec1f8256aa378f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Types of protocols that the socket can use.  <a href="class_t_r_a_p_1_1_network_1_1_socket.html#a0bf42978715a480dfdec1f8256aa378f">More...</a><br /></td></tr>
 <tr class="separator:a0bf42978715a480dfdec1f8256aa378f inherit pro_types_class_t_r_a_p_1_1_network_1_1_socket"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_class_t_r_a_p_1_1_network_1_1_socket"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_t_r_a_p_1_1_network_1_1_socket')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td></tr>
 <tr class="memitem:aad897f0fd82d697e8ce98d2c7ec8d8c1 inherit pro_methods_class_t_r_a_p_1_1_network_1_1_socket"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#aad897f0fd82d697e8ce98d2c7ec8d8c1">Socket</a> (<a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a0bf42978715a480dfdec1f8256aa378f">Type</a> type)</td></tr>
@@ -236,7 +283,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Constants </p>
+<p>Constants. </p>
 
 </div>
 </div>
@@ -256,7 +303,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Default constructor </p>
+<p>Constructor. </p>
 
 </div>
 </div>
@@ -296,12 +343,12 @@ Additional Inherited Members</h2></td></tr>
  Since the socket cn only be bound to a single port at any given moment, if it is already bound when this function is called, it will be unbound from the previous port before being bound to the new one. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">port</td><td>Port to bind the socket to</td></tr>
-    <tr><td class="paramname">address</td><td>Address of the interface to bind to</td></tr>
+    <tr><td class="paramname">port</td><td>Port to bind the socket to.</td></tr>
+    <tr><td class="paramname">address</td><td>Address of the interface to bind to.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Status code</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Status code.</dd></dl>
 
 </div>
 </div>
@@ -323,7 +370,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get the port to which the socket is bound locally.<br  />
  <br  />
  If the socket is not bound to a port, this function returns 0. </p>
-<dl class="section return"><dt>Returns</dt><dd>Port to which the socket is bound</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Port to which the socket is bound.</dd></dl>
 
 </div>
 </div>
@@ -364,13 +411,13 @@ Additional Inherited Members</h2></td></tr>
  In blocking mode, this function will wait until the whole packet has been received. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">packet</td><td><a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html" title="Utility class to build blocks of data to transfer over the network">Packet</a> to fill with the received data</td></tr>
-    <tr><td class="paramname">remoteAddress</td><td>Address of the peer that sent the data</td></tr>
-    <tr><td class="paramname">remotePort</td><td>Port of the peer that sent the data</td></tr>
+    <tr><td class="paramname">packet</td><td><a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html" title="Utility class to build blocks of data to transfer. over the network">Packet</a> to fill with the received data.</td></tr>
+    <tr><td class="paramname">remoteAddress</td><td>Address of the peer that sent the data.</td></tr>
+    <tr><td class="paramname">remotePort</td><td>Port of the peer that sent the data.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Status code</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Status code.</dd></dl>
 
 </div>
 </div>
@@ -424,15 +471,15 @@ Additional Inherited Members</h2></td></tr>
  Be careful to use a buffer which is large enough for the data that you intend to receive, if it is too small then an error will be returned and *all* the data will be list. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">data</td><td>Pointer to the array to fill with the received bytes</td></tr>
-    <tr><td class="paramname">size</td><td>Maximum number of bytes that can be received</td></tr>
-    <tr><td class="paramname">received</td><td>This variable is filled with the actual number of bytes received</td></tr>
-    <tr><td class="paramname">remoteAddress</td><td>Address of the peer that sent the data</td></tr>
-    <tr><td class="paramname">remotePort</td><td>Port of the peer that sent the data</td></tr>
+    <tr><td class="paramname">data</td><td>Pointer to the array to fill with the received bytes.</td></tr>
+    <tr><td class="paramname">size</td><td>Maximum number of bytes that can be received.</td></tr>
+    <tr><td class="paramname">received</td><td>This variable is filled with the actual number of bytes received.</td></tr>
+    <tr><td class="paramname">remoteAddress</td><td>Address of the peer that sent the data.</td></tr>
+    <tr><td class="paramname">remotePort</td><td>Port of the peer that sent the data.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Status code</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Status code.</dd></dl>
 
 </div>
 </div>
@@ -479,14 +526,14 @@ Additional Inherited Members</h2></td></tr>
  Make sure that size is not greater than UDPSocket::MaxDatagramSize, otherwise this function will fail and no data will be sent. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">data</td><td>Pointer to the sequence of bytes to send</td></tr>
-    <tr><td class="paramname">size</td><td>Number of bytes to send</td></tr>
-    <tr><td class="paramname">remoteAddress</td><td>Address of the receiver</td></tr>
-    <tr><td class="paramname">remotePort</td><td>Port of the receiver to send the data to</td></tr>
+    <tr><td class="paramname">data</td><td>Pointer to the sequence of bytes to send.</td></tr>
+    <tr><td class="paramname">size</td><td>Number of bytes to send.</td></tr>
+    <tr><td class="paramname">remoteAddress</td><td>Address of the receiver.</td></tr>
+    <tr><td class="paramname">remotePort</td><td>Port of the receiver to send the data to.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Status code</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Status code.</dd></dl>
 
 </div>
 </div>
@@ -527,13 +574,13 @@ Additional Inherited Members</h2></td></tr>
  Make sure that the packet size is not greater than UDPSocket::MaxDatagramSize, otherwise this function will fail and no data will be sent. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">packet</td><td><a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html" title="Utility class to build blocks of data to transfer over the network">Packet</a> to send</td></tr>
-    <tr><td class="paramname">remoteAddress</td><td>Address of the received</td></tr>
-    <tr><td class="paramname">remotePort</td><td>Port of the receiver to send the data to</td></tr>
+    <tr><td class="paramname">packet</td><td><a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html" title="Utility class to build blocks of data to transfer. over the network">Packet</a> to send.</td></tr>
+    <tr><td class="paramname">remoteAddress</td><td>Address of the received.</td></tr>
+    <tr><td class="paramname">remotePort</td><td>Port of the receiver to send the data to.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Status code</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Status code.</dd></dl>
 
 </div>
 </div>

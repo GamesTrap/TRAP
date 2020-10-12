@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP/src/Network/Sockets/SocketSelector.h Source File</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,34 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -119,40 +154,40 @@ $(function() {
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#af110d22cdf9b173d4de682f54dded799">SocketSelector</a>();</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#af110d22cdf9b173d4de682f54dded799">SocketSelector</a>(<span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html">SocketSelector</a>&amp; copy);</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a794d85e25a7b7ebfcf9b71ea022320ca">~SocketSelector</a>();</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a1e3629a954695a740e6f3938307ab570">Add</a>(<a class="code" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a>&amp; socket);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#ac8df3095ded27e2c2d3514107f4d5b6b">Remove</a>(<a class="code" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a>&amp; socket) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a0b4bc95015bc893bbb0853936f6b0770">Clear</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a94206d516e7745f033ad14a56904dbc0">Wait</a>(<a class="code" href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">Utils::TimeStep</a> timeout) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a88042536c0944e507288af1460c2ac37">IsReady</a>(<a class="code" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a>&amp; socket) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html">SocketSelector</a>&amp; <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a4d84f52d2565edf24deadad3578dc978">operator=</a>(<span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html">SocketSelector</a>&amp; right);</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        <span class="keyword">struct </span>SocketSelectorImpl;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        SocketSelectorImpl* m_impl; <span class="comment">//Opaque pointer to the implementation (which requires OS-specific types)</span></div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    };</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;}</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_NETWORK_SOCKETSELECTOR_H_*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#af110d22cdf9b173d4de682f54dded799">SocketSelector</a>(<span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html">SocketSelector</a>&amp; copy);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a794d85e25a7b7ebfcf9b71ea022320ca">~SocketSelector</a>();</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a1e3629a954695a740e6f3938307ab570">Add</a>(<a class="code" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a>&amp; socket);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#ac8df3095ded27e2c2d3514107f4d5b6b">Remove</a>(<a class="code" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a>&amp; socket) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a0b4bc95015bc893bbb0853936f6b0770">Clear</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a94206d516e7745f033ad14a56904dbc0">Wait</a>(<a class="code" href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">Utils::TimeStep</a> timeout) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a88042536c0944e507288af1460c2ac37">IsReady</a>(<a class="code" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a>&amp; socket) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html">SocketSelector</a>&amp; <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a4d84f52d2565edf24deadad3578dc978">operator=</a>(<span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html">SocketSelector</a>&amp; right);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <span class="keyword">struct </span>SocketSelectorImpl;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        SocketSelectorImpl* m_impl; <span class="comment">//Opaque pointer to the implementation (which requires OS-specific types)</span></div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    };</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;}</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_NETWORK_SOCKETSELECTOR_H_*/</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_selector_html_a0b4bc95015bc893bbb0853936f6b0770"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a0b4bc95015bc893bbb0853936f6b0770">TRAP::Network::SocketSelector::Clear</a></div><div class="ttdeci">void Clear() const</div><div class="ttdoc">Remove all the sockets stored in the selector.    This function doesn't destroy any instance,...</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_selector_html_a4d84f52d2565edf24deadad3578dc978"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a4d84f52d2565edf24deadad3578dc978">TRAP::Network::SocketSelector::operator=</a></div><div class="ttdeci">SocketSelector &amp; operator=(const SocketSelector &amp;right)</div><div class="ttdoc">Overload of assignment operator</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_selector_html_a4d84f52d2565edf24deadad3578dc978"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a4d84f52d2565edf24deadad3578dc978">TRAP::Network::SocketSelector::operator=</a></div><div class="ttdeci">SocketSelector &amp; operator=(const SocketSelector &amp;right)</div><div class="ttdoc">Overload of assignment operator.</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></div><div class="ttdef"><b>Definition:</b> Socket.h:38</div></div>
-<div class="ttc" id="astruct_t_r_a_p_1_1_utils_1_1_time_step_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">TRAP::Utils::TimeStep</a></div><div class="ttdef"><b>Definition:</b> TimeStep.h:6</div></div>
+<div class="ttc" id="astruct_t_r_a_p_1_1_utils_1_1_time_step_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">TRAP::Utils::TimeStep</a></div><div class="ttdoc">Struct for a single step in Time.</div><div class="ttdef"><b>Definition:</b> TimeStep.h:9</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_selector_html_a88042536c0944e507288af1460c2ac37"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a88042536c0944e507288af1460c2ac37">TRAP::Network::SocketSelector::IsReady</a></div><div class="ttdeci">bool IsReady(Socket &amp;socket) const</div><div class="ttdoc">Test a socket to know if it is ready to receive data.    This function must be used after a call to W...</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_selector_html_a794d85e25a7b7ebfcf9b71ea022320ca"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a794d85e25a7b7ebfcf9b71ea022320ca">TRAP::Network::SocketSelector::~SocketSelector</a></div><div class="ttdeci">~SocketSelector()</div><div class="ttdoc">Destructor</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_selector_html_af110d22cdf9b173d4de682f54dded799"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#af110d22cdf9b173d4de682f54dded799">TRAP::Network::SocketSelector::SocketSelector</a></div><div class="ttdeci">SocketSelector()</div><div class="ttdoc">Default constructor</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_selector_html_a794d85e25a7b7ebfcf9b71ea022320ca"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a794d85e25a7b7ebfcf9b71ea022320ca">TRAP::Network::SocketSelector::~SocketSelector</a></div><div class="ttdeci">~SocketSelector()</div><div class="ttdoc">Destructor.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_selector_html_af110d22cdf9b173d4de682f54dded799"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#af110d22cdf9b173d4de682f54dded799">TRAP::Network::SocketSelector::SocketSelector</a></div><div class="ttdeci">SocketSelector()</div><div class="ttdoc">Constructor.</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_selector_html_a1e3629a954695a740e6f3938307ab570"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a1e3629a954695a740e6f3938307ab570">TRAP::Network::SocketSelector::Add</a></div><div class="ttdeci">void Add(Socket &amp;socket)</div><div class="ttdoc">Add a new socket to the selector.    This function keeps a weak reference to the socket,...</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_selector_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html">TRAP::Network::SocketSelector</a></div><div class="ttdoc">Multiplexer that allows to read form multiple sockets</div><div class="ttdef"><b>Definition:</b> SocketSelector.h:44</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_selector_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html">TRAP::Network::SocketSelector</a></div><div class="ttdoc">Multiplexer that allows to read form multiple sockets.</div><div class="ttdef"><b>Definition:</b> SocketSelector.h:44</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_selector_html_ac8df3095ded27e2c2d3514107f4d5b6b"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#ac8df3095ded27e2c2d3514107f4d5b6b">TRAP::Network::SocketSelector::Remove</a></div><div class="ttdeci">void Remove(Socket &amp;socket) const</div><div class="ttdoc">Remove a socket from the selector.    This function doesn't destroy the socket, it simply removes the...</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_selector_html_a94206d516e7745f033ad14a56904dbc0"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a94206d516e7745f033ad14a56904dbc0">TRAP::Network::SocketSelector::Wait</a></div><div class="ttdeci">bool Wait(Utils::TimeStep timeout) const</div><div class="ttdoc">Wait until one or more sockets are ready to receive.    This function returns as soon as at least one...</div></div>
 <!-- HTML footer for doxygen 1.8.8-->

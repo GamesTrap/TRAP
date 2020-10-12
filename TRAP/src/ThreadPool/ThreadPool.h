@@ -4,21 +4,57 @@
 #include "BlockingQueue.h"
 
 namespace TRAP
-{	
+{
+	/// <summary>
+	/// ThreadPool is a multi-thread task scheduler.<br>
+	/// Note: ThreadPool should only be used for small tasks!
+	/// </summary>
 	class ThreadPool
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="threads">Max amount of threads to use for tasks.</param>
 		explicit ThreadPool(uint32_t threads = std::thread::hardware_concurrency());
+		/// <summary>
+		/// Destructor.
+		/// </summary>
 		~ThreadPool() noexcept;
 
+		/// <summary>
+		/// Deleted Copy Constructor.
+		/// </summary>
 		ThreadPool(const ThreadPool&) = delete;
+		/// <summary>
+		/// Deleted Copy Assignment Operator.
+		/// </summary>
 		ThreadPool& operator=(const ThreadPool&) = delete;
+		/// <summary>
+		/// Deleted Move Constructor.
+		/// </summary>
 		ThreadPool(ThreadPool&&) = delete;
+		/// <summary>
+		/// Deleted Move Assignment Operator.
+		/// </summary>
 		ThreadPool& operator=(ThreadPool&&) = delete;
 
+		/// <summary>
+		/// Enqueue work (Call given function on separate thread).
+		/// </summary>
+		/// <typeparam name="F">Functor to work on.</typeparam>
+		/// <typeparam name="...Args">Parameters of the functor.</typeparam>
+		/// <param name="f">Functor to work on.</param>
 		template<typename F, typename... Args>
 		void EnqueueWork(F&& f, Args&&... args);
 
+		/// <summary>
+		/// Enqueue task (Call given function on seperate thread and get a future).
+		/// </summary>
+		/// <typeparam name="F">Functor to work on.</typeparam>
+		/// <typeparam name="...Args">Parameters of the functor.</typeparam>
+		/// <param name="f">Functor to work on.</param>
+		/// <returns>Future for the result of the given functor.</returns>
 		template<typename F, typename... Args>
 		[[nodiscard]] auto EnqueueTask(F&& f, Args&&... args)->std::future<std::invoke_result_t<F, Args...>>;
 

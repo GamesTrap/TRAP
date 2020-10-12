@@ -64,7 +64,7 @@ void TRAP::Graphics::API::OpenGLRenderer::Clear(const RendererBufferType buffer)
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glClear(TRAPRendererBufferToOpenGL(buffer)));
+	glClear(TRAPRendererBufferToOpenGL(buffer));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -82,7 +82,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetClearColor(const Math::Vec4& color)
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glClearColor(color.x, color.y, color.z, color.w));
+	glClearColor(color.x, color.y, color.z, color.w);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -92,13 +92,9 @@ void TRAP::Graphics::API::OpenGLRenderer::SetDepthTesting(const bool enabled)
 	TP_PROFILE_FUNCTION();
 
 	if (enabled)
-	{
-		OpenGLCall(glEnable(GL_DEPTH_TEST));
-	}
+		glEnable(GL_DEPTH_TEST);
 	else
-	{
-		OpenGLCall(glDisable(GL_DEPTH_TEST));
-	}
+		glDisable(GL_DEPTH_TEST);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -107,7 +103,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetDepthMasking(const bool enabled)
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glDepthMask(enabled));
+	glDepthMask(enabled);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -116,7 +112,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetDepthFunction(const RendererFunctio
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glDepthFunc(TRAPRendererFunctionToOpenGL(function)));
+	glDepthFunc(TRAPRendererFunctionToOpenGL(function));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -126,13 +122,9 @@ void TRAP::Graphics::API::OpenGLRenderer::SetStencilTesting(const bool enabled)
 	TP_PROFILE_FUNCTION();
 
 	if(enabled)
-	{
-		OpenGLCall(glEnable(GL_STENCIL_TEST));
-	}
+		glEnable(GL_STENCIL_TEST);
 	else
-	{
-		OpenGLCall(glDisable(GL_STENCIL_TEST));
-	}
+		glDisable(GL_STENCIL_TEST);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -141,7 +133,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetStencilMasking(const uint32_t mask)
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glStencilMask(mask));
+	glStencilMask(mask);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -150,7 +142,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetStencilMaskingSeparate(const Render
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glStencilMaskSeparate(TRAPRendererFaceModeToOpenGL(face), mask));
+	glStencilMaskSeparate(TRAPRendererFaceModeToOpenGL(face), mask);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -159,7 +151,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetStencilFunction(const RendererFunct
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glStencilFunc(TRAPRendererFunctionToOpenGL(function), reference, mask));
+	glStencilFunc(TRAPRendererFunctionToOpenGL(function), reference, mask);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -168,7 +160,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetStencilFunctionSeparate(const Rende
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glStencilFuncSeparate(TRAPRendererFaceModeToOpenGL(face), TRAPRendererFunctionToOpenGL(function), reference, mask));
+	glStencilFuncSeparate(TRAPRendererFaceModeToOpenGL(face), TRAPRendererFunctionToOpenGL(function), reference, mask);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -177,7 +169,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetStencilOperation(const RendererOper
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glStencilOp(TRAPRendererOperationToOpenGL(stencilFail), TRAPRendererOperationToOpenGL(depthFail), TRAPRendererOperationToOpenGL(pass)));
+	glStencilOp(TRAPRendererOperationToOpenGL(stencilFail), TRAPRendererOperationToOpenGL(depthFail), TRAPRendererOperationToOpenGL(pass));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -186,7 +178,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetStencilOperationSeparate(const Rend
 {
 	TP_PROFILE_FUNCTION();
 	
-	OpenGLCall(glStencilOpSeparate(TRAPRendererFaceModeToOpenGL(face), TRAPRendererOperationToOpenGL(stencilFail), TRAPRendererOperationToOpenGL(depthFail), TRAPRendererOperationToOpenGL(pass)));
+	glStencilOpSeparate(TRAPRendererFaceModeToOpenGL(face), TRAPRendererOperationToOpenGL(stencilFail), TRAPRendererOperationToOpenGL(depthFail), TRAPRendererOperationToOpenGL(pass));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -196,13 +188,9 @@ void TRAP::Graphics::API::OpenGLRenderer::SetBlend(const bool enabled)
 	TP_PROFILE_FUNCTION();
 
 	if (enabled)
-	{
-		OpenGLCall(glEnable(GL_BLEND));
-	}
+		glEnable(GL_BLEND);
 	else
-	{
-		OpenGLCall(glDisable(GL_BLEND));
-	}
+		glDisable(GL_BLEND);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -212,13 +200,9 @@ void TRAP::Graphics::API::OpenGLRenderer::SetCull(const bool enabled)
 	TP_PROFILE_FUNCTION();
 
 	if(enabled)
-	{
-		OpenGLCall(glEnable(GL_CULL_FACE));
-	}
+		glEnable(GL_CULL_FACE);
 	else
-	{
-		OpenGLCall(glDisable(GL_CULL_FACE));
-	}
+		glDisable(GL_CULL_FACE);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -227,7 +211,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetFrontFace(const RendererFrontFace f
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glFrontFace(TRAPRendererFrontFaceToOpenGL(frontFace)));
+	glFrontFace(TRAPRendererFrontFaceToOpenGL(frontFace));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -236,7 +220,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetViewport(const uint32_t x, const ui
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glViewport(x, y, width, height));
+	glViewport(x, y, width, height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -245,7 +229,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetBlendFunction(const RendererBlendFu
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glBlendFunc(TRAPRendererBlendFunctionToOpenGL(source), TRAPRendererBlendFunctionToOpenGL(destination)));
+	glBlendFunc(TRAPRendererBlendFunctionToOpenGL(source), TRAPRendererBlendFunctionToOpenGL(destination));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -257,11 +241,11 @@ void TRAP::Graphics::API::OpenGLRenderer::SetBlendFunctionSeparate(const Rendere
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glBlendFuncSeparate(TRAPRendererBlendFunctionToOpenGL(sourceRGB),
-		                           TRAPRendererBlendFunctionToOpenGL(destinationRGB),
-		                           TRAPRendererBlendFunctionToOpenGL(sourceAlpha),
-		                           TRAPRendererBlendFunctionToOpenGL(destinationAlpha)
-	));
+	glBlendFuncSeparate(TRAPRendererBlendFunctionToOpenGL(sourceRGB),
+		                TRAPRendererBlendFunctionToOpenGL(destinationRGB),
+		                TRAPRendererBlendFunctionToOpenGL(sourceAlpha),
+		                TRAPRendererBlendFunctionToOpenGL(destinationAlpha)
+	);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -270,7 +254,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetBlendEquation(const RendererBlendEq
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glBlendEquation(TRAPRendererBlendEquationToOpenGL(blendEquation)));
+	glBlendEquation(TRAPRendererBlendEquationToOpenGL(blendEquation));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -279,7 +263,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetBlendEquationSeparate(const Rendere
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glBlendEquationSeparate(TRAPRendererBlendEquationToOpenGL(blendEquationRGB), TRAPRendererBlendEquationToOpenGL(blendEquationAlpha)));
+	glBlendEquationSeparate(TRAPRendererBlendEquationToOpenGL(blendEquationRGB), TRAPRendererBlendEquationToOpenGL(blendEquationAlpha));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -288,7 +272,7 @@ void TRAP::Graphics::API::OpenGLRenderer::SetCullMode(const RendererFaceMode cul
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glCullFace(TRAPRendererFaceModeToOpenGL(cullMode)));
+	glCullFace(TRAPRendererFaceModeToOpenGL(cullMode));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -298,13 +282,9 @@ void TRAP::Graphics::API::OpenGLRenderer::SetWireFrame(const bool enabled)
 	TP_PROFILE_FUNCTION();
 
 	if (enabled)
-	{
-		OpenGLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
-	}
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	else
-	{
-		OpenGLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
-	}
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -314,7 +294,7 @@ void TRAP::Graphics::API::OpenGLRenderer::DrawIndexed(const Scope<VertexArray>& 
 	TP_PROFILE_FUNCTION();
 
 	const uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
-	OpenGLCall(glDrawElementsBaseVertex(TRAPRendererPrimitiveToOpenGL(primitive), count, GL_UNSIGNED_INT, nullptr, 0));
+	glDrawElementsBaseVertex(TRAPRendererPrimitiveToOpenGL(primitive), count, GL_UNSIGNED_INT, nullptr, 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -326,7 +306,7 @@ void TRAP::Graphics::API::OpenGLRenderer::Draw(const Scope<VertexArray>& vertexA
 	//Amount of indices = Total Vertex count divided by the stride of the data layout
 	const uint32_t count = vertexArray->GetVertexBuffer()->GetVertexCount() / vertexArray->GetVertexBuffer()->GetLayout().GetStride();
 	
-	OpenGLCall(glDrawArrays(TRAPRendererPrimitiveToOpenGL(primitive), 0, count));
+	glDrawArrays(TRAPRendererPrimitiveToOpenGL(primitive), 0, count);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -340,7 +320,7 @@ const std::string& TRAP::Graphics::API::OpenGLRenderer::GetTitle() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::Graphics::API::OpenGLRenderer::GetCurrentGPUUUID()
+std::array<uint8_t, 16> TRAP::Graphics::API::OpenGLRenderer::GetCurrentGPUUUID()
 {
 	return {};
 }
@@ -351,14 +331,14 @@ std::string TRAP::Graphics::API::OpenGLRenderer::GetCurrentGPUName()
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(const GLubyte* renderer = glGetString(GL_RENDERER));
+	const GLubyte* renderer = glGetString(GL_RENDERER);
 	return std::string(reinterpret_cast<const char*>(renderer));
 }
 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::pair<std::string, std::vector<uint8_t>>> TRAP::Graphics::API::OpenGLRenderer::GetAllGPUs()
+std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API::OpenGLRenderer::GetAllGPUs()
 {
 	TP_PROFILE_FUNCTION();
 
@@ -591,9 +571,7 @@ uint32_t TRAP::Graphics::API::OpenGLRenderer::TRAPRendererOperationToOpenGL(Rend
 uint32_t TRAP::Graphics::API::OpenGLRenderer::GetMaxTextureUnits()
 {
 	if(s_maxCombinedTextureUnits == 0)
-	{
-		OpenGLCall(glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits)));
-	}
+		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int32_t*>(&s_maxCombinedTextureUnits));
 
 	return s_maxCombinedTextureUnits;
 }
@@ -708,7 +686,7 @@ void GLAPIENTRY TRAP::Graphics::API::OpenGLRenderer::DebugCallback(const GLenum 
 
 void TRAP::Graphics::API::OpenGLRenderer::InitDebug()
 {
-	OpenGLCall(glEnable(GL_DEBUG_OUTPUT));
-	OpenGLCall(glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS));
-	OpenGLCall(glDebugMessageCallback(DebugCallback, nullptr));
+	glDebugMessageCallback(DebugCallback, nullptr);
+	glEnable(GL_DEBUG_OUTPUT);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 }

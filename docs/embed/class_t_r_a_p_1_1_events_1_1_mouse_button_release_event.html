@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::Events::MouseButtonReleaseEvent Class Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -80,50 +118,58 @@ $(function() {
 <div class="title">TRAP::Events::MouseButtonReleaseEvent Class Reference<span class="mlabels"><span class="mlabel">final</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Mouse button released.  
+ <a href="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_mouse_event_8h_source.html">MouseEvent.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for TRAP::Events::MouseButtonReleaseEvent:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.png" usemap="#TRAP::Events::MouseButtonReleaseEvent_map" alt=""/>
   <map id="TRAP::Events::MouseButtonReleaseEvent_map" name="TRAP::Events::MouseButtonReleaseEvent_map">
-<area href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html" alt="TRAP::Events::MouseButtonEvent" shape="rect" coords="0,56,244,80"/>
-<area href="class_t_r_a_p_1_1_events_1_1_event.html" alt="TRAP::Events::Event" shape="rect" coords="0,0,244,24"/>
+<area href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html" title="Mouse button event base class." alt="TRAP::Events::MouseButtonEvent" shape="rect" coords="0,56,244,80"/>
+<area href="class_t_r_a_p_1_1_events_1_1_event.html" title="Event base class." alt="TRAP::Events::Event" shape="rect" coords="0,0,244,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a6be6ab8d3b102a5a756c2d4ef8dde1a1"><td class="memItemLeft" align="right" valign="top"><a id="a6be6ab8d3b102a5a756c2d4ef8dde1a1"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>MouseButtonReleaseEvent</b> (Input::MouseButton button, std::string_view title)</td></tr>
-<tr class="separator:a6be6ab8d3b102a5a756c2d4ef8dde1a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a525968e1132e3174d439ad0fd1b32fc8"><td class="memItemLeft" align="right" valign="top"><a id="a525968e1132e3174d439ad0fd1b32fc8"></a>
-std::string_view&#160;</td><td class="memItemRight" valign="bottom"><b>GetTitle</b> () const</td></tr>
-<tr class="separator:a525968e1132e3174d439ad0fd1b32fc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6a1e9ef0a69934437b698f9a194c67a"><td class="memItemLeft" align="right" valign="top"><a id="af6a1e9ef0a69934437b698f9a194c67a"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>ToString</b> () const override</td></tr>
+<tr class="memitem:a94ce08cdd4fb8967a75a16c8c900e56a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.html#a94ce08cdd4fb8967a75a16c8c900e56a">MouseButtonReleaseEvent</a> (<a class="el" href="class_t_r_a_p_1_1_input.html#aa03b41ad11d04dd89343ead74658b2c4">Input::MouseButton</a> button, std::string title)</td></tr>
+<tr class="memdesc:a94ce08cdd4fb8967a75a16c8c900e56a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.html#a94ce08cdd4fb8967a75a16c8c900e56a">More...</a><br /></td></tr>
+<tr class="separator:a94ce08cdd4fb8967a75a16c8c900e56a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7046037bd2a9e17b49e97b458ef5d0f"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.html#ad7046037bd2a9e17b49e97b458ef5d0f">GetTitle</a> () const</td></tr>
+<tr class="memdesc:ad7046037bd2a9e17b49e97b458ef5d0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the title of the affected <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">Window</a>.  <a href="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.html#ad7046037bd2a9e17b49e97b458ef5d0f">More...</a><br /></td></tr>
+<tr class="separator:ad7046037bd2a9e17b49e97b458ef5d0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6a1e9ef0a69934437b698f9a194c67a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.html#af6a1e9ef0a69934437b698f9a194c67a">ToString</a> () const override</td></tr>
+<tr class="memdesc:af6a1e9ef0a69934437b698f9a194c67a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a string representation of the <a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.html" title="Mouse button released.">MouseButtonReleaseEvent</a>.  <a href="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.html#af6a1e9ef0a69934437b698f9a194c67a">More...</a><br /></td></tr>
 <tr class="separator:af6a1e9ef0a69934437b698f9a194c67a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75c3c897ef32fe87c7c58212db73eb23"><td class="memItemLeft" align="right" valign="top"><a id="a75c3c897ef32fe87c7c58212db73eb23"></a>
-EventType&#160;</td><td class="memItemRight" valign="bottom"><b>GetEventType</b> () const override</td></tr>
+<tr class="memitem:a75c3c897ef32fe87c7c58212db73eb23"><td class="memItemLeft" align="right" valign="top">EventType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.html#a75c3c897ef32fe87c7c58212db73eb23">GetEventType</a> () const override</td></tr>
+<tr class="memdesc:a75c3c897ef32fe87c7c58212db73eb23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the EventType of the <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html" title="Event base class.">Event</a>.  <a href="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.html#a75c3c897ef32fe87c7c58212db73eb23">More...</a><br /></td></tr>
 <tr class="separator:a75c3c897ef32fe87c7c58212db73eb23"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3770194c1c31042747179cbb5081c17"><td class="memItemLeft" align="right" valign="top"><a id="af3770194c1c31042747179cbb5081c17"></a>
-const char *&#160;</td><td class="memItemRight" valign="bottom"><b>GetName</b> () const override</td></tr>
+<tr class="memitem:af3770194c1c31042747179cbb5081c17"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.html#af3770194c1c31042747179cbb5081c17">GetName</a> () const override</td></tr>
+<tr class="memdesc:af3770194c1c31042747179cbb5081c17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the name of the <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html" title="Event base class.">Event</a>.  <a href="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.html#af3770194c1c31042747179cbb5081c17">More...</a><br /></td></tr>
 <tr class="separator:af3770194c1c31042747179cbb5081c17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html">TRAP::Events::MouseButtonEvent</a></td></tr>
-<tr class="memitem:a05a4bdafee0f1f100a6dbbcfbfec086f inherit pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top"><a id="a05a4bdafee0f1f100a6dbbcfbfec086f"></a>
-Input::MouseButton&#160;</td><td class="memItemRight" valign="bottom"><b>GetMouseButton</b> () const</td></tr>
+<tr class="memitem:a05a4bdafee0f1f100a6dbbcfbfec086f inherit pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_input.html#aa03b41ad11d04dd89343ead74658b2c4">Input::MouseButton</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html#a05a4bdafee0f1f100a6dbbcfbfec086f">GetMouseButton</a> () const</td></tr>
+<tr class="memdesc:a05a4bdafee0f1f100a6dbbcfbfec086f inherit pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the affected mouse button.  <a href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html#a05a4bdafee0f1f100a6dbbcfbfec086f">More...</a><br /></td></tr>
 <tr class="separator:a05a4bdafee0f1f100a6dbbcfbfec086f inherit pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0370c3a6684c9987e04eef4526d8fde1 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top"><a id="a0370c3a6684c9987e04eef4526d8fde1"></a>
-int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>GetCategoryFlags</b> () const override</td></tr>
+<tr class="memitem:a0370c3a6684c9987e04eef4526d8fde1 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html#a0370c3a6684c9987e04eef4526d8fde1">GetCategoryFlags</a> () const override</td></tr>
+<tr class="memdesc:a0370c3a6684c9987e04eef4526d8fde1 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the category flags of the <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html" title="Event base class.">Event</a>.  <a href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html#a0370c3a6684c9987e04eef4526d8fde1">More...</a><br /></td></tr>
 <tr class="separator:a0370c3a6684c9987e04eef4526d8fde1 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_t_r_a_p_1_1_events_1_1_event"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_t_r_a_p_1_1_events_1_1_event')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">TRAP::Events::Event</a></td></tr>
-<tr class="memitem:ae75af1e048b84b7c73341623ee8d8716 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top"><a id="ae75af1e048b84b7c73341623ee8d8716"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>IsInCategory</b> (EventCategory category) const</td></tr>
+<tr class="memitem:a946e9774906dff98d9de7c1dcc0639a7 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html#a946e9774906dff98d9de7c1dcc0639a7">~Event</a> ()=default</td></tr>
+<tr class="memdesc:a946e9774906dff98d9de7c1dcc0639a7 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual Default Destructor.  <a href="class_t_r_a_p_1_1_events_1_1_event.html#a946e9774906dff98d9de7c1dcc0639a7">More...</a><br /></td></tr>
+<tr class="separator:a946e9774906dff98d9de7c1dcc0639a7 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae75af1e048b84b7c73341623ee8d8716 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html#ae75af1e048b84b7c73341623ee8d8716">IsInCategory</a> (EventCategory category) const</td></tr>
+<tr class="memdesc:ae75af1e048b84b7c73341623ee8d8716 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if an <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html" title="Event base class.">Event</a> is in the specified category.  <a href="class_t_r_a_p_1_1_events_1_1_event.html#ae75af1e048b84b7c73341623ee8d8716">More...</a><br /></td></tr>
 <tr class="separator:ae75af1e048b84b7c73341623ee8d8716 inherit pub_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a2d9947e08a9791f5cafb34363e637979"><td class="memItemLeft" align="right" valign="top"><a id="a2d9947e08a9791f5cafb34363e637979"></a>
-static EventType&#160;</td><td class="memItemRight" valign="bottom"><b>GetStaticType</b> ()</td></tr>
+<tr class="memitem:a2d9947e08a9791f5cafb34363e637979"><td class="memItemLeft" align="right" valign="top">static EventType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.html#a2d9947e08a9791f5cafb34363e637979">GetStaticType</a> ()</td></tr>
+<tr class="memdesc:a2d9947e08a9791f5cafb34363e637979"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the EventType of the <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html" title="Event base class.">Event</a>.  <a href="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.html#a2d9947e08a9791f5cafb34363e637979">More...</a><br /></td></tr>
 <tr class="separator:a2d9947e08a9791f5cafb34363e637979"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
@@ -133,31 +179,221 @@ Additional Inherited Members</h2></td></tr>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>Handled</b> = false</td></tr>
 <tr class="separator:a40822802ebedc36775ea7c734e491ff3 inherit pub_attribs_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html">TRAP::Events::MouseButtonEvent</a></td></tr>
-<tr class="memitem:a9b2145e2346d80a7a346c67de1d29727 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top"><a id="a9b2145e2346d80a7a346c67de1d29727"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>MouseButtonEvent</b> (Input::MouseButton button)</td></tr>
+<tr class="memitem:a9b2145e2346d80a7a346c67de1d29727 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html#a9b2145e2346d80a7a346c67de1d29727">MouseButtonEvent</a> (<a class="el" href="class_t_r_a_p_1_1_input.html#aa03b41ad11d04dd89343ead74658b2c4">Input::MouseButton</a> button)</td></tr>
+<tr class="memdesc:a9b2145e2346d80a7a346c67de1d29727 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html#a9b2145e2346d80a7a346c67de1d29727">More...</a><br /></td></tr>
 <tr class="separator:a9b2145e2346d80a7a346c67de1d29727 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_t_r_a_p_1_1_events_1_1_event')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">TRAP::Events::Event</a></td></tr>
-<tr class="memitem:a8284c5591ba8f0ea70e911832edcbe43 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top"><a id="a8284c5591ba8f0ea70e911832edcbe43"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Event</b> (const <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;)=default</td></tr>
+<tr class="memitem:af7c50ee319eca5987bc7de857f45806a inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html#af7c50ee319eca5987bc7de857f45806a">Event</a> ()=default</td></tr>
+<tr class="memdesc:af7c50ee319eca5987bc7de857f45806a inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Constructor.  <a href="class_t_r_a_p_1_1_events_1_1_event.html#af7c50ee319eca5987bc7de857f45806a">More...</a><br /></td></tr>
+<tr class="separator:af7c50ee319eca5987bc7de857f45806a inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8284c5591ba8f0ea70e911832edcbe43 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html#a8284c5591ba8f0ea70e911832edcbe43">Event</a> (const <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;)=default</td></tr>
+<tr class="memdesc:a8284c5591ba8f0ea70e911832edcbe43 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Copy Constructor.  <a href="class_t_r_a_p_1_1_events_1_1_event.html#a8284c5591ba8f0ea70e911832edcbe43">More...</a><br /></td></tr>
 <tr class="separator:a8284c5591ba8f0ea70e911832edcbe43 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a873f097c65dd5d39375dd8351a649835 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top"><a id="a873f097c65dd5d39375dd8351a649835"></a>
-<a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;)=default</td></tr>
+<tr class="memitem:a873f097c65dd5d39375dd8351a649835 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html#a873f097c65dd5d39375dd8351a649835">operator=</a> (const <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;)=default</td></tr>
+<tr class="memdesc:a873f097c65dd5d39375dd8351a649835 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Copy Assignment Operator.  <a href="class_t_r_a_p_1_1_events_1_1_event.html#a873f097c65dd5d39375dd8351a649835">More...</a><br /></td></tr>
 <tr class="separator:a873f097c65dd5d39375dd8351a649835 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2ac1bf9bf2f1a4a90892d040e33cae6 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top"><a id="ab2ac1bf9bf2f1a4a90892d040e33cae6"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Event</b> (<a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;&amp;)=default</td></tr>
+<tr class="memitem:ab2ac1bf9bf2f1a4a90892d040e33cae6 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html#ab2ac1bf9bf2f1a4a90892d040e33cae6">Event</a> (<a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;&amp;)=default</td></tr>
+<tr class="memdesc:ab2ac1bf9bf2f1a4a90892d040e33cae6 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Move Constructor.  <a href="class_t_r_a_p_1_1_events_1_1_event.html#ab2ac1bf9bf2f1a4a90892d040e33cae6">More...</a><br /></td></tr>
 <tr class="separator:ab2ac1bf9bf2f1a4a90892d040e33cae6 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9457f13995ce9600c22f079e1b6d2d62 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top"><a id="a9457f13995ce9600c22f079e1b6d2d62"></a>
-<a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;&amp;)=default</td></tr>
+<tr class="memitem:a9457f13995ce9600c22f079e1b6d2d62 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html#a9457f13995ce9600c22f079e1b6d2d62">operator=</a> (<a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a> &amp;&amp;)=default</td></tr>
+<tr class="memdesc:a9457f13995ce9600c22f079e1b6d2d62 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Move Assignment Operator.  <a href="class_t_r_a_p_1_1_events_1_1_event.html#a9457f13995ce9600c22f079e1b6d2d62">More...</a><br /></td></tr>
 <tr class="separator:a9457f13995ce9600c22f079e1b6d2d62 inherit pro_methods_class_t_r_a_p_1_1_events_1_1_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_static_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html">TRAP::Events::MouseButtonEvent</a></td></tr>
-<tr class="memitem:a01ed5b2ae9276ec6f2c025e53808e8d0 inherit pro_static_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top"><a id="a01ed5b2ae9276ec6f2c025e53808e8d0"></a>
-static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>MouseButtonToString</b> (Input::MouseButton button)</td></tr>
+<tr class="memitem:a01ed5b2ae9276ec6f2c025e53808e8d0 inherit pro_static_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html#a01ed5b2ae9276ec6f2c025e53808e8d0">MouseButtonToString</a> (<a class="el" href="class_t_r_a_p_1_1_input.html#aa03b41ad11d04dd89343ead74658b2c4">Input::MouseButton</a> button)</td></tr>
+<tr class="memdesc:a01ed5b2ae9276ec6f2c025e53808e8d0 inherit pro_static_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a mouse button to a string representation.  <a href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html#a01ed5b2ae9276ec6f2c025e53808e8d0">More...</a><br /></td></tr>
 <tr class="separator:a01ed5b2ae9276ec6f2c025e53808e8d0 inherit pro_static_methods_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_t_r_a_p_1_1_events_1_1_mouse_button_event')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_event.html">TRAP::Events::MouseButtonEvent</a></td></tr>
 <tr class="memitem:afd6448175c329584b9c4bada8ad977b3 inherit pro_attribs_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memItemLeft" align="right" valign="top"><a id="afd6448175c329584b9c4bada8ad977b3"></a>
-Input::MouseButton&#160;</td><td class="memItemRight" valign="bottom"><b>m_button</b></td></tr>
+<a class="el" href="class_t_r_a_p_1_1_input.html#aa03b41ad11d04dd89343ead74658b2c4">Input::MouseButton</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_button</b></td></tr>
 <tr class="separator:afd6448175c329584b9c4bada8ad977b3 inherit pro_attribs_class_t_r_a_p_1_1_events_1_1_mouse_button_event"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Mouse button released. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a94ce08cdd4fb8967a75a16c8c900e56a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94ce08cdd4fb8967a75a16c8c900e56a">&#9670;&nbsp;</a></span>MouseButtonReleaseEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TRAP::Events::MouseButtonReleaseEvent::MouseButtonReleaseEvent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_t_r_a_p_1_1_input.html#aa03b41ad11d04dd89343ead74658b2c4">Input::MouseButton</a>&#160;</td>
+          <td class="paramname"><em>button</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>title</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constructor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">button</td><td>Released mouse button.</td></tr>
+    <tr><td class="paramname">title</td><td>Title of the affected <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">Window</a>.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a75c3c897ef32fe87c7c58212db73eb23"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75c3c897ef32fe87c7c58212db73eb23">&#9670;&nbsp;</a></span>GetEventType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">EventType TRAP::Events::MouseButtonReleaseEvent::GetEventType </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Retrieve the EventType of the <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html" title="Event base class.">Event</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd>EventType.</dd></dl>
+
+<p>Implements <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html#ae860836e26e9b71a35a052fec09e0fc3">TRAP::Events::Event</a>.</p>
+
+</div>
+</div>
+<a id="af3770194c1c31042747179cbb5081c17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3770194c1c31042747179cbb5081c17">&#9670;&nbsp;</a></span>GetName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* TRAP::Events::MouseButtonReleaseEvent::GetName </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Retrieve the name of the <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html" title="Event base class.">Event</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd>Name.</dd></dl>
+
+<p>Implements <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html#a3e4f8764c6522b83a5c851db7350227c">TRAP::Events::Event</a>.</p>
+
+</div>
+</div>
+<a id="a2d9947e08a9791f5cafb34363e637979"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d9947e08a9791f5cafb34363e637979">&#9670;&nbsp;</a></span>GetStaticType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static EventType TRAP::Events::MouseButtonReleaseEvent::GetStaticType </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Retrieve the EventType of the <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html" title="Event base class.">Event</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd>EventType.</dd></dl>
+
+</div>
+</div>
+<a id="ad7046037bd2a9e17b49e97b458ef5d0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7046037bd2a9e17b49e97b458ef5d0f">&#9670;&nbsp;</a></span>GetTitle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string&amp; TRAP::Events::MouseButtonReleaseEvent::GetTitle </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieve the title of the affected <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">Window</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">Window</a> title.</dd></dl>
+
+</div>
+</div>
+<a id="af6a1e9ef0a69934437b698f9a194c67a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6a1e9ef0a69934437b698f9a194c67a">&#9670;&nbsp;</a></span>ToString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string TRAP::Events::MouseButtonReleaseEvent::ToString </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get a string representation of the <a class="el" href="class_t_r_a_p_1_1_events_1_1_mouse_button_release_event.html" title="Mouse button released.">MouseButtonReleaseEvent</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd>String representation.</dd></dl>
+
+<p>Reimplemented from <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html#ae1970bebfa85ea06620e21c1e40daa63">TRAP::Events::Event</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>TRAP/src/Events/<a class="el" href="_mouse_event_8h_source.html">MouseEvent.h</a></li>
 </ul>

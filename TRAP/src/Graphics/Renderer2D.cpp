@@ -97,7 +97,7 @@ void TRAP::Graphics::Renderer2D::Init()
 	s_data->DataUniformBuffer = UniformBuffer::Create("DataBuffer", &s_data->UniformData, sizeof(Renderer2DData::UniformData), BufferUsage::Dynamic);
 
 	ShaderManager::Load("Renderer2D", Embed::Renderer2DVS, Embed::Renderer2DFS);
-	const Scope<Image> whiteImage = Image::LoadFromMemory(1, 1, 32, Image::ColorFormat::RGBA, std::vector<uint8_t>{255, 255, 255, 255});
+	const Scope<Image> whiteImage = Image::LoadFromMemory(1, 1, Image::ColorFormat::RGBA, std::vector<uint8_t>{255, 255, 255, 255});
 	TextureManager::Load("Renderer2DWhite", whiteImage);
 	
 	TextureManager::Get2D("Fallback2D")->Bind(0);

@@ -9,15 +9,42 @@ namespace TRAP::INTERNAL
 	class BMPImage final : public Image
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="filepath">File path of the Image to load.</param>
 		explicit BMPImage(std::string filepath);
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
 		BMPImage(const BMPImage&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
 		BMPImage& operator=(const BMPImage&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
 		BMPImage(BMPImage&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
 		BMPImage& operator=(BMPImage&&) = default;
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
 		~BMPImage() = default;
 
+		/// <summary>
+		/// Retrieve the raw pixel data of the Image.
+		/// </summary>
+		/// <returns>Constant pointer to the raw pixel data.</returns>
 		const void* GetPixelData() const override;
-		uint32_t GetPixelDataSize() const override;
+		/// <summary>
+		/// Retrieve the size of the raw pixel data of the Image.
+		/// </summary>
+		/// <returns>Size of the raw pixel data in bytes.</returns>
+		uint64_t GetPixelDataSize() const override;
 
 	private:
 		typedef struct Bitfield
@@ -25,6 +52,7 @@ namespace TRAP::INTERNAL
 			uint32_t Start;
 			uint32_t Span;
 		} BitField;
+		
 		bool ValidateBitFields(std::array<BitField, 4>& bitFields, std::array<uint32_t, 4>& masks) const;
 		static bool ParseBitfield(BitField& field, uint32_t mask);
 		static uint8_t Make8Bits(uint32_t value, uint32_t bitSpan);

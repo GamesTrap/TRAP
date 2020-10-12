@@ -36,6 +36,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 namespace TRAP::Math
 {
+	/// <summary>
+	/// Struct for a 3-dimensional vector.
+	/// </summary>
 	template<typename T>
 	struct Vec<3, T>
 	{
@@ -103,7 +106,10 @@ namespace TRAP::Math
 		~Vec() = default;
 		constexpr Vec<3, T>& operator=(Vec&&) = default;
 
-		//Return the count of components of the vector
+		/// <summary>
+		/// Retrieve the count of components of the vector.
+		/// </summary>
+		/// <returns>Count of components.</returns>
 		static constexpr int Length();
 
 		//Comoponent accesses

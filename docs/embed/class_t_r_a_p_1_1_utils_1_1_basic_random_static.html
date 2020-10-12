@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::Utils::BasicRandomStatic&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt; Class Template Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -74,6 +112,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-static-methods">Static Protected Member Functions</a> &#124;
 <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static-members.html">List of all members</a>  </div>
@@ -81,134 +120,1561 @@ $(function() {
 <div class="title">TRAP::Utils::BasicRandomStatic&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Base template class for random with static API and static internal member storage.<br  />
+ <br  />
+ Note: It is NOT thread safe but more efficient then basic_random_thread_local.  
+ <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_random_8h_source.html">Random.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a5c61374ec70e5656a5c4c9f7ad308032"><td class="memItemLeft" align="right" valign="top"><a id="a5c61374ec70e5656a5c4c9f7ad308032"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>EngineType</b> = engine</td></tr>
+<tr class="memitem:a5c61374ec70e5656a5c4c9f7ad308032"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a5c61374ec70e5656a5c4c9f7ad308032">EngineType</a> = engine</td></tr>
+<tr class="memdesc:a5c61374ec70e5656a5c4c9f7ad308032"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of used random number engine.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a5c61374ec70e5656a5c4c9f7ad308032">More...</a><br /></td></tr>
 <tr class="separator:a5c61374ec70e5656a5c4c9f7ad308032"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abcfba5c06f14d50da165aa8713407b1e"><td class="memItemLeft" align="right" valign="top"><a id="abcfba5c06f14d50da165aa8713407b1e"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>SeederType</b> = Seeder</td></tr>
+<tr class="memitem:abcfba5c06f14d50da165aa8713407b1e"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#abcfba5c06f14d50da165aa8713407b1e">SeederType</a> = Seeder</td></tr>
+<tr class="memdesc:abcfba5c06f14d50da165aa8713407b1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of used random number seeder.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#abcfba5c06f14d50da165aa8713407b1e">More...</a><br /></td></tr>
 <tr class="separator:abcfba5c06f14d50da165aa8713407b1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8af8f086fa1a4c7d0a69f697e402655d"><td class="memTemplParams" colspan="2"><a id="a8af8f086fa1a4c7d0a69f697e402655d"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a8af8f086fa1a4c7d0a69f697e402655d"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>IntegerDistT</b> = IntegerDist&lt; T &gt;</td></tr>
+<tr class="memitem:a8af8f086fa1a4c7d0a69f697e402655d"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a8af8f086fa1a4c7d0a69f697e402655d"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a8af8f086fa1a4c7d0a69f697e402655d">IntegerDistT</a> = IntegerDist&lt; T &gt;</td></tr>
+<tr class="memdesc:a8af8f086fa1a4c7d0a69f697e402655d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of used integer distribution.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a8af8f086fa1a4c7d0a69f697e402655d">More...</a><br /></td></tr>
 <tr class="separator:a8af8f086fa1a4c7d0a69f697e402655d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88c7779a88c154a2670c81fbc05c07db"><td class="memTemplParams" colspan="2"><a id="a88c7779a88c154a2670c81fbc05c07db"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a88c7779a88c154a2670c81fbc05c07db"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>RealDistT</b> = RealDist&lt; T &gt;</td></tr>
+<tr class="memitem:a88c7779a88c154a2670c81fbc05c07db"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a88c7779a88c154a2670c81fbc05c07db"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a88c7779a88c154a2670c81fbc05c07db">RealDistT</a> = RealDist&lt; T &gt;</td></tr>
+<tr class="memdesc:a88c7779a88c154a2670c81fbc05c07db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of used real distribution.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a88c7779a88c154a2670c81fbc05c07db">More...</a><br /></td></tr>
 <tr class="separator:a88c7779a88c154a2670c81fbc05c07db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99c4d05b39e72b95beead4662240bab3"><td class="memItemLeft" align="right" valign="top"><a id="a99c4d05b39e72b95beead4662240bab3"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>BoolDistT</b> = BoolDist</td></tr>
+<tr class="memitem:a99c4d05b39e72b95beead4662240bab3"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a99c4d05b39e72b95beead4662240bab3">BoolDistT</a> = BoolDist</td></tr>
+<tr class="memdesc:a99c4d05b39e72b95beead4662240bab3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of used bool distribution.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a99c4d05b39e72b95beead4662240bab3">More...</a><br /></td></tr>
 <tr class="separator:a99c4d05b39e72b95beead4662240bab3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51f576660ef31a143e97415c42b2e3fd"><td class="memItemLeft" align="right" valign="top"><a id="a51f576660ef31a143e97415c42b2e3fd"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>Common</b> = <a class="el" href="struct_t_r_a_p_1_1_utils_1_1_i_n_t_e_r_n_a_l_1_1_common.html">INTERNAL::Common</a></td></tr>
+<tr class="memitem:a51f576660ef31a143e97415c42b2e3fd"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a51f576660ef31a143e97415c42b2e3fd">Common</a> = INTERNAL::Common</td></tr>
+<tr class="memdesc:a51f576660ef31a143e97415c42b2e3fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Key type for getting common type numbers or objects.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a51f576660ef31a143e97415c42b2e3fd">More...</a><br /></td></tr>
 <tr class="separator:a51f576660ef31a143e97415c42b2e3fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a0f536f07a2395e3fa1f27238ba9fd3c6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a0f536f07a2395e3fa1f27238ba9fd3c6">BasicRandomStatic</a> ()=delete</td></tr>
+<tr class="memdesc:a0f536f07a2395e3fa1f27238ba9fd3c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Constructor.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a0f536f07a2395e3fa1f27238ba9fd3c6">More...</a><br /></td></tr>
+<tr class="separator:a0f536f07a2395e3fa1f27238ba9fd3c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6bad0212e34e415645ccf6fd1a369cec"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a6bad0212e34e415645ccf6fd1a369cec">~BasicRandomStatic</a> ()=delete</td></tr>
+<tr class="memdesc:a6bad0212e34e415645ccf6fd1a369cec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Destructor.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a6bad0212e34e415645ccf6fd1a369cec">More...</a><br /></td></tr>
+<tr class="separator:a6bad0212e34e415645ccf6fd1a369cec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a522d98fe54c1403afa35b8de0fd452b4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a522d98fe54c1403afa35b8de0fd452b4">BasicRandomStatic</a> (const <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a> &amp;)=delete</td></tr>
+<tr class="memdesc:a522d98fe54c1403afa35b8de0fd452b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Copy Constructor.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a522d98fe54c1403afa35b8de0fd452b4">More...</a><br /></td></tr>
+<tr class="separator:a522d98fe54c1403afa35b8de0fd452b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8306f7005b2636ca61346bae67631f16"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a8306f7005b2636ca61346bae67631f16">operator=</a> (const <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a> &amp;)=delete</td></tr>
+<tr class="memdesc:a8306f7005b2636ca61346bae67631f16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Copy Assignment Operator.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a8306f7005b2636ca61346bae67631f16">More...</a><br /></td></tr>
+<tr class="separator:a8306f7005b2636ca61346bae67631f16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8062dbb910382fe1c457fd591da82ea"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#aa8062dbb910382fe1c457fd591da82ea">BasicRandomStatic</a> (<a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a> &amp;&amp;)=delete</td></tr>
+<tr class="memdesc:aa8062dbb910382fe1c457fd591da82ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Move Constructor.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#aa8062dbb910382fe1c457fd591da82ea">More...</a><br /></td></tr>
+<tr class="separator:aa8062dbb910382fe1c457fd591da82ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa85dea8af8314e9482c86160bc65133"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#afa85dea8af8314e9482c86160bc65133">operator=</a> (<a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a> &amp;&amp;)=delete</td></tr>
+<tr class="memdesc:afa85dea8af8314e9482c86160bc65133"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Move Assignment Operator.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#afa85dea8af8314e9482c86160bc65133">More...</a><br /></td></tr>
+<tr class="separator:afa85dea8af8314e9482c86160bc65133"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a3a42b38ae3702f5bad3dd63b17b908bf"><td class="memItemLeft" align="right" valign="top"><a id="a3a42b38ae3702f5bad3dd63b17b908bf"></a>
-static constexpr engine::result_type&#160;</td><td class="memItemRight" valign="bottom"><b>Min</b> ()</td></tr>
+<tr class="memitem:a3a42b38ae3702f5bad3dd63b17b908bf"><td class="memItemLeft" align="right" valign="top">static constexpr engine::result_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a3a42b38ae3702f5bad3dd63b17b908bf">Min</a> ()</td></tr>
+<tr class="memdesc:a3a42b38ae3702f5bad3dd63b17b908bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the minimum value potentially generated by the random-number engine.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a3a42b38ae3702f5bad3dd63b17b908bf">More...</a><br /></td></tr>
 <tr class="separator:a3a42b38ae3702f5bad3dd63b17b908bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb1b7a78946c3ea582879cf4f5d74766"><td class="memItemLeft" align="right" valign="top"><a id="abb1b7a78946c3ea582879cf4f5d74766"></a>
-static constexpr engine::result_type&#160;</td><td class="memItemRight" valign="bottom"><b>Max</b> ()</td></tr>
+<tr class="memitem:abb1b7a78946c3ea582879cf4f5d74766"><td class="memItemLeft" align="right" valign="top">static constexpr engine::result_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#abb1b7a78946c3ea582879cf4f5d74766">Max</a> ()</td></tr>
+<tr class="memdesc:abb1b7a78946c3ea582879cf4f5d74766"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the maximum value potentially generated by the random-number engine.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#abb1b7a78946c3ea582879cf4f5d74766">More...</a><br /></td></tr>
 <tr class="separator:abb1b7a78946c3ea582879cf4f5d74766"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae70db39600a086f47ba2f287091a52c"><td class="memItemLeft" align="right" valign="top"><a id="aae70db39600a086f47ba2f287091a52c"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>Discard</b> (const unsigned long long z)</td></tr>
-<tr class="separator:aae70db39600a086f47ba2f287091a52c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d334b5ada8588f47276f946ffc715ba"><td class="memItemLeft" align="right" valign="top"><a id="a3d334b5ada8588f47276f946ffc715ba"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>Reseed</b> ()</td></tr>
+<tr class="memitem:a4b616e7cb35c6415a5cae6cfe091ecf7"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a4b616e7cb35c6415a5cae6cfe091ecf7">Discard</a> (const uint64_t z)</td></tr>
+<tr class="memdesc:a4b616e7cb35c6415a5cae6cfe091ecf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Advances the internal state by z times.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a4b616e7cb35c6415a5cae6cfe091ecf7">More...</a><br /></td></tr>
+<tr class="separator:a4b616e7cb35c6415a5cae6cfe091ecf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d334b5ada8588f47276f946ffc715ba"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a3d334b5ada8588f47276f946ffc715ba">Reseed</a> ()</td></tr>
+<tr class="memdesc:a3d334b5ada8588f47276f946ffc715ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reseed by Seeder.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a3d334b5ada8588f47276f946ffc715ba">More...</a><br /></td></tr>
 <tr class="separator:a3d334b5ada8588f47276f946ffc715ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f829a25629609178c8c03d23ce8bde6"><td class="memItemLeft" align="right" valign="top"><a id="a9f829a25629609178c8c03d23ce8bde6"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>Seed</b> (const typename engine::result_type value=engine::default_seed)</td></tr>
+<tr class="memitem:a9f829a25629609178c8c03d23ce8bde6"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a9f829a25629609178c8c03d23ce8bde6">Seed</a> (const typename engine::result_type value=engine::default_seed)</td></tr>
+<tr class="memdesc:a9f829a25629609178c8c03d23ce8bde6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Re-Initializes the internal state of the random-number engine using new seed value.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a9f829a25629609178c8c03d23ce8bde6">More...</a><br /></td></tr>
 <tr class="separator:a9f829a25629609178c8c03d23ce8bde6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46b1e7dd9efb0c7dcd56f17006d55ff0"><td class="memTemplParams" colspan="2"><a id="a46b1e7dd9efb0c7dcd56f17006d55ff0"></a>
-template&lt;typename SSeq &gt; </td></tr>
-<tr class="memitem:a46b1e7dd9efb0c7dcd56f17006d55ff0"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Seed</b> (SSeq &amp;seq)</td></tr>
+<tr class="memitem:a46b1e7dd9efb0c7dcd56f17006d55ff0"><td class="memTemplParams" colspan="2">template&lt;typename SSeq &gt; </td></tr>
+<tr class="memitem:a46b1e7dd9efb0c7dcd56f17006d55ff0"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a46b1e7dd9efb0c7dcd56f17006d55ff0">Seed</a> (SSeq &amp;seq)</td></tr>
+<tr class="memdesc:a46b1e7dd9efb0c7dcd56f17006d55ff0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Re-Initializes the internal state of the random-number engine using new seed value.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a46b1e7dd9efb0c7dcd56f17006d55ff0">More...</a><br /></td></tr>
 <tr class="separator:a46b1e7dd9efb0c7dcd56f17006d55ff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a068ffaaa0a9e4fcb156a72fe3629fd43"><td class="memItemLeft" align="right" valign="top"><a id="a068ffaaa0a9e4fcb156a72fe3629fd43"></a>
-static engine::result_type&#160;</td><td class="memItemRight" valign="bottom"><b>Get</b> ()</td></tr>
+<tr class="memitem:a068ffaaa0a9e4fcb156a72fe3629fd43"><td class="memItemLeft" align="right" valign="top">static engine::result_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a068ffaaa0a9e4fcb156a72fe3629fd43">Get</a> ()</td></tr>
+<tr class="memdesc:a068ffaaa0a9e4fcb156a72fe3629fd43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a random number from engine in [<a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a3a42b38ae3702f5bad3dd63b17b908bf" title="Retrieve the minimum value potentially generated by the random-number engine.">Min()</a>, <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#abb1b7a78946c3ea582879cf4f5d74766" title="Retrieve the maximum value potentially generated by the random-number engine.">Max()</a>] range.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a068ffaaa0a9e4fcb156a72fe3629fd43">More...</a><br /></td></tr>
 <tr class="separator:a068ffaaa0a9e4fcb156a72fe3629fd43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abcc01259d75db5f2b85d98ff23651603"><td class="memItemLeft" align="right" valign="top"><a id="abcc01259d75db5f2b85d98ff23651603"></a>
-static bool&#160;</td><td class="memItemRight" valign="bottom"><b>IsEqual</b> (const engine &amp;other)</td></tr>
+<tr class="memitem:abcc01259d75db5f2b85d98ff23651603"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#abcc01259d75db5f2b85d98ff23651603">IsEqual</a> (const engine &amp;other)</td></tr>
+<tr class="memdesc:abcc01259d75db5f2b85d98ff23651603"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares internal pseudo-random number engine with 'other' pseudo-random number engine.<br  />
+ Two engines are equal, if their internal states are equivalent, that is, if they would generate equivalent values for any number of calls of operator().  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#abcc01259d75db5f2b85d98ff23651603">More...</a><br /></td></tr>
 <tr class="separator:abcc01259d75db5f2b85d98ff23651603"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a90cb92a7b34ea38f5eff8135681b4d24"><td class="memTemplParams" colspan="2"><a id="a90cb92a7b34ea38f5eff8135681b4d24"></a>
-template&lt;typename CharT , typename Traits &gt; </td></tr>
-<tr class="memitem:a90cb92a7b34ea38f5eff8135681b4d24"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Serialize</b> (std::basic_ostream&lt; CharT, Traits &gt; &amp;ost)</td></tr>
+<tr class="memitem:a90cb92a7b34ea38f5eff8135681b4d24"><td class="memTemplParams" colspan="2">template&lt;typename CharT , typename Traits &gt; </td></tr>
+<tr class="memitem:a90cb92a7b34ea38f5eff8135681b4d24"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a90cb92a7b34ea38f5eff8135681b4d24">Serialize</a> (std::basic_ostream&lt; CharT, Traits &gt; &amp;ost)</td></tr>
+<tr class="memdesc:a90cb92a7b34ea38f5eff8135681b4d24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes the internal state of the internal pseudo-random number engine as a sequence of decimal numbers separated by one or more spaces, and inserts it to the stream ost.<br  />
+ The fill character and the formatting flags of the stream are ignored and unaffected.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a90cb92a7b34ea38f5eff8135681b4d24">More...</a><br /></td></tr>
 <tr class="separator:a90cb92a7b34ea38f5eff8135681b4d24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13a4137eb7da83c1b68d98c69dd5dec6"><td class="memTemplParams" colspan="2"><a id="a13a4137eb7da83c1b68d98c69dd5dec6"></a>
-template&lt;typename CharT , typename Traits &gt; </td></tr>
-<tr class="memitem:a13a4137eb7da83c1b68d98c69dd5dec6"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Deserialize</b> (std::basic_istream&lt; CharT, Traits &gt; &amp;ist)</td></tr>
+<tr class="memitem:a13a4137eb7da83c1b68d98c69dd5dec6"><td class="memTemplParams" colspan="2">template&lt;typename CharT , typename Traits &gt; </td></tr>
+<tr class="memitem:a13a4137eb7da83c1b68d98c69dd5dec6"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a13a4137eb7da83c1b68d98c69dd5dec6">Deserialize</a> (std::basic_istream&lt; CharT, Traits &gt; &amp;ist)</td></tr>
+<tr class="memdesc:a13a4137eb7da83c1b68d98c69dd5dec6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restores the internal state of the internal pseudo-random number engine from the serialized representation, which was created by an earlier call to 'Serialize' using a stream with the same imbued locale and the same CharT and Traits.<br  />
+ If the input cannot be deserialized, internal engine is left unchanged and fail-Bit is raised on ist.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a13a4137eb7da83c1b68d98c69dd5dec6">More...</a><br /></td></tr>
 <tr class="separator:a13a4137eb7da83c1b68d98c69dd5dec6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4301bc3f90768b982f48b1e2893de43c"><td class="memTemplParams" colspan="2"><a id="a4301bc3f90768b982f48b1e2893de43c"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a4301bc3f90768b982f48b1e2893de43c"><td class="memTemplItemLeft" align="right" valign="top">static std::enable_if&lt; <a class="el" href="struct_t_r_a_p_1_1_utils_1_1_i_n_t_e_r_n_a_l_1_1_is_uniform_int.html">INTERNAL::IsUniformInt</a>&lt; T &gt;::value, T &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Get</b> (T from=std::numeric_limits&lt; T &gt;::min(), T to=std::numeric_limits&lt; T &gt;::max())</td></tr>
+<tr class="memitem:a4301bc3f90768b982f48b1e2893de43c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a4301bc3f90768b982f48b1e2893de43c"><td class="memTemplItemLeft" align="right" valign="top">static std::enable_if&lt; INTERNAL::IsUniformInt&lt; T &gt;::value, T &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a4301bc3f90768b982f48b1e2893de43c">Get</a> (T from=std::numeric_limits&lt; T &gt;::min(), T to=std::numeric_limits&lt; T &gt;::max())</td></tr>
+<tr class="memdesc:a4301bc3f90768b982f48b1e2893de43c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a random integer number in a [from; to] range by std::uniform_int_distribution.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a4301bc3f90768b982f48b1e2893de43c">More...</a><br /></td></tr>
 <tr class="separator:a4301bc3f90768b982f48b1e2893de43c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6bb5b71834099c85ba23cca44fd12659"><td class="memTemplParams" colspan="2"><a id="a6bb5b71834099c85ba23cca44fd12659"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a6bb5b71834099c85ba23cca44fd12659"><td class="memTemplItemLeft" align="right" valign="top">static std::enable_if&lt; <a class="el" href="struct_t_r_a_p_1_1_utils_1_1_i_n_t_e_r_n_a_l_1_1_is_uniform_real.html">INTERNAL::IsUniformReal</a>&lt; T &gt;::value, T &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Get</b> (T from=std::numeric_limits&lt; T &gt;::min(), T to=std::numeric_limits&lt; T &gt;::max())</td></tr>
+<tr class="memitem:a6bb5b71834099c85ba23cca44fd12659"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a6bb5b71834099c85ba23cca44fd12659"><td class="memTemplItemLeft" align="right" valign="top">static std::enable_if&lt; INTERNAL::IsUniformReal&lt; T &gt;::value, T &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a6bb5b71834099c85ba23cca44fd12659">Get</a> (T from=std::numeric_limits&lt; T &gt;::min(), T to=std::numeric_limits&lt; T &gt;::max())</td></tr>
+<tr class="memdesc:a6bb5b71834099c85ba23cca44fd12659"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a random real number in a [from; to] range by std::uniform_real_distribution.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a6bb5b71834099c85ba23cca44fd12659">More...</a><br /></td></tr>
 <tr class="separator:a6bb5b71834099c85ba23cca44fd12659"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acab9e033b389ad9cfe008164b470e883"><td class="memTemplParams" colspan="2"><a id="acab9e033b389ad9cfe008164b470e883"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:acab9e033b389ad9cfe008164b470e883"><td class="memTemplItemLeft" align="right" valign="top">static std::enable_if&lt; <a class="el" href="struct_t_r_a_p_1_1_utils_1_1_i_n_t_e_r_n_a_l_1_1_is_byte.html">INTERNAL::IsByte</a>&lt; T &gt;::value, T &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Get</b> (T from=std::numeric_limits&lt; T &gt;::min(), T to=std::numeric_limits&lt; T &gt;::max())</td></tr>
+<tr class="memitem:acab9e033b389ad9cfe008164b470e883"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:acab9e033b389ad9cfe008164b470e883"><td class="memTemplItemLeft" align="right" valign="top">static std::enable_if&lt; INTERNAL::IsByte&lt; T &gt;::value, T &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#acab9e033b389ad9cfe008164b470e883">Get</a> (T from=std::numeric_limits&lt; T &gt;::min(), T to=std::numeric_limits&lt; T &gt;::max())</td></tr>
+<tr class="memdesc:acab9e033b389ad9cfe008164b470e883"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a random byte number in a [from; to] range.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#acab9e033b389ad9cfe008164b470e883">More...</a><br /></td></tr>
 <tr class="separator:acab9e033b389ad9cfe008164b470e883"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7fa1f3baf488191e1b61ac62c70096d"><td class="memTemplParams" colspan="2"><a id="ae7fa1f3baf488191e1b61ac62c70096d"></a>
-template&lt;typename Key , typename A , typename B , typename C  = typename std::common_type&lt;A, B&gt;::type&gt; </td></tr>
-<tr class="memitem:ae7fa1f3baf488191e1b61ac62c70096d"><td class="memTemplItemLeft" align="right" valign="top">static std::enable_if&lt; std::is_same&lt; Key, <a class="el" href="struct_t_r_a_p_1_1_utils_1_1_i_n_t_e_r_n_a_l_1_1_common.html">Common</a> &gt;::value &amp;&amp;<a class="el" href="struct_t_r_a_p_1_1_utils_1_1_i_n_t_e_r_n_a_l_1_1_is_supported_number.html">INTERNAL::IsSupportedNumber</a>&lt; A &gt;::value &amp;&amp;<a class="el" href="struct_t_r_a_p_1_1_utils_1_1_i_n_t_e_r_n_a_l_1_1_is_supported_number.html">INTERNAL::IsSupportedNumber</a>&lt; B &gt;::value &amp;&amp;std::is_signed&lt; A &gt;::value !=std::is_unsigned&lt; B &gt;::value, C &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Get</b> (A from=std::numeric_limits&lt; A &gt;::min(), B to=std::numeric_limits&lt; B &gt;::max())</td></tr>
+<tr class="memitem:ae7fa1f3baf488191e1b61ac62c70096d"><td class="memTemplParams" colspan="2">template&lt;typename Key , typename A , typename B , typename C  = typename std::common_type&lt;A, B&gt;::type&gt; </td></tr>
+<tr class="memitem:ae7fa1f3baf488191e1b61ac62c70096d"><td class="memTemplItemLeft" align="right" valign="top">static std::enable_if&lt; std::is_same&lt; Key, <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a51f576660ef31a143e97415c42b2e3fd">Common</a> &gt;::value &amp;&amp;INTERNAL::IsSupportedNumber&lt; A &gt;::value &amp;&amp;INTERNAL::IsSupportedNumber&lt; B &gt;::value &amp;&amp;std::is_signed&lt; A &gt;::value !=std::is_unsigned&lt; B &gt;::value, C &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#ae7fa1f3baf488191e1b61ac62c70096d">Get</a> (A from=std::numeric_limits&lt; A &gt;::min(), B to=std::numeric_limits&lt; B &gt;::max())</td></tr>
+<tr class="memdesc:ae7fa1f3baf488191e1b61ac62c70096d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a random common_type number in a [from; to] range.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#ae7fa1f3baf488191e1b61ac62c70096d">More...</a><br /></td></tr>
 <tr class="separator:ae7fa1f3baf488191e1b61ac62c70096d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae48fbc81631b6ecf705d32502779a8ee"><td class="memTemplParams" colspan="2"><a id="ae48fbc81631b6ecf705d32502779a8ee"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ae48fbc81631b6ecf705d32502779a8ee"><td class="memTemplItemLeft" align="right" valign="top">static std::enable_if&lt; <a class="el" href="struct_t_r_a_p_1_1_utils_1_1_i_n_t_e_r_n_a_l_1_1_is_supported_character.html">INTERNAL::IsSupportedCharacter</a>&lt; T &gt;::value, T &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Get</b> (T from=std::numeric_limits&lt; T &gt;::min(), T to=std::numeric_limits&lt; T &gt;::max())</td></tr>
+<tr class="memitem:ae48fbc81631b6ecf705d32502779a8ee"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ae48fbc81631b6ecf705d32502779a8ee"><td class="memTemplItemLeft" align="right" valign="top">static std::enable_if&lt; INTERNAL::IsSupportedCharacter&lt; T &gt;::value, T &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#ae48fbc81631b6ecf705d32502779a8ee">Get</a> (T from=std::numeric_limits&lt; T &gt;::min(), T to=std::numeric_limits&lt; T &gt;::max())</td></tr>
+<tr class="memdesc:ae48fbc81631b6ecf705d32502779a8ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a random character in a [from; to] range by std::uniform_int_distribution.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#ae48fbc81631b6ecf705d32502779a8ee">More...</a><br /></td></tr>
 <tr class="separator:ae48fbc81631b6ecf705d32502779a8ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e169be9866a8e8db9125b1dd6adc656"><td class="memTemplParams" colspan="2"><a id="a5e169be9866a8e8db9125b1dd6adc656"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a5e169be9866a8e8db9125b1dd6adc656"><td class="memTemplItemLeft" align="right" valign="top">static std::enable_if&lt; std::is_same&lt; T, bool &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Get</b> (const double probability=0.5)</td></tr>
+<tr class="memitem:a5e169be9866a8e8db9125b1dd6adc656"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a5e169be9866a8e8db9125b1dd6adc656"><td class="memTemplItemLeft" align="right" valign="top">static std::enable_if&lt; std::is_same&lt; T, bool &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a5e169be9866a8e8db9125b1dd6adc656">Get</a> (const double probability=0.5)</td></tr>
+<tr class="memdesc:a5e169be9866a8e8db9125b1dd6adc656"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a bool value with specific probability by std::bernoulli_distribution.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a5e169be9866a8e8db9125b1dd6adc656">More...</a><br /></td></tr>
 <tr class="separator:a5e169be9866a8e8db9125b1dd6adc656"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace0a2cd7f029120d1df950d443d006da"><td class="memTemplParams" colspan="2"><a id="ace0a2cd7f029120d1df950d443d006da"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ace0a2cd7f029120d1df950d443d006da"><td class="memTemplItemLeft" align="right" valign="top">static T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Get</b> (std::initializer_list&lt; T &gt; init_list)</td></tr>
+<tr class="memitem:ace0a2cd7f029120d1df950d443d006da"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ace0a2cd7f029120d1df950d443d006da"><td class="memTemplItemLeft" align="right" valign="top">static T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#ace0a2cd7f029120d1df950d443d006da">Get</a> (std::initializer_list&lt; T &gt; init_list)</td></tr>
+<tr class="memdesc:ace0a2cd7f029120d1df950d443d006da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get random value from initializer_list.<br  />
+ Should be 1 or more elements in initializer_list.<br  />
+ Note: Elements in initializer_list can't be moved!  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#ace0a2cd7f029120d1df950d443d006da">More...</a><br /></td></tr>
 <tr class="separator:ace0a2cd7f029120d1df950d443d006da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae34d8501954046ea2521283b7aee8415"><td class="memTemplParams" colspan="2"><a id="ae34d8501954046ea2521283b7aee8415"></a>
-template&lt;typename InputIt &gt; </td></tr>
-<tr class="memitem:ae34d8501954046ea2521283b7aee8415"><td class="memTemplItemLeft" align="right" valign="top">static std::enable_if&lt; <a class="el" href="struct_t_r_a_p_1_1_utils_1_1_i_n_t_e_r_n_a_l_1_1_is_iterator.html">INTERNAL::IsIterator</a>&lt; InputIt &gt;::value, InputIt &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Get</b> (InputIt first, InputIt last)</td></tr>
+<tr class="memitem:ae34d8501954046ea2521283b7aee8415"><td class="memTemplParams" colspan="2">template&lt;typename InputIt &gt; </td></tr>
+<tr class="memitem:ae34d8501954046ea2521283b7aee8415"><td class="memTemplItemLeft" align="right" valign="top">static std::enable_if&lt; INTERNAL::IsIterator&lt; InputIt &gt;::value, InputIt &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#ae34d8501954046ea2521283b7aee8415">Get</a> (InputIt first, InputIt last)</td></tr>
+<tr class="memdesc:ae34d8501954046ea2521283b7aee8415"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get random iterator from iterator range.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#ae34d8501954046ea2521283b7aee8415">More...</a><br /></td></tr>
 <tr class="separator:ae34d8501954046ea2521283b7aee8415"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c2c2d28b0da7dfd316bc5166aec2ed8"><td class="memTemplParams" colspan="2"><a id="a5c2c2d28b0da7dfd316bc5166aec2ed8"></a>
-template&lt;typename Container &gt; </td></tr>
-<tr class="memitem:a5c2c2d28b0da7dfd316bc5166aec2ed8"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Get</b> (Container &amp;container) -&gt; typename std::enable_if&lt; <a class="el" href="struct_t_r_a_p_1_1_utils_1_1_i_n_t_e_r_n_a_l_1_1_is_iterator.html">INTERNAL::IsIterator</a>&lt; decltype(std::begin(container))&gt;::value, decltype(std::begin(container)) &gt;::type</td></tr>
+<tr class="memitem:a5c2c2d28b0da7dfd316bc5166aec2ed8"><td class="memTemplParams" colspan="2">template&lt;typename Container &gt; </td></tr>
+<tr class="memitem:a5c2c2d28b0da7dfd316bc5166aec2ed8"><td class="memTemplItemLeft" align="right" valign="top">static auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a5c2c2d28b0da7dfd316bc5166aec2ed8">Get</a> (Container &amp;container) -&gt; typename std::enable_if&lt; INTERNAL::IsIterator&lt; decltype(std::begin(container))&gt;::value, decltype(std::begin(container)) &gt;::type</td></tr>
+<tr class="memdesc:a5c2c2d28b0da7dfd316bc5166aec2ed8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get random iterator from Container.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a5c2c2d28b0da7dfd316bc5166aec2ed8">More...</a><br /></td></tr>
 <tr class="separator:a5c2c2d28b0da7dfd316bc5166aec2ed8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51fda6098ef1dbb9323085a968b79749"><td class="memTemplParams" colspan="2"><a id="a51fda6098ef1dbb9323085a968b79749"></a>
-template&lt;typename T , std::size_t N&gt; </td></tr>
-<tr class="memitem:a51fda6098ef1dbb9323085a968b79749"><td class="memTemplItemLeft" align="right" valign="top">static T *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Get</b> (T(&amp;array)[N])</td></tr>
+<tr class="memitem:a51fda6098ef1dbb9323085a968b79749"><td class="memTemplParams" colspan="2">template&lt;typename T , std::size_t N&gt; </td></tr>
+<tr class="memitem:a51fda6098ef1dbb9323085a968b79749"><td class="memTemplItemLeft" align="right" valign="top">static T *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a51fda6098ef1dbb9323085a968b79749">Get</a> (T(&amp;array)[N])</td></tr>
+<tr class="memdesc:a51fda6098ef1dbb9323085a968b79749"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get random pointer from built-in array.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a51fda6098ef1dbb9323085a968b79749">More...</a><br /></td></tr>
 <tr class="separator:a51fda6098ef1dbb9323085a968b79749"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb53647af539f7221cc04b5d33e0e544"><td class="memTemplParams" colspan="2"><a id="acb53647af539f7221cc04b5d33e0e544"></a>
-template&lt;typename Dist , typename... Args&gt; </td></tr>
-<tr class="memitem:acb53647af539f7221cc04b5d33e0e544"><td class="memTemplItemLeft" align="right" valign="top">static Dist::result_type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Get</b> (Args &amp;&amp;... args)</td></tr>
+<tr class="memitem:acb53647af539f7221cc04b5d33e0e544"><td class="memTemplParams" colspan="2">template&lt;typename Dist , typename... Args&gt; </td></tr>
+<tr class="memitem:acb53647af539f7221cc04b5d33e0e544"><td class="memTemplItemLeft" align="right" valign="top">static Dist::result_type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#acb53647af539f7221cc04b5d33e0e544">Get</a> (Args &amp;&amp;... args)</td></tr>
+<tr class="memdesc:acb53647af539f7221cc04b5d33e0e544"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get value from custom Dist distribution seeded by internal random engine.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#acb53647af539f7221cc04b5d33e0e544">More...</a><br /></td></tr>
 <tr class="separator:acb53647af539f7221cc04b5d33e0e544"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3892b79fd308ec25ff70fa4a8fea808"><td class="memTemplParams" colspan="2"><a id="aa3892b79fd308ec25ff70fa4a8fea808"></a>
-template&lt;typename Dist &gt; </td></tr>
-<tr class="memitem:aa3892b79fd308ec25ff70fa4a8fea808"><td class="memTemplItemLeft" align="right" valign="top">static Dist::result_type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Get</b> (Dist &amp;dist)</td></tr>
+<tr class="memitem:aa3892b79fd308ec25ff70fa4a8fea808"><td class="memTemplParams" colspan="2">template&lt;typename Dist &gt; </td></tr>
+<tr class="memitem:aa3892b79fd308ec25ff70fa4a8fea808"><td class="memTemplItemLeft" align="right" valign="top">static Dist::result_type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#aa3892b79fd308ec25ff70fa4a8fea808">Get</a> (Dist &amp;dist)</td></tr>
+<tr class="memdesc:aa3892b79fd308ec25ff70fa4a8fea808"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get value from custom 'dist' distribution seeded by internal random engine.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#aa3892b79fd308ec25ff70fa4a8fea808">More...</a><br /></td></tr>
 <tr class="separator:aa3892b79fd308ec25ff70fa4a8fea808"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30ecee1dcf30d62e37d5309dd80ca0b8"><td class="memTemplParams" colspan="2"><a id="a30ecee1dcf30d62e37d5309dd80ca0b8"></a>
-template&lt;typename RandomIt &gt; </td></tr>
-<tr class="memitem:a30ecee1dcf30d62e37d5309dd80ca0b8"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Shuffle</b> (RandomIt first, RandomIt last)</td></tr>
+<tr class="memitem:a30ecee1dcf30d62e37d5309dd80ca0b8"><td class="memTemplParams" colspan="2">template&lt;typename RandomIt &gt; </td></tr>
+<tr class="memitem:a30ecee1dcf30d62e37d5309dd80ca0b8"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a30ecee1dcf30d62e37d5309dd80ca0b8">Shuffle</a> (RandomIt first, RandomIt last)</td></tr>
+<tr class="memdesc:a30ecee1dcf30d62e37d5309dd80ca0b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reorders the elements in the given range [first, last) such that each possible permutation of those elements has equal probability of appearance.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a30ecee1dcf30d62e37d5309dd80ca0b8">More...</a><br /></td></tr>
 <tr class="separator:a30ecee1dcf30d62e37d5309dd80ca0b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6a90b7db11cb65d74e7c1aa78ef17e0"><td class="memTemplParams" colspan="2"><a id="af6a90b7db11cb65d74e7c1aa78ef17e0"></a>
-template&lt;typename Container &gt; </td></tr>
-<tr class="memitem:af6a90b7db11cb65d74e7c1aa78ef17e0"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Shuffle</b> (Container &amp;container)</td></tr>
+<tr class="memitem:af6a90b7db11cb65d74e7c1aa78ef17e0"><td class="memTemplParams" colspan="2">template&lt;typename Container &gt; </td></tr>
+<tr class="memitem:af6a90b7db11cb65d74e7c1aa78ef17e0"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#af6a90b7db11cb65d74e7c1aa78ef17e0">Shuffle</a> (Container &amp;container)</td></tr>
+<tr class="memdesc:af6a90b7db11cb65d74e7c1aa78ef17e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reorders the elements in the given container such that each possible permutation of those elements has equal probability of appearance.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#af6a90b7db11cb65d74e7c1aa78ef17e0">More...</a><br /></td></tr>
 <tr class="separator:af6a90b7db11cb65d74e7c1aa78ef17e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9369909e9fc55152bf3e149a35a003e"><td class="memItemLeft" align="right" valign="top"><a id="af9369909e9fc55152bf3e149a35a003e"></a>
-static engine&#160;</td><td class="memItemRight" valign="bottom"><b>GetEngine</b> ()</td></tr>
+<tr class="memitem:af9369909e9fc55152bf3e149a35a003e"><td class="memItemLeft" align="right" valign="top">static engine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#af9369909e9fc55152bf3e149a35a003e">GetEngine</a> ()</td></tr>
+<tr class="memdesc:af9369909e9fc55152bf3e149a35a003e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get internal engine by copy.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#af9369909e9fc55152bf3e149a35a003e">More...</a><br /></td></tr>
 <tr class="separator:af9369909e9fc55152bf3e149a35a003e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a16a1cee3a960a11a2cd9795ca54385be"><td class="memItemLeft" align="right" valign="top"><a id="a16a1cee3a960a11a2cd9795ca54385be"></a>
-static engine &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Engine</b> ()</td></tr>
+<tr class="memitem:a16a1cee3a960a11a2cd9795ca54385be"><td class="memItemLeft" align="right" valign="top">static engine &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a16a1cee3a960a11a2cd9795ca54385be">Engine</a> ()</td></tr>
+<tr class="memdesc:a16a1cee3a960a11a2cd9795ca54385be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get internal engine by reference,  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a16a1cee3a960a11a2cd9795ca54385be">More...</a><br /></td></tr>
 <tr class="separator:a16a1cee3a960a11a2cd9795ca54385be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-static-methods"></a>
 Static Protected Member Functions</h2></td></tr>
-<tr class="memitem:ae9b6e72b3ce2228ab069c142f52471fa"><td class="memItemLeft" align="right" valign="top"><a id="ae9b6e72b3ce2228ab069c142f52471fa"></a>
-static engine &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>EngineInstance</b> ()</td></tr>
+<tr class="memitem:ae9b6e72b3ce2228ab069c142f52471fa"><td class="memItemLeft" align="right" valign="top">static engine &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#ae9b6e72b3ce2228ab069c142f52471fa">EngineInstance</a> ()</td></tr>
+<tr class="memdesc:ae9b6e72b3ce2228ab069c142f52471fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get reference to the static engine instance.  <a href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#ae9b6e72b3ce2228ab069c142f52471fa">More...</a><br /></td></tr>
 <tr class="separator:ae9b6e72b3ce2228ab069c142f52471fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename engine, typename Seeder = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist = std::bernoulli_distribution&gt;<br />
+class TRAP::Utils::BasicRandomStatic&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;</h3>
+
+<p>Base template class for random with static API and static internal member storage.<br  />
+ <br  />
+ Note: It is NOT thread safe but more efficient then basic_random_thread_local. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">engine</td><td>A random engine with interface like in the std::mt19937.</td></tr>
+    <tr><td class="paramname">Seeder</td><td>A seeder type which return seed for internal engine through operator().</td></tr>
+  </table>
+  </dd>
+</dl>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a99c4d05b39e72b95beead4662240bab3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99c4d05b39e72b95beead4662240bab3">&#9670;&nbsp;</a></span>BoolDistT</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::<a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a99c4d05b39e72b95beead4662240bab3">BoolDistT</a> =  BoolDist</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Type of used bool distribution. </p>
+
+</div>
+</div>
+<a id="a51f576660ef31a143e97415c42b2e3fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51f576660ef31a143e97415c42b2e3fd">&#9670;&nbsp;</a></span>Common</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::<a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a51f576660ef31a143e97415c42b2e3fd">Common</a> =  INTERNAL::Common</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Key type for getting common type numbers or objects. </p>
+
+</div>
+</div>
+<a id="a5c61374ec70e5656a5c4c9f7ad308032"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c61374ec70e5656a5c4c9f7ad308032">&#9670;&nbsp;</a></span>EngineType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::<a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a5c61374ec70e5656a5c4c9f7ad308032">EngineType</a> =  engine</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Type of used random number engine. </p>
+
+</div>
+</div>
+<a id="a8af8f086fa1a4c7d0a69f697e402655d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8af8f086fa1a4c7d0a69f697e402655d">&#9670;&nbsp;</a></span>IntegerDistT</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::<a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a8af8f086fa1a4c7d0a69f697e402655d">IntegerDistT</a> =  IntegerDist&lt;T&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Type of used integer distribution. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Integer type.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a88c7779a88c154a2670c81fbc05c07db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88c7779a88c154a2670c81fbc05c07db">&#9670;&nbsp;</a></span>RealDistT</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::<a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a88c7779a88c154a2670c81fbc05c07db">RealDistT</a> =  RealDist&lt;T&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Type of used real distribution. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Float/Double type.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="abcfba5c06f14d50da165aa8713407b1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abcfba5c06f14d50da165aa8713407b1e">&#9670;&nbsp;</a></span>SeederType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::<a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#abcfba5c06f14d50da165aa8713407b1e">SeederType</a> =  Seeder</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Type of used random number seeder. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a0f536f07a2395e3fa1f27238ba9fd3c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f536f07a2395e3fa1f27238ba9fd3c6">&#9670;&nbsp;</a></span>BasicRandomStatic() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::<a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Constructor. </p>
+
+</div>
+</div>
+<a id="a6bad0212e34e415645ccf6fd1a369cec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6bad0212e34e415645ccf6fd1a369cec">&#9670;&nbsp;</a></span>~BasicRandomStatic()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::~<a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Destructor. </p>
+
+</div>
+</div>
+<a id="a522d98fe54c1403afa35b8de0fd452b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a522d98fe54c1403afa35b8de0fd452b4">&#9670;&nbsp;</a></span>BasicRandomStatic() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::<a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a> </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt; &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Copy Constructor. </p>
+
+</div>
+</div>
+<a id="aa8062dbb910382fe1c457fd591da82ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8062dbb910382fe1c457fd591da82ea">&#9670;&nbsp;</a></span>BasicRandomStatic() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::<a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt; &amp;&amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Move Constructor. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a13a4137eb7da83c1b68d98c69dd5dec6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13a4137eb7da83c1b68d98c69dd5dec6">&#9670;&nbsp;</a></span>Deserialize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename CharT , typename Traits &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Deserialize </td>
+          <td>(</td>
+          <td class="paramtype">std::basic_istream&lt; CharT, Traits &gt; &amp;&#160;</td>
+          <td class="paramname"><em>ist</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Restores the internal state of the internal pseudo-random number engine from the serialized representation, which was created by an earlier call to 'Serialize' using a stream with the same imbued locale and the same CharT and Traits.<br  />
+ If the input cannot be deserialized, internal engine is left unchanged and fail-Bit is raised on ist. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ist</td><td><a class="el" href="class_t_r_a_p_1_1_input.html">Input</a> stream to extract the data from.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4b616e7cb35c6415a5cae6cfe091ecf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b616e7cb35c6415a5cae6cfe091ecf7">&#9670;&nbsp;</a></span>Discard()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Discard </td>
+          <td>(</td>
+          <td class="paramtype">const uint64_t&#160;</td>
+          <td class="paramname"><em>z</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Advances the internal state by z times. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">z</td><td>How many times to advance.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a16a1cee3a960a11a2cd9795ca54385be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16a1cee3a960a11a2cd9795ca54385be">&#9670;&nbsp;</a></span>Engine()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static engine&amp; <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Engine </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get internal engine by reference, </p>
+<dl class="section return"><dt>Returns</dt><dd>Internal engine.</dd></dl>
+
+</div>
+</div>
+<a id="ae9b6e72b3ce2228ab069c142f52471fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9b6e72b3ce2228ab069c142f52471fa">&#9670;&nbsp;</a></span>EngineInstance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static engine&amp; <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::EngineInstance </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get reference to the static engine instance. </p>
+<dl class="section return"><dt>Returns</dt><dd>Static engine instance.</dd></dl>
+
+</div>
+</div>
+<a id="a068ffaaa0a9e4fcb156a72fe3629fd43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a068ffaaa0a9e4fcb156a72fe3629fd43">&#9670;&nbsp;</a></span>Get() <span class="overload">[1/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static engine::result_type <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Get </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get a random number from engine in [<a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a3a42b38ae3702f5bad3dd63b17b908bf" title="Retrieve the minimum value potentially generated by the random-number engine.">Min()</a>, <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#abb1b7a78946c3ea582879cf4f5d74766" title="Retrieve the maximum value potentially generated by the random-number engine.">Max()</a>] range. </p>
+<dl class="section return"><dt>Returns</dt><dd>Random number.</dd></dl>
+
+</div>
+</div>
+<a id="ae7fa1f3baf488191e1b61ac62c70096d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7fa1f3baf488191e1b61ac62c70096d">&#9670;&nbsp;</a></span>Get() <span class="overload">[2/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename Key , typename A , typename B , typename C  = typename std::common_type&lt;A, B&gt;::type&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::enable_if&lt; std::is_same&lt;Key, <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a51f576660ef31a143e97415c42b2e3fd">Common</a>&gt;::value &amp;&amp; INTERNAL::IsSupportedNumber&lt;A&gt;::value &amp;&amp; INTERNAL::IsSupportedNumber&lt;B&gt;::value &amp;&amp; std::is_signed&lt;A&gt;::value != std::is_unsigned&lt;B&gt;::value , C&gt;::type <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Get </td>
+          <td>(</td>
+          <td class="paramtype">A&#160;</td>
+          <td class="paramname"><em>from</em> = <code>std::numeric_limits&lt;A&gt;::min()</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">B&#160;</td>
+          <td class="paramname"><em>to</em> = <code>std::numeric_limits&lt;B&gt;::max()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generate a random common_type number in a [from; to] range. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Key</td><td>Key type for this version of 'Get' method Type should be '(THIS_TYPE)::Common' struct.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">from</td><td>First limit number of a random range.</td></tr>
+    <tr><td class="paramname">to</td><td>Second limit number of a random range.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A random common_type number in a [from; to] range.</dd></dl>
+
+</div>
+</div>
+<a id="acb53647af539f7221cc04b5d33e0e544"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb53647af539f7221cc04b5d33e0e544">&#9670;&nbsp;</a></span>Get() <span class="overload">[3/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename Dist , typename... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static Dist::result_type <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Get </td>
+          <td>(</td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get value from custom Dist distribution seeded by internal random engine. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Dist</td><td>Type of custom distribution with next concept.</td></tr>
+    <tr><td class="paramname">...Args</td><td>Arguments which will be forwarded to Dist constructor.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Value from custom distribution.</dd></dl>
+
+</div>
+</div>
+<a id="a5e169be9866a8e8db9125b1dd6adc656"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e169be9866a8e8db9125b1dd6adc656">&#9670;&nbsp;</a></span>Get() <span class="overload">[4/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::enable_if&lt;std::is_same&lt;T, bool&gt;::value , bool&gt;::type <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Get </td>
+          <td>(</td>
+          <td class="paramtype">const double&#160;</td>
+          <td class="paramname"><em>probability</em> = <code>0.5</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generate a bool value with specific probability by std::bernoulli_distribution. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">probability</td><td>Probability of generating true in [0; 1] range 0 means always false, 1 means always true.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>'true' with 'probability' probability ('false' otherwise).</dd></dl>
+
+</div>
+</div>
+<a id="a5c2c2d28b0da7dfd316bc5166aec2ed8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c2c2d28b0da7dfd316bc5166aec2ed8">&#9670;&nbsp;</a></span>Get() <span class="overload">[5/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename Container &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static auto <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Get </td>
+          <td>(</td>
+          <td class="paramtype">Container &amp;&#160;</td>
+          <td class="paramname"><em>container</em></td><td>)</td>
+          <td> -&gt; typename std::enable_if&lt;INTERNAL::IsIterator&lt;
+            decltype(std::begin(container))&gt;::value
+            , decltype(std::begin(container))
+            &gt;::type
+        </td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get random iterator from Container. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">container</td><td>Container with elements.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Random iterator from container.</dd></dl>
+
+</div>
+</div>
+<a id="aa3892b79fd308ec25ff70fa4a8fea808"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3892b79fd308ec25ff70fa4a8fea808">&#9670;&nbsp;</a></span>Get() <span class="overload">[6/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename Dist &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static Dist::result_type <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Get </td>
+          <td>(</td>
+          <td class="paramtype">Dist &amp;&#160;</td>
+          <td class="paramname"><em>dist</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get value from custom 'dist' distribution seeded by internal random engine. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dist</td><td>Custom distribution with next concept</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Value from custom 'dist' distribution</dd></dl>
+
+</div>
+</div>
+<a id="ae34d8501954046ea2521283b7aee8415"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae34d8501954046ea2521283b7aee8415">&#9670;&nbsp;</a></span>Get() <span class="overload">[7/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename InputIt &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::enable_if&lt;INTERNAL::IsIterator&lt;InputIt&gt;::value , InputIt&gt;::type <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Get </td>
+          <td>(</td>
+          <td class="paramtype">InputIt&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">InputIt&#160;</td>
+          <td class="paramname"><em>last</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get random iterator from iterator range. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first</td><td>Range of elements.</td></tr>
+    <tr><td class="paramname">last</td><td>Range of elements.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Random iterator from [first, last) range.</dd></dl>
+
+</div>
+</div>
+<a id="ace0a2cd7f029120d1df950d443d006da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace0a2cd7f029120d1df950d443d006da">&#9670;&nbsp;</a></span>Get() <span class="overload">[8/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static T <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Get </td>
+          <td>(</td>
+          <td class="paramtype">std::initializer_list&lt; T &gt;&#160;</td>
+          <td class="paramname"><em>init_list</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get random value from initializer_list.<br  />
+ Should be 1 or more elements in initializer_list.<br  />
+ Note: Elements in initializer_list can't be moved! </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">init_list</td><td>Initializer_list with values.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Random value from initializer_list.</dd></dl>
+
+</div>
+</div>
+<a id="a4301bc3f90768b982f48b1e2893de43c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4301bc3f90768b982f48b1e2893de43c">&#9670;&nbsp;</a></span>Get() <span class="overload">[9/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::enable_if&lt;INTERNAL::IsUniformInt&lt;T&gt;::value , T&gt;::type <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Get </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>from</em> = <code>std::numeric_limits&lt;T&gt;::min()</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>to</em> = <code>std::numeric_limits&lt;T&gt;::max()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generate a random integer number in a [from; to] range by std::uniform_int_distribution. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">from</td><td>First limit number of a random range.</td></tr>
+    <tr><td class="paramname">to</td><td>Second limit number of a random range.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A random integer number in a [from; to] range.</dd></dl>
+
+</div>
+</div>
+<a id="a6bb5b71834099c85ba23cca44fd12659"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6bb5b71834099c85ba23cca44fd12659">&#9670;&nbsp;</a></span>Get() <span class="overload">[10/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::enable_if&lt;INTERNAL::IsUniformReal&lt;T&gt;::value , T&gt;::type <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Get </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>from</em> = <code>std::numeric_limits&lt;T&gt;::min()</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>to</em> = <code>std::numeric_limits&lt;T&gt;::max()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generate a random real number in a [from; to] range by std::uniform_real_distribution. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">from</td><td>First limit number of a random range.</td></tr>
+    <tr><td class="paramname">to</td><td>Second limit number of a random range.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A random real number in a [from; to] range.</dd></dl>
+
+</div>
+</div>
+<a id="acab9e033b389ad9cfe008164b470e883"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acab9e033b389ad9cfe008164b470e883">&#9670;&nbsp;</a></span>Get() <span class="overload">[11/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::enable_if&lt;INTERNAL::IsByte&lt;T&gt;::value , T&gt;::type <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Get </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>from</em> = <code>std::numeric_limits&lt;T&gt;::min()</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>to</em> = <code>std::numeric_limits&lt;T&gt;::max()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generate a random byte number in a [from; to] range. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">from</td><td>First limit number of a random range.</td></tr>
+    <tr><td class="paramname">to</td><td>Second limit number of a random range.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A random byte number in a [from; to] range.</dd></dl>
+
+</div>
+</div>
+<a id="ae48fbc81631b6ecf705d32502779a8ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae48fbc81631b6ecf705d32502779a8ee">&#9670;&nbsp;</a></span>Get() <span class="overload">[12/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::enable_if&lt;INTERNAL::IsSupportedCharacter&lt;T&gt;::value , T&gt;::type <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Get </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>from</em> = <code>std::numeric_limits&lt;T&gt;::min()</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>to</em> = <code>std::numeric_limits&lt;T&gt;::max()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generate a random character in a [from; to] range by std::uniform_int_distribution. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">from</td><td>First limit number of a random range.</td></tr>
+    <tr><td class="paramname">to</td><td>Second limit number of a random range.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A random character in a [from; to] range.</dd></dl>
+
+</div>
+</div>
+<a id="a51fda6098ef1dbb9323085a968b79749"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51fda6098ef1dbb9323085a968b79749">&#9670;&nbsp;</a></span>Get() <span class="overload">[13/13]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename T , std::size_t N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static T* <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Get </td>
+          <td>(</td>
+          <td class="paramtype">T(&amp;)&#160;</td>
+          <td class="paramname"><em>array</em>[N]</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get random pointer from built-in array. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">array</td><td>Built-in array with elements.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to random element in array.</dd></dl>
+
+</div>
+</div>
+<a id="af9369909e9fc55152bf3e149a35a003e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9369909e9fc55152bf3e149a35a003e">&#9670;&nbsp;</a></span>GetEngine()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static engine <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::GetEngine </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get internal engine by copy. </p>
+<dl class="section return"><dt>Returns</dt><dd>Internal engine.</dd></dl>
+
+</div>
+</div>
+<a id="abcc01259d75db5f2b85d98ff23651603"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abcc01259d75db5f2b85d98ff23651603">&#9670;&nbsp;</a></span>IsEqual()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::IsEqual </td>
+          <td>(</td>
+          <td class="paramtype">const engine &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Compares internal pseudo-random number engine with 'other' pseudo-random number engine.<br  />
+ Two engines are equal, if their internal states are equivalent, that is, if they would generate equivalent values for any number of calls of operator(). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>Engine, with which the internal engine will be compared.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True, if other and internal engine are equal.</dd></dl>
+
+</div>
+</div>
+<a id="abb1b7a78946c3ea582879cf4f5d74766"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb1b7a78946c3ea582879cf4f5d74766">&#9670;&nbsp;</a></span>Max()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static constexpr engine::result_type <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Max </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Retrieve the maximum value potentially generated by the random-number engine. </p>
+<dl class="section return"><dt>Returns</dt><dd>Maximum value.</dd></dl>
+
+</div>
+</div>
+<a id="a3a42b38ae3702f5bad3dd63b17b908bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a42b38ae3702f5bad3dd63b17b908bf">&#9670;&nbsp;</a></span>Min()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static constexpr engine::result_type <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Min </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Retrieve the minimum value potentially generated by the random-number engine. </p>
+<dl class="section return"><dt>Returns</dt><dd>Minimum value.</dd></dl>
+
+</div>
+</div>
+<a id="afa85dea8af8314e9482c86160bc65133"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa85dea8af8314e9482c86160bc65133">&#9670;&nbsp;</a></span>operator=() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a> <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt; &amp;&amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Move Assignment Operator. </p>
+
+</div>
+</div>
+<a id="a8306f7005b2636ca61346bae67631f16"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8306f7005b2636ca61346bae67631f16">&#9670;&nbsp;</a></span>operator=() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a> <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt; &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Copy Assignment Operator. </p>
+
+</div>
+</div>
+<a id="a3d334b5ada8588f47276f946ffc715ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d334b5ada8588f47276f946ffc715ba">&#9670;&nbsp;</a></span>Reseed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Reseed </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reseed by Seeder. </p>
+
+</div>
+</div>
+<a id="a9f829a25629609178c8c03d23ce8bde6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f829a25629609178c8c03d23ce8bde6">&#9670;&nbsp;</a></span>Seed() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Seed </td>
+          <td>(</td>
+          <td class="paramtype">const typename engine::result_type&#160;</td>
+          <td class="paramname"><em>value</em> = <code>engine::default_seed</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Re-Initializes the internal state of the random-number engine using new seed value. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>Seed value to use in the initialization of the internal state.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a46b1e7dd9efb0c7dcd56f17006d55ff0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46b1e7dd9efb0c7dcd56f17006d55ff0">&#9670;&nbsp;</a></span>Seed() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename SSeq &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Seed </td>
+          <td>(</td>
+          <td class="paramtype">SSeq &amp;&#160;</td>
+          <td class="paramname"><em>seq</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Re-Initializes the internal state of the random-number engine using new seed value. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">SSeq</td><td>Seed sequence.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">seq</td><td>Seed sequence to use in the initialization of the internal state</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a90cb92a7b34ea38f5eff8135681b4d24"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90cb92a7b34ea38f5eff8135681b4d24">&#9670;&nbsp;</a></span>Serialize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename CharT , typename Traits &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Serialize </td>
+          <td>(</td>
+          <td class="paramtype">std::basic_ostream&lt; CharT, Traits &gt; &amp;&#160;</td>
+          <td class="paramname"><em>ost</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Serializes the internal state of the internal pseudo-random number engine as a sequence of decimal numbers separated by one or more spaces, and inserts it to the stream ost.<br  />
+ The fill character and the formatting flags of the stream are ignored and unaffected. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ost</td><td>Output stream to insert the data to.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="af6a90b7db11cb65d74e7c1aa78ef17e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6a90b7db11cb65d74e7c1aa78ef17e0">&#9670;&nbsp;</a></span>Shuffle() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename Container &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Shuffle </td>
+          <td>(</td>
+          <td class="paramtype">Container &amp;&#160;</td>
+          <td class="paramname"><em>container</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reorders the elements in the given container such that each possible permutation of those elements has equal probability of appearance. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">container</td><td>Container with elements to shuffle randomly.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a30ecee1dcf30d62e37d5309dd80ca0b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30ecee1dcf30d62e37d5309dd80ca0b8">&#9670;&nbsp;</a></span>Shuffle() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename engine , typename Seeder  = SeederDefault, template&lt; typename &gt; class IntegerDist = std::uniform_int_distribution, template&lt; typename &gt; class RealDist = std::uniform_real_distribution, typename BoolDist  = std::bernoulli_distribution&gt; </div>
+<div class="memtemplate">
+template&lt;typename RandomIt &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html">TRAP::Utils::BasicRandomStatic</a>&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;::Shuffle </td>
+          <td>(</td>
+          <td class="paramtype">RandomIt&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">RandomIt&#160;</td>
+          <td class="paramname"><em>last</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reorders the elements in the given range [first, last) such that each possible permutation of those elements has equal probability of appearance. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first</td><td>Range of elements to shuffle randomly.</td></tr>
+    <tr><td class="paramname">last</td><td>Range of elements to shuffle randomly.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>TRAP/src/Utils/Random/<a class="el" href="_random_8h_source.html">Random.h</a></li>
 </ul>

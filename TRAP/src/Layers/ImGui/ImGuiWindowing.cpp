@@ -266,7 +266,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMousePosAndButtons()
 		if (!windowPtr)
 			return;
 		
-		const bool focused = WindowingAPI::GetWindowAttrib(windowPtr, WindowingAPI::Hint::Focused);
+		const bool focused = WindowingAPI::GetWindowHint(windowPtr, WindowingAPI::Hint::Focused);
 		if(focused)
 		{
 			if (io.WantSetMousePos)
@@ -298,7 +298,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMousePosAndButtons()
 		//- This is _regardless_ of whether another viewport is focused or being dragged from.
 		//If ImGuiBackendFlags_HasMouseHoveredViewport is not set by the back-end, imgui will ignore this field and infer the information by relying on the
 		//rectangles and last focused time of every viewports it knows about. It will be unaware of other windows that may be sitting between or over your windows.
-		if (WindowingAPI::GetWindowAttrib(windowPtr, WindowingAPI::Hint::Hovered) && !(viewport->Flags & ImGuiViewportFlags_NoInputs))
+		if (WindowingAPI::GetWindowHint(windowPtr, WindowingAPI::Hint::Hovered) && !(viewport->Flags & ImGuiViewportFlags_NoInputs))
 			io.MouseHoveredViewport = viewport->ID;
 	}
 }
@@ -705,7 +705,7 @@ bool TRAP::INTERNAL::ImGuiWindowing::GetWindowFocus(ImGuiViewport* viewport)
 
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
-	return WindowingAPI::GetWindowAttrib(data->WindowPtr, WindowingAPI::Hint::Focused) != 0;
+	return WindowingAPI::GetWindowHint(data->WindowPtr, WindowingAPI::Hint::Focused) != 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -716,7 +716,7 @@ bool TRAP::INTERNAL::ImGuiWindowing::GetWindowMinimized(ImGuiViewport* viewport)
 
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
-	return WindowingAPI::GetWindowAttrib(data->WindowPtr, WindowingAPI::Hint::Minimized) != 0;
+	return WindowingAPI::GetWindowHint(data->WindowPtr, WindowingAPI::Hint::Minimized) != 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -741,9 +741,9 @@ void TRAP::INTERNAL::ImGuiWindowing::RenderWindow(ImGuiViewport* viewport, void*
 		WindowingAPI::MakeContextCurrent(data->WindowPtr);
 
 	if(viewport->Flags & ImGuiViewportFlags_NoInputs)
-		WindowingAPI::SetWindowAttrib(data->WindowPtr, WindowingAPI::Hint::MousePassthrough, true);
+		WindowingAPI::SetWindowHint(data->WindowPtr, WindowingAPI::Hint::MousePassthrough, true);
 	else
-		WindowingAPI::SetWindowAttrib(data->WindowPtr, WindowingAPI::Hint::MousePassthrough, false);
+		WindowingAPI::SetWindowHint(data->WindowPtr, WindowingAPI::Hint::MousePassthrough, false);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

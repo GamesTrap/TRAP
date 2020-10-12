@@ -9,45 +9,133 @@ namespace TRAP::Utils
 	class Config
 	{
 	public:
+		/// <summary>
+		/// Constructor.
+		/// </summary>
 		Config();
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
 		~Config() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
 		Config(const Config&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
 		Config(Config&&) = default;
+		/// <summary>
+		/// Deleted Copy Assignment Operator.
+		/// </summary>
 		Config& operator=(const Config&) = delete;
+		/// <summary>
+		/// Deleted Move Assignment Operator.
+		/// </summary>
 		Config& operator=(Config&&) = delete;
 
-		bool LoadFromFile(std::string_view filename);
-		bool SaveToFile(std::string_view filename);
+		/// <summary>
+		/// Load a Config file from disk.
+		/// </summary>
+		/// <param name="file">Virtual or physical file path to load.</param>
+		/// <returns>True if loading was successful, false otherwise.</returns>
+		bool LoadFromFile(std::string_view file);
+		/// <summary>
+		/// Save a Config file to disk.
+		/// </summary>
+		/// <param name="file">Virtual or physical file path to save to.</param>
+		/// <returns>True if saving was successful, false otherwise.</returns>
+		bool SaveToFile(std::string_view file);
 
+		/// <summary>
+		/// Check if Config got changed after last Loading/Saving.
+		/// </summary>
+		/// <returns>True if Config got changed, false otherwise.</returns>
 		bool IsChanged() const;
 
+		/// <summary>
+		/// Retrieve the value of a specific key in the Config.
+		/// </summary>
+		/// <typeparam name="T">Output variable.</typeparam>
+		/// <param name="key">Key to get value from.</param>
+		/// <param name="value">Output variable for the value.<br>Note: Unchanged when key was not found!</param>
 		template<typename T>
 		void Get(std::string_view key, T& value) const;
+		/// <summary>
+		/// Retrieve the values of a specific key in the Config.
+		/// </summary>
+		/// <typeparam name="T">Output variable.</typeparam>
+		/// <param name="key">Key to get values from.</param>
+		/// <param name="value">Output variable for the values.<br>Note: Unchanged when key was not found!</param>
 		template<typename T>
 		void Get(std::string_view key, std::vector<T>& value) const;
 
+		/// <summary>
+		/// Retrieve the value of a specific key in the Config.
+		/// </summary>
+		/// <typeparam name="T">Output variable.</typeparam>
+		/// <param name="key">Key to get value from.</param>
+		/// <returns>Found value or default constructor for the given type.</returns>
 		template<typename T>
 		T Get(std::string_view key) const;
+		/// <summary>
+		/// Retrieve the values of a specific key in the Config.
+		/// </summary>
+		/// <typeparam name="T">Output variable.</typeparam>
+		/// <param name="key">Key to get values from.</param>
+		/// <returns>Found values or default constructor for the given type.</returns>
 		template<typename T>
 		std::vector<T> GetVector(std::string_view key) const;
 
+		/// <summary>
+		/// Set a value in the Config.
+		/// </summary>
+		/// <typeparam name="T">Value type.</typeparam>
+		/// <param name="key">Key for the new or updated value.</param>
+		/// <param name="value">Value.</param>
 		template<typename T>
 		void Set(const std::string& key, T value);
+		/// <summary>
+		/// Set values in the Config.
+		/// </summary>
+		/// <typeparam name="T">Value type.</typeparam>
+		/// <param name="key">Key for the new or updated values.</param>
+		/// <param name="value">Values.</param>
 		template<typename T>
 		void Set(const std::string& key, const std::vector<T>& value);
 
+		/// <summary>
+		/// Print all stored values to the console.
+		/// </summary>
 		void Print() const;
 
 	private:
 		//Return the string in the type of T
+
+		/// <summary>
+		/// Convert a string to the given type.
+		/// </summary>
+		/// <typeparam name="T">Type to get.</typeparam>
+		/// <param name="input">String to convert.</param>
+		/// <returns>String converted to type T.</returns>
 		template<typename T>
 		T ConvertToType(const std::string& input) const;
-		//Return string of type T
+		/// <summary>
+		/// Convert a value of type T to a string.
+		/// </summary>
+		/// <typeparam name="T">Type to convert.</typeparam>
+		/// <param name="value">Value to convert.</param>
+		/// <returns>Type T value converted to string.</returns>
 		template<typename T>
 		std::string ConvertToString(T value) const;
 
-		bool Read(std::string_view filename);
-		bool Write(std::string_view filename) const;
+		/// <summary>
+		/// Parse a line from the Config files.<br>
+		/// Splits keys from value(s).<br>
+		/// Ignores lines starting with a '#'.
+		/// </summary>
+		/// <param name="line">Line to parse.</param>
+		/// <returns>Pair of key and value.</returns>
 		std::pair<std::string, std::string> ParseLine(const std::string_view& line) const;
 
 		bool m_isChanged;

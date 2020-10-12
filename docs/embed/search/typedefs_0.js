@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['cursormode_535',['CursorMode',['../class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e',1,'TRAP::Window']]],
-  ['cursortype_536',['CursorType',['../class_t_r_a_p_1_1_window.html#a58b36740dcdc5de9b711b0bb4afd1a1f',1,'TRAP::Window']]]
+  ['booldistt_960',['BoolDistT',['../class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#a99c4d05b39e72b95beead4662240bab3',1,'TRAP::Utils::BasicRandomStatic::BoolDistT()'],['../class_t_r_a_p_1_1_utils_1_1_basic_random_thread_local.html#aaa62f96f685fe8f9ecfb064cbc1888bf',1,'TRAP::Utils::BasicRandomThreadLocal::BoolDistT()'],['../class_t_r_a_p_1_1_utils_1_1_basic_random_local.html#a5c6df7935a66ab0148f827305e4945be',1,'TRAP::Utils::BasicRandomLocal::BoolDistT()']]]
 ];

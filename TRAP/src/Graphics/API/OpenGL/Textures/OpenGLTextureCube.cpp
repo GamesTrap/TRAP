@@ -18,33 +18,31 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(const TextureParameter
 	
 	TP_DEBUG(Log::TextureCubeOpenGLPrefix, "Loading Texture: \"", m_name, "\"");
 	if (s_maxCubeTextureSize == 0) //Only load maximum available texture size once
-	{
-		OpenGLCall(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize)));
-	}
+		glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize));
 	Scope<Image> image = Image::LoadFallback();
 	image = Image::FlipY(image);
 
 	InitializeTexture();
 
 	const uint32_t numMipMapLevels = 1 + static_cast<uint32_t>(std::floor(std::log2(Math::Max(image->GetWidth(), image->GetHeight())))); //Same as specification
-	OpenGLCall(glTextureStorage2D(m_handle, numMipMapLevels, TRAPImageFormatToOpenGLPrecise(image->GetColorFormat(), image->GetBytesPerPixel()), image->GetWidth(), image->GetHeight()));
+	glTextureStorage2D(m_handle, numMipMapLevels, TRAPImageFormatToOpenGLPrecise(image->GetColorFormat(), image->GetBytesPerPixel()), image->GetWidth(), image->GetHeight());
 	
-	OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 0, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
-		image->GetPixelData()));
-	OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 1, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
-		image->GetPixelData()));
+	glTextureSubImage3D(m_handle, 0, 0, 0, 0, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
+		image->GetPixelData());
+	glTextureSubImage3D(m_handle, 0, 0, 0, 1, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
+		image->GetPixelData());
 
-	OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 2, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
-		image->GetPixelData()));
-	OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 3, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
-		image->GetPixelData()));
+	glTextureSubImage3D(m_handle, 0, 0, 0, 2, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
+		image->GetPixelData());
+	glTextureSubImage3D(m_handle, 0, 0, 0, 3, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
+		image->GetPixelData());
 
-	OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 4, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
-		image->GetPixelData()));
-	OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 5, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
-		image->GetPixelData()));
+	glTextureSubImage3D(m_handle, 0, 0, 0, 4, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
+		image->GetPixelData());
+	glTextureSubImage3D(m_handle, 0, 0, 0, 5, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
+		image->GetPixelData());
 
-	OpenGLCall(glGenerateTextureMipmap(m_handle));
+	glGenerateTextureMipmap(m_handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -69,9 +67,7 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 	
 	TP_DEBUG(Log::TextureCubeOpenGLPrefix, "Loading Texture: \"", m_name, "\"");
 	if (s_maxCubeTextureSize == 0) //Only load maximum available texture size once
-	{
-		OpenGLCall(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize)));
-	}
+		glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize));
 
 	for (const auto& path : m_filepaths)
 		if (path.empty())
@@ -98,9 +94,7 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 	
 	TP_DEBUG(Log::TextureCubeOpenGLPrefix, "Loading Texture: \"", m_name, "\"");
 	if (s_maxCubeTextureSize == 0) //Only load maximum available texture size once
-	{
-		OpenGLCall(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize)));
-	}
+		glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize));
 
 	if (m_filepaths[0].empty())
 	{
@@ -138,9 +132,7 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 
 		TP_DEBUG(Log::TextureCubeOpenGLPrefix, "Loading Texture: \"", m_name, "\"");
 		if (s_maxCubeTextureSize == 0) //Only load maximum available texture size once
-		{
-			OpenGLCall(glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize)));
-		}
+			glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize));
 
 		if(!CheckImageSize(img))
 		{
@@ -189,9 +181,7 @@ TRAP::Graphics::API::OpenGLTextureCube::~OpenGLTextureCube()
 	TP_DEBUG(Log::TextureCubeOpenGLPrefix, "Destroying TextureCube: \"", m_name, "\"");
 	
 	if(m_handle)
-	{
-		OpenGLCall(glDeleteTextures(1, &m_handle));		
-	}
+		glDeleteTextures(1, &m_handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -205,9 +195,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::Bind(const uint32_t slot) const
 		if (slot < OpenGLRenderer::GetMaxTextureUnits())
 		{
 			if (m_handle)
-			{
-				OpenGLCall(glBindTextureUnit(slot, m_handle));
-			}
+				glBindTextureUnit(slot, m_handle);
 			else
 				TextureManager::Get("FallbackCube", TextureType::TextureCube)->Bind(slot);
 
@@ -226,7 +214,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::Unbind(const uint32_t slot) const
 	
 	if (slot < OpenGLRenderer::GetMaxTextureUnits())
 	{
-		OpenGLCall(glBindTextureUnit(slot, 0));
+		glBindTextureUnit(slot, 0);
 		OpenGLRenderer::GetBoundTextures()[slot] = nullptr;
 	}
 	else
@@ -249,9 +237,9 @@ void TRAP::Graphics::API::OpenGLTextureCube::SetWrap(const TextureWrap wrap)
 	TP_PROFILE_FUNCTION();
 	
 	m_textureParameters.Wrap = wrap;
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(wrap)));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_T, TRAPTextureWrapToOpenGL(wrap)));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(wrap)));
+	glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(wrap));
+	glTextureParameteri(m_handle, GL_TEXTURE_WRAP_T, TRAPTextureWrapToOpenGL(wrap));
+	glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(wrap));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -261,8 +249,8 @@ void TRAP::Graphics::API::OpenGLTextureCube::SetFilter(const TextureFilter filte
 	TP_PROFILE_FUNCTION();
 	
 	m_textureParameters.Filter = filter;
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));
+	glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST);
+	glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -332,12 +320,12 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross(const Scope<Image
 	//if (!std::ispow2(faceWidth) || !std::ispow2(faceHeight))
 	if (!Math::IsPowerOfTwo(faceWidth) || !Math::IsPowerOfTwo(faceHeight))
 	{
-		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		resetPixelStore = true;
 	}
 
 	const uint32_t numMipMapLevels = 1 + static_cast<uint32_t>(std::floor(std::log2(Math::Max(faceWidth, faceHeight)))); //Same as specification
-	OpenGLCall(glTextureStorage2D(m_handle, numMipMapLevels, TRAPImageFormatToOpenGLPrecise(img->GetColorFormat(), img->GetBytesPerPixel()), faceWidth, faceHeight));
+	glTextureStorage2D(m_handle, numMipMapLevels, TRAPImageFormatToOpenGLPrecise(img->GetColorFormat(), img->GetBytesPerPixel()), faceWidth, faceHeight);
 
 	if (img->IsHDR())
 	{
@@ -400,14 +388,14 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross(const Scope<Image
 			}
 		}
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[3].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[1].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[3].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[1].data());
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[0].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[4].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[0].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[4].data());
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[2].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[5].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[2].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[5].data());
 	}
 	else if ((img->IsImageGrayScale() && img->GetBitsPerPixel() == 16 && !img->HasAlphaChannel()) ||
 		(img->IsImageGrayScale() && img->GetBitsPerPixel() == 32 && img->HasAlphaChannel()) ||
@@ -474,14 +462,14 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross(const Scope<Image
 			}
 		}
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[3].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[1].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[3].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[1].data());
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[0].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[4].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[0].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[4].data());
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[2].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[5].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[2].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[5].data());
 	}
 	else
 	{
@@ -545,31 +533,25 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross(const Scope<Image
 			}
 		}
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[3].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[1].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[3].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[1].data());
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[0].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[4].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[0].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[4].data());
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[2].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[5].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[2].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[5].data());
 	}
 
 	if (img->HasAlphaChannel() && img->IsImageGrayScale())
-	{
-		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
-	}
+		glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data());
 	else if (img->IsImageGrayScale())
-	{
-		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
-	}
+		glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data());
 
 	if (resetPixelStore)
-	{
-		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 4));
-	}
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
-	OpenGLCall(glGenerateTextureMipmap(m_handle));
+	glGenerateTextureMipmap(m_handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -587,12 +569,12 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross(const Scope<Ima
 	//if (!std::ispow2(faceWidth) || !std::ispow2(faceHeight))
 	if (!Math::IsPowerOfTwo(faceWidth) || !Math::IsPowerOfTwo(faceHeight))
 	{
-		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		resetPixelStore = true;
 	}
 
 	const uint32_t numMipMapLevels = 1 + static_cast<uint32_t>(std::floor(std::log2(Math::Max(faceWidth, faceHeight)))); //Same as specification
-	OpenGLCall(glTextureStorage2D(m_handle, numMipMapLevels, TRAPImageFormatToOpenGLPrecise(img->GetColorFormat(), img->GetBytesPerPixel()), faceWidth, faceHeight));
+	glTextureStorage2D(m_handle, numMipMapLevels, TRAPImageFormatToOpenGLPrecise(img->GetColorFormat(), img->GetBytesPerPixel()), faceWidth, faceHeight);
 
 	if (img->IsHDR())
 	{
@@ -651,14 +633,14 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross(const Scope<Ima
 			}
 		}
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[3].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[1].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[3].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[1].data());
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[0].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[4].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[0].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[4].data());
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[2].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[5].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[2].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[5].data());
 	}
 	else if ((img->IsImageGrayScale() && img->GetBitsPerPixel() == 16 && !img->HasAlphaChannel()) ||
 		(img->IsImageGrayScale() && img->GetBitsPerPixel() == 32 && img->HasAlphaChannel()) ||
@@ -721,14 +703,14 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross(const Scope<Ima
 			}
 		}
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[3].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[1].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[3].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[1].data());
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[0].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[4].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[0].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[4].data());
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[2].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[5].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[2].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[5].data());
 	}
 	else
 	{
@@ -788,31 +770,25 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross(const Scope<Ima
 			}
 		}
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[3].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[1].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[3].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[1].data());
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[0].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[5].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[0].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[5].data());
 
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[2].data()));
-		OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[4].data()));
+		glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[2].data());
+		glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[4].data());
 
 		if (img->HasAlphaChannel() && img->IsImageGrayScale())
-		{
-			OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
-		}
+			glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data());
 		else if (img->IsImageGrayScale())
-		{
-			OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
-		}
+			glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data());
 	}
 
 	if (resetPixelStore)
-	{
-		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 4));
-	}
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
-	OpenGLCall(glGenerateTextureMipmap(m_handle));
+	glGenerateTextureMipmap(m_handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -864,47 +840,37 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadFiles()
 	//if (!std::ispow2(faceWidth) || !std::ispow2(faceHeight))
 	if (!Math::IsPowerOfTwo(width) || !Math::IsPowerOfTwo(height))
 	{
-		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		resetPixelStore = true;
 	}
 
 	const uint32_t numMipMapLevels = 1 + static_cast<uint32_t>(std::floor(std::log2(Math::Max(width, height)))); //Same as specification
-	OpenGLCall(glTextureStorage2D(m_handle, numMipMapLevels, TRAPImageFormatToOpenGLPrecise(images[0]->GetColorFormat(), images[0]->GetBytesPerPixel()), width, height));
+	glTextureStorage2D(m_handle, numMipMapLevels, TRAPImageFormatToOpenGLPrecise(images[0]->GetColorFormat(), images[0]->GetBytesPerPixel()), width, height);
 
 	for (uint32_t i = 0; i < 6; i++)
 	{
 		if (images[i]->IsHDR())
-		{
-			OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, i, width, height, 1, TRAPImageFormatToOpenGL(images[0]->GetColorFormat()), GL_FLOAT, images[i]->GetPixelData()));
-		}
+			glTextureSubImage3D(m_handle, 0, 0, 0, i, width, height, 1, TRAPImageFormatToOpenGL(images[0]->GetColorFormat()), GL_FLOAT, images[i]->GetPixelData());
 		else if ((images[i]->IsImageGrayScale() && images[i]->GetBitsPerPixel() == 16 && !images[i]->HasAlphaChannel()) ||
 			(images[i]->IsImageGrayScale() && images[i]->GetBitsPerPixel() == 32 && images[i]->HasAlphaChannel()) ||
 			(images[i]->IsImageColored() && images[i]->GetBitsPerPixel() == 48 && !images[i]->HasAlphaChannel()) ||
 			(images[i]->IsImageColored() && images[i]->GetBitsPerPixel() == 64 && images[i]->HasAlphaChannel()))
 		{
-			OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, i, width, height, 1, TRAPImageFormatToOpenGL(images[i]->GetColorFormat()), GL_UNSIGNED_SHORT, images[i]->GetPixelData()));
+			glTextureSubImage3D(m_handle, 0, 0, 0, i, width, height, 1, TRAPImageFormatToOpenGL(images[i]->GetColorFormat()), GL_UNSIGNED_SHORT, images[i]->GetPixelData());
 		}
 		else
-		{
-			OpenGLCall(glTextureSubImage3D(m_handle, 0, 0, 0, i, width, height, 1, TRAPImageFormatToOpenGL(images[i]->GetColorFormat()), GL_UNSIGNED_BYTE, images[i]->GetPixelData()));
-		}
+			glTextureSubImage3D(m_handle, 0, 0, 0, i, width, height, 1, TRAPImageFormatToOpenGL(images[i]->GetColorFormat()), GL_UNSIGNED_BYTE, images[i]->GetPixelData());
 	}
 
 	if (hasAlphaChannel && isGrayScale)
-	{
-		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
-	}
+		glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data());
 	else if (isGrayScale)
-	{
-		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
-	}
+		glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data());
 	
 	if (resetPixelStore)
-	{
-		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 4));
-	}
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
-	OpenGLCall(glGenerateTextureMipmap(m_handle));
+	glGenerateTextureMipmap(m_handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -925,10 +891,10 @@ bool TRAP::Graphics::API::OpenGLTextureCube::CheckImageSize(const Scope<Image>& 
 
 void TRAP::Graphics::API::OpenGLTextureCube::InitializeTexture()
 {
-	OpenGLCall(glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_handle));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(m_textureParameters.Wrap)));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_textureParameters.Wrap)));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_textureParameters.Wrap)));
+	glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_handle);
+	glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST);
+	glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST);
+	glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(m_textureParameters.Wrap));
+	glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_textureParameters.Wrap));
+	glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_textureParameters.Wrap));
 }

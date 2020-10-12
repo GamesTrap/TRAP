@@ -19,23 +19,15 @@ TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(std::string name, 
 	TP_PROFILE_FUNCTION();
 	
 	if(s_maxUniformBufferBindingPoints == 0)
-	{
-		OpenGLCall(glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int32_t*>(&s_maxUniformBufferBindingPoints)));
-	}
+		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int32_t*>(&s_maxUniformBufferBindingPoints));
 	
-	OpenGLCall(glCreateBuffers(1, &m_handle));
+	glCreateBuffers(1, &m_handle);
 	if (m_usage == BufferUsage::Static)
-	{
-		OpenGLCall(glNamedBufferStorage(m_handle, m_size, data, 0));
-	}
+		glNamedBufferStorage(m_handle, m_size, data, 0);
 	else if (m_usage == BufferUsage::Dynamic)
-	{
-		OpenGLCall(glNamedBufferStorage(m_handle, m_size, data, GL_DYNAMIC_STORAGE_BIT));
-	}
+		glNamedBufferStorage(m_handle, m_size, data, GL_DYNAMIC_STORAGE_BIT);
 	else //Stream
-	{
-		OpenGLCall(glNamedBufferStorage(m_handle, m_size, data, GL_DYNAMIC_STORAGE_BIT));
-	}
+		glNamedBufferStorage(m_handle, m_size, data, GL_DYNAMIC_STORAGE_BIT);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -46,23 +38,15 @@ TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(std::string name, 
 	TP_PROFILE_FUNCTION();
 	
 	if (s_maxUniformBufferBindingPoints == 0)
-	{
-		OpenGLCall(glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int32_t*>(&s_maxUniformBufferBindingPoints)));
-	}
+		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int32_t*>(&s_maxUniformBufferBindingPoints));
 	
-	OpenGLCall(glCreateBuffers(1, &m_handle));
+	glCreateBuffers(1, &m_handle);
 	if (m_usage == BufferUsage::Static)
-	{
-		OpenGLCall(glNamedBufferStorage(m_handle, m_size, nullptr, 0));
-	}
+		glNamedBufferStorage(m_handle, m_size, nullptr, 0);
 	else if (m_usage == BufferUsage::Dynamic)
-	{
-		OpenGLCall(glNamedBufferStorage(m_handle, m_size, nullptr, GL_DYNAMIC_STORAGE_BIT));
-	}
+		glNamedBufferStorage(m_handle, m_size, nullptr, GL_DYNAMIC_STORAGE_BIT);
 	else //Stream
-	{
-		OpenGLCall(glNamedBufferStorage(m_handle, m_size, nullptr, GL_DYNAMIC_STORAGE_BIT));
-	}
+		glNamedBufferStorage(m_handle, m_size, nullptr, GL_DYNAMIC_STORAGE_BIT);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -72,9 +56,7 @@ TRAP::Graphics::API::OpenGLUniformBuffer::~OpenGLUniformBuffer()
 	TP_PROFILE_FUNCTION();
 	
 	if (m_handle)
-	{
-		OpenGLCall(glDeleteBuffers(1, &m_handle));
-	}
+		glDeleteBuffers(1, &m_handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -91,17 +73,13 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::Bind(const uint32_t bindingPoint)
 			{
 				uint32_t uniformBlockIndex = GL_INVALID_INDEX;
 				if (dynamic_cast<OpenGLShader*>(shader.get())->GetHandle())
-				{
-					OpenGLCall(uniformBlockIndex = glGetUniformBlockIndex(dynamic_cast<OpenGLShader*>(shader.get())->GetHandle(), m_name.c_str()));
-				}
+					uniformBlockIndex = glGetUniformBlockIndex(dynamic_cast<OpenGLShader*>(shader.get())->GetHandle(), m_name.c_str());
 
 				if (uniformBlockIndex != GL_INVALID_INDEX)
-				{
-					OpenGLCall(glUniformBlockBinding(dynamic_cast<OpenGLShader*>(shader.get())->GetHandle(), uniformBlockIndex, bindingPoint));
-				}
+					glUniformBlockBinding(dynamic_cast<OpenGLShader*>(shader.get())->GetHandle(), uniformBlockIndex, bindingPoint);
 			}
 
-			OpenGLCall(glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, m_handle));
+			glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, m_handle);
 			s_boundUniformBuffers[bindingPoint] = this;
 		}
 	}
@@ -117,7 +95,7 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::Unbind(const uint32_t bindingPoin
 	
 	if(bindingPoint < s_maxUniformBufferBindingPoints)
 	{
-		OpenGLCall(glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, 0));
+		glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, 0);
 		s_boundUniformBuffers[bindingPoint] = nullptr;
 	}
 	else
@@ -133,13 +111,9 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::UpdateData(const void* data)
 	if (m_usage != BufferUsage::Static)
 	{
 		if (m_usage == BufferUsage::Dynamic)
-		{
-			OpenGLCall(glNamedBufferSubData(m_handle, 0, m_size, data));
-		}
+			glNamedBufferSubData(m_handle, 0, m_size, data);
 		else //Stream
-		{
-			OpenGLCall(glNamedBufferSubData(m_handle, 0, m_size, data));
-		}
+			glNamedBufferSubData(m_handle, 0, m_size, data);
 	}
 	else
 		TP_ERROR(Log::UniformBufferOpenGLPrefix, "Static UniformBuffer: \"", m_name, "\" tried to update data!");
@@ -164,7 +138,7 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::UpdateSubData(const void* data, c
 			return;
 		}
 		
-		OpenGLCall(glNamedBufferSubData(m_handle, offset, size, data));
+		glNamedBufferSubData(m_handle, offset, size, data);
 	}
 	else
 	{

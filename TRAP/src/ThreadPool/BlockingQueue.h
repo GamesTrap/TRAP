@@ -7,46 +7,93 @@ namespace TRAP
 	class BlockingQueue
 	{
 	public:
+		/// <summary>
+		/// Push a copy constructable item to the queue.
+		/// </summary>
+		/// <param name="item">Item to push.</param>
 		template<typename Q = T>
 		typename std::enable_if<std::is_copy_constructible<Q>::value, void>::type
 		Push(const T& item);
 
+		/// <summary>
+		/// Push a move constructable item to the queue.
+		/// </summary>
+		/// <param name="item">Item to push.</param>
 		template<typename Q = T>
 		typename std::enable_if<std::is_move_constructible<Q>::value, void>::type
 		Push(T&& item);
 
+		/// <summary>
+		/// Try to push a copy constructable item to the queue.
+		/// </summary>
+		/// <param name="item">Item to push.</param>
+		/// <returns>True on success, false otherwise.</returns>
 		template<typename Q = T>
 		typename std::enable_if<std::is_copy_constructible<Q>::value, bool>::type
 		TryPush(const T& item);
 
+		/// <summary>
+		/// Try to push a move constructable item to the queue.
+		/// </summary>
+		/// <param name="item">Item to push.</param>
+		/// <returns>True on success, false otherwise.</returns>
 		template<typename Q = T>
 		typename std::enable_if<std::is_move_constructible<Q>::value, bool>::type
 		TryPush(T&& item);
 
+		/// <summary>
+		/// Pop a copy assignable item from the queue.
+		/// </summary>
+		/// <param name="item">Item to pop.</param>
 		template<typename Q = T>
 		typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type
 		Pop(T& item);
 
+		/// <summary>
+		/// Pop a move assignable item from the queue.
+		/// </summary>
+		/// <param name="item">Item to pop.</param>
 		template<typename Q = T>
 		typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type
 		Pop(T& item);
 
+		/// <summary>
+		/// Try to pop a copy assignable item from the queue.
+		/// </summary>
+		/// <param name="item">Item to pop.</param>
+		/// <returns>True on success, false otherwise.</returns>
 		template<typename Q = T>
 		typename std::enable_if<std::is_copy_assignable<Q>::value && !std::is_move_assignable<Q>::value, bool>::type
 		TryPop(T& item);
 
+		/// <summary>
+		/// Try to pop a move assignable item from the queue.
+		/// </summary>
+		/// <param name="item">Item to pop.</param>
+		/// <returns>True on success, false otherwise.</returns>
 		template<typename Q = T>
 		typename std::enable_if<std::is_move_assignable<Q>::value, bool>::type
 		TryPop(T& item);
 
+		/// <summary>
+		/// Mark the queue as done.
+		/// </summary>
 		void Done() noexcept;
 
-		void Empty() const noexcept;
+		/// <summary>
+		/// Check if queue is empty.
+		/// </summary>
+		/// <returns>True if queue is empty, false otherwise.</returns>
+		bool Empty() const noexcept;
 
+		/// <summary>
+		/// Retrieve the size of the queue.
+		/// </summary>
+		/// <returns>Queue size.</returns>
 		uint32_t Size() const noexcept;
 
 	private:
-		std::queue<T> m_queue;
+		std::queue<T> m_queue{};
 		mutable std::mutex m_mutex;
 		std::condition_variable m_ready;
 		bool m_done = false;
@@ -202,7 +249,7 @@ void TRAP::BlockingQueue<T>::Done() noexcept
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-void TRAP::BlockingQueue<T>::Empty() const noexcept
+bool TRAP::BlockingQueue<T>::Empty() const noexcept
 {
 	std::scoped_lock lock(m_mutex);
 	return m_queue.empty();

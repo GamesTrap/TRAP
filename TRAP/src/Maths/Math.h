@@ -197,371 +197,949 @@ namespace TRAP::Math
 	//Common-------------------------------------------------------------------------------------------------------------//
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <typeparam name="genType">Floating-point or integer; scalar or vector types.</typeparam>
+	/// <returns>y if y < x; otherwise it returns x.</returns>
 	template<typename genType>
 	constexpr genType Min(genType x, genType y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="genType">Floating-point or integer; scalar or vector types.</typeparam>
+	/// <returns>y if x < y; otherwise it returns x.</returns>
 	template<typename genType>
 	constexpr genType Max(genType x, genType y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// The fraction 0.5 will round in a direction chosen by the implementation, presumably the direction that is fastest.
+	/// This includes the posibillity that Round(x) returns the same value as RoundEven(x) for all values of x.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point types.</typeparam>
+	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename genType>
 	genType Round(genType x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <typeparam name="genType">Floating-point types.</typeparam>
+	/// <returns>Value equal to the nearest integer to x whose absolute value is not larger than the absolute value of x.</returns>
 	template<typename genType>
 	genType Trunc(genType x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
-	
+
+	/// <typeparam name="genFIType">Floating-point or signed integer; scalar or vector types.</typeparam>
+	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<typename genFIType>
 	constexpr genFIType Abs(genFIType x);
 
+	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<>
 	constexpr int Abs(int x);
 
+	/// <typeparam name="genFIType">Floating-point or signed integer scalar types.</typeparam>
+	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<typename T>
 	constexpr Vec<2, T> Abs(const Vec<2, T>& x);
+	/// <typeparam name="genFIType">Floating-point or signed integer scalar types.</typeparam>
+	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<typename T>
 	constexpr Vec<3, T> Abs(const Vec<3, T>& x);
+	/// <typeparam name="genFIType">Floating-point or signed integer scalar types.</typeparam>
+	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<typename T>
 	constexpr Vec<4, T> Abs(const Vec<4, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
 	//Fast and works for any type
+
+	/// <typeparam name="genFIType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>1.0f if x > 0, 0.0 if x == 0, or -1.0 if x < 0.</returns>
 	template<typename genFIType>
 	genFIType Sign(genFIType x);
 
+	/// <typeparam name="genFIType">Floating-point scalar types.</typeparam>
+	/// <returns>1.0f if x > 0, 0.0 if x == 0, or -1.0 if x < 0.</returns>
 	template<typename T>
 	Vec<2, T> Sign(const Vec<2, T>& x);
+	/// <typeparam name="genFIType">Floating-point scalar types.</typeparam>
+	/// <returns>1.0f if x > 0, 0.0 if x == 0, or -1.0 if x < 0.</returns>
 	template<typename T>
 	Vec<3, T> Sign(const Vec<3, T>& x);
+	/// <typeparam name="genFIType">Floating-point scalar types.</typeparam>
+	/// <returns>1.0f if x > 0, 0.0 if x == 0, or -1.0 if x < 0.</returns>
 	template<typename T>
 	Vec<4, T> Sign(const Vec<4, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
+	/// <returns>Value equal to the nearest integer that is less then or equal to x.</returns>
 	template<typename T>
 	T Floor(T x);
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Value equal to the nearest integer that is less then or equal to x.</returns>
 	template<typename T>
 	Vec<2, T> Floor(const Vec<2, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Value equal to the nearest integer that is less then or equal to x.</returns>
 	template<typename T>
 	Vec<3, T> Floor(const Vec<3, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Value equal to the nearest integer that is less then or equal to x.</returns>
 	template<typename T>
 	Vec<4, T> Floor(const Vec<4, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Value equal to the nearest integer to x whose absolute value is not larger than the absolute vlaue of x.</returns>
 	template<typename T>
 	Vec<2, T> Trunc(const Vec<2, T>& x);
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Value equal to the nearest integer to x whose absolute value is not larger than the absolute vlaue of x.</returns>
 	template<typename T>
 	Vec<3, T> Trunc(const Vec<3, T>& x);
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Value equal to the nearest integer to x whose absolute value is not larger than the absolute vlaue of x.</returns>
 	template<typename T>
 	Vec<4, T> Trunc(const Vec<4, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// The fraction 0.5 will round in a direction chosen by the implementation, presumably the direction that is fastest.
+	/// This includes the posibillity that Round(x) returns the same value as RoundEven(x) for all values of x.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename T>
 	Vec<2, T> Round(const Vec<2, T>& x);
+	/// <summary>
+	/// The fraction 0.5 will round in a direction chosen by the implementation, presumably the direction that is fastest.
+	/// This includes the posibillity that Round(x) returns the same value as RoundEven(x) for all values of x.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename T>
 	Vec<3, T> Round(const Vec<3, T>& x);
+	/// <summary>
+	/// The fraction 0.5 will round in a direction chosen by the implementation, presumably the direction that is fastest.
+	/// This includes the posibillity that Round(x) returns the same value as RoundEven(x) for all values of x.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename T>
 	Vec<4, T> Round(const Vec<4, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// A fractional part of 0.5 will round toward the nearest even integer. (Both 3.5 and 4.5 for x will return 4.0).
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename genType>
 	genType RoundEven(genType x);
 
+	/// <summary>
+	/// A fractional part of 0.5 will round toward the nearest even integer. (Both 3.5 and 4.5 for x will return 4.0).
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename T>
 	Vec<2, T> RoundEven(const Vec<2, T>& x);
+	/// <summary>
+	/// A fractional part of 0.5 will round toward the nearest even integer. (Both 3.5 and 4.5 for x will return 4.0).
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename T>
 	Vec<3, T> RoundEven(const Vec<3, T>& x);
+	/// <summary>
+	/// A fractional part of 0.5 will round toward the nearest even integer. (Both 3.5 and 4.5 for x will return 4.0).
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<typename T>
 	Vec<4, T> RoundEven(const Vec<4, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
+	/// <returns>Value equal to the nearest integer that is greater than or equal to x.</returns>
 	template<typename T>
 	T Ceil(T x);
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Value equal to the nearest integer that is greater than or equal to x.</returns>
 	template<typename T>
 	Vec<2, T> Ceil(const Vec<2, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Value equal to the nearest integer that is greater than or equal to x.</returns>
 	template<typename T>
 	Vec<3, T> Ceil(const Vec<3, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Value equal to the nearest integer that is greater than or equal to x.</returns>
 	template<typename T>
 	Vec<4, T> Ceil(const Vec<4, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>x - Floor(x).</returns>
 	template<typename genType>
 	genType Fract(genType x);
 
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>x - Floor(x).</returns>
 	template<typename T>
 	Vec<2, T> Fract(const Vec<2, T>& x);
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>x - Floor(x).</returns>
 	template<typename T>
 	Vec<3, T> Fract(const Vec<3, T>& x);
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>x - Floor(x).</returns>
 	template<typename T>
 	Vec<4, T> Fract(const Vec<4, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <summary>
+	/// Modulus.
+	/// </summary>
+	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
 	template<typename genType>
 	genType Mod(genType x, genType y);
 
+	/// <summary>
+	/// Modulus.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
 	template<typename T>
 	Vec<2, T> Mod(const Vec<2, T>& x, T y);
+	/// <summary>
+	/// Modulus.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
 	template<typename T>
 	Vec<3, T> Mod(const Vec<3, T>& x, T y);
+	/// <summary>
+	/// Modulus.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
 	template<typename T>
 	Vec<4, T> Mod(const Vec<4, T>& x, T y);
 
+	/// <summary>
+	/// Modulus.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
 	template<typename T>
 	Vec<2, T> Mod(const Vec<2, T>& x, const Vec<2, T>& y);
+	/// <summary>
+	/// Modulus.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
 	template<typename T>
 	Vec<3, T> Mod(const Vec<3, T>& x, const Vec<3, T>& y);
+	/// <summary>
+	/// Modulus.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>x - y * Floor(x / y) for each component in x using the floating point value y.</returns>
 	template<typename T>
 	Vec<4, T> Mod(const Vec<4, T>& x, const Vec<4, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <summary>
+	/// Both the return value and the output parameter will have the same sign as x.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>Fractional part of x and sets i to the integer part (as a whole number floating point value).</returns>
 	template<typename genType>
 	genType Modf(genType x, genType& i);
 
+	/// <summary>
+	/// Both the return value and the output parameter will have the same sign as x.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Fractional part of x and sets i to the integer part (as a whole number floating point value).</returns>
 	template<typename T>
 	Vec<1, T> Modf(const Vec<1, T>& x, Vec<1, T>& i);
+	/// <summary>
+	/// Both the return value and the output parameter will have the same sign as x.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Fractional part of x and sets i to the integer part (as a whole number floating point value).</returns>
 	template<typename T>
 	Vec<2, T> Modf(const Vec<2, T>& x, Vec<2, T>& i);
+	/// <summary>
+	/// Both the return value and the output parameter will have the same sign as x.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Fractional part of x and sets i to the integer part (as a whole number floating point value).</returns>
 	template<typename T>
 	Vec<3, T> Modf(const Vec<3, T>& x, Vec<3, T>& i);
+	/// <summary>
+	/// Both the return value and the output parameter will have the same sign as x.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Fractional part of x and sets i to the integer part (as a whole number floating point value).</returns>
 	template<typename T>
 	Vec<4, T> Modf(const Vec<4, T>& x, Vec<4, T>& i);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>y if y < x; otherwise it returns x.</returns>
 	template<typename T>
 	constexpr Vec<2, T> Min(const Vec<2, T>& a, T b);
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>y if y < x; otherwise it returns x.</returns>
 	template<typename T>
 	constexpr Vec<3, T> Min(const Vec<3, T>& a, T b);
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>y if y < x; otherwise it returns x.</returns>
 	template<typename T>
 	constexpr Vec<4, T> Min(const Vec<4, T>& a, T b);
 
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>y if y < x; otherwise it returns x.</returns>
 	template<typename T>
 	constexpr Vec<2, T> Min(const Vec<2, T>& a, const Vec<2, T>& b);
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>y if y < x; otherwise it returns x.</returns>
 	template<typename T>
 	constexpr Vec<3, T> Min(const Vec<3, T>& a, const Vec<3, T>& b);
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>y if y < x; otherwise it returns x.</returns>
 	template<typename T>
 	constexpr Vec<4, T> Min(const Vec<4, T>& a, const Vec<4, T>& b);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>y if x < y; otherwise it returns x.</returns>
 	template<typename T>
 	constexpr Vec<2, T> Max(const Vec<2, T>& a, T b);
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>y if x < y; otherwise it returns x.</returns>
 	template<typename T>
 	constexpr Vec<3, T> Max(const Vec<3, T>& a, T b);
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>y if x < y; otherwise it returns x.</returns>
 	template<typename T>
 	constexpr Vec<4, T> Max(const Vec<4, T>& a, T b);
 
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>y if x < y; otherwise it returns x.</returns>
 	template<typename T>
 	constexpr Vec<2, T> Max(const Vec<2, T>& a, const Vec<2, T>& b);
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>y if x < y; otherwise it returns x.</returns>
 	template<typename T>
 	constexpr Vec<3, T> Max(const Vec<3, T>& a, const Vec<3, T>& b);
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>y if x < y; otherwise it returns x.</returns>
 	template<typename T>
 	constexpr Vec<4, T> Max(const Vec<4, T>& a, const Vec<4, T>& b);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <typeparam name="genType">Floating-point or integer; scalar or vector types.</typeparam>
+	/// <returns>Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.</returns>
 	template<typename genType>
 	constexpr genType Clamp(genType x, genType minVal, genType maxVal);
 
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.</returns>
 	template<typename T>
 	constexpr Vec<2, T> Clamp(const Vec<2, T>& x, T minVal, T maxVal);
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.</returns>
 	template<typename T>
 	constexpr Vec<3, T> Clamp(const Vec<3, T>& x, T minVal, T maxVal);
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.</returns>
 	template<typename T>
 	constexpr Vec<4, T> Clamp(const Vec<4, T>& x, T minVal, T maxVal);
 
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.</returns>
 	template<typename T>
 	constexpr Vec<2, T> Clamp(const Vec<2, T>& x, const Vec<2, T>& minVal, const Vec<2, T>& maxVal);
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.</returns>
 	template<typename T>
 	constexpr Vec<3, T> Clamp(const Vec<3, T>& x, const Vec<3, T>& minVal, const Vec<3, T>& maxVal);
+	/// <typeparam name="genType">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.</returns>
 	template<typename T>
 	constexpr Vec<4, T> Clamp(const Vec<4, T>& x, const Vec<4, T>& minVal, const Vec<4, T>& maxVal);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <summary>
+	/// If genTypeU is a floating scalar or vector:<br>
+	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.<br>
+	/// The value for a is not restricted to the range [0, 1].<br>
+	/// <br>
+	/// If genTypeU is a boolean scalar or vector:<br>
+	/// Select which vector each returned component comes from.
+	/// For a component of 'a' that is false, the corresponding component of 'x' is returned.
+	/// For a compoennt of 'a' that is true, the corresponding component of 'y' is returned.
+	/// Components of 'x' and 'y' that are not selected are allowed to be invalid floating point values and will have no effect on the results.
+	/// </summary>
+	/// <typeparam name="genTypeT">Floating-point scalar or vector.</typeparam>
+	/// <typeparam name="genTypeU">Floating-point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT!</typeparam>
+	/// <param name="x">Value to interpolate.</param>
+	/// <param name="y">Value to interpolate.</param>
+	/// <param name="a">Interpolant.</param>
+	/// <returns>See description.</returns>
 	template<typename genTypeT, typename genTypeU>
 	genTypeT Mix(genTypeT x, genTypeT y, genTypeU a);
 
+	/// <summary>
+	/// If genTypeU is a floating scalar or vector:<br>
+	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.<br>
+	/// The value for a is not restricted to the range [0, 1].<br>
+	/// <br>
+	/// If genTypeU is a boolean scalar or vector:<br>
+	/// Select which vector each returned component comes from.
+	/// For a component of 'a' that is false, the corresponding component of 'x' is returned.
+	/// For a compoennt of 'a' that is true, the corresponding component of 'y' is returned.
+	/// Components of 'x' and 'y' that are not selected are allowed to be invalid floating point values and will have no effect on the results.
+	/// </summary>
+	/// <typeparam name="genTypeT">Floating-point scalar or vector.</typeparam>
+	/// <typeparam name="genTypeU">Floating-point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT!</typeparam>
+	/// <param name="x">Value to interpolate.</param>
+	/// <param name="y">Value to interpolate.</param>
+	/// <param name="a">Interpolant.</param>
+	/// <returns>See description.</returns>
 	template<typename T, typename U>
 	Vec<2, T> Mix(const Vec<2, T>& x, const Vec<2, T>& y, U a);
+	/// <summary>
+	/// If genTypeU is a floating scalar or vector:<br>
+	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.<br>
+	/// The value for a is not restricted to the range [0, 1].<br>
+	/// <br>
+	/// If genTypeU is a boolean scalar or vector:<br>
+	/// Select which vector each returned component comes from.
+	/// For a component of 'a' that is false, the corresponding component of 'x' is returned.
+	/// For a compoennt of 'a' that is true, the corresponding component of 'y' is returned.
+	/// Components of 'x' and 'y' that are not selected are allowed to be invalid floating point values and will have no effect on the results.
+	/// </summary>
+	/// <typeparam name="genTypeT">Floating-point scalar or vector.</typeparam>
+	/// <typeparam name="genTypeU">Floating-point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT!</typeparam>
+	/// <param name="x">Value to interpolate.</param>
+	/// <param name="y">Value to interpolate.</param>
+	/// <param name="a">Interpolant.</param>
+	/// <returns>See description.</returns>
 	template<typename T, typename U>
 	Vec<3, T> Mix(const Vec<3, T>& x, const Vec<3, T>& y, U a);
+	/// <summary>
+	/// If genTypeU is a floating scalar or vector:<br>
+	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.<br>
+	/// The value for a is not restricted to the range [0, 1].<br>
+	/// <br>
+	/// If genTypeU is a boolean scalar or vector:<br>
+	/// Select which vector each returned component comes from.
+	/// For a component of 'a' that is false, the corresponding component of 'x' is returned.
+	/// For a compoennt of 'a' that is true, the corresponding component of 'y' is returned.
+	/// Components of 'x' and 'y' that are not selected are allowed to be invalid floating point values and will have no effect on the results.
+	/// </summary>
+	/// <typeparam name="genTypeT">Floating-point scalar or vector.</typeparam>
+	/// <typeparam name="genTypeU">Floating-point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT!</typeparam>
+	/// <param name="x">Value to interpolate.</param>
+	/// <param name="y">Value to interpolate.</param>
+	/// <param name="a">Interpolant.</param>
+	/// <returns>See description.</returns>
 	template<typename T, typename U>
 	Vec<4, T> Mix(const Vec<4, T>& x, const Vec<4, T>& y, U a);
 
 	template<typename T, typename U>
 	Vec<2, T> Mix(const Vec<2, T>& x, const Vec<2, T>& y, const Vec<2, U>& a);
+	/// <summary>
+	/// If genTypeU is a floating scalar or vector:<br>
+	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.<br>
+	/// The value for a is not restricted to the range [0, 1].<br>
+	/// <br>
+	/// If genTypeU is a boolean scalar or vector:<br>
+	/// Select which vector each returned component comes from.
+	/// For a component of 'a' that is false, the corresponding component of 'x' is returned.
+	/// For a compoennt of 'a' that is true, the corresponding component of 'y' is returned.
+	/// Components of 'x' and 'y' that are not selected are allowed to be invalid floating point values and will have no effect on the results.
+	/// </summary>
+	/// <typeparam name="genTypeT">Floating-point scalar or vector.</typeparam>
+	/// <typeparam name="genTypeU">Floating-point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT!</typeparam>
+	/// <param name="x">Value to interpolate.</param>
+	/// <param name="y">Value to interpolate.</param>
+	/// <param name="a">Interpolant.</param>
+	/// <returns>See description.</returns>
 	template<typename T, typename U>
 	Vec<3, T> Mix(const Vec<3, T>& x, const Vec<3, T>& y, const Vec<3, U>& a);
+	/// <summary>
+	/// If genTypeU is a floating scalar or vector:<br>
+	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.<br>
+	/// The value for a is not restricted to the range [0, 1].<br>
+	/// <br>
+	/// If genTypeU is a boolean scalar or vector:<br>
+	/// Select which vector each returned component comes from.
+	/// For a component of 'a' that is false, the corresponding component of 'x' is returned.
+	/// For a compoennt of 'a' that is true, the corresponding component of 'y' is returned.
+	/// Components of 'x' and 'y' that are not selected are allowed to be invalid floating point values and will have no effect on the results.
+	/// </summary>
+	/// <typeparam name="genTypeT">Floating-point scalar or vector.</typeparam>
+	/// <typeparam name="genTypeU">Floating-point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT!</typeparam>
+	/// <param name="x">Value to interpolate.</param>
+	/// <param name="y">Value to interpolate.</param>
+	/// <param name="a">Interpolant.</param>
+	/// <returns>See description.</returns>
 	template<typename T, typename U>
 	Vec<4, T> Mix(const Vec<4, T>& x, const Vec<4, T>& y, const Vec<4, U>& a);
 
+	/// <summary>
+	/// Spherical linear interpolation of two quaternions.<br>
+	/// The interpolation is oriented and the rotation is performed at constant speed.
+	/// For short path spherical linear interpolation, use the Slerp function.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="x">A quaternion.</param>
+	/// <param name="y">A quaternion.</param>
+	/// <param name="a">Interpolation factor. The interpolation is defined beyond the range [0, 1].</param>
+	/// <returns>Spherical linear interpolation of two quaternions.</returns>
 	template<typename T>
 	tQuaternion<T> Mix(const tQuaternion<T>& x, const tQuaternion<T>& y, T a);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <returns>0.0 if x < edge, otherwise it returns 1.0 for each component of a genType.</returns>
 	template<typename genType>
 	genType Step(genType edge, genType x);
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>0.0 if x < edge, otherwise it returns 1.0.</returns>
 	template<typename T>
 	Vec<2, T> Step(T edge, const Vec<2, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>0.0 if x < edge, otherwise it returns 1.0.</returns>
 	template<typename T>
 	Vec<3, T> Step(T edge, const Vec<3, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>0.0 if x < edge, otherwise it returns 1.0.</returns>
 	template<typename T>
 	Vec<4, T> Step(T edge, const Vec<4, T>& x);
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>0.0 if x < edge, otherwise it returns 1.0.</returns>
 	template<typename T>
 	Vec<2, T> Step(const Vec<2, T>& edge, const Vec<2, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>0.0 if x < edge, otherwise it returns 1.0.</returns>
 	template<typename T>
 	Vec<3, T> Step(const Vec<3, T>& edge, const Vec<3, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>0.0 if x < edge, otherwise it returns 1.0.</returns>
 	template<typename T>
 	Vec<4, T> Step(const Vec<4, T>& edge, const Vec<4, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <summary>
+	/// This is useful in cases where you would want a threshold function with a smooth transition.<br>
+	/// This is equivalent to: getnType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);<br>
+	/// Note: Results are undefined if edge0 >= edge1!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>0.0 if x <= edge0 and 1.0 if x >= edge1 and performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.</returns>
 	template<typename genType>
 	genType SmoothStep(genType edge0, genType edge1, genType x);	
 
+	/// <summary>
+	/// This is useful in cases where you would want a threshold function with a smooth transition.<br>
+	/// This is equivalent to: getnType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);<br>
+	/// Note: Results are undefined if edge0 >= edge1!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>0.0 if x <= edge0 and 1.0 if x >= edge1 and performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.</returns>
 	template<typename T>
 	Vec<2, T> SmoothStep(T edge0, T edge1, const Vec<2, T>& x);
+	/// <summary>
+	/// This is useful in cases where you would want a threshold function with a smooth transition.<br>
+	/// This is equivalent to: getnType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);<br>
+	/// Note: Results are undefined if edge0 >= edge1!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>0.0 if x <= edge0 and 1.0 if x >= edge1 and performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.</returns>
 	template<typename T>
 	Vec<3, T> SmoothStep(T edge0, T edge1, const Vec<3, T>& x);
+	/// <summary>
+	/// This is useful in cases where you would want a threshold function with a smooth transition.<br>
+	/// This is equivalent to: getnType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);<br>
+	/// Note: Results are undefined if edge0 >= edge1!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>0.0 if x <= edge0 and 1.0 if x >= edge1 and performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.</returns>
 	template<typename T>
 	Vec<4, T> SmoothStep(T edge0, T edge1, const Vec<4, T>& x);
 
+	/// <summary>
+	/// This is useful in cases where you would want a threshold function with a smooth transition.<br>
+	/// This is equivalent to: getnType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);<br>
+	/// Note: Results are undefined if edge0 >= edge1!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>0.0 if x <= edge0 and 1.0 if x >= edge1 and performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.</returns>
 	template<typename T>
 	Vec<2, T> SmoothStep(const Vec<2, T>& edge0, const Vec<2, T>& edge1, const Vec<2, T>& x);
+	/// <summary>
+	/// This is useful in cases where you would want a threshold function with a smooth transition.<br>
+	/// This is equivalent to: getnType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);<br>
+	/// Note: Results are undefined if edge0 >= edge1!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>0.0 if x <= edge0 and 1.0 if x >= edge1 and performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.</returns>
 	template<typename T>
 	Vec<3, T> SmoothStep(const Vec<3, T>& edge0, const Vec<3, T>& edge1, const Vec<3, T>& x);
+	/// <summary>
+	/// This is useful in cases where you would want a threshold function with a smooth transition.<br>
+	/// This is equivalent to: getnType t; t = Clamp((x - edge0) / (edge1 - edge0), 0, 1); return t * t * (3 - 2 * t);<br>
+	/// Note: Results are undefined if edge0 >= edge1!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>0.0 if x <= edge0 and 1.0 if x >= edge1 and performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.</returns>
 	template<typename T>
 	Vec<4, T> SmoothStep(const Vec<4, T>& edge0, const Vec<4, T>& edge1, const Vec<4, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <summary>
+	/// Note: When using compiler fast math, this function may fail!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>
+	/// True if x hold a NaN (not a number) representation in the underlying implementation's set of floating-point representations.<br>
+	/// False otherwise, including for implementations with no NaN representations.
+	/// </returns>
 	template<typename genType>
 	bool IsNaN(genType x);
 
+	/// <summary>
+	/// Note: When using compiler fast math, this function may fail!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>
+	/// True if x hold a NaN (not a number) representation in the underlying implementation's set of floating-point representations.<br>
+	/// False otherwise, including for implementations with no NaN representations.
 	template<typename T>
 	Vec<2, bool> IsNaN(const Vec<2, T>& v);
+	/// <summary>
+	/// Note: When using compiler fast math, this function may fail!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>
+	/// True if x hold a NaN (not a number) representation in the underlying implementation's set of floating-point representations.<br>
+	/// False otherwise, including for implementations with no NaN representations.
 	template<typename T>
 	Vec<3, bool> IsNaN(const Vec<3, T>& v);
+	/// <summary>
+	/// Note: When using compiler fast math, this function may fail!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>
+	/// True if x hold a NaN (not a number) representation in the underlying implementation's set of floating-point representations.<br>
+	/// False otherwise, including for implementations with no NaN representations.
 	template<typename T>
 	Vec<4, bool> IsNaN(const Vec<4, T>& v);
 
+	/// <summary>
+	/// Note: When using compiler fast math, this function may fail!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar type.</typeparam>
+	/// <returns>
+	/// True if x hold a NaN (not a number) representation in the underlying implementation's set of floating-point representations.<br>
+	/// False otherwise, including for implementations with no NaN representations.
 	template<typename T>
 	Vec<4, bool> IsNaN(const tQuaternion<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>
+	/// True if x holds a positive infinity or negative infinity representation in the underlying implementation's set of floating-point representations.<br>
+	/// False otherwise, including for implementations with no infinity representations.
+	/// </returns>
 	template<typename genType>
 	bool IsInf(genType x);
 
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>
+	/// True if x holds a positive infinity or negative infinity representation in the underlying implementation's set of floating-point representations.<br>
+	/// False otherwise, including for implementations with no infinity representations.
+	/// </returns>
 	template<typename T>
 	Vec<2, bool> IsInf(const Vec<2, T>& v);
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>
+	/// True if x holds a positive infinity or negative infinity representation in the underlying implementation's set of floating-point representations.<br>
+	/// False otherwise, including for implementations with no infinity representations.
+	/// </returns>
 	template<typename T>
 	Vec<3, bool> IsInf(const Vec<3, T>& v);
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>
+	/// True if x holds a positive infinity or negative infinity representation in the underlying implementation's set of floating-point representations.<br>
+	/// False otherwise, including for implementations with no infinity representations.
+	/// </returns>
 	template<typename T>
 	Vec<4, bool> IsInf(const Vec<4, T>& v);
 
+	/// <typeparam name="genType">Floating-point scalar type.</typeparam>
+	/// <returns>
+	/// True if x holds a positive infinity or negative infinity representation in the underlying implementation's set of floating-point representations.<br>
+	/// False otherwise, including for implementations with no infinity representations.
+	/// </returns>
 	template<typename T>
 	Vec<4, bool> IsInf(const tQuaternion<T>& q);
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <summary>
+	/// Computes and returns a * b + c.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>Computes and returns a * b + c.</returns>
 	template<typename genType>
 	genType FMA(const genType& a, const genType& b, const genType& c);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <summary>
+	/// Splits x into a floating-point significant in the range [0.5, 1.0) and an integral exponent of two,
+	/// such that x = significant * exp(2, exponent).<br>
+	/// This significant is returned by the function and exponent is returned in the parameter exp.<br>
+	/// For a floating-point value of zero, the significant and exponent are both zero.<br>
+	/// Note: For a floating-point value that is an infinity or is not a number, the results are undefined!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>See description.</returns>
 	template<typename genType>
 	genType FrExp(genType x, int& exp);
 
+	/// <summary>
+	/// Splits x into a floating-point significant in the range [0.5, 1.0) and an integral exponent of two,
+	/// such that x = significant * exp(2, exponent).<br>
+	/// This significant is returned by the function and exponent is returned in the parameter exp.<br>
+	/// For a floating-point value of zero, the significant and exponent are both zero.<br>
+	/// Note: For a floating-point value that is an infinity or is not a number, the results are undefined!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>See description.</returns>
 	template<typename T>
 	Vec<2, T> FrExp(const Vec<2, T>& v, const Vec<2, int>& exp);
+	/// <summary>
+	/// Splits x into a floating-point significant in the range [0.5, 1.0) and an integral exponent of two,
+	/// such that x = significant * exp(2, exponent).<br>
+	/// This significant is returned by the function and exponent is returned in the parameter exp.<br>
+	/// For a floating-point value of zero, the significant and exponent are both zero.<br>
+	/// Note: For a floating-point value that is an infinity or is not a number, the results are undefined!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>See description.</returns>
 	template<typename T>
 	Vec<3, T> FrExp(const Vec<3, T>& v, const Vec<3, int>& exp);
+	/// <summary>
+	/// Splits x into a floating-point significant in the range [0.5, 1.0) and an integral exponent of two,
+	/// such that x = significant * Exp(2, exponent).<br>
+	/// This significant is returned by the function and exponent is returned in the parameter exp.<br>
+	/// For a floating-point value of zero, the significant and exponent are both zero.<br>
+	/// Note: For a floating-point value that is an infinity or is not a number, the results are undefined!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>See description.</returns>
 	template<typename T>
 	Vec<4, T> FrExp(const Vec<4, T>& v, const Vec<4, int>& exp);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <summary>
+	/// Builds a floating-point number from x and the corresponding integral exponent of two in exp, returning:<br>
+	/// significant * Exp(2, exponent).<br>
+	/// Note: If this product is too large to be represented in the floating-point type, the result is undefined!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>See description.</returns>
 	template<typename genType>
 	genType LdExp(const genType& x, const int& exp);
 
+	/// <summary>
+	/// Builds a floating-point number from x and the corresponding integral exponent of two in exp, returning:<br>
+	/// significant * Exp(2, exponent).<br>
+	/// Note: If this product is too large to be represented in the floating-point type, the result is undefined!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>See description.</returns>
 	template<typename T>
 	Vec<2, T> LdExp(const Vec<2, T>& v, const Vec<2, int>& exp);
+	/// <summary>
+	/// Builds a floating-point number from x and the corresponding integral exponent of two in exp, returning:<br>
+	/// significant * Exp(2, exponent).<br>
+	/// Note: If this product is too large to be represented in the floating-point type, the result is undefined!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>See description.</returns>
 	template<typename T>
 	Vec<3, T> LdExp(const Vec<3, T>& v, const Vec<3, int>& exp);
+	/// <summary>
+	/// Builds a floating-point number from x and the corresponding integral exponent of two in exp, returning:<br>
+	/// significant * Exp(2, exponent).<br>
+	/// Note: If this product is too large to be represented in the floating-point type, the result is undefined!
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
+	/// <returns>See description.</returns>
 	template<typename T>
 	Vec<4, T> LdExp(const Vec<4, T>& v, const Vec<4, int>& exp);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <returns>True if the value is a power of two number.</returns>
 	template<typename genType>
 	bool IsPowerOfTwo(genType value);
 
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>True if the value is a power of two number.</returns>
 	template<typename T>
 	Vec<2, bool> IsPowerOfTwo(const Vec<2, T>& v);
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>True if the value is a power of two number.</returns>
 	template<typename T>
 	Vec<3, bool> IsPowerOfTwo(const Vec<3, T>& v);
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>True if the value is a power of two number.</returns>
 	template<typename T>
 	Vec<4, bool> IsPowerOfTwo(const Vec<4, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Similar to 'Mod' but with a different rounding and integer support.
+	/// </summary>
+	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
 	template<typename genType>
 	genType FMod(genType x, genType y);
 
+	/// <summary>
+	/// Similar to 'Mod' but with a different rounding and integer support.
+	/// </summary>
+	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
 	template<typename T>
 	Vec<2, T> FMod(const Vec<2, T>& x, T y);
+	/// <summary>
+	/// Similar to 'Mod' but with a different rounding and integer support.
+	/// </summary>
+	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
 	template<typename T>
 	Vec<3, T> FMod(const Vec<3, T>& x, T y);
+	/// <summary>
+	/// Similar to 'Mod' but with a different rounding and integer support.
+	/// </summary>
+	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
 	template<typename T>
 	Vec<4, T> FMod(const Vec<4, T>& x, T y);
 
+	/// <summary>
+	/// Similar to 'Mod' but with a different rounding and integer support.
+	/// </summary>
+	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
 	template<typename T>
 	Vec<2, T> FMod(const Vec<2, T>& x, const Vec<2, T>& y);
+	/// <summary>
+	/// Similar to 'Mod' but with a different rounding and integer support.
+	/// </summary>
+	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
 	template<typename T>
 	Vec<3, T> FMod(const Vec<3, T>& x, const Vec<3, T>& y);
+	/// <summary>
+	/// Similar to 'Mod' but with a different rounding and integer support.
+	/// </summary>
+	/// <returns>'x - y * Trunc(x / y)' instead of 'x - y * Floor(x / y)'.</returns>
 	template<typename T>
 	Vec<4, T> FMod(const Vec<4, T>& x, const Vec<4, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Linear interpolation.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
+	/// <returns>Linear interpolation.</returns>
 	template<typename T>
 	T Lerp(T x, T y, T a);
 
+	/// <summary>
+	/// Linear interpolation.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Linear interpolation.</returns>
 	template<typename T>
 	Vec<2, T> Lerp(const Vec<2, T>& x, const Vec<2, T>& y, T a);
+	/// <summary>
+	/// Linear interpolation.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Linear interpolation.</returns>
 	template<typename T>
 	Vec<3, T> Lerp(const Vec<3, T>& x, const Vec<3, T>& y, T a);
+	/// <summary>
+	/// Linear interpolation.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Linear interpolation.</returns>
 	template<typename T>
 	Vec<4, T> Lerp(const Vec<4, T>& x, const Vec<4, T>& y, T a);
 
+	/// <summary>
+	/// Linear interpolation.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Linear interpolation.</returns>
 	template<typename T>
 	Vec<2, T> Lerp(const Vec<2, T>& x, const Vec<2, T>& y, const Vec<2, T>& a);
+	/// <summary>
+	/// Linear interpolation.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Linear interpolation.</returns>
 	template<typename T>
 	Vec<3, T> Lerp(const Vec<3, T>& x, const Vec<3, T>& y, const Vec<3, T>& a);
+	/// <summary>
+	/// Linear interpolation.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Linear interpolation.</returns>
 	template<typename T>
 	Vec<4, T> Lerp(const Vec<4, T>& x, const Vec<4, T>& y, const Vec<4, T>& a);
 
+	/// <summary>
+	/// Linear interpolation of two quaternions.<br>
+	/// The interpolation is oriented.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="x">A quaternion.</param>
+	/// <param name="y">A quaternion.</param>
+	/// <param name="a">Interpolation factor. The interpolation is defined in the range [0, 1].</param>
+	/// <returns>Linear interpolation of two quaternions.</returns>
 	template<typename T>
 	tQuaternion<T> Lerp(const tQuaternion<T>& x, const tQuaternion<T>& y, T a);
 	
@@ -569,97 +1147,198 @@ namespace TRAP::Math
 	//Exponential--------------------------------------------------------------------------------------------------------//
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point value.</typeparam>
+	/// <param name="base">Pow function is defined for input values of 'base' defined in the range (inf-, inf+) in the limit of the type qualifier.</param>
+	/// <param name="exponent">Floating-point value representing the 'exponent'.</param>
+	/// <returns>'base' raised to the power 'exponent'.</returns>
 	template<typename T>
 	T Pow(T base, T exponent);
 	
+	/// <param name="base">
+	/// Floating-point value.<br>
+	/// Pow function is defined for input values of 'base' defined in the range (inf-, inf+) in the limit of the type qualifier.
+	/// </param>
+	/// <param name="exponent">Floating-point value representing the 'exponent'.</param>
+	/// <returns>'base' raised to the power 'exponent'.</returns>
 	template<typename T>
 	Vec<2, T> Pow(const Vec<2, T>& base, const Vec<2, T>& exponent);
+	/// <param name="base">
+	/// Floating-point value.<br>
+	/// Pow function is defined for input values of 'base' defined in the range (inf-, inf+) in the limit of the type qualifier.
+	/// </param>
+	/// <param name="exponent">Floating-point value representing the 'exponent'.</param>
+	/// <returns>'base' raised to the power 'exponent'.</returns>
 	template<typename T>
 	Vec<3, T> Pow(const Vec<3, T>& base, const Vec<3, T>& exponent);
+	/// <param name="base">
+	/// Floating-point value.<br>
+	/// Pow function is defined for input values of 'base' defined in the range (inf-, inf+) in the limit of the type qualifier.
+	/// </param>
+	/// <param name="exponent">Floating-point value representing the 'exponent'.</param>
+	/// <returns>'base' raised to the power 'exponent'.</returns>
 	template<typename T>
 	Vec<4, T> Pow(const Vec<4, T>& base, const Vec<4, T>& exponent);
 
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>Quaternion raised to a power.</returns>
 	template<typename T>
 	tQuaternion<T> Pow(const tQuaternion<T>& x, T y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar or vector type.</typeparam>
+	/// <param name="x">Exp function is defined for input values of x defined in the range (inf-, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Natural exponentiation of x. i.e., e^x.</returns>
 	template<typename T>
 	T Exp(T x);
 	
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <param name="x">Exp function is defined for input values of x defined in the range (inf-, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Natural exponentiation of x. i.e., e^x.</returns>
 	template<typename T>
 	Vec<2, T> Exp(const Vec<2, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <param name="x">Exp function is defined for input values of x defined in the range (inf-, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Natural exponentiation of x. i.e., e^x.</returns>
 	template<typename T>
 	Vec<3, T> Exp(const Vec<3, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <param name="x">Exp function is defined for input values of x defined in the range (inf-, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Natural exponentiation of x. i.e., e^x.</returns>
 	template<typename T>
 	Vec<4, T> Exp(const Vec<4, T>& x);
 
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>Exponential of a quaternion.</returns>
 	template<typename T>
 	tQuaternion<T> Exp(const tQuaternion<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar or vector type.</typeparam>
+	/// <param name="x">Log function is defined for input values of x defined in the reange (0, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Natural logarithm of x, i.e., returns the value y which satisfies the equation x = e^y.</returns>
 	template<typename T>
 	T Log(T x);
 	
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <param name="x">Log function is defined for input values of x defined in the reange (0, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Natural logarithm of x, i.e., returns the value y which satisfies the equation x = e^y.<br>Note: Results are undefined if x <= 0!</returns>
 	template<typename T>
 	Vec<2, T> Log(const Vec<2, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <param name="x">Log function is defined for input values of x defined in the reange (0, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Natural logarithm of x, i.e., returns the value y which satisfies the equation x = e^y.<br>Note: Results are undefined if x <= 0!</returns>
 	template<typename T>
 	Vec<3, T> Log(const Vec<3, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <param name="x">Log function is defined for input values of x defined in the reange (0, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Natural logarithm of x, i.e., returns the value y which satisfies the equation x = e^y.<br>Note: Results are undefined if x <= 0!</returns>
 	template<typename T>
 	Vec<4, T> Log(const Vec<4, T>& x);
 
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>Logarithm of a quaternion.</returns>
 	template<typename T>
 	tQuaternion<T> Log(const tQuaternion<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="genType">Floating-point scalar or vector type.</typeparam>
+	/// <param name="x">Exp2 function is defined for input values of x defined in the range (inf-, inf+) in the limit of the type qualifier.</param>
+	/// <returns>2 raised to the x power.</returns>
 	template<typename genType>
 	genType Exp2(genType x);
 
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="x">Exp2 function is defined for input values of x defined in the range (inf-, inf+) in the limit of the type qualifier.</param>
+	/// <returns>2 raised to the x power.</returns>
 	template<typename T>
 	Vec<2, T> Exp2(const Vec<2, T>& x);
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="x">Exp2 function is defined for input values of x defined in the range (inf-, inf+) in the limit of the type qualifier.</param>
+	/// <returns>2 raised to the x power.</returns>
 	template<typename T>
 	Vec<3, T> Exp2(const Vec<3, T>& x);
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="x">Exp2 function is defined for input values of x defined in the range (inf-, inf+) in the limit of the type qualifier.</param>
+	/// <returns>2 raised to the x power.</returns>
 	template<typename T>
 	Vec<4, T> Exp2(const Vec<4, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="genType">Floating point scalar or vector type.</typeparam>
+	/// <param name="x">Log2 function is defined for input values of x defined in the range (0, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Base 2 log of x, i.e., returns the value y, which satisfies the equation x = 2^y.</returns>
 	template<typename genType>
 	genType Log2(genType x);
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <param name="x">Log2 function is defined for input values of x defined in the range (0, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Base 2 log of x, i.e., returns the value y, which satisfies the equation x = 2^y.</returns>
 	template<typename T>
 	Vec<2, T> Log2(const Vec<2, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <param name="x">Log2 function is defined for input values of x defined in the range (0, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Base 2 log of x, i.e., returns the value y, which satisfies the equation x = 2^y.</returns>
 	template<typename T>
 	Vec<3, T> Log2(const Vec<3, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <param name="x">Log2 function is defined for input values of x defined in the range (0, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Base 2 log of x, i.e., returns the value y, which satisfies the equation x = 2^y.</returns>
 	template<typename T>
 	Vec<4, T> Log2(const Vec<4, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar or vector type.</typeparam>
+	/// <returns>Positive square root of x.</returns>
 	template<typename T>
 	T Sqrt(T x);
-	
+
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <param name="x">Sqrt function is defined for input values of x defined in the range [0, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Positive square root of x.</returns>
 	template<typename T>
 	Vec<2, T> Sqrt(const Vec<2, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <param name="x">Sqrt function is defined for input values of x defined in the range [0, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Positive square root of x.</returns>
 	template<typename T>
 	Vec<3, T> Sqrt(const Vec<3, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <param name="x">Sqrt function is defined for input values of x defined in the range [0, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Positive square root of x.</returns>
 	template<typename T>
 	Vec<4, T> Sqrt(const Vec<4, T>& x);
 
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>Sqaure root of a quaternion.</returns>
 	template<typename T>
 	tQuaternion<T> Sqrt(const tQuaternion<T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="genType">Floating-point scalar or vector type.</typeparam>
+	/// <param name="x">InverserSqrt function is defined for input values of x defined in the range [0, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Reciprocal of the positive square root of x.</returns>
 	template<typename genType>
 	genType InverseSqrt(genType x);
 
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <param name="x">InverserSqrt function is defined for input values of x defined in the range [0, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Reciprocal of the positive square root of x.</returns>
 	template<typename T>
 	Vec<2, T> InverseSqrt(const Vec<2, T>& x);
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <param name="x">InverserSqrt function is defined for input values of x defined in the range [0, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Reciprocal of the positive square root of x.</returns>
 	template<typename T>
 	Vec<3, T> InverseSqrt(const Vec<3, T>& x);
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <param name="x">InverserSqrt function is defined for input values of x defined in the range [0, inf+) in the limit of the type qualifier.</param>
+	/// <returns>Reciprocal of the positive square root of x.</returns>
 	template<typename T>
 	Vec<4, T> InverseSqrt(const Vec<4, T>& x);
 
@@ -667,99 +1346,172 @@ namespace TRAP::Math
 	//Geometric----------------------------------------------------------------------------------------------------------//
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <typeparam name="T">Floating-point scalar or vector type.</typeparam>
+	/// <returns>Length of x, i.e., Sqrt(x * x).</returns>
 	template<typename genType>
 	genType Length(genType x);
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Length of x, i.e., Sqrt(x * x).</returns>
 	template<typename T>
 	T Length(const Vec<2, T>& v);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Length of x, i.e., Sqrt(x * x).</returns>
 	template<typename T>
 	T Length(const Vec<3, T>& v);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Length of x, i.e., Sqrt(x * x).</returns>
 	template<typename T>
 	T Length(const Vec<4, T>& v);
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Norm of a quaternion.</returns>
 	template<typename T>
 	T Length(const tQuaternion<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar or vector type.</typeparam>
+	/// <returns>Distance between p0 and p1, i.e., Length(p0 - p1).</returns>
 	template<typename genType>
 	genType Distance(const genType& p0, const genType& p1);
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Distance between p0 and p1, i.e., Length(p0 - p1).</returns>
 	template<typename T>
 	T Distance(const Vec<2, T>& p0, const Vec<2, T>& p1);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Distance between p0 and p1, i.e., Length(p0 - p1).</returns>
 	template<typename T>
 	T Distance(const Vec<3, T>& p0, const Vec<3, T>& p1);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Distance between p0 and p1, i.e., Length(p0 - p1).</returns>
 	template<typename T>
 	T Distance(const Vec<4, T>& p0, const Vec<4, T>& p1);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar or vector type.</typeparam>
+	/// <returns>Dot product of x and y, i.e., result = x * y.</returns>
 	template<typename T>
 	T Dot(T x, T y);
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Dot product of x and y, i.e., result = x * y.</returns>
 	template<typename T>
 	T Dot(const Vec<2, T>& x, const Vec<2, T>& y);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Dot product of x and y, i.e., result = x * y.</returns>
 	template<typename T>
 	T Dot(const Vec<3, T>& x, const Vec<3, T>& y);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Dot product of x and y, i.e., result = x * y.</returns>
 	template<typename T>
 	T Dot(const Vec<4, T>& x, const Vec<4, T>& y);
 
+	/// <summary>
+	/// Compute a cross product.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Compute a cross product.</returns>
 	template<typename T>
 	T Dot(const tQuaternion<T>& x, const tQuaternion<T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Compute a cross product.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Cross product of x and y.</returns>
 	template<typename T>
 	Vec<3, T> Cross(const Vec<3, T>& x, const Vec<3, T>& y);
 
+	/// <summary>
+	/// Compute a cross product.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Compute a cross product.</returns>
 	template<typename T>
 	tQuaternion<T> Cross(const tQuaternion<T>& q1, const tQuaternion<T>& q2);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Vector in the same direction as x but with a length of 1.</returns>
 	template<typename T>
 	Vec<2, T> Normalize(const Vec<2, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Vector in the same direction as x but with a length of 1.</returns>
 	template<typename T>
 	Vec<3, T> Normalize(const Vec<3, T>& x);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Vector in the same direction as x but with a length of 1.</returns>
 	template<typename T>
 	Vec<4, T> Normalize(const Vec<4, T>& x);
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Normalized quaternion.</returns>
 	template<typename T>
 	tQuaternion<T> Normalize(const tQuaternion<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>If Dot(NRef, I) < 0.0, returns N, otherwise; returns -N.</returns>
 	template<typename genType>
 	genType FaceForward(const genType& N, const genType& I, const genType& NRef);
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>If Dot(NRef, I) < 0.0, returns N, otherwise; returns -N.</returns>
 	template<typename T>
 	Vec<2, T> FaceForward(const Vec<2, T>& N, const Vec<2, T>& I, const Vec<2, T>& NRef);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>If Dot(NRef, I) < 0.0, returns N, otherwise; returns -N.</returns>
 	template<typename T>
 	Vec<3, T> FaceForward(const Vec<3, T>& N, const Vec<3, T>& I, const Vec<3, T>& NRef);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>If Dot(NRef, I) < 0.0, returns N, otherwise; returns -N.</returns>
 	template<typename T>
 	Vec<4, T> FaceForward(const Vec<4, T>& N, const Vec<4, T>& I, const Vec<4, T>& NRef);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>For the incident vector I and surface orientation N, returns the reflection direction: result = I - 2.0 * Dot(N, I) * N.</returns>
 	template<typename genType>
 	genType Reflect(const genType& I, const genType& N);
 
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>For the incident vector I and surface orientation N, returns the reflection direction: result = I - 2.0 * Dot(N, I) * N.</returns>
 	template<typename T>
 	Vec<2, T> Reflect(const Vec<2, T>& I, const Vec<2, T>& N);
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>For the incident vector I and surface orientation N, returns the reflection direction: result = I - 2.0 * Dot(N, I) * N.</returns>
 	template<typename T>
 	Vec<3, T> Reflect(const Vec<3, T>& I, const Vec<3, T>& N);
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>For the incident vector I and surface orientation N, returns the reflection direction: result = I - 2.0 * Dot(N, I) * N.</returns>
 	template<typename T>
 	Vec<4, T> Reflect(const Vec<4, T>& I, const Vec<4, T>& N);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>For the incident vector I and surface normal N, and the ratio of indices of refraction eta, returns the refraction vector.</returns>
 	template<typename genType>
 	genType Refract(const genType& I, const genType& N, genType eta);
 
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>For the incident vector I and surface normal N, and the ratio of indices of refraction eta, returns the refraction vector.</returns>
 	template<typename T>
 	Vec<2, T> Refract(const Vec<2, T>& I, const Vec<2, T>& N, T eta);
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>For the incident vector I and surface normal N, and the ratio of indices of refraction eta, returns the refraction vector.</returns>
 	template<typename T>
 	Vec<3, T> Refract(const Vec<3, T>& I, const Vec<3, T>& N, T eta);
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>For the incident vector I and surface normal N, and the ratio of indices of refraction eta, returns the refraction vector.</returns>
 	template<typename T>
 	Vec<4, T> Refract(const Vec<4, T>& I, const Vec<4, T>& N, T eta);
 
@@ -767,105 +1519,297 @@ namespace TRAP::Math
 	//Matrix-------------------------------------------------------------------------------------------------------------//
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <summary>
+	/// Multiply matrix x by matrix y component-wise, i.e., result[i][j] is the scalar product of x[i][j] and y[i][j].
+	/// </summary>
+	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <returns>Multiplied matrix.</returns>
 	template<typename T>
 	Mat<3, 3, T> MatrixCompMult(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y);
+	/// <summary>
+	/// Multiply matrix x by matrix y component-wise, i.e., result[i][j] is the scalar product of x[i][j] and y[i][j].
+	/// </summary>
+	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <returns>Multiplied matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> MatrixCompMult(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Treats the first parameter c as a column vector and the second paramter r as a row
+	/// vector and does a linear algebraic matrix multiply c * r.
+	/// </summary>
+	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <returns>Multiplied matrix.</returns>
 	template<typename T>
 	Mat<3, 3, T> OuterProduct(const Vec<3, T>& c, const Vec<3, T>& r);
+	/// <summary>
+	/// Treats the first parameter c as a column vector and the second paramter r as a row
+	/// vector and does a linear algebraic matrix multiply c * r.
+	/// </summary>
+	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <returns>Multiplied matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> OuterProduct(const Vec<4, T>& c, const Vec<4, T>& r);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <returns>Transpoed matrix of m.</returns>
 	template<typename T>
 	typename Mat<3, 3, T>::transposeType Transpose(const Mat<3, 3, T>& m);
+	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <returns>Transpoed matrix of m.</returns>
 	template<typename T>
 	typename Mat<4, 4, T>::transposeType Transpose(const Mat<4, 4, T>& m);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <returns>Determinant of a sqaured matrix.</returns>
 	template<typename T>
 	T Determinant(const Mat<3, 3, T>& m);
+	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <returns>Determinant of a sqaured matrix.</returns>
 	template<typename T>
 	T Determinant(const Mat<4, 4, T>& m);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <returns>Inverse of a sqaured matrix.</returns>
 	template<typename T>
 	Mat<3, 3, T> Inverse(const Mat<3, 3, T>& m);
+	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <returns>Inverse of a sqaured matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> Inverse(const Mat<4, 4, T>& m);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Create a matrix for projecting two-dimensional coordinates onto the screen.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>Projection matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> Orthographic(T left, T right, T bottom, T top);
-
+	/// <summary>
+	/// Create a matrix for an orthographic parallel viewing volume.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>Projection matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> Orthographic(T left, T right, T bottom, T top, T zNear, T zFar);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Creates a frustum matrix.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>Frustum matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> Frustum(T left, T right, T bottom, T top, T nearVal, T farVal);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Creates a matrix for a symetric perspective-view frustum.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="fovY">Specifies the field of view angle in the y direction. Expressed in radians.</param>
+	/// <param name="aspect">Specified the aspect ratio that determines the field of view in the x direction. The aspect ratio is the ratio of x(width) to y(height).</param>
+	/// <param name="zNear">Specifies the distance from the viewer to the near clipping plange (always positive).</param>
+	/// <param name="zFar">Specifies the distance from the viewer to the far clipping plane (always positive).</param>
+	/// <returns>Perspective-view matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> Perspective(T fovY, T aspect, T zNear, T zFar);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Builds a perspective projection matrix based on a field of view.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="fov">Expressed in radians.</param>
+	/// <param name="width">Width of the viewport.</param>
+	/// <param name="height">Height of the viewport.</param>
+	/// <param name="zNear">Specifies the distance from the viewer to the near clipping plane (always positive).</param>
+	/// <param name="zFar">Specifies the distance from the viewer to the far clipping plange (always positive).</param>
+	/// <returns>Field of view based perspective projection matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> PerspectiveFoV(T fov, T width, T height, T zNear, T zFar);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Creates a matrix for a symmetric perspective-view frustum with far plane at infinite.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="fovY">Specifies the field of view angle, in degrees, in the y direction. Expressed in radians.</param>
+	/// <param name="aspect"></param>
+	/// <param name="zNear"></param>
+	/// <returns>Symmetric perspective matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> InfinitePerspective(T fovY, T aspect, T zNear);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// If genTypeU is a floating scalar or vector:<br>
+	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.<br>
+	/// The value for a is not restricted to the range [0, 1].<br>
+	/// <br>
+	/// If genTypeU is a boolean scalar or vector:<br>
+	/// Select which vector each returned component comes from.
+	/// For a component of 'a' that is false, the corresponding component of 'x' is returned.
+	/// For a compoennt of 'a' that is true, the corresponding component of 'y' is returned.
+	/// Components of 'x' and 'y' that are not selected are allowed to be invalid floating point values and will have no effect on the results.
+	/// </summary>
+	/// <typeparam name="genTypeT">Floating-point scalar or vector.</typeparam>
+	/// <typeparam name="genTypeU">Floating-point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT!</typeparam>
+	/// <param name="x">Value to interpolate.</param>
+	/// <param name="y">Value to interpolate.</param>
+	/// <param name="a">Interpolant.</param>
+	/// <returns>See description.</returns>
 	template<typename T, typename U>
 	Mat<3, 3, T> Mix(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, const Mat<3, 3, U>& a);
+	/// <summary>
+	/// If genTypeU is a floating scalar or vector:<br>
+	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.<br>
+	/// The value for a is not restricted to the range [0, 1].<br>
+	/// <br>
+	/// If genTypeU is a boolean scalar or vector:<br>
+	/// Select which vector each returned component comes from.
+	/// For a component of 'a' that is false, the corresponding component of 'x' is returned.
+	/// For a compoennt of 'a' that is true, the corresponding component of 'y' is returned.
+	/// Components of 'x' and 'y' that are not selected are allowed to be invalid floating point values and will have no effect on the results.
+	/// </summary>
+	/// <typeparam name="genTypeT">Floating-point scalar or vector.</typeparam>
+	/// <typeparam name="genTypeU">Floating-point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT!</typeparam>
+	/// <param name="x">Value to interpolate.</param>
+	/// <param name="y">Value to interpolate.</param>
+	/// <param name="a">Interpolant.</param>
+	/// <returns>See description.</returns>
 	template<typename T, typename U>
 	Mat<4, 4, T> Mix(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, const Mat<4, 4, U>& a);
 
+	/// <summary>
+	/// If genTypeU is a floating scalar or vector:<br>
+	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.<br>
+	/// The value for a is not restricted to the range [0, 1].<br>
+	/// <br>
+	/// If genTypeU is a boolean scalar or vector:<br>
+	/// Select which vector each returned component comes from.
+	/// For a component of 'a' that is false, the corresponding component of 'x' is returned.
+	/// For a compoennt of 'a' that is true, the corresponding component of 'y' is returned.
+	/// Components of 'x' and 'y' that are not selected are allowed to be invalid floating point values and will have no effect on the results.
+	/// </summary>
+	/// <typeparam name="genTypeT">Floating-point scalar or vector.</typeparam>
+	/// <typeparam name="genTypeU">Floating-point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT!</typeparam>
+	/// <param name="x">Value to interpolate.</param>
+	/// <param name="y">Value to interpolate.</param>
+	/// <param name="a">Interpolant.</param>
+	/// <returns>See description.</returns>
 	template<typename T, typename U>
 	Mat<3, 3, T> Mix(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, U a);
+	/// <summary>
+	/// If genTypeU is a floating scalar or vector:<br>
+	/// Returns x * (1.0f - 1) + y * a, i.e., the linear blend of x and y using the floating-point value a.<br>
+	/// The value for a is not restricted to the range [0, 1].<br>
+	/// <br>
+	/// If genTypeU is a boolean scalar or vector:<br>
+	/// Select which vector each returned component comes from.
+	/// For a component of 'a' that is false, the corresponding component of 'x' is returned.
+	/// For a compoennt of 'a' that is true, the corresponding component of 'y' is returned.
+	/// Components of 'x' and 'y' that are not selected are allowed to be invalid floating point values and will have no effect on the results.
+	/// </summary>
+	/// <typeparam name="genTypeT">Floating-point scalar or vector.</typeparam>
+	/// <typeparam name="genTypeU">Floating-point or boolean scalar or vector. It can't be a vector if it is the length of genTypeT!</typeparam>
+	/// <param name="x">Value to interpolate.</param>
+	/// <param name="y">Value to interpolate.</param>
+	/// <param name="a">Interpolant.</param>
+	/// <returns>See description.</returns>
 	template<typename T, typename U>
 	Mat<4, 4, T> Mix(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, U a);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Builds a translation 4 * 4 matrix created from a vector of 3 components.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="m">Input matrix multiplied by this translation matrix.</param>
+	/// <param name="v">Coordinates of a translation vector.</param>
+	/// <returns>Translation matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> Translate(const Mat<4, 4, T>& m, const Vec<3, T>& v);
 	
+	/// <summary>
+	/// Transforms a matrix with a translation 4 * 4 matrix created from 3 scalars.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="v">Coordinate of a translation vector.</param>
+	/// <returns>Transformation matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> Translate(const Vec<3, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Builds a rotation 4 * 4 matrix created from an axis vector and an angle.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="m">Input matrix multiplied by this rotation matrix.</param>
+	/// <param name="angleInRadians">Rotation angle expressed in radians.</param>
+	/// <param name="v">Rotation axis, recommended to be normalized.</param>
+	/// <returns>Rotation matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> Rotate(const Mat<4, 4, T>& m, T angleInRadians, const Vec<3, T>& v);
 
+	/// <summary>
+	/// Builds a rotation 4 * 4 matrix created from an axis of 3 scalars and an angle expressed in radians.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="angleInRadians">Rotation angle expressed in radians.</param>
+	/// <param name="v">Scalar</param>
+	/// <returns>Rotation matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> Rotate(T angleInRadians, const Vec<3, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Builds a scale 4 * 4 matrix created from 3 scalars.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="m">Input matrix multiplied by this scale matrix.</param>
+	/// <param name="v">Ratio of scaling for each axis.</param>
+	/// <returns>Scaled matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> Scale(const Mat<4, 4, T>& m, const Vec<3, T>& v);
 
+	/// <summary>
+	/// Transforms a matrix with a scale 4 * 4 matrix created from a vector of 3 components.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="v">3 Component vector.</param>
+	/// <returns>Scaled matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> Scale(const Vec<3, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Build a look at view matrix.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="eye">Position of the camera.</param>
+	/// <param name="center">Position where the camera is looking at.</param>
+	/// <param name="up">Normalized up vector, how the camera is oriented. Typically (0, 0, 1).</param>
+	/// <returns>Look at view matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> LookAt(const Vec<3, T>& eye, const Vec<3, T>& center, const Vec<3, T>& up);
 
@@ -873,111 +1817,193 @@ namespace TRAP::Math
 	//Quaternion---------------------------------------------------------------------------------------------------------//
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Spherical linear interpolation of two quaternions.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="x">A quaternion.</param>
+	/// <param name="y">A quaternion.</param>
+	/// <param name="a">Interpolation factor. The interpolation is defined beyond the range [0, 1].</param>
+	/// <returns>Interpolated quaternions.</returns>
 	template<typename T>
 	tQuaternion<T> SLerp(const tQuaternion<T>& x, const tQuaternion<T>& y, T a);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>Conjugated quaternion.</returns>
 	template<typename T>
 	tQuaternion<T> Conjugate(const tQuaternion<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>Inverted quaternion.</returns>
 	template<typename T>
 	tQuaternion<T> Inverse(const tQuaternion<T>& q);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>Euler angles, pitch as x, yaw as y, roll as z. The result is expressed in radians.</returns>
 	template<typename T>
 	Vec<3, T> EulerAngles(const tQuaternion<T>& x);	
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>Roll value of euler angles expressed in radians.</returns>
 	template<typename T>
-	T Roll(const tQuaternion<T>& x);	
+	T Roll(const tQuaternion<T>& q);	
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>Pitch value of euler angles expressed in radians.</returns>
 	template<typename T>
 	T Pitch(const tQuaternion<T>& q);
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Yaw value of euler angles expressed in radians.</returns>
 	template<typename T>
 	T Yaw(const tQuaternion<T>& x);
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Converts a quaternion to a 3 * 3 matrix.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Converted matrix.</returns>
 	template<typename T>
 	Mat<3, 3, T> Mat3Cast(const tQuaternion<T>& q);
+	/// <summary>
+	/// Converts a quaternion to a 4 * 4 matrix.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Converted matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> Mat4Cast(const tQuaternion<T>& q);
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Converts a pure rotation 3 * 3 matrix to a quaternion.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Converted quaternion.</returns>
 	template<typename T>
 	tQuaternion<T> QuaternionCast(const Mat<3, 3, T>& m);
+	/// <summary>
+	/// Converts a pure rotation 4 * 4 matrix to a quaternion.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Converted quaternion.</returns>
 	template<typename T>
 	tQuaternion<T> QuaternionCast(const Mat<4, 4, T>& m);
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Component-wise comparison result of x < y.</returns>
 	template<typename T>
 	Vec<4, bool> LessThan(const tQuaternion<T>& x, const tQuaternion<T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Component-wise comparison result of x <= y.</returns>
 	template<typename T>
 	Vec<4, bool> LessThanEqual(const tQuaternion<T>& x, const tQuaternion<T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Component-wise comparison result of x > y.</returns>
 	template<typename T>
 	Vec<4, bool> GreaterThan(const tQuaternion<T>& x, const tQuaternion<T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Component-wise comparison result of x >= y.</returns>
 	template<typename T>
 	Vec<4, bool> GreaterThanEqual(const tQuaternion<T>& x, const tQuaternion<T>& y);
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Build a look at quaternion.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <param name="direction">Desired forward direction. Needs to be normalized.</param>
+	/// <param name="up">Up vector, how the camera is oriented. Typically (0, 1, 0).</param>
+	/// <returns>Look at quaternion.</returns>
 	template<typename T>
 	tQuaternion<T> QuaternionLookAt(const Vec<3, T>& direction, const Vec<3, T>& up);
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Component-wise comparison of result x == y.</returns>
 	template<typename T>
 	Vec<4, bool> Equal(const tQuaternion<T>& x, const tQuaternion<T>& y);
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Component-wise comparison of |x - y| < epsilon.</returns>
 	template<typename T>
 	Vec<4, bool> Equal(const tQuaternion<T>& x, const tQuaternion<T>& y, T epsilon);	
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Component-wise comparison of result x != y.</returns>
 	template<typename T>
 	Vec<4, bool> NotEqual(const tQuaternion<T>& x, const tQuaternion<T>& y);
 	
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Component-wise comparison of |x - y| >= epsilon.</returns>
 	template<typename T>
 	Vec<4, bool> NotEqual(const tQuaternion<T>& x, const tQuaternion<T>& y, T epsilon);	
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>Quaternion rotation angle.</returns>
 	template<typename T>
 	T Angle(const tQuaternion<T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>Rotation axis.</returns>
 	template<typename T>
 	Vec<3, T> Axis(const tQuaternion<T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Build a quaternion from an angle and a normalized axis.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="angle">Angle expressed in radians.</param>
+	/// <param name="v">Axis of the quaternion, must be normalized.</param>
+	/// <returns>Quaternion.</returns>
 	template<typename T>
 	tQuaternion<T> AngleAxis(const T& angle, const Vec<3, T>& v);
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Rotates a quaternion from a vector of 3 components axis and an angle.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <param name="q">Sourcec orientation.</param>
+	/// <param name="angle">Angle expressed in radians.</param>
+	/// <param name="v">Axis of the rotation.</param>
+	/// <returns>Rotated quaternion.</returns>
 	template<typename T>
 	tQuaternion<T> Rotate(const tQuaternion<T>& q, const T& angle, const Vec<3, T>& v);
 	
@@ -985,264 +2011,636 @@ namespace TRAP::Math
 	//Vector-------------------------------------------------------------------------------------------------------------//
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <returns>Normalized rotation vector for the x-axis.</returns>
 	template<typename T>
 	constexpr Vec<3, T> XAxis();
 
+	/// <returns>Normalized rotation vector for the x-axis.</returns>
 	template<typename T>
 	constexpr Vec<3, T> YAxis();
 
+	/// <returns>Normalized rotation vector for the x-axis.</returns>
 	template<typename T>
 	constexpr Vec<3, T> ZAxis();
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 	
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x < y.</returns>
 	template<typename T>
 	constexpr Vec<2, bool> LessThan(const Vec<2, T>& x, const Vec<2, T>& y);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x < y.</returns>
 	template<typename T>
 	constexpr Vec<3, bool> LessThan(const Vec<3, T>& x, const Vec<3, T>& y);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x < y.</returns>
 	template<typename T>
 	constexpr Vec<4, bool> LessThan(const Vec<4, T>& x, const Vec<4, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x <= y.</returns>
 	template<typename T>
 	constexpr Vec<2, bool> LessThanEqual(const Vec<2, T>& x, const Vec<2, T>& y);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x <= y.</returns>
 	template<typename T>
 	constexpr Vec<3, bool> LessThanEqual(const Vec<3, T>& x, const Vec<3, T>& y);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x <= y.</returns>
 	template<typename T>
 	constexpr Vec<4, bool> LessThanEqual(const Vec<4, T>& x, const Vec<4, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x > y.</returns>
 	template<typename T>
 	constexpr Vec<2, bool> GreaterThan(const Vec<2, T>& x, const Vec<2, T>& y);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x > y.</returns>
 	template<typename T>
 	constexpr Vec<3, bool> GreaterThan(const Vec<3, T>& x, const Vec<3, T>& y);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x > y.</returns>
 	template<typename T>
 	constexpr Vec<4, bool> GreaterThan(const Vec<4, T>& x, const Vec<4, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x >= y.</returns>
 	template<typename T>
 	constexpr Vec<2, bool> GreaterThanEqual(const Vec<2, T>& x, const Vec<2, T>& y);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x >= y.</returns>
 	template<typename T>
 	constexpr Vec<3, bool> GreaterThanEqual(const Vec<3, T>& x, const Vec<3, T>& y);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x >= y.</returns>
 	template<typename T>
 	constexpr Vec<4, bool> GreaterThanEqual(const Vec<4, T>& x, const Vec<4, T>& y);
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x == y.</returns>
 	template<typename T>
 	constexpr Vec<2, bool> Equal(const Vec<2, T>& x, const Vec<2, T>& y);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x == y.</returns>
 	template<typename T>
 	constexpr Vec<3, bool> Equal(const Vec<3, T>& x, const Vec<3, T>& y);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x == y.</returns>
 	template<typename T>
 	constexpr Vec<4, bool> Equal(const Vec<4, T>& x, const Vec<4, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x != y.</returns>
 	template<typename T>
 	constexpr Vec<2, bool> NotEqual(const Vec<2, T>& x, const Vec<2, T>& y);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x != y.</returns>
 	template<typename T>
 	constexpr Vec<3, bool> NotEqual(const Vec<3, T>& x, const Vec<3, T>& y);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x != y.</returns>
 	template<typename T>
 	constexpr Vec<4, bool> NotEqual(const Vec<4, T>& x, const Vec<4, T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <returns>True if any component of v is true.</returns>
 	constexpr bool Any(const Vec<2, bool>& v);
+	/// <returns>True if any component of v is true.</returns>
 	constexpr bool Any(const Vec<3, bool>& v);
+	/// <returns>True if any component of v is true.</returns>
 	constexpr bool Any(const Vec<4, bool>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <returns>True if all component of v are true.</returns>
 	constexpr bool All(const Vec<2, bool>& v);
+	/// <returns>True if all component of v are true.</returns>
 	constexpr bool All(const Vec<3, bool>& v);
+	/// <returns>True if all component of v are true.</returns>
 	constexpr bool All(const Vec<4, bool>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <returns>Component-wise logical complement of x.</returns>
 	constexpr Vec<2, bool> Not(const Vec<2, bool>& v);
+	/// <returns>Component-wise logical complement of x.</returns>
 	constexpr Vec<3, bool> Not(const Vec<3, bool>& v);
+	/// <returns>Component-wise logical complement of x.</returns>
 	constexpr Vec<4, bool> Not(const Vec<4, bool>& v);
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Trigonometric------------------------------------------------------------------------------------------------------//
 	//-------------------------------------------------------------------------------------------------------------------//
-	
+
+	/// <summary>
+	/// Converts degrees to radians and returns the result.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Radians.</returns>
 	template<typename genType>
 	constexpr genType Radians(genType degrees);
 
+	/// <summary>
+	/// Converts degrees to radians and returns the result.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Radians.</returns>
 	template<typename T>
 	constexpr Vec<2, T> Radians(const Vec<2, T>& v);
+	/// <summary>
+	/// Converts degrees to radians and returns the result.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Radians.</returns>
 	template<typename T>
 	constexpr Vec<3, T> Radians(const Vec<3, T>& v);
+	/// <summary>
+	/// Converts degrees to radians and returns the result.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Radians.</returns>
 	template<typename T>
 	constexpr Vec<4, T> Radians(const Vec<4, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Converts radians to degrees and returns the result.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Degrees.</returns>
 	template<typename genType>
 	constexpr genType Degrees(genType radians);
 
+	/// <summary>
+	/// Converts radians to degrees and returns the result.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Degrees.</returns>
 	template<typename T>
 	constexpr Vec<2, T> Degrees(const Vec<2, T>& v);
+	/// <summary>
+	/// Converts radians to degrees and returns the result.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Degrees.</returns>
 	template<typename T>
 	constexpr Vec<3, T> Degrees(const Vec<3, T>& v);
+	/// <summary>
+	/// Converts radians to degrees and returns the result.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Degrees.</returns>
 	template<typename T>
 	constexpr Vec<4, T> Degrees(const Vec<4, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Standard trigonometric sine functon.<br>
+	/// Values returned by this function will range from [-1, 1].
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Sine.</returns>
 	template<typename T>
 	T Sin(T x);
 	
+	/// <summary>
+	/// Standard trigonometric sine functon.<br>
+	/// Values returned by this function will range from [-1, 1].
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Sine.</returns>
 	template<typename T>
 	Vec<2, T> Sin(const Vec<2, T>& v);
+	/// <summary>
+	/// Standard trigonometric sine functon.<br>
+	/// Values returned by this function will range from [-1, 1].
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Sine.</returns>
 	template<typename T>
 	Vec<3, T> Sin(const Vec<3, T>& v);
+	/// <summary>
+	/// Standard trigonometric sine functon.<br>
+	/// Values returned by this function will range from [-1, 1].
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Sine.</returns>
 	template<typename T>
 	Vec<4, T> Sin(const Vec<4, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Standard trigonometric cosine functon.<br>
+	/// Values returned by this function will range from [-1, 1].
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Cosine.</returns>
 	template<typename T>
 	T Cos(T x);
 
+	/// <summary>
+	/// Standard trigonometric cosine functon.<br>
+	/// Values returned by this function will range from [-1, 1].
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Cosine.</returns>
 	template<typename T>
 	Vec<2, T> Cos(const Vec<2, T>& v);
+	/// <summary>
+	/// Standard trigonometric cosine functon.<br>
+	/// Values returned by this function will range from [-1, 1].
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Cosine.</returns>
 	template<typename T>
 	Vec<3, T> Cos(const Vec<3, T>& v);
+	/// <summary>
+	/// Standard trigonometric cosine functon.<br>
+	/// Values returned by this function will range from [-1, 1].
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Cosine.</returns>
 	template<typename T>
 	Vec<4, T> Cos(const Vec<4, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Standard trigonometric tangent functon.<br>
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Tangent.</returns>
 	template<typename T>
 	T Tan(T x);
 	
+	/// <summary>
+	/// Standard trigonometric tangent functon.<br>
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Tangent.</returns>
 	template<typename T>
 	Vec<2, T> Tan(const Vec<2, T>& v);
+	/// <summary>
+	/// Standard trigonometric tangent functon.<br>
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Tangent.</returns>
 	template<typename T>
 	Vec<3, T> Tan(const Vec<3, T>& v);
+	/// <summary>
+	/// Standard trigonometric tangent functon.<br>
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Tangent.</returns>
 	template<typename T>
 	Vec<4, T> Tan(const Vec<4, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Arc sine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>
+	/// Angle whose sine is x.<br>
+	/// The range of values returned by this function is [-PI / 2, PI / 2].<br>
+	/// Note: Results are undefined if |x| > 1!
+	/// </returns>
 	template<typename T>
 	T ASin(T x);
 	
+	/// <summary>
+	/// Arc sine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>
+	/// Angle whose sine is x.<br>
+	/// The range of values returned by this function is [-PI / 2, PI / 2].<br>
+	/// Note: Results are undefined if |x| > 1!
+	/// </returns>
 	template<typename T>
 	Vec<2, T> ASin(const Vec<2, T>& v);
+	/// <summary>
+	/// Arc sine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>
+	/// Angle whose sine is x.<br>
+	/// The range of values returned by this function is [-PI / 2, PI / 2].<br>
+	/// Note: Results are undefined if |x| > 1!
+	/// </returns>
 	template<typename T>
 	Vec<3, T> ASin(const Vec<3, T>& v);
+	/// <summary>
+	/// Arc sine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>
+	/// Angle whose sine is x.<br>
+	/// The range of values returned by this function is [-PI / 2, PI / 2].<br>
+	/// Note: Results are undefined if |x| > 1!
+	/// </returns>
 	template<typename T>
 	Vec<4, T> ASin(const Vec<4, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Arc cosine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>
+	/// Angle whose cosine is x.
+	/// The range of values returned by this function is [0, PI].<br>
+	/// Note: Results are undefined if |x| > 1!
+	/// </returns>
 	template<typename T>
 	T ACos(T x);
 	
+	/// <summary>
+	/// Arc cosine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>
+	/// Angle whose cosine is x.
+	/// The range of values returned by this function is [0, PI].<br>
+	/// Note: Results are undefined if |x| > 1!
+	/// </returns>
 	template<typename T>
 	Vec<2, T> ACos(const Vec<2, T>& v);
+	/// <summary>
+	/// Arc cosine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>
+	/// Angle whose cosine is x.
+	/// The range of values returned by this function is [0, PI].<br>
+	/// Note: Results are undefined if |x| > 1!
+	/// </returns>
 	template<typename T>
 	Vec<3, T> ACos(const Vec<3, T>& v);
+	/// <summary>
+	/// Arc cosine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <returns>
+	/// Angle whose cosine is x.
+	/// The range of values returned by this function is [0, PI].<br>
+	/// Note: Results are undefined if |x| > 1!
+	/// </returns>
 	template<typename T>
 	Vec<4, T> ACos(const Vec<4, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Arc tangent.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>
+	/// Angle whose tangent is y / x.<br>
+	/// The signs of x and y are used to determine what quadrant the angle is in.<br>
+	/// The range of values returned by this function is [-PI, PI].<br>
+	/// Note: Results are undefined if x and y are both 0!
+	/// </returns>
 	template<typename genType>
 	genType ATan(genType y, genType x);
 
+	/// <summary>
+	/// Arc tangent.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>
+	/// Angle whose tangent is y / x.<br>
+	/// The signs of x and y are used to determine what quadrant the angle is in.<br>
+	/// The range of values returned by this function is [-PI, PI].<br>
+	/// Note: Results are undefined if x and y are both 0!
+	/// </returns>
 	template<typename T>
 	Vec<2, T> ATan(const Vec<2, T>& a, const Vec<2, T>& b);
+	/// <summary>
+	/// Arc tangent.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>
+	/// Angle whose tangent is y / x.<br>
+	/// The signs of x and y are used to determine what quadrant the angle is in.<br>
+	/// The range of values returned by this function is [-PI, PI].<br>
+	/// Note: Results are undefined if x and y are both 0!
+	/// </returns>
 	template<typename T>
 	Vec<3, T> ATan(const Vec<3, T>& a, const Vec<3, T>& b);
+	/// <summary>
+	/// Arc tangent.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>
+	/// Angle whose tangent is y / x.<br>
+	/// The signs of x and y are used to determine what quadrant the angle is in.<br>
+	/// The range of values returned by this function is [-PI, PI].<br>
+	/// Note: Results are undefined if x and y are both 0!
+	/// </returns>
 	template<typename T>
 	Vec<4, T> ATan(const Vec<4, T>& a, const Vec<4, T>& b);
 
+	/// <summary>
+	/// Arc tangent.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Angle whose tangent is y over x. The range of values returned by this function is [-PI / 2, PI / 2].</returns>
 	template<typename T>
 	T ATan(T x);
 	
+	/// <summary>
+	/// Arc tangent.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Angle whose tangent is y over x. The range of values returned by this function is [-PI / 2, PI / 2].</returns>
 	template<typename T>
 	Vec<2, T> ATan(const Vec<2, T>& v);
+	/// <summary>
+	/// Arc tangent.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Angle whose tangent is y over x. The range of values returned by this function is [-PI / 2, PI / 2].</returns>
 	template<typename T>
 	Vec<3, T> ATan(const Vec<3, T>& v);
+	/// <summary>
+	/// Arc tangent.
+	/// </summary>
+	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
+	/// <returns>Angle whose tangent is y over x. The range of values returned by this function is [-PI / 2, PI / 2].</returns>
 	template<typename T>
 	Vec<4, T> ATan(const Vec<4, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Hyperbolic sine function, (Exp(x) - Exp(-x)) / 2.</returns>
 	template<typename T>
 	T SinH(T x);
 	
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Hyperbolic sine function, (Exp(x) - Exp(-x)) / 2.</returns>
 	template<typename T>
 	Vec<2, T> SinH(const Vec<2, T>& v);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Hyperbolic sine function, (Exp(x) - Exp(-x)) / 2.</returns>
 	template<typename T>
 	Vec<3, T> SinH(const Vec<3, T>& v);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Hyperbolic sine function, (Exp(x) - Exp(-x)) / 2.</returns>
 	template<typename T>
 	Vec<4, T> SinH(const Vec<4, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Hyperbolic cosine function, (Exp(x) + Exp(-x)) / 2.</returns>
 	template<typename T>
 	T CosH(T x);
 	
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Hyperbolic cosine function, (Exp(x) + Exp(-x)) / 2.</returns>
 	template<typename T>
 	Vec<2, T> CosH(const Vec<2, T>& v);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Hyperbolic cosine function, (Exp(x) + Exp(-x)) / 2.</returns>
 	template<typename T>
 	Vec<3, T> CosH(const Vec<3, T>& v);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Hyperbolic cosine function, (Exp(x) + Exp(-x)) / 2.</returns>
 	template<typename T>
 	Vec<4, T> CosH(const Vec<4, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Hyperbolic tangent function, SinH(angle) / CosH(angle).</returns>
 	template<typename T>
 	T TanH(T x);
 	
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Hyperbolic tangent function, SinH(angle) / CosH(angle).</returns>
 	template<typename T>
 	Vec<2, T> TanH(const Vec<2, T>& v);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Hyperbolic tangent function, SinH(angle) / CosH(angle).</returns>
 	template<typename T>
 	Vec<3, T> TanH(const Vec<3, T>& v);
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Hyperbolic tangent function, SinH(angle) / CosH(angle).</returns>
 	template<typename T>
 	Vec<4, T> TanH(const Vec<4, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Ary hyperbolic sine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Inverse of SinH.</returns>
 	template<typename T>
 	T ASinH(T x);
 	
+	/// <summary>
+	/// Ary hyperbolic sine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Inverse of SinH.</returns>
 	template<typename T>
 	Vec<2, T> ASinH(const Vec<2, T>& v);
+	/// <summary>
+	/// Ary hyperbolic sine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Inverse of SinH.</returns>
 	template<typename T>
 	Vec<3, T> ASinH(const Vec<3, T>& v);
+	/// <summary>
+	/// Ary hyperbolic sine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Inverse of SinH.</returns>
 	template<typename T>
 	Vec<4, T> ASinH(const Vec<4, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Arc hyperbolic cosine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Non-negative inverse of CosH.</returns>
 	template<typename T>
 	T ACosH(T x);
 	
+	/// <summary>
+	/// Arc hyperbolic cosine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Non-negative inverse of CosH.</returns>
 	template<typename T>
 	Vec<2, T> ACosH(const Vec<2, T>& v);
+	/// <summary>
+	/// Arc hyperbolic cosine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Non-negative inverse of CosH.</returns>
 	template<typename T>
 	Vec<3, T> ACosH(const Vec<3, T>& v);
+	/// <summary>
+	/// Arc hyperbolic cosine.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Non-negative inverse of CosH.</returns>
 	template<typename T>
 	Vec<4, T> ACosH(const Vec<4, T>& v);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	/// <summary>
+	/// Arc hyperbolic tangent.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Inverse of TanH. Note: Results are undefined if Abs(x) >= 1!</returns>
 	template<typename T>
 	T ATanH(T x);
 	
+	/// <summary>
+	/// Arc hyperbolic tangent.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Inverse of TanH. Note: Results are undefined if Abs(x) >= 1!</returns>
 	template<typename T>
 	Vec<2, T> ATanH(const Vec<2, T>& v);
+	/// <summary>
+	/// Arc hyperbolic tangent.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Inverse of TanH. Note: Results are undefined if Abs(x) >= 1!</returns>
 	template<typename T>
 	Vec<3, T> ATanH(const Vec<3, T>& v);
+	/// <summary>
+	/// Arc hyperbolic tangent.
+	/// </summary>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <returns>Inverse of TanH. Note: Results are undefined if Abs(x) >= 1!</returns>
 	template<typename T>
 	Vec<4, T> ATanH(const Vec<4, T>& v);
 }
@@ -2309,7 +3707,9 @@ TRAP::Math::tQuaternion<T> TRAP::Math::Pow(const tQuaternion<T>& x, T y)
 		
 		//Prevent a division by 0 error later on
 		T vectorMagnitude = x.x * x.x + x.y * x.y + x.z * x.z;
-		if(Abs(vectorMagnitude - static_cast<T>(0)) < Epsilon<T>())
+		//if(Abs(vectorMagnitude - static_cast<T>(0)) < Epsilon<T>())
+		//Despite the compiler might say, we actually want to compare vectorMagnitude to 0.
+		if(vectorMagnitude < std::numeric_limits<T>::min())
 		{
 			//Equivalent to raising a real number to a power
 			return tQuaternion<T>(Pow(x.w, y), 0, 0, 0);
@@ -3362,9 +4762,15 @@ TRAP::Math::Vec<3, T> TRAP::Math::EulerAngles(const tQuaternion<T>& x)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
-T TRAP::Math::Roll(const tQuaternion<T>& x)
+T TRAP::Math::Roll(const tQuaternion<T>& q)
 {
-	return static_cast<T>(ATan(static_cast<T>(2)* (x.x * x.y + x.w * x.z), x.w* x.w + x.x * x.x - x.y * x.y - x.z * x.z));
+	const T y = static_cast<T>(2) * (q.x * q.y + q.w * q.z);
+	const T x = q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z;
+
+	if (All(Equal(tVec2<T>(x, y), tVec2<T>(0), Epsilon<T>())))
+		return static_cast<T>(0);
+
+	return static_cast<T>(ATan(y, x));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

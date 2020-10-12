@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::Network::HTTP::Response Class Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -82,7 +120,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Define a <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> response  
+<p>Define a <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> response.  
  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_h_t_t_p_8h_source.html">HTTP.h</a>&gt;</code></p>
@@ -120,13 +158,13 @@ Public Types</h2></td></tr>
 <b>ConnectionFailed</b> = 1001
 <br />
  }</td></tr>
-<tr class="memdesc:aa676f65ee242f56231f3f741cf3e6661"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumerate all the valid status codes for a response  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#aa676f65ee242f56231f3f741cf3e6661">More...</a><br /></td></tr>
+<tr class="memdesc:aa676f65ee242f56231f3f741cf3e6661"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumerate all the valid status codes for a response.  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#aa676f65ee242f56231f3f741cf3e6661">More...</a><br /></td></tr>
 <tr class="separator:aa676f65ee242f56231f3f741cf3e6661"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac93f6b67eb7e68c987156257f545895e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#ac93f6b67eb7e68c987156257f545895e">Response</a> ()</td></tr>
-<tr class="memdesc:ac93f6b67eb7e68c987156257f545895e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#ac93f6b67eb7e68c987156257f545895e">More...</a><br /></td></tr>
+<tr class="memdesc:ac93f6b67eb7e68c987156257f545895e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#ac93f6b67eb7e68c987156257f545895e">More...</a><br /></td></tr>
 <tr class="separator:ac93f6b67eb7e68c987156257f545895e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a167079d38a4ebf0f07f80d239ca472ec"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a167079d38a4ebf0f07f80d239ca472ec">GetField</a> (const std::string &amp;field) const</td></tr>
 <tr class="memdesc:a167079d38a4ebf0f07f80d239ca472ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the value of a field.<br  />
@@ -140,10 +178,10 @@ Public Member Functions</h2></td></tr>
  The status code should be the first thing to be checked after receiving a response, it defines whether it is a success, a failure or anything else (see the Status enumeration).  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a2f29e433a0e3ffddf66a6cf1aebd49ed">More...</a><br /></td></tr>
 <tr class="separator:a2f29e433a0e3ffddf66a6cf1aebd49ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae387b94d17ebadde6f5b7bf8ae7a27df"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#ae387b94d17ebadde6f5b7bf8ae7a27df">GetMajorHTTPVersion</a> () const</td></tr>
-<tr class="memdesc:ae387b94d17ebadde6f5b7bf8ae7a27df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the major <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> version number of the response  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#ae387b94d17ebadde6f5b7bf8ae7a27df">More...</a><br /></td></tr>
+<tr class="memdesc:ae387b94d17ebadde6f5b7bf8ae7a27df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the major <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> version number of the response.  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#ae387b94d17ebadde6f5b7bf8ae7a27df">More...</a><br /></td></tr>
 <tr class="separator:ae387b94d17ebadde6f5b7bf8ae7a27df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a479e5f25c5a6f0bb89874939cfc780b6"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a479e5f25c5a6f0bb89874939cfc780b6">GetMinorHTTPVersion</a> () const</td></tr>
-<tr class="memdesc:a479e5f25c5a6f0bb89874939cfc780b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the minor <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> version number of the response  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a479e5f25c5a6f0bb89874939cfc780b6">More...</a><br /></td></tr>
+<tr class="memdesc:a479e5f25c5a6f0bb89874939cfc780b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the minor <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> version number of the response.  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a479e5f25c5a6f0bb89874939cfc780b6">More...</a><br /></td></tr>
 <tr class="separator:a479e5f25c5a6f0bb89874939cfc780b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70ddb5c6ce9e03bf864bd6f961bb6fb6"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a70ddb5c6ce9e03bf864bd6f961bb6fb6">GetBody</a> () const</td></tr>
 <tr class="memdesc:a70ddb5c6ce9e03bf864bd6f961bb6fb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the body of the response.<br  />
@@ -159,7 +197,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>HTTP</b></td></tr>
 <tr class="separator:a3058f3fff9e2363635db0473440a3ba5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Define a <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> response </p>
+<div class="textblock"><p>Define a <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> response. </p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="aa676f65ee242f56231f3f741cf3e6661"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa676f65ee242f56231f3f741cf3e6661">&#9670;&nbsp;</a></span>Status</h2>
@@ -181,7 +219,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>HTTP</b></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Enumerate all the valid status codes for a response </p>
+<p>Enumerate all the valid status codes for a response. </p>
 
 </div>
 </div>
@@ -201,7 +239,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>HTTP</b></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Default constructor </p>
+<p>Constructor. </p>
 
 </div>
 </div>
@@ -234,7 +272,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>HTTP</b></td></tr>
 </li>
 <li>an error message (in case of an error)</li>
 </ul>
-<dl class="section return"><dt>Returns</dt><dd>The response body</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The response body.</dd></dl>
 
 </div>
 </div>
@@ -260,11 +298,11 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>HTTP</b></td></tr>
  This function uses case-insensitive comparisons. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">field</td><td>Name of the field to get</td></tr>
+    <tr><td class="paramname">field</td><td>Name of the field to get.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Value of the field, or empty string if not found</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Value of the field, or empty string if not found.</dd></dl>
 
 </div>
 </div>
@@ -283,8 +321,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>HTTP</b></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the major <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> version number of the response </p>
-<dl class="section return"><dt>Returns</dt><dd>Major <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> version number</dd></dl>
+<p>Get the major <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> version number of the response. </p>
+<dl class="section return"><dt>Returns</dt><dd>Major <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> version number.</dd></dl>
 
 </div>
 </div>
@@ -303,8 +341,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>HTTP</b></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the minor <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> version number of the response </p>
-<dl class="section return"><dt>Returns</dt><dd>Minor <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> version number</dd></dl>
+<p>Get the minor <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> version number of the response. </p>
+<dl class="section return"><dt>Returns</dt><dd>Minor <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> version number.</dd></dl>
 
 </div>
 </div>
@@ -326,7 +364,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>HTTP</b></td></tr>
 <p>Get the response status code.<br  />
  <br  />
  The status code should be the first thing to be checked after receiving a response, it defines whether it is a success, a failure or anything else (see the Status enumeration). </p>
-<dl class="section return"><dt>Returns</dt><dd>Status code of the response</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Status code of the response.</dd></dl>
 
 </div>
 </div>

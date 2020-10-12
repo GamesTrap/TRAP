@@ -38,55 +38,55 @@ namespace TRAP::INTERNAL::Network
 {
 	/// <summary>
 	/// Helper class implementing all the non-portable
-	/// socket stuff; this is the Windows version
+	/// socket stuff; this is the Windows version.
 	/// </summary>
 	class SocketImpl
 	{
 	public:
 		/// <summary>
-		/// Types
+		/// Types.
 		/// </summary>
 		typedef int32_t AddressLength;
 
 		/// <summary>
-		/// Create an internal sockaddr_in address
+		/// Create an internal sockaddr_in address.
 		/// </summary>
-		/// <param name="address">Target address</param>
-		/// <param name="port">Target port</param>
-		/// <returns>sockaddr_in ready to be used by socket functions</returns>
+		/// <param name="address">Target address.</param>
+		/// <param name="port">Target port.</param>
+		/// <returns>sockaddr_in ready to be used by socket functions.</returns>
 		static sockaddr_in CreateAddress(uint32_t address, uint16_t port);
 
 		/// <summary>
-		/// Create an internal sockaddr_in address
+		/// Create an internal sockaddr_in address.
 		/// </summary>
-		/// <param name="address">Target address</param>
-		/// <param name="port">Target port</param>
-		/// <returns>sockaddr_in6 ready to be used by socket functions</returns>
+		/// <param name="address">Target address.</param>
+		/// <param name="port">Target port.</param>
+		/// <returns>sockaddr_in6 ready to be used by socket functions.</returns>
 		static sockaddr_in6 CreateAddress(const std::array<uint8_t, 16>& address, uint16_t port);
 
 		/// <summary>
-		/// Return the value of the invalid socket
+		/// Return the value of the invalid socket.
 		/// </summary>
-		/// <returns>Special value of the invalid socket</returns>
+		/// <returns>Special value of the invalid socket.</returns>
 		static TRAP::Network::SocketHandle InvalidSocket();
 
 		/// <summary>
-		/// Close and destroy a socket
+		/// Close and destroy a socket.
 		/// </summary>
-		/// <param name="sock">Handle of the socket to close</param>
+		/// <param name="sock">Handle of the socket to close.</param>
 		static void Close(TRAP::Network::SocketHandle sock);
 
 		/// <summary>
-		/// Set a socket as blocking or non-blocking
+		/// Set a socket as blocking or non-blocking.
 		/// </summary>
-		/// <param name="sock">Handle of the socket</param>
-		/// <param name="block">New blocking state of the socket</param>
+		/// <param name="sock">Handle of the socket.</param>
+		/// <param name="block">New blocking state of the socket.</param>
 		static void SetBlocking(TRAP::Network::SocketHandle sock, bool block);
 
 		/// <summary>
-		/// Get the last socket error status
+		/// Get the last socket error status.
 		/// </summary>
-		/// <returns>Status corresponding to the last socket error</returns>
+		/// <returns>Status corresponding to the last socket error.</returns>
 		static TRAP::Network::Socket::Status GetErrorStatus();
 	};
 }

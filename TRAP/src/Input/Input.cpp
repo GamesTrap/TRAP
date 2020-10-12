@@ -30,6 +30,7 @@ The above license only applies to some of the Controller specific parts of this 
 #include "Input.h"
 
 #include "Application.h"
+#include "ControllerMappings.h"
 #include "Utils/String/String.h"
 #include "Window/WindowingAPI.h"
 
@@ -47,6 +48,8 @@ void TRAP::Input::Init()
 
 	TP_DEBUG(Log::InputPrefix, "Initializing");
 
+	s_mappings.reserve(Embed::ControllerMappings.size());
+	
 	if(!InitController())
 		TP_ERROR(Log::InputControllerPrefix, "Failed to initialize Controller support!");
 }
@@ -154,7 +157,7 @@ bool TRAP::Input::IsControllerGamepad(const Controller controller)
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return false;
 
-	if (!PollController(controller, Poll_Presence))
+	if (!PollController(controller, PollMode::Presence))
 		return false;
 	
 	return s_controllerInternal[static_cast<uint32_t>(controller)].mapping;
@@ -214,6 +217,28 @@ float TRAP::Input::GetMouseY()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+float TRAP::Input::GetMouseX(const Scope<Window>& window)
+{
+	TP_PROFILE_FUNCTION();
+
+	auto [x, y] = GetMousePosition(window);
+
+	return x;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+float TRAP::Input::GetMouseY(const Scope<Window>& window)
+{
+	TP_PROFILE_FUNCTION();
+
+	auto [x, y] = GetMousePosition(window);
+
+	return y;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::string TRAP::Input::GetKeyName(const Key key)
 {
 	TP_PROFILE_FUNCTION();
@@ -251,7 +276,7 @@ TRAP::Input::ControllerDPad TRAP::Input::GetControllerDPad(const Controller cont
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::GetControllerButton(const Controller controller, const ControllerButton button)
+bool TRAP::Input::IsControllerButtonPressed(const Controller controller, const ControllerButton button)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -270,7 +295,7 @@ std::string TRAP::Input::GetControllerName(const Controller controller)
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return "";
 
-	if (!PollController(controller, Poll_Presence))
+	if (!PollController(controller, PollMode::Presence))
 		return "";
 
 	if(!s_controllerInternal[static_cast<uint32_t>(controller)].mapping)
@@ -288,7 +313,7 @@ std::string TRAP::Input::GetControllerGUID(const Controller controller)
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return "";
 
-	if (!PollController(controller, Poll_Presence))
+	if (!PollController(controller, PollMode::Presence))
 		return "";
 
 	return s_controllerInternal[static_cast<uint32_t>(controller)].guid;
@@ -303,7 +328,7 @@ std::vector<float> TRAP::Input::GetAllControllerAxes(const Controller controller
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return {};
 
-	if (!PollController(controller, Poll_Axes))
+	if (!PollController(controller, PollMode::Axes))
 		return {};
 
 	return s_controllerInternal[static_cast<uint32_t>(controller)].Axes;
@@ -318,7 +343,7 @@ std::vector<bool> TRAP::Input::GetAllControllerButtons(const Controller controll
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return {};
 
-	if (!PollController(controller, Poll_Buttons))
+	if (!PollController(controller, PollMode::Buttons))
 		return {};
 
 	return s_controllerInternal[static_cast<uint32_t>(controller)].Buttons;
@@ -333,7 +358,7 @@ std::vector<TRAP::Input::ControllerDPad> TRAP::Input::GetAllControllerDPads(cons
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return {};
 
-	if (!PollController(controller, Poll_Buttons))
+	if (!PollController(controller, PollMode::Buttons))
 		return {};
 	
 	return s_controllerInternal[static_cast<uint32_t>(controller)].DPads;
@@ -348,7 +373,7 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const floa
 	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
 		return;
 
-	if (!PollController(controller, Poll_Presence))
+	if (!PollController(controller, PollMode::Presence))
 		return;
 
 	if (leftMotor != s_controllerInternal[static_cast<uint32_t>(controller)].LeftMotor ||
@@ -357,6 +382,27 @@ void TRAP::Input::SetControllerVibration(const Controller controller, const floa
 		s_controllerInternal[static_cast<uint32_t>(controller)].LeftMotor = leftMotor;
 		s_controllerInternal[static_cast<uint32_t>(controller)].RightMotor = rightMotor;
 		SetControllerVibrationInternal(controller, leftMotor, rightMotor);	
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Input::SetControllerVibration(const Controller controller, const Math::Vec2& intensity)
+{
+	TP_PROFILE_FUNCTION();
+
+	if (!s_controllerInternal[static_cast<uint32_t>(controller)].Connected)
+		return;
+
+	if (!PollController(controller, PollMode::Presence))
+		return;
+
+	if (intensity.x != s_controllerInternal[static_cast<uint32_t>(controller)].LeftMotor ||
+		intensity.y != s_controllerInternal[static_cast<uint32_t>(controller)].RightMotor)
+	{
+		s_controllerInternal[static_cast<uint32_t>(controller)].LeftMotor = intensity.x;
+		s_controllerInternal[static_cast<uint32_t>(controller)].RightMotor = intensity.y;
+		SetControllerVibrationInternal(controller, intensity.x, intensity.y);
 	}
 }
 
@@ -382,6 +428,30 @@ void TRAP::Input::SetMousePosition(const float x, const float y, const Scope<Win
 	}
 
 	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), x, y);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Input::SetMousePosition(const Math::Vec2& position)
+{
+	TP_PROFILE_FUNCTION();
+
+	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow()), position.x, position.y);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Input::SetMousePosition(const Math::Vec2& position, const Scope<Window>& window)
+{
+	TP_PROFILE_FUNCTION();
+
+	if (!window)
+	{
+		TP_WARN(Log::InputPrefix, "Tried to pass nullptr to SetMousePosition!");
+		return;
+	}
+
+	INTERNAL::WindowingAPI::SetCursorPos(static_cast<INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), position.x, position.y);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -737,7 +807,7 @@ bool TRAP::Input::IsValidElementForController(const MapElement* e, const Control
 
 bool TRAP::Input::GetMappedControllerButton(Controller controller, ControllerButton button)
 {
-	if (!PollController(controller, Poll_Buttons))
+	if (!PollController(controller, PollMode::Buttons))
 		return false;
 
 	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
@@ -776,7 +846,7 @@ bool TRAP::Input::GetMappedControllerButton(Controller controller, ControllerBut
 
 float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis axis)
 {
-	if(!PollController(controller, Poll_Axes))
+	if(!PollController(controller, PollMode::Axes))
 		return 0.0f;
 		
 	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
@@ -807,7 +877,7 @@ float TRAP::Input::GetMappedControllerAxis(Controller controller, ControllerAxis
 
 TRAP::Input::ControllerDPad TRAP::Input::GetMappedControllerDPad(Controller controller, const uint32_t dpad)
 {
-	if(!PollController(controller, Poll_All))
+	if(!PollController(controller, PollMode::All))
 		return ControllerDPad::Centered;
 		
 	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];

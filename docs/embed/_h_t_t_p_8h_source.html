@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP/src/Network/HTTP/HTTP.h Source File</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,34 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -115,162 +150,167 @@ $(function() {
 <div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">   43</a></span>&#160;    <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    {</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a67c2a73d14d20f4effbe624bf37b3462">HTTP</a>(<span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a> operator=(<span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html">   52</a></span>&#160;        <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html">Request</a></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        {</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a9528ff5ef90bc328ee78421f4af417b3">   58</a></span>&#160;            <span class="keyword">enum class</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a9528ff5ef90bc328ee78421f4af417b3">Method</a></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            {</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                GET, <span class="comment">//Request in get mode, standard method to retrieve a page</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                POST, <span class="comment">//Request in post mode, usually to send data to a page</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                HEAD, <span class="comment">//Request a page&#39;s header only</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                PUT, <span class="comment">//Request in put mode, useful for a REST API</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                DELETE <span class="comment">//Request in delete mode, useful for a REST API</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            };</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a67c2a73d14d20f4effbe624bf37b3462">HTTP</a>(<a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a>&amp;&amp;) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a>&amp; <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ab9a47e25192449dddddac76358f3cc9b">operator=</a>(<a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a>&amp;&amp;) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a67c2a73d14d20f4effbe624bf37b3462">HTTP</a>(<span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a>&amp; <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ab9a47e25192449dddddac76358f3cc9b">operator=</a>(<span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ace0fd9fdbacabdeacbf4e3d6f9ff4b93">~HTTP</a>() = <span class="keywordflow">default</span>;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            <span class="keyword">explicit</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a282944b9c5de1e0f294914ea2818f990">Request</a>(<span class="keyword">const</span> std::string&amp; uri = <span class="stringliteral">&quot;/&quot;</span>, <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a9528ff5ef90bc328ee78421f4af417b3">Method</a> method = Method::GET, <span class="keyword">const</span> std::string&amp; body = <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a5dc08b83127a4bcf854c3f5809d17e4e">SetField</a>(<span class="keyword">const</span> std::string&amp; field, <span class="keyword">const</span> std::string&amp; value);</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#ae81a6da6665c238e0cd23efc63b589ec">SetMethod</a>(<a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a9528ff5ef90bc328ee78421f4af417b3">Method</a> method);</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a6e975716e379a79f11684c87c88557bb">SetURI</a>(<span class="keyword">const</span> std::string&amp; uri);</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a661bbb58036aebeda2350d02504dc6be">SetHTTPVersion</a>(uint32_t major, uint32_t minor);</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a9fa167814ab7c4fad28df81538853609">SetBody</a>(<span class="keyword">const</span> std::string&amp; body);</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;            <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a>;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;            std::string Prepare() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160; </div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;            <span class="keywordtype">bool</span> HasField(<span class="keyword">const</span> std::string&amp; field) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html">   70</a></span>&#160;        <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html">Request</a></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a9528ff5ef90bc328ee78421f4af417b3">   76</a></span>&#160;            <span class="keyword">enum class</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a9528ff5ef90bc328ee78421f4af417b3">Method</a></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            {</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                GET, <span class="comment">//Request in get mode, standard method to retrieve a page</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                POST, <span class="comment">//Request in post mode, usually to send data to a page</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                HEAD, <span class="comment">//Request a page&#39;s header only</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                PUT, <span class="comment">//Request in put mode, useful for a REST API</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                DELETE <span class="comment">//Request in delete mode, useful for a REST API</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            };</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            <span class="keyword">explicit</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a3849f59569e010c699b6bbc3fddeefa0">Request</a>(<span class="keyword">const</span> std::string&amp; uri = <span class="stringliteral">&quot;/&quot;</span>, <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a9528ff5ef90bc328ee78421f4af417b3">Method</a> method = Method::GET, std::string body = <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a5dc08b83127a4bcf854c3f5809d17e4e">SetField</a>(<span class="keyword">const</span> std::string&amp; field, <span class="keyword">const</span> std::string&amp; value);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#ae81a6da6665c238e0cd23efc63b589ec">SetMethod</a>(<a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a9528ff5ef90bc328ee78421f4af417b3">Method</a> method);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a6e975716e379a79f11684c87c88557bb">SetURI</a>(<span class="keyword">const</span> std::string&amp; uri);</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a661bbb58036aebeda2350d02504dc6be">SetHTTPVersion</a>(uint32_t major, uint32_t minor);</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a9fa167814ab7c4fad28df81538853609">SetBody</a>(<span class="keyword">const</span> std::string&amp; body);</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;            <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a>;</div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            <span class="keyword">typedef</span> std::map&lt;std::string, std::string&gt; FieldTable;</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;            FieldTable m_fields; <span class="comment">//Fields of the header associated to their value</span></div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a9528ff5ef90bc328ee78421f4af417b3">Method</a> m_method; <span class="comment">//Method to use for the request</span></div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;            std::string m_uri; <span class="comment">//Target URI of the request</span></div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;            uint32_t m_majorVersion; <span class="comment">//Major HTTP version</span></div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;            uint32_t m_minorVersion; <span class="comment">//Minor HTTP version</span></div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;            std::string m_body; <span class="comment">//Body of the request</span></div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        };</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
-<div class="line"><a name="l00165"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html">  165</a></span>&#160;        <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html">Response</a></div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        {</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00171"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#aa676f65ee242f56231f3f741cf3e6661">  171</a></span>&#160;            <span class="keyword">enum class</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#aa676f65ee242f56231f3f741cf3e6661">Status</a></div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;            {</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                <span class="comment">//2XX: success</span></div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                OK = 200, <span class="comment">//MOst common code returned when operation was successful</span></div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                Created = 201, <span class="comment">//The resource has successfully been created</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                Accepted = 202, <span class="comment">//The request has been accepted, but will be processed later by the server</span></div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                NoContent = 204, <span class="comment">//The server didn&#39;t send any data in return</span></div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                ResetContent = 205, <span class="comment">//The server informs the client that it should clear the view (form) that caused the request to be sent </span></div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                PartialContent = 206, <span class="comment">//The server has sent a part of the resource, as a response to a partial GET request</span></div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;                <span class="comment">//3XX: redirection</span></div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                MultipleChoices = 300, <span class="comment">//The requested page can be accessed from several locations</span></div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                MovedPermanently = 301, <span class="comment">//The requested page has permanently moved to a new location</span></div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                MovedTemporarily = 302, <span class="comment">//The requested page has temporarily moved to a new location</span></div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                NotModified = 304, <span class="comment">//For conditional requests, means the requested page hasn&#39;t changed and doesn&#39;t need to be refreshed</span></div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;                <span class="comment">//4XX: client error</span></div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;                BadRequest = 400, <span class="comment">//The server couldn&#39;t understand the request (syntax error)</span></div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                Unauthorized = 401, <span class="comment">//The requested page needs an authentication to be accessed</span></div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                Forbidden = 403, <span class="comment">//The requested page cannot be accessed at all, event with authentication</span></div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                NotFound = 404, <span class="comment">//The requested page doesn&#39;t exist</span></div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                RangeNotSatisfiable = 407, <span class="comment">//The server can&#39;t satisfy the partial GET request (with a &quot;Range&quot; header field)</span></div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160; </div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                <span class="comment">//5XX: server error</span></div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                InternalServerError = 500, <span class="comment">//The server encountered an unexpected error</span></div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                NotImplemented = 501, <span class="comment">//The server doesn&#39;t implement a requested feature</span></div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                BadGateway = 502, <span class="comment">//The gateway server has received an error from the source server</span></div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                ServiceNotAvailable = 503, <span class="comment">//The server is temporarily unavailable (overloaded, in maintenance, ...)</span></div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                GatewayTimeout = 504, <span class="comment">//The gateway server couldn&#39;t receive a response from the source server</span></div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;                VersionNotSupported = 505, <span class="comment">//The server doesn&#39;t support the requested HTTP version</span></div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;                <span class="comment">//10XX: custom codes</span></div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                InvalidResponse = 1000, <span class="comment">//Response is not a valid HTTP one</span></div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;                ConnectionFailed = 1001 <span class="comment">//Connection with server failed</span></div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;            };</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#ac93f6b67eb7e68c987156257f545895e">Response</a>();</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;            std::string Prepare() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;            <span class="keywordtype">bool</span> HasField(<span class="keyword">const</span> std::string&amp; field) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            <span class="keyword">typedef</span> std::map&lt;std::string, std::string&gt; FieldTable;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;            FieldTable m_fields; <span class="comment">//Fields of the header associated to their value</span></div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a9528ff5ef90bc328ee78421f4af417b3">Method</a> m_method; <span class="comment">//Method to use for the request</span></div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            std::string m_uri; <span class="comment">//Target URI of the request</span></div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;            uint32_t m_majorVersion; <span class="comment">//Major HTTP version</span></div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;            uint32_t m_minorVersion; <span class="comment">//Minor HTTP version</span></div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;            std::string m_body; <span class="comment">//Body of the request</span></div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        };</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
+<div class="line"><a name="l00183"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html">  183</a></span>&#160;        <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html">Response</a></div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        {</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00189"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#aa676f65ee242f56231f3f741cf3e6661">  189</a></span>&#160;            <span class="keyword">enum class</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#aa676f65ee242f56231f3f741cf3e6661">Status</a></div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;            {</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                <span class="comment">//2XX: success</span></div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                OK = 200, <span class="comment">//MOst common code returned when operation was successful</span></div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                Created = 201, <span class="comment">//The resource has successfully been created</span></div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                Accepted = 202, <span class="comment">//The request has been accepted, but will be processed later by the server</span></div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                NoContent = 204, <span class="comment">//The server didn&#39;t send any data in return</span></div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                ResetContent = 205, <span class="comment">//The server informs the client that it should clear the view (form) that caused the request to be sent </span></div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                PartialContent = 206, <span class="comment">//The server has sent a part of the resource, as a response to a partial GET request</span></div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160; </div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                <span class="comment">//3XX: redirection</span></div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;                MultipleChoices = 300, <span class="comment">//The requested page can be accessed from several locations</span></div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                MovedPermanently = 301, <span class="comment">//The requested page has permanently moved to a new location</span></div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;                MovedTemporarily = 302, <span class="comment">//The requested page has temporarily moved to a new location</span></div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                NotModified = 304, <span class="comment">//For conditional requests, means the requested page hasn&#39;t changed and doesn&#39;t need to be refreshed</span></div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;                <span class="comment">//4XX: client error</span></div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;                BadRequest = 400, <span class="comment">//The server couldn&#39;t understand the request (syntax error)</span></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;                Unauthorized = 401, <span class="comment">//The requested page needs an authentication to be accessed</span></div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                Forbidden = 403, <span class="comment">//The requested page cannot be accessed at all, event with authentication</span></div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;                NotFound = 404, <span class="comment">//The requested page doesn&#39;t exist</span></div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;                RangeNotSatisfiable = 407, <span class="comment">//The server can&#39;t satisfy the partial GET request (with a &quot;Range&quot; header field)</span></div>
 <div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;            <span class="keyword">const</span> std::string&amp; <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a167079d38a4ebf0f07f80d239ca472ec">GetField</a>(<span class="keyword">const</span> std::string&amp; field) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160; </div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#aa676f65ee242f56231f3f741cf3e6661">Status</a> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a2f29e433a0e3ffddf66a6cf1aebd49ed">GetStatus</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160; </div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;            uint32_t <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#ae387b94d17ebadde6f5b7bf8ae7a27df">GetMajorHTTPVersion</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160; </div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;            uint32_t <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a479e5f25c5a6f0bb89874939cfc780b6">GetMinorHTTPVersion</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160; </div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;            <span class="keyword">const</span> std::string&amp; <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a70ddb5c6ce9e03bf864bd6f961bb6fb6">GetBody</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;                <span class="comment">//5XX: server error</span></div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;                InternalServerError = 500, <span class="comment">//The server encountered an unexpected error</span></div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;                NotImplemented = 501, <span class="comment">//The server doesn&#39;t implement a requested feature</span></div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;                BadGateway = 502, <span class="comment">//The gateway server has received an error from the source server</span></div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;                ServiceNotAvailable = 503, <span class="comment">//The server is temporarily unavailable (overloaded, in maintenance, ...)</span></div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;                GatewayTimeout = 504, <span class="comment">//The gateway server couldn&#39;t receive a response from the source server</span></div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;                VersionNotSupported = 505, <span class="comment">//The server doesn&#39;t support the requested HTTP version</span></div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160; </div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                <span class="comment">//10XX: custom codes</span></div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;                InvalidResponse = 1000, <span class="comment">//Response is not a valid HTTP one</span></div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                ConnectionFailed = 1001 <span class="comment">//Connection with server failed</span></div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;            };</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#ac93f6b67eb7e68c987156257f545895e">Response</a>();</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160; </div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;            <span class="keyword">const</span> std::string&amp; <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a167079d38a4ebf0f07f80d239ca472ec">GetField</a>(<span class="keyword">const</span> std::string&amp; field) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160; </div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#aa676f65ee242f56231f3f741cf3e6661">Status</a> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a2f29e433a0e3ffddf66a6cf1aebd49ed">GetStatus</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;            uint32_t <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#ae387b94d17ebadde6f5b7bf8ae7a27df">GetMajorHTTPVersion</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160; </div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;            <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a>;</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160; </div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;            <span class="keywordtype">void</span> Parse(<span class="keyword">const</span> std::string&amp; data);</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160; </div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;            <span class="keywordtype">void</span> ParseFields(std::istream&amp; in);</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;            uint32_t <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a479e5f25c5a6f0bb89874939cfc780b6">GetMinorHTTPVersion</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160; </div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;            <span class="keyword">const</span> std::string&amp; <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a70ddb5c6ce9e03bf864bd6f961bb6fb6">GetBody</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160; </div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;            <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a>;</div>
 <div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160; </div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;            <span class="keyword">typedef</span> std::map&lt;std::string, std::string&gt; FieldTable;</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160; </div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;            FieldTable m_fields; <span class="comment">//Fields of the header</span></div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#aa676f65ee242f56231f3f741cf3e6661">Status</a> m_status; <span class="comment">//Status code</span></div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;            uint32_t m_majorVersion; <span class="comment">//Major HTTP version</span></div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;            uint32_t m_minorVersion; <span class="comment">//Minor HTTP version</span></div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;            std::string m_body; <span class="comment">//Body of the response</span></div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;        };</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;            <span class="keywordtype">void</span> Parse(<span class="keyword">const</span> std::string&amp; data);</div>
 <div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160; </div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a67c2a73d14d20f4effbe624bf37b3462">HTTP</a>();</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; </div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a67c2a73d14d20f4effbe624bf37b3462">HTTP</a>(<span class="keyword">const</span> std::string&amp; host, uint16_t port = 0);</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160; </div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ac5e2dea603b12f809dbb81f3ea498df6">SetHost</a>(<span class="keyword">const</span> std::string&amp; host, uint16_t port = 0);</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160; </div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;        Response <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a248879cbad08b652a43cd470a14ee9d1">SendRequest</a>(<span class="keyword">const</span> Request&amp; request, <a class="code" href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">Utils::TimeStep</a> timeout = <a class="code" href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">Utils::TimeStep</a>(0.0f));</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160; </div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html">TCPSocket</a> m_connection; <span class="comment">//Connection to the host</span></div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket_i_pv6.html">TCPSocketIPv6</a> m_connectionIPv6; <span class="comment">//Connection to the host</span></div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html">IPv4Address</a> m_host; <span class="comment">//Web host address</span></div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html">IPv6Address</a> m_hostIPv6; <span class="comment">//Web host address</span></div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;        std::string m_hostName; <span class="comment">//Web host name</span></div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        uint16_t m_port; <span class="comment">//Port used for connection with host</span></div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    };</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;}</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160; </div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_NETWORK_HTTP_H_*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;            <span class="keywordtype">void</span> ParseFields(std::istream&amp; in);</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160; </div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;            <span class="keyword">typedef</span> std::map&lt;std::string, std::string&gt; FieldTable;</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160; </div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;            FieldTable m_fields; <span class="comment">//Fields of the header</span></div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;            <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#aa676f65ee242f56231f3f741cf3e6661">Status</a> m_status; <span class="comment">//Status code</span></div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;            uint32_t m_majorVersion; <span class="comment">//Major HTTP version</span></div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;            uint32_t m_minorVersion; <span class="comment">//Minor HTTP version</span></div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;            std::string m_body; <span class="comment">//Body of the response</span></div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;        };</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160; </div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a67c2a73d14d20f4effbe624bf37b3462">HTTP</a>();</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160; </div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a67c2a73d14d20f4effbe624bf37b3462">HTTP</a>(<span class="keyword">const</span> std::string&amp; host, uint16_t port = 0);</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160; </div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ac5e2dea603b12f809dbb81f3ea498df6">SetHost</a>(<span class="keyword">const</span> std::string&amp; host, uint16_t port = 0);</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160; </div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;        Response <a class="code" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a248879cbad08b652a43cd470a14ee9d1">SendRequest</a>(<span class="keyword">const</span> Request&amp; request, <a class="code" href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">Utils::TimeStep</a> timeout = <a class="code" href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">Utils::TimeStep</a>(0.0f));</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160; </div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html">TCPSocket</a> m_connection; <span class="comment">//Connection to the host</span></div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket_i_pv6.html">TCPSocketIPv6</a> m_connectionIPv6; <span class="comment">//Connection to the host</span></div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html">IPv4Address</a> m_host; <span class="comment">//Web host address</span></div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html">IPv6Address</a> m_hostIPv6; <span class="comment">//Web host address</span></div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        std::string m_hostName; <span class="comment">//Web host name</span></div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;        uint16_t m_port; <span class="comment">//Port used for connection with host</span></div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    };</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;}</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160; </div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_NETWORK_HTTP_H_*/</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request_html_a9528ff5ef90bc328ee78421f4af417b3"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a9528ff5ef90bc328ee78421f4af417b3">TRAP::Network::HTTP::Request::Method</a></div><div class="ttdeci">Method</div><div class="ttdoc">Enumerate the available HTTP methods for a request</div><div class="ttdef"><b>Definition:</b> HTTP.h:58</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_html_ace0fd9fdbacabdeacbf4e3d6f9ff4b93"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ace0fd9fdbacabdeacbf4e3d6f9ff4b93">TRAP::Network::HTTP::~HTTP</a></div><div class="ttdeci">~HTTP()=default</div><div class="ttdoc">Default Destructor.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request_html_a9528ff5ef90bc328ee78421f4af417b3"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a9528ff5ef90bc328ee78421f4af417b3">TRAP::Network::HTTP::Request::Method</a></div><div class="ttdeci">Method</div><div class="ttdoc">Enumerate the available HTTP methods for a request.</div><div class="ttdef"><b>Definition:</b> HTTP.h:76</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request_html_a6e975716e379a79f11684c87c88557bb"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a6e975716e379a79f11684c87c88557bb">TRAP::Network::HTTP::Request::SetURI</a></div><div class="ttdeci">void SetURI(const std::string &amp;uri)</div><div class="ttdoc">Set the requested URI.    The URI is the resource (usually a web page or a file) that you want to get...</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_html_a67c2a73d14d20f4effbe624bf37b3462"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a67c2a73d14d20f4effbe624bf37b3462">TRAP::Network::HTTP::HTTP</a></div><div class="ttdeci">HTTP()</div><div class="ttdoc">Default constructor</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html">TRAP::Network::HTTP::Request</a></div><div class="ttdoc">Define a HTTP request</div><div class="ttdef"><b>Definition:</b> HTTP.h:52</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response_html_a479e5f25c5a6f0bb89874939cfc780b6"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a479e5f25c5a6f0bb89874939cfc780b6">TRAP::Network::HTTP::Response::GetMinorHTTPVersion</a></div><div class="ttdeci">uint32_t GetMinorHTTPVersion() const</div><div class="ttdoc">Get the minor HTTP version number of the response</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_html_a67c2a73d14d20f4effbe624bf37b3462"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a67c2a73d14d20f4effbe624bf37b3462">TRAP::Network::HTTP::HTTP</a></div><div class="ttdeci">HTTP()</div><div class="ttdoc">Constructor.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html">TRAP::Network::HTTP::Request</a></div><div class="ttdoc">Define a HTTP request.</div><div class="ttdef"><b>Definition:</b> HTTP.h:70</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response_html_a479e5f25c5a6f0bb89874939cfc780b6"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a479e5f25c5a6f0bb89874939cfc780b6">TRAP::Network::HTTP::Response::GetMinorHTTPVersion</a></div><div class="ttdeci">uint32_t GetMinorHTTPVersion() const</div><div class="ttdoc">Get the minor HTTP version number of the response.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_html_ab9a47e25192449dddddac76358f3cc9b"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ab9a47e25192449dddddac76358f3cc9b">TRAP::Network::HTTP::operator=</a></div><div class="ttdeci">HTTP &amp; operator=(HTTP &amp;&amp;)=default</div><div class="ttdoc">Default Move Assignment Operator.</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request_html_a5dc08b83127a4bcf854c3f5809d17e4e"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a5dc08b83127a4bcf854c3f5809d17e4e">TRAP::Network::HTTP::Request::SetField</a></div><div class="ttdeci">void SetField(const std::string &amp;field, const std::string &amp;value)</div><div class="ttdoc">Set the value of a field.    The field is created if it doesn't exist.  The name of the field is case...</div></div>
-<div class="ttc" id="astruct_t_r_a_p_1_1_utils_1_1_time_step_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">TRAP::Utils::TimeStep</a></div><div class="ttdef"><b>Definition:</b> TimeStep.h:6</div></div>
+<div class="ttc" id="astruct_t_r_a_p_1_1_utils_1_1_time_step_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">TRAP::Utils::TimeStep</a></div><div class="ttdoc">Struct for a single step in Time.</div><div class="ttdef"><b>Definition:</b> TimeStep.h:9</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_html_ac5e2dea603b12f809dbb81f3ea498df6"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ac5e2dea603b12f809dbb81f3ea498df6">TRAP::Network::HTTP::SetHost</a></div><div class="ttdeci">void SetHost(const std::string &amp;host, uint16_t port=0)</div><div class="ttdoc">Set target host.    This function just stores the host address and port, it doesn't actually connect ...</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html">TRAP::Network::TCPSocket</a></div><div class="ttdoc">Specialized socket using the TCP protocol</div><div class="ttdef"><b>Definition:</b> TCPSocket.h:44</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html">TRAP::Network::HTTP::Response</a></div><div class="ttdoc">Define a HTTP response</div><div class="ttdef"><b>Definition:</b> HTTP.h:165</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html">TRAP::Network::TCPSocket</a></div><div class="ttdoc">Specialized socket using the TCP protocol.</div><div class="ttdef"><b>Definition:</b> TCPSocket.h:44</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html">TRAP::Network::HTTP::Response</a></div><div class="ttdoc">Define a HTTP response.</div><div class="ttdef"><b>Definition:</b> HTTP.h:183</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request_html_ae81a6da6665c238e0cd23efc63b589ec"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#ae81a6da6665c238e0cd23efc63b589ec">TRAP::Network::HTTP::Request::SetMethod</a></div><div class="ttdeci">void SetMethod(Method method)</div><div class="ttdoc">Set the request method.    See the Method enumeration for a complete list of all the available method...</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request_html_a9fa167814ab7c4fad28df81538853609"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a9fa167814ab7c4fad28df81538853609">TRAP::Network::HTTP::Request::SetBody</a></div><div class="ttdeci">void SetBody(const std::string &amp;body)</div><div class="ttdoc">Set the body of the request.    The body of a request is optional and only makes sense for POST reque...</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv4_address_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html">TRAP::Network::IPv4Address</a></div><div class="ttdoc">TRAP::Network::IPv4Address is a utility class for manipulating network addresses.  It provides a set ...</div><div class="ttdef"><b>Definition:</b> IPv4Address.h:41</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv6_address_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html">TRAP::Network::IPv6Address</a></div><div class="ttdoc">TRAP::Network::IPv6Address is a utility class for manipulating network addresses.  It provides a set ...</div><div class="ttdef"><b>Definition:</b> IPv6Address.h:13</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response_html_ac93f6b67eb7e68c987156257f545895e"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#ac93f6b67eb7e68c987156257f545895e">TRAP::Network::HTTP::Response::Response</a></div><div class="ttdeci">Response()</div><div class="ttdoc">Default constructor</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response_html_ac93f6b67eb7e68c987156257f545895e"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#ac93f6b67eb7e68c987156257f545895e">TRAP::Network::HTTP::Response::Response</a></div><div class="ttdeci">Response()</div><div class="ttdoc">Constructor.</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response_html_a167079d38a4ebf0f07f80d239ca472ec"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a167079d38a4ebf0f07f80d239ca472ec">TRAP::Network::HTTP::Response::GetField</a></div><div class="ttdeci">const std::string &amp; GetField(const std::string &amp;field) const</div><div class="ttdoc">Get the value of a field.    If the field field is not found in the response header,...</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_i_pv6_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket_i_pv6.html">TRAP::Network::TCPSocketIPv6</a></div><div class="ttdoc">Specialized socket using the TCP protocol</div><div class="ttdef"><b>Definition:</b> TCPSocketIPv6.h:44</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_i_pv6_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket_i_pv6.html">TRAP::Network::TCPSocketIPv6</a></div><div class="ttdoc">Specialized socket using the TCP protocol.</div><div class="ttdef"><b>Definition:</b> TCPSocketIPv6.h:16</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response_html_a70ddb5c6ce9e03bf864bd6f961bb6fb6"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a70ddb5c6ce9e03bf864bd6f961bb6fb6">TRAP::Network::HTTP::Response::GetBody</a></div><div class="ttdeci">const std::string &amp; GetBody() const</div><div class="ttdoc">Get the body of the response.    The body of a response may contain:</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response_html_aa676f65ee242f56231f3f741cf3e6661"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#aa676f65ee242f56231f3f741cf3e6661">TRAP::Network::HTTP::Response::Status</a></div><div class="ttdeci">Status</div><div class="ttdoc">Enumerate all the valid status codes for a response</div><div class="ttdef"><b>Definition:</b> HTTP.h:171</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">TRAP::Network::HTTP</a></div><div class="ttdoc">A HTTP client.  Priorities IPv6 over IPv4</div><div class="ttdef"><b>Definition:</b> HTTP.h:43</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request_html_a282944b9c5de1e0f294914ea2818f990"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a282944b9c5de1e0f294914ea2818f990">TRAP::Network::HTTP::Request::Request</a></div><div class="ttdeci">Request(const std::string &amp;uri=&quot;/&quot;, Method method=Method::GET, const std::string &amp;body=&quot;&quot;)</div><div class="ttdoc">Default constructor.    This constructor creates a GET request, with the root URI (&quot;/&quot;) and an empty ...</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response_html_aa676f65ee242f56231f3f741cf3e6661"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#aa676f65ee242f56231f3f741cf3e6661">TRAP::Network::HTTP::Response::Status</a></div><div class="ttdeci">Status</div><div class="ttdoc">Enumerate all the valid status codes for a response.</div><div class="ttdef"><b>Definition:</b> HTTP.h:189</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">TRAP::Network::HTTP</a></div><div class="ttdoc">A HTTP client.  Prioritizes IPv6 over IPv4.</div><div class="ttdef"><b>Definition:</b> HTTP.h:43</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request_html_a661bbb58036aebeda2350d02504dc6be"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a661bbb58036aebeda2350d02504dc6be">TRAP::Network::HTTP::Request::SetHTTPVersion</a></div><div class="ttdeci">void SetHTTPVersion(uint32_t major, uint32_t minor)</div><div class="ttdoc">Set the HTTP version for the request.    The HTTP version is 1.0 by default.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request_html_a3849f59569e010c699b6bbc3fddeefa0"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#a3849f59569e010c699b6bbc3fddeefa0">TRAP::Network::HTTP::Request::Request</a></div><div class="ttdeci">Request(const std::string &amp;uri=&quot;/&quot;, Method method=Method::GET, std::string body=&quot;&quot;)</div><div class="ttdoc">Default constructor.    This constructor creates a GET request, with the root URI (&quot;/&quot;) and an empty ...</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_html_a248879cbad08b652a43cd470a14ee9d1"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a248879cbad08b652a43cd470a14ee9d1">TRAP::Network::HTTP::SendRequest</a></div><div class="ttdeci">Response SendRequest(const Request &amp;request, Utils::TimeStep timeout=Utils::TimeStep(0.0f))</div><div class="ttdoc">Send a HTTP request and return the server's response.    You must have a valid host before sending a ...</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response_html_a2f29e433a0e3ffddf66a6cf1aebd49ed"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#a2f29e433a0e3ffddf66a6cf1aebd49ed">TRAP::Network::HTTP::Response::GetStatus</a></div><div class="ttdeci">Status GetStatus() const</div><div class="ttdoc">Get the response status code.    The status code should be the first thing to be checked after receiv...</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response_html_ae387b94d17ebadde6f5b7bf8ae7a27df"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#ae387b94d17ebadde6f5b7bf8ae7a27df">TRAP::Network::HTTP::Response::GetMajorHTTPVersion</a></div><div class="ttdeci">uint32_t GetMajorHTTPVersion() const</div><div class="ttdoc">Get the major HTTP version number of the response</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response_html_ae387b94d17ebadde6f5b7bf8ae7a27df"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#ae387b94d17ebadde6f5b7bf8ae7a27df">TRAP::Network::HTTP::Response::GetMajorHTTPVersion</a></div><div class="ttdeci">uint32_t GetMajorHTTPVersion() const</div><div class="ttdoc">Get the major HTTP version number of the response.</div></div>
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->
 </div>

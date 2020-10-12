@@ -29,7 +29,7 @@ namespace TRAP::Graphics::API::Vulkan
 		VkPhysicalDeviceLimits GetPhysicalDeviceLimits() const;
 		std::string GetPhysicalDeviceName() const;
 		const std::vector<VkExtensionProperties>& GetAvailableExtensions() const;
-		std::vector<uint8_t> GetUUID() const;
+		std::array<uint8_t, 16> GetUUID() const;
 		bool IsExtensionSupported(const char* extension);
 		bool IsRayTracingSupported() const;
 
@@ -49,7 +49,7 @@ namespace TRAP::Graphics::API::Vulkan
 		VkPhysicalDeviceMemoryProperties m_deviceMemoryProperties;
 		std::vector<VkExtensionProperties> m_deviceExtensions;
 		bool m_rayTracing;
-		std::vector<uint8_t> m_deviceUUID;
+		std::array<uint8_t, 16> m_deviceUUID;
 
 		static Instance* s_instance;
 		static std::multimap<int32_t, PhysicalDevice> s_availableGraphicPhysicalDevices;

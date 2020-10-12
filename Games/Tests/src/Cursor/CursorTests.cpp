@@ -35,7 +35,7 @@ TRAP::Scope<TRAP::Image> CursorTests::CreateCursorFrame(const float t) const
 		}
 	}
 
-	return TRAP::Image::LoadFromMemory(64, 64, 32, TRAP::Image::ColorFormat::RGBA, buffer);
+	return TRAP::Image::LoadFromMemory(64, 64, TRAP::Image::ColorFormat::RGBA, buffer);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

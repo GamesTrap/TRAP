@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP/src/Network/Sockets/TCPSocket.h Source File</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,34 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -157,21 +192,21 @@ $(function() {
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_NETWORK_TCPSOCKET_H_*/</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_html_a5b9431e417a9ed2b13b121462e9f0f77"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket.html#a5b9431e417a9ed2b13b121462e9f0f77">TRAP::Network::Socket::Status</a></div><div class="ttdeci">Status</div><div class="ttdoc">Status codes that may be returned by socket functions</div><div class="ttdef"><b>Definition:</b> Socket.h:47</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_packet_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_packet.html">TRAP::Network::Packet</a></div><div class="ttdoc">Utility class to build blocks of data to transfer over the network</div><div class="ttdef"><b>Definition:</b> Packet.h:43</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_html_a5b9431e417a9ed2b13b121462e9f0f77"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket.html#a5b9431e417a9ed2b13b121462e9f0f77">TRAP::Network::Socket::Status</a></div><div class="ttdeci">Status</div><div class="ttdoc">Status codes that may be returned by socket functions.</div><div class="ttdef"><b>Definition:</b> Socket.h:65</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_packet_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_packet.html">TRAP::Network::Packet</a></div><div class="ttdoc">Utility class to build blocks of data to transfer. over the network</div><div class="ttdef"><b>Definition:</b> Packet.h:43</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_html_afc7cb6ae0b1d38870c5312d990bad349"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html#afc7cb6ae0b1d38870c5312d990bad349">TRAP::Network::TCPSocket::Send</a></div><div class="ttdeci">Status Send(const void *data, std::size_t size) const</div><div class="ttdoc">Send raw data to the remote peer.    To be able to handle partial sends over non-blocking sockets,...</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_html_a95a60e08e1d1366e5abed93c0d3a4f12"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html#a95a60e08e1d1366e5abed93c0d3a4f12">TRAP::Network::TCPSocket::Disconnect</a></div><div class="ttdeci">void Disconnect()</div><div class="ttdoc">Disconnect the socket from its remote peer.    This function gracefully closes the connection....</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></div><div class="ttdef"><b>Definition:</b> Socket.h:38</div></div>
-<div class="ttc" id="astruct_t_r_a_p_1_1_utils_1_1_time_step_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">TRAP::Utils::TimeStep</a></div><div class="ttdef"><b>Definition:</b> TimeStep.h:6</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html">TRAP::Network::TCPSocket</a></div><div class="ttdoc">Specialized socket using the TCP protocol</div><div class="ttdef"><b>Definition:</b> TCPSocket.h:44</div></div>
+<div class="ttc" id="astruct_t_r_a_p_1_1_utils_1_1_time_step_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">TRAP::Utils::TimeStep</a></div><div class="ttdoc">Struct for a single step in Time.</div><div class="ttdef"><b>Definition:</b> TimeStep.h:9</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html">TRAP::Network::TCPSocket</a></div><div class="ttdoc">Specialized socket using the TCP protocol.</div><div class="ttdef"><b>Definition:</b> TCPSocket.h:44</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_html_a3a173d1c79ea9dcf5e920b9c599ca79e"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html#a3a173d1c79ea9dcf5e920b9c599ca79e">TRAP::Network::TCPSocket::Receive</a></div><div class="ttdeci">Status Receive(void *data, std::size_t size, std::size_t &amp;received) const</div><div class="ttdoc">Receive raw data from the remote peer.    In blocking mode, this function will wait until some bytes ...</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_html_a294f3960c9333364ad570886ff8d4f21"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html#a294f3960c9333364ad570886ff8d4f21">TRAP::Network::TCPSocket::GetRemoteAddress</a></div><div class="ttdeci">IPv4Address GetRemoteAddress() const</div><div class="ttdoc">Get the address of the connected peer.    If the socket is not connected, this function returns TRAP:...</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv4_address_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html">TRAP::Network::IPv4Address</a></div><div class="ttdoc">TRAP::Network::IPv4Address is a utility class for manipulating network addresses.  It provides a set ...</div><div class="ttdef"><b>Definition:</b> IPv4Address.h:41</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_html_a21850219b4e318e02e469d349b1b1af2"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html#a21850219b4e318e02e469d349b1b1af2">TRAP::Network::TCPSocket::GetLocalPort</a></div><div class="ttdeci">uint16_t GetLocalPort() const</div><div class="ttdoc">Get the port to which the socket is bound locally.    If the socket is not connected,...</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_html_a5610588b44a73db3aea2cd5c386e2263"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html#a5610588b44a73db3aea2cd5c386e2263">TRAP::Network::TCPSocket::TCPSocket</a></div><div class="ttdeci">TCPSocket()</div><div class="ttdoc">Default constructor</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_html_a5610588b44a73db3aea2cd5c386e2263"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html#a5610588b44a73db3aea2cd5c386e2263">TRAP::Network::TCPSocket::TCPSocket</a></div><div class="ttdeci">TCPSocket()</div><div class="ttdoc">Constructor.</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_html_a54c629e3c804472b7b23ecc8688c0933"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html#a54c629e3c804472b7b23ecc8688c0933">TRAP::Network::TCPSocket::Connect</a></div><div class="ttdeci">Status Connect(const IPv4Address &amp;remoteAddress, uint16_t remotePort, Utils::TimeStep timeout=Utils::TimeStep(0.0f))</div><div class="ttdoc">Connect the socket to a remote peer.    In blocking mode, this function may take a while,...</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_html_ab61937aa87c39457d468d39de8b992a4"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket.html#ab61937aa87c39457d468d39de8b992a4">TRAP::Network::TCPSocket::GetRemotePort</a></div><div class="ttdeci">uint16_t GetRemotePort() const</div><div class="ttdoc">Get the port of the connected peer to which the socket is connected.    If the socket is not connecte...</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_listener_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener.html">TRAP::Network::TCPListener</a></div><div class="ttdoc">Socket that listens to new TCP connections</div><div class="ttdef"><b>Definition:</b> TCPListener.h:14</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_listener_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener.html">TRAP::Network::TCPListener</a></div><div class="ttdoc">Socket that listens to new TCP connections.</div><div class="ttdef"><b>Definition:</b> TCPListener.h:42</div></div>
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->
 </div>

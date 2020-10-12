@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP/src/Network/IP/IPv6Address.h Source File</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,34 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -135,9 +170,9 @@ $(function() {
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_IPV6ADDRESS_H_*/</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv6_address_html_a71858e2e87a5e76875d174cbd76bb3ba"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html#a71858e2e87a5e76875d174cbd76bb3ba">TRAP::Network::IPv6Address::ToString</a></div><div class="ttdeci">std::string ToString() const</div><div class="ttdoc">Get a string representation of the address.    The returned string is the hex representation of the I...</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv6_address_html_a9c27141bf731aa1bb6f0dd2f1b5ffbd9"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html#a9c27141bf731aa1bb6f0dd2f1b5ffbd9">TRAP::Network::IPv6Address::operator&lt;</a></div><div class="ttdeci">friend bool operator&lt;(const IPv6Address &amp;left, const IPv6Address &amp;right)</div><div class="ttdoc">Overload of &lt; operator to compare two IP addresses</div></div>
-<div class="ttc" id="astruct_t_r_a_p_1_1_utils_1_1_time_step_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">TRAP::Utils::TimeStep</a></div><div class="ttdef"><b>Definition:</b> TimeStep.h:6</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv6_address_html_a9f7c004498e93140d46b27e6a150e99a"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html#a9f7c004498e93140d46b27e6a150e99a">TRAP::Network::IPv6Address::IPv6Address</a></div><div class="ttdeci">IPv6Address()</div><div class="ttdoc">This constructor create an empty (invalid) address</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv6_address_html_a9c27141bf731aa1bb6f0dd2f1b5ffbd9"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html#a9c27141bf731aa1bb6f0dd2f1b5ffbd9">TRAP::Network::IPv6Address::operator&lt;</a></div><div class="ttdeci">friend bool operator&lt;(const IPv6Address &amp;left, const IPv6Address &amp;right)</div><div class="ttdoc">Overload of &lt; operator to compare two IP addresses.</div></div>
+<div class="ttc" id="astruct_t_r_a_p_1_1_utils_1_1_time_step_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">TRAP::Utils::TimeStep</a></div><div class="ttdoc">Struct for a single step in Time.</div><div class="ttdef"><b>Definition:</b> TimeStep.h:9</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv6_address_html_a9f7c004498e93140d46b27e6a150e99a"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html#a9f7c004498e93140d46b27e6a150e99a">TRAP::Network::IPv6Address::IPv6Address</a></div><div class="ttdeci">IPv6Address()</div><div class="ttdoc">This constructor creates an empty (invalid) address.</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv6_address_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html">TRAP::Network::IPv6Address</a></div><div class="ttdoc">TRAP::Network::IPv6Address is a utility class for manipulating network addresses.  It provides a set ...</div><div class="ttdef"><b>Definition:</b> IPv6Address.h:13</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv6_address_html_a1e2b73ebb696d409bb2bd9863b419616"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html#a1e2b73ebb696d409bb2bd9863b419616">TRAP::Network::IPv6Address::GetLocalAddress</a></div><div class="ttdeci">static IPv6Address GetLocalAddress()</div><div class="ttdoc">Get the computer's local address.    The local address is the address of the computer from the LAN po...</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv6_address_html_a8d536206b225dd7db9c20ee5ce6e7e46"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html#a8d536206b225dd7db9c20ee5ce6e7e46">TRAP::Network::IPv6Address::ToArray</a></div><div class="ttdeci">std::array&lt; uint8_t, 16 &gt; ToArray() const</div><div class="ttdoc">Get a byte representation of the address.    The returned array is the byte representation of the IPv...</div></div>

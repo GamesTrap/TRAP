@@ -21,7 +21,7 @@ private:
 	{
 		std::string Name{};
 		uint32_t ID{};
-		TRAP::Monitor::VideoMode CurrentVideoMode{};
+		TRAP::Monitor::VideoMode CurrentVideoMode;
 		std::vector<TRAP::Monitor::VideoMode> VideoModes{};
 		TRAP::Math::Vec2i Position{};
 		TRAP::Math::Vec2 Scale{};

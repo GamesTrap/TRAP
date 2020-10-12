@@ -38,13 +38,26 @@ namespace TRAP::Network
 
 	/// <summary>
 	/// A FTP client.<br>
-	/// Only supports IPv4
+	/// Only supports IPv4.
 	/// </summary>
 	class FTP
 	{
 	public:
-		//Non Copyable class
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		FTP(FTP&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		FTP& operator=(FTP&&) = default;
+		/// <summary>
+		/// Deleted Copy Constructor.
+		/// </summary>
 		FTP(const FTP&) = delete;
+		/// <summary>
+		/// Deleted Copy Assignment Constructor.
+		/// </summary>
 		FTP& operator=(const FTP&) = delete;
 		
 		/// <summary>
@@ -61,7 +74,7 @@ namespace TRAP::Network
 		{
 		public:
 			/// <summary>
-			/// Status codes possibly returned by a FTP response
+			/// Status codes possibly returned by a FTP response.
 			/// </summary>
 			enum class Status
 			{
@@ -128,8 +141,8 @@ namespace TRAP::Network
 			/// <summary>
 			/// This constructor is used by the FTP client to build the response.
 			/// </summary>
-			/// <param name="code">Response status code</param>
-			/// <param name="message">Response message</param>
+			/// <param name="code">Response status code.</param>
+			/// <param name="message">Response message.</param>
 			explicit Response(Status code = Status::InvalidResponse, std::string message = "");
 
 			/// <summary>
@@ -138,19 +151,19 @@ namespace TRAP::Network
 			/// This function is defined for convenience, it is
 			/// equivalent to testing if the status code is < 400.
 			/// </summary>
-			/// <returns>True if the status is a success, false if it is a failure</returns>
+			/// <returns>True if the status is a success, false if it is a failure.</returns>
 			bool IsOK() const;
 
 			/// <summary>
-			/// Get the status code of the response
+			/// Get the status code of the response.
 			/// </summary>
-			/// <returns>Status code</returns>
+			/// <returns>Status code.</returns>
 			Status GetStatus() const;
 
 			/// <summary>
-			/// Get the full message contained in the response
+			/// Get the full message contained in the response.
 			/// </summary>
-			/// <returns>The response message</returns>
+			/// <returns>The response message.</returns>
 			const std::string& GetMessage() const;
 
 		private:
@@ -159,21 +172,21 @@ namespace TRAP::Network
 		};
 
 		/// <summary>
-		/// Specialization of FTP response returning a directory
+		/// Specialization of FTP response returning a directory.
 		/// </summary>
 		class DirectoryResponse : public Response
 		{
 		public:
 			/// <summary>
-			/// Default Constructor
+			/// Constructor.
 			/// </summary>
-			/// <param name="response">Source response</param>
+			/// <param name="response">Source response.</param>
 			explicit DirectoryResponse(const Response& response);
 
 			/// <summary>
-			/// Get the directory returned in the response
+			/// Get the directory returned in the response.
 			/// </summary>
-			/// <returns>Directory name</returns>
+			/// <returns>Directory name.</returns>
 			const std::string& GetDirectory() const;
 
 		private:
@@ -181,22 +194,22 @@ namespace TRAP::Network
 		};
 
 		/// <summary>
-		/// Specialization of FTP response returning a filename listing
+		/// Specialization of FTP response returning a filename listing.
 		/// </summary>
 		class ListingResponse : public Response
 		{
 		public:
 			/// <summary>
-			/// Default constructor
+			/// Constructor.
 			/// </summary>
-			/// <param name="response">Source response</param>
-			/// <param name="data">Data containing the raw listing</param>
+			/// <param name="response">Source response.</param>
+			/// <param name="data">Data containing the raw listing.</param>
 			ListingResponse(const Response& response, const std::string& data);
 
 			/// <summary>
-			/// Return the array of directory/file names
+			/// Return the array of directory/file names.
 			/// </summary>
-			/// <returns>Array containing the requested listing</returns>
+			/// <returns>Array containing the requested listing.</returns>
 			const std::vector<std::string>& GetListing() const;
 
 		private:
@@ -204,7 +217,7 @@ namespace TRAP::Network
 		};
 
 		/// <summary>
-		/// Default constructor
+		/// Default Constructor.
 		/// </summary>
 		FTP() = default;
 		
@@ -227,16 +240,16 @@ namespace TRAP::Network
 		/// The default value, Time::Zero, means that the
 		/// system timeout will be used (which is usually pretty long).
 		/// </summary>
-		/// <param name="server">Name or address of the FTP server to connect to</param>
-		/// <param name="port">Port used for the connection</param>
-		/// <param name="timeout">Maximum time to wait</param>
-		/// <returns>Server response to the request</returns>
+		/// <param name="server">Name or address of the FTP server to connect to.</param>
+		/// <param name="port">Port used for the connection.</param>
+		/// <param name="timeout">Maximum time to wait.</param>
+		/// <returns>Server response to the request.</returns>
 		Response Connect(const IPv4Address& server, uint16_t port = 21, Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 		/// <summary>
-		/// Close the connection with the server
+		/// Close the connection with the server.
 		/// </summary>
-		/// <returns>Server response to the request</returns>
+		/// <returns>Server response to the request.</returns>
 		Response Disconnect();
 
 		/// <summary>
@@ -245,7 +258,7 @@ namespace TRAP::Network
 		/// Logging in is mandatory after connecting to the server.<br>
 		/// Users that are not logged in cannot perform any operation.
 		/// </summary>
-		/// <returns>Server response to the request</returns>
+		/// <returns>Server response to the request.</returns>
 		Response Login();
 
 		/// <summary>
@@ -254,9 +267,9 @@ namespace TRAP::Network
 		/// Logging in is mandatory after connecting to the server.<br>
 		/// Users that are not logged in cannot perform any operation.
 		/// </summary>
-		/// <param name="name">User name</param>
-		/// <param name="password">Password</param>
-		/// <returns>Server response to the request</returns>
+		/// <param name="name">User name.</param>
+		/// <param name="password">Password.</param>
+		/// <returns>Server response to the request.</returns>
 		Response Login(const std::string& name, const std::string& password);
 
 		/// <summary>
@@ -265,7 +278,7 @@ namespace TRAP::Network
 		/// This command is useful because the server may close the
 		/// connection automatically if no command is sent.
 		/// </summary>
-		/// <returns>Server response to the request</returns>
+		/// <returns>Server response to the request.</returns>
 		Response KeepAlive();
 
 		/// <summary>
@@ -274,7 +287,7 @@ namespace TRAP::Network
 		/// The working directory is the root path for subsequent
 		/// operations involving directories and/or filenames.
 		/// </summary>
-		/// <returns>Server response to the request</returns>
+		/// <returns>Server response to the request.</returns>
 		DirectoryResponse GetWorkingDirectory();
 
 		/// <summary>
@@ -285,8 +298,8 @@ namespace TRAP::Network
 		/// It is not recursive.<br>
 		/// The directory parameter is relative to the current working directory.
 		/// </summary>
-		/// <param name="directory">Directory to list</param>
-		/// <returns>Server response to the request</returns>
+		/// <param name="directory">Directory to list.</param>
+		/// <returns>Server response to the request.</returns>
 		ListingResponse GetDirectoryListing(const std::string& directory = "");
 
 		/// <summary>
@@ -294,14 +307,14 @@ namespace TRAP::Network
 		/// <br>
 		/// The new directory must be relative to the current one.
 		/// </summary>
-		/// <param name="directory">New working directory</param>
-		/// <returns>Server response to the request</returns>
+		/// <param name="directory">New working directory.</param>
+		/// <returns>Server response to the request.</returns>
 		Response ChangeDirectory(const std::string& directory);
 
 		/// <summary>
-		/// Go to the parent directory of the current one
+		/// Go to the parent directory of the current one.
 		/// </summary>
-		/// <returns>Server response to the request</returns>
+		/// <returns>Server response to the request.</returns>
 		Response ParentDirectory();
 
 		/// <summary>
@@ -309,8 +322,8 @@ namespace TRAP::Network
 		/// <br>
 		/// The new directory is created as a child of the current working directory.
 		/// </summary>
-		/// <param name="name">Name of the directory to create</param>
-		/// <returns>Server response to the request</returns>
+		/// <param name="name">Name of the directory to create.</param>
+		/// <returns>Server response to the request.</returns>
 		Response CreateDirectory(const std::string& name);
 
 		/// <summary>
@@ -321,8 +334,8 @@ namespace TRAP::Network
 		/// Use this function with caution, the directory will
 		/// be removed permanently!
 		/// </summary>
-		/// <param name="name">Name of the directory to remove</param>
-		/// <returns>Server response to the request</returns>
+		/// <param name="name">Name of the directory to remove.</param>
+		/// <returns>Server response to the request.</returns>
 		Response DeleteDirectory(const std::string& name);
 
 		/// <summary>
@@ -330,9 +343,9 @@ namespace TRAP::Network
 		/// <br>
 		/// The filenames must be relative to the current working directory.
 		/// </summary>
-		/// <param name="file">File to rename</param>
-		/// <param name="newName">New name of the file</param>
-		/// <returns>Server response to the request</returns>
+		/// <param name="file">File to rename.</param>
+		/// <param name="newName">New name of the file.</param>
+		/// <returns>Server response to the request.</returns>
 		Response RenameFile(const std::string& file, const std::string& newName);
 
 		/// <summary>
@@ -342,8 +355,8 @@ namespace TRAP::Network
 		/// Use this function with caution, the file will be
 		/// removed permanently!
 		/// </summary>
-		/// <param name="name">File to remove</param>
-		/// <returns>Server response to the request</returns>
+		/// <param name="name">File to remove.</param>
+		/// <returns>Server response to the request.</returns>
 		Response DeleteFile(const std::string& name);
 
 		/// <summary>
@@ -357,10 +370,10 @@ namespace TRAP::Network
 		/// already exists in the local destination path, it will
 		/// be overwritten.
 		/// </summary>
-		/// <param name="remoteFile">Filename of the distant file to download</param>
-		/// <param name="localVirtualOrPhysicalPath">The directory in which to put the file on the local computer</param>
-		/// <param name="mode">Transfer mode</param>
-		/// <returns>Server response to the request</returns>
+		/// <param name="remoteFile">Filename of the distant file to download.</param>
+		/// <param name="localVirtualOrPhysicalPath">The directory in which to put the file on the local computer.</param>
+		/// <param name="mode">Transfer mode.</param>
+		/// <returns>Server response to the request.</returns>
 		Response Download(const std::string& remoteFile, const std::string& localVirtualOrPhysicalPath, TransferMode mode = TransferMode::Binary);
 
 		/// <summary>
@@ -374,11 +387,11 @@ namespace TRAP::Network
 		/// The append parameter controls whether the remote file is
 		/// appended to or overwritten if it already exists.
 		/// </summary>
-		/// <param name="localVirtualOrPhysicalFile">Path of the local file to upload</param>
-		/// <param name="remotePath">The directory in which to put the file on the server</param>
-		/// <param name="mode">Transfer mode</param>
-		/// <param name="append">Pass true to append to or false to overwrite the remote file if it already exists</param>
-		/// <returns>Server response to the request</returns>
+		/// <param name="localVirtualOrPhysicalFile">Path of the local file to upload.</param>
+		/// <param name="remotePath">The directory in which to put the file on the server.</param>
+		/// <param name="mode">Transfer mode.</param>
+		/// <param name="append">Pass true to append to or false to overwrite the remote file if it already exists.</param>
+		/// <returns>Server response to the request.</returns>
 		Response Upload(const std::string& localVirtualOrPhysicalFile, const std::string& remotePath, TransferMode mode = TransferMode::Binary, bool append = false);
 
 		/// <summary>
@@ -392,9 +405,9 @@ namespace TRAP::Network
 		/// If the server returns information, you
 		/// can extract it from the response using TRAP::Network::FTP::Response::GetMessage().
 		/// </summary>
-		/// <param name="command">Command to send</param>
-		/// <param name="parameter">Command parameter</param>
-		/// <returns>Server response to the request</returns>
+		/// <param name="command">Command to send.</param>
+		/// <param name="parameter">Command parameter.</param>
+		/// <returns>Server response to the request.</returns>
 		Response SendCommand(const std::string& command, const std::string& parameter = "");
 
 	private:
@@ -404,11 +417,11 @@ namespace TRAP::Network
 		/// This function must be called after each call to
 		/// SendCommand that expects a response.
 		/// </summary>
-		/// <returns>Server response to the request</returns>
+		/// <returns>Server response to the request.</returns>
 		Response GetResponse();
 
 		/// <summary>
-		/// Utility class for exchanging data with the server on the data channel
+		/// Utility class for exchanging data with the server on the data channel.
 		/// </summary>
 		class DataChannel;
 

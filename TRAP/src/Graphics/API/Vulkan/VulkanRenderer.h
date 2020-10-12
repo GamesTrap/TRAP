@@ -72,9 +72,9 @@ namespace TRAP::Graphics::API
 
 		const std::string& GetTitle() const override;
 
-		std::vector<uint8_t> GetCurrentGPUUUID() override;
+		std::array<uint8_t, 16> GetCurrentGPUUUID() override;
 		std::string GetCurrentGPUName() override;
-		std::vector<std::pair<std::string, std::vector<uint8_t>>> GetAllGPUs() override;
+		std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() override;
 
 		//VulkanRenderer specific
 		static void SetVSyncIntervalInternal(uint32_t interval);
@@ -103,7 +103,7 @@ namespace TRAP::Graphics::API
 		Scope<Vulkan::Device> m_device;
 		std::vector<Scope<Vulkan::Swapchain>> m_swapchains;
 
-		std::vector<std::pair<std::string, std::vector<uint8_t>>> m_deviceNamesAndUUIDs;
+		std::vector<std::pair<std::string, std::array<uint8_t, 16>>> m_deviceNamesAndUUIDs;
 
 		static Vulkan::Swapchain* s_currentSwapchain;
 		static VulkanRenderer* s_renderer;

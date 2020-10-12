@@ -36,6 +36,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 namespace TRAP::Math
 {
+	/// <summary>
+	/// Struct for a 4x4 matrix.
+	/// </summary>
 	template<typename T>
 	struct Mat<4, 4, T>
 	{
@@ -83,7 +86,11 @@ namespace TRAP::Math
 		explicit constexpr Mat(const Mat<4, 4, U> & m);
 
 		explicit constexpr Mat(const Mat<3, 3, T> & x);
-		
+
+		/// <summary>
+		/// Retrieve the length of the matrix.
+		/// </summary>
+		/// <returns>Length.</returns>
 		static constexpr int Length();
 
 		//Accesses

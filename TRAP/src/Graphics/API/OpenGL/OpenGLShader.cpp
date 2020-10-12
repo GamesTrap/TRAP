@@ -1,9 +1,7 @@
 #include "TRAPPCH.h"
 #include "OpenGLShader.h"
 
-#include "OpenGLCommon.h"
 #include "Utils/String/String.h"
-#include "Embed.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -64,9 +62,7 @@ void TRAP::Graphics::API::OpenGLShader::Shutdown() const
 	TP_PROFILE_FUNCTION();
 
 	if (m_handle)
-	{
-		OpenGLCall(glDeleteProgram(m_handle));
-	}
+		glDeleteProgram(m_handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -79,7 +75,7 @@ void TRAP::Graphics::API::OpenGLShader::Bind() const
 	{
 		if (m_handle)
 		{
-			OpenGLCall(glUseProgram(m_handle));
+			glUseProgram(m_handle);
 			s_CurrentlyBound = this;
 		}
 		else
@@ -93,7 +89,7 @@ void TRAP::Graphics::API::OpenGLShader::Unbind() const
 {
 	TP_PROFILE_FUNCTION();
 	
-	OpenGLCall(glUseProgram(0));
+	glUseProgram(0);
 	s_CurrentlyBound = nullptr;
 }
 
@@ -265,7 +261,7 @@ uint32_t TRAP::Graphics::API::OpenGLShader::CompileGLSL(const std::array<std::st
 	
 	if (!linkResult || !validateResult)
 	{
-		OpenGLCall(glDeleteProgram(program));
+		glDeleteProgram(program);
 		return 0;
 	}
 	
@@ -276,24 +272,24 @@ uint32_t TRAP::Graphics::API::OpenGLShader::CompileGLSL(const std::array<std::st
 
 bool TRAP::Graphics::API::OpenGLShader::CompileGLSLShader(const ShaderType type, const char* source, uint32_t& handle)
 {
-	OpenGLCall(handle = glCreateShader(ShaderTypeToOpenGL(type)));
+	handle = glCreateShader(ShaderTypeToOpenGL(type));
 
 	TP_DEBUG(Log::ShaderOpenGLGLSLPrefix, "Compiling ", ShaderTypeToString(type));
-	OpenGLCall(glShaderSource(handle, 1, &source, nullptr));
-	OpenGLCall(glCompileShader(handle));
+	glShaderSource(handle, 1, &source, nullptr);
+	glCompileShader(handle);
 
 	int32_t result;
-	OpenGLCall(glGetShaderiv(handle, GL_COMPILE_STATUS, &result));
+	glGetShaderiv(handle, GL_COMPILE_STATUS, &result);
 	if (result == GL_FALSE)
 	{
 		int32_t length;
-		OpenGLCall(glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &length));
+		glGetShaderiv(handle, GL_INFO_LOG_LENGTH, &length);
 		std::vector<char> error(length);
-		OpenGLCall(glGetShaderInfoLog(handle, length, &length, error.data()));
+		glGetShaderInfoLog(handle, length, &length, error.data());
 		const std::string_view errorMessage(error.data(), length - 1);
 		TP_ERROR("[Shader][OpenGL][GLSL][", ShaderTypeToString(type), "] Failed to compile Shader!");
 		TP_ERROR("[Shader][OpenGL][GLSL][", ShaderTypeToString(type), "] ", errorMessage);
-		OpenGLCall(glDeleteShader(handle));
+		glDeleteShader(handle);
 
 		return false;
 	}
@@ -312,14 +308,14 @@ bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(const std::array<std::
 	uint32_t& compute,
 	uint32_t& handle)
 {
-	OpenGLCall(handle = glCreateProgram());
+	handle = glCreateProgram();
 
 	if (!shaders[0].empty())
 	{
 		if (!CompileGLSLShader(ShaderType::Vertex, shaders[0].data(), vertex))
 			return false;
 
-		OpenGLCall(glAttachShader(handle, vertex));
+		glAttachShader(handle, vertex);
 	}
 
 	if (!shaders[1].empty())
@@ -327,7 +323,7 @@ bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(const std::array<std::
 		if (!CompileGLSLShader(ShaderType::Fragment, shaders[1].data(), fragment))
 			return false;
 
-		OpenGLCall(glAttachShader(handle, fragment));
+		glAttachShader(handle, fragment);
 	}
 
 	if (!shaders[2].empty())
@@ -335,7 +331,7 @@ bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(const std::array<std::
 		if (!CompileGLSLShader(ShaderType::Geometry, shaders[2].data(), geometry))
 			return false;
 
-		OpenGLCall(glAttachShader(handle, geometry));
+		glAttachShader(handle, geometry);
 	}
 
 	if (!shaders[3].empty())
@@ -343,7 +339,7 @@ bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(const std::array<std::
 		if (!CompileGLSLShader(ShaderType::Tessellation_Control, shaders[3].data(), tessControl))
 			return false;
 
-		OpenGLCall(glAttachShader(handle, tessControl));
+		glAttachShader(handle, tessControl);
 	}
 
 	if (!shaders[4].empty())
@@ -351,7 +347,7 @@ bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(const std::array<std::
 		if (!CompileGLSLShader(ShaderType::Tessellation_Evaluation, shaders[4].data(), tessEval))
 			return false;
 
-		OpenGLCall(glAttachShader(handle, tessEval));
+		glAttachShader(handle, tessEval);
 	}
 
 	if (!shaders[5].empty())
@@ -359,7 +355,7 @@ bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(const std::array<std::
 		if (!CompileGLSLShader(ShaderType::Compute, shaders[5].data(), compute))
 			return false;
 
-		OpenGLCall(glAttachShader(handle, compute));
+		glAttachShader(handle, compute);
 	}
 
 	return true;
@@ -369,14 +365,14 @@ bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(const std::array<std::
 
 void TRAP::Graphics::API::OpenGLShader::LinkGLSLProgram(int32_t& linkResult, int32_t& validateResult, const uint32_t& handle)
 {
-	OpenGLCall(glLinkProgram(handle));
-	OpenGLCall(glGetProgramiv(handle, GL_LINK_STATUS, &linkResult));
+	glLinkProgram(handle);
+	glGetProgramiv(handle, GL_LINK_STATUS, &linkResult);
 	if (linkResult == GL_FALSE)
 	{
 		int32_t length;
-		OpenGLCall(glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length));
+		glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length);
 		std::vector<char> error(length);
-		OpenGLCall(glGetProgramInfoLog(handle, length, &length, error.data()));
+		glGetProgramInfoLog(handle, length, &length, error.data());
 		const std::string_view errorMessage(error.data(), length - 1);
 		TP_ERROR(Log::ShaderOpenGLGLSLProgramPrefix, "Failed to link Program!");
 		TP_ERROR(Log::ShaderOpenGLGLSLProgramPrefix, errorMessage);
@@ -384,8 +380,8 @@ void TRAP::Graphics::API::OpenGLShader::LinkGLSLProgram(int32_t& linkResult, int
 
 	if (linkResult == GL_TRUE)
 	{
-		OpenGLCall(glValidateProgram(handle));
-		OpenGLCall(glGetProgramiv(handle, GL_VALIDATE_STATUS, &validateResult));
+		glValidateProgram(handle);
+		glGetProgramiv(handle, GL_VALIDATE_STATUS, &validateResult);
 		if (validateResult == GL_FALSE)
 			TP_ERROR(Log::ShaderOpenGLGLSLProgramPrefix, "Failed to validate Program!");
 	}
@@ -404,38 +400,38 @@ void TRAP::Graphics::API::OpenGLShader::DeleteGLSLShaders(const std::array<std::
 {
 	if (!shaders[0].empty())
 	{
-		OpenGLCall(glDetachShader(handle, vertex));
-		OpenGLCall(glDeleteShader(vertex));
+		glDetachShader(handle, vertex);
+		glDeleteShader(vertex);
 	}
 
 	if (!shaders[1].empty())
 	{
-		OpenGLCall(glDetachShader(handle, fragment));
-		OpenGLCall(glDeleteShader(fragment));
+		glDetachShader(handle, fragment);
+		glDeleteShader(fragment);
 	}
 
 	if (!shaders[2].empty())
 	{
-		OpenGLCall(glDetachShader(handle, geometry));
-		OpenGLCall(glDeleteShader(geometry));
+		glDetachShader(handle, geometry);
+		glDeleteShader(geometry);
 	}
 
 	if (!shaders[3].empty())
 	{
-		OpenGLCall(glDetachShader(handle, tessControl));
-		OpenGLCall(glDeleteShader(tessControl));
+		glDetachShader(handle, tessControl);
+		glDeleteShader(tessControl);
 	}
 
 	if (!shaders[4].empty())
 	{
-		OpenGLCall(glDetachShader(handle, tessEval));
-		OpenGLCall(glDeleteShader(tessEval));
+		glDetachShader(handle, tessEval);
+		glDeleteShader(tessEval);
 	}
 
 	if (!shaders[5].empty())
 	{
-		OpenGLCall(glDetachShader(handle, compute));
-		OpenGLCall(glDeleteShader(compute));
+		glDetachShader(handle, compute);
+		glDeleteShader(compute);
 	}
 }
 
@@ -548,7 +544,7 @@ void TRAP::Graphics::API::OpenGLShader::CheckForUniforms()
 	Bind();
 
 	uint32_t uniformCount = 0;
-	OpenGLCall(glGetProgramiv(m_handle, GL_ACTIVE_UNIFORMS, reinterpret_cast<int32_t*>(&uniformCount)));
+	glGetProgramiv(m_handle, GL_ACTIVE_UNIFORMS, reinterpret_cast<int32_t*>(&uniformCount));
 
 	if (uniformCount != 0)
 	{
@@ -558,12 +554,12 @@ void TRAP::Graphics::API::OpenGLShader::CheckForUniforms()
 		uint32_t length = 0;
 		uint32_t count = 0;
 		GLenum type = GL_NONE;
-		OpenGLCall(glGetProgramiv(m_handle, GL_ACTIVE_UNIFORM_MAX_LENGTH, reinterpret_cast<int32_t*>(&maxNameLength)));
+		glGetProgramiv(m_handle, GL_ACTIVE_UNIFORM_MAX_LENGTH, reinterpret_cast<int32_t*>(&maxNameLength));
 		const Scope<char[]> uniformName = MakeScope<char[]>(maxNameLength);
 
 		for (uint32_t i = 0; i < uniformCount; ++i)
 		{
-			OpenGLCall(glGetActiveUniform(m_handle, i, static_cast<int32_t>(maxNameLength), reinterpret_cast<int32_t*>(&length), reinterpret_cast<int32_t*>(&count), &type, uniformName.get()));
+			glGetActiveUniform(m_handle, i, static_cast<int32_t>(maxNameLength), reinterpret_cast<int32_t*>(&length), reinterpret_cast<int32_t*>(&count), &type, uniformName.get());
 
 			if (Utils::String::GetCount(std::string_view(uniformName.get()), '.') == 0) //Ignore if UBO
 			{

@@ -14,7 +14,7 @@ namespace TRAP::Network
 	{
 	public:
 		/// <summary>
-		/// This constructor create an empty (invalid) address
+		/// This constructor creates an empty (invalid) address.
 		/// </summary>
 		IPv6Address();
 
@@ -24,7 +24,7 @@ namespace TRAP::Network
 		/// Here address can be either a hex address (ex: "2001:0db8:85a3:0000:0000:8a2e:0370:7334") or a
 		/// network name (ex: "localhost").
 		/// </summary>
-		/// <param name="address">IPv6 address or network name</param>
+		/// <param name="address">IPv6 address or network name.</param>
 		IPv6Address(const std::string& address);
 
 		/// <summary>
@@ -36,13 +36,13 @@ namespace TRAP::Network
 		/// parameter, it is defined for convenience so that the
 		/// implicit conversion from literal strings to IPv6Address work.
 		/// </summary>
-		/// <param name="address">IPv6 address or network name</param>
+		/// <param name="address">IPv6 address or network name.</param>
 		IPv6Address(const char* address);
 
 		/// <summary>
 		/// Construct the address from 16 bytes array.
 		/// </summary>
-		/// <param name="addressBytes">Array containing 16 bytes address</param>
+		/// <param name="addressBytes">Array containing 16 bytes address.</param>
 		IPv6Address(const std::array<uint8_t, 16>& addressBytes);
 
 		/// <summary>
@@ -52,7 +52,7 @@ namespace TRAP::Network
 		/// IPv6 address (like "2001:0db8:85a3:0000:0000:8a2e:0370:7334"), event if it was constructed
 		/// from a host name.
 		/// </summary>
-		/// <returns>String representation of the address</returns>
+		/// <returns>String representation of the address.</returns>
 		std::string ToString() const;
 
 		/// <summary>
@@ -62,7 +62,7 @@ namespace TRAP::Network
 		/// IPv6 address, event if it was constructed
 		/// from a host name.
 		/// </summary>
-		/// <returns>Byte representation of the address</returns>
+		/// <returns>Byte representation of the address.</returns>
 		std::array<uint8_t, 16> ToArray() const;
 
 		/// <summary>
@@ -73,7 +73,7 @@ namespace TRAP::Network
 		/// It is meaningful only for communications over the local network.<br>
 		/// Unlike GetPublicAddress, this function is fast and may be used safely anywhere.
 		/// </summary>
-		/// <returns>Local IPv6 address of the computer</returns>
+		/// <returns>Local IPv6 address of the computer.</returns>
 		static IPv6Address GetLocalAddress();
 
 		/// <summary>
@@ -91,8 +91,8 @@ namespace TRAP::Network
 		/// to be possibly stuck waiting in case there is a problem; this
 		/// limit is deactivated by default.
 		/// </summary>
-		/// <param name="timeout">Maximum time to wait</param>
-		/// <returns>Public IP address of the computer</returns>
+		/// <param name="timeout">Maximum time to wait.</param>
+		/// <returns>Public IP address of the computer.</returns>
 		static IPv6Address GetPublicAddress(Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 		static const IPv6Address None; //Value representing an empty/invaid address
@@ -103,9 +103,9 @@ namespace TRAP::Network
 		friend bool operator<(const IPv6Address& left, const IPv6Address& right);
 
 		/// <summary>
-		/// Resolve the given address string
+		/// Resolve the given address string.
 		/// </summary>
-		/// <param name="address">Address string</param>
+		/// <param name="address">Address string.</param>
 		void Resolve(const std::string& address);
 
 		std::array<uint8_t, 16> m_address; //Address stored as an 128 Bit array
@@ -113,67 +113,67 @@ namespace TRAP::Network
 	};
 
 	/// <summary>
-	/// Overload of == operator to compare two IP addresses
+	/// Overload of == operator to compare two IP addresses.
 	/// </summary>
-	/// <param name="left">Left operand (a IP address)</param>
-	/// <param name="right">Right operand (a IP address)</param>
-	/// <returns>True if both addresses are equal</returns>
+	/// <param name="left">Left operand (a IP address).</param>
+	/// <param name="right">Right operand (a IP address).</param>
+	/// <returns>True if both addresses are equal.</returns>
 	bool operator==(const IPv6Address& left, const IPv6Address& right);
 
 	/// <summary>
-	/// Overload of != operator to compare two IP addresses
+	/// Overload of != operator to compare two IP addresses.
 	/// </summary>
-	/// <param name="left">Left operand (a IP address)</param>
-	/// <param name="right">Right operand (a IP address)</param>
-	/// <returns>True if both addresses are not equal</returns>
+	/// <param name="left">Left operand (a IP address).</param>
+	/// <param name="right">Right operand (a IP address).</param>
+	/// <returns>True if both addresses are not equal.</returns>
 	bool operator!=(const IPv6Address& left, const IPv6Address& right);
 
 	/// <summary>
-	/// Overload of < operator to compare two IP addresses
+	/// Overload of < operator to compare two IP addresses.
 	/// </summary>
-	/// <param name="left">Left operand (a IP address)</param>
-	/// <param name="right">Right operand (a IP address)</param>
-	/// <returns>True if left is lesser than right</returns>
+	/// <param name="left">Left operand (a IP address).</param>
+	/// <param name="right">Right operand (a IP address).</param>
+	/// <returns>True if left is lesser than right.</returns>
 	bool operator<(const IPv6Address& left, const IPv6Address& right);
 
 	/// <summary>
-	/// Overload of > operator to compare two IP addresses
+	/// Overload of > operator to compare two IP addresses.
 	/// </summary>
-	/// <param name="left">Left operand (a IP address)</param>
-	/// <param name="right">Right operand (a IP address)</param>
-	/// <returns>True if left is greater than right</returns>
+	/// <param name="left">Left operand (a IP address).</param>
+	/// <param name="right">Right operand (a IP address).</param>
+	/// <returns>True if left is greater than right.</returns>
 	bool operator>(const IPv6Address& left, const IPv6Address& right);
 
 	/// <summary>
-	/// Overload of <= operator to compare two IP addresses
+	/// Overload of <= operator to compare two IP addresses.
 	/// </summary>
-	/// <param name="left">Left operand (a IP address)</param>
-	/// <param name="right">Right operand (a IP address)</param>
-	/// <returns>True if left is lesser or equal than right</returns>
+	/// <param name="left">Left operand (a IP address).</param>
+	/// <param name="right">Right operand (a IP address).</param>
+	/// <returns>True if left is lesser or equal than right.</returns>
 	bool operator<=(const IPv6Address& left, const IPv6Address& right);
 
 	/// <summary>
-	/// Overload of >= operator to compare two IP addresses
+	/// Overload of >= operator to compare two IP addresses.
 	/// </summary>
-	/// <param name="left">Left operand (a IP address)</param>
-	/// <param name="right">Right operand (a IP address)</param>
-	/// <returns>True if left is greater or equal than right</returns>
+	/// <param name="left">Left operand (a IP address).</param>
+	/// <param name="right">Right operand (a IP address).</param>
+	/// <returns>True if left is greater or equal than right.</returns>
 	bool operator>=(const IPv6Address& left, const IPv6Address& right);
 
 	/// <summary>
-	/// Overload of >> operator to extract an IP address from input stream
+	/// Overload of >> operator to extract an IP address from input stream.
 	/// </summary>
-	/// <param name="stream">Input stream</param>
-	/// <param name="address">IP address to extract</param>
-	/// <returns>Reference to the input stream</returns>
+	/// <param name="stream">Input stream.</param>
+	/// <param name="address">IP address to extract.</param>
+	/// <returns>Reference to the input stream.</returns>
 	std::istream& operator>>(std::istream& stream, IPv6Address& address);
 
 	/// <summary>
-	/// Overload of << operator to print an IP address to an output stream
+	/// Overload of << operator to print an IP address to an output stream.
 	/// </summary>
-	/// <param name="stream">Output stream</param>
-	/// <param name="address">IP address to print</param>
-	/// <returns>Reference to the output stream</returns>
+	/// <param name="stream">Output stream.</param>
+	/// <param name="address">IP address to print.</param>
+	/// <returns>Reference to the output stream.</returns>
 	std::ostream& operator<<(std::ostream& stream, const IPv6Address& address);
 }
 

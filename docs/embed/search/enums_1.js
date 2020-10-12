@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['filestatus_538',['FileStatus',['../class_t_r_a_p_1_1_file_watcher.html#ab54629edb3fbb8a9e0c8ee078eb35f83',1,'TRAP::FileWatcher']]]
+  ['displaymode_973',['DisplayMode',['../class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b',1,'TRAP::Window']]]
 ];

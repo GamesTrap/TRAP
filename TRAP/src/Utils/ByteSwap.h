@@ -3,12 +3,22 @@
 
 namespace TRAP::Utils::Memory
 {
+	/// <summary>
+	/// Converts primitive data types from big->little or little->big endian depending on given parameters endianness.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="t">Primitive data type.</param>
 	template<typename T>
 	static constexpr void SwapBytes(T& t);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// <summary>
+/// Converts primitive data types from big->little or little->big endian depending on given parameters endianness.
+/// </summary>
+/// <typeparam name="T"></typeparam>
+/// <param name="t">Primitive data type.</param>
 template <typename T>
 constexpr void TRAP::Utils::Memory::SwapBytes(T& t)
 {
@@ -17,6 +27,10 @@ constexpr void TRAP::Utils::Memory::SwapBytes(T& t)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// <summary>
+/// Converts primitive data types from big->little or little->big endian depending on given parameters endianness.
+/// </summary>
+/// <param name="t">Primitive data type.</param>
 template<>
 constexpr void TRAP::Utils::Memory::SwapBytes<float>(float& t)
 {
@@ -26,14 +40,22 @@ constexpr void TRAP::Utils::Memory::SwapBytes<float>(float& t)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// <summary>
+/// Converts primitive data types from big->little or little->big endian depending on given parameters endianness.
+/// </summary>
+/// <param name="t">Primitive data type.</param>
 template<>
 constexpr void TRAP::Utils::Memory::SwapBytes<uint16_t>(uint16_t& t)
 {
-	t = (((t & 0xFF00) >> 8) | ((t & 0x00FF) << 8));
+	t = (static_cast<uint16_t>(((t & 0xFF00) >> 8)) | static_cast<uint16_t>(((t & 0x00FF) << 8)));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// <summary>
+/// Converts primitive data types from big->little or little->big endian depending on given parameters endianness.
+/// </summary>
+/// <param name="t">Primitive data type.</param>
 template<>
 constexpr void TRAP::Utils::Memory::SwapBytes<uint32_t>(uint32_t& t)
 {
@@ -43,6 +65,10 @@ constexpr void TRAP::Utils::Memory::SwapBytes<uint32_t>(uint32_t& t)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// <summary>
+/// Converts primitive data types from big->little or little->big endian depending on given parameters endianness.
+/// </summary>
+/// <param name="t">Primitive data type.</param>
 template<>
 constexpr void TRAP::Utils::Memory::SwapBytes<int32_t>(int32_t& t)
 {
@@ -52,6 +78,10 @@ constexpr void TRAP::Utils::Memory::SwapBytes<int32_t>(int32_t& t)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// <summary>
+/// Converts primitive data types from big->little or little->big endian depending on given parameters endianness.
+/// </summary>
+/// <param name="t">Primitive data type.</param>
 template<>
 constexpr void TRAP::Utils::Memory::SwapBytes<uint64_t>(uint64_t& t)
 {
@@ -63,6 +93,10 @@ constexpr void TRAP::Utils::Memory::SwapBytes<uint64_t>(uint64_t& t)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// <summary>
+/// Converts primitive data types from big->little or little->big endian depending on given parameters endianness.
+/// </summary>
+/// <param name="t">Primitive data type.</param>
 template<>
 constexpr void TRAP::Utils::Memory::SwapBytes<int64_t>(int64_t& t)
 {

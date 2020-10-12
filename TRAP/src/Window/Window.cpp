@@ -41,11 +41,11 @@ TRAP::Window::Window(const WindowProps &props)
 	TP_INFO
 	(
 	    Log::WindowPrefix, "Initializing Window: \"", props.Title, "\" ", props.Width, "x", props.Height, "@", props.RefreshRate, "Hz VSync: ",
-		props.advanced.VSync > 0 ? "On" : "Off", "(", props.advanced.VSync, //Output VSync status
-		") DisplayMode: ", props.displayMode == DisplayMode::Windowed ? "Windowed" : props.displayMode == DisplayMode::Borderless ? "Borderless" : "Fullscreen", //Output DisplayMode
+		props.Advanced.VSync > 0 ? "On" : "Off", "(", props.Advanced.VSync, //Output VSync status
+		") DisplayMode: ", props.DisplayMode == DisplayMode::Windowed ? "Windowed" : props.DisplayMode == DisplayMode::Borderless ? "Borderless" : "Fullscreen", //Output DisplayMode
 		" Monitor: ", props.Monitor,
-		" CursorMode: ", props.advanced.CursorMode == CursorMode::Normal ? "Normal" : props.advanced.CursorMode == CursorMode::Hidden ? "Hidden" : "Disabled", //Output CursorMode
-		" RawMouseInput: ", props.advanced.RawMouseInput ? "Enabled" : "Disabled"
+		" CursorMode: ", props.Advanced.CursorMode == CursorMode::Normal ? "Normal" : props.Advanced.CursorMode == CursorMode::Hidden ? "Hidden" : "Disabled", //Output CursorMode
+		" RawMouseInput: ", props.Advanced.RawMouseInput ? "Enabled" : "Disabled"
 	);
 	
 	Init(props);
@@ -522,7 +522,7 @@ void TRAP::Window::SetIcon() const
 	TP_PROFILE_FUNCTION();
 
 	const std::vector<uint8_t> TRAPLogo{ Embed::TRAPLogo.begin(), Embed::TRAPLogo.end() };
-	INTERNAL::WindowingAPI::SetWindowIcon(m_window.get(), Image::LoadFromMemory(32, 32, 32, Image::ColorFormat::RGBA, TRAPLogo));
+	INTERNAL::WindowingAPI::SetWindowIcon(m_window.get(), Image::LoadFromMemory(32, 32, Image::ColorFormat::RGBA, TRAPLogo));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -577,7 +577,7 @@ void TRAP::Window::SetResizable(const bool enabled) const
 {
 	TP_PROFILE_FUNCTION();
 
-	INTERNAL::WindowingAPI::SetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Resizable, enabled);
+	INTERNAL::WindowingAPI::SetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Resizable, enabled);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -631,7 +631,7 @@ bool TRAP::Window::IsMaximized() const
 {
 	TP_PROFILE_FUNCTION();
 
-	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Maximized);
+	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Maximized);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -640,7 +640,7 @@ bool TRAP::Window::IsMinimized() const
 {
 	TP_PROFILE_FUNCTION();
 
-	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Minimized);
+	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Minimized);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -649,7 +649,7 @@ bool TRAP::Window::IsResizable() const
 {
 	TP_PROFILE_FUNCTION();
 
-	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Resizable);
+	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Resizable);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -658,7 +658,7 @@ bool TRAP::Window::IsVisible() const
 {
 	TP_PROFILE_FUNCTION();
 
-	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Visible);
+	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Visible);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -667,7 +667,7 @@ bool TRAP::Window::IsFocused() const
 {
 	TP_PROFILE_FUNCTION();
 
-	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Focused);
+	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Focused);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -676,7 +676,7 @@ bool TRAP::Window::IsDecorated() const
 {
 	TP_PROFILE_FUNCTION();
 
-	return INTERNAL::WindowingAPI::GetWindowAttrib(m_window.get(), INTERNAL::WindowingAPI::Hint::Decorated);
+	return INTERNAL::WindowingAPI::GetWindowHint(m_window.get(), INTERNAL::WindowingAPI::Hint::Decorated);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -759,10 +759,10 @@ void TRAP::Window::Init(const WindowProps& props)
 	m_data.Width = props.Width;
 	m_data.Height = props.Height;
 	m_data.RefreshRate = props.RefreshRate;
-	m_data.VSync = props.advanced.VSync;
+	m_data.VSync = props.Advanced.VSync;
 	m_data.Monitor = props.Monitor;
-	m_data.cursorMode = props.advanced.CursorMode;
-	m_data.RawMouseInput = props.advanced.RawMouseInput;
+	m_data.cursorMode = props.Advanced.CursorMode;
+	m_data.RawMouseInput = props.Advanced.RawMouseInput;
 	m_data.windowModeParams = &m_oldWindowedParams;
 
 	if (!s_WindowingAPIInitialized)
@@ -836,20 +836,20 @@ void TRAP::Window::Init(const WindowProps& props)
 			INTERNAL::WindowingAPI::SetContextAPI(INTERNAL::WindowingAPI::ContextAPI::OpenGL);
 	}
 
-	if (props.displayMode == DisplayMode::Windowed)
+	if (props.DisplayMode == DisplayMode::Windowed)
 	{
-		if(props.advanced.Maximized)
+		if(props.Advanced.Maximized)
 			INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Maximized, true);
-		if (!props.advanced.Resizable)
+		if (!props.Advanced.Resizable)
 			INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Resizable, false);
-		if (!props.advanced.Visible)
+		if (!props.Advanced.Visible)
 			INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
-		if (!props.advanced.Decorated)
+		if (!props.Advanced.Decorated)
 			INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Decorated, false);
-		if (!props.advanced.Focused && !props.advanced.Visible)
+		if (!props.Advanced.Focused && !props.Advanced.Visible)
 			INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
 	}
-	if (!props.advanced.FocusOnShow)
+	if (!props.Advanced.FocusOnShow)
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::FocusOnShow, false);
 
 	if(s_windows >= 1 && Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
@@ -884,14 +884,14 @@ void TRAP::Window::Init(const WindowProps& props)
 		//Create Context & Initialize Renderer
 		Graphics::API::Context::Create(this);
 		Graphics::API::RendererAPI::Init();
-		Graphics::API::Context::SetVSyncInterval(props.advanced.VSync);
+		Graphics::API::Context::SetVSyncInterval(props.Advanced.VSync);
 	}
 
 	s_windows++;
 	if (s_windows > 1)
 	{
 		Graphics::API::Context::Use(this);
-		SetVSyncInterval(props.advanced.VSync);
+		SetVSyncInterval(props.Advanced.VSync);
 	}
 
 	//Update Window Title
@@ -921,7 +921,7 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	INTERNAL::WindowingAPI::InternalMonitor* monitor = nullptr;
 
-	if (props.displayMode == DisplayMode::Borderless)
+	if (props.DisplayMode == DisplayMode::Borderless)
 	{
 		if (s_fullscreenWindows[m_data.Monitor])
 		{
@@ -944,13 +944,13 @@ void TRAP::Window::Init(const WindowProps& props)
 			monitor = m_useMonitor;
 		}
 	}
-	else if (props.displayMode == DisplayMode::Windowed)
+	else if (props.DisplayMode == DisplayMode::Windowed)
 	{
 		width = m_oldWindowedParams.Width;
 		height = m_oldWindowedParams.Height;
 		refreshRate = m_oldWindowedParams.RefreshRate;				
 	}
-	else if (props.displayMode == DisplayMode::Fullscreen)
+	else if (props.DisplayMode == DisplayMode::Fullscreen)
 	{
 		if (s_fullscreenWindows[m_data.Monitor])
 		{
@@ -1007,7 +1007,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	m_data.RefreshRate = refreshRate;
 
 	//Record new window type
-	m_data.displayMode = props.displayMode;
+	m_data.displayMode = props.DisplayMode;
 	
 
 	if (m_data.displayMode == DisplayMode::Borderless)
@@ -1054,16 +1054,16 @@ void TRAP::Window::Init(const WindowProps& props)
 	}
 
 	//Set WindowingAPI callbacks
-	INTERNAL::WindowingAPI::SetWindowSizeCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const int32_t width, const int32_t height)
+	INTERNAL::WindowingAPI::SetWindowSizeCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const int32_t w, const int32_t h)
 	{
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
-		data.Width = width;
-		data.Height = height;
+		data.Width = w;
+		data.Height = h;
 
 		if (!data.EventCallback)
 			return;
 
-		Events::WindowResizeEvent event(width, height, data.Title);
+		Events::WindowResizeEvent event(w, h, data.Title);
 		data.EventCallback(event);
 	});
 
@@ -1243,16 +1243,16 @@ void TRAP::Window::Init(const WindowProps& props)
 		data.EventCallback(event);
 	});
 
-	INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const int32_t width, const int32_t height)
+	INTERNAL::WindowingAPI::SetFrameBufferSizeCallback(m_window.get(), [](const INTERNAL::WindowingAPI::InternalWindow* window, const int32_t w, const int32_t h)
 	{		
 		WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(window));
-		data.Width = width;
-		data.Height = height;
+		data.Width = w;
+		data.Height = h;
 
 		if (!data.EventCallback)
 			return;
 
-		Events::FrameBufferResizeEvent event(width, height, data.Title);
+		Events::FrameBufferResizeEvent event(w, h, data.Title);
 		data.EventCallback(event);
 	});
 
@@ -1297,7 +1297,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		data.EventCallback(event);
 	});
 
-	INTERNAL::WindowingAPI::SetMonitorCallback([](const INTERNAL::WindowingAPI::InternalMonitor* monitor, const bool connected)
+	INTERNAL::WindowingAPI::SetMonitorCallback([](const INTERNAL::WindowingAPI::InternalMonitor* mon, const bool connected)
 	{
 		if(!connected && Monitor::GetAllMonitors().size() == 1)
 		{
@@ -1306,16 +1306,16 @@ void TRAP::Window::Init(const WindowProps& props)
 			std::exit(0);
 		}
 		
-		if (monitor->Window)
+		if (mon->Window)
 		{
-			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(monitor->Window));
+			WindowData& data = *static_cast<WindowData*>(INTERNAL::WindowingAPI::GetWindowUserPointer(mon->Window));
 
 			for (const auto& win : s_fullscreenWindows)
 			{
 				if (win)
 				{
 					Window& window = *win;
-					if (window.m_useMonitor == monitor)
+					if (window.m_useMonitor == mon)
 					{
 						const auto removeWindowIterator = s_fullscreenWindows.begin() + window.m_data.Monitor;
 						if(removeWindowIterator != std::end(s_fullscreenWindows))
@@ -1336,18 +1336,18 @@ void TRAP::Window::Init(const WindowProps& props)
 			if (!data.EventCallback)
 				return;
 
-			for (const auto& mon : Monitor::GetAllMonitors())
+			for (const auto& m : Monitor::GetAllMonitors())
 			{
-				if (monitor == mon.GetInternalMonitor())
+				if (mon == m.GetInternalMonitor())
 				{
 					if (connected)
 					{
-						Events::MonitorConnectEvent event(mon);
+						Events::MonitorConnectEvent event(m);
 						data.EventCallback(event);
 					}
 					else
 					{
-						Events::MonitorDisconnectEvent event(mon);
+						Events::MonitorDisconnectEvent event(m);
 						data.EventCallback(event);
 					}
 
@@ -1383,31 +1383,31 @@ TRAP::WindowProps::WindowProps(std::string title,
 							   const uint32_t height,
 							   const uint32_t refreshRate,
 							   const Window::DisplayMode displayMode,
-							   Advanced advanced,
+							   AdvancedProps advanced,
 							   const uint32_t monitor)
 	: Title(std::move(title)),
 	  Width(width),
 	  Height(height),
 	  RefreshRate(refreshRate),
 	  RenderAPI(Graphics::API::Context::GetRenderAPI()),
-	  displayMode(displayMode),
+	  DisplayMode(displayMode),
 	  Monitor(monitor),
-	  advanced{advanced}
+	  Advanced{advanced}
 {
 	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::WindowProps::Advanced::Advanced(const uint32_t VSync,
-                                      const bool resizable,
-                                      const bool maximized,
-                                      const bool visible,
-                                      const bool focused,
-                                      const bool focusOnShow,
-                                      const bool decorated,
-                                      const bool rawMouseInput,
-                                      const Window::CursorMode cursorMode)
+TRAP::WindowProps::AdvancedProps::AdvancedProps(const uint32_t VSync,
+                                                const bool resizable,
+                                                const bool maximized,
+                                                const bool visible,
+                                                const bool focused,
+                                                const bool focusOnShow,
+                                                const bool decorated,
+                                                const bool rawMouseInput,
+                                                const Window::CursorMode cursorMode)
 	: VSync(VSync),
 	  Resizable(resizable),
 	  Maximized(maximized),

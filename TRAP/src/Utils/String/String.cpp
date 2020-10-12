@@ -214,7 +214,7 @@ std::string_view TRAP::Utils::String::GetSuffixStringView(const std::string_view
 {
 	const std::size_t pos = name.rfind('.');
 
-	return (pos == std::string::npos) ? "" : std::string_view(name.substr(pos + 1));
+	return (pos == std::string::npos) ? nullptr : std::string_view(name.substr(pos + 1));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

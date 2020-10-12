@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP/src/Graphics/Textures/Texture2D.h Source File</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,34 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -86,13 +121,13 @@ $(function() {
 <div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_graphics_1_1_texture2_d.html">    8</a></span>&#160;    <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_graphics_1_1_texture2_d.html">Texture2D</a> : <span class="keyword">public</span> <a class="code" href="class_t_r_a_p_1_1_graphics_1_1_texture.html">Texture</a></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <span class="keyword">static</span> Scope&lt;Texture2D&gt; CreateFromFile(<span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> std::string&amp; filepath, <a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters = <a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>());</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        <span class="keyword">static</span> Scope&lt;Texture2D&gt; CreateFromFile(<span class="keyword">const</span> std::string&amp; filepath, <a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters = <a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>());</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <span class="keyword">static</span> Scope&lt;Texture2D&gt; CreateFromFile(<span class="keyword">const</span> std::string&amp; name, std::string_view filepath, <a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters = <a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>());</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        <span class="keyword">static</span> Scope&lt;Texture2D&gt; CreateFromFile(std::string_view filepath, <a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters = <a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>());</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="keyword">static</span> Scope&lt;Texture2D&gt; CreateFromImage(<span class="keyword">const</span> std::string&amp; name, <span class="keyword">const</span> TRAP::Scope&lt;TRAP::Image&gt;&amp; img, <a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters = <a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>());</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keyword">static</span> Scope&lt;Texture2D&gt; CreateEmpty(uint32_t width, uint32_t height, uint32_t bitsPerPixel, Image::ColorFormat format, <a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters = <a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>());</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keyword">static</span> Scope&lt;Texture2D&gt; CreateEmpty(uint32_t width, uint32_t height, uint32_t bitsPerPixel, <a class="code" href="class_t_r_a_p_1_1_image.html#a5bee5d4520506ffc6702eaec782a5011">Image::ColorFormat</a> format, <a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters = <a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>());</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="keyword">static</span> Scope&lt;Texture2D&gt; Create(<a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters = <a class="code" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>());</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        std::string_view GetFilePath() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="keyword">const</span> std::string&amp; GetFilePath() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> UploadImage(<span class="keyword">const</span> TRAP::Scope&lt;TRAP::Image&gt;&amp; image) = 0;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
@@ -111,6 +146,7 @@ $(function() {
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_TEXTURE2D_H_*/</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="aclass_t_r_a_p_1_1_image_html_a5bee5d4520506ffc6702eaec782a5011"><div class="ttname"><a href="class_t_r_a_p_1_1_image.html#a5bee5d4520506ffc6702eaec782a5011">TRAP::Image::ColorFormat</a></div><div class="ttdeci">ColorFormat</div><div class="ttdoc">Color formats.</div><div class="ttdef"><b>Definition:</b> Image.h:16</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_graphics_1_1_texture_html"><div class="ttname"><a href="class_t_r_a_p_1_1_graphics_1_1_texture.html">TRAP::Graphics::Texture</a></div><div class="ttdef"><b>Definition:</b> Texture.h:40</div></div>
 <div class="ttc" id="astruct_t_r_a_p_1_1_graphics_1_1_texture_parameters_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TRAP::Graphics::TextureParameters</a></div><div class="ttdef"><b>Definition:</b> Texture.h:30</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_graphics_1_1_texture2_d_html"><div class="ttname"><a href="class_t_r_a_p_1_1_graphics_1_1_texture2_d.html">TRAP::Graphics::Texture2D</a></div><div class="ttdef"><b>Definition:</b> Texture2D.h:8</div></div>

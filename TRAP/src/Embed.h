@@ -3,7 +3,9 @@
 
 namespace TRAP::Embed
 {
-	//FALLBACK SHADER
+	/// <summary>
+	/// Fallback Vertex Shader
+	/// </summary>
 	static constexpr const char* FallbackVS
 	{
 		R"(
@@ -24,6 +26,9 @@ namespace TRAP::Embed
 		}
 	)"
 	};
+	/// <summary>
+	/// Fallback Fragment Shader
+	/// </summary>
 	static constexpr const char* FallbackFS
 	{
 		R"(
@@ -38,6 +43,9 @@ namespace TRAP::Embed
 	)"
 	};
 
+	/// <summary>
+	/// 2D Renderer Vertex Shader
+	/// </summary>
 	static constexpr const char* Renderer2DVS
 	{
 		R"(
@@ -62,6 +70,9 @@ namespace TRAP::Embed
 		}
 	)"
 	};
+	/// <summary>
+	/// 2D Renderer Fragment Shader
+	/// </summary>
 	static constexpr const char* Renderer2DFS
 	{
 		R"(
@@ -85,6 +96,9 @@ namespace TRAP::Embed
 	)"
 	};
 
+	/// <summary>
+	/// Default Debug Image Pixel Data RGBA 32BPP
+	/// </summary>
 	static std::array<uint8_t, 4096> DefaultImageData =
 	{
 	13, 13, 13, 255,
@@ -1113,6 +1127,9 @@ namespace TRAP::Embed
 	13, 13, 13, 255
 	};
 
+	/// <summary>
+	/// TRAP Engine Logo Pixel Data RGBA 32BPP
+	/// </summary>
 	inline std::array<uint8_t, 4096> TRAPLogo
 	{
 	255, 255, 255, 0,

@@ -69,14 +69,21 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 	for(auto& device : physicalDevices)
 		m_deviceNamesAndUUIDs.emplace_back(device.second.GetPhysicalDeviceName(), device.second.GetUUID());
 	const std::string_view GPUUUIDString = Application::GetConfig().Get<std::string_view>("VulkanGPU");
-	const std::vector<uint8_t> GPUUUID = Utils::UUIDFromString(GPUUUIDString);
-	if(GPUUUID.empty())
+	const std::array<uint8_t, 16> GPUUUID = Utils::UUIDFromString(GPUUUIDString);
+	
+	bool invalidUUID = false;
+	for(uint8_t c : GPUUUID)
 	{
-		auto lastPhysicalDevice = (--physicalDevices.end())->second;
-		m_physicalDevice = MakeScope<Vulkan::PhysicalDevice>(std::move(lastPhysicalDevice));
+		if(c == '0')
+		{
+			invalidUUID = true;
+			break;
+		}
 	}
-	else if(GPUUUID.size() != 16)
+
+	if (invalidUUID)
 	{
+
 		TP_ERROR(Log::RendererVulkanPrefix, "Invalid GPU UUID: \"", GPUUUIDString, "\"!");
 		TP_ERROR(Log::RendererVulkanPrefix, "Falling back to score based system");
 		auto lastPhysicalDevice = (--physicalDevices.end())->second;
@@ -87,20 +94,9 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 		for(const auto& [score, physicalDevice] : physicalDevices)
 		{
 			bool sameGPU = true;
-			std::vector<uint8_t> physicalDeviceUUID = physicalDevice.GetUUID();
-
-			//Check if a GPU with the same UUID exists
-			uint32_t i = 0;
-			for(; i < physicalDeviceUUID.size(); i++)
-			{
-				if (GPUUUID[i] != physicalDeviceUUID[i])
-				{
-					sameGPU = false;
-					break;
-				}
-			}
+			std::array<uint8_t, 16> physicalDeviceUUID = physicalDevice.GetUUID();
 			
-			if(sameGPU) //GPU UUID found so use it
+			if(GPUUUID == physicalDeviceUUID) //GPU UUID found so use it
 			{
 				m_physicalDevice = MakeScope<Vulkan::PhysicalDevice>(physicalDevice);
 				break;
@@ -475,7 +471,7 @@ const std::string& TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUUUID()
+std::array<uint8_t, 16> TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUUUID()
 {
 	return m_physicalDevice->GetUUID();
 }
@@ -489,7 +485,7 @@ std::string TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUName()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::pair<std::string, std::vector<uint8_t>>> TRAP::Graphics::API::VulkanRenderer::GetAllGPUs()
+std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API::VulkanRenderer::GetAllGPUs()
 {
 	return m_deviceNamesAndUUIDs;
 }

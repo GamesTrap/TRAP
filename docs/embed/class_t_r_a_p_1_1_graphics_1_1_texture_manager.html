@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::Graphics::TextureManager Class Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -99,9 +137,9 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a0f7c0e4b8d095da93998571a72755c7b"><td class="memItemLeft" align="right" valign="top"><a id="a0f7c0e4b8d095da93998571a72755c7b"></a>
-static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_texture2_d.html">Texture2D</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Load</b> (const std::string &amp;filepath, <a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters=<a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>())</td></tr>
-<tr class="separator:a0f7c0e4b8d095da93998571a72755c7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fe16c81b262fe5c7d3f693f42ebb50e"><td class="memItemLeft" align="right" valign="top"><a id="a6fe16c81b262fe5c7d3f693f42ebb50e"></a>
+static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_texture2_d.html">Texture2D</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Load</b> (std::string_view filepath, <a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters=<a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>())</td></tr>
+<tr class="separator:a6fe16c81b262fe5c7d3f693f42ebb50e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac741ae13576d1e86f970e2d9b9841ece"><td class="memItemLeft" align="right" valign="top"><a id="ac741ae13576d1e86f970e2d9b9841ece"></a>
 static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_texture2_d.html">Texture2D</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Load</b> (const std::string &amp;name, const std::string &amp;filepath, <a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters=<a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>())</td></tr>
 <tr class="separator:ac741ae13576d1e86f970e2d9b9841ece"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -111,12 +149,12 @@ static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_textur
 <tr class="memitem:a1f81b6db3c38529a1af5cc24fe111847"><td class="memItemLeft" align="right" valign="top"><a id="a1f81b6db3c38529a1af5cc24fe111847"></a>
 static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_texture_cube.html">TextureCube</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Load</b> (const std::string &amp;name, const std::string &amp;filepath, InputFormat format, <a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters=<a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>())</td></tr>
 <tr class="separator:a1f81b6db3c38529a1af5cc24fe111847"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32b7d42608dfc0604974a5b3329e448b"><td class="memItemLeft" align="right" valign="top"><a id="a32b7d42608dfc0604974a5b3329e448b"></a>
-static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_texture_cube.html">TextureCube</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Load</b> (const std::string &amp;filepath, InputFormat format, <a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters=<a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>())</td></tr>
-<tr class="separator:a32b7d42608dfc0604974a5b3329e448b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02af9ea383d9e2fdce6b6274fb758cd1"><td class="memItemLeft" align="right" valign="top"><a id="a02af9ea383d9e2fdce6b6274fb758cd1"></a>
-static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_texture_cube.html">TextureCube</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Load</b> (const std::string &amp;name, const std::array&lt; std::string, 6 &gt; &amp;filepaths, <a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters=<a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>())</td></tr>
-<tr class="separator:a02af9ea383d9e2fdce6b6274fb758cd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a187a166e9f055955e17e8ed442f9e317"><td class="memItemLeft" align="right" valign="top"><a id="a187a166e9f055955e17e8ed442f9e317"></a>
+static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_texture_cube.html">TextureCube</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Load</b> (std::string_view filepath, InputFormat format, <a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters=<a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>())</td></tr>
+<tr class="separator:a187a166e9f055955e17e8ed442f9e317"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add29e08ad67327254fd9716159efefcb"><td class="memItemLeft" align="right" valign="top"><a id="add29e08ad67327254fd9716159efefcb"></a>
+static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_texture_cube.html">TextureCube</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Load</b> (const std::string &amp;name, const std::array&lt; std::string_view, 6 &gt; &amp;filepaths, <a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters=<a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>())</td></tr>
+<tr class="separator:add29e08ad67327254fd9716159efefcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0f0c76056b1f3c6c641d036519605a6"><td class="memItemLeft" align="right" valign="top"><a id="ac0f0c76056b1f3c6c641d036519605a6"></a>
 static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_texture_cube.html">TextureCube</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Load</b> (const std::string &amp;name, const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_image.html">Image</a> &gt; &amp;img, InputFormat format, <a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a> parameters=<a class="el" href="struct_t_r_a_p_1_1_graphics_1_1_texture_parameters.html">TextureParameters</a>())</td></tr>
 <tr class="separator:ac0f0c76056b1f3c6c641d036519605a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -126,9 +164,9 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>Add</b> (Scope
 <tr class="memitem:a7dcd903d17e1ef4c3b8909491904db1e"><td class="memItemLeft" align="right" valign="top"><a id="a7dcd903d17e1ef4c3b8909491904db1e"></a>
 static void&#160;</td><td class="memItemRight" valign="bottom"><b>Remove</b> (const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_texture.html">Texture</a> &gt; &amp;texture)</td></tr>
 <tr class="separator:a7dcd903d17e1ef4c3b8909491904db1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac5af38cf8cedbf15be6e2c792cdf921f"><td class="memItemLeft" align="right" valign="top"><a id="ac5af38cf8cedbf15be6e2c792cdf921f"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>Remove</b> (std::string_view name)</td></tr>
-<tr class="separator:ac5af38cf8cedbf15be6e2c792cdf921f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace663e119a2137628570f7e99aa9a947"><td class="memItemLeft" align="right" valign="top"><a id="ace663e119a2137628570f7e99aa9a947"></a>
+static void&#160;</td><td class="memItemRight" valign="bottom"><b>Remove</b> (const std::string &amp;name)</td></tr>
+<tr class="separator:ace663e119a2137628570f7e99aa9a947"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e732a71bef15bc7db6a32480cf71f49"><td class="memItemLeft" align="right" valign="top"><a id="a4e732a71bef15bc7db6a32480cf71f49"></a>
 static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_texture.html">Texture</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Get</b> (const std::string &amp;name, TextureType textureType)</td></tr>
 <tr class="separator:a4e732a71bef15bc7db6a32480cf71f49"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -156,9 +194,9 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>Shutdown</b> (
 <tr class="memitem:aea6da577fd40b048e9c484871cfd3b32"><td class="memItemLeft" align="right" valign="top"><a id="aea6da577fd40b048e9c484871cfd3b32"></a>
 static bool&#160;</td><td class="memItemRight" valign="bottom"><b>Exists</b> (const std::string &amp;name)</td></tr>
 <tr class="separator:aea6da577fd40b048e9c484871cfd3b32"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2dbe24658adce93bdd1f542ff4688b9"><td class="memItemLeft" align="right" valign="top"><a id="ab2dbe24658adce93bdd1f542ff4688b9"></a>
-static bool&#160;</td><td class="memItemRight" valign="bottom"><b>ExistsVirtualPath</b> (const std::string &amp;virtualPath)</td></tr>
-<tr class="separator:ab2dbe24658adce93bdd1f542ff4688b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a612b5094fe5fb2bab1e1c9d1d371d2b8"><td class="memItemLeft" align="right" valign="top"><a id="a612b5094fe5fb2bab1e1c9d1d371d2b8"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><b>ExistsVirtualPath</b> (std::string_view virtualPath)</td></tr>
+<tr class="separator:a612b5094fe5fb2bab1e1c9d1d371d2b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>

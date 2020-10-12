@@ -147,9 +147,9 @@ const void* TRAP::INTERNAL::RadianceImage::GetPixelData() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::INTERNAL::RadianceImage::GetPixelDataSize() const
+uint64_t TRAP::INTERNAL::RadianceImage::GetPixelDataSize() const
 {
-	return static_cast<uint32_t>(m_data.size());
+	return m_data.size() * sizeof(float);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -1,112 +1,39 @@
 #ifndef _TRAP_RANDOM_H_
 #define _TRAP_RANDOM_H_
 
-#include "TRAPPCH.h"
+#include "RandomInternal.h"
 
 namespace TRAP::Utils
 {
-    namespace INTERNAL {
-        //Key type for getting common type numbers or objects
-        struct Common { };
-
-        //True if type T is applicable by a std::uniform_int_distribution
-        template<typename T>
-        struct IsUniformInt
-    	{
-            static constexpr bool value =
-                std::is_same<T, short>::value
-                || std::is_same<T, int>::value
-                || std::is_same<T, long>::value
-                || std::is_same<T, long long>::value
-                || std::is_same<T, unsigned short>::value
-                || std::is_same<T, unsigned int>::value
-                || std::is_same<T, unsigned long>::value
-                || std::is_same<T, unsigned long long>::value;
-        };
-
-        //True if type T is applicable by a std::uniform_real_distribution
-        template<typename T>
-        struct IsUniformReal
-    	{
-            static constexpr bool value =
-                std::is_same<T, float>::value
-                || std::is_same<T, double>::value
-                || std::is_same<T, long double>::value;
-        };
-
-        //True if type T is plain byte
-        template<typename T>
-        struct IsByte
-    	{
-            static constexpr bool value =
-                std::is_same<T, signed char>::value
-                || std::is_same<T, unsigned char>::value;
-        };
-
-        //True if type T is plain number type
-        template<typename T>
-        struct IsSupportedNumber
-    	{
-            static constexpr bool value =
-                IsByte        <T>::value
-                || IsUniformReal<T>::value
-                || IsUniformInt <T>::value;
-        };
-
-        //True if type T is character type
-        template<typename T>
-        struct IsSupportedCharacter
-    	{
-            static constexpr bool value =
-                std::is_same<T, char>::value
-                || std::is_same<T, wchar_t>::value
-                || std::is_same<T, char16_t>::value
-                || std::is_same<T, char32_t>::value;
-        };
-
-        //True if type T is iterator
-        template<typename T>
-        struct IsIterator
-    	{
-        private:
-            static char Test(...);
-
-            template <typename U,
-                typename = typename std::iterator_traits<U>::difference_type,
-                typename = typename std::iterator_traits<U>::pointer,
-                typename = typename std::iterator_traits<U>::reference,
-                typename = typename std::iterator_traits<U>::value_type,
-                typename = typename std::iterator_traits<U>::iterator_category
-            > static long Test(U&&);
-        public:
-            static constexpr bool value = std::is_same<
-                decltype(Test(std::declval<T>())), long>::value;
-        };
-
-    }
-
-    //Default seeder for 'random' classes
+    /// <summary>
+    /// Default seeder for 'Random' classes.
+    /// </summary>
     struct SeederDefault
-	{
-        //Return seed sequence
-        std::seed_seq& operator() ()
-    	{
-            //Use std::seed_seq with additional seed from C++ chrono
+    {
+        /// <summary>
+        /// Use std::seed_seq with additional seed from C++ chrono.
+        /// </summary>
+        /// <returns>Seed sequence.</returns>
+        std::seed_seq& operator()()
+        {
             return SeedSeq;
         }
+
     private:
         std::seed_seq SeedSeq
-    	{ {
+        { {
                 static_cast<std::uintmax_t>(std::random_device{ }()),
-                static_cast<std::uintmax_t>(std::chrono::steady_clock::now()
-                                             .time_since_epoch().count()),
+                static_cast<std::uintmax_t>(std::chrono::steady_clock::now().time_since_epoch().count()),
         } };
     };
 
-    //Base template class for random with static API and static internal member storage
-    //It is NOT thread safe but more efficient then basic_random_thread_local
-    //Engine: A random engine with interface like in the std::mt19937
-    //Seeder: A seeder type which return seed for internal engine through operator()
+    /// <summary>
+    /// Base template class for random with static API and static internal member storage.<br>
+    /// <br>
+    /// Note: It is NOT thread safe but more efficient then basic_random_thread_local.
+    /// </summary>
+    /// <typeparam name="engine">A random engine with interface like in the std::mt19937.</typeparam>
+    /// <typeparam name="Seeder">A seeder type which return seed for internal engine through operator().</typeparam>
     template
 	<
         typename engine,
@@ -117,112 +44,174 @@ namespace TRAP::Utils
     >
     class BasicRandomStatic {
     public:
+        /// <summary>
+        /// Deleted Constructor.
+        /// </summary>
         BasicRandomStatic() = delete;
+    	/// <summary>
+    	/// Deleted Destructor.
+    	/// </summary>
+        ~BasicRandomStatic() = delete;
+        /// <summary>
+        /// Deleted Copy Constructor.
+        /// </summary>
+        BasicRandomStatic(const BasicRandomStatic&) = delete;
+        /// <summary>
+        /// Deleted Copy Assignment Operator.
+        /// </summary>
+        BasicRandomStatic operator=(const BasicRandomStatic&) = delete;
+        /// <summary>
+        /// Deleted Move Constructor.
+        /// </summary>
+        BasicRandomStatic(BasicRandomStatic&&) = delete;
+        /// <summary>
+        /// Deleted Move Assignment Operator.
+        /// </summary>
+        BasicRandomStatic operator=(BasicRandomStatic&&) = delete;
 
-        //Type of used random number engine
+        /// <summary>
+        /// Type of used random number engine.
+        /// </summary>
         using EngineType = engine;
 
-        //Type of used random number seeder
+        /// <summary>
+        /// Type of used random number seeder.
+        /// </summary>
         using SeederType = Seeder;
 
-        //Type of used integer distribution
+        /// <summary>
+        /// Type of used integer distribution.
+        /// </summary>
+        /// <typeparam name="T">Integer type.</typeparam>
         template<typename T>
         using IntegerDistT = IntegerDist<T>;
 
-        //Type of used real distribution
+        /// <summary>
+        /// Type of used real distribution.
+        /// </summary>
+        /// <typeparam name="T">Float/Double type.</typeparam>
         template<typename T>
         using RealDistT = RealDist<T>;
 
-        //Type of used bool distribution
+        /// <summary>
+        /// Type of used bool distribution.
+        /// </summary>
         using BoolDistT = BoolDist;
 
-        //Key type for getting common type numbers or objects
+        /// <summary>
+        /// Key type for getting common type numbers or objects.
+        /// </summary>
         using Common = INTERNAL::Common;
 
-        //Return: The minimum value potentially generated by the random-number engine
+        /// <summary>
+        /// Retrieve the minimum value potentially generated by the random-number engine.
+        /// </summary>
+        /// <returns>Minimum value.</returns>
         static constexpr typename engine::result_type Min()
     	{
             return engine::min();
         }
 
-        //Return: The maximum value potentially generated by the random-number engine
+        /// <summary>
+        /// Retrieve the maximum value potentially generated by the random-number engine.
+        /// </summary>
+        /// <returns>Maximum value.</returns>
         static constexpr typename engine::result_type Max()
     	{
             return engine::max();
         }
 
-        //Advances the internal state by z times
-        static void Discard(const unsigned long long z)
+        /// <summary>
+        /// Advances the internal state by z times.
+        /// </summary>
+        /// <param name="z">How many times to advance.</param>
+        static void Discard(const uint64_t z)
     	{
             EngineInstance().discard(z);
         }
 
-        //Reseed by Seeder
+        /// <summary>
+        /// Reseed by Seeder.
+        /// </summary>
         static void Reseed()
     	{
             Seeder seeder;
             Seed(seeder());
         }
 
-        //Reinitializes the internal state of the random-number engine using new seed value
-        //Value: The seed value to use in the initialization of the internal state
+        /// <summary>
+        /// Re-Initializes the internal state of the random-number engine using new seed value.
+        /// </summary>
+        /// <param name="value">Seed value to use in the initialization of the internal state.</param>
         static void Seed(const typename engine::result_type value =
             engine::default_seed)
     	{
             EngineInstance().seed(value);
         }
 
-        //Reinitializes the internal state of the random-number engine using new seed value
-        //Seq: The seed sequence to use in the initialization of the internal state
+        /// <summary>
+        /// Re-Initializes the internal state of the random-number engine using new seed value.
+        /// </summary>
+        /// <typeparam name="SSeq">Seed sequence.</typeparam>
+        /// <param name="seq">Seed sequence to use in the initialization of the internal state</param>
         template<typename SSeq>
         static void Seed(SSeq& seq)
     	{
             EngineInstance().seed(seq);
         }
 
-        //Return random number from engine in [Min(), Max()] range
+        /// <summary>
+        /// Get a random number from engine in [Min(), Max()] range.
+        /// </summary>
+        /// <returns>Random number.</returns>
         static typename engine::result_type Get()
     	{
             return EngineInstance()();
         }
 
-        //Compares internal pseudo-random number engine with 'other' pseudo-random number engine.
-        //Two engines are equal, if their internal states are equivalent, that is, if they would generate
-        //equivalent values for any number of calls of operator()
-        //Other: The engine, with which the internal engine will be compared
-        //Return: true, if other and internal engine are equal
+        /// <summary>
+        /// Compares internal pseudo-random number engine with 'other' pseudo-random number engine.<br>
+        /// Two engines are equal, if their internal states are equivalent, that is, if they would generate
+        /// equivalent values for any number of calls of operator().
+        /// </summary>
+        /// <param name="other">Engine, with which the internal engine will be compared.</param>
+        /// <returns>True, if other and internal engine are equal.</returns>
         static bool IsEqual(const engine& other)
     	{
             return EngineInstance() == other;
         }
 
-        //Serializes the internal state of the internal pseudo-random number engine as a sequence
-        //of decimal numbers separated by one or more spaces, and inserts it to the stream ost. The fill character
-        //and the formatting flags of the stream are ignored and unaffected.
-        //Ost: The output stream to insert the data to
+        /// <summary>
+        /// Serializes the internal state of the internal pseudo-random number engine as a sequence
+        /// of decimal numbers separated by one or more spaces, and inserts it to the stream ost.<br>
+        /// The fill character and the formatting flags of the stream are ignored and unaffected.
+        /// </summary>
+        /// <param name="ost">Output stream to insert the data to.</param>
         template<typename CharT, typename Traits>
         static void Serialize(std::basic_ostream<CharT, Traits>& ost)
     	{
             ost << EngineInstance();
         }
 
-        //Restores the internal state of the internal pseudo-random number engine from
-        //the serialized representation, which was created by an earlier call to 'Serialize'
-        //using a stream with the same imbued locale and the same CharT and Traits.
-        //If the input cannot be deserialized, internal engine is left unchanged and failbit is raised on ist
-        //Ist: The input stream to extract the data from
+        /// <summary>
+        /// Restores the internal state of the internal pseudo-random number engine from
+        /// the serialized representation, which was created by an earlier call to 'Serialize'
+        /// using a stream with the same imbued locale and the same CharT and Traits.<br>
+        /// If the input cannot be deserialized, internal engine is left unchanged and fail-Bit is raised on ist.
+        /// </summary>
+        /// <param name="ist">Input stream to extract the data from.</param>
         template<typename CharT, typename Traits>
         static void Deserialize(std::basic_istream<CharT, Traits>& ist)
     	{
             ist >> EngineInstance();
         }
 
-        //Generate a random integer number in a [from; to] range by std::uniform_int_distribution
-        //From: The first limit number of a random range
-        //To: The second limit number of a random range
-        //Return: A random integer number in a [from; to] range
-        //Allow both: 'from' <= 'to' and 'from' >= 'to'
-        //Prevent implicit type conversion
+        /// <summary>
+        /// Generate a random integer number in a [from; to] range by std::uniform_int_distribution.
+        /// </summary>
+        /// <param name="from">First limit number of a random range.</param>
+        /// <param name="to">Second limit number of a random range.</param>
+        /// <returns>A random integer number in a [from; to] range.</returns>
         template<typename T>
         static typename std::enable_if<INTERNAL::IsUniformInt<T>::value
             , T>::type Get(T from = std::numeric_limits<T>::min(),
@@ -234,12 +223,12 @@ namespace TRAP::Utils
             return IntegerDist<T>{ to, from }(EngineInstance());
         }
 
-        //Generate a random real number in a [from; to] range by std::uniform_real_distribution
-        //From: The first limit number of a random range
-        //To: The second limit number of a random range
-        //Return: A random real number in a [from; to] range
-        //Allow both: 'from' <= 'to' and 'from' >= 'to'
-        //Prevent implicit type conversion
+        /// <summary>
+        /// Generate a random real number in a [from; to] range by std::uniform_real_distribution.
+        /// </summary>
+        /// <param name="from">First limit number of a random range.</param>
+        /// <param name="to">Second limit number of a random range.</param>
+        /// <returns>A random real number in a [from; to] range.</returns>
         template<typename T>
         static typename std::enable_if<INTERNAL::IsUniformReal<T>::value
             , T>::type Get(T from = std::numeric_limits<T>::min(),
@@ -251,12 +240,12 @@ namespace TRAP::Utils
             return RealDist<T>{ to, from }(EngineInstance());
         }
 
-        //Generate a random byte number in a [from; to] range
-    	//From: The first limit number of a random range
-        //To: The second limit number of a random range
-        //Return: A random byte number in a [from; to] range
-        //Allow both: 'from' <= 'to' and 'from' >= 'to'
-        //Prevent implicit type conversion
+        /// <summary>
+        /// Generate a random byte number in a [from; to] range.
+        /// </summary>
+        /// <param name="from">First limit number of a random range.</param>
+        /// <param name="to">Second limit number of a random range.</param>
+        /// <returns>A random byte number in a [from; to] range.</returns>
         template<typename T>
         static typename std::enable_if<INTERNAL::IsByte<T>::value
             , T>::type Get(T from = std::numeric_limits<T>::min(),
@@ -264,21 +253,18 @@ namespace TRAP::Utils
     	{
             //Choose between short and unsigned short for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
-                short, unsigned short>::type;
+                int16_t, uint16_t>::type;
 
             return static_cast<T>(Get<short_t>(from, to));
         }
 
-        //Generate a random common_type number in a [from; to] range
-        //Key: The Key type for this version of 'Get' method Type should be '(THIS_TYPE)::Common' struct
-        //From: The first limit number of a random range
-        //To: The second limit number of a random range
-        //Return: A random common_type number in a [from; to] range
-        //Allow both: 'from' <= 'to' and 'from' >= 'to'
-        //Allow implicit type conversion
-        //Prevent implicit type conversion from singed to unsigned types Why?
-        //std::common_type<Unsigned, Signed> chooses unsigned value, then Signed value will be converted to Unsigned value
-        //which gives us a wrong range for random values.
+        /// <summary>
+        /// Generate a random common_type number in a [from; to] range.
+        /// </summary>
+        /// <typeparam name="Key">Key type for this version of 'Get' method Type should be '(THIS_TYPE)::Common' struct.</typeparam>
+        /// <param name="from">First limit number of a random range.</param>
+        /// <param name="to">Second limit number of a random range.</param>
+        /// <returns>A random common_type number in a [from; to] range.</returns>
         template
     	<
             typename Key,
@@ -298,12 +284,12 @@ namespace TRAP::Utils
             return Get(static_cast<C>(from), static_cast<C>(to));
         }
 
-        //Generate a random character in a [from; to] range by std::uniform_int_distribution
-        //From: The first limit number of a random range
-        //To: The second limit number of a random range
-        //Rreturn: A random character in a [from; to] range
-        //Allow both: 'from' <= 'to' and 'from' >= 'to'
-        //Prevent implicit type conversion
+        /// <summary>
+        /// Generate a random character in a [from; to] range by std::uniform_int_distribution.
+        /// </summary>
+        /// <param name="from">First limit number of a random range.</param>
+        /// <param name="to">Second limit number of a random range.</param>
+        /// <returns>A random character in a [from; to] range.</returns>
         template<typename T>
         static typename std::enable_if<INTERNAL::IsSupportedCharacter<T>::value
             , T>::type Get(T from = std::numeric_limits<T>::min(),
@@ -315,9 +301,11 @@ namespace TRAP::Utils
             return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(to), static_cast<std::int64_t>(from) }(EngineInstance()));
         }
 
-        //Generate a bool value with specific probability by std::bernoulli_distribution
-        //Probability: The probability of generating true in [0; 1] range 0 means always false, 1 means always true
-        //Return: 'true' with 'probability' probability ('false' otherwise)
+        /// <summary>
+        /// Generate a bool value with specific probability by std::bernoulli_distribution.
+        /// </summary>
+        /// <param name="probability">Probability of generating true in [0; 1] range 0 means always false, 1 means always true.</param>
+        /// <returns>'true' with 'probability' probability ('false' otherwise).</returns>
         template<typename T>
         static typename std::enable_if<std::is_same<T, bool>::value
             , bool>::type Get(const double probability = 0.5)
@@ -326,11 +314,13 @@ namespace TRAP::Utils
             return BoolDist{ probability }(EngineInstance());
         }
 
-        //Return random value from initilizer_list
-    	//init_list: initializer_list with values
-        //Return: Random value from initializer_list
-        //Should be 1 or more elements in initializer_list
-        //Warning! Elements in initializer_list can't be moved
+        /// <summary>
+        /// Get random value from initializer_list.<br>
+        /// Should be 1 or more elements in initializer_list.<br>
+        /// Note: Elements in initializer_list can't be moved!
+        /// </summary>
+        /// <param name="init_list">Initializer_list with values.</param>
+        /// <returns>Random value from initializer_list.</returns>
         template<typename T>
         static T Get(std::initializer_list<T> init_list)
     	{
@@ -338,10 +328,12 @@ namespace TRAP::Utils
             return *Get(init_list.begin(), init_list.end());
         }
 
-        //Return random iterator from iterator range
-    	//First, Last: the range of elements
-        //Return Random iterator from [first, last) range
-        //If first == last, return last
+        /// <summary>
+        /// Get random iterator from iterator range.
+        /// </summary>
+        /// <param name="first">Range of elements.</param>
+        /// <param name="last">Range of elements.</param>
+        /// <returns>Random iterator from [first, last) range.</returns>
         template<typename InputIt>
         static typename std::enable_if<INTERNAL::IsIterator<InputIt>::value
             , InputIt>::type Get(InputIt first, InputIt last)
@@ -352,90 +344,114 @@ namespace TRAP::Utils
             return std::next(first, Get<diff_t>(0, size - 1));
         }
 
-        //Return random iterator from Container
-        //Container: The container with elements
-        //Return: Random iterator from container
-        //If container is empty return std::end( container ) iterator
+        /// <summary>
+        /// Get random iterator from Container.
+        /// </summary>
+        /// <param name="container">Container with elements.</param>
+        /// <returns>Random iterator from container.</returns>
         template<typename Container>
         static auto Get(Container& container) ->
             typename std::enable_if<INTERNAL::IsIterator<
             decltype(std::begin(container))>::value
             , decltype(std::begin(container))
             >::type
-    	{
+        {
             return Get(std::begin(container), std::end(container));
         }
-
-        //Return random pointer from built-in array
-        //Array: The built-in array with elements
-        //Return: Pointer to random element in array
+    	
+        /// <summary>
+        /// Get random pointer from built-in array.
+        /// </summary>
+        /// <param name="array">Built-in array with elements.</param>
+        /// <returns>Pointer to random element in array.</returns>
         template<typename T, std::size_t N>
         static T* Get(T(&array)[N])
     	{
             return std::addressof(array[Get<std::size_t>(0, N - 1)]);
         }
 
-        //Return value from custom Dist distribution seeded by internal random engine
-        //Dist: The type of custom distribution with next concept
-        //Args: The arguments which will be forwarded to Dist constructor
-        //Return: Value from custom distribution
+        /// <summary>
+        /// Get value from custom Dist distribution seeded by internal random engine.
+        /// </summary>
+        /// <typeparam name="Dist">Type of custom distribution with next concept.</typeparam>
+        /// <typeparam name="...Args">Arguments which will be forwarded to Dist constructor.</typeparam>
+        /// <returns>Value from custom distribution.</returns>
         template<typename Dist, typename... Args>
         static typename Dist::result_type Get(Args&&... args)
     	{
             return Dist{ std::forward<Args>(args)... }(EngineInstance());
         }
 
-        //Return value from custom 'dist' distribution seeded by internal random engine
-        //Dist: The custom distribution with next concept
-        //Args: The arguments which will be forwarded to Dist constructor
-        //Return: Value from custom 'dist' distribution
+        /// <summary>
+        /// Get value from custom 'dist' distribution seeded by internal random engine.
+        /// </summary>
+        /// <param name="dist">Custom distribution with next concept</param>
+        /// <returns>Value from custom 'dist' distribution</returns>
         template<typename Dist>
         static typename Dist::result_type Get(Dist& dist)
     	{
             return dist(EngineInstance());
         }
 
-        //Reorders the elements in the given range [first, last) such that each possible permutation of those elements
-        //has equal probability of appearance.
-        //First, Last: the range of elements to shuffle randomly
+        /// <summary>
+        /// Reorders the elements in the given range [first, last) such that each possible permutation of those elements
+        /// has equal probability of appearance.
+        /// </summary>
+        /// <param name="first">Range of elements to shuffle randomly.</param>
+        /// <param name="last">Range of elements to shuffle randomly.</param>
         template<typename RandomIt>
         static void Shuffle(RandomIt first, RandomIt last)
     	{
             std::shuffle(first, last, EngineInstance());
         }
 
-        //Reorders the elements in the given container such that each possible permutation of those elements
-        //has equal probability of appearance.
-        //Container: the container with elements to shuffle randomly
+        /// <summary>
+        /// Reorders the elements in the given container such that each possible permutation of those elements
+        /// has equal probability of appearance.
+        /// </summary>
+        /// <param name="container">Container with elements to shuffle randomly.</param>
         template<typename Container>
         static void Shuffle(Container& container)
     	{
             Shuffle(std::begin(container), std::end(container));
         }
 
-        //Return internal engine by copy
+        /// <summary>
+        /// Get internal engine by copy.
+        /// </summary>
+        /// <returns>Internal engine.</returns>
         static engine GetEngine()
     	{
             return EngineInstance();
         }
 
-        //Return internal engine by ref
+        /// <summary>
+        /// Get internal engine by reference,
+        /// </summary>
+        /// <returns>Internal engine.</returns>
         static engine& Engine()
     	{
             return EngineInstance();
         }
+    	
     protected:
-        //Get reference to the static engine instance
+        /// <summary>
+        /// Get reference to the static engine instance.
+        /// </summary>
+        /// <returns>Static engine instance.</returns>
         static engine& EngineInstance() {
             static engine Engine{ Seeder{ }() };
             return Engine;
         }
     };
 
-    //Base template class for random with thread_local API and thread_local internal member storage
-    //It IS thread safe but less efficient then BasicRandomStatic
-    //Engine: A random engine with interface like in the std::mt19937
-    //Seeder: A seeder type which return seed for internal engine through operator()
+    /// <summary>
+    /// Base template class for random with thread_local API and thread_local internal member storage.<br>
+    /// <br>
+    /// Note: It IS thread safe but less efficient then BasicRandomStatic.
+    /// </summary>
+    /// <typeparam name="engine">A random engine with interface like in the std::mt19937.</typeparam>
+    /// <typeparam name="Seeder">A seeder type which return seed for internal engine through operator().</typeparam>
     template
 	<
         typename engine,
@@ -446,111 +462,170 @@ namespace TRAP::Utils
     >
     class BasicRandomThreadLocal {
     public:
+        /// <summary>
+        /// Deleted Constructor.
+        /// </summary>
         BasicRandomThreadLocal() = delete;
+        /// <summary>
+        /// Deleted Destructor.
+        /// </summary>
+        ~BasicRandomThreadLocal() = delete;
+        /// <summary>
+        /// Deleted Copy Constructor.
+        /// </summary>
+        BasicRandomThreadLocal(const BasicRandomThreadLocal&) = delete;
+        /// <summary>
+        /// Deleted Copy Assignment Operator.
+        /// </summary>
+        BasicRandomThreadLocal operator=(const BasicRandomThreadLocal&) = delete;
+        /// <summary>
+        /// Deleted Move Constructor.
+        /// </summary>
+        BasicRandomThreadLocal(BasicRandomThreadLocal&&) = delete;
+        /// <summary>
+        /// Deleted Move Assignment Operator.
+        /// </summary>
+        BasicRandomThreadLocal operator=(BasicRandomThreadLocal&&) = delete;
 
-        //Type of used random number engine
+        /// <summary>
+        /// Type of used random number engine.
+        /// </summary>
         using EngineType = engine;
 
-        //Type of used random number seeder
+        /// <summary>
+        /// Type of used random number seeder.
+        /// </summary>
         using SeederType = Seeder;
 
-        //Type of used integer distribution
+        /// <summary>
+        /// Type of used integer distribution
+        /// </summary>
         template<typename T>
         using IntegerDistT = IntegerDist<T>;
 
-        //Type of used real distribution
+        /// <summary>
+        /// Type of used real distribution
+        /// </summary>
         template<typename T>
         using RealDistT = RealDist<T>;
 
-        //Type of used bool distribution
+        /// <summary>
+        /// Type of used bool distribution.
+        /// </summary>
         using BoolDistT = BoolDist;
 
-        //Key type for getting common type numbers or objects
+        /// <summary>
+        /// Key type for getting common type numbers or objects.
+        /// </summary>
         using Common = INTERNAL::Common;
 
-        //Return: The minimum value potentially generated by the random-number engine
+        /// <summary>
+        /// Retrieve the minimum value potentially generated by the random-number engine.
+        /// </summary>
+        /// <returns>Minimum value.</returns>
         static constexpr typename engine::result_type Min()
-    	{
+        {
             return engine::min();
         }
-
-        //Return: The maximum value potentially generated by the random-number engine
+        	
+        /// <summary>
+        /// Retrieve the maximum value potentially generated by the random-number engine.
+        /// </summary>
+        /// <returns>Maximum value.</returns>
         static constexpr typename engine::result_type Max()
     	{
             return engine::max();
         }
 
-        //Advances the internal state by z times
-        static void Discard(const unsigned long long z)
+        /// <summary>
+        /// Advances the internal state by z times.
+        /// </summary>
+        /// <param name="z">How many times to advance.</param>
+        static void Discard(const uint64_t z)
     	{
             EngineInstance().discard(z);
         }
 
-        //Reseed by Seeder
-        static void Reseed() {
+        /// <summary>
+        /// Reseed by Seeder.
+        /// </summary>
+        static void Reseed()
+        {
             Seeder seeder;
             Seed(seeder());
         }
-
-        //Reinitializes the internal state of the random-number engine using new seed value
-        //Value: The seed value to use in the initialization of the internal state
-        static void Seed(const typename engine::result_type value =
-            engine::default_seed)
+    	
+        /// <summary>
+        /// Re-Initializes the internal state of the random-number engine using new seed value.
+        /// </summary>
+        /// <param name="value">Seed value to use in the initialization of the internal state.</param>
+        static void Seed(const typename engine::result_type value = engine::default_seed)
     	{
             EngineInstance().seed(value);
         }
 
-        //Reinitializes the internal state of the random-number engine using new seed value
-        //Seq: The seed sequence to use in the initialization of the internal state
+        /// <summary>
+        /// Re-Initializes the internal state of the random-number engine using new seed value.
+        /// </summary>
+        /// <param name="seq">Seed sequence to use in the initialization of the internal state.</param>
         template<typename SSeq>
         static void Seed(SSeq& seq)
     	{
             EngineInstance().seed(seq);
         }
 
-        //Return random number from engine in [min(), max()] range
+        /// <summary>
+        /// Retrieve a random number from engine in [min(), max()] range.
+        /// </summary>
+        /// <returns>Random number.</returns>
         static typename engine::result_type Get()
     	{
             return EngineInstance()();
         }
 
-        //Compares internal pseudo-random number engine with 'other' pseudo-random number engine.
-        //Two engines are equal, if their internal states are equivalent, that is, if they would generate
-        //equivalent values for any number of calls of operator()
-        //Other: The engine, with which the internal engine will be compared
-        //Return: true, if other and internal engine are equal
+        /// <summary>
+        /// Compares internal pseudo-random number engine with 'other' pseudo-random number engine.<br>
+        /// Two engines are equal, if their internal states are equivalent, that is, if they would generate
+        /// equivalent values for any number of calls of operator().
+        /// </summary>
+        /// <param name="other">Engine, with which the internal engine will be compared.</param>
+        /// <returns>True if other and internal engine are equal, false otherwise</returns>
         static bool IsEqual(const engine& other)
     	{
             return EngineInstance() == other;
         }
 
-        //Serializes the internal state of the internal pseudo-random number engine as a sequence
-        //of decimal numbers separated by one or more spaces, and inserts it to the stream ost. The fill character
-        //and the formatting flags of the stream are ignored and unaffected.
-        //Ost: The output stream to insert the data to
+        /// <summary>
+        /// Serializes the internal state of the internal pseudo-random number engine as a sequence
+        /// of decimal numbers separated by one or more spaces, and inserts it to the stream ost.<br>
+        /// The fill character and the formatting flags of the stream are ignored and unaffected.
+        /// </summary>
+        /// <param name="ost">Output stream to insert the data to.</param>
         template<typename CharT, typename Traits>
         static void Serialize(std::basic_ostream<CharT, Traits>& ost)
     	{
             ost << EngineInstance();
         }
 
-        //Restores the internal state of the internal pseudo-random number engine from
-        //the serialized representation, which was created by an earlier call to 'Serialize'
-        //using a stream with the same imbued locale and the same CharT and Traits.
-        //If the input cannot be deserialized, internal engine is left unchanged and failbit is raised on ist
-        //Ist: The input stream to extract the data from
+        /// <summary>
+        /// Restores the internal state of the internal pseudo-random number engine from
+        /// the serialized representation, which was created by an earlier call to 'Serialize'
+        /// using a stream with the same imbued locale and the same CharT and Traits.<br>
+        /// If the input cannot be deserialized, internal engine is left unchanged and fail-Bit is raised on ist.
+        /// </summary>
+        /// <param name="ist">Input stream to extract the data from.</param>
         template<typename CharT, typename Traits>
         static void Deserialize(std::basic_istream<CharT, Traits>& ist)
     	{
             ist >> EngineInstance();
         }
 
-        //Generate a random integer number in a [from; to] range by std::uniform_int_distribution
-        //From: The first limit number of a random range
-        //To: The second limit number of a random range
-        //Return: A random integer number in a [from; to] range
-        //Allow both: 'from' <= 'to' and 'from' >= 'to'
-        //Prevent implicit type conversion
+        /// <summary>
+        /// Generate a random integer number in a [from; to] range by std::uniform_int_distribution.
+        /// </summary>
+        /// <param name="from">First limit number of a random range.</param>
+        /// <param name="to">Second limit number of a random range.</param>
+        /// <returns>Random integer number in a [from; to] range.</returns>
         template<typename T>
         static typename std::enable_if<INTERNAL::IsUniformInt<T>::value
             , T>::type Get(T from = std::numeric_limits<T>::min(),
@@ -562,12 +637,12 @@ namespace TRAP::Utils
             return IntegerDist<T>{ to, from }(EngineInstance());
         }
 
-        //Generate a random real number in a [from; to] range by std::uniform_real_distribution
-        //From: The first limit number of a random range
-        //To: The second limit number of a random range
-        //Return: A random real number in a [from; to] range
-        //Allow both: 'from' <= 'to' and 'from' >= 'to'
-        //Prevent implicit type conversion
+        /// <summary>
+        /// Generate a random real number in a [from; to] range by std::uniform_real_distribution.
+        /// </summary>
+        /// <param name="from">First limit number of a random range</param>
+        /// <param name="to">Second limit number of a random range.</param>
+        /// <returns>Random real number in a [from; to] range.</returns>
         template<typename T>
         static typename std::enable_if<INTERNAL::IsUniformReal<T>::value
             , T>::type Get(T from = std::numeric_limits<T>::min(),
@@ -579,12 +654,12 @@ namespace TRAP::Utils
             return RealDist<T>{ to, from }(EngineInstance());
         }
 
-        //Generate a random byte number in a [from; to] range
-    	//From: The first limit number of a random range
-        //To: The second limit number of a random range
-        //Return: A random byte number in a [from; to] range
-        //Allow both: 'from' <= 'to' and 'from' >= 'to'
-        //Prevent implicit type conversion
+        /// <summary>
+        /// Generate a random byte number in a [from; to] range.
+        /// </summary>
+        /// <param name="from">First limit number of a random range.</param>
+        /// <param name="to">Second limit number of a random range.</param>
+        /// <returns>Random byte number in a [from; to] range.</returns>
         template<typename T>
         static typename std::enable_if<INTERNAL::IsByte<T>::value
             , T>::type Get(T from = std::numeric_limits<T>::min(),
@@ -592,21 +667,18 @@ namespace TRAP::Utils
     	{
             //Choose between short and unsigned short for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
-                short, unsigned short>::type;
+                int16_t, uint16_t>::type;
 
             return static_cast<T>(Get<short_t>(from, to));
         }
 
-        //Generate a random common_type number in a [from; to] range
-        //Key: The Key type for this version of 'get' method Type should be '(THIS_TYPE)::Common' struct
-        //From: The first limit number of a random range
-        //To: The second limit number of a random range
-        //Return: A random common_type number in a [from; to] range
-        //Allow both: 'from' <= 'to' and 'from' >= 'to'
-        //Allow implicit type conversion
-        //Prevent implicit type conversion from singed to unsigned types Why?
-        //std::common_type<Unsigned, Signed> chooses unsigned value, then Signed value will be converted to Unsigned value
-        //which gives us a wrong range for random values.
+        /// <summary>
+        /// Generate a random common_type number in a [from; to] range.
+        /// </summary>
+        /// <typeparam name="Key">The Key type for this version of 'get' method Type should be '(THIS_TYPE)::Common' struct.</typeparam>
+        /// <param name="from">First limit number of a random range.</param>
+        /// <param name="to">Second limit number of a random range.</param>
+        /// <returns>Random common_type number in a [from; to] range.</returns>
         template
     	<
             typename Key,
@@ -626,12 +698,12 @@ namespace TRAP::Utils
             return Get(static_cast<C>(from), static_cast<C>(to));
         }
 
-        //Generate a random character in a [from; to] range by std::uniform_int_distribution
-        //From: The first limit number of a random range
-        //To: The second limit number of a random range
-        //Return: A random character in a [from; to] range
-        //Allow both: 'from' <= 'to' and 'from' >= 'to'
-        //Prevent implicit type conversion
+        /// <summary>
+        /// Generate a random character in a [from; to] range by std::uniform_int_distribution.
+        /// </summary>
+        /// <param name="from">First limit number of a random range.</param>
+        /// <param name="to">Second limit number of a random range.</param>
+        /// <returns>Random character in a [from; to] range.</returns>
         template<typename T>
         static typename std::enable_if<INTERNAL::IsSupportedCharacter<T>::value
             , T>::type Get(T from = std::numeric_limits<T>::min(),
@@ -643,9 +715,11 @@ namespace TRAP::Utils
             return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(to), static_cast<std::int64_t>(from) }(EngineInstance()));
         }
 
-        //Generate a bool value with specific probability by std::bernoulli_distribution
-        //Probability: The probability of generating true in [0; 1] range 0 means always false, 1 means always true
-        //Return: 'true' with 'probability' probability ('false' otherwise)
+        /// <summary>
+        /// Generate a bool value with specific probability by std::bernoulli_distribution.
+        /// </summary>
+        /// <param name="probability">Probability of generating true in [0; 1] range 0 means always false, 1 means always true.</param>
+        /// <returns>'True' with 'probability' probability ('False' otherwise).</returns>
         template<typename T>
         static typename std::enable_if<std::is_same<T, bool>::value
             , bool>::type Get(const double probability = 0.5)
@@ -654,11 +728,11 @@ namespace TRAP::Utils
             return BoolDist{ probability }(EngineInstance());
         }
 
-        //Return random value from initializer_list
-    	//init_list: initializer_list with values
-        //Rreturn: Random value from initializer_list
-        //Should be 1 or more elements in initializer_list
-        //Warning! Elements in initializer_list can't be moved:
+        /// <summary>
+        /// Retrieve a random value from initializer_list.
+        /// </summary>
+        /// <param name="init_list">initializer_list with values.</param>
+        /// <returns>Random value from initializer_list.</returns>
         template<typename T>
         static T Get(std::initializer_list<T> init_list)
     	{
@@ -666,10 +740,12 @@ namespace TRAP::Utils
             return *Get(init_list.begin(), init_list.end());
         }
 
-        //Return random iterator from iterator range
-    	//First, Last: the range of elements
-        //Return: Random iterator from [first, last) range
-        //If first == last, return last
+        /// <summary>
+        /// Retrieve a random iterator from iterator range.
+        /// </summary>
+        /// <param name="first">Range of elements.</param>
+        /// <param name="last">Range of elements.</param>
+        /// <returns>Random iterator from [first, last) range.</returns>
         template<typename InputIt>
         static typename std::enable_if<INTERNAL::IsIterator<InputIt>::value
             , InputIt>::type Get(InputIt first, InputIt last)
@@ -680,10 +756,11 @@ namespace TRAP::Utils
             return std::next(first, Get<diff_t>(0, size - 1));
         }
 
-        //Return random iterator from Container
-    	//Container: The container with elements
-        //Return: Random iterator from container
-        //If container is empty return std::end( container ) iterator
+        /// <summary>
+        /// Retrieve a random iterator from Container.
+        /// </summary>
+        /// <param name="container">Container with elements.</param>
+        /// <returns>Random iterator from container.</returns>
         template<typename Container>
         static auto Get(Container& container) ->
             typename std::enable_if<INTERNAL::IsIterator<
@@ -694,74 +771,100 @@ namespace TRAP::Utils
             return Get(std::begin(container), std::end(container));
         }
 
-        //Return random pointer from built-in array
-        //Array: The built-in array with elements
-        //Return: Pointer to random element in array
+        /// <summary>
+        /// Retrieve a random pointer from built-in array.
+        /// </summary>
+        /// <param name="array">Built-in array with elements</param>
+        /// <returns>Pointer to random element in array.</returns>
         template<typename T, std::size_t N>
         static T* Get(T(&array)[N])
     	{
             return std::addressof(array[Get<std::size_t>(0, N - 1)]);
         }
 
-        //Return value from custom Dist distribution seeded by internal random engine
-        //Dist: The type of custom distribution with next concept
-        //Args: The arguments which will be forwarded to Dist constructor
-        //Return: Value from custom distribution
+        /// <summary>
+        /// Retrieve a value from custom Dist distribution seeded by internal random engine.
+        /// </summary>
+        /// <typeparam name="Dist">Type of custom distribution with next concept.</typeparam>
+        /// <typeparam name="...Args">Arguments which will be forwarded to Dist constructor.</typeparam>
+        /// <returns>Value from custom distribution.</returns>
         template<typename Dist, typename... Args>
         static typename Dist::result_type Get(Args&&... args)
     	{
             return Dist{ std::forward<Args>(args)... }(EngineInstance());
         }
 
-        //Return value from custom 'dist' distribution seeded by internal random engine
-        //Dist: The custom distribution with next concept
-        //Args: The arguments which will be forwarded to Dist constructor
-        //Return: Value from custom 'dist' distribution
+        /// <summary>
+        /// Retrieve a value from custom 'dist' distribution seeded by internal random engine.
+        /// </summary>
+        /// <typeparam name="Dist">Custom distribution with next concept.</typeparam>
+        /// <param name="dist">Custom distribution with next concept.</param>
+        /// <returns>Value from custom 'dist' distribution.</returns>
         template<typename Dist>
         static typename Dist::result_type Get(Dist& dist)
     	{
             return dist(EngineInstance());
         }
 
-        //Reorders the elements in the given range [first, last) such that each possible permutation of those elements
-        //has equal probability of appearance.
-        //First, Last: the range of elements to shuffle randomly
+        /// <summary>
+        /// Reorders the elements in the given range [first, last) such that each possible permutation of those elements
+        /// has equal probability of appearance.
+        /// </summary>
+        /// <param name="first">Range of elements to shuffle randomly.</param>
+        /// <param name="last">Range of elements to shuffle randomly.</param>
         template<typename RandomIt>
         static void Shuffle(RandomIt first, RandomIt last)
     	{
             std::shuffle(first, last, EngineInstance());
         }
 
-        //Reorders the elements in the given container such that each possible permutation of those elements
-        //has equal probability of appearance.
-        //Container: the container with elements to shuffle randomly
+        /// <summary>
+        /// Reorders the elements in the given container such that each possible permutation of those elements
+        /// has equal probability of appearance.
+        /// </summary>
+        /// <typeparam name="Container">Container with elements to shuffle randomly.</typeparam>
+        /// <param name="container">Container with elements to shuffle randomly.</param>
         template<typename Container>
         static void Shuffle(Container& container)
     	{
             Shuffle(std::begin(container), std::end(container));
         }
 
-        //Return internal engine by copy
-        static engine GetEngine() {
+        /// <summary>
+        /// Retrieve internal engine by copy.
+        /// </summary>
+        /// <returns>Internal engine.</returns>
+        static engine GetEngine()
+    	{
             return EngineInstance();
         }
 
-        //Return internal engine by ref
-        static engine& Engine() {
+        /// <summary>
+        /// Retrieve internal engine by ref.
+        /// </summary>
+        /// <returns>Internal engine.</returns>
+        static engine& Engine()
+    	{
             return EngineInstance();
         }
     protected:
-        //Get reference to the thread local engine instance
-        static engine& EngineInstance() {
+        /// <summary>
+        /// Get reference to the thread local engine instance.
+        /// </summary>
+        /// <returns>Thread local engine reference.</returns>
+        static engine& EngineInstance()
+    	{
             thread_local engine Engine{ Seeder{ }() };
             return Engine;
         }
     };
 
-    //Base template class for random with local API and local internal member storage
-    //It IS thread safe but less efficient then BasicRandomStatic
-    //Engine: A random engine with interface like in the std::mt19937
-    //Seeder: A seeder type which return seed for internal engine through operator()
+    /// <summary>
+    /// Base template class for random with local API and local internal member storage.<br>
+    /// It IS thread safe but less efficient then BasicRandomStatic.
+    /// </summary>
+    /// <typeparam name="engine">Random engine with interface like in the std::mt19937.</typeparam>
+    /// <typeparam name="Seeder">Seeder type which return seed for internal engine through operator().</typeparam>
     template
 	<
         typename engine,
@@ -772,110 +875,145 @@ namespace TRAP::Utils
     >
     class BasicRandomLocal {
     public:
-        //Type of used random number engine
+        /// <summary>
+        /// Type of used random number engine.
+        /// </summary>
         using EngineType = engine;
 
-        //Type of used random number seeder
+        /// <summary>
+        /// Type of used random number seeder.
+        /// </summary>
         using SeederType = Seeder;
 
-        //Type of used integer distribution
+        /// <summary>
+        /// Type of used integer distribution.
+        /// </summary>
         template<typename T>
         using IntegerDistT = IntegerDist<T>;
 
-        //Type of used real distribution
+        /// <summary>
+        /// Type of used real distribution.
+        /// </summary>
         template<typename T>
         using RealDistT = RealDist<T>;
 
-        //Type of used bool distribution
+        /// <summary>
+        /// Type of used bool distribution.
+        /// </summary>
         using BoolDistT = BoolDist;
 
-        //Key type for getting common type numbers or objects
+        /// <summary>
+        /// Key type for getting common type numbers or objects.
+        /// </summary>
         using Common = INTERNAL::Common;
 
-        //Return: The minimum value potentially generated by the random-number engine
+        /// <summary>
+        /// Retrieve the minimum value potentially generated by the random-number engine.
+        /// </summary>
+        /// <returns>Minimum random number.</returns>
         static constexpr typename engine::result_type Min()
     	{
             return engine::min();
         }
 
-        //Return The maximum value potentially generated by the random-number engine
+        /// <summary>
+        /// Retrieve the maximum value potentially generated by the random-number engine.
+        /// </summary>
+        /// <returns>Maximum random number.</returns>
         static constexpr typename engine::result_type Max()
     	{
             return engine::max();
         }
 
-        //Advances the internal state by z times
-        void Discard(const unsigned long long z)
-    	{
+        /// <summary>
+        /// Advances the internal state by z times
+        /// </summary>
+        /// <param name="z">How many times to advance.</param>
+        void Discard(const uint64_t z)
+        {
             m_engine.discard(z);
         }
-
-        //Reseed by Seeder
+    	
+        /// <summary>
+        /// Reseed by Seeder.
+        /// </summary>
         void Reseed()
     	{
             Seeder seeder;
             Seed(seeder());
         }
 
-        //Reinitializes the internal state of the random-number engine using new seed value
-        //Value: The seed value to use in the initialization of the internal state
-        void Seed(const typename engine::result_type value =
-            engine::default_seed)
+        /// <summary>
+        /// Re-Initializes the internal state of the random-number engine using new seed value.
+        /// </summary>
+        /// <param name="value">Seed value to use in the initialization of the internal state</param>
+        void Seed(const typename engine::result_type value = engine::default_seed)
     	{
             m_engine.seed(value);
         }
 
-        //Reinitializes the internal state of the random-number engine using new seed value
-        //Seq: The seed sequence to use in the initialization of the internal state
+        /// <summary>
+        /// Re-Initializes the internal state of the random-number engine using new seed value.
+        /// </summary>
+        /// <param name="seq">Seed sequence to use in the initialization of the internal state.</param>
         template<typename SSeq>
         void Seed(SSeq& seq)
     	{
             m_engine.seed(seq);
         }
 
-        //Return random number from engine in [Min(), Max()] range
+        /// <summary>
+        /// Retrieve a random number from engine in [Min(), Max()] range.
+        /// </summary>
+        /// <returns>Random number.</returns>
         typename engine::result_type Get()
     	{
             return m_engine();
         }
 
-        //Compares internal pseudo-random number engine with 'other' pseudo-random number engine.
-        //Two engines are equal, if their internal states are equivalent, that is, if they would generate
-        //equivalent values for any number of calls of operator()
-        //Other: The engine, with which the internal engine will be compared
-        //Return: true, if other and internal engine are equal
+        /// <summary>
+        /// Compares internal pseudo-random number engine with 'other' pseudo-random number engine.<br>
+        /// Two engines are equal, if their internal states are equivalent, that is, if they would generate
+        /// equivalent values for any number of calls of operator().
+        /// </summary>
+        /// <param name="other">Engine, with which the internal engine will be compared.</param>
+        /// <returns>True if other and internal engine are equal, false otherwise.</returns>
         bool IsEqual(const engine& other)
     	{
             return m_engine == other;
         }
 
-        //Serializes the internal state of the internal pseudo-random number engine as a sequence
-        //of decimal numbers separated by one or more spaces, and inserts it to the stream ost. The fill character
-        //and the formatting flags of the stream are ignored and unaffected.
-        //Ost: The output stream to insert the data to
+        /// <summary>
+        /// Serializes the internal state of the internal pseudo-random number engine as a sequence
+        /// of decimal numbers separated by one or more spaces, and inserts it to the stream ost.<br>
+        /// The fill character and the formatting flags of the stream are ignored and unaffected.
+        /// </summary>
+        /// <param name="ost">Output stream to insert the data to</param>
         template<typename CharT, typename Traits>
         void Serialize(std::basic_ostream<CharT, Traits>& ost)
     	{
             ost << m_engine;
         }
 
-        //Restores the internal state of the internal pseudo-random number engine from
-        //the serialized representation, which was created by an earlier call to 'Serialize'
-        //using a stream with the same imbued locale and the same CharT and Traits.
-        //If the input cannot be deserialized, internal engine is left unchanged and failbit is raised on ist
-        //Ist: The input stream to extract the data from
+        /// <summary>
+        /// Restores the internal state of the internal pseudo-random number engine from
+        /// the serialized representation, which was created by an earlier call to 'Serialize'
+        /// using a stream with the same imbued locale and the same CharT and Traits.<br>
+        /// If the input cannot be deserialized, internal engine is left unchanged and fail-Bit is raised on ist.
+        /// </summary>
+        /// <param name="ist">Input stream to extract the data from.</param>
         template<typename CharT, typename Traits>
         void Deserialize(std::basic_istream<CharT, Traits>& ist)
     	{
             ist >> m_engine;
         }
 
-        //Generate a random integer number in a [from; to] range by std::uniform_int_distribution
-        //From: The first limit number of a random range
-        //To: The second limit number of a random range
-        //Return: A random integer number in a [from; to] range
-        //Allow both: 'from' <= 'to' and 'from' >= 'to'
-        //Prevent implicit type conversion
+        /// <summary>
+        /// Generate a random integer number in a [from; to] range by std::uniform_int_distribution.
+        /// </summary>
+        /// <param name="from">First limit number of a random range.</param>
+        /// <param name="to">Second limit number of a random range.</param>
+        /// <returns>Random integer number in a [from; to] range.</returns>
         template<typename T>
         typename std::enable_if<INTERNAL::IsUniformInt<T>::value
             , T>::type Get(T from = std::numeric_limits<T>::min(),
@@ -887,12 +1025,12 @@ namespace TRAP::Utils
             return IntegerDist<T>{ to, from }(m_engine);
         }
 
-        //Generate a random real number in a [from; to] range by std::uniform_real_distribution
-        //From: The first limit number of a random range
-        //To: The second limit number of a random range
-        //Return: A random real number in a [from; to] range
-        //Allow both: 'from' <= 'to' and 'from' >= 'to'
-        //Prevent implicit type conversion
+        /// <summary>
+        /// Generate a random real number in a [from; to] range by std::uniform_real_distribution.
+        /// </summary>
+        /// <param name="from">First limit number of a random range.</param>
+        /// <param name="to">Second limit number of a random range.</param>
+        /// <returns>Random real number in a [from; to] range.</returns>
         template<typename T>
         typename std::enable_if<INTERNAL::IsUniformReal<T>::value
             , T>::type Get(T from = std::numeric_limits<T>::min(),
@@ -904,12 +1042,12 @@ namespace TRAP::Utils
             return RealDist<T>{ to, from }(m_engine);
         }
 
-        //Generate a random byte number in a [from; to] range
-    	//From: The first limit number of a random range
-        //To: The second limit number of a random range
-        //Return: A random byte number in a [from; to] range
-        //Allow both: 'from' <= 'to' and 'from' >= 'to'
-        //Prevent implicit type conversion
+        /// <summary>
+        /// Generate a random byte number in a [from; to] range.
+        /// </summary>
+        /// <param name="from">First limit number of a random range.</param>
+        /// <param name="to">Second limit number of a random range.</param>
+        /// <returns>Random byte number in a [from; to] range.</returns>
         template<typename T>
         typename std::enable_if<INTERNAL::IsByte<T>::value
             , T>::type Get(T from = std::numeric_limits<T>::min(),
@@ -917,21 +1055,18 @@ namespace TRAP::Utils
     	{
             //Choose between short and unsigned short for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
-                short, unsigned short>::type;
+                int16_t, uint16_t>::type;
 
             return static_cast<T>(Get<short_t>(from, to));
         }
 
-        //Generate a random common_type number in a [from; to] range
-        //Key: The Key type for this version of 'Get' method Type should be '(THIS_TYPE)::Common' struct
-        //From: The first limit number of a random range
-        //To: The second limit number of a random range
-        //Return: A random common_type number in a [from; to] range
-        //Allow both: 'from' <= 'to' and 'from' >= 'to'
-        //Allow implicit type conversion
-        //Prevent implicit type conversion from singed to unsigned types Why?
-        //std::common_type<Unsigned, Signed> chooses unsigned value, then Signed value will be converted to Unsigned value
-        //which gives us a wrong range for random values.
+        /// <summary>
+        /// Generate a random common_type number in a [from; to] range.
+        /// </summary>
+        /// <typeparam name="Key">Key type for this version of 'Get' method Type should be '(THIS_TYPE)::Common' struct.</typeparam>
+        /// <param name="from">First limit number of a random range.</param>
+        /// <param name="to">Second limit number of a random range.</param>
+        /// <returns>Random common_type number in a [from; to] range.</returns>
         template
     	<
             typename Key,
@@ -951,12 +1086,12 @@ namespace TRAP::Utils
             return Get(static_cast<C>(from), static_cast<C>(to));
         }
 
-        //Generate a random character in a [from; to] range by std::uniform_int_distribution
-        //From: The first limit number of a random range
-        //To: The second limit number of a random range
-        //Return: A random character in a [from; to] range
-        //Allow both: 'from' <= 'to' and 'from' >= 'to'
-        //Prevent implicit type conversion
+        /// <summary>
+        /// Generate a random character in a [from; to] range by std::uniform_int_distribution.
+        /// </summary>
+        /// <param name="from">First limit number of a random range.</param>
+        /// <param name="to">Second limit number of a random range.</param>
+        /// <returns>Random character in a [from; to] range.</returns>
         template<typename T>
         typename std::enable_if<INTERNAL::IsSupportedCharacter<T>::value
             , T>::type Get(T from = std::numeric_limits<T>::min(),
@@ -968,9 +1103,11 @@ namespace TRAP::Utils
         	return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(to), static_cast<std::int64_t>(from) }(m_engine));
         }
 
-        //Generate a bool value with specific probability by std::bernoulli_distribution
-        //Probability: The probability of generating true in [0; 1] range 0 means always false, 1 means always true
-        //Return: 'true' with 'probability' probability ('false' otherwise)
+        /// <summary>
+        /// Generate a bool value with specific probability by std::bernoulli_distribution.
+        /// </summary>
+        /// <param name="probability">Probability of generating true in [0; 1] range 0 means always false, 1 means always true.</param>
+        /// <returns>'true' with 'probability' probability ('false' otherwise).</returns>
         template<typename T>
         typename std::enable_if<std::is_same<T, bool>::value
             , bool>::type Get(const double probability = 0.5)
@@ -979,11 +1116,11 @@ namespace TRAP::Utils
             return BoolDist{ probability }(m_engine);
         }
 
-        //Return random value from initializer_list
-    	//init_list: initializer_list with values
-        //Return: Random value from initializer_list
-        //Should be 1 or more elements in initializer_list
-        //Warning! Elements in initializer_list can't be moved
+        /// <summary>
+        /// Retrieve random value from initializer_list.
+        /// </summary>
+        /// <param name="init_list">initializer_list with values.</param>
+        /// <returns>Random value from initializer_list.</returns>
         template<typename T>
         T Get(std::initializer_list<T> init_list)
     	{
@@ -991,10 +1128,12 @@ namespace TRAP::Utils
             return *Get(init_list.begin(), init_list.end());
         }
 
-        //Return random iterator from iterator range
-        //First, Last: the range of elements
-        //Return Random iterator from [first, last) range
-        //If first == last, return last
+        /// <summary>
+        /// Retrieve random iterator from iterator range.
+        /// </summary>
+        /// <param name="first">Range of elements.</param>
+        /// <param name="last">Range of elements.</param>
+        /// <returns>Random iterator from [first, last) range.</returns>
         template<typename InputIt>
         typename std::enable_if<INTERNAL::IsIterator<InputIt>::value
             , InputIt>::type Get(InputIt first, InputIt last)
@@ -1005,10 +1144,12 @@ namespace TRAP::Utils
             return std::next(first, Get<diff_t>(0, size - 1));
         }
 
-        //Return random iterator from Container
-        //Container: The container with elements
-        //Return: Random iterator from container
-        //If container is empty return std::end( container ) iterator
+        /// <summary>
+        /// Retrieve random iterator from Container.
+        /// </summary>
+        /// <typeparam name="Container">Container with elements.</typeparam>
+        /// <param name="container">Container with elements.</param>
+        /// <returns>Random iterator from container.</returns>
         template<typename Container>
         auto Get(Container& container) ->
             typename std::enable_if<INTERNAL::IsIterator<
@@ -1019,73 +1160,97 @@ namespace TRAP::Utils
             return Get(std::begin(container), std::end(container));
         }
 
-        //Return random pointer from built-in array
-        //Array: The built-in array with elements
-        //Return: Pointer to random element in array
+        /// <summary>
+        /// Retrieve random pointer from built-in array.
+        /// </summary>
+        /// <param name="array">Built-in array with elements.</param>
+        /// <returns>Pointer to random element in array.</returns>
         template<typename T, std::size_t N>
         T* Get(T(&array)[N])
     	{
             return std::addressof(array[Get<std::size_t>(0, N - 1)]);
         }
 
-        //Return value from custom Dist distribution seeded by internal random engine
-        //Dist: The type of custom distribution with next concept
-        //Args: The arguments which will be forwarded to Dist constructor
-        //Return: Value from custom distribution
+        /// <summary>
+        /// Retrieve value from custom Dist distribution seeded by internal random engine.
+        /// </summary>
+        /// <typeparam name="Dist">Type of custom distribution with next concept.</typeparam>
+        /// <typeparam name="...Args">Arguments which will be forwarded to Dist constructor.</typeparam>
+        /// <returns>Value from custom distribution.</returns>
         template<typename Dist, typename... Args>
         typename Dist::result_type Get(Args&&... args)
     	{
             return Dist{ std::forward<Args>(args)... }(m_engine);
         }
 
-        //Return value from custom 'dist' distribution seeded by internal random engine
-        //Dist: The custom distribution with next concept
-        //Args: The arguments which will be forwarded to Dist constructor
-        //Return: Value from custom 'dist' distribution
+        /// <summary>
+        /// Retrieve value from custom 'dist' distribution seeded by internal random engine.
+        /// </summary>
+        /// <typeparam name="Dist">Custom distribution with next concept.</typeparam>
+        /// <param name="dist">Custom distribution with next concept.</param>
+        /// <returns>Value from custom 'dist' distribution.</returns>
         template<typename Dist>
         typename Dist::result_type Get(Dist& dist)
     	{
             return dist(m_engine);
         }
 
-        //Reorders the elements in the given range [first, last) such that each possible permutation of those elements
-        //has equal probability of appearance.
-        //First, Last: the range of elements to shuffle randomly
+        /// <summary>
+        /// Reorders the elements in the given range [first, last) such that each possible permutation of those elements
+        /// has equal probability of appearance.
+        /// </summary>
+        /// <param name="first">Range of elements to shuffle randomly.</param>
+        /// <param name="last">Range of elements to shuffle randomly.</param>
         template<typename RandomIt>
         void Shuffle(RandomIt first, RandomIt last)
     	{
             std::shuffle(first, last, m_engine);
         }
 
-        //Reorders the elements in the given container such that each possible permutation of those elements
-        //has equal probability of appearance.
-        //Container: the container with elements to shuffle randomly
+        /// <summary>
+        /// Reorders the elements in the given container such that each possible permutation of those elements
+        /// has equal probability of appearance.
+        /// </summary>
+        /// <typeparam name="Container">Container with elements to shuffle randomly.</typeparam>
+        /// <param name="container">Container with elements to shuffle randomly.</param>
         template<typename Container>
         void Shuffle(Container& container)
     	{
             Shuffle(std::begin(container), std::end(container));
         }
 
-        //Return internal engine by copy
+        /// <summary>
+        /// Retrieve internal engine by copy.
+        /// </summary>
+        /// <returns>Internal engine.</returns>
         engine GetEngine() const
     	{
             return m_engine;
         }
 
-        //Return internal engine by ref
+        /// <summary>
+        /// Retrieve internal engine by ref.
+        /// </summary>
+        /// <returns>Internal engine-</returns>
         engine& Engine()
     	{
             return m_engine;
         }
     	
     protected:
-        //Return engine seeded by Seeder
-        static engine MakeSeededEngine() {
+        /// <summary>
+        /// Retrieve engine seeded by Seeder
+        /// </summary>
+        /// <returns>Seeded engine.</returns>
+        static engine MakeSeededEngine()
+    	{
             //Make seeder instance for seed return by reference like std::seed_seq
             return engine{ Seeder{ }() };
-        }
+        } 
 
-        //The random number engine
+        /// <summary>
+        /// Random number engine
+        /// </summary>
         engine m_engine{ MakeSeededEngine() };
     };
 }
@@ -1094,20 +1259,26 @@ namespace TRAP::Utils
 
 namespace TRAP::Utils
 {
-	//The basic static random alias based on a std::mt19937_64
-	//It uses static methods API and data with static storage
-	//Not thread safe but more performance
+	/// <summary>
+	/// The basic static random alias based on a std::mt19937_64.<br>
+	/// It uses static methods API and data with static storage.<br>
+	/// Note: Not thread safe but more performance.
+	/// </summary>
 	using Random = BasicRandomStatic<std::mt19937_64>;
 
-	//The basic static random alias based on a std::mt19937_64
-	//It uses static methods API and data with thread_local storage
-	//Thread safe but less performance
+	/// <summary>
+	/// The basic static random alias based on a std::mt19937_64.<br>
+	/// It uses static methods API and data with thread_local storage.<br>
+	/// Note: Thread safe but less performance.
+	/// </summary>
 	using RandomThreadLocal = BasicRandomThreadLocal<std::mt19937_64>;
 
-    //The basic static random alias based on a std::mt19937
-    //It uses non static methods API and data with auto storage
-    //Not thread safe. Should construct on the stack at local scope
-    using RandomLocal = BasicRandomLocal<std::mt19937>;
+    /// <summary>
+    /// The basic static random alias based on a std::mt19937_64.<br>
+    /// It uses non static methods API and data with auto storage.<br>
+    /// Note: Not thread safe. Should construct on the stack at local scope.
+    /// </summary>
+    using RandomLocal = BasicRandomLocal<std::mt19937_64>;
 }
 
 #endif /*_TRAP_RANDOM_H_*/

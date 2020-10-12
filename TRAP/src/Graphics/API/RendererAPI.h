@@ -76,9 +76,9 @@ namespace TRAP::Graphics::API
 
 		virtual const std::string& GetTitle() const = 0;
 
-		virtual std::vector<uint8_t> GetCurrentGPUUUID() = 0;
+		virtual std::array<uint8_t, 16> GetCurrentGPUUUID() = 0;
 		virtual std::string GetCurrentGPUName() = 0;
-		virtual std::vector<std::pair<std::string, std::vector<uint8_t>>> GetAllGPUs() = 0;
+		virtual std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() = 0;
 
 	protected:
 		static Scope<RendererAPI> s_Renderer;

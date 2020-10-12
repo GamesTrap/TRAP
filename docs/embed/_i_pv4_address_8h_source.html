@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP/src/Network/IP/IPv4Address.h Source File</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,34 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -114,7 +149,7 @@ $(function() {
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#ac2183b4f4c59280b231624c4145dd3ca">IPv4Address</a>();</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#ac2183b4f4c59280b231624c4145dd3ca">IPv4Address</a>(<span class="keyword">const</span> std::string&amp; address);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#ac2183b4f4c59280b231624c4145dd3ca">IPv4Address</a>(std::string_view address);</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#ac2183b4f4c59280b231624c4145dd3ca">IPv4Address</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* address);</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
@@ -138,7 +173,7 @@ $(function() {
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keyword">private</span>:</div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <span class="keyword">friend</span> <span class="keywordtype">bool</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#a3cb1d1b1ea724c9cd59b56620e161f08">operator&lt;</a>(<span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html">IPv4Address</a>&amp; left, <span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html">IPv4Address</a>&amp; right);</div>
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        <span class="keywordtype">void</span> Resolve(<span class="keyword">const</span> std::string&amp; address);</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        <span class="keywordtype">void</span> Resolve(std::string_view address);</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        uint32_t m_address; <span class="comment">//Address stored as an unsigned 32 Bit integer</span></div>
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        <span class="keywordtype">bool</span> m_valid; <span class="comment">//Is the address valid?</span></div>
@@ -164,11 +199,11 @@ $(function() {
 <div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_NETWORK_IPADDRESS_H*/</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv4_address_html_aec16f09d4dbe6eab7a1ddf9a9d36efc0"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#aec16f09d4dbe6eab7a1ddf9a9d36efc0">TRAP::Network::IPv4Address::ToString</a></div><div class="ttdeci">std::string ToString() const</div><div class="ttdoc">Get a string representation of the address.    The returned string is the decimal representation of t...</div></div>
-<div class="ttc" id="astruct_t_r_a_p_1_1_utils_1_1_time_step_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">TRAP::Utils::TimeStep</a></div><div class="ttdef"><b>Definition:</b> TimeStep.h:6</div></div>
+<div class="ttc" id="astruct_t_r_a_p_1_1_utils_1_1_time_step_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">TRAP::Utils::TimeStep</a></div><div class="ttdoc">Struct for a single step in Time.</div><div class="ttdef"><b>Definition:</b> TimeStep.h:9</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv4_address_html_ad6057ec5efa2490fa048ab2e0e08293e"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#ad6057ec5efa2490fa048ab2e0e08293e">TRAP::Network::IPv4Address::GetLocalAddress</a></div><div class="ttdeci">static IPv4Address GetLocalAddress()</div><div class="ttdoc">Get the computer's local address.    The local address is the address of the computer from the LAN po...</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv4_address_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html">TRAP::Network::IPv4Address</a></div><div class="ttdoc">TRAP::Network::IPv4Address is a utility class for manipulating network addresses.  It provides a set ...</div><div class="ttdef"><b>Definition:</b> IPv4Address.h:41</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv4_address_html_a3cb1d1b1ea724c9cd59b56620e161f08"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#a3cb1d1b1ea724c9cd59b56620e161f08">TRAP::Network::IPv4Address::operator&lt;</a></div><div class="ttdeci">friend bool operator&lt;(const IPv4Address &amp;left, const IPv4Address &amp;right)</div><div class="ttdoc">Overload of &lt; operator to compare two IP addresses</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv4_address_html_ac2183b4f4c59280b231624c4145dd3ca"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#ac2183b4f4c59280b231624c4145dd3ca">TRAP::Network::IPv4Address::IPv4Address</a></div><div class="ttdeci">IPv4Address()</div><div class="ttdoc">This constructor creates an empty (invalid) address</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv4_address_html_a3cb1d1b1ea724c9cd59b56620e161f08"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#a3cb1d1b1ea724c9cd59b56620e161f08">TRAP::Network::IPv4Address::operator&lt;</a></div><div class="ttdeci">friend bool operator&lt;(const IPv4Address &amp;left, const IPv4Address &amp;right)</div><div class="ttdoc">Overload of &lt; operator to compare two IP addresses.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv4_address_html_ac2183b4f4c59280b231624c4145dd3ca"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#ac2183b4f4c59280b231624c4145dd3ca">TRAP::Network::IPv4Address::IPv4Address</a></div><div class="ttdeci">IPv4Address()</div><div class="ttdoc">This constructor creates an empty (invalid) address.</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv4_address_html_a0d1ddd0fd463f390325356ad033e2827"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#a0d1ddd0fd463f390325356ad033e2827">TRAP::Network::IPv4Address::GetPublicAddress</a></div><div class="ttdeci">static IPv4Address GetPublicAddress(Utils::TimeStep timeout=Utils::TimeStep(0.0f))</div><div class="ttdoc">Get the computer's public address.    The public address is the address of the computer from the inte...</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv4_address_html_afd57027515127b89ba645ca43507b279"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#afd57027515127b89ba645ca43507b279">TRAP::Network::IPv4Address::ToInteger</a></div><div class="ttdeci">uint32_t ToInteger() const</div><div class="ttdoc">Get an integer representation of the address.    The returned number is in the internal representatio...</div></div>
 <!-- HTML footer for doxygen 1.8.8-->

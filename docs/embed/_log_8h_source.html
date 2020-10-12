@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP/src/Log/Log.h Source File</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,34 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -88,207 +123,222 @@ $(function() {
 <div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_log.html">   10</a></span>&#160;    <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_log.html">Log</a> final</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    {</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>();</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        ~<a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>();</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>(<span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>(<a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>&amp; operator=(<a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keyword">enum class</span> Level</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        {</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            Trace,</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            Debug,</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            Info,</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            Warn,</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            Error,</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            Critical</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        };</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keyword">static</span> <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>&amp; Get();</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> Trace(Args&amp;&amp; ... args);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> Debug(Args&amp;&amp; ... args);</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>();</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_log.html#a85dd48bfa93ada6f5c6b607f552c0c15">~Log</a>();</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>(<span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>&amp; <a class="code" href="class_t_r_a_p_1_1_log.html#a26f56914ae5c1ced4a348619d9f710ee">operator=</a>(<span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>(<a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>&amp; <a class="code" href="class_t_r_a_p_1_1_log.html#a26f56914ae5c1ced4a348619d9f710ee">operator=</a>(<a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> Info(Args&amp;&amp; ... args);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> Warn(Args&amp;&amp; ... args);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> Error(Args&amp;&amp; ... args);</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> Critical(Args&amp;&amp; ... args);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> std::vector&lt;std::pair&lt;Level, std::string&gt;&gt;&amp; GetBuffer();</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> Save();</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> Clear();</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> WindowVersion = <span class="stringliteral">&quot;[20w35a1]&quot;</span>;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> WindowPrefix = <span class="stringliteral">&quot;[Window] &quot;</span>;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> WindowInternalPrefix = <span class="stringliteral">&quot;[Window][Internal] &quot;</span>;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> WindowIconPrefix = <span class="stringliteral">&quot;[Window][Icon] &quot;</span>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ConfigPrefix = <span class="stringliteral">&quot;[Config] &quot;</span>;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ApplicationPrefix = <span class="stringliteral">&quot;[Application] &quot;</span>;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderManagerPrefix = <span class="stringliteral">&quot;[ShaderManager] &quot;</span>;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderPrefix = <span class="stringliteral">&quot;[Shader] &quot;</span>;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderSPIRVPrefix = <span class="stringliteral">&quot;[Shader][SPIR-V] &quot;</span>;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderVulkanPrefix = <span class="stringliteral">&quot;[Shader][Vulkan] &quot;</span>;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderVulkanSPIRVPrefix = <span class="stringliteral">&quot;[Shader][Vulkan][SPIR-V] &quot;</span>;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderVulkanGLSLPrefix = <span class="stringliteral">&quot;[Shader][Vulkan][GLSL] &quot;</span>;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderOpenGLPrefix = <span class="stringliteral">&quot;[Shader][OpenGL] &quot;</span>;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderOpenGLGLSLPrefix = <span class="stringliteral">&quot;[Shader][OpenGL][GLSL] &quot;</span>;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderOpenGLGLSLProgramPrefix = <span class="stringliteral">&quot;[Shader][OpenGL][GLSL][Program] &quot;</span>;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderOpenGLSPIRVPrefix = <span class="stringliteral">&quot;[Shader][OpenGL][SPIR-V] &quot;</span>;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> TextureManagerPrefix = <span class="stringliteral">&quot;[TextureManager] &quot;</span>;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> TextureManagerTextureCubePrefix = <span class="stringliteral">&quot;[TextureManager][TextureCube] &quot;</span>;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> TextureManagerTexture2DPrefix = <span class="stringliteral">&quot;[TextureManager][Texture2D] &quot;</span>;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> TextureCubePrefix = <span class="stringliteral">&quot;[TextureCube] &quot;</span>;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> TextureCubeVulkanPrefix = <span class="stringliteral">&quot;[TextureCube][Vulkan] &quot;</span>;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> TextureCubeOpenGLPrefix = <span class="stringliteral">&quot;[TextureCube][OpenGL] &quot;</span>;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> Texture2DPrefix = <span class="stringliteral">&quot;[Texture2D] &quot;</span>;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> Texture2DVulkanPrefix = <span class="stringliteral">&quot;[Texture2D][Vulkan] &quot;</span>;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> Texture2DOpenGLPrefix = <span class="stringliteral">&quot;[Texture2D][OpenGL] &quot;</span>;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> Texture2DOpenGLPerformancePrefix = <span class="stringliteral">&quot;[Texture2D][OpenGL][Performance] &quot;</span>;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> EnginePrefix = <span class="stringliteral">&quot;[Engine] &quot;</span>;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> EngineLinuxPrefix = <span class="stringliteral">&quot;[Engine][Linux] &quot;</span>;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> EngineLinuxX11Prefix = <span class="stringliteral">&quot;[Engine][Linux][X11] &quot;</span>;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> EngineLinuxWaylandPrefix = <span class="stringliteral">&quot;[Engine][Linux][Wayland] &quot;</span>;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> EngineWindowsPrefix = <span class="stringliteral">&quot;[Engine][Windows] &quot;</span>;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> VFSPrefix = <span class="stringliteral">&quot;[VFS] &quot;</span>;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> FileSystemPrefix = <span class="stringliteral">&quot;[FileSystem] &quot;</span>;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> InstrumentorPrefix = <span class="stringliteral">&quot;[Instrumentor] &quot;</span>;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> MsgBoxLinuxX11Prefix = <span class="stringliteral">&quot;[MsgBox][Linux][X11] &quot;</span>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> LoggerPrefix = <span class="stringliteral">&quot;[Logger] &quot;</span>;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> LayerStackPrefix = <span class="stringliteral">&quot;[LayerStack] &quot;</span>;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImGuiOpenGLPrefix = <span class="stringliteral">&quot;[ImGui][OpenGL] &quot;</span>;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> InputControllerDirectInputPrefix = <span class="stringliteral">&quot;[Input][Controller][Windows][DirectInput] &quot;</span>;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> InputControllerXInputPrefix = <span class="stringliteral">&quot;[Input][Controller][Windows][XInput] &quot;</span>;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> InputControllerLinuxPrefix = <span class="stringliteral">&quot;[Input][Controller][Linux] &quot;</span>;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> InputControllerPrefix = <span class="stringliteral">&quot;[Input][Controller] &quot;</span>;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> InputWinAPIPrefix = <span class="stringliteral">&quot;[Input][Windows][WinAPI] &quot;</span>;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> InputPrefix = <span class="stringliteral">&quot;[Input] &quot;</span>;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImagePrefix = <span class="stringliteral">&quot;[Image] &quot;</span>;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImageTGAPrefix = <span class="stringliteral">&quot;[Image][TGA] &quot;</span>;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImagePNGPrefix = <span class="stringliteral">&quot;[Image][PNG] &quot;</span>;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImagePPMPrefix = <span class="stringliteral">&quot;[Image][PPM] &quot;</span>;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImagePNMPrefix = <span class="stringliteral">&quot;[Image][PNM] &quot;</span>;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImagePGMPrefix = <span class="stringliteral">&quot;[Image][PGM] &quot;</span>;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImagePFMPrefix = <span class="stringliteral">&quot;[Image][PFM] &quot;</span>;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImagePAMPrefix = <span class="stringliteral">&quot;[Image][PAM] &quot;</span>;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImageBMPPrefix = <span class="stringliteral">&quot;[Image][BMP] &quot;</span>;</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> RendererPrefix = <span class="stringliteral">&quot;[Renderer] &quot;</span>;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> RendererVulkanPrefix = <span class="stringliteral">&quot;[Renderer][Vulkan] &quot;</span>;</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> RendererVulkanPhysicalDevicePrefix = <span class="stringliteral">&quot;[Renderer][Vulkan][PhysicalDevice] &quot;</span>;</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> RendererVulkanInstancePrefix = <span class="stringliteral">&quot;[Renderer][Vulkan][Instance] &quot;</span>;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> RendererOpenGLPrefix = <span class="stringliteral">&quot;[Renderer][OpenGL] &quot;</span>;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> Renderer2DPrefix = <span class="stringliteral">&quot;[Renderer2D] &quot;</span>;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ContextPrefix = <span class="stringliteral">&quot;[Context] &quot;</span>;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ContextOpenGLPrefix = <span class="stringliteral">&quot;[Context][OpenGL] &quot;</span>;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ContextVulkanPrefix = <span class="stringliteral">&quot;[Context][Vulkan] &quot;</span>;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> UniformBufferVulkanPrefix = <span class="stringliteral">&quot;[UniformBuffer][Vulkan] &quot;</span>;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> UniformBufferOpenGLPrefix = <span class="stringliteral">&quot;[UniformBuffer][OpenGL] &quot;</span>;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> FrameBufferVulkanPrefix = <span class="stringliteral">&quot;[FrameBuffer][Vulkan] &quot;</span>;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> FrameBufferOpenGLPrefix = <span class="stringliteral">&quot;[FrameBuffer][OpenGL] &quot;</span>;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkSocketPrefix = <span class="stringliteral">&quot;[Network][Socket] &quot;</span>;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkFTPPrefix = <span class="stringliteral">&quot;[Network][FTP] &quot;</span>;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkHTTPPrefix = <span class="stringliteral">&quot;[Network][HTTP] &quot;</span>;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkTCPListenerPrefix = <span class="stringliteral">&quot;[Network][TCPListener] &quot;</span>;</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkTCPSocketPrefix = <span class="stringliteral">&quot;[Network][TCPSocket] &quot;</span>;</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkUDPSocketPrefix = <span class="stringliteral">&quot;[Network][UDPSocket] &quot;</span>;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkSocketUnixPrefix = <span class="stringliteral">&quot;[Network][Socket][Unix] &quot;</span>;</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        </div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="preprocessor">#ifdef TRAP_PLATFORM_WINDOWS</span></div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> GetInfo() { GetConsoleScreenBufferInfo(m_handleConsole, &amp;m_csbi); }</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> SetColor(WORD wRGBI);</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> ResetColor() { SetColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); }</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        <span class="keyword">static</span> HANDLE m_handleConsole;</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        <span class="keyword">static</span> CONSOLE_SCREEN_BUFFER_INFO m_csbi;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">bool</span> IsColorTerminal() noexcept;</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="keyword">static</span> std::string GetTimeStamp();</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        std::vector&lt;std::pair&lt;Level, std::string&gt;&gt; m_buffer{};</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        <span class="keyword">static</span> std::mutex m_mtx;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    };</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;}</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="preprocessor">#include &quot;Log.inl&quot;</span></div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;constexpr <span class="keywordtype">void</span> TP_TRACE(<span class="keyword">const</span> Args&amp; ... args)</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;{</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    ::TRAP::Log::Trace(args...);</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;}</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="preprocessor">#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)</span></div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;constexpr <span class="keywordtype">void</span> TP_DEBUG(<span class="keyword">const</span> Args&amp; ... args)</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;{</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    ::TRAP::Log::Debug(args...);</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;}</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;constexpr <span class="keywordtype">void</span> TP_DEBUG(<span class="keyword">const</span> Args&amp; ... args)</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;{</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;}</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;constexpr <span class="keywordtype">void</span> TP_INFO(<span class="keyword">const</span> Args&amp; ... args)</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;{</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    ::TRAP::Log::Info(args...);</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;}</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160; </div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160; </div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;constexpr <span class="keywordtype">void</span> TP_WARN(<span class="keyword">const</span> Args&amp; ... args)</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;{</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    ::TRAP::Log::Warn(args...);</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;}</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_log.html#ad03369cc0e494c8d9ff384c4e4d7e7fc">   42</a></span>&#160;        <span class="keyword">enum class</span> <a class="code" href="class_t_r_a_p_1_1_log.html#ad03369cc0e494c8d9ff384c4e4d7e7fc">Level</a></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        {</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            Trace,</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            Debug,</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            Info,</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            Warn,</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            Error,</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            Critical</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        };</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keyword">static</span> <a class="code" href="class_t_r_a_p_1_1_log.html">Log</a>&amp; <a class="code" href="class_t_r_a_p_1_1_log.html#aa8fc4495c84e2a4814ad628e772f307c">Get</a>();</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_log.html#aef309c1a69175a2d5cafcd1bf3bf3292">Trace</a>(Args&amp;&amp; ... args);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_log.html#a49f8502950460abbf5a0755614ccf6fd">Debug</a>(Args&amp;&amp; ... args);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_log.html#a1e29481f408057ddc31c6003c0bd5f7a">Info</a>(Args&amp;&amp; ... args);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_log.html#a4ae37e3b70f5fe21ca2f5d5d9319e49c">Warn</a>(Args&amp;&amp; ... args);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_log.html#a8640492e22da070fd26a8827b66f400c">Error</a>(Args&amp;&amp; ... args);</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_log.html#a06eb4d4926b94bdebc80e40052bde1a7">Critical</a>(Args&amp;&amp; ... args);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> std::vector&lt;std::pair&lt;Level, std::string&gt;&gt;&amp; <a class="code" href="class_t_r_a_p_1_1_log.html#a7705c172f6cf3678a3c8b165fbe07f08">GetBuffer</a>();</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_log.html#a6457710a308a77f6aaf95de0ed02ce5d">Save</a>();</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_log.html#a1f7882f85c240a3727ba3e51b302da3c">Clear</a>();</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> WindowVersion = <span class="stringliteral">&quot;[20w42a1]&quot;</span>;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> WindowPrefix = <span class="stringliteral">&quot;[Window] &quot;</span>;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> WindowInternalPrefix = <span class="stringliteral">&quot;[Window][Internal] &quot;</span>;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> WindowIconPrefix = <span class="stringliteral">&quot;[Window][Icon] &quot;</span>;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ConfigPrefix = <span class="stringliteral">&quot;[Config] &quot;</span>;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ApplicationPrefix = <span class="stringliteral">&quot;[Application] &quot;</span>;</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderManagerPrefix = <span class="stringliteral">&quot;[ShaderManager] &quot;</span>;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderPrefix = <span class="stringliteral">&quot;[Shader] &quot;</span>;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderSPIRVPrefix = <span class="stringliteral">&quot;[Shader][SPIR-V] &quot;</span>;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderVulkanPrefix = <span class="stringliteral">&quot;[Shader][Vulkan] &quot;</span>;</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderVulkanSPIRVPrefix = <span class="stringliteral">&quot;[Shader][Vulkan][SPIR-V] &quot;</span>;</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderVulkanGLSLPrefix = <span class="stringliteral">&quot;[Shader][Vulkan][GLSL] &quot;</span>;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderOpenGLPrefix = <span class="stringliteral">&quot;[Shader][OpenGL] &quot;</span>;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderOpenGLGLSLPrefix = <span class="stringliteral">&quot;[Shader][OpenGL][GLSL] &quot;</span>;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderOpenGLGLSLProgramPrefix = <span class="stringliteral">&quot;[Shader][OpenGL][GLSL][Program] &quot;</span>;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ShaderOpenGLSPIRVPrefix = <span class="stringliteral">&quot;[Shader][OpenGL][SPIR-V] &quot;</span>;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> TextureManagerPrefix = <span class="stringliteral">&quot;[TextureManager] &quot;</span>;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> TextureManagerTextureCubePrefix = <span class="stringliteral">&quot;[TextureManager][TextureCube] &quot;</span>;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> TextureManagerTexture2DPrefix = <span class="stringliteral">&quot;[TextureManager][Texture2D] &quot;</span>;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> TextureCubePrefix = <span class="stringliteral">&quot;[TextureCube] &quot;</span>;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> TextureCubeVulkanPrefix = <span class="stringliteral">&quot;[TextureCube][Vulkan] &quot;</span>;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> TextureCubeOpenGLPrefix = <span class="stringliteral">&quot;[TextureCube][OpenGL] &quot;</span>;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> Texture2DPrefix = <span class="stringliteral">&quot;[Texture2D] &quot;</span>;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> Texture2DVulkanPrefix = <span class="stringliteral">&quot;[Texture2D][Vulkan] &quot;</span>;</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> Texture2DOpenGLPrefix = <span class="stringliteral">&quot;[Texture2D][OpenGL] &quot;</span>;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> Texture2DOpenGLPerformancePrefix = <span class="stringliteral">&quot;[Texture2D][OpenGL][Performance] &quot;</span>;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> EnginePrefix = <span class="stringliteral">&quot;[Engine] &quot;</span>;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> EngineLinuxPrefix = <span class="stringliteral">&quot;[Engine][Linux] &quot;</span>;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> EngineLinuxX11Prefix = <span class="stringliteral">&quot;[Engine][Linux][X11] &quot;</span>;</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> EngineLinuxWaylandPrefix = <span class="stringliteral">&quot;[Engine][Linux][Wayland] &quot;</span>;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> EngineWindowsPrefix = <span class="stringliteral">&quot;[Engine][Windows] &quot;</span>;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> VFSPrefix = <span class="stringliteral">&quot;[VFS] &quot;</span>;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> FileSystemPrefix = <span class="stringliteral">&quot;[FileSystem] &quot;</span>;</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> InstrumentorPrefix = <span class="stringliteral">&quot;[Instrumentor] &quot;</span>;</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> MsgBoxLinuxX11Prefix = <span class="stringliteral">&quot;[MsgBox][Linux][X11] &quot;</span>;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> LoggerPrefix = <span class="stringliteral">&quot;[Logger] &quot;</span>;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> LayerStackPrefix = <span class="stringliteral">&quot;[LayerStack] &quot;</span>;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImGuiOpenGLPrefix = <span class="stringliteral">&quot;[ImGui][OpenGL] &quot;</span>;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> InputControllerDirectInputPrefix = <span class="stringliteral">&quot;[Input][Controller][Windows][DirectInput] &quot;</span>;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> InputControllerXInputPrefix = <span class="stringliteral">&quot;[Input][Controller][Windows][XInput] &quot;</span>;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> InputControllerLinuxPrefix = <span class="stringliteral">&quot;[Input][Controller][Linux] &quot;</span>;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> InputControllerPrefix = <span class="stringliteral">&quot;[Input][Controller] &quot;</span>;</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> InputWinAPIPrefix = <span class="stringliteral">&quot;[Input][Windows][WinAPI] &quot;</span>;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> InputPrefix = <span class="stringliteral">&quot;[Input] &quot;</span>;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImagePrefix = <span class="stringliteral">&quot;[Image] &quot;</span>;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImageTGAPrefix = <span class="stringliteral">&quot;[Image][TGA] &quot;</span>;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImagePNGPrefix = <span class="stringliteral">&quot;[Image][PNG] &quot;</span>;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImagePPMPrefix = <span class="stringliteral">&quot;[Image][PPM] &quot;</span>;</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImagePNMPrefix = <span class="stringliteral">&quot;[Image][PNM] &quot;</span>;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImagePGMPrefix = <span class="stringliteral">&quot;[Image][PGM] &quot;</span>;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImagePFMPrefix = <span class="stringliteral">&quot;[Image][PFM] &quot;</span>;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImagePAMPrefix = <span class="stringliteral">&quot;[Image][PAM] &quot;</span>;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImageBMPPrefix = <span class="stringliteral">&quot;[Image][BMP] &quot;</span>;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ImageRadiancePrefix = <span class="stringliteral">&quot;[Image][Radiance] &quot;</span>;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> RendererPrefix = <span class="stringliteral">&quot;[Renderer] &quot;</span>;</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> RendererVulkanPrefix = <span class="stringliteral">&quot;[Renderer][Vulkan] &quot;</span>;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> RendererVulkanPhysicalDevicePrefix = <span class="stringliteral">&quot;[Renderer][Vulkan][PhysicalDevice] &quot;</span>;</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> RendererVulkanInstancePrefix = <span class="stringliteral">&quot;[Renderer][Vulkan][Instance] &quot;</span>;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> RendererOpenGLPrefix = <span class="stringliteral">&quot;[Renderer][OpenGL] &quot;</span>;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> Renderer2DPrefix = <span class="stringliteral">&quot;[Renderer2D] &quot;</span>;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ContextPrefix = <span class="stringliteral">&quot;[Context] &quot;</span>;</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ContextOpenGLPrefix = <span class="stringliteral">&quot;[Context][OpenGL] &quot;</span>;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> ContextVulkanPrefix = <span class="stringliteral">&quot;[Context][Vulkan] &quot;</span>;</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> UniformBufferVulkanPrefix = <span class="stringliteral">&quot;[UniformBuffer][Vulkan] &quot;</span>;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> UniformBufferOpenGLPrefix = <span class="stringliteral">&quot;[UniformBuffer][OpenGL] &quot;</span>;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> FrameBufferVulkanPrefix = <span class="stringliteral">&quot;[FrameBuffer][Vulkan] &quot;</span>;</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> FrameBufferOpenGLPrefix = <span class="stringliteral">&quot;[FrameBuffer][OpenGL] &quot;</span>;</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkSocketPrefix = <span class="stringliteral">&quot;[Network][Socket] &quot;</span>;</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkFTPPrefix = <span class="stringliteral">&quot;[Network][FTP] &quot;</span>;</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkHTTPPrefix = <span class="stringliteral">&quot;[Network][HTTP] &quot;</span>;</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkTCPListenerPrefix = <span class="stringliteral">&quot;[Network][TCPListener] &quot;</span>;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkTCPSocketPrefix = <span class="stringliteral">&quot;[Network][TCPSocket] &quot;</span>;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkUDPSocketPrefix = <span class="stringliteral">&quot;[Network][UDPSocket] &quot;</span>;</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> constexpr <span class="keyword">auto</span> NetworkSocketUnixPrefix = <span class="stringliteral">&quot;[Network][Socket][Unix] &quot;</span>;</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        </div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<span class="preprocessor">#ifdef TRAP_PLATFORM_WINDOWS</span></div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> GetInfo() { GetConsoleScreenBufferInfo(m_handleConsole, &amp;m_csbi); }</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> SetColor(WORD wRGBI);</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> ResetColor() { SetColor(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE); }</div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160; </div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;constexpr <span class="keywordtype">void</span> TP_ERROR(<span class="keyword">const</span> Args&amp; ... args)</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;{</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    ::TRAP::Log::Error(args...);</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;}</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160; </div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;constexpr <span class="keywordtype">void</span> TP_CRITICAL(<span class="keyword">const</span> Args&amp; ... args)</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;{</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    ::TRAP::Log::Critical(args...);</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;}</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_LOG_H_*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        <span class="keyword">static</span> HANDLE m_handleConsole;</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        <span class="keyword">static</span> CONSOLE_SCREEN_BUFFER_INFO m_csbi;</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">bool</span> IsColorTerminal() noexcept;</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        <span class="keyword">static</span> std::string GetTimeStamp();</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        std::vector&lt;std::pair&lt;Level, std::string&gt;&gt; m_buffer{};</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160; </div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        <span class="keyword">static</span> std::mutex m_mtx;</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    };</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;}</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160; </div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160; </div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;<span class="preprocessor">#include &quot;Log.inl&quot;</span></div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160; </div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160; </div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;constexpr <span class="keywordtype">void</span> TP_TRACE(<span class="keyword">const</span> Args&amp; ... args)</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;{</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    <a class="code" href="class_t_r_a_p_1_1_log.html#aef309c1a69175a2d5cafcd1bf3bf3292">::TRAP::Log::Trace</a>(args...);</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;}</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160; </div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160; </div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="preprocessor">#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)</span></div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160; </div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;constexpr <span class="keywordtype">void</span> TP_DEBUG(<span class="keyword">const</span> Args&amp; ... args)</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;{</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    <a class="code" href="class_t_r_a_p_1_1_log.html#a49f8502950460abbf5a0755614ccf6fd">::TRAP::Log::Debug</a>(args...);</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;}</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160; </div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160; </div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;constexpr <span class="keywordtype">void</span> TP_DEBUG(<span class="keyword">const</span> Args&amp; ... args)</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;{</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;}</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160; </div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;constexpr <span class="keywordtype">void</span> TP_INFO(<span class="keyword">const</span> Args&amp; ... args)</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;{</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    <a class="code" href="class_t_r_a_p_1_1_log.html#a1e29481f408057ddc31c6003c0bd5f7a">::TRAP::Log::Info</a>(args...);</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;}</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160; </div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160; </div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;constexpr <span class="keywordtype">void</span> TP_WARN(<span class="keyword">const</span> Args&amp; ... args)</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;{</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    <a class="code" href="class_t_r_a_p_1_1_log.html#a4ae37e3b70f5fe21ca2f5d5d9319e49c">::TRAP::Log::Warn</a>(args...);</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;}</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160; </div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160; </div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;constexpr <span class="keywordtype">void</span> TP_ERROR(<span class="keyword">const</span> Args&amp; ... args)</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;{</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    <a class="code" href="class_t_r_a_p_1_1_log.html#a8640492e22da070fd26a8827b66f400c">::TRAP::Log::Error</a>(args...);</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;}</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; </div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160; </div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;constexpr <span class="keywordtype">void</span> TP_CRITICAL(<span class="keyword">const</span> Args&amp; ... args)</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;{</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    <a class="code" href="class_t_r_a_p_1_1_log.html#a06eb4d4926b94bdebc80e40052bde1a7">::TRAP::Log::Critical</a>(args...);</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;}</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160; </div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_LOG_H_*/</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="aclass_t_r_a_p_1_1_log_html_a85dd48bfa93ada6f5c6b607f552c0c15"><div class="ttname"><a href="class_t_r_a_p_1_1_log.html#a85dd48bfa93ada6f5c6b607f552c0c15">TRAP::Log::~Log</a></div><div class="ttdeci">~Log()</div><div class="ttdoc">Destructor.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_log_html_a7705c172f6cf3678a3c8b165fbe07f08"><div class="ttname"><a href="class_t_r_a_p_1_1_log.html#a7705c172f6cf3678a3c8b165fbe07f08">TRAP::Log::GetBuffer</a></div><div class="ttdeci">static const std::vector&lt; std::pair&lt; Level, std::string &gt; &gt; &amp; GetBuffer()</div><div class="ttdoc">Get all saves log messages and their importance level.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_log_html_aa8fc4495c84e2a4814ad628e772f307c"><div class="ttname"><a href="class_t_r_a_p_1_1_log.html#aa8fc4495c84e2a4814ad628e772f307c">TRAP::Log::Get</a></div><div class="ttdeci">static Log &amp; Get()</div><div class="ttdoc">Get the singleton Log instance.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_log_html_a4ae37e3b70f5fe21ca2f5d5d9319e49c"><div class="ttname"><a href="class_t_r_a_p_1_1_log.html#a4ae37e3b70f5fe21ca2f5d5d9319e49c">TRAP::Log::Warn</a></div><div class="ttdeci">static void Warn(Args &amp;&amp;... args)</div><div class="ttdoc">Log a Warn message.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_log_html_a06eb4d4926b94bdebc80e40052bde1a7"><div class="ttname"><a href="class_t_r_a_p_1_1_log.html#a06eb4d4926b94bdebc80e40052bde1a7">TRAP::Log::Critical</a></div><div class="ttdeci">static void Critical(Args &amp;&amp;... args)</div><div class="ttdoc">Log a Critical message.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_log_html_a1e29481f408057ddc31c6003c0bd5f7a"><div class="ttname"><a href="class_t_r_a_p_1_1_log.html#a1e29481f408057ddc31c6003c0bd5f7a">TRAP::Log::Info</a></div><div class="ttdeci">static void Info(Args &amp;&amp;... args)</div><div class="ttdoc">Log a Info message.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_log_html_a49f8502950460abbf5a0755614ccf6fd"><div class="ttname"><a href="class_t_r_a_p_1_1_log.html#a49f8502950460abbf5a0755614ccf6fd">TRAP::Log::Debug</a></div><div class="ttdeci">static void Debug(Args &amp;&amp;... args)</div><div class="ttdoc">Log a Debug message.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_log_html_a1f7882f85c240a3727ba3e51b302da3c"><div class="ttname"><a href="class_t_r_a_p_1_1_log.html#a1f7882f85c240a3727ba3e51b302da3c">TRAP::Log::Clear</a></div><div class="ttdeci">static void Clear()</div><div class="ttdoc">Clears (and also Saves) all collected messages.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_log_html_ad03369cc0e494c8d9ff384c4e4d7e7fc"><div class="ttname"><a href="class_t_r_a_p_1_1_log.html#ad03369cc0e494c8d9ff384c4e4d7e7fc">TRAP::Log::Level</a></div><div class="ttdeci">Level</div><div class="ttdoc">Importance of a log message.</div><div class="ttdef"><b>Definition:</b> Log.h:42</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_log_html_aef309c1a69175a2d5cafcd1bf3bf3292"><div class="ttname"><a href="class_t_r_a_p_1_1_log.html#aef309c1a69175a2d5cafcd1bf3bf3292">TRAP::Log::Trace</a></div><div class="ttdeci">static void Trace(Args &amp;&amp;... args)</div><div class="ttdoc">Log a Trace message.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_log_html_a6457710a308a77f6aaf95de0ed02ce5d"><div class="ttname"><a href="class_t_r_a_p_1_1_log.html#a6457710a308a77f6aaf95de0ed02ce5d">TRAP::Log::Save</a></div><div class="ttdeci">static void Save()</div><div class="ttdoc">Save all collected messages into &quot;TRAP.log&quot; file.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_log_html_a8640492e22da070fd26a8827b66f400c"><div class="ttname"><a href="class_t_r_a_p_1_1_log.html#a8640492e22da070fd26a8827b66f400c">TRAP::Log::Error</a></div><div class="ttdeci">static void Error(Args &amp;&amp;... args)</div><div class="ttdoc">Log a Error message.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_log_html_a26f56914ae5c1ced4a348619d9f710ee"><div class="ttname"><a href="class_t_r_a_p_1_1_log.html#a26f56914ae5c1ced4a348619d9f710ee">TRAP::Log::operator=</a></div><div class="ttdeci">Log &amp; operator=(const Log &amp;)=delete</div><div class="ttdoc">Deleted Copy Assignment Operator.</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_log_html"><div class="ttname"><a href="class_t_r_a_p_1_1_log.html">TRAP::Log</a></div><div class="ttdef"><b>Definition:</b> Log.h:10</div></div>
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->

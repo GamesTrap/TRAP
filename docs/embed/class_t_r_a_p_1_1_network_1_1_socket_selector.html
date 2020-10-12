@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::Network::SocketSelector Class Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -80,7 +118,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Multiplexer that allows to read form multiple sockets  
+<p>Multiplexer that allows to read form multiple sockets.  
  <a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_socket_selector_8h_source.html">SocketSelector.h</a>&gt;</code></p>
@@ -88,13 +126,13 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af110d22cdf9b173d4de682f54dded799"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#af110d22cdf9b173d4de682f54dded799">SocketSelector</a> ()</td></tr>
-<tr class="memdesc:af110d22cdf9b173d4de682f54dded799"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor  <a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#af110d22cdf9b173d4de682f54dded799">More...</a><br /></td></tr>
+<tr class="memdesc:af110d22cdf9b173d4de682f54dded799"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#af110d22cdf9b173d4de682f54dded799">More...</a><br /></td></tr>
 <tr class="separator:af110d22cdf9b173d4de682f54dded799"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add50e8c486d4d1a0664b07107f1acac3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#add50e8c486d4d1a0664b07107f1acac3">SocketSelector</a> (const <a class="el" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html">SocketSelector</a> &amp;copy)</td></tr>
-<tr class="memdesc:add50e8c486d4d1a0664b07107f1acac3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor  <a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#add50e8c486d4d1a0664b07107f1acac3">More...</a><br /></td></tr>
+<tr class="memdesc:add50e8c486d4d1a0664b07107f1acac3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#add50e8c486d4d1a0664b07107f1acac3">More...</a><br /></td></tr>
 <tr class="separator:add50e8c486d4d1a0664b07107f1acac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a794d85e25a7b7ebfcf9b71ea022320ca"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a794d85e25a7b7ebfcf9b71ea022320ca">~SocketSelector</a> ()</td></tr>
-<tr class="memdesc:a794d85e25a7b7ebfcf9b71ea022320ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor  <a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a794d85e25a7b7ebfcf9b71ea022320ca">More...</a><br /></td></tr>
+<tr class="memdesc:a794d85e25a7b7ebfcf9b71ea022320ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a794d85e25a7b7ebfcf9b71ea022320ca">More...</a><br /></td></tr>
 <tr class="separator:a794d85e25a7b7ebfcf9b71ea022320ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e3629a954695a740e6f3938307ab570"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a1e3629a954695a740e6f3938307ab570">Add</a> (<a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a> &amp;socket)</td></tr>
 <tr class="memdesc:a1e3629a954695a740e6f3938307ab570"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a new socket to the selector.<br  />
@@ -124,14 +162,14 @@ Public Member Functions</h2></td></tr>
  <br  />
  This function must be used after a call to Wait, to know which sockets are ready to receive data.<br  />
  If a socket is ready, a call to receive will never block because we know that there is data available to read.<br  />
- Note that if this function returns true for a <a class="el" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener.html" title="Socket that listens to new TCP connections">TCPListener</a>, this means that it is ready to accept a new connection.  <a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a88042536c0944e507288af1460c2ac37">More...</a><br /></td></tr>
+ Note that if this function returns true for a <a class="el" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener.html" title="Socket that listens to new TCP connections.">TCPListener</a>, this means that it is ready to accept a new connection.  <a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a88042536c0944e507288af1460c2ac37">More...</a><br /></td></tr>
 <tr class="separator:a88042536c0944e507288af1460c2ac37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d84f52d2565edf24deadad3578dc978"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html">SocketSelector</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a4d84f52d2565edf24deadad3578dc978">operator=</a> (const <a class="el" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html">SocketSelector</a> &amp;right)</td></tr>
-<tr class="memdesc:a4d84f52d2565edf24deadad3578dc978"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of assignment operator  <a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a4d84f52d2565edf24deadad3578dc978">More...</a><br /></td></tr>
+<tr class="memdesc:a4d84f52d2565edf24deadad3578dc978"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of assignment operator.  <a href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a4d84f52d2565edf24deadad3578dc978">More...</a><br /></td></tr>
 <tr class="separator:a4d84f52d2565edf24deadad3578dc978"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Multiplexer that allows to read form multiple sockets </p>
+<div class="textblock"><p>Multiplexer that allows to read form multiple sockets. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af110d22cdf9b173d4de682f54dded799"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af110d22cdf9b173d4de682f54dded799">&#9670;&nbsp;</a></span>SocketSelector() <span class="overload">[1/2]</span></h2>
@@ -148,7 +186,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Default constructor </p>
+<p>Constructor. </p>
 
 </div>
 </div>
@@ -168,13 +206,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Copy constructor </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">copy</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Copy constructor. </p>
 
 </div>
 </div>
@@ -193,7 +225,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Destructor </p>
+<p>Destructor. </p>
 
 </div>
 </div>
@@ -220,7 +252,7 @@ Public Member Functions</h2></td></tr>
  This function does nothing if the socket is not valid. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">socket</td><td>Reference to the socket to add</td></tr>
+    <tr><td class="paramname">socket</td><td>Reference to the socket to add.</td></tr>
   </table>
   </dd>
 </dl>
@@ -268,14 +300,14 @@ Public Member Functions</h2></td></tr>
  <br  />
  This function must be used after a call to Wait, to know which sockets are ready to receive data.<br  />
  If a socket is ready, a call to receive will never block because we know that there is data available to read.<br  />
- Note that if this function returns true for a <a class="el" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener.html" title="Socket that listens to new TCP connections">TCPListener</a>, this means that it is ready to accept a new connection. </p>
+ Note that if this function returns true for a <a class="el" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener.html" title="Socket that listens to new TCP connections.">TCPListener</a>, this means that it is ready to accept a new connection. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">socket</td><td><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a> to test</td></tr>
+    <tr><td class="paramname">socket</td><td><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">Socket</a> to test.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>True if the socket is ready to read, false otherwise</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the socket is ready to read, false otherwise.</dd></dl>
 
 </div>
 </div>
@@ -295,14 +327,14 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Overload of assignment operator </p>
+<p>Overload of assignment operator. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">right</td><td>Instance to assign</td></tr>
+    <tr><td class="paramname">right</td><td>Instance to assign.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Reference to self</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to self.</dd></dl>
 
 </div>
 </div>
@@ -327,7 +359,7 @@ Public Member Functions</h2></td></tr>
  This function doesn't destroy the socket, it simply removes the reference that the selector has to it. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">socket</td><td>Reference to the socket to remove</td></tr>
+    <tr><td class="paramname">socket</td><td>Reference to the socket to remove.</td></tr>
   </table>
   </dd>
 </dl>
@@ -357,11 +389,11 @@ Public Member Functions</h2></td></tr>
  If you use a timeout and no socket is ready before the timeout is over, the function returns false. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">timeout</td><td>Maximum time to wait, (use <a class="el" href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">TRAP::Utils::TimeStep</a>(0.0f) for infinity)</td></tr>
+    <tr><td class="paramname">timeout</td><td>Maximum time to wait, (use <a class="el" href="struct_t_r_a_p_1_1_utils_1_1_time_step.html" title="Struct for a single step in Time.">TRAP::Utils::TimeStep</a>(0.0f) for infinity).</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>True if there are sockets ready, false otherwise</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if there are sockets ready, false otherwise.</dd></dl>
 
 </div>
 </div>

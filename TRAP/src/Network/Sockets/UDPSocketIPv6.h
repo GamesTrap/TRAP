@@ -1,31 +1,3 @@
-/*
-////////////////////////////////////////////////////////////
-//
-// SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2019 Laurent Gomila (laurent@sfml-dev.org)
-//
-// This software is provided 'as-is', without any express or implied warranty.
-// In no event will the authors be held liable for any damages arising from the use of this software.
-//
-// Permission is granted to anyone to use this software for any purpose,
-// including commercial applications, and to alter it and redistribute it freely,
-// subject to the following restrictions:
-//
-// 1. The origin of this software must not be misrepresented;
-//    you must not claim that you wrote the original software.
-//    If you use this software in a product, an acknowledgment
-//    in the product documentation would be appreciated but is not required.
-//
-// 2. Altered source versions must be plainly marked as such,
-//    and must not be misrepresented as being the original software.
-//
-// 3. This notice may not be removed or altered from any source distribution.
-//
-////////////////////////////////////////////////////////////
-
-Modified by: Jan "GamesTrap" Schuerkamp
-*/
-
 #ifndef _TRAP_NETWORK_UDPSOCKETIPV6_H_
 #define _TRAP_NETWORK_UDPSOCKETIPV6_H_
 
@@ -40,7 +12,7 @@ namespace TRAP::Network
 	{
 	public:
 		/// <summary>
-		/// Constants
+		/// Constants.
 		/// </summary>
 		enum
 		{
@@ -48,17 +20,16 @@ namespace TRAP::Network
 		};
 
 		/// <summary>
-		/// Default constructor
+		/// Constructor.
 		/// </summary>
 		UDPSocketIPv6();
 
 		/// <summary>
 		/// Get the port to which the socket is bound locally.<br>
 		/// <br>
-		/// If the socket is not bound to a port, this function
-		/// returns 0.
+		/// If the socket is not bound to a port, this function returns 0.
 		/// </summary>
-		/// <returns>Port to which the socket is bound</returns>
+		/// <returns>Port to which the socket is bound.</returns>
 		uint16_t GetLocalPort() const;
 
 		/// <summary>
@@ -75,9 +46,9 @@ namespace TRAP::Network
 		/// function is called, it will be unbound from the previous
 		/// port before being bound to the new one.
 		/// </summary>
-		/// <param name="port">Port to bind the socket to</param>
-		/// <param name="address">Address of the interface to bind to</param>
-		/// <returns>Status code</returns>
+		/// <param name="port">Port to bind the socket to.</param>
+		/// <param name="address">Address of the interface to bind to.</param>
+		/// <returns>Status code.</returns>
 		Status Bind(uint16_t port, const IPv6Address& address = IPv6Address::Any);
 
 		/// <summary>
@@ -98,11 +69,11 @@ namespace TRAP::Network
 		/// UDPSocket::MaxDatagramSize, otherwise this function will
 		/// fail and no data will be sent.
 		/// </summary>
-		/// <param name="data">Pointer to the sequence of bytes to send</param>
-		/// <param name="size">Number of bytes to send</param>
-		/// <param name="remoteAddress">Address of the receiver</param>
-		/// <param name="remotePort">Port of the receiver to send the data to</param>
-		/// <returns>Status code</returns>
+		/// <param name="data">Pointer to the sequence of bytes to send.</param>
+		/// <param name="size">Number of bytes to send.</param>
+		/// <param name="remoteAddress">Address of the receiver.</param>
+		/// <param name="remotePort">Port of the receiver to send the data to.</param>
+		/// <returns>Status code.</returns>
 		Status Send(const void* data, std::size_t size, const IPv6Address& remoteAddress, uint16_t remotePort);
 
 		/// <summary>
@@ -115,12 +86,12 @@ namespace TRAP::Network
 		/// then an error will be returned and *all* the data will
 		/// be list.
 		/// </summary>
-		/// <param name="data">Pointer to the array to fill with the received bytes</param>
-		/// <param name="size">Maximum number of bytes that can be received</param>
-		/// <param name="received">This variable is filled with the actual number of bytes received</param>
-		/// <param name="remoteAddress">Address of the peer that sent the data</param>
-		/// <param name="remotePort">Port of the peer that sent the data</param>
-		/// <returns>Status code</returns>
+		/// <param name="data">Pointer to the array to fill with the received bytes.</param>
+		/// <param name="size">Maximum number of bytes that can be received.</param>
+		/// <param name="received">This variable is filled with the actual number of bytes received.</param>
+		/// <param name="remoteAddress">Address of the peer that sent the data.</param>
+		/// <param name="remotePort">Port of the peer that sent the data.</param>
+		/// <returns>Status code.</returns>
 		Status Receive(void* data, std::size_t size, std::size_t& received, IPv6Address& remoteAddress, uint16_t& remotePort) const;
 
 		/// <summary>
@@ -130,10 +101,10 @@ namespace TRAP::Network
 		/// UDPSocket::MaxDatagramSize, otherwise this function will
 		/// fail and no data will be sent.
 		/// </summary>
-		/// <param name="packet">Packet to send</param>
-		/// <param name="remoteAddress">Address of the received</param>
-		/// <param name="remotePort">Port of the receiver to send the data to</param>
-		/// <returns>Status code</returns>
+		/// <param name="packet">Packet to send.</param>
+		/// <param name="remoteAddress">Address of the received.</param>
+		/// <param name="remotePort">Port of the receiver to send the data to.</param>
+		/// <returns>Status code.</returns>
 		Status Send(Packet& packet, const IPv6Address& remoteAddress, uint16_t remotePort);
 
 		/// <summary>
@@ -142,10 +113,10 @@ namespace TRAP::Network
 		/// In blocking mode, this function will wait until the whole packet
 		/// has been received.
 		/// </summary>
-		/// <param name="packet">Packet to fill with the received data</param>
-		/// <param name="remoteAddress">Address of the peer that sent the data</param>
-		/// <param name="remotePort">Port of the peer that sent the data</param>
-		/// <returns>Status code</returns>
+		/// <param name="packet">Packet to fill with the received data.</param>
+		/// <param name="remoteAddress">Address of the peer that sent the data.</param>
+		/// <param name="remotePort">Port of the peer that sent the data.</param>
+		/// <returns>Status code.</returns>
 		Status Receive(Packet& packet, IPv6Address& remoteAddress, uint16_t& remotePort);
 
 	private:

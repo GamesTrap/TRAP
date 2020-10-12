@@ -42,7 +42,7 @@ namespace TRAP::Network
 	{
 	public:
 		/// <summary>
-		/// This constructor creates an empty (invalid) address
+		/// This constructor creates an empty (invalid) address.
 		/// </summary>
 		IPv4Address();
 
@@ -52,7 +52,7 @@ namespace TRAP::Network
 		/// Here address can be either a decimal address (ex: "192.168.1.180") or a
 		/// network name (ex: "localhost").
 		/// </summary>
-		/// <param name="address">IPv4 address or network name</param>
+		/// <param name="address">IPv4 address or network name.</param>
 		IPv4Address(std::string_view address);
 
 		/// <summary>
@@ -64,7 +64,7 @@ namespace TRAP::Network
 		/// parameter, it is defined for convenience so that the
 		/// implicit conversion from literal strings to IPv4Address work.
 		/// </summary>
-		/// <param name="address">IPv4 address or network name</param>
+		/// <param name="address">IPv4 address or network name.</param>
 		IPv4Address(const char* address);
 
 		/// <summary>
@@ -74,10 +74,10 @@ namespace TRAP::Network
 		/// IPv4Address("a.b.c.d"), but safer as it doesn't have to
 		/// parse a string to get the address components.
 		/// </summary>
-		/// <param name="byte0">First byte of the address</param>
-		/// <param name="byte1">Second byte of the address</param>
-		/// <param name="byte2">Third byte of the address</param>
-		/// <param name="byte3">Fourth byte of the address</param>
+		/// <param name="byte0">First byte of the address.</param>
+		/// <param name="byte1">Second byte of the address.</param>
+		/// <param name="byte2">Third byte of the address.</param>
+		/// <param name="byte3">Fourth byte of the address.</param>
 		IPv4Address(uint8_t byte0, uint8_t byte1, uint8_t byte2, uint8_t byte3);
 
 		/// <summary>
@@ -88,7 +88,7 @@ namespace TRAP::Network
 		/// It should be used for optimization purposes, and only if you
 		/// get that representation from IPv4Address::ToInteger().
 		/// </summary>
-		/// <param name="address">4 Bytes of the address packed into a 32 Bit integer</param>
+		/// <param name="address">4 Bytes of the address packed into a 32 Bit integer.</param>
 		explicit IPv4Address(uint32_t address);
 
 		/// <summary>
@@ -98,7 +98,7 @@ namespace TRAP::Network
 		/// IPv4 address (like "192.168.1.180"), even if it was constructed
 		/// from a host name.
 		/// </summary>
-		/// <returns>String representation of the address</returns>
+		/// <returns>String representation of the address.</returns>
 		std::string ToString() const;
 
 		/// <summary>
@@ -110,7 +110,7 @@ namespace TRAP::Network
 		/// The integer produced by this function can then be converted
 		/// back to a TRAP::Network::IPv4Address with the proper constructor.
 		/// </summary>
-		/// <returns>32 Bit unsigned integer representation of the address</returns>
+		/// <returns>32 Bit unsigned integer representation of the address.</returns>
 		uint32_t ToInteger() const;
 
 		/// <summary>
@@ -121,7 +121,7 @@ namespace TRAP::Network
 		/// It is meaningful only for communications over the local network.<br>
 		/// Unlike GetPublicAddress, this function is fast and may be used safely anywhere.
 		/// </summary>
-		/// <returns>Local IPv4 address of the computer</returns>
+		/// <returns>Local IPv4 address of the computer.</returns>
 		static IPv4Address GetLocalAddress();
 
 		/// <summary>
@@ -140,8 +140,8 @@ namespace TRAP::Network
 		/// to be possibly stuck waiting in case there is a problem; this
 		/// limit is deactivated by default.
 		/// </summary>
-		/// <param name="timeout">Maximum time to wait</param>
-		/// <returns>Public IP address of the computer</returns>
+		/// <param name="timeout">Maximum time to wait.</param>
+		/// <returns>Public IP address of the computer.</returns>
 		static IPv4Address GetPublicAddress(Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 		static const IPv4Address None; //Value representing an empty/invalid address
@@ -153,9 +153,9 @@ namespace TRAP::Network
 		friend bool operator<(const IPv4Address& left, const IPv4Address& right);
 
 		/// <summary>
-		/// Resolve the given address string
+		/// Resolve the given address string.
 		/// </summary>
-		/// <param name="address">Address string</param>
+		/// <param name="address">Address string.</param>
 		void Resolve(std::string_view address);
 
 		uint32_t m_address; //Address stored as an unsigned 32 Bit integer
@@ -163,67 +163,67 @@ namespace TRAP::Network
 	};
 
 	/// <summary>
-	/// Overload of == operator to compare two IP addresses
+	/// Overload of == operator to compare two IP addresses.
 	/// </summary>
-	/// <param name="left">Left operand (a IP address)</param>
-	/// <param name="right">Right operand (a IP address)</param>
-	/// <returns>True if both addresses are equal</returns>
+	/// <param name="left">Left operand (a IP address).</param>
+	/// <param name="right">Right operand (a IP address).</param>
+	/// <returns>True if both addresses are equal.</returns>
 	bool operator==(const IPv4Address& left, const IPv4Address& right);
 
 	/// <summary>
-	/// Overload of != operator to compare two IP addresses
+	/// Overload of != operator to compare two IP addresses.
 	/// </summary>
-	/// <param name="left">Left operand (a IP address)</param>
-	/// <param name="right">Right operand (a IP address)</param>
-	/// <returns>True if both addresses are not equal</returns>
+	/// <param name="left">Left operand (a IP address).</param>
+	/// <param name="right">Right operand (a IP address).</param>
+	/// <returns>True if both addresses are not equal.</returns>
 	bool operator!=(const IPv4Address& left, const IPv4Address& right);
 
 	/// <summary>
-	/// Overload of < operator to compare two IP addresses
+	/// Overload of < operator to compare two IP addresses.
 	/// </summary>
-	/// <param name="left">Left operand (a IP address)</param>
-	/// <param name="right">Right operand (a IP address)</param>
-	/// <returns>True if left is lesser than right</returns>
+	/// <param name="left">Left operand (a IP address).</param>
+	/// <param name="right">Right operand (a IP address).</param>
+	/// <returns>True if left is lesser than right.</returns>
 	bool operator<(const IPv4Address& left, const IPv4Address& right);
 
 	/// <summary>
-	/// Overload of > operator to compare two IP addresses
+	/// Overload of > operator to compare two IP addresses.
 	/// </summary>
-	/// <param name="left">Left operand (a IP address)</param>
-	/// <param name="right">Right operand (a IP address)</param>
-	/// <returns>True if left is greater than right</returns>
+	/// <param name="left">Left operand (a IP address).</param>
+	/// <param name="right">Right operand (a IP address).</param>
+	/// <returns>True if left is greater than right.</returns>
 	bool operator>(const IPv4Address& left, const IPv4Address& right);
 
 	/// <summary>
-	/// Overload of <= operator to compare two IP addresses
+	/// Overload of <= operator to compare two IP addresses.
 	/// </summary>
-	/// <param name="left">Left operand (a IP address)</param>
-	/// <param name="right">Right operand (a IP address)</param>
-	/// <returns>True if left is lesser or equal than right</returns>
+	/// <param name="left">Left operand (a IP address).</param>
+	/// <param name="right">Right operand (a IP address).</param>
+	/// <returns>True if left is lesser or equal than right.</returns>
 	bool operator <=(const IPv4Address& left, const IPv4Address& right);
 
 	/// <summary>
-	/// Overload of >= operator to compare two IP addresses
+	/// Overload of >= operator to compare two IP addresses.
 	/// </summary>
-	/// <param name="left">Left operand (a IP address)</param>
-	/// <param name="right">Right operand (a IP address)</param>
-	/// <returns>True if left is greater or equal than right</returns>
+	/// <param name="left">Left operand (a IP address).</param>
+	/// <param name="right">Right operand (a IP address).</param>
+	/// <returns>True if left is greater or equal than right.</returns>
 	bool operator >=(const IPv4Address& left, const IPv4Address& right);
 
 	/// <summary>
-	/// Overload of >> operator to extract an IP address from input stream
+	/// Overload of >> operator to extract an IP address from input stream.
 	/// </summary>
-	/// <param name="stream">Input stream</param>
-	/// <param name="address">IP address to extract</param>
-	/// <returns>Reference to the input stream</returns>
+	/// <param name="stream">Input stream.</param>
+	/// <param name="address">IP address to extract.</param>
+	/// <returns>Reference to the input stream.</returns>
 	std::istream& operator>>(std::istream& stream, IPv4Address& address);
 
 	/// <summary>
-	/// Overload of << operator to print an IP address to an output stream
+	/// Overload of << operator to print an IP address to an output stream.
 	/// </summary>
-	/// <param name="stream">Output stream</param>
-	/// <param name="address">IP address to print</param>
-	/// <returns>Reference to the output stream</returns>
+	/// <param name="stream">Output stream.</param>
+	/// <param name="address">IP address to print.</param>
+	/// <returns>Reference to the output stream.</returns>
 	std::ostream& operator<<(std::ostream& stream, const IPv4Address& address);
 }
 

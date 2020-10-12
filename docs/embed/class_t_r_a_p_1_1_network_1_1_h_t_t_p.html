@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::Network::HTTP Class Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -81,8 +119,8 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>A <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> client.<br  />
- Priorities IPv6 over IPv4  
+<p>A <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> client.<br  />
+ Prioritizes IPv6 over IPv4.  
  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_h_t_t_p_8h_source.html">HTTP.h</a>&gt;</code></p>
@@ -90,52 +128,144 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html">Request</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define a <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> request  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define a <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> request.  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html">Response</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define a <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> response  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define a <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> response.  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a6f70e9cfb0724774d8bd701edac6f9ad"><td class="memItemLeft" align="right" valign="top"><a id="a6f70e9cfb0724774d8bd701edac6f9ad"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>HTTP</b> (const <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a> &amp;)=delete</td></tr>
+<tr class="memitem:aaf13d8002f72720cafa2e59cb686fdcf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#aaf13d8002f72720cafa2e59cb686fdcf">HTTP</a> (<a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a> &amp;&amp;)=default</td></tr>
+<tr class="memdesc:aaf13d8002f72720cafa2e59cb686fdcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Move Constructor.  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#aaf13d8002f72720cafa2e59cb686fdcf">More...</a><br /></td></tr>
+<tr class="separator:aaf13d8002f72720cafa2e59cb686fdcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9a47e25192449dddddac76358f3cc9b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ab9a47e25192449dddddac76358f3cc9b">operator=</a> (<a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a> &amp;&amp;)=default</td></tr>
+<tr class="memdesc:ab9a47e25192449dddddac76358f3cc9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Move Assignment Operator.  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ab9a47e25192449dddddac76358f3cc9b">More...</a><br /></td></tr>
+<tr class="separator:ab9a47e25192449dddddac76358f3cc9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f70e9cfb0724774d8bd701edac6f9ad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a6f70e9cfb0724774d8bd701edac6f9ad">HTTP</a> (const <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a> &amp;)=delete</td></tr>
+<tr class="memdesc:a6f70e9cfb0724774d8bd701edac6f9ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Copy Constructor.  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a6f70e9cfb0724774d8bd701edac6f9ad">More...</a><br /></td></tr>
 <tr class="separator:a6f70e9cfb0724774d8bd701edac6f9ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae21e38bee69f613117d59a451da78dc0"><td class="memItemLeft" align="right" valign="top"><a id="ae21e38bee69f613117d59a451da78dc0"></a>
-<a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a> &amp;)=delete</td></tr>
-<tr class="separator:ae21e38bee69f613117d59a451da78dc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6221ced1902044a7bb28993c5a4f4fe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ac6221ced1902044a7bb28993c5a4f4fe">operator=</a> (const <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a> &amp;)=delete</td></tr>
+<tr class="memdesc:ac6221ced1902044a7bb28993c5a4f4fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Copy Assignment Operator.  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ac6221ced1902044a7bb28993c5a4f4fe">More...</a><br /></td></tr>
+<tr class="separator:ac6221ced1902044a7bb28993c5a4f4fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace0fd9fdbacabdeacbf4e3d6f9ff4b93"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ace0fd9fdbacabdeacbf4e3d6f9ff4b93">~HTTP</a> ()=default</td></tr>
+<tr class="memdesc:ace0fd9fdbacabdeacbf4e3d6f9ff4b93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Destructor.  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ace0fd9fdbacabdeacbf4e3d6f9ff4b93">More...</a><br /></td></tr>
+<tr class="separator:ace0fd9fdbacabdeacbf4e3d6f9ff4b93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67c2a73d14d20f4effbe624bf37b3462"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a67c2a73d14d20f4effbe624bf37b3462">HTTP</a> ()</td></tr>
-<tr class="memdesc:a67c2a73d14d20f4effbe624bf37b3462"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a67c2a73d14d20f4effbe624bf37b3462">More...</a><br /></td></tr>
+<tr class="memdesc:a67c2a73d14d20f4effbe624bf37b3462"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a67c2a73d14d20f4effbe624bf37b3462">More...</a><br /></td></tr>
 <tr class="separator:a67c2a73d14d20f4effbe624bf37b3462"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a424e0c57a7e5e88388fef7ee2d55f1e5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a424e0c57a7e5e88388fef7ee2d55f1e5">HTTP</a> (const std::string &amp;host, uint16_t port=0)</td></tr>
-<tr class="memdesc:a424e0c57a7e5e88388fef7ee2d55f1e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> client with the target host.<br  />
+<tr class="memdesc:a424e0c57a7e5e88388fef7ee2d55f1e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> client with the target host.<br  />
  <br  />
  This is equivalent to calling SetHost(host, port).<br  />
- The port has a default value of 0, which means that the <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> client will use the right port according to the protocol used (80 for <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a>).<br  />
+ The port has a default value of 0, which means that the <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> client will use the right port according to the protocol used (80 for <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a>).<br  />
  You should leave it like this unless you rally need a part other than the standard one, or use an unknown protocol.  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a424e0c57a7e5e88388fef7ee2d55f1e5">More...</a><br /></td></tr>
 <tr class="separator:a424e0c57a7e5e88388fef7ee2d55f1e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5e2dea603b12f809dbb81f3ea498df6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ac5e2dea603b12f809dbb81f3ea498df6">SetHost</a> (const std::string &amp;host, uint16_t port=0)</td></tr>
 <tr class="memdesc:ac5e2dea603b12f809dbb81f3ea498df6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set target host.<br  />
  <br  />
  This function just stores the host address and port, it doesn't actually connect to it until you send a request.<br  />
- The port has a default value of 0, which means that the <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> client will use the right port according to the protocol used (80 for <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a>).<br  />
+ The port has a default value of 0, which means that the <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> client will use the right port according to the protocol used (80 for <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a>).<br  />
  You should leave it like this unless you really need a port other than the standard one, or use an unknown protocol.  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#ac5e2dea603b12f809dbb81f3ea498df6">More...</a><br /></td></tr>
 <tr class="separator:ac5e2dea603b12f809dbb81f3ea498df6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a248879cbad08b652a43cd470a14ee9d1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html">Response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a248879cbad08b652a43cd470a14ee9d1">SendRequest</a> (const <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html">Request</a> &amp;request, <a class="el" href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">Utils::TimeStep</a> timeout=<a class="el" href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">Utils::TimeStep</a>(0.0f))</td></tr>
-<tr class="memdesc:a248879cbad08b652a43cd470a14ee9d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> request and return the server's response.<br  />
+<tr class="memdesc:a248879cbad08b652a43cd470a14ee9d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> request and return the server's response.<br  />
  <br  />
  You must have a valid host before sending a request (see SetHost).<br  />
  Any missing mandatory header field in the request will be added with an appropriate value.<br  />
  Warning: this function waits for the server's response and may not return instantly; use a thread if you don't want to block your application, or use a timeout to limit the time to wait.<br  />
- A value of <a class="el" href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">Utils::TimeStep</a>(0.0f) means that the client will use the system default timeout (which is usually pretty long).  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a248879cbad08b652a43cd470a14ee9d1">More...</a><br /></td></tr>
+ A value of <a class="el" href="struct_t_r_a_p_1_1_utils_1_1_time_step.html" title="Struct for a single step in Time.">Utils::TimeStep</a>(0.0f) means that the client will use the system default timeout (which is usually pretty long).  <a href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html#a248879cbad08b652a43cd470a14ee9d1">More...</a><br /></td></tr>
 <tr class="separator:a248879cbad08b652a43cd470a14ee9d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> client.<br  />
- Priorities IPv6 over IPv4 </p>
+<div class="textblock"><p>A <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> client.<br  />
+ Prioritizes IPv6 over IPv4. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="aaf13d8002f72720cafa2e59cb686fdcf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf13d8002f72720cafa2e59cb686fdcf">&#9670;&nbsp;</a></span>HTTP() <span class="overload">[1/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TRAP::Network::HTTP::HTTP </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a> &amp;&amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Default Move Constructor. </p>
+
+</div>
+</div>
+<a id="a6f70e9cfb0724774d8bd701edac6f9ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f70e9cfb0724774d8bd701edac6f9ad">&#9670;&nbsp;</a></span>HTTP() <span class="overload">[2/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TRAP::Network::HTTP::HTTP </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Copy Constructor. </p>
+
+</div>
+</div>
+<a id="ace0fd9fdbacabdeacbf4e3d6f9ff4b93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace0fd9fdbacabdeacbf4e3d6f9ff4b93">&#9670;&nbsp;</a></span>~HTTP()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TRAP::Network::HTTP::~HTTP </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Default Destructor. </p>
+
+</div>
+</div>
 <a id="a67c2a73d14d20f4effbe624bf37b3462"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67c2a73d14d20f4effbe624bf37b3462">&#9670;&nbsp;</a></span>HTTP() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a67c2a73d14d20f4effbe624bf37b3462">&#9670;&nbsp;</a></span>HTTP() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -149,12 +279,12 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Default constructor </p>
+<p>Constructor. </p>
 
 </div>
 </div>
 <a id="a424e0c57a7e5e88388fef7ee2d55f1e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a424e0c57a7e5e88388fef7ee2d55f1e5">&#9670;&nbsp;</a></span>HTTP() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a424e0c57a7e5e88388fef7ee2d55f1e5">&#9670;&nbsp;</a></span>HTTP() <span class="overload">[4/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -187,15 +317,15 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Construct the <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> client with the target host.<br  />
+<p>Construct the <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> client with the target host.<br  />
  <br  />
  This is equivalent to calling SetHost(host, port).<br  />
- The port has a default value of 0, which means that the <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> client will use the right port according to the protocol used (80 for <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a>).<br  />
+ The port has a default value of 0, which means that the <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> client will use the right port according to the protocol used (80 for <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a>).<br  />
  You should leave it like this unless you rally need a part other than the standard one, or use an unknown protocol. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">host</td><td>Web server to connect to</td></tr>
-    <tr><td class="paramname">port</td><td>Port to use for connection</td></tr>
+    <tr><td class="paramname">host</td><td>Web server to connect to.</td></tr>
+    <tr><td class="paramname">port</td><td>Port to use for connection.</td></tr>
   </table>
   </dd>
 </dl>
@@ -203,6 +333,62 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="ac6221ced1902044a7bb28993c5a4f4fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6221ced1902044a7bb28993c5a4f4fe">&#9670;&nbsp;</a></span>operator=() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a>&amp; TRAP::Network::HTTP::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Copy Assignment Operator. </p>
+
+</div>
+</div>
+<a id="ab9a47e25192449dddddac76358f3cc9b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9a47e25192449dddddac76358f3cc9b">&#9670;&nbsp;</a></span>operator=() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a>&amp; TRAP::Network::HTTP::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html">HTTP</a> &amp;&amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Default Move Assignment Operator. </p>
+
+</div>
+</div>
 <a id="a248879cbad08b652a43cd470a14ee9d1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a248879cbad08b652a43cd470a14ee9d1">&#9670;&nbsp;</a></span>SendRequest()</h2>
 
@@ -229,16 +415,16 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Send a <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> request and return the server's response.<br  />
+<p>Send a <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> request and return the server's response.<br  />
  <br  />
  You must have a valid host before sending a request (see SetHost).<br  />
  Any missing mandatory header field in the request will be added with an appropriate value.<br  />
  Warning: this function waits for the server's response and may not return instantly; use a thread if you don't want to block your application, or use a timeout to limit the time to wait.<br  />
- A value of <a class="el" href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">Utils::TimeStep</a>(0.0f) means that the client will use the system default timeout (which is usually pretty long). </p>
+ A value of <a class="el" href="struct_t_r_a_p_1_1_utils_1_1_time_step.html" title="Struct for a single step in Time.">Utils::TimeStep</a>(0.0f) means that the client will use the system default timeout (which is usually pretty long). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">request</td><td><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html" title="Define a HTTP request">Request</a> to send</td></tr>
-    <tr><td class="paramname">timeout</td><td>Maximum time to wait</td></tr>
+    <tr><td class="paramname">request</td><td><a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html" title="Define a HTTP request.">Request</a> to send.</td></tr>
+    <tr><td class="paramname">timeout</td><td>Maximum time to wait.</td></tr>
   </table>
   </dd>
 </dl>
@@ -275,12 +461,12 @@ Public Member Functions</h2></td></tr>
 <p>Set target host.<br  />
  <br  />
  This function just stores the host address and port, it doesn't actually connect to it until you send a request.<br  />
- The port has a default value of 0, which means that the <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a> client will use the right port according to the protocol used (80 for <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Priorities IPv6 over IPv4">HTTP</a>).<br  />
+ The port has a default value of 0, which means that the <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a> client will use the right port according to the protocol used (80 for <a class="el" href="class_t_r_a_p_1_1_network_1_1_h_t_t_p.html" title="A HTTP client.  Prioritizes IPv6 over IPv4.">HTTP</a>).<br  />
  You should leave it like this unless you really need a port other than the standard one, or use an unknown protocol. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">host</td><td>Web server to connect to</td></tr>
-    <tr><td class="paramname">port</td><td>Port to use for connection</td></tr>
+    <tr><td class="paramname">host</td><td>Web server to connect to.</td></tr>
+    <tr><td class="paramname">port</td><td>Port to use for connection.</td></tr>
   </table>
   </dd>
 </dl>

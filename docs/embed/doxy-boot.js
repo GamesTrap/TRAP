@@ -26,6 +26,7 @@ $( document ).ready(function() {
     $("#nav-path > ul").addClass("breadcrumb");
 
     $("table.params").addClass("table");
+    $("table.tparams").addClass("table");
     $("div.ingroups").wrapInner("<span class='text-nowrap'></span>");
     $("div.levels").css("margin", "0.5em");
     $("div.levels > span").addClass("btn btn-default btn-xs");
@@ -192,10 +193,10 @@ $( document ).ready(function() {
       $('#search-results-window').addClass('panel-success');
     }
   }
-  $('#MSearchResults').load(function() {
+  $('#MSearchResults').on('load', function() {
     $('#MSearchResults').contents().find('link[href="search.css"]').attr('href','../doxygen.css');
     $('#MSearchResults').contents().find('head').append(
-      '<link href="../customdoxygen.css" rel="stylesheet" type="text/css">');
+      '<link href="customdoxygen.css" rel="stylesheet" type="text/css">');
 
     update_search_results_window();
 
@@ -268,4 +269,11 @@ $( document ).ready(function() {
 		}
 	});
   searchBox.CloseResultsWindow();
+
+  /*Responsive images*/
+  $('img').each(function() {
+    if ( !$(this).hasClass('footer') && !this.id) {
+      $(this).addClass('img-responsive');
+    }
+  });
 });

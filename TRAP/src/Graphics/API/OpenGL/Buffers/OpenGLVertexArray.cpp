@@ -13,7 +13,7 @@ TRAP::Graphics::API::OpenGLVertexArray::OpenGLVertexArray()
 {
 	TP_PROFILE_FUNCTION();
 	
-	OpenGLCall(glCreateVertexArrays(1, &m_handle));
+	glCreateVertexArrays(1, &m_handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -24,7 +24,7 @@ TRAP::Graphics::API::OpenGLVertexArray::~OpenGLVertexArray()
 	
 	if(m_handle)
 	{
-		OpenGLCall(glDeleteBuffers(1, &m_handle));		
+		glDeleteBuffers(1, &m_handle);		
 	}
 }
 
@@ -36,7 +36,7 @@ void TRAP::Graphics::API::OpenGLVertexArray::SetVertexBuffer(Scope<VertexBuffer>
 	
 	TRAP_CORE_ASSERT(buffer->GetLayout().GetElements().size(), "[VBO][OpenGL] VertexBuffer has no layout!");
 	
-	OpenGLCall(glVertexArrayVertexBuffer(m_handle, 0, dynamic_cast<OpenGLVertexBuffer*>(buffer.get())->GetHandle(), 0, buffer->GetLayout().GetStride()));
+	glVertexArrayVertexBuffer(m_handle, 0, dynamic_cast<OpenGLVertexBuffer*>(buffer.get())->GetHandle(), 0, buffer->GetLayout().GetStride());
 
 	const auto& layout = buffer->GetLayout();
 	for (const auto& element : layout)
@@ -53,9 +53,9 @@ void TRAP::Graphics::API::OpenGLVertexArray::SetVertexBuffer(Scope<VertexBuffer>
 		case ShaderDataType::Int4:
 		case ShaderDataType::Bool:
 		{
-			OpenGLCall(glEnableVertexArrayAttrib(m_handle, m_attribIndex));
-			OpenGLCall(glVertexArrayAttribFormat(m_handle, m_attribIndex, element.GetComponentCount(), TRAP::Graphics::API::ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized, static_cast<intptr_t>(element.Offset)));
-			OpenGLCall(glVertexArrayAttribBinding(m_handle, m_attribIndex, 0));
+			glEnableVertexArrayAttrib(m_handle, m_attribIndex);
+			glVertexArrayAttribFormat(m_handle, m_attribIndex, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized, static_cast<intptr_t>(element.Offset));
+			glVertexArrayAttribBinding(m_handle, m_attribIndex, 0);
 
 			m_attribIndex++;
 			break;
@@ -67,9 +67,9 @@ void TRAP::Graphics::API::OpenGLVertexArray::SetVertexBuffer(Scope<VertexBuffer>
 			const uint8_t count = element.GetComponentCount();
 			for (uint8_t i = 0; i < count; i++)
 			{
-				OpenGLCall(glEnableVertexArrayAttrib(m_handle, m_attribIndex));
-				OpenGLCall(glVertexArrayAttribFormat(m_handle, m_attribIndex, element.GetComponentCount(), TRAP::Graphics::API::ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized, static_cast<intptr_t>(sizeof(float) * count * i)));
-				OpenGLCall(glVertexArrayAttribBinding(m_handle, m_attribIndex, 0));
+				glEnableVertexArrayAttrib(m_handle, m_attribIndex);
+				glVertexArrayAttribFormat(m_handle, m_attribIndex, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized, static_cast<intptr_t>(sizeof(float) * count * i));
+				glVertexArrayAttribBinding(m_handle, m_attribIndex, 0);
 				glVertexArrayBindingDivisor(m_handle, 0, 1);
 
 				m_attribIndex++;
@@ -92,7 +92,7 @@ void TRAP::Graphics::API::OpenGLVertexArray::SetIndexBuffer(Scope<IndexBuffer>& 
 	TP_PROFILE_FUNCTION();
 	
 	m_indexBuffer = std::move(buffer);
-	OpenGLCall(glVertexArrayElementBuffer(m_handle, dynamic_cast<OpenGLIndexBuffer*>(m_indexBuffer.get())->GetHandle()));
+	glVertexArrayElementBuffer(m_handle, dynamic_cast<OpenGLIndexBuffer*>(m_indexBuffer.get())->GetHandle());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -103,7 +103,7 @@ void TRAP::Graphics::API::OpenGLVertexArray::Bind() const
 	
 	if(s_CurrentlyBound != this)
 	{
-		OpenGLCall(glBindVertexArray(m_handle));
+		glBindVertexArray(m_handle);
 		s_CurrentlyBound = this;
 	}
 }
@@ -114,7 +114,7 @@ void TRAP::Graphics::API::OpenGLVertexArray::Unbind() const
 {
 	TP_PROFILE_FUNCTION();
 	
-	OpenGLCall(glBindVertexArray(0));
+	glBindVertexArray(0);
 	s_CurrentlyBound = nullptr;
 }
 

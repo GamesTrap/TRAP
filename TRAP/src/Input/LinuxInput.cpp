@@ -31,8 +31,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifdef TRAP_PLATFORM_LINUX
 
 #include "Events/ControllerEvent.h"
-#include "Utils/ControllerMappings.h"
 #include "Window/WindowingAPI.h"
+#include "ControllerMappings.h"
 
 TRAP::Input::ControllerLinuxLibrary TRAP::Input::s_linuxController{};
 
@@ -118,7 +118,7 @@ void TRAP::Input::ShutdownController()
 
 void TRAP::Input::SetControllerVibrationInternal(Controller controller, float leftMotor, float rightMotor)
 {
-	if(!PollController(controller, 0))
+	if(!PollController(controller, PollMode::Presence))
 		return;
 		
 	ControllerInternal* con = &s_controllerInternal[static_cast<uint8_t>(controller)];
@@ -369,7 +369,7 @@ void TRAP::Input::DetectControllerConnectionLinux()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::PollController(Controller controller, int32_t mode)
+bool TRAP::Input::PollController(Controller controller, PollMode mode)
 {
 	if(s_controllerInternal[static_cast<uint8_t>(controller)].Connected)
 	{

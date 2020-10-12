@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::WindowProps Struct Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -81,17 +119,23 @@ $(function() {
 <div class="title">TRAP::WindowProps Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Struct containing all <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">Window</a> properties needed to create a new <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  
+ <a href="struct_t_r_a_p_1_1_window_props.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_window_8h_source.html">Window.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_t_r_a_p_1_1_window_props_1_1_advanced.html">Advanced</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_t_r_a_p_1_1_window_props_1_1_advanced_props.html">AdvancedProps</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">More advanced(optional) window properties.  <a href="struct_t_r_a_p_1_1_window_props_1_1_advanced_props.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af20a86bee2be8a61114dfe055d75dbd3"><td class="memItemLeft" align="right" valign="top"><a id="af20a86bee2be8a61114dfe055d75dbd3"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>WindowProps</b> (std::string title=&quot;TRAP Engine&quot;, uint32_t width=1280, uint32_t height=720, uint32_t refreshRate=60, <a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b">Window::DisplayMode</a> displayMode=Window::DisplayMode::Windowed, <a class="el" href="struct_t_r_a_p_1_1_window_props_1_1_advanced.html">Advanced</a> advanced=<a class="el" href="struct_t_r_a_p_1_1_window_props_1_1_advanced.html">Advanced</a>{}, uint32_t monitor=0)</td></tr>
-<tr class="separator:af20a86bee2be8a61114dfe055d75dbd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af799cbf05abae1c3fb70fcf0d7c602bb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_t_r_a_p_1_1_window_props.html#af799cbf05abae1c3fb70fcf0d7c602bb">WindowProps</a> (std::string title=&quot;TRAP Engine&quot;, uint32_t width=1280, uint32_t height=720, uint32_t refreshRate=60, <a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b">Window::DisplayMode</a> displayMode=Window::DisplayMode::Windowed, <a class="el" href="struct_t_r_a_p_1_1_window_props_1_1_advanced_props.html">AdvancedProps</a> advanced=<a class="el" href="struct_t_r_a_p_1_1_window_props_1_1_advanced_props.html">AdvancedProps</a>{}, uint32_t monitor=0)</td></tr>
+<tr class="memdesc:af799cbf05abae1c3fb70fcf0d7c602bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for basic window properties.  <a href="struct_t_r_a_p_1_1_window_props.html#af799cbf05abae1c3fb70fcf0d7c602bb">More...</a><br /></td></tr>
+<tr class="separator:af799cbf05abae1c3fb70fcf0d7c602bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -110,16 +154,99 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>RefreshRate</b></
 <tr class="memitem:a7803f5e9425a3a59b164c51f78687dcc"><td class="memItemLeft" align="right" valign="top"><a id="a7803f5e9425a3a59b164c51f78687dcc"></a>
 Graphics::API::RenderAPI&#160;</td><td class="memItemRight" valign="bottom"><b>RenderAPI</b></td></tr>
 <tr class="separator:a7803f5e9425a3a59b164c51f78687dcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6637d2c0b8804d9d6cdfd03c3028639"><td class="memItemLeft" align="right" valign="top"><a id="ae6637d2c0b8804d9d6cdfd03c3028639"></a>
-<a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b">Window::DisplayMode</a>&#160;</td><td class="memItemRight" valign="bottom"><b>displayMode</b></td></tr>
-<tr class="separator:ae6637d2c0b8804d9d6cdfd03c3028639"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fac5a3bca60a8538f93094549d7fd81"><td class="memItemLeft" align="right" valign="top"><a id="a4fac5a3bca60a8538f93094549d7fd81"></a>
+<a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b">Window::DisplayMode</a>&#160;</td><td class="memItemRight" valign="bottom"><b>DisplayMode</b></td></tr>
+<tr class="separator:a4fac5a3bca60a8538f93094549d7fd81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abca9e8ed0178fa4770b352cfac8bb392"><td class="memItemLeft" align="right" valign="top"><a id="abca9e8ed0178fa4770b352cfac8bb392"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>Monitor</b></td></tr>
 <tr class="separator:abca9e8ed0178fa4770b352cfac8bb392"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc4124e2fd5f096e69cca6924e418119"><td class="memItemLeft" align="right" valign="top"><a id="adc4124e2fd5f096e69cca6924e418119"></a>
-struct <a class="el" href="struct_t_r_a_p_1_1_window_props_1_1_advanced.html">TRAP::WindowProps::Advanced</a>&#160;</td><td class="memItemRight" valign="bottom"><b>advanced</b></td></tr>
-<tr class="separator:adc4124e2fd5f096e69cca6924e418119"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acbe94187adca317486db08efaeb34294"><td class="memItemLeft" align="right" valign="top"><a id="acbe94187adca317486db08efaeb34294"></a>
+struct <a class="el" href="struct_t_r_a_p_1_1_window_props_1_1_advanced_props.html">TRAP::WindowProps::AdvancedProps</a>&#160;</td><td class="memItemRight" valign="bottom"><b>Advanced</b></td></tr>
+<tr class="separator:acbe94187adca317486db08efaeb34294"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Struct containing all <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">Window</a> properties needed to create a new <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="af799cbf05abae1c3fb70fcf0d7c602bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af799cbf05abae1c3fb70fcf0d7c602bb">&#9670;&nbsp;</a></span>WindowProps()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TRAP::WindowProps::WindowProps </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>title</em> = <code>&quot;TRAP&#160;Engine&quot;</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>width</em> = <code>1280</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>height</em> = <code>720</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>refreshRate</em> = <code>60</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b">Window::DisplayMode</a>&#160;</td>
+          <td class="paramname"><em>displayMode</em> = <code>Window::DisplayMode::Windowed</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_t_r_a_p_1_1_window_props_1_1_advanced_props.html">AdvancedProps</a>&#160;</td>
+          <td class="paramname"><em>advanced</em> = <code><a class="el" href="struct_t_r_a_p_1_1_window_props_1_1_advanced_props.html">AdvancedProps</a>{}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>monitor</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constructor for basic window properties. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">title</td><td>Title for the new <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</td></tr>
+    <tr><td class="paramname">width</td><td>Width for the new <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</td></tr>
+    <tr><td class="paramname">height</td><td>Height for the new <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</td></tr>
+    <tr><td class="paramname">refreshRate</td><td>Refresh rate for the new <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</td></tr>
+    <tr><td class="paramname">displayMode</td><td><a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b" title="Specifies the display mode of a TRAP::Window.">TRAP::Window::DisplayMode</a> for the new <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</td></tr>
+    <tr><td class="paramname">advanced</td><td>Optional advanced properties to be used for the new <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</td></tr>
+    <tr><td class="paramname">monitor</td><td><a class="el" href="class_t_r_a_p_1_1_monitor.html" title="Interface representing a physical Monitor.">Monitor</a> to be used by the new <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>TRAP/src/Window/<a class="el" href="_window_8h_source.html">Window.h</a></li>
 </ul>

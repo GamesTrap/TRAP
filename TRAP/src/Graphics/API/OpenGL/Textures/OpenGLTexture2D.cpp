@@ -55,7 +55,7 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const uint32_t width, cons
 
 	InitializeTexture();
 
-	OpenGLCall(glTextureStorage2D(m_handle, 1, TRAPImageFormatToOpenGLPrecise(format, bitsPerPixel / 8), width, height));
+	glTextureStorage2D(m_handle, 1, TRAPImageFormatToOpenGLPrecise(format, bitsPerPixel / 8), width, height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -123,9 +123,7 @@ TRAP::Graphics::API::OpenGLTexture2D::~OpenGLTexture2D()
 	TP_DEBUG(Log::Texture2DOpenGLPrefix, "Destroying Texture2D: \"", m_name, "\"");
 	
 	if(m_handle)
-	{
-		OpenGLCall(glDeleteTextures(1, &m_handle));		
-	}
+		glDeleteTextures(1, &m_handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -139,9 +137,7 @@ void TRAP::Graphics::API::OpenGLTexture2D::Bind(const uint32_t slot) const
 		if (slot < OpenGLRenderer::GetMaxTextureUnits())
 		{
 			if (m_handle)
-			{
-				OpenGLCall(glBindTextureUnit(slot, m_handle));
-			}
+				glBindTextureUnit(slot, m_handle);
 			else
 				TextureManager::Get("Fallback", TextureType::Texture2D)->Bind(slot);
 
@@ -160,7 +156,7 @@ void TRAP::Graphics::API::OpenGLTexture2D::Unbind(const uint32_t slot) const
 	
 	if (slot < OpenGLRenderer::GetMaxTextureUnits())
 	{
-		OpenGLCall(glBindTextureUnit(slot, 0));
+		glBindTextureUnit(slot, 0);
 		OpenGLRenderer::GetBoundTextures()[slot] = nullptr;
 	}
 	else
@@ -183,9 +179,9 @@ void TRAP::Graphics::API::OpenGLTexture2D::SetWrap(const TextureWrap wrap)
 	TP_PROFILE_FUNCTION();
 	
 	m_textureParameters.Wrap = wrap;
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(wrap)));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_T, TRAPTextureWrapToOpenGL(wrap)));
-	OpenGLCall(glGenerateTextureMipmap(m_handle));
+	glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(wrap));
+	glTextureParameteri(m_handle, GL_TEXTURE_WRAP_T, TRAPTextureWrapToOpenGL(wrap));
+	glGenerateTextureMipmap(m_handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -195,9 +191,9 @@ void TRAP::Graphics::API::OpenGLTexture2D::SetFilter(const TextureFilter filter)
 	TP_PROFILE_FUNCTION();
 	
 	m_textureParameters.Filter = filter;
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));
-	OpenGLCall(glGenerateTextureMipmap(m_handle));
+	glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST);
+	glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST);
+	glGenerateTextureMipmap(m_handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -230,9 +226,7 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadImage(const TRAP::Scope<TRAP::I
 			
 			//Delete current texture if exists
 			if (m_handle)
-			{
-				OpenGLCall(glDeleteTextures(1, &m_handle));
-			}
+				glDeleteTextures(1, &m_handle);
 
 			m_width = image->GetWidth();
 			m_height = image->GetHeight();
@@ -266,11 +260,11 @@ GLenum TRAP::Graphics::API::OpenGLTexture2D::PixelDataTypeToOpenGL(const PixelDa
 
 void TRAP::Graphics::API::OpenGLTexture2D::InitializeTexture()
 {
-	OpenGLCall(glCreateTextures(GL_TEXTURE_2D, 1, &m_handle));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(m_textureParameters.Wrap)));
-	OpenGLCall(glTextureParameteri(m_handle, GL_TEXTURE_WRAP_T, TRAPTextureWrapToOpenGL(m_textureParameters.Wrap)));
+	glCreateTextures(GL_TEXTURE_2D, 1, &m_handle);
+	glTextureParameteri(m_handle, GL_TEXTURE_MIN_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST);
+	glTextureParameteri(m_handle, GL_TEXTURE_MAG_FILTER, m_textureParameters.Filter == TextureFilter::Linear ? GL_LINEAR : GL_NEAREST);
+	glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(m_textureParameters.Wrap));
+	glTextureParameteri(m_handle, GL_TEXTURE_WRAP_T, TRAPTextureWrapToOpenGL(m_textureParameters.Wrap));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -281,15 +275,13 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadTexture(const Scope<Image>& ima
 	//if(!std::ispow2(image->GetWidth() || !std::ispow2(image->GetHeight())	
 	if (!Math::IsPowerOfTwo(image->GetWidth()) || !Math::IsPowerOfTwo(image->GetHeight()))
 	{
-		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		resetPixelStore = true;
 	}
 
 	const uint32_t numMipMapLevels = 1 + static_cast<uint32_t>(std::floor(std::log2(Math::Max(image->GetWidth(), image->GetHeight())))); //Same as specification
 	if(!exists)
-	{
-		OpenGLCall(glTextureStorage2D(m_handle, numMipMapLevels, TRAPImageFormatToOpenGLPrecise(image->GetColorFormat(), image->GetBytesPerPixel()), image->GetWidth(), image->GetHeight()));
-	}
+		glTextureStorage2D(m_handle, numMipMapLevels, TRAPImageFormatToOpenGLPrecise(image->GetColorFormat(), image->GetBytesPerPixel()), image->GetWidth(), image->GetHeight());
 	if (image->IsHDR())
 		UploadData(image, PixelDataType::Float);
 	//GrayScale, GrayScaleAlpha, RGB, RGBA
@@ -302,20 +294,14 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadTexture(const Scope<Image>& ima
 		UploadData(image, PixelDataType::Unsigned_Byte);
 
 	if (image->HasAlphaChannel() && image->IsImageGrayScale())
-	{
-		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data()));
-	}
+		glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data());
 	else if (image->IsImageGrayScale())
-	{
-		OpenGLCall(glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data()));
-	}
+		glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data());
 
 	if (resetPixelStore)
-	{
-		OpenGLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 4));
-	}
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
-	OpenGLCall(glGenerateTextureMipmap(m_handle));
+	glGenerateTextureMipmap(m_handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -325,21 +311,21 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadData(const Scope<Image>& image,
 	switch(type)
 	{
 	case PixelDataType::Float:
-		OpenGLCall(glTextureSubImage2D(m_handle, 0, 0, 0, image->GetWidth(), image->GetHeight(),
+		glTextureSubImage2D(m_handle, 0, 0, 0, image->GetWidth(), image->GetHeight(),
 			TRAPImageFormatToOpenGL(image->GetColorFormat()), PixelDataTypeToOpenGL(type),
-			TRAP::Image::FlipY(image)->GetPixelData()));
+			TRAP::Image::FlipY(image)->GetPixelData());
 		break;
 
 	case PixelDataType::Unsigned_Short:
-		OpenGLCall(glTextureSubImage2D(m_handle, 0, 0, 0, image->GetWidth(), image->GetHeight(),
+		glTextureSubImage2D(m_handle, 0, 0, 0, image->GetWidth(), image->GetHeight(),
 			TRAPImageFormatToOpenGL(image->GetColorFormat()), PixelDataTypeToOpenGL(type),
-			TRAP::Image::FlipY(image)->GetPixelData()));
+			TRAP::Image::FlipY(image)->GetPixelData());
 		break;
 
 	case PixelDataType::Unsigned_Byte:
-		OpenGLCall(glTextureSubImage2D(m_handle, 0, 0, 0, image->GetWidth(), image->GetHeight(),
+		glTextureSubImage2D(m_handle, 0, 0, 0, image->GetWidth(), image->GetHeight(),
 			TRAPImageFormatToOpenGL(image->GetColorFormat()), PixelDataTypeToOpenGL(type),
-			TRAP::Image::FlipY(image)->GetPixelData()));
+			TRAP::Image::FlipY(image)->GetPixelData());
 		break;
 	}	
 }
@@ -365,9 +351,7 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadFallback()
 bool TRAP::Graphics::API::OpenGLTexture2D::CheckLimits(const uint32_t width, const uint32_t height)
 {
 	if (s_maxTextureSize == 0) //Only load maximum available texture size once
-	{
-		OpenGLCall(glGetIntegerv(GL_MAX_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxTextureSize)));
-	}
+		glGetIntegerv(GL_MAX_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxTextureSize));
 
 	if (width > s_maxTextureSize || height > s_maxTextureSize)
 	{

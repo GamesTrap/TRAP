@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: Member List</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -89,14 +127,17 @@ $(function() {
   <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a0d00def9ccec7199fb69245ef2ee07a2">GetLocalPort</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html">TRAP::Network::TCPListenerIPv6</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#aab97946284a9e629ed8c476635fba2e5">IsBlocking</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#ab970df2d38bba68393ecafe24cd67dd4">Listen</a>(uint16_t port, const IPv6Address &amp;address=IPv6Address::Any)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html">TRAP::Network::TCPListenerIPv6</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>operator=</b>(const Socket &amp;)=delete (defined in <a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a74bc5397a1e40a6db8bf7763cb7ef0b1">SetBlocking</a>(bool blocking)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>Socket</b>(const Socket &amp;)=delete (defined in <a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#aad897f0fd82d697e8ce98d2c7ec8d8c1">Socket</a>(Type type)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"><span class="mlabel">explicit</span><span class="mlabel">protected</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a5b9431e417a9ed2b13b121462e9f0f77">Status</a> enum name</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a1064a7ce437ec6407a3d40f1f4cda4c4">TCPListenerIPv6</a>()</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html">TRAP::Network::TCPListenerIPv6</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a0bf42978715a480dfdec1f8256aa378f">Type</a> enum name</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a0ef440a21a8b7d07705a14b20a54ffff">~Socket</a>()</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a40307326e001f7492184ca13f64773d7">operator=</a>(Socket &amp;&amp;)=default</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a7fcf22142fee2f1c88d80ddc445eb4f6">operator=</a>(const Socket &amp;)=delete</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a74bc5397a1e40a6db8bf7763cb7ef0b1">SetBlocking</a>(bool blocking)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#aece3d111294650cdea6fb3fcb6b5ce3e">Socket</a>()=default</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a22b381f8a00921be09fff5fd66145399">Socket</a>(Socket &amp;&amp;)=default</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#af8dffa45f208e99cbb6169bc7144e830">Socket</a>(const Socket &amp;)=delete</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#aad897f0fd82d697e8ce98d2c7ec8d8c1">Socket</a>(Type type)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"><span class="mlabel">explicit</span><span class="mlabel">protected</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a5b9431e417a9ed2b13b121462e9f0f77">Status</a> enum name</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a1064a7ce437ec6407a3d40f1f4cda4c4">TCPListenerIPv6</a>()</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html">TRAP::Network::TCPListenerIPv6</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a0bf42978715a480dfdec1f8256aa378f">Type</a> enum name</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#a0ef440a21a8b7d07705a14b20a54ffff">~Socket</a>()</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
 </table></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->

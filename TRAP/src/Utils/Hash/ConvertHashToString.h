@@ -5,6 +5,11 @@
 
 namespace TRAP::Utils::Hash
 {
+	/// <summary>
+	/// Convert a hash(fixed-size array of bytes) into a string representation.
+	/// </summary>
+	/// <param name="hash">N-sized array of bytes.</param>
+	/// <returns>String representation of given hash.</returns>
 	template<std::size_t N>
 	std::string ConvertHashToString(const std::array<uint8_t, N>& hash)
 	{

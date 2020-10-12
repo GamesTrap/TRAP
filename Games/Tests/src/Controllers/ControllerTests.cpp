@@ -92,16 +92,16 @@ void ControllerTests::OnImGuiRender()
 			ImGui::SliderFloat("Left Trigger", &leftTrigger, -1.0f, 1.0f);
 			ImGui::SliderFloat("Right Trigger", &rightTrigger, -1.0f, 1.0f);
 
-			bool a = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::A);
-			bool b = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::B);
-			bool x = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::X);
-			bool y = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::Y);
-			bool lb = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::Left_Bumper);
-			bool rb = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::Right_Bumper);
-			bool back = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::Back);
-			bool start = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::Start);
-			bool lt = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::Left_Thumb);
-			bool rt = TRAP::Input::GetControllerButton(controller, TRAP::Input::ControllerButton::Right_Thumb);
+			bool a = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::A);
+			bool b = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::B);
+			bool x = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::X);
+			bool y = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Y);
+			bool lb = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Left_Bumper);
+			bool rb = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Right_Bumper);
+			bool back = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Back);
+			bool start = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Start);
+			bool lt = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Left_Thumb);
+			bool rt = TRAP::Input::IsControllerButtonPressed(controller, TRAP::Input::ControllerButton::Right_Thumb);
 
 			ImGui::Checkbox("A", &a);
 			ImGui::SameLine(ImGui::GetContentRegionAvailWidth() / 2.0f);

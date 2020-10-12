@@ -38,11 +38,29 @@ namespace TRAP::Network
 	class Socket
 	{
 	public:
+		/// <summary>
+		/// Default Constructor.
+		/// </summary>
+		Socket() = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		Socket(Socket&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		Socket& operator=(Socket&&) = default;
+		/// <summary>
+		/// Deleted Copy Constructor.
+		/// </summary>
 		Socket(const Socket&) = delete;
+		/// <summary>
+		/// Deleted Copy Assignment Operator.
+		/// </summary>
 		Socket& operator=(const Socket&) = delete;
 
 		/// <summary>
-		/// Status codes that may be returned by socket functions
+		/// Status codes that may be returned by socket functions.
 		/// </summary>
 		enum class Status
 		{
@@ -54,7 +72,7 @@ namespace TRAP::Network
 		};
 
 		/// <summary>
-		/// Some special values used by sockets
+		/// Some special values used by sockets.
 		/// </summary>
 		enum
 		{
@@ -63,7 +81,7 @@ namespace TRAP::Network
 
 	public:
 		/// <summary>
-		/// Destructor
+		/// Destructor.
 		/// </summary>
 		virtual ~Socket();
 
@@ -80,18 +98,18 @@ namespace TRAP::Network
 		/// available or not.<br>
 		/// By default, all sockets are blocking.
 		/// </summary>
-		/// <param name="blocking">True to set the socket as blocking, false for non-blocking</param>
+		/// <param name="blocking">True to set the socket as blocking, false for non-blocking.</param>
 		void SetBlocking(bool blocking);
 
 		/// <summary>
-		/// Tell whether the socket is in blocking or non-blocking mode
+		/// Tell whether the socket is in blocking or non-blocking mode.
 		/// </summary>
-		/// <returns>True if the socket is blocking, false otherwise</returns>
+		/// <returns>True if the socket is blocking, false otherwise.</returns>
 		bool IsBlocking() const;
 
 	protected:
 		/// <summary>
-		/// Types of protocols that the socket can use
+		/// Types of protocols that the socket can use.
 		/// </summary>
 		enum class Type
 		{
@@ -104,7 +122,7 @@ namespace TRAP::Network
 		/// <br>
 		/// This constructor can only be accessed by derived classes.
 		/// </summary>
-		/// <param name="type">Type of the socket (TCP or UDP)</param>
+		/// <param name="type">Type of the socket (TCP or UDP).</param>
 		explicit Socket(Type type);
 
 		/// <summary>
@@ -114,7 +132,7 @@ namespace TRAP::Network
 		/// was not created yet (or already destroyed).<br>
 		/// This function can only be accessed by derived classes.
 		/// </summary>
-		/// <returns>The internal (OS-specific) handle of the socket</returns>
+		/// <returns>The internal (OS-specific) handle of the socket.</returns>
 		SocketHandle GetHandle() const;
 
 		/// <summary>
@@ -137,7 +155,7 @@ namespace TRAP::Network
 		/// <br>
 		/// This function can only be accessed by derived classes.
 		/// </summary>
-		/// <param name="handle">OS-specific handle of the socket to wrap</param>
+		/// <param name="handle">OS-specific handle of the socket to wrap.</param>
 		void Create(SocketHandle handle);
 
 		/// <summary>

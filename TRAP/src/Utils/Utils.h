@@ -3,19 +3,18 @@
 
 namespace TRAP::Utils
 {
-	//Determines if a function can be resolved @ compile time or not
-	constexpr bool IsConstantEvaluated()
-	{
-	#if __cpp_lib_constant_evaluated >= 201811
-		return std::is_constant_evaluated();
-	#endif
-
-		//Compiler doesnt support std::is_constant_evaluated()
-		return false;
-	}
-
-	std::string UUIDToString(const std::vector<uint8_t>& uuid);
-	std::vector<uint8_t> UUIDFromString(std::string_view uuid);
+	/// <summary>
+	/// Convert a 16 byte long UUID to a string.
+	/// </summary>
+	/// <param name="uuid">UUID.</param>
+	/// <returns>String representation of UUID.</returns>
+	std::string UUIDToString(const std::array<uint8_t, 16>& uuid);
+	/// <summary>
+	/// Convert a string to a 16 byte long UUID.
+	/// </summary>
+	/// <param name="uuid">String representation of a 16 byte long UUID.</param>
+	/// <returns>16 byte long UUID.</returns>
+	std::array<uint8_t, 16> UUIDFromString(std::string_view uuid);
 }
 
 #endif /*_TRAP_UTILS_H_*/

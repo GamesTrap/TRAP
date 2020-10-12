@@ -1,20 +1,55 @@
 #ifndef _TRAP_TIMER_H_
 #define _TRAP_TIMER_H_
 
-#include <chrono>
-
 namespace TRAP::Utils
 {
+	/// <summary>
+	/// Timer class.
+	/// </summary>
 	class Timer
 	{
 	public:
-		//Creates and starts timer
+		/// <summary>
+		/// Default Constructor.<br>
+		/// Creates and starts a new Timer.
+		/// </summary>
+		/// <returns></returns>
 		Timer();
-		//Resets and restarts timer
+
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~Timer() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
+		Timer(const Timer&) = default;
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		Timer(Timer&&) = default;
+		/// <summary>
+		/// Default Copy Assignment Operator.
+		/// </summary>
+		Timer& operator=(const Timer&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		Timer& operator=(Timer&&) = default;
+		
+		/// <summary>
+		/// Resets and restarts the Timer.
+		/// </summary>
 		void Reset();
-		//Returns time in seconds
+		/// <summary>
+		/// Retrieve elapsed time in seconds.
+		/// </summary>
+		/// <returns>Elapsed time in seconds.</returns>
 		float Elapsed() const;
-		//Returns time in milliseconds
+		/// <summary>
+		/// Retrieve elapsed time in milliseconds.
+		/// </summary>
+		/// <returns>Elapsed time in milliseconds.</returns>
 		float ElapsedMilliseconds() const;
 
 	private:

@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::Window Class Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -83,7 +121,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Interface representing a desktop system based <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  
+<p>Interface representing a desktop system based <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">Window</a>.  
  <a href="class_t_r_a_p_1_1_window.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_window_8h_source.html">Window.h</a>&gt;</code></p>
@@ -94,13 +132,13 @@ Public Types</h2></td></tr>
 <b>Fullscreen</b>, 
 <b>Borderless</b>
  }</td></tr>
-<tr class="memdesc:ac8a81beca739a13e6db84df2fd967b3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specifies the display mode of a <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b">More...</a><br /></td></tr>
+<tr class="memdesc:ac8a81beca739a13e6db84df2fd967b3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specifies the display mode of a <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b">More...</a><br /></td></tr>
 <tr class="separator:ac8a81beca739a13e6db84df2fd967b3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ac27cab0cf24b0ecab2b0ba47ab2b5e"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e">CursorMode</a> = INTERNAL::WindowingAPI::CursorMode</td></tr>
-<tr class="memdesc:a4ac27cab0cf24b0ecab2b0ba47ab2b5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Same as: enum class CursorMode { Normal, Hidden, Disabled, Captured }; Specifies the cursor mode of a <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e">More...</a><br /></td></tr>
+<tr class="memdesc:a4ac27cab0cf24b0ecab2b0ba47ab2b5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Same as: enum class CursorMode { Normal, Hidden, Disabled, Captured }; Specifies the cursor mode of a <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e">More...</a><br /></td></tr>
 <tr class="separator:a4ac27cab0cf24b0ecab2b0ba47ab2b5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58b36740dcdc5de9b711b0bb4afd1a1f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a58b36740dcdc5de9b711b0bb4afd1a1f">CursorType</a> = INTERNAL::WindowingAPI::CursorType</td></tr>
-<tr class="memdesc:a58b36740dcdc5de9b711b0bb4afd1a1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Same as: enum class CursorType { Arrow = 0, <a class="el" href="class_t_r_a_p_1_1_input.html">Input</a> = 1, Crosshair = 2, PointingHand = 3, ResizeHorizontal = 4, ResizeVertical = 5, ResizeDiagonalTopLeftBottomRight = 6, ResizeDiagonalTopRightBottomLeft = 7, ResizeAll = 8, NotAllowed = 9 }; Specifies the cursor type (visual appearance) of a <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#a58b36740dcdc5de9b711b0bb4afd1a1f">More...</a><br /></td></tr>
+<tr class="memdesc:a58b36740dcdc5de9b711b0bb4afd1a1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Same as: enum class CursorType { Arrow = 0, <a class="el" href="class_t_r_a_p_1_1_input.html">Input</a> = 1, Crosshair = 2, PointingHand = 3, ResizeHorizontal = 4, ResizeVertical = 5, ResizeDiagonalTopLeftBottomRight = 6, ResizeDiagonalTopRightBottomLeft = 7, ResizeAll = 8, NotAllowed = 9 }; Specifies the cursor type (visual appearance) of a <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#a58b36740dcdc5de9b711b0bb4afd1a1f">More...</a><br /></td></tr>
 <tr class="separator:a58b36740dcdc5de9b711b0bb4afd1a1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0930d249522cb18a1cb1d0b8c5632e2c"><td class="memItemLeft" align="right" valign="top"><a id="a0930d249522cb18a1cb1d0b8c5632e2c"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>EventCallbackFn</b> = std::function&lt; void(<a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html">Events::Event</a> &amp;)&gt;</td></tr>
@@ -109,164 +147,167 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>EventCallbackFn</b> 
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aea1f8414a5d5b813a82a23fb904e6ea0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#aea1f8414a5d5b813a82a23fb904e6ea0">Window</a> (const <a class="el" href="struct_t_r_a_p_1_1_window_props.html">WindowProps</a> &amp;props)</td></tr>
-<tr class="memdesc:aea1f8414a5d5b813a82a23fb904e6ea0"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> constructor  <a href="class_t_r_a_p_1_1_window.html#aea1f8414a5d5b813a82a23fb904e6ea0">More...</a><br /></td></tr>
+<tr class="memdesc:aea1f8414a5d5b813a82a23fb904e6ea0"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> Constructor.  <a href="class_t_r_a_p_1_1_window.html#aea1f8414a5d5b813a82a23fb904e6ea0">More...</a><br /></td></tr>
 <tr class="separator:aea1f8414a5d5b813a82a23fb904e6ea0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32f2302e2a0ea9a290bcbca00cc7abf8"><td class="memItemLeft" align="right" valign="top"><a id="a32f2302e2a0ea9a290bcbca00cc7abf8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Window</b> (const <a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;)=delete</td></tr>
+<tr class="memitem:a32f2302e2a0ea9a290bcbca00cc7abf8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a32f2302e2a0ea9a290bcbca00cc7abf8">Window</a> (const <a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;)=delete</td></tr>
+<tr class="memdesc:a32f2302e2a0ea9a290bcbca00cc7abf8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Copy Constructor.  <a href="class_t_r_a_p_1_1_window.html#a32f2302e2a0ea9a290bcbca00cc7abf8">More...</a><br /></td></tr>
 <tr class="separator:a32f2302e2a0ea9a290bcbca00cc7abf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a651172757e72f53e5446630eaed9f0e9"><td class="memItemLeft" align="right" valign="top"><a id="a651172757e72f53e5446630eaed9f0e9"></a>
-<a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;)=delete</td></tr>
+<tr class="memitem:a651172757e72f53e5446630eaed9f0e9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a651172757e72f53e5446630eaed9f0e9">operator=</a> (const <a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;)=delete</td></tr>
+<tr class="memdesc:a651172757e72f53e5446630eaed9f0e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Copy Assignment Operator.  <a href="class_t_r_a_p_1_1_window.html#a651172757e72f53e5446630eaed9f0e9">More...</a><br /></td></tr>
 <tr class="separator:a651172757e72f53e5446630eaed9f0e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8193dac0aa33dccddc1543b8c4e05edd"><td class="memItemLeft" align="right" valign="top"><a id="a8193dac0aa33dccddc1543b8c4e05edd"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Window</b> (<a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;&amp;)=default</td></tr>
+<tr class="memitem:a8193dac0aa33dccddc1543b8c4e05edd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a8193dac0aa33dccddc1543b8c4e05edd">Window</a> (<a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;&amp;)=default</td></tr>
+<tr class="memdesc:a8193dac0aa33dccddc1543b8c4e05edd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Move Constructor.  <a href="class_t_r_a_p_1_1_window.html#a8193dac0aa33dccddc1543b8c4e05edd">More...</a><br /></td></tr>
 <tr class="separator:a8193dac0aa33dccddc1543b8c4e05edd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d05b7782a9d676783797670c73c546a"><td class="memItemLeft" align="right" valign="top"><a id="a2d05b7782a9d676783797670c73c546a"></a>
-<a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;&amp;)=default</td></tr>
+<tr class="memitem:a2d05b7782a9d676783797670c73c546a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a2d05b7782a9d676783797670c73c546a">operator=</a> (<a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;&amp;)=default</td></tr>
+<tr class="memdesc:a2d05b7782a9d676783797670c73c546a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Move Assignment Operator.  <a href="class_t_r_a_p_1_1_window.html#a2d05b7782a9d676783797670c73c546a">More...</a><br /></td></tr>
 <tr class="separator:a2d05b7782a9d676783797670c73c546a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c1a96844e67055e8cc342b085298d27"><td class="memItemLeft" align="right" valign="top">std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a1c1a96844e67055e8cc342b085298d27">GetTitle</a> () const</td></tr>
-<tr class="memdesc:a1c1a96844e67055e8cc342b085298d27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current title of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#a1c1a96844e67055e8cc342b085298d27">More...</a><br /></td></tr>
-<tr class="separator:a1c1a96844e67055e8cc342b085298d27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10caeba71949f2ac68ba34c7f335a185"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a10caeba71949f2ac68ba34c7f335a185">~Window</a> ()</td></tr>
+<tr class="memdesc:a10caeba71949f2ac68ba34c7f335a185"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="class_t_r_a_p_1_1_window.html#a10caeba71949f2ac68ba34c7f335a185">More...</a><br /></td></tr>
+<tr class="separator:a10caeba71949f2ac68ba34c7f335a185"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4530e258cf9ececbd2a76dbd45872294"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a4530e258cf9ececbd2a76dbd45872294">GetTitle</a> () const</td></tr>
+<tr class="memdesc:a4530e258cf9ececbd2a76dbd45872294"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current title of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#a4530e258cf9ececbd2a76dbd45872294">More...</a><br /></td></tr>
+<tr class="separator:a4530e258cf9ececbd2a76dbd45872294"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b68763bbcf071488fb09ac522ebed28"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a9b68763bbcf071488fb09ac522ebed28">GetWidth</a> () const</td></tr>
-<tr class="memdesc:a9b68763bbcf071488fb09ac522ebed28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current width of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#a9b68763bbcf071488fb09ac522ebed28">More...</a><br /></td></tr>
+<tr class="memdesc:a9b68763bbcf071488fb09ac522ebed28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current width of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#a9b68763bbcf071488fb09ac522ebed28">More...</a><br /></td></tr>
 <tr class="separator:a9b68763bbcf071488fb09ac522ebed28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e56c2a1b4dc0f125c1226ff9479e2f8"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a7e56c2a1b4dc0f125c1226ff9479e2f8">GetHeight</a> () const</td></tr>
-<tr class="memdesc:a7e56c2a1b4dc0f125c1226ff9479e2f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current height of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#a7e56c2a1b4dc0f125c1226ff9479e2f8">More...</a><br /></td></tr>
+<tr class="memdesc:a7e56c2a1b4dc0f125c1226ff9479e2f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current height of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#a7e56c2a1b4dc0f125c1226ff9479e2f8">More...</a><br /></td></tr>
 <tr class="separator:a7e56c2a1b4dc0f125c1226ff9479e2f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07e26bb88be2e74895ef17f3d4a7a1da"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_t_r_a_p_1_1_math_1_1_vec.html">Math::Vec2ui</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a07e26bb88be2e74895ef17f3d4a7a1da">GetSize</a> () const</td></tr>
-<tr class="memdesc:a07e26bb88be2e74895ef17f3d4a7a1da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current width and height of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#a07e26bb88be2e74895ef17f3d4a7a1da">More...</a><br /></td></tr>
+<tr class="memdesc:a07e26bb88be2e74895ef17f3d4a7a1da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current width and height of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#a07e26bb88be2e74895ef17f3d4a7a1da">More...</a><br /></td></tr>
 <tr class="separator:a07e26bb88be2e74895ef17f3d4a7a1da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a50da09d2b2a21650dfc06da4853c92"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a4a50da09d2b2a21650dfc06da4853c92">GetRefreshRate</a> () const</td></tr>
-<tr class="memdesc:a4a50da09d2b2a21650dfc06da4853c92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current refresh rate of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#a4a50da09d2b2a21650dfc06da4853c92">More...</a><br /></td></tr>
+<tr class="memdesc:a4a50da09d2b2a21650dfc06da4853c92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current refresh rate of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#a4a50da09d2b2a21650dfc06da4853c92">More...</a><br /></td></tr>
 <tr class="separator:a4a50da09d2b2a21650dfc06da4853c92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8a24e4e09ddeee9022014e4b4531315"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b">DisplayMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#af8a24e4e09ddeee9022014e4b4531315">GetDisplayMode</a> () const</td></tr>
-<tr class="memdesc:af8a24e4e09ddeee9022014e4b4531315"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current DisplayMode of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#af8a24e4e09ddeee9022014e4b4531315">More...</a><br /></td></tr>
+<tr class="memdesc:af8a24e4e09ddeee9022014e4b4531315"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current <a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b" title="Specifies the display mode of a TRAP::Window.">TRAP::Window::DisplayMode</a> of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#af8a24e4e09ddeee9022014e4b4531315">More...</a><br /></td></tr>
 <tr class="separator:af8a24e4e09ddeee9022014e4b4531315"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92ed57d2f247ca4b897fa3cf73b3c0be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_monitor.html">Monitor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a92ed57d2f247ca4b897fa3cf73b3c0be">GetMonitor</a> () const</td></tr>
-<tr class="memdesc:a92ed57d2f247ca4b897fa3cf73b3c0be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current <a class="el" href="class_t_r_a_p_1_1_monitor.html">Monitor</a> used by the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> (only in DisplayMode Fullscreen and Borderless)  <a href="class_t_r_a_p_1_1_window.html#a92ed57d2f247ca4b897fa3cf73b3c0be">More...</a><br /></td></tr>
+<tr class="memdesc:a92ed57d2f247ca4b897fa3cf73b3c0be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current <a class="el" href="class_t_r_a_p_1_1_monitor.html" title="Interface representing a physical Monitor.">TRAP::Monitor</a> used by the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> (only in <a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b" title="Specifies the display mode of a TRAP::Window.">TRAP::Window::DisplayMode</a> Fullscreen and Borderless).  <a href="class_t_r_a_p_1_1_window.html#a92ed57d2f247ca4b897fa3cf73b3c0be">More...</a><br /></td></tr>
 <tr class="separator:a92ed57d2f247ca4b897fa3cf73b3c0be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac77cd0b59a53b045f8683e4affef6689"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#ac77cd0b59a53b045f8683e4affef6689">GetVSyncInterval</a> () const</td></tr>
-<tr class="memdesc:ac77cd0b59a53b045f8683e4affef6689"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current VSync interval used by the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#ac77cd0b59a53b045f8683e4affef6689">More...</a><br /></td></tr>
+<tr class="memdesc:ac77cd0b59a53b045f8683e4affef6689"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current VSync interval used by the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#ac77cd0b59a53b045f8683e4affef6689">More...</a><br /></td></tr>
 <tr class="separator:ac77cd0b59a53b045f8683e4affef6689"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc8cbb69f1def98c325275fce5a28cf2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e">CursorMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#acc8cbb69f1def98c325275fce5a28cf2">GetCursorMode</a> () const</td></tr>
-<tr class="memdesc:acc8cbb69f1def98c325275fce5a28cf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current CursorMode of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#acc8cbb69f1def98c325275fce5a28cf2">More...</a><br /></td></tr>
+<tr class="memdesc:acc8cbb69f1def98c325275fce5a28cf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current <a class="el" href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e" title="Same as: enum class CursorMode { Normal, Hidden, Disabled, Captured }; Specifies the cursor mode of a...">TRAP::Window::CursorMode</a> of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#acc8cbb69f1def98c325275fce5a28cf2">More...</a><br /></td></tr>
 <tr class="separator:acc8cbb69f1def98c325275fce5a28cf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7c2cc921e827f72079344f90a3e7c71"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#aa7c2cc921e827f72079344f90a3e7c71">GetRawMouseInput</a> () const</td></tr>
-<tr class="memdesc:aa7c2cc921e827f72079344f90a3e7c71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current raw mouse input (false = off, true = on) usage of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#aa7c2cc921e827f72079344f90a3e7c71">More...</a><br /></td></tr>
+<tr class="memdesc:aa7c2cc921e827f72079344f90a3e7c71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current raw mouse input (false = off, true = on) usage of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#aa7c2cc921e827f72079344f90a3e7c71">More...</a><br /></td></tr>
 <tr class="separator:aa7c2cc921e827f72079344f90a3e7c71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaaa106157d8e07227904c58d4dfe372f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_t_r_a_p_1_1_math_1_1_vec.html">Math::Vec2</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#aaaa106157d8e07227904c58d4dfe372f">GetContentScale</a> () const</td></tr>
-<tr class="memdesc:aaaa106157d8e07227904c58d4dfe372f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the ratio between the current DPI and the platforms DPI  <a href="class_t_r_a_p_1_1_window.html#aaaa106157d8e07227904c58d4dfe372f">More...</a><br /></td></tr>
+<tr class="memdesc:aaaa106157d8e07227904c58d4dfe372f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the ratio between the current DPI and the platforms DPI.  <a href="class_t_r_a_p_1_1_window.html#aaaa106157d8e07227904c58d4dfe372f">More...</a><br /></td></tr>
 <tr class="separator:aaaa106157d8e07227904c58d4dfe372f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7676ac80499be1abf444f06a8cc3c8a"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#ab7676ac80499be1abf444f06a8cc3c8a">GetOpacity</a> () const</td></tr>
-<tr class="memdesc:ab7676ac80499be1abf444f06a8cc3c8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current opacity of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#ab7676ac80499be1abf444f06a8cc3c8a">More...</a><br /></td></tr>
+<tr class="memdesc:ab7676ac80499be1abf444f06a8cc3c8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current opacity of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#ab7676ac80499be1abf444f06a8cc3c8a">More...</a><br /></td></tr>
 <tr class="separator:ab7676ac80499be1abf444f06a8cc3c8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ec3e102f89b0b6347184512d21e12fc"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a3ec3e102f89b0b6347184512d21e12fc">GetInternalWindow</a> () const</td></tr>
-<tr class="memdesc:a3ec3e102f89b0b6347184512d21e12fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the internal handle of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#a3ec3e102f89b0b6347184512d21e12fc">More...</a><br /></td></tr>
+<tr class="memdesc:a3ec3e102f89b0b6347184512d21e12fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the internal handle of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#a3ec3e102f89b0b6347184512d21e12fc">More...</a><br /></td></tr>
 <tr class="separator:a3ec3e102f89b0b6347184512d21e12fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6558c07f0e759a301a026acef6a8c8fd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a6558c07f0e759a301a026acef6a8c8fd">SetTitle</a> (const std::string &amp;title)</td></tr>
-<tr class="memdesc:a6558c07f0e759a301a026acef6a8c8fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a new title for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#a6558c07f0e759a301a026acef6a8c8fd">More...</a><br /></td></tr>
+<tr class="memdesc:a6558c07f0e759a301a026acef6a8c8fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a new title for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#a6558c07f0e759a301a026acef6a8c8fd">More...</a><br /></td></tr>
 <tr class="separator:a6558c07f0e759a301a026acef6a8c8fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af694cbc2af0298888fc6bcd05eed56ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#af694cbc2af0298888fc6bcd05eed56ba">SetDisplayMode</a> (const <a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b">DisplayMode</a> &amp;mode, uint32_t width=0, uint32_t height=0, uint32_t refreshRate=0)</td></tr>
-<tr class="memdesc:af694cbc2af0298888fc6bcd05eed56ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a new DisplayMode and or a new size/refresh rate for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#af694cbc2af0298888fc6bcd05eed56ba">More...</a><br /></td></tr>
+<tr class="memdesc:af694cbc2af0298888fc6bcd05eed56ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a new <a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b" title="Specifies the display mode of a TRAP::Window.">TRAP::Window::DisplayMode</a> and or a new size/refresh rate for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#af694cbc2af0298888fc6bcd05eed56ba">More...</a><br /></td></tr>
 <tr class="separator:af694cbc2af0298888fc6bcd05eed56ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3251d39967a79e61e332c3c21e1e6e52"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a3251d39967a79e61e332c3c21e1e6e52">SetMonitor</a> (<a class="el" href="class_t_r_a_p_1_1_monitor.html">Monitor</a> &amp;monitor)</td></tr>
-<tr class="memdesc:a3251d39967a79e61e332c3c21e1e6e52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a new <a class="el" href="class_t_r_a_p_1_1_monitor.html">Monitor</a> for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#a3251d39967a79e61e332c3c21e1e6e52">More...</a><br /></td></tr>
+<tr class="memdesc:a3251d39967a79e61e332c3c21e1e6e52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a new <a class="el" href="class_t_r_a_p_1_1_monitor.html" title="Interface representing a physical Monitor.">Monitor</a> for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#a3251d39967a79e61e332c3c21e1e6e52">More...</a><br /></td></tr>
 <tr class="separator:a3251d39967a79e61e332c3c21e1e6e52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af882eec1230dc80c8d9130d7b520c32b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#af882eec1230dc80c8d9130d7b520c32b">SetVSyncInterval</a> (uint32_t interval)</td></tr>
-<tr class="memdesc:af882eec1230dc80c8d9130d7b520c32b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the VSync interval (0 = No VSync)  <a href="class_t_r_a_p_1_1_window.html#af882eec1230dc80c8d9130d7b520c32b">More...</a><br /></td></tr>
+<tr class="memdesc:af882eec1230dc80c8d9130d7b520c32b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the VSync interval (0 = No VSync).  <a href="class_t_r_a_p_1_1_window.html#af882eec1230dc80c8d9130d7b520c32b">More...</a><br /></td></tr>
 <tr class="separator:af882eec1230dc80c8d9130d7b520c32b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62e0a9e296ad0b84fbe3a69b4dfdd531"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a62e0a9e296ad0b84fbe3a69b4dfdd531">SetCursorMode</a> (const <a class="el" href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e">CursorMode</a> &amp;mode)</td></tr>
-<tr class="memdesc:a62e0a9e296ad0b84fbe3a69b4dfdd531"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the CursorMode for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#a62e0a9e296ad0b84fbe3a69b4dfdd531">More...</a><br /></td></tr>
+<tr class="memdesc:a62e0a9e296ad0b84fbe3a69b4dfdd531"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the <a class="el" href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e" title="Same as: enum class CursorMode { Normal, Hidden, Disabled, Captured }; Specifies the cursor mode of a...">TRAP::Window::CursorMode</a> for the TRAP:<a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">Window</a>.  <a href="class_t_r_a_p_1_1_window.html#a62e0a9e296ad0b84fbe3a69b4dfdd531">More...</a><br /></td></tr>
 <tr class="separator:a62e0a9e296ad0b84fbe3a69b4dfdd531"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa93b626832ac68f6b887227acdc6cfef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#aa93b626832ac68f6b887227acdc6cfef">SetCursorType</a> (const <a class="el" href="class_t_r_a_p_1_1_window.html#a58b36740dcdc5de9b711b0bb4afd1a1f">CursorType</a> &amp;cursor) const</td></tr>
-<tr class="memdesc:aa93b626832ac68f6b887227acdc6cfef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the CursorType for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#aa93b626832ac68f6b887227acdc6cfef">More...</a><br /></td></tr>
+<tr class="memdesc:aa93b626832ac68f6b887227acdc6cfef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the <a class="el" href="class_t_r_a_p_1_1_window.html#a58b36740dcdc5de9b711b0bb4afd1a1f" title="Same as: enum class CursorType { Arrow = 0, Input = 1, Crosshair = 2, PointingHand = 3,...">TRAP::Window::CursorType</a> for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#aa93b626832ac68f6b887227acdc6cfef">More...</a><br /></td></tr>
 <tr class="separator:aa93b626832ac68f6b887227acdc6cfef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88e26eb6600ee22e99fdf4461aaae597"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a88e26eb6600ee22e99fdf4461aaae597">SetCursorIcon</a> (const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_image.html">Image</a> &gt; &amp;image, int32_t xHotspot=0, int32_t yHotspot=0) const</td></tr>
-<tr class="memdesc:a88e26eb6600ee22e99fdf4461aaae597"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the cursor to a custom <a class="el" href="class_t_r_a_p_1_1_image.html">Image</a> (<a class="el" href="class_t_r_a_p_1_1_image.html">Image</a> must be non HDR RGB/RGBA with 24/32 bits per pixel)  <a href="class_t_r_a_p_1_1_window.html#a88e26eb6600ee22e99fdf4461aaae597">More...</a><br /></td></tr>
+<tr class="memdesc:a88e26eb6600ee22e99fdf4461aaae597"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the cursor to a custom <a class="el" href="class_t_r_a_p_1_1_image.html" title="Abstract Image base class.">TRAP::Image</a> (<a class="el" href="class_t_r_a_p_1_1_image.html" title="Abstract Image base class.">Image</a> must be non HDR RGB/RGBA with 24/32 bits per pixel).  <a href="class_t_r_a_p_1_1_window.html#a88e26eb6600ee22e99fdf4461aaae597">More...</a><br /></td></tr>
 <tr class="separator:a88e26eb6600ee22e99fdf4461aaae597"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6fa966786dfe81fe6562f7e055335e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#aa6fa966786dfe81fe6562f7e055335e4">SetRawMouseInput</a> (bool enabled)</td></tr>
-<tr class="memdesc:aa6fa966786dfe81fe6562f7e055335e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set if raw mouse input should be used  <a href="class_t_r_a_p_1_1_window.html#aa6fa966786dfe81fe6562f7e055335e4">More...</a><br /></td></tr>
+<tr class="memdesc:aa6fa966786dfe81fe6562f7e055335e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set if raw mouse input should be used.  <a href="class_t_r_a_p_1_1_window.html#aa6fa966786dfe81fe6562f7e055335e4">More...</a><br /></td></tr>
 <tr class="separator:aa6fa966786dfe81fe6562f7e055335e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2221c4be2e229cd9fb8f37105002ac96"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a2221c4be2e229cd9fb8f37105002ac96">SetIcon</a> () const</td></tr>
-<tr class="memdesc:a2221c4be2e229cd9fb8f37105002ac96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> icon to the TRAP logo  <a href="class_t_r_a_p_1_1_window.html#a2221c4be2e229cd9fb8f37105002ac96">More...</a><br /></td></tr>
+<tr class="memdesc:a2221c4be2e229cd9fb8f37105002ac96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> icon to the TRAP logo.  <a href="class_t_r_a_p_1_1_window.html#a2221c4be2e229cd9fb8f37105002ac96">More...</a><br /></td></tr>
 <tr class="separator:a2221c4be2e229cd9fb8f37105002ac96"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8374c6feec002fa1bad84996674a3e86"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a8374c6feec002fa1bad84996674a3e86">SetIcon</a> (const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_image.html">Image</a> &gt; &amp;image) const</td></tr>
-<tr class="memdesc:a8374c6feec002fa1bad84996674a3e86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a custom logo as <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> icon (<a class="el" href="class_t_r_a_p_1_1_image.html">Image</a> must be non HDR RGBA 32 bits per pixel)(nullptr also resets to the TRAP logo)  <a href="class_t_r_a_p_1_1_window.html#a8374c6feec002fa1bad84996674a3e86">More...</a><br /></td></tr>
+<tr class="memdesc:a8374c6feec002fa1bad84996674a3e86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set a custom logo as <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> icon (<a class="el" href="class_t_r_a_p_1_1_image.html" title="Abstract Image base class.">Image</a> must be non HDR RGBA 32 bits per pixel)(nullptr also resets to the TRAP logo).  <a href="class_t_r_a_p_1_1_window.html#a8374c6feec002fa1bad84996674a3e86">More...</a><br /></td></tr>
 <tr class="separator:a8374c6feec002fa1bad84996674a3e86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac542967a06b5acaf5084c361039b47fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#ac542967a06b5acaf5084c361039b47fe">SetEventCallback</a> (const EventCallbackFn &amp;callback)</td></tr>
-<tr class="memdesc:ac542967a06b5acaf5084c361039b47fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the function where events should be reported to from the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#ac542967a06b5acaf5084c361039b47fe">More...</a><br /></td></tr>
+<tr class="memdesc:ac542967a06b5acaf5084c361039b47fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the function where events should be reported to from the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#ac542967a06b5acaf5084c361039b47fe">More...</a><br /></td></tr>
 <tr class="separator:ac542967a06b5acaf5084c361039b47fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28f1370ae185a365ee0665512fbe1cb3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a28f1370ae185a365ee0665512fbe1cb3">SetResizable</a> (bool enabled) const</td></tr>
-<tr class="memdesc:a28f1370ae185a365ee0665512fbe1cb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set whether resizing of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> should be allowed  <a href="class_t_r_a_p_1_1_window.html#a28f1370ae185a365ee0665512fbe1cb3">More...</a><br /></td></tr>
+<tr class="memdesc:a28f1370ae185a365ee0665512fbe1cb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set whether resizing of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> should be allowed.  <a href="class_t_r_a_p_1_1_window.html#a28f1370ae185a365ee0665512fbe1cb3">More...</a><br /></td></tr>
 <tr class="separator:a28f1370ae185a365ee0665512fbe1cb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f9237420469600df32997791ec7cc8a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a9f9237420469600df32997791ec7cc8a">SetMinimumSize</a> (uint32_t minWidth, uint32_t minHeight) const</td></tr>
-<tr class="memdesc:a9f9237420469600df32997791ec7cc8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Limit the minimum size of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#a9f9237420469600df32997791ec7cc8a">More...</a><br /></td></tr>
+<tr class="memdesc:a9f9237420469600df32997791ec7cc8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Limit the minimum size of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#a9f9237420469600df32997791ec7cc8a">More...</a><br /></td></tr>
 <tr class="separator:a9f9237420469600df32997791ec7cc8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8023e77a5a20daeef8515915abd5a88"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#ae8023e77a5a20daeef8515915abd5a88">SetMaximumSize</a> (uint32_t maxWidth, uint32_t maxHeight) const</td></tr>
-<tr class="memdesc:ae8023e77a5a20daeef8515915abd5a88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Limit the maximum size of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#ae8023e77a5a20daeef8515915abd5a88">More...</a><br /></td></tr>
+<tr class="memdesc:ae8023e77a5a20daeef8515915abd5a88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Limit the maximum size of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#ae8023e77a5a20daeef8515915abd5a88">More...</a><br /></td></tr>
 <tr class="separator:ae8023e77a5a20daeef8515915abd5a88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd6ede0bc20de12a6beab079c7802fc0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#afd6ede0bc20de12a6beab079c7802fc0">SetOpacity</a> (float opacity) const</td></tr>
-<tr class="memdesc:afd6ede0bc20de12a6beab079c7802fc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the opacity of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> (1.0f = Fully opaque, 0.0f = Fully transparent)  <a href="class_t_r_a_p_1_1_window.html#afd6ede0bc20de12a6beab079c7802fc0">More...</a><br /></td></tr>
+<tr class="memdesc:afd6ede0bc20de12a6beab079c7802fc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the opacity of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> (1.0f = Fully opaque, 0.0f = Fully transparent).  <a href="class_t_r_a_p_1_1_window.html#afd6ede0bc20de12a6beab079c7802fc0">More...</a><br /></td></tr>
 <tr class="separator:afd6ede0bc20de12a6beab079c7802fc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af7b5d7641fb13df9dde0ba3ce03f3a2a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#af7b5d7641fb13df9dde0ba3ce03f3a2a">SetDragAndDrop</a> (bool enabled) const</td></tr>
-<tr class="memdesc:af7b5d7641fb13df9dde0ba3ce03f3a2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or Disable Drag and Drop feature for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#af7b5d7641fb13df9dde0ba3ce03f3a2a">More...</a><br /></td></tr>
+<tr class="memdesc:af7b5d7641fb13df9dde0ba3ce03f3a2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable or Disable Drag and Drop feature for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#af7b5d7641fb13df9dde0ba3ce03f3a2a">More...</a><br /></td></tr>
 <tr class="separator:af7b5d7641fb13df9dde0ba3ce03f3a2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac322c2439a11891117b24e78a0fc36ea"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#ac322c2439a11891117b24e78a0fc36ea">IsMaximized</a> () const</td></tr>
-<tr class="memdesc:ac322c2439a11891117b24e78a0fc36ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> is maximized or not  <a href="class_t_r_a_p_1_1_window.html#ac322c2439a11891117b24e78a0fc36ea">More...</a><br /></td></tr>
+<tr class="memdesc:ac322c2439a11891117b24e78a0fc36ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> is maximized or not.  <a href="class_t_r_a_p_1_1_window.html#ac322c2439a11891117b24e78a0fc36ea">More...</a><br /></td></tr>
 <tr class="separator:ac322c2439a11891117b24e78a0fc36ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5eeb583ad0cb916ced46864b8d722089"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a5eeb583ad0cb916ced46864b8d722089">IsMinimized</a> () const</td></tr>
-<tr class="memdesc:a5eeb583ad0cb916ced46864b8d722089"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> is minimized or not  <a href="class_t_r_a_p_1_1_window.html#a5eeb583ad0cb916ced46864b8d722089">More...</a><br /></td></tr>
+<tr class="memdesc:a5eeb583ad0cb916ced46864b8d722089"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> is minimized or not.  <a href="class_t_r_a_p_1_1_window.html#a5eeb583ad0cb916ced46864b8d722089">More...</a><br /></td></tr>
 <tr class="separator:a5eeb583ad0cb916ced46864b8d722089"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a538b445f54729e08f5ecd9bf9af3ac9f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a538b445f54729e08f5ecd9bf9af3ac9f">IsResizable</a> () const</td></tr>
-<tr class="memdesc:a538b445f54729e08f5ecd9bf9af3ac9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> is resizable or not  <a href="class_t_r_a_p_1_1_window.html#a538b445f54729e08f5ecd9bf9af3ac9f">More...</a><br /></td></tr>
+<tr class="memdesc:a538b445f54729e08f5ecd9bf9af3ac9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> is resizable or not.  <a href="class_t_r_a_p_1_1_window.html#a538b445f54729e08f5ecd9bf9af3ac9f">More...</a><br /></td></tr>
 <tr class="separator:a538b445f54729e08f5ecd9bf9af3ac9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78c874e885c9b8271620faa00a003db3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a78c874e885c9b8271620faa00a003db3">IsVisible</a> () const</td></tr>
-<tr class="memdesc:a78c874e885c9b8271620faa00a003db3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> is visible or not  <a href="class_t_r_a_p_1_1_window.html#a78c874e885c9b8271620faa00a003db3">More...</a><br /></td></tr>
+<tr class="memdesc:a78c874e885c9b8271620faa00a003db3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> is visible or not.  <a href="class_t_r_a_p_1_1_window.html#a78c874e885c9b8271620faa00a003db3">More...</a><br /></td></tr>
 <tr class="separator:a78c874e885c9b8271620faa00a003db3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af7df0446104880f0915a7c0a4a8dc3e0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#af7df0446104880f0915a7c0a4a8dc3e0">IsFocused</a> () const</td></tr>
-<tr class="memdesc:af7df0446104880f0915a7c0a4a8dc3e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> is focused or not  <a href="class_t_r_a_p_1_1_window.html#af7df0446104880f0915a7c0a4a8dc3e0">More...</a><br /></td></tr>
+<tr class="memdesc:af7df0446104880f0915a7c0a4a8dc3e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> is focused or not.  <a href="class_t_r_a_p_1_1_window.html#af7df0446104880f0915a7c0a4a8dc3e0">More...</a><br /></td></tr>
 <tr class="separator:af7df0446104880f0915a7c0a4a8dc3e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afefd3233e0aaf9632403ebc369240f36"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#afefd3233e0aaf9632403ebc369240f36">IsDecorated</a> () const</td></tr>
-<tr class="memdesc:afefd3233e0aaf9632403ebc369240f36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> is decorated or not  <a href="class_t_r_a_p_1_1_window.html#afefd3233e0aaf9632403ebc369240f36">More...</a><br /></td></tr>
+<tr class="memdesc:afefd3233e0aaf9632403ebc369240f36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> is decorated or not.  <a href="class_t_r_a_p_1_1_window.html#afefd3233e0aaf9632403ebc369240f36">More...</a><br /></td></tr>
 <tr class="separator:afefd3233e0aaf9632403ebc369240f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c3c7c8877bbacb2ccfffce521434870"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a9c3c7c8877bbacb2ccfffce521434870">Maximize</a> () const</td></tr>
-<tr class="memdesc:a9c3c7c8877bbacb2ccfffce521434870"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximize the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#a9c3c7c8877bbacb2ccfffce521434870">More...</a><br /></td></tr>
+<tr class="memdesc:a9c3c7c8877bbacb2ccfffce521434870"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximize the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#a9c3c7c8877bbacb2ccfffce521434870">More...</a><br /></td></tr>
 <tr class="separator:a9c3c7c8877bbacb2ccfffce521434870"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0b5b770700bd8d6b5a6d248ba0cd2f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#aa0b5b770700bd8d6b5a6d248ba0cd2f7">Minimize</a> () const</td></tr>
-<tr class="memdesc:aa0b5b770700bd8d6b5a6d248ba0cd2f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimize the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#aa0b5b770700bd8d6b5a6d248ba0cd2f7">More...</a><br /></td></tr>
+<tr class="memdesc:aa0b5b770700bd8d6b5a6d248ba0cd2f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimize the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#aa0b5b770700bd8d6b5a6d248ba0cd2f7">More...</a><br /></td></tr>
 <tr class="separator:aa0b5b770700bd8d6b5a6d248ba0cd2f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac066ce312c9920cb51c231c81e937d3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#ac066ce312c9920cb51c231c81e937d3a">RequestAttention</a> () const</td></tr>
-<tr class="memdesc:ac066ce312c9920cb51c231c81e937d3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request attention/focus for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#ac066ce312c9920cb51c231c81e937d3a">More...</a><br /></td></tr>
+<tr class="memdesc:ac066ce312c9920cb51c231c81e937d3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request attention/focus for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#ac066ce312c9920cb51c231c81e937d3a">More...</a><br /></td></tr>
 <tr class="separator:ac066ce312c9920cb51c231c81e937d3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb74e8c3d1deebecaf646f4da75e0117"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#adb74e8c3d1deebecaf646f4da75e0117">Focus</a> () const</td></tr>
-<tr class="memdesc:adb74e8c3d1deebecaf646f4da75e0117"><td class="mdescLeft">&#160;</td><td class="mdescRight">Focus the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#adb74e8c3d1deebecaf646f4da75e0117">More...</a><br /></td></tr>
+<tr class="memdesc:adb74e8c3d1deebecaf646f4da75e0117"><td class="mdescLeft">&#160;</td><td class="mdescRight">Focus the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#adb74e8c3d1deebecaf646f4da75e0117">More...</a><br /></td></tr>
 <tr class="separator:adb74e8c3d1deebecaf646f4da75e0117"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87e2ba198f191ddd8ea2071142b4560f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a87e2ba198f191ddd8ea2071142b4560f">Hide</a> () const</td></tr>
-<tr class="memdesc:a87e2ba198f191ddd8ea2071142b4560f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hide the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#a87e2ba198f191ddd8ea2071142b4560f">More...</a><br /></td></tr>
+<tr class="memdesc:a87e2ba198f191ddd8ea2071142b4560f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hide the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#a87e2ba198f191ddd8ea2071142b4560f">More...</a><br /></td></tr>
 <tr class="separator:a87e2ba198f191ddd8ea2071142b4560f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69489852408b882f10e611c8f875fec9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a69489852408b882f10e611c8f875fec9">Show</a> () const</td></tr>
-<tr class="memdesc:a69489852408b882f10e611c8f875fec9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Show the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#a69489852408b882f10e611c8f875fec9">More...</a><br /></td></tr>
+<tr class="memdesc:a69489852408b882f10e611c8f875fec9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Show the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#a69489852408b882f10e611c8f875fec9">More...</a><br /></td></tr>
 <tr class="separator:a69489852408b882f10e611c8f875fec9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6c0f8407dcb67f6424fd474a619ed9c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#ab6c0f8407dcb67f6424fd474a619ed9c">Restore</a> () const</td></tr>
-<tr class="memdesc:ab6c0f8407dcb67f6424fd474a619ed9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restore/Show the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a>  <a href="class_t_r_a_p_1_1_window.html#ab6c0f8407dcb67f6424fd474a619ed9c">More...</a><br /></td></tr>
+<tr class="memdesc:ab6c0f8407dcb67f6424fd474a619ed9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restore/Show the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.  <a href="class_t_r_a_p_1_1_window.html#ab6c0f8407dcb67f6424fd474a619ed9c">More...</a><br /></td></tr>
 <tr class="separator:ab6c0f8407dcb67f6424fd474a619ed9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a19dddb280ec158117b8946d6983725d5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a19dddb280ec158117b8946d6983725d5">OnUpdate</a> ()</td></tr>
-<tr class="memdesc:a19dddb280ec158117b8946d6983725d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates all Windows (polls events from OS etc.)  <a href="class_t_r_a_p_1_1_window.html#a19dddb280ec158117b8946d6983725d5">More...</a><br /></td></tr>
+<tr class="memdesc:a19dddb280ec158117b8946d6983725d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates all TRAP::Windows (polls events from OS etc.).  <a href="class_t_r_a_p_1_1_window.html#a19dddb280ec158117b8946d6983725d5">More...</a><br /></td></tr>
 <tr class="separator:a19dddb280ec158117b8946d6983725d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a813959f960789f5f93fc72ca9f468f01"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a813959f960789f5f93fc72ca9f468f01">Use</a> (const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &gt; &amp;window)</td></tr>
-<tr class="memdesc:a813959f960789f5f93fc72ca9f468f01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the given <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> for all following rendering commands  <a href="class_t_r_a_p_1_1_window.html#a813959f960789f5f93fc72ca9f468f01">More...</a><br /></td></tr>
+<tr class="memdesc:a813959f960789f5f93fc72ca9f468f01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Select the given <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> for all following rendering commands.  <a href="class_t_r_a_p_1_1_window.html#a813959f960789f5f93fc72ca9f468f01">More...</a><br /></td></tr>
 <tr class="separator:a813959f960789f5f93fc72ca9f468f01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f11eb8a48f467887b326a530e460e42"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a3f11eb8a48f467887b326a530e460e42">Use</a> ()</td></tr>
-<tr class="memdesc:a3f11eb8a48f467887b326a530e460e42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Selects the "Main" <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> for all following rendering commands  <a href="class_t_r_a_p_1_1_window.html#a3f11eb8a48f467887b326a530e460e42">More...</a><br /></td></tr>
+<tr class="memdesc:a3f11eb8a48f467887b326a530e460e42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Selects the "Main" <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> for all following rendering commands.  <a href="class_t_r_a_p_1_1_window.html#a3f11eb8a48f467887b326a530e460e42">More...</a><br /></td></tr>
 <tr class="separator:a3f11eb8a48f467887b326a530e460e42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a502649e0f4a3bd8f2b900ce00fd2516b"><td class="memItemLeft" align="right" valign="top">static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_window.html#a502649e0f4a3bd8f2b900ce00fd2516b">GetActiveWindows</a> ()</td></tr>
-<tr class="memdesc:a502649e0f4a3bd8f2b900ce00fd2516b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the amount of all active Windows  <a href="class_t_r_a_p_1_1_window.html#a502649e0f4a3bd8f2b900ce00fd2516b">More...</a><br /></td></tr>
+<tr class="memdesc:a502649e0f4a3bd8f2b900ce00fd2516b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the amount of all active TRAP::Windows.  <a href="class_t_r_a_p_1_1_window.html#a502649e0f4a3bd8f2b900ce00fd2516b">More...</a><br /></td></tr>
 <tr class="separator:a502649e0f4a3bd8f2b900ce00fd2516b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Interface representing a desktop system based <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<div class="textblock"><p>Interface representing a desktop system based <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">Window</a>. </p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a4ac27cab0cf24b0ecab2b0ba47ab2b5e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4ac27cab0cf24b0ecab2b0ba47ab2b5e">&#9670;&nbsp;</a></span>CursorMode</h2>
@@ -280,7 +321,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Same as: enum class CursorMode { Normal, Hidden, Disabled, Captured }; Specifies the cursor mode of a <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Same as: enum class CursorMode { Normal, Hidden, Disabled, Captured }; Specifies the cursor mode of a <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 
 </div>
 </div>
@@ -296,7 +337,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Same as: enum class CursorType { Arrow = 0, <a class="el" href="class_t_r_a_p_1_1_input.html">Input</a> = 1, Crosshair = 2, PointingHand = 3, ResizeHorizontal = 4, ResizeVertical = 5, ResizeDiagonalTopLeftBottomRight = 6, ResizeDiagonalTopRightBottomLeft = 7, ResizeAll = 8, NotAllowed = 9 }; Specifies the cursor type (visual appearance) of a <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Same as: enum class CursorType { Arrow = 0, <a class="el" href="class_t_r_a_p_1_1_input.html">Input</a> = 1, Crosshair = 2, PointingHand = 3, ResizeHorizontal = 4, ResizeVertical = 5, ResizeDiagonalTopLeftBottomRight = 6, ResizeDiagonalTopRightBottomLeft = 7, ResizeAll = 8, NotAllowed = 9 }; Specifies the cursor type (visual appearance) of a <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 
 </div>
 </div>
@@ -321,13 +362,13 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Specifies the display mode of a <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Specifies the display mode of a <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aea1f8414a5d5b813a82a23fb904e6ea0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aea1f8414a5d5b813a82a23fb904e6ea0">&#9670;&nbsp;</a></span>Window()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aea1f8414a5d5b813a82a23fb904e6ea0">&#9670;&nbsp;</a></span>Window() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -350,14 +391,89 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> constructor </p>
+<p><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> Constructor. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">props</td><td>Properties to be applied to the new <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a></td></tr>
+    <tr><td class="paramname">props</td><td>Properties to be applied to the new <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>New <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> object</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>New <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> object.</dd></dl>
+
+</div>
+</div>
+<a id="a32f2302e2a0ea9a290bcbca00cc7abf8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32f2302e2a0ea9a290bcbca00cc7abf8">&#9670;&nbsp;</a></span>Window() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TRAP::Window::Window </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Copy Constructor. </p>
+
+</div>
+</div>
+<a id="a8193dac0aa33dccddc1543b8c4e05edd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8193dac0aa33dccddc1543b8c4e05edd">&#9670;&nbsp;</a></span>Window() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TRAP::Window::Window </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;&amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Default Move Constructor. </p>
+
+</div>
+</div>
+<a id="a10caeba71949f2ac68ba34c7f335a185"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10caeba71949f2ac68ba34c7f335a185">&#9670;&nbsp;</a></span>~Window()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TRAP::Window::~Window </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Destructor. </p>
 
 </div>
 </div>
@@ -377,7 +493,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Focus the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Focus the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 
 </div>
 </div>
@@ -404,8 +520,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Get the amount of all active Windows </p>
-<dl class="section return"><dt>Returns</dt><dd>Total amount of active Windows</dd></dl>
+<p>Get the amount of all active TRAP::Windows. </p>
+<dl class="section return"><dt>Returns</dt><dd>Total amount of active TRAP::Windows.</dd></dl>
 
 </div>
 </div>
@@ -424,8 +540,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the ratio between the current DPI and the platforms DPI </p>
-<dl class="section return"><dt>Returns</dt><dd>Vec2 containing the x and y scale</dd></dl>
+<p>Get the ratio between the current DPI and the platforms DPI. </p>
+<dl class="section return"><dt>Returns</dt><dd>TRAP::Math::Vec2 containing the x and y scale.</dd></dl>
 
 </div>
 </div>
@@ -444,8 +560,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the current CursorMode of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
-<dl class="section return"><dt>Returns</dt><dd>CursorMode of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a></dd></dl>
+<p>Get the current <a class="el" href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e" title="Same as: enum class CursorMode { Normal, Hidden, Disabled, Captured }; Specifies the cursor mode of a...">TRAP::Window::CursorMode</a> of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e" title="Same as: enum class CursorMode { Normal, Hidden, Disabled, Captured }; Specifies the cursor mode of a...">TRAP::Window::CursorMode</a> of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</dd></dl>
 
 </div>
 </div>
@@ -464,8 +580,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the current DisplayMode of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
-<dl class="section return"><dt>Returns</dt><dd>DisplayMode of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a></dd></dl>
+<p>Get the current <a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b" title="Specifies the display mode of a TRAP::Window.">TRAP::Window::DisplayMode</a> of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b" title="Specifies the display mode of a TRAP::Window.">TRAP::Window::DisplayMode</a> of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</dd></dl>
 
 </div>
 </div>
@@ -484,8 +600,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the current height of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
-<dl class="section return"><dt>Returns</dt><dd>Height of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a></dd></dl>
+<p>Get the current height of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd>Height of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</dd></dl>
 
 </div>
 </div>
@@ -504,8 +620,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the internal handle of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
-<dl class="section return"><dt>Returns</dt><dd>Pointer to the TRAP::INTERNAL::WindowingAPI::InternalWindow handle</dd></dl>
+<p>Get the internal handle of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the TRAP::INTERNAL::WindowingAPI::InternalWindow handle.</dd></dl>
 
 </div>
 </div>
@@ -524,8 +640,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the current <a class="el" href="class_t_r_a_p_1_1_monitor.html">Monitor</a> used by the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> (only in DisplayMode Fullscreen and Borderless) </p>
-<dl class="section return"><dt>Returns</dt><dd>Object of <a class="el" href="class_t_r_a_p_1_1_monitor.html">Monitor</a> class used by the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a></dd></dl>
+<p>Get the current <a class="el" href="class_t_r_a_p_1_1_monitor.html" title="Interface representing a physical Monitor.">TRAP::Monitor</a> used by the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> (only in <a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b" title="Specifies the display mode of a TRAP::Window.">TRAP::Window::DisplayMode</a> Fullscreen and Borderless). </p>
+<dl class="section return"><dt>Returns</dt><dd>Object of <a class="el" href="class_t_r_a_p_1_1_monitor.html" title="Interface representing a physical Monitor.">TRAP::Monitor</a> class used by the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</dd></dl>
 
 </div>
 </div>
@@ -544,8 +660,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the current opacity of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
-<dl class="section return"><dt>Returns</dt><dd>Opacity of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a></dd></dl>
+<p>Get the current opacity of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd>Opacity of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</dd></dl>
 
 </div>
 </div>
@@ -564,8 +680,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the current raw mouse input (false = off, true = on) usage of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
-<dl class="section return"><dt>Returns</dt><dd>Raw mouse input status of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a></dd></dl>
+<p>Get the current raw mouse input (false = off, true = on) usage of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd>Raw mouse input status of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</dd></dl>
 
 </div>
 </div>
@@ -584,8 +700,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the current refresh rate of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
-<dl class="section return"><dt>Returns</dt><dd>Refresh rate of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a></dd></dl>
+<p>Get the current refresh rate of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd>Refresh rate of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</dd></dl>
 
 </div>
 </div>
@@ -604,19 +720,19 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the current width and height of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
-<dl class="section return"><dt>Returns</dt><dd>Vec2ui containing the width and height of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a></dd></dl>
+<p>Get the current width and height of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd>TRAP::Math::Vec2ui containing the width and height of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</dd></dl>
 
 </div>
 </div>
-<a id="a1c1a96844e67055e8cc342b085298d27"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1c1a96844e67055e8cc342b085298d27">&#9670;&nbsp;</a></span>GetTitle()</h2>
+<a id="a4530e258cf9ececbd2a76dbd45872294"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4530e258cf9ececbd2a76dbd45872294">&#9670;&nbsp;</a></span>GetTitle()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string_view TRAP::Window::GetTitle </td>
+          <td class="memname">const std::string&amp; TRAP::Window::GetTitle </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -624,8 +740,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the current title of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
-<dl class="section return"><dt>Returns</dt><dd>Title of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a></dd></dl>
+<p>Get the current title of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd>Title of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</dd></dl>
 
 </div>
 </div>
@@ -644,8 +760,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the current VSync interval used by the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
-<dl class="section return"><dt>Returns</dt><dd>VSync interval of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a></dd></dl>
+<p>Get the current VSync interval used by the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd>VSync interval of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</dd></dl>
 
 </div>
 </div>
@@ -664,8 +780,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Get the current width of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
-<dl class="section return"><dt>Returns</dt><dd>Width of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a></dd></dl>
+<p>Get the current width of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd>Width of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</dd></dl>
 
 </div>
 </div>
@@ -684,7 +800,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Hide the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Hide the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 
 </div>
 </div>
@@ -703,8 +819,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> is decorated or not </p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> decoration status</dd></dl>
+<p>Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> is decorated or not. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> decoration status.</dd></dl>
 
 </div>
 </div>
@@ -723,8 +839,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> is focused or not </p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> focus status</dd></dl>
+<p>Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> is focused or not. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> focus status.</dd></dl>
 
 </div>
 </div>
@@ -743,8 +859,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> is maximized or not </p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> maximization status</dd></dl>
+<p>Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> is maximized or not. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> maximization status.</dd></dl>
 
 </div>
 </div>
@@ -763,8 +879,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> is minimized or not </p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> minimization status</dd></dl>
+<p>Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> is minimized or not. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> minimization status.</dd></dl>
 
 </div>
 </div>
@@ -783,8 +899,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> is resizable or not </p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> resizable status</dd></dl>
+<p>Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> is resizable or not. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> resizable status.</dd></dl>
 
 </div>
 </div>
@@ -803,8 +919,8 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> is visible or not </p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> visibility status</dd></dl>
+<p>Query whether the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> is visible or not. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> visibility status.</dd></dl>
 
 </div>
 </div>
@@ -823,7 +939,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Maximize the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Maximize the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 
 </div>
 </div>
@@ -842,7 +958,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Minimize the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Minimize the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 
 </div>
 </div>
@@ -869,7 +985,63 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Updates all Windows (polls events from OS etc.) </p>
+<p>Updates all TRAP::Windows (polls events from OS etc.). </p>
+
+</div>
+</div>
+<a id="a651172757e72f53e5446630eaed9f0e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a651172757e72f53e5446630eaed9f0e9">&#9670;&nbsp;</a></span>operator=() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_t_r_a_p_1_1_window.html">Window</a>&amp; TRAP::Window::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Copy Assignment Operator. </p>
+
+</div>
+</div>
+<a id="a2d05b7782a9d676783797670c73c546a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d05b7782a9d676783797670c73c546a">&#9670;&nbsp;</a></span>operator=() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_t_r_a_p_1_1_window.html">Window</a>&amp; TRAP::Window::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_t_r_a_p_1_1_window.html">Window</a> &amp;&amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Default Move Assignment Operator. </p>
 
 </div>
 </div>
@@ -888,7 +1060,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Request attention/focus for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Request attention/focus for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 
 </div>
 </div>
@@ -907,7 +1079,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Restore/Show the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Restore/Show the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 
 </div>
 </div>
@@ -943,12 +1115,12 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set the cursor to a custom <a class="el" href="class_t_r_a_p_1_1_image.html">Image</a> (<a class="el" href="class_t_r_a_p_1_1_image.html">Image</a> must be non HDR RGB/RGBA with 24/32 bits per pixel) </p>
+<p>Set the cursor to a custom <a class="el" href="class_t_r_a_p_1_1_image.html" title="Abstract Image base class.">TRAP::Image</a> (<a class="el" href="class_t_r_a_p_1_1_image.html" title="Abstract Image base class.">Image</a> must be non HDR RGB/RGBA with 24/32 bits per pixel). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">image</td><td><a class="el" href="class_t_r_a_p_1_1_image.html">Image</a> to be used as a cursor</td></tr>
-    <tr><td class="paramname">xHotspot</td><td>X hotspot of the <a class="el" href="class_t_r_a_p_1_1_image.html">Image</a></td></tr>
-    <tr><td class="paramname">yHotspot</td><td>Y hotspot of the <a class="el" href="class_t_r_a_p_1_1_image.html">Image</a></td></tr>
+    <tr><td class="paramname">image</td><td><a class="el" href="class_t_r_a_p_1_1_image.html" title="Abstract Image base class.">TRAP::Image</a> to be used as a cursor.</td></tr>
+    <tr><td class="paramname">xHotspot</td><td>X hotspot of the <a class="el" href="class_t_r_a_p_1_1_image.html" title="Abstract Image base class.">TRAP::Image</a>.</td></tr>
+    <tr><td class="paramname">yHotspot</td><td>Y hotspot of the <a class="el" href="class_t_r_a_p_1_1_image.html" title="Abstract Image base class.">TRAP::Image</a>.</td></tr>
   </table>
   </dd>
 </dl>
@@ -971,10 +1143,10 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set the CursorMode for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Set the <a class="el" href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e" title="Same as: enum class CursorMode { Normal, Hidden, Disabled, Captured }; Specifies the cursor mode of a...">TRAP::Window::CursorMode</a> for the TRAP:<a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">Window</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">mode</td><td>New CursorMode</td></tr>
+    <tr><td class="paramname">mode</td><td>New <a class="el" href="class_t_r_a_p_1_1_window.html#a4ac27cab0cf24b0ecab2b0ba47ab2b5e" title="Same as: enum class CursorMode { Normal, Hidden, Disabled, Captured }; Specifies the cursor mode of a...">TRAP::Window::CursorMode</a>.</td></tr>
   </table>
   </dd>
 </dl>
@@ -997,10 +1169,10 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set the CursorType for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Set the <a class="el" href="class_t_r_a_p_1_1_window.html#a58b36740dcdc5de9b711b0bb4afd1a1f" title="Same as: enum class CursorType { Arrow = 0, Input = 1, Crosshair = 2, PointingHand = 3,...">TRAP::Window::CursorType</a> for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">cursor</td><td>New CursorType</td></tr>
+    <tr><td class="paramname">cursor</td><td>New CursorType.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1045,13 +1217,13 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set a new DisplayMode and or a new size/refresh rate for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Set a new <a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b" title="Specifies the display mode of a TRAP::Window.">TRAP::Window::DisplayMode</a> and or a new size/refresh rate for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">mode</td><td>New DisplayMode for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a></td></tr>
-    <tr><td class="paramname">width</td><td>New width (ignored when used with DisplayMode Borderless)</td></tr>
-    <tr><td class="paramname">height</td><td>New height (ignored when used with DisplayMode Borderless)</td></tr>
-    <tr><td class="paramname">refreshRate</td><td>New refresh rate (ignored when used with DisplayMode Borderless, Windowed)</td></tr>
+    <tr><td class="paramname">mode</td><td>New <a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b" title="Specifies the display mode of a TRAP::Window.">TRAP::Window::DisplayMode</a> for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</td></tr>
+    <tr><td class="paramname">width</td><td>New width (ignored when used with <a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b" title="Specifies the display mode of a TRAP::Window.">TRAP::Window::DisplayMode</a> Borderless).</td></tr>
+    <tr><td class="paramname">height</td><td>New height (ignored when used with <a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b" title="Specifies the display mode of a TRAP::Window.">TRAP::Window::DisplayMode</a> Borderless).</td></tr>
+    <tr><td class="paramname">refreshRate</td><td>New refresh rate (ignored when used with <a class="el" href="class_t_r_a_p_1_1_window.html#ac8a81beca739a13e6db84df2fd967b3b" title="Specifies the display mode of a TRAP::Window.">TRAP::Window::DisplayMode</a> Borderless, Windowed).</td></tr>
   </table>
   </dd>
 </dl>
@@ -1074,10 +1246,10 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Enable or Disable Drag and Drop feature for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Enable or Disable Drag and Drop feature for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">enabled</td><td>True to enable, false otherwise</td></tr>
+    <tr><td class="paramname">enabled</td><td>True to enable, false otherwise.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1100,10 +1272,10 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set the function where events should be reported to from the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Set the function where events should be reported to from the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">callback</td><td>Callback function used to report events to</td></tr>
+    <tr><td class="paramname">callback</td><td>Callback function used to report events to.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1125,7 +1297,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Resets the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> icon to the TRAP logo </p>
+<p>Resets the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> icon to the TRAP logo. </p>
 
 </div>
 </div>
@@ -1145,10 +1317,10 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set a custom logo as <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> icon (<a class="el" href="class_t_r_a_p_1_1_image.html">Image</a> must be non HDR RGBA 32 bits per pixel)(nullptr also resets to the TRAP logo) </p>
+<p>Set a custom logo as <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> icon (<a class="el" href="class_t_r_a_p_1_1_image.html" title="Abstract Image base class.">Image</a> must be non HDR RGBA 32 bits per pixel)(nullptr also resets to the TRAP logo). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">image</td><td>New logo to be used by the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a></td></tr>
+    <tr><td class="paramname">image</td><td>New logo to be used by the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1181,11 +1353,11 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Limit the maximum size of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Limit the maximum size of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">maxWidth</td><td>Max width</td></tr>
-    <tr><td class="paramname">maxHeight</td><td>Max height</td></tr>
+    <tr><td class="paramname">maxWidth</td><td>Max width.</td></tr>
+    <tr><td class="paramname">maxHeight</td><td>Max height.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1218,11 +1390,11 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Limit the minimum size of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Limit the minimum size of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">minWidth</td><td>Min width</td></tr>
-    <tr><td class="paramname">minHeight</td><td>Min height</td></tr>
+    <tr><td class="paramname">minWidth</td><td>Min width.</td></tr>
+    <tr><td class="paramname">minHeight</td><td>Min height.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1245,10 +1417,10 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set a new <a class="el" href="class_t_r_a_p_1_1_monitor.html">Monitor</a> for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Set a new <a class="el" href="class_t_r_a_p_1_1_monitor.html" title="Interface representing a physical Monitor.">Monitor</a> for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">monitor</td><td><a class="el" href="class_t_r_a_p_1_1_monitor.html">Monitor</a> object to be used from now on</td></tr>
+    <tr><td class="paramname">monitor</td><td><a class="el" href="class_t_r_a_p_1_1_monitor.html" title="Interface representing a physical Monitor.">TRAP::Monitor</a> object to be used from now on.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1271,10 +1443,10 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set the opacity of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> (1.0f = Fully opaque, 0.0f = Fully transparent) </p>
+<p>Set the opacity of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> (1.0f = Fully opaque, 0.0f = Fully transparent). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">opacity</td><td>Opacity strength</td></tr>
+    <tr><td class="paramname">opacity</td><td>Opacity strength.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1297,10 +1469,10 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set if raw mouse input should be used </p>
+<p>Set if raw mouse input should be used. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">enabled</td><td>New status for raw mouse input</td></tr>
+    <tr><td class="paramname">enabled</td><td>New status for raw mouse input.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1323,10 +1495,10 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set whether resizing of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> should be allowed </p>
+<p>Set whether resizing of the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> should be allowed. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">enabled</td><td>Set resizable or non resizable</td></tr>
+    <tr><td class="paramname">enabled</td><td>Set resizable or non resizable.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1349,10 +1521,10 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set a new title for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Set a new title for the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">title</td><td>New <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> title</td></tr>
+    <tr><td class="paramname">title</td><td>New <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> title.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1375,10 +1547,10 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set the VSync interval (0 = No VSync) </p>
+<p>Set the VSync interval (0 = No VSync). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">interval</td><td>New VSync interval</td></tr>
+    <tr><td class="paramname">interval</td><td>New VSync interval.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1400,7 +1572,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Show the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> </p>
+<p>Show the <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a>. </p>
 
 </div>
 </div>
@@ -1427,7 +1599,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Selects the "Main" <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> for all following rendering commands </p>
+<p>Selects the "Main" <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> for all following rendering commands. </p>
 
 </div>
 </div>
@@ -1455,10 +1627,10 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Select the given <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> for all following rendering commands </p>
+<p>Select the given <a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> for all following rendering commands. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">window</td><td><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window">Window</a> that should be used for rendering</td></tr>
+    <tr><td class="paramname">window</td><td><a class="el" href="class_t_r_a_p_1_1_window.html" title="Interface representing a desktop system based Window.">TRAP::Window</a> that should be used for rendering.</td></tr>
   </table>
   </dd>
 </dl>

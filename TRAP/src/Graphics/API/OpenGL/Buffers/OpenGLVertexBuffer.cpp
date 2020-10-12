@@ -1,15 +1,13 @@
 #include "TRAPPCH.h"
 #include "OpenGLVertexBuffer.h"
 
-#include "Graphics/API/OpenGL/OpenGLCommon.h"
-
 TRAP::Graphics::API::OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, const uint32_t size)
 	: m_handle(0), m_vertexCount(size)
 {
 	TP_PROFILE_FUNCTION();
 	
-	OpenGLCall(glCreateBuffers(1, &m_handle));
-	OpenGLCall(glNamedBufferStorage(m_handle, size, vertices, GL_DYNAMIC_STORAGE_BIT));
+	glCreateBuffers(1, &m_handle);
+	glNamedBufferStorage(m_handle, size, vertices, GL_DYNAMIC_STORAGE_BIT);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -19,8 +17,8 @@ TRAP::Graphics::API::OpenGLVertexBuffer::OpenGLVertexBuffer(const uint32_t size)
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glCreateBuffers(1, &m_handle));
-	OpenGLCall(glNamedBufferStorage(m_handle, size, nullptr, GL_DYNAMIC_STORAGE_BIT));
+	glCreateBuffers(1, &m_handle);
+	glNamedBufferStorage(m_handle, size, nullptr, GL_DYNAMIC_STORAGE_BIT);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -30,9 +28,7 @@ TRAP::Graphics::API::OpenGLVertexBuffer::~OpenGLVertexBuffer()
 	TP_PROFILE_FUNCTION();
 	
 	if(m_handle)
-	{
-		OpenGLCall(glDeleteBuffers(1, &m_handle));		
-	}
+		glDeleteBuffers(1, &m_handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -68,7 +64,7 @@ void TRAP::Graphics::API::OpenGLVertexBuffer::SetData(const void* data, const ui
 {
 	TP_PROFILE_FUNCTION();
 
-	OpenGLCall(glNamedBufferSubData(m_handle, 0, size, data));
+	glNamedBufferSubData(m_handle, 0, size, data);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

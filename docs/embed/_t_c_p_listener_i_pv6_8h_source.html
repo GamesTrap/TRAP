@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP/src/Network/TCPListenerIPv6.h Source File</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,34 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -91,26 +126,26 @@ $(function() {
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a1064a7ce437ec6407a3d40f1f4cda4c4">TCPListenerIPv6</a>();</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        uint16_t <a class="code" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a0d00def9ccec7199fb69245ef2ee07a2">GetLocalPort</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket.html#a5b9431e417a9ed2b13b121462e9f0f77">Status</a> <a class="code" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#ab970df2d38bba68393ecafe24cd67dd4">Listen</a>(uint16_t port, <span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html">IPv6Address</a>&amp; address = IPv6Address::Any);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a7efb89dcd0d2bcbe75e21669e42addb2">Close</a>();</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket.html#a5b9431e417a9ed2b13b121462e9f0f77">Status</a> <a class="code" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a20a22987e7f10a982f21e39160f9430e">Accept</a>(<a class="code" href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket_i_pv6.html">TCPSocketIPv6</a>&amp; socket) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    };</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_NETWORK_TCPLISTENERIPV6_H_*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        uint16_t <a class="code" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a0d00def9ccec7199fb69245ef2ee07a2">GetLocalPort</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket.html#a5b9431e417a9ed2b13b121462e9f0f77">Status</a> <a class="code" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#ab970df2d38bba68393ecafe24cd67dd4">Listen</a>(uint16_t port, <span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html">IPv6Address</a>&amp; address = IPv6Address::Any);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a7efb89dcd0d2bcbe75e21669e42addb2">Close</a>();</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_network_1_1_socket.html#a5b9431e417a9ed2b13b121462e9f0f77">Status</a> <a class="code" href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a20a22987e7f10a982f21e39160f9430e">Accept</a>(<a class="code" href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket_i_pv6.html">TCPSocketIPv6</a>&amp; socket) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    };</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;}</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_NETWORK_TCPLISTENERIPV6_H_*/</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_html_a5b9431e417a9ed2b13b121462e9f0f77"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket.html#a5b9431e417a9ed2b13b121462e9f0f77">TRAP::Network::Socket::Status</a></div><div class="ttdeci">Status</div><div class="ttdoc">Status codes that may be returned by socket functions</div><div class="ttdef"><b>Definition:</b> Socket.h:47</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_html_a5b9431e417a9ed2b13b121462e9f0f77"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket.html#a5b9431e417a9ed2b13b121462e9f0f77">TRAP::Network::Socket::Status</a></div><div class="ttdeci">Status</div><div class="ttdoc">Status codes that may be returned by socket functions.</div><div class="ttdef"><b>Definition:</b> Socket.h:65</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6_html_ab970df2d38bba68393ecafe24cd67dd4"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#ab970df2d38bba68393ecafe24cd67dd4">TRAP::Network::TCPListenerIPv6::Listen</a></div><div class="ttdeci">Status Listen(uint16_t port, const IPv6Address &amp;address=IPv6Address::Any)</div><div class="ttdoc">Start listening for incoming connection attempts.    This function makes the socket start listening o...</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_socket_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_socket.html">TRAP::Network::Socket</a></div><div class="ttdef"><b>Definition:</b> Socket.h:38</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6_html_a20a22987e7f10a982f21e39160f9430e"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a20a22987e7f10a982f21e39160f9430e">TRAP::Network::TCPListenerIPv6::Accept</a></div><div class="ttdeci">Status Accept(TCPSocketIPv6 &amp;socket) const</div><div class="ttdoc">Accept a new connection.    If the socket is in blocking mode, this function will not return until a ...</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6_html_a1064a7ce437ec6407a3d40f1f4cda4c4"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a1064a7ce437ec6407a3d40f1f4cda4c4">TRAP::Network::TCPListenerIPv6::TCPListenerIPv6</a></div><div class="ttdeci">TCPListenerIPv6()</div><div class="ttdoc">Default constructor</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6_html_a1064a7ce437ec6407a3d40f1f4cda4c4"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a1064a7ce437ec6407a3d40f1f4cda4c4">TRAP::Network::TCPListenerIPv6::TCPListenerIPv6</a></div><div class="ttdeci">TCPListenerIPv6()</div><div class="ttdoc">Constructor.</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_i_pv6_address_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html">TRAP::Network::IPv6Address</a></div><div class="ttdoc">TRAP::Network::IPv6Address is a utility class for manipulating network addresses.  It provides a set ...</div><div class="ttdef"><b>Definition:</b> IPv6Address.h:13</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html">TRAP::Network::TCPListenerIPv6</a></div><div class="ttdoc">Socket that listens to new TCP connections</div><div class="ttdef"><b>Definition:</b> TCPListenerIPv6.h:14</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_i_pv6_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket_i_pv6.html">TRAP::Network::TCPSocketIPv6</a></div><div class="ttdoc">Specialized socket using the TCP protocol</div><div class="ttdef"><b>Definition:</b> TCPSocketIPv6.h:44</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html">TRAP::Network::TCPListenerIPv6</a></div><div class="ttdoc">Socket that listens to new TCP connections.</div><div class="ttdef"><b>Definition:</b> TCPListenerIPv6.h:14</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_socket_i_pv6_html"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_socket_i_pv6.html">TRAP::Network::TCPSocketIPv6</a></div><div class="ttdoc">Specialized socket using the TCP protocol.</div><div class="ttdef"><b>Definition:</b> TCPSocketIPv6.h:16</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6_html_a7efb89dcd0d2bcbe75e21669e42addb2"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a7efb89dcd0d2bcbe75e21669e42addb2">TRAP::Network::TCPListenerIPv6::Close</a></div><div class="ttdeci">void Close()</div><div class="ttdoc">Stop listening and close the socket.    This function gracefully stops the listener....</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6_html_a0d00def9ccec7199fb69245ef2ee07a2"><div class="ttname"><a href="class_t_r_a_p_1_1_network_1_1_t_c_p_listener_i_pv6.html#a0d00def9ccec7199fb69245ef2ee07a2">TRAP::Network::TCPListenerIPv6::GetLocalPort</a></div><div class="ttdeci">uint16_t GetLocalPort() const</div><div class="ttdoc">Get the port to which the socket is bound locally.    If the socket is not listening to a port,...</div></div>
 <!-- HTML footer for doxygen 1.8.8-->

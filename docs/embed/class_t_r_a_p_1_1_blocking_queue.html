@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::BlockingQueue&lt; T &gt; Class Template Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -82,48 +120,373 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a49063b6a04217d6612f6c2f6d86897ae"><td class="memTemplParams" colspan="2"><a id="a49063b6a04217d6612f6c2f6d86897ae"></a>
-template&lt;typename Q  = T&gt; </td></tr>
-<tr class="memitem:a49063b6a04217d6612f6c2f6d86897ae"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_copy_constructible&lt; Q &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Push</b> (const T &amp;item)</td></tr>
+<tr class="memitem:a49063b6a04217d6612f6c2f6d86897ae"><td class="memTemplParams" colspan="2">template&lt;typename Q  = T&gt; </td></tr>
+<tr class="memitem:a49063b6a04217d6612f6c2f6d86897ae"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_copy_constructible&lt; Q &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_blocking_queue.html#a49063b6a04217d6612f6c2f6d86897ae">Push</a> (const T &amp;item)</td></tr>
+<tr class="memdesc:a49063b6a04217d6612f6c2f6d86897ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Push a copy constructable item to the queue.  <a href="class_t_r_a_p_1_1_blocking_queue.html#a49063b6a04217d6612f6c2f6d86897ae">More...</a><br /></td></tr>
 <tr class="separator:a49063b6a04217d6612f6c2f6d86897ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec4cd279c62978eb84d45f0b5acbc55c"><td class="memTemplParams" colspan="2"><a id="aec4cd279c62978eb84d45f0b5acbc55c"></a>
-template&lt;typename Q  = T&gt; </td></tr>
-<tr class="memitem:aec4cd279c62978eb84d45f0b5acbc55c"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_move_constructible&lt; Q &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Push</b> (T &amp;&amp;item)</td></tr>
+<tr class="memitem:aec4cd279c62978eb84d45f0b5acbc55c"><td class="memTemplParams" colspan="2">template&lt;typename Q  = T&gt; </td></tr>
+<tr class="memitem:aec4cd279c62978eb84d45f0b5acbc55c"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_move_constructible&lt; Q &gt;::value, void &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_blocking_queue.html#aec4cd279c62978eb84d45f0b5acbc55c">Push</a> (T &amp;&amp;item)</td></tr>
+<tr class="memdesc:aec4cd279c62978eb84d45f0b5acbc55c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Push a move constructable item to the queue.  <a href="class_t_r_a_p_1_1_blocking_queue.html#aec4cd279c62978eb84d45f0b5acbc55c">More...</a><br /></td></tr>
 <tr class="separator:aec4cd279c62978eb84d45f0b5acbc55c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e5c1c75d4b04c0b06ddeadb98683a18"><td class="memTemplParams" colspan="2"><a id="a4e5c1c75d4b04c0b06ddeadb98683a18"></a>
-template&lt;typename Q  = T&gt; </td></tr>
-<tr class="memitem:a4e5c1c75d4b04c0b06ddeadb98683a18"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_copy_constructible&lt; Q &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>TryPush</b> (const T &amp;item)</td></tr>
+<tr class="memitem:a4e5c1c75d4b04c0b06ddeadb98683a18"><td class="memTemplParams" colspan="2">template&lt;typename Q  = T&gt; </td></tr>
+<tr class="memitem:a4e5c1c75d4b04c0b06ddeadb98683a18"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_copy_constructible&lt; Q &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_blocking_queue.html#a4e5c1c75d4b04c0b06ddeadb98683a18">TryPush</a> (const T &amp;item)</td></tr>
+<tr class="memdesc:a4e5c1c75d4b04c0b06ddeadb98683a18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try to push a copy constructable item to the queue.  <a href="class_t_r_a_p_1_1_blocking_queue.html#a4e5c1c75d4b04c0b06ddeadb98683a18">More...</a><br /></td></tr>
 <tr class="separator:a4e5c1c75d4b04c0b06ddeadb98683a18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0e5c1f069957551be460c2091c7277d"><td class="memTemplParams" colspan="2"><a id="ab0e5c1f069957551be460c2091c7277d"></a>
-template&lt;typename Q  = T&gt; </td></tr>
-<tr class="memitem:ab0e5c1f069957551be460c2091c7277d"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_move_constructible&lt; Q &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>TryPush</b> (T &amp;&amp;item)</td></tr>
+<tr class="memitem:ab0e5c1f069957551be460c2091c7277d"><td class="memTemplParams" colspan="2">template&lt;typename Q  = T&gt; </td></tr>
+<tr class="memitem:ab0e5c1f069957551be460c2091c7277d"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_move_constructible&lt; Q &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_blocking_queue.html#ab0e5c1f069957551be460c2091c7277d">TryPush</a> (T &amp;&amp;item)</td></tr>
+<tr class="memdesc:ab0e5c1f069957551be460c2091c7277d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try to push a move constructable item to the queue.  <a href="class_t_r_a_p_1_1_blocking_queue.html#ab0e5c1f069957551be460c2091c7277d">More...</a><br /></td></tr>
 <tr class="separator:ab0e5c1f069957551be460c2091c7277d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac9825d9ca1c71bc34a40d548356d374b"><td class="memTemplParams" colspan="2"><a id="ac9825d9ca1c71bc34a40d548356d374b"></a>
-template&lt;typename Q  = T&gt; </td></tr>
-<tr class="memitem:ac9825d9ca1c71bc34a40d548356d374b"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_copy_assignable&lt; Q &gt;::value &amp;&amp;!std::is_move_assignable&lt; Q &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Pop</b> (T &amp;item)</td></tr>
+<tr class="memitem:ac9825d9ca1c71bc34a40d548356d374b"><td class="memTemplParams" colspan="2">template&lt;typename Q  = T&gt; </td></tr>
+<tr class="memitem:ac9825d9ca1c71bc34a40d548356d374b"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_copy_assignable&lt; Q &gt;::value &amp;&amp;!std::is_move_assignable&lt; Q &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_blocking_queue.html#ac9825d9ca1c71bc34a40d548356d374b">Pop</a> (T &amp;item)</td></tr>
+<tr class="memdesc:ac9825d9ca1c71bc34a40d548356d374b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pop a copy assignable item from the queue.  <a href="class_t_r_a_p_1_1_blocking_queue.html#ac9825d9ca1c71bc34a40d548356d374b">More...</a><br /></td></tr>
 <tr class="separator:ac9825d9ca1c71bc34a40d548356d374b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a155672016ddd022ad59407d4ca45b972"><td class="memTemplParams" colspan="2"><a id="a155672016ddd022ad59407d4ca45b972"></a>
-template&lt;typename Q  = T&gt; </td></tr>
-<tr class="memitem:a155672016ddd022ad59407d4ca45b972"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_move_assignable&lt; Q &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Pop</b> (T &amp;item)</td></tr>
+<tr class="memitem:a155672016ddd022ad59407d4ca45b972"><td class="memTemplParams" colspan="2">template&lt;typename Q  = T&gt; </td></tr>
+<tr class="memitem:a155672016ddd022ad59407d4ca45b972"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_move_assignable&lt; Q &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_blocking_queue.html#a155672016ddd022ad59407d4ca45b972">Pop</a> (T &amp;item)</td></tr>
+<tr class="memdesc:a155672016ddd022ad59407d4ca45b972"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pop a move assignable item from the queue.  <a href="class_t_r_a_p_1_1_blocking_queue.html#a155672016ddd022ad59407d4ca45b972">More...</a><br /></td></tr>
 <tr class="separator:a155672016ddd022ad59407d4ca45b972"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a752196dd7cbf879f7fce4b4ee284ec89"><td class="memTemplParams" colspan="2"><a id="a752196dd7cbf879f7fce4b4ee284ec89"></a>
-template&lt;typename Q  = T&gt; </td></tr>
-<tr class="memitem:a752196dd7cbf879f7fce4b4ee284ec89"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_copy_assignable&lt; Q &gt;::value &amp;&amp;!std::is_move_assignable&lt; Q &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>TryPop</b> (T &amp;item)</td></tr>
+<tr class="memitem:a752196dd7cbf879f7fce4b4ee284ec89"><td class="memTemplParams" colspan="2">template&lt;typename Q  = T&gt; </td></tr>
+<tr class="memitem:a752196dd7cbf879f7fce4b4ee284ec89"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_copy_assignable&lt; Q &gt;::value &amp;&amp;!std::is_move_assignable&lt; Q &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_blocking_queue.html#a752196dd7cbf879f7fce4b4ee284ec89">TryPop</a> (T &amp;item)</td></tr>
+<tr class="memdesc:a752196dd7cbf879f7fce4b4ee284ec89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try to pop a copy assignable item from the queue.  <a href="class_t_r_a_p_1_1_blocking_queue.html#a752196dd7cbf879f7fce4b4ee284ec89">More...</a><br /></td></tr>
 <tr class="separator:a752196dd7cbf879f7fce4b4ee284ec89"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22c30298dd94dba724da6b4902e4a873"><td class="memTemplParams" colspan="2"><a id="a22c30298dd94dba724da6b4902e4a873"></a>
-template&lt;typename Q  = T&gt; </td></tr>
-<tr class="memitem:a22c30298dd94dba724da6b4902e4a873"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_move_assignable&lt; Q &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><b>TryPop</b> (T &amp;item)</td></tr>
+<tr class="memitem:a22c30298dd94dba724da6b4902e4a873"><td class="memTemplParams" colspan="2">template&lt;typename Q  = T&gt; </td></tr>
+<tr class="memitem:a22c30298dd94dba724da6b4902e4a873"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if&lt; std::is_move_assignable&lt; Q &gt;::value, bool &gt;::type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_blocking_queue.html#a22c30298dd94dba724da6b4902e4a873">TryPop</a> (T &amp;item)</td></tr>
+<tr class="memdesc:a22c30298dd94dba724da6b4902e4a873"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try to pop a move assignable item from the queue.  <a href="class_t_r_a_p_1_1_blocking_queue.html#a22c30298dd94dba724da6b4902e4a873">More...</a><br /></td></tr>
 <tr class="separator:a22c30298dd94dba724da6b4902e4a873"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6fdf1f1506a8a9eadfd186c8a97c775e"><td class="memItemLeft" align="right" valign="top"><a id="a6fdf1f1506a8a9eadfd186c8a97c775e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>Done</b> () noexcept</td></tr>
+<tr class="memitem:a6fdf1f1506a8a9eadfd186c8a97c775e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_blocking_queue.html#a6fdf1f1506a8a9eadfd186c8a97c775e">Done</a> () noexcept</td></tr>
+<tr class="memdesc:a6fdf1f1506a8a9eadfd186c8a97c775e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mark the queue as done.  <a href="class_t_r_a_p_1_1_blocking_queue.html#a6fdf1f1506a8a9eadfd186c8a97c775e">More...</a><br /></td></tr>
 <tr class="separator:a6fdf1f1506a8a9eadfd186c8a97c775e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ee9398930c11df7dc8169c2013a9f71"><td class="memItemLeft" align="right" valign="top"><a id="a9ee9398930c11df7dc8169c2013a9f71"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>Empty</b> () const noexcept</td></tr>
-<tr class="separator:a9ee9398930c11df7dc8169c2013a9f71"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25bb9d0367e77fbb6d67f390fb693ed9"><td class="memItemLeft" align="right" valign="top"><a id="a25bb9d0367e77fbb6d67f390fb693ed9"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>Size</b> () const noexcept</td></tr>
+<tr class="memitem:aaa7e2e384c83d8c0b1afe4c55ae7dc20"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_blocking_queue.html#aaa7e2e384c83d8c0b1afe4c55ae7dc20">Empty</a> () const noexcept</td></tr>
+<tr class="memdesc:aaa7e2e384c83d8c0b1afe4c55ae7dc20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if queue is empty.  <a href="class_t_r_a_p_1_1_blocking_queue.html#aaa7e2e384c83d8c0b1afe4c55ae7dc20">More...</a><br /></td></tr>
+<tr class="separator:aaa7e2e384c83d8c0b1afe4c55ae7dc20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25bb9d0367e77fbb6d67f390fb693ed9"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_blocking_queue.html#a25bb9d0367e77fbb6d67f390fb693ed9">Size</a> () const noexcept</td></tr>
+<tr class="memdesc:a25bb9d0367e77fbb6d67f390fb693ed9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve the size of the queue.  <a href="class_t_r_a_p_1_1_blocking_queue.html#a25bb9d0367e77fbb6d67f390fb693ed9">More...</a><br /></td></tr>
 <tr class="separator:a25bb9d0367e77fbb6d67f390fb693ed9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a6fdf1f1506a8a9eadfd186c8a97c775e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fdf1f1506a8a9eadfd186c8a97c775e">&#9670;&nbsp;</a></span>Done()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="class_t_r_a_p_1_1_blocking_queue.html">TRAP::BlockingQueue</a>&lt; T &gt;::Done</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Mark the queue as done. </p>
+
+</div>
+</div>
+<a id="aaa7e2e384c83d8c0b1afe4c55ae7dc20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa7e2e384c83d8c0b1afe4c55ae7dc20">&#9670;&nbsp;</a></span>Empty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="class_t_r_a_p_1_1_blocking_queue.html">TRAP::BlockingQueue</a>&lt; T &gt;::Empty</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Check if queue is empty. </p>
+<dl class="section return"><dt>Returns</dt><dd>True if queue is empty, false otherwise.</dd></dl>
+
+</div>
+</div>
+<a id="ac9825d9ca1c71bc34a40d548356d374b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9825d9ca1c71bc34a40d548356d374b">&#9670;&nbsp;</a></span>Pop() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename Q &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::enable_if&lt; std::is_move_assignable&lt; Q &gt;::value, bool &gt;::type <a class="el" href="class_t_r_a_p_1_1_blocking_queue.html">TRAP::BlockingQueue</a>&lt; T &gt;::Pop </td>
+          <td>(</td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>item</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pop a copy assignable item from the queue. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">item</td><td>Item to pop.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a155672016ddd022ad59407d4ca45b972"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a155672016ddd022ad59407d4ca45b972">&#9670;&nbsp;</a></span>Pop() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename Q  = T&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::enable_if&lt;std::is_move_assignable&lt;Q&gt;::value, bool&gt;::type <a class="el" href="class_t_r_a_p_1_1_blocking_queue.html">TRAP::BlockingQueue</a>&lt; T &gt;::Pop </td>
+          <td>(</td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>item</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pop a move assignable item from the queue. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">item</td><td>Item to pop.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a49063b6a04217d6612f6c2f6d86897ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49063b6a04217d6612f6c2f6d86897ae">&#9670;&nbsp;</a></span>Push() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename Q &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::enable_if&lt; std::is_copy_constructible&lt; Q &gt;::value, void &gt;::type <a class="el" href="class_t_r_a_p_1_1_blocking_queue.html">TRAP::BlockingQueue</a>&lt; T &gt;::Push </td>
+          <td>(</td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>item</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Push a copy constructable item to the queue. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">item</td><td>Item to push.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aec4cd279c62978eb84d45f0b5acbc55c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec4cd279c62978eb84d45f0b5acbc55c">&#9670;&nbsp;</a></span>Push() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename Q &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::enable_if&lt; std::is_move_constructible&lt; Q &gt;::value, void &gt;::type <a class="el" href="class_t_r_a_p_1_1_blocking_queue.html">TRAP::BlockingQueue</a>&lt; T &gt;::Push </td>
+          <td>(</td>
+          <td class="paramtype">T &amp;&amp;&#160;</td>
+          <td class="paramname"><em>item</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Push a move constructable item to the queue. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">item</td><td>Item to push.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a25bb9d0367e77fbb6d67f390fb693ed9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25bb9d0367e77fbb6d67f390fb693ed9">&#9670;&nbsp;</a></span>Size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t <a class="el" href="class_t_r_a_p_1_1_blocking_queue.html">TRAP::BlockingQueue</a>&lt; T &gt;::Size</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Retrieve the size of the queue. </p>
+<dl class="section return"><dt>Returns</dt><dd>Queue size.</dd></dl>
+
+</div>
+</div>
+<a id="a752196dd7cbf879f7fce4b4ee284ec89"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a752196dd7cbf879f7fce4b4ee284ec89">&#9670;&nbsp;</a></span>TryPop() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename Q &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::enable_if&lt; std::is_move_assignable&lt; Q &gt;::value, bool &gt;::type <a class="el" href="class_t_r_a_p_1_1_blocking_queue.html">TRAP::BlockingQueue</a>&lt; T &gt;::TryPop </td>
+          <td>(</td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>item</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Try to pop a copy assignable item from the queue. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">item</td><td>Item to pop.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True on success, false otherwise.</dd></dl>
+
+</div>
+</div>
+<a id="a22c30298dd94dba724da6b4902e4a873"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22c30298dd94dba724da6b4902e4a873">&#9670;&nbsp;</a></span>TryPop() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename Q  = T&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::enable_if&lt;std::is_move_assignable&lt;Q&gt;::value, bool&gt;::type <a class="el" href="class_t_r_a_p_1_1_blocking_queue.html">TRAP::BlockingQueue</a>&lt; T &gt;::TryPop </td>
+          <td>(</td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>item</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Try to pop a move assignable item from the queue. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">item</td><td>Item to pop.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True on success, false otherwise.</dd></dl>
+
+</div>
+</div>
+<a id="a4e5c1c75d4b04c0b06ddeadb98683a18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e5c1c75d4b04c0b06ddeadb98683a18">&#9670;&nbsp;</a></span>TryPush() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename Q &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::enable_if&lt; std::is_copy_constructible&lt; Q &gt;::value, bool &gt;::type <a class="el" href="class_t_r_a_p_1_1_blocking_queue.html">TRAP::BlockingQueue</a>&lt; T &gt;::TryPush </td>
+          <td>(</td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>item</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Try to push a copy constructable item to the queue. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">item</td><td>Item to push.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True on success, false otherwise.</dd></dl>
+
+</div>
+</div>
+<a id="ab0e5c1f069957551be460c2091c7277d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0e5c1f069957551be460c2091c7277d">&#9670;&nbsp;</a></span>TryPush() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename Q &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::enable_if&lt; std::is_move_constructible&lt; Q &gt;::value, bool &gt;::type <a class="el" href="class_t_r_a_p_1_1_blocking_queue.html">TRAP::BlockingQueue</a>&lt; T &gt;::TryPush </td>
+          <td>(</td>
+          <td class="paramtype">T &amp;&amp;&#160;</td>
+          <td class="paramname"><em>item</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Try to push a move constructable item to the queue. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">item</td><td>Item to push.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True on success, false otherwise.</dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>TRAP/src/ThreadPool/<a class="el" href="_blocking_queue_8h_source.html">BlockingQueue.h</a></li>
 </ul>

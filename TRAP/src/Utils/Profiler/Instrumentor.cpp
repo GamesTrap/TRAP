@@ -49,7 +49,7 @@ void TRAP::Utils::Debug::Instrumentor::EndSession()
 
 void TRAP::Utils::Debug::Instrumentor::WriteProfile(const ProfileResult& result)
 {
-	std::stringstream json;
+	std::stringstream json{};
 
 	json << std::setprecision(3) << std::fixed;
 	json << ",{";
@@ -74,7 +74,7 @@ void TRAP::Utils::Debug::Instrumentor::WriteProfile(const ProfileResult& result)
 
 TRAP::Utils::Debug::Instrumentor& TRAP::Utils::Debug::Instrumentor::Get()
 {
-	static Instrumentor instance;
+	static Instrumentor instance{};
 
 	return instance;
 }
@@ -83,7 +83,7 @@ TRAP::Utils::Debug::Instrumentor& TRAP::Utils::Debug::Instrumentor::Get()
 
 void TRAP::Utils::Debug::Instrumentor::WriteHeader()
 {
-	m_outputStream << "{\"otherData\": {},\"traceEvents\":[{}";
+	m_outputStream << R"({"otherData": {},"traceEvents":[{})";
 	m_outputStream.flush();
 }
 

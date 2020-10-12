@@ -14,62 +14,18 @@ TRAP::Utils::Config::Config()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Config::LoadFromFile(const std::string_view filename)
+bool TRAP::Utils::Config::LoadFromFile(const std::string_view file)
 {
 	TP_PROFILE_FUNCTION();
 	
 	m_data.clear();
 
-	return Read(filename);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Utils::Config::SaveToFile(const std::string_view filename)
-{
-	TP_PROFILE_FUNCTION();
-	
-	if (m_isChanged)
-	{
-		m_isChanged = false;
-		return Write(filename);
-	}
-
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Utils::Config::IsChanged() const
-{
-	TP_PROFILE_FUNCTION();
-	
-	return m_isChanged;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Utils::Config::Print() const
-{
-	TP_PROFILE_FUNCTION();
-
-#ifdef TRAP_DEBUG_CONFIGS	
-	for (auto& [key, value] : m_data)
-		TP_TRACE(ConfigPrefix, key, " = ", value);
-
-	TP_TRACE(ConfigPrefix, "Size: ", m_data.size());
-#endif
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Utils::Config::Read(const std::string_view filename)
-{
-	const std::string input = VFS::ReadTextFile(filename);
+	//Load
+	const std::string input = VFS::ReadTextFile(file);
 	if (input.empty())
 		return false;
 
-	TP_INFO(TRAP::Log::ConfigPrefix, "Loading File: \"", filename, "\"");
+	TP_INFO(TRAP::Log::ConfigPrefix, "Loading File: \"", file, "\"");
 	std::vector<std::string_view> lines = String::SplitStringView(input, '\n');
 
 	for (const auto& line : lines)
@@ -93,66 +49,97 @@ bool TRAP::Utils::Config::Read(const std::string_view filename)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Utils::Config::Write(const std::string_view filename) const
-{	
-	std::vector<std::pair<std::string, std::string>> fileContents;
-
-	TP_INFO(TRAP::Log::ConfigPrefix, "Saving File: \"", filename, "\"");
+bool TRAP::Utils::Config::SaveToFile(const std::string_view file)
+{
+	TP_PROFILE_FUNCTION();
 	
-	//Read the file into a vector and replace the values of the keys that match with our map
-	const std::string input = VFS::ReadTextFile(filename);
-	if (!input.empty())
+	if (m_isChanged)
 	{
-		std::vector<std::string> lines = String::SplitString(input, '\n');
+		m_isChanged = false;
+		
+		//Write
+		std::vector<std::pair<std::string, std::string>> fileContents;
 
-		for (const auto& line : lines)
+		TP_INFO(TRAP::Log::ConfigPrefix, "Saving File: \"", file, "\"");
+
+		//Read the file into a vector and replace the values of the keys that match with our map
+		const std::string input = VFS::ReadTextFile(file);
+		if (!input.empty())
 		{
-			//Parse line
-			auto pLine = ParseLine(line);
-			auto& [key, value] = pLine;
+			std::vector<std::string> lines = String::SplitString(input, '\n');
 
-			if (!key.empty())
+			for (const auto& line : lines)
 			{
-				//Check if the key is found in the vector
-				const auto it = std::find_if(m_data.begin(), m_data.end(),
-					[&pLine](const std::pair<std::string, std::string>& element)
-					{
-						return Utils::String::CompareAnyCase(element.first, pLine.first);
-					});
-				if (it != m_data.end())
+				//Parse line
+				auto pLine = ParseLine(line);
+				auto& [key, value] = pLine;
+
+				if (!key.empty())
 				{
-					//If so take it's value, otherwise the value from the file is kept
-					value = it->second;
+					//Check if the key is found in the vector
+					const auto it = std::find_if(m_data.begin(), m_data.end(),
+						[&pLine](const std::pair<std::string, std::string>& element)
+						{
+							return Utils::String::CompareAnyCase(element.first, pLine.first);
+						});
+					if (it != m_data.end())
+					{
+						//If so take it's value, otherwise the value from the file is kept
+						value = it->second;
+					}
 				}
+				else
+				{
+					//If the line is empty or a comment simply take the whole line as the key
+					key = line;
+				}
+				fileContents.emplace_back(key, value);
 			}
-			else
-			{
-				//If the line is empty or a comment simply take the whole line as the key
-				key = line;
-			}
-			fileContents.emplace_back(key, value);
 		}
+		else
+		{
+			//Can't open file for reading. Use only the data from the map
+			for (const auto& [key, value] : m_data)
+				fileContents.emplace_back(key, value);
+		}
+
+		std::stringstream ss;
+		for (const auto& [key, value] : fileContents)
+		{
+			ss << key; //Write the key
+
+			if (!value.empty())
+				//If this line is not empty or a comment also write the assignment and the value
+				ss << " = " << value;
+
+			ss << '\n';
+		}
+
+		return VFS::WriteTextFile(file, ss.str());
 	}
-	else
-	{
-		//Can't open file for reading. Use only the data from the map
-		for (const auto& [key, value] : m_data)
-			fileContents.emplace_back(key, value);
-	}
 
-	std::stringstream ss;
-	for (const auto& [key, value] : fileContents)
-	{
-		ss << key; //Write the key
+	return true;
+}
 
-		if (!value.empty())
-			//If this line is not empty or a comment also write the assignment and the value
-			ss << " = " << value;
+//-------------------------------------------------------------------------------------------------------------------//
 
-		ss << '\n';
-	}
+bool TRAP::Utils::Config::IsChanged() const
+{
+	TP_PROFILE_FUNCTION();
+	
+	return m_isChanged;
+}
 
-	return VFS::WriteTextFile(filename, ss.str());
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Utils::Config::Print() const
+{
+	TP_PROFILE_FUNCTION();
+
+	for (const auto& [key, value] : m_data)
+		TP_TRACE(Log::ConfigPrefix, key, " = ", value);
+
+	TP_TRACE(Log::ConfigPrefix, "Size: ", m_data.size());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

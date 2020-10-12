@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP/src/Events/ApplicationEvent.h Source File</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,34 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -83,49 +118,61 @@ $(function() {
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span>TRAP::Events</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;{</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="comment">//Unused for now</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html">    9</a></span>&#160;    <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html">AppTickEvent</a> final : <span class="keyword">public</span> <a class="code" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    {</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html">AppTickEvent</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keyword">static</span> EventType GetStaticType();</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        EventType GetEventType() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* GetName() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        int32_t GetCategoryFlags() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    };</div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html">   12</a></span>&#160;    <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html">AppTickEvent</a> final : <span class="keyword">public</span> <a class="code" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html#a4535a1bf33c72f16647e9950ee1a2f8d">AppTickEvent</a>() = <span class="keywordflow">default</span>;</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="comment">//Unused for now</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_events_1_1_app_update_event.html">   21</a></span>&#160;    <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_events_1_1_app_update_event.html">AppUpdateEvent</a> final : <span class="keyword">public</span> <a class="code" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    {</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_update_event.html">AppUpdateEvent</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keyword">static</span> EventType GetStaticType();</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        EventType GetEventType() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* GetName() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        int32_t GetCategoryFlags() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    };</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="comment">//Unused for now</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_events_1_1_app_render_event.html">   33</a></span>&#160;    <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_events_1_1_app_render_event.html">AppRenderEvent</a> final : <span class="keyword">public</span> <a class="code" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_render_event.html">AppRenderEvent</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">static</span> EventType GetStaticType();</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        EventType GetEventType() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* GetName() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        int32_t GetCategoryFlags() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    };</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_APPLICATIONEVENT_H_*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keyword">static</span> EventType <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html#a5c900181d296c82a607a2a76a4364947">GetStaticType</a>();</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        EventType <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html#aa0080a59da031c4d8a0c20357bdb3576">GetEventType</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html#ab4d42c0e11d58d8e7d95c10dad22b21e">GetName</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        int32_t <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html#a5ce23c49ad54bd6b6fb826e69c916e06">GetCategoryFlags</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    };</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_events_1_1_app_update_event.html">   46</a></span>&#160;    <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_events_1_1_app_update_event.html">AppUpdateEvent</a> final : <span class="keyword">public</span> <a class="code" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_update_event.html#a82093c8038130457105bb093d1d2dd71">AppUpdateEvent</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keyword">static</span> EventType <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_update_event.html#a4c29fad017ba61002ed5662877b8a6ec">GetStaticType</a>();</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        EventType <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_update_event.html#a67edf6f2ebbea68c18da740a93c0496b">GetEventType</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_update_event.html#a3026a8ed47cf4c4ca70d454b7c425cfb">GetName</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        int32_t <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_update_event.html#a72a3f8f5a3cf16156e8ff9869285ded6">GetCategoryFlags</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    };</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_events_1_1_app_render_event.html">   80</a></span>&#160;    <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_events_1_1_app_render_event.html">AppRenderEvent</a> final : <span class="keyword">public</span> <a class="code" href="class_t_r_a_p_1_1_events_1_1_event.html">Event</a></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    {</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_render_event.html#a8b7ec3e6750ed674f918364dc6f5ce2f">AppRenderEvent</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keyword">static</span> EventType <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_render_event.html#a6088f17256b51c19fd85815e6e456333">GetStaticType</a>();</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        EventType <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_render_event.html#a0db454a0c482560427b1aeaf85924de6">GetEventType</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_render_event.html#aef2cf23f39e0cc293d63b09eec86b8dd">GetName</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        int32_t <a class="code" href="class_t_r_a_p_1_1_events_1_1_app_render_event.html#ab05ffb1a52ee2c617b990f7bf774800d">GetCategoryFlags</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    };</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;}</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_APPLICATIONEVENT_H_*/</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_update_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_update_event.html">TRAP::Events::AppUpdateEvent</a></div><div class="ttdef"><b>Definition:</b> ApplicationEvent.h:21</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_tick_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html">TRAP::Events::AppTickEvent</a></div><div class="ttdef"><b>Definition:</b> ApplicationEvent.h:9</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_render_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_render_event.html">TRAP::Events::AppRenderEvent</a></div><div class="ttdef"><b>Definition:</b> ApplicationEvent.h:33</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_event.html">TRAP::Events::Event</a></div><div class="ttdef"><b>Definition:</b> Event.h:32</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_render_event_html_a6088f17256b51c19fd85815e6e456333"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_render_event.html#a6088f17256b51c19fd85815e6e456333">TRAP::Events::AppRenderEvent::GetStaticType</a></div><div class="ttdeci">static EventType GetStaticType()</div><div class="ttdoc">Retrieve the EventType of the Event.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_tick_event_html_aa0080a59da031c4d8a0c20357bdb3576"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html#aa0080a59da031c4d8a0c20357bdb3576">TRAP::Events::AppTickEvent::GetEventType</a></div><div class="ttdeci">EventType GetEventType() const override</div><div class="ttdoc">Retrieve the EventType of the Event.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_update_event_html_a72a3f8f5a3cf16156e8ff9869285ded6"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_update_event.html#a72a3f8f5a3cf16156e8ff9869285ded6">TRAP::Events::AppUpdateEvent::GetCategoryFlags</a></div><div class="ttdeci">int32_t GetCategoryFlags() const override</div><div class="ttdoc">Retrieve the category flags of the Event.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_update_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_update_event.html">TRAP::Events::AppUpdateEvent</a></div><div class="ttdoc">Application update.  Note: Unused for now!</div><div class="ttdef"><b>Definition:</b> ApplicationEvent.h:46</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_tick_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html">TRAP::Events::AppTickEvent</a></div><div class="ttdoc">Application tick.  Note: Unused for now!</div><div class="ttdef"><b>Definition:</b> ApplicationEvent.h:12</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_render_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_render_event.html">TRAP::Events::AppRenderEvent</a></div><div class="ttdoc">Application render.  Note: Unused for now!</div><div class="ttdef"><b>Definition:</b> ApplicationEvent.h:80</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_render_event_html_a0db454a0c482560427b1aeaf85924de6"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_render_event.html#a0db454a0c482560427b1aeaf85924de6">TRAP::Events::AppRenderEvent::GetEventType</a></div><div class="ttdeci">EventType GetEventType() const override</div><div class="ttdoc">Retrieve the EventType of the Event.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_render_event_html_ab05ffb1a52ee2c617b990f7bf774800d"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_render_event.html#ab05ffb1a52ee2c617b990f7bf774800d">TRAP::Events::AppRenderEvent::GetCategoryFlags</a></div><div class="ttdeci">int32_t GetCategoryFlags() const override</div><div class="ttdoc">Retrieve the category flags of the Event.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_tick_event_html_a4535a1bf33c72f16647e9950ee1a2f8d"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html#a4535a1bf33c72f16647e9950ee1a2f8d">TRAP::Events::AppTickEvent::AppTickEvent</a></div><div class="ttdeci">AppTickEvent()=default</div><div class="ttdoc">Default Constructor.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_tick_event_html_a5ce23c49ad54bd6b6fb826e69c916e06"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html#a5ce23c49ad54bd6b6fb826e69c916e06">TRAP::Events::AppTickEvent::GetCategoryFlags</a></div><div class="ttdeci">int32_t GetCategoryFlags() const override</div><div class="ttdoc">Retrieve the category flags of the Event.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_update_event_html_a82093c8038130457105bb093d1d2dd71"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_update_event.html#a82093c8038130457105bb093d1d2dd71">TRAP::Events::AppUpdateEvent::AppUpdateEvent</a></div><div class="ttdeci">AppUpdateEvent()=default</div><div class="ttdoc">Default Constructor.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_render_event_html_aef2cf23f39e0cc293d63b09eec86b8dd"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_render_event.html#aef2cf23f39e0cc293d63b09eec86b8dd">TRAP::Events::AppRenderEvent::GetName</a></div><div class="ttdeci">const char * GetName() const override</div><div class="ttdoc">Retrieve the name of the Event.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_update_event_html_a4c29fad017ba61002ed5662877b8a6ec"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_update_event.html#a4c29fad017ba61002ed5662877b8a6ec">TRAP::Events::AppUpdateEvent::GetStaticType</a></div><div class="ttdeci">static EventType GetStaticType()</div><div class="ttdoc">Retrieve the EventType of the Event.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_update_event_html_a67edf6f2ebbea68c18da740a93c0496b"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_update_event.html#a67edf6f2ebbea68c18da740a93c0496b">TRAP::Events::AppUpdateEvent::GetEventType</a></div><div class="ttdeci">EventType GetEventType() const override</div><div class="ttdoc">Retrieve the EventType of the Event.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_update_event_html_a3026a8ed47cf4c4ca70d454b7c425cfb"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_update_event.html#a3026a8ed47cf4c4ca70d454b7c425cfb">TRAP::Events::AppUpdateEvent::GetName</a></div><div class="ttdeci">const char * GetName() const override</div><div class="ttdoc">Retrieve the name of the Event.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_tick_event_html_a5c900181d296c82a607a2a76a4364947"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html#a5c900181d296c82a607a2a76a4364947">TRAP::Events::AppTickEvent::GetStaticType</a></div><div class="ttdeci">static EventType GetStaticType()</div><div class="ttdoc">Retrieve the EventType of the Event.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_event.html">TRAP::Events::Event</a></div><div class="ttdoc">Event base class.</div><div class="ttdef"><b>Definition:</b> Event.h:41</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_tick_event_html_ab4d42c0e11d58d8e7d95c10dad22b21e"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_tick_event.html#ab4d42c0e11d58d8e7d95c10dad22b21e">TRAP::Events::AppTickEvent::GetName</a></div><div class="ttdeci">const char * GetName() const override</div><div class="ttdoc">Retrieve the name of the Event.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_app_render_event_html_a8b7ec3e6750ed674f918364dc6f5ce2f"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_app_render_event.html#a8b7ec3e6750ed674f918364dc6f5ce2f">TRAP::Events::AppRenderEvent::AppRenderEvent</a></div><div class="ttdeci">AppRenderEvent()=default</div><div class="ttdoc">Default Constructor.</div></div>
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->
 </div>

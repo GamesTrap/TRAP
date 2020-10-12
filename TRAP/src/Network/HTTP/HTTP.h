@@ -38,22 +38,40 @@ namespace TRAP::Network
 {
 	/// <summary>
 	/// A HTTP client.<br>
-	/// Priorities IPv6 over IPv4
+	/// Prioritizes IPv6 over IPv4.
 	/// </summary>
 	class HTTP
 	{
 	public:
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
+		HTTP(HTTP&&) = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
+		HTTP& operator=(HTTP&&) = default;
+		/// <summary>
+		/// Deleted Copy Constructor.
+		/// </summary>
 		HTTP(const HTTP&) = delete;
-		HTTP operator=(const HTTP&) = delete;
+		/// <summary>
+		/// Deleted Copy Assignment Operator.
+		/// </summary>
+		HTTP& operator=(const HTTP&) = delete;
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
+		~HTTP() = default;
 
 		/// <summary>
-		/// Define a HTTP request
+		/// Define a HTTP request.
 		/// </summary>
 		class Request
 		{
 		public:
 			/// <summary>
-			/// Enumerate the available HTTP methods for a request
+			/// Enumerate the available HTTP methods for a request.
 			/// </summary>
 			enum class Method
 			{
@@ -70,9 +88,9 @@ namespace TRAP::Network
 			/// This constructor creates a GET request, with the root
 			/// URI ("/") and an empty body.
 			/// </summary>
-			/// <param name="uri">Target URI</param>
-			/// <param name="method">Method to use for the request</param>
-			/// <param name="body">Content of the request's body</param>
+			/// <param name="uri">Target URI.</param>
+			/// <param name="method">Method to use for the request.</param>
+			/// <param name="body">Content of the request's body.</param>
 			explicit Request(const std::string& uri = "/", Method method = Method::GET, std::string body = "");
 
 			/// <summary>
@@ -84,8 +102,8 @@ namespace TRAP::Network
 			/// mandatory fields are added later by the HTTP client when
 			/// sending the request).
 			/// </summary>
-			/// <param name="field">Name of the field to set</param>
-			/// <param name="value">Value of the field</param>
+			/// <param name="field">Name of the field to set.</param>
+			/// <param name="value">Value of the field.</param>
 			void SetField(const std::string& field, const std::string& value);
 
 			/// <summary>
@@ -95,7 +113,7 @@ namespace TRAP::Network
 			/// the available methods.<br>
 			/// The method is HTTP::Request::GET by default.
 			/// </summary>
-			/// <param name="method">Method to use for the request</param>
+			/// <param name="method">Method to use for the request.</param>
 			void SetMethod(Method method);
 
 			/// <summary>
@@ -105,7 +123,7 @@ namespace TRAP::Network
 			/// that you want to get or post.<br>
 			/// The URI is "/" (the root page) by default.
 			/// </summary>
-			/// <param name="uri">URI to request, relative to the host</param>
+			/// <param name="uri">URI to request, relative to the host.</param>
 			void SetURI(const std::string& uri);
 
 			/// <summary>
@@ -113,8 +131,8 @@ namespace TRAP::Network
 			/// <br>
 			/// The HTTP version is 1.0 by default.
 			/// </summary>
-			/// <param name="major">Major HTTP version number</param>
-			/// <param name="minor">Minor HTTP version number</param>
+			/// <param name="major">Major HTTP version number.</param>
+			/// <param name="minor">Minor HTTP version number.</param>
 			void SetHTTPVersion(uint32_t major, uint32_t minor);
 
 			/// <summary>
@@ -125,7 +143,7 @@ namespace TRAP::Network
 			/// It is ignored for all other methods.<br>
 			/// The body is empty by default.
 			/// </summary>
-			/// <param name="body">Content of the body</param>
+			/// <param name="body">Content of the body.</param>
 			void SetBody(const std::string& body);
 
 		private:
@@ -137,7 +155,7 @@ namespace TRAP::Network
 			/// This is used internally by HTTP before sending the
 			/// request to the web server.
 			/// </summary>
-			/// <returns>String containing the request, ready to be sent</returns>
+			/// <returns>String containing the request, ready to be sent.</returns>
 			std::string Prepare() const;
 
 			/// <summary>
@@ -145,8 +163,8 @@ namespace TRAP::Network
 			/// <br>
 			/// This function uses case-insensitive comparisons.
 			/// </summary>
-			/// <param name="field">Name of the field to test</param>
-			/// <returns>True if the field exists, false otherwise</returns>
+			/// <param name="field">Name of the field to test.</param>
+			/// <returns>True if the field exists, false otherwise.</returns>
 			bool HasField(const std::string& field) const;
 
 			typedef std::map<std::string, std::string> FieldTable;
@@ -160,13 +178,13 @@ namespace TRAP::Network
 		};
 
 		/// <summary>
-		/// Define a HTTP response
+		/// Define a HTTP response.
 		/// </summary>
 		class Response
 		{
 		public:
 			/// <summary>
-			/// Enumerate all the valid status codes for a response
+			/// Enumerate all the valid status codes for a response.
 			/// </summary>
 			enum class Status
 			{
@@ -205,7 +223,7 @@ namespace TRAP::Network
 			};
 
 			/// <summary>
-			/// Default constructor
+			/// Constructor.
 			/// </summary>
 			Response();
 
@@ -216,8 +234,8 @@ namespace TRAP::Network
 			/// the empty string is returned.<br>
 			/// This function uses case-insensitive comparisons.
 			/// </summary>
-			/// <param name="field">Name of the field to get</param>
-			/// <returns>Value of the field, or empty string if not found</returns>
+			/// <param name="field">Name of the field to get.</param>
+			/// <returns>Value of the field, or empty string if not found.</returns>
 			const std::string& GetField(const std::string& field) const;
 
 			/// <summary>
@@ -228,19 +246,19 @@ namespace TRAP::Network
 			/// success, a failure or anything else (see the Status
 			/// enumeration).
 			/// </summary>
-			/// <returns>Status code of the response</returns>
+			/// <returns>Status code of the response.</returns>
 			Status GetStatus() const;
 
 			/// <summary>
-			/// Get the major HTTP version number of the response
+			/// Get the major HTTP version number of the response.
 			/// </summary>
-			/// <returns>Major HTTP version number</returns>
+			/// <returns>Major HTTP version number.</returns>
 			uint32_t GetMajorHTTPVersion() const;
 
 			/// <summary>
-			/// Get the minor HTTP version number of the response
+			/// Get the minor HTTP version number of the response.
 			/// </summary>
-			/// <returns>Minor HTTP version number</returns>
+			/// <returns>Minor HTTP version number.</returns>
 			uint32_t GetMinorHTTPVersion() const;
 
 			/// <summary>
@@ -252,7 +270,7 @@ namespace TRAP::Network
 			/// - nothing (for HEAD requests)<br>
 			/// - an error message (in case of an error)
 			/// </summary>
-			/// <returns>The response body</returns>
+			/// <returns>The response body.</returns>
 			const std::string& GetBody() const;
 
 		private:
@@ -264,7 +282,7 @@ namespace TRAP::Network
 			/// This function is used by HTTP to build the response
 			/// of a request.
 			/// </summary>
-			/// <param name="data">Content of the response to parse</param>
+			/// <param name="data">Content of the response to parse.</param>
 			void Parse(const std::string& data);
 
 			/// <summary>
@@ -273,7 +291,7 @@ namespace TRAP::Network
 			/// This function is used by HTTP to extract values passed
 			/// in the response.
 			/// </summary>
-			/// <param name="in">String stream containing the header values</param>
+			/// <param name="in">String stream containing the header values.</param>
 			void ParseFields(std::istream& in);
 
 			typedef std::map<std::string, std::string> FieldTable;
@@ -286,7 +304,7 @@ namespace TRAP::Network
 		};
 
 		/// <summary>
-		/// Default constructor
+		/// Constructor.
 		/// </summary>
 		HTTP();
 
@@ -300,8 +318,8 @@ namespace TRAP::Network
 		/// You should leave it like this unless you rally need a part other than the
 		/// standard one, or use an unknown protocol.
 		/// </summary>
-		/// <param name="host">Web server to connect to</param>
-		/// <param name="port">Port to use for connection</param>
+		/// <param name="host">Web server to connect to.</param>
+		/// <param name="port">Port to use for connection.</param>
 		explicit HTTP(const std::string& host, uint16_t port = 0);
 
 		/// <summary>
@@ -315,8 +333,8 @@ namespace TRAP::Network
 		/// You should leave it like this unless you really need a port other than the
 		/// standard one, or use an unknown protocol.
 		/// </summary>
-		/// <param name="host">Web server to connect to</param>
-		/// <param name="port">Port to use for connection</param>
+		/// <param name="host">Web server to connect to.</param>
+		/// <param name="port">Port to use for connection.</param>
 		void SetHost(const std::string& host, uint16_t port = 0);
 
 		/// <summary>
@@ -331,8 +349,8 @@ namespace TRAP::Network
 		/// A value of Utils::TimeStep(0.0f) means that the client will use the system default timeout
 		/// (which is usually pretty long).
 		/// </summary>
-		/// <param name="request">Request to send</param>
-		/// <param name="timeout">Maximum time to wait</param>
+		/// <param name="request">Request to send.</param>
+		/// <param name="timeout">Maximum time to wait.</param>
 		/// <returns></returns>
 		Response SendRequest(const Request& request, Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 

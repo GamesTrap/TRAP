@@ -2,7 +2,7 @@
 
 #include "Utils.h"
 
-std::string TRAP::Utils::UUIDToString(const std::vector<uint8_t>& uuid)
+std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
 {
 	std::stringstream s;
 	
@@ -33,7 +33,7 @@ std::string TRAP::Utils::UUIDToString(const std::vector<uint8_t>& uuid)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::Utils::UUIDFromString(const std::string_view uuid)
+std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 {
 	uint8_t digit = 0;
 	bool firstDigit = true;
@@ -42,7 +42,7 @@ std::vector<uint8_t> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 	if (uuid.empty())
 		return {};
 	
-	std::vector<uint8_t> result;
+	std::array<uint8_t, 16> result{};
 	for (uint8_t i : uuid)
 	{
 		if (i == '-')
@@ -79,7 +79,7 @@ std::vector<uint8_t> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 			else
 				uuidDigit = 0;
 			
-			result.emplace_back((charDigit << 4) | uuidDigit);
+			result[index] = ((charDigit << 4) | uuidDigit);
 			index++;
 			firstDigit = true;
 		}

@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: Member List</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -79,53 +117,45 @@ $(function() {
 
 <p>This is the complete list of members for <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>, including all inherited members.</p>
 <table class="directory">
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>ColorFormat</b> enum name (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a5bee5d4520506ffc6702eaec782a5011">ColorFormat</a> enum name</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
   <tr bgcolor="#f0f0f0"><td class="entry"><b>ConvertBGR16ToRGB24</b>(std::vector&lt; uint8_t &gt; &amp;source, uint32_t width, uint32_t height) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
   <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>ConvertBGR24ToRGB24</b>(std::vector&lt; uint8_t &gt; &amp;source, uint32_t width, uint32_t height) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
   <tr bgcolor="#f0f0f0"><td class="entry"><b>ConvertBGRA32ToRGBA32</b>(std::vector&lt; uint8_t &gt; &amp;source, uint32_t width, uint32_t height) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>ConvertRLEBGR16ToRGB24</b>(std::vector&lt; uint8_t &gt; &amp;source, uint32_t width, uint32_t height) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>ConvertRLEBGR24ToRGB24</b>(std::vector&lt; uint8_t &gt; &amp;source, uint32_t width, uint32_t height) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>ConvertRLEBGRA32ToRGBA</b>(std::vector&lt; uint8_t &gt; &amp;source, uint32_t width, uint32_t height) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>DecodeBGRAMap</b>(std::vector&lt; uint8_t &gt; &amp;source, uint32_t width, uint32_t height, uint32_t channels, std::vector&lt; uint8_t &gt; &amp;colorMap) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>DecodeRLEBGRAMap</b>(std::vector&lt; uint8_t &gt; &amp;source, uint32_t width, uint32_t height, uint32_t channels, std::vector&lt; uint8_t &gt; &amp;colorMap) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>DecodeRLEGrayScale</b>(std::vector&lt; uint8_t &gt; &amp;source, uint32_t width, uint32_t height) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>FlipX</b>(const Scope&lt; Image &gt; &amp;img) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>FlipX</b>(uint32_t width, uint32_t height, ColorFormat format, const T *data) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>FlipY</b>(const Scope&lt; Image &gt; &amp;img) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>FlipY</b>(uint32_t width, uint32_t height, ColorFormat format, const T *data) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>GetBitsPerPixel</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>GetBytesPerPixel</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>GetColorFormat</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>GetFilePath</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>GetHeight</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>GetPixelData</b>() const =0 (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>GetPixelDataSize</b>() const =0 (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>GetSize</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>GetWidth</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>HasAlpha</b>(ColorFormat format) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>HasAlphaChannel</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>Image</b>() (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>Image</b>(const Image &amp;)=default (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>Image</b>(Image &amp;&amp;)=default (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>IsColored</b>(ColorFormat format) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>IsGrayScale</b>(ColorFormat format) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>IsHDR</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>IsImageColored</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>IsImageGrayScale</b>() const (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>LoadFallback</b>() (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>LoadFromFile</b>(const std::string &amp;filepath) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>LoadFromMemory</b>(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ColorFormat format, const std::vector&lt; uint8_t &gt; &amp;pixelData) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>LoadFromMemory</b>(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ColorFormat format, const std::vector&lt; uint16_t &gt; &amp;pixelData) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>LoadFromMemory</b>(uint32_t width, uint32_t height, uint32_t bitsPerPixel, ColorFormat format, const std::vector&lt; float &gt; &amp;pixelData) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>DecodeBGRAMap</b>(std::vector&lt; uint8_t &gt; &amp;source, uint32_t width, uint32_t height, uint32_t channels, std::vector&lt; uint8_t &gt; &amp;colorMap) (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a89af9a5f7e1b13c7616c7ba6f3711ec1">FlipX</a>(const Scope&lt; Image &gt; &amp;img)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a845e1885f617f504adb8a5a433216a84">FlipX</a>(uint32_t width, uint32_t height, ColorFormat format, const T *data)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#aee88cc358f46c777292c22acdd377b54">FlipY</a>(const Scope&lt; Image &gt; &amp;img)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a86c3e1ce3f4358b07204cee0cfb90cbb">FlipY</a>(uint32_t width, uint32_t height, ColorFormat format, const T *data)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a2dca807f4bd1ca11f72b809d2ad82a98">GetBitsPerPixel</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#af92c7056200d0893755ac83ac02f6c62">GetBytesPerPixel</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a77f905b079febf164910d28ba8a94437">GetColorFormat</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a0b7ab6e0daabc3f02e14d16069d47066">GetFilePath</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a07f52361bc98ca5c6fb7ddb60c61c85e">GetHeight</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a0f54ee711e298f8ee5503b6bc2a1f927">GetPixelData</a>() const =0</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a249217537be3ad90d1cd43fbfe4aa664">GetPixelDataSize</a>() const =0</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#aa054d860108ba9cc8dc24c26f6c00221">GetSize</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#af13dea57e0987c4a5fde0e837f00a84f">GetWidth</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a66f92b6d9664d550e5ab98239e113e2b">HasAlphaChannel</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a8756e088b2ec260fba1f0a76da452f62">Image</a>()</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a4b187904358e918478b6f23adbabbaf6">Image</a>(const Image &amp;)=default</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a5c94007a22e3fa66019be4a900065b0e">Image</a>(Image &amp;&amp;)=default</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#ab80b6bd19eb994be5d2a2f2aab84350e">IsHDR</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a1fe55a4942128a31882e7d9f2168e5f1">IsImageColored</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a7c1d6c0e9d1fef15f59dd67490a1eb23">IsImageGrayScale</a>() const</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a4f40578a6a79726ce7b08475f7bdafc0">LoadFallback</a>()</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a8147097ce5e2e7e53504fdc59cab7b08">LoadFromFile</a>(const std::string &amp;filepath)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a3987c41a9be2bf2e0fac0367f21e9a4c">LoadFromMemory</a>(uint32_t width, uint32_t height, ColorFormat format, const std::vector&lt; uint8_t &gt; &amp;pixelData)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a6bc92abbc2f2018a1cf25e62d0a08909">LoadFromMemory</a>(uint32_t width, uint32_t height, ColorFormat format, const std::vector&lt; uint16_t &gt; &amp;pixelData)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a6580e6c22e07a82b2b50cf4cc915a1c7">LoadFromMemory</a>(uint32_t width, uint32_t height, ColorFormat format, const std::vector&lt; float &gt; &amp;pixelData)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
   <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>m_bitsPerPixel</b> (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr bgcolor="#f0f0f0"><td class="entry"><b>m_colorFormat</b> (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>m_filepath</b> (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr bgcolor="#f0f0f0"><td class="entry"><b>m_height</b> (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>m_isHDR</b> (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr bgcolor="#f0f0f0"><td class="entry"><b>m_width</b> (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>operator=</b>(const Image &amp;)=default (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>operator=</b>(Image &amp;&amp;)=default (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>~Image</b>()=default (defined in <a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a>)</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a6eed4e61c8dddb4df32d2606c66ce26f">operator=</a>(const Image &amp;)=default</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a61a345c38439656157122fe1f76e3836">operator=</a>(Image &amp;&amp;)=default</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html#a8f9dae0b04a98f3c832cc1fe8443f0dd">~Image</a>()=default</td><td class="entry"><a class="el" href="class_t_r_a_p_1_1_image.html">TRAP::Image</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
 </table></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->

@@ -13,7 +13,7 @@ TRAP::Graphics::API::Vulkan::Instance* TRAP::Graphics::API::Vulkan::PhysicalDevi
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::Vulkan::PhysicalDevice::PhysicalDevice(VkPhysicalDevice device, const QueueFamilyIndices indices)
-	: m_device(device), m_familyIndices(indices), m_deviceProperties(), m_deviceProperties11(), m_deviceFeatures(), m_deviceMemoryProperties(), m_rayTracing(false)
+	: m_device(device), m_familyIndices(indices), m_deviceProperties(), m_deviceProperties11(), m_deviceFeatures(), m_deviceMemoryProperties(), m_rayTracing(false), m_deviceUUID()
 {
 	vkGetPhysicalDeviceProperties(m_device, &m_deviceProperties);
 	vkGetPhysicalDeviceFeatures(m_device, &m_deviceFeatures);
@@ -34,9 +34,7 @@ TRAP::Graphics::API::Vulkan::PhysicalDevice::PhysicalDevice(VkPhysicalDevice dev
 	propID.pNext = nullptr;
 	VkPhysicalDeviceProperties2 props21{ VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2, &propID, {} };
 	vkGetPhysicalDeviceProperties2(device, &props21);
-	m_deviceUUID.resize(16, 0);
-	for(uint8_t i = 0; i < 16; i++)
-		m_deviceUUID[i] = propID.deviceUUID[i];
+	std::memcpy(m_deviceUUID.data(), propID.deviceUUID, m_deviceUUID.size());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -118,7 +116,7 @@ const std::vector<VkExtensionProperties>& TRAP::Graphics::API::Vulkan::PhysicalD
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<uint8_t> TRAP::Graphics::API::Vulkan::PhysicalDevice::GetUUID() const
+std::array<uint8_t, 16> TRAP::Graphics::API::Vulkan::PhysicalDevice::GetUUID() const
 {
 	return m_deviceUUID;
 }

@@ -428,9 +428,9 @@ const void* TRAP::INTERNAL::BMPImage::GetPixelData() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::INTERNAL::BMPImage::GetPixelDataSize() const
+uint64_t TRAP::INTERNAL::BMPImage::GetPixelDataSize() const
 {
-	return static_cast<uint32_t>(m_data.size());
+	return m_data.size();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

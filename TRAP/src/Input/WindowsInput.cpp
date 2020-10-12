@@ -34,7 +34,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifdef TRAP_PLATFORM_WINDOWS
 
 #include "Events/ControllerEvent.h"
-#include "Utils/ControllerMappings.h"
+#include "ControllerMappings.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -180,7 +180,7 @@ void TRAP::Input::DetectControllerDisconnectionWin32()
 {
 	for (uint32_t cID = 0; cID <= static_cast<uint32_t>(Controller::Sixteen); cID++)
 		if (s_controllerInternal[cID].Connected)
-			PollController(static_cast<Controller>(cID), Poll_Presence);
+			PollController(static_cast<Controller>(cID), PollMode::Presence);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -189,8 +189,8 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 {
 	if (s_controllerInternal[static_cast<uint32_t>(controller)].WinCon.XInput)
 	{
-		const uint16_t left = static_cast<uint16_t>(static_cast<float>(65535)* leftMotor);
-		const uint16_t right = static_cast<uint16_t>(static_cast<float>(65535)* rightMotor);
+		const uint16_t left = static_cast<uint16_t>(static_cast<float>(65535) * leftMotor);
+		const uint16_t right = static_cast<uint16_t>(static_cast<float>(65535) * rightMotor);
 		XINPUT_VIBRATION vibration{ left, right };
 		const uint32_t result = s_xinput.SetState(static_cast<DWORD>(controller), &vibration);
 		if (result != ERROR_SUCCESS)
@@ -200,7 +200,7 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, const fl
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::PollController(Controller controller, const int32_t mode)
+bool TRAP::Input::PollController(Controller controller, const PollMode mode)
 {
 	ControllerInternal* con = &s_controllerInternal[static_cast<uint32_t>(controller)];
 	if (con->WinCon.Device)
@@ -224,7 +224,7 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 			return false;
 		}
 
-		if (mode == Poll_Presence)
+		if (mode == PollMode::Presence)
 			return true;
 
 		for (int32_t i = 0; i < con->WinCon.ObjectCount; i++)
@@ -307,7 +307,7 @@ bool TRAP::Input::PollController(Controller controller, const int32_t mode)
 			return false;
 		}
 
-		if (mode == Poll_Presence)
+		if (mode == PollMode::Presence)
 			return true;
 
 		InternalInputControllerAxis(con, 0, (xis.Gamepad.sThumbLX + 0.5f) / 32767.5f);

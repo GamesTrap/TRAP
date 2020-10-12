@@ -3,7 +3,9 @@
 
 namespace TRAP::Utils::MsgBox
 {
-	//Options for styles to apply to a message box
+	/// <summary>
+	/// Options for styles to apply to a message box.
+	/// </summary>
 	enum class Style
 	{
 		Info,
@@ -14,7 +16,9 @@ namespace TRAP::Utils::MsgBox
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	//Options for buttons to provide on a message box
+	/// <summary>
+	/// Options for buttons to provide on a message box.
+	/// </summary>
 	enum class Buttons
 	{
 		OK,
@@ -25,9 +29,11 @@ namespace TRAP::Utils::MsgBox
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	//Possible responses from a message box.
-	//'None' signifies that no option was chosen.
-	//'Error' signifies that an error was encountered while creating the message box.
+	/// <summary>
+	/// Possible responses from a message box.<br>
+	/// "None" signifies that no option was chosen.<br>
+	/// "Error" signifies that an error was encountered while creating the message box.
+	/// </summary>
 	enum class Selection
 	{
 		OK,
@@ -40,23 +46,49 @@ namespace TRAP::Utils::MsgBox
 	};
 
 	//-------------------------------------------------------------------------------------------------------------------//
-
-	//Blocking call to create a modal message box with the given message, title, style and buttons
+	
+	/// <summary>
+	/// Blocking call to create a modal message box with the given message, title, style and buttons.
+	/// </summary>
+	/// <param name="message">Message for the message box.</param>
+	/// <param name="title">Title for the message box.</param>
+	/// <param name="style">Style for the message box.</param>
+	/// <param name="buttons">Buttons for the message box.</param>
+	/// <returns>Selection made by the user.</returns>
 	Selection Show(const char* message, const char* title, Style style, Buttons buttons);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	//Convenience function to call Show() with the default buttons
+	/// <summary>
+	/// Convenience function to call Show() with default button.
+	/// </summary>
+	/// <param name="message">Message for the message box.</param>
+	/// <param name="title">Title for the message box.</param>
+	/// <param name="style">Style for the message box.</param>
+	/// <returns>Selection made by the user.</returns>
 	Selection Show(const char* message, const char* title, Style style);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	//Convenience function to call Show() with the default style
+	//
+
+	/// <summary>
+	/// Convenience function to call Show() with default style.
+	/// </summary>
+	/// <param name="message">Message for the message box-</param>
+	/// <param name="title">Title for the message box.</param>
+	/// <param name="buttons">Button(s) for the message box.</param>
+	/// <returns>Selection made by the user.</returns>
 	Selection Show(const char* message, const char* title, Buttons buttons);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	//Convenience function to call Show() with the default style and buttons
+	/// <summary>
+	/// Convenience function to call Show() with default style and button.
+	/// </summary>
+	/// <param name="message">Message for the message box.</param>
+	/// <param name="title">Title message box.</param>
+	/// <returns>Selection made by the user.</returns>
 	Selection Show(const char* message, const char* title);
 }
 

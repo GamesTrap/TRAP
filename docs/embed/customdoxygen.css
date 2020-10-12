@@ -109,7 +109,13 @@ body, .navbar, .btn-default
 
 .btn-default
 {
-	color: inherit !important;
+  color: inherit !important;
+  border-color: #000000 !important;
+}
+
+.input-group-btn
+{
+  color: #FFFFFF !important;
 }
 
 /* Wrapper for page content to push down footer */
@@ -450,4 +456,44 @@ span.SRScope
 .page-header .label
 {
   font-size: 50%;
+}
+
+.col-md-9 ul:first-child li:first-child
+{
+  display: none !important;
+}
+
+.line
+{
+  background-color: #333 !important;
+}
+
+.fragment
+{
+  border: 1px solid #3c3c3c !important;
+  background-color: #3c3c3c !important;
+}
+
+span.lineno
+{
+  background-color: #2d2d2d !important;
+  color: #FFF !important;
+  border-left: 1px solid #2d2d2d !important;
+  border-right: 1px solid #2d2d2d !important;
+}
+
+.panel-title
+{
+  color: #333 !important;
+  font-weight: 500 !important;
+}
+
+.SRStatus, .SRResults, .SRIndex, .SRPage, .SRScope
+{
+  color: #FFF !important;
+}
+
+.SRSymbol
+{
+  color: #5776b5 !important;
 }

@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::Network::IPv4Address Class Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -92,13 +130,13 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac2183b4f4c59280b231624c4145dd3ca"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#ac2183b4f4c59280b231624c4145dd3ca">IPv4Address</a> ()</td></tr>
-<tr class="memdesc:ac2183b4f4c59280b231624c4145dd3ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">This constructor creates an empty (invalid) address  <a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#ac2183b4f4c59280b231624c4145dd3ca">More...</a><br /></td></tr>
+<tr class="memdesc:ac2183b4f4c59280b231624c4145dd3ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">This constructor creates an empty (invalid) address.  <a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#ac2183b4f4c59280b231624c4145dd3ca">More...</a><br /></td></tr>
 <tr class="separator:ac2183b4f4c59280b231624c4145dd3ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0dcf2e6497ba73a5a6e9d670b953f3b8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#a0dcf2e6497ba73a5a6e9d670b953f3b8">IPv4Address</a> (const std::string &amp;address)</td></tr>
-<tr class="memdesc:a0dcf2e6497ba73a5a6e9d670b953f3b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the address from a string.<br  />
+<tr class="memitem:a6a7afab056c650df7ae757a36e152930"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#a6a7afab056c650df7ae757a36e152930">IPv4Address</a> (std::string_view address)</td></tr>
+<tr class="memdesc:a6a7afab056c650df7ae757a36e152930"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the address from a string.<br  />
  <br  />
- Here address can be either a decimal address (ex: "192.168.1.180") or a network name (ex: "localhost").  <a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#a0dcf2e6497ba73a5a6e9d670b953f3b8">More...</a><br /></td></tr>
-<tr class="separator:a0dcf2e6497ba73a5a6e9d670b953f3b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+ Here address can be either a decimal address (ex: "192.168.1.180") or a network name (ex: "localhost").  <a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#a6a7afab056c650df7ae757a36e152930">More...</a><br /></td></tr>
+<tr class="separator:a6a7afab056c650df7ae757a36e152930"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab09abc36b09bed6cade15a8064c022cc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#ab09abc36b09bed6cade15a8064c022cc">IPv4Address</a> (const char *address)</td></tr>
 <tr class="memdesc:ab09abc36b09bed6cade15a8064c022cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the address from a string.<br  />
  <br  />
@@ -165,7 +203,7 @@ static const <a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.htm
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
 <tr class="memitem:a3cb1d1b1ea724c9cd59b56620e161f08"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#a3cb1d1b1ea724c9cd59b56620e161f08">operator&lt;</a> (const <a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html">IPv4Address</a> &amp;left, const <a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html">IPv4Address</a> &amp;right)</td></tr>
-<tr class="memdesc:a3cb1d1b1ea724c9cd59b56620e161f08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of &lt; operator to compare two IP addresses  <a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#a3cb1d1b1ea724c9cd59b56620e161f08">More...</a><br /></td></tr>
+<tr class="memdesc:a3cb1d1b1ea724c9cd59b56620e161f08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of &lt; operator to compare two IP addresses.  <a href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#a3cb1d1b1ea724c9cd59b56620e161f08">More...</a><br /></td></tr>
 <tr class="separator:a3cb1d1b1ea724c9cd59b56620e161f08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -187,12 +225,12 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>This constructor creates an empty (invalid) address </p>
+<p>This constructor creates an empty (invalid) address. </p>
 
 </div>
 </div>
-<a id="a0dcf2e6497ba73a5a6e9d670b953f3b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dcf2e6497ba73a5a6e9d670b953f3b8">&#9670;&nbsp;</a></span>IPv4Address() <span class="overload">[2/5]</span></h2>
+<a id="a6a7afab056c650df7ae757a36e152930"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a7afab056c650df7ae757a36e152930">&#9670;&nbsp;</a></span>IPv4Address() <span class="overload">[2/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -200,7 +238,7 @@ Friends</h2></td></tr>
         <tr>
           <td class="memname">TRAP::Network::IPv4Address::IPv4Address </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>address</em></td><td>)</td>
           <td></td>
         </tr>
@@ -212,7 +250,7 @@ Friends</h2></td></tr>
  Here address can be either a decimal address (ex: "192.168.1.180") or a network name (ex: "localhost"). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">address</td><td>IPv4 address or network name</td></tr>
+    <tr><td class="paramname">address</td><td>IPv4 address or network name.</td></tr>
   </table>
   </dd>
 </dl>
@@ -241,7 +279,7 @@ Friends</h2></td></tr>
  This is equivalent to the constructor taking a std::string parameter, it is defined for convenience so that the implicit conversion from literal strings to <a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html" title="TRAP::Network::IPv4Address is a utility class for manipulating network addresses.  It provides a set ...">IPv4Address</a> work. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">address</td><td>IPv4 address or network name</td></tr>
+    <tr><td class="paramname">address</td><td>IPv4 address or network name.</td></tr>
   </table>
   </dd>
 </dl>
@@ -291,10 +329,10 @@ Friends</h2></td></tr>
  Calling IPv4Address(a, b, c, d) is equivalent to calling <a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html" title="TRAP::Network::IPv4Address is a utility class for manipulating network addresses.  It provides a set ...">IPv4Address</a>("a.b.c.d"), but safer as it doesn't have to parse a string to get the address components. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">byte0</td><td>First byte of the address</td></tr>
-    <tr><td class="paramname">byte1</td><td>Second byte of the address</td></tr>
-    <tr><td class="paramname">byte2</td><td>Third byte of the address</td></tr>
-    <tr><td class="paramname">byte3</td><td>Fourth byte of the address</td></tr>
+    <tr><td class="paramname">byte0</td><td>First byte of the address.</td></tr>
+    <tr><td class="paramname">byte1</td><td>Second byte of the address.</td></tr>
+    <tr><td class="paramname">byte2</td><td>Third byte of the address.</td></tr>
+    <tr><td class="paramname">byte3</td><td>Fourth byte of the address.</td></tr>
   </table>
   </dd>
 </dl>
@@ -331,7 +369,7 @@ Friends</h2></td></tr>
  It should be used for optimization purposes, and only if you get that representation from <a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#afd57027515127b89ba645ca43507b279" title="Get an integer representation of the address.    The returned number is in the internal representatio...">IPv4Address::ToInteger()</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">address</td><td>4 Bytes of the address packed into a 32 Bit integer</td></tr>
+    <tr><td class="paramname">address</td><td>4 Bytes of the address packed into a 32 Bit integer.</td></tr>
   </table>
   </dd>
 </dl>
@@ -367,7 +405,7 @@ Friends</h2></td></tr>
  The local address is the address of the computer from the LAN point of view, i.e. something like 192.168.1.180.<br  />
  It is meaningful only for communications over the local network.<br  />
  Unlike GetPublicAddress, this function is fast and may be used safely anywhere. </p>
-<dl class="section return"><dt>Returns</dt><dd>Local IPv4 address of the computer</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Local IPv4 address of the computer.</dd></dl>
 
 </div>
 </div>
@@ -404,11 +442,11 @@ Friends</h2></td></tr>
  Because this function depends on the network connection and on a distant server, you may use a time limit if you don't want your program to be possibly stuck waiting in case there is a problem; this limit is deactivated by default. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">timeout</td><td>Maximum time to wait</td></tr>
+    <tr><td class="paramname">timeout</td><td>Maximum time to wait.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Public IP address of the computer</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Public IP address of the computer.</dd></dl>
 
 </div>
 </div>
@@ -431,7 +469,7 @@ Friends</h2></td></tr>
  <br  />
  The returned number is in the internal representation of the address, and should be used for optimization purposes only (like sending the address through a socket).<br  />
  The integer produced by this function can then be converted back to a <a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html" title="TRAP::Network::IPv4Address is a utility class for manipulating network addresses.  It provides a set ...">TRAP::Network::IPv4Address</a> with the proper constructor. </p>
-<dl class="section return"><dt>Returns</dt><dd>32 Bit unsigned integer representation of the address</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>32 Bit unsigned integer representation of the address.</dd></dl>
 
 </div>
 </div>
@@ -453,7 +491,7 @@ Friends</h2></td></tr>
 <p>Get a string representation of the address.<br  />
  <br  />
  The returned string is the decimal representation of the IPv4 address (like "192.168.1.180"), even if it was constructed from a host name. </p>
-<dl class="section return"><dt>Returns</dt><dd>String representation of the address</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>String representation of the address.</dd></dl>
 
 </div>
 </div>
@@ -492,15 +530,15 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Overload of &lt; operator to compare two IP addresses </p>
+<p>Overload of &lt; operator to compare two IP addresses. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">left</td><td>Left operand (a IP address)</td></tr>
-    <tr><td class="paramname">right</td><td>Right operand (a IP address)</td></tr>
+    <tr><td class="paramname">left</td><td>Left operand (a IP address).</td></tr>
+    <tr><td class="paramname">right</td><td>Right operand (a IP address).</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>True if left is lesser than right</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if left is lesser than right.</dd></dl>
 
 </div>
 </div>

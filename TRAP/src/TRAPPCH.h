@@ -39,6 +39,7 @@
 
 //OpenGL
 #include "Graphics/API/OpenGL/Loader/OpenGLLoader.h"
+#pragma warning(push, 0)
 //SPIRV
 #include <glslang/Public/ShaderLang.h>
 #include <SPIRV/GlslangToSpv.h>
@@ -46,12 +47,15 @@
 #include <spirv_glsl.hpp>
 //ImGUI
 #include <imgui.h>
+#pragma warning(pop)
+
 //TRAP Engine
 #include "Core.h"
 #include "Log/Log.h"
 #include "Utils/Profiler/Instrumentor.h"
 
 #ifdef TRAP_PLATFORM_LINUX
+#pragma warning(push, 0)
 #include <linux/input.h>
 #include <linux/limits.h>
 #include <regex.h>
@@ -77,6 +81,8 @@
 #include <X11/Xmd.h>
 #include <dlfcn.h>
 #include <arpa/inet.h>
+#include <signal.h>
+#pragma warning(pop)
 
 #ifdef None
 	#undef None
@@ -112,6 +118,7 @@
 #endif
 
 #ifdef TRAP_PLATFORM_WINDOWS
+#pragma warning(push, 0)
 //WinAPI
 #include "Utils/Win.h"
 #include <Dbt.h>
@@ -129,10 +136,11 @@
 #endif
 #include <basetsd.h>
 #include <dinput.h>
-#include <winsock2.h>
+#include <WinSock2.h>
 #include <winsock.h>
-#include <ws2tcpip.h>
+#include <WS2tcpip.h>
 #include <shellapi.h>
+#pragma warning(pop)
 
 #ifdef far
 	#undef far

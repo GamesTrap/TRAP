@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::Graphics::ShaderManager Class Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -104,18 +142,18 @@ static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_shader
 <tr class="memitem:a6e6b61dcbdfd90cc74d0f1cf97e442c1"><td class="memItemLeft" align="right" valign="top"><a id="a6e6b61dcbdfd90cc74d0f1cf97e442c1"></a>
 static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_shader.html">Shader</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Load</b> (const std::string &amp;name, const std::string &amp;filepath)</td></tr>
 <tr class="separator:a6e6b61dcbdfd90cc74d0f1cf97e442c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aabf6183f4b26ee8c5e0a83e7ea7bc3c4"><td class="memItemLeft" align="right" valign="top"><a id="aabf6183f4b26ee8c5e0a83e7ea7bc3c4"></a>
-static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_shader.html">Shader</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Load</b> (const std::string &amp;name, const std::string &amp;VSSource, const std::string &amp;FSSource, const std::string &amp;GSSource=&quot;&quot;, const std::string &amp;TCSSource=&quot;&quot;, const std::string &amp;TESSource=&quot;&quot;, const std::string &amp;CSSSource=&quot;&quot;)</td></tr>
-<tr class="separator:aabf6183f4b26ee8c5e0a83e7ea7bc3c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac83222a4be1dddc476d7c532b89cc8f6"><td class="memItemLeft" align="right" valign="top"><a id="ac83222a4be1dddc476d7c532b89cc8f6"></a>
+static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_shader.html">Shader</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Load</b> (const std::string &amp;name, std::string_view VSSource, std::string_view FSSource, std::string_view GSSource=&quot;&quot;, std::string_view TCSSource=&quot;&quot;, std::string_view TESSource=&quot;&quot;, std::string_view CSSSource=&quot;&quot;)</td></tr>
+<tr class="separator:ac83222a4be1dddc476d7c532b89cc8f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3f21b05fa19bb3ed41a0dada01294d4"><td class="memItemLeft" align="right" valign="top"><a id="ad3f21b05fa19bb3ed41a0dada01294d4"></a>
 static void&#160;</td><td class="memItemRight" valign="bottom"><b>Add</b> (Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_shader.html">Shader</a> &gt; shader)</td></tr>
 <tr class="separator:ad3f21b05fa19bb3ed41a0dada01294d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8695b72893fac33639bba1339ea4358f"><td class="memItemLeft" align="right" valign="top"><a id="a8695b72893fac33639bba1339ea4358f"></a>
 static void&#160;</td><td class="memItemRight" valign="bottom"><b>Remove</b> (const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_shader.html">Shader</a> &gt; &amp;shader)</td></tr>
 <tr class="separator:a8695b72893fac33639bba1339ea4358f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad88625aea1bf7e4556f00b452058a4b1"><td class="memItemLeft" align="right" valign="top"><a id="ad88625aea1bf7e4556f00b452058a4b1"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>Remove</b> (std::string_view name)</td></tr>
-<tr class="separator:ad88625aea1bf7e4556f00b452058a4b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fd67f376854f49f5719e3925ab06df2"><td class="memItemLeft" align="right" valign="top"><a id="a9fd67f376854f49f5719e3925ab06df2"></a>
+static void&#160;</td><td class="memItemRight" valign="bottom"><b>Remove</b> (const std::string &amp;name)</td></tr>
+<tr class="separator:a9fd67f376854f49f5719e3925ab06df2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08a8290d09ccb51fd9b25ae3a73cae15"><td class="memItemLeft" align="right" valign="top"><a id="a08a8290d09ccb51fd9b25ae3a73cae15"></a>
 static const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_shader.html">Shader</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Get</b> (const std::string &amp;name)</td></tr>
 <tr class="separator:a08a8290d09ccb51fd9b25ae3a73cae15"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -140,9 +178,9 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>Shutdown</b> (
 <tr class="memitem:a953c95537318e827cc43d60745b1dc45"><td class="memItemLeft" align="right" valign="top"><a id="a953c95537318e827cc43d60745b1dc45"></a>
 static bool&#160;</td><td class="memItemRight" valign="bottom"><b>Exists</b> (const std::string &amp;name)</td></tr>
 <tr class="separator:a953c95537318e827cc43d60745b1dc45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afbcf8b76d78bc4696402aee7b85d2f68"><td class="memItemLeft" align="right" valign="top"><a id="afbcf8b76d78bc4696402aee7b85d2f68"></a>
-static bool&#160;</td><td class="memItemRight" valign="bottom"><b>ExistsVirtualPath</b> (const std::string &amp;virtualPath)</td></tr>
-<tr class="separator:afbcf8b76d78bc4696402aee7b85d2f68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50d70b9701c7d956572dbd95ef7e850b"><td class="memItemLeft" align="right" valign="top"><a id="a50d70b9701c7d956572dbd95ef7e850b"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><b>ExistsVirtualPath</b> (std::string_view virtualPath)</td></tr>
+<tr class="separator:a50d70b9701c7d956572dbd95ef7e850b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>TRAP/src/Graphics/Shaders/<a class="el" href="_shader_manager_8h_source.html">ShaderManager.h</a></li>

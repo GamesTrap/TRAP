@@ -247,7 +247,12 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 
 void TRAP::INTERNAL::WindowingAPI::SetSamples(const uint32_t samples)
 {
-	s_Data.Hints.FrameBuffer.Samples = samples;
+	if(samples > 8)
+		s_Data.Hints.FrameBuffer.Samples = 8;
+	else if(samples == 0 || samples == 1 || samples == 2 || samples == 4 || samples == 8)
+		s_Data.Hints.FrameBuffer.Samples = samples;
+	else
+		s_Data.Hints.FrameBuffer.Samples = 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -572,7 +577,7 @@ TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::Window
 				pixelCount++;
 			}			
 
-			const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(), 32, Image::ColorFormat::RGBA, pixelDataRGBA);
+			const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(), Image::ColorFormat::RGBA, pixelDataRGBA);
 			
 			cursor = MakeScope<InternalCursor>();
 			s_Data.CursorList.emplace_front(cursor.get());
@@ -676,7 +681,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowIcon(InternalWindow* window, const S
 				pixelCount++;
 			}
 
-			const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(), 32, Image::ColorFormat::RGBA, pixelDataRGBA);
+			const Scope<Image> iconImage = Image::LoadFromMemory(image->GetWidth(), image->GetHeight(), Image::ColorFormat::RGBA, pixelDataRGBA);
 			PlatformSetWindowIcon(window, iconImage);
 		}
 		else if (image->GetColorFormat() == Image::ColorFormat::RGBA)
@@ -794,7 +799,7 @@ void TRAP::INTERNAL::WindowingAPI::GetWindowContentScale(const InternalWindow* w
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Sets an attribute for the specified window.
-void TRAP::INTERNAL::WindowingAPI::SetWindowAttrib(InternalWindow* window, const Hint hint, const bool value)
+void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* window, const Hint hint, const bool value)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
@@ -861,7 +866,7 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowAttrib(InternalWindow* window, const
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns an attribute of the specified window.
-bool TRAP::INTERNAL::WindowingAPI::GetWindowAttrib(const InternalWindow* window, const Hint hint)
+bool TRAP::INTERNAL::WindowingAPI::GetWindowHint(const InternalWindow* window, const Hint hint)
 {
 	TRAP_WINDOW_ASSERT(window, "[Window] window is nullptr!");
 
@@ -1769,7 +1774,7 @@ bool TRAP::INTERNAL::WindowingAPI::StringInExtensionString(const char* string, c
 {
 	const char* start = extensions;
 
-	for (;;)
+	while(true)
 	{
 		const char* where = strstr(start, string);
 		if (!where)

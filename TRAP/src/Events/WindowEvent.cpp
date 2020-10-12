@@ -226,9 +226,16 @@ TRAP::Events::WindowCloseEvent::WindowCloseEvent(std::string title)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::WindowCloseEvent::GetWindowTitle() const
+const std::string& TRAP::Events::WindowCloseEvent::GetTitle() const
 {
 	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Events::WindowCloseEvent::ToString() const
+{
+	return "WindowCloseEvent: " + m_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -284,7 +291,14 @@ int32_t TRAP::Events::WindowMoveEvent::GetY() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string&TRAP::Events::WindowMoveEvent::GetTitle() const
+TRAP::Math::Vec2i TRAP::Events::WindowMoveEvent::GetPosition() const
+{
+	return Math::Vec2i(m_x, m_y);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::string& TRAP::Events::WindowMoveEvent::GetTitle() const
 {
 	return m_title;
 }
@@ -342,6 +356,13 @@ const std::string& TRAP::Events::WindowFocusEvent::GetTitle() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+std::string TRAP::Events::WindowFocusEvent::ToString() const
+{
+	return "WindowFocusEvent: " + m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Events::EventType TRAP::Events::WindowFocusEvent::GetStaticType()
 {
 	return EventType::WindowFocus;
@@ -382,6 +403,13 @@ TRAP::Events::WindowLostFocusEvent::WindowLostFocusEvent(std::string title)
 const std::string& TRAP::Events::WindowLostFocusEvent::GetTitle() const
 {
 	return m_title;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::Events::WindowLostFocusEvent::ToString() const
+{
+	return "WindowLostFocusEvent: " + m_title;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -471,7 +499,7 @@ const char* TRAP::Events::WindowDropEvent::GetName() const
 
 int32_t TRAP::Events::WindowDropEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application)  | static_cast<int32_t>(EventCategory::Input);
+	return static_cast<int32_t>(EventCategory::Application) | static_cast<int32_t>(EventCategory::Input);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -495,6 +523,13 @@ float TRAP::Events::WindowContentScaleEvent::GetXScale() const
 float TRAP::Events::WindowContentScaleEvent::GetYScale() const
 {
 	return m_YScale;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Math::Vec2 TRAP::Events::WindowContentScaleEvent::GetScale() const
+{
+	return Math::Vec2(m_XScale, m_YScale);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -562,6 +597,14 @@ uint32_t TRAP::Events::FrameBufferResizeEvent::GetHeight() const
 {
 	return m_height;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Math::Vec2ui TRAP::Events::FrameBufferResizeEvent::GetSize() const
+{
+	return Math::Vec2ui(m_width, m_height);
+}
+
 
 //-------------------------------------------------------------------------------------------------------------------//
 

@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::Graphics::API::RendererAPI Class Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -174,18 +212,18 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>DrawIndexed</
 <tr class="memitem:a31e0b42125914a76370318e1d94911fa"><td class="memItemLeft" align="right" valign="top"><a id="a31e0b42125914a76370318e1d94911fa"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>Draw</b> (const Scope&lt; <a class="el" href="class_t_r_a_p_1_1_graphics_1_1_vertex_array.html">VertexArray</a> &gt; &amp;vertexArray, RendererPrimitive primitive)=0</td></tr>
 <tr class="separator:a31e0b42125914a76370318e1d94911fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a973e400fd58ff54d72c84ef64299ee6e"><td class="memItemLeft" align="right" valign="top"><a id="a973e400fd58ff54d72c84ef64299ee6e"></a>
-virtual std::string_view&#160;</td><td class="memItemRight" valign="bottom"><b>GetTitle</b> () const =0</td></tr>
-<tr class="separator:a973e400fd58ff54d72c84ef64299ee6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6063f4fdacd562d57492a163f3566ae"><td class="memItemLeft" align="right" valign="top"><a id="ad6063f4fdacd562d57492a163f3566ae"></a>
-virtual std::vector&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GetCurrentGPUUUID</b> ()=0</td></tr>
-<tr class="separator:ad6063f4fdacd562d57492a163f3566ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3782a4b2604c444dc9beb90eef56ede3"><td class="memItemLeft" align="right" valign="top"><a id="a3782a4b2604c444dc9beb90eef56ede3"></a>
+virtual const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>GetTitle</b> () const =0</td></tr>
+<tr class="separator:a3782a4b2604c444dc9beb90eef56ede3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ecedb3287159b6086a7517edcf1cab5"><td class="memItemLeft" align="right" valign="top"><a id="a4ecedb3287159b6086a7517edcf1cab5"></a>
+virtual std::array&lt; uint8_t, 16 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GetCurrentGPUUUID</b> ()=0</td></tr>
+<tr class="separator:a4ecedb3287159b6086a7517edcf1cab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72b896dff88b7af82b6a34bf03f81266"><td class="memItemLeft" align="right" valign="top"><a id="a72b896dff88b7af82b6a34bf03f81266"></a>
 virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><b>GetCurrentGPUName</b> ()=0</td></tr>
 <tr class="separator:a72b896dff88b7af82b6a34bf03f81266"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aedb407829d6d87d4b82e765e3c04ad5e"><td class="memItemLeft" align="right" valign="top"><a id="aedb407829d6d87d4b82e765e3c04ad5e"></a>
-virtual std::vector&lt; std::pair&lt; std::string, std::vector&lt; uint8_t &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GetAllGPUs</b> ()=0</td></tr>
-<tr class="separator:aedb407829d6d87d4b82e765e3c04ad5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40d405dabc6b13b0dc6d3e1f395070d1"><td class="memItemLeft" align="right" valign="top"><a id="a40d405dabc6b13b0dc6d3e1f395070d1"></a>
+virtual std::vector&lt; std::pair&lt; std::string, std::array&lt; uint8_t, 16 &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GetAllGPUs</b> ()=0</td></tr>
+<tr class="separator:a40d405dabc6b13b0dc6d3e1f395070d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>

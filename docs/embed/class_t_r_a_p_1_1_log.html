@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::Log Class Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -85,7 +123,7 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:ad03369cc0e494c8d9ff384c4e4d7e7fc"><td class="memItemLeft" align="right" valign="top"><a id="ad03369cc0e494c8d9ff384c4e4d7e7fc"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>Level</b> { <br />
+<tr class="memitem:ad03369cc0e494c8d9ff384c4e4d7e7fc"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#ad03369cc0e494c8d9ff384c4e4d7e7fc">Level</a> { <br />
 &#160;&#160;<b>Trace</b>, 
 <b>Debug</b>, 
 <b>Info</b>, 
@@ -95,66 +133,70 @@ Public Types</h2></td></tr>
 <b>Critical</b>
 <br />
  }</td></tr>
+<tr class="memdesc:ad03369cc0e494c8d9ff384c4e4d7e7fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Importance of a log message.  <a href="class_t_r_a_p_1_1_log.html#ad03369cc0e494c8d9ff384c4e4d7e7fc">More...</a><br /></td></tr>
 <tr class="separator:ad03369cc0e494c8d9ff384c4e4d7e7fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa6789b311e6b9695571c696cf9121a06"><td class="memItemLeft" align="right" valign="top"><a id="aa6789b311e6b9695571c696cf9121a06"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Log</b> (const <a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;)=delete</td></tr>
+<tr class="memitem:a85dd48bfa93ada6f5c6b607f552c0c15"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#a85dd48bfa93ada6f5c6b607f552c0c15">~Log</a> ()</td></tr>
+<tr class="memdesc:a85dd48bfa93ada6f5c6b607f552c0c15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="class_t_r_a_p_1_1_log.html#a85dd48bfa93ada6f5c6b607f552c0c15">More...</a><br /></td></tr>
+<tr class="separator:a85dd48bfa93ada6f5c6b607f552c0c15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6789b311e6b9695571c696cf9121a06"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#aa6789b311e6b9695571c696cf9121a06">Log</a> (const <a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;)=delete</td></tr>
+<tr class="memdesc:aa6789b311e6b9695571c696cf9121a06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Copy Constructor.  <a href="class_t_r_a_p_1_1_log.html#aa6789b311e6b9695571c696cf9121a06">More...</a><br /></td></tr>
 <tr class="separator:aa6789b311e6b9695571c696cf9121a06"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26f56914ae5c1ced4a348619d9f710ee"><td class="memItemLeft" align="right" valign="top"><a id="a26f56914ae5c1ced4a348619d9f710ee"></a>
-<a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;)=delete</td></tr>
+<tr class="memitem:a26f56914ae5c1ced4a348619d9f710ee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#a26f56914ae5c1ced4a348619d9f710ee">operator=</a> (const <a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;)=delete</td></tr>
+<tr class="memdesc:a26f56914ae5c1ced4a348619d9f710ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Copy Assignment Operator.  <a href="class_t_r_a_p_1_1_log.html#a26f56914ae5c1ced4a348619d9f710ee">More...</a><br /></td></tr>
 <tr class="separator:a26f56914ae5c1ced4a348619d9f710ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a368e11a66087c908b3f18f134ef94e4d"><td class="memItemLeft" align="right" valign="top"><a id="a368e11a66087c908b3f18f134ef94e4d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Log</b> (<a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;&amp;)=delete</td></tr>
+<tr class="memitem:a368e11a66087c908b3f18f134ef94e4d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#a368e11a66087c908b3f18f134ef94e4d">Log</a> (<a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;&amp;)=delete</td></tr>
+<tr class="memdesc:a368e11a66087c908b3f18f134ef94e4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Move Constructor.  <a href="class_t_r_a_p_1_1_log.html#a368e11a66087c908b3f18f134ef94e4d">More...</a><br /></td></tr>
 <tr class="separator:a368e11a66087c908b3f18f134ef94e4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61e58a290b8d418a793f7e050f1a68d3"><td class="memItemLeft" align="right" valign="top"><a id="a61e58a290b8d418a793f7e050f1a68d3"></a>
-<a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;&amp;)=delete</td></tr>
+<tr class="memitem:a61e58a290b8d418a793f7e050f1a68d3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#a61e58a290b8d418a793f7e050f1a68d3">operator=</a> (<a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;&amp;)=delete</td></tr>
+<tr class="memdesc:a61e58a290b8d418a793f7e050f1a68d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted Move Assignment Operator.  <a href="class_t_r_a_p_1_1_log.html#a61e58a290b8d418a793f7e050f1a68d3">More...</a><br /></td></tr>
 <tr class="separator:a61e58a290b8d418a793f7e050f1a68d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aa8fc4495c84e2a4814ad628e772f307c"><td class="memItemLeft" align="right" valign="top"><a id="aa8fc4495c84e2a4814ad628e772f307c"></a>
-static <a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>Get</b> ()</td></tr>
+<tr class="memitem:aa8fc4495c84e2a4814ad628e772f307c"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#aa8fc4495c84e2a4814ad628e772f307c">Get</a> ()</td></tr>
+<tr class="memdesc:aa8fc4495c84e2a4814ad628e772f307c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the singleton <a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> instance.  <a href="class_t_r_a_p_1_1_log.html#aa8fc4495c84e2a4814ad628e772f307c">More...</a><br /></td></tr>
 <tr class="separator:aa8fc4495c84e2a4814ad628e772f307c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef309c1a69175a2d5cafcd1bf3bf3292"><td class="memTemplParams" colspan="2"><a id="aef309c1a69175a2d5cafcd1bf3bf3292"></a>
-template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:aef309c1a69175a2d5cafcd1bf3bf3292"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Trace</b> (Args &amp;&amp;... args)</td></tr>
+<tr class="memitem:aef309c1a69175a2d5cafcd1bf3bf3292"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:aef309c1a69175a2d5cafcd1bf3bf3292"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#aef309c1a69175a2d5cafcd1bf3bf3292">Trace</a> (Args &amp;&amp;... args)</td></tr>
+<tr class="memdesc:aef309c1a69175a2d5cafcd1bf3bf3292"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> a Trace message.  <a href="class_t_r_a_p_1_1_log.html#aef309c1a69175a2d5cafcd1bf3bf3292">More...</a><br /></td></tr>
 <tr class="separator:aef309c1a69175a2d5cafcd1bf3bf3292"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49f8502950460abbf5a0755614ccf6fd"><td class="memTemplParams" colspan="2"><a id="a49f8502950460abbf5a0755614ccf6fd"></a>
-template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:a49f8502950460abbf5a0755614ccf6fd"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Debug</b> (Args &amp;&amp;... args)</td></tr>
+<tr class="memitem:a49f8502950460abbf5a0755614ccf6fd"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:a49f8502950460abbf5a0755614ccf6fd"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#a49f8502950460abbf5a0755614ccf6fd">Debug</a> (Args &amp;&amp;... args)</td></tr>
+<tr class="memdesc:a49f8502950460abbf5a0755614ccf6fd"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> a Debug message.  <a href="class_t_r_a_p_1_1_log.html#a49f8502950460abbf5a0755614ccf6fd">More...</a><br /></td></tr>
 <tr class="separator:a49f8502950460abbf5a0755614ccf6fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e29481f408057ddc31c6003c0bd5f7a"><td class="memTemplParams" colspan="2"><a id="a1e29481f408057ddc31c6003c0bd5f7a"></a>
-template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:a1e29481f408057ddc31c6003c0bd5f7a"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Info</b> (Args &amp;&amp;... args)</td></tr>
+<tr class="memitem:a1e29481f408057ddc31c6003c0bd5f7a"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:a1e29481f408057ddc31c6003c0bd5f7a"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#a1e29481f408057ddc31c6003c0bd5f7a">Info</a> (Args &amp;&amp;... args)</td></tr>
+<tr class="memdesc:a1e29481f408057ddc31c6003c0bd5f7a"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> a Info message.  <a href="class_t_r_a_p_1_1_log.html#a1e29481f408057ddc31c6003c0bd5f7a">More...</a><br /></td></tr>
 <tr class="separator:a1e29481f408057ddc31c6003c0bd5f7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ae37e3b70f5fe21ca2f5d5d9319e49c"><td class="memTemplParams" colspan="2"><a id="a4ae37e3b70f5fe21ca2f5d5d9319e49c"></a>
-template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:a4ae37e3b70f5fe21ca2f5d5d9319e49c"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Warn</b> (Args &amp;&amp;... args)</td></tr>
+<tr class="memitem:a4ae37e3b70f5fe21ca2f5d5d9319e49c"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:a4ae37e3b70f5fe21ca2f5d5d9319e49c"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#a4ae37e3b70f5fe21ca2f5d5d9319e49c">Warn</a> (Args &amp;&amp;... args)</td></tr>
+<tr class="memdesc:a4ae37e3b70f5fe21ca2f5d5d9319e49c"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> a Warn message.  <a href="class_t_r_a_p_1_1_log.html#a4ae37e3b70f5fe21ca2f5d5d9319e49c">More...</a><br /></td></tr>
 <tr class="separator:a4ae37e3b70f5fe21ca2f5d5d9319e49c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8640492e22da070fd26a8827b66f400c"><td class="memTemplParams" colspan="2"><a id="a8640492e22da070fd26a8827b66f400c"></a>
-template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:a8640492e22da070fd26a8827b66f400c"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Error</b> (Args &amp;&amp;... args)</td></tr>
+<tr class="memitem:a8640492e22da070fd26a8827b66f400c"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:a8640492e22da070fd26a8827b66f400c"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#a8640492e22da070fd26a8827b66f400c">Error</a> (Args &amp;&amp;... args)</td></tr>
+<tr class="memdesc:a8640492e22da070fd26a8827b66f400c"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> a Error message.  <a href="class_t_r_a_p_1_1_log.html#a8640492e22da070fd26a8827b66f400c">More...</a><br /></td></tr>
 <tr class="separator:a8640492e22da070fd26a8827b66f400c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06eb4d4926b94bdebc80e40052bde1a7"><td class="memTemplParams" colspan="2"><a id="a06eb4d4926b94bdebc80e40052bde1a7"></a>
-template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:a06eb4d4926b94bdebc80e40052bde1a7"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Critical</b> (Args &amp;&amp;... args)</td></tr>
+<tr class="memitem:a06eb4d4926b94bdebc80e40052bde1a7"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:a06eb4d4926b94bdebc80e40052bde1a7"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#a06eb4d4926b94bdebc80e40052bde1a7">Critical</a> (Args &amp;&amp;... args)</td></tr>
+<tr class="memdesc:a06eb4d4926b94bdebc80e40052bde1a7"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> a Critical message.  <a href="class_t_r_a_p_1_1_log.html#a06eb4d4926b94bdebc80e40052bde1a7">More...</a><br /></td></tr>
 <tr class="separator:a06eb4d4926b94bdebc80e40052bde1a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7705c172f6cf3678a3c8b165fbe07f08"><td class="memItemLeft" align="right" valign="top"><a id="a7705c172f6cf3678a3c8b165fbe07f08"></a>
-static const std::vector&lt; std::pair&lt; Level, std::string &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>GetBuffer</b> ()</td></tr>
+<tr class="memitem:a7705c172f6cf3678a3c8b165fbe07f08"><td class="memItemLeft" align="right" valign="top">static const std::vector&lt; std::pair&lt; <a class="el" href="class_t_r_a_p_1_1_log.html#ad03369cc0e494c8d9ff384c4e4d7e7fc">Level</a>, std::string &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#a7705c172f6cf3678a3c8b165fbe07f08">GetBuffer</a> ()</td></tr>
+<tr class="memdesc:a7705c172f6cf3678a3c8b165fbe07f08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get all saves log messages and their importance level.  <a href="class_t_r_a_p_1_1_log.html#a7705c172f6cf3678a3c8b165fbe07f08">More...</a><br /></td></tr>
 <tr class="separator:a7705c172f6cf3678a3c8b165fbe07f08"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6457710a308a77f6aaf95de0ed02ce5d"><td class="memItemLeft" align="right" valign="top"><a id="a6457710a308a77f6aaf95de0ed02ce5d"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>Save</b> ()</td></tr>
+<tr class="memitem:a6457710a308a77f6aaf95de0ed02ce5d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#a6457710a308a77f6aaf95de0ed02ce5d">Save</a> ()</td></tr>
+<tr class="memdesc:a6457710a308a77f6aaf95de0ed02ce5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save all collected messages into "TRAP.log" file.  <a href="class_t_r_a_p_1_1_log.html#a6457710a308a77f6aaf95de0ed02ce5d">More...</a><br /></td></tr>
 <tr class="separator:a6457710a308a77f6aaf95de0ed02ce5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f7882f85c240a3727ba3e51b302da3c"><td class="memItemLeft" align="right" valign="top"><a id="a1f7882f85c240a3727ba3e51b302da3c"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>Clear</b> ()</td></tr>
+<tr class="memitem:a1f7882f85c240a3727ba3e51b302da3c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_log.html#a1f7882f85c240a3727ba3e51b302da3c">Clear</a> ()</td></tr>
+<tr class="memdesc:a1f7882f85c240a3727ba3e51b302da3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears (and also Saves) all collected messages.  <a href="class_t_r_a_p_1_1_log.html#a1f7882f85c240a3727ba3e51b302da3c">More...</a><br /></td></tr>
 <tr class="separator:a1f7882f85c240a3727ba3e51b302da3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a6fa51e0310409129fd1f738ae6b6ad7a"><td class="memItemLeft" align="right" valign="top"><a id="a6fa51e0310409129fd1f738ae6b6ad7a"></a>
-static constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><b>WindowVersion</b> = &quot;[20w35a1]&quot;</td></tr>
+static constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><b>WindowVersion</b> = &quot;[20w42a1]&quot;</td></tr>
 <tr class="separator:a6fa51e0310409129fd1f738ae6b6ad7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad82c1baed08ab8a1da8c396816ef1921"><td class="memItemLeft" align="right" valign="top"><a id="ad82c1baed08ab8a1da8c396816ef1921"></a>
 static constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><b>WindowPrefix</b> = &quot;[Window] &quot;</td></tr>
@@ -312,6 +354,9 @@ static constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><b>Imag
 <tr class="memitem:afc8be3d67df83da85626bc356394fca8"><td class="memItemLeft" align="right" valign="top"><a id="afc8be3d67df83da85626bc356394fca8"></a>
 static constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><b>ImageBMPPrefix</b> = &quot;[Image][BMP] &quot;</td></tr>
 <tr class="separator:afc8be3d67df83da85626bc356394fca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56189e07b520aa300063acab69b0ab40"><td class="memItemLeft" align="right" valign="top"><a id="a56189e07b520aa300063acab69b0ab40"></a>
+static constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><b>ImageRadiancePrefix</b> = &quot;[Image][Radiance] &quot;</td></tr>
+<tr class="separator:a56189e07b520aa300063acab69b0ab40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae70b0481327dd1bd7be3e64666960482"><td class="memItemLeft" align="right" valign="top"><a id="ae70b0481327dd1bd7be3e64666960482"></a>
 static constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><b>RendererPrefix</b> = &quot;[Renderer] &quot;</td></tr>
 <tr class="separator:ae70b0481327dd1bd7be3e64666960482"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -373,6 +418,490 @@ static constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><b>Netw
 static constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><b>NetworkSocketUnixPrefix</b> = &quot;[Network][Socket][Unix] &quot;</td></tr>
 <tr class="separator:ae5b20d3ded045fa4ee81839922a24029"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="ad03369cc0e494c8d9ff384c4e4d7e7fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad03369cc0e494c8d9ff384c4e4d7e7fc">&#9670;&nbsp;</a></span>Level</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="class_t_r_a_p_1_1_log.html#ad03369cc0e494c8d9ff384c4e4d7e7fc">TRAP::Log::Level</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Importance of a log message. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a85dd48bfa93ada6f5c6b607f552c0c15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85dd48bfa93ada6f5c6b607f552c0c15">&#9670;&nbsp;</a></span>~Log()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TRAP::Log::~Log </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Destructor. </p>
+
+</div>
+</div>
+<a id="aa6789b311e6b9695571c696cf9121a06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6789b311e6b9695571c696cf9121a06">&#9670;&nbsp;</a></span>Log() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TRAP::Log::Log </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Copy Constructor. </p>
+
+</div>
+</div>
+<a id="a368e11a66087c908b3f18f134ef94e4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a368e11a66087c908b3f18f134ef94e4d">&#9670;&nbsp;</a></span>Log() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TRAP::Log::Log </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;&amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Move Constructor. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a1f7882f85c240a3727ba3e51b302da3c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f7882f85c240a3727ba3e51b302da3c">&#9670;&nbsp;</a></span>Clear()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void TRAP::Log::Clear </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Clears (and also Saves) all collected messages. </p>
+
+</div>
+</div>
+<a id="a06eb4d4926b94bdebc80e40052bde1a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06eb4d4926b94bdebc80e40052bde1a7">&#9670;&nbsp;</a></span>Critical()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void TRAP::Log::Critical </td>
+          <td>(</td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> a Critical message. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">...Args</td><td>Message to log.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a49f8502950460abbf5a0755614ccf6fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49f8502950460abbf5a0755614ccf6fd">&#9670;&nbsp;</a></span>Debug()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void TRAP::Log::Debug </td>
+          <td>(</td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> a Debug message. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">...Args</td><td>Message to log.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8640492e22da070fd26a8827b66f400c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8640492e22da070fd26a8827b66f400c">&#9670;&nbsp;</a></span>Error()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void TRAP::Log::Error </td>
+          <td>(</td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> a Error message. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">...Args</td><td>Message to log.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa8fc4495c84e2a4814ad628e772f307c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8fc4495c84e2a4814ad628e772f307c">&#9670;&nbsp;</a></span>Get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_t_r_a_p_1_1_log.html">Log</a>&amp; TRAP::Log::Get </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the singleton <a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> instance. </p>
+<dl class="section return"><dt>Returns</dt><dd>Singleton <a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> instance.</dd></dl>
+
+</div>
+</div>
+<a id="a7705c172f6cf3678a3c8b165fbe07f08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7705c172f6cf3678a3c8b165fbe07f08">&#9670;&nbsp;</a></span>GetBuffer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static const std::vector&lt;std::pair&lt;<a class="el" href="class_t_r_a_p_1_1_log.html#ad03369cc0e494c8d9ff384c4e4d7e7fc">Level</a>, std::string&gt; &gt;&amp; TRAP::Log::GetBuffer </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get all saves log messages and their importance level. </p>
+<dl class="section return"><dt>Returns</dt><dd>Messages and importance level in a vector.</dd></dl>
+
+</div>
+</div>
+<a id="a1e29481f408057ddc31c6003c0bd5f7a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e29481f408057ddc31c6003c0bd5f7a">&#9670;&nbsp;</a></span>Info()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void TRAP::Log::Info </td>
+          <td>(</td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> a Info message. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">...Args</td><td>Message to log.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a26f56914ae5c1ced4a348619d9f710ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26f56914ae5c1ced4a348619d9f710ee">&#9670;&nbsp;</a></span>operator=() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a>&amp; TRAP::Log::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Copy Assignment Operator. </p>
+
+</div>
+</div>
+<a id="a61e58a290b8d418a793f7e050f1a68d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61e58a290b8d418a793f7e050f1a68d3">&#9670;&nbsp;</a></span>operator=() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a>&amp; TRAP::Log::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> &amp;&amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted Move Assignment Operator. </p>
+
+</div>
+</div>
+<a id="a6457710a308a77f6aaf95de0ed02ce5d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6457710a308a77f6aaf95de0ed02ce5d">&#9670;&nbsp;</a></span>Save()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void TRAP::Log::Save </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Save all collected messages into "TRAP.log" file. </p>
+
+</div>
+</div>
+<a id="aef309c1a69175a2d5cafcd1bf3bf3292"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef309c1a69175a2d5cafcd1bf3bf3292">&#9670;&nbsp;</a></span>Trace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void TRAP::Log::Trace </td>
+          <td>(</td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> a Trace message. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">...Args</td><td>Message to log.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4ae37e3b70f5fe21ca2f5d5d9319e49c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ae37e3b70f5fe21ca2f5d5d9319e49c">&#9670;&nbsp;</a></span>Warn()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void TRAP::Log::Warn </td>
+          <td>(</td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><a class="el" href="class_t_r_a_p_1_1_log.html">Log</a> a Warn message. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">...Args</td><td>Message to log.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>TRAP/src/Log/<a class="el" href="_log_8h_source.html">Log.h</a></li>
 </ul>

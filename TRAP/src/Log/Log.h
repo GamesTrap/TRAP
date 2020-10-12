@@ -10,14 +10,35 @@ namespace TRAP
 	class Log final
 	{
 	private:
+		/// <summary>
+		/// Private Constructor.
+		/// </summary>
 		Log();
 	public:
+		/// <summary>
+		///	Destructor.
+		/// </summary>
 		~Log();
+		/// <summary>
+		/// Deleted Copy Constructor.
+		/// </summary>
 		Log(const Log&) = delete;
+		/// <summary>
+		/// Deleted Copy Assignment Operator.
+		/// </summary>
 		Log& operator=(const Log&) = delete;
+		/// <summary>
+		/// Deleted Move Constructor.
+		/// </summary>
 		Log(Log&&) = delete;
+		/// <summary>
+		/// Deleted Move Assignment Operator.
+		/// </summary>
 		Log& operator=(Log&&) = delete;
-		
+
+		/// <summary>
+		/// Importance of a log message.
+		/// </summary>
 		enum class Level
 		{
 			Trace,
@@ -28,32 +49,70 @@ namespace TRAP
 			Critical
 		};
 
+		/// <summary>
+		/// Get the singleton Log instance.
+		/// </summary>
+		/// <returns>Singleton Log instance.</returns>
 		static Log& Get();
 
+		/// <summary>
+		/// Log a Trace message.
+		/// </summary>
+		/// <typeparam name="...Args">Message to log.</typeparam>
 		template<typename... Args>
 		static void Trace(Args&& ... args);
 
+		/// <summary>
+		/// Log a Debug message.
+		/// </summary>
+		/// <typeparam name="...Args">Message to log.</typeparam>
 		template<typename... Args>
 		static void Debug(Args&& ... args);
 
+		/// <summary>
+		/// Log a Info message.
+		/// </summary>
+		/// <typeparam name="...Args">Message to log.</typeparam>
 		template<typename... Args>
 		static void Info(Args&& ... args);
 
+		/// <summary>
+		/// Log a Warn message.
+		/// </summary>
+		/// <typeparam name="...Args">Message to log.</typeparam>
 		template<typename... Args>
 		static void Warn(Args&& ... args);
 
+		/// <summary>
+		/// Log a Error message.
+		/// </summary>
+		/// <typeparam name="...Args">Message to log.</typeparam>
 		template<typename... Args>
 		static void Error(Args&& ... args);
 
+		/// <summary>
+		/// Log a Critical message.
+		/// </summary>
+		/// <typeparam name="...Args">Message to log.</typeparam>
 		template<typename... Args>
 		static void Critical(Args&& ... args);
 
+		/// <summary>
+		/// Get all saves log messages and their importance level.
+		/// </summary>
+		/// <returns>Messages and importance level in a vector.</returns>
 		static const std::vector<std::pair<Level, std::string>>& GetBuffer();
 
+		/// <summary>
+		/// Save all collected messages into "TRAP.log" file.
+		/// </summary>
 		static void Save();
+		/// <summary>
+		/// Clears (and also Saves) all collected messages.
+		/// </summary>
 		static void Clear();
 
-		inline static constexpr auto WindowVersion = "[20w38a2]";
+		inline static constexpr auto WindowVersion = "[20w42a1]";
 		inline static constexpr auto WindowPrefix = "[Window] ";
 		inline static constexpr auto WindowInternalPrefix = "[Window][Internal] ";
 		inline static constexpr auto WindowIconPrefix = "[Window][Icon] ";
@@ -140,6 +199,10 @@ namespace TRAP
 	private:
 		static bool IsColorTerminal() noexcept;
 #endif
+		/// <summary>
+		/// Get a TimeStamp with [HH:MM:SS] format.
+		/// </summary>
+		/// <returns>TimeStamp as a string.</returns>
 		static std::string GetTimeStamp();
 
 		std::vector<std::pair<Level, std::string>> m_buffer{};
@@ -154,6 +217,10 @@ namespace TRAP
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// <summary>
+/// Log a Trace message.
+/// </summary>
+/// <typeparam name="...Args">Message to log.</typeparam>
 template<typename... Args>
 constexpr void TP_TRACE(const Args& ... args)
 {
@@ -163,6 +230,11 @@ constexpr void TP_TRACE(const Args& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
+
+/// <summary>
+/// Log a Debug message.
+/// </summary>
+/// <typeparam name="...Args">Message to log.</typeparam>
 template<typename... Args>
 constexpr void TP_DEBUG(const Args& ... args)
 {
@@ -172,6 +244,10 @@ constexpr void TP_DEBUG(const Args& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #else
+/// <summary>
+/// Log a Debug message.
+/// </summary>
+/// <typeparam name="...Args">Message to log.</typeparam>
 template<typename... Args>
 constexpr void TP_DEBUG(const Args& ... args)
 {
@@ -180,6 +256,10 @@ constexpr void TP_DEBUG(const Args& ... args)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// <summary>
+/// Log a Info message.
+/// </summary>
+/// <typeparam name="...Args">Message to log.</typeparam>
 template<typename... Args>
 constexpr void TP_INFO(const Args& ... args)
 {
@@ -188,6 +268,10 @@ constexpr void TP_INFO(const Args& ... args)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// <summary>
+/// Log a Warn message.
+/// </summary>
+/// <typeparam name="...Args">Message to log.</typeparam>
 template<typename... Args>
 constexpr void TP_WARN(const Args& ... args)
 {
@@ -196,6 +280,10 @@ constexpr void TP_WARN(const Args& ... args)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// <summary>
+/// Log a Error message.
+/// </summary>
+/// <typeparam name="...Args">Message to log.</typeparam>
 template<typename... Args>
 constexpr void TP_ERROR(const Args& ... args)
 {
@@ -204,6 +292,10 @@ constexpr void TP_ERROR(const Args& ... args)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+/// <summary>
+/// Log a Critical message.
+/// </summary>
+/// <typeparam name="...Args">Message to log.</typeparam>
 template<typename... Args>
 constexpr void TP_CRITICAL(const Args& ... args)
 {

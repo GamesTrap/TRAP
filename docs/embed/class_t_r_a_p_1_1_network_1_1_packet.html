@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::Network::Packet Class Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -82,7 +120,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Utility class to build blocks of data to transfer over the network  
+<p>Utility class to build blocks of data to transfer. over the network  
  <a href="class_t_r_a_p_1_1_network_1_1_packet.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_packet_8h_source.html">Packet.h</a>&gt;</code></p>
@@ -90,24 +128,21 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ab5c6274f5fa9e6036f137581a2d288b1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html#ab5c6274f5fa9e6036f137581a2d288b1">Packet</a> ()</td></tr>
-<tr class="memdesc:ab5c6274f5fa9e6036f137581a2d288b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.<br  />
- <br  />
+<tr class="memdesc:ab5c6274f5fa9e6036f137581a2d288b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.<br  />
  Creates an empty packet.  <a href="class_t_r_a_p_1_1_network_1_1_packet.html#ab5c6274f5fa9e6036f137581a2d288b1">More...</a><br /></td></tr>
 <tr class="separator:ab5c6274f5fa9e6036f137581a2d288b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a390684a92973bc91d07f03a168be2f4f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html#a390684a92973bc91d07f03a168be2f4f">~Packet</a> ()=default</td></tr>
-<tr class="memdesc:a390684a92973bc91d07f03a168be2f4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor  <a href="class_t_r_a_p_1_1_network_1_1_packet.html#a390684a92973bc91d07f03a168be2f4f">More...</a><br /></td></tr>
+<tr class="memdesc:a390684a92973bc91d07f03a168be2f4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default virtual destructor.  <a href="class_t_r_a_p_1_1_network_1_1_packet.html#a390684a92973bc91d07f03a168be2f4f">More...</a><br /></td></tr>
 <tr class="separator:a390684a92973bc91d07f03a168be2f4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b536a6c88d6cea2f947e7f9df3b641e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html#a3b536a6c88d6cea2f947e7f9df3b641e">Append</a> (const void *data, std::size_t sizeInBytes)</td></tr>
-<tr class="memdesc:a3b536a6c88d6cea2f947e7f9df3b641e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append data to the end of the packet  <a href="class_t_r_a_p_1_1_network_1_1_packet.html#a3b536a6c88d6cea2f947e7f9df3b641e">More...</a><br /></td></tr>
+<tr class="memdesc:a3b536a6c88d6cea2f947e7f9df3b641e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append data to the end of the packet.  <a href="class_t_r_a_p_1_1_network_1_1_packet.html#a3b536a6c88d6cea2f947e7f9df3b641e">More...</a><br /></td></tr>
 <tr class="separator:a3b536a6c88d6cea2f947e7f9df3b641e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:accec2d6592b15a6a96d06b48d98ee80f"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html#accec2d6592b15a6a96d06b48d98ee80f">GetReadPosition</a> () const</td></tr>
 <tr class="memdesc:accec2d6592b15a6a96d06b48d98ee80f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current reading position in the packet.<br  />
- <br  />
- The next read operation will read data from this position  <a href="class_t_r_a_p_1_1_network_1_1_packet.html#accec2d6592b15a6a96d06b48d98ee80f">More...</a><br /></td></tr>
+ The next read operation will read data from this position.  <a href="class_t_r_a_p_1_1_network_1_1_packet.html#accec2d6592b15a6a96d06b48d98ee80f">More...</a><br /></td></tr>
 <tr class="separator:accec2d6592b15a6a96d06b48d98ee80f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9257e209dfecf35ca390e75932cf9994"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html#a9257e209dfecf35ca390e75932cf9994">Clear</a> ()</td></tr>
 <tr class="memdesc:a9257e209dfecf35ca390e75932cf9994"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the packet.<br  />
- <br  />
  After calling Clear, the packet is empty.  <a href="class_t_r_a_p_1_1_network_1_1_packet.html#a9257e209dfecf35ca390e75932cf9994">More...</a><br /></td></tr>
 <tr class="separator:a9257e209dfecf35ca390e75932cf9994"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad254c8dc4ed2a111e7142db1bada8722"><td class="memItemLeft" align="right" valign="top">const void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html#ad254c8dc4ed2a111e7142db1bada8722">GetData</a> () const</td></tr>
@@ -138,7 +173,7 @@ Public Member Functions</h2></td></tr>
  Don't focus on the return type, it's equivalent to bool but it disallows unwanted implicit conversions to integer or pointer types.  <a href="class_t_r_a_p_1_1_network_1_1_packet.html#a2d9095aa5781eef60bc7f290a3a027c4">More...</a><br /></td></tr>
 <tr class="separator:a2d9095aa5781eef60bc7f290a3a027c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae89e6ed4d234595577443f3fc7e89ca1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html">Packet</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html#ae89e6ed4d234595577443f3fc7e89ca1">operator&gt;&gt;</a> (bool &amp;data)</td></tr>
-<tr class="memdesc:ae89e6ed4d234595577443f3fc7e89ca1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of operator &gt;&gt; to read data from the packet  <a href="class_t_r_a_p_1_1_network_1_1_packet.html#ae89e6ed4d234595577443f3fc7e89ca1">More...</a><br /></td></tr>
+<tr class="memdesc:ae89e6ed4d234595577443f3fc7e89ca1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of operator &gt;&gt; to read data from the packet.  <a href="class_t_r_a_p_1_1_network_1_1_packet.html#ae89e6ed4d234595577443f3fc7e89ca1">More...</a><br /></td></tr>
 <tr class="separator:ae89e6ed4d234595577443f3fc7e89ca1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56dc31642d85c9bbc382f269cff76712"><td class="memItemLeft" align="right" valign="top"><a id="a56dc31642d85c9bbc382f269cff76712"></a>
 <a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html">Packet</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&gt;&gt;</b> (int8_t &amp;data)</td></tr>
@@ -183,7 +218,7 @@ Public Member Functions</h2></td></tr>
 <a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html">Packet</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&gt;&gt;</b> (std::wstring &amp;data)</td></tr>
 <tr class="separator:a269286c3a0d31dfbe15e7afbb3631462"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a850ff256333274ffb11b85b70f60ea6a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html">Packet</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html#a850ff256333274ffb11b85b70f60ea6a">operator&lt;&lt;</a> (bool data)</td></tr>
-<tr class="memdesc:a850ff256333274ffb11b85b70f60ea6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of operator &lt;&lt; to write data into the packet  <a href="class_t_r_a_p_1_1_network_1_1_packet.html#a850ff256333274ffb11b85b70f60ea6a">More...</a><br /></td></tr>
+<tr class="memdesc:a850ff256333274ffb11b85b70f60ea6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overload of operator &lt;&lt; to write data into the packet.  <a href="class_t_r_a_p_1_1_network_1_1_packet.html#a850ff256333274ffb11b85b70f60ea6a">More...</a><br /></td></tr>
 <tr class="separator:a850ff256333274ffb11b85b70f60ea6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83f80b2032582277476973e72f9017e1"><td class="memItemLeft" align="right" valign="top"><a id="a83f80b2032582277476973e72f9017e1"></a>
 <a class="el" href="class_t_r_a_p_1_1_network_1_1_packet.html">Packet</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (int8_t data)</td></tr>
@@ -261,7 +296,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>UDPSocketIPv6</b></t
 <tr class="separator:ad072d36f599b10d365cbb9c2ad91dd8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Utility class to build blocks of data to transfer over the network </p>
+<div class="textblock"><p>Utility class to build blocks of data to transfer. over the network </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab5c6274f5fa9e6036f137581a2d288b1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab5c6274f5fa9e6036f137581a2d288b1">&#9670;&nbsp;</a></span>Packet()</h2>
@@ -278,8 +313,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>UDPSocketIPv6</b></t
       </table>
 </div><div class="memdoc">
 
-<p>Default constructor.<br  />
- <br  />
+<p>Constructor.<br  />
  Creates an empty packet. </p>
 
 </div>
@@ -307,7 +341,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>UDPSocketIPv6</b></t
 </table>
 </div><div class="memdoc">
 
-<p>Virtual destructor </p>
+<p>Default virtual destructor. </p>
 
 </div>
 </div>
@@ -338,11 +372,11 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>UDPSocketIPv6</b></t
       </table>
 </div><div class="memdoc">
 
-<p>Append data to the end of the packet </p>
+<p>Append data to the end of the packet. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">data</td><td>Pointer to the sequence of bytes to append</td></tr>
-    <tr><td class="paramname">sizeInBytes</td><td>Number of bytes to append</td></tr>
+    <tr><td class="paramname">data</td><td>Pointer to the sequence of bytes to append.</td></tr>
+    <tr><td class="paramname">sizeInBytes</td><td>Number of bytes to append.</td></tr>
   </table>
   </dd>
 </dl>
@@ -365,7 +399,6 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>UDPSocketIPv6</b></t
 </div><div class="memdoc">
 
 <p>Clear the packet.<br  />
- <br  />
  After calling Clear, the packet is empty. </p>
 
 </div>
@@ -388,7 +421,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>UDPSocketIPv6</b></t
 <p>Tell if the reading position has reached the end of the packet.<br  />
  <br  />
  This function is useful to know if there is some data left to be read, without actually reading it. </p>
-<dl class="section return"><dt>Returns</dt><dd>True if all data was read, false otherwise</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if all data was read, false otherwise.</dd></dl>
 
 </div>
 </div>
@@ -411,7 +444,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>UDPSocketIPv6</b></t
  <br  />
  Warning: the returned pointer may become invalid after you append data to the packet, therefore it should never be stored.<br  />
  The return pointer is nullptr if the packet is empty. </p>
-<dl class="section return"><dt>Returns</dt><dd>Pointer to the data</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the data.</dd></dl>
 
 </div>
 </div>
@@ -433,7 +466,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>UDPSocketIPv6</b></t
 <p>Get the size of the data contained in the packet.<br  />
  <br  />
  This function returns the number of bytes pointer to by what GetData returns. </p>
-<dl class="section return"><dt>Returns</dt><dd>Data size, in bytes</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Data size, in bytes.</dd></dl>
 
 </div>
 </div>
@@ -453,9 +486,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>UDPSocketIPv6</b></t
 </div><div class="memdoc">
 
 <p>Get the current reading position in the packet.<br  />
- <br  />
- The next read operation will read data from this position </p>
-<dl class="section return"><dt>Returns</dt><dd>The bytes offset of the current read position</dd></dl>
+ The next read operation will read data from this position. </p>
+<dl class="section return"><dt>Returns</dt><dd>The bytes offset of the current read position.</dd></dl>
 
 </div>
 </div>
@@ -500,8 +532,8 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>UDPSocketIPv6</b></t
  The default implementation fills the packet directly without transforming the data. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">data</td><td>Pointer to the received bytes</td></tr>
-    <tr><td class="paramname">size</td><td>Number of bytes</td></tr>
+    <tr><td class="paramname">data</td><td>Pointer to the received bytes.</td></tr>
+    <tr><td class="paramname">size</td><td>Number of bytes.</td></tr>
   </table>
   </dd>
 </dl>
@@ -539,11 +571,11 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>UDPSocketIPv6</b></t
  The default implementation provides the packet's data without transforming it. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">size</td><td>Variable to fill with the size of data to send</td></tr>
+    <tr><td class="paramname">size</td><td>Variable to fill with the size of data to send.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Pointer to the array of bytes to send</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the array of bytes to send.</dd></dl>
 
 </div>
 </div>
@@ -571,7 +603,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>UDPSocketIPv6</b></t
  This behavior is the same as standard C++ streams.<br  />
  <br  />
  Don't focus on the return type, it's equivalent to bool but it disallows unwanted implicit conversions to integer or pointer types. </p>
-<dl class="section return"><dt>Returns</dt><dd>True if last data extraction from packet was successful</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if last data extraction from packet was successful.</dd></dl>
 
 </div>
 </div>
@@ -591,7 +623,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>UDPSocketIPv6</b></t
       </table>
 </div><div class="memdoc">
 
-<p>Overload of operator &lt;&lt; to write data into the packet </p>
+<p>Overload of operator &lt;&lt; to write data into the packet. </p>
 
 </div>
 </div>
@@ -611,7 +643,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>UDPSocketIPv6</b></t
       </table>
 </div><div class="memdoc">
 
-<p>Overload of operator &gt;&gt; to read data from the packet </p>
+<p>Overload of operator &gt;&gt; to read data from the packet. </p>
 
 </div>
 </div>

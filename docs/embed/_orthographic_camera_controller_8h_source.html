@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP/src/Graphics/Cameras/Orthographic/OrthographicCameraController.h Source File</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,34 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -98,7 +133,7 @@ $(function() {
 <div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_graphics_1_1_orthographic_camera_controller.html">   20</a></span>&#160;    <span class="keyword">class </span><a class="code" href="class_t_r_a_p_1_1_graphics_1_1_orthographic_camera_controller.html">OrthographicCameraController</a></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    {</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="class_t_r_a_p_1_1_graphics_1_1_orthographic_camera_controller.html">OrthographicCameraController</a>(<span class="keywordtype">float</span> aspectRatio, <span class="keywordtype">bool</span> rotation = <span class="keyword">false</span>, <span class="keywordtype">bool</span> useController = <span class="keyword">false</span>, Input::Controller controller = Input::Controller::One, <span class="keyword">const</span> std::unique_ptr&lt;Window&gt;&amp; window = Application::GetWindow());</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="class_t_r_a_p_1_1_graphics_1_1_orthographic_camera_controller.html">OrthographicCameraController</a>(<span class="keywordtype">float</span> aspectRatio, <span class="keywordtype">bool</span> rotation = <span class="keyword">false</span>, <span class="keywordtype">bool</span> useController = <span class="keyword">false</span>, <a class="code" href="class_t_r_a_p_1_1_input.html#a815e13a60cc2a72be7c92e39ead976a5">Input::Controller</a> controller = Input::Controller::One, <span class="keyword">const</span> std::unique_ptr&lt;Window&gt;&amp; window = <a class="code" href="class_t_r_a_p_1_1_application.html#ae14cd75657bc836d3ce4cd7bbda0cec7">Application::GetWindow</a>());</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <span class="keywordtype">void</span> OnUpdate(<span class="keyword">const</span> <a class="code" href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">Utils::TimeStep</a>&amp; deltaTime);</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keywordtype">void</span> OnEvent(<a class="code" href="class_t_r_a_p_1_1_events_1_1_event.html">Events::Event</a>&amp; e);</div>
@@ -131,7 +166,7 @@ $(function() {
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keywordtype">bool</span> m_rotation;</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordtype">bool</span> m_useController;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        Input::Controller m_controller;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <a class="code" href="class_t_r_a_p_1_1_input.html#a815e13a60cc2a72be7c92e39ead976a5">Input::Controller</a> m_controller;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keyword">const</span> Scope&lt;Window&gt;&amp; m_window;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <a class="code" href="struct_t_r_a_p_1_1_math_1_1_vec.html">Math::Vec3</a> m_cameraPosition{ 0.0f };</div>
@@ -143,11 +178,13 @@ $(function() {
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/*_TRAP_ORTHOGRAPHICCAMERACONTROLLER_H_*/</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_t_r_a_p_1_1_graphics_1_1_orthographic_camera_html"><div class="ttname"><a href="class_t_r_a_p_1_1_graphics_1_1_orthographic_camera.html">TRAP::Graphics::OrthographicCamera</a></div><div class="ttdef"><b>Definition:</b> OrthographicCamera.h:9</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_mouse_scroll_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_mouse_scroll_event.html">TRAP::Events::MouseScrollEvent</a></div><div class="ttdef"><b>Definition:</b> MouseEvent.h:31</div></div>
-<div class="ttc" id="astruct_t_r_a_p_1_1_utils_1_1_time_step_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">TRAP::Utils::TimeStep</a></div><div class="ttdef"><b>Definition:</b> TimeStep.h:6</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_application_html_ae14cd75657bc836d3ce4cd7bbda0cec7"><div class="ttname"><a href="class_t_r_a_p_1_1_application.html#ae14cd75657bc836d3ce4cd7bbda0cec7">TRAP::Application::GetWindow</a></div><div class="ttdeci">static const Scope&lt; Window &gt; &amp; GetWindow()</div><div class="ttdoc">Get the Main Render TRAP::Window.</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_input_html_a815e13a60cc2a72be7c92e39ead976a5"><div class="ttname"><a href="class_t_r_a_p_1_1_input.html#a815e13a60cc2a72be7c92e39ead976a5">TRAP::Input::Controller</a></div><div class="ttdeci">Controller</div><div class="ttdoc">Controller</div><div class="ttdef"><b>Definition:</b> Input.h:227</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_mouse_scroll_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_mouse_scroll_event.html">TRAP::Events::MouseScrollEvent</a></div><div class="ttdoc">Mouse scrolled.</div><div class="ttdef"><b>Definition:</b> MouseEvent.h:79</div></div>
+<div class="ttc" id="astruct_t_r_a_p_1_1_utils_1_1_time_step_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_utils_1_1_time_step.html">TRAP::Utils::TimeStep</a></div><div class="ttdoc">Struct for a single step in Time.</div><div class="ttdef"><b>Definition:</b> TimeStep.h:9</div></div>
 <div class="ttc" id="astruct_t_r_a_p_1_1_math_1_1_vec_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_math_1_1_vec.html">TRAP::Math::Vec</a></div><div class="ttdef"><b>Definition:</b> Types.h:6</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_frame_buffer_resize_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_frame_buffer_resize_event.html">TRAP::Events::FrameBufferResizeEvent</a></div><div class="ttdef"><b>Definition:</b> WindowEvent.h:194</div></div>
-<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_event.html">TRAP::Events::Event</a></div><div class="ttdef"><b>Definition:</b> Event.h:32</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_frame_buffer_resize_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_frame_buffer_resize_event.html">TRAP::Events::FrameBufferResizeEvent</a></div><div class="ttdoc">Window framebuffer resized.</div><div class="ttdef"><b>Definition:</b> WindowEvent.h:559</div></div>
+<div class="ttc" id="aclass_t_r_a_p_1_1_events_1_1_event_html"><div class="ttname"><a href="class_t_r_a_p_1_1_events_1_1_event.html">TRAP::Events::Event</a></div><div class="ttdoc">Event base class.</div><div class="ttdef"><b>Definition:</b> Event.h:41</div></div>
 <div class="ttc" id="astruct_t_r_a_p_1_1_graphics_1_1_orthographic_camera_bounds_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_graphics_1_1_orthographic_camera_bounds.html">TRAP::Graphics::OrthographicCameraBounds</a></div><div class="ttdef"><b>Definition:</b> OrthographicCameraController.h:11</div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_graphics_1_1_orthographic_camera_controller_html"><div class="ttname"><a href="class_t_r_a_p_1_1_graphics_1_1_orthographic_camera_controller.html">TRAP::Graphics::OrthographicCameraController</a></div><div class="ttdef"><b>Definition:</b> OrthographicCameraController.h:20</div></div>
 <!-- HTML footer for doxygen 1.8.8-->

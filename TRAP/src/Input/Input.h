@@ -45,15 +45,36 @@ namespace TRAP
 
 	class Input final
 	{
-	public:		
+	public:
+		/// <summary>
+		/// Deleted Constructor.
+		/// </summary>
 		Input() = delete;
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
 		~Input() = default;
 
+		/// <summary>
+		/// Deleted Copy Constructor.
+		/// </summary>
 		Input(const Input&) = delete;
+		/// <summary>
+		/// Deleted Copy Assignment Operator.
+		/// </summary>
 		Input& operator=(const Input&) = delete;
+		/// <summary>
+		/// Deleted Move Constructor.
+		/// </summary>
 		Input(Input&&) = delete;
+		/// <summary>
+		/// Deleted Move Assignment Operator.
+		/// </summary>
 		Input& operator=(Input&&) = delete;
-	
+
+		/// <summary>
+		/// Keyboard keys.
+		/// </summary>
 		enum class Key
 		{
 			Unknown = -1,
@@ -181,7 +202,10 @@ namespace TRAP
 			Right_Super    = 347,
 			Menu           = 348
 		};
-		
+
+		/// <summary>
+		/// Mouse buttons.
+		/// </summary>
 		enum class MouseButton
 		{
 			One    = 0,
@@ -197,6 +221,9 @@ namespace TRAP
 			Middle = Three
 		};
 
+		/// <summary>
+		/// Controller
+		/// </summary>
 		enum class Controller
 		{
 			One      = 0,
@@ -217,6 +244,9 @@ namespace TRAP
 			Sixteen  = 15
 		};
 
+		/// <summary>
+		/// Controller axis.
+		/// </summary>
 		enum class ControllerAxis
 		{
 			Left_X        = 0,
@@ -226,7 +256,10 @@ namespace TRAP
 			Left_Trigger  = 4,
 			Right_Trigger = 5
 		};
-		
+
+		/// <summary>
+		/// Controller buttons.
+		/// </summary>
 		enum class ControllerButton
 		{
 			A            = 0,
@@ -250,6 +283,9 @@ namespace TRAP
 			Triangle     = Y
 		};
 
+		/// <summary>
+		/// Controller DPad.
+		/// </summary>
 		enum class ControllerDPad
 		{
 			Centered   = 0,
@@ -262,47 +298,259 @@ namespace TRAP
 			Left_Up    = Left | Up,
 			Left_Down  = Left | Down
 		};
-		
+
+		/// <summary>
+		/// Check if a button on the keyboard is pressed.
+		/// </summary>
+		/// <param name="key">Key to check.</param>
+		/// <returns>True if provided key is pressed, false otherwise.</returns>
 		static bool IsKeyPressed(Key key);
+		/// <summary>
+		/// Check if a button on the keyboard in the specified Window is pressed.
+		/// </summary>
+		/// <param name="key">Key to check.</param>
+		/// <param name="window">Window to check on.</param>
+		/// <returns>True if provided key is pressed in provided Window, false otherwise.</returns>
 		static bool IsKeyPressed(Key key, const Scope<Window>& window);
+		/// <summary>
+		/// Check if a mouse button on the mouse is pressed.
+		/// </summary>
+		/// <param name="button">Mouse button to check.</param>
+		/// <returns>True if provided mouse button is pressed, false otherwise.</returns>
 		static bool IsMouseButtonPressed(MouseButton button);
+		/// <summary>
+		/// Check if a mouse button on the mouse in the specified Window is pressed.
+		/// </summary>
+		/// <param name="button">Mouse button to check.</param>
+		/// <param name="window">Window to check on.</param>
+		/// <returns>True if provided mouse button is pressed in provided Window, false otherwise.</returns>
 		static bool IsMouseButtonPressed(MouseButton button, const Scope<Window>& window);
+		/// <summary>
+		/// Retrieve whether raw mouse input is supported.
+		/// </summary>
+		/// <returns>True if raw mouse input is supported, false otherwise.</returns>
 		static bool IsRawMouseInputSupported();
+		/// <summary>
+		/// Check if a specific Controller is connected.
+		/// </summary>
+		/// <param name="controller">Controller to check</param>
+		/// <returns>True if provided Controller is connected, false otherwise.</returns>
 		static bool IsControllerConnected(Controller controller);
+		/// <summary>
+		/// Check if a Controller is a Gamepad (is able to map to an XBox like Controller).
+		/// </summary>
+		/// <param name="controller">Controller to check.</param>
+		/// <returns>True if Controller is a Gamepad, false otherwise.</returns>
 		static bool IsControllerGamepad(Controller controller);
 
+		/// <summary>
+		/// Retrieve the current mouse position.
+		/// </summary>
+		/// <returns>Mouse position as a Math::Vec2.</returns>
 		static Math::Vec2 GetMousePosition();
+		/// <summary>
+		/// Retrieve the current mouse position for the provided Window.
+		/// </summary>
+		/// <param name="window">Window to check.</param>
+		/// <returns>Mouse position of the Window as a Math::Vec2.</returns>
 		static Math::Vec2 GetMousePosition(const Scope<Window>& window);
+		/// <summary>
+		/// Retrieve the current mouse position on the x axis.
+		/// </summary>
+		/// <returns>X mouse position.</returns>
 		static float GetMouseX();
+		/// <summary>
+		/// Retrieve the current mouse position on the y axis.
+		/// </summary>
+		/// <returns>Y mouse position.</returns>
 		static float GetMouseY();
+		/// <summary>
+		/// Retrieve the current mouse position on the x axis for the provided Window.
+		/// </summary>
+		/// <param name="window">Window to check.</param>
+		/// <returns>X mouse position.</returns>
+		static float GetMouseX(const Scope<Window>& window);
+		/// <summary>
+		/// Retrieve the current mouse position on the y axis for the provided Window.
+		/// </summary>
+		/// <param name="window">Window to check.</param>
+		/// <returns>Y mouse position.</returns>
+		static float GetMouseY(const Scope<Window>& window);
+		/// <summary>
+		/// Retrieve the string representation of a Key.
+		/// </summary>
+		/// <param name="key">Key to retrieve.</param>
+		/// <returns>String representation of Key.</returns>
 		static std::string GetKeyName(Key key);
+		/// <summary>
+		/// Retrieve the value of the specified ControllerAxis from the provided Controller.
+		/// </summary>
+		/// <param name="controller">Controller to query.</param>
+		/// <param name="axis">ControllerAxis to check.</param>
+		/// <returns>Value of the axis.</returns>
 		static float GetControllerAxis(Controller controller, ControllerAxis axis);
+		/// <summary>
+		/// Retrieve the state of the specified DPad from the provided Controller.
+		/// </summary>
+		/// <param name="controller">Controller to query.</param>
+		/// <param name="dpad">DPad to check.</param>
+		/// <returns>State of DPad.</returns>
 		static ControllerDPad GetControllerDPad(Controller controller, uint32_t dpad);
-		static bool GetControllerButton(Controller controller, ControllerButton button);
+
+		/// <summary>
+		/// Retrieve whether the specified ControllerButton from the provided Controller is pressed or not.
+		/// </summary>
+		/// <param name="controller">Controller to query.</param>
+		/// <param name="button">ControllerButton to check.</param>
+		/// <returns>True if ControllerButton is pressed, false otherwise.</returns>
+		static bool IsControllerButtonPressed(Controller controller, ControllerButton button);
+		/// <summary>
+		/// Retrieve the name of the provided Controller.
+		/// </summary>
+		/// <param name="controller">Controller to query.</param>
+		/// <returns>Name of the Controller.</returns>
 		static std::string GetControllerName(Controller controller);
+		/// <summary>
+		/// Retrieve the GUID of the provided Controller.
+		/// </summary>
+		/// <param name="controller">Controller to query.</param>
+		/// <returns>GUID of the Controller.</returns>
 		static std::string GetControllerGUID(Controller controller);
+		/// <summary>
+		/// Retrieve all states of every Axis from the provided Controller.
+		/// </summary>
+		/// <param name="controller">Controller to query.</param>
+		/// <returns>Vector with every Axis state.</returns>
 		static std::vector<float> GetAllControllerAxes(Controller controller);
+		/// <summary>
+		/// Retrieve all states of every button from the provided Controller.
+		/// </summary>
+		/// <param name="controller">Controller to query.</param>
+		/// <returns>Vector with every button state.</returns>
 		static std::vector<bool> GetAllControllerButtons(Controller controller);
+		/// <summary>
+		/// Retrieve all states of every DPad from the provided Controller.
+		/// </summary>
+		/// <param name="controller">Controller to query.</param>
+		/// <returns>Vector with every DPad state.</returns>
 		static std::vector<ControllerDPad> GetAllControllerDPads(Controller controller);
 
+		/// <summary>
+		/// Retrieve the name of the current keyboard layout.
+		/// </summary>
+		/// <returns>Name of keyboard layout.</returns>
 		static std::string GetKeyboardLayoutName();
 
+		/// <summary>
+		/// Set the vibration level(s) for the specified Controller.<br>
+		/// Intensity values are normalized and range from 0-1.
+		/// Note: Only takes effect when on Linux or Windows via XInput (DirectInput doesn't support vibrations)!
+		/// </summary>
+		/// <param name="controller">Controller to affect.</param>
+		/// <param name="leftMotor">Normalized intensity for the left motor.</param>
+		/// <param name="rightMotor">Normalized intensity for the right motor.</param>
 		static void SetControllerVibration(Controller controller, float leftMotor, float rightMotor);
+		/// <summary>
+		/// Set the vibration level(s) for the specified Controller.<br>
+		/// Intensity values are normalized and range from 0-1.
+		/// Note: Only takes effect when on Linux or Windows via XInput (DirectInput doesn't support vibrations)!
+		/// </summary>
+		/// <param name="controller">Controller to affect.</param>
+		/// <param name="intensity">Normalized intensity for both motors.</param>
+		static void SetControllerVibration(Controller controller, const Math::Vec2& intensity);
 
+		/// <summary>
+		/// Set the mouse position.
+		/// </summary>
+		/// <param name="x">New X position.</param>
+		/// <param name="y">New Y position.</param>
 		static void SetMousePosition(float x, float y);
+		/// <summary>
+		/// Set the mouse position for the provided Window.
+		/// </summary>
+		/// <param name="x">New X position.</param>
+		/// <param name="y">New Y position.</param>
+		/// <param name="window">Window to affect.</param>
 		static void SetMousePosition(float x, float y, const Scope<Window>& window);
-		
+		/// <summary>
+		/// Set the mouse position.
+		/// </summary>
+		/// <param name="position">New position.</param>
+		static void SetMousePosition(const Math::Vec2& position);
+		/// <summary>
+		/// Set the mouse position for the provided Window.
+		/// </summary>
+		/// <param name="position">New position.</param>
+		/// <param name="window">Window to affect.</param>
+		static void SetMousePosition(const Math::Vec2& position, const Scope<Window>& window);
+
+		/// <summary>
+		/// Set the system clipboard to the specified UTF-8 encoded string.
+		/// </summary>
+		/// <param name="str">string.</param>
 		static void SetClipboard(std::string_view str);
+		/// <summary>
+		/// Retrieve the contents of the system clipboard.
+		/// </summary>
+		/// <returns>Contents of clipboard.</returns>
 		static std::string GetClipboard();
 		
-		using EventCallbackFn = std::function<void(Events::Event&)>;
-		static void SetEventCallback(const EventCallbackFn& callback);
-		
+		/// <summary>
+		/// Update an existing Controller mapping or add a new one.<br>
+		/// <br>
+		/// Description:<br>
+		/// Each mapping is a single line of comma-separated values describing the GUID, name and layout of the Controller.<br>
+		/// Note: Lines that do not begin with a hexadecimal digit are ignored!<br>
+		/// <br>
+		/// The first value is always the Controller GUID, a 32 character long hexadecimal string that typically identifies its make, model, revision and tht type
+		/// of connection to the computer.<br>
+		/// When this information is not available, the GUID is generated using the Controller name.<br>
+		/// TRAP uses the SDL 2.0.5+ GUID format but can convert from the older formats.<br>
+		/// <br>
+		/// The second value is always the human-readable name of the Controller.<br>
+		/// <br>
+		/// All subsequent values are in the form "<field>:<value>" and describe the layout of the mapping.<br>
+		/// These fields may not all be present and may occur in any order.<br>
+		/// <br>
+		/// The button fields are "a", "b", "c", "d", "back", "start", "guide", "dpup", "dpright", "dpdown", "dpleft", "leftshoulder", "rightshoulder", "leftstick" and "rightstick".<br>
+		/// The axis fields are "leftx", "lefty", "rightx", "righty", "lefttrigger" and "righttrigger".<br>
+		/// <br>
+		/// The value of an axis or button field can be a Controller button, a Controller axis, a hat bitmask or empty.<br>
+		/// Controller buttons are specified as "bN", for example "b2" for the third button.<br>
+		/// Controller axes are specified as "aN", for example "a7" for the eighth axis.<br>
+		/// Controller hit bit masks are specified as "hN.N", for example "h0.8" for left on the first hat. More than one bit may be set in the mask.<br>
+		/// <br>
+		/// Before an axis there may be a "+" or "-" range modifier, for example "+a3" for the positive half of the fourth axis.<br>
+		/// This restricts input to only the positive or negative halves of the Controller axis.<br>
+		/// After an axis of half-axis there may be the "~" inversion modifier, for example "a2~" or "-a7~".<br>
+		/// This negates the values of the Controller axis.<br>
+		/// <br>
+		/// There is also the special "platform" field that specifies which platform the mapping is valid for.<br>
+		/// Possible values are "Windows" and "Linux".
+		/// </summary>
+		/// <param name="map">Controller mapping to update or add.</param>
 		static void UpdateControllerMappings(std::string_view map);
 
 	private:
+		/// <summary>
+		/// Describes a callback function which gets called when an Input Event occurs.
+		/// </summary>
+		using EventCallbackFn = std::function<void(Events::Event&)>;
+		/// <summary>
+		/// Set the function to call when an Input Event occurred.
+		/// </summary>
+		/// <param name="callback">Function to call.</param>
+		static void SetEventCallback(const EventCallbackFn& callback);
+
+		/// <summary>
+		/// Initialize Input.
+		/// </summary>
 		static void Init();
+		/// <summary>
+		/// Shutdown Input.
+		/// </summary>
 		static void Shutdown();
+		
 		friend class TRAP::Application;
 		
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -312,18 +560,49 @@ namespace TRAP
 		static void DetectControllerConnectionLinux();
 #endif
 		friend class TRAP::INTERNAL::WindowingAPI;
-		
-		static constexpr uint32_t Poll_Presence = 0;
-		static constexpr uint32_t Poll_Axes = 1;
-		static constexpr uint32_t Poll_Buttons = 2;
-		static constexpr uint32_t Poll_All = (Poll_Axes | Poll_Buttons);
+
+		/// <summary>
+		/// Modes for polling.
+		/// </summary>
+		enum class PollMode
+		{
+			Presence = 0,
+			Axes = 1,
+			Buttons = 2,
+			All = (Axes | Buttons)
+		};
 		
 		//Universal API Methods
+
+		/// <summary>
+		/// Initialize Controller(s).
+		/// </summary>
+		/// <returns>True on success, false otherwise.</returns>
 		static bool InitController();
+		/// <summary>
+		/// Shutdown Controller(s).
+		/// </summary>
 		static void ShutdownController();
+		/// <summary>
+		/// OS-dependent function for Controller vibrations.
+		/// </summary>
 		static void SetControllerVibrationInternal(Controller controller, float leftMotor, float rightMotor);
-		static bool PollController(Controller controller, int32_t mode);		
+		/// <summary>
+		/// OS-dependent function for Controller polling.
+		/// </summary>
+		/// <param name="controller">Controller to poll.</param>
+		/// <param name="mode">Mode for polling.</param>
+		/// <returns>True on success, false otherwise.</returns>
+		static bool PollController(Controller controller, PollMode mode);
+		/// <summary>
+		/// OS-dependent function for Controller disconnections.
+		/// </summary>
+		/// <param name="controller">Controller to disconnect.</param>
 		static void CloseController(Controller controller);
+		/// <summary>
+		/// OS-dependent function for updating a Controller GUID.
+		/// </summary>
+		/// <param name="guid">New GUID.</param>
 		static void UpdateControllerGUID(std::string& guid);
 		
 #ifdef TRAP_PLATFORM_WINDOWS
@@ -549,22 +828,89 @@ namespace TRAP
 #endif
 		};
 		static std::array<ControllerInternal, 16> s_controllerInternal;
+		/// <summary>
+		/// Internally add a Controller.
+		/// </summary>
+		/// <param name="name">Name of the Controller.</param>
+		/// <param name="guid">GUID of the Controller.</param>
+		/// <param name="axisCount">Amount of Axes.</param>
+		/// <param name="buttonCount">Amount of Buttons.</param>
+		/// <param name="dpadCount">Amount of DPads.</param>
+		/// <returns>Pointer to the new ControllerInternal or nullptr if there are already 16 Controller connected.</returns>
 		static ControllerInternal* AddInternalController(const std::string& name, const std::string& guid, int32_t axisCount, int32_t buttonCount, int32_t dpadCount);
+		/// <summary>
+		/// Internally DPad input processing.
+		/// </summary>
+		/// <param name="con">Which Controller.</param>
+		/// <param name="dpad">Which DPad.</param>
+		/// <param name="value">New State.</param>
 		static void InternalInputControllerDPad(ControllerInternal* con, int32_t dpad, uint8_t value);
+		/// <summary>
+		/// Internally Axis input processing.
+		/// </summary>
+		/// <param name="con">Which Controller</param>
+		/// <param name="axis">Which DPad.</param>
+		/// <param name="value">New Axis value.</param>
 		static void InternalInputControllerAxis(ControllerInternal* con, int32_t axis, float value);
+		/// <summary>
+		/// Internally Button input processing.
+		/// </summary>
+		/// <param name="con">Which Controller.</param>
+		/// <param name="button">Which Button.</param>
+		/// <param name="pressed">New pressed or not pressed state.</param>
 		static void InternalInputControllerButton(ControllerInternal* con, int32_t button, bool pressed);
 		
 		///////////
 		//Mapping//
 		///////////	
 		static std::vector<Mapping> s_mappings;
-		
+
+		/// <summary>
+		/// Parse a string to a Mapping.
+		/// </summary>
+		/// <param name="mapping">Output variable for the new Mapping.</param>
+		/// <param name="str">Mapping as a string representation.</param>
+		/// <returns>True on success, false otherwise.</returns>
 		static bool ParseMapping(Mapping& mapping, std::string_view str);
+		/// <summary>
+		/// Find a loaded Mapping via its GUID.
+		/// </summary>
+		/// <param name="guid">GUID to search for.</param>
+		/// <returns>When found Pointer to Mapping, nullptr otherwise.</returns>
 		static Mapping* FindMapping(std::string_view guid);
+		/// <summary>
+		/// Find a Mapping based on Controller GUID and verifies validity.
+		/// </summary>
+		/// <param name="con">Controller from which to use GUID.</param>
+		/// <returns>When found and valid Pointer to Mapping, nullptr otherwise.</returns>
 		static Mapping* FindValidMapping(const ControllerInternal* con);
+		/// <summary>
+		/// Checks whether a Controller Mapping element is present in the hardware.
+		/// </summary>
+		/// <param name="e">Map element to check.</param>
+		/// <param name="con">Controller to validate with.</param>
+		/// <returns>True if MapElement is present in hardware, false otherwise.</returns>
 		static bool IsValidElementForController(const MapElement* e, const ControllerInternal* con);
+		/// <summary>
+		/// Retrieve state of a specific button from a Controller.
+		/// </summary>
+		/// <param name="controller">Controller to query.</param>
+		/// <param name="button">Button to get state from.</param>
+		/// <returns>On success button state, false otherwise.</returns>
 		static bool GetMappedControllerButton(Controller controller, ControllerButton button);
+		/// <summary>
+		/// Retrieve state of a specific axis from a Controller.
+		/// </summary>
+		/// <param name="controller">Controller to query.</param>
+		/// <param name="axis">Axis to get state from.</param>
+		/// <returns>On success axis state, 0.0f otherwise.</returns>
 		static float GetMappedControllerAxis(Controller controller, ControllerAxis axis);
+		/// <summary>
+		/// Retrieve state of a specific DPad from a Controller.
+		/// </summary>
+		/// <param name="controller">Controller to query.</param>
+		/// <param name="dpad">DPad to get state from.</param>
+		/// <returns>On success DPad state, ControllerDPad::Centered otherwise.</returns>
 		static ControllerDPad GetMappedControllerDPad(Controller controller, uint32_t dpad);
 	};
 }

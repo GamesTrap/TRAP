@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: TRAP::Network::FTP::ListingResponse Class Reference</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,37 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -80,7 +118,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Specialization of <a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p.html" title="A FTP client.  Only supports IPv4">FTP</a> response returning a filename listing  
+<p>Specialization of <a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p.html" title="A FTP client.  Only supports IPv4.">FTP</a> response returning a filename listing.  
  <a href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_listing_response.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_f_t_p_8h_source.html">FTP.h</a>&gt;</code></p>
@@ -97,14 +135,14 @@ Inheritance diagram for TRAP::Network::FTP::ListingResponse:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a703a5aa0655f60c85c20d4108b009b02"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_listing_response.html#a703a5aa0655f60c85c20d4108b009b02">ListingResponse</a> (const <a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html">Response</a> &amp;response, const std::string &amp;data)</td></tr>
-<tr class="memdesc:a703a5aa0655f60c85c20d4108b009b02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor  <a href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_listing_response.html#a703a5aa0655f60c85c20d4108b009b02">More...</a><br /></td></tr>
+<tr class="memdesc:a703a5aa0655f60c85c20d4108b009b02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_listing_response.html#a703a5aa0655f60c85c20d4108b009b02">More...</a><br /></td></tr>
 <tr class="separator:a703a5aa0655f60c85c20d4108b009b02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6dc9131eb633fb007aa65fb7bfe21695"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::string &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_listing_response.html#a6dc9131eb633fb007aa65fb7bfe21695">GetListing</a> () const</td></tr>
-<tr class="memdesc:a6dc9131eb633fb007aa65fb7bfe21695"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the array of directory/file names  <a href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_listing_response.html#a6dc9131eb633fb007aa65fb7bfe21695">More...</a><br /></td></tr>
+<tr class="memdesc:a6dc9131eb633fb007aa65fb7bfe21695"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the array of directory/file names.  <a href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_listing_response.html#a6dc9131eb633fb007aa65fb7bfe21695">More...</a><br /></td></tr>
 <tr class="separator:a6dc9131eb633fb007aa65fb7bfe21695"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html">TRAP::Network::FTP::Response</a></td></tr>
 <tr class="memitem:a56642a1f0a93e964e38cbd484640cea0 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#a56642a1f0a93e964e38cbd484640cea0">Response</a> (<a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#ab74ad9610943d5c57a843cd3886f93c1">Status</a> code=Status::InvalidResponse, std::string message=&quot;&quot;)</td></tr>
-<tr class="memdesc:a56642a1f0a93e964e38cbd484640cea0 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="mdescLeft">&#160;</td><td class="mdescRight">This constructor is used by the <a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p.html" title="A FTP client.  Only supports IPv4">FTP</a> client to build the response.  <a href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#a56642a1f0a93e964e38cbd484640cea0">More...</a><br /></td></tr>
+<tr class="memdesc:a56642a1f0a93e964e38cbd484640cea0 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="mdescLeft">&#160;</td><td class="mdescRight">This constructor is used by the <a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p.html" title="A FTP client.  Only supports IPv4.">FTP</a> client to build the response.  <a href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#a56642a1f0a93e964e38cbd484640cea0">More...</a><br /></td></tr>
 <tr class="separator:a56642a1f0a93e964e38cbd484640cea0 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4b4eea56a71c4c6e825e92d9de07e15 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#ae4b4eea56a71c4c6e825e92d9de07e15">IsOK</a> () const</td></tr>
 <tr class="memdesc:ae4b4eea56a71c4c6e825e92d9de07e15 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the status code means a success.<br  />
@@ -112,10 +150,10 @@ Public Member Functions</h2></td></tr>
  This function is defined for convenience, it is equivalent to testing if the status code is &lt; 400.  <a href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#ae4b4eea56a71c4c6e825e92d9de07e15">More...</a><br /></td></tr>
 <tr class="separator:ae4b4eea56a71c4c6e825e92d9de07e15 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ca90ac03a75cd91e7fdddb250b8733c inherit pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#ab74ad9610943d5c57a843cd3886f93c1">Status</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#a7ca90ac03a75cd91e7fdddb250b8733c">GetStatus</a> () const</td></tr>
-<tr class="memdesc:a7ca90ac03a75cd91e7fdddb250b8733c inherit pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the status code of the response  <a href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#a7ca90ac03a75cd91e7fdddb250b8733c">More...</a><br /></td></tr>
+<tr class="memdesc:a7ca90ac03a75cd91e7fdddb250b8733c inherit pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the status code of the response.  <a href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#a7ca90ac03a75cd91e7fdddb250b8733c">More...</a><br /></td></tr>
 <tr class="separator:a7ca90ac03a75cd91e7fdddb250b8733c inherit pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a790037792721af9e4a5fee34ea1ef372 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#a790037792721af9e4a5fee34ea1ef372">GetMessage</a> () const</td></tr>
-<tr class="memdesc:a790037792721af9e4a5fee34ea1ef372 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the full message contained in the response  <a href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#a790037792721af9e4a5fee34ea1ef372">More...</a><br /></td></tr>
+<tr class="memdesc:a790037792721af9e4a5fee34ea1ef372 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the full message contained in the response.  <a href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#a790037792721af9e4a5fee34ea1ef372">More...</a><br /></td></tr>
 <tr class="separator:a790037792721af9e4a5fee34ea1ef372 inherit pub_methods_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
@@ -177,11 +215,11 @@ Additional Inherited Members</h2></td></tr>
 <b>InvalidFile</b> = 1003
 <br />
  }</td></tr>
-<tr class="memdesc:ab74ad9610943d5c57a843cd3886f93c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Status codes possibly returned by a <a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p.html" title="A FTP client.  Only supports IPv4">FTP</a> response  <a href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#ab74ad9610943d5c57a843cd3886f93c1">More...</a><br /></td></tr>
+<tr class="memdesc:ab74ad9610943d5c57a843cd3886f93c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Status codes possibly returned by a <a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p.html" title="A FTP client.  Only supports IPv4.">FTP</a> response.  <a href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#ab74ad9610943d5c57a843cd3886f93c1">More...</a><br /></td></tr>
 <tr class="separator:ab74ad9610943d5c57a843cd3886f93c1 inherit pub_types_class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Specialization of <a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p.html" title="A FTP client.  Only supports IPv4">FTP</a> response returning a filename listing </p>
+<div class="textblock"><p>Specialization of <a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p.html" title="A FTP client.  Only supports IPv4.">FTP</a> response returning a filename listing. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a703a5aa0655f60c85c20d4108b009b02"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a703a5aa0655f60c85c20d4108b009b02">&#9670;&nbsp;</a></span>ListingResponse()</h2>
@@ -209,11 +247,11 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Default constructor </p>
+<p>Constructor. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">response</td><td>Source response</td></tr>
-    <tr><td class="paramname">data</td><td>Data containing the raw listing</td></tr>
+    <tr><td class="paramname">response</td><td>Source response.</td></tr>
+    <tr><td class="paramname">data</td><td>Data containing the raw listing.</td></tr>
   </table>
   </dd>
 </dl>
@@ -236,8 +274,8 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Return the array of directory/file names </p>
-<dl class="section return"><dt>Returns</dt><dd>Array containing the requested listing</dd></dl>
+<p>Return the array of directory/file names. </p>
+<dl class="section return"><dt>Returns</dt><dd>Array containing the requested listing.</dd></dl>
 
 </div>
 </div>

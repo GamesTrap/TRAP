@@ -1,31 +1,3 @@
-/*
-////////////////////////////////////////////////////////////
-//
-// SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2019 Laurent Gomila (laurent@sfml-dev.org)
-//
-// This software is provided 'as-is', without any express or implied warranty.
-// In no event will the authors be held liable for any damages arising from the use of this software.
-//
-// Permission is granted to anyone to use this software for any purpose,
-// including commercial applications, and to alter it and redistribute it freely,
-// subject to the following restrictions:
-//
-// 1. The origin of this software must not be misrepresented;
-//    you must not claim that you wrote the original software.
-//    If you use this software in a product, an acknowledgment
-//    in the product documentation would be appreciated but is not required.
-//
-// 2. Altered source versions must be plainly marked as such,
-//    and must not be misrepresented as being the original software.
-//
-// 3. This notice may not be removed or altered from any source distribution.
-//
-////////////////////////////////////////////////////////////
-
-Modified by: Jan "GamesTrap" Schuerkamp
-*/
-
 #ifndef _TRAP_NETWORK_TCPSOCKETIPV6_H_
 #define _TRAP_NETWORK_TCPSOCKETIPV6_H_
 
@@ -39,13 +11,13 @@ namespace TRAP::Network
 	class Packet;
 
 	/// <summary>
-	/// Specialized socket using the TCP protocol
+	/// Specialized socket using the TCP protocol.
 	/// </summary>
 	class TCPSocketIPv6 final : public Socket
 	{
 	public:
 		/// <summary>
-		/// Default constructor
+		/// Constructor.
 		/// </summary>
 		TCPSocketIPv6();
 
@@ -54,7 +26,7 @@ namespace TRAP::Network
 		/// <br>
 		/// If the socket is not connected, this function returns 0.
 		/// </summary>
-		/// <returns>Port to which the socket is bound</returns>
+		/// <returns>Port to which the socket is bound.</returns>
 		uint16_t GetLocalPort() const;
 
 		/// <summary>
@@ -63,7 +35,7 @@ namespace TRAP::Network
 		/// If the socket is not connected, this function returns
 		/// TRAP::Network::IPv4Address::None.
 		/// </summary>
-		/// <returns>Address of the remote peer</returns>
+		/// <returns>Address of the remote peer.</returns>
 		IPv6Address GetRemoteAddress() const;
 
 		/// <summary>
@@ -72,7 +44,7 @@ namespace TRAP::Network
 		/// <br>
 		/// If the socket is not connected, this function returns 0.
 		/// </summary>
-		/// <returns>Remote port to which the socket is connected</returns>
+		/// <returns>Remote port to which the socket is connected.</returns>
 		uint16_t GetRemotePort() const;
 
 		/// <summary>
@@ -84,10 +56,10 @@ namespace TRAP::Network
 		/// If the socket is already connected, the connection is
 		/// forcibly disconnected before attempting to connect again.
 		/// </summary>
-		/// <param name="remoteAddress">Address of the remote peer</param>
-		/// <param name="remotePort">Port of the remote peer</param>
-		/// <param name="timeout">Optional maximum time to wait</param>
-		/// <returns></returns>
+		/// <param name="remoteAddress">Address of the remote peer.</param>
+		/// <param name="remotePort">Port of the remote peer.</param>
+		/// <param name="timeout">Optional maximum time to wait.</param>
+		/// <returns>Status code.</returns>
 		Status Connect(const IPv6Address& remoteAddress, uint16_t remotePort, Utils::TimeStep timeout = Utils::TimeStep(0.0f));
 
 		/// <summary>
@@ -106,9 +78,9 @@ namespace TRAP::Network
 		/// overload instead.<br>
 		/// This function will fail if the socket is not connected
 		/// </summary>
-		/// <param name="data">Pointer to the sequence of bytes to send</param>
-		/// <param name="size">Number of bytes to send</param>
-		/// <returns>Status code</returns>
+		/// <param name="data">Pointer to the sequence of bytes to send.</param>
+		/// <param name="size">Number of bytes to send.</param>
+		/// <returns>Status code.</returns>
 		Status Send(const void* data, std::size_t size) const;
 
 		/// <summary>
@@ -116,10 +88,10 @@ namespace TRAP::Network
 		/// <br>
 		/// This function will fail if the socket is not connected
 		/// </summary>
-		/// <param name="data">Pointer to the sequence of bytes to send</param>
-		/// <param name="size">Number of bytes to send</param>
-		/// <param name="sent">The number of bytes sent will be written here</param>
-		/// <returns>Status code</returns>
+		/// <param name="data">Pointer to the sequence of bytes to send.</param>
+		/// <param name="size">Number of bytes to send.</param>
+		/// <param name="sent">The number of bytes sent will be written here.</param>
+		/// <returns>Status code.</returns>
 		Status Send(const void* data, std::size_t size, std::size_t& sent) const;
 
 		/// <summary>
@@ -129,10 +101,10 @@ namespace TRAP::Network
 		/// bytes are actually received.<br>
 		/// This function will fail if the socket is not connected.
 		/// </summary>
-		/// <param name="data">Pointer to the array to fill with the received bytes</param>
-		/// <param name="size">Maximum number of bytes that can be received</param>
-		/// <param name="received">This variable is filled with the actual number of bytes received</param>
-		/// <returns></returns>
+		/// <param name="data">Pointer to the array to fill with the received bytes.</param>
+		/// <param name="size">Maximum number of bytes that can be received.</param>
+		/// <param name="received">This variable is filled with the actual number of bytes received.</param>
+		/// <returns>Status code.</returns>
 		Status Receive(void* data, std::size_t size, std::size_t& received) const;
 
 		/// <summary>
@@ -144,8 +116,8 @@ namespace TRAP::Network
 		/// peer uncorrupted.<br>
 		/// This function will fail if the socket is not connected.
 		/// </summary>
-		/// <param name="packet">Packet to send</param>
-		/// <returns>Status code</returns>
+		/// <param name="packet">Packet to send.</param>
+		/// <returns>Status code.</returns>
 		Status Send(Packet& packet) const;
 
 		/// <summary>
@@ -155,15 +127,15 @@ namespace TRAP::Network
 		/// has been received.<br>
 		/// This function will fail if the socket is not connected.
 		/// </summary>
-		/// <param name="packet">Packet to fill with the received data</param>
-		/// <returns>Status code</returns>
+		/// <param name="packet">Packet to fill with the received data.</param>
+		/// <returns>Status code.</returns>
 		Status Receive(Packet& packet);
 
 	private:
 		friend class TCPListenerIPv6;
 
 		/// <summary>
-		/// Structure holding the data of a pending packet
+		/// Structure holding the data of a pending packet.
 		/// </summary>
 		struct PendingPacket
 		{

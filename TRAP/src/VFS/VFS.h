@@ -9,16 +9,34 @@ namespace TRAP
 	class VFS final
 	{
 	public:
+		/// <summary>
+		/// Default Constructor.
+		/// </summary>
 		VFS() = default;
+		/// <summary>
+		///	Default Destructor.
+		/// </summary>
 		~VFS() = default;		
 
+		/// <summary>
+		/// Deleted Copy Constructor.
+		/// </summary>
 		VFS(const VFS&) = delete;
+		/// <summary>
+		/// Deleted Copy Assignment Operator.
+		/// </summary>
 		VFS& operator=(const VFS&) = delete;
+		/// <summary>
+		/// Deleted Move Constructor.
+		/// </summary>
 		VFS(VFS&&) = delete;
+		/// <summary>
+		/// Deleted Move Assignment Operator.
+		/// </summary>
 		VFS& operator=(VFS&&) = delete;
 
 		/// <summary>
-		/// WriteMode to be used by writing operations
+		/// WriteMode to be used by writing operations.
 		/// </summary>
 		enum class WriteMode
 		{
@@ -29,7 +47,7 @@ namespace TRAP
 		/// <summary>
 		/// Mount a physical folder path to a virtual folder path.<br>
 		/// Subfolders need to be mounted separately.<br>
-		/// NOTE: Physical path should use forward slashes and not back slashes!
+		/// NOTE: Physical path should use forward slashes and not back slashes!<br>
 		/// NOTE: Virtual file paths always use lowercase (except for the filename and its ending).<br>
 		/// <br>
 		/// If HotShaderReloading is enabled and the virtualPath is "/shaders" then this also instantiates the Shader TRAP::FileWatcher.<br>
@@ -64,7 +82,7 @@ namespace TRAP
 		/// Prints an error if virtualPath is empty.<br>
 		/// <br>
 		/// If virtualPath is "/shaders" and HotShaderReloading is enabled and the Shader TRAP::FileWatcher is already instantiated then this also stops it.<br>
-		/// If virtualPath is "/textures" and HotTextureReloading is enabled and the Texture TRAP::FileWatcher is already instantiated then this also stops it.<br>
+		/// If virtualPath is "/textures" and HotTextureReloading is enabled and the Texture TRAP::FileWatcher is already instantiated then this also stops it.
 		/// </summary>
 		/// <param name="virtualPath">Virtual folder path to unmount.</param>
 		static void Unmount(const std::string& virtualPath);
@@ -77,10 +95,10 @@ namespace TRAP
 		/// <param name="outPhysicalPath">
 		/// Output physical path.<br>
 		/// Unchanged if path couldn't be resolved.</param>
-		/// <param name="silent">If set to false no error messages will be logged</param>
+		/// <param name="silent">If set to false no error messages will be logged.</param>
 		/// <returns>
 		/// True if file or folder was found.<br>
-		/// False if it wasn't found doesn't exist.<br>
+		/// False if it wasn't found doesn't exist.
 		/// </returns>
 		static bool ResolveReadPhysicalPath(std::string_view path, std::filesystem::path& outPhysicalPath, bool silent = false);
 		/// <summary>
@@ -112,7 +130,7 @@ namespace TRAP
 		/// Prints an error if path is empty, wasn't found, doesn't exist or couldn't be opened.
 		/// </summary>
 		/// <param name="path">Virtual or physical file path.</param>
-		/// <param name="silent">If set to false no error messages will be logged</param>
+		/// <param name="silent">If set to false no error messages will be logged.</param>
 		/// <returns>
 		/// Vector with file content on success.<br>
 		/// Empty vector if an error has occurred.
@@ -121,10 +139,10 @@ namespace TRAP
 		/// <summary>
 		/// Read the given text file.<br>
 		/// <br>
-		/// Prints an error if path is empty
+		/// Prints an error if path is empty.
 		/// </summary>
-		/// <param name="path">Virtual or physical file path</param>
-		/// <param name="silent">If set to false no error messages will be logged</param>
+		/// <param name="path">Virtual or physical file path.</param>
+		/// <param name="silent">If set to false no error messages will be logged.</param>
 		/// <returns>
 		/// String with file content on success.<br>
 		/// Empty string if an error has occurred.
@@ -133,21 +151,21 @@ namespace TRAP
 
 		/// <summary>
 		/// Write the given data to the given file path.<br>
-		/// Can be a virtual or a physical file path
+		/// Can be a virtual or a physical file path.
 		/// </summary>
-		/// <param name="path">Virtual or physical file path</param>
-		/// <param name="buffer">Data to be written</param>
-		/// <param name="mode">WriteMode to use</param>
-		/// <returns>If path could be resolved and data has been written true, false otherwise</returns>
+		/// <param name="path">Virtual or physical file path.</param>
+		/// <param name="buffer">Data to be written.</param>
+		/// <param name="mode">WriteMode to use.</param>
+		/// <returns>If path could be resolved and data has been written true, false otherwise.</returns>
 		static bool WriteFile(const std::string& path, std::vector<uint8_t>& buffer, WriteMode mode = WriteMode::Overwrite);
 		/// <summary>
 		/// Write the given text to the given file path.<br>
-		/// Can be a virtual or a physical file path
+		/// Can be a virtual or a physical file path.
 		/// </summary>
-		/// <param name="path">Virtual or physical file path</param>
-		/// <param name="text">Text to be written</param>
-		/// <param name="mode">WriteMode to use</param>
-		/// <returns>If path could be resolved and text has been written true, false otherwise</returns>
+		/// <param name="path">Virtual or physical file path.</param>
+		/// <param name="text">Text to be written.</param>
+		/// <param name="mode">WriteMode to use.</param>
+		/// <returns>If path could be resolved and text has been written true, false otherwise.</returns>
 		static bool WriteTextFile(std::string_view path, const std::string& text, WriteMode mode = WriteMode::Overwrite);
 
 		/// <summary>
@@ -158,8 +176,8 @@ namespace TRAP
 		/// <br>
 		/// Prints a warning if the file or folder doesn't exist.
 		/// </summary>
-		/// <param name="path">Virtual or physical path to a folder or a file</param>
-		/// <param name="silent">If set to false no error messages will be logged</param>
+		/// <param name="path">Virtual or physical path to a folder or a file.</param>
+		/// <param name="silent">If set to false no error messages will be logged.</param>
 		/// <returns>
 		/// True if file or folder exists.<br>
 		/// False if file or folder doesn't exist.<br>
@@ -173,7 +191,7 @@ namespace TRAP
 		/// Note: If a virtual folder path is provided only the size of the first mounted folder gets returned!<br>
 		/// Note: If a virtual file path is provided every mounted physical folder path to it gets checked!
 		/// </summary>
-		/// <param name="path">Virtual or physical path to a file or folder</param>
+		/// <param name="path">Virtual or physical path to a file or folder.</param>
 		/// <returns>
 		/// File or folder size in bytes.<br>
 		/// 0 if an error has occurred.
@@ -186,7 +204,7 @@ namespace TRAP
 		/// Note: If a virtual folder path is provided only the last write time of the first mounted folder gets returned!<br>
 		/// Note: If a virtual file path is provided every mounted physical folder path to it gets checked!
 		/// </summary>
-		/// <param name="path">Virtual or physical path to a file or folder</param>
+		/// <param name="path">Virtual or physical path to a file or folder.</param>
 		/// <returns>
 		/// Last write time of the file or folder.<br>
 		/// std::filesystem::file_time_type::min() if an error has occurred.
@@ -216,12 +234,12 @@ namespace TRAP
 		static void SetHotTextureReloading(bool enabled);
 
 		/// <summary>
-		/// Makes user written virtual paths compatible with the Virtual File System<br>
+		/// Makes user written virtual paths compatible with the Virtual File System.<br>
 		/// <br>
 		/// NOTE: Physical path won't be affected by this and just return the same as virtualPath.
 		/// </summary>
-		/// <param name="virtualPath">Path to make compatible</param>
-		/// <returns>String with a compatible path for the Virtual File System</returns>
+		/// <param name="virtualPath">Path to make compatible.</param>
+		/// <returns>String with a compatible path for the Virtual File System.</returns>
 		static std::string MakeVirtualPathCompatible(std::string_view virtualPath);
 		/// <summary>
 		/// Get only the filename without its file ending from a virtual or physical file path.
@@ -232,11 +250,11 @@ namespace TRAP
 
 	private:
 		/// <summary>
-		/// Initializes the Virtual File System
+		/// Initializes the Virtual File System.
 		/// </summary>
 		static void Init();
 		/// <summary>
-		/// Shuts down the Virtual File System
+		/// Shuts down the Virtual File System.
 		/// </summary>
 		static void Shutdown();
 		friend TRAP::Application::Application();
@@ -252,7 +270,7 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Pointer to the hot texture reloading FileWatcher.</returns>
 		static FileWatcher* GetTextureFileWatcher();
-		friend static void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, std::vector<std::string>& textures, const bool& running);
+		friend void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, std::vector<std::string>& textures, const bool& run);
 		
 		/// <summary>
 		/// Read the given physical file.<br>
@@ -260,8 +278,8 @@ namespace TRAP
 		/// Prints an error when file couldn't be opened.<br>
 		/// Prints an error when physicalFilePath doesn't exist.
 		/// </summary>
-		/// <param name="physicalFilePath">Physical file path</param>
-		/// <param name="silent">If set to false no error messages will be logged</param>
+		/// <param name="physicalFilePath">Physical file path.</param>
+		/// <param name="silent">If set to false no error messages will be logged.</param>
 		/// <returns>
 		/// Vector filled with the file content.<br>
 		/// Empty vector if an error has occurred.
@@ -274,8 +292,8 @@ namespace TRAP
 		/// Prints an error if physicalFilePath doesn't exist.<br>
 		/// Prints an error if physicalFilePath couldn't be opened.
 		/// </summary>
-		/// <param name="physicalFilePath">Physical file path</param>
-		/// <param name="silent">If set to false no error messages will be logged</param>
+		/// <param name="physicalFilePath">Physical file path.</param>
+		/// <param name="silent">If set to false no error messages will be logged.</param>
 		/// <returns>
 		/// String filled with the file content.<br>
 		/// Empty string if an error has occurred.
@@ -288,9 +306,9 @@ namespace TRAP
 		/// Prints an error if physicalFilePath and/or buffer is empty.<br>
 		/// Prints an error if file couldn't be written.
 		/// </summary>
-		/// <param name="physicalFilePath">Physical file path to be written to</param>
-		/// <param name="buffer">Data to be written</param>
-		/// <param name="mode">WriteMode to be used (Overwrite or Append)</param>
+		/// <param name="physicalFilePath">Physical file path to be written to.</param>
+		/// <param name="buffer">Data to be written.</param>
+		/// <param name="mode">WriteMode to be used (Overwrite or Append).</param>
 		/// <returns>
 		/// True if file was successfully written.<br>
 		/// False if an error has occurred.
@@ -302,9 +320,9 @@ namespace TRAP
 		/// Prints an error if physicalFilePath and/or text is empty.<br>
 		/// Prints an error if file couldn't be written.
 		/// </summary>
-		/// <param name="physicalFilePath">Physical file path to be written to</param>
-		/// <param name="text">Text to be written</param>
-		/// <param name="mode">WriteMode to be used (Overwrite or Append)</param>
+		/// <param name="physicalFilePath">Physical file path to be written to.</param>
+		/// <param name="text">Text to be written.</param>
+		/// <param name="mode">WriteMode to be used (Overwrite or Append).</param>
 		/// <returns>
 		/// True if file was successfully written.<br>
 		/// False if an error has occurred.

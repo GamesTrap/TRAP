@@ -39,8 +39,17 @@ namespace TRAP::Math
 	template<typename T>
 	struct tQuaternion
 	{
+		/// <summary>
+		/// Default Move Constructor.
+		/// </summary>
 		constexpr tQuaternion(tQuaternion&&) = default;
+		/// <summary>
+		/// Default Destructor.
+		/// </summary>
 		~tQuaternion() = default;
+		/// <summary>
+		/// Default Move Assignment Operator.
+		/// </summary>
 		constexpr tQuaternion<T>& operator=(tQuaternion&&) = default;
 		
 		//Implementation detail
@@ -51,14 +60,27 @@ namespace TRAP::Math
 		T x, y, z, w;
 
 		//Implicit basic constructors
+
+		/// <summary>
+		/// Default Constructor.
+		/// </summary>
 		constexpr tQuaternion() = default;
+		/// <summary>
+		/// Default Copy Constructor.
+		/// </summary>
 		constexpr tQuaternion(const tQuaternion& q) = default;
 
-		//Explicit basic constructors
+		/// <summary>
+		/// Explicit basic constructor.
+		/// </summary>
 		constexpr tQuaternion(T s, const Vec<3, T>& v);
+		/// <summary>
+		/// Explicit basic constructor.
+		/// </summary>
 		constexpr tQuaternion(T w, T x, T y, T z);
 
 		//Conversion constructors
+		
 		template<typename U>
 		constexpr explicit tQuaternion(const tQuaternion<T>& q);
 
@@ -66,10 +88,15 @@ namespace TRAP::Math
 		//explicit operator Mat<3, 3, T>() const;
 		//explicit operator Mat<4, 4, T>() const;
 
-		//Create a quaternion from two normalized axis
+		/// <summary>
+		/// Create a quaternion from two normalized axis.
+		/// </summary>
 		tQuaternion(const Vec<3, T>& u, const Vec<3, T>& v);
 
-		//Build a quaternion from euler angles (pitch, yaw, roll).
+		/// <summary>
+		/// Build a quaternion from euler angles (pitch, yaw, roll).
+		/// </summary>
+		/// <param name="eulerAnglesInRadians">Euler angles (pitch, yaw, roll).</param>
 		constexpr explicit tQuaternion(const Vec<3, T>& eulerAnglesInRadians);
 		explicit tQuaternion(const Mat<3, 3, T>& m);
 		explicit tQuaternion(const Mat<4, 4, T>& m);		
@@ -89,8 +116,11 @@ namespace TRAP::Math
 		constexpr tQuaternion<T>& operator*=(U s);
 		template<typename U>
 		constexpr tQuaternion<T>& operator/=(U s);
-		
-		//Return the count of components of a quaternion
+
+		/// <summary>
+		/// Retrieve the count of components of a quaternion.
+		/// </summary>
+		/// <returns>Count.</returns>
 		static constexpr int Length();
 
 		//Component Access

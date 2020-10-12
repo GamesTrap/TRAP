@@ -1266,3 +1266,7 @@ SITREP 09/19/2020|20w38a2
     - Fixed missing last element in SplitStringView ~<20 mins
     - VFS is now actually lowercase except filename ~<20 mins
     - Some documentation stuff in TRAP::VFS ~<20 mins
+
+SITREP 10/12/2020|20w42a1
+    - Changed TRAP Engine version to 20w42a1(0.6.72)
+    - Complete Reference overhaul ~>Multiple weeks

@@ -127,7 +127,7 @@ const void* TRAP::INTERNAL::PFMImage::GetPixelData() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::INTERNAL::PFMImage::GetPixelDataSize() const
+uint64_t TRAP::INTERNAL::PFMImage::GetPixelDataSize() const
 {
-	return static_cast<uint32_t>(m_data.size());
+	return m_data.size() * sizeof(float);
 }

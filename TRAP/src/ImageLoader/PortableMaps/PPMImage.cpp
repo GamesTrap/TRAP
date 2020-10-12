@@ -124,10 +124,10 @@ const void* TRAP::INTERNAL::PPMImage::GetPixelData() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::INTERNAL::PPMImage::GetPixelDataSize() const
+uint64_t TRAP::INTERNAL::PPMImage::GetPixelDataSize() const
 {
 	if (!m_data2Byte.empty())
-		return static_cast<uint32_t>(m_data2Byte.size());
+		return m_data2Byte.size() * sizeof(uint16_t);
 	
-	return static_cast<uint32_t>(m_data.size());
+	return m_data.size();
 }

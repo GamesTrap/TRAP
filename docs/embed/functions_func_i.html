@@ -7,25 +7,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.17"/>
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         <title>TRAP: Class Members - Functions</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
         <link href="doxygen.css" rel="stylesheet" type="text/css" />
         <link href="customdoxygen.css" rel="stylesheet" type="text/css"/>
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="doxy-boot.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <!-- Custom input to switch branches -->
+        <script>
+            function switchBranchAction() {
+                var branch = document.getElementById("branch_input").value;
+                var form = this;
+                window.location.href = window.location.hostname + '/en/' + branch;
+            }
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="annotated.html">TRAP 0.6.53</a>
+                    <a href="annotated.html" class="navbar-brand">TRAP 0.6.72</a>
                 </div>
             </div>
         </nav>
@@ -42,16 +59,73 @@
 var searchBox = new SearchBox("searchBox", "search",false,'Search');
 /* @license-end */
 </script>
-<script type="text/javascript" src="menudata.js"></script>
-<script type="text/javascript" src="menu.js"></script>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(function() {
-  initMenu('',true,false,'search.php','Search');
-  $(document).ready(function() { init_search(); });
-});
-/* @license-end */</script>
-<div id="main-nav"></div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
+      <li class="current"><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow3" class="tabs2">
+    <ul class="tablist">
+      <li><a href="functions.html"><span>All</span></a></li>
+      <li class="current"><a href="functions_func.html"><span>Functions</span></a></li>
+      <li><a href="functions_vars.html"><span>Variables</span></a></li>
+      <li><a href="functions_type.html"><span>Typedefs</span></a></li>
+      <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="functions_rela.html"><span>Related&#160;Functions</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow4" class="tabs3">
+    <ul class="tablist">
+      <li><a href="functions_func.html#index_a"><span>a</span></a></li>
+      <li><a href="functions_func_b.html#index_b"><span>b</span></a></li>
+      <li><a href="functions_func_c.html#index_c"><span>c</span></a></li>
+      <li><a href="functions_func_d.html#index_d"><span>d</span></a></li>
+      <li><a href="functions_func_e.html#index_e"><span>e</span></a></li>
+      <li><a href="functions_func_f.html#index_f"><span>f</span></a></li>
+      <li><a href="functions_func_g.html#index_g"><span>g</span></a></li>
+      <li><a href="functions_func_h.html#index_h"><span>h</span></a></li>
+      <li class="current"><a href="functions_func_i.html#index_i"><span>i</span></a></li>
+      <li><a href="functions_func_k.html#index_k"><span>k</span></a></li>
+      <li><a href="functions_func_l.html#index_l"><span>l</span></a></li>
+      <li><a href="functions_func_m.html#index_m"><span>m</span></a></li>
+      <li><a href="functions_func_n.html#index_n"><span>n</span></a></li>
+      <li><a href="functions_func_o.html#index_o"><span>o</span></a></li>
+      <li><a href="functions_func_p.html#index_p"><span>p</span></a></li>
+      <li><a href="functions_func_r.html#index_r"><span>r</span></a></li>
+      <li><a href="functions_func_s.html#index_s"><span>s</span></a></li>
+      <li><a href="functions_func_t.html#index_t"><span>t</span></a></li>
+      <li><a href="functions_func_u.html#index_u"><span>u</span></a></li>
+      <li><a href="functions_func_v.html#index_v"><span>v</span></a></li>
+      <li><a href="functions_func_w.html#index_w"><span>w</span></a></li>
+      <li><a href="functions_func_~.html#index__7E"><span>~</span></a></li>
+    </ul>
+  </div>
 </div><!-- top -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -71,20 +145,70 @@ $(function() {
 &#160;
 
 <h3><a id="index_i"></a>- i -</h3><ul>
+<li>Image()
+: <a class="el" href="class_t_r_a_p_1_1_image.html#a8756e088b2ec260fba1f0a76da452f62">TRAP::Image</a>
+</li>
+<li>Info()
+: <a class="el" href="class_t_r_a_p_1_1_log.html#a1e29481f408057ddc31c6003c0bd5f7a">TRAP::Log</a>
+</li>
+<li>Input()
+: <a class="el" href="class_t_r_a_p_1_1_input.html#ab16fb22a71021c1778d572c137b55164">TRAP::Input</a>
+</li>
+<li>InstrumentationTimer()
+: <a class="el" href="class_t_r_a_p_1_1_utils_1_1_debug_1_1_instrumentation_timer.html#af02c640c567275fccc0b60ed7c3d5750">TRAP::Utils::Debug::InstrumentationTimer</a>
+</li>
+<li>Instrumentor()
+: <a class="el" href="class_t_r_a_p_1_1_utils_1_1_debug_1_1_instrumentor.html#a6170e3099a9dafec0f2d364d3f469470">TRAP::Utils::Debug::Instrumentor</a>
+</li>
 <li>IPv4Address()
-: <a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#ac2183b4f4c59280b231624c4145dd3ca">TRAP::Network::IPv4Address</a>
+: <a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv4_address.html#ab09abc36b09bed6cade15a8064c022cc">TRAP::Network::IPv4Address</a>
 </li>
 <li>IPv6Address()
-: <a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html#a836e09271cef44cceda9197999025088">TRAP::Network::IPv6Address</a>
+: <a class="el" href="class_t_r_a_p_1_1_network_1_1_i_pv6_address.html#a9f7c004498e93140d46b27e6a150e99a">TRAP::Network::IPv6Address</a>
 </li>
 <li>IsBlocking()
 : <a class="el" href="class_t_r_a_p_1_1_network_1_1_socket.html#aab97946284a9e629ed8c476635fba2e5">TRAP::Network::Socket</a>
 </li>
+<li>IsChanged()
+: <a class="el" href="class_t_r_a_p_1_1_utils_1_1_config.html#a21e5c6bfa329c2785e4a54bfe57f1170">TRAP::Utils::Config</a>
+</li>
+<li>IsControllerButtonPressed()
+: <a class="el" href="class_t_r_a_p_1_1_input.html#ae47a5dd56d7ba569516c61c30a50ca24">TRAP::Input</a>
+</li>
+<li>IsControllerConnected()
+: <a class="el" href="class_t_r_a_p_1_1_input.html#a0c5fef8520cbb8249ca19c4904c1d4fe">TRAP::Input</a>
+</li>
+<li>IsControllerGamepad()
+: <a class="el" href="class_t_r_a_p_1_1_input.html#a1e0494aa557fe9a152b6967d01e604ce">TRAP::Input</a>
+</li>
 <li>IsDecorated()
 : <a class="el" href="class_t_r_a_p_1_1_window.html#afefd3233e0aaf9632403ebc369240f36">TRAP::Window</a>
 </li>
+<li>IsEqual()
+: <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_local.html#a7dd778224174cae5e1d6fac9e5a48511">TRAP::Utils::BasicRandomLocal&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;</a>
+, <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_static.html#abcc01259d75db5f2b85d98ff23651603">TRAP::Utils::BasicRandomStatic&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;</a>
+, <a class="el" href="class_t_r_a_p_1_1_utils_1_1_basic_random_thread_local.html#a29afc620b387770caa4ab92204375463">TRAP::Utils::BasicRandomThreadLocal&lt; engine, Seeder, IntegerDist, RealDist, BoolDist &gt;</a>
+</li>
 <li>IsFocused()
 : <a class="el" href="class_t_r_a_p_1_1_window.html#af7df0446104880f0915a7c0a4a8dc3e0">TRAP::Window</a>
+</li>
+<li>IsHDR()
+: <a class="el" href="class_t_r_a_p_1_1_image.html#ab80b6bd19eb994be5d2a2f2aab84350e">TRAP::Image</a>
+</li>
+<li>IsImageColored()
+: <a class="el" href="class_t_r_a_p_1_1_image.html#a1fe55a4942128a31882e7d9f2168e5f1">TRAP::Image</a>
+</li>
+<li>IsImageGrayScale()
+: <a class="el" href="class_t_r_a_p_1_1_image.html#a7c1d6c0e9d1fef15f59dd67490a1eb23">TRAP::Image</a>
+</li>
+<li>IsInCategory()
+: <a class="el" href="class_t_r_a_p_1_1_events_1_1_event.html#ae75af1e048b84b7c73341623ee8d8716">TRAP::Events::Event</a>
+</li>
+<li>IsInUse()
+: <a class="el" href="class_t_r_a_p_1_1_monitor.html#afeb7e926881b4bf10297c610fbf0878e">TRAP::Monitor</a>
+</li>
+<li>IsKeyPressed()
+: <a class="el" href="class_t_r_a_p_1_1_input.html#a921fc8eb35e39ee9280cb3fc6ea5b4b4">TRAP::Input</a>
 </li>
 <li>IsMaximized()
 : <a class="el" href="class_t_r_a_p_1_1_window.html#ac322c2439a11891117b24e78a0fc36ea">TRAP::Window</a>
@@ -92,8 +216,14 @@ $(function() {
 <li>IsMinimized()
 : <a class="el" href="class_t_r_a_p_1_1_window.html#a5eeb583ad0cb916ced46864b8d722089">TRAP::Window</a>
 </li>
+<li>IsMouseButtonPressed()
+: <a class="el" href="class_t_r_a_p_1_1_input.html#a9237fd49cae5af512f8ccb2d21f541e7">TRAP::Input</a>
+</li>
 <li>IsOK()
 : <a class="el" href="class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#ae4b4eea56a71c4c6e825e92d9de07e15">TRAP::Network::FTP::Response</a>
+</li>
+<li>IsRawMouseInputSupported()
+: <a class="el" href="class_t_r_a_p_1_1_input.html#a33350622d8a1df5725b75d994b49002a">TRAP::Input</a>
 </li>
 <li>IsReady()
 : <a class="el" href="class_t_r_a_p_1_1_network_1_1_socket_selector.html#a88042536c0944e507288af1460c2ac37">TRAP::Network::SocketSelector</a>
