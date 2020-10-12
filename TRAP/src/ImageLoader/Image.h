@@ -294,10 +294,13 @@ std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, c
 	if (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value || std::is_same<T, float>::value))
 	{
 		TRAP_ASSERT(false, "Invalid type!");
-		return {};
+		return std::vector<T>();
 	}
 	if (format == ColorFormat::NONE || !data)
-		return {};
+	{
+		TRAP_ASSERT(false, "Invalid ColorFormat!");
+		return std::vector<T>();
+	}
 
 	std::vector<T> newData{};
 	uint32_t stride = 0;
@@ -324,10 +327,8 @@ std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, c
 
 	std::vector<T> row{};
 	row.resize(stride);
-	uint32_t lowOffset = 0;
-	uint32_t highOffset = (width - 1) * stride;
 
-	for (; lowOffset < highOffset; lowOffset += stride, highOffset -= stride)
+	for (uint32_t lowOffset = 0, highOffset = (width - 1) * stride; lowOffset < highOffset; lowOffset += stride, highOffset -= stride)
 	{
 		std::copy(newData.data() + lowOffset, newData.data() + lowOffset + stride, row.data());
 		std::copy(newData.data() + highOffset, newData.data() + highOffset + stride, newData.data() + lowOffset);
@@ -345,10 +346,13 @@ std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, c
 	if (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value || std::is_same<T, float>::value))
 	{
 		TRAP_ASSERT(false, "Invalid type!");
-		return {};
+		return std::vector<T>();
 	}
 	if (format == ColorFormat::NONE || !data)
-		return {};
+	{
+		TRAP_ASSERT(false, "Invalid ColorFormat!");
+		return std::vector<T>();
+	}
 
 	std::vector<T> newData{};
 	uint32_t stride = 0;
@@ -376,11 +380,7 @@ std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, c
 	std::vector<T> row{};
 	row.resize(stride);
 
-	row.reserve(stride);
-	uint32_t lowOffset = 0;
-	uint32_t highOffset = (height - 1) * stride;
-
-	for (; lowOffset < highOffset; lowOffset += stride, highOffset -= stride)
+	for (uint32_t lowOffset = 0, highOffset = (height - 1) * stride; lowOffset < highOffset; lowOffset += stride, highOffset -= stride)
 	{
 		std::copy(newData.data() + lowOffset, newData.data() + lowOffset + stride, row.data());
 		std::copy(newData.data() + highOffset, newData.data() + highOffset + stride, newData.data() + lowOffset);

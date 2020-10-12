@@ -27,8 +27,8 @@ public:
 		//PushLayer(TRAP::MakeScope<MonitorTests>());
 		//PushLayer(TRAP::MakeScope<OpacityTests>());
 		//PushLayer(TRAP::MakeScope<TitleTests>());
-		PushLayer(TRAP::MakeScope<VulkanTests>());
-		//PushLayer(TRAP::MakeScope<ImageLoaderTests>());
+		//PushLayer(TRAP::MakeScope<VulkanTests>());
+		PushLayer(TRAP::MakeScope<ImageLoaderTests>());
 		//PushLayer(TRAP::MakeScope<DragAndDropTests>());
 	}
 };
