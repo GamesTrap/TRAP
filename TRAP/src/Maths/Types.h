@@ -3,8 +3,8 @@
 
 namespace TRAP::Math
 {
-	template<int L, typename T> struct Vec;
-	template<int C, int R, typename T> struct Mat;
+	template<uint32_t L, typename T> struct Vec;
+	template<uint32_t C, uint32_t R, typename T> struct Mat;
 	template<typename T> struct tQuaternion;
 
 	template <typename T> using tVec2 = Vec<2, T>;

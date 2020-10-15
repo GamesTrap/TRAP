@@ -1280,3 +1280,4 @@ SITREP 10/14/2020|20w42a2
 SITREP 10/15/2020|20w42a3
     - Changed TRAP Engine version to 20w42a3(0.6.74)
     - Simplified Math.h (removed redundancy) ~>60 mins
+    - Updated docs ~<10 mins

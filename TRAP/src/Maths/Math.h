@@ -236,7 +236,7 @@ namespace TRAP::Math
 
 	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
 	template<>
-	constexpr int Abs(int x);
+	constexpr int32_t Abs(int32_t x);
 
 	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
 	/// <returns>x if x >= 0; otherwise it returns -x.</returns>
@@ -619,7 +619,7 @@ namespace TRAP::Math
 	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
 	/// <returns>See description.</returns>
 	template<typename genType>
-	genType FrExp(genType x, int& exp);
+	genType FrExp(genType x, int32_t& exp);
 
 	/// <summary>
 	/// Splits x into a floating-point significant in the range [0.5, 1.0) and an integral exponent of two,
@@ -631,7 +631,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
 	/// <returns>See description.</returns>
 	template<uint32_t L, typename T>
-	Vec<L, T> FrExp(const Vec<L, T>& v, const Vec<L, int>& exp);
+	Vec<L, T> FrExp(const Vec<L, T>& v, const Vec<L, int32_t>& exp);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
@@ -643,7 +643,7 @@ namespace TRAP::Math
 	/// <typeparam name="genType">Floating-point scalar or vector types.</typeparam>
 	/// <returns>See description.</returns>
 	template<typename genType>
-	genType LdExp(const genType& x, const int& exp);
+	genType LdExp(const genType& x, const int32_t& exp);
 
 	/// <summary>
 	/// Builds a floating-point number from x and the corresponding integral exponent of two in exp, returning:<br>
@@ -653,7 +653,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar or vector types.</typeparam>
 	/// <returns>See description.</returns>
 	template<uint32_t L, typename T>
-	Vec<L, T> LdExp(const Vec<L, T>& v, const Vec<L, int>& exp);
+	Vec<L, T> LdExp(const Vec<L, T>& v, const Vec<L, int32_t>& exp);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -998,12 +998,12 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point.</typeparam>
 	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this expression is satisfied.</returns>
 	template<uint32_t L, typename T>
-	constexpr Vec<L, bool> Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y, int ULPs);
+	constexpr Vec<L, bool> Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y, int32_t ULPs);
 
 	/// <typeparam name="T">Floating-point.</typeparam>
 	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this expression is satisfied.</returns>
 	template<uint32_t L, typename T >
-	constexpr Vec<L, bool> Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Vec<L, int>& ULPs);
+	constexpr Vec<L, bool> Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Vec<L, int32_t>& ULPs);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1028,12 +1028,12 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point.</typeparam>
 	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this expression is not satisfied.</returns>
 	template<uint32_t L, typename T>
-	constexpr Vec<L, bool> NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y, int ULPs);
+	constexpr Vec<L, bool> NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y, int32_t ULPs);
 
 	/// <typeparam name="T">Floating-point.</typeparam>
 	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this expression is not satisfied.</returns>
 	template<uint32_t L, typename T>
-	constexpr Vec<L, bool> NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Vec<L, int>& ULPs);
+	constexpr Vec<L, bool> NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Vec<L, int32_t>& ULPs);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Matrix-------------------------------------------------------------------------------------------------------------//
@@ -1538,12 +1538,12 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point.</typeparam>
 	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this is satisfied.</returns>
 	template<uint32_t L, typename T>
-	constexpr Vec<L, bool> Equal(const Vec<L, T>& x, const Vec<L, T>& y, int ULPs);
+	constexpr Vec<L, bool> Equal(const Vec<L, T>& x, const Vec<L, T>& y, int32_t ULPs);
 
 	/// <typeparam name="T">Floating-point.</typeparam>
 	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this is satisfied.</returns>
 	template<uint32_t L, typename T>
-	constexpr Vec<L, bool> Equal(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, int>& ULPs);
+	constexpr Vec<L, bool> Equal(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, int32_t>& ULPs);
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1565,12 +1565,12 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point</typeparam>
 	/// <returns>Component-wise comparison between the two vectors in term of ULPs.</returns>
 	template<uint32_t L, typename T>
-	constexpr Vec<L, bool> NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, int ULPs);
+	constexpr Vec<L, bool> NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, int32_t ULPs);
 
 	/// <typeparam name="T">Floating-point</typeparam>
 	/// <returns>Component-wise comparison between the two vectors in term of ULPs.</returns>
 	template<uint32_t L, typename T>
-	constexpr Vec<L, bool> NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, int>& ULPs);
+	constexpr Vec<L, bool> NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, int32_t>& ULPs);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1898,9 +1898,9 @@ constexpr genType TRAP::Math::Max(genType x, genType y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<>
-constexpr int TRAP::Math::Abs(const int x)
+constexpr int32_t TRAP::Math::Abs(const int32_t x)
 {
-	const int y = x >> (sizeof(int) * 8 - 1);
+	const int32_t y = x >> (sizeof(int32_t) * 8 - 1);
 
 	return (x ^ y) - y;
 }
@@ -2015,7 +2015,7 @@ genType TRAP::Math::RoundEven(genType x)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559, "'RoundEven' only accepts floating-point inputs");
 
-	int integer = static_cast<int>(x);
+	int32_t integer = static_cast<int32_t>(x);
 	genType integerPart = static_cast<genType>(integer);
 	genType fractionalPart = Fract(x);
 
@@ -2349,7 +2349,7 @@ genType TRAP::Math::FMA(const genType& a, const genType& b, const genType& c)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::FrExp(genType x, int& exp)
+genType TRAP::Math::FrExp(genType x, int32_t& exp)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559, "'FrExp' only accepts floating-point inputs");
 
@@ -2357,7 +2357,7 @@ genType TRAP::Math::FrExp(genType x, int& exp)
 }
 
 template<uint32_t L, typename T>
-TRAP::Math::Vec<L, T> TRAP::Math::FrExp(const Vec<L, T>& v, const Vec<L, int>& exp)
+TRAP::Math::Vec<L, T> TRAP::Math::FrExp(const Vec<L, T>& v, const Vec<L, int32_t>& exp)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'FrExp' only accepts floating-point inputs");
 
@@ -2370,7 +2370,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::FrExp(const Vec<L, T>& v, const Vec<L, int>& e
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename genType>
-genType TRAP::Math::LdExp(const genType& x, const int& exp)
+genType TRAP::Math::LdExp(const genType& x, const int32_t& exp)
 {
 	static_assert(std::numeric_limits<genType>::is_iec559, "'LdExp' only accepts floating-point inputs");
 
@@ -2378,7 +2378,7 @@ genType TRAP::Math::LdExp(const genType& x, const int& exp)
 }
 
 template<uint32_t L, typename T>
-TRAP::Math::Vec<L, T> TRAP::Math::LdExp(const Vec<L, T>& v, const Vec<L, int>& exp)
+TRAP::Math::Vec<L, T> TRAP::Math::LdExp(const Vec<L, T>& v, const Vec<L, int32_t>& exp)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'LdExp' only accepts floating-point inputs");
 
@@ -2875,13 +2875,13 @@ constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Mat<L, L, T>& x, cons
 }
 
 template <uint32_t L, typename T>
-constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y, int ULPs)
+constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y, int32_t ULPs)
 {
-	return Equal(x, y, Vec<L, int>(ULPs));
+	return Equal(x, y, Vec<L, int32_t>(ULPs));
 }
 
 template <uint32_t L, typename T>
-constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Vec<L, int>& ULPs)
+constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Vec<L, int32_t>& ULPs)
 {
 	Vec<L, bool> result(true);
 	for (uint32_t i = 0; i < L; ++i)
@@ -2913,13 +2913,13 @@ constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Mat<L, L, T>& x, c
 }
 
 template <uint32_t L, typename T>
-constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y, int ULPs)
+constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y, int32_t ULPs)
 {
-	return NotEqual(x, y, Vec<L, int>(ULPs));
+	return NotEqual(x, y, Vec<L, int32_t>(ULPs));
 }
 
 template <uint32_t L, typename T>
-constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Vec<L, int>& ULPs)
+constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y, const Vec<L, int32_t>& ULPs)
 {
 	Vec<L, bool> result(true);
 	for (uint32_t i = 0; i < L; ++i)
@@ -3590,7 +3590,7 @@ template <typename T>
 TRAP::Math::Vec<4, bool> TRAP::Math::LessThan(const tQuaternion<T>& x, const tQuaternion<T>& y)
 {
 	Vec<4, bool> result;
-	for (int i = 0; i < x.Length(); ++i)
+	for (uint32_t i = 0; i < x.Length(); ++i)
 		result[i] = x[i] < y[i];
 
 	return result;
@@ -3602,7 +3602,7 @@ template <typename T>
 TRAP::Math::Vec<4, bool> TRAP::Math::LessThanEqual(const tQuaternion<T>& x, const tQuaternion<T>& y)
 {
 	Vec<4, bool> result;
-	for (int i = 0; i < x.Length(); ++i)
+	for (uint32_t i = 0; i < x.Length(); ++i)
 		result[i] = x[i] <= y[i];
 
 	return result;
@@ -3614,7 +3614,7 @@ template <typename T>
 TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThan(const tQuaternion<T>& x, const tQuaternion<T>& y)
 {
 	Vec<4, bool> result;
-	for (int i = 0; i < x.Length(); ++i)
+	for (uint32_t i = 0; i < x.Length(); ++i)
 		result[i] = x[i] > y[i];
 
 	return result;
@@ -3626,7 +3626,7 @@ template <typename T>
 TRAP::Math::Vec<4, bool> TRAP::Math::GreaterThanEqual(const tQuaternion<T>& x, const tQuaternion<T>& y)
 {
 	Vec<4, bool> result;
-	for (int i = 0; i < x.Length(); ++i)
+	for (uint32_t i = 0; i < x.Length(); ++i)
 		result[i] = x[i] >= y[i];
 
 	return result;
@@ -3652,7 +3652,7 @@ template <typename T>
 TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const tQuaternion<T>& x, const tQuaternion<T>& y)
 {
 	Vec<4, bool> result;
-	for (int i = 0; i < x.Length(); ++i)
+	for (uint32_t i = 0; i < x.Length(); ++i)
 		result[i] = x[i] == y[i];
 
 	return result;
@@ -3671,7 +3671,7 @@ template <typename T>
 TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const tQuaternion<T>& x, const tQuaternion<T>& y)
 {
 	Vec<4, bool> result;
-	for (int i = 0; i < x.Length(); ++i)
+	for (uint32_t i = 0; i < x.Length(); ++i)
 		result[i] = x[i] != y[i];
 
 	return result;
@@ -3839,15 +3839,15 @@ constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const V
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <uint32_t L, typename T>
-constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const Vec<L, T>& y, int ULPs)
+constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const Vec<L, T>& y, int32_t ULPs)
 {
-	return Equal(x, y, Vec<L, int>(ULPs));
+	return Equal(x, y, Vec<L, int32_t>(ULPs));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
-constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, int>& ULPs)
+constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, int32_t>& ULPs)
 {
 	Vec<L, bool> result(false);
 	for (uint32_t i = 0; i < L; i++)
@@ -3860,12 +3860,13 @@ constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Vec<L, T>& x, const V
 		{
 			//Check for equality to make sure +0==-0
 			//a mantissa == b mantissa && a exponent == b exponent
-			result[i] = (static_cast<int>(a) & ((1 << 23) - 1)) == (static_cast<int>(b) & ((1 << 23) - 1)) && ((static_cast<int>(a) >> 23) & ((1 << 8) - 1)) == ((static_cast<int>(b) >> 23) & ((1 << 8) - 1));
+			result[i] = (static_cast<int32_t>(a) & ((1 << 23) - 1)) == (static_cast<int32_t>(b) & ((1 << 23) - 1)) &&
+				        ((static_cast<int32_t>(a) >> 23) & ((1 << 8) - 1)) == ((static_cast<int32_t>(b) >> 23) & ((1 << 8) - 1));
 		}
 		else
 		{
 			//Find the difference in ULPs.
-			const int diffULPs = Abs(static_cast<int>(a) - static_cast<int>(b));
+			const int32_t diffULPs = Abs(static_cast<int32_t>(a) - static_cast<int32_t>(b));
 			result[i] = diffULPs <= ULPs[i];
 		}
 	}
@@ -3903,15 +3904,15 @@ constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, cons
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
-constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, int ULPs)
+constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, int32_t ULPs)
 {
-	return NotEqual(x, y, Vec<L, int>(ULPs));
+	return NotEqual(x, y, Vec<L, int32_t>(ULPs));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<uint32_t L, typename T>
-constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, int>& ULPs)
+constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Vec<L, T>& x, const Vec<L, T>& y, const Vec<L, int32_t>& ULPs)
 {
 	return Not(Equal(x, y, ULPs));
 }
@@ -3964,7 +3965,7 @@ constexpr genType TRAP::Math::Radians(genType degrees)
 template<uint32_t L, typename T>
 constexpr TRAP::Math::Vec<L, T> TRAP::Math::Radians(const Vec<L, T>& v)
 {
-	Vec<L, T> result;
+	Vec<L, T> result{};
 	for (uint32_t i = 0; i < L; i++)
 		result[i] = Radians(v[i]);
 	return result;
@@ -4000,7 +4001,7 @@ T TRAP::Math::Sin(T x)
 template<uint32_t L, typename T>
 TRAP::Math::Vec<L, T> TRAP::Math::Sin(const Vec<L, T>& v)
 {
-	Vec<L, T> result;
+	Vec<L, T> result{};
 	for (uint32_t i = 0; i < L; i++)
 		result[i] = std::sin(v[i]);
 	return result;
@@ -4017,7 +4018,7 @@ T TRAP::Math::Cos(T x)
 template<uint32_t L, typename T>
 TRAP::Math::Vec<L, T> TRAP::Math::Cos(const Vec<L, T>& v)
 {
-	Vec<L, T> result;
+	Vec<L, T> result{};
 	for (uint32_t i = 0; i < L; i++)
 		result[i] = std::cos(v[i]);
 	return result;
