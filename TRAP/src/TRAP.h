@@ -10,6 +10,10 @@
 #include "../src/Log/Log.h"
 //-----------------------
 
+//----ASSERT-------------
+#include "../src/TRAP_Assert.h"
+//-----------------------
+
 //----INPUT--------------
 #include "../src/Input/Input.h"
 //-----------------------

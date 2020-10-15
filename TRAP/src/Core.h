@@ -76,7 +76,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP_VERSION number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 74);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 75);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -118,139 +118,11 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 74);
 	#define TRAP_ENABLE_ASSERTS
 #endif
 
+#define TRAP_EXPAND_MACRO(x) x
+#define TRAP_STRINGIFY_MACRO(x) #x
+
 #include "Log/Log.h"
-
-#ifdef TRAP_ENABLE_ASSERTS
-
-#if __cplusplus > 201703L
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#define TRAP_ASSERT(x, ...)                                                                        \
-	{                                                                                              \
-		if (!(x))                                                                                  \
-		{																					       \
-			std::source_location loc = std::source_location::current();                            \
-			TP_ERROR("Assertion Failed: ", __VA_ARGS__, " @[", loc.file_name, ':', loc.line, ']'); \
-			TRAP_DEBUG_BREAK();                                                                    \
-		}                                                                                          \
-	}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#define TRAP_CORE_ASSERT(x, ...)                                                                          \
-	{                                                                                                     \
-		if (!(x))                                                                                         \
-		{																					              \
-			std::source_location loc = std::source_location::current();                                   \
-			TP_ERROR("[Core] Assertion Failed: ", __VA_ARGS__, " @[", loc.file_name, ':', loc.line, ']'); \
-			TRAP_DEBUG_BREAK();                                                                           \
-		}                                                                                                 \
-	}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#define TRAP_RENDERER_ASSERT(x, ...)                                                                          \
-	{                                                                                                         \
-		if (!(x))                                                                                             \
-		{																					                  \
-			std::source_location loc = std::source_location::current();                                       \
-			TP_ERROR("[Renderer] Assertion Failed: ", __VA_ARGS__, " @[", loc.file_name, ':', loc.line, ']'); \
-			TRAP_DEBUG_BREAK();                                                                               \
-		}                                                                                                     \
-	}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#define TRAP_WINDOW_ASSERT(x, ...)                                                                          \
-	{                                                                                                       \
-		if (!(x))                                                                                           \
-		{																					                \
-			std::source_location loc = std::source_location::current();                                     \
-			TP_ERROR("[WIndow] Assertion Failed: ", __VA_ARGS__, " @[", loc.file_name, ':', loc.line, ']'); \
-			TRAP_DEBUG_BREAK();                                                                             \
-		}                                                                                                   \
-	}
-
-#else
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#define TRAP_ASSERT(x, ...)                                                                   \
-	{                                                                                         \
-		if (!(x))                                                                             \
-		{                                                                                     \
-			TP_ERROR("Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
-			TRAP_DEBUG_BREAK();                                                               \
-		}                                                                                     \
-	}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#define TRAP_CORE_ASSERT(x, ...)                                                                     \
-	{                                                                                                \
-		if (!(x))                                                                                    \
-		{                                                                                            \
-			TP_ERROR("[Core] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
-			TRAP_DEBUG_BREAK();                                                                      \
-		}                                                                                            \
-	}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#define TRAP_RENDERER_ASSERT(x, ...)                                                                     \
-	{                                                                                                    \
-		if (!(x))                                                                                        \
-		{                                                                                                \
-			TP_ERROR("[Renderer] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']'); \
-			TRAP_DEBUG_BREAK();                                                                          \
-		}                                                                                                \
-	}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#define TRAP_WINDOW_ASSERT(x, ...)                                                                       \
-	{                                                                                                    \
-		if (!(x))                                                                                        \
-		{                                                                                                \
-			TP_ERROR("[Window] Assertion Failed: ", __VA_ARGS__, " @[", __FILE__, ':', __LINE__, ']');   \
-			TRAP_DEBUG_BREAK();                                                                          \
-		}                                                                                                \
-	}
-
-#endif
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-#else
-template <typename T, typename... Args>
-constexpr void TRAP_ASSERT(T x, const Args &... args)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <typename T, typename... Args>
-constexpr void TRAP_CORE_ASSERT(T x, const Args &... args)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template <typename T, typename... Args>
-constexpr void TRAP_RENDERER_ASSERT(T x, const Args &... args)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-template<typename T, typename... Args>
-constexpr void TRAP_WINDOW_ASSERT(T x, const Args&... args)
-{
-}
-#endif
-
-//-------------------------------------------------------------------------------------------------------------------//
+#include "TRAP_Assert.h"
 
 /// <summary>
 /// Shift 1 x times.

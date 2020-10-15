@@ -2675,7 +2675,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateTLS(TLS& tls)
 {
-	TRAP_WINDOW_ASSERT(!tls.Allocated, "[Window] Tls is already in use!");
+	TRAP_CORE_ASSERT(!tls.Allocated, "[Window] Tls is already in use!");
 
 	tls.Index = TlsAlloc();
 	if (tls.Index == TLS_OUT_OF_INDEXES)
@@ -2692,7 +2692,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateTLS(TLS& tls)
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetTLS(TLS& tls, void* value)
 {
-	TRAP_WINDOW_ASSERT(tls.Allocated, "[Window] Tls is not allocated!");
+	TRAP_CORE_ASSERT(tls.Allocated, "[Window] Tls is not allocated!");
 	TlsSetValue(tls.Index, value);
 }
 
@@ -2700,7 +2700,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetTLS(TLS& tls, void* value)
 
 void* TRAP::INTERNAL::WindowingAPI::PlatformGetTLS(TLS& tls)
 {
-	TRAP_WINDOW_ASSERT(tls.Allocated, "[Window] Tls is not allocated!");
+	TRAP_CORE_ASSERT(tls.Allocated, "[Window] Tls is not allocated!");
 	return TlsGetValue(tls.Index);
 }
 

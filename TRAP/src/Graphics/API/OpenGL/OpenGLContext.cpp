@@ -19,7 +19,7 @@ TRAP::Graphics::API::OpenGLContext::OpenGLContext(Window* window)
 
 	if (!s_IsOpenGLInitialized)
 	{
-		TRAP_RENDERER_ASSERT(TRAPLoadOpenGLLoader(reinterpret_cast<TRAPLoadProc>(INTERNAL::WindowingAPI::GetProcAddress)), "Could not initialize OpenGL");
+		TRAP_CORE_ASSERT(TRAPLoadOpenGLLoader(reinterpret_cast<TRAPLoadProc>(INTERNAL::WindowingAPI::GetProcAddress)), "Could not initialize OpenGL");
 		s_IsOpenGLInitialized = true;
 	}
 }

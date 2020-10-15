@@ -293,12 +293,12 @@ std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, c
 {
 	if (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value || std::is_same<T, float>::value))
 	{
-		TRAP_ASSERT(false, "Invalid type!");
+		TRAP_CORE_ASSERT(false, "Invalid type!");
 		return std::vector<T>();
 	}
 	if (format == ColorFormat::NONE || !data)
 	{
-		TRAP_ASSERT(false, "Invalid ColorFormat!");
+		TRAP_CORE_ASSERT(false, "Invalid ColorFormat!");
 		return std::vector<T>();
 	}
 
@@ -345,12 +345,12 @@ std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, c
 {
 	if (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value || std::is_same<T, float>::value))
 	{
-		TRAP_ASSERT(false, "Invalid type!");
+		TRAP_CORE_ASSERT(false, "Invalid type!");
 		return std::vector<T>();
 	}
 	if (format == ColorFormat::NONE || !data)
 	{
-		TRAP_ASSERT(false, "Invalid ColorFormat!");
+		TRAP_CORE_ASSERT(false, "Invalid ColorFormat!");
 		return std::vector<T>();
 	}
 

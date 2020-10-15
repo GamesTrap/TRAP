@@ -20,7 +20,7 @@ TRAP::Graphics::API::Vulkan::Debug::Debug(const Scope<Instance>& instance)
 	VkDebugUtilsMessengerCreateInfoEXT info = Initializers::DebugUtilsMessengerCreateInfo(VulkanDebugCallback);
 
 	VkCall(m_fvkCreateDebugUtilsMessengerEXT(instance->GetInstance(), &info, nullptr, &m_debugReport));
-	TRAP_RENDERER_ASSERT(m_debugReport, "[Renderer][Vulkan] Couldn't create Debug Utils Messenger!");
+	TRAP_CORE_ASSERT(m_debugReport, "[Renderer][Vulkan] Couldn't create Debug Utils Messenger!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
