@@ -31,8 +31,7 @@ namespace TRAP::Events
 		Input       = BIT(1),
 		Keyboard    = BIT(2),
 		Mouse       = BIT(3),
-		MouseButton = BIT(4),
-		Controller  = BIT(5)
+		Controller  = BIT(4)
 	};
 
 	/// <summary>
@@ -89,7 +88,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the Event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		virtual int32_t GetCategoryFlags() const = 0;
+		virtual EventCategory GetCategoryFlags() const = 0;
 
 		/// <summary>
 		/// Check if an Event is in the specified category.
@@ -130,7 +129,7 @@ namespace TRAP::Events
 	{
 		if (m_event.GetEventType() == T::GetStaticType())
 		{
-			m_event.Handled = func(static_cast<T&>(m_event));
+			m_event.Handled |= func(static_cast<T&>(m_event));
 
 			return true;
 		}
@@ -141,5 +140,13 @@ namespace TRAP::Events
 }
 
 std::ostream& operator<<(std::ostream& os, const TRAP::Events::Event& e);
+
+TRAP::Events::EventCategory operator |(TRAP::Events::EventCategory lhs, TRAP::Events::EventCategory rhs);
+TRAP::Events::EventCategory operator &(TRAP::Events::EventCategory lhs, TRAP::Events::EventCategory rhs);
+TRAP::Events::EventCategory operator ^(TRAP::Events::EventCategory lhs, TRAP::Events::EventCategory rhs);
+TRAP::Events::EventCategory operator ~(TRAP::Events::EventCategory rhs);
+TRAP::Events::EventCategory& operator |=(TRAP::Events::EventCategory& lhs, TRAP::Events::EventCategory rhs);
+TRAP::Events::EventCategory& operator &=(TRAP::Events::EventCategory& lhs, TRAP::Events::EventCategory rhs);
+TRAP::Events::EventCategory& operator ^=(TRAP::Events::EventCategory& lhs, TRAP::Events::EventCategory rhs);
 
 #endif /*_TRAP_EVENT_H_*/

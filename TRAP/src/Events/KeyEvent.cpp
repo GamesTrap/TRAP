@@ -12,9 +12,9 @@ TRAP::Input::Key TRAP::Events::KeyEvent::GetKey() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::KeyEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::KeyEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Keyboard) | static_cast<int32_t>(EventCategory::Input);
+	return EventCategory::Keyboard | EventCategory::Input;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -210,14 +210,14 @@ std::string TRAP::Events::KeyEvent::NonPrintableKeyToString(const Input::Key key
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const int32_t repeatCount, std::string title)
+TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const uint32_t repeatCount, std::string title)
 	: KeyEvent(key), m_repeatCount(repeatCount), m_title(std::move(title))
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::KeyPressEvent::GetRepeatCount() const
+uint32_t TRAP::Events::KeyPressEvent::GetRepeatCount() const
 {
 	return m_repeatCount;
 }
@@ -360,9 +360,9 @@ const char* TRAP::Events::KeyTypeEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::KeyTypeEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::KeyTypeEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Keyboard) | static_cast<int32_t>(EventCategory::Input);
+	return EventCategory::Keyboard | EventCategory::Input;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -439,7 +439,7 @@ const char* TRAP::Events::KeyLayoutEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::KeyLayoutEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::KeyLayoutEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Keyboard) | static_cast<int32_t>(EventCategory::Input);
+	return EventCategory::Keyboard | EventCategory::Input;
 }

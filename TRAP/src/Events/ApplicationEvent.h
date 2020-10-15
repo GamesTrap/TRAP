@@ -36,7 +36,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the Event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		int32_t GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const override;
 	};
 
 	/// <summary>
@@ -70,7 +70,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the Event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		int32_t GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const override;
 	};
 
 	/// <summary>
@@ -104,7 +104,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the Event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		int32_t GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const override;
 	};
 }
 

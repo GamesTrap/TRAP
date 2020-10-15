@@ -66,7 +66,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the Event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		int32_t GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const override;
 
 	private:
 		float m_mouseX, m_mouseY;
@@ -133,7 +133,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the Event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		int32_t GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const override;
 
 	private:
 		float m_xOffset, m_yOffset;
@@ -156,7 +156,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the Event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		int32_t GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const override;
 
 	protected:
 		/// <summary>
@@ -302,7 +302,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the Event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		int32_t GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const override;
 
 	private:
 		std::string m_title;
@@ -345,7 +345,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the Event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		int32_t GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const override;
 
 	private:
 		std::string m_title;

@@ -22,7 +22,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the Event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		int32_t GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const override;
 
 	protected:
 		/// <summary>
@@ -53,13 +53,13 @@ namespace TRAP::Events
 		/// <param name="key">Pressed key.</param>
 		/// <param name="repeatCount">Amount of key press repeats.</param>
 		/// <param name="title">Title of the affected Window.</param>
-		KeyPressEvent(Input::Key key, int32_t repeatCount, std::string title);
+		KeyPressEvent(Input::Key key, uint32_t repeatCount, std::string title);
 
 		/// <summary>
 		/// Retrieve tha amount of key press repeats.
 		/// </summary>
 		/// <returns>Repeat count.</returns>
-		int32_t GetRepeatCount() const;
+		uint32_t GetRepeatCount() const;
 		/// <summary>
 		/// Retrieve the title of the affected Window.
 		/// </summary>
@@ -89,7 +89,7 @@ namespace TRAP::Events
 		const char* GetName() const override;
 
 	private:
-		int32_t m_repeatCount;
+		uint32_t m_repeatCount;
 		std::string m_title;
 	};
 
@@ -187,7 +187,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the Event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		int32_t GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const override;
 		
 	private:
 		/// <summary>
@@ -244,7 +244,7 @@ namespace TRAP::Events
 		/// Retrieve the category flags of the Event.
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
-		int32_t GetCategoryFlags() const override;
+		EventCategory GetCategoryFlags() const override;
 
 	private:
 		std::string m_layout;

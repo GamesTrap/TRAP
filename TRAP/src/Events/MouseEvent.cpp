@@ -64,9 +64,9 @@ const char* TRAP::Events::MouseMoveEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::MouseMoveEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::MouseMoveEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input);
+	return EventCategory::Mouse | EventCategory::Input;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -136,9 +136,9 @@ const char* TRAP::Events::MouseScrollEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::MouseScrollEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::MouseScrollEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input);
+	return EventCategory::Mouse | EventCategory::Input;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -152,9 +152,9 @@ TRAP::Input::MouseButton TRAP::Events::MouseButtonEvent::GetMouseButton() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::MouseButtonEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::MouseButtonEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input) | static_cast<int32_t>(EventCategory::MouseButton);
+	return EventCategory::Mouse | EventCategory::Input;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -326,9 +326,9 @@ const char* TRAP::Events::MouseEnterEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::MouseEnterEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::MouseEnterEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input);
+	return EventCategory::Mouse | EventCategory::Input;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -370,7 +370,7 @@ const char* TRAP::Events::MouseLeaveEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::MouseLeaveEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::MouseLeaveEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Mouse) | static_cast<int32_t>(EventCategory::Input);
+	return EventCategory::Mouse | EventCategory::Input;
 }

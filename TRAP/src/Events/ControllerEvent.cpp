@@ -8,9 +8,9 @@ TRAP::Input::Controller TRAP::Events::ControllerEvent::GetController() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::ControllerEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::ControllerEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Controller) | static_cast<int32_t>(EventCategory::Input);
+	return EventCategory::Controller | EventCategory::Input;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

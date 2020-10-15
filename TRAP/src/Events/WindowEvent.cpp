@@ -57,9 +57,9 @@ const char* TRAP::Events::WindowResizeEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::WindowResizeEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowResizeEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application);
+	return EventCategory::Application;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -108,9 +108,9 @@ const char* TRAP::Events::WindowMinimizeEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::WindowMinimizeEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowMinimizeEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application);
+	return EventCategory::Application;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -159,9 +159,9 @@ const char* TRAP::Events::WindowMaximizeEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::WindowMaximizeEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowMaximizeEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application);
+	return EventCategory::Application;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -210,9 +210,9 @@ const char* TRAP::Events::WindowRestoreEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::WindowRestoreEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowRestoreEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application);
+	return EventCategory::Application;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -261,9 +261,9 @@ const char* TRAP::Events::WindowCloseEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::WindowCloseEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowCloseEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application);
+	return EventCategory::Application;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -333,9 +333,9 @@ const char* TRAP::Events::WindowMoveEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::WindowMoveEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowMoveEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application);
+	return EventCategory::Application;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -384,9 +384,9 @@ const char* TRAP::Events::WindowFocusEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::WindowFocusEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowFocusEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application);
+	return EventCategory::Application;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -435,9 +435,9 @@ const char* TRAP::Events::WindowLostFocusEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::WindowLostFocusEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowLostFocusEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application);
+	return EventCategory::Application;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -497,9 +497,9 @@ const char* TRAP::Events::WindowDropEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::WindowDropEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowDropEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application) | static_cast<int32_t>(EventCategory::Input);
+	return EventCategory::Application | EventCategory::Input;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -569,9 +569,9 @@ const char* TRAP::Events::WindowContentScaleEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::WindowContentScaleEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::WindowContentScaleEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application);
+	return EventCategory::Application;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -643,7 +643,7 @@ const char* TRAP::Events::FrameBufferResizeEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::FrameBufferResizeEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::FrameBufferResizeEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application);
+	return EventCategory::Application;
 }

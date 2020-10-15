@@ -8,9 +8,9 @@ TRAP::Monitor TRAP::Events::MonitorEvent::GetMonitor() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::MonitorEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::MonitorEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application);
+	return EventCategory::Application;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

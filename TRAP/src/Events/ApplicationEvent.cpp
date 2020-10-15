@@ -22,9 +22,9 @@ const char* TRAP::Events::AppTickEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::AppTickEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::AppTickEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application);
+	return EventCategory::Application;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -52,9 +52,9 @@ const char* TRAP::Events::AppUpdateEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::AppUpdateEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::AppUpdateEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application);
+	return EventCategory::Application;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -82,7 +82,7 @@ const char* TRAP::Events::AppRenderEvent::GetName() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int32_t TRAP::Events::AppRenderEvent::GetCategoryFlags() const
+TRAP::Events::EventCategory TRAP::Events::AppRenderEvent::GetCategoryFlags() const
 {
-	return static_cast<int32_t>(EventCategory::Application);
+	return EventCategory::Application;
 }
