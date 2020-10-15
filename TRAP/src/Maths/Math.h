@@ -1314,30 +1314,30 @@ namespace TRAP::Math
 	Vec<4, T> Sqrt(const Vec<4, T>& x);
 
 	/// <typeparam name="T">Floating-point scalar type.</typeparam>
-	/// <returns>Sqaure root of a quaternion.</returns>
+	/// <returns>Square root of a quaternion.</returns>
 	template<typename T>
 	tQuaternion<T> Sqrt(const tQuaternion<T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <typeparam name="genType">Floating-point scalar or vector type.</typeparam>
-	/// <param name="x">InverserSqrt function is defined for input values of x defined in the range [0, inf+) in the limit of the type qualifier.</param>
+	/// <param name="x">InverseSqrt function is defined for input values of x defined in the range [0, inf+) in the limit of the type qualifier.</param>
 	/// <returns>Reciprocal of the positive square root of x.</returns>
 	template<typename genType>
 	genType InverseSqrt(genType x);
 
 	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
-	/// <param name="x">InverserSqrt function is defined for input values of x defined in the range [0, inf+) in the limit of the type qualifier.</param>
+	/// <param name="x">InverseSqrt function is defined for input values of x defined in the range [0, inf+) in the limit of the type qualifier.</param>
 	/// <returns>Reciprocal of the positive square root of x.</returns>
 	template<typename T>
 	Vec<2, T> InverseSqrt(const Vec<2, T>& x);
 	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
-	/// <param name="x">InverserSqrt function is defined for input values of x defined in the range [0, inf+) in the limit of the type qualifier.</param>
+	/// <param name="x">InverseSqrt function is defined for input values of x defined in the range [0, inf+) in the limit of the type qualifier.</param>
 	/// <returns>Reciprocal of the positive square root of x.</returns>
 	template<typename T>
 	Vec<3, T> InverseSqrt(const Vec<3, T>& x);
 	/// <typeparam name="genType">Floating-point scalar types.</typeparam>
-	/// <param name="x">InverserSqrt function is defined for input values of x defined in the range [0, inf+) in the limit of the type qualifier.</param>
+	/// <param name="x">InverseSqrt function is defined for input values of x defined in the range [0, inf+) in the limit of the type qualifier.</param>
 	/// <returns>Reciprocal of the positive square root of x.</returns>
 	template<typename T>
 	Vec<4, T> InverseSqrt(const Vec<4, T>& x);
@@ -1514,6 +1514,86 @@ namespace TRAP::Math
 	/// <returns>For the incident vector I and surface normal N, and the ratio of indices of refraction eta, returns the refraction vector.</returns>
 	template<typename T>
 	Vec<4, T> Refract(const Vec<4, T>& I, const Vec<4, T>& N, T eta);
+	
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Perform a component-wise equal-to comparison of two matrices.
+	/// </summary>
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Boolean vector which components value is true if this expression is satisfied per column of the matrices.</returns>
+	template<typename T>
+	constexpr Vec<3, bool> Equal(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y);
+	/// <summary>
+	/// Perform a component-wise equal-to comparison of two matrices.
+	/// </summary>
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Boolean vector which components value is true if this expression is satisfied per column of the matrices.</returns>
+	template<typename T>
+	constexpr Vec<4, bool> Equal(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y);
+
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<3, bool> Equal(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, T epsilon);
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<4, bool> Equal(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, T epsilon);
+
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<3, bool> Equal(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, const Vec<3, T>& epsilon);
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<4, bool> Equal(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, const Vec<4, T>& epsilon);
+
+	/// <typeparam name="T">Floating-point.</typeparam>
+	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this expression is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<3, bool> Equal(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, int ULPs);
+	/// <typeparam name="T">Floating-point.</typeparam>
+	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this expression is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<4, bool> Equal(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, int ULPs);
+
+	/// <typeparam name="T">Floating-point.</typeparam>
+	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this expression is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<3, bool> Equal(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, const Vec<3, int>& ULPs);
+	/// <typeparam name="T">Floating-point.</typeparam>
+	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this expression is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<4, bool> Equal(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, const Vec<3, int>& ULPs);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	template<typename T>
+	constexpr Vec<3, bool> NotEqual(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y);
+	template<typename T>
+	constexpr Vec<4, bool> NotEqual(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y);
+
+	template<typename T>
+	constexpr Vec<3, bool> NotEqual(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, T epsilon);
+	template<typename T>
+	constexpr Vec<4, bool> NotEqual(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, T epsilon);
+
+	template<typename T>
+	constexpr Vec<3, bool> NotEqual(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, const Vec<3, T>& epsilon);
+	template<typename T>
+	constexpr Vec<4, bool> NotEqual(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, const Vec<4, T>& epsilon);
+
+	template<typename T>
+	constexpr Vec<3, bool> NotEqual(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, int ULPs);
+	template<typename T>
+	constexpr Vec<4, bool> NotEqual(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, int ULPs);
+
+	template<typename T>
+	constexpr Vec<3, bool> NotEqual(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, const Vec<3, int>& ULPs);
+	template<typename T>
+	constexpr Vec<4, bool> NotEqual(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, const Vec<3, int>& ULPs);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	//Matrix-------------------------------------------------------------------------------------------------------------//
@@ -2098,6 +2178,58 @@ namespace TRAP::Math
 	template<typename T>
 	constexpr Vec<4, bool> Equal(const Vec<4, T>& x, const Vec<4, T>& y);
 
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<2, bool> Equal(const Vec<2, T>& x, const Vec<2, T>& y, T epsilon);
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<3, bool> Equal(const Vec<3, T>& x, const Vec<3, T>& y, T epsilon);
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<4, bool> Equal(const Vec<4, T>& x, const Vec<4, T>& y, T epsilon);
+
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<2, bool> Equal(const Vec<2, T>& x, const Vec<2, T>& y, const Vec<2, T>& epsilon);
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<3, bool> Equal(const Vec<3, T>& x, const Vec<3, T>& y, const Vec<3, T>& epsilon);
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Component-wise comparison of |x - y| < epsilon. True if this expression is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<4, bool> Equal(const Vec<4, T>& x, const Vec<4, T>& y, const Vec<4, T>& epsilon);
+
+	/// <typeparam name="T">Floating-point.</typeparam>
+	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<2, bool> Equal(const Vec<2, T>& x, const Vec<2, T>& y, int ULPs);
+	/// <typeparam name="T">Floating-point.</typeparam>
+	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<3, bool> Equal(const Vec<3, T>& x, const Vec<3, T>& y, int ULPs);
+	/// <typeparam name="T">Floating-point.</typeparam>
+	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<4, bool> Equal(const Vec<4, T>& x, const Vec<4, T>& y, int ULPs);
+
+	/// <typeparam name="T">Floating-point.</typeparam>
+	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<2, bool> Equal(const Vec<2, T>& x, const Vec<2, T>& y, const Vec<2, int>& ULPs);
+	/// <typeparam name="T">Floating-point.</typeparam>
+	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<3, bool> Equal(const Vec<3, T>& x, const Vec<3, T>& y, const Vec<3, int>& ULPs);
+	/// <typeparam name="T">Floating-point.</typeparam>
+	/// <returns>Component-wise comparison between two vectors in term of ULPs. True if this is satisfied.</returns>
+	template<typename T>
+	constexpr Vec<4, bool> Equal(const Vec<4, T>& x, const Vec<4, T>& y, const Vec<4, int>& ULPs);
+	
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
@@ -2112,6 +2244,58 @@ namespace TRAP::Math
 	/// <returns>Component-wise comparison result of x != y.</returns>
 	template<typename T>
 	constexpr Vec<4, bool> NotEqual(const Vec<4, T>& x, const Vec<4, T>& y);
+
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x != y.</returns>
+	template<typename T>
+	constexpr Vec<2, bool> NotEqual(const Vec<2, T>& x, const Vec<2, T>& y, T epsilon);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x != y.</returns>
+	template<typename T>
+	constexpr Vec<3, bool> NotEqual(const Vec<3, T>& x, const Vec<3, T>& y, T epsilon);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x != y.</returns>
+	template<typename T>
+	constexpr Vec<4, bool> NotEqual(const Vec<4, T>& x, const Vec<4, T>& y, T epsilon);
+
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x != y.</returns>
+	template<typename T>
+	constexpr Vec<2, bool> NotEqual(const Vec<2, T>& x, const Vec<2, T>& y, const Vec<2, T>& epsilon);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x != y.</returns>
+	template<typename T>
+	constexpr Vec<3, bool> NotEqual(const Vec<3, T>& x, const Vec<3, T>& y, const Vec<3, T>& epsilon);
+	/// <typeparam name="T">Floating-point or integer scalar type.</typeparam>
+	/// <returns>Component-wise comparison result of x != y.</returns>
+	template<typename T>
+	constexpr Vec<4, bool> NotEqual(const Vec<4, T>& x, const Vec<4, T>& y, const Vec<4, T>& epsilon);
+
+	/// <typeparam name="T">Floating-point</typeparam>
+	/// <returns>Component-wise comparison between the two vectors in term of ULPs.</returns>
+	template<typename T>
+	constexpr Vec<2, bool> NotEqual(const Vec<2, T>& x, const Vec<2, T>& y, int ULPs);
+	/// <typeparam name="T">Floating-point</typeparam>
+	/// <returns>Component-wise comparison between the two vectors in term of ULPs.</returns>
+	template<typename T>
+	constexpr Vec<3, bool> NotEqual(const Vec<3, T>& x, const Vec<3, T>& y, int ULPs);
+	/// <typeparam name="T">Floating-point</typeparam>
+	/// <returns>Component-wise comparison between the two vectors in term of ULPs.</returns>
+	template<typename T>
+	constexpr Vec<4, bool> NotEqual(const Vec<4, T>& x, const Vec<4, T>& y, int ULPs);
+
+	/// <typeparam name="T">Floating-point</typeparam>
+	/// <returns>Component-wise comparison between the two vectors in term of ULPs.</returns>
+	template<typename T>
+	constexpr Vec<2, bool> NotEqual(const Vec<2, T>& x, const Vec<2, T>& y, const Vec<2, int>& ULPs);
+	/// <typeparam name="T">Floating-point</typeparam>
+	/// <returns>Component-wise comparison between the two vectors in term of ULPs.</returns>
+	template<typename T>
+	constexpr Vec<3, bool> NotEqual(const Vec<3, T>& x, const Vec<3, T>& y, const Vec<3, int>& ULPs);
+	/// <typeparam name="T">Floating-point</typeparam>
+	/// <returns>Component-wise comparison between the two vectors in term of ULPs.</returns>
+	template<typename T>
+	constexpr Vec<4, bool> NotEqual(const Vec<4, T>& x, const Vec<4, T>& y, const Vec<4, int>& ULPs);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -4195,6 +4379,144 @@ TRAP::Math::Vec<4, T> TRAP::Math::Refract(const Vec<4, T>& I, const Vec<4, T>& N
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
+
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::Equal(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y)
+{
+	return Equal(x, y, static_cast<T>(0));
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y)
+{
+	return Equal(x, y, static_cast<T>(0));
+}
+
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::Equal(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, T epsilon)
+{
+	return Equal(x, y, Vec<3, T>(epsilon));
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, T epsilon)
+{
+	return Equal(x, y, Vec<4, T>(epsilon));
+}
+
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::Equal(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, const Vec<3, T>& epsilon)
+{
+	Vec<3, bool> result(true);
+	for (uint32_t i = 0; i < 3; ++i)
+		result[i] = All(Equal(x[i], y[i], epsilon[i]));
+	return result;
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, const Vec<4, T>& epsilon)
+{
+	Vec<4, bool> result(true);
+	for (uint32_t i = 0; i < 4; ++i)
+		result[i] = All(Equal(x[i], y[i], epsilon[i]));
+	return result;
+}
+
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::Equal(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, int ULPs)
+{
+	return Equal(x, y, Vec<3, int>(ULPs));
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, int ULPs)
+{
+	return Equal(x, y, Vec<4, int>(ULPs));
+}
+
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::Equal(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, const Vec<3, int>& ULPs)
+{
+	Vec<3, bool> result(true);
+	for (uint32_t i = 0; i < 3; ++i)
+		result[i] = All(Equal(x[i], y[i], ULPs[i]));
+	return result;
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, const Vec<3, int>& ULPs)
+{
+	Vec<4, bool> result(true);
+	for (uint32_t i = 0; i < 4; ++i)
+		result[i] = All(Equal(x[i], y[i], ULPs[i]));
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::NotEqual(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y)
+{
+	return NotEqual(x, y, static_cast<T>(0));
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y)
+{
+	return Equal(x, y, static_cast<T>(0));
+}
+
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::NotEqual(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, T epsilon)
+{
+	return Equal(x, y, Vec<3, T>(epsilon));
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, T epsilon)
+{
+	return Equal(x, y, Vec<4, T>(epsilon));
+}
+
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::NotEqual(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, const Vec<3, T>& epsilon)
+{
+	Vec<3, bool> result(true);
+	for (uint32_t i = 0; i < 3; ++i)
+		result[i] = All(NotEqual(x[i], y[i], epsilon[i]));
+	return result;
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, const Vec<4, T>& epsilon)
+{
+	Vec<4, bool> result(true);
+	for (uint32_t i = 0; i < 4; ++i)
+		result[i] = All(NotEqual(x[i], y[i], epsilon[i]));
+	return result;
+}
+
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::NotEqual(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, int ULPs)
+{
+	return NotEqual(x, y, Vec<3, int>(ULPs));
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, int ULPs)
+{
+	return NotEqual(x, y, Vec<4, int>(ULPs));
+}
+
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::NotEqual(const Mat<3, 3, T>& x, const Mat<3, 3, T>& y, const Vec<3, int>& ULPs)
+{
+	Vec<3, bool> result(true);
+	for (uint32_t i = 0; i < 3; ++i)
+		result[i] = All(NotEqual(x[i], y[i], ULPs[i]));
+	return result;
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const Mat<4, 4, T>& x, const Mat<4, 4, T>& y, const Vec<3, int>& ULPs)
+{
+	Vec<4, bool> result(true);
+	for (uint32_t i = 0; i < 4; ++i)
+		result[i] = All(NotEqual(x[i], y[i], ULPs[i]));
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
 //Matrix-------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -5236,6 +5558,141 @@ constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const Vec<4, T>& x, const V
 //-------------------------------------------------------------------------------------------------------------------//
 
 template <typename T>
+constexpr TRAP::Math::Vec<2, bool> TRAP::Math::Equal(const Vec<2, T>& x, const Vec<2, T>& y, T epsilon)
+{
+	return Equal(x, y, Vec<2, T>(epsilon));
+}
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::Equal(const Vec<3, T>& x, const Vec<3, T>& y, T epsilon)
+{
+	return Equal(x, y, Vec<3, T>(epsilon));
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const Vec<4, T>& x, const Vec<4, T>& y, T epsilon)
+{
+	return Equal(x, y, Vec<4, T>(epsilon));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template <typename T>
+constexpr TRAP::Math::Vec<2, bool> TRAP::Math::Equal(const Vec<2, T>& x, const Vec<2, T>& y, const Vec<2, T>& epsilon)
+{
+	return LessThanEqual(Abs(x - y), epsilon);
+}
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::Equal(const Vec<3, T>& x, const Vec<3, T>& y, const Vec<3, T>& epsilon)
+{
+	return LessThanEqual(Abs(x - y), epsilon);
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const Vec<4, T>& x, const Vec<4, T>& y, const Vec<4, T>& epsilon)
+{
+	return LessThanEqual(Abs(x - y), epsilon);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template <typename T>
+constexpr TRAP::Math::Vec<2, bool> TRAP::Math::Equal(const Vec<2, T>& x, const Vec<2, T>& y, int ULPs)
+{
+	return Equal(x, y, Vec<2, int>(ULPs));
+}
+template <typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::Equal(const Vec<3, T>& x, const Vec<3, T>& y, int ULPs)
+{
+	return Equal(x, y, Vec<3, int>(ULPs));
+}
+template <typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const Vec<4, T>& x, const Vec<4, T>& y, int ULPs)
+{
+	return Equal(x, y, Vec<4, int>(ULPs));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+constexpr TRAP::Math::Vec<2, bool> TRAP::Math::Equal(const Vec<2, T>& x, const Vec<2, T>& y, const Vec<2, int>& ULPs)
+{
+	Vec<2, bool> result(false);
+	for(uint32_t i = 0; i < 2; i++)
+	{
+		const float a(x[i]);
+		const float b(y[i]);
+
+		//Different signs means they do not match
+		if((a < 0) != (b < 0))
+		{
+			//Check for equality to make sure +0==-0
+			//a mantissa == b mantissa && a exponent == b exponent
+			result[i] = (static_cast<int>(a) & ((1 << 23) - 1)) == (static_cast<int>(b) & ((1 << 23) - 1)) && ((static_cast<int>(a) >> 23) & ((1 << 8) - 1)) == ((static_cast<int>(b) >> 23) & ((1 << 8) - 1));
+		}
+		else
+		{
+			//Find the difference in ULPs.
+			const int diffULPs = Abs(static_cast<int>(a) - static_cast<int>(b));
+			result[i] = diffULPs <= ULPs[i];
+		}
+	}
+
+	return result;
+}
+template<typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::Equal(const Vec<3, T>& x, const Vec<3, T>& y, const Vec<3, int>& ULPs)
+{
+	Vec<3, bool> result(false);
+	for (uint32_t i = 0; i < 3; i++)
+	{
+		const float a(x[i]);
+		const float b(y[i]);
+
+		//Different signs means they do not match
+		if ((a < 0) != (b < 0))
+		{
+			//Check for equality to make sure +0==-0
+			//a mantissa == b mantissa && a exponent == b exponent
+			result[i] = (static_cast<int>(a) & ((1 << 23) - 1)) == (static_cast<int>(b) & ((1 << 23) - 1)) && ((static_cast<int>(a) >> 23) & ((1 << 8) - 1)) == ((static_cast<int>(b) >> 23) & ((1 << 8) - 1));
+		}
+		else
+		{
+			//Find the difference in ULPs.
+			const int diffULPs = Abs(static_cast<int>(a) - static_cast<int>(b));
+			result[i] = diffULPs <= ULPs[i];
+		}
+	}
+
+	return result;
+}
+template<typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::Equal(const Vec<4, T>& x, const Vec<4, T>& y, const Vec<4, int>& ULPs)
+{
+	Vec<4, bool> result(false);
+	for (uint32_t i = 0; i < 4; i++)
+	{
+		const float a(x[i]);
+		const float b(y[i]);
+
+		//Different signs means they do not match
+		if ((a < 0) != (b < 0))
+		{
+			//Check for equality to make sure +0==-0
+			//a mantissa == b mantissa && a exponent == b exponent
+			result[i] = (static_cast<int>(a) & ((1 << 23) - 1)) == (static_cast<int>(b) & ((1 << 23) - 1)) && ((static_cast<int>(a) >> 23) & ((1 << 8) - 1)) == ((static_cast<int>(b) >> 23) & ((1 << 8) - 1));
+		}
+		else
+		{
+			//Find the difference in ULPs.
+			const int diffULPs = Abs(static_cast<int>(a) - static_cast<int>(b));
+			result[i] = diffULPs <= ULPs[i];
+		}
+	}
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template <typename T>
 constexpr TRAP::Math::Vec<2, bool> TRAP::Math::NotEqual(const Vec<2, T>& x, const Vec<2, T>& y)
 {
 	Vec<2, bool> result(true);
@@ -5264,6 +5721,78 @@ constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const Vec<4, T>& x, cons
 		result[i] = x[i] != y[i];
 
 	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+constexpr TRAP::Math::Vec<2, bool> TRAP::Math::NotEqual(const Vec<2, T>& x, const Vec<2, T>& y, T epsilon)
+{
+	return NotEqual(x, y, Vec<2, T>(epsilon));
+}
+template<typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::NotEqual(const Vec<3, T>& x, const Vec<3, T>& y, T epsilon)
+{
+	return NotEqual(x, y, Vec<3, T>(epsilon));
+}
+template<typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const Vec<4, T>& x, const Vec<4, T>& y, T epsilon)
+{
+	return NotEqual(x, y, Vec<4, T>(epsilon));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+constexpr TRAP::Math::Vec<2, bool> TRAP::Math::NotEqual(const Vec<2, T>& x, const Vec<2, T>& y, const Vec<2, T>& epsilon)
+{
+	return GreaterThan(Abs(x - y), epsilon);
+}
+template<typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::NotEqual(const Vec<3, T>& x, const Vec<3, T>& y, const Vec<3, T>& epsilon)
+{
+	return GreaterThan(Abs(x - y), epsilon);
+}
+template<typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const Vec<4, T>& x, const Vec<4, T>& y, const Vec<4, T>& epsilon)
+{
+	return GreaterThan(Abs(x - y), epsilon);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+constexpr TRAP::Math::Vec<2, bool> TRAP::Math::NotEqual(const Vec<2, T>& x, const Vec<2, T>& y, int ULPs)
+{
+	return NotEqual(x, y, Vec<2, int>(ULPs));
+}
+template<typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::NotEqual(const Vec<3, T>& x, const Vec<3, T>& y, int ULPs)
+{
+	return NotEqual(x, y, Vec<2, int>(ULPs));
+}
+template<typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const Vec<4, T>& x, const Vec<4, T>& y, int ULPs)
+{
+	return NotEqual(x, y, Vec<2, int>(ULPs));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+constexpr TRAP::Math::Vec<2, bool> TRAP::Math::NotEqual(const Vec<2, T>& x, const Vec<2, T>& y, const Vec<2, int>& ULPs)
+{
+	return Not(Equal(x, y, ULPs));
+}
+template<typename T>
+constexpr TRAP::Math::Vec<3, bool> TRAP::Math::NotEqual(const Vec<3, T>& x, const Vec<3, T>& y, const Vec<3, int>& ULPs)
+{
+	return Not(Equal(x, y, ULPs));
+}
+template<typename T>
+constexpr TRAP::Math::Vec<4, bool> TRAP::Math::NotEqual(const Vec<4, T>& x, const Vec<4, T>& y, const Vec<4, int>& ULPs)
+{
+	return Not(Equal(x, y, ULPs));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

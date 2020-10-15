@@ -262,93 +262,93 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;    <span class="keywordflow">if</span> (!(std::is_same&lt;T, uint8_t&gt;::value || std::is_same&lt;T, uint16_t&gt;::value || std::is_same&lt;T, float&gt;::value))</div>
 <div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    {</div>
 <div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;        TRAP_ASSERT(<span class="keyword">false</span>, <span class="stringliteral">&quot;Invalid type!&quot;</span>);</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;        <span class="keywordflow">return</span> {};</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;        <span class="keywordflow">return</span> std::vector&lt;T&gt;();</div>
 <div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    }</div>
 <div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    <span class="keywordflow">if</span> (format == ColorFormat::NONE || !data)</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;        <span class="keywordflow">return</span> {};</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160; </div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    std::vector&lt;T&gt; newData{};</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    uint32_t stride = 0;</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    <span class="keywordflow">if</span> (format == ColorFormat::GrayScale)</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    {</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height));</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;        stride = height;</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    }</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == ColorFormat::GrayScaleAlpha)</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    {</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height) * 2);</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;        stride = height * 2;</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    }</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == ColorFormat::RGB)</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    {</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height) * 3);</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        stride = height * 3;</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    }</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == ColorFormat::RGBA)</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    {</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height) * 4);</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;        stride = height * 4;</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    }</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160; </div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    std::vector&lt;T&gt; row{};</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    row.resize(stride);</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    uint32_t lowOffset = 0;</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    uint32_t highOffset = (width - 1) * stride;</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160; </div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    <span class="keywordflow">for</span> (; lowOffset &lt; highOffset; lowOffset += stride, highOffset -= stride)</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    {</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;        std::copy(newData.data() + lowOffset, newData.data() + lowOffset + stride, row.data());</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        std::copy(newData.data() + highOffset, newData.data() + highOffset + stride, newData.data() + lowOffset);</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;        std::copy(row.data(), row.data() + stride, newData.data() + highOffset);</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    }</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160; </div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    <span class="keywordflow">return</span> newData;</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;}</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160; </div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160; </div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00343"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_image.html#a86c3e1ce3f4358b07204cee0cfb90cbb">  343</a></span>&#160;std::vector&lt;T&gt; <a class="code" href="class_t_r_a_p_1_1_image.html#aee88cc358f46c777292c22acdd377b54">TRAP::Image::FlipY</a>(<span class="keyword">const</span> uint32_t width, <span class="keyword">const</span> uint32_t height, <span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_image.html#a5bee5d4520506ffc6702eaec782a5011">ColorFormat</a> format, <span class="keyword">const</span> T* data)</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;{</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;    <span class="keywordflow">if</span> (!(std::is_same&lt;T, uint8_t&gt;::value || std::is_same&lt;T, uint16_t&gt;::value || std::is_same&lt;T, float&gt;::value))</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    {</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;        TRAP_ASSERT(<span class="keyword">false</span>, <span class="stringliteral">&quot;Invalid type!&quot;</span>);</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;        <span class="keywordflow">return</span> {};</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    }</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    <span class="keywordflow">if</span> (format == ColorFormat::NONE || !data)</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;        <span class="keywordflow">return</span> {};</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160; </div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    std::vector&lt;T&gt; newData{};</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    uint32_t stride = 0;</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    <span class="keywordflow">if</span> (format == ColorFormat::GrayScale)</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    {</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height));</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;        stride = width;</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;    }</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == ColorFormat::GrayScaleAlpha)</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    {</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height) * 2);</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;        stride = width * 2;</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    }</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == ColorFormat::RGB)</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    {</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height) * 3);</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;        stride = width * 3;</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    }</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == ColorFormat::RGBA)</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    {</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height) * 4);</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        stride = width * 4;</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    }</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160; </div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;    std::vector&lt;T&gt; row{};</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    row.resize(stride);</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160; </div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    row.reserve(stride);</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    uint32_t lowOffset = 0;</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;    uint32_t highOffset = (height - 1) * stride;</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    {</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;        TRAP_ASSERT(<span class="keyword">false</span>, <span class="stringliteral">&quot;Invalid ColorFormat!&quot;</span>);</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;        <span class="keywordflow">return</span> std::vector&lt;T&gt;();</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    }</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160; </div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    std::vector&lt;T&gt; newData{};</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    uint32_t stride = 0;</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    <span class="keywordflow">if</span> (format == ColorFormat::GrayScale)</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    {</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height));</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;        stride = height;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    }</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == ColorFormat::GrayScaleAlpha)</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    {</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height) * 2);</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        stride = height * 2;</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    }</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == ColorFormat::RGB)</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    {</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height) * 3);</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        stride = height * 3;</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    }</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == ColorFormat::RGBA)</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    {</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height) * 4);</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;        stride = height * 4;</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    }</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160; </div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    std::vector&lt;T&gt; row{};</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    row.resize(stride);</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160; </div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    <span class="keywordflow">for</span> (uint32_t lowOffset = 0, highOffset = (width - 1) * stride; lowOffset &lt; highOffset; lowOffset += stride, highOffset -= stride)</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    {</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        std::copy(newData.data() + lowOffset, newData.data() + lowOffset + stride, row.data());</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;        std::copy(newData.data() + highOffset, newData.data() + highOffset + stride, newData.data() + lowOffset);</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;        std::copy(row.data(), row.data() + stride, newData.data() + highOffset);</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    }</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160; </div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    <span class="keywordflow">return</span> newData;</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;}</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160; </div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;<span class="comment">//-------------------------------------------------------------------------------------------------------------------//</span></div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160; </div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00344"></a><span class="lineno"><a class="line" href="class_t_r_a_p_1_1_image.html#a86c3e1ce3f4358b07204cee0cfb90cbb">  344</a></span>&#160;std::vector&lt;T&gt; <a class="code" href="class_t_r_a_p_1_1_image.html#aee88cc358f46c777292c22acdd377b54">TRAP::Image::FlipY</a>(<span class="keyword">const</span> uint32_t width, <span class="keyword">const</span> uint32_t height, <span class="keyword">const</span> <a class="code" href="class_t_r_a_p_1_1_image.html#a5bee5d4520506ffc6702eaec782a5011">ColorFormat</a> format, <span class="keyword">const</span> T* data)</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;{</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    <span class="keywordflow">if</span> (!(std::is_same&lt;T, uint8_t&gt;::value || std::is_same&lt;T, uint16_t&gt;::value || std::is_same&lt;T, float&gt;::value))</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;    {</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;        TRAP_ASSERT(<span class="keyword">false</span>, <span class="stringliteral">&quot;Invalid type!&quot;</span>);</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;        <span class="keywordflow">return</span> std::vector&lt;T&gt;();</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    }</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    <span class="keywordflow">if</span> (format == ColorFormat::NONE || !data)</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    {</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;        TRAP_ASSERT(<span class="keyword">false</span>, <span class="stringliteral">&quot;Invalid ColorFormat!&quot;</span>);</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;        <span class="keywordflow">return</span> std::vector&lt;T&gt;();</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    }</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160; </div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    std::vector&lt;T&gt; newData{};</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    uint32_t stride = 0;</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;    <span class="keywordflow">if</span> (format == ColorFormat::GrayScale)</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    {</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height));</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        stride = width;</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;    }</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == ColorFormat::GrayScaleAlpha)</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    {</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height) * 2);</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;        stride = width * 2;</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    }</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == ColorFormat::RGB)</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    {</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height) * 3);</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        stride = width * 3;</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    }</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (format == ColorFormat::RGBA)</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    {</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;        newData.assign(data, data + <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(width) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(height) * 4);</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;        stride = width * 4;</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;    }</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160; </div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    std::vector&lt;T&gt; row{};</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;    row.resize(stride);</div>
 <div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160; </div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    <span class="keywordflow">for</span> (; lowOffset &lt; highOffset; lowOffset += stride, highOffset -= stride)</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    <span class="keywordflow">for</span> (uint32_t lowOffset = 0, highOffset = (height - 1) * stride; lowOffset &lt; highOffset; lowOffset += stride, highOffset -= stride)</div>
 <div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    {</div>
 <div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;        std::copy(newData.data() + lowOffset, newData.data() + lowOffset + stride, row.data());</div>
 <div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;        std::copy(newData.data() + highOffset, newData.data() + highOffset + stride, newData.data() + lowOffset);</div>

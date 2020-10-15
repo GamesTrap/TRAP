@@ -710,7 +710,7 @@ constexpr TRAP::Math::Vec<4, T>::Vec(A x, const Vec<3, B>& yzw)
 	: x(static_cast<T>(x)),
 	y(static_cast<T>(yzw.x)),
 	z(static_cast<T>(yzw.y)),
-	w(static_cast<T>(yzw.w))
+	w(static_cast<T>(yzw.z))
 {}
 
 template<typename T>
