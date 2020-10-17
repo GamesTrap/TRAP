@@ -3302,7 +3302,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 
 		if (window->LastCursorPosX != width / 2 ||
 			window->LastCursorPosY != height / 2)
-			PlatformSetCursorPos(window, width / 2, height / 2);
+			PlatformSetCursorPos(window, static_cast<double>(width) / 2.0, static_cast<double>(height) / 2.0);
 	}
 }
 

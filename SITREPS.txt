@@ -1285,3 +1285,7 @@ SITREP 10/15/2020|20w42a3
 SITREP 10/16/2020|20w42a4
     - Changed TRAP Engine version to 20w42a4(0.6.75)
     - Better Assertion support ~<40 mins
+
+SITREP 10/17/2020|20w42a5
+    - Changed TRAP Engine version to 20w42a5(0.6.76)
+    - Fixed Linux assertion ~<5 mins

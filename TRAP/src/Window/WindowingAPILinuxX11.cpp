@@ -3039,7 +3039,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateTLS(TLS& tls)
 {
-	TRAP_ASSERT(!tls.Allocated, "TLS is already allocated!");
+	TRAP_CORE_ASSERT(!tls.Allocated, "TLS is already allocated!");
 	
 	if(pthread_key_create(&tls.Key, nullptr) != 0)
 	{
@@ -3055,7 +3055,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateTLS(TLS& tls)
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetTLS(TLS& tls, void* value)
 {
-	TRAP_ASSERT(tls.Allocated, "TLS already contains allocated data!");
+	TRAP_CORE_ASSERT(tls.Allocated, "TLS already contains allocated data!");
 	
 	pthread_setspecific(tls.Key, value);
 }
@@ -3064,7 +3064,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetTLS(TLS& tls, void* value)
 
 void* TRAP::INTERNAL::WindowingAPI::PlatformGetTLS(TLS& tls)
 {
-	TRAP_ASSERT(tls.Allocated, "TLS doesn't contain allocated data!");
+	TRAP_CORE_ASSERT(tls.Allocated, "TLS doesn't contain allocated data!");
 	
 	return pthread_getspecific(tls.Key);
 }
@@ -5071,7 +5071,7 @@ uint32_t TRAP::INTERNAL::WindowingAPI::DecodeUTF8(const char** s)
 		count++;
 	} while((**s & 0xC0) == 0x80);
 	
-	TRAP_WINDOW_ASSERT(count <= 6, "");
+	TRAP_CORE_ASSERT(count <= 6, "");
 	
 	return ch - offsets[count - 1];
 }
