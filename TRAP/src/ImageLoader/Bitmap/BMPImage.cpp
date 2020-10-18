@@ -243,11 +243,12 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			}
 		}
 
+		file.close();
+
 		if (infoHeader.Compression == 0) //Uncompressed
 		{
 			if (m_bitsPerPixel < 8)
 			{
-				file.close();
 				TP_ERROR(Log::ImageBMPPrefix, "BitsPerPixel ", m_bitsPerPixel, " is unsupported!");
 				TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
 				return;
@@ -324,7 +325,6 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 		}
 		else if (infoHeader.Compression == 2) //Microsoft RLE 4
 		{
-			file.close();
 			TP_ERROR(Log::ImageBMPPrefix, "RLE 4 is unsupported!");
 			TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
 			return;
@@ -341,7 +341,6 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			{
 				if(!ValidateBitFields(bitFields, masks))
 				{
-					file.close();
 					TP_ERROR(Log::ImageBMPPrefix, "Invalid BitFields!");
 					TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
 					return;
@@ -373,7 +372,6 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			{
 				if (!ValidateBitFields(bitFields, masks))
 				{
-					file.close();
 					TP_ERROR(Log::ImageBMPPrefix, "Invalid BitFields!");
 					TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
 					return;
@@ -403,7 +401,6 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 			}
 			else
 			{
-				file.close();
 				TP_ERROR(Log::ImageBMPPrefix, "Invalid BitsPerPixel for BitField Image!");
 				TP_WARN(Log::ImageBMPPrefix, "Using Default Image!");
 				return;
@@ -414,8 +411,6 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 
 		if (needYFlip)
 			m_data = FlipY(m_width, m_height, m_colorFormat, m_data.data());
-
-		file.close();
 	}
 }
 

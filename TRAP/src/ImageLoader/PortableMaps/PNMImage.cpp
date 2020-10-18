@@ -106,6 +106,8 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 				}
 			}
 
+			file.close();
+
 			//File uses big-endian
 			//Convert to machines endian
 			bool needSwap = static_cast<bool>(Application::GetEndian() != Application::Endian::Big);
@@ -143,9 +145,9 @@ TRAP::INTERNAL::PNMImage::PNMImage(std::string filepath)
 					return;
 				}
 			}
-		}
 
-		file.close();
+			file.close();
+		}
 	}
 }
 

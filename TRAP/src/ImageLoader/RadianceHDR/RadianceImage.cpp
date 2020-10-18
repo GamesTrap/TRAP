@@ -128,13 +128,13 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::string filepath)
 			WorkOnRGBE(scanline, scanlineIndex, m_data, dataIndex);
 			dataIndex += m_width * 3;
 		}
+
+		file.close();
 		
 		if (needXFlip)
 			m_data = FlipX(m_width, m_height, m_colorFormat, m_data.data());
 		if (needYFlip)
 			m_data = FlipY(m_width, m_height, m_colorFormat, m_data.data());
-
-		file.close();
 	}
 }
 
@@ -178,7 +178,7 @@ bool TRAP::INTERNAL::RadianceImage::Decrunch(std::vector<std::array<uint8_t, 4>>
 	int32_t i = static_cast<int32_t>(file.get());
 	if(i != 2)
 	{
-		file.seekg(-1, file.cur);
+		file.seekg(-1, std::ifstream::cur);
 		return OldDecrunch(scanline, scanlineIndex, length, file);
 	}
 

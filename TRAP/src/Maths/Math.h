@@ -2729,7 +2729,7 @@ T TRAP::Math::Dot(const Vec<L, T>& x, const Vec<L, T>& y)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'Dot' accepts only floating-point inputs");
 
-	T result;
+	T result = 0;
 	Vec<L, T> tmp(x * y);
 	for (uint32_t i = 0; i < L; i++)
 		result += tmp[i];

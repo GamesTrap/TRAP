@@ -89,6 +89,8 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			}
 		}
 
+		file.close();
+
 		m_width = data.Width;
 		m_height = data.Height;
 
@@ -286,8 +288,6 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 		default:
 			break;
 		}
-
-		file.close();
 	}
 }
 

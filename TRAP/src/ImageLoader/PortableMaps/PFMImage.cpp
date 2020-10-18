@@ -69,7 +69,7 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 		m_width = header.Width;
 		m_height = header.Height;
 		
-		//Determine endianess
+		//Determine endianness
 		bool isFileLittleEndian = (header.ByteOrder < 0.0f); //If true little-endian is used else if false big-endian is used
 		bool needSwap = isFileLittleEndian != static_cast<bool>(Application::GetEndian());
 		
@@ -90,6 +90,8 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 				return;
 			}
 
+			file.close();
+
 			if (needSwap)
 				for (float& element : m_data)
 					Utils::Memory::SwapBytes(element);
@@ -109,12 +111,12 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 				return;
 			}
 
+			file.close();
+
 			if (needSwap)
 				for (float& element : m_data)
 					Utils::Memory::SwapBytes(element);
 		}
-
-		file.close();
 	}
 }
 

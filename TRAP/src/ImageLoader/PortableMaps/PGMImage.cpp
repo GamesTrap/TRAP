@@ -89,10 +89,11 @@ TRAP::INTERNAL::PGMImage::PGMImage(std::string filepath)
 				return;
 			}
 
+			file.close();
+			
 			//File uses big-endian
 			//Convert to machines endian
-			bool needSwap = static_cast<bool>(Application::GetEndian() != Application::Endian::Big);
-			if (needSwap)
+			if (static_cast<bool>(Application::GetEndian() != Application::Endian::Big))
 				for (uint16_t& element : m_data2Byte)
 					Utils::Memory::SwapBytes(element);
 		}
@@ -108,9 +109,9 @@ TRAP::INTERNAL::PGMImage::PGMImage(std::string filepath)
 				TP_WARN(Log::ImagePGMPrefix, "Using Default Image!");
 				return;
 			}
-		}
 
-		file.close();
+			file.close();
+		}
 	}
 }
 

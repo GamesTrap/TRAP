@@ -88,6 +88,8 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 				return;
 			}
 
+			file.close();
+			
 			//File uses big-endian
 			//Convert to machines endian
 			bool needSwap = static_cast<bool>(Application::GetEndian() != Application::Endian::Big);
@@ -106,9 +108,9 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 				TP_WARN(Log::ImagePPMPrefix, "Using Default Image!");
 				return;
 			}
-		}
 
-		file.close();
+			file.close();
+		}
 	}
 }
 

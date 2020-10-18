@@ -122,6 +122,8 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 				return;
 			}
 
+			file.close();
+
 			//File uses big-endian
 			//Convert to machines endian
 			bool needSwap = static_cast<bool>(Application::GetEndian() != Application::Endian::Big);
@@ -165,9 +167,9 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 				TP_WARN(Log::ImagePAMPrefix, "Using Default Image!");
 				return;
 			}
-		}
 
-		file.close();
+			file.close();
+		}
 	}
 }
 

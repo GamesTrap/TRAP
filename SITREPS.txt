@@ -1289,3 +1289,7 @@ SITREP 10/16/2020|20w42a4
 SITREP 10/17/2020|20w42a5
     - Changed TRAP Engine version to 20w42a5(0.6.76)
     - Fixed Linux assertion ~<5 mins
+
+SITREP 10/18/2020|20w42a6
+    - Changed TRAP Engine version to 20w42a6(0.6.77)
+    - Moved file closing in Image loaders ~<40 mins
