@@ -21,13 +21,7 @@ TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(std::string name, 
 	if(s_maxUniformBufferBindingPoints == 0)
 		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int32_t*>(&s_maxUniformBufferBindingPoints));
 	
-	glCreateBuffers(1, &m_handle);
-	if (m_usage == BufferUsage::Static)
-		glNamedBufferStorage(m_handle, m_size, data, 0);
-	else if (m_usage == BufferUsage::Dynamic)
-		glNamedBufferStorage(m_handle, m_size, data, GL_DYNAMIC_STORAGE_BIT);
-	else //Stream
-		glNamedBufferStorage(m_handle, m_size, data, GL_DYNAMIC_STORAGE_BIT);
+	CreateBuffer(data);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -40,13 +34,7 @@ TRAP::Graphics::API::OpenGLUniformBuffer::OpenGLUniformBuffer(std::string name, 
 	if (s_maxUniformBufferBindingPoints == 0)
 		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int32_t*>(&s_maxUniformBufferBindingPoints));
 	
-	glCreateBuffers(1, &m_handle);
-	if (m_usage == BufferUsage::Static)
-		glNamedBufferStorage(m_handle, m_size, nullptr, 0);
-	else if (m_usage == BufferUsage::Dynamic)
-		glNamedBufferStorage(m_handle, m_size, nullptr, GL_DYNAMIC_STORAGE_BIT);
-	else //Stream
-		glNamedBufferStorage(m_handle, m_size, nullptr, GL_DYNAMIC_STORAGE_BIT);
+	CreateBuffer(nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -109,12 +97,7 @@ void TRAP::Graphics::API::OpenGLUniformBuffer::UpdateData(const void* data)
 	TP_PROFILE_FUNCTION();
 	
 	if (m_usage != BufferUsage::Static)
-	{
-		if (m_usage == BufferUsage::Dynamic)
-			glNamedBufferSubData(m_handle, 0, m_size, data);
-		else //Stream
-			glNamedBufferSubData(m_handle, 0, m_size, data);
-	}
+		glNamedBufferSubData(m_handle, 0, m_size, data);
 	else
 		TP_ERROR(Log::UniformBufferOpenGLPrefix, "Static UniformBuffer: \"", m_name, "\" tried to update data!");
 }
@@ -174,4 +157,15 @@ TRAP::Graphics::BufferUsage TRAP::Graphics::API::OpenGLUniformBuffer::GetUsage()
 	TP_PROFILE_FUNCTION();
 	
 	return m_usage;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLUniformBuffer::CreateBuffer(const void* data)
+{
+	glCreateBuffers(1, &m_handle);
+	if (m_usage == BufferUsage::Static)
+		glNamedBufferStorage(m_handle, m_size, data, 0);
+	else //Stream
+		glNamedBufferStorage(m_handle, m_size, data, GL_DYNAMIC_STORAGE_BIT);
 }

@@ -2,6 +2,7 @@
 #include "OpenGLShader.h"
 
 #include "Utils/String/String.h"
+#include "Graphics/Shaders/ShaderManager.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -41,8 +42,10 @@ TRAP::Graphics::API::OpenGLShader::OpenGLShader(std::string name,
 	TP_PROFILE_FUNCTION();
 
 	m_name = std::move(name);
+
+	const std::array<std::string_view, 6> shaderSources{ VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource };
 	
-	InitGLSL(VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
+	InitGLSL(shaderSources);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -144,25 +147,12 @@ void TRAP::Graphics::API::OpenGLShader::InitGLSL(const std::string_view source)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLShader::InitGLSL(const std::string_view VSSource,
-                                                 const std::string_view FSSource,
-                                                 const std::string_view GSSource,
-                                                 const std::string_view TCSSource,
-                                                 const std::string_view TESSource,
-                                                 const std::string_view CSSource)
+void TRAP::Graphics::API::OpenGLShader::InitGLSL(const std::array<std::string_view, 6>& shaderSources)
 {
 	TP_DEBUG(Log::ShaderOpenGLGLSLPrefix, "Compiling: \"", m_name, "\"");
-	
-	std::array<std::string_view, 6> shaders{ VSSource,
-											 FSSource,
-											 GSSource,
-											 TCSSource,
-											 TESSource,
-											 CSSource
-	};	
 
 	bool isEmpty = true;
-	for (const auto& shaderSource : shaders)
+	for (const auto& shaderSource : shaderSources)
 	{
 		if (!shaderSource.empty())
 		{
@@ -175,8 +165,8 @@ void TRAP::Graphics::API::OpenGLShader::InitGLSL(const std::string_view VSSource
 		TP_WARN(Log::ShaderOpenGLGLSLPrefix, "Shader: \"", m_name, "\" using fallback Shader: \"Fallback\"");
 		return;
 	}
-	
-	m_handle = CompileGLSL(shaders);
+
+	m_handle = CompileGLSL(shaderSources);
 	if (!m_handle)
 	{
 		TP_WARN(Log::ShaderOpenGLGLSLPrefix, "Shader: \"", m_name, "\" using fallback Shader: \"Fallback\"");
@@ -196,40 +186,14 @@ void TRAP::Graphics::API::OpenGLShader::InitSPIRV(const std::vector<uint32_t>& s
 	for(uint32_t i = 0; i < SPIRVSubShaderCount; i++)
 	{
 		const uint32_t SPIRVSize = source[index++];
-		uint32_t shaderType = source[index++];
+		ShaderType shaderType = static_cast<ShaderType>(source[index++]);
 
 		const std::vector<uint32_t> tempSPIRV(source.begin() + index, source.begin() + index + SPIRVSize);
 		index += SPIRVSize;
 
-		switch(static_cast<ShaderType>(shaderType))
-		{
-		case ShaderType::Vertex:
-			SPIRVShaders[0] = tempSPIRV;
-			break;
-
-		case ShaderType::Fragment:
-			SPIRVShaders[1] = tempSPIRV;
-			break;
-
-		case ShaderType::Geometry:
-			SPIRVShaders[2] = tempSPIRV;
-			break;
-
-		case ShaderType::Tessellation_Control:
-			SPIRVShaders[3] = tempSPIRV;
-			break;
-
-		case ShaderType::Tessellation_Evaluation:
-			SPIRVShaders[4] = tempSPIRV;
-			break;
-
-		case ShaderType::Compute:
-			SPIRVShaders[5] = tempSPIRV;
-			break;
-			
-		default:
-			break;
-		}
+		if (shaderType >= ShaderType::Vertex &&
+		    shaderType <= ShaderType::Tessellation_Evaluation)
+			SPIRVShaders[static_cast<uint32_t>(shaderType) - 1] = tempSPIRV;
 	}
 
 	TP_DEBUG(Log::ShaderOpenGLSPIRVPrefix, "Converting: \"", m_name, "\" to GLSL");
@@ -249,15 +213,15 @@ void TRAP::Graphics::API::OpenGLShader::InitSPIRV(const std::vector<uint32_t>& s
 uint32_t TRAP::Graphics::API::OpenGLShader::CompileGLSL(const std::array<std::string_view, 6>& shaders)
 {
 	uint32_t program = 0;
-	uint32_t vertex = 0, fragment = 0, geometry = 0, tessControl = 0, tessEval = 0, compute = 0;
+	std::array<uint32_t, 6> shaderHandles{0, 0, 0, 0, 0, 0};
 	int32_t linkResult = 0, validateResult = 0;
 	
-	if (!CreateGLSLProgram(shaders, vertex, fragment, geometry, tessControl, tessEval, compute, program))
+	if (!CreateGLSLProgram(shaders, shaderHandles, program))
 		return 0;
 
 	LinkGLSLProgram(linkResult, validateResult, program);
 
-	DeleteGLSLShaders(shaders, vertex, fragment, geometry, tessControl, tessEval, compute, program);
+	DeleteGLSLShaders(shaders, shaderHandles, program);
 	
 	if (!linkResult || !validateResult)
 	{
@@ -300,62 +264,20 @@ bool TRAP::Graphics::API::OpenGLShader::CompileGLSLShader(const ShaderType type,
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Graphics::API::OpenGLShader::CreateGLSLProgram(const std::array<std::string_view, 6>& shaders,
-	uint32_t& vertex,
-	uint32_t& fragment,
-	uint32_t& geometry,
-	uint32_t& tessControl,
-	uint32_t& tessEval,
-	uint32_t& compute,
-	uint32_t& handle)
+														  std::array<uint32_t, 6>& shaderHandles,
+														  uint32_t& handle)
 {
 	handle = glCreateProgram();
 
-	if (!shaders[0].empty())
+	for(uint32_t i = 0; i < shaders.size(); i++)
 	{
-		if (!CompileGLSLShader(ShaderType::Vertex, shaders[0].data(), vertex))
-			return false;
+		if(!shaders[i].empty())
+		{
+			if (!CompileGLSLShader(static_cast<ShaderType>(i + 1), shaders[i].data(), shaderHandles[i]))
+				return false;
 
-		glAttachShader(handle, vertex);
-	}
-
-	if (!shaders[1].empty())
-	{
-		if (!CompileGLSLShader(ShaderType::Fragment, shaders[1].data(), fragment))
-			return false;
-
-		glAttachShader(handle, fragment);
-	}
-
-	if (!shaders[2].empty())
-	{
-		if (!CompileGLSLShader(ShaderType::Geometry, shaders[2].data(), geometry))
-			return false;
-
-		glAttachShader(handle, geometry);
-	}
-
-	if (!shaders[3].empty())
-	{
-		if (!CompileGLSLShader(ShaderType::Tessellation_Control, shaders[3].data(), tessControl))
-			return false;
-
-		glAttachShader(handle, tessControl);
-	}
-
-	if (!shaders[4].empty())
-	{
-		if (!CompileGLSLShader(ShaderType::Tessellation_Evaluation, shaders[4].data(), tessEval))
-			return false;
-
-		glAttachShader(handle, tessEval);
-	}
-
-	if (!shaders[5].empty())
-	{
-		if (!CompileGLSLShader(ShaderType::Compute, shaders[5].data(), compute))
-			return false;
-
-		glAttachShader(handle, compute);
+			glAttachShader(handle, shaderHandles[i]);
+		}
 	}
 
 	return true;
@@ -390,48 +312,16 @@ void TRAP::Graphics::API::OpenGLShader::LinkGLSLProgram(int32_t& linkResult, int
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::OpenGLShader::DeleteGLSLShaders(const std::array<std::string_view, 6>& shaders,
-	const uint32_t& vertex,
-	const uint32_t& fragment,
-	const uint32_t& geometry,
-	const uint32_t& tessControl,
-	const uint32_t& tessEval,
-	const uint32_t& compute,
-	const uint32_t& handle)
+														  std::array<uint32_t, 6>& shaderHandles,
+														  const uint32_t& handle)
 {
-	if (!shaders[0].empty())
+	for(uint32_t i = 0; i < shaders.size(); i++)
 	{
-		glDetachShader(handle, vertex);
-		glDeleteShader(vertex);
-	}
-
-	if (!shaders[1].empty())
-	{
-		glDetachShader(handle, fragment);
-		glDeleteShader(fragment);
-	}
-
-	if (!shaders[2].empty())
-	{
-		glDetachShader(handle, geometry);
-		glDeleteShader(geometry);
-	}
-
-	if (!shaders[3].empty())
-	{
-		glDetachShader(handle, tessControl);
-		glDeleteShader(tessControl);
-	}
-
-	if (!shaders[4].empty())
-	{
-		glDetachShader(handle, tessEval);
-		glDeleteShader(tessEval);
-	}
-
-	if (!shaders[5].empty())
-	{
-		glDetachShader(handle, compute);
-		glDeleteShader(compute);
+		if(!shaders[i].empty())
+		{
+			glDetachShader(handle, shaderHandles[i]);
+			glDeleteShader(shaderHandles[i]);
+		}
 	}
 }
 
@@ -483,6 +373,7 @@ GLenum TRAP::Graphics::API::OpenGLShader::ShaderTypeToOpenGL(const ShaderType ty
 	case ShaderType::Compute:
 		return GL_COMPUTE_SHADER;
 
+	case ShaderType::Unknown:
 	default:
 		return 0;
 	}
@@ -495,40 +386,22 @@ bool TRAP::Graphics::API::OpenGLShader::IsTypeOpaque(const GLenum type)
 	switch (type)
 	{
 	case GL_SAMPLER_1D:
-		return true;
 	case GL_SAMPLER_2D:
-		return true;
 	case GL_SAMPLER_3D:
-		return true;
 	case GL_SAMPLER_CUBE:
-		return true;
 	case GL_SAMPLER_2D_RECT:
-		return true;
 	case GL_SAMPLER_1D_ARRAY:
-		return true;
 	case GL_SAMPLER_2D_ARRAY:
-		return true;
 	case GL_SAMPLER_CUBE_MAP_ARRAY:
-		return true;
 	case GL_SAMPLER_BUFFER:
-		return true;
 	case GL_SAMPLER_2D_MULTISAMPLE:
-		return true;
 	case GL_SAMPLER_2D_MULTISAMPLE_ARRAY:
-		return true;
-
 	case GL_SAMPLER_1D_SHADOW:
-		return true;
 	case GL_SAMPLER_2D_SHADOW:
-		return true;
 	case GL_SAMPLER_CUBE_SHADOW:
-		return true;
 	case GL_SAMPLER_2D_RECT_SHADOW:
-		return true;
 	case GL_SAMPLER_1D_ARRAY_SHADOW:
-		return true;
 	case GL_SAMPLER_2D_ARRAY_SHADOW:
-		return true;
 	case GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW:
 		return true;
 

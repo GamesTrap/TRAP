@@ -27,15 +27,17 @@ namespace TRAP::Graphics::API
 		void SetFilter(TextureFilter filter) override;
 		
 	private:
-		void SetupVerticalCross();
-		void SetupHorizontalCross();
-		void LoadVerticalCross(const Scope<Image>& img);
-		void LoadHorizontalCross(const Scope<Image>& img);
+		void SetupCross();
+		void LoadCross(const Scope<Image>& img);
 		void LoadFiles();
 
 		bool CheckImageSize(const Scope<Image>& image) const;
 		void InitializeTexture();
 
+		template<typename T>
+		static std::array<std::vector<T>, 6> SplitImageFromCross(const Scope<Image>& image, InputFormat format, uint32_t faceWidth, uint32_t faceHeight, uint32_t& face, uint32_t stride);
+		void UploadImage(const Scope<Image>& image, uint32_t faceWidth, uint32_t faceHeight, uint32_t& face, uint32_t stride) const;
+		
 		uint32_t m_handle;
 	};
 }

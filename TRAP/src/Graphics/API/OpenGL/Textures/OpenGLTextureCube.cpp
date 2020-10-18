@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "OpenGLTextureCube.h"
 
-#include "Graphics/API/OpenGL/OpenGLCommon.h"
 #include "Graphics/API/OpenGL/OpenGLRenderer.h"
 #include "Graphics/Textures/TextureManager.h"
 #include "VFS/VFS.h"
@@ -26,21 +25,10 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(const TextureParameter
 
 	const uint32_t numMipMapLevels = 1 + static_cast<uint32_t>(std::floor(std::log2(Math::Max(image->GetWidth(), image->GetHeight())))); //Same as specification
 	glTextureStorage2D(m_handle, numMipMapLevels, TRAPImageFormatToOpenGLPrecise(image->GetColorFormat(), image->GetBytesPerPixel()), image->GetWidth(), image->GetHeight());
-	
-	glTextureSubImage3D(m_handle, 0, 0, 0, 0, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
-		image->GetPixelData());
-	glTextureSubImage3D(m_handle, 0, 0, 0, 1, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
-		image->GetPixelData());
 
-	glTextureSubImage3D(m_handle, 0, 0, 0, 2, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
-		image->GetPixelData());
-	glTextureSubImage3D(m_handle, 0, 0, 0, 3, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
-		image->GetPixelData());
-
-	glTextureSubImage3D(m_handle, 0, 0, 0, 4, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
-		image->GetPixelData());
-	glTextureSubImage3D(m_handle, 0, 0, 0, 5, image->GetWidth(), image->GetHeight(), 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,
-		image->GetPixelData());
+	for(uint32_t i = 0; i < 6; i++)
+		glTextureSubImage3D(m_handle, 0, 0, 0, i, image->GetWidth(), image->GetHeight(), 1,
+			TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE,	image->GetPixelData());
 
 	glGenerateTextureMipmap(m_handle);
 }
@@ -53,15 +41,8 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 	TP_PROFILE_FUNCTION();
 
 	m_name = std::move(name);
-	m_filepaths =
-	{
-		VFS::MakeVirtualPathCompatible(filepaths[0]),
-		VFS::MakeVirtualPathCompatible(filepaths[1]),
-		VFS::MakeVirtualPathCompatible(filepaths[2]),
-		VFS::MakeVirtualPathCompatible(filepaths[3]),
-		VFS::MakeVirtualPathCompatible(filepaths[4]),
-		VFS::MakeVirtualPathCompatible(filepaths[5])
-	};
+	for(uint32_t i = 0; i < filepaths.size(); i++)
+		m_filepaths[i] = VFS::MakeVirtualPathCompatible(filepaths[i]);
 	m_textureParameters = parameters;
 	m_inputFormat = InputFormat::NONE;
 	
@@ -70,12 +51,14 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 		glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxCubeTextureSize));
 
 	for (const auto& path : m_filepaths)
+	{
 		if (path.empty())
 		{
 			TP_ERROR(Log::TextureCubeOpenGLPrefix, "Missing File(s)!");
 			TP_WARN(Log::TextureCubeOpenGLPrefix, "Using Default Cube Map");
 			return;
 		}
+	}
 
 	LoadFiles();
 }
@@ -104,9 +87,9 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 	}
 
 	if (m_inputFormat == InputFormat::Vertical_Cross)
-		SetupVerticalCross();
+		SetupCross();
 	else if (m_inputFormat == InputFormat::Horizontal_Cross)
-		SetupHorizontalCross();
+		SetupCross();
 	else if (m_inputFormat == InputFormat::NONE)
 	{
 		TP_ERROR(Log::TextureCubeOpenGLPrefix, "InputFormat is None!");
@@ -156,7 +139,7 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 				return;
 			}
 
-			LoadVerticalCross(img);
+			LoadCross(img);
 		}
 		else
 		{
@@ -167,7 +150,7 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 				return;
 			}
 
-			LoadHorizontalCross(img);
+			LoadCross(img);
 		}
 	}
 }
@@ -255,7 +238,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::SetFilter(const TextureFilter filte
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLTextureCube::SetupVerticalCross()
+void TRAP::Graphics::API::OpenGLTextureCube::SetupCross()
 {
 	std::filesystem::path physicalPath;
 	if (!VFS::ResolveReadPhysicalPath(m_filepaths[0], physicalPath, true))
@@ -269,50 +252,40 @@ void TRAP::Graphics::API::OpenGLTextureCube::SetupVerticalCross()
 
 	if (!CheckImageSize(image))
 		return;
-	if (image->GetHeight() <= image->GetWidth())
+	if(m_inputFormat == InputFormat::Horizontal_Cross)
 	{
-		TP_ERROR(Log::TextureCubeOpenGLPrefix, "Texture: \"", m_name, "\" Invalid InputFormat usage!");
-		TP_WARN(Log::TextureCubeOpenGLPrefix, "Using Default Cube Map");
-		return;
+		if (image->GetWidth() <= image->GetHeight())
+		{
+			TP_ERROR(Log::TextureCubeOpenGLPrefix, "Texture: \"", m_name, "\" Invalid InputFormat usage!");
+			TP_WARN(Log::TextureCubeOpenGLPrefix, "Using Default Cube Map");
+			return;
+		}
 	}
+	else if(m_inputFormat == InputFormat::Vertical_Cross)
+	{
+		if (image->GetHeight() <= image->GetWidth())
+		{
+			TP_ERROR(Log::TextureCubeOpenGLPrefix, "Texture: \"", m_name, "\" Invalid InputFormat usage!");
+			TP_WARN(Log::TextureCubeOpenGLPrefix, "Using Default Cube Map");
+			return;
+		}
+	}	
 
-	LoadVerticalCross(image);
+	LoadCross(image);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::OpenGLTextureCube::SetupHorizontalCross()
-{
-	std::filesystem::path physicalPath;
-	if (!VFS::ResolveReadPhysicalPath(m_filepaths[0], physicalPath, true))
-	{
-		TP_ERROR(Log::TextureCubeOpenGLPrefix, "Couldn't resolve FilePath: ", m_filepaths[0], "!");
-		TP_WARN(Log::TextureCubeOpenGLPrefix, "Using Default Cube Map!");
-		return;
-	}
-
-	const Scope<Image> image = Image::LoadFromFile(m_filepaths[0]);
-
-	if (!CheckImageSize(image))
-		return;
-	if (image->GetWidth() <= image->GetHeight())
-	{
-		TP_ERROR(Log::TextureCubeOpenGLPrefix, "Texture: \"", m_name, "\" Invalid InputFormat usage!");
-		TP_WARN(Log::TextureCubeOpenGLPrefix, "Using Default Cube Map");
-		return;
-	}
-
-	LoadHorizontalCross(image);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross(const Scope<Image>& img)
+void TRAP::Graphics::API::OpenGLTextureCube::LoadCross(const Scope<Image>& img)
 {
 	const uint32_t stride = img->GetBitsPerPixel() / 8;
 	uint32_t face = 0;
-	const uint32_t faceWidth = img->GetWidth() / 3;
-	const uint32_t faceHeight = img->GetHeight() / 4;
+	uint32_t faceWidth = img->GetWidth() / 3, faceHeight = img->GetHeight() / 4;
+	if(m_inputFormat == InputFormat::Horizontal_Cross)
+	{
+		faceWidth = img->GetWidth() / 4;
+		faceHeight = img->GetHeight() / 3;
+	}
 
 	bool resetPixelStore = false;
 	InitializeTexture();
@@ -327,463 +300,12 @@ void TRAP::Graphics::API::OpenGLTextureCube::LoadVerticalCross(const Scope<Image
 	const uint32_t numMipMapLevels = 1 + static_cast<uint32_t>(std::floor(std::log2(Math::Max(faceWidth, faceHeight)))); //Same as specification
 	glTextureStorage2D(m_handle, numMipMapLevels, TRAPImageFormatToOpenGLPrecise(img->GetColorFormat(), img->GetBytesPerPixel()), faceWidth, faceHeight);
 
-	if (img->IsHDR())
-	{
-		std::array<std::vector<float>, 6> cubeTextureData;
-		for (auto& i : cubeTextureData)
-			i.resize(faceWidth * faceHeight * stride);
-
-		for (uint32_t cy = 0; cy < 4; cy++)
-		{
-			for (uint32_t cx = 0; cx < 3; cx++)
-			{
-				if (cy == 0 || cy == 2 || cy == 3)
-				{
-					if (cx != 1)
-						continue;
-				}
-
-				for (uint32_t y = 0; y < faceHeight; y++)
-				{
-					uint32_t offset = y;
-					if (face == 5)
-						offset = faceHeight - (y + 1);
-					const uint32_t yp = cy * faceHeight + offset;
-					for (uint32_t x = 0; x < faceWidth; x++)
-					{
-						offset = x;
-						if (face == 5)
-							offset = faceWidth - (x + 1);
-						const uint32_t xp = cx * faceWidth + offset;
-						switch (stride)
-						{
-						case 1:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							break;
-
-						case 2:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							break;
-
-						case 3:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 2];
-							break;
-
-						case 4:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 2];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 3] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 3];
-							break;
-
-						default:
-							break;
-						}
-					}
-				}
-				face++;
-			}
-		}
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[3].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[1].data());
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[0].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[4].data());
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[2].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[5].data());
-	}
-	else if ((img->IsImageGrayScale() && img->GetBitsPerPixel() == 16 && !img->HasAlphaChannel()) ||
-		(img->IsImageGrayScale() && img->GetBitsPerPixel() == 32 && img->HasAlphaChannel()) ||
-		(img->IsImageColored() && img->GetBitsPerPixel() == 48 && !img->HasAlphaChannel()) ||
-		(img->IsImageColored() && img->GetBitsPerPixel() == 64 && img->HasAlphaChannel()))
-	{
-		std::vector<std::vector<uint16_t>> cubeTextureData;
-		cubeTextureData.resize(6);
-		for (auto& i : cubeTextureData)
-			i.resize(faceWidth * faceHeight * stride);
-
-		for (uint32_t cy = 0; cy < 4; cy++)
-		{
-			for (uint32_t cx = 0; cx < 3; cx++)
-			{
-				if (cy == 0 || cy == 2 || cy == 3)
-				{
-					if (cx != 1)
-						continue;
-				}
-
-				for (uint32_t y = 0; y < faceHeight; y++)
-				{
-					uint32_t offset = y;
-					if (face == 5)
-						offset = faceHeight - (y + 1);
-					const uint32_t yp = cy * faceHeight + offset;
-					for (uint32_t x = 0; x < faceWidth; x++)
-					{
-						offset = x;
-						if (face == 5)
-							offset = faceWidth - (x + 1);
-						const uint32_t xp = cx * faceWidth + offset;
-						switch (stride)
-						{
-						case 1:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							break;
-
-						case 2:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							break;
-
-						case 3:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 2];
-							break;
-
-						case 4:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 2];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 3] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 3];
-							break;
-
-						default:
-							break;
-						}
-					}
-				}
-				face++;
-			}
-		}
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[3].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[1].data());
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[0].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[4].data());
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[2].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[5].data());
-	}
-	else
-	{
-		std::vector<std::vector<uint8_t>> cubeTextureData;
-		cubeTextureData.resize(6);
-		for (auto& i : cubeTextureData)
-			i.resize(faceWidth * faceHeight * stride);
-
-		for (uint32_t cy = 0; cy < 4; cy++)
-		{
-			for (uint32_t cx = 0; cx < 3; cx++)
-			{
-				if (cy == 0 || cy == 2 || cy == 3)
-				{
-					if (cx != 1)
-						continue;
-				}
-
-				for (uint32_t y = 0; y < faceHeight; y++)
-				{
-					uint32_t offset = y;
-					if (face == 5)
-						offset = faceHeight - (y + 1);
-					const uint32_t yp = cy * faceHeight + offset;
-					for (uint32_t x = 0; x < faceWidth; x++)
-					{
-						offset = x;
-						if (face == 5)
-							offset = faceWidth - (x + 1);
-						const uint32_t xp = cx * faceWidth + offset;
-						switch (stride)
-						{
-						case 1:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							break;
-
-						case 2:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							break;
-
-						case 3:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 2];
-							break;
-
-						case 4:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 2];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 3] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 3];
-							break;
-
-						default:
-							break;
-						}
-					}
-				}
-				face++;
-			}
-		}
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[3].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[1].data());
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[0].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[4].data());
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[2].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[5].data());
-	}
+	UploadImage(img, faceWidth, faceHeight, face, stride);
 
 	if (img->HasAlphaChannel() && img->IsImageGrayScale())
 		glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data());
 	else if (img->IsImageGrayScale())
 		glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data());
-
-	if (resetPixelStore)
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-
-	glGenerateTextureMipmap(m_handle);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::OpenGLTextureCube::LoadHorizontalCross(const Scope<Image>& img)
-{
-	const uint32_t stride = img->GetBitsPerPixel() / 8;
-	uint32_t face = 0;
-	const uint32_t faceWidth = img->GetWidth() / 4;
-	const uint32_t faceHeight = img->GetHeight() / 3;
-
-	bool resetPixelStore = false;
-	InitializeTexture();
-
-	//if (!std::ispow2(faceWidth) || !std::ispow2(faceHeight))
-	if (!Math::IsPowerOfTwo(faceWidth) || !Math::IsPowerOfTwo(faceHeight))
-	{
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		resetPixelStore = true;
-	}
-
-	const uint32_t numMipMapLevels = 1 + static_cast<uint32_t>(std::floor(std::log2(Math::Max(faceWidth, faceHeight)))); //Same as specification
-	glTextureStorage2D(m_handle, numMipMapLevels, TRAPImageFormatToOpenGLPrecise(img->GetColorFormat(), img->GetBytesPerPixel()), faceWidth, faceHeight);
-
-	if (img->IsHDR())
-	{
-		std::array<std::vector<float>, 6> cubeTextureData;
-		for (auto& i : cubeTextureData)
-			i.resize(faceWidth * faceHeight * stride);
-
-		for (uint32_t cy = 0; cy < 3; cy++)
-		{
-			for (uint32_t cx = 0; cx < 4; cx++)
-			{
-				if (cy == 0 || cy == 2 || cy == 3)
-				{
-					if (cx != 1)
-						continue;
-				}
-
-				for (uint32_t y = 0; y < faceHeight; y++)
-				{
-					uint32_t offset = y;
-					const uint32_t yp = cy * faceHeight + offset;
-					for (uint32_t x = 0; x < faceWidth; x++)
-					{
-						offset = x;
-						const uint32_t xp = cx * faceWidth + offset;
-						switch (stride)
-						{
-						case 1:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							break;
-
-						case 2:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							break;
-
-						case 3:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 2];
-							break;
-
-						case 4:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 2];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 3] = static_cast<const float*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 3];
-							break;
-
-						default:
-							break;
-						}
-					}
-				}
-				face++;
-			}
-		}
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[3].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[1].data());
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[0].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[4].data());
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[2].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_FLOAT, cubeTextureData[5].data());
-	}
-	else if ((img->IsImageGrayScale() && img->GetBitsPerPixel() == 16 && !img->HasAlphaChannel()) ||
-		(img->IsImageGrayScale() && img->GetBitsPerPixel() == 32 && img->HasAlphaChannel()) ||
-		(img->IsImageColored() && img->GetBitsPerPixel() == 48 && !img->HasAlphaChannel()) ||
-		(img->IsImageColored() && img->GetBitsPerPixel() == 64 && img->HasAlphaChannel()))
-	{
-		std::vector<std::vector<uint16_t>> cubeTextureData;
-		cubeTextureData.resize(6);
-		for (auto& i : cubeTextureData)
-			i.resize(faceWidth * faceHeight * stride);
-
-		for (uint32_t cy = 0; cy < 3; cy++)
-		{
-			for (uint32_t cx = 0; cx < 4; cx++)
-			{
-				if (cy == 0 || cy == 2 || cy == 3)
-				{
-					if (cx != 1)
-						continue;
-				}
-
-				for (uint32_t y = 0; y < faceHeight; y++)
-				{
-					uint32_t offset = y;
-					const uint32_t yp = cy * faceHeight + offset;
-					for (uint32_t x = 0; x < faceWidth; x++)
-					{
-						offset = x;
-						const uint32_t xp = cx * faceWidth + offset;
-						switch (stride)
-						{
-						case 1:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							break;
-
-						case 2:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							break;
-
-						case 3:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 2];
-							break;
-
-						case 4:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 2];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 3] = static_cast<const uint16_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 3];
-							break;
-
-						default:
-							break;
-						}
-					}
-				}
-				face++;
-			}
-		}
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[3].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[1].data());
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[0].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[4].data());
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[2].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[5].data());
-	}
-	else
-	{
-		std::vector<std::vector<uint8_t>> cubeTextureData;
-		cubeTextureData.resize(6);
-		for (auto& i : cubeTextureData)
-			i.resize(faceWidth * faceHeight * stride);
-
-		for (uint32_t cy = 0; cy < 3; cy++)
-		{
-			for (uint32_t cx = 0; cx < 4; cx++)
-			{
-				if (cy == 0 || cy == 2 || cy == 3)
-				{
-					if (cx != 1)
-						continue;
-				}
-
-				for (uint32_t y = 0; y < faceHeight; y++)
-				{
-					uint32_t offset = y;
-					const uint32_t yp = cy * faceHeight + offset;
-					for (uint32_t x = 0; x < faceWidth; x++)
-					{
-						offset = x;
-						const uint32_t xp = cx * faceWidth + offset;
-						switch (stride)
-						{
-						case 1:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							break;
-
-						case 2:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							break;
-
-						case 3:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 2];
-							break;
-							
-						case 4:
-							cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 0];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 1];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 2];
-							cubeTextureData[face][(x + y * faceWidth) * stride + 3] = static_cast<const uint8_t*>(img->GetPixelData())[(xp + yp * img->GetWidth()) * stride + 3];
-							break;
-
-						default:
-							break;
-						}
-					}
-				}
-				face++;
-			}
-		}
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 0, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[3].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 1, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[1].data());
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 2, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[0].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 3, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[5].data());
-
-		glTextureSubImage3D(m_handle, 0, 0, 0, 4, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[2].data());
-		glTextureSubImage3D(m_handle, 0, 0, 0, 5, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(img->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[4].data());
-
-		if (img->HasAlphaChannel() && img->IsImageGrayScale())
-			glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_GREEN}.data());
-		else if (img->IsImageGrayScale())
-			glTextureParameteriv(m_handle, GL_TEXTURE_SWIZZLE_RGBA, std::array<int32_t, 4>{GL_RED, GL_RED, GL_RED, GL_ONE}.data());
-	}
 
 	if (resetPixelStore)
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
@@ -897,4 +419,126 @@ void TRAP::Graphics::API::OpenGLTextureCube::InitializeTexture()
 	glTextureParameteri(m_handle, GL_TEXTURE_WRAP_S, TRAPTextureWrapToOpenGL(m_textureParameters.Wrap));
 	glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_textureParameters.Wrap));
 	glTextureParameteri(m_handle, GL_TEXTURE_WRAP_R, TRAPTextureWrapToOpenGL(m_textureParameters.Wrap));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template <typename T>
+std::array<std::vector<T>, 6> TRAP::Graphics::API::OpenGLTextureCube::SplitImageFromCross(const Scope<Image>& image,
+                                                                                          const InputFormat format,
+																						  const uint32_t faceWidth,
+																						  const uint32_t faceHeight,
+																						  uint32_t& face,
+																						  const uint32_t stride)
+{
+	uint32_t cxLimit = 3, cyLimit = 4;
+	if (format == InputFormat::Horizontal_Cross)
+	{
+		cxLimit = 4;
+		cyLimit = 3;
+	}
+	
+	std::array<std::vector<T>, 6> cubeTextureData;
+	for (auto& i : cubeTextureData)
+		i.resize(faceWidth * faceHeight * stride);
+
+	for (uint32_t cy = 0; cy < cyLimit; cy++)
+	{
+		for (uint32_t cx = 0; cx < cxLimit; cx++)
+		{
+			if (cy == 0 || cy == 2 || cy == 3)
+			{
+				if (cx != 1)
+					continue;
+			}
+
+			for (uint32_t y = 0; y < faceHeight; y++)
+			{
+				uint32_t offset = y;
+				if(format == InputFormat::Vertical_Cross && face == 5)
+					offset = faceHeight - (y + 1);
+				const uint32_t yp = cy * faceHeight + offset;
+				
+				for (uint32_t x = 0; x < faceWidth; x++)
+				{
+					offset = x;
+					if (format == InputFormat::Vertical_Cross && face == 5)
+						offset = faceWidth - (x + 1);
+					const uint32_t xp = cx * faceWidth + offset;
+					switch (stride)
+					{
+					case 1:
+						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 0];
+						break;
+
+					case 2:
+						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 0];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 1];
+						break;
+
+					case 3:
+						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 0];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 1];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 2];
+						break;
+
+					case 4:
+						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 0];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 1];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 2];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 3] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 3];
+						break;
+
+					default:
+						break;
+					}
+				}
+			}
+			face++;
+		}
+	}
+	
+	//Now swap images into correct order for OpenGL
+	std::swap(cubeTextureData[3], cubeTextureData[0]);
+	std::swap(cubeTextureData[3], cubeTextureData[2]);
+	if(format == InputFormat::Horizontal_Cross)
+	{
+		std::swap(cubeTextureData[3], cubeTextureData[5]);
+		std::swap(cubeTextureData[5], cubeTextureData[4]);
+	}
+	else
+		std::swap(cubeTextureData[3], cubeTextureData[4]);
+
+	return cubeTextureData;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLTextureCube::UploadImage(const Scope<Image>& image, const uint32_t faceWidth,
+	const uint32_t faceHeight, uint32_t& face, const uint32_t stride) const
+{
+	if (image->IsHDR())
+	{
+		std::array<std::vector<float>, 6> cubeTextureData = SplitImageFromCross<float>(image, InputFormat::Vertical_Cross, faceWidth, faceHeight, face, stride);
+
+		for (uint32_t i = 0; i < 6; i++)
+			glTextureSubImage3D(m_handle, 0, 0, 0, i, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_FLOAT, cubeTextureData[i].data());
+	}
+	else if ((image->IsImageGrayScale() && image->GetBitsPerPixel() == 16 && !image->HasAlphaChannel()) ||
+		(image->IsImageGrayScale() && image->GetBitsPerPixel() == 32 && image->HasAlphaChannel()) ||
+		(image->IsImageColored() && image->GetBitsPerPixel() == 48 && !image->HasAlphaChannel()) ||
+		(image->IsImageColored() && image->GetBitsPerPixel() == 64 && image->HasAlphaChannel()))
+	{
+		std::array<std::vector<uint16_t>, 6> cubeTextureData = SplitImageFromCross<uint16_t>(image, InputFormat::Vertical_Cross, faceWidth, faceHeight, face, stride);
+
+		for (uint32_t i = 0; i < 6; i++)
+			glTextureSubImage3D(m_handle, 0, 0, 0, i, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[i].data());
+	}
+	else
+	{
+		std::array<std::vector<uint8_t>, 6> cubeTextureData = SplitImageFromCross<uint8_t>(image, InputFormat::Vertical_Cross, faceWidth, faceHeight, face, stride);
+
+		for (uint32_t i = 0; i < 6; i++)
+			glTextureSubImage3D(m_handle, 0, 0, 0, i, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[i].data());
+	}
 }

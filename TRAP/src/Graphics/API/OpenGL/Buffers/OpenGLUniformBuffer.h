@@ -31,7 +31,9 @@ namespace TRAP::Graphics::API
 		uint32_t GetSize() const override;
 		BufferUsage GetUsage() const override;
 
-	private:		
+	private:
+		void CreateBuffer(const void* data);
+		
 		uint32_t m_handle;
 		std::string m_name;
 		uint32_t m_size;

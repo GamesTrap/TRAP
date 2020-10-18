@@ -5,9 +5,8 @@ TRAP::Graphics::API::OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, con
 	: m_handle(0), m_vertexCount(size)
 {
 	TP_PROFILE_FUNCTION();
-	
-	glCreateBuffers(1, &m_handle);
-	glNamedBufferStorage(m_handle, size, vertices, GL_DYNAMIC_STORAGE_BIT);
+
+	CreateBuffer(vertices, size);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -17,8 +16,7 @@ TRAP::Graphics::API::OpenGLVertexBuffer::OpenGLVertexBuffer(const uint32_t size)
 {
 	TP_PROFILE_FUNCTION();
 
-	glCreateBuffers(1, &m_handle);
-	glNamedBufferStorage(m_handle, size, nullptr, GL_DYNAMIC_STORAGE_BIT);
+	CreateBuffer(nullptr, size);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -74,4 +72,12 @@ uint32_t TRAP::Graphics::API::OpenGLVertexBuffer::GetHandle() const
 	TP_PROFILE_FUNCTION();
 	
 	return m_handle;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLVertexBuffer::CreateBuffer(float* vertices, const uint32_t size)
+{
+	glCreateBuffers(1, &m_handle);
+	glNamedBufferStorage(m_handle, size, vertices, GL_DYNAMIC_STORAGE_BIT);
 }

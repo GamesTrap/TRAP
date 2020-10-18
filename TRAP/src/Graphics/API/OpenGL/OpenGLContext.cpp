@@ -2,7 +2,6 @@
 #include "OpenGLContext.h"
 
 #include "Window/Window.h"
-#include "OpenGLCommon.h"
 #include "Window/WindowingAPI.h"
 
 //-------------------------------------------------------------------------------------------------------------------//

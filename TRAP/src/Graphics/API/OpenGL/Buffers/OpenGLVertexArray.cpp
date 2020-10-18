@@ -23,9 +23,7 @@ TRAP::Graphics::API::OpenGLVertexArray::~OpenGLVertexArray()
 	TP_PROFILE_FUNCTION();
 	
 	if(m_handle)
-	{
-		glDeleteBuffers(1, &m_handle);		
-	}
+		glDeleteBuffers(1, &m_handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -64,8 +62,8 @@ void TRAP::Graphics::API::OpenGLVertexArray::SetVertexBuffer(Scope<VertexBuffer>
 		case ShaderDataType::Mat3:
 		case ShaderDataType::Mat4:
 		{
-			const uint8_t count = element.GetComponentCount();
-			for (uint8_t i = 0; i < count; i++)
+			const uint32_t count = element.GetComponentCount();
+			for (uint32_t i = 0; i < count; i++)
 			{
 				glEnableVertexArrayAttrib(m_handle, m_attribIndex);
 				glVertexArrayAttribFormat(m_handle, m_attribIndex, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized, static_cast<intptr_t>(sizeof(float) * count * i));
@@ -77,6 +75,7 @@ void TRAP::Graphics::API::OpenGLVertexArray::SetVertexBuffer(Scope<VertexBuffer>
 			break;
 		}
 
+		case ShaderDataType::None:
 		default:
 			TRAP_CORE_ASSERT(false, "[VAO][OpenGL] Unknown ShaderDataType!");
 		}

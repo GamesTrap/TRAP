@@ -34,15 +34,8 @@ TRAP::Graphics::API::VulkanTextureCube::VulkanTextureCube(std::string name, cons
 	TP_PROFILE_FUNCTION();
 
 	m_name = std::move(name);
-	m_filepaths = 
-	{
-		VFS::MakeVirtualPathCompatible(filepaths[0]),
-		VFS::MakeVirtualPathCompatible(filepaths[1]),
-		VFS::MakeVirtualPathCompatible(filepaths[2]),
-		VFS::MakeVirtualPathCompatible(filepaths[3]),
-		VFS::MakeVirtualPathCompatible(filepaths[4]),
-		VFS::MakeVirtualPathCompatible(filepaths[5])
-	};
+	for (uint32_t i = 0; i < filepaths.size(); i++)
+		m_filepaths[i] = VFS::MakeVirtualPathCompatible(filepaths[i]);
 	m_textureParameters = parameters;
 	
 	TP_WARN(Log::TextureCubeVulkanPrefix, "WIP");

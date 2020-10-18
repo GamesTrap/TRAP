@@ -42,7 +42,9 @@ namespace TRAP::Graphics::API
 		void UploadData(const Scope<Image>& image, PixelDataType type) const;
 
 		void UploadFallback();
-		bool CheckLimits(uint32_t width, uint32_t height);
+		bool CheckLimits();
+
+		void SetImageData(const Scope<Image>& image);
 
 		uint32_t m_handle;
 		uint32_t m_width, m_height, m_bitsPerPixel;

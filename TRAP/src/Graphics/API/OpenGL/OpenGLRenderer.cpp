@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "OpenGLRenderer.h"
 
-#include "OpenGLCommon.h"
 #include "Graphics/RenderCommand.h"
 #include "Graphics/Buffers/VertexArray.h"
 #include "Graphics/Buffers/IndexBuffer.h"
@@ -612,9 +611,6 @@ void GLAPIENTRY TRAP::Graphics::API::OpenGLRenderer::DebugCallback(const GLenum 
 		break;
 
 	case GL_DEBUG_SOURCE_OTHER:
-		ss << "UNKNOWN";
-		break;
-
 	default:
 		ss << "UNKNOWN";
 		break;

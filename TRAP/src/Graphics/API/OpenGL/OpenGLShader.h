@@ -2,7 +2,6 @@
 #define _TRAP_OPENGLSHADER_H_
 
 #include "Graphics/Shaders/Shader.h"
-#include "Graphics/Shaders/ShaderManager.h"
 
 namespace TRAP::Graphics::API
 {
@@ -26,29 +25,19 @@ namespace TRAP::Graphics::API
 
 	private:
 		void InitGLSL(std::string_view source);
-		void InitGLSL(std::string_view VSSource, std::string_view FSSource, std::string_view GSSource, std::string_view TCSSource, std::string_view TESSource, std::string_view CSSource);
+		void InitGLSL(const std::array<std::string_view, 6>& shaderSources);
 		void InitSPIRV(const std::vector<uint32_t>& source);
 		
 		static uint32_t CompileGLSL(const std::array<std::string_view, 6>& shaders);
 		
 		static bool CompileGLSLShader(ShaderType type, const char* source, uint32_t& handle);
 		static bool CreateGLSLProgram(const std::array<std::string_view, 6>& shaders,
-		                          uint32_t& vertex,
-		                          uint32_t& fragment,
-		                          uint32_t& geometry,
-		                          uint32_t& tessControl,
-		                          uint32_t& tessEval,
-		                          uint32_t& compute,
-		                          uint32_t& handle);
+									  std::array<uint32_t, 6>& shaderHandles,
+									  uint32_t& handle);
 		static void LinkGLSLProgram(int32_t& linkResult, int32_t& validateResult, const uint32_t& handle);
 		static void DeleteGLSLShaders(const std::array<std::string_view, 6>& shaders,
-		                          const uint32_t& vertex,
-		                          const uint32_t& fragment,
-		                          const uint32_t& geometry,
-		                          const uint32_t& tessControl,
-		                          const uint32_t& tessEval,
-		                          const uint32_t& compute,
-								  const uint32_t& handle);
+									  std::array<uint32_t, 6>& shaderHandles,
+									  const uint32_t& handle);
 
 		static std::array<std::string, 6> ConvertSPIRVToGLSL(const std::array<std::vector<uint32_t>, 6>& SPIRVShaders);
 		

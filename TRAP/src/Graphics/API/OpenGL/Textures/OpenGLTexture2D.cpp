@@ -1,9 +1,7 @@
 #include "TRAPPCH.h"
 #include "OpenGLTexture2D.h"
 
-
 #include "Application.h"
-#include "Graphics/API/OpenGL/OpenGLCommon.h"
 #include "Graphics/API/OpenGL/OpenGLRenderer.h"
 #include "Maths/Math.h"
 #include "Graphics/Textures/TextureManager.h"
@@ -22,12 +20,9 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const TextureParameters pa
 	if (!m_filepath.empty())
 	{
 		image = Image::LoadFromFile(m_filepath);
-		m_width = image->GetWidth();
-		m_height = image->GetHeight();
-		m_bitsPerPixel = image->GetBitsPerPixel();
-		m_colorFormat = image->GetColorFormat();
+		SetImageData(image);
 
-		if (!CheckLimits(image->GetWidth(), image->GetHeight()))
+		if (!CheckLimits())
 			return;
 
 		InitializeTexture();
@@ -50,7 +45,7 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(const uint32_t width, cons
 	m_name = "Empty";
 	m_textureParameters = parameters;
 
-	if (!CheckLimits(width, height))
+	if (!CheckLimits())
 		return;
 
 	InitializeTexture();
@@ -70,15 +65,12 @@ TRAP::Graphics::API::OpenGLTexture2D::OpenGLTexture2D(std::string name, const Sc
 
 	if (img)
 	{
-		m_width = img->GetWidth();
-		m_height = img->GetHeight();
-		m_bitsPerPixel = img->GetBitsPerPixel();
-		m_colorFormat = img->GetColorFormat();
+		SetImageData(img);
 		m_filepath = VFS::MakeVirtualPathCompatible(img->GetFilePath());
 
 		TP_DEBUG(Log::Texture2DOpenGLPrefix, "Loading Texture: \"", m_name, "\"");
 
-		if (!CheckLimits(img->GetWidth(), img->GetHeight()))
+		if (!CheckLimits())
 			return;
 
 		InitializeTexture();
@@ -206,12 +198,9 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadImage(const TRAP::Scope<TRAP::I
 		if (m_handle && m_filepath == image->GetFilePath() && m_width == 0 && m_height == 0 && m_bitsPerPixel == 0 && m_colorFormat == Image::ColorFormat::NONE)
 		{
 			TP_DEBUG(Log::Texture2DOpenGLPrefix, "Uploading Texture: \"", m_name, "\"");
-			m_width = image->GetWidth();
-			m_height = image->GetHeight();
-			m_bitsPerPixel = image->GetBitsPerPixel();
-			m_colorFormat = image->GetColorFormat();
+			SetImageData(image);
 
-			if (!CheckLimits(image->GetWidth(), image->GetHeight()))
+			if (!CheckLimits())
 				return;
 
 			UploadTexture(image, false);
@@ -228,16 +217,13 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadImage(const TRAP::Scope<TRAP::I
 			if (m_handle)
 				glDeleteTextures(1, &m_handle);
 
-			m_width = image->GetWidth();
-			m_height = image->GetHeight();
-			m_bitsPerPixel = image->GetBitsPerPixel();
-			m_colorFormat = image->GetColorFormat();
+			SetImageData(image);
 			
 			InitializeTexture();
 		}
 		m_filepath = "";
 
-		if (!CheckLimits(image->GetWidth(), image->GetHeight()))
+		if (!CheckLimits())
 			return;
 
 		UploadTexture(image, true);
@@ -286,9 +272,9 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadTexture(const Scope<Image>& ima
 		UploadData(image, PixelDataType::Float);
 	//GrayScale, GrayScaleAlpha, RGB, RGBA
 	else if ((image->IsImageGrayScale() && image->GetBitsPerPixel() == 16 && !image->HasAlphaChannel()) ||
-		(image->IsImageGrayScale() && image->GetBitsPerPixel() == 32 && image->HasAlphaChannel()) ||
-		(image->IsImageColored() && image->GetBitsPerPixel() == 48 && !image->HasAlphaChannel()) ||
-		(image->IsImageColored() && image->GetBitsPerPixel() == 64 && image->HasAlphaChannel()))
+			 (image->IsImageGrayScale() && image->GetBitsPerPixel() == 32 && image->HasAlphaChannel()) ||
+		     (image->IsImageColored() && image->GetBitsPerPixel() == 48 && !image->HasAlphaChannel()) ||
+		     (image->IsImageColored() && image->GetBitsPerPixel() == 64 && image->HasAlphaChannel()))
 		UploadData(image, PixelDataType::Unsigned_Short);
 	else
 		UploadData(image, PixelDataType::Unsigned_Byte);
@@ -308,26 +294,9 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadTexture(const Scope<Image>& ima
 
 void TRAP::Graphics::API::OpenGLTexture2D::UploadData(const Scope<Image>& image, const PixelDataType type) const
 {
-	switch(type)
-	{
-	case PixelDataType::Float:
-		glTextureSubImage2D(m_handle, 0, 0, 0, image->GetWidth(), image->GetHeight(),
-			TRAPImageFormatToOpenGL(image->GetColorFormat()), PixelDataTypeToOpenGL(type),
-			TRAP::Image::FlipY(image)->GetPixelData());
-		break;
-
-	case PixelDataType::Unsigned_Short:
-		glTextureSubImage2D(m_handle, 0, 0, 0, image->GetWidth(), image->GetHeight(),
-			TRAPImageFormatToOpenGL(image->GetColorFormat()), PixelDataTypeToOpenGL(type),
-			TRAP::Image::FlipY(image)->GetPixelData());
-		break;
-
-	case PixelDataType::Unsigned_Byte:
-		glTextureSubImage2D(m_handle, 0, 0, 0, image->GetWidth(), image->GetHeight(),
-			TRAPImageFormatToOpenGL(image->GetColorFormat()), PixelDataTypeToOpenGL(type),
-			TRAP::Image::FlipY(image)->GetPixelData());
-		break;
-	}	
+	glTextureSubImage2D(m_handle, 0, 0, 0, image->GetWidth(), image->GetHeight(),
+		TRAPImageFormatToOpenGL(image->GetColorFormat()), PixelDataTypeToOpenGL(type),
+		TRAP::Image::FlipY(image)->GetPixelData());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -336,10 +305,7 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadFallback()
 {
 	TP_WARN(Log::Texture2DOpenGLPrefix, "Using Default Image!");
 	const Scope<Image> image = Image::LoadFallback();
-	m_width = image->GetWidth();
-	m_height = image->GetHeight();
-	m_bitsPerPixel = image->GetBitsPerPixel();
-	m_colorFormat = image->GetColorFormat();
+	SetImageData(image);
 	if(m_handle == 0)
 		InitializeTexture();
 
@@ -348,17 +314,27 @@ void TRAP::Graphics::API::OpenGLTexture2D::UploadFallback()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::OpenGLTexture2D::CheckLimits(const uint32_t width, const uint32_t height)
+bool TRAP::Graphics::API::OpenGLTexture2D::CheckLimits()
 {
 	if (s_maxTextureSize == 0) //Only load maximum available texture size once
 		glGetIntegerv(GL_MAX_TEXTURE_SIZE, reinterpret_cast<int32_t*>(&s_maxTextureSize));
 
-	if (width > s_maxTextureSize || height > s_maxTextureSize)
+	if (m_width > s_maxTextureSize || m_height > s_maxTextureSize)
 	{
-		TP_CRITICAL(Log::Texture2DOpenGLPrefix, "Texture: \"", m_name, "\" Width: ", width, " or Height: ", height, " is bigger than the maximum allowed texture size(", s_maxTextureSize, ")!");
+		TP_CRITICAL(Log::Texture2DOpenGLPrefix, "Texture: \"", m_name, "\" Width: ", m_width, " or Height: ", m_height, " is bigger than the maximum allowed texture size(", s_maxTextureSize, ")!");
 		UploadFallback();
 		return false;
 	}
 
 	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::OpenGLTexture2D::SetImageData(const Scope<Image>& image)
+{
+	m_width = image->GetWidth();
+	m_height = image->GetHeight();
+	m_bitsPerPixel = image->GetBitsPerPixel();
+	m_colorFormat = image->GetColorFormat();
 }

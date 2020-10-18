@@ -25,6 +25,8 @@ namespace TRAP::Graphics::API
 		uint32_t GetHandle() const;
 
 	private:
+		void CreateBuffer(float* vertices, uint32_t size);
+		
 		uint32_t m_handle;
 		BufferLayout m_layout;
 		uint32_t m_vertexCount;

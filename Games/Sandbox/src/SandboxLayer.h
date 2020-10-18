@@ -52,6 +52,7 @@ public:
 		//Mount & Load Shader
 		TRAP::VFS::MountShaders("Assets/Shaders");
 		TRAP::Graphics::ShaderManager::Load("/Shaders/TextureColor.shader");
+		//TRAP::Graphics::ShaderManager::Load("TextureColor", "/Shaders/TextureColorSPIRV.spirv");
 		
 		//Mount & Load Texture
 		TRAP::VFS::MountTextures("Assets/Textures");
