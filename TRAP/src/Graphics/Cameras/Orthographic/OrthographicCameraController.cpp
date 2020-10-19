@@ -46,11 +46,17 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 		if (Input::IsControllerConnected(m_controller)) //Controller
 		{
 			const float LeftXAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_X);
-			if (LeftXAxis < -0.1f || LeftXAxis > 0.1f)
-				m_cameraPosition.x += LeftXAxis * m_cameraTranslationSpeed * deltaTime;
+			if (LeftXAxis < -0.1f || LeftXAxis > 0.1f) //Dead zone
+			{
+				m_cameraPosition.x += LeftXAxis * Math::Cos(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed * deltaTime;
+				m_cameraPosition.y += LeftXAxis * Math::Sin(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed * deltaTime;
+			}
 			const float LeftYAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Left_Y);
-			if (LeftYAxis < -0.1f || LeftYAxis > 0.1f)
-				m_cameraPosition.y -= LeftYAxis * m_cameraTranslationSpeed * deltaTime;
+			if (LeftYAxis < -0.1f || LeftYAxis > 0.1f) //Dead zone
+			{
+				m_cameraPosition.x -= LeftYAxis * -Math::Sin(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed * deltaTime;
+				m_cameraPosition.y -= LeftYAxis * Math::Cos(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed * deltaTime;
+			}
 
 			const float RightTrigger = (Input::GetControllerAxis(m_controller, Input::ControllerAxis::Right_Trigger) + 1) / 2;
 			if (RightTrigger > 0.0f)
@@ -72,11 +78,8 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 			if (m_rotation)
 			{
 				const float RightXAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Right_X);
-				if (RightXAxis < -0.1f || RightXAxis > 0.1f)
-					m_cameraRotation.y += RightXAxis * m_cameraRotationSpeed * deltaTime;
-				const float RightYAxis = Input::GetControllerAxis(m_controller, Input::ControllerAxis::Right_Y);
-				if (RightYAxis < -0.1f || RightYAxis > 0.1f)
-					m_cameraRotation.x -= RightYAxis * m_cameraRotationSpeed * deltaTime;
+				if (RightXAxis < -0.1f || RightXAxis > 0.1f) //Dead zone
+					m_cameraRotation.z += RightXAxis * m_cameraRotationSpeed * deltaTime;
 			}
 		}
 	}
@@ -84,34 +87,45 @@ void TRAP::Graphics::OrthographicCameraController::OnUpdate(const Utils::TimeSte
 	{
 		//Keyboard
 		if (Input::IsKeyPressed(Input::Key::A))
-			m_cameraPosition.x -= m_cameraTranslationSpeed * deltaTime;
+		{
+			m_cameraPosition.x -= Math::Cos(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed * deltaTime;
+			m_cameraPosition.y -= Math::Sin(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed * deltaTime;
+		}
 		if (Input::IsKeyPressed(Input::Key::D))
-			m_cameraPosition.x += m_cameraTranslationSpeed * deltaTime;
+		{
+			m_cameraPosition.x += Math::Cos(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed * deltaTime;
+			m_cameraPosition.y += Math::Sin(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed * deltaTime;
+		}
 		if (Input::IsKeyPressed(Input::Key::W))
-			m_cameraPosition.y += m_cameraTranslationSpeed * deltaTime;
+		{
+			m_cameraPosition.x += -Math::Sin(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed * deltaTime;
+			m_cameraPosition.y += Math::Cos(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed * deltaTime;
+		}
 		if (Input::IsKeyPressed(Input::Key::S))
-			m_cameraPosition.y -= m_cameraTranslationSpeed * deltaTime;
+		{
+			m_cameraPosition.x -= -Math::Sin(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed * deltaTime;
+			m_cameraPosition.y -= Math::Cos(Math::Radians(m_cameraRotation.z)) * m_cameraTranslationSpeed * deltaTime;
+		}
 
 		if (m_rotation)
 		{
-			if (Input::IsKeyPressed(Input::Key::KP_4))
+			if (Input::IsKeyPressed(Input::Key::Comma))
 				m_cameraRotation.z += m_cameraRotationSpeed * deltaTime;
-			if (Input::IsKeyPressed(Input::Key::KP_6))
+			if (Input::IsKeyPressed(Input::Key::Period))
 				m_cameraRotation.z -= m_cameraRotationSpeed * deltaTime;
-			if (Input::IsKeyPressed(Input::Key::KP_8))
-				m_cameraRotation.x += m_cameraRotationSpeed * deltaTime;
-			if (Input::IsKeyPressed(Input::Key::KP_2))
-				m_cameraRotation.x -= m_cameraRotationSpeed * deltaTime;
-			if (Input::IsKeyPressed(Input::Key::KP_7))
-				m_cameraRotation.y += m_cameraRotationSpeed * deltaTime;
-			if (Input::IsKeyPressed(Input::Key::KP_9))
-				m_cameraRotation.y -= m_cameraRotationSpeed * deltaTime;
 		}
 	}
 
 	m_camera.SetPosition(m_cameraPosition);
 	if (m_rotation)
+	{
+		if (m_cameraRotation.z > 180.0f)
+			m_cameraRotation -= 360.0f;
+		else if (m_cameraRotation.z <= -180.0f)
+			m_cameraRotation.z += 360.0f;
+		
 		m_camera.SetRotation(m_cameraRotation);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -121,8 +135,8 @@ void TRAP::Graphics::OrthographicCameraController::OnEvent(Events::Event& e)
 	TP_PROFILE_FUNCTION();
 	
 	Events::EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<Events::MouseScrollEvent>([this](Events::MouseScrollEvent& e) {return OnMouseScroll(e); });
-	dispatcher.Dispatch<Events::FrameBufferResizeEvent>([this](Events::FrameBufferResizeEvent& e) {return OnFrameBufferResize(e); });
+	dispatcher.Dispatch<Events::MouseScrollEvent>([this](Events::MouseScrollEvent& event) {return OnMouseScroll(event); });
+	dispatcher.Dispatch<Events::FrameBufferResizeEvent>([this](Events::FrameBufferResizeEvent& event) {return OnFrameBufferResize(event); });
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

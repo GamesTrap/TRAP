@@ -1294,3 +1294,7 @@ SITREP 10/18/2020|20w42a6
     - Changed TRAP Engine version to 20w42a6(0.6.77)
     - Moved file closing in Image loaders ~<40 mins
     - Reduced redundancy in OpenGL ~>130 mins
+
+SITREP 10/19/2020|20w43a1
+    - Changed TRAP Engine version to 20w43a1(0.6.78)
+    - Fixed OrthographicCameraController movement ~<30 mins
