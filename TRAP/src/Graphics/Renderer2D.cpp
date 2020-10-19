@@ -31,9 +31,9 @@ namespace TRAP::Graphics
 			Math::Mat4 ModelMatrix{ 1.0f };
 		} UniformCamera;
 	};
-
-	static Scope<Renderer2DData> s_data;
 }
+
+TRAP::Scope<TRAP::Graphics::Renderer2DData> TRAP::Graphics::Renderer2D::s_data = nullptr;
 
 void TRAP::Graphics::Renderer2D::Init()
 {

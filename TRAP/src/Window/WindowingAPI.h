@@ -424,7 +424,8 @@ namespace TRAP::INTERNAL
 			Hovered,
 			Decorated,
 			Floating,
-			MousePassthrough
+			MousePassthrough,
+			OpenGLDebugContext
 			//Stereo //Used for 3D/VR
 		};
 
@@ -527,6 +528,7 @@ namespace TRAP::INTERNAL
 		inline static constexpr uint32_t WGL_DOUBLE_BUFFER_ARB = 0x2011;
 		inline static constexpr uint32_t WGL_SAMPLES_ARB = 0x2042;
 		inline static constexpr uint32_t WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB = 0x20a9;
+		inline static constexpr uint32_t WGL_CONTEXT_DEBUG_BIT_ARB = 0x00000001;
 		inline static constexpr uint32_t WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB = 0x00000002;
 		inline static constexpr uint32_t WGL_CONTEXT_PROFILE_MASK_ARB = 0x9126;
 		inline static constexpr uint32_t WGL_CONTEXT_CORE_PROFILE_BIT_ARB = 0x00000001;
@@ -559,6 +561,7 @@ namespace TRAP::INTERNAL
 		inline static constexpr uint32_t GLX_DOUBLEBUFFER = 5;
 		inline static constexpr uint32_t GLX_SAMPLES = 0x186A1;
 		inline static constexpr uint32_t GLX_FRAMEBUFFER_SRGB_CAPABLE_ARB = 0x20B2;
+		inline static constexpr uint32_t GLX_CONTEXT_DEBUG_BIT_ARB = 0x00000001;
 		inline static constexpr uint32_t GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB = 0x00000002;
 		inline static constexpr uint32_t GLX_CONTEXT_CORE_PROFILE_BIT_ARB = 0x00000001;
 		inline static constexpr uint32_t GLX_CONTEXT_MAJOR_VERSION_ARB = 0x2091;
@@ -674,6 +677,7 @@ namespace TRAP::INTERNAL
 		{
 			ContextAPI Client = ContextAPI::None;
 			const InternalWindow* Share = nullptr;
+			bool Debug = false;
 		};
 
 		/// <summary>
@@ -694,6 +698,8 @@ namespace TRAP::INTERNAL
 			ExtensionSupportedFunc ExtensionSupported = nullptr;
 			GetProcAddressFunc GetProcAddress = nullptr;
 			DestroyContextFunc Destroy = nullptr;
+
+			bool Debug = false;
 
 #ifdef TRAP_PLATFORM_WINDOWS
 			HDC DC = nullptr;

@@ -229,6 +229,12 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 			break;
 		}
 
+		case Hint::OpenGLDebugContext:
+		{
+			s_Data.Hints.Context.Debug = value;
+			break;
+		}
+
 		/*case Hint::Stereo:
 		{
 			s_Data.Hints.FrameBuffer.Stereo = value;
@@ -901,6 +907,9 @@ bool TRAP::INTERNAL::WindowingAPI::GetWindowHint(const InternalWindow* window, c
 
 	case Hint::MousePassthrough:
 		return window->MousePassthrough;
+
+	case Hint::OpenGLDebugContext:
+		return window->context.Debug;
 		
 	default:
 		return false;
@@ -2290,6 +2299,16 @@ bool TRAP::INTERNAL::WindowingAPI::RefreshContextAttribs(InternalWindow* window,
 	{
 		GLint flags;
 		window->context.GetIntegerv(GL_CONTEXT_FLAGS, &flags);
+
+		if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
+			window->context.Debug = true;
+		else if(ExtensionSupported("GL_ARB_debug_output") && CTXConfig.Debug)
+		{
+			//HACK: This is a workaround for older drivers (pre KHR_debug)
+			//      not setting the debug bit in the context flags for
+			//      debug context
+			window->context.Debug = true;
+		}
 
 		//Read back OpenGL context profile (OpenGL 3.2 and above)
 		GLint mask;

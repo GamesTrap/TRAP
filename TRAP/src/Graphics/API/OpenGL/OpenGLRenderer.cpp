@@ -670,6 +670,7 @@ void GLAPIENTRY TRAP::Graphics::API::OpenGLRenderer::DebugCallback(const GLenum 
 		break;
 
 	case GL_DEBUG_SEVERITY_NOTIFICATION:
+		TP_DEBUG(ss.str());
 		break;
 
 	default:
@@ -682,7 +683,9 @@ void GLAPIENTRY TRAP::Graphics::API::OpenGLRenderer::DebugCallback(const GLenum 
 
 void TRAP::Graphics::API::OpenGLRenderer::InitDebug()
 {
-	glDebugMessageCallback(DebugCallback, nullptr);
 	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glDebugMessageCallback(DebugCallback, nullptr);
+
+	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, false);
 }

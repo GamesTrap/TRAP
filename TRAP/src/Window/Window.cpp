@@ -836,6 +836,11 @@ void TRAP::Window::Init(const WindowProps& props)
 			INTERNAL::WindowingAPI::SetContextAPI(INTERNAL::WindowingAPI::ContextAPI::OpenGL);
 	}
 
+#if defined(TRAP_DEBUG)
+	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
+		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::OpenGLDebugContext, true);
+#endif
+
 	if (props.DisplayMode == DisplayMode::Windowed)
 	{
 		if(props.Advanced.Maximized)

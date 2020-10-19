@@ -4286,6 +4286,9 @@ bool TRAP::INTERNAL::WindowingAPI::CreateContextGLX(InternalWindow* window, cons
 			
 			mask |= GLX_CONTEXT_CORE_PROFILE_BIT_ARB;
 		}
+
+		if (CTXConfig.Debug)
+			flags |= GLX_CONTEXT_DEBUG_BIT_ARB;
 		
 		attribs[index++] = GLX_CONTEXT_MAJOR_VERSION_ARB;
 		attribs[index++] = 4;

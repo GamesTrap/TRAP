@@ -6,6 +6,8 @@
 
 namespace TRAP::Graphics
 {
+	struct Renderer2DData;
+	
 	class Renderer2D
 	{
 	public:
@@ -35,6 +37,8 @@ namespace TRAP::Graphics
 	private:
 		static void DrawQuad(const Transform& transform);
 		static void DrawTriangle(const Transform& transform);
+		
+		static Scope<Renderer2DData> s_data;
 	};
 }
 
