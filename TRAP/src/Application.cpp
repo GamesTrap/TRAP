@@ -42,6 +42,7 @@ TRAP::Application::Application()
 
 	TRAP_CORE_ASSERT(!s_Instance, "Application already exists!");
 	s_Instance = this;
+	m_mainThreadID = std::this_thread::get_id();
 
 	TP_INFO(Log::ApplicationPrefix, "CPU: ", GetCPUInfo().LogicalCores, "x ", GetCPUInfo().Model);
 
@@ -604,6 +605,13 @@ const TRAP::CPUInfo& TRAP::Application::GetCPUInfo()
 	}
 
 	return s_CPU;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::thread::id TRAP::Application::GetMainThreadID()
+{
+	return s_Instance->m_mainThreadID;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

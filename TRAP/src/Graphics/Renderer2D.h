@@ -16,6 +16,7 @@ namespace TRAP::Graphics
 		
 		static void BeginScene(const OrthographicCamera& camera);
 		static void EndScene();
+		static void Flush();
 
 		//First Component
 		struct Transform
@@ -30,15 +31,22 @@ namespace TRAP::Graphics
 		static void DrawQuad(const Transform& transform, const Scope<Texture2D>& texture);
 		static void DrawQuad(const Transform& transform, const Math::Vec4& color, const Scope<Texture2D>& texture);
 
-		static void DrawTriangle(const Transform& transform, const Math::Vec4& color);
-		static void DrawTriangle(const Transform& transform, const Scope<Texture2D>& texture);
-		static void DrawTriangle(const Transform& transform, const Math::Vec4& color, const Scope<Texture2D>& texture);
+		//Stats
+		struct Statistics
+		{
+			uint32_t DrawCalls = 0;
+			uint32_t QuadCount = 0;
 
-	private:
-		static void DrawQuad(const Transform& transform);
-		static void DrawTriangle(const Transform& transform);
+			uint32_t GetTotalVertexCount() const;
+			uint32_t GetTotalIndexCount() const;
+		};
+		static Statistics GetStats();
+		static void ResetStats();
 		
-		static Scope<Renderer2DData> s_data;
+	private:
+		static float GetTextureIndex(const Scope<Texture2D>& texture);
+		
+		static void FlushAndReset();
 	};
 }
 

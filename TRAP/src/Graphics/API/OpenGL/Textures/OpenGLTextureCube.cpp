@@ -86,9 +86,7 @@ TRAP::Graphics::API::OpenGLTextureCube::OpenGLTextureCube(std::string name, cons
 		return;
 	}
 
-	if (m_inputFormat == InputFormat::Vertical_Cross)
-		SetupCross();
-	else if (m_inputFormat == InputFormat::Horizontal_Cross)
+	if (m_inputFormat == InputFormat::Vertical_Cross || m_inputFormat == InputFormat::Horizontal_Cross)
 		SetupCross();
 	else if (m_inputFormat == InputFormat::NONE)
 	{
@@ -519,7 +517,7 @@ void TRAP::Graphics::API::OpenGLTextureCube::UploadImage(const Scope<Image>& ima
 {
 	if (image->IsHDR())
 	{
-		std::array<std::vector<float>, 6> cubeTextureData = SplitImageFromCross<float>(image, InputFormat::Vertical_Cross, faceWidth, faceHeight, face, stride);
+		std::array<std::vector<float>, 6> cubeTextureData = SplitImageFromCross<float>(image, m_inputFormat, faceWidth, faceHeight, face, stride);
 
 		for (uint32_t i = 0; i < 6; i++)
 			glTextureSubImage3D(m_handle, 0, 0, 0, i, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_FLOAT, cubeTextureData[i].data());
@@ -529,14 +527,14 @@ void TRAP::Graphics::API::OpenGLTextureCube::UploadImage(const Scope<Image>& ima
 		(image->IsImageColored() && image->GetBitsPerPixel() == 48 && !image->HasAlphaChannel()) ||
 		(image->IsImageColored() && image->GetBitsPerPixel() == 64 && image->HasAlphaChannel()))
 	{
-		std::array<std::vector<uint16_t>, 6> cubeTextureData = SplitImageFromCross<uint16_t>(image, InputFormat::Vertical_Cross, faceWidth, faceHeight, face, stride);
+		std::array<std::vector<uint16_t>, 6> cubeTextureData = SplitImageFromCross<uint16_t>(image, m_inputFormat, faceWidth, faceHeight, face, stride);
 
 		for (uint32_t i = 0; i < 6; i++)
 			glTextureSubImage3D(m_handle, 0, 0, 0, i, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_SHORT, cubeTextureData[i].data());
 	}
 	else
 	{
-		std::array<std::vector<uint8_t>, 6> cubeTextureData = SplitImageFromCross<uint8_t>(image, InputFormat::Vertical_Cross, faceWidth, faceHeight, face, stride);
+		std::array<std::vector<uint8_t>, 6> cubeTextureData = SplitImageFromCross<uint8_t>(image, m_inputFormat, faceWidth, faceHeight, face, stride);
 
 		for (uint32_t i = 0; i < 6; i++)
 			glTextureSubImage3D(m_handle, 0, 0, 0, i, faceWidth, faceHeight, 1, TRAPImageFormatToOpenGL(image->GetColorFormat()), GL_UNSIGNED_BYTE, cubeTextureData[i].data());

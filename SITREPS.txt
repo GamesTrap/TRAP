@@ -1300,3 +1300,9 @@ SITREP 10/19/2020|20w43a1
     - Fixed OrthographicCameraController movement ~<30 mins
     - Added OpenGL context debug bit ~<40 mins
     - Deactivated OpenGL notification debug messages ~<10 mins
+
+SITREP 10/20/2020|20w43a2
+    - Changed TRAP Engine version to 20w43a2(0.6.79)
+    - Better thread utilization by FileWatcher ~>30 mins
+    - Fixed Horizontal_Cross texture crash ~<20 mins
+    - Added new 2D batch renderer ~>3 days

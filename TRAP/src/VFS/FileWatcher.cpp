@@ -39,8 +39,10 @@ TRAP::FileWatcher::FileWatcher(const std::string& virtualPath, const float updat
 void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, std::string, FileStatus)>& action)
 {
 	TP_PROFILE_FUNCTION();
+	static const std::thread::id mainID = TRAP::Application::GetMainThreadID();
+	static const std::thread::id thisID = std::this_thread::get_id();
 
-	if (m_timer.ElapsedMilliseconds() >= m_delay)
+	if (thisID != mainID || m_timer.ElapsedMilliseconds() >= m_delay)
 	{
 		//Check if Files have changed
 		auto it = m_physicalPaths.begin();
@@ -130,7 +132,10 @@ void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, st
 			}
 		}
 
-		m_timer.Reset();
+		if(thisID != mainID)
+			std::this_thread::sleep_for(std::chrono::milliseconds{ static_cast<int>(m_delay) });
+		else
+			m_timer.Reset();
 	}
 }
 

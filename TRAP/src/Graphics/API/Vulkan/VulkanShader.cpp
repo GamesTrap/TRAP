@@ -102,6 +102,9 @@ void TRAP::Graphics::API::VulkanShader::Shutdown() const
 {
 	TP_PROFILE_FUNCTION();
 
+	if (s_CurrentlyBound == this)
+		s_CurrentlyBound->Unbind();
+
 	if (m_VShaderModule)
 		vkDestroyShaderModule(VulkanRenderer::GetDevice().GetDevice(), m_VShaderModule, nullptr);
 	if (m_FShaderModule)

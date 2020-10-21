@@ -214,9 +214,6 @@ void TRAP::Graphics::ShaderManager::ReloadAll()
 void TRAP::Graphics::ShaderManager::Shutdown()
 {
 	TP_PROFILE_FUNCTION();
-	
-	if (Shader::s_CurrentlyBound)
-		Shader::s_CurrentlyBound->Unbind();
 
 	TP_DEBUG(Log::ShaderManagerPrefix, "Destroying Shaders");
 	Clean();

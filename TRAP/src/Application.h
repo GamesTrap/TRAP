@@ -207,6 +207,12 @@ namespace TRAP
 		/// <returns>Constant reference to the TRAP::CPUInfo.</returns>
 		static const CPUInfo& GetCPUInfo();
 
+		/// <summary>
+		/// Get the id of the main engine thread.
+		/// </summary>
+		/// <returns>Main thread ID.</returns>
+		static std::thread::id GetMainThreadID();
+
 	private:
 		/// <summary>
 		/// Game/Run Loop.
@@ -312,6 +318,8 @@ namespace TRAP
 		LinuxWindowManager m_linuxWindowManager;
 
 		ThreadPool m_threadPool;
+
+		std::thread::id m_mainThreadID;
 
 		static CPUInfo s_CPU;
 		static Application* s_Instance;

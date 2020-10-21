@@ -50,23 +50,28 @@ namespace TRAP::Embed
 	{
 		R"(
 		#version 460 core
-		
-		layout(location = 0) in vec3 Position;
-		layout(location = 1) in vec2 UV;
 
-		layout(location = 2) out vec2 vUV;
+		layout(location = 0) in vec3 Position;
+		layout(location = 1) in vec4 Color;
+		layout(location = 2) in vec2 TexCoord;
+		layout(location = 3) in float TexIndex;
+
+		layout(location = 1) out vec4 vColor;
+		layout(location = 2) out vec2 vTexCoord;
+		layout(location = 3) out float vTexIndex;
 
 		layout(std140, binding = 0) uniform CameraBuffer
 		{
 			mat4 sys_ProjectionMatrix;
 			mat4 sys_ViewMatrix;
-			mat4 sys_ModelMatrix;
 		} Camera;
 
 		void main()
 		{
-			gl_Position = Camera.sys_ProjectionMatrix * Camera.sys_ViewMatrix * Camera.sys_ModelMatrix * vec4(Position, 1.0f);
-			vUV = UV;
+			gl_Position = Camera.sys_ProjectionMatrix * Camera.sys_ViewMatrix * vec4(Position, 1.0f);
+			vColor = Color;
+			vTexCoord = TexCoord;
+			vTexIndex = TexIndex;
 		}
 	)"
 	};
@@ -77,21 +82,18 @@ namespace TRAP::Embed
 	{
 		R"(
 		#version 460 core
-		
+
 		layout(location = 0) out vec4 FragColor;
 
-		layout(location = 2) in vec2 vUV;
+		layout(location = 1) in vec4 vColor;
+		layout(location = 2) in vec2 vTexCoord;
+		layout(location = 3) in float vTexIndex;
 
-		layout(binding = 0) uniform sampler2D Texture;
-
-		layout(std140, binding = 1) uniform DataBuffer
-		{
-			vec4 Color;
-		} Data;
+		layout(binding = 0) uniform sampler2D Textures[32];
 
 		void main()
 		{
-			FragColor = texture(Texture, vUV) * Data.Color;
+			FragColor = texture(Textures[int(vTexIndex)], vTexCoord) * vColor;
 		}
 	)"
 	};

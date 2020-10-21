@@ -64,6 +64,9 @@ void TRAP::Graphics::API::OpenGLShader::Shutdown() const
 {
 	TP_PROFILE_FUNCTION();
 
+	if (s_CurrentlyBound == this)
+		s_CurrentlyBound->Unbind();
+	
 	if (m_handle)
 		glDeleteProgram(m_handle);
 }
