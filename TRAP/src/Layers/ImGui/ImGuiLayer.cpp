@@ -12,7 +12,7 @@
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::ImGuiLayer::ImGuiLayer()
-	: Layer("ImGuiLayer")
+	: Layer("ImGuiLayer"), m_blockEvents(true)
 {
 	TP_PROFILE_FUNCTION();
 }
@@ -82,9 +82,12 @@ void TRAP::ImGuiLayer::OnDetach()
 
 void TRAP::ImGuiLayer::OnEvent(Events::Event& event)
 {
-	ImGuiIO& io = ImGui::GetIO();
-	event.Handled |= event.IsInCategory(Events::EventCategory::Mouse) & io.WantCaptureMouse;
-	event.Handled |= event.IsInCategory(Events::EventCategory::Keyboard) & io.WantCaptureKeyboard;
+	if (m_blockEvents)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		event.Handled |= event.IsInCategory(Events::EventCategory::Mouse) & io.WantCaptureMouse;
+		event.Handled |= event.IsInCategory(Events::EventCategory::Keyboard) & io.WantCaptureKeyboard;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -143,4 +146,11 @@ void TRAP::ImGuiLayer::End()
 		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::OpenGL)
 			INTERNAL::WindowingAPI::MakeContextCurrent(backupCurrentContext);
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::ImGuiLayer::BlockEvents(const bool block)
+{
+	m_blockEvents = block;
 }

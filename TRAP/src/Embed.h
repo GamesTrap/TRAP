@@ -93,7 +93,43 @@ namespace TRAP::Embed
 
 		void main()
 		{
-			FragColor = texture(Textures[int(vTexIndex)], vTexCoord) * vColor;
+			vec4 texColor = vColor;
+			switch(int(vTexIndex))
+			{
+				case 0: texColor *= texture(Textures[0], vTexCoord); break;
+				case 1: texColor *= texture(Textures[1], vTexCoord); break;
+				case 2: texColor *= texture(Textures[2], vTexCoord); break;
+				case 3: texColor *= texture(Textures[3], vTexCoord); break;
+				case 4: texColor *= texture(Textures[4], vTexCoord); break;
+				case 5: texColor *= texture(Textures[5], vTexCoord); break;
+				case 6: texColor *= texture(Textures[6], vTexCoord); break;
+				case 7: texColor *= texture(Textures[7], vTexCoord); break;
+				case 8: texColor *= texture(Textures[8], vTexCoord); break;
+				case 9: texColor *= texture(Textures[9], vTexCoord); break;
+				case 10: texColor *= texture(Textures[10], vTexCoord); break;
+				case 11: texColor *= texture(Textures[11], vTexCoord); break;
+				case 12: texColor *= texture(Textures[12], vTexCoord); break;
+				case 13: texColor *= texture(Textures[13], vTexCoord); break;
+				case 14: texColor *= texture(Textures[14], vTexCoord); break;
+				case 15: texColor *= texture(Textures[15], vTexCoord); break;
+				case 16: texColor *= texture(Textures[16], vTexCoord); break;
+				case 17: texColor *= texture(Textures[17], vTexCoord); break;
+				case 18: texColor *= texture(Textures[18], vTexCoord); break;
+				case 19: texColor *= texture(Textures[19], vTexCoord); break;
+				case 20: texColor *= texture(Textures[20], vTexCoord); break;
+				case 21: texColor *= texture(Textures[21], vTexCoord); break;
+				case 22: texColor *= texture(Textures[22], vTexCoord); break;
+				case 23: texColor *= texture(Textures[23], vTexCoord); break;
+				case 24: texColor *= texture(Textures[24], vTexCoord); break;
+				case 25: texColor *= texture(Textures[25], vTexCoord); break;
+				case 26: texColor *= texture(Textures[26], vTexCoord); break;
+				case 27: texColor *= texture(Textures[27], vTexCoord); break;
+				case 28: texColor *= texture(Textures[28], vTexCoord); break;
+				case 29: texColor *= texture(Textures[29], vTexCoord); break;
+				case 30: texColor *= texture(Textures[30], vTexCoord); break;
+				case 31: texColor *= texture(Textures[31], vTexCoord); break;
+			}
+			FragColor = texColor;
 		}
 	)"
 	};

@@ -32,7 +32,7 @@ TRAP::Graphics::API::OpenGLFrameBuffer::~OpenGLFrameBuffer()
 	if(m_depthAttachment)
 		glDeleteTextures(1, &m_depthAttachment);
 	if(m_colorAttachment)
-		glDeleteTextures(2, &m_colorAttachment);
+		glDeleteTextures(1, &m_colorAttachment);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -58,7 +58,7 @@ void TRAP::Graphics::API::OpenGLFrameBuffer::Invalidate()
 		if (m_depthAttachment)
 			glDeleteTextures(1, &m_depthAttachment);
 		if (m_colorAttachment)
-			glDeleteTextures(2, &m_colorAttachment);
+			glDeleteTextures(1, &m_colorAttachment);
 	}
 	
 	glCreateFramebuffers(1, &m_handle);

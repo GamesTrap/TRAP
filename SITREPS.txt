@@ -1306,3 +1306,9 @@ SITREP 10/20/2020|20w43a2
     - Better thread utilization by FileWatcher ~>30 mins
     - Fixed Horizontal_Cross texture crash ~<20 mins
     - Added new 2D batch renderer ~>3 days
+
+SITREP 10/22/2020|20w43a3
+    - Changed TRAP Engine version to 20w43a3(0.6.80)
+    - Fixed bug in OpenGLFrameBuffer when deleting textures ~<10 mins
+    - ImGui changed event blocking ~<20 mins
+    - Fixed possible bug in Renderer2DVS shader (now using branching instead of indexing) ~<20 mins

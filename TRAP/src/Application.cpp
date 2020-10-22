@@ -135,8 +135,9 @@ TRAP::Application::Application()
 	Input::SetEventCallback([this](Events::Event& e) {OnEvent(e); });
 	Input::Init();
 
-	m_ImGuiLayer = std::make_unique<ImGuiLayer>();
-	m_layerStack->PushOverlay(std::move(m_ImGuiLayer));
+	Scope<ImGuiLayer> imguiLayer = TRAP::MakeScope<ImGuiLayer>();
+	m_ImGuiLayer = imguiLayer.get();
+	m_layerStack->PushOverlay(std::move(imguiLayer));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -333,6 +334,13 @@ const TRAP::Utils::Config& TRAP::Application::GetConfig()
 TRAP::LayerStack& TRAP::Application::GetLayerStack()
 {
 	return *s_Instance->m_layerStack;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::ImGuiLayer TRAP::Application::GetImGuiLayer()
+{
+	return *s_Instance->m_ImGuiLayer;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

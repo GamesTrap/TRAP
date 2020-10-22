@@ -107,6 +107,11 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Reference to the TRAP::LayerStack.</returns>
 		static LayerStack& GetLayerStack();
+		/// <summary>
+		/// Get the default ImGuiLayer
+		/// </summary>
+		/// <returns>Reference to ImGuiLayer.</returns>
+		static ImGuiLayer GetImGuiLayer();
 
 		/// <summary>
 		/// Get the current Frames Per Second.
@@ -298,7 +303,7 @@ namespace TRAP
 		static std::mutex s_hotReloadingMutex;
 
 		Scope<Window> m_window;
-		std::unique_ptr<ImGuiLayer> m_ImGuiLayer;
+		ImGuiLayer* m_ImGuiLayer;
 		bool m_running = true;
 		bool m_minimized = false;
 		bool m_focused = true;

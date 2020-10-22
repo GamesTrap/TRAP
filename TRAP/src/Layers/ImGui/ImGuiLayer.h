@@ -55,7 +55,14 @@ namespace TRAP
 		/// End an ImGui frame.
 		/// </summary>
 		static void End();
+
+		/// <summary>
+		/// Block ImGui event handling.
+		/// </summary>
+		/// <param name="block">Whether to block events or not</param>
+		void BlockEvents(bool block);
 	private:
+		bool m_blockEvents;
 		float m_time = 0.0f;
 	};
 }
