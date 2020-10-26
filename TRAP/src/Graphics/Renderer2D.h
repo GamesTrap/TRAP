@@ -18,7 +18,7 @@ namespace TRAP::Graphics
 		static void EndScene();
 		static void Flush();
 
-		//First Component
+		//Transform struct
 		struct Transform
 		{
 			Math::Vec3 Position = {0.0f, 0.0f, 0.0f};
@@ -30,6 +30,7 @@ namespace TRAP::Graphics
 		static void DrawQuad(const Transform& transform, const Math::Vec4& color);
 		static void DrawQuad(const Transform& transform, const Scope<Texture2D>& texture);
 		static void DrawQuad(const Transform& transform, const Math::Vec4& color, const Scope<Texture2D>& texture);
+		static void DrawQuad(const TRAP::Math::Mat4& transform, const Math::Vec4& color, const Scope<Texture2D>& texture);
 
 		//Stats
 		struct Statistics

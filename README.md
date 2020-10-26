@@ -46,6 +46,7 @@ For example, run `premake gmake2` to generate the `Makefile` files.
 - [VulkanSDK](https://vulkan.lunarg.com/sdk/home)
 - [GLSLang](https://github.com/GamesTrap/glslang)
 - [SPIRV-Cross](https://github.com/GamesTrap/SPIRV-Cross)
+- [Entt](https://github.com/skypjack/entt)
 
 ## System Requirements
 

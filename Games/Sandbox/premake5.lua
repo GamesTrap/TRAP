@@ -23,7 +23,8 @@ project "Sandbox"
 		"../../%{IncludeDir.GLSLANG}",
 		"../../%{IncludeDir.SPIRV}",
 		"../../%{IncludeDir.VULKAN}/include/",
-		"../../%{IncludeDir.SPIRVCROSS}"
+		"../../%{IncludeDir.SPIRVCROSS}",
+		"../../%{IncludeDir.ENTT}"
 	}
 
 	links

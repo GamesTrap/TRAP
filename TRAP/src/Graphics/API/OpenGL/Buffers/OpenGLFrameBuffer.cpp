@@ -15,6 +15,16 @@ TRAP::Graphics::API::OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferProps
 {
 	TP_PROFILE_FUNCTION();
 
+	if (s_maxRenderBufferSize == 0)
+		glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, reinterpret_cast<int32_t*>(&s_maxRenderBufferSize));
+
+	if (m_props.Width == 0 || m_props.Height == 0 || m_props.Width > s_maxRenderBufferSize || m_props.Height > s_maxRenderBufferSize)
+	{
+		TP_ERROR(Log::FrameBufferOpenGLPrefix, "Couldn't create FrameBuffer!");
+		TP_ERROR(Log::FrameBufferOpenGLPrefix, "Width: ", m_props.Width, " or Height: ", m_props.Height, " is bigger than the maximum render buffer size: ", s_maxRenderBufferSize, "!");
+		return;
+	}
+	
 	Invalidate();
 }
 
@@ -40,17 +50,6 @@ TRAP::Graphics::API::OpenGLFrameBuffer::~OpenGLFrameBuffer()
 void TRAP::Graphics::API::OpenGLFrameBuffer::Invalidate()
 {
 	TP_PROFILE_FUNCTION();
-	
-	if (s_maxRenderBufferSize == 0)
-		glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, reinterpret_cast<int32_t*>(&s_maxRenderBufferSize));
-
-	if (m_props.Width > s_maxRenderBufferSize || m_props.Height > s_maxRenderBufferSize)
-	{
-		TP_ERROR(Log::FrameBufferOpenGLPrefix, "Couldn't create FrameBuffer!");
-		TP_ERROR(Log::FrameBufferOpenGLPrefix, "Width: ", m_props.Width, " or Height: ", m_props.Height, " is bigger than the maximum render buffer size: ", s_maxRenderBufferSize, "!");
-		return;
-	}
-
 
 	if (m_handle)
 	{
@@ -116,6 +115,13 @@ void TRAP::Graphics::API::OpenGLFrameBuffer::Unbind()
 
 void TRAP::Graphics::API::OpenGLFrameBuffer::Resize(const uint32_t width, const uint32_t height)
 {
+	if (width == 0 || height == 0 || width > s_maxRenderBufferSize || height > s_maxRenderBufferSize)
+	{
+		TP_ERROR(Log::FrameBufferOpenGLPrefix, "Couldn't create FrameBuffer!");
+		TP_ERROR(Log::FrameBufferOpenGLPrefix, "Width: ", width, " or Height: ", height, " is bigger than the maximum render buffer size: ", s_maxRenderBufferSize, "!");
+		return;
+	}
+	
 	m_props.Width = width;
 	m_props.Height = height;
 	Invalidate();

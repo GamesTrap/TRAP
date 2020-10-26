@@ -1312,3 +1312,7 @@ SITREP 10/22/2020|20w43a3
     - Fixed bug in OpenGLFrameBuffer when deleting textures ~<10 mins
     - ImGui changed event blocking ~<20 mins
     - Fixed possible bug in Renderer2DVS shader (now using branching instead of indexing) ~<20 mins
+
+SITREP 10/25/2020|20w43a4
+    - Changed TRAP Engine version to 20w43a4(0.6.81)
+    - Added ECS entt ~>20 mins

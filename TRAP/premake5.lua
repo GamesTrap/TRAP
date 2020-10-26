@@ -49,7 +49,8 @@ project "TRAP"
 		"../%{IncludeDir.GLSLANG}",
 		"../%{IncludeDir.SPIRV}",
 		"../%{IncludeDir.SPIRVCROSS}",
-		"../%{IncludeDir.VULKAN}/include/"
+		"../%{IncludeDir.VULKAN}/include/",
+		"../%{IncludeDir.ENTT}",
 	}
 
 	filter "system:windows"

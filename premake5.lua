@@ -26,6 +26,7 @@ IncludeDir["OSDEPENDENT"] = "Dependencies/GLSLang/glslang/OSDependent"
 IncludeDir["HLSL"] = "Dependencies/GLSLang/hlsl"
 IncludeDir["SPIRV"] = "Dependencies/GLSLang/SPIRV"
 IncludeDir["SPIRVCROSS"] = "Dependencies/SPIRV-Cross"
+IncludeDir["ENTT"] = "Dependencies/Entt"
 
 include "TRAP"
 

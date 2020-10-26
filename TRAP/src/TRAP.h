@@ -110,4 +110,9 @@
 #include "../src/Network/Network.h"
 //-----------------------
 
+//----SCENE & COMPONENTS-
+#include "../src/Scene/Scene.h"
+#include "../src/Scene/Components.h"
+//-----------------------
+
 #endif /*_TRAP_TRAP_H_*/

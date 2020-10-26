@@ -211,23 +211,30 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 {
 	TP_PROFILE_FUNCTION();
 
-	constexpr uint64_t quadVertexCount = 4;
-	constexpr std::array<Math::Vec2, 4> textureCoords = { {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}} };
-
-	if (s_data.QuadIndexCount >= Renderer2DData::MaxIndices)
-		FlushAndReset();
-	
-	const float textureIndex = GetTextureIndex(texture);
-
 	Math::Mat4 transformation;
 	if (transform.Rotation.x != 0.0f || transform.Rotation.y != 0.0f || transform.Rotation.z != 0.0f)
 		transformation = Math::Translate(transform.Position) * Mat4Cast(Math::Quaternion(Radians(transform.Rotation))) * Math::Scale(transform.Scale);
 	else
 		transformation = Math::Translate(transform.Position) * Math::Scale(transform.Scale);
 
-	for(uint64_t i = 0; i < quadVertexCount; i++)
+	DrawQuad(transformation, color, texture);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Math::Vec4& color, const Scope<Texture2D>& texture)
+{
+	constexpr uint64_t quadVertexCount = 4;
+	constexpr std::array<Math::Vec2, 4> textureCoords = { {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}} };
+
+	if (s_data.QuadIndexCount >= Renderer2DData::MaxIndices)
+		FlushAndReset();
+
+	const float textureIndex = GetTextureIndex(texture);
+
+	for (uint64_t i = 0; i < quadVertexCount; i++)
 	{
-		s_data.QuadVertexBufferPtr->Position = Math::Vec3(transformation * s_data.QuadVertexPositions[i]);
+		s_data.QuadVertexBufferPtr->Position = Math::Vec3(transform * s_data.QuadVertexPositions[i]);
 		s_data.QuadVertexBufferPtr->Color = color;
 		s_data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 		s_data.QuadVertexBufferPtr->TexIndex = textureIndex;
@@ -244,6 +251,9 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 float TRAP::Graphics::Renderer2D::GetTextureIndex(const Scope<Texture2D>& texture)
 {
 	float textureIndex = 0.0f;
+
+	if (!texture)
+		return textureIndex;
 	
 	for (uint32_t i = 1; i < s_data.TextureSlotIndex; i++)
 	{

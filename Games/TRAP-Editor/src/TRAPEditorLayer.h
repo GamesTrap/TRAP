@@ -21,6 +21,9 @@ private:
 	TRAP::Math::Vec2 m_viewportSize;
 	bool m_viewportFocused;
 	bool m_viewportHovered;
+
+	TRAP::Scope<TRAP::Scene> m_activeScene;
+	entt::entity m_squareEntity;
 };
 
 #endif /*_GAMESTRAP_TRAPEDITORLAYER_H_*/

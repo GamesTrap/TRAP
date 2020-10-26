@@ -74,12 +74,21 @@ void TRAPEditorLayer::OnImGuiRender()
 		ImGui::EndMenuBar();
 	}
 
-	ImGui::Begin("Performance");
+	ImGui::Begin("Settings");
 	ImGui::Text("CPU: %ix %s", TRAP::Application::GetCPUInfo().LogicalCores, TRAP::Application::GetCPUInfo().Model.c_str());
 	ImGui::Text("GPU: %s", TRAP::Graphics::API::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
-	ImGui::Text("DrawCalls: %u", TRAP::Graphics::Renderer::GetDrawCalls());
 	ImGui::Text("FPS: %u", TRAP::Graphics::Renderer::GetFPS());
 	ImGui::Text("FrameTime: %.3fms", TRAP::Graphics::Renderer::GetFrameTime());
+	ImGui::Separator();
+	const TRAP::Graphics::Renderer2D::Statistics stats = TRAP::Graphics::Renderer2D::GetStats();
+	ImGui::Text("Renderer2D Stats:");
+	ImGui::Text("DrawCalls: %u", stats.DrawCalls);
+	ImGui::Text("Quads: %u", stats.QuadCount);
+	ImGui::Text("Vertices: %u", stats.GetTotalVertexCount());
+	ImGui::Text("Indices: %u", stats.GetTotalIndexCount());
+	ImGui::Separator();
+	auto& squareColor = m_activeScene->Reg().get<TRAP::SpriteRendererComponent>(m_squareEntity).Color;
+	ImGui::ColorEdit4("Square Color", &squareColor[0]);
 	ImGui::End();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });
@@ -127,6 +136,14 @@ void TRAPEditorLayer::OnAttach()
 	//Setup Viewport FrameBuffer
 	const TRAP::Graphics::FrameBufferProps frameBufferProps{ 1280, 720, 1, false };
 	m_frameBuffer = TRAP::Graphics::FrameBuffer::Create(frameBufferProps);
+
+	m_activeScene = TRAP::MakeScope<TRAP::Scene>();
+
+	const auto square = m_activeScene->CreateEntity();
+	m_activeScene->Reg().emplace<TRAP::TransformComponent>(square);
+	m_activeScene->Reg().emplace<TRAP::SpriteRendererComponent>(square, TRAP::Math::Vec4{0.0f, 1.0f, 0.0f, 1.0f});
+
+	m_squareEntity = square;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -134,6 +151,7 @@ void TRAPEditorLayer::OnAttach()
 void TRAPEditorLayer::OnDetach()
 {
 	m_frameBuffer.reset();
+	m_activeScene.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -153,33 +171,19 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	if(m_viewportFocused)
 		m_cameraController.OnUpdate(deltaTime);
 	
+	TRAP::Graphics::Renderer2D::ResetStats();
 	//Framebuffer
 	m_frameBuffer->Bind();
 	//Setup
 	TRAP::Graphics::RenderCommand::SetClearColor();
 	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
-	TRAP::Graphics::RenderCommand::SetDepthTesting(true);
 	//Render
-	TRAP::Graphics::Renderer2D::ResetStats();
-	{
-		TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
-		for (float y = -5.0; y < 5.0; y += 0.5f)
-		{
-			for (float x = -5.0; x < 5.0; x += 0.5f)
-			{
-				TRAP::Math::Vec4 color = { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f };
-				TRAP::Graphics::Renderer2D::DrawQuad({ {x, y, 0.0f}, {}, {0.45f, 0.45f, 0.0f} }, color);
-			}
-		}
-		TRAP::Graphics::Renderer2D::EndScene();
-
-		TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
-		TRAP::Graphics::Renderer2D::DrawQuad({ {-1.0f, 0.0f, 0.1f}, {}, {0.8f, 0.8f, 0.0f} }, { 0.8f, 0.2f, 0.3f, 1.0f });
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.5f, -0.5f, 0.1f}, {}, {0.5f, 0.75f, 0.0f} }, { 0.2f, 0.3f, 0.8f, 1.0f });
-		TRAP::Graphics::Renderer2D::DrawQuad({ {0.2f, 0.5f, 0.1f}, {0.0f, 0.0f, TRAP::Application::GetTime() * -50.0f }, {1.0f, 1.0f, 0.0f} },
-			{ 0.2f, 0.8f, 0.3f, 1.0f });
-		TRAP::Graphics::Renderer2D::EndScene();
-	}
+	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
+	
+	//Update Scene
+	m_activeScene->OnUpdate(deltaTime);
+	
+	TRAP::Graphics::Renderer2D::EndScene();
 	m_frameBuffer->Unbind();
 }
 
