@@ -73,12 +73,12 @@ void TRAP::Graphics::Renderer::SetTickRate(const uint32_t tickRate)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::BeginScene(Camera& camera)
+void TRAP::Graphics::Renderer::BeginScene(const Camera& camera, const Math::Mat4& transform)
 {
 	TP_PROFILE_FUNCTION();
 
 	s_sceneData->m_projectionMatrix = camera.GetProjectionMatrix();
-	s_sceneData->m_viewMatrix = camera.GetViewMatrix();
+	s_sceneData->m_viewMatrix = Math::Inverse(transform);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

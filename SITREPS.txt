@@ -1316,3 +1316,13 @@ SITREP 10/22/2020|20w43a3
 SITREP 10/25/2020|20w43a4
     - Changed TRAP Engine version to 20w43a4(0.6.81)
     - Added ECS entt ~>20 mins
+
+SITREP 10/27/2020|20w44a1
+    - Changed TRAP Engine version to 20w44a1(0.6.82)
+    - Reused Camera class for CameraComponent instead as a base class ~<20 mins
+    - Renderer & Renderer2D added support for the new Camera class ~<30 mins
+    - Added Components: TagComponent, TransformComponent, CameraComponent, NativeScriptComponent ~<90 mins
+    - Added Entity wrapped class for entt ~<30 mins
+    - Added Scene class ~<30 mins
+    - Added SceneCamera class ~<35 mins
+    - Added ScriptableEntity class used by NativeScriptComponents ~<30 mins

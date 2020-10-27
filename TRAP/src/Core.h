@@ -76,7 +76,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP_VERSION number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 81);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 82);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -144,17 +144,12 @@ namespace TRAP
 	/// WIP!<br>
 	/// Related to MemoryManagement which is still in planing.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
 	template<typename T>
 	using Scope = std::unique_ptr<T>;
 	/// <summary>
 	/// WIP!<br>
 	/// Related to MemoryManagement which is still in planing.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <typeparam name="...Args"></typeparam>
-	/// <param name="...args"></param>
-	/// <returns></returns>
 	template<typename T, typename... Args>
 	constexpr Scope<T> MakeScope(Args&&... args)
 	{
@@ -165,17 +160,12 @@ namespace TRAP
 	/// WIP!<br>
 	/// Related to MemoryManagement which is still in planing.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
 	template<typename T>
 	using Ref = std::shared_ptr<T>;
 	/// <summary>
 	/// WIP!<br>
 	/// Related to MemoryManagement which is still in planing.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <typeparam name="...Args"></typeparam>
-	/// <param name="...args"></param>
-	/// <returns></returns>
 	template<typename T, typename... Args>
 	constexpr Ref<T> MakeRef(Args&&... args)
 	{

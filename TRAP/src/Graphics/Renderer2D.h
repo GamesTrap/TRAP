@@ -6,6 +6,7 @@
 
 namespace TRAP::Graphics
 {
+	class Camera;
 	struct Renderer2DData;
 	
 	class Renderer2D
@@ -14,7 +15,8 @@ namespace TRAP::Graphics
 		static void Init();
 		static void Shutdown();
 		
-		static void BeginScene(const OrthographicCamera& camera);
+		static void BeginScene(const Camera& camera, const Math::Mat4& transform);
+		static void BeginScene(const OrthographicCamera& camera); //Deprecated
 		static void EndScene();
 		static void Flush();
 

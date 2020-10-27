@@ -7,6 +7,7 @@
 #include "RenderCommand.h"
 #include "Application.h"
 #include "Embed.h"
+#include "Cameras/Camera.h"
 #include "Textures/TextureManager.h"
 
 namespace TRAP::Graphics
@@ -123,6 +124,24 @@ void TRAP::Graphics::Renderer2D::Shutdown()
 	TP_DEBUG(Log::Renderer2DPrefix, "Shutting down");
 	s_data.TextureShader.reset();
 	s_data.WhiteTexture.reset();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::BeginScene(const Camera& camera, const Math::Mat4& transform)
+{
+	TP_PROFILE_FUNCTION();
+
+	s_data.UniformCamera.ProjectionMatrix = camera.GetProjectionMatrix();
+	s_data.UniformCamera.ViewMatrix = Math::Inverse(transform);
+
+	//Bind Shader
+	s_data.TextureShader->Bind();
+
+	s_data.QuadIndexCount = 0;
+	s_data.QuadVertexBufferPtr = s_data.QuadVertexBufferBase;
+
+	s_data.TextureSlotIndex = 1;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

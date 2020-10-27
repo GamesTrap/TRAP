@@ -113,6 +113,8 @@
 //----SCENE & COMPONENTS-
 #include "../src/Scene/Scene.h"
 #include "../src/Scene/Components.h"
+#include "../src/Scene/Entity.h"
+#include "../src/Scene/ScriptableEntity.h"
 //-----------------------
 
 #endif /*_TRAP_TRAP_H_*/

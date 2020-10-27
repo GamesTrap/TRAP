@@ -12,6 +12,7 @@ public:
 	void OnAttach() override;
 	void OnDetach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
+	void OnTick() override;
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
@@ -23,7 +24,11 @@ private:
 	bool m_viewportHovered;
 
 	TRAP::Scope<TRAP::Scene> m_activeScene;
-	entt::entity m_squareEntity;
+	TRAP::Entity m_squareEntity;
+	TRAP::Entity m_cameraEntity;
+	TRAP::Entity m_secondCameraEntity;
+
+	bool m_primaryCamera;
 };
 
 #endif /*_GAMESTRAP_TRAPEDITORLAYER_H_*/

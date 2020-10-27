@@ -5,7 +5,8 @@ TRAPEditorLayer::TRAPEditorLayer()
 	  m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
 	  m_viewportSize(),
 	  m_viewportFocused(false),
-	  m_viewportHovered(false)
+	  m_viewportHovered(false),
+	  m_primaryCamera(true)
 {
 }
 
@@ -86,9 +87,32 @@ void TRAPEditorLayer::OnImGuiRender()
 	ImGui::Text("Quads: %u", stats.QuadCount);
 	ImGui::Text("Vertices: %u", stats.GetTotalVertexCount());
 	ImGui::Text("Indices: %u", stats.GetTotalIndexCount());
-	ImGui::Separator();
-	auto& squareColor = m_activeScene->Reg().get<TRAP::SpriteRendererComponent>(m_squareEntity).Color;
-	ImGui::ColorEdit4("Square Color", &squareColor[0]);
+
+	if (m_squareEntity)
+	{
+		ImGui::Separator();
+		ImGui::Text("%s", m_squareEntity.GetComponent<TRAP::TagComponent>().Tag.c_str());
+		
+		auto& squareColor = m_squareEntity.GetComponent<TRAP::SpriteRendererComponent>().Color;
+		ImGui::ColorEdit4("Square Color", &squareColor[0]);
+		ImGui::Separator();
+	}
+
+	ImGui::DragFloat3("Camera Transform", &m_cameraEntity.GetComponent<TRAP::TransformComponent>().Transform[3][0]);
+
+	if(ImGui::Checkbox("Camera A", &m_primaryCamera))
+	{
+		m_cameraEntity.GetComponent<TRAP::CameraComponent>().Primary = m_primaryCamera;
+		m_secondCameraEntity.GetComponent<TRAP::CameraComponent>().Primary = !m_primaryCamera;
+	}
+
+	{
+		auto& camera = m_secondCameraEntity.GetComponent<TRAP::CameraComponent>().Camera;
+		float orthoSize = camera.GetOrthographicSize();
+		if(ImGui::DragFloat("Second Camera Ortho Size", &orthoSize, 1.0f, 1.0f, 1000.0f))
+			camera.SetOrthographicSize(orthoSize);
+	}
+	
 	ImGui::End();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });
@@ -100,6 +124,7 @@ void TRAPEditorLayer::OnImGuiRender()
 	
 	const ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+	
 	const uint32_t textureID = m_frameBuffer->GetColorAttachmentRendererID();
 	ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0.0f, 1.0f }, ImVec2{ 1.0f, 0.0f });
 	ImGui::End();
@@ -139,11 +164,48 @@ void TRAPEditorLayer::OnAttach()
 
 	m_activeScene = TRAP::MakeScope<TRAP::Scene>();
 
-	const auto square = m_activeScene->CreateEntity();
-	m_activeScene->Reg().emplace<TRAP::TransformComponent>(square);
-	m_activeScene->Reg().emplace<TRAP::SpriteRendererComponent>(square, TRAP::Math::Vec4{0.0f, 1.0f, 0.0f, 1.0f});
+	//Entity
+	auto square = m_activeScene->CreateEntity("Square Entity");
+	square.AddComponent<TRAP::SpriteRendererComponent>(TRAP::Math::Vec4{0.0f, 1.0f, 0.0f, 1.0f});
 
 	m_squareEntity = square;
+
+	m_cameraEntity = m_activeScene->CreateEntity("Camera Entity");
+	m_cameraEntity.AddComponent<TRAP::CameraComponent>();
+
+	m_secondCameraEntity = m_activeScene->CreateEntity("Clip-Space Camera Entity");
+	auto& cc = m_secondCameraEntity.AddComponent<TRAP::CameraComponent>();
+	cc.Primary = false;
+
+	class CameraController : public TRAP::ScriptableEntity
+	{
+	public:
+		void OnCreate()
+		{}
+
+		void OnDestroy()
+		{}
+
+		void OnUpdate(const TRAP::Utils::TimeStep deltaTime)
+		{
+			auto& transform = GetComponent<TRAP::TransformComponent>().Transform;
+			const float speed = 5.0f;
+
+			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::W))
+				transform[3][1] += speed * deltaTime;
+			if(TRAP::Input::IsKeyPressed(TRAP::Input::Key::A))
+				transform[3][0] -= speed * deltaTime;
+			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::S))
+				transform[3][1] -= speed * deltaTime;
+			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::D))
+				transform[3][0] += speed * deltaTime;
+		}
+
+		void OnTick()
+		{}
+	};
+
+	m_cameraEntity.AddComponent<TRAP::NativeScriptComponent>().Bind<CameraController>();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -165,6 +227,8 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	{
 		m_frameBuffer->Resize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
 		m_cameraController.OnResize(m_viewportSize.x, m_viewportSize.y);
+
+		m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
 	}
 
 	//Update Camera if viewport if focused
@@ -177,14 +241,19 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	//Setup
 	TRAP::Graphics::RenderCommand::SetClearColor();
 	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
-	//Render
-	TRAP::Graphics::Renderer2D::BeginScene(m_cameraController.GetCamera());
 	
 	//Update Scene
 	m_activeScene->OnUpdate(deltaTime);
-	
-	TRAP::Graphics::Renderer2D::EndScene();
+
 	m_frameBuffer->Unbind();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::OnTick()
+{
+	//Update Scene
+	m_activeScene->OnTick();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

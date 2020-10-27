@@ -1,26 +1,27 @@
 #ifndef _TRAP_CAMERA_H_
 #define _TRAP_CAMERA_H_
 
+#include "Maths/Math.h"
+
 namespace TRAP::Graphics
 {
 	class Camera
 	{		
 	public:
 		Camera() = default;
+		Camera(const Math::Mat4& projection)
+			: m_projection(projection)
+		{}
 		virtual ~Camera() = default;
 		Camera(const Camera&) = default;
 		Camera(Camera&&) = default;
 		Camera& operator=(const Camera&) = default;
 		Camera& operator=(Camera&&) = default;
 		
-		virtual const Math::Vec3& GetPosition() const = 0;
-		virtual void SetPosition(const Math::Vec3& position) = 0;
+		const Math::Mat4& GetProjectionMatrix() const;
 
-		virtual const Math::Vec3& GetRotation() const = 0;
-		virtual void SetRotation(const Math::Vec3& rotation) = 0;
-
-		virtual const Math::Mat4& GetProjectionMatrix() const = 0;
-		virtual const Math::Mat4& GetViewMatrix() const = 0;
+	protected:
+		Math::Mat4 m_projection = Math::Mat4(1.0f);
 	};
 }
 
