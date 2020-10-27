@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Application.h"
 
-#include "Core.h"
+#include "Core/Base.h"
 #include "VFS/VFS.h"
 #include "Embed.h"
 #include "Graphics/RenderCommand.h"

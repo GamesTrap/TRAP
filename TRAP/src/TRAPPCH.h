@@ -1,6 +1,14 @@
 #ifndef _TRAP_TRAPPCH_H_
 #define _TRAP_TRAPPCH_H_
 
+#include "Core/PlatformDetection.h"
+
+#ifdef TRAP_PLATFORM_WINDOWS
+	#ifndef NOMINMAX
+		#define NOMINMAX
+	#endif
+#endif
+
 //C++ STL
 #include <iostream>
 #include <memory>
@@ -45,7 +53,7 @@
 #pragma warning(pop)
 
 //TRAP Engine
-#include "Core.h"
+#include "Core/Base.h"
 #include "Log/Log.h"
 #include "Utils/Profiler/Instrumentor.h"
 

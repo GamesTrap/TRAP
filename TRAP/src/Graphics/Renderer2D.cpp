@@ -104,7 +104,7 @@ void TRAP::Graphics::Renderer2D::Init()
 	for (uint32_t i = 0; i < Renderer2DData::MaxTextureSlots; i++)
 		samplers[i] = i;
 
-	//Set all texture slots to 0
+	//Set first texture slot to 0
 	s_data.TextureSlots[0] = s_data.WhiteTexture.get();
 
 	s_data.QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };

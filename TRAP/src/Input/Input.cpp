@@ -199,9 +199,7 @@ float TRAP::Input::GetMouseX()
 {
 	TP_PROFILE_FUNCTION();
 
-	auto [x, y] = GetMousePosition();
-
-	return x;
+	return GetMousePosition().x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -210,9 +208,7 @@ float TRAP::Input::GetMouseY()
 {
 	TP_PROFILE_FUNCTION();
 
-	auto [x, y] = GetMousePosition();
-
-	return y;
+	return GetMousePosition().y;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -221,9 +217,7 @@ float TRAP::Input::GetMouseX(const Scope<Window>& window)
 {
 	TP_PROFILE_FUNCTION();
 
-	auto [x, y] = GetMousePosition(window);
-
-	return x;
+	return GetMousePosition(window).x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -232,9 +226,7 @@ float TRAP::Input::GetMouseY(const Scope<Window>& window)
 {
 	TP_PROFILE_FUNCTION();
 
-	auto [x, y] = GetMousePosition(window);
-
-	return y;
+	return GetMousePosition(window).y;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

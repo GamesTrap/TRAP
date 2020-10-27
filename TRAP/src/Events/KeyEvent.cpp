@@ -210,14 +210,14 @@ std::string TRAP::Events::KeyEvent::NonPrintableKeyToString(const Input::Key key
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const uint32_t repeatCount, std::string title)
+TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const uint16_t repeatCount, std::string title)
 	: KeyEvent(key), m_repeatCount(repeatCount), m_title(std::move(title))
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Events::KeyPressEvent::GetRepeatCount() const
+uint16_t TRAP::Events::KeyPressEvent::GetRepeatCount() const
 {
 	return m_repeatCount;
 }

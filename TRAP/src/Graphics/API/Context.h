@@ -1,7 +1,7 @@
 #ifndef _TRAP_CONTEXT_H_
 #define _TRAP_CONTEXT_H_
 
-#include "Core.h"
+#include "Core/Base.h"
 
 namespace TRAP
 {

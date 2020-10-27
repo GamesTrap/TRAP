@@ -52,7 +52,7 @@ void TRAP::Graphics::API::OpenGLVertexArray::SetVertexBuffer(Scope<VertexBuffer>
 		case ShaderDataType::Bool:
 		{
 			glEnableVertexArrayAttrib(m_handle, m_attribIndex);
-			glVertexArrayAttribFormat(m_handle, m_attribIndex, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized, static_cast<intptr_t>(element.Offset));
+			glVertexArrayAttribFormat(m_handle, m_attribIndex, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized, element.Offset);
 			glVertexArrayAttribBinding(m_handle, m_attribIndex, 0);
 
 			m_attribIndex++;
@@ -66,7 +66,7 @@ void TRAP::Graphics::API::OpenGLVertexArray::SetVertexBuffer(Scope<VertexBuffer>
 			for (uint32_t i = 0; i < count; i++)
 			{
 				glEnableVertexArrayAttrib(m_handle, m_attribIndex);
-				glVertexArrayAttribFormat(m_handle, m_attribIndex, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized, static_cast<intptr_t>(sizeof(float) * count * i));
+				glVertexArrayAttribFormat(m_handle, m_attribIndex, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized, element.Offset + sizeof(float) * count * i);
 				glVertexArrayAttribBinding(m_handle, m_attribIndex, 0);
 				glVertexArrayBindingDivisor(m_handle, 0, 1);
 

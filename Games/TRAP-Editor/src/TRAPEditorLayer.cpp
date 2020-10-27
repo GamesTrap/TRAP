@@ -13,7 +13,7 @@ TRAPEditorLayer::TRAPEditorLayer()
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAPEditorLayer::OnImGuiRender()
-{
+{	
 	static bool dockspaceOpen = true;
 	static bool optFullscreenPersistent = true;
 	const bool optFullscreen = optFullscreenPersistent;
@@ -125,7 +125,7 @@ void TRAPEditorLayer::OnImGuiRender()
 	const ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 	
-	const uint32_t textureID = m_frameBuffer->GetColorAttachmentRendererID();
+	const uint64_t textureID = m_frameBuffer->GetColorAttachmentRendererID();
 	ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0.0f, 1.0f }, ImVec2{ 1.0f, 0.0f });
 	ImGui::End();
 	ImGui::PopStyleVar();

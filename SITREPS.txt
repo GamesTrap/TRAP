@@ -1327,3 +1327,5 @@ SITREP 10/27/2020|20w44a1
     - Added SceneCamera class ~<35 mins
     - Added ScriptableEntity class used by NativeScriptComponents ~<30 mins
     - Fixed linux build ~<30 mins
+    - Splitted Platform detection from Core.h into PlatformDetection.h ~<10 mins
+    - Moved & Renamed Core.h to Core/Base.h ~<10 mins

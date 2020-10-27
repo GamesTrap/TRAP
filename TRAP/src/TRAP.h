@@ -5,8 +5,8 @@
 #include "../src/Application.h"
 //-----------------------
 
-//----CORE---------------
-#include "../src/Core.h"
+//----BASE---------------
+#include "../src/Core/Base.h"
 //-----------------------
 
 //----LOG----------------
