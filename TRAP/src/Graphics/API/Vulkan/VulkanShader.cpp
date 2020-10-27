@@ -4,7 +4,6 @@
 #include "VulkanCommon.h"
 #include "VulkanRenderer.h"
 #include "Utils/String/String.h"
-#include "Embed.h"
 #include "Internals/Objects/VulkanDevice.h"
 #include "Internals/Objects/VulkanSwapchain.h"
 #include "Internals/Objects/VulkanPipeline.h"

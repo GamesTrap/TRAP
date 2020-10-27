@@ -29,8 +29,13 @@ The above license only applies to some of the Controller specific parts of this 
 #ifndef _TRAP_INPUT_H_
 #define _TRAP_INPUT_H_
 
+#include "TRAPPCH.h" //Needed for OS dependent includes
+
 #include "Maths/Math.h"
 #include "Events/Event.h"
+
+#include <functional>
+#include <array>
 
 namespace TRAP
 {

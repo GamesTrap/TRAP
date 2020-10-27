@@ -1,6 +1,5 @@
 #ifndef _TRAP_APPLICATION_H_
 #define _TRAP_APPLICATION_H_
-#include "TRAPPCH.h"
 
 #include "Layers/ImGui/ImGuiLayer.h"
 

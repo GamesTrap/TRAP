@@ -1,6 +1,10 @@
 #ifndef _TRAP_EVENT_H_
 #define _TRAP_EVENT_H_
 
+#include <string>
+
+#include "Core.h"
+
 namespace TRAP::Events
 {
 	//TODO

@@ -40,11 +40,6 @@
 //OpenGL
 #include "Graphics/API/OpenGL/Loader/OpenGLLoader.h"
 #pragma warning(push, 0)
-//SPIRV
-#include <glslang/Public/ShaderLang.h>
-#include <SPIRV/GlslangToSpv.h>
-//SPIRV to GLSL
-#include <spirv_glsl.hpp>
 //ImGUI
 #include <imgui.h>
 #pragma warning(pop)
@@ -200,5 +195,13 @@
 
 //VulkanAPI
 #include "Graphics/API/Vulkan/Loader/VulkanLoader.h"
+
+#pragma warning(push, 0)
+//SPIRV
+#include <glslang/Public/ShaderLang.h>
+#include <SPIRV/GlslangToSpv.h>
+//SPIRV to GLSL
+#include <spirv_glsl.hpp>
+#pragma warning(pop)
 
 #endif /*_TRAP_TRAPPCH_H_*/

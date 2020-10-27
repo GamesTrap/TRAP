@@ -2,8 +2,11 @@
 #define _TRAP_TRAP_H_
 
 //----APPLICATION--------
-//#include "Application.h"
 #include "../src/Application.h"
+//-----------------------
+
+//----CORE---------------
+#include "../src/Core.h"
 //-----------------------
 
 //----LOG----------------

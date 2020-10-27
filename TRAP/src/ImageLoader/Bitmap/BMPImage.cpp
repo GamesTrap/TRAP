@@ -467,7 +467,7 @@ bool TRAP::INTERNAL::BMPImage::ValidateBitFields(std::array<BitField, 4>& bitFie
 bool TRAP::INTERNAL::BMPImage::ParseBitfield(BitField& field, const uint32_t mask)
 {
 	uint32_t bit;
-	for (bit = 0; bit < 32 && !(mask & (uint32_t(1) << bit)); bit++)
+	for (bit = 0; bit < 32 && !(mask & (static_cast<uint32_t>(1) << bit)); bit++)
 		;
 
 	if(bit >= 32)
@@ -478,12 +478,12 @@ bool TRAP::INTERNAL::BMPImage::ParseBitfield(BitField& field, const uint32_t mas
 	}
 
 	field.Start = bit;
-	for (; bit < 32 && (mask & (uint32_t(1) << bit)); bit++)
+	for (; bit < 32 && (mask & (static_cast<uint32_t>(1) << bit)); bit++)
 		;
 	field.Span = bit - field.Start;
 
 	//If there are more set bits, there was a gap, which is invalid
-	if (bit < 32 && (mask & ~((uint32_t(1) << bit) - 1)))
+	if (bit < 32 && (mask & ~((static_cast<uint32_t>(1) << bit) - 1)))
 		return false;
 
 	return true;
@@ -514,14 +514,14 @@ uint8_t TRAP::INTERNAL::BMPImage::Make8Bits(uint32_t value, const uint32_t bitSp
 
 uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint16_t x, BitField& bitField)
 {
-	return static_cast<uint32_t>(x >> bitField.Start & ((uint32_t(1) << bitField.Span) - 1));
+	return static_cast<uint32_t>(x >> bitField.Start & ((static_cast<uint32_t>(1) << bitField.Span) - 1));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint32_t TRAP::INTERNAL::BMPImage::ApplyBitField(const uint32_t x, BitField& bitField)
 {
-	return static_cast<uint32_t>(x >> bitField.Start & ((uint32_t(1) << bitField.Span) - 1));
+	return static_cast<uint32_t>(x >> bitField.Start & ((static_cast<uint32_t>(1) << bitField.Span) - 1));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

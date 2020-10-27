@@ -1,8 +1,6 @@
 #ifndef _TRAP_CONVERTHASHTOSTRING_H_
 #define _TRAP_CONVERTHASHTOSTRING_H_
 
-#include "TRAPPCH.h"
-
 namespace TRAP::Utils::Hash
 {
 	/// <summary>

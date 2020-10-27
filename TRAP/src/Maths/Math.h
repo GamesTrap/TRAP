@@ -32,8 +32,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef _TRAP_MATH_H_
 #define _TRAP_MATH_H_
 
-#include "TRAPPCH.h"
-
 #include "Vec2.h"
 #include "Vec3.h"
 #include "Vec4.h"
@@ -2333,7 +2331,7 @@ TRAP::Math::Vec<L, bool> TRAP::Math::IsInf(const Vec<L, T>& v)
 template <typename T>
 TRAP::Math::Vec<4, bool> TRAP::Math::IsInf(const tQuaternion<T>& q)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'isinf' only accepts floating-point inputs");
+	static_assert(std::numeric_limits<T>::is_iec559, "'IsInf' only accepts floating-point inputs");
 
 	return Vec<4, bool>(IsInf(q.x), IsInf(q.y), IsInf(q.z), IsInf(q.w));
 }
@@ -3407,7 +3405,7 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::LookAt(const Vec<3, T>& eye, const Vec<3, T
 template <typename T>
 TRAP::Math::tQuaternion<T> TRAP::Math::SLerp(const tQuaternion<T>& x, const tQuaternion<T>& y, T a)
 {
-	static_assert(std::numeric_limits<T>::is_iec559, "'slerp' only accepts floating-point inputs");
+	static_assert(std::numeric_limits<T>::is_iec559, "'SLerp' only accepts floating-point inputs");
 
 	tQuaternion<T> z = y;
 

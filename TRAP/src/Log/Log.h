@@ -5,6 +5,9 @@
 	#include "Utils/Win.h"
 #endif
 
+#include <vector>
+#include <mutex>
+
 namespace TRAP
 {
 	class Log final

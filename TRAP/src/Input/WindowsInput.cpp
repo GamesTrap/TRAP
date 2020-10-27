@@ -27,8 +27,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "TRAPPCH.h"
 
-
-//#include "Application.h"
 #include "Input/Input.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS

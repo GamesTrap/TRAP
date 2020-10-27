@@ -1,5 +1,8 @@
 #ifndef _TRAP_IMAGE_H_
 #define _TRAP_IMAGE_H_
+
+#include <vector>
+
 #include "Maths/Vec2.h"
 
 namespace TRAP

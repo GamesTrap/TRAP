@@ -1,6 +1,8 @@
 #ifndef _TRAP_CONTEXT_H_
 #define _TRAP_CONTEXT_H_
 
+#include "Core.h"
+
 namespace TRAP
 {
 	class Window;

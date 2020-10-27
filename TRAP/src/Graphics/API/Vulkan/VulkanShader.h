@@ -1,11 +1,6 @@
 #ifndef _TRAP_VULKANSHADER_H_
 #define _TRAP_VULKANSHADER_H_
 
-#include <algorithm>
-#include <algorithm>
-#include <algorithm>
-#include <algorithm>
-
 #include "Graphics/Shaders/Shader.h"
 
 namespace TRAP::Graphics::API

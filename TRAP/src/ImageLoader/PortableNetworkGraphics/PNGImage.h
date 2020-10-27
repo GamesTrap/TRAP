@@ -1,7 +1,6 @@
 #ifndef _TRAP_PNGIMAGE_H_
 #define _TRAP_PNGIMAGE_H_
 
-#include "TRAPPCH.h"
 #include "ImageLoader/Image.h"
 
 namespace TRAP::INTERNAL
