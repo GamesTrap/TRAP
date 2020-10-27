@@ -33,6 +33,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #define _TRAP_MAT4_H_
 
 #include "Vec4.h"
+#include "TRAP_Assert.h"
 
 namespace TRAP::Math
 {
@@ -286,7 +287,7 @@ constexpr int TRAP::Math::Mat<4, 4, T>::Length()
 template<typename T>
 typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4, T>::operator[](int i)
 {
-	assert(i < this->Length());
+	TRAP_ASSERT(i < this->Length());
 
 	return this->value[i];
 }
@@ -294,7 +295,7 @@ typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4, T>::operator[]
 template<typename T>
 constexpr const typename TRAP::Math::Mat<4, 4, T>::colType& TRAP::Math::Mat<4, 4, T>::operator[](int i) const
 {
-	assert(i < this->Length());
+	TRAP_ASSERT(i < this->Length());
 
 	return this->value[i];
 }

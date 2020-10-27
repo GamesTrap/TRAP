@@ -1,6 +1,8 @@
 #ifndef _TRAP_CORE_H_
 #define _TRAP_CORE_H_
 
+#include <memory>
+
 #ifdef _WIN32
 	//Windows x64/x86
 	#ifdef _WIN64

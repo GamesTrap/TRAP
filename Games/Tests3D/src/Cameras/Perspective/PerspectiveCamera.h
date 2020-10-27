@@ -3,20 +3,20 @@
 
 #include <TRAP.h>
 
-class PerspectiveCamera : public TRAP::Graphics::Camera
+class PerspectiveCamera
 {
 public:
 	PerspectiveCamera(float fov, float left, float right, float bottom, float top, float near, float far);
 	void SetProjection(float fov, float left, float right, float bottom, float top, float near, float far);
 	
-	const TRAP::Math::Vec3& GetPosition() const override;
-	void SetPosition(const TRAP::Math::Vec3& position) override;
+	const TRAP::Math::Vec3& GetPosition() const;
+	void SetPosition(const TRAP::Math::Vec3& position);
 
-	const TRAP::Math::Vec3& GetRotation() const override;
-	void SetRotation(const TRAP::Math::Vec3& rotation) override;
+	const TRAP::Math::Vec3& GetRotation() const;
+	void SetRotation(const TRAP::Math::Vec3& rotation);
 
-	const TRAP::Math::Mat4& GetProjectionMatrix() const override;
-	const TRAP::Math::Mat4& GetViewMatrix() const override;
+	const TRAP::Math::Mat4& GetProjectionMatrix() const;
+	const TRAP::Math::Mat4& GetViewMatrix() const;
 
 	float GetFoV() const;
 	

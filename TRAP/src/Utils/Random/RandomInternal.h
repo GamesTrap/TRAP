@@ -84,7 +84,7 @@ namespace TRAP::Utils::INTERNAL
     struct IsIterator
     {
     private:
-        static char Test(...) {}
+        static char Test(...) { return 0; }
 
         template <typename U,
             typename = typename std::iterator_traits<U>::difference_type,
@@ -92,7 +92,7 @@ namespace TRAP::Utils::INTERNAL
             typename = typename std::iterator_traits<U>::reference,
             typename = typename std::iterator_traits<U>::value_type,
             typename = typename std::iterator_traits<U>::iterator_category
-        > static long Test(U&&);
+        > static long Test(U&&) { return 0; }
     public:
         static constexpr bool value = std::is_same<
             decltype(Test(std::declval<T>())), long>::value;

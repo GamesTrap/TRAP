@@ -7,6 +7,7 @@
 
 namespace TRAP::Graphics
 {
+	class OrthographicCamera;
 	class Shader;
 
 	class Camera;
@@ -25,6 +26,7 @@ namespace TRAP::Graphics
 
 		static void SetTickRate(uint32_t tickRate);
 
+		static void BeginScene(const OrthographicCamera& camera);
 		static void BeginScene(const Camera& camera, const Math::Mat4& transform);
 		static void EndScene();
 

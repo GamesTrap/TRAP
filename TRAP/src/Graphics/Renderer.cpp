@@ -4,6 +4,7 @@
 #include "RenderCommand.h"
 #include "Graphics/Buffers/VertexArray.h"
 #include "Cameras/Camera.h"
+#include "Cameras/Orthographic/OrthographicCamera.h"
 #include "Graphics/Shaders/Shader.h"
 #include "Renderer2D.h"
 
@@ -69,6 +70,16 @@ std::string TRAP::Graphics::Renderer::GetCurrentGPUName()
 void TRAP::Graphics::Renderer::SetTickRate(const uint32_t tickRate)
 {
 	Application::SetTickRate(tickRate);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer::BeginScene(const OrthographicCamera& camera)
+{
+	TP_PROFILE_FUNCTION();
+
+	s_sceneData->m_projectionMatrix = camera.GetProjectionMatrix();
+	s_sceneData->m_viewMatrix = camera.GetViewMatrix();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

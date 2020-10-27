@@ -33,6 +33,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #define _TRAP_QUATERNION_H_
 
 #include "Types.h"
+#include "TRAP_Assert.h"
 
 namespace TRAP::Math
 {
@@ -347,7 +348,7 @@ constexpr int TRAP::Math::tQuaternion<T>::Length()
 template <typename T>
 constexpr T& TRAP::Math::tQuaternion<T>::operator[](int i)
 {
-	assert(i >= 0 && i < this->Length());
+	TRAP_ASSERT(i >= 0 && i < this->Length());
 
 	return (&x)[i];
 }
@@ -357,7 +358,7 @@ constexpr T& TRAP::Math::tQuaternion<T>::operator[](int i)
 template <typename T>
 constexpr const T& TRAP::Math::tQuaternion<T>::operator[](int i) const
 {
-	assert(i >= 0 && i < this->Length());
+	TRAP_ASSERT(i >= 0 && i < this->Length());
 
 	return (&x)[i];
 }

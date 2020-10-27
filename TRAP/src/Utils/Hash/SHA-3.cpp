@@ -1,5 +1,6 @@
 #include "TRAPPCH.h"
 #include "SHA-3.h"
+#include "TRAP_Assert.h"
 
 constexpr std::array<uint64_t, 24> RC =
 {
@@ -15,7 +16,7 @@ template<class T> T Rotatel64(T x, int64_t y)
 {
 	static const uint32_t thisSize = sizeof(T) * 8;
 	static const uint32_t mask = thisSize - 1;
-	assert(y < thisSize);
+	TRAP_ASSERT(y < thisSize);
 
 	return T((x << y) | (x >> (-y & mask)));
 }

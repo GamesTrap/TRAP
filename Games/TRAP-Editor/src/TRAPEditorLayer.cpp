@@ -193,7 +193,7 @@ void TRAPEditorLayer::OnAttach()
 
 			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::W))
 				transform[3][1] += speed * deltaTime;
-			if(TRAP::Input::IsKeyPressed(TRAP::Input::Key::A))
+			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::A))
 				transform[3][0] -= speed * deltaTime;
 			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::S))
 				transform[3][1] -= speed * deltaTime;

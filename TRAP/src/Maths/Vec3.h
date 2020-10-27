@@ -33,6 +33,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #define _TRAP_VEC3_H_
 
 #include "Types.h"
+#include "TRAP_Assert.h"
 
 namespace TRAP::Math
 {
@@ -519,7 +520,7 @@ constexpr int TRAP::Math::Vec<3, T>::Length()
 template<typename T>
 constexpr T& TRAP::Math::Vec<3, T>::operator[](int i)
 {
-	assert(i >= 0 && i < this->Length());
+	TRAP_ASSERT(i >= 0 && i < this->Length());
 
 	switch (i)
 	{
@@ -538,7 +539,7 @@ constexpr T& TRAP::Math::Vec<3, T>::operator[](int i)
 template<typename T>
 constexpr const T& TRAP::Math::Vec<3, T>::operator[](int i) const
 {
-	assert(i >= 0 && i < this->Length());
+	TRAP_ASSERT(i >= 0 && i < this->Length());
 
 	switch (i)
 	{

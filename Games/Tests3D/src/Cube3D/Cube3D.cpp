@@ -307,7 +307,7 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     TRAP::Graphics::RenderCommand::SetWireFrame(m_wireFrame);
     TRAP::Graphics::RenderCommand::SetDepthTesting(!m_wireFrame);
 
-    TRAP::Graphics::Renderer::BeginScene(m_camera.GetCamera());
+    /*TRAP::Graphics::Renderer::BeginScene(m_camera.GetCamera()); //RIP Needs to use ECS or camera has to be moved into engine code
 	{
         if (m_shaderNames[m_currentShader] == "Diffuse Reflection")
         {
@@ -346,7 +346,7 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
             TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::RendererFunction::Less);
     	}
 	}
-    TRAP::Graphics::Renderer::EndScene();
+    TRAP::Graphics::Renderer::EndScene();*/
 
     //Update FPS & FrameTIme history
     if (m_titleTimer.Elapsed() >= 0.025f)

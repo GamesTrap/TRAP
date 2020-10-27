@@ -2,6 +2,7 @@
 #define _TRAP_RANDOM_H_
 
 #include "RandomInternal.h"
+#include "TRAP_Assert.h"
 
 namespace TRAP::Utils
 {
@@ -310,7 +311,7 @@ namespace TRAP::Utils
         static typename std::enable_if<std::is_same<T, bool>::value
             , bool>::type Get(const double probability = 0.5)
     	{
-            assert(0 <= probability && 1 >= probability); //Out of [0; 1] range
+            TRAP_ASSERT(0 <= probability && 1 >= probability); //Out of [0; 1] range
             return BoolDist{ probability }(EngineInstance());
         }
 
@@ -324,7 +325,7 @@ namespace TRAP::Utils
         template<typename T>
         static T Get(std::initializer_list<T> init_list)
     	{
-            assert(0u != init_list.size());
+            TRAP_ASSERT(0u != init_list.size());
             return *Get(init_list.begin(), init_list.end());
         }
 
@@ -724,7 +725,7 @@ namespace TRAP::Utils
         static typename std::enable_if<std::is_same<T, bool>::value
             , bool>::type Get(const double probability = 0.5)
     	{
-            assert(0 <= probability && 1 >= probability); //Out of [0; 1] range
+            TRAP_ASSERT(0 <= probability && 1 >= probability); //Out of [0; 1] range
             return BoolDist{ probability }(EngineInstance());
         }
 
@@ -736,7 +737,7 @@ namespace TRAP::Utils
         template<typename T>
         static T Get(std::initializer_list<T> init_list)
     	{
-            assert(0u != init_list.size());
+            TRAP_ASSERT(0u != init_list.size());
             return *Get(init_list.begin(), init_list.end());
         }
 
@@ -1112,7 +1113,7 @@ namespace TRAP::Utils
         typename std::enable_if<std::is_same<T, bool>::value
             , bool>::type Get(const double probability = 0.5)
     	{
-            assert(0 <= probability && 1 >= probability); //Out of [0; 1] range
+            TRAP_ASSERT(0 <= probability && 1 >= probability); //Out of [0; 1] range
             return BoolDist{ probability }(m_engine);
         }
 
@@ -1124,7 +1125,7 @@ namespace TRAP::Utils
         template<typename T>
         T Get(std::initializer_list<T> init_list)
     	{
-            assert(0u != init_list.size());
+            TRAP_ASSERT(0u != init_list.size());
             return *Get(init_list.begin(), init_list.end());
         }
 

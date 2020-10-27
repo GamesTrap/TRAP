@@ -38,6 +38,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Mat3.h"
 #include "Mat4.h"
 #include "Quaternion.h"
+#include "TRAP_Assert.h"
 
 namespace TRAP::Math
 {
@@ -2460,8 +2461,8 @@ TRAP::Math::tQuaternion<T> TRAP::Math::Lerp(const tQuaternion<T>& x, const tQuat
 	static_assert(std::numeric_limits<T>::is_iec559, "'lerp' only accepts floating-point inputs");
 
 	//Lerp is only defined in [0, 1]
-	assert(a >= static_cast<T>(0));
-	assert(a <= static_cast<T>(1));
+	TRAP_ASSERT(a >= static_cast<T>(0));
+	TRAP_ASSERT(a <= static_cast<T>(1));
 
 	return x * (static_cast<T>(1) - 1) + (y * a);
 }
@@ -3176,7 +3177,7 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Frustum(T left, T right, T bottom, T top, T
 template <typename T>
 TRAP::Math::Mat<4, 4, T> TRAP::Math::Perspective(T fovY, T aspect, T zNear, T zFar)
 {
-	assert(std::abs(aspect - std::numeric_limits<T>::epsilon()) > static_cast<T>(0));
+	TRAP_ASSERT(std::abs(aspect - std::numeric_limits<T>::epsilon()) > static_cast<T>(0));
 
 	T const tanHalfFoVY = std::tan(fovY / static_cast<T>(2));
 
@@ -3196,9 +3197,9 @@ TRAP::Math::Mat<4, 4, T> TRAP::Math::Perspective(T fovY, T aspect, T zNear, T zF
 template <typename T>
 TRAP::Math::Mat<4, 4, T> TRAP::Math::PerspectiveFoV(T fov, T width, T height, T zNear, T zFar)
 {
-	assert(width > static_cast<T>(0));
-	assert(height > static_cast<T>(0));
-	assert(fov > static_cast<T>(0));
+	TRAP_ASSERT(width > static_cast<T>(0));
+	TRAP_ASSERT(height > static_cast<T>(0));
+	TRAP_ASSERT(fov > static_cast<T>(0));
 
 	T const rad = fov;
 	T const h = Cos(static_cast<T>(0.5)* rad) / Sin(static_cast<T>(0.5)* rad);
@@ -3571,7 +3572,7 @@ TRAP::Math::tQuaternion<T> TRAP::Math::QuaternionCast(const Mat<3, 3, T>& m)
 		return tQuaternion<T>((m[0][1] - m[1][0]) * mult, (m[2][0] + m[0][2]) * mult, (m[1][2] + m[2][1]) * mult, biggestVal);
 
 	default:
-		assert(false);
+		TRAP_ASSERT(false);
 		return tQuaternion<T>(1, 0, 0, 0);
 	}
 }

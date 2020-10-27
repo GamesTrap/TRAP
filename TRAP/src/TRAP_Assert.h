@@ -1,6 +1,8 @@
 #ifndef _TRAP_TRAPASSERT_H_
 #define _TRAP_TRAPASSERT_H_
 
+#include <filesystem>
+
 #ifdef TRAP_ENABLE_ASSERTS
 //Alternatively we could use the same "default" message for both "WITH_MSG" and "NO_MSG" and
 //provide support for custom formatting by concatenating the formatting string instead of having the format inside the default message

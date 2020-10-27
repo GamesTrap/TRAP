@@ -1326,3 +1326,4 @@ SITREP 10/27/2020|20w44a1
     - Added Scene class ~<30 mins
     - Added SceneCamera class ~<35 mins
     - Added ScriptableEntity class used by NativeScriptComponents ~<30 mins
+    - Fixed linux build ~<30 mins
