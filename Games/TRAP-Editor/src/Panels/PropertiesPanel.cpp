@@ -4,6 +4,7 @@
 #include <Core/PlatformDetection.h>
 #include <imgui.h>
 #include <imgui_internal.h>
+#include <Maths/Math.h>
 
 static void DrawVec3Control(const std::string& label,
                             TRAP::Math::Vec3& values,

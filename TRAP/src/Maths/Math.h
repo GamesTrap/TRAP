@@ -40,6 +40,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "Quaternion.h"
 #include "TRAP_Assert.h"
 
+#include <cmath>
+
 namespace TRAP::Math
 {
 	//Constants

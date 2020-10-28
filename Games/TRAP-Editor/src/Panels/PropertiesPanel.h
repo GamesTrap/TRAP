@@ -2,6 +2,7 @@
 #define _TRAPEDITORPROPERTIESPANEL_H_
 
 #include <Scene/Entity.h>
+#include <TRAP_Assert.h>
 
 namespace TRAP
 {
