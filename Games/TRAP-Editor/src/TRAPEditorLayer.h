@@ -2,6 +2,7 @@
 #define _GAMESTRAP_TRAPEDITORLAYER_H_
 
 #include <TRAP.h>
+#include "Panels/SceneGraphPanel.h"
 
 class TRAPEditorLayer final : public TRAP::Layer
 {
@@ -23,12 +24,12 @@ private:
 	bool m_viewportFocused;
 	bool m_viewportHovered;
 
-	TRAP::Scope<TRAP::Scene> m_activeScene;
+	TRAP::Ref<TRAP::Scene> m_activeScene;
 	TRAP::Entity m_squareEntity;
 	TRAP::Entity m_cameraEntity;
-	TRAP::Entity m_secondCameraEntity;
 
-	bool m_primaryCamera;
+	//Panels
+	TRAP::SceneGraphPanel m_sceneGraphPanel;
 };
 
 #endif /*_GAMESTRAP_TRAPEDITORLAYER_H_*/

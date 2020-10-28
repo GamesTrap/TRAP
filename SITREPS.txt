@@ -1329,3 +1329,13 @@ SITREP 10/27/2020|20w44a1
     - Fixed linux build ~<30 mins
     - Splitted Platform detection from Core.h into PlatformDetection.h ~<10 mins
     - Moved & Renamed Core.h to Core/Base.h ~<10 mins
+
+SITREP 10/28/2020|20w44a2
+    - Changed TRAP Engine version to 20w44a2(0.6.83)
+    - Added basic scene graph panel ~<40 mins
+    - Added properties panel ~<20 mins
+    - Added TagComponent UI for properties panel ~<30 mins
+    - SceneCamera added support for perspective camera ~<25 mins
+    - Added CameraComponent UI for properties panel ~<30 mins
+    - Added SpriteRendererComponent UI for properties panel ~<20 mins
+    - Added TransformComponent UI for properties panel ~<50 mins

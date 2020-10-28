@@ -38,10 +38,11 @@ namespace TRAP
 		void OnViewportResize(uint32_t width, uint32_t height);
 		
 	private:
+		friend class Entity;
+		friend class SceneGraphPanel;
+		
 		entt::registry m_registry;
 		uint32_t m_viewportWidth = 0, m_viewportHeight = 0;
-
-		friend class Entity;
 	};
 }
 

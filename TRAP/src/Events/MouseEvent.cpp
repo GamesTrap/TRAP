@@ -154,7 +154,7 @@ TRAP::Input::MouseButton TRAP::Events::MouseButtonEvent::GetMouseButton() const
 
 TRAP::Events::EventCategory TRAP::Events::MouseButtonEvent::GetCategoryFlags() const
 {
-	return EventCategory::Mouse | EventCategory::Input;
+	return EventCategory::Mouse | EventCategory::Input | EventCategory::MouseButton;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

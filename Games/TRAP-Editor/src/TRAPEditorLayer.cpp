@@ -5,8 +5,7 @@ TRAPEditorLayer::TRAPEditorLayer()
 	  m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
 	  m_viewportSize(),
 	  m_viewportFocused(false),
-	  m_viewportHovered(false),
-	  m_primaryCamera(true)
+	  m_viewportHovered(false)
 {
 }
 
@@ -75,6 +74,8 @@ void TRAPEditorLayer::OnImGuiRender()
 		ImGui::EndMenuBar();
 	}
 
+	m_sceneGraphPanel.OnImGuiRender();
+	
 	ImGui::Begin("Settings");
 	ImGui::Text("CPU: %ix %s", TRAP::Application::GetCPUInfo().LogicalCores, TRAP::Application::GetCPUInfo().Model.c_str());
 	ImGui::Text("GPU: %s", TRAP::Graphics::API::RendererAPI::GetRenderer()->GetCurrentGPUName().c_str());
@@ -87,31 +88,6 @@ void TRAPEditorLayer::OnImGuiRender()
 	ImGui::Text("Quads: %u", stats.QuadCount);
 	ImGui::Text("Vertices: %u", stats.GetTotalVertexCount());
 	ImGui::Text("Indices: %u", stats.GetTotalIndexCount());
-
-	if (m_squareEntity)
-	{
-		ImGui::Separator();
-		ImGui::Text("%s", m_squareEntity.GetComponent<TRAP::TagComponent>().Tag.c_str());
-		
-		auto& squareColor = m_squareEntity.GetComponent<TRAP::SpriteRendererComponent>().Color;
-		ImGui::ColorEdit4("Square Color", &squareColor[0]);
-		ImGui::Separator();
-	}
-
-	ImGui::DragFloat3("Camera Transform", &m_cameraEntity.GetComponent<TRAP::TransformComponent>().Transform[3][0]);
-
-	if(ImGui::Checkbox("Camera A", &m_primaryCamera))
-	{
-		m_cameraEntity.GetComponent<TRAP::CameraComponent>().Primary = m_primaryCamera;
-		m_secondCameraEntity.GetComponent<TRAP::CameraComponent>().Primary = !m_primaryCamera;
-	}
-
-	{
-		auto& camera = m_secondCameraEntity.GetComponent<TRAP::CameraComponent>().Camera;
-		float orthoSize = camera.GetOrthographicSize();
-		if(ImGui::DragFloat("Second Camera Ortho Size", &orthoSize, 1.0f, 1.0f, 1000.0f))
-			camera.SetOrthographicSize(orthoSize);
-	}
 	
 	ImGui::End();
 
@@ -173,39 +149,40 @@ void TRAPEditorLayer::OnAttach()
 	m_cameraEntity = m_activeScene->CreateEntity("Camera Entity");
 	m_cameraEntity.AddComponent<TRAP::CameraComponent>();
 
-	m_secondCameraEntity = m_activeScene->CreateEntity("Clip-Space Camera Entity");
-	auto& cc = m_secondCameraEntity.AddComponent<TRAP::CameraComponent>();
-	cc.Primary = false;
-
 	class CameraController : public TRAP::ScriptableEntity
 	{
 	public:
-		void OnCreate()
-		{}
-
-		void OnDestroy()
-		{}
-
-		void OnUpdate(const TRAP::Utils::TimeStep deltaTime)
+		void OnCreate() override
 		{
-			auto& transform = GetComponent<TRAP::TransformComponent>().Transform;
+			auto& pos = GetComponent<TRAP::TransformComponent>().Position;
+			pos.x = TRAP::Utils::Random::Get(-5.0f, 5.0f);
+		}
+
+		void OnDestroy() override
+		{}
+
+		void OnUpdate(const TRAP::Utils::TimeStep deltaTime) override
+		{
+			auto& pos = GetComponent<TRAP::TransformComponent>().Position;
 			const float speed = 5.0f;
 
 			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::W))
-				transform[3][1] += speed * deltaTime;
+				pos.y += speed * deltaTime;
 			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::A))
-				transform[3][0] -= speed * deltaTime;
+				pos.x -= speed * deltaTime;
 			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::S))
-				transform[3][1] -= speed * deltaTime;
+				pos.y -= speed * deltaTime;
 			if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::D))
-				transform[3][0] += speed * deltaTime;
+				pos.x += speed * deltaTime;
 		}
 
-		void OnTick()
+		void OnTick() override
 		{}
 	};
 
 	m_cameraEntity.AddComponent<TRAP::NativeScriptComponent>().Bind<CameraController>();
+
+	m_sceneGraphPanel.SetContext(m_activeScene);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

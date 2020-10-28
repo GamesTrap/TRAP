@@ -35,7 +35,8 @@ namespace TRAP::Events
 		Input       = BIT(1),
 		Keyboard    = BIT(2),
 		Mouse       = BIT(3),
-		Controller  = BIT(4)
+		Controller  = BIT(4),
+		MouseButton = BIT(5)
 	};
 
 	/// <summary>

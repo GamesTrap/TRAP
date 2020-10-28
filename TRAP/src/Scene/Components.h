@@ -4,7 +4,6 @@
 #include "SceneCamera.h"
 #include "ScriptableEntity.h"
 #include "Maths/Math.h"
-#include "Utils/Time/TimeStep.h"
 
 namespace TRAP
 {
@@ -25,7 +24,9 @@ namespace TRAP
 	
 	struct TransformComponent
 	{
-		Math::Mat4 Transform{ 1.0f };
+		Math::Vec3 Position{ 0.0f, 0.0f, 0.0f };
+		Math::Vec3 Rotation{ 0.0f, 0.0f, 0.0f };
+		Math::Vec3 Scale{ 1.0f, 1.0f, 1.0f };
 
 		TransformComponent() = default;
 		~TransformComponent() = default;
@@ -33,18 +34,19 @@ namespace TRAP
 		TransformComponent(TransformComponent&&) = default;
 		TransformComponent& operator=(const TransformComponent&) = default;
 		TransformComponent& operator=(TransformComponent&&) = default;
-		explicit TransformComponent(const TRAP::Math::Mat4& transform)
-			: Transform(transform)
+		explicit TransformComponent(const TRAP::Math::Vec3& position)
+			: Position(position)
 		{}
 
-		operator TRAP::Math::Mat4&()
+		Math::Mat4 GetTransform() const
 		{
-			return Transform;
-		}
+			if(Rotation.x != 0.0f || Rotation.y != 0.0f || Rotation.z != 0.0f)
+			{
+				const Math::Mat4 rotation = Mat4Cast(Math::Quaternion(Rotation));
+				return Math::Translate(Position) * rotation * Math::Scale(Scale);
+			}
 
-		operator const TRAP::Math::Mat4&() const
-		{
-			return Transform;
+			return Math::Translate(Position) * Math::Scale(Scale);
 		}
 	};
 
@@ -80,25 +82,15 @@ namespace TRAP
 	struct NativeScriptComponent
 	{
 		ScriptableEntity* Instance = nullptr;
-
-		std::function<void()> InstantiateFunction;
-		std::function<void()> DestroyInstanceFunction;
 		
-		std::function<void(ScriptableEntity*)> OnCreateFunction;
-		std::function<void(ScriptableEntity*)> OnDestroyFunction;
-		std::function<void(ScriptableEntity*, Utils::TimeStep)> OnUpdateFunction;
-		std::function<void(ScriptableEntity*)> OnTickFunction;
+		ScriptableEntity*(*InstantiateScript)();
+		void (*DestroyScript)(NativeScriptComponent*);
 		
 		template<typename T>
 		void Bind()
 		{
-			InstantiateFunction = [&]() { Instance = new T(); };
-			DestroyInstanceFunction = [&]() {delete static_cast<T*>(Instance); Instance = nullptr; };
-			
-			OnCreateFunction = [](ScriptableEntity* instance) { static_cast<T*>(instance)->OnCreate(); };
-			OnDestroyFunction = [](ScriptableEntity* instance) { static_cast<T*>(instance)->OnDestroy(); };
-			OnUpdateFunction = [](ScriptableEntity* instance, Utils::TimeStep deltaTime) { static_cast<T*>(instance)->OnUpdate(deltaTime); };
-			OnTickFunction = [](ScriptableEntity* instance) { static_cast<T*>(instance)->OnTick(); };
+			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
+			DestroyScript = [](NativeScriptComponent* nsc) {delete nsc->Instance; nsc->Instance = nullptr; };
 		}
 	};
 }

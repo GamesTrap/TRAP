@@ -32,24 +32,22 @@ void TRAP::Scene::OnUpdate(const Utils::TimeStep deltaTime)
 		m_registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
 		{
 			//TODO For now create and instantiate every native script.
+			//Bug Memory leak OnDestroy is never called!
 			if(!nsc.Instance)
 			{
-				nsc.InstantiateFunction();
+				nsc.Instance = nsc.InstantiateScript();
 				nsc.Instance->m_entity = Entity{ entity, this };
-
-				if(nsc.OnCreateFunction)
-					nsc.OnCreateFunction(nsc.Instance);
+				nsc.Instance->OnCreate();
 			}
 
-			if(nsc.OnUpdateFunction)
-				nsc.OnUpdateFunction(nsc.Instance, deltaTime);
+			nsc.Instance->OnUpdate(deltaTime);
 		});
 	}
 	
 	//Render 2D
 	//Find Main Camera
 	Graphics::Camera* mainCamera = nullptr;
-	Math::Mat4* cameraTransform = nullptr;
+	Math::Mat4 cameraTransform;
 	{
 		auto view = m_registry.view<TransformComponent, CameraComponent>();
 		for (auto entity : view)
@@ -59,7 +57,7 @@ void TRAP::Scene::OnUpdate(const Utils::TimeStep deltaTime)
 			if(camera.Primary)
 			{
 				mainCamera = &camera.Camera;
-				cameraTransform = &transform.Transform;
+				cameraTransform = transform.GetTransform();
 				break;
 			}
 		}
@@ -68,14 +66,14 @@ void TRAP::Scene::OnUpdate(const Utils::TimeStep deltaTime)
 	//Go Render something
 	if (mainCamera)
 	{
-		Graphics::Renderer2D::BeginScene(mainCamera->GetProjectionMatrix(), *cameraTransform);
+		Graphics::Renderer2D::BeginScene(*mainCamera, cameraTransform);
 
 		auto group = m_registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 		for (auto entity : group)
 		{
 			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-			Graphics::Renderer2D::DrawQuad(transform, sprite.Color, nullptr);
+			Graphics::Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, nullptr);
 		}
 
 		Graphics::Renderer2D::EndScene();
@@ -91,17 +89,15 @@ void TRAP::Scene::OnTick()
 		m_registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
 		{
 			//TODO For now create and instantiate every native script.
+			//Bug Memory leak OnDestroy is never called!
 			if (!nsc.Instance)
 			{
-				nsc.InstantiateFunction();
+				nsc.Instance = nsc.InstantiateScript();
 				nsc.Instance->m_entity = Entity{ entity, this };
-
-				if(nsc.OnCreateFunction)
-					nsc.OnCreateFunction(nsc.Instance);
+				nsc.Instance->OnCreate();
 			}
 
-			if(nsc.OnTickFunction)
-				nsc.OnTickFunction(nsc.Instance);
+			nsc.Instance->OnTick();
 		});
 	}
 }
