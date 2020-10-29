@@ -1,6 +1,9 @@
 #ifndef _TRAP_ENTITY_H_
 #define _TRAP_ENTITY_H_
 
+#include "Core/PlatformDetection.h"
+#include "Core/Base.h"
+#include "TRAP_Assert.h"
 #include "Scene.h"
 
 #pragma warning(push, 0)
@@ -23,8 +26,9 @@ namespace TRAP
 		T& AddComponent(Args&&... args)
 		{
 			TRAP_ASSERT(!HasComponent<T>(), "Entity already has component!");
-			
-			return m_scene->m_registry.emplace<T>(m_entityHandle, std::forward<Args>(args)...);
+			T& component = m_scene->m_registry.emplace<T>(m_entityHandle, std::forward<Args>(args)...);
+			m_scene->OnComponentAdded<T>(*this, component);
+			return component;
 		}
 
 		template<typename T>
@@ -49,23 +53,12 @@ namespace TRAP
 			m_scene->m_registry.remove<T>(m_entityHandle);
 		}
 
-		operator bool() const
-		{
-			return m_entityHandle != entt::null;
-		}
-		operator uint32_t() const
-		{
-			return static_cast<uint32_t>(m_entityHandle);
-		}
+		operator bool() const;
+		operator entt::entity() const;
+		operator uint32_t() const;
 
-		bool operator==(const Entity other) const
-		{
-			return m_entityHandle == other.m_entityHandle && m_scene == other.m_scene;
-		}
-		bool operator!=(const Entity other) const
-		{
-			return !operator==(other);
-		}
+		bool operator==(Entity other) const;
+		bool operator!=(Entity other) const;
 		
 	private:
 		entt::entity m_entityHandle{ entt::null };

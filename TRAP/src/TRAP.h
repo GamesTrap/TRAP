@@ -1,20 +1,20 @@
 #ifndef _TRAP_TRAP_H_
 #define _TRAP_TRAP_H_
 
-//----APPLICATION--------
-#include "../src/Application.h"
-//-----------------------
-
 //----BASE---------------
 #include "../src/Core/Base.h"
 //-----------------------
 
-//----LOG----------------
-#include "../src/Log/Log.h"
-//-----------------------
-
 //----ASSERT-------------
 #include "../src/TRAP_Assert.h"
+//-----------------------
+
+//----APPLICATION--------
+#include "../src/Application.h"
+//-----------------------
+
+//----LOG----------------
+#include "../src/Log/Log.h"
 //-----------------------
 
 //----INPUT--------------

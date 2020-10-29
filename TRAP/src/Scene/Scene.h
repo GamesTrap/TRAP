@@ -26,6 +26,7 @@ namespace TRAP
 		Scene& operator=(Scene&&) = default;
 
 		Entity CreateEntity(const std::string& name = std::string());
+		void DestroyEntity(Entity entity);
 
 		//TEMP
 		entt::registry& Reg()
@@ -38,6 +39,9 @@ namespace TRAP
 		void OnViewportResize(uint32_t width, uint32_t height);
 		
 	private:
+		template<typename T>
+		void OnComponentAdded(Entity entity, T& component);
+		
 		friend class Entity;
 		friend class SceneGraphPanel;
 		

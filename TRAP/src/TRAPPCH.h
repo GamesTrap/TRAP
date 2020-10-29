@@ -54,6 +54,7 @@
 
 //TRAP Engine
 #include "Core/Base.h"
+#include "TRAP_Assert.h"
 #include "Log/Log.h"
 #include "Utils/Profiler/Instrumentor.h"
 

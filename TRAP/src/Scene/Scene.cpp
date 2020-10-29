@@ -25,6 +25,13 @@ TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Scene::DestroyEntity(const Entity entity)
+{
+	m_registry.destroy(entity);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Scene::OnUpdate(const Utils::TimeStep deltaTime)
 {
 	//Update scripts
@@ -118,3 +125,33 @@ void TRAP::Scene::OnViewportResize(const uint32_t width, const uint32_t height)
 			cameraComponent.Camera.SetViewportSize(width, height);
 	}
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+void TRAP::Scene::OnComponentAdded(Entity entity, T& component)
+{
+	static_assert(false);
+}
+
+template<>
+void TRAP::Scene::OnComponentAdded<TRAP::TransformComponent>(Entity entity, TransformComponent& component)
+{}
+
+template<>
+void TRAP::Scene::OnComponentAdded<TRAP::CameraComponent>(Entity entity, CameraComponent& component)
+{
+	component.Camera.SetViewportSize(m_viewportWidth, m_viewportHeight);
+} 
+
+template<>
+void TRAP::Scene::OnComponentAdded<TRAP::SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
+{}
+
+template<>
+void TRAP::Scene::OnComponentAdded<TRAP::TagComponent>(Entity entity, TagComponent& component)
+{}
+
+template<>
+void TRAP::Scene::OnComponentAdded<TRAP::NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+{}

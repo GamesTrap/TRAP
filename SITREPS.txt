@@ -1339,3 +1339,12 @@ SITREP 10/28/2020|20w44a2
     - Added CameraComponent UI for properties panel ~<30 mins
     - Added SpriteRendererComponent UI for properties panel ~<20 mins
     - Added TransformComponent UI for properties panel ~<50 mins
+
+SITREP 10/29/2020|20w44a3
+    - Changed TRAP Engine version to 20w44a3(0.6.84)
+    - Added Create Entity UI ~<20 mins
+    - Added Delete Entity UI ~<20 mins
+    - Added Add Component UI ~<20 mins
+    - Added Remove Component UI ~<20 mins
+    - Fixed Camera viewport resize bug ~<10 mins
+    - Fixed some asserts ~<20 mins

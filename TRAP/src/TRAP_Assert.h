@@ -3,6 +3,10 @@
 
 #include <filesystem>
 
+#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
+	#define TRAP_ENABLE_ASSERTS
+#endif
+
 #ifdef TRAP_ENABLE_ASSERTS
 //Alternatively we could use the same "default" message for both "WITH_MSG" and "NO_MSG" and
 //provide support for custom formatting by concatenating the formatting string instead of having the format inside the default message

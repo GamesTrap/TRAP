@@ -33,6 +33,8 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #define _TRAP_QUATERNION_H_
 
 #include "Types.h"
+#include "Core/PlatformDetection.h"
+#include "Core/Base.h"
 #include "TRAP_Assert.h"
 
 namespace TRAP::Math

@@ -56,7 +56,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP_VERSION number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 83);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 84);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -66,13 +66,20 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 83);
 		/// Set a cross platform Debug Break.<br>
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
-		void TRAP_DEBUG_BREAK();
+		inline void TRAP_DEBUG_BREAK()
+		{
+			__debugbreak();
+		}
 	#elif defined(TRAP_PLATFORM_LINUX)
 		/// <summary>
 		/// Set a cross platform Debug Break.<br>
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.
 		/// </summary>
-		void TRAP_DEBUG_BREAK();
+		#include <signal.h>	
+		inline void TRAP_DEBUG_BREAK()
+		{
+			raise(SIGTRAP);
+		}
 	#else
 		/// <summary>
 		/// Set a cross platform Debug Break.<br>
@@ -94,15 +101,11 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 83);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
-	#define TRAP_ENABLE_ASSERTS
-#endif
-
 #define TRAP_EXPAND_MACRO(x) x
 #define TRAP_STRINGIFY_MACRO(x) #x
 
-#include "Log/Log.h"
 #include "TRAP_Assert.h"
+#include "Log/Log.h"
 
 /// <summary>
 /// Shift 1 x times.

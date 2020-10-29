@@ -33,6 +33,15 @@ void TRAP::SceneGraphPanel::OnImGuiRender()
 		m_selectionContext = {};
 		m_propertiesPanel.SetEntity({});
 	}
+
+	//Right-click on blank space
+	if(ImGui::BeginPopupContextWindow(nullptr, 1, false))
+	{
+		if (ImGui::MenuItem("Create Entity"))
+			m_context->CreateEntity("Entity");
+
+		ImGui::EndPopup();
+	}
 	
 	ImGui::End();
 
@@ -53,6 +62,25 @@ void TRAP::SceneGraphPanel::DrawEntityNode(Entity entity)
 		m_propertiesPanel.SetEntity(m_selectionContext);
 	}
 
+	bool entityDeleted = false;
+	if (ImGui::BeginPopupContextItem())
+	{
+		if (ImGui::MenuItem("Delete Entity"))
+			entityDeleted = true;
+
+		ImGui::EndPopup();
+	}
+
 	if(opened)
 		ImGui::TreePop();
+
+	if(entityDeleted)
+	{
+		m_context->DestroyEntity(entity);
+		if (m_selectionContext == entity)
+		{
+			m_selectionContext = {};
+			m_propertiesPanel.SetEntity({});
+		}
+	}
 }
