@@ -17,8 +17,8 @@ namespace TRAP
 		void OnImGuiRender();
 	private:
 		void DrawComponents(Entity entity);
-		template<typename T, typename F>
-		void DrawComponent(const std::string& name, Entity& entity, F func);
+		template<typename T, typename UIFunction>
+		void DrawComponent(const std::string& name, Entity& entity, UIFunction func);
 
 		Entity m_entity;
 	};

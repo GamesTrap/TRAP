@@ -52,11 +52,16 @@ void TRAPEditorLayer::OnImGuiRender()
 
 	//DockSpace
 	ImGuiIO& io = ImGui::GetIO();
+	ImGuiStyle& style = ImGui::GetStyle();
+	const float minWinSizeX = style.WindowMinSize.x;
+	style.WindowMinSize.x = 370.0f;
 	if(io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 	{
 		const ImGuiID dockspaceID = ImGui::GetID("MyDockSpace");
 		ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), dockspaceFlags);
 	}
+
+	style.WindowMinSize.x = minWinSizeX;
 
 	if(ImGui::BeginMenuBar())
 	{

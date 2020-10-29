@@ -138,10 +138,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const Camera& camera, const Math::Ma
 	//Bind Shader
 	s_data.TextureShader->Bind();
 
-	s_data.QuadIndexCount = 0;
-	s_data.QuadVertexBufferPtr = s_data.QuadVertexBufferBase;
-
-	s_data.TextureSlotIndex = 1;
+	StartBatch();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -156,10 +153,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 	//Bind Shader
 	s_data.TextureShader->Bind();
 
-	s_data.QuadIndexCount = 0;
-	s_data.QuadVertexBufferPtr = s_data.QuadVertexBufferBase;
-
-	s_data.TextureSlotIndex = 1;
+	StartBatch();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -167,10 +161,6 @@ void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 void TRAP::Graphics::Renderer2D::EndScene()
 {
 	TP_PROFILE_FUNCTION();
-
-	const uint32_t dataSize = static_cast<uint32_t>(reinterpret_cast<uint8_t*>(s_data.QuadVertexBufferPtr) -
-		                                            reinterpret_cast<uint8_t*>(s_data.QuadVertexBufferBase));
-	s_data.QuadVertexArray->GetVertexBuffer()->SetData(s_data.QuadVertexBufferBase, dataSize);
 
 	Flush();
 }
@@ -189,6 +179,10 @@ void TRAP::Graphics::Renderer2D::Flush()
 	//Bind Vertex Array
 	s_data.QuadVertexArray->Bind();
 
+	const uint32_t dataSize = static_cast<uint32_t>(reinterpret_cast<uint8_t*>(s_data.QuadVertexBufferPtr) -
+		reinterpret_cast<uint8_t*>(s_data.QuadVertexBufferBase));
+	s_data.QuadVertexArray->GetVertexBuffer()->SetData(s_data.QuadVertexBufferBase, dataSize);
+
 	//Bind textures
 	for (uint32_t i = 0; i < s_data.TextureSlotIndex; i++)
 		s_data.TextureSlots[i]->Bind(i);
@@ -200,14 +194,20 @@ void TRAP::Graphics::Renderer2D::Flush()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer2D::FlushAndReset()
+void TRAP::Graphics::Renderer2D::StartBatch()
 {
-	EndScene();
-
 	s_data.QuadIndexCount = 0;
 	s_data.QuadVertexBufferPtr = s_data.QuadVertexBufferBase;
 
 	s_data.TextureSlotIndex = 1;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Renderer2D::NextBatch()
+{
+	Flush();
+	StartBatch();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -247,7 +247,7 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 	constexpr std::array<Math::Vec2, 4> textureCoords = { {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}} };
 
 	if (s_data.QuadIndexCount >= Renderer2DData::MaxIndices)
-		FlushAndReset();
+		NextBatch();
 
 	const float textureIndex = GetTextureIndex(texture);
 
@@ -286,7 +286,7 @@ float TRAP::Graphics::Renderer2D::GetTextureIndex(const Scope<Texture2D>& textur
 	if (textureIndex == 0.0f)
 	{
 		if (s_data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
-			FlushAndReset();
+			NextBatch();
 		
 		textureIndex = static_cast<float>(s_data.TextureSlotIndex);
 		s_data.TextureSlots[s_data.TextureSlotIndex] = texture.get();

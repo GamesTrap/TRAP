@@ -49,7 +49,8 @@ namespace TRAP::Graphics
 	private:
 		static float GetTextureIndex(const Scope<Texture2D>& texture);
 		
-		static void FlushAndReset();
+		static void StartBatch();
+		static void NextBatch();
 	};
 }
 

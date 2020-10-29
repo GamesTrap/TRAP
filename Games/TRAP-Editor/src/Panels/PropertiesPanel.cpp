@@ -1,4 +1,4 @@
-#include "PropertiesPanel.h"
+﻿#include "PropertiesPanel.h"
 
 #include <Scene/Components.h>
 #include <Core/PlatformDetection.h>
@@ -11,6 +11,9 @@ static void DrawVec3Control(const std::string& label,
                             const float resetValues = 0.0f,
                             const float columnWidth = 100.0f)
 {
+	ImGuiIO& io = ImGui::GetIO();
+	const auto boldFont = io.Fonts->Fonts[0];
+	
 	ImGui::PushID(label.c_str());
 	
 	ImGui::Columns(2);
@@ -27,36 +30,42 @@ static void DrawVec3Control(const std::string& label,
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.9f, 0.2f, 0.2f, 1.0f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
+	ImGui::PushFont(boldFont);
 	if (ImGui::Button("X", buttonSize))
 		values.x = resetValues;
+	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
-	ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.3f");
+	ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.8f, 0.3f, 1.0f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));
+	ImGui::PushFont(boldFont);
 	if (ImGui::Button("Y", buttonSize))
 		values.y = resetValues;
+	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
-	ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.3f");
+	ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.25f, 0.8f, 1.0f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2f, 0.35f, 0.9f, 1.0f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.18f, 0.25f, 0.8f, 1.0f));
+	ImGui::PushFont(boldFont);
 	if (ImGui::Button("Z", buttonSize))
 		values.z = resetValues;
+	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
-	ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.3f");
+	ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
 	ImGui::PopItemWidth();
 
 	ImGui::PopStyleVar();
@@ -86,29 +95,7 @@ void TRAP::PropertiesPanel::OnImGuiRender()
 {
 	ImGui::Begin("Properties");
 	if(m_entity)
-	{
 		DrawComponents(m_entity);
-
-		if(ImGui::Button("Add Component"))
-			ImGui::OpenPopup("AddComponent");
-
-		if(ImGui::BeginPopup("AddComponent"))
-		{
-			if(ImGui::MenuItem("Camera"))
-			{
-				m_entity.AddComponent<CameraComponent>();
-				ImGui::CloseCurrentPopup();
-			}
-
-			if (ImGui::MenuItem("Sprite Renderer"))
-			{
-				m_entity.AddComponent<SpriteRendererComponent>();
-				ImGui::CloseCurrentPopup();
-			}
-			
-			ImGui::EndPopup();
-		}
-	}
 	ImGui::End();
 }
 
@@ -126,15 +113,41 @@ void TRAP::PropertiesPanel::DrawComponents(Entity entity)
 #else
 		strcpy(buffer.data(), tag.c_str());
 #endif
-		if(ImGui::InputText("Tag", buffer.data(), buffer.size() * sizeof(char)))
+		if(ImGui::InputText("##Tag", buffer.data(), buffer.size() * sizeof(char)))
 		{
 			tag = std::string(buffer.data());
 		}
 	}
 
+	ImGui::SameLine();
+	ImGui::PushItemWidth(-1);
+	
+	if (ImGui::Button("Add Component"))
+		ImGui::OpenPopup("AddComponent");
+
+	if (ImGui::BeginPopup("AddComponent"))
+	{
+		if (ImGui::MenuItem("Camera"))
+		{
+			m_entity.AddComponent<CameraComponent>();
+			ImGui::CloseCurrentPopup();
+		}
+
+		if (ImGui::MenuItem("Sprite Renderer"))
+		{
+			m_entity.AddComponent<SpriteRendererComponent>();
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+
+	ImGui::PopItemWidth();
+
 	if (entity.HasComponent<TransformComponent>())
 	{
-		if (ImGui::TreeNodeEx(reinterpret_cast<void*>(typeid(TransformComponent).hash_code()), ImGuiTreeNodeFlags_DefaultOpen, "Transform"))
+		if (ImGui::TreeNodeEx(reinterpret_cast<void*>(typeid(TransformComponent).hash_code()), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap |
+			ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_FramePadding, "Transform"))
 		{
 			auto& tc = entity.GetComponent<TransformComponent>();
 			DrawVec3Control("Position", tc.Position);
@@ -146,12 +159,11 @@ void TRAP::PropertiesPanel::DrawComponents(Entity entity)
 		}
 	}
 
-	DrawComponent<CameraComponent>("Camera", entity, [&]()
+	DrawComponent<CameraComponent>("Camera", entity, [](auto& component)
 	{
-		auto& cameraComponent = entity.GetComponent<CameraComponent>();
-		auto& camera = cameraComponent.Camera;
+		auto& camera = component.Camera;
 
-		ImGui::Checkbox("Primary", &cameraComponent.Primary); //BUG Doesn't uncheck other cameras
+		ImGui::Checkbox("Primary", &component.Primary); //BUG Doesn't uncheck other cameras
 
 		std::array<const char*, 2> projectionTypeStrings = { "Perspective", "Orthographic" };
 		const char* currentProjectionTypeString = projectionTypeStrings[static_cast<uint32_t>(camera.GetProjectionType())];
@@ -202,33 +214,37 @@ void TRAP::PropertiesPanel::DrawComponents(Entity entity)
 			if (ImGui::DragFloat("Far", &orthoFar))
 				camera.SetOrthographicFarClip(orthoFar);
 
-			ImGui::Checkbox("Fixed Aspect Ratio", &cameraComponent.FixedAspectRatio);
+			ImGui::Checkbox("Fixed Aspect Ratio", &component.FixedAspectRatio);
 		}
 	});
 
-	DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [&]()
+	DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
 	{
-		auto& src = entity.GetComponent<SpriteRendererComponent>();
-		ImGui::ColorEdit4("Color", &src.Color[0]);
+		ImGui::ColorEdit4("Color", &component.Color[0]);
 	});
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-template <typename T, typename F>
-void TRAP::PropertiesPanel::DrawComponent(const std::string& name, Entity& entity, F func)
+template <typename T, typename UIFunction>
+void TRAP::PropertiesPanel::DrawComponent(const std::string& name, Entity& entity, UIFunction func)
 {
+	constexpr ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap |
+		ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_FramePadding;
+	
 	if (entity.HasComponent<T>())
 	{
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4.0f, 4.0f });
-		
-		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
-		const bool open = ImGui::TreeNodeEx(reinterpret_cast<void*>(typeid(T).hash_code()), treeNodeFlags, "%s", name.c_str());
+		auto& component = entity.GetComponent<T>();
+		const ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
 
-		ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
-		if (ImGui::Button("+", ImVec2{ 20.0f, 20.0f }))
-			ImGui::OpenPopup("ComponentSettings");
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4.0f, 4.0f });
+		const float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+		ImGui::Separator();
+		const bool open = ImGui::TreeNodeEx(reinterpret_cast<void*>(typeid(T).hash_code()), treeNodeFlags, "%s", name.c_str());
 		ImGui::PopStyleVar();
+		ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
+		if (ImGui::Button(":", ImVec2{ lineHeight, lineHeight }))
+			ImGui::OpenPopup("ComponentSettings");
 		
 		bool removeComponent = false;
 		if (ImGui::BeginPopup("ComponentSettings"))
@@ -241,7 +257,7 @@ void TRAP::PropertiesPanel::DrawComponent(const std::string& name, Entity& entit
 
 		if (open)
 		{
-			func();
+			func(component);
 			ImGui::TreePop();
 		}
 

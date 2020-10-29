@@ -61,6 +61,8 @@ namespace TRAP
 		/// </summary>
 		/// <param name="block">Whether to block events or not</param>
 		void BlockEvents(bool block);
+
+		static void SetDarkThemeColors();
 	private:
 		bool m_blockEvents;
 		float m_time = 0.0f;

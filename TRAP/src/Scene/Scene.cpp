@@ -131,7 +131,11 @@ void TRAP::Scene::OnViewportResize(const uint32_t width, const uint32_t height)
 template<typename T>
 void TRAP::Scene::OnComponentAdded(Entity entity, T& component)
 {
+#ifndef __GNUC__
 	static_assert(false);
+#else
+	assert(false);
+#endif
 }
 
 template<>

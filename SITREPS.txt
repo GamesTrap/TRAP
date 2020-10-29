@@ -1348,3 +1348,6 @@ SITREP 10/29/2020|20w44a3
     - Added Remove Component UI ~<20 mins
     - Fixed Camera viewport resize bug ~<10 mins
     - Fixed some asserts ~<20 mins
+    - New ImGui dark theme colors ~<30 mins
+    - Visual UI changes for TRAP-Editor ~<20 mins
+    - Embedded OpenSans font inside Embed.h ~<20 mins
