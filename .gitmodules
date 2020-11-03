@@ -9,4 +9,4 @@
 	url = https://github.com/GamesTrap/SPIRV-Cross.git
 [submodule "Dependencies/YAMLCpp"]
 	path = Dependencies/YAMLCpp
-	url = git@github.com:GamesTrap/yaml-cpp.git
+	url = https://github.com/GamesTrap/yaml-cpp.git
