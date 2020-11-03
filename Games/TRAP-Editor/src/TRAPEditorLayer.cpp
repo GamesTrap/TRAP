@@ -4,7 +4,6 @@
 
 TRAPEditorLayer::TRAPEditorLayer()
 	: Layer("TRAPEditorLayer"),
-	  m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
 	  m_viewportSize(),
 	  m_viewportFocused(false),
 	  m_viewportHovered(false)
@@ -157,7 +156,7 @@ void TRAPEditorLayer::OnAttach()
 	const TRAP::Graphics::FrameBufferProps frameBufferProps{ 1280, 720, 1, false };
 	m_frameBuffer = TRAP::Graphics::FrameBuffer::Create(frameBufferProps);
 
-	m_activeScene = TRAP::MakeScope<TRAP::Scene>();
+	m_activeScene = TRAP::MakeRef<TRAP::Scene>();
 
 #if 0
 	//Entity
@@ -223,14 +222,9 @@ void TRAPEditorLayer::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		(props.Width != static_cast<uint32_t>(m_viewportSize.x) || props.Height != static_cast<uint32_t>(m_viewportSize.y)))
 	{
 		m_frameBuffer->Resize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
-		m_cameraController.OnResize(m_viewportSize.x, m_viewportSize.y);
 
 		m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
 	}
-
-	//Update Camera if viewport if focused
-	if(m_viewportFocused)
-		m_cameraController.OnUpdate(deltaTime);
 	
 	TRAP::Graphics::Renderer2D::ResetStats();
 	//Framebuffer
@@ -251,11 +245,4 @@ void TRAPEditorLayer::OnTick()
 {
 	//Update Scene
 	m_activeScene->OnTick();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAPEditorLayer::OnEvent(TRAP::Events::Event& event)
-{
-	m_cameraController.OnEvent(event);
 }

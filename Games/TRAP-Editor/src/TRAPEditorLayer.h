@@ -14,10 +14,9 @@ public:
 	void OnDetach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 	void OnTick() override;
-	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
-	TRAP::Graphics::OrthographicCameraController m_cameraController;
+	//TRAP::Graphics::OrthographicCameraController m_cameraController;
 	
 	TRAP::Scope<TRAP::Graphics::FrameBuffer> m_frameBuffer;
 	TRAP::Math::Vec2 m_viewportSize;

@@ -3,9 +3,6 @@
 
 #include <TRAP.h>
 
-#include "../Cameras/Perspective/PerspectiveCamera.h"
-#include "../Cameras/Perspective/PerspectiveCameraController.h"
-
 class Cube3D final : public TRAP::Layer
 {
 public:
@@ -18,6 +15,7 @@ public:
 	void OnEvent(TRAP::Events::Event& event) override;
 
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& event);
+	bool OnMouseMove(TRAP::Events::MouseMoveEvent& event);
 	bool OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event);
 	
 private:
@@ -52,8 +50,6 @@ private:
 	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_phongLightningUniformBuffer;
 	TRAP::Math::Vec4 m_lightPosition = TRAP::Math::Vec4(5.0f, 5.0f, 2.0f, 1.0f);
 	
-	PerspectiveCameraController m_camera;
-	
 	TRAP::Math::Vec3 m_cubePosition;
 	TRAP::Math::Vec3 m_cubeRotation;
 	TRAP::Math::Vec3 m_cubeScale;
@@ -67,6 +63,12 @@ private:
 	uint32_t m_currentShader;
 	bool m_wireFrame;
 	bool m_drawSkyBox;
+
+	TRAP::SceneCamera m_camera;
+	TRAP::TransformComponent m_cameraTransform;
+	float m_mouseSensitivity;
+	float m_translationSpeed;
+	bool m_firstMouse; //Camera Controls
 };
 
 #endif /*_GAMESTRAP_TITLETESTS_H_*/

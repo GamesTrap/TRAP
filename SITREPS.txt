@@ -1357,3 +1357,4 @@ SITREP 11/03/2020|20w45a1
     - Added YAML-cpp as a submodule ~<20 mins
     - Added SceneSerializer class ~<30 mins
     - Added WIP Serialize & Deserialize button in TRAP-Editor ~<20 mins
+    - Fixed Tests3D (Cube3D) ~<30 mins

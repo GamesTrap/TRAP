@@ -4,7 +4,6 @@ Cube3D::Cube3D()
     : Layer("Cube3D"),
       m_diffuseReflectionDataBuffer(),
 	  m_phongLightningDataBuffer(),
-	  m_camera((static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()))),
 	  m_cubePosition(0.0f, 0.0f, -5.0f),
 	  m_cubeRotation(0.0f, 0.0f, 0.0f),
 	  m_cubeScale(1.0f, 1.0f, 1.0f),
@@ -13,7 +12,10 @@ Cube3D::Cube3D()
 	  m_shaderNames{ "Base", "Color", "Texture", "Diffuse Reflection", "Phong Lightning" },
 	  m_currentShader(0),
 	  m_wireFrame(false),
-	  m_drawSkyBox(true)
+	  m_drawSkyBox(true),
+	  m_mouseSensitivity(5.0f),
+	  m_translationSpeed(2.5f),
+	  m_firstMouse(true)
 {
 }
 
@@ -161,12 +163,18 @@ void Cube3D::OnAttach()
     m_skyBoxVertexArray = TRAP::Graphics::VertexArray::Create();
     m_skyBoxVertexArray->SetVertexBuffer(skyBoxVertexBuffer);
 
-    m_diffuseReflectionDataBuffer.LightPosition = m_camera.GetCamera().GetViewMatrix() * m_lightPosition;
+	//Camera setup
+    m_camera.SetPerspective(TRAP::Math::Radians(45.0f), 0.01f, 1000.0f);
+    m_camera.SetViewportSize(TRAP::Application::GetWindow()->GetWidth(), TRAP::Application::GetWindow()->GetHeight());
+    //Camera setup
+
+    const TRAP::Math::Mat4 inverseView = TRAP::Math::Inverse(m_cameraTransform.GetTransform());
+    m_diffuseReflectionDataBuffer.LightPosition = inverseView * m_lightPosition;
     m_diffuseReflectionDataBuffer.LightSourceIntensity = { 1.0f, 1.0f, 1.0f };
     m_diffuseReflectionDataBuffer.DiffuseReflectivity = { 0.9f, 0.5f, 0.3f };
     m_diffuseReflectionUniformBuffer = TRAP::Graphics::UniformBuffer::Create("DataBuffer", &m_diffuseReflectionDataBuffer, sizeof(DiffuseReflectionDataBuffer), TRAP::Graphics::BufferUsage::Dynamic);
 
-    m_phongLightningDataBuffer.LightPosition = m_camera.GetCamera().GetViewMatrix() * m_lightPosition;
+    m_phongLightningDataBuffer.LightPosition = inverseView * m_lightPosition;
     m_phongLightningDataBuffer.LightLa = { 0.4f, 0.4f, 0.4f };
     m_phongLightningDataBuffer.LightLd = { 1.0f, 1.0f, 1.0f };
     m_phongLightningDataBuffer.LightLs = { 1.0f, 1.0f, 1.0f };
@@ -194,11 +202,11 @@ void Cube3D::OnDetach()
 
 void Cube3D::OnImGuiRender()
 {
-    const TRAP::Math::Vec3 pos = m_camera.GetCamera().GetPosition();
-    const TRAP::Math::Vec3 rot = m_camera.GetCamera().GetRotation();
-    float fov = m_camera.GetFoV();
-    float sensitivity = m_camera.GetMouseSensitivity();
-    float movement = m_camera.GetTranslationSpeed();
+    const TRAP::Math::Vec3 pos = m_cameraTransform.Position;
+    const TRAP::Math::Vec3 rot = TRAP::Math::Degrees(m_cameraTransform.Rotation);
+    float fov = TRAP::Math::Degrees(m_camera.GetPerspectiveVerticalFOV());
+    float sensitivity = m_mouseSensitivity;
+    float movement = m_translationSpeed;
 
     ImGuiWindowFlags flags;
 
@@ -222,11 +230,11 @@ void Cube3D::OnImGuiRender()
     ImGui::Text("Camera Position: %f %f %f", pos.x, pos.y, pos.z);
     ImGui::Text("Camera Rotation: %f %f %f", rot.x, rot.y, rot.z);
     if(ImGui::SliderFloat("Camera FoV", &fov, 1.0f, 100.0f))
-        m_camera.SetFoV(fov);
+        m_camera.SetPerspectiveVerticalFOV(TRAP::Math::Radians(fov));
     if(ImGui::SliderFloat("Camera Sensitivity", &sensitivity, 0.01f, 50.0f))
-        m_camera.SetMouseSensitivity(sensitivity);
+        m_mouseSensitivity = sensitivity;
     if(ImGui::SliderFloat("Camera Movement", &movement, 0.25f, 100.0f))
-        m_camera.SetTranslationSpeed(movement);
+        m_translationSpeed = movement;
     ImGui::Text("Press ALT to toggle Mouse Movement");
     ImGui::Separator();
     ImGui::Text("Cube");
@@ -299,19 +307,17 @@ void Cube3D::OnImGuiRender()
 
 void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
-    m_camera.OnUpdate(deltaTime);
-	
 	//Render
 	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
 
     TRAP::Graphics::RenderCommand::SetWireFrame(m_wireFrame);
     TRAP::Graphics::RenderCommand::SetDepthTesting(!m_wireFrame);
 
-    /*TRAP::Graphics::Renderer::BeginScene(m_camera.GetCamera()); //RIP Needs to use ECS or camera has to be moved into engine code
+    TRAP::Graphics::Renderer::BeginScene(m_camera, m_cameraTransform.GetTransform());
 	{
         if (m_shaderNames[m_currentShader] == "Diffuse Reflection")
         {
-            m_diffuseReflectionDataBuffer.LightPosition = m_camera.GetCamera().GetViewMatrix() * m_lightPosition;
+            m_diffuseReflectionDataBuffer.LightPosition = TRAP::Math::Inverse(m_cameraTransform.GetTransform()) * m_lightPosition;
             m_diffuseReflectionUniformBuffer->Bind();
             m_diffuseReflectionUniformBuffer->UpdateSubData(&m_diffuseReflectionDataBuffer.LightPosition, sizeof(TRAP::Math::Vec4), 0); //Update Camera
             TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[0]),
@@ -321,7 +327,7 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
         }
         else if (m_shaderNames[m_currentShader] == "Phong Lightning")
         {
-            m_phongLightningDataBuffer.LightPosition = m_camera.GetCamera().GetViewMatrix() * m_lightPosition;
+            m_phongLightningDataBuffer.LightPosition = TRAP::Math::Inverse(m_cameraTransform.GetTransform()) * m_lightPosition;
             m_phongLightningUniformBuffer->Bind();
             m_phongLightningUniformBuffer->UpdateSubData(&m_phongLightningDataBuffer.LightPosition, sizeof(TRAP::Math::Vec4), 0); //Update Camera
             TRAP::Graphics::Renderer::Submit(TRAP::Graphics::ShaderManager::Get(m_shaderNames[0]),
@@ -346,7 +352,27 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
             TRAP::Graphics::RenderCommand::SetDepthFunction(TRAP::Graphics::RendererFunction::Less);
     	}
 	}
-    TRAP::Graphics::Renderer::EndScene();*/
+    TRAP::Graphics::Renderer::EndScene();
+
+    const TRAP::Math::Vec3 rotVec{ m_cameraTransform.Rotation.x, m_cameraTransform.Rotation.y, m_cameraTransform.Rotation.z };
+    const TRAP::Math::Quaternion orientation = TRAP::Math::Quaternion(rotVec);
+    const TRAP::Math::Quaternion qF = orientation * TRAP::Math::Quaternion(0.0f, 0.0f, 0.0f, -1.0f) * TRAP::Math::Conjugate(orientation);
+    const TRAP::Math::Vec3 front = { qF.x, qF.y, qF.z };
+    const TRAP::Math::Vec3 right = TRAP::Math::Normalize(TRAP::Math::Cross(front, TRAP::Math::Vec3(0.0f, 1.0f, 0.0f)));
+
+    //Keyboard Position
+    if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::A))
+        m_cameraTransform.Position -= right * (m_translationSpeed * deltaTime);
+    if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::D))
+        m_cameraTransform.Position += right * (m_translationSpeed * deltaTime);
+    if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::W))
+        m_cameraTransform.Position += front * (m_translationSpeed * deltaTime);
+    if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::S))
+        m_cameraTransform.Position -= front * (m_translationSpeed * deltaTime);
+    if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::Space))
+        m_cameraTransform.Position.y += m_translationSpeed * deltaTime;
+    if (TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift))
+        m_cameraTransform.Position.y -= m_translationSpeed * deltaTime;
 
     //Update FPS & FrameTIme history
     if (m_titleTimer.Elapsed() >= 0.025f)
@@ -370,10 +396,48 @@ void Cube3D::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 void Cube3D::OnEvent(TRAP::Events::Event& event)
 {
-    m_camera.OnEvent(event);
-	
     TRAP::Events::EventDispatcher dispatcher(event);
     dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) { return OnKeyPress(e); });
+    dispatcher.Dispatch<TRAP::Events::MouseMoveEvent>([this](TRAP::Events::MouseMoveEvent& e) {return OnMouseMove(e); });
+    dispatcher.Dispatch<TRAP::Events::FrameBufferResizeEvent>([this](TRAP::Events::FrameBufferResizeEvent& e) {return OnFrameBufferResize(e); });
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool Cube3D::OnMouseMove(TRAP::Events::MouseMoveEvent& event)
+{
+    if (m_ignoreImGui)
+    {
+        static float lastX = 0.0f;
+        static float lastY = 0.0f;
+        if (m_firstMouse)
+        {
+            lastX = event.GetX();
+            lastY = event.GetY();
+            m_firstMouse = false;
+        }
+
+        float pitch = event.GetX() - lastX;
+        float yaw = lastY - event.GetY();
+        lastX = event.GetX();
+        lastY = event.GetY();
+
+        pitch *= TRAP::Math::Radians(m_mouseSensitivity);
+        yaw *= TRAP::Math::Radians(m_mouseSensitivity);
+
+    	m_cameraTransform.Rotation.x += TRAP::Math::Radians(yaw);
+        m_cameraTransform.Rotation.y -= TRAP::Math::Radians(pitch);
+
+        //Limit pitch movement
+        if (m_cameraTransform.Rotation.x > TRAP::Math::Radians(89.0f))
+            m_cameraTransform.Rotation.x = TRAP::Math::Radians(89.0f);
+        if (m_cameraTransform.Rotation.x < TRAP::Math::Radians(-89.0f))
+            m_cameraTransform.Rotation.x = TRAP::Math::Radians(-89.0f);
+
+        return true;
+    }
+
+    return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -405,7 +469,26 @@ bool Cube3D::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 	}
 
 	if(event.GetKey() == TRAP::Input::Key::Left_ALT && event.GetRepeatCount() == 0)
+	{
         m_ignoreImGui = !m_ignoreImGui;
 
+        if (m_ignoreImGui)
+            TRAP::Application::GetWindow()->SetCursorMode(TRAP::Window::CursorMode::Disabled);
+        else
+        {
+            m_firstMouse = true;
+            TRAP::Application::GetWindow()->SetCursorMode(TRAP::Window::CursorMode::Normal);
+        }
+	}
+
     return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool Cube3D::OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event)
+{
+    m_camera.SetViewportSize(event.GetWidth(), event.GetHeight());
+
+    return true;
 }
