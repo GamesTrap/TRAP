@@ -1351,3 +1351,9 @@ SITREP 10/29/2020|20w44a3
     - New ImGui dark theme colors ~<30 mins
     - Visual UI changes for TRAP-Editor ~<20 mins
     - Embedded OpenSans font inside Embed.h ~<20 mins
+
+SITREP 11/03/2020|20w45a1
+    - Changed TRAP Engine version to 20w45a1(0.6.85)
+    - Added YAML-cpp as a submodule ~<20 mins
+    - Added SceneSerializer class ~<30 mins
+    - Added WIP Serialize & Deserialize button in TRAP-Editor ~<20 mins

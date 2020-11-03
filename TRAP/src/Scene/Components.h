@@ -7,6 +7,7 @@
 
 namespace TRAP
 {
+	//Document
 	struct TagComponent
 	{
 		std::string Tag;
@@ -21,7 +22,8 @@ namespace TRAP
 			: Tag(std::move(tag))
 		{}
 	};
-	
+
+	//Document
 	struct TransformComponent
 	{
 		Math::Vec3 Position{ 0.0f, 0.0f, 0.0f };
@@ -50,6 +52,7 @@ namespace TRAP
 		}
 	};
 
+	//Document
 	struct SpriteRendererComponent
 	{
 		Math::Vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
@@ -65,6 +68,7 @@ namespace TRAP
 		{}
 	};
 
+	//Document
 	struct CameraComponent
 	{
 		SceneCamera Camera;
@@ -79,6 +83,7 @@ namespace TRAP
 		CameraComponent& operator=(CameraComponent&&) = default;
 	};
 
+	//Document
 	struct NativeScriptComponent
 	{
 		ScriptableEntity* Instance = nullptr;

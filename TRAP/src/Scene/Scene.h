@@ -13,7 +13,8 @@ namespace TRAP
 	}
 
 	class Entity;
-	
+
+	//Document
 	class Scene
 	{
 	public:
@@ -43,6 +44,7 @@ namespace TRAP
 		void OnComponentAdded(Entity entity, T& component);
 		
 		friend class Entity;
+		friend class SceneSerializer;
 		friend class SceneGraphPanel;
 		
 		entt::registry m_registry;

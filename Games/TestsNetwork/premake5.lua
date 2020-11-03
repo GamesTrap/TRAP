@@ -24,7 +24,8 @@ project "TestsNetwork"
 		"../../%{IncludeDir.SPIRV}",
 		"../../%{IncludeDir.VULKAN}/include/",
 		"../../%{IncludeDir.SPIRVCROSS}",
-		"../../%{IncludeDir.ENTT}"
+		"../../%{IncludeDir.ENTT}",
+		"../../%{IncludeDir.YAMLCPP}"
 	}
 
 	links
@@ -36,6 +37,7 @@ project "TestsNetwork"
 		links
 		{
 			"ImGui",
+			"YAMLCpp",
 			"GLSLang",
 			"SPIRV",
 

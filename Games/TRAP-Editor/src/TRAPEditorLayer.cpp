@@ -1,5 +1,7 @@
 #include "TRAPEditorLayer.h"
 
+#include <Scene/SceneSerializer.h>
+
 TRAPEditorLayer::TRAPEditorLayer()
 	: Layer("TRAPEditorLayer"),
 	  m_cameraController(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
@@ -71,6 +73,18 @@ void TRAPEditorLayer::OnImGuiRender()
 			//which we can not undo at the moment without finer window depth/z control.
 			//ImGui::MenuItem("Fullscreen", nullptr, &optFullscreenPersistent);
 
+			if(ImGui::MenuItem("Serialize"))
+			{
+				TRAP::SceneSerializer serializer(m_activeScene);
+				serializer.Serialize("Test.TRAP");
+			}
+
+			if (ImGui::MenuItem("Deserialize"))
+			{
+				TRAP::SceneSerializer serializer(m_activeScene);
+				serializer.Deserialize("Test.TRAP");
+			}
+			
 			if (ImGui::MenuItem("Exit"))
 				TRAP::Application::Shutdown();
 			ImGui::EndMenu();
@@ -145,6 +159,7 @@ void TRAPEditorLayer::OnAttach()
 
 	m_activeScene = TRAP::MakeScope<TRAP::Scene>();
 
+#if 0
 	//Entity
 	auto square = m_activeScene->CreateEntity("Square Entity");
 	square.AddComponent<TRAP::SpriteRendererComponent>(TRAP::Math::Vec4{0.0f, 1.0f, 0.0f, 1.0f});
@@ -186,7 +201,7 @@ void TRAPEditorLayer::OnAttach()
 	};
 
 	m_cameraEntity.AddComponent<TRAP::NativeScriptComponent>().Bind<CameraController>();
-
+#endif
 	m_sceneGraphPanel.SetContext(m_activeScene);
 }
 

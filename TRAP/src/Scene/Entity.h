@@ -12,6 +12,7 @@
 
 namespace TRAP
 {
+	//Document
 	class Entity
 	{
 	public:

@@ -6,6 +6,7 @@
 
 namespace TRAP
 {
+	//Document
 	class ScriptableEntity
 	{
 	public:

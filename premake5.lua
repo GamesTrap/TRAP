@@ -27,11 +27,13 @@ IncludeDir["HLSL"] = "Dependencies/GLSLang/hlsl"
 IncludeDir["SPIRV"] = "Dependencies/GLSLang/SPIRV"
 IncludeDir["SPIRVCROSS"] = "Dependencies/SPIRV-Cross"
 IncludeDir["ENTT"] = "Dependencies/Entt"
+IncludeDir["YAMLCPP"] = "Dependencies/YAMLCpp/include"
 
 include "TRAP"
 
 group "Dependencies"
 	include "Dependencies/ImGui"
+	include "Dependencies/YAMLCpp"
 	group "Dependencies/GLSLang"
 		include "Dependencies/GLSLang/SPIRV"
 		include "Dependencies/GLSLang/glslang"

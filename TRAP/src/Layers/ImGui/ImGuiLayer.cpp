@@ -35,8 +35,8 @@ void TRAP::ImGuiLayer::OnAttach()
 
 	ImFontConfig fontConfig;
 	fontConfig.FontDataOwnedByAtlas = false;
-	io.Fonts->AddFontFromMemoryTTF(Embed::OpenSansBoldTTFData.data(), Embed::OpenSansBoldTTFData.size(), 18.0f, &fontConfig);
-	io.FontDefault = io.Fonts->AddFontFromMemoryTTF(Embed::OpenSansTTFData.data(), Embed::OpenSansTTFData.size(), 18.0f, &fontConfig);
+	io.Fonts->AddFontFromMemoryTTF(Embed::OpenSansBoldTTFData.data(), static_cast<int32_t>(Embed::OpenSansBoldTTFData.size()), 18.0f, &fontConfig);
+	io.FontDefault = io.Fonts->AddFontFromMemoryTTF(Embed::OpenSansTTFData.data(), static_cast<int32_t>(Embed::OpenSansTTFData.size()), 18.0f, &fontConfig);
 	
 	//Setup Dear ImGui style
 	ImGui::StyleColorsDark();

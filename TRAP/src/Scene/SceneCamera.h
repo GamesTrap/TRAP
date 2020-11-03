@@ -5,6 +5,7 @@
 
 namespace TRAP
 {
+	//Document
 	class SceneCamera : public Graphics::Camera
 	{
 	public:

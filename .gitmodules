@@ -7,3 +7,6 @@
 [submodule "Dependencies/SPIRV-Cross"]
 	path = Dependencies/SPIRV-Cross
 	url = https://github.com/GamesTrap/SPIRV-Cross.git
+[submodule "Dependencies/YAMLCpp"]
+	path = Dependencies/YAMLCpp
+	url = git@github.com:GamesTrap/yaml-cpp.git

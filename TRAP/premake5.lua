@@ -51,6 +51,7 @@ project "TRAP"
 		"../%{IncludeDir.SPIRVCROSS}",
 		"../%{IncludeDir.VULKAN}/include/",
 		"../%{IncludeDir.ENTT}",
+		"../%{IncludeDir.YAMLCPP}"
 	}
 
 	filter "system:windows"
@@ -68,6 +69,7 @@ project "TRAP"
 		links
 		{
 			"ImGui",
+			"YAMLCpp",
 			"GLSLang",
 			"SPIRV",
 			"SPIRV-Cross-Core",
@@ -95,6 +97,7 @@ project "TRAP"
 		links
 		{
 			"ImGui",
+			"YAMLCpp",
 			"GLSLang",
 			"SPIRV",
 			"SPIRV-Cross-Core",
