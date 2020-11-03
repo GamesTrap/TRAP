@@ -53,9 +53,13 @@ namespace TRAP::Graphics
 			Math::Mat4 ViewMatrix{ 1.0f };
 		} UniformCamera;
 	};
-
-	static Renderer2DData s_data;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::Renderer2DData TRAP::Graphics::Renderer2D::s_data{};
+
+//-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::Init()
 {
@@ -122,8 +126,11 @@ void TRAP::Graphics::Renderer2D::Shutdown()
 	TP_PROFILE_FUNCTION();
 
 	TP_DEBUG(Log::Renderer2DPrefix, "Shutting down");
+	s_data.CameraUniformBuffer.reset();
 	s_data.TextureShader.reset();
 	s_data.WhiteTexture.reset();
+	s_data.QuadVertexArray->Unbind();
+	s_data.QuadVertexArray.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

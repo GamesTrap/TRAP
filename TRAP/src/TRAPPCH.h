@@ -2,6 +2,7 @@
 #define _TRAP_TRAPPCH_H_
 
 #include "Core/PlatformDetection.h"
+#include "TRAP_Assert.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 	#ifndef NOMINMAX

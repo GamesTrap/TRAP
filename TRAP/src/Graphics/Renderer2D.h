@@ -51,6 +51,8 @@ namespace TRAP::Graphics
 		
 		static void StartBatch();
 		static void NextBatch();
+
+		static Renderer2DData s_data;
 	};
 }
 
