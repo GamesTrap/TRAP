@@ -3,7 +3,7 @@
 
 #include "OpenGL/OpenGLContext.h"
 #include "Vulkan/VulkanContext.h"
-#include "Utils/MsgBox/MsgBox.h"
+#include "Utils/Dialogs/MsgBox.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -35,7 +35,7 @@ void TRAP::Graphics::API::Context::Create(Window* window)
 	default:
 		//This should never be reached.
 		TP_CRITICAL(Log::EnginePrefix, "Unsupported Device!");
-		Show("Device is unsupported!\nNo RenderAPI selected!", "Unsupported Device", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+		Utils::Dialogs::MsgBox::Show("Device is unsupported!\nNo RenderAPI selected!", "Unsupported Device", Utils::Dialogs::MsgBox::Style::Error, Utils::Dialogs::MsgBox::Buttons::Quit);
 		exit(-1);
 	}
 }

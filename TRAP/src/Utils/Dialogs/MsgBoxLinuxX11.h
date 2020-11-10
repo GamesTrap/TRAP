@@ -3,14 +3,14 @@
 
 #ifdef TRAP_PLATFORM_LINUX
 
-namespace TRAP::Utils::MsgBox
+namespace TRAP::Utils::Dialogs::MsgBox
 {
 	enum class Selection;
 	enum class Style;
 	enum class Buttons;
 }
 
-namespace TRAP::Utils::MsgBox::INTERNAL::X11
+namespace TRAP::Utils::Dialogs::MsgBox::INTERNAL::X11
 {
 	struct Button
 	{
@@ -83,7 +83,7 @@ namespace TRAP::Utils::MsgBox::INTERNAL::X11
 		                           Button& btn1,
 		                           Button& btn2);
 
-	TRAP::Utils::MsgBox::Selection ShowX11(const char* message,
+	TRAP::Utils::Dialogs::MsgBox::Selection ShowX11(const char* message,
 		                                   const char* title,
 		                                   const TRAP::Utils::MsgBox::Style style,
 		                                   const TRAP::Utils::MsgBox::Buttons buttons);

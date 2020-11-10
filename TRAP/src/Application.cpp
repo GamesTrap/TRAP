@@ -12,7 +12,7 @@
 #include "Graphics/Textures/TextureCube.h"
 #include "Graphics/Renderer.h"
 #include "Utils/String/String.h"
-#include "Utils/MsgBox/MsgBox.h"
+#include "Utils/Dialogs/MsgBox.h"
 #include "Events/KeyEvent.h"
 #include "Events/WindowEvent.h"
 #include "Input/Input.h"

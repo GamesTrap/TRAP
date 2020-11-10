@@ -150,7 +150,7 @@ bool Sandbox2D::OnKeyPress(TRAP::Events::KeyPressEvent& event)
 	}
 
 	if (event.GetKey() == TRAP::Input::Key::F11 && event.GetRepeatCount() < 1)
-		TRAP::Utils::MsgBox::Show("Just a prank bro!", "Critical Error");
+		TRAP::Utils::Dialogs::MsgBox::Show("Just a prank bro!", "Critical Error");
 
 	return true;
 }

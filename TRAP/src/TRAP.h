@@ -40,7 +40,7 @@
 //-----------------------
 
 //----UTILS--------------
-#include "../src/Utils/MsgBox/MsgBox.h"
+#include "../src/Utils/Dialogs/MsgBox.h"
 #include "../src/Utils/Time/TimeStep.h"
 #include "../src/Utils/Time/Timer.h"
 #include "../src/Utils/String/String.h"

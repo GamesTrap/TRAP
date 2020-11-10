@@ -4,7 +4,7 @@
 #ifdef TRAP_PLATFORM_WINDOWS
 
 //Internal MsgBox Stuff
-namespace TRAP::Utils::MsgBox::INTERNAL
+namespace TRAP::Utils::Dialogs::MsgBox::INTERNAL
 {
 	uint32_t GetIcon(const Style style)
 	{
@@ -70,10 +70,10 @@ namespace TRAP::Utils::MsgBox::INTERNAL
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::Show(const char* message,
-														 const char* title,
-														 const Style style,
-														 const Buttons buttons)
+TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::Show(const char* message,
+														                   const char* title,
+														                   const Style style,
+														                   const Buttons buttons)
 {
 	uint32_t flags = MB_TASKMODAL;
 

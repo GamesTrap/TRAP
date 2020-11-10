@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "MsgBox.h"
 
-TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::Show(const char* message, const char* title, const Style style)
+TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::Show(const char* message, const char* title, const Style style)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -10,7 +10,7 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::Show(const char* message, co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::Show(const char* message, const char* title, const Buttons buttons)
+TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::Show(const char* message, const char* title, const Buttons buttons)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -19,7 +19,7 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::Show(const char* message, co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::Show(const char* message, const char* title)
+TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::Show(const char* message, const char* title)
 {
 	TP_PROFILE_FUNCTION();
 

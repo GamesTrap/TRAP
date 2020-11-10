@@ -1,7 +1,7 @@
 #ifndef _TRAP_MSGBOX_H_
 #define _TRAP_MSGBOX_H_
 
-namespace TRAP::Utils::MsgBox
+namespace TRAP::Utils::Dialogs::MsgBox
 {
 	/// <summary>
 	/// Options for styles to apply to a message box.

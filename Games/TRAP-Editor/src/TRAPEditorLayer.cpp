@@ -138,10 +138,10 @@ void TRAPEditorLayer::OnAttach()
 	if (!TRAP::Graphics::API::Context::IsSupported(TRAP::Graphics::API::RenderAPI::OpenGL))
 	{
 		TP_CRITICAL("[TRAP Editor] TRAP Editor needs OpenGL 4.6 to run!");
-		TRAP::Utils::MsgBox::Show("[TRAP Editor] TRAP Editor needs OpenGL 4.6 or newer!",
+		TRAP::Utils::Dialogs::MsgBox::Show("[TRAP Editor] TRAP Editor needs OpenGL 4.6 or newer!",
 			"[TRAP Editor] Invalid RenderAPI",
-			TRAP::Utils::MsgBox::Style::Error,
-			TRAP::Utils::MsgBox::Buttons::Quit);
+			TRAP::Utils::Dialogs::MsgBox::Style::Error,
+			TRAP::Utils::Dialogs::MsgBox::Buttons::Quit);
 	}
 
 	//If OpenGL 4.6 is supported switch to it

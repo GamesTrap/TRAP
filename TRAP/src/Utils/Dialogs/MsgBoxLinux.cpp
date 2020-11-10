@@ -8,7 +8,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::Show(const char* message,
+TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::Show(const char* message,
 	const char* title,
 	const Style style,
 	const Buttons buttons)

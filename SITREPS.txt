@@ -1358,3 +1358,8 @@ SITREP 11/03/2020|20w45a1
     - Added SceneSerializer class ~<30 mins
     - Added WIP Serialize & Deserialize button in TRAP-Editor ~<20 mins
     - Fixed Tests3D (Cube3D) ~<30 mins
+    - Fixed Linux crash when closing engine ~>30 mins
+
+SITREP 11/04/2020|20w45a2
+    - Changed TRAP Engine version to 20w45a2(0.6.86)
+    - Moved MsgBox to TRAP::Utils::Dialogs namespace ~<20 mins

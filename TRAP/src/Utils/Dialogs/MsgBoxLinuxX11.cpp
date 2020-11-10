@@ -7,7 +7,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Utils::MsgBox::INTERNAL::X11::DrawButton(Button* b, Display* dpy, ::Window w, GC gc)
+void TRAP::Utils::Dialogs::MsgBox::INTERNAL::X11::DrawButton(Button* b, Display* dpy, ::Window w, GC gc)
 {
 	if (b->Mouseover)
 	{
@@ -29,14 +29,14 @@ void TRAP::Utils::MsgBox::INTERNAL::X11::DrawButton(Button* b, Display* dpy, ::W
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-int TRAP::Utils::MsgBox::INTERNAL::X11::IsPointInside(Button* b, const int px, const int py)
+int TRAP::Utils::Dialogs::MsgBox::INTERNAL::X11::IsPointInside(Button* b, const int px, const int py)
 {
 	return px >= b->X && px <= (b->X + static_cast<int>(b->Width) - 1) && py >= b->Y && py <= (b->Y + static_cast<int>(b->Height) - 1);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Utils::MsgBox::INTERNAL::X11::Cleanup(Display* display, ::Window& window, GC& gc)
+void TRAP::Utils::Dialogs::MsgBox::INTERNAL::X11::Cleanup(Display* display, ::Window& window, GC& gc)
 {
 	XFreeGC(display, gc);
 	XDestroyWindow(display, window);
@@ -45,7 +45,7 @@ void TRAP::Utils::MsgBox::INTERNAL::X11::Cleanup(Display* display, ::Window& win
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Utils::MsgBox::INTERNAL::X11::SingleButtonMsgBoxEventLoop(Display* display, ::Window& window, Button& btn, const char* message, int& height, GC& gc)
+void TRAP::Utils::Dialogs::MsgBox::INTERNAL::X11::SingleButtonMsgBoxEventLoop(Display* display, ::Window& window, Button& btn, const char* message, int& height, GC& gc)
 {
 	XEvent event;
 	const char* temp, * end;
@@ -139,7 +139,7 @@ void TRAP::Utils::MsgBox::INTERNAL::X11::SingleButtonMsgBoxEventLoop(Display* di
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::DoubleButtonMsgBoxEventLoop(Display* display, ::Window& window, Button& btn1, Button& btn2, const char* message, int& height, GC& gc)
+TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::INTERNAL::X11::DoubleButtonMsgBoxEventLoop(Display* display, ::Window& window, Button& btn1, Button& btn2, const char* message, int& height, GC& gc)
 {
 	XEvent event;
 	const char* temp, * end;
@@ -282,18 +282,18 @@ TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::DoubleButtonM
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Utils::MsgBox::INTERNAL::X11::SingleButtonMsgBox(const char* btnName,
-	                                                        XFontStruct* font,
-	                                                        int& direction,
-	                                                        int& ascent,
-	                                                        int& descent,
-	                                                        XCharStruct& overall,
-	                                                        int& W,
-	                                                        int& H,
-	                                                        int& height,
-	                                                        int& X,
-	                                                        int& Y,
-	                                                        Button& btn)
+void TRAP::Utils::Dialogs::MsgBox::INTERNAL::X11::SingleButtonMsgBox(const char* btnName,
+	                                                                 XFontStruct* font,
+	                                                                 int& direction,
+	                                                                 int& ascent,
+	                                                                 int& descent,
+	                                                                 XCharStruct& overall,
+	                                                                 int& W,
+	                                                                 int& H,
+	                                                                 int& height,
+	                                                                 int& X,
+	                                                                 int& Y,
+	                                                                 Button& btn)
 {
 	//Compute the shape of the first button
 	XTextExtents(font, btnName, 2, &direction, &ascent, &descent, &overall);
@@ -318,20 +318,20 @@ void TRAP::Utils::MsgBox::INTERNAL::X11::SingleButtonMsgBox(const char* btnName,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Utils::MsgBox::INTERNAL::X11::DoubleButtonMsgBox(const char* btnName1,
-	                                                        const char* btnName2,
-	                                                        XFontStruct* font,
-	                                                        int& direction,
-	                                                        int& ascent,
-	                                                        int& descent,
-	                                                        XCharStruct& overall,
-	                                                        int& W,
-	                                                        int& H,
-	                                                        int& height,
-	                                                        int& X,
-	                                                        int& Y,
-	                                                        Button& btn1,
-	                                                        Button& btn2)
+void TRAP::Utils::Dialogs::MsgBox::INTERNAL::X11::DoubleButtonMsgBox(const char* btnName1,
+	                                                                 const char* btnName2,
+	                                                                 XFontStruct* font,
+	                                                                 int& direction,
+	                                                                 int& ascent,
+	                                                                 int& descent,
+	                                                                 XCharStruct& overall,
+	                                                                 int& W,
+	                                                                 int& H,
+	                                                                 int& height,
+	                                                                 int& X,
+	                                                                 int& Y,
+	                                                                 Button& btn1,
+	                                                                 Button& btn2)
 {
 	//Compute the shape of the first button
 	XTextExtents(font, btnName1, 2, &direction, &ascent, &descent, &overall);
@@ -368,10 +368,10 @@ void TRAP::Utils::MsgBox::INTERNAL::X11::DoubleButtonMsgBox(const char* btnName1
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Utils::MsgBox::Selection TRAP::Utils::MsgBox::INTERNAL::X11::ShowX11(const char* message,
-	                                                                       const char* title,
-	                                                                       const Style style,
-	                                                                       const Buttons buttons)
+TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::INTERNAL::X11::ShowX11(const char* message,
+	                                                                                         const char* title,
+	                                                                                         const Style style,
+	                                                                                         const Buttons buttons)
 {
 	//Style gets ignored because there are no icons to choose from
 	Display* display;

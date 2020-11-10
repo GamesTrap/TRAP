@@ -3,7 +3,7 @@
 
 #include "OpenGL/OpenGLRenderer.h"
 #include "Vulkan/VulkanRenderer.h"
-#include "Utils/MsgBox/MsgBox.h"
+#include "Utils/Dialogs/MsgBox.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -29,7 +29,7 @@ void TRAP::Graphics::API::RendererAPI::Init()
 
 	default:
 		TP_CRITICAL(Log::RendererPrefix, "Unsupported Device!");
-		Show("Device is unsupported!\n No RenderAPI selected!", "Unsupported Device", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+		Utils::Dialogs::MsgBox::Show("Device is unsupported!\n No RenderAPI selected!", "Unsupported Device", Utils::Dialogs::MsgBox::Style::Error, Utils::Dialogs::MsgBox::Buttons::Quit);
 		exit(-1);
 	}
 

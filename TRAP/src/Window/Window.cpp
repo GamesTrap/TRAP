@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Window.h"
 
-#include "Utils/MsgBox/MsgBox.h"
+#include "Utils/Dialogs/MsgBox.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvent.h"
@@ -770,7 +770,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		const int32_t success = INTERNAL::WindowingAPI::Init();
 		TRAP_CORE_ASSERT(success, "Could not initialize WindowingAPI!");
 		if (!success)
-			Utils::MsgBox::Show("Could not initialize WindowingAPI!", "Error WindowingAPI", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+			Utils::Dialogs::MsgBox::Show("Could not initialize WindowingAPI!", "Error WindowingAPI", Utils::Dialogs::MsgBox::Style::Error, Utils::Dialogs::MsgBox::Buttons::Quit);
 		INTERNAL::WindowingAPI::SetErrorCallback(WindowingAPIErrorCallback);
 		s_WindowingAPIInitialized = true;
 
@@ -822,10 +822,10 @@ void TRAP::Window::Init(const WindowProps& props)
 				else
 				{
 					//All RenderAPIs are unsupported
-					TRAP::Utils::MsgBox::Show("Every RenderAPI that TRAP Engine uses is unsupported on your device!\nDoes your system meet the minimum system requirements for running TRAP Engine?",
+					TRAP::Utils::Dialogs::MsgBox::Show("Every RenderAPI that TRAP Engine uses is unsupported on your device!\nDoes your system meet the minimum system requirements for running TRAP Engine?",
 						"Incompatible Device",
-						Utils::MsgBox::Style::Error,
-						Utils::MsgBox::Buttons::Quit);
+						Utils::Dialogs::MsgBox::Style::Error,
+						Utils::Dialogs::MsgBox::Buttons::Quit);
 					exit(-1);
 				}
 			}
@@ -878,7 +878,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	if (!m_window)
 	{
 		TP_CRITICAL(Log::WindowPrefix, "Failed to create window");
-		TRAP::Utils::MsgBox::Show("Failed to create Window!", "Failed to Create Window", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+		TRAP::Utils::Dialogs::MsgBox::Show("Failed to create Window!", "Failed to Create Window", Utils::Dialogs::MsgBox::Style::Error, Utils::Dialogs::MsgBox::Buttons::Quit);
 		exit(-1);
 	}
 	
