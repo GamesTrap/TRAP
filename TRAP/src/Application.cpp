@@ -712,7 +712,7 @@ void TRAP::Application::UpdateLinuxWindowManager()
 	else
 	{
 		TP_CRITICAL(Log::EngineLinuxPrefix, "Unsupported Window Manager!");
-		Show("Window Manager is unsupported!\nTRAP Engine uses X11 or Wayland\nMake sure the appropriate environment variables are set!", "Unsupported Window Manager", Utils::MsgBox::Style::Error, Utils::MsgBox::Buttons::Quit);
+		Utils::Dialogs::MsgBox::Show("Window Manager is unsupported!\nTRAP Engine uses X11 or Wayland\nMake sure the appropriate environment variables are set!", "Unsupported Window Manager", Utils::Dialogs::MsgBox::Style::Error, Utils::Dialogs::MsgBox::Buttons::Quit);
 		exit(-1);
 	}
 #endif
