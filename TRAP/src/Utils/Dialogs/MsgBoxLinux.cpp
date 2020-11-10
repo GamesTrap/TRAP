@@ -14,7 +14,7 @@ TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::Show(const
 	const Buttons buttons)
 {
 	if (Application::GetLinuxWindowManager() == Application::LinuxWindowManager::X11)
-		return INTERNAL::X11::ShowX11(message, title, style, buttons);
+		return TRAP::Utils::Dialogs::MsgBox::INTERNAL::X11::ShowX11(message, title, style, buttons);
 	if (Application::GetLinuxWindowManager() == Application::LinuxWindowManager::Wayland)
 	{
 		//TODO Implement

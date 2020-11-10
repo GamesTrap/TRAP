@@ -85,8 +85,8 @@ namespace TRAP::Utils::Dialogs::MsgBox::INTERNAL::X11
 
 	TRAP::Utils::Dialogs::MsgBox::Selection ShowX11(const char* message,
 		                                   const char* title,
-		                                   const TRAP::Utils::MsgBox::Style style,
-		                                   const TRAP::Utils::MsgBox::Buttons buttons);
+		                                   const TRAP::Utils::Dialogs::MsgBox::Style style,
+		                                   const TRAP::Utils::Dialogs::MsgBox::Buttons buttons);
 }
 
 #endif
