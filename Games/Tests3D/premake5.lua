@@ -25,7 +25,8 @@ project "Tests3D"
 		"../../%{IncludeDir.VULKAN}/include/",
 		"../../%{IncludeDir.SPIRVCROSS}",
 		"../../%{IncludeDir.ENTT}",
-		"../../%{IncludeDir.YAMLCPP}"
+		"../../%{IncludeDir.YAMLCPP}",
+		"../../%{IncludeDir.MODERNFILEDIALOGS}"
 	}
 
 	links
@@ -38,6 +39,7 @@ project "Tests3D"
 		{
 			"ImGui",
 			"YAMLCpp",
+			"ModernFileDialogs",
 			"GLSLang",
 			"SPIRV",
 

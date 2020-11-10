@@ -10,3 +10,6 @@
 [submodule "Dependencies/YAMLCpp"]
 	path = Dependencies/YAMLCpp
 	url = https://github.com/GamesTrap/yaml-cpp.git
+[submodule "Dependencies/ModernFileDialogs"]
+	path = Dependencies/ModernFileDialogs
+	url = git@github.com:GamesTrap/ModernFileDialogs.git

@@ -1363,3 +1363,7 @@ SITREP 11/03/2020|20w45a1
 SITREP 11/04/2020|20w45a2
     - Changed TRAP Engine version to 20w45a2(0.6.86)
     - Moved MsgBox to TRAP::Utils::Dialogs namespace ~<20 mins
+
+SITREP 11/10/2020|20w46a1
+    - Changed TRAP Engine version to 20w46a1(0.6.87)
+    - Added ModernFileDialogs as submodule ~<30 mins

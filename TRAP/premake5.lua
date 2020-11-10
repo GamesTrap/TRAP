@@ -51,7 +51,8 @@ project "TRAP"
 		"../%{IncludeDir.SPIRVCROSS}",
 		"../%{IncludeDir.VULKAN}/include/",
 		"../%{IncludeDir.ENTT}",
-		"../%{IncludeDir.YAMLCPP}"
+		"../%{IncludeDir.YAMLCPP}",
+		"../%{IncludeDir.MODERNFILEDIALOGS}"
 	}
 
 	filter "system:windows"
@@ -70,6 +71,7 @@ project "TRAP"
 		{
 			"ImGui",
 			"YAMLCpp",
+			"ModernFileDialogs",
 			"GLSLang",
 			"SPIRV",
 			"SPIRV-Cross-Core",
@@ -98,6 +100,7 @@ project "TRAP"
 		{
 			"ImGui",
 			"YAMLCpp",
+			"ModernFileDialogs",
 			"GLSLang",
 			"SPIRV",
 			"SPIRV-Cross-Core",

@@ -7,7 +7,7 @@
 #include "Scene.h"
 
 #pragma warning(push, 0)
-#include "entt.h"
+#include <entt.h>
 #pragma warning(pop)
 
 namespace TRAP
