@@ -30,8 +30,6 @@ project "TRAP"
 		"src/Log/WindowsLog.cpp",
 		"src/Utils/Dialogs/MsgBoxWindows.cpp",
 		"src/Utils/Dialogs/MsgBoxLinux.cpp",
-		"src/Utils/Dialogs/MsgBoxLinuxX11.h",
-		"src/Utils/Dialogs/MsgBoxLinuxX11.cpp",
 		"src/Input/WindowsInput.cpp",
 		"src/Input/LinuxInput.cpp",
 		"src/Window/WindowingAPIWin32.cpp",
@@ -89,8 +87,6 @@ project "TRAP"
 			"src/Log/ANSILog.cpp",
 			"src/Input/LinuxInput.cpp",
 			"src/Utils/Dialogs/MsgBoxLinux.cpp",
-			"src/Utils/Dialogs/MsgBoxLinuxX11.h",
-			"src/Utils/Dialogs/MsgBoxLinuxX11.cpp",
 			"src/Window/WindowingAPILinuxX11.cpp",
 			"src/Network/Sockets/Platform/SocketImplLinux.h",
 			"src/Network/Sockets/Platform/SocketImplLinux.cpp"

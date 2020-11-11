@@ -68,6 +68,7 @@
 #include <sys/stat.h>
 #include <sys/inotify.h>
 #include <sys/select.h>
+#include <sys/utsname.h>
 #include <fcntl.h>
 #include <dirent.h>
 #include <unistd.h>

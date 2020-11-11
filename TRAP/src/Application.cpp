@@ -60,6 +60,8 @@ TRAP::Application::Application()
 	//TODO Future Remove
 	if (GetLinuxWindowManager() == LinuxWindowManager::Wayland)
 	{
+        TRAP::Utils::Dialogs::MsgBox::Show("Wayland is currently not supported by TRAP! Please use X11 instead", "Wayland unsupported!",
+            TRAP::Utils::Dialogs::MsgBox::Style::Error, TRAP::Utils::Dialogs::MsgBox::Buttons::Quit);
 		TP_CRITICAL(Log::EngineLinuxWaylandPrefix, "Wayland is currently not supported by TRAP! Please use X11 instead");
 		exit(-1);
 	}
@@ -705,9 +707,14 @@ void TRAP::Application::ReCreateWindow(const Graphics::API::RenderAPI renderAPI)
 void TRAP::Application::UpdateLinuxWindowManager()
 {
 #ifdef TRAP_PLATFORM_LINUX
-	if (std::getenv("WAYLAND_DISPLAY") || strcmp(std::getenv("XDG_SESSION_TYPE"), "wayland") == 0)
+	std::string wl = "wayland";
+	std::string x = "x11";
+	std::string session;
+	if(std::getenv("XDG_SESSION_TYPE"))
+		session = std::getenv("XDG_SESSION_TYPE");
+	if (std::getenv("WAYLAND_DISPLAY") || session == wl)
 		m_linuxWindowManager = LinuxWindowManager::Wayland;
-	else if (std::getenv("DISPLAY") || strcmp(std::getenv("XDG_SESSION_TYPE"), "x11") == 0)
+	else if (std::getenv("DISPLAY") || session == x)
 		m_linuxWindowManager = LinuxWindowManager::X11;
 	else
 	{
