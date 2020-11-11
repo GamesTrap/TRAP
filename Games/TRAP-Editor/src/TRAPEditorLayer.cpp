@@ -72,17 +72,16 @@ void TRAPEditorLayer::OnImGuiRender()
 			//which we can not undo at the moment without finer window depth/z control.
 			//ImGui::MenuItem("Fullscreen", nullptr, &optFullscreenPersistent);
 
-			if(ImGui::MenuItem("Serialize"))
-			{
-				TRAP::SceneSerializer serializer(m_activeScene);
-				serializer.Serialize("Test.TRAP");
-			}
+			if(ImGui::MenuItem("New", "Ctrl+N"))
+				NewScene();
+			if(ImGui::MenuItem("Open...", "Ctrl+O"))
+				OpenScene();
+			if(ImGui::MenuItem("Save", "Ctrl+S"))
+				SaveScene();
+			if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+				SaveSceneAs();
 
-			if (ImGui::MenuItem("Deserialize"))
-			{
-				TRAP::SceneSerializer serializer(m_activeScene);
-				serializer.Deserialize("Test.TRAP");
-			}
+			ImGui::Separator();
 			
 			if (ImGui::MenuItem("Exit"))
 				TRAP::Application::Shutdown();
@@ -245,4 +244,116 @@ void TRAPEditorLayer::OnTick()
 {
 	//Update Scene
 	m_activeScene->OnTick();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::OnEvent(TRAP::Events::Event& event)
+{
+	TRAP::Events::EventDispatcher dispatcher(event);
+	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) {return OnKeyPress(e); });
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAPEditorLayer::OnKeyPress(TRAP::Events::KeyPressEvent& event)
+{
+	//Shortcuts
+	if (event.GetRepeatCount() > 0)
+		return false;
+
+	const bool ctrlPressed = TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Control) || TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Control);
+	const bool shiftPressed = TRAP::Input::IsKeyPressed(TRAP::Input::Key::Left_Shift) || TRAP::Input::IsKeyPressed(TRAP::Input::Key::Right_Shift);
+	switch(event.GetKey())
+	{
+	case TRAP::Input::Key::N:
+	{
+		if (ctrlPressed)
+			NewScene();
+		
+		break;
+	}
+		
+	case TRAP::Input::Key::O:
+	{
+		if (ctrlPressed)
+			OpenScene();
+		
+		break;
+	}
+
+	case TRAP::Input::Key::S:
+	{
+		if (ctrlPressed && shiftPressed)
+			SaveSceneAs();
+		else if (shiftPressed)
+			SaveScene();
+
+		break;
+	}
+		
+	default:
+		break;
+	}
+	
+	return false;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::NewScene()
+{
+	m_activeScene = TRAP::MakeRef<TRAP::Scene>();
+	m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
+	m_sceneGraphPanel.SetContext(m_activeScene);
+
+	m_lastScenePath = "";
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::OpenScene()
+{
+	const std::string physicalPath = TRAP::Utils::Dialogs::OpenSingleFile("TRAP Scene", m_lastScenePath.empty() ? "" : m_lastScenePath, { {"TRAP Scene", "*.TRAPScene;*.TPScene"} });
+	if (!physicalPath.empty())
+	{
+		m_lastScenePath = physicalPath;
+
+		m_activeScene = TRAP::MakeRef<TRAP::Scene>();
+		m_activeScene->OnViewportResize(static_cast<uint32_t>(m_viewportSize.x), static_cast<uint32_t>(m_viewportSize.y));
+		m_sceneGraphPanel.SetContext(m_activeScene);
+
+		TRAP::SceneSerializer serializer(m_activeScene);
+		serializer.Deserialize(m_lastScenePath);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::SaveScene()
+{
+	std::string physicalPath;
+	if (m_lastScenePath.empty())
+		physicalPath = TRAP::Utils::Dialogs::SaveFile("TRAP Scene", "MyScene.TRAPScene", { {"TRAP Scene", "*.TRAPScene;*.TPScene"} });
+
+	if (!physicalPath.empty())
+		m_lastScenePath = physicalPath;
+
+	TRAP::SceneSerializer serializer(m_activeScene);
+	serializer.Serialize(m_lastScenePath);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAPEditorLayer::SaveSceneAs()
+{
+	const std::string physicalPath = TRAP::Utils::Dialogs::SaveFile("TRAP Scene", m_lastScenePath.empty() ? "MyScene.TRAPScene" : m_lastScenePath, { {"TRAP Scene", "*.TRAPScene;*.TPScene"} });
+
+	if (!physicalPath.empty())
+	{
+		m_lastScenePath = physicalPath;
+
+		TRAP::SceneSerializer serializer(m_activeScene);
+		serializer.Serialize(m_lastScenePath);
+	}
 }

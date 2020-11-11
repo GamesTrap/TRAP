@@ -14,6 +14,7 @@ TRAP::SceneGraphPanel::SceneGraphPanel(const Ref<Scene>& context)
 void TRAP::SceneGraphPanel::SetContext(const Ref<Scene>& context)
 {
 	m_context = context;
+	m_selectionContext = {};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -1368,3 +1368,7 @@ SITREP 11/10/2020|20w46a1
     - Changed TRAP Engine version to 20w46a1(0.6.87)
     - Added ModernFileDialogs as submodule ~<30 mins
     - Added MessageBoxes for Linux ~> 30 mins
+
+SITREP 11/11/2020|20w46a3
+    - Changed TRAP Engine version to 20w46a3(0.6.88)
+    - TRAP-Editor Added proper Save/Load dialogs & a New scene button ~<30 mins
