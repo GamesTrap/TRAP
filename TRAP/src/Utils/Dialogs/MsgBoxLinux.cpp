@@ -5,215 +5,217 @@
 #include "MsgBox.h"
 #include "Application.h"
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool DetectPresence(const std::string& executable)
+namespace INTERNAL
 {
-	std::string buffer;
-	buffer.resize(1024);
-	FILE* in;
 
-	std::string testedString = "which " + executable + " 2>/dev/null ";
-	in = popen(testedString.data(), "r");
-	if ((fgets(buffer.data(), buffer.size(), in) != nullptr)
-		&& (buffer.find_first_of(':') == std::string::npos) && (buffer.find("no ") == std::string::npos))
+	bool DetectPresence(const std::string& executable)
 	{
-		pclose(in);
-		return true;
-	}
-	else
-	{
-		pclose(in);
-		return false;
-	}
-}
+		std::string buffer;
+		buffer.resize(1024);
+		FILE* in;
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool IsDarwin()
-{
-	static int32_t isDarwin = -1;
-	struct utsname lUtsname;
-
-	if (isDarwin < 0)
-		isDarwin = !uname(&lUtsname) && std::string(lUtsname.sysname) == "Darwin";
-
-	return isDarwin;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool GetEnvDISPLAY()
-{
-	return std::getenv("DISPLAY");
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool GraphicMode()
-{
-	return (GetEnvDISPLAY() || (IsDarwin() && GetEnvDISPLAY()));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool ZenityPresent()
-{
-	static int32_t zenityPresent = -1;
-
-	if (zenityPresent < 0)
-		zenityPresent = DetectPresence("zenity");
-
-	return zenityPresent && GraphicMode();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-int32_t Zenity3Present()
-{
-    static int32_t zenity3Present = -1;
-    FILE* in;
-    std::string buffer;
-    buffer.resize(1024);
-    
-    if(zenity3Present < 0)
-    {
-        zenity3Present = 0;
-        if(ZenityPresent())
-        {
-            in = popen("zenity --version", "r");
-            if(fgets(buffer.data(), buffer.size(), in) != nullptr)
-            {
-                if(std::stoi(buffer) >= 3)
-                {
-                    zenity3Present = 3;
-                    int32_t temp = std::stoi(buffer.substr(buffer.find_first_not_of('.') + 2));
-                    if(temp >= 18)
-                        zenity3Present = 5;
-                    else if(temp >= 10)
-                        zenity3Present = 4;
-                }
-                else if((std::stoi(buffer) == 2) && (std::stoi(buffer.substr(buffer.find_first_not_of('.') + 2)) >= 32))
-                    zenity3Present == 2;
-            }
-            pclose(in);
-        }
-    }
-    
-    return GraphicMode() ? zenity3Present : 0;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool XPropPresent()
-{
-	static int32_t xpropPresent = -1;
-
-	if (xpropPresent < 0)
-		xpropPresent = DetectPresence("xprop");
-
-	return xpropPresent && GraphicMode();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool MateDialogPresent()
-{
-    static int32_t matedialogPresent = -1;
-    
-    if(matedialogPresent < 0)
-        matedialogPresent = DetectPresence("matedialog");
-        
-    return matedialogPresent && GraphicMode();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool ShellementaryPresent()
-{
-    static int32_t shellementaryPresent = -1;
-    
-    if(shellementaryPresent < 0)
-        shellementaryPresent = DetectPresence("shellementary");
-        
-    return shellementaryPresent && GraphicMode();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool QarmaPresent()
-{
-    static int32_t qarmaPresent = -1;
-    
-    if(qarmaPresent < 0)
-        qarmaPresent = DetectPresence("qarma");
-        
-    return qarmaPresent && GraphicMode();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool YadPresent()
-{
-    static int32_t yadPresent = -1;
-    
-    if(yadPresent < 0)
-        yadPresent = DetectPresence("yad");
-        
-    return yadPresent && GraphicMode();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-int32_t KDialogPresent()
-{
-	static int32_t kdialogPresent = -1;
-	std::string buffer;
-	buffer.resize(1024);
-	FILE* in;
-	std::string desktop;
-
-	if (kdialogPresent < 0)
-	{
-		if (ZenityPresent())
+		std::string testedString = "which " + executable + " 2>/dev/null ";
+		in = popen(testedString.data(), "r");
+		if ((fgets(buffer.data(), buffer.size(), in) != nullptr)
+			&& (buffer.find_first_of(':') == std::string::npos) && (buffer.find("no ") == std::string::npos))
 		{
-			auto desktopEnv = std::getenv("XDG_SESSION_DESKTOP");
-			if (!desktopEnv)
+			pclose(in);
+			return true;
+		}
+		else
+		{
+			pclose(in);
+			return false;
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool IsDarwin()
+	{
+		static int32_t isDarwin = -1;
+		struct utsname lUtsname;
+
+		if (isDarwin < 0)
+			isDarwin = !uname(&lUtsname) && std::string(lUtsname.sysname) == "Darwin";
+
+		return isDarwin;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool GetEnvDISPLAY()
+	{
+		return std::getenv("DISPLAY");
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool GraphicMode()
+	{
+		return (GetEnvDISPLAY() || (IsDarwin() && GetEnvDISPLAY()));
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool ZenityPresent()
+	{
+		static int32_t zenityPresent = -1;
+
+		if (zenityPresent < 0)
+			zenityPresent = DetectPresence("zenity");
+
+		return zenityPresent && GraphicMode();
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	int32_t Zenity3Present()
+	{
+		static int32_t zenity3Present = -1;
+		FILE* in;
+		std::string buffer;
+		buffer.resize(1024);
+
+		if (zenity3Present < 0)
+		{
+			zenity3Present = 0;
+			if (ZenityPresent())
 			{
-				desktopEnv = std::getenv("XDG_CURRENT_DESKTOP");
+				in = popen("zenity --version", "r");
+				if (fgets(buffer.data(), buffer.size(), in) != nullptr)
+				{
+					if (std::stoi(buffer) >= 3)
+					{
+						zenity3Present = 3;
+						int32_t temp = std::stoi(buffer.substr(buffer.find_first_not_of('.') + 2));
+						if (temp >= 18)
+							zenity3Present = 5;
+						else if (temp >= 10)
+							zenity3Present = 4;
+					}
+					else if ((std::stoi(buffer) == 2) && (std::stoi(buffer.substr(buffer.find_first_not_of('.') + 2)) >= 32))
+						zenity3Present == 2;
+				}
+				pclose(in);
+			}
+		}
+
+		return GraphicMode() ? zenity3Present : 0;
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool XPropPresent()
+	{
+		static int32_t xpropPresent = -1;
+
+		if (xpropPresent < 0)
+			xpropPresent = DetectPresence("xprop");
+
+		return xpropPresent && GraphicMode();
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool MateDialogPresent()
+	{
+		static int32_t matedialogPresent = -1;
+
+		if (matedialogPresent < 0)
+			matedialogPresent = DetectPresence("matedialog");
+
+		return matedialogPresent && GraphicMode();
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool ShellementaryPresent()
+	{
+		static int32_t shellementaryPresent = -1;
+
+		if (shellementaryPresent < 0)
+			shellementaryPresent = DetectPresence("shellementary");
+
+		return shellementaryPresent && GraphicMode();
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool QarmaPresent()
+	{
+		static int32_t qarmaPresent = -1;
+
+		if (qarmaPresent < 0)
+			qarmaPresent = DetectPresence("qarma");
+
+		return qarmaPresent && GraphicMode();
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	bool YadPresent()
+	{
+		static int32_t yadPresent = -1;
+
+		if (yadPresent < 0)
+			yadPresent = DetectPresence("yad");
+
+		return yadPresent && GraphicMode();
+	}
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	int32_t KDialogPresent()
+	{
+		static int32_t kdialogPresent = -1;
+		std::string buffer;
+		buffer.resize(1024);
+		FILE* in;
+		std::string desktop;
+
+		if (kdialogPresent < 0)
+		{
+			if (ZenityPresent())
+			{
+				auto desktopEnv = std::getenv("XDG_SESSION_DESKTOP");
 				if (!desktopEnv)
 				{
-					desktopEnv = std::getenv("DESKTOP_SESSION");
-
+					desktopEnv = std::getenv("XDG_CURRENT_DESKTOP");
 					if (!desktopEnv)
 					{
-						kdialogPresent = 0;
-						return kdialogPresent;
+						desktopEnv = std::getenv("DESKTOP_SESSION");
+
+						if (!desktopEnv)
+						{
+							kdialogPresent = 0;
+							return kdialogPresent;
+						}
 					}
 				}
+				desktop = std::string(desktopEnv);
+				if (desktop.empty() || ((desktop != "KDE" || desktop != "kde") && (desktop != "lxqt" || desktop != "LXQT")))
+				{
+					kdialogPresent = 0;
+					return kdialogPresent;
+				}
 			}
-			desktop = std::string(desktopEnv);
-			if (desktop.empty() || ((desktop != "KDE" || desktop != "kde") && (desktop != "lxqt" || desktop != "LXQT")))
+
+			kdialogPresent = DetectPresence("kdialog");
+			if (kdialogPresent)
 			{
-				kdialogPresent = 0;
-				return kdialogPresent;
+				in = popen("kdialog --attach 2>&1", "r");
+				if (fgets(buffer.data(), buffer.size(), in) != nullptr)
+				{
+					if (buffer.find("Unknown") == std::string::npos)
+						kdialogPresent = 2;
+				}
+				pclose(in);
 			}
 		}
 
-		kdialogPresent = DetectPresence("kdialog");
-		if (kdialogPresent)
-		{
-			in = popen("kdialog --attach 2>&1", "r");
-			if (fgets(buffer.data(), buffer.size(), in) != nullptr)
-			{
-				if (buffer.find("Unknown") == std::string::npos)
-					kdialogPresent = 2;
-			}
-			pclose(in);
-		}
+		return GraphicMode() ? kdialogPresent : 0;
 	}
-
-	return GraphicMode() ? kdialogPresent : 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -239,10 +241,10 @@ TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::Show(const
 	if (msg.empty() || msg.find('"') != std::string::npos)
 		msg = "EMPTY MESSAGE";
 
-	if (KDialogPresent())
+	if (INTERNAL::KDialogPresent())
 	{
 		dialogString = "kdialog";
-		if (KDialogPresent() == 2 && XPropPresent())
+		if (INTERNAL::KDialogPresent() == 2 && INTERNAL::XPropPresent())
 			dialogString += " --attach=$(xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW | cut -f 2)";
 
 		dialogString += " --";
@@ -271,22 +273,22 @@ TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::Show(const
 
 		dialogString += ";if [ $? = 0 ];then echo 1;else echo 0;fi";
 	}
-    else if(ZenityPresent() || MateDialogPresent() || ShellementaryPresent() || QarmaPresent())
+    else if(INTERNAL::ZenityPresent() || INTERNAL::MateDialogPresent() || INTERNAL::ShellementaryPresent() || INTERNAL::QarmaPresent())
     {
-        if(ZenityPresent())
+        if(INTERNAL::ZenityPresent())
         {
             dialogString = "szAnswer=$(zenity";
-            if(Zenity3Present() >= 4 && XPropPresent())
+            if(INTERNAL::Zenity3Present() >= 4 && INTERNAL::XPropPresent())
                 dialogString += " --attach=$(sleep .01;xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW | cut -f 2)";
         }
-        else if(MateDialogPresent())
+        else if(INTERNAL::MateDialogPresent())
             dialogString = "szAnswer=$(matedialog";
-        else if(ShellementaryPresent())
+        else if(INTERNAL::ShellementaryPresent())
             dialogString = "szAnswer=$(shellementary";
         else
         {
             dialogString = "szAnswer=$(qarma";
-            if(XPropPresent())
+            if(INTERNAL::XPropPresent())
                 dialogString += " --attach=$(xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW | cut -f 2)";
         }
         dialogString += " --";
@@ -310,7 +312,7 @@ TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::Show(const
         if(!msg.empty())
             dialogString += " --text=\"" + msg + "\"";
             
-        if(Zenity3Present() >= 3 || (!ZenityPresent() && (ShellementaryPresent() || QarmaPresent())))
+        if(INTERNAL::Zenity3Present() >= 3 || (!INTERNAL::ZenityPresent() && (INTERNAL::ShellementaryPresent() || INTERNAL::QarmaPresent())))
         {
             dialogString += " --icon-name=dialog-";
             if(style == Style::Question)
@@ -326,7 +328,7 @@ TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::Show(const
         dialogString += " 2>/dev/null ";
         dialogString += ");if [ $? = 0 ];then echo 1;else echo 0;fi";
     }
-    else if(YadPresent())
+    else if(INTERNAL::YadPresent())
     {
         dialogString += "szAnswer=$(yad --";
         if(buttons == Buttons::OK)

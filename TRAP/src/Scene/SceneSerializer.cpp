@@ -187,76 +187,91 @@ void TRAP::SceneSerializer::SerializeRuntime(const std::string& filepath)
 
 bool TRAP::SceneSerializer::Deserialize(const std::string& filepath)
 {
-	const std::string input = VFS::ReadTextFile(filepath);
-	if(input.empty())
+	std::filesystem::path path;
+	if (!VFS::ResolveReadPhysicalPath(filepath, path, true))
 	{
-		TP_ERROR(Log::SceneSerializerPrefix, " loading of: ", filepath, " failed!");
+		TP_ERROR(Log::SceneSerializerPrefix, " Couldn't resolve FilePath: ", path, "!");
 		return false;
 	}
 
-	YAML::Node data = YAML::Load(input);
-	if (!data["Scene"])
-		return false;
-
-	const std::string sceneName = data["Scene"].as<std::string>();
-	TP_TRACE(Log::SceneSerializerPrefix, "Deserializing scene '", sceneName, "'");
-
-	auto entities = data["Entities"];
-	if(entities)
+	if (VFS::FileOrFolderExists(path))
 	{
-		for(auto entity : entities)
+		YAML::Node data;
+		try
 		{
-			const uint64_t uuid = entity["Entity"].as<uint64_t>(); //TODO
+			data = YAML::LoadFile(path.string());
+		}
+		catch(const YAML::ParserException& ex)
+		{
+			TP_ERROR(Log::SceneSerializerPrefix, " Failed to Load Scene file: ", path, " ", ex.what());
+		}
 
-			std::string name;
-			auto tagComponent = entity["TagComponent"];
-			if (tagComponent)
-				name = tagComponent["Tag"].as<std::string>();
+		if (!data["Scene"])
+			return false;
 
-			TP_TRACE(Log::SceneSerializerPrefix, "Deserialized entity with ID = ", uuid, ", name = ", name);
+		const std::string sceneName = data["Scene"].as<std::string>();
+		TP_TRACE(Log::SceneSerializerPrefix, "Deserializing scene '", sceneName, "'");
 
-			Entity deserializedEntity = m_scene->CreateEntity(name);
-
-			auto transformComponent = entity["TransformComponent"];
-			if(transformComponent)
+		auto entities = data["Entities"];
+		if (entities)
+		{
+			for (auto entity : entities)
 			{
-				//Entities always have transforms
-				auto& tc = deserializedEntity.GetComponent<TransformComponent>();
-				tc.Position = transformComponent["Position"].as<Math::Vec3>();
-				tc.Rotation = transformComponent["Rotation"].as<Math::Vec3>();
-				tc.Scale = transformComponent["Scale"].as<Math::Vec3>();
-			}
+				const uint64_t uuid = entity["Entity"].as<uint64_t>(); //TODO
 
-			auto cameraComponent = entity["CameraComponent"];
-			if(cameraComponent)
-			{
-				auto& cc = deserializedEntity.AddComponent<CameraComponent>();
+				std::string name;
+				auto tagComponent = entity["TagComponent"];
+				if (tagComponent)
+					name = tagComponent["Tag"].as<std::string>();
 
-				auto cameraProps = cameraComponent["Camera"];
-				cc.Camera.SetProjectionType(static_cast<SceneCamera::ProjectionType>(cameraProps["ProjectionType"].as<int32_t>()));
-				
-				cc.Camera.SetPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<float>());
-				cc.Camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
-				cc.Camera.SetPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
-				
-				cc.Camera.SetOrthographicSize(cameraProps["OrthographicSize"].as<float>());
-				cc.Camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
-				cc.Camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
+				TP_TRACE(Log::SceneSerializerPrefix, "Deserialized entity with ID = ", uuid, ", name = ", name);
 
-				cc.Primary = cameraComponent["Primary"].as<bool>();
-				cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
-			}
+				Entity deserializedEntity = m_scene->CreateEntity(name);
 
-			auto spriteRendererComponent = entity["SpriteRendererComponent"];
-			if(spriteRendererComponent)
-			{
-				auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
-				src.Color = spriteRendererComponent["Color"].as<Math::Vec4>();
+				auto transformComponent = entity["TransformComponent"];
+				if (transformComponent)
+				{
+					//Entities always have transforms
+					auto& tc = deserializedEntity.GetComponent<TransformComponent>();
+					tc.Position = transformComponent["Position"].as<Math::Vec3>();
+					tc.Rotation = transformComponent["Rotation"].as<Math::Vec3>();
+					tc.Scale = transformComponent["Scale"].as<Math::Vec3>();
+				}
+
+				auto cameraComponent = entity["CameraComponent"];
+				if (cameraComponent)
+				{
+					auto& cc = deserializedEntity.AddComponent<CameraComponent>();
+
+					auto cameraProps = cameraComponent["Camera"];
+					cc.Camera.SetProjectionType(static_cast<SceneCamera::ProjectionType>(cameraProps["ProjectionType"].as<int32_t>()));
+
+					cc.Camera.SetPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<float>());
+					cc.Camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
+					cc.Camera.SetPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
+
+					cc.Camera.SetOrthographicSize(cameraProps["OrthographicSize"].as<float>());
+					cc.Camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
+					cc.Camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
+
+					cc.Primary = cameraComponent["Primary"].as<bool>();
+					cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
+				}
+
+				auto spriteRendererComponent = entity["SpriteRendererComponent"];
+				if (spriteRendererComponent)
+				{
+					auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
+					src.Color = spriteRendererComponent["Color"].as<Math::Vec4>();
+				}
 			}
 		}
+
+		return true;
 	}
 	
-	return true;
+	TP_ERROR(Log::SceneSerializerPrefix, " File: ", path, " doesnt exists!");
+	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -127,18 +127,24 @@ void TRAP::PropertiesPanel::DrawComponents(Entity entity)
 
 	if (ImGui::BeginPopup("AddComponent"))
 	{
-		if (ImGui::MenuItem("Camera"))
+		if (!m_entity.HasComponent<CameraComponent>())
 		{
-			m_entity.AddComponent<CameraComponent>();
-			ImGui::CloseCurrentPopup();
+			if (ImGui::MenuItem("Camera"))
+			{
+				m_entity.AddComponent<CameraComponent>();
+				ImGui::CloseCurrentPopup();
+			}
 		}
 
-		if (ImGui::MenuItem("Sprite Renderer"))
+		if (!m_entity.HasComponent<SpriteRendererComponent>())
 		{
-			m_entity.AddComponent<SpriteRendererComponent>();
-			ImGui::CloseCurrentPopup();
+			if (ImGui::MenuItem("Sprite Renderer"))
+			{
+				m_entity.AddComponent<SpriteRendererComponent>();
+				ImGui::CloseCurrentPopup();
+			}
 		}
-
+		
 		ImGui::EndPopup();
 	}
 
