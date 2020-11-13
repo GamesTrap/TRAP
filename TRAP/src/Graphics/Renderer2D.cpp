@@ -12,7 +12,6 @@
 
 namespace TRAP::Graphics
 {
-	//TODO Maybe multi thread transformation calculation and insertion of vertex data with own ThreadPool
 	struct QuadVertex
 	{
 		Math::Vec3 Position;

@@ -15,6 +15,9 @@ void TRAP::SceneGraphPanel::SetContext(const Ref<Scene>& context)
 {
 	m_context = context;
 	m_selectionContext = {};
+
+	m_propertiesPanel.SetContext(m_context);
+	m_propertiesPanel.SetEntity(m_selectionContext);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

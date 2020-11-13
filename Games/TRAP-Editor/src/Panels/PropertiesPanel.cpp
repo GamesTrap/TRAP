@@ -77,9 +77,11 @@ static void DrawVec3Control(const std::string& label,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::PropertiesPanel::PropertiesPanel(const Entity& entity)
+TRAP::PropertiesPanel::PropertiesPanel(const Entity& entity, const Ref<Scene>& context)
 {
 	SetEntity(entity);
+
+	m_context = context;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -87,6 +89,13 @@ TRAP::PropertiesPanel::PropertiesPanel(const Entity& entity)
 void TRAP::PropertiesPanel::SetEntity(const Entity& entity)
 {
 	m_entity = entity;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::PropertiesPanel::SetContext(const Ref<Scene>& context)
+{
+	m_context = context;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -165,11 +174,19 @@ void TRAP::PropertiesPanel::DrawComponents(Entity entity)
 		}
 	}
 
-	DrawComponent<CameraComponent>("Camera", entity, [](auto& component)
+	DrawComponent<CameraComponent>("Camera", entity, [&](auto& component)
 	{
 		auto& camera = component.Camera;
 
-		ImGui::Checkbox("Primary", &component.Primary); //BUG Doesn't uncheck other cameras
+		if (ImGui::Checkbox("Primary", &component.Primary))
+		{
+			auto view = m_context->Reg().view<CameraComponent>();
+			for(auto ent : view)
+			{
+				if(entity != ent)
+					view.get<CameraComponent>(ent).Primary = false;
+			}
+		}
 
 		std::array<const char*, 2> projectionTypeStrings = { "Perspective", "Orthographic" };
 		const char* currentProjectionTypeString = projectionTypeStrings[static_cast<uint32_t>(camera.GetProjectionType())];

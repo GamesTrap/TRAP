@@ -90,12 +90,12 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 	WindowingAPI::GetFrameBufferSize(s_window, displayWidth, displayHeight);
 	io.DisplaySize = ImVec2(static_cast<float>(width), static_cast<float>(height));
 	if (width > 0 && height > 0)
-		io.DisplayFramebufferScale = ImVec2(static_cast<float>(displayWidth) / width, static_cast<float>(displayHeight) / height);
+		io.DisplayFramebufferScale = ImVec2(static_cast<float>(displayWidth) / static_cast<float>(width), static_cast<float>(displayHeight) / static_cast<float>(height));
 	if (s_wantUpdateMonitors)
 		UpdateMonitors();
 
 	//Setup time step
-	const double currentTime = Application::GetTime();
+	const double currentTime = static_cast<double>(Application::GetTime());
 	io.DeltaTime = s_time > 0.0 ? static_cast<float>(currentTime - s_time) : static_cast<float>(1.0f / 60.0f);
 	s_time = currentTime;
 

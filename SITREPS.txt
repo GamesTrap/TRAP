@@ -1374,3 +1374,8 @@ SITREP 11/11/2020|20w46a3
     - TRAP-Editor Added proper Save/Load dialogs & a New scene button ~<30 mins
     - SceneSerializer::Deserialize now also works with virtual files ~<20 mins
     - TRAP-Editor fixed adding the same component twice resulting in a crash ~<20 min
+
+SITREP 11/13/2020|20w46a4
+    - Changed TRAP Engine version to 20w46a4(0.6.89)
+    - TRAP-Editor Fixed ability to select multiple primary cameras ~<20 mins
+    - TRAP-Editor Fixed crash when creating a new scene while an entity is selected (PropertiesPanel) ~<10 mins

@@ -33,16 +33,24 @@ void TRAP::ImGuiLayer::OnAttach()
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; //Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; //Enable Multi-Viewport / Platform Windows
 
+	const auto contentScale = Application::GetWindow()->GetContentScale();
+	float scaleFactor = 1.0f;
+	if (contentScale.x > 1.0f || contentScale.y > 1.0f)
+		scaleFactor = contentScale.x;
+	
 	ImFontConfig fontConfig;
 	fontConfig.FontDataOwnedByAtlas = false;
-	io.Fonts->AddFontFromMemoryTTF(Embed::OpenSansBoldTTFData.data(), static_cast<int32_t>(Embed::OpenSansBoldTTFData.size()), 18.0f, &fontConfig);
-	io.FontDefault = io.Fonts->AddFontFromMemoryTTF(Embed::OpenSansTTFData.data(), static_cast<int32_t>(Embed::OpenSansTTFData.size()), 18.0f, &fontConfig);
+	io.Fonts->AddFontFromMemoryTTF(Embed::OpenSansBoldTTFData.data(), static_cast<int32_t>(Embed::OpenSansBoldTTFData.size()), scaleFactor * 18.0f, &fontConfig);
+	io.FontDefault = io.Fonts->AddFontFromMemoryTTF(Embed::OpenSansTTFData.data(), static_cast<int32_t>(Embed::OpenSansTTFData.size()), scaleFactor * 18.0f, &fontConfig);
 	
 	//Setup Dear ImGui style
 	ImGui::StyleColorsDark();
 
 	//When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to
 	ImGuiStyle& style = ImGui::GetStyle();
+
+	style.ScaleAllSizes(scaleFactor);
+	
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
 		style.WindowRounding = 0.0f;

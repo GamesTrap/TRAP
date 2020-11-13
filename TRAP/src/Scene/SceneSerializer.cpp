@@ -173,7 +173,7 @@ void TRAP::SceneSerializer::Serialize(const std::string& filepath)
 	out << YAML::EndMap;
 
 	if(!VFS::WriteTextFile(filepath, out.c_str()))
-		TP_ERROR(Log::SceneSerializerPrefix, " saving to: ", filepath, " failed!");
+		TP_ERROR(Log::SceneSerializerPrefix, " Saving to: \"", filepath, "\" failed!");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -190,7 +190,7 @@ bool TRAP::SceneSerializer::Deserialize(const std::string& filepath)
 	std::filesystem::path path;
 	if (!VFS::ResolveReadPhysicalPath(filepath, path, true))
 	{
-		TP_ERROR(Log::SceneSerializerPrefix, " Couldn't resolve FilePath: ", path, "!");
+		TP_ERROR(Log::SceneSerializerPrefix, " Couldn't resolve FilePath: \"", path, "\"!");
 		return false;
 	}
 
@@ -203,7 +203,7 @@ bool TRAP::SceneSerializer::Deserialize(const std::string& filepath)
 		}
 		catch(const YAML::ParserException& ex)
 		{
-			TP_ERROR(Log::SceneSerializerPrefix, " Failed to Load Scene file: ", path, " ", ex.what());
+			TP_ERROR(Log::SceneSerializerPrefix, " Failed to Load Scene file: \"", path, "\" ", ex.what());
 		}
 
 		if (!data["Scene"])
@@ -270,7 +270,7 @@ bool TRAP::SceneSerializer::Deserialize(const std::string& filepath)
 		return true;
 	}
 	
-	TP_ERROR(Log::SceneSerializerPrefix, " File: ", path, " doesnt exists!");
+	TP_ERROR(Log::SceneSerializerPrefix, " File: \"", path, "\" doesnt exists!");
 	return false;
 }
 
