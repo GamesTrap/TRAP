@@ -5,9 +5,8 @@
 #include "MsgBox.h"
 #include "Application.h"
 
-namespace INTERNAL
+namespace TRAP::Utils::Dialogs::MsgBox::INTERNAL
 {
-
 	bool DetectPresence(const std::string& executable)
 	{
 		std::string buffer;
@@ -221,9 +220,9 @@ namespace INTERNAL
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::Show(const char* message,
-	const char* title,
-	const Style style,
-	const Buttons buttons)
+																		   const char* title,
+																		   const Style style,
+																		   const Buttons buttons)
 {
 	std::string dialogString;
 	std::string tit;
@@ -241,10 +240,10 @@ TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::Show(const
 	if (msg.empty() || msg.find('"') != std::string::npos)
 		msg = "EMPTY MESSAGE";
 
-	if (INTERNAL::KDialogPresent())
+	if (TRAP::Utils::Dialogs::MsgBox::INTERNAL::KDialogPresent())
 	{
 		dialogString = "kdialog";
-		if (INTERNAL::KDialogPresent() == 2 && INTERNAL::XPropPresent())
+		if (TRAP::Utils::Dialogs::MsgBox::INTERNAL::KDialogPresent() == 2 && TRAP::Utils::Dialogs::MsgBox::INTERNAL::XPropPresent())
 			dialogString += " --attach=$(xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW | cut -f 2)";
 
 		dialogString += " --";
@@ -273,22 +272,23 @@ TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::Show(const
 
 		dialogString += ";if [ $? = 0 ];then echo 1;else echo 0;fi";
 	}
-    else if(INTERNAL::ZenityPresent() || INTERNAL::MateDialogPresent() || INTERNAL::ShellementaryPresent() || INTERNAL::QarmaPresent())
+    else if(TRAP::Utils::Dialogs::MsgBox::INTERNAL::ZenityPresent() || TRAP::Utils::Dialogs::MsgBox::INTERNAL::MateDialogPresent() ||
+		TRAP::Utils::Dialogs::MsgBox::INTERNAL::ShellementaryPresent() || TRAP::Utils::Dialogs::MsgBox::INTERNAL::QarmaPresent())
     {
-        if(INTERNAL::ZenityPresent())
+        if(TRAP::Utils::Dialogs::MsgBox::INTERNAL::ZenityPresent())
         {
             dialogString = "szAnswer=$(zenity";
-            if(INTERNAL::Zenity3Present() >= 4 && INTERNAL::XPropPresent())
+            if(TRAP::Utils::Dialogs::MsgBox::INTERNAL::Zenity3Present() >= 4 && TRAP::Utils::Dialogs::MsgBox::INTERNAL::XPropPresent())
                 dialogString += " --attach=$(sleep .01;xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW | cut -f 2)";
         }
-        else if(INTERNAL::MateDialogPresent())
+        else if(TRAP::Utils::Dialogs::MsgBox::INTERNAL::MateDialogPresent())
             dialogString = "szAnswer=$(matedialog";
-        else if(INTERNAL::ShellementaryPresent())
+        else if(TRAP::Utils::Dialogs::MsgBox::INTERNAL::ShellementaryPresent())
             dialogString = "szAnswer=$(shellementary";
         else
         {
             dialogString = "szAnswer=$(qarma";
-            if(INTERNAL::XPropPresent())
+            if(TRAP::Utils::Dialogs::MsgBox::INTERNAL::XPropPresent())
                 dialogString += " --attach=$(xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW | cut -f 2)";
         }
         dialogString += " --";
@@ -312,7 +312,9 @@ TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::Show(const
         if(!msg.empty())
             dialogString += " --text=\"" + msg + "\"";
             
-        if(INTERNAL::Zenity3Present() >= 3 || (!INTERNAL::ZenityPresent() && (INTERNAL::ShellementaryPresent() || INTERNAL::QarmaPresent())))
+        if (TRAP::Utils::Dialogs::MsgBox::INTERNAL::Zenity3Present() >= 3 ||
+			(!TRAP::Utils::Dialogs::MsgBox::INTERNAL::ZenityPresent() &&
+			(TRAP::Utils::Dialogs::MsgBox::INTERNAL::ShellementaryPresent() || TRAP::Utils::Dialogs::MsgBox::INTERNAL::QarmaPresent())))
         {
             dialogString += " --icon-name=dialog-";
             if(style == Style::Question)
@@ -328,7 +330,7 @@ TRAP::Utils::Dialogs::MsgBox::Selection TRAP::Utils::Dialogs::MsgBox::Show(const
         dialogString += " 2>/dev/null ";
         dialogString += ");if [ $? = 0 ];then echo 1;else echo 0;fi";
     }
-    else if(INTERNAL::YadPresent())
+    else if(TRAP::Utils::Dialogs::MsgBox::INTERNAL::YadPresent())
     {
         dialogString += "szAnswer=$(yad --";
         if(buttons == Buttons::OK)
