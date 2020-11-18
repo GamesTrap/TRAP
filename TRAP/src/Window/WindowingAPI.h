@@ -2365,10 +2365,6 @@ namespace TRAP::INTERNAL
 		/// </summary>
 		static std::string ConvertLatin1ToUTF8(const char* source);
 		/// <summary>
-		/// Create the OpenGL context.
-		/// </summary>
-		static bool CreateContextGLX(InternalWindow* window, const ContextConfig& CTXConfig, const FrameBufferConfig& FBConfig);
-		/// <summary>
 		/// Reports the specified error, appending information about the last X error.
 		/// </summary>
 		/// <param name="error">Error code.</param>
