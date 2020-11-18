@@ -1,0 +1,15 @@
+[submodule "Dependencies/GLSLang"]
+	path = Dependencies/GLSLang
+	url = https://github.com/GamesTrap/glslang.git
+[submodule "Dependencies/ImGui"]
+	path = Dependencies/ImGui
+	url = https://github.com/GamesTrap/imgui.git
+[submodule "Dependencies/SPIRV-Cross"]
+	path = Dependencies/SPIRV-Cross
+	url = https://github.com/GamesTrap/SPIRV-Cross.git
+[submodule "Dependencies/YAMLCpp"]
+	path = Dependencies/YAMLCpp
+	url = https://github.com/GamesTrap/yaml-cpp.git
+[submodule "Dependencies/ModernFileDialogs"]
+	path = Dependencies/ModernFileDialogs
+	url = https://github.com/GamesTrap/ModernFileDialogs.git

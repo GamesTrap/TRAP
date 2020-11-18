@@ -1,0 +1,1381 @@
+SITREP 05/08/2019|19w19b1
+    - Added Precompiled Header files(PCH) to speed up compiling ~30 mins
+    - Optimized all vector accesses by replacing vector.at() with vector[] operators ~>50 mins
+    - Log.txt is now created by the Virtual File System(VFS) ~<1 min
+    - Replaced all uint8_t with std::byte less error prone because std::bytes has no operator overloads except bitwise operations ~10 mins
+    - Added macros for versioning TRAP Engine ~<5 mins
+    - Changed TRAP Engine version to 19w19b1(0.2.53) ~<1 min
+    - Changed Parameters of WriteFile(VFS), WriteFile(FileSystem) to use std::vector<std::byte>& instead of std::byte* ~<5 mins
+    - Added TP_RENDERER_ASSERT back to VKContext ~>10 mins
+
+SITREP 05/09/2019|19w19b2
+    - Changed TRAP Engine version to 19w19b2(0.2.54)
+    - Started Adding TP_RENDERER_ASSERT back to VKRenderer ~10 mins
+
+SITREP 05/10/2019|19w19b3a
+    - Changed TRAP Engine version to 19w19b3(0.2.55) 
+    - Reported Bug #1 Destruction of Context before VkImageViews could be cleaned up by Renderer Destructor
+    - Added more TP_RENDERER_ASSERT back to VKRenderer ~10 mins
+
+SITREP 05/14/2019|19w20a
+    - Updated Trello board https://trello.com/b/OFXQuscQ/trap-engine-redesign
+    - Updated Version Number
+
+SITREP 05/15/2019|19w20a1
+    - Finished adding TP_RENDERER_ASSERT back to VKRenderer ~<10 mins
+    - Changed TRAP Engine version to 19w20a1(0.2.56) 
+
+SITREP 05/16/2019|19w20b2
+    - Fixed Bug #1 replaced VKContext* Get() with shared_ptr<VKContext> Get() ~15 mins
+    - Changed TRAP Engine version to 19w20b2(0.2.58)
+    - Renamed VK to Vulkan, GL to OpenGL, DX to D3D12 ~<15 mins
+    - Added a Config class(not using VFS for now) ~>20 mins
+
+SITREP 05/18/2019|19w20c1
+    - Changed TRAP Engine version to 19w20c1(0.2.59)
+    - Added Config class(using VFS for reading and writing to files) ~>30 mins
+    - Added Loading & Saving of Window Width, Height, Mode, VSync and RenderAPI ~<10 mins
+
+SITREP 05/19/2019|19w20c2
+    - Changed TRAP Engine version to 19w20c2(0.2.60)
+    - Changed Config class std::map to std::vector
+
+SITREP 05/19/2019|19w20d2
+    - Changed TRAP Engine version to 19w20d2(0.2.62)
+    - Removed Warnings ~>40 mins
+    - Removed #defines ~>30 mins
+    - Removed potential memory leak in LayerStack ~>20 mins
+
+SITREP 05/20/2019|19w21a2
+    - Changed TRAP Engine version to 19w21a2(0.2.66)
+    - Fixed Bug #4 replaced VFS::Get()->WriteTextFile() with ofstream ~<10 mins
+    - Config changed forEach loops to use std::find_if() ~>20 mins
+    - Changed enums to enum classes ~>30 mins
+    - Removed EVENT_CLASS_CATEGORY macro ~>10 mins
+    - Removed EVENT_CLASS_TYPE ~>20 mins
+
+SITREP 05/21/2019|19w21b1
+    - Changed TRAP Engine version to 19w21b1(0.2.67)
+    - Updated ImGui ~>5 mins
+    - Replaced some function parameters and return types from string to string_view(Only Shader System is missing now) ~>30 mins
+
+SITREP 05/22/2019|19w21b2
+    - Changed TRAP Engine version to 19w21b2(0.2.68)
+    - Started removing new & delete from Shader System ~>60 mins
+
+SITREP 05/23/2019|19w21b3
+    - Changed TRAP Engine version to 19w21b3(0.2.69)
+    - Finished removing new & delete from Shader System(replaced by unique_ptr) ~>120 mins
+    - Added advanced debugging for OpenGL(DebugCallback) ~>20 mins
+    - Fixed Bug Shaders are now correctly destroyed before Context current == nullptr ~>15 mins
+    - Renamed Pixel Shader to Fragment Shader ~>15 mins
+    - Replaced some function parameters and return types from string to string_view(Shader System)
+
+SITREP 05/24/2019|19w21c1
+    - Changed TRAP Engine version to 19w21c1(0.2.70)
+    - Windows Favors Nvidia or Amd GPU now ~<5 mins
+    - Fixed Bug #6 Added a check if shader == nullptr return ~1 mins
+    - Removed TryCompile & TryCompileFromFile ~<5 mins
+    - Replaced GetTimeStamp with __TIME__ macro ~5 mins
+    - Added Timer & TimeStamp classes ~>15 mins
+    - Added GetFrameTime & GetFPS in Application ~>20 mins
+    - Readded GetTimeStamp with new Format ~>15 mins
+    - Added some missing constructors ~>15 mins
+    - Replaced all shared_ptr with unique_ptr ~>30 mins
+    - Added Multi Monitor support ~>20 mins
+    - Added Shutdown in Application to use for Hotkeys ~<10 mins
+    - Added Monitor Resolution Check for Fullscreen see Bug #2 ~>20 mins
+    - Added Refresh Rate to Fullscreen ~>10 mins
+
+SITREP 05/25/2019|19w21c2
+    - Changed TRAP Engine version to 19w21c2(0.2.71)
+    - Added Optional Shader Types to Shader System ~>100 mins
+    - Added Hot Shader Reloading Support with Hotkey(R+S) and On File Modified ~>150 mins
+    - Added Fallback Shader to Shader System for runtime Shader compile errors ~>60 mins
+
+SITREP 05/26/2019|19w21c3
+    - Changed TRAP Engine version to 19w21c3(0.2.73)
+    - Splitted Dependencies into a seperate group ~>50 mins
+    - Added GLSLang library for runtime GLSL to SPIRV compiling ~>120 mins
+
+SITREP 05/27/2019|19w22a1
+    - Changed TRAP Engine version to 19w22a1(0.2.74)
+    - Removed GLFW and ImGui ~<10 mins
+    - Re-Added GLFW and ImGui as submodules ~>45 mins
+    - Added GLSLang as Dependencie submodule ~>70 mins
+    - Reimplemented Hot Shader Reloading(FileWatcher) ~>120 mins
+
+SITREP 05/28/2019|19w22a2
+    - Changed TRAP Engine version to 19w22a2(0.2.75)
+    - Uploaded Repository to GitHub Yay :D ~>20 mins
+
+SITREP 05/29/2019|19w22a3
+    - Changed TRAP Engine version to 19w22a3(0.2.76)
+    - Big CodeStyle overhaul ~>180 mins
+
+SITREP 05/30/2019|19w22a4
+    - Changed TRAP Engine version to 19w22a4(0.2.77)
+    - Changed checks if TRAP_PLATFORM_WINDOWS for D3D12 API ~>10 mins
+    - Changed calculation of FPS & set FPS and FrameTime at the end of the GameLoop ~>15 mins
+    - Added SetIcon inside Window and embedded TRAP logo as default icon ~>40 mins
+
+SITREP 05/31/2019|19w22b1
+    - Changed TRAP Engine version to 19w22b1(0.2.78)
+    - Added Automatic selection of RenderAPI if there's no/an invalid provided in Engine.cfg ~>60 mins
+
+SITREP 06/02/2019|19w22c1
+    - Changed TRAP Engine version to 19w22c1(0.3.0)
+    - Added Runtime switching between RenderAPIs ~>180 mins
+    - Added MsgBox API to create cross-platform Message Boxes ~>45 mins
+    - Fixed Bug #9 Crash if Engine.cfg was overwritten with an incompatible RenderAPI ~>30 mins
+    - Added RenderAPI auto correction for Bug #9 ~>20 mins
+
+SITREP 06/03/2019|19w23a1
+    - Changed TRAP Engine version to 19w23a1(0.3.1)
+    - Added IsVulkanCapable() functionality inside VulkanContext ~>70 mins
+    - Added check if Vulkan 1.1 is supported by physical device inside VulkanContext ~<10 mins
+
+SITREP 06/05/2019|19w23a2
+    - Changed TRAP Engine verison to 19w23b1(0.3.2)
+    - Worked on VulkanShader ~>70 mins
+
+SITREP 06/10/2019|19w24a1
+    - Changed TRAP Engine version to 19w24a1(0.4.0)
+    - Added BufferLayout ~>40 mins
+    - Added Vertex Buffer ~>45 mins
+    - Added Index Buffer ~>30 mins
+    - Added Vertex Array ~>35 mins
+    - Changed where ShaderManager gets destroyed ~>10 mins
+
+SITREP 06/14/2019|19w24a2
+    - Changed TRAP Engine version to 19w24a2(0.4.1)
+    - Added checks for Geometry and Tessellation Shader support inside Vulkan ~>30 mins
+
+SITREP 06/15/2019|19w24a3
+    - Changed TRAP Engine version to 19w24a3(0.4.2)
+    - Added TGAImage and BMPImage class to load Images ~>120 mins
+
+SITREP 06/16/2019|19w24a4
+    - Changed TRAP Engine version to 19w24a(0.4.3)
+    - Added abstract Image class ~>30 mins
+    - Added Texture(2D) class ~>60 mins
+    - Added TextureManager ~>45 mins
+
+SITREP 06/17/2019|19w25a2
+    - Changed TRAP Engine version to 19w25a2(0.4.5)
+    - Added TextureManager Reload functionality ~>60 mins
+    - Added Conversion from BGR(A) to RGB(A) format ~>25 mins
+
+SITREP 07/09/2019|19w28a1
+    - Changed TRAP Engine version to 19w28a1(0.4.6)
+    - Removed Texture stuff for now...
+    - Moved some Renderer abstractions ~>40 mins
+    - Renamed Renderer class to RendererAPI
+    - Added new Renderer class for abstractions
+    - Added RenderCommand class for Renderer settings
+    - Removed rectangle from Sandbox ~<5 mins
+    - Added automatic viewport change on WindowResizeEvent ~<10 mins
+    - Started evaluating the validity of my Maths API results(Vectors seem to work fine) ~>30 mins
+    - Added OrthographicCamera class ~>35 mins
+    - Changed Sandbox Color Shader to allow View and Projection Matrix ~< 10mins
+
+SITREP 07/19/2019|19w29a1
+    - Changed TRAP Engine version to 19w29a1(0.4.7)
+    - Updated Submodules ~< 15mins
+    - Added UniformBuffer support ~>100 mins
+    - Changed Shader file format ~>20 mins
+    - Added support for comments(non range based) in Shaders ~>40 mins
+    - Shader parser now ignores UniformBufferBlock because they get handled by the UBOs ~>20 mins
+
+SITREP 07/21/2019|19w29a2
+    - Changed TRAP Engine version to 19w29a2(0.4.8)
+    - Resolved Cyclic Dependency in tVec2,3,4 and Mat3,4(I know Math.h is ugly) ~>30 mins
+
+SITREP 07/22/2019|19w30a1
+    - Changed TRAP Engine version to 19w30a1(0.4.9)
+    - Removed unused Exception class <5 mins
+    - Removed MsgBoxLinux(Will be re-added without the need of GTK)
+
+SITREP 07/24/2019|19w30a2
+    - Changed TRAP Engine version to 19w30a2(0.4.10)
+    - Readded MsgBoxLinux ~>75 mins
+    - Fixed premake5.lua to successfully build on Linux and Windows
+    - Fixed all issues with Travis
+
+SITREP 07/26/2019|19w30a3
+    - Changed TRAP Engine version to 19w30a3(0.5.0)
+    - Linux support now official
+
+SITREP 07/27/2019|19w30a4
+    - Changed TRAP Engine version to 19w30a4(0.5.1)
+    - Added FPS and FrameTime overlay ~<20 mins
+    - Migrated UBO for Matrices to the abstract Renderer ~>20 mins
+    - Added Projection Matrix recalculation on resizing ~>15 mins
+    - Added support for Model(Transformation) Matrix ~>35 mins
+    - Added new FPS calculation method thx to Nilusss <10 mins
+
+SITREP 07/28/2019|19w30a5
+    - Changed TRAP Engine version to 19w30a5(0.5.2)
+    - Added Projection/View/Model Matrix to the Passthrough Shader ~<10 mins
+    - Changed destruction order Renderer->ShaderManager->RendererAPI->Context->Window ~<10 mins
+
+SITREP 07/29/2019|19w31a1
+    - Changed TRAP Engine version to 19w31a1(0.5.3)
+    - Added GetDrawCalls() ~<15 mins
+    - Added optional FPSLimiter ~<20 mins
+    - Added OnTick, SetTickRate, GetTickRate functions ~<30 mins
+    - Tested if Geometry Shaders are working ~>20 mins
+    - Added OpenGL Shader Linker Error detection ~>25 mins
+    - Added RendererPrimitive option ~>15 mins
+
+SITREP 07/30/2019|19w31a2
+    - Changed TRAP Engine version to 19w31a2(0.5.4)
+    - Tested if Tessellation Control and Evaulation Shader are working ~>30 mins
+    - Added PATCHES to RendererPrimitive for Tessellation ~<5 mins
+    - Fixed bug with single comments ~>10 mins
+    - Removed OpenGLShader comment detection because its unecessary ~>20 mins
+
+SITREP 07/31/2019|19w31a3
+    - Changed TRAP Engine version to 19w31a3(0.5.5)
+    - Added Image class ~>20 mins
+    - Added DefaultImage for errors ~>25 mins
+    - Added PPM Image Format ~>15 mins
+    - Added PNM Image Format ~>15 mins
+    - Added PGM Image Format ~>15 mins
+    - Added PAM Image Format ~>20 mins
+    - Added PFM Image Format ~>25 mins
+
+SITREP 08/01/2019|19w31a4
+    - Changed TRAP Engine version to 19w31a4(0.5.6)
+    - Confirmed PPM, PNM, PGM, PAM and PFM Image Formats working ~>60 mins
+    - Added TextureManager ~>30 mins
+    - Added HotTextureReloading ~>25 mins
+
+SITREP 08/02/2019|19w31a5
+    - Changed TRAP Engine version to 19w31a5(0.5.7)
+    - Allow FileWatcher to track sub directory files ~>40 mins
+    - Started working on TGA Image Format ~>30 mins
+
+SITREP 08/03/2019|19w31a6
+    - Changed TRAP Engine version to 19w31a6(0.5.8)
+    - Added uniform location caching for OpenGL shaders ~>25 mins
+
+SITREP 08/04/2019|19w31a7
+    - Changed TRAP Engine version to 19w31a7(0.5.9)
+    - Working on TGA Image Loader ~>120 mins
+
+SITREP 08/05/2019|19w32a1
+    - Changed TRAP Engine version to 19w32a1(0.5.10)
+    - Finished TGA Image Loader ~>60 mins 
+
+SITREP 08/11/2019|19w32a2
+    - Changed TRAP Engine version to 19w32a2(0.5.11)
+    - Added Range to FPSLimiter(25-1000FPS) ~<15 mins
+
+SITREP 08/13/2019|19w33a1
+    - Changed TRAP Engine version to 19w33a1(0.5.12)
+    - Working on BMP Image Loader ~>120 mins
+    - Added check if OpenGLTexture2D exceeds max size ~>30 mins
+
+SITREP 08/14/2019|19w33a2
+    - Changed TRAP Engine version to 19w33a2(0.5.13)
+    - Got 32 BPP BMP Images working ~>60 mins
+
+SITREP 08/19/2019|19w34a1
+    - Changed TRAP Engine version to 19w34a1(0.5.14)
+    - Got padding for 8 BPP BMP Images working ~>45 mins
+    - Fixed Linux compiling ~<10 mins
+    - Added support for NPOT Textures ~>35 mins
+
+SITREP 08/20/2019|19w34a2
+    - Changed TRAP Engine version to 19w34a2(0.5.15)
+    - Tested NPOT Textures on all current image formats ~>45 mins
+    - Simplified FlipX/Y function ~>20 mins
+    - Made the OpenGLTexture2D more bindless ~>35 mins
+
+SITREP 08/21/2019|19w34a3
+    - Changed TRAP Engine version to 19w34a3(0.5.16)
+    - Switched to OpenGL DSA(Direct State Access) mode ~>60 mins
+
+SITREP 08/22/2019|19w34a4
+    - Changed TRAP Engine version to 19w34a4(0.5.17)
+    - Removed support for Non-Opaque Uniforms in GLSL Shaders(Use UBOs instead) ~>45 mins 
+    - Added support for custom window icon with TRAP::Image ~>20 mins
+    - Simplified Compile function from OpenGLShader ~>30 mins
+    - Added support for 16BPP Indexed (RLE) TGA Image Files ~>45 mins
+    - Fixed bug in DecodeBGRAMap & DecodeRLEBGRAMap ~<5 mins
+    - Added Support for BMPV5 BitField Images ~>60 mins
+
+SITREP 08/23/2019|19w34a5
+    - Changed TRAP Engine version to 19w34a5(0.5.18)
+    - Added Multi-Window support ~> 100 mins
+    - Changed Events system so it now passes current window title through ~>30 mins
+
+SITREP 08/24/2019|19w34a6
+    - Changed TRAP Engine version to 19w34a6(0.5.19)
+    - Optimized memory usage in TGA Image Loader for RLE images ~>45 mins
+
+SITREP 08/25/2019|19w34a7
+    - Changed TRAP Engine version to 19w34a7(0.5.20)
+    - Optimized Vertical/Horizontal Functions for Image flipping ~>25 mins
+    - Optimized Image Decode/Convert Functions ~>65 mins
+
+SITREP 08/28/2019|19w35a2
+    - Changed TRAP Engine version to 19w35a2(0.5.22)
+    - 8BPP Indexed RLE BMP are now unsupported
+    - Added EmptyImage for OpenGLFrameBuffer ~>20 mins
+    - Vulkan Splitted Compute/Graphics shaders ~<10 mins
+    - OpenGL Changed DrawCall function ~<5 mins
+
+SITREP 08/29/2019|19w35a3
+    - Changed TRAP Engine version to 19w35a3(0.5.23)
+    - Vulkan Added incomplete graphics pipeline ~>65 mins
+    - Added TextureCube Base class ~>30 mins    
+
+SITREP 09/02/2019|19w36a1
+    - Changed TRAP Engine version to 19w36a1(0.5.24)
+    - OpenGL Added Texture Cube with Vertical Cross ~>45 mins
+    - Added HotTextureReloading to TextureCube ~>45 mins
+    - OpenGL Added TextureCube with Horizontal Cross ~>25 mins
+    - Modified TextureManager::Get() function to pass TextureType ~>15 mins
+    - Added Fallback for TextureCube ~>25 mins
+    - Made Input class Singleton ~<15 mins
+    - OpenGL Added TextureCube with multiple images ~>40 mins
+
+SITREP 09/03/2019|19w36a2
+    - Changed TRAP Engine version to 19w36a2(0.5.25)
+    - Removed std::function in EventDispatcher for performance ~<10 mins
+    - Fixed Changing Wrap/Filter of Texture ~<20 mins
+    - Added automatic drawing without IndexBuffer if no IndexBuffer exists ~>20 mins
+    - Added functions Get2D/GetCube to TextureManager ~<10 mins
+    - Updated Submodules ~15 mins
+
+SITREP 09/04/2019|19w36a3
+    - Changed TRAP Engine version to 19w36a3(0.5.26)
+    - Added Camera Base class ~<15 mins
+    - OpenGL Added Texture Swizzle for GrayScale Images ~<25 mins
+    - RenderCommand Added Enable/Disable of Depth Masking ~<15 mins
+    - RenderCommand Added Setting of the Depth Test Function ~<25 mins
+    - RenderCommand Added Setting of different Blend Equations for RGB and alpha ~<25 mins
+    - RenderCommand Added Setting of different Blend Functions for srcRGB, srcAlpha, dstRGB, dstAlpha ~<30 mins
+    - RenderCommand Added Default values to some functions ~<10 mins
+    - Made VSync Window dependent ~>25 mins
+    - Removed GetVSyncInterval from API::Context ~<10 mins
+    - Added SetVSyncInterval and GetVSyncInterval to TRAP::Window ~>15 mins
+    - Removed unecessary TRAP::WindowProps constructor ~<20 mins
+
+SITREP 09/05/2019|19w36a4
+    - Changed TRAP Engine version to 19w36a4(0.5.27)
+    - BufferElement GetComponentCount() Removed Invalid returns ~<15 mins
+    - Started Working on Documentation ~>60 mins
+    - Replaced every unsigned int with uint32_t ~<20 mins
+    - Replaced every int with int32_t ~<20 mins
+
+SITREP 09/06/2019|19w36a5
+    - Changed TRAP Engine version to 19w36a5(0.5.28)
+    - Working on Documentation(TRAP::Window) ~>60 mins
+    - Fixed a Bug inside Window SetDisplayMode when using Fullscreen ~<20 mins
+    - Restructured Window class ~<30 mins
+
+SITREP 09/07/2019|19w36a6
+    - Changed TRAP Engine version to 19w36a6(0.5.29)
+    - Added setting of the CursorMode ~>20 mins
+    - Added Raw Mouse Input support ~>20 mins
+
+SITREP 09/08/2019|19w36a7
+    - Changed TRAP Engine version to 19w36a7(0.5.30)
+    - Replaced Key and Mouse defines with enum classes ~<45 mins
+    - Input Added GetKeyName ~<20 mins
+    - Window Added GetMonitorNames, GetMonitorName ~>15 mins
+    - Started Adding Gamepad support ~<10 mins
+    - Shader Added CreateFromFile without name parameter ~<15 mins
+    - Texture2D Added CreateFromFile without name parameter ~<15 mins
+    - TextureCube Added CreateFromCross without name parameter ~<15 mins
+
+SITREP 09/09/2019|19w37a1
+    - Changed TRAP Engine version to 19w37a1(0.5.31)
+    - ShaderManager now uses unordered_map ~>20 mins
+    - TextureManager now uses unordered_map ~>20 mins
+    - TextureManager changed some functions ~>25 mins
+    - ShaderManager changed some functions ~>25 mins
+    - Textures and Shaders that already exists don't get overwritten now ~<20 mins
+    - ShaderManager Added Load functions to replace Add + CreateFromFile/Source ~<20 mins
+    - TextureManager Added Load functions to replace Add + CreateFromFile(s)/Cross ~<20 mins
+    - VFS Added GetFileName to retrieve filename of a virtualPath ~<15 mins
+    - Added Scopes and Refs as unique_ptr and shared_ptr replacement ~>35 mins
+
+SITREP 09/11/2019|19w37a2
+    - Changed TRAP Engine version to 19w37a2(0.5.32)
+    - Window Added Detection for which Windows uses which Monitor when using Fullscreen or Borderless ~>35 mins
+    - UniformBuffer Added support for multiple UBOs @ the same time ~<20 mins
+    - Working on Controller support ~>35 mins
+
+SITREP 09/12/2019|19w37a3
+    - Changed TRAP Engine version to 19w37a3(0.5.33)
+    - Finished Controller support ~>45 mins
+    - Changed all enums to use UpperCamelCase ~<20 mins
+
+SITREP 09/13/2019|19w37a4
+    - Changed TRAP Engine version to 19w37a4(0.5.34)
+    - Working on Documentation for TRAP::Input ~>45 mins
+
+SITREP 09/14/2019|19w37a5
+    - Changed TRAP Engine version to 19w37a5(0.5.35)
+    - Renderer changed Clear() ~<20 mins
+    - Fixed TimeStep class ~<20 mins
+    - Added new shader for testing(and fun :D) ~>20 mins
+
+SITREP 09/19/2019|19w38a1
+    - Changed TRAP Engine version to 19w38a1(0.5.36)
+    - Moved Platform detection macros from premake to Core.h ~<20 mins
+    - Added OrthographicCameraController class and outsourced camera stuff from Sandbox ~>20 mins
+    - Added Zooming via mouse scrolling | controller triggers ~<5 mins
+    - Made OrthographicCameraController rotations optional ~<5 mins
+    - Made OrthographicCameraController controller input optional ~>10 mins
+    - Removed Translate and Rotate functions from OrthographicCamera ~<5 mins
+    - Added support for multiple OrthographicCameraControllers on different Windows ~>25 mins
+    - Main Window Resizing now gets handled inside the Engine ~<10 mins
+    - Added documentation for TRAP::Input ~>130 mins
+
+SITREP 09/20/2019|19w38a2
+    - Changed TRAP Engine version to 19w38a2(0.5.37)
+    - Only Textures and Shaders which already exist in the Shader/TextureManager are getting reloaded now ~>20 mins
+    - OpenGL working on Persistent Mapped Triple Buffered(No Sync) Buffers for streaming data to the GPU every frame ~>45 mins
+
+SITREP 09/23/2019|19w39a1
+    - Changed TRAP Engine version to 19w39a1(0.5.38)
+    - OpenGL Finished Persistent Mapped Triple Buffered(No Sync) Buffers ~>120 mins
+
+SITREP 09/24/2019|19w39a2
+    - Changed TRAP Engine version to 19w39a2(0.5.39)
+    - Updated all submodules
+
+SITREP 09/28/2019|19w39a3
+    - Changed TRAP Engine version to 19w39a3(0.5.40)
+    - Worked on Event/Core documentation ~>60 mins
+    - Changed some things in Core.h <10 mins
+    - Changed some macro/template names ~>10 mins
+
+SITREP 09/29/2019|19w39a4
+    - Changed TRAP Engine version to 19w39a4(0.5.41)
+    - Reverted Logging macros back to use TP_ ~<20 mins
+
+SITREP 09/30/2019|19w40a1
+    - Changed TRAP Engine version to 19w40a1(0.5.42)
+    - Fixed invalid monitor usage if Engine.cfg doesnt exist ~<5 mins
+    - Added Core.h documentation ~>30 mins
+
+SITREP 10/03/2019|19w40a2
+    - Changed TRAP Engine version to 19w40a2(0.5.43)
+    - Fixed Window not updating position on windowed mode ~>10 mins
+    - Window Added storing of base video mode for every monitor ~>20 mins
+
+SITREP 10/04/2019|19w40a3
+    - Changed TRAP Engine version to 19w40a3(0.5.44)
+    - Windows now use overclocked monitors refresh rate or native refresh rate ~>20 mins
+    - Worked on Event documentation ~>30 mins
+
+SITREP 10/05/2019|19w40a4
+    - Changed TRAP Engine version to 19w40a4(0.5.45)
+    - Finished & Added Event documentation ~>75 mins
+    - OpenGLTexture2D & OpenGLTextureCube Added safety checks to Bind and Unbind ~>10 mins
+    - Now utilizing structured bindings ~<30 mins
+    - OpenGLTexture2D & OpenGLTextureCube Optimized Binding/Unbinding of the same Texture to the same slot ~>25 mins
+
+SITREP 10/06/2019|19w40a5
+    - Changed TRAP Engine version to 19w40a5(0.5.46)
+    - OpenGLUniformBuffer Fixed Unbind function not using bindingPoint ~<20 mins
+    - OpenGLUniformBuffer Added Unbind/Bind safety checks ~>20 mins
+    - OpenGLUniformBuffer Optimized Binding/Unbinding of the same UniformBuffer to the same bindingPoint ~>20 mins
+    - Moved all inline functions to the .cpp files ~>120 mins
+    - Reordered functions to match declarations ~>125 mins
+
+SITREP 10/08/2019|19w41a1
+    - Changed TRAP Engine version to 19w41a1(0.5.47)
+    - OpenGLShader GLSL Ignore #version tag & always add "#version 460 core" ~>15 mins
+
+SITREP 10/09/2019|19w41a2
+    - Changed TRAP Engine version to 19w41a2(0.5.48)
+    - OpenGLUniformBuffer with Stream usage now uses Orphaning(because of internal issues) ~>15 mins
+    - Working on Shading language independent loading ~>60 mins
+
+SITREP 10/12/2019|19w41a3
+    - Changed TRAP Engine version to 19w41a3(0.5.49)
+    - Working on Shading language independent loading ~>60 mins
+    - ConvertToSPIRV Finished GLSL converting ~>150 mins
+    - Shader Optimized RAM usage ~>45 mins
+    - VulkanShader Added loading of SPIR-V ~>30 mins
+    - Dependencies Added SPIRV-Cross ~>35 mins
+    - Updated documentation ~>15 mins
+    - OpenGLShader Added loading of SPIR-V ~>45 mins
+    - Updated README.md ~<5 mins
+    - Fixed Travis CI ~<15 mins
+
+SITREP 10/13/2019|19w41a4
+    - Changed TRAP Engine version to 19w41a4(0.5.50)
+    - Application Replaced BIND_EVENT_FN with TRAP_BIND_EVENT_FN ~<10 mins
+    - Texture Optimized RAM usage ~>45 mins
+    - Refactored OpenGLTexture2D ~>25 mins
+    - KeyPressedEvent Added actually counting the amount of key repeats ~>15 mins
+    - Removed EmptyImage class ~<20 mins
+    - Shaders Removed language tag and HLSL support ~>20 mins
+    - Shaders Fixed some edge cases in *.shader parsing ~>40 mins
+
+SITREP 10/15/2019|19w42a2
+    - Changed TRAP Engine version to 19w42a2(0.5.51)
+    - Images started caring about endian correctness ~>45 mins
+    - Worked on PNG Image File Format ~>20 mins
+
+SITREP 10/18/2019|19w42a3
+    - Changed TRAP Engine version to 19w42a3(0.5.52)
+    - Finished caring about endian correctness ~>60 mins
+
+SITREP 10/19/2019|19w42a4
+    - Changed TRAP Engine version to 19w42a4(0.5.53)
+    - Worked on PNG Image File Format ~>45 mins
+
+SITREP 10/21/2019|19w43a1
+    - Changed TRAP Engine version to 19w43a1(0.5.54)
+    - PNG Finished loading of all chunks ~>100 mins
+    - PNG Finished CRC Checking ~>20 mins
+    - Started working on PNG Decompression ~> 20 mins
+
+SITREP 10/26/2019|19w43a2
+    - Changed TRAP Engine version to 19w43a2(0.5.55)
+    - Added zlib to Inflate PNG Image Data ~>40 mins
+    - Disabled warnings from all submodules ~>20 mins
+    - Added Unfinished PNG Loader ~>120 mins
+
+SITREP 10/27/2019|19w43a3
+    - Changed TRAP Engine version to 19w43a3(0.5.56)
+    - Finished PNG Loader ~> 120 mins
+    - Tested PNG Loader with PNGSuite ~>130 mins
+    - Fixed small bugs in PNG Loader ~>30 mins
+
+SITREP 10/28/2019|19w44a1
+    - Changed TRAP Engine version to 19w44a1(0.5.57)
+    - Added HuffmanTree ~>60 mins
+    - Added Adler32 ~>30 mins
+    - Added own zlib inflator ~>140 mins
+    - Removed zlib-ng submodule ~>20 mins
+
+SITREP 10/29/2019|19w44a2
+    - Changed TRAP Engine version to 19w44a2(0.5.58)
+    - [Vulkan] Fixed some unitinialized variables ~>10 mins
+
+SITREP 10/31/2019|19w44a3
+    - Changed TRAP Engine version to 19w44a3(0.5.59)
+    - Config class can now be used in games ~<10 mins
+    - Changed some strings to string_views ~>30 mins
+
+SITREP 11/02/2019|19w44a4
+    - Changed TRAP Engine version to 19w44a4(0.5.60)
+    - Changed Default Fallback Image ~<10 mins
+    - Started working on Renderer2D ~>40 mins
+    - Embedeed Shader for Renderer2D ~<15 mins
+    - Shader/TextureManager Added ability to remove Shader/Texture ~<30 mins
+
+SITREP 11/03/2019|19w44a5
+    - Changed TRAP Engine version to 19w44a5(0.5.61)
+    - Optimized PNG Loader ~>20 mins
+    - Removed macOS support ~>25 mins
+
+SITREP 11/05/2019|19w45a1
+    - Changed TRAP Engine version to 19w45a1(0.5.62)
+    - OpenGLTexture2D/Cube Fixed Uploading of 32BPP GrayScale-Alpha Images ~>20 mins
+
+SITREP 11/06/2019|19w45a2
+    - Changed TRAP Engine version to 19w45a2(0.5.63)
+    - Memory SwapBytes now uses bitwise operations ~>20 mins
+
+SITREP 11/09/2019|19w45a3
+    - Changed TRAP Engine version to 19w45a3(0.5.64)
+    - ImageLoader changed some functions ~>20 mins
+    - Added ability to load 2D texure from memory ~>40 mins
+    - OpenGLFrameBuffer2D Added resolution safety check ~>15 mins
+    - Renderer2D now uses only 1 shader and a 1x1 White 2D Texture ~>25 mins
+
+SITREP 11/10/2019|19w45a4
+    - Changed TRAP Engine version to 19w45a4(0.5.65)
+    - Started working on Controller Input(XInput) ~>40 mins
+
+SITREP 11/14/2019|19w46a1
+    - Changed TRAP Engine version to 19w46a1(0.5.66)
+    - PNG Image Loader reduced memory usage ~>30 mins
+    - Reverted last PNG Optimization because it invalidated data ~>20 mins
+
+SITREP 11/16/2019|19w46a2
+    - Changed TRAP Engine version to 19w46a2(0.5.67)
+    - Create new branch for Controller Input ~>10 mins
+        - Finished Controller Input(XInput) ~>30 mins
+        - Application Added check if Windows 8 or newer (XInput 1.4 Requirements) ~>X mins
+        - Renamed ControllerHat functions to ControllerDPad ~>10 mins
+        - Added GetControllerDPad for XInput ~>20 mins
+
+SITREP 11/17/2019|19w46a3
+    - Changed TRAP Engine version to 19w46a3(0.5.68)
+    - Branch ControllerInput:
+        - Started working on Linux Controller Input ~>30 mins
+
+SITREP 11/23/2019|19w47a1
+    - Changed TRAP Engine version to 19w47a1(0.5.69)
+    - Branch ControllerInput:
+        - Finished Linux Controller Input ~>120 mins
+        - Windows XInput gets loaded at runtime now ~>20 mins
+        - Updated Documentation ~>45 mins
+
+SITREP 11/24/2019|19w47a2
+    - Changed TRAP Engine version to 19w47a2(0.5.70)
+    - Branch ControllerInput:
+        - Reverted XInput runtime loading ~<10 mins
+        - TRAP Engine now requires Windows 8 or newer because of XInput 1.4
+        - Added DirectInput as new Controller API ~>50 mins
+        - Updated Docs ~<5 mins
+    - Created new Branch for a new Windowing API for Windows(Win32) and Linux(X11) ~<20 mins
+
+SITREP 11/26/2019|19w48a1
+    - Changed TRAP Engine version to 19w48a1(0.5.71)
+    - Fixed SandboxLayer not initializing VertexArray ~<5 mins
+    - Fixed VulkanTexture2D creating Fallback2D with wrong name ~<5 mins
+
+SITREP 11/28/2019|19w48a2
+    - Changed TRAP Engine version to 19w48a2(0.5.72)
+    - Tidied up Input header functions ~>30 mins
+
+SITREP 11/30/2019|19w48a3
+    - Changed TRAP Engine version to 19w48a3(0.5.73)
+    - Updated documentation ~>15 mins
+
+SITREP 12/01/2019|19w48a4
+    - Changed TRAP Engine version to 19w48a4(0.5.74)
+    - Replaced cstring functions from Controller Input with std::strings ~>40 mins
+    - Merged some XInput functions with the other APIs ~>20 mins
+
+SITREP 12/04/2019|19w49a1
+    - Changed TRAP Engine version to 19w49a1(0.5.75)
+    - Branch Window:
+        - Started working on new Window API ~>40 mins
+        - Removed GLFW
+
+SITREP 12/20/2019-12/23/2019|19w51a4-19w52a1
+    - Changed TRAP Engine version to 19w52a1(0.5.80)
+    - Branch Window:
+        - Finished big parts of the new WindowingAPI ~>720 mins
+        - Current phase: Debugging of core features & Tidying up the API
+
+SITREP 12/25/2019|19w52a2
+    - Changed TRAP Engine version to 19w52a2(0.5.81)
+    - Branch Window:
+        - Updated Docs ~>20 mins
+        - Debugged and Fixed WindowingAPI ~>65 mins
+
+SITREP 12/26/2019|19w52a3
+    - Changed TRAP Engine version to 19w52a3(0.5.82)
+    - Branch Window:
+        - Finished Windows side of WindowingAPI ~>240 mins
+
+SITREP 12/27/2019|19w52a4
+    - Changed TRAP Engine version to 19w52a4(0.5.83)
+    - Branch Window:
+        - Added more Cursors ~>20 mins
+        - Updated ImGui submodule ~<10 mins
+
+SITREP 12/28/2019|19w52a5
+    - Changed TRAP Engine version to 19w52a5(0.5.84)
+    - Branch Window:
+        - Changed Borderless Fullscreen Window behaviour ~<25 mins
+        - Fixed: VSync setting gets ignored if switch to Fullscreen ~<20 mins
+        - Fixed: Input polling only used Main Render Window. Now it uses an optional parameter ~<30 mins
+        - Updated Docs ~>25 mins
+        - Fixed: Fullscreen Windows using wrong Viewport size ~<20 mins
+        - Updated Readme ~<20 mins
+
+SITREP 12/29/2019|19w52a6
+    - Changed TRAP Engine version to 19w52a6(0.5.85)
+    - Branch Window:
+        - Added Hotkey ALT+(KP)Enter to switch between Windowed and Fullscreen mode (Single-Window only!) ~<30 mins
+        - Fixed Minimizing the Main Window on Multi-Window programs also stopped Rendering on the other Windows ~<20 mins
+        - Added 30 FPS Lock if Main Window loses focus (Single-Window only!) ~<20 mins
+
+SITREP 01/04/2020|20w01a1
+    - Changed TRAP Engine version to 20w01a1(0.5.86)
+    - Branch Window:
+        - Added Main Window now keeps track of maximized status and saves it for next start ~>20 mins
+        - Added ability to set maximized state upon window creation ~>10 mins
+        - Added ability to set resizable state upon window creation ~<10 mins
+        - Added ability to set custom image as mouse cursor ~<20 mins
+        - Added ability to query maximized, minimized and resizable states from a window ~<30 mins
+        - Replaced every TRAP_BIND_EVENT_FN with lambdas <~20 mins
+        - Removed TRAP_BIND_EVENT_FN instead use lambdas now <~20 mins
+        - Fixed TRAP::Window crash if no EventCallbackFn was set ~<20 mins
+        - Updated Docs
+
+SITREP 01/05/2020|20w01a2
+    - Changed TRAP Engine version to 20w01a2(0.5.87)
+    - Branch Window:
+        - Added ImGui support ~>150 mins
+        - Fixed False triggering 30FPS lock if ImGui child window is focused outside Main Window ~<30 mins
+        - Moar references ~>40 mins
+
+SITREP 01/06/2020|20w02a1
+    - Changed TRAP Engine version to 20w02a1(0.5.88)
+    - Branch Window:
+        - Changed Context Use function to use raw pointer instead of const Scope reference ~<10 mins
+        - Removed pointer hack inside Window.cpp ~<10 mins
+        - Changed some Window functionality ~>30 mins
+
+SITREP 01/07/2020|20w02a2
+    - Changed TRAP Engine version to 20w02a2(0.5.89)
+    - Branch Window:
+        - Added 3 more functions to Window.cpp ~<30 mins
+        - Updated Docs ~<10 mins
+        - Removed some undefined behaviour ~>30 mins
+        - Removed some null deallocator smart pointer ~>30 mins
+
+SITREP 01/11/2020|20w02a3
+    - Changed TRAP Engine version to 20w02a3(0.5.90)
+    - Branch Window:
+        - Changed WindowingAPI from Scopes to Refs ~>145 mins
+        - Added more WindowingAPI functions ~>40 mins
+        - Added GetControllerGUID to Input ~<10 mins
+        - Added new WindowingAPI functions to Window ~>30 mins
+        - Updated Docs ~<35 mins
+
+SITREP 01/12/2020|20w02a4
+    - Changed TRAP Engine version to 20w02a4(0.5.91)
+    - Branch Window:
+        - Added WindowingAPI functions to Window ~>30 mins
+        - Changed WindowProps constructor ~<20 mins
+        - Added clipboard functions to Input ~<10 mins
+        - Updated Docs ~>50 mins
+        - Added detection for X11 and Wayland on Engine startup ~<20 mins
+        - Engine now only runs on Windows 7 or newer ~<10 mins
+        - Made branch more linux compatible ~<15 mins
+
+SITREP 01/18/2020|20w03a1
+    - Changed TRAP Engine version to 20w03a1(0.5.92)
+    - Branch Window:
+        - Finished X11 Windowing ~>400 mins
+        - Fixed 2 small bugs ~<50 mins
+        - Made Config files Cross-Platform compatible (read text files now always use LF) ~<20 mins
+
+SITREP 01/19/2020|20w03a2
+    - Changed TRAP Engine version to 20w03a2(0.5.93)
+    - Branch Window:
+        - Fixed X11 parent window initialization ~<10 mins
+        - Fixed Windows no Win key release event ~<20 mins
+        - Updated Docs ~<15 mins
+        - Fixed Windows synthetic key event used TRAP::Input::Key::Unknown ~<20 mins
+        - Fixed Windows Frame/Window size callback called twice ~<30 mins
+        - Fixed Windows Trying to set SwapInterval while not using OpenGL ~<30 mins
+        - Added Cursor captured mode ~>25 mins
+
+SITREP 01/20/2020|20w04a1
+    - Changed TRAP Engine version to 20w04a1(0.6.01)
+    - Switched License from GPL 3.0 to Apache 2.0 ~<20 mins
+    - Replaced GLAD ~>300 mins
+    - Added custom ImGui OpenGL 4 implementation ~>40 mins
+    - Updated docs ~<20 mins
+
+SITREP 01/21/2020|20w04a2
+    - Changed TRAP Engine version to 20w04a2(0.6.02)
+    - Added optional C++20 features ~25 mins
+
+SITREP 01/26/2020|20w04a3
+    - Changed TRAP Engine version to 20w04a3(0.6.03)
+    - Reworked Math API (Vec1-4, Mat3-4, General)~>309 mins
+    - Updated GLSLang submodule ~<10 mins
+    - VulkanShader now convert GLSL to SPIRV 1.5 (Need Vulkan 1.2 SDK) ~<20 mins
+    - Renamed Events ~<20 mins
+    - Updated Docs ~<30 mins
+    - Splitted up WindowEvents from ApplicationEvents ~<20 mins
+    - Added FrameBufferResizeEvent ~<30 mins
+    - Switched WindowResizeEvent to FrameBufferResizeEvent ~<20 mins
+    - Updated Docs ~<25 mins
+
+SITREP 02/02/2020|20w05a1
+    - Changed TRAP Engine version to 20w05a1(0.6.04)
+    - Fixed Engine.cfg RefreshRate = 0 when invalid RefreshRate was used ~<15 mins
+    - Fixed GLSL Shaders for AMD GPUs ~<20 mins
+    - Added MouseEnter & MouseLeave Events ~<20 mins
+    - Replaced Single Linked Lists inside WindowingAPI with std::forward_list (This fixed a memory bug) ~>25 mins
+
+SITREP 02/03/2020|20w06a1
+    - Changed TRAP Engine version to 20w06a1(0.6.05)
+    - Fixed TRAP_WINDOW_ASSERT undefined in release builds ~<5 mins
+    - Updated Docs ~<20 mins
+    - Added WindowDropEvent for Drag'n'Drop ~<25 mins
+    - Updated Docs ~<20 mins
+
+SITREP 02/05/2020|20w06a2
+    - Changed TRAP Engine version to 20w06a2(0.6.06)
+    - Added WindowContentScaleEvent for OS DPI setting changes ~>20 mins
+    - Added GetContentScale to TRAP::Window ~<15 mins
+    - Updated Docs ~<20 mins
+    - Added Monitor class ~>30 mins
+    - Moved VideoMode struct from TRAP::INTERNAL::WindowingAPI to TRAP:: ~<10 mins
+
+SITREP 02/08/2020|20w06a3
+    - Changed TRAP Engine version to 20w06a3(0.6.07)
+    - Moved TRAP::VideoMode struct to TRAP::Monitor ~<20 mins
+    - Updated Docs ~>40 mins
+    - Replaced GetWindowLong with GetWindowLongPtr inside WindowingAPIWin32.cpp ~<10 mins
+    - Replaced SetWindowLong with SetWindowLongPtr inside WindowingAPIWin32.cpp ~<10 mins
+    - Removed TRAP::Application::Get() function ~<10 mins
+    - Made some TRAP::Application functions static ~<20 mins
+    - Added Single-Line Comments to Config files by using a '#' at the beginning of a line ~<20 mins
+
+SITREP 02/09/2020|20w06a4
+    - Changed TRAP Engine version to 20w06a4(0.6.08)
+    - Added Config class to Docs ~>30 mins
+    - Removed HotShader/TextureReloading from Engine.cfg ~<10 mins
+    - Added SetHotShader/TextureReloading() to TRAP::Application ~<15 mins
+    - Updated Docs ~<5 mins
+    - Removed TRAP::VFS::Get() function ~<20 mins
+    - Removed TRAP::Log::Get() function ~<20 mins
+    - Added TRAP::Log::GetBuffer() function ~<10 mins
+    - Added TRAP::Log to Docs ~>30 mins
+    - Added MonitorConnectEvent ~<30mins
+    - Added MonitorDisconnectEvent ~<20 mins
+    - Fixed PollMonitorsWin32 not updating Monitor Handles ~>25 mins
+    - Added Monitor(Dis)ConnectEvent to Docs ~<30 mins
+    - Added automatic handling of Windows on Monitors that got disconnected ~>50 mins
+
+SITREP 02/10/2020|20w07a1
+    - Changed TRAP Engine version to 20w07a1(0.6.09)
+    - Changed Controller API (Temporarily removed XInput) ~>40 mins
+    - Added support for up to 16 Controllers simoultaneously ~>20 mins
+    - Fixed CRLF endings for Linux ~<10 mins
+    - Readded XInput support ~>40 mins
+    - Removed ControllerAPI from Engine.cfg ~<20 mins
+    - Finished combining DirectInput and XInput APIs ~>25 mins
+    - Added XInput entries to ControllerMapping ~<20 mins
+    - Fixed OrthographicCameraController not zooming until Controller trigger > 0.0 ~<10 mins
+    - Fixed Windows builds ~>15 mins
+
+SITREP 02/11/2020|20w07a2
+    - Changed TRAP Engine version to 20w07a2(0.6.10)
+    - Updated ConvertToSPIRV tool for Vulkan 1.2 and SPIRV 1.5 ~<10 mins
+    - Really Fixed CRLF endings for Linux ~<10 mins
+    - Added Tests project. Used for future tests ~<20mins
+    - Validated Clipboard functionality on Windows ~<20 mins
+    - Fixed TRAP_RELWITHDEBINFO preprocessor in Sandbox & Tests ~<10 mins
+    - Added missing iterators to LayerStack ~<20 mins
+    - Validated Cursor functionality on Windows ~>30 mins
+    - Fixed ImGui overwriting Cursor the by Client ~>30 mins
+
+SITREP 02/15/2020|20w07a3
+    - Changed TRAP Engine version to 20w07a3(0.6.11)
+    - Updated Travis.yml. Now uses Vulkan 1.2.131.2 SDK ~<15 mins
+    - Fixed Linux (XKB) Keyboard not working properly ~>20 mins
+    - Validated Clipboard functionality on Linux(X11) ~<20 mins
+    - Fixed and Validated Cursor functionality on Linux(X11) ~>50 mins
+    - Changed ToString functions in KeyPress/Release/TypeEvent & MouseButtonPress/ReleaseEvent & ControllerDis/ConnectEvent ~>25 mins
+    - Fixed missing InputCursorEnter calls in WindowingAPIWin32 ~<10 mins
+    - Validated Events functionality on Windows ~<30 mins
+    - Updated Docs ~<30 mins
+
+SITREP 02/19/2020|20w08a1
+    - Changed TRAP Engine version to 20w08a1(0.6.12)
+    - Added Utility functions using TRAP::Math::Vec ~<20 mins
+    - Validated Controller functionality on Windows ~<30 mins
+    - Validated Window Minimize functionality on Windows ~<30 mins
+    - CloseController now only sends ControllerDisconnectEvents if the Controller was connected ~<10 mins
+    - Updated Docs ~<30 mins
+
+SITREP 02/20/2020|20w08a2
+    - Changed TRAP Engine version to 20w08a2(0.6.13)
+    - Added WindowMinimize/Maximize/RestoreEvents ~<40 mins
+    - Updated Docs ~<30 mins
+    - Validated Window Icon functionality on Windows ~<20 mins
+    - Added more queries to TRAP::Monitor ~<30 mins
+    - Updated Docs ~>30 mins
+    - Validated Monitor functionality on Windows ~<20 mins
+
+SITREP 02/21/2020|20w08a3
+    - Changed TRAP Engine version to 20w08a3(0.6.14)
+    - Added support for translucent windows ~<20 mins
+    - Updated Docs ~<20 mins
+    - Validated Window Opacity functionality on Windows ~<20 mins
+
+SITREP 02/22/2020|20w08a4
+    - Changed TRAP Engine version to 20w08a4(0.6.15)
+    - Validated Window Title UTF-8 support on Windows ~<20 mins
+    - Validated Events on Linux X11 ~<30 mins
+    - Validated Window Minimize functionality on Linux X11 ~<20 mins
+    - Validated Window Icon functionality on Linux X11 ~<20 mins
+    - Validated Monitor functionality on Linux X11 ~<20 mins
+    - Validated Window Opacity functionality on Linux X11 ~<20 mins
+    - Validated Window Title UTF-8 support on Linux X11 ~<20 mins
+    - Controller vibrations now only get set if they differ from current (Fixes Linux bug with repeated calls) ~<20 mins
+    - Fixed compiler warnings on Linux X11 ~>30 mins
+
+SITREP 02/23/2020|20w08a5
+    - Changed TRAP Engine version to 20w08a5(0.6.16)
+    - Fixed Heap corruption on Linux X11 ~>50 mins
+    - Validated Controller functionality on Linux X11 ~<20 mins
+    - Fixed Controller bugs when Connected while TRAP is running on Windows ~<20 mins
+    - Removed Singleton class ~<20 mins
+
+SITREP 02/24/2020|20w09a1
+    - Changed TRAP Engine version to 20w09a1(0.6.17)
+    - TRAP::Application::Run is now only accessible by the engine ~<10 mins
+    - Added JSON based Performance Profiler ~>30 mins
+    - Added Profiling to SandboxLayer & Sandbox2D ~<20 mins
+    - Added Profiling to whole engine ~>60 mins
+
+SITREP 02/27/2020|20w09a2
+    - Changed TRAP Engine version to 20w09a2(0.6.18)
+    - Added Random generator using mt19937_64 ~>50 mins
+    - Validated Random generator ~<40 mins
+
+SITREP 02/29/2020|20w09a3
+    - Changed TRAP Engine version to 20w09a3(0.6.19)
+    - Renderer2D Added Rotation support ~<20 mins
+    - Working on Vulkan ~>70 mins
+
+SITREP 03/01/2020|20w09a4
+    - Changed TRAP Engine version to 20w09a4(0.6.20)
+    - Fixed Vulkan Present Queue ~<20 mins
+    - Added Command Buffer Submit synchronization ~<20 mins
+    - Added macro "TRAP_EXPERIMENTAL_VULKAN" to allow experimental usage of Vulkan API ~<20 mins
+
+SITREP 03/04/2020|20w10a1
+    - Changed TRAP Engine version to 20w10a1(0.6.21)
+    - Added Quaternions ~>50 mins
+    - Replaced Matrix Rotations with Quaternions (thus fixing Gimbal Locking) ~<20 mins
+    - Added Missing GLM license notice in TRAP::Math ~<10 mins
+    - Added Missing GLAD license notice in OpenGLLoader ~<10 mins
+    - Added Missing GLFW license notice in TRAP::Input & TRAP::INTERNAL::WindowingAPI ~<10 mins
+    - Added Missing ImGui license notice in ImGui Layer ~<10 mins
+    - Added Missing GLSLang license ~<10 mins
+    - Added Missing SPIRV-Cross license ~<10 mins
+    - Added Missing Premake5 license ~<10 mins
+
+SITREP 03/07/2020|20w10a2
+    - Changed TRAP Engine version to 20w10a2(0.6.22)
+    - Enabled AVX2 compilation(CPU Requirement) ~<10 mins
+    - Added SHA2 hash functions ~>20 mins
+    - Changed Adler32 and CRC32 interface ~<20 mins
+    - Added SHA3 hash functions ~>20 mins
+    - Fixed SHA2 on Linux ~<10 mins
+
+SITREP 03/08/2020|20w10a3
+    - Changed TRAP Engine version to 20w10a3(0.6.23)
+    - Docs now use Dark theme by default ~<20 mins
+    - Moved Event stuff from TRAP namespace to TRAP::Events ~<30 mins
+    - Updated Event Docs ~>25 mins
+    - Restructured Events in Docs ~>40 mins
+    - Made TRAP::Input class static ~<30 mins
+    - Updated Input Docs ~>25 mins
+    - Worked on Image Docs ~>40 mins
+
+SITREP 03/12/2020|20w11a1
+    - Changed TRAP Engine version to 20w11a1(0.6.24)
+    - Worked on Docs ~>60 mins
+    - Added ability to create texture via name and a TRAP::Image ~<30 mins
+    - Removed redundancy in Texture classes ~>40 mins
+    - Removed redundancy in Shader classes ~<30 mins
+
+SITREP 03/14/2020|20w11a2
+    - Changed TRAP Engine version to 20w11a2(0.6.25)
+    - 2D Textures now can only be loaded directly from memory via a TRAP::Image ~>25 mins
+    - Cube Texture can now be loaded via a TRAP::Image ~>30 mins
+    - FPS now get calculated via the frametime ~<10 mins
+
+SITREP 03/16/2020|20w12a1
+    - Changed TRAP Engine version to 20w12a1(0.6.26)
+    - Made TRAP::Log singleton ~<20 mins
+    - Updated TRAP::Log Docs ~<10 mins
+    - Added experimental ThreadPool (Dont use it for now) ~>30 mins
+    - Added a small 2D particle system example ~<70 mins
+
+SITREP 03/20/2020|20w12a2
+    - Changed TRAP Engine version to 20w12a2(0.6.27)
+    - Added Triangle as Renderer2D primitive ~<20 mins
+
+SITREP 03/26/2020|20w13a1
+    - Changed TRAP Engine version to 20w13a1(0.6.28)
+    - Moved OpenGL Max Texture Units from Texture2D/Cube to OpenGLRenderer ~<10 mins
+    - Fixed FrameTime when out of Focus ~<20 mins
+
+SITREP 04/09/2020|20w15a1
+    - Changed TRAP Engine version to 20w15a1(0.6.29)
+    - Updated Travis.yml ~<5 mins
+    - Removed Standalone sub project ~<10 mins
+    - Dropped DirectX 12 support ~<20 mins
+
+SITREP 04/10/2020|20w15a2
+    - Changed TRAP Engine version to 20w15a2(0.6.30)
+    - Added TimeScale feature ~<10 mins
+
+SITREP 04/16/2020|20w16a1
+    - Changed TRAP Engine version to 20w16a1(0.6.31)
+    - Started working on Vulkan rewrite ~>60 mins
+    - Fixed IsVulkanCapable using wrong Vulkan API version define ~<20 mins
+    - Removed Deprecated Vulkan Device Layers ~<20 mins
+
+SITREP 04/20/2020|20w17a1
+    - Changed TRAP Engine version to 20w17a1(0.6.32)
+    - Added macro TRAP_DEBUG_CONFIGS to allow tracing of config file values ~<10 mins
+
+SITREP 20w19 & 20w20
+    - Worked on new Vulkan implementation ~>1800 mins
+
+SITREP 05/15/2020|20w20a1
+    - Updated Premake 5 to Alpha 15 ~<5 mins
+
+SITREP 05/28/2020|20w22a1
+    - Changed TRAP Engine version to 20w22a1(0.6.33)
+    - Finished big VulkanAPI rework(replaced old implementation) ~>360 mins
+
+SITREP 05/31/2020|20w23a1
+    - Changed TRAP Engine version to 20w23a1(0.6.34)
+    - Fixed SandboxLayer not rendering the quad ~<5 mins
+
+SITREP 06/06/2020|20w23a2
+    - Changed TRAP Engine version to 20w23a2(0.6.35)
+    - Vulkan added support for multiple windows ~>90 mins
+    - Fixed remaining Vulkan errors ~<40 mins
+    - Validated Vulkan functionality on Ubuntu 20.04 LTS using NVIDIA 440.66.15 ~<30 mins
+
+SITREP 06/07/2020|20w23a3
+    - Changed TRAP Engine version to 20w23a3(0.6.36)
+    - Vulkan fixed validation errors inside PrepareNextFrame when swapchain is out of date or suboptimal ~<20 mins
+    - WindowingAPI Linux X11/XLib is now loaded dynamically (doesnt apply for MsgBoxes) ~>35 mins
+    - WindowingAPI Linux X11 Added XIM callbacks (Fixed segfault) ~<30 mins
+    - WindowingAPI Linux X11 Filtered error from other connections ~<10 mins
+    - WindowingAPI Linux X11 XKB now also checks key aliases ~>25 mins
+    - WindowingAPI WinAPI Removed pre Windows XP checks ~>20 mins
+
+SITREP 06/08/2020|20w24a1
+    - Changed TRAP Engine version to 20w24a1(0.6.37)
+    - Changed Instrumentor & made it thread safe ~<30 mins
+
+SITREP 06/19/2020|20w25a1
+    - Changed TRAP Engine version to 20w25a1(0.6.38)
+    - Refactored OpenGLTexture2D ~<40 mins
+    - Added UploadImage to Texture2D(OpenGLTexture2D) ~<30 mins
+    - Updated VulkanSDK version for Travis CI on Windows ~<5 mins
+    - Fixed a bug in VFS::MakeVirtualPathCompatible ~<10 mins
+
+SITREP 06/21/2020|20w25a2
+    - Changed TRAP Engine version to 20w25a2(0.6.39)
+    - Added new Documentation via Sphinx + Doxygen + Breathe + Exhale ~>50 mins
+    - Added ImageLoaderTests ~<60 mins
+    - BMP loader added error message for OS/2 images ~<15 mins
+    - BMP loader added grayscale support ~>20 mins
+    - BMP loader added grayscale and RGBA RLE 8 decoding support ~>60 mins
+
+SITREP 06/25/2020|20w26a1
+    - Changed TRAP Engine version to 20w26a1(0.6.40)
+    - Moved some functions from Image to TGAImage ~<20 mins
+    - Changed VFS std::byte to uint8_t data type ~<10 mins
+
+SITREP 06/27/2020|20w26a2
+    - Changed TRAP Engine version to 20w26a2(0.6.41)
+    - Changed folder structure ~>25 mins
+    - Modularized remaining premake5 scripts ~<30 mins
+    - Config Fixed an out of range error when only the key exists without any value ~<10 mins
+    - Utils Added UUIDToString and UUIDFromString functions ~<20 mins
+    - Added VulkanGPU UUID entry to Engine.cfg ~<15 mins
+    - Vulkan Added Saving/Loading of a GPU UUID ~>30 mins
+    - Vulkan Removed Verbose debug messages ~<10 mins
+    - Added Query to get current GPU name ~<20 mins
+    - Added Stencil function ~>60 mins
+
+SITREP 06/28/2020|20w26a3
+    - Changed TRAP Engine version to 20w26a3(0.6.42)
+    - Added GetAllGPUs function which returns every GPU name and its UUID(VulkanAPI) ~<20 min
+    - Updated docs ~<10 mins
+
+SITREP 06/29/2020|20w27a1
+    - Changed TRAP Engine version to 20w27a1(0.6.43)
+    - Implemented VulkanVertexBuffer ~>130 mins
+    - Implemented VulkanIndexBuffer ~>40 mins
+    - Added TRAP Editor project ~<40 mins
+    - Changed FrameBuffer API ~<50 mins
+
+SITREP 07/02/2020|20w27a2
+    - Changed TRAP Engine version to 20w27a2(0.6.44)
+    - Fixed unresolved functions in Experimental ThreadPool & BlockingQueue ~<20 mins
+    - Added multithreading inside OpenGLTexture2D when loading an Image from filepath (STILL EXPERIMENTAL) ~>30 mins
+    - Removed Load() function from OpenGLTexture2D as it was only used by one of the constructors ~<10 mins
+    - Made Logging thread safe ~<20 mins
+    - Renamed TRAP Editor to TRAP-Editor (fixes Linux CI bug) ~<5 mins
+    - Added TRAP::Window documentation ~<40 mins
+    - Added PNG images to HotTextureReloading list ~<10 mins
+    - Added SPIRV shaders to HotShaderReloading list ~<10 mins
+
+SITREP 07/03/2020|20w27a3
+    - Changed TRAP Engine version to 20w27a3(0.6.45)
+    - Removed multiple VBO support inside a single VAO ~<20 mins
+
+SITREP 07/08/2020|20w28a1
+    - Changed TRAP Engine version to 20w28a1(0.6.46)
+    - Removed deprecated sudo from Travis CI ~<20 mins
+    - WindowingAPI updates ~<40 mins
+    - Renamed Event folder to Events (naming consistency) ~<5 mins
+
+SITREP 07/11/2020|20w28a2
+    - Changed TRAP Engine version to 20w28a2(0.6.47)
+    - WindowingAPI fixed 2 bugs in X11 ~<20 mins
+    - Changed Window mouse event transparency inside WindowingAPI ~>30 mins
+    - Moved BlockingQueue & ThreadPool into TRAP namespace ~<10 mins
+
+SITREP 07/16/2020|20w29a1
+    - Changed TRAP Engine version to 20w29a1(0.6.48)
+    - Fixed a bug in TRAP::Math ~<10 mins
+    - Added Tests3D Project for 3D testing ~>40 mins
+    - Added Cube to Tests3D ~<20 mins
+    - Added an FPS Camera (like Minecraft Creative mode) to Tests3D ~>30 mins
+    - Fixed multiple bugs in FileWatcher (HotReloading System) ~>30 mins
+
+SITREP 07/17/2020|20w29a2
+    - Changed TRAP Engine version to 20w29a2(0.6.49)
+    - Made Test3D cube indexed and added normals ~<30 mins
+    - Small changes to WindowingAPI ~<20 mins
+    - HotReloading is now multithreaded and instant reloads(15ms instead of 1000ms delay) ~>40 mins
+    - Added Runtime CPU detection (Detects AMD & Intel) ~>45 mins
+
+SITREP 07/19/2020|20w29a3
+    - Changed TRAP Engine version to 20w29a3(0.6.50)
+    - Test3D Added Skybox ~<30 mins
+    - Fixed Bug in Test3D PerspectiveCameraController when x rotation is bigger than 90° or smaller than -90° ~<10 mins
+    - Fixed Bug when Camera gets an OnFrameBufferResizeEvent where width or/and height is 0 ~<10 mins
+    - Added RawMouseInput entry to Engine.cfg ~<20 mins
+    - Tried to implement DirectInput rumble via Force Feedback but all my controller do not report the needed
+      Force Feedback flag so I can't test this feature properly! Help wanted :O ~>30 mins
+
+SITREP 07/20/2020|20w30a1
+    - Changed TRAP Engine version to 20w30a1(0.6.51)
+    - Fixed crash on shutdown when not using HotReloading (tried to join a nullptr thread xD) ~<10 mins
+    - Added GetKeyboardLayoutName() to TRAP::Input ~>20 mins
+    - Added KeyLayout Event to TRAP::Input Callback ~>45 mins
+    - Made X11 MsgBoxes prettier ~<20 mins
+    - Removed unused friend classes in OpenGLShader & VulkanShader ~<10 mins
+
+SITREP 07/22/2020|20w30a2
+    - Changed TRAP Engine version to 20w30a2(0.6.52)
+    - OpenGLLoader Removed some non Direct State Access (DSA) functions ~>120 mins
+    - ImGuiOpenGL4 replaced non-DSA functions with DSA functions ~<40 mins
+    - ImGuiOpenGL4 removed unnecessary bindings thx to DSA :D ~<10 mins
+
+SITREP 07/23/2020|20w30a3
+    - Changed TRAP Engine version to 20w30a3(0.6.53)
+    - OpenGLShader if Fragment/Vertex shader does not contain entry point "main" the Fallback shader will be used ~<20 mins
+    - VulkanShader Added Debugging Reflection (enable via TRAP_DEBUG_SHADERS macro) ~>65 mins
+    - Replaced all logging prefixes with constant expressions inside TRAP::Log namespace ~>120 mins
+    - More documentation ~>120 mins
+
+SITREP 07/25/2020|20w30a4
+    - Completely overhauled documentation generation ~>120 mins
+    - Changed TRAP Engine version to 20w30a4(0.6.54)
+    - TRAP::FileSystem added additional checks for empty paths and/or data ~<25 mins
+
+SITREP 07/29/2020|20w31a1
+    - Changed TRAP Engine version to 20w31a1(0.6.55)
+    - TRAP::FileWatcher moved lambda functions into own function ~<20 mins
+
+SITREP 08/02/2020|20w31a2
+    - Changed TRAP Engine version to 20w31a2(0.6.56)
+    - WindowingAPI Replaced manuall Mutex with std::mutex ~>20 mins
+
+SITREP 08/05/2020|20w32a1
+    - Changed TRAP Engine version to 20w32a1(0.6.57)
+    - TravisCI updated Windows VulkanSDK to 1.2.148.0 ~<5 mins
+    - Updated ImGui Docking submodule ~<10 mins
+    - Updated SPIRV-Cross submodule ~<15 mins
+    - Updated GLSLang submodule ~>60 mins
+
+SITREP 08/18/2020|20w34a1
+    - Changed TRAP Engine version to 20w34a1(0.6.58)
+    - Added Networking stuff (FTP, HTTP, TCPSocket, UDPSocket, Packet, IPv4Address) ~>660 mins
+
+SITREP 08/19/2020|20w34a2
+    - Changed TRAP Engine version to 20w34a2(0.6.59)
+    - Added TCP/UDP Client/Server test ~>40 mins
+    - Added FTP Client test ~<40 mins
+
+SITREP 08/20/2020|20w34a3
+    - Changed TRAP Engine version to 20w34a3(0.6.60)
+    - Made FTP Download/Upload virtual file path compatible ~<15 mins
+
+SITREP 08/22/2020|20w34a4
+    - Changed TRAP Engine version to 20w34a4(0.6.61)
+    - Made DragAndDrop non default ~<10 mins
+    - Added SetDragAndDrop to TRAP::Window ~<20 mins
+    - Added DragAndDrop Tests ~<30 mins
+
+SITREP 08/23/2020|20w34a5
+    - Changed TRAP Engine version to 20w34a5(0.6.62)
+    - Added IPv6Address ~<30 mins
+    - Added IPv6 support ~>300 mins
+    - HTTP added automatic prioritising of IPv6 over IPv4 ~<20 mins
+
+SITREP 08/25/2020|20w35a1
+    - Changed TRAP Engine version to 20w35a1(0.6.63)
+    - FileSystem added append mode for file writes ~<20 mins
+    - VFS added append mode for file writes ~<10 mins
+    - Linux IPv6 compatibility ~<20 mins
+
+SITREP 08/27/2020|20w35a2
+    - Changed TRAP Engine version to 20w35a2(0.6.64)
+    - Added custom VulkanAPI meta loader (Based on Volk) ~<60 mins
+    - Fixed a missing s6_addr in SocketImplLinux ~<10 mins
+    - Fixed VulkanSDK download on TravisCI on Windows ~<10 mins
+
+SITREP 09/02/2020|20w36a1
+    - Changed TRAP Engine version to 20w36a1(0.6.65)
+    - Added bool silent = false to every Silent*** counter function ~<20 mins
+    - Removed every Silent*** function ~<20 mins
+    - Migrated TRAP::FileSystem to TRAP::VFS ~<40 mins
+    - Added Virtual path supprot to TRAP::VFS::FileOrFolderExists ~<20 mins
+    - Added Virtual path support to TRAP::VFS::GetFileOrFolderSize ~<20 mins
+    - Added Virtual path support to TRAP::VFS::GetLastWriteTime ~<20 mins
+    - Fixed getting 0 from TRAP::VFS::GetFileOrFolderSize if a folder was supplied ~<20 mins
+
+SITREP 09/04/2020|20w36a2
+    - Changed TRAP Engine version to 20w36a2(0.6.66)
+    - Config Added Get & GetVector functions with non void return type ~<20 mins
+    - Config Reordered ConvertToType functions and added more primitive data types ~<25 mins
+    - Config Reordered ConvertToString functions and added more primitve data types ~<25 mins
+    - Config optimized ConvertToType & ConvertToString functions (removed stringstreams) ~<25 mins
+    - String added CompareAnyCase functions ~<10 mins
+    - Config made values case insensitive ~<10 mins
+    - String added several string_view functions ~<45 mins
+
+SITREP 09/06/2020|20w36a4
+    - Changed TRAP Engine version to 20w36a4(0.6.68)
+    - Changed lots of string stuff ~>400 mins
+    - Renamed MinimizeTests to WindowStateTests ~<5 mins
+    - Added ImGui instructions to tests ~<60 mins
+
+SITREP 09/11/2020|20w37a1
+    - Changed TRAP Engine version to 20w37a1(0.6.69)
+    - FileWatcher now also refreshes search list every check ~<10 mins
+
+SITREP 09/18/2020|20w38a1
+    - Changed TRAP Engine version to 20w38a1(0.6.70)
+    - Added Radiance(HDR) Image Format Loader ~>45 mins
+    - Added Radiance(HDR) Image to ImageLoaderTests ~<10 mins
+    - Fixed Bug for RGB Images when set as Window or Mouse Icon ~<10 mins
+
+SITREP 09/19/2020|20w38a2
+    - Changed TRAP Engine version to 20w38a2(0.6.71)
+    - Fixed missing last element in SplitStringView ~<20 mins
+    - VFS is now actually lowercase except filename ~<20 mins
+    - Some documentation stuff in TRAP::VFS ~<20 mins
+
+SITREP 10/12/2020|20w42a1
+    - Changed TRAP Engine version to 20w42a1(0.6.72)
+    - Complete Reference overhaul ~>Multiple weeks
+    - Fixed crash(assert) when no Engine.cfg exists ~<5 mins
+    - Fixed Windows Travis CI (new VulkanAPI version) ~<5 mins
+
+SITREP 10/14/2020|20w42a2
+    - Changed TRAP Engine version to 20w42a2(0.6.73)
+    - Math Added missing Matrix Equal & NotEqual functions ~>20 mins
+
+SITREP 10/15/2020|20w42a3
+    - Changed TRAP Engine version to 20w42a3(0.6.74)
+    - Simplified Math.h (removed redundancy) ~>60 mins
+    - Updated docs ~<10 mins
+
+SITREP 10/16/2020|20w42a4
+    - Changed TRAP Engine version to 20w42a4(0.6.75)
+    - Better Assertion support ~<40 mins
+
+SITREP 10/17/2020|20w42a5
+    - Changed TRAP Engine version to 20w42a5(0.6.76)
+    - Fixed Linux assertion ~<5 mins
+
+SITREP 10/18/2020|20w42a6
+    - Changed TRAP Engine version to 20w42a6(0.6.77)
+    - Moved file closing in Image loaders ~<40 mins
+    - Reduced redundancy in OpenGL ~>130 mins
+
+SITREP 10/19/2020|20w43a1
+    - Changed TRAP Engine version to 20w43a1(0.6.78)
+    - Fixed OrthographicCameraController movement ~<30 mins
+    - Added OpenGL context debug bit ~<40 mins
+    - Deactivated OpenGL notification debug messages ~<10 mins
+
+SITREP 10/20/2020|20w43a2
+    - Changed TRAP Engine version to 20w43a2(0.6.79)
+    - Better thread utilization by FileWatcher ~>30 mins
+    - Fixed Horizontal_Cross texture crash ~<20 mins
+    - Added new 2D batch renderer ~>3 days
+
+SITREP 10/22/2020|20w43a3
+    - Changed TRAP Engine version to 20w43a3(0.6.80)
+    - Fixed bug in OpenGLFrameBuffer when deleting textures ~<10 mins
+    - ImGui changed event blocking ~<20 mins
+    - Fixed possible bug in Renderer2DVS shader (now using branching instead of indexing) ~<20 mins
+
+SITREP 10/25/2020|20w43a4
+    - Changed TRAP Engine version to 20w43a4(0.6.81)
+    - Added ECS entt ~>20 mins
+
+SITREP 10/27/2020|20w44a1
+    - Changed TRAP Engine version to 20w44a1(0.6.82)
+    - Reused Camera class for CameraComponent instead as a base class ~<20 mins
+    - Renderer & Renderer2D added support for the new Camera class ~<30 mins
+    - Added Components: TagComponent, TransformComponent, CameraComponent, NativeScriptComponent ~<90 mins
+    - Added Entity wrapped class for entt ~<30 mins
+    - Added Scene class ~<30 mins
+    - Added SceneCamera class ~<35 mins
+    - Added ScriptableEntity class used by NativeScriptComponents ~<30 mins
+    - Fixed linux build ~<30 mins
+    - Splitted Platform detection from Core.h into PlatformDetection.h ~<10 mins
+    - Moved & Renamed Core.h to Core/Base.h ~<10 mins
+
+SITREP 10/28/2020|20w44a2
+    - Changed TRAP Engine version to 20w44a2(0.6.83)
+    - Added basic scene graph panel ~<40 mins
+    - Added properties panel ~<20 mins
+    - Added TagComponent UI for properties panel ~<30 mins
+    - SceneCamera added support for perspective camera ~<25 mins
+    - Added CameraComponent UI for properties panel ~<30 mins
+    - Added SpriteRendererComponent UI for properties panel ~<20 mins
+    - Added TransformComponent UI for properties panel ~<50 mins
+
+SITREP 10/29/2020|20w44a3
+    - Changed TRAP Engine version to 20w44a3(0.6.84)
+    - Added Create Entity UI ~<20 mins
+    - Added Delete Entity UI ~<20 mins
+    - Added Add Component UI ~<20 mins
+    - Added Remove Component UI ~<20 mins
+    - Fixed Camera viewport resize bug ~<10 mins
+    - Fixed some asserts ~<20 mins
+    - New ImGui dark theme colors ~<30 mins
+    - Visual UI changes for TRAP-Editor ~<20 mins
+    - Embedded OpenSans font inside Embed.h ~<20 mins
+
+SITREP 11/03/2020|20w45a1
+    - Changed TRAP Engine version to 20w45a1(0.6.85)
+    - Added YAML-cpp as a submodule ~<20 mins
+    - Added SceneSerializer class ~<30 mins
+    - Added WIP Serialize & Deserialize button in TRAP-Editor ~<20 mins
+    - Fixed Tests3D (Cube3D) ~<30 mins
+    - Fixed Linux crash when closing engine ~>30 mins
+
+SITREP 11/04/2020|20w45a2
+    - Changed TRAP Engine version to 20w45a2(0.6.86)
+    - Moved MsgBox to TRAP::Utils::Dialogs namespace ~<20 mins
+
+SITREP 11/10/2020|20w46a1
+    - Changed TRAP Engine version to 20w46a1(0.6.87)
+    - Added ModernFileDialogs as submodule ~<30 mins
+    - Added MessageBoxes for Linux ~> 30 mins
+
+SITREP 11/11/2020|20w46a3
+    - Changed TRAP Engine version to 20w46a3(0.6.88)
+    - TRAP-Editor Added proper Save/Load dialogs & a New scene button ~<30 mins
+    - SceneSerializer::Deserialize now also works with virtual files ~<20 mins
+    - TRAP-Editor fixed adding the same component twice resulting in a crash ~<20 min
+
+SITREP 11/13/2020|20w46a4
+    - Changed TRAP Engine version to 20w46a4(0.6.89)
+    - TRAP-Editor Fixed ability to select multiple primary cameras ~<20 mins
+    - TRAP-Editor Fixed crash when creating a new scene while an entity is selected (PropertiesPanel) ~<10 mins
