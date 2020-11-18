@@ -133,20 +133,6 @@ void TRAPEditorLayer::OnAttach()
 	//THIS IS THE TRAP EDITOR!!!11!!1!
 	TRAP::Application::GetWindow()->SetTitle("TRAP Editor");
 
-	//Currently do not allow to use VulkanAPI as it isn't finished yet!
-	if (!TRAP::Graphics::API::Context::IsSupported(TRAP::Graphics::API::RenderAPI::OpenGL))
-	{
-		TP_CRITICAL("[TRAP Editor] TRAP Editor needs OpenGL 4.6 to run!");
-		TRAP::Utils::Dialogs::MsgBox::Show("[TRAP Editor] TRAP Editor needs OpenGL 4.6 or newer!",
-			"[TRAP Editor] Invalid RenderAPI",
-			TRAP::Utils::Dialogs::MsgBox::Style::Error,
-			TRAP::Utils::Dialogs::MsgBox::Buttons::Quit);
-	}
-
-	//If OpenGL 4.6 is supported switch to it
-	if (TRAP::Graphics::API::Context::GetRenderAPI() == TRAP::Graphics::API::RenderAPI::Vulkan)
-		TRAP::Graphics::API::Context::SwitchRenderAPI(TRAP::Graphics::API::RenderAPI::OpenGL);
-
 	//Enable Developer features
 	TRAP::Application::SetHotShaderReloading(true);
 	TRAP::Application::SetHotTextureReloading(true);
