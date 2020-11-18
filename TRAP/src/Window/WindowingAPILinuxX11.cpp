@@ -1075,312 +1075,6 @@ void TRAP::INTERNAL::WindowingAPI::CreateInputContextX11(InternalWindow* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Shutdown GLX
-void TRAP::INTERNAL::WindowingAPI::ShutdownGLX()
-{
-	//NOTE: This function must not call any X11 functions, as it is called after
-	//      s_Data.XLIB.CloseDisplay
-	
-	if(s_Data.GLX.Handle)
-	{
-		dlclose(s_Data.GLX.Handle);
-		s_Data.GLX.Handle = nullptr;
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Initialize GLX
-bool TRAP::INTERNAL::WindowingAPI::InitGLX()
-{
-	int32_t i;
-	std::vector<const char*> sonames
-	{
-#ifdef __CYGWIN__
-		"libGL-1.so",
-#else
-		"libGL.so.1",
-        "libGL.so",
-#endif
-		nullptr
-	};
-	
-	if(s_Data.GLX.Handle)
-		return true;
-		
-	for(i = 0; sonames[i]; i++)
-	{
-		s_Data.GLX.Handle = dlopen(sonames[i], RTLD_LAZY | RTLD_LOCAL);
-		if(s_Data.GLX.Handle)
-			break;
-	}
-	
-	if(!s_Data.GLX.Handle)
-	{
-		InputError(Error::API_Unavailable, "[GLX] Failed to load GLX!");
-		return false;
-	}
-	
-	s_Data.GLX.GetFBConfigs = (PFNGLXGETFBCONFIGSPROC)dlsym(s_Data.GLX.Handle, "glXGetFBConfigs");
-	s_Data.GLX.GetFBConfigAttrib = (PFNGLXGETFBCONFIGATTRIBPROC)dlsym(s_Data.GLX.Handle, "glXGetFBConfigAttrib");
-	s_Data.GLX.GetClientString = (PFNGLXGETCLIENTSTRINGPROC)dlsym(s_Data.GLX.Handle, "glXGetClientString");
-	s_Data.GLX.QueryExtension = (PFNGLXQUERYEXTENSIONPROC)dlsym(s_Data.GLX.Handle, "glXQueryExtension");
-	s_Data.GLX.QueryVersion = (PFNGLXQUERYVERSIONPROC)dlsym(s_Data.GLX.Handle, "glXQueryVersion");
-	s_Data.GLX.DestroyContext = (PFNGLXDESTROYCONTEXTPROC)dlsym(s_Data.GLX.Handle, "glXDestroyContext");
-	s_Data.GLX.MakeCurrent = (PFNGLXMAKECURRENTPROC)dlsym(s_Data.GLX.Handle, "glXMakeCurrent");
-	s_Data.GLX.SwapBuffers = (PFNGLXSWAPBUFFERSPROC)dlsym(s_Data.GLX.Handle, "glXSwapBuffers");
-	s_Data.GLX.QueryExtensionsString = (PFNGLXQUERYEXTENSIONSSTRINGPROC)dlsym(s_Data.GLX.Handle, "glXQueryExtensionsString");
-	s_Data.GLX.CreateNewContext = (PFNGLXCREATENEWCONTEXTPROC)dlsym(s_Data.GLX.Handle, "glXCreateNewContext");
-	s_Data.GLX.CreateWindow = (PFNGLXCREATEWINDOWPROC)dlsym(s_Data.GLX.Handle, "glXCreateWindow");
-	s_Data.GLX.DestroyWindow = (PFNGLXDESTROYWINDOWPROC)dlsym(s_Data.GLX.Handle, "glXDestroyWindow");
-	s_Data.GLX.GetProcAddress = (PFNGLXGETPROCADDRESSPROC)dlsym(s_Data.GLX.Handle, "glXGetProcAddress");
-	s_Data.GLX.GetProcAddressARB = (PFNGLXGETPROCADDRESSPROC)dlsym(s_Data.GLX.Handle, "glXGetProcAddressARB");
-	s_Data.GLX.GetVisualFromFBConfig = (PFNGLXGETVISUALFROMFBCONFIGPROC)dlsym(s_Data.GLX.Handle, "glXGetVisualFromFBConfig");
-	
-	if(!s_Data.GLX.GetFBConfigs ||
-	   !s_Data.GLX.GetFBConfigAttrib ||
-	   !s_Data.GLX.GetClientString || 
-	   !s_Data.GLX.QueryExtension ||
-	   !s_Data.GLX.QueryVersion ||
-	   !s_Data.GLX.DestroyContext ||
-	   !s_Data.GLX.MakeCurrent || 
-	   !s_Data.GLX.SwapBuffers ||
-	   !s_Data.GLX.QueryExtensionsString ||
-	   !s_Data.GLX.CreateNewContext ||
-	   !s_Data.GLX.CreateWindow ||
-	   !s_Data.GLX.DestroyWindow ||
-	   !s_Data.GLX.GetProcAddress ||
-	   !s_Data.GLX.GetProcAddressARB ||
-	   !s_Data.GLX.GetVisualFromFBConfig)
-	{		   
-		InputError(Error::Platform_Error, "[GLX] Failed to load required entry points!");
-		return false;
-	}
-	
-	if(!s_Data.GLX.QueryExtension(s_Data.display, &s_Data.GLX.ErrorBase, &s_Data.GLX.EventBase))
-	{
-		InputError(Error::API_Unavailable, "[GLX] GLX extension not found!");
-		return false;
-	}
-	
-	if(s_Data.GLX.Major == 1 && s_Data.GLX.Minor < 3)
-	{
-		InputError(Error::API_Unavailable, "[GLX] GLX Version 1.3 is required!");
-		return false;
-	}
-	
-	if(ExtensionSupportedGLX("GLX_EXT_swap_control"))
-	{
-		s_Data.GLX.SwapIntervalEXT = (PFNGLXSWAPINTERVALEXTPROC)
-			GetProcAddressGLX("glXSwapIntervalEXT");
-			
-		if(s_Data.GLX.SwapIntervalEXT)
-			s_Data.GLX.EXT_swap_control = true;
-	}
-	
-	if(ExtensionSupportedGLX("GLX_SGI_swap_control"))
-	{
-		s_Data.GLX.SwapIntervalSGI = (PFNGLXSWAPINTERVALSGIPROC)
-			GetProcAddressGLX("glXSwapIntervalSGI");
-			
-		if(s_Data.GLX.SwapIntervalSGI)
-			s_Data.GLX.SGI_swap_control = true;
-	}
-	
-	if(ExtensionSupportedGLX("GLX_MESA_swap_control"))
-	{
-		s_Data.GLX.SwapIntervalMESA = (PFNGLXSWAPINTERVALMESAPROC)
-			GetProcAddressGLX("glXSwapIntervalMESA");
-			
-		if(s_Data.GLX.SwapIntervalEXT)
-			s_Data.GLX.MESA_swap_control = true;
-	}
-	
-	if(ExtensionSupportedGLX("GLX_ARB_multisample"))
-		s_Data.GLX.ARB_multisample = true;
-		
-	if(ExtensionSupportedGLX("GLX_ARB_framebuffer_sRGB"))
-		s_Data.GLX.ARB_framebuffer_sRGB = true;
-		
-	if(ExtensionSupportedGLX("GLX_EXT_framebuffer_sRGB"))
-		s_Data.GLX.EXT_framebuffer_sRGB = true;
-		
-	if(ExtensionSupportedGLX("GLX_ARB_create_context"))
-	{
-		s_Data.GLX.CreateContextAttribsARB = (PFNGLXCREATECONTEXTATTRIBSARBPROC)
-			GetProcAddressGLX("glXCreateContextAttribsARB");
-			
-		if(s_Data.GLX.CreateContextAttribsARB)
-			s_Data.GLX.ARB_create_context = true;
-	}
-	
-	if(ExtensionSupportedGLX("GLX_ARB_create_context_profile"))
-		s_Data.GLX.ARB_create_context_profile = true;
-		
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::INTERNAL::WindowingAPI::ExtensionSupportedGLX(const char* extension)
-{
-	const char* extensions = s_Data.GLX.QueryExtensionsString(s_Data.display, s_Data.Screen);
-	if(extensions)
-	{
-		if(StringInExtensionString(extension, extensions))
-			return true;
-	}
-	
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Returns the Visual and depth of the chosen GLXFBConfig
-bool TRAP::INTERNAL::WindowingAPI::ChooseVisualGLX(const WindowConfig& WNDConfig,
-												   const ContextConfig& CTXConfig,
-												   const FrameBufferConfig& FBConfig,
-												   Visual** visual, 
-												   int32_t* depth)
-{
-	GLXFBConfig native;
-	XVisualInfo* result;
-	
-	if(!ChooseGLXFBConfig(FBConfig, &native))
-	{
-		InputError(Error::Format_Unavailable, "[GLX] Failed to find a suitable GLXFBConfig!");
-		return false;
-	}
-	
-	result = s_Data.GLX.GetVisualFromFBConfig(s_Data.display, native);
-	if(!result)
-	{
-		InputError(Error::Platform_Error, "[GLX] Failed to retrieve VIsual for GLXFBConfig!");
-		return false;
-	}
-	
-	*visual = result->visual;
-	*depth = result->depth;
-	
-	s_Data.XLIB.Free(result);
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::INTERNAL::WindowingAPI::GLProcess TRAP::INTERNAL::WindowingAPI::GetProcAddressGLX(const char* procName)
-{
-	if(s_Data.GLX.GetProcAddress)
-		return s_Data.GLX.GetProcAddress((const GLubyte*)procName);
-	else if(s_Data.GLX.GetProcAddressARB)
-		return s_Data.GLX.GetProcAddressARB((const GLubyte*)procName);
-	else
-		return (GLProcess)dlsym(s_Data.GLX.Handle, procName);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Return the GLXFBConfig most closely matching the specified hints
-bool TRAP::INTERNAL::WindowingAPI::ChooseGLXFBConfig(const FrameBufferConfig& desired, GLXFBConfig* result)
-{
-	GLXFBConfig* nativeConfigs;
-	std::vector<FrameBufferConfig> usableConfigs{};
-	const FrameBufferConfig* closest;
-	int32_t i, nativeCount, usableCount;
-	const char* vendor;
-	bool trustWindowBit = true;
-	
-	//HACK: This is a (hopefully temporary) workaround for Chromium (VirtualBox GL) not setting the window bit on any
-	//      GLXFBConfigs
-	vendor = s_Data.GLX.GetClientString(s_Data.display, GLX_VENDOR);
-	if(vendor && strcmp(vendor, "Chromium") == 0)
-		trustWindowBit = false;
-		
-	nativeConfigs = s_Data.GLX.GetFBConfigs(s_Data.display, s_Data.Screen, &nativeCount);
-	if(!nativeConfigs || !nativeCount)
-	{
-		InputError(Error::API_Unavailable, "[GLX] No GLXFBConfig returned!");
-		return false;
-	}
-	
-	usableConfigs.resize(nativeCount);
-	usableCount = 0;
-	
-	for(i = 0; i < nativeCount; i++)
-	{
-		const GLXFBConfig n = nativeConfigs[i];
-		FrameBufferConfig* u = &usableConfigs[usableCount];
-		
-		//Only consider RGBA GLXFBConfigs
-		if(!(GetGLXFBConfigAttrib(n, GLX_RENDER_TYPE) & GLX_RGBA_BIT))
-			continue;
-			
-		//Only consider window GLXFBConfigs
-		if(!(GetGLXFBConfigAttrib(n, GLX_DRAWABLE_TYPE) & GLX_WINDOW_BIT))
-			if(trustWindowBit)
-				continue;
-				
-		if(desired.Transparent)
-		{
-			XVisualInfo* vi = s_Data.GLX.GetVisualFromFBConfig(s_Data.display, n);
-			if(vi)
-			{
-				u->Transparent = IsVisualTransparentX11(vi->visual);
-				s_Data.XLIB.Free(vi);
-			}
-		}
-		
-		u->RedBits = GetGLXFBConfigAttrib(n, GLX_RED_SIZE);
-		u->GreenBits = GetGLXFBConfigAttrib(n, GLX_GREEN_SIZE);
-		u->BlueBits = GetGLXFBConfigAttrib(n, GLX_BLUE_SIZE);
-		
-		u->AlphaBits = GetGLXFBConfigAttrib(n, GLX_ALPHA_SIZE);
-		u->DepthBits = GetGLXFBConfigAttrib(n, GLX_DEPTH_SIZE);
-		u->StencilBits = GetGLXFBConfigAttrib(n, GLX_STENCIL_SIZE);
-		
-		u->AccumRedBits = GetGLXFBConfigAttrib(n, GLX_ACCUM_RED_SIZE);
-		u->AccumGreenBits = GetGLXFBConfigAttrib(n, GLX_ACCUM_GREEN_SIZE);
-		u->AccumBlueBits = GetGLXFBConfigAttrib(n, GLX_ACCUM_BLUE_SIZE);
-		u->AccumAlphaBits = GetGLXFBConfigAttrib(n, GLX_ACCUM_ALPHA_SIZE);
-		
-		u->AuxBuffers = GetGLXFBConfigAttrib(n, GLX_AUX_BUFFERS);
-		
-		if(GetGLXFBConfigAttrib(n, GLX_STEREO))
-			u->Stereo = true;
-		if(GetGLXFBConfigAttrib(n, GLX_DOUBLEBUFFER))
-			u->DoubleBuffer = true;
-			
-		if(s_Data.GLX.ARB_multisample)
-			u->Samples = GetGLXFBConfigAttrib(n, GLX_SAMPLES);
-			
-		if(s_Data.GLX.ARB_framebuffer_sRGB || s_Data.GLX.EXT_framebuffer_sRGB)
-			u->SRGB = GetGLXFBConfigAttrib(n, GLX_FRAMEBUFFER_SRGB_CAPABLE_ARB);
-			
-		u->Handle = (uintptr_t)n;
-		usableCount++;
-	}
-	
-	closest = ChooseFBConfig(desired, usableConfigs);
-	if(closest)
-		*result = (GLXFBConfig)closest->Handle;
-		
-	s_Data.XLIB.Free(nativeConfigs);
-	
-	return closest != nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-//Returns the specified attribute of the specified GLXFBConfig
-int32_t TRAP::INTERNAL::WindowingAPI::GetGLXFBConfigAttrib(GLXFBConfig fbconfig, int32_t attrib)
-{
-	int32_t value;
-	s_Data.GLX.GetFBConfigAttrib(s_Data.display, fbconfig, attrib, &value);
-	return value;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 bool TRAP::INTERNAL::WindowingAPI::IsVisualTransparentX11(Visual* visual)
 {
 	if(!s_Data.XRender.Available)
@@ -3093,9 +2787,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyWindow(InternalWindow* window)
 		s_Data.XLIB.DestroyIC(window->IC);
 		window->IC = nullptr;
 	}
-	
-	if(window->context.Destroy)
-		window->context.Destroy(window);
 		
 	if(window->Handle)
 	{
@@ -3182,10 +2873,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 		dlclose(s_Data.XI.Handle);
 		s_Data.XI.Handle = nullptr;
 	}
-	
-	//Note: These need to be unloaded after s_Data.XLIB.CloseDisplay, as they register cleanup callbacks
-	//      that get called by that function
-	ShutdownGLX();
 
 	if(s_Data.XLIB.Handle)
 	{
@@ -3257,14 +2944,6 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window,
 {
 	Visual* visual = nullptr;
 	int32_t depth;
-	
-	if(CTXConfig.Client != ContextAPI::None)
-	{
-		if(!InitGLX())
-			return false;
-		if(!ChooseVisualGLX(WNDConfig, CTXConfig, FBConfig, &visual, &depth))
-			return false;
-	}
 		
 	if(!visual)
 	{
@@ -3274,12 +2953,6 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window,
 	
 	if(!CreateNativeWindow(window, WNDConfig, visual, depth))
 		return false;
-		
-	if(CTXConfig.Client != ContextAPI::None)
-	{
-		if(!CreateContextGLX(window, CTXConfig, FBConfig))
-		return false;
-	}
 		
 	if(window->Monitor)
 	{		
@@ -4237,112 +3910,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* w
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//Create the OpenGL context
-bool TRAP::INTERNAL::WindowingAPI::CreateContextGLX(InternalWindow* window, const ContextConfig& CTXConfig, const FrameBufferConfig& FBConfig)
-{
-	std::array<int32_t, 40> attribs{0};
-	GLXFBConfig native = nullptr;
-	GLXContext share = nullptr;
-	
-	if(CTXConfig.Share)
-		share = CTXConfig.Share->context.Handle;
-		
-	if(!ChooseGLXFBConfig(FBConfig, &native))
-	{
-		InputError(Error::Format_Unavailable, "[GLX] Failed to find a suitable GLXFBConfig!");
-		return false;
-	}
-	
-	if(CTXConfig.Client == ContextAPI::OpenGL)
-	{
-		if(!s_Data.GLX.ARB_create_context || !s_Data.GLX.ARB_create_context_profile)
-		{
-			InputError(Error::API_Unavailable, "[GLX] OpenGL requested but GLX_ARB_create_context_profile is unavailable!");
-			return false;
-		}
-	}
-	
-	if(!s_Data.GLX.ARB_create_context)
-	{
-		InputError(Error::Version_Unavailable, "[GLX] Forward compatibility requested but GLX_ARB_create_context_profile is unavailable!");
-		return false;
-	}
-	
-	if(!s_Data.GLX.ARB_create_context || !s_Data.GLX.ARB_create_context_profile)
-	{
-		InputError(Error::Version_Unavailable, "[GLX] An OpenGL profile requested but GLX_ARB_create_context_profile is unavailable!");
-		return false;
-	}
-	
-	GrabErrorHandlerX11();
-	
-	if(s_Data.GLX.ARB_create_context)
-	{
-		int32_t index = 0, mask = 0, flags = 0;
-		
-		if(CTXConfig.Client == ContextAPI::OpenGL)
-		{
-			flags |= GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
-			
-			mask |= GLX_CONTEXT_CORE_PROFILE_BIT_ARB;
-		}
-
-		if (CTXConfig.Debug)
-			flags |= GLX_CONTEXT_DEBUG_BIT_ARB;
-		
-		attribs[index++] = GLX_CONTEXT_MAJOR_VERSION_ARB;
-		attribs[index++] = 4;
-		attribs[index++] = GLX_CONTEXT_MINOR_VERSION_ARB;
-		attribs[index++] = 6;
-		
-		if(mask)
-		{
-			attribs[index++] = GLX_CONTEXT_PROFILE_MASK_ARB;
-			attribs[index++] = mask;
-		}			
-			
-		if(flags)
-		{
-			attribs[index++] = GLX_CONTEXT_FLAGS_ARB;
-			attribs[index++] = flags;
-		}
-		
-		attribs[index++] = 0;
-		attribs[index++] = 0;
-		
-		window->context.Handle = s_Data.GLX.CreateContextAttribsARB(s_Data.display, native, share, 1, attribs.data());
-	}
-	else
-		window->context.Handle = s_Data.GLX.CreateNewContext(s_Data.display, native, GLX_RGBA_TYPE, share, 1);
-	
-	ReleaseErrorHandlerX11();	
-	
-	if(!window->context.Handle)
-	{
-		InputErrorX11(Error::API_Unavailable, "[GLX] Failed to create context!");
-		return false;
-	}
-	
-	window->context.Window = s_Data.GLX.CreateWindow(s_Data.display, native, window->Handle, nullptr);
-	
-	if(!window->context.Window)
-	{
-		InputError(Error::Platform_Error, "[GLX] Failed to create window!");
-		return false;
-	}
-	
-	window->context.MakeCurrent = MakeContextCurrentGLX;
-	window->context.SwapBuffers = SwapBuffersGLX;
-	window->context.SwapInterval = SwapIntervalGLX;
-	window->context.ExtensionSupported = ExtensionSupportedGLX;
-	window->context.GetProcAddress = GetProcAddressGLX;
-	window->context.Destroy = DestroyContextGLX;
-	
-	return true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 //Enable XI2 raw mouse motion events
 void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow* window)
 {
@@ -4384,69 +3951,6 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorX11(Error error, const char* messag
 	buffer.shrink_to_fit();
 	
 	InputError(error, std::string(message) + ": " + buffer.data());
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::MakeContextCurrentGLX(InternalWindow* window)
-{
-	if(window)
-	{
-		if(!s_Data.GLX.MakeCurrent(s_Data.display, window->context.Window, window->context.Handle))
-		{
-			InputError(Error::Platform_Error, "[GLX] Failed to make context current!");
-			return;
-		}
-	}
-	else
-	{
-		if(!s_Data.GLX.MakeCurrent(s_Data.display, 0, nullptr))
-		{
-			InputError(Error::Platform_Error, "[GLX] Failed to clear current context!");
-			return;
-		}
-	}
-	
-	PlatformSetTLS(s_Data.ContextSlot, window);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::INTERNAL::WindowingAPI::SwapBuffersGLX(const InternalWindow* window)
-{
-	s_Data.GLX.SwapBuffers(s_Data.display, window->context.Window);
-}
-		
-//-------------------------------------------------------------------------------------------------------------------//
-	
-void TRAP::INTERNAL::WindowingAPI::SwapIntervalGLX(int32_t interval)
-{
-	InternalWindow* window = (InternalWindow*)PlatformGetTLS(s_Data.ContextSlot);
-	
-	if(s_Data.GLX.EXT_swap_control)
-		s_Data.GLX.SwapIntervalEXT(s_Data.display, window->context.Window, interval);
-	else if(s_Data.GLX.MESA_swap_control)
-		s_Data.GLX.SwapIntervalMESA(interval);
-	else if(s_Data.GLX.SGI_swap_control)
-		if(interval > 0)
-			s_Data.GLX.SwapIntervalSGI(interval);
-}
-	
-//-------------------------------------------------------------------------------------------------------------------//
-		
-void TRAP::INTERNAL::WindowingAPI::DestroyContextGLX(InternalWindow* window)
-{
-	if(window->context.Window)
-	{
-		s_Data.GLX.DestroyWindow(s_Data.display, window->context.Window);
-		window->context.Window = 0;
-	}
-	
-	if(window->context.Handle)
-	{
-		s_Data.GLX.DestroyContext(s_Data.display, window->context.Handle);
-		window->context.Handle = nullptr;
-	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -4661,9 +4165,9 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				InputScroll(window, 0.0, 1.0);
 			else if(event.xbutton.button == Button5)
 				InputScroll(window, 0.0, -1.0);
-			else if(event.xbutton.button == Button6)
+			else if(event.xbutton.button == 6)
 				InputScroll(window, 1.0, 0.0);
-			else if(event.xbutton.button == Button7)
+			else if(event.xbutton.button == 7)
 				InputScroll(window, -1.0, 0.0);
 				
 			else
@@ -4684,7 +4188,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				InputMouseClick(window, Input::MouseButton::Middle, false);
 			else if(event.xbutton.button == Button3)
 				InputMouseClick(window, Input::MouseButton::Right, false);
-			else if(event.xbutton.button > Button7)
+			else if(event.xbutton.button > 7)
 			{
 				//Additional buttons after 7 are treated as regular buttons
 				//We subtract 4 to fill the gap left by scroll input above
