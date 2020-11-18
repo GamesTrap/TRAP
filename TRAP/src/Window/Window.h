@@ -95,6 +95,16 @@ namespace TRAP
 		static void OnUpdate();
 
 		/// <summary>
+		/// Select the given TRAP::Window for all following rendering commands.
+		/// </summary>
+		/// <param name="window">TRAP::Window that should be used for rendering.</param>
+		static void Use(const Scope<Window>& window);
+		/// <summary>
+		/// Selects the "Main" TRAP::Window for all following rendering commands.
+		/// </summary>
+		static void Use();
+		
+		/// <summary>
 		/// Get the amount of all active TRAP::Windows.
 		/// </summary>
 		/// <returns>Total amount of active TRAP::Windows.</returns>

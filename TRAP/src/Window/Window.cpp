@@ -87,6 +87,23 @@ void TRAP::Window::OnUpdate()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Window::Use(const Scope<Window>& window)
+{
+	if (window)
+		Graphics::API::Context::Use(window.get());
+	else
+		Use();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Window::Use()
+{
+	Graphics::API::Context::Use(Application::GetWindow().get());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 uint32_t TRAP::Window::GetActiveWindows()
 {
 	return s_windows;
