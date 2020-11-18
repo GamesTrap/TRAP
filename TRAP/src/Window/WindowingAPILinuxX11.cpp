@@ -2939,7 +2939,6 @@ void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindow(const InternalWindow* win
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window,
 			                                            const WindowConfig& WNDConfig,
-			                                            const ContextConfig& CTXConfig,
 			                                            const FrameBufferConfig& FBConfig)
 {
 	Visual* visual = nullptr;
