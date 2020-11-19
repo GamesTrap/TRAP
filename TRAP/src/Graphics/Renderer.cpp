@@ -27,7 +27,7 @@ void TRAP::Graphics::Renderer::Init()
 
 const std::string& TRAP::Graphics::Renderer::GetTitle()
 {
-	return API::RendererAPI::GetRenderer()->GetTitle();
+	return RendererAPI::GetRenderer()->GetTitle();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -62,7 +62,7 @@ uint32_t TRAP::Graphics::Renderer::GetTickRate()
 
 std::string TRAP::Graphics::Renderer::GetCurrentGPUName()
 {
-	return API::RendererAPI::GetRenderer()->GetCurrentGPUName();
+	return RendererAPI::GetRenderer()->GetCurrentGPUName();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

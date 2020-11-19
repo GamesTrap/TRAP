@@ -2,9 +2,11 @@
 #define _TRAP_RENDERERAPI_H_
 
 #include "Maths/Math.h"
+#include "Window/Window.h"
 
 namespace TRAP
 {
+	class Application;
 	class Window;
 }
 
@@ -21,8 +23,14 @@ namespace TRAP::Graphics
 	enum class RendererBufferType;
 }
 
-namespace TRAP::Graphics::API
+namespace TRAP::Graphics
 {
+	enum class RenderAPI
+	{
+		NONE = 0,
+		Vulkan
+	};
+	
 	class RendererAPI
 	{
 	public:
@@ -36,10 +44,18 @@ namespace TRAP::Graphics::API
 		static void Init();
 		static void Shutdown();
 
-		static RendererAPI* GetRenderer();
+		static const TRAP::Scope<RendererAPI>& GetRenderer();
+		
+		static void AutoSelectRenderAPI();
+		static void SwitchRenderAPI(RenderAPI api);
+		static bool IsVulkanCapable();
+		static bool IsSupported(RenderAPI api);
+		static RenderAPI GetRenderAPI();
+		static void SetVSyncInterval(uint32_t interval);
+		static void Use(Window* window);
 
 		virtual void InitInternal() = 0;
-
+		
 		virtual void Clear(RendererBufferType buffer) = 0;
 		virtual void Present(const Scope<Window>& window) = 0;
 
@@ -81,7 +97,10 @@ namespace TRAP::Graphics::API
 		virtual std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() = 0;
 
 	protected:
-		static Scope<RendererAPI> s_Renderer;
+		static TRAP::Scope<RendererAPI> s_Renderer;
+		static RenderAPI s_RenderAPI;
+
+		friend TRAP::Application;
 	};
 }
 

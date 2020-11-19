@@ -4,7 +4,6 @@
 #include <examples/imgui_impl_vulkan.h>
 
 #include "Application.h"
-#include "Graphics/API/Context.h"
 #include "Window/WindowingAPI.h"
 #include "ImGuiWindowing.h"
 #include "Embed.h"
@@ -60,7 +59,7 @@ void TRAP::ImGuiLayer::OnAttach()
 	INTERNAL::WindowingAPI::InternalWindow* window = static_cast<INTERNAL::WindowingAPI::InternalWindow*>(Application::GetWindow()->GetInternalWindow());
 
 	//Setup Platform/Renderer bindings
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
+	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
 		//ImGui_ImplGlfw_InitForVulkan(window, false);
 		//ImGui_ImplVulkan_Init();
@@ -73,7 +72,7 @@ void TRAP::ImGuiLayer::OnDetach()
 {
 	TP_PROFILE_FUNCTION();
 
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
+	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
 		ImGui_ImplVulkan_Shutdown();
 		INTERNAL::ImGuiWindowing::Shutdown();
@@ -100,7 +99,7 @@ void TRAP::ImGuiLayer::Begin()
 {
 	TP_PROFILE_FUNCTION();
 
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
+	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
 		ImGui_ImplVulkan_NewFrame();
 		INTERNAL::ImGuiWindowing::NewFrame();
@@ -126,7 +125,7 @@ void TRAP::ImGuiLayer::End()
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
 		INTERNAL::WindowingAPI::InternalWindow* backupCurrentContext = nullptr;
-		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
+		if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 		{
 			//Save current context here
 		}
@@ -134,7 +133,7 @@ void TRAP::ImGuiLayer::End()
 		ImGui::UpdatePlatformWindows();
 		ImGui::RenderPlatformWindowsDefault();
 
-		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
+		if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 		{
 			//Load saved context here
 		}

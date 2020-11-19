@@ -1,16 +1,16 @@
 #include "TRAPPCH.h"
 #include "VertexBuffer.h"
 
-#include "Graphics/API/Context.h"
+#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Buffers/VulkanVertexBuffer.h"
 
 TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(float* vertices, uint32_t size)
 {
 	TP_PROFILE_FUNCTION();
 
-	switch(API::Context::GetRenderAPI())
+	switch(RendererAPI::GetRenderAPI())
 	{
-	case API::RenderAPI::Vulkan:
+	case RenderAPI::Vulkan:
 		return MakeScope<API::VulkanVertexBuffer>(vertices, size);
 
 	default:
@@ -25,10 +25,10 @@ TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(u
 {
 	TP_PROFILE_FUNCTION();
 
-	switch (API::Context::GetRenderAPI())
+	switch (RendererAPI::GetRenderAPI())
 	{
 
-	case API::RenderAPI::Vulkan:
+	case RenderAPI::Vulkan:
 		return MakeScope<API::VulkanVertexBuffer>(size);
 
 	default:

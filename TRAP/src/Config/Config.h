@@ -518,13 +518,13 @@ inline TRAP::Window::DisplayMode TRAP::Utils::Config::ConvertToType<TRAP::Window
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<>
-inline TRAP::Graphics::API::RenderAPI TRAP::Utils::Config::ConvertToType<TRAP::Graphics::API::RenderAPI>(const std::string& input) const
+inline TRAP::Graphics::RenderAPI TRAP::Utils::Config::ConvertToType<TRAP::Graphics::RenderAPI>(const std::string& input) const
 {
 	if (Utils::String::CompareAnyCase("Vulkan", input) || Utils::String::CompareAnyCase("VulkanAPI", input))
-		return Graphics::API::RenderAPI::Vulkan;
+		return Graphics::RenderAPI::Vulkan;
 
 	TP_ERROR(TRAP::Log::ConfigPrefix, "Exception while converting string to TRAP::Graphics::API::RenderAPI!");
-	return Graphics::API::RenderAPI::NONE;
+	return Graphics::RenderAPI::NONE;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -664,11 +664,11 @@ inline std::string TRAP::Utils::Config::ConvertToString<TRAP::Window::DisplayMod
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<>
-inline std::string TRAP::Utils::Config::ConvertToString<TRAP::Graphics::API::RenderAPI>(const Graphics::API::RenderAPI value) const
+inline std::string TRAP::Utils::Config::ConvertToString<TRAP::Graphics::RenderAPI>(const Graphics::RenderAPI value) const
 {
 	switch (value)
 	{
-	case Graphics::API::RenderAPI::Vulkan:
+	case Graphics::RenderAPI::Vulkan:
 		return "Vulkan";
 
 	default:

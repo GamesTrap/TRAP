@@ -34,7 +34,8 @@ TRAP::Application::Application()
 	m_tickRate(100),
 	m_timeScale(1.0f),
 	m_linuxWindowManager(LinuxWindowManager::Unknown),
-	m_threadPool(GetCPUInfo().LogicalCores > 1 ? GetCPUInfo().LogicalCores : std::thread::hardware_concurrency())
+	m_threadPool(GetCPUInfo().LogicalCores > 1 ? GetCPUInfo().LogicalCores : std::thread::hardware_concurrency()),
+	m_newRenderAPI(Graphics::RenderAPI::NONE)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -85,7 +86,7 @@ TRAP::Application::Application()
 	const bool maximized = m_config.Get<bool>("Maximized");
 	const uint32_t monitor = m_config.Get<uint32_t>("Monitor");
 	const bool rawInput = m_config.Get<bool>("RawMouseInput");
-	const Graphics::API::RenderAPI renderAPI = m_config.Get<Graphics::API::RenderAPI>("RenderAPI");
+	const Graphics::RenderAPI renderAPI = m_config.Get<Graphics::RenderAPI>("RenderAPI");
 
 	if (fpsLimit > 0)
 	{
@@ -95,7 +96,7 @@ TRAP::Application::Application()
 			m_fpsLimit = 0;
 	}
 
-	Graphics::API::Context::SetRenderAPI(renderAPI);
+	Graphics::RendererAPI::s_RenderAPI = renderAPI;
 	m_window = MakeScope<Window>
 	(
 		WindowProps
@@ -167,9 +168,9 @@ TRAP::Application::~Application()
 	m_config.Set("Maximized", m_window->IsMaximized());
 	m_config.Set("Monitor", m_window->GetMonitor().GetID());
 	m_config.Set("RawMouseInput", m_window->GetRawMouseInput());
-	m_config.Set("RenderAPI", Graphics::API::Context::GetRenderAPI());
-	const std::array<uint8_t, 16> VulkanGPUUUID = Graphics::API::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
-	if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
+	m_config.Set("RenderAPI", Graphics::RendererAPI::GetRenderAPI());
+	const std::array<uint8_t, 16> VulkanGPUUUID = Graphics::RendererAPI::GetRenderer()->GetCurrentGPUUUID();
+	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 		m_config.Set("VulkanGPU", Utils::UUIDToString(VulkanGPUUUID));
 	else
 	{
@@ -253,12 +254,8 @@ void TRAP::Application::Run()
 			m_hotReloadingThread = TRAP::MakeScope<std::thread>(ProcessHotReloading, std::ref(m_hotReloadingShaderPaths), std::ref(m_hotReloadingTexturePaths), std::ref(m_running));
 		UpdateHotReloading();
 
-		if (Graphics::API::Context::s_newRenderAPI != Graphics::API::RenderAPI::NONE && Graphics::API::Context::s_newRenderAPI != Graphics::API::Context::GetRenderAPI())
-		{
-			ReCreate(Graphics::API::Context::s_newRenderAPI);
-
-			Graphics::API::Context::SetRenderAPI(Graphics::API::Context::s_newRenderAPI);
-		}
+		if (m_newRenderAPI != Graphics::RenderAPI::NONE && m_newRenderAPI != Graphics::RendererAPI::GetRenderAPI())
+			ReCreate(m_newRenderAPI);
 
 		if (!m_minimized)
 		{
@@ -619,23 +616,22 @@ std::thread::id TRAP::Application::GetMainThreadID()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Application::ReCreate(const Graphics::API::RenderAPI renderAPI) const
+void TRAP::Application::ReCreate(const Graphics::RenderAPI renderAPI) const
 {
 	TP_PROFILE_FUNCTION();
 
 	for (const auto& layer : *m_layerStack)
 		layer->OnDetach();
-	Graphics::API::Context::SetRenderAPI(renderAPI);
+
+	Graphics::RendererAPI::SwitchRenderAPI(renderAPI);
 
 	Graphics::TextureManager::Shutdown();
 	Graphics::ShaderManager::Shutdown();
 	Graphics::Renderer::Shutdown();
-	Graphics::API::RendererAPI::Shutdown();
-	Graphics::API::Context::Shutdown();
+	Graphics::RendererAPI::Shutdown();
 
-	Graphics::API::Context::Create(m_window.get());
-	Graphics::API::Context::SetVSyncInterval(m_window->GetVSyncInterval());
-	Graphics::API::RendererAPI::Init();
+	Graphics::RendererAPI::SetVSyncInterval(m_window->GetVSyncInterval());
+	Graphics::RendererAPI::Init();
 	m_window->SetTitle(m_window->GetTitle());
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);

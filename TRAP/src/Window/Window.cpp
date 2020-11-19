@@ -64,8 +64,7 @@ TRAP::Window::~Window()
 		Graphics::Renderer::Shutdown();
 		Graphics::TextureManager::Shutdown();
 		Graphics::ShaderManager::Shutdown();
-		Graphics::API::RendererAPI::Shutdown();
-		Graphics::API::Context::Shutdown();
+		Graphics::RendererAPI::Shutdown();
 	}	
 	TP_DEBUG(Log::WindowPrefix, "Destroying Window: \"", m_data.Title, "\"");
 	Shutdown();
@@ -85,7 +84,7 @@ void TRAP::Window::OnUpdate()
 void TRAP::Window::Use(const Scope<Window>& window)
 {
 	if (window)
-		Graphics::API::Context::Use(window.get());
+		Graphics::RendererAPI::Use(window.get());
 	else
 		Use();
 }
@@ -94,7 +93,7 @@ void TRAP::Window::Use(const Scope<Window>& window)
 
 void TRAP::Window::Use()
 {
-	Graphics::API::Context::Use(Application::GetWindow().get());
+	Graphics::RendererAPI::Use(Application::GetWindow().get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -445,7 +444,7 @@ void TRAP::Window::SetVSyncInterval(const uint32_t interval)
 {
 	TP_PROFILE_FUNCTION();
 
-	Graphics::API::Context::SetVSyncInterval(interval);
+	Graphics::RendererAPI::SetVSyncInterval(interval);
 	m_data.VSync = interval;
 }
 
@@ -767,8 +766,6 @@ void TRAP::Window::Init(const WindowProps& props)
 			Utils::Dialogs::MsgBox::Show("Could not initialize WindowingAPI!", "Error WindowingAPI", Utils::Dialogs::MsgBox::Style::Error, Utils::Dialogs::MsgBox::Buttons::Quit);
 		INTERNAL::WindowingAPI::SetErrorCallback(WindowingAPIErrorCallback);
 		s_WindowingAPIInitialized = true;
-
-		Graphics::API::Context::CheckAllRenderAPIs();
 	}
 
 	if(s_fullscreenWindows.empty())
@@ -801,16 +798,14 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	if (!s_windows)
 	{
-		if (props.RenderAPI == Graphics::API::RenderAPI::NONE)
-			Graphics::API::Context::AutoSelectRenderAPI();
+		if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::NONE)
+			Graphics::RendererAPI::AutoSelectRenderAPI();
 		else
 		{
-			if (Graphics::API::Context::IsSupported(props.RenderAPI))
-				Graphics::API::Context::SetRenderAPI(props.RenderAPI);
-			else
+			if (!Graphics::RendererAPI::IsSupported(Graphics::RendererAPI::GetRenderAPI()))
 			{
-				if (Graphics::API::Context::IsVulkanCapable())
-					Graphics::API::Context::SetRenderAPI(Graphics::API::RenderAPI::Vulkan);
+				if (Graphics::RendererAPI::IsVulkanCapable())
+					Graphics::RendererAPI::SwitchRenderAPI(Graphics::RenderAPI::Vulkan);
 				else
 				{
 					//All RenderAPIs are unsupported
@@ -865,16 +860,15 @@ void TRAP::Window::Init(const WindowProps& props)
 
 	if (!s_windows)
 	{
-		//Create Context & Initialize Renderer
-		Graphics::API::Context::Create(this);
-		Graphics::API::RendererAPI::Init();
-		Graphics::API::Context::SetVSyncInterval(props.Advanced.VSync);
+		//Initialize Renderer
+		Graphics::RendererAPI::Init();
+		Graphics::RendererAPI::SetVSyncInterval(props.Advanced.VSync);
 	}
 
 	s_windows++;
 	if (s_windows > 1)
 	{
-		Graphics::API::Context::Use(this);
+		Graphics::RendererAPI::Use(this);
 		SetVSyncInterval(props.Advanced.VSync);
 	}
 
@@ -1370,7 +1364,6 @@ TRAP::WindowProps::WindowProps(std::string title,
 	  Width(width),
 	  Height(height),
 	  RefreshRate(refreshRate),
-	  RenderAPI(Graphics::API::Context::GetRenderAPI()),
 	  DisplayMode(displayMode),
 	  Monitor(monitor),
 	  Advanced{advanced}

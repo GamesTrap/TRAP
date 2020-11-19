@@ -1,11 +1,10 @@
 #ifndef _TRAP_WINDOW_H_
 #define _TRAP_WINDOW_H_
 
-#include "Graphics/API/Context.h"
-
 #include "Events/Event.h"
 #include "ImageLoader/Image.h"
 #include "WindowingAPI.h"
+#include "Graphics/API/RendererAPI.h"
 
 namespace TRAP
 {
@@ -380,7 +379,6 @@ namespace TRAP
 		uint32_t Width;
 		uint32_t Height;
 		uint32_t RefreshRate;
-		Graphics::API::RenderAPI RenderAPI;
 		Window::DisplayMode DisplayMode;
 		uint32_t Monitor;
 
@@ -396,7 +394,6 @@ namespace TRAP
 			bool Focused = true;
 			bool FocusOnShow = true;
 			bool Decorated = true;
-			//bool Stereo = false;
 			bool RawMouseInput = false;
 			Window::CursorMode CursorMode = Window::CursorMode::Normal;
 

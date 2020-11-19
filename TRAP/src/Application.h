@@ -227,7 +227,7 @@ namespace TRAP
 		/// Recreate the Engine for use by the specified TRAP::Graphics::API::RenderAPI (needed for switching RenderingAPIs).
 		/// </summary>
 		/// <param name="renderAPI">New TRAP::Graphics::API::RenderAPI to be used.</param>
-		void ReCreate(Graphics::API::RenderAPI renderAPI) const;
+		void ReCreate(Graphics::RenderAPI renderAPI) const;
 		
 		/// <summary>
 		/// Handles all Events for the Main Render Window and the TRAP::LayerStack.
@@ -323,6 +323,8 @@ namespace TRAP
 		ThreadPool m_threadPool;
 
 		std::thread::id m_mainThreadID;
+
+		Graphics::RenderAPI m_newRenderAPI;
 
 		static CPUInfo s_CPU;
 		static Application* s_Instance;

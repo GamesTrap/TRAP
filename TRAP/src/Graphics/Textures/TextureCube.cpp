@@ -1,7 +1,8 @@
 #include "TRAPPCH.h"
-
 #include "TextureCube.h"
-#include "Graphics/API/Context.h"
+
+
+#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Textures/VulkanTextureCube.h"
 #include "VFS/VFS.h"
 
@@ -41,9 +42,9 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		return nullptr;
 	}
 	
-	switch (API::Context::GetRenderAPI())
+	switch (RendererAPI::GetRenderAPI())
 	{
-	case API::RenderAPI::Vulkan:
+	case RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTextureCube>(name, filepaths, parameters);
 
 	default:
@@ -63,9 +64,9 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 		return CreateFromCross(filepath, format, parameters);
 	}
 	
-	switch (API::Context::GetRenderAPI())
+	switch (RendererAPI::GetRenderAPI())
 	{
-	case API::RenderAPI::Vulkan:
+	case RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTextureCube>(name, filepath, format, parameters);
 
 	default:
@@ -81,9 +82,9 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 
 	std::string name = VFS::GetFileName(VFS::MakeVirtualPathCompatible(filepath));
 	
-	switch (API::Context::GetRenderAPI())
+	switch (RendererAPI::GetRenderAPI())
 	{
-	case API::RenderAPI::Vulkan:
+	case RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTextureCube>(name, filepath, format, parameters);
 
 	default:
@@ -97,9 +98,9 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::CreateFrom
 {
 	TP_PROFILE_FUNCTION();
 
-	switch(API::Context::GetRenderAPI())
+	switch(RendererAPI::GetRenderAPI())
 	{
-	case API::RenderAPI::Vulkan:
+	case RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTextureCube>(name, img, format, parameters);
 		
 	default:
@@ -113,9 +114,9 @@ TRAP::Scope<TRAP::Graphics::TextureCube> TRAP::Graphics::TextureCube::Create(Tex
 {
 	TP_PROFILE_FUNCTION();
 
-	switch (API::Context::GetRenderAPI())
+	switch (RendererAPI::GetRenderAPI())
 	{
-	case API::RenderAPI::Vulkan:
+	case RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTextureCube>(parameters);
 
 	default:

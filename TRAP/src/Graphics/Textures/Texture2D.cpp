@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Texture2D.h"
 
-#include "Graphics/API/Context.h"
+#include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Textures/VulkanTexture2D.h"
 #include "VFS/VFS.h"
 
@@ -37,9 +37,9 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 		return CreateFromFile(filepath, parameters);
 	}
 	
-	switch(API::Context::GetRenderAPI())
+	switch(RendererAPI::GetRenderAPI())
 	{
-	case API::RenderAPI::Vulkan:
+	case RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTexture2D>(name, filepath, parameters);
 
 	default:
@@ -55,9 +55,9 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 
 	std::string name = VFS::GetFileName(VFS::MakeVirtualPathCompatible(filepath));
 	
-	switch (API::Context::GetRenderAPI())
+	switch (RendererAPI::GetRenderAPI())
 	{
-	case API::RenderAPI::Vulkan:
+	case RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTexture2D>(name, filepath, parameters);
 
 	default:
@@ -71,9 +71,9 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImag
 {
 	TP_PROFILE_FUNCTION();
 
-	switch(API::Context::GetRenderAPI())
+	switch(RendererAPI::GetRenderAPI())
 	{
-	case API::RenderAPI::Vulkan:
+	case RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTexture2D>(name, img, parameters);
 
 	default:
@@ -87,9 +87,9 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ui
 {
 	TP_PROFILE_FUNCTION();
 
-	switch (API::Context::GetRenderAPI())
+	switch (RendererAPI::GetRenderAPI())
 	{
-	case API::RenderAPI::Vulkan:
+	case RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTexture2D>(width, height, bitsPerPixel, format, parameters);
 
 	default:
@@ -103,9 +103,9 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::Create(Texture
 {
 	TP_PROFILE_FUNCTION();
 
-	switch (API::Context::GetRenderAPI())
+	switch (RendererAPI::GetRenderAPI())
 	{
-	case API::RenderAPI::Vulkan:
+	case RenderAPI::Vulkan:
 		return MakeScope<API::VulkanTexture2D>(parameters);
 
 	default:

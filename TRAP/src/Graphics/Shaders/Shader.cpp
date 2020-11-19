@@ -2,7 +2,6 @@
 #include "Shader.h"
 
 #include "VFS/VFS.h"
-#include "Graphics/API/Context.h"
 #include "Graphics/API/Vulkan/VulkanShader.h"
 #include "Utils/String/String.h"
 
@@ -74,9 +73,9 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		return nullptr;
 	}
 
-	switch (API::Context::GetRenderAPI())
+	switch (RendererAPI::GetRenderAPI())
 	{
-	case API::RenderAPI::Vulkan:
+	case RenderAPI::Vulkan:
 	{
 		Scope<API::VulkanShader> result;
 		if (isSPIRV)
@@ -139,9 +138,9 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		return nullptr;
 	}
 
-	switch (API::Context::GetRenderAPI())
+	switch (RendererAPI::GetRenderAPI())
 	{
-	case API::RenderAPI::Vulkan:
+	case RenderAPI::Vulkan:
 	{
 		Scope<API::VulkanShader> result;
 		if (isSPIRV)
@@ -170,9 +169,9 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(con
 {
 	TP_PROFILE_FUNCTION();
 
-	switch (API::Context::GetRenderAPI())
+	switch (RendererAPI::GetRenderAPI())
 	{
-	case API::RenderAPI::Vulkan:
+	case RenderAPI::Vulkan:
 		return MakeScope<API::VulkanShader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
 
 	default:
