@@ -17,31 +17,12 @@ namespace TRAP::Graphics::API
 		VulkanVertexBuffer& operator=(VulkanVertexBuffer&&) = default;
 		~VulkanVertexBuffer();
 
-		VkBuffer& GetHandle();
-
 		const BufferLayout& GetLayout() const override;
 		void SetLayout(const BufferLayout& layout) override;
 		uint32_t GetVertexCount() const override;
 		void SetData(const void* data, uint32_t size) override;
 
 	private:
-		void AllocateBuffer();
-		void DeallocateBuffer() const;
-		void UploadData(const void* data) const;
-		void CopyBuffer(VkBuffer& stagingBuffer) const;
-		static uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags props);
-		static void CreateBuffer(VkDeviceSize size,
-		                         VkBufferUsageFlags usage,
-		                         VkMemoryPropertyFlags properties,
-		                         VkBuffer& buffer,
-		                         VkDeviceMemory& bufferMemory);
-		
-		BufferLayout m_layout;
-		uint32_t m_vertexCount;
-
-		//Internal
-		VkBuffer m_vertexBuffer;
-		VkDeviceMemory m_vertexBufferMemory;
 	};
 }
 

@@ -57,11 +57,6 @@ TRAP::Window::~Window()
 {
 	TP_PROFILE_FUNCTION();
 
-	if (s_windows > 1)
-	{
-		if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
-			Graphics::API::VulkanRenderer::DeleteWindowSwapchain(m_window.get());
-	}
 	s_windows--;
 
 	if(!s_windows)

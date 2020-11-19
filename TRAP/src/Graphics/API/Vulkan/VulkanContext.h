@@ -26,9 +26,6 @@ namespace TRAP::Graphics::API
 		static const std::string& GetAppName();
 
 	private:
-		static PFN_vkEnumerateInstanceVersion s_vkEnumerateInstanceVersion;
-
-		static INTERNAL::WindowingAPI::InternalWindow* s_currentWindow;
 		static std::string s_appName;
 	};
 }

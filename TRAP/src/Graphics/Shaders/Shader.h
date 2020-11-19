@@ -25,8 +25,6 @@ namespace TRAP::Graphics
 		Shader& operator=(Shader&&) = default;
 		virtual ~Shader() = default;
 
-		static const Shader* s_CurrentlyBound;
-
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 

@@ -27,9 +27,6 @@ namespace TRAP::Graphics::API
 		BufferUsage GetUsage() const override;
 
 	private:
-		std::string m_name;
-		uint32_t m_size;
-		BufferUsage m_usage;
 	};
 }
 

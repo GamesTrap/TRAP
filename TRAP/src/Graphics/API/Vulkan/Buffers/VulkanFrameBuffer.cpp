@@ -5,37 +5,30 @@
 TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(const FrameBufferProps& props)
 	: m_props(props)
 {
-	TP_PROFILE_FUNCTION();
-
-	TP_WARN(Log::FrameBufferVulkanPrefix, "WIP");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanFrameBuffer::~VulkanFrameBuffer()
 {
-	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanFrameBuffer::Bind()
 {
-	TP_PROFILE_FUNCTION();	
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanFrameBuffer::Unbind()
 {
-	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanFrameBuffer::Resize(uint32_t width, uint32_t height)
 {
-	TP_PROFILE_FUNCTION();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

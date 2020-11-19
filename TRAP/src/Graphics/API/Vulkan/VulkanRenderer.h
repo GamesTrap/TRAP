@@ -7,23 +7,6 @@
 
 namespace TRAP::Graphics::API
 {
-	class VulkanContext;
-
-	namespace Vulkan
-	{
-		class CommandBuffer;
-		class Semaphore;
-		class Swapchain;
-		class CommandPool;
-		class Debug;
-		class PhysicalDevice;
-		class Instance;
-		class Surface;
-		class Device;
-		class RenderPass;
-		class Fence;
-	}
-
 	class VulkanRenderer final : public RendererAPI
 	{
 	public:
@@ -75,37 +58,10 @@ namespace TRAP::Graphics::API
 		std::array<uint8_t, 16> GetCurrentGPUUUID() override;
 		std::string GetCurrentGPUName() override;
 		std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() override;
-
-		//VulkanRenderer specific
-		static void SetVSyncIntervalInternal(uint32_t interval);
-		static const std::vector<Scope<Vulkan::Swapchain>>& GetAllSwapchains();
-		static void SetCurrentSwapchain(Vulkan::Swapchain* swapchain);
-		static Vulkan::Swapchain* CreateWindowSwapchain(INTERNAL::WindowingAPI::InternalWindow* window);
-		static void DeleteWindowSwapchain(INTERNAL::WindowingAPI::InternalWindow* window);
-		static Vulkan::Device& GetDevice();
-		static Vulkan::Swapchain& GetCurrentSwapchain();
-		static Vulkan::PhysicalDevice& GetPhysicalDevice();
-		static void BindGraphicsPipeline();
 		
-	private:
-		static VulkanRenderer* Get();
-		
-		std::array<std::vector<std::string>, 2> SetupInstanceLayersAndExtensions();
-		static std::vector<std::string> SetupDeviceExtensions(const Scope<Vulkan::PhysicalDevice>& physicalDevice);
-		
+	private:		
 		std::string m_rendererTitle;
 
-		//Vulkan Data
-		bool m_debugCallbackSupported;
-		Scope<Vulkan::Instance> m_instance;
-		Scope<Vulkan::PhysicalDevice> m_physicalDevice;
-		Scope<Vulkan::Debug> m_debug;
-		Scope<Vulkan::Device> m_device;
-		std::vector<Scope<Vulkan::Swapchain>> m_swapchains;
-
-		std::vector<std::pair<std::string, std::array<uint8_t, 16>>> m_deviceNamesAndUUIDs;
-
-		static Vulkan::Swapchain* s_currentSwapchain;
 		static VulkanRenderer* s_renderer;
 	};
 }

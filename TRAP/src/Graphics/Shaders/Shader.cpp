@@ -8,10 +8,6 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Graphics::Shader* TRAP::Graphics::Shader::s_CurrentlyBound = nullptr;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 const std::string& TRAP::Graphics::Shader::GetName() const
 {
 	TP_PROFILE_FUNCTION();
