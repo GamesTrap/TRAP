@@ -80,7 +80,7 @@ TRAP::Application::Application()
 	m_config.Get("Width", width);
 	m_config.Get("Height", height);
 	m_config.Get("RefreshRate", refreshRate);
-	const uint32_t vsync = m_config.Get<uint32_t>("VSync");
+	const bool vsync = m_config.Get<bool>("VSync");
 	const uint32_t fpsLimit = m_config.Get<uint32_t>("FPSLimit");
 	const Window::DisplayMode displayMode = m_config.Get<Window::DisplayMode>("DisplayMode");
 	const bool maximized = m_config.Get<bool>("Maximized");
@@ -96,7 +96,6 @@ TRAP::Application::Application()
 			m_fpsLimit = 0;
 	}
 
-	Graphics::RendererAPI::s_RenderAPI = renderAPI;
 	m_window = MakeScope<Window>
 	(
 		WindowProps
@@ -108,7 +107,6 @@ TRAP::Application::Application()
 			displayMode,
 			WindowProps::AdvancedProps
 			{
-				vsync,
 				true,
 				maximized,
 				true,
@@ -123,6 +121,35 @@ TRAP::Application::Application()
 	);
 	m_window->SetEventCallback([this](Events::Event& e) { OnEvent(e); });
 
+	if (renderAPI == Graphics::RenderAPI::NONE || !Graphics::RendererAPI::IsSupported(renderAPI))
+		Graphics::RendererAPI::AutoSelectRenderAPI();
+	else
+	{
+		if (renderAPI == Graphics::RenderAPI::Vulkan)
+			Graphics::RendererAPI::SwitchRenderAPI(Graphics::RenderAPI::Vulkan);
+		else
+		{
+			//All RenderAPIs are unsupported
+			TRAP::Utils::Dialogs::MsgBox::Show("Every RenderAPI that TRAP Engine uses is unsupported on your device!\nDoes your system meet the minimum system requirements for running TRAP Engine?",
+				"Incompatible Device",
+				Utils::Dialogs::MsgBox::Style::Error,
+				Utils::Dialogs::MsgBox::Buttons::Quit);
+			exit(-1);
+		}
+	}
+
+	//Initialize Renderer
+	Graphics::RendererAPI::Init();
+	Graphics::RendererAPI::SetVSync(vsync);
+
+	//Update Window Title (Debug/DebWithRelInfo)
+	m_window->SetTitle(m_window->GetTitle() + Graphics::Renderer::GetTitle());
+
+	//Update Viewport
+	int32_t w, h;
+	INTERNAL::WindowingAPI::GetFrameBufferSize(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(m_window->GetInternalWindow()), w, h);
+	Graphics::RenderCommand::SetViewport(0, 0, width, height);
+	
 	//Always added as a fallback shader
 	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
 	//Always added as a fallback texture
@@ -162,7 +189,7 @@ TRAP::Application::~Application()
 	m_config.Set("Width", m_window->GetWidth());
 	m_config.Set("Height", m_window->GetHeight());
 	m_config.Set("RefreshRate", m_window->GetRefreshRate());
-	m_config.Set("VSync", m_window->GetVSyncInterval());
+	m_config.Set("VSync", Graphics::RendererAPI::GetVSync());
 	m_config.Set("FPSLimit", m_fpsLimit);
 	m_config.Set("DisplayMode", m_window->GetDisplayMode());
 	m_config.Set("Maximized", m_window->IsMaximized());
@@ -630,7 +657,7 @@ void TRAP::Application::ReCreate(const Graphics::RenderAPI renderAPI) const
 	Graphics::Renderer::Shutdown();
 	Graphics::RendererAPI::Shutdown();
 
-	Graphics::RendererAPI::SetVSyncInterval(m_window->GetVSyncInterval());
+	Graphics::RendererAPI::SetVSync(Graphics::RendererAPI::GetVSync());
 	Graphics::RendererAPI::Init();
 	m_window->SetTitle(m_window->GetTitle());
 	//Always added as a fallback shader

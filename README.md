@@ -46,7 +46,16 @@ For example, run `premake gmake2` to generate the `Makefile` files.
 - [VulkanSDK](https://vulkan.lunarg.com/sdk/home)
 - [GLSLang](https://github.com/GamesTrap/glslang)
 - [SPIRV-Cross](https://github.com/GamesTrap/SPIRV-Cross)
-- [Entt](https://github.com/skypjack/entt)
+- [YAML-Cpp](https://github.com/jbeder/yaml-cpp)
+- [Entt](https://github.com/skypjack/entt) (Embedded)
+- [GLFW](https://github.com/glfw/glfw) (Custom rewrite)
+- [GLM](https://github.com/g-truc/glm) (Custom rewrite)
+- [LodePNG](https://github.com/lvandeve/lodepng) (Embedded decompression)
+- [OpenSans](https://fonts.google.com/specimen/Open+Sans#standard-styles)(Embedded fonts)
+- [Premake5](https://github.com/premake/premake-core) (Build system)
+- [SFML](https://github.com/SFML/SFML) (Networking)
+- [Volk](https://github.com/zeux/volk) (Embedded)
+- [VulkanMemoryAllocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator/) (Embedded)
 
 ## System Requirements
 

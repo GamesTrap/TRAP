@@ -145,11 +145,6 @@ namespace TRAP
 		/// <returns>Object of TRAP::Monitor class used by the TRAP::Window.</returns>
 		Monitor GetMonitor() const;
 		/// <summary>
-		/// Get the current VSync interval used by the TRAP::Window.
-		/// </summary>
-		/// <returns>VSync interval of the TRAP::Window.</returns>
-		uint32_t GetVSyncInterval() const;
-		/// <summary>
 		/// Get the current TRAP::Window::CursorMode of the TRAP::Window.
 		/// </summary>
 		/// <returns>TRAP::Window::CursorMode of the TRAP::Window.</returns>
@@ -197,11 +192,6 @@ namespace TRAP
 		/// </summary>
 		/// <param name="monitor">TRAP::Monitor object to be used from now on.</param>
 		void SetMonitor(Monitor& monitor);
-		/// <summary>
-		/// Set the VSync interval (0 = No VSync).
-		/// </summary>
-		/// <param name="interval">New VSync interval.</param>
-		void SetVSyncInterval(uint32_t interval);
 		/// <summary>
 		/// Set the TRAP::Window::CursorMode for the TRAP:Window.
 		/// </summary>
@@ -353,7 +343,7 @@ namespace TRAP
 		struct WindowData
 		{
 			std::string Title;
-			int32_t Width{}, Height{}, RefreshRate{}, VSync{};
+			int32_t Width{}, Height{}, RefreshRate{};
 			DisplayMode displayMode{};
 			uint32_t Monitor{};
 			CursorMode cursorMode{};
@@ -386,8 +376,7 @@ namespace TRAP
 		/// More advanced(optional) window properties.
 		/// </summary>
 		struct AdvancedProps
-		{			
-			uint32_t VSync = 0;
+		{
 			bool Resizable = true;
 			bool Maximized = false;
 			bool Visible = true;
@@ -400,7 +389,6 @@ namespace TRAP
 			/// <summary>
 			/// Constructor for advanced(optional) window properties.
 			/// </summary>
-			/// <param name="vSync">VSync interval to be used.</param>
 			/// <param name="resizable">Whether the TRAP::Window should be resizable.</param>
 			/// <param name="maximized">Whether the TRAP::Window should be maximized on creation.</param>
 			/// <param name="visible">Whether the TRAP::Window should be visible or not.</param>
@@ -409,8 +397,7 @@ namespace TRAP
 			/// <param name="decorated">Whether the TRAP::Window should be decorated or not.</param>
 			/// <param name="rawMouseInput">Whether the TRAP::Window should use raw mouse input or not.</param>
 			/// <param name="cursorMode">TRAP::Window::CursorMode to be used by the TRAP::Window.</param>
-			explicit AdvancedProps(uint32_t vSync = 0,
-			                       bool resizable = true,
+			explicit AdvancedProps(bool resizable = true,
 			                       bool maximized = false,
 			                       bool visible = true,
 			                       bool focused = true,

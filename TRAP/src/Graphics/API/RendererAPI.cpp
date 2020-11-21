@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "RendererAPI.h"
 
+#include "Application.h"
 #include "Vulkan/VulkanRenderer.h"
 #include "Utils/Dialogs/MsgBox.h"
 
@@ -59,6 +60,11 @@ void TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 	TP_DEBUG(Log::RendererVulkanPrefix, "Device isn't Vulkan 1.2 capable!");
 
 	s_RenderAPI = RenderAPI::NONE;
+	TRAP::Utils::Dialogs::MsgBox::Show("TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
+		"No compatible RenderAPI found",
+		Utils::Dialogs::MsgBox::Style::Error,
+		Utils::Dialogs::MsgBox::Buttons::Quit);
+	TRAP::Application::Shutdown();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -78,8 +84,20 @@ void TRAP::Graphics::RendererAPI::SwitchRenderAPI(const RenderAPI api)
 			}
 
 			TP_ERROR(Log::RendererVulkanPrefix, "This device doesn't support Vulkan 1.2!");
-
-			return;
+			
+			TRAP::Utils::Dialogs::MsgBox::Show("TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
+				"No compatible RenderAPI found",
+				Utils::Dialogs::MsgBox::Style::Error,
+				Utils::Dialogs::MsgBox::Buttons::Quit);
+			TRAP::Application::Shutdown();
+		}
+		else
+		{
+			TRAP::Utils::Dialogs::MsgBox::Show("TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
+				"No compatible RenderAPI found",
+				Utils::Dialogs::MsgBox::Style::Error,
+				Utils::Dialogs::MsgBox::Buttons::Quit);
+			TRAP::Application::Shutdown();
 		}
 	}
 }
@@ -88,7 +106,7 @@ void TRAP::Graphics::RendererAPI::SwitchRenderAPI(const RenderAPI api)
 
 bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 {
-	return true;
+	return TRAP::INTERNAL::WindowingAPI::VulkanSupported(); //TODO More tests
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -110,8 +128,15 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::GetRenderAPI()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::SetVSyncInterval(uint32_t interval)
+void TRAP::Graphics::RendererAPI::SetVSync(bool enabled)
 {
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::RendererAPI::GetVSync()
+{
+	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

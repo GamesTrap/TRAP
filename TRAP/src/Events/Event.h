@@ -146,12 +146,10 @@ namespace TRAP::Events
 
 std::ostream& operator<<(std::ostream& os, const TRAP::Events::Event& e);
 
-TRAP::Events::EventCategory operator |(TRAP::Events::EventCategory lhs, TRAP::Events::EventCategory rhs);
-TRAP::Events::EventCategory operator &(TRAP::Events::EventCategory lhs, TRAP::Events::EventCategory rhs);
+MAKE_ENUM_FLAG(TRAP::Events::EventCategory)
+
 TRAP::Events::EventCategory operator ^(TRAP::Events::EventCategory lhs, TRAP::Events::EventCategory rhs);
 TRAP::Events::EventCategory operator ~(TRAP::Events::EventCategory rhs);
-TRAP::Events::EventCategory& operator |=(TRAP::Events::EventCategory& lhs, TRAP::Events::EventCategory rhs);
-TRAP::Events::EventCategory& operator &=(TRAP::Events::EventCategory& lhs, TRAP::Events::EventCategory rhs);
 TRAP::Events::EventCategory& operator ^=(TRAP::Events::EventCategory& lhs, TRAP::Events::EventCategory rhs);
 
 #endif /*_TRAP_EVENT_H_*/

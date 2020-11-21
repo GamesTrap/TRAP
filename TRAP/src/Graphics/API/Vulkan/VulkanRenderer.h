@@ -7,6 +7,9 @@
 
 namespace TRAP::Graphics::API
 {
+	class VulkanInstance;
+	class VulkanDebug;
+
 	class VulkanRenderer final : public RendererAPI
 	{
 	public:
@@ -59,8 +62,22 @@ namespace TRAP::Graphics::API
 		std::string GetCurrentGPUName() override;
 		std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() override;
 		
-	private:		
+	private:
+		static std::vector<std::string> SetupInstanceLayers();
+		static std::vector<std::string> SetupInstanceExtensions();
+		
 		std::string m_rendererTitle;
+
+		TRAP::Ref<VulkanInstance> m_instance;
+		TRAP::Scope<VulkanDebug> m_debug;
+		
+		static bool s_debugUtilsExtension;
+		static bool s_deviceGroupCreationExtension;
+		static bool s_swapchainColorSpaceExtension;
+		static bool s_externalMemoryCapabilitiesExtension;
+		static bool s_getPhysicalDeviceProperties2Extension;
+
+		static bool s_renderdocCapture;
 
 		static VulkanRenderer* s_renderer;
 	};

@@ -3,6 +3,17 @@
 
 #include <memory>
 
+//Set this define to enable renderdoc layer
+//NOTE: Settings this define will disable use of the KHR dedicated allocation extension since
+//      it conflicts with the renderdoc capture layer.
+//#define USE_RENDER_DOC
+
+//Enable graphics validation in debug builds by default.
+#if (defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)) && !defined(DISABLE_GRAPHICS_DEBUG)
+	#define ENABLE_GRAPHICS_DEBUG
+	#define VERBOSE_GRAPHICS_DEBUG
+#endif
+
 /// <summary>
 /// Construct an API/Engine version number.
 /// </summary>
@@ -56,7 +67,19 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP_VERSION number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 6, 89);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 1);
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+#ifndef MAKE_ENUM_FLAG
+#define MAKE_ENUM_FLAG(ENUM_TYPE)\
+	static inline ENUM_TYPE operator|(ENUM_TYPE a, ENUM_TYPE b) { return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) | \
+																		                        static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); } \
+	static inline ENUM_TYPE operator&(ENUM_TYPE a, ENUM_TYPE b) { return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) & \
+																		                        static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); } \
+	static inline ENUM_TYPE operator|=(ENUM_TYPE& a, ENUM_TYPE b) { return a = (a | b); }\
+	static inline ENUM_TYPE operator&=(ENUM_TYPE& a, ENUM_TYPE b) { return a = (a & b); }
+#endif
 
 //-------------------------------------------------------------------------------------------------------------------//
 

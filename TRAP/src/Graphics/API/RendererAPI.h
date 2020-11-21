@@ -24,7 +24,7 @@ namespace TRAP::Graphics
 }
 
 namespace TRAP::Graphics
-{
+{	
 	enum class RenderAPI
 	{
 		NONE = 0,
@@ -51,7 +51,8 @@ namespace TRAP::Graphics
 		static bool IsVulkanCapable();
 		static bool IsSupported(RenderAPI api);
 		static RenderAPI GetRenderAPI();
-		static void SetVSyncInterval(uint32_t interval);
+		static void SetVSync(bool enabled);
+		static bool GetVSync();
 		static void Use(Window* window);
 
 		virtual void InitInternal() = 0;
@@ -99,8 +100,6 @@ namespace TRAP::Graphics
 	protected:
 		static TRAP::Scope<RendererAPI> s_Renderer;
 		static RenderAPI s_RenderAPI;
-
-		friend TRAP::Application;
 	};
 }
 

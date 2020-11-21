@@ -20,7 +20,6 @@ void VulkanTests::OnAttach()
 		TRAP::Window::DisplayMode::Windowed,
 		TRAP::WindowProps::AdvancedProps
 		{
-			0,
 			true,
 			false,
 			true,

@@ -29,24 +29,6 @@ std::ostream& operator<<(std::ostream& os, const TRAP::Events::Event& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::EventCategory operator |(TRAP::Events::EventCategory lhs, TRAP::Events::EventCategory rhs)
-{
-	return static_cast<TRAP::Events::EventCategory>
-		(
-			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(lhs) |
-			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(rhs)
-		);
-}
-
-TRAP::Events::EventCategory operator &(TRAP::Events::EventCategory lhs, TRAP::Events::EventCategory rhs)
-{
-	return static_cast<TRAP::Events::EventCategory>
-		(
-			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(lhs) &
-			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(rhs)
-		);
-}
-
 TRAP::Events::EventCategory operator ^(TRAP::Events::EventCategory lhs, TRAP::Events::EventCategory rhs)
 {
 	return static_cast<TRAP::Events::EventCategory>
@@ -62,28 +44,6 @@ TRAP::Events::EventCategory operator ~(TRAP::Events::EventCategory rhs)
 		(
 			~static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(rhs)
 		);
-}
-
-TRAP::Events::EventCategory& operator |=(TRAP::Events::EventCategory& lhs, TRAP::Events::EventCategory rhs)
-{
-	lhs = static_cast<TRAP::Events::EventCategory>
-		(
-			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(lhs) |
-			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(rhs)
-		);
-
-	return lhs;
-}
-
-TRAP::Events::EventCategory& operator &=(TRAP::Events::EventCategory& lhs, TRAP::Events::EventCategory rhs)
-{
-	lhs = static_cast<TRAP::Events::EventCategory>
-		(
-			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(lhs) &
-			static_cast<std::underlying_type<TRAP::Events::EventCategory>::type>(rhs)
-		);
-
-	return lhs;
 }
 
 TRAP::Events::EventCategory& operator ^=(TRAP::Events::EventCategory& lhs, TRAP::Events::EventCategory rhs)

@@ -1,0 +1,198 @@
+#include "TRAPPCH.h"
+#include "VulkanInstance.h"
+
+#include "Application.h"
+#include "VulkanInits.h"
+#include "Graphics/API/Vulkan/VulkanCommon.h"
+
+uint32_t TRAP::Graphics::API::VulkanInstance::s_instanceVersion = 0;
+std::vector<VkLayerProperties> TRAP::Graphics::API::VulkanInstance::s_availableInstanceLayers{};
+std::vector<VkExtensionProperties> TRAP::Graphics::API::VulkanInstance::s_availableInstanceExtensions{};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string& appName,
+													std::vector<std::string> instanceLayers,
+                                                    std::vector<std::string> instanceExtensions)
+	: m_instance(VK_NULL_HANDLE),
+	  m_instanceLayers(std::move(instanceLayers)),
+	  m_instanceExtensions(std::move(instanceExtensions))
+{
+	std::vector<const char*> layers(m_instanceLayers.size());
+	for (uint32_t i = 0; i < m_instanceLayers.size(); i++)
+	{
+		if(IsLayerSupported(m_instanceLayers[i]))
+			layers[i] = m_instanceLayers[i].c_str();
+		else
+			m_instanceLayers.erase(m_instanceLayers.begin() + i);
+	}
+
+	std::vector<const char*> extensions(m_instanceExtensions.size());
+	for (uint32_t i = 0; i < m_instanceExtensions.size(); i++)
+	{
+		if (IsExtensionSupported(m_instanceExtensions[i]))
+			extensions[i] = m_instanceExtensions[i].c_str();
+		else
+			m_instanceExtensions.erase(m_instanceExtensions.begin() + i);
+	}
+
+#ifdef VERBOSE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanInstancePrefix, "Creating Instance");
+	if (!m_instanceLayers.empty())
+	{
+		TP_DEBUG(Log::RendererVulkanInstancePrefix, "Loading Instance Layers:");
+		for (const std::string& str : m_instanceLayers)
+			TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str);
+	}
+	if (!m_instanceExtensions.empty())
+	{
+		TP_DEBUG(Log::RendererVulkanInstancePrefix, "Loading Instance Extensions:");
+		for (const std::string& str : m_instanceExtensions)
+			TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str);
+	}
+#endif
+
+	const VkApplicationInfo appInfo = VulkanInits::ApplicationInfo(appName);
+	VkInstanceCreateInfo info = VulkanInits::InstanceCreateInfo(appInfo, layers, extensions);
+
+	//TODO Set AllocationCallbacks for host memory
+	VkCall(vkCreateInstance(&info, nullptr, &m_instance));
+
+	if (m_instance)
+		VkLoadInstance(m_instance);
+	else
+	{
+		TP_CRITICAL(Log::RendererVulkanInstancePrefix, "Instance creation failed! Trying to switch RenderAPI");
+		Graphics::RendererAPI::SwitchRenderAPI(RenderAPI::NONE); //TODO Switch to D3D12 instead
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
+{
+	if (m_instance)
+	{
+		vkDestroyInstance(m_instance, nullptr);
+		m_instance = nullptr;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkInstance& TRAP::Graphics::API::VulkanInstance::GetVkInstance()
+{
+	return m_instance;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceLayers() const
+{
+	return m_instanceLayers;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<std::string>& TRAP::Graphics::API::VulkanInstance::GetUsedInstanceExtensions() const
+{
+	return m_instanceExtensions;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::VulkanInstance::GetInstanceVersion()
+{
+	if(!s_instanceVersion)
+		s_instanceVersion = VkGetInstanceVersion();
+
+	return s_instanceVersion;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<VkLayerProperties>& TRAP::Graphics::API::VulkanInstance::GetAvailableInstanceLayers()
+{
+	if (s_availableInstanceLayers.empty())
+		LoadAllInstanceLayers();
+
+	return s_availableInstanceLayers;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<VkExtensionProperties>& TRAP::Graphics::API::VulkanInstance::GetAvailableInstanceExtensions()
+{
+	if (s_availableInstanceExtensions.empty())
+		LoadAllInstanceExtensions();
+
+	return s_availableInstanceExtensions;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::API::VulkanInstance::IsLayerSupported(const std::string& layer)
+{
+	if (s_availableInstanceLayers.empty())
+		LoadAllInstanceLayers();
+
+	const auto result = std::find_if(s_availableInstanceLayers.begin(),
+		                             s_availableInstanceLayers.end(),
+		                             [layer](VkLayerProperties prop) 
+									 { return std::strcmp(prop.layerName, layer.c_str()) == 0; });
+	if (result == s_availableInstanceLayers.end())
+	{
+		if (layer == "VK_LAYER_KHRONOS_validation")
+			TP_WARN(Log::RendererVulkanInstancePrefix, "Layer: \"", layer, "\" is not supported(Vulkan SDK installed?)");
+		else
+			TP_WARN(Log::RendererVulkanInstancePrefix, "Layer: \"", layer, "\" is not supported");
+		
+		return false;
+	}
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::API::VulkanInstance::IsExtensionSupported(const std::string& extension)
+{
+	if (s_availableInstanceExtensions.empty())
+		LoadAllInstanceExtensions();
+
+	const auto result = std::find_if(s_availableInstanceExtensions.begin(),
+	                              s_availableInstanceExtensions.end(),
+	                              [extension](VkExtensionProperties prop)
+								  { return std::strcmp(prop.extensionName, extension.c_str()) == 0; });
+	if (result == s_availableInstanceExtensions.end())
+	{
+		if (extension == VK_EXT_DEBUG_UTILS_EXTENSION_NAME)
+			TP_WARN(Log::RendererVulkanInstancePrefix, "Extension: \"", extension, "\" is not supported(Vulkan SDK installed?)");
+		else
+			TP_WARN(Log::RendererVulkanInstancePrefix, "Extension: \"", extension, "\" is not supported");
+
+		return false;
+	}
+
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanInstance::LoadAllInstanceLayers()
+{
+	uint32_t layersCount = 0;
+	VkCall(vkEnumerateInstanceLayerProperties(&layersCount, nullptr));
+	s_availableInstanceLayers.resize(layersCount);
+	VkCall(vkEnumerateInstanceLayerProperties(&layersCount, s_availableInstanceLayers.data()));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanInstance::LoadAllInstanceExtensions()
+{
+	uint32_t extensionsCount = 0;
+	VkCall(vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, nullptr));
+	s_availableInstanceExtensions.resize(extensionsCount);
+	VkCall(vkEnumerateInstanceExtensionProperties(nullptr, &extensionsCount, s_availableInstanceExtensions.data()));
+}

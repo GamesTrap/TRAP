@@ -1,11 +1,22 @@
 #include "TRAPPCH.h"
 #include "VulkanRenderer.h"
 
+#include "Application.h"
 #include "Graphics/RenderCommand.h"
 #include "Window/Window.h"
 #include "Window/WindowingAPI.h"
 
+#include "Objects/VulkanInstance.h"
+#include "Objects/VulkanDebug.h"
+
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
+bool TRAP::Graphics::API::VulkanRenderer::s_debugUtilsExtension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_deviceGroupCreationExtension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_swapchainColorSpaceExtension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_externalMemoryCapabilitiesExtension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_getPhysicalDeviceProperties2Extension = false;
+
+bool TRAP::Graphics::API::VulkanRenderer::s_renderdocCapture = false;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -18,6 +29,10 @@ TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
 
 TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 {
+	TP_DEBUG(Log::RendererVulkanPrefix, "Destroying Renderer");
+	
+	//Free everything in order
+	//Should happen automagically through Scope deconstructors
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -26,12 +41,21 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 {
 	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");
 	TP_INFO(Log::RendererVulkanPrefix, "Vulkan:");
-	TP_INFO(Log::RendererVulkanPrefix, "Version:  0.0.0");
+	TP_INFO(Log::RendererVulkanPrefix, "Instance Version: ",
+		VK_VERSION_MAJOR(VulkanInstance::GetInstanceVersion()), '.',
+		VK_VERSION_MINOR(VulkanInstance::GetInstanceVersion()), '.',
+		VK_VERSION_PATCH(VulkanInstance::GetInstanceVersion()));
+	TP_INFO(Log::RendererVulkanPrefix, "Driver Version:  0.0.0");
 	TP_INFO(Log::RendererVulkanPrefix, "Renderer: XXX");
 	TP_INFO(Log::RendererVulkanPrefix, "Driver:   0.0.0");
 	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");
 
 	m_rendererTitle = "[Vulkan 0.0.0]";
+
+	m_instance = TRAP::MakeRef<VulkanInstance>(Application::GetWindow()->GetTitle(), SetupInstanceLayers(), SetupInstanceExtensions());
+#if defined(ENABLE_GRAPHICS_DEBUG)
+	m_debug = TRAP::MakeScope<VulkanDebug>(m_instance);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -213,4 +237,82 @@ std::string TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUName()
 std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API::VulkanRenderer::GetAllGPUs()
 {
 	return {};
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupInstanceLayers()
+{
+	std::vector<std::string> layers{};
+	
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if (VulkanInstance::IsLayerSupported("VK_LAYER_KHRONOS_validation"))
+		layers.emplace_back("VK_LAYER_KHRONOS_validation");
+#endif
+
+#ifdef USE_RENDER_DOC
+	if(VulkanInstance::IsLayerSupported("VK_LAYER_RENDERDOC_Capture"))
+	{
+		layers.emplace_back("VK_LAYER_RENDERDOC_Capture");
+		s_renderdocCapture = true;
+	}
+#endif
+
+	return layers;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupInstanceExtensions()
+{
+	std::vector<std::string> extensions{};
+
+	const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
+
+	if(!VulkanInstance::IsExtensionSupported(reqExt[0]) || !VulkanInstance::IsExtensionSupported(reqExt[1]))
+	{
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan Surface extensions are unsupported! Trying to switch RenderAPI");
+		Graphics::RendererAPI::SwitchRenderAPI(RenderAPI::NONE); //TODO Switch to D3D12 instead
+	}
+	else
+	{
+		extensions.push_back(reqExt[0]);
+		extensions.push_back(reqExt[1]);
+	}
+	
+#ifdef ENABLE_GRAPHICS_DEBUG
+	if(VulkanInstance::IsExtensionSupported(VK_EXT_DEBUG_UTILS_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		s_debugUtilsExtension = true;
+	}
+#endif
+
+	//Multi-GPU Extension
+	if(VulkanInstance::IsExtensionSupported(VK_KHR_DEVICE_GROUP_CREATION_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_KHR_DEVICE_GROUP_CREATION_EXTENSION_NAME);
+		s_deviceGroupCreationExtension = true;
+	}
+
+	///HDR support
+	if(VulkanInstance::IsExtensionSupported(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME);
+		s_swapchainColorSpaceExtension = true;
+	}
+
+	if(VulkanInstance::IsExtensionSupported(VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME);
+		s_externalMemoryCapabilitiesExtension = true;
+	}
+
+	if(VulkanInstance::IsExtensionSupported(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
+		s_getPhysicalDeviceProperties2Extension = true;
+	}
+	
+	return extensions;
 }
