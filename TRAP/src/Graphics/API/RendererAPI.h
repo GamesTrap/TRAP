@@ -48,7 +48,6 @@ namespace TRAP::Graphics
 		
 		static void AutoSelectRenderAPI();
 		static void SwitchRenderAPI(RenderAPI api);
-		static bool IsVulkanCapable();
 		static bool IsSupported(RenderAPI api);
 		static RenderAPI GetRenderAPI();
 		static void SetVSync(bool enabled);
@@ -97,9 +96,15 @@ namespace TRAP::Graphics
 		virtual std::string GetCurrentGPUName() = 0;
 		virtual std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() = 0;
 
+		static bool IsVulkanCapable();
+		
 	protected:
 		static TRAP::Scope<RendererAPI> s_Renderer;
 		static RenderAPI s_RenderAPI;
+
+	private:
+		static bool s_isVulkanCapable;
+		static bool s_isVulkanCapableFirstTest;
 	};
 }
 

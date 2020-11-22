@@ -36,17 +36,19 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string& appName,
 			m_instanceExtensions.erase(m_instanceExtensions.begin() + i);
 	}
 
-#ifdef VERBOSE_GRAPHICS_DEBUG
+#ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanInstancePrefix, "Creating Instance");
+#endif
+#ifdef VERBOSE_GRAPHICS_DEBUG
 	if (!m_instanceLayers.empty())
 	{
-		TP_DEBUG(Log::RendererVulkanInstancePrefix, "Loading Instance Layers:");
+		TP_DEBUG(Log::RendererVulkanInstancePrefix, "Loading Instance Layer(s):");
 		for (const std::string& str : m_instanceLayers)
 			TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str);
 	}
 	if (!m_instanceExtensions.empty())
 	{
-		TP_DEBUG(Log::RendererVulkanInstancePrefix, "Loading Instance Extensions:");
+		TP_DEBUG(Log::RendererVulkanInstancePrefix, "Loading Instance Extension(s):");
 		for (const std::string& str : m_instanceExtensions)
 			TP_DEBUG(Log::RendererVulkanInstancePrefix, "    ", str);
 	}
@@ -73,6 +75,9 @@ TRAP::Graphics::API::VulkanInstance::~VulkanInstance()
 {
 	if (m_instance)
 	{
+	#ifdef ENABLE_GRAPHICS_DEBUG
+		TP_DEBUG(Log::RendererVulkanInstancePrefix, "Destroying Instance");
+	#endif
 		vkDestroyInstance(m_instance, nullptr);
 		m_instance = nullptr;
 	}

@@ -7,6 +7,8 @@
 
 namespace TRAP::Graphics::API
 {
+	class VulkanPhysicalDevice;
+	class VulkanDevice;
 	class VulkanInstance;
 	class VulkanDebug;
 
@@ -65,21 +67,32 @@ namespace TRAP::Graphics::API
 	private:
 		static std::vector<std::string> SetupInstanceLayers();
 		static std::vector<std::string> SetupInstanceExtensions();
+		static std::vector<std::string> SetupDeviceExtensions(const TRAP::Scope<VulkanPhysicalDevice>& physicalDevice);
 		
 		std::string m_rendererTitle;
 
 		TRAP::Ref<VulkanInstance> m_instance;
 		TRAP::Scope<VulkanDebug> m_debug;
-		
+		TRAP::Ref<VulkanDevice> m_device;
+
+		//Instance Extensions
 		static bool s_debugUtilsExtension;
 		static bool s_deviceGroupCreationExtension;
 		static bool s_swapchainColorSpaceExtension;
 		static bool s_externalMemoryCapabilitiesExtension;
 		static bool s_getPhysicalDeviceProperties2Extension;
 
+		//Device Extensions
+		static bool s_fragmentShaderInterlock;
+
 		static bool s_renderdocCapture;
 
+		static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs;
+		
 		static VulkanRenderer* s_renderer;
+
+		friend VulkanPhysicalDevice;
+		friend VulkanDevice;
 	};
 }
 

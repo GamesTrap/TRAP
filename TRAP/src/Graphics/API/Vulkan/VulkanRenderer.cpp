@@ -5,18 +5,26 @@
 #include "Graphics/RenderCommand.h"
 #include "Window/Window.h"
 #include "Window/WindowingAPI.h"
+#include "Utils/Utils.h"
 
+#include "Objects/VulkanDevice.h"
+#include "Objects/VulkanPhysicalDevice.h"
 #include "Objects/VulkanInstance.h"
 #include "Objects/VulkanDebug.h"
 
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
+//Instance Extensions
 bool TRAP::Graphics::API::VulkanRenderer::s_debugUtilsExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_deviceGroupCreationExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_swapchainColorSpaceExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_externalMemoryCapabilitiesExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_getPhysicalDeviceProperties2Extension = false;
+//Device Extensions
+bool TRAP::Graphics::API::VulkanRenderer::s_fragmentShaderInterlock = false;
 
 bool TRAP::Graphics::API::VulkanRenderer::s_renderdocCapture = false;
+
+std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API::VulkanRenderer::s_usableGPUs{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -39,23 +47,62 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 
 void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 {
+	m_instance = TRAP::MakeRef<VulkanInstance>(Application::GetWindow()->GetTitle(), SetupInstanceLayers(), SetupInstanceExtensions());
+#if defined(ENABLE_GRAPHICS_DEBUG)
+	m_debug = TRAP::MakeScope<VulkanDebug>(m_instance);
+#endif
+
+	const std::multimap<uint32_t, std::array<uint8_t, 16>> physicalDevices = VulkanPhysicalDevice::GetAllRatedPhysicalDevices(m_instance);
+	TRAP::Scope<VulkanPhysicalDevice> physicalDevice;
+	
+	//Get Vulkan GPU UUID
+	const std::string UUIDstr = TRAP::Application::GetConfig().Get<std::string>("VulkanGPU");
+	const std::array<uint8_t, 16> UUID = TRAP::Utils::UUIDFromString(UUIDstr);
+	
+	if(UUID == std::array<uint8_t, 16>{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0})
+	{
+		TP_ERROR(Log::RendererVulkanPrefix, "Invalid GPU UUID: \"", UUIDstr, "\"!");
+		TP_ERROR(Log::RendererVulkanPrefix, "Falling back to score based system");
+		physicalDevice = TRAP::MakeScope<VulkanPhysicalDevice>(m_instance, (--physicalDevices.end())->second);
+	}
+	else
+	{
+		for (const auto& [score, devUUID] : physicalDevices)
+		{
+			if(UUID == devUUID)
+			{
+				physicalDevice = TRAP::MakeScope<VulkanPhysicalDevice>(m_instance, devUUID);
+				break;
+			}
+		}
+
+		if(!physicalDevice)
+		{
+			TP_ERROR(Log::RendererVulkanPrefix, "Could not find a GPU with UUID: \"", UUIDstr, "\"!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Falling back to score based system");
+			physicalDevice = TRAP::MakeScope<VulkanPhysicalDevice>(m_instance, (--physicalDevices.end())->second);
+		}
+	}
+
+	m_device = TRAP::MakeRef<VulkanDevice>(std::move(physicalDevice), SetupDeviceExtensions(physicalDevice));
+
+	
+
+	const VkPhysicalDeviceProperties devProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties();
 	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");
 	TP_INFO(Log::RendererVulkanPrefix, "Vulkan:");
 	TP_INFO(Log::RendererVulkanPrefix, "Instance Version: ",
 		VK_VERSION_MAJOR(VulkanInstance::GetInstanceVersion()), '.',
 		VK_VERSION_MINOR(VulkanInstance::GetInstanceVersion()), '.',
 		VK_VERSION_PATCH(VulkanInstance::GetInstanceVersion()));
-	TP_INFO(Log::RendererVulkanPrefix, "Driver Version:  0.0.0");
-	TP_INFO(Log::RendererVulkanPrefix, "Renderer: XXX");
-	TP_INFO(Log::RendererVulkanPrefix, "Driver:   0.0.0");
+	TP_INFO(Log::RendererVulkanPrefix, "Driver Vulkan Version: ", VK_VERSION_MAJOR(devProps.apiVersion), '.', VK_VERSION_MINOR(devProps.apiVersion), '.', VK_VERSION_PATCH(devProps.apiVersion));
+	TP_INFO(Log::RendererVulkanPrefix, "Renderer: ", devProps.deviceName);
+	TP_INFO(Log::RendererVulkanPrefix, "Driver: ", VK_VERSION_MAJOR(devProps.driverVersion), '.', VK_VERSION_MINOR(devProps.driverVersion), '.', VK_VERSION_PATCH(devProps.driverVersion));
 	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");
 
-	m_rendererTitle = "[Vulkan 0.0.0]";
-
-	m_instance = TRAP::MakeRef<VulkanInstance>(Application::GetWindow()->GetTitle(), SetupInstanceLayers(), SetupInstanceExtensions());
-#if defined(ENABLE_GRAPHICS_DEBUG)
-	m_debug = TRAP::MakeScope<VulkanDebug>(m_instance);
-#endif
+	m_rendererTitle = "[Vulkan " + std::to_string(VK_VERSION_MAJOR(devProps.apiVersion)) + "." +
+							       std::to_string(VK_VERSION_MINOR(devProps.apiVersion)) + "." +
+								   std::to_string(VK_VERSION_PATCH(devProps.apiVersion)) + "]";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -222,21 +269,33 @@ const std::string& TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 
 std::array<uint8_t, 16> TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUUUID()
 {
-	return {};
+	return m_device->GetPhysicalDevice()->GetPhysicalDeviceUUID();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUName()
 {
-	return {};
+	return m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().deviceName;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API::VulkanRenderer::GetAllGPUs()
 {
-	return {};
+	if(s_usableGPUs.empty())
+	{
+		for(const auto& [score, devUUID] : VulkanPhysicalDevice::GetAllRatedPhysicalDevices(m_instance))
+		{
+			const VkPhysicalDevice dev = VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(m_instance, devUUID);
+			VkPhysicalDeviceProperties props;
+			vkGetPhysicalDeviceProperties(dev, &props);
+
+			s_usableGPUs.emplace_back(props.deviceName, devUUID);
+		}
+	}
+	
+	return s_usableGPUs;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -302,17 +361,41 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupInstanceExten
 		s_swapchainColorSpaceExtension = true;
 	}
 
-	if(VulkanInstance::IsExtensionSupported(VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME))
+	if (VulkanInstance::GetInstanceVersion() < VK_MAKE_VERSION(1, 1, 0) && !VulkanInstance::IsExtensionSupported(VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME))
+	{
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan external memory capabilities extension is unsupported! Trying to switch RenderAPI");
+		Graphics::RendererAPI::SwitchRenderAPI(RenderAPI::NONE); //TODO Switch to D3D12 instead
+	}
+	else if(VulkanInstance::IsExtensionSupported(VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME);
 		s_externalMemoryCapabilitiesExtension = true;
 	}
 
-	if(VulkanInstance::IsExtensionSupported(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME))
+	if(VulkanInstance::GetInstanceVersion() < VK_MAKE_VERSION(1, 1, 0) && !VulkanInstance::IsExtensionSupported(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME))
+	{
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan get physical device properties 2 extension is unsupported! Trying to switch RenderAPI");
+		Graphics::RendererAPI::SwitchRenderAPI(RenderAPI::NONE); //TODO Switch to D3D12 instead
+	}
+	else if(VulkanInstance::IsExtensionSupported(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
 		s_getPhysicalDeviceProperties2Extension = true;
 	}
 	
+	return extensions;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensions(const TRAP::Scope<VulkanPhysicalDevice>& physicalDevice)
+{
+	std::vector<std::string> extensions{};
+
+	/*if(physicalDevice->IsExtensionSupported())
+	{
+		
+	}*/
+
 	return extensions;
 }

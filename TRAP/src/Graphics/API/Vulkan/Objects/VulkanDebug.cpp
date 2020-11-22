@@ -8,6 +8,10 @@
 TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 	: m_debugReport(nullptr), m_instance(std::move(instance))
 {
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanDebugPrefix, "Registering Debug Callback");
+#endif
+	
 	VkDebugUtilsMessengerCreateInfoEXT info = VulkanInits::DebugUtilsMessengerCreateInfo(VulkanDebugCallback);
 
 	VkCall(vkCreateDebugUtilsMessengerEXT(m_instance->GetVkInstance(), &info, nullptr, &m_debugReport));
@@ -18,6 +22,10 @@ TRAP::Graphics::API::VulkanDebug::VulkanDebug(Ref<VulkanInstance> instance)
 
 TRAP::Graphics::API::VulkanDebug::~VulkanDebug()
 {
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanDebugPrefix, "Unregistering Debug Callback");
+#endif
+	
 	if(m_debugReport)
 	{
 		vkDestroyDebugUtilsMessengerEXT(m_instance->GetVkInstance(), m_debugReport, nullptr);
@@ -32,25 +40,15 @@ VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugCallback(const VkDebugUtil
                                                                const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
                                                                void* userData)
 {
-	std::string str = Log::RendererVulkanPrefix;
+	std::string str = Log::RendererVulkanDebugPrefix;
 	str.pop_back();
 
-	if (messageType == VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT)
-		str += "[Violation] ";
-	else if (messageType == VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
-		str += "[Performance] ";
-	else
-		str += ' ';
+	if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
+		TP_INFO(str, '[', callbackData->pMessageIdName, "] ", callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
+	else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+		TP_WARN(str, '[', callbackData->pMessageIdName, "] ", callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
+	else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+		TP_ERROR(str, '[', callbackData->pMessageIdName, "] ", callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
 
-	str += std::to_string(callbackData->messageIdNumber) + "(" + callbackData->pMessageIdName + ") " + callbackData->pMessage;
-
-	if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
-		TP_INFO(str);
-	else if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-		TP_WARN(str);
-	else if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
-		TP_ERROR(str);
-	else TP_TRACE(str);
-
-	return false;
+	return VK_FALSE;
 }

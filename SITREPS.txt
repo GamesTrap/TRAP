@@ -1382,6 +1382,7 @@ SITREP 11/13/2020|20w46a4
 
 SITREP 11/19/2020|20w47a1
     - Changed TRAP Engine version to 20w47a1(0.7.0)
+    - Created Private Vulkan only testing fork (TRAPVK) ~<60 mins
     - Removed all OpenGL code ~>30 mins
     - Cleared up all Vulkan code ~>30 mins
     - Merged Context class with RendererAPI ~>20 mins
@@ -1393,3 +1394,9 @@ SITREP 11/21/2020|20w47a2
     - Added fully working VulkanInstance class ~<60 mins
     - Added fully working VulkanDebug class ~<30 mins
     - Moved VSync setting to RendererAPI and changed from uint32_t to bool ~<20 mins
+
+SITREP 11/22/2020|20w47a3
+    - Changed TRAP Engine version to 20w47a3(0.7.2)
+    - Added fully working automatic VulkanPhysicalDevice selection ~>90 mins
+    - Added fully working VulkanPhysicalDevice ~>120 mins
+    - Added partial VulkanDevice ~<30 mins
