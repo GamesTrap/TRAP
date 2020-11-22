@@ -1,8 +1,6 @@
 #include "TRAPPCH.h"
 #include "VulkanInits.h"
 
-#include "VulkanInstance.h"
-
 VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string& appName)
 {
 	VkApplicationInfo info;
@@ -13,7 +11,7 @@ VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::s
 	info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
 	info.pEngineName = "TRAP";
 	info.engineVersion = TRAP_VERSION;
-	info.apiVersion = VulkanInstance::GetInstanceVersion();
+	info.apiVersion = VK_API_VERSION_1_2;
 	
 	return info;
 }
@@ -57,5 +55,27 @@ VkDebugUtilsMessengerCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsM
 	info.pfnUserCallback = callback;
 	info.pUserData = nullptr;
 
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkDeviceCreateInfo TRAP::Graphics::API::VulkanInits::DeviceCreateInfo(const void* pNext,
+                                                                      const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos,
+																	  const std::vector<const char*>& deviceExtensions)
+{
+	VkDeviceCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+	info.pNext = pNext;
+	info.flags = 0;
+	info.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+	info.pQueueCreateInfos = queueCreateInfos.data();
+	info.enabledLayerCount = 0;
+	info.ppEnabledLayerNames = nullptr;
+	info.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
+	info.ppEnabledExtensionNames = deviceExtensions.data();
+	info.pEnabledFeatures = nullptr;
+	
 	return info;
 }

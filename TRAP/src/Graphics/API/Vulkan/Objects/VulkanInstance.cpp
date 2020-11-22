@@ -57,7 +57,6 @@ TRAP::Graphics::API::VulkanInstance::VulkanInstance(const std::string& appName,
 	const VkApplicationInfo appInfo = VulkanInits::ApplicationInfo(appName);
 	VkInstanceCreateInfo info = VulkanInits::InstanceCreateInfo(appInfo, layers, extensions);
 
-	//TODO Set AllocationCallbacks for host memory
 	VkCall(vkCreateInstance(&info, nullptr, &m_instance));
 
 	if (m_instance)

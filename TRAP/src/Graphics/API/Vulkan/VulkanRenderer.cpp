@@ -15,14 +15,18 @@
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
 //Instance Extensions
 bool TRAP::Graphics::API::VulkanRenderer::s_debugUtilsExtension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_deviceGroupCreationExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_swapchainColorSpaceExtension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_externalMemoryCapabilitiesExtension = false;
-bool TRAP::Graphics::API::VulkanRenderer::s_getPhysicalDeviceProperties2Extension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_VRExtensions = false;
 //Device Extensions
-bool TRAP::Graphics::API::VulkanRenderer::s_fragmentShaderInterlock = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_shaderDrawParameters = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_subgroupBroadcastDynamicID = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_fragmentShaderInterlockExtension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_drawIndirectCountExtension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_descriptorIndexingExtension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_raytracingExtension = false;
 
 bool TRAP::Graphics::API::VulkanRenderer::s_renderdocCapture = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport = false;
 
 std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API::VulkanRenderer::s_usableGPUs{};
 
@@ -84,7 +88,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 		}
 	}
 
-	m_device = TRAP::MakeRef<VulkanDevice>(std::move(physicalDevice), SetupDeviceExtensions(physicalDevice));
+	m_device = TRAP::MakeRef<VulkanDevice>(m_instance, std::move(physicalDevice), SetupDeviceExtensions(physicalDevice));
 
 	
 
@@ -347,40 +351,20 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupInstanceExten
 	}
 #endif
 
-	//Multi-GPU Extension
-	if(VulkanInstance::IsExtensionSupported(VK_KHR_DEVICE_GROUP_CREATION_EXTENSION_NAME))
-	{
-		extensions.emplace_back(VK_KHR_DEVICE_GROUP_CREATION_EXTENSION_NAME);
-		s_deviceGroupCreationExtension = true;
-	}
-
 	///HDR support
-	if(VulkanInstance::IsExtensionSupported(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME))
+	if (VulkanInstance::IsExtensionSupported(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME))
 	{
 		extensions.emplace_back(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME);
 		s_swapchainColorSpaceExtension = true;
 	}
 
-	if (VulkanInstance::GetInstanceVersion() < VK_MAKE_VERSION(1, 1, 0) && !VulkanInstance::IsExtensionSupported(VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME))
+	///VR support
+	if (VulkanInstance::IsExtensionSupported(VK_KHR_DISPLAY_EXTENSION_NAME) &&
+		VulkanInstance::IsExtensionSupported(VK_EXT_DIRECT_MODE_DISPLAY_EXTENSION_NAME))
 	{
-		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan external memory capabilities extension is unsupported! Trying to switch RenderAPI");
-		Graphics::RendererAPI::SwitchRenderAPI(RenderAPI::NONE); //TODO Switch to D3D12 instead
-	}
-	else if(VulkanInstance::IsExtensionSupported(VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME))
-	{
-		extensions.emplace_back(VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME);
-		s_externalMemoryCapabilitiesExtension = true;
-	}
-
-	if(VulkanInstance::GetInstanceVersion() < VK_MAKE_VERSION(1, 1, 0) && !VulkanInstance::IsExtensionSupported(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME))
-	{
-		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan get physical device properties 2 extension is unsupported! Trying to switch RenderAPI");
-		Graphics::RendererAPI::SwitchRenderAPI(RenderAPI::NONE); //TODO Switch to D3D12 instead
-	}
-	else if(VulkanInstance::IsExtensionSupported(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME))
-	{
-		extensions.emplace_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
-		s_getPhysicalDeviceProperties2Extension = true;
+		extensions.emplace_back(VK_KHR_DISPLAY_EXTENSION_NAME);
+		extensions.emplace_back(VK_EXT_DIRECT_MODE_DISPLAY_EXTENSION_NAME);
+		s_VRExtensions = true;
 	}
 	
 	return extensions;
@@ -392,10 +376,44 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 {
 	std::vector<std::string> extensions{};
 
-	/*if(physicalDevice->IsExtensionSupported())
+	if(physicalDevice->IsExtensionSupported(VK_KHR_SWAPCHAIN_EXTENSION_NAME))
+		extensions.emplace_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+	else
 	{
-		
-	}*/
+		TP_CRITICAL(Log::RendererVulkanPrefix, "Mandatory Vulkan swapchain extension is unsupported! Trying to switch RenderAPI");
+		Graphics::RendererAPI::SwitchRenderAPI(RenderAPI::NONE); //TODO Switch to D3D12 instead
+	}
+
+	if (physicalDevice->IsExtensionSupported(VK_KHR_DRAW_INDIRECT_COUNT_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_KHR_DRAW_INDIRECT_COUNT_EXTENSION_NAME);
+		s_drawIndirectCountExtension = true;
+	}
+
+	if (physicalDevice->IsExtensionSupported(VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_EXT_FRAGMENT_SHADER_INTERLOCK_EXTENSION_NAME);
+		s_fragmentShaderInterlockExtension = true;
+	}
+
+	if (physicalDevice->IsExtensionSupported(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME);
+		s_descriptorIndexingExtension = true;
+	}
+
+	if (physicalDevice->IsExtensionSupported("VK_KHR_ray_tracing") &&
+		physicalDevice->IsExtensionSupported(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME) &&
+		physicalDevice->IsExtensionSupported(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME) &&
+		physicalDevice->IsExtensionSupported("VK_KHR_deferred_host_operations") &&
+		physicalDevice->IsExtensionSupported("VK_KHR_pipeline_library"))
+	{
+		extensions.emplace_back("VK_KHR_ray_tracing");
+		extensions.emplace_back(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME);
+		extensions.emplace_back("VK_KHR_deferred_host_operations");
+		extensions.emplace_back("VK_KHR_pipeline_library");
+		s_raytracingExtension = true;
+	}
 
 	return extensions;
 }

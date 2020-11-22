@@ -3,13 +3,16 @@
 
 namespace TRAP::Graphics::API
 {
+	class VulkanInstance;
 	class VulkanPhysicalDevice;
 
 	class VulkanDevice
 	{
 	public:
-		explicit VulkanDevice(TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
-			std::vector<std::string> deviceExtensions);
+		explicit VulkanDevice(const TRAP::Ref<VulkanInstance>& instance,
+		                      TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
+		                      std::vector<std::string> deviceExtensions,
+		                      bool requestAllAvailableQueues = false);
 		~VulkanDevice();
 
 		VulkanDevice(const VulkanDevice&) = delete;
@@ -17,6 +20,8 @@ namespace TRAP::Graphics::API
 		VulkanDevice(VulkanDevice&&) = default;
 		VulkanDevice& operator=(VulkanDevice&&) = default;
 
+		VkDevice& GetVkDevice();
+		
 		const TRAP::Scope<VulkanPhysicalDevice>& GetPhysicalDevice() const;
 
 		const std::vector<std::string>& GetUsedPhysicalDeviceExtensions() const;
@@ -25,6 +30,11 @@ namespace TRAP::Graphics::API
 		TRAP::Scope<VulkanPhysicalDevice> m_physicalDevice;
 
 		std::vector<std::string> m_deviceExtensions;
+
+		std::vector<std::vector<uint32_t>> m_availableQueueCount;
+		std::vector<std::vector<uint32_t>> m_usedQueueCount;
+
+		VkDevice m_device;
 	};
 }
 

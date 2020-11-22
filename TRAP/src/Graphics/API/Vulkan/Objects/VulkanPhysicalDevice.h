@@ -20,10 +20,15 @@ namespace TRAP::Graphics::API
 		VkPhysicalDevice& GetVkPhysicalDevice();
 		const VkPhysicalDeviceProperties& GetVkPhysicalDeviceProperties() const;
 		const VkPhysicalDeviceSubgroupProperties& GetVkPhysicalDeviceSubgroupProperties() const;
-		const VkPhysicalDeviceIDPropertiesKHR& GetVkPhysicalDeviceIDProperties() const;
+		const VkPhysicalDeviceIDProperties& GetVkPhysicalDeviceIDProperties() const;
 		const VkPhysicalDeviceMemoryProperties& GetVkPhysicalDeviceMemoryProperties() const;
 		const VkPhysicalDeviceFeatures& GetVkPhysicalDeviceFeatures() const;
+		const VkPhysicalDeviceVulkan11Features& GetVkPhysicalDeviceVulkan11Features() const;
+		const VkPhysicalDeviceVulkan12Features& GetVkPhysicalDeviceVulkan12Features() const;
+		const VkPhysicalDeviceVulkan11Properties& GetVkPhysicalDeviceVulkan11Properties() const;
+		const VkPhysicalDeviceVulkan12Properties& GetVkPhysicalDeviceVulkan12Properties() const;
 		const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT& GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const;
+		const std::vector<VkQueueFamilyProperties>& GetQueueFamilyProperties() const;
 		bool IsExtensionSupported(const std::string& extension);
 		
 		const std::vector<VkExtensionProperties>& GetAvailablePhysicalDeviceExtensions();
@@ -45,9 +50,6 @@ namespace TRAP::Graphics::API
 		
 		static std::vector<VkPhysicalDevice> GetAllVkPhysicalDevices(const VkInstance& instance);
 
-		static VkPhysicalDeviceIDPropertiesKHR RetrievePhysicalDeviceIDProperties(const VkPhysicalDevice& physicalDevice);
-		static VkPhysicalDeviceSubgroupProperties RetrievePhysicalDeviceSubgroupProperties(const VkPhysicalDevice& physicalDevice);
-
 		static void RatePhysicalDevices(const std::vector<VkPhysicalDevice>& physicalDevices);
 		
 		void LoadAllPhysicalDeviceExtensions();
@@ -55,10 +57,14 @@ namespace TRAP::Graphics::API
 		VkPhysicalDevice m_physicalDevice;
 		VkPhysicalDeviceProperties m_physicalDeviceProperties;
 		VkPhysicalDeviceSubgroupProperties m_physicalDeviceSubgroupProperties;
-		VkPhysicalDeviceIDPropertiesKHR m_physicalDeviceIDProperties;
+		VkPhysicalDeviceIDProperties m_physicalDeviceIDProperties;
 		VkPhysicalDeviceMemoryProperties m_physicalDeviceMemoryProperties;
 		VkPhysicalDeviceFeatures m_physicalDeviceFeatures;
 		VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT m_physicalDeviceFragmentShaderInterlockFeatures;
+		VkPhysicalDeviceVulkan11Features m_physicalDeviceVulkan11Features;
+		VkPhysicalDeviceVulkan12Features m_physicalDeviceVulkan12Features;
+		VkPhysicalDeviceVulkan11Properties m_physicalDeviceVulkan11Properties;
+		VkPhysicalDeviceVulkan12Properties m_physicalDeviceVulkan12Properties;
 		std::vector<VkQueueFamilyProperties> m_queueFamilyProperties;
 
 		std::array<uint8_t, 16> m_deviceUUID;

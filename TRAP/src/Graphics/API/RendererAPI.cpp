@@ -63,7 +63,7 @@ void TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 		s_RenderAPI = RenderAPI::Vulkan;
 		return;
 	}
-	TP_DEBUG(Log::RendererVulkanPrefix, "Device isn't Vulkan capable!");
+	TP_DEBUG(Log::RendererVulkanPrefix, "Device isn't Vulkan 1.2 capable!");
 
 	s_RenderAPI = RenderAPI::NONE;
 	TRAP::Utils::Dialogs::MsgBox::Show("TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
@@ -89,7 +89,7 @@ void TRAP::Graphics::RendererAPI::SwitchRenderAPI(const RenderAPI api)
 				return;
 			}
 
-			TP_ERROR(Log::RendererVulkanPrefix, "This device doesn't support Vulkan!");
+			TP_ERROR(Log::RendererVulkanPrefix, "This device doesn't support Vulkan 1.2!");
 			
 			TRAP::Utils::Dialogs::MsgBox::Show("TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
 				"No compatible RenderAPI found",
@@ -157,28 +157,28 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 		
 		if (INTERNAL::WindowingAPI::VulkanSupported())
 		{
+			if(VkGetInstanceVersion() < VK_API_VERSION_1_2)
+			{
+				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Instance version Test!");
+				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
+				TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
+				s_isVulkanCapable = false;
+				return s_isVulkanCapable;
+			}
+			
 			//Instance Extensions
 			std::vector<std::string> instanceExtensions{};
 			const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
 			if (!API::VulkanInstance::IsExtensionSupported(reqExt[0]) || !API::VulkanInstance::IsExtensionSupported(reqExt[1]))
 			{
+				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Surface Extension Test");
+				TP_CRITICAL(Log::RendererVulkanPrefix, "Failed Vulkan Capability Tester!");
+				TP_INFO(Log::RendererVulkanPrefix, "--------------------------------");
 				s_isVulkanCapable = false;
 				return s_isVulkanCapable;
 			}
 			instanceExtensions.push_back(reqExt[0]);
 			instanceExtensions.push_back(reqExt[1]);
-			if (API::VulkanInstance::GetInstanceVersion() < VK_MAKE_VERSION(1, 1, 0) && !API::VulkanInstance::IsExtensionSupported(VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME))
-			{
-				s_isVulkanCapable = false;
-				return s_isVulkanCapable;
-			}
-			instanceExtensions.emplace_back(VK_KHR_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME);
-			if (API::VulkanInstance::GetInstanceVersion() < VK_MAKE_VERSION(1, 1, 0) && !API::VulkanInstance::IsExtensionSupported(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME))
-			{
-				s_isVulkanCapable = false;
-				return s_isVulkanCapable;
-			}
-			instanceExtensions.emplace_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
 
 			//Create Instance
 			VkInstance instance;

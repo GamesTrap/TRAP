@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "VulkanPhysicalDevice.h"
 
-
 #include "VulkanInits.h"
 #include "VulkanInstance.h"
 #include "Graphics/API/RendererAPI.h"
@@ -21,8 +20,39 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	  m_physicalDeviceMemoryProperties(),
 	  m_physicalDeviceFeatures(),
 	  m_physicalDeviceFragmentShaderInterlockFeatures(),
+	  m_physicalDeviceVulkan11Features(),
 	  m_deviceUUID()
 {
+	VulkanRenderer::GPUSettings.UniformBufferAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
+	VulkanRenderer::GPUSettings.UploadBufferTextureAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyOffsetAlignment);
+	VulkanRenderer::GPUSettings.UploadBufferTextureRowAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyRowPitchAlignment);
+	VulkanRenderer::GPUSettings.MaxVertexInputBindings = m_physicalDeviceProperties.limits.maxVertexInputBindings;
+	VulkanRenderer::GPUSettings.MultiDrawIndirect = m_physicalDeviceProperties.limits.maxDrawIndirectCount > 1;
+
+	VulkanRenderer::GPUSettings.WaveLaneCount = m_physicalDeviceSubgroupProperties.subgroupSize;
+	VulkanRenderer::GPUSettings.WaveOpsSupportFlags = VulkanRenderer::WaveOpsSupportFlags::None;
+	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_BASIC_BIT)
+		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Basic_Bit;
+	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_VOTE_BIT)
+		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Vote_Bit;
+	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_ARITHMETIC_BIT)
+		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Arithmetic_Bit;
+	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_BALLOT_BIT)
+		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Ballot_Bit;
+	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_BIT)
+		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Shuffle_Bit;
+	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT)
+		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Shuffle_Relative_Bit;
+	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_CLUSTERED_BIT)
+		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Clustered_Bit;
+	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_QUAD_BIT)
+		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Quad_Bit;
+	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV)
+		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Partitioned_Bit_NV;
+
+	VulkanRenderer::GPUSettings.TessellationSupported = m_physicalDeviceFeatures.tessellationShader;
+	VulkanRenderer::GPUSettings.GeometryShaderSupported = m_physicalDeviceFeatures.geometryShader;
+	
 	m_physicalDevice = FindPhysicalDeviceViaUUID(instance, physicalDeviceUUID);
 	
 	if (m_physicalDevice)
@@ -35,9 +65,30 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 		vkGetPhysicalDeviceMemoryProperties(m_physicalDevice, &m_physicalDeviceMemoryProperties);
 		vkGetPhysicalDeviceFeatures(m_physicalDevice, &m_physicalDeviceFeatures);
 
-		m_physicalDeviceIDProperties = RetrievePhysicalDeviceIDProperties(m_physicalDevice);
-		m_physicalDeviceSubgroupProperties = RetrievePhysicalDeviceSubgroupProperties(m_physicalDevice);
+		VkPhysicalDeviceProperties2 props2;
+		props2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+		props2.pNext = &m_physicalDeviceIDProperties;
+		m_physicalDeviceIDProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES;
+		m_physicalDeviceIDProperties.pNext = nullptr;
+		vkGetPhysicalDeviceProperties2(m_physicalDevice, &props2);
 
+		VkPhysicalDeviceProperties2 props{};
+		props.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+		props.pNext = &m_physicalDeviceSubgroupProperties;
+		m_physicalDeviceSubgroupProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_PROPERTIES;
+		m_physicalDeviceSubgroupProperties.pNext = nullptr;
+		vkGetPhysicalDeviceProperties2(m_physicalDevice, &props);
+
+		m_physicalDeviceVulkan11Properties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_PROPERTIES;
+		m_physicalDeviceVulkan11Properties.pNext = nullptr;
+		props.pNext = &m_physicalDeviceVulkan11Properties;
+		vkGetPhysicalDeviceProperties2(m_physicalDevice, &props);
+		
+		m_physicalDeviceVulkan12Properties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_PROPERTIES;
+		m_physicalDeviceVulkan12Properties.pNext = nullptr;
+		props.pNext = &m_physicalDeviceVulkan12Properties;
+		vkGetPhysicalDeviceProperties2(m_physicalDevice, &props);
+		
 		uint32_t queueFamilyPropertyCount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevice, &queueFamilyPropertyCount, nullptr);
 		m_queueFamilyProperties.resize(queueFamilyPropertyCount);
@@ -45,6 +96,21 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 		
 		//Copy UUID
 		std::memcpy(m_deviceUUID.data(), m_physicalDeviceIDProperties.deviceUUID, m_deviceUUID.size());
+
+		VkPhysicalDeviceFeatures2 features{};
+		m_physicalDeviceVulkan11Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES;
+		m_physicalDeviceVulkan11Features.pNext = nullptr;
+		features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+		features.pNext = &m_physicalDeviceVulkan11Features;
+		vkGetPhysicalDeviceFeatures2(m_physicalDevice, &features);
+
+		m_physicalDeviceVulkan12Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
+		m_physicalDeviceVulkan12Features.pNext = nullptr;
+		features.pNext = &m_physicalDeviceVulkan12Features;
+		vkGetPhysicalDeviceFeatures2(m_physicalDevice, &features);		
+
+		VulkanRenderer::s_shaderDrawParameters = m_physicalDeviceVulkan11Features.shaderDrawParameters;
+		VulkanRenderer::s_subgroupBroadcastDynamicID = m_physicalDeviceVulkan12Features.subgroupBroadcastDynamicId;
 	}
 	else
 	{
@@ -89,7 +155,7 @@ const VkPhysicalDeviceSubgroupProperties& TRAP::Graphics::API::VulkanPhysicalDev
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const VkPhysicalDeviceIDPropertiesKHR& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceIDProperties() const
+const VkPhysicalDeviceIDProperties& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceIDProperties() const
 {
 	return m_physicalDeviceIDProperties;
 }
@@ -110,9 +176,44 @@ const VkPhysicalDeviceFeatures& TRAP::Graphics::API::VulkanPhysicalDevice::GetVk
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+const VkPhysicalDeviceVulkan11Features& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan11Features() const
+{
+	return m_physicalDeviceVulkan11Features;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const VkPhysicalDeviceVulkan12Features& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan12Features() const
+{
+	return m_physicalDeviceVulkan12Features;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const VkPhysicalDeviceVulkan11Properties& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan11Properties() const
+{
+	return m_physicalDeviceVulkan11Properties;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const VkPhysicalDeviceVulkan12Properties& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceVulkan12Properties() const
+{
+	return m_physicalDeviceVulkan12Properties;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT& TRAP::Graphics::API::VulkanPhysicalDevice::GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const
 {
 	return m_physicalDeviceFragmentShaderInterlockFeatures;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<VkQueueFamilyProperties>& TRAP::Graphics::API::VulkanPhysicalDevice::GetQueueFamilyProperties() const
+{
+	return m_queueFamilyProperties;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -163,27 +264,14 @@ const std::array<uint8_t, 16>& TRAP::Graphics::API::VulkanPhysicalDevice::GetPhy
 
 void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentShaderInterlockFeatures()
 {
-	if (VulkanInstance::GetInstanceVersion() >= VK_MAKE_VERSION(1, 1, 0))
-	{
-		VkPhysicalDeviceFeatures2 features2;
-		features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-		m_physicalDeviceFragmentShaderInterlockFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT;
-		m_physicalDeviceFragmentShaderInterlockFeatures.pNext = nullptr;
-		features2.pNext = &m_physicalDeviceFragmentShaderInterlockFeatures;
-		vkGetPhysicalDeviceFeatures2(m_physicalDevice, &features2);
-	}
-	else if (VulkanRenderer::s_getPhysicalDeviceProperties2Extension)
-	{
-		if (VulkanRenderer::s_externalMemoryCapabilitiesExtension)
-		{
-			VkPhysicalDeviceFeatures2KHR features2;
-			features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2_KHR;
-			m_physicalDeviceFragmentShaderInterlockFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT;
-			m_physicalDeviceFragmentShaderInterlockFeatures.pNext = nullptr;
-			features2.pNext = &m_physicalDeviceFragmentShaderInterlockFeatures;
-			vkGetPhysicalDeviceFeatures2KHR(m_physicalDevice, &features2);
-		}
-	}
+	VkPhysicalDeviceFeatures2 features2;
+	features2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+	m_physicalDeviceFragmentShaderInterlockFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADER_INTERLOCK_FEATURES_EXT;
+	m_physicalDeviceFragmentShaderInterlockFeatures.pNext = nullptr;
+	features2.pNext = &m_physicalDeviceFragmentShaderInterlockFeatures;
+	vkGetPhysicalDeviceFeatures2(m_physicalDevice, &features2);
+
+	VulkanRenderer::GPUSettings.ROVsSupported = static_cast<bool>(m_physicalDeviceFragmentShaderInterlockFeatures.fragmentShaderPixelInterlock);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -217,7 +305,15 @@ VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceVi
 	for (const auto& device : physicalDevices)
 	{
 		std::array<uint8_t, 16> testUUID{};
-		VkPhysicalDeviceIDPropertiesKHR physicalDeviceIDProperties = RetrievePhysicalDeviceIDProperties(device);
+		
+		VkPhysicalDeviceIDPropertiesKHR physicalDeviceIDProperties;
+		VkPhysicalDeviceProperties2 props2;
+		props2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+		props2.pNext = &physicalDeviceIDProperties;
+		physicalDeviceIDProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES;
+		physicalDeviceIDProperties.pNext = nullptr;
+		vkGetPhysicalDeviceProperties2(device, &props2);
+		
 		//Copy UUID
 		std::memcpy(testUUID.data(), physicalDeviceIDProperties.deviceUUID, testUUID.size());
 
@@ -274,56 +370,6 @@ std::vector<VkPhysicalDevice> TRAP::Graphics::API::VulkanPhysicalDevice::GetAllV
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPhysicalDeviceIDPropertiesKHR TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceIDProperties(const VkPhysicalDevice& physicalDevice)
-{
-	VkPhysicalDeviceIDPropertiesKHR props{};
-	
-	if (VulkanInstance::GetInstanceVersion() >= VK_MAKE_VERSION(1, 1, 0))
-	{
-		VkPhysicalDeviceProperties2 props2;
-		props2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-		props.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES;
-		props.pNext = nullptr;
-		props2.pNext = &props;
-		vkGetPhysicalDeviceProperties2(physicalDevice, &props2);
-	}
-	else if (VulkanRenderer::s_getPhysicalDeviceProperties2Extension)
-	{
-		if (VulkanRenderer::s_externalMemoryCapabilitiesExtension)
-		{
-			VkPhysicalDeviceProperties2KHR props2;
-			props2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2_KHR;
-			props.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES_KHR;
-			props.pNext = nullptr;
-			props2.pNext = &props;
-			vkGetPhysicalDeviceProperties2KHR(physicalDevice, &props2);
-		}
-	}
-
-	return props;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkPhysicalDeviceSubgroupProperties TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceSubgroupProperties(const VkPhysicalDevice& physicalDevice)
-{
-	VkPhysicalDeviceSubgroupProperties subgroupProperties{};
-	subgroupProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_PROPERTIES;
-	subgroupProperties.pNext = nullptr;
-	
-	if(VulkanInstance::GetInstanceVersion() >= VK_MAKE_VERSION(1, 1, 0))
-	{
-		VkPhysicalDeviceProperties2 props{};
-		props.pNext = &subgroupProperties;
-		props.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-		vkGetPhysicalDeviceProperties2(physicalDevice, &props);
-	}
-	
-	return subgroupProperties;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::vector<VkPhysicalDevice>& physicalDevices)
 {
 	//Score each Physical Device and insert into multimap
@@ -334,6 +380,13 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		VkPhysicalDeviceProperties devProps;
 		vkGetPhysicalDeviceProperties(dev, &devProps);
 
+		//Required: Vulkan 1.2 is minimum
+		if(devProps.apiVersion < VK_API_VERSION_1_2)
+		{
+			TP_ERROR(Log::RendererVulkanPrefix, "Failed Vulkan Version Test!");
+			continue;
+		}
+		
 		//Required: Discrete GPUs have a significant performance advantage
 		if (devProps.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
 			score += 5000;
@@ -522,11 +575,9 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		const std::vector<std::string> raytracingExt =
 		{
 			"VK_KHR_ray_tracing",
-			"VK_KHR_get_memory_requirements2",
-			"VK_EXT_descriptor_indexing",
-			"VK_KHR_buffer_device_address",
+			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
+			VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,
 			"VK_KHR_deferred_host_operations",
-			"VK_KHR_maintenance3",
 			"VK_KHR_pipeline_library",
 
 		};
@@ -614,7 +665,15 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 		//Get PhysicalDevice UUID
 		std::array<uint8_t, 16> physicalDeviceUUID{};
-		VkPhysicalDeviceIDPropertiesKHR physicalDeviceIDProperties = RetrievePhysicalDeviceIDProperties(physicalDevices.front());
+
+		VkPhysicalDeviceIDPropertiesKHR physicalDeviceIDProperties;
+		VkPhysicalDeviceProperties2 props2;
+		props2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+		props2.pNext = &physicalDeviceIDProperties;
+		physicalDeviceIDProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES;
+		physicalDeviceIDProperties.pNext = nullptr;
+		vkGetPhysicalDeviceProperties2(dev, &props2);
+		
 		//Copy UUID
 		std::memcpy(physicalDeviceUUID.data(), physicalDeviceIDProperties.deviceUUID, physicalDeviceUUID.size());
 

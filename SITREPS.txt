@@ -1399,4 +1399,5 @@ SITREP 11/22/2020|20w47a3
     - Changed TRAP Engine version to 20w47a3(0.7.2)
     - Added fully working automatic VulkanPhysicalDevice selection ~>90 mins
     - Added fully working VulkanPhysicalDevice ~>120 mins
-    - Added partial VulkanDevice ~<30 mins
+    - Added fully working VulkanDevice ~<135 mins
+    - Switched to Vulkan 1.2 ~<40 mins

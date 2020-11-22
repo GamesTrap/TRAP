@@ -77,15 +77,19 @@ namespace TRAP::Graphics::API
 
 		//Instance Extensions
 		static bool s_debugUtilsExtension;
-		static bool s_deviceGroupCreationExtension;
 		static bool s_swapchainColorSpaceExtension;
-		static bool s_externalMemoryCapabilitiesExtension;
-		static bool s_getPhysicalDeviceProperties2Extension;
+		static bool s_VRExtensions;
 
 		//Device Extensions
-		static bool s_fragmentShaderInterlock;
+		static bool s_shaderDrawParameters;
+		static bool s_subgroupBroadcastDynamicID;
+		static bool s_fragmentShaderInterlockExtension;
+		static bool s_drawIndirectCountExtension;
+		static bool s_descriptorIndexingExtension;
+		static bool s_raytracingExtension;
 
 		static bool s_renderdocCapture;
+		static bool s_debugMarkerSupport;
 
 		static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs;
 		

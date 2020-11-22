@@ -97,15 +97,62 @@ namespace TRAP::Graphics
 		virtual std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() = 0;
 
 		static bool IsVulkanCapable();
+
+		enum class GPUMode
+		{
+			Single = 0,
+			Linked
+		};
+
+		enum class WaveOpsSupportFlags : uint32_t
+		{
+			None = 0x0,
+			Basic_Bit = 0x00000001,
+			Vote_Bit = 0x00000002,
+			Arithmetic_Bit = 0x00000004,
+			Ballot_Bit = 0x00000008,
+			Shuffle_Bit = 0x00000010,
+			Shuffle_Relative_Bit = 0x00000020,
+			Clustered_Bit = 0x00000040,
+			Quad_Bit = 0x00000080,
+			Partitioned_Bit_NV = 0x00000100,
+
+			ALL = 0x7FFFFFFF
+		};
 		
 	protected:
 		static TRAP::Scope<RendererAPI> s_Renderer;
 		static RenderAPI s_RenderAPI;
+
+		static constexpr uint32_t MAX_LINKED_GPUS = 4;
+		
+		inline static struct Renderer
+		{
+			uint32_t LinkedNodeCount;
+			GPUMode GPUMode;
+		} Renderer{};
+
+		inline static struct GPUSettings
+		{
+			uint32_t UniformBufferAlignment;
+			uint32_t UploadBufferTextureAlignment;
+			uint32_t UploadBufferTextureRowAlignment;
+			uint32_t MaxVertexInputBindings;
+			uint32_t MaxRootSignatureDWORDS;
+			uint32_t WaveLaneCount;
+			WaveOpsSupportFlags WaveOpsSupportFlags;
+			uint32_t MultiDrawIndirect;
+			uint32_t ROVsSupported;
+			uint32_t TessellationSupported;
+			uint32_t GeometryShaderSupported;
+		} GPUSettings{};
 
 	private:
 		static bool s_isVulkanCapable;
 		static bool s_isVulkanCapableFirstTest;
 	};
 }
+
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::WaveOpsSupportFlags)
 
 #endif /*_TRAP_RENDERERAPI_H_*/
