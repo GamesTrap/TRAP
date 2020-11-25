@@ -21,6 +21,9 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	  m_physicalDeviceFeatures(),
 	  m_physicalDeviceFragmentShaderInterlockFeatures(),
 	  m_physicalDeviceVulkan11Features(),
+	  m_physicalDeviceVulkan12Features(),
+	  m_physicalDeviceVulkan11Properties(),
+	  m_physicalDeviceVulkan12Properties(),
 	  m_deviceUUID()
 {
 	VulkanRenderer::GPUSettings.UniformBufferAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
@@ -574,12 +577,13 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		bool raytracing = true;
 		const std::vector<std::string> raytracingExt =
 		{
-			"VK_KHR_ray_tracing",
+			"VK_KHR_ray_tracing_pipeline", //TODO Replace with VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME with SDK 1.2.162
 			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
+			"VK_KHR_acceleration_structure", //TODO Replace with VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME with SDK 1.2.162
 			VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,
-			"VK_KHR_deferred_host_operations",
-			"VK_KHR_pipeline_library",
-
+			"VK_KHR_deferred_host_operations", //TODO Replace with VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME with SDK 1.2.162
+			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
+			"VK_KHR_pipeline_library" //TODO Replace with VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME with SDK 1.2.162
 		};
 		for (const std::string& str : raytracingExt)
 		{

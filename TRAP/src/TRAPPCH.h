@@ -203,7 +203,9 @@
 #endif
 
 //VulkanAPI
+#pragma warning(push, 0)
 #include "Graphics/API/Vulkan/Loader/VulkanLoader.h"
+#pragma warning(pop)
 
 #pragma warning(push, 0)
 //SPIRV

@@ -1401,3 +1401,8 @@ SITREP 11/22/2020|20w47a3
     - Added fully working VulkanPhysicalDevice ~>120 mins
     - Added fully working VulkanDevice ~<135 mins
     - Switched to Vulkan 1.2 ~<40 mins
+
+SITREP 11/24/2020|20w48a1
+    - Changed TRAP Engine version to 20w48a1(0.7.3)
+    - Updated VulkanLoader to use 1.2.162.0 ~>30 mins
+    - Updated used Raytracing extensions ~<10 mins
