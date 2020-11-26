@@ -9,11 +9,11 @@
 #include "Utils/Utils.h"
 
 #include "Objects/VulkanDescriptorPool.h"
+#include "Objects/VulkanMemoryAllocator.h"
 #include "Objects/VulkanDevice.h"
 #include "Objects/VulkanPhysicalDevice.h"
 #include "Objects/VulkanInstance.h"
 #include "Objects/VulkanDebug.h"
-#include "Objects/VulkanInits.h"
 
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
 //Instance Extensions
@@ -93,9 +93,24 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 
 	m_device = TRAP::MakeRef<VulkanDevice>(m_instance, std::move(physicalDevice), SetupDeviceExtensions(physicalDevice));
 
-	InitVulkanMemoryAllocator();
+	m_vma = TRAP::MakeScope<VulkanMemoryAllocator>(m_device, m_instance);
 
 	m_descriptorPool = TRAP::MakeRef<VulkanDescriptorPool>(m_device, 8192);
+
+	/*RendererAPI::Renderer.BuiltinShaderDefines =
+	{
+		{
+			{"VK_EXT_DESCRIPTOR_INDEXING_ENABLED", std::to_string(s_descriptorIndexingExtension)},
+			{"VK_FEATURE_TEXTURE_ARRAY_DYNAMIC_INDEXING_ENABLED", std::to_string(m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFeatures().shaderSampledImageArrayDynamicIndexing)},
+			//Descriptor set indices
+			{"UPDATE_FREQ_NONE", "set = 0"},
+			{"UPDATE_FREQ_PER_FRAME", "set = 1"},
+			{"UPDATE_FREQ_PER_BATCH", "set = 2"},
+			{"UPDATE_FREQ_PER_DRAW", "set = 3"}
+		}
+	};*/
+
+	m_device->FindQueueFamilyIndices();
 	
 	const VkPhysicalDeviceProperties devProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties();
 	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");
@@ -251,19 +266,19 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendEquationSeparate(RendererBlend
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const RendererFaceMode cullMode)
+void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const RendererCullMode cullMode)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount, const RendererPrimitive primitive)
+void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::Draw(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
+void TRAP::Graphics::API::VulkanRenderer::Draw(const Scope<VertexArray>& vertexArray)
 {
 }
 
@@ -305,43 +320,6 @@ std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API
 	}
 	
 	return s_usableGPUs;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::InitVulkanMemoryAllocator()
-{
-	VmaVulkanFunctions vulkanFunctions = {};
-
-	vulkanFunctions.vkGetPhysicalDeviceProperties = vkGetPhysicalDeviceProperties;
-	vulkanFunctions.vkGetPhysicalDeviceMemoryProperties = vkGetPhysicalDeviceMemoryProperties;
-	vulkanFunctions.vkAllocateMemory = vkAllocateMemory;
-	vulkanFunctions.vkFreeMemory = vkFreeMemory;
-	vulkanFunctions.vkMapMemory = vkMapMemory;
-	vulkanFunctions.vkUnmapMemory = vkUnmapMemory;
-	vulkanFunctions.vkFlushMappedMemoryRanges = vkFlushMappedMemoryRanges;
-	vulkanFunctions.vkInvalidateMappedMemoryRanges = vkInvalidateMappedMemoryRanges;
-	vulkanFunctions.vkBindBufferMemory = vkBindBufferMemory;
-	vulkanFunctions.vkBindImageMemory = vkBindImageMemory;
-	vulkanFunctions.vkGetBufferMemoryRequirements = vkGetBufferMemoryRequirements;
-	vulkanFunctions.vkGetImageMemoryRequirements = vkGetImageMemoryRequirements;
-	vulkanFunctions.vkCreateBuffer = vkCreateBuffer;
-	vulkanFunctions.vkDestroyBuffer = vkDestroyBuffer;
-	vulkanFunctions.vkCreateImage = vkCreateImage;
-	vulkanFunctions.vkDestroyImage = vkDestroyImage;
-	vulkanFunctions.vkCmdCopyBuffer = vkCmdCopyBuffer;
-	vulkanFunctions.vkGetBufferMemoryRequirements2KHR = vkGetBufferMemoryRequirements2;
-	vulkanFunctions.vkGetImageMemoryRequirements2KHR = vkGetImageMemoryRequirements2;
-	vulkanFunctions.vkBindBufferMemory2KHR = vkBindBufferMemory2;
-	vulkanFunctions.vkBindImageMemory2KHR = vkBindImageMemory2;
-	vulkanFunctions.vkGetPhysicalDeviceMemoryProperties2KHR = vkGetPhysicalDeviceMemoryProperties2;
-	
-	VmaAllocatorCreateInfo info = VulkanInits::VMAAllocatorCreateInfo(m_device->GetVkDevice(),
-	                                                                  m_device->GetPhysicalDevice()->GetVkPhysicalDevice(),
-	                                                                  m_instance->GetVkInstance(),
-																	  vulkanFunctions);
-
-	VkCall(vmaCreateAllocator(&info, &m_VMAAllocator));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

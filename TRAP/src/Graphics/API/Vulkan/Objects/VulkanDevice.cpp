@@ -13,7 +13,10 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(const TRAP::Ref<VulkanInstance>&
                                                 bool requestAllAvailableQueues)
 	: m_physicalDevice(std::move(physicalDevice)),
       m_deviceExtensions(std::move(deviceExtensions)),
-      m_device()
+      m_graphicsQueueFamilyIndex(0),
+	  m_transferQueueFamilyIndex(0),
+	  m_computeQueueFamilyIndex(0),
+	  m_device()
 {
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Creating Device");
@@ -46,39 +49,6 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(const TRAP::Ref<VulkanInstance>&
 	{
 		m_physicalDevice->RetrievePhysicalDeviceFragmentShaderInterlockFeatures();
 	}
-
-	VkDeviceGroupDeviceCreateInfo deviceGroupInfo;
-	deviceGroupInfo.sType = VK_STRUCTURE_TYPE_DEVICE_GROUP_DEVICE_CREATE_INFO;
-	std::array<VkPhysicalDeviceGroupProperties, VulkanRenderer::MAX_LINKED_GPUS> physicalDeviceGroupProperties{};
-
-	VulkanRenderer::Renderer.LinkedNodeCount = 1;
-	if (VulkanRenderer::Renderer.GPUMode == VulkanRenderer::GPUMode::Linked)
-	{
-		uint32_t deviceGroupCount = 0;
-
-		VkCall(vkEnumeratePhysicalDeviceGroups(instance->GetVkInstance(), &deviceGroupCount, nullptr));
-
-		for (uint32_t i = 0; i < deviceGroupCount; i++)
-		{
-			physicalDeviceGroupProperties[i].sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GROUP_PROPERTIES;
-			physicalDeviceGroupProperties[i].pNext = nullptr;
-		}
-		VkCall(vkEnumeratePhysicalDeviceGroups(instance->GetVkInstance(), &deviceGroupCount, &physicalDeviceGroupProperties[0]));
-
-		for (uint32_t i = 0; i < deviceGroupCount; i++)
-		{
-			if (physicalDeviceGroupProperties[i].physicalDeviceCount > 1)
-			{
-				deviceGroupInfo.physicalDeviceCount = physicalDeviceGroupProperties[i].physicalDeviceCount;
-				deviceGroupInfo.pPhysicalDevices = physicalDeviceGroupProperties[i].physicalDevices;
-				VulkanRenderer::Renderer.LinkedNodeCount = deviceGroupInfo.physicalDeviceCount;
-				break;
-			}
-		}
-	}
-
-	if (VulkanRenderer::Renderer.LinkedNodeCount < 2)
-		VulkanRenderer::Renderer.GPUMode = VulkanRenderer::GPUMode::Single;
 	
 	VkPhysicalDeviceFeatures2 deviceFeatures2;
 	VkPhysicalDeviceDescriptorIndexingFeatures descriptorIndexingFeatures;
@@ -107,13 +77,8 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(const TRAP::Ref<VulkanInstance>&
 
 	const uint32_t maxQueueFlag = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT |
 			                      VK_QUEUE_SPARSE_BINDING_BIT | VK_QUEUE_PROTECTED_BIT;
-	m_availableQueueCount.resize(VulkanRenderer::Renderer.LinkedNodeCount);
-	m_usedQueueCount.resize(VulkanRenderer::Renderer.LinkedNodeCount);
-	for(uint32_t i = 0; i < VulkanRenderer::Renderer.LinkedNodeCount; i++)
-	{
-		m_availableQueueCount[i].resize(maxQueueFlag);
-		m_usedQueueCount[i].resize(maxQueueFlag);
-	}
+	m_availableQueueCount.resize(maxQueueFlag);
+	m_usedQueueCount.resize(maxQueueFlag);
 
 	for(uint32_t i = 0; i < queueFamilyProperties.size(); i++)
 	{
@@ -135,17 +100,11 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(const TRAP::Ref<VulkanInstance>&
 			info.pQueuePriorities = queueFamilyPriorities[i].data();
 			queueCreateInfos.push_back(info);
 
-			for (uint32_t n = 0; n < VulkanRenderer::Renderer.LinkedNodeCount; n++)
-				m_availableQueueCount[n][queueFamilyProperties[i].queueFlags] = queueCount;
+			m_availableQueueCount[queueFamilyProperties[i].queueFlags] = queueCount;
 		}
 	}
 
-	VkDeviceCreateInfo deviceCreateInfo;
-	
-	if(VulkanRenderer::Renderer.GPUMode == RendererAPI::GPUMode::Linked)
-		deviceCreateInfo = VulkanInits::DeviceCreateInfo(&deviceGroupInfo, queueCreateInfos, extensions);
-	else
-		deviceCreateInfo = VulkanInits::DeviceCreateInfo(&deviceFeatures2, queueCreateInfos, extensions);
+	VkDeviceCreateInfo deviceCreateInfo = VulkanInits::DeviceCreateInfo(&deviceFeatures2, queueCreateInfos, extensions);
 
 	VkCall(vkCreateDevice(m_physicalDevice->GetVkPhysicalDevice(), &deviceCreateInfo, nullptr, &m_device));
 
@@ -188,4 +147,138 @@ const TRAP::Scope<TRAP::Graphics::API::VulkanPhysicalDevice>& TRAP::Graphics::AP
 const std::vector<std::string>& TRAP::Graphics::API::VulkanDevice::GetUsedPhysicalDeviceExtensions() const
 {
 	return m_deviceExtensions;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
+{
+	FindQueueFamilyIndex(RendererAPI::QueueType::Graphics, m_graphicsQueueFamilyIndex, m_graphicsQueueIndex);
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Graphics Queue Family Index ", static_cast<uint32_t>(m_graphicsQueueFamilyIndex));
+#endif
+	FindQueueFamilyIndex(RendererAPI::QueueType::Compute, m_computeQueueFamilyIndex, m_computeQueueIndex);
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Compute Queue Family Index ", static_cast<uint32_t>(m_computeQueueFamilyIndex));
+#endif
+	FindQueueFamilyIndex(RendererAPI::QueueType::Transfer, m_transferQueueFamilyIndex, m_transferQueueIndex);
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Transfer Queue Family Index ", static_cast<uint32_t>(m_transferQueueFamilyIndex));
+#endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::QueueType queueType, uint8_t& queueFamilyIndex, uint8_t& queueIndex)
+{
+	uint32_t qfi = std::numeric_limits<uint32_t>::max();
+	uint32_t qi = std::numeric_limits<uint32_t>::max();
+	const VkQueueFlags requiredFlags = QueueTypeToVkQueueFlags(queueType);
+	bool found = false;
+
+	const std::vector<VkQueueFamilyProperties>& props = m_physicalDevice->GetQueueFamilyProperties();
+
+	uint32_t minQueueFlag = std::numeric_limits<uint32_t>::max();
+
+	//Try to find a dedicated queue of this type
+	for(uint32_t index = 0; index < props.size(); ++index)
+	{
+		const VkQueueFlags queueFlags = props[index].queueFlags;
+		const bool graphicsQueue = (queueFlags & VK_QUEUE_GRAPHICS_BIT) ? true : false;
+		const uint32_t flagAnd = (queueFlags & requiredFlags);
+		if(queueType == RendererAPI::QueueType::Graphics && graphicsQueue)
+		{
+			found = true;
+			qfi = index;
+			qi = 0;
+			break;
+		}
+		if((queueFlags & requiredFlags) && ((queueFlags & ~requiredFlags) == 0) &&
+			m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
+		{
+			found = true;
+			qfi = index;
+			qi = m_usedQueueCount[queueFlags];
+			break;
+		}
+		if(flagAnd && ((queueFlags - flagAnd) < minQueueFlag) && !graphicsQueue &&
+			m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
+		{
+			found = true;
+			minQueueFlag = (queueFlags - flagAnd);
+			qfi = index;
+			qi = m_usedQueueCount[queueFlags];
+			break;
+		}
+	}
+
+	//If hardware doesn't provide a dedicated queue try to find a non-dedicated one
+	if(!found)
+	{
+		for(uint32_t index = 0; index < props.size(); ++index)
+		{
+			const VkQueueFlags queueFlags = props[index].queueFlags;
+			if((queueFlags & requiredFlags) && m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
+			{
+				found = true;
+				qfi = index;
+				qi = m_usedQueueCount[queueFlags];
+				break;
+			}
+		}
+	}
+
+	if(!found)
+	{
+		found = true;
+		qfi = 0;
+		qi = 0;
+
+		TP_WARN(Log::RendererVulkanDevicePrefix, "Could not find queue of type ", static_cast<uint32_t>(queueType), ". Using default queue");
+	}
+
+	queueFamilyIndex = static_cast<uint8_t>(qfi);
+	queueIndex = static_cast<uint8_t>(qi);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueFamilyIndex() const
+{
+	return m_graphicsQueueFamilyIndex;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueFamilyIndex() const
+{
+	return m_transferQueueFamilyIndex;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueFamilyIndex() const
+{
+	return m_computeQueueFamilyIndex;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint8_t TRAP::Graphics::API::VulkanDevice::GetGraphicsQueueIndex() const
+{
+	return m_graphicsQueueIndex;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueIndex() const
+{
+	return m_transferQueueIndex;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueIndex() const
+{
+	return m_computeQueueIndex;
 }

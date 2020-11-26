@@ -122,3 +122,29 @@ VkDescriptorPoolCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorPoolCreat
 	
 	return info;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkFenceCreateInfo TRAP::Graphics::API::VulkanInits::FenceCreateInfo()
+{
+	VkFenceCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkSemaphoreCreateInfo TRAP::Graphics::API::VulkanInits::SemaphoreCreateInfo()
+{
+	VkSemaphoreCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	
+	return info;
+}

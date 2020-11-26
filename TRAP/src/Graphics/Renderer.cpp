@@ -101,7 +101,7 @@ void TRAP::Graphics::Renderer::EndScene()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<VertexArray>& vertexArray, const Math::Mat4& transform, const RendererPrimitive primitive)
+void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<VertexArray>& vertexArray, const Math::Mat4& transform)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -120,9 +120,9 @@ void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<V
 
 	vertexArray->Bind();
 	if (vertexArray->GetIndexBuffer())
-		RenderCommand::DrawIndexed(vertexArray, 0, primitive);
+		RenderCommand::DrawIndexed(vertexArray, 0);
 	else
-		RenderCommand::Draw(vertexArray, primitive);
+		RenderCommand::Draw(vertexArray);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -22,15 +22,26 @@ namespace TRAP::Graphics
 	{
 		Zero,
 		One,
+		Source_Color,
+		One_Minus_Source_Color,
+		Destination_Color,
+		One_Minus_Destination_Color,
 		Source_Alpha,
+		One_Minus_Source_Alpha,
 		Destination_Alpha,
-		One_Minus_Source_Alpha
+		One_Minus_Destination_Alpha,
+		Source_Alpha_Saturate,
+		Constant_Color,
+		One_Minus_Constant_Color
 	};
 
 	enum class RendererBlendEquation
 	{
 		Add,
-		Subtract
+		Subtract,
+		Reverse_Subtract,
+		Min,
+		Max
 	};
 
 	enum class RendererFaceMode
@@ -40,30 +51,28 @@ namespace TRAP::Graphics
 		Front_And_Back
 	};
 
+	enum class RendererCullMode
+	{
+		Back,
+		Front
+	};
+
 	enum class RendererFrontFace
 	{
 		Clockwise,
 		Counter_Clockwise
 	};
 
-	enum class RendererPrimitive
-	{
-		Point,
-		Line,
-		Triangle,
-		Patch
-	};
-
 	enum class RendererFunction
 	{
-		Always,
 		Never,
 		Less,
 		Equal,
-		Less_Equal,
+		Less_Or_Equal,
 		Greater,
 		Not_Equal,
-		Greater_Equal
+		Greater_Or_Equal,
+		Always
 	};
 
 	enum class RendererOperation
@@ -71,11 +80,11 @@ namespace TRAP::Graphics
 		Keep,
 		Zero,
 		Replace,
-		Increment,
-		Increment_Wrap,
-		Decrement,
-		Decrement_Wrap,
-		Invert
+		Invert,
+		Increment_And_Wrap,
+		Decrement_And_Wrap,
+		Increment_And_Clamp,
+		Decrement_And_Clamp,
 	};
 
 	class RenderCommand
@@ -110,10 +119,10 @@ namespace TRAP::Graphics
 		static void SetBlendEquation(RendererBlendEquation blendEquation = RendererBlendEquation::Add);
 		static void SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB = RendererBlendEquation::Add, RendererBlendEquation blendEquationAlpha = RendererBlendEquation::Add);
 
-		static void SetCullMode(RendererFaceMode cullMode = RendererFaceMode::Back);
+		static void SetCullMode(RendererCullMode cullMode = RendererCullMode::Back);
 
-		static void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount = 0, RendererPrimitive primitive = RendererPrimitive::Triangle);
-		static void Draw(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive = RendererPrimitive::Triangle);
+		static void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount = 0);
+		static void Draw(const Scope<VertexArray>& vertexArray);
 	};
 }
 

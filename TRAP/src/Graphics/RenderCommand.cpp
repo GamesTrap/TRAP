@@ -162,25 +162,25 @@ void TRAP::Graphics::RenderCommand::SetBlendEquationSeparate(const RendererBlend
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::SetCullMode(const RendererFaceMode cullMode)
+void TRAP::Graphics::RenderCommand::SetCullMode(const RendererCullMode cullMode)
 {
 	RendererAPI::GetRenderer()->SetCullMode(cullMode);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::DrawIndexed(const Scope<VertexArray>& vertexArray, const uint32_t indexCount, const RendererPrimitive primitive)
+void TRAP::Graphics::RenderCommand::DrawIndexed(const Scope<VertexArray>& vertexArray, const uint32_t indexCount)
 {
 	Application::AddSingleDrawCall();
 
-	RendererAPI::GetRenderer()->DrawIndexed(vertexArray, indexCount, primitive);
+	RendererAPI::GetRenderer()->DrawIndexed(vertexArray, indexCount);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::Draw(const Scope<VertexArray>& vertexArray, const RendererPrimitive primitive)
+void TRAP::Graphics::RenderCommand::Draw(const Scope<VertexArray>& vertexArray)
 {
 	Application::AddSingleDrawCall();
 	
-	RendererAPI::GetRenderer()->Draw(vertexArray, primitive);
+	RendererAPI::GetRenderer()->Draw(vertexArray);
 }

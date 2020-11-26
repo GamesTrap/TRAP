@@ -12,9 +12,9 @@ namespace TRAP
 
 namespace TRAP::Graphics 
 {
+	enum class RendererCullMode;
 	enum class RendererOperation;
 	class VertexArray;
-	enum class RendererPrimitive;
 	enum class RendererFaceMode;
 	enum class RendererBlendEquation;
 	enum class RendererBlendFunction;
@@ -85,10 +85,10 @@ namespace TRAP::Graphics
 		virtual void SetBlendEquation(RendererBlendEquation blendEquation) = 0;
 		virtual void SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB, RendererBlendEquation blendEquationAlpha) = 0;
 
-		virtual void SetCullMode(RendererFaceMode cullMode) = 0;
+		virtual void SetCullMode(RendererCullMode cullMode) = 0;
 
-		virtual void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount, RendererPrimitive primitive) = 0;
-		virtual void Draw(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive) = 0;
+		virtual void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) = 0;
+		virtual void Draw(const Scope<VertexArray>& vertexArray) = 0;
 
 		virtual const std::string& GetTitle() const = 0;
 
@@ -97,12 +97,6 @@ namespace TRAP::Graphics
 		virtual std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() = 0;
 
 		static bool IsVulkanCapable();
-
-		enum class GPUMode
-		{
-			Single = 0,
-			Linked
-		};
 
 		enum class WaveOpsSupportFlags : uint32_t
 		{
@@ -120,13 +114,19 @@ namespace TRAP::Graphics
 			ALL = 0x7FFFFFFF
 		};
 
-		static constexpr uint32_t MAX_LINKED_GPUS = 4;
-
-		inline static struct Renderer
+		enum class QueueType
 		{
-			uint32_t LinkedNodeCount;
-			GPUMode GPUMode;
-		} Renderer{};
+			Graphics = 0,
+			Transfer,
+			Compute,
+
+			MAX_QUEUE_TYPE
+		};
+
+		/*inline static struct Renderer
+		{
+			std::vector<std::pair<std::string, std::string>> BuiltinShaderDefines;
+		} Renderer{};*/
 
 		inline static struct GPUSettings
 		{
@@ -142,7 +142,7 @@ namespace TRAP::Graphics
 			uint32_t TessellationSupported;
 			uint32_t GeometryShaderSupported;
 		} GPUSettings{};
-		
+
 	protected:
 		static TRAP::Scope<RendererAPI> s_Renderer;
 		static RenderAPI s_RenderAPI;
@@ -151,6 +151,7 @@ namespace TRAP::Graphics
 		static bool s_isVulkanCapable;
 		static bool s_isVulkanCapableFirstTest;
 	};
+
 }
 
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::WaveOpsSupportFlags)

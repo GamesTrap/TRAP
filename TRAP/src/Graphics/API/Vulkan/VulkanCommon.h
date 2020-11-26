@@ -1,9 +1,19 @@
 #ifndef _TRAP_VULKANCOMMON_H_
 #define _TRAP_VULKANCOMMON_H_
 
+#include "Graphics/API/RendererAPI.h"
+
 namespace TRAP::Graphics::API
 {
 	bool ErrorCheck(VkResult result, const char* function, const char* file, int32_t line);
+	VkQueueFlags QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType);
+
+	VkBlendOp RendererBlendEquationToVkBlendOp(RendererBlendEquation blendEquation);
+	VkBlendFactor RendererBlendFunctionToVkBlendFactor(RendererBlendFunction blendFunction);
+	VkCompareOp RendererFunctionToVkCompareOp(RendererFunction func);
+	VkStencilOp RendererOperationToVkStencilOp(RendererOperation op);
+	VkCullModeFlagBits RendererCullModeToVkCullModeFlagBits(RendererCullMode cullMode);
+	VkFrontFace RendererFrontFaceToVkFrontFace(RendererFrontFace frontFace);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

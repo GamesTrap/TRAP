@@ -24,6 +24,10 @@ namespace TRAP::Graphics::API::VulkanInits
 
 	VkDescriptorPoolCreateInfo DescriptorPoolCreateInfo(const std::vector<VkDescriptorPoolSize>& descriptorPoolSizes,
 	                                                    uint32_t numDescriptorSets);
+
+	VkFenceCreateInfo FenceCreateInfo();
+
+	VkSemaphoreCreateInfo SemaphoreCreateInfo();
 }
 
 #endif /*_TRAP_VULKANINITS_H_*/

@@ -26,35 +26,35 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	  m_physicalDeviceVulkan12Properties(),
 	  m_deviceUUID()
 {
-	VulkanRenderer::GPUSettings.UniformBufferAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
-	VulkanRenderer::GPUSettings.UploadBufferTextureAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyOffsetAlignment);
-	VulkanRenderer::GPUSettings.UploadBufferTextureRowAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyRowPitchAlignment);
-	VulkanRenderer::GPUSettings.MaxVertexInputBindings = m_physicalDeviceProperties.limits.maxVertexInputBindings;
-	VulkanRenderer::GPUSettings.MultiDrawIndirect = m_physicalDeviceProperties.limits.maxDrawIndirectCount > 1;
+	RendererAPI::GPUSettings.UniformBufferAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
+	RendererAPI::GPUSettings.UploadBufferTextureAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyOffsetAlignment);
+	RendererAPI::GPUSettings.UploadBufferTextureRowAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyRowPitchAlignment);
+	RendererAPI::GPUSettings.MaxVertexInputBindings = m_physicalDeviceProperties.limits.maxVertexInputBindings;
+	RendererAPI::GPUSettings.MultiDrawIndirect = m_physicalDeviceProperties.limits.maxDrawIndirectCount > 1;
 
-	VulkanRenderer::GPUSettings.WaveLaneCount = m_physicalDeviceSubgroupProperties.subgroupSize;
-	VulkanRenderer::GPUSettings.WaveOpsSupportFlags = VulkanRenderer::WaveOpsSupportFlags::None;
+	RendererAPI::GPUSettings.WaveLaneCount = m_physicalDeviceSubgroupProperties.subgroupSize;
+	RendererAPI::GPUSettings.WaveOpsSupportFlags = RendererAPI::WaveOpsSupportFlags::None;
 	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_BASIC_BIT)
-		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Basic_Bit;
+		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Basic_Bit;
 	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_VOTE_BIT)
-		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Vote_Bit;
+		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Vote_Bit;
 	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_ARITHMETIC_BIT)
-		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Arithmetic_Bit;
+		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Arithmetic_Bit;
 	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_BALLOT_BIT)
-		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Ballot_Bit;
+		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Ballot_Bit;
 	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_BIT)
-		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Shuffle_Bit;
+		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Shuffle_Bit;
 	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_SHUFFLE_RELATIVE_BIT)
-		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Shuffle_Relative_Bit;
+		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Shuffle_Relative_Bit;
 	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_CLUSTERED_BIT)
-		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Clustered_Bit;
+		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Clustered_Bit;
 	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_QUAD_BIT)
-		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Quad_Bit;
+		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Quad_Bit;
 	if (m_physicalDeviceSubgroupProperties.supportedOperations & VK_SUBGROUP_FEATURE_PARTITIONED_BIT_NV)
-		VulkanRenderer::GPUSettings.WaveOpsSupportFlags |= VulkanRenderer::WaveOpsSupportFlags::Partitioned_Bit_NV;
+		RendererAPI::GPUSettings.WaveOpsSupportFlags |= RendererAPI::WaveOpsSupportFlags::Partitioned_Bit_NV;
 
-	VulkanRenderer::GPUSettings.TessellationSupported = m_physicalDeviceFeatures.tessellationShader;
-	VulkanRenderer::GPUSettings.GeometryShaderSupported = m_physicalDeviceFeatures.geometryShader;
+	RendererAPI::GPUSettings.TessellationSupported = m_physicalDeviceFeatures.tessellationShader;
+	RendererAPI::GPUSettings.GeometryShaderSupported = m_physicalDeviceFeatures.geometryShader;
 	
 	m_physicalDevice = FindPhysicalDeviceViaUUID(instance, physicalDeviceUUID);
 	
@@ -274,7 +274,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 	features2.pNext = &m_physicalDeviceFragmentShaderInterlockFeatures;
 	vkGetPhysicalDeviceFeatures2(m_physicalDevice, &features2);
 
-	VulkanRenderer::GPUSettings.ROVsSupported = static_cast<bool>(m_physicalDeviceFragmentShaderInterlockFeatures.fragmentShaderPixelInterlock);
+	RendererAPI::GPUSettings.ROVsSupported = static_cast<bool>(m_physicalDeviceFragmentShaderInterlockFeatures.fragmentShaderPixelInterlock);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

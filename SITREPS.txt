@@ -1411,3 +1411,13 @@ SITREP 11/26/2020|20w48a1
     - Changed TRAP Engine version to 20w48a2(0.7.4)
     - Added VMAAllocator ~<30 mins
     - Added VulkanDescriptorPool ~>45 mins
+    - Dropped Vulkan Multi-GPU (SLI/Crossfire) support ~<20 mins
+    - Move VulkanLoader to Graphics/API/Vulkan/Utils ~<5 mins
+    - Moved & renamed VulkanMemoryAllocator to Graphics/API/Vulkan/Utils/VMA ~<5 mins
+    - Added QueueFamilyIndex & QueueIndex to VulkanDevice ~<20 mins
+    - Added VulkanMemoryAllocator as wrapper for VMA ~<20 mins
+    - Added VulkanFence ~<20 mins
+    - Added VulkanSemaphore ~<20 mins
+    - Added some conversion functions to VulkanCommon for RenderCommand ~<30 mins
+    - RenderCommand added RendererCullMode enum ~<5 mins
+    - Added some more options to RenderCommand enums ~<10 mins

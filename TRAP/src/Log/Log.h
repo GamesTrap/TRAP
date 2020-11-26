@@ -169,6 +169,9 @@ namespace TRAP
 		inline static constexpr auto RendererVulkanDevicePrefix = "[Renderer][Vulkan][Device] ";
 		inline static constexpr auto RendererVulkanPhysicalDevicePrefix = "[Renderer][Vulkan][PhysicalDevice] ";
 		inline static constexpr auto RendererVulkanDescriptorPoolPrefix = "[Renderer][Vulkan][DescriptorPool] ";
+		inline static constexpr auto RendererVulkanRenderPassPrefix = "[Renderer][Vulkan][RenderPass] ";
+		inline static constexpr auto RendererVulkanFrameBufferPrefix = "[Renderer][Vulkan][FrameBuffer] ";
+		inline static constexpr auto RendererVulkanVMAPrefix = "[Renderer][Vulkan][VMA] ";
 		inline static constexpr auto RendererVulkanInstancePrefix = "[Renderer][Vulkan][Instance] ";
 		inline static constexpr auto RendererVulkanDebugPrefix = "[Renderer][Vulkan][Debug] ";
 		inline static constexpr auto Renderer2DPrefix = "[Renderer2D] ";

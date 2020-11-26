@@ -5,10 +5,11 @@
 #include "Maths/Math.h"
 #include "Window/WindowingAPI.h"
 
-#include "Objects/VulkanMemoryAllocator.h"
-
 namespace TRAP::Graphics::API
 {
+	class VulkanMemoryAllocator;
+	class VulkanFrameBuffer;
+	class VulkanRenderPass;
 	class VulkanDescriptorPool;
 	class VulkanPhysicalDevice;
 	class VulkanDevice;
@@ -56,10 +57,10 @@ namespace TRAP::Graphics::API
 		void SetBlendEquation(RendererBlendEquation blendEquation) override;
 		void SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB, RendererBlendEquation blendEquationAlpha) override;
 
-		void SetCullMode(RendererFaceMode cullMode) override;
+		void SetCullMode(RendererCullMode cullMode) override;
 
-		void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount, RendererPrimitive primitive) override;
-		void Draw(const Scope<VertexArray>& vertexArray, RendererPrimitive primitive) override;
+		void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) override;
+		void Draw(const Scope<VertexArray>& vertexArray) override;
 
 		const std::string& GetTitle() const override;
 
@@ -83,9 +84,7 @@ namespace TRAP::Graphics::API
 		static bool s_renderdocCapture;
 		static bool s_debugMarkerSupport;
 		
-	private:
-		void InitVulkanMemoryAllocator();
-		
+	private:		
 		static std::vector<std::string> SetupInstanceLayers();
 		static std::vector<std::string> SetupInstanceExtensions();
 		static std::vector<std::string> SetupDeviceExtensions(const TRAP::Scope<VulkanPhysicalDevice>& physicalDevice);
@@ -95,18 +94,18 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanInstance> m_instance;
 		TRAP::Scope<VulkanDebug> m_debug;
 		TRAP::Ref<VulkanDevice> m_device;
+		TRAP::Scope<VulkanMemoryAllocator> m_vma;
 		TRAP::Ref<VulkanDescriptorPool> m_descriptorPool;
 
-		VmaAllocator m_VMAAllocator;
+		std::mutex m_renderPassMutex;
+		using RenderPassMap = std::unordered_map<uint64_t, VulkanRenderPass*>;
+		TRAP::Scope<std::unordered_map<std::thread::id, RenderPassMap>> m_renderPassMap;
+		using FrameBufferMap = std::unordered_map<uint64_t, VulkanFrameBuffer*>;
+		TRAP::Scope<std::unordered_map<std::thread::id, FrameBufferMap>>* m_frameBufferMap;
 
 		static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs;
 		
 		static VulkanRenderer* s_renderer;
-
-		/*friend VulkanPhysicalDevice;
-		friend VulkanDevice;
-		friend VmaAllocatorCreateInfo VulkanInits::VMAAllocatorCreateInfo(VkDevice, VkPhysicalDevice, VkInstance,
-			const VmaVulkanFunctions&);*/
 	};
 }
 
