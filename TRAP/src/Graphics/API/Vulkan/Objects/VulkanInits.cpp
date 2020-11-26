@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "VulkanInits.h"
 
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
+
 VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string& appName)
 {
 	VkApplicationInfo info;
@@ -76,6 +78,47 @@ VkDeviceCreateInfo TRAP::Graphics::API::VulkanInits::DeviceCreateInfo(const void
 	info.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
 	info.ppEnabledExtensionNames = deviceExtensions.data();
 	info.pEnabledFeatures = nullptr;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VmaAllocatorCreateInfo TRAP::Graphics::API::VulkanInits::VMAAllocatorCreateInfo(VkDevice device,
+	VkPhysicalDevice physicalDevice,
+	VkInstance instance,
+	const VmaVulkanFunctions& vulkanFunctions)
+{
+	VmaAllocatorCreateInfo info{};
+
+	info.device = device;
+	info.physicalDevice = physicalDevice;
+	info.instance = instance;
+	info.flags = 0;
+
+	if (!VulkanRenderer::s_renderdocCapture)
+		info.flags |= VMA_ALLOCATOR_CREATE_KHR_DEDICATED_ALLOCATION_BIT;
+
+	info.pVulkanFunctions = &vulkanFunctions;
+	info.pAllocationCallbacks = nullptr;
+	info.vulkanApiVersion = VK_API_VERSION_1_2;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkDescriptorPoolCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorPoolCreateInfo(
+	const std::vector<VkDescriptorPoolSize>& descriptorPoolSizes, const uint32_t numDescriptorSets)
+{
+	VkDescriptorPoolCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.poolSizeCount = static_cast<uint32_t>(descriptorPoolSizes.size());
+	info.pPoolSizes = descriptorPoolSizes.data();
+	info.maxSets = numDescriptorSets;
 	
 	return info;
 }

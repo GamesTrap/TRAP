@@ -118,7 +118,7 @@ namespace TRAP
 		/// </summary>
 		static void Clear();
 
-		inline static constexpr auto WindowVersion = "[20w48a1]";
+		inline static constexpr auto WindowVersion = "[20w48a2]";
 		inline static constexpr auto WindowPrefix = "[Window] ";
 		inline static constexpr auto WindowInternalPrefix = "[Window][Internal] ";
 		inline static constexpr auto WindowIconPrefix = "[Window][Icon] ";
@@ -168,6 +168,7 @@ namespace TRAP
 		inline static constexpr auto RendererVulkanPrefix = "[Renderer][Vulkan] ";
 		inline static constexpr auto RendererVulkanDevicePrefix = "[Renderer][Vulkan][Device] ";
 		inline static constexpr auto RendererVulkanPhysicalDevicePrefix = "[Renderer][Vulkan][PhysicalDevice] ";
+		inline static constexpr auto RendererVulkanDescriptorPoolPrefix = "[Renderer][Vulkan][DescriptorPool] ";
 		inline static constexpr auto RendererVulkanInstancePrefix = "[Renderer][Vulkan][Instance] ";
 		inline static constexpr auto RendererVulkanDebugPrefix = "[Renderer][Vulkan][Debug] ";
 		inline static constexpr auto Renderer2DPrefix = "[Renderer2D] ";

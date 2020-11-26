@@ -1406,3 +1406,8 @@ SITREP 11/24/2020|20w48a1
     - Changed TRAP Engine version to 20w48a1(0.7.3)
     - Updated VulkanLoader to use 1.2.162.0 ~>30 mins
     - Updated used Raytracing extensions ~<10 mins
+
+SITREP 11/26/2020|20w48a1
+    - Changed TRAP Engine version to 20w48a2(0.7.4)
+    - Added VMAAllocator ~<30 mins
+    - Added VulkanDescriptorPool ~>45 mins

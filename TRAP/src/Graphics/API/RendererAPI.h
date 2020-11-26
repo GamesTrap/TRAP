@@ -119,13 +119,9 @@ namespace TRAP::Graphics
 
 			ALL = 0x7FFFFFFF
 		};
-		
-	protected:
-		static TRAP::Scope<RendererAPI> s_Renderer;
-		static RenderAPI s_RenderAPI;
 
 		static constexpr uint32_t MAX_LINKED_GPUS = 4;
-		
+
 		inline static struct Renderer
 		{
 			uint32_t LinkedNodeCount;
@@ -146,6 +142,10 @@ namespace TRAP::Graphics
 			uint32_t TessellationSupported;
 			uint32_t GeometryShaderSupported;
 		} GPUSettings{};
+		
+	protected:
+		static TRAP::Scope<RendererAPI> s_Renderer;
+		static RenderAPI s_RenderAPI;
 
 	private:
 		static bool s_isVulkanCapable;

@@ -2,15 +2,18 @@
 #include "VulkanRenderer.h"
 
 #include "Application.h"
+#include "VulkanCommon.h"
 #include "Graphics/RenderCommand.h"
 #include "Window/Window.h"
 #include "Window/WindowingAPI.h"
 #include "Utils/Utils.h"
 
+#include "Objects/VulkanDescriptorPool.h"
 #include "Objects/VulkanDevice.h"
 #include "Objects/VulkanPhysicalDevice.h"
 #include "Objects/VulkanInstance.h"
 #include "Objects/VulkanDebug.h"
+#include "Objects/VulkanInits.h"
 
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
 //Instance Extensions
@@ -90,8 +93,10 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 
 	m_device = TRAP::MakeRef<VulkanDevice>(m_instance, std::move(physicalDevice), SetupDeviceExtensions(physicalDevice));
 
-	
+	InitVulkanMemoryAllocator();
 
+	m_descriptorPool = TRAP::MakeRef<VulkanDescriptorPool>(m_device, 8192);
+	
 	const VkPhysicalDeviceProperties devProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties();
 	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");
 	TP_INFO(Log::RendererVulkanPrefix, "Vulkan:");
@@ -300,6 +305,43 @@ std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API
 	}
 	
 	return s_usableGPUs;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::InitVulkanMemoryAllocator()
+{
+	VmaVulkanFunctions vulkanFunctions = {};
+
+	vulkanFunctions.vkGetPhysicalDeviceProperties = vkGetPhysicalDeviceProperties;
+	vulkanFunctions.vkGetPhysicalDeviceMemoryProperties = vkGetPhysicalDeviceMemoryProperties;
+	vulkanFunctions.vkAllocateMemory = vkAllocateMemory;
+	vulkanFunctions.vkFreeMemory = vkFreeMemory;
+	vulkanFunctions.vkMapMemory = vkMapMemory;
+	vulkanFunctions.vkUnmapMemory = vkUnmapMemory;
+	vulkanFunctions.vkFlushMappedMemoryRanges = vkFlushMappedMemoryRanges;
+	vulkanFunctions.vkInvalidateMappedMemoryRanges = vkInvalidateMappedMemoryRanges;
+	vulkanFunctions.vkBindBufferMemory = vkBindBufferMemory;
+	vulkanFunctions.vkBindImageMemory = vkBindImageMemory;
+	vulkanFunctions.vkGetBufferMemoryRequirements = vkGetBufferMemoryRequirements;
+	vulkanFunctions.vkGetImageMemoryRequirements = vkGetImageMemoryRequirements;
+	vulkanFunctions.vkCreateBuffer = vkCreateBuffer;
+	vulkanFunctions.vkDestroyBuffer = vkDestroyBuffer;
+	vulkanFunctions.vkCreateImage = vkCreateImage;
+	vulkanFunctions.vkDestroyImage = vkDestroyImage;
+	vulkanFunctions.vkCmdCopyBuffer = vkCmdCopyBuffer;
+	vulkanFunctions.vkGetBufferMemoryRequirements2KHR = vkGetBufferMemoryRequirements2;
+	vulkanFunctions.vkGetImageMemoryRequirements2KHR = vkGetImageMemoryRequirements2;
+	vulkanFunctions.vkBindBufferMemory2KHR = vkBindBufferMemory2;
+	vulkanFunctions.vkBindImageMemory2KHR = vkBindImageMemory2;
+	vulkanFunctions.vkGetPhysicalDeviceMemoryProperties2KHR = vkGetPhysicalDeviceMemoryProperties2;
+	
+	VmaAllocatorCreateInfo info = VulkanInits::VMAAllocatorCreateInfo(m_device->GetVkDevice(),
+	                                                                  m_device->GetPhysicalDevice()->GetVkPhysicalDevice(),
+	                                                                  m_instance->GetVkInstance(),
+																	  vulkanFunctions);
+
+	VkCall(vmaCreateAllocator(&info, &m_VMAAllocator));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

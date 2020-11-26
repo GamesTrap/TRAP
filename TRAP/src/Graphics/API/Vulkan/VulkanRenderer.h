@@ -5,8 +5,11 @@
 #include "Maths/Math.h"
 #include "Window/WindowingAPI.h"
 
+#include "Objects/VulkanMemoryAllocator.h"
+
 namespace TRAP::Graphics::API
 {
+	class VulkanDescriptorPool;
 	class VulkanPhysicalDevice;
 	class VulkanDevice;
 	class VulkanInstance;
@@ -63,17 +66,6 @@ namespace TRAP::Graphics::API
 		std::array<uint8_t, 16> GetCurrentGPUUUID() override;
 		std::string GetCurrentGPUName() override;
 		std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() override;
-		
-	private:
-		static std::vector<std::string> SetupInstanceLayers();
-		static std::vector<std::string> SetupInstanceExtensions();
-		static std::vector<std::string> SetupDeviceExtensions(const TRAP::Scope<VulkanPhysicalDevice>& physicalDevice);
-		
-		std::string m_rendererTitle;
-
-		TRAP::Ref<VulkanInstance> m_instance;
-		TRAP::Scope<VulkanDebug> m_debug;
-		TRAP::Ref<VulkanDevice> m_device;
 
 		//Instance Extensions
 		static bool s_debugUtilsExtension;
@@ -90,13 +82,31 @@ namespace TRAP::Graphics::API
 
 		static bool s_renderdocCapture;
 		static bool s_debugMarkerSupport;
+		
+	private:
+		void InitVulkanMemoryAllocator();
+		
+		static std::vector<std::string> SetupInstanceLayers();
+		static std::vector<std::string> SetupInstanceExtensions();
+		static std::vector<std::string> SetupDeviceExtensions(const TRAP::Scope<VulkanPhysicalDevice>& physicalDevice);
+		
+		std::string m_rendererTitle;
+
+		TRAP::Ref<VulkanInstance> m_instance;
+		TRAP::Scope<VulkanDebug> m_debug;
+		TRAP::Ref<VulkanDevice> m_device;
+		TRAP::Ref<VulkanDescriptorPool> m_descriptorPool;
+
+		VmaAllocator m_VMAAllocator;
 
 		static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs;
 		
 		static VulkanRenderer* s_renderer;
 
-		friend VulkanPhysicalDevice;
+		/*friend VulkanPhysicalDevice;
 		friend VulkanDevice;
+		friend VmaAllocatorCreateInfo VulkanInits::VMAAllocatorCreateInfo(VkDevice, VkPhysicalDevice, VkInstance,
+			const VmaVulkanFunctions&);*/
 	};
 }
 
