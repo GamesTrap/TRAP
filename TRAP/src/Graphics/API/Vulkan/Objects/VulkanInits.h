@@ -10,20 +10,33 @@ namespace TRAP::Graphics::API::VulkanInits
 	VkInstanceCreateInfo InstanceCreateInfo(const VkApplicationInfo& appInfo, 
 									const std::vector<const char*>& instanceLayers,
 	                                const std::vector<const char*>& instanceExtensions);
+	
+	//-------------------------------------------------------------------------------------------------------------------//
 
 	VkDebugUtilsMessengerCreateInfoEXT DebugUtilsMessengerCreateInfo(PFN_vkDebugUtilsMessengerCallbackEXT callback);
+
+	//-------------------------------------------------------------------------------------------------------------------//
 
 	VkDeviceCreateInfo DeviceCreateInfo(const void* pNext,
 	                                    const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos,
 	                                    const std::vector<const char*>& deviceExtensions);
-
+	
+	//-------------------------------------------------------------------------------------------------------------------//
+	
 	VmaAllocatorCreateInfo VMAAllocatorCreateInfo(VkDevice device,
 	                                              VkPhysicalDevice physicalDevice,
 	                                              VkInstance instance,
 	                                              const VmaVulkanFunctions& vulkanFunctions);
 
+	//-------------------------------------------------------------------------------------------------------------------//
+
 	VkDescriptorPoolCreateInfo DescriptorPoolCreateInfo(const std::vector<VkDescriptorPoolSize>& descriptorPoolSizes,
 	                                                    uint32_t numDescriptorSets);
+
+	VkDescriptorSetAllocateInfo DescriptorSetAllocateInfo(VkDescriptorPool descriptorPool,
+														  const VkDescriptorSetLayout& descriptorLayout);
+
+	//-------------------------------------------------------------------------------------------------------------------//
 
 	VkFenceCreateInfo FenceCreateInfo();
 

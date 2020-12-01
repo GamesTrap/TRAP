@@ -88,6 +88,9 @@ namespace TRAP::Graphics::API
 		static std::vector<std::string> SetupInstanceLayers();
 		static std::vector<std::string> SetupInstanceExtensions();
 		static std::vector<std::string> SetupDeviceExtensions(const TRAP::Scope<VulkanPhysicalDevice>& physicalDevice);
+
+		static void AddDefaultResources();
+		static void RemoveDefaultResources();
 		
 		std::string m_rendererTitle;
 
@@ -101,7 +104,7 @@ namespace TRAP::Graphics::API
 		using RenderPassMap = std::unordered_map<uint64_t, VulkanRenderPass*>;
 		TRAP::Scope<std::unordered_map<std::thread::id, RenderPassMap>> m_renderPassMap;
 		using FrameBufferMap = std::unordered_map<uint64_t, VulkanFrameBuffer*>;
-		TRAP::Scope<std::unordered_map<std::thread::id, FrameBufferMap>>* m_frameBufferMap;
+		TRAP::Scope<std::unordered_map<std::thread::id, FrameBufferMap>> m_frameBufferMap;
 
 		static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs;
 		

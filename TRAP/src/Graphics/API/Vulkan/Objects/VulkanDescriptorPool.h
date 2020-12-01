@@ -3,6 +3,7 @@
 
 namespace TRAP::Graphics::API
 {
+	class VulkanDescriptorSet;
 	class VulkanDevice;
 
 	class VulkanDescriptorPool
@@ -16,22 +17,27 @@ namespace TRAP::Graphics::API
 
 		void Reset();
 		
-		VkDescriptorPool& GetVkDescriptorPool();
+		VkDescriptorPool& GetCurrentVkDescriptorPool();
 		const std::vector<VkDescriptorPoolSize>& GetDescriptorPoolSizes() const;
 		uint32_t GetDescriptorSetsNum() const;
 		uint32_t GetUsedDescriptorSetsCount() const;
-		
+
 		static constexpr uint32_t DescriptorTypeRangeSize = DESCRIPTOR_TYPE_RANGE_SIZE - 1;
 	private:
-		VkDescriptorPool m_descriptorPool;
+		VkDescriptorSet AllocateVkDescriptorSet(VkDescriptorSetLayout layout);
+		
+		VkDescriptorPool m_currentPool;
+		std::vector<VkDescriptorPool> m_descriptorPools;
 		std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes;
 		uint32_t m_numDescriptorSets;
 		uint32_t m_usedDescriptorSetCount;
-		std::mutex m_Mutex;
+		std::mutex m_mutex;
 		
 		TRAP::Ref<VulkanDevice> m_device;
 
 		static std::array<VkDescriptorPoolSize, DESCRIPTOR_TYPE_RANGE_SIZE> s_descriptorPoolSizes;
+
+		friend VulkanDescriptorSet;
 	};
 }
 

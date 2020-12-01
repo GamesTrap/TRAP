@@ -8,6 +8,8 @@
 TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore(TRAP::Ref<VulkanDevice> device)
 	: m_semaphore(VK_NULL_HANDLE), m_signaled(false), m_device(std::move(device))
 {
+	TRAP_ASSERT(m_device, "device is nullptr");
+	
 	VkSemaphoreCreateInfo info = VulkanInits::SemaphoreCreateInfo();
 	VkCall(vkCreateSemaphore(m_device->GetVkDevice(), &info, nullptr, &m_semaphore));
 }

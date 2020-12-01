@@ -26,6 +26,8 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 	  m_physicalDeviceVulkan12Properties(),
 	  m_deviceUUID()
 {
+	TRAP_ASSERT(instance, "instance is nullptr");
+	
 	RendererAPI::GPUSettings.UniformBufferAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
 	RendererAPI::GPUSettings.UploadBufferTextureAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyOffsetAlignment);
 	RendererAPI::GPUSettings.UploadBufferTextureRowAlignment = static_cast<uint32_t>(m_physicalDeviceProperties.limits.optimalBufferCopyRowPitchAlignment);
@@ -248,6 +250,24 @@ bool TRAP::Graphics::API::VulkanPhysicalDevice::IsExtensionSupported(const std::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+uint32_t TRAP::Graphics::API::VulkanPhysicalDevice::GetMemoryType(uint32_t typeBits, const VkMemoryPropertyFlags properties) const
+{
+	for(uint32_t i = 0; i < m_physicalDeviceMemoryProperties.memoryTypeCount; i++)
+	{
+		if((typeBits & 1) == 1)
+		{
+			if((m_physicalDeviceMemoryProperties.memoryTypes[i].propertyFlags & properties) == properties)
+				return i;
+		}
+		typeBits >>= 1;
+	}
+
+	TP_ERROR(Log::RendererVulkanPhysicalDevicePrefix, "Could not find a matching memory type!");
+	return 0;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 const std::vector<VkExtensionProperties>& TRAP::Graphics::API::VulkanPhysicalDevice::GetAvailablePhysicalDeviceExtensions()
 {
 	if (m_availablePhysicalDeviceExtensions.empty())
@@ -282,6 +302,8 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 std::multimap<uint32_t, std::array<uint8_t, 16>> TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(
 	const TRAP::Ref<VulkanInstance>& instance)
 {
+	TRAP_ASSERT(instance, "instance is nullptr");
+	
 	if(s_availablePhysicalDeviceUUIDs.empty())
 	{
 		const std::vector<VkPhysicalDevice> physicalDevices = GetAllVkPhysicalDevices(instance->GetVkInstance());
@@ -303,6 +325,8 @@ std::multimap<uint32_t, std::array<uint8_t, 16>> TRAP::Graphics::API::VulkanPhys
 VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance>& instance,
 	const std::array<uint8_t, 16>& physicalDeviceUUID)
 {
+	TRAP_ASSERT(instance, "instance is nullptr");
+	
 	const auto physicalDevices = GetAllVkPhysicalDevices(instance->GetVkInstance());
 
 	for (const auto& device : physicalDevices)

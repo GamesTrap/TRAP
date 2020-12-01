@@ -10,6 +10,9 @@
 TRAP::Graphics::API::VulkanMemoryAllocator::VulkanMemoryAllocator(const TRAP::Ref<VulkanDevice>& device, const TRAP::Ref<VulkanInstance>& instance)
 	: m_allocator(nullptr)
 {
+	TRAP_ASSERT(device, "device is nullptr");
+	TRAP_ASSERT(instance, "instance is nullptr");
+	
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanVMAPrefix, "Creating Allocator");
 #endif

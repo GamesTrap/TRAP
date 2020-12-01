@@ -30,6 +30,7 @@ namespace TRAP::Graphics::API
 		const VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT& GetVkPhysicalDeviceFragmentShaderInterlockFeatures() const;
 		const std::vector<VkQueueFamilyProperties>& GetQueueFamilyProperties() const;
 		bool IsExtensionSupported(const std::string& extension);
+		uint32_t GetMemoryType(uint32_t typeBits, VkMemoryPropertyFlags properties) const;
 		
 		const std::vector<VkExtensionProperties>& GetAvailablePhysicalDeviceExtensions();
 		
@@ -42,6 +43,7 @@ namespace TRAP::Graphics::API
 
 		static VkPhysicalDevice FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance>& instance,
 			const std::array<uint8_t, 16>& physicalDeviceUUID);
+
 		
 	private:
 		friend bool TRAP::Graphics::RendererAPI::IsVulkanCapable();

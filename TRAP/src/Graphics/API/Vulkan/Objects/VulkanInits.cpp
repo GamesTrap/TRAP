@@ -125,6 +125,23 @@ VkDescriptorPoolCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorPoolCreat
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkDescriptorSetAllocateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetAllocateInfo(
+	const VkDescriptorPool descriptorPool,
+	const VkDescriptorSetLayout& descriptorLayout)
+{
+	VkDescriptorSetAllocateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	info.pNext = nullptr;
+	info.descriptorPool = descriptorPool;
+	info.descriptorSetCount = 1;
+	info.pSetLayouts = &descriptorLayout;
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkFenceCreateInfo TRAP::Graphics::API::VulkanInits::FenceCreateInfo()
 {
 	VkFenceCreateInfo info;

@@ -91,7 +91,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 		}
 	}
 
-	m_device = TRAP::MakeRef<VulkanDevice>(m_instance, std::move(physicalDevice), SetupDeviceExtensions(physicalDevice));
+	m_device = TRAP::MakeRef<VulkanDevice>(std::move(physicalDevice), SetupDeviceExtensions(physicalDevice));
 
 	m_vma = TRAP::MakeScope<VulkanMemoryAllocator>(m_device, m_instance);
 
@@ -439,4 +439,18 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 	}
 
 	return extensions;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
+{
+	//TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
+{
+	//TODO
 }

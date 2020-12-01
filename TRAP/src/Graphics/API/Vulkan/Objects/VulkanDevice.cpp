@@ -1,14 +1,12 @@
 #include "TRAPPCH.h"
 #include "VulkanDevice.h"
 
-#include "VulkanInstance.h"
 #include "VulkanPhysicalDevice.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
-TRAP::Graphics::API::VulkanDevice::VulkanDevice(const TRAP::Ref<VulkanInstance>& instance, 
-                                                TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
+TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
                                                 std::vector<std::string> deviceExtensions,
                                                 bool requestAllAvailableQueues)
 	: m_physicalDevice(std::move(physicalDevice)),
@@ -16,8 +14,13 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(const TRAP::Ref<VulkanInstance>&
       m_graphicsQueueFamilyIndex(0),
 	  m_transferQueueFamilyIndex(0),
 	  m_computeQueueFamilyIndex(0),
+	  m_graphicsQueueIndex(),
+	  m_transferQueueIndex(),
+	  m_computeQueueIndex(),
 	  m_device()
 {
+	TRAP_ASSERT(m_physicalDevice, "physicalDevice is nullptr");
+	
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Creating Device");
 #endif
@@ -165,6 +168,13 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Using Transfer Queue Family Index ", static_cast<uint32_t>(m_transferQueueFamilyIndex));
 #endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanDevice::WaitDeviceIdle() const
+{
+	VkCall(vkDeviceWaitIdle(m_device));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

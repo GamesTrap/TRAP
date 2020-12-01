@@ -1,6 +1,8 @@
 #ifndef _TRAP_VULKANFENCE_H_
 #define _TRAP_VULKANFENCE_H_
 
+#include "Graphics/API/RendererAPI.h"
+
 namespace TRAP::Graphics::API
 {
 	class VulkanDevice;
@@ -14,6 +16,12 @@ namespace TRAP::Graphics::API
 		VkFence& GetVkFence();
 
 		bool IsSubmitted() const;
+
+		RendererAPI::FenceStatus GetStatus();
+
+		void Wait();
+
+		static void WaitForFences(const TRAP::Scope<VulkanDevice>& device, std::vector<VulkanFence>& fences);
 		
 	private:
 		VkFence m_fence;

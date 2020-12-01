@@ -1407,7 +1407,7 @@ SITREP 11/24/2020|20w48a1
     - Updated VulkanLoader to use 1.2.162.0 ~>30 mins
     - Updated used Raytracing extensions ~<10 mins
 
-SITREP 11/26/2020|20w48a1
+SITREP 11/26/2020|20w48a2
     - Changed TRAP Engine version to 20w48a2(0.7.4)
     - Added VMAAllocator ~<30 mins
     - Added VulkanDescriptorPool ~>45 mins
@@ -1421,3 +1421,16 @@ SITREP 11/26/2020|20w48a1
     - Added some conversion functions to VulkanCommon for RenderCommand ~<30 mins
     - RenderCommand added RendererCullMode enum ~<5 mins
     - Added some more options to RenderCommand enums ~<10 mins
+
+SITREP 12/01/2020|20w49a1
+    - Changed TRAP Engine version to 20w49a1(0.7.5)
+    - Added Assertions ~<20 mins
+    - Some changes on VulkanDescriptorPool ~<30 mins
+    - Added WIP VulkanDescriptorSet ~<30 mins
+    - VulkanDevice removed unnecessary VulkanInstance parameter ~<10 mins
+    - VulkanDevice added WaitDeviceIdle ~<5 mins
+    - VulkanFence added GetStatus, Wait & static WaitForFences functions ~<30 mins
+    - Added WIP VulkanFrameBuffer ~<20 mins
+    - VulkanPhysicalDevice added GetMemoryType ~<20 mins
+    - Added WIP VulkanRenderPass ~<30 mins
+    - Added fully working VulkanSurface ~<30 mins

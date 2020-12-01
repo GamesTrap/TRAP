@@ -123,11 +123,18 @@ namespace TRAP::Graphics
 			MAX_QUEUE_TYPE
 		};
 
-		/*inline static struct Renderer
+		enum class FenceStatus
+		{
+			Complete = 0,
+			Incomplete,
+			NotSubmitted,
+		};
+
+		/*inline static struct alignsas(64) Renderer
 		{
 			std::vector<std::pair<std::string, std::string>> BuiltinShaderDefines;
 		} Renderer{};*/
-
+		
 		inline static struct GPUSettings
 		{
 			uint32_t UniformBufferAlignment;

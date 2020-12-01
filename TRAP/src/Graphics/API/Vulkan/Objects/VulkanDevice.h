@@ -11,8 +11,7 @@ namespace TRAP::Graphics::API
 	class VulkanDevice
 	{
 	public:
-		explicit VulkanDevice(const TRAP::Ref<VulkanInstance>& instance,
-		                      TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
+		explicit VulkanDevice(TRAP::Scope<VulkanPhysicalDevice> physicalDevice,
 		                      std::vector<std::string> deviceExtensions,
 		                      bool requestAllAvailableQueues = false);
 		~VulkanDevice();
@@ -30,6 +29,8 @@ namespace TRAP::Graphics::API
 
 		void FindQueueFamilyIndices();
 
+		void WaitDeviceIdle() const;
+		
 		uint8_t GetGraphicsQueueFamilyIndex() const;
 		uint8_t GetTransferQueueFamilyIndex() const;
 		uint8_t GetComputeQueueFamilyIndex() const;
