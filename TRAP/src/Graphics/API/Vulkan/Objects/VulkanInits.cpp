@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "VulkanInits.h"
 
+#include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 VkApplicationInfo TRAP::Graphics::API::VulkanInits::ApplicationInfo(const std::string& appName)
@@ -57,6 +58,23 @@ VkDebugUtilsMessengerCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsM
 	info.pfnUserCallback = callback;
 	info.pUserData = nullptr;
 
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObjectNameInfo(const VkObjectType type,
+	const uint64_t handle,
+	const char* name)
+{
+	VkDebugUtilsObjectNameInfoEXT info;
+
+	info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
+	info.pNext = nullptr;
+	info.objectType = type;
+	info.objectHandle = handle;
+	info.pObjectName = name;
+	
 	return info;
 }
 
@@ -126,7 +144,7 @@ VkDescriptorPoolCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorPoolCreat
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkDescriptorSetAllocateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetAllocateInfo(
-	const VkDescriptorPool descriptorPool,
+	VkDescriptorPool descriptorPool,
 	const VkDescriptorSetLayout& descriptorLayout)
 {
 	VkDescriptorSetAllocateInfo info;
@@ -162,6 +180,233 @@ VkSemaphoreCreateInfo TRAP::Graphics::API::VulkanInits::SemaphoreCreateInfo()
 	info.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 	info.pNext = nullptr;
 	info.flags = 0;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkAttachmentDescription TRAP::Graphics::API::VulkanInits::AttachmentDescription(const VkFormat format,
+	const VkSampleCountFlagBits sampleCount,
+	const VkAttachmentLoadOp loadOp,
+	const VkAttachmentStoreOp storeOp,
+	const VkAttachmentLoadOp stencilLoadOp,
+	const VkAttachmentStoreOp stencilStoreOp,
+	const VkImageLayout layout,
+	const VkImageLayout finalLayout)
+{
+	VkAttachmentDescription desc{};
+
+	desc.flags = 0;
+	desc.format = format;
+	desc.samples = sampleCount;
+	desc.loadOp = loadOp;
+	desc.storeOp = storeOp;
+	desc.stencilLoadOp = stencilLoadOp;
+	desc.stencilStoreOp = stencilStoreOp;
+	desc.initialLayout = layout;
+	desc.finalLayout = finalLayout;
+	
+	return desc;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
+	const std::vector<VkAttachmentReference>& inputAttachments, 
+	const std::vector<VkAttachmentReference>& colorAttachments, 
+	VkAttachmentReference& depthStencilAttachment)
+{
+	VkSubpassDescription subpass;
+
+	subpass.flags = 0;
+	subpass.pipelineBindPoint = bindPoint;
+	subpass.inputAttachmentCount = static_cast<uint32_t>(inputAttachments.size());
+	subpass.pInputAttachments = inputAttachments.data();
+	subpass.colorAttachmentCount = static_cast<uint32_t>(colorAttachments.size());
+	subpass.pColorAttachments = colorAttachments.data();
+	subpass.pResolveAttachments = nullptr;
+	subpass.pDepthStencilAttachment = &depthStencilAttachment;
+	subpass.preserveAttachmentCount = 0;
+	subpass.pPreserveAttachments = nullptr;
+	
+	return subpass;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const VkPipelineBindPoint bindPoint,
+	const std::vector<VkAttachmentReference>& inputAttachments,
+	const std::vector<VkAttachmentReference>& colorAttachments)
+{
+	VkSubpassDescription subpass;
+
+	subpass.flags = 0;
+	subpass.pipelineBindPoint = bindPoint;
+	subpass.inputAttachmentCount = static_cast<uint32_t>(inputAttachments.size());
+	subpass.pInputAttachments = inputAttachments.data();
+	subpass.colorAttachmentCount = static_cast<uint32_t>(colorAttachments.size());
+	subpass.pColorAttachments = colorAttachments.data();
+	subpass.pResolveAttachments = nullptr;
+	subpass.pDepthStencilAttachment = nullptr;
+	subpass.preserveAttachmentCount = 0;
+	subpass.pPreserveAttachments = nullptr;
+
+	return subpass;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions,
+	const std::vector<VkSubpassDescription>& subpassDescriptions)
+{
+	VkRenderPassCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.attachmentCount = static_cast<uint32_t>(attachmentDescriptions.size());
+	info.pAttachments = attachmentDescriptions.data();
+	info.subpassCount = static_cast<uint32_t>(subpassDescriptions.size());
+	info.pSubpasses = subpassDescriptions.data();
+	info.dependencyCount = 0;
+	info.pDependencies = nullptr;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions)
+{
+	VkRenderPassCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.attachmentCount = static_cast<uint32_t>(attachmentDescriptions.size());
+	info.pAttachments = attachmentDescriptions.data();
+	info.subpassCount = 0;
+	info.pSubpasses = nullptr;
+	info.dependencyCount = 0;
+	info.pDependencies = nullptr;
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkFramebufferCreateInfo TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(VkRenderPass renderPass,
+	const std::vector<VkImageView>& attachments,
+	const uint32_t width,
+	const uint32_t height,
+	const uint32_t layerCount)
+{
+	VkFramebufferCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.renderPass = renderPass;
+	info.attachmentCount = static_cast<uint32_t>(attachments.size());
+	info.pAttachments = attachments.data();
+	info.width = width;
+	info.height = height;
+	info.layers = layerCount;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkImageViewCreateInfo TRAP::Graphics::API::VulkanInits::ImageViewCreateInfo(VkImage image,
+	const VkImageViewType imageViewType,
+	const VkFormat format,
+	const uint32_t levelCount,
+	const uint32_t layerCount)
+{
+	VkImageViewCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.image = image;
+	info.viewType = imageViewType;
+	info.format = format;
+	info.components.r = VK_COMPONENT_SWIZZLE_R;
+	info.components.g = VK_COMPONENT_SWIZZLE_G;
+	info.components.b = VK_COMPONENT_SWIZZLE_B;
+	info.components.a = VK_COMPONENT_SWIZZLE_A;
+	info.subresourceRange.aspectMask = DetermineAspectMask(info.format, true);
+	info.subresourceRange.baseMipLevel = 0;
+	info.subresourceRange.levelCount = levelCount;
+	info.subresourceRange.baseArrayLayer = 0;
+	info.subresourceRange.layerCount = layerCount;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkImageCreateInfo TRAP::Graphics::API::VulkanInits::ImageCreateInfo(const VkImageType imageType,
+                                                                    const VkFormat imageFormat,
+                                                                    const uint32_t width,
+                                                                    const uint32_t height,
+                                                                    const uint32_t depth,
+                                                                    const uint32_t mipLevels,
+                                                                    const uint32_t arrayLayers,
+																	const VkSampleCountFlagBits sampleCount,
+																	const VkImageTiling tiling,
+																	const VkImageUsageFlags usage)
+{
+	VkImageCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.imageType = imageType;
+	info.format = imageFormat;
+	info.extent.width = width;
+	info.extent.height = height;
+	info.extent.depth = depth;
+	info.mipLevels = mipLevels;
+	info.arrayLayers = arrayLayers;
+	info.samples = sampleCount;
+	info.tiling = tiling;
+	info.usage = usage;
+	info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	info.queueFamilyIndexCount = 0;
+	info.pQueueFamilyIndices = nullptr;
+	info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkCommandPoolCreateInfo TRAP::Graphics::API::VulkanInits::CommandPoolCreateInfo(const uint32_t queueFamilyIndex)
+{
+	VkCommandPoolCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.queueFamilyIndex = queueFamilyIndex;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkCommandBufferAllocateInfo TRAP::Graphics::API::VulkanInits::CommandBufferAllocateInfo(VkCommandPool commandPool, const bool secondary)
+{
+	VkCommandBufferAllocateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	info.pNext = nullptr;
+	info.commandPool = commandPool;
+	info.level = secondary ? VK_COMMAND_BUFFER_LEVEL_SECONDARY : VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	info.commandBufferCount = 1;
 	
 	return info;
 }

@@ -14,6 +14,21 @@ namespace TRAP::Graphics::API
 	VkStencilOp RendererOperationToVkStencilOp(RendererOperation op);
 	VkCullModeFlagBits RendererCullModeToVkCullModeFlagBits(RendererCullMode cullMode);
 	VkFrontFace RendererFrontFaceToVkFrontFace(RendererFrontFace frontFace);
+
+	VkSampleCountFlagBits SampleCountToVkSampleCount(RendererAPI::SampleCount sampleCount);
+	VkFormat ImageFormatToVkFormat(RendererAPI::ImageFormat imageFormat);
+	VkImageAspectFlags DetermineAspectMask(VkFormat format, bool includeStencilBit);
+	VkImageUsageFlags DescriptorTypeToVkImageUsage(RendererAPI::DescriptorType type);
+	VkFormatFeatureFlags VkImageUsageToFormatFeatures(VkImageUsageFlags usage);
+
+	void VkSetObjectName(VkDevice device, uint64_t handle, VkObjectType type, const char* name);
+
+	inline static constexpr std::array<VkAttachmentLoadOp, static_cast<uint32_t>(RendererAPI::LoadActionType::MAX_LOAD_ACTION_TYPE)> VkAttachmentLoadOpTranslator =
+	{
+		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+		VK_ATTACHMENT_LOAD_OP_LOAD,
+		VK_ATTACHMENT_LOAD_OP_CLEAR
+	};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

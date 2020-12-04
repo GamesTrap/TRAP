@@ -1,6 +1,7 @@
 #ifndef _TRAP_VULKANDEVICE_H_
 #define _TRAP_VULKANDEVICE_H_
 
+#include "VulkanQueue.h"
 #include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics::API
@@ -40,7 +41,10 @@ namespace TRAP::Graphics::API
 		uint8_t GetComputeQueueIndex() const;
 		
 	private:
+		friend VulkanQueue;
+		
 		void FindQueueFamilyIndex(RendererAPI::QueueType queueType, uint8_t& queueFamilyIndex, uint8_t& queueIndex);
+		void FindQueueFamilyIndex(RendererAPI::QueueType type, VkQueueFamilyProperties& queueFamilyProperties, uint8_t& queueFamilyIndex, uint8_t& queueIndex);
 		
 		TRAP::Scope<VulkanPhysicalDevice> m_physicalDevice;
 

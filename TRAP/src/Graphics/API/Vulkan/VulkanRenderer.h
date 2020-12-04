@@ -83,21 +83,27 @@ namespace TRAP::Graphics::API
 
 		static bool s_renderdocCapture;
 		static bool s_debugMarkerSupport;
+
+		struct NullDescriptors
+		{
+			std::mutex SubmitMutex;
+		};
+		TRAP::Scope<NullDescriptors> NullDescriptors;
 		
 	private:		
 		static std::vector<std::string> SetupInstanceLayers();
 		static std::vector<std::string> SetupInstanceExtensions();
 		static std::vector<std::string> SetupDeviceExtensions(const TRAP::Scope<VulkanPhysicalDevice>& physicalDevice);
 
-		static void AddDefaultResources();
-		static void RemoveDefaultResources();
+		void AddDefaultResources();
+		void RemoveDefaultResources();
 		
 		std::string m_rendererTitle;
 
 		TRAP::Ref<VulkanInstance> m_instance;
 		TRAP::Scope<VulkanDebug> m_debug;
 		TRAP::Ref<VulkanDevice> m_device;
-		TRAP::Scope<VulkanMemoryAllocator> m_vma;
+		TRAP::Ref<VulkanMemoryAllocator> m_vma;
 		TRAP::Ref<VulkanDescriptorPool> m_descriptorPool;
 
 		std::mutex m_renderPassMutex;

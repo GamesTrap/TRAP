@@ -240,13 +240,86 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 
 	if(!found)
 	{
-		found = true;
 		qfi = 0;
 		qi = 0;
 
 		TP_WARN(Log::RendererVulkanDevicePrefix, "Could not find queue of type ", static_cast<uint32_t>(queueType), ". Using default queue");
 	}
 
+	queueFamilyIndex = static_cast<uint8_t>(qfi);
+	queueIndex = static_cast<uint8_t>(qi);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::QueueType queueType, VkQueueFamilyProperties& queueFamilyProperties, uint8_t& queueFamilyIndex, uint8_t& queueIndex)
+{
+	uint32_t qfi = std::numeric_limits<uint32_t>::max();
+	uint32_t qi = std::numeric_limits<uint32_t>::max();
+	const VkQueueFlags requiredFlags = QueueTypeToVkQueueFlags(queueType);
+	bool found = false;
+
+	const std::vector<VkQueueFamilyProperties>& props = m_physicalDevice->GetQueueFamilyProperties();
+
+	uint32_t minQueueFlag = std::numeric_limits<uint32_t>::max();
+
+	//Try to find a dedicated queue of this type
+	for (uint32_t index = 0; index < props.size(); ++index)
+	{
+		const VkQueueFlags queueFlags = props[index].queueFlags;
+		const bool graphicsQueue = (queueFlags & VK_QUEUE_GRAPHICS_BIT) ? true : false;
+		const uint32_t flagAnd = (queueFlags & requiredFlags);
+		if (queueType == RendererAPI::QueueType::Graphics && graphicsQueue)
+		{
+			found = true;
+			qfi = index;
+			qi = 0;
+			break;
+		}
+		if ((queueFlags & requiredFlags) && ((queueFlags & ~requiredFlags) == 0) &&
+			m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
+		{
+			found = true;
+			qfi = index;
+			qi = m_usedQueueCount[queueFlags];
+			break;
+		}
+		if (flagAnd && ((queueFlags - flagAnd) < minQueueFlag) && !graphicsQueue &&
+			m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
+		{
+			found = true;
+			minQueueFlag = (queueFlags - flagAnd);
+			qfi = index;
+			qi = m_usedQueueCount[queueFlags];
+			break;
+		}
+	}
+
+	//If hardware doesn't provide a dedicated queue try to find a non-dedicated one
+	if (!found)
+	{
+		for (uint32_t index = 0; index < props.size(); ++index)
+		{
+			const VkQueueFlags queueFlags = props[index].queueFlags;
+			if ((queueFlags & requiredFlags) && m_usedQueueCount[queueFlags] < m_availableQueueCount[queueFlags])
+			{
+				found = true;
+				qfi = index;
+				qi = m_usedQueueCount[queueFlags];
+				break;
+			}
+		}
+	}
+
+	if (!found)
+	{
+		qfi = 0;
+		qi = 0;
+
+		TP_WARN(Log::RendererVulkanDevicePrefix, "Could not find queue of type ", static_cast<uint32_t>(queueType), ". Using default queue");
+	}
+
+	queueFamilyProperties = props[queueFamilyIndex];
 	queueFamilyIndex = static_cast<uint8_t>(qfi);
 	queueIndex = static_cast<uint8_t>(qi);
 }

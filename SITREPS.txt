@@ -1432,5 +1432,17 @@ SITREP 12/01/2020|20w49a1
     - VulkanFence added GetStatus, Wait & static WaitForFences functions ~<30 mins
     - Added WIP VulkanFrameBuffer ~<20 mins
     - VulkanPhysicalDevice added GetMemoryType ~<20 mins
-    - Added WIP VulkanRenderPass ~<30 mins
     - Added fully working VulkanSurface ~<30 mins
+    - Added fully working VulkanRenderPass ~<60 mins
+
+SITREP 12/05/2020|20w49a2
+    - Changed TRAP Engine version to 20w49a2(0.7.6)
+    - Added VulkanCommandpool ~>30 mins
+    - Added VulkanCommandBuffer ~<20 mins
+    - VulkanDevice added public FindQueueFamilyIndex function ~<10 mins
+    - Implemented VulkanFrameBuffer ~<30 mins
+    - Added VulkanQueue ~<30 mins
+    - Added Getters to VulkanRenderPass ~<30 mins
+    - Added VulkanRenderTarget ~<50 mins
+    - Added VulkanTexture ~<50 mins
+    - Added some helper function to VulkanCommon ~<30 mins

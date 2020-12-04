@@ -45,7 +45,9 @@ TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
 TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 {
 	TP_DEBUG(Log::RendererVulkanPrefix, "Destroying Renderer");
-	
+
+	RemoveDefaultResources();
+
 	//Free everything in order
 	//Should happen automagically through Scope deconstructors
 }
@@ -93,24 +95,13 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 
 	m_device = TRAP::MakeRef<VulkanDevice>(std::move(physicalDevice), SetupDeviceExtensions(physicalDevice));
 
-	m_vma = TRAP::MakeScope<VulkanMemoryAllocator>(m_device, m_instance);
+	m_vma = TRAP::MakeRef<VulkanMemoryAllocator>(m_device, m_instance);
 
 	m_descriptorPool = TRAP::MakeRef<VulkanDescriptorPool>(m_device, 8192);
 
-	/*RendererAPI::Renderer.BuiltinShaderDefines =
-	{
-		{
-			{"VK_EXT_DESCRIPTOR_INDEXING_ENABLED", std::to_string(s_descriptorIndexingExtension)},
-			{"VK_FEATURE_TEXTURE_ARRAY_DYNAMIC_INDEXING_ENABLED", std::to_string(m_device->GetPhysicalDevice()->GetVkPhysicalDeviceFeatures().shaderSampledImageArrayDynamicIndexing)},
-			//Descriptor set indices
-			{"UPDATE_FREQ_NONE", "set = 0"},
-			{"UPDATE_FREQ_PER_FRAME", "set = 1"},
-			{"UPDATE_FREQ_PER_BATCH", "set = 2"},
-			{"UPDATE_FREQ_PER_DRAW", "set = 3"}
-		}
-	};*/
-
 	m_device->FindQueueFamilyIndices();
+
+	AddDefaultResources();
 	
 	const VkPhysicalDeviceProperties devProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties();
 	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");
@@ -445,6 +436,8 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 
 void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 {
+	NullDescriptors = TRAP::MakeScope<struct NullDescriptors>();
+	
 	//TODO
 }
 
@@ -453,4 +446,6 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 {
 	//TODO
+	
+	NullDescriptors.reset();
 }
