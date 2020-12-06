@@ -1,25 +1,25 @@
 #include "TRAPPCH.h"
-#include "VulkanShader.h"
+#include "VkShader.h"
 
 #include "Graphics/Shaders/ShaderManager.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::string_view source)
+TRAP::Graphics::API::VkShader::VkShader(std::string name, const std::string_view source)
 {
 	m_name = std::move(name);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name, const std::vector<uint32_t>& source)
+TRAP::Graphics::API::VkShader::VkShader(std::string name, const std::vector<uint32_t>& source)
 {
 	m_name = std::move(name);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name,
+TRAP::Graphics::API::VkShader::VkShader(std::string name,
                                                 const std::string_view VSSource,
                                                 const std::string_view FSSource,
                                                 const std::string_view GSSource,
@@ -32,24 +32,24 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(std::string name,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanShader::~VulkanShader()
+TRAP::Graphics::API::VkShader::~VkShader()
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::Shutdown() const
+void TRAP::Graphics::API::VkShader::Shutdown() const
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::Bind() const
+void TRAP::Graphics::API::VkShader::Bind() const
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanShader::Unbind() const
+void TRAP::Graphics::API::VkShader::Unbind() const
 {
 }

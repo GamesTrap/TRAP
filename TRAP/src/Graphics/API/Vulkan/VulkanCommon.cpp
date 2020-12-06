@@ -555,6 +555,96 @@ VkFormatFeatureFlags TRAP::Graphics::API::VkImageUsageToFormatFeatures(const VkI
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(const RendererAPI::DescriptorType usage, const bool typed)
+{
+	VkBufferUsageFlags result = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::UniformBuffer))
+		result |= VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::RWBuffer))
+	{
+		result |= VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+		if (typed)
+			result |= VK_BUFFER_USAGE_STORAGE_TEXEL_BUFFER_BIT;
+	}
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::Buffer))
+	{
+		result |= VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+		if (typed)
+			result |= VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT;
+	}
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::IndexBuffer))
+		result |= VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::VertexBuffer))
+		result |= VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::IndirectBuffer))
+		result |= VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT;
+	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::RayTracing))
+		result |= VK_BUFFER_USAGE_RAY_TRACING_BIT_KHR;
+
+	return result;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkFilter TRAP::Graphics::API::FilterTypeToVkFilter(const RendererAPI::FilterType filter)
+{
+	switch(filter)
+	{
+	case RendererAPI::FilterType::Nearest:
+		return VK_FILTER_NEAREST;
+
+	case RendererAPI::FilterType::Linear:
+		return VK_FILTER_LINEAR;
+		
+	default:
+		return VK_FILTER_LINEAR;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkSamplerMipmapMode TRAP::Graphics::API::MipMapModeToVkMipMapMode(const RendererAPI::MipMapMode mipMapMode)
+{
+	switch (mipMapMode)
+	{
+	case RendererAPI::MipMapMode::Nearest:
+		return VK_SAMPLER_MIPMAP_MODE_NEAREST;
+
+	case RendererAPI::MipMapMode::Linear:
+		return VK_SAMPLER_MIPMAP_MODE_LINEAR;
+
+	default:
+		TRAP_ASSERT(false, "Invalid Mip Map Mode");
+		return VK_SAMPLER_MIPMAP_MODE_MAX_ENUM;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(const RendererAPI::AddressMode addressMode)
+{
+	switch(addressMode)
+	{
+	case RendererAPI::AddressMode::Mirror:
+		return VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
+
+	case RendererAPI::AddressMode::Repeat:
+		return VK_SAMPLER_ADDRESS_MODE_REPEAT;
+
+	case RendererAPI::AddressMode::ClampToEdge:
+		return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+
+	case RendererAPI::AddressMode::ClampToBorder:
+		return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
+		
+	default:
+		return VK_SAMPLER_ADDRESS_MODE_REPEAT;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VkSetObjectName(VkDevice device, const uint64_t handle, const VkObjectType type, const char* name)
 {
 #if defined(ENABLE_GRAPHICS_DEBUG)

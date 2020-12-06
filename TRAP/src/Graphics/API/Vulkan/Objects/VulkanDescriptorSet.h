@@ -8,13 +8,12 @@ namespace TRAP::Graphics::API
 	class VulkanDescriptorSet
 	{
 	public:
-		VulkanDescriptorSet(const TRAP::Ref<VulkanDescriptorPool>& descriptorPool);
 		~VulkanDescriptorSet();
-
-		VkDescriptorSet& GetVkDescriptorSet();
 		
 	private:
-		VkDescriptorSet m_descriptorSet;
+		friend VulkanDescriptorPool;
+		
+		VulkanDescriptorSet();
 	};
 }
 

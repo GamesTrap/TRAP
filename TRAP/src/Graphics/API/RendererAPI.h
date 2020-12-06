@@ -506,6 +506,115 @@ namespace TRAP::Graphics
 			TexelBuffer = (InputAttachment << 1),
 			RWTexelBuffer = (TexelBuffer << 1)
 		};
+
+		//Choosing Memory Type
+		enum class ResourceMemoryUsage
+		{
+			//No intended memory usage specified
+			Unknown = 0,
+			//Memory will be used on device only, no need to be mapped on host.
+			GPUOnly = 1,
+			//Memory will be mapped on host.
+			//Could be used for transfer to device.
+			CPUOnly = 2,
+			//Memory will be used for frequent (dynamic) updates from host and reads on device.
+			CPUToGPU = 3,
+			//Memory will be used for writing on device and readback on host.
+			GPUToCPU = 4,
+
+			RESOURCE_MEMORY_USAGE_COUNT,
+			RESOURCE_MEMORY_USAGE_MAX_ENUM = 0x7FFFFFFF
+		};
+
+		enum class BufferCreationFlags
+		{
+			//Default flag (Buffer will use aliased memory, buffer will not be CPU accessible until MapBuffer is called)
+			None = 0x01,
+			//Buffer will allocate its own memory (COMMITTED resource)
+			OnwMemory = 0x02,
+			//Buffer will be persistently mapped
+			PersistentMap = 0x04,
+			//Use ESRAM to store this buffer
+			ESRAM = 0x08,
+			//Flag to specify not to allocate descriptors for the resoruce
+			NoDescriptorViewCreation = 0x10
+		};
+
+		enum class IndirectArgumentType
+		{
+			IndirectDraw,
+			IndirectDrawIndex,
+			IndirectDispatch,
+			IndirectVertexBuffer,
+			IndirectIndexBuffer,
+			IndirectConstant,
+			IndirectDescriptorTable,
+			IndirectPipeline
+		};
+
+		enum class DescriptorUpdateFrequency
+		{
+			None = 0,
+			PerFrame,
+			PerBatch,
+			PerDraw,
+
+			DESCRIPTOR_UPDATE_FREQUENCY_COUNT
+		};
+
+		enum class FilterType
+		{
+			Nearest = 0,
+			Linear
+		};
+
+		enum class MipMapMode
+		{
+			Nearest = 0,
+			Linear
+		};
+
+		enum class AddressMode
+		{
+			Mirror,
+			Repeat,
+			ClampToEdge,
+			ClampToBorder
+		};
+
+		enum class CompareMode
+		{
+			Never,
+			Less,
+			Equal,
+			LessOrEqual,
+			Greater,
+			NotEqual,
+			GreaterOrEqual,
+			Always,
+
+			MAX_COMPARE_MODES
+		};
+
+		enum class ShaderStage
+		{
+			None = 0,
+			Vertex = 0x00000001,
+			TessellationControl = 0x00000002,
+			TessellationEvaluation = 0x00000004,
+			Geometry = 0x00000008,
+			Fragment = 0x00000010,
+			Compute = 0x00000020,
+			RayTracing = 0x00000040,
+			
+			AllGraphics = (static_cast<uint32_t>(Vertex) | static_cast<uint32_t>(TessellationControl) |
+			               static_cast<uint32_t>(TessellationEvaluation) | static_cast<uint32_t>(Geometry) |
+				           static_cast<uint32_t>(Fragment)),
+			Hull = TessellationControl,
+			Domain = TessellationEvaluation,
+
+			SHADER_STAGE_COUNT = 7
+		};
 		
 		union ClearValue
 		{
@@ -590,11 +699,86 @@ namespace TRAP::Graphics
 			bool HostVisible;
 		};
 
+		//Data structure holding necessary info to create a Buffer
+		struct BufferDesc
+		{
+			//Size of the buffer (in bytes)
+			uint64_t Size;
+			//Alignment
+			uint32_t Alignment;
+			//Decides which heap buffer will be used (default, upload, readback)
+			ResourceMemoryUsage MemoryUsage;
+			//Creation flags of the buffer
+			BufferCreationFlags Flags;
+			//What type of queue the buffer is owned by
+			QueueType QueueType;
+			//What state will the buffer get created in
+			ResourceState StartState;
+			//Index of the first element accessible by the SRV/UAV
+			uint64_t FirstElement;
+			//Number of elements in the buffer
+			uint64_t ElementCount;
+			//Size of each element (in bytes) in the buffer
+			uint64_t StructStride;
+			//ICB draw type
+			IndirectArgumentType ICBDrawType;
+			//ICB max vertex buffers slots count
+			uint32_t ICBMaxVertexBufferBind;
+			//ICB max fragment buffers slots count
+			uint32_t ICBMaxFragmentBufferBind;
+			//Set this to specify a counter buffer for this buffer
+			//struct Buffer* CounterBuffer;
+			//Format of the buffer
+			ImageFormat Format;
+			//Flags specifying the suitable usage of this buffer (Uniform Buffer, Vertex Buffer, Index Buffer, ...)
+			DescriptorType Descriptors;
+			//Debug name used in GPU-profile
+			const char* Name;
+		};
+
+		struct SamplerDesc
+		{
+			FilterType MinFilter;
+			FilterType MagFilter;
+			MipMapMode MipMapMode;
+			AddressMode AddressU;
+			AddressMode AddressV;
+			AddressMode AddressW;
+			float MipLodBias;
+			float MaxAnisotropy;
+			CompareMode CompareFunc;
+		};
+
+		struct BinaryShaderStageDesc
+		{
+			std::vector<uint8_t> ByteCode;
+			std::string EntryPoint;
+		};
+
+		struct BinaryShaderDesc
+		{
+			ShaderStage Stages;
+			//Specify whether shader will own byte code memory
+			bool OwnByteCode;
+			BinaryShaderStageDesc Vertex;
+			BinaryShaderStageDesc Fragment;
+			BinaryShaderStageDesc Geometry;
+			BinaryShaderStageDesc TessellationControl;
+			BinaryShaderStageDesc TessellationEvaluation;
+			BinaryShaderStageDesc Compute;
+		};
+		
 		struct QueueDesc
 		{
 			QueueType Type;
 			QueueFlag Flag;
 			QueuePriority Priority;
+		};
+
+		struct ReadRange
+		{
+			uint64_t Offset;
+			uint64_t Range;
 		};
 
 		/*inline static struct alignsas(64) Renderer
@@ -633,5 +817,7 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::TextureCreationFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ResourceState);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::DescriptorType);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::QueueFlag);
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::BufferCreationFlags);
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShaderStage);
 
 #endif /*_TRAP_RENDERERAPI_H_*/

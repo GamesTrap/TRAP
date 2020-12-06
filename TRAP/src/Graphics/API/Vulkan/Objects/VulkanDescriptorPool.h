@@ -22,9 +22,11 @@ namespace TRAP::Graphics::API
 		uint32_t GetDescriptorSetsNum() const;
 		uint32_t GetUsedDescriptorSetsCount() const;
 
+		VulkanDescriptorSet RetrieveDescriptorSet();
+
 		static constexpr uint32_t DescriptorTypeRangeSize = DESCRIPTOR_TYPE_RANGE_SIZE - 1;
 	private:
-		VkDescriptorSet AllocateVkDescriptorSet(VkDescriptorSetLayout layout);
+		VkDescriptorSet RetrieveVkDescriptorSet(VkDescriptorSetLayout layout);
 		
 		VkDescriptorPool m_currentPool;
 		std::vector<VkDescriptorPool> m_descriptorPools;
@@ -34,6 +36,8 @@ namespace TRAP::Graphics::API
 		std::mutex m_mutex;
 		
 		TRAP::Ref<VulkanDevice> m_device;
+
+		std::vector<TRAP::Scope<VulkanDescriptorSet>> m_descriptorSets;
 
 		static std::array<VkDescriptorPoolSize, DESCRIPTOR_TYPE_RANGE_SIZE> s_descriptorPoolSizes;
 

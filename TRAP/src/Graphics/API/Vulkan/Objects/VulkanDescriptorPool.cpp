@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "VulkanDescriptorPool.h"
 
+#include "VulkanDescriptorSet.h"
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
@@ -104,7 +105,17 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::AllocateVkDescriptorSet(const VkDescriptorSetLayout layout)
+TRAP::Graphics::API::VulkanDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet()
+{
+	//TODO
+	m_descriptorSets.push_back(TRAP::Scope<VulkanDescriptorSet>(new VulkanDescriptorSet()));
+
+	return *m_descriptorSets.back();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveVkDescriptorSet(VkDescriptorSetLayout layout)
 {
 	//Need a lock since vkAllocateDescriptorSets needs to be externally synchronized
 	//This is fine since this will only happen during Init time

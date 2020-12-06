@@ -2,7 +2,7 @@
 #include "Shader.h"
 
 #include "VFS/VFS.h"
-#include "Graphics/API/Vulkan/VulkanShader.h"
+#include "Graphics/API/Vulkan/VkShader.h"
 #include "Utils/String/String.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -77,11 +77,11 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	{
 	case RenderAPI::Vulkan:
 	{
-		Scope<API::VulkanShader> result;
+		Scope<API::VkShader> result;
 		if (isSPIRV)
-			result = MakeScope<API::VulkanShader>(name, SPIRVSource);
+			result = MakeScope<API::VkShader>(name, SPIRVSource);
 		else
-			result = MakeScope<API::VulkanShader>(name, source);
+			result = MakeScope<API::VkShader>(name, source);
 			
 		result->m_filepath = VFSFilePath;
 		return result;
@@ -142,11 +142,11 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	{
 	case RenderAPI::Vulkan:
 	{
-		Scope<API::VulkanShader> result;
+		Scope<API::VkShader> result;
 		if (isSPIRV)
-			result = MakeScope<API::VulkanShader>(name, SPIRVSource);
+			result = MakeScope<API::VkShader>(name, SPIRVSource);
 		else
-			result = MakeScope<API::VulkanShader>(name, source);
+			result = MakeScope<API::VkShader>(name, source);
 
 		result->m_filepath = VFSFilePath;
 		return result;
@@ -172,7 +172,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(con
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
-		return MakeScope<API::VulkanShader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
+		return MakeScope<API::VkShader>(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSource);
 
 	default:
 		return nullptr;

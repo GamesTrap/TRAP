@@ -9,6 +9,10 @@ TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore(TRAP::Ref<VulkanDevice> de
 	: m_semaphore(VK_NULL_HANDLE), m_signaled(false), m_device(std::move(device))
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
+
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanSemaphorePrefix, "Creating Semaphore");
+#endif
 	
 	VkSemaphoreCreateInfo info = VulkanInits::SemaphoreCreateInfo();
 	VkCall(vkCreateSemaphore(m_device->GetVkDevice(), &info, nullptr, &m_semaphore));
@@ -20,6 +24,10 @@ TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 {
 	if(m_semaphore)
 	{
+#ifdef ENABLE_GRAPHICS_DEBUG
+		TP_DEBUG(Log::RendererVulkanSemaphorePrefix, "Destroying Semaphore");
+#endif
+		
 		vkDestroySemaphore(m_device->GetVkDevice(), m_semaphore, nullptr);
 		m_semaphore = nullptr;
 	}

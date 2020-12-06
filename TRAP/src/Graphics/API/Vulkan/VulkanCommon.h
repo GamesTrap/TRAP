@@ -20,7 +20,11 @@ namespace TRAP::Graphics::API
 	VkImageAspectFlags DetermineAspectMask(VkFormat format, bool includeStencilBit);
 	VkImageUsageFlags DescriptorTypeToVkImageUsage(RendererAPI::DescriptorType type);
 	VkFormatFeatureFlags VkImageUsageToFormatFeatures(VkImageUsageFlags usage);
-
+	VkBufferUsageFlags DescriptorTypeToVkBufferUsage(RendererAPI::DescriptorType usage, bool typed);
+	VkFilter FilterTypeToVkFilter(RendererAPI::FilterType filter);
+	VkSamplerMipmapMode MipMapModeToVkMipMapMode(RendererAPI::MipMapMode mipMapMode);
+	VkSamplerAddressMode AddressModeToVkAddressMode(RendererAPI::AddressMode addressMode);
+	
 	void VkSetObjectName(VkDevice device, uint64_t handle, VkObjectType type, const char* name);
 
 	inline static constexpr std::array<VkAttachmentLoadOp, static_cast<uint32_t>(RendererAPI::LoadActionType::MAX_LOAD_ACTION_TYPE)> VkAttachmentLoadOpTranslator =
@@ -28,6 +32,18 @@ namespace TRAP::Graphics::API
 		VK_ATTACHMENT_LOAD_OP_DONT_CARE,
 		VK_ATTACHMENT_LOAD_OP_LOAD,
 		VK_ATTACHMENT_LOAD_OP_CLEAR
+	};
+
+	inline static constexpr std::array<VkCompareOp, static_cast<uint32_t>(RendererAPI::CompareMode::MAX_COMPARE_MODES)> VkComparisonFuncTranslator =
+	{
+		VK_COMPARE_OP_NEVER,
+		VK_COMPARE_OP_LESS,
+		VK_COMPARE_OP_EQUAL,
+		VK_COMPARE_OP_LESS_OR_EQUAL,
+		VK_COMPARE_OP_GREATER,
+		VK_COMPARE_OP_NOT_EQUAL,
+		VK_COMPARE_OP_GREATER_OR_EQUAL,
+		VK_COMPARE_OP_ALWAYS
 	};
 }
 

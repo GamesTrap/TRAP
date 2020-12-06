@@ -10,6 +10,10 @@ TRAP::Graphics::API::VulkanFence::VulkanFence(TRAP::Ref<VulkanDevice> device)
 	: m_fence(VK_NULL_HANDLE), m_submitted(false), m_device(std::move(device))
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
+
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanFencePrefix, "Creating Fence");
+#endif
 	
 	VkFenceCreateInfo info = VulkanInits::FenceCreateInfo();
 	VkCall(vkCreateFence(m_device->GetVkDevice(), &info, nullptr, &m_fence));
@@ -21,6 +25,10 @@ TRAP::Graphics::API::VulkanFence::~VulkanFence()
 {
 	if(m_fence)
 	{
+#ifdef ENABLE_GRAPHICS_DEBUG
+		TP_DEBUG(Log::RendererVulkanFencePrefix, "Destroying Fence");
+#endif
+		
 		vkDestroyFence(m_device->GetVkDevice(), m_fence, nullptr);
 		m_fence = nullptr;
 	}

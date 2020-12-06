@@ -319,6 +319,26 @@ VkFramebufferCreateInfo TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkBufferViewCreateInfo TRAP::Graphics::API::VulkanInits::BufferViewCreateInfo(VkBuffer buffer,
+	const VkFormat format,
+	const uint64_t offset,
+	const uint64_t range)
+{
+	VkBufferViewCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.buffer = buffer;
+	info.format = format;
+	info.offset = offset;
+	info.range = range;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkImageViewCreateInfo TRAP::Graphics::API::VulkanInits::ImageViewCreateInfo(VkImage image,
 	const VkImageViewType imageViewType,
 	const VkFormat format,
@@ -384,6 +404,24 @@ VkImageCreateInfo TRAP::Graphics::API::VulkanInits::ImageCreateInfo(const VkImag
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkBufferCreateInfo TRAP::Graphics::API::VulkanInits::BufferCreateInfo(const uint64_t allocationSize, const VkBufferUsageFlags usageFlags)
+{
+	VkBufferCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.size = allocationSize;
+	info.usage = usageFlags;
+	info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	info.queueFamilyIndexCount = 0;
+	info.pQueueFamilyIndices = nullptr;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkCommandPoolCreateInfo TRAP::Graphics::API::VulkanInits::CommandPoolCreateInfo(const uint32_t queueFamilyIndex)
 {
 	VkCommandPoolCreateInfo info;
@@ -407,6 +445,42 @@ VkCommandBufferAllocateInfo TRAP::Graphics::API::VulkanInits::CommandBufferAlloc
 	info.commandPool = commandPool;
 	info.level = secondary ? VK_COMMAND_BUFFER_LEVEL_SECONDARY : VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	info.commandBufferCount = 1;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkSamplerCreateInfo TRAP::Graphics::API::VulkanInits::SamplerCreateInfo(const VkFilter magFilter,
+	const VkFilter minFilter,
+	const VkSamplerMipmapMode mipMapMode,
+	const VkSamplerAddressMode u,
+	const VkSamplerAddressMode v,
+	const VkSamplerAddressMode w,
+	const float mipLodBias,
+	const float maxAnisotropy,
+	const VkCompareOp compareOp)
+{
+	VkSamplerCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.magFilter = magFilter;
+	info.minFilter = minFilter;
+	info.mipmapMode = mipMapMode;
+	info.addressModeU = u;
+	info.addressModeV = v;
+	info.addressModeW = w;
+	info.mipLodBias = mipLodBias;
+	info.anisotropyEnable = (maxAnisotropy > 0.0f) ? VK_TRUE : VK_FALSE;
+	info.maxAnisotropy = maxAnisotropy;
+	info.compareEnable = (compareOp != VK_COMPARE_OP_NEVER) ? VK_TRUE : VK_FALSE;
+	info.compareOp = compareOp;
+	info.minLod = 0.0f;
+	info.maxLod = (mipMapMode == VK_SAMPLER_MIPMAP_MODE_LINEAR) ? std::numeric_limits<float>::max() : 0.0f;
+	info.borderColor = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
+	info.unnormalizedCoordinates = VK_FALSE;
 	
 	return info;
 }

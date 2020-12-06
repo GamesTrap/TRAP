@@ -89,6 +89,19 @@ namespace TRAP::Graphics::API
 			std::mutex SubmitMutex;
 		};
 		TRAP::Scope<NullDescriptors> NullDescriptors;
+
+		struct SizeOffset
+		{
+			uint32_t Size;
+			uint32_t Offset;
+		};
+
+		union DescriptorUpdateData
+		{
+			VkDescriptorImageInfo ImageInfo;
+			VkDescriptorBufferInfo BufferInfo;
+			VkBufferView BufferView;
+		};
 		
 	private:		
 		static std::vector<std::string> SetupInstanceLayers();

@@ -1446,3 +1446,15 @@ SITREP 12/05/2020|20w49a2
     - Added VulkanRenderTarget ~<50 mins
     - Added VulkanTexture ~<50 mins
     - Added some helper function to VulkanCommon ~<30 mins
+
+SITREP 12/06/2020|20w49a3
+    - Changed TRAP Engine version to 20w49a3(0.7.7)
+    - Renamed old VulkanShader class to VkShader ~<20 mins
+    - Added VulkanBuffer ~<30 mins
+    - Added VulkanSampler ~<30 mins
+    - Added more util functions to VulkanCommon ~<30 mins
+    - Added new VulkanShader class ~<30 mins
+    - Added ShaderReflection ~<30 mins
+    - Added VulkanShaderReflection (SPIRVCross) ~<30 min
+    - Added CommonShaderReflection ~<30 mins
+    - Added SPIRVTools ~<60 mins

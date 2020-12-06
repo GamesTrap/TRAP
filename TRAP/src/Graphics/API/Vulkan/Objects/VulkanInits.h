@@ -100,9 +100,27 @@ namespace TRAP::Graphics::API::VulkanInits
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
+	VkBufferCreateInfo BufferCreateInfo(uint64_t allocationSize, VkBufferUsageFlags usageFlags);
+
+	VkBufferViewCreateInfo BufferViewCreateInfo(VkBuffer buffer, VkFormat format, uint64_t offset, uint64_t range);
+	
+	//-------------------------------------------------------------------------------------------------------------------//
+
 	VkCommandPoolCreateInfo CommandPoolCreateInfo(uint32_t queueFamilyIndex);
 
 	VkCommandBufferAllocateInfo CommandBufferAllocateInfo(VkCommandPool commandPool, bool secondary);
+	
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	VkSamplerCreateInfo SamplerCreateInfo(VkFilter magFilter,
+		VkFilter minFilter,
+		VkSamplerMipmapMode mipMapMode,
+		VkSamplerAddressMode u,
+		VkSamplerAddressMode v,
+		VkSamplerAddressMode w,
+		float mipLodBias,
+		float maxAnisotropy,
+		VkCompareOp compareOp);
 }
 
 #endif /*_TRAP_VULKANINITS_H_*/
