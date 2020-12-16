@@ -31,7 +31,7 @@ TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDe
 	  m_vkCommandPool(commandPool),
 	  m_secondary(secondary)
 {
-	TRAP_ASSERT(device, "device is nullptr");
+	TRAP_ASSERT(m_device, "device is nullptr");
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandBufferPrefix, "Creating CommandBuffer");

@@ -16,7 +16,7 @@ TRAP::Graphics::API::VulkanQueue::VulkanQueue(TRAP::Ref<VulkanDevice> device, co
 	  m_flags(),
 	  m_timestampPeriod(m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties().limits.timestampPeriod)
 {
-	TRAP_ASSERT(device, "device is nullptr");
+	TRAP_ASSERT(m_device, "device is nullptr");
 	
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueuePrefix, "Creating Queue");

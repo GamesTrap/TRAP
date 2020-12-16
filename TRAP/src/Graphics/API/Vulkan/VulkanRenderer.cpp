@@ -415,13 +415,13 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 		s_descriptorIndexingExtension = true;
 	}
 
-	if (physicalDevice->IsExtensionSupported("VK_KHR_ray_tracing_pipeline") && //TODO Replace with VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME with SDK 1.2.162
+	if (physicalDevice->IsExtensionSupported(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME) &&
 		physicalDevice->IsExtensionSupported(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME) &&
-		physicalDevice->IsExtensionSupported("VK_KHR_acceleration_structure") && //TODO Replace with VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME with SDK 1.2.162
+		physicalDevice->IsExtensionSupported(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME) &&
 		physicalDevice->IsExtensionSupported(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME) &&
-		physicalDevice->IsExtensionSupported("VK_KHR_deferred_host_operations") && //TODO Replace with VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME with SDK 1.2.162
+		physicalDevice->IsExtensionSupported(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME) &&
 		physicalDevice->IsExtensionSupported(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME) &&
-		physicalDevice->IsExtensionSupported("VK_KHR_pipeline_library")) //TODO Replace with VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME with SDK 1.2.162
+		physicalDevice->IsExtensionSupported(VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME))
 	{
 		extensions.emplace_back("VK_KHR_ray_tracing_pipeline");
 		extensions.emplace_back(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME);

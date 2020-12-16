@@ -13,7 +13,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	  m_arraySize(),
       m_device(std::move(device))
 {
-	TRAP_ASSERT(device, "device is nullptr");
+	TRAP_ASSERT(m_device, "device is nullptr");
 	
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanFrameBufferPrefix, "Creating FrameBuffer");

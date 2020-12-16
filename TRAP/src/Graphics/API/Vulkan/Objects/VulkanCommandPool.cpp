@@ -10,8 +10,8 @@
 TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(TRAP::Ref<VulkanDevice> device, TRAP::Ref<VulkanQueue> queue, const bool transient)
 	: m_device(std::move(device)), m_queue(std::move(queue)), m_vkCommandPool(VK_NULL_HANDLE)
 {
-	TRAP_ASSERT(device, "device is nullptr");
-	TRAP_ASSERT(queue, "queue is nullptr");
+	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_queue, "queue is nullptr");
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanCommandPoolPrefix, "Creating CommandPool");

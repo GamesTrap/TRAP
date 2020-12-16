@@ -27,7 +27,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(TRAP::Ref<VulkanDe
 	  m_vkEmptyDescriptorSets(),
 	  m_vkPushConstantCount()
 {
-	TRAP_ASSERT(device, "device is nullptr");
+	TRAP_ASSERT(m_device, "device is nullptr");
 	
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRootSignaturePrefix, "Creating RootSignature");

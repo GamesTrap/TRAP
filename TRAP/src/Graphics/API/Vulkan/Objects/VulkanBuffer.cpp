@@ -20,8 +20,8 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(TRAP::Ref<VulkanDevice> device, 
 	  m_descriptors(desc.Descriptors),
 	  m_memoryUsage(desc.MemoryUsage)
 {
-	TRAP_ASSERT(device, "device is nullptr");
-	TRAP_ASSERT(vma, "VMA is nullptr");
+	TRAP_ASSERT(m_device, "device is nullptr");
+	TRAP_ASSERT(m_VMA, "VMA is nullptr");
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanBufferPrefix, "Creating Buffer");

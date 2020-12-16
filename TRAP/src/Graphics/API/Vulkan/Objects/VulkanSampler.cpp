@@ -8,7 +8,7 @@
 TRAP::Graphics::API::VulkanSampler::VulkanSampler(TRAP::Ref<VulkanDevice> device, const RendererAPI::SamplerDesc& desc)
 	: m_device(std::move(device)), m_vkSampler(VK_NULL_HANDLE)
 {
-	TRAP_ASSERT(device, "device is nullptr");
+	TRAP_ASSERT(m_device, "device is nullptr");
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSamplerPrefix, "Creating Sampler");

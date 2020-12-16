@@ -23,7 +23,7 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(std::vector<VkDesc
 		  m_dynamicOffsetCount(dynamicOffsetCount),
 		  m_updateFrequency(updateFrequency)
 {
-	TRAP_ASSERT(rootSignature, "rootSignature is nullptr");
+	TRAP_ASSERT(m_rootSignature, "rootSignature is nullptr");
 	
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Creating DescriptorSet");

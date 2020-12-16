@@ -9,7 +9,7 @@
 TRAP::Graphics::API::VulkanShader::VulkanShader(TRAP::Ref<VulkanDevice> device, const RendererAPI::BinaryShaderDesc& desc)
 	: m_device(std::move(device)), m_stages(), m_numThreadsPerGroup(), m_reflection(nullptr)
 {
-	TRAP_ASSERT(device, "device is nullptr");
+	TRAP_ASSERT(m_device, "device is nullptr");
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanShaderPrefix, "Creating Shader");

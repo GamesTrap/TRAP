@@ -29,7 +29,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(TRAP::Ref<VulkanDevi
       m_descriptors(desc.Descriptors),
 	  m_ID(++s_RenderTargetIDs)
 {
-	TRAP_ASSERT(device, "device is nullptr");
+	TRAP_ASSERT(m_device, "device is nullptr");
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanRenderTargetPrefix, "Creating RenderTarget");

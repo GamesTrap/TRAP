@@ -1464,11 +1464,12 @@ SITREP 12/16/2020|20w51a1
     - Added DeviceMemory functions to VulkanBuffer ~<20 mins
     - VulkanCommandBuffer Added PushConstant binding functions ~<20mins
     - VulkanCommandBuffer Added DebugMarker support ~<30 mins
-    - VulkanDescriptorPool implemented RevtrieveDescriptorSet function ~>35 mins
-    - VulkanDescriptorSet implemented constructor ~<15 mins
+    - VulkanDescriptorPool implemented RetrieveDescriptorSet function ~>35 mins
+    - VulkanDescriptorSet implemented (de)constructor ~<15 mins
     - VulkanQueue Added WaitQueueIdle function ~<5 mins
     - Updated VulkanInits ~<10 mins
     - Added VulkanRootSignature ~<90 mins
     - Added some getters to VulkanShader ~<20 mins
     - Added DescriptorTypeToVkDescriptorType & ShaderStageToVkShaderStageFlags
       functions in VulkanCommon ~<15 mins
+    - Fixed TRAP_ASSERT checking wrong variable ~<10 mins
