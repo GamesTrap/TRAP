@@ -32,9 +32,9 @@ namespace TRAP::Graphics::API
 		RendererAPI::DescriptorType GetUAV() const;
 		bool OwnsImage() const;
 		
-	private:		
 		void SetTextureName(const char* name) const;
 		
+	private:
 		TRAP::Ref<VulkanDevice> m_device;
 		TRAP::Ref<VulkanMemoryAllocator> m_vma;
 

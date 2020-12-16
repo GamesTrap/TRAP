@@ -3,12 +3,13 @@
 
 #include "VulkanPhysicalDevice.h"
 #include "VulkanDevice.h"
+#include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanQueue::VulkanQueue(TRAP::Ref<VulkanDevice> device, const RendererAPI::QueueDesc& desc)
 	: m_device(std::move(device)),
 	  m_vkQueue(VK_NULL_HANDLE),
-	  m_submitMutex(dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer().get())->NullDescriptors->SubmitMutex),
+	  m_submitMutex(VulkanRenderer::s_NullDescriptors->SubmitMutex),
 	  m_vkQueueFamilyIndex(std::numeric_limits<uint8_t>::max()),
 	  m_vkQueueIndex(std::numeric_limits<uint8_t>::max()),
 	  m_type(desc.Type),
@@ -85,4 +86,11 @@ uint32_t TRAP::Graphics::API::VulkanQueue::GetFlags() const
 float TRAP::Graphics::API::VulkanQueue::GetTimestampPeriod() const
 {
 	return m_timestampPeriod;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanQueue::WaitQueueIdle() const
+{
+	VkCall(vkQueueWaitIdle(m_vkQueue));
 }

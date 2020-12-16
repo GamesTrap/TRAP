@@ -1458,3 +1458,17 @@ SITREP 12/06/2020|20w49a3
     - Added VulkanShaderReflection (SPIRVCross) ~<30 min
     - Added CommonShaderReflection ~<30 mins
     - Added SPIRVTools ~<60 mins
+
+SITREP 12/16/2020|20w51a1
+    - Changed TRAP Engine version to 20w51a1(0.7.8)
+    - Added DeviceMemory functions to VulkanBuffer ~<20 mins
+    - VulkanCommandBuffer Added PushConstant binding functions ~<20mins
+    - VulkanCommandBuffer Added DebugMarker support ~<30 mins
+    - VulkanDescriptorPool implemented RevtrieveDescriptorSet function ~>35 mins
+    - VulkanDescriptorSet implemented constructor ~<15 mins
+    - VulkanQueue Added WaitQueueIdle function ~<5 mins
+    - Updated VulkanInits ~<10 mins
+    - Added VulkanRootSignature ~<90 mins
+    - Added some getters to VulkanShader ~<20 mins
+    - Added DescriptorTypeToVkDescriptorType & ShaderStageToVkShaderStageFlags
+      functions in VulkanCommon ~<15 mins

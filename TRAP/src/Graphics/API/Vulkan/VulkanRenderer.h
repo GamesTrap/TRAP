@@ -4,9 +4,12 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Maths/Math.h"
 #include "Window/WindowingAPI.h"
+#include "Graphics/API/ShaderReflection.h"
 
 namespace TRAP::Graphics::API
 {
+	class VulkanBuffer;
+	class VulkanTexture;
 	class VulkanMemoryAllocator;
 	class VulkanFrameBuffer;
 	class VulkanRenderPass;
@@ -84,24 +87,34 @@ namespace TRAP::Graphics::API
 		static bool s_renderdocCapture;
 		static bool s_debugMarkerSupport;
 
-		struct NullDescriptors
-		{
-			std::mutex SubmitMutex;
-		};
-		TRAP::Scope<NullDescriptors> NullDescriptors;
-
 		struct SizeOffset
 		{
 			uint32_t Size;
 			uint32_t Offset;
 		};
 
+		struct DescriptorIndexMap
+		{
+			std::unordered_map<std::string, uint32_t> Map;
+		};
+		
 		union DescriptorUpdateData
 		{
 			VkDescriptorImageInfo ImageInfo;
 			VkDescriptorBufferInfo BufferInfo;
 			VkBufferView BufferView;
 		};
+
+		struct NullDescriptors
+		{
+			std::array<TRAP::Ref<VulkanTexture>, static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureSRV;
+			std::array<TRAP::Ref<VulkanTexture>, static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureUAV;
+			TRAP::Ref<VulkanBuffer> DefaultBufferSRV;
+			TRAP::Ref<VulkanBuffer> DefaultBufferUAV;
+			TRAP::Ref<VulkanSampler> DefaultSampler;
+			std::mutex SubmitMutex;
+		};
+		static TRAP::Scope<NullDescriptors> s_NullDescriptors;
 		
 	private:		
 		static std::vector<std::string> SetupInstanceLayers();

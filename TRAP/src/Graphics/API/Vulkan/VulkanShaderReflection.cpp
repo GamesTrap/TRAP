@@ -54,7 +54,7 @@ bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource, c
 
 TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::vector<uint8_t>& shaderCode, RendererAPI::ShaderStage shaderStage)
 {
-	SPIRVTools::CrossCompiler cc = SPIRVTools::CreateCrossCompiler(reinterpret_cast<const uint32_t*>(shaderCode.data()), shaderCode.size() / sizeof(uint32_t));
+	SPIRVTools::CrossCompiler cc = SPIRVTools::CreateCrossCompiler(reinterpret_cast<const uint32_t*>(shaderCode.data()), static_cast<uint32_t>(shaderCode.size() / sizeof(uint32_t)));
 
 	ReflectEntryPoint(cc);
 	ReflectShaderResources(cc);
@@ -72,7 +72,7 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 	uint32_t resourceCount = 0;
 	uint32_t variablesCount = 0;
 
-	namePoolSize += cc.EntryPoint.size() + 1;
+	namePoolSize += static_cast<uint32_t>(cc.EntryPoint.size()) + 1;
 
 	for(uint32_t i = 0; i < cc.ShaderResources.size(); ++i)
 	{
@@ -81,7 +81,7 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 		//Filter out what we don't use
 		if(!FilterResource(resource, shaderStage))
 		{
-			namePoolSize += resource.Name.size() + 1;
+			namePoolSize += static_cast<uint32_t>(resource.Name.size()) + 1;
 
 			if (resource.Type == SPIRVTools::ResourceType::Inputs && shaderStage == TRAP::Graphics::RendererAPI::ShaderStage::Vertex)
 				++vertexInputCount;
@@ -100,7 +100,7 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 		//Filter out what we don't use
 		if(variable.IsUsed && !parentFiltered)
 		{
-			namePoolSize += variable.Name.size() + 1;
+			namePoolSize += static_cast<uint32_t>(variable.Name.size()) + 1;
 			++variablesCount;
 		}
 	}

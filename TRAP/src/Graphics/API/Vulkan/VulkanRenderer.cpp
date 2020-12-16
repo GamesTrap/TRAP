@@ -33,6 +33,8 @@ bool TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport = false;
 
 std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API::VulkanRenderer::s_usableGPUs{};
 
+TRAP::Scope<TRAP::Graphics::API::VulkanRenderer::NullDescriptors> TRAP::Graphics::API::VulkanRenderer::s_NullDescriptors = nullptr;
+
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
@@ -436,7 +438,7 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 
 void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 {
-	NullDescriptors = TRAP::MakeScope<struct NullDescriptors>();
+	s_NullDescriptors = TRAP::MakeScope<struct NullDescriptors>();
 	
 	//TODO
 }
@@ -447,5 +449,6 @@ void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 {
 	//TODO
 	
-	NullDescriptors.reset();
+	s_NullDescriptors.reset();
+	s_NullDescriptors = nullptr;
 }

@@ -27,6 +27,9 @@ namespace TRAP::Graphics::API
 
 		void MapBuffer(RendererAPI::ReadRange* range);
 		void UnMapBuffer();
+
+		VkDeviceMemory GetVkDeviceMemory() const;
+		uint64_t GetVkDeviceMemoryOffset() const;
 		
 	private:
 		void SetBufferName(const char* name) const;

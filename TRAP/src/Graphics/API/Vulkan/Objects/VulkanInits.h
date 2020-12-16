@@ -16,6 +16,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	VkDebugUtilsMessengerCreateInfoEXT DebugUtilsMessengerCreateInfo(PFN_vkDebugUtilsMessengerCallbackEXT callback);
 
 	VkDebugUtilsObjectNameInfoEXT DebugUtilsObjectNameInfo(VkObjectType type, uint64_t handle, const char* name);
+
+	VkDebugUtilsLabelEXT DebugUtilsLabelExt(float r, float g, float b, const char* name);
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -38,6 +40,16 @@ namespace TRAP::Graphics::API::VulkanInits
 	VkDescriptorSetAllocateInfo DescriptorSetAllocateInfo(VkDescriptorPool descriptorPool,
 														  const VkDescriptorSetLayout& descriptorLayout);
 
+	VkDescriptorSetLayoutCreateInfo DescriptorSetLayoutCreateInfo(const std::vector<VkDescriptorSetLayoutBinding>& bindings);
+
+	VkDescriptorUpdateTemplateCreateInfo DescriptorUpdateTemplateCreateInfo(
+		VkDescriptorSetLayout descriptorSetLayout,
+		uint32_t entryCount,
+		VkDescriptorUpdateTemplateEntry* entries,
+		VkPipelineBindPoint bindPoint,
+		VkPipelineLayout pipelineLayout,
+		uint32_t setIndex);
+	
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	VkFenceCreateInfo FenceCreateInfo();
@@ -121,6 +133,13 @@ namespace TRAP::Graphics::API::VulkanInits
 		float mipLodBias,
 		float maxAnisotropy,
 		VkCompareOp compareOp);
+	
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	VkPipelineLayoutCreateInfo PipelineLayoutCreateInfo(uint32_t layoutCount,
+	                                                    VkDescriptorSetLayout* layouts,
+	                                                    uint32_t pushConstantRangeCount,
+	                                                    VkPushConstantRange* pushConstants);
 }
 
 #endif /*_TRAP_VULKANINITS_H_*/

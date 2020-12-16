@@ -19,6 +19,8 @@ namespace TRAP::Graphics::API
 		RendererAPI::QueueType GetQueueType() const;
 		uint32_t GetFlags() const;
 		float GetTimestampPeriod() const;
+
+		void WaitQueueIdle() const;
 		
 	private:
 		TRAP::Ref<VulkanDevice> m_device;

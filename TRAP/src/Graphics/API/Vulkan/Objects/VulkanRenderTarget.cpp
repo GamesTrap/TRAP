@@ -245,3 +245,10 @@ const std::vector<VkImageView>& TRAP::Graphics::API::VulkanRenderTarget::GetVkIm
 {
 	return m_vkSliceDescriptors;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderTarget::SetRenderTargetName(const char* name) const
+{
+	m_texture->SetTextureName(name);
+}

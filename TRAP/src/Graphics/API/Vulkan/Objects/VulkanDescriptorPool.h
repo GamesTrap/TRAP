@@ -1,8 +1,10 @@
 #ifndef _TRAP_VULKANDESCRIPTORPOOL_H_
 #define _TRAP_VULKANDESCRIPTORPOOL_H_
+#include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics::API
 {
+	class VulkanRootSignature;
 	class VulkanDescriptorSet;
 	class VulkanDevice;
 
@@ -22,7 +24,7 @@ namespace TRAP::Graphics::API
 		uint32_t GetDescriptorSetsNum() const;
 		uint32_t GetUsedDescriptorSetsCount() const;
 
-		VulkanDescriptorSet RetrieveDescriptorSet();
+		VulkanDescriptorSet RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc);
 
 		static constexpr uint32_t DescriptorTypeRangeSize = DESCRIPTOR_TYPE_RANGE_SIZE - 1;
 	private:
@@ -42,6 +44,7 @@ namespace TRAP::Graphics::API
 		static std::array<VkDescriptorPoolSize, DESCRIPTOR_TYPE_RANGE_SIZE> s_descriptorPoolSizes;
 
 		friend VulkanDescriptorSet;
+		friend VulkanRootSignature;
 	};
 }
 

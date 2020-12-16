@@ -29,8 +29,10 @@ namespace TRAP::Graphics::API
 		RendererAPI::DescriptorType GetDescriptorType() const;
 		VkImageView& GetVkImageView();
 		const std::vector<VkImageView>& GetVkImageViewSlices() const;
-		
+
 	private:
+		void SetRenderTargetName(const char* name) const;
+		
 		TRAP::Ref<VulkanDevice> m_device;
 
 		TRAP::Scope<VulkanTexture> m_texture;

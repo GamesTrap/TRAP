@@ -580,7 +580,7 @@ VkBufferUsageFlags TRAP::Graphics::API::DescriptorTypeToVkBufferUsage(const Rend
 	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::IndirectBuffer))
 		result |= VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT;
 	if (static_cast<uint32_t>(usage & RendererAPI::DescriptorType::RayTracing))
-		result |= VK_BUFFER_USAGE_RAY_TRACING_BIT_KHR;
+		result |= VK_BUFFER_USAGE_SHADER_BINDING_TABLE_BIT_KHR;
 
 	return result;
 }
@@ -654,4 +654,76 @@ void TRAP::Graphics::API::VkSetObjectName(VkDevice device, const uint64_t handle
 		VkCall(vkSetDebugUtilsObjectNameEXT(device, &nameInfo));
 	}
 #endif
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType(const RendererAPI::DescriptorType type)
+{
+	switch(type)
+	{
+	case RendererAPI::DescriptorType::Undefined:
+		TRAP_ASSERT("Invalid DescriptorInfo Type");
+		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
+
+	case RendererAPI::DescriptorType::Sampler:
+		return VK_DESCRIPTOR_TYPE_SAMPLER;
+
+	case RendererAPI::DescriptorType::Texture:
+		return VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+
+	case RendererAPI::DescriptorType::UniformBuffer:
+		return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+
+	case RendererAPI::DescriptorType::RWTexture:
+		return VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+
+	case RendererAPI::DescriptorType::Buffer:
+	case RendererAPI::DescriptorType::RWBuffer:
+		return VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+
+	case RendererAPI::DescriptorType::InputAttachment:
+		return VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+
+	case RendererAPI::DescriptorType::TexelBuffer:
+		return VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
+
+	case RendererAPI::DescriptorType::RWTexelBuffer:
+		return VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+
+	case RendererAPI::DescriptorType::RayTracing:
+		return VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR;
+		
+	default:
+		TRAP_ASSERT("Invalid DescriptorInfo Type");
+		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlags(const RendererAPI::ShaderStage stages)
+{
+	VkShaderStageFlags res = 0;
+
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::AllGraphics))
+		return VK_SHADER_STAGE_ALL_GRAPHICS;
+
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::Vertex))
+		res |= VK_SHADER_STAGE_VERTEX_BIT;
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::Geometry))
+		res |= VK_SHADER_STAGE_GEOMETRY_BIT;
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::TessellationEvaluation))
+		res |= VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::TessellationControl))
+		res |= VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::Compute))
+		res |= VK_SHADER_STAGE_COMPUTE_BIT;
+	if (static_cast<uint32_t>(stages & RendererAPI::ShaderStage::RayTracing))
+		res |= (VK_SHADER_STAGE_RAYGEN_BIT_KHR | VK_SHADER_STAGE_ANY_HIT_BIT_KHR |
+			VK_SHADER_STAGE_CLOSEST_HIT_BIT_KHR | VK_SHADER_STAGE_MISS_BIT_KHR |
+			VK_SHADER_STAGE_INTERSECTION_BIT_KHR | VK_SHADER_STAGE_CALLABLE_BIT_KHR);
+	
+	TRAP_ASSERT(res != 0);
+	return res;
 }

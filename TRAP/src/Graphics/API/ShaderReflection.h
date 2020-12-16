@@ -17,7 +17,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 		TextureDim2DArray,
 		TextureDim2DMSArray,
 		TextureDimCubeArray,
-		TextureCimCount,
+		TextureDimCount,
 
 		TextureDimUndefined
 	};
@@ -114,7 +114,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 		std::vector<ShaderVariable> Variables;
 	};
 
-	TRAP::Scope<PipelineReflection> CreatePipelineReflection(const std::array<ShaderReflection, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection, uint32_t stageCount);
+	TRAP::Ref<PipelineReflection> CreatePipelineReflection(const std::array<ShaderReflection, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection, uint32_t stageCount);
 }
 
 #endif /*_TRAP_SHADERREFLECTION_H_*/

@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "VulkanDescriptorPool.h"
 
+#include "VulkanRootSignature.h"
 #include "VulkanDescriptorSet.h"
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
@@ -105,10 +106,44 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet()
+TRAP::Graphics::API::VulkanDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc)
 {
-	//TODO
-	m_descriptorSets.push_back(TRAP::Scope<VulkanDescriptorSet>(new VulkanDescriptorSet()));
+	const TRAP::Ref<VulkanRootSignature> rootSignature = desc.RootSignature;
+	RendererAPI::DescriptorUpdateFrequency updateFreq = desc.UpdateFrequency;
+	const uint8_t dynamicOffsetCount = rootSignature->GetVkDynamicDescriptorCounts()[static_cast<uint32_t>(updateFreq)];
+	const uint32_t maxSets = desc.MaxSets;
+	std::vector<std::vector<union VulkanRenderer::DescriptorUpdateData>> updateData{};
+	const std::vector<VulkanRenderer::SizeOffset> dynamicSizeOffsets{};
+	std::vector<VkDescriptorSetLayout> layouts{};
+	std::vector<VkDescriptorSet> handles{};
+	
+	if (rootSignature->GetVkDescriptorSetLayouts()[static_cast<uint32_t>(updateFreq)] != VK_NULL_HANDLE)
+	{
+		layouts.resize(maxSets);
+		handles.resize(maxSets);
+
+		for(uint32_t i = 0; i < maxSets; ++i)
+		{
+			layouts[i] = rootSignature->GetVkDescriptorSetLayouts()[static_cast<uint32_t>(updateFreq)];
+
+			updateData[i] = rootSignature->GetUpdateTemplateData()[static_cast<uint32_t>(updateFreq)];
+		}
+
+		for(uint32_t i = 0; i < handles.size(); ++i)
+			handles[i] = RetrieveVkDescriptorSet(layouts[i]);
+	}
+	else
+	{
+		TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, "nullptr Descriptor Set Layout for update frequency ", static_cast<uint32_t>(updateFreq), ". Cannot allocate descriptor set");
+		TRAP_ASSERT(false, "nullptr Descriptor Set Layout for update frequency. Cannot allocate descriptor set");
+	}
+
+	if(dynamicOffsetCount)
+	{
+		TRAP_ASSERT(dynamicOffsetCount == 1);
+	}
+	
+	m_descriptorSets.push_back(TRAP::Scope<VulkanDescriptorSet>(new VulkanDescriptorSet(handles, rootSignature, updateData, dynamicSizeOffsets, maxSets, dynamicOffsetCount, updateFreq)));
 
 	return *m_descriptorSets.back();
 }

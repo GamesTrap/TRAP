@@ -33,7 +33,7 @@ bool ShaderVariableCmp(TRAP::Graphics::API::ShaderReflection::ShaderVariable& a,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graphics::API::ShaderReflection::CreatePipelineReflection(
+TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graphics::API::ShaderReflection::CreatePipelineReflection(
 	const std::array<ShaderReflection, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& reflection,
 	const uint32_t stageCount)
 {
@@ -68,7 +68,7 @@ TRAP::Scope<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Gra
 	std::vector<ShaderVariable> variables;
 	uint32_t variableCount = 0;
 
-	TRAP::Scope<PipelineReflection> out = TRAP::MakeScope<PipelineReflection>();
+	TRAP::Ref<PipelineReflection> out = TRAP::MakeRef<PipelineReflection>();
 	
 	std::array<ShaderResource*, 512> uniqueResources{};
 	std::array<RendererAPI::ShaderStage, 512> shaderUsage{};

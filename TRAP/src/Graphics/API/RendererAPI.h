@@ -23,6 +23,20 @@ namespace TRAP::Graphics
 	enum class RendererBufferType;
 }
 
+namespace TRAP::Graphics::API
+{
+	class VulkanBuffer;
+
+	namespace ShaderReflection
+	{
+		enum class TextureDimension;
+	}
+
+	class VulkanRootSignature;
+	class VulkanShader;
+	class VulkanSampler;
+}
+
 namespace TRAP::Graphics
 {	
 	enum class RenderAPI
@@ -615,6 +629,24 @@ namespace TRAP::Graphics
 
 			SHADER_STAGE_COUNT = 7
 		};
+
+		enum class RootSignatureFlags
+		{
+			//Default flag
+			None = 0,
+			//Local root signature used mainly in raytracing shaders
+			Local = 0x1
+		};
+
+		enum class PipelineType
+		{
+			Undefined = 0,
+			Compute,
+			Graphics,
+			RayTracing,
+
+			PIPELINE_TYPE_COUNT
+		};
 		
 		union ClearValue
 		{
@@ -767,6 +799,40 @@ namespace TRAP::Graphics
 			BinaryShaderStageDesc TessellationEvaluation;
 			BinaryShaderStageDesc Compute;
 		};
+
+		struct RootSignatureDesc
+		{
+			std::vector<TRAP::Ref<API::VulkanShader>> Shaders;
+			uint32_t MaxBindlessTextures;
+			std::vector<const char*> StaticSamplerNames;
+			std::vector<TRAP::Ref<API::VulkanSampler>> StaticSamplers;
+			RootSignatureFlags Flags;
+		};
+
+		struct DescriptorInfo
+		{
+			const char* Name;
+			DescriptorType Type;
+			API::ShaderReflection::TextureDimension Dimension;
+			bool RootDescriptor;
+			DescriptorUpdateFrequency UpdateFrequency;
+			uint32_t Size;
+			//Index in the descriptor set
+			uint32_t IndexInParent;
+			uint32_t HandleIndex;
+
+			VkDescriptorType VkType;
+			uint32_t Reg;
+			uint32_t RootDescriptorIndex;
+			uint32_t VkStages;
+		};
+
+		struct DescriptorSetDesc
+		{
+			TRAP::Ref<API::VulkanRootSignature> RootSignature;
+			DescriptorUpdateFrequency UpdateFrequency;
+			uint32_t MaxSets;
+		};
 		
 		struct QueueDesc
 		{
@@ -819,5 +885,6 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::DescriptorType);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::QueueFlag);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::BufferCreationFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShaderStage);
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::RootSignatureFlags);
 
 #endif /*_TRAP_RENDERERAPI_H_*/

@@ -24,6 +24,8 @@ namespace TRAP::Graphics::API
 	VkFilter FilterTypeToVkFilter(RendererAPI::FilterType filter);
 	VkSamplerMipmapMode MipMapModeToVkMipMapMode(RendererAPI::MipMapMode mipMapMode);
 	VkSamplerAddressMode AddressModeToVkAddressMode(RendererAPI::AddressMode addressMode);
+	VkDescriptorType DescriptorTypeToVkDescriptorType(RendererAPI::DescriptorType type);
+	VkShaderStageFlags ShaderStageToVkShaderStageFlags(RendererAPI::ShaderStage stages);
 	
 	void VkSetObjectName(VkDevice device, uint64_t handle, VkObjectType type, const char* name);
 
@@ -44,6 +46,14 @@ namespace TRAP::Graphics::API
 		VK_COMPARE_OP_NOT_EQUAL,
 		VK_COMPARE_OP_GREATER_OR_EQUAL,
 		VK_COMPARE_OP_ALWAYS
+	};
+
+	inline static constexpr std::array<VkPipelineBindPoint, static_cast<uint32_t>(RendererAPI::PipelineType::PIPELINE_TYPE_COUNT)> VkPipelineBindPointTranslator =
+	{
+		VK_PIPELINE_BIND_POINT_MAX_ENUM,
+		VK_PIPELINE_BIND_POINT_COMPUTE,
+		VK_PIPELINE_BIND_POINT_GRAPHICS,
+		VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR
 	};
 }
 

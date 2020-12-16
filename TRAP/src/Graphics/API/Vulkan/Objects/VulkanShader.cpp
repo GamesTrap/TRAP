@@ -145,3 +145,38 @@ TRAP::Graphics::API::VulkanShader::~VulkanShader()
 	m_reflection.reset();
 	m_reflection = nullptr;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RendererAPI::ShaderStage TRAP::Graphics::API::VulkanShader::GetShaderStages() const
+{
+	return m_stages;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::array<uint32_t, 3>& TRAP::Graphics::API::VulkanShader::GetNumThreadsPerGroup() const
+{
+	return m_numThreadsPerGroup;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<VkShaderModule>& TRAP::Graphics::API::VulkanShader::GetVkShaderModules() const
+{
+	return m_shaderModules;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::API::ShaderReflection::PipelineReflection> TRAP::Graphics::API::VulkanShader::GetReflection() const
+{
+	return m_reflection;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<std::string>& TRAP::Graphics::API::VulkanShader::GetEntryNames() const
+{
+	return m_entryNames;
+}

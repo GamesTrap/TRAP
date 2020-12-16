@@ -80,6 +80,22 @@ VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObject
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkDebugUtilsLabelEXT TRAP::Graphics::API::VulkanInits::DebugUtilsLabelExt(const float r, const float g, const float b, const char* name)
+{
+	VkDebugUtilsLabelEXT info;
+
+	info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
+	info.color[0] = r;
+	info.color[1] = g;
+	info.color[2] = b;
+	info.color[3] = 1.0f;
+	info.pLabelName = name;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkDeviceCreateInfo TRAP::Graphics::API::VulkanInits::DeviceCreateInfo(const void* pNext,
                                                                       const std::vector<VkDeviceQueueCreateInfo>& queueCreateInfos,
 																	  const std::vector<const char*>& deviceExtensions)
@@ -155,6 +171,46 @@ VkDescriptorSetAllocateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetAlloc
 	info.descriptorSetCount = 1;
 	info.pSetLayouts = &descriptorLayout;
 
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkDescriptorSetLayoutCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorSetLayoutCreateInfo(const std::vector<VkDescriptorSetLayoutBinding>& bindings)
+{
+	VkDescriptorSetLayoutCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.bindingCount = static_cast<uint32_t>(bindings.size());
+	info.pBindings = bindings.data();
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkDescriptorUpdateTemplateCreateInfo TRAP::Graphics::API::VulkanInits::DescriptorUpdateTemplateCreateInfo(VkDescriptorSetLayout descriptorSetLayout,
+	const uint32_t entryCount,
+	VkDescriptorUpdateTemplateEntry* entries,
+	const VkPipelineBindPoint bindPoint,
+	VkPipelineLayout pipelineLayout,
+	const uint32_t setIndex)
+{
+	VkDescriptorUpdateTemplateCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.descriptorSetLayout = descriptorSetLayout;
+	info.descriptorUpdateEntryCount = entryCount;
+	info.pDescriptorUpdateEntries = entries;
+	info.pipelineBindPoint = bindPoint;
+	info.pipelineLayout = pipelineLayout;
+	info.set = setIndex;
+	info.templateType = VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_DESCRIPTOR_SET;
+	
 	return info;
 }
 
@@ -481,6 +537,26 @@ VkSamplerCreateInfo TRAP::Graphics::API::VulkanInits::SamplerCreateInfo(const Vk
 	info.maxLod = (mipMapMode == VK_SAMPLER_MIPMAP_MODE_LINEAR) ? std::numeric_limits<float>::max() : 0.0f;
 	info.borderColor = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
 	info.unnormalizedCoordinates = VK_FALSE;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPipelineLayoutCreateInfo TRAP::Graphics::API::VulkanInits::PipelineLayoutCreateInfo(const uint32_t layoutCount,
+	VkDescriptorSetLayout* layouts,
+	const uint32_t pushConstantRangeCount,
+	VkPushConstantRange* pushConstants)
+{
+	VkPipelineLayoutCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.setLayoutCount = layoutCount;
+	info.pSetLayouts = layouts;
+	info.pushConstantRangeCount = pushConstantRangeCount;
+	info.pPushConstantRanges = pushConstants;
 	
 	return info;
 }

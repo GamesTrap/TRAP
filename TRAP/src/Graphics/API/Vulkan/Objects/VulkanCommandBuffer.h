@@ -17,6 +17,13 @@ namespace TRAP::Graphics::API
 		VkCommandBuffer& GetVkCommandBuffer();
 		RendererAPI::QueueType GetQueueType() const;
 		bool IsSecondary() const;
+
+		void BindPushConstants(const TRAP::Ref<VulkanRootSignature>& rootSignature, const char* name, const void* constants) const;
+		void BindPushConstantsByIndex(const TRAP::Ref<VulkanRootSignature>& rootSignature, uint32_t paramIndex, const void* constants) const;
+
+		void AddDebugMarker(float r, float g, float b, const char* name) const;
+		void BeginDebugMarker(float r, float g, float b, const char* name) const;
+		void EndDebugMarker() const;
 		
 	private:
 		friend VulkanCommandPool;
