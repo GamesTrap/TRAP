@@ -1,8 +1,12 @@
 #include "TRAPPCH.h"
 #include "VulkanQueue.h"
 
+#include "VulkanFence.h"
+#include "VulkanSemaphore.h"
+#include "VulkanCommandBuffer.h"
 #include "VulkanPhysicalDevice.h"
 #include "VulkanDevice.h"
+#include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
@@ -93,4 +97,54 @@ float TRAP::Graphics::API::VulkanQueue::GetTimestampPeriod() const
 void TRAP::Graphics::API::VulkanQueue::WaitQueueIdle() const
 {
 	VkCall(vkQueueWaitIdle(m_vkQueue));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc& desc)
+{
+	TRAP_ASSERT(!desc.Cmds.empty());
+	TRAP_ASSERT(m_vkQueue != VK_NULL_HANDLE);
+
+	std::vector<VkCommandBuffer> cmds(desc.Cmds.size());
+	for (uint32_t i = 0; i < desc.Cmds.size(); ++i)
+		cmds[i] = desc.Cmds[i]->GetVkCommandBuffer();
+
+	std::vector<VkSemaphore> waitSemaphores(desc.WaitSemaphores.size());
+	std::vector<VkPipelineStageFlags> waitMasks(desc.WaitSemaphores.size());
+	uint32_t waitCount = 0;
+	for(uint32_t i = 0; i < desc.WaitSemaphores.size(); ++i)
+	{
+		if(desc.WaitSemaphores[i]->IsSignaled())
+		{
+			waitSemaphores[waitCount] = desc.WaitSemaphores[i]->GetVkSemaphore();
+			waitMasks[waitCount] = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+			++waitCount;
+
+			desc.WaitSemaphores[i]->m_signaled = false;
+		}
+	}
+
+	std::vector<VkSemaphore> signalSemaphores(desc.SignalSemaphores.size());
+	uint32_t signalCount = 0;
+	for(uint32_t i = 0; i < desc.SignalSemaphores.size(); ++i)
+	{
+		if(!desc.SignalSemaphores[i]->IsSignaled())
+		{
+			signalSemaphores[signalCount] = desc.SignalSemaphores[i]->GetVkSemaphore();
+			desc.SignalSemaphores[signalCount]->m_signaled = true;
+			++signalCount;
+		}
+	}
+
+	VkSubmitInfo submitInfo = VulkanInits::SubmitInfo(waitSemaphores, waitMasks, cmds, signalSemaphores);
+
+	//Lightweight lock to make sure multiple threads dont use the same queue simultaneously
+	//Many setups have just one queue family and one queue.
+	//In this case, async compute, async transfer doesn't exist and we end up using the same queue for all three operations
+	std::lock_guard<std::mutex> lock(m_submitMutex);
+	VkCall(vkQueueSubmit(m_vkQueue, 1, &submitInfo, desc.SignalFence ? desc.SignalFence->GetVkFence() : VK_NULL_HANDLE));
+
+	if (desc.SignalFence)
+		desc.SignalFence->m_submitted = true;
 }

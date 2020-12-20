@@ -25,6 +25,9 @@ namespace TRAP::Graphics
 
 namespace TRAP::Graphics::API
 {
+	class VulkanSemaphore;
+	class VulkanFence;
+	class VulkanCommandBuffer;
 	class VulkanBuffer;
 
 	namespace ShaderReflection
@@ -162,6 +165,314 @@ namespace TRAP::Graphics
 		static constexpr bool ImageFormatHasStencil(const ImageFormat fmt)
 		{
 			return ImageFormatIsStencilOnly(fmt) || ImageFormatIsDepthAndStencil(fmt);
+		}
+		static constexpr uint32_t ImageFormatBitSizeOfBlock(const ImageFormat fmt)
+		{
+			switch(fmt)
+			{
+			case ImageFormat::Undefined: return 0;
+			case ImageFormat::R1_UNORM: return 8;
+			case ImageFormat::R2_UNORM: return 8;
+			case ImageFormat::R4_UNORM: return 8;
+			case ImageFormat::R4G4_UNORM: return 8;
+			case ImageFormat::G4R4_UNORM: return 8;
+			case ImageFormat::A8_UNORM: return 8;
+			case ImageFormat::R8_UNORM: return 8;
+			case ImageFormat::R8_SNORM: return 8;
+			case ImageFormat::R8_UINT: return 8;
+			case ImageFormat::R8_SINT: return 8;
+			case ImageFormat::R8_SRGB: return 8;
+			case ImageFormat::B2G3R3_UNORM: return 8;
+			case ImageFormat::R4G4B4A4_UNORM: return 16;
+			case ImageFormat::R4G4B4X4_UNORM: return 16;
+			case ImageFormat::B4G4R4A4_UNORM: return 16;
+			case ImageFormat::B4G4R4X4_UNORM: return 16;
+			case ImageFormat::A4R4G4B4_UNORM: return 16;
+			case ImageFormat::X4R4G4B4_UNORM: return 16;
+			case ImageFormat::A4B4G4R4_UNORM: return 16;
+			case ImageFormat::X4B4G4R4_UNORM: return 16;
+			case ImageFormat::R5G6B5_UNORM: return 16;
+			case ImageFormat::B5G6R5_UNORM: return 16;
+			case ImageFormat::R5G5B5A1_UNORM: return 16;
+			case ImageFormat::B5G5R5A1_UNORM: return 16;
+			case ImageFormat::A1B5G5R5_UNORM: return 16;
+			case ImageFormat::A1R5G5B5_UNORM: return 16;
+			case ImageFormat::R5G5B5X1_UNORM: return 16;
+			case ImageFormat::B5G5R5X1_UNORM: return 16;
+			case ImageFormat::X1R5G5B5_UNORM: return 16;
+			case ImageFormat::X1B5G5R5_UNORM: return 16;
+			case ImageFormat::B2G3R3A8_UNORM: return 16;
+			case ImageFormat::R8G8_UNORM: return 16;
+			case ImageFormat::R8G8_SNORM: return 16;
+			case ImageFormat::G8R8_UNORM: return 16;
+			case ImageFormat::G8R8_SNORM: return 16;
+			case ImageFormat::R8G8_UINT: return 16;
+			case ImageFormat::R8G8_SINT: return 16;
+			case ImageFormat::R8G8_SRGB: return 16;
+			case ImageFormat::R16_UNORM: return 16;
+			case ImageFormat::R16_SNORM: return 16;
+			case ImageFormat::R16_UINT: return 16;
+			case ImageFormat::R16_SINT: return 16;
+			case ImageFormat::R16_SFLOAT: return 16;
+			case ImageFormat::R16_SBFLOAT: return 16;
+			case ImageFormat::R8G8B8_UNORM: return 24;
+			case ImageFormat::R8G8B8_SNORM: return 24;
+			case ImageFormat::R8G8B8_UINT: return 24;
+			case ImageFormat::R8G8B8_SINT: return 24;
+			case ImageFormat::R8G8B8_SRGB: return 24;
+			case ImageFormat::B8G8R8_UNORM: return 24;
+			case ImageFormat::B8G8R8_SNORM: return 24;
+			case ImageFormat::B8G8R8_UINT: return 24;
+			case ImageFormat::B8G8R8_SINT: return 24;
+			case ImageFormat::B8G8R8_SRGB: return 24;
+			case ImageFormat::R16G16B16_UNORM: return 48;
+			case ImageFormat::R16G16B16_SNORM: return 48;
+			case ImageFormat::R16G16B16_UINT: return 48;
+			case ImageFormat::R16G16B16_SINT: return 48;
+			case ImageFormat::R16G16B16_SFLOAT: return 48;
+			case ImageFormat::R16G16B16_SBFLOAT: return 48;
+			case ImageFormat::R16G16B16A16_UNORM: return 64;
+			case ImageFormat::R16G16B16A16_SNORM: return 64;
+			case ImageFormat::R16G16B16A16_UINT: return 64;
+			case ImageFormat::R16G16B16A16_SINT: return 64;
+			case ImageFormat::R16G16B16A16_SFLOAT: return 64;
+			case ImageFormat::R16G16B16A16_SBFLOAT: return 64;
+			case ImageFormat::R32G32_UINT: return 64;
+			case ImageFormat::R32G32_SINT: return 64;
+			case ImageFormat::R32G32_SFLOAT: return 64;
+			case ImageFormat::R32G32B32_UINT: return 96;
+			case ImageFormat::R32G32B32_SINT: return 96;
+			case ImageFormat::R32G32B32_SFLOAT: return 96;
+			case ImageFormat::R32G32B32A32_UINT: return 128;
+			case ImageFormat::R32G32B32A32_SINT: return 128;
+			case ImageFormat::R32G32B32A32_SFLOAT: return 128;
+			case ImageFormat::R64_UINT: return 64;
+			case ImageFormat::R64_SINT: return 64;
+			case ImageFormat::R64_SFLOAT: return 64;
+			case ImageFormat::R64G64_UINT: return 128;
+			case ImageFormat::R64G64_SINT: return 128;
+			case ImageFormat::R64G64_SFLOAT: return 128;
+			case ImageFormat::R64G64B64_UINT: return 192;
+			case ImageFormat::R64G64B64_SINT: return 192;
+			case ImageFormat::R64G64B64_SFLOAT: return 192;
+			case ImageFormat::R64G64B64A64_UINT: return 256;
+			case ImageFormat::R64G64B64A64_SINT: return 256;
+			case ImageFormat::R64G64B64A64_SFLOAT: return 256;
+			case ImageFormat::D16_UNORM: return 16;
+			case ImageFormat::S8_UINT: return 8;
+			case ImageFormat::D32_SFLOAT_S8_UINT: return 64;
+			case ImageFormat::DXBC1_RGB_UNORM: return 64;
+			case ImageFormat::DXBC1_RGB_SRGB: return 64;
+			case ImageFormat::DXBC1_RGBA_UNORM: return 64;
+			case ImageFormat::DXBC1_RGBA_SRGB: return 64;
+			case ImageFormat::DXBC2_UNORM: return 128;
+			case ImageFormat::DXBC2_SRGB: return 128;
+			case ImageFormat::DXBC3_UNORM: return 128;
+			case ImageFormat::DXBC3_SRGB: return 128;
+			case ImageFormat::DXBC4_UNORM: return 64;
+			case ImageFormat::DXBC4_SNORM: return 64;
+			case ImageFormat::DXBC5_UNORM: return 128;
+			case ImageFormat::DXBC5_SNORM: return 128;
+			case ImageFormat::DXBC6H_UFLOAT: return 128;
+			case ImageFormat::DXBC6H_SFLOAT: return 128;
+			case ImageFormat::DXBC7_UNORM: return 128;
+			case ImageFormat::DXBC7_SRGB: return 128;
+			case ImageFormat::PVRTC1_2BPP_UNORM: return 64;
+			case ImageFormat::PVRTC1_4BPP_UNORM: return 64;
+			case ImageFormat::PVRTC2_2BPP_UNORM: return 64;
+			case ImageFormat::PVRTC2_4BPP_UNORM: return 64;
+			case ImageFormat::PVRTC1_2BPP_SRGB: return 64;
+			case ImageFormat::PVRTC1_4BPP_SRGB: return 64;
+			case ImageFormat::PVRTC2_2BPP_SRGB: return 64;
+			case ImageFormat::PVRTC2_4BPP_SRGB: return 64;
+			case ImageFormat::ETC2_R8G8B8_UNORM: return 64;
+			case ImageFormat::ETC2_R8G8B8_SRGB: return 64;
+			case ImageFormat::ETC2_R8G8B8A1_UNORM: return 64;
+			case ImageFormat::ETC2_R8G8B8A1_SRGB: return 64;
+			case ImageFormat::ETC2_R8G8B8A8_UNORM: return 64;
+			case ImageFormat::ETC2_R8G8B8A8_SRGB: return 64;
+			case ImageFormat::ETC2_EAC_R11_UNORM: return 64;
+			case ImageFormat::ETC2_EAC_R11_SNORM: return 64;
+			case ImageFormat::ETC2_EAC_R11G11_UNORM: return 64;
+			case ImageFormat::ETC2_EAC_R11G11_SNORM: return 64;
+			case ImageFormat::ASTC_4x4_UNORM: return 128;
+			case ImageFormat::ASTC_4x4_SRGB: return 128;
+			case ImageFormat::ASTC_5x4_UNORM: return 128;
+			case ImageFormat::ASTC_5x4_SRGB: return 128;
+			case ImageFormat::ASTC_5x5_UNORM: return 128;
+			case ImageFormat::ASTC_5x5_SRGB: return 128;
+			case ImageFormat::ASTC_6x5_UNORM: return 128;
+			case ImageFormat::ASTC_6x5_SRGB: return 128;
+			case ImageFormat::ASTC_6x6_UNORM: return 128;
+			case ImageFormat::ASTC_6x6_SRGB: return 128;
+			case ImageFormat::ASTC_8x5_UNORM: return 128;
+			case ImageFormat::ASTC_8x5_SRGB: return 128;
+			case ImageFormat::ASTC_8x6_UNORM: return 128;
+			case ImageFormat::ASTC_8x6_SRGB: return 128;
+			case ImageFormat::ASTC_8x8_UNORM: return 128;
+			case ImageFormat::ASTC_8x8_SRGB: return 128;
+			case ImageFormat::ASTC_10x5_UNORM: return 128;
+			case ImageFormat::ASTC_10x5_SRGB: return 128;
+			case ImageFormat::ASTC_10x6_UNORM: return 128;
+			case ImageFormat::ASTC_10x6_SRGB: return 128;
+			case ImageFormat::ASTC_10x8_UNORM: return 128;
+			case ImageFormat::ASTC_10x8_SRGB: return 128;
+			case ImageFormat::ASTC_10x10_UNORM: return 128;
+			case ImageFormat::ASTC_10x10_SRGB: return 128;
+			case ImageFormat::ASTC_12x10_UNORM: return 128;
+			case ImageFormat::ASTC_12x10_SRGB: return 128;
+			case ImageFormat::ASTC_12x12_UNORM: return 128;
+			case ImageFormat::ASTC_12x12_SRGB: return 128;
+			case ImageFormat::CLUT_P4: return 8;
+			case ImageFormat::CLUT_P4A4: return 8;
+			case ImageFormat::CLUT_P8: return 8;
+			case ImageFormat::CLUT_P8A8: return 16;
+			default: return 32;
+			}
+		}
+		static constexpr uint32_t ImageFormatWidthOfBlock(const ImageFormat fmt)
+		{
+			switch(fmt)
+			{
+			case ImageFormat::Undefined: return 1;
+			case ImageFormat::R1_UNORM: return 8;
+			case ImageFormat::R2_UNORM: return 4;
+			case ImageFormat::R4_UNORM: return 2;
+			case ImageFormat::DXBC1_RGB_UNORM: return 4;
+			case ImageFormat::DXBC1_RGB_SRGB: return 4;
+			case ImageFormat::DXBC1_RGBA_UNORM: return 4;
+			case ImageFormat::DXBC1_RGBA_SRGB: return 4;
+			case ImageFormat::DXBC2_UNORM: return 4;
+			case ImageFormat::DXBC2_SRGB: return 4;
+			case ImageFormat::DXBC3_UNORM: return 4;
+			case ImageFormat::DXBC3_SRGB: return 4;
+			case ImageFormat::DXBC4_UNORM: return 4;
+			case ImageFormat::DXBC4_SNORM: return 4;
+			case ImageFormat::DXBC5_UNORM: return 4;
+			case ImageFormat::DXBC5_SNORM: return 4;
+			case ImageFormat::DXBC6H_UFLOAT: return 4;
+			case ImageFormat::DXBC6H_SFLOAT: return 4;
+			case ImageFormat::DXBC7_UNORM: return 4;
+			case ImageFormat::DXBC7_SRGB: return 4;
+			case ImageFormat::PVRTC1_2BPP_UNORM: return 8;
+			case ImageFormat::PVRTC1_4BPP_UNORM: return 4;
+			case ImageFormat::PVRTC2_2BPP_UNORM: return 8;
+			case ImageFormat::PVRTC2_4BPP_UNORM: return 4;
+			case ImageFormat::PVRTC1_2BPP_SRGB: return 8;
+			case ImageFormat::PVRTC1_4BPP_SRGB: return 4;
+			case ImageFormat::PVRTC2_2BPP_SRGB: return 8;
+			case ImageFormat::PVRTC2_4BPP_SRGB: return 4;
+			case ImageFormat::ETC2_R8G8B8_UNORM: return 4;
+			case ImageFormat::ETC2_R8G8B8_SRGB: return 4;
+			case ImageFormat::ETC2_R8G8B8A1_UNORM: return 4;
+			case ImageFormat::ETC2_R8G8B8A1_SRGB: return 4;
+			case ImageFormat::ETC2_R8G8B8A8_UNORM: return 4;
+			case ImageFormat::ETC2_R8G8B8A8_SRGB: return 4;
+			case ImageFormat::ETC2_EAC_R11_UNORM: return 4;
+			case ImageFormat::ETC2_EAC_R11_SNORM: return 4;
+			case ImageFormat::ETC2_EAC_R11G11_UNORM: return 4;
+			case ImageFormat::ETC2_EAC_R11G11_SNORM: return 4;
+			case ImageFormat::ASTC_4x4_UNORM: return 4;
+			case ImageFormat::ASTC_4x4_SRGB: return 4;
+			case ImageFormat::ASTC_5x4_UNORM: return 5;
+			case ImageFormat::ASTC_5x4_SRGB: return 5;
+			case ImageFormat::ASTC_5x5_UNORM: return 5;
+			case ImageFormat::ASTC_5x5_SRGB: return 5;
+			case ImageFormat::ASTC_6x5_UNORM: return 6;
+			case ImageFormat::ASTC_6x5_SRGB: return 6;
+			case ImageFormat::ASTC_6x6_UNORM: return 6;
+			case ImageFormat::ASTC_6x6_SRGB: return 6;
+			case ImageFormat::ASTC_8x5_UNORM: return 8;
+			case ImageFormat::ASTC_8x5_SRGB: return 8;
+			case ImageFormat::ASTC_8x6_UNORM: return 8;
+			case ImageFormat::ASTC_8x6_SRGB: return 8;
+			case ImageFormat::ASTC_8x8_UNORM: return 8;
+			case ImageFormat::ASTC_8x8_SRGB: return 8;
+			case ImageFormat::ASTC_10x5_UNORM: return 10;
+			case ImageFormat::ASTC_10x5_SRGB: return 10;
+			case ImageFormat::ASTC_10x6_UNORM: return 10;
+			case ImageFormat::ASTC_10x6_SRGB: return 10;
+			case ImageFormat::ASTC_10x8_UNORM: return 10;
+			case ImageFormat::ASTC_10x8_SRGB: return 10;
+			case ImageFormat::ASTC_10x10_UNORM: return 10;
+			case ImageFormat::ASTC_10x10_SRGB: return 10;
+			case ImageFormat::ASTC_12x10_UNORM: return 12;
+			case ImageFormat::ASTC_12x10_SRGB: return 12;
+			case ImageFormat::ASTC_12x12_UNORM: return 12;
+			case ImageFormat::ASTC_12x12_SRGB: return 12;
+			case ImageFormat::CLUT_P4: return 2;
+			default: return 1;
+			}
+		}
+		static constexpr uint32_t ImageFormatHeightOfBlock(const ImageFormat fmt)
+		{
+			switch(fmt)
+			{
+			case ImageFormat::Undefined: return 1;
+			case ImageFormat::DXBC1_RGB_UNORM: return 4;
+			case ImageFormat::DXBC1_RGB_SRGB: return 4;
+			case ImageFormat::DXBC1_RGBA_UNORM: return 4;
+			case ImageFormat::DXBC1_RGBA_SRGB: return 4;
+			case ImageFormat::DXBC2_UNORM: return 4;
+			case ImageFormat::DXBC2_SRGB: return 4;
+			case ImageFormat::DXBC3_UNORM: return 4;
+			case ImageFormat::DXBC3_SRGB: return 4;
+			case ImageFormat::DXBC4_UNORM: return 4;
+			case ImageFormat::DXBC4_SNORM: return 4;
+			case ImageFormat::DXBC5_UNORM: return 4;
+			case ImageFormat::DXBC5_SNORM: return 4;
+			case ImageFormat::DXBC6H_UFLOAT: return 4;
+			case ImageFormat::DXBC6H_SFLOAT: return 4;
+			case ImageFormat::DXBC7_UNORM: return 4;
+			case ImageFormat::DXBC7_SRGB: return 4;
+			case ImageFormat::PVRTC1_2BPP_UNORM: return 4;
+			case ImageFormat::PVRTC1_4BPP_UNORM: return 4;
+			case ImageFormat::PVRTC2_2BPP_UNORM: return 4;
+			case ImageFormat::PVRTC2_4BPP_UNORM: return 4;
+			case ImageFormat::PVRTC1_2BPP_SRGB: return 4;
+			case ImageFormat::PVRTC1_4BPP_SRGB: return 4;
+			case ImageFormat::PVRTC2_2BPP_SRGB: return 4;
+			case ImageFormat::PVRTC2_4BPP_SRGB: return 4;
+			case ImageFormat::ETC2_R8G8B8_UNORM: return 4;
+			case ImageFormat::ETC2_R8G8B8_SRGB: return 4;
+			case ImageFormat::ETC2_R8G8B8A1_UNORM: return 4;
+			case ImageFormat::ETC2_R8G8B8A1_SRGB: return 4;
+			case ImageFormat::ETC2_R8G8B8A8_UNORM: return 4;
+			case ImageFormat::ETC2_R8G8B8A8_SRGB: return 4;
+			case ImageFormat::ETC2_EAC_R11_UNORM: return 4;
+			case ImageFormat::ETC2_EAC_R11_SNORM: return 4;
+			case ImageFormat::ETC2_EAC_R11G11_UNORM: return 4;
+			case ImageFormat::ETC2_EAC_R11G11_SNORM: return 4;
+			case ImageFormat::ASTC_4x4_UNORM: return 4;
+			case ImageFormat::ASTC_4x4_SRGB: return 4;
+			case ImageFormat::ASTC_5x4_UNORM: return 4;
+			case ImageFormat::ASTC_5x4_SRGB: return 4;
+			case ImageFormat::ASTC_5x5_UNORM: return 5;
+			case ImageFormat::ASTC_5x5_SRGB: return 5;
+			case ImageFormat::ASTC_6x5_UNORM: return 5;
+			case ImageFormat::ASTC_6x5_SRGB: return 5;
+			case ImageFormat::ASTC_6x6_UNORM: return 6;
+			case ImageFormat::ASTC_6x6_SRGB: return 6;
+			case ImageFormat::ASTC_8x5_UNORM: return 5;
+			case ImageFormat::ASTC_8x5_SRGB: return 5;
+			case ImageFormat::ASTC_8x6_UNORM: return 6;
+			case ImageFormat::ASTC_8x6_SRGB: return 6;
+			case ImageFormat::ASTC_8x8_UNORM: return 8;
+			case ImageFormat::ASTC_8x8_SRGB: return 8;
+			case ImageFormat::ASTC_10x5_UNORM: return 5;
+			case ImageFormat::ASTC_10x5_SRGB: return 5;
+			case ImageFormat::ASTC_10x6_UNORM: return 6;
+			case ImageFormat::ASTC_10x6_SRGB: return 6;
+			case ImageFormat::ASTC_10x8_UNORM: return 8;
+			case ImageFormat::ASTC_10x8_SRGB: return 8;
+			case ImageFormat::ASTC_10x10_UNORM: return 10;
+			case ImageFormat::ASTC_10x10_SRGB: return 10;
+			case ImageFormat::ASTC_12x10_UNORM: return 10;
+			case ImageFormat::ASTC_12x10_SRGB: return 10;
+			case ImageFormat::ASTC_12x12_UNORM: return 12;
+			case ImageFormat::ASTC_12x12_SRGB: return 12;
+			default: return 1;
+			}
 		}
 
 		enum class WaveOpsSupportFlags : uint32_t
@@ -435,7 +746,9 @@ namespace TRAP::Graphics
 			CLUT_P4 = 198,
 			CLUT_P4A4 = 199,
 			CLUT_P8 = 200,
-			CLUT_P8A8 = 201
+			CLUT_P8A8 = 201,
+			
+			IMAGE_FORMAT_COUNT = 202
 		};
 
 		enum class TextureCreationFlags
@@ -647,6 +960,63 @@ namespace TRAP::Graphics
 
 			PIPELINE_TYPE_COUNT
 		};
+
+		enum class IndexType
+		{
+			UInt32 = 0,
+			UInt16
+		};
+
+		enum class BlendConstant
+		{
+			Zero = 0,
+			One,
+			SrcColor,
+			OneMinusSrcColor,
+			DstColor,
+			OneMinusDstColor,
+			SrcAlpha,
+			OneMinusSrcAlpha,
+			DstAlpha,
+			OneMinusDstAlpha,
+			SrcAlphaSaturate,
+			BlendFactor,
+			OneMinusBlendFactor,
+
+			MAX_BLEND_CONSTANTS
+		};
+
+		enum class BlendMode
+		{
+			Add,
+			Subtract,
+			ReverseSubtract,
+			Min,
+			Max,
+
+			MAX_BLEND_MODES
+		};
+
+		//Blend states are always attached to one of the eight or more render targets that are in a MRT
+		//Mask constants
+		enum class BlendStateTargets
+		{
+			BlendStateTarget0 = 0x1,
+			BlendStateTarget1 = 0x2,
+			BlendStateTarget2 = 0x4,
+			BlendStateTarget3 = 0x8,
+			BlendStateTarget4 = 0x10,
+			BlendStateTarget5 = 0x20,
+			BlendStateTarget6 = 0x40,
+			BlendStateTarget7 = 0x80,
+			
+			BlendStateTargetAll = 0xFF,
+		};
+		
+		enum
+		{
+			MaxRenderTargetAttachments = 8
+		};
 		
 		union ClearValue
 		{
@@ -847,6 +1217,40 @@ namespace TRAP::Graphics
 			uint64_t Range;
 		};
 
+		struct QueueSubmitDesc
+		{
+			std::vector<API::VulkanCommandBuffer*> Cmds;
+			TRAP::Ref<API::VulkanFence> SignalFence;
+			std::vector<TRAP::Ref<API::VulkanSemaphore>> WaitSemaphores;
+			std::vector<TRAP::Ref<API::VulkanSemaphore>> SignalSemaphores;
+			bool SubmitDone;
+		};
+
+		struct BlendStateDesc
+		{
+			//Source blend factor per render target.
+			std::array<BlendConstant, MaxRenderTargetAttachments> SrcFactors;
+			//Destination blend factor per render target.
+			std::array<BlendConstant, MaxRenderTargetAttachments> DstFactors;
+			//Source alpha blend factor per render target.
+			std::array<BlendConstant, MaxRenderTargetAttachments> SrcAlphaFactors;
+			//Destination alpha blend factor per render target.
+			std::array<BlendConstant, MaxRenderTargetAttachments> DstAlphaFactors;
+			//Blend mode per render target.
+			std::array<BlendMode, MaxRenderTargetAttachments> BlendModes;
+			//Alpha blend mode per render target.
+			std::array<BlendMode, MaxRenderTargetAttachments> BlendAlphaModes;
+			//Write mask per render target.
+			std::array<int32_t, MaxRenderTargetAttachments> Masks;
+			//Mask that identifies the render targets affected by the blend state.
+			BlendStateTargets RenderTargetMask;
+			//Set whether alpha to coverage should be enabled.
+			bool AlphaToCoverage;
+			//Set whether each render target has an unique blend function.
+			//When false the blend function in slot 0 will be used for all render targets.
+			bool IndependentBlend;
+		};
+		
 		/*inline static struct alignsas(64) Renderer
 		{
 			std::vector<std::pair<std::string, std::string>> BuiltinShaderDefines;
@@ -886,5 +1290,6 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::QueueFlag);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::BufferCreationFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShaderStage);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::RootSignatureFlags);
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::BlendStateTargets);
 
 #endif /*_TRAP_RENDERERAPI_H_*/

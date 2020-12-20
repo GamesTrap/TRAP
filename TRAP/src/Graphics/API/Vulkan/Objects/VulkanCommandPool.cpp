@@ -51,19 +51,19 @@ VkCommandPool& TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanCommandBuffer TRAP::Graphics::API::VulkanCommandPool::AllocateCommandBuffer(const bool secondary)
+TRAP::Graphics::API::VulkanCommandBuffer* TRAP::Graphics::API::VulkanCommandPool::AllocateCommandBuffer(const bool secondary)
 {	
 	m_commandBuffers.push_back(TRAP::Scope<VulkanCommandBuffer>(new VulkanCommandBuffer(m_device, m_queue, m_vkCommandPool, secondary)));
-	return *m_commandBuffers.back();
+	return m_commandBuffers.back().get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(const VulkanCommandBuffer& cmdBuffer)
+void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(VulkanCommandBuffer* cmdBuffer)
 {
 	for(uint32_t i = 0; i < m_commandBuffers.size(); i++)
 	{
-		if(m_commandBuffers[i].get() == &cmdBuffer)
+		if(m_commandBuffers[i].get() == cmdBuffer)
 		{
 			TRAP::Scope<VulkanCommandBuffer> cmdBuf = std::move(m_commandBuffers[i]);
 			cmdBuf.reset();
@@ -72,4 +72,12 @@ void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(const VulkanComma
 			m_commandBuffers.pop_back();
 		}
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandPool::Reset()
+{
+	VkCall(vkResetCommandPool(m_device->GetVkDevice(), m_vkCommandPool, 0));
+	m_commandBuffers.clear();
 }

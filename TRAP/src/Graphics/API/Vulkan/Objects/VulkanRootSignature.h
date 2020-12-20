@@ -6,18 +6,6 @@
 
 namespace TRAP::Graphics::API
 {
-	struct UpdateFrequencyLayoutInfo
-	{
-		//Array of all bindings in the descriptor set
-		std::vector<VkDescriptorSetLayoutBinding> Bindings{};
-		//Array of all descriptors in this descriptor set
-		std::vector<RendererAPI::DescriptorInfo*> Descriptors{};
-		//Array of all descriptors marked as dynamic in this descriptor set (applicable to DescriptorType::UniformBuffer)
-		std::vector<RendererAPI::DescriptorInfo*> DynamicDescriptors{};
-		//Hash map to get index of the descriptor in the root signature
-		std::unordered_map<RendererAPI::DescriptorInfo*, uint32_t> DescriptorIndexMap{};
-	};
-	
 	class VulkanRootSignature
 	{
 	public:

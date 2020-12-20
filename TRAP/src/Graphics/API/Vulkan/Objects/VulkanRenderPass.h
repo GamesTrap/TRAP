@@ -2,27 +2,16 @@
 #define _TRAP_VULKANRENDERPASS_H_
 
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
 {
 	class VulkanDevice;
-
-	struct RenderPassDesc
-	{
-		std::vector<RendererAPI::ImageFormat> ColorFormats;
-		std::vector<RendererAPI::LoadActionType> LoadActionsColor;
-		std::vector<bool> SRGBValues;
-		uint32_t RenderTargetCount;
-		RendererAPI::SampleCount SampleCount;
-		RendererAPI::ImageFormat DepthStencilFormat;
-		RendererAPI::LoadActionType LoadActionDepth;
-		RendererAPI::LoadActionType LoadActionStencil;
-	};
 	
 	class VulkanRenderPass
 	{
 	public:
-		VulkanRenderPass(TRAP::Ref<VulkanDevice> device, const RenderPassDesc& desc);
+		VulkanRenderPass(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::RenderPassDesc& desc);
 		~VulkanRenderPass();
 
 		VkRenderPass& GetVkRenderPass();
@@ -39,7 +28,6 @@ namespace TRAP::Graphics::API
 	private:
 		VkRenderPass m_renderPass;
 
-		//TODO Getters
 		std::vector<RendererAPI::ImageFormat> m_colorFormats;
 		std::vector<RendererAPI::LoadActionType> m_loadActionsColor;
 		std::vector<bool> m_SRGBValues;

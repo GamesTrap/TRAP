@@ -21,6 +21,8 @@ namespace TRAP::Graphics::API
 		float GetTimestampPeriod() const;
 
 		void WaitQueueIdle() const;
+
+		void Submit(const RendererAPI::QueueSubmitDesc& desc);
 		
 	private:
 		TRAP::Ref<VulkanDevice> m_device;

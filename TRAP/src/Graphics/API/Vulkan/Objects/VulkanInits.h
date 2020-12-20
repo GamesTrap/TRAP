@@ -121,6 +121,8 @@ namespace TRAP::Graphics::API::VulkanInits
 	VkCommandPoolCreateInfo CommandPoolCreateInfo(uint32_t queueFamilyIndex);
 
 	VkCommandBufferAllocateInfo CommandBufferAllocateInfo(VkCommandPool commandPool, bool secondary);
+
+	VkCommandBufferBeginInfo CommandBufferBeginInfo();
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -140,6 +142,22 @@ namespace TRAP::Graphics::API::VulkanInits
 	                                                    VkDescriptorSetLayout* layouts,
 	                                                    uint32_t pushConstantRangeCount,
 	                                                    VkPushConstantRange* pushConstants);
+
+	VkPipelineColorBlendStateCreateInfo PipelineColorBlendStateCreateInfo(const std::vector<VkPipelineColorBlendAttachmentState>& attachments);
+	
+	VkPipelineColorBlendStateCreateInfo PipelineColorBlendStateCreateInfo(VkLogicOp logicOp,
+		const std::vector<VkPipelineColorBlendAttachmentState>& attachments,
+		float blendConstR,
+		float blendConstG,
+		float blendConstB,
+		float blendConstA);
+	
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	VkSubmitInfo SubmitInfo(const std::vector<VkSemaphore>& waitSemaphores,
+	                        const std::vector<VkPipelineStageFlags>& waitMasks,
+	                        const std::vector<VkCommandBuffer>& cmds,
+	                        const std::vector<VkSemaphore>& signalSemaphore);
 }
 
 #endif /*_TRAP_VULKANINITS_H_*/

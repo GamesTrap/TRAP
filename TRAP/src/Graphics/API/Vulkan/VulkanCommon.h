@@ -26,6 +26,8 @@ namespace TRAP::Graphics::API
 	VkSamplerAddressMode AddressModeToVkAddressMode(RendererAPI::AddressMode addressMode);
 	VkDescriptorType DescriptorTypeToVkDescriptorType(RendererAPI::DescriptorType type);
 	VkShaderStageFlags ShaderStageToVkShaderStageFlags(RendererAPI::ShaderStage stages);
+
+	VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc, std::vector<VkPipelineColorBlendAttachmentState>& attachments);
 	
 	void VkSetObjectName(VkDevice device, uint64_t handle, VkObjectType type, const char* name);
 
@@ -54,6 +56,32 @@ namespace TRAP::Graphics::API
 		VK_PIPELINE_BIND_POINT_COMPUTE,
 		VK_PIPELINE_BIND_POINT_GRAPHICS,
 		VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR
+	};
+
+	inline static constexpr std::array<VkBlendFactor, static_cast<uint32_t>(RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS)> VkBlendConstantTranslator =
+	{
+		VK_BLEND_FACTOR_ZERO,
+		VK_BLEND_FACTOR_ONE,
+		VK_BLEND_FACTOR_SRC_COLOR,
+		VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR,
+		VK_BLEND_FACTOR_DST_COLOR,
+		VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR,
+		VK_BLEND_FACTOR_SRC_ALPHA,
+		VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
+		VK_BLEND_FACTOR_DST_ALPHA,
+		VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA,
+		VK_BLEND_FACTOR_SRC_ALPHA_SATURATE,
+		VK_BLEND_FACTOR_CONSTANT_COLOR,
+		VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR
+	};
+
+	inline static constexpr std::array<VkBlendOp, static_cast<uint32_t>(RendererAPI::BlendMode::MAX_BLEND_MODES)> VkBlendOpTranslator =
+	{
+		VK_BLEND_OP_ADD,
+		VK_BLEND_OP_SUBTRACT,
+		VK_BLEND_OP_REVERSE_SUBTRACT,
+		VK_BLEND_OP_MIN,
+		VK_BLEND_OP_MAX
 	};
 }
 

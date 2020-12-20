@@ -29,3 +29,45 @@ TRAP::Graphics::API::VulkanDescriptorSet::VulkanDescriptorSet(std::vector<VkDesc
 	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Creating DescriptorSet");
 #endif
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<VkDescriptorSet>& TRAP::Graphics::API::VulkanDescriptorSet::GetVkDescriptorSets() const
+{
+	return m_vkDescriptorSetHandles;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::API::VulkanRootSignature> TRAP::Graphics::API::VulkanDescriptorSet::GetRootSignature() const
+{
+	return m_rootSignature;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency TRAP::Graphics::API::VulkanDescriptorSet::GetUpdateFrequency() const
+{
+	return m_updateFrequency;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint8_t TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicOffsetCount() const
+{
+	return m_dynamicOffsetCount;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::vector<TRAP::Graphics::API::VulkanRenderer::SizeOffset> TRAP::Graphics::API::VulkanDescriptorSet::GetDynamicSizeOffsets() const
+{
+	return m_dynamicSizeOffsets;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetMaxSets() const
+{
+	return m_maxSets;
+}

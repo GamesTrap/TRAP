@@ -116,6 +116,21 @@ TRAP::Graphics::API::VulkanPhysicalDevice::VulkanPhysicalDevice(const TRAP::Ref<
 
 		VulkanRenderer::s_shaderDrawParameters = m_physicalDeviceVulkan11Features.shaderDrawParameters;
 		VulkanRenderer::s_subgroupBroadcastDynamicID = m_physicalDeviceVulkan12Features.subgroupBroadcastDynamicId;
+
+		//Capabilities for VulkanRenderer
+		for(uint32_t i = 0; i < static_cast<uint32_t>(RendererAPI::ImageFormat::IMAGE_FORMAT_COUNT); ++i)
+		{
+			VkFormatProperties formatSupport;
+			VkFormat fmt = ImageFormatToVkFormat(static_cast<RendererAPI::ImageFormat>(i));
+			if (fmt == VK_FORMAT_UNDEFINED)
+				continue;
+
+			vkGetPhysicalDeviceFormatProperties(m_physicalDevice, fmt, &formatSupport);
+			VulkanRenderer::s_GPUCapBits.CanShaderReadFrom[i] = (formatSupport.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) != 0;
+			VulkanRenderer::s_GPUCapBits.CanShaderWriteTo[i] = (formatSupport.optimalTilingFeatures & VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT) != 0;
+			VulkanRenderer::s_GPUCapBits.CanRenderTargetWriteTo[i] = (formatSupport.optimalTilingFeatures &
+				(VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT | VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT)) != 0;
+		}
 	}
 	else
 	{
@@ -601,13 +616,13 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		bool raytracing = true;
 		const std::vector<std::string> raytracingExt =
 		{
-			"VK_KHR_ray_tracing_pipeline", //TODO Replace with VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME with SDK 1.2.162
+			VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME,
 			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
-			"VK_KHR_acceleration_structure", //TODO Replace with VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME with SDK 1.2.162
+			VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME,
 			VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,
-			"VK_KHR_deferred_host_operations", //TODO Replace with VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME with SDK 1.2.162
+			VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME,
 			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
-			"VK_KHR_pipeline_library" //TODO Replace with VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME with SDK 1.2.162
+			VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME
 		};
 		for (const std::string& str : raytracingExt)
 		{

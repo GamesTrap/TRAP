@@ -2,26 +2,16 @@
 #define _TRAP_VULKANFRAMEBUFFER_H_
 
 #include "VulkanRenderPass.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
 {
 	class VulkanRenderTarget;
 	
-	struct FrameBufferDesc
-	{
-		TRAP::Ref<VulkanRenderPass> RenderPass;
-		std::vector<TRAP::Ref<VulkanRenderTarget>> RenderTargets;
-		TRAP::Ref<VulkanRenderTarget> DepthStencil;
-		std::vector<uint32_t> ColorArraySlices;
-		std::vector<uint32_t> ColorMipSlices;
-		uint32_t DepthArraySlice;
-		uint32_t DepthMipSlice;
-	};
-	
 	class VulkanFrameBuffer
 	{
 	public:
-		VulkanFrameBuffer(TRAP::Ref<VulkanDevice> device, const FrameBufferDesc& desc);
+		VulkanFrameBuffer(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::FrameBufferDesc& desc);
 		~VulkanFrameBuffer();
 
 		VkFramebuffer& GetVkFrameBuffer();

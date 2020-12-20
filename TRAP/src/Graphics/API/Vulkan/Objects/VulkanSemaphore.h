@@ -3,6 +3,7 @@
 
 namespace TRAP::Graphics::API
 {
+	class VulkanQueue;
 	class VulkanDevice;
 
 	class VulkanSemaphore
@@ -16,6 +17,8 @@ namespace TRAP::Graphics::API
 		bool IsSignaled() const;
 		
 	private:
+		friend VulkanQueue;
+		
 		VkSemaphore m_semaphore;
 		bool m_signaled;
 		

@@ -6,6 +6,7 @@
 
 namespace TRAP::Graphics::API
 {
+	class VulkanVirtualTexture;
 	class VulkanMemoryAllocator;
 	class VulkanDevice;
 
@@ -49,7 +50,7 @@ namespace TRAP::Graphics::API
 		//Contains resource allocation info such as parent heap, offset in heap
 		VmaAllocation m_vkAllocation;
 
-		//VirtualTexture* pSvt; TODO
+		//TRAP::Ref<VulkanVirtualTexture> m_SVT;
 		//Current state of the buffer
 		uint32_t m_width;
 		uint32_t m_height;

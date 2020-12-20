@@ -6,6 +6,7 @@
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device,
                                                   const RendererAPI::TextureDesc& desc,
@@ -102,7 +103,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 			info.usage |= (VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT);
 		}
 
-		//TRAP_ASSERT()//Capabilitybits canshaderreadfrom[desc.format] TODO
+		TRAP_ASSERT(VulkanRenderer::s_GPUCapBits.CanShaderReadFrom[static_cast<uint32_t>(desc.Format)], "GPU shader can't read from this format");
 
 		VkFormatProperties props;
 		vkGetPhysicalDeviceFormatProperties(device->GetPhysicalDevice()->GetVkPhysicalDevice(), info.format, &props);

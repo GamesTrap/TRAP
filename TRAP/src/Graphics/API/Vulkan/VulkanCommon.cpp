@@ -727,3 +727,55 @@ VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlags(const Re
 	TRAP_ASSERT(res != 0);
 	return res;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
+	std::vector<VkPipelineColorBlendAttachmentState>& attachments)
+{
+	int32_t blendDescIndex = 0;
+
+	for(int32_t i = 0; i < RendererAPI::MaxRenderTargetAttachments; ++i)
+	{
+		if(static_cast<uint32_t>(desc.RenderTargetMask) & (1 << i))
+		{
+			TRAP_ASSERT(desc.SrcFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS);
+			TRAP_ASSERT(desc.DstFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS);
+			TRAP_ASSERT(desc.SrcAlphaFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS);
+			TRAP_ASSERT(desc.DstAlphaFactors[blendDescIndex] < RendererAPI::BlendConstant::MAX_BLEND_CONSTANTS);
+			TRAP_ASSERT(desc.BlendModes[blendDescIndex] < RendererAPI::BlendMode::MAX_BLEND_MODES);
+			TRAP_ASSERT(desc.BlendAlphaModes[blendDescIndex] < RendererAPI::BlendMode::MAX_BLEND_MODES);
+		}
+
+		if (desc.IndependentBlend)
+			++blendDescIndex;
+	}
+
+	blendDescIndex = 0;
+
+	for(int32_t i = 0; i < RendererAPI::MaxRenderTargetAttachments; ++i)
+	{
+		if (static_cast<uint32_t>(desc.RenderTargetMask) & (1 << i))
+		{
+			const VkBool32 blendEnable =
+			(VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcFactors[blendDescIndex])] != VK_BLEND_FACTOR_ONE ||
+			 VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO ||
+			 VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ONE ||
+			 VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstAlphaFactors[blendDescIndex])] != VK_BLEND_FACTOR_ZERO);
+
+			attachments[i].blendEnable = blendEnable;
+			attachments[i].colorWriteMask = desc.Masks[blendDescIndex];
+			attachments[i].srcColorBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcFactors[blendDescIndex])];
+			attachments[i].dstColorBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstFactors[blendDescIndex])];
+			attachments[i].colorBlendOp = VkBlendOpTranslator[static_cast<uint32_t>(desc.BlendModes[blendDescIndex])];
+			attachments[i].srcAlphaBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.SrcAlphaFactors[blendDescIndex])];
+			attachments[i].dstAlphaBlendFactor = VkBlendConstantTranslator[static_cast<uint32_t>(desc.DstAlphaFactors[blendDescIndex])];
+			attachments[i].alphaBlendOp = VkBlendOpTranslator[static_cast<uint32_t>(desc.BlendAlphaModes[blendDescIndex])];
+		}
+
+		if (desc.IndependentBlend)
+			++blendDescIndex;
+	}
+
+	return VulkanInits::PipelineColorBlendStateCreateInfo(attachments);
+}

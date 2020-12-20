@@ -8,6 +8,7 @@
 
 namespace TRAP::Graphics::API
 {
+	class VulkanRenderTarget;
 	class VulkanBuffer;
 	class VulkanTexture;
 	class VulkanMemoryAllocator;
@@ -87,6 +88,13 @@ namespace TRAP::Graphics::API
 		static bool s_renderdocCapture;
 		static bool s_debugMarkerSupport;
 
+		static struct GPUCapBits
+		{
+			std::array<bool, static_cast<uint32_t>(ImageFormat::IMAGE_FORMAT_COUNT)> CanShaderReadFrom{};
+			std::array<bool, static_cast<uint32_t>(ImageFormat::IMAGE_FORMAT_COUNT)> CanShaderWriteTo{};
+			std::array<bool, static_cast<uint32_t>(ImageFormat::IMAGE_FORMAT_COUNT)> CanRenderTargetWriteTo{};
+		} s_GPUCapBits;
+
 		struct SizeOffset
 		{
 			uint32_t Size;
@@ -103,6 +111,50 @@ namespace TRAP::Graphics::API
 			VkDescriptorImageInfo ImageInfo;
 			VkDescriptorBufferInfo BufferInfo;
 			VkBufferView BufferView;
+		};
+
+		struct FrameBufferDesc
+		{
+			TRAP::Ref<VulkanRenderPass> RenderPass;
+			std::vector<TRAP::Ref<VulkanRenderTarget>> RenderTargets;
+			TRAP::Ref<VulkanRenderTarget> DepthStencil;
+			std::vector<uint32_t> ColorArraySlices;
+			std::vector<uint32_t> ColorMipSlices;
+			uint32_t DepthArraySlice;
+			uint32_t DepthMipSlice;
+		};
+
+		struct RenderPassDesc
+		{
+			std::vector<RendererAPI::ImageFormat> ColorFormats;
+			std::vector<RendererAPI::LoadActionType> LoadActionsColor;
+			std::vector<bool> SRGBValues;
+			uint32_t RenderTargetCount;
+			RendererAPI::SampleCount SampleCount;
+			RendererAPI::ImageFormat DepthStencilFormat;
+			RendererAPI::LoadActionType LoadActionDepth;
+			RendererAPI::LoadActionType LoadActionStencil;
+		};
+
+		struct UpdateFrequencyLayoutInfo
+		{
+			//Array of all bindings in the descriptor set
+			std::vector<VkDescriptorSetLayoutBinding> Bindings{};
+			//Array of all descriptors in this descriptor set
+			std::vector<RendererAPI::DescriptorInfo*> Descriptors{};
+			//Array of all descriptors marked as dynamic in this descriptor set (applicable to DescriptorType::UniformBuffer)
+			std::vector<RendererAPI::DescriptorInfo*> DynamicDescriptors{};
+			//Hash map to get index of the descriptor in the root signature
+			std::unordered_map<RendererAPI::DescriptorInfo*, uint32_t> DescriptorIndexMap{};
+		};
+
+		struct SubresourceDesc
+		{
+			uint64_t SrcOffset;
+			uint32_t MipLevel;
+			uint32_t ArrayLayer;
+			uint32_t RowPitch;
+			uint32_t SlicePitch;
 		};
 
 		struct NullDescriptors

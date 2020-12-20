@@ -5,7 +5,7 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
-TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> device, const RenderPassDesc& desc)
+TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> device, const VulkanRenderer::RenderPassDesc& desc)
 	: m_renderPass(VK_NULL_HANDLE),
 	  m_colorFormats(desc.ColorFormats),
 	  m_loadActionsColor(desc.LoadActionsColor),

@@ -34,7 +34,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(TRAP::Ref<VulkanDe
 #endif
 
 	static constexpr uint32_t maxLayoutCount = static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT);
-	std::array<UpdateFrequencyLayoutInfo, maxLayoutCount> layouts{};
+	std::array<VulkanRenderer::UpdateFrequencyLayoutInfo, maxLayoutCount> layouts{};
 	std::array<VkPushConstantRange, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> pushConstants{};
 	uint32_t pushConstantCount = 0;
 	std::vector<ShaderReflection::ShaderResource> shaderResources{};
@@ -227,7 +227,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(TRAP::Ref<VulkanDe
 	//Put most frequently changed params first
 	for(uint32_t i = maxLayoutCount; i-- > 0U;)
 	{
-		UpdateFrequencyLayoutInfo& layout = layouts[i];
+		VulkanRenderer::UpdateFrequencyLayoutInfo& layout = layouts[i];
 
 		if(!layouts[i].Bindings.empty())
 		{
@@ -297,7 +297,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(TRAP::Ref<VulkanDe
 	{
 		if(m_vkDescriptorCounts[setIndex])
 		{
-			const UpdateFrequencyLayoutInfo& layout = layouts[setIndex];
+			const VulkanRenderer::UpdateFrequencyLayoutInfo& layout = layouts[setIndex];
 			std::vector<VkDescriptorUpdateTemplateEntry> entries(m_vkDescriptorCounts[setIndex]);
 			uint32_t entryCount = 0;
 

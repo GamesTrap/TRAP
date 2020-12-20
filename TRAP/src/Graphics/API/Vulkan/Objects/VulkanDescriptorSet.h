@@ -10,6 +10,13 @@ namespace TRAP::Graphics::API
 	{
 	public:
 		~VulkanDescriptorSet();
+
+		const std::vector<VkDescriptorSet>& GetVkDescriptorSets() const;
+		TRAP::Ref<VulkanRootSignature> GetRootSignature() const;
+		RendererAPI::DescriptorUpdateFrequency GetUpdateFrequency() const;
+		uint8_t GetDynamicOffsetCount() const;
+		std::vector<VulkanRenderer::SizeOffset> GetDynamicSizeOffsets() const;
+		uint32_t GetMaxSets() const;
 		
 	private:
 		friend VulkanDescriptorPool;

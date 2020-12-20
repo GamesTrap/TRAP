@@ -1473,3 +1473,15 @@ SITREP 12/16/2020|20w51a1
     - Added DescriptorTypeToVkDescriptorType & ShaderStageToVkShaderStageFlags
       functions in VulkanCommon ~<15 mins
     - Fixed TRAP_ASSERT checking wrong variable ~<10 mins
+
+SITREP 12/17/2020|20w51a2
+    - Changed TRAP Engine version to 20w51a2(0.7.9)
+    - VulkanCommandBuffer Added important Bind/Set/Update/Draw functions ~<50 mins
+    - Changed VulkanCommandPool to return a pointer in function AllocateCommandBuffer ~<5 mins
+    - VulkanDescriptorSet Added getters ~<10 mins
+    - RendererAPI Added some ImageFormat functions ~<20 mins
+    - Moved some struct from Vulkan***.h files to VulkanRenderer.h ~<10 mins
+    - VulkanQueue Added Submit function ~<25 mins
+    - VulkanCommon/VulkanInits Added Blending utilities ~<20 mins
+    - Replaced some Vulkan extensions with predefined macros ~<10 mins
+    - 

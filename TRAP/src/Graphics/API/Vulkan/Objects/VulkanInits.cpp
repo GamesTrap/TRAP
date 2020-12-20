@@ -507,6 +507,20 @@ VkCommandBufferAllocateInfo TRAP::Graphics::API::VulkanInits::CommandBufferAlloc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkCommandBufferBeginInfo TRAP::Graphics::API::VulkanInits::CommandBufferBeginInfo()
+{
+	VkCommandBufferBeginInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.pInheritanceInfo = nullptr;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkSamplerCreateInfo TRAP::Graphics::API::VulkanInits::SamplerCreateInfo(const VkFilter magFilter,
 	const VkFilter minFilter,
 	const VkSamplerMipmapMode mipMapMode,
@@ -557,6 +571,75 @@ VkPipelineLayoutCreateInfo TRAP::Graphics::API::VulkanInits::PipelineLayoutCreat
 	info.pSetLayouts = layouts;
 	info.pushConstantRangeCount = pushConstantRangeCount;
 	info.pPushConstantRanges = pushConstants;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineColorBlendStateCreateInfo(const std::vector<VkPipelineColorBlendAttachmentState>& attachments)
+{
+	VkPipelineColorBlendStateCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.logicOpEnable = VK_FALSE;
+	info.logicOp = VK_LOGIC_OP_CLEAR;
+	info.attachmentCount = static_cast<uint32_t>(attachments.size());
+	info.pAttachments = attachments.data();
+	info.blendConstants[0] = 0.0f;
+	info.blendConstants[1] = 0.0f;
+	info.blendConstants[2] = 0.0f;
+	info.blendConstants[3] = 0.0f;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineColorBlendStateCreateInfo(const VkLogicOp logicOp,
+	const std::vector<VkPipelineColorBlendAttachmentState>& attachments,
+	const float blendConstR,
+	const float blendConstG,
+	const float blendConstB,
+	const float blendConstA)
+{
+	VkPipelineColorBlendStateCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.logicOpEnable = VK_TRUE;
+	info.logicOp = logicOp;
+	info.attachmentCount = static_cast<uint32_t>(attachments.size());
+	info.pAttachments = attachments.data();
+	info.blendConstants[0] = blendConstR;
+	info.blendConstants[1] = blendConstG;
+	info.blendConstants[2] = blendConstB;
+	info.blendConstants[3] = blendConstA;
+
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkSubmitInfo TRAP::Graphics::API::VulkanInits::SubmitInfo(const std::vector<VkSemaphore>& waitSemaphores,
+                                                          const std::vector<VkPipelineStageFlags>& waitMasks,
+                                                          const std::vector<VkCommandBuffer>& cmds,
+                                                          const std::vector<VkSemaphore>& signalSemaphore)
+{
+	VkSubmitInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	info.pNext = nullptr;
+	info.waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size());
+	info.pWaitSemaphores = waitSemaphores.data();
+	info.pWaitDstStageMask = waitMasks.data();
+	info.commandBufferCount = static_cast<uint32_t>(cmds.size());
+	info.pCommandBuffers = cmds.data();
+	info.signalSemaphoreCount = static_cast<uint32_t>(signalSemaphore.size());
+	info.pSignalSemaphores = signalSemaphore.data();
 	
 	return info;
 }

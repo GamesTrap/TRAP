@@ -15,8 +15,10 @@ namespace TRAP::Graphics::API
 
 		VkCommandPool& GetVkCommandPool();
 
-		VulkanCommandBuffer AllocateCommandBuffer(bool secondary);
-		void FreeCommandBuffer(const VulkanCommandBuffer& cmdBuffer);
+		VulkanCommandBuffer* AllocateCommandBuffer(bool secondary);
+		void FreeCommandBuffer(VulkanCommandBuffer* cmdBuffer);
+
+		void Reset();
 		
 	private:		
 		TRAP::Ref<VulkanDevice> m_device;

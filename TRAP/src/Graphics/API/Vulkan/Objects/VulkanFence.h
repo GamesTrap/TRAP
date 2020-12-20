@@ -5,6 +5,7 @@
 
 namespace TRAP::Graphics::API
 {
+	class VulkanQueue;
 	class VulkanDevice;
 
 	class VulkanFence
@@ -24,6 +25,8 @@ namespace TRAP::Graphics::API
 		static void WaitForFences(const TRAP::Scope<VulkanDevice>& device, std::vector<VulkanFence>& fences);
 		
 	private:
+		friend VulkanQueue;
+		
 		VkFence m_fence;
 		bool m_submitted;
 		TRAP::Ref<VulkanDevice> m_device;
