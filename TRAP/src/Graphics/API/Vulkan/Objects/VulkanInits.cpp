@@ -624,6 +624,204 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkPipelineCacheCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCacheCreateInfo(const std::size_t size,
+	void* data,
+	const VkPipelineCacheCreateFlags flags)
+{
+	VkPipelineCacheCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.initialDataSize = size;
+	info.pInitialData = data;
+	info.flags = flags;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPipelineShaderStageCreateInfo TRAP::Graphics::API::VulkanInits::PipelineShaderStageCreateInfo(const VkShaderStageFlagBits stage,
+	VkShaderModule module,
+	const char* name)
+{
+	VkPipelineShaderStageCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.stage = stage;
+	info.module = module;
+	info.pName = name;
+	info.pSpecializationInfo = nullptr;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPipelineVertexInputStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineVertexInputStateCreateInfo(const uint32_t inputBindingCount,
+	VkVertexInputBindingDescription* inputBindings,
+	const uint32_t inputAttributeCount,
+	VkVertexInputAttributeDescription* inputAttributes)
+{
+	VkPipelineVertexInputStateCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.vertexBindingDescriptionCount = inputBindingCount;
+	info.pVertexBindingDescriptions = inputBindings;
+	info.vertexAttributeDescriptionCount = inputAttributeCount;
+	info.pVertexAttributeDescriptions = inputAttributes;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPipelineInputAssemblyStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineInputAssemblyStateCreateInfo(const VkPrimitiveTopology topology, const bool primitiveRestart)
+{
+	VkPipelineInputAssemblyStateCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.topology = topology;
+	info.primitiveRestartEnable = primitiveRestart;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPipelineTessellationStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineTessellationStateCreateInfo(const uint32_t patchControlPoints)
+{
+	VkPipelineTessellationStateCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.patchControlPoints = patchControlPoints;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPipelineViewportStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineViewportStateCreateInfo()
+{
+	VkPipelineViewportStateCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.viewportCount = 1; //We are using dynamic viewports but we must set the viewportCount to 1
+	info.pViewports = nullptr;
+	info.scissorCount = 1;
+	info.pScissors = nullptr;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPipelineMultisampleStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineMultisampleStateCreateInfo(const VkSampleCountFlagBits sampleCount,
+	const bool sampleShading)
+{
+	VkPipelineMultisampleStateCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.rasterizationSamples = sampleCount;
+	info.sampleShadingEnable = sampleShading;
+	info.minSampleShading = 0.0f;
+	info.pSampleMask = nullptr;
+	info.alphaToCoverageEnable = VK_FALSE;
+	info.alphaToOneEnable = VK_FALSE;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPipelineDynamicStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineDynamicStateCreateInfo(const std::vector<VkDynamicState>& dynamicStates)
+{
+	VkPipelineDynamicStateCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+	info.pDynamicStates = dynamicStates.data();
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkComputePipelineCreateInfo TRAP::Graphics::API::VulkanInits::ComputePipelineCreateInfo(const VkPipelineShaderStageCreateInfo& stage,
+	VkPipelineLayout layout)
+{
+	VkComputePipelineCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.stage = stage;
+	info.layout = layout;
+	info.basePipelineHandle = nullptr;
+	info.basePipelineIndex = 0;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkGraphicsPipelineCreateInfo TRAP::Graphics::API::VulkanInits::GraphicsPipelineCreateInfo(
+	const uint32_t stageCount,
+	VkPipelineShaderStageCreateInfo* stages,
+	const VkPipelineVertexInputStateCreateInfo& vi,
+	const VkPipelineInputAssemblyStateCreateInfo& ia,
+	const VkPipelineViewportStateCreateInfo& vs,
+	const VkPipelineRasterizationStateCreateInfo& rs,
+	const VkPipelineMultisampleStateCreateInfo& ms,
+	const VkPipelineDepthStencilStateCreateInfo& ds,
+	const VkPipelineColorBlendStateCreateInfo& cb,
+	const VkPipelineDynamicStateCreateInfo& dy,
+	const VkPipelineLayout layout,
+	VkRenderPass renderPass)
+{
+	VkGraphicsPipelineCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.stageCount = stageCount;
+	info.pStages = stages;
+	info.pVertexInputState = &vi;
+	info.pInputAssemblyState = &ia;
+
+	info.pViewportState = &vs;
+	info.pRasterizationState = &rs;
+	info.pMultisampleState = &ms;
+	info.pDepthStencilState = &ds;
+	info.pColorBlendState = &cb;
+	info.pDynamicState = &dy;
+	info.layout = layout;
+	info.renderPass = renderPass;
+	info.subpass = 0;
+	info.basePipelineHandle = VK_NULL_HANDLE;
+	info.basePipelineIndex = -1;
+
+	info.pTessellationState = nullptr;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkSubmitInfo TRAP::Graphics::API::VulkanInits::SubmitInfo(const std::vector<VkSemaphore>& waitSemaphores,
                                                           const std::vector<VkPipelineStageFlags>& waitMasks,
                                                           const std::vector<VkCommandBuffer>& cmds,

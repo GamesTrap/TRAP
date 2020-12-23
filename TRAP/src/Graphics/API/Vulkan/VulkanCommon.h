@@ -5,6 +5,8 @@
 
 namespace TRAP::Graphics::API
 {
+	class VulkanPhysicalDevice;
+	
 	bool ErrorCheck(VkResult result, const char* function, const char* file, int32_t line);
 	VkQueueFlags QueueTypeToVkQueueFlags(RendererAPI::QueueType queueType);
 
@@ -26,8 +28,14 @@ namespace TRAP::Graphics::API
 	VkSamplerAddressMode AddressModeToVkAddressMode(RendererAPI::AddressMode addressMode);
 	VkDescriptorType DescriptorTypeToVkDescriptorType(RendererAPI::DescriptorType type);
 	VkShaderStageFlags ShaderStageToVkShaderStageFlags(RendererAPI::ShaderStage stages);
-
+	VkPipelineCacheCreateFlags PipelineCacheFlagsToVkPipelineCacheCreateFlags(RendererAPI::PipelineCacheFlags flags);
+	VkAccessFlags ResourceStateToVkAccessFlags(RendererAPI::ResourceState state);
+	VkImageLayout ResourceStateToVkImageLayout(RendererAPI::ResourceState usage);
+	VkPipelineStageFlags DetermineVkPipelineStageFlags(VkAccessFlags accessFlags, RendererAPI::QueueType queueType);
+	
 	VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc, std::vector<VkPipelineColorBlendAttachmentState>& attachments);
+	VkPipelineDepthStencilStateCreateInfo UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc);
+	VkPipelineRasterizationStateCreateInfo UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc);
 	
 	void VkSetObjectName(VkDevice device, uint64_t handle, VkObjectType type, const char* name);
 
@@ -82,6 +90,37 @@ namespace TRAP::Graphics::API
 		VK_BLEND_OP_REVERSE_SUBTRACT,
 		VK_BLEND_OP_MIN,
 		VK_BLEND_OP_MAX
+	};
+
+	inline static constexpr std::array<VkStencilOp, static_cast<uint32_t>(RendererAPI::StencilOp::MAX_STENCIL_OPS)> VkStencilOpTranslator =
+	{
+		VK_STENCIL_OP_KEEP,
+		VK_STENCIL_OP_ZERO,
+		VK_STENCIL_OP_REPLACE,
+		VK_STENCIL_OP_INVERT,
+		VK_STENCIL_OP_INCREMENT_AND_WRAP,
+		VK_STENCIL_OP_DECREMENT_AND_WRAP,
+		VK_STENCIL_OP_INCREMENT_AND_CLAMP,
+		VK_STENCIL_OP_DECREMENT_AND_CLAMP
+	};
+
+	inline static constexpr std::array<VkCullModeFlagBits, static_cast<uint32_t>(RendererAPI::CullMode::MAX_CULL_MODES)> VkCullModeTranslator =
+	{
+		VK_CULL_MODE_NONE,
+		VK_CULL_MODE_BACK_BIT,
+		VK_CULL_MODE_FRONT_BIT
+	};
+	
+	inline static constexpr std::array<VkPolygonMode, static_cast<uint32_t>(RendererAPI::FillMode::MAX_FILL_MODES)> VkFillModeTranslator =
+	{
+		VK_POLYGON_MODE_FILL,
+		VK_POLYGON_MODE_LINE
+	};
+
+	inline static constexpr std::array<VkFrontFace, 2> VkFrontFaceTranslator =
+	{
+		VK_FRONT_FACE_COUNTER_CLOCKWISE,
+		VK_FRONT_FACE_CLOCKWISE
 	};
 }
 

@@ -167,6 +167,10 @@ namespace TRAP::Graphics::API
 			std::mutex SubmitMutex;
 		};
 		static TRAP::Scope<NullDescriptors> s_NullDescriptors;
+		static std::vector<VkPipelineColorBlendAttachmentState> DefaultBlendAttachments;
+		static VkPipelineRasterizationStateCreateInfo DefaultRasterizerDesc;
+		static VkPipelineDepthStencilStateCreateInfo DefaultDepthDesc;
+		static VkPipelineColorBlendStateCreateInfo DefaultBlendDesc;
 		
 	private:		
 		static std::vector<std::string> SetupInstanceLayers();

@@ -730,6 +730,160 @@ VkShaderStageFlags TRAP::Graphics::API::ShaderStageToVkShaderStageFlags(const Re
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkPipelineCacheCreateFlags TRAP::Graphics::API::PipelineCacheFlagsToVkPipelineCacheCreateFlags(const RendererAPI::PipelineCacheFlags flags)
+{
+	VkPipelineCacheCreateFlags ret = 0;
+
+	if (static_cast<uint32_t>(flags & RendererAPI::PipelineCacheFlags::ExternallySynchronized))
+		ret |= VK_PIPELINE_CACHE_CREATE_EXTERNALLY_SYNCHRONIZED_BIT_EXT;
+	
+	return ret;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkAccessFlags TRAP::Graphics::API::ResourceStateToVkAccessFlags(const RendererAPI::ResourceState state)
+{
+	VkAccessFlags ret = 0;
+
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::CopySource))
+		ret |= VK_ACCESS_TRANSFER_READ_BIT;
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::CopyDestination))
+		ret |= VK_ACCESS_TRANSFER_WRITE_BIT;
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::VertexAndConstantBuffer))
+		ret |= VK_ACCESS_UNIFORM_READ_BIT | VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::IndexBuffer))
+		ret |= VK_ACCESS_INDEX_READ_BIT;
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::UnorderedAccess))
+		ret |= VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT;
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::IndirectArgument))
+		ret |= VK_ACCESS_INDIRECT_COMMAND_READ_BIT;
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::RenderTarget))
+		ret |= VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::DepthWrite))
+		ret |= VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::ShaderResource))
+		ret |= VK_ACCESS_SHADER_READ_BIT;
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::Present))
+		ret |= VK_ACCESS_MEMORY_READ_BIT;
+	if (static_cast<uint32_t>(state & RendererAPI::ResourceState::RayTracingAccelerationStructure))
+		ret |= VK_ACCESS_ACCELERATION_STRUCTURE_READ_BIT_KHR | VK_ACCESS_ACCELERATION_STRUCTURE_WRITE_BIT_KHR;
+	
+	return ret;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkImageLayout TRAP::Graphics::API::ResourceStateToVkImageLayout(const RendererAPI::ResourceState usage)
+{
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::CopySource))
+		return VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+	
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::CopyDestination))
+		return VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+	
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::RenderTarget))
+		return VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+	
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::DepthWrite))
+		return VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+	
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::UnorderedAccess))
+		return VK_IMAGE_LAYOUT_GENERAL;
+	
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::ShaderResource))
+		return VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+	
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::Present))
+		return VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+	
+	if (static_cast<uint32_t>(usage & RendererAPI::ResourceState::Common))
+		return VK_IMAGE_LAYOUT_GENERAL;
+
+	return VK_IMAGE_LAYOUT_UNDEFINED;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//Determines pipeline stages involved for given accesses
+VkPipelineStageFlags TRAP::Graphics::API::DetermineVkPipelineStageFlags(const VkAccessFlags accessFlags, const RendererAPI::QueueType queueType)
+{
+	VkPipelineStageFlags flags = 0;
+
+	switch(queueType)
+	{
+	case RendererAPI::QueueType::Graphics:
+	{
+		if ((accessFlags & (VK_ACCESS_INDEX_READ_BIT | VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT)) != 0)
+			flags |= VK_PIPELINE_STAGE_VERTEX_INPUT_BIT;
+
+		if((accessFlags & (VK_ACCESS_UNIFORM_READ_BIT | VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT)) != 0)
+		{
+			flags |= VK_PIPELINE_STAGE_VERTEX_SHADER_BIT;
+			flags |= VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+			if (RendererAPI::GPUSettings.GeometryShaderSupported)
+				flags |= VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT;
+			if(RendererAPI::GPUSettings.TessellationSupported)
+			{
+				flags |= VK_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT;
+				flags |= VK_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT;
+			}
+			flags |= VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+			if (VulkanRenderer::s_raytracingExtension)
+				flags |= VK_PIPELINE_STAGE_RAY_TRACING_SHADER_BIT_KHR;
+		}
+
+		if ((accessFlags & VK_ACCESS_INPUT_ATTACHMENT_READ_BIT) != 0)
+			flags |= VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+
+		if ((accessFlags & (VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)) != 0)
+			flags |= VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+
+		if ((accessFlags & (VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)) != 0)
+			flags |= VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT;
+		
+		break;
+	}
+
+	case RendererAPI::QueueType::Compute:
+	{
+		if ((accessFlags & (VK_ACCESS_INDEX_READ_BIT | VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT)) != 0 ||
+			(accessFlags & VK_ACCESS_INPUT_ATTACHMENT_READ_BIT) != 0 ||
+			(accessFlags & (VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)) != 0 ||
+			(accessFlags & (VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT)) != 0)
+			return VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+
+		if ((accessFlags & (VK_ACCESS_UNIFORM_READ_BIT | VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT)) != 0)
+			flags |= VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT;
+		
+		break;
+	}
+
+	case RendererAPI::QueueType::Transfer:
+		return VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+
+	default:
+		break;
+	}
+
+	//Compatible with both compute and graphics queues
+	if ((accessFlags & VK_ACCESS_INDIRECT_COMMAND_READ_BIT) != 0)
+		flags |= VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT;
+
+	if ((accessFlags & (VK_ACCESS_TRANSFER_READ_BIT | VK_ACCESS_TRANSFER_WRITE_BIT)) != 0)
+		flags |= VK_PIPELINE_STAGE_TRANSFER_BIT;
+
+	if ((accessFlags & (VK_ACCESS_HOST_READ_BIT | VK_ACCESS_HOST_WRITE_BIT)) != 0)
+		flags |= VK_PIPELINE_STAGE_HOST_BIT;
+
+	if (flags == 0)
+		flags = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+
+	return flags;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
 	std::vector<VkPipelineColorBlendAttachmentState>& attachments)
 {
@@ -778,4 +932,76 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const R
 	}
 
 	return VulkanInits::PipelineColorBlendStateCreateInfo(attachments);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc)
+{
+	TRAP_ASSERT(desc.DepthFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES);
+	TRAP_ASSERT(desc.StencilFrontFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES);
+	TRAP_ASSERT(desc.StencilFrontFail < RendererAPI::StencilOp::MAX_STENCIL_OPS);
+	TRAP_ASSERT(desc.DepthFrontFail < RendererAPI::StencilOp::MAX_STENCIL_OPS);
+	TRAP_ASSERT(desc.StencilFrontPass < RendererAPI::StencilOp::MAX_STENCIL_OPS);
+	TRAP_ASSERT(desc.StencilBackFunc < RendererAPI::CompareMode::MAX_COMPARE_MODES);
+	TRAP_ASSERT(desc.StencilBackFail < RendererAPI::StencilOp::MAX_STENCIL_OPS);
+	TRAP_ASSERT(desc.DepthBackFail < RendererAPI::StencilOp::MAX_STENCIL_OPS);
+	TRAP_ASSERT(desc.StencilBackPass < RendererAPI::StencilOp::MAX_STENCIL_OPS);
+
+	VkPipelineDepthStencilStateCreateInfo ds{};
+	ds.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+	ds.pNext = nullptr;
+	ds.flags = 0;
+	ds.depthTestEnable = desc.DepthTest ? VK_TRUE : VK_FALSE;
+	ds.depthWriteEnable = desc.DepthWrite ? VK_TRUE : VK_FALSE;
+	ds.depthCompareOp = VkComparisonFuncTranslator[static_cast<uint32_t>(desc.DepthFunc)];
+	ds.depthBoundsTestEnable = VK_FALSE;
+	ds.stencilTestEnable = desc.StencilTest ? VK_TRUE : VK_FALSE;
+
+	ds.front.failOp = VkStencilOpTranslator[static_cast<uint32_t>(desc.StencilFrontFail)];
+	ds.front.passOp = VkStencilOpTranslator[static_cast<uint32_t>(desc.StencilFrontPass)];
+	ds.front.depthFailOp = VkStencilOpTranslator[static_cast<uint32_t>(desc.DepthFrontFail)];
+	ds.front.compareOp = static_cast<VkCompareOp>(desc.StencilFrontFunc);
+	ds.front.compareMask = desc.StencilReadMask;
+	ds.front.writeMask = desc.StencilWriteMask;
+	ds.front.reference = 0;
+
+	ds.back.failOp = VkStencilOpTranslator[static_cast<uint32_t>(desc.StencilBackFail)];
+	ds.back.passOp = VkStencilOpTranslator[static_cast<uint32_t>(desc.StencilBackPass)];
+	ds.back.depthFailOp = VkStencilOpTranslator[static_cast<uint32_t>(desc.DepthBackFail)];
+	ds.back.compareOp = VkComparisonFuncTranslator[static_cast<uint32_t>(desc.StencilBackFail)];
+	ds.back.compareMask = desc.StencilReadMask;
+	ds.back.writeMask = desc.StencilWriteMask;
+	ds.back.reference = 0;
+
+	ds.minDepthBounds = 0;
+	ds.maxDepthBounds = 1;
+
+	return ds;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc)
+{
+	TRAP_ASSERT(desc.FillMode < RendererAPI::FillMode::MAX_FILL_MODES);
+	TRAP_ASSERT(desc.CullMode < RendererAPI::CullMode::MAX_CULL_MODES);
+	TRAP_ASSERT(desc.FrontFace == RendererAPI::FrontFace::CounterClockwise || desc.FrontFace == RendererAPI::FrontFace::Clockwise);
+
+	VkPipelineRasterizationStateCreateInfo rs{};
+	rs.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+	rs.pNext = nullptr;
+	rs.flags = 0;
+	rs.depthClampEnable = desc.DepthClampEnable ? VK_TRUE : VK_FALSE;
+	rs.rasterizerDiscardEnable = VK_FALSE;
+	rs.polygonMode = VkFillModeTranslator[static_cast<uint32_t>(desc.FillMode)];
+	rs.cullMode = VkCullModeTranslator[static_cast<uint32_t>(desc.CullMode)];
+	rs.frontFace = VkFrontFaceTranslator[static_cast<uint32_t>(desc.FrontFace)];
+	rs.depthBiasEnable = (desc.DepthBias != 0) ? VK_TRUE : VK_FALSE;
+	rs.depthBiasConstantFactor = static_cast<float>(desc.DepthBias);
+	rs.depthBiasClamp = 0.0f;
+	rs.depthBiasSlopeFactor = desc.SlopeScaledDepthBias;
+	rs.lineWidth = 1.0f;
+	
+	return rs;
 }

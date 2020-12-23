@@ -25,6 +25,7 @@ namespace TRAP::Graphics
 
 namespace TRAP::Graphics::API
 {
+	class VulkanPipelineCache;
 	class VulkanSemaphore;
 	class VulkanFence;
 	class VulkanCommandBuffer;
@@ -1012,6 +1013,92 @@ namespace TRAP::Graphics
 			
 			BlendStateTargetAll = 0xFF,
 		};
+
+		enum class StencilOp
+		{
+			Keep,
+			SetZero,
+			Replace,
+			Invert,
+			Increment,
+			Decrement,
+			IncrementSaturation,
+			DecrementSaturation,
+
+			MAX_STENCIL_OPS
+		};
+
+		enum class CullMode
+		{
+			None = 0,
+			Back,
+			Front,
+			Both,
+
+			MAX_CULL_MODES
+		};
+
+		enum class FrontFace
+		{
+			CounterClockwise = 0,
+			Clockwise
+		};
+
+		enum class FillMode
+		{
+			Solid,
+			WireFrame,
+
+			MAX_FILL_MODES
+		};
+
+		enum class PipelineCacheFlags
+		{
+			None = 0x0,
+			ExternallySynchronized = 0x1
+		};
+
+		enum class PrimitiveTopology
+		{
+			PointList = 0,
+			LineList,
+			LineStrip,
+			TriangleList,
+			TriangleStrip,
+			PatchList,
+
+			PRIMITIVE_TOPOLOGY_COUNT
+		};
+
+		enum class VertexAttributeRate
+		{
+			Vertex = 0,
+			Instance = 1,
+
+			VERTEX_ATTRIBUTE_RATE_COUNT
+		};
+
+		enum class ShaderSemantic
+		{
+			Undefined = 0,
+			Position,
+			Normal,
+			Color,
+			Tangent,
+			BiTangent,
+			Joints,
+			Weights,
+			TexCoord0,
+			TexCoord1,
+			TexCoord2,
+			TexCoord3,
+			TexCoord4,
+			TexCoord5,
+			TexCoord6,
+			TexCoord7,
+			TexCoord8,
+			TexCoord9,
+		};
 		
 		enum
 		{
@@ -1250,6 +1337,105 @@ namespace TRAP::Graphics
 			//When false the blend function in slot 0 will be used for all render targets.
 			bool IndependentBlend;
 		};
+
+		struct DepthStateDesc
+		{
+			bool DepthTest;
+			bool DepthWrite;
+			CompareMode DepthFunc;
+			bool StencilTest;
+			uint8_t StencilReadMask;
+			uint8_t StencilWriteMask;
+			CompareMode StencilFrontFunc;
+			StencilOp StencilFrontFail;
+			StencilOp DepthFrontFail;
+			StencilOp StencilFrontPass;
+			CompareMode StencilBackFunc;
+			StencilOp StencilBackFail;
+			StencilOp DepthBackFail;
+			StencilOp StencilBackPass;
+		};
+
+		struct RasterizerStateDesc
+		{
+			CullMode CullMode;
+			int32_t DepthBias;
+			float SlopeScaledDepthBias;
+			FillMode FillMode;
+			bool MultiSample;
+			bool Scissor;
+			FrontFace FrontFace;
+			bool DepthClampEnable;
+		};
+
+		struct PipelineCacheDesc
+		{
+			//Initial pipeline cache data (can be nullptr which means empty pipeline cache)
+			void* Data;
+			//Initial pipeline cache size
+			std::size_t Size;
+			PipelineCacheFlags Flags;
+		};
+
+		struct ComputePipelineDesc
+		{
+			TRAP::Ref<API::VulkanShader> ShaderProgram;
+			TRAP::Ref<API::VulkanRootSignature> RootSignature;
+		};
+
+		struct VertexAttribute
+		{
+			ShaderSemantic Semantic;
+			std::string SemanticName;
+			ImageFormat Format;
+			uint32_t Binding;
+			uint32_t Location;
+			uint32_t Offset;
+			VertexAttributeRate Rate;
+		};
+
+		struct VertexLayout
+		{
+			uint32_t AttributeCount;
+			std::array<VertexAttribute, 15> Attributes;
+		};
+		
+		struct GraphicsPipelineDesc
+		{
+			TRAP::Ref<API::VulkanShader> ShaderProgram;
+			TRAP::Ref<API::VulkanRootSignature> RootSignature;
+			VertexLayout* VertexLayout;
+			TRAP::Ref<BlendStateDesc> BlendState;
+			TRAP::Ref<DepthStateDesc> DepthState;
+			TRAP::Ref<RasterizerStateDesc> RasterizerState;
+			std::vector<ImageFormat> ColorFormats;
+			uint32_t RenderTargetCount;
+			SampleCount SampleCount;
+			uint32_t SampleQuality;
+			ImageFormat DepthStencilFormat;
+			PrimitiveTopology PrimitiveTopology;
+			bool SupportIndirectCommandBuffer;
+		};
+
+		struct RayTracingPipelineDesc
+		{
+		};
+
+		//BUG C4624 TODO
+		struct PipelineDesc
+		{
+			PipelineType Type;
+			union
+			{
+				ComputePipelineDesc ComputeDesc;
+				GraphicsPipelineDesc GraphicsDesc;
+				RayTracingPipelineDesc RayTracingDesc;
+			};
+			TRAP::Ref<API::VulkanPipelineCache> Cache;
+			void* PipelineExtensions;
+			uint32_t PipelineExtensionCount;
+			const char* Name;
+		};
 		
 		/*inline static struct alignsas(64) Renderer
 		{
@@ -1291,5 +1477,6 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::BufferCreationFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShaderStage);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::RootSignatureFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::BlendStateTargets);
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::PipelineCacheFlags);
 
 #endif /*_TRAP_RENDERERAPI_H_*/

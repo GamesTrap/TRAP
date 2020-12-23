@@ -1484,4 +1484,11 @@ SITREP 12/17/2020|20w51a2
     - VulkanQueue Added Submit function ~<25 mins
     - VulkanCommon/VulkanInits Added Blending utilities ~<20 mins
     - Replaced some Vulkan extensions with predefined macros ~<10 mins
+
+SITREP 12/23/2020|20w52a1
+    - Changed TRAP Engine version to 20w52a1(0.7.11)
+    - Added more utility functions to VulkanCommon ~<30 mins
+    - VulkanRenderer Added default BlendAttachments/RasterizerDesc/DepthStencilDesc/BlendDesc ~<20 mins
+    - Added VulkanPipelineCache class ~<30 mins
+    - Added VulkanPipeline class (missing RayTracingPipeline) ~<60 mins
     - 

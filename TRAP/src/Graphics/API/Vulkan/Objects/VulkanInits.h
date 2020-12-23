@@ -151,6 +151,41 @@ namespace TRAP::Graphics::API::VulkanInits
 		float blendConstG,
 		float blendConstB,
 		float blendConstA);
+
+	VkPipelineCacheCreateInfo PipelineCacheCreateInfo(std::size_t size, void* data, VkPipelineCacheCreateFlags flags);
+
+	VkPipelineShaderStageCreateInfo PipelineShaderStageCreateInfo(VkShaderStageFlagBits stage, VkShaderModule module, const char* name);
+
+	VkPipelineVertexInputStateCreateInfo PipelineVertexInputStateCreateInfo(uint32_t inputBindingCount,
+		VkVertexInputBindingDescription* inputBindings,
+		uint32_t inputAttributeCount,
+		VkVertexInputAttributeDescription* inputAttributes);
+	
+	VkPipelineInputAssemblyStateCreateInfo PipelineInputAssemblyStateCreateInfo(VkPrimitiveTopology topology, bool primitiveRestart);
+
+	VkPipelineTessellationStateCreateInfo PipelineTessellationStateCreateInfo(uint32_t patchControlPoints);
+
+	VkPipelineViewportStateCreateInfo PipelineViewportStateCreateInfo();
+
+	VkPipelineMultisampleStateCreateInfo PipelineMultisampleStateCreateInfo(VkSampleCountFlagBits sampleCount, bool sampleShading);
+
+	VkPipelineDynamicStateCreateInfo PipelineDynamicStateCreateInfo(const std::vector<VkDynamicState>& dynamicStates);
+	
+	VkComputePipelineCreateInfo ComputePipelineCreateInfo(const VkPipelineShaderStageCreateInfo& stage, VkPipelineLayout layout);
+
+	VkGraphicsPipelineCreateInfo GraphicsPipelineCreateInfo(uint32_t stageCount,
+															VkPipelineShaderStageCreateInfo* stages,
+															const VkPipelineVertexInputStateCreateInfo& vi,
+															const VkPipelineInputAssemblyStateCreateInfo& ia,
+															const VkPipelineViewportStateCreateInfo& vs,
+															const VkPipelineRasterizationStateCreateInfo& rs,
+															const VkPipelineMultisampleStateCreateInfo& ms,
+															const VkPipelineDepthStencilStateCreateInfo& ds,
+															const VkPipelineColorBlendStateCreateInfo& cb,
+															const VkPipelineDynamicStateCreateInfo& dy,
+															VkPipelineLayout layout,
+															VkRenderPass renderPass
+	);
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
