@@ -1491,4 +1491,16 @@ SITREP 12/23/2020|20w52a1
     - VulkanRenderer Added default BlendAttachments/RasterizerDesc/DepthStencilDesc/BlendDesc ~<20 mins
     - Added VulkanPipelineCache class ~<30 mins
     - Added VulkanPipeline class (missing RayTracingPipeline) ~<60 mins
-    - 
+    - Added several CreateInfo functions to VulkanInits ~<30 mins
+
+SITREP 12/29/2020|20w53a1
+    - Changed TRAP Engine version to 20w53a1(0.7.12)
+    - Added more functions to VulkanCommandBuffer ~<45 mins
+    - Added VulkanCommandSignature class ~<30 mins
+    - Fixed a bug in VulkanDevice::FindQueueFamilyIndex ~<10 mins
+    - Added getters to VulkanPipeline ~<10 mins
+    - Added VulkanQueryPool class ~<20 mins
+    - Added VulkanSwapChain (missing getters) ~<60 mins
+    - Fixed a bug in VulkanTexture ~<15 mins
+    - Added more utility functions to VulkanCommon ~<20 mins
+    - VulkanRenderer added DefaultResource creation/upload ~>45 mins

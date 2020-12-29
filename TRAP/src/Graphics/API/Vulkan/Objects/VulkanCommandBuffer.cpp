@@ -1,6 +1,10 @@
 #include "TRAPPCH.h"
 #include "VulkanCommandBuffer.h"
 
+#include "VulkanRenderTarget.h"
+#include "VulkanPipeline.h"
+#include "VulkanCommandSignature.h"
+#include "VulkanQueryPool.h"
 #include "VulkanTexture.h"
 #include "VulkanPhysicalDevice.h"
 #include "VulkanBuffer.h"
@@ -183,6 +187,17 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindVertexBuffer(const std::vecto
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanCommandBuffer::BindPipeline(const TRAP::Ref<VulkanPipeline>& pipeline) const
+{
+	TRAP_ASSERT(pipeline);
+	TRAP_ASSERT(m_vkCommandBuffer);
+
+	const VkPipelineBindPoint pipelineBindPoint = VkPipelineBindPointTranslator[static_cast<uint32_t>(pipeline->GetPipelineType())];
+	vkCmdBindPipeline(m_vkCommandBuffer, pipelineBindPoint, pipeline->GetVkPipeline());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanCommandBuffer::AddDebugMarker(const float r, const float g, const float b, const char* name) const
 {
 	VkDebugUtilsLabelEXT markerInfo = VulkanInits::DebugUtilsLabelExt(r, g, b, name);
@@ -320,6 +335,49 @@ void TRAP::Graphics::API::VulkanCommandBuffer::DrawIndexedInstanced(const uint32
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanCommandBuffer::ExecuteIndirect(const TRAP::Ref<VulkanCommandSignature>& cmdSignature,
+                                                               const uint32_t maxCommandCount,
+                                                               const TRAP::Ref<VulkanBuffer>& indirectBuffer,
+                                                               const uint64_t bufferOffset,
+                                                               const TRAP::Ref<VulkanBuffer>& counterBuffer,
+                                                               const uint64_t counterBufferOffset) const
+{
+	if (cmdSignature->GetDrawType() == RendererAPI::IndirectArgumentType::IndirectDraw)
+	{
+		if (counterBuffer)
+		{
+			vkCmdDrawIndirectCount(m_vkCommandBuffer,
+				indirectBuffer->GetVkBuffer(),
+				bufferOffset,
+				counterBuffer->GetVkBuffer(),
+				counterBufferOffset,
+				maxCommandCount,
+				cmdSignature->GetStride());
+		}
+		else
+			vkCmdDrawIndirect(m_vkCommandBuffer, indirectBuffer->GetVkBuffer(), bufferOffset, maxCommandCount, cmdSignature->GetStride());
+	}
+	else if (cmdSignature->GetDrawType() == RendererAPI::IndirectArgumentType::IndirectDrawIndex)
+	{
+		if (counterBuffer)
+		{
+			vkCmdDrawIndexedIndirectCount(m_vkCommandBuffer,
+				indirectBuffer->GetVkBuffer(),
+				bufferOffset,
+				counterBuffer->GetVkBuffer(),
+				counterBufferOffset,
+				maxCommandCount,
+				cmdSignature->GetStride());
+		}
+		else
+			vkCmdDrawIndexedIndirect(m_vkCommandBuffer, indirectBuffer->GetVkBuffer(), bufferOffset, maxCommandCount, cmdSignature->GetStride());
+	}
+	else if (cmdSignature->GetDrawType() == RendererAPI::IndirectArgumentType::IndirectDispatch)
+		vkCmdDispatchIndirect(m_vkCommandBuffer, indirectBuffer->GetVkBuffer(), bufferOffset);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanCommandBuffer::Dispatch(const uint32_t groupCountX,
                                                         const uint32_t groupCountY,
                                                         const uint32_t groupCountZ) const
@@ -381,4 +439,265 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref
 	copy.imageExtent.depth = depth;
 
 	vkCmdCopyBufferToImage(m_vkCommandBuffer, srcBuffer->GetVkBuffer(), texture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandBuffer::ResetQueryPool(const TRAP::Ref<VulkanQueryPool>& queryPool,
+                                                              const uint32_t startQuery,
+                                                              const uint32_t queryCount) const
+{
+	vkCmdResetQueryPool(m_vkCommandBuffer, queryPool->GetVkQueryPool(), startQuery, queryCount);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandBuffer::BeginQuery(const TRAP::Ref<VulkanQueryPool>& queryPool, const RendererAPI::QueryDesc& desc) const
+{
+	const VkQueryType type = queryPool->GetVkQueryType();
+	switch(type)
+	{
+	case VK_QUERY_TYPE_TIMESTAMP:
+		vkCmdWriteTimestamp(m_vkCommandBuffer, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, queryPool->GetVkQueryPool(), desc.Index);
+		break;
+
+	case VK_QUERY_TYPE_PIPELINE_STATISTICS:
+		break;
+
+	case VK_QUERY_TYPE_OCCLUSION:
+		break;
+		
+	default:
+		break;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandBuffer::EndQuery(const TRAP::Ref<VulkanQueryPool>& queryPool, const RendererAPI::QueryDesc& desc) const
+{
+	BeginQuery(queryPool, desc);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandBuffer::ResolveQuery(const TRAP::Ref<VulkanQueryPool>& queryPool,
+                                                            const TRAP::Ref<VulkanBuffer>& readBackBuffer,
+                                                            const uint32_t startQuery,
+                                                            const uint32_t queryCount) const
+{
+	VkQueryResultFlags flags = VK_QUERY_RESULT_64_BIT;
+	flags |= VK_QUERY_RESULT_WAIT_BIT;
+
+	vkCmdCopyQueryPoolResults(m_vkCommandBuffer, queryPool->GetVkQueryPool(), startQuery, queryCount, readBackBuffer->GetVkBuffer(), 0, sizeof(uint64_t), flags);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+	const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+	const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers) const
+{
+	std::vector<VkImageMemoryBarrier> iBarriers;
+	if (!textureBarriers.empty() || !renderTargetBarriers.empty())
+		iBarriers.resize(textureBarriers.size() + renderTargetBarriers.size());
+	uint32_t imageBarrierCount = 0;
+
+	std::vector<VkBufferMemoryBarrier> bBarriers;
+	if (!bufferBarriers.empty())
+		bBarriers.resize(bufferBarriers.size());
+	uint32_t bufferBarrierCount = 0;
+
+	VkAccessFlags srcAccessFlags = 0;
+	VkAccessFlags dstAccessFlags = 0;
+
+	for (const auto& trans : bufferBarriers)
+	{
+		const TRAP::Ref<VulkanBuffer>& buffer = trans.Buffer;
+		VkBufferMemoryBarrier* bufferBarrier;
+
+		if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
+			trans.NewState == RendererAPI::ResourceState::UnorderedAccess)
+		{
+			bufferBarrier = &bBarriers[bufferBarrierCount++];
+			bufferBarrier->sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
+			bufferBarrier->pNext = nullptr;
+
+			bufferBarrier->srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+			bufferBarrier->dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT | VK_ACCESS_SHADER_READ_BIT;
+		}
+		else
+		{
+			bufferBarrier = &bBarriers[bufferBarrierCount++];
+			bufferBarrier->sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
+			bufferBarrier->pNext = nullptr;
+
+			bufferBarrier->srcAccessMask = ResourceStateToVkAccessFlags(trans.CurrentState);
+			bufferBarrier->dstAccessMask = ResourceStateToVkAccessFlags(trans.NewState);
+		}
+
+		if(bufferBarrier)
+		{
+			bufferBarrier->buffer = buffer->GetVkBuffer();
+			bufferBarrier->size = VK_WHOLE_SIZE;
+			bufferBarrier->offset = 0;
+
+			if(trans.Acquire)
+			{
+				bufferBarrier->srcQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
+				bufferBarrier->dstQueueFamilyIndex = m_queue->GetQueueFamilyIndex();
+			}
+			else if(trans.Release)
+			{
+				bufferBarrier->srcQueueFamilyIndex = m_queue->GetQueueFamilyIndex();
+				bufferBarrier->dstQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
+			}
+			else
+			{
+				bufferBarrier->srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+				bufferBarrier->dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			}
+
+			srcAccessFlags |= bufferBarrier->srcAccessMask;
+			dstAccessFlags |= bufferBarrier->dstAccessMask;
+		}
+	}
+
+	for (const auto& trans : textureBarriers)
+	{
+		const TRAP::Ref<VulkanTexture>& texture = trans.Texture;
+		VkImageMemoryBarrier* imageBarrier;
+
+		if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
+			trans.NewState == RendererAPI::ResourceState::UnorderedAccess)
+		{
+			imageBarrier = &iBarriers[imageBarrierCount++];
+			imageBarrier->sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+			imageBarrier->pNext = nullptr;
+
+			imageBarrier->image = texture->GetVkImage();
+			imageBarrier->subresourceRange.aspectMask = texture->GetAspectMask();
+			imageBarrier->subresourceRange.baseMipLevel = 0;
+			imageBarrier->subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
+			imageBarrier->subresourceRange.baseArrayLayer = 0;
+			imageBarrier->subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
+
+			imageBarrier->srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+			imageBarrier->dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT | VK_ACCESS_SHADER_READ_BIT;
+			imageBarrier->oldLayout = VK_IMAGE_LAYOUT_GENERAL;
+			imageBarrier->newLayout = VK_IMAGE_LAYOUT_GENERAL;
+		}
+		else
+		{
+			imageBarrier = &iBarriers[imageBarrierCount++];
+			imageBarrier->sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+			imageBarrier->pNext = nullptr;
+
+			imageBarrier->srcAccessMask = ResourceStateToVkAccessFlags(trans.CurrentState);
+			imageBarrier->dstAccessMask = ResourceStateToVkAccessFlags(trans.NewState);
+			imageBarrier->oldLayout = ResourceStateToVkImageLayout(trans.CurrentState);
+			imageBarrier->newLayout = ResourceStateToVkImageLayout(trans.NewState);
+		}
+
+		if(imageBarrier)
+		{
+			imageBarrier->image = texture->GetVkImage();
+			imageBarrier->subresourceRange.aspectMask = texture->GetAspectMask();
+			imageBarrier->subresourceRange.baseMipLevel = 0;
+			imageBarrier->subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
+			imageBarrier->subresourceRange.baseArrayLayer = 0;
+			imageBarrier->subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
+
+			if(trans.Acquire)
+			{
+				imageBarrier->srcQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
+				imageBarrier->dstQueueFamilyIndex = m_queue->GetQueueFamilyIndex();
+			}
+			else if(trans.Release)
+			{
+				imageBarrier->srcQueueFamilyIndex = m_queue->GetQueueFamilyIndex();
+				imageBarrier->dstQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
+			}
+			else
+			{
+				imageBarrier->srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+				imageBarrier->dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			}
+
+			srcAccessFlags |= imageBarrier->srcAccessMask;
+			dstAccessFlags |= imageBarrier->dstAccessMask;
+		}
+	}
+
+	for (const auto& trans : renderTargetBarriers)
+	{
+		const TRAP::Ref<VulkanTexture> texture = trans.RenderTarget->m_texture;
+		VkImageMemoryBarrier* imageBarrier;
+
+		if (trans.CurrentState == RendererAPI::ResourceState::UnorderedAccess &&
+			trans.NewState == RendererAPI::ResourceState::UnorderedAccess)
+		{
+			imageBarrier = &iBarriers[imageBarrierCount++];
+			imageBarrier->sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+			imageBarrier->pNext = nullptr;
+
+			imageBarrier->image = texture->GetVkImage();
+			imageBarrier->subresourceRange.aspectMask = texture->GetAspectMask();
+			imageBarrier->subresourceRange.baseMipLevel = 0;
+			imageBarrier->subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
+			imageBarrier->subresourceRange.baseArrayLayer = 0;
+			imageBarrier->subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
+
+			imageBarrier->srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+			imageBarrier->dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT | VK_ACCESS_SHADER_READ_BIT;
+			imageBarrier->oldLayout = VK_IMAGE_LAYOUT_GENERAL;
+			imageBarrier->newLayout = VK_IMAGE_LAYOUT_GENERAL;
+		}
+		else
+		{
+			imageBarrier = &iBarriers[imageBarrierCount++];
+			imageBarrier->sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+			imageBarrier->pNext = nullptr;
+
+			imageBarrier->srcAccessMask = ResourceStateToVkAccessFlags(trans.CurrentState);
+			imageBarrier->dstAccessMask = ResourceStateToVkAccessFlags(trans.NewState);
+			imageBarrier->oldLayout = trans.RenderTarget->m_used++ ? ResourceStateToVkImageLayout(trans.CurrentState) : VK_IMAGE_LAYOUT_UNDEFINED;
+			imageBarrier->newLayout = ResourceStateToVkImageLayout(trans.NewState);
+		}
+
+		if(imageBarrier)
+		{
+			imageBarrier->image = texture->GetVkImage();
+			imageBarrier->subresourceRange.aspectMask = texture->GetAspectMask();
+			imageBarrier->subresourceRange.baseMipLevel = 0;
+			imageBarrier->subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
+			imageBarrier->subresourceRange.baseArrayLayer = 0;
+			imageBarrier->subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
+
+			if(trans.Acquire)
+			{
+				imageBarrier->srcQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
+				imageBarrier->dstQueueFamilyIndex = m_queue->GetQueueFamilyIndex();
+			}
+			else if(trans.Release)
+			{
+				imageBarrier->srcQueueFamilyIndex = m_queue->GetQueueFamilyIndex();
+				imageBarrier->dstQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
+			}
+			else
+			{
+				imageBarrier->srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+				imageBarrier->dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			}
+
+			srcAccessFlags |= imageBarrier->srcAccessMask;
+			dstAccessFlags |= imageBarrier->dstAccessMask;
+		}
+	}
+
+	const VkPipelineStageFlags srcStageMask = DetermineVkPipelineStageFlags(srcAccessFlags, m_queue->GetQueueType());
+	const VkPipelineStageFlags dstStageMask = DetermineVkPipelineStageFlags(dstAccessFlags, m_queue->GetQueueType());
+
+	if(bufferBarrierCount || imageBarrierCount)
+		vkCmdPipelineBarrier(m_vkCommandBuffer, srcStageMask, dstStageMask, 0, 0, nullptr, bufferBarrierCount, bBarriers.data(), imageBarrierCount, iBarriers.data());
 }

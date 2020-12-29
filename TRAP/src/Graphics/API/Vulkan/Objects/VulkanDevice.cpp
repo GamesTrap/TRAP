@@ -319,7 +319,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndex(const RendererAPI::
 		TP_WARN(Log::RendererVulkanDevicePrefix, "Could not find queue of type ", static_cast<uint32_t>(queueType), ". Using default queue");
 	}
 
-	queueFamilyProperties = props[queueFamilyIndex];
+	queueFamilyProperties = props[qfi];
 	queueFamilyIndex = static_cast<uint8_t>(qfi);
 	queueIndex = static_cast<uint8_t>(qi);
 }
@@ -343,6 +343,13 @@ uint8_t TRAP::Graphics::API::VulkanDevice::GetTransferQueueFamilyIndex() const
 uint8_t TRAP::Graphics::API::VulkanDevice::GetComputeQueueFamilyIndex() const
 {
 	return m_computeQueueFamilyIndex;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::array<uint8_t, 3> TRAP::Graphics::API::VulkanDevice::GetQueueFamilyIndices() const
+{
+	return { m_graphicsQueueFamilyIndex, m_transferQueueFamilyIndex, m_computeQueueFamilyIndex };
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

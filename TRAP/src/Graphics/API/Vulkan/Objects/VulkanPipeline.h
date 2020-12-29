@@ -13,6 +13,9 @@ namespace TRAP::Graphics::API
 		VulkanPipeline(TRAP::Ref<VulkanDevice> device, const RendererAPI::PipelineDesc& desc);
 		~VulkanPipeline();
 
+		VkPipeline& GetVkPipeline();
+		RendererAPI::PipelineType GetPipelineType() const;
+		
 	private:
 		void AddComputePipeline(const RendererAPI::PipelineDesc& desc);
 		void AddGraphicsPipeline(const RendererAPI::PipelineDesc& desc);

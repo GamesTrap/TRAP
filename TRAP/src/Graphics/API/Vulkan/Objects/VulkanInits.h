@@ -193,6 +193,23 @@ namespace TRAP::Graphics::API::VulkanInits
 	                        const std::vector<VkPipelineStageFlags>& waitMasks,
 	                        const std::vector<VkCommandBuffer>& cmds,
 	                        const std::vector<VkSemaphore>& signalSemaphore);
+	
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	VkQueryPoolCreateInfo QueryPoolCreateInfo(uint32_t count, VkQueryType queryType);
+	
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	VkSwapchainCreateInfoKHR SwapchainCreateInfoKHR(VkSurfaceKHR surface,
+	                                                uint32_t imageCount,
+	                                                VkSurfaceFormatKHR surfaceFormat,
+	                                                VkExtent2D imageExtent,
+	                                                VkSharingMode sharingMode,
+	                                                uint32_t queueFamilyIndexCount,
+	                                                const std::array<uint32_t, 2>& queueFamilyIndices,
+	                                                VkSurfaceTransformFlagBitsKHR preTransform,
+	                                                VkCompositeAlphaFlagBitsKHR compositeAlpha,
+	                                                VkPresentModeKHR presentMode);
 }
 
 #endif /*_TRAP_VULKANINITS_H_*/

@@ -126,14 +126,14 @@ namespace TRAP::Graphics::API
 
 		struct RenderPassDesc
 		{
-			std::vector<RendererAPI::ImageFormat> ColorFormats;
-			std::vector<RendererAPI::LoadActionType> LoadActionsColor;
+			std::vector<ImageFormat> ColorFormats;
+			std::vector<LoadActionType> LoadActionsColor;
 			std::vector<bool> SRGBValues;
 			uint32_t RenderTargetCount;
-			RendererAPI::SampleCount SampleCount;
-			RendererAPI::ImageFormat DepthStencilFormat;
-			RendererAPI::LoadActionType LoadActionDepth;
-			RendererAPI::LoadActionType LoadActionStencil;
+			SampleCount SampleCount;
+			ImageFormat DepthStencilFormat;
+			LoadActionType LoadActionDepth;
+			LoadActionType LoadActionStencil;
 		};
 
 		struct UpdateFrequencyLayoutInfo
@@ -141,11 +141,11 @@ namespace TRAP::Graphics::API
 			//Array of all bindings in the descriptor set
 			std::vector<VkDescriptorSetLayoutBinding> Bindings{};
 			//Array of all descriptors in this descriptor set
-			std::vector<RendererAPI::DescriptorInfo*> Descriptors{};
+			std::vector<DescriptorInfo*> Descriptors{};
 			//Array of all descriptors marked as dynamic in this descriptor set (applicable to DescriptorType::UniformBuffer)
-			std::vector<RendererAPI::DescriptorInfo*> DynamicDescriptors{};
+			std::vector<DescriptorInfo*> DynamicDescriptors{};
 			//Hash map to get index of the descriptor in the root signature
-			std::unordered_map<RendererAPI::DescriptorInfo*, uint32_t> DescriptorIndexMap{};
+			std::unordered_map<DescriptorInfo*, uint32_t> DescriptorIndexMap{};
 		};
 
 		struct SubresourceDesc
@@ -157,6 +157,7 @@ namespace TRAP::Graphics::API
 			uint32_t SlicePitch;
 		};
 
+		//Create default resources to be used as null descriptors in case user does not specify some descriptors
 		struct NullDescriptors
 		{
 			std::array<TRAP::Ref<VulkanTexture>, static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount)> DefaultTextureSRV;
@@ -170,15 +171,15 @@ namespace TRAP::Graphics::API
 		static std::vector<VkPipelineColorBlendAttachmentState> DefaultBlendAttachments;
 		static VkPipelineRasterizationStateCreateInfo DefaultRasterizerDesc;
 		static VkPipelineDepthStencilStateCreateInfo DefaultDepthDesc;
-		static VkPipelineColorBlendStateCreateInfo DefaultBlendDesc;
+		static VkPipelineColorBlendStateCreateInfo DefaultBlendDesc;		
 		
-	private:		
+	private:
 		static std::vector<std::string> SetupInstanceLayers();
 		static std::vector<std::string> SetupInstanceExtensions();
 		static std::vector<std::string> SetupDeviceExtensions(const TRAP::Scope<VulkanPhysicalDevice>& physicalDevice);
 
 		void AddDefaultResources();
-		void RemoveDefaultResources();
+		static void RemoveDefaultResources();
 		
 		std::string m_rendererTitle;
 
@@ -188,11 +189,24 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanMemoryAllocator> m_vma;
 		TRAP::Ref<VulkanDescriptorPool> m_descriptorPool;
 
-		std::mutex m_renderPassMutex;
-		using RenderPassMap = std::unordered_map<uint64_t, VulkanRenderPass*>;
-		TRAP::Scope<std::unordered_map<std::thread::id, RenderPassMap>> m_renderPassMap;
-		using FrameBufferMap = std::unordered_map<uint64_t, VulkanFrameBuffer*>;
-		TRAP::Scope<std::unordered_map<std::thread::id, FrameBufferMap>> m_frameBufferMap;
+		//Per Thread Render Pass synchronization logic
+		//Render-passes are not exposed to the engine code since they are not available on all APIs
+		//This map takes care of hashing a render pass based on the render targets passed to
+		//CommandBuffer::BeginRender()
+		using RenderPassMap = std::unordered_map<uint64_t, TRAP::Ref<VulkanRenderPass>>;
+		using RenderPassMapNode = RenderPassMap::value_type;
+		using RenderPassMapIt = RenderPassMap::iterator;
+		using FrameBufferMap = std::unordered_map<uint64_t, TRAP::Ref<VulkanFrameBuffer>>;
+		using FrameBufferMapNode = FrameBufferMap::value_type;
+		using FrameBufferMapIt = FrameBufferMap::iterator;
+		//RenderPass map per thread (this will make lookups lock free and we only need a lock when inserting a RenderPass Map for the first time)
+		static TRAP::Scope<std::unordered_map<std::thread::id, RenderPassMap>> s_renderPassMap;
+		//FrameBuffer map per thread (this will make lookups lock free and we only need a lock when inserting a FrameBuffer Map for the first time)
+		static TRAP::Scope<std::unordered_map<std::thread::id, FrameBufferMap>> s_frameBufferMap;
+		static std::mutex s_renderPassMutex;
+
+		static RenderPassMap& GetRenderPassMap();
+		static FrameBufferMap& GetFrameBufferMap();
 
 		static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs;
 		

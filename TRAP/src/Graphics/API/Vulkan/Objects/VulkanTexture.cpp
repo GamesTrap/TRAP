@@ -106,7 +106,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		TRAP_ASSERT(VulkanRenderer::s_GPUCapBits.CanShaderReadFrom[static_cast<uint32_t>(desc.Format)], "GPU shader can't read from this format");
 
 		VkFormatProperties props;
-		vkGetPhysicalDeviceFormatProperties(device->GetPhysicalDevice()->GetVkPhysicalDevice(), info.format, &props);
+		vkGetPhysicalDeviceFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), info.format, &props);
 		const VkFormatFeatureFlags formatFeatures = VkImageUsageToFormatFeatures(info.usage);
 
 		if(desc.HostVisible)
@@ -162,14 +162,15 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 
 	//SRV
 	VkImageViewCreateInfo srvDesc = VulkanInits::ImageViewCreateInfo(m_vkImage, viewType, ImageFormatToVkFormat(desc.Format), desc.MipLevels, desc.ArraySize);
+	m_aspectMask = DetermineAspectMask(srvDesc.format, true);
 	if (static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::Texture))
-		VkCall(vkCreateImageView(device->GetVkDevice(), &srvDesc, nullptr, &m_vkSRVDescriptor));
+		VkCall(vkCreateImageView(m_device->GetVkDevice(), &srvDesc, nullptr, &m_vkSRVDescriptor));
 
 	//SRV stencil
 	if((RendererAPI::ImageFormatHasStencil(desc.Format)) && (static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::Texture)))
 	{
 		srvDesc.subresourceRange.aspectMask = VK_IMAGE_ASPECT_STENCIL_BIT;
-		VkCall(vkCreateImageView(device->GetVkDevice(), &srvDesc, nullptr, &m_vkSRVStencilDescriptor));
+		VkCall(vkCreateImageView(m_device->GetVkDevice(), &srvDesc, nullptr, &m_vkSRVStencilDescriptor));
 	}
 
 	//UAV
@@ -184,7 +185,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		for(uint32_t i = 0; i < desc.MipLevels; ++i)
 		{
 			uavDesc.subresourceRange.baseMipLevel = i;
-			VkCall(vkCreateImageView(device->GetVkDevice(), &uavDesc, nullptr, &m_vkUAVDescriptors[i]));
+			VkCall(vkCreateImageView(m_device->GetVkDevice(), &uavDesc, nullptr, &m_vkUAVDescriptors[i]));
 		}
 	}
 

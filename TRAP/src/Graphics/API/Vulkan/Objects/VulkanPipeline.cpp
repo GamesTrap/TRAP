@@ -305,3 +305,17 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 		renderPass.reset();
 	}
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPipeline& TRAP::Graphics::API::VulkanPipeline::GetVkPipeline()
+{
+	return m_vkPipeline;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RendererAPI::PipelineType TRAP::Graphics::API::VulkanPipeline::GetPipelineType() const
+{
+	return m_type;
+}

@@ -841,3 +841,56 @@ VkSubmitInfo TRAP::Graphics::API::VulkanInits::SubmitInfo(const std::vector<VkSe
 	
 	return info;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkQueryPoolCreateInfo TRAP::Graphics::API::VulkanInits::QueryPoolCreateInfo(const uint32_t count, const VkQueryType queryType)
+{
+	VkQueryPoolCreateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.queryCount = count;
+	info.queryType = queryType;
+	info.pipelineStatistics = 0;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkSwapchainCreateInfoKHR TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKHR(VkSurfaceKHR surface,
+	const uint32_t imageCount,
+	const VkSurfaceFormatKHR surfaceFormat,
+	const VkExtent2D imageExtent,
+	const VkSharingMode sharingMode,
+	const uint32_t queueFamilyIndexCount,
+	const std::array<uint32_t, 2>& queueFamilyIndices,
+	const VkSurfaceTransformFlagBitsKHR preTransform,
+	const VkCompositeAlphaFlagBitsKHR compositeAlpha,
+	const VkPresentModeKHR presentMode)
+{
+	VkSwapchainCreateInfoKHR info{};
+
+	info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+	info.pNext = nullptr;
+	info.flags = 0;
+	info.surface = surface;
+	info.minImageCount = imageCount;
+	info.imageFormat = surfaceFormat.format;
+	info.imageColorSpace = surfaceFormat.colorSpace;
+	info.imageExtent = imageExtent;
+	info.imageArrayLayers = 1;
+	info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+	info.imageSharingMode = sharingMode;
+	info.queueFamilyIndexCount = queueFamilyIndexCount;
+	info.pQueueFamilyIndices = queueFamilyIndices.data();
+	info.preTransform = preTransform;
+	info.compositeAlpha = compositeAlpha;
+	info.presentMode = presentMode;
+	info.clipped = VK_TRUE;
+	info.oldSwapchain = nullptr;
+	
+	return info;
+}

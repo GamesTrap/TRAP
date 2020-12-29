@@ -8,6 +8,11 @@
 #include "Window/WindowingAPI.h"
 #include "Utils/Utils.h"
 
+#include "Objects/VulkanSampler.h"
+#include "Objects/VulkanBuffer.h"
+#include "Objects/VulkanTexture.h"
+#include "Objects/VulkanCommandPool.h"
+#include "Objects/VulkanCommandBuffer.h"
 #include "Objects/VulkanDescriptorPool.h"
 #include "Objects/VulkanMemoryAllocator.h"
 #include "Objects/VulkanDevice.h"
@@ -41,6 +46,10 @@ std::vector<VkPipelineColorBlendAttachmentState> TRAP::Graphics::API::VulkanRend
 VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultRasterizerDesc = UtilToRasterizerDesc({CullMode::Back, {}, {}, {}, {}, {}, {}, {}});
 VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultDepthDesc = UtilToDepthDesc({ false, false, CompareMode::LessOrEqual, {}, 0xFF, 0xFF, CompareMode::Always, {}, {}, {}, CompareMode::Always, {}, {}, {} });
 VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultBlendDesc = UtilToBlendDesc({ {BlendConstant::One}, {BlendConstant::Zero}, {BlendConstant::One}, {BlendConstant::Zero}, {}, {}, {(0x1 | 0x2 | 0x4 | 0x8)}, BlendStateTargets::BlendStateTargetAll, {}, false }, DefaultBlendAttachments);
+
+TRAP::Scope<std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::RenderPassMap>> TRAP::Graphics::API::VulkanRenderer::s_renderPassMap{};
+TRAP::Scope<std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::FrameBufferMap>> TRAP::Graphics::API::VulkanRenderer::s_frameBufferMap{};
+std::mutex TRAP::Graphics::API::VulkanRenderer::s_renderPassMutex{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -445,17 +454,214 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 
 void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 {
-	s_NullDescriptors = TRAP::MakeScope<struct NullDescriptors>();
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanPrefix, "Creating DefaultResources");
+#endif
 	
-	//TODO
+	s_NullDescriptors = TRAP::MakeScope<struct NullDescriptors>();
+
+	//1D Texture
+	TextureDesc textureDesc{};
+	textureDesc.ArraySize = 1;
+	textureDesc.Depth = 1;
+	textureDesc.Format = ImageFormat::R8G8B8A8_UNORM;
+	textureDesc.Height = 1;
+	textureDesc.MipLevels = 1;
+	textureDesc.SampleCount = SampleCount::SampleCount1;
+	textureDesc.StartState = ResourceState::Common;
+	textureDesc.Descriptors = DescriptorType::Texture;
+	textureDesc.Width = 1;
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1D)] = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, m_vma);
+	textureDesc.Descriptors = DescriptorType::RWTexture;
+	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1D)] = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, m_vma);
+
+	//1D Texture Array
+	textureDesc.ArraySize = 2;
+	textureDesc.Descriptors = DescriptorType::Texture;
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1DArray)] = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, m_vma);
+	textureDesc.Descriptors = DescriptorType::RWTexture;
+	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim1DArray)] = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, m_vma);
+
+	//2D Texture
+	textureDesc.Width = 2;
+	textureDesc.Height = 2;
+	textureDesc.ArraySize = 1;
+	textureDesc.Descriptors = DescriptorType::Texture;
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2D)] = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, m_vma);
+	textureDesc.Descriptors = DescriptorType::RWTexture;
+	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2D)] = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, m_vma);
+
+	//2D MS Texture
+	textureDesc.Descriptors = DescriptorType::Texture;
+	textureDesc.SampleCount = SampleCount::SampleCount2;
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DMS)] = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, m_vma);
+	textureDesc.SampleCount = SampleCount::SampleCount1;
+
+	//2D Texture Array
+	textureDesc.ArraySize = 2;
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DArray)] = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, m_vma);
+	textureDesc.Descriptors = DescriptorType::RWTexture;
+	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DArray)] = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, m_vma);
+
+	//2D MS Texture Array
+	textureDesc.Descriptors = DescriptorType::Texture;
+	textureDesc.SampleCount = SampleCount::SampleCount2;
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim2DMSArray)] = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, m_vma);
+	textureDesc.SampleCount = SampleCount::SampleCount1;
+
+	//3D Texture
+	textureDesc.Depth = 2;
+	textureDesc.ArraySize = 1;
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim3D)] = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, m_vma);
+	textureDesc.Descriptors = DescriptorType::RWTexture;
+	s_NullDescriptors->DefaultTextureUAV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDim3D)] = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, m_vma);
+
+	//Cube Texture
+	textureDesc.Depth = 1;
+	textureDesc.ArraySize = 6;
+	textureDesc.Descriptors = DescriptorType::TextureCube;
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCube)] = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, m_vma);
+	textureDesc.ArraySize = 6 * 2;
+	s_NullDescriptors->DefaultTextureSRV[static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCubeArray)] = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, m_vma);
+
+	BufferDesc bufferDesc{};
+	bufferDesc.Descriptors = DescriptorType::Buffer | DescriptorType::UniformBuffer;
+	bufferDesc.MemoryUsage = ResourceMemoryUsage::GPUOnly;
+	bufferDesc.StartState = ResourceState::Common;
+	bufferDesc.Size = sizeof(uint32_t);
+	bufferDesc.FirstElement = 0;
+	bufferDesc.ElementCount = 1;
+	bufferDesc.StructStride = sizeof(uint32_t);
+	bufferDesc.Format = ImageFormat::R32_UINT;
+	s_NullDescriptors->DefaultBufferSRV = TRAP::MakeRef<VulkanBuffer>(m_device, m_vma, bufferDesc);
+	bufferDesc.Descriptors = DescriptorType::RWBuffer;
+	s_NullDescriptors->DefaultBufferUAV = TRAP::MakeRef<VulkanBuffer>(m_device, m_vma, bufferDesc);
+
+	SamplerDesc samplerDesc{};
+	samplerDesc.AddressU = AddressMode::ClampToBorder;
+	samplerDesc.AddressV = AddressMode::ClampToBorder;
+	samplerDesc.AddressW = AddressMode::ClampToBorder;
+	s_NullDescriptors->DefaultSampler = TRAP::MakeRef<VulkanSampler>(m_device, samplerDesc);
+
+	BlendStateDesc blendStateDesc{};
+	blendStateDesc.DstAlphaFactors[0] = BlendConstant::Zero;
+	blendStateDesc.DstFactors[0] = BlendConstant::Zero;
+	blendStateDesc.SrcAlphaFactors[0] = BlendConstant::One;
+	blendStateDesc.SrcFactors[0] = BlendConstant::One;
+	blendStateDesc.Masks[0] = (0x1 | 0x2 | 0x4 | 0x8);
+	blendStateDesc.RenderTargetMask = BlendStateTargets::BlendStateTargetAll;
+	blendStateDesc.IndependentBlend = false;
+	DefaultBlendDesc = UtilToBlendDesc(blendStateDesc, DefaultBlendAttachments);
+
+	DepthStateDesc depthStateDesc{};
+	depthStateDesc.DepthFunc = CompareMode::LessOrEqual;
+	depthStateDesc.DepthTest = false;
+	depthStateDesc.DepthWrite = false;
+	depthStateDesc.StencilBackFunc = CompareMode::Always;
+	depthStateDesc.StencilFrontFunc = CompareMode::Always;
+	depthStateDesc.StencilReadMask = 0xFF;
+	depthStateDesc.StencilWriteMask = 0xFF;
+	DefaultDepthDesc = UtilToDepthDesc(depthStateDesc);
+
+	RasterizerStateDesc rasterizerStateDesc{};
+	rasterizerStateDesc.CullMode = CullMode::Back;
+	DefaultRasterizerDesc = UtilToRasterizerDesc(rasterizerStateDesc);
+
+	//Create Command Buffer to transition resources to the correct state
+	QueueDesc queueDesc{};
+	queueDesc.Type = QueueType::Graphics;
+	TRAP::Ref<VulkanQueue> graphicsQueue = TRAP::MakeRef<VulkanQueue>(m_device, queueDesc);
+
+	TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(m_device, graphicsQueue, true);
+	
+	VulkanCommandBuffer* cmd = cmdPool->AllocateCommandBuffer(false);
+
+	//Transition resources
+	cmd->Begin();
+
+	std::vector<BufferBarrier> bufferBarriers;
+	std::vector<TextureBarrier> textureBarriers;
+
+	for (uint32_t dim = 0; dim < static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount); ++dim)
+	{
+		if (s_NullDescriptors->DefaultTextureSRV[dim])
+			textureBarriers.push_back({ s_NullDescriptors->DefaultTextureSRV[dim], ResourceState::Undefined, ResourceState::ShaderResource });
+
+		if (s_NullDescriptors->DefaultTextureUAV[dim])
+			textureBarriers.push_back({s_NullDescriptors->DefaultTextureUAV[dim], ResourceState::Undefined, ResourceState::UnorderedAccess});
+	}
+
+	bufferBarriers.push_back({ s_NullDescriptors->DefaultBufferSRV, ResourceState::Undefined, ResourceState::ShaderResource });
+	bufferBarriers.push_back({ s_NullDescriptors->DefaultBufferUAV, ResourceState::Undefined, ResourceState::UnorderedAccess });
+
+	cmd->ResourceBarrier(bufferBarriers, textureBarriers, {});
+	cmd->End();
+
+	QueueSubmitDesc submitDesc{};
+	submitDesc.Cmds.push_back(cmd);
+	graphicsQueue->Submit(submitDesc);
+	graphicsQueue->WaitQueueIdle();
+
+	//Delete Command Buffer
+	cmdPool->FreeCommandBuffer(cmd);
+	cmdPool.reset();
+	graphicsQueue.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 {
-	//TODO
+#ifdef ENABLE_GRAPHICS_DEBUG
+	TP_DEBUG(Log::RendererVulkanPrefix, "Destroying DefaultResources");
+#endif
+	
+	for(uint32_t dim = 0; dim < static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount); ++dim)
+	{
+		if (s_NullDescriptors->DefaultTextureSRV[dim])
+			s_NullDescriptors->DefaultTextureSRV[dim].reset();
+
+		if (s_NullDescriptors->DefaultTextureUAV[dim])
+			s_NullDescriptors->DefaultTextureUAV[dim].reset();
+	}
+
+	s_NullDescriptors->DefaultBufferSRV.reset();
+	s_NullDescriptors->DefaultBufferUAV.reset();
+
+	s_NullDescriptors->DefaultSampler.reset();
 	
 	s_NullDescriptors.reset();
 	s_NullDescriptors = nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::VulkanRenderer::RenderPassMap& TRAP::Graphics::API::VulkanRenderer::GetRenderPassMap()
+{
+	//Only need a lock when creating a new RenderPass Map for this thread
+	std::lock_guard<std::mutex> lock(s_renderPassMutex);
+	auto it = s_renderPassMap->find(std::this_thread::get_id());
+	if (it == s_renderPassMap->end())
+	{
+		(*s_renderPassMap)[std::this_thread::get_id()] = {};
+		return (*s_renderPassMap)[std::this_thread::get_id()];
+	}
+
+	return it->second;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::API::VulkanRenderer::FrameBufferMap& TRAP::Graphics::API::VulkanRenderer::GetFrameBufferMap()
+{
+	//Only need a lock when creating a new FrameBuffer Map for this thread
+	std::lock_guard<std::mutex> lock(s_renderPassMutex);
+	auto it = s_frameBufferMap->find(std::this_thread::get_id());
+	if(it == s_frameBufferMap->end())
+	{
+		(*s_frameBufferMap)[std::this_thread::get_id()] = {};
+		return (*s_frameBufferMap)[std::this_thread::get_id()];
+	}
+
+	return it->second;
 }

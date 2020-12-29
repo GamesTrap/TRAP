@@ -95,7 +95,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(TRAP::Ref<VulkanDevi
 
 	textureDesc.Name = desc.Name;
 
-	m_texture = TRAP::MakeScope<VulkanTexture>(m_device, textureDesc, vma);
+	m_texture = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, vma);
 
 	VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_MAX_ENUM;
 	if (desc.Height > 1)

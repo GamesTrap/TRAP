@@ -118,7 +118,7 @@ namespace TRAP
 		/// </summary>
 		static void Clear();
 
-		inline static constexpr auto WindowVersion = "[20w52a1]";
+		inline static constexpr auto WindowVersion = "[20w53a1]";
 		inline static constexpr auto WindowPrefix = "[Window] ";
 		inline static constexpr auto WindowInternalPrefix = "[Window][Internal] ";
 		inline static constexpr auto WindowIconPrefix = "[Window][Icon] ";
@@ -173,9 +173,11 @@ namespace TRAP
 		inline static constexpr auto RendererVulkanRenderPassPrefix = "[Renderer][Vulkan][RenderPass] ";
 		inline static constexpr auto RendererVulkanFrameBufferPrefix = "[Renderer][Vulkan][FrameBuffer] ";
 		inline static constexpr auto RendererVulkanRenderTargetPrefix = "[Renderer][Vulkan][RenderTarget] ";
+		inline static constexpr auto RendererVulkanCommandSignaturePrefix = "[Renderer][Vulkan][CommandSignature] ";
 		inline static constexpr auto RendererVulkanQueuePrefix = "[Renderer][Vulkan][Queue] ";
 		inline static constexpr auto RendererVulkanCommandPoolPrefix = "[Renderer][Vulkan][CommandPool] ";
 		inline static constexpr auto RendererVulkanCommandBufferPrefix = "[Renderer][Vulkan][CommandBuffer] ";
+		inline static constexpr auto RendererVulkanQueryPoolPrefix = "[Renderer][Vulkan][QueryPool] ";
 		inline static constexpr auto RendererVulkanPipelinePrefix = "[Renderer][Vulkan][Pipeline] ";
 		inline static constexpr auto RendererVulkanPipelineCachePrefix = "[Renderer][Vulkan][PipelineCache] ";
 		inline static constexpr auto RendererVulkanFencePrefix = "[Renderer][Vulkan][Fence] ";
@@ -183,6 +185,7 @@ namespace TRAP
 		inline static constexpr auto RendererVulkanBufferPrefix = "[Renderer][Vulkan][Buffer] ";
 		inline static constexpr auto RendererVulkanSamplerPrefix = "[Renderer][Vulkan][Sampler] ";
 		inline static constexpr auto RendererVulkanTexturePrefix = "[Renderer][Vulkan][Texture] ";
+		inline static constexpr auto RendererVulkanSwapChainPrefix = "[Renderer][Vulkan][SwapChain] ";
 		inline static constexpr auto RendererVulkanVirtualTexturePrefix = "[Renderer][Vulkan][VirtualTexture] ";
 		inline static constexpr auto RendererVulkanShaderPrefix = "[Renderer][Vulkan][Shader] ";
 		inline static constexpr auto RendererVulkanRootSignaturePrefix = "[Renderer][Vulkan][RootSignature] ";

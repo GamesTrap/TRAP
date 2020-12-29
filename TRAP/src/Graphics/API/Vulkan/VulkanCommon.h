@@ -5,6 +5,7 @@
 
 namespace TRAP::Graphics::API
 {
+	class VulkanQueue;
 	class VulkanPhysicalDevice;
 	
 	bool ErrorCheck(VkResult result, const char* function, const char* file, int32_t line);
@@ -32,10 +33,16 @@ namespace TRAP::Graphics::API
 	VkAccessFlags ResourceStateToVkAccessFlags(RendererAPI::ResourceState state);
 	VkImageLayout ResourceStateToVkImageLayout(RendererAPI::ResourceState usage);
 	VkPipelineStageFlags DetermineVkPipelineStageFlags(VkAccessFlags accessFlags, RendererAPI::QueueType queueType);
+	VkQueryType QueryTypeToVkQueryType(RendererAPI::QueryType type);
 	
 	VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc, std::vector<VkPipelineColorBlendAttachmentState>& attachments);
 	VkPipelineDepthStencilStateCreateInfo UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc);
 	VkPipelineRasterizationStateCreateInfo UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc);
+
+	RendererAPI::ImageFormat GetRecommendedSwapchainFormat(bool HDR);
+	double GetTimestampFrequency(const TRAP::Ref<VulkanQueue>& queue);
+
+	RendererAPI::ImageFormat ImageFormatFromVkFormat(VkFormat format);
 	
 	void VkSetObjectName(VkDevice device, uint64_t handle, VkObjectType type, const char* name);
 

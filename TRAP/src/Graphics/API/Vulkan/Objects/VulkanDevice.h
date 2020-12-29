@@ -35,6 +35,7 @@ namespace TRAP::Graphics::API
 		uint8_t GetGraphicsQueueFamilyIndex() const;
 		uint8_t GetTransferQueueFamilyIndex() const;
 		uint8_t GetComputeQueueFamilyIndex() const;
+		std::array<uint8_t, 3> GetQueueFamilyIndices() const;
 		
 		uint8_t GetGraphicsQueueIndex() const;
 		uint8_t GetTransferQueueIndex() const;

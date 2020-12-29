@@ -25,6 +25,9 @@ namespace TRAP::Graphics
 
 namespace TRAP::Graphics::API
 {
+	class VulkanTexture;
+	class VulkanRenderTarget;
+	class VulkanQueue;
 	class VulkanPipelineCache;
 	class VulkanSemaphore;
 	class VulkanFence;
@@ -489,7 +492,7 @@ namespace TRAP::Graphics
 			Quad = 0x00000080,
 			PartitionedNV = 0x00000100,
 
-			ALL = 0x7FFFFFFF
+			WAVE_OPS_SUPPORT_FLAG_ALL = 0x7FFFFFFF
 		};
 
 		enum class QueueType
@@ -864,7 +867,7 @@ namespace TRAP::Graphics
 			PersistentMap = 0x04,
 			//Use ESRAM to store this buffer
 			ESRAM = 0x08,
-			//Flag to specify not to allocate descriptors for the resoruce
+			//Flag to specify not to allocate descriptors for the resource
 			NoDescriptorViewCreation = 0x10
 		};
 
@@ -1099,6 +1102,15 @@ namespace TRAP::Graphics
 			TexCoord8,
 			TexCoord9,
 		};
+
+		enum class QueryType
+		{
+			Timestamp = 0,
+			PipelineStatistics,
+			Occlusion,
+
+			QUERY_TYPE_COUNT
+		};
 		
 		enum
 		{
@@ -1151,6 +1163,8 @@ namespace TRAP::Graphics
 			DescriptorType Descriptors;
 			//Debug name used in GPU profile
 			const char* Name;
+
+			const void* NativeHandle;
 		};
 
 		//Data structure holding necessary info to create a Texture
@@ -1248,7 +1262,7 @@ namespace TRAP::Graphics
 		{
 			ShaderStage Stages;
 			//Specify whether shader will own byte code memory
-			bool OwnByteCode;
+			bool OwnByteCode{};
 			BinaryShaderStageDesc Vertex;
 			BinaryShaderStageDesc Fragment;
 			BinaryShaderStageDesc Geometry;
@@ -1396,7 +1410,7 @@ namespace TRAP::Graphics
 
 		struct VertexLayout
 		{
-			uint32_t AttributeCount;
+			uint32_t AttributeCount{};
 			std::array<VertexAttribute, 15> Attributes;
 		};
 		
@@ -1421,9 +1435,10 @@ namespace TRAP::Graphics
 		{
 		};
 
-		//BUG C4624 TODO
 		struct PipelineDesc
 		{
+			~PipelineDesc(); //Fixes C4624
+			
 			PipelineType Type;
 			union
 			{
@@ -1435,6 +1450,125 @@ namespace TRAP::Graphics
 			void* PipelineExtensions;
 			uint32_t PipelineExtensionCount;
 			const char* Name;
+		};
+
+		struct QueryPoolDesc
+		{
+			QueryType Type;
+			uint32_t QueryCount;
+		};
+
+		struct QueryDesc
+		{
+			uint32_t Index;
+		};
+
+		struct IndirectDrawArguments
+		{
+			uint32_t VertexCount;
+			uint32_t InstanceCount;
+			uint32_t StartVertex;
+			uint32_t StartInstance;
+		};
+
+		struct IndirectDrawIndexArguments
+		{
+			uint32_t IndexCount;
+			uint32_t InstanceCount;
+			uint32_t StartIndex;
+			uint32_t VertexOffset;
+			uint32_t StartInstance;
+		};
+
+		struct IndirectDispatchArguments
+		{
+			uint32_t GroupCountX;
+			uint32_t GroupCountY;
+			uint32_t GroupCountZ;
+		};
+
+		struct IndirectArgumentDescriptor
+		{
+			IndirectArgumentType Type;
+			const char* Name;
+			uint32_t Index;
+		};
+		
+		struct CommandSignatureDesc
+		{
+			TRAP::Ref<API::VulkanRootSignature> RootSignature;
+			uint32_t IndirectArgCount;
+			std::vector<IndirectArgumentDescriptor> ArgDescs;
+			//Set to true if indirect argument struct should not be aligned to 16 bytes
+			bool Packed;
+		};
+
+		struct SwapChainDesc
+		{
+			//Window handle
+			TRAP::INTERNAL::WindowingAPI::InternalWindow* WindowHandle;
+			//Queues which should be allowed to present
+			std::vector<TRAP::Ref<API::VulkanQueue>> PresentQueues;
+			//Number of back buffers in this swapchain
+			uint32_t ImageCount;
+			//Width of the swapchain
+			uint32_t Width;
+			//Height of the swapchain
+			uint32_t Height;
+			//Color format of the swapchain
+			ImageFormat ColorFormat;
+			//Clear value
+			ClearValue ColorClearValue;
+			//Set whether swapchain will be presented using VSync
+			bool EnableVSync;
+			//We can toggle to using FLIP model if application desires
+			bool UseFlipSwapEffect;
+		};
+
+		struct RenderTargetBarrier
+		{
+			TRAP::Ref<API::VulkanRenderTarget> RenderTarget;
+			ResourceState CurrentState;
+			ResourceState NewState;
+			bool BeginOnly;
+			bool EndOnly;
+			bool Acquire;
+			bool Release;
+			QueueType QueueType;
+			//Specify whether following barrier targets particular subresource
+			bool SubresourceBarrier;
+			//Following values are ignored if SubresourceBarrier is false
+			uint8_t MipLevel;
+			uint16_t ArrayLayer;
+		};
+
+		struct BufferBarrier
+		{
+			TRAP::Ref<API::VulkanBuffer> Buffer;
+			ResourceState CurrentState;
+			ResourceState NewState;
+			bool BeginOnly;
+			bool EndOnly;
+			bool Acquire;
+			bool Release;
+			QueueType QueueType;
+		};
+
+		struct TextureBarrier
+		{
+			TRAP::Ref<API::VulkanTexture> Texture;
+			ResourceState CurrentState;
+			ResourceState NewState;
+			bool BeginOnly;
+			bool EndOnly;
+			bool Acquire;
+			bool Release;
+			QueueType QueueType;
+			//Specify whether the following barrier targets particular subresource
+			bool SubresourceBarrier;
+			//Following values are ignored if SubresourceBarrier is false
+			uint8_t MipLevel;
+			uint16_t ArrayLayer;
 		};
 		
 		/*inline static struct alignsas(64) Renderer

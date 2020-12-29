@@ -1,6 +1,7 @@
 #ifndef _TRAP_VULKANRENDERTARGET_H_
 #define _TRAP_VULKANRENDERTARGET_H_
 
+#include "VulkanCommandBuffer.h"
 #include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics::API
@@ -31,11 +32,15 @@ namespace TRAP::Graphics::API
 		const std::vector<VkImageView>& GetVkImageViewSlices() const;
 
 	private:
+		friend void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
+			const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
+			const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers) const;
+		
 		void SetRenderTargetName(const char* name) const;
 		
 		TRAP::Ref<VulkanDevice> m_device;
 
-		TRAP::Scope<VulkanTexture> m_texture;
+		TRAP::Ref<VulkanTexture> m_texture;
 
 		VkImageView m_vkDescriptor;
 		std::vector<VkImageView> m_vkSliceDescriptors;
