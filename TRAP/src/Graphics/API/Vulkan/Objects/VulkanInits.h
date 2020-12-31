@@ -82,6 +82,11 @@ namespace TRAP::Graphics::API::VulkanInits
 		const std::vector<VkSubpassDescription>& subpassDescriptions);
 
 	VkRenderPassCreateInfo RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions);
+
+	VkRenderPassBeginInfo RenderPassBeginInfo(VkRenderPass renderPass,
+	                                          VkFramebuffer frameBuffer,
+											  VkRect2D renderArea,
+	                                          const std::vector<VkClearValue>& colorValues);
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -210,6 +215,14 @@ namespace TRAP::Graphics::API::VulkanInits
 	                                                VkSurfaceTransformFlagBitsKHR preTransform,
 	                                                VkCompositeAlphaFlagBitsKHR compositeAlpha,
 	                                                VkPresentModeKHR presentMode);
+	
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	VkPresentInfoKHR PresentInfo(const std::vector<VkSemaphore>& waitSemaphores, VkSwapchainKHR swapChain, uint32_t presentIndex);
+	
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	VkMemoryAllocateInfo MemoryAllocateInfo(VkDeviceSize allocSize, uint32_t memoryTypeIndex);
 }
 
 #endif /*_TRAP_VULKANINITS_H_*/

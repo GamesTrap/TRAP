@@ -30,11 +30,19 @@ namespace TRAP::Graphics::API
 		RendererAPI::DescriptorType GetDescriptorType() const;
 		VkImageView& GetVkImageView();
 		const std::vector<VkImageView>& GetVkImageViewSlices() const;
+		uint32_t GetID() const;
 
 	private:
 		friend void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
 			const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
 			const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers) const;
+		friend void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vector<TRAP::Ref<VulkanRenderTarget>>& renderTargets,
+			const TRAP::Ref<VulkanRenderTarget>& depthStencil,
+			const RendererAPI::LoadActionsDesc* loadActions,
+			const std::vector<uint32_t>& colorArraySlices,
+			const std::vector<uint32_t>& colorMipSlices,
+			uint32_t depthArraySlice,
+			uint32_t depthMipSlice);
 		
 		void SetRenderTargetName(const char* name) const;
 		

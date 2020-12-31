@@ -352,6 +352,26 @@ VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(co
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkRenderPassBeginInfo TRAP::Graphics::API::VulkanInits::RenderPassBeginInfo(VkRenderPass renderPass,
+	VkFramebuffer frameBuffer,
+	const VkRect2D renderArea,
+	const std::vector<VkClearValue>& colorValues)
+{
+	VkRenderPassBeginInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+	info.pNext = nullptr;
+	info.renderPass = renderPass;
+	info.framebuffer = frameBuffer;
+	info.renderArea = renderArea;
+	info.clearValueCount = static_cast<uint32_t>(colorValues.size());
+	info.pClearValues = colorValues.data();
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkFramebufferCreateInfo TRAP::Graphics::API::VulkanInits::FramebufferCreateInfo(VkRenderPass renderPass,
 	const std::vector<VkImageView>& attachments,
 	const uint32_t width,
@@ -891,6 +911,38 @@ VkSwapchainCreateInfoKHR TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKH
 	info.presentMode = presentMode;
 	info.clipped = VK_TRUE;
 	info.oldSwapchain = nullptr;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkPresentInfoKHR TRAP::Graphics::API::VulkanInits::PresentInfo(const std::vector<VkSemaphore>& waitSemaphores, VkSwapchainKHR swapChain, uint32_t presentIndex)
+{
+	VkPresentInfoKHR info;
+
+	info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+	info.pNext = nullptr;
+	info.waitSemaphoreCount = static_cast<uint32_t>(waitSemaphores.size());
+	info.pWaitSemaphores = !waitSemaphores.empty() ? waitSemaphores.data() : nullptr;
+	info.swapchainCount = 1;
+	info.pSwapchains = &swapChain;
+	info.pImageIndices = &presentIndex;
+	info.pResults = nullptr;
+	
+	return info;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkMemoryAllocateInfo TRAP::Graphics::API::VulkanInits::MemoryAllocateInfo(const VkDeviceSize allocSize, const uint32_t memoryTypeIndex)
+{
+	VkMemoryAllocateInfo info;
+
+	info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+	info.pNext = nullptr;
+	info.allocationSize = allocSize;
+	info.memoryTypeIndex = memoryTypeIndex;
 	
 	return info;
 }

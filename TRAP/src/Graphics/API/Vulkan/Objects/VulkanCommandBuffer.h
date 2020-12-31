@@ -21,6 +21,7 @@ namespace TRAP::Graphics::API
 
 		VkCommandBuffer& GetVkCommandBuffer();
 		RendererAPI::QueueType GetQueueType() const;
+		TRAP::Ref<VulkanQueue> GetQueue() const;
 		bool IsSecondary() const;
 
 		void BindPushConstants(const TRAP::Ref<VulkanRootSignature>& rootSignature, const char* name, const void* constants) const;
@@ -29,7 +30,14 @@ namespace TRAP::Graphics::API
 		void BindIndexBuffer(const TRAP::Ref<VulkanBuffer>& buffer, RendererAPI::IndexType indexType, uint64_t offset) const;
 		void BindVertexBuffer(const std::vector<TRAP::Ref<VulkanBuffer>>& buffers, const std::vector<uint32_t>& strides, const std::vector<uint64_t>& offsets) const;
 		void BindPipeline(const TRAP::Ref<VulkanPipeline>& pipeline) const;
-
+		void BindRenderTargets(const std::vector<TRAP::Ref<VulkanRenderTarget>>& renderTargets,
+		                       const TRAP::Ref<VulkanRenderTarget>& depthStencil,
+		                       const RendererAPI::LoadActionsDesc* loadActions,
+		                       const std::vector<uint32_t>& colorArraySlices,
+		                       const std::vector<uint32_t>& colorMipSlices,
+		                       uint32_t depthArraySlice,
+		                       uint32_t depthMipSlice);
+		
 		void AddDebugMarker(float r, float g, float b, const char* name) const;
 		void BeginDebugMarker(float r, float g, float b, const char* name) const;
 		void EndDebugMarker() const;
@@ -55,6 +63,7 @@ namespace TRAP::Graphics::API
 
 		void UpdateBuffer(const TRAP::Ref<VulkanBuffer>& buffer, uint64_t dstOffset, const TRAP::Ref<VulkanBuffer>& srcBuffer, uint64_t srcOffset, uint64_t size) const;
 		void UpdateSubresource(const TRAP::Ref<VulkanTexture>& texture, const TRAP::Ref<VulkanBuffer>& srcBuffer, const VulkanRenderer::SubresourceDesc& subresourceDesc) const;
+		void UpdateVirtualTexture(const TRAP::Ref<VulkanTexture>& virtualTexture);
 
 		void ResetQueryPool(const TRAP::Ref<VulkanQueryPool>& queryPool, uint32_t startQuery, uint32_t queryCount) const;
 		void BeginQuery(const TRAP::Ref<VulkanQueryPool>& queryPool, const RendererAPI::QueryDesc& desc) const;
@@ -69,6 +78,17 @@ namespace TRAP::Graphics::API
 		friend VulkanCommandPool;
 		
 		VulkanCommandBuffer(TRAP::Ref<VulkanDevice> device, TRAP::Ref<VulkanQueue> queue, VkCommandPool& commandPool, bool secondary);
+
+		template<typename T>
+		static std::size_t HashAlg(const T* mem, std::size_t size, const std::size_t prev = 2166136261U)
+		{
+			uint32_t result = static_cast<uint32_t>(prev); //Intentionally uint32_t instead of std::size_t, so the behavior is the same regardless of size.
+
+			while (size--)
+				result = (result * 16777619) ^ *mem++;
+			
+			return static_cast<std::size_t>(result);
+		}
 
 		VkCommandBuffer m_vkCommandBuffer;
 

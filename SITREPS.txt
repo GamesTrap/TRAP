@@ -1504,3 +1504,13 @@ SITREP 12/29/2020|20w53a1
     - Fixed a bug in VulkanTexture ~<15 mins
     - Added more utility functions to VulkanCommon ~<20 mins
     - VulkanRenderer added DefaultResource creation/upload ~>45 mins
+
+SITREP 12/31/2020|20w53a2
+    - Changed TRAP Engine version to 20w53a2(0.7.13)
+    - VulkanCommandBuffer Added UpdateVirtualTexture/BindRenderTargets/GetQueue functions ~<60 mins
+    - VulkanDescriptorSet Added Update function (missing RayTracing) ~<40 mins
+    - VulkanQueue Added Present fuction ~<30 mins
+    - VulkanRenderTarget Added GetID function ~<5 mins
+    - VulkanSwapChain Added AcquireNextImage/ToggleVSync/GetVkSwapChain/GetPresentVkQueue function ~>60 mins
+    - VulkanTexture Added VirtualTexture support ~>120 mins
+    - FINISHED BASELINE IMPLEMENTATION OF ALL VULKAN CLASSES

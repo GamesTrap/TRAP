@@ -1,6 +1,7 @@
 #include "TRAPPCH.h"
 #include "VulkanCommandBuffer.h"
 
+#include "VulkanFrameBuffer.h"
 #include "VulkanRenderTarget.h"
 #include "VulkanPipeline.h"
 #include "VulkanCommandSignature.h"
@@ -64,6 +65,13 @@ VkCommandBuffer& TRAP::Graphics::API::VulkanCommandBuffer::GetVkCommandBuffer()
 TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanCommandBuffer::GetQueueType() const
 {
 	return m_queue->GetQueueType();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::API::VulkanQueue> TRAP::Graphics::API::VulkanCommandBuffer::GetQueue() const
+{
+	return m_queue;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -194,6 +202,176 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPipeline(const TRAP::Ref<Vulk
 
 	const VkPipelineBindPoint pipelineBindPoint = VkPipelineBindPointTranslator[static_cast<uint32_t>(pipeline->GetPipelineType())];
 	vkCmdBindPipeline(m_vkCommandBuffer, pipelineBindPoint, pipeline->GetVkPipeline());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vector<TRAP::Ref<VulkanRenderTarget>>& renderTargets,
+																 const TRAP::Ref<VulkanRenderTarget>& depthStencil,
+																 const RendererAPI::LoadActionsDesc* loadActions,
+																 const std::vector<uint32_t>& colorArraySlices,
+																 const std::vector<uint32_t>& colorMipSlices,
+																 uint32_t depthArraySlice,
+																 uint32_t depthMipSlice)
+{
+	TRAP_ASSERT(m_vkCommandBuffer != VK_NULL_HANDLE);
+
+	if(m_activeRenderPass)
+	{
+		vkCmdEndRenderPass(m_vkCommandBuffer);
+		m_activeRenderPass = VK_NULL_HANDLE;
+	}
+
+	if (renderTargets.empty() && !depthStencil)
+		return;
+
+	std::size_t renderPassHash = 0;
+	std::size_t frameBufferHash = 0;
+
+	std::vector<RendererAPI::RenderTargetBarrier> barriers;
+	barriers.reserve(8 + 1);
+	
+	//Generate hash for RenderPass and FrameBuffer
+	//NOTE:
+	//RenderPass does not care about underlying VkImageView.
+	//It only cares about the format and sample count of the attachments.
+	//We hash those two values to generate the RenderPass Hash.
+	//FrameBuffer is the actual array of all the VkImageViews
+	//We hash the texture id associated with the RenderTarget to generate the FrameBuffer Hash.
+	for(uint32_t i = 0; i < renderTargets.size(); ++i)
+	{
+		std::array<uint32_t, 3> hashValues =
+		{
+			static_cast<uint32_t>(renderTargets[i]->GetImageFormat()),
+			static_cast<uint32_t>(renderTargets[i]->GetSampleCount()),
+			loadActions ? static_cast<uint32_t>(loadActions->LoadActionsColor[i]) : 0
+		};
+		
+		renderPassHash = HashAlg<uint32_t>(hashValues.data(), 3, renderPassHash);
+		const uint32_t ID = renderTargets[i]->GetID();
+		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
+
+		if(renderTargets[i]->m_used++)
+			barriers.push_back({ renderTargets[i], RendererAPI::ResourceState::Undefined, RendererAPI::ResourceState::RenderTarget });
+	}
+	if(depthStencil)
+	{
+		std::array<uint32_t, 4> hashValues =
+		{
+			static_cast<uint32_t>(depthStencil->GetImageFormat()),
+			static_cast<uint32_t>(depthStencil->GetSampleCount()),
+			loadActions ? static_cast<uint32_t>(loadActions->LoadActionDepth) : 0,
+			loadActions ? static_cast<uint32_t>(loadActions->LoadActionStencil) : 0
+		};
+		renderPassHash = HashAlg<uint32_t>(hashValues.data(), 4, renderPassHash);
+		const uint32_t ID = depthStencil->GetID();
+		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
+
+		if (depthStencil->m_used++)
+			barriers.push_back({ depthStencil, RendererAPI::ResourceState::Undefined, RendererAPI::ResourceState::DepthWrite });
+	}
+	if (!colorArraySlices.empty())
+		frameBufferHash = HashAlg<uint32_t>(colorArraySlices.data(), renderTargets.size(), frameBufferHash);
+	if (!colorMipSlices.empty())
+		frameBufferHash = HashAlg<uint32_t>(colorMipSlices.data(), renderTargets.size(), frameBufferHash);
+	if (depthArraySlice != -1)
+		frameBufferHash = HashAlg<uint32_t>(&depthArraySlice, 1, frameBufferHash);
+	if (depthMipSlice != -1)
+		frameBufferHash = HashAlg<uint32_t>(&depthMipSlice, 1, frameBufferHash);
+
+	RendererAPI::SampleCount sampleCount = RendererAPI::SampleCount::SampleCount1;
+
+	VulkanRenderer::RenderPassMap& renderPassMap = VulkanRenderer::GetRenderPassMap();
+	VulkanRenderer::FrameBufferMap& frameBufferMap = VulkanRenderer::GetFrameBufferMap();
+
+	const VulkanRenderer::RenderPassMapIt node = renderPassMap.find(renderPassHash);
+	const VulkanRenderer::FrameBufferMapIt frameBufferNode = frameBufferMap.find(frameBufferHash);
+
+	TRAP::Ref<VulkanRenderPass> renderPass = nullptr;
+	TRAP::Ref<VulkanFrameBuffer> frameBuffer = nullptr;
+
+	//If a RenderPass of this combination already exists just use it or create a new one
+	if (node != renderPassMap.end())
+		renderPass = node->second;
+	else
+	{
+		std::array<RendererAPI::ImageFormat, 8> colorFormats{};
+		RendererAPI::ImageFormat depthStencilFormat = RendererAPI::ImageFormat::Undefined;
+		for (uint32_t i = 0; i < renderTargets.size(); ++i)
+			colorFormats[i] = renderTargets[i]->GetImageFormat();
+		if (depthStencil)
+		{
+			depthStencilFormat = depthStencil->GetImageFormat();
+			sampleCount = depthStencil->GetSampleCount();
+		}
+		else if (!renderTargets.empty())
+			sampleCount = renderTargets[0]->GetSampleCount();
+
+		VulkanRenderer::RenderPassDesc desc{};
+		desc.RenderTargetCount = static_cast<uint32_t>(renderTargets.size());
+		desc.SampleCount = sampleCount;
+		desc.ColorFormats = std::vector<RendererAPI::ImageFormat>(colorFormats.begin(), colorFormats.end());
+		desc.DepthStencilFormat = depthStencilFormat;
+		desc.LoadActionsColor = loadActions ? std::vector<RendererAPI::LoadActionType>(loadActions->LoadActionsColor.begin(), loadActions->LoadActionsColor.end()) : std::vector<RendererAPI::LoadActionType>();
+		desc.LoadActionDepth = loadActions ? loadActions->LoadActionDepth : RendererAPI::LoadActionType::DontCare;
+		desc.LoadActionStencil = loadActions ? loadActions->LoadActionStencil : RendererAPI::LoadActionType::DontCare;
+		renderPass = TRAP::MakeRef<VulkanRenderPass>(m_device, desc);
+
+		//No need of a lock here since this map is per thread
+		renderPassMap.insert({ {renderPassHash, renderPass} });
+	}
+
+	//If a FrameBuffer of this combination already exists just use it or create a new one
+	if (frameBufferNode != frameBufferMap.end())
+		frameBuffer = frameBufferNode->second;
+	else
+	{
+		VulkanRenderer::FrameBufferDesc desc{};
+		desc.RenderTargets = renderTargets;
+		desc.DepthStencil = depthStencil;
+		desc.RenderPass = renderPass;
+		desc.ColorArraySlices = colorArraySlices;
+		desc.ColorMipSlices = colorMipSlices;
+		desc.DepthArraySlice = depthArraySlice;
+		desc.DepthMipSlice = depthMipSlice;
+		frameBuffer = TRAP::MakeRef<VulkanFrameBuffer>(m_device, desc);
+
+		//No need of a lock here since this map is per thread
+		frameBufferMap.insert({ {frameBufferHash, frameBuffer} });
+	}
+
+	VkRect2D renderArea{};
+	renderArea.offset.x = 0;
+	renderArea.offset.y = 0;
+	renderArea.extent.width = frameBuffer->GetWidth();
+	renderArea.extent.height = frameBuffer->GetHeight();
+
+	std::vector<VkClearValue> clearValues;
+	clearValues.reserve(8 + 1);
+	if(loadActions)
+	{
+		for(uint32_t i = 0; i < renderTargets.size(); ++i)
+		{
+			RendererAPI::ClearValue clearValue = loadActions->ClearColorValues[i];
+			VkClearValue val{};
+			val.color = { {clearValue.R, clearValue.G, clearValue.B, clearValue.A} };
+			clearValues.push_back(val);
+		}
+		if(depthStencil)
+		{
+			VkClearValue val{};
+			val.depthStencil = { loadActions->ClearDepth.Depth, loadActions->ClearDepth.Stencil };
+			clearValues.push_back(val);
+		}
+	}
+
+	if (!barriers.empty())
+		ResourceBarrier({}, {}, barriers);
+
+	VkRenderPassBeginInfo beginInfo = VulkanInits::RenderPassBeginInfo(renderPass->GetVkRenderPass(), frameBuffer->GetVkFrameBuffer(), renderArea, clearValues);
+
+	vkCmdBeginRenderPass(m_vkCommandBuffer, &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
+	m_activeRenderPass = renderPass->GetVkRenderPass();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -439,6 +617,17 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref
 	copy.imageExtent.depth = depth;
 
 	vkCmdCopyBufferToImage(m_vkCommandBuffer, srcBuffer->GetVkBuffer(), texture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandBuffer::UpdateVirtualTexture(const TRAP::Ref<VulkanTexture>& virtualTexture)
+{
+	if(virtualTexture->GetSVT()->Visibility)
+	{
+		virtualTexture->ReleasePage();
+		virtualTexture->FillVirtualTexture(*this);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

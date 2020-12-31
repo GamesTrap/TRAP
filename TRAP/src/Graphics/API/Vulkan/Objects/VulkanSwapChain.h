@@ -14,13 +14,25 @@ namespace TRAP::Graphics::API
 	class VulkanSwapChain
 	{
 	public:
-		VulkanSwapChain(const TRAP::Ref<VulkanInstance>& instance,
+		VulkanSwapChain(TRAP::Ref<VulkanInstance> instance,
 		                TRAP::Ref<VulkanDevice> device,
-		                const TRAP::Ref<VulkanMemoryAllocator>& vma,
+		                TRAP::Ref<VulkanMemoryAllocator> vma,
 		                RendererAPI::SwapChainDesc& desc);
 		~VulkanSwapChain();
+
+		uint32_t AcquireNextImage(const TRAP::Ref<VulkanSemaphore>& signalSemaphore, const TRAP::Ref<VulkanFence>& fence) const;
+		
+		void ToggleVSync();
+
+		VkSwapchainKHR GetVkSwapChain() const;
+		VkQueue GetPresentVkQueue() const;
 		
 	private:
+		void AddSwapchain(RendererAPI::SwapChainDesc& desc);
+		void RemoveSwapchain();
+
+		TRAP::Ref<VulkanMemoryAllocator> m_vma;
+		TRAP::Ref<VulkanInstance> m_instance;
 		TRAP::Ref<VulkanDevice> m_device;
 		
 		//Render targets created from the swapchain back buffers

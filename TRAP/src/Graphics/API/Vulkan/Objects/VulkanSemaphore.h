@@ -1,6 +1,8 @@
 #ifndef _TRAP_VULKANSEMAPHORE_H_
 #define _TRAP_VULKANSEMAPHORE_H_
 
+#include "VulkanSwapChain.h"
+
 namespace TRAP::Graphics::API
 {
 	class VulkanQueue;
@@ -18,6 +20,7 @@ namespace TRAP::Graphics::API
 		
 	private:
 		friend VulkanQueue;
+		friend uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<VulkanSemaphore>& signalSemaphore, const TRAP::Ref<VulkanFence>& fence) const;
 		
 		VkSemaphore m_semaphore;
 		bool m_signaled;

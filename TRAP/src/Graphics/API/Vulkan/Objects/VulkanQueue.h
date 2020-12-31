@@ -22,7 +22,9 @@ namespace TRAP::Graphics::API
 
 		void WaitQueueIdle() const;
 
-		void Submit(const RendererAPI::QueueSubmitDesc& desc);
+		void Submit(const RendererAPI::QueueSubmitDesc& desc) const;
+
+		void Present(const RendererAPI::QueuePresentDesc& desc) const;
 		
 	private:
 		TRAP::Ref<VulkanDevice> m_device;

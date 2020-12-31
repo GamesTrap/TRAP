@@ -1,6 +1,7 @@
 #ifndef _TRAP_VULKANFENCE_H_
 #define _TRAP_VULKANFENCE_H_
 
+#include "VulkanSwapChain.h"
 #include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics::API
@@ -26,6 +27,7 @@ namespace TRAP::Graphics::API
 		
 	private:
 		friend VulkanQueue;
+		friend uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<VulkanSemaphore>& signalSemaphore, const TRAP::Ref<VulkanFence>& fence) const;
 		
 		VkFence m_fence;
 		bool m_submitted;

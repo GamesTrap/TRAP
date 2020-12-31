@@ -25,6 +25,9 @@ namespace TRAP::Graphics
 
 namespace TRAP::Graphics::API
 {
+	class VulkanSwapChain;
+	class VulkanDescriptorSet;
+	class VulkanPipeline;
 	class VulkanTexture;
 	class VulkanRenderTarget;
 	class VulkanQueue;
@@ -1569,6 +1572,144 @@ namespace TRAP::Graphics
 			//Following values are ignored if SubresourceBarrier is false
 			uint8_t MipLevel;
 			uint16_t ArrayLayer;
+		};
+
+		struct DescriptorData
+		{
+			~DescriptorData(); //Fixes C4624
+			
+			//User can either set name of descriptor or index (index in RootSignature->Descriptors array)
+			//Name of descriptor
+			const char* Name;
+			union
+			{
+				struct
+				{
+					//Offset to bind the buffer descriptor
+					std::vector<uint64_t> Offsets;
+					std::vector<uint64_t> Sizes;
+				};
+				
+				//Descriptor set buffer extraction options
+				struct
+				{
+					uint32_t DescriptorSetBufferIndex;
+					TRAP::Ref<API::VulkanShader> DescriptorSetShader;
+					ShaderStage DescriptorSetShaderStage;
+				};
+
+				struct
+				{
+					uint32_t UAVMipSlice;
+					bool BindMipChain;
+				};
+
+				bool BindStencilResource;
+			};
+			//Array of resources containing descriptor handles or constant to be used in ring buffer memory
+			//DescriptorRange can hold only one resource type array
+			union
+			{
+				//Array of texture descriptors (SRV and UAV textures)
+				std::vector<TRAP::Ref<API::VulkanTexture>> Textures;
+				//Array of sampler descriptors
+				std::vector<TRAP::Ref<API::VulkanSampler>> Samplers;
+				//Array of buffer descriptors (SRV, UAV and CBV buffers)
+				std::vector<TRAP::Ref<API::VulkanBuffer>> Buffers;
+				//Array of pipeline descriptors
+				std::vector<TRAP::Ref<API::VulkanPipeline>> Pipelines;
+				//DescriptorSet buffer extraction
+				std::vector<TRAP::Ref<API::VulkanDescriptorSet>> DescriptorSet;
+				//Custom binding (raytracing acceleration structure ...)
+				//std::vector<TRAP::Ref<API::VulkanAccelerationStructure>> AccelerationStructures; //TODO RT
+			};
+
+			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
+			uint32_t Count;
+			uint32_t Index = static_cast<uint32_t>(-1);
+			bool ExtractBuffer = false;
+		};
+
+		struct QueuePresentDesc
+		{
+			TRAP::Ref<API::VulkanSwapChain> SwapChain;
+			std::vector<TRAP::Ref<API::VulkanSemaphore>> WaitSemaphores;
+			uint8_t Index;
+			bool SubmitDone;
+		};
+
+		struct LoadActionsDesc
+		{
+			std::array<ClearValue, 8> ClearColorValues;
+			std::array<LoadActionType, 8> LoadActionsColor;
+			ClearValue ClearDepth;
+			LoadActionType LoadActionDepth;
+			LoadActionType LoadActionStencil;
+		};
+
+		struct VirtualTexture
+		{
+			//Sparse queue binding information
+			VkBindSparseInfo BindSparseInfo;
+			//Sparse image memory bindings of all memory-backed virtual tables
+			TRAP::Ref<void> SparseImageMemoryBinds;
+			//Sparse queue memory bindings for the mip tail (if present)
+			TRAP::Ref<void> OpaqueMemoryBinds;
+			//First mip level in mip tail
+			uint32_t MipTailStart;
+			//Lastly filled mip level in mip tail
+			uint32_t LastFilledMip;
+			//Memory type for Sparse texture's memory
+			uint32_t SparseMemoryTypeIndex;
+			//Sparse image memory bind info
+			VkSparseImageMemoryBindInfo ImageMemoryBindInfo;
+			//Sparse image opaque memory bind info (mip tail)
+			VkSparseImageOpaqueMemoryBindInfo OpaqueMemoryBindInfo;
+
+			//Virtual Texture members
+			//Contains all virtual pages of the texture
+			TRAP::Ref<void> Pages;
+			//Visibility data
+			TRAP::Ref<API::VulkanBuffer> Visibility;
+			//PrevVisibility data
+			TRAP::Ref<API::VulkanBuffer> PrevVisibility;
+			//Alive Page's Index
+			TRAP::Ref<API::VulkanBuffer> AlivePage;
+			//Page's Index which should be removed
+			TRAP::Ref<API::VulkanBuffer> RemovePage;
+			//A { uint alive; uint remove; } count of pages which are alive or should be remove
+			TRAP::Ref<API::VulkanBuffer> PageCounts;
+			//Original Pixel image data
+			std::vector<uint8_t> VirtualImageData;
+			//Total pages count
+			uint32_t VirtualPageTotalCount;
+			//Sparse Virtual Texture width
+			uint64_t SparseVirtualTexturePageWidth;
+			//Sparse Virtual Texture height
+			uint64_t SparseVirtualTexturePageHeight;
+		};
+
+		//Virtual Texture Page as a part of the partially resident Texture
+		//Contains memory bindings, offsets and status information
+		struct VirtualTexturePage
+		{
+			//Buffer which contains the image data and be used for copying it to Virtual Texture
+			TRAP::Ref<API::VulkanBuffer> IntermediateBuffer;
+			//Mip level for this page
+			uint32_t MipLevel;
+			//Array layer for this page
+			uint32_t Layer;
+			//Index for this page
+			uint32_t Index;
+
+			//Offset for this apge
+			VkOffset3D Offset;
+			//Size for this page
+			VkExtent3D Extent;
+			//Sparse image memory bind for this page
+			VkSparseImageMemoryBind ImageMemoryBind;
+			//Byte size for this page
+			VkDeviceSize Size;
 		};
 		
 		/*inline static struct alignsas(64) Renderer

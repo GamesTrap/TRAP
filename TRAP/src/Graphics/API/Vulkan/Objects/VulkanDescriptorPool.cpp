@@ -143,7 +143,7 @@ TRAP::Graphics::API::VulkanDescriptorSet TRAP::Graphics::API::VulkanDescriptorPo
 		TRAP_ASSERT(dynamicOffsetCount == 1);
 	}
 	
-	m_descriptorSets.push_back(TRAP::Scope<VulkanDescriptorSet>(new VulkanDescriptorSet(handles, rootSignature, updateData, dynamicSizeOffsets, maxSets, dynamicOffsetCount, updateFreq)));
+	m_descriptorSets.push_back(TRAP::Scope<VulkanDescriptorSet>(new VulkanDescriptorSet(m_device, handles, rootSignature, updateData, dynamicSizeOffsets, maxSets, dynamicOffsetCount, updateFreq)));
 
 	return *m_descriptorSets.back();
 }
