@@ -13,6 +13,7 @@ std::array<TRAP::Graphics::RendererAPI::DescriptorType, static_cast<uint32_t>(TR
 	TRAP::Graphics::RendererAPI::DescriptorType::Sampler, TRAP::Graphics::RendererAPI::DescriptorType::RootConstant,
 	TRAP::Graphics::RendererAPI::DescriptorType::InputAttachment, TRAP::Graphics::RendererAPI::DescriptorType::TexelBuffer,
 	TRAP::Graphics::RendererAPI::DescriptorType::RWTexelBuffer, TRAP::Graphics::RendererAPI::DescriptorType::RayTracing,
+	TRAP::Graphics::RendererAPI::DescriptorType::CombinedImageSampler
 };
 
 //-------------------------------------------------------------------------------------------------------------------//

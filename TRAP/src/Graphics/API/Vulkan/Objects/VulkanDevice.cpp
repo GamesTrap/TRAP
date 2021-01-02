@@ -70,6 +70,15 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 
 		deviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
 		deviceFeatures2.pNext = &descriptorIndexingFeatures;
+
+		VkPhysicalDeviceSamplerYcbcrConversionFeatures ycbcrFeatures;
+		ycbcrFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES;
+		if(VulkanRenderer::s_samplerYcbcrConversionExtension)
+		{
+			deviceFeatures2.pNext = &ycbcrFeatures;
+			ycbcrFeatures.pNext = &descriptorIndexingFeatures;
+		}
+		
 		vkGetPhysicalDeviceFeatures2(m_physicalDevice->GetVkPhysicalDevice(), &deviceFeatures2);
 	}
 

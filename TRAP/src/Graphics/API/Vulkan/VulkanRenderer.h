@@ -84,6 +84,7 @@ namespace TRAP::Graphics::API
 		static bool s_drawIndirectCountExtension;
 		static bool s_descriptorIndexingExtension;
 		static bool s_raytracingExtension;
+		static bool s_samplerYcbcrConversionExtension;
 
 		static bool s_renderdocCapture;
 		static bool s_debugMarkerSupport;

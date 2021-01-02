@@ -32,6 +32,7 @@ bool TRAP::Graphics::API::VulkanRenderer::s_fragmentShaderInterlockExtension = f
 bool TRAP::Graphics::API::VulkanRenderer::s_drawIndirectCountExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_descriptorIndexingExtension = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_raytracingExtension = false;
+bool TRAP::Graphics::API::VulkanRenderer::s_samplerYcbcrConversionExtension = false;
 
 bool TRAP::Graphics::API::VulkanRenderer::s_renderdocCapture = false;
 bool TRAP::Graphics::API::VulkanRenderer::s_debugMarkerSupport = false;
@@ -450,6 +451,12 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 		extensions.emplace_back(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME);
 		extensions.emplace_back(VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME);
 		s_raytracingExtension = true;
+	}
+
+	if(physicalDevice->IsExtensionSupported(VK_KHR_SAMPLER_YCBCR_CONVERSION_EXTENSION_NAME))
+	{
+		extensions.emplace_back(VK_KHR_SAMPLER_YCBCR_CONVERSION_EXTENSION_NAME);
+		s_samplerYcbcrConversionExtension = true;
 	}
 
 	return extensions;

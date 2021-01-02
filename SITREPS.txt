@@ -1521,3 +1521,7 @@ SITREP 01/02/2020|20w53a3
     - Fixed several bugs ~<30 mins
     - Fixed a major bug ~<45 mins
     - Added a Vulkan API clear screen test ~<20 mins
+    - Added support for combined image samplers ~<60 mins
+    - Added support for Ycbcr color conversion ~<30 mins
+    - VulkanQueue Added PresentStatus struct as return value for Present function ~<15 mins
+    - Added support for multi-planar image format ~<40 mins

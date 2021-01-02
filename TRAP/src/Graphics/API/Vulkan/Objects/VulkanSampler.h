@@ -20,6 +20,8 @@ namespace TRAP::Graphics::API
 		
 		//Native handle of the underlying resource
 		VkSampler m_vkSampler;
+		VkSamplerYcbcrConversion m_vkSamplerYcbcrConversion;
+		VkSamplerYcbcrConversionInfo m_vkSamplerYcbcrConversionInfo;
 	};
 }
 

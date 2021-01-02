@@ -151,13 +151,13 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderResources(CrossCompiler& comp
 	resourceCount += static_cast<uint32_t>(allResources.separate_images.size()); //textures
 	resourceCount += static_cast<uint32_t>(allResources.storage_images.size()); //uav textures
 	resourceCount += static_cast<uint32_t>(allResources.separate_samplers.size()); //samplers
+	resourceCount += static_cast<uint32_t>(allResources.sampled_images.size()); //combined samplers
 	resourceCount += static_cast<uint32_t>(allResources.push_constant_buffers.size()); //push constants
 	resourceCount += static_cast<uint32_t>(allResources.subpass_inputs.size()); //input attachments
 	resourceCount += static_cast<uint32_t>(allResources.acceleration_structures.size()); //raytracing structures
 
 	//These we dont care about right
 	//subpass_inputs - we are not going to use this
-	//sampled_images - we wont be using these
 	//atomic_counters - not useable in Vulkan
 
 	//Allocate array for resources
@@ -218,6 +218,7 @@ void TRAP::Graphics::API::SPIRVTools::ReflectShaderResources(CrossCompiler& comp
 	ReflectBoundResources(*compiler.Compiler, allResources.storage_images, usedResources, resources, currentResource, ResourceType::StorageImages);
 	ReflectBoundResources(*compiler.Compiler, allResources.separate_images, usedResources, resources, currentResource, ResourceType::Images);
 	ReflectBoundResources(*compiler.Compiler, allResources.separate_samplers, usedResources, resources, currentResource, ResourceType::Samplers);
+	ReflectBoundResources(*compiler.Compiler, allResources.sampled_images, usedResources, resources, currentResource, ResourceType::CombinedSamplers);
 	ReflectBoundResources(*compiler.Compiler, allResources.subpass_inputs, usedResources, resources, currentResource, ResourceType::SubpassInputs);
 	ReflectBoundResources(*compiler.Compiler, allResources.subpass_inputs, usedResources, resources, currentResource, ResourceType::SubpassInputs);
 	ReflectBoundResources(*compiler.Compiler, allResources.acceleration_structures, usedResources, resources, currentResource, ResourceType::AccelerationStructures);

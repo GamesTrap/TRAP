@@ -192,15 +192,19 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(TRAP::Ref<VulkanDe
 
 			//Find if the given descriptor is a static sampler
 			auto it = staticSamplerMap.find(descInfo.Name);
-			if (it != staticSamplerMap.end())
+			bool hasStaticSampler = it != staticSamplerMap.end();
+			if (hasStaticSampler)
 			{
 				TP_INFO("Descriptor (", descInfo.Name, "): User specified Static Sampler");
-
-				//Set the index to an invalid value to we can use this later for error checking
-				//if user tries to update a static sampler
-				descInfo.IndexInParent = -1;
 				binding.pImmutableSamplers = &it->second->GetVkSampler();
 			}
+
+			//Set the index to an invalid value to we can use this later for error checking
+			//if user tries to update a static sampler
+			//In case of Combined Image Samplers, skip invalidating the index
+			//because we do not introduce new ways to update the descriptor in the interface
+			if(hasStaticSampler && descInfo.Type != RendererAPI::DescriptorType::CombinedImageSampler)
+				descInfo.IndexInParent = -1;
 			else
 				layouts[setIndex].Descriptors.emplace_back(&descInfo);
 
@@ -534,4 +538,11 @@ uint32_t TRAP::Graphics::API::VulkanRootSignature::GetDescriptorCount() const
 const std::vector<TRAP::Graphics::RendererAPI::DescriptorInfo>& TRAP::Graphics::API::VulkanRootSignature::GetDescriptors() const
 {
 	return m_descriptors;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const TRAP::Scope<TRAP::Graphics::API::VulkanRenderer::DescriptorIndexMap>& TRAP::Graphics::API::VulkanRootSignature::GetDescriptorNameToIndexMap() const
+{
+	return m_descriptorNameToIndexMap;
 }

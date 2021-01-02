@@ -34,6 +34,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 		UniformTexelBuffers,
 		StorageTexelBuffers,
 		AccelerationStructures,
+		CombinedSamplers,
 
 		RESOURCE_TYPE_COUNT
 	};

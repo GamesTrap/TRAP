@@ -24,7 +24,7 @@ namespace TRAP::Graphics::API
 
 		void Submit(const RendererAPI::QueueSubmitDesc& desc) const;
 
-		void Present(const RendererAPI::QueuePresentDesc& desc) const;
+		RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const;
 		
 	private:
 		TRAP::Ref<VulkanDevice> m_device;

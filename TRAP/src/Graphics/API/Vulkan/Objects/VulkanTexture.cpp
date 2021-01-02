@@ -84,6 +84,10 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	bool cubeMapRequired = (descriptors & RendererAPI::DescriptorType::TextureCube) == RendererAPI::DescriptorType::TextureCube;
 	bool arrayRequired = false;
 
+	const bool isPlanarFormat = RendererAPI::ImageFormatIsPlanar(desc.Format);
+	const uint32_t numOfPlanes = RendererAPI::ImageFormatNumOfPlanes(desc.Format);
+	const bool isSinglePlane = RendererAPI::ImageFormatIsSinglePlane(desc.Format);
+	TRAP_ASSERT(((isSinglePlane && numOfPlanes == 1) || (!isSinglePlane && numOfPlanes > 1 && numOfPlanes <= 3)), "Number of planes for multi-planar formats must be 2 or 3 and for single-planar formats it must be 1");
 	
 	if (imageType == VK_IMAGE_TYPE_3D)
 		arrayRequired = true;
@@ -98,9 +102,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		                                                      desc.MipLevels,
 		                                                      desc.ArraySize,
 		                                                      SampleCountToVkSampleCount(desc.SampleCount),
-		                                                      (desc.HostVisible != 0)
-			                                                      ? VK_IMAGE_TILING_LINEAR
-			                                                      : VK_IMAGE_TILING_OPTIMAL,
+		                                                      VK_IMAGE_TILING_OPTIMAL,
 															  DescriptorTypeToVkImageUsage(descriptors));
 		info.usage |= additionalFlags;
 
@@ -109,6 +111,14 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		if (arrayRequired)
 			info.flags |= VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT;
 
+		VkFormatProperties formatProps{};
+		vkGetPhysicalDeviceFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), info.format, &formatProps);
+		if(isPlanarFormat) //Multi-Planar formats must have each plane separately bound to memory, rather than having a single memory binding for the whole image
+		{
+			TRAP_ASSERT(formatProps.optimalTilingFeatures & VK_FORMAT_FEATURE_DISJOINT_BIT);
+			info.flags |= VK_IMAGE_CREATE_DISJOINT_BIT;
+		}
+		
 		if((info.usage & VK_IMAGE_USAGE_SAMPLED_BIT) || (info.usage & VK_IMAGE_USAGE_STORAGE_BIT))
 		{
 			//Make it easy to copy to and from textures
@@ -116,21 +126,11 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		}
 
 		TRAP_ASSERT(VulkanRenderer::s_GPUCapBits.CanShaderReadFrom[static_cast<uint32_t>(desc.Format)], "GPU shader can't read from this format");
-
-		VkFormatProperties props;
-		vkGetPhysicalDeviceFormatProperties(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), info.format, &props);
+		
 		const VkFormatFeatureFlags formatFeatures = VkImageUsageToFormatFeatures(info.usage);
 
-		if(desc.HostVisible)
-		{
-			const VkFormatFeatureFlags flags = props.linearTilingFeatures & formatFeatures;
-			TRAP_ASSERT(0 != flags, "Format is not supported for host visibile images");
-		}
-		else
-		{
-			const VkFormatFeatureFlags flags = props.optimalTilingFeatures & formatFeatures;
-			TRAP_ASSERT(0 != flags, "Format is not suported for GPU local images (i.e. not host visible images)");
-		}
+		const VkFormatFeatureFlags flags = formatProps.optimalTilingFeatures & formatFeatures;
+		TRAP_ASSERT(0 != flags, "Format is not suported for GPU local images (i.e. not host visible images)");
 
 		VmaAllocationCreateInfo memReqs{};
 		if (static_cast<uint32_t>(desc.Flags & RendererAPI::TextureCreationFlags::OwnMemory))
@@ -138,7 +138,62 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 		memReqs.usage = static_cast<VmaMemoryUsage>(VMA_MEMORY_USAGE_GPU_ONLY);
 
 		VmaAllocationInfo allocInfo{};
-		VkCall(vmaCreateImage(m_vma->GetVMAAllocator(), &info, &memReqs, &m_vkImage, &m_vkAllocation, &allocInfo));
+		if(isSinglePlane)
+		{
+			VkCall(vmaCreateImage(m_vma->GetVMAAllocator(), &info, &memReqs, &m_vkImage, &m_vkAllocation, &allocInfo));
+		}
+		else //Multi-Planar formats
+		{
+			//Create info requires the mutable format flag set for multi planar images
+			//Also pass the format list for mutable formats as per recommendation from the spec
+			//Might help to keep DCC enabled if we ever use this as a output format
+			//DCC gets disabled when we pass mutable format bit to the create info.
+			//Passing the format list helps the driver to enable it
+			VkFormat planarFormat = ImageFormatToVkFormat(desc.Format);
+			VkImageFormatListCreateInfo formatList{};
+			formatList.sType = VK_STRUCTURE_TYPE_IMAGE_FORMAT_LIST_CREATE_INFO;
+			formatList.pNext = nullptr;
+			formatList.pViewFormats = &planarFormat;
+			formatList.viewFormatCount = 1;
+
+			info.flags |= VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT;
+			info.pNext = &formatList;
+
+			//Create Image
+			VkCall(vkCreateImage(m_device->GetVkDevice(), &info, nullptr, &m_vkImage));
+
+			VkMemoryRequirements memReq{};
+			std::vector<uint64_t> planeOffsets(3);
+			UtilGetPlanarVkImageMemoryRequirement(m_device->GetVkDevice(), m_vkImage, numOfPlanes, memReq, planeOffsets);
+
+			//Allocate image memory
+			VkMemoryAllocateInfo memAllocInfo{};
+			memAllocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+			memAllocInfo.allocationSize = memReq.size;
+			const VkPhysicalDeviceMemoryProperties& memProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceMemoryProperties();
+			memAllocInfo.memoryTypeIndex = GetMemoryType(memReq.memoryTypeBits, memProps, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+			VkCall(vkAllocateMemory(m_device->GetVkDevice(), &memAllocInfo, nullptr, &m_vkDeviceMemory));
+
+			//Bind planes to their memories
+			std::vector<VkBindImageMemoryInfo> bindImagesMemoryInfo(3);
+			std::vector<VkBindImagePlaneMemoryInfo> bindImagePlanesMemoryInfo(3);
+			for(uint32_t i = 0; i < numOfPlanes; ++i)
+			{
+				VkBindImagePlaneMemoryInfo& bindImagePlaneMemoryInfo = bindImagePlanesMemoryInfo[i];
+				bindImagePlaneMemoryInfo.sType = VK_STRUCTURE_TYPE_BIND_IMAGE_PLANE_MEMORY_INFO;
+				bindImagePlaneMemoryInfo.pNext = nullptr;
+				bindImagePlaneMemoryInfo.planeAspect = static_cast<VkImageAspectFlagBits>(VK_IMAGE_ASPECT_PLANE_0_BIT << i);
+
+				VkBindImageMemoryInfo& bindImageMemoryInfo = bindImagesMemoryInfo[i];
+				bindImageMemoryInfo.sType = VK_STRUCTURE_TYPE_BIND_IMAGE_MEMORY_INFO;
+				bindImageMemoryInfo.pNext = &bindImagePlaneMemoryInfo;
+				bindImageMemoryInfo.image = m_vkImage;
+				bindImageMemoryInfo.memory = m_vkDeviceMemory;
+				bindImageMemoryInfo.memoryOffset = planeOffsets[i];
+			}
+
+			VkCall(vkBindImageMemory2(m_device->GetVkDevice(), numOfPlanes, bindImagesMemoryInfo.data()));
+		}
 	}
 
 	//Create image view
@@ -175,6 +230,10 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	//SRV
 	VkImageViewCreateInfo srvDesc = VulkanInits::ImageViewCreateInfo(m_vkImage, viewType, ImageFormatToVkFormat(desc.Format), desc.MipLevels, desc.ArraySize);
 	m_aspectMask = DetermineAspectMask(srvDesc.format, true);
+
+	if (desc.VkSamplerYcbcrConversionInfo)
+		srvDesc.pNext = desc.VkSamplerYcbcrConversionInfo;
+	
 	if (static_cast<uint32_t>(descriptors & RendererAPI::DescriptorType::Texture))
 		VkCall(vkCreateImageView(m_device->GetVkDevice(), &srvDesc, nullptr, &m_vkSRVDescriptor));
 
@@ -311,10 +370,8 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	//Get sparse image requirements for the color aspect
 	VkSparseImageMemoryRequirements sparseMemoryReq{};
 	bool colorAspectFound = false;
-	for(uint32_t i = 0; i < sparseMemoryReqs.size(); ++i)
+	for (auto& reqs : sparseMemoryReqs)
 	{
-		const VkSparseImageMemoryRequirements& reqs = sparseMemoryReqs[i];
-
 		if (reqs.formatProperties.aspectMask & VK_IMAGE_ASPECT_COLOR_BIT)
 		{
 			sparseMemoryReq = reqs;
@@ -332,9 +389,6 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 
 	TRAP_ASSERT((sparseImageMemoryReqs.size % sparseImageMemoryReqs.alignment) == 0);
 	m_SVT->SparseMemoryTypeIndex = GetMemoryType(sparseImageMemoryReqs.memoryTypeBits, memProps, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-	//Get sparse bindings
-	uint32_t sparseBindsCount = static_cast<uint32_t>(sparseImageMemoryReqs.size / sparseImageMemoryReqs.alignment);
 
 	//Check if the format has a single mip tail for all layers or one mip tail for each layer
 	//The mip tail contains all mip levels > sparseMemoryReq.imageMipTailFirstLod
@@ -484,7 +538,17 @@ TRAP::Graphics::API::VulkanTexture::~VulkanTexture()
 	if(m_ownsImage)
 	{
 		if (m_vkImage && !m_SVT)
-			vmaDestroyImage(m_vma->GetVMAAllocator(), m_vkImage, m_vkAllocation);
+		{
+			if(RendererAPI::ImageFormatIsSinglePlane(m_format))
+			{
+				vmaDestroyImage(m_vma->GetVMAAllocator(), m_vkImage, m_vkAllocation);
+			}
+			else
+			{
+				vkDestroyImage(m_device->GetVkDevice(), m_vkImage, nullptr);
+				vkFreeMemory(m_device->GetVkDevice(), m_vkDeviceMemory, nullptr);
+			}			
+		}
 		else if (m_vkImage && m_SVT)
 			vkDestroyImage(m_device->GetVkDevice(), m_vkImage, nullptr);
 	}

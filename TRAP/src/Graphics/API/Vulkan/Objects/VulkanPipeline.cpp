@@ -279,7 +279,8 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 			VK_DYNAMIC_STATE_SCISSOR,
 			VK_DYNAMIC_STATE_DEPTH_BIAS,
 			VK_DYNAMIC_STATE_BLEND_CONSTANTS,
-			VK_DYNAMIC_STATE_DEPTH_BOUNDS
+			VK_DYNAMIC_STATE_DEPTH_BOUNDS,
+			VK_DYNAMIC_STATE_STENCIL_REFERENCE
 		};
 		VkPipelineDynamicStateCreateInfo dy = VulkanInits::PipelineDynamicStateCreateInfo(dynamicStates);
 

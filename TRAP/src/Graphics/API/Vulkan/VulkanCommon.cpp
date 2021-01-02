@@ -692,6 +692,9 @@ VkDescriptorType TRAP::Graphics::API::DescriptorTypeToVkDescriptorType(const Ren
 	case RendererAPI::DescriptorType::RWTexelBuffer:
 		return VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
 
+	case RendererAPI::DescriptorType::CombinedImageSampler:
+		return VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+
 	case RendererAPI::DescriptorType::RayTracing:
 		return VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR;
 		
@@ -911,7 +914,7 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const R
 {
 	int32_t blendDescIndex = 0;
 
-	for(int32_t i = 0; i < RendererAPI::MaxRenderTargetAttachments; ++i)
+	for(int32_t i = 0; i < 8; ++i)
 	{
 		if(static_cast<uint32_t>(desc.RenderTargetMask) & (1 << i))
 		{
@@ -929,7 +932,7 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const R
 
 	blendDescIndex = 0;
 
-	for(int32_t i = 0; i < RendererAPI::MaxRenderTargetAttachments; ++i)
+	for(int32_t i = 0; i < 8; ++i)
 	{
 		if (static_cast<uint32_t>(desc.RenderTargetMask) & (1 << i))
 		{
@@ -1026,6 +1029,44 @@ VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::UtilToRasterizerDesc
 	rs.lineWidth = 1.0f;
 	
 	return rs;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
+                                                                VkImage image,
+                                                                const uint32_t planesCount,
+                                                                VkMemoryRequirements& memReq,
+                                                                std::vector<uint64_t>& planesOffsets)
+{
+	memReq = {};
+
+	VkImagePlaneMemoryRequirementsInfo imagePlaneMemReqInfo;
+	imagePlaneMemReqInfo.sType = VK_STRUCTURE_TYPE_IMAGE_PLANE_MEMORY_REQUIREMENTS_INFO;
+	imagePlaneMemReqInfo.pNext = nullptr;
+	
+	VkImageMemoryRequirementsInfo2 imagePlaneMemReqInfo2;
+	imagePlaneMemReqInfo.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2;
+	imagePlaneMemReqInfo2.pNext = &imagePlaneMemReqInfo;
+	imagePlaneMemReqInfo2.image = image;
+
+	VkMemoryDedicatedRequirements memDedicatedReq;
+	memDedicatedReq.sType = VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS;
+	memDedicatedReq.pNext = nullptr;
+	VkMemoryRequirements2 memReq2;
+	memReq2.sType = VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2;
+	memReq2.pNext = &memDedicatedReq;
+
+	for(uint32_t i = 0; i < planesCount; ++i)
+	{
+		imagePlaneMemReqInfo.planeAspect = static_cast<VkImageAspectFlagBits>(VK_IMAGE_ASPECT_PLANE_0_BIT << i);
+		vkGetImageMemoryRequirements2(device, &imagePlaneMemReqInfo2, &memReq2);
+
+		planesOffsets[i] += memReq.size;
+		memReq.alignment = TRAP::Math::Max(memReq2.memoryRequirements.alignment, memReq.alignment);
+		memReq.size += ((memReq2.memoryRequirements.size + memReq2.memoryRequirements.alignment - 1) / memReq2.memoryRequirements.alignment) * memReq2.memoryRequirements.alignment;
+		memReq.memoryTypeBits |= memReq2.memoryRequirements.memoryTypeBits;
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

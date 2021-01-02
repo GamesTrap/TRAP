@@ -73,6 +73,8 @@ namespace TRAP::Graphics::API
 		void ResourceBarrier(const std::vector<RendererAPI::BufferBarrier>& bufferBarriers,
 		                     const std::vector<RendererAPI::TextureBarrier>& textureBarriers,
 		                     const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers) const;
+
+		void SetStencilReferenceValue(uint32_t val) const;
 		
 	private:
 		friend VulkanCommandPool;

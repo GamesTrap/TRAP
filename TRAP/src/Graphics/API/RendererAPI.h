@@ -334,6 +334,16 @@ namespace TRAP::Graphics
 			case ImageFormat::CLUT_P4A4: return 8;
 			case ImageFormat::CLUT_P8: return 8;
 			case ImageFormat::CLUT_P8A8: return 16;
+			case ImageFormat::G16B16G16R16_422_UNORM: return 8;
+			case ImageFormat::B16G16R16G16_422_UNORM: return 8;
+			case ImageFormat::R12X4G12X4B12X4A12X4_UNORM_4PACK16: return 8;
+			case ImageFormat::G12X4B12X4G12X4R12X4_422_UNORM_4PACK16: return 8;
+			case ImageFormat::B12X4G12X4R12X4G12X4_422_UNORM_4PACK16: return 8;
+			case ImageFormat::R10X6G10X6B10X6A10X6_UNORM_4PACK16: return 8;
+			case ImageFormat::G10X6B10X6G10X6R10X6_422_UNORM_4PACK16: return 8;
+			case ImageFormat::B10X6G10X6R10X6G10X6_422_UNORM_4PACK16: return 8;
+			case ImageFormat::G8B8G8R8_422_UNORM: return 4;
+			case ImageFormat::B8G8R8G8_422_UNORM: return 4;
 			default: return 32;
 			}
 		}
@@ -479,6 +489,157 @@ namespace TRAP::Graphics
 			case ImageFormat::ASTC_12x12_UNORM: return 12;
 			case ImageFormat::ASTC_12x12_SRGB: return 12;
 			default: return 1;
+			}
+		}
+		static constexpr bool ImageFormatIsPlanar(const ImageFormat fmt)
+		{
+			switch(fmt)
+			{
+			case ImageFormat::G8_B8R8_2PLANE_420_UNORM:
+			case ImageFormat::G8_B8R8_2PLANE_422_UNORM:
+			case ImageFormat::G8_B8_R8_3PLANE_420_UNORM:
+			case ImageFormat::G8_B8_R8_3PLANE_422_UNORM:
+			case ImageFormat::G8_B8_R8_3PLANE_444_UNORM:
+			case ImageFormat::G16_B16R16_2PLANE_420_UNORM:
+			case ImageFormat::G16_B16R16_2PLANE_422_UNORM:
+			case ImageFormat::G16_B16_R16_3PLANE_420_UNORM:
+			case ImageFormat::G16_B16_R16_3PLANE_422_UNORM:
+			case ImageFormat::G16_B16_R16_3PLANE_444_UNORM:
+			case ImageFormat::G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16:
+			case ImageFormat::G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16:
+			case ImageFormat::G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16:
+				return true;
+				
+			default:
+				return false;
+			}
+		}
+		static constexpr uint32_t ImageFormatNumOfPlanes(const ImageFormat fmt)
+		{
+			switch(fmt)
+			{
+			case ImageFormat::G8_B8_R8_3PLANE_420_UNORM:
+			case ImageFormat::G8_B8_R8_3PLANE_422_UNORM:
+			case ImageFormat::G8_B8_R8_3PLANE_444_UNORM:
+			case ImageFormat::G16_B16_R16_3PLANE_420_UNORM:
+			case ImageFormat::G16_B16_R16_3PLANE_422_UNORM:
+			case ImageFormat::G16_B16_R16_3PLANE_444_UNORM:
+			case ImageFormat::G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16:
+			case ImageFormat::G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16:
+				return 3;
+
+			case ImageFormat::G8_B8R8_2PLANE_420_UNORM:
+			case ImageFormat::G8_B8R8_2PLANE_422_UNORM:
+			case ImageFormat::G16_B16R16_2PLANE_420_UNORM:
+			case ImageFormat::G16_B16R16_2PLANE_422_UNORM:
+			case ImageFormat::G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16:
+				return 2;
+				
+			default:
+				return 1;
+			}
+		}
+		static constexpr uint32_t ImageFormatIsSinglePlane(const ImageFormat fmt)
+		{
+			return !ImageFormatIsPlanar(fmt) || ImageFormatNumOfPlanes(fmt) < 2;
+		}
+		static constexpr uint32_t ImageFormatPlaneWidth(const ImageFormat fmt, const uint32_t plane, const uint32_t width)
+		{
+			if (plane == 0)
+				return width;
+
+			switch(fmt)
+			{
+			case ImageFormat::G8_B8_R8_3PLANE_420_UNORM:
+			case ImageFormat::G8_B8R8_2PLANE_420_UNORM:
+			case ImageFormat::G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G8_B8_R8_3PLANE_422_UNORM:
+			case ImageFormat::G8_B8R8_2PLANE_422_UNORM:
+			case ImageFormat::G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16:
+			case ImageFormat::G16_B16_R16_3PLANE_420_UNORM:
+			case ImageFormat::G16_B16_R16_3PLANE_422_UNORM:
+			case ImageFormat::G16_B16R16_2PLANE_420_UNORM:
+			case ImageFormat::G16_B16R16_2PLANE_422_UNORM:
+				return width >> 1;
+				
+			default:
+				return width;
+			}
+		}
+		static constexpr uint32_t ImageFormatPlaneHeight(const ImageFormat fmt, const uint32_t plane, const uint32_t height)
+		{
+			if (plane == 0)
+				return height;
+
+			switch(fmt)
+			{
+			case ImageFormat::G8_B8_R8_3PLANE_420_UNORM:
+			case ImageFormat::G8_B8R8_2PLANE_420_UNORM:
+			case ImageFormat::G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G16_B16_R16_3PLANE_420_UNORM:
+			case ImageFormat::G16_B16R16_2PLANE_420_UNORM:
+				return height >> 1;
+				
+			default:
+				return height;
+			}
+		}
+		static constexpr uint32_t ImageFormatPlaneSizeOfBlock(const ImageFormat fmt, uint32_t plane)
+		{
+			switch(fmt)
+			{
+			case ImageFormat::G8_B8_R8_3PLANE_420_UNORM:
+			case ImageFormat::G8_B8_R8_3PLANE_422_UNORM:
+			case ImageFormat::G8_B8_R8_3PLANE_444_UNORM:
+				return 1;
+
+			case ImageFormat::G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16:
+			case ImageFormat::G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16:
+			case ImageFormat::G16_B16_R16_3PLANE_420_UNORM:
+			case ImageFormat::G16_B16_R16_3PLANE_422_UNORM:
+			case ImageFormat::G16_B16_R16_3PLANE_444_UNORM:
+			case ImageFormat::G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16:
+				return 2;
+
+			case ImageFormat::G8_B8R8_2PLANE_420_UNORM:
+			case ImageFormat::G8_B8R8_2PLANE_422_UNORM:
+				return 0 == plane ? 1 : 2;
+
+			case ImageFormat::G16_B16R16_2PLANE_420_UNORM:
+			case ImageFormat::G16_B16R16_2PLANE_422_UNORM:
+			case ImageFormat::G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16:
+			case ImageFormat::G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16:
+				return 0 == plane ? 2 : 4;
+				
+			default:
+				return 1;
 			}
 		}
 
@@ -754,8 +915,45 @@ namespace TRAP::Graphics
 			CLUT_P4A4 = 199,
 			CLUT_P8 = 200,
 			CLUT_P8A8 = 201,
+			R4G4B4A4_UNORM_PACK16 = 202,
+			B4G4R4A4_UNORM_PACK16 = 203,
+			R5G6B5_UNORM_PACK16 = 204,
+			B5G6R5_UNORM_PACK16 = 205,
+			R5G5B5A1_UNORM_PACK16 = 206,
+			B5G5R5A1_UNORM_PACK16 = 207,
+			A1R5G5B5_UNORM_PACK16 = 208,
+			G16B16G16R16_422_UNORM = 209,
+			B16G16R16G16_422_UNORM = 210,
+			R12X4G12X4B12X4A12X4_UNORM_4PACK16 = 211,
+			G12X4B12X4G12X4R12X4_422_UNORM_4PACK16 = 212,
+			B12X4G12X4R12X4G12X4_422_UNORM_4PACK16 = 213,
+			R10X6G10X6B10X6A10X6_UNORM_4PACK16 = 214,
+			G10X6B10X6G10X6R10X6_422_UNORM_4PACK16 = 215,
+			B10X6G10X6R10X6G10X6_422_UNORM_4PACK16 = 216,
+			G8B8G8R8_422_UNORM = 217,
+			B8G8R8G8_422_UNORM = 218,
+			G8_B8_R8_3PLANE_420_UNORM = 219,
+			G8_B8R8_2PLANE_420_UNORM = 220,
+			G8_B8_R8_3PLANE_422_UNORM = 221,
+			G8_B8R8_2PLANE_422_UNORM = 222,
+			G8_B8_R8_3PLANE_444_UNORM = 223,
+			G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16 = 224,
+			G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16 = 225,
+			G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16 = 226,
+			G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16 = 227,
+			G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16 = 228,
+			G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16 = 229,
+			G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16 = 230,
+			G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16 = 231,
+			G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16 = 232,
+			G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16 = 233,
+			G16_B16_R16_3PLANE_420_UNORM = 234,
+			G16_B16_R16_3PLANE_422_UNORM = 235,
+			G16_B16_R16_3PLANE_444_UNORM = 236,
+			G16_B16R16_2PLANE_420_UNORM = 237,
+			G16_B16R16_2PLANE_422_UNORM = 238,
 			
-			IMAGE_FORMAT_COUNT = 202
+			IMAGE_FORMAT_COUNT = 239
 		};
 
 		enum class TextureCreationFlags
@@ -838,7 +1036,8 @@ namespace TRAP::Graphics
 			//Subpass input (descriptor type only available in Vulkan)
 			InputAttachment = (RayTracing << 1),
 			TexelBuffer = (InputAttachment << 1),
-			RWTexelBuffer = (TexelBuffer << 1)
+			RWTexelBuffer = (TexelBuffer << 1),
+			CombinedImageSampler = (RWTexelBuffer << 1)
 		};
 
 		//Choosing Memory Type
@@ -1114,10 +1313,33 @@ namespace TRAP::Graphics
 
 			QUERY_TYPE_COUNT
 		};
-		
-		enum
+
+		enum class PresentStatus
 		{
-			MaxRenderTargetAttachments = 8
+			Success = 0,
+			DeviceReset = 1,
+			Failed = 2
+		};
+
+		enum class SamplerRange
+		{
+			Full = 0,
+			Narrow = 1
+		};
+
+		enum class SamplerModelConversion
+		{
+			RGBIdentity = 0,
+			YCBCRIdentity = 1,
+			YCBCR709 = 2,
+			YCBCR601 = 3,
+			YCBCR2020 = 4
+		};
+
+		enum class SampleLocation
+		{
+			Cosited = 0,
+			Midpoint = 1
 		};
 		
 		union ClearValue
@@ -1199,12 +1421,12 @@ namespace TRAP::Graphics
 			ResourceState StartState{};
 			//Descriptor creation
 			DescriptorType Descriptors{};
+			//Pointer to native texture handle if the texture does not own underlying resource
+			void* NativeHandle{};
 			//Debug name used in GPU profile
 			const char* Name{};
-			//Is the texture CPU accessible (applicable on hardware supporting CPU mapped texture (UMA))
-			bool HostVisible{};
-			
-			void* NativeHandle{};
+
+			VkSamplerYcbcrConversionInfo* VkSamplerYcbcrConversionInfo{};
 		};
 
 		//Data structure holding necessary info to create a Buffer
@@ -1255,6 +1477,17 @@ namespace TRAP::Graphics
 			float MipLodBias{};
 			float MaxAnisotropy{};
 			CompareMode CompareFunc{};
+
+			struct SamplerConversionDesc
+			{
+				ImageFormat Format;
+				SamplerModelConversion Model;
+				SamplerRange Range;
+				SampleLocation ChromaOffsetX;
+				SampleLocation ChromaOffsetY;
+				FilterType ChromaFilter;
+				bool ForceExplicitReconstruction;
+			} SamplerConversionDesc;
 		};
 
 		struct BinaryShaderStageDesc
@@ -1333,19 +1566,19 @@ namespace TRAP::Graphics
 		struct BlendStateDesc
 		{
 			//Source blend factor per render target.
-			std::array<BlendConstant, MaxRenderTargetAttachments> SrcFactors{};
+			std::array<BlendConstant, 8> SrcFactors{};
 			//Destination blend factor per render target.
-			std::array<BlendConstant, MaxRenderTargetAttachments> DstFactors{};
+			std::array<BlendConstant, 8> DstFactors{};
 			//Source alpha blend factor per render target.
-			std::array<BlendConstant, MaxRenderTargetAttachments> SrcAlphaFactors{};
+			std::array<BlendConstant, 8> SrcAlphaFactors{};
 			//Destination alpha blend factor per render target.
-			std::array<BlendConstant, MaxRenderTargetAttachments> DstAlphaFactors{};
+			std::array<BlendConstant, 8> DstAlphaFactors{};
 			//Blend mode per render target.
-			std::array<BlendMode, MaxRenderTargetAttachments> BlendModes{};
+			std::array<BlendMode, 8> BlendModes{};
 			//Alpha blend mode per render target.
-			std::array<BlendMode, MaxRenderTargetAttachments> BlendAlphaModes{};
+			std::array<BlendMode, 8> BlendAlphaModes{};
 			//Write mask per render target.
-			std::array<int32_t, MaxRenderTargetAttachments> Masks{};
+			std::array<int32_t, 8> Masks{};
 			//Mask that identifies the render targets affected by the blend state.
 			BlendStateTargets RenderTargetMask{};
 			//Set whether alpha to coverage should be enabled.

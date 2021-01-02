@@ -38,6 +38,7 @@ namespace TRAP::Graphics::API
 	VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc, std::vector<VkPipelineColorBlendAttachmentState>& attachments);
 	VkPipelineDepthStencilStateCreateInfo UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc);
 	VkPipelineRasterizationStateCreateInfo UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc);
+	void UtilGetPlanarVkImageMemoryRequirement(VkDevice device, VkImage image, uint32_t planesCount, VkMemoryRequirements& memReq, std::vector<uint64_t>& planesOffsets);
 
 	RendererAPI::ImageFormat GetRecommendedSwapchainFormat(bool HDR);
 	double GetTimestampFrequency(const TRAP::Ref<VulkanQueue>& queue);

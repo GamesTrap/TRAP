@@ -27,6 +27,7 @@ namespace TRAP::Graphics::API
 		RendererAPI::DescriptorInfo* GetDescriptor(const char* resName);
 		uint32_t GetDescriptorCount() const;
 		const std::vector<RendererAPI::DescriptorInfo>& GetDescriptors() const;
+		const TRAP::Scope<VulkanRenderer::DescriptorIndexMap>& GetDescriptorNameToIndexMap() const;
 	private:
 		TRAP::Ref<VulkanDevice> m_device;
 		

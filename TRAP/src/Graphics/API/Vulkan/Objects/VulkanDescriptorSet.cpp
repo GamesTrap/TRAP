@@ -161,6 +161,34 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index, uint32_t c
 			break;
 		}
 
+		case RendererAPI::DescriptorType::CombinedImageSampler:
+		{
+			const std::vector<TRAP::Ref<VulkanTexture>>& textures = std::get<std::vector<TRAP::Ref<VulkanTexture>>>(param.Resource);
+			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty Texture (") + std::string(desc->Name) + std::string(")"));
+
+			std::unordered_map<std::string, uint32_t>::const_iterator it = m_rootSignature->GetDescriptorNameToIndexMap()->Map.find(desc->Name);
+			if(it == m_rootSignature->GetDescriptorNameToIndexMap()->Map.end())
+			{
+				TP_ERROR(Log::RendererVulkanDescriptorSetPrefix, "No Static Sampler called (", desc->Name, ")");
+				TRAP_ASSERT(false);
+			}
+
+			for(uint32_t arr = 0; arr < arrayCount; ++arr)
+			{
+				VALIDATE_DESCRIPTOR(textures[arr], std::string("nullptr Texture (") + std::string(desc->Name) + std::string(" [") + std::to_string(arr) + std::string("])"));
+
+				updateData[desc->HandleIndex + arr].ImageInfo =
+				{
+					nullptr,                                 //Sampler
+					textures[arr]->GetSRVVkImageView(),      //Image View
+					VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL //Image Layout
+				};
+
+				update = true;
+			}
+			break;
+		}
+
 		case RendererAPI::DescriptorType::Texture:
 		{
 			const std::vector<TRAP::Ref<VulkanTexture>>& textures = std::get<std::vector<TRAP::Ref<VulkanTexture>>>(param.Resource);
@@ -205,24 +233,43 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index, uint32_t c
 		{
 			const std::vector<TRAP::Ref<VulkanTexture>>& textures = std::get<std::vector<TRAP::Ref<VulkanTexture>>>(param.Resource);
 			VALIDATE_DESCRIPTOR(!textures.empty(), std::string("Empty RW Texture (") + std::string(desc->Name) + std::string(")"));
-			const uint32_t mipSlice = std::get<RendererAPI::DescriptorData::TextureSlice>(param.Offset).UAVMipSlice;
 
-			for(uint32_t arr = 0; arr < arrayCount; ++arr)
+			if(std::get<TRAP::Graphics::RendererAPI::DescriptorData::TextureSlice>(param.Offset).BindMipChain)
 			{
-				VALIDATE_DESCRIPTOR(textures[arr], std::string("nullptr RW Texture (") + std::string(desc->Name) + std::string(" [") + std::to_string(arr) + std::string("])"));
-				VALIDATE_DESCRIPTOR(mipSlice < textures[arr]->GetMipLevels(),
-				                    std::string("Descriptor: (") + std::string(desc->Name) + std::string(" [") + std::to_string(arr) +
-									std::string("]) Mip Slice (") + std::to_string(mipSlice) + std::string(") exceeds mip levels (") +
-									std::to_string(textures[arr]->GetMipLevels()) + std::string(")"));
+				VALIDATE_DESCRIPTOR(textures[0], std::string("nullptr RW Texture (") + std::string(desc->Name) + std::string(")"));
 
-				updateData[desc->HandleIndex + arr].ImageInfo =
+				for (uint32_t arr = 0; arr < arrayCount; ++arr)
 				{
-					VK_NULL_HANDLE,                                      //Sampler
-					textures[arr]->GetUAVVkImageViews()[mipSlice], //Image View
-					VK_IMAGE_LAYOUT_GENERAL                              //Image Layout
-				};
+					updateData[desc->HandleIndex + arr].ImageInfo =
+					{
+						VK_NULL_HANDLE,                         //Sampler
+						textures[0]->GetUAVVkImageViews()[arr], //Image View
+						VK_IMAGE_LAYOUT_GENERAL                 //Image Layout
+					};
+					
+					update = true;
+				}
+			}
+			else
+			{
+				const uint32_t mipSlice = std::get<TRAP::Graphics::RendererAPI::DescriptorData::TextureSlice>(param.Offset).UAVMipSlice;
 
-				update = true;
+				for(uint32_t arr = 0; arr < arrayCount; ++arr)
+				{
+					VALIDATE_DESCRIPTOR(textures[arr], std::string("nullptr RW Texture (") + std::string(desc->Name) + std::string(" [") + std::to_string(arr) + std::string("])"));
+					VALIDATE_DESCRIPTOR(mipSlice < textures[arr]->GetMipLevels(),
+						std::string("Descriptor: (") + std::string(desc->Name) + std::string(" [") + std::to_string(arr) + std::string("]) Mip Slice (") +
+						std::to_string(mipSlice) + std::string(") exceeds mip levels (") + std::to_string(textures[arr]->GetMipLevels()) + std::string(")"));
+
+					updateData[desc->HandleIndex + arr].ImageInfo =
+					{
+						VK_NULL_HANDLE,                                //Sampler
+						textures[arr]->GetUAVVkImageViews()[mipSlice], //Image View
+						VK_IMAGE_LAYOUT_GENERAL                        //Image Layout
+					};
+
+					update = true;
+				}
 			}
 			break;
 		}

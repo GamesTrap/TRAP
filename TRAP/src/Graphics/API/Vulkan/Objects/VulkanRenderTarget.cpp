@@ -62,7 +62,6 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(TRAP::Ref<VulkanDevi
 	textureDesc.SampleQuality = desc.SampleQuality;
 	textureDesc.Format = desc.Format;
 	textureDesc.ClearValue = desc.ClearValue;
-	textureDesc.HostVisible = false;
 	textureDesc.NativeHandle = desc.NativeHandle;
 
 	if (!isDepth)

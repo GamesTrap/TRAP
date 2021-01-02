@@ -66,7 +66,15 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 
 	const VkSurfaceCapabilitiesKHR caps = surface->GetVkSurfaceCapabilities();
 	if ((caps.maxImageCount > 0) && (desc.ImageCount > caps.maxImageCount))
+	{
+		TP_WARN(Log::RendererVulkanSwapChainPrefix, "Changed requested SwapChain images ", desc.ImageCount, " to maximum allowed SwapChain images ", caps.maxImageCount);
 		desc.ImageCount = caps.maxImageCount;
+	}
+	if(desc.ImageCount < caps.minImageCount)
+	{
+		TP_WARN(Log::RendererVulkanSwapChainPrefix, "Changed requested SwapChain images ", desc.ImageCount, " to minimum required SwapChain images ", caps.minImageCount);
+		desc.ImageCount = caps.minImageCount;
+	}
 
 	//Surface format
 	//Select a surface format, depending on whether HDR is available.
@@ -137,8 +145,8 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 
 	//SwapChain
 	VkExtent2D extent{};
-	extent.width = desc.Width;
-	extent.height = desc.Height;
+	extent.width = TRAP::Math::Clamp(desc.Width, caps.minImageExtent.width, caps.maxImageExtent.width);
+	extent.height = TRAP::Math::Clamp(desc.Height, caps.minImageExtent.height, caps.maxImageExtent.height);
 
 	VkSharingMode sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	uint32_t queueFamilyIndexCount = 0;
@@ -223,7 +231,7 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 
 	VkSwapchainKHR swapChain;
 	VkSwapchainCreateInfoKHR swapChainCreateInfo = VulkanInits::SwapchainCreateInfoKHR(surface->GetVkSurface(),
-		TRAP::Math::Clamp(desc.ImageCount, caps.minImageCount, caps.maxImageCount),
+		desc.ImageCount,
 		surfaceFormat,
 		extent,
 		sharingMode,

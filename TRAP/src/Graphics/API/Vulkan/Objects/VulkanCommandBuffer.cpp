@@ -594,29 +594,63 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref
                                                                  const TRAP::Ref<VulkanBuffer>& srcBuffer,
                                                                  const VulkanRenderer::SubresourceDesc& subresourceDesc) const
 {
-	const uint32_t width = TRAP::Math::Max(1u, texture->GetWidth() >> subresourceDesc.MipLevel);
-	const uint32_t height = TRAP::Math::Max(1u, texture->GetHeight() >> subresourceDesc.MipLevel);
-	const uint32_t depth = TRAP::Math::Max(1u, texture->GetDepth() >> subresourceDesc.MipLevel);
-	const RendererAPI::ImageFormat format = texture->GetImageFormat();
-	const uint32_t numBlocksWide = subresourceDesc.RowPitch / (RendererAPI::ImageFormatBitSizeOfBlock(format) >> 3);
-	const uint32_t numBlocksHigh = (subresourceDesc.SlicePitch / subresourceDesc.RowPitch);
+	const RendererAPI::ImageFormat fmt = texture->GetImageFormat();
+	if(RendererAPI::ImageFormatIsSinglePlane(fmt))
+	{
+		const uint32_t width = TRAP::Math::Max<uint32_t>(1u, texture->GetWidth() >> subresourceDesc.MipLevel);
+		const uint32_t height = TRAP::Math::Max<uint32_t>(1u, texture->GetHeight() >> subresourceDesc.MipLevel);
+		const uint32_t depth = TRAP::Math::Max<uint32_t>(1u, texture->GetDepth() >> subresourceDesc.MipLevel);
+		const uint32_t numBlocksWide = subresourceDesc.RowPitch / (RendererAPI::ImageFormatBitSizeOfBlock(fmt) >> 3);
+		const uint32_t numBlocksHigh = (subresourceDesc.SlicePitch / subresourceDesc.RowPitch);
+		
+		VkBufferImageCopy copy{};
+		copy.bufferOffset = subresourceDesc.SrcOffset;
+		copy.bufferRowLength = numBlocksWide * RendererAPI::ImageFormatWidthOfBlock(fmt);
+		copy.bufferImageHeight = numBlocksHigh * RendererAPI::ImageFormatHeightOfBlock(fmt);
+		copy.imageSubresource.aspectMask = static_cast<VkImageAspectFlags>(texture->GetAspectMask());
+		copy.imageSubresource.mipLevel = subresourceDesc.MipLevel;
+		copy.imageSubresource.baseArrayLayer = subresourceDesc.ArrayLayer;
+		copy.imageSubresource.layerCount = 1;
+		copy.imageOffset.x = 0;
+		copy.imageOffset.y = 0;
+		copy.imageOffset.z = 0;
+		copy.imageExtent.width = width;
+		copy.imageExtent.height = height;
+		copy.imageExtent.depth = depth;
+			
+		vkCmdCopyBufferToImage(m_vkCommandBuffer, srcBuffer->GetVkBuffer(), texture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
+	}
+	else
+	{
+		const uint32_t width = texture->GetWidth();
+		const uint32_t height = texture->GetHeight();
+		const uint32_t depth = texture->GetDepth();
+		const uint32_t numOfPlanes = RendererAPI::ImageFormatNumOfPlanes(fmt);
 
-	VkBufferImageCopy copy{};
-	copy.bufferOffset = subresourceDesc.SrcOffset;
-	copy.bufferRowLength = numBlocksWide * RendererAPI::ImageFormatWidthOfBlock(format);
-	copy.bufferImageHeight = numBlocksHigh * RendererAPI::ImageFormatHeightOfBlock(format);
-	copy.imageSubresource.aspectMask = static_cast<VkImageAspectFlags>(texture->GetAspectMask());
-	copy.imageSubresource.mipLevel = subresourceDesc.MipLevel;
-	copy.imageSubresource.baseArrayLayer = subresourceDesc.ArrayLayer;
-	copy.imageSubresource.layerCount = 1;
-	copy.imageOffset.x = 0;
-	copy.imageOffset.y = 0;
-	copy.imageOffset.z = 0;
-	copy.imageExtent.width = width;
-	copy.imageExtent.height = height;
-	copy.imageExtent.depth = depth;
+		uint64_t offset = subresourceDesc.SrcOffset;
+		std::vector<VkBufferImageCopy> bufferImagesCopy(3);
 
-	vkCmdCopyBufferToImage(m_vkCommandBuffer, srcBuffer->GetVkBuffer(), texture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
+		for(uint32_t i = 0; i < numOfPlanes; ++i)
+		{
+			VkBufferImageCopy& copy = bufferImagesCopy[i];
+			copy.bufferOffset = offset;
+			copy.bufferRowLength = 0;
+			copy.bufferImageHeight = 0;
+			copy.imageSubresource.aspectMask = static_cast<VkImageAspectFlagBits>(VK_IMAGE_ASPECT_PLANE_0_BIT << i);
+			copy.imageSubresource.mipLevel = subresourceDesc.MipLevel;
+			copy.imageSubresource.baseArrayLayer = subresourceDesc.ArrayLayer;
+			copy.imageSubresource.layerCount = 1;
+			copy.imageOffset.x = 0;
+			copy.imageOffset.y = 0;
+			copy.imageOffset.z = 0;
+			copy.imageExtent.width = RendererAPI::ImageFormatPlaneWidth(fmt, i, width);
+			copy.imageExtent.height = RendererAPI::ImageFormatPlaneHeight(fmt, i, height);
+			copy.imageExtent.depth = depth;
+			offset += copy.imageExtent.width * copy.imageExtent.height * RendererAPI::ImageFormatPlaneSizeOfBlock(fmt, i);
+		}
+
+		vkCmdCopyBufferToImage(m_vkCommandBuffer, srcBuffer->GetVkBuffer(), texture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, numOfPlanes, bufferImagesCopy.data());
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -764,13 +798,6 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 			imageBarrier->sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 			imageBarrier->pNext = nullptr;
 
-			imageBarrier->image = texture->GetVkImage();
-			imageBarrier->subresourceRange.aspectMask = texture->GetAspectMask();
-			imageBarrier->subresourceRange.baseMipLevel = 0;
-			imageBarrier->subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
-			imageBarrier->subresourceRange.baseArrayLayer = 0;
-			imageBarrier->subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
-
 			imageBarrier->srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
 			imageBarrier->dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT | VK_ACCESS_SHADER_READ_BIT;
 			imageBarrier->oldLayout = VK_IMAGE_LAYOUT_GENERAL;
@@ -792,10 +819,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 		{
 			imageBarrier->image = texture->GetVkImage();
 			imageBarrier->subresourceRange.aspectMask = texture->GetAspectMask();
-			imageBarrier->subresourceRange.baseMipLevel = 0;
-			imageBarrier->subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
-			imageBarrier->subresourceRange.baseArrayLayer = 0;
-			imageBarrier->subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
+			imageBarrier->subresourceRange.baseMipLevel = trans.SubresourceBarrier ? trans.MipLevel : 0;
+			imageBarrier->subresourceRange.levelCount = trans.SubresourceBarrier ? 1 : VK_REMAINING_MIP_LEVELS;
+			imageBarrier->subresourceRange.baseArrayLayer = trans.SubresourceBarrier ? trans.ArrayLayer : 0;
+			imageBarrier->subresourceRange.layerCount = trans.SubresourceBarrier ? 1 : VK_REMAINING_ARRAY_LAYERS;
 
 			if(trans.Acquire)
 			{
@@ -830,13 +857,6 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 			imageBarrier->sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 			imageBarrier->pNext = nullptr;
 
-			imageBarrier->image = texture->GetVkImage();
-			imageBarrier->subresourceRange.aspectMask = texture->GetAspectMask();
-			imageBarrier->subresourceRange.baseMipLevel = 0;
-			imageBarrier->subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
-			imageBarrier->subresourceRange.baseArrayLayer = 0;
-			imageBarrier->subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
-
 			imageBarrier->srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
 			imageBarrier->dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT | VK_ACCESS_SHADER_READ_BIT;
 			imageBarrier->oldLayout = VK_IMAGE_LAYOUT_GENERAL;
@@ -858,10 +878,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 		{
 			imageBarrier->image = texture->GetVkImage();
 			imageBarrier->subresourceRange.aspectMask = texture->GetAspectMask();
-			imageBarrier->subresourceRange.baseMipLevel = 0;
-			imageBarrier->subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
-			imageBarrier->subresourceRange.baseArrayLayer = 0;
-			imageBarrier->subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
+			imageBarrier->subresourceRange.baseMipLevel = trans.SubresourceBarrier ? trans.MipLevel : 0;
+			imageBarrier->subresourceRange.levelCount = trans.SubresourceBarrier ? 1 : VK_REMAINING_MIP_LEVELS;
+			imageBarrier->subresourceRange.baseArrayLayer = trans.SubresourceBarrier ? trans.ArrayLayer : 0;
+			imageBarrier->subresourceRange.layerCount = trans.SubresourceBarrier ? 1 : VK_REMAINING_ARRAY_LAYERS;
 
 			if(trans.Acquire)
 			{
@@ -889,4 +909,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 
 	if(bufferBarrierCount || imageBarrierCount)
 		vkCmdPipelineBarrier(m_vkCommandBuffer, srcStageMask, dstStageMask, 0, 0, nullptr, bufferBarrierCount, bBarriers.data(), imageBarrierCount, iBarriers.data());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandBuffer::SetStencilReferenceValue(const uint32_t val) const
+{
+	vkCmdSetStencilReference(m_vkCommandBuffer, VK_STENCIL_FRONT_AND_BACK, val);
 }

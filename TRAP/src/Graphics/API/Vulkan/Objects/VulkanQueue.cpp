@@ -151,10 +151,11 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDesc& desc) const
+TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDesc& desc) const
 {
 	const std::vector<TRAP::Ref<VulkanSemaphore>>& waitSemaphores = desc.WaitSemaphores;
-
+	RendererAPI::PresentStatus presentStatus = RendererAPI::PresentStatus::Failed;
+	
 	if(desc.SwapChain)
 	{
 		TRAP_ASSERT(m_vkQueue != VK_NULL_HANDLE);
@@ -178,13 +179,19 @@ void TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDe
 		//Lightweigt lock to make sure multiple threads dont use the same queue simultaneously
 		std::lock_guard<std::mutex> lock(m_submitMutex);
 		const VkResult res = vkQueuePresentKHR(desc.SwapChain->GetPresentVkQueue() ? desc.SwapChain->GetPresentVkQueue() : m_vkQueue, &presentInfo);
-		if(res == VK_ERROR_OUT_OF_DATE_KHR)
+		if (res == VK_SUCCESS)
+			presentStatus = RendererAPI::PresentStatus::Success;
+		else if (res == VK_ERROR_DEVICE_LOST)
+			presentStatus = RendererAPI::PresentStatus::DeviceReset;		
+		else if(res == VK_ERROR_OUT_OF_DATE_KHR)
 		{
 			//TODO
 		}
 		else
 		{
-			VkCall(res);
+			TRAP_ASSERT(false);
 		}
 	}
+
+	return presentStatus;
 }

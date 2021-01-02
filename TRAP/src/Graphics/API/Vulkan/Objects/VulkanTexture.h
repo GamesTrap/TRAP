@@ -69,8 +69,12 @@ namespace TRAP::Graphics::API
 		VkImageView m_vkSRVStencilDescriptor;
 		//Native handle of the underlying resource
 		VkImage m_vkImage;
-		//Contains resource allocation info such as parent heap, offset in heap
-		VmaAllocation m_vkAllocation;
+		union
+		{
+			//Contains resource allocation info such as parent heap, offset in heap
+			VmaAllocation m_vkAllocation;
+			VkDeviceMemory m_vkDeviceMemory;
+		};
 
 		TRAP::Ref<RendererAPI::VirtualTexture> m_SVT;
 		//Current state of the buffer
