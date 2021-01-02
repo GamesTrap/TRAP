@@ -67,7 +67,7 @@ TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 
 void TRAP::Graphics::API::VulkanPipeline::AddComputePipeline(const RendererAPI::PipelineDesc& desc)
 {
-	const RendererAPI::ComputePipelineDesc& computeDesc = desc.ComputeDesc;
+	const RendererAPI::ComputePipelineDesc& computeDesc = std::get<RendererAPI::ComputePipelineDesc>(desc.Pipeline);
 	VkPipelineCache psoCache = desc.Cache ? desc.Cache->GetVkPipelineCache() : VK_NULL_HANDLE;
 
 	TRAP_ASSERT(computeDesc.ShaderProgram);
@@ -80,7 +80,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddComputePipeline(const RendererAPI::
 	{
 		const VkPipelineShaderStageCreateInfo stage = VulkanInits::PipelineShaderStageCreateInfo(VK_SHADER_STAGE_COMPUTE_BIT,
 			computeDesc.ShaderProgram->GetVkShaderModules()[0],
-			computeDesc.ShaderProgram->GetReflection()->StageReflections[0].EntryPoint);
+			computeDesc.ShaderProgram->GetReflection()->StageReflections[0].EntryPoint.data());
 
 		VkComputePipelineCreateInfo info = VulkanInits::ComputePipelineCreateInfo(stage, computeDesc.RootSignature->GetVkPipelineLayout());
 
@@ -92,7 +92,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddComputePipeline(const RendererAPI::
 
 void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI::PipelineDesc& desc)
 {
-	const RendererAPI::GraphicsPipelineDesc& graphicsDesc = desc.GraphicsDesc;
+	const RendererAPI::GraphicsPipelineDesc& graphicsDesc = std::get<RendererAPI::GraphicsPipelineDesc>(desc.Pipeline);
 	VkPipelineCache psoCache = desc.Cache ? desc.Cache->GetVkPipelineCache() : VK_NULL_HANDLE;
 
 	TRAP_ASSERT(graphicsDesc.ShaderProgram);
@@ -133,7 +133,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 				{
 				case RendererAPI::ShaderStage::Vertex:
 				{
-					stages[stageCount].pName = shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->VertexStageIndex].EntryPoint;
+					stages[stageCount].pName = shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->VertexStageIndex].EntryPoint.data();
 					stages[stageCount].stage = VK_SHADER_STAGE_VERTEX_BIT;
 					stages[stageCount].module = shaderProgram->GetVkShaderModules()[shaderProgram->GetReflection()->VertexStageIndex];
 					break;
@@ -141,7 +141,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 
 				case RendererAPI::ShaderStage::TessellationControl:
 				{
-					stages[stageCount].pName = shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->TessellationControlStageIndex].EntryPoint;
+					stages[stageCount].pName = shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->TessellationControlStageIndex].EntryPoint.data();
 					stages[stageCount].stage = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
 					stages[stageCount].module = shaderProgram->GetVkShaderModules()[shaderProgram->GetReflection()->TessellationControlStageIndex];
 					break;
@@ -149,7 +149,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 					
 				case RendererAPI::ShaderStage::TessellationEvaluation:
 				{
-					stages[stageCount].pName = shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->TessellationEvaluationStageIndex].EntryPoint;
+					stages[stageCount].pName = shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->TessellationEvaluationStageIndex].EntryPoint.data();
 					stages[stageCount].stage = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
 					stages[stageCount].module = shaderProgram->GetVkShaderModules()[shaderProgram->GetReflection()->TessellationEvaluationStageIndex];
 					break;
@@ -157,7 +157,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 
 				case RendererAPI::ShaderStage::Geometry:
 				{
-					stages[stageCount].pName = shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->GeometryStageIndex].EntryPoint;
+					stages[stageCount].pName = shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->GeometryStageIndex].EntryPoint.data();
 					stages[stageCount].stage = VK_SHADER_STAGE_GEOMETRY_BIT;
 					stages[stageCount].module = shaderProgram->GetVkShaderModules()[shaderProgram->GetReflection()->GeometryStageIndex];
 					break;
@@ -165,7 +165,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 					
 				case RendererAPI::ShaderStage::Fragment:
 				{
-					stages[stageCount].pName = shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->FragmentStageIndex].EntryPoint;
+					stages[stageCount].pName = shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->FragmentStageIndex].EntryPoint.data();
 					stages[stageCount].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
 					stages[stageCount].module = shaderProgram->GetVkShaderModules()[shaderProgram->GetReflection()->FragmentStageIndex];
 					break;

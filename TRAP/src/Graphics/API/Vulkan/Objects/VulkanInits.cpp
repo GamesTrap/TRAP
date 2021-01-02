@@ -314,7 +314,7 @@ VkSubpassDescription TRAP::Graphics::API::VulkanInits::SubPassDescription(const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions,
-	const std::vector<VkSubpassDescription>& subpassDescriptions)
+	const VkSubpassDescription& subpassDescription)
 {
 	VkRenderPassCreateInfo info;
 
@@ -323,8 +323,8 @@ VkRenderPassCreateInfo TRAP::Graphics::API::VulkanInits::RenderPassCreateInfo(co
 	info.flags = 0;
 	info.attachmentCount = static_cast<uint32_t>(attachmentDescriptions.size());
 	info.pAttachments = attachmentDescriptions.data();
-	info.subpassCount = static_cast<uint32_t>(subpassDescriptions.size());
-	info.pSubpasses = subpassDescriptions.data();
+	info.subpassCount = 1;
+	info.pSubpasses = &subpassDescription;
 	info.dependencyCount = 0;
 	info.pDependencies = nullptr;
 	
@@ -917,7 +917,7 @@ VkSwapchainCreateInfoKHR TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKH
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPresentInfoKHR TRAP::Graphics::API::VulkanInits::PresentInfo(const std::vector<VkSemaphore>& waitSemaphores, VkSwapchainKHR swapChain, uint32_t presentIndex)
+VkPresentInfoKHR TRAP::Graphics::API::VulkanInits::PresentInfo(const std::vector<VkSemaphore>& waitSemaphores, const VkSwapchainKHR& swapChain, uint32_t& presentIndex)
 {
 	VkPresentInfoKHR info;
 

@@ -24,9 +24,10 @@ namespace TRAP::Graphics::API
 		
 		void ToggleVSync();
 
-		VkSwapchainKHR GetVkSwapChain() const;
+		const VkSwapchainKHR& GetVkSwapChain() const;
 		VkQueue GetPresentVkQueue() const;
-		
+		const std::vector<TRAP::Ref<VulkanRenderTarget>>& GetRenderTargets() const;
+	
 	private:
 		void AddSwapchain(RendererAPI::SwapChainDesc& desc);
 		void RemoveSwapchain();

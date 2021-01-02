@@ -79,7 +79,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	VkRenderPassCreateInfo RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions,
-		const std::vector<VkSubpassDescription>& subpassDescriptions);
+		const VkSubpassDescription& subpassDescription);
 
 	VkRenderPassCreateInfo RenderPassCreateInfo(const std::vector<VkAttachmentDescription>& attachmentDescriptions);
 
@@ -218,7 +218,7 @@ namespace TRAP::Graphics::API::VulkanInits
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	VkPresentInfoKHR PresentInfo(const std::vector<VkSemaphore>& waitSemaphores, VkSwapchainKHR swapChain, uint32_t presentIndex);
+	VkPresentInfoKHR PresentInfo(const std::vector<VkSemaphore>& waitSemaphores, const VkSwapchainKHR& swapChain, uint32_t& presentIndex);
 	
 	//-------------------------------------------------------------------------------------------------------------------//
 

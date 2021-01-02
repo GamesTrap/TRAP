@@ -48,6 +48,14 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	if (static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture))
 		m_vkUAVDescriptors.resize((static_cast<uint32_t>(desc.Descriptors & RendererAPI::DescriptorType::RWTexture) ? desc.MipLevels : 0));
 
+	if (desc.NativeHandle)
+	{
+		m_ownsImage = false;
+		m_vkImage = static_cast<VkImage>(desc.NativeHandle);
+	}
+	else
+		m_ownsImage = true;
+
 	VkImageUsageFlags additionalFlags = 0;
 	if (static_cast<uint32_t>(desc.StartState & RendererAPI::ResourceState::RenderTarget))
 		additionalFlags |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
@@ -76,6 +84,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	bool cubeMapRequired = (descriptors & RendererAPI::DescriptorType::TextureCube) == RendererAPI::DescriptorType::TextureCube;
 	bool arrayRequired = false;
 
+	
 	if (imageType == VK_IMAGE_TYPE_3D)
 		arrayRequired = true;
 
@@ -326,7 +335,6 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 
 	//Get sparse bindings
 	uint32_t sparseBindsCount = static_cast<uint32_t>(sparseImageMemoryReqs.size / sparseImageMemoryReqs.alignment);
-	std::vector<VkSparseMemoryBind> sparseMemoryBinds(sparseBindsCount);
 
 	//Check if the format has a single mip tail for all layers or one mip tail for each layer
 	//The mip tail contains all mip levels > sparseMemoryReq.imageMipTailFirstLod
@@ -779,7 +787,7 @@ void TRAP::Graphics::API::VulkanTexture::RemoveVirtualTexture()
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint32_t TRAP::Graphics::API::VulkanTexture::GetMemoryType(uint32_t typeBits,
-                                                           const VkPhysicalDeviceMemoryProperties memProps,
+                                                           const VkPhysicalDeviceMemoryProperties& memProps,
                                                            const VkMemoryPropertyFlags props,
                                                            VkBool32* memTypeFound)
 {
@@ -893,8 +901,8 @@ void TRAP::Graphics::API::VulkanTexture::FillVirtualTextureLevel(const TRAP::Ref
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::RendererAPI::VirtualTexturePage* TRAP::Graphics::API::VulkanTexture::AddPage(const VkOffset3D offset,
-                                                                                             const VkExtent3D extent,
+TRAP::Graphics::RendererAPI::VirtualTexturePage* TRAP::Graphics::API::VulkanTexture::AddPage(const VkOffset3D& offset,
+                                                                                             const VkExtent3D& extent,
                                                                                              const VkDeviceSize size,
                                                                                              const uint32_t mipLevel,
                                                                                              const uint32_t layer) const
@@ -963,8 +971,5 @@ void TRAP::Graphics::API::VulkanTexture::ReleaseVirtualPage(RendererAPI::Virtual
 	}
 
 	if(virtualPage.IntermediateBuffer)
-	{
 		virtualPage.IntermediateBuffer.reset();
-		virtualPage.IntermediateBuffer = nullptr;
-	}
 }

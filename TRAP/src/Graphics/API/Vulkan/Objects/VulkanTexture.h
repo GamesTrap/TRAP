@@ -51,10 +51,10 @@ namespace TRAP::Graphics::API
 		};
 		
 		void RemoveVirtualTexture();
-		static uint32_t GetMemoryType(uint32_t typeBits, VkPhysicalDeviceMemoryProperties memProps, VkMemoryPropertyFlags props, VkBool32* memTypeFound = nullptr);
+		static uint32_t GetMemoryType(uint32_t typeBits, const VkPhysicalDeviceMemoryProperties& memProps, VkMemoryPropertyFlags props, VkBool32* memTypeFound = nullptr);
 		static VkExtent3D AlignedDivision(const VkExtent3D& extent, const VkExtent3D& granularity);
 		void FillVirtualTextureLevel(const TRAP::Ref<VulkanCommandBuffer>& cmd, uint32_t mipLevel);
-		RendererAPI::VirtualTexturePage* AddPage(VkOffset3D offset, VkExtent3D extent, VkDeviceSize size, uint32_t mipLevel, uint32_t layer) const;
+		RendererAPI::VirtualTexturePage* AddPage(const VkOffset3D& offset, const VkExtent3D& extent, VkDeviceSize size, uint32_t mipLevel, uint32_t layer) const;
 		bool AllocateVirtualPage(RendererAPI::VirtualTexturePage& virtualPage, uint32_t memoryTypeIndex);
 		void ReleaseVirtualPage(RendererAPI::VirtualTexturePage& virtualPage, bool removeMemoryBind) const;
 		

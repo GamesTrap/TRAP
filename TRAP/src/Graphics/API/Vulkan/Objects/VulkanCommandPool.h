@@ -18,7 +18,7 @@ namespace TRAP::Graphics::API
 		VulkanCommandBuffer* AllocateCommandBuffer(bool secondary);
 		void FreeCommandBuffer(VulkanCommandBuffer* cmdBuffer);
 
-		void Reset();
+		void Reset() const;
 		
 	private:		
 		TRAP::Ref<VulkanDevice> m_device;

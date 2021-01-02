@@ -47,8 +47,8 @@ VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::VulkanRenderer::Defa
 VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultDepthDesc = UtilToDepthDesc({ false, false, CompareMode::LessOrEqual, {}, 0xFF, 0xFF, CompareMode::Always, {}, {}, {}, CompareMode::Always, {}, {}, {} });
 VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultBlendDesc = UtilToBlendDesc({ {BlendConstant::One}, {BlendConstant::Zero}, {BlendConstant::One}, {BlendConstant::Zero}, {}, {}, {(0x1 | 0x2 | 0x4 | 0x8)}, BlendStateTargets::BlendStateTargetAll, {}, false }, DefaultBlendAttachments);
 
-TRAP::Scope<std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::RenderPassMap>> TRAP::Graphics::API::VulkanRenderer::s_renderPassMap{};
-TRAP::Scope<std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::FrameBufferMap>> TRAP::Graphics::API::VulkanRenderer::s_frameBufferMap{};
+TRAP::Scope<std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::RenderPassMap>> TRAP::Graphics::API::VulkanRenderer::s_renderPassMap = TRAP::MakeScope<std::unordered_map<std::thread::id, RenderPassMap>>();
+TRAP::Scope<std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::FrameBufferMap>> TRAP::Graphics::API::VulkanRenderer::s_frameBufferMap = TRAP::MakeScope<std::unordered_map<std::thread::id, FrameBufferMap>>();
 std::mutex TRAP::Graphics::API::VulkanRenderer::s_renderPassMutex{};
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -65,6 +65,11 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 	TP_DEBUG(Log::RendererVulkanPrefix, "Destroying Renderer");
 
 	RemoveDefaultResources();
+
+	std::lock_guard<std::mutex> lock(s_renderPassMutex);
+	s_frameBufferMap.reset();
+	
+	s_renderPassMap.reset();
 
 	//Free everything in order
 	//Should happen automagically through Scope deconstructors
@@ -439,11 +444,11 @@ std::vector<std::string> TRAP::Graphics::API::VulkanRenderer::SetupDeviceExtensi
 		physicalDevice->IsExtensionSupported(VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME) &&
 		physicalDevice->IsExtensionSupported(VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME))
 	{
-		extensions.emplace_back("VK_KHR_ray_tracing_pipeline");
+		extensions.emplace_back(VK_KHR_RAY_TRACING_PIPELINE_EXTENSION_NAME);
 		extensions.emplace_back(VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME);
-		extensions.emplace_back("VK_KHR_acceleration_structure");
-		extensions.emplace_back("VK_KHR_deferred_host_operations");
-		extensions.emplace_back("VK_KHR_pipeline_library");
+		extensions.emplace_back(VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME);
+		extensions.emplace_back(VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME);
+		extensions.emplace_back(VK_KHR_PIPELINE_LIBRARY_EXTENSION_NAME);
 		s_raytracingExtension = true;
 	}
 
@@ -631,7 +636,6 @@ void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 	s_NullDescriptors->DefaultSampler.reset();
 	
 	s_NullDescriptors.reset();
-	s_NullDescriptors = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -664,4 +668,25 @@ TRAP::Graphics::API::VulkanRenderer::FrameBufferMap& TRAP::Graphics::API::Vulkan
 	}
 
 	return it->second;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::API::VulkanInstance> TRAP::Graphics::API::VulkanRenderer::GetInstance() const
+{
+	return m_instance;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::API::VulkanDevice> TRAP::Graphics::API::VulkanRenderer::GetDevice() const
+{
+	return m_device;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::API::VulkanMemoryAllocator> TRAP::Graphics::API::VulkanRenderer::GetVMA() const
+{
+	return m_vma;
 }

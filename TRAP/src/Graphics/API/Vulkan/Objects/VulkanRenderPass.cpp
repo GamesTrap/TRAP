@@ -35,18 +35,15 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 	//Fill out attachment descriptions and references
 	{
 		attachments.resize(colorAttachmentCount + depthAttachmentCount);
-		TRAP_ASSERT(attachments.empty());
+		TRAP_ASSERT(!attachments.empty());
 
 		if(colorAttachmentCount > 0)
 		{
 			colorAttachmentRefs.resize(colorAttachmentCount);
-			TRAP_ASSERT(colorAttachmentRefs.empty());
+			TRAP_ASSERT(!colorAttachmentRefs.empty());
 		}
 		if(depthAttachmentCount > 0)
-		{
 			depthStencilAttachmentRefs.resize(1);
-			TRAP_ASSERT(depthStencilAttachmentRefs.empty());
-		}
 
 		//Color
 		for(uint32_t i = 0; i < colorAttachmentCount; ++i)
@@ -94,7 +91,7 @@ TRAP::Graphics::API::VulkanRenderPass::VulkanRenderPass(TRAP::Ref<VulkanDevice> 
 	else
 		subpass = VulkanInits::SubPassDescription(VK_PIPELINE_BIND_POINT_GRAPHICS, {}, colorAttachmentRefs);
 
-	VkRenderPassCreateInfo info = VulkanInits::RenderPassCreateInfo(attachments, { subpass });
+	VkRenderPassCreateInfo info = VulkanInits::RenderPassCreateInfo(attachments, subpass);
 
 	VkCall(vkCreateRenderPass(m_device->GetVkDevice(), &info, nullptr, &m_renderPass));
 

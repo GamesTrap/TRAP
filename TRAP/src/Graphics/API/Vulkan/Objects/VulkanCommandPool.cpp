@@ -76,8 +76,7 @@ void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(VulkanCommandBuff
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandPool::Reset()
+void TRAP::Graphics::API::VulkanCommandPool::Reset() const
 {
 	VkCall(vkResetCommandPool(m_device->GetVkDevice(), m_vkCommandPool, 0));
-	m_commandBuffers.clear();
 }

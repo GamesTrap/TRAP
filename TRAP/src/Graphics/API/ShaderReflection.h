@@ -28,7 +28,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 		uint32_t Size;
 
 		//Resource name
-		const char* Name;
+		std::string Name;
 		uint32_t NameSize;
 	};
 	
@@ -51,8 +51,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 		RendererAPI::ShaderStage UsedStages;
 
 		//Resource name
-		const char* Name;
-		uint32_t NameSize;
+		std::string Name;
 
 		//1D / 2D / Array / MSAA / ...
 		TextureDimension Dim;
@@ -70,16 +69,12 @@ namespace TRAP::Graphics::API::ShaderReflection
 		uint32_t Size{};
 
 		//Variable name
-		const char* Name;
-		uint32_t NameSize;
+		std::string Name;
 	};
 	
 	struct ShaderReflection
 	{
 		RendererAPI::ShaderStage ShaderStage;
-
-		//Single large allocation for names to reduce number of allocations
-		std::vector<char> NamePool{};
 
 		std::vector<VertexInput> VertexInputs;
 
@@ -93,7 +88,7 @@ namespace TRAP::Graphics::API::ShaderReflection
 		//Number of tessellation control points
 		uint32_t NumControlPoint{};
 
-		char* EntryPoint;
+		std::string EntryPoint;
 	};
 	
 	struct PipelineReflection

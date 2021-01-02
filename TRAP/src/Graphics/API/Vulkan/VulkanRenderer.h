@@ -186,6 +186,10 @@ namespace TRAP::Graphics::API
 		
 		static RenderPassMap& GetRenderPassMap();
 		static FrameBufferMap& GetFrameBufferMap();
+
+		TRAP::Ref<VulkanInstance> GetInstance() const; //TODO Remove Just for testing
+		TRAP::Ref<VulkanDevice> GetDevice() const; //TODO Remove Just for testing
+		TRAP::Ref<VulkanMemoryAllocator> GetVMA() const; //TODO Remove Just for testing
 		
 	private:
 		static std::vector<std::string> SetupInstanceLayers();

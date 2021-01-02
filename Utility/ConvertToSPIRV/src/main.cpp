@@ -112,7 +112,7 @@ std::string ReadTextFile(const std::filesystem::path& filePath)
 
 		while (std::getline(file, line))
 		{
-			if (line.back() == '\r')
+			if(!line.empty() && line.back() == '\r')
 				line.pop_back();
 
 			result += line;
@@ -173,7 +173,7 @@ bool StartsWith(const std::string& string, const std::string& start)
 const char* FindToken(const char* str, const std::string& token)
 {
 	const char* t = str;
-	while ((t = strstr(t, token.c_str())))
+	while ((t = strstr(t, token.data())))
 	{
 		const bool left = str == t || isspace(t[-1]);
 		const bool right = !t[token.size()] || isspace(t[token.size()]);
@@ -217,7 +217,7 @@ bool CheckForParameters(const int argc)
 	if (argc < 2)
 	{
 		std::cout << "No Console Parameters found!" << '\n';
-		std::cout << "Usage: Drag and Drop a file or a folder on the .exe file to convert TRAP GLSL or HLSL Shaders to SPIRV" << '\n';
+		std::cout << "Usage: Drag and Drop a file or a folder on the .exe file to convert TRAP GLSL Shaders to SPIRV" << '\n';
 
 		return false;
 	}

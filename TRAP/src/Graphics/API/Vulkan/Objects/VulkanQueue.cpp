@@ -113,15 +113,15 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	std::vector<VkSemaphore> waitSemaphores(desc.WaitSemaphores.size());
 	std::vector<VkPipelineStageFlags> waitMasks(desc.WaitSemaphores.size());
 	uint32_t waitCount = 0;
-	for(uint32_t i = 0; i < desc.WaitSemaphores.size(); ++i)
+	for (const auto& WaitSemaphore : desc.WaitSemaphores)
 	{
-		if(desc.WaitSemaphores[i]->IsSignaled())
+		if(WaitSemaphore->IsSignaled())
 		{
-			waitSemaphores[waitCount] = desc.WaitSemaphores[i]->GetVkSemaphore();
+			waitSemaphores[waitCount] = WaitSemaphore->GetVkSemaphore();
 			waitMasks[waitCount] = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
 			++waitCount;
 
-			desc.WaitSemaphores[i]->m_signaled = false;
+			WaitSemaphore->m_signaled = false;
 		}
 	}
 
@@ -157,8 +157,6 @@ void TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDe
 
 	if(desc.SwapChain)
 	{
-		const TRAP::Ref<VulkanSwapChain>& swapChain = desc.SwapChain;
-
 		TRAP_ASSERT(m_vkQueue != VK_NULL_HANDLE);
 
 		std::vector<VkSemaphore> wSemaphores;
@@ -173,13 +171,13 @@ void TRAP::Graphics::API::VulkanQueue::Present(const RendererAPI::QueuePresentDe
 			}
 		}
 
-		const uint32_t presentIndex = desc.Index;
+		uint32_t presentIndex = desc.Index;
 
-		VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, swapChain->GetVkSwapChain(), presentIndex);
+		VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, desc.SwapChain->GetVkSwapChain(), presentIndex);
 
 		//Lightweigt lock to make sure multiple threads dont use the same queue simultaneously
 		std::lock_guard<std::mutex> lock(m_submitMutex);
-		const VkResult res = vkQueuePresentKHR(swapChain->GetPresentVkQueue() ? swapChain->GetPresentVkQueue() : m_vkQueue, &presentInfo);
+		const VkResult res = vkQueuePresentKHR(desc.SwapChain->GetPresentVkQueue() ? desc.SwapChain->GetPresentVkQueue() : m_vkQueue, &presentInfo);
 		if(res == VK_ERROR_OUT_OF_DATE_KHR)
 		{
 			//TODO

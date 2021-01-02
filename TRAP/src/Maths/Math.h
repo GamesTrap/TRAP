@@ -2620,7 +2620,7 @@ TRAP::Math::Vec<L, T> TRAP::Math::Exp2(const Vec<L, T>& x)
 template<typename genType>
 genType TRAP::Math::Log2(genType x)
 {
-	return std::log2(x);
+	return static_cast<genType>(std::log2(x));
 }
 
 template<uint32_t L, typename T>

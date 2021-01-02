@@ -294,7 +294,7 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 	m_desc = desc;
 	m_enableVSync = desc.EnableVSync;
 	m_imageCount = imageCount;
-	m_surface = surface;
+	m_surface = std::move(surface);
 	m_presentQueueFamilyIndex = finalPresentQueueFamilyIndex;
 	m_presentQueue = presentQueue;
 	m_swapChain = swapChain;
@@ -369,7 +369,7 @@ void TRAP::Graphics::API::VulkanSwapChain::ToggleVSync()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const
+const VkSwapchainKHR& TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const
 {
 	return m_swapChain;
 }
@@ -379,4 +379,11 @@ VkSwapchainKHR TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() const
 VkQueue TRAP::Graphics::API::VulkanSwapChain::GetPresentVkQueue() const
 {
 	return m_presentQueue;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<TRAP::Ref<TRAP::Graphics::API::VulkanRenderTarget>>& TRAP::Graphics::API::VulkanSwapChain::GetRenderTargets() const
+{
+	return m_renderTargets;
 }

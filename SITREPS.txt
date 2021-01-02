@@ -1514,3 +1514,10 @@ SITREP 12/31/2020|20w53a2
     - VulkanSwapChain Added AcquireNextImage/ToggleVSync/GetVkSwapChain/GetPresentVkQueue function ~>60 mins
     - VulkanTexture Added VirtualTexture support ~>120 mins
     - FINISHED BASELINE IMPLEMENTATION OF ALL VULKAN CLASSES
+
+SITREP 01/02/2020|20w53a3
+    - Changed TRAP Engine version to 20w53a3(0.7.14)
+    - Replaced unions with std::variant ~<40 mins
+    - Fixed several bugs ~<30 mins
+    - Fixed a major bug ~<45 mins
+    - Added a Vulkan API clear screen test ~<20 mins

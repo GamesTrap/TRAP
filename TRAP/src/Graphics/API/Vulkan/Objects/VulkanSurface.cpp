@@ -9,17 +9,17 @@
 TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> instance,
 												  const TRAP::Ref<VulkanDevice>& device,
                                                   TRAP::INTERNAL::WindowingAPI::InternalWindow* window)
-	: m_surface(VK_NULL_HANDLE), m_instance(std::move(instance))
+	: m_surface(VK_NULL_HANDLE), m_surfaceCapabilities(), m_instance(std::move(instance))
 {
 	TRAP_ASSERT(m_instance, "instance is nullptr");
 	TRAP_ASSERT(device, "device is nullptr");
 	TRAP_ASSERT(window, "window is nullptr");
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererVulkanDevicePrefix, "Creating Surface");
+	TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Creating Surface");
 #endif
 
-	VkCall(TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance->GetVkInstance(), window, nullptr, m_surface));
+	VkCall(TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(m_instance->GetVkInstance(), window, nullptr, m_surface));
 
 	VkCall(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface, &m_surfaceCapabilities));
 
@@ -41,7 +41,7 @@ TRAP::Graphics::API::VulkanSurface::~VulkanSurface()
 	if(m_surface)
 	{
 #ifdef ENABLE_GRAPHICS_DEBUG
-		TP_DEBUG(Log::RendererVulkanDevicePrefix, "Destroying Surface");
+		TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Destroying Surface");
 #endif
 
 		vkDestroySurfaceKHR(m_instance->GetVkInstance(), m_surface, nullptr);

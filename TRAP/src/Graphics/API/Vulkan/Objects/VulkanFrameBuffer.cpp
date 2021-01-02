@@ -24,12 +24,13 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	
 	if(colorAttachmentCount)
 	{
-		m_width = desc.RenderTargets[0]->GetWidth();
-		m_height = desc.RenderTargets[0]->GetHeight();
+		const TRAP::Ref<VulkanRenderTarget>& renderTarget = desc.RenderTargets[0];
+		m_width = renderTarget->GetWidth();
+		m_height = renderTarget->GetHeight();
 		if (!desc.ColorArraySlices.empty())
 			m_arraySize = 1;
 		else
-			m_arraySize = desc.RenderTargets[0]->GetArraySize();
+			m_arraySize = renderTarget->GetArraySize();
 	}
 	else
 	{

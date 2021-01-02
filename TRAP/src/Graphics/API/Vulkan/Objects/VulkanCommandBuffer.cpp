@@ -251,7 +251,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		const uint32_t ID = renderTargets[i]->GetID();
 		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
 
-		if(renderTargets[i]->m_used++)
+		if(0 == renderTargets[i]->m_used++)
 			barriers.push_back({ renderTargets[i], RendererAPI::ResourceState::Undefined, RendererAPI::ResourceState::RenderTarget });
 	}
 	if(depthStencil)
@@ -267,7 +267,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		const uint32_t ID = depthStencil->GetID();
 		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
 
-		if (depthStencil->m_used++)
+		if (0 == depthStencil->m_used++)
 			barriers.push_back({ depthStencil, RendererAPI::ResourceState::Undefined, RendererAPI::ResourceState::DepthWrite });
 	}
 	if (!colorArraySlices.empty())

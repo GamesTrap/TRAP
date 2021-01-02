@@ -152,7 +152,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(TRAP::Ref<VulkanDe
 		descInfo.Reg = res.Reg;
 		descInfo.Size = res.Size;
 		descInfo.Type = res.Type;
-		descInfo.Name = res.Name;
+		descInfo.Name = res.Name.data();
 		descInfo.Dimension = res.Dim;
 
 		//If descriptor is not a root constant create a new layout binding for this descriptor and add it to the binding array

@@ -1139,299 +1139,299 @@ namespace TRAP::Graphics
 		struct RenderTargetDesc
 		{
 			//Texture creation flags (decides memory allocation strategy, sharing access, ...)
-			TextureCreationFlags Flags;
+			TextureCreationFlags Flags{};
 			//Width
-			uint32_t Width;
+			uint32_t Width{};
 			//Height
-			uint32_t Height;
+			uint32_t Height{};
 			//Depth (should be 1 if type is not TextureType::TextureType2D)
-			uint32_t Depth;
+			uint32_t Depth{};
 			//Texture array size (should be 1 if texture is not a texture array or cubemap)
-			uint32_t ArraySize;
+			uint32_t ArraySize{};
 			//Number of mip levels
-			uint32_t MipLevels;
+			uint32_t MipLevels{};
 			//Multisample anti-aliasing (MSAA)
-			SampleCount SampleCount;
+			SampleCount SampleCount{};
 			//Internal image format
-			ImageFormat Format;
+			ImageFormat Format{};
 			//What state will the texture get created in
-			ResourceState StartState;
+			ResourceState StartState{};
 			//Optimized clear value (recommended to use the same value when clearing the renderTarget)
-			ClearValue ClearValue;
+			ClearValue ClearValue{};
 			//The image quality level.
 			//The higher the quality, the lower the performance.
 			//The valid range is between 0 and the value appropriate for SampleCount
-			uint32_t SampleQuality;
+			uint32_t SampleQuality{};
 			//Descriptor creation
-			DescriptorType Descriptors;
+			DescriptorType Descriptors{};
 			//Debug name used in GPU profile
-			const char* Name;
+			const char* Name{};
 
-			const void* NativeHandle;
+			void* NativeHandle{};
 		};
 
 		//Data structure holding necessary info to create a Texture
 		struct TextureDesc
 		{
 			//Texture creation flags (decides memory allocation strategy, sharing access, ...)
-			TextureCreationFlags Flags;
+			TextureCreationFlags Flags{};
 			//Width
-			uint32_t Width;
+			uint32_t Width{};
 			//Height;
-			uint32_t Height;
+			uint32_t Height{};
 			//Depth (should be 1 if Type is not TextureType::TextureType2D)
-			uint32_t Depth;
+			uint32_t Depth{};
 			//Texture array size (should be 1 if texture is not a texture array or cubemap)
-			uint32_t ArraySize;
+			uint32_t ArraySize{};
 			//Number of mip levels
-			uint32_t MipLevels;
+			uint32_t MipLevels{};
 			//Number of multisamples per pixel (currently Textures created with Usage TextureUsage::SampledImage only support SampleCount1).
-			SampleCount SampleCount;
+			SampleCount SampleCount{};
 			//The image quality level.
 			//The higher the quality, the lower the performance.
 			//The valid range is between 0 and the value appropriate for SampleCount.
-			uint32_t SampleQuality;
+			uint32_t SampleQuality{};
 			//Image format
-			ImageFormat Format;
+			ImageFormat Format{};
 			//Optimized clear value (recommended to use the same value when clearing the renderTarget)
-			ClearValue ClearValue;
+			ClearValue ClearValue{};
 			//What state will the texture get created in
-			ResourceState StartState;
+			ResourceState StartState{};
 			//Descriptor creation
-			DescriptorType Descriptors;
+			DescriptorType Descriptors{};
 			//Debug name used in GPU profile
-			const char* Name;
+			const char* Name{};
 			//Is the texture CPU accessible (applicable on hardware supporting CPU mapped texture (UMA))
-			bool HostVisible;
+			bool HostVisible{};
+			
+			void* NativeHandle{};
 		};
 
 		//Data structure holding necessary info to create a Buffer
 		struct BufferDesc
 		{
 			//Size of the buffer (in bytes)
-			uint64_t Size;
+			uint64_t Size{};
 			//Alignment
-			uint32_t Alignment;
+			uint32_t Alignment{};
 			//Decides which heap buffer will be used (default, upload, readback)
-			ResourceMemoryUsage MemoryUsage;
+			ResourceMemoryUsage MemoryUsage{};
 			//Creation flags of the buffer
-			BufferCreationFlags Flags;
+			BufferCreationFlags Flags{};
 			//What type of queue the buffer is owned by
-			QueueType QueueType;
+			QueueType QueueType{};
 			//What state will the buffer get created in
-			ResourceState StartState;
+			ResourceState StartState{};
 			//Index of the first element accessible by the SRV/UAV
-			uint64_t FirstElement;
+			uint64_t FirstElement{};
 			//Number of elements in the buffer
-			uint64_t ElementCount;
+			uint64_t ElementCount{};
 			//Size of each element (in bytes) in the buffer
-			uint64_t StructStride;
+			uint64_t StructStride{};
 			//ICB draw type
-			IndirectArgumentType ICBDrawType;
+			IndirectArgumentType ICBDrawType{};
 			//ICB max vertex buffers slots count
-			uint32_t ICBMaxVertexBufferBind;
+			uint32_t ICBMaxVertexBufferBind{};
 			//ICB max fragment buffers slots count
-			uint32_t ICBMaxFragmentBufferBind;
+			uint32_t ICBMaxFragmentBufferBind{};
 			//Set this to specify a counter buffer for this buffer
 			//struct Buffer* CounterBuffer;
 			//Format of the buffer
-			ImageFormat Format;
+			ImageFormat Format{};
 			//Flags specifying the suitable usage of this buffer (Uniform Buffer, Vertex Buffer, Index Buffer, ...)
-			DescriptorType Descriptors;
+			DescriptorType Descriptors{};
 			//Debug name used in GPU-profile
-			const char* Name;
+			const char* Name{};
 		};
 
 		struct SamplerDesc
 		{
-			FilterType MinFilter;
-			FilterType MagFilter;
-			MipMapMode MipMapMode;
-			AddressMode AddressU;
-			AddressMode AddressV;
-			AddressMode AddressW;
-			float MipLodBias;
-			float MaxAnisotropy;
-			CompareMode CompareFunc;
+			FilterType MinFilter{};
+			FilterType MagFilter{};
+			MipMapMode MipMapMode{};
+			AddressMode AddressU{};
+			AddressMode AddressV{};
+			AddressMode AddressW{};
+			float MipLodBias{};
+			float MaxAnisotropy{};
+			CompareMode CompareFunc{};
 		};
 
 		struct BinaryShaderStageDesc
 		{
-			std::vector<uint8_t> ByteCode;
-			std::string EntryPoint;
+			std::vector<uint8_t> ByteCode{};
+			std::string EntryPoint{};
 		};
 
 		struct BinaryShaderDesc
 		{
-			ShaderStage Stages;
-			//Specify whether shader will own byte code memory
-			bool OwnByteCode{};
-			BinaryShaderStageDesc Vertex;
-			BinaryShaderStageDesc Fragment;
-			BinaryShaderStageDesc Geometry;
-			BinaryShaderStageDesc TessellationControl;
-			BinaryShaderStageDesc TessellationEvaluation;
-			BinaryShaderStageDesc Compute;
+			ShaderStage Stages{};
+			BinaryShaderStageDesc Vertex{};
+			BinaryShaderStageDesc Fragment{};
+			BinaryShaderStageDesc Geometry{};
+			BinaryShaderStageDesc TessellationControl{};
+			BinaryShaderStageDesc TessellationEvaluation{};
+			BinaryShaderStageDesc Compute{};
 		};
 
 		struct RootSignatureDesc
 		{
-			std::vector<TRAP::Ref<API::VulkanShader>> Shaders;
-			uint32_t MaxBindlessTextures;
-			std::vector<const char*> StaticSamplerNames;
-			std::vector<TRAP::Ref<API::VulkanSampler>> StaticSamplers;
-			RootSignatureFlags Flags;
+			std::vector<TRAP::Ref<API::VulkanShader>> Shaders{};
+			uint32_t MaxBindlessTextures{};
+			std::vector<const char*> StaticSamplerNames{};
+			std::vector<TRAP::Ref<API::VulkanSampler>> StaticSamplers{};
+			RootSignatureFlags Flags{};
 		};
 
 		struct DescriptorInfo
 		{
-			const char* Name;
-			DescriptorType Type;
-			API::ShaderReflection::TextureDimension Dimension;
-			bool RootDescriptor;
-			DescriptorUpdateFrequency UpdateFrequency;
-			uint32_t Size;
+			const char* Name{};
+			DescriptorType Type{};
+			API::ShaderReflection::TextureDimension Dimension{};
+			bool RootDescriptor{};
+			DescriptorUpdateFrequency UpdateFrequency{};
+			uint32_t Size{};
 			//Index in the descriptor set
-			uint32_t IndexInParent;
-			uint32_t HandleIndex;
+			uint32_t IndexInParent{};
+			uint32_t HandleIndex{};
 
-			VkDescriptorType VkType;
-			uint32_t Reg;
-			uint32_t RootDescriptorIndex;
-			uint32_t VkStages;
+			VkDescriptorType VkType{};
+			uint32_t Reg{};
+			uint32_t RootDescriptorIndex{};
+			uint32_t VkStages{};
 		};
 
 		struct DescriptorSetDesc
 		{
-			TRAP::Ref<API::VulkanRootSignature> RootSignature;
-			DescriptorUpdateFrequency UpdateFrequency;
-			uint32_t MaxSets;
+			TRAP::Ref<API::VulkanRootSignature> RootSignature{};
+			DescriptorUpdateFrequency UpdateFrequency{};
+			uint32_t MaxSets{};
 		};
 		
 		struct QueueDesc
 		{
-			QueueType Type;
-			QueueFlag Flag;
-			QueuePriority Priority;
+			QueueType Type{};
+			QueueFlag Flag{};
+			QueuePriority Priority{};
 		};
 
 		struct ReadRange
 		{
-			uint64_t Offset;
-			uint64_t Range;
+			uint64_t Offset{};
+			uint64_t Range{};
 		};
 
 		struct QueueSubmitDesc
 		{
-			std::vector<API::VulkanCommandBuffer*> Cmds;
-			TRAP::Ref<API::VulkanFence> SignalFence;
-			std::vector<TRAP::Ref<API::VulkanSemaphore>> WaitSemaphores;
-			std::vector<TRAP::Ref<API::VulkanSemaphore>> SignalSemaphores;
-			bool SubmitDone;
+			std::vector<API::VulkanCommandBuffer*> Cmds{};
+			TRAP::Ref<API::VulkanFence> SignalFence{};
+			std::vector<TRAP::Ref<API::VulkanSemaphore>> WaitSemaphores{};
+			std::vector<TRAP::Ref<API::VulkanSemaphore>> SignalSemaphores{};
+			bool SubmitDone{};
 		};
 
 		struct BlendStateDesc
 		{
 			//Source blend factor per render target.
-			std::array<BlendConstant, MaxRenderTargetAttachments> SrcFactors;
+			std::array<BlendConstant, MaxRenderTargetAttachments> SrcFactors{};
 			//Destination blend factor per render target.
-			std::array<BlendConstant, MaxRenderTargetAttachments> DstFactors;
+			std::array<BlendConstant, MaxRenderTargetAttachments> DstFactors{};
 			//Source alpha blend factor per render target.
-			std::array<BlendConstant, MaxRenderTargetAttachments> SrcAlphaFactors;
+			std::array<BlendConstant, MaxRenderTargetAttachments> SrcAlphaFactors{};
 			//Destination alpha blend factor per render target.
-			std::array<BlendConstant, MaxRenderTargetAttachments> DstAlphaFactors;
+			std::array<BlendConstant, MaxRenderTargetAttachments> DstAlphaFactors{};
 			//Blend mode per render target.
-			std::array<BlendMode, MaxRenderTargetAttachments> BlendModes;
+			std::array<BlendMode, MaxRenderTargetAttachments> BlendModes{};
 			//Alpha blend mode per render target.
-			std::array<BlendMode, MaxRenderTargetAttachments> BlendAlphaModes;
+			std::array<BlendMode, MaxRenderTargetAttachments> BlendAlphaModes{};
 			//Write mask per render target.
-			std::array<int32_t, MaxRenderTargetAttachments> Masks;
+			std::array<int32_t, MaxRenderTargetAttachments> Masks{};
 			//Mask that identifies the render targets affected by the blend state.
-			BlendStateTargets RenderTargetMask;
+			BlendStateTargets RenderTargetMask{};
 			//Set whether alpha to coverage should be enabled.
-			bool AlphaToCoverage;
+			bool AlphaToCoverage{};
 			//Set whether each render target has an unique blend function.
 			//When false the blend function in slot 0 will be used for all render targets.
-			bool IndependentBlend;
+			bool IndependentBlend{};
 		};
 
 		struct DepthStateDesc
 		{
-			bool DepthTest;
-			bool DepthWrite;
-			CompareMode DepthFunc;
-			bool StencilTest;
-			uint8_t StencilReadMask;
-			uint8_t StencilWriteMask;
-			CompareMode StencilFrontFunc;
-			StencilOp StencilFrontFail;
-			StencilOp DepthFrontFail;
-			StencilOp StencilFrontPass;
-			CompareMode StencilBackFunc;
-			StencilOp StencilBackFail;
-			StencilOp DepthBackFail;
-			StencilOp StencilBackPass;
+			bool DepthTest{};
+			bool DepthWrite{};
+			CompareMode DepthFunc{};
+			bool StencilTest{};
+			uint8_t StencilReadMask{};
+			uint8_t StencilWriteMask{};
+			CompareMode StencilFrontFunc{};
+			StencilOp StencilFrontFail{};
+			StencilOp DepthFrontFail{};
+			StencilOp StencilFrontPass{};
+			CompareMode StencilBackFunc{};
+			StencilOp StencilBackFail{};
+			StencilOp DepthBackFail{};
+			StencilOp StencilBackPass{};
 		};
 
 		struct RasterizerStateDesc
 		{
-			CullMode CullMode;
-			int32_t DepthBias;
-			float SlopeScaledDepthBias;
-			FillMode FillMode;
-			bool MultiSample;
-			bool Scissor;
-			FrontFace FrontFace;
-			bool DepthClampEnable;
+			CullMode CullMode{};
+			int32_t DepthBias{};
+			float SlopeScaledDepthBias{};
+			FillMode FillMode{};
+			bool MultiSample{};
+			bool Scissor{};
+			FrontFace FrontFace{};
+			bool DepthClampEnable{};
 		};
 
 		struct PipelineCacheDesc
 		{
 			//Initial pipeline cache data (can be nullptr which means empty pipeline cache)
-			void* Data;
+			void* Data{};
 			//Initial pipeline cache size
-			std::size_t Size;
-			PipelineCacheFlags Flags;
+			std::size_t Size{};
+			PipelineCacheFlags Flags{};
 		};
 
 		struct ComputePipelineDesc
-		{
-			TRAP::Ref<API::VulkanShader> ShaderProgram;
-			TRAP::Ref<API::VulkanRootSignature> RootSignature;
+		{			
+			TRAP::Ref<API::VulkanShader> ShaderProgram{};
+			TRAP::Ref<API::VulkanRootSignature> RootSignature{};
 		};
 
 		struct VertexAttribute
 		{
-			ShaderSemantic Semantic;
-			std::string SemanticName;
-			ImageFormat Format;
-			uint32_t Binding;
-			uint32_t Location;
-			uint32_t Offset;
-			VertexAttributeRate Rate;
+			ShaderSemantic Semantic{};
+			std::string SemanticName{};
+			ImageFormat Format{};
+			uint32_t Binding{};
+			uint32_t Location{};
+			uint32_t Offset{};
+			VertexAttributeRate Rate{};
 		};
 
 		struct VertexLayout
 		{
 			uint32_t AttributeCount{};
-			std::array<VertexAttribute, 15> Attributes;
+			std::array<VertexAttribute, 15> Attributes{};
 		};
 		
 		struct GraphicsPipelineDesc
-		{
-			TRAP::Ref<API::VulkanShader> ShaderProgram;
-			TRAP::Ref<API::VulkanRootSignature> RootSignature;
-			VertexLayout* VertexLayout;
-			TRAP::Ref<BlendStateDesc> BlendState;
-			TRAP::Ref<DepthStateDesc> DepthState;
-			TRAP::Ref<RasterizerStateDesc> RasterizerState;
-			std::vector<ImageFormat> ColorFormats;
-			uint32_t RenderTargetCount;
-			SampleCount SampleCount;
-			uint32_t SampleQuality;
-			ImageFormat DepthStencilFormat;
-			PrimitiveTopology PrimitiveTopology;
-			bool SupportIndirectCommandBuffer;
+		{			
+			TRAP::Ref<API::VulkanShader> ShaderProgram{};
+			TRAP::Ref<API::VulkanRootSignature> RootSignature{};
+			VertexLayout* VertexLayout{};
+			TRAP::Ref<BlendStateDesc> BlendState{};
+			TRAP::Ref<DepthStateDesc> DepthState{};
+			TRAP::Ref<RasterizerStateDesc> RasterizerState{};
+			std::vector<ImageFormat> ColorFormats{};
+			uint32_t RenderTargetCount{};
+			SampleCount SampleCount{};
+			uint32_t SampleQuality{};
+			ImageFormat DepthStencilFormat{};
+			PrimitiveTopology PrimitiveTopology{};
+			bool SupportIndirectCommandBuffer{};
 		};
 
 		struct RayTracingPipelineDesc
@@ -1439,254 +1439,230 @@ namespace TRAP::Graphics
 		};
 
 		struct PipelineDesc
-		{
-			~PipelineDesc(); //Fixes C4624
-			
-			PipelineType Type;
-			union
-			{
-				ComputePipelineDesc ComputeDesc;
-				GraphicsPipelineDesc GraphicsDesc;
-				RayTracingPipelineDesc RayTracingDesc;
-			};
-			TRAP::Ref<API::VulkanPipelineCache> Cache;
-			void* PipelineExtensions;
-			uint32_t PipelineExtensionCount;
-			const char* Name;
+		{			
+			PipelineType Type{};
+			std::variant<ComputePipelineDesc, GraphicsPipelineDesc, RayTracingPipelineDesc> Pipeline{};
+			TRAP::Ref<API::VulkanPipelineCache> Cache{};
+			void* PipelineExtensions{};
+			uint32_t PipelineExtensionCount{};
+			const char* Name{};
 		};
 
 		struct QueryPoolDesc
 		{
-			QueryType Type;
-			uint32_t QueryCount;
+			QueryType Type{};
+			uint32_t QueryCount{};
 		};
 
 		struct QueryDesc
 		{
-			uint32_t Index;
+			uint32_t Index{};
 		};
 
 		struct IndirectDrawArguments
 		{
-			uint32_t VertexCount;
-			uint32_t InstanceCount;
-			uint32_t StartVertex;
-			uint32_t StartInstance;
+			uint32_t VertexCount{};
+			uint32_t InstanceCount{};
+			uint32_t StartVertex{};
+			uint32_t StartInstance{};
 		};
 
 		struct IndirectDrawIndexArguments
 		{
-			uint32_t IndexCount;
-			uint32_t InstanceCount;
-			uint32_t StartIndex;
-			uint32_t VertexOffset;
-			uint32_t StartInstance;
+			uint32_t IndexCount{};
+			uint32_t InstanceCount{};
+			uint32_t StartIndex{};
+			uint32_t VertexOffset{};
+			uint32_t StartInstance{};
 		};
 
 		struct IndirectDispatchArguments
 		{
-			uint32_t GroupCountX;
-			uint32_t GroupCountY;
-			uint32_t GroupCountZ;
+			uint32_t GroupCountX{};
+			uint32_t GroupCountY{};
+			uint32_t GroupCountZ{};
 		};
 
 		struct IndirectArgumentDescriptor
 		{
-			IndirectArgumentType Type;
-			const char* Name;
-			uint32_t Index;
+			IndirectArgumentType Type{};
+			const char* Name{};
+			uint32_t Index{};
 		};
 		
 		struct CommandSignatureDesc
 		{
-			TRAP::Ref<API::VulkanRootSignature> RootSignature;
-			uint32_t IndirectArgCount;
-			std::vector<IndirectArgumentDescriptor> ArgDescs;
+			TRAP::Ref<API::VulkanRootSignature> RootSignature{};
+			uint32_t IndirectArgCount{};
+			std::vector<IndirectArgumentDescriptor> ArgDescs{};
 			//Set to true if indirect argument struct should not be aligned to 16 bytes
-			bool Packed;
+			bool Packed{};
 		};
 
 		struct SwapChainDesc
 		{
 			//Window handle
-			TRAP::INTERNAL::WindowingAPI::InternalWindow* WindowHandle;
+			TRAP::INTERNAL::WindowingAPI::InternalWindow* WindowHandle{};
 			//Queues which should be allowed to present
-			std::vector<TRAP::Ref<API::VulkanQueue>> PresentQueues;
+			std::vector<TRAP::Ref<API::VulkanQueue>> PresentQueues{};
 			//Number of back buffers in this swapchain
-			uint32_t ImageCount;
+			uint32_t ImageCount{};
 			//Width of the swapchain
-			uint32_t Width;
+			uint32_t Width{};
 			//Height of the swapchain
-			uint32_t Height;
+			uint32_t Height{};
 			//Color format of the swapchain
-			ImageFormat ColorFormat;
+			ImageFormat ColorFormat{};
 			//Clear value
-			ClearValue ColorClearValue;
+			ClearValue ColorClearValue{};
 			//Set whether swapchain will be presented using VSync
-			bool EnableVSync;
+			bool EnableVSync{};
 			//We can toggle to using FLIP model if application desires
-			bool UseFlipSwapEffect;
+			bool UseFlipSwapEffect{};
 		};
 
 		struct RenderTargetBarrier
 		{
-			TRAP::Ref<API::VulkanRenderTarget> RenderTarget;
-			ResourceState CurrentState;
-			ResourceState NewState;
-			bool BeginOnly;
-			bool EndOnly;
-			bool Acquire;
-			bool Release;
-			QueueType QueueType;
+			TRAP::Ref<API::VulkanRenderTarget> RenderTarget{};
+			ResourceState CurrentState{};
+			ResourceState NewState{};
+			bool BeginOnly{};
+			bool EndOnly{};
+			bool Acquire{};
+			bool Release{};
+			QueueType QueueType{};
 			//Specify whether following barrier targets particular subresource
-			bool SubresourceBarrier;
+			bool SubresourceBarrier{};
 			//Following values are ignored if SubresourceBarrier is false
-			uint8_t MipLevel;
-			uint16_t ArrayLayer;
+			uint8_t MipLevel{};
+			uint16_t ArrayLayer{};
 		};
 
 		struct BufferBarrier
 		{
-			TRAP::Ref<API::VulkanBuffer> Buffer;
-			ResourceState CurrentState;
-			ResourceState NewState;
-			bool BeginOnly;
-			bool EndOnly;
-			bool Acquire;
-			bool Release;
-			QueueType QueueType;
+			TRAP::Ref<API::VulkanBuffer> Buffer{};
+			ResourceState CurrentState{};
+			ResourceState NewState{};
+			bool BeginOnly{};
+			bool EndOnly{};
+			bool Acquire{};
+			bool Release{};
+			QueueType QueueType{};
 		};
 
 		struct TextureBarrier
 		{
-			TRAP::Ref<API::VulkanTexture> Texture;
-			ResourceState CurrentState;
-			ResourceState NewState;
-			bool BeginOnly;
-			bool EndOnly;
-			bool Acquire;
-			bool Release;
-			QueueType QueueType;
+			TRAP::Ref<API::VulkanTexture> Texture{};
+			ResourceState CurrentState{};
+			ResourceState NewState{};
+			bool BeginOnly{};
+			bool EndOnly{};
+			bool Acquire{};
+			bool Release{};
+			QueueType QueueType{};
 			//Specify whether the following barrier targets particular subresource
-			bool SubresourceBarrier;
+			bool SubresourceBarrier{};
 			//Following values are ignored if SubresourceBarrier is false
-			uint8_t MipLevel;
-			uint16_t ArrayLayer;
+			uint8_t MipLevel{};
+			uint16_t ArrayLayer{};
 		};
 
 		struct DescriptorData
-		{
-			~DescriptorData(); //Fixes C4624
-			
+		{			
 			//User can either set name of descriptor or index (index in RootSignature->Descriptors array)
 			//Name of descriptor
-			const char* Name;
-			union
+			const char* Name{};
+			struct BufferOffset
 			{
-				struct
-				{
-					//Offset to bind the buffer descriptor
-					std::vector<uint64_t> Offsets;
-					std::vector<uint64_t> Sizes;
-				};
-				
-				//Descriptor set buffer extraction options
-				struct
-				{
-					uint32_t DescriptorSetBufferIndex;
-					TRAP::Ref<API::VulkanShader> DescriptorSetShader;
-					ShaderStage DescriptorSetShaderStage;
-				};
-
-				struct
-				{
-					uint32_t UAVMipSlice;
-					bool BindMipChain;
-				};
-
-				bool BindStencilResource;
+				//Offset to bind the buffer descriptor
+				std::vector<uint64_t> Offsets{};
+				std::vector<uint64_t> Sizes{};
 			};
+
+			//Descriptor set buffer extraction options
+			struct DescriptorSetExtraction
+			{
+				uint32_t DescriptorSetBufferIndex{};
+				TRAP::Ref<API::VulkanShader> DescriptorSetShader{};
+				ShaderStage DescriptorSetShaderStage{};
+			};
+
+			struct TextureSlice
+			{
+				uint32_t UAVMipSlice{};
+				bool BindMipChain{};
+			};
+			std::variant<BufferOffset, DescriptorSetExtraction, TextureSlice, bool> Offset{};
 			//Array of resources containing descriptor handles or constant to be used in ring buffer memory
 			//DescriptorRange can hold only one resource type array
-			union
-			{
-				//Array of texture descriptors (SRV and UAV textures)
-				std::vector<TRAP::Ref<API::VulkanTexture>> Textures;
-				//Array of sampler descriptors
-				std::vector<TRAP::Ref<API::VulkanSampler>> Samplers;
-				//Array of buffer descriptors (SRV, UAV and CBV buffers)
-				std::vector<TRAP::Ref<API::VulkanBuffer>> Buffers;
-				//Array of pipeline descriptors
-				std::vector<TRAP::Ref<API::VulkanPipeline>> Pipelines;
-				//DescriptorSet buffer extraction
-				std::vector<TRAP::Ref<API::VulkanDescriptorSet>> DescriptorSet;
-				//Custom binding (raytracing acceleration structure ...)
-				//std::vector<TRAP::Ref<API::VulkanAccelerationStructure>> AccelerationStructures; //TODO RT
-			};
+			//std::vector<TRAP::Ref<API::VulkanAccelerationStructure>> AccelerationStructures; //TODO RT
+			std::variant<std::vector<TRAP::Ref<API::VulkanTexture>>, std::vector<TRAP::Ref<API::VulkanSampler>>,
+				std::vector<TRAP::Ref<API::VulkanBuffer>>, std::vector<TRAP::Ref<API::VulkanPipeline>>,
+				std::vector<TRAP::Ref<API::VulkanDescriptorSet>>> Resource{};
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
-			uint32_t Count;
+			uint32_t Count{};
 			uint32_t Index = static_cast<uint32_t>(-1);
 			bool ExtractBuffer = false;
 		};
 
 		struct QueuePresentDesc
 		{
-			TRAP::Ref<API::VulkanSwapChain> SwapChain;
-			std::vector<TRAP::Ref<API::VulkanSemaphore>> WaitSemaphores;
-			uint8_t Index;
-			bool SubmitDone;
+			TRAP::Ref<API::VulkanSwapChain> SwapChain{};
+			std::vector<TRAP::Ref<API::VulkanSemaphore>> WaitSemaphores{};
+			uint8_t Index{};
+			bool SubmitDone{};
 		};
 
 		struct LoadActionsDesc
 		{
-			std::array<ClearValue, 8> ClearColorValues;
-			std::array<LoadActionType, 8> LoadActionsColor;
-			ClearValue ClearDepth;
-			LoadActionType LoadActionDepth;
-			LoadActionType LoadActionStencil;
+			std::array<ClearValue, 8> ClearColorValues{};
+			std::array<LoadActionType, 8> LoadActionsColor{};
+			ClearValue ClearDepth{};
+			LoadActionType LoadActionDepth{};
+			LoadActionType LoadActionStencil{};
 		};
 
 		struct VirtualTexture
 		{
 			//Sparse queue binding information
-			VkBindSparseInfo BindSparseInfo;
+			VkBindSparseInfo BindSparseInfo{};
 			//Sparse image memory bindings of all memory-backed virtual tables
-			TRAP::Ref<void> SparseImageMemoryBinds;
+			TRAP::Ref<void> SparseImageMemoryBinds{};
 			//Sparse queue memory bindings for the mip tail (if present)
-			TRAP::Ref<void> OpaqueMemoryBinds;
+			TRAP::Ref<void> OpaqueMemoryBinds{};
 			//First mip level in mip tail
-			uint32_t MipTailStart;
+			uint32_t MipTailStart{};
 			//Lastly filled mip level in mip tail
-			uint32_t LastFilledMip;
+			uint32_t LastFilledMip{};
 			//Memory type for Sparse texture's memory
-			uint32_t SparseMemoryTypeIndex;
+			uint32_t SparseMemoryTypeIndex{};
 			//Sparse image memory bind info
-			VkSparseImageMemoryBindInfo ImageMemoryBindInfo;
+			VkSparseImageMemoryBindInfo ImageMemoryBindInfo{};
 			//Sparse image opaque memory bind info (mip tail)
-			VkSparseImageOpaqueMemoryBindInfo OpaqueMemoryBindInfo;
+			VkSparseImageOpaqueMemoryBindInfo OpaqueMemoryBindInfo{};
 
 			//Virtual Texture members
 			//Contains all virtual pages of the texture
-			TRAP::Ref<void> Pages;
+			TRAP::Ref<void> Pages{};
 			//Visibility data
-			TRAP::Ref<API::VulkanBuffer> Visibility;
+			TRAP::Ref<API::VulkanBuffer> Visibility{};
 			//PrevVisibility data
-			TRAP::Ref<API::VulkanBuffer> PrevVisibility;
+			TRAP::Ref<API::VulkanBuffer> PrevVisibility{};
 			//Alive Page's Index
-			TRAP::Ref<API::VulkanBuffer> AlivePage;
+			TRAP::Ref<API::VulkanBuffer> AlivePage{};
 			//Page's Index which should be removed
-			TRAP::Ref<API::VulkanBuffer> RemovePage;
+			TRAP::Ref<API::VulkanBuffer> RemovePage{};
 			//A { uint alive; uint remove; } count of pages which are alive or should be remove
-			TRAP::Ref<API::VulkanBuffer> PageCounts;
+			TRAP::Ref<API::VulkanBuffer> PageCounts{};
 			//Original Pixel image data
-			std::vector<uint8_t> VirtualImageData;
+			std::vector<uint8_t> VirtualImageData{};
 			//Total pages count
-			uint32_t VirtualPageTotalCount;
+			uint32_t VirtualPageTotalCount{};
 			//Sparse Virtual Texture width
-			uint64_t SparseVirtualTexturePageWidth;
+			uint64_t SparseVirtualTexturePageWidth{};
 			//Sparse Virtual Texture height
-			uint64_t SparseVirtualTexturePageHeight;
+			uint64_t SparseVirtualTexturePageHeight{};
 		};
 
 		//Virtual Texture Page as a part of the partially resident Texture
@@ -1694,42 +1670,37 @@ namespace TRAP::Graphics
 		struct VirtualTexturePage
 		{
 			//Buffer which contains the image data and be used for copying it to Virtual Texture
-			TRAP::Ref<API::VulkanBuffer> IntermediateBuffer;
+			TRAP::Ref<API::VulkanBuffer> IntermediateBuffer{};
 			//Mip level for this page
-			uint32_t MipLevel;
+			uint32_t MipLevel{};
 			//Array layer for this page
-			uint32_t Layer;
+			uint32_t Layer{};
 			//Index for this page
-			uint32_t Index;
+			uint32_t Index{};
 
-			//Offset for this apge
-			VkOffset3D Offset;
+			//Offset for this page
+			VkOffset3D Offset{};
 			//Size for this page
-			VkExtent3D Extent;
+			VkExtent3D Extent{};
 			//Sparse image memory bind for this page
-			VkSparseImageMemoryBind ImageMemoryBind;
+			VkSparseImageMemoryBind ImageMemoryBind{};
 			//Byte size for this page
-			VkDeviceSize Size;
+			VkDeviceSize Size{};
 		};
-		
-		/*inline static struct alignsas(64) Renderer
-		{
-			std::vector<std::pair<std::string, std::string>> BuiltinShaderDefines;
-		} Renderer{};*/
 		
 		inline static struct GPUSettings
 		{
-			uint32_t UniformBufferAlignment;
-			uint32_t UploadBufferTextureAlignment;
-			uint32_t UploadBufferTextureRowAlignment;
-			uint32_t MaxVertexInputBindings;
-			uint32_t MaxRootSignatureDWORDS;
-			uint32_t WaveLaneCount;
-			WaveOpsSupportFlags WaveOpsSupportFlags;
-			uint32_t MultiDrawIndirect;
-			uint32_t ROVsSupported;
-			uint32_t TessellationSupported;
-			uint32_t GeometryShaderSupported;
+			uint32_t UniformBufferAlignment{};
+			uint32_t UploadBufferTextureAlignment{};
+			uint32_t UploadBufferTextureRowAlignment{};
+			uint32_t MaxVertexInputBindings{};
+			uint32_t MaxRootSignatureDWORDS{};
+			uint32_t WaveLaneCount{};
+			WaveOpsSupportFlags WaveOpsSupportFlags{};
+			bool MultiDrawIndirect{};
+			uint32_t ROVsSupported{};
+			uint32_t TessellationSupported{};
+			uint32_t GeometryShaderSupported{};
 		} GPUSettings{};
 
 	protected:

@@ -57,12 +57,13 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(TRAP::Ref<VulkanDevi
 	textureDesc.Height = desc.Height;
 	textureDesc.Depth = desc.Depth;
 	textureDesc.ArraySize = desc.ArraySize;
-	textureDesc.MipLevels = desc.MipLevels;
+	textureDesc.MipLevels = m_mipLevels;
 	textureDesc.SampleCount = desc.SampleCount;
 	textureDesc.SampleQuality = desc.SampleQuality;
 	textureDesc.Format = desc.Format;
 	textureDesc.ClearValue = desc.ClearValue;
 	textureDesc.HostVisible = false;
+	textureDesc.NativeHandle = desc.NativeHandle;
 
 	if (!isDepth)
 		textureDesc.StartState |= RendererAPI::ResourceState::RenderTarget;

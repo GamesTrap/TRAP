@@ -67,12 +67,9 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 	else if (shaderStage == RendererAPI::ShaderStage::TessellationControl)
 		out.NumControlPoint = ReflectTessellationControlShaderControlPoint(cc);
 
-	uint32_t namePoolSize = 0;
 	uint32_t vertexInputCount = 0;
 	uint32_t resourceCount = 0;
 	uint32_t variablesCount = 0;
-
-	namePoolSize += static_cast<uint32_t>(cc.EntryPoint.size()) + 1;
 
 	for(uint32_t i = 0; i < cc.ShaderResources.size(); ++i)
 	{
@@ -81,8 +78,6 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 		//Filter out what we don't use
 		if(!FilterResource(resource, shaderStage))
 		{
-			namePoolSize += static_cast<uint32_t>(resource.Name.size()) + 1;
-
 			if (resource.Type == SPIRVTools::ResourceType::Inputs && shaderStage == TRAP::Graphics::RendererAPI::ShaderStage::Vertex)
 				++vertexInputCount;
 			else
@@ -99,19 +94,10 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 
 		//Filter out what we don't use
 		if(variable.IsUsed && !parentFiltered)
-		{
-			namePoolSize += static_cast<uint32_t>(variable.Name.size()) + 1;
 			++variablesCount;
-		}
 	}
 
-	//We now have the size of the memory pool and number of resources
-	std::vector<char> namePool(namePoolSize);
-	char* currentName = namePool.data();
-
-	out.EntryPoint = currentName;
-	std::memcpy(currentName, cc.EntryPoint.data(), cc.EntryPoint.size());
-	currentName += cc.EntryPoint.size() + 1;
+	out.EntryPoint = cc.EntryPoint;
 
 	std::vector<ShaderReflection::VertexInput> vertexInputs{};
 	//Start with the vertex input
@@ -128,12 +114,9 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 			if(!FilterResource(resource, shaderStage) && resource.Type == TRAP::Graphics::API::SPIRVTools::ResourceType::Inputs)
 			{
 				vertexInputs[j].Size = resource.Size;
-				vertexInputs[j].Name = currentName;
+				vertexInputs[j].Name = resource.Name;
 				vertexInputs[j].NameSize = static_cast<uint32_t>(resource.Name.size());
 
-				//We dont own the names memory we need to copy it to the name pool
-				std::memcpy(currentName, resource.Name.data(), resource.Name.size());
-				currentName += resource.Name.size() + 1;
 				++j;
 			}
 		}
@@ -167,13 +150,9 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 				resources[j].Size = resource.Size;
 				resources[j].UsedStages = shaderStage;
 
-				resources[j].Name = currentName;
-				resources[j].NameSize = resource.Size;
+				resources[j].Name = resource.Name;
 				resources[j].Dim = SPIRVToTextureDimension[static_cast<uint32_t>(resource.Dimension)];
 
-				//We dont own the names memory we need to copy it to the name pool
-				std::memcpy(currentName, resource.Name.data(), resource.Name.size());
-				currentName += resource.Name.size() + 1;
 				++j;
 			}
 		}
@@ -200,11 +179,8 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 				variables[j].Size = variable.Size;
 				variables[j].ParentIndex = indexRemap[variable.ParentIndex];
 
-				variables[j].Name = currentName;
-				variables[j].NameSize = static_cast<uint32_t>(variable.Name.size());
-				//We dont own the names memory we need to copy it to the name pool
-				std::memcpy(currentName, variable.Name.data(), variable.Name.size());
-				currentName += variable.Name.size() + 1;
+				variables[j].Name = variable.Name;
+
 				++j;
 			}
 		}
@@ -215,8 +191,6 @@ TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkC
 
 	//All reflection struct should be built now
 	out.ShaderStage = shaderStage;
-
-	out.NamePool = namePool;
 	
 	out.VertexInputs = vertexInputs;
 	out.ShaderResources = resources;

@@ -7,7 +7,12 @@
 #include "Graphics/API/Vulkan/VulkanShaderReflection.h"
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(TRAP::Ref<VulkanDevice> device, const RendererAPI::BinaryShaderDesc& desc)
-	: m_device(std::move(device)), m_stages(), m_numThreadsPerGroup(), m_reflection(nullptr)
+	: m_device(std::move(device)),
+	  m_stages(),
+	  m_numThreadsPerGroup(),
+	  m_shaderModules(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
+	  m_reflection(nullptr),
+	  m_entryNames(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT))
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
 
@@ -20,7 +25,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(TRAP::Ref<VulkanDevice> device, 
 	m_stages = desc.Stages;
 
 	std::array<ShaderReflection::ShaderReflection, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> stageReflections{};
-
+	
 	for(uint32_t i = 0; i < stageReflections.size(); i++)
 	{
 		const RendererAPI::ShaderStage stageMask = static_cast<RendererAPI::ShaderStage>(1 << i);
@@ -32,6 +37,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(TRAP::Ref<VulkanDevice> device, 
 			createInfo.flags = 0;
 
 			const RendererAPI::BinaryShaderStageDesc* stageDesc = nullptr;
+			
 			switch(stageMask)
 			{
 				case RendererAPI::ShaderStage::Vertex:

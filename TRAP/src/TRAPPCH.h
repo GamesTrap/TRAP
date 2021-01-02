@@ -45,6 +45,7 @@
 #include <tuple>
 #include <cassert>
 #include <numeric>
+#include <variant>
 
 #pragma warning(push, 0)
 //ImGUI
