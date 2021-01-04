@@ -271,7 +271,7 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device,
 	const RendererAPI::TextureDesc& desc,
 	const std::vector<uint8_t>& imageData,
-	const TRAP::Ref<VulkanCommandBuffer>& cmd,
+	CommandBuffer* cmd,
 	TRAP::Ref<VulkanMemoryAllocator> vma)
 		: m_device(std::move(device)),
 	      m_vma(std::move(vma)),
@@ -685,7 +685,7 @@ bool TRAP::Graphics::API::VulkanTexture::OwnsImage() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanTexture::FillVirtualTexture(VulkanCommandBuffer& cmd)
+void TRAP::Graphics::API::VulkanTexture::FillVirtualTexture(CommandBuffer& cmd)
 {
 	std::vector<RendererAPI::VirtualTexturePage>& pageTable = *static_cast<std::vector<RendererAPI::VirtualTexturePage>*>(m_SVT->Pages.get());
 	std::vector<VkSparseImageMemoryBind>& imageMemory = *static_cast<std::vector<VkSparseImageMemoryBind>*>(m_SVT->SparseImageMemoryBinds.get());
@@ -723,7 +723,7 @@ void TRAP::Graphics::API::VulkanTexture::FillVirtualTexture(VulkanCommandBuffer&
 			region.imageOffset = { page.Offset.x, page.Offset.y, 0 };
 			region.imageExtent = { static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageWidth), static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageHeight), 1 };
 
-			vkCmdCopyBufferToImage(cmd.GetVkCommandBuffer(), page.IntermediateBuffer->GetVkBuffer(), m_vkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+			vkCmdCopyBufferToImage(static_cast<VulkanCommandBuffer&>(cmd).GetVkCommandBuffer(), std::dynamic_pointer_cast<VulkanBuffer>(page.IntermediateBuffer)->GetVkBuffer(), m_vkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 			//Update list of memory-backed sparse image memory binds
 			imageMemory.push_back(page.ImageMemoryBind);
@@ -895,7 +895,7 @@ VkExtent3D TRAP::Graphics::API::VulkanTexture::AlignedDivision(const VkExtent3D&
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanTexture::FillVirtualTextureLevel(const TRAP::Ref<VulkanCommandBuffer>& cmd, const uint32_t mipLevel)
+void TRAP::Graphics::API::VulkanTexture::FillVirtualTextureLevel(CommandBuffer* cmd, const uint32_t mipLevel)
 {
 	std::vector<RendererAPI::VirtualTexturePage>& pageTable = *static_cast<std::vector<RendererAPI::VirtualTexturePage>*>(m_SVT->Pages.get());
 
@@ -931,7 +931,7 @@ void TRAP::Graphics::API::VulkanTexture::FillVirtualTextureLevel(const TRAP::Ref
 				region.imageOffset = { page.Offset.x, page.Offset.y, 0 };
 				region.imageExtent = { static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageWidth), static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageHeight), 1 };
 
-				vkCmdCopyBufferToImage(cmd->GetVkCommandBuffer(), page.IntermediateBuffer->GetVkBuffer(), m_vkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+				vkCmdCopyBufferToImage(static_cast<VulkanCommandBuffer*>(cmd)->GetVkCommandBuffer(), std::dynamic_pointer_cast<VulkanBuffer>(page.IntermediateBuffer)->GetVkBuffer(), m_vkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 			}
 
 			//Update list of memory-backed sparse image memory binds
@@ -1003,7 +1003,7 @@ bool TRAP::Graphics::API::VulkanTexture::AllocateVirtualPage(RendererAPI::Virtua
 	desc.ElementCount = m_SVT->SparseVirtualTexturePageWidth * m_SVT->SparseVirtualTexturePageHeight;
 	desc.StructStride = sizeof(uint32_t);
 	desc.Size = desc.ElementCount * desc.StructStride;
-	virtualPage.IntermediateBuffer = TRAP::MakeRef<VulkanBuffer>(m_device, m_vma, desc);
+	virtualPage.IntermediateBuffer = TRAP::MakeRef<VulkanBuffer>(desc);
 
 	virtualPage.ImageMemoryBind = {};
 

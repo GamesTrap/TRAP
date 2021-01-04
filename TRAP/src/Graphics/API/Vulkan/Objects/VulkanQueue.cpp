@@ -108,7 +108,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 
 	std::vector<VkCommandBuffer> cmds(desc.Cmds.size());
 	for (uint32_t i = 0; i < desc.Cmds.size(); ++i)
-		cmds[i] = desc.Cmds[i]->GetVkCommandBuffer();
+		cmds[i] = static_cast<VulkanCommandBuffer*>(desc.Cmds[i])->GetVkCommandBuffer();
 
 	std::vector<VkSemaphore> waitSemaphores(desc.WaitSemaphores.size());
 	std::vector<VkPipelineStageFlags> waitMasks(desc.WaitSemaphores.size());

@@ -4,11 +4,13 @@
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
-TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(TRAP::Ref<VulkanDevice> device, const RendererAPI::QueryPoolDesc& desc)
-	: m_vkQueryPool(VK_NULL_HANDLE), m_type(), m_count(), m_device(std::move(device))
+TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(const RendererAPI::QueryPoolDesc& desc)
+	: m_vkQueryPool(VK_NULL_HANDLE), m_type(), m_count()
 {
-	TRAP_ASSERT(m_device);
+	TRAP::Ref<VulkanDevice> device = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice();
+	TRAP_ASSERT(device);
 	
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanQueryPoolPrefix, "Creating QueryPool");
@@ -18,7 +20,7 @@ TRAP::Graphics::API::VulkanQueryPool::VulkanQueryPool(TRAP::Ref<VulkanDevice> de
 	m_count = desc.QueryCount;
 
 	VkQueryPoolCreateInfo info = VulkanInits::QueryPoolCreateInfo(desc.QueryCount, QueryTypeToVkQueryType(desc.Type));
-	VkCall(vkCreateQueryPool(m_device->GetVkDevice(), &info, nullptr, &m_vkQueryPool));
+	VkCall(vkCreateQueryPool(device->GetVkDevice(), &info, nullptr, &m_vkQueryPool));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -30,7 +32,7 @@ TRAP::Graphics::API::VulkanQueryPool::~VulkanQueryPool()
 #endif
 
 	TRAP_ASSERT(m_vkQueryPool);
-	vkDestroyQueryPool(m_device->GetVkDevice(), m_vkQueryPool, nullptr);
+	vkDestroyQueryPool(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()->GetVkDevice(), m_vkQueryPool, nullptr);
 }
 
 VkQueryPool& TRAP::Graphics::API::VulkanQueryPool::GetVkQueryPool()

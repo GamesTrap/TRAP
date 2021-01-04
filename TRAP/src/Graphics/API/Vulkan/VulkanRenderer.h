@@ -8,6 +8,7 @@
 
 namespace TRAP::Graphics::API
 {
+	class VulkanSampler;
 	class VulkanRenderTarget;
 	class VulkanBuffer;
 	class VulkanTexture;
@@ -101,11 +102,6 @@ namespace TRAP::Graphics::API
 			uint32_t Size;
 			uint32_t Offset;
 		};
-
-		struct DescriptorIndexMap
-		{
-			std::unordered_map<std::string, uint32_t> Map;
-		};
 		
 		union DescriptorUpdateData
 		{
@@ -117,8 +113,8 @@ namespace TRAP::Graphics::API
 		struct FrameBufferDesc
 		{
 			TRAP::Ref<VulkanRenderPass> RenderPass;
-			std::vector<TRAP::Ref<VulkanRenderTarget>> RenderTargets;
-			TRAP::Ref<VulkanRenderTarget> DepthStencil;
+			std::vector<TRAP::Ref<RenderTarget>> RenderTargets;
+			TRAP::Ref<RenderTarget> DepthStencil;
 			std::vector<uint32_t> ColorArraySlices;
 			std::vector<uint32_t> ColorMipSlices;
 			uint32_t DepthArraySlice;
@@ -191,6 +187,7 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanInstance> GetInstance() const; //TODO Remove Just for testing
 		TRAP::Ref<VulkanDevice> GetDevice() const; //TODO Remove Just for testing
 		TRAP::Ref<VulkanMemoryAllocator> GetVMA() const; //TODO Remove Just for testing
+		TRAP::Ref<VulkanDescriptorPool> GetDescriptorPool() const; //TODO Remove Just for testing
 		
 	private:
 		static std::vector<std::string> SetupInstanceLayers();

@@ -53,9 +53,10 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 		m_physicalDevice->RetrievePhysicalDeviceFragmentShaderInterlockFeatures();
 	}
 	
-	VkPhysicalDeviceFeatures2 deviceFeatures2;
-	VkPhysicalDeviceDescriptorIndexingFeatures descriptorIndexingFeatures;
-	VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT fragmentShaderInterlockFeatures;
+	VkPhysicalDeviceFeatures2 deviceFeatures2{};
+	VkPhysicalDeviceDescriptorIndexingFeatures descriptorIndexingFeatures{};
+	VkPhysicalDeviceFragmentShaderInterlockFeaturesEXT fragmentShaderInterlockFeatures{};
+	VkPhysicalDeviceSamplerYcbcrConversionFeatures ycbcrFeatures{};
 	if (VulkanRenderer::s_descriptorIndexingExtension)
 	{
 		if (VulkanRenderer::s_fragmentShaderInterlockExtension)
@@ -71,7 +72,6 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 		deviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
 		deviceFeatures2.pNext = &descriptorIndexingFeatures;
 
-		VkPhysicalDeviceSamplerYcbcrConversionFeatures ycbcrFeatures;
 		ycbcrFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES;
 		if(VulkanRenderer::s_samplerYcbcrConversionExtension)
 		{

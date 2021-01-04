@@ -1,15 +1,17 @@
 #ifndef _TRAP_VULKANQUERYPOOL_H_
 #define _TRAP_VULKANQUERYPOOL_H_
+
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Objects/QueryPool.h"
 
 namespace TRAP::Graphics::API
 {
 	class VulkanDevice;
 	
-	class VulkanQueryPool
+	class VulkanQueryPool final : public QueryPool
 	{
 	public:
-		VulkanQueryPool(TRAP::Ref<VulkanDevice> device, const RendererAPI::QueryPoolDesc& desc);
+		explicit VulkanQueryPool(const RendererAPI::QueryPoolDesc& desc);
 		~VulkanQueryPool();
 
 		VkQueryPool& GetVkQueryPool();
@@ -20,8 +22,6 @@ namespace TRAP::Graphics::API
 		VkQueryPool m_vkQueryPool;
 		VkQueryType m_type;
 		uint32_t m_count;
-		
-		TRAP::Ref<VulkanDevice> m_device;
 	};
 }
 

@@ -545,15 +545,15 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	bufferDesc.ElementCount = 1;
 	bufferDesc.StructStride = sizeof(uint32_t);
 	bufferDesc.Format = ImageFormat::R32_UINT;
-	s_NullDescriptors->DefaultBufferSRV = TRAP::MakeRef<VulkanBuffer>(m_device, m_vma, bufferDesc);
+	s_NullDescriptors->DefaultBufferSRV = TRAP::MakeRef<VulkanBuffer>(bufferDesc);
 	bufferDesc.Descriptors = DescriptorType::RWBuffer;
-	s_NullDescriptors->DefaultBufferUAV = TRAP::MakeRef<VulkanBuffer>(m_device, m_vma, bufferDesc);
+	s_NullDescriptors->DefaultBufferUAV = TRAP::MakeRef<VulkanBuffer>(bufferDesc);
 
 	SamplerDesc samplerDesc{};
 	samplerDesc.AddressU = AddressMode::ClampToBorder;
 	samplerDesc.AddressV = AddressMode::ClampToBorder;
 	samplerDesc.AddressW = AddressMode::ClampToBorder;
-	s_NullDescriptors->DefaultSampler = TRAP::MakeRef<VulkanSampler>(m_device, samplerDesc);
+	s_NullDescriptors->DefaultSampler = TRAP::MakeRef<VulkanSampler>(samplerDesc);
 
 	BlendStateDesc blendStateDesc{};
 	blendStateDesc.DstAlphaFactors[0] = BlendConstant::Zero;
@@ -584,9 +584,12 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	queueDesc.Type = QueueType::Graphics;
 	TRAP::Ref<VulkanQueue> graphicsQueue = TRAP::MakeRef<VulkanQueue>(m_device, queueDesc);
 
-	TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(m_device, graphicsQueue, true);
+	CommandPoolDesc cmdPoolDesc{};
+	cmdPoolDesc.Queue = graphicsQueue;
+	cmdPoolDesc.Transient = true;
+	TRAP::Ref<VulkanCommandPool> cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
 	
-	VulkanCommandBuffer* cmd = cmdPool->AllocateCommandBuffer(false);
+	CommandBuffer* cmd = cmdPool->AllocateCommandBuffer(false);
 
 	//Transition resources
 	cmd->Begin();
@@ -696,4 +699,11 @@ TRAP::Ref<TRAP::Graphics::API::VulkanDevice> TRAP::Graphics::API::VulkanRenderer
 TRAP::Ref<TRAP::Graphics::API::VulkanMemoryAllocator> TRAP::Graphics::API::VulkanRenderer::GetVMA() const
 {
 	return m_vma;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::API::VulkanDescriptorPool> TRAP::Graphics::API::VulkanRenderer::GetDescriptorPool() const
+{
+	return m_descriptorPool;
 }

@@ -1525,3 +1525,15 @@ SITREP 01/02/2020|20w53a3
     - Added support for Ycbcr color conversion ~<30 mins
     - VulkanQueue Added PresentStatus struct as return value for Present function ~<15 mins
     - Added support for multi-planar image format ~<40 mins
+
+SITREP 01/04/2020|20w01a1
+    - Changed TRAP Engine version to 20w501a1(0.7.15)
+    - Fixed a bug in Ycbcr features testing (VulkanDevice) ~<20 mins
+    - Started implementing abstraction for Vulkan*** classes ~>60 mins
+        - Added Buffer base class
+        - Added CommanBuffer base class
+        - Added CommandPool base class
+        - Added QueryPool base class
+        - Added RenderTarget base class
+        - Added RootSignature base class
+        - Added Sampler base class

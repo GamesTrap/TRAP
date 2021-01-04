@@ -82,7 +82,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddComputePipeline(const RendererAPI::
 			computeDesc.ShaderProgram->GetVkShaderModules()[0],
 			computeDesc.ShaderProgram->GetReflection()->StageReflections[0].EntryPoint.data());
 
-		VkComputePipelineCreateInfo info = VulkanInits::ComputePipelineCreateInfo(stage, computeDesc.RootSignature->GetVkPipelineLayout());
+		VkComputePipelineCreateInfo info = VulkanInits::ComputePipelineCreateInfo(stage, std::dynamic_pointer_cast<VulkanRootSignature>(computeDesc.RootSignature)->GetVkPipelineLayout());
 
 		vkCreateComputePipelines(m_device->GetVkDevice(), psoCache, 1, &info, nullptr, &m_vkPipeline);
 	}
@@ -294,7 +294,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 																					ds,
 																					cb,
 																					dy,
-																					graphicsDesc.RootSignature->GetVkPipelineLayout(),
+																					std::dynamic_pointer_cast<VulkanRootSignature>(graphicsDesc.RootSignature)->GetVkPipelineLayout(),
 																					renderPass->GetVkRenderPass()
 		);
 		if( static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationControl) &&

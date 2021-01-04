@@ -7,8 +7,11 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
-TRAP::Graphics::API::VulkanSampler::VulkanSampler(TRAP::Ref<VulkanDevice> device, const RendererAPI::SamplerDesc& desc)
-	: m_device(std::move(device)), m_vkSampler(VK_NULL_HANDLE), m_vkSamplerYcbcrConversion(), m_vkSamplerYcbcrConversionInfo()
+TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc& desc)
+	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
+	  m_vkSampler(VK_NULL_HANDLE),
+	  m_vkSamplerYcbcrConversion(),
+	  m_vkSamplerYcbcrConversionInfo()
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
 
@@ -29,7 +32,7 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(TRAP::Ref<VulkanDevice> device
 	if(RendererAPI::ImageFormatIsPlanar(desc.SamplerConversionDesc.Format))
 	{
 		auto& conversionDesc = desc.SamplerConversionDesc;
-		VkFormat format = ImageFormatToVkFormat(conversionDesc.Format);
+		const VkFormat format = ImageFormatToVkFormat(conversionDesc.Format);
 
 		//Check format props
 		{

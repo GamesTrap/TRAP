@@ -108,7 +108,7 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount()
 
 TRAP::Graphics::API::VulkanDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc)
 {
-	const TRAP::Ref<VulkanRootSignature> rootSignature = desc.RootSignature;
+	const TRAP::Ref<VulkanRootSignature> rootSignature = std::dynamic_pointer_cast<VulkanRootSignature>(desc.RootSignature);
 	RendererAPI::DescriptorUpdateFrequency updateFreq = desc.UpdateFrequency;
 	const uint8_t dynamicOffsetCount = rootSignature->GetVkDynamicDescriptorCounts()[static_cast<uint32_t>(updateFreq)];
 	const uint32_t maxSets = desc.MaxSets;

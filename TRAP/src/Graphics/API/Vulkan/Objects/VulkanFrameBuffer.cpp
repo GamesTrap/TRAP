@@ -24,7 +24,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	
 	if(colorAttachmentCount)
 	{
-		const TRAP::Ref<VulkanRenderTarget>& renderTarget = desc.RenderTargets[0];
+		const TRAP::Ref<VulkanRenderTarget>& renderTarget = std::dynamic_pointer_cast<VulkanRenderTarget>(desc.RenderTargets[0]);
 		m_width = renderTarget->GetWidth();
 		m_height = renderTarget->GetHeight();
 		if (!desc.ColorArraySlices.empty())
@@ -53,9 +53,10 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	//Color
 	for(uint32_t i = 0; i < desc.RenderTargets.size(); i++)
 	{
+		TRAP::Ref<VulkanRenderTarget> rTarget = std::dynamic_pointer_cast<VulkanRenderTarget>(desc.RenderTargets[i]);
 		if(desc.ColorMipSlices.empty() && desc.ColorArraySlices.empty())
 		{
-			*iterAttachments = desc.RenderTargets[i]->GetVkImageView();
+			*iterAttachments = rTarget->GetVkImageView();
 			++iterAttachments;
 		}
 		else
@@ -71,7 +72,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 			else if (!desc.ColorArraySlices.empty())
 				handle = desc.ColorArraySlices[i];
 			
-			*iterAttachments = desc.RenderTargets[i]->GetVkImageViewSlices()[handle];
+			*iterAttachments = rTarget->GetVkImageViewSlices()[handle];
 			++iterAttachments;
 		}
 	}
@@ -79,9 +80,10 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 	//Depth/Stencil
 	if(desc.DepthStencil)
 	{
+		TRAP::Ref<VulkanRenderTarget> rTarget = std::dynamic_pointer_cast<VulkanRenderTarget>(desc.DepthStencil);
 		if(desc.DepthMipSlice == std::numeric_limits<uint32_t>::max() && desc.DepthArraySlice == std::numeric_limits<uint32_t>::max())
 		{
-			*iterAttachments = desc.DepthStencil->GetVkImageView();
+			*iterAttachments = rTarget ->GetVkImageView();
 			++iterAttachments;
 		}
 		else
@@ -97,7 +99,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 			else if (desc.DepthArraySlice != std::numeric_limits<uint32_t>::max())
 				handle = desc.DepthArraySlice;
 
-			*iterAttachments = desc.DepthStencil->GetVkImageViewSlices()[handle];
+			*iterAttachments = rTarget->GetVkImageViewSlices()[handle];
 			++iterAttachments;
 		}
 	}

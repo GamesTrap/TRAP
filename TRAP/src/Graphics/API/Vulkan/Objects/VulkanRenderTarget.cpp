@@ -11,24 +11,23 @@ std::atomic_int32_t TRAP::Graphics::API::VulkanRenderTarget::s_RenderTargetIDs =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(TRAP::Ref<VulkanDevice> device,
-	const RendererAPI::RenderTargetDesc& desc,
-	const TRAP::Ref<VulkanMemoryAllocator>& vma)
-	: m_device(std::move(device)),
+TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::RenderTargetDesc& desc)
+	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
 	  m_vkDescriptor(VK_NULL_HANDLE),
 	  m_used(),
-	  m_width(desc.Width),
-	  m_height(desc.Height),
-	  m_depth(desc.Depth),
-	  m_arraySize(desc.ArraySize),
-	  m_mipLevels(TRAP::Math::Max(1U, desc.MipLevels)),
-	  m_sampleCount(desc.SampleCount),
-	  m_sampleQuality(desc.SampleQuality),
-	  m_format(desc.Format),
-      m_clearValue(desc.ClearValue), 
-      m_descriptors(desc.Descriptors),
 	  m_ID(++s_RenderTargetIDs)
 {
+	m_width = desc.Width;
+	m_height = desc.Height;
+	m_depth = desc.Depth;
+	m_arraySize = desc.ArraySize;
+	m_mipLevels = TRAP::Math::Max(1U, desc.MipLevels);
+	m_sampleCount = desc.SampleCount;
+	m_sampleQuality = desc.SampleQuality;
+	m_format = desc.Format;
+	m_clearValue = desc.ClearValue;
+	m_descriptors = desc.Descriptors;
+
 	TRAP_ASSERT(m_device, "device is nullptr");
 
 #ifdef ENABLE_GRAPHICS_DEBUG
@@ -95,7 +94,7 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(TRAP::Ref<VulkanDevi
 
 	textureDesc.Name = desc.Name;
 
-	m_texture = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, vma);
+	m_texture = TRAP::MakeRef<VulkanTexture>(m_device, textureDesc, dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetVMA());
 
 	VkImageViewType viewType = VK_IMAGE_VIEW_TYPE_MAX_ENUM;
 	if (desc.Height > 1)

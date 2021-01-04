@@ -12,6 +12,11 @@ namespace TRAP
 
 namespace TRAP::Graphics 
 {
+	class Buffer;
+	class CommandBuffer;
+	class RootSignature;
+	class Sampler;
+	class RenderTarget;
 	enum class RendererCullMode;
 	enum class RendererOperation;
 	class VertexArray;
@@ -29,22 +34,17 @@ namespace TRAP::Graphics::API
 	class VulkanDescriptorSet;
 	class VulkanPipeline;
 	class VulkanTexture;
-	class VulkanRenderTarget;
 	class VulkanQueue;
 	class VulkanPipelineCache;
 	class VulkanSemaphore;
 	class VulkanFence;
-	class VulkanCommandBuffer;
-	class VulkanBuffer;
 
 	namespace ShaderReflection
 	{
 		enum class TextureDimension;
 	}
-
-	class VulkanRootSignature;
+	
 	class VulkanShader;
-	class VulkanSampler;
 }
 
 namespace TRAP::Graphics
@@ -1512,7 +1512,7 @@ namespace TRAP::Graphics
 			std::vector<TRAP::Ref<API::VulkanShader>> Shaders{};
 			uint32_t MaxBindlessTextures{};
 			std::vector<const char*> StaticSamplerNames{};
-			std::vector<TRAP::Ref<API::VulkanSampler>> StaticSamplers{};
+			std::vector<TRAP::Ref<Sampler>> StaticSamplers{};
 			RootSignatureFlags Flags{};
 		};
 
@@ -1536,9 +1536,15 @@ namespace TRAP::Graphics
 
 		struct DescriptorSetDesc
 		{
-			TRAP::Ref<API::VulkanRootSignature> RootSignature{};
+			TRAP::Ref<RootSignature> RootSignature{};
 			DescriptorUpdateFrequency UpdateFrequency{};
 			uint32_t MaxSets{};
+		};
+
+		struct CommandPoolDesc
+		{
+			TRAP::Ref<API::VulkanQueue> Queue;
+			bool Transient;
 		};
 		
 		struct QueueDesc
@@ -1556,7 +1562,7 @@ namespace TRAP::Graphics
 
 		struct QueueSubmitDesc
 		{
-			std::vector<API::VulkanCommandBuffer*> Cmds{};
+			std::vector<CommandBuffer*> Cmds{};
 			TRAP::Ref<API::VulkanFence> SignalFence{};
 			std::vector<TRAP::Ref<API::VulkanSemaphore>> WaitSemaphores{};
 			std::vector<TRAP::Ref<API::VulkanSemaphore>> SignalSemaphores{};
@@ -1630,7 +1636,7 @@ namespace TRAP::Graphics
 		struct ComputePipelineDesc
 		{			
 			TRAP::Ref<API::VulkanShader> ShaderProgram{};
-			TRAP::Ref<API::VulkanRootSignature> RootSignature{};
+			TRAP::Ref<RootSignature> RootSignature{};
 		};
 
 		struct VertexAttribute
@@ -1653,7 +1659,7 @@ namespace TRAP::Graphics
 		struct GraphicsPipelineDesc
 		{			
 			TRAP::Ref<API::VulkanShader> ShaderProgram{};
-			TRAP::Ref<API::VulkanRootSignature> RootSignature{};
+			TRAP::Ref<RootSignature> RootSignature{};
 			VertexLayout* VertexLayout{};
 			TRAP::Ref<BlendStateDesc> BlendState{};
 			TRAP::Ref<DepthStateDesc> DepthState{};
@@ -1725,7 +1731,7 @@ namespace TRAP::Graphics
 		
 		struct CommandSignatureDesc
 		{
-			TRAP::Ref<API::VulkanRootSignature> RootSignature{};
+			TRAP::Ref<RootSignature> RootSignature{};
 			uint32_t IndirectArgCount{};
 			std::vector<IndirectArgumentDescriptor> ArgDescs{};
 			//Set to true if indirect argument struct should not be aligned to 16 bytes
@@ -1756,7 +1762,7 @@ namespace TRAP::Graphics
 
 		struct RenderTargetBarrier
 		{
-			TRAP::Ref<API::VulkanRenderTarget> RenderTarget{};
+			TRAP::Ref<RenderTarget> RenderTarget{};
 			ResourceState CurrentState{};
 			ResourceState NewState{};
 			bool BeginOnly{};
@@ -1773,7 +1779,7 @@ namespace TRAP::Graphics
 
 		struct BufferBarrier
 		{
-			TRAP::Ref<API::VulkanBuffer> Buffer{};
+			TRAP::Ref<Buffer> Buffer{};
 			ResourceState CurrentState{};
 			ResourceState NewState{};
 			bool BeginOnly{};
@@ -1829,8 +1835,8 @@ namespace TRAP::Graphics
 			//Array of resources containing descriptor handles or constant to be used in ring buffer memory
 			//DescriptorRange can hold only one resource type array
 			//std::vector<TRAP::Ref<API::VulkanAccelerationStructure>> AccelerationStructures; //TODO RT
-			std::variant<std::vector<TRAP::Ref<API::VulkanTexture>>, std::vector<TRAP::Ref<API::VulkanSampler>>,
-				std::vector<TRAP::Ref<API::VulkanBuffer>>, std::vector<TRAP::Ref<API::VulkanPipeline>>,
+			std::variant<std::vector<TRAP::Ref<API::VulkanTexture>>, std::vector<TRAP::Ref<Sampler>>,
+				std::vector<TRAP::Ref<Buffer>>, std::vector<TRAP::Ref<API::VulkanPipeline>>,
 				std::vector<TRAP::Ref<API::VulkanDescriptorSet>>> Resource{};
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
@@ -1879,15 +1885,15 @@ namespace TRAP::Graphics
 			//Contains all virtual pages of the texture
 			TRAP::Ref<void> Pages{};
 			//Visibility data
-			TRAP::Ref<API::VulkanBuffer> Visibility{};
+			TRAP::Ref<Buffer> Visibility{};
 			//PrevVisibility data
-			TRAP::Ref<API::VulkanBuffer> PrevVisibility{};
+			TRAP::Ref<Buffer> PrevVisibility{};
 			//Alive Page's Index
-			TRAP::Ref<API::VulkanBuffer> AlivePage{};
+			TRAP::Ref<Buffer> AlivePage{};
 			//Page's Index which should be removed
-			TRAP::Ref<API::VulkanBuffer> RemovePage{};
+			TRAP::Ref<Buffer> RemovePage{};
 			//A { uint alive; uint remove; } count of pages which are alive or should be remove
-			TRAP::Ref<API::VulkanBuffer> PageCounts{};
+			TRAP::Ref<Buffer> PageCounts{};
 			//Original Pixel image data
 			std::vector<uint8_t> VirtualImageData{};
 			//Total pages count
@@ -1903,7 +1909,7 @@ namespace TRAP::Graphics
 		struct VirtualTexturePage
 		{
 			//Buffer which contains the image data and be used for copying it to Virtual Texture
-			TRAP::Ref<API::VulkanBuffer> IntermediateBuffer{};
+			TRAP::Ref<Buffer> IntermediateBuffer{};
 			//Mip level for this page
 			uint32_t MipLevel{};
 			//Array layer for this page
@@ -1919,6 +1925,11 @@ namespace TRAP::Graphics
 			VkSparseImageMemoryBind ImageMemoryBind{};
 			//Byte size for this page
 			VkDeviceSize Size{};
+		};
+
+		struct DescriptorIndexMap
+		{
+			std::unordered_map<std::string, uint32_t> Map;
 		};
 		
 		inline static struct GPUSettings

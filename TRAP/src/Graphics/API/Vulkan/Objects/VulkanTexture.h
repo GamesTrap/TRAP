@@ -18,7 +18,7 @@ namespace TRAP::Graphics::API
 		VulkanTexture(TRAP::Ref<VulkanDevice> device,
 			const RendererAPI::TextureDesc& desc,
 			const std::vector<uint8_t>& imageData,
-			const TRAP::Ref<VulkanCommandBuffer>& cmd,
+			CommandBuffer* cmd,
 			TRAP::Ref<VulkanMemoryAllocator> vma);
 		~VulkanTexture();
 
@@ -38,7 +38,7 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<RendererAPI::VirtualTexture> GetSVT() const;
 		bool OwnsImage() const;
 
-		void FillVirtualTexture(VulkanCommandBuffer& cmd);
+		void FillVirtualTexture(CommandBuffer& cmd);
 		void ReleasePage();
 		
 		void SetTextureName(const char* name) const;
@@ -53,7 +53,7 @@ namespace TRAP::Graphics::API
 		void RemoveVirtualTexture();
 		static uint32_t GetMemoryType(uint32_t typeBits, const VkPhysicalDeviceMemoryProperties& memProps, VkMemoryPropertyFlags props, VkBool32* memTypeFound = nullptr);
 		static VkExtent3D AlignedDivision(const VkExtent3D& extent, const VkExtent3D& granularity);
-		void FillVirtualTextureLevel(const TRAP::Ref<VulkanCommandBuffer>& cmd, uint32_t mipLevel);
+		void FillVirtualTextureLevel(CommandBuffer* cmd, uint32_t mipLevel);
 		RendererAPI::VirtualTexturePage* AddPage(const VkOffset3D& offset, const VkExtent3D& extent, VkDeviceSize size, uint32_t mipLevel, uint32_t layer) const;
 		bool AllocateVirtualPage(RendererAPI::VirtualTexturePage& virtualPage, uint32_t memoryTypeIndex);
 		void ReleaseVirtualPage(RendererAPI::VirtualTexturePage& virtualPage, bool removeMemoryBind) const;

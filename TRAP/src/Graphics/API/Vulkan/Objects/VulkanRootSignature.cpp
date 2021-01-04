@@ -13,10 +13,8 @@
 #include "VulkanTexture.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
-TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(TRAP::Ref<VulkanDevice> device, const TRAP::Ref<VulkanDescriptorPool>& descriptorPool, const RendererAPI::RootSignatureDesc& desc)
-	: m_device(std::move(device)),
-	  m_descriptorCount(),
-	  m_pipelineType(),
+TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI::RootSignatureDesc& desc)
+	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
 	  m_vkDescriptorSetLayouts(),
 	  m_vkCumulativeDescriptorsCounts(),
 	  m_vkDescriptorCounts(),
@@ -43,7 +41,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(TRAP::Ref<VulkanDe
 	for(uint32_t i = 0; i < desc.StaticSamplers.size(); ++i)
 	{
 		TRAP_ASSERT(desc.StaticSamplers[i]);
-		staticSamplerMap.insert({ {desc.StaticSamplerNames[i], desc.StaticSamplers[i]} });
+		staticSamplerMap.insert({ {desc.StaticSamplerNames[i], std::dynamic_pointer_cast<VulkanSampler>(desc.StaticSamplers[i])} });
 	}
 
 	RendererAPI::PipelineType pipelineType = RendererAPI::PipelineType::Undefined;
@@ -136,6 +134,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(TRAP::Ref<VulkanDe
 
 	if(!shaderResources.empty())
 		m_descriptorCount = static_cast<uint32_t>(shaderResources.size());
+	//Bug Maybe needs m_descriptors.resize(shaderResources.size()); this would also allow to get rid of m_descriptorCount
 
 	m_pipelineType = pipelineType;
 	m_descriptorNameToIndexMap->Map = indexMap.Map;
@@ -408,7 +407,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(TRAP::Ref<VulkanDe
 		else if(m_vkDescriptorSetLayouts[setIndex] != VK_NULL_HANDLE)
 		{
 			//Consume empty descriptor sets from empty descriptor set pool
-			m_vkEmptyDescriptorSets[setIndex] = descriptorPool->RetrieveVkDescriptorSet(m_vkDescriptorSetLayouts[setIndex]);
+			m_vkEmptyDescriptorSets[setIndex] = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDescriptorPool()->RetrieveVkDescriptorSet(m_vkDescriptorSetLayouts[setIndex]);
 		}
 	}
 }

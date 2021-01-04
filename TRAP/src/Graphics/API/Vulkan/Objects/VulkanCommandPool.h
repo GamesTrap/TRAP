@@ -1,32 +1,32 @@
 #ifndef _TRAP_VULKANCOMMANDPOOL_H_
 #define _TRAP_VULKANCOMMANDPOOL_H_
 
+#include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Objects/CommandPool.h"
+
 namespace TRAP::Graphics::API
 {
 	class VulkanCommandBuffer;
 	class VulkanQueue;
 	class VulkanDevice;
 
-	class VulkanCommandPool
+	class VulkanCommandPool final : public CommandPool
 	{
 	public:
-		VulkanCommandPool(TRAP::Ref<VulkanDevice> device, TRAP::Ref<VulkanQueue> queue, bool transient);
+		explicit VulkanCommandPool(const RendererAPI::CommandPoolDesc& desc);
 		~VulkanCommandPool();
 
 		VkCommandPool& GetVkCommandPool();
 
-		VulkanCommandBuffer* AllocateCommandBuffer(bool secondary);
-		void FreeCommandBuffer(VulkanCommandBuffer* cmdBuffer);
+		CommandBuffer* AllocateCommandBuffer(bool secondary) override;
+		void FreeCommandBuffer(CommandBuffer* cmdBuffer) override;
 
-		void Reset() const;
+		void Reset() const override;
 		
 	private:		
 		TRAP::Ref<VulkanDevice> m_device;
-		TRAP::Ref<VulkanQueue> m_queue;
 		
 		VkCommandPool m_vkCommandPool;
-
-		std::vector<TRAP::Scope<VulkanCommandBuffer>> m_commandBuffers;
 	};
 }
 

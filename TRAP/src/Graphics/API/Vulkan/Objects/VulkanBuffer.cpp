@@ -6,20 +6,22 @@
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
-TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(TRAP::Ref<VulkanDevice> device, TRAP::Ref<VulkanMemoryAllocator> vma, const RendererAPI::BufferDesc& desc)
-	: m_device(std::move(device)),
-	  m_VMA(std::move(vma)),
-	  m_CPUMappedAddress(nullptr),
+TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& desc)
+	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
+	  m_VMA(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetVMA()),
 	  m_vkBuffer(VK_NULL_HANDLE),
 	  m_vkStorageTexelView(VK_NULL_HANDLE),
 	  m_vkUniformTexelView(VK_NULL_HANDLE),
 	  m_allocation(VK_NULL_HANDLE),
-	  m_offset(),
-	  m_size(desc.Size),
-	  m_descriptors(desc.Descriptors),
-	  m_memoryUsage(desc.MemoryUsage)
+	  m_offset()
 {
+	m_CPUMappedAddress = nullptr;
+	m_size = desc.Size;
+	m_descriptors = desc.Descriptors;
+	m_memoryUsage = desc.MemoryUsage;
+	
 	TRAP_ASSERT(m_device, "device is nullptr");
 	TRAP_ASSERT(m_VMA, "VMA is nullptr");
 
@@ -155,6 +157,26 @@ uint64_t TRAP::Graphics::API::VulkanBuffer::GetOffset() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkDeviceMemory TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemory() const
+{
+	VmaAllocationInfo allocInfo{};
+	vmaGetAllocationInfo(m_VMA->GetVMAAllocator(), m_allocation, &allocInfo);
+
+	return allocInfo.deviceMemory;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+uint64_t TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
+{
+	VmaAllocationInfo allocInfo{};
+	vmaGetAllocationInfo(m_VMA->GetVMAAllocator(), m_allocation, &allocInfo);
+
+	return static_cast<uint64_t>(allocInfo.offset);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 uint64_t TRAP::Graphics::API::VulkanBuffer::GetSize() const
 {
 	return m_size;
@@ -210,24 +232,4 @@ void TRAP::Graphics::API::VulkanBuffer::UnMapBuffer()
 void TRAP::Graphics::API::VulkanBuffer::SetBufferName(const char* name) const
 {
 	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkBuffer), VK_OBJECT_TYPE_BUFFER, name);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-VkDeviceMemory TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemory() const
-{
-	VmaAllocationInfo allocInfo{};
-	vmaGetAllocationInfo(m_VMA->GetVMAAllocator(), m_allocation, &allocInfo);
-	
-	return allocInfo.deviceMemory;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-uint64_t TRAP::Graphics::API::VulkanBuffer::GetVkDeviceMemoryOffset() const
-{
-	VmaAllocationInfo allocInfo{};
-	vmaGetAllocationInfo(m_VMA->GetVMAAllocator(), m_allocation, &allocInfo);
-
-	return static_cast<uint64_t>(allocInfo.offset);
 }

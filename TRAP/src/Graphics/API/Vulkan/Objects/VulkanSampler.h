@@ -2,15 +2,16 @@
 #define _TRAP_VULKANSAMPLER_H_
 
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Objects/Sampler.h"
 
 namespace TRAP::Graphics::API
 {
 	class VulkanDevice;
 	
-	class VulkanSampler
+	class VulkanSampler final : public Sampler
 	{
 	public:
-		VulkanSampler(TRAP::Ref<VulkanDevice> device, const RendererAPI::SamplerDesc& desc);
+		explicit VulkanSampler(const RendererAPI::SamplerDesc& desc);
 		~VulkanSampler();
 
 		VkSampler& GetVkSampler();

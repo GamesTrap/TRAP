@@ -3,33 +3,34 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Vulkan/Utils/VMA.h"
+#include "Graphics/API/Objects/Buffer.h"
 
 namespace TRAP::Graphics::API
 {
 	class VulkanMemoryAllocator;
 	class VulkanDevice;
 	
-	class VulkanBuffer
+	class VulkanBuffer final : public Buffer
 	{
 	public:
-		VulkanBuffer(TRAP::Ref<VulkanDevice> device, TRAP::Ref<VulkanMemoryAllocator> vma, const RendererAPI::BufferDesc& desc);
+		explicit VulkanBuffer(const RendererAPI::BufferDesc& desc);
 		~VulkanBuffer();
 
 		VkBuffer& GetVkBuffer();
 		VkBufferView& GetStorageTexelView();
 		VkBufferView& GetUniformTexelView();
 		uint64_t GetOffset() const;
-		uint64_t GetSize() const;
-		RendererAPI::DescriptorType GetDescriptors() const;
-		RendererAPI::ResourceMemoryUsage GetMemoryUsage() const;
-		
-		void* GetCPUMappedAddress() const;
-
-		void MapBuffer(RendererAPI::ReadRange* range);
-		void UnMapBuffer();
-
 		VkDeviceMemory GetVkDeviceMemory() const;
 		uint64_t GetVkDeviceMemoryOffset() const;
+		
+		uint64_t GetSize() const override;
+		RendererAPI::DescriptorType GetDescriptors() const override;
+		RendererAPI::ResourceMemoryUsage GetMemoryUsage() const override;
+		
+		void* GetCPUMappedAddress() const override;
+
+		void MapBuffer(RendererAPI::ReadRange* range) override;
+		void UnMapBuffer() override;
 		
 	private:
 		void SetBufferName(const char* name) const;
@@ -37,8 +38,6 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanDevice> m_device;
 		TRAP::Ref<VulkanMemoryAllocator> m_VMA;
 
-		//CPU address of mapped buffer applicable to buffers created in CPU accessible heaps (CPU, CPUToGPU, GPUToCPU)
-		void* m_CPUMappedAddress;
 		//Native handle of the underlying resource
 		VkBuffer m_vkBuffer;
 		//Buffer view
@@ -47,10 +46,6 @@ namespace TRAP::Graphics::API
 		//Contains resource allocation info such as parent heap, offset in heap
 		VmaAllocation m_allocation;
 		uint64_t m_offset;
-
-		uint64_t m_size;
-		RendererAPI::DescriptorType m_descriptors;
-		RendererAPI::ResourceMemoryUsage m_memoryUsage;
 	};
 }
 

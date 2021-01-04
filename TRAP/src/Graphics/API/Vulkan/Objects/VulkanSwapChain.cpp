@@ -270,18 +270,21 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 	for (uint32_t i = 0; i < imageCount; ++i)
 	{
 		descColor.NativeHandle = images[i];
-		m_renderTargets.push_back(TRAP::MakeRef<VulkanRenderTarget>(m_device, descColor, m_vma));
+		m_renderTargets.push_back(TRAP::MakeRef<VulkanRenderTarget>(descColor));
 		barriers.push_back({ m_renderTargets[i], RendererAPI::ResourceState::Undefined, RendererAPI::ResourceState::Present });
 	}
 
 	TRAP::Ref<VulkanQueue> queue = nullptr;
 	TRAP::Ref<VulkanCommandPool> cmdPool = nullptr;
-	VulkanCommandBuffer* cmd = nullptr;
+	CommandBuffer* cmd = nullptr;
 	TRAP::Ref<VulkanFence> fence = nullptr;
 	RendererAPI::QueueDesc queueDesc{};
 	queueDesc.Type = RendererAPI::QueueType::Graphics;
 	queue = TRAP::MakeRef<VulkanQueue>(m_device, queueDesc);
-	cmdPool = TRAP::MakeRef<VulkanCommandPool>(m_device, queue, false);
+	RendererAPI::CommandPoolDesc cmdPoolDesc{};
+	cmdPoolDesc.Queue = queue;
+	cmdPoolDesc.Transient = false;
+	cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
 	cmd = cmdPool->AllocateCommandBuffer(false);
 	fence = TRAP::MakeRef<VulkanFence>(m_device);
 	cmd->Begin();

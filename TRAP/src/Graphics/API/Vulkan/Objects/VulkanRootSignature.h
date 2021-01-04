@@ -2,17 +2,18 @@
 #define _TRAP_VULKANROOTSIGNATURE_H_
 
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Objects/RootSignature.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
 {
-	class VulkanRootSignature
+	class VulkanRootSignature final : public RootSignature
 	{
 	public:
-		VulkanRootSignature(TRAP::Ref<VulkanDevice> device, const TRAP::Ref<VulkanDescriptorPool>& descriptorPool, const RendererAPI::RootSignatureDesc& desc);
+		explicit VulkanRootSignature(const RendererAPI::RootSignatureDesc& desc);
 		~VulkanRootSignature();
 
-		RendererAPI::PipelineType GetPipelineType() const;
+		RendererAPI::PipelineType GetPipelineType() const override;
 		VkPipelineLayout GetVkPipelineLayout() const;
 		const std::array<VkDescriptorSetLayout, static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>& GetVkDescriptorSetLayouts() const;
 		const std::array<uint32_t, static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>& GetVkCumulativeDescriptorCounts() const;
@@ -25,20 +26,11 @@ namespace TRAP::Graphics::API
 		const std::array<std::vector<VulkanRenderer::DescriptorUpdateData>, static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)>& GetUpdateTemplateData() const;
 
 		RendererAPI::DescriptorInfo* GetDescriptor(const char* resName);
-		uint32_t GetDescriptorCount() const;
-		const std::vector<RendererAPI::DescriptorInfo>& GetDescriptors() const;
-		const TRAP::Scope<VulkanRenderer::DescriptorIndexMap>& GetDescriptorNameToIndexMap() const;
+		uint32_t GetDescriptorCount() const override;
+		const std::vector<RendererAPI::DescriptorInfo>& GetDescriptors() const override;
+		const TRAP::Scope<RendererAPI::DescriptorIndexMap>& GetDescriptorNameToIndexMap() const override;
 	private:
 		TRAP::Ref<VulkanDevice> m_device;
-		
-		//Number of descriptors declared in the root signature layout
-		uint32_t m_descriptorCount;
-		//Graphics or Compute
-		RendererAPI::PipelineType m_pipelineType;
-		//Array of all descriptors declared in the root signature layout
-		std::vector<RendererAPI::DescriptorInfo> m_descriptors;
-		//Translates hash of descriptor name to descriptor index in m_descriptors array
-		TRAP::Scope<VulkanRenderer::DescriptorIndexMap> m_descriptorNameToIndexMap;
 
 		std::array<VkDescriptorSetLayout, static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)> m_vkDescriptorSetLayouts;
 		std::array<uint32_t, static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::DESCRIPTOR_UPDATE_FREQUENCY_COUNT)> m_vkCumulativeDescriptorsCounts;

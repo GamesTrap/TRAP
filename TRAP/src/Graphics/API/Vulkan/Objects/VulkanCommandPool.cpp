@@ -7,9 +7,11 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
-TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(TRAP::Ref<VulkanDevice> device, TRAP::Ref<VulkanQueue> queue, const bool transient)
-	: m_device(std::move(device)), m_queue(std::move(queue)), m_vkCommandPool(VK_NULL_HANDLE)
+TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::CommandPoolDesc& desc)
+	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()), m_vkCommandPool(VK_NULL_HANDLE)
 {
+	m_queue = desc.Queue;
+	
 	TRAP_ASSERT(m_device, "device is nullptr");
 	TRAP_ASSERT(m_queue, "queue is nullptr");
 
@@ -18,7 +20,7 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(TRAP::Ref<VulkanDevice
 #endif
 	
 	VkCommandPoolCreateInfo info = VulkanInits::CommandPoolCreateInfo(m_queue->GetQueueFamilyIndex());
-	if (transient)
+	if (desc.Transient)
 		info.flags |= VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
 
 	VkCall(vkCreateCommandPool(m_device->GetVkDevice(), &info, nullptr, &m_vkCommandPool));
@@ -51,7 +53,7 @@ VkCommandPool& TRAP::Graphics::API::VulkanCommandPool::GetVkCommandPool()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanCommandBuffer* TRAP::Graphics::API::VulkanCommandPool::AllocateCommandBuffer(const bool secondary)
+TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::VulkanCommandPool::AllocateCommandBuffer(const bool secondary)
 {	
 	m_commandBuffers.push_back(TRAP::Scope<VulkanCommandBuffer>(new VulkanCommandBuffer(m_device, m_queue, m_vkCommandPool, secondary)));
 	return m_commandBuffers.back().get();
@@ -59,13 +61,13 @@ TRAP::Graphics::API::VulkanCommandBuffer* TRAP::Graphics::API::VulkanCommandPool
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(VulkanCommandBuffer* cmdBuffer)
+void TRAP::Graphics::API::VulkanCommandPool::FreeCommandBuffer(CommandBuffer* cmdBuffer)
 {
 	for(uint32_t i = 0; i < m_commandBuffers.size(); i++)
 	{
 		if(m_commandBuffers[i].get() == cmdBuffer)
 		{
-			TRAP::Scope<VulkanCommandBuffer> cmdBuf = std::move(m_commandBuffers[i]);
+			TRAP::Scope<CommandBuffer> cmdBuf = std::move(m_commandBuffers[i]);
 			cmdBuf.reset();
 
 			m_commandBuffers[i] = std::move(m_commandBuffers.back());

@@ -63,7 +63,7 @@ void VulkanTests::OnAttach()
 
 	for(uint32_t i = 0; i < ImageCount; ++i)
 	{
-		m_cmdPools[i] = TRAP::MakeRef<TRAP::Graphics::API::VulkanCommandPool>(vkRenderer->GetDevice(), m_graphicsQueue, false);
+		m_cmdPools[i] = TRAP::MakeRef<TRAP::Graphics::API::VulkanCommandPool>(TRAP::Graphics::RendererAPI::CommandPoolDesc{ m_graphicsQueue, false });
 		m_cmds[i] = m_cmdPools[i]->AllocateCommandBuffer(false);
 
 		m_renderCompleteFences[i] = TRAP::MakeRef<TRAP::Graphics::API::VulkanFence>(vkRenderer->GetDevice());
@@ -82,7 +82,7 @@ void VulkanTests::OnAttach()
 	//RootSignature
 	TRAP::Graphics::RendererAPI::RootSignatureDesc rootDesc{};
 	rootDesc.Shaders = { m_defaultShader };
-	m_rootSignature = TRAP::MakeRef<TRAP::Graphics::API::VulkanRootSignature>(vkRenderer->GetDevice(), nullptr, rootDesc);
+	m_rootSignature = TRAP::MakeRef<TRAP::Graphics::API::VulkanRootSignature>(rootDesc);
 	
 	TRAP::Graphics::RendererAPI::SwapChainDesc swapChainDesc{};
 	swapChainDesc.WindowHandle = static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(TRAP::Application::GetWindow()->GetInternalWindow());
@@ -189,7 +189,7 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	//Reset cmd pool for this frame
 	m_cmdPools[m_frameIndex]->Reset();
 
-	TRAP::Graphics::API::VulkanCommandBuffer* cmd = m_cmds[m_frameIndex];
+	TRAP::Graphics::CommandBuffer* cmd = m_cmds[m_frameIndex];
 	cmd->Begin();
 	
 	TRAP::Graphics::RendererAPI::RenderTargetBarrier barrier = { renderTarget, TRAP::Graphics::RendererAPI::ResourceState::Present, TRAP::Graphics::RendererAPI::ResourceState::RenderTarget };
