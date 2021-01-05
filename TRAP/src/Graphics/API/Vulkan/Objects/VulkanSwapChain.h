@@ -2,6 +2,7 @@
 #define _TRAP_VULKANSWAPCHAIN_H_
 
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Objects/SwapChain.h"
 
 namespace TRAP::Graphics::API
 {
@@ -9,24 +10,19 @@ namespace TRAP::Graphics::API
 	class VulkanInstance;
 	class VulkanDevice;
 	class VulkanSurface;
-	class VulkanRenderTarget;
 
-	class VulkanSwapChain
+	class VulkanSwapChain final : public SwapChain
 	{
 	public:
-		VulkanSwapChain(TRAP::Ref<VulkanInstance> instance,
-		                TRAP::Ref<VulkanDevice> device,
-		                TRAP::Ref<VulkanMemoryAllocator> vma,
-		                RendererAPI::SwapChainDesc& desc);
+		explicit VulkanSwapChain(RendererAPI::SwapChainDesc& desc);
 		~VulkanSwapChain();
 
-		uint32_t AcquireNextImage(const TRAP::Ref<VulkanSemaphore>& signalSemaphore, const TRAP::Ref<VulkanFence>& fence) const;
+		uint32_t AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore, const TRAP::Ref<Fence>& fence) const override;
 		
-		void ToggleVSync();
+		void ToggleVSync() override;
 
 		const VkSwapchainKHR& GetVkSwapChain() const;
 		VkQueue GetPresentVkQueue() const;
-		const std::vector<TRAP::Ref<VulkanRenderTarget>>& GetRenderTargets() const;
 	
 	private:
 		void AddSwapchain(RendererAPI::SwapChainDesc& desc);
@@ -35,9 +31,6 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanMemoryAllocator> m_vma;
 		TRAP::Ref<VulkanInstance> m_instance;
 		TRAP::Ref<VulkanDevice> m_device;
-		
-		//Render targets created from the swapchain back buffers
-		std::vector<TRAP::Ref<VulkanRenderTarget>> m_renderTargets;
 
 		//Present queue if one exists (queuePresent will use this queue if the hardware has a dedicated present queue)
 		VkQueue m_presentQueue;

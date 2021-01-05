@@ -48,8 +48,6 @@ namespace TRAP::Graphics::API
 
 		TRAP::Ref<VulkanDevice> m_device;
 
-		TRAP::Ref<VulkanTexture> m_texture;
-
 		VkImageView m_vkDescriptor;
 		std::vector<VkImageView> m_vkSliceDescriptors;
 		volatile uint32_t m_used;

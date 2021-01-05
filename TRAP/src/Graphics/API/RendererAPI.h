@@ -12,6 +12,12 @@ namespace TRAP
 
 namespace TRAP::Graphics 
 {
+	class Pipeline;
+	class PipelineCache;
+	class SwapChain;
+	class Fence;
+	class Semaphore;
+	class Queue;
 	class Buffer;
 	class CommandBuffer;
 	class RootSignature;
@@ -30,14 +36,8 @@ namespace TRAP::Graphics
 
 namespace TRAP::Graphics::API
 {
-	class VulkanSwapChain;
 	class VulkanDescriptorSet;
-	class VulkanPipeline;
 	class VulkanTexture;
-	class VulkanQueue;
-	class VulkanPipelineCache;
-	class VulkanSemaphore;
-	class VulkanFence;
 
 	namespace ShaderReflection
 	{
@@ -1543,7 +1543,7 @@ namespace TRAP::Graphics
 
 		struct CommandPoolDesc
 		{
-			TRAP::Ref<API::VulkanQueue> Queue;
+			TRAP::Ref<Queue> Queue;
 			bool Transient;
 		};
 		
@@ -1563,9 +1563,9 @@ namespace TRAP::Graphics
 		struct QueueSubmitDesc
 		{
 			std::vector<CommandBuffer*> Cmds{};
-			TRAP::Ref<API::VulkanFence> SignalFence{};
-			std::vector<TRAP::Ref<API::VulkanSemaphore>> WaitSemaphores{};
-			std::vector<TRAP::Ref<API::VulkanSemaphore>> SignalSemaphores{};
+			TRAP::Ref<Fence> SignalFence{};
+			std::vector<TRAP::Ref<Semaphore>> WaitSemaphores{};
+			std::vector<TRAP::Ref<Semaphore>> SignalSemaphores{};
 			bool SubmitDone{};
 		};
 
@@ -1681,7 +1681,7 @@ namespace TRAP::Graphics
 		{			
 			PipelineType Type{};
 			std::variant<ComputePipelineDesc, GraphicsPipelineDesc, RayTracingPipelineDesc> Pipeline{};
-			TRAP::Ref<API::VulkanPipelineCache> Cache{};
+			TRAP::Ref<PipelineCache> Cache{};
 			void* PipelineExtensions{};
 			uint32_t PipelineExtensionCount{};
 			const char* Name{};
@@ -1743,7 +1743,7 @@ namespace TRAP::Graphics
 			//Window handle
 			TRAP::INTERNAL::WindowingAPI::InternalWindow* WindowHandle{};
 			//Queues which should be allowed to present
-			std::vector<TRAP::Ref<API::VulkanQueue>> PresentQueues{};
+			std::vector<TRAP::Ref<Queue>> PresentQueues{};
 			//Number of back buffers in this swapchain
 			uint32_t ImageCount{};
 			//Width of the swapchain
@@ -1836,7 +1836,7 @@ namespace TRAP::Graphics
 			//DescriptorRange can hold only one resource type array
 			//std::vector<TRAP::Ref<API::VulkanAccelerationStructure>> AccelerationStructures; //TODO RT
 			std::variant<std::vector<TRAP::Ref<API::VulkanTexture>>, std::vector<TRAP::Ref<Sampler>>,
-				std::vector<TRAP::Ref<Buffer>>, std::vector<TRAP::Ref<API::VulkanPipeline>>,
+				std::vector<TRAP::Ref<Buffer>>, std::vector<TRAP::Ref<Pipeline>>,
 				std::vector<TRAP::Ref<API::VulkanDescriptorSet>>> Resource{};
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
@@ -1847,8 +1847,8 @@ namespace TRAP::Graphics
 
 		struct QueuePresentDesc
 		{
-			TRAP::Ref<API::VulkanSwapChain> SwapChain{};
-			std::vector<TRAP::Ref<API::VulkanSemaphore>> WaitSemaphores{};
+			TRAP::Ref<SwapChain> SwapChain{};
+			std::vector<TRAP::Ref<Semaphore>> WaitSemaphores{};
 			uint8_t Index{};
 			bool SubmitDone{};
 		};

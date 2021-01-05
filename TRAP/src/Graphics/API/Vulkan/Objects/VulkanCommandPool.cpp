@@ -19,7 +19,7 @@ TRAP::Graphics::API::VulkanCommandPool::VulkanCommandPool(const RendererAPI::Com
 	TP_DEBUG(Log::RendererVulkanCommandPoolPrefix, "Creating CommandPool");
 #endif
 	
-	VkCommandPoolCreateInfo info = VulkanInits::CommandPoolCreateInfo(m_queue->GetQueueFamilyIndex());
+	VkCommandPoolCreateInfo info = VulkanInits::CommandPoolCreateInfo(std::dynamic_pointer_cast<VulkanQueue>(m_queue)->GetQueueFamilyIndex());
 	if (desc.Transient)
 		info.flags |= VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
 

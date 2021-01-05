@@ -28,13 +28,13 @@ TRAP::Graphics::API::VulkanDescriptorPool::s_descriptorPoolSizes =
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(TRAP::Ref<VulkanDevice> device, const uint32_t numDescriptorSets)
+TRAP::Graphics::API::VulkanDescriptorPool::VulkanDescriptorPool(const uint32_t numDescriptorSets)
 	: m_currentPool(VK_NULL_HANDLE),
 	  m_descriptorPoolSizes(DescriptorTypeRangeSize),
-	  m_numDescriptorSets(numDescriptorSets),
 	  m_usedDescriptorSetCount(0),
-	  m_device(std::move(device))
+	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice())
 {
+	m_numDescriptorSets = numDescriptorSets;
 	TRAP_ASSERT(m_device, "device is nullptr");
 	
 #ifdef ENABLE_GRAPHICS_DEBUG
@@ -92,13 +92,6 @@ const std::vector<VkDescriptorPoolSize>& TRAP::Graphics::API::VulkanDescriptorPo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetDescriptorSetsNum() const
-{
-	return m_numDescriptorSets;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount() const
 {
 	return m_usedDescriptorSetCount;
@@ -106,7 +99,7 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorPool::GetUsedDescriptorSetsCount()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::VulkanDescriptorSet TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc)
+TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc)
 {
 	const TRAP::Ref<VulkanRootSignature> rootSignature = std::dynamic_pointer_cast<VulkanRootSignature>(desc.RootSignature);
 	RendererAPI::DescriptorUpdateFrequency updateFreq = desc.UpdateFrequency;
@@ -145,7 +138,7 @@ TRAP::Graphics::API::VulkanDescriptorSet TRAP::Graphics::API::VulkanDescriptorPo
 	
 	m_descriptorSets.push_back(TRAP::Scope<VulkanDescriptorSet>(new VulkanDescriptorSet(m_device, handles, rootSignature, updateData, dynamicSizeOffsets, maxSets, dynamicOffsetCount, updateFreq)));
 
-	return *m_descriptorSets.back();
+	return m_descriptorSets.back().get();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

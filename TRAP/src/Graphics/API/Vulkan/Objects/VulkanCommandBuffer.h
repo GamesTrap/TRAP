@@ -5,6 +5,10 @@
 #include "Graphics/API/Objects/CommandBuffer.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
+namespace TRAP {namespace Graphics {
+	class DescriptorSet;
+}}
+
 namespace TRAP::Graphics::API
 {
 	class VulkanPipeline;
@@ -22,15 +26,14 @@ namespace TRAP::Graphics::API
 
 		VkCommandBuffer& GetVkCommandBuffer();
 		RendererAPI::QueueType GetQueueType() const;
-		TRAP::Ref<VulkanQueue> GetQueue() const override;
 		bool IsSecondary() const;
 
 		void BindPushConstants(const TRAP::Ref<RootSignature>& rootSignature, const char* name, const void* constants) const override;
 		void BindPushConstantsByIndex(const TRAP::Ref<RootSignature>& rootSignature, uint32_t paramIndex, const void* constants) const override;
-		void BindDescriptorSet(uint32_t index, VulkanDescriptorSet& descriptorSet) override;
+		void BindDescriptorSet(uint32_t index, DescriptorSet& descriptorSet) override;
 		void BindIndexBuffer(const TRAP::Ref<Buffer>& buffer, RendererAPI::IndexType indexType, uint64_t offset) const override;
 		void BindVertexBuffer(const std::vector<TRAP::Ref<Buffer>>& buffers, const std::vector<uint32_t>& strides, const std::vector<uint64_t>& offsets) const override;
-		void BindPipeline(const TRAP::Ref<VulkanPipeline>& pipeline) const override;
+		void BindPipeline(const TRAP::Ref<Pipeline>& pipeline) const override;
 		void BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
 		                       const TRAP::Ref<RenderTarget>& depthStencil,
 		                       const RendererAPI::LoadActionsDesc* loadActions,
@@ -53,7 +56,7 @@ namespace TRAP::Graphics::API
 		void DrawInstanced(uint32_t vertexCount, uint32_t firstVertex, uint32_t instanceCount, uint32_t firstInstance) const override;
 		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, uint32_t firstVertex) const override;
 		void DrawIndexedInstanced(uint32_t indexCount, uint32_t firstIndex, uint32_t instanceCount, uint32_t firstInstance, uint32_t firstVertex) const override;
-		void ExecuteIndirect(const TRAP::Ref<VulkanCommandSignature>& cmdSignature,
+		void ExecuteIndirect(const TRAP::Ref<CommandSignature>& cmdSignature,
 		                     uint32_t maxCommandCount,
 		                     const TRAP::Ref<Buffer>& indirectBuffer,
 		                     uint64_t bufferOffset,
@@ -80,7 +83,7 @@ namespace TRAP::Graphics::API
 	private:
 		friend VulkanCommandPool;
 		
-		VulkanCommandBuffer(TRAP::Ref<VulkanDevice> device, TRAP::Ref<VulkanQueue> queue, VkCommandPool& commandPool, bool secondary);
+		VulkanCommandBuffer(TRAP::Ref<VulkanDevice> device, TRAP::Ref<Queue> queue, VkCommandPool& commandPool, bool secondary);
 
 		template<typename T>
 		static std::size_t HashAlg(const T* mem, std::size_t size, const std::size_t prev = 2166136261U)

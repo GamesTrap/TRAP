@@ -31,7 +31,7 @@ TRAP::Graphics::API::VulkanCommandBuffer::~VulkanCommandBuffer()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanCommandBuffer::VulkanCommandBuffer(TRAP::Ref<VulkanDevice> device,
-                                                              TRAP::Ref<VulkanQueue> queue,
+                                                              TRAP::Ref<Queue> queue,
                                                               VkCommandPool& commandPool,
                                                               const bool secondary)
 	: m_device(std::move(device)),
@@ -65,14 +65,7 @@ VkCommandBuffer& TRAP::Graphics::API::VulkanCommandBuffer::GetVkCommandBuffer()
 
 TRAP::Graphics::RendererAPI::QueueType TRAP::Graphics::API::VulkanCommandBuffer::GetQueueType() const
 {
-	return m_queue->GetQueueType();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Ref<TRAP::Graphics::API::VulkanQueue> TRAP::Graphics::API::VulkanCommandBuffer::GetQueue() const
-{
-	return m_queue;
+	return std::dynamic_pointer_cast<VulkanQueue>(m_queue)->GetQueueType();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -120,12 +113,13 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstantsByIndex(const TR
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::BindDescriptorSet(const uint32_t index, VulkanDescriptorSet& descriptorSet)
+void TRAP::Graphics::API::VulkanCommandBuffer::BindDescriptorSet(const uint32_t index, DescriptorSet& descriptorSet)
 {
-	TRAP_ASSERT(!descriptorSet.GetVkDescriptorSets().empty());
-	TRAP_ASSERT(descriptorSet.GetMaxSets() > index);
+	VulkanDescriptorSet* dSet = dynamic_cast<VulkanDescriptorSet*>(&descriptorSet);
+	TRAP_ASSERT(!dSet->GetVkDescriptorSets().empty());
+	TRAP_ASSERT(dSet->GetMaxSets() > index);
 
-	const TRAP::Ref<VulkanRootSignature> rootSignature = descriptorSet.GetRootSignature();
+	const TRAP::Ref<VulkanRootSignature> rootSignature = dSet->GetRootSignature();
 
 	if(m_boundPipelineLayout != rootSignature->GetVkPipelineLayout())
 	{
@@ -150,11 +144,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindDescriptorSet(const uint32_t 
 	vkCmdBindDescriptorSets(m_vkCommandBuffer,
 	                        VkPipelineBindPointTranslator[static_cast<uint32_t>(rootSignature->GetPipelineType())],
 	                        rootSignature->GetVkPipelineLayout(),
-	                        static_cast<uint32_t>(descriptorSet.GetUpdateFrequency()),
+	                        static_cast<uint32_t>(dSet->GetUpdateFrequency()),
 	                        1,
-	                        &descriptorSet.GetVkDescriptorSets()[index],
-	                        descriptorSet.GetDynamicOffsetCount(),
-	                        descriptorSet.GetDynamicOffsetCount() ? &descriptorSet.GetDynamicSizeOffsets()[index].Offset : nullptr);
+	                        &dSet->GetVkDescriptorSets()[index],
+							dSet->GetDynamicOffsetCount(),
+							dSet->GetDynamicOffsetCount() ? &dSet->GetDynamicSizeOffsets()[index].Offset : nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -198,13 +192,14 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindVertexBuffer(const std::vecto
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::BindPipeline(const TRAP::Ref<VulkanPipeline>& pipeline) const
+void TRAP::Graphics::API::VulkanCommandBuffer::BindPipeline(const TRAP::Ref<Pipeline>& pipeline) const
 {
 	TRAP_ASSERT(pipeline);
 	TRAP_ASSERT(m_vkCommandBuffer);
 
-	const VkPipelineBindPoint pipelineBindPoint = VkPipelineBindPointTranslator[static_cast<uint32_t>(pipeline->GetPipelineType())];
-	vkCmdBindPipeline(m_vkCommandBuffer, pipelineBindPoint, pipeline->GetVkPipeline());
+	TRAP::Ref<VulkanPipeline> pipe = std::dynamic_pointer_cast<VulkanPipeline>(pipeline);
+	const VkPipelineBindPoint pipelineBindPoint = VkPipelineBindPointTranslator[static_cast<uint32_t>(pipe->GetPipelineType())];
+	vkCmdBindPipeline(m_vkCommandBuffer, pipelineBindPoint, pipe->GetVkPipeline());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -517,7 +512,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::DrawIndexedInstanced(const uint32
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanCommandBuffer::ExecuteIndirect(const TRAP::Ref<VulkanCommandSignature>& cmdSignature,
+void TRAP::Graphics::API::VulkanCommandBuffer::ExecuteIndirect(const TRAP::Ref<CommandSignature>& cmdSignature,
                                                                const uint32_t maxCommandCount,
                                                                const TRAP::Ref<Buffer>& indirectBuffer,
                                                                const uint64_t bufferOffset,
@@ -525,8 +520,9 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ExecuteIndirect(const TRAP::Ref<V
                                                                const uint64_t counterBufferOffset) const
 {
 	TRAP::Ref<VulkanBuffer> iBuffer = std::dynamic_pointer_cast<VulkanBuffer>(indirectBuffer);
+	TRAP::Ref<VulkanCommandSignature> cSig = std::dynamic_pointer_cast<VulkanCommandSignature>(cmdSignature);
 	
-	if (cmdSignature->GetDrawType() == RendererAPI::IndirectArgumentType::IndirectDraw)
+	if (cSig->GetDrawType() == RendererAPI::IndirectArgumentType::IndirectDraw)
 	{
 		if (counterBuffer)
 		{
@@ -536,12 +532,12 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ExecuteIndirect(const TRAP::Ref<V
 				std::dynamic_pointer_cast<VulkanBuffer>(counterBuffer)->GetVkBuffer(),
 				counterBufferOffset,
 				maxCommandCount,
-				cmdSignature->GetStride());
+				cSig->GetStride());
 		}
 		else
-			vkCmdDrawIndirect(m_vkCommandBuffer, iBuffer->GetVkBuffer(), bufferOffset, maxCommandCount, cmdSignature->GetStride());
+			vkCmdDrawIndirect(m_vkCommandBuffer, iBuffer->GetVkBuffer(), bufferOffset, maxCommandCount, cSig->GetStride());
 	}
-	else if (cmdSignature->GetDrawType() == RendererAPI::IndirectArgumentType::IndirectDrawIndex)
+	else if (cSig->GetDrawType() == RendererAPI::IndirectArgumentType::IndirectDrawIndex)
 	{
 		if (counterBuffer)
 		{
@@ -551,12 +547,12 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ExecuteIndirect(const TRAP::Ref<V
 				std::dynamic_pointer_cast<VulkanBuffer>(counterBuffer)->GetVkBuffer(),
 				counterBufferOffset,
 				maxCommandCount,
-				cmdSignature->GetStride());
+				cSig->GetStride());
 		}
 		else
-			vkCmdDrawIndexedIndirect(m_vkCommandBuffer, iBuffer->GetVkBuffer(), bufferOffset, maxCommandCount, cmdSignature->GetStride());
+			vkCmdDrawIndexedIndirect(m_vkCommandBuffer, iBuffer->GetVkBuffer(), bufferOffset, maxCommandCount, cSig->GetStride());
 	}
-	else if (cmdSignature->GetDrawType() == RendererAPI::IndirectArgumentType::IndirectDispatch)
+	else if (cSig->GetDrawType() == RendererAPI::IndirectArgumentType::IndirectDispatch)
 		vkCmdDispatchIndirect(m_vkCommandBuffer, iBuffer->GetVkBuffer(), bufferOffset);
 }
 
@@ -752,6 +748,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 	VkAccessFlags srcAccessFlags = 0;
 	VkAccessFlags dstAccessFlags = 0;
 
+	TRAP::Ref<VulkanQueue> q = std::dynamic_pointer_cast<VulkanQueue>(m_queue);
 	for (const auto& trans : bufferBarriers)
 	{
 		const TRAP::Ref<Buffer>& buffer = trans.Buffer;
@@ -786,11 +783,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 			if(trans.Acquire)
 			{
 				bufferBarrier->srcQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
-				bufferBarrier->dstQueueFamilyIndex = m_queue->GetQueueFamilyIndex();
+				bufferBarrier->dstQueueFamilyIndex = q->GetQueueFamilyIndex();
 			}
 			else if(trans.Release)
 			{
-				bufferBarrier->srcQueueFamilyIndex = m_queue->GetQueueFamilyIndex();
+				bufferBarrier->srcQueueFamilyIndex = q->GetQueueFamilyIndex();
 				bufferBarrier->dstQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
 			}
 			else
@@ -845,11 +842,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 			if(trans.Acquire)
 			{
 				imageBarrier->srcQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
-				imageBarrier->dstQueueFamilyIndex = m_queue->GetQueueFamilyIndex();
+				imageBarrier->dstQueueFamilyIndex = q->GetQueueFamilyIndex();
 			}
 			else if(trans.Release)
 			{
-				imageBarrier->srcQueueFamilyIndex = m_queue->GetQueueFamilyIndex();
+				imageBarrier->srcQueueFamilyIndex = q->GetQueueFamilyIndex();
 				imageBarrier->dstQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
 			}
 			else
@@ -904,11 +901,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 			if(trans.Acquire)
 			{
 				imageBarrier->srcQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
-				imageBarrier->dstQueueFamilyIndex = m_queue->GetQueueFamilyIndex();
+				imageBarrier->dstQueueFamilyIndex = q->GetQueueFamilyIndex();
 			}
 			else if(trans.Release)
 			{
-				imageBarrier->srcQueueFamilyIndex = m_queue->GetQueueFamilyIndex();
+				imageBarrier->srcQueueFamilyIndex = q->GetQueueFamilyIndex();
 				imageBarrier->dstQueueFamilyIndex = m_device->GetQueueFamilyIndices()[static_cast<uint32_t>(trans.QueueType)];
 			}
 			else
@@ -922,8 +919,8 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 		}
 	}
 
-	const VkPipelineStageFlags srcStageMask = DetermineVkPipelineStageFlags(srcAccessFlags, m_queue->GetQueueType());
-	const VkPipelineStageFlags dstStageMask = DetermineVkPipelineStageFlags(dstAccessFlags, m_queue->GetQueueType());
+	const VkPipelineStageFlags srcStageMask = DetermineVkPipelineStageFlags(srcAccessFlags, q->GetQueueType());
+	const VkPipelineStageFlags dstStageMask = DetermineVkPipelineStageFlags(dstAccessFlags, q->GetQueueType());
 
 	if(bufferBarrierCount || imageBarrierCount)
 		vkCmdPipelineBarrier(m_vkCommandBuffer, srcStageMask, dstStageMask, 0, 0, nullptr, bufferBarrierCount, bBarriers.data(), imageBarrierCount, iBarriers.data());

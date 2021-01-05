@@ -1537,3 +1537,18 @@ SITREP 01/04/2020|20w01a1
         - Added RenderTarget base class
         - Added RootSignature base class
         - Added Sampler base class
+
+SITREP 01/05/2020|20w01a2
+    - Changed TRAP Engine version to 20w501a2(0.7.16)
+    - Implemented abstraction for Vulkan*** classes ~>60 mins
+        - Added CommandSignature base class
+        - Added DescriptorPool base class
+        - Added DescriptorSet base class
+        - Added Fence base class
+        - Added Pipeline base class
+        - Added PipelineCache base class
+        - Added Queue base class
+        - Added Semaphore base class
+        - Added SwapChain base class
+    - RemdererAPI replaced Vulkan*** with equivalent abstraction ~>30 mins
+    - VulkanTest replaced Vulkan*** with equivalent abstraction ~<20 mins

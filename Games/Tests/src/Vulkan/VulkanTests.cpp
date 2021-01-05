@@ -53,23 +53,23 @@ void VulkanTests::OnAttach()
 	m_window = TRAP::MakeScope<TRAP::Window>(windowProps);
 	m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });*/
 
-	auto* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer().get());
+	auto* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer().get()); //TBD Remove
 	
 	//Vulkan Initialization
 	TRAP::Graphics::RendererAPI::QueueDesc queueDesc{};
 	queueDesc.Type = TRAP::Graphics::RendererAPI::QueueType::Graphics;
 	queueDesc.Flag = TRAP::Graphics::RendererAPI::QueueFlag::InitMicroprofile;
-	m_graphicsQueue = TRAP::MakeRef<TRAP::Graphics::API::VulkanQueue>(vkRenderer->GetDevice(), queueDesc);
+	m_graphicsQueue = TRAP::Graphics::Queue::Create(queueDesc);
 
 	for(uint32_t i = 0; i < ImageCount; ++i)
 	{
-		m_cmdPools[i] = TRAP::MakeRef<TRAP::Graphics::API::VulkanCommandPool>(TRAP::Graphics::RendererAPI::CommandPoolDesc{ m_graphicsQueue, false });
+		m_cmdPools[i] = TRAP::Graphics::CommandPool::Create({ m_graphicsQueue, false });
 		m_cmds[i] = m_cmdPools[i]->AllocateCommandBuffer(false);
 
-		m_renderCompleteFences[i] = TRAP::MakeRef<TRAP::Graphics::API::VulkanFence>(vkRenderer->GetDevice());
-		m_renderCompleteSemaphores[i] = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>(vkRenderer->GetDevice());
+		m_renderCompleteFences[i] = TRAP::Graphics::Fence::Create();
+		m_renderCompleteSemaphores[i] = TRAP::Graphics::Semaphore::Create();
 	}
-	m_imageAcquiredSemaphore = TRAP::MakeRef<TRAP::Graphics::API::VulkanSemaphore>(vkRenderer->GetDevice());
+	m_imageAcquiredSemaphore = TRAP::Graphics::Semaphore::Create();
 
 	const std::vector<uint8_t> vertSource = TRAP::VFS::ReadFile("Assets/Shaders/test.vert.spv");
 	const std::vector<uint8_t> fragSource = TRAP::VFS::ReadFile("Assets/Shaders/test.frag.spv");
@@ -82,7 +82,7 @@ void VulkanTests::OnAttach()
 	//RootSignature
 	TRAP::Graphics::RendererAPI::RootSignatureDesc rootDesc{};
 	rootDesc.Shaders = { m_defaultShader };
-	m_rootSignature = TRAP::MakeRef<TRAP::Graphics::API::VulkanRootSignature>(rootDesc);
+	m_rootSignature = TRAP::Graphics::RootSignature::Create(rootDesc);
 	
 	TRAP::Graphics::RendererAPI::SwapChainDesc swapChainDesc{};
 	swapChainDesc.WindowHandle = static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(TRAP::Application::GetWindow()->GetInternalWindow());
@@ -92,7 +92,7 @@ void VulkanTests::OnAttach()
 	swapChainDesc.ImageCount = ImageCount;
 	swapChainDesc.ColorFormat = TRAP::Graphics::API::GetRecommendedSwapchainFormat(false);
 	swapChainDesc.EnableVSync = false;
-	m_swapChain = TRAP::MakeRef<TRAP::Graphics::API::VulkanSwapChain>(vkRenderer->GetInstance(), vkRenderer->GetDevice(), vkRenderer->GetVMA(), swapChainDesc);
+	m_swapChain = TRAP::Graphics::SwapChain::Create(swapChainDesc);
 	
 	if (!m_swapChain)
 		TRAP::Application::Shutdown();
@@ -108,7 +108,7 @@ void VulkanTests::OnAttach()
 	pipelineSettings.SampleQuality = m_swapChain->GetRenderTargets()[0]->GetSampleQuality();
 	pipelineSettings.RootSignature = m_rootSignature;
 	pipelineSettings.ShaderProgram = m_defaultShader;
-	m_defaultPipeline = TRAP::MakeRef<TRAP::Graphics::API::VulkanPipeline>(vkRenderer->GetDevice(), desc);
+	m_defaultPipeline = TRAP::Graphics::Pipeline::Create(desc);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -176,11 +176,11 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		TRAP::Graphics::RenderCommand::Present(m_window);
 	}*/
 
-	uint32_t swapChainImageIndex = m_swapChain->AcquireNextImage(m_imageAcquiredSemaphore, nullptr);
+	const uint32_t swapChainImageIndex = m_swapChain->AcquireNextImage(m_imageAcquiredSemaphore, nullptr);
 
-	TRAP::Ref<TRAP::Graphics::API::VulkanRenderTarget> renderTarget = m_swapChain->GetRenderTargets()[swapChainImageIndex];
-	TRAP::Ref<TRAP::Graphics::API::VulkanSemaphore> renderCompleteSemaphore = m_renderCompleteSemaphores[m_frameIndex];
-	TRAP::Ref<TRAP::Graphics::API::VulkanFence> renderCompleteFence = m_renderCompleteFences[m_frameIndex];
+	const TRAP::Ref<TRAP::Graphics::RenderTarget> renderTarget = m_swapChain->GetRenderTargets()[swapChainImageIndex];
+	const TRAP::Ref<TRAP::Graphics::Semaphore> renderCompleteSemaphore = m_renderCompleteSemaphores[m_frameIndex];
+	TRAP::Ref<TRAP::Graphics::Fence> renderCompleteFence = m_renderCompleteFences[m_frameIndex];
 
 	//Stall if CPU is running "Swap Chain Buffer Count" frames ahead of GPU
 	if (renderCompleteFence->GetStatus() == TRAP::Graphics::RendererAPI::FenceStatus::Incomplete)
@@ -226,7 +226,8 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	presentDesc.WaitSemaphores = { renderCompleteSemaphore };
 	presentDesc.SwapChain = m_swapChain;
 	presentDesc.SubmitDone = true;
-	m_graphicsQueue->Present(presentDesc);
+	if (m_graphicsQueue->Present(presentDesc) != TRAP::Graphics::RendererAPI::PresentStatus::Success)
+		TRAP::Application::Shutdown();
 
 	m_frameIndex = (m_frameIndex + 1) % ImageCount;
 

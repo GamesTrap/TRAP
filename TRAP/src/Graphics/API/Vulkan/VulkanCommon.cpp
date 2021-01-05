@@ -1078,19 +1078,6 @@ TRAP::Graphics::RendererAPI::ImageFormat TRAP::Graphics::API::GetRecommendedSwap
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-double TRAP::Graphics::API::GetTimestampFrequency(const TRAP::Ref<VulkanQueue>& queue)
-{
-	TRAP_ASSERT(queue);
-
-	//The engine is using ticks per sec as frequency.
-	//Vulkan is nano sec per tick.
-	//Handle the conversion logic here.
-	
-	return 1.0f / (static_cast<double>(queue->GetTimestampPeriod()) * 1e-9);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Graphics::RendererAPI::ImageFormat TRAP::Graphics::API::ImageFormatFromVkFormat(VkFormat format)
 {
 	switch(format)

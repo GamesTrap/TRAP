@@ -25,7 +25,7 @@ namespace TRAP::Graphics
 		virtual RendererAPI::DescriptorType GetDescriptorType() const = 0;
 
 	protected:
-		TRAP::Ref<API::VulkanTexture> m_texture;
+		TRAP::Ref<API::VulkanTexture> m_texture; //TODO
 
 		RendererAPI::ClearValue m_clearValue;
 		uint32_t m_arraySize;

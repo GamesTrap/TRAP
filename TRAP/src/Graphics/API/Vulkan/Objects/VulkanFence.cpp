@@ -5,9 +5,10 @@
 #include "VulkanDevice.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
-TRAP::Graphics::API::VulkanFence::VulkanFence(TRAP::Ref<VulkanDevice> device)
-	: m_fence(VK_NULL_HANDLE), m_submitted(false), m_device(std::move(device))
+TRAP::Graphics::API::VulkanFence::VulkanFence()
+	: m_fence(VK_NULL_HANDLE), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice())
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
 
@@ -43,13 +44,6 @@ VkFence& TRAP::Graphics::API::VulkanFence::GetVkFence()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanFence::IsSubmitted() const
-{
-	return m_submitted;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Graphics::RendererAPI::FenceStatus TRAP::Graphics::API::VulkanFence::GetStatus()
 {
 	if(m_submitted)
@@ -79,11 +73,8 @@ void TRAP::Graphics::API::VulkanFence::Wait()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanFence::WaitForFences(const TRAP::Scope<VulkanDevice>& device,
-                                                     std::vector<VulkanFence>& fences)
+void TRAP::Graphics::API::VulkanFence::WaitForFences(std::vector<VulkanFence>& fences)
 {
-	TRAP_ASSERT(device, "Device is nullptr");
-
 	if (!fences.empty())
 	{
 		for(VulkanFence& f : fences)

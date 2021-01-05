@@ -2,18 +2,19 @@
 #define _TRAP_VULKANPIPELINECACHE_H_
 
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Objects/PipelineCache.h"
 
 namespace TRAP::Graphics::API
 {
 	class VulkanDevice;
 	
-	class VulkanPipelineCache
+	class VulkanPipelineCache final : public PipelineCache
 	{
 	public:
-		VulkanPipelineCache(TRAP::Ref<VulkanDevice> device, const RendererAPI::PipelineCacheDesc& desc);
+		explicit VulkanPipelineCache(const RendererAPI::PipelineCacheDesc& desc);
 		~VulkanPipelineCache();
 
-		void GetPipelineCacheData(std::size_t* size, void* data) const;
+		void GetPipelineCacheData(std::size_t* size, void* data) const override;
 
 		VkPipelineCache GetVkPipelineCache() const;
 		

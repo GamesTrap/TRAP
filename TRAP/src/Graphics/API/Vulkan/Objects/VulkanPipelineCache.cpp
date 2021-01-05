@@ -4,9 +4,10 @@
 #include "VulkanDevice.h"
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
-TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(TRAP::Ref<VulkanDevice> device, const RendererAPI::PipelineCacheDesc& desc)
-	: m_cache(VK_NULL_HANDLE), m_device(std::move(device))
+TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI::PipelineCacheDesc& desc)
+	: m_cache(VK_NULL_HANDLE), m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice())
 {
 	TRAP_ASSERT(m_device);
 	

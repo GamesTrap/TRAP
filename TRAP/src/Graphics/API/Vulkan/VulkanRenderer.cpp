@@ -121,7 +121,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 
 	m_vma = TRAP::MakeRef<VulkanMemoryAllocator>(m_device, m_instance);
 
-	m_descriptorPool = TRAP::MakeRef<VulkanDescriptorPool>(m_device, 8192);
+	m_descriptorPool = TRAP::MakeRef<VulkanDescriptorPool>(8192);
 
 	m_device->FindQueueFamilyIndices();
 
@@ -582,7 +582,7 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	//Create Command Buffer to transition resources to the correct state
 	QueueDesc queueDesc{};
 	queueDesc.Type = QueueType::Graphics;
-	TRAP::Ref<VulkanQueue> graphicsQueue = TRAP::MakeRef<VulkanQueue>(m_device, queueDesc);
+	TRAP::Ref<VulkanQueue> graphicsQueue = TRAP::MakeRef<VulkanQueue>(queueDesc);
 
 	CommandPoolDesc cmdPoolDesc{};
 	cmdPoolDesc.Queue = graphicsQueue;

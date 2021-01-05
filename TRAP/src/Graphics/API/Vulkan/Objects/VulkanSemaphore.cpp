@@ -4,9 +4,11 @@
 #include "VulkanInits.h"
 #include "VulkanDevice.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 
-TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore(TRAP::Ref<VulkanDevice> device)
-	: m_semaphore(VK_NULL_HANDLE), m_signaled(false), m_device(std::move(device))
+TRAP::Graphics::API::VulkanSemaphore::VulkanSemaphore()
+	: m_semaphore(VK_NULL_HANDLE),
+	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice())
 {
 	TRAP_ASSERT(m_device, "device is nullptr");
 
@@ -38,11 +40,4 @@ TRAP::Graphics::API::VulkanSemaphore::~VulkanSemaphore()
 VkSemaphore& TRAP::Graphics::API::VulkanSemaphore::GetVkSemaphore()
 {
 	return m_semaphore;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Graphics::API::VulkanSemaphore::IsSignaled() const
-{
-	return m_signaled;
 }

@@ -3,9 +3,14 @@
 
 #include <TRAP.h>
 
-namespace TRAP::Graphics::API
+namespace TRAP::Graphics
 {
-	class VulkanCommandPool;
+	class SwapChain;
+	class Queue;
+	class CommandPool;
+	class Fence;
+	class Semaphore;
+	class Pipeline;
 }
 
 class VulkanTests final : public TRAP::Layer
@@ -27,18 +32,18 @@ private:
 	TRAP::Utils::Timer m_fpsTimer;
 
 	inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
-	TRAP::Ref<TRAP::Graphics::API::VulkanQueue> m_graphicsQueue;
-	std::array<TRAP::Ref<TRAP::Graphics::API::VulkanCommandPool>, ImageCount> m_cmdPools;
+	TRAP::Ref<TRAP::Graphics::Queue> m_graphicsQueue;
+	std::array<TRAP::Ref<TRAP::Graphics::CommandPool>, ImageCount> m_cmdPools;
 	std::array<TRAP::Graphics::CommandBuffer*, ImageCount> m_cmds;
 
-	TRAP::Ref<TRAP::Graphics::API::VulkanSwapChain> m_swapChain;
-	std::array<TRAP::Ref<TRAP::Graphics::API::VulkanFence>, ImageCount> m_renderCompleteFences;
-	TRAP::Ref<TRAP::Graphics::API::VulkanSemaphore> m_imageAcquiredSemaphore;
-	std::array<TRAP::Ref<TRAP::Graphics::API::VulkanSemaphore>, ImageCount> m_renderCompleteSemaphores;
+	TRAP::Ref<TRAP::Graphics::SwapChain> m_swapChain;
+	std::array<TRAP::Ref<TRAP::Graphics::Fence>, ImageCount> m_renderCompleteFences;
+	TRAP::Ref<TRAP::Graphics::Semaphore> m_imageAcquiredSemaphore;
+	std::array<TRAP::Ref<TRAP::Graphics::Semaphore>, ImageCount> m_renderCompleteSemaphores;
 
 	TRAP::Ref<TRAP::Graphics::API::VulkanShader> m_defaultShader;
 	TRAP::Ref<TRAP::Graphics::RootSignature> m_rootSignature;
-	TRAP::Ref<TRAP::Graphics::API::VulkanPipeline> m_defaultPipeline;
+	TRAP::Ref<TRAP::Graphics::Pipeline> m_defaultPipeline;
 
 	uint32_t m_frameIndex;
 };

@@ -751,7 +751,7 @@ void TRAP::Graphics::API::VulkanTexture::FillVirtualTexture(CommandBuffer& cmd)
 		m_SVT->BindSparseInfo.imageOpaqueBindCount = (m_SVT->OpaqueMemoryBindInfo.bindCount > 0) ? 1 : 0;
 		m_SVT->BindSparseInfo.pImageOpaqueBinds = &m_SVT->OpaqueMemoryBindInfo;
 
-		VkCall(vkQueueBindSparse(cmd.GetQueue()->GetVkQueue(), static_cast<uint32_t>(1), &m_SVT->BindSparseInfo, VK_NULL_HANDLE));
+		VkCall(vkQueueBindSparse(std::dynamic_pointer_cast<VulkanQueue>(cmd.GetQueue())->GetVkQueue(), static_cast<uint32_t>(1), &m_SVT->BindSparseInfo, VK_NULL_HANDLE));
 	}
 }
 
@@ -959,7 +959,7 @@ void TRAP::Graphics::API::VulkanTexture::FillVirtualTextureLevel(CommandBuffer* 
 		m_SVT->BindSparseInfo.imageOpaqueBindCount = (m_SVT->OpaqueMemoryBindInfo.bindCount > 0) ? 1 : 0;
 		m_SVT->BindSparseInfo.pImageOpaqueBinds = &m_SVT->OpaqueMemoryBindInfo;
 
-		VkCall(vkQueueBindSparse(cmd->GetQueue()->GetVkQueue(), static_cast<uint32_t>(1), &m_SVT->BindSparseInfo, VK_NULL_HANDLE));
+		VkCall(vkQueueBindSparse(std::dynamic_pointer_cast<VulkanQueue>(cmd->GetQueue())->GetVkQueue(), static_cast<uint32_t>(1), &m_SVT->BindSparseInfo, VK_NULL_HANDLE));
 	}
 }
 

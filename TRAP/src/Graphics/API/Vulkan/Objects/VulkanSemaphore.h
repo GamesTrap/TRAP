@@ -2,28 +2,25 @@
 #define _TRAP_VULKANSEMAPHORE_H_
 
 #include "VulkanSwapChain.h"
+#include "Graphics/API/Objects/Semaphore.h"
 
 namespace TRAP::Graphics::API
 {
 	class VulkanQueue;
 	class VulkanDevice;
 
-	class VulkanSemaphore
+	class VulkanSemaphore final : public Semaphore
 	{
 	public:
-		explicit VulkanSemaphore(TRAP::Ref<VulkanDevice> device);
+		explicit VulkanSemaphore();
 		~VulkanSemaphore();
 
 		VkSemaphore& GetVkSemaphore();
-
-		bool IsSignaled() const;
 		
 	private:
-		friend VulkanQueue;
-		friend uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<VulkanSemaphore>& signalSemaphore, const TRAP::Ref<VulkanFence>& fence) const;
+		friend uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore, const TRAP::Ref<Fence>& fence) const;
 		
 		VkSemaphore m_semaphore;
-		bool m_signaled;
 		
 		TRAP::Ref<VulkanDevice> m_device;
 	};

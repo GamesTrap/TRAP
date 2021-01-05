@@ -6,26 +6,21 @@
 #include "VulkanCommandBuffer.h"
 #include "VulkanCommandPool.h"
 #include "VulkanInits.h"
-#include "VulkanInstance.h"
 #include "VulkanPhysicalDevice.h"
 #include "VulkanDevice.h"
 #include "VulkanSurface.h"
 #include "VulkanRenderTarget.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
-TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(TRAP::Ref<VulkanInstance> instance,
-                                                      TRAP::Ref<VulkanDevice> device,
-                                                      TRAP::Ref<VulkanMemoryAllocator> vma,
-                                                      RendererAPI::SwapChainDesc& desc)
-	: m_vma(std::move(vma)),
-	  m_instance(std::move(instance)),
-	  m_device(std::move(device)),
+TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc& desc)
+	: m_vma(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetVMA()),
+	  m_instance(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetInstance()),
+	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
 	  m_presentQueue(),
 	  m_swapChain(),
 	  m_presentQueueFamilyIndex(),
 	  m_imageCount(),
-	  m_enableVSync(),
-	  m_desc()
+	  m_enableVSync()
 {
 	TRAP_ASSERT(m_device);
 	TRAP_ASSERT(desc.ImageCount <= 3);
@@ -150,7 +145,7 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 
 	VkSharingMode sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	uint32_t queueFamilyIndexCount = 0;
-	std::array<uint32_t, 2> queueFamilyIndices = { static_cast<uint32_t>(desc.PresentQueues[0]->GetQueueFamilyIndex()), 0 };
+	std::array<uint32_t, 2> queueFamilyIndices = { static_cast<uint32_t>(std::dynamic_pointer_cast<VulkanQueue>(desc.PresentQueues[0])->GetQueueFamilyIndex()), 0 };
 	uint32_t presentQueueFamilyIndex = -1;
 
 	const std::vector<VkQueueFamilyProperties>& queueFamilyProperties = m_device->GetPhysicalDevice()->GetQueueFamilyProperties();
@@ -162,7 +157,7 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 		{
 			VkBool32 supportsPresent = VK_FALSE;
 			const VkResult res = vkGetPhysicalDeviceSurfaceSupportKHR(m_device->GetPhysicalDevice()->GetVkPhysicalDevice(), index, surface->GetVkSurface(), &supportsPresent);
-			if ((res == VK_SUCCESS) && (supportsPresent == VK_TRUE) && desc.PresentQueues[0]->GetQueueFamilyIndex() != index)
+			if ((res == VK_SUCCESS) && (supportsPresent == VK_TRUE) && std::dynamic_pointer_cast<VulkanQueue>(desc.PresentQueues[0])->GetQueueFamilyIndex() != index)
 			{
 				presentQueueFamilyIndex = index;
 				break;
@@ -280,13 +275,13 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 	TRAP::Ref<VulkanFence> fence = nullptr;
 	RendererAPI::QueueDesc queueDesc{};
 	queueDesc.Type = RendererAPI::QueueType::Graphics;
-	queue = TRAP::MakeRef<VulkanQueue>(m_device, queueDesc);
+	queue = TRAP::MakeRef<VulkanQueue>(queueDesc);
 	RendererAPI::CommandPoolDesc cmdPoolDesc{};
 	cmdPoolDesc.Queue = queue;
 	cmdPoolDesc.Transient = false;
 	cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
 	cmd = cmdPool->AllocateCommandBuffer(false);
-	fence = TRAP::MakeRef<VulkanFence>(m_device);
+	fence = TRAP::MakeRef<VulkanFence>();
 	cmd->Begin();
 	cmd->ResourceBarrier({}, {}, barriers);
 	cmd->End();
@@ -324,7 +319,7 @@ void TRAP::Graphics::API::VulkanSwapChain::RemoveSwapchain()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<VulkanSemaphore>& signalSemaphore, const TRAP::Ref<VulkanFence>& fence) const
+uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore, const TRAP::Ref<Fence>& fence) const
 {
 	TRAP_ASSERT(m_device != VK_NULL_HANDLE);
 	TRAP_ASSERT(m_swapChain != VK_NULL_HANDLE);
@@ -335,31 +330,33 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 
 	if(fence != nullptr)
 	{
-		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(), VK_NULL_HANDLE, fence->GetVkFence(), &imageIndex);
+		TRAP::Ref<VulkanFence> fen = std::dynamic_pointer_cast<VulkanFence>(fence);
+		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(), VK_NULL_HANDLE, fen->GetVkFence(), &imageIndex);
 
 		//If SwapChain is out of date, let caller know by returning -1
 		if(res == VK_ERROR_OUT_OF_DATE_KHR)
 		{
-			VkCall(vkResetFences(m_device->GetVkDevice(), 1, &fence->GetVkFence()));
-			fence->m_submitted = false;
+			VkCall(vkResetFences(m_device->GetVkDevice(), 1, &fen->GetVkFence()));
+			fen->m_submitted = false;
 			return -1;
 		}
 
-		fence->m_submitted = true;
+		fen->m_submitted = true;
 	}
 	else
 	{
-		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(), signalSemaphore->GetVkSemaphore(), VK_NULL_HANDLE, &imageIndex);
+		TRAP::Ref<VulkanSemaphore> sema = std::dynamic_pointer_cast<VulkanSemaphore>(signalSemaphore);
+		res = vkAcquireNextImageKHR(m_device->GetVkDevice(), m_swapChain, std::numeric_limits<uint64_t>::max(), sema->GetVkSemaphore(), VK_NULL_HANDLE, &imageIndex);
 
 		//If SwapChain is out of date, let caller know by returning -1
 		if(res == VK_ERROR_OUT_OF_DATE_KHR)
 		{
-			signalSemaphore->m_signaled = false;
+			sema->m_signaled = false;
 			return -1;
 		}
 
 		VkCall(res);
-		signalSemaphore->m_signaled = true;
+		sema->m_signaled = true;
 	}
 
 	return imageIndex;
@@ -390,11 +387,4 @@ const VkSwapchainKHR& TRAP::Graphics::API::VulkanSwapChain::GetVkSwapChain() con
 VkQueue TRAP::Graphics::API::VulkanSwapChain::GetPresentVkQueue() const
 {
 	return m_presentQueue;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-const std::vector<TRAP::Ref<TRAP::Graphics::API::VulkanRenderTarget>>& TRAP::Graphics::API::VulkanSwapChain::GetRenderTargets() const
-{
-	return m_renderTargets;
 }

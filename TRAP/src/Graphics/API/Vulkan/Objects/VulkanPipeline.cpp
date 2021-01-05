@@ -9,8 +9,10 @@
 #include "VulkanInits.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 
-TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(TRAP::Ref<VulkanDevice> device, const RendererAPI::PipelineDesc& desc)
-	: m_vkPipeline(VK_NULL_HANDLE), m_type(), m_device(std::move(device))
+TRAP::Graphics::API::VulkanPipeline::VulkanPipeline(const RendererAPI::PipelineDesc& desc)
+	: m_vkPipeline(VK_NULL_HANDLE),
+	  m_type(),
+	  m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice())
 {
 	TRAP_ASSERT(m_device);
 	
@@ -68,7 +70,7 @@ TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 void TRAP::Graphics::API::VulkanPipeline::AddComputePipeline(const RendererAPI::PipelineDesc& desc)
 {
 	const RendererAPI::ComputePipelineDesc& computeDesc = std::get<RendererAPI::ComputePipelineDesc>(desc.Pipeline);
-	VkPipelineCache psoCache = desc.Cache ? desc.Cache->GetVkPipelineCache() : VK_NULL_HANDLE;
+	VkPipelineCache psoCache = desc.Cache ? std::dynamic_pointer_cast<VulkanPipelineCache>(desc.Cache)->GetVkPipelineCache() : VK_NULL_HANDLE;
 
 	TRAP_ASSERT(computeDesc.ShaderProgram);
 	TRAP_ASSERT(computeDesc.RootSignature);
@@ -93,7 +95,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddComputePipeline(const RendererAPI::
 void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI::PipelineDesc& desc)
 {
 	const RendererAPI::GraphicsPipelineDesc& graphicsDesc = std::get<RendererAPI::GraphicsPipelineDesc>(desc.Pipeline);
-	VkPipelineCache psoCache = desc.Cache ? desc.Cache->GetVkPipelineCache() : VK_NULL_HANDLE;
+	VkPipelineCache psoCache = desc.Cache ? std::dynamic_pointer_cast<VulkanPipelineCache>(desc.Cache)->GetVkPipelineCache() : VK_NULL_HANDLE;
 
 	TRAP_ASSERT(graphicsDesc.ShaderProgram);
 	TRAP_ASSERT(graphicsDesc.RootSignature);

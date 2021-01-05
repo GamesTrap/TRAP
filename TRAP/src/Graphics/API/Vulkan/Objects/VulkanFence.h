@@ -3,34 +3,31 @@
 
 #include "VulkanSwapChain.h"
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Objects/Fence.h"
 
 namespace TRAP::Graphics::API
 {
 	class VulkanQueue;
 	class VulkanDevice;
 
-	class VulkanFence
+	class VulkanFence final : public Fence
 	{
 	public:
-		explicit VulkanFence(TRAP::Ref<VulkanDevice> device);
+		explicit VulkanFence();
 		~VulkanFence();
 
 		VkFence& GetVkFence();
 
-		bool IsSubmitted() const;
+		RendererAPI::FenceStatus GetStatus() override;
 
-		RendererAPI::FenceStatus GetStatus();
+		void Wait() override;
 
-		void Wait();
-
-		static void WaitForFences(const TRAP::Scope<VulkanDevice>& device, std::vector<VulkanFence>& fences);
+		static void WaitForFences(std::vector<VulkanFence>& fences);
 		
 	private:
-		friend VulkanQueue;
-		friend uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<VulkanSemaphore>& signalSemaphore, const TRAP::Ref<VulkanFence>& fence) const;
+		friend uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore, const TRAP::Ref<Fence>& fence) const;
 		
 		VkFence m_fence;
-		bool m_submitted;
 		TRAP::Ref<VulkanDevice> m_device;
 	};
 }

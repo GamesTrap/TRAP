@@ -2,11 +2,12 @@
 #define _TRAP_VULKANDESCRIPTORSET_H_
 
 #include "VulkanDescriptorPool.h"
+#include "Graphics/API/Objects/DescriptorSet.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
 namespace TRAP::Graphics::API
 {	
-	class VulkanDescriptorSet
+	class VulkanDescriptorSet final : public DescriptorSet
 	{
 	public:
 		~VulkanDescriptorSet();
@@ -18,7 +19,7 @@ namespace TRAP::Graphics::API
 		std::vector<VulkanRenderer::SizeOffset> GetDynamicSizeOffsets() const;
 		uint32_t GetMaxSets() const;
 
-		void Update(uint32_t index, uint32_t count, const std::vector<RendererAPI::DescriptorData>& params);
+		void Update(uint32_t index, uint32_t count, const std::vector<RendererAPI::DescriptorData>& params) override;
 		
 	private:
 		friend VulkanDescriptorPool;

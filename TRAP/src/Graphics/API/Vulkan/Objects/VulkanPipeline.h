@@ -2,15 +2,16 @@
 #define _TRAP_VULKANPIPELINE_H_
 
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Objects/Pipeline.h"
 
 namespace TRAP::Graphics::API
 {
 	class VulkanDevice;
 
-	class VulkanPipeline
+	class VulkanPipeline final : public Pipeline
 	{
 	public:
-		VulkanPipeline(TRAP::Ref<VulkanDevice> device, const RendererAPI::PipelineDesc& desc);
+		explicit VulkanPipeline(const RendererAPI::PipelineDesc& desc);
 		~VulkanPipeline();
 
 		VkPipeline& GetVkPipeline();

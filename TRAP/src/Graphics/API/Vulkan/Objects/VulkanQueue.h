@@ -2,15 +2,16 @@
 #define _TRAP_VULKANQUEUE_H_
 
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/API/Objects/Queue.h"
 
 namespace TRAP::Graphics::API
 {
 	class VulkanDevice;
 	
-	class VulkanQueue
+	class VulkanQueue final : public Queue
 	{
 	public:
-		VulkanQueue(TRAP::Ref<VulkanDevice> device, const RendererAPI::QueueDesc& desc);
+		explicit VulkanQueue(const RendererAPI::QueueDesc& desc);
 		~VulkanQueue();
 
 		VkQueue& GetVkQueue();
@@ -19,12 +20,13 @@ namespace TRAP::Graphics::API
 		RendererAPI::QueueType GetQueueType() const;
 		uint32_t GetFlags() const;
 		float GetTimestampPeriod() const;
+		double GetTimestampFrequency() const;
 
-		void WaitQueueIdle() const;
+		void WaitQueueIdle() const override;
 
-		void Submit(const RendererAPI::QueueSubmitDesc& desc) const;
+		void Submit(const RendererAPI::QueueSubmitDesc& desc) const override;
 
-		RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const;
+		RendererAPI::PresentStatus Present(const RendererAPI::QueuePresentDesc& desc) const override;
 		
 	private:
 		TRAP::Ref<VulkanDevice> m_device;

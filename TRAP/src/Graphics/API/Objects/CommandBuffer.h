@@ -5,30 +5,27 @@
 
 namespace TRAP::Graphics
 {
+	class DescriptorSet;
+	class CommandSignature;
+	class Pipeline;
 	class QueryPool;
 	class Buffer;
 	class RenderTarget;
 	class RootSignature;
-
-	namespace API
-	{
-		class VulkanDevice;
-		class VulkanCommandSignature;
-	}
 
 	class CommandBuffer
 	{
 	public:
 		virtual ~CommandBuffer() = default;
 
-		virtual TRAP::Ref<API::VulkanQueue> GetQueue() const = 0; //TODO
+		virtual TRAP::Ref<Queue> GetQueue() const;
 
 		virtual void BindPushConstants(const TRAP::Ref<RootSignature>& rootSignature, const char* name, const void* constants) const = 0;
 		virtual void BindPushConstantsByIndex(const TRAP::Ref<RootSignature>& rootSignature, uint32_t paramIndex, const void* constants) const = 0;
-		virtual void BindDescriptorSet(uint32_t index, API::VulkanDescriptorSet& descriptorSet) = 0; //TODO
+		virtual void BindDescriptorSet(uint32_t index, DescriptorSet& descriptorSet) = 0;
 		virtual void BindIndexBuffer(const TRAP::Ref<Buffer>& buffer, RendererAPI::IndexType indexType, uint64_t offset) const = 0;
 		virtual void BindVertexBuffer(const std::vector<TRAP::Ref<Buffer>>& buffers, const std::vector<uint32_t>& strides, const std::vector<uint64_t>& offsets) const = 0;
-		virtual void BindPipeline(const TRAP::Ref<API::VulkanPipeline>& pipeline) const = 0; //TODO
+		virtual void BindPipeline(const TRAP::Ref<Pipeline>& pipeline) const = 0;
 		virtual void BindRenderTargets(const std::vector<TRAP::Ref<RenderTarget>>& renderTargets,
 			const TRAP::Ref<RenderTarget>& depthStencil,
 			const RendererAPI::LoadActionsDesc* loadActions,
@@ -51,12 +48,12 @@ namespace TRAP::Graphics
 		virtual void DrawInstanced(uint32_t vertexCount, uint32_t firstVertex, uint32_t instanceCount, uint32_t firstInstance) const = 0;
 		virtual void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, uint32_t firstVertex) const = 0;
 		virtual void DrawIndexedInstanced(uint32_t indexCount, uint32_t firstIndex, uint32_t instanceCount, uint32_t firstInstance, uint32_t firstVertex) const = 0;
-		virtual void ExecuteIndirect(const TRAP::Ref<API::VulkanCommandSignature>& cmdSignature,
+		virtual void ExecuteIndirect(const TRAP::Ref<CommandSignature>& cmdSignature,
 			uint32_t maxCommandCount,
 			const TRAP::Ref<Buffer>& indirectBuffer,
 			uint64_t bufferOffset,
 			const TRAP::Ref<Buffer>& counterBuffer,
-			uint64_t counterBufferOffset) const = 0; //TODO
+			uint64_t counterBufferOffset) const = 0;
 		
 		virtual void Dispatch(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const = 0;
 
@@ -77,7 +74,7 @@ namespace TRAP::Graphics
 	protected:
 		CommandBuffer();
 
-		TRAP::Ref<API::VulkanQueue> m_queue; //TODO
+		TRAP::Ref<Queue> m_queue;
 	};
 }
 

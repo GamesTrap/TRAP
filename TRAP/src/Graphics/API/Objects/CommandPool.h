@@ -23,7 +23,7 @@ namespace TRAP::Graphics
 	protected:
 		std::vector<TRAP::Scope<CommandBuffer>> m_commandBuffers;
 
-		TRAP::Ref<API::VulkanQueue> m_queue; //TODO Change to Queue
+		TRAP::Ref<Queue> m_queue;
 	};
 }
 
