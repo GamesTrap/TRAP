@@ -3,18 +3,18 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/ShaderReflection.h"
+#include "Graphics/Shaders/Shader.h"
 
 namespace TRAP::Graphics::API
 {
 	class VulkanDevice;
 	
-	class VulkanShader
+	class VulkanShader final : public Shader
 	{
 	public:
-		VulkanShader(TRAP::Ref<VulkanDevice> device, const RendererAPI::BinaryShaderDesc& desc);
+		VulkanShader(const std::string& name, const RendererAPI::BinaryShaderDesc& desc);
 		~VulkanShader();
-
-		RendererAPI::ShaderStage GetShaderStages() const;
+		
 		const std::array<uint32_t, 3>& GetNumThreadsPerGroup() const;
 
 		const std::vector<VkShaderModule>& GetVkShaderModules() const;
@@ -24,7 +24,6 @@ namespace TRAP::Graphics::API
 	private:
 		TRAP::Ref<VulkanDevice> m_device;
 		
-		RendererAPI::ShaderStage m_stages;
 		std::array<uint32_t, 3> m_numThreadsPerGroup;
 
 		std::vector<VkShaderModule> m_shaderModules;

@@ -4,32 +4,34 @@
 #include "VulkanDevice.h"
 #include "Graphics/API/ShaderReflection.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Vulkan/VulkanShaderReflection.h"
 
-TRAP::Graphics::API::VulkanShader::VulkanShader(TRAP::Ref<VulkanDevice> device, const RendererAPI::BinaryShaderDesc& desc)
-	: m_device(std::move(device)),
-	  m_stages(),
+TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const RendererAPI::BinaryShaderDesc& desc)
+	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
 	  m_numThreadsPerGroup(),
 	  m_shaderModules(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
 	  m_reflection(nullptr),
 	  m_entryNames(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT))
 {
+	m_name = name;
+	
 	TRAP_ASSERT(m_device, "device is nullptr");
 
 #ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererVulkanShaderPrefix, "Creating Shader");
+	TP_DEBUG(Log::RendererVulkanShaderPrefix, "Creating Shader: \"", m_name, "\"");
 #endif
 
 	uint32_t counter = 0;
 
-	m_stages = desc.Stages;
+	m_shaderStages = desc.Stages;
 
 	std::array<ShaderReflection::ShaderReflection, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> stageReflections{};
 	
 	for(uint32_t i = 0; i < stageReflections.size(); i++)
 	{
 		const RendererAPI::ShaderStage stageMask = static_cast<RendererAPI::ShaderStage>(1 << i);
-		if(stageMask == (m_stages & stageMask))
+		if(stageMask == (m_shaderStages & stageMask))
 		{
 			VkShaderModuleCreateInfo createInfo{};
 			createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -44,8 +46,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(TRAP::Ref<VulkanDevice> device, 
 				{
 					stageReflections[counter] = VkCreateShaderReflection(desc.Vertex.ByteCode, stageMask);
 
-					createInfo.codeSize = desc.Vertex.ByteCode.size();
-					createInfo.pCode = reinterpret_cast<const uint32_t*>(desc.Vertex.ByteCode.data());
+					createInfo.codeSize = desc.Vertex.ByteCode.size() * sizeof(uint32_t);
+					createInfo.pCode = desc.Vertex.ByteCode.data();
 					stageDesc = &desc.Vertex;
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr, &m_shaderModules[counter]));
 					break;
@@ -55,8 +57,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(TRAP::Ref<VulkanDevice> device, 
 				{
 					stageReflections[counter] = VkCreateShaderReflection(desc.TessellationControl.ByteCode, stageMask);
 
-					createInfo.codeSize = desc.TessellationControl.ByteCode.size();
-					createInfo.pCode = reinterpret_cast<const uint32_t*>(desc.TessellationControl.ByteCode.data());
+					createInfo.codeSize = desc.TessellationControl.ByteCode.size() * sizeof(uint32_t);
+					createInfo.pCode = desc.TessellationControl.ByteCode.data();
 					stageDesc = &desc.TessellationControl;
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr, &m_shaderModules[counter]));
 					break;
@@ -66,8 +68,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(TRAP::Ref<VulkanDevice> device, 
 				{
 					stageReflections[counter] = VkCreateShaderReflection(desc.TessellationEvaluation.ByteCode, stageMask);
 
-					createInfo.codeSize = desc.TessellationEvaluation.ByteCode.size();
-					createInfo.pCode = reinterpret_cast<const uint32_t*>(desc.TessellationEvaluation.ByteCode.data());
+					createInfo.codeSize = desc.TessellationEvaluation.ByteCode.size() * sizeof(uint32_t);
+					createInfo.pCode = desc.TessellationEvaluation.ByteCode.data();
 					stageDesc = &desc.TessellationEvaluation;
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr, &m_shaderModules[counter]));
 					break;
@@ -77,8 +79,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(TRAP::Ref<VulkanDevice> device, 
 				{
 					stageReflections[counter] = VkCreateShaderReflection(desc.Geometry.ByteCode, stageMask);
 
-					createInfo.codeSize = desc.Geometry.ByteCode.size();
-					createInfo.pCode = reinterpret_cast<const uint32_t*>(desc.Geometry.ByteCode.data());
+					createInfo.codeSize = desc.Geometry.ByteCode.size() * sizeof(uint32_t);
+					createInfo.pCode = desc.Geometry.ByteCode.data();
 					stageDesc = &desc.Geometry;
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr, &m_shaderModules[counter]));
 					break;
@@ -88,8 +90,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(TRAP::Ref<VulkanDevice> device, 
 				{
 					stageReflections[counter] = VkCreateShaderReflection(desc.Fragment.ByteCode, stageMask);
 
-					createInfo.codeSize = desc.Fragment.ByteCode.size();
-					createInfo.pCode = reinterpret_cast<const uint32_t*>(desc.Fragment.ByteCode.data());
+					createInfo.codeSize = desc.Fragment.ByteCode.size() * sizeof(uint32_t);
+					createInfo.pCode = desc.Fragment.ByteCode.data();
 					stageDesc = &desc.Fragment;
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr, &m_shaderModules[counter]));
 					break;
@@ -100,8 +102,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(TRAP::Ref<VulkanDevice> device, 
 				{
 					stageReflections[counter] = VkCreateShaderReflection(desc.Compute.ByteCode, stageMask);
 
-					createInfo.codeSize = desc.Compute.ByteCode.size();
-					createInfo.pCode = reinterpret_cast<const uint32_t*>(desc.Compute.ByteCode.data());
+					createInfo.codeSize = desc.Compute.ByteCode.size() * sizeof(uint32_t);
+					createInfo.pCode = desc.Compute.ByteCode.data();
 					stageDesc = &desc.Compute;
 					VkCall(vkCreateShaderModule(m_device->GetVkDevice(), &createInfo, nullptr, &m_shaderModules[counter]));
 					break;
@@ -124,39 +126,31 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(TRAP::Ref<VulkanDevice> device, 
 TRAP::Graphics::API::VulkanShader::~VulkanShader()
 {
 #ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererVulkanShaderPrefix, "Destroying Shader");
+	TP_DEBUG(Log::RendererVulkanShaderPrefix, "Destroying Shader: \"", m_name, "\"");
 #endif
 
-	if (static_cast<uint32_t>(m_stages & RendererAPI::ShaderStage::Vertex))
+	if (static_cast<uint32_t>(m_shaderStages & RendererAPI::ShaderStage::Vertex))
 		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->VertexStageIndex], nullptr);
 
-	if (static_cast<uint32_t>(m_stages & RendererAPI::ShaderStage::TessellationControl))
+	if (static_cast<uint32_t>(m_shaderStages & RendererAPI::ShaderStage::TessellationControl))
 		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->TessellationControlStageIndex], nullptr);
 
-	if (static_cast<uint32_t>(m_stages & RendererAPI::ShaderStage::TessellationEvaluation))
+	if (static_cast<uint32_t>(m_shaderStages & RendererAPI::ShaderStage::TessellationEvaluation))
 		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->TessellationEvaluationStageIndex], nullptr);
 
-	if (static_cast<uint32_t>(m_stages & RendererAPI::ShaderStage::Geometry))
+	if (static_cast<uint32_t>(m_shaderStages & RendererAPI::ShaderStage::Geometry))
 		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->GeometryStageIndex], nullptr);
 
-	if (static_cast<uint32_t>(m_stages & RendererAPI::ShaderStage::Fragment))
+	if (static_cast<uint32_t>(m_shaderStages & RendererAPI::ShaderStage::Fragment))
 		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[m_reflection->FragmentStageIndex], nullptr);
 	
-	if (static_cast<uint32_t>(m_stages & RendererAPI::ShaderStage::Compute))
+	if (static_cast<uint32_t>(m_shaderStages & RendererAPI::ShaderStage::Compute))
 		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[0], nullptr);
 
-	if (static_cast<uint32_t>(m_stages & RendererAPI::ShaderStage::RayTracing))
+	if (static_cast<uint32_t>(m_shaderStages & RendererAPI::ShaderStage::RayTracing))
 		vkDestroyShaderModule(m_device->GetVkDevice(), m_shaderModules[0], nullptr);
 	
 	m_reflection.reset();
-	m_reflection = nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::RendererAPI::ShaderStage TRAP::Graphics::API::VulkanShader::GetShaderStages() const
-{
-	return m_stages;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

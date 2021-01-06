@@ -12,6 +12,8 @@ namespace TRAP
 
 namespace TRAP::Graphics 
 {
+	class DescriptorSet;
+	class Shader;
 	class Pipeline;
 	class PipelineCache;
 	class SwapChain;
@@ -36,15 +38,12 @@ namespace TRAP::Graphics
 
 namespace TRAP::Graphics::API
 {
-	class VulkanDescriptorSet;
 	class VulkanTexture;
 
 	namespace ShaderReflection
 	{
 		enum class TextureDimension;
 	}
-	
-	class VulkanShader;
 }
 
 namespace TRAP::Graphics
@@ -1487,12 +1486,12 @@ namespace TRAP::Graphics
 				SampleLocation ChromaOffsetY;
 				FilterType ChromaFilter;
 				bool ForceExplicitReconstruction;
-			} SamplerConversionDesc;
+			} SamplerConversionDesc{};
 		};
 
 		struct BinaryShaderStageDesc
 		{
-			std::vector<uint8_t> ByteCode{};
+			std::vector<uint32_t> ByteCode{};
 			std::string EntryPoint{};
 		};
 
@@ -1509,7 +1508,7 @@ namespace TRAP::Graphics
 
 		struct RootSignatureDesc
 		{
-			std::vector<TRAP::Ref<API::VulkanShader>> Shaders{};
+			std::vector<Shader*> Shaders{};
 			uint32_t MaxBindlessTextures{};
 			std::vector<const char*> StaticSamplerNames{};
 			std::vector<TRAP::Ref<Sampler>> StaticSamplers{};
@@ -1635,7 +1634,7 @@ namespace TRAP::Graphics
 
 		struct ComputePipelineDesc
 		{			
-			TRAP::Ref<API::VulkanShader> ShaderProgram{};
+			Shader* ShaderProgram{};
 			TRAP::Ref<RootSignature> RootSignature{};
 		};
 
@@ -1658,7 +1657,7 @@ namespace TRAP::Graphics
 		
 		struct GraphicsPipelineDesc
 		{			
-			TRAP::Ref<API::VulkanShader> ShaderProgram{};
+			Shader* ShaderProgram{};
 			TRAP::Ref<RootSignature> RootSignature{};
 			VertexLayout* VertexLayout{};
 			TRAP::Ref<BlendStateDesc> BlendState{};
@@ -1822,7 +1821,7 @@ namespace TRAP::Graphics
 			struct DescriptorSetExtraction
 			{
 				uint32_t DescriptorSetBufferIndex{};
-				TRAP::Ref<API::VulkanShader> DescriptorSetShader{};
+				Shader* DescriptorSetShader{};
 				ShaderStage DescriptorSetShaderStage{};
 			};
 
@@ -1837,7 +1836,7 @@ namespace TRAP::Graphics
 			//std::vector<TRAP::Ref<API::VulkanAccelerationStructure>> AccelerationStructures; //TODO RT
 			std::variant<std::vector<TRAP::Ref<API::VulkanTexture>>, std::vector<TRAP::Ref<Sampler>>,
 				std::vector<TRAP::Ref<Buffer>>, std::vector<TRAP::Ref<Pipeline>>,
-				std::vector<TRAP::Ref<API::VulkanDescriptorSet>>> Resource{};
+				std::vector<TRAP::Ref<DescriptorSet>>> Resource{};
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
 			uint32_t Count{};

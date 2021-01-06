@@ -11,7 +11,6 @@ namespace TRAP::Graphics
 	public:
 		static TRAP::Ref<DescriptorPool> Create(uint32_t numDescriptorSets);
 		
-		DescriptorPool();
 		virtual ~DescriptorPool() = default;
 
 		virtual void Reset() = 0;
@@ -21,6 +20,8 @@ namespace TRAP::Graphics
 		virtual DescriptorSet* RetrieveDescriptorSet(const RendererAPI::DescriptorSetDesc& desc) = 0;
 	
 	protected:
+		DescriptorPool();
+		
 		uint32_t m_numDescriptorSets;
 	};
 }

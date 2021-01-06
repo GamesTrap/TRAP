@@ -151,7 +151,7 @@ TRAP::Application::Application()
 	Graphics::RenderCommand::SetViewport(0, 0, width, height);
 	
 	//Always added as a fallback shader
-	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
+	Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader);
 	//Always added as a fallback texture
 	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
 	Graphics::TextureManager::Add(Graphics::TextureCube::Create());
@@ -661,7 +661,7 @@ void TRAP::Application::ReCreate(const Graphics::RenderAPI renderAPI) const
 	Graphics::RendererAPI::Init();
 	m_window->SetTitle(m_window->GetTitle());
 	//Always added as a fallback shader
-	Graphics::ShaderManager::Load("Fallback", Embed::FallbackVS, Embed::FallbackFS);
+	Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader);
 	//Always added as a fallback texture
 	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
 	Graphics::TextureManager::Add(Graphics::TextureCube::Create());

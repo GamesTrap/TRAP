@@ -17,15 +17,10 @@ namespace TRAP::Graphics
 		ShaderManager(ShaderManager&&) = delete;
 		ShaderManager& operator=(ShaderManager&&) = delete;
 		
-		static const Scope<Shader>& Load(const std::string& filepath);
-		static const Scope<Shader>& Load(const std::string& name, const std::string& filepath);
-		static const Scope<Shader>& Load(const std::string& name,
-		                                 std::string_view VSSource,
-		                                 std::string_view FSSource,
-		                                 std::string_view GSSource = "",
-		                                 std::string_view TCSSource = "",
-		                                 std::string_view TESSource = "",
-		                                 std::string_view CSSSource = "");
+		static const Scope<Shader>& LoadFile(const std::string& filepath);
+		static const Scope<Shader>& LoadFile(const std::string& name, const std::string& filepath);
+		static const Scope<Shader>& LoadSource(const std::string& name,
+		                                 const std::string& glslSource);
 		
 		static void Add(Scope<Shader> shader);
 		static void Remove(const Scope<Shader>& shader);

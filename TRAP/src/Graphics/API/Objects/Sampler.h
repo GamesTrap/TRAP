@@ -10,10 +10,11 @@ namespace TRAP::Graphics
 	public:
 		static TRAP::Ref<Sampler> Create(const RendererAPI::SamplerDesc& desc);
 		
-		Sampler() = default;
 		virtual ~Sampler() = default;
 	
 	protected:
+		Sampler() = default;
+		
 		//No Graphic API independent data
 	};
 }

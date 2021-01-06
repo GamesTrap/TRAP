@@ -10,10 +10,11 @@ namespace TRAP::Graphics
 	public:
 		static TRAP::Ref<CommandSignature> Create(const RendererAPI::CommandSignatureDesc& desc);
 		
-		CommandSignature() = default;
 		virtual ~CommandSignature() = default;
 	
 	protected:
+		CommandSignature() = default;
+		
 		//No Graphic API independent data
 	};
 }

@@ -10,7 +10,6 @@ namespace TRAP::Graphics
 	public:
 		static TRAP::Ref<RenderTarget> Create(const RendererAPI::RenderTargetDesc& desc);
 		
-		RenderTarget();
 		virtual ~RenderTarget() = default;
 
 		virtual uint32_t GetWidth() const = 0;
@@ -25,6 +24,8 @@ namespace TRAP::Graphics
 		virtual RendererAPI::DescriptorType GetDescriptorType() const = 0;
 
 	protected:
+		RenderTarget();
+		
 		TRAP::Ref<API::VulkanTexture> m_texture; //TODO
 
 		RendererAPI::ClearValue m_clearValue;

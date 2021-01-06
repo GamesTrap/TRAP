@@ -99,7 +99,7 @@ void TRAP::Graphics::Renderer2D::Init()
 	
 	s_data.CameraUniformBuffer = UniformBuffer::Create("CameraBuffer", &s_data.UniformCamera, sizeof(Renderer2DData::UniformCamera), BufferUsage::Stream);
 
-	s_data.TextureShader = Shader::CreateFromSource("Renderer2D", Embed::Renderer2DVS, Embed::Renderer2DFS);
+	s_data.TextureShader = Shader::CreateFromSource("Renderer2D", Embed::Renderer2DShader);
 	const Scope<Image> whiteImage = Image::LoadFromMemory(1, 1, Image::ColorFormat::RGBA, std::vector<uint8_t>{255, 255, 255, 255});
 	s_data.WhiteTexture = Texture2D::CreateFromImage("Renderer2DWhite", whiteImage);
 
@@ -142,7 +142,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const Camera& camera, const Math::Ma
 	s_data.UniformCamera.ViewMatrix = Math::Inverse(transform);
 
 	//Bind Shader
-	s_data.TextureShader->Bind();
+	//s_data.TextureShader->Bind();
 
 	StartBatch();
 }
@@ -157,7 +157,7 @@ void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 	s_data.UniformCamera.ViewMatrix = camera.GetViewMatrix();
 
 	//Bind Shader
-	s_data.TextureShader->Bind();
+	//s_data.TextureShader->Bind();
 
 	StartBatch();
 }

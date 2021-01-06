@@ -13,7 +13,6 @@ namespace TRAP::Graphics
 	public:
 		static TRAP::Ref<SwapChain> Create(RendererAPI::SwapChainDesc& desc);
 		
-		SwapChain() = default;
 		virtual ~SwapChain();
 
 		virtual uint32_t AcquireNextImage(const TRAP::Ref<Semaphore>& signalSemaphore, const TRAP::Ref<Fence>& fence) const = 0;
@@ -23,6 +22,8 @@ namespace TRAP::Graphics
 		virtual void ToggleVSync() = 0;
 	
 	protected:
+		SwapChain() = default;
+		
 		//Render targets created from the swapchain back buffers
 		std::vector<TRAP::Ref<RenderTarget>> m_renderTargets;
 	};

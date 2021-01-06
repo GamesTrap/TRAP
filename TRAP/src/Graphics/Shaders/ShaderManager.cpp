@@ -7,7 +7,7 @@ std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Shader>> TRAP::Graph
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(const std::string& filepath)
+const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::LoadFile(const std::string& filepath)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -26,7 +26,7 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(const std::string& name, const std::string& filepath)
+const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::LoadFile(const std::string& name, const std::string& filepath)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -44,17 +44,12 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::Load(const std::string& name,
-																			   const std::string_view VSSource,
-																			   const std::string_view FSSource,
-																			   const std::string_view GSSource,
-																			   const std::string_view TCSSource,
-																			   const std::string_view TESSource,
-																			   const std::string_view CSSSource)
+const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::LoadSource(const std::string& name,
+																			   const std::string& glslSource)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Shader> shader = Shader::CreateFromSource(name, VSSource, FSSource, GSSource, TCSSource, TESSource, CSSSource);
+	Scope<Shader> shader = Shader::CreateFromSource(name, glslSource);
 
 	if(shader)
 	{
@@ -153,7 +148,7 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 			std::string error;
 			if (!path.empty())
 			{
-				s_Shaders[nameOrVirtualPath]->Unbind();
+				//s_Shaders[nameOrVirtualPath]->Unbind();
 				s_Shaders[nameOrVirtualPath].reset();
 				s_Shaders[nameOrVirtualPath] = Shader::CreateFromFile(nameOrVirtualPath, path);
 				TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrVirtualPath, "\"");
@@ -188,7 +183,7 @@ void TRAP::Graphics::ShaderManager::Reload(const Scope<Shader>& shader)
 		std::string error;
 		if (!path.empty())
 		{
-			s_Shaders[name]->Unbind();
+			//s_Shaders[name]->Unbind();
 			s_Shaders[name].reset();
 			s_Shaders[name] = Shader::CreateFromFile(name, path);
 			TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", name, "\"");

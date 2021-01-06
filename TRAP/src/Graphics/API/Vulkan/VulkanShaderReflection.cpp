@@ -53,9 +53,9 @@ bool FilterResource(const TRAP::Graphics::API::SPIRVTools::Resource& resource, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::vector<uint8_t>& shaderCode, RendererAPI::ShaderStage shaderStage)
+TRAP::Graphics::API::ShaderReflection::ShaderReflection TRAP::Graphics::API::VkCreateShaderReflection(const std::vector<uint32_t>& shaderCode, RendererAPI::ShaderStage shaderStage)
 {
-	SPIRVTools::CrossCompiler cc = SPIRVTools::CreateCrossCompiler(reinterpret_cast<const uint32_t*>(shaderCode.data()), static_cast<uint32_t>(shaderCode.size() / sizeof(uint32_t)));
+	SPIRVTools::CrossCompiler cc = SPIRVTools::CreateCrossCompiler(shaderCode.data(), static_cast<uint32_t>(shaderCode.size()));
 
 	ReflectEntryPoint(cc);
 	ReflectShaderResources(cc);

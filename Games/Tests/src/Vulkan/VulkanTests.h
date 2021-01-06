@@ -22,10 +22,11 @@ public:
 	void OnDetach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
 
-	//void OnEvent(TRAP::Events::Event& event) override;
+	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
 	//bool OnWindowClose(TRAP::Events::WindowCloseEvent& e);
+	bool OnWindowResize(TRAP::Events::WindowResizeEvent& e);
 	
 	//TRAP::Scope<TRAP::Window> m_window;
 
@@ -41,7 +42,7 @@ private:
 	TRAP::Ref<TRAP::Graphics::Semaphore> m_imageAcquiredSemaphore;
 	std::array<TRAP::Ref<TRAP::Graphics::Semaphore>, ImageCount> m_renderCompleteSemaphores;
 
-	TRAP::Ref<TRAP::Graphics::API::VulkanShader> m_defaultShader;
+	TRAP::Graphics::Shader* m_defaultShader;
 	TRAP::Ref<TRAP::Graphics::RootSignature> m_rootSignature;
 	TRAP::Ref<TRAP::Graphics::Pipeline> m_defaultPipeline;
 

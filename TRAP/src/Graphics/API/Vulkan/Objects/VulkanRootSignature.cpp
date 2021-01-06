@@ -52,7 +52,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	//be considered the same resource)
 	for(uint32_t sh = 0; sh < desc.Shaders.size(); ++sh)
 	{
-		TRAP::Ref<ShaderReflection::PipelineReflection> reflection = desc.Shaders[sh]->GetReflection();
+		TRAP::Ref<ShaderReflection::PipelineReflection> reflection = dynamic_cast<VulkanShader*>(desc.Shaders[sh])->GetReflection();
 
 		if (static_cast<uint32_t>(reflection->ShaderStages & RendererAPI::ShaderStage::Compute))
 			pipelineType = RendererAPI::PipelineType::Compute;

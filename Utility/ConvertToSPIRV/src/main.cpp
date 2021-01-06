@@ -7,29 +7,47 @@
 #include <glslang/Public/ShaderLang.h>
 #include <GlslangToSpv.h>
 
-enum class ShaderType
+#define MAKE_ENUM_FLAG(ENUM_TYPE)\
+	static inline ENUM_TYPE operator|(ENUM_TYPE a, ENUM_TYPE b) { return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) | \
+																		                        static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); } \
+	static inline ENUM_TYPE operator&(ENUM_TYPE a, ENUM_TYPE b) { return static_cast<ENUM_TYPE>(static_cast<std::underlying_type<ENUM_TYPE>::type>(a) & \
+																		                        static_cast<std::underlying_type<ENUM_TYPE>::type>(b)); } \
+	static inline ENUM_TYPE operator|=(ENUM_TYPE& a, ENUM_TYPE b) { return a = (a | b); }\
+	static inline ENUM_TYPE operator&=(ENUM_TYPE& a, ENUM_TYPE b) { return a = (a & b); }
+
+enum class ShaderStage
 {
-	Unknown = 0,
-	Vertex = 1,
-	Fragment = 2,
-	Geometry = 3,
-	Tessellation_Control = 4,
-	Tessellation_Evaluation = 5,
-	Compute = 6
+	None = 0,
+	Vertex = 0x00000001,
+	TessellationControl = 0x00000002,
+	TessellationEvaluation = 0x00000004,
+	Geometry = 0x00000008,
+	Fragment = 0x00000010,
+	Compute = 0x00000020,
+	RayTracing = 0x00000040,
+
+	AllGraphics = (static_cast<uint32_t>(Vertex) | static_cast<uint32_t>(TessellationControl) |
+	static_cast<uint32_t>(TessellationEvaluation) | static_cast<uint32_t>(Geometry) |
+		static_cast<uint32_t>(Fragment)),
+	Hull = TessellationControl,
+	Domain = TessellationEvaluation,
+
+	SHADER_STAGE_COUNT = 7
 };
 
 struct SubShader
 {
 	std::string Source;
-	ShaderType Type;
-	std::vector<uint32_t> SPIRV{};
+	std::vector<uint32_t> SPIRV{};;
 };
 struct Shader
 {
 	std::string FilePath;
 	std::string Source;
-	std::array<SubShader, 6> SubShaderSources{};
+	ShaderStage Stages;
+	std::array<SubShader, static_cast<uint32_t>(ShaderStage::SHADER_STAGE_COUNT)> SubShaderSources{};
 };
+MAKE_ENUM_FLAG(ShaderStage);
 
 static bool s_glslangInitialized = false;
 
@@ -44,24 +62,13 @@ std::string GetSuffix(const std::string& name);
 std::string ToLower(std::string string);
 bool CheckForParameters(int argc);
 std::vector<Shader> LoadShaderSources(int argc, char* argv[]);
-std::array<SubShader, 6> PreProcessGLSL(Shader& shader);
+bool PreProcessGLSL(Shader& shader);
+bool ValidateShaderStages(const Shader& shader);
 bool CompileGLSLToSPIRV(Shader& shader);
-std::unique_ptr<glslang::TShader> PreProcessGLSLForSPIRV(const char* source, ShaderType shaderType, std::string& preProcessedSource);
+std::unique_ptr<glslang::TShader> PreProcessGLSLForConversion(const char* source, ShaderStage stage, std::string& preProcessedSource);
 bool ParseGLSL(glslang::TShader* shader);
-bool LinkGLSL(glslang::TShader* VShader,
-	      glslang::TShader* FShader,
-	      glslang::TShader* GShader,
-	      glslang::TShader* TCShader,
-	      glslang::TShader* TEShader,
-	      glslang::TShader* CShader,
-	      glslang::TProgram& program);
-std::vector<std::vector<uint32_t>> ConvertToSPIRV(glslang::TShader* VShader,
-	                                              glslang::TShader* FShader,
-	                                              glslang::TShader* GShader,
-	                                              glslang::TShader* TCShader,
-	                                              glslang::TShader* TEShader,
-	                                              glslang::TShader* CShader,
-	                                              glslang::TProgram& program);
+bool LinkGLSL(glslang::TShader* shader, glslang::TProgram& program);
+std::vector<uint32_t> ConvertToSPIRV(glslang::TShader* shader, ShaderStage stage, glslang::TProgram& program);
 void SaveSPIRV(Shader& shader);
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -74,7 +81,17 @@ int main(const int argc, char* argv[])
 
 		for(auto& shader : shaders)
 		{
-			shader.SubShaderSources = PreProcessGLSL(shader);
+			if(!PreProcessGLSL(shader))
+			{
+				std::cout << "Skipping File!" << '\n';
+				continue;
+			}
+			if(!ValidateShaderStages(shader))
+			{
+				std::cout << "Skipping File!" << '\n';
+				continue;
+			}
+			
 			if(CompileGLSLToSPIRV(shader))
 				SaveSPIRV(shader);					
 			else
@@ -246,7 +263,7 @@ std::vector<Shader> LoadShaderSources(const int argc, char* argv[])
 					{
 						std::string newPath = argv[i];
 						newPath = newPath.substr(0, newPath.size() - 7);
-						shaders.push_back({ newPath, source });					
+						shaders.push_back({ newPath, source });
 					}
 					else
 					{
@@ -301,119 +318,238 @@ std::vector<Shader> LoadShaderSources(const int argc, char* argv[])
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::array<SubShader, 6> PreProcessGLSL(Shader& shader)
+bool PreProcessGLSL(Shader& shader)
 {
-	std::array<SubShader, 6> shaderSources{};
-	
+	ShaderStage currentShaderStage = ShaderStage::None;
 	std::vector<std::string> lines = GetLines(shader.Source);
-	std::array<std::string, 6> GLSLShaderSources{};
-	ShaderType type = ShaderType::Unknown;
 
-	//Get Shader Type
-	for (uint32_t i = 1; i < lines.size(); i++)
+	//Go through every line of the shader source
+	for (uint32_t i = 0; i < lines.size(); ++i)
 	{
-		if (StartsWith(ToLower(lines[i]), "#shader"))
+		//Optimization lines converted to lower case
+		std::string lowerLine = ToLower(lines[i]);
+
+		//Search for a shader type tag
+		if (StartsWith(lowerLine, "#shader"))
 		{
-			if (FindToken(ToLower(lines[i]), "vertex"))
-				type = ShaderType::Vertex;
-			else if (FindToken(ToLower(lines[i]), "fragment"))
-				type = ShaderType::Fragment;
-			else if (FindToken(ToLower(lines[i]), "geometry"))
-				type = ShaderType::Geometry;
-			else if (FindToken(ToLower(lines[i]), "tessellation"))
+			//Detect shader type
+			if (FindToken(lowerLine, "vertex"))
 			{
-				if (FindToken(ToLower(lines[i]), "control"))
-					type = ShaderType::Tessellation_Control;
-				else if (FindToken(ToLower(lines[i]), "evaluation"))
-					type = ShaderType::Tessellation_Evaluation;
+				std::cout << "[GLSL] Adding Vertex Shader to \"" << shader.FilePath << "\"" << '\n';
+				currentShaderStage = ShaderStage::Vertex;
 			}
-			else if (FindToken(ToLower(lines[i]), "compute"))
-				type = ShaderType::Compute;
-		}
-		else if (StartsWith(ToLower(lines[i]), "#version"))
-			std::cout << "[GLSL] Found Tag: \"" << lines[i] << "\" this is unnecessary! Skipping Line: " << i;
-		else if (type != ShaderType::Unknown)
-		{
-			GLSLShaderSources[static_cast<int32_t>(type) - 1].append(lines[i]);
-			GLSLShaderSources[static_cast<int32_t>(type) - 1].append("\n");
-		}
-	}
-
-	for (uint32_t i = 0; i < GLSLShaderSources.size(); i++)
-	{
-		if (!GLSLShaderSources[i].empty())
-		{
-			if (ToLower(GLSLShaderSources[i]).find("main") == std::string::npos)
+			else if (FindToken(lowerLine, "fragment") ||
+				     FindToken(lowerLine, "pixel"))
 			{
-				switch(static_cast<ShaderType>(i + 1))
+				std::cout << "[GLSL] Adding Fragment Shader to \"" << shader.FilePath << "\"" << '\n';
+				currentShaderStage = ShaderStage::Fragment;
+			}
+			else if (FindToken(lowerLine, "geometry"))
+			{
+				std::cout << "[GLSL] Adding Geometry Shader to \"" << shader.FilePath << "\"" << '\n';
+				currentShaderStage = ShaderStage::Geometry;
+			}
+			else if (FindToken(lowerLine, "tessellation"))
+			{
+				//Either Control or Evaluation
+				if (FindToken(lowerLine, "control"))
 				{
-				case ShaderType::Vertex:
-					std::cout << "[GLSL] Vertex Shader: Couldn't find \"main\" function!" << '\n';
-					break;
-
-				case ShaderType::Fragment:
-					std::cout << "[GLSL] Fragment Shader: Couldn't find \"main\" function!" << '\n';
-					break;
-
-				case ShaderType::Geometry:
-					std::cout << "[GLSL] Geometry Shader: Couldn't find \"main\" function!" << '\n';
-					break;
-
-				case ShaderType::Tessellation_Control:
-					std::cout << "[GLSL] Tessellation Control Shader: Couldn't find \"main\" function!" << '\n';
-					break;
-
-				case ShaderType::Tessellation_Evaluation:
-					std::cout << "[GLSL] Tessellation Evaluation Shader: Couldn't find \"main\" function!" << '\n';
-					break;
-
-				case ShaderType::Compute:
-					std::cout << "[GLSL] Compute Shader: Couldn't find \"main\" function!" << '\n';
-					break;
-					
-				default:
-					break;
+					std::cout << "[GLSL] Adding TessellationControl Shader to \"" << shader.FilePath << "\"" << '\n';
+					currentShaderStage = ShaderStage::TessellationControl;
 				}
-				
-				GLSLShaderSources[i] = "";
+				else if (FindToken(lowerLine, "evaluation"))
+				{
+					std::cout << "[GLSL] Adding TessellationEvaluation Shader to \"" << shader.FilePath << "\"" << '\n';
+					currentShaderStage = ShaderStage::TessellationEvaluation;
+				}
 			}
-			else //Found main function
-				GLSLShaderSources[i] = "#version 460 core\n" + GLSLShaderSources[i];
+			else if (FindToken(lowerLine, "compute"))
+			{
+				std::cout << "[GLSL] Adding Compute Shader to \"" << shader.FilePath << "\"" << '\n';
+				currentShaderStage = ShaderStage::Compute;
+			}
+			//TODO RayTracing Shaders i.e. "RayGen" "AnyHit" "ClosestHit" "Miss" "Intersection" ("Callable")
+
+			//Check for duplicate "#shader XXX" defines
+			if (static_cast<uint32_t>(shader.Stages & currentShaderStage))
+			{
+				std::cout << "[GLSL] Found duplicate \"#shader\" define: " << lines[i] << '\n';
+				return false;
+			}
+
+			shader.Stages |= currentShaderStage;
+		}
+		else if (FindToken(lowerLine, "#version")) //Check for unnecessary "#version" define
+			std::cout << "[GLSL] Found Tag: \"" << lines[i] << "\" this is unnecessary! Skipping Line: " << i << '\n';
+		else if (currentShaderStage != ShaderStage::None) //Add shader code to detected shader stage
+		{
+			switch (currentShaderStage)
+			{
+			case ShaderStage::Vertex:
+				shader.SubShaderSources[0].Source.append(lines[i] + '\n');
+				break;
+
+			case ShaderStage::TessellationControl:
+				//case RendererAPI::ShaderStage::Hull:
+				shader.SubShaderSources[1].Source.append(lines[i] + '\n');
+				break;
+
+			case ShaderStage::TessellationEvaluation:
+				//case RendererAPI::ShaderStage::Domain:
+				shader.SubShaderSources[2].Source.append(lines[i] + '\n');
+				break;
+
+			case ShaderStage::Geometry:
+				shader.SubShaderSources[3].Source.append(lines[i] + '\n');
+				break;
+
+			case ShaderStage::Fragment:
+				shader.SubShaderSources[4].Source.append(lines[i] + '\n');
+				break;
+
+			case ShaderStage::Compute:
+				shader.SubShaderSources[5].Source.append(lines[i] + '\n');
+				break;
+
+			case ShaderStage::RayTracing:
+				std::cout << "[GLSL] RayTracing Shader support is WIP!" << '\n';
+				return false;
+
+			case ShaderStage::AllGraphics:
+			case ShaderStage::SHADER_STAGE_COUNT:
+			case ShaderStage::None:
+			default:
+				std::cout << "[GLSL] Unsupported Shader Type!" << '\n';
+				break;
+			}
 		}
 	}
 
-	if (!GLSLShaderSources[0].empty())
+	for(uint32_t i = 0; i < shader.SubShaderSources.size(); ++i)
 	{
-		std::cout << "[GLSL] Adding Vertex Shader to \"" << shader.FilePath << "\"" << '\n';
-		shaderSources[0] = SubShader{GLSLShaderSources[0], ShaderType::Vertex};
-	}
-	if (!GLSLShaderSources[1].empty())
-	{
-		std::cout << "[GLSL] Adding Fragment Shader to \"" << shader.FilePath << "\"" << '\n';
-		shaderSources[1] = SubShader{ GLSLShaderSources[1], ShaderType::Fragment };
-	}
-	if (!GLSLShaderSources[2].empty())
-	{
-		std::cout << "[GLSL] Adding Geometry Shader to \"" << shader.FilePath << "\"" << '\n';
-		shaderSources[2] = SubShader{ GLSLShaderSources[2], ShaderType::Geometry };
-	}
-	if (!GLSLShaderSources[3].empty())
-	{
-		std::cout << "[GLSL] Adding Tessellation Control Shader to \"" << shader.FilePath << "\"" << '\n';
-		shaderSources[3] = SubShader{ GLSLShaderSources[3], ShaderType::Tessellation_Control };
-	}
-	if (!GLSLShaderSources[4].empty())
-	{
-		std::cout << "[GLSL] Adding Tessellation Evaluation Shader to \"" << shader.FilePath << "\"" << '\n';
-		shaderSources[4] = SubShader{ GLSLShaderSources[4], ShaderType::Tessellation_Evaluation };
-	}
-	if (!GLSLShaderSources[5].empty())
-	{
-		std::cout << "[GLSL] Adding Compute Shader to \"" << shader.FilePath << "\"" << '\n';
-		shaderSources[5] = SubShader{ GLSLShaderSources[5], ShaderType::Compute };
+		if (ToLower(shader.SubShaderSources[i].Source).find("main") == std::string::npos)
+		{
+			switch(i)
+			{
+			case 0:
+				if(static_cast<uint32_t>(ShaderStage::Vertex & shader.Stages))
+				{
+					std::cout << "[GLSL] Vertex Shader Couldn't find \"main\" function!" << '\n';
+					return false;
+				}
+				break;
+
+			case 1:
+				if (static_cast<uint32_t>(ShaderStage::TessellationControl & shader.Stages))
+				{
+					std::cout << "[GLSL] TessellationControl Shader Couldn't find \"main\" function!" << '\n';
+					return false;
+				}
+				break;
+
+			case 2:
+				if (static_cast<uint32_t>(ShaderStage::TessellationEvaluation & shader.Stages))
+				{
+					std::cout << "[GLSL] TessellationEvaluation Shader Couldn't find \"main\" function!" << '\n';
+					return false;
+				}
+				break;
+					
+			case 3:
+				if (static_cast<uint32_t>(ShaderStage::Geometry & shader.Stages))
+				{
+					std::cout << "[GLSL] Geometry Shader Couldn't find \"main\" function!" << '\n';
+					return false;
+				}
+				break;
+
+			case 4:
+				if (static_cast<uint32_t>(ShaderStage::Fragment & shader.Stages))
+				{
+					std::cout << "[GLSL] Fragment Shader Couldn't find \"main\" function!" << '\n';
+					return false;
+				}
+				break;
+					
+			case 5:
+				if (static_cast<uint32_t>(ShaderStage::Compute & shader.Stages))
+				{
+					std::cout << "[GLSL] Compute Shader Couldn't find \"main\" function!" << '\n';
+					return false;
+				}
+				break;
+					
+			default:
+				break;
+			}
+		}
+
+		if (!shader.SubShaderSources[i].Source.empty())
+		{
+			//Found main function
+			//Add GLSL version before any shader code
+			shader.SubShaderSources[i].Source = "#version 460 core\n" + shader.SubShaderSources[i].Source;
+		}
 	}
 
-	return shaderSources;
+	return true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool ValidateShaderStages(const Shader& shader)
+{
+	const ShaderStage& stages = shader.Stages;
+
+	//Check if any Shader Stage is set
+	if(ShaderStage::None == stages)
+	{
+		std::cout << "[GLSL] No Shader Stage found!" << '\n';
+		return false;
+	}
+	
+	//Check for "Normal" Shader Stages combined with Compute
+	if ((static_cast<uint32_t>(ShaderStage::Vertex & stages) ||
+		static_cast<uint32_t>(ShaderStage::Fragment & stages) ||
+		static_cast<uint32_t>(ShaderStage::TessellationControl & stages) ||
+		static_cast<uint32_t>(ShaderStage::TessellationEvaluation & stages) ||
+		static_cast<uint32_t>(ShaderStage::Geometry & stages)) &&
+		static_cast<uint32_t>(ShaderStage::Compute & stages))
+	{
+		std::cout << "[GLSL] Rasterizer Shader Stages combined with Compute stage!" << '\n';
+		return false;
+	}
+
+	//Check for "Normal" Shader Stages combined with RayTracing
+	if ((static_cast<uint32_t>(ShaderStage::Vertex & stages) ||
+		static_cast<uint32_t>(ShaderStage::Fragment & stages) ||
+		static_cast<uint32_t>(ShaderStage::TessellationControl & stages) ||
+		static_cast<uint32_t>(ShaderStage::TessellationEvaluation & stages) ||
+		static_cast<uint32_t>(ShaderStage::Geometry & stages)) &&
+		static_cast<uint32_t>(ShaderStage::RayTracing & stages))
+	{
+		std::cout << "[GLSL] Rasterizer Shader Stages combined with RayTracing stage!" << '\n';
+		return false;
+	}
+
+	//Check for Compute Shader Stage combined with RayTracing
+	if (static_cast<uint32_t>(ShaderStage::Compute & stages) &&
+		static_cast<uint32_t>(ShaderStage::RayTracing & stages))
+	{
+		std::cout << "[GLSL] Compute Shader Stage combined with RayTracing stage!" << '\n';
+		return false;
+	}
+
+	//Check for Vertex Shader Stage & required Fragment/Pixel Shader Stage
+	if (static_cast<uint32_t>(ShaderStage::Vertex & stages) &&
+		!(static_cast<uint32_t>(ShaderStage::Fragment & stages)))
+	{
+		std::cout << "[GLSL] Only Vertex Shader Stage provided! Missing Fragment/Pixel Shader Stage" << '\n';
+		return false;
+	}
+
+	//Shader Stages should be valid
+	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -422,178 +558,217 @@ bool CompileGLSLToSPIRV(Shader& shader)
 {
 	if (!s_glslangInitialized)
 	{
-		glslang::InitializeProcess();
+		if (!glslang::InitializeProcess())
+		{
+			std::cout << "[GLSL] GLSLang initialization failed!" << '\n';
+			return false;
+		}
 		s_glslangInitialized = true;
 	}
 
-	glslang::TProgram program;
-	std::unique_ptr<glslang::TShader> VShader = nullptr;
-	std::unique_ptr<glslang::TShader> FShader = nullptr;
-	std::unique_ptr<glslang::TShader> GShader = nullptr;
-	std::unique_ptr<glslang::TShader> TCShader = nullptr;
-	std::unique_ptr<glslang::TShader> TEShader = nullptr;
-	std::unique_ptr<glslang::TShader> CShader = nullptr;
-
-	if (!shader.SubShaderSources[0].Source.empty())
+	std::array<std::unique_ptr<glslang::TShader>, static_cast<uint32_t>(ShaderStage::SHADER_STAGE_COUNT)> glslShaders{};
+	for (uint32_t i = 0; i < shader.SubShaderSources.size(); ++i)
 	{
-		const char* VSSource = shader.SubShaderSources[0].Source.c_str();
-		std::cout << "[GLSL] Pre-Processing Vertex Shader" << '\n';
-		std::string preProcessedSource;
-		VShader = PreProcessGLSLForSPIRV(VSSource, ShaderType::Vertex, preProcessedSource);
-		if (preProcessedSource.empty() || !VShader)
-			return false;
-		const char* preProcessedCStr = preProcessedSource.c_str();
-		VShader->setStrings(&preProcessedCStr, 1);
+		if (!shader.SubShaderSources[i].Source.empty())
+		{
+			glslang::TProgram program;
 
-		std::cout << "[GLSL] Parsing Vertex Shader" << '\n';
-		if (!ParseGLSL(VShader.get()))
-			return false;
+			std::string preProcessedSource;
+
+			switch (i)
+			{
+			case 0:
+			{
+				std::cout << "[GLSL] Pre-Processing Vertex Shader" << '\n';
+				glslShaders[i] = PreProcessGLSLForConversion(shader.SubShaderSources[i].Source.c_str(), ShaderStage::Vertex, preProcessedSource);
+				if (preProcessedSource.empty())
+					return false;
+
+				const char* preProcessedCStr = preProcessedSource.c_str();
+				glslShaders[i]->setStrings(&preProcessedCStr, 1);
+
+				std::cout << "[GLSL] Parsing Vertex Shader" << '\n';
+				if (!ParseGLSL(glslShaders[i].get()))
+					return false;
+
+				std::cout << "[GLSL] Linking Vertex Shader" << '\n';
+				if (!LinkGLSL(glslShaders[i].get(), program))
+					return false;
+
+				std::cout << "[SPIRV] Converting GLSL -> SPIR-V" << '\n';
+				shader.SubShaderSources[i].SPIRV = ConvertToSPIRV(glslShaders[i].get(), ShaderStage::Vertex, program);
+				break;
+			}
+
+			case 1:
+			{
+				std::cout << "[GLSL] Pre-Processing TessellationControl Shader" << '\n';
+				glslShaders[i] = PreProcessGLSLForConversion(shader.SubShaderSources[i].Source.c_str(), ShaderStage::TessellationControl, preProcessedSource);
+				if (preProcessedSource.empty())
+					return false;
+
+				const char* preProcessedCStr = preProcessedSource.c_str();
+				glslShaders[i]->setStrings(&preProcessedCStr, 1);
+
+				std::cout << "[GLSL] Parsing TessellationControl Shader" << '\n';
+				if (!ParseGLSL(glslShaders[i].get()))
+					return false;
+
+				std::cout << "[GLSL] Linking TessellationControl Shader" << '\n';
+				if (!LinkGLSL(glslShaders[i].get(), program))
+					return false;
+
+				std::cout << "[SPIRV] Converting GLSL -> SPIR-V" << '\n';
+				shader.SubShaderSources[i].SPIRV = ConvertToSPIRV(glslShaders[i].get(), ShaderStage::TessellationControl, program);
+				break;
+			}
+
+			case 2:
+			{
+				std::cout << "[GLSL] Pre-Processing TessellationEvaluation Shader" << '\n';
+				glslShaders[i] = PreProcessGLSLForConversion(shader.SubShaderSources[i].Source.c_str(), ShaderStage::TessellationEvaluation, preProcessedSource);
+				if (preProcessedSource.empty())
+					return false;
+
+				const char* preProcessedCStr = preProcessedSource.c_str();
+				glslShaders[i]->setStrings(&preProcessedCStr, 1);
+
+				std::cout << "[GLSL] Parsing TessellationEvaluation Shader" << '\n';
+				if (!ParseGLSL(glslShaders[i].get()))
+					return false;
+
+				std::cout << "[GLSL] Linking TessellationEvaluation Shader" << '\n';
+				if (!LinkGLSL(glslShaders[i].get(), program))
+					return false;
+
+				std::cout << "[SPIRV] Converting GLSL -> SPIR-V" << '\n';
+				shader.SubShaderSources[i].SPIRV = ConvertToSPIRV(glslShaders[i].get(), ShaderStage::TessellationEvaluation, program);
+				break;
+			}
+
+			case 3:
+			{
+				std::cout << "[GLSL] Pre-Processing Geometry Shader" << '\n';
+				glslShaders[i] = PreProcessGLSLForConversion(shader.SubShaderSources[i].Source.c_str(), ShaderStage::Geometry, preProcessedSource);
+				if (preProcessedSource.empty())
+					return false;
+
+				const char* preProcessedCStr = preProcessedSource.c_str();
+				glslShaders[i]->setStrings(&preProcessedCStr, 1);
+
+				std::cout << "[GLSL] Parsing Geometry Shader" << '\n';
+				if (!ParseGLSL(glslShaders[i].get()))
+					return false;
+
+				std::cout << "[GLSL] Linking Geometry Shader" << '\n';
+				if (!LinkGLSL(glslShaders[i].get(), program))
+					return false;
+
+				std::cout << "[SPIRV] Converting GLSL -> SPIR-V" << '\n';
+				shader.SubShaderSources[i].SPIRV = ConvertToSPIRV(glslShaders[i].get(), ShaderStage::Geometry, program);
+				break;
+			}
+
+			case 4:
+			{
+				std::cout << "[GLSL] Pre-Processing Fragment Shader" << '\n';
+				glslShaders[i] = PreProcessGLSLForConversion(shader.SubShaderSources[i].Source.c_str(), ShaderStage::Fragment, preProcessedSource);
+				if (preProcessedSource.empty())
+					return false;
+
+				const char* preProcessedCStr = preProcessedSource.c_str();
+				glslShaders[i]->setStrings(&preProcessedCStr, 1);
+
+				std::cout << "[GLSL] Parsing Fragment Shader" << '\n';
+				if (!ParseGLSL(glslShaders[i].get()))
+					return false;
+
+				std::cout << "[GLSL] Linking Fragment Shader" << '\n';
+				if (!LinkGLSL(glslShaders[i].get(), program))
+					return false;
+
+				std::cout << "[SPIRV] Converting GLSL -> SPIR-V" << '\n';
+				shader.SubShaderSources[i].SPIRV = ConvertToSPIRV(glslShaders[i].get(), ShaderStage::Fragment, program);
+				break;
+			}
+
+			case 5:
+			{
+				std::cout << "[GLSL] Pre-Processing Compute Shader" << '\n';
+				glslShaders[i] = PreProcessGLSLForConversion(shader.SubShaderSources[i].Source.c_str(), ShaderStage::Compute, preProcessedSource);
+				if (preProcessedSource.empty())
+					return false;
+
+				const char* preProcessedCStr = preProcessedSource.c_str();
+				glslShaders[i]->setStrings(&preProcessedCStr, 1);
+
+				std::cout << "[GLSL] Parsing Compute Shader" << '\n';
+				if (!ParseGLSL(glslShaders[i].get()))
+					return false;
+
+				std::cout << "[GLSL] Linking Compute Shader" << '\n';
+				if (!LinkGLSL(glslShaders[i].get(), program))
+					return false;
+
+				std::cout << "[SPIRV] Converting GLSL -> SPIR-V" << '\n';
+				shader.SubShaderSources[i].SPIRV = ConvertToSPIRV(glslShaders[i].get(), ShaderStage::Compute, program);
+				break;
+			}
+
+			//TODO
+
+			default:
+				break;
+			}
+		}
 	}
-
-	if (!shader.SubShaderSources[1].Source.empty())
-	{
-		const char* FSSource = shader.SubShaderSources[1].Source.c_str();
-		std::cout << "[GLSL] Pre-Processing Fragment Shader" << '\n';
-		std::string preProcessedSource;
-		FShader = PreProcessGLSLForSPIRV(FSSource, ShaderType::Fragment, preProcessedSource);
-		if (preProcessedSource.empty())
-			return false;
-		const char* preProcessedCStr = preProcessedSource.c_str();
-		FShader->setStrings(&preProcessedCStr, 1);
-
-		std::cout << "[GLSL] Parsing Fragment Shader" << '\n';
-		if (!ParseGLSL(FShader.get()))
-			return false;
-	}
-
-	if (!shader.SubShaderSources[2].Source.empty())
-	{
-		const char* GSSource = shader.SubShaderSources[2].Source.c_str();
-		std::cout << "[GLSL] Pre-Processing Geometry Shader" << '\n';
-		std::string preProcessedSource;
-		GShader = PreProcessGLSLForSPIRV(GSSource, ShaderType::Geometry, preProcessedSource);
-		if (preProcessedSource.empty())
-			return false;
-		const char* preProcessedCStr = preProcessedSource.c_str();
-		GShader->setStrings(&preProcessedCStr, 1);
-
-		std::cout << "[GLSL] Parsing Geometry Shader" << '\n';
-		if (!ParseGLSL(GShader.get()))
-			return false;
-	};
-
-	if (!shader.SubShaderSources[3].Source.empty())
-	{
-		const char* TCSSource = shader.SubShaderSources[3].Source.c_str();
-		std::cout << "[GLSL] Pre-Processing Tessellation Control Shader" << '\n';
-		std::string preProcessedSource;
-		TCShader = PreProcessGLSLForSPIRV(TCSSource, ShaderType::Tessellation_Control, preProcessedSource);
-		if (preProcessedSource.empty())
-			return false;
-		const char* preProcessedCStr = preProcessedSource.c_str();
-		TCShader->setStrings(&preProcessedCStr, 1);
-
-		std::cout << "[GLSL] Parsing Tessellation Control Shader" << '\n';
-		if (!ParseGLSL(TCShader.get()))
-			return false;
-	}
-
-	if (!shader.SubShaderSources[4].Source.empty())
-	{
-		const char* TESSource = shader.SubShaderSources[4].Source.c_str();
-		std::cout << "[GLSL] Pre-Processing Tessellation Evaluation Shader" << '\n';
-		std::string preProcessedSource;
-		TEShader = PreProcessGLSLForSPIRV(TESSource, ShaderType::Tessellation_Evaluation, preProcessedSource);
-		if (preProcessedSource.empty())
-			return false;
-		const char* preProcessedCStr = preProcessedSource.c_str();
-		TEShader->setStrings(&preProcessedCStr, 1);
-
-		std::cout << "[GLSL] Parsing Tessellation Evaluation Shader" << '\n';
-		if (!ParseGLSL(TEShader.get()))
-			return false;
-	}
-
-	if (!shader.SubShaderSources[5].Source.empty())
-	{
-		const char* CSSource = shader.SubShaderSources[5].Source.c_str();
-		std::cout << "[GLSL] Pre-Processing Compute Shader" << '\n';
-		std::string preProcessedSource;
-		CShader = PreProcessGLSLForSPIRV(CSSource, ShaderType::Compute, preProcessedSource);
-		if (preProcessedSource.empty())
-			return false;
-		const char* preProcessedCStr = preProcessedSource.c_str();
-		CShader->setStrings(&preProcessedCStr, 1);
-
-		std::cout << "[GLSL] Parsing Compute Shader" << '\n';
-		if (!ParseGLSL(CShader.get()))
-			return false;
-	}
-
-	std::cout << "[GLSL] Linking Shaders" << '\n';
-	if (!LinkGLSL(VShader.get(), FShader.get(), GShader.get(), TCShader.get(), TEShader.get(), CShader.get(), program))
-		return false;
-
-	std::cout << "[SPIRV] Converting Shader to SPIRV" << '\n';
-	std::vector<std::vector<uint32_t>> SPIRV = ConvertToSPIRV(VShader.get(), FShader.get(), GShader.get(), TCShader.get(), TEShader.get(), CShader.get(), program);
-
-	if (!shader.SubShaderSources[0].Source.empty())
-		shader.SubShaderSources[0].SPIRV = SPIRV[0];
-	if (!shader.SubShaderSources[1].Source.empty())
-		shader.SubShaderSources[1].SPIRV = SPIRV[1];
-	if (!shader.SubShaderSources[2].Source.empty())
-		shader.SubShaderSources[2].SPIRV = SPIRV[2];
-	if (!shader.SubShaderSources[3].Source.empty())
-		shader.SubShaderSources[3].SPIRV = SPIRV[3];
-	if (!shader.SubShaderSources[4].Source.empty())
-		shader.SubShaderSources[4].SPIRV = SPIRV[4];
-	if (!shader.SubShaderSources[5].Source.empty())
-		shader.SubShaderSources[5].SPIRV = SPIRV[5];
 
 	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unique_ptr<glslang::TShader> PreProcessGLSLForSPIRV(const char* source, const ShaderType shaderType, std::string& preProcessedSource)
+std::unique_ptr<glslang::TShader> PreProcessGLSLForConversion(const char* source, const ShaderStage stage, std::string& preProcessedSource)
 {
-	std::unique_ptr<glslang::TShader> shader;
-	if (shaderType == ShaderType::Vertex)
+	std::unique_ptr<glslang::TShader> shader = nullptr;
+	
+	if (stage == ShaderStage::Vertex)
 	{
 		shader = std::make_unique<glslang::TShader>(EShLangVertex);
 		shader->setStrings(&source, 1);
 		shader->setEnvInput(glslang::EShSourceGlsl, EShLangVertex, glslang::EShClientVulkan, 460);
 	}
-	else if (shaderType == ShaderType::Fragment)
-	{
-		shader = std::make_unique<glslang::TShader>(EShLangFragment);
-		shader->setStrings(&source, 1);
-		shader->setEnvInput(glslang::EShSourceGlsl, EShLangFragment, glslang::EShClientVulkan, 460);
-	}
-	else if (shaderType == ShaderType::Geometry)
-	{
-		shader = std::make_unique<glslang::TShader>(EShLangGeometry);
-		shader->setStrings(&source, 1);
-		shader->setEnvInput(glslang::EShSourceGlsl, EShLangGeometry, glslang::EShClientVulkan, 460);
-	}
-	else if (shaderType == ShaderType::Tessellation_Control)
+	else if (stage == ShaderStage::TessellationControl)
 	{
 		shader = std::make_unique<glslang::TShader>(EShLangTessControl);
 		shader->setStrings(&source, 1);
 		shader->setEnvInput(glslang::EShSourceGlsl, EShLangTessControl, glslang::EShClientVulkan, 460);
 	}
-	else if (shaderType == ShaderType::Tessellation_Evaluation)
+	else if (stage == ShaderStage::TessellationEvaluation)
 	{
 		shader = std::make_unique<glslang::TShader>(EShLangTessEvaluation);
 		shader->setStrings(&source, 1);
 		shader->setEnvInput(glslang::EShSourceGlsl, EShLangTessEvaluation, glslang::EShClientVulkan, 460);
 	}
-	else if (shaderType == ShaderType::Compute)
+	else if (stage == ShaderStage::Geometry)
+	{
+		shader = std::make_unique<glslang::TShader>(EShLangGeometry);
+		shader->setStrings(&source, 1);
+		shader->setEnvInput(glslang::EShSourceGlsl, EShLangGeometry, glslang::EShClientVulkan, 460);
+	}
+	else if (stage == ShaderStage::Fragment)
+	{
+		shader = std::make_unique<glslang::TShader>(EShLangFragment);
+		shader->setStrings(&source, 1);
+		shader->setEnvInput(glslang::EShSourceGlsl, EShLangFragment, glslang::EShClientVulkan, 460);
+	}
+	else if (stage == ShaderStage::Compute)
 	{
 		shader = std::make_unique<glslang::TShader>(EShLangCompute);
 		shader->setStrings(&source, 1);
 		shader->setEnvInput(glslang::EShSourceGlsl, EShLangCompute, glslang::EShClientVulkan, 460);
 	}
+	//TODO RayTracing
 
 	shader->setEnvClient(glslang::EShClientVulkan, glslang::EShTargetVulkan_1_2);
 	shader->setEnvTarget(glslang::EShTargetSpv, glslang::EShTargetSpv_1_5);
@@ -713,7 +888,7 @@ std::unique_ptr<glslang::TShader> PreProcessGLSLForSPIRV(const char* source, con
 		&preProcessedSource,
 		includer))
 	{
-		std::cout << "[GLSL] Preprocessing failed!" << '\n';
+		std::cout << "[GLSL] GLSL -> SPIR-V Preprocessing failed!" << '\n';
 		std::cout << "[GLSL] " << shader->getInfoLog() << '\n';
 		std::cout << "[GLSL] " << shader->getInfoDebugLog() << '\n';
 
@@ -848,26 +1023,10 @@ bool ParseGLSL(glslang::TShader* shader)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool LinkGLSL(glslang::TShader* VShader,
-          glslang::TShader* FShader,
-          glslang::TShader* GShader,
-          glslang::TShader* TCShader,
-          glslang::TShader* TEShader,
-          glslang::TShader* CShader,
-          glslang::TProgram& program)
+bool LinkGLSL(glslang::TShader* shader, glslang::TProgram& program)
 {
-	if (VShader)
-		program.addShader(VShader);
-	if (FShader)
-		program.addShader(FShader);
-	if (GShader)
-		program.addShader(GShader);
-	if (TCShader)
-		program.addShader(TCShader);
-	if (TEShader)
-		program.addShader(TEShader);
-	if (CShader)
-		program.addShader(CShader);
+	if (shader)
+		program.addShader(shader);
 
 	if (!program.link(static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules)))
 	{
@@ -883,68 +1042,60 @@ bool LinkGLSL(glslang::TShader* VShader,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::vector<std::vector<uint32_t>> ConvertToSPIRV(glslang::TShader* VShader,
-                                                  glslang::TShader* FShader,
-                                                  glslang::TShader* GShader,
-                                                  glslang::TShader* TCShader,
-                                                  glslang::TShader* TEShader,
-                                                  glslang::TShader* CShader,
-                                                  glslang::TProgram& program)
+std::vector<uint32_t> ConvertToSPIRV(glslang::TShader* shader, const ShaderStage stage, glslang::TProgram& program)
 {
-	std::vector<std::vector<uint32_t>> SPIRV(6);
+	std::vector<uint32_t> SPIRV{};
 
-	if (VShader)
+	if (shader)
 	{
-		spv::SpvBuildLogger logger;
-		glslang::SpvOptions spvOptions;
-		GlslangToSpv(*program.getIntermediate(EShLangVertex), SPIRV[0], &logger, &spvOptions);
-		if (logger.getAllMessages().length() > 0)
-			std::cout << "[SPIRV] Vertex Shader: " << logger.getAllMessages() << '\n';
-	}
+		spv::SpvBuildLogger logger{};
+		glslang::SpvOptions spvOptions{};
+		spvOptions.disableOptimizer = false;
+		spvOptions.optimizeSize = true;
 
-	if (FShader)
-	{
-		spv::SpvBuildLogger logger;
-		glslang::SpvOptions spvOptions;
-		GlslangToSpv(*program.getIntermediate(EShLangFragment), SPIRV[1], &logger, &spvOptions);
-		if (logger.getAllMessages().length() > 0)
-			std::cout << "[SPIRV] Fragment Shader: " << logger.getAllMessages() << '\n';
-	}
+		switch(stage)
+		{
+		case ShaderStage::Vertex:
+			glslang::GlslangToSpv(*program.getIntermediate(EShLangVertex), SPIRV, &logger, &spvOptions);
+			if (logger.getAllMessages().length() > 0)
+				std::cout << "[SPIRV] Vertex Shader: " << logger.getAllMessages() << '\n';
+			break;
 
-	if (GShader)
-	{
-		spv::SpvBuildLogger logger;
-		glslang::SpvOptions spvOptions;
-		GlslangToSpv(*program.getIntermediate(EShLangGeometry), SPIRV[2], &logger, &spvOptions);
-		if (logger.getAllMessages().length() > 0)
-			std::cout << "[SPIRV] Geometry Shader: " << logger.getAllMessages() << '\n';
-	}
+		case ShaderStage::TessellationControl:
+			glslang::GlslangToSpv(*program.getIntermediate(EShLangTessControl), SPIRV, &logger, &spvOptions);
+			if (logger.getAllMessages().length() > 0)
+				std::cout << "[SPIRV] Vertex Shader: " << logger.getAllMessages() << '\n';
+			break;
 
-	if (TCShader)
-	{
-		spv::SpvBuildLogger logger;
-		glslang::SpvOptions spvOptions;
-		GlslangToSpv(*program.getIntermediate(EShLangTessControl), SPIRV[3], &logger, &spvOptions);
-		if (logger.getAllMessages().length() > 0)
-			std::cout << "[SPIRV] Tessellation Control Shader: " << logger.getAllMessages() << '\n';
-	}
+		case ShaderStage::TessellationEvaluation:
+			glslang::GlslangToSpv(*program.getIntermediate(EShLangTessEvaluation), SPIRV, &logger, &spvOptions);
+			if (logger.getAllMessages().length() > 0)
+				std::cout << "[SPIRV] Vertex Shader: " << logger.getAllMessages() << '\n';
+			break;
 
-	if (TEShader)
-	{
-		spv::SpvBuildLogger logger;
-		glslang::SpvOptions spvOptions;
-		GlslangToSpv(*program.getIntermediate(EShLangTessEvaluation), SPIRV[4], &logger, &spvOptions);
-		if (logger.getAllMessages().length() > 0)
-			std::cout << "[SPIRV] Tessellation Evaluation Shader: " << logger.getAllMessages() << '\n';
-	}
+		case ShaderStage::Geometry:
+			glslang::GlslangToSpv(*program.getIntermediate(EShLangGeometry), SPIRV, &logger, &spvOptions);
+			if (logger.getAllMessages().length() > 0)
+				std::cout << "[SPIRV] Vertex Shader: " << logger.getAllMessages() << '\n';
+			break;
 
-	if (CShader)
-	{
-		spv::SpvBuildLogger logger;
-		glslang::SpvOptions spvOptions;
-		GlslangToSpv(*program.getIntermediate(EShLangCompute), SPIRV[5], &logger, &spvOptions);
-		if (logger.getAllMessages().length() > 0)
-			std::cout << "[SPIRV] Compute Shader: " << logger.getAllMessages() << '\n';
+		case ShaderStage::Fragment:
+			glslang::GlslangToSpv(*program.getIntermediate(EShLangFragment), SPIRV, &logger, &spvOptions);
+			if (logger.getAllMessages().length() > 0)
+				std::cout << "[SPIRV] Vertex Shader: " << logger.getAllMessages() << '\n';
+			break;
+
+		case ShaderStage::Compute:
+			glslang::GlslangToSpv(*program.getIntermediate(EShLangCompute), SPIRV, &logger, &spvOptions);
+			if (logger.getAllMessages().length() > 0)
+				std::cout << "[SPIRV] Vertex Shader: " << logger.getAllMessages() << '\n';
+			break;
+
+			//TODO RayTracing
+			
+		default:
+			break;
+		}
 	}
 
 	return SPIRV;
@@ -969,16 +1120,47 @@ void SaveSPIRV(Shader& shader)
 		}
 		file.write(reinterpret_cast<char*>(&SPIRVSubShadersCount), sizeof(uint32_t));
 		
-		for(auto& subShader : shader.SubShaderSources)
+		for(uint32_t i = 0; i < shader.SubShaderSources.size(); ++i)
 		{
-			if(!subShader.SPIRV.empty())
+			if(!shader.SubShaderSources[i].SPIRV.empty())
 			{
-				uint32_t SPIRVSize = static_cast<uint32_t>(subShader.SPIRV.size());
-				uint32_t type = static_cast<uint32_t>(subShader.Type);
+				uint32_t SPIRVSize = static_cast<uint32_t>(shader.SubShaderSources[i].SPIRV.size());
+				uint32_t type = -1;
+				switch(i)
+				{
+				case 0:
+					type = static_cast<uint32_t>(ShaderStage::Vertex);
+					break;
+
+				case 1:
+					type = static_cast<uint32_t>(ShaderStage::TessellationControl);
+					break;
+
+				case 2:
+					type = static_cast<uint32_t>(ShaderStage::TessellationEvaluation);
+					break;
+
+				case 3:
+					type = static_cast<uint32_t>(ShaderStage::Geometry);
+					break;
+
+				case 4:
+					type = static_cast<uint32_t>(ShaderStage::Fragment);
+					break;
+
+				case 5:
+					type = static_cast<uint32_t>(ShaderStage::Compute);
+					break;
+
+				//TODO RayTracing
+					
+				default:
+					break;
+				}
 
 				file.write(reinterpret_cast<char*>(&SPIRVSize), sizeof(uint32_t));
 				file.write(reinterpret_cast<char*>(&type), sizeof(uint32_t));
-				file.write(reinterpret_cast<char*>(subShader.SPIRV.data()), subShader.SPIRV.size() * sizeof(uint32_t));
+				file.write(reinterpret_cast<char*>(shader.SubShaderSources[i].SPIRV.data()), shader.SubShaderSources[i].SPIRV.size() * sizeof(uint32_t));
 			}
 		}
 		

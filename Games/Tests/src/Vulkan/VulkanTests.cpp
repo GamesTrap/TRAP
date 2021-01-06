@@ -9,6 +9,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanSemaphore.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Vulkan/Objects/VulkanCommandPool.h"
+#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
 #include "Graphics/API/Vulkan/Objects/VulkanRenderTarget.h"
 
 VulkanTests::VulkanTests()
@@ -28,6 +29,9 @@ VulkanTests::VulkanTests()
 void VulkanTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Clear Screen Test");
+
+	TRAP::VFS::MountShaders("Assets/Shaders");
+	
 	//TRAP::Application::GetWindow()->SetTitle("Vulkan Multi-Window Test");
 
 	/*TRAP::WindowProps windowProps
@@ -52,8 +56,6 @@ void VulkanTests::OnAttach()
 	};
 	m_window = TRAP::MakeScope<TRAP::Window>(windowProps);
 	m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });*/
-
-	auto* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer().get()); //TBD Remove
 	
 	//Vulkan Initialization
 	TRAP::Graphics::RendererAPI::QueueDesc queueDesc{};
@@ -71,13 +73,8 @@ void VulkanTests::OnAttach()
 	}
 	m_imageAcquiredSemaphore = TRAP::Graphics::Semaphore::Create();
 
-	const std::vector<uint8_t> vertSource = TRAP::VFS::ReadFile("Assets/Shaders/test.vert.spv");
-	const std::vector<uint8_t> fragSource = TRAP::VFS::ReadFile("Assets/Shaders/test.frag.spv");
-	TRAP::Graphics::RendererAPI::BinaryShaderDesc shaderDesc{};
-	shaderDesc.Vertex = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ vertSource, "main" };
-	shaderDesc.Fragment = TRAP::Graphics::RendererAPI::BinaryShaderStageDesc{ fragSource, "main" };
-	shaderDesc.Stages = TRAP::Graphics::RendererAPI::ShaderStage::Vertex | TRAP::Graphics::RendererAPI::ShaderStage::Fragment;
-	m_defaultShader = TRAP::MakeRef<TRAP::Graphics::API::VulkanShader>(vkRenderer->GetDevice(), shaderDesc);
+	//m_defaultShader = TRAP::Graphics::ShaderManager::LoadFile("/shaders/test.shader");
+	m_defaultShader = TRAP::Graphics::ShaderManager::LoadFile("/shaders/test.spirv").get();
 
 	//RootSignature
 	TRAP::Graphics::RendererAPI::RootSignatureDesc rootDesc{};
@@ -118,39 +115,21 @@ void VulkanTests::OnDetach()
 	//m_window.reset();
 
 	m_graphicsQueue->WaitQueueIdle();
-
-	m_defaultPipeline.reset();
-	m_defaultPipeline = nullptr;
 	
+	m_defaultPipeline.reset();	
 	m_swapChain.reset();
-	m_swapChain = nullptr;
-
-	m_rootSignature.reset(); //Not deleting (reference count)
-	m_rootSignature = nullptr;
-	
-	m_defaultShader.reset(); //Not deleting (reference count)
-	m_defaultShader = nullptr;
-
+	m_rootSignature.reset();
 	m_imageAcquiredSemaphore.reset();
-	m_imageAcquiredSemaphore = nullptr;
 
 	for(uint32_t i = ImageCount - 1; i > 0; i--)
 	{
 		m_renderCompleteSemaphores[i].reset();
-		m_renderCompleteSemaphores[i] = nullptr;
-
 		m_renderCompleteFences[i].reset();
-		m_renderCompleteFences[i] = nullptr;
-
 		m_cmdPools[i]->FreeCommandBuffer(m_cmds[i]);
-		m_cmds[i] = nullptr;
-
 		m_cmdPools[i].reset();
-		m_cmdPools[i] = nullptr;
 	}
 
 	m_graphicsQueue.reset();
-	m_graphicsQueue = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -241,11 +220,12 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-/*void VulkanTests::OnEvent(TRAP::Events::Event& event)
+void VulkanTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::WindowCloseEvent>([this](TRAP::Events::WindowCloseEvent& e) { return OnWindowClose(e); });
-}*/
+	//dispatcher.Dispatch<TRAP::Events::WindowCloseEvent>([this](TRAP::Events::WindowCloseEvent& e) { return OnWindowClose(e); });
+	dispatcher.Dispatch<TRAP::Events::WindowResizeEvent>([this](TRAP::Events::WindowResizeEvent& e) { return OnWindowResize(e); });
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -256,3 +236,43 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	
 	return true;
 }*/
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool VulkanTests::OnWindowResize(TRAP::Events::WindowResizeEvent& e)
+{
+	auto* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer().get()); //TBD Remove
+	
+	vkRenderer->GetDevice()->WaitDeviceIdle();
+
+	m_defaultPipeline.reset();
+	m_swapChain.reset();
+
+	TRAP::Graphics::RendererAPI::SwapChainDesc swapChainDesc{};
+	swapChainDesc.WindowHandle = static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(TRAP::Application::GetWindow()->GetInternalWindow());
+	swapChainDesc.PresentQueues = { m_graphicsQueue };
+	swapChainDesc.Width = e.GetWidth();
+	swapChainDesc.Height = e.GetHeight();
+	swapChainDesc.ImageCount = ImageCount;
+	swapChainDesc.ColorFormat = TRAP::Graphics::API::GetRecommendedSwapchainFormat(false);
+	swapChainDesc.EnableVSync = false;
+	m_swapChain = TRAP::Graphics::SwapChain::Create(swapChainDesc);
+
+	if (!m_swapChain)
+		TRAP::Application::Shutdown();
+
+	TRAP::Graphics::RendererAPI::PipelineDesc desc{};
+	desc.Type = TRAP::Graphics::RendererAPI::PipelineType::Graphics;
+	desc.Pipeline = TRAP::Graphics::RendererAPI::GraphicsPipelineDesc();
+	TRAP::Graphics::RendererAPI::GraphicsPipelineDesc& pipelineSettings = std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>(desc.Pipeline);
+	pipelineSettings.PrimitiveTopology = TRAP::Graphics::RendererAPI::PrimitiveTopology::TriangleList;
+	pipelineSettings.RenderTargetCount = 1;
+	pipelineSettings.ColorFormats = { m_swapChain->GetRenderTargets()[0]->GetImageFormat(), m_swapChain->GetRenderTargets()[1]->GetImageFormat(), m_swapChain->GetRenderTargets()[2]->GetImageFormat() };
+	pipelineSettings.SampleCount = m_swapChain->GetRenderTargets()[0]->GetSampleCount();
+	pipelineSettings.SampleQuality = m_swapChain->GetRenderTargets()[0]->GetSampleQuality();
+	pipelineSettings.RootSignature = m_rootSignature;
+	pipelineSettings.ShaderProgram = m_defaultShader;
+	m_defaultPipeline = TRAP::Graphics::Pipeline::Create(desc);
+	
+	return false;
+}

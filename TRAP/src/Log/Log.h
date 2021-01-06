@@ -118,7 +118,7 @@ namespace TRAP
 		/// </summary>
 		static void Clear();
 
-		inline static constexpr auto WindowVersion = "[21w01a2]";
+		inline static constexpr auto WindowVersion = "[21w01a3]";
 		inline static constexpr auto WindowPrefix = "[Window] ";
 		inline static constexpr auto WindowInternalPrefix = "[Window][Internal] ";
 		inline static constexpr auto WindowIconPrefix = "[Window][Icon] ";
@@ -126,10 +126,9 @@ namespace TRAP
 		inline static constexpr auto ApplicationPrefix = "[Application] ";
 		inline static constexpr auto ShaderManagerPrefix = "[ShaderManager] ";
 		inline static constexpr auto ShaderPrefix = "[Shader] ";
+		inline static constexpr auto ShaderGLSLPrefix = "[Shader][GLSL] ";
 		inline static constexpr auto ShaderSPIRVPrefix = "[Shader][SPIR-V] ";
 		inline static constexpr auto ShaderVulkanPrefix = "[Shader][Vulkan] ";
-		inline static constexpr auto ShaderVulkanSPIRVPrefix = "[Shader][Vulkan][SPIR-V] ";
-		inline static constexpr auto ShaderVulkanGLSLPrefix = "[Shader][Vulkan][GLSL] ";
 		inline static constexpr auto TextureManagerPrefix = "[TextureManager] ";
 		inline static constexpr auto TextureManagerTextureCubePrefix = "[TextureManager][TextureCube] ";
 		inline static constexpr auto TextureManagerTexture2DPrefix = "[TextureManager][Texture2D] ";

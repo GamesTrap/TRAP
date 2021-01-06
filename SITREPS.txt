@@ -1527,7 +1527,7 @@ SITREP 01/02/2020|20w53a3
     - Added support for multi-planar image format ~<40 mins
 
 SITREP 01/04/2020|20w01a1
-    - Changed TRAP Engine version to 20w501a1(0.7.15)
+    - Changed TRAP Engine version to 20w01a1(0.7.15)
     - Fixed a bug in Ycbcr features testing (VulkanDevice) ~<20 mins
     - Started implementing abstraction for Vulkan*** classes ~>60 mins
         - Added Buffer base class
@@ -1539,7 +1539,7 @@ SITREP 01/04/2020|20w01a1
         - Added Sampler base class
 
 SITREP 01/05/2020|20w01a2
-    - Changed TRAP Engine version to 20w501a2(0.7.16)
+    - Changed TRAP Engine version to 20w01a2(0.7.16)
     - Implemented abstraction for Vulkan*** classes ~>60 mins
         - Added CommandSignature base class
         - Added DescriptorPool base class
@@ -1552,3 +1552,7 @@ SITREP 01/05/2020|20w01a2
         - Added SwapChain base class
     - RemdererAPI replaced Vulkan*** with equivalent abstraction ~>30 mins
     - VulkanTest replaced Vulkan*** with equivalent abstraction ~<20 mins
+
+SITREP 01/06/2020|20w01a3
+    - Changed TRAP Engine version to 20w01a3(0.7.17)
+    - 

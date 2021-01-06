@@ -74,15 +74,16 @@ void TRAP::Graphics::API::VulkanPipeline::AddComputePipeline(const RendererAPI::
 
 	TRAP_ASSERT(computeDesc.ShaderProgram);
 	TRAP_ASSERT(computeDesc.RootSignature);
-	TRAP_ASSERT(computeDesc.ShaderProgram->GetVkShaderModules()[0] != VK_NULL_HANDLE);
+	VulkanShader* vShader = dynamic_cast<VulkanShader*>(computeDesc.ShaderProgram);
+	TRAP_ASSERT(vShader->GetVkShaderModules()[0] != VK_NULL_HANDLE);
 
 	m_type = RendererAPI::PipelineType::Compute;
 
 	//Pipeline
 	{
 		const VkPipelineShaderStageCreateInfo stage = VulkanInits::PipelineShaderStageCreateInfo(VK_SHADER_STAGE_COMPUTE_BIT,
-			computeDesc.ShaderProgram->GetVkShaderModules()[0],
-			computeDesc.ShaderProgram->GetReflection()->StageReflections[0].EntryPoint.data());
+			vShader->GetVkShaderModules()[0],
+			vShader->GetReflection()->StageReflections[0].EntryPoint.data());
 
 		VkComputePipelineCreateInfo info = VulkanInits::ComputePipelineCreateInfo(stage, std::dynamic_pointer_cast<VulkanRootSignature>(computeDesc.RootSignature)->GetVkPipelineLayout());
 
@@ -113,9 +114,10 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 	renderPassDesc.DepthStencilFormat = graphicsDesc.DepthStencilFormat;
 	TRAP::Scope<VulkanRenderPass> renderPass = TRAP::MakeScope<VulkanRenderPass>(m_device, renderPassDesc);
 
-	for(uint32_t i = 0; i < shaderProgram->GetReflection()->StageReflectionCount; ++i)
+	VulkanShader* vShader = dynamic_cast<VulkanShader*>(shaderProgram);
+	for(uint32_t i = 0; i < vShader->GetReflection()->StageReflectionCount; ++i)
 	{
-		TRAP_ASSERT(shaderProgram->GetVkShaderModules()[i] != VK_NULL_HANDLE);
+		TRAP_ASSERT(vShader->GetVkShaderModules()[i] != VK_NULL_HANDLE);
 	}
 
 	//Pipeline
@@ -135,41 +137,41 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 				{
 				case RendererAPI::ShaderStage::Vertex:
 				{
-					stages[stageCount].pName = shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->VertexStageIndex].EntryPoint.data();
+					stages[stageCount].pName = vShader->GetReflection()->StageReflections[vShader->GetReflection()->VertexStageIndex].EntryPoint.data();
 					stages[stageCount].stage = VK_SHADER_STAGE_VERTEX_BIT;
-					stages[stageCount].module = shaderProgram->GetVkShaderModules()[shaderProgram->GetReflection()->VertexStageIndex];
+					stages[stageCount].module = vShader->GetVkShaderModules()[vShader->GetReflection()->VertexStageIndex];
 					break;
 				}
 
 				case RendererAPI::ShaderStage::TessellationControl:
 				{
-					stages[stageCount].pName = shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->TessellationControlStageIndex].EntryPoint.data();
+					stages[stageCount].pName = vShader->GetReflection()->StageReflections[vShader->GetReflection()->TessellationControlStageIndex].EntryPoint.data();
 					stages[stageCount].stage = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
-					stages[stageCount].module = shaderProgram->GetVkShaderModules()[shaderProgram->GetReflection()->TessellationControlStageIndex];
+					stages[stageCount].module = vShader->GetVkShaderModules()[vShader->GetReflection()->TessellationControlStageIndex];
 					break;
 				}
 					
 				case RendererAPI::ShaderStage::TessellationEvaluation:
 				{
-					stages[stageCount].pName = shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->TessellationEvaluationStageIndex].EntryPoint.data();
+					stages[stageCount].pName = vShader->GetReflection()->StageReflections[vShader->GetReflection()->TessellationEvaluationStageIndex].EntryPoint.data();
 					stages[stageCount].stage = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
-					stages[stageCount].module = shaderProgram->GetVkShaderModules()[shaderProgram->GetReflection()->TessellationEvaluationStageIndex];
+					stages[stageCount].module = vShader->GetVkShaderModules()[vShader->GetReflection()->TessellationEvaluationStageIndex];
 					break;
 				}
 
 				case RendererAPI::ShaderStage::Geometry:
 				{
-					stages[stageCount].pName = shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->GeometryStageIndex].EntryPoint.data();
+					stages[stageCount].pName = vShader->GetReflection()->StageReflections[vShader->GetReflection()->GeometryStageIndex].EntryPoint.data();
 					stages[stageCount].stage = VK_SHADER_STAGE_GEOMETRY_BIT;
-					stages[stageCount].module = shaderProgram->GetVkShaderModules()[shaderProgram->GetReflection()->GeometryStageIndex];
+					stages[stageCount].module = vShader->GetVkShaderModules()[vShader->GetReflection()->GeometryStageIndex];
 					break;
 				}
 					
 				case RendererAPI::ShaderStage::Fragment:
 				{
-					stages[stageCount].pName = shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->FragmentStageIndex].EntryPoint.data();
+					stages[stageCount].pName = vShader->GetReflection()->StageReflections[vShader->GetReflection()->FragmentStageIndex].EntryPoint.data();
 					stages[stageCount].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-					stages[stageCount].module = shaderProgram->GetVkShaderModules()[shaderProgram->GetReflection()->FragmentStageIndex];
+					stages[stageCount].module = vShader->GetVkShaderModules()[vShader->GetReflection()->FragmentStageIndex];
 					break;
 				}
 
@@ -261,7 +263,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 		VkPipelineTessellationStateCreateInfo ts{};
 		if (static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationControl) &&
 			static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationEvaluation))
-			ts = VulkanInits::PipelineTessellationStateCreateInfo(shaderProgram->GetReflection()->StageReflections[shaderProgram->GetReflection()->TessellationControlStageIndex].NumControlPoint);
+			ts = VulkanInits::PipelineTessellationStateCreateInfo(vShader->GetReflection()->StageReflections[vShader->GetReflection()->TessellationControlStageIndex].NumControlPoint);
 
 		VkPipelineViewportStateCreateInfo vs = VulkanInits::PipelineViewportStateCreateInfo();
 

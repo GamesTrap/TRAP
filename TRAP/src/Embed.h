@@ -4,12 +4,12 @@
 namespace TRAP::Embed
 {
 	/// <summary>
-	/// Fallback Vertex Shader
+	/// Fallback Shader
 	/// </summary>
-	static constexpr const char* FallbackVS
+	static constexpr const char* FallbackShader
 	{
 		R"(
-		#version 460 core
+#shader vertex
 
 		layout(location = 0) in vec3 Position;
 
@@ -24,15 +24,8 @@ namespace TRAP::Embed
 		{
 			gl_Position = Matrices.sys_ProjectionMatrix * Matrices.sys_ViewMatrix * Matrices.sys_ModelMatrix * vec4(Position, 1.0f);
 		}
-	)"
-	};
-	/// <summary>
-	/// Fallback Fragment Shader
-	/// </summary>
-	static constexpr const char* FallbackFS
-	{
-		R"(
-		#version 460 core
+
+#shader fragment
 
 		layout(location = 0) out vec4 FragColor;
 
@@ -44,12 +37,12 @@ namespace TRAP::Embed
 	};
 
 	/// <summary>
-	/// 2D Renderer Vertex Shader
+	/// 2D Renderer Shader
 	/// </summary>
-	static constexpr const char* Renderer2DVS
+	static constexpr const char* Renderer2DShader
 	{
 		R"(
-		#version 460 core
+#shader vertex
 
 		layout(location = 0) in vec3 Position;
 		layout(location = 1) in vec4 Color;
@@ -73,15 +66,8 @@ namespace TRAP::Embed
 			vTexCoord = TexCoord;
 			vTexIndex = TexIndex;
 		}
-	)"
-	};
-	/// <summary>
-	/// 2D Renderer Fragment Shader
-	/// </summary>
-	static constexpr const char* Renderer2DFS
-	{
-		R"(
-		#version 460 core
+
+#shader fragment
 
 		layout(location = 0) out vec4 FragColor;
 

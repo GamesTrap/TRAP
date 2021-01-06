@@ -8,8 +8,7 @@ namespace TRAP::Graphics
 	{
 	public:
 		static TRAP::Ref<Buffer> Create(const RendererAPI::BufferDesc& desc);
-		
-		Buffer();
+
 		virtual ~Buffer() = default;
 
 		virtual uint64_t GetSize() const = 0;
@@ -22,6 +21,8 @@ namespace TRAP::Graphics
 		virtual void UnMapBuffer() = 0;
 	
 	protected:
+		Buffer();
+		
 		//CPU address of the mapped buffer (applicable to buffers created in CPU accessible heaps (CPU, CPUToGPU, GPUToCPU))
 		void* m_CPUMappedAddress;
 

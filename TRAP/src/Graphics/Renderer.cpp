@@ -108,7 +108,7 @@ void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<V
 	s_sceneData->m_modelMatrix = transform;
 	if(shader)
 	{
-		shader->Bind();
+		//shader->Bind();
 		if (!s_uniformBuffer)
 			s_uniformBuffer = UniformBuffer::Create("MatrixBuffer", s_sceneData.get(), sizeof(SceneData), BufferUsage::Stream);
 		else
