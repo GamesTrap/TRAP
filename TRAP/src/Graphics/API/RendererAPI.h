@@ -1400,7 +1400,7 @@ namespace TRAP::Graphics
 			uint32_t Width{};
 			//Height;
 			uint32_t Height{};
-			//Depth (should be 1 if Type is not TextureType::TextureType2D)
+			//Depth (should be 1 if Type is not TextureType::TextureType3D)
 			uint32_t Depth{};
 			//Texture array size (should be 1 if texture is not a texture array or cubemap)
 			uint32_t ArraySize{};
@@ -1625,10 +1625,13 @@ namespace TRAP::Graphics
 
 		struct PipelineCacheDesc
 		{
-			//Initial pipeline cache data (can be nullptr which means empty pipeline cache)
-			void* Data{};
-			//Initial pipeline cache size
-			std::size_t Size{};
+			std::vector<uint8_t> Data{};
+			PipelineCacheFlags Flags{};
+		};
+
+		struct PipelineCacheLoadDesc
+		{
+			std::string VirtualOrPhysicalPath{};
 			PipelineCacheFlags Flags{};
 		};
 
@@ -1740,7 +1743,7 @@ namespace TRAP::Graphics
 		struct SwapChainDesc
 		{
 			//Window handle
-			TRAP::INTERNAL::WindowingAPI::InternalWindow* WindowHandle{};
+			TRAP::Window* Window{};
 			//Queues which should be allowed to present
 			std::vector<TRAP::Ref<Queue>> PresentQueues{};
 			//Number of back buffers in this swapchain

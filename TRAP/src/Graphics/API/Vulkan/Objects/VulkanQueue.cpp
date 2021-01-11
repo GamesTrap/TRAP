@@ -128,7 +128,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	{
 		if(waitSemaphore->IsSignaled())
 		{
-			waitSemaphores[waitCount] = std::dynamic_pointer_cast<VulkanSemaphore>(waitSemaphore)->GetVkSemaphore();
+			waitSemaphores[waitCount] = dynamic_cast<VulkanSemaphore*>(waitSemaphore.get())->GetVkSemaphore();
 			waitMasks[waitCount] = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
 			++waitCount;
 
@@ -142,7 +142,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	{
 		if(!desc.SignalSemaphores[i]->IsSignaled())
 		{
-			signalSemaphores[signalCount] = std::dynamic_pointer_cast<VulkanSemaphore>(desc.SignalSemaphores[i])->GetVkSemaphore();
+			signalSemaphores[signalCount] = dynamic_cast<VulkanSemaphore*>(desc.SignalSemaphores[i].get())->GetVkSemaphore();
 			desc.SignalSemaphores[signalCount]->m_signaled = true;
 			++signalCount;
 		}
@@ -154,7 +154,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 	//Many setups have just one queue family and one queue.
 	//In this case, async compute, async transfer doesn't exist and we end up using the same queue for all three operations
 	std::lock_guard<std::mutex> lock(m_submitMutex);
-	VkCall(vkQueueSubmit(m_vkQueue, 1, &submitInfo, desc.SignalFence ? std::dynamic_pointer_cast<VulkanFence>(desc.SignalFence)->GetVkFence() : VK_NULL_HANDLE));
+	VkCall(vkQueueSubmit(m_vkQueue, 1, &submitInfo, desc.SignalFence ? dynamic_cast<VulkanFence*>(desc.SignalFence.get())->GetVkFence() : VK_NULL_HANDLE));
 
 	if (desc.SignalFence)
 		desc.SignalFence->m_submitted = true;
@@ -178,14 +178,14 @@ TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Pre
 		{
 			if(waitSemaphore->IsSignaled())
 			{
-				wSemaphores.push_back(std::dynamic_pointer_cast<VulkanSemaphore>(waitSemaphore)->GetVkSemaphore());
+				wSemaphores.push_back(dynamic_cast<VulkanSemaphore*>(waitSemaphore.get())->GetVkSemaphore());
 				waitSemaphore->m_signaled = false;
 			}
 		}
 
 		uint32_t presentIndex = desc.Index;
 
-		TRAP::Ref<VulkanSwapChain> sChain = std::dynamic_pointer_cast<VulkanSwapChain>(desc.SwapChain);
+		VulkanSwapChain* sChain = dynamic_cast<VulkanSwapChain*>(desc.SwapChain.get());
 		VkPresentInfoKHR presentInfo = VulkanInits::PresentInfo(wSemaphores, sChain->GetVkSwapChain(), presentIndex);
 
 		//Lightweigt lock to make sure multiple threads dont use the same queue simultaneously
@@ -201,7 +201,7 @@ TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Pre
 		}
 		else
 		{
-			TRAP_ASSERT(false);
+			VkCall(res);
 		}
 	}
 

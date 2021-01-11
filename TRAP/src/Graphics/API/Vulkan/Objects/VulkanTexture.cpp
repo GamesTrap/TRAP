@@ -723,7 +723,7 @@ void TRAP::Graphics::API::VulkanTexture::FillVirtualTexture(CommandBuffer& cmd)
 			region.imageOffset = { page.Offset.x, page.Offset.y, 0 };
 			region.imageExtent = { static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageWidth), static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageHeight), 1 };
 
-			vkCmdCopyBufferToImage(static_cast<VulkanCommandBuffer&>(cmd).GetVkCommandBuffer(), std::dynamic_pointer_cast<VulkanBuffer>(page.IntermediateBuffer)->GetVkBuffer(), m_vkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+			vkCmdCopyBufferToImage(static_cast<VulkanCommandBuffer&>(cmd).GetVkCommandBuffer(), dynamic_cast<VulkanBuffer*>(page.IntermediateBuffer.get())->GetVkBuffer(), m_vkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 			//Update list of memory-backed sparse image memory binds
 			imageMemory.push_back(page.ImageMemoryBind);
@@ -751,7 +751,7 @@ void TRAP::Graphics::API::VulkanTexture::FillVirtualTexture(CommandBuffer& cmd)
 		m_SVT->BindSparseInfo.imageOpaqueBindCount = (m_SVT->OpaqueMemoryBindInfo.bindCount > 0) ? 1 : 0;
 		m_SVT->BindSparseInfo.pImageOpaqueBinds = &m_SVT->OpaqueMemoryBindInfo;
 
-		VkCall(vkQueueBindSparse(std::dynamic_pointer_cast<VulkanQueue>(cmd.GetQueue())->GetVkQueue(), static_cast<uint32_t>(1), &m_SVT->BindSparseInfo, VK_NULL_HANDLE));
+		VkCall(vkQueueBindSparse(dynamic_cast<VulkanQueue*>(cmd.GetQueue().get())->GetVkQueue(), static_cast<uint32_t>(1), &m_SVT->BindSparseInfo, VK_NULL_HANDLE));
 	}
 }
 
@@ -931,7 +931,7 @@ void TRAP::Graphics::API::VulkanTexture::FillVirtualTextureLevel(CommandBuffer* 
 				region.imageOffset = { page.Offset.x, page.Offset.y, 0 };
 				region.imageExtent = { static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageWidth), static_cast<uint32_t>(m_SVT->SparseVirtualTexturePageHeight), 1 };
 
-				vkCmdCopyBufferToImage(static_cast<VulkanCommandBuffer*>(cmd)->GetVkCommandBuffer(), std::dynamic_pointer_cast<VulkanBuffer>(page.IntermediateBuffer)->GetVkBuffer(), m_vkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+				vkCmdCopyBufferToImage(static_cast<VulkanCommandBuffer*>(cmd)->GetVkCommandBuffer(), dynamic_cast<VulkanBuffer*>(page.IntermediateBuffer.get())->GetVkBuffer(), m_vkImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 			}
 
 			//Update list of memory-backed sparse image memory binds
@@ -959,7 +959,7 @@ void TRAP::Graphics::API::VulkanTexture::FillVirtualTextureLevel(CommandBuffer* 
 		m_SVT->BindSparseInfo.imageOpaqueBindCount = (m_SVT->OpaqueMemoryBindInfo.bindCount > 0) ? 1 : 0;
 		m_SVT->BindSparseInfo.pImageOpaqueBinds = &m_SVT->OpaqueMemoryBindInfo;
 
-		VkCall(vkQueueBindSparse(std::dynamic_pointer_cast<VulkanQueue>(cmd->GetQueue())->GetVkQueue(), static_cast<uint32_t>(1), &m_SVT->BindSparseInfo, VK_NULL_HANDLE));
+		VkCall(vkQueueBindSparse(dynamic_cast<VulkanQueue*>(cmd->GetQueue().get())->GetVkQueue(), static_cast<uint32_t>(1), &m_SVT->BindSparseInfo, VK_NULL_HANDLE));
 	}
 }
 

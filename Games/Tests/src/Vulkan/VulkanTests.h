@@ -26,7 +26,7 @@ public:
 
 private:
 	//bool OnWindowClose(TRAP::Events::WindowCloseEvent& e);
-	bool OnWindowResize(TRAP::Events::WindowResizeEvent& e);
+	bool OnWindowResize(TRAP::Events::FrameBufferResizeEvent& e);
 	
 	//TRAP::Scope<TRAP::Window> m_window;
 
@@ -46,7 +46,11 @@ private:
 	TRAP::Ref<TRAP::Graphics::RootSignature> m_rootSignature;
 	TRAP::Ref<TRAP::Graphics::Pipeline> m_defaultPipeline;
 
+	TRAP::Ref<TRAP::Graphics::PipelineCache> m_defaultPipelineCache;
+
 	uint32_t m_frameIndex;
+
+	bool m_resChanged;
 };
 
 #endif /*_GAMESTRAP_VULKANTESTS_H_*/

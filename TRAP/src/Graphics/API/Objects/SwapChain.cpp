@@ -2,6 +2,7 @@
 #include "SwapChain.h"
 
 #include "Graphics/API/Vulkan/Objects/VulkanSwapChain.h"
+#include "Graphics/API/Vulkan/VulkanCommon.h"
 
 TRAP::Ref<TRAP::Graphics::SwapChain> TRAP::Graphics::SwapChain::Create(RendererAPI::SwapChainDesc& desc)
 {
@@ -16,6 +17,21 @@ TRAP::Ref<TRAP::Graphics::SwapChain> TRAP::Graphics::SwapChain::Create(RendererA
 	default:
 		TRAP_ASSERT(false, "Unknown RenderAPI");
 		return nullptr;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RendererAPI::ImageFormat TRAP::Graphics::SwapChain::GetRecommendedSwapchainFormat(const bool HDR)
+{
+	switch(RendererAPI::GetRenderAPI())
+	{
+	case RenderAPI::Vulkan:
+		return API::VulkanGetRecommendedSwapchainFormat(HDR);
+		
+	case RenderAPI::NONE:
+	default:
+		return RendererAPI::ImageFormat::Undefined;
 	}
 }
 

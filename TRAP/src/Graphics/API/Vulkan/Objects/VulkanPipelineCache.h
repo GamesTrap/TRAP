@@ -16,6 +16,8 @@ namespace TRAP::Graphics::API
 
 		void GetPipelineCacheData(std::size_t* size, void* data) const override;
 
+		void Save(const std::string& virtualOrPhysicalPath) override;
+
 		VkPipelineCache GetVkPipelineCache() const;
 		
 	private:

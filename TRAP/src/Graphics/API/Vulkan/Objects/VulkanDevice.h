@@ -30,7 +30,7 @@ namespace TRAP::Graphics::API
 
 		void FindQueueFamilyIndices();
 
-		void WaitDeviceIdle() const;
+		void WaitIdle() const;
 		
 		uint8_t GetGraphicsQueueFamilyIndex() const;
 		uint8_t GetTransferQueueFamilyIndex() const;

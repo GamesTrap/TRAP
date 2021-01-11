@@ -181,7 +181,7 @@ void TRAP::Graphics::API::VulkanDevice::FindQueueFamilyIndices()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanDevice::WaitDeviceIdle() const
+void TRAP::Graphics::API::VulkanDevice::WaitIdle() const
 {
 	VkCall(vkDeviceWaitIdle(m_device));
 }

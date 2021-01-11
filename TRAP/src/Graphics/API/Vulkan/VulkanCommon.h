@@ -40,7 +40,7 @@ namespace TRAP::Graphics::API
 	VkPipelineRasterizationStateCreateInfo UtilToRasterizerDesc(const RendererAPI::RasterizerStateDesc& desc);
 	void UtilGetPlanarVkImageMemoryRequirement(VkDevice device, VkImage image, uint32_t planesCount, VkMemoryRequirements& memReq, std::vector<uint64_t>& planesOffsets);
 
-	RendererAPI::ImageFormat GetRecommendedSwapchainFormat(bool HDR);
+	RendererAPI::ImageFormat VulkanGetRecommendedSwapchainFormat(bool HDR);
 
 	RendererAPI::ImageFormat ImageFormatFromVkFormat(VkFormat format);
 	

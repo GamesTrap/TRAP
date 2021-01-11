@@ -1555,4 +1555,15 @@ SITREP 01/05/2020|20w01a2
 
 SITREP 01/06/2020|20w01a3
     - Changed TRAP Engine version to 20w01a3(0.7.17)
-    - 
+    - Reimplemented Shader base class ~>120 mins
+        - Replaced ShaderType enum with the RendererAPI::ShaderStage
+        - Added ability to load GLSL or SPIRV(created with ConvertToSPIRV)
+        - Removed Bind/Unbind functions
+    - Removed old VkShader class ~<5 mins
+    - Moved constructors of the abstract Vulkan*** base classes to protected ~<20 mins
+    - VulkanTest Added Window Resizing ~<15 mins
+    - VulkanTest Added a test shader ~<5 mins
+    - VulkanTest now uses ShaderManager ~<5 mins
+    - Updated ConvertToSPIRV ~>45 mins
+    - VulkanTest optimized Window resizing ~<10 mins
+    - Optimized/Reduced usage of std::dynamic_pointer_cast in Vulkan code ~<10 mins

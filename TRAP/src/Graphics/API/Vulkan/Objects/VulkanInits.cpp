@@ -644,16 +644,15 @@ VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkPipelineCacheCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCacheCreateInfo(const std::size_t size,
-	void* data,
+VkPipelineCacheCreateInfo TRAP::Graphics::API::VulkanInits::PipelineCacheCreateInfo(const std::vector<uint8_t>& data,
 	const VkPipelineCacheCreateFlags flags)
 {
 	VkPipelineCacheCreateInfo info{};
 
 	info.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
 	info.pNext = nullptr;
-	info.initialDataSize = size;
-	info.pInitialData = data;
+	info.initialDataSize = data.size();
+	info.pInitialData = data.data();
 	info.flags = flags;
 	
 	return info;

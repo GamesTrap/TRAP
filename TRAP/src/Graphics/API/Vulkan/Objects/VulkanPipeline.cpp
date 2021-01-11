@@ -70,7 +70,7 @@ TRAP::Graphics::API::VulkanPipeline::~VulkanPipeline()
 void TRAP::Graphics::API::VulkanPipeline::AddComputePipeline(const RendererAPI::PipelineDesc& desc)
 {
 	const RendererAPI::ComputePipelineDesc& computeDesc = std::get<RendererAPI::ComputePipelineDesc>(desc.Pipeline);
-	VkPipelineCache psoCache = desc.Cache ? std::dynamic_pointer_cast<VulkanPipelineCache>(desc.Cache)->GetVkPipelineCache() : VK_NULL_HANDLE;
+	VkPipelineCache psoCache = desc.Cache ? dynamic_cast<VulkanPipelineCache*>(desc.Cache.get())->GetVkPipelineCache() : VK_NULL_HANDLE;
 
 	TRAP_ASSERT(computeDesc.ShaderProgram);
 	TRAP_ASSERT(computeDesc.RootSignature);
@@ -85,7 +85,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddComputePipeline(const RendererAPI::
 			vShader->GetVkShaderModules()[0],
 			vShader->GetReflection()->StageReflections[0].EntryPoint.data());
 
-		VkComputePipelineCreateInfo info = VulkanInits::ComputePipelineCreateInfo(stage, std::dynamic_pointer_cast<VulkanRootSignature>(computeDesc.RootSignature)->GetVkPipelineLayout());
+		VkComputePipelineCreateInfo info = VulkanInits::ComputePipelineCreateInfo(stage, dynamic_cast<VulkanRootSignature*>(computeDesc.RootSignature.get())->GetVkPipelineLayout());
 
 		vkCreateComputePipelines(m_device->GetVkDevice(), psoCache, 1, &info, nullptr, &m_vkPipeline);
 	}
@@ -96,7 +96,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddComputePipeline(const RendererAPI::
 void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI::PipelineDesc& desc)
 {
 	const RendererAPI::GraphicsPipelineDesc& graphicsDesc = std::get<RendererAPI::GraphicsPipelineDesc>(desc.Pipeline);
-	VkPipelineCache psoCache = desc.Cache ? std::dynamic_pointer_cast<VulkanPipelineCache>(desc.Cache)->GetVkPipelineCache() : VK_NULL_HANDLE;
+	VkPipelineCache psoCache = desc.Cache ? dynamic_cast<VulkanPipelineCache*>(desc.Cache.get())->GetVkPipelineCache() : VK_NULL_HANDLE;
 
 	TRAP_ASSERT(graphicsDesc.ShaderProgram);
 	TRAP_ASSERT(graphicsDesc.RootSignature);
@@ -298,7 +298,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 																					ds,
 																					cb,
 																					dy,
-																					std::dynamic_pointer_cast<VulkanRootSignature>(graphicsDesc.RootSignature)->GetVkPipelineLayout(),
+																					dynamic_cast<VulkanRootSignature*>(graphicsDesc.RootSignature.get())->GetVkPipelineLayout(),
 																					renderPass->GetVkRenderPass()
 		);
 		if( static_cast<uint32_t>(shaderProgram->GetShaderStages() & RendererAPI::ShaderStage::TessellationControl) &&

@@ -157,7 +157,7 @@ namespace TRAP::Graphics::API::VulkanInits
 		float blendConstB,
 		float blendConstA);
 
-	VkPipelineCacheCreateInfo PipelineCacheCreateInfo(std::size_t size, void* data, VkPipelineCacheCreateFlags flags);
+	VkPipelineCacheCreateInfo PipelineCacheCreateInfo(const std::vector<uint8_t>& data, VkPipelineCacheCreateFlags flags);
 
 	VkPipelineShaderStageCreateInfo PipelineShaderStageCreateInfo(VkShaderStageFlagBits stage, VkShaderModule module, const char* name);
 

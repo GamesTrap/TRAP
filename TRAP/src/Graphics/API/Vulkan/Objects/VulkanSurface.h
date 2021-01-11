@@ -13,7 +13,7 @@ namespace TRAP::Graphics::API
 	public:
 		VulkanSurface(TRAP::Ref<VulkanInstance> instance,
 		              const TRAP::Ref<VulkanDevice>& device,
-		              TRAP::INTERNAL::WindowingAPI::InternalWindow* window);
+		              TRAP::Window* window);
 		~VulkanSurface();
 
 		VkSurfaceKHR& GetVkSurface();

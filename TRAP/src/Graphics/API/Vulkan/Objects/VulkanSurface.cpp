@@ -8,7 +8,7 @@
 
 TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> instance,
 												  const TRAP::Ref<VulkanDevice>& device,
-                                                  TRAP::INTERNAL::WindowingAPI::InternalWindow* window)
+                                                  TRAP::Window* window)
 	: m_surface(VK_NULL_HANDLE), m_surfaceCapabilities(), m_instance(std::move(instance))
 {
 	TRAP_ASSERT(m_instance, "instance is nullptr");
@@ -19,7 +19,7 @@ TRAP::Graphics::API::VulkanSurface::VulkanSurface(TRAP::Ref<VulkanInstance> inst
 	TP_DEBUG(Log::RendererVulkanSurfacePrefix, "Creating Surface");
 #endif
 
-	VkCall(TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(m_instance->GetVkInstance(), window, nullptr, m_surface));
+	VkCall(TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(m_instance->GetVkInstance(), static_cast<TRAP::INTERNAL::WindowingAPI::InternalWindow*>(window->GetInternalWindow()), nullptr, m_surface));
 
 	VkCall(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device->GetPhysicalDevice()->GetVkPhysicalDevice(), m_surface, &m_surfaceCapabilities));
 
