@@ -8,11 +8,13 @@
 #include "Vulkan/Objects/VulkanInits.h"
 #include "Vulkan/Objects/VulkanInstance.h"
 #include "Vulkan/Objects/VulkanPhysicalDevice.h"
+#include "ResourceLoader.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::RendererAPI> TRAP::Graphics::RendererAPI::s_Renderer = nullptr;
 TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::s_RenderAPI = TRAP::Graphics::RenderAPI::NONE;
+TRAP::Scope<TRAP::Graphics::API::ResourceLoader> TRAP::Graphics::RendererAPI::s_ResourceLoader = nullptr;
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapable = true;
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
 
@@ -49,6 +51,13 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 const TRAP::Scope<TRAP::Graphics::RendererAPI>& TRAP::Graphics::RendererAPI::GetRenderer()
 {
 	return s_Renderer;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const TRAP::Scope<TRAP::Graphics::API::ResourceLoader>& TRAP::Graphics::RendererAPI::GetResourceLoader()
+{
+	return s_ResourceLoader;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

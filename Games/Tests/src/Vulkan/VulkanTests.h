@@ -48,9 +48,19 @@ private:
 
 	TRAP::Ref<TRAP::Graphics::PipelineCache> m_defaultPipelineCache;
 
+	TRAP::Ref<TRAP::Graphics::Buffer> m_triangleVertexBuffer;
+
 	uint32_t m_frameIndex;
 
 	bool m_resChanged;
+
+	std::array<float, 18> m_triangleVertices
+	{
+		//XYZ RGB
+		 0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+	};
 };
 
 #endif /*_GAMESTRAP_VULKANTESTS_H_*/

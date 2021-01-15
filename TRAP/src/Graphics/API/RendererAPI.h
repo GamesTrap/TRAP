@@ -38,6 +38,7 @@ namespace TRAP::Graphics
 
 namespace TRAP::Graphics::API
 {
+	class ResourceLoader;
 	class VulkanTexture;
 
 	namespace ShaderReflection
@@ -68,6 +69,7 @@ namespace TRAP::Graphics
 		static void Shutdown();
 
 		static const TRAP::Scope<RendererAPI>& GetRenderer();
+		static const TRAP::Scope<API::ResourceLoader>& GetResourceLoader();
 		
 		static void AutoSelectRenderAPI();
 		static void SwitchRenderAPI(RenderAPI api);
@@ -1933,6 +1935,47 @@ namespace TRAP::Graphics
 		{
 			std::unordered_map<std::string, uint32_t> Map;
 		};
+
+		struct MappedMemoryRange
+		{
+			uint8_t* Data;
+			TRAP::Ref<Buffer> Buffer;
+			uint64_t Offset;
+			uint64_t Size;
+			uint32_t Flags;
+		};
+
+		struct ResourceLoaderDesc
+		{
+			uint64_t BufferSize;
+			uint32_t BufferCount;
+		};
+
+		struct BufferLoadDesc
+		{
+			TRAP::Ref<Buffer> Buffer;
+			const void* Data;
+			BufferDesc Desc;
+
+			//Force Reset Buffer to nullptr
+			bool ForceReset;
+		};
+		
+		struct BufferUpdateDesc
+		{
+			TRAP::Ref<Buffer> Buffer;
+			uint64_t DstOffset;
+			uint64_t Size;
+
+			//To be filled by the caller
+			void* MappedData;
+
+			//Internal
+			struct
+			{
+				MappedMemoryRange MappedRange;
+			} Internal;
+		};
 		
 		inline static struct GPUSettings
 		{
@@ -1952,12 +1995,12 @@ namespace TRAP::Graphics
 	protected:
 		static TRAP::Scope<RendererAPI> s_Renderer;
 		static RenderAPI s_RenderAPI;
+		static TRAP::Scope<API::ResourceLoader> s_ResourceLoader;
 
 	private:
 		static bool s_isVulkanCapable;
 		static bool s_isVulkanCapableFirstTest;
 	};
-
 }
 
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::WaveOpsSupportFlags)

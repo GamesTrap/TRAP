@@ -1550,7 +1550,7 @@ SITREP 01/05/2020|20w01a2
         - Added Queue base class
         - Added Semaphore base class
         - Added SwapChain base class
-    - RemdererAPI replaced Vulkan*** with equivalent abstraction ~>30 mins
+    - RendererAPI replaced Vulkan*** with equivalent abstraction ~>30 mins
     - VulkanTest replaced Vulkan*** with equivalent abstraction ~<20 mins
 
 SITREP 01/06/2020|20w01a3
@@ -1565,5 +1565,14 @@ SITREP 01/06/2020|20w01a3
     - VulkanTest Added a test shader ~<5 mins
     - VulkanTest now uses ShaderManager ~<5 mins
     - Updated ConvertToSPIRV ~>45 mins
-    - VulkanTest optimized Window resizing ~<10 mins
+
+SITREP 01/11/2020|20w02a1
+    - Changed TRAP Engine version to 20w02a1(0.7.18)
+    - Added loading/saving of PipelineCache from disk ~<20 mins
     - Optimized/Reduced usage of std::dynamic_pointer_cast in Vulkan code ~<10 mins
+    - VulkanTest optimized Window resizing ~<10 mins
+
+SITREP 01/15/2020|20w02a2
+    - Changed TRAP Engine version to 20w02a1(0.7.19)
+    - Added ResourceLoader for Buffers like VertexBuffer, IndexBuffer, etc... ~>60 mins
+    - VulkanTest Added colored triangle ~<20 mins

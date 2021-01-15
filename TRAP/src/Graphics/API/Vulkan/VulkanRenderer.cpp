@@ -20,6 +20,8 @@
 #include "Objects/VulkanInstance.h"
 #include "Objects/VulkanDebug.h"
 
+#include "Graphics/API/ResourceLoader.h"
+
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
 //Instance Extensions
 bool TRAP::Graphics::API::VulkanRenderer::s_debugUtilsExtension = false;
@@ -65,6 +67,8 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 {
 	TP_DEBUG(Log::RendererVulkanPrefix, "Destroying Renderer");
 
+	s_ResourceLoader.reset();
+	
 	RemoveDefaultResources();
 
 	std::lock_guard<std::mutex> lock(s_renderPassMutex);
@@ -126,6 +130,8 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 	m_device->FindQueueFamilyIndices();
 
 	AddDefaultResources();
+
+	s_ResourceLoader = TRAP::MakeScope<ResourceLoader>();
 	
 	const VkPhysicalDeviceProperties devProps = m_device->GetPhysicalDevice()->GetVkPhysicalDeviceProperties();
 	TP_INFO(Log::RendererVulkanPrefix, "----------------------------------");

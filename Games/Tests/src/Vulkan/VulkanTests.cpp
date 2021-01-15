@@ -1,5 +1,6 @@
 #include "VulkanTests.h"
 
+#include "Graphics/API/ResourceLoader.h"
 #include "Graphics/API/Objects/CommandBuffer.h"
 #include "Graphics/API/Objects/CommandPool.h"
 #include "Graphics/API/Objects/Fence.h"
@@ -75,11 +76,11 @@ void VulkanTests::OnAttach()
 	m_imageAcquiredSemaphore = TRAP::Graphics::Semaphore::Create();
 
 	TRAP::Graphics::RendererAPI::PipelineCacheLoadDesc cacheDesc{};
-	cacheDesc.VirtualOrPhysicalPath = "Assets/Cache/VkClearScreenCache.cache";
+	cacheDesc.VirtualOrPhysicalPath = "Assets/Cache/VkClearScreen.cache";
 	m_defaultPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
 
-	m_defaultShader = TRAP::Graphics::ShaderManager::LoadFile("/shaders/test.spirv").get();
-
+	m_defaultShader = TRAP::Graphics::ShaderManager::LoadFile("/shaders/test.shader").get();
+	
 	//RootSignature
 	TRAP::Graphics::RendererAPI::RootSignatureDesc rootDesc{};
 	rootDesc.Shaders = { m_defaultShader };
@@ -93,12 +94,25 @@ void VulkanTests::OnAttach()
 	swapChainDesc.ImageCount = ImageCount;
 	swapChainDesc.ColorFormat = TRAP::Graphics::SwapChain::GetRecommendedSwapchainFormat(false);
 	swapChainDesc.EnableVSync = false;
-	swapChainDesc.ColorClearValue = { {0.5f, 0.75f, 1.0f, 1.0f} };
+	swapChainDesc.ColorClearValue = { {0.1f, 0.1f, 0.1f, 1.0f} };
 	m_swapChain = TRAP::Graphics::SwapChain::Create(swapChainDesc);
 	
 	if (!m_swapChain)
 		TRAP::Application::Shutdown();
 
+	TRAP::Graphics::RendererAPI::VertexLayout vertexLayout{};
+	vertexLayout.AttributeCount = 2;
+	vertexLayout.Attributes[0].Semantic = TRAP::Graphics::RendererAPI::ShaderSemantic::Position;
+	vertexLayout.Attributes[0].Format = TRAP::Graphics::RendererAPI::ImageFormat::R32G32B32_SFLOAT;
+	vertexLayout.Attributes[0].Binding = 0;
+	vertexLayout.Attributes[0].Location = 0;
+	vertexLayout.Attributes[0].Offset = 0;
+	vertexLayout.Attributes[1].Semantic = TRAP::Graphics::RendererAPI::ShaderSemantic::Color;
+	vertexLayout.Attributes[1].Format = TRAP::Graphics::RendererAPI::ImageFormat::R32G32B32_SFLOAT;
+	vertexLayout.Attributes[1].Binding = 0;
+	vertexLayout.Attributes[1].Location = 1;
+	vertexLayout.Attributes[1].Offset = 3 * sizeof(float);
+	
 	TRAP::Graphics::RendererAPI::PipelineDesc desc{};
 	if (m_defaultPipelineCache)
 		desc.Cache = m_defaultPipelineCache;
@@ -112,7 +126,20 @@ void VulkanTests::OnAttach()
 	pipelineSettings.SampleQuality = m_swapChain->GetRenderTargets()[0]->GetSampleQuality();
 	pipelineSettings.RootSignature = m_rootSignature;
 	pipelineSettings.ShaderProgram = m_defaultShader;
+	pipelineSettings.VertexLayout = &vertexLayout;
 	m_defaultPipeline = TRAP::Graphics::Pipeline::Create(desc);
+
+	//Triangle Vertex Buffer
+	TRAP::Graphics::RendererAPI::BufferLoadDesc loadDesc{};
+	loadDesc.Desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::VertexBuffer;
+	loadDesc.Desc.MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::GPUOnly;
+	loadDesc.Desc.Size = m_triangleVertices.size() * sizeof(float);
+	loadDesc.Data = m_triangleVertices.data();
+	TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(loadDesc, nullptr);
+
+	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
+	
+	m_triangleVertexBuffer = loadDesc.Buffer;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -122,6 +149,8 @@ void VulkanTests::OnDetach()
 	//m_window.reset();
 
 	m_graphicsQueue->WaitQueueIdle();
+	
+	m_triangleVertexBuffer.reset();
 	
 	m_defaultPipeline.reset();
 	m_swapChain.reset();
@@ -140,7 +169,7 @@ void VulkanTests::OnDetach()
 
 	if (m_defaultPipelineCache)
 	{
-		m_defaultPipelineCache->Save("Assets/Cache/VkClearScreenCache");
+		m_defaultPipelineCache->Save("Assets/Cache/VkClearScreen.cache");
 		m_defaultPipelineCache.reset();
 	}
 }
@@ -209,15 +238,17 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 	TRAP::Graphics::RendererAPI::LoadActionsDesc loadActions{};
 	loadActions.LoadActionsColor[0] = TRAP::Graphics::RendererAPI::LoadActionType::Clear;
-	loadActions.ClearColorValues[0].R = 0.5f;
-	loadActions.ClearColorValues[0].G = 0.75f;
-	loadActions.ClearColorValues[0].B = 1.0f;
+	loadActions.ClearColorValues[0].R = 0.1f;
+	loadActions.ClearColorValues[0].G = 0.1f;
+	loadActions.ClearColorValues[0].B = 0.1f;
 	loadActions.ClearColorValues[0].A = 1.0f;
 	cmd->BindRenderTargets({ renderTarget }, nullptr, &loadActions, {}, {}, -1, -1);
 	cmd->SetViewport(0.0f, 0.0f, static_cast<float>(renderTarget->GetWidth()), static_cast<float>(renderTarget->GetHeight()), 0.0f, 1.0f);
 	cmd->SetScissor(0, 0, renderTarget->GetWidth(), renderTarget->GetHeight());
 
 	cmd->BindPipeline(m_defaultPipeline);
+	cmd->BindVertexBuffer({ m_triangleVertexBuffer }, { 6 * sizeof(float) }, {});
+	cmd->Draw(3, 0);
 	
 	cmd->BindRenderTargets({}, nullptr, nullptr, {}, {}, -1, -1);
 

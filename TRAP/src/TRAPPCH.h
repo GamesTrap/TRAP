@@ -201,6 +201,12 @@
 #ifdef DeleteFile
 	#undef DeleteFile
 #endif
+#ifdef BeginUpdateResource
+	#undef BeginUpdateResource
+#endif
+#ifdef EndUpdateResource
+	#undef EndUpdateResource
+#endif
 #endif
 
 //VulkanAPI
