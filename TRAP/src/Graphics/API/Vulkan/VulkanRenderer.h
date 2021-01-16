@@ -37,6 +37,10 @@ namespace TRAP::Graphics::API
 		void Clear(RendererBufferType buffer) override;
 		void Present(const Scope<Window>& window) override;
 
+		void SetVSync(bool vsync) override;
+
+		void InternalUse(Window* window) override;
+		
 		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) override;
 		void SetDepthTesting(bool enabled) override;
 		void SetDepthMasking(bool enabled) override;
@@ -68,6 +72,7 @@ namespace TRAP::Graphics::API
 		void Draw(const Scope<VertexArray>& vertexArray) override;
 
 		const std::string& GetTitle() const override;
+		bool GetVSync() override;
 
 		std::array<uint8_t, 16> GetCurrentGPUUUID() override;
 		std::string GetCurrentGPUName() override;

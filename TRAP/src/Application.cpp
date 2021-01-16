@@ -140,7 +140,8 @@ TRAP::Application::Application()
 
 	//Initialize Renderer
 	Graphics::RendererAPI::Init();
-	Graphics::RendererAPI::SetVSync(vsync);
+	Graphics::RendererAPI::Use(m_window.get());
+	Graphics::RendererAPI::GetRenderer()->SetVSync(vsync);
 
 	//Update Window Title (Debug/DebWithRelInfo)
 	m_window->SetTitle(m_window->GetTitle() + Graphics::Renderer::GetTitle());
@@ -189,7 +190,7 @@ TRAP::Application::~Application()
 	m_config.Set("Width", m_window->GetWidth());
 	m_config.Set("Height", m_window->GetHeight());
 	m_config.Set("RefreshRate", m_window->GetRefreshRate());
-	m_config.Set("VSync", Graphics::RendererAPI::GetVSync());
+	m_config.Set("VSync", Graphics::RendererAPI::GetRenderer()->GetVSync());
 	m_config.Set("FPSLimit", m_fpsLimit);
 	m_config.Set("DisplayMode", m_window->GetDisplayMode());
 	m_config.Set("Maximized", m_window->IsMaximized());
@@ -650,6 +651,8 @@ void TRAP::Application::ReCreate(const Graphics::RenderAPI renderAPI) const
 	for (const auto& layer : *m_layerStack)
 		layer->OnDetach();
 
+	const bool vsync = Graphics::RendererAPI::GetRenderer()->GetVSync();
+	
 	Graphics::RendererAPI::SwitchRenderAPI(renderAPI);
 
 	Graphics::TextureManager::Shutdown();
@@ -657,7 +660,7 @@ void TRAP::Application::ReCreate(const Graphics::RenderAPI renderAPI) const
 	Graphics::Renderer::Shutdown();
 	Graphics::RendererAPI::Shutdown();
 
-	Graphics::RendererAPI::SetVSync(Graphics::RendererAPI::GetVSync());
+	Graphics::RendererAPI::GetRenderer()->SetVSync(vsync);
 	Graphics::RendererAPI::Init();
 	m_window->SetTitle(m_window->GetTitle());
 	//Always added as a fallback shader

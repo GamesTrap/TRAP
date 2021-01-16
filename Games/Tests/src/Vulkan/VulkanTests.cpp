@@ -30,7 +30,7 @@ VulkanTests::VulkanTests()
 
 void VulkanTests::OnAttach()
 {
-	TRAP::Application::GetWindow()->SetTitle("Vulkan Clear Screen Test");
+	TRAP::Application::GetWindow()->SetTitle("Vulkan Test");
 
 	TRAP::VFS::MountShaders("Assets/Shaders");
 	
@@ -60,7 +60,7 @@ void VulkanTests::OnAttach()
 	m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });*/
 	
 	//Vulkan Initialization
-	TRAP::Graphics::RendererAPI::QueueDesc queueDesc{};
+	/*TRAP::Graphics::RendererAPI::QueueDesc queueDesc{};
 	queueDesc.Type = TRAP::Graphics::RendererAPI::QueueType::Graphics;
 	queueDesc.Flag = TRAP::Graphics::RendererAPI::QueueFlag::InitMicroprofile;
 	m_graphicsQueue = TRAP::Graphics::Queue::Create(queueDesc);
@@ -73,7 +73,7 @@ void VulkanTests::OnAttach()
 		m_renderCompleteFences[i] = TRAP::Graphics::Fence::Create();
 		m_renderCompleteSemaphores[i] = TRAP::Graphics::Semaphore::Create();
 	}
-	m_imageAcquiredSemaphore = TRAP::Graphics::Semaphore::Create();
+	m_imageAcquiredSemaphore = TRAP::Graphics::Semaphore::Create();*/
 
 	TRAP::Graphics::RendererAPI::PipelineCacheLoadDesc cacheDesc{};
 	cacheDesc.VirtualOrPhysicalPath = "Assets/Cache/VkClearScreen.cache";
@@ -86,7 +86,7 @@ void VulkanTests::OnAttach()
 	rootDesc.Shaders = { m_defaultShader };
 	m_rootSignature = TRAP::Graphics::RootSignature::Create(rootDesc);
 	
-	TRAP::Graphics::RendererAPI::SwapChainDesc swapChainDesc{};
+	/*TRAP::Graphics::RendererAPI::SwapChainDesc swapChainDesc{};
 	swapChainDesc.Window = TRAP::Application::GetWindow().get();
 	swapChainDesc.PresentQueues = { m_graphicsQueue };
 	swapChainDesc.Width = TRAP::Application::GetWindow()->GetWidth();
@@ -98,9 +98,9 @@ void VulkanTests::OnAttach()
 	m_swapChain = TRAP::Graphics::SwapChain::Create(swapChainDesc);
 	
 	if (!m_swapChain)
-		TRAP::Application::Shutdown();
+		TRAP::Application::Shutdown();*/
 
-	TRAP::Graphics::RendererAPI::VertexLayout vertexLayout{};
+	/*TRAP::Graphics::RendererAPI::VertexLayout vertexLayout{};
 	vertexLayout.AttributeCount = 2;
 	vertexLayout.Attributes[0].Semantic = TRAP::Graphics::RendererAPI::ShaderSemantic::Position;
 	vertexLayout.Attributes[0].Format = TRAP::Graphics::RendererAPI::ImageFormat::R32G32B32_SFLOAT;
@@ -111,7 +111,7 @@ void VulkanTests::OnAttach()
 	vertexLayout.Attributes[1].Format = TRAP::Graphics::RendererAPI::ImageFormat::R32G32B32_SFLOAT;
 	vertexLayout.Attributes[1].Binding = 0;
 	vertexLayout.Attributes[1].Location = 1;
-	vertexLayout.Attributes[1].Offset = 3 * sizeof(float);
+	vertexLayout.Attributes[1].Offset = 3 * sizeof(float);*/
 	
 	TRAP::Graphics::RendererAPI::PipelineDesc desc{};
 	if (m_defaultPipelineCache)
@@ -126,11 +126,11 @@ void VulkanTests::OnAttach()
 	pipelineSettings.SampleQuality = m_swapChain->GetRenderTargets()[0]->GetSampleQuality();
 	pipelineSettings.RootSignature = m_rootSignature;
 	pipelineSettings.ShaderProgram = m_defaultShader;
-	pipelineSettings.VertexLayout = &vertexLayout;
+	//pipelineSettings.VertexLayout = &vertexLayout;
 	m_defaultPipeline = TRAP::Graphics::Pipeline::Create(desc);
 
 	//Triangle Vertex Buffer
-	TRAP::Graphics::RendererAPI::BufferLoadDesc loadDesc{};
+	/*TRAP::Graphics::RendererAPI::BufferLoadDesc loadDesc{};
 	loadDesc.Desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::VertexBuffer;
 	loadDesc.Desc.MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::GPUOnly;
 	loadDesc.Desc.Size = m_triangleVertices.size() * sizeof(float);
@@ -139,7 +139,7 @@ void VulkanTests::OnAttach()
 
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 	
-	m_triangleVertexBuffer = loadDesc.Buffer;
+	m_triangleVertexBuffer = loadDesc.Buffer;*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -148,24 +148,24 @@ void VulkanTests::OnDetach()
 {
 	//m_window.reset();
 
-	m_graphicsQueue->WaitQueueIdle();
+	//m_graphicsQueue->WaitQueueIdle();
 	
-	m_triangleVertexBuffer.reset();
+	//m_triangleVertexBuffer.reset();
 	
 	m_defaultPipeline.reset();
-	m_swapChain.reset();
+	//m_swapChain.reset();
 	m_rootSignature.reset();
-	m_imageAcquiredSemaphore.reset();
+	//m_imageAcquiredSemaphore.reset();
 
-	for(uint32_t i = ImageCount - 1; i > 0; i--)
+	/*for(uint32_t i = ImageCount - 1; i > 0; i--)
 	{
 		m_renderCompleteSemaphores[i].reset();
 		m_renderCompleteFences[i].reset();
 		m_cmdPools[i]->FreeCommandBuffer(m_cmds[i]);
 		m_cmdPools[i].reset();
-	}
+	}*/
 
-	m_graphicsQueue.reset();
+	//m_graphicsQueue.reset();
 
 	if (m_defaultPipelineCache)
 	{

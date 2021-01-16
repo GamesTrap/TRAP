@@ -10,7 +10,6 @@ ClipboardTests::ClipboardTests()
 void ClipboardTests::OnAttach()
 {
 	TRAP::Application::GetWindow()->SetTitle("Clipboard");
-	TRAP::Graphics::RendererAPI::SetVSync(true);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

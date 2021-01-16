@@ -8,6 +8,8 @@
 #include "Window/WindowingAPI.h"
 #include "Utils/Utils.h"
 
+#include "Objects/VulkanSemaphore.h"
+#include "Objects/VulkanFence.h"
 #include "Objects/VulkanSampler.h"
 #include "Objects/VulkanBuffer.h"
 #include "Objects/VulkanTexture.h"
@@ -164,6 +166,74 @@ void TRAP::Graphics::API::VulkanRenderer::Present(const Scope<Window>& window)
 
 //------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::SetVSync(const bool vsync)
+{
+}
+
+//------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::InternalUse(Window* window)
+{
+	std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
+	if(s_perWindowDataMap->find(window) == s_perWindowDataMap->end())
+	{
+		//Add new Window to map
+		TRAP::Scope<PerWindowData> p = TRAP::MakeScope<PerWindowData>();
+		
+		//Create Graphic Queue
+		QueueDesc queueDesc{};
+		queueDesc.Type = QueueType::Graphics;
+		queueDesc.Flag = QueueFlag::InitMicroprofile;
+		p->GraphicQueue = Queue::Create(queueDesc);
+
+		//Create Compute Queue
+		queueDesc.Type = QueueType::Compute;
+		p->ComputeQueue = Queue::Create(queueDesc);
+
+		//For each buffered image
+		for(uint32_t i = 0; i < PerWindowData::ImageCount; ++i)
+		{
+			//Create Graphic Command Pool
+			p->GraphicCommandPools[i] = CommandPool::Create({ p->GraphicQueue, false });
+			//Allocate Graphic Command Buffer
+			p->GraphicCommandBuffers[i] = p->GraphicCommandPools[i]->AllocateCommandBuffer(false);
+
+			//Create Compute Command Pool
+			p->ComputeCommandPools[i] = CommandPool::Create({ p->ComputeQueue, false });
+			//Allocate Compute Command Buffer
+			p->ComputeCommandBuffers[i] = p->ComputeCommandPools[i]->AllocateCommandBuffer(false);
+
+			//Create Render Fences/Semaphores
+			p->RenderCompleteFences[i] = Fence::Create();
+			p->RenderCompleteSemaphores[i] = Semaphore::Create();
+		}
+
+		//Image Acquire Semaphore
+		p->ImageAcquiredSemaphore = Semaphore::Create();
+
+		//Create Swapchain
+		SwapChainDesc swapChainDesc{};
+		swapChainDesc.Window = window;
+		swapChainDesc.PresentQueues = { p->GraphicQueue };
+		swapChainDesc.Width = window->GetWidth();
+		swapChainDesc.Height = window->GetHeight();
+		swapChainDesc.ImageCount = PerWindowData::ImageCount;
+		swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true);
+		swapChainDesc.EnableVSync = false;
+		swapChainDesc.ColorClearValue = { 0.1f, 0.1f, 0.1f, 1.0f };
+		p->SwapChain = SwapChain::Create(swapChainDesc);
+
+		if (!p->SwapChain)
+			TRAP::Application::Shutdown();
+
+		(*s_perWindowDataMap)[window] = std::move(p);
+	}
+
+	//Window is already in map
+}
+
+//------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Math::Vec4& color)
 {
 }
@@ -308,6 +378,13 @@ void TRAP::Graphics::API::VulkanRenderer::Draw(const Scope<VertexArray>& vertexA
 const std::string& TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 {
 	return m_rendererTitle;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::API::VulkanRenderer::GetVSync()
+{
+	return false;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

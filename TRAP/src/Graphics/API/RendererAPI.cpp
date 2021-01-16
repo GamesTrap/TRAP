@@ -9,12 +9,17 @@
 #include "Vulkan/Objects/VulkanInstance.h"
 #include "Vulkan/Objects/VulkanPhysicalDevice.h"
 #include "ResourceLoader.h"
+#include "Objects/CommandPool.h"
+#include "Objects/Queue.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::RendererAPI> TRAP::Graphics::RendererAPI::s_Renderer = nullptr;
 TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::s_RenderAPI = TRAP::Graphics::RenderAPI::NONE;
 TRAP::Scope<TRAP::Graphics::API::ResourceLoader> TRAP::Graphics::RendererAPI::s_ResourceLoader = nullptr;
+TRAP::Window* TRAP::Graphics::RendererAPI::s_activeWindow = nullptr;
+TRAP::Scope<std::unordered_map<TRAP::Window*, TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>>> TRAP::Graphics::RendererAPI::s_perWindowDataMap = TRAP::MakeScope<std::unordered_map<Window*, TRAP::Scope<PerWindowData>>>();
+std::mutex TRAP::Graphics::RendererAPI::s_perWindowDataMutex{};
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapable = true;
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
 
@@ -42,6 +47,11 @@ void TRAP::Graphics::RendererAPI::Init()
 
 void TRAP::Graphics::RendererAPI::Shutdown()
 {
+	{
+		std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
+		s_perWindowDataMap->clear();
+	}
+	
 	s_Renderer.reset();
 	s_Renderer = nullptr;
 }
@@ -136,21 +146,14 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::GetRenderAPI()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::SetVSync(bool enabled)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool TRAP::Graphics::RendererAPI::GetVSync()
-{
-	return false;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::RendererAPI::Use(Window* window)
 {
+	if (window)
+		s_activeWindow = window;
+	else
+		s_activeWindow = TRAP::Application::GetWindow().get();
+
+	s_Renderer->InternalUse(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -231,4 +234,30 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 	}
 	
 	return s_isVulkanCapable;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
+{
+	GraphicQueue->WaitQueueIdle();
+	ComputeQueue->WaitQueueIdle();
+
+	SwapChain.reset();
+	ImageAcquiredSemaphore.reset();
+
+	for(uint32_t i = ImageCount - 1; i > 0; i--)
+	{
+		RenderCompleteSemaphores[i].reset();
+		RenderCompleteFences[i].reset();
+
+		GraphicCommandPools[i]->FreeCommandBuffer(GraphicCommandBuffers[i]);
+		GraphicCommandPools[i].reset();
+
+		ComputeCommandPools[i]->FreeCommandBuffer(ComputeCommandBuffers[i]);
+		ComputeCommandPools[i].reset();
+	}
+
+	GraphicQueue.reset();
+	ComputeQueue.reset();
 }

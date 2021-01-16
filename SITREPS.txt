@@ -1573,6 +1573,11 @@ SITREP 01/11/2020|20w02a1
     - VulkanTest optimized Window resizing ~<10 mins
 
 SITREP 01/15/2020|20w02a2
-    - Changed TRAP Engine version to 20w02a1(0.7.19)
+    - Changed TRAP Engine version to 20w02a2(0.7.19)
     - Added ResourceLoader for Buffers like VertexBuffer, IndexBuffer, etc... ~>60 mins
     - VulkanTest Added colored triangle ~<20 mins
+
+SITREP 01/16/2020|20w02a3
+    - Changed TRAP Engine version to 20w02a3(0.7.20)
+    - Integrated code from VulkanTest into RendererAPI ~>75 mins
+      (Queues, CommandPools, CommandBuffers, Fences, Semaphores, SwapChain)

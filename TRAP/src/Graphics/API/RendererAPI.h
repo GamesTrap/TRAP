@@ -12,6 +12,7 @@ namespace TRAP
 
 namespace TRAP::Graphics 
 {
+	class CommandPool;
 	class DescriptorSet;
 	class Shader;
 	class Pipeline;
@@ -75,14 +76,17 @@ namespace TRAP::Graphics
 		static void SwitchRenderAPI(RenderAPI api);
 		static bool IsSupported(RenderAPI api);
 		static RenderAPI GetRenderAPI();
-		static void SetVSync(bool enabled);
-		static bool GetVSync();
 		static void Use(Window* window);
 
 		virtual void InitInternal() = 0;
 		
 		virtual void Clear(RendererBufferType buffer) = 0;
 		virtual void Present(const Scope<Window>& window) = 0;
+
+		virtual void InternalUse(Window* window) = 0;
+		
+		virtual void SetVSync(bool vsync) = 0;
+		virtual bool GetVSync() = 0;
 
 		virtual void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) = 0;
 		virtual void SetDepthTesting(bool enabled) = 0;
@@ -1996,6 +2000,29 @@ namespace TRAP::Graphics
 		static TRAP::Scope<RendererAPI> s_Renderer;
 		static RenderAPI s_RenderAPI;
 		static TRAP::Scope<API::ResourceLoader> s_ResourceLoader;
+		static Window* s_activeWindow;
+
+		struct PerWindowData
+		{
+			~PerWindowData();
+			
+			inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
+
+			uint32_t ImageIndex = 0;
+			TRAP::Ref<Queue> GraphicQueue;
+			TRAP::Ref<Queue> ComputeQueue;
+			std::array<TRAP::Ref<CommandPool>, ImageCount> GraphicCommandPools;
+			std::array<CommandBuffer*, ImageCount> GraphicCommandBuffers;
+			std::array<TRAP::Ref<CommandPool>, ImageCount> ComputeCommandPools;
+			std::array<CommandBuffer*, ImageCount> ComputeCommandBuffers;
+			std::array<TRAP::Ref<Fence>, ImageCount> RenderCompleteFences;
+			TRAP::Ref<Semaphore> ImageAcquiredSemaphore;
+			std::array<TRAP::Ref<Semaphore>, ImageCount> RenderCompleteSemaphores;
+			
+			TRAP::Ref<SwapChain> SwapChain;
+		};
+		static TRAP::Scope<std::unordered_map<Window*, TRAP::Scope<PerWindowData>>> s_perWindowDataMap;
+		static std::mutex s_perWindowDataMutex;
 
 	private:
 		static bool s_isVulkanCapable;
