@@ -932,3 +932,29 @@ void TRAP::Graphics::API::VulkanCommandBuffer::SetStencilReferenceValue(const ui
 {
 	vkCmdSetStencilReference(m_vkCommandBuffer, VK_STENCIL_FRONT_AND_BACK, val);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const RendererAPI::ClearFlags flags, const RendererAPI::ClearValue value,
+	const uint32_t width, const uint32_t height)
+{
+	VkClearRect rect{};
+	VkRect2D r{};
+	r.offset.x = 0;
+	r.offset.y = 0;
+	r.extent.width = width;
+	r.extent.height = height;
+	rect.rect = r;
+	rect.baseArrayLayer = 0;
+	rect.layerCount = 1;
+	
+	VkClearAttachment attachment{};
+	attachment.aspectMask = ClearFlagsToVKImageAspectFlags(flags);
+	attachment.colorAttachment = 0;
+	if (flags == RendererAPI::ClearFlags::Color)
+		attachment.clearValue.color = { value.R, value.G, value.B, value.A };
+	else
+		attachment.clearValue.depthStencil = { value.Depth, value.Stencil };
+	
+	vkCmdClearAttachments(m_vkCommandBuffer, 1, &attachment, 1, &rect);
+}

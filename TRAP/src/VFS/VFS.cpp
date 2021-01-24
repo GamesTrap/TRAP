@@ -584,3 +584,10 @@ std::string TRAP::VFS::GetFileName(const std::string& virtualOrPhysicalPath)
 
 	return result.substr(0, result.size() - (Utils::String::GetSuffixStringView(result).size() + 1));
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+std::string TRAP::VFS::GetTempFolderPath()
+{
+	return std::filesystem::temp_directory_path().string();
+}

@@ -17,7 +17,6 @@
 TRAP::Scope<TRAP::Graphics::RendererAPI> TRAP::Graphics::RendererAPI::s_Renderer = nullptr;
 TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::s_RenderAPI = TRAP::Graphics::RenderAPI::NONE;
 TRAP::Scope<TRAP::Graphics::API::ResourceLoader> TRAP::Graphics::RendererAPI::s_ResourceLoader = nullptr;
-TRAP::Window* TRAP::Graphics::RendererAPI::s_activeWindow = nullptr;
 TRAP::Scope<std::unordered_map<TRAP::Window*, TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>>> TRAP::Graphics::RendererAPI::s_perWindowDataMap = TRAP::MakeScope<std::unordered_map<Window*, TRAP::Scope<PerWindowData>>>();
 std::mutex TRAP::Graphics::RendererAPI::s_perWindowDataMutex{};
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapable = true;
@@ -25,7 +24,7 @@ bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::Init()
+void TRAP::Graphics::RendererAPI::Init(const std::string& gameName)
 {	
 	switch (s_RenderAPI)
 	{
@@ -40,7 +39,7 @@ void TRAP::Graphics::RendererAPI::Init()
 		exit(-1);
 	}
 
-	s_Renderer->InitInternal();
+	s_Renderer->InitInternal(gameName);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -142,18 +141,6 @@ bool TRAP::Graphics::RendererAPI::IsSupported(const RenderAPI api)
 TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::GetRenderAPI()
 {
 	return s_RenderAPI;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::RendererAPI::Use(Window* window)
-{
-	if (window)
-		s_activeWindow = window;
-	else
-		s_activeWindow = TRAP::Application::GetWindow().get();
-
-	s_Renderer->InternalUse(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

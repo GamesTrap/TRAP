@@ -32,51 +32,60 @@ namespace TRAP::Graphics::API
 		VulkanRenderer(VulkanRenderer&&) = delete;
 		VulkanRenderer& operator=(VulkanRenderer&&) = delete;
 
-		void InitInternal() override;
+		void InitInternal(const std::string& gameName) override;
 
-		void Clear(RendererBufferType buffer) override;
 		void Present(const Scope<Window>& window) override;
 
-		void SetVSync(bool vsync) override;
-
-		void InternalUse(Window* window) override;
+		void SetVSync(bool vsync, Window* window = nullptr) override;
 		
-		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) override;
-		void SetDepthTesting(bool enabled) override;
-		void SetDepthMasking(bool enabled) override;
-		void SetDepthFunction(RendererFunction function) override;
-		void SetStencilTesting(bool enabled) override;
-		void SetStencilMasking(uint32_t mask) override;
-		void SetStencilMaskingSeparate(RendererFaceMode face, uint32_t mask) override;
-		void SetStencilFunction(RendererFunction function, int32_t reference, uint32_t mask) override;
-		void SetStencilFunctionSeparate(RendererFaceMode face, RendererFunction function, int32_t reference, uint32_t mask) override;
-		void SetStencilOperation(RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass) override;
-		void SetStencilOperationSeparate(RendererFaceMode face, RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass) override;
-		void SetBlend(bool enabled) override;
-		void SetCull(bool enabled) override;
-		void SetFrontFace(RendererFrontFace frontFace) override;
-		void SetWireFrame(bool enabled) override;
-		void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override;
+		void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }, Window* window = nullptr) override;
+		void SetDepthTesting(bool enabled, Window* window = nullptr) override;
+		void SetDepthWriting(bool enabled, Window* window = nullptr) override;
+		void SetDepthFunction(CompareMode function, Window* window = nullptr) override;
+		void SetDepthFail(StencilOp front, StencilOp back, Window* window) override;
+		void SetDepthBias(int32_t depthBias, Window* window = nullptr) override;
+		void SetDepthBiasSlopeFactor(float factor, Window* window = nullptr) override;
+		void SetStencilTesting(bool enabled, Window* window = nullptr) override;
+		void SetStencilFail(StencilOp front, StencilOp back, Window* window = nullptr) override;
+		void SetStencilPass(StencilOp front, StencilOp back, Window* window = nullptr) override;
+		void SetStencilFunction(CompareMode front, CompareMode back, Window* window = nullptr) override;
+		void SetStencilMask(uint8_t read, uint8_t write, Window* window = nullptr) override;
+		void SetCullMode(CullMode mode, Window* window = nullptr) override;
+		void SetFillMode(FillMode mode, Window* window = nullptr) override;
+		void SetFrontFace(FrontFace face, Window* window = nullptr) override;
+		void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, Window* window = nullptr) override;
+		void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,
+							  BlendConstant destinationRGB, BlendConstant destinationAlpha,
+							  Window* window = nullptr) override;
 
-		void SetBlendFunction(RendererBlendFunction source, RendererBlendFunction destination) override;
-		void SetBlendFunctionSeparate(RendererBlendFunction sourceRGB,
-		                              RendererBlendFunction sourceAlpha,
-		                              RendererBlendFunction destinationRGB,
-		                              RendererBlendFunction destinationAlpha) override;
-		void SetBlendEquation(RendererBlendEquation blendEquation) override;
-		void SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB, RendererBlendEquation blendEquationAlpha) override;
-
-		void SetCullMode(RendererCullMode cullMode) override;
+		void Clear(ClearFlags clear, ClearValue value, Window* window = nullptr) override;
+		
+		void SetViewport(uint32_t x,
+		                 uint32_t y,
+		                 uint32_t width,
+		                 uint32_t height,
+		                 float minDepth = 0.0f,
+		                 float maxDepth = 1.0f,
+		                 Window* window = nullptr) override;
+		void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height, Window* window = nullptr) override;
 
 		void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) override;
 		void Draw(const Scope<VertexArray>& vertexArray) override;
 
 		const std::string& GetTitle() const override;
-		bool GetVSync() override;
+		bool GetVSync(Window* window = nullptr) override;
 
 		std::array<uint8_t, 16> GetCurrentGPUUUID() override;
 		std::string GetCurrentGPUName() override;
 		std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() override;
+
+		void InitPerWindowData(Window* window) override;
+		void RemovePerWindowData(Window* window) override;
+
+		CommandBuffer* GetCurrentGraphicCommandBuffer(Window* window) override; //TODO Remove
+		TRAP::Ref<TRAP::Graphics::SwapChain> GetCurrentSwapChain(Window* window) override; //TODO Remove
+
+		void WaitIdle() override;
 
 		//Instance Extensions
 		static bool s_debugUtilsExtension;
@@ -201,6 +210,9 @@ namespace TRAP::Graphics::API
 
 		void AddDefaultResources();
 		static void RemoveDefaultResources();
+
+		static void StartGraphicRecording(const TRAP::Scope<PerWindowData>& p);
+		static void EndGraphicRecording(const TRAP::Scope<PerWindowData>& p);
 		
 		std::string m_rendererTitle;
 
@@ -209,7 +221,9 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanDevice> m_device;
 		TRAP::Ref<VulkanMemoryAllocator> m_vma;
 		TRAP::Ref<VulkanDescriptorPool> m_descriptorPool;
-
+		
+		bool m_vsyncNew;
+		
 		//RenderPass map per thread (this will make lookups lock free and we only need a lock when inserting a RenderPass Map for the first time)
 		static TRAP::Scope<std::unordered_map<std::thread::id, RenderPassMap>> s_renderPassMap;
 		//FrameBuffer map per thread (this will make lookups lock free and we only need a lock when inserting a FrameBuffer Map for the first time)

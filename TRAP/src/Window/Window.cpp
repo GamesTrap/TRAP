@@ -40,8 +40,9 @@ TRAP::Window::Window(const WindowProps &props)
 
 	TP_INFO
 	(
-	    Log::WindowPrefix, "Initializing Window: \"", props.Title, "\" ", props.Width, "x", props.Height, "@", props.RefreshRate, "Hz DisplayMode: ",
-		props.DisplayMode == DisplayMode::Windowed ? "Windowed" : props.DisplayMode == DisplayMode::Borderless ? "Borderless" : "Fullscreen", //Output DisplayMode
+	    Log::WindowPrefix, "Initializing Window: \"", props.Title, "\" ", props.Width, "x", props.Height, "@", props.RefreshRate, "Hz VSync: ",
+		props.VSync ? "True" : "False",
+		" DisplayMode: ", props.DisplayMode == DisplayMode::Windowed ? "Windowed" : props.DisplayMode == DisplayMode::Borderless ? "Borderless" : "Fullscreen", //Output DisplayMode
 		" Monitor: ", props.Monitor,
 		" CursorMode: ", props.Advanced.CursorMode == CursorMode::Normal ? "Normal" : props.Advanced.CursorMode == CursorMode::Hidden ? "Hidden" : "Disabled", //Output CursorMode
 		" RawMouseInput: ", props.Advanced.RawMouseInput ? "Enabled" : "Disabled"
@@ -56,6 +57,8 @@ TRAP::Window::~Window()
 {
 	TP_PROFILE_FUNCTION();
 
+	TRAP::Graphics::RendererAPI::GetRenderer()->RemovePerWindowData(this);
+	
 	s_windows--;
 
 	if(!s_windows)
@@ -76,23 +79,6 @@ void TRAP::Window::OnUpdate()
 	TP_PROFILE_FUNCTION();
 
 	INTERNAL::WindowingAPI::PollEvents();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Window::Use(const Scope<Window>& window)
-{
-	if (window)
-		Graphics::RendererAPI::Use(window.get());
-	else
-		Use();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Window::Use()
-{
-	Graphics::RendererAPI::Use(Application::GetWindow().get());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -184,6 +170,13 @@ float TRAP::Window::GetOpacity() const
 	TP_PROFILE_FUNCTION();
 
 	return INTERNAL::WindowingAPI::GetWindowOpacity(m_window.get());
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Window::GetVSync() const
+{
+	return m_data.VSync;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -602,6 +595,14 @@ void TRAP::Window::SetDragAndDrop(const bool enabled) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Window::SetVSync(const bool enabled)
+{
+	m_data.VSync = enabled;
+	TRAP::Graphics::RendererAPI::GetRenderer()->SetVSync(enabled, this);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::Window::IsMaximized() const
 {
 	TP_PROFILE_FUNCTION();
@@ -734,6 +735,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	m_data.Width = props.Width;
 	m_data.Height = props.Height;
 	m_data.RefreshRate = props.RefreshRate;
+	m_data.VSync = props.VSync;
 	m_data.Monitor = props.Monitor;
 	m_data.cursorMode = props.Advanced.CursorMode;
 	m_data.RawMouseInput = props.Advanced.RawMouseInput;
@@ -819,8 +821,6 @@ void TRAP::Window::Init(const WindowProps& props)
 	s_windows++;
 	if (s_windows > 1)
 	{
-		Graphics::RendererAPI::Use(this);
-
 		//Update Window Title
 	#ifndef TRAP_RELEASE
 		newTitle += Graphics::Renderer::GetTitle();
@@ -1286,6 +1286,8 @@ void TRAP::Window::Init(const WindowProps& props)
 			}
 		}
 	});
+	
+	TRAP::Graphics::RendererAPI::GetRenderer()->InitPerWindowData(this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1309,6 +1311,7 @@ TRAP::WindowProps::WindowProps(std::string title,
                                const uint32_t width,
 							   const uint32_t height,
 							   const uint32_t refreshRate,
+							   const bool vsync,
 							   const Window::DisplayMode displayMode,
 							   AdvancedProps advanced,
 							   const uint32_t monitor)
@@ -1316,6 +1319,7 @@ TRAP::WindowProps::WindowProps(std::string title,
 	  Width(width),
 	  Height(height),
 	  RefreshRate(refreshRate),
+	  VSync(vsync),
 	  DisplayMode(displayMode),
 	  Monitor(monitor),
 	  Advanced{advanced}

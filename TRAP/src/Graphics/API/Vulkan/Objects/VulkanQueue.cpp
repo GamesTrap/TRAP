@@ -196,9 +196,7 @@ TRAP::Graphics::RendererAPI::PresentStatus TRAP::Graphics::API::VulkanQueue::Pre
 		else if (res == VK_ERROR_DEVICE_LOST)
 			presentStatus = RendererAPI::PresentStatus::DeviceReset;		
 		else if(res == VK_ERROR_OUT_OF_DATE_KHR)
-		{
-			//TODO
-		}
+			presentStatus = RendererAPI::PresentStatus::OutOfDate;
 		else
 		{
 			VkCall(res);

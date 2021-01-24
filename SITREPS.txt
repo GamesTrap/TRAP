@@ -1581,3 +1581,42 @@ SITREP 01/16/2020|20w02a3
     - Changed TRAP Engine version to 20w02a3(0.7.20)
     - Integrated code from VulkanTest into RendererAPI ~>75 mins
       (Queues, CommandPools, CommandBuffers, Fences, Semaphores, SwapChain)
+
+SITREP 01/24/2020|20w03a1
+    - Changed TRAP Engine version to 20w03a1(0.7.21)
+    - RendererAPI Added ClearFlags enum ~<5 mins
+    - RendererAPI Removed Use function ~<10 mins
+    - VulkanCommon Added ClearFlagsToVkImageAspectFlags function ~<5 mins
+    - CommandBuffer Added Clear function ~<30 mins
+        - VulkanCommandBuffer Added Clear function implementation
+    - VulkanRenderer Implemented functions:
+        - Present (fully)
+        - SetVSync (fully)
+        - SetClearColor (fully)
+        - SetDepthTesting (partially)
+        - SetDepthWriting (partially)
+        - SetDepthFunction (partially)
+        - SetDepthFail (partially)
+        - SetDepthBias (partially)
+        - SetDepthBiasSlopeFactor (partially)
+        - SetStencilTesting (partially)
+        - SetStencilFail (partially)
+        - SetStencilPass (partially)
+        - SetStencilFunction (partially)
+        - SetStencilMask (partially)
+        - SetCullMode (partially)
+        - SetFillMode (partially)
+        - SetFrontFace (partially)
+        - SetBlendMode (partially)
+        - SetBlendConstant (partially)
+        - Clear (fully)
+        - SetViewport (fully)
+        - SetScissor (fully)
+        - GetVSync (fully)
+        - WaitIdle (fully)
+    - RenderCommand Disabled a lot of functions (Will be reworked) ~<10 mins
+    - VFS Added Query for temp folder path ~<15 mins
+    - Window Added SetVSync & GetVSync functions ~<10 mins
+    - Window Removed Use functions ~<10 mins
+    - Application constructor now requires game title ~<10 mins
+    - Multiple Windows are now supported by the RendererAPI ~>60 mins

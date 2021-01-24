@@ -62,7 +62,8 @@ namespace TRAP
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		Application();
+		/// <param name="gameName">Name of the game.</param>
+		explicit Application(const std::string& gameName);
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -316,6 +317,7 @@ namespace TRAP
 		uint32_t m_fpsLimit;
 		uint32_t m_tickRate;
 		float m_timeScale;
+		std::string m_gameName;
 
 		Endian m_endian;
 		LinuxWindowManager m_linuxWindowManager;

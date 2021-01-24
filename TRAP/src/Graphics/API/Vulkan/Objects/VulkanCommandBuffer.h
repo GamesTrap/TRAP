@@ -79,7 +79,9 @@ namespace TRAP::Graphics::API
 		                     const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers) const override;
 
 		void SetStencilReferenceValue(uint32_t val) const override;
-		
+
+		void Clear(RendererAPI::ClearFlags flags, RendererAPI::ClearValue value, uint32_t width, uint32_t height) override;
+	
 	private:
 		friend VulkanCommandPool;
 		

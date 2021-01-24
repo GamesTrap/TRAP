@@ -248,6 +248,12 @@ namespace TRAP
 		/// <returns>String only containing the filename without its file ending.</returns>
 		static std::string GetFileName(const std::string& virtualOrPhysicalPath);
 
+		/// <summary>
+		/// Get the path to the temp folder.
+		/// </summary>
+		/// <returns>Path to the temp folder.</returns>
+		static std::string GetTempFolderPath();
+	
 	private:
 		/// <summary>
 		/// Initializes the Virtual File System.
@@ -257,7 +263,7 @@ namespace TRAP
 		/// Shuts down the Virtual File System.
 		/// </summary>
 		static void Shutdown();
-		friend TRAP::Application::Application();
+		friend TRAP::Application::Application(const std::string&);
 		friend TRAP::Application::~Application();
 
 		/// <summary>

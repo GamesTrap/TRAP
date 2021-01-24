@@ -23,6 +23,7 @@
 #include "Objects/VulkanDebug.h"
 
 #include "Graphics/API/ResourceLoader.h"
+#include "Graphics/API/Objects/RenderTarget.h"
 
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
 //Instance Extensions
@@ -48,9 +49,9 @@ TRAP::Scope<TRAP::Graphics::API::VulkanRenderer::NullDescriptors> TRAP::Graphics
 TRAP::Graphics::API::VulkanRenderer::GPUCapBits TRAP::Graphics::API::VulkanRenderer::s_GPUCapBits{};
 
 std::vector<VkPipelineColorBlendAttachmentState> TRAP::Graphics::API::VulkanRenderer::DefaultBlendAttachments(8);
-VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultRasterizerDesc = UtilToRasterizerDesc({CullMode::Back, {}, {}, {}, {}, {}, {}, {}});
+VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultRasterizerDesc = UtilToRasterizerDesc({CullMode::Back, {}, {}, {}, {}, {}});
 VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultDepthDesc = UtilToDepthDesc({ false, false, CompareMode::LessOrEqual, {}, 0xFF, 0xFF, CompareMode::Always, {}, {}, {}, CompareMode::Always, {}, {}, {} });
-VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultBlendDesc = UtilToBlendDesc({ {BlendConstant::One}, {BlendConstant::Zero}, {BlendConstant::One}, {BlendConstant::Zero}, {}, {}, {(0x1 | 0x2 | 0x4 | 0x8)}, BlendStateTargets::BlendStateTargetAll, {}, false }, DefaultBlendAttachments);
+VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultBlendDesc = UtilToBlendDesc({ {BlendConstant::One}, {BlendConstant::Zero}, {BlendConstant::One}, {BlendConstant::Zero}, {}, {}, {(0x1 | 0x2 | 0x4 | 0x8)}, BlendStateTargets::BlendStateTargetAll, false }, DefaultBlendAttachments);
 
 TRAP::Scope<std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::RenderPassMap>> TRAP::Graphics::API::VulkanRenderer::s_renderPassMap = TRAP::MakeScope<std::unordered_map<std::thread::id, RenderPassMap>>();
 TRAP::Scope<std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::FrameBufferMap>> TRAP::Graphics::API::VulkanRenderer::s_frameBufferMap = TRAP::MakeScope<std::unordered_map<std::thread::id, FrameBufferMap>>();
@@ -59,6 +60,12 @@ std::mutex TRAP::Graphics::API::VulkanRenderer::s_renderPassMutex{};
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
+	: m_instance(nullptr),
+	  m_debug(nullptr),
+	  m_device(nullptr),
+	  m_vma(nullptr),
+	  m_descriptorPool(nullptr),
+	  m_vsyncNew(false)
 {
 	s_renderer = this;
 }
@@ -84,9 +91,102 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::InitInternal()
+void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(const TRAP::Scope<PerWindowData>& p)
 {
-	m_instance = TRAP::MakeRef<VulkanInstance>(Application::GetWindow()->GetTitle(), SetupInstanceLayers(), SetupInstanceExtensions());
+	TRAP_ASSERT(p);
+
+	if (!p->Window->IsMinimized())
+	{
+		//Start Recording
+		p->CurrentSwapChainImageIndex = p->SwapChain->AcquireNextImage(p->ImageAcquiredSemaphore, nullptr);
+
+		const TRAP::Ref<RenderTarget> renderTarget = p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex];
+		const TRAP::Ref<Semaphore> renderCompleteSemaphore = p->RenderCompleteSemaphores[p->ImageIndex];
+		TRAP::Ref<Fence> renderCompleteFence = p->RenderCompleteFences[p->ImageIndex];
+
+		//Stall if CPU is running "Swap Chain Buffer Count" frames ahead of GPU
+		if (renderCompleteFence->GetStatus() == FenceStatus::Incomplete)
+			renderCompleteFence->Wait();
+
+		//Reset cmd pool for this frame
+		p->GraphicCommandPools[p->ImageIndex]->Reset();
+
+		p->GraphicCommandBuffers[p->ImageIndex]->Begin();
+
+		const RenderTargetBarrier barrier = { renderTarget, ResourceState::Present, ResourceState::RenderTarget };
+		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier({}, {}, { barrier });
+
+		LoadActionsDesc loadActions{};
+		loadActions.LoadActionsColor[0] = LoadActionType::Clear;
+		loadActions.ClearColorValues[0] = p->ClearColor;
+		p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({ renderTarget }, nullptr, &loadActions, {}, {}, -1, -1);
+
+		//Set Default Dynamic Viewport & Scissor
+		p->GraphicCommandBuffers[p->ImageIndex]->SetViewport(0, 0, p->Window->GetWidth(), p->Window->GetHeight(), 0.0f, 1.0f);
+		p->GraphicCommandBuffers[p->ImageIndex]->SetScissor(0, 0, p->Window->GetWidth(), p->Window->GetHeight());
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<PerWindowData>& p)
+{
+	if (!p->Window->IsMinimized())
+	{
+		//End Recording
+		p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, {}, {}, -1, -1);
+
+		const RenderTargetBarrier barrier = { p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex], ResourceState::RenderTarget, ResourceState::Present };
+		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier({}, {}, { barrier });
+
+		p->GraphicCommandBuffers[p->ImageIndex]->End();
+
+		QueueSubmitDesc submitDesc{};
+		submitDesc.Cmds = { p->GraphicCommandBuffers[p->ImageIndex] };
+		submitDesc.SignalSemaphores = { p->RenderCompleteSemaphores[p->ImageIndex] };
+		submitDesc.WaitSemaphores = { p->ImageAcquiredSemaphore };
+		submitDesc.SignalFence = p->RenderCompleteFences[p->ImageIndex];
+		p->GraphicQueue->Submit(submitDesc);
+
+		QueuePresentDesc presentDesc{};
+		presentDesc.Index = static_cast<uint8_t>(p->CurrentSwapChainImageIndex);
+		presentDesc.WaitSemaphores = { p->RenderCompleteSemaphores[p->ImageIndex] };
+		presentDesc.SwapChain = p->SwapChain;
+		const PresentStatus presentStatus = p->GraphicQueue->Present(presentDesc);
+		if (presentStatus == PresentStatus::DeviceReset || presentStatus == PresentStatus::Failed)
+			TRAP::Application::Shutdown();
+		else if (presentStatus == PresentStatus::OutOfDate)
+		{
+			//Resize needed
+			//Clear SwapChain reference
+			presentDesc = {};
+
+			p->SwapChain.reset();
+
+			SwapChainDesc swapChainDesc{};
+			swapChainDesc.Window = p->Window;
+			swapChainDesc.PresentQueues = { p->GraphicQueue };
+			swapChainDesc.Width = p->Window->GetWidth();
+			swapChainDesc.Height = p->Window->GetHeight();
+			swapChainDesc.ImageCount = PerWindowData::ImageCount;
+			swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true);
+			swapChainDesc.ColorClearValue = p->ClearColor;
+			swapChainDesc.EnableVSync = p->CurrentVSync;
+			p->SwapChain = SwapChain::Create(swapChainDesc);
+
+			if (!p->SwapChain)
+				TRAP::Application::Shutdown();
+		}
+
+		p->ImageIndex = (p->ImageIndex + 1) % PerWindowData::ImageCount;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string& gameName)
+{
+	m_instance = TRAP::MakeRef<VulkanInstance>(gameName, SetupInstanceLayers(), SetupInstanceExtensions());
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	m_debug = TRAP::MakeScope<VulkanDebug>(m_instance);
 #endif
@@ -154,211 +254,300 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::Clear(RendererBufferType buffer)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::API::VulkanRenderer::Present(const Scope<Window>& window)
 {
+	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window.get()];
+
+	EndGraphicRecording(p);
+	if (p->CurrentVSync != m_vsyncNew)
+	{		
+		std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
+		if(p->SwapChain)
+			p->SwapChain->ToggleVSync();
+		p->CurrentVSync = m_vsyncNew;
+	}
+	StartGraphicRecording(p);
 }
 
 //------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetVSync(const bool vsync)
+void TRAP::Graphics::API::VulkanRenderer::SetVSync(const bool vsync, Window* window)
 {
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+	
+	(*s_perWindowDataMap)[window]->NewVSync = vsync;
 }
 
 //------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::InternalUse(Window* window)
+void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Math::Vec4& color, Window* window)
 {
-	std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
-	if(s_perWindowDataMap->find(window) == s_perWindowDataMap->end())
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+	
+	(*s_perWindowDataMap)[window]->ClearColor = { color.x, color.y, color.z, color.w };
+}
+
+//------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(const bool enabled, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.DepthState->DepthTest = enabled;
+	
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetDepthWriting(const bool enabled, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.DepthState->DepthWrite = enabled;
+
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetDepthFunction(const CompareMode function, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.DepthState->DepthFunc = function;
+
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetDepthFail(const StencilOp front, const StencilOp back, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.DepthState->DepthFrontFail = front;
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.DepthState->DepthBackFail = back;
+
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetDepthBias(const int32_t depthBias, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.RasterizerState->DepthBias = depthBias;
+
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetDepthBiasSlopeFactor(const float factor, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.RasterizerState->SlopeScaledDepthBias = factor;
+
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetStencilTesting(const bool enabled, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.DepthState->StencilTest = enabled;
+	
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetStencilFail(const StencilOp front, const StencilOp back, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.DepthState->StencilFrontFail = front;
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.DepthState->StencilBackFail = back;
+
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetStencilPass(const StencilOp front, const StencilOp back, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.DepthState->StencilFrontPass = front;
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.DepthState->StencilBackPass = back;
+
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetStencilFunction(const CompareMode front, const CompareMode back, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.DepthState->StencilFrontFunc = front;
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.DepthState->StencilBackFunc = back;
+
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetStencilMask(const uint8_t read, const uint8_t write, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.DepthState->StencilReadMask = read;
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.DepthState->StencilWriteMask = write;
+
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const CullMode mode, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.RasterizerState->CullMode = mode;
+
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetFillMode(const FillMode mode, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.RasterizerState->FillMode = mode;
+
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetFrontFace(const FrontFace face, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.RasterizerState->FrontFace = face;
+
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetBlendMode(const BlendMode modeRGB, const BlendMode modeAlpha, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.BlendState->BlendModes = { modeRGB };
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.BlendState->BlendAlphaModes = { modeAlpha };
+
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetBlendConstant(const BlendConstant sourceRGB,
+                                                           const BlendConstant sourceAlpha,
+                                                           const BlendConstant destinationRGB,
+                                                           const BlendConstant destinationAlpha,
+                                                           Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.BlendState->SrcFactors = {sourceRGB};
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.BlendState->DstFactors = {destinationRGB};
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.BlendState->SrcAlphaFactors = {sourceAlpha};
+	(*s_perWindowDataMap)[window]->GraphicsPipelineDesc.BlendState->DstAlphaFactors = {destinationAlpha};
+
+	//TODO Load GraphicsPipeline or create new one
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearFlags clear, const ClearValue value, Window* window)
+{
+	if ((static_cast<uint32_t>(clear & ClearFlags::Color) && static_cast<uint32_t>(clear & ClearFlags::Depth)) ||
+		(static_cast<uint32_t>(clear & ClearFlags::Color) && static_cast<uint32_t>(clear & ClearFlags::Stencil)))
 	{
-		//Add new Window to map
-		TRAP::Scope<PerWindowData> p = TRAP::MakeScope<PerWindowData>();
-		
-		//Create Graphic Queue
-		QueueDesc queueDesc{};
-		queueDesc.Type = QueueType::Graphics;
-		queueDesc.Flag = QueueFlag::InitMicroprofile;
-		p->GraphicQueue = Queue::Create(queueDesc);
-
-		//Create Compute Queue
-		queueDesc.Type = QueueType::Compute;
-		p->ComputeQueue = Queue::Create(queueDesc);
-
-		//For each buffered image
-		for(uint32_t i = 0; i < PerWindowData::ImageCount; ++i)
-		{
-			//Create Graphic Command Pool
-			p->GraphicCommandPools[i] = CommandPool::Create({ p->GraphicQueue, false });
-			//Allocate Graphic Command Buffer
-			p->GraphicCommandBuffers[i] = p->GraphicCommandPools[i]->AllocateCommandBuffer(false);
-
-			//Create Compute Command Pool
-			p->ComputeCommandPools[i] = CommandPool::Create({ p->ComputeQueue, false });
-			//Allocate Compute Command Buffer
-			p->ComputeCommandBuffers[i] = p->ComputeCommandPools[i]->AllocateCommandBuffer(false);
-
-			//Create Render Fences/Semaphores
-			p->RenderCompleteFences[i] = Fence::Create();
-			p->RenderCompleteSemaphores[i] = Semaphore::Create();
-		}
-
-		//Image Acquire Semaphore
-		p->ImageAcquiredSemaphore = Semaphore::Create();
-
-		//Create Swapchain
-		SwapChainDesc swapChainDesc{};
-		swapChainDesc.Window = window;
-		swapChainDesc.PresentQueues = { p->GraphicQueue };
-		swapChainDesc.Width = window->GetWidth();
-		swapChainDesc.Height = window->GetHeight();
-		swapChainDesc.ImageCount = PerWindowData::ImageCount;
-		swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true);
-		swapChainDesc.EnableVSync = false;
-		swapChainDesc.ColorClearValue = { 0.1f, 0.1f, 0.1f, 1.0f };
-		p->SwapChain = SwapChain::Create(swapChainDesc);
-
-		if (!p->SwapChain)
-			TRAP::Application::Shutdown();
-
-		(*s_perWindowDataMap)[window] = std::move(p);
+		TP_ERROR(Log::RendererVulkanPrefix, "ClearFlags must be Color or a combination of Depth/Stencil!");
+		return;
 	}
 
-	//Window is already in map
-}
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
 
-//------------------------------------------------------------------------------------------------------------------//
+	const TRAP::Scope<PerWindowData>& data = (*s_perWindowDataMap)[window];
 
-void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Math::Vec4& color)
-{
-}
-
-//------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(bool enabled)
-{
+	const TRAP::Ref<RenderTarget>& renderTarget = data->SwapChain->GetRenderTargets()[data->ImageIndex];
+	
+	data->GraphicCommandBuffers[data->ImageIndex]->Clear(clear, value, renderTarget->GetWidth(), renderTarget->GetHeight());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetDepthMasking(bool enabled)
+void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x,
+                                                      const uint32_t y,
+                                                      const uint32_t width,
+                                                      const uint32_t height,
+                                                      const float minDepth,
+                                                      const float maxDepth,
+													  Window* window)
 {
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+	
+	const TRAP::Scope<PerWindowData>& data = (*s_perWindowDataMap)[window];
+
+	data->GraphicCommandBuffers[data->ImageIndex]->SetViewport(static_cast<const float>(x),
+	                                                           static_cast<const float>(y),
+	                                                           static_cast<const float>(width),
+	                                                           static_cast<const float>(height),
+	                                                           minDepth,
+	                                                           maxDepth);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::SetDepthFunction(RendererFunction function)
+void TRAP::Graphics::API::VulkanRenderer::SetScissor(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height, Window* window)
 {
-}
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+	
+	const TRAP::Scope<PerWindowData>& data = (*s_perWindowDataMap)[window];
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetStencilTesting(bool enabled)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetStencilMasking(uint32_t mask)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetStencilMaskingSeparate(RendererFaceMode face, uint32_t mask)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetStencilFunction(RendererFunction function, int32_t reference, uint32_t mask)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetStencilFunctionSeparate(RendererFaceMode face, RendererFunction function, int32_t reference, uint32_t mask)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetStencilOperation(RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetStencilOperationSeparate(RendererFaceMode face, RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass)
-{	
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetBlend(const bool enabled)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetCull(const bool enabled)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetFrontFace(const RendererFrontFace frontFace)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetWireFrame(const bool enabled)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x, const uint32_t y, const uint32_t width, const uint32_t height)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetBlendFunction(const RendererBlendFunction source, const RendererBlendFunction destination)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetBlendFunctionSeparate(RendererBlendFunction sourceRGB,
-	                                                               RendererBlendFunction sourceAlpha,
-	                                                               RendererBlendFunction destinationRGB,
-	                                                               RendererBlendFunction destinationAlpha)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetBlendEquation(RendererBlendEquation blendEquation)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB, RendererBlendEquation blendEquationAlpha)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const RendererCullMode cullMode)
-{
+	data->GraphicCommandBuffers[data->ImageIndex]->SetScissor(x, y, width, height);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -382,9 +571,12 @@ const std::string& TRAP::Graphics::API::VulkanRenderer::GetTitle() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Graphics::API::VulkanRenderer::GetVSync()
+bool TRAP::Graphics::API::VulkanRenderer::GetVSync(Window* window)
 {
-	return false;
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+	
+	return (*s_perWindowDataMap)[window]->CurrentVSync;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -418,6 +610,164 @@ std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API
 	}
 	
 	return s_usableGPUs;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
+{
+	std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
+	if (s_perWindowDataMap->find(window) == s_perWindowDataMap->end())
+	{
+		//Add new Window to map
+		TRAP::Scope<PerWindowData> p = TRAP::MakeScope<PerWindowData>();
+
+		p->Window = window;
+		
+		//Create Graphic Queue
+		QueueDesc queueDesc{};
+		queueDesc.Type = QueueType::Graphics;
+		queueDesc.Flag = QueueFlag::InitMicroprofile;
+		p->GraphicQueue = Queue::Create(queueDesc);
+
+		//Create Compute Queue
+		queueDesc.Type = QueueType::Compute;
+		p->ComputeQueue = Queue::Create(queueDesc);
+
+		//For each buffered image
+		for (uint32_t i = 0; i < PerWindowData::ImageCount; ++i)
+		{
+			//Create Graphic Command Pool
+			p->GraphicCommandPools[i] = CommandPool::Create({ p->GraphicQueue, false });
+			//Allocate Graphic Command Buffer
+			p->GraphicCommandBuffers[i] = p->GraphicCommandPools[i]->AllocateCommandBuffer(false);
+
+			//Create Compute Command Pool
+			p->ComputeCommandPools[i] = CommandPool::Create({ p->ComputeQueue, false });
+			//Allocate Compute Command Buffer
+			p->ComputeCommandBuffers[i] = p->ComputeCommandPools[i]->AllocateCommandBuffer(false);
+
+			//Create Render Fences/Semaphores
+			p->RenderCompleteFences[i] = Fence::Create();
+			p->RenderCompleteSemaphores[i] = Semaphore::Create();
+		}
+
+		//Image Acquire Semaphore
+		p->ImageAcquiredSemaphore = Semaphore::Create();
+
+		if (!p->Window->IsMinimized())
+		{
+			//Create Swapchain
+			p->CurrentVSync = window->GetVSync();
+			SwapChainDesc swapChainDesc{};
+			swapChainDesc.Window = window;
+			swapChainDesc.PresentQueues = { p->GraphicQueue };
+			swapChainDesc.Width = window->GetWidth();
+			swapChainDesc.Height = window->GetHeight();
+			swapChainDesc.ImageCount = PerWindowData::ImageCount;
+			swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true);
+			swapChainDesc.EnableVSync = p->CurrentVSync;
+			swapChainDesc.ColorClearValue = p->ClearColor;
+			p->SwapChain = SwapChain::Create(swapChainDesc);
+
+			if (!p->SwapChain)
+				TRAP::Application::Shutdown();
+
+			StartGraphicRecording(p);
+		}
+
+		//GraphicsPipeline
+		const std::vector<TRAP::Ref<RenderTarget>>& rT = p->SwapChain->GetRenderTargets();
+		p->GraphicsPipelineDesc = {};
+		GraphicsPipelineDesc& gpd = p->GraphicsPipelineDesc;
+		gpd.PrimitiveTopology = PrimitiveTopology::TriangleList;
+		gpd.RenderTargetCount = 1;
+		gpd.ColorFormats = { rT[0]->GetImageFormat(), rT[1]->GetImageFormat(), rT[2]->GetImageFormat() };
+		gpd.SampleCount = rT[0]->GetSampleCount();
+		gpd.SampleQuality = rT[0]->GetSampleQuality();
+
+		gpd.DepthState = TRAP::MakeRef<DepthStateDesc>();
+		gpd.DepthState->DepthTest = false;
+		gpd.DepthState->DepthWrite = false;
+		gpd.DepthState->DepthFunc = CompareMode::LessOrEqual;
+		gpd.DepthState->StencilTest = false;
+		gpd.DepthState->StencilReadMask = 0xFF;
+		gpd.DepthState->StencilWriteMask = 0xFF;
+		gpd.DepthState->StencilFrontFunc = CompareMode::Always;
+		gpd.DepthState->StencilFrontFail = {};
+		gpd.DepthState->DepthFrontFail = {};
+		gpd.DepthState->StencilFrontPass = {};
+		gpd.DepthState->StencilBackFunc = CompareMode::Always;
+		gpd.DepthState->StencilBackFail = {};
+		gpd.DepthState->DepthBackFail = {};
+		gpd.DepthState->StencilBackPass = {};
+
+		gpd.RasterizerState = TRAP::MakeRef<RasterizerStateDesc>();
+		gpd.RasterizerState->CullMode = CullMode::Back;
+		gpd.RasterizerState->DepthBias = 0;
+		gpd.RasterizerState->SlopeScaledDepthBias = 0.0f;
+		gpd.RasterizerState->FillMode = FillMode::Solid;
+		gpd.RasterizerState->FrontFace = FrontFace::Clockwise;
+		gpd.RasterizerState->DepthClampEnable = false;
+
+		gpd.BlendState = TRAP::MakeRef<BlendStateDesc>();
+		gpd.BlendState->SrcFactors = {BlendConstant::One };
+		gpd.BlendState->DstFactors = {BlendConstant::Zero };
+		gpd.BlendState->SrcAlphaFactors = { BlendConstant::One };
+		gpd.BlendState->DstAlphaFactors = { BlendConstant::Zero};
+		gpd.BlendState->BlendModes = {};
+		gpd.BlendState->BlendAlphaModes = {};
+		gpd.BlendState->Masks = {(0x1 | 0x2 | 0x4 | 0x8)};
+		gpd.BlendState->RenderTargetMask = BlendStateTargets::BlendStateTargetAll;
+		gpd.BlendState->IndependentBlend = false;
+
+		(*s_perWindowDataMap)[window] = std::move(p);
+	}
+
+	//Window is already in map
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::RemovePerWindowData(Window* window)
+{
+	std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
+	if (s_perWindowDataMap->find(window) != s_perWindowDataMap->end())
+		(*s_perWindowDataMap).erase(window);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::VulkanRenderer::GetCurrentGraphicCommandBuffer(Window* window)
+{
+	auto it = s_perWindowDataMap->find(window);
+	if (it != s_perWindowDataMap->end())
+	{
+		if (it->second->Window->IsMinimized())
+			return nullptr;
+		
+		return it->second->GraphicCommandBuffers[it->second->ImageIndex];
+	}
+
+	return nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::SwapChain> TRAP::Graphics::API::VulkanRenderer::GetCurrentSwapChain(Window* window)
+{
+	const auto it = s_perWindowDataMap->find(window);
+	if (it != s_perWindowDataMap->end())
+		return it->second->SwapChain;
+
+	return nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::WaitIdle()
+{
+	m_device->WaitIdle();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

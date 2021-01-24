@@ -25,7 +25,7 @@ TRAP::CPUInfo TRAP::Application::s_CPU{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Application::Application()
+TRAP::Application::Application(const std::string& gameName)
 	: m_timer(std::make_unique<Utils::Timer>()),
 	m_FramesPerSecond(0),
 	m_FrameTime(0.0f),
@@ -33,6 +33,7 @@ TRAP::Application::Application()
 	m_fpsLimit(0),
 	m_tickRate(100),
 	m_timeScale(1.0f),
+	m_gameName(gameName),
 	m_linuxWindowManager(LinuxWindowManager::Unknown),
 	m_threadPool(GetCPUInfo().LogicalCores > 1 ? GetCPUInfo().LogicalCores : std::thread::hardware_concurrency()),
 	m_newRenderAPI(Graphics::RenderAPI::NONE)
@@ -96,31 +97,6 @@ TRAP::Application::Application()
 			m_fpsLimit = 0;
 	}
 
-	m_window = MakeScope<Window>
-	(
-		WindowProps
-		(
-			"TRAP Engine",
-			width,
-			height,
-			refreshRate,
-			displayMode,
-			WindowProps::AdvancedProps
-			{
-				true,
-				maximized,
-				true,
-				true,
-				true,
-				true,
-				rawInput,
-				Window::CursorMode::Normal
-			},
-			monitor
-		)
-	);
-	m_window->SetEventCallback([this](Events::Event& e) { OnEvent(e); });
-
 	if (renderAPI == Graphics::RenderAPI::NONE || !Graphics::RendererAPI::IsSupported(renderAPI))
 		Graphics::RendererAPI::AutoSelectRenderAPI();
 	else
@@ -139,9 +115,33 @@ TRAP::Application::Application()
 	}
 
 	//Initialize Renderer
-	Graphics::RendererAPI::Init();
-	Graphics::RendererAPI::Use(m_window.get());
-	Graphics::RendererAPI::GetRenderer()->SetVSync(vsync);
+	Graphics::RendererAPI::Init(gameName);
+
+	m_window = MakeScope<Window>
+	(
+		WindowProps
+		(
+			"TRAP Engine",
+			width,
+			height,
+			refreshRate,
+			vsync,
+			displayMode,
+			WindowProps::AdvancedProps
+			{
+				true,
+				maximized,
+				true,
+				true,
+				true,
+				true,
+				rawInput,
+				Window::CursorMode::Normal
+			},
+			monitor
+		)
+	);
+	m_window->SetEventCallback([this](Events::Event& e) { OnEvent(e); });
 
 	//Update Window Title (Debug/DebWithRelInfo)
 	m_window->SetTitle(m_window->GetTitle() + Graphics::Renderer::GetTitle());
@@ -186,11 +186,12 @@ TRAP::Application::~Application()
 		m_hotReloadingThread.reset();
 	}
 	Input::Shutdown();
+	TRAP::Graphics::RendererAPI::GetRenderer()->WaitIdle();
 	m_layerStack.reset();
 	m_config.Set("Width", m_window->GetWidth());
 	m_config.Set("Height", m_window->GetHeight());
 	m_config.Set("RefreshRate", m_window->GetRefreshRate());
-	m_config.Set("VSync", Graphics::RendererAPI::GetRenderer()->GetVSync());
+	m_config.Set("VSync", m_window->GetVSync());
 	m_config.Set("FPSLimit", m_fpsLimit);
 	m_config.Set("DisplayMode", m_window->GetDisplayMode());
 	m_config.Set("Maximized", m_window->IsMaximized());
@@ -650,8 +651,6 @@ void TRAP::Application::ReCreate(const Graphics::RenderAPI renderAPI) const
 
 	for (const auto& layer : *m_layerStack)
 		layer->OnDetach();
-
-	const bool vsync = Graphics::RendererAPI::GetRenderer()->GetVSync();
 	
 	Graphics::RendererAPI::SwitchRenderAPI(renderAPI);
 
@@ -659,9 +658,8 @@ void TRAP::Application::ReCreate(const Graphics::RenderAPI renderAPI) const
 	Graphics::ShaderManager::Shutdown();
 	Graphics::Renderer::Shutdown();
 	Graphics::RendererAPI::Shutdown();
-
-	Graphics::RendererAPI::GetRenderer()->SetVSync(vsync);
-	Graphics::RendererAPI::Init();
+	
+	Graphics::RendererAPI::Init(m_gameName);
 	m_window->SetTitle(m_window->GetTitle());
 	//Always added as a fallback shader
 	Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader);

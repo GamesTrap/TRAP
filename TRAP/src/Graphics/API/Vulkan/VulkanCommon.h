@@ -34,6 +34,7 @@ namespace TRAP::Graphics::API
 	VkImageLayout ResourceStateToVkImageLayout(RendererAPI::ResourceState usage);
 	VkPipelineStageFlags DetermineVkPipelineStageFlags(VkAccessFlags accessFlags, RendererAPI::QueueType queueType);
 	VkQueryType QueryTypeToVkQueryType(RendererAPI::QueryType type);
+	VkImageAspectFlags ClearFlagsToVKImageAspectFlags(RendererAPI::ClearFlags flags);
 	
 	VkPipelineColorBlendStateCreateInfo UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc, std::vector<VkPipelineColorBlendAttachmentState>& attachments);
 	VkPipelineDepthStencilStateCreateInfo UtilToDepthDesc(const RendererAPI::DepthStateDesc& desc);

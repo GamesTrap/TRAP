@@ -58,7 +58,7 @@ namespace TRAP::Graphics
 		virtual void Dispatch(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const = 0;
 
 		virtual void UpdateBuffer(const TRAP::Ref<Buffer>& buffer, uint64_t dstOffset, const TRAP::Ref<Buffer>& srcBuffer, uint64_t srcOffset, uint64_t size) const = 0;
-		virtual void UpdateVirtualTexture(const TRAP::Ref<API::VulkanTexture>& virtualTexture) = 0; //TODO
+		virtual void UpdateVirtualTexture(const TRAP::Ref<API::VulkanTexture>& virtualTexture) = 0;
 
 		virtual void ResetQueryPool(const TRAP::Ref<QueryPool>& queryPool, uint32_t startQuery, uint32_t queryCount) const = 0;
 		virtual void BeginQuery(const TRAP::Ref<QueryPool>& queryPool, const RendererAPI::QueryDesc& desc) const = 0;
@@ -70,6 +70,8 @@ namespace TRAP::Graphics
 			const std::vector<RendererAPI::RenderTargetBarrier>& renderTargetBarriers) const = 0;
 		
 		virtual void SetStencilReferenceValue(uint32_t val) const = 0;
+
+		virtual void Clear(RendererAPI::ClearFlags clear, RendererAPI::ClearValue value, uint32_t width, uint32_t height) = 0;
 	
 	protected:
 		CommandBuffer();

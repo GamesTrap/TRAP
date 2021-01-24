@@ -909,6 +909,22 @@ VkQueryType TRAP::Graphics::API::QueryTypeToVkQueryType(const RendererAPI::Query
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+VkImageAspectFlags TRAP::Graphics::API::ClearFlagsToVKImageAspectFlags(const RendererAPI::ClearFlags flags)
+{
+	if (flags == RendererAPI::ClearFlags::Color)
+		return VK_IMAGE_ASPECT_COLOR_BIT;
+
+	if (flags == RendererAPI::ClearFlags::Depth)
+		return VK_IMAGE_ASPECT_DEPTH_BIT;
+
+	if (flags == RendererAPI::ClearFlags::Stencil)
+		return VK_IMAGE_ASPECT_STENCIL_BIT;
+
+	return VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::UtilToBlendDesc(const RendererAPI::BlendStateDesc& desc,
 	std::vector<VkPipelineColorBlendAttachmentState>& attachments)
 {

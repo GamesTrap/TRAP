@@ -59,6 +59,17 @@ namespace TRAP::Graphics
 	class RendererAPI
 	{
 	public:
+		enum class CompareMode;
+		enum class StencilOp;
+		enum class CullMode;
+		enum class FillMode;
+		enum class FrontFace;
+		enum class BlendMode;
+		enum class BlendConstant;
+		enum class ClearFlags;
+		union ClearValue;
+	
+	public:
 		RendererAPI() = default;
 		virtual ~RendererAPI() = default;
 		RendererAPI(const RendererAPI&) = default;
@@ -66,7 +77,7 @@ namespace TRAP::Graphics
 		RendererAPI(RendererAPI&&) = default;
 		RendererAPI& operator=(RendererAPI&&) = default;
 
-		static void Init();
+		static void Init(const std::string& gameName);
 		static void Shutdown();
 
 		static const TRAP::Scope<RendererAPI>& GetRenderer();
@@ -76,46 +87,52 @@ namespace TRAP::Graphics
 		static void SwitchRenderAPI(RenderAPI api);
 		static bool IsSupported(RenderAPI api);
 		static RenderAPI GetRenderAPI();
-		static void Use(Window* window);
 
-		virtual void InitInternal() = 0;
-		
-		virtual void Clear(RendererBufferType buffer) = 0;
+		virtual void InitInternal(const std::string& gameName) = 0;
+
 		virtual void Present(const Scope<Window>& window) = 0;
-
-		virtual void InternalUse(Window* window) = 0;
 		
-		virtual void SetVSync(bool vsync) = 0;
-		virtual bool GetVSync() = 0;
+		virtual void SetVSync(bool vsync, Window* window = nullptr) = 0;
+		virtual bool GetVSync(Window* window = nullptr) = 0;
 
-		virtual void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }) = 0;
-		virtual void SetDepthTesting(bool enabled) = 0;
-		virtual void SetDepthMasking(bool enabled) = 0;
-		virtual void SetDepthFunction(RendererFunction function) = 0;
-		virtual void SetStencilTesting(bool enabled) = 0;
-		virtual void SetStencilMasking(uint32_t mask) = 0;
-		virtual void SetStencilMaskingSeparate(RendererFaceMode face, uint32_t mask) = 0;
-		virtual void SetStencilFunction(RendererFunction function, int32_t reference, uint32_t mask) = 0;
-		virtual void SetStencilFunctionSeparate(RendererFaceMode face, RendererFunction function, int32_t reference, uint32_t mask) = 0;
-		virtual void SetStencilOperation(RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass) = 0;
-		virtual void SetStencilOperationSeparate(RendererFaceMode face, RendererOperation stencilFail, RendererOperation depthFail, RendererOperation pass) = 0;
-		virtual void SetBlend(bool enabled) = 0;
-		virtual void SetCull(bool enabled) = 0;
-		virtual void SetFrontFace(RendererFrontFace frontFace) = 0;
-		virtual void SetWireFrame(bool enabled) = 0;
-		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
+		//RenderTarget Stuff
+		virtual void SetClearColor(const Math::Vec4& color = { 0.1f, 0.1f, 0.1f, 1.0f }, Window* window = nullptr) = 0;
 
-		virtual void SetBlendFunction(RendererBlendFunction source, RendererBlendFunction destination) = 0;
-		virtual void SetBlendFunctionSeparate(RendererBlendFunction sourceRGB,
-			                                  RendererBlendFunction sourceAlpha,
-			                                  RendererBlendFunction destinationRGB,
-			                                  RendererBlendFunction destinationAlpha
-		) = 0;
-		virtual void SetBlendEquation(RendererBlendEquation blendEquation) = 0;
-		virtual void SetBlendEquationSeparate(RendererBlendEquation blendEquationRGB, RendererBlendEquation blendEquationAlpha) = 0;
+		//Pipeline Stuff
+		virtual void SetDepthTesting(bool enabled, Window* window = nullptr) = 0;
+		virtual void SetDepthWriting(bool enabled, Window* window = nullptr) = 0;
+		virtual void SetDepthFunction(CompareMode function, Window* window = nullptr) = 0;
+		virtual void SetDepthFail(StencilOp front, StencilOp back, Window* window = nullptr) = 0;
+		virtual void SetDepthBias(int32_t depthBias, Window* window = nullptr) = 0;
+		virtual void SetDepthBiasSlopeFactor(float factor, Window* window = nullptr) = 0;
+		virtual void SetStencilTesting(bool enabled, Window* window = nullptr) = 0;
+		virtual void SetStencilFail(StencilOp front, StencilOp back, Window* window = nullptr) = 0;
+		virtual void SetStencilPass(StencilOp front, StencilOp back, Window* window = nullptr) = 0;
+		virtual void SetStencilFunction(CompareMode front, CompareMode back, Window* window = nullptr) = 0;
+		virtual void SetStencilMask(uint8_t read, uint8_t write, Window* window = nullptr) = 0;
+		virtual void SetCullMode(CullMode mode, Window* window = nullptr) = 0;
+		virtual void SetFillMode(FillMode mode, Window* window = nullptr) = 0;
+		virtual void SetFrontFace(FrontFace face, Window* window = nullptr) = 0;
+		virtual void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, Window* window = nullptr) = 0;
+		virtual void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,
+			                          BlendConstant destinationRGB, BlendConstant destinationAlpha,
+									  Window* window = nullptr) = 0;
 
-		virtual void SetCullMode(RendererCullMode cullMode) = 0;
+		virtual void Clear(ClearFlags clear, ClearValue value, Window* window = nullptr) = 0;
+		
+		//CommandBuffer Stuff
+		virtual void SetViewport(uint32_t x,
+		                         uint32_t y,
+		                         uint32_t width,
+		                         uint32_t height,
+		                         float minDepth = 0.0f,
+		                         float maxDepth = 1.0f,
+		                         Window* window = nullptr) = 0;
+		virtual void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height, Window* window = nullptr) = 0;
 
+		//TODO More CommandBuffer Stuff
+
+		
 		virtual void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) = 0;
 		virtual void Draw(const Scope<VertexArray>& vertexArray) = 0;
 
@@ -124,6 +141,14 @@ namespace TRAP::Graphics
 		virtual std::array<uint8_t, 16> GetCurrentGPUUUID() = 0;
 		virtual std::string GetCurrentGPUName() = 0;
 		virtual std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() = 0;
+
+		virtual void InitPerWindowData(Window* window) = 0;
+		virtual void RemovePerWindowData(Window* window) = 0;
+
+		virtual CommandBuffer* GetCurrentGraphicCommandBuffer(Window* window) = 0; //TODO Remove
+		virtual TRAP::Ref<TRAP::Graphics::SwapChain> GetCurrentSwapChain(Window* window) = 0; //TODO Remove
+
+		virtual void WaitIdle() = 0;
 
 		static bool IsVulkanCapable();
 
@@ -611,7 +636,7 @@ namespace TRAP::Graphics
 				return height;
 			}
 		}
-		static constexpr uint32_t ImageFormatPlaneSizeOfBlock(const ImageFormat fmt, uint32_t plane)
+		static constexpr uint32_t ImageFormatPlaneSizeOfBlock(const ImageFormat fmt, const uint32_t plane)
 		{
 			switch(fmt)
 			{
@@ -1323,7 +1348,8 @@ namespace TRAP::Graphics
 		{
 			Success = 0,
 			DeviceReset = 1,
-			Failed = 2
+			Failed = 2,
+			OutOfDate = 3
 		};
 
 		enum class SamplerRange
@@ -1345,6 +1371,13 @@ namespace TRAP::Graphics
 		{
 			Cosited = 0,
 			Midpoint = 1
+		};
+
+		enum class ClearFlags
+		{
+			Color = 0x0,
+			Depth = 0x1,
+			Stencil = 0x2
 		};
 		
 		union ClearValue
@@ -1592,8 +1625,6 @@ namespace TRAP::Graphics
 			std::array<int32_t, 8> Masks{};
 			//Mask that identifies the render targets affected by the blend state.
 			BlendStateTargets RenderTargetMask{};
-			//Set whether alpha to coverage should be enabled.
-			bool AlphaToCoverage{};
 			//Set whether each render target has an unique blend function.
 			//When false the blend function in slot 0 will be used for all render targets.
 			bool IndependentBlend{};
@@ -1623,8 +1654,6 @@ namespace TRAP::Graphics
 			int32_t DepthBias{};
 			float SlopeScaledDepthBias{};
 			FillMode FillMode{};
-			bool MultiSample{};
-			bool Scissor{};
 			FrontFace FrontFace{};
 			bool DepthClampEnable{};
 		};
@@ -2000,7 +2029,6 @@ namespace TRAP::Graphics
 		static TRAP::Scope<RendererAPI> s_Renderer;
 		static RenderAPI s_RenderAPI;
 		static TRAP::Scope<API::ResourceLoader> s_ResourceLoader;
-		static Window* s_activeWindow;
 
 		struct PerWindowData
 		{
@@ -2008,6 +2036,8 @@ namespace TRAP::Graphics
 			
 			inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
 
+			Window* Window;
+			
 			uint32_t ImageIndex = 0;
 			TRAP::Ref<Queue> GraphicQueue;
 			TRAP::Ref<Queue> ComputeQueue;
@@ -2020,6 +2050,14 @@ namespace TRAP::Graphics
 			std::array<TRAP::Ref<Semaphore>, ImageCount> RenderCompleteSemaphores;
 			
 			TRAP::Ref<SwapChain> SwapChain;
+			uint32_t CurrentSwapChainImageIndex;
+
+			ClearValue ClearColor{0.1f, 0.1f, 0.1f, 1.0f};
+			
+			bool CurrentVSync;
+			bool NewVSync;
+
+			GraphicsPipelineDesc GraphicsPipelineDesc;
 		};
 		static TRAP::Scope<std::unordered_map<Window*, TRAP::Scope<PerWindowData>>> s_perWindowDataMap;
 		static std::mutex s_perWindowDataMutex;
@@ -2040,5 +2078,6 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShaderStage);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::RootSignatureFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::BlendStateTargets);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::PipelineCacheFlags);
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearFlags);
 
 #endif /*_TRAP_RENDERERAPI_H_*/

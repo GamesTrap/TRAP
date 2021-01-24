@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "VulkanPhysicalDevice.h"
 
+
+#include "Application.h"
 #include "VulkanInits.h"
 #include "VulkanInstance.h"
 #include "Graphics/API/RendererAPI.h"
@@ -481,6 +483,11 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		}
 
 		//Create Vulkan Surface Test Window
+		if(!INTERNAL::WindowingAPI::Init())
+		{
+			TP_ERROR(Log::RendererVulkanPrefix, "Failed to initialize WindowingAPI!");
+			TRAP::Application::Shutdown();
+		}
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
 		Scope<INTERNAL::WindowingAPI::InternalWindow> vulkanTestWindow = INTERNAL::WindowingAPI::CreateWindow(400,

@@ -242,12 +242,12 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 
 	//Create RenderTargets from SwapChain
 	uint32_t imageCount = 0;
-	vkGetSwapchainImagesKHR(m_device->GetVkDevice(), swapChain, &imageCount, nullptr);
+	VkCall(vkGetSwapchainImagesKHR(m_device->GetVkDevice(), swapChain, &imageCount, nullptr));
 
 	TRAP_ASSERT(desc.ImageCount == imageCount);
 
 	std::vector<VkImage> images(imageCount);
-	vkGetSwapchainImagesKHR(m_device->GetVkDevice(), swapChain, &imageCount, images.data());
+	VkCall(vkGetSwapchainImagesKHR(m_device->GetVkDevice(), swapChain, &imageCount, images.data()));
 
 	RendererAPI::RenderTargetDesc descColor = {};
 	descColor.Width = desc.Width;

@@ -16,7 +16,8 @@
 class Tests final : public TRAP::Application
 {
 public:
-	Tests()
+	explicit Tests(const std::string& gameName)
+		: Application(gameName)
 	{
 		//PushLayer(TRAP::MakeScope<ClipboardTests>());
 		//PushLayer(TRAP::MakeScope<CursorTests>());
@@ -35,5 +36,5 @@ public:
 
 std::unique_ptr<TRAP::Application> TRAP::CreateApplication()
 {
-	return std::make_unique<Tests>();
+	return std::make_unique<Tests>("Tests");
 }

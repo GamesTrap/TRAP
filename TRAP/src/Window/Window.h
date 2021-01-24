@@ -92,16 +92,6 @@ namespace TRAP
 		/// Updates all TRAP::Windows (polls events from OS etc.).
 		/// </summary>
 		static void OnUpdate();
-
-		/// <summary>
-		/// Select the given TRAP::Window for all following rendering commands.
-		/// </summary>
-		/// <param name="window">TRAP::Window that should be used for rendering.</param>
-		static void Use(const Scope<Window>& window);
-		/// <summary>
-		/// Selects the "Main" TRAP::Window for all following rendering commands.
-		/// </summary>
-		static void Use();
 		
 		/// <summary>
 		/// Get the amount of all active TRAP::Windows.
@@ -164,6 +154,11 @@ namespace TRAP
 		/// </summary>
 		/// <returns>Opacity of the TRAP::Window.</returns>
 		float GetOpacity() const;
+		/// <summary>
+		/// Get whether VSync is enabled or disabled.
+		/// </summary>
+		/// <returns>True if VSync is enabled, false otherwise.</returns>
+		bool GetVSync() const;
 
 		/// <summary>
 		/// Get the internal handle of the TRAP::Window.
@@ -255,6 +250,11 @@ namespace TRAP
 		/// </summary>
 		/// <param name="enabled">True to enable, false otherwise.</param>
 		void SetDragAndDrop(bool enabled) const;
+		/// <summary>
+		/// Enable or Disable VSync for the TRAP::Window.
+		/// </summary>
+		/// <param name="enabled">Whether to enable VSync or not.</param>
+		void SetVSync(bool enabled);
 
 		/// <summary>
 		/// Query whether the TRAP::Window is maximized or not.
@@ -344,6 +344,7 @@ namespace TRAP
 		{
 			std::string Title;
 			int32_t Width{}, Height{}, RefreshRate{};
+			bool VSync;
 			DisplayMode displayMode{};
 			uint32_t Monitor{};
 			CursorMode cursorMode{};
@@ -369,6 +370,7 @@ namespace TRAP
 		uint32_t Width;
 		uint32_t Height;
 		uint32_t RefreshRate;
+		bool VSync;
 		Window::DisplayMode DisplayMode;
 		uint32_t Monitor;
 
@@ -422,6 +424,7 @@ namespace TRAP
 							 uint32_t width = 1280,
 							 uint32_t height = 720,
 							 uint32_t refreshRate = 60,
+							 bool vsync = false,
 							 Window::DisplayMode displayMode = Window::DisplayMode::Windowed,
 							 AdvancedProps advanced = AdvancedProps{},
 		                     uint32_t monitor = 0);
