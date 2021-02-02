@@ -15,6 +15,17 @@ namespace TRAP::Utils
 	/// <param name="uuid">String representation of a 16 byte long UUID.</param>
 	/// <returns>16 byte long UUID.</returns>
 	std::array<uint8_t, 16> UUIDFromString(std::string_view uuid);
+
+	inline void HashCombine(std::size_t& seed)
+	{}
+
+	template<typename T, typename... Rest>
+	void HashCombine(std::size_t& seed, const T& v, Rest... rest)
+	{
+		std::hash<T> hasher;
+		seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+		HashCombine(seed, rest...);
+	}
 }
 
 #endif /*_TRAP_UTILS_H_*/

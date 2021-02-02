@@ -1515,7 +1515,7 @@ SITREP 12/31/2020|20w53a2
     - VulkanTexture Added VirtualTexture support ~>120 mins
     - FINISHED BASELINE IMPLEMENTATION OF ALL VULKAN CLASSES
 
-SITREP 01/02/2020|20w53a3
+SITREP 01/02/2021|20w53a3
     - Changed TRAP Engine version to 20w53a3(0.7.14)
     - Replaced unions with std::variant ~<40 mins
     - Fixed several bugs ~<30 mins
@@ -1526,7 +1526,7 @@ SITREP 01/02/2020|20w53a3
     - VulkanQueue Added PresentStatus struct as return value for Present function ~<15 mins
     - Added support for multi-planar image format ~<40 mins
 
-SITREP 01/04/2020|20w01a1
+SITREP 01/04/2021|21w01a1
     - Changed TRAP Engine version to 20w01a1(0.7.15)
     - Fixed a bug in Ycbcr features testing (VulkanDevice) ~<20 mins
     - Started implementing abstraction for Vulkan*** classes ~>60 mins
@@ -1538,7 +1538,7 @@ SITREP 01/04/2020|20w01a1
         - Added RootSignature base class
         - Added Sampler base class
 
-SITREP 01/05/2020|20w01a2
+SITREP 01/05/2021|21w01a2
     - Changed TRAP Engine version to 20w01a2(0.7.16)
     - Implemented abstraction for Vulkan*** classes ~>60 mins
         - Added CommandSignature base class
@@ -1553,7 +1553,7 @@ SITREP 01/05/2020|20w01a2
     - RendererAPI replaced Vulkan*** with equivalent abstraction ~>30 mins
     - VulkanTest replaced Vulkan*** with equivalent abstraction ~<20 mins
 
-SITREP 01/06/2020|20w01a3
+SITREP 01/06/2021|21w01a3
     - Changed TRAP Engine version to 20w01a3(0.7.17)
     - Reimplemented Shader base class ~>120 mins
         - Replaced ShaderType enum with the RendererAPI::ShaderStage
@@ -1566,23 +1566,23 @@ SITREP 01/06/2020|20w01a3
     - VulkanTest now uses ShaderManager ~<5 mins
     - Updated ConvertToSPIRV ~>45 mins
 
-SITREP 01/11/2020|20w02a1
+SITREP 01/11/2021|21w02a1
     - Changed TRAP Engine version to 20w02a1(0.7.18)
     - Added loading/saving of PipelineCache from disk ~<20 mins
     - Optimized/Reduced usage of std::dynamic_pointer_cast in Vulkan code ~<10 mins
     - VulkanTest optimized Window resizing ~<10 mins
 
-SITREP 01/15/2020|20w02a2
+SITREP 01/15/2021|21w02a2
     - Changed TRAP Engine version to 20w02a2(0.7.19)
     - Added ResourceLoader for Buffers like VertexBuffer, IndexBuffer, etc... ~>60 mins
     - VulkanTest Added colored triangle ~<20 mins
 
-SITREP 01/16/2020|20w02a3
+SITREP 01/16/2021|21w02a3
     - Changed TRAP Engine version to 20w02a3(0.7.20)
     - Integrated code from VulkanTest into RendererAPI ~>75 mins
       (Queues, CommandPools, CommandBuffers, Fences, Semaphores, SwapChain)
 
-SITREP 01/24/2020|20w03a1
+SITREP 01/24/2021|21w03a1
     - Changed TRAP Engine version to 20w03a1(0.7.21)
     - RendererAPI Added ClearFlags enum ~<5 mins
     - RendererAPI Removed Use function ~<10 mins

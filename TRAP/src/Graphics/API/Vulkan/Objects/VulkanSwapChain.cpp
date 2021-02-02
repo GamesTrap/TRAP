@@ -137,12 +137,15 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 			break;
 		}
 	}
-
+	
 	//SwapChain
 	VkExtent2D extent{};
 	extent.width = TRAP::Math::Clamp(desc.Width, caps.minImageExtent.width, caps.maxImageExtent.width);
 	extent.height = TRAP::Math::Clamp(desc.Height, caps.minImageExtent.height, caps.maxImageExtent.height);
 
+	desc.Width = extent.width;
+	desc.Height = extent.height;
+	
 	VkSharingMode sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	uint32_t queueFamilyIndexCount = 0;
 	std::array<uint32_t, 2> queueFamilyIndices = { static_cast<uint32_t>(dynamic_cast<VulkanQueue*>(desc.PresentQueues[0].get())->GetQueueFamilyIndex()), 0 };
@@ -314,6 +317,7 @@ void TRAP::Graphics::API::VulkanSwapChain::RemoveSwapchain()
 	
 	for (auto& m_renderTarget : m_renderTargets)
 		m_renderTarget.reset();
+	m_renderTargets.clear();
 
 	vkDestroySwapchainKHR(m_device->GetVkDevice(), m_swapChain, nullptr);
 	m_surface.reset();

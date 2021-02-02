@@ -188,8 +188,10 @@ TRAP::Application::~Application()
 	Input::Shutdown();
 	TRAP::Graphics::RendererAPI::GetRenderer()->WaitIdle();
 	m_layerStack.reset();
-	m_config.Set("Width", m_window->GetWidth());
-	m_config.Set("Height", m_window->GetHeight());
+	if(m_window->GetWidth() > 0)
+		m_config.Set("Width", m_window->GetWidth());
+	if(m_window->GetHeight() > 0)
+		m_config.Set("Height", m_window->GetHeight());
 	m_config.Set("RefreshRate", m_window->GetRefreshRate());
 	m_config.Set("VSync", m_window->GetVSync());
 	m_config.Set("FPSLimit", m_fpsLimit);

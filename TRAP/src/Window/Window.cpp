@@ -555,7 +555,7 @@ void TRAP::Window::SetMinimumSize(const uint32_t minWidth, const uint32_t minHei
 	TP_PROFILE_FUNCTION();
 
 	if (minWidth == 0 && minHeight == 0)
-		INTERNAL::WindowingAPI::SetWindowSizeLimits(m_window.get(), -1, -1, -1, -1);
+		INTERNAL::WindowingAPI::SetWindowSizeLimits(m_window.get(), 2, 2, -1, -1);
 	else
 		INTERNAL::WindowingAPI::SetWindowSizeLimits(m_window.get(), minWidth, minHeight, -1, -1);
 }
@@ -567,9 +567,9 @@ void TRAP::Window::SetMaximumSize(const uint32_t maxWidth, const uint32_t maxHei
 	TP_PROFILE_FUNCTION();
 
 	if (maxWidth == 0 && maxHeight == 0)
-		INTERNAL::WindowingAPI::SetWindowSizeLimits(m_window.get(), -1, -1, -1, -1);
+		INTERNAL::WindowingAPI::SetWindowSizeLimits(m_window.get(), 2, 2, -1, -1);
 	else
-		INTERNAL::WindowingAPI::SetWindowSizeLimits(m_window.get(), -1, -1, maxWidth, maxHeight);
+		INTERNAL::WindowingAPI::SetWindowSizeLimits(m_window.get(), 2, 2, maxWidth, maxHeight);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -841,6 +841,8 @@ void TRAP::Window::Init(const WindowProps& props)
 	//If currently windowed, stash the current size and position of the window
 	if (m_data.displayMode == DisplayMode::Windowed)
 	{
+		INTERNAL::WindowingAPI::SetWindowSizeLimits(m_window.get(), 2, 2, -1, -1);
+		
 		m_oldWindowedParams.Width = m_data.Width;
 		m_oldWindowedParams.Height = m_data.Height;
 		m_oldWindowedParams.RefreshRate = m_data.RefreshRate;

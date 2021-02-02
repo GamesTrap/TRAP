@@ -85,7 +85,7 @@ For example, run `premake gmake2` to generate the `Makefile` files.
 
 ## License
 
-Copyright (c) 2019-2020 Jan "GamesTrap" Schürkamp
+Copyright (c) 2019-2021 Jan "GamesTrap" Schürkamp
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
