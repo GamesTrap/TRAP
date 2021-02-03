@@ -20,6 +20,8 @@ namespace TRAP::Graphics::API
 		const std::vector<VkShaderModule>& GetVkShaderModules() const;
 		TRAP::Ref<ShaderReflection::PipelineReflection> GetReflection() const;
 		const std::vector<std::string>& GetEntryNames() const;
+
+		void Use(Window* window = nullptr) override;
 		
 	private:
 		TRAP::Ref<VulkanDevice> m_device;

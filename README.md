@@ -2,17 +2,7 @@
 
 ![TRAP](Branding/TRAP.gif?raw=true "TRAP")
 
-[![Build Status](https://travis-ci.com/GamesTrap/TRAPVK.svg?branch=master)](https://travis-ci.com/GamesTrap/TRAPVK)
-[![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/GamesTrap/TRAPVK)](https://github.com/GamesTrap/TRAPVK)
-[![GitHub repo size](https://img.shields.io/github/repo-size/GamesTrap/TRAPVK)](https://github.com/GamesTrap/TRAPVK)
-[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/GamesTrap/TRAP?include_prereleases)](https://github.com/GamesTrap/TRAPVK/releases)
-[![GitHub All Releases](https://img.shields.io/github/downloads/GamesTrap/TRAPVK/total)](https://github.com/GamesTrap/TRAPVK/releases)
-[![GitHub issues](https://img.shields.io/github/issues/GamesTrap/TRAPVK)](https://github.com/GamesTrap/TRAPVK/issues?q=is%3Aopen+is%3Aissue)
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/GamesTrap/TRAPVK)](https://github.com/GamesTrap/TRAPVK/pulls?q=is%3Aopen+is%3Apr)
-[![GitHub](https://img.shields.io/github/license/GamesTrap/TRAPVK)](https://github.com/GamesTrap/TRAPVK/blob/master/LICENSE)
-
-
-TRAPVK is a cross-platform, high performance game engine currently in development.  
+TRAPVK-Alpha is a cross-platform, high performance game engine currently in development.  
 This README will be updated with more info eventually.
 
 ## Setup

@@ -69,6 +69,8 @@ namespace TRAP::Graphics::API
 		                 Window* window = nullptr) override;
 		void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height, Window* window = nullptr) override;
 
+		void Draw(uint32_t vertexCount, uint32_t firstVertex, Window* window = nullptr) override;
+		
 		void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) override;
 		void Draw(const Scope<VertexArray>& vertexArray) override;
 
@@ -81,6 +83,8 @@ namespace TRAP::Graphics::API
 
 		void InitPerWindowData(Window* window) override;
 		void RemovePerWindowData(Window* window) override;
+
+		void BindShader(Shader* shader, Window* window = nullptr) const;
 
 		CommandBuffer* GetCurrentGraphicCommandBuffer(Window* window) override; //TODO Remove
 		TRAP::Ref<TRAP::Graphics::SwapChain> GetCurrentSwapChain(Window* window) override; //TODO Remove
@@ -201,8 +205,10 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanInstance> GetInstance() const;
 		TRAP::Ref<VulkanDevice> GetDevice() const;
 		TRAP::Ref<VulkanMemoryAllocator> GetVMA() const;
-		TRAP::Ref<VulkanDescriptorPool> GetDescriptorPool() const;;
-		
+		TRAP::Ref<VulkanDescriptorPool> GetDescriptorPool() const;
+
+		static const TRAP::Ref<Pipeline>& GetPipeline(const PipelineDesc& desc);
+	
 	private:
 		static std::vector<std::string> SetupInstanceLayers();
 		static std::vector<std::string> SetupInstanceExtensions();
@@ -231,6 +237,9 @@ namespace TRAP::Graphics::API
 		static std::mutex s_renderPassMutex;
 
 		static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs;
+
+		static std::unordered_map<PipelineDesc, TRAP::Ref<Pipeline>> s_pipelines;
+		static std::mutex s_pipelineMutex;
 		
 		static VulkanRenderer* s_renderer;
 	};

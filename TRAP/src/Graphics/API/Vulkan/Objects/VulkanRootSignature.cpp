@@ -133,8 +133,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 	m_descriptorNameToIndexMap = TRAP::MakeScope<VulkanRenderer::DescriptorIndexMap>();
 
 	if(!shaderResources.empty())
-		m_descriptorCount = static_cast<uint32_t>(shaderResources.size());
-	//Bug Maybe needs m_descriptors.resize(shaderResources.size()); this would also allow to get rid of m_descriptorCount
+		m_descriptors.resize(shaderResources.size());
 
 	m_pipelineType = pipelineType;
 	m_descriptorNameToIndexMap->Map = indexMap.Map;
@@ -529,7 +528,7 @@ TRAP::Graphics::RendererAPI::DescriptorInfo* TRAP::Graphics::API::VulkanRootSign
 
 uint32_t TRAP::Graphics::API::VulkanRootSignature::GetDescriptorCount() const
 {
-	return m_descriptorCount;
+	return static_cast<uint32_t>(m_descriptors.size());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

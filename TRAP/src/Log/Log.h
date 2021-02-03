@@ -7,8 +7,6 @@
 
 #include <vector>
 #include <mutex>
-#include <sstream>
-#include <iostream>
 #include <string>
 
 namespace TRAP

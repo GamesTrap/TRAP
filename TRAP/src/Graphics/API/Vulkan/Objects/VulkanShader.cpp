@@ -180,3 +180,10 @@ const std::vector<std::string>& TRAP::Graphics::API::VulkanShader::GetEntryNames
 {
 	return m_entryNames;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanShader::Use(Window* window)
+{
+	dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->BindShader(this, window);
+}

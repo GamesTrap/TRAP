@@ -21,6 +21,8 @@ namespace TRAP::Graphics
 		const std::string& GetFilePath() const;
 
 		RendererAPI::ShaderStage GetShaderStages() const;
+
+		virtual void Use(Window* window = nullptr) = 0;
 		
 		static Scope<Shader> CreateFromFile(const std::string& name, const std::string& filePath);
 		static Scope<Shader> CreateFromFile(const std::string& filepath);

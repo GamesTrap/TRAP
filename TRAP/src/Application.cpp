@@ -152,7 +152,8 @@ TRAP::Application::Application(const std::string& gameName)
 	Graphics::RenderCommand::SetViewport(0, 0, width, height);
 	
 	//Always added as a fallback shader
-	Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader);
+	//TODO Provide vertex layout
+	Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader)->Use();
 	//Always added as a fallback texture
 	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
 	Graphics::TextureManager::Add(Graphics::TextureCube::Create());
