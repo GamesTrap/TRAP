@@ -238,7 +238,7 @@ namespace TRAP::Graphics::API
 
 		static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs;
 
-		static std::unordered_map<PipelineDesc, TRAP::Ref<Pipeline>> s_pipelines;
+		static std::unordered_map<uint64_t, TRAP::Ref<Pipeline>> s_pipelines;
 		static std::mutex s_pipelineMutex;
 		
 		static VulkanRenderer* s_renderer;

@@ -29,6 +29,8 @@
 #include "Graphics/API/Objects/RootSignature.h"
 #include "Graphics/Shaders/Shader.h"
 
+#include "Graphics/API/PipelineDescHash.h"
+
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
 //Instance Extensions
 bool TRAP::Graphics::API::VulkanRenderer::s_debugUtilsExtension = false;
@@ -61,7 +63,7 @@ TRAP::Scope<std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRende
 TRAP::Scope<std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::FrameBufferMap>> TRAP::Graphics::API::VulkanRenderer::s_frameBufferMap = TRAP::MakeScope<std::unordered_map<std::thread::id, FrameBufferMap>>();
 std::mutex TRAP::Graphics::API::VulkanRenderer::s_renderPassMutex{};
 
-std::unordered_map<TRAP::Graphics::RendererAPI::PipelineDesc, TRAP::Ref<TRAP::Graphics::Pipeline>> TRAP::Graphics::API::VulkanRenderer::s_pipelines{};
+std::unordered_map<uint64_t, TRAP::Ref<TRAP::Graphics::Pipeline>> TRAP::Graphics::API::VulkanRenderer::s_pipelines{};
 std::mutex TRAP::Graphics::API::VulkanRenderer::s_pipelineMutex{};
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -751,6 +753,14 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		gpd.BlendState->RenderTargetMask = BlendStateTargets::BlendStateTargetAll;
 		gpd.BlendState->IndependentBlend = false;
 
+		gpd.VertexLayout = TRAP::MakeRef<VertexLayout>();
+		const TRAP::Ref<VertexLayout>& vLayout = gpd.VertexLayout;
+		vLayout->AttributeCount = 1;
+		vLayout->Attributes[0].Format = ImageFormat::R32G32B32_SFLOAT;
+		vLayout->Attributes[0].Binding = 0;
+		vLayout->Attributes[0].Location = 0;
+		vLayout->Attributes[0].Offset = 0;
+
 		(*s_perWindowDataMap)[window] = std::move(p);
 	}
 
@@ -1213,14 +1223,17 @@ TRAP::Ref<TRAP::Graphics::API::VulkanDescriptorPool> TRAP::Graphics::API::Vulkan
 
 const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::GetPipeline(const PipelineDesc& desc)
 {
-	const auto it = s_pipelines.find(desc);
+	std::size_t hash = std::hash<PipelineDesc>{}(desc);
+	const auto it = s_pipelines.find(hash);
 
 	if(it == s_pipelines.end())
 	{
 		std::lock_guard<std::mutex> lock(s_pipelineMutex);
+		TP_TRACE(Log::RendererVulkanPipelinePrefix, "Recreating Graphic Pipeline...");
 		//Lock while inserting new Pipeline
-		s_pipelines.insert({ desc, Pipeline::Create(desc) });
-		return s_pipelines[desc];
+		s_pipelines.insert({ hash, Pipeline::Create(desc) });
+		TP_TRACE(Log::RendererVulkanPipelinePrefix, "Cached Graphic Pipeline");
+		return s_pipelines[hash];
 	}
 	
 	return it->second;

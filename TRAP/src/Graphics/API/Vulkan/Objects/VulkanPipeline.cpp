@@ -203,7 +203,7 @@ void TRAP::Graphics::API::VulkanPipeline::AddGraphicsPipeline(const RendererAPI:
 			{
 				const RendererAPI::VertexAttribute& attribute = vertexLayout->Attributes[i];
 
-				if(bindingValue !=attribute.Binding)
+				if(bindingValue != attribute.Binding)
 				{
 					bindingValue = attribute.Binding;
 					++inputBindingCount;

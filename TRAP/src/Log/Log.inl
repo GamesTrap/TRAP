@@ -1,7 +1,7 @@
 #ifndef _TRAP_LOG_INL_
 #define _TRAP_LOG_INL_
 
-//-------------------------------------------------------------------------------------------------------------------//
+#ifdef TRAP_PLATFORM_WINDOWS
 
 template <typename ... Args>
 void TRAP::Log::Trace(Args&& ... args)
@@ -16,8 +16,10 @@ void TRAP::Log::Trace(Args&& ... args)
 	{
 		std::lock_guard<std::mutex> lock(m_mtx);
 #if !defined(TRAP_RELEASE)
-		//Standard White
+		SetColor(FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_BLUE);
+		//Standard Magenta
 		std::cout << stream.str() << '\n';
+		ResetColor();
 #endif
 		Get().m_buffer.emplace_back(Level::Trace, stream.str());
 	}
@@ -25,7 +27,6 @@ void TRAP::Log::Trace(Args&& ... args)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-#ifdef TRAP_PLATFORM_WINDOWS
 template <typename ... Args>
 void TRAP::Log::Debug(Args&& ... args)
 {
@@ -147,6 +148,29 @@ void TRAP::Log::Critical(Args&& ... args)
 //-------------------------------------------------------------------------------------------------------------------//
 
 #else
+
+template <typename ... Args>
+void TRAP::Log::Trace(Args&& ... args)
+{
+	std::ostringstream stream;
+	stream << GetTimeStamp() << "[Trace]";
+	using List = int32_t[];
+	(void)List {
+		0, ((void)(stream << args), 0)...
+	};
+
+	{
+		std::lock_guard<std::mutex> lock(m_mtx);
+#if !defined(TRAP_RELEASE)
+		//Standard Magenta
+		std::cout << "\033[35m" << stream.str() << "\033[m" << '\n';
+#endif
+		Get().m_buffer.emplace_back(Level::Trace, stream.str());
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 template<typename... Args>
 void TRAP::Log::Debug(Args&& ... args)
 {

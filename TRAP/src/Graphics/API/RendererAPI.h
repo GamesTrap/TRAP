@@ -2,7 +2,6 @@
 #define _TRAP_RENDERERAPI_H_
 
 #include "Maths/Math.h"
-#include "Utils/Utils.h"
 #include "Window/Window.h"
 
 namespace TRAP
@@ -130,7 +129,7 @@ namespace TRAP::Graphics
 		                         float maxDepth = 1.0f,
 		                         Window* window = nullptr) = 0;
 		virtual void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height, Window* window = nullptr) = 0;
-
+		
 		//TODO More CommandBuffer Stuff
 		virtual void Draw(uint32_t vertexCount, uint32_t firstVertex = 0, Window* window = nullptr) = 0;
 		
@@ -1314,28 +1313,6 @@ namespace TRAP::Graphics
 			VERTEX_ATTRIBUTE_RATE_COUNT
 		};
 
-		enum class ShaderSemantic
-		{
-			Undefined = 0,
-			Position,
-			Normal,
-			Color,
-			Tangent,
-			BiTangent,
-			Joints,
-			Weights,
-			TexCoord0,
-			TexCoord1,
-			TexCoord2,
-			TexCoord3,
-			TexCoord4,
-			TexCoord5,
-			TexCoord6,
-			TexCoord7,
-			TexCoord8,
-			TexCoord9,
-		};
-
 		enum class QueryType
 		{
 			Timestamp = 0,
@@ -1679,8 +1656,6 @@ namespace TRAP::Graphics
 
 		struct VertexAttribute
 		{
-			ShaderSemantic Semantic{};
-			std::string SemanticName{};
 			ImageFormat Format{};
 			uint32_t Binding{};
 			uint32_t Location{};
@@ -1698,7 +1673,7 @@ namespace TRAP::Graphics
 		{			
 			Shader* ShaderProgram{};
 			TRAP::Ref<RootSignature> RootSignature{};
-			VertexLayout* VertexLayout{};
+			TRAP::Ref<VertexLayout> VertexLayout{};
 			TRAP::Ref<BlendStateDesc> BlendState{};
 			TRAP::Ref<DepthStateDesc> DepthState{};
 			TRAP::Ref<RasterizerStateDesc> RasterizerState{};
@@ -1723,71 +1698,6 @@ namespace TRAP::Graphics
 			void* PipelineExtensions{};
 			uint32_t PipelineExtensionCount{};
 			const char* Name{};
-
-			//Needed for std::unordered_map TODO maybe replace this with hashing the PipelineDesc
-			friend bool operator==(const PipelineDesc& lhs, const PipelineDesc& rhs)
-			{
-				if (lhs.Type != rhs.Type ||
-					lhs.Cache != rhs.Cache ||
-					lhs.PipelineExtensions != rhs.PipelineExtensions ||
-					lhs.PipelineExtensionCount != rhs.PipelineExtensionCount ||
-					lhs.Name != rhs.Name)
-				{
-					return false;
-				}
-
-				if (std::holds_alternative<ComputePipelineDesc>(lhs.Pipeline) != std::holds_alternative<ComputePipelineDesc>(rhs.Pipeline) ||
-					std::holds_alternative<GraphicsPipelineDesc>(lhs.Pipeline) != std::holds_alternative<GraphicsPipelineDesc>(rhs.Pipeline) ||
-					std::holds_alternative<RayTracingPipelineDesc>(lhs.Pipeline) != std::holds_alternative<RayTracingPipelineDesc>(rhs.Pipeline))
-				{
-					return false;
-				}
-
-				if (std::holds_alternative<ComputePipelineDesc>(lhs.Pipeline))
-				{
-					const ComputePipelineDesc& lc = std::get<ComputePipelineDesc>(lhs.Pipeline);
-					const ComputePipelineDesc& rc = std::get<ComputePipelineDesc>(rhs.Pipeline);
-
-					if (lc.ShaderProgram != rc.ShaderProgram ||
-						lc.RootSignature != rc.RootSignature)
-					{
-						return false;
-					}
-				}
-
-				if (std::holds_alternative<GraphicsPipelineDesc>(lhs.Pipeline))
-				{
-					const GraphicsPipelineDesc& lg = std::get<GraphicsPipelineDesc>(lhs.Pipeline);
-					const GraphicsPipelineDesc& rg = std::get<GraphicsPipelineDesc>(rhs.Pipeline);
-
-					if (lg.ShaderProgram != rg.ShaderProgram ||
-						//lg.RootSignature != rg.RootSignature ||
-						lg.VertexLayout != rg.VertexLayout ||
-						lg.BlendState != rg.BlendState ||
-						lg.DepthState != rg.DepthState ||
-						lg.RasterizerState != rg.RasterizerState ||
-						lg.ColorFormats != rg.ColorFormats ||
-						lg.RenderTargetCount != rg.RenderTargetCount ||
-						lg.SampleCount != rg.SampleCount ||
-						lg.SampleQuality != rg.SampleQuality ||
-						lg.DepthStencilFormat != rg.DepthStencilFormat ||
-						lg.PrimitiveTopology != rg.PrimitiveTopology ||
-						lg.SupportIndirectCommandBuffer != rg.SupportIndirectCommandBuffer)
-					{
-						return false;
-					}
-				}
-
-				if (std::holds_alternative<RayTracingPipelineDesc>(lhs.Pipeline))
-				{
-					const RayTracingPipelineDesc& lr = std::get<RayTracingPipelineDesc>(lhs.Pipeline);
-					const RayTracingPipelineDesc& rr = std::get<RayTracingPipelineDesc>(rhs.Pipeline);
-
-					return true; //TODO Implement When RayTracing is implemented
-				}
-				
-				return true;
-			}
 		};
 
 		struct QueryPoolDesc
@@ -2149,56 +2059,5 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::RootSignatureFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::BlendStateTargets);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::PipelineCacheFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearFlags);
-
-namespace std
-{
-	template<> struct hash<TRAP::Graphics::RendererAPI::PipelineDesc>
-	{
-		std::size_t operator()(const TRAP::Graphics::RendererAPI::PipelineDesc& p) const noexcept
-		{
-			std::size_t hash = 0;
-
-			TRAP::Utils::HashCombine(hash, p.Type, p.Cache, p.PipelineExtensions, p.PipelineExtensionCount, p.Name);
-
-			if (std::holds_alternative<TRAP::Graphics::RendererAPI::ComputePipelineDesc>(p.Pipeline))
-			{
-				const TRAP::Graphics::RendererAPI::ComputePipelineDesc& c = std::get<TRAP::Graphics::RendererAPI::ComputePipelineDesc>(p.Pipeline);
-
-				TRAP::Utils::HashCombine(hash, c.ShaderProgram, c.RootSignature);
-			}
-
-			if (std::holds_alternative<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>(p.Pipeline))
-			{
-				const TRAP::Graphics::RendererAPI::GraphicsPipelineDesc& g = std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>(p.Pipeline);
-
-				TRAP::Utils::HashCombine(hash,
-					g.ShaderProgram,
-					//g.RootSignature,
-					g.VertexLayout,
-					g.BlendState,
-					g.DepthState,
-					g.RasterizerState,
-					g.RenderTargetCount,
-					g.SampleCount,
-					g.SampleQuality,
-					g.DepthStencilFormat,
-					g.PrimitiveTopology,
-					g.SupportIndirectCommandBuffer);
-
-				for (const TRAP::Graphics::RendererAPI::ImageFormat i : g.ColorFormats)
-					TRAP::Utils::HashCombine(hash, i);
-			}
-
-			if (std::holds_alternative<TRAP::Graphics::RendererAPI::RayTracingPipelineDesc>(p.Pipeline))
-			{
-				const TRAP::Graphics::RendererAPI::RayTracingPipelineDesc& r = std::get<TRAP::Graphics::RendererAPI::RayTracingPipelineDesc>(p.Pipeline);
-
-				//TODO Implement When RayTracing is implemented
-			}
-			
-			return hash;
-		}
-	};
-}
 
 #endif /*_TRAP_RENDERERAPI_H_*/
