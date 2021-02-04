@@ -15,8 +15,6 @@ VulkanTests::VulkanTests()
 
 void VulkanTests::OnAttach()
 {
-	TRAP::Application::GetWindow()->SetTitle("Vulkan Test");
-
 	TRAP::VFS::MountShaders("Assets/Shaders");
 	
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Multi-Window Test");
@@ -53,7 +51,7 @@ void VulkanTests::OnAttach()
 
 	TRAP::Graphics::ShaderManager::LoadFile("/shaders/test.shader")->Use();
 
-	TRAP::Graphics::RendererAPI::VertexLayout vertexLayout{};
+	/*TRAP::Graphics::RendererAPI::VertexLayout vertexLayout{};
 	vertexLayout.AttributeCount = 2;
 	vertexLayout.Attributes[0].Format = TRAP::Graphics::RendererAPI::ImageFormat::R32G32B32_SFLOAT;
 	vertexLayout.Attributes[0].Binding = 0;
@@ -62,7 +60,7 @@ void VulkanTests::OnAttach()
 	vertexLayout.Attributes[1].Format = TRAP::Graphics::RendererAPI::ImageFormat::R32G32B32_SFLOAT;
 	vertexLayout.Attributes[1].Binding = 0;
 	vertexLayout.Attributes[1].Location = 1;
-	vertexLayout.Attributes[1].Offset = 3 * sizeof(float);
+	vertexLayout.Attributes[1].Offset = 3 * sizeof(float);*/
 	
 	//TODO
 	//TRAP::Graphics::RendererAPI::PipelineDesc desc{};
@@ -108,7 +106,7 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 	TRAP::Graphics::CommandBuffer* cmd = TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGraphicCommandBuffer(TRAP::Application::GetWindow().get());
 	if(cmd)
-		cmd->BindVertexBuffer({ m_triangleVertexBuffer }, { 6 * sizeof(float) }, {});
+		cmd->BindVertexBuffer({ m_triangleVertexBuffer }, { 3 * sizeof(float) }, {});
 
 	if(m_wireFrame)
 		TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::WireFrame);

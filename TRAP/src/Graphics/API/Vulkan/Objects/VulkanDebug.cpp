@@ -46,11 +46,11 @@ VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugCallback(const VkDebugUtil
 	str.pop_back();
 
 	if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
-		TP_INFO(str, '[', callbackData->pMessageIdName, "] ", callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
+		TP_INFO(str, '[', callbackData->pMessageIdName ? callbackData->pMessageIdName : "", "] ", callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
 	else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
-		TP_WARN(str, '[', callbackData->pMessageIdName, "] ", callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
+		TP_WARN(str, '[', callbackData->pMessageIdName ? callbackData->pMessageIdName : "", "] ", callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
 	else if (messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
-		TP_ERROR(str, '[', callbackData->pMessageIdName, "] ", callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
+		TP_ERROR(str, '[', callbackData->pMessageIdName ? callbackData->pMessageIdName : "", "] ", callbackData->pMessage, " (", callbackData->messageIdNumber, ')');
 
 	return VK_FALSE;
 }

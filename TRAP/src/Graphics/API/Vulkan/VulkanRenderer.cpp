@@ -1229,10 +1229,10 @@ const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::
 	if(it == s_pipelines.end())
 	{
 		std::lock_guard<std::mutex> lock(s_pipelineMutex);
-		TP_TRACE(Log::RendererVulkanPipelinePrefix, "Recreating Graphic Pipeline...");
+		TP_TRACE(Log::RendererVulkanPipelinePrefix, "Recreating Graphics Pipeline...");
 		//Lock while inserting new Pipeline
 		s_pipelines.insert({ hash, Pipeline::Create(desc) });
-		TP_TRACE(Log::RendererVulkanPipelinePrefix, "Cached Graphic Pipeline");
+		TP_TRACE(Log::RendererVulkanPipelinePrefix, "Cached Graphics Pipeline");
 		return s_pipelines[hash];
 	}
 	

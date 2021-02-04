@@ -3,11 +3,6 @@
 
 #include <TRAP.h>
 
-namespace TRAP::Graphics
-{
-	class Pipeline;
-}
-
 class VulkanTests final : public TRAP::Layer
 {
 public:
@@ -31,12 +26,12 @@ private:
 
 	TRAP::Ref<TRAP::Graphics::Buffer> m_triangleVertexBuffer;
 
-	std::array<float, 18> m_triangleVertices
+	std::array<float, 9> m_triangleVertices
 	{
-		//XYZ RGB
-		 0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-		 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+		//XYZ
+		 -0.0f,  0.5f, 0.0f,
+		 0.5f, -0.5f, 0.0f,
+		-0.5f, -0.5f, 0.0f,
 	};
 
 	bool m_wireFrame;
