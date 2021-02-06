@@ -1515,7 +1515,7 @@ SITREP 12/31/2020|20w53a2
     - VulkanTexture Added VirtualTexture support ~>120 mins
     - FINISHED BASELINE IMPLEMENTATION OF ALL VULKAN CLASSES
 
-SITREP 01/02/2021|20w53a3
+SITREP 01/02/2020|20w53a3
     - Changed TRAP Engine version to 20w53a3(0.7.14)
     - Replaced unions with std::variant ~<40 mins
     - Fixed several bugs ~<30 mins
@@ -1527,7 +1527,7 @@ SITREP 01/02/2021|20w53a3
     - Added support for multi-planar image format ~<40 mins
 
 SITREP 01/04/2021|21w01a1
-    - Changed TRAP Engine version to 20w01a1(0.7.15)
+    - Changed TRAP Engine version to 21w01a1(0.7.15)
     - Fixed a bug in Ycbcr features testing (VulkanDevice) ~<20 mins
     - Started implementing abstraction for Vulkan*** classes ~>60 mins
         - Added Buffer base class
@@ -1539,7 +1539,7 @@ SITREP 01/04/2021|21w01a1
         - Added Sampler base class
 
 SITREP 01/05/2021|21w01a2
-    - Changed TRAP Engine version to 20w01a2(0.7.16)
+    - Changed TRAP Engine version to 21w01a2(0.7.16)
     - Implemented abstraction for Vulkan*** classes ~>60 mins
         - Added CommandSignature base class
         - Added DescriptorPool base class
@@ -1554,7 +1554,7 @@ SITREP 01/05/2021|21w01a2
     - VulkanTest replaced Vulkan*** with equivalent abstraction ~<20 mins
 
 SITREP 01/06/2021|21w01a3
-    - Changed TRAP Engine version to 20w01a3(0.7.17)
+    - Changed TRAP Engine version to 21w01a3(0.7.17)
     - Reimplemented Shader base class ~>120 mins
         - Replaced ShaderType enum with the RendererAPI::ShaderStage
         - Added ability to load GLSL or SPIRV(created with ConvertToSPIRV)
@@ -1567,23 +1567,23 @@ SITREP 01/06/2021|21w01a3
     - Updated ConvertToSPIRV ~>45 mins
 
 SITREP 01/11/2021|21w02a1
-    - Changed TRAP Engine version to 20w02a1(0.7.18)
+    - Changed TRAP Engine version to 21w02a1(0.7.18)
     - Added loading/saving of PipelineCache from disk ~<20 mins
     - Optimized/Reduced usage of std::dynamic_pointer_cast in Vulkan code ~<10 mins
     - VulkanTest optimized Window resizing ~<10 mins
 
 SITREP 01/15/2021|21w02a2
-    - Changed TRAP Engine version to 20w02a2(0.7.19)
+    - Changed TRAP Engine version to 21w02a2(0.7.19)
     - Added ResourceLoader for Buffers like VertexBuffer, IndexBuffer, etc... ~>60 mins
     - VulkanTest Added colored triangle ~<20 mins
 
 SITREP 01/16/2021|21w02a3
-    - Changed TRAP Engine version to 20w02a3(0.7.20)
+    - Changed TRAP Engine version to 21w02a3(0.7.20)
     - Integrated code from VulkanTest into RendererAPI ~>75 mins
       (Queues, CommandPools, CommandBuffers, Fences, Semaphores, SwapChain)
 
 SITREP 01/24/2021|21w03a1
-    - Changed TRAP Engine version to 20w03a1(0.7.21)
+    - Changed TRAP Engine version to 21w03a1(0.7.21)
     - RendererAPI Added ClearFlags enum ~<5 mins
     - RendererAPI Removed Use function ~<10 mins
     - VulkanCommon Added ClearFlagsToVkImageAspectFlags function ~<5 mins
@@ -1620,3 +1620,38 @@ SITREP 01/24/2021|21w03a1
     - Window Removed Use functions ~<10 mins
     - Application constructor now requires game title ~<10 mins
     - Multiple Windows are now supported by the RendererAPI ~>60 mins
+
+SITREP 02/04/2021|21w05a1
+    - Changed TRAP Engine version to 21w05a1(0.7.22)
+    - New Main Window Width & Height only gets saved if greater than 0 ~<5 mins
+    - VulkanSwapChain Added missing RenderTargets destruction ~<5 mins
+    - Utils Added HashCombine which can be used to combine multiple std::hashes together ~<10 mins
+    - Window Set Minimum Default Window size to 2x2 ~<5 mins
+    - Log Removed unused includes ~<5 mins
+    - Shader Added Use function ~<5 mins
+    - VulkanRenderer Added Caching of Pipelines ~<20 mins
+    - VulkanRenderer Finished functions:
+        - SetDepthTesting
+        - SetDepthWriting
+        - SetDepthFunction
+        - SetDepthFail
+        - SetDepthBias
+        - SetDepthBiasSlopeFactor
+        - SetStencilTesting
+        - SetStencilFail
+        - SetStencilPass
+        - SetStencilFunction
+        - SetStencilMask
+        - SetCullMode
+        - SetFillMode
+        - SetFrontFace
+        - SetBlendMode
+        - SetBlendConstant
+    - VulkanRenderer Added Dynamic Graphics Pipeline recreation ~>30 mins
+    - RendererAPI Added std::hash overload for PipelineDesc ~>15 mins
+    - Log TP_TRACE now uses magenta instead of plain white color ~<10 mins
+    - VulkanRenderer Added default VertexLayout of 0:vec3 ~<5 mins
+    - RendererAPI Removed ShaderSemantic ~<10 mins
+    - VulkanTest Added F1 toggle for Wireframe mode ~<10 mins
+    - VulkanTest fixed winding order of triangle vertices ~<5 mins
+    - Fixed a crash in VulkanDebugCallback when using RenderDoc ~<10 mins

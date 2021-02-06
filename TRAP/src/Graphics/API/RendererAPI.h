@@ -12,6 +12,7 @@ namespace TRAP
 
 namespace TRAP::Graphics 
 {
+	class BufferLayout;
 	class CommandPool;
 	class DescriptorSet;
 	class Shader;
@@ -132,6 +133,8 @@ namespace TRAP::Graphics
 		
 		//TODO More CommandBuffer Stuff
 		virtual void Draw(uint32_t vertexCount, uint32_t firstVertex = 0, Window* window = nullptr) = 0;
+
+		virtual void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const BufferLayout& layout, Window* window = nullptr) = 0;
 		
 		virtual void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) = 0;
 		virtual void Draw(const Scope<VertexArray>& vertexArray) = 0;

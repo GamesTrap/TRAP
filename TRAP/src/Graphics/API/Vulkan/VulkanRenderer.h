@@ -70,6 +70,8 @@ namespace TRAP::Graphics::API
 		void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height, Window* window = nullptr) override;
 
 		void Draw(uint32_t vertexCount, uint32_t firstVertex, Window* window = nullptr) override;
+
+		void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const BufferLayout& layout, Window* window = nullptr) override;
 		
 		void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) override;
 		void Draw(const Scope<VertexArray>& vertexArray) override;

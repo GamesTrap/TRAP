@@ -23,18 +23,29 @@ private:
 	TRAP::Utils::Timer m_fpsTimer;
 
 	TRAP::Ref<TRAP::Graphics::PipelineCache> m_defaultPipelineCache;
-
-	TRAP::Ref<TRAP::Graphics::Buffer> m_triangleVertexBuffer;
-
-	std::array<float, 9> m_triangleVertices
+	
+	TRAP::Ref<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
+	std::array<float, 18> m_triangleVertices
 	{
-		//XYZ
-		 -0.0f,  0.5f, 0.0f,
-		 0.5f, -0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f,
+		//XYZ RGB
+		 -0.0f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f
+	};
+	std::array<float, 36> m_quadVertices
+	{
+		//XYZ RGB
+		 -0.5f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
+		 0.5f, 0.5f, 0.0f,    0.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
+		0.5f, 0.5f, 0.0f,    0.0f, 1.0f, 0.0f,
+		0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
+		
 	};
 
 	bool m_wireFrame;
+	bool m_quad;
 };
 
 #endif /*_GAMESTRAP_VULKANTESTS_H_*/

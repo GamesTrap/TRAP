@@ -67,7 +67,7 @@ void TRAP::Graphics::Renderer2D::Init()
 	TP_DEBUG(Log::Renderer2DPrefix, "Initializing");
 	
 	s_data.QuadVertexArray = VertexArray::Create();
-	s_data.QuadVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxVertices * sizeof(QuadVertex));
+	s_data.QuadVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxVertices * sizeof(QuadVertex), BufferUsage::Dynamic);
 	s_data.QuadVertexBuffer->SetLayout
 	({
 		{ ShaderDataType::Float3, "Position" },
@@ -130,6 +130,7 @@ void TRAP::Graphics::Renderer2D::Shutdown()
 	s_data.WhiteTexture.reset();
 	s_data.QuadVertexArray->Unbind();
 	s_data.QuadVertexArray.reset();
+	s_data.QuadVertexBuffer.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -148,10 +148,11 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 			std::string error;
 			if (!path.empty())
 			{
-				//s_Shaders[nameOrVirtualPath]->Unbind();
 				s_Shaders[nameOrVirtualPath].reset();
 				s_Shaders[nameOrVirtualPath] = Shader::CreateFromFile(nameOrVirtualPath, path);
 				TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrVirtualPath, "\"");
+				Get("Fallback")->Use();
+				
 			}
 		}
 		else
@@ -183,10 +184,10 @@ void TRAP::Graphics::ShaderManager::Reload(const Scope<Shader>& shader)
 		std::string error;
 		if (!path.empty())
 		{
-			//s_Shaders[name]->Unbind();
 			s_Shaders[name].reset();
 			s_Shaders[name] = Shader::CreateFromFile(name, path);
 			TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", name, "\"");
+			Get("Fallback")->Use();
 		}
 	}
 	else
@@ -202,6 +203,8 @@ void TRAP::Graphics::ShaderManager::ReloadAll()
 	TP_INFO(Log::ShaderManagerPrefix, "Reloading all may take a while...");
 	for (auto& [name, shader] : s_Shaders)
 		Reload(shader);
+
+	Get("Fallback")->Use();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

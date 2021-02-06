@@ -1,13 +1,11 @@
 #include "VulkanTests.h"
 
-#include "Graphics/API/ResourceLoader.h"
-#include "Graphics/API/Objects/CommandBuffer.h"
-
 VulkanTests::VulkanTests()
 	: Layer("VulkanTests"),
 	  m_window(nullptr),
 	  m_defaultPipelineCache(nullptr),
-	  m_wireFrame(false)
+	  m_wireFrame(false),
+	  m_quad(false)
 {
 }
 
@@ -50,17 +48,6 @@ void VulkanTests::OnAttach()
 	//m_defaultPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
 
 	TRAP::Graphics::ShaderManager::LoadFile("/shaders/test.shader")->Use();
-
-	/*TRAP::Graphics::RendererAPI::VertexLayout vertexLayout{};
-	vertexLayout.AttributeCount = 2;
-	vertexLayout.Attributes[0].Format = TRAP::Graphics::RendererAPI::ImageFormat::R32G32B32_SFLOAT;
-	vertexLayout.Attributes[0].Binding = 0;
-	vertexLayout.Attributes[0].Location = 0;
-	vertexLayout.Attributes[0].Offset = 0;
-	vertexLayout.Attributes[1].Format = TRAP::Graphics::RendererAPI::ImageFormat::R32G32B32_SFLOAT;
-	vertexLayout.Attributes[1].Binding = 0;
-	vertexLayout.Attributes[1].Location = 1;
-	vertexLayout.Attributes[1].Offset = 3 * sizeof(float);*/
 	
 	//TODO
 	//TRAP::Graphics::RendererAPI::PipelineDesc desc{};
@@ -68,17 +55,14 @@ void VulkanTests::OnAttach()
 		//desc.Cache = m_defaultPipelineCache;
 	////////////////////////////////////////////////////////////
 
-	//Triangle Vertex Buffer
-	TRAP::Graphics::RendererAPI::BufferLoadDesc loadDesc{};
-	loadDesc.Desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::VertexBuffer;
-	loadDesc.Desc.MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::GPUOnly;
-	loadDesc.Desc.Size = m_triangleVertices.size() * sizeof(float);
-	loadDesc.Data = m_triangleVertices.data();
-	TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(loadDesc, nullptr);
-
-	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
-	
-	m_triangleVertexBuffer = loadDesc.Buffer;
+	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(), m_quadVertices.size() * sizeof(float), TRAP::Graphics::BufferUsage::Dynamic);
+	const TRAP::Graphics::BufferLayout layout =
+	{
+		{TRAP::Graphics::ShaderDataType::Float3, "Pos"},
+		{TRAP::Graphics::ShaderDataType::Float3, "Color"}
+	};
+	m_vertexBuffer->SetLayout(layout);
+	m_vertexBuffer->AwaitLoading();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -87,7 +71,7 @@ void VulkanTests::OnDetach()
 {
 	m_window.reset();
 	
-	m_triangleVertexBuffer.reset();
+	m_vertexBuffer.reset();
 
 	//TODO
 	//if (m_defaultPipelineCache)
@@ -104,16 +88,18 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	if (m_window)
 		TRAP::Graphics::RenderCommand::Present(m_window);
 
-	TRAP::Graphics::CommandBuffer* cmd = TRAP::Graphics::RendererAPI::GetRenderer()->GetCurrentGraphicCommandBuffer(TRAP::Application::GetWindow().get());
-	if(cmd)
-		cmd->BindVertexBuffer({ m_triangleVertexBuffer }, { 3 * sizeof(float) }, {});
-
 	if(m_wireFrame)
 		TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::WireFrame);
 	else
 		TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::Solid);
 
-	TRAP::Graphics::RendererAPI::GetRenderer()->Draw(3, 0);
+	if(!m_quad)
+		m_vertexBuffer->SetData(m_triangleVertices.data(), m_triangleVertices.size() * sizeof(float));
+	else
+		m_vertexBuffer->SetData(m_quadVertices.data(), m_quadVertices.size() * sizeof(float));
+
+	m_vertexBuffer->Use();
+	TRAP::Graphics::RendererAPI::GetRenderer()->Draw(m_quad ? 6 : 3, 0);
 
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 	{
@@ -148,6 +134,10 @@ bool VulkanTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 {
 	if (e.GetKey() == TRAP::Input::Key::F1)
 		m_wireFrame = !m_wireFrame;
+	if (e.GetKey() == TRAP::Input::Key::F2)
+		m_quad = !m_quad;
+	if (e.GetKey() == TRAP::Input::Key::Escape)
+		TRAP::Application::Shutdown();
 	
 	return false;
 }

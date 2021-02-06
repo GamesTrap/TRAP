@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "VulkanVertexArray.h"
 
-#include "VulkanVertexBuffer.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Vulkan/Buffers/VulkanIndexBuffer.h"
 

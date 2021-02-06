@@ -580,6 +580,74 @@ void TRAP::Graphics::API::VulkanRenderer::Draw(const uint32_t vertexCount, const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const BufferLayout& layout, Window* window)
+{
+	auto ShaderDataTypeToImageFormat = [](const ShaderDataType s) -> ImageFormat
+	{
+		switch(s)
+		{
+		case ShaderDataType::Bool:
+			return ImageFormat::R1_UNORM;
+
+		case ShaderDataType::Float:
+			return ImageFormat::R32_SFLOAT;
+
+		case ShaderDataType::Float2:
+			return ImageFormat::R32G32_SFLOAT;
+
+		case ShaderDataType::Float3:
+			return ImageFormat::R32G32B32_SFLOAT;
+
+		case ShaderDataType::Float4:
+			return ImageFormat::R32G32B32A32_SFLOAT;
+
+		case ShaderDataType::Int:
+			return ImageFormat::R32_SINT;
+
+		case ShaderDataType::Int2:
+			return ImageFormat::R32G32_SINT;
+
+		case ShaderDataType::Int3:
+			return ImageFormat::R32G32B32_SINT;
+
+		case ShaderDataType::Int4:
+			return ImageFormat::R32G32B32A32_SINT;
+
+		/*case ShaderDataType::Mat3:
+			return;
+
+		case ShaderDataType::Mat4:
+			return;*/
+
+		case ShaderDataType::None:
+		default:
+			return ImageFormat::Undefined;
+		}
+	};
+	
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
+
+	p->GraphicCommandBuffers[p->ImageIndex]->BindVertexBuffer({ vBuffer }, { layout.GetStride() }, {});
+
+	TRAP::Ref<VertexLayout> lay = TRAP::MakeRef<VertexLayout>();
+	const std::vector<BufferElement>& elements = layout.GetElements();
+	lay->AttributeCount = static_cast<uint32_t>(elements.size());
+	for(uint32_t i = 0; i < elements.size(); ++i)
+	{
+		lay->Attributes[i].Binding = 0;
+		lay->Attributes[i].Location = i;
+		lay->Attributes[i].Format = ShaderDataTypeToImageFormat(elements[i].Type);
+		lay->Attributes[i].Rate = VertexAttributeRate::Vertex;
+		lay->Attributes[i].Offset = elements[i].Offset;
+	}
+	std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).VertexLayout = lay;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount)
 {
 }
