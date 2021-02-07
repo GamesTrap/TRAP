@@ -74,7 +74,7 @@ void TRAP::Graphics::VertexBuffer::SetLayout(const BufferLayout& layout)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::VertexBuffer::GetSize() const
+uint64_t TRAP::Graphics::VertexBuffer::GetSize() const
 {
 	return m_vertexBuffer->GetSize();
 }

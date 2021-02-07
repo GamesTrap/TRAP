@@ -29,7 +29,6 @@ namespace TRAP::Graphics
 	class RenderTarget;
 	enum class RendererCullMode;
 	enum class RendererOperation;
-	class VertexArray;
 	enum class RendererFaceMode;
 	enum class RendererBlendEquation;
 	enum class RendererBlendFunction;
@@ -68,6 +67,7 @@ namespace TRAP::Graphics
 		enum class BlendMode;
 		enum class BlendConstant;
 		enum class ClearFlags;
+		enum class IndexType;
 		union ClearValue;
 	
 	public:
@@ -133,11 +133,13 @@ namespace TRAP::Graphics
 		
 		//TODO More CommandBuffer Stuff
 		virtual void Draw(uint32_t vertexCount, uint32_t firstVertex = 0, Window* window = nullptr) = 0;
+		virtual void DrawIndexed(uint32_t indexCount, uint32_t firstIndex = 0, uint32_t firstVertex = 0, Window* window = nullptr) = 0;
 
 		virtual void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const BufferLayout& layout, Window* window = nullptr) = 0;
+		virtual void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType, Window* window = nullptr) = 0;
 		
-		virtual void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) = 0;
-		virtual void Draw(const Scope<VertexArray>& vertexArray) = 0;
+		//virtual void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) = 0;
+		//virtual void Draw(const Scope<VertexArray>& vertexArray) = 0;
 
 		virtual const std::string& GetTitle() const = 0;
 

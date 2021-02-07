@@ -22,7 +22,7 @@ namespace TRAP::Graphics
 
 		const BufferLayout& GetLayout() const;
 		void SetLayout(const BufferLayout& layout);
-		uint32_t GetSize() const;
+		uint64_t GetSize() const;
 		BufferUsage GetBufferUsage() const;
 
 		void SetData(void* data, uint32_t size, uint32_t offset = 0);

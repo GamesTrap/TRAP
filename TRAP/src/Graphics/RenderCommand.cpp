@@ -169,7 +169,7 @@ void TRAP::Graphics::RenderCommand::SetCullMode(const RendererCullMode cullMode)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RenderCommand::DrawIndexed(const Scope<VertexArray>& vertexArray, const uint32_t indexCount)
+/*void TRAP::Graphics::RenderCommand::DrawIndexed(const Scope<VertexArray>& vertexArray, const uint32_t indexCount)
 {
 	Application::AddSingleDrawCall();
 
@@ -183,4 +183,4 @@ void TRAP::Graphics::RenderCommand::Draw(const Scope<VertexArray>& vertexArray)
 	Application::AddSingleDrawCall();
 	
 	RendererAPI::GetRenderer()->Draw(vertexArray);
-}
+}*/

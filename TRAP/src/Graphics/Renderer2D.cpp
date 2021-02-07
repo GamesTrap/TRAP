@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "Renderer2D.h"
 
-#include "Buffers/VertexArray.h"
 #include "Shaders/Shader.h"
 #include "Buffers/UniformBuffer.h"
 #include "RenderCommand.h"
@@ -27,8 +26,8 @@ namespace TRAP::Graphics
 		static constexpr uint32_t MaxIndices = MaxQuads * 6;
 		static constexpr uint32_t MaxTextureSlots = 32; //TODO: RenderCaps (OpenGL already has GetMaxTextureUnits())
 		
-		Scope<VertexArray> QuadVertexArray;
-		Scope<VertexBuffer> QuadVertexBuffer;
+		//Scope<VertexArray> QuadVertexArray;
+		//Scope<VertexBuffer> QuadVertexBuffer;
 		Scope<Shader> TextureShader;
 		Scope<Texture2D> WhiteTexture;
 
@@ -66,7 +65,7 @@ void TRAP::Graphics::Renderer2D::Init()
 
 	TP_DEBUG(Log::Renderer2DPrefix, "Initializing");
 	
-	s_data.QuadVertexArray = VertexArray::Create();
+	/*s_data.QuadVertexArray = VertexArray::Create();
 	s_data.QuadVertexBuffer = VertexBuffer::Create(Renderer2DData::MaxVertices * sizeof(QuadVertex), BufferUsage::Dynamic);
 	s_data.QuadVertexBuffer->SetLayout
 	({
@@ -115,7 +114,7 @@ void TRAP::Graphics::Renderer2D::Init()
 	s_data.QuadVertexPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f };
 	s_data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
 
-	TextureManager::Get2D("Fallback2D")->Bind(0);
+	TextureManager::Get2D("Fallback2D")->Bind(0);*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -125,12 +124,12 @@ void TRAP::Graphics::Renderer2D::Shutdown()
 	TP_PROFILE_FUNCTION();
 
 	TP_DEBUG(Log::Renderer2DPrefix, "Shutting down");
-	s_data.CameraUniformBuffer.reset();
+	/*s_data.CameraUniformBuffer.reset();
 	s_data.TextureShader.reset();
 	s_data.WhiteTexture.reset();
 	s_data.QuadVertexArray->Unbind();
 	s_data.QuadVertexArray.reset();
-	s_data.QuadVertexBuffer.reset();
+	s_data.QuadVertexBuffer.reset();*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -139,13 +138,13 @@ void TRAP::Graphics::Renderer2D::BeginScene(const Camera& camera, const Math::Ma
 {
 	TP_PROFILE_FUNCTION();
 
-	s_data.UniformCamera.ProjectionMatrix = camera.GetProjectionMatrix();
+	/*s_data.UniformCamera.ProjectionMatrix = camera.GetProjectionMatrix();
 	s_data.UniformCamera.ViewMatrix = Math::Inverse(transform);
 
 	//Bind Shader
 	//s_data.TextureShader->Bind();
 
-	StartBatch();
+	StartBatch();*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -154,13 +153,13 @@ void TRAP::Graphics::Renderer2D::BeginScene(const OrthographicCamera& camera)
 {
 	TP_PROFILE_FUNCTION();
 
-	s_data.UniformCamera.ProjectionMatrix = camera.GetProjectionMatrix();
+	/*s_data.UniformCamera.ProjectionMatrix = camera.GetProjectionMatrix();
 	s_data.UniformCamera.ViewMatrix = camera.GetViewMatrix();
 
 	//Bind Shader
 	//s_data.TextureShader->Bind();
 
-	StartBatch();
+	StartBatch();*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -169,14 +168,14 @@ void TRAP::Graphics::Renderer2D::EndScene()
 {
 	TP_PROFILE_FUNCTION();
 
-	Flush();
+	//Flush();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::Flush()
 {
-	if (s_data.QuadIndexCount == 0)
+	/*if (s_data.QuadIndexCount == 0)
 		return; //Nothing to render
 	
 	//Update Camera
@@ -196,39 +195,39 @@ void TRAP::Graphics::Renderer2D::Flush()
 	
 	RenderCommand::DrawIndexed(s_data.QuadVertexArray, s_data.QuadIndexCount);
 
-	s_data.Stats.DrawCalls++;
+	s_data.Stats.DrawCalls++;*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::StartBatch()
 {
-	s_data.QuadIndexCount = 0;
+	/*s_data.QuadIndexCount = 0;
 	s_data.QuadVertexBufferPtr = s_data.QuadVertexBufferBase;
 
-	s_data.TextureSlotIndex = 1;
+	s_data.TextureSlotIndex = 1;*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::NextBatch()
 {
-	Flush();
-	StartBatch();
+	/*Flush();
+	StartBatch();*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math::Vec4& color)
 {
-	DrawQuad(transform, color, s_data.WhiteTexture);
+	//DrawQuad(transform, color, s_data.WhiteTexture);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Scope<Texture2D>& texture)
 {
-	DrawQuad(transform, Math::Vec4(1.0f), texture);
+	//DrawQuad(transform, Math::Vec4(1.0f), texture);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -237,20 +236,20 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Transform& transform, const Math
 {
 	TP_PROFILE_FUNCTION();
 
-	Math::Mat4 transformation;
+	/*Math::Mat4 transformation;
 	if (transform.Rotation.x != 0.0f || transform.Rotation.y != 0.0f || transform.Rotation.z != 0.0f)
 		transformation = Math::Translate(transform.Position) * Mat4Cast(Math::Quaternion(Radians(transform.Rotation))) * Math::Scale(transform.Scale);
 	else
 		transformation = Math::Translate(transform.Position) * Math::Scale(transform.Scale);
 
-	DrawQuad(transformation, color, texture);
+	DrawQuad(transformation, color, texture);*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Math::Vec4& color, const Scope<Texture2D>& texture)
 {
-	constexpr uint64_t quadVertexCount = 4;
+	/*constexpr uint64_t quadVertexCount = 4;
 	constexpr std::array<Math::Vec2, 4> textureCoords = { {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}} };
 
 	if (s_data.QuadIndexCount >= Renderer2DData::MaxIndices)
@@ -269,14 +268,14 @@ void TRAP::Graphics::Renderer2D::DrawQuad(const Math::Mat4& transform, const Mat
 
 	s_data.QuadIndexCount += 6;
 
-	s_data.Stats.QuadCount++;
+	s_data.Stats.QuadCount++;*/
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 float TRAP::Graphics::Renderer2D::GetTextureIndex(const Scope<Texture2D>& texture)
 {
-	float textureIndex = 0.0f;
+	/*float textureIndex = 0.0f;
 
 	if (!texture)
 		return textureIndex;
@@ -300,33 +299,38 @@ float TRAP::Graphics::Renderer2D::GetTextureIndex(const Scope<Texture2D>& textur
 		s_data.TextureSlotIndex++;
 	}
 
-	return textureIndex;
+	return textureIndex;*/
+
+	return 0.0f;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalVertexCount() const
 {
-	return QuadCount * 4;
+	//return QuadCount * 4;
+	return 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint32_t TRAP::Graphics::Renderer2D::Statistics::GetTotalIndexCount() const
 {
-	return QuadCount * 6;
+	//return QuadCount * 6;
+	return 0;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Renderer2D::Statistics TRAP::Graphics::Renderer2D::GetStats()
 {
-	return s_data.Stats;
+	//return s_data.Stats;
+	return {};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::Renderer2D::ResetStats()
 {
-	std::memset(&s_data.Stats, 0, sizeof(Statistics));
+	//std::memset(&s_data.Stats, 0, sizeof(Statistics));
 }

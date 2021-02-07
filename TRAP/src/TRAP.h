@@ -85,7 +85,6 @@
 //----BUFFERS------------
 #include "../src/Graphics/Buffers/BufferLayout.h"
 #include "../src/Graphics/Buffers/IndexBuffer.h"
-#include "../src/Graphics/Buffers/VertexArray.h"
 #include "../src/Graphics/Buffers/VertexBuffer.h"
 #include "../src/Graphics/Buffers/UniformBuffer.h"
 #include "../src/Graphics/Buffers/FrameBuffer.h"

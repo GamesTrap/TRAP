@@ -1,7 +1,6 @@
 #ifndef _TRAP_RENDERCOMMAND_H_
 #define _TRAP_RENDERCOMMAND_H_
 
-#include "Graphics/Buffers/VertexArray.h"
 #include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics
@@ -121,8 +120,8 @@ namespace TRAP::Graphics
 
 		static void SetCullMode(RendererCullMode cullMode = RendererCullMode::Back);
 
-		static void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount = 0);
-		static void Draw(const Scope<VertexArray>& vertexArray);
+		//static void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount = 0);
+		//static void Draw(const Scope<VertexArray>& vertexArray);
 	};
 }
 

@@ -1,8 +1,7 @@
 #include "TRAPPCH.h"
 #include "Renderer.h"
 
-#include "RenderCommand.h"
-#include "Graphics/Buffers/VertexArray.h"
+#include "Buffers/BufferLayout.h"
 #include "Cameras/Camera.h"
 #include "Cameras/Orthographic/OrthographicCamera.h"
 #include "Graphics/Shaders/Shader.h"
@@ -101,7 +100,7 @@ void TRAP::Graphics::Renderer::EndScene()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<VertexArray>& vertexArray, const Math::Mat4& transform)
+/*void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<VertexArray>& vertexArray, const Math::Mat4& transform)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -118,12 +117,12 @@ void TRAP::Graphics::Renderer::Submit(const Scope<Shader>& shader, const Scope<V
 		}
 	}
 
-	vertexArray->Bind();
-	if (vertexArray->GetIndexBuffer())
+	//vertexArray->Bind();
+	/*if (vertexArray->GetIndexBuffer())
 		RenderCommand::DrawIndexed(vertexArray, 0);
 	else
-		RenderCommand::Draw(vertexArray);
-}
+		RenderCommand::Draw(vertexArray);*/
+//}
 
 //-------------------------------------------------------------------------------------------------------------------//
 

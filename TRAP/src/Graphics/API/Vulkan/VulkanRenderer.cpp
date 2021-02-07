@@ -3,7 +3,7 @@
 
 #include "Application.h"
 #include "VulkanCommon.h"
-#include "Graphics/RenderCommand.h"
+#include "Graphics/Buffers/BufferLayout.h"
 #include "Window/Window.h"
 #include "Window/WindowingAPI.h"
 #include "Utils/Utils.h"
@@ -593,6 +593,30 @@ void TRAP::Graphics::API::VulkanRenderer::Draw(const uint32_t vertexCount, const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount, const uint32_t firstIndex, const uint32_t firstVertex, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
+	RootSignatureDesc& rsd = p->RootSignatureDesc;;
+
+	//Create/Load Graphics Pipeline
+	if (!gpd.RootSignature || std::find(rsd.Shaders.begin(), rsd.Shaders.end(), gpd.ShaderProgram) == rsd.Shaders.end())
+	{
+		rsd.Shaders.push_back(gpd.ShaderProgram);
+		gpd.RootSignature = RootSignature::Create(rsd);
+	}
+
+	p->CurrentGraphicPipeline = GetPipeline(p->GraphicsPipelineDesc);
+	p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicPipeline);
+
+	p->GraphicCommandBuffers[p->ImageIndex]->DrawIndexed(indexCount, firstIndex, firstVertex);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const BufferLayout& layout, Window* window)
 {
 	auto ShaderDataTypeToImageFormat = [](const ShaderDataType s) -> ImageFormat
@@ -661,7 +685,19 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount)
+void TRAP::Graphics::API::VulkanRenderer::BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, const IndexType indexType, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
+
+	p->GraphicCommandBuffers[p->ImageIndex]->BindIndexBuffer(iBuffer, indexType, 0);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+/*void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount)
 {
 }
 
@@ -669,7 +705,7 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const Scope<VertexArray>& 
 
 void TRAP::Graphics::API::VulkanRenderer::Draw(const Scope<VertexArray>& vertexArray)
 {
-}
+}*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 
