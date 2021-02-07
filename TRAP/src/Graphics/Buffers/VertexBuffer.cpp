@@ -5,7 +5,7 @@
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Buffer.h"
 
-TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(float* vertices, const uint32_t size, const BufferUsage usage)
+TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(float* vertices, const uint64_t size, const BufferUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -26,7 +26,7 @@ TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(f
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const uint32_t size, const BufferUsage usage)
+TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(const uint64_t size, const BufferUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 	
@@ -81,6 +81,13 @@ uint64_t TRAP::Graphics::VertexBuffer::GetSize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+uint64_t TRAP::Graphics::VertexBuffer::GetCount() const
+{
+	return m_vertexBuffer->GetSize() / sizeof(float);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Graphics::BufferUsage TRAP::Graphics::VertexBuffer::GetBufferUsage() const
 {
 	return (m_vertexBuffer->GetMemoryUsage() == RendererAPI::ResourceMemoryUsage::GPUOnly) ? BufferUsage::Static : BufferUsage::Dynamic;
@@ -95,14 +102,14 @@ void TRAP::Graphics::VertexBuffer::Use(Window* window) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::VertexBuffer::SetData(void* data, const uint32_t size, const uint32_t offset)
+void TRAP::Graphics::VertexBuffer::SetData(float* data, const uint64_t size, const uint64_t offset)
 {
-	TRAP_ASSERT(size <= m_vertexBuffer->GetSize());
+	TRAP_ASSERT(size + offset <= m_vertexBuffer->GetSize());
 	
 	RendererAPI::BufferUpdateDesc desc{ m_vertexBuffer };
 	desc.DstOffset = offset;
 	RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);
-	std::memcpy(desc.MappedData, data, size);
+	std::memcpy(desc.MappedData, static_cast<void*>(data), size);
 	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_token);
 }
 

@@ -42,7 +42,7 @@ void VulkanTests::OnAttach()
 	m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });
 	TRAP::Graphics::RendererAPI::GetRenderer()->SetClearColor({ 1.0f, 0.0f, 1.0f, 1.0f }, m_window.get());
 
-	TRAP::Graphics::ShaderManager::LoadFile("/shaders/test.shader")->Use();
+	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "/shaders/test.shader");
 
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(), static_cast<uint32_t>(m_quadVertices.size()) * sizeof(float), TRAP::Graphics::BufferUsage::Dynamic);
 	const TRAP::Graphics::BufferLayout layout =
@@ -100,6 +100,8 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	m_indexBuffer->Use();
 	m_vertexBuffer->AwaitLoading();
 	m_vertexBuffer->Use();
+
+	TRAP::Graphics::ShaderManager::Get("VKTest")->Use();
 
 	if(!m_indexed)
 		TRAP::Graphics::RendererAPI::GetRenderer()->Draw(m_quad ? 6 : 3);

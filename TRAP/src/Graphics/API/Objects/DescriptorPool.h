@@ -1,7 +1,6 @@
 #ifndef _TRAP_DESCRIPTORPOOL_H_
 #define _TRAP_DESCRIPTORPOOL_H_
 
-#include "DescriptorSet.h"
 #include "Graphics/API/RendererAPI.h"
 
 namespace TRAP::Graphics

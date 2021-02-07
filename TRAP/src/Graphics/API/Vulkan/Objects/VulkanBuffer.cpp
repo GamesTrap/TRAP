@@ -46,7 +46,7 @@ TRAP::Graphics::API::VulkanBuffer::VulkanBuffer(const RendererAPI::BufferDesc& d
 	VmaAllocationCreateInfo vmaMemReqs{};
 	vmaMemReqs.usage = static_cast<VmaMemoryUsage>(desc.MemoryUsage);
 	vmaMemReqs.flags = 0;
-	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::OnwMemory))
+	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::OwnMemory))
 		vmaMemReqs.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
 	if (static_cast<uint32_t>(desc.Flags & RendererAPI::BufferCreationFlags::PersistentMap))
 		vmaMemReqs.flags |= VMA_ALLOCATION_CREATE_MAPPED_BIT;

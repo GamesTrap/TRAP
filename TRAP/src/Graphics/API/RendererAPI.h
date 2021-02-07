@@ -150,9 +150,6 @@ namespace TRAP::Graphics
 		virtual void InitPerWindowData(Window* window) = 0;
 		virtual void RemovePerWindowData(Window* window) = 0;
 
-		virtual CommandBuffer* GetCurrentGraphicCommandBuffer(Window* window) = 0; //TODO Remove
-		virtual TRAP::Ref<TRAP::Graphics::SwapChain> GetCurrentSwapChain(Window* window) = 0; //TODO Remove
-
 		virtual void WaitIdle() = 0;
 
 		static bool IsVulkanCapable();
@@ -1099,7 +1096,7 @@ namespace TRAP::Graphics
 			//Default flag (Buffer will use aliased memory, buffer will not be CPU accessible until MapBuffer is called)
 			None = 0x01,
 			//Buffer will allocate its own memory (COMMITTED resource)
-			OnwMemory = 0x02,
+			OwnMemory = 0x02,
 			//Buffer will be persistently mapped
 			PersistentMap = 0x04,
 			//Use ESRAM to store this buffer

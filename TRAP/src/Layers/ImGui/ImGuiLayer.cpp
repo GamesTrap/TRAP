@@ -7,6 +7,12 @@
 #include "Window/WindowingAPI.h"
 #include "ImGuiWindowing.h"
 #include "Embed.h"
+#include "Graphics/API/Vulkan/VulkanRenderer.h"
+#include "Graphics/API/Vulkan/Objects/VulkanDescriptorPool.h"
+#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
+#include "Graphics/API/Vulkan/Objects/VulkanInstance.h"
+#include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
+#include "Graphics/API/Vulkan/VulkanCommon.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -61,8 +67,27 @@ void TRAP::ImGuiLayer::OnAttach()
 	//Setup Platform/Renderer bindings
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
-		//ImGui_ImplGlfw_InitForVulkan(window, false);
-		//ImGui_ImplVulkan_Init();
+		TRAP::INTERNAL::ImGuiWindowing::InitForVulkan(window, true);
+		
+		auto* renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer().get());
+		const TRAP::Ref<TRAP::Graphics::Queue>& graphicsQueue = TRAP::Graphics::API::VulkanRenderer::GetPerWindowData(*TRAP::Application::GetWindow())->GraphicQueue;
+		const uint32_t imageCount = TRAP::Graphics::API::VulkanRenderer::GetPerWindowData(*TRAP::Application::GetWindow())->ImageCount;
+		ImGui_ImplVulkan_InitInfo initInfo{};
+		initInfo.Instance = renderer->GetInstance()->GetVkInstance();
+		initInfo.PhysicalDevice = renderer->GetDevice()->GetPhysicalDevice()->GetVkPhysicalDevice();
+		initInfo.Device = renderer->GetDevice()->GetVkDevice();
+		initInfo.QueueFamily = dynamic_cast<TRAP::Graphics::API::VulkanQueue*>(graphicsQueue.get())->GetQueueFamilyIndex();
+		initInfo.Queue = dynamic_cast<TRAP::Graphics::API::VulkanQueue*>(graphicsQueue.get())->GetVkQueue();
+		initInfo.PipelineCache = nullptr;
+		initInfo.DescriptorPool = renderer->GetDescriptorPool()->GetCurrentVkDescriptorPool();
+		initInfo.MinImageCount = imageCount;
+		initInfo.ImageCount = imageCount;
+		initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+		initInfo.Allocator = nullptr;
+		initInfo.CheckVkResultFn = [](const VkResult res) {VkCall(res); };
+	
+		//Create Own ImGui RenderPass
+		//ImGui_ImplVulkan_Init(&initInfo, );
 	}
 }
 

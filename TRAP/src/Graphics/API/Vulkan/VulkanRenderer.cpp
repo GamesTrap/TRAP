@@ -600,7 +600,7 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount,
 
 	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
-	RootSignatureDesc& rsd = p->RootSignatureDesc;;
+	RootSignatureDesc& rsd = p->RootSignatureDesc;
 
 	//Create/Load Graphics Pipeline
 	if (!gpd.RootSignature || std::find(rsd.Shaders.begin(), rsd.Shaders.end(), gpd.ShaderProgram) == rsd.Shaders.end())
@@ -613,6 +613,44 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount,
 	p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicPipeline);
 
 	p->GraphicCommandBuffers[p->ImageIndex]->DrawIndexed(indexCount, firstIndex, firstVertex);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* window) const
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
+
+	const ShaderStage stages = shader->GetShaderStages();
+
+	if (stages == ShaderStage::RayTracing)
+	{
+		//TODO RayTracingPipelineDesc.Pipeline.ShaderProgram = shader;
+		//Bind pipeline
+	}
+	else if (stages == ShaderStage::Compute)
+	{
+		//TODO ComputePipelineDesc.Pipeline.ShaderProgram = shader;
+		//Bind pipeline
+	}
+	else if (stages != ShaderStage::None && stages != ShaderStage::SHADER_STAGE_COUNT)
+	{
+		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
+		if (gpd.ShaderProgram != shader)
+		{
+			gpd.ShaderProgram = shader;
+
+			RootSignatureDesc rsd{};
+			rsd.Shaders = { shader };
+			gpd.RootSignature = RootSignature::Create(rsd);
+
+			p->CurrentGraphicPipeline = GetPipeline(p->GraphicsPipelineDesc);
+			p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicPipeline);
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -891,71 +929,6 @@ void TRAP::Graphics::API::VulkanRenderer::RemovePerWindowData(Window* window)
 	std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
 	if (s_perWindowDataMap->find(window) != s_perWindowDataMap->end())
 		(*s_perWindowDataMap).erase(window);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* window) const
-{
-	if (!window)
-		window = TRAP::Application::GetWindow().get();
-	
-	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
-
-	const ShaderStage stages = shader->GetShaderStages();
-
-	if(stages == ShaderStage::RayTracing)
-	{
-		//TODO RayTracingPipelineDesc.Pipeline.ShaderProgram = shader;
-		//Bind pipeline
-	}
-	else if(stages == ShaderStage::Compute)
-	{
-		//TODO ComputePipelineDesc.Pipeline.ShaderProgram = shader;
-		//Bind pipeline
-	}
-	else if(stages != ShaderStage::None && stages != ShaderStage::SHADER_STAGE_COUNT)
-	{
-		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
-		if(gpd.ShaderProgram != shader)
-		{
-			gpd.ShaderProgram = shader;
-
-			RootSignatureDesc rsd{};
-			rsd.Shaders = { shader };
-			gpd.RootSignature = RootSignature::Create(rsd);
-
-			p->CurrentGraphicPipeline = GetPipeline(p->GraphicsPipelineDesc);
-			p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicPipeline);
-		}
-	}
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::CommandBuffer* TRAP::Graphics::API::VulkanRenderer::GetCurrentGraphicCommandBuffer(Window* window)
-{
-	auto it = s_perWindowDataMap->find(window);
-	if (it != s_perWindowDataMap->end())
-	{
-		if (it->second->Window->IsMinimized())
-			return nullptr;
-		
-		return it->second->GraphicCommandBuffers[it->second->ImageIndex];
-	}
-
-	return nullptr;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Ref<TRAP::Graphics::SwapChain> TRAP::Graphics::API::VulkanRenderer::GetCurrentSwapChain(Window* window)
-{
-	const auto it = s_perWindowDataMap->find(window);
-	if (it != s_perWindowDataMap->end())
-		return it->second->SwapChain;
-
-	return nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1365,4 +1338,16 @@ const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::
 	}
 	
 	return pipelineIt->second;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RendererAPI::PerWindowData* TRAP::Graphics::API::VulkanRenderer::GetPerWindowData(Window& window)
+{
+	const auto it = s_perWindowDataMap->find(&window);
+
+	if (it == s_perWindowDataMap->end())
+		return nullptr;
+
+	return it->second.get();
 }

@@ -34,6 +34,7 @@ std::array<TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor>, ImGuiMouse
 bool TRAP::INTERNAL::ImGuiWindowing::s_installedCallbacks = false;
 bool TRAP::INTERNAL::ImGuiWindowing::s_wantUpdateMonitors = true;
 TRAP::Scope<TRAP::INTERNAL::WindowingAPI::InternalCursor> TRAP::INTERNAL::ImGuiWindowing::s_customCursor{};
+TRAP::Graphics::RenderAPI TRAP::INTERNAL::ImGuiWindowing::s_renderAPI = TRAP::Graphics::RenderAPI::NONE;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -41,6 +42,15 @@ TRAP::INTERNAL::WindowingAPI::MouseButtonFunc TRAP::INTERNAL::ImGuiWindowing::s_
 TRAP::INTERNAL::WindowingAPI::ScrollFunc TRAP::INTERNAL::ImGuiWindowing::s_prevUserCallbackScroll = nullptr;
 TRAP::INTERNAL::WindowingAPI::KeyFunc TRAP::INTERNAL::ImGuiWindowing::s_prevUserCallbackKey = nullptr;
 TRAP::INTERNAL::WindowingAPI::CharFunc TRAP::INTERNAL::ImGuiWindowing::s_prevUserCallbackChar = nullptr;
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::INTERNAL::ImGuiWindowing::InitForVulkan(WindowingAPI::InternalWindow* window, const bool installCallbacks)
+{
+	TP_PROFILE_FUNCTION();
+
+	return Init(window, installCallbacks, TRAP::Graphics::RenderAPI::Vulkan);
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -105,7 +115,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetCustomCursor(Scope<WindowingAPI::Interna
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::INTERNAL::ImGuiWindowing::Init(WindowingAPI::InternalWindow* window, const bool installCallbacks)
+bool TRAP::INTERNAL::ImGuiWindowing::Init(WindowingAPI::InternalWindow* window, const bool installCallbacks, const TRAP::Graphics::RenderAPI renderAPI)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -186,6 +196,7 @@ bool TRAP::INTERNAL::ImGuiWindowing::Init(WindowingAPI::InternalWindow* window, 
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		InitPlatformInterface();
 
+	s_renderAPI = renderAPI;
 	return true;
 }
 
@@ -733,7 +744,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SwapBuffers(ImGuiViewport* viewport, void* 
 {
 	TP_PROFILE_FUNCTION();
 
-	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
+	//ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -765,6 +776,7 @@ int32_t TRAP::INTERNAL::ImGuiWindowing::CreateVkSurface(ImGuiViewport* viewport,
 	TP_PROFILE_FUNCTION();
 
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
+	IM_ASSERT(s_renderAPI == TRAP::Graphics::RenderAPI::NONE);
 	const VkResult err = WindowingAPI::CreateWindowSurface(reinterpret_cast<VkInstance>(vkInstance),
 	                                                       data->WindowPtr,
 	                                                       static_cast<const VkAllocationCallbacks*>(vkAllocator),

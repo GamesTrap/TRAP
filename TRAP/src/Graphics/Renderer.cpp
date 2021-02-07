@@ -133,10 +133,7 @@ void TRAP::Graphics::Renderer::Shutdown()
 	Renderer2D::Shutdown();
 	
 	if(s_uniformBuffer)
-	{
-		s_uniformBuffer->Unbind(0);
 		s_uniformBuffer.reset();		
-	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

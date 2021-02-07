@@ -72,6 +72,7 @@ namespace TRAP::Graphics::API
 		void Draw(uint32_t vertexCount, uint32_t firstVertex, Window* window = nullptr) override;
 		void DrawIndexed(uint32_t indexCount, uint32_t firstIndex, uint32_t firstVertex, Window* window = nullptr) override;
 
+		void BindShader(Shader* shader, Window* window = nullptr) const;
 		void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const BufferLayout& layout, Window* window = nullptr) override;
 		void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType, Window* window) override;
 		
@@ -87,11 +88,6 @@ namespace TRAP::Graphics::API
 
 		void InitPerWindowData(Window* window) override;
 		void RemovePerWindowData(Window* window) override;
-
-		void BindShader(Shader* shader, Window* window = nullptr) const;
-
-		CommandBuffer* GetCurrentGraphicCommandBuffer(Window* window) override; //TODO Remove
-		TRAP::Ref<TRAP::Graphics::SwapChain> GetCurrentSwapChain(Window* window) override; //TODO Remove
 
 		void WaitIdle() override;
 
@@ -212,6 +208,8 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanDescriptorPool> GetDescriptorPool() const;
 
 		static const TRAP::Ref<Pipeline>& GetPipeline(PipelineDesc& desc);
+
+		static PerWindowData* GetPerWindowData(Window& window);
 	
 	private:
 		static std::vector<std::string> SetupInstanceLayers();

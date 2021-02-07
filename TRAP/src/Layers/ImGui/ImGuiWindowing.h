@@ -28,11 +28,17 @@ Modified by: Jan "GamesTrap" Schuerkamp
 
 #include "Window/WindowingAPI.h"
 
+namespace TRAP::Graphics
+{
+	enum class RenderAPI;
+}
+
 namespace TRAP::INTERNAL
 {
 	class ImGuiWindowing
 	{
 	public:
+		static bool InitForVulkan(WindowingAPI::InternalWindow* window, bool installCallbacks);
 		static void Shutdown();
 		static void NewFrame();
 		static void SetCustomCursor(Scope<WindowingAPI::InternalCursor>& cursor);
@@ -46,6 +52,7 @@ namespace TRAP::INTERNAL
 		static bool s_installedCallbacks;
 		static bool s_wantUpdateMonitors;
 		static Scope<WindowingAPI::InternalCursor> s_customCursor;
+		static TRAP::Graphics::RenderAPI s_renderAPI;
 
 		//Chain WindowingAPI callbacks for main viewport: our callbacks will call the user's previously installed callbacks, if any.
 		static WindowingAPI::MouseButtonFunc s_prevUserCallbackMouseButton;
@@ -72,7 +79,7 @@ namespace TRAP::INTERNAL
 		static void UpdateGamepads();
 		static void UpdateMonitors();
 
-		static bool Init(WindowingAPI::InternalWindow* window, bool installCallbacks);
+		static bool Init(WindowingAPI::InternalWindow* window, bool installCallbacks, Graphics::RenderAPI renderAPI);
 		static const char* GetClipboardText(void* userData);
 		static void SetClipboardText(void* userData, const char* text);
 		static void MouseButtonCallback(const WindowingAPI::InternalWindow* window, Input::MouseButton mouseButton, bool pressed);
