@@ -3,7 +3,6 @@
 
 #include "RendererAPI.h"
 #include "Graphics/Shaders/Shader.h"
-#include "Objects/RootSignature.h"
 #include "Utils/Utils.h"
 
 namespace std
@@ -14,7 +13,7 @@ namespace std
 		{
 			std::size_t hash = 0;
 
-			TRAP::Utils::HashCombine(hash, p.Type, p.Cache, p.PipelineExtensions, p.PipelineExtensionCount, p.Name);
+			TRAP::Utils::HashCombine(hash, p.Type, p.PipelineExtensions, p.PipelineExtensionCount, p.Name);
 
 			if (std::holds_alternative<TRAP::Graphics::RendererAPI::ComputePipelineDesc>(p.Pipeline))
 			{

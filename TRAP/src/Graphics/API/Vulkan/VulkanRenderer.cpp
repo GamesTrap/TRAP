@@ -30,6 +30,8 @@
 #include "Graphics/Shaders/Shader.h"
 
 #include "Graphics/API/PipelineDescHash.h"
+#include "Graphics/API/Objects/PipelineCache.h"
+#include "VFS/VFS.h"
 
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
 //Instance Extensions
@@ -64,6 +66,7 @@ TRAP::Scope<std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRende
 std::mutex TRAP::Graphics::API::VulkanRenderer::s_renderPassMutex{};
 
 std::unordered_map<uint64_t, TRAP::Ref<TRAP::Graphics::Pipeline>> TRAP::Graphics::API::VulkanRenderer::s_pipelines{};
+std::unordered_map<uint64_t, TRAP::Ref<TRAP::Graphics::PipelineCache>> TRAP::Graphics::API::VulkanRenderer::s_pipelineCaches{};
 std::mutex TRAP::Graphics::API::VulkanRenderer::s_pipelineMutex{};
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -95,6 +98,16 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 	s_renderPassMap.reset();
 
 	s_pipelines.clear();
+
+	for(auto& [hash, cache] : s_pipelineCaches)
+	{
+		if(cache)
+		{
+			cache->Save(TRAP::VFS::GetTempFolderPath() + "TRAP/" + std::to_string(hash) + ".cache");
+			cache.reset();
+		}
+	}
+	s_pipelineCaches.clear();
 
 	//Free everything in order
 	//Should happen automagically through Scope destructors
@@ -1289,13 +1302,24 @@ TRAP::Ref<TRAP::Graphics::API::VulkanDescriptorPool> TRAP::Graphics::API::Vulkan
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::GetPipeline(const PipelineDesc& desc)
+const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::GetPipeline(PipelineDesc& desc)
 {
 	std::size_t hash = std::hash<PipelineDesc>{}(desc);
-	const auto it = s_pipelines.find(hash);
+	const auto pipelineIt = s_pipelines.find(hash);
 
-	if(it == s_pipelines.end())
+	if(pipelineIt == s_pipelines.end())
 	{
+		const auto cacheIt = s_pipelineCaches.find(hash);
+
+		if (cacheIt == s_pipelineCaches.end())
+		{
+			PipelineCacheLoadDesc cacheDesc{};
+			cacheDesc.VirtualOrPhysicalPath = TRAP::VFS::GetTempFolderPath() + "TRAP/" + std::to_string(hash) + ".cache";
+			s_pipelineCaches.insert({ hash, PipelineCache::Create(cacheDesc) });
+		}
+
+		desc.Cache = s_pipelineCaches[hash];
+		
 		std::lock_guard<std::mutex> lock(s_pipelineMutex);
 		TP_TRACE(Log::RendererVulkanPipelinePrefix, "Recreating Graphics Pipeline...");
 		//Lock while inserting new Pipeline
@@ -1304,5 +1328,5 @@ const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::
 		return s_pipelines[hash];
 	}
 	
-	return it->second;
+	return pipelineIt->second;
 }

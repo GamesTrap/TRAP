@@ -209,7 +209,7 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanMemoryAllocator> GetVMA() const;
 		TRAP::Ref<VulkanDescriptorPool> GetDescriptorPool() const;
 
-		static const TRAP::Ref<Pipeline>& GetPipeline(const PipelineDesc& desc);
+		static const TRAP::Ref<Pipeline>& GetPipeline(PipelineDesc& desc);
 	
 	private:
 		static std::vector<std::string> SetupInstanceLayers();
@@ -241,6 +241,7 @@ namespace TRAP::Graphics::API
 		static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs;
 
 		static std::unordered_map<uint64_t, TRAP::Ref<Pipeline>> s_pipelines;
+		static std::unordered_map<uint64_t, TRAP::Ref<PipelineCache>> s_pipelineCaches;
 		static std::mutex s_pipelineMutex;
 		
 		static VulkanRenderer* s_renderer;

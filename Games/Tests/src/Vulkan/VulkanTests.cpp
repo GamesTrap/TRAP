@@ -3,7 +3,6 @@
 VulkanTests::VulkanTests()
 	: Layer("VulkanTests"),
 	  m_window(nullptr),
-	  m_defaultPipelineCache(nullptr),
 	  m_wireFrame(false),
 	  m_quad(false)
 {
@@ -42,18 +41,7 @@ void VulkanTests::OnAttach()
 	m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });
 	TRAP::Graphics::RendererAPI::GetRenderer()->SetClearColor({ 1.0f, 0.0f, 1.0f, 1.0f }, m_window.get());
 
-	//TODO
-	//TRAP::Graphics::RendererAPI::PipelineCacheLoadDesc cacheDesc{};
-	//cacheDesc.VirtualOrPhysicalPath = "Assets/Cache/VkClearScreen.cache";
-	//m_defaultPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
-
 	TRAP::Graphics::ShaderManager::LoadFile("/shaders/test.shader")->Use();
-	
-	//TODO
-	//TRAP::Graphics::RendererAPI::PipelineDesc desc{};
-	//if (m_defaultPipelineCache)
-		//desc.Cache = m_defaultPipelineCache;
-	////////////////////////////////////////////////////////////
 
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(), m_quadVertices.size() * sizeof(float), TRAP::Graphics::BufferUsage::Dynamic);
 	const TRAP::Graphics::BufferLayout layout =
@@ -72,13 +60,6 @@ void VulkanTests::OnDetach()
 	m_window.reset();
 	
 	m_vertexBuffer.reset();
-
-	//TODO
-	//if (m_defaultPipelineCache)
-	//{
-		//m_defaultPipelineCache->Save("Assets/Cache/VkClearScreen.cache");
-		//m_defaultPipelineCache.reset();
-	//}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -26,7 +26,7 @@ TRAP::Graphics::API::VulkanPipelineCache::VulkanPipelineCache(const RendererAPI:
 TRAP::Graphics::API::VulkanPipelineCache::~VulkanPipelineCache()
 {
 #ifdef ENABLE_GRAPHICS_DEBUG
-	TP_DEBUG(Log::RendererVulkanPipelineCachePrefix, "Creating PipelineCache");
+	TP_DEBUG(Log::RendererVulkanPipelineCachePrefix, "Destroying PipelineCache");
 #endif
 
 	if(m_cache)

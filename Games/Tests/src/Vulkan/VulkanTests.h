@@ -21,8 +21,6 @@ private:
 	TRAP::Scope<TRAP::Window> m_window;
 
 	TRAP::Utils::Timer m_fpsTimer;
-
-	TRAP::Ref<TRAP::Graphics::PipelineCache> m_defaultPipelineCache;
 	
 	TRAP::Ref<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
 	std::array<float, 18> m_triangleVertices
