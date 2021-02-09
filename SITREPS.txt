@@ -1655,3 +1655,28 @@ SITREP 02/04/2021|21w05a1
     - VulkanTest Added F1 toggle for Wireframe mode ~<10 mins
     - VulkanTest fixed winding order of triangle vertices ~<5 mins
     - Fixed a crash in VulkanDebugCallback when using RenderDoc ~<10 mins
+
+SITREP 02/08/2021|21w06a1
+    - Changed TRAP Engine version to 21w06a1(0.7.23)
+    - Removed old VulkanVertexBuffer class ~<5 mins
+    - Removed old VulkanIndexBuffer class ~<5 mins
+    - Removed old VulkanVertexArray class ~<5 mins
+    - Removed old VulkanUniformBuffer class ~<5 mins
+    - Removed old VertexArray base class ~<5 mins
+    - RendererAPI, VulkanRenderer Added BindVertexBuffer/BindIndexBuffer function for use by VertexBuffer/IndexBuffers ~<20 mins
+    - RendererAPI, VulkanRenderer Added DrawIndexed function ~<20 mins
+    - RendererAPI Removed GetCurrentGraphicCommandBuffer & GetCurrentSwapChain functions ~<5 mins
+    - Added new VertexBuffer abstraction ~>35 mins
+    - Added new IndexBuffer abstraction ~>30 mins
+    - Added partially complete UniformBuffer abstraction ~>25 mins
+    - ShaderManager Added default call of Shader.Use on Reload*** functions ~<5 mins
+    - VFS Added creation of TRAP folder in Temp folder if not existing ~<5 mins
+    - VulkanRenderer Added automatic PipelineCache creation & saving to Temp/TRAP folder ~>20 mins
+    - ImGui Added support for different RenderAPI implementations ~<10 mins
+    - VulkanTests Added Quad Vertices (non indexed) ~<10 mins
+    - VulkanTests Added Quad Vertices (indexed) ~<10 mins
+    - VulkanTests Added Triangle Indices ~<5 mins
+    - VulkanTests Added Quad Indices ~<5 mins
+    - VulkanTests Added dynamic VertexBuffer updating Triangle, Quad via F2 ~<15 mins
+    - VulkanTests Added dynamic IndexBuffer updating Triangle, Quad via F3 ~<15 mins
+    - VulkanTests Added ESC to shutdown ~<5 mins
