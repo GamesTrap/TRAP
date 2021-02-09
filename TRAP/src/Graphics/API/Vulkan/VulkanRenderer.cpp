@@ -77,6 +77,7 @@ TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
 	  m_device(nullptr),
 	  m_vma(nullptr),
 	  m_descriptorPool(nullptr),
+	  m_imguiDescriptorPool(nullptr),
 	  m_vsyncNew(false)
 {
 	s_renderer = this;
@@ -259,6 +260,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string& gameNa
 	m_vma = TRAP::MakeRef<VulkanMemoryAllocator>(m_device, m_instance);
 
 	m_descriptorPool = TRAP::MakeRef<VulkanDescriptorPool>(8192);
+	m_imguiDescriptorPool = TRAP::MakeRef<VulkanDescriptorPool>(8192);
 
 	m_device->FindQueueFamilyIndices();
 
@@ -1307,6 +1309,13 @@ TRAP::Ref<TRAP::Graphics::API::VulkanMemoryAllocator> TRAP::Graphics::API::Vulka
 TRAP::Ref<TRAP::Graphics::API::VulkanDescriptorPool> TRAP::Graphics::API::VulkanRenderer::GetDescriptorPool() const
 {
 	return m_descriptorPool;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::API::VulkanDescriptorPool> TRAP::Graphics::API::VulkanRenderer::GetImGuiDescriptorPool() const
+{
+	return m_imguiDescriptorPool;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

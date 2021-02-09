@@ -1,18 +1,12 @@
 #include "TRAPPCH.h"
 #include "ImGuiLayer.h"
 
-#include <examples/imgui_impl_vulkan.h>
-
 #include "Application.h"
 #include "Window/WindowingAPI.h"
 #include "ImGuiWindowing.h"
 #include "Embed.h"
+#include "Graphics/API/Objects/CommandPool.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
-#include "Graphics/API/Vulkan/Objects/VulkanDescriptorPool.h"
-#include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
-#include "Graphics/API/Vulkan/Objects/VulkanInstance.h"
-#include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
-#include "Graphics/API/Vulkan/VulkanCommon.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -69,25 +63,7 @@ void TRAP::ImGuiLayer::OnAttach()
 	{
 		TRAP::INTERNAL::ImGuiWindowing::InitForVulkan(window, true);
 		
-		auto* renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer().get());
-		const TRAP::Ref<TRAP::Graphics::Queue>& graphicsQueue = TRAP::Graphics::API::VulkanRenderer::GetPerWindowData(*TRAP::Application::GetWindow())->GraphicQueue;
-		const uint32_t imageCount = TRAP::Graphics::API::VulkanRenderer::GetPerWindowData(*TRAP::Application::GetWindow())->ImageCount;
-		ImGui_ImplVulkan_InitInfo initInfo{};
-		initInfo.Instance = renderer->GetInstance()->GetVkInstance();
-		initInfo.PhysicalDevice = renderer->GetDevice()->GetPhysicalDevice()->GetVkPhysicalDevice();
-		initInfo.Device = renderer->GetDevice()->GetVkDevice();
-		initInfo.QueueFamily = dynamic_cast<TRAP::Graphics::API::VulkanQueue*>(graphicsQueue.get())->GetQueueFamilyIndex();
-		initInfo.Queue = dynamic_cast<TRAP::Graphics::API::VulkanQueue*>(graphicsQueue.get())->GetVkQueue();
-		initInfo.PipelineCache = nullptr;
-		initInfo.DescriptorPool = renderer->GetDescriptorPool()->GetCurrentVkDescriptorPool();
-		initInfo.MinImageCount = imageCount;
-		initInfo.ImageCount = imageCount;
-		initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
-		initInfo.Allocator = nullptr;
-		initInfo.CheckVkResultFn = [](const VkResult res) {VkCall(res); };
-	
-		//Create Own ImGui RenderPass
-		//ImGui_ImplVulkan_Init(&initInfo, );
+		//TODO Do Vulkan API init stuff here
 	}
 }
 
@@ -99,7 +75,7 @@ void TRAP::ImGuiLayer::OnDetach()
 
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
-		ImGui_ImplVulkan_Shutdown();
+		//TODO Do Vulkan API Deallocation stuff here
 		INTERNAL::ImGuiWindowing::Shutdown();
 	}
 
@@ -126,7 +102,8 @@ void TRAP::ImGuiLayer::Begin()
 
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
-		ImGui_ImplVulkan_NewFrame();
+		//TODO Do new Vulkan API frame
+		//Is this even needed? Vulkan uses RenderPasses which should be restarted after every Present/BufferSwap
 		INTERNAL::ImGuiWindowing::NewFrame();
 	}
 
@@ -144,24 +121,15 @@ void TRAP::ImGuiLayer::End()
 
 	//Rendering
 	ImGui::Render();
-	/*if (Graphics::API::Context::GetRenderAPI() == Graphics::API::RenderAPI::Vulkan)
-		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData());*/
+	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
+	{
+		//TODO Do Present/BufferSwap VulkanAPI
+	}
 
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
-		INTERNAL::WindowingAPI::InternalWindow* backupCurrentContext = nullptr;
-		if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
-		{
-			//Save current context here
-		}
-
 		ImGui::UpdatePlatformWindows();
 		ImGui::RenderPlatformWindowsDefault();
-
-		if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
-		{
-			//Load saved context here
-		}
 	}
 }
 

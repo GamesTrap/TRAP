@@ -206,6 +206,7 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanDevice> GetDevice() const;
 		TRAP::Ref<VulkanMemoryAllocator> GetVMA() const;
 		TRAP::Ref<VulkanDescriptorPool> GetDescriptorPool() const;
+		TRAP::Ref<VulkanDescriptorPool> GetImGuiDescriptorPool() const;
 
 		static const TRAP::Ref<Pipeline>& GetPipeline(PipelineDesc& desc);
 
@@ -229,6 +230,7 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanDevice> m_device;
 		TRAP::Ref<VulkanMemoryAllocator> m_vma;
 		TRAP::Ref<VulkanDescriptorPool> m_descriptorPool;
+		TRAP::Ref<VulkanDescriptorPool> m_imguiDescriptorPool;
 		
 		bool m_vsyncNew;
 		
