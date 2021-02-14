@@ -148,8 +148,8 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(const TRAP::Scop
 		//Set Default Dynamic Viewport & Scissor
 		p->GraphicCommandBuffers[p->ImageIndex]->SetViewport(0.0f, 0.0f, static_cast<float>(p->Window->GetWidth()), static_cast<float>(p->Window->GetHeight()), 0.0f, 1.0f);
 		p->GraphicCommandBuffers[p->ImageIndex]->SetScissor(0, 0, p->Window->GetWidth(), p->Window->GetHeight());
-		if(p->CurrentGraphicPipeline)
-			p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicPipeline);
+		if(p->CurrentGraphicsPipeline)
+			p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicsPipeline);
 		//TODO Also check if pipeline changed?!
 		
 		p->Recording = true;
@@ -576,7 +576,7 @@ void TRAP::Graphics::API::VulkanRenderer::Draw(const uint32_t vertexCount, const
 
 	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
 	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
-	RootSignatureDesc& rsd = p->RootSignatureDesc;;
+	RootSignatureDesc& rsd = p->RootSignatureDesc;
 	
 	//Create/Load Graphics Pipeline
 	if(!gpd.RootSignature || std::find(rsd.Shaders.begin(), rsd.Shaders.end(), gpd.ShaderProgram) == rsd.Shaders.end())
@@ -585,8 +585,8 @@ void TRAP::Graphics::API::VulkanRenderer::Draw(const uint32_t vertexCount, const
 		gpd.RootSignature = RootSignature::Create(rsd);
 	}
 	
-	p->CurrentGraphicPipeline = GetPipeline(p->GraphicsPipelineDesc);
-	p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicPipeline);
+	p->CurrentGraphicsPipeline = GetPipeline(p->GraphicsPipelineDesc);
+	p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicsPipeline);
 	
 	p->GraphicCommandBuffers[p->ImageIndex]->Draw(vertexCount, firstVertex);
 }
@@ -609,8 +609,8 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount,
 		gpd.RootSignature = RootSignature::Create(rsd);
 	}
 
-	p->CurrentGraphicPipeline = GetPipeline(p->GraphicsPipelineDesc);
-	p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicPipeline);
+	p->CurrentGraphicsPipeline = GetPipeline(p->GraphicsPipelineDesc);
+	p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicsPipeline);
 
 	p->GraphicCommandBuffers[p->ImageIndex]->DrawIndexed(indexCount, firstIndex, firstVertex);
 }
@@ -647,8 +647,8 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 			rsd.Shaders = { shader };
 			gpd.RootSignature = RootSignature::Create(rsd);
 
-			p->CurrentGraphicPipeline = GetPipeline(p->GraphicsPipelineDesc);
-			p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicPipeline);
+			p->CurrentGraphicsPipeline = GetPipeline(p->GraphicsPipelineDesc);
+			p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicsPipeline); //TODO Needed because of ImGui ?!
 		}
 	}
 }
@@ -780,9 +780,9 @@ std::string TRAP::Graphics::API::VulkanRenderer::GetCurrentGPUName()
 
 std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API::VulkanRenderer::GetAllGPUs()
 {
-	if(s_usableGPUs.empty())
+	if (s_usableGPUs.empty())
 	{
-		for(const auto& [score, devUUID] : VulkanPhysicalDevice::GetAllRatedPhysicalDevices(m_instance))
+		for (const auto& [score, devUUID] : VulkanPhysicalDevice::GetAllRatedPhysicalDevices(m_instance))
 		{
 			const VkPhysicalDevice dev = VulkanPhysicalDevice::FindPhysicalDeviceViaUUID(m_instance, devUUID);
 			VkPhysicalDeviceProperties props;
@@ -791,7 +791,7 @@ std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API
 			s_usableGPUs.emplace_back(props.deviceName, devUUID);
 		}
 	}
-	
+
 	return s_usableGPUs;
 }
 
@@ -1338,16 +1338,4 @@ const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::
 	}
 	
 	return pipelineIt->second;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::RendererAPI::PerWindowData* TRAP::Graphics::API::VulkanRenderer::GetPerWindowData(Window& window)
-{
-	const auto it = s_perWindowDataMap->find(&window);
-
-	if (it == s_perWindowDataMap->end())
-		return nullptr;
-
-	return it->second.get();
 }

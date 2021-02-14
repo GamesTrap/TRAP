@@ -112,6 +112,7 @@ TRAP::Graphics::DescriptorSet* TRAP::Graphics::API::VulkanDescriptorPool::Retrie
 	
 	if (rootSignature->GetVkDescriptorSetLayouts()[static_cast<uint32_t>(updateFreq)] != VK_NULL_HANDLE)
 	{
+		updateData.resize(maxSets);
 		layouts.resize(maxSets);
 		handles.resize(maxSets);
 

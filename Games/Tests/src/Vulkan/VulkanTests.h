@@ -11,6 +11,7 @@ public:
 	void OnAttach() override;
 	void OnDetach() override;
 	void OnUpdate(const TRAP::Utils::TimeStep& deltaTime) override;
+	void OnImGuiRender() override;
 
 	void OnEvent(TRAP::Events::Event& event) override;
 

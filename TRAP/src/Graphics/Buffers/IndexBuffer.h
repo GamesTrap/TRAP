@@ -33,6 +33,7 @@ namespace TRAP::Graphics
 
 		static Scope<IndexBuffer> Create(uint16_t* indices, uint32_t size, BufferUsage usage);
 		static Scope<IndexBuffer> Create(uint32_t* indices, uint32_t size, BufferUsage usage);
+		static Scope<IndexBuffer> Create(uint32_t size, BufferUsage usage);
 
 	private:
 		TRAP::Ref<TRAP::Graphics::Buffer> m_indexBuffer;

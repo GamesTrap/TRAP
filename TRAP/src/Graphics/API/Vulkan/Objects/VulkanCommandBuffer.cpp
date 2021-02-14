@@ -961,3 +961,10 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const RendererAPI::ClearFla
 	
 	vkCmdClearAttachments(m_vkCommandBuffer, 1, &attachment, 1, &rect);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+VkRenderPass TRAP::Graphics::API::VulkanCommandBuffer::GetActiveVkRenderPass() const
+{
+	return m_activeRenderPass;
+}

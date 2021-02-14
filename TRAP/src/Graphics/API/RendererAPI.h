@@ -69,6 +69,8 @@ namespace TRAP::Graphics
 		enum class ClearFlags;
 		enum class IndexType;
 		union ClearValue;
+	protected:
+		struct PerWindowData;
 	
 	public:
 		RendererAPI() = default;
@@ -147,6 +149,10 @@ namespace TRAP::Graphics
 		virtual std::string GetCurrentGPUName() = 0;
 		virtual std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() = 0;
 
+	protected:
+		static const TRAP::Scope<PerWindowData>& GetMainWindowData();
+	
+	public:
 		virtual void InitPerWindowData(Window* window) = 0;
 		virtual void RemovePerWindowData(Window* window) = 0;
 
@@ -2008,6 +2014,7 @@ namespace TRAP::Graphics
 		static RenderAPI s_RenderAPI;
 		static TRAP::Scope<API::ResourceLoader> s_ResourceLoader;
 
+		friend class ImGuiLayer;
 		struct PerWindowData
 		{
 			~PerWindowData();
@@ -2037,10 +2044,11 @@ namespace TRAP::Graphics
 
 			PipelineDesc GraphicsPipelineDesc;
 			RootSignatureDesc RootSignatureDesc;
-			TRAP::Ref<Pipeline> CurrentGraphicPipeline;
+			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
 
 			bool Recording;
 		};
+	protected:
 		static TRAP::Scope<std::unordered_map<Window*, TRAP::Scope<PerWindowData>>> s_perWindowDataMap;
 		static std::mutex s_perWindowDataMutex;
 

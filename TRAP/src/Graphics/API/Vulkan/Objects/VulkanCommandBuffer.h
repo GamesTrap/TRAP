@@ -81,6 +81,8 @@ namespace TRAP::Graphics::API
 		void SetStencilReferenceValue(uint32_t val) const override;
 
 		void Clear(RendererAPI::ClearFlags flags, RendererAPI::ClearValue value, uint32_t width, uint32_t height) override;
+
+		VkRenderPass GetActiveVkRenderPass() const;
 	
 	private:
 		friend VulkanCommandPool;

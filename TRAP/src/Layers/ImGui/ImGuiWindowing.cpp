@@ -776,7 +776,7 @@ int32_t TRAP::INTERNAL::ImGuiWindowing::CreateVkSurface(ImGuiViewport* viewport,
 	TP_PROFILE_FUNCTION();
 
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
-	IM_ASSERT(s_renderAPI == TRAP::Graphics::RenderAPI::NONE);
+	IM_ASSERT(s_renderAPI == TRAP::Graphics::RenderAPI::Vulkan);
 	const VkResult err = WindowingAPI::CreateWindowSurface(reinterpret_cast<VkInstance>(vkInstance),
 	                                                       data->WindowPtr,
 	                                                       static_cast<const VkAllocationCallbacks*>(vkAllocator),

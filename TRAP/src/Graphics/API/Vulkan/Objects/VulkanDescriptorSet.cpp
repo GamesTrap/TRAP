@@ -85,7 +85,7 @@ uint32_t TRAP::Graphics::API::VulkanDescriptorSet::GetMaxSets() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index, uint32_t count, const std::vector<RendererAPI::DescriptorData>& params)
+void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index, const std::vector<RendererAPI::DescriptorData>& params)
 {
 #ifdef ENABLE_GRAPHICS_DEBUG
 #define VALIDATE_DESCRIPTOR(descriptor, ...)                                            \
@@ -118,7 +118,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index, uint32_t c
 		rayTracingWritesKHR.resize(rootSignature->GetVkRayTracingDescriptorCounts()[static_cast<uint32_t>(updateFreq)]);
 	}
 
-	for(uint32_t i = 0; i < count; ++i)
+	for(uint32_t i = 0; i < params.size(); ++i)
 	{
 		const RendererAPI::DescriptorData& param = params[i];
 		uint32_t paramIndex = param.Index;
@@ -304,7 +304,6 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index, uint32_t c
 					m_dynamicSizeOffsets[index].Size = static_cast<uint32_t>(off.Sizes[0]);
 					update = true;
 				}
-
 			}
 			break;
 		}
