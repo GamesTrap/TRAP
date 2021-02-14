@@ -100,9 +100,9 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	m_indexBuffer->Use();
 	m_vertexBuffer->AwaitLoading();
 	m_vertexBuffer->Use();
-
+	
 	TRAP::Graphics::ShaderManager::Get("VKTest")->Use();
-
+	
 	if(!m_indexed)
 		TRAP::Graphics::RendererAPI::GetRenderer()->Draw(m_quad ? 6 : 3);
 	else
@@ -114,6 +114,17 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		TP_INFO("[Sandbox] FrameTime: ", TRAP::Graphics::Renderer::GetFrameTime(), "ms");
 		m_fpsTimer.Reset();
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void VulkanTests::OnImGuiRender()
+{
+	ImGui::Begin("LOL");
+	ImGui::Text("HELLO IMGUI");
+	ImGui::End();
+
+	ImGui::ShowDemoWindow();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

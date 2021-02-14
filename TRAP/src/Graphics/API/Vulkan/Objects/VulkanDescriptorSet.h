@@ -19,7 +19,7 @@ namespace TRAP::Graphics::API
 		std::vector<VulkanRenderer::SizeOffset> GetDynamicSizeOffsets() const;
 		uint32_t GetMaxSets() const;
 
-		void Update(uint32_t index, uint32_t count, const std::vector<RendererAPI::DescriptorData>& params) override;
+		void Update(uint32_t index, const std::vector<RendererAPI::DescriptorData>& params) override;
 		
 	private:
 		friend VulkanDescriptorPool;

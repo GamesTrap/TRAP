@@ -35,14 +35,17 @@ namespace TRAP::Graphics
 		void AwaitLoading() const;
 
 		const std::string& GetName() const;
+
+		//TODO Remove?!
+		const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetUniformBuffers() const;
 		
 		static Scope<UniformBuffer> Create(const char* name, uint64_t size, BufferUsage usage);
 		static Scope<UniformBuffer> Create(const char* name, void* data, uint64_t size, BufferUsage usage);
 
 	private:
-		TRAP::Ref<TRAP::Graphics::Buffer> m_uniformBuffer;
+		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_uniformBuffers;
 		
-		API::SyncToken m_token;
+		std::vector<API::SyncToken> m_tokens;
 
 		BufferUsage m_bufferUsage;
 		

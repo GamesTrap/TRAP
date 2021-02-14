@@ -19,9 +19,11 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 	desc.Desc.Descriptors = RendererAPI::DescriptorType::UniformBuffer;
 	desc.Desc.Size = size;
 
-	RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_token);
-
-	buffer->m_uniformBuffer = desc.Buffer;
+	for (uint32_t i = 0; i < 3u; ++i)
+	{
+		RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_tokens[i]);
+		buffer->m_uniformBuffers[i] = desc.Buffer;
+	}
 	
 	return buffer;
 }
@@ -43,9 +45,11 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 	desc.Desc.Size = size;
 	desc.Data = data;
 
-	RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_token);
-
-	buffer->m_uniformBuffer = desc.Buffer;
+	for(uint32_t i = 0; i < 3u; ++i)
+	{
+		RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_tokens[i]);
+		buffer->m_uniformBuffers[i] = desc.Buffer;
+	}
 
 	return buffer;
 }
@@ -53,7 +57,7 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::UniformBuffer::UniformBuffer()
-	: m_uniformBuffer(nullptr), m_token(), m_bufferUsage(BufferUsage::Static)
+	: m_uniformBuffers(3), m_tokens(3), m_bufferUsage(BufferUsage::Static)
 {
 }
 
@@ -61,14 +65,14 @@ TRAP::Graphics::UniformBuffer::UniformBuffer()
 
 TRAP::Graphics::UniformBuffer::~UniformBuffer()
 {
-	m_uniformBuffer.reset();
+	m_uniformBuffers = {};
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 uint64_t TRAP::Graphics::UniformBuffer::GetSize() const
 {
-	return m_uniformBuffer->GetSize();
+	return m_uniformBuffers[0]->GetSize();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -94,27 +98,33 @@ void TRAP::Graphics::UniformBuffer::Use(Window* window)
 
 void TRAP::Graphics::UniformBuffer::SetData(const void* data, const uint64_t size, const uint64_t offset)
 {
-	TRAP_ASSERT(size + offset <= m_uniformBuffer->GetSize());
+	TRAP_ASSERT(size + offset <= m_uniformBuffers[0]->GetSize());
 
-	RendererAPI::BufferUpdateDesc desc{ m_uniformBuffer };
-	desc.DstOffset = offset;
-	RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);
-	std::memcpy(desc.MappedData, data, size);
-	RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_token);
+	for(uint32_t i = 0; i < 3u; ++i)
+	{
+		RendererAPI::BufferUpdateDesc desc{ m_uniformBuffers[i] };
+		desc.DstOffset = offset;
+		RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);
+		std::memcpy(desc.MappedData, data, size);
+		RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &m_tokens[i]);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Graphics::UniformBuffer::IsLoaded() const
 {
-	return RendererAPI::GetResourceLoader()->IsTokenCompleted(&m_token);
+	return RendererAPI::GetResourceLoader()->IsTokenCompleted(&m_tokens[0]) &&
+		   RendererAPI::GetResourceLoader()->IsTokenCompleted(&m_tokens[1]) &&
+		   RendererAPI::GetResourceLoader()->IsTokenCompleted(&m_tokens[2]);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 {
-	RendererAPI::GetResourceLoader()->WaitForToken(&m_token);
+	for(uint32_t i = 0; i < 3u; ++i)
+		RendererAPI::GetResourceLoader()->WaitForToken(&m_tokens[i]);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -122,4 +132,11 @@ void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 const std::string& TRAP::Graphics::UniformBuffer::GetName() const
 {
 	return m_name;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::UniformBuffer::GetUniformBuffers() const
+{
+	return m_uniformBuffers;
 }

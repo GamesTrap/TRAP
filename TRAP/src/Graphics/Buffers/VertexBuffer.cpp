@@ -15,6 +15,7 @@ TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(f
 	desc.Desc.MemoryUsage = (usage == BufferUsage::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly : RendererAPI::ResourceMemoryUsage::CPUToGPU;
 	desc.Desc.Descriptors = RendererAPI::DescriptorType::VertexBuffer;
 	desc.Desc.Size = size;
+	desc.Desc.Flags = (usage == BufferUsage::Dynamic) ? RendererAPI::BufferCreationFlags::PersistentMap : RendererAPI::BufferCreationFlags::None;
 	desc.Data = vertices;
 
 	RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_token);
@@ -36,6 +37,7 @@ TRAP::Scope<TRAP::Graphics::VertexBuffer> TRAP::Graphics::VertexBuffer::Create(c
 	desc.Desc.MemoryUsage = (usage == BufferUsage::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly : RendererAPI::ResourceMemoryUsage::CPUToGPU;
 	desc.Desc.Descriptors = RendererAPI::DescriptorType::VertexBuffer;
 	desc.Desc.Size = size;
+	desc.Desc.Flags = (usage == BufferUsage::Dynamic) ? RendererAPI::BufferCreationFlags::PersistentMap : RendererAPI::BufferCreationFlags::None;
 	
 	RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_token);
 

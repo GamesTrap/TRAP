@@ -145,6 +145,13 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::GetRenderAPI()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& TRAP::Graphics::RendererAPI::GetMainWindowData()
+{
+	return (*s_Renderer->s_perWindowDataMap)[TRAP::Application::GetWindow().get()];
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 {
 	if (s_isVulkanCapableFirstTest)

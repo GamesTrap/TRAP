@@ -266,14 +266,14 @@ void TRAP::Application::Run()
 			}
 		}
 
-		/*ImGuiLayer::Begin();
+		ImGuiLayer::Begin();
 		{
 			TP_PROFILE_SCOPE("LayerStack OnImGuiRender");
 
 			for (const auto& layer : *m_layerStack)
 				layer->OnImGuiRender();
 		}
-		ImGuiLayer::End();*/
+		ImGuiLayer::End();
 
 		if (!m_minimized)
 			Graphics::RenderCommand::Present(m_window);

@@ -64,10 +64,6 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		for(uint32_t i = 0; i < reflection->ShaderResources.size(); ++i)
 		{
 			ShaderReflection::ShaderResource& res = reflection->ShaderResources[i];
-			uint32_t setIndex = res.Set;
-
-			if (res.Type == RendererAPI::DescriptorType::RootConstant)
-				setIndex = 0;
 
 			std::unordered_map<std::string, uint32_t>::iterator it =
 				indexMap.Map.find(res.Name);
@@ -175,7 +171,9 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 					binding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
 				}
 				else
-				TP_WARN("Descriptor (", descInfo.Name, "): Cannot use VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC for arrays");
+				{
+					TP_WARN("Descriptor (", descInfo.Name, "): Cannot use VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC for arrays");
+				}
 			}
 
 			binding.stageFlags = ShaderStageToVkShaderStageFlags(res.UsedStages);

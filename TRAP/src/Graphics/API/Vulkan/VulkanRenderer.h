@@ -85,7 +85,7 @@ namespace TRAP::Graphics::API
 		std::array<uint8_t, 16> GetCurrentGPUUUID() override;
 		std::string GetCurrentGPUName() override;
 		std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() override;
-
+		
 		void InitPerWindowData(Window* window) override;
 		void RemovePerWindowData(Window* window) override;
 
@@ -206,11 +206,8 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanDevice> GetDevice() const;
 		TRAP::Ref<VulkanMemoryAllocator> GetVMA() const;
 		TRAP::Ref<VulkanDescriptorPool> GetDescriptorPool() const;
-		TRAP::Ref<VulkanDescriptorPool> GetImGuiDescriptorPool() const;
 
 		static const TRAP::Ref<Pipeline>& GetPipeline(PipelineDesc& desc);
-
-		static PerWindowData* GetPerWindowData(Window& window);
 	
 	private:
 		static std::vector<std::string> SetupInstanceLayers();
@@ -230,7 +227,6 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanDevice> m_device;
 		TRAP::Ref<VulkanMemoryAllocator> m_vma;
 		TRAP::Ref<VulkanDescriptorPool> m_descriptorPool;
-		TRAP::Ref<VulkanDescriptorPool> m_imguiDescriptorPool;
 		
 		bool m_vsyncNew;
 		
