@@ -1680,3 +1680,20 @@ SITREP 02/08/2021|21w06a1
     - VulkanTests Added dynamic VertexBuffer updating Triangle, Quad via F2 ~<15 mins
     - VulkanTests Added dynamic IndexBuffer updating Triangle, Quad via F3 ~<15 mins
     - VulkanTests Added ESC to shutdown ~<5 mins
+
+SITREP 02/14/2021|21w06b2
+    - Changed TRAP Engine version to 21w06b2(0.7.26)
+    - (Vulkan)DescriptorSet Removed unnecessary count parameter in Update function ~<5 mins
+    - Added RootSignature back to PipelineDescHash ~<5 mins
+    - RendererAPI Added GetMainWindowData function for ImGuiLayer ~<5 mins
+    - VulkanDescriptorPool Fixed out of bounds in RetrieveDescriptorSet ~<5 mins
+    - VulkanRootSignature Removed unused uint32_t & if check in constructor ~<5 mins
+    - VulkanRenderer Removed GetImGuiDescriptorPool & GetPerWindowData functions ~<5 mins
+    - VertexBuffer, IndexBuffer, UniformBuffer Added persistent map flag for Static usage ~<5 mins
+    - IndexBuffer Added constructor without immediate data upload ~<10 mins
+    - UniformBuffer WIP changes ~>15 mins
+    - ImGuiLayer Implemented OnAttach, OnDetach, End for VulkanAPI ~>60 mins
+    - ImGuiWindowing Fixed an IM_ASSERT ~<5 mins
+    - ImGuiLayer Added PipelineCache @ TEMP/TRAP/ImGui.cache ~<15 mins
+    - Application enabled ImGui again ~<5 mins
+    - VulkanTests Added small ImGui test ~<5 mins
