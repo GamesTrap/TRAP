@@ -10,6 +10,7 @@
 #include "Graphics/API/Objects/CommandBuffer.h"
 #include "Graphics/API/Objects/CommandPool.h"
 #include "Graphics/API/Objects/Fence.h"
+#include "Graphics/API/Objects/PipelineCache.h"
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Vulkan/Objects/VulkanDevice.h"
@@ -18,11 +19,13 @@
 #include "Graphics/API/Vulkan/Objects/VulkanInits.h"
 #include "Graphics/API/Vulkan/Objects/VulkanInstance.h"
 #include "Graphics/API/Vulkan/Objects/VulkanPhysicalDevice.h"
+#include "Graphics/API/Vulkan/Objects/VulkanPipelineCache.h"
+#include "VFS/VFS.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::ImGuiLayer::ImGuiLayer()
-	: Layer("ImGuiLayer"), m_blockEvents(true), m_imguiDescriptorPool(nullptr)
+	: Layer("ImGuiLayer"), m_blockEvents(true), m_imguiPipelineCache(nullptr), m_imguiDescriptorPool(nullptr)
 {
 	TP_PROFILE_FUNCTION();
 }
@@ -82,6 +85,10 @@ void TRAP::ImGuiLayer::OnAttach()
 		VkDescriptorPoolCreateInfo poolInfo = Graphics::API::VulkanInits::DescriptorPoolCreateInfo(m_descriptorPoolSizes, 1000);
 		VkCall(vkCreateDescriptorPool(renderer->GetDevice()->GetVkDevice(), &poolInfo, nullptr, &m_imguiDescriptorPool));
 		
+		TRAP::Graphics::RendererAPI::PipelineCacheLoadDesc cacheDesc{};
+		cacheDesc.VirtualOrPhysicalPath = TRAP::VFS::GetTempFolderPath() + "TRAP/ImGui.cache";
+		m_imguiPipelineCache = TRAP::Graphics::PipelineCache::Create(cacheDesc);
+		
 		//This initializes ImGui for Vulkan
 		ImGui_ImplVulkan_InitInfo initInfo{};
 		initInfo.Instance = renderer->GetInstance()->GetVkInstance();
@@ -89,7 +96,7 @@ void TRAP::ImGuiLayer::OnAttach()
 		initInfo.Device = renderer->GetDevice()->GetVkDevice();
 		initInfo.QueueFamily = renderer->GetDevice()->GetGraphicsQueueFamilyIndex();
 		initInfo.Queue = dynamic_cast<TRAP::Graphics::API::VulkanQueue*>(winData->GraphicQueue.get())->GetVkQueue();
-		initInfo.PipelineCache = nullptr; //TODO Use Abstraction for this
+		initInfo.PipelineCache = dynamic_cast<TRAP::Graphics::API::VulkanPipelineCache*>(m_imguiPipelineCache.get())->GetVkPipelineCache();
 		initInfo.DescriptorPool = m_imguiDescriptorPool;
 		initInfo.Allocator = nullptr;
 		initInfo.MinImageCount = winData->ImageCount;
@@ -127,6 +134,8 @@ void TRAP::ImGuiLayer::OnDetach()
 	if (Graphics::RendererAPI::GetRenderAPI() == Graphics::RenderAPI::Vulkan)
 	{
 		TP_TRACE(Log::ImGuiPrefix, "Vulkan Shutdown...");
+		m_imguiPipelineCache->Save(TRAP::VFS::GetTempFolderPath() + "TRAP/ImGui.cache");
+		m_imguiPipelineCache.reset();
 		const TRAP::Graphics::API::VulkanRenderer* renderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(TRAP::Graphics::RendererAPI::GetRenderer().get());
 		vkDestroyDescriptorPool(renderer->GetDevice()->GetVkDevice(), m_imguiDescriptorPool, nullptr);
 		TP_TRACE(Log::ImGuiPrefix, "Vulkan Shutdown Finished");

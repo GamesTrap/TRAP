@@ -7,6 +7,11 @@
 
 namespace TRAP
 {
+	namespace Graphics
+	{
+		class PipelineCache;
+	}
+
 	class  ImGuiLayer final : public Layer
 	{
 	public:
@@ -69,6 +74,7 @@ namespace TRAP
 		bool m_blockEvents;
 		float m_time = 0.0f;
 
+		TRAP::Ref<TRAP::Graphics::PipelineCache> m_imguiPipelineCache;
 		VkDescriptorPool m_imguiDescriptorPool;
 
 		std::vector<VkDescriptorPoolSize> m_descriptorPoolSizes =
