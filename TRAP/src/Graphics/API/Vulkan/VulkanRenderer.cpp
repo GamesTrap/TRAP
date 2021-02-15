@@ -75,8 +75,7 @@ TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
 	: m_instance(nullptr),
 	  m_debug(nullptr),
 	  m_device(nullptr),
-	  m_vma(nullptr),
-	  m_vsyncNew(false)
+	  m_vma(nullptr)
 {
 	s_renderer = this;
 }
@@ -291,12 +290,12 @@ void TRAP::Graphics::API::VulkanRenderer::Present(const Scope<Window>& window)
 	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window.get()];
 
 	EndGraphicRecording(p);
-	if (p->CurrentVSync != m_vsyncNew)
+	if (p->CurrentVSync != p->NewVSync)
 	{
 		std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
 		if(p->SwapChain)
 			p->SwapChain->ToggleVSync();
-		p->CurrentVSync = m_vsyncNew;
+		p->CurrentVSync = p->NewVSync;
 	}
 	StartGraphicRecording(p);
 }

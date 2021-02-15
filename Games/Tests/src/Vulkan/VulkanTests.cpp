@@ -18,6 +18,8 @@ void VulkanTests::OnAttach()
 	
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Multi-Window Test");
 
+	TRAP::Graphics::RendererAPI::GetRenderer()->SetVSync(true);
+
 	TRAP::WindowProps windowProps
 	{
 		"Vulkan Test",

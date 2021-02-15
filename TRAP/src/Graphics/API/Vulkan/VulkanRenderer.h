@@ -227,8 +227,6 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanDevice> m_device;
 		TRAP::Ref<VulkanMemoryAllocator> m_vma;
 		
-		bool m_vsyncNew;
-		
 		//RenderPass map per thread (this will make lookups lock free and we only need a lock when inserting a RenderPass Map for the first time)
 		static TRAP::Scope<std::unordered_map<std::thread::id, RenderPassMap>> s_renderPassMap;
 		//FrameBuffer map per thread (this will make lookups lock free and we only need a lock when inserting a FrameBuffer Map for the first time)
