@@ -5,7 +5,8 @@ VulkanTests::VulkanTests()
 	  m_window(nullptr),
 	  m_wireFrame(false),
 	  m_quad(false),
-	  m_indexed(false)
+	  m_indexed(false),
+	  m_ubo(true)
 {
 }
 
@@ -42,7 +43,8 @@ void VulkanTests::OnAttach()
 	m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });
 	TRAP::Graphics::RendererAPI::GetRenderer()->SetClearColor({ 1.0f, 0.0f, 1.0f, 1.0f }, m_window.get());
 
-	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "/shaders/test.shader");
+	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "/shaders/testubo.shader");
+	TRAP::Graphics::ShaderManager::LoadFile("VKTestNoUBO", "/shaders/test.shader");
 
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(), static_cast<uint32_t>(m_quadVertices.size()) * sizeof(float), TRAP::Graphics::BufferUsage::Dynamic);
 	const TRAP::Graphics::BufferLayout layout =
@@ -55,6 +57,8 @@ void VulkanTests::OnAttach()
 
 	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_triangleIndices.data(), static_cast<uint32_t>(m_quadIndices.size()) * sizeof(uint16_t), TRAP::Graphics::BufferUsage::Dynamic);
 	m_indexBuffer->AwaitLoading();
+
+	m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("ubo", sizeof(UniformBufferObject), TRAP::Graphics::BufferUsage::Stream);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -62,7 +66,8 @@ void VulkanTests::OnAttach()
 void VulkanTests::OnDetach()
 {
 	m_window.reset();
-	
+
+	m_uniformBuffer.reset();
 	m_indexBuffer.reset();
 	m_vertexBuffer.reset();
 }
@@ -100,8 +105,21 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	m_indexBuffer->Use();
 	m_vertexBuffer->AwaitLoading();
 	m_vertexBuffer->Use();
-	
-	TRAP::Graphics::ShaderManager::Get("VKTest")->Use();
+
+	if (m_ubo)
+		TRAP::Graphics::ShaderManager::Get("VKTest")->Use();
+	else
+		TRAP::Graphics::ShaderManager::Get("VKTestNoUBO")->Use();
+
+	if(m_ubo)
+	{
+		UniformBufferObject ubo{};
+		ubo.Model = TRAP::Math::Rotate(TRAP::Math::Mat4(1.0f), TRAP::Application::GetTime() * TRAP::Math::Radians(90.0f), TRAP::Math::Vec3(0.0f, 0.0f, 1.0f));
+		ubo.View = TRAP::Math::LookAt(TRAP::Math::Vec3(2.0f), TRAP::Math::Vec3(0.0f), TRAP::Math::Vec3(0.0f, 0.0f, 1.0f));
+		ubo.Proj = TRAP::Math::Perspective(TRAP::Math::Radians(45.0f), static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()), 0.1f, 10.0f);
+		m_uniformBuffer->SetData(&ubo, sizeof(UniformBufferObject));
+	}
+	m_uniformBuffer->Use();
 	
 	if(!m_indexed)
 		TRAP::Graphics::RendererAPI::GetRenderer()->Draw(m_quad ? 6 : 3);
@@ -123,8 +141,6 @@ void VulkanTests::OnImGuiRender()
 	ImGui::Begin("LOL");
 	ImGui::Text("HELLO IMGUI");
 	ImGui::End();
-
-	ImGui::ShowDemoWindow();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -164,6 +180,11 @@ bool VulkanTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 	{
 		m_indexed = !m_indexed;
 		TP_TRACE("[VulkanTests] Indexed Drawing: ", m_indexed ? "On" : "Off");
+	}
+	if(e.GetKey() == TRAP::Input::Key::F4)
+	{
+		m_ubo = !m_ubo;
+		TP_TRACE("[VulkanTests] UniformBuffer: ", m_ubo ? "On" : "Off");
 	}
 	if (e.GetKey() == TRAP::Input::Key::Escape)
 	{

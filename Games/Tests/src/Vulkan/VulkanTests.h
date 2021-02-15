@@ -22,6 +22,14 @@ private:
 	TRAP::Scope<TRAP::Window> m_window;
 
 	TRAP::Utils::Timer m_fpsTimer;
+
+	struct UniformBufferObject
+	{
+		alignas(16) TRAP::Math::Mat4 Model;
+		alignas(16)	TRAP::Math::Mat4 View;
+		alignas(16) TRAP::Math::Mat4 Proj;
+	};
+	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_uniformBuffer;
 	
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
 	std::array<float, 18> m_triangleVertices
@@ -63,6 +71,7 @@ private:
 	bool m_wireFrame;
 	bool m_quad;
 	bool m_indexed;
+	bool m_ubo;
 };
 
 #endif /*_GAMESTRAP_VULKANTESTS_H_*/

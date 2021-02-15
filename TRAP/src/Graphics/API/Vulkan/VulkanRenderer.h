@@ -75,6 +75,7 @@ namespace TRAP::Graphics::API
 		void BindShader(Shader* shader, Window* window = nullptr) const;
 		void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const BufferLayout& layout, Window* window = nullptr) override;
 		void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType, Window* window) override;
+		void BindDescriptorSet(DescriptorSet& dSet, BufferUsage usage, Window* window) override;
 		
 		//void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) override;
 		//void Draw(const Scope<VertexArray>& vertexArray) override;
@@ -205,7 +206,6 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanInstance> GetInstance() const;
 		TRAP::Ref<VulkanDevice> GetDevice() const;
 		TRAP::Ref<VulkanMemoryAllocator> GetVMA() const;
-		TRAP::Ref<VulkanDescriptorPool> GetDescriptorPool() const;
 
 		static const TRAP::Ref<Pipeline>& GetPipeline(PipelineDesc& desc);
 	
@@ -226,7 +226,6 @@ namespace TRAP::Graphics::API
 		TRAP::Scope<VulkanDebug> m_debug;
 		TRAP::Ref<VulkanDevice> m_device;
 		TRAP::Ref<VulkanMemoryAllocator> m_vma;
-		TRAP::Ref<VulkanDescriptorPool> m_descriptorPool;
 		
 		bool m_vsyncNew;
 		

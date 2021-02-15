@@ -404,7 +404,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		else if(m_vkDescriptorSetLayouts[setIndex] != VK_NULL_HANDLE)
 		{
 			//Consume empty descriptor sets from empty descriptor set pool
-			m_vkEmptyDescriptorSets[setIndex] = dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDescriptorPool()->RetrieveVkDescriptorSet(m_vkDescriptorSetLayouts[setIndex]);
+			m_vkEmptyDescriptorSets[setIndex] = dynamic_cast<TRAP::Graphics::API::VulkanDescriptorPool*>(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDescriptorPool().get())->RetrieveVkDescriptorSet(m_vkDescriptorSetLayouts[setIndex]);
 		}
 	}
 }

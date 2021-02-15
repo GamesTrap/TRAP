@@ -12,8 +12,10 @@ namespace TRAP
 
 namespace TRAP::Graphics 
 {
+	enum class BufferUsage;
 	class BufferLayout;
 	class CommandPool;
+	class DescriptorPool;
 	class DescriptorSet;
 	class Shader;
 	class Pipeline;
@@ -139,6 +141,7 @@ namespace TRAP::Graphics
 
 		virtual void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const BufferLayout& layout, Window* window = nullptr) = 0;
 		virtual void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType, Window* window = nullptr) = 0;
+		virtual void BindDescriptorSet(DescriptorSet& dSet, BufferUsage usage, Window* window = nullptr) = 0;
 		
 		//virtual void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) = 0;
 		//virtual void Draw(const Scope<VertexArray>& vertexArray) = 0;
@@ -148,6 +151,9 @@ namespace TRAP::Graphics
 		virtual std::array<uint8_t, 16> GetCurrentGPUUUID() = 0;
 		virtual std::string GetCurrentGPUName() = 0;
 		virtual std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() = 0;
+
+		static TRAP::Ref<TRAP::Graphics::DescriptorPool> GetDescriptorPool();
+		static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(Window* window = nullptr);
 
 	protected:
 		static const TRAP::Scope<PerWindowData>& GetMainWindowData();
@@ -2014,6 +2020,8 @@ namespace TRAP::Graphics
 		static RenderAPI s_RenderAPI;
 		static TRAP::Scope<API::ResourceLoader> s_ResourceLoader;
 
+		static TRAP::Ref<DescriptorPool> s_descriptorPool;
+		
 		friend class ImGuiLayer;
 		struct PerWindowData
 		{

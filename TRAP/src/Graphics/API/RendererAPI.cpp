@@ -21,6 +21,7 @@ TRAP::Scope<std::unordered_map<TRAP::Window*, TRAP::Scope<TRAP::Graphics::Render
 std::mutex TRAP::Graphics::RendererAPI::s_perWindowDataMutex{};
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapable = true;
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
+TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::s_descriptorPool = nullptr;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -145,9 +146,26 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::GetRenderAPI()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::GetDescriptorPool()
+{
+	return s_descriptorPool;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& TRAP::Graphics::RendererAPI::GetMainWindowData()
 {
-	return (*s_Renderer->s_perWindowDataMap)[TRAP::Application::GetWindow().get()];
+	return (*s_perWindowDataMap)[TRAP::Application::GetWindow().get()];
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphicsRootSignature(Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	return std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline).RootSignature;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

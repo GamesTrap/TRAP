@@ -4,6 +4,8 @@
 #include "BufferLayout.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Buffer.h"
+#include "Graphics/API/Objects/DescriptorPool.h"
+#include "Graphics/API/Objects/DescriptorSet.h"
 
 TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const char* name, const uint64_t size, const BufferUsage usage)
 {
@@ -57,7 +59,7 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::UniformBuffer::UniformBuffer()
-	: m_uniformBuffers(3), m_tokens(3), m_bufferUsage(BufferUsage::Static)
+	: m_uniformBuffers(3), m_descriptorSet(nullptr), m_tokens(3), m_bufferUsage(BufferUsage::Static)
 {
 }
 
@@ -92,6 +94,43 @@ void TRAP::Graphics::UniformBuffer::Use(Window* window)
 	//CommandBuffer->BindDescriptorSet();
 
 	//BufferUsage Static = UpdateFreqNone, Dynamic = UpdateFreqPerBatch, Stream = UpdateFreqPerFrame
+
+	if(!m_descriptorSet)
+	{
+		TRAP::Graphics::RendererAPI::DescriptorSetDesc setDesc{};
+		if (m_bufferUsage == BufferUsage::Static)
+		{
+			setDesc.UpdateFrequency = TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::None;
+			setDesc.MaxSets = 1;
+		}
+		else if (m_bufferUsage == BufferUsage::Dynamic)
+		{
+			setDesc.UpdateFrequency = TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::PerFrame;
+			setDesc.MaxSets = 3u * 2;
+		}
+		else
+		{
+			setDesc.UpdateFrequency = TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::PerFrame;
+			setDesc.MaxSets = 3u * 2;
+		}
+		setDesc.RootSignature = TRAP::Graphics::RendererAPI::GetGraphicsRootSignature(window);
+		m_descriptorSet = TRAP::Graphics::RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
+		
+		for(uint32_t i = 0; i < 3u; ++i)
+		{
+			TRAP::Graphics::RendererAPI::DescriptorData params{};
+			params.Name = m_name.c_str();
+			params.Resource = std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>{ m_uniformBuffers[i] };
+			m_descriptorSet->Update(i * 2 + 0, { params });
+		}
+	}
+
+	if (m_bufferUsage == BufferUsage::Static)
+		RendererAPI::GetRenderer()->BindDescriptorSet(*m_descriptorSet, m_bufferUsage, window);
+	else if (m_bufferUsage == BufferUsage::Dynamic)
+		RendererAPI::GetRenderer()->BindDescriptorSet(*m_descriptorSet, m_bufferUsage, window);
+	else
+		RendererAPI::GetRenderer()->BindDescriptorSet(*m_descriptorSet, m_bufferUsage, window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

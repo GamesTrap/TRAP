@@ -44,6 +44,8 @@ namespace TRAP::Graphics
 
 	private:
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_uniformBuffers;
+
+		TRAP::Graphics::DescriptorSet* m_descriptorSet;
 		
 		std::vector<API::SyncToken> m_tokens;
 

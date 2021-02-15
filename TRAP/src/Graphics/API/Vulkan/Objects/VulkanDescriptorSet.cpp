@@ -304,9 +304,8 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index, const std:
 					m_dynamicSizeOffsets[index].Size = static_cast<uint32_t>(off.Sizes[0]);
 					update = true;
 				}
+				break;
 			}
-			break;
-		}
 
 		case RendererAPI::DescriptorType::Buffer:
 		case RendererAPI::DescriptorType::BufferRaw:
@@ -316,7 +315,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index, const std:
 			const std::vector<TRAP::Ref<Buffer>>& buffers = std::get<std::vector<TRAP::Ref<Buffer>>>(param.Resource);
 			VALIDATE_DESCRIPTOR(!buffers.empty(), std::string("Empty Buffer (") + std::string(desc->Name));
 
-			for(uint32_t arr = 0; arr < arrayCount; ++arr)
+			for (uint32_t arr = 0; arr < arrayCount; ++arr)
 			{
 				VALIDATE_DESCRIPTOR(buffers[arr], std::string("nullptr Buffer (") + std::string(desc->Name) + std::string(" [") + std::to_string(arr) + std::string("])"));
 
@@ -329,7 +328,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index, const std:
 				};
 
 				const RendererAPI::DescriptorData::BufferOffset& off = std::get<RendererAPI::DescriptorData::BufferOffset>(param.Offset);
-				if(!off.Offsets.empty())
+				if (!off.Offsets.empty())
 				{
 					VALIDATE_DESCRIPTOR(!off.Sizes.empty(), std::string("Descriptor (") + std::string(desc->Name) + std::string(") - Sizes must be provided with Offsets"));
 					VALIDATE_DESCRIPTOR(off.Sizes[arr] > 0, std::string("Descriptor (") + std::string(desc->Name) + std::string(") - Sizes[") + std::to_string(arr) + std::string("] is zero"));
@@ -344,7 +343,8 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index, const std:
 
 				update = true;
 			}
-			
+
+		}
 			break;
 		}
 

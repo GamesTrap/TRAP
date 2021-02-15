@@ -76,7 +76,6 @@ TRAP::Graphics::API::VulkanRenderer::VulkanRenderer()
 	  m_debug(nullptr),
 	  m_device(nullptr),
 	  m_vma(nullptr),
-	  m_descriptorPool(nullptr),
 	  m_vsyncNew(false)
 {
 	s_renderer = this;
@@ -88,6 +87,8 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 {
 	TP_DEBUG(Log::RendererVulkanPrefix, "Destroying Renderer");
 
+	s_descriptorPool.reset();
+	
 	s_ResourceLoader.reset();
 	
 	RemoveDefaultResources();
@@ -258,7 +259,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string& gameNa
 
 	m_vma = TRAP::MakeRef<VulkanMemoryAllocator>(m_device, m_instance);
 
-	m_descriptorPool = TRAP::MakeRef<VulkanDescriptorPool>(8192);
+	s_descriptorPool = TRAP::MakeRef<VulkanDescriptorPool>(8192);
 
 	m_device->FindQueueFamilyIndices();
 
@@ -648,7 +649,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 			gpd.RootSignature = RootSignature::Create(rsd);
 
 			p->CurrentGraphicsPipeline = GetPipeline(p->GraphicsPipelineDesc);
-			p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicsPipeline); //TODO Needed because of ImGui ?!
+			p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicsPipeline);
 		}
 	}
 }
@@ -731,6 +732,23 @@ void TRAP::Graphics::API::VulkanRenderer::BindIndexBuffer(const TRAP::Ref<Buffer
 	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
 
 	p->GraphicCommandBuffers[p->ImageIndex]->BindIndexBuffer(iBuffer, indexType, 0);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet, const BufferUsage usage, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+	
+	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
+	
+	if (usage == BufferUsage::Static)
+		p->GraphicCommandBuffers[p->ImageIndex]->BindDescriptorSet(0, dSet);
+	else if (usage == BufferUsage::Dynamic)
+		p->GraphicCommandBuffers[p->ImageIndex]->BindDescriptorSet(p->ImageIndex * 2, dSet);
+	else
+		p->GraphicCommandBuffers[p->ImageIndex]->BindDescriptorSet(p->ImageIndex * 2, dSet);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1300,13 +1318,6 @@ TRAP::Ref<TRAP::Graphics::API::VulkanDevice> TRAP::Graphics::API::VulkanRenderer
 TRAP::Ref<TRAP::Graphics::API::VulkanMemoryAllocator> TRAP::Graphics::API::VulkanRenderer::GetVMA() const
 {
 	return m_vma;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Ref<TRAP::Graphics::API::VulkanDescriptorPool> TRAP::Graphics::API::VulkanRenderer::GetDescriptorPool() const
-{
-	return m_descriptorPool;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
