@@ -17,7 +17,7 @@
 #endif
 
 /* VK_LOADER_GENERATE_VERSION_DEFINE */
-constexpr uint32_t VK_LOADER_HEADER_VERSION = 162;
+constexpr uint32_t VK_LOADER_HEADER_VERSION = 170;
 /* VK_LOADER_GENERATE_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -505,6 +505,20 @@ struct VkDeviceTable
 	PFN_vkGetSwapchainImagesKHR vkGetSwapchainImagesKHR;
 	PFN_vkQueuePresentKHR vkQueuePresentKHR;
 #endif /* defined(VK_KHR_swapchain) */
+#if defined(VK_KHR_synchronization2)
+	PFN_vkCmdPipelineBarrier2KHR vkCmdPipelineBarrier2KHR;
+	PFN_vkCmdResetEvent2KHR vkCmdResetEvent2KHR;
+	PFN_vkCmdSetEvent2KHR vkCmdSetEvent2KHR;
+	PFN_vkCmdWaitEvents2KHR vkCmdWaitEvents2KHR;
+	PFN_vkCmdWriteTimestamp2KHR vkCmdWriteTimestamp2KHR;
+	PFN_vkQueueSubmit2KHR vkQueueSubmit2KHR;
+#endif /* defined(VK_KHR_synchronization2) */
+#if defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker)
+	PFN_vkCmdWriteBufferMarker2AMD vkCmdWriteBufferMarker2AMD;
+#endif /* defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker) */
+#if defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints)
+	PFN_vkGetQueueCheckpointData2NV vkGetQueueCheckpointData2NV;
+#endif /* defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints) */
 #if defined(VK_KHR_timeline_semaphore)
 	PFN_vkGetSemaphoreCounterValueKHR vkGetSemaphoreCounterValueKHR;
 	PFN_vkSignalSemaphoreKHR vkSignalSemaphoreKHR;
@@ -1118,6 +1132,20 @@ extern PFN_vkDestroySwapchainKHR vkDestroySwapchainKHR;
 extern PFN_vkGetSwapchainImagesKHR vkGetSwapchainImagesKHR;
 extern PFN_vkQueuePresentKHR vkQueuePresentKHR;
 #endif /* defined(VK_KHR_swapchain) */
+#if defined(VK_KHR_synchronization2)
+extern PFN_vkCmdPipelineBarrier2KHR vkCmdPipelineBarrier2KHR;
+extern PFN_vkCmdResetEvent2KHR vkCmdResetEvent2KHR;
+extern PFN_vkCmdSetEvent2KHR vkCmdSetEvent2KHR;
+extern PFN_vkCmdWaitEvents2KHR vkCmdWaitEvents2KHR;
+extern PFN_vkCmdWriteTimestamp2KHR vkCmdWriteTimestamp2KHR;
+extern PFN_vkQueueSubmit2KHR vkQueueSubmit2KHR;
+#endif /* defined(VK_KHR_synchronization2) */
+#if defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker)
+extern PFN_vkCmdWriteBufferMarker2AMD vkCmdWriteBufferMarker2AMD;
+#endif /* defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker) */
+#if defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints)
+extern PFN_vkGetQueueCheckpointData2NV vkGetQueueCheckpointData2NV;
+#endif /* defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints) */
 #if defined(VK_KHR_timeline_semaphore)
 extern PFN_vkGetSemaphoreCounterValueKHR vkGetSemaphoreCounterValueKHR;
 extern PFN_vkSignalSemaphoreKHR vkSignalSemaphoreKHR;
@@ -1152,6 +1180,10 @@ extern PFN_vkCreateViSurfaceNN vkCreateViSurfaceNN;
 extern PFN_vkGetImageViewAddressNVX vkGetImageViewAddressNVX;
 extern PFN_vkGetImageViewHandleNVX vkGetImageViewHandleNVX;
 #endif /* defined(VK_NVX_image_view_handle) */
+#if defined(VK_NV_acquire_winrt_display)
+extern PFN_vkAcquireWinrtDisplayNV vkAcquireWinrtDisplayNV;
+extern PFN_vkGetWinrtDisplayNV vkGetWinrtDisplayNV;
+#endif /* defined(VK_NV_acquire_winrt_display) */
 #if defined(VK_NV_clip_space_w_scaling)
 extern PFN_vkCmdSetViewportWScalingNV vkCmdSetViewportWScalingNV;
 #endif /* defined(VK_NV_clip_space_w_scaling) */
@@ -1579,6 +1611,10 @@ static void VkGenLoadInstance(void* context, PFN_vkVoidFunction(*load)(void*, co
 #if defined(VK_NN_vi_surface)
 	vkCreateViSurfaceNN = (PFN_vkCreateViSurfaceNN)load(context, "vkCreateViSurfaceNN");
 #endif /* defined(VK_NN_vi_surface) */
+#if defined(VK_NV_acquire_winrt_display)
+	vkAcquireWinrtDisplayNV = (PFN_vkAcquireWinrtDisplayNV)load(context, "vkAcquireWinrtDisplayNV");
+	vkGetWinrtDisplayNV = (PFN_vkGetWinrtDisplayNV)load(context, "vkGetWinrtDisplayNV");
+#endif /* defined(VK_NV_acquire_winrt_display) */
 #if defined(VK_NV_cooperative_matrix)
 	vkGetPhysicalDeviceCooperativeMatrixPropertiesNV = (PFN_vkGetPhysicalDeviceCooperativeMatrixPropertiesNV)load(context, "vkGetPhysicalDeviceCooperativeMatrixPropertiesNV");
 #endif /* defined(VK_NV_cooperative_matrix) */
@@ -2004,6 +2040,20 @@ static void VkGenLoadDevice(void* context, PFN_vkVoidFunction(*load)(void*, cons
 	vkGetSwapchainImagesKHR = (PFN_vkGetSwapchainImagesKHR)load(context, "vkGetSwapchainImagesKHR");
 	vkQueuePresentKHR = (PFN_vkQueuePresentKHR)load(context, "vkQueuePresentKHR");
 #endif /* defined(VK_KHR_swapchain) */
+#if defined(VK_KHR_synchronization2)
+	vkCmdPipelineBarrier2KHR = (PFN_vkCmdPipelineBarrier2KHR)load(context, "vkCmdPipelineBarrier2KHR");
+	vkCmdResetEvent2KHR = (PFN_vkCmdResetEvent2KHR)load(context, "vkCmdResetEvent2KHR");
+	vkCmdSetEvent2KHR = (PFN_vkCmdSetEvent2KHR)load(context, "vkCmdSetEvent2KHR");
+	vkCmdWaitEvents2KHR = (PFN_vkCmdWaitEvents2KHR)load(context, "vkCmdWaitEvents2KHR");
+	vkCmdWriteTimestamp2KHR = (PFN_vkCmdWriteTimestamp2KHR)load(context, "vkCmdWriteTimestamp2KHR");
+	vkQueueSubmit2KHR = (PFN_vkQueueSubmit2KHR)load(context, "vkQueueSubmit2KHR");
+#endif /* defined(VK_KHR_synchronization2) */
+#if defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker)
+	vkCmdWriteBufferMarker2AMD = (PFN_vkCmdWriteBufferMarker2AMD)load(context, "vkCmdWriteBufferMarker2AMD");
+#endif /* defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker) */
+#if defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints)
+	vkGetQueueCheckpointData2NV = (PFN_vkGetQueueCheckpointData2NV)load(context, "vkGetQueueCheckpointData2NV");
+#endif /* defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints) */
 #if defined(VK_KHR_timeline_semaphore)
 	vkGetSemaphoreCounterValueKHR = (PFN_vkGetSemaphoreCounterValueKHR)load(context, "vkGetSemaphoreCounterValueKHR");
 	vkSignalSemaphoreKHR = (PFN_vkSignalSemaphoreKHR)load(context, "vkSignalSemaphoreKHR");
@@ -2013,6 +2063,10 @@ static void VkGenLoadDevice(void* context, PFN_vkVoidFunction(*load)(void*, cons
 	vkGetImageViewAddressNVX = (PFN_vkGetImageViewAddressNVX)load(context, "vkGetImageViewAddressNVX");
 	vkGetImageViewHandleNVX = (PFN_vkGetImageViewHandleNVX)load(context, "vkGetImageViewHandleNVX");
 #endif /* defined(VK_NVX_image_view_handle) */
+#if defined(VK_NV_acquire_winrt_display)
+	PFN_vkAcquireWinrtDisplayNV vkAcquireWinrtDisplayNV;
+	PFN_vkGetWinrtDisplayNV vkGetWinrtDisplayNV;
+#endif /* defined(VK_NV_acquire_winrt_display) */
 #if defined(VK_NV_clip_space_w_scaling)
 	vkCmdSetViewportWScalingNV = (PFN_vkCmdSetViewportWScalingNV)load(context, "vkCmdSetViewportWScalingNV");
 #endif /* defined(VK_NV_clip_space_w_scaling) */
@@ -2487,6 +2541,20 @@ static void VkGenLoadDeviceTable(struct VkDeviceTable* table, void* context, PFN
 	table->vkGetSwapchainImagesKHR = (PFN_vkGetSwapchainImagesKHR)load(context, "vkGetSwapchainImagesKHR");
 	table->vkQueuePresentKHR = (PFN_vkQueuePresentKHR)load(context, "vkQueuePresentKHR");
 #endif /* defined(VK_KHR_swapchain) */
+#if defined(VK_KHR_synchronization2)
+	table->vkCmdPipelineBarrier2KHR = (PFN_vkCmdPipelineBarrier2KHR)load(context, "vkCmdPipelineBarrier2KHR");
+	table->vkCmdResetEvent2KHR = (PFN_vkCmdResetEvent2KHR)load(context, "vkCmdResetEvent2KHR");
+	table->vkCmdSetEvent2KHR = (PFN_vkCmdSetEvent2KHR)load(context, "vkCmdSetEvent2KHR");
+	table->vkCmdWaitEvents2KHR = (PFN_vkCmdWaitEvents2KHR)load(context, "vkCmdWaitEvents2KHR");
+	table->vkCmdWriteTimestamp2KHR = (PFN_vkCmdWriteTimestamp2KHR)load(context, "vkCmdWriteTimestamp2KHR");
+	table->vkQueueSubmit2KHR = (PFN_vkQueueSubmit2KHR)load(context, "vkQueueSubmit2KHR");
+#endif /* defined(VK_KHR_synchronization2) */
+#if defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker)
+	table->vkCmdWriteBufferMarker2AMD = (PFN_vkCmdWriteBufferMarker2AMD)load(context, "vkCmdWriteBufferMarker2AMD");
+#endif /* defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker) */
+#if defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints)
+	table->vkGetQueueCheckpointData2NV = (PFN_vkGetQueueCheckpointData2NV)load(context, "vkGetQueueCheckpointData2NV");
+#endif /* defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints) */
 #if defined(VK_KHR_timeline_semaphore)
 	table->vkGetSemaphoreCounterValueKHR = (PFN_vkGetSemaphoreCounterValueKHR)load(context, "vkGetSemaphoreCounterValueKHR");
 	table->vkSignalSemaphoreKHR = (PFN_vkSignalSemaphoreKHR)load(context, "vkSignalSemaphoreKHR");
@@ -3104,6 +3172,20 @@ inline PFN_vkDestroySwapchainKHR vkDestroySwapchainKHR;
 inline PFN_vkGetSwapchainImagesKHR vkGetSwapchainImagesKHR;
 inline PFN_vkQueuePresentKHR vkQueuePresentKHR;
 #endif /* defined(VK_KHR_swapchain) */
+#if defined(VK_KHR_synchronization2)
+inline PFN_vkCmdPipelineBarrier2KHR vkCmdPipelineBarrier2KHR;
+inline PFN_vkCmdResetEvent2KHR vkCmdResetEvent2KHR;
+inline PFN_vkCmdSetEvent2KHR vkCmdSetEvent2KHR;
+inline PFN_vkCmdWaitEvents2KHR vkCmdWaitEvents2KHR;
+inline PFN_vkCmdWriteTimestamp2KHR vkCmdWriteTimestamp2KHR;
+inline PFN_vkQueueSubmit2KHR vkQueueSubmit2KHR;
+#endif /* defined(VK_KHR_synchronization2) */
+#if defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker)
+inline PFN_vkCmdWriteBufferMarker2AMD vkCmdWriteBufferMarker2AMD;
+#endif /* defined(VK_KHR_synchronization2) && defined(VK_AMD_buffer_marker) */
+#if defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints)
+inline PFN_vkGetQueueCheckpointData2NV vkGetQueueCheckpointData2NV;
+#endif /* defined(VK_KHR_synchronization2) && defined(VK_NV_device_diagnostic_checkpoints) */
 #if defined(VK_KHR_timeline_semaphore)
 inline PFN_vkGetSemaphoreCounterValueKHR vkGetSemaphoreCounterValueKHR;
 inline PFN_vkSignalSemaphoreKHR vkSignalSemaphoreKHR;

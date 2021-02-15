@@ -124,13 +124,8 @@ void TRAP::Graphics::UniformBuffer::Use(Window* window)
 			m_descriptorSet->Update(i * 2 + 0, { params });
 		}
 	}
-
-	if (m_bufferUsage == BufferUsage::Static)
-		RendererAPI::GetRenderer()->BindDescriptorSet(*m_descriptorSet, m_bufferUsage, window);
-	else if (m_bufferUsage == BufferUsage::Dynamic)
-		RendererAPI::GetRenderer()->BindDescriptorSet(*m_descriptorSet, m_bufferUsage, window);
-	else
-		RendererAPI::GetRenderer()->BindDescriptorSet(*m_descriptorSet, m_bufferUsage, window);
+	
+	RendererAPI::GetRenderer()->BindDescriptorSet(*m_descriptorSet, m_bufferUsage, window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
