@@ -150,7 +150,6 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(const TRAP::Scop
 		p->GraphicCommandBuffers[p->ImageIndex]->SetScissor(0, 0, p->Window->GetWidth(), p->Window->GetHeight());
 		if(p->CurrentGraphicsPipeline)
 			p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicsPipeline);
-		//TODO Also check if pipeline changed?!
 		
 		p->Recording = true;
 	}
@@ -574,21 +573,9 @@ void TRAP::Graphics::API::VulkanRenderer::Draw(const uint32_t vertexCount, const
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
-	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
-	RootSignatureDesc& rsd = p->RootSignatureDesc;
+	const TRAP::Scope<PerWindowData>& data = (*s_perWindowDataMap)[window];
 	
-	//Create/Load Graphics Pipeline
-	if(!gpd.RootSignature || std::find(rsd.Shaders.begin(), rsd.Shaders.end(), gpd.ShaderProgram) == rsd.Shaders.end())
-	{
-		rsd.Shaders.push_back(gpd.ShaderProgram);
-		gpd.RootSignature = RootSignature::Create(rsd);
-	}
-	
-	p->CurrentGraphicsPipeline = GetPipeline(p->GraphicsPipelineDesc);
-	p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicsPipeline);
-	
-	p->GraphicCommandBuffers[p->ImageIndex]->Draw(vertexCount, firstVertex);
+	data->GraphicCommandBuffers[data->ImageIndex]->Draw(vertexCount, firstVertex);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -598,21 +585,9 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount,
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
-	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
-	RootSignatureDesc& rsd = p->RootSignatureDesc;
+	const TRAP::Scope<PerWindowData>& data = (*s_perWindowDataMap)[window];
 
-	//Create/Load Graphics Pipeline
-	if (!gpd.RootSignature || std::find(rsd.Shaders.begin(), rsd.Shaders.end(), gpd.ShaderProgram) == rsd.Shaders.end())
-	{
-		rsd.Shaders.push_back(gpd.ShaderProgram);
-		gpd.RootSignature = RootSignature::Create(rsd);
-	}
-
-	p->CurrentGraphicsPipeline = GetPipeline(p->GraphicsPipelineDesc);
-	p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicsPipeline);
-
-	p->GraphicCommandBuffers[p->ImageIndex]->DrawIndexed(indexCount, firstIndex, firstVertex);
+	data->GraphicCommandBuffers[data->ImageIndex]->DrawIndexed(indexCount, firstIndex, firstVertex);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -622,7 +597,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
+	const TRAP::Scope<PerWindowData>& data = (*s_perWindowDataMap)[window];
 
 	const ShaderStage stages = shader->GetShaderStages();
 
@@ -638,18 +613,20 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 	}
 	else if (stages != ShaderStage::None && stages != ShaderStage::SHADER_STAGE_COUNT)
 	{
-		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
+		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(data->GraphicsPipelineDesc.Pipeline);
 		if (gpd.ShaderProgram != shader)
 		{
 			gpd.ShaderProgram = shader;
 
-			RootSignatureDesc rsd{};
-			rsd.Shaders = { shader };
-			gpd.RootSignature = RootSignature::Create(rsd);
-
-			p->CurrentGraphicsPipeline = GetPipeline(p->GraphicsPipelineDesc);
-			p->GraphicCommandBuffers[p->ImageIndex]->BindPipeline(p->CurrentGraphicsPipeline);
+			if (!gpd.RootSignature || std::find(data->RootSignatureDesc.Shaders.begin(), data->RootSignatureDesc.Shaders.end(), gpd.ShaderProgram) == data->RootSignatureDesc.Shaders.end())
+			{
+				data->RootSignatureDesc.Shaders.push_back(gpd.ShaderProgram);
+				gpd.RootSignature = RootSignature::Create(data->RootSignatureDesc);
+			}
 		}
+		
+		data->CurrentGraphicsPipeline = GetPipeline(data->GraphicsPipelineDesc);
+		data->GraphicCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentGraphicsPipeline);
 	}
 }
 
