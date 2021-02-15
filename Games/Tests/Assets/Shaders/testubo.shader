@@ -4,7 +4,7 @@ layout(location = 1) in vec3 col;
 
 layout(location = 0) out vec3 vCol;
 
-layout(set = 1, binding = 0) uniform UniformBlock
+layout(UpdateFreqPerFrame, binding = 0) uniform UniformBlock
 {
     mat4 model;
     mat4 view;

@@ -480,8 +480,9 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 		if (!shaders[i].empty())
 		{
 			//Found main function
-			//Add GLSL version before any shader code
-			shaders[i] = "#version 460 core\n" + shaders[i];
+			//Add GLSL version before any shader code &
+			//Add Descriptor defines
+			shaders[i] = "#version 460 core\n#define UpdateFreqNone set = 0\n#define UpdateFreqPerFrame set = 1\n#define UpdateFreqPerBatch set = 2\n#define UpdateFreqPerDraw set = 3\n" + shaders[i];
 		}
 	}
 

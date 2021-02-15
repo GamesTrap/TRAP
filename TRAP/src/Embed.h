@@ -13,7 +13,7 @@ namespace TRAP::Embed
 
 		layout(location = 0) in vec3 Position;
 
-		layout(std140, binding = 0) uniform MatrixBuffer
+		layout(UpdateFreqPerFrame, binding = 0) uniform MatrixBuffer
 		{
 			mat4 sys_ProjectionMatrix;
 			mat4 sys_ViewMatrix;
@@ -53,7 +53,7 @@ namespace TRAP::Embed
 		layout(location = 2) out vec2 vTexCoord;
 		layout(location = 3) out flat float vTexIndex;
 
-		layout(std140, binding = 0) uniform CameraBuffer
+		layout(UpdateFreqPerFrame, binding = 0) uniform CameraBuffer
 		{
 			mat4 sys_ProjectionMatrix;
 			mat4 sys_ViewMatrix;
