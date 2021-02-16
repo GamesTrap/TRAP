@@ -72,6 +72,7 @@ private:
 	bool m_quad;
 	bool m_indexed;
 	bool m_ubo;
+	bool m_vsync;
 };
 
 #endif /*_GAMESTRAP_VULKANTESTS_H_*/

@@ -1,6 +1,8 @@
 #include "TRAPPCH.h"
 #include "Shader.h"
 
+
+#include "DummyShader.h"
 #include "VFS/VFS.h"
 #include "Graphics/API/Vulkan/Objects/VulkanShader.h"
 #include "Utils/String/String.h"
@@ -82,7 +84,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	if ((glslSource.empty() && !isSPIRV) || (SPIRVSource.empty() && isSPIRV))
 	{
 		TP_WARN(Log::ShaderPrefix, "Shader using fallback Shader: \"Fallback\"");
-		return nullptr;
+		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
 	}
 
 	if (!isSPIRV)
@@ -92,12 +94,12 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		if (!PreProcessGLSL(glslSource, shaders, shaderStages))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback Shader: \"Fallback\"");
-			return nullptr;
+			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
 		}
 		if (!ValidateShaderStages(shaderStages))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback Shader: \"Fallback\"");
-			return nullptr;
+			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
 		}
 
 		desc = ConvertGLSLToSPIRV(shaders, shaderStages);
@@ -106,7 +108,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		desc = LoadSPIRV(SPIRVSource);
 
 	if (desc.Stages == RendererAPI::ShaderStage::None)
-		return nullptr;
+		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
 	
 	switch (RendererAPI::GetRenderAPI())
 	{
@@ -173,7 +175,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	if ((glslSource.empty() && !isSPIRV) || (SPIRVSource.empty() && isSPIRV))
 	{
 		TP_WARN(Log::ShaderPrefix, "Shader using fallback Shader: \"Fallback\"");
-		return nullptr;
+		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
 	}
 
 	if(!isSPIRV)
@@ -183,12 +185,12 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		if (!PreProcessGLSL(glslSource, shaders, shaderStages))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback Shader: \"Fallback\"");
-			return nullptr;
+			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
 		}
 		if (!ValidateShaderStages(shaderStages))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback Shader: \"Fallback\"");
-			return nullptr;
+			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
 		}
 		
 		desc = ConvertGLSLToSPIRV(shaders, shaderStages);
@@ -197,7 +199,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 		desc = LoadSPIRV(SPIRVSource);
 
 	if (desc.Stages == RendererAPI::ShaderStage::None)
-		return nullptr;
+		return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
 
 	switch (RendererAPI::GetRenderAPI())
 	{

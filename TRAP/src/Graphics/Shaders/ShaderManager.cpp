@@ -3,7 +3,7 @@
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Shader>> TRAP::Graphics::ShaderManager::s_Shaders;
+std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Shader>> TRAP::Graphics::ShaderManager::s_Shaders{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -85,7 +85,10 @@ void TRAP::Graphics::ShaderManager::Remove(const Scope<Shader>& shader)
 	if(shader)
 	{
 		if (Exists(shader->GetName()))
+		{
+			TRAP::Graphics::RendererAPI::RemoveShaderFromGraphicsRootSignature(shader.get());
 			s_Shaders.erase(shader->GetName());
+		}
 		else
 			TP_ERROR(Log::ShaderManagerPrefix, "Could not find Shader with Name: \"", shader->GetName(), "\"!");
 	}
@@ -98,7 +101,10 @@ void TRAP::Graphics::ShaderManager::Remove(const std::string& name)
 	TP_PROFILE_FUNCTION();
 	
 	if (Exists(name))
+	{
+		TRAP::Graphics::RendererAPI::RemoveShaderFromGraphicsRootSignature(s_Shaders[name].get());
 		s_Shaders.erase(name);
+	}
 	else
 		TP_ERROR(Log::ShaderManagerPrefix, "Could not find Shader with Name: \"", name, "\"!");
 }
@@ -148,11 +154,11 @@ void TRAP::Graphics::ShaderManager::Reload(const std::string& nameOrVirtualPath)
 			std::string error;
 			if (!path.empty())
 			{
+				TRAP::Graphics::RendererAPI::RemoveShaderFromGraphicsRootSignature(s_Shaders[nameOrVirtualPath].get());
 				s_Shaders[nameOrVirtualPath].reset();
 				s_Shaders[nameOrVirtualPath] = Shader::CreateFromFile(nameOrVirtualPath, path);
 				TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", nameOrVirtualPath, "\"");
 				Get("Fallback")->Use();
-				
 			}
 		}
 		else
@@ -184,6 +190,7 @@ void TRAP::Graphics::ShaderManager::Reload(const Scope<Shader>& shader)
 		std::string error;
 		if (!path.empty())
 		{
+			TRAP::Graphics::RendererAPI::RemoveShaderFromGraphicsRootSignature(shader.get());
 			s_Shaders[name].reset();
 			s_Shaders[name] = Shader::CreateFromFile(name, path);
 			TP_INFO(Log::ShaderManagerPrefix, "Reloaded: \"", name, "\"");
@@ -203,8 +210,6 @@ void TRAP::Graphics::ShaderManager::ReloadAll()
 	TP_INFO(Log::ShaderManagerPrefix, "Reloading all may take a while...");
 	for (auto& [name, shader] : s_Shaders)
 		Reload(shader);
-
-	Get("Fallback")->Use();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -6,7 +6,8 @@ VulkanTests::VulkanTests()
 	  m_wireFrame(false),
 	  m_quad(false),
 	  m_indexed(false),
-	  m_ubo(true)
+	  m_ubo(true),
+	  m_vsync(true)
 {
 }
 
@@ -14,11 +15,12 @@ VulkanTests::VulkanTests()
 
 void VulkanTests::OnAttach()
 {
+	TRAP::VFS::SetHotShaderReloading(true);
 	TRAP::VFS::MountShaders("Assets/Shaders");
 	
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Multi-Window Test");
 
-	//TRAP::Graphics::RendererAPI::GetRenderer()->SetVSync(true);
+	TRAP::Graphics::RendererAPI::GetRenderer()->SetVSync(m_vsync);
 
 	TRAP::WindowProps windowProps
 	{
@@ -187,6 +189,12 @@ bool VulkanTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 	{
 		m_ubo = !m_ubo;
 		TP_TRACE("[VulkanTests] UniformBuffer: ", m_ubo ? "On" : "Off");
+	}
+	if(e.GetKey() == TRAP::Input::Key::V)
+	{
+		m_vsync = !m_vsync;
+		TP_TRACE("[VulkanTests] VSync: ", m_vsync ? "On" : "Off");
+		TRAP::Graphics::RendererAPI::GetRenderer()->SetVSync(m_vsync);
 	}
 	if (e.GetKey() == TRAP::Input::Key::Escape)
 	{

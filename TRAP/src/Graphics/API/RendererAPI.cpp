@@ -22,6 +22,7 @@ std::mutex TRAP::Graphics::RendererAPI::s_perWindowDataMutex{};
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapable = true;
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::s_descriptorPool = nullptr;
+TRAP::Graphics::RendererAPI::RootSignatureDesc TRAP::Graphics::RendererAPI::s_graphicRootSignatureDesc{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -149,6 +150,17 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::GetRenderAPI()
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::GetDescriptorPool()
 {
 	return s_descriptorPool;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::RendererAPI::RemoveShaderFromGraphicsRootSignature(Shader* shader)
+{
+	if (s_graphicRootSignatureDesc.Shaders.empty())
+		return;
+
+	if(std::find(s_graphicRootSignatureDesc.Shaders.begin(), s_graphicRootSignatureDesc.Shaders.end(), shader) != s_graphicRootSignatureDesc.Shaders.end())
+		s_graphicRootSignatureDesc.Shaders.erase(std::remove(s_graphicRootSignatureDesc.Shaders.begin(), s_graphicRootSignatureDesc.Shaders.end(), shader));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

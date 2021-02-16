@@ -155,6 +155,8 @@ namespace TRAP::Graphics
 		static TRAP::Ref<TRAP::Graphics::DescriptorPool> GetDescriptorPool();
 		static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(Window* window = nullptr);
 
+		static void RemoveShaderFromGraphicsRootSignature(Shader* shader);
+	
 	protected:
 		static const TRAP::Scope<PerWindowData>& GetMainWindowData();
 	
@@ -2021,6 +2023,7 @@ namespace TRAP::Graphics
 		static TRAP::Scope<API::ResourceLoader> s_ResourceLoader;
 
 		static TRAP::Ref<DescriptorPool> s_descriptorPool;
+		static RootSignatureDesc s_graphicRootSignatureDesc;
 		
 		friend class ImGuiLayer;
 		struct PerWindowData
@@ -2051,7 +2054,6 @@ namespace TRAP::Graphics
 			bool NewVSync;
 
 			PipelineDesc GraphicsPipelineDesc;
-			RootSignatureDesc RootSignatureDesc;
 			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
 
 			bool Recording;

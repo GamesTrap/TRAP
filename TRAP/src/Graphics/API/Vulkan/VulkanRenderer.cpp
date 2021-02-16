@@ -618,10 +618,10 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 		{
 			gpd.ShaderProgram = shader;
 
-			if (!gpd.RootSignature || std::find(data->RootSignatureDesc.Shaders.begin(), data->RootSignatureDesc.Shaders.end(), gpd.ShaderProgram) == data->RootSignatureDesc.Shaders.end())
+			if (!gpd.RootSignature || std::find(s_graphicRootSignatureDesc.Shaders.begin(), s_graphicRootSignatureDesc.Shaders.end(), gpd.ShaderProgram) == s_graphicRootSignatureDesc.Shaders.end())
 			{
-				data->RootSignatureDesc.Shaders.push_back(gpd.ShaderProgram);
-				gpd.RootSignature = RootSignature::Create(data->RootSignatureDesc);
+				s_graphicRootSignatureDesc.Shaders.push_back(gpd.ShaderProgram);
+				gpd.RootSignature = RootSignature::Create(s_graphicRootSignatureDesc);
 			}
 		}
 		
@@ -858,7 +858,6 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		p->GraphicsPipelineDesc = {};
 		p->GraphicsPipelineDesc.Type = PipelineType::Graphics;
 		p->GraphicsPipelineDesc.Pipeline = GraphicsPipelineDesc();
-		p->RootSignatureDesc = {};
 		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline);
 
 		gpd.PrimitiveTopology = PrimitiveTopology::TriangleList;
