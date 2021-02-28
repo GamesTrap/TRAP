@@ -12,7 +12,7 @@ namespace TRAP
 		class PipelineCache;
 	}
 
-	class  ImGuiLayer final : public Layer
+	class ImGuiLayer final : public Layer
 	{
 	public:
 		/// <summary>

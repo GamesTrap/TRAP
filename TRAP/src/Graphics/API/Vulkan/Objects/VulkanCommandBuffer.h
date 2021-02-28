@@ -5,10 +5,6 @@
 #include "Graphics/API/Objects/CommandBuffer.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 
-namespace TRAP {namespace Graphics {
-	class DescriptorSet;
-}}
-
 namespace TRAP::Graphics::API
 {
 	class VulkanPipeline;

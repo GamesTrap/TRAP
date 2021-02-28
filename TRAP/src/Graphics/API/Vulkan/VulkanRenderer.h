@@ -75,7 +75,7 @@ namespace TRAP::Graphics::API
 		void BindShader(Shader* shader, Window* window = nullptr) const;
 		void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const BufferLayout& layout, Window* window = nullptr) override;
 		void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType, Window* window) override;
-		void BindDescriptorSet(DescriptorSet& dSet, BufferUsage usage, Window* window) override;
+		void BindDescriptorSet(DescriptorSet& dSet, uint32_t index, Window* window) override;
 		
 		//void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) override;
 		//void Draw(const Scope<VertexArray>& vertexArray) override;
@@ -146,7 +146,7 @@ namespace TRAP::Graphics::API
 			std::vector<LoadActionType> LoadActionsColor;
 			std::vector<bool> SRGBValues;
 			uint32_t RenderTargetCount;
-			SampleCount SampleCount;
+			TRAP::Graphics::RendererAPI::SampleCount SampleCount;
 			ImageFormat DepthStencilFormat;
 			LoadActionType LoadActionDepth;
 			LoadActionType LoadActionStencil;
@@ -228,13 +228,12 @@ namespace TRAP::Graphics::API
 		TRAP::Ref<VulkanMemoryAllocator> m_vma;
 		
 		//RenderPass map per thread (this will make lookups lock free and we only need a lock when inserting a RenderPass Map for the first time)
-		static TRAP::Scope<std::unordered_map<std::thread::id, RenderPassMap>> s_renderPassMap;
+		static std::unordered_map<std::thread::id, RenderPassMap> s_renderPassMap;
 		//FrameBuffer map per thread (this will make lookups lock free and we only need a lock when inserting a FrameBuffer Map for the first time)
-		static TRAP::Scope<std::unordered_map<std::thread::id, FrameBufferMap>> s_frameBufferMap;
+		static std::unordered_map<std::thread::id, FrameBufferMap> s_frameBufferMap;
 		static std::mutex s_renderPassMutex;
 
 		static std::vector<std::pair<std::string, std::array<uint8_t, 16>>> s_usableGPUs;
-
 		static std::unordered_map<uint64_t, TRAP::Ref<Pipeline>> s_pipelines;
 		static std::unordered_map<uint64_t, TRAP::Ref<PipelineCache>> s_pipelineCaches;
 		static std::mutex s_pipelineMutex;

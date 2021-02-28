@@ -6,14 +6,14 @@
 
 TRAP::Scope<TRAP::Graphics::FrameBuffer> TRAP::Graphics::FrameBuffer::Create(const FrameBufferProps& props)
 {
-	TP_PROFILE_FUNCTION();
+	/*TP_PROFILE_FUNCTION();
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
 		return MakeScope<API::VulkanFrameBuffer>(props);
 
-	default:
+	default:*/
 		return nullptr;
-	}
+	//}
 }

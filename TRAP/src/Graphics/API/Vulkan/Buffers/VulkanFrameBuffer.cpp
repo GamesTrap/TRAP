@@ -2,7 +2,7 @@
 
 #include "VulkanFrameBuffer.h"
 
-TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(const FrameBufferProps& props)
+/*TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(const FrameBufferProps& props)
 	: m_props(props)
 {
 }
@@ -43,4 +43,4 @@ uint32_t TRAP::Graphics::API::VulkanFrameBuffer::GetColorAttachmentRendererID() 
 const TRAP::Graphics::FrameBufferProps& TRAP::Graphics::API::VulkanFrameBuffer::GetProps() const
 {
 	return m_props;
-}
+}*/

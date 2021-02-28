@@ -59,7 +59,7 @@ namespace TRAP::Graphics::API::SPIRVTools
 	struct Resource
 	{
 		//SPIRV data type
-		Type SPIRVCode;
+		TRAP::Graphics::API::SPIRVTools::Type SPIRVCode;
 
 		//Resource type
 		ResourceType Type;

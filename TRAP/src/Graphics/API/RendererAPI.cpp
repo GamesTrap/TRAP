@@ -11,13 +11,14 @@
 #include "ResourceLoader.h"
 #include "Objects/CommandPool.h"
 #include "Objects/Queue.h"
+#include "Vulkan/Objects/VulkanDevice.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Scope<TRAP::Graphics::RendererAPI> TRAP::Graphics::RendererAPI::s_Renderer = nullptr;
 TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::s_RenderAPI = TRAP::Graphics::RenderAPI::NONE;
 TRAP::Scope<TRAP::Graphics::API::ResourceLoader> TRAP::Graphics::RendererAPI::s_ResourceLoader = nullptr;
-TRAP::Scope<std::unordered_map<TRAP::Window*, TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>>> TRAP::Graphics::RendererAPI::s_perWindowDataMap = TRAP::MakeScope<std::unordered_map<Window*, TRAP::Scope<PerWindowData>>>();
+std::unordered_map<TRAP::Window*, TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>> TRAP::Graphics::RendererAPI::s_perWindowDataMap = {};
 std::mutex TRAP::Graphics::RendererAPI::s_perWindowDataMutex{};
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapable = true;
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
@@ -50,7 +51,7 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 {
 	{
 		std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
-		s_perWindowDataMap->clear();
+		s_perWindowDataMap.clear();
 	}
 	
 	s_Renderer.reset();
@@ -165,9 +166,16 @@ void TRAP::Graphics::RendererAPI::RemoveShaderFromGraphicsRootSignature(Shader* 
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& TRAP::Graphics::RendererAPI::GetPerWindowData(Window* window)
+{
+	return s_perWindowDataMap[window];
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& TRAP::Graphics::RendererAPI::GetMainWindowData()
 {
-	return (*s_perWindowDataMap)[TRAP::Application::GetWindow().get()];
+	return s_perWindowDataMap[TRAP::Application::GetWindow().get()];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -177,7 +185,7 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::RendererAPI::GetGraphic
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	return std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline).RootSignature;
+	return std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline).RootSignature;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

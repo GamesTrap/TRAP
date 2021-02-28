@@ -120,7 +120,19 @@ bool TRAP::VFS::ResolveReadPhysicalPath(const std::string_view path, std::filesy
 	const std::string virtualDir = Utils::String::ToLower(Utils::String::SplitString(path, '/').front());
 
 	if (s_Instance->m_mountPoints.find('/' + virtualDir) == s_Instance->m_mountPoints.end() || s_Instance->m_mountPoints['/' + virtualDir].empty())
+	{
+		std::string folderPath;
+		if(path.find_last_of('/') != std::string::npos)
+			folderPath = path.substr(0, path.find_last_of('/'));
+
+		if(std::filesystem::exists(folderPath))
+		{
+			outPhysicalPath = path;
+			return true;
+		}
+
 		return false;
+	}
 
 	const std::string remainder = std::string(path.substr(virtualDir.size() + 1, path.size() - virtualDir.size()));
 	for (const std::string& physicalPath : s_Instance->m_mountPoints['/' + virtualDir])
@@ -157,7 +169,19 @@ bool TRAP::VFS::ResolveWritePhysicalPath(const std::string_view path, std::files
 	const std::string virtualDir = Utils::String::ToLower(Utils::String::SplitString(path, '/').front());
 
 	if (s_Instance->m_mountPoints.find('/' + virtualDir) == s_Instance->m_mountPoints.end() || s_Instance->m_mountPoints['/' + virtualDir].empty())
+	{
+		std::string folderPath;
+		if(path.find_last_of('/') != std::string::npos)
+			folderPath = path.substr(0, path.find_last_of('/'));
+
+		if(std::filesystem::exists(folderPath))
+		{
+			outPhysicalPath = path;
+			return true;
+		}
+
 		return false;
+	}
 
 	const std::string remainder = std::string(path.substr(virtualDir.size() + 1, path.size() - virtualDir.size()));
 	for (const std::string& physicalPath : s_Instance->m_mountPoints['/' + virtualDir])
@@ -592,5 +616,11 @@ std::string TRAP::VFS::GetFileName(const std::string& virtualOrPhysicalPath)
 
 std::string TRAP::VFS::GetTempFolderPath()
 {
-	return std::filesystem::temp_directory_path().string();
+	std::string tempFolderPath = std::filesystem::temp_directory_path().string();
+
+#ifdef TRAP_PLATFORM_LINUX
+	tempFolderPath += '/';
+#endif
+
+	return tempFolderPath;
 }

@@ -4,6 +4,10 @@
 #include "Maths/Math.h"
 #include "Window/Window.h"
 
+#include "TRAPPCH.h"
+
+#include "Layers/ImGui/ImGuiLayer.h"
+
 namespace TRAP
 {
 	class Application;
@@ -141,7 +145,7 @@ namespace TRAP::Graphics
 
 		virtual void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const BufferLayout& layout, Window* window = nullptr) = 0;
 		virtual void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType, Window* window = nullptr) = 0;
-		virtual void BindDescriptorSet(DescriptorSet& dSet, BufferUsage usage, Window* window = nullptr) = 0;
+		virtual void BindDescriptorSet(DescriptorSet& dSet, uint32_t index, Window* window = nullptr) = 0;
 		
 		//virtual void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) = 0;
 		//virtual void Draw(const Scope<VertexArray>& vertexArray) = 0;
@@ -156,6 +160,8 @@ namespace TRAP::Graphics
 		static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(Window* window = nullptr);
 
 		static void RemoveShaderFromGraphicsRootSignature(Shader* shader);
+		
+		static const TRAP::Scope<PerWindowData>& GetPerWindowData(Window* window); //TODO Remove
 	
 	protected:
 		static const TRAP::Scope<PerWindowData>& GetMainWindowData();
@@ -1405,13 +1411,13 @@ namespace TRAP::Graphics
 			//Number of mip levels
 			uint32_t MipLevels{};
 			//Multisample anti-aliasing (MSAA)
-			SampleCount SampleCount{};
+			TRAP::Graphics::RendererAPI::SampleCount SampleCount{};
 			//Internal image format
 			ImageFormat Format{};
 			//What state will the texture get created in
 			ResourceState StartState{};
 			//Optimized clear value (recommended to use the same value when clearing the renderTarget)
-			ClearValue ClearValue{};
+			TRAP::Graphics::RendererAPI::ClearValue ClearValue{};
 			//The image quality level.
 			//The higher the quality, the lower the performance.
 			//The valid range is between 0 and the value appropriate for SampleCount
@@ -1440,7 +1446,7 @@ namespace TRAP::Graphics
 			//Number of mip levels
 			uint32_t MipLevels{};
 			//Number of multisamples per pixel (currently Textures created with Usage TextureUsage::SampledImage only support SampleCount1).
-			SampleCount SampleCount{};
+			TRAP::Graphics::RendererAPI::SampleCount SampleCount{};
 			//The image quality level.
 			//The higher the quality, the lower the performance.
 			//The valid range is between 0 and the value appropriate for SampleCount.
@@ -1448,7 +1454,7 @@ namespace TRAP::Graphics
 			//Image format
 			ImageFormat Format{};
 			//Optimized clear value (recommended to use the same value when clearing the renderTarget)
-			ClearValue ClearValue{};
+			TRAP::Graphics::RendererAPI::ClearValue ClearValue{};
 			//What state will the texture get created in
 			ResourceState StartState{};
 			//Descriptor creation
@@ -1458,7 +1464,7 @@ namespace TRAP::Graphics
 			//Debug name used in GPU profile
 			const char* Name{};
 
-			VkSamplerYcbcrConversionInfo* VkSamplerYcbcrConversionInfo{};
+			::VkSamplerYcbcrConversionInfo* VkSamplerYcbcrConversionInfo{};
 		};
 
 		//Data structure holding necessary info to create a Buffer
@@ -1473,7 +1479,7 @@ namespace TRAP::Graphics
 			//Creation flags of the buffer
 			BufferCreationFlags Flags{};
 			//What type of queue the buffer is owned by
-			QueueType QueueType{};
+			TRAP::Graphics::RendererAPI::QueueType QueueType{};
 			//What state will the buffer get created in
 			ResourceState StartState{};
 			//Index of the first element accessible by the SRV/UAV
@@ -1502,7 +1508,7 @@ namespace TRAP::Graphics
 		{
 			FilterType MinFilter{};
 			FilterType MagFilter{};
-			MipMapMode MipMapMode{};
+			TRAP::Graphics::RendererAPI::MipMapMode MipMapMode{};
 			AddressMode AddressU{};
 			AddressMode AddressV{};
 			AddressMode AddressW{};
@@ -1550,7 +1556,7 @@ namespace TRAP::Graphics
 
 		struct DescriptorInfo
 		{
-			const char* Name{};
+			std::string Name{};
 			DescriptorType Type{};
 			API::ShaderReflection::TextureDimension Dimension{};
 			bool RootDescriptor{};
@@ -1568,14 +1574,14 @@ namespace TRAP::Graphics
 
 		struct DescriptorSetDesc
 		{
-			TRAP::Ref<RootSignature> RootSignature{};
+			TRAP::Ref<TRAP::Graphics::RootSignature> RootSignature{};
 			DescriptorUpdateFrequency UpdateFrequency{};
 			uint32_t MaxSets{};
 		};
 
 		struct CommandPoolDesc
 		{
-			TRAP::Ref<Queue> Queue;
+			TRAP::Ref<TRAP::Graphics::Queue> Queue;
 			bool Transient;
 		};
 		
@@ -1644,11 +1650,11 @@ namespace TRAP::Graphics
 
 		struct RasterizerStateDesc
 		{
-			CullMode CullMode{};
+			TRAP::Graphics::RendererAPI::CullMode CullMode{};
 			int32_t DepthBias{};
 			float SlopeScaledDepthBias{};
-			FillMode FillMode{};
-			FrontFace FrontFace{};
+			TRAP::Graphics::RendererAPI::FillMode FillMode{};
+			TRAP::Graphics::RendererAPI::FrontFace FrontFace{};
 			bool DepthClampEnable{};
 		};
 
@@ -1667,7 +1673,7 @@ namespace TRAP::Graphics
 		struct ComputePipelineDesc
 		{			
 			Shader* ShaderProgram{};
-			TRAP::Ref<RootSignature> RootSignature{};
+			TRAP::Ref<TRAP::Graphics::RootSignature> RootSignature{};
 		};
 
 		struct VertexAttribute
@@ -1686,19 +1692,19 @@ namespace TRAP::Graphics
 		};
 		
 		struct GraphicsPipelineDesc
-		{			
+		{
 			Shader* ShaderProgram{};
-			TRAP::Ref<RootSignature> RootSignature{};
-			TRAP::Ref<VertexLayout> VertexLayout{};
+			TRAP::Ref<TRAP::Graphics::RootSignature> RootSignature{};
+			TRAP::Ref<TRAP::Graphics::RendererAPI::VertexLayout> VertexLayout{};
 			TRAP::Ref<BlendStateDesc> BlendState{};
 			TRAP::Ref<DepthStateDesc> DepthState{};
 			TRAP::Ref<RasterizerStateDesc> RasterizerState{};
 			std::vector<ImageFormat> ColorFormats{};
 			uint32_t RenderTargetCount{};
-			SampleCount SampleCount{};
+			TRAP::Graphics::RendererAPI::SampleCount SampleCount{};
 			uint32_t SampleQuality{};
 			ImageFormat DepthStencilFormat{};
-			PrimitiveTopology PrimitiveTopology{};
+			TRAP::Graphics::RendererAPI::PrimitiveTopology PrimitiveTopology{};
 			bool SupportIndirectCommandBuffer{};
 		};
 
@@ -1707,9 +1713,9 @@ namespace TRAP::Graphics
 		};
 
 		struct PipelineDesc
-		{			
+		{
 			PipelineType Type{};
-			std::variant<ComputePipelineDesc, GraphicsPipelineDesc, RayTracingPipelineDesc> Pipeline{};
+			std::variant<ComputePipelineDesc, GraphicsPipelineDesc, RayTracingPipelineDesc> Pipeline{GraphicsPipelineDesc()};
 			TRAP::Ref<PipelineCache> Cache{};
 			void* PipelineExtensions{};
 			uint32_t PipelineExtensionCount{};
@@ -1760,7 +1766,7 @@ namespace TRAP::Graphics
 		
 		struct CommandSignatureDesc
 		{
-			TRAP::Ref<RootSignature> RootSignature{};
+			TRAP::Ref<TRAP::Graphics::RootSignature> RootSignature{};
 			uint32_t IndirectArgCount{};
 			std::vector<IndirectArgumentDescriptor> ArgDescs{};
 			//Set to true if indirect argument struct should not be aligned to 16 bytes
@@ -1791,14 +1797,14 @@ namespace TRAP::Graphics
 
 		struct RenderTargetBarrier
 		{
-			TRAP::Ref<RenderTarget> RenderTarget{};
+			TRAP::Ref<TRAP::Graphics::RenderTarget> RenderTarget{};
 			ResourceState CurrentState{};
 			ResourceState NewState{};
 			bool BeginOnly{};
 			bool EndOnly{};
 			bool Acquire{};
 			bool Release{};
-			QueueType QueueType{};
+			TRAP::Graphics::RendererAPI::QueueType QueueType{};
 			//Specify whether following barrier targets particular subresource
 			bool SubresourceBarrier{};
 			//Following values are ignored if SubresourceBarrier is false
@@ -1808,14 +1814,14 @@ namespace TRAP::Graphics
 
 		struct BufferBarrier
 		{
-			TRAP::Ref<Buffer> Buffer{};
+			TRAP::Ref<TRAP::Graphics::Buffer> Buffer{};
 			ResourceState CurrentState{};
 			ResourceState NewState{};
 			bool BeginOnly{};
 			bool EndOnly{};
 			bool Acquire{};
 			bool Release{};
-			QueueType QueueType{};
+			TRAP::Graphics::RendererAPI::QueueType QueueType{};
 		};
 
 		struct TextureBarrier
@@ -1827,7 +1833,7 @@ namespace TRAP::Graphics
 			bool EndOnly{};
 			bool Acquire{};
 			bool Release{};
-			QueueType QueueType{};
+			TRAP::Graphics::RendererAPI::QueueType QueueType{};
 			//Specify whether the following barrier targets particular subresource
 			bool SubresourceBarrier{};
 			//Following values are ignored if SubresourceBarrier is false
@@ -1836,7 +1842,7 @@ namespace TRAP::Graphics
 		};
 
 		struct DescriptorData
-		{			
+		{
 			//User can either set name of descriptor or index (index in RootSignature->Descriptors array)
 			//Name of descriptor
 			const char* Name{};
@@ -1860,13 +1866,13 @@ namespace TRAP::Graphics
 				uint32_t UAVMipSlice{};
 				bool BindMipChain{};
 			};
-			std::variant<BufferOffset, DescriptorSetExtraction, TextureSlice, bool> Offset{};
+			std::variant<BufferOffset, DescriptorSetExtraction, TextureSlice, bool> Offset{BufferOffset()};
 			//Array of resources containing descriptor handles or constant to be used in ring buffer memory
 			//DescriptorRange can hold only one resource type array
 			//std::vector<TRAP::Ref<API::VulkanAccelerationStructure>> AccelerationStructures; //TODO RT
-			std::variant<std::vector<TRAP::Ref<API::VulkanTexture>>, std::vector<TRAP::Ref<Sampler>>,
-				std::vector<TRAP::Ref<Buffer>>, std::vector<TRAP::Ref<Pipeline>>,
-				std::vector<TRAP::Ref<DescriptorSet>>> Resource{};
+			std::variant<std::vector<API::VulkanTexture*>, std::vector<Sampler*>,
+				std::vector<Buffer*>, std::vector<Pipeline*>,
+				std::vector<DescriptorSet*>> Resource{std::vector<API::VulkanTexture*>()};
 
 			//Number of resources in the descriptor(applies to array of textures, buffers, ...)
 			uint32_t Count{};
@@ -1876,7 +1882,7 @@ namespace TRAP::Graphics
 
 		struct QueuePresentDesc
 		{
-			TRAP::Ref<SwapChain> SwapChain{};
+			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain{};
 			std::vector<TRAP::Ref<Semaphore>> WaitSemaphores{};
 			uint8_t Index{};
 			bool SubmitDone{};
@@ -1964,7 +1970,7 @@ namespace TRAP::Graphics
 		struct MappedMemoryRange
 		{
 			uint8_t* Data;
-			TRAP::Ref<Buffer> Buffer;
+			TRAP::Ref<TRAP::Graphics::Buffer> Buffer;
 			uint64_t Offset;
 			uint64_t Size;
 			uint32_t Flags;
@@ -1978,7 +1984,7 @@ namespace TRAP::Graphics
 
 		struct BufferLoadDesc
 		{
-			TRAP::Ref<Buffer> Buffer;
+			TRAP::Ref<TRAP::Graphics::Buffer> Buffer;
 			const void* Data;
 			BufferDesc Desc;
 
@@ -1988,7 +1994,7 @@ namespace TRAP::Graphics
 		
 		struct BufferUpdateDesc
 		{
-			TRAP::Ref<Buffer> Buffer;
+			TRAP::Ref<TRAP::Graphics::Buffer> Buffer;
 			uint64_t DstOffset;
 			uint64_t Size;
 
@@ -2004,17 +2010,17 @@ namespace TRAP::Graphics
 		
 		inline static struct GPUSettings
 		{
-			uint32_t UniformBufferAlignment{};
-			uint32_t UploadBufferTextureAlignment{};
-			uint32_t UploadBufferTextureRowAlignment{};
-			uint32_t MaxVertexInputBindings{};
-			uint32_t MaxRootSignatureDWORDS{};
-			uint32_t WaveLaneCount{};
-			WaveOpsSupportFlags WaveOpsSupportFlags{};
-			bool MultiDrawIndirect{};
-			uint32_t ROVsSupported{};
-			uint32_t TessellationSupported{};
-			uint32_t GeometryShaderSupported{};
+			uint32_t UniformBufferAlignment;
+			uint32_t UploadBufferTextureAlignment;
+			uint32_t UploadBufferTextureRowAlignment;
+			uint32_t MaxVertexInputBindings;
+			uint32_t MaxRootSignatureDWORDS;
+			uint32_t WaveLaneCount;
+			TRAP::Graphics::RendererAPI::WaveOpsSupportFlags WaveOpsSupportFlags;
+			bool MultiDrawIndirect;
+			uint32_t ROVsSupported;
+			bool TessellationSupported;
+			bool GeometryShaderSupported;
 		} GPUSettings{};
 
 	protected:
@@ -2025,14 +2031,16 @@ namespace TRAP::Graphics
 		static TRAP::Ref<DescriptorPool> s_descriptorPool;
 		static RootSignatureDesc s_graphicRootSignatureDesc;
 		
-		friend class ImGuiLayer;
+		friend class TRAP::ImGuiLayer;
 		struct PerWindowData
 		{
+			friend class TRAP::ImGuiLayer;
+
 			~PerWindowData();
 			
 			inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
 
-			Window* Window;
+			TRAP::Window* Window;
 			
 			uint32_t ImageIndex = 0;
 			TRAP::Ref<Queue> GraphicQueue;
@@ -2045,7 +2053,7 @@ namespace TRAP::Graphics
 			TRAP::Ref<Semaphore> ImageAcquiredSemaphore;
 			std::array<TRAP::Ref<Semaphore>, ImageCount> RenderCompleteSemaphores;
 			
-			TRAP::Ref<SwapChain> SwapChain;
+			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 			uint32_t CurrentSwapChainImageIndex;
 
 			ClearValue ClearColor{0.1f, 0.1f, 0.1f, 1.0f};
@@ -2059,7 +2067,7 @@ namespace TRAP::Graphics
 			bool Recording;
 		};
 	protected:
-		static TRAP::Scope<std::unordered_map<Window*, TRAP::Scope<PerWindowData>>> s_perWindowDataMap;
+		static std::unordered_map<Window*, TRAP::Scope<PerWindowData>> s_perWindowDataMap;
 		static std::mutex s_perWindowDataMutex;
 
 	private:

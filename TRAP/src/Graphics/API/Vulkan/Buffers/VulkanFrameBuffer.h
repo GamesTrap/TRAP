@@ -5,7 +5,7 @@
 
 namespace TRAP::Graphics::API
 {
-	class VulkanFrameBuffer final : public FrameBuffer
+	/*class VulkanFrameBuffer final : public FrameBuffer
 	{
 	public:
 		explicit VulkanFrameBuffer(const FrameBufferProps& props);
@@ -26,7 +26,7 @@ namespace TRAP::Graphics::API
 
 	private:
 		FrameBufferProps m_props;
-	};
+	};*/
 }
 
 #endif /*_TRAP_VULKANFRAMEBUFFER2D_H_*/

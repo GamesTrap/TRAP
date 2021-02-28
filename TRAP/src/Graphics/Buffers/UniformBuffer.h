@@ -27,7 +27,7 @@ namespace TRAP::Graphics
 		uint64_t GetSize() const;
 		BufferUsage GetBufferUsage() const;
 		
-		void Use(Window* window = nullptr);
+		void Use();
 		
 		void SetData(const void* data, uint64_t size, uint64_t offset = 0);
 
@@ -39,10 +39,13 @@ namespace TRAP::Graphics
 		//TODO Remove?!
 		const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetUniformBuffers() const;
 		
-		static Scope<UniformBuffer> Create(const char* name, uint64_t size, BufferUsage usage);
-		static Scope<UniformBuffer> Create(const char* name, void* data, uint64_t size, BufferUsage usage);
+		static Scope<UniformBuffer> Create(const char* name, uint32_t binding, uint64_t size, BufferUsage usage, Window* window = nullptr);
+		static Scope<UniformBuffer> Create(const char* name, uint32_t binding, void* data, uint64_t size, BufferUsage usage, Window* window = nullptr);
 
 	private:
+		Window* m_window;
+		uint32_t m_binding;
+		
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_uniformBuffers;
 
 		TRAP::Graphics::DescriptorSet* m_descriptorSet;
@@ -52,6 +55,8 @@ namespace TRAP::Graphics
 		BufferUsage m_bufferUsage;
 		
 		std::string m_name;
+
+		static std::unordered_map<Window*, DescriptorSet*> s_boundDescriptorSets;
 	};
 }
 

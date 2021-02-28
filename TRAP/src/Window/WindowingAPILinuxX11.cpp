@@ -369,7 +369,7 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 			s_Data.XI.Major = 2;
 			s_Data.XI.Minor = 0;
 			
-			if(s_Data.XI.QueryVersion(s_Data.display, &s_Data.XI.Major, &s_Data.XI.Minor) == Success)
+			if(s_Data.XI.QueryVersion(s_Data.display, &s_Data.XI.Major, &s_Data.XI.Minor) == 0) //0 = Success
 				s_Data.XI.Available = true;
 		}
 	}
@@ -480,7 +480,7 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 		
 		s_Data.XKB.Group = 0;
 		XkbStateRec state;
-		if(s_Data.XKB.GetState(s_Data.display, XkbUseCoreKbd, &state) == Success)
+		if(s_Data.XKB.GetState(s_Data.display, XkbUseCoreKbd, &state) == 0) //0 = Success
 			s_Data.XKB.Group = static_cast<uint32_t>(state.group);
 
 		s_Data.XKB.SelectEventDetails(s_Data.display, XkbUseCoreKbd, XkbStateNotify, XkbGroupStateMask, XkbGroupStateMask);
@@ -660,7 +660,7 @@ void TRAP::INTERNAL::WindowingAPI::DetectEWMH()
 //Sets the X error handler callback
 void TRAP::INTERNAL::WindowingAPI::GrabErrorHandlerX11()
 {
-	s_Data.ErrorCode = Success;
+	s_Data.ErrorCode = 0; //0 = Success
 	s_Data.XLIB.SetErrorHandler(ErrorHandler);
 }
 
@@ -3092,8 +3092,14 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursor(InternalCursor* 
 			native = XC_sb_h_double_arrow;
 		else if(shape == CursorType::ResizeVertical)
 			native = XC_sb_v_double_arrow;
+		else if(shape == CursorType::ResizeDiagonalTopRightBottomLeft)
+			native = XC_top_left_corner;
+		else if(shape == CursorType::ResizeDiagonalTopLeftBottomRight)
+			native = XC_top_right_corner;
 		else if(shape == CursorType::ResizeAll)
 			native = XC_fleur;
+		else if(shape == CursorType::NotAllowed)
+			native = XC_X_cursor;
 		else
 		{
 			InputError(Error::Cursor_Unavailable, "[X11] Standard cursor shape unavailable!");
@@ -3703,11 +3709,15 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensions(std::ar
 		return;
 		
 	if(!s_Data.VK.KHR_XCB_Surface || !s_Data.XCB.Handle)
+	{
 		if(!s_Data.VK.KHR_XLib_Surface)
 			return;
+	}
 	
 	extensions[0] = "VK_KHR_surface";
 	
+	//TODO Wayland support should prefer wayland if available & on wayland seesion
+
 	//NOTE: VK_KHR_xcb_surface is preferred due to some early ICDs exposing but not correctly implementing
 	//      VK_KHR_xlib_surface
 	if(s_Data.VK.KHR_XCB_Surface && s_Data.XCB.Handle)
@@ -3949,7 +3959,7 @@ void TRAP::INTERNAL::WindowingAPI::InputErrorX11(Error error, const char* messag
 	
 	buffer.shrink_to_fit();
 	
-	InputError(error, std::string(message) + ": " + buffer.data());
+	InputError(error, "[X11] " + std::string(message) + ": " + buffer.data());
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -5288,7 +5298,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetX11KeyboardLayoutName()
 	s_Data.XKB.GetState(s_Data.display, XkbUseCoreKbd, &state);
 
 	XkbDescPtr desc = s_Data.XKB.AllocKeyboard();
-	if (s_Data.XKB.GetNames(s_Data.display, XkbGroupNamesMask, desc) != Success)
+	if (s_Data.XKB.GetNames(s_Data.display, XkbGroupNamesMask, desc) != 0) //0 = Success
 	{
 		s_Data.XKB.FreeKeyboard(desc, 0, 1);
 		InputError(Error::Platform_Error, "[Input][X11] Failed to retrieve keyboard layout names");

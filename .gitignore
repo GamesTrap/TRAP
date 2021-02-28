@@ -179,3 +179,5 @@ Sandbox/*.json
 TRAP/*.json
 Games/TRAPNES
 premake5Private.lua
+*.make
+*.code-workspace

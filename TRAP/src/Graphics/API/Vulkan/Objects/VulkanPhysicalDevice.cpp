@@ -465,6 +465,14 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		}
 
 		//Create Instance
+
+		//Init WindowingAPI needed here for instance extensions
+		if(!INTERNAL::WindowingAPI::Init())
+		{
+			TP_ERROR(Log::RendererVulkanPrefix, "Failed to initialize WindowingAPI!");
+			TRAP::Application::Shutdown();
+		}
+
 		std::vector<std::string> instanceExtensions{};
 		const auto reqExt = INTERNAL::WindowingAPI::GetRequiredInstanceExtensions();
 		instanceExtensions.push_back(reqExt[0]);
@@ -483,11 +491,6 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		}
 
 		//Create Vulkan Surface Test Window
-		if(!INTERNAL::WindowingAPI::Init())
-		{
-			TP_ERROR(Log::RendererVulkanPrefix, "Failed to initialize WindowingAPI!");
-			TRAP::Application::Shutdown();
-		}
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Visible, false);
 		INTERNAL::WindowingAPI::WindowHint(INTERNAL::WindowingAPI::Hint::Focused, false);
 		Scope<INTERNAL::WindowingAPI::InternalWindow> vulkanTestWindow = INTERNAL::WindowingAPI::CreateWindow(400,
@@ -504,10 +507,11 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		
 		//Required: Check if Surface can be created
 		VkSurfaceKHR surface;
-		TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance, vulkanTestWindow.get(), nullptr, surface);
-		if(!surface)
+		VkResult res;
+		VkCall(res = TRAP::INTERNAL::WindowingAPI::CreateWindowSurface(instance, vulkanTestWindow.get(), nullptr, surface));
+		if(!surface || res != VK_SUCCESS)
 		{
-			vulkanTestWindow.reset();
+			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Failed Surface creation!");
 			continue;
@@ -521,7 +525,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		if(queueFamilyProperties.empty())
 		{
 			vkDestroySurfaceKHR(instance, surface, nullptr);
-			vulkanTestWindow.reset();
+			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Failed Querying Queue Family Properties!");
 			continue;
@@ -540,7 +544,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		if(!foundGraphicsQueue)
 		{
 			vkDestroySurfaceKHR(instance, surface, nullptr);
-			vulkanTestWindow.reset();
+			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Failed Graphics Queue Test!");
 			continue;
@@ -550,14 +554,14 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		VkBool32 foundPresentSupport = false;
 		for(uint32_t i = 0; i < queueFamilyProperties.size(); i++)
 		{
-			vkGetPhysicalDeviceSurfaceSupportKHR(dev, i, surface, &foundPresentSupport);
+			VkCall(vkGetPhysicalDeviceSurfaceSupportKHR(dev, i, surface, &foundPresentSupport));
 			if (foundPresentSupport)
 				break;
 		}
 		if (!foundPresentSupport)
 		{
 			vkDestroySurfaceKHR(instance, surface, nullptr);
-			vulkanTestWindow.reset();
+			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Failed Present Queue Test!");
 			continue;
@@ -571,7 +575,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		if(presentModes.empty())
 		{
 			vkDestroySurfaceKHR(instance, surface, nullptr);
-			vulkanTestWindow.reset();
+			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Failed Present Mode Test!");
 			continue;
@@ -585,7 +589,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		if (surfaceFormats.empty())
 		{
 			vkDestroySurfaceKHR(instance, surface, nullptr);
-			vulkanTestWindow.reset();
+			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 			vkDestroyInstance(instance, nullptr);
 			TP_ERROR(Log::RendererVulkanPrefix, "Failed Surface Format Test!");
 			continue;
@@ -684,7 +688,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			TP_WARN(Log::RendererVulkanPrefix, "Failed Optimal Surface Format Test!");
 
 		vkDestroySurfaceKHR(instance, surface, nullptr);
-		vulkanTestWindow.reset();
+		TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 		vkDestroyInstance(instance, nullptr);
 
 		//Optionally: Check VRAM size (1e+9 == Bytes to Gigabytes)

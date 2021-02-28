@@ -1697,3 +1697,26 @@ SITREP 02/14/2021|21w06b2
     - ImGuiLayer Added PipelineCache @ TEMP/TRAP/ImGui.cache ~<15 mins
     - Application enabled ImGui again ~<5 mins
     - VulkanTests Added small ImGui test ~<5 mins
+
+SITREP 02/16/2021|21w07a1
+    - Changed TRAP Engine version to 21w07a1(0.7.27)
+    - RendererAPI Added GetDescriptorPool & GetGraphicsRootSignature functions ~<15 mins
+    - VulkanRenderer Added BindDescriptorSet function ~<15 mins
+    - Added UniformBuffer abstraction class which currently only supports 1 binding per set ~>30 mins
+    - Shader Added predefined macros for UniformBuffer set index ordered by update frequency None -> every draw calls ~<10 mins
+    - VulkanRenderer Fixed VSync (used wrong bool to check if changed) ~<5 mins
+    - VulkanRenderer Removed Pipeline binding from draw calls ~<10 mins
+    - VulkanRenderer Added Pipeline binding & RootSignature recreation to BindShader function ~<10 mins
+    - VulkanLoader Updated to Vulkan 1.2.170 ~<20 mins
+    - VulkanTests Added Shader using a single UniformBuffer ~<10 mins
+    - VulkanTests Added F4 key to toggle between UniformBuffer usage ~<10 mins
+
+SITREP 02/16/2021|21w07a2
+    - Changed TRAP Engine version to 21w07a2(0.7.27)
+    - RendererAPI Moved Graphics RootSignature from per window to static data ~<10 mins
+    - RendererAPI Added RemoveShaderFromGraphicsRootSignature function ~<15 mins
+    - ShaderManager/Shader Fixed multiple crashes when Shader creation fails (including HotShaderReloading) ~>20 mins
+    - Added DummyShader class which gets used when Shader creation fails (preventing crashes | HotShaderReloading) ~<15 mins
+    - Vulkan Memory Allocator updated ~<10 mins
+    - VulkanTests Added V key to toggle VSync ~<5 mins
+    - VulkanTests Enabled HotShaderReloading ~<5 mins

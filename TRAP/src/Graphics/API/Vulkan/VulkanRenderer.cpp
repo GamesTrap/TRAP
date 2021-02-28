@@ -61,8 +61,8 @@ VkPipelineRasterizationStateCreateInfo TRAP::Graphics::API::VulkanRenderer::Defa
 VkPipelineDepthStencilStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultDepthDesc = UtilToDepthDesc({ false, false, CompareMode::LessOrEqual, {}, 0xFF, 0xFF, CompareMode::Always, {}, {}, {}, CompareMode::Always, {}, {}, {} });
 VkPipelineColorBlendStateCreateInfo TRAP::Graphics::API::VulkanRenderer::DefaultBlendDesc = UtilToBlendDesc({ {BlendConstant::One}, {BlendConstant::Zero}, {BlendConstant::One}, {BlendConstant::Zero}, {}, {}, {(0x1 | 0x2 | 0x4 | 0x8)}, BlendStateTargets::BlendStateTargetAll, false }, DefaultBlendAttachments);
 
-TRAP::Scope<std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::RenderPassMap>> TRAP::Graphics::API::VulkanRenderer::s_renderPassMap = TRAP::MakeScope<std::unordered_map<std::thread::id, RenderPassMap>>();
-TRAP::Scope<std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::FrameBufferMap>> TRAP::Graphics::API::VulkanRenderer::s_frameBufferMap = TRAP::MakeScope<std::unordered_map<std::thread::id, FrameBufferMap>>();
+std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::RenderPassMap> TRAP::Graphics::API::VulkanRenderer::s_renderPassMap = {};
+std::unordered_map<std::thread::id, TRAP::Graphics::API::VulkanRenderer::FrameBufferMap> TRAP::Graphics::API::VulkanRenderer::s_frameBufferMap = {};
 std::mutex TRAP::Graphics::API::VulkanRenderer::s_renderPassMutex{};
 
 std::unordered_map<uint64_t, TRAP::Ref<TRAP::Graphics::Pipeline>> TRAP::Graphics::API::VulkanRenderer::s_pipelines{};
@@ -93,9 +93,9 @@ TRAP::Graphics::API::VulkanRenderer::~VulkanRenderer()
 	RemoveDefaultResources();
 
 	std::lock_guard<std::mutex> lock(s_renderPassMutex);
-	s_frameBufferMap.reset();
+	s_frameBufferMap.clear();
 	
-	s_renderPassMap.reset();
+	s_renderPassMap.clear();
 
 	s_pipelines.clear();
 
@@ -286,7 +286,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitInternal(const std::string& gameNa
 
 void TRAP::Graphics::API::VulkanRenderer::Present(const Scope<Window>& window)
 {
-	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window.get()];
+	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window.get()];
 
 	EndGraphicRecording(p);
 	if (p->CurrentVSync != p->NewVSync)
@@ -306,7 +306,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetVSync(const bool vsync, Window* win
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 	
-	(*s_perWindowDataMap)[window]->NewVSync = vsync;
+	s_perWindowDataMap[window]->NewVSync = vsync;
 }
 
 //------------------------------------------------------------------------------------------------------------------//
@@ -316,7 +316,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetClearColor(const Math::Vec4& color,
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 	
-	(*s_perWindowDataMap)[window]->ClearColor = { color.x, color.y, color.z, color.w };
+	s_perWindowDataMap[window]->ClearColor = { color.x, color.y, color.z, color.w };
 }
 
 //------------------------------------------------------------------------------------------------------------------//
@@ -326,7 +326,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthTesting(const bool enabled, Wi
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	std::get<GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline).DepthState->DepthTest = enabled;
+	std::get<GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline).DepthState->DepthTest = enabled;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -336,7 +336,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthWriting(const bool enabled, Wi
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	std::get<GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline).DepthState->DepthWrite = enabled;
+	std::get<GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline).DepthState->DepthWrite = enabled;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -346,7 +346,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthFunction(const CompareMode fun
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	std::get<GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline).DepthState->DepthFunc = function;
+	std::get<GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline).DepthState->DepthFunc = function;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -356,7 +356,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthFail(const StencilOp front, co
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline);
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline);
 	
 	gpd.DepthState->DepthFrontFail = front;
 	gpd.DepthState->DepthBackFail = back;
@@ -369,7 +369,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthBias(const int32_t depthBias, 
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	std::get<GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline).RasterizerState->DepthBias = depthBias;
+	std::get<GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline).RasterizerState->DepthBias = depthBias;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -379,7 +379,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetDepthBiasSlopeFactor(const float fa
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	std::get<GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline).RasterizerState->SlopeScaledDepthBias = factor;
+	std::get<GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline).RasterizerState->SlopeScaledDepthBias = factor;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -389,7 +389,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilTesting(const bool enabled, 
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	std::get<GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline).DepthState->StencilTest = enabled;
+	std::get<GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline).DepthState->StencilTest = enabled;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -399,7 +399,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilFail(const StencilOp front, 
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline);
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline);
 	
 	gpd.DepthState->StencilFrontFail = front;
 	gpd.DepthState->StencilBackFail = back;
@@ -412,7 +412,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilPass(const StencilOp front, 
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline);
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline);
 	
 	gpd.DepthState->StencilFrontPass = front;
 	gpd.DepthState->StencilBackPass = back;
@@ -425,7 +425,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilFunction(const CompareMode f
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline);
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline);
 
 	gpd.DepthState->StencilFrontFunc = front;
 	gpd.DepthState->StencilBackFunc = back;
@@ -438,7 +438,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetStencilMask(const uint8_t read, con
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline);
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline);
 	
 	gpd.DepthState->StencilReadMask = read;
 	gpd.DepthState->StencilWriteMask = write;
@@ -451,7 +451,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetCullMode(const CullMode mode, Windo
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	std::get<GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline).RasterizerState->CullMode = mode;
+	std::get<GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline).RasterizerState->CullMode = mode;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -461,7 +461,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetFillMode(const FillMode mode, Windo
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
+	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window];
 	
 	std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RasterizerState->FillMode = mode;
 }
@@ -473,7 +473,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetFrontFace(const FrontFace face, Win
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	std::get<GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline).RasterizerState->FrontFace = face;
+	std::get<GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline).RasterizerState->FrontFace = face;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -483,7 +483,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendMode(const BlendMode modeRGB, 
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline);
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline);
 	
 	gpd.BlendState->BlendModes = { modeRGB };
 	gpd.BlendState->BlendAlphaModes = { modeAlpha };
@@ -500,7 +500,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetBlendConstant(const BlendConstant s
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>((*s_perWindowDataMap)[window]->GraphicsPipelineDesc.Pipeline);
+	GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(s_perWindowDataMap[window]->GraphicsPipelineDesc.Pipeline);
 	
 	gpd.BlendState->SrcFactors = {sourceRGB};
 	gpd.BlendState->DstFactors = {destinationRGB};
@@ -522,7 +522,7 @@ void TRAP::Graphics::API::VulkanRenderer::Clear(const ClearFlags clear, const Cl
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	const TRAP::Scope<PerWindowData>& data = (*s_perWindowDataMap)[window];
+	const TRAP::Scope<PerWindowData>& data = s_perWindowDataMap[window];
 	const TRAP::Ref<RenderTarget>& renderTarget = data->SwapChain->GetRenderTargets()[data->ImageIndex];
 	
 	data->GraphicCommandBuffers[data->ImageIndex]->Clear(clear, value, renderTarget->GetWidth(), renderTarget->GetHeight());
@@ -544,7 +544,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x,
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 	
-	const TRAP::Scope<PerWindowData>& data = (*s_perWindowDataMap)[window];
+	const TRAP::Scope<PerWindowData>& data = s_perWindowDataMap[window];
 
 	data->GraphicCommandBuffers[data->ImageIndex]->SetViewport(static_cast<const float>(x),
 	                                                           static_cast<const float>(y),
@@ -561,7 +561,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetScissor(const uint32_t x, const uin
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 	
-	const TRAP::Scope<PerWindowData>& data = (*s_perWindowDataMap)[window];
+	const TRAP::Scope<PerWindowData>& data = s_perWindowDataMap[window];
 
 	data->GraphicCommandBuffers[data->ImageIndex]->SetScissor(x, y, width, height);
 }
@@ -573,7 +573,7 @@ void TRAP::Graphics::API::VulkanRenderer::Draw(const uint32_t vertexCount, const
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	const TRAP::Scope<PerWindowData>& data = (*s_perWindowDataMap)[window];
+	const TRAP::Scope<PerWindowData>& data = s_perWindowDataMap[window];
 	
 	data->GraphicCommandBuffers[data->ImageIndex]->Draw(vertexCount, firstVertex);
 }
@@ -585,7 +585,7 @@ void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const uint32_t indexCount,
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	const TRAP::Scope<PerWindowData>& data = (*s_perWindowDataMap)[window];
+	const TRAP::Scope<PerWindowData>& data = s_perWindowDataMap[window];
 
 	data->GraphicCommandBuffers[data->ImageIndex]->DrawIndexed(indexCount, firstIndex, firstVertex);
 }
@@ -597,7 +597,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	const TRAP::Scope<PerWindowData>& data = (*s_perWindowDataMap)[window];
+	const TRAP::Scope<PerWindowData>& data = s_perWindowDataMap[window];
 
 	const ShaderStage stages = shader->GetShaderStages();
 
@@ -680,7 +680,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindVertexBuffer(const TRAP::Ref<Buffe
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
+	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window];
 
 	p->GraphicCommandBuffers[p->ImageIndex]->BindVertexBuffer({ vBuffer }, { layout.GetStride() }, {});
 
@@ -705,26 +705,21 @@ void TRAP::Graphics::API::VulkanRenderer::BindIndexBuffer(const TRAP::Ref<Buffer
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 
-	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
+	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window];
 
 	p->GraphicCommandBuffers[p->ImageIndex]->BindIndexBuffer(iBuffer, indexType, 0);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet, const BufferUsage usage, Window* window)
+void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet, const uint32_t index, Window* window)
 {
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 	
-	const TRAP::Scope<PerWindowData>& p = (*s_perWindowDataMap)[window];
-	
-	if (usage == BufferUsage::Static)
-		p->GraphicCommandBuffers[p->ImageIndex]->BindDescriptorSet(0, dSet);
-	else if (usage == BufferUsage::Dynamic)
-		p->GraphicCommandBuffers[p->ImageIndex]->BindDescriptorSet(p->ImageIndex * 2, dSet);
-	else
-		p->GraphicCommandBuffers[p->ImageIndex]->BindDescriptorSet(p->ImageIndex * 2, dSet);
+	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window];
+
+	p->GraphicCommandBuffers[p->ImageIndex]->BindDescriptorSet(index, dSet);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -753,7 +748,7 @@ bool TRAP::Graphics::API::VulkanRenderer::GetVSync(Window* window)
 	if (!window)
 		window = TRAP::Application::GetWindow().get();
 	
-	return (*s_perWindowDataMap)[window]->CurrentVSync;
+	return s_perWindowDataMap[window]->CurrentVSync;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -794,7 +789,7 @@ std::vector<std::pair<std::string, std::array<uint8_t, 16>>> TRAP::Graphics::API
 void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 {
 	std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
-	if (s_perWindowDataMap->find(window) == s_perWindowDataMap->end())
+	if (s_perWindowDataMap.find(window) == s_perWindowDataMap.end())
 	{
 		//Add new Window to map
 		TRAP::Scope<PerWindowData> p = TRAP::MakeScope<PerWindowData>();
@@ -909,7 +904,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		vLayout->Attributes[0].Location = 0;
 		vLayout->Attributes[0].Offset = 0;
 
-		(*s_perWindowDataMap)[window] = std::move(p);
+		s_perWindowDataMap[window] = std::move(p);
 	}
 
 	//Window is already in map
@@ -920,8 +915,8 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 void TRAP::Graphics::API::VulkanRenderer::RemovePerWindowData(Window* window)
 {
 	std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
-	if (s_perWindowDataMap->find(window) != s_perWindowDataMap->end())
-		(*s_perWindowDataMap).erase(window);
+	if (s_perWindowDataMap.find(window) != s_perWindowDataMap.end())
+		s_perWindowDataMap.erase(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1248,11 +1243,11 @@ TRAP::Graphics::API::VulkanRenderer::RenderPassMap& TRAP::Graphics::API::VulkanR
 {
 	//Only need a lock when creating a new RenderPass Map for this thread
 	std::lock_guard<std::mutex> lock(s_renderPassMutex);
-	auto it = s_renderPassMap->find(std::this_thread::get_id());
-	if (it == s_renderPassMap->end())
+	auto it = s_renderPassMap.find(std::this_thread::get_id());
+	if (it == s_renderPassMap.end())
 	{
-		(*s_renderPassMap)[std::this_thread::get_id()] = {};
-		return (*s_renderPassMap)[std::this_thread::get_id()];
+		s_renderPassMap[std::this_thread::get_id()] = {};
+		return s_renderPassMap[std::this_thread::get_id()];
 	}
 
 	return it->second;
@@ -1264,11 +1259,11 @@ TRAP::Graphics::API::VulkanRenderer::FrameBufferMap& TRAP::Graphics::API::Vulkan
 {
 	//Only need a lock when creating a new FrameBuffer Map for this thread
 	std::lock_guard<std::mutex> lock(s_renderPassMutex);
-	auto it = s_frameBufferMap->find(std::this_thread::get_id());
-	if(it == s_frameBufferMap->end())
+	auto it = s_frameBufferMap.find(std::this_thread::get_id());
+	if(it == s_frameBufferMap.end())
 	{
-		(*s_frameBufferMap)[std::this_thread::get_id()] = {};
-		return (*s_frameBufferMap)[std::this_thread::get_id()];
+		s_frameBufferMap[std::this_thread::get_id()] = {};
+		return s_frameBufferMap[std::this_thread::get_id()];
 	}
 
 	return it->second;

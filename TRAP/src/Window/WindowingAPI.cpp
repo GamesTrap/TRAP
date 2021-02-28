@@ -37,18 +37,6 @@ TRAP::INTERNAL::WindowingAPI::Data TRAP::INTERNAL::WindowingAPI::s_Data{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::INTERNAL::WindowingAPI::WindowingError TRAP::INTERNAL::WindowingAPI::s_MainThreadError{};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::INTERNAL::WindowingAPI::ErrorFunc TRAP::INTERNAL::WindowingAPI::s_ErrorCallback = nullptr;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-std::mutex TRAP::INTERNAL::WindowingAPI::s_ErrorLock{};
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 bool TRAP::INTERNAL::WindowingAPI::Init()
 {
 	if (s_Data.Initialized)
@@ -62,13 +50,11 @@ bool TRAP::INTERNAL::WindowingAPI::Init()
 		return false;
 	}
 
-	if(!PlatformCreateTLS(s_Data.ErrorSlot) || !PlatformCreateTLS(s_Data.ContextSlot))
+	if(!PlatformCreateTLS(s_Data.ContextSlot))
 	{
 		Shutdown();
 		return false;
 	}
-
-	PlatformSetTLS(s_Data.ErrorSlot, &s_MainThreadError);
 
 	s_Data.Initialized = true;
 
@@ -97,7 +83,6 @@ void TRAP::INTERNAL::WindowingAPI::Shutdown()
 	s_Data.Initialized = false;
 
 	PlatformDestroyTLS(s_Data.ContextSlot);
-	PlatformDestroyTLS(s_Data.ErrorSlot);
 
 	s_Data = {};
 }
@@ -366,8 +351,7 @@ void TRAP::INTERNAL::WindowingAPI::CenterCursorInContentArea(InternalWindow* win
 
 void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::string& str)
 {
-	Scope<WindowingError> error;
-	std::string description = "[Window]";
+	std::string description = "[WindowingAPI]";
 	
 	if (!str.empty())
 		description += str;
@@ -393,22 +377,7 @@ void TRAP::INTERNAL::WindowingAPI::InputError(const Error code, const std::strin
 			description += " UNKNOWN WINDOWING ERROR";
 	}
 
-	const auto errorPtr = static_cast<WindowingError*>(PlatformGetTLS(s_Data.ErrorSlot));
-	if (!errorPtr)
-	{			
-		error = MakeScope<WindowingError>();
-		PlatformSetTLS(s_Data.ErrorSlot, error.get());
-		{
-			std::lock_guard<std::mutex> lock(s_ErrorLock);
-			error->Next = s_Data.ErrorListHead.get();
-			s_Data.ErrorListHead = std::move(error);
-		}
-		s_Data.ErrorListHead->ErrorCode = code;
-		s_Data.ErrorListHead->Description = description;
-	}
-
-	if (s_ErrorCallback)
-		s_ErrorCallback(code, description);
+	TP_ERROR(description, " Code(", static_cast<uint32_t>(code), ")");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -891,13 +860,6 @@ void* TRAP::INTERNAL::WindowingAPI::GetWindowUserPointer(const InternalWindow* w
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::SetErrorCallback(const ErrorFunc callback)
-{
-	s_ErrorCallback = callback;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::INTERNAL::WindowingAPI::SetMonitorCallback(const MonitorFunc callback)
 {
 	s_Data.Callbacks.Monitor = callback;
@@ -1051,13 +1013,6 @@ void TRAP::INTERNAL::WindowingAPI::SetDropCallback(InternalWindow* window, const
 	TRAP_CORE_ASSERT(window, "[Window] window is nullptr!");
 	
 	window->Callbacks.Drop = callback;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::INTERNAL::WindowingAPI::ErrorFunc TRAP::INTERNAL::WindowingAPI::GetErrorCallback()
-{
-	return s_ErrorCallback;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2058,7 +2013,6 @@ bool TRAP::INTERNAL::WindowingAPI::InitVulkan(const uint32_t mode)
 			s_Data.VK.KHR_XLib_Surface = true;
 		else if (ext == "VK_KHR_xcb_surface")
 			s_Data.VK.KHR_XCB_Surface = true;
-#elif defined(TRAP_PLATFORM_LINUX)
 		else if (ext == "VK_KHR_wayland_surface")
 			s_Data.VK.KHR_Wayland_Surface = true;
 #endif

@@ -1,5 +1,8 @@
 #include "VulkanTests.h"
 
+#include "Graphics/API/Objects/DescriptorPool.h"
+#include "Graphics/API/Objects/DescriptorSet.h"
+
 VulkanTests::VulkanTests()
 	: Layer("VulkanTests"),
 	  m_window(nullptr),
@@ -22,33 +25,33 @@ void VulkanTests::OnAttach()
 
 	TRAP::Graphics::RendererAPI::GetRenderer()->SetVSync(m_vsync);
 
-	TRAP::WindowProps windowProps
+	if (s_window)
 	{
-		"Vulkan Test",
-		200,
-		200,
-		60,
-		false,
-		TRAP::Window::DisplayMode::Windowed,
-		TRAP::WindowProps::AdvancedProps
+		TRAP::WindowProps windowProps
 		{
-			true,
+			"Vulkan Test",
+			200,
+			200,
+			60,
 			false,
-			true,
-			true,
-			true,
-			true,
-			false,
-			TRAP::Window::CursorMode::Normal
-		},
-		0
-	};
-	m_window = TRAP::MakeScope<TRAP::Window>(windowProps);
-	m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });
-	TRAP::Graphics::RendererAPI::GetRenderer()->SetClearColor({ 1.0f, 0.0f, 1.0f, 1.0f }, m_window.get());
-
-	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "/shaders/testubo.shader");
-	TRAP::Graphics::ShaderManager::LoadFile("VKTestNoUBO", "/shaders/test.shader");
+			TRAP::Window::DisplayMode::Windowed,
+			TRAP::WindowProps::AdvancedProps
+			{
+				true,
+				false,
+				true,
+				true,
+				true,
+				true,
+				false,
+				TRAP::Window::CursorMode::Normal
+			},
+			0
+		};
+		m_window = TRAP::MakeScope<TRAP::Window>(windowProps);
+		m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });
+		TRAP::Graphics::RendererAPI::GetRenderer()->SetClearColor({ 1.0f, 0.0f, 1.0f, 1.0f }, m_window.get());
+	}
 
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(), static_cast<uint32_t>(m_quadVertices.size()) * sizeof(float), TRAP::Graphics::BufferUsage::Dynamic);
 	const TRAP::Graphics::BufferLayout layout =
@@ -58,20 +61,76 @@ void VulkanTests::OnAttach()
 	};
 	m_vertexBuffer->SetLayout(layout);
 	m_vertexBuffer->AwaitLoading();
+	m_vertexBuffer->Use();
 
 	m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_triangleIndices.data(), static_cast<uint32_t>(m_quadIndices.size()) * sizeof(uint16_t), TRAP::Graphics::BufferUsage::Dynamic);
 	m_indexBuffer->AwaitLoading();
+	m_vertexBuffer->Use();
 
-	m_uniformBuffer = TRAP::Graphics::UniformBuffer::Create("ubo", sizeof(UniformBufferObject), TRAP::Graphics::BufferUsage::Stream);
+	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "/shaders/testubo.shader")->Use();
+	TRAP::Graphics::ShaderManager::LoadFile("VKTestNoUBO", "/shaders/test.shader")->Use();
+
+	//m_uniformBufferFragment = TRAP::Graphics::UniformBuffer::Create("uboF", 0, sizeof(TRAP::Math::Vec4), TRAP::Graphics::BufferUsage::Stream);
+	//m_uniformBufferVertex = TRAP::Graphics::UniformBuffer::Create("uboV", 1, sizeof(UniformBufferObject), TRAP::Graphics::BufferUsage::Stream);
+
+	///////////////////////////////////////////////
+	///INTERNAL ENGINE CODE - Usage at own risk!///
+	///////////////////////////////////////////////
+	m_uboVertexBuffer.resize(3);
+	m_uboFragmentBuffer.resize(3);
+	
+	/*TRAP::Graphics::RendererAPI::DescriptorSetDesc desc{};
+	desc.RootSignature = TRAP::Graphics::RendererAPI::GetRenderer()->GetGraphicsRootSignature();
+	desc.UpdateFrequency = TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::PerFrame;
+	desc.MaxSets = 3u;
+	m_uboSet = TRAP::Graphics::RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(desc);*/
+
+	for(uint32_t i = 0; i < 3u; ++i)
+	{
+		TRAP::Graphics::RendererAPI::BufferLoadDesc ubDescV{};
+		ubDescV.Desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer;
+		ubDescV.Desc.MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU;
+		ubDescV.Desc.Size = sizeof(TRAP::Math::Vec3);
+		ubDescV.Desc.Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::PersistentMap;
+		ubDescV.Data = nullptr;
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(ubDescV, nullptr);
+		m_uboVertexBuffer[i] = ubDescV.Buffer;
+
+		TRAP::Graphics::RendererAPI::BufferLoadDesc ubDescF{};
+		ubDescF.Desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer;
+		ubDescF.Desc.MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU;
+		ubDescF.Desc.Size = sizeof(TRAP::Math::Vec4);
+		ubDescF.Desc.Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::PersistentMap;
+		ubDescF.Data = nullptr;
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(ubDescF, nullptr);
+		m_uboFragmentBuffer[i] = ubDescF.Buffer;
+	}
+
+	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
+
+	/*for(uint32_t i = 0; i < 3u; ++i)
+	{
+		std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(2);
+		params[0].Name = "ColorV";
+		params[0].Resource = std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>{ m_uboVertexBuffer[i] };
+		params[1].Name = "ColorF";
+		params[1].Resource = std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>{ m_uboFragmentBuffer[i] };
+		m_uboSet->Update(i, params);
+	}*/
+	
+	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
+	///////////////////////////////////////////////
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 void VulkanTests::OnDetach()
 {
-	m_window.reset();
+	if (s_window)
+		m_window.reset();
 
-	m_uniformBuffer.reset();
+	//m_uniformBufferFragment.reset();
+	//m_uniformBufferVertex.reset();
 	m_indexBuffer.reset();
 	m_vertexBuffer.reset();
 }
@@ -80,7 +139,7 @@ void VulkanTests::OnDetach()
 
 void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
-	if (m_window)
+	if (s_window && m_window)
 		TRAP::Graphics::RenderCommand::Present(m_window);
 
 	if(m_wireFrame)
@@ -117,13 +176,89 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 	if(m_ubo)
 	{
-		UniformBufferObject ubo{};
+		/*if(!m_uboSet || m_cachedRootSignature != TRAP::Graphics::RendererAPI::GetRenderer()->GetGraphicsRootSignature().get())
+		{
+			m_cachedRootSignature = TRAP::Graphics::RendererAPI::GetRenderer()->GetGraphicsRootSignature().get();
+			TRAP::Graphics::RendererAPI::DescriptorSetDesc desc{};
+			desc.RootSignature = TRAP::Graphics::RendererAPI::GetRenderer()->GetGraphicsRootSignature();
+			desc.UpdateFrequency = TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::PerFrame;
+			desc.MaxSets = 3u;
+			m_uboSet = TRAP::Graphics::RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(desc);
+
+			for (uint32_t i = 0; i < 3; ++i)
+			{
+				std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(2);
+				params[0].Name = "ColorV";
+				params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{ m_uboVertexBuffer[i].get() };
+				params[1].Name = "ColorF";
+				params[1].Resource = std::vector<TRAP::Graphics::Buffer*>{ m_uboFragmentBuffer[i].get() };
+				m_uboSet->Update(i, params);
+			}
+		}*/
+		
+		
+		/*UniformBufferObject ubo{};
 		ubo.Model = TRAP::Math::Rotate(TRAP::Math::Mat4(1.0f), TRAP::Application::GetTime() * TRAP::Math::Radians(90.0f), TRAP::Math::Vec3(0.0f, 0.0f, 1.0f));
 		ubo.View = TRAP::Math::LookAt(TRAP::Math::Vec3(2.0f), TRAP::Math::Vec3(0.0f), TRAP::Math::Vec3(0.0f, 0.0f, 1.0f));
-		ubo.Proj = TRAP::Math::Perspective(TRAP::Math::Radians(45.0f), static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()), 0.1f, 10.0f);
-		m_uniformBuffer->SetData(&ubo, sizeof(UniformBufferObject));
+		ubo.Proj = TRAP::Math::Perspective(TRAP::Math::Radians(45.0f), static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()), 0.1f, 10.0f);*/
+		//m_uniformBufferVertex->SetData(&ubo, sizeof(UniformBufferObject));
+
+		const uint32_t currentImageIndex = TRAP::Graphics::RendererAPI::GetRenderer()->GetPerWindowData(TRAP::Application::GetWindow().get())->ImageIndex;
+		TRAP::Math::Vec3 MultiplierV(1.0f);
+		static float countVertex = 0.0f;
+		countVertex += deltaTime.GetMilliseconds();
+		if (countVertex > 2000.0f)
+		{			
+			MultiplierV = TRAP::Math::Vec3(1.5f);
+			if (countVertex > 4000.0f)
+				countVertex = 0.0f;
+		}
+		
+		///////////////////////////////////////////////
+		///INTERNAL ENGINE CODE - Usage at own risk!///
+		///////////////////////////////////////////////
+		TRAP::Graphics::RendererAPI::BufferUpdateDesc descV{ m_uboVertexBuffer[currentImageIndex] };
+		descV.DstOffset = 0;
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(descV);
+		//std::memcpy(descV.MappedData, &ubo, sizeof(UniformBufferObject));
+		std::memcpy(descV.MappedData, &MultiplierV, sizeof(TRAP::Math::Vec3));
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(descV, nullptr);
+		///////////////////////////////////////////////		
+
+		/*TRAP::Math::Vec4 color{ 1.0f };
+		for(uint32_t i = 0; i < TRAP::Math::Vec4::Length(); ++i)
+			color[i] = TRAP::Utils::Random::Get(0.0f, 1.0f);*/
+		//m_uniformBufferFragment->SetData(&color, sizeof(TRAP::Math::Vec4));
+
+		TRAP::Math::Vec4 ColorF(1.0f);
+		static float countFragment = 0.0f;
+		countFragment += deltaTime.GetMilliseconds();
+		if (countFragment > 1000.0f)
+		{
+			if (countFragment > 2000.0f)
+				ColorF = TRAP::Math::Vec4(0.0f, 0.0f, 1.0f, 1.0f);
+			else
+				ColorF = TRAP::Math::Vec4(0.0f, 1.0f, 0.0f, 1.0f);
+
+			if (countFragment > 3000.0f)
+				countFragment = 0.0f;
+		}
+
+		///////////////////////////////////////////////
+		///INTERNAL ENGINE CODE - Usage at own risk!///
+		///////////////////////////////////////////////
+		TRAP::Graphics::RendererAPI::BufferUpdateDesc descF{ m_uboFragmentBuffer[currentImageIndex] };
+		descF.DstOffset = 0;
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(descF);
+		//std::memcpy(descF.MappedData, &color, sizeof(TRAP::Math::Vec4));
+		std::memcpy(descF.MappedData, &ColorF, sizeof(TRAP::Math::Vec4));
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(descF, nullptr);
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
+		
+		//TRAP::Graphics::RendererAPI::GetRenderer()->BindDescriptorSet(*m_uboSet, 0);
+		///////////////////////////////////////////////
 	}
-	m_uniformBuffer->Use();
+	//m_uniformBufferFragment->Use();
 	
 	if(!m_indexed)
 		TRAP::Graphics::RendererAPI::GetRenderer()->Draw(m_quad ? 6 : 3);
@@ -160,8 +295,11 @@ void VulkanTests::OnEvent(TRAP::Events::Event& event)
 
 bool VulkanTests::OnWindowClose(TRAP::Events::WindowCloseEvent& e)
 {
-	if (e.GetTitle() == m_window->GetTitle())
-		m_window.reset();
+	if (s_window)
+	{
+		if (e.GetTitle() == m_window->GetTitle())
+			m_window.reset();
+	}
 	
 	return true;
 }
@@ -198,7 +336,7 @@ bool VulkanTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 	}
 	if (e.GetKey() == TRAP::Input::Key::Escape)
 	{
-		if(m_window)
+		if(s_window && m_window)
 			m_window.reset();
 		else
 			TRAP::Application::Shutdown();

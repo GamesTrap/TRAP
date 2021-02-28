@@ -13,16 +13,17 @@ namespace TRAP::Embed
 
 		layout(location = 0) in vec3 Position;
 
-		layout(UpdateFreqPerFrame, binding = 0) uniform MatrixBuffer
-		{
-			mat4 sys_ProjectionMatrix;
-			mat4 sys_ViewMatrix;
-			mat4 sys_ModelMatrix;
-		} Matrices;
+		//layout(std140, UpdateFreqPerFrame, binding = 0) uniform Matrices
+		//{
+			//uniform mat4 sys_ProjectionMatrix;
+			//uniform mat4 sys_ViewMatrix;
+			//uniform mat4 sys_ModelMatrix;
+		//};
 
 		void main()
 		{
-			gl_Position = Matrices.sys_ProjectionMatrix * Matrices.sys_ViewMatrix * Matrices.sys_ModelMatrix * vec4(Position, 1.0f);
+			//gl_Position = sys_ProjectionMatrix * sys_ViewMatrix * sys_ModelMatrix * vec4(Position, 1.0f);
+			gl_Position = vec4(Position, 1.0f);
 		}
 
 #shader fragment

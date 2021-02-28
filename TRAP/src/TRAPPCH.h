@@ -119,6 +119,9 @@
 #ifdef BadRequest
 	#undef BadRequest
 #endif
+#ifdef Success
+	#undef Success
+#endif
 
 #endif
 

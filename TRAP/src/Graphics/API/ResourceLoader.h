@@ -11,7 +11,6 @@ namespace TRAP::Graphics
 namespace TRAP::Graphics::API
 {
 	typedef uint64_t SyncToken;
-	
 	class ResourceLoader
 	{
 	public:
@@ -121,13 +120,13 @@ namespace TRAP::Graphics::API
 
 		struct CopyEngine
 		{
-			TRAP::Ref<Queue> Queue;
+			TRAP::Ref<TRAP::Graphics::Queue> Queue;
 			struct CopyResourceSet
 			{
-				TRAP::Ref<Fence> Fence;
+				TRAP::Ref<TRAP::Graphics::Fence> Fence;
 				CommandBuffer* Cmd;
-				TRAP::Ref<CommandPool> CommandPool;
-				TRAP::Ref<Buffer> Buffer;
+				TRAP::Ref<TRAP::Graphics::CommandPool> CommandPool;
+				TRAP::Ref<TRAP::Graphics::Buffer> Buffer;
 				uint64_t AllocatedSpace;
 
 				//Buffers created in case we ran out of space in the original staging buffer

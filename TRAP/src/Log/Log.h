@@ -8,6 +8,7 @@
 #include <vector>
 #include <mutex>
 #include <string>
+#include <iostream>
 
 namespace TRAP
 {
@@ -116,7 +117,7 @@ namespace TRAP
 		/// </summary>
 		static void Clear();
 
-		inline static constexpr auto WindowVersion = "[21w07a1]";
+		inline static constexpr auto WindowVersion = "[21w09a1]";
 		inline static constexpr auto WindowPrefix = "[Window] ";
 		inline static constexpr auto WindowInternalPrefix = "[Window][Internal] ";
 		inline static constexpr auto WindowIconPrefix = "[Window][Icon] ";

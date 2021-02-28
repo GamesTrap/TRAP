@@ -19,7 +19,7 @@ namespace std
 			{
 				const TRAP::Graphics::RendererAPI::ComputePipelineDesc& c = std::get<TRAP::Graphics::RendererAPI::ComputePipelineDesc>(p.Pipeline);
 
-				TRAP::Utils::HashCombine(hash, c.ShaderProgram->GetName(), c.RootSignature);
+				TRAP::Utils::HashCombine(hash, c.ShaderProgram, c.RootSignature);
 			}
 
 			if (std::holds_alternative<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>(p.Pipeline))
@@ -27,7 +27,7 @@ namespace std
 				const TRAP::Graphics::RendererAPI::GraphicsPipelineDesc& g = std::get<TRAP::Graphics::RendererAPI::GraphicsPipelineDesc>(p.Pipeline);
 
 				TRAP::Utils::HashCombine(hash,
-					g.ShaderProgram->GetName(),
+					g.ShaderProgram,
 					g.RootSignature,
 					g.RenderTargetCount,
 					g.SampleCount,

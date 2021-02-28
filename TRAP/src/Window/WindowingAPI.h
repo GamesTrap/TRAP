@@ -96,8 +96,6 @@ namespace TRAP::INTERNAL
 		//Callbacks//
 		//---------//
 	public:
-		//The function pointer type for error callbacks.
-		typedef void (*ErrorFunc)(Error error, const std::string& description);
 		//The function pointer type for window position callbacks.
 		typedef void (*WindowPositionFunc)(const InternalWindow*, int32_t xPos, int32_t yPos);
 		//The function pointer type for window size callbacks.
@@ -479,16 +477,6 @@ namespace TRAP::INTERNAL
 			pthread_key_t Key{};
 #endif
 		};
-		
-		/// <summary>
-		/// Per-thread error structure.
-		/// </summary>
-		struct WindowingError
-		{
-			WindowingError* Next = nullptr;
-			Error ErrorCode = Error::No_Error;
-			std::string Description = "";
-		};
 
 		/// <summary>
 		/// Framebuffer configuration.
@@ -545,14 +533,11 @@ namespace TRAP::INTERNAL
 				WindowConfig Window{};
 			} Hints;
 
-			Scope<WindowingError> ErrorListHead = nullptr;
-
 			std::forward_list<InternalWindow*> WindowList{};
 			std::forward_list<InternalCursor*> CursorList{};
 			
 			std::vector<Scope<InternalMonitor>> Monitors{};
 
-			TLS ErrorSlot{};
 			TLS ContextSlot{};
 
 			struct
@@ -571,7 +556,6 @@ namespace TRAP::INTERNAL
 #elif defined(TRAP_PLATFORM_LINUX)
 				bool KHR_XLib_Surface = false;
 				bool KHR_XCB_Surface = false;
-#elif defined(TRAP_PLATFORM_LINUX)
 				bool KHR_Wayland_Surface = false;
 #endif
 			} VK{};
@@ -1091,10 +1075,7 @@ namespace TRAP::INTERNAL
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Static Members-----------------------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
-		static WindowingError s_MainThreadError;
-		static ErrorFunc s_ErrorCallback;
 		static Data s_Data;
-		static std::mutex s_ErrorLock;
 		//-------------------------------------------------------------------------------------------------------------------//
 		//Platform Independent Functions-------------------------------------------------------------------------------------//
 		//-------------------------------------------------------------------------------------------------------------------//
@@ -1350,11 +1331,6 @@ namespace TRAP::INTERNAL
 		/// <returns>Data stored with the window.</returns>
 		static void* GetWindowUserPointer(const InternalWindow* window);
 		/// <summary>
-		/// Sets the error callback.
-		/// </summary>
-		/// <param name="callback">Function to call when an error occurs.</param>
-		static void SetErrorCallback(ErrorFunc callback);
-		/// <summary>
 		/// Sets the monitor configuration callback.
 		/// </summary>
 		/// <param name="callback">Function to call when a monitor event occurs.</param>
@@ -1451,11 +1427,6 @@ namespace TRAP::INTERNAL
 		/// <param name="window">InternalWindow to set the callback for.</param>
 		/// <param name="callback">Function to call when a drop even occurs.</param>
 		static void SetDropCallback(InternalWindow* window, DropFunc callback);
-		/// <summary>
-		/// Gets the error callback.
-		/// </summary>
-		/// <returns>Function that gets called when an error occurs.</returns>
-		static ErrorFunc GetErrorCallback();
 		/// <summary>
 		/// Gets the monitor configuration callback.
 		/// </summary>

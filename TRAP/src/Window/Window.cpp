@@ -721,14 +721,6 @@ void TRAP::Window::Restore() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void WindowingAPIErrorCallback(const TRAP::INTERNAL::WindowingAPI::Error error, const std::string& description)
-{
-	if(error != TRAP::INTERNAL::WindowingAPI::Error::No_Error)
-		TP_ERROR(TRAP::Log::WindowInternalPrefix, description);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Window::Init(const WindowProps& props)
 {
 	m_data.Title = props.Title;
@@ -747,7 +739,6 @@ void TRAP::Window::Init(const WindowProps& props)
 		TRAP_CORE_ASSERT(success, "Could not initialize WindowingAPI!");
 		if (!success)
 			Utils::Dialogs::MsgBox::Show("Could not initialize WindowingAPI!", "Error WindowingAPI", Utils::Dialogs::MsgBox::Style::Error, Utils::Dialogs::MsgBox::Buttons::Quit);
-		INTERNAL::WindowingAPI::SetErrorCallback(WindowingAPIErrorCallback);
 		s_WindowingAPIInitialized = true;
 	}
 
