@@ -1720,3 +1720,19 @@ SITREP 02/16/2021|21w07a2
     - Vulkan Memory Allocator updated ~<10 mins
     - VulkanTests Added V key to toggle VSync ~<5 mins
     - VulkanTests Enabled HotShaderReloading ~<5 mins
+
+SITREP 03/01/2021|21w09a1
+    - Changed TRAP Engine version to 21w09a1(0.7.28)
+    - .gitignore Added make and code-workspace files ~<5 mins
+    - WindowingAPIX11 Replaced Success macro with its value (compiler error) ~<5 mins
+    - WindowingAPIX11 Added missing CursorTypes ~<10 mins
+    - WindowingAPI Removed ErrorCallback now uses TP_ERROR directly ~<15 mins
+    - (Linux) VFS GetTempFolderPath Added "/" as last character of folder path ~<5 mins
+    - (Linux) VFS Added filesystem exist check if path starts with "/" but its not a virtualPath ~<15 mins
+    - Worked on UniformBuffer abstraction ~>60 mins
+    - VulkanPhysicalDevice Moved WindowingAPI initialization ~<5 mins
+    - Commented out VulkanFrameBuffer class ~<5 mins
+
+SITREP 03/01/2021|21w09a2
+    - Changed TRAP Engine version to 21w09a2(0.7.29)
+    - Log class can now be used by client code ~<15 mins

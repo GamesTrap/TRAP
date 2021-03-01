@@ -121,6 +121,7 @@ bool TRAP::VFS::ResolveReadPhysicalPath(const std::string_view path, std::filesy
 
 	if (s_Instance->m_mountPoints.find('/' + virtualDir) == s_Instance->m_mountPoints.end() || s_Instance->m_mountPoints['/' + virtualDir].empty())
 	{
+#ifdef TRAP_PLATFORM_LINUX
 		std::string folderPath;
 		if(path.find_last_of('/') != std::string::npos)
 			folderPath = path.substr(0, path.find_last_of('/'));
@@ -130,6 +131,7 @@ bool TRAP::VFS::ResolveReadPhysicalPath(const std::string_view path, std::filesy
 			outPhysicalPath = path;
 			return true;
 		}
+#endif
 
 		return false;
 	}
@@ -170,6 +172,7 @@ bool TRAP::VFS::ResolveWritePhysicalPath(const std::string_view path, std::files
 
 	if (s_Instance->m_mountPoints.find('/' + virtualDir) == s_Instance->m_mountPoints.end() || s_Instance->m_mountPoints['/' + virtualDir].empty())
 	{
+#ifdef TRAP_PLATFORM_LINUX
 		std::string folderPath;
 		if(path.find_last_of('/') != std::string::npos)
 			folderPath = path.substr(0, path.find_last_of('/'));
@@ -179,6 +182,7 @@ bool TRAP::VFS::ResolveWritePhysicalPath(const std::string_view path, std::files
 			outPhysicalPath = path;
 			return true;
 		}
+#endif
 
 		return false;
 	}
@@ -619,7 +623,8 @@ std::string TRAP::VFS::GetTempFolderPath()
 	std::string tempFolderPath = std::filesystem::temp_directory_path().string();
 
 #ifdef TRAP_PLATFORM_LINUX
-	tempFolderPath += '/';
+	if(!tempFolderPath.empty() && tempFolderPath[tempFolderPath.size() - 1] != '/')
+		tempFolderPath += '/';
 #endif
 
 	return tempFolderPath;

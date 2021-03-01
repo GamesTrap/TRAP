@@ -1,11 +1,14 @@
 #include "TRAPPCH.h"
 #include "Log.h"
 
-std::mutex TRAP::Log::m_mtx;
+#include "VFS/VFS.h"
+
+TRAP::Log TRAP::TRAPLog("TRAP.Log");
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Log::Log()
+TRAP::Log::Log(std::string virtualOrPhysicalFilePath)
+	: m_path(std::move(virtualOrPhysicalFilePath))
 {
 	m_buffer.reserve(256);
 }
@@ -13,24 +16,29 @@ TRAP::Log::Log()
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Log::~Log()
-{	
+{
 	Save();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Log& TRAP::Log::Get()
+const std::string& TRAP::Log::GetFilePath() const
 {
-	static std::unique_ptr<Log> logger(new Log());
-	
-	return *logger;
+	return m_path;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Log::SetFilePath(const std::string& virtualOrPhysicalFilePath)
+{
+	m_path = virtualOrPhysicalFilePath;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffer()
 {
-	return Get().m_buffer;
+	return m_buffer;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -39,16 +47,23 @@ void TRAP::Log::Save()
 {
 	TP_PROFILE_FUNCTION();
 
-	TP_INFO(LoggerPrefix, "Saving TRAP.Log");
+	TP_INFO(LoggerPrefix, "Saving ", m_path);
+	std::string output = "";
 
-	std::ofstream file("TRAP.Log");
-	if (file.is_open())
+	for (const auto& [level, message] : m_buffer)
+		output += message + '\n';
+
+	if(m_path == "TRAP.Log")
 	{
-		for (const auto& [level, message] : Get().m_buffer)
-			file << message << '\n';
-
-		file.close();
+		std::ofstream file(m_path);
+		if(file.is_open())
+		{
+			file << output;
+			file.close();
+		}
 	}
+	else if(!TRAP::VFS::WriteTextFile(m_path, output))
+		TP_ERROR(LoggerPrefix, "Failed to save: ", m_path);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -57,9 +72,8 @@ void TRAP::Log::Clear()
 {
 	TP_PROFILE_FUNCTION();
 
-	Save();
-	Get().m_buffer.clear();
-	Get().m_buffer.reserve(256);
+	m_buffer.clear();
+	m_buffer.reserve(256);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

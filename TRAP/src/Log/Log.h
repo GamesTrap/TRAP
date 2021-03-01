@@ -14,12 +14,12 @@ namespace TRAP
 {
 	class Log final
 	{
-	private:
+	public:
 		/// <summary>
 		/// Private Constructor.
 		/// </summary>
-		Log();
-	public:
+		/// <param name="virtualOrPhysicalFilePath">Virtual or Physical file path to save to.</param>
+		Log(std::string virtualOrPhysicalFilePath);
 		/// <summary>
 		///	Destructor.
 		/// </summary>
@@ -42,6 +42,17 @@ namespace TRAP
 		Log& operator=(Log&&) = delete;
 
 		/// <summary>
+		/// Get the current used path for saving.
+		/// </summary>
+		/// <returns>Virtual or Physical file path.</returns>
+		const std::string& GetFilePath() const;
+		/// <summary>
+		/// Set the file path used for saving.
+		/// </summary>
+		/// <param name="virtualOrPhysicalFilePath">Virtual or Physical file path.</param>
+		void SetFilePath(const std::string& virtualOrPhysicalFilePath);
+
+		/// <summary>
 		/// Importance of a log message.
 		/// </summary>
 		enum class Level
@@ -55,69 +66,63 @@ namespace TRAP
 		};
 
 		/// <summary>
-		/// Get the singleton Log instance.
-		/// </summary>
-		/// <returns>Singleton Log instance.</returns>
-		static Log& Get();
-
-		/// <summary>
 		/// Log a Trace message.
 		/// </summary>
 		/// <typeparam name="...Args">Message to log.</typeparam>
 		template<typename... Args>
-		static void Trace(Args&& ... args);
+		void Trace(Args&& ... args);
 
 		/// <summary>
 		/// Log a Debug message.
 		/// </summary>
 		/// <typeparam name="...Args">Message to log.</typeparam>
 		template<typename... Args>
-		static void Debug(Args&& ... args);
+		void Debug(Args&& ... args);
 
 		/// <summary>
 		/// Log a Info message.
 		/// </summary>
 		/// <typeparam name="...Args">Message to log.</typeparam>
 		template<typename... Args>
-		static void Info(Args&& ... args);
+		void Info(Args&& ... args);
 
 		/// <summary>
 		/// Log a Warn message.
 		/// </summary>
 		/// <typeparam name="...Args">Message to log.</typeparam>
 		template<typename... Args>
-		static void Warn(Args&& ... args);
+		void Warn(Args&& ... args);
 
 		/// <summary>
 		/// Log a Error message.
 		/// </summary>
 		/// <typeparam name="...Args">Message to log.</typeparam>
 		template<typename... Args>
-		static void Error(Args&& ... args);
+		void Error(Args&& ... args);
 
 		/// <summary>
 		/// Log a Critical message.
 		/// </summary>
 		/// <typeparam name="...Args">Message to log.</typeparam>
 		template<typename... Args>
-		static void Critical(Args&& ... args);
+		void Critical(Args&& ... args);
 
 		/// <summary>
 		/// Get all saves log messages and their importance level.
 		/// </summary>
 		/// <returns>Messages and importance level in a vector.</returns>
-		static const std::vector<std::pair<Level, std::string>>& GetBuffer();
+		const std::vector<std::pair<Level, std::string>>& GetBuffer();
 
 		/// <summary>
-		/// Save all collected messages into "TRAP.log" file.
+		/// Save all collected messages to file.
 		/// </summary>
-		static void Save();
+		void Save();
 		/// <summary>
-		/// Clears (and also Saves) all collected messages.
+		/// Clears all collected messages.
 		/// </summary>
-		static void Clear();
+		void Clear();
 
-		inline static constexpr auto WindowVersion = "[21w09a1]";
+		inline static constexpr auto WindowVersion = "[21w09a2]";
 		inline static constexpr auto WindowPrefix = "[Window] ";
 		inline static constexpr auto WindowInternalPrefix = "[Window][Internal] ";
 		inline static constexpr auto WindowIconPrefix = "[Window][Icon] ";
@@ -204,7 +209,7 @@ namespace TRAP
 		inline static constexpr auto NetworkUDPSocketPrefix = "[Network][UDPSocket] ";
 		inline static constexpr auto NetworkSocketUnixPrefix = "[Network][Socket][Unix] ";
 		inline static constexpr auto SceneSerializerPrefix = "[SceneSerializer] ";
-		
+
 #ifdef TRAP_PLATFORM_WINDOWS
 	private:
 		static void GetInfo() { GetConsoleScreenBufferInfo(m_handleConsole, &m_csbi); }
@@ -225,8 +230,12 @@ namespace TRAP
 
 		std::vector<std::pair<Level, std::string>> m_buffer{};
 
-		static std::mutex m_mtx;
+		std::mutex m_mtx;
+
+		std::string m_path;
 	};
+
+	extern Log TRAPLog;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -242,7 +251,7 @@ namespace TRAP
 template<typename... Args>
 constexpr void TP_TRACE(const Args& ... args)
 {
-	::TRAP::Log::Trace(args...);
+	TRAP::TRAPLog.Trace(args...);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -256,7 +265,7 @@ constexpr void TP_TRACE(const Args& ... args)
 template<typename... Args>
 constexpr void TP_DEBUG(const Args& ... args)
 {
-	::TRAP::Log::Debug(args...);
+	TRAP::TRAPLog.Debug(args...);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -281,7 +290,7 @@ constexpr void TP_DEBUG(const Args& ... args)
 template<typename... Args>
 constexpr void TP_INFO(const Args& ... args)
 {
-	::TRAP::Log::Info(args...);
+	TRAP::TRAPLog.Info(args...);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -293,7 +302,7 @@ constexpr void TP_INFO(const Args& ... args)
 template<typename... Args>
 constexpr void TP_WARN(const Args& ... args)
 {
-	::TRAP::Log::Warn(args...);
+	TRAP::TRAPLog.Warn(args...);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -305,7 +314,7 @@ constexpr void TP_WARN(const Args& ... args)
 template<typename... Args>
 constexpr void TP_ERROR(const Args& ... args)
 {
-	::TRAP::Log::Error(args...);
+	TRAP::TRAPLog.Error(args...);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -317,7 +326,7 @@ constexpr void TP_ERROR(const Args& ... args)
 template<typename... Args>
 constexpr void TP_CRITICAL(const Args& ... args)
 {
-	::TRAP::Log::Critical(args...);
+	TRAP::TRAPLog.Critical(args...);
 }
 
 #endif /*_TRAP_LOG_H_*/

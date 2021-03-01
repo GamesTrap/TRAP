@@ -21,7 +21,7 @@ void TRAP::Log::Trace(Args&& ... args)
 		std::cout << stream.str() << '\n';
 		ResetColor();
 #endif
-		Get().m_buffer.emplace_back(Level::Trace, stream.str());
+		m_buffer.emplace_back(Level::Trace, stream.str());
 	}
 }
 
@@ -45,7 +45,7 @@ void TRAP::Log::Debug(Args&& ... args)
 		std::cout << stream.str() << '\n';
 		ResetColor();
 #endif
-		Get().m_buffer.emplace_back(Level::Debug, stream.str());
+		m_buffer.emplace_back(Level::Debug, stream.str());
 	}
 }
 
@@ -69,7 +69,7 @@ void TRAP::Log::Info(Args&& ... args)
 		std::cout << stream.str() << '\n';
 		ResetColor();
 #endif
-		Get().m_buffer.emplace_back(Level::Info, stream.str());
+		m_buffer.emplace_back(Level::Info, stream.str());
 	}
 }
 
@@ -93,7 +93,7 @@ void TRAP::Log::Warn(Args&& ... args)
 		std::cout << stream.str() << '\n';
 		ResetColor();
 #endif
-		Get().m_buffer.emplace_back(Level::Warn, stream.str());
+		m_buffer.emplace_back(Level::Warn, stream.str());
 	}
 }
 
@@ -117,7 +117,7 @@ void TRAP::Log::Error(Args&& ... args)
 		std::cout << stream.str() << '\n';
 		ResetColor();
 #endif
-		Get().m_buffer.emplace_back(Level::Error, stream.str());
+		m_buffer.emplace_back(Level::Error, stream.str());
 	}
 }
 
@@ -141,7 +141,7 @@ void TRAP::Log::Critical(Args&& ... args)
 		std::cout << stream.str() << '\n';
 		ResetColor();
 #endif
-		Get().m_buffer.emplace_back(Level::Critical, stream.str());
+		m_buffer.emplace_back(Level::Critical, stream.str());
 	}
 }
 
@@ -165,7 +165,7 @@ void TRAP::Log::Trace(Args&& ... args)
 		//Standard Magenta
 		std::cout << "\033[35m" << stream.str() << "\033[m" << '\n';
 #endif
-		Get().m_buffer.emplace_back(Level::Trace, stream.str());
+		m_buffer.emplace_back(Level::Trace, stream.str());
 	}
 }
 
@@ -185,7 +185,7 @@ void TRAP::Log::Debug(Args&& ... args)
 		std::lock_guard<std::mutex> lock(m_mtx);
 		//Standard Cyan
 		std::cout << "\033[36m" << stream.str() << "\033[m" << '\n';
-		Get().m_buffer.emplace_back(Level::Debug, stream.str());
+		m_buffer.emplace_back(Level::Debug, stream.str());
 	}
 }
 
@@ -205,7 +205,7 @@ void TRAP::Log::Info(Args&& ... args)
 		std::lock_guard<std::mutex> lock(m_mtx);
 		//Standard Green
 		std::cout << "\033[32m" << stream.str() << "\033[m" << '\n';
-		Get().m_buffer.emplace_back(Level::Info, stream.str());
+		m_buffer.emplace_back(Level::Info, stream.str());
 	}
 }
 
@@ -225,7 +225,7 @@ void TRAP::Log::Warn(Args&& ... args)
 		std::lock_guard<std::mutex> lock(m_mtx);
 		//Bold Yellow
 		std::cout << "\033[33m" << "\033[1m" << stream.str() << "\033[m" << '\n';
-		Get().m_buffer.emplace_back(Level::Warn, stream.str());
+		m_buffer.emplace_back(Level::Warn, stream.str());
 	}
 }
 
@@ -245,7 +245,7 @@ void TRAP::Log::Error(Args&& ... args)
 		std::lock_guard<std::mutex> lock(m_mtx);
 		//Bold Red
 		std::cout << "\033[31m" << "\033[1m" << stream.str() << "\033[m" << '\n';
-		Get().m_buffer.emplace_back(Level::Error, stream.str());
+		m_buffer.emplace_back(Level::Error, stream.str());
 	}
 }
 
@@ -265,7 +265,7 @@ void TRAP::Log::Critical(Args&& ... args)
 		std::lock_guard<std::mutex> lock(m_mtx);
 		//Bold White on Red
 		std::cout << "\033[41m" << "\033[1m" << stream.str() << "\033[m" << '\n';
-		Get().m_buffer.emplace_back(Level::Critical, stream.str());
+		m_buffer.emplace_back(Level::Critical, stream.str());
 	}
 }
 #endif

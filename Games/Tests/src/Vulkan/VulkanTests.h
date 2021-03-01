@@ -18,23 +18,15 @@ public:
 private:
 	bool OnWindowClose(TRAP::Events::WindowCloseEvent& e);
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& e);
-	
+
 	TRAP::Scope<TRAP::Window> m_window;
 
 	TRAP::Utils::Timer m_fpsTimer;
 
-	/*TRAP::Scope<TRAP::Graphics::UniformBuffer> m_uniformBufferVertex;
-	TRAP::Scope<TRAP::Graphics::UniformBuffer> m_uniformBufferFragment;*/
-	///////////////////////////////////////////////
-	///INTERNAL ENGINE CODE - Usage at own risk!///
-	///////////////////////////////////////////////
-	TRAP::Graphics::DescriptorSet* m_uboSet = nullptr;
-	std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_uboVertexBuffer{};
-	std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_uboFragmentBuffer{};
 	TRAP::Graphics::RootSignature* m_cachedRootSignature{};
 	///////////////////////////////////////////////
-	
-	
+
+
 	TRAP::Scope<TRAP::Graphics::VertexBuffer> m_vertexBuffer;
 	std::array<float, 18> m_triangleVertices
 	{
@@ -75,7 +67,6 @@ private:
 	bool m_wireFrame;
 	bool m_quad;
 	bool m_indexed;
-	bool m_ubo;
 	bool m_vsync;
 
 	inline static constexpr bool s_window = false;
