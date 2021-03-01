@@ -4,6 +4,11 @@
 #include "Event.h"
 #include "Maths/Vec2.h"
 
+namespace TRAP
+{
+	class Window;
+}
+
 namespace TRAP::Events
 {
 	/// <summary>
@@ -17,8 +22,8 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="width">New Window width.</param>
 		/// <param name="height">New Window height.</param>
-		/// <param name="title">Title of the affected Window.</param>
-		WindowResizeEvent(uint32_t width, uint32_t height, std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		WindowResizeEvent(uint32_t width, uint32_t height, TRAP::Window* window);
 
 		/// <summary>
 		/// Retrieve the new Window width.
@@ -31,10 +36,10 @@ namespace TRAP::Events
 		/// <returns>Height.</returns>
 		uint32_t GetHeight() const;
 		/// <summary>
-		/// Retrieve the title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowResizeEvent.
@@ -65,7 +70,7 @@ namespace TRAP::Events
 
 	private:
 		uint32_t m_width, m_height;
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -77,14 +82,14 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="title">Title of the affected Window.</param>
-		explicit WindowMinimizeEvent(std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		explicit WindowMinimizeEvent(TRAP::Window* window);
 
 		/// <summary>
-		/// Retrieve the Title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowMinimizeEvent.
@@ -114,7 +119,7 @@ namespace TRAP::Events
 		EventCategory GetCategoryFlags() const override;
 
 	private:
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -126,15 +131,14 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="title">Title of the affected Window.</param>
-		explicit WindowMaximizeEvent(std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		explicit WindowMaximizeEvent(TRAP::Window* window);
 
 		/// <summary>
-		/// Retrieve the Title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
-
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 		/// <summary>
 		/// Get a string representation of the WindowMaximizeEvent.
 		/// </summary>
@@ -163,7 +167,7 @@ namespace TRAP::Events
 		EventCategory GetCategoryFlags() const override;
 
 	private:
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -175,14 +179,14 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="title">Title of the affected Window.</param>
-		explicit WindowRestoreEvent(std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		explicit WindowRestoreEvent(TRAP::Window* window);
 
 		/// <summary>
-		/// Retrieve the Title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowRestoreEvent.
@@ -212,7 +216,7 @@ namespace TRAP::Events
 		EventCategory GetCategoryFlags() const override;
 
 	private:
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -224,14 +228,14 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="title">Title of the affected Window.</param>
-		explicit WindowCloseEvent(std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		explicit WindowCloseEvent(TRAP::Window* window);
 
 		/// <summary>
-		/// Retrieve the Title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowCloseEvent.
@@ -261,7 +265,7 @@ namespace TRAP::Events
 		EventCategory GetCategoryFlags() const override;
 
 	private:
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -275,8 +279,8 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="x">New x position.</param>
 		/// <param name="y">New y position.</param>
-		/// <param name="title">Title of the affected Window.</param>
-		WindowMoveEvent(int32_t x, int32_t y, std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		WindowMoveEvent(int32_t x, int32_t y, TRAP::Window* window);
 
 		/// <summary>
 		/// Retrieve the new Window x position.
@@ -294,10 +298,10 @@ namespace TRAP::Events
 		/// <returns>Position</returns>
 		Math::Vec2i GetPosition() const;
 		/// <summary>
-		/// Retrieve the Title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowMoveEvent.
@@ -328,7 +332,7 @@ namespace TRAP::Events
 
 	private:
 		int32_t m_x, m_y;
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -340,14 +344,14 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="title">Title of the affected Window.</param>
-		explicit WindowFocusEvent(std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		explicit WindowFocusEvent(TRAP::Window* window);
 
 		/// <summary>
-		/// Retrieve the Title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowFocusEvent.
@@ -377,7 +381,7 @@ namespace TRAP::Events
 		EventCategory GetCategoryFlags() const override;
 
 	private:
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -389,14 +393,14 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="title">Title of the affected Window.</param>
-		explicit WindowLostFocusEvent(std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		explicit WindowLostFocusEvent(TRAP::Window* window);
 
 		/// <summary>
-		/// Retrieve the Title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowLostFocusEvent.
@@ -426,7 +430,7 @@ namespace TRAP::Events
 		EventCategory GetCategoryFlags() const override;
 
 	private:
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -439,8 +443,8 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="paths">Path(s) to the file(s) or folder(s) dropped on the Window.</param>
-		/// <param name="title">Title of the affected Window.</param>
-		explicit WindowDropEvent(std::vector<std::string> paths, std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		explicit WindowDropEvent(std::vector<std::string> paths, TRAP::Window* window);
 
 		/// <summary>
 		/// Retrieve the dropped paths.
@@ -448,10 +452,10 @@ namespace TRAP::Events
 		/// <returns>Vector of file or folder paths.</returns>
 		const std::vector<std::string>& GetPaths() const;
 		/// <summary>
-		/// Retrieve the Title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowDropEvent.
@@ -482,7 +486,7 @@ namespace TRAP::Events
 
 	private:
 		std::vector<std::string> m_paths{};
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -496,8 +500,8 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="xScale">New x content scale.</param>
 		/// <param name="yScale">New y content scale.</param>
-		/// <param name="title">Title of the affected Window.</param>
-		explicit WindowContentScaleEvent(float xScale, float yScale, std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		explicit WindowContentScaleEvent(float xScale, float yScale, TRAP::Window* window);
 
 		/// <summary>
 		/// Retrieve the new x content scale.
@@ -515,10 +519,10 @@ namespace TRAP::Events
 		/// <returns>Content scale.</returns>
 		Math::Vec2 GetScale() const;
 		/// <summary>
-		/// Retrieve the Title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the WindowContentScaleEvent.
@@ -550,7 +554,7 @@ namespace TRAP::Events
 	private:
 		float m_XScale;
 		float m_YScale;
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -564,8 +568,8 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="width">New framebuffer width.</param>
 		/// <param name="height">New framebuffer height.</param>
-		/// <param name="title">Title of the affected Window.</param>
-		FrameBufferResizeEvent(uint32_t width, uint32_t height, std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		FrameBufferResizeEvent(uint32_t width, uint32_t height, TRAP::Window* window);
 
 		/// <summary>
 		/// Retrieve the new framebuffer width.
@@ -583,10 +587,10 @@ namespace TRAP::Events
 		/// <returns>Framebuffer size.</returns>
 		Math::Vec2ui GetSize() const;
 		/// <summary>
-		/// Retrieve the Title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the FrameBufferResizeEvent.
@@ -617,7 +621,7 @@ namespace TRAP::Events
 
 	private:
 		uint32_t m_width, m_height;
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 }
 

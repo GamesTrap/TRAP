@@ -30,7 +30,7 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="controller">Affected Controller.</param>
 		explicit ControllerEvent(Input::Controller controller);
-		
+
 		Input::Controller m_controller;
 	};
 

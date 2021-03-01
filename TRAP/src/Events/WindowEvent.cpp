@@ -1,8 +1,10 @@
 #include "TRAPPCH.h"
 #include "WindowEvent.h"
 
-TRAP::Events::WindowResizeEvent::WindowResizeEvent(const uint32_t width, const uint32_t height, std::string title)
-	: m_width(width), m_height(height), m_title(std::move(title))
+#include "Window/Window.h"
+
+TRAP::Events::WindowResizeEvent::WindowResizeEvent(const uint32_t width, const uint32_t height, TRAP::Window* window)
+	: m_width(width), m_height(height), m_window(window)
 {
 }
 
@@ -22,9 +24,9 @@ uint32_t TRAP::Events::WindowResizeEvent::GetHeight() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::WindowResizeEvent::GetTitle() const
+TRAP::Window* TRAP::Events::WindowResizeEvent::GetWindow() const
 {
-	return m_title;
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -66,16 +68,16 @@ TRAP::Events::EventCategory TRAP::Events::WindowResizeEvent::GetCategoryFlags() 
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::WindowMinimizeEvent::WindowMinimizeEvent(std::string title)
-	: m_title(std::move(title))
+TRAP::Events::WindowMinimizeEvent::WindowMinimizeEvent(TRAP::Window* window)
+	: m_window(window)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::WindowMinimizeEvent::GetTitle() const
+TRAP::Window* TRAP::Events::WindowMinimizeEvent::GetWindow() const
 {
-	return m_title;
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -117,16 +119,16 @@ TRAP::Events::EventCategory TRAP::Events::WindowMinimizeEvent::GetCategoryFlags(
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::WindowMaximizeEvent::WindowMaximizeEvent(std::string title)
-	: m_title(std::move(title))
+TRAP::Events::WindowMaximizeEvent::WindowMaximizeEvent(TRAP::Window* window)
+	: m_window(window)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::WindowMaximizeEvent::GetTitle() const
+TRAP::Window* TRAP::Events::WindowMaximizeEvent::GetWindow() const
 {
-	return m_title;
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -168,16 +170,16 @@ TRAP::Events::EventCategory TRAP::Events::WindowMaximizeEvent::GetCategoryFlags(
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::WindowRestoreEvent::WindowRestoreEvent(std::string title)
-	: m_title(std::move(title))
+TRAP::Events::WindowRestoreEvent::WindowRestoreEvent(TRAP::Window* window)
+	: m_window(window)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::WindowRestoreEvent::GetTitle() const
+TRAP::Window* TRAP::Events::WindowRestoreEvent::GetWindow() const
 {
-	return m_title;
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -219,23 +221,23 @@ TRAP::Events::EventCategory TRAP::Events::WindowRestoreEvent::GetCategoryFlags()
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::WindowCloseEvent::WindowCloseEvent(std::string title)
-	: m_title(std::move(title))
+TRAP::Events::WindowCloseEvent::WindowCloseEvent(TRAP::Window* window)
+	: m_window(window)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::WindowCloseEvent::GetTitle() const
+TRAP::Window* TRAP::Events::WindowCloseEvent::GetWindow() const
 {
-	return m_title;
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::WindowCloseEvent::ToString() const
 {
-	return "WindowCloseEvent: " + m_title;
+	return "WindowCloseEvent: " + m_window->GetTitle();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -270,8 +272,8 @@ TRAP::Events::EventCategory TRAP::Events::WindowCloseEvent::GetCategoryFlags() c
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::WindowMoveEvent::WindowMoveEvent(const int32_t x, const int32_t y, std::string title)
-	: m_x(x), m_y(y), m_title(std::move(title))
+TRAP::Events::WindowMoveEvent::WindowMoveEvent(const int32_t x, const int32_t y, TRAP::Window* window)
+	: m_x(x), m_y(y), m_window(window)
 {
 }
 
@@ -298,9 +300,9 @@ TRAP::Math::Vec2i TRAP::Events::WindowMoveEvent::GetPosition() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::WindowMoveEvent::GetTitle() const
+TRAP::Window* TRAP::Events::WindowMoveEvent::GetWindow() const
 {
-	return m_title;
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -342,23 +344,23 @@ TRAP::Events::EventCategory TRAP::Events::WindowMoveEvent::GetCategoryFlags() co
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::WindowFocusEvent::WindowFocusEvent(std::string title)
-	: m_title(std::move(title))
+TRAP::Events::WindowFocusEvent::WindowFocusEvent(TRAP::Window* window)
+	: m_window(window)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::WindowFocusEvent::GetTitle() const
+TRAP::Window* TRAP::Events::WindowFocusEvent::GetWindow() const
 {
-	return m_title;
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::WindowFocusEvent::ToString() const
 {
-	return "WindowFocusEvent: " + m_title;
+	return "WindowFocusEvent: " + m_window->GetTitle();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -393,23 +395,23 @@ TRAP::Events::EventCategory TRAP::Events::WindowFocusEvent::GetCategoryFlags() c
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::WindowLostFocusEvent::WindowLostFocusEvent(std::string title)
-	: m_title(std::move(title))
+TRAP::Events::WindowLostFocusEvent::WindowLostFocusEvent(TRAP::Window* window)
+	: m_window(window)
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::WindowLostFocusEvent::GetTitle() const
+TRAP::Window* TRAP::Events::WindowLostFocusEvent::GetWindow() const
 {
-	return m_title;
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 std::string TRAP::Events::WindowLostFocusEvent::ToString() const
 {
-	return "WindowLostFocusEvent: " + m_title;
+	return "WindowLostFocusEvent: " + m_window->GetTitle();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -444,8 +446,8 @@ TRAP::Events::EventCategory TRAP::Events::WindowLostFocusEvent::GetCategoryFlags
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::WindowDropEvent::WindowDropEvent(std::vector<std::string> paths, std::string title)
-	: m_paths(std::move(paths)), m_title(std::move(title))
+TRAP::Events::WindowDropEvent::WindowDropEvent(std::vector<std::string> paths, TRAP::Window* window)
+	: m_paths(std::move(paths)), m_window(window)
 {
 }
 
@@ -458,9 +460,9 @@ const std::vector<std::string>& TRAP::Events::WindowDropEvent::GetPaths() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::WindowDropEvent::GetTitle() const
+TRAP::Window* TRAP::Events::WindowDropEvent::GetWindow() const
 {
-	return m_title;
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -506,8 +508,8 @@ TRAP::Events::EventCategory TRAP::Events::WindowDropEvent::GetCategoryFlags() co
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::WindowContentScaleEvent::WindowContentScaleEvent(const float xScale, const float yScale, std::string title)
-	: m_XScale(xScale), m_YScale(yScale), m_title(std::move(title))
+TRAP::Events::WindowContentScaleEvent::WindowContentScaleEvent(const float xScale, const float yScale, TRAP::Window* window)
+	: m_XScale(xScale), m_YScale(yScale), m_window(window)
 {
 }
 
@@ -534,9 +536,9 @@ TRAP::Math::Vec2 TRAP::Events::WindowContentScaleEvent::GetScale() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::WindowContentScaleEvent::GetTitle() const
+TRAP::Window* TRAP::Events::WindowContentScaleEvent::GetWindow() const
 {
-	return m_title;
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -579,8 +581,8 @@ TRAP::Events::EventCategory TRAP::Events::WindowContentScaleEvent::GetCategoryFl
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Events::FrameBufferResizeEvent::FrameBufferResizeEvent(const uint32_t width, const uint32_t height,
-                                                             std::string title)
-	: m_width(width), m_height(height), m_title(std::move(title))
+                                                             TRAP::Window* window)
+	: m_width(width), m_height(height), m_window(window)
 {
 }
 
@@ -608,9 +610,9 @@ TRAP::Math::Vec2ui TRAP::Events::FrameBufferResizeEvent::GetSize() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::FrameBufferResizeEvent::GetTitle() const
+TRAP::Window* TRAP::Events::FrameBufferResizeEvent::GetWindow() const
 {
-	return m_title;
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

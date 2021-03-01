@@ -52,8 +52,8 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="key">Pressed key.</param>
 		/// <param name="repeatCount">Amount of key press repeats.</param>
-		/// <param name="title">Title of the affected Window.</param>
-		KeyPressEvent(Input::Key key, uint16_t repeatCount, std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		KeyPressEvent(Input::Key key, uint16_t repeatCount, TRAP::Window* window);
 
 		/// <summary>
 		/// Retrieve tha amount of key press repeats.
@@ -61,10 +61,10 @@ namespace TRAP::Events
 		/// <returns>Repeat count.</returns>
 		uint16_t GetRepeatCount() const;
 		/// <summary>
-		/// Retrieve the title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the KeyPressEvent.
@@ -90,7 +90,7 @@ namespace TRAP::Events
 
 	private:
 		uint16_t m_repeatCount;
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -103,14 +103,14 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="key">Released key.</param>
-		/// <param name="title">Title of the affected Window.</param>
-		explicit KeyReleaseEvent(Input::Key key, std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		explicit KeyReleaseEvent(Input::Key key, TRAP::Window* window);
 
 		/// <summary>
-		/// Retrieve the title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the KeyReleaseEvent.
@@ -135,7 +135,7 @@ namespace TRAP::Events
 		const char* GetName() const override;
 
 	private:
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -148,14 +148,14 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="codePoint">Unicode code point entered.</param>
-		/// <param name="title">Title of the affected Window.</param>
-		explicit KeyTypeEvent(uint32_t codePoint, std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		explicit KeyTypeEvent(uint32_t codePoint, TRAP::Window* window);
 
 		/// <summary>
-		/// Retrieve the title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 		/// <summary>
 		/// Retrieve the entered Unicode code point.
 		/// </summary>
@@ -188,7 +188,7 @@ namespace TRAP::Events
 		/// </summary>
 		/// <returns>Combination of one or more EventCategory's.</returns>
 		EventCategory GetCategoryFlags() const override;
-		
+
 	private:
 		/// <summary>
 		/// Encode a single Unicode code point to a UTF-8 string.
@@ -196,8 +196,8 @@ namespace TRAP::Events
 		/// <param name="codePoint">Unicode code point</param>
 		/// <returns>UTF-8 string.</returns>
 		static std::string EncodeUTF8(uint32_t codePoint);
-		
-		std::string m_title;
+
+		TRAP::Window* m_window;
 		uint32_t m_codePoint;
 	};
 

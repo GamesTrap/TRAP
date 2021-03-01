@@ -17,8 +17,8 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="x">New mouse x position.</param>
 		/// <param name="y">New mouse y position.</param>
-		/// <param name="title">Title of the affected Window.</param>
-		MouseMoveEvent(float x, float y, std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		MouseMoveEvent(float x, float y, TRAP::Window* window);
 
 		/// <summary>
 		/// Retrieve the new mouse x position.
@@ -36,10 +36,10 @@ namespace TRAP::Events
 		/// <returns>Mouse position.</returns>
 		Math::Vec2 GetPosition() const;
 		/// <summary>
-		/// Retrieve the title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the MouseMoveEvent.
@@ -70,7 +70,7 @@ namespace TRAP::Events
 
 	private:
 		float m_mouseX, m_mouseY;
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -84,8 +84,8 @@ namespace TRAP::Events
 		/// </summary>
 		/// <param name="xOffset">New mouse scroll wheel x offset.</param>
 		/// <param name="yOffset">New mouse scroll wheel y offset.</param>
-		/// <param name="title">Title of the affected Window.</param>
-		MouseScrollEvent(float xOffset, float yOffset, std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		MouseScrollEvent(float xOffset, float yOffset, TRAP::Window* window);
 
 		/// <summary>
 		/// Retrieve the new mouse scroll wheel x offset.
@@ -103,10 +103,10 @@ namespace TRAP::Events
 		/// <returns>Mouse scroll wheel offset.</returns>
 		Math::Vec2 GetOffset() const;
 		/// <summary>
-		/// Retrieve the title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the MouseScrollEvent.
@@ -137,7 +137,7 @@ namespace TRAP::Events
 
 	private:
 		float m_xOffset, m_yOffset;
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -185,14 +185,14 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="button">Pressed mouse button.</param>
-		/// <param name="title">Title of the affected Window.</param>
-		explicit MouseButtonPressEvent(Input::MouseButton button, std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		explicit MouseButtonPressEvent(Input::MouseButton button, TRAP::Window* window);
 
 		/// <summary>
-		/// Retrieve the title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the MouseButtonPressEvent.
@@ -217,7 +217,7 @@ namespace TRAP::Events
 		const char* GetName() const override;
 
 	private:
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -230,14 +230,14 @@ namespace TRAP::Events
 		/// Constructor.
 		/// </summary>
 		/// <param name="button">Released mouse button.</param>
-		/// <param name="title">Title of the affected Window.</param>
-		explicit MouseButtonReleaseEvent(Input::MouseButton button, std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		explicit MouseButtonReleaseEvent(Input::MouseButton button, TRAP::Window* window);
 
 		/// <summary>
-		/// Retrieve the title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Get a string representation of the MouseButtonReleaseEvent.
@@ -262,7 +262,7 @@ namespace TRAP::Events
 		const char* GetName() const override;
 
 	private:
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -274,14 +274,14 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="title">Title of the affected Window.</param>
-		explicit MouseEnterEvent(std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		explicit MouseEnterEvent(TRAP::Window* window);
 
 		/// <summary>
-		/// Retrieve the title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Retrieve the EventType of the Event.
@@ -305,7 +305,7 @@ namespace TRAP::Events
 		EventCategory GetCategoryFlags() const override;
 
 	private:
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 
 	/// <summary>
@@ -317,14 +317,14 @@ namespace TRAP::Events
 		/// <summary>
 		/// Constructor.
 		/// </summary>
-		/// <param name="title">Title of the affected Window.</param>
-		explicit MouseLeaveEvent(std::string title);
+		/// <param name="window">Pointer to the affected Window.</param>
+		explicit MouseLeaveEvent(TRAP::Window* window);
 
 		/// <summary>
-		/// Retrieve the title of the affected Window.
+		/// Retrieve a pointer to the affected Window.
 		/// </summary>
-		/// <returns>Window title.</returns>
-		const std::string& GetTitle() const;
+		/// <returns>Window pointer.</returns>
+		TRAP::Window* GetWindow() const;
 
 		/// <summary>
 		/// Retrieve the EventType of the Event.
@@ -348,7 +348,7 @@ namespace TRAP::Events
 		EventCategory GetCategoryFlags() const override;
 
 	private:
-		std::string m_title;
+		TRAP::Window* m_window;
 	};
 }
 

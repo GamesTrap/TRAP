@@ -223,8 +223,8 @@ const TRAP::Graphics::OrthographicCameraBounds& TRAP::Graphics::OrthographicCame
 bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(Events::MouseScrollEvent& e)
 {
 	TP_PROFILE_FUNCTION();
-	
-	if (m_window && m_window->GetTitle() == e.GetTitle())
+
+	if (m_window && m_window.get() == e.GetWindow())
 	{
 		if (!Input::IsControllerConnected(Input::Controller::One))
 		{
@@ -235,7 +235,7 @@ bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(Events::MouseSc
 			m_camera.SetProjection(m_bounds.Left, m_bounds.Right, m_bounds.Bottom, m_bounds.Top, -1.0f, 1.0f);
 		}
 	}
-	
+
 	return false;
 }
 
@@ -244,9 +244,9 @@ bool TRAP::Graphics::OrthographicCameraController::OnMouseScroll(Events::MouseSc
 bool TRAP::Graphics::OrthographicCameraController::OnFrameBufferResize(Events::FrameBufferResizeEvent& e)
 {
 	TP_PROFILE_FUNCTION();
-	
-	if (m_window && m_window->GetTitle() == e.GetTitle() && e.GetWidth() > 0 && e.GetHeight() > 0)
+
+	if (m_window && m_window.get() == e.GetWindow() && e.GetWidth() > 0 && e.GetHeight() > 0)
 		OnResize(static_cast<float>(e.GetWidth()), static_cast<float>(e.GetHeight()));
-	
+
 	return false;
 }

@@ -35,7 +35,7 @@ std::string TRAP::Events::KeyEvent::NonPrintableKeyToString(const Input::Key key
 
 	case Input::Key::Space:
 		return "Space";
-		
+
 	case Input::Key::Grave_Accent:
 		return "Grave Accent";
 
@@ -200,7 +200,7 @@ std::string TRAP::Events::KeyEvent::NonPrintableKeyToString(const Input::Key key
 
 	case Input::Key::Menu:
 		return "Menu";
-		
+
 	default:
 		return "";
 	}
@@ -210,8 +210,8 @@ std::string TRAP::Events::KeyEvent::NonPrintableKeyToString(const Input::Key key
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const uint16_t repeatCount, std::string title)
-	: KeyEvent(key), m_repeatCount(repeatCount), m_title(std::move(title))
+TRAP::Events::KeyPressEvent::KeyPressEvent(const Input::Key key, const uint16_t repeatCount, TRAP::Window* window)
+	: KeyEvent(key), m_repeatCount(repeatCount), m_window(window)
 {
 }
 
@@ -234,9 +234,9 @@ std::string TRAP::Events::KeyPressEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::KeyPressEvent::GetTitle() const
+TRAP::Window* TRAP::Events::KeyPressEvent::GetWindow() const
 {
-	return m_title;
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -264,8 +264,8 @@ const char* TRAP::Events::KeyPressEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, std::string title)
-	: KeyEvent(key), m_title(std::move(title))
+TRAP::Events::KeyReleaseEvent::KeyReleaseEvent(const Input::Key key, TRAP::Window* window)
+	: KeyEvent(key), m_window(window)
 {
 }
 
@@ -275,15 +275,15 @@ std::string TRAP::Events::KeyReleaseEvent::ToString() const
 {
 	const char* name = INTERNAL::WindowingAPI::GetKeyName(m_key, 0);
 
-	return "KeyReleaseEvent: " + (name ? name : NonPrintableKeyToString(m_key)) + "(" + 
+	return "KeyReleaseEvent: " + (name ? name : NonPrintableKeyToString(m_key)) + "(" +
 		   std::to_string(static_cast<int32_t>(m_key)) + ")";
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::KeyReleaseEvent::GetTitle() const
+TRAP::Window* TRAP::Events::KeyReleaseEvent::GetWindow() const
 {
-	return m_title;
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -311,8 +311,8 @@ const char* TRAP::Events::KeyReleaseEvent::GetName() const
 //-------------------------------------------------------------------------------------------------------------------//
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Events::KeyTypeEvent::KeyTypeEvent(const uint32_t codePoint, std::string title)
-	: m_title(std::move(title)), m_codePoint(codePoint)
+TRAP::Events::KeyTypeEvent::KeyTypeEvent(const uint32_t codePoint, TRAP::Window* window)
+	: m_window(window), m_codePoint(codePoint)
 {
 }
 
@@ -325,9 +325,9 @@ std::string TRAP::Events::KeyTypeEvent::ToString() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::string& TRAP::Events::KeyTypeEvent::GetTitle() const
+TRAP::Window* TRAP::Events::KeyTypeEvent::GetWindow() const
 {
-	return m_title;
+	return m_window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

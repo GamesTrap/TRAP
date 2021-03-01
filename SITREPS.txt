@@ -1736,3 +1736,4 @@ SITREP 03/01/2021|21w09a1
 SITREP 03/01/2021|21w09a2
     - Changed TRAP Engine version to 21w09a2(0.7.29)
     - Log class can now be used by client code ~<15 mins
+    - Event callbacks now get a pointer to the affected window instead of its title ~<25 mins

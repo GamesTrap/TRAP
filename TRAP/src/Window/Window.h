@@ -354,6 +354,7 @@ namespace TRAP
 			EventCallbackFn EventCallback;
 
 			WindowedModeParams* windowModeParams = nullptr;
+			Window* Win = nullptr;
 		} m_data;
 		
 		static uint32_t s_windows;

@@ -153,7 +153,7 @@ bool VulkanTests::OnWindowClose(TRAP::Events::WindowCloseEvent& e)
 {
 	if (s_window)
 	{
-		if (e.GetTitle() == m_window->GetTitle())
+		if (e.GetWindow() == m_window.get())
 			m_window.reset();
 	}
 
