@@ -830,7 +830,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		if (!p->Window->IsMinimized())
 		{
 			//Create Swapchain
-			p->CurrentVSync = window->GetVSync();
+			p->CurrentVSync = p->NewVSync = window->GetVSync();
 			SwapChainDesc swapChainDesc{};
 			swapChainDesc.Window = window;
 			swapChainDesc.PresentQueues = { p->GraphicQueue };

@@ -6,7 +6,7 @@ VulkanTests::VulkanTests()
 	  m_wireFrame(false),
 	  m_quad(false),
 	  m_indexed(false),
-	  m_vsync(true)
+	  m_vsync(TRAP::Application::GetConfig().Get<bool>("VSync"))
 {
 }
 
@@ -18,8 +18,6 @@ void VulkanTests::OnAttach()
 	TRAP::VFS::MountShaders("Assets/Shaders");
 
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Multi-Window Test");
-
-	TRAP::Graphics::RendererAPI::GetRenderer()->SetVSync(m_vsync);
 
 	if (s_window)
 	{
@@ -183,7 +181,7 @@ bool VulkanTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 	{
 		m_vsync = !m_vsync;
 		TP_TRACE("[VulkanTests] VSync: ", m_vsync ? "On" : "Off");
-		TRAP::Graphics::RendererAPI::GetRenderer()->SetVSync(m_vsync);
+		e.GetWindow()->SetVSync(m_vsync);
 	}
 	if (e.GetKey() == TRAP::Input::Key::Escape)
 	{
