@@ -724,6 +724,34 @@ void TRAP::Graphics::API::VulkanRenderer::BindDescriptorSet(DescriptorSet& dSet,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::API::VulkanRenderer::BindPushConstants(const char* name, const void* constantsData, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window];
+
+	p->GraphicCommandBuffers[p->ImageIndex]->BindPushConstants(std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RootSignature,
+		name, constantsData
+	);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::BindPushConstantsByIndex(const uint32_t paramIndex, const void* constantsData, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window];
+
+	p->GraphicCommandBuffers[p->ImageIndex]->BindPushConstantsByIndex(std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RootSignature,
+		paramIndex, constantsData
+	);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 /*void TRAP::Graphics::API::VulkanRenderer::DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount)
 {
 }

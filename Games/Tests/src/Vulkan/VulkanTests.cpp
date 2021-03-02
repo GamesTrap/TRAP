@@ -6,7 +6,8 @@ VulkanTests::VulkanTests()
 	  m_wireFrame(false),
 	  m_quad(false),
 	  m_indexed(false),
-	  m_vsync(TRAP::Application::GetConfig().Get<bool>("VSync"))
+	  m_vsync(TRAP::Application::GetConfig().Get<bool>("VSync")),
+	  m_pushConstant(false)
 {
 }
 
@@ -61,8 +62,8 @@ void VulkanTests::OnAttach()
 	m_indexBuffer->AwaitLoading();
 	m_vertexBuffer->Use();
 
-	TRAP::Graphics::ShaderManager::LoadFile("VKTestNoUBO", "/shaders/test.shader");
-	//TRAP::Graphics::ShaderManager::LoadFile("VKTestNoUBO", "/shaders/test.shader")->Use();
+	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "/shaders/test.shader");
+	TRAP::Graphics::ShaderManager::LoadFile("VKTestPushConstant", "/shaders/testpushconstant.shader");
 
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 }
@@ -112,7 +113,22 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	m_vertexBuffer->AwaitLoading();
 	m_vertexBuffer->Use();
 
-	TRAP::Graphics::ShaderManager::Get("VKTestNoUBO")->Use();
+	if(m_pushConstant)
+	{
+		if(m_colorTimer.Elapsed() > 2.5f)
+		{
+			for(uint32_t i = 0; i < m_colorData.Color.Length(); ++i)
+				m_colorData.Color[i] = TRAP::Utils::Random::Get(0.0f, 1.0f);
+
+			m_colorTimer.Reset();
+		}
+
+		TRAP::Graphics::ShaderManager::Get("VKTestPushConstant")->Use();
+
+		TRAP::Graphics::RendererAPI::GetRenderer()->BindPushConstantsByIndex(0, &m_colorData);
+	}
+	else
+		TRAP::Graphics::ShaderManager::Get("VKTest")->Use();
 
 	if(!m_indexed)
 		TRAP::Graphics::RendererAPI::GetRenderer()->Draw(m_quad ? 6 : 3);
@@ -176,6 +192,11 @@ bool VulkanTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 	{
 		m_indexed = !m_indexed;
 		TP_TRACE("[VulkanTests] Indexed Drawing: ", m_indexed ? "On" : "Off");
+	}
+	if(e.GetKey() == TRAP::Input::Key::F4)
+	{
+		m_pushConstant = !m_pushConstant;
+		TP_TRACE("[VulkanTests] Push Constant: ", m_pushConstant ? "On" : "Off");
 	}
 	if(e.GetKey() == TRAP::Input::Key::V)
 	{

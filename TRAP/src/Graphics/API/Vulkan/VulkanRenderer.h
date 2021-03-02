@@ -74,9 +74,11 @@ namespace TRAP::Graphics::API
 
 		void BindShader(Shader* shader, Window* window = nullptr) const;
 		void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const BufferLayout& layout, Window* window = nullptr) override;
-		void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType, Window* window) override;
-		void BindDescriptorSet(DescriptorSet& dSet, uint32_t index, Window* window) override;
-		
+		void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType, Window* window = nullptr) override;
+		void BindDescriptorSet(DescriptorSet& dSet, uint32_t index, Window* window = nullptr) override;
+		void BindPushConstants(const char* name, const void* constantsData, Window* window = nullptr) override;
+		void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData, Window* window = nullptr) override;
+
 		//void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) override;
 		//void Draw(const Scope<VertexArray>& vertexArray) override;
 

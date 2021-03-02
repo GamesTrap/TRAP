@@ -223,6 +223,8 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		layouts[setIndex].DescriptorIndexMap[&descInfo] = i;
 	}
 
+	m_vkPushConstantCount = pushConstantCount;
+
 	//Create descriptor layouts
 	//Put most frequently changed params first
 	for(uint32_t i = maxLayoutCount; i-- > 0U;)

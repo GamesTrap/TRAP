@@ -146,6 +146,8 @@ namespace TRAP::Graphics
 		virtual void BindVertexBuffer(const TRAP::Ref<Buffer>& vBuffer, const BufferLayout& layout, Window* window = nullptr) = 0;
 		virtual void BindIndexBuffer(const TRAP::Ref<Buffer>& iBuffer, IndexType indexType, Window* window = nullptr) = 0;
 		virtual void BindDescriptorSet(DescriptorSet& dSet, uint32_t index, Window* window = nullptr) = 0;
+		virtual void BindPushConstants(const char* name, const void* constantsData, Window* window = nullptr) = 0;
+		virtual void BindPushConstantsByIndex(uint32_t paramIndex, const void* constantsData, Window* window = nullptr) = 0;
 		
 		//virtual void DrawIndexed(const Scope<VertexArray>& vertexArray, uint32_t indexCount) = 0;
 		//virtual void Draw(const Scope<VertexArray>& vertexArray) = 0;

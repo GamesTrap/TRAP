@@ -23,7 +23,6 @@ private:
 
 	TRAP::Utils::Timer m_fpsTimer;
 
-	TRAP::Graphics::RootSignature* m_cachedRootSignature{};
 	///////////////////////////////////////////////
 
 
@@ -68,8 +67,16 @@ private:
 	bool m_quad;
 	bool m_indexed;
 	bool m_vsync;
+	bool m_pushConstant;
 
 	inline static constexpr bool s_window = false;
+
+	struct ColorData
+	{
+		TRAP::Math::Vec3 Color;
+	} m_colorData;
+
+	TRAP::Utils::Timer m_colorTimer;
 };
 
 #endif /*_GAMESTRAP_VULKANTESTS_H_*/
