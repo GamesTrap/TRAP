@@ -8,13 +8,13 @@ namespace TRAP::Graphics
 	class Shader
 	{
 	protected:
-		Shader() = default;
+		Shader();
 	public:
 		Shader(const Shader&) = default;
 		Shader& operator=(const Shader&) = default;
 		Shader(Shader&&) = default;
 		Shader& operator=(Shader&&) = default;
-		virtual ~Shader() = default;
+		virtual ~Shader();
 
 		const std::string& GetName() const;
 

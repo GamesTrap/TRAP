@@ -191,8 +191,6 @@ void* TRAP::Window::GetInternalWindow() const
 void TRAP::Window::SetTitle(const std::string& title)
 {
 	TP_PROFILE_FUNCTION();
-
-	const std::string oldTitle = m_data.Title;
 	
 	if (!title.empty())
 		m_data.Title = title;
@@ -792,7 +790,7 @@ void TRAP::Window::Init(const WindowProps& props)
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
 		"[INDEV]" + Log::WindowVersion;
 #else
-	const std::string newTitle = m_data.Title;
+	std::string newTitle = m_data.Title;
 #endif
 
 	m_window = INTERNAL::WindowingAPI::CreateWindow(static_cast<int32_t>(props.Width),
@@ -815,7 +813,6 @@ void TRAP::Window::Init(const WindowProps& props)
 		//Update Window Title
 	#ifndef TRAP_RELEASE
 		newTitle += Graphics::Renderer::GetTitle();
-	#endif
 	#ifdef TRAP_PLATFORM_LINUX
 		if (Application::GetLinuxWindowManager() == Application::LinuxWindowManager::Wayland)
 			newTitle += "[Wayland]";
@@ -823,6 +820,7 @@ void TRAP::Window::Init(const WindowProps& props)
 			newTitle += "[X11]";
 		else
 			newTitle += "[Unknown]";
+	#endif
 	#endif
 		INTERNAL::WindowingAPI::SetWindowTitle(m_window.get(), newTitle);
 	}

@@ -430,7 +430,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			TP_ERROR(Log::RendererVulkanPrefix, "Failed Vulkan Version Test!");
 			continue;
 		}
-		
+
 		//Required: Discrete GPUs have a significant performance advantage
 		if (devProps.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
 			score += 5000;
@@ -449,7 +449,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		extensions.resize(extensionsCount);
 		VkCall(vkEnumerateDeviceExtensionProperties(dev, nullptr, &extensionsCount, extensions.data()));
 		score += extensionsCount * 50;
-		
+
 		//Required: Check if PhysicalDevice supports swapchains
 		const auto result = std::find_if(extensions.begin(),
 			extensions.end(),

@@ -138,9 +138,9 @@ bool TRAP::INTERNAL::WindowingAPI::WaitForEvent(double* timeout)
 //Retrieve a single window property of the specified type
 uint32_t TRAP::INTERNAL::WindowingAPI::GetWindowPropertyX11(::Window window, Atom property, Atom type, uint8_t** value)
 {
-	Atom actualType;
-	int32_t actualFormat;
-	uint32_t itemCount, bytesAfter;
+	Atom actualType{};
+	int32_t actualFormat{};
+	uint32_t itemCount{}, bytesAfter{};
 	
 	s_Data.XLIB.GetWindowProperty(s_Data.display,
 					   window,
@@ -597,7 +597,7 @@ bool TRAP::INTERNAL::WindowingAPI::InitExtensions()
 
 //Check whether the running window manager is EMWH-compliant
 void TRAP::INTERNAL::WindowingAPI::DetectEWMH()
-{
+{	
 	//First we read the _NET_SUPPORTING_WM_CHECK property on the root window
 	::Window* windowFromRoot = nullptr;
 	if(!GetWindowPropertyX11(s_Data.Root, s_Data.NET_SUPPORTING_WM_CHECK, XA_WINDOW, (uint8_t**)&windowFromRoot))
@@ -2685,7 +2685,6 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformInit()
 	s_Data.XRM.GetStringDatabase = (PFN_XrmGetStringDatabase)dlsym(s_Data.XLIB.Handle, "XrmGetStringDatabase");
 	s_Data.XRM.Initialize = (PFN_XrmInitialize)dlsym(s_Data.XLIB.Handle, "XrmInitialize");
 	s_Data.XRM.UniqueQuark = (PFN_XrmUniqueQuark)dlsym(s_Data.XLIB.Handle, "XrmUniqueQuark");
-
 	if (s_Data.XLIB.UTF8LookupString && s_Data.XLIB.UTF8SetWMProperties)
 		s_Data.XLIB.UTF8 = true;
 

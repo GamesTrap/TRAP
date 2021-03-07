@@ -4,7 +4,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanRootSignature.h"
 
 TRAP::Graphics::RootSignature::RootSignature()
-	: m_descriptorCount(), m_pipelineType(), m_descriptorNameToIndexMap(nullptr)
+	: m_pipelineType(), m_descriptorNameToIndexMap(nullptr)
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//

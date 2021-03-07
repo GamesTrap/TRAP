@@ -11,6 +11,21 @@ bool TRAP::Graphics::Shader::s_glslangInitialized = false;
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+TRAP::Graphics::Shader::Shader()
+	: m_name(), m_filepath(), m_shaderStages()
+{
+	TRAP::Graphics::RendererAPI::AddShaderToGraphicsRootSignature(this);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::Shader::~Shader()
+{
+	TRAP::Graphics::RendererAPI::RemoveShaderFromGraphicsRootSignature(this);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 const std::string& TRAP::Graphics::Shader::GetName() const
 {
 	TP_PROFILE_FUNCTION();

@@ -8,7 +8,7 @@ namespace TRAP::Graphics
 	{
 	public:
 		static TRAP::Ref<RootSignature> Create(const RendererAPI::RootSignatureDesc& desc);
-		
+
 		virtual ~RootSignature() = default;
 
 		virtual RendererAPI::PipelineType GetPipelineType() const = 0;
@@ -18,9 +18,7 @@ namespace TRAP::Graphics
 	
 	protected:
 		RootSignature();
-		
-		//Number of descriptors declared in the root signature layout
-		uint32_t m_descriptorCount;
+
 		//Graphics or Compute
 		RendererAPI::PipelineType m_pipelineType;
 		//Array of all descriptors declared in the root signature layout

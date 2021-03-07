@@ -283,7 +283,7 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 template<typename T>
 T TRAP::Utils::Config::ConvertToType(const std::string&) const
 {
-	TRAP_ASSERT(false, "Unconvertable type encountered, please use a different type, or define the handle case in Config.h")
+	TRAP_ASSERT(false, "Unconvertable type encountered, please use a different type, or define the handle case in Config.h");
 	TP_ERROR(TRAP::Log::ConfigPrefix, "Unconvertable type encountered, please use a different type, or define the handle case in Config.h");
 	return T();
 }

@@ -133,7 +133,11 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, float le
 			play.code = con->LinuxCon.CurrentVibration;
 			play.value = 0;
 		
-			write(con->LinuxCon.FD, (const void*)&play, sizeof(play));
+			if(write(con->LinuxCon.FD, (const void*)&play, sizeof(play)) == -1)
+			{
+				TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to stop Vibration");
+				return;
+			}
 		
 			//Delete the effect
 			ioctl(con->LinuxCon.FD, EVIOCRMFF, con->LinuxCon.CurrentVibration);
@@ -161,7 +165,11 @@ void TRAP::Input::SetControllerVibrationInternal(Controller controller, float le
 			play.code = con->LinuxCon.CurrentVibration;
 			play.value = 1;
 		
-			write(con->LinuxCon.FD, (const void*)&play, sizeof(play));
+			if(write(con->LinuxCon.FD, (const void*)&play, sizeof(play)) == -1)
+			{
+				TP_ERROR(Log::InputControllerLinuxPrefix, "Failed to start Vibration");
+				return;
+			}
 		}
 	}
 }

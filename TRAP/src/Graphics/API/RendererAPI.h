@@ -161,6 +161,7 @@ namespace TRAP::Graphics
 		static TRAP::Ref<TRAP::Graphics::DescriptorPool> GetDescriptorPool();
 		static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(Window* window = nullptr);
 
+		static void AddShaderToGraphicsRootSignature(Shader* shader);
 		static void RemoveShaderFromGraphicsRootSignature(Shader* shader);
 		
 		static const TRAP::Scope<PerWindowData>& GetPerWindowData(Window* window); //TODO Remove
@@ -2067,6 +2068,8 @@ namespace TRAP::Graphics
 			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
 
 			bool Recording;
+
+			bool RebuildRootSignature = false;
 		};
 	protected:
 		static std::unordered_map<Window*, TRAP::Scope<PerWindowData>> s_perWindowDataMap;

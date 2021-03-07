@@ -618,10 +618,10 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 		{
 			gpd.ShaderProgram = shader;
 
-			if (!gpd.RootSignature || std::find(s_graphicRootSignatureDesc.Shaders.begin(), s_graphicRootSignatureDesc.Shaders.end(), gpd.ShaderProgram) == s_graphicRootSignatureDesc.Shaders.end())
+			if (!gpd.RootSignature || data->RebuildRootSignature)
 			{
-				s_graphicRootSignatureDesc.Shaders.push_back(gpd.ShaderProgram);
 				gpd.RootSignature = RootSignature::Create(s_graphicRootSignatureDesc);
+				data->RebuildRootSignature = false;
 			}
 		}
 		

@@ -43,7 +43,6 @@ bool TRAP::INTERNAL::WindowingAPI::Init()
 		return true;
 
 	s_Data = {}; //Reset
-	
 	if(!PlatformInit())
 	{
 		Shutdown();

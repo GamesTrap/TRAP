@@ -28,7 +28,12 @@ TRAP::Graphics::RendererAPI::RootSignatureDesc TRAP::Graphics::RendererAPI::s_gr
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::RendererAPI::Init(const std::string& gameName)
-{	
+{
+	if(s_Renderer)
+		return;
+
+	s_graphicRootSignatureDesc.Shaders.reserve(256);
+
 	switch (s_RenderAPI)
 	{
 	case RenderAPI::Vulkan:
@@ -155,6 +160,16 @@ TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::GetDescri
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::RendererAPI::AddShaderToGraphicsRootSignature(Shader* shader)
+{
+	s_graphicRootSignatureDesc.Shaders.push_back(shader);
+
+	for(auto& [windows, data] : s_perWindowDataMap)
+		data->RebuildRootSignature = true;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 void TRAP::Graphics::RendererAPI::RemoveShaderFromGraphicsRootSignature(Shader* shader)
 {
 	if (s_graphicRootSignatureDesc.Shaders.empty())
@@ -235,7 +250,7 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 			if (instance)
 			{
 				VkLoadInstance(instance);
-				
+
 				//Physical Device
 				const auto& physicalDevices = API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(instance);
 				if(physicalDevices.empty())
