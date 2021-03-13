@@ -67,7 +67,7 @@ private:
 	bool m_quad;
 	bool m_indexed;
 	bool m_vsync;
-	bool m_pushConstant;
+	uint8_t m_pushConstantOrUBO;
 
 	inline static constexpr bool s_window = false;
 
@@ -75,8 +75,22 @@ private:
 	{
 		TRAP::Math::Vec3 Color;
 	} m_colorData;
+	struct SizeMultiplicatorData
+	{
+		TRAP::Math::Vec3 Multiplier;
+	} m_sizeMultiplicatorData;
 
 	TRAP::Utils::Timer m_colorTimer;
+
+	////////////////////////////////////////////
+	//INTERNAL RENDERERAPI USE AT YOUR OWN RISK!
+	////////////////////////////////////////////
+	inline static constexpr uint32_t ImageCount = 3;
+	std::array<TRAP::Ref<TRAP::Graphics::Buffer>, ImageCount> m_colorUniformBuffer;
+	std::array<TRAP::Ref<TRAP::Graphics::Buffer>, ImageCount> m_sizeMultiplicatorUniformBuffer;
+	TRAP::Graphics::DescriptorSet* m_descriptorSet;
+	////////////////////////////////////////////
+	TRAP::Utils::Timer m_vertexTimer;
 };
 
 #endif /*_GAMESTRAP_VULKANTESTS_H_*/

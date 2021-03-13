@@ -1742,3 +1742,19 @@ SITREP 03/01/2021|21w09a2
 SITREP 03/02/2021|21w09a3
     - Changed TRAP Engine version to 21w09a3(0.7.30)
     - RendererAPI Added BindPushConstants & BindPushConstantsByIndex functions ~<20 mins
+
+SITREP 03/13/2021|21w10a1
+    - Changed TRAP Engine version to 21w10a1(0.7.31)
+    - Premake5 Added debug symbols to RelWithDebInfo ~<10 mins
+    - Config Fixed missing semicolon ~<5 mins
+    - RootSignature Removed unused DescriptorCount variable ~<5 mins
+    - RendererAPI Added AddShaderToGraphicsRootSignature function ~<10 mins
+    - RendererAPI Added bool which indicates if RootSignatures should be rebuilt ~<5 mins
+    - VulkanRenderer Optimized RootSignature recreation check ~<5 mins
+    - Shader Constructor & Destructor now call RendererAPI::AddShaderToGraphicsRootSignature & RendererAPI::RemoveShaderFromGraphicsRootSignature ~<5 mins
+    - ShaderManager Removed calls to RendererAPI::RemoveShaderFromGraphicsRootSignature ~<5 mins
+    - (Linux) LinuxInput (Controller Vibration) Added check if write failed ~<5 mins
+    - (Linux X11) WindowingAPI Fixed a SEGFAULT in GetWindowPropertyX11 ~<5 mins
+    - VulkanRootSignature Fixed a bug where only the newest binding of a set was getting bound (nasty bug) ~>200 mins
+    - VulkanTests Added a Test for multiple UniformBuffer usage ~<20 mins
+    - VulkanTests Added testubo.shader for the UniformBuffer test ~<10 mins

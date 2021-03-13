@@ -1,5 +1,8 @@
 #include "VulkanTests.h"
 
+#include <Graphics/API/Objects/DescriptorPool.h>
+#include <Graphics/API/Objects/DescriptorSet.h>
+
 VulkanTests::VulkanTests()
 	: Layer("VulkanTests"),
 	  m_window(nullptr),
@@ -7,7 +10,12 @@ VulkanTests::VulkanTests()
 	  m_quad(false),
 	  m_indexed(false),
 	  m_vsync(TRAP::Application::GetConfig().Get<bool>("VSync")),
-	  m_pushConstant(false)
+	  m_pushConstantOrUBO(0),
+	  m_descriptorSet(nullptr),
+	  m_colorData(),
+	  m_sizeMultiplicatorData(),
+	  m_colorTimer(),
+	  m_vertexTimer()
 {
 }
 
@@ -64,6 +72,41 @@ void VulkanTests::OnAttach()
 
 	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "/shaders/test.shader");
 	TRAP::Graphics::ShaderManager::LoadFile("VKTestPushConstant", "/shaders/testpushconstant.shader");
+	TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader");
+
+	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
+
+	//////////////////////////////////////////////
+	//INTERNAL RENDERERAPI USE AT YOUR OWN RISK!//
+	//////////////////////////////////////////////
+	TRAP::Graphics::RendererAPI::BufferLoadDesc colorUniformBufferDesc{};
+	colorUniformBufferDesc.Desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer;
+	colorUniformBufferDesc.Desc.MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU;
+	colorUniformBufferDesc.Desc.Size = sizeof(ColorData);
+	colorUniformBufferDesc.Desc.Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::PersistentMap;
+	colorUniformBufferDesc.Data = nullptr;
+	colorUniformBufferDesc.Desc.Name = "Color Uniform Buffer";
+
+	for(uint32_t i = 0; i < ImageCount; ++i)
+	{
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(colorUniformBufferDesc, nullptr);
+		m_colorUniformBuffer[i] = colorUniformBufferDesc.Buffer;
+	}
+
+	TRAP::Graphics::RendererAPI::BufferLoadDesc sizeMultiplicatorUniformBufferDesc{};
+	sizeMultiplicatorUniformBufferDesc.Desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer;
+	sizeMultiplicatorUniformBufferDesc.Desc.MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU;
+	sizeMultiplicatorUniformBufferDesc.Desc.Size = sizeof(SizeMultiplicatorData);
+	sizeMultiplicatorUniformBufferDesc.Desc.Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::PersistentMap;
+	sizeMultiplicatorUniformBufferDesc.Data = nullptr;
+	sizeMultiplicatorUniformBufferDesc.Desc.Name = "Size Multiplicator Uniform Buffer";
+
+	for(uint32_t i = 0; i < ImageCount; ++i)
+	{
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(sizeMultiplicatorUniformBufferDesc, nullptr);
+		m_sizeMultiplicatorUniformBuffer[i] = sizeMultiplicatorUniformBufferDesc.Buffer;
+	}
+	//////////////////////////////////////////////
 
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 }
@@ -113,7 +156,7 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	m_vertexBuffer->AwaitLoading();
 	m_vertexBuffer->Use();
 
-	if(m_pushConstant)
+	if(m_pushConstantOrUBO == 1)
 	{
 		if(m_colorTimer.Elapsed() > 2.5f)
 		{
@@ -126,6 +169,77 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		TRAP::Graphics::ShaderManager::Get("VKTestPushConstant")->Use();
 
 		TRAP::Graphics::RendererAPI::GetRenderer()->BindPushConstantsByIndex(0, &m_colorData);
+	}
+	else if(m_pushConstantOrUBO == 2)
+	{
+		if(!m_descriptorSet)
+		{
+			//////////////////////////////////////////////
+			//INTERNAL RENDERERAPI USE AT YOUR OWN RISK!//
+			//////////////////////////////////////////////
+			TRAP::Graphics::RendererAPI::DescriptorSetDesc desc{};
+			desc.RootSignature = TRAP::Graphics::RendererAPI::GetGraphicsRootSignature();
+			desc.UpdateFrequency = TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::PerFrame;
+			desc.MaxSets = ImageCount;
+			m_descriptorSet = TRAP::Graphics::RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(desc);
+
+			for(uint32_t i = 0; i < ImageCount; ++i)
+			{
+				std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(2);
+				params[0].Name = "SizeMultiplicator";
+				params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{m_sizeMultiplicatorUniformBuffer[i].get()};
+				params[1].Name = "Color";
+				params[1].Resource = std::vector<TRAP::Graphics::Buffer*>{m_colorUniformBuffer[i].get()};
+				m_descriptorSet->Update(i, params);
+			}
+			//////////////////////////////////////////////
+
+			TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
+		}
+
+		uint32_t imageIndex = TRAP::Graphics::RendererAPI::GetPerWindowData(TRAP::Application::GetWindow().get())->ImageIndex;
+
+		if(m_vertexTimer.Elapsed() > 2.0f)
+		{
+			m_sizeMultiplicatorData.Multiplier = TRAP::Math::Vec3(1.5f);
+			if(m_vertexTimer.Elapsed() > 4.0f)
+				m_vertexTimer.Reset();
+		}
+		else
+			m_sizeMultiplicatorData.Multiplier = TRAP::Math::Vec3(1.0f);
+
+		if(m_colorTimer.Elapsed() > 1.0f)
+		{
+			if(m_colorTimer.Elapsed() > 2.0f)
+				m_colorData.Color = TRAP::Math::Vec3(0.0f, 0.0f, 1.0f);
+			else
+				m_colorData.Color = TRAP::Math::Vec3(0.0f, 1.0f, 0.0f);
+
+			if(m_colorTimer.Elapsed() > 3.0f)
+				m_colorTimer.Reset();
+		}
+		else
+			m_colorData.Color = TRAP::Math::Vec3(1.0f, 0.0f, 0.0f);
+
+		//////////////////////////////////////////////
+		//INTERNAL RENDERERAPI USE AT YOUR OWN RISK!//
+		//////////////////////////////////////////////
+		TRAP::Graphics::RendererAPI::BufferUpdateDesc descOne{};
+		descOne.Buffer = m_sizeMultiplicatorUniformBuffer[imageIndex];
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(descOne);
+		*(SizeMultiplicatorData*)descOne.MappedData = m_sizeMultiplicatorData;
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(descOne, nullptr);
+
+		TRAP::Graphics::RendererAPI::BufferUpdateDesc descTwo{};
+		descTwo.Buffer = m_colorUniformBuffer[imageIndex];
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(descTwo);
+		*(ColorData*)descTwo.MappedData = m_colorData;
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(descTwo, nullptr);
+		//////////////////////////////////////////////
+
+		TRAP::Graphics::RendererAPI::GetRenderer()->BindDescriptorSet(*m_descriptorSet, imageIndex);
+
+		TRAP::Graphics::ShaderManager::Get("VKTestUBO")->Use();
 	}
 	else
 		TRAP::Graphics::ShaderManager::Get("VKTest")->Use();
@@ -195,8 +309,8 @@ bool VulkanTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 	}
 	if(e.GetKey() == TRAP::Input::Key::F4)
 	{
-		m_pushConstant = !m_pushConstant;
-		TP_TRACE("[VulkanTests] Push Constant: ", m_pushConstant ? "On" : "Off");
+		m_pushConstantOrUBO = ++m_pushConstantOrUBO % 3;
+		TP_TRACE("[VulkanTests] Push Constant / Uniform Buffer: ", m_pushConstantOrUBO ? "On" : "Off");
 	}
 	if(e.GetKey() == TRAP::Input::Key::V)
 	{

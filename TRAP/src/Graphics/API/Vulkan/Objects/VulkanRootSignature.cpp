@@ -87,7 +87,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 						TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Failed to create root signature");
 						TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Shared shader resources ", res.Name, " and ", it->Name, " have mismatching types (", static_cast<uint32_t>(res.Type),
 							") and (", static_cast<uint32_t>(it->Type), "). All shader resources sharing the same",
-							"register and space addRootSignature must have the same type");
+							"register and space RootSignature must have the same type");
 						return;
 					}
 
@@ -101,7 +101,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				{
 					TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Failed to create root signature");
 					TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Shared shader resources ", res.Name, " has mismatching binding.", 
-						" All shader resources shared by multiple shaders specified in addRootSignature ",
+						" All shader resources shared by multiple shaders specified in RootSignature ",
 						"must have the same binding and set.");
 					return;
 				}
@@ -109,7 +109,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				{
 					TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Failed to create root signature");
 					TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Shared shader resources ", res.Name, " has mismatching set.",
-						" All shader resources shared by multiple shaders specified in addRootSignature ",
+						" All shader resources shared by multiple shaders specified in RootSignature ",
 						"must have the same binding and set.");
 					return;
 				}
@@ -146,7 +146,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		descInfo.Reg = res.Reg;
 		descInfo.Size = res.Size;
 		descInfo.Type = res.Type;
-		descInfo.Name = res.Name.data();
+		descInfo.Name = res.Name;
 		descInfo.Dimension = res.Dim;
 
 		//If descriptor is not a root constant create a new layout binding for this descriptor and add it to the binding array
@@ -195,7 +195,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				binding.pImmutableSamplers = &it->second->GetVkSampler();
 			}
 
-			//Set the index to an invalid value to we can use this later for error checking
+			//Set the index to an invalid value so we can use this later for error checking
 			//if user tries to update a static sampler
 			//In case of Combined Image Samplers, skip invalidating the index
 			//because we do not introduce new ways to update the descriptor in the interface
@@ -206,7 +206,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 			layouts[setIndex].Bindings.push_back(binding);
 		}
-		else //If descriptor array to be stored in the root signature
+		else //If descriptor is a push constant, add it to the push constant array
 		{
 			TP_INFO("Descriptor (", descInfo.Name, "): User specified Push Constant");
 
@@ -384,13 +384,13 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 					for (uint32_t arr = 0; arr < arrayCount; ++arr)
 						updateData[descInfo->HandleIndex + arr].BufferView = VulkanRenderer::s_NullDescriptors->DefaultBufferUAV->GetStorageTexelView();
 					break;
-					
+
 				default:
 					break;
 				}
-			}
 
-			++entryCount;
+				++entryCount;
+			}
 
 			VkDescriptorUpdateTemplateCreateInfo createInfo =
 					VulkanInits::DescriptorUpdateTemplateCreateInfo(m_vkDescriptorSetLayouts[setIndex],
@@ -400,7 +400,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 					                                                m_pipelineLayout,
 					                                                setIndex);
 			VkCall(vkCreateDescriptorUpdateTemplate(m_device->GetVkDevice(), &createInfo, nullptr, &m_updateTemplates[setIndex]));
-			
+
 			entries.clear();
 		}
 		else if(m_vkDescriptorSetLayouts[setIndex] != VK_NULL_HANDLE)
