@@ -7,11 +7,12 @@ std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Shader>> TRAP::Graph
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::LoadFile(const std::string& filepath)
+const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::LoadFile(const std::string& filepath,
+																				    const std::vector<Shader::Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Shader> shader = Shader::CreateFromFile(filepath);
+	Scope<Shader> shader = Shader::CreateFromFile(filepath, userMacros);
 	if(shader)
 	{
 		const std::string name = shader->GetName();
@@ -26,11 +27,13 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::LoadFi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::LoadFile(const std::string& name, const std::string& filepath)
+const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::LoadFile(const std::string& name,
+																				   const std::string& filepath,
+																				   const std::vector<Shader::Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Shader> shader = Shader::CreateFromFile(name, filepath);
+	Scope<Shader> shader = Shader::CreateFromFile(name, filepath, userMacros);
 
 	if(shader)
 	{
@@ -45,11 +48,12 @@ const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::LoadFi
 //-------------------------------------------------------------------------------------------------------------------//
 
 const TRAP::Scope<TRAP::Graphics::Shader>& TRAP::Graphics::ShaderManager::LoadSource(const std::string& name,
-																			   const std::string& glslSource)
+																			         const std::string& glslSource,
+																			         const std::vector<Shader::Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Shader> shader = Shader::CreateFromSource(name, glslSource);
+	Scope<Shader> shader = Shader::CreateFromSource(name, glslSource, userMacros);
 
 	if(shader)
 	{

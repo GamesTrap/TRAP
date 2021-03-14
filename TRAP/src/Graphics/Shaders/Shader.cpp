@@ -51,14 +51,14 @@ TRAP::Graphics::RendererAPI::ShaderStage TRAP::Graphics::Shader::GetShaderStages
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name, const std::string& filePath)
+TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& name, const std::string& filePath, const std::vector<Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
 	if(name.empty())
 	{
 		TP_WARN(Log::ShaderPrefix, "Name is empty! Using Filename as Shader Name!");
-		return CreateFromFile(filePath);
+		return CreateFromFile(filePath, userMacros);
 	}
 	
 	std::string glslSource;
@@ -106,7 +106,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	{
 		RendererAPI::ShaderStage shaderStages = RendererAPI::ShaderStage::None;
 		std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> shaders{};
-		if (!PreProcessGLSL(glslSource, shaders, shaderStages))
+		if (!PreProcessGLSL(glslSource, shaders, shaderStages, userMacros))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback Shader: \"Fallback\"");
 			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
@@ -146,7 +146,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& filePath)
+TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const std::string& filePath, const std::vector<Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -197,7 +197,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	{
 		RendererAPI::ShaderStage shaderStages = RendererAPI::ShaderStage::None;
 		std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> shaders{};
-		if (!PreProcessGLSL(glslSource, shaders, shaderStages))
+		if (!PreProcessGLSL(glslSource, shaders, shaderStages, userMacros))
 		{
 			TP_WARN(Log::ShaderGLSLPrefix, "Shader: \"", name, "\" using fallback Shader: \"Fallback\"");
 			return TRAP::MakeScope<TRAP::Graphics::DummyShader>(name, filePath);
@@ -237,13 +237,13 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const std::string& name, const std::string& glslSource)
+TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromSource(const std::string& name, const std::string& glslSource, const std::vector<Macro>* userMacros)
 {
 	TP_PROFILE_FUNCTION();
 
 	std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)> shaders{};
 	RendererAPI::ShaderStage shaderStages = RendererAPI::ShaderStage::None;
-	if(!PreProcessGLSL(glslSource, shaders, shaderStages))
+	if(!PreProcessGLSL(glslSource, shaders, shaderStages, userMacros))
 	{
 		TP_WARN(Log::ShaderPrefix, "Shader: \"", name, "\" using fallback Shader: \"Fallback\"");
 		return nullptr;
@@ -333,7 +333,8 @@ std::vector<uint32_t> TRAP::Graphics::Shader::Convert8To32(const std::vector<uin
 
 bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
                                             std::array<std::string, static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)>& shaders,
-                                            RendererAPI::ShaderStage& shaderStages)
+                                            RendererAPI::ShaderStage& shaderStages,
+											const std::vector<Macro>* userMacros)
 {
 	RendererAPI::ShaderStage currentShaderStage = RendererAPI::ShaderStage::None;
 	std::vector<std::string> lines = Utils::String::GetLines(glslSource);
@@ -494,12 +495,33 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 			}
 		}
 
-		if (!shaders[i].empty())
+		std::string preprocessed = "";
+		if (!shaders[i].empty() && TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 		{
 			//Found main function
 			//Add GLSL version before any shader code &
 			//Add Descriptor defines
-			shaders[i] = "#version 460 core\n#define UpdateFreqNone set = 0\n#define UpdateFreqPerFrame set = 1\n#define UpdateFreqPerBatch set = 2\n#define UpdateFreqPerDraw set = 3\n" + shaders[i];
+			preprocessed = "#version 460 core\n";
+			for(const Macro& macro : s_defaultShaderMacrosVulkan)
+				preprocessed += "#define " + macro.Definition + " " + macro.Value + '\n';
+		}
+		else if(!shaders[i].empty() && TRAP::Graphics::RendererAPI::GetRenderAPI() != TRAP::Graphics::RenderAPI::Vulkan)
+		{
+			//Found main function
+			//Add GLSL version before any shader code
+			preprocessed = "#version 460 core\n";
+		}
+
+		if(!shaders[i].empty())
+		{
+			if(userMacros)
+			{
+				for(const Macro& macro : *userMacros)
+					preprocessed += "#define " + macro.Definition + " " + macro.Value + '\n';
+			}
+
+			//Add preprocessed macros to shader
+			shaders[i] = preprocessed + shaders[i];
 		}
 	}
 
@@ -835,7 +857,7 @@ bool TRAP::Graphics::Shader::ValidateShaderStages(const RendererAPI::ShaderStage
 	//Check if any Shader Stage is set
 	if (RendererAPI::ShaderStage::None == shaderStages)
 	{
-		std::cout << "[GLSL] No Shader Stage found!" << '\n';
+		TP_ERROR(Log::ShaderGLSLPrefix, "No Shader Stage found!");
 		return false;
 	}
 	

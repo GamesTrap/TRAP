@@ -1758,3 +1758,10 @@ SITREP 03/13/2021|21w10a1
     - VulkanRootSignature Fixed a bug where only the newest binding of a set was getting bound (nasty bug) ~>200 mins
     - VulkanTests Added a Test for multiple UniformBuffer usage ~<20 mins
     - VulkanTests Added testubo.shader for the UniformBuffer test ~<10 mins
+
+SITREP 03/14/2021|21w10a2
+    - Changed TRAP Engine version to 21w10a2(0.7.32)
+    - UniformBuffer is now usable except the Use function ~<20 mins
+    - Shader/Manager Added a way to provide optional macros on shader loading/creation ~<40 mins
+    - VulkanTests Replaced internal UniformBuffer with the UniformBuffer class ~<5 mins
+    - VulkanTests Added a shader macro as a test to the testubo.shader ~<5 mins

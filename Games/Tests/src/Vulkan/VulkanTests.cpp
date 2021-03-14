@@ -72,41 +72,13 @@ void VulkanTests::OnAttach()
 
 	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "/shaders/test.shader");
 	TRAP::Graphics::ShaderManager::LoadFile("VKTestPushConstant", "/shaders/testpushconstant.shader");
-	TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader");
+	std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
+	TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader", &macros);
 
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
-	//////////////////////////////////////////////
-	//INTERNAL RENDERERAPI USE AT YOUR OWN RISK!//
-	//////////////////////////////////////////////
-	TRAP::Graphics::RendererAPI::BufferLoadDesc colorUniformBufferDesc{};
-	colorUniformBufferDesc.Desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer;
-	colorUniformBufferDesc.Desc.MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU;
-	colorUniformBufferDesc.Desc.Size = sizeof(ColorData);
-	colorUniformBufferDesc.Desc.Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::PersistentMap;
-	colorUniformBufferDesc.Data = nullptr;
-	colorUniformBufferDesc.Desc.Name = "Color Uniform Buffer";
-
-	for(uint32_t i = 0; i < ImageCount; ++i)
-	{
-		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(colorUniformBufferDesc, nullptr);
-		m_colorUniformBuffer[i] = colorUniformBufferDesc.Buffer;
-	}
-
-	TRAP::Graphics::RendererAPI::BufferLoadDesc sizeMultiplicatorUniformBufferDesc{};
-	sizeMultiplicatorUniformBufferDesc.Desc.Descriptors = TRAP::Graphics::RendererAPI::DescriptorType::UniformBuffer;
-	sizeMultiplicatorUniformBufferDesc.Desc.MemoryUsage = TRAP::Graphics::RendererAPI::ResourceMemoryUsage::CPUToGPU;
-	sizeMultiplicatorUniformBufferDesc.Desc.Size = sizeof(SizeMultiplicatorData);
-	sizeMultiplicatorUniformBufferDesc.Desc.Flags = TRAP::Graphics::RendererAPI::BufferCreationFlags::PersistentMap;
-	sizeMultiplicatorUniformBufferDesc.Data = nullptr;
-	sizeMultiplicatorUniformBufferDesc.Desc.Name = "Size Multiplicator Uniform Buffer";
-
-	for(uint32_t i = 0; i < ImageCount; ++i)
-	{
-		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(sizeMultiplicatorUniformBufferDesc, nullptr);
-		m_sizeMultiplicatorUniformBuffer[i] = sizeMultiplicatorUniformBufferDesc.Buffer;
-	}
-	//////////////////////////////////////////////
+	m_sizeMultiplicatorUniformBuffer = TRAP::Graphics::UniformBuffer::Create("SizeMultiplicator", sizeof(SizeMultiplicatorData), TRAP::Graphics::BufferUsage::Stream);
+	m_colorUniformBuffer = TRAP::Graphics::UniformBuffer::Create("Color", sizeof(ColorData), TRAP::Graphics::BufferUsage::Stream);
 
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 }
@@ -183,13 +155,18 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 			desc.MaxSets = ImageCount;
 			m_descriptorSet = TRAP::Graphics::RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(desc);
 
+			const auto& sizeBuffer = m_sizeMultiplicatorUniformBuffer->GetUniformBuffers();
+			const auto& colorBuffer = m_colorUniformBuffer->GetUniformBuffers();
+
 			for(uint32_t i = 0; i < ImageCount; ++i)
 			{
 				std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(2);
 				params[0].Name = "SizeMultiplicator";
-				params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{m_sizeMultiplicatorUniformBuffer[i].get()};
+				//params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{m_sizeMultiplicatorUniformBuffer[i].get()};
+				params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{sizeBuffer[i].get()};
 				params[1].Name = "Color";
-				params[1].Resource = std::vector<TRAP::Graphics::Buffer*>{m_colorUniformBuffer[i].get()};
+				//params[1].Resource = std::vector<TRAP::Graphics::Buffer*>{m_colorUniformBuffer[i].get()};
+				params[1].Resource = std::vector<TRAP::Graphics::Buffer*>{colorBuffer[i].get()};
 				m_descriptorSet->Update(i, params);
 			}
 			//////////////////////////////////////////////
@@ -221,21 +198,8 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		else
 			m_colorData.Color = TRAP::Math::Vec3(1.0f, 0.0f, 0.0f);
 
-		//////////////////////////////////////////////
-		//INTERNAL RENDERERAPI USE AT YOUR OWN RISK!//
-		//////////////////////////////////////////////
-		TRAP::Graphics::RendererAPI::BufferUpdateDesc descOne{};
-		descOne.Buffer = m_sizeMultiplicatorUniformBuffer[imageIndex];
-		TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(descOne);
-		*(SizeMultiplicatorData*)descOne.MappedData = m_sizeMultiplicatorData;
-		TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(descOne, nullptr);
-
-		TRAP::Graphics::RendererAPI::BufferUpdateDesc descTwo{};
-		descTwo.Buffer = m_colorUniformBuffer[imageIndex];
-		TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(descTwo);
-		*(ColorData*)descTwo.MappedData = m_colorData;
-		TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(descTwo, nullptr);
-		//////////////////////////////////////////////
+		m_sizeMultiplicatorUniformBuffer->SetData(&m_sizeMultiplicatorData, sizeof(SizeMultiplicatorData));
+		m_colorUniformBuffer->SetData(&m_colorData, sizeof(ColorData));
 
 		TRAP::Graphics::RendererAPI::GetRenderer()->BindDescriptorSet(*m_descriptorSet, imageIndex);
 

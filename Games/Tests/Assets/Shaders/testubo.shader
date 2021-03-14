@@ -11,7 +11,7 @@ layout(std140, UpdateFreqPerFrame, binding = 0) uniform SizeMultiplicator
 
 void main()
 {
-    gl_Position = vec4(pos * Multiplier, 1.0f);
+    gl_Position = vec4(pos * Multiplier * TEST, 1.0f);
     vCol = col;
 }
 

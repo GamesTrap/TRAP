@@ -17,10 +17,11 @@ namespace TRAP::Graphics
 		ShaderManager(ShaderManager&&) = delete;
 		ShaderManager& operator=(ShaderManager&&) = delete;
 		
-		static const Scope<Shader>& LoadFile(const std::string& filepath);
-		static const Scope<Shader>& LoadFile(const std::string& name, const std::string& filepath);
+		static const Scope<Shader>& LoadFile(const std::string& filepath, const std::vector<Shader::Macro>* userMacros = nullptr);
+		static const Scope<Shader>& LoadFile(const std::string& name, const std::string& filepath, const std::vector<Shader::Macro>* userMacros = nullptr);
 		static const Scope<Shader>& LoadSource(const std::string& name,
-		                                 const std::string& glslSource);
+		                                 const std::string& glslSource,
+										 const std::vector<Shader::Macro>* userMacros = nullptr);
 		
 		static void Add(Scope<Shader> shader);
 		static void Remove(const Scope<Shader>& shader);

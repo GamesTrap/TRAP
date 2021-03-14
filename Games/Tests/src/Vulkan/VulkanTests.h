@@ -86,11 +86,12 @@ private:
 	//INTERNAL RENDERERAPI USE AT YOUR OWN RISK!
 	////////////////////////////////////////////
 	inline static constexpr uint32_t ImageCount = 3;
-	std::array<TRAP::Ref<TRAP::Graphics::Buffer>, ImageCount> m_colorUniformBuffer;
-	std::array<TRAP::Ref<TRAP::Graphics::Buffer>, ImageCount> m_sizeMultiplicatorUniformBuffer;
 	TRAP::Graphics::DescriptorSet* m_descriptorSet;
 	////////////////////////////////////////////
 	TRAP::Utils::Timer m_vertexTimer;
+
+	TRAP::Ref<TRAP::Graphics::UniformBuffer> m_colorUniformBuffer;
+	TRAP::Ref<TRAP::Graphics::UniformBuffer> m_sizeMultiplicatorUniformBuffer;
 };
 
 #endif /*_GAMESTRAP_VULKANTESTS_H_*/
