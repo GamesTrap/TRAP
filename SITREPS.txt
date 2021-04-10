@@ -1765,3 +1765,9 @@ SITREP 03/14/2021|21w10a2
     - Shader/Manager Added a way to provide optional macros on shader loading/creation ~<40 mins
     - VulkanTests Replaced internal UniformBuffer with the UniformBuffer class ~<5 mins
     - VulkanTests Added a shader macro as a test to the testubo.shader ~<5 mins
+
+SITREP 04/10/2021|21w14a1
+    - Changed TRAP Engine version to 21w14a1(0.7.33)
+    - Removed unused Shaders ~<5 mins
+    - VulkanTests Added OnImGuiRender runtime information ~<5 mins
+    - UniformBuffer now uses a global map of descriptors (likely needs to be moved/refactored) ~>20 mins

@@ -6,7 +6,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// Fallback Shader
 	/// </summary>
-	static constexpr const char* FallbackShader
+	inline static constexpr const char* FallbackShader
 	{
 		R"(
 #shader vertex
@@ -40,7 +40,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// 2D Renderer Shader
 	/// </summary>
-	static constexpr const char* Renderer2DShader
+	inline static constexpr const char* Renderer2DShader
 	{
 		R"(
 #shader vertex
@@ -124,7 +124,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// Default Debug Image Pixel Data RGBA 32BPP
 	/// </summary>
-	static std::array<uint8_t, 4096> DefaultImageData =
+	inline static constexpr std::array<uint8_t, 4096> DefaultImageData =
 	{
 		13, 13, 13, 255,
 		13, 13, 13, 255,
@@ -1150,13 +1150,13 @@ namespace TRAP::Embed
 		13, 13, 13, 255,
 		13, 13, 13, 255,
 		13, 13, 13, 255
-		};
+	};
 
-		/// <summary>
-		/// TRAP Engine Logo Pixel Data RGBA 32BPP
-		/// </summary>
-		inline std::array<uint8_t, 4096> TRAPLogo
-		{
+	/// <summary>
+	/// TRAP Engine Logo Pixel Data RGBA 32BPP
+	/// </summary>
+	inline static constexpr std::array<uint8_t, 4096> TRAPLogo
+	{
 		255, 255, 255, 0,
 		255, 255, 255, 0,
 		255, 255, 255, 0,
@@ -2186,7 +2186,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// OpenSans TTF Font data.
 	/// </summary>
-	static std::array<uint8_t, 96932> OpenSansTTFData =
+	inline static constexpr std::array<uint8_t, 96932> OpenSansTTFData =
 	{
 		0x00, 0x01, 0x00, 0x00, 0x00, 0x11, 0x01, 0x00, 0x00, 0x04, 0x00, 0x10,
 		0x47, 0x44, 0x45, 0x46, 0x0B, 0x7C, 0x0C, 0xD4, 0x00, 0x01, 0x77, 0x74,
@@ -10271,7 +10271,7 @@ namespace TRAP::Embed
 	/// <summary>
 	/// OpenSans Bold TTF Font data
 	/// </summary>
-	static std::array<uint8_t, 104120> OpenSansBoldTTFData =
+	inline static constexpr std::array<uint8_t, 104120> OpenSansBoldTTFData =
 	{
 		0x00, 0x01, 0x00, 0x00, 0x00, 0x11, 0x01, 0x00, 0x00, 0x04, 0x00, 0x10,
 		0x47, 0x44, 0x45, 0x46, 0x0B, 0x7C, 0x0C, 0xD4, 0x00, 0x01, 0x93, 0x88,

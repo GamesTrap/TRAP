@@ -38,7 +38,7 @@ namespace TRAP::Graphics::API
 
 		void RetrievePhysicalDeviceFragmentShaderInterlockFeatures();
 		
-		static std::multimap<uint32_t, std::array<uint8_t, 16>> GetAllRatedPhysicalDevices(
+		static const std::multimap<uint32_t, std::array<uint8_t, 16>>& GetAllRatedPhysicalDevices(
 			const TRAP::Ref<VulkanInstance>& instance);
 
 		static VkPhysicalDevice FindPhysicalDeviceViaUUID(const TRAP::Ref<VulkanInstance>& instance,
@@ -47,7 +47,7 @@ namespace TRAP::Graphics::API
 		
 	private:
 		friend bool TRAP::Graphics::RendererAPI::IsVulkanCapable();
-		static std::multimap<uint32_t, std::array<uint8_t, 16>> GetAllRatedPhysicalDevices(
+		static const std::multimap<uint32_t, std::array<uint8_t, 16>>& GetAllRatedPhysicalDevices(
 			const VkInstance& instance);
 		
 		static std::vector<VkPhysicalDevice> GetAllVkPhysicalDevices(const VkInstance& instance);

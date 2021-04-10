@@ -5,10 +5,19 @@
 #include "BufferLayout.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Buffer.h"
+#include "Graphics/API/Objects/DescriptorPool.h"
+#include "Graphics/API/Objects/DescriptorSet.h"
 
-TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name, const uint64_t size, const BufferUsage usage)
+std::unordered_map<TRAP::Window*, TRAP::Graphics::DescriptorSet*> TRAP::Graphics::UniformBuffer::s_descriptorSetMap{};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name, const uint64_t size, const BufferUsage usage, Window* window)
 {
 	TP_PROFILE_FUNCTION();
+
+	if(!window)
+		window = TRAP::Application::GetWindow().get();
 
 	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer());
 	buffer->m_name = name;
@@ -28,14 +37,45 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 		buffer->m_uniformBuffers[i] = desc.Buffer;
 	}
 
+	if(s_descriptorSetMap.find(window) == s_descriptorSetMap.end())
+	{
+		TRAP::Graphics::RendererAPI::DescriptorSetDesc desc{};
+		desc.RootSignature = TRAP::Graphics::RendererAPI::GetGraphicsRootSignature(window);
+		desc.UpdateFrequency = TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::PerFrame;
+		desc.MaxSets = 3;
+		s_descriptorSetMap[window] = TRAP::Graphics::RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(desc);
+	}
+
+	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
+	params[0].Name = buffer->m_name.c_str();
+	if(buffer->m_bufferUsage == BufferUsage::Static)
+	{
+		for(uint32_t i = 0; i < 3; ++i)
+		{
+			params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{buffer->m_uniformBuffers[0].get()};
+			s_descriptorSetMap[window]->Update(0, params);
+		}
+	}
+	else
+	{
+		for(uint32_t i = 0; i < 3; ++i)
+		{
+			params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{buffer->m_uniformBuffers[i].get()};
+			s_descriptorSetMap[window]->Update(i, params);
+		}
+	}
+
 	return buffer;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name, void* data, const uint64_t size, const BufferUsage usage)
+TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name, void* data, const uint64_t size, const BufferUsage usage, Window* window)
 {
 	TP_PROFILE_FUNCTION();
+
+	if(!window)
+		window = TRAP::Application::GetWindow().get();
 
 	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer());
 	buffer->m_name = name;
@@ -55,7 +95,35 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 		RendererAPI::GetResourceLoader()->AddResource(desc, &buffer->m_tokens[i]);
 		buffer->m_uniformBuffers[i] = desc.Buffer;
 	}
-	buffer->AwaitLoading();
+	//buffer->AwaitLoading();
+
+	if(s_descriptorSetMap.find(window) == s_descriptorSetMap.end())
+	{
+		TRAP::Graphics::RendererAPI::DescriptorSetDesc desc{};
+		desc.RootSignature = TRAP::Graphics::RendererAPI::GetGraphicsRootSignature(window);
+		desc.UpdateFrequency = TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::PerFrame;
+		desc.MaxSets = 3;
+		s_descriptorSetMap[window] = TRAP::Graphics::RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(desc);
+	}
+
+	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
+	params[0].Name = buffer->m_name.c_str();
+	if(buffer->m_bufferUsage == BufferUsage::Static)
+	{
+		for(uint32_t i = 0; i < 3; ++i)
+		{
+			params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{buffer->m_uniformBuffers[0].get()};
+			s_descriptorSetMap[window]->Update(0, params);
+		}
+	}
+	else
+	{
+		for(uint32_t i = 0; i < 3; ++i)
+		{
+			params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{buffer->m_uniformBuffers[i].get()};
+			s_descriptorSetMap[window]->Update(i, params);
+		}
+	}
 
 	return buffer;
 }
@@ -90,9 +158,16 @@ TRAP::Graphics::BufferUsage TRAP::Graphics::UniformBuffer::GetBufferUsage() cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::UniformBuffer::Use()
+void TRAP::Graphics::UniformBuffer::Use(Window* window)
 {
-	//TODO
+	if(!window)
+		window = TRAP::Application::GetWindow().get();
+
+	if(s_descriptorSetMap.find(window) != s_descriptorSetMap.end())
+	{
+		uint32_t imageIndex = TRAP::Graphics::RendererAPI::GetPerWindowData(window)->ImageIndex;
+		TRAP::Graphics::RendererAPI::GetRenderer()->BindDescriptorSet(*s_descriptorSetMap[window], imageIndex);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -138,11 +213,4 @@ void TRAP::Graphics::UniformBuffer::AwaitLoading() const
 const std::string& TRAP::Graphics::UniformBuffer::GetName() const
 {
 	return m_name;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::UniformBuffer::GetUniformBuffers() const
-{
-	return m_uniformBuffers;
 }

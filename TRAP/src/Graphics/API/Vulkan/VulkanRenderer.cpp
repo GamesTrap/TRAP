@@ -624,7 +624,7 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 				data->RebuildRootSignature = false;
 			}
 		}
-		
+
 		data->CurrentGraphicsPipeline = GetPipeline(data->GraphicsPipelineDesc);
 		data->GraphicCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentGraphicsPipeline);
 	}

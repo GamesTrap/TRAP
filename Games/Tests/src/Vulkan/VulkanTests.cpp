@@ -76,11 +76,6 @@ void VulkanTests::OnAttach()
 	TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader", &macros);
 
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
-
-	m_sizeMultiplicatorUniformBuffer = TRAP::Graphics::UniformBuffer::Create("SizeMultiplicator", sizeof(SizeMultiplicatorData), TRAP::Graphics::BufferUsage::Stream);
-	m_colorUniformBuffer = TRAP::Graphics::UniformBuffer::Create("Color", sizeof(ColorData), TRAP::Graphics::BufferUsage::Stream);
-
-	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -144,37 +139,14 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	}
 	else if(m_pushConstantOrUBO == 2)
 	{
-		if(!m_descriptorSet)
+		if(!m_sizeMultiplicatorUniformBuffer && !m_colorUniformBuffer)
 		{
-			//////////////////////////////////////////////
-			//INTERNAL RENDERERAPI USE AT YOUR OWN RISK!//
-			//////////////////////////////////////////////
-			TRAP::Graphics::RendererAPI::DescriptorSetDesc desc{};
-			desc.RootSignature = TRAP::Graphics::RendererAPI::GetGraphicsRootSignature();
-			desc.UpdateFrequency = TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::PerFrame;
-			desc.MaxSets = ImageCount;
-			m_descriptorSet = TRAP::Graphics::RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(desc);
-
-			const auto& sizeBuffer = m_sizeMultiplicatorUniformBuffer->GetUniformBuffers();
-			const auto& colorBuffer = m_colorUniformBuffer->GetUniformBuffers();
-
-			for(uint32_t i = 0; i < ImageCount; ++i)
-			{
-				std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(2);
-				params[0].Name = "SizeMultiplicator";
-				//params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{m_sizeMultiplicatorUniformBuffer[i].get()};
-				params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{sizeBuffer[i].get()};
-				params[1].Name = "Color";
-				//params[1].Resource = std::vector<TRAP::Graphics::Buffer*>{m_colorUniformBuffer[i].get()};
-				params[1].Resource = std::vector<TRAP::Graphics::Buffer*>{colorBuffer[i].get()};
-				m_descriptorSet->Update(i, params);
-			}
-			//////////////////////////////////////////////
-
-			TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
+			m_sizeMultiplicatorUniformBuffer = TRAP::Graphics::UniformBuffer::Create("SizeMultiplicator", sizeof(SizeMultiplicatorData), TRAP::Graphics::BufferUsage::Stream);
+			m_colorUniformBuffer = TRAP::Graphics::UniformBuffer::Create("Color", sizeof(ColorData), TRAP::Graphics::BufferUsage::Stream);
+			m_sizeMultiplicatorUniformBuffer->AwaitLoading();
+			m_colorUniformBuffer->AwaitLoading();
 		}
 
-		uint32_t imageIndex = TRAP::Graphics::RendererAPI::GetPerWindowData(TRAP::Application::GetWindow().get())->ImageIndex;
 
 		if(m_vertexTimer.Elapsed() > 2.0f)
 		{
@@ -201,7 +173,8 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		m_sizeMultiplicatorUniformBuffer->SetData(&m_sizeMultiplicatorData, sizeof(SizeMultiplicatorData));
 		m_colorUniformBuffer->SetData(&m_colorData, sizeof(ColorData));
 
-		TRAP::Graphics::RendererAPI::GetRenderer()->BindDescriptorSet(*m_descriptorSet, imageIndex);
+		m_colorUniformBuffer->Use();
+		m_sizeMultiplicatorUniformBuffer->Use();
 
 		TRAP::Graphics::ShaderManager::Get("VKTestUBO")->Use();
 	}
@@ -225,8 +198,17 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 void VulkanTests::OnImGuiRender()
 {
-	ImGui::Begin("LOL");
-	ImGui::Text("HELLO IMGUI");
+	ImGui::Begin("Vulkan Test");
+	ImGui::Text("WireFrame (F1): %s", m_wireFrame ? "Enabled" : "Disabled");
+	ImGui::Text("Geometry (F2): %s", m_quad ? "Quad" : "Triangle");
+	ImGui::Text("Indexed Drawing (F3): %s", m_indexed ? "Enabled" : "Disabled");
+	std::string shaderData = "Uniform Buffer";
+	if(m_pushConstantOrUBO == 0)
+		shaderData = "Disabled";
+	else if(m_pushConstantOrUBO == 1)
+		shaderData = "Push Constants";
+	ImGui::Text("Shader Data (F4): %s", shaderData.c_str());
+	ImGui::Text("VSync (V): %s", m_vsync ? "Enabled" : "Disabled");
 	ImGui::End();
 }
 

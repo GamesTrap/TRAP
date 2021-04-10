@@ -116,6 +116,7 @@ void TRAP::PropertiesPanel::DrawComponents(Entity entity)
 	{
 		auto& tag = entity.GetComponent<TagComponent>().Tag;
 
+		//TODO Replace array with real string?!
 		std::array<char, 256> buffer{};
 #ifdef TRAP_PLATFORM_WINDOWS
 		strcpy_s(buffer.data(), buffer.size() * sizeof(char), tag.c_str());
@@ -188,7 +189,7 @@ void TRAP::PropertiesPanel::DrawComponents(Entity entity)
 			}
 		}
 
-		std::array<const char*, 2> projectionTypeStrings = { "Perspective", "Orthographic" };
+		constexpr std::array<const char*, 2> projectionTypeStrings = { "Perspective", "Orthographic" };
 		const char* currentProjectionTypeString = projectionTypeStrings[static_cast<uint32_t>(camera.GetProjectionType())];
 		if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
 		{

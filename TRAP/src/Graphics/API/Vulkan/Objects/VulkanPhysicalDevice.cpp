@@ -316,7 +316,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RetrievePhysicalDeviceFragmentSh
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::multimap<uint32_t, std::array<uint8_t, 16>> TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(
+const std::multimap<uint32_t, std::array<uint8_t, 16>>& TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(
 	const TRAP::Ref<VulkanInstance>& instance)
 {
 	TRAP_ASSERT(instance, "instance is nullptr");
@@ -380,7 +380,7 @@ VkPhysicalDevice TRAP::Graphics::API::VulkanPhysicalDevice::FindPhysicalDeviceVi
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-std::multimap<uint32_t, std::array<uint8_t, 16>> TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(
+const std::multimap<uint32_t, std::array<uint8_t, 16>>& TRAP::Graphics::API::VulkanPhysicalDevice::GetAllRatedPhysicalDevices(
 	const VkInstance& instance)
 {
 	if (s_availablePhysicalDeviceUUIDs.empty())
