@@ -166,6 +166,13 @@ namespace TRAP
 		static Scope<Image> LoadFallback();
 
 		/// <summary>
+		/// Check if the given (valid) file is a supported Image.
+		/// </summary>
+		/// <param name="filepath">Path to a file</param>
+		/// <returns>True if given file is an Image, false otherwise.</returns>
+		static bool IsSupportedImageFile(const std::string& filepath);
+
+		/// <summary>
 		/// Flip an Image on its X axis.
 		/// </summary>
 		/// <param name="img">Image to flip</param>

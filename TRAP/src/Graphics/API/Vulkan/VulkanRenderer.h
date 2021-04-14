@@ -166,15 +166,6 @@ namespace TRAP::Graphics::API
 			std::unordered_map<DescriptorInfo*, uint32_t> DescriptorIndexMap{};
 		};
 
-		struct SubresourceDesc
-		{
-			uint64_t SrcOffset;
-			uint32_t MipLevel;
-			uint32_t ArrayLayer;
-			uint32_t RowPitch;
-			uint32_t SlicePitch;
-		};
-
 		//Create default resources to be used as null descriptors in case user does not specify some descriptors
 		struct NullDescriptors
 		{

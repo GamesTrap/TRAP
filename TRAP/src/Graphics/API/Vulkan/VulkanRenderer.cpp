@@ -910,7 +910,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		gpd.RasterizerState->DepthBias = 0;
 		gpd.RasterizerState->SlopeScaledDepthBias = 0.0f;
 		gpd.RasterizerState->FillMode = FillMode::Solid;
-		gpd.RasterizerState->FrontFace = FrontFace::Clockwise;
+		gpd.RasterizerState->FrontFace = FrontFace::CounterClockwise;
 		gpd.RasterizerState->DepthClampEnable = false;
 
 		gpd.BlendState = TRAP::MakeRef<BlendStateDesc>();

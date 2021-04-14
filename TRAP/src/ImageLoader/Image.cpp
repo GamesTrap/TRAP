@@ -260,3 +260,24 @@ TRAP::Scope<TRAP::Image> TRAP::Image::LoadFallback()
 
 	return MakeScope<INTERNAL::CustomImage>("", 32, 32, ColorFormat::RGBA, std::vector<uint8_t>{ Embed::DefaultImageData.begin(), Embed::DefaultImageData.end() });
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Image::IsSupportedImageFile(const std::string& filepath)
+{
+	TP_PROFILE_FUNCTION();
+
+	std::string virtualFilePath = VFS::MakeVirtualPathCompatible(filepath);
+	const std::string fileFormat = Utils::String::GetSuffix(Utils::String::ToLower(virtualFilePath));
+
+	bool result = false;
+
+	if (fileFormat == "pgm" || fileFormat == "ppm" || fileFormat == "pnm" || fileFormat == "pam" || fileFormat == "pfm" ||
+	    fileFormat == "tga" || fileFormat == "icb" || fileFormat == "vda" || fileFormat == "vst" ||
+		fileFormat == "bmp" || fileFormat == "dib" ||
+		fileFormat == "png" ||
+		fileFormat == "hdr" || fileFormat == "pic")
+		result = true;
+
+	return result;
+}

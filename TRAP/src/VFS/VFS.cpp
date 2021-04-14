@@ -600,9 +600,9 @@ std::string TRAP::VFS::MakeVirtualPathCompatible(const std::string_view virtualP
 	
 	std::vector<std::string> dirs = Utils::String::SplitString(virtualPath, '/');
 	const std::string virtualDirOffset = Utils::String::ToLower(dirs.front());
-	std::string virtualDir;
-	for (uint32_t i = 0; i < dirs.size() - 1; i++)
-		virtualDir += Utils::String::ToLower(dirs[i]) + '/';
+	std::string virtualDir = virtualDirOffset + '/';
+	for (uint32_t i = 1; i < dirs.size() - 1; i++)
+		virtualDir += dirs[i] + '/';
 
 	return '/' + virtualDir + dirs.back();
 }

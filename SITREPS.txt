@@ -1770,4 +1770,17 @@ SITREP 04/10/2021|21w14a1
     - Changed TRAP Engine version to 21w14a1(0.7.33)
     - Removed unused Shaders ~<5 mins
     - VulkanTests Added OnImGuiRender runtime information ~<5 mins
-    - UniformBuffer now uses a global map of descriptors (likely needs to be moved/refactored) ~>20 mins
+    - UniformBuffer class now uses a global map of descriptors (likely needs to be moved/refactored) ~>20 mins
+
+SITREP 04/13/2021|21w15a1
+    - Changed TRAP Engine version to 21w15a1(0.7.34)
+    - RendererAPI Default winding order is now CounterClockWise ~<5 mins
+    - RendererAPI/ResourceLoader Added 2D Texture support ~>60 mins
+    - RendererAPI Fixed GPUSettings not set correctly ~<10 mins
+    - RendererAPI Added Max Anisotropy to GPUSettings ~<5 mins
+    - Image Added Function to check if filepath is a supported Image file ~<10 mins
+    - VFS Fixed casing of paths ~<10 mins
+    - VulkanTests Changed Vertices to CounterClockWise winding order ~>15 mins
+    - VulkanTests Added UV coordinates to indexed quad vertices ~<10 mins
+    - VulkanTests Added a Texture Shader ~<5 mins
+    - VulkanTests Added Internal Texture & Sampler ~<15 mins

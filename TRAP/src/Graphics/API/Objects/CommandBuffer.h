@@ -58,6 +58,7 @@ namespace TRAP::Graphics
 		virtual void Dispatch(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ) const = 0;
 
 		virtual void UpdateBuffer(const TRAP::Ref<Buffer>& buffer, uint64_t dstOffset, const TRAP::Ref<Buffer>& srcBuffer, uint64_t srcOffset, uint64_t size) const = 0;
+		virtual void UpdateSubresource(const TRAP::Ref<API::VulkanTexture>& texture, const TRAP::Ref<Buffer>& srcBuffer, const RendererAPI::SubresourceDataDesc& subresourceDesc) const = 0;
 		virtual void UpdateVirtualTexture(const TRAP::Ref<API::VulkanTexture>& virtualTexture) = 0;
 
 		virtual void ResetQueryPool(const TRAP::Ref<QueryPool>& queryPool, uint32_t startQuery, uint32_t queryCount) const = 0;

@@ -261,8 +261,8 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 	}
 
 #if defined(ENABLE_GRAPHICS_DEBUG)
-	if (desc.Name)
-		SetTextureName(desc.Name);
+	if (!desc.Name.empty())
+		SetTextureName(desc.Name.c_str());
 #endif
 }
 

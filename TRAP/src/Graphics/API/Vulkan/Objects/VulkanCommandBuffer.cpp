@@ -599,9 +599,11 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateBuffer(const TRAP::Ref<Buff
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref<VulkanTexture>& texture,
-                                                                 const TRAP::Ref<VulkanBuffer>& srcBuffer,
-                                                                 const VulkanRenderer::SubresourceDesc& subresourceDesc) const
+                                                                 const TRAP::Ref<Buffer>& srcBuffer,
+                                                                 const RendererAPI::SubresourceDataDesc& subresourceDesc) const
 {
+	VkBuffer buffer = dynamic_cast<VulkanBuffer*>(srcBuffer.get())->GetVkBuffer();
+
 	const RendererAPI::ImageFormat fmt = texture->GetImageFormat();
 	if(RendererAPI::ImageFormatIsSinglePlane(fmt))
 	{
@@ -626,7 +628,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref
 		copy.imageExtent.height = height;
 		copy.imageExtent.depth = depth;
 			
-		vkCmdCopyBufferToImage(m_vkCommandBuffer, srcBuffer->GetVkBuffer(), texture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
+		vkCmdCopyBufferToImage(m_vkCommandBuffer, buffer, texture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
 	}
 	else
 	{
@@ -657,7 +659,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::UpdateSubresource(const TRAP::Ref
 			offset += copy.imageExtent.width * copy.imageExtent.height * RendererAPI::ImageFormatPlaneSizeOfBlock(fmt, i);
 		}
 
-		vkCmdCopyBufferToImage(m_vkCommandBuffer, srcBuffer->GetVkBuffer(), texture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, numOfPlanes, bufferImagesCopy.data());
+		vkCmdCopyBufferToImage(m_vkCommandBuffer, buffer, texture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, numOfPlanes, bufferImagesCopy.data());
 	}
 }
 

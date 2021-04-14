@@ -67,7 +67,7 @@ constexpr uint32_t TRAP_VERSION_PATCH(const uint32_t version)
 /// <summary>
 /// TRAP_VERSION number created with TRAP_MAKE_VERSION
 /// </summary>
-constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 33);
+constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 34);
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -84,7 +84,7 @@ constexpr uint32_t TRAP_VERSION = TRAP_MAKE_VERSION(0, 7, 33);
 //-------------------------------------------------------------------------------------------------------------------//
 
 #if defined(TRAP_DEBUG) || defined(TRAP_RELWITHDEBINFO)
-	#ifdef TRAP_PLATFORM_WINDOWS
+	#if defined(TRAP_PLATFORM_WINDOWS)
 		/// <summary>
 		/// Set a cross platform Debug Break.<br>
 		/// Note: Only works when TRAP_DEBUG or TRAP_RELWITHDEBINFO is set.

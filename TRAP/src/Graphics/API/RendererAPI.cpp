@@ -58,7 +58,10 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 		std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
 		s_perWindowDataMap.clear();
 	}
-	
+
+	for(uint32_t i = 0; i < s_graphicRootSignatureDesc.StaticSamplers.size(); ++i)
+		s_graphicRootSignatureDesc.StaticSamplers[i].reset();
+
 	s_Renderer.reset();
 	s_Renderer = nullptr;
 }
@@ -184,6 +187,13 @@ void TRAP::Graphics::RendererAPI::RemoveShaderFromGraphicsRootSignature(Shader* 
 const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& TRAP::Graphics::RendererAPI::GetPerWindowData(Window* window)
 {
 	return s_perWindowDataMap[window];
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::RendererAPI::RootSignatureDesc& TRAP::Graphics::RendererAPI::GetGraphicsRootSignatureDesc()
+{
+	return s_graphicRootSignatureDesc;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

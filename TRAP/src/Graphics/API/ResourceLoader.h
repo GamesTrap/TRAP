@@ -2,6 +2,8 @@
 #define _TRAP_RESOURCELOADER_H_
 
 #include "RendererAPI.h"
+#include "Vulkan/Objects/VulkanTexture.h"
+#include "ImageLoader/Image.h"
 
 namespace TRAP::Graphics
 {
@@ -24,9 +26,12 @@ namespace TRAP::Graphics::API
 		//If token is nullptr, the resource will be available when AllResourceLoadsCompleted() returns true.
 		//If token is non nullptr, the resource will be available after IsTokenCompleted(token) return true.
 		void AddResource(RendererAPI::BufferLoadDesc& desc, SyncToken* token);
+		void AddResource(RendererAPI::TextureLoadDesc& desc, SyncToken* token);
 
 		static void BeginUpdateResource(RendererAPI::BufferUpdateDesc& desc);
+		static void BeginUpdateResource(RendererAPI::TextureUpdateDesc& desc);
 		void EndUpdateResource(RendererAPI::BufferUpdateDesc& desc, SyncToken* token);
+		void EndUpdateResource(RendererAPI::TextureUpdateDesc& desc, SyncToken* token);
 
 		//Returns whether all submitted resource loads and updates have been completed.
 		bool AllResourceLoadsCompleted() const;
@@ -45,12 +50,30 @@ namespace TRAP::Graphics::API
 		void WaitForToken(const SyncToken* token);
 	
 	private:
+		struct TextureUpdateDescInternal
+		{
+			TRAP::Ref<TRAP::Graphics::API::VulkanTexture> Texture = nullptr; //TODO Replace with abstraction
+			RendererAPI::MappedMemoryRange Range{};
+			uint32_t BaseMipLevel = 0;
+			uint32_t MipLevels = 0;
+			uint32_t BaseArrayLayer = 0;
+			uint32_t LayerCount = 0;
+			bool MipsAfterSlice = false;
+		};
+		struct UpdateRequest;
+
 		static RendererAPI::ResourceLoaderDesc DefaultResourceLoaderDesc;
 		static void StreamerThreadFunc(ResourceLoader* loader);
 		static uint32_t UtilGetTextureSubresourceAlignment(RendererAPI::ImageFormat fmt = RendererAPI::ImageFormat::Undefined);
+		static uint32_t UtilGetSurfaceSize(RendererAPI::ImageFormat fmt, uint32_t width, uint32_t height, uint32_t depth,
+			uint32_t rowStride, uint32_t sliceStride, uint32_t baseMipLevel, uint32_t mipLevels, uint32_t baseArrayLayer, uint32_t arrayLayers);
+		static bool UtilGetSurfaceInfo(uint32_t width, uint32_t height, RendererAPI::ImageFormat fmt, uint32_t* outNumBytes, uint32_t* outRowBytes, uint32_t* outNumRows);
 		static RendererAPI::MappedMemoryRange AllocateUploadMemory(uint64_t memoryRequirement, uint32_t alignment);
 		void QueueBufferBarrier(const TRAP::Ref<Buffer>& buffer, RendererAPI::ResourceState state, SyncToken* token);
 		void QueueBufferUpdate(const RendererAPI::BufferUpdateDesc& desc, SyncToken* token);
+		void QueueTextureLoad(const RendererAPI::TextureLoadDesc& desc, SyncToken* token);
+		void QueueTextureUpdate(const TextureUpdateDescInternal& textureUpdate, SyncToken* token);
+		void QueueTextureBarrier(const TRAP::Ref<TRAP::Graphics::API::VulkanTexture>& texture, RendererAPI::ResourceState state, SyncToken* token);
 		
 		RendererAPI::MappedMemoryRange AllocateStagingMemory(uint64_t memoryRequirement, uint32_t alignment);
 		void FreeAllUploadMemory();
@@ -64,6 +87,7 @@ namespace TRAP::Graphics::API
 		bool AreTasksAvailable() const;
 
 		static RendererAPI::ResourceState UtilDetermineResourceStartState(const RendererAPI::BufferDesc& desc);
+		static RendererAPI::ResourceState UtilDetermineResourceStartState(bool uav);
 
 		enum class UploadFunctionResult
 		{
@@ -79,6 +103,8 @@ namespace TRAP::Graphics::API
 		};
 		
 		UploadFunctionResult UpdateBuffer(std::size_t activeSet, const RendererAPI::BufferUpdateDesc& bufferUpdateDesc);
+		UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& bufferUpdateDesc, TRAP::Scope<TRAP::Image> img);
+		UploadFunctionResult LoadTexture(std::size_t activeSet, UpdateRequest& textureUpdate);
 		
 		RendererAPI::ResourceLoaderDesc m_desc;
 		
@@ -92,24 +118,25 @@ namespace TRAP::Graphics::API
 		enum class UpdateRequestType
 		{
 			UpdateBuffer,
-			//UpdateTexture,
+			UpdateTexture,
 			BufferBarrier,
-			//TextureBarrier,
-			//LoadTexture,
+			TextureBarrier,
+			LoadTexture,
 			Invalid
 		};
 		struct UpdateRequest
 		{
 			explicit UpdateRequest(const RendererAPI::BufferUpdateDesc& buffer);
-			//UpdateRequest(const RendererAPI::TextureLoadDesc& texture);
-			//UpdateRequest(const RendererAPI::TextureUpdateDescInternal& texture);
+			explicit UpdateRequest(const RendererAPI::TextureLoadDesc& texture);
+			explicit UpdateRequest(TRAP::Graphics::API::ResourceLoader::TextureUpdateDescInternal texture);
 			explicit UpdateRequest(const RendererAPI::BufferBarrier& barrier);
-			//explicit UpdateRequest(const RendererAPI::TextureBarrier& barrier);
-			
+			explicit UpdateRequest(const RendererAPI::TextureBarrier& barrier);
+
 			UpdateRequestType Type = UpdateRequestType::Invalid;
 			uint64_t WaitIndex = 0;
 			TRAP::Ref<Buffer> UploadBuffer = nullptr;
-			std::variant<RendererAPI::BufferUpdateDesc, RendererAPI::BufferBarrier, RendererAPI::TextureBarrier> Desc; //TODO TextureUpdateDescInternal, TextureLoadDesc
+			TRAP::Scope<TRAP::Image> Image = nullptr;
+			std::variant<RendererAPI::BufferUpdateDesc, TRAP::Graphics::API::ResourceLoader::TextureUpdateDescInternal, RendererAPI::TextureLoadDesc, RendererAPI::BufferBarrier, RendererAPI::TextureBarrier> Desc;
 		};
 		std::vector<UpdateRequest> m_requestQueue;
 

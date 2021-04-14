@@ -2,6 +2,7 @@
 #define _GAMESTRAP_VULKANTESTS_H_
 
 #include <TRAP.h>
+#include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 
 class VulkanTests final : public TRAP::Layer
 {
@@ -30,27 +31,27 @@ private:
 	std::array<float, 18> m_triangleVertices
 	{
 		//XYZ RGB
-		 -0.0f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
-		 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f
+		 0.0f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
 	};
 	std::array<float, 36> m_quadVertices
 	{
 		//XYZ RGB
-		 -0.5f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
-		 0.5f, 0.5f, 0.0f,    0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
-		-0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
-		0.5f, 0.5f, 0.0f,    0.0f, 1.0f, 0.0f,
-		0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,
+		 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
+		 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
+		-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f
 	};
-	std::array<float, 36> m_quadVerticesIndexed
+	std::array<float, 32> m_quadVerticesIndexed
 	{
-		//XYZ RGB
-		-0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,
-		 -0.5f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
-		 0.5f, 0.5f, 0.0f,    0.0f, 1.0f, 0.0f,
-		0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f,
+		//XYZ RGB UV
+		-0.5f, -0.5f, 0.0f,    1.0f, 0.0f, 0.0f,    0.0f, 1.0f,
+		 0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,    1.0f, 1.0f,
+		 0.5f,  0.5f, 0.0f,    0.0f, 0.0f, 1.0f,    1.0f, 0.0f,
+		-0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f,    0.0f, 0.0f
 	};
 
 	TRAP::Scope<TRAP::Graphics::IndexBuffer> m_indexBuffer;
@@ -60,13 +61,14 @@ private:
 	};
 	std::array<uint16_t, 6> m_quadIndices
 	{
-		0, 1, 2, 0, 2, 3
+		0, 1, 2, 2, 3, 0
 	};
 
 	bool m_wireFrame;
 	bool m_quad;
 	bool m_indexed;
 	bool m_vsync;
+	bool m_texture;
 	uint8_t m_pushConstantOrUBO;
 
 	inline static constexpr bool s_window = false;
@@ -81,17 +83,19 @@ private:
 	} m_sizeMultiplicatorData;
 
 	TRAP::Utils::Timer m_colorTimer;
-
-	////////////////////////////////////////////
-	//INTERNAL RENDERERAPI USE AT YOUR OWN RISK!
-	////////////////////////////////////////////
-	inline static constexpr uint32_t ImageCount = 3;
-	TRAP::Graphics::DescriptorSet* m_descriptorSet;
-	////////////////////////////////////////////
 	TRAP::Utils::Timer m_vertexTimer;
 
 	TRAP::Ref<TRAP::Graphics::UniformBuffer> m_colorUniformBuffer;
 	TRAP::Ref<TRAP::Graphics::UniformBuffer> m_sizeMultiplicatorUniformBuffer;
+
+	TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler;
+
+	//////////////////////////////////////
+	//INTERNAL CODE USE AT YOUR OWN RISK//
+	//////////////////////////////////////
+	TRAP::Ref<TRAP::Graphics::API::VulkanTexture> m_testTexture;
+	TRAP::Graphics::DescriptorSet* m_descriptorSet;
+	//////////////////////////////////////
 };
 
 #endif /*_GAMESTRAP_VULKANTESTS_H_*/

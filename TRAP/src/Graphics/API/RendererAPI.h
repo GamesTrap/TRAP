@@ -165,6 +165,8 @@ namespace TRAP::Graphics
 		static void RemoveShaderFromGraphicsRootSignature(Shader* shader);
 		
 		static const TRAP::Scope<PerWindowData>& GetPerWindowData(Window* window); //TODO Remove
+		struct RootSignatureDesc;
+		static RootSignatureDesc& GetGraphicsRootSignatureDesc();
 	
 	protected:
 		static const TRAP::Scope<PerWindowData>& GetMainWindowData();
@@ -696,6 +698,80 @@ namespace TRAP::Graphics
 			default:
 				return 1;
 			}
+		}
+		static constexpr bool ImageFormatIsCompressed(const ImageFormat fmt)
+		{
+			switch(fmt)
+			{
+			case ImageFormat::DXBC1_RGB_UNORM:
+			case ImageFormat::DXBC1_RGB_SRGB:
+			case ImageFormat::DXBC1_RGBA_UNORM:
+			case ImageFormat::DXBC1_RGBA_SRGB:
+			case ImageFormat::DXBC2_UNORM:
+			case ImageFormat::DXBC2_SRGB:
+			case ImageFormat::DXBC3_UNORM:
+			case ImageFormat::DXBC3_SRGB:
+			case ImageFormat::DXBC4_UNORM:
+			case ImageFormat::DXBC4_SNORM:
+			case ImageFormat::DXBC5_UNORM:
+			case ImageFormat::DXBC5_SNORM:
+			case ImageFormat::DXBC6H_UFLOAT:
+			case ImageFormat::DXBC6H_SFLOAT:
+			case ImageFormat::DXBC7_UNORM:
+			case ImageFormat::DXBC7_SRGB:
+			case ImageFormat::PVRTC1_2BPP_UNORM:
+			case ImageFormat::PVRTC1_4BPP_UNORM:
+			case ImageFormat::PVRTC2_2BPP_UNORM:
+			case ImageFormat::PVRTC2_4BPP_UNORM:
+			case ImageFormat::PVRTC1_2BPP_SRGB:
+			case ImageFormat::PVRTC1_4BPP_SRGB:
+			case ImageFormat::PVRTC2_2BPP_SRGB:
+			case ImageFormat::PVRTC2_4BPP_SRGB:
+			case ImageFormat::ETC2_R8G8B8_UNORM:
+			case ImageFormat::ETC2_R8G8B8_SRGB:
+			case ImageFormat::ETC2_R8G8B8A1_UNORM:
+			case ImageFormat::ETC2_R8G8B8A1_SRGB:
+			case ImageFormat::ETC2_R8G8B8A8_UNORM:
+			case ImageFormat::ETC2_R8G8B8A8_SRGB:
+			case ImageFormat::ETC2_EAC_R11_UNORM:
+			case ImageFormat::ETC2_EAC_R11_SNORM:
+			case ImageFormat::ETC2_EAC_R11G11_UNORM:
+			case ImageFormat::ETC2_EAC_R11G11_SNORM:
+			case ImageFormat::ASTC_4x4_UNORM:
+			case ImageFormat::ASTC_4x4_SRGB:
+			case ImageFormat::ASTC_5x4_UNORM:
+			case ImageFormat::ASTC_5x4_SRGB:
+			case ImageFormat::ASTC_5x5_UNORM:
+			case ImageFormat::ASTC_5x5_SRGB:
+			case ImageFormat::ASTC_6x5_UNORM:
+			case ImageFormat::ASTC_6x5_SRGB:
+			case ImageFormat::ASTC_6x6_UNORM:
+			case ImageFormat::ASTC_6x6_SRGB:
+			case ImageFormat::ASTC_8x5_UNORM:
+			case ImageFormat::ASTC_8x5_SRGB:
+			case ImageFormat::ASTC_8x6_UNORM:
+			case ImageFormat::ASTC_8x6_SRGB:
+			case ImageFormat::ASTC_8x8_UNORM:
+			case ImageFormat::ASTC_8x8_SRGB:
+			case ImageFormat::ASTC_10x5_UNORM:
+			case ImageFormat::ASTC_10x5_SRGB:
+			case ImageFormat::ASTC_10x6_UNORM:
+			case ImageFormat::ASTC_10x6_SRGB:
+			case ImageFormat::ASTC_10x8_UNORM:
+			case ImageFormat::ASTC_10x8_SRGB:
+			case ImageFormat::ASTC_10x10_UNORM:
+			case ImageFormat::ASTC_10x10_SRGB:
+			case ImageFormat::ASTC_12x10_UNORM:
+			case ImageFormat::ASTC_12x10_SRGB:
+			case ImageFormat::ASTC_12x12_UNORM:
+			case ImageFormat::ASTC_12x12_SRGB:
+				return true;
+
+			default:
+				return false;
+			}
+
+			return false;
 		}
 
 		enum class WaveOpsSupportFlags : uint32_t
@@ -1398,6 +1474,16 @@ namespace TRAP::Graphics
 				uint32_t Stencil;
 			};
 		};
+
+		struct SubresourceDataDesc
+		{
+			uint64_t SrcOffset;
+			uint32_t MipLevel;
+			uint32_t ArrayLayer;
+
+			uint32_t RowPitch;
+			uint32_t SlicePitch;
+		};
 		
 		struct RenderTargetDesc
 		{
@@ -1428,7 +1514,7 @@ namespace TRAP::Graphics
 			//Descriptor creation
 			DescriptorType Descriptors{};
 			//Debug name used in GPU profile
-			const char* Name{};
+			std::string Name{};
 
 			void* NativeHandle{};
 		};
@@ -1465,9 +1551,22 @@ namespace TRAP::Graphics
 			//Pointer to native texture handle if the texture does not own underlying resource
 			void* NativeHandle{};
 			//Debug name used in GPU profile
-			const char* Name{};
+			std::string Name{};
 
 			::VkSamplerYcbcrConversionInfo* VkSamplerYcbcrConversionInfo{};
+		};
+
+		//TODO Replace with Texture abstraction
+		struct TextureLoadDesc
+		{
+			TRAP::Ref<TRAP::Graphics::API::VulkanTexture>* Texture;
+			//Load empty texture
+			TRAP::Ref<TextureDesc> Desc;
+			//Filepath with extension.
+			std::string Filepath;
+			//Following is ignored if Desc != nullptr.
+			//Desc->Flags will be considered instead.
+			TextureCreationFlags CreationFlag;
 		};
 
 		//Data structure holding necessary info to create a Buffer
@@ -1964,6 +2063,12 @@ namespace TRAP::Graphics
 			//Byte size for this page
 			VkDeviceSize Size{};
 		};
+		struct VirtualTexturePageInfo
+		{
+			uint32_t PageAlive;
+			uint32_t TexID;
+			uint32_t MipLevel;
+		};
 
 		struct DescriptorIndexMap
 		{
@@ -1972,13 +2077,57 @@ namespace TRAP::Graphics
 
 		struct MappedMemoryRange
 		{
-			uint8_t* Data;
-			TRAP::Ref<TRAP::Graphics::Buffer> Buffer;
-			uint64_t Offset;
-			uint64_t Size;
-			uint32_t Flags;
+			uint8_t* Data = nullptr;
+			TRAP::Ref<TRAP::Graphics::Buffer> Buffer = nullptr;
+			uint64_t Offset = 0;
+			uint64_t Size = 0;
+			uint32_t Flags = 0;
 		};
 
+		//Note: Only use for procedural textures which are created on CPU (noise textures, font texture, ...)
+		struct TextureUpdateDesc
+		{
+			TRAP::Ref<TRAP::Graphics::API::VulkanTexture> Texture; //TODO Replace VulkanTexture with TRAP::Graphics::Texture
+			uint32_t MipLevel;
+			uint32_t ArrayLayer;
+
+			//To be filled by the caller
+			//Example
+			//TRAP::Graphics::RendererAPI::BufferUpdateDesc update = {Texture, 2, 1};
+			//TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(update);
+			//Row by row copy is required if DstRowStride > SrcRowStride.
+			//Single memcpy will work if DstRowStride == SrcRowStride.
+			//2D:
+			//for (uint32_t r = 0; r < update.RowCount; ++r)
+			//    memcpy(update.MappedData + r * update.DstRowStride, srcPixels + r * update.SrcRowStride, update.SrcRowStride);
+			//3D:
+			//for (uint32_t z = 0; z < depth; ++z)
+			//{
+			//    uint8_t* dstData = update.MappedData + update.DstSliceStride * z;
+			//    uint8_t* srcData = srcPixels + update.SrcSliceStride * z;
+			//    for (uint32_t r = 0; r < update.RowCount; ++r)
+			//        memcpy(dstData + r * update.DstRowStride, srcData + r * update.SrcRowStride, update.SrcRowStride);
+			//}
+			//TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(update, &token);
+			uint8_t* MappedData;
+			//Size of each row in destination including padding - Needs to be respected
+			//otherwise texture data will be corrupted if dst row stride is not the same as src row stride
+			uint32_t DstRowStride;
+			//Number of rows in this slice of the texture
+			uint32_t RowCount;
+			//Src row stride for convenience (RowCount * width * texture format size)
+			uint32_t SrcRowStride;
+			//Size of each slice in destination including padding - Use for offsetting dst data updating 3D textures
+			uint32_t DstSliceStride;
+			//Size of each slice in src - Use for offsetting src data when updating 3D textures
+			uint32_t SrcSliceStride;
+
+			//Internal
+			struct
+			{
+				MappedMemoryRange MappedRange;
+			} Internal;
+		};
 		struct ResourceLoaderDesc
 		{
 			uint64_t BufferSize;
@@ -2024,6 +2173,7 @@ namespace TRAP::Graphics
 			uint32_t ROVsSupported;
 			bool TessellationSupported;
 			bool GeometryShaderSupported;
+			uint32_t MaxAnisotropy;
 		} GPUSettings{};
 
 	protected:
