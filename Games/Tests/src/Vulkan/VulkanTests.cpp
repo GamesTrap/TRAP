@@ -101,10 +101,12 @@ void VulkanTests::OnAttach()
 	//Load Texture
 	TRAP::VFS::MountTextures("Assets/Textures");
 	TRAP::Graphics::RendererAPI::TextureLoadDesc textureLoadDesc{};
-	textureLoadDesc.Filepath = "/Textures/PNG/Test48BPPBig.png";
+	textureLoadDesc.Filepaths[0] = "/Textures/PNG/Test24BPPSmaller.png";
 	TRAP::Graphics::API::SyncToken token;
 	textureLoadDesc.Texture = &m_testTexture;
+	textureLoadDesc.IsCubemap = false;
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(textureLoadDesc, nullptr);
+
 	//TODO Test Runtime Texture Update
 	//////////////////////////////////////
 
@@ -231,6 +233,9 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 		TRAP::Graphics::ShaderManager::Get("VKTest")->Use();
 	else //(m_texture)
 	{
+		m_vertexBuffer->Use();
+		m_indexBuffer->Use();
+
 		TRAP::Graphics::ShaderManager::Get("VKTestTexture")->Use();
 
 		//////////////////////////////////////

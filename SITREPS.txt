@@ -1784,3 +1784,12 @@ SITREP 04/13/2021|21w15a1
     - VulkanTests Added UV coordinates to indexed quad vertices ~<10 mins
     - VulkanTests Added a Texture Shader ~<5 mins
     - VulkanTests Added Internal Texture & Sampler ~<15 mins
+
+SITREP 04/18/2021|21w15b1
+    - Changed TRAP Engine version to 21w15b1(0.7.35)
+    - RendererAPI Added Cube Texture support ~>60 mins
+    - ResourceLoader Added more validations to Texture loading ~<30 mins
+    - ResourceLoader shortened Texture upload code ~<30 mins
+    - ResourceLoader Added SplitImageFromCross for cubemaps ~<30 mins
+    - ResourceLoader Added support for Horizontal/Vertical-Cross Cubemap Textures ~>60 mins
+    - ResourceLoader Added support for Multi-File Cubemap Textures ~>30 mins

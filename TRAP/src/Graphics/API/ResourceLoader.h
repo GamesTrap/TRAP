@@ -103,9 +103,13 @@ namespace TRAP::Graphics::API
 		};
 		
 		UploadFunctionResult UpdateBuffer(std::size_t activeSet, const RendererAPI::BufferUpdateDesc& bufferUpdateDesc);
-		UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& bufferUpdateDesc, TRAP::Scope<TRAP::Image> img);
+		UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& bufferUpdateDesc, std::array<TRAP::Scope<TRAP::Image>, 6> img);
 		UploadFunctionResult LoadTexture(std::size_t activeSet, UpdateRequest& textureUpdate);
 		
+		template<typename T>
+		std::array<TRAP::Scope<TRAP::Image>, 6> SplitImageFromCross(const TRAP::Scope<TRAP::Image>& image,
+			uint32_t faceWidth, uint32_t faceHeight);
+
 		RendererAPI::ResourceLoaderDesc m_desc;
 		
 		volatile int32_t m_run;

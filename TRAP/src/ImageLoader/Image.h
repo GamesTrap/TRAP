@@ -201,11 +201,11 @@ namespace TRAP
 		/// Flip raw pixel data on Y axis.
 		/// </summary>
 		/// <typeparam name="T">uint8_t, uint16_t or float.</typeparam>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="format"></param>
-		/// <param name="data"></param>
-		/// <returns></returns>
+		/// <param name="width">Width of Image in pixels.</param>
+		/// <param name="height">Height of Image in pixels.</param>
+		/// <param name="format">Color format of the Image data.</param>
+		/// <param name="data">Raw pixel data.</param>
+		/// <returns>Flipped raw pixel data</returns>
 		template<typename T>
 		static std::vector<T> FlipY(uint32_t width, uint32_t height, ColorFormat format, const T* data);
 

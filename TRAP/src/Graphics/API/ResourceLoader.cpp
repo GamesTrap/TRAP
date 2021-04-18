@@ -7,6 +7,7 @@
 #include "Objects/CommandPool.h"
 #include "Vulkan/VulkanRenderer.h"
 #include "Utils/String/String.h"
+#include "VFS/VFS.h"
 
 TRAP::Graphics::RendererAPI::ResourceLoaderDesc TRAP::Graphics::API::ResourceLoader::DefaultResourceLoaderDesc{8ull << 20, 2};
 
@@ -76,7 +77,8 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* loa
 
 			case UpdateRequestType::UpdateTexture:
 			{
-				result = loader->UpdateTexture(loader->m_nextSet, std::get<TextureUpdateDescInternal>(updateState.Desc), std::move(updateState.Image)); //Bug Crash?!
+				//TODO
+				result = loader->UpdateTexture(loader->m_nextSet, std::get<TextureUpdateDescInternal>(updateState.Desc), {}); //Bug Crash?!
 				break;
 			}
 
@@ -357,7 +359,7 @@ void TRAP::Graphics::API::ResourceLoader::AddResource(RendererAPI::TextureLoadDe
 {
 	TRAP_ASSERT(textureDesc.Texture);
 
-	if(textureDesc.Filepath.empty() && textureDesc.Desc)
+	if(textureDesc.Filepaths[0].empty() && textureDesc.Desc)
 	{
 		TRAP_ASSERT(static_cast<uint32_t>(textureDesc.Desc->StartState));
 
@@ -869,7 +871,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::UpdateTexture(const std::size_t activeSet,
-	const TextureUpdateDescInternal& textureUpdateDesc, TRAP::Scope<TRAP::Image> img)
+	const TextureUpdateDescInternal& textureUpdateDesc, std::array<TRAP::Scope<TRAP::Image>, 6> images)
 {
 	//When this call comes from UpdateResource, staging buffer data is already filled
 	//All that is left to do is record and execute the Copy commands
@@ -901,100 +903,88 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	uint32_t secondStart = textureUpdateDesc.MipsAfterSlice ? textureUpdateDesc.BaseArrayLayer : textureUpdateDesc.BaseMipLevel;
 	uint32_t secondEnd = textureUpdateDesc.MipsAfterSlice ? (textureUpdateDesc.BaseArrayLayer + textureUpdateDesc.LayerCount) : (textureUpdateDesc.BaseMipLevel + textureUpdateDesc.MipLevels);
 
-	for(uint32_t p = 0; p < 1; ++p)
+	for(uint32_t j = firstStart; j < firstEnd; ++j)
 	{
-		for(uint32_t j = firstStart; j < firstEnd; ++j)
+		for(uint32_t i = secondStart; i < secondEnd; ++i)
 		{
-			for(uint32_t i = secondStart; i < secondEnd; ++i)
+			uint32_t mip = textureUpdateDesc.MipsAfterSlice ? j : i;
+			uint32_t layer = textureUpdateDesc.MipsAfterSlice ? i : j;
+
+			uint32_t w = Math::Max(1u, (texture->GetWidth() >> mip));
+			uint32_t h = Math::Max(1u, (texture->GetHeight() >> mip));
+			uint32_t d = Math::Max(1u, (texture->GetDepth() >> mip));
+
+			uint32_t numBytes = 0;
+			uint32_t rowBytes = 0;
+			uint32_t numRows = 0;
+
+			bool ret = UtilGetSurfaceInfo(w, h, format, &numBytes, &rowBytes, &numRows);
+			if(!ret)
+				return UploadFunctionResult::InvalidRequest;
+
+			uint32_t subRowPitch = ((rowBytes + rowAlignment - 1) / rowAlignment) * rowAlignment;
+			uint32_t subSlicePitch = (((subRowPitch * numRows) + sliceAlignment - 1) / sliceAlignment) * sliceAlignment;
+			uint32_t subNumRows = numRows;
+			uint32_t subDepth = d;
+			uint32_t subRowSize = rowBytes;
+			uint8_t* data = upload.Data + offset;
+
+			if(!dataAlreadyFilled)
 			{
-				uint32_t mip = textureUpdateDesc.MipsAfterSlice ? j : i;
-				uint32_t layer = textureUpdateDesc.MipsAfterSlice ? i : j;
-
-				uint32_t w = Math::Max(1u, (texture->GetWidth() >> mip));
-				uint32_t h = Math::Max(1u, (texture->GetHeight() >> mip));
-				uint32_t d = Math::Max(1u, (texture->GetDepth() >> mip));
-
-				uint32_t numBytes = 0;
-				uint32_t rowBytes = 0;
-				uint32_t numRows = 0;
-
-				bool ret = UtilGetSurfaceInfo(w, h, format, &numBytes, &rowBytes, &numRows);
-				if(!ret)
-					return UploadFunctionResult::InvalidRequest;
-
-				uint32_t subRowPitch = ((rowBytes + rowAlignment - 1) / rowAlignment) * rowAlignment;
-				uint32_t subSlicePitch = (((subRowPitch * numRows) + sliceAlignment - 1) / sliceAlignment) * sliceAlignment;
-				uint32_t subNumRows = numRows;
-				uint32_t subDepth = d;
-				uint32_t subRowSize = rowBytes;
-				uint8_t* data = upload.Data + offset;
-
-				if(!dataAlreadyFilled)
+				for(uint32_t z = 0; z < subDepth; ++z)
 				{
-					for(uint32_t z = 0; z < subDepth; ++z)
+					uint8_t* dstData = data + subSlicePitch * z;
+					const uint8_t* pixelData = static_cast<const uint8_t*>(images[layer]->GetPixelData());
+
+					if(images[layer]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //RGB also needs an alpha value
 					{
-						uint8_t* dstData = data + subSlicePitch * z;
-						const uint8_t* pixelData = static_cast<const uint8_t*>(img->GetPixelData());
-						if(img->GetColorFormat() == TRAP::Image::ColorFormat::RGB && !img->IsHDR() && format == RendererAPI::ImageFormat::R8G8B8A8_SRGB)
+						uint8_t alpha1Byte = 255;
+						uint16_t alpha2Byte = 65535;
+						float alphaHDR = 1.0f;
+						uint32_t pixelDataByteSizePerChannel = images[layer]->GetBytesPerPixel() / 3;
+						uint64_t pixelDataSizeRGBA = images[layer]->GetWidth() * images[layer]->GetHeight() * 4 * pixelDataByteSizePerChannel;
+						uint64_t pixelDataOffset = 0;
+						for(uint64_t i = 0; i < pixelDataSizeRGBA; i += 4 * pixelDataByteSizePerChannel)
 						{
-							uint8_t tempAlpha = 255;
-							uint64_t readOffset = 0;
-							for(uint64_t i = 0; i < img->GetPixelDataSize(); i += 3)
-							{
-								//RGB pixel data
-								memcpy(dstData + readOffset, pixelData + i, 3);
-								readOffset += 4;
+							memcpy(dstData + i, pixelData + pixelDataOffset, 3 * pixelDataByteSizePerChannel);
+							pixelDataOffset += 3 * pixelDataByteSizePerChannel;
 
-								//Alpha pixel
-								memcpy(dstData + readOffset + 3, &tempAlpha, 1);
+							switch(pixelDataByteSizePerChannel)
+							{
+							case 1:
+								memcpy(dstData + i + 3 * pixelDataByteSizePerChannel, &alpha1Byte, 1 * pixelDataByteSizePerChannel);
+								break;
+
+							case 2:
+								memcpy(dstData + i + 3 * pixelDataByteSizePerChannel, &alpha2Byte, 1 * pixelDataByteSizePerChannel);
+								break;
+
+							case 4:
+								memcpy(dstData + i + 3 * pixelDataByteSizePerChannel, &alphaHDR, 1 * pixelDataByteSizePerChannel);
+								break;
+
+							default:
+								break;
 							}
 						}
-						else if(img->IsHDR() && img->GetColorFormat() == TRAP::Image::ColorFormat::RGB && img->GetBitsPerPixel() == 96)
-						{
-							float tempAlpha = 1.0f;
-							uint64_t readOffset = 0;
-							for(uint64_t i = 0; i < img->GetPixelDataSize(); i += 3 * sizeof(float))
-							{
-								//RGB pixel data
-								memcpy(dstData + readOffset, pixelData + i, 3 * sizeof(float));
-								readOffset += 4 * sizeof(float);
-
-								//Alpha pixel
-								memcpy(dstData + readOffset + 3 * sizeof(float), &tempAlpha, sizeof(float));
-							}
-						}
-						else if(img->GetColorFormat() == TRAP::Image::ColorFormat::RGB && !img->IsHDR() && img->GetBitsPerPixel() == 48)
-						{
-							uint16_t tempAlpha = 65535;
-							uint64_t readOffset = 0;
-							for(uint64_t i = 0; i < img->GetPixelDataSize(); i += 3 * sizeof(uint16_t))
-							{
-								//RGB pixel data
-								memcpy(dstData + readOffset, pixelData + i, 3 * sizeof(uint16_t));
-								readOffset += 4 * sizeof(uint16_t);
-
-								//Alpha pixel
-								memcpy(dstData + readOffset + 3 * sizeof(uint16_t), &tempAlpha, sizeof(uint16_t));
-							}
-						}
-						else
-							memcpy(dstData, pixelData, subRowSize * subNumRows);
 					}
+					else
+						memcpy(dstData, pixelData, subRowSize * subNumRows);
 				}
-
-				RendererAPI::SubresourceDataDesc subresourceDesc = {};
-				subresourceDesc.ArrayLayer = layer;
-				subresourceDesc.MipLevel = mip;
-				subresourceDesc.SrcOffset = upload.Offset + offset;
-				if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
-				{
-					subresourceDesc.RowPitch = subRowPitch;
-					subresourceDesc.SlicePitch = subSlicePitch;
-				}
-
-				cmd->UpdateSubresource(texture, upload.Buffer, subresourceDesc);
-				offset += subDepth * subSlicePitch;
 			}
+
+			RendererAPI::SubresourceDataDesc subresourceDesc = {};
+			subresourceDesc.ArrayLayer = layer;
+			subresourceDesc.MipLevel = mip;
+			subresourceDesc.SrcOffset = upload.Offset + offset;
+			if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
+			{
+				subresourceDesc.RowPitch = subRowPitch;
+				subresourceDesc.SlicePitch = subSlicePitch;
+			}
+
+			cmd->UpdateSubresource(texture, upload.Buffer, subresourceDesc);
+			offset += subDepth * subSlicePitch;
 		}
 	}
 
@@ -1010,50 +1000,184 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::LoadTexture(const std::size_t activeSet,
-	TRAP::Graphics::API::ResourceLoader::UpdateRequest& textureUpdate) //TODO CubeMaps
+	TRAP::Graphics::API::ResourceLoader::UpdateRequest& textureUpdate)
 {
 	TRAP::Graphics::RendererAPI::TextureLoadDesc& textureLoadDesc = std::get<TRAP::Graphics::RendererAPI::TextureLoadDesc>(textureUpdate.Desc);
 
-	if(!textureLoadDesc.Filepath.empty() && TRAP::Image::IsSupportedImageFile(textureLoadDesc.Filepath))
+	bool validMultiFileCubemap = true;
+	for(const std::string& str : textureLoadDesc.Filepaths)
 	{
-		TextureUpdateDescInternal updateDesc = {};
-		TRAP::Graphics::RendererAPI::TextureDesc textureDesc = {};
-		textureDesc.Name = TRAP::Utils::String::SplitString(textureLoadDesc.Filepath, '/').back();
+		if(str.empty() || !TRAP::VFS::FileOrFolderExists(str, true) || !TRAP::Image::IsSupportedImageFile(str))
+		{
+			validMultiFileCubemap = false;
+			break;
+		}
+	}
 
-		TRAP::Scope<TRAP::Image> img = TRAP::Image::LoadFromFile(textureLoadDesc.Filepath);
-		
-		textureDesc.Width = img->GetWidth();
-		textureDesc.Height = img->GetHeight();
-		textureDesc.Depth = 1;//img->GetDepth();?!
-		textureDesc.MipLevels = Math::Max(1u, 0u); //Minimum 1 Mip Level
-		textureDesc.Descriptors = RendererAPI::DescriptorType::Texture;
-		textureDesc.SampleCount = RendererAPI::SampleCount::SampleCount1;
-		textureDesc.ArraySize = 1;
+	bool supported = true;
+	if((textureLoadDesc.Filepaths[0].empty() || !TRAP::VFS::FileOrFolderExists(textureLoadDesc.Filepaths[0], true) || !TRAP::Image::IsSupportedImageFile(textureLoadDesc.Filepaths[0])))
+		supported = false;
+	else if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::MultiFile && !validMultiFileCubemap)
+		supported = false;
 
-		if (img->IsHDR() && img->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //Always no Alpha Channel
+	TextureUpdateDescInternal updateDesc = {};
+	TRAP::Graphics::RendererAPI::TextureDesc textureDesc = {};
+	textureDesc.Depth = 1;//images[0]->GetDepth();?!
+	textureDesc.ArraySize = 1;
+	textureDesc.MipLevels = Math::Max(1u, 0u); //Minimum 1 Mip Level
+	textureDesc.Descriptors = RendererAPI::DescriptorType::Texture;
+	textureDesc.SampleCount = RendererAPI::SampleCount::SampleCount1;
+	textureDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::Common;
+	textureDesc.Flags |= textureLoadDesc.CreationFlag;
+
+	if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan && textureLoadDesc.Desc != nullptr)
+			textureDesc.VkSamplerYcbcrConversionInfo = textureLoadDesc.Desc->VkSamplerYcbcrConversionInfo;
+
+	std::array<TRAP::Scope<TRAP::Image>, 6> images{};
+
+	//TODO Mipmapping
+	if(!textureLoadDesc.Filepaths[0].empty() && supported)
+	{
+		textureDesc.Name = TRAP::Utils::String::SplitString(textureLoadDesc.Filepaths[0], '/').back();
+
+		if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::MultiFile)
+		{
+			for(uint32_t i = 0; i < images.size(); ++i)
+				images[i] = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[i]);
+
+			//Validation checks
+			bool valid = true;
+			if(images[0]->GetWidth() != images[0]->GetHeight())
+			{
+				TP_ERROR(Log::TextureCubePrefix, "Images width and height must be the same!");
+				valid = false;
+			}
+			for(uint32_t i = 1; i < images.size(); ++i)
+			{
+				if(!valid)
+					break;
+
+				//Check if every image has the same resolution as image 0
+				if (images[0]->GetWidth() != images[i]->GetWidth() ||
+					images[0]->GetHeight() != images[i]->GetHeight())
+				{
+					TP_ERROR(Log::TextureCubePrefix, "Images have mismatching width and/or height!");
+					valid = false;
+					break;
+				}
+				else if (images[0]->GetColorFormat() != images[i]->GetColorFormat() ||
+					     images[0]->GetBitsPerPixel() != images[i]->GetBitsPerPixel())
+				{
+					TP_ERROR(Log::TextureCubePrefix, "Images have mismatching color formats and/or BPP!");
+					valid = false;
+					break;
+				}
+			}
+
+			if(!valid) //Use FallbackCube
+			{
+				TP_WARN(Log::TextureCubePrefix, "Texture using FallbackCube Texture");
+				textureDesc.Name = "FallbackCube";
+
+				for(uint32_t i = 0; i < images.size(); ++i)
+					images[i] = TRAP::Image::LoadFallback();
+			}
+
+			textureDesc.Width = images[0]->GetWidth();
+			textureDesc.Height = images[0]->GetHeight();
+			textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
+			textureDesc.ArraySize = 6;
+		}
+		else if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::Equirectangular)
+		{
+			//TODO
+			//load image
+			//TODO what now?
+			//set texturedesc
+			//arraysize = 6 ?!
+			//descriptors texture, cubemap
+		}
+		else if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::Cross)
+		{
+			TRAP::Scope<TRAP::Image> baseImg = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[0]);
+
+			bool valid = true;
+			uint32_t faceWidth = 0, faceHeight = 0;
+			if(baseImg->GetWidth() > baseImg->GetHeight()) //Horizontal
+			{
+				if(baseImg->GetWidth() % 4 != 0 || baseImg->GetHeight() % 3 != 0)
+				{
+					valid = false;
+					TP_ERROR(Log::TextureCubePrefix, "Width must be a multiple of 4 & Height must be a multiple of 3!");
+				}
+
+				faceWidth = baseImg->GetWidth() / 4;
+				faceHeight = baseImg->GetHeight() / 3;
+			}
+			else //Vertical
+			{
+				if(baseImg->GetWidth() % 3 != 0 || baseImg->GetHeight() % 4 != 0)
+				{
+					TP_ERROR(Log::TextureCubePrefix, "Width must be a multiple of 3 & Height must be a multiple of 4!");
+					valid = false;
+				}
+
+				faceWidth = baseImg->GetWidth() / 3;
+				faceHeight = baseImg->GetHeight() / 4;
+			}
+
+			if(valid)
+			{
+				if(baseImg->IsHDR())
+					images = SplitImageFromCross<float>(baseImg, faceWidth, faceHeight);
+				else if ((baseImg->IsImageGrayScale() && baseImg->GetBitsPerPixel() == 16 && !baseImg->HasAlphaChannel()) ||
+						(baseImg->IsImageGrayScale() && baseImg->GetBitsPerPixel() == 32 &&  baseImg->HasAlphaChannel()) ||
+						(baseImg->IsImageColored()   && baseImg->GetBitsPerPixel() == 48 && !baseImg->HasAlphaChannel()) ||
+						(baseImg->IsImageColored()   && baseImg->GetBitsPerPixel() == 64 &&  baseImg->HasAlphaChannel()))
+					images = SplitImageFromCross<uint16_t>(baseImg, faceWidth, faceHeight);
+				else
+					images = SplitImageFromCross<uint8_t>(baseImg, faceWidth, faceHeight);
+			}
+			else //Use FallbackCube
+			{
+				TP_WARN(Log::TextureCubePrefix, "Texture using FallbackCube Texture");
+				textureDesc.Name = "FallbackCube";
+
+				for(uint32_t i = 0; i < images.size(); ++i)
+					images[i] = TRAP::Image::LoadFallback();
+			}
+
+			textureDesc.Width = images[0]->GetWidth();
+			textureDesc.Height = images[0]->GetHeight();
+			textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
+			textureDesc.ArraySize = 6;
+		}
+		else //if(!textureLoadDesc.IsCubemap) //Normal Texture
+		{
+			images[0] = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[0]);
+
+			textureDesc.Width = images[0]->GetWidth();
+			textureDesc.Height = images[0]->GetHeight();
+		}
+
+		if (images[0]->IsHDR() && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //Always no Alpha Channel
 			textureDesc.Format = RendererAPI::ImageFormat::R32G32B32A32_SFLOAT;
-		else if(img->IsHDR() && img->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale)
+		else if(images[0]->IsHDR() && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::GrayScale)
 			textureDesc.Format = RendererAPI::ImageFormat::R32_SFLOAT;
-		else if (img->IsImageColored() && img->GetBitsPerPixel() == 64 && img->HasAlphaChannel())
+		else if (images[0]->IsImageColored() && images[0]->GetBitsPerPixel() == 64 && images[0]->HasAlphaChannel())
 			 textureDesc.Format = RendererAPI::ImageFormat::R16G16B16A16_UNORM;
-		else if (img->IsImageColored() && img->GetBitsPerPixel() == 48 && !img->HasAlphaChannel())
+		else if (images[0]->IsImageColored() && images[0]->GetBitsPerPixel() == 48 && !images[0]->HasAlphaChannel())
 			 textureDesc.Format = RendererAPI::ImageFormat::R16G16B16A16_UNORM;
-		else if (img->IsImageColored() && img->GetBitsPerPixel() == 32 && img->HasAlphaChannel())
+		else if (images[0]->IsImageColored() && images[0]->GetBitsPerPixel() == 32 && images[0]->HasAlphaChannel())
 			textureDesc.Format = RendererAPI::ImageFormat::R8G8B8A8_SRGB;
-		else if (img->IsImageGrayScale() && img->GetBitsPerPixel() == 16 && img->HasAlphaChannel())
+		else if (images[0]->IsImageGrayScale() && images[0]->GetBitsPerPixel() == 16 && images[0]->HasAlphaChannel())
 			 textureDesc.Format = RendererAPI::ImageFormat::R8G8_UNORM;
-		else if (img->IsImageGrayScale() && img->GetBitsPerPixel() == 16 && !img->HasAlphaChannel())
+		else if (images[0]->IsImageGrayScale() && images[0]->GetBitsPerPixel() == 16 && !images[0]->HasAlphaChannel())
 			textureDesc.Format = RendererAPI::ImageFormat::R16_UNORM;
-		else if (img->IsImageGrayScale() && img->GetBitsPerPixel() == 8 && !img->HasAlphaChannel())
+		else if (images[0]->IsImageGrayScale() && images[0]->GetBitsPerPixel() == 8 && !images[0]->HasAlphaChannel())
 			textureDesc.Format = RendererAPI::ImageFormat::R8_UNORM;
 		else
 			textureDesc.Format = RendererAPI::ImageFormat::R8G8B8A8_SRGB;
-
-		textureDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::Common;
-		textureDesc.Flags |= textureLoadDesc.CreationFlag;
-
-		if(TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan && textureLoadDesc.Desc != nullptr)
-			textureDesc.VkSamplerYcbcrConversionInfo = textureLoadDesc.Desc->VkSamplerYcbcrConversionInfo;
 
 		//TODO Replace with Texture abstraction
 		TRAP::Graphics::API::VulkanRenderer* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(RendererAPI::GetRenderer().get());
@@ -1065,10 +1189,129 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		updateDesc.BaseArrayLayer = 0;
 		updateDesc.LayerCount = textureDesc.ArraySize;
 
-		return UpdateTexture(activeSet, updateDesc, std::move(img));
+		auto res = UpdateTexture(activeSet, updateDesc, std::move(images));
+
+		return res;
 	}
 
-	return UploadFunctionResult::InvalidRequest;
+	//Fallback to default textures
+	if(!textureLoadDesc.IsCubemap)
+	{
+		textureDesc.Name = "Fallback2D";
+
+		images[0] = TRAP::Image::LoadFallback();
+
+		textureDesc.Width = images[0]->GetWidth();
+		textureDesc.Height = images[0]->GetHeight();
+		textureDesc.Format = RendererAPI::ImageFormat::R8G8B8A8_SRGB;
+	}
+	else
+	{
+		textureDesc.Name = "FallbackCube";
+
+		for(uint32_t i = 0; i < images.size(); ++i)
+			images[i] = TRAP::Image::LoadFallback();
+
+		textureDesc.Width = images[0]->GetWidth();
+		textureDesc.Height = images[0]->GetHeight();
+		textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
+		textureDesc.ArraySize = 6;
+		textureDesc.Format = RendererAPI::ImageFormat::R8G8B8A8_SRGB;
+	}
+
+	//TODO Replace with Texture abstraction
+	TRAP::Graphics::API::VulkanRenderer* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(RendererAPI::GetRenderer().get());
+	*textureLoadDesc.Texture = TRAP::MakeRef<TRAP::Graphics::API::VulkanTexture>(vkRenderer->GetDevice(), textureDesc, vkRenderer->GetVMA());
+
+	updateDesc.Texture = *textureLoadDesc.Texture;
+	updateDesc.BaseMipLevel = 0;
+	updateDesc.MipLevels = textureDesc.MipLevels;
+	updateDesc.BaseArrayLayer = 0;
+	updateDesc.LayerCount = textureDesc.ArraySize;
+
+	return UpdateTexture(activeSet, updateDesc, std::move(images));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename T>
+std::array<TRAP::Scope<TRAP::Image>, 6> TRAP::Graphics::API::ResourceLoader::SplitImageFromCross(const TRAP::Scope<TRAP::Image>& image,
+	const uint32_t faceWidth, const uint32_t faceHeight)
+{
+	bool isHorizontal = image->GetWidth() > image->GetHeight();
+
+	uint32_t stride = image->GetBytesPerPixel();
+	uint32_t face = 0;
+	uint32_t cxLimit = 4, cyLimit = 3;
+	if(!isHorizontal)
+	{
+		cxLimit = 3;
+		cyLimit = 4;
+	}
+
+	std::array<std::vector<T>, 6> cubeTextureData;
+	for(auto& i : cubeTextureData)
+		i.resize(faceWidth * faceHeight * stride);
+
+	for(uint32_t cy = 0; cy < cyLimit; ++cy)
+	{
+		for(uint32_t cx = 0; cx < cxLimit; ++cx)
+		{
+			if((cy == 0 || cy == 2 || cy == 3) && cx != 1)
+				continue;
+
+			for(uint32_t y = 0; y < faceHeight; ++y)
+			{
+				uint32_t offset = y;
+				if(!isHorizontal && face == 5)
+					offset = faceHeight - (y + 1);
+				const uint32_t yp = cy * faceHeight + offset;
+
+				for(uint32_t x = 0; x < faceWidth; ++x)
+				{
+					offset = x;
+					if(!isHorizontal && face == 5)
+						offset = faceWidth - (x + 1);
+					const uint32_t xp = cx * faceWidth + offset;
+					switch(stride)
+					{
+					case 1:
+						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 0];
+						break;
+
+					case 2:
+						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 0];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 1];
+						break;
+
+					case 3:
+						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 0];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 1];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 2];
+						break;
+
+					case 4:
+						cubeTextureData[face][(x + y * faceWidth) * stride + 0] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 0];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 1] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 1];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 2] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 2];
+						cubeTextureData[face][(x + y * faceWidth) * stride + 3] = static_cast<const T*>(image->GetPixelData())[(xp + yp * image->GetWidth()) * stride + 3];
+						break;
+
+					default:
+						break;
+					}
+				}
+			}
+			++face;
+		}
+	}
+
+	std::array<TRAP::Scope<TRAP::Image>, 6> images{};
+
+	for(uint32_t i = 0; i < images.size(); ++i)
+		images[i] = TRAP::Image::LoadFromMemory(faceWidth, faceHeight, image->GetColorFormat(), cubeTextureData[i]);
+
+	return images;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

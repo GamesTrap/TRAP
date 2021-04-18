@@ -12,6 +12,7 @@
 #include "Utils/Hash/ConvertHashToString.h"
 
 TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
+	: m_data(), m_data2Byte()
 {
 	TP_PROFILE_FUNCTION();
 

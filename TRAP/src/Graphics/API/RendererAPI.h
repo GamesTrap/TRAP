@@ -833,6 +833,13 @@ namespace TRAP::Graphics
 			MAX_LOAD_ACTION_TYPE
 		};
 
+		enum class TextureCubeType
+		{
+			MultiFile,
+			Cross,
+			Equirectangular
+		};
+
 		enum class SampleCount
 		{
 			SampleCount1 = 1,
@@ -1563,10 +1570,14 @@ namespace TRAP::Graphics
 			//Load empty texture
 			TRAP::Ref<TextureDesc> Desc;
 			//Filepath with extension.
-			std::string Filepath;
+			std::array<std::string, 6> Filepaths;
 			//Following is ignored if Desc != nullptr.
 			//Desc->Flags will be considered instead.
 			TextureCreationFlags CreationFlag;
+			//Is Texture cubemap?
+			bool IsCubemap;
+			//Type of cubemap texture
+			TextureCubeType Type;
 		};
 
 		//Data structure holding necessary info to create a Buffer
