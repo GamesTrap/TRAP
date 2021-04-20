@@ -1797,3 +1797,7 @@ SITREP 04/18/2021|21w15b1
 SITREP 04/18/2021|21w15c1
     - Changed TRAP Engine version to 21w15c1(0.7.36)
     - Updated ControllerMappings (PS5 support) ~<5 mins
+
+SITREP 04/20/2021|21w16a1
+    - Changed TRAP Engine version to 21w16a1(0.7.37)
+    - Added auto generator for ControllerMappings (premake5/lua) ~>30 mins

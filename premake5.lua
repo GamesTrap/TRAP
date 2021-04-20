@@ -1,3 +1,5 @@
+require "GenerateControllerMappings"
+
 workspace "TRAP"
 	architecture "x86_64"
 	startproject "Sandbox"

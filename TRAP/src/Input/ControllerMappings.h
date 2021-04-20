@@ -25,7 +25,7 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 //Updates can be found at: https://github.com/spurious/SDL-mirror/commits/master/src/joystick/SDL_gamecontrollerdb.h
-//Modified by Jan "GamesTrap" Schuerkamp 2020-02-10
+//Modified by Jan "GamesTrap" Schuerkamp 2021-04-20
 
 namespace TRAP::Embed
 {
