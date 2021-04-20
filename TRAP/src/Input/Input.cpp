@@ -618,7 +618,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 		TP_ERROR(Log::InputControllerPrefix, "Map is empty!");
 		return false;
 	}
-	if (splittedString.size() > 24)
+	if (splittedString.size() > 25)
 	{
 		TP_ERROR(Log::InputControllerPrefix, "Map has too many elements! There must be less than 24 elements!");
 		return false;
@@ -635,47 +635,60 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 		TP_ERROR(Log::InputControllerPrefix, "Mapping GUID can't be empty!");
 		return false;
 	}
-	mapping.guid = splittedString[0] + '\0';
+	mapping.guid = splittedString[0];
 	
 	if(splittedString[1].empty())
 	{
 		TP_ERROR(Log::InputControllerPrefix, "Mapping Name can't be empty!");
 		return false;
 	}
-	mapping.Name = splittedString[1] + '\0';
+	mapping.Name = splittedString[1];
 
 	for (uint8_t i = 2; i < splittedString.size();) //Start after Mapping Name
 	{
 		std::vector<std::string> splittedField = Utils::String::SplitString(splittedString[i] + ':', ':');
 		if (splittedField.empty())
 		{
-			TP_ERROR(Log::InputControllerPrefix, "Field can't be empty!");
+			TP_ERROR(Log::InputControllerPrefix, "Field can't be empty! Mapping: ", splittedString[1]);
 			return false;
 		}
 		if (splittedField.size() < 2)
 		{
-			TP_ERROR(Log::InputControllerPrefix, "Too few elements inside field: ", i, "!");
+			TP_ERROR(Log::InputControllerPrefix, "Too few elements inside field: ", static_cast<uint32_t>(i), "! Mapping: ", splittedString[1]);
 			return false;
 		}
 		if (splittedField.size() > 2)
 		{
-			TP_ERROR(Log::InputControllerPrefix, "Too many elements inside field: ", i, "!");
+			TP_ERROR(Log::InputControllerPrefix, "Too many elements inside field: ", static_cast<uint32_t>(i), "! Mapping: ", splittedString[1]);
 			return false;
 		}
 
 		for (const auto& c : splittedField[0])
-			if (!std::isalnum(static_cast<int8_t>(c)))
+		{
+			if(c == '+' || c == '-')
 			{
-				TP_ERROR(Log::InputControllerPrefix, "Invalid char inside field: ", i, "!");
+				TP_WARN(Log::InputControllerPrefix, "Controller Mapping output modifiers WIP! Mapping: ", splittedString[1]);
 				return false;
 			}
+			else if (!std::isalnum(static_cast<int8_t>(c)))
+			{
+				TP_ERROR(Log::InputControllerPrefix, "Invalid char inside field: ", static_cast<uint32_t>(i), "! Mapping: ", splittedString[1]);
+				return false;
+			}
+		}
 
+		bool found = false;
 		uint8_t j;
 		for (j = 0; j < fields.size(); j++)
+		{
 			if (fields[j].Name == splittedField[0])
+			{
+				found = true;
 				break;
+			}
+		}
 
-		if(fields[j].Element)
+		if(fields[j].Element && found)
 		{
 			MapElement* e = fields[j].Element;
 			int8_t minimum = -1;

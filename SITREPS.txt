@@ -1793,3 +1793,7 @@ SITREP 04/18/2021|21w15b1
     - ResourceLoader Added SplitImageFromCross for cubemaps ~<30 mins
     - ResourceLoader Added support for Horizontal/Vertical-Cross Cubemap Textures ~>60 mins
     - ResourceLoader Added support for Multi-File Cubemap Textures ~>30 mins
+
+SITREP 04/18/2021|21w15c1
+    - Changed TRAP Engine version to 21w15c1(0.7.36)
+    - Updated ControllerMappings (PS5 support) ~<5 mins
