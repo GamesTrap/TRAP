@@ -81,12 +81,12 @@ void VulkanTests::OnAttach()
 	samplerDesc.AddressU = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
 	samplerDesc.AddressV = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
 	samplerDesc.AddressW = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
-	samplerDesc.MagFilter = TRAP::Graphics::RendererAPI::FilterType::Nearest;
-	samplerDesc.MinFilter = TRAP::Graphics::RendererAPI::FilterType::Nearest;
+	samplerDesc.MagFilter = TRAP::Graphics::RendererAPI::FilterType::Linear;
+	samplerDesc.MinFilter = TRAP::Graphics::RendererAPI::FilterType::Linear;
 	samplerDesc.MaxAnisotropy = 0.0f;
 	samplerDesc.CompareFunc = TRAP::Graphics::RendererAPI::CompareMode::Always;
 	samplerDesc.MipLodBias = 0.0f;
-	samplerDesc.MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode::Nearest;
+	samplerDesc.MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode::Linear;
 	m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
 
 	//////////////////////////////////////
@@ -101,10 +101,9 @@ void VulkanTests::OnAttach()
 	//Load Texture
 	TRAP::VFS::MountTextures("Assets/Textures");
 	TRAP::Graphics::RendererAPI::TextureLoadDesc textureLoadDesc{};
-	textureLoadDesc.Filepaths[0] = "/Textures/PNG/Test24BPPSmaller.png";
+	textureLoadDesc.Filepaths[0] = "/Textures/testequi.png";
 	TRAP::Graphics::API::SyncToken token;
 	textureLoadDesc.Texture = &m_testTexture;
-	textureLoadDesc.IsCubemap = false;
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(textureLoadDesc, nullptr);
 
 	//TODO Test Runtime Texture Update

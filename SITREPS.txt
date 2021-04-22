@@ -1801,3 +1801,7 @@ SITREP 04/18/2021|21w15c1
 SITREP 04/20/2021|21w16a1
     - Changed TRAP Engine version to 21w16a1(0.7.37)
     - Added auto generator for ControllerMappings (premake5/lua) ~>30 mins
+
+SITREP 04/22/2021|21w16b1
+    - Changed TRAP Engine version to 21w16b1(0.7.38)
+    - Added mipmap creation for Vulkan API (vkCmdBlitImage) ~>50 mins

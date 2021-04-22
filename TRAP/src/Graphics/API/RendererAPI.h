@@ -837,7 +837,8 @@ namespace TRAP::Graphics
 		{
 			MultiFile,
 			Cross,
-			Equirectangular
+			//TODO
+			//Equirectangular
 		};
 
 		enum class SampleCount

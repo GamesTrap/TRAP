@@ -9,6 +9,11 @@
 #include "Utils/String/String.h"
 #include "VFS/VFS.h"
 
+#include "Vulkan/VulkanCommon.h"
+#include "Vulkan/Objects/VulkanDevice.h"
+#include "Vulkan/Objects/VulkanPhysicalDevice.h"
+#include "Vulkan/Objects/VulkanCommandBuffer.h"
+
 TRAP::Graphics::RendererAPI::ResourceLoaderDesc TRAP::Graphics::API::ResourceLoader::DefaultResourceLoaderDesc{8ull << 20, 2};
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -684,7 +689,9 @@ void TRAP::Graphics::API::ResourceLoader::FreeAllUploadMemory()
 
 void TRAP::Graphics::API::ResourceLoader::SetupCopyEngine()
 {
-	const RendererAPI::QueueDesc desc{ RendererAPI::QueueType::Transfer, RendererAPI::QueueFlag::None, RendererAPI::QueuePriority::Normal };
+	//TODO Change after Mipmapping uses compute shaders (and equirectangular images)
+	//const RendererAPI::QueueDesc desc{ RendererAPI::QueueType::Transfer, RendererAPI::QueueFlag::None, RendererAPI::QueuePriority::Normal };
+	const RendererAPI::QueueDesc desc{ RendererAPI::QueueType::Graphics, RendererAPI::QueueFlag::None, RendererAPI::QueuePriority::Normal };
 	m_copyEngine.Queue = Queue::Create(desc);
 
 	constexpr uint64_t maxBlockSize = 32;
@@ -898,21 +905,27 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	if(!upload.Data)
 		return UploadFunctionResult::StagingBufferFull;
 
-	uint32_t firstStart = textureUpdateDesc.MipsAfterSlice ? textureUpdateDesc.BaseMipLevel : textureUpdateDesc.BaseArrayLayer;
-	uint32_t firstEnd = textureUpdateDesc.MipsAfterSlice ? (textureUpdateDesc.BaseMipLevel + textureUpdateDesc.MipLevels) : (textureUpdateDesc.BaseArrayLayer + textureUpdateDesc.LayerCount);
-	uint32_t secondStart = textureUpdateDesc.MipsAfterSlice ? textureUpdateDesc.BaseArrayLayer : textureUpdateDesc.BaseMipLevel;
-	uint32_t secondEnd = textureUpdateDesc.MipsAfterSlice ? (textureUpdateDesc.BaseArrayLayer + textureUpdateDesc.LayerCount) : (textureUpdateDesc.BaseMipLevel + textureUpdateDesc.MipLevels);
+	// uint32_t firstStart = textureUpdateDesc.MipsAfterSlice ? textureUpdateDesc.BaseMipLevel : textureUpdateDesc.BaseArrayLayer;
+	// uint32_t firstEnd = textureUpdateDesc.MipsAfterSlice ? (textureUpdateDesc.BaseMipLevel + textureUpdateDesc.MipLevels) : (textureUpdateDesc.BaseArrayLayer + textureUpdateDesc.LayerCount);
+	// uint32_t secondStart = textureUpdateDesc.MipsAfterSlice ? textureUpdateDesc.BaseArrayLayer : textureUpdateDesc.BaseMipLevel;
+	// uint32_t secondEnd = textureUpdateDesc.MipsAfterSlice ? (textureUpdateDesc.BaseArrayLayer + textureUpdateDesc.LayerCount) : (textureUpdateDesc.BaseMipLevel + textureUpdateDesc.MipLevels);
 
-	for(uint32_t j = firstStart; j < firstEnd; ++j)
-	{
-		for(uint32_t i = secondStart; i < secondEnd; ++i)
+	// for(uint32_t j = firstStart; j < firstEnd; ++j)
+	// {
+	// 	for(uint32_t i = secondStart; i < secondEnd; ++i)
+	// 	{
+			//uint32_t mip = textureUpdateDesc.MipsAfterSlice ? j : i;
+			//uint32_t layer = textureUpdateDesc.MipsAfterSlice ? i : j;
+		for(uint32_t i = 0; i < textureUpdateDesc.LayerCount; ++i)
 		{
-			uint32_t mip = textureUpdateDesc.MipsAfterSlice ? j : i;
-			uint32_t layer = textureUpdateDesc.MipsAfterSlice ? i : j;
+			uint32_t layer = i;
 
-			uint32_t w = Math::Max(1u, (texture->GetWidth() >> mip));
-			uint32_t h = Math::Max(1u, (texture->GetHeight() >> mip));
-			uint32_t d = Math::Max(1u, (texture->GetDepth() >> mip));
+			// uint32_t w = Math::Max(1u, (texture->GetWidth() >> mip));
+			// uint32_t h = Math::Max(1u, (texture->GetHeight() >> mip));
+			// uint32_t d = Math::Max(1u, (texture->GetDepth() >> mip));
+			uint32_t w = Math::Max(1u, texture->GetWidth());
+			uint32_t h = Math::Max(1u, texture->GetHeight());
+			uint32_t d = Math::Max(1u, texture->GetDepth());
 
 			uint32_t numBytes = 0;
 			uint32_t rowBytes = 0;
@@ -975,7 +988,8 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 			RendererAPI::SubresourceDataDesc subresourceDesc = {};
 			subresourceDesc.ArrayLayer = layer;
-			subresourceDesc.MipLevel = mip;
+			//subresourceDesc.MipLevel = mip;
+			subresourceDesc.MipLevel = 0;
 			subresourceDesc.SrcOffset = upload.Offset + offset;
 			if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
 			{
@@ -985,6 +999,71 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 			cmd->UpdateSubresource(texture, upload.Buffer, subresourceDesc);
 			offset += subDepth * subSlicePitch;
+		}
+	// 	}
+	// }
+
+	//TODO Make API independent (Compute Shader approach)
+	if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
+	{
+		//Mipmapping via vkCmdBlitImage
+
+		//Check if image format supports linear blitting
+		VkFormatProperties formatProperties;
+		TRAP::Graphics::API::VulkanRenderer* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(RendererAPI::GetRenderer().get());
+		vkGetPhysicalDeviceFormatProperties(vkRenderer->GetDevice()->GetPhysicalDevice()->GetVkPhysicalDevice(),
+			TRAP::Graphics::API::ImageFormatToVkFormat(texture->GetImageFormat()), &formatProperties);
+
+		if(!(formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT))
+		{
+			TRAP_ASSERT(false, "Texture image format does not support linear blitting!");
+		}
+
+		RendererAPI::TextureBarrier barrier{};
+		barrier.Texture = texture;
+		barrier.ArrayLayer = 0;
+		barrier.SubresourceBarrier = true;
+
+		int32_t mipWidth = texture->GetWidth();
+		int32_t mipHeight = texture->GetHeight();
+
+		for(uint32_t i = 1; i < texture->GetMipLevels(); ++i)
+		{
+			barrier.MipLevel = i - 1;
+			barrier.CurrentState = RendererAPI::ResourceState::CopyDestination;
+			barrier.NewState = RendererAPI::ResourceState::CopySource;
+
+			cmd->ResourceBarrier({}, {barrier}, {});
+
+			VkImageBlit blit{};
+			blit.srcOffsets[0] = {0, 0, 0};
+			blit.srcOffsets[1] = {mipWidth, mipHeight, 1};
+			blit.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			blit.srcSubresource.mipLevel = i - 1;
+			blit.srcSubresource.baseArrayLayer = 0;
+			blit.srcSubresource.layerCount = 1;
+			blit.dstOffsets[0] = {0, 0, 0,};
+			blit.dstOffsets[1] = {mipWidth > 1 ? mipWidth / 2 : 1, mipHeight > 1 ? mipHeight / 2 : 1, 1};
+			blit.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			blit.dstSubresource.mipLevel = i;
+			blit.dstSubresource.baseArrayLayer = 0;
+			blit.dstSubresource.layerCount = 1;
+
+			vkCmdBlitImage(dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(cmd)->GetVkCommandBuffer(),
+				texture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+				texture->GetVkImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+				1, &blit,
+				VK_FILTER_LINEAR);
+
+			barrier.CurrentState = RendererAPI::ResourceState::CopySource;
+			barrier.NewState = RendererAPI::ResourceState::CopyDestination;
+
+			cmd->ResourceBarrier({}, {barrier}, {});
+
+			if(mipWidth > 1)
+				mipWidth /= 2;
+			if(mipHeight > 1)
+				mipHeight /= 2;
 		}
 	}
 
@@ -1024,7 +1103,6 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	TRAP::Graphics::RendererAPI::TextureDesc textureDesc = {};
 	textureDesc.Depth = 1;//images[0]->GetDepth();?!
 	textureDesc.ArraySize = 1;
-	textureDesc.MipLevels = Math::Max(1u, 0u); //Minimum 1 Mip Level
 	textureDesc.Descriptors = RendererAPI::DescriptorType::Texture;
 	textureDesc.SampleCount = RendererAPI::SampleCount::SampleCount1;
 	textureDesc.StartState = TRAP::Graphics::RendererAPI::ResourceState::Common;
@@ -1035,7 +1113,8 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 	std::array<TRAP::Scope<TRAP::Image>, 6> images{};
 
-	//TODO Mipmapping
+	//TODO Mipmapping via Compute Shader
+	//https://github.com/GPUOpen-Effects/FidelityFX-SPD/blob/master/sample/src/VK/CSDownsampler.glsl
 	if(!textureLoadDesc.Filepaths[0].empty() && supported)
 	{
 		textureDesc.Name = TRAP::Utils::String::SplitString(textureLoadDesc.Filepaths[0], '/').back();
@@ -1087,8 +1166,9 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			textureDesc.Height = images[0]->GetHeight();
 			textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
 			textureDesc.ArraySize = 6;
+			textureDesc.MipLevels = Math::Max(1u, static_cast<uint32_t>(Math::Floor(Math::Log2(Math::Max(static_cast<float>(textureDesc.Width), static_cast<float>(textureDesc.Height))))) + 1); //Minimum 1 Mip Level
 		}
-		else if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::Equirectangular)
+		/*else if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::Equirectangular)
 		{
 			//TODO
 			//load image
@@ -1096,7 +1176,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			//set texturedesc
 			//arraysize = 6 ?!
 			//descriptors texture, cubemap
-		}
+		}*/
 		else if(textureLoadDesc.IsCubemap && textureLoadDesc.Type == RendererAPI::TextureCubeType::Cross)
 		{
 			TRAP::Scope<TRAP::Image> baseImg = TRAP::Image::LoadFromFile(textureLoadDesc.Filepaths[0]);
@@ -1151,6 +1231,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 			textureDesc.Height = images[0]->GetHeight();
 			textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
 			textureDesc.ArraySize = 6;
+			textureDesc.MipLevels = Math::Max(1u, static_cast<uint32_t>(Math::Floor(Math::Log2(Math::Max(static_cast<float>(textureDesc.Width), static_cast<float>(textureDesc.Height))))) + 1); //Minimum 1 Mip Level
 		}
 		else //if(!textureLoadDesc.IsCubemap) //Normal Texture
 		{
@@ -1158,6 +1239,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 			textureDesc.Width = images[0]->GetWidth();
 			textureDesc.Height = images[0]->GetHeight();
+			textureDesc.MipLevels = Math::Max(1u, static_cast<uint32_t>(Math::Floor(Math::Log2(Math::Max(static_cast<float>(textureDesc.Width), static_cast<float>(textureDesc.Height))))) + 1); //Minimum 1 Mip Level
 		}
 
 		if (images[0]->IsHDR() && images[0]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //Always no Alpha Channel
@@ -1169,7 +1251,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		else if (images[0]->IsImageColored() && images[0]->GetBitsPerPixel() == 48 && !images[0]->HasAlphaChannel())
 			 textureDesc.Format = RendererAPI::ImageFormat::R16G16B16A16_UNORM;
 		else if (images[0]->IsImageColored() && images[0]->GetBitsPerPixel() == 32 && images[0]->HasAlphaChannel())
-			textureDesc.Format = RendererAPI::ImageFormat::R8G8B8A8_SRGB;
+			textureDesc.Format = RendererAPI::ImageFormat::R8G8B8A8_UNORM;
 		else if (images[0]->IsImageGrayScale() && images[0]->GetBitsPerPixel() == 16 && images[0]->HasAlphaChannel())
 			 textureDesc.Format = RendererAPI::ImageFormat::R8G8_UNORM;
 		else if (images[0]->IsImageGrayScale() && images[0]->GetBitsPerPixel() == 16 && !images[0]->HasAlphaChannel())
@@ -1177,7 +1259,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		else if (images[0]->IsImageGrayScale() && images[0]->GetBitsPerPixel() == 8 && !images[0]->HasAlphaChannel())
 			textureDesc.Format = RendererAPI::ImageFormat::R8_UNORM;
 		else
-			textureDesc.Format = RendererAPI::ImageFormat::R8G8B8A8_SRGB;
+			textureDesc.Format = RendererAPI::ImageFormat::R8G8B8A8_UNORM;
 
 		//TODO Replace with Texture abstraction
 		TRAP::Graphics::API::VulkanRenderer* vkRenderer = dynamic_cast<TRAP::Graphics::API::VulkanRenderer*>(RendererAPI::GetRenderer().get());
@@ -1189,9 +1271,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		updateDesc.BaseArrayLayer = 0;
 		updateDesc.LayerCount = textureDesc.ArraySize;
 
-		auto res = UpdateTexture(activeSet, updateDesc, std::move(images));
-
-		return res;
+		return UpdateTexture(activeSet, updateDesc, std::move(images));
 	}
 
 	//Fallback to default textures
@@ -1204,6 +1284,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		textureDesc.Width = images[0]->GetWidth();
 		textureDesc.Height = images[0]->GetHeight();
 		textureDesc.Format = RendererAPI::ImageFormat::R8G8B8A8_SRGB;
+		textureDesc.MipLevels = Math::Max(1u, static_cast<uint32_t>(Math::Floor(Math::Log2(Math::Max(static_cast<float>(textureDesc.Width), static_cast<float>(textureDesc.Height))))) + 1); //Minimum 1 Mip Level
 	}
 	else
 	{
@@ -1217,6 +1298,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		textureDesc.Descriptors |= RendererAPI::DescriptorType::TextureCube;
 		textureDesc.ArraySize = 6;
 		textureDesc.Format = RendererAPI::ImageFormat::R8G8B8A8_SRGB;
+		textureDesc.MipLevels = Math::Max(1u, static_cast<uint32_t>(Math::Floor(Math::Log2(Math::Max(static_cast<float>(textureDesc.Width), static_cast<float>(textureDesc.Height))))) + 1); //Minimum 1 Mip Level
 	}
 
 	//TODO Replace with Texture abstraction
