@@ -1805,3 +1805,14 @@ SITREP 04/20/2021|21w16a1
 SITREP 04/22/2021|21w16b1
     - Changed TRAP Engine version to 21w16b1(0.7.38)
     - Added mipmap creation for Vulkan API (vkCmdBlitImage) ~>50 mins
+    - Sampler Added ability to force a specific mip level ~<10 mins
+    - VulkanTests Splitted Texture related stuff into own VulkanTextureTests ~<30 mins
+
+SITREP 04/29/2021|21w17a1
+    - Changed TRAP Engine version to 21w17a1(0.7.39)
+    - Added project generation scripts ~<20 mins
+    - Added controller mapping generation script ~<5 mins
+    - Added documentation generation script ~>60 mins
+    - Updated README ~<10 mins
+    - Updated Controller Mappings ~<5 mins
+    - Regenerated documentation ~<5 mins

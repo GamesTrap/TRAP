@@ -1,6 +1,22 @@
 var searchData=
 [
-  ['udpsocket_547',['UDPSocket',['../class_t_r_a_p_1_1_network_1_1_u_d_p_socket.html',1,'TRAP::Network']]],
-  ['udpsocketipv6_548',['UDPSocketIPv6',['../class_t_r_a_p_1_1_network_1_1_u_d_p_socket_i_pv6.html',1,'TRAP::Network']]],
-  ['uniformbuffer_549',['UniformBuffer',['../class_t_r_a_p_1_1_graphics_1_1_uniform_buffer.html',1,'TRAP::Graphics']]]
+  ['radianceimage_956',['RadianceImage',['../class_t_r_a_p_1_1_i_n_t_e_r_n_a_l_1_1_radiance_image.html',1,'TRAP::INTERNAL']]],
+  ['rasterizerstatedesc_957',['RasterizerStateDesc',['../struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_rasterizer_state_desc.html',1,'TRAP::Graphics::RendererAPI']]],
+  ['raytracingpipelinedesc_958',['RayTracingPipelineDesc',['../struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_ray_tracing_pipeline_desc.html',1,'TRAP::Graphics::RendererAPI']]],
+  ['readrange_959',['ReadRange',['../struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_read_range.html',1,'TRAP::Graphics::RendererAPI']]],
+  ['rendercommand_960',['RenderCommand',['../class_t_r_a_p_1_1_graphics_1_1_render_command.html',1,'TRAP::Graphics']]],
+  ['renderer_961',['Renderer',['../class_t_r_a_p_1_1_graphics_1_1_renderer.html',1,'TRAP::Graphics']]],
+  ['renderer2d_962',['Renderer2D',['../class_t_r_a_p_1_1_graphics_1_1_renderer2_d.html',1,'TRAP::Graphics']]],
+  ['rendererapi_963',['RendererAPI',['../class_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i.html',1,'TRAP::Graphics']]],
+  ['renderpassdesc_964',['RenderPassDesc',['../struct_t_r_a_p_1_1_graphics_1_1_a_p_i_1_1_vulkan_renderer_1_1_render_pass_desc.html',1,'TRAP::Graphics::API::VulkanRenderer']]],
+  ['rendertarget_965',['RenderTarget',['../class_t_r_a_p_1_1_graphics_1_1_render_target.html',1,'TRAP::Graphics']]],
+  ['rendertargetbarrier_966',['RenderTargetBarrier',['../struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_render_target_barrier.html',1,'TRAP::Graphics::RendererAPI']]],
+  ['rendertargetdesc_967',['RenderTargetDesc',['../struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_render_target_desc.html',1,'TRAP::Graphics::RendererAPI']]],
+  ['request_968',['Request',['../class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_request.html',1,'TRAP::Network::HTTP']]],
+  ['resource_969',['Resource',['../struct_t_r_a_p_1_1_graphics_1_1_a_p_i_1_1_s_p_i_r_v_tools_1_1_resource.html',1,'TRAP::Graphics::API::SPIRVTools']]],
+  ['resourceloader_970',['ResourceLoader',['../class_t_r_a_p_1_1_graphics_1_1_a_p_i_1_1_resource_loader.html',1,'TRAP::Graphics::API']]],
+  ['resourceloaderdesc_971',['ResourceLoaderDesc',['../struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_resource_loader_desc.html',1,'TRAP::Graphics::RendererAPI']]],
+  ['response_972',['Response',['../class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html',1,'TRAP::Network::FTP::Response'],['../class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html',1,'TRAP::Network::HTTP::Response']]],
+  ['rootsignature_973',['RootSignature',['../class_t_r_a_p_1_1_graphics_1_1_root_signature.html',1,'TRAP::Graphics']]],
+  ['rootsignaturedesc_974',['RootSignatureDesc',['../struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_root_signature_desc.html',1,'TRAP::Graphics::RendererAPI']]]
 ];

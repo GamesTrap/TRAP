@@ -181,3 +181,4 @@ Games/TRAPNES
 premake5Private.lua
 *.make
 *.code-workspace
+!/GeneratorScripts/**

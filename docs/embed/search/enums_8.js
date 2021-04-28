@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['transfermode_982',['TransferMode',['../class_t_r_a_p_1_1_network_1_1_f_t_p.html#ac635a0370335159c4d2f397f7c3b531f',1,'TRAP::Network::FTP']]],
-  ['type_983',['Type',['../class_t_r_a_p_1_1_network_1_1_socket.html#a0bf42978715a480dfdec1f8256aa378f',1,'TRAP::Network::Socket']]]
+  ['status_1693',['Status',['../class_t_r_a_p_1_1_network_1_1_f_t_p_1_1_response.html#ab74ad9610943d5c57a843cd3886f93c1',1,'TRAP::Network::FTP::Response::Status()'],['../class_t_r_a_p_1_1_network_1_1_h_t_t_p_1_1_response.html#aa676f65ee242f56231f3f741cf3e6661',1,'TRAP::Network::HTTP::Response::Status()'],['../class_t_r_a_p_1_1_network_1_1_socket.html#a5b9431e417a9ed2b13b121462e9f0f77',1,'TRAP::Network::Socket::Status()']]]
 ];

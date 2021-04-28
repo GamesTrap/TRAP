@@ -18,19 +18,18 @@ First clone the repository with `git clone --recursive https://github.com/GamesT
 
 TRAP uses _Premake 5_ as a build generation tool. Follow [these](https://premake.github.io/download.html) instructions in order to install it.
 
-Then, follow the steps relevant to your operating system.
+Then, execute one of the generator scripts in the GeneratorScripts folder.
 
-### Windows
+## Updating Controller Mappings
 
-Premake can generate project files for several Visual Studio versions.
-For example, run `premake vs2019` to generate the `.sln` and `.vcxproj` files for Visual Studio 2019.
+To update the controller mappings run the `GenerateControllerMappings` file from the GeneratorScripts folder.
 
-### Linux
+## Documentation
 
-Premake can generate makefile project files.
-For example, run `premake gmake2` to generate the `Makefile` files.
+Make sure you have [Doxygen](https://www.doxygen.nl/download.html) & [Python3](https://www.python.org/downloads/) installed.
+To generate the documentation run the `GenerateDocumentation` file from the GeneratorScripts folder.
 
-## 3rd Party Libraries used by TRAP Engine:
+## 3rd Party Libraries used by TRAP Engine
 
 - [ImGui](https://github.com/GamesTrap/imgui)
 - [VulkanSDK](https://vulkan.lunarg.com/sdk/home)

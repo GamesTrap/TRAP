@@ -1,11 +1,22 @@
 var searchData=
 [
-  ['camera_469',['Camera',['../class_t_r_a_p_1_1_graphics_1_1_camera.html',1,'TRAP::Graphics']]],
-  ['changeresult_470',['ChangeResult',['../struct_t_r_a_p_1_1_utils_1_1_debug_1_1_instrumentor_utils_1_1_change_result.html',1,'TRAP::Utils::Debug::InstrumentorUtils']]],
-  ['config_471',['Config',['../class_t_r_a_p_1_1_utils_1_1_config.html',1,'TRAP::Utils']]],
-  ['context_472',['Context',['../class_t_r_a_p_1_1_graphics_1_1_a_p_i_1_1_context.html',1,'TRAP::Graphics::API']]],
-  ['controllerconnectevent_473',['ControllerConnectEvent',['../class_t_r_a_p_1_1_events_1_1_controller_connect_event.html',1,'TRAP::Events']]],
-  ['controllerdisconnectevent_474',['ControllerDisconnectEvent',['../class_t_r_a_p_1_1_events_1_1_controller_disconnect_event.html',1,'TRAP::Events']]],
-  ['controllerevent_475',['ControllerEvent',['../class_t_r_a_p_1_1_events_1_1_controller_event.html',1,'TRAP::Events']]],
-  ['cpuinfo_476',['CPUInfo',['../struct_t_r_a_p_1_1_c_p_u_info.html',1,'TRAP']]]
+  ['camera_835',['Camera',['../class_t_r_a_p_1_1_graphics_1_1_camera.html',1,'TRAP::Graphics']]],
+  ['cameracomponent_836',['CameraComponent',['../struct_t_r_a_p_1_1_camera_component.html',1,'TRAP']]],
+  ['changeresult_837',['ChangeResult',['../struct_t_r_a_p_1_1_utils_1_1_debug_1_1_instrumentor_utils_1_1_change_result.html',1,'TRAP::Utils::Debug::InstrumentorUtils']]],
+  ['clearvalue_838',['ClearValue',['../union_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_clear_value.html',1,'TRAP::Graphics::RendererAPI']]],
+  ['commandbuffer_839',['CommandBuffer',['../class_t_r_a_p_1_1_graphics_1_1_command_buffer.html',1,'TRAP::Graphics']]],
+  ['commandpool_840',['CommandPool',['../class_t_r_a_p_1_1_graphics_1_1_command_pool.html',1,'TRAP::Graphics']]],
+  ['commandpooldesc_841',['CommandPoolDesc',['../struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_command_pool_desc.html',1,'TRAP::Graphics::RendererAPI']]],
+  ['commandsignature_842',['CommandSignature',['../class_t_r_a_p_1_1_graphics_1_1_command_signature.html',1,'TRAP::Graphics']]],
+  ['commandsignaturedesc_843',['CommandSignatureDesc',['../struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_command_signature_desc.html',1,'TRAP::Graphics::RendererAPI']]],
+  ['common_844',['Common',['../struct_t_r_a_p_1_1_utils_1_1_i_n_t_e_r_n_a_l_1_1_common.html',1,'TRAP::Utils::INTERNAL']]],
+  ['computepipelinedesc_845',['ComputePipelineDesc',['../struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_compute_pipeline_desc.html',1,'TRAP::Graphics::RendererAPI']]],
+  ['config_846',['Config',['../class_t_r_a_p_1_1_utils_1_1_config.html',1,'TRAP::Utils']]],
+  ['controllerconnectevent_847',['ControllerConnectEvent',['../class_t_r_a_p_1_1_events_1_1_controller_connect_event.html',1,'TRAP::Events']]],
+  ['controllerdisconnectevent_848',['ControllerDisconnectEvent',['../class_t_r_a_p_1_1_events_1_1_controller_disconnect_event.html',1,'TRAP::Events']]],
+  ['controllerevent_849',['ControllerEvent',['../class_t_r_a_p_1_1_events_1_1_controller_event.html',1,'TRAP::Events']]],
+  ['copyresourceset_850',['CopyResourceSet',['../struct_t_r_a_p_1_1_graphics_1_1_a_p_i_1_1_resource_loader_1_1_copy_engine_1_1_copy_resource_set.html',1,'TRAP::Graphics::API::ResourceLoader::CopyEngine']]],
+  ['cpuinfo_851',['CPUInfo',['../struct_t_r_a_p_1_1_c_p_u_info.html',1,'TRAP']]],
+  ['crosscompiler_852',['CrossCompiler',['../struct_t_r_a_p_1_1_graphics_1_1_a_p_i_1_1_s_p_i_r_v_tools_1_1_cross_compiler.html',1,'TRAP::Graphics::API::SPIRVTools']]],
+  ['customimage_853',['CustomImage',['../class_t_r_a_p_1_1_i_n_t_e_r_n_a_l_1_1_custom_image.html',1,'TRAP::INTERNAL']]]
 ];

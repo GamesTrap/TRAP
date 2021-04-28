@@ -1,4 +1,5 @@
-require "GenerateControllerMappings"
+require "generatecontrollermappings"
+require "generatedocs"
 
 workspace "TRAP"
 	architecture "x86_64"

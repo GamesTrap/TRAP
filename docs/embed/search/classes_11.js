@@ -1,11 +1,25 @@
 var searchData=
 [
-  ['vec_550',['Vec',['../struct_t_r_a_p_1_1_math_1_1_vec.html',1,'TRAP::Math']]],
-  ['vec_3c_202_2c_20t_20_3e_551',['Vec&lt; 2, T &gt;',['../struct_t_r_a_p_1_1_math_1_1_vec_3_012_00_01_t_01_4.html',1,'TRAP::Math']]],
-  ['vec_3c_203_2c_20t_20_3e_552',['Vec&lt; 3, T &gt;',['../struct_t_r_a_p_1_1_math_1_1_vec_3_013_00_01_t_01_4.html',1,'TRAP::Math']]],
-  ['vec_3c_204_2c_20t_20_3e_553',['Vec&lt; 4, T &gt;',['../struct_t_r_a_p_1_1_math_1_1_vec_3_014_00_01_t_01_4.html',1,'TRAP::Math']]],
-  ['vertexarray_554',['VertexArray',['../class_t_r_a_p_1_1_graphics_1_1_vertex_array.html',1,'TRAP::Graphics']]],
-  ['vertexbuffer_555',['VertexBuffer',['../class_t_r_a_p_1_1_graphics_1_1_vertex_buffer.html',1,'TRAP::Graphics']]],
-  ['vfs_556',['VFS',['../class_t_r_a_p_1_1_v_f_s.html',1,'TRAP']]],
-  ['videomode_557',['VideoMode',['../struct_t_r_a_p_1_1_monitor_1_1_video_mode.html',1,'TRAP::Monitor']]]
+  ['sampler_975',['Sampler',['../class_t_r_a_p_1_1_graphics_1_1_sampler.html',1,'TRAP::Graphics']]],
+  ['samplerconversiondesc_976',['SamplerConversionDesc',['../struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_sampler_desc_1_1_sampler_conversion_desc.html',1,'TRAP::Graphics::RendererAPI::SamplerDesc']]],
+  ['samplerdesc_977',['SamplerDesc',['../struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_sampler_desc.html',1,'TRAP::Graphics::RendererAPI']]],
+  ['scene_978',['Scene',['../class_t_r_a_p_1_1_scene.html',1,'TRAP']]],
+  ['scenecamera_979',['SceneCamera',['../class_t_r_a_p_1_1_scene_camera.html',1,'TRAP']]],
+  ['sceneserializer_980',['SceneSerializer',['../class_t_r_a_p_1_1_scene_serializer.html',1,'TRAP']]],
+  ['scriptableentity_981',['ScriptableEntity',['../class_t_r_a_p_1_1_scriptable_entity.html',1,'TRAP']]],
+  ['seederdefault_982',['SeederDefault',['../struct_t_r_a_p_1_1_utils_1_1_seeder_default.html',1,'TRAP::Utils']]],
+  ['semaphore_983',['Semaphore',['../class_t_r_a_p_1_1_graphics_1_1_semaphore.html',1,'TRAP::Graphics']]],
+  ['shader_984',['Shader',['../class_t_r_a_p_1_1_graphics_1_1_shader.html',1,'TRAP::Graphics']]],
+  ['shadermanager_985',['ShaderManager',['../class_t_r_a_p_1_1_graphics_1_1_shader_manager.html',1,'TRAP::Graphics']]],
+  ['shaderreflection_986',['ShaderReflection',['../struct_t_r_a_p_1_1_graphics_1_1_a_p_i_1_1_shader_reflection_1_1_shader_reflection.html',1,'TRAP::Graphics::API::ShaderReflection']]],
+  ['shaderresource_987',['ShaderResource',['../struct_t_r_a_p_1_1_graphics_1_1_a_p_i_1_1_shader_reflection_1_1_shader_resource.html',1,'TRAP::Graphics::API::ShaderReflection']]],
+  ['shadervariable_988',['ShaderVariable',['../struct_t_r_a_p_1_1_graphics_1_1_a_p_i_1_1_shader_reflection_1_1_shader_variable.html',1,'TRAP::Graphics::API::ShaderReflection']]],
+  ['sizeoffset_989',['SizeOffset',['../struct_t_r_a_p_1_1_graphics_1_1_a_p_i_1_1_vulkan_renderer_1_1_size_offset.html',1,'TRAP::Graphics::API::VulkanRenderer']]],
+  ['socket_990',['Socket',['../class_t_r_a_p_1_1_network_1_1_socket.html',1,'TRAP::Network']]],
+  ['socketselector_991',['SocketSelector',['../class_t_r_a_p_1_1_network_1_1_socket_selector.html',1,'TRAP::Network']]],
+  ['spriterenderercomponent_992',['SpriteRendererComponent',['../struct_t_r_a_p_1_1_sprite_renderer_component.html',1,'TRAP']]],
+  ['statistics_993',['Statistics',['../struct_t_r_a_p_1_1_graphics_1_1_renderer2_d_1_1_statistics.html',1,'TRAP::Graphics::Renderer2D']]],
+  ['subresourcedatadesc_994',['SubresourceDataDesc',['../struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_subresource_data_desc.html',1,'TRAP::Graphics::RendererAPI']]],
+  ['swapchain_995',['SwapChain',['../class_t_r_a_p_1_1_graphics_1_1_swap_chain.html',1,'TRAP::Graphics']]],
+  ['swapchaindesc_996',['SwapChainDesc',['../struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_swap_chain_desc.html',1,'TRAP::Graphics::RendererAPI']]]
 ];
