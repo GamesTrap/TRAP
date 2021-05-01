@@ -98,6 +98,14 @@ function WindowsCopyDocs()
     os.execute("rename ..\\sphinx docs > NUL")
 end
 
+function LinuxCopyFonts()
+    os.execute("cp -r ../.modules/generatedocs/fonts ../.modules/generatedocs/sphinx/fonts")
+end
+
+function WindowsCopyFonts()
+    os.execute("xcopy ../.modules/generatedocs/fonts ../.modules/generatedocs/sphinx/fonts > NUL")
+end
+
 newaction
 {
     trigger = "gendocs",
@@ -137,6 +145,13 @@ newaction
 
         print("Copying .nojekyll")
         os.copyfile("../.modules/generatedocs/.nojekyll", "../.modules/generatedocs/sphinx") --Needed for GitHub Pages to display correctly as a static page
+
+        print("Copying fonts")
+        if(_TARGET_OS == "linux") then
+            LinuxCopyFonts()
+        elseif(_TARGET_OS == "windows") then
+            WindowsCopyFonts()
+        end
 
         os.rmdir("../docs") --Delete old pages
 
