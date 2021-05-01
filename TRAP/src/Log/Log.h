@@ -122,7 +122,7 @@ namespace TRAP
 		/// </summary>
 		void Clear();
 
-		inline static constexpr auto WindowVersion = "[21w17a1]";
+		inline static constexpr auto WindowVersion = "[21w17b1]";
 		inline static constexpr auto WindowPrefix = "[Window] ";
 		inline static constexpr auto WindowInternalPrefix = "[Window][Internal] ";
 		inline static constexpr auto WindowIconPrefix = "[Window][Icon] ";

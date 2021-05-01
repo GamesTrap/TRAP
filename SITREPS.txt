@@ -1816,3 +1816,9 @@ SITREP 04/29/2021|21w17a1
     - Updated README ~<10 mins
     - Updated Controller Mappings ~<5 mins
     - Regenerated documentation ~<5 mins
+
+SITREP 04/29/2021|21w17b1
+    - Changed TRAP Engine version to 21w17b1(0.7.40)
+    - Seperated VulkanTests Textures stuff into VulkanTextureTests ~>40 mins
+    - VulkanTextureTests Seperated sampler from texture ~<10 mins
+    - Fixed a bug in UniformBuffer (Offset in DescriptorData was not BufferOffset) ~<10 mins

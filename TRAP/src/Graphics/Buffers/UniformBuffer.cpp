@@ -48,6 +48,7 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = buffer->m_name.c_str();
+	params[0].Offset = TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset{};
 	if(buffer->m_bufferUsage == BufferUsage::Static)
 	{
 		for(uint32_t i = 0; i < 3; ++i)
@@ -108,6 +109,7 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 
 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
 	params[0].Name = buffer->m_name.c_str();
+	params[0].Offset = TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset{};
 	if(buffer->m_bufferUsage == BufferUsage::Static)
 	{
 		for(uint32_t i = 0; i < 3; ++i)

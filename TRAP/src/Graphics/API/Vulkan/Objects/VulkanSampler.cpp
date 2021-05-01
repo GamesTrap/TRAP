@@ -29,6 +29,12 @@ TRAP::Graphics::API::VulkanSampler::VulkanSampler(const RendererAPI::SamplerDesc
 		desc.MaxAnisotropy,
 		VkComparisonFuncTranslator[static_cast<uint32_t>(desc.CompareFunc)]);
 
+	if(desc.ForceMipLevel)
+	{
+		info.minLod = desc.MipLevel;
+		info.maxLod = desc.MipLevel;
+	}
+
 	if(RendererAPI::ImageFormatIsPlanar(desc.SamplerConversionDesc.Format))
 	{
 		auto& conversionDesc = desc.SamplerConversionDesc;

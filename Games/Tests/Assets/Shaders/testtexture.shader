@@ -1,7 +1,6 @@
 #shader vertex
 layout(location = 0) in vec3 pos;
-layout(location = 1) in vec3 col;
-layout(location = 2) in vec2 uv;
+layout(location = 1) in vec2 uv;
 
 layout(location = 0) out vec2 vUV;
 
@@ -16,10 +15,10 @@ layout(location = 0) out vec4 FragColor;
 
 layout(location = 0) in vec2 vUV;
 
-layout(UpdateFreqNone, binding = 0) uniform sampler2D Tex;
+layout(UpdateFreqNone, binding = 0) uniform texture2D Texture;
+layout(UpdateFreqNone, binding = 1) uniform sampler Sampler;
 
 void main()
 {
-    FragColor = texture(Tex, vUV);
-    //FragColor = vec4(vUV, 0.0f, 1.0f);
+    FragColor = texture(sampler2D(Texture, Sampler), vUV);
 }

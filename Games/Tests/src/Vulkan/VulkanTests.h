@@ -68,7 +68,6 @@ private:
 	bool m_quad;
 	bool m_indexed;
 	bool m_vsync;
-	bool m_texture;
 	uint8_t m_pushConstantOrUBO;
 
 	inline static constexpr bool s_window = false;
@@ -87,15 +86,6 @@ private:
 
 	TRAP::Ref<TRAP::Graphics::UniformBuffer> m_colorUniformBuffer;
 	TRAP::Ref<TRAP::Graphics::UniformBuffer> m_sizeMultiplicatorUniformBuffer;
-
-	TRAP::Ref<TRAP::Graphics::Sampler> m_textureSampler;
-
-	//////////////////////////////////////
-	//INTERNAL CODE USE AT YOUR OWN RISK//
-	//////////////////////////////////////
-	TRAP::Ref<TRAP::Graphics::API::VulkanTexture> m_testTexture;
-	TRAP::Graphics::DescriptorSet* m_descriptorSet;
-	//////////////////////////////////////
 };
 
 #endif /*_GAMESTRAP_VULKANTESTS_H_*/

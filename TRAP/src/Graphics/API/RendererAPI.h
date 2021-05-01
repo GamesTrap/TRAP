@@ -1533,15 +1533,15 @@ namespace TRAP::Graphics
 			//Texture creation flags (decides memory allocation strategy, sharing access, ...)
 			TextureCreationFlags Flags{};
 			//Width
-			uint32_t Width{};
+			uint32_t Width = 1;
 			//Height;
-			uint32_t Height{};
+			uint32_t Height = 1;
 			//Depth (should be 1 if Type is not TextureType::TextureType3D)
-			uint32_t Depth{};
+			uint32_t Depth = 1;
 			//Texture array size (should be 1 if texture is not a texture array or cubemap)
-			uint32_t ArraySize{};
+			uint32_t ArraySize = 1;
 			//Number of mip levels
-			uint32_t MipLevels{};
+			uint32_t MipLevels = 1;
 			//Number of multisamples per pixel (currently Textures created with Usage TextureUsage::SampledImage only support SampleCount1).
 			TRAP::Graphics::RendererAPI::SampleCount SampleCount{};
 			//The image quality level.
@@ -1629,6 +1629,10 @@ namespace TRAP::Graphics
 			float MipLodBias{};
 			float MaxAnisotropy{};
 			CompareMode CompareFunc{};
+
+			//Optional (used to display specific mip level at all times)
+			bool ForceMipLevel{};
+			float MipLevel{};
 
 			struct SamplerConversionDesc
 			{
@@ -1980,7 +1984,7 @@ namespace TRAP::Graphics
 				uint32_t UAVMipSlice{};
 				bool BindMipChain{};
 			};
-			std::variant<BufferOffset, DescriptorSetExtraction, TextureSlice, bool> Offset{BufferOffset()};
+			std::variant<BufferOffset, DescriptorSetExtraction, TextureSlice, bool> Offset{false};
 			//Array of resources containing descriptor handles or constant to be used in ring buffer memory
 			//DescriptorRange can hold only one resource type array
 			//std::vector<TRAP::Ref<API::VulkanAccelerationStructure>> AccelerationStructures; //TODO RT

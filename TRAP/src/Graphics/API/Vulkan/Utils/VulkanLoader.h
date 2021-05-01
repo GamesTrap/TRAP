@@ -2064,8 +2064,8 @@ static void VkGenLoadDevice(void* context, PFN_vkVoidFunction(*load)(void*, cons
 	vkGetImageViewHandleNVX = (PFN_vkGetImageViewHandleNVX)load(context, "vkGetImageViewHandleNVX");
 #endif /* defined(VK_NVX_image_view_handle) */
 #if defined(VK_NV_acquire_winrt_display)
-	PFN_vkAcquireWinrtDisplayNV vkAcquireWinrtDisplayNV;
-	PFN_vkGetWinrtDisplayNV vkGetWinrtDisplayNV;
+	vkAcquireWinrtDisplayNV = (PFN_vkAcquireWinrtDisplayNV)load(context, "vkAcquireWinrtDisplayNV");
+	vkGetWinrtDisplayNV = (PFN_vkGetWinrtDisplayNV)load(context, "vkGetWinrtDisplayNV");
 #endif /* defined(VK_NV_acquire_winrt_display) */
 #if defined(VK_NV_clip_space_w_scaling)
 	vkCmdSetViewportWScalingNV = (PFN_vkCmdSetViewportWScalingNV)load(context, "vkCmdSetViewportWScalingNV");

@@ -14,9 +14,7 @@ VulkanTests::VulkanTests()
 	  m_colorData(),
 	  m_sizeMultiplicatorData(),
 	  m_colorTimer(),
-	  m_vertexTimer(),
-	  m_texture(false),
-	  m_descriptorSet(nullptr)
+	  m_vertexTimer()
 {
 }
 
@@ -75,39 +73,6 @@ void VulkanTests::OnAttach()
 	TRAP::Graphics::ShaderManager::LoadFile("VKTestPushConstant", "/shaders/testpushconstant.shader");
 	std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
 	TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader", &macros);
-	TRAP::Graphics::ShaderManager::LoadFile("VKTestTexture", "/shaders/testtexture.shader");
-
-	TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
-	samplerDesc.AddressU = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
-	samplerDesc.AddressV = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
-	samplerDesc.AddressW = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
-	samplerDesc.MagFilter = TRAP::Graphics::RendererAPI::FilterType::Linear;
-	samplerDesc.MinFilter = TRAP::Graphics::RendererAPI::FilterType::Linear;
-	samplerDesc.MaxAnisotropy = 0.0f;
-	samplerDesc.CompareFunc = TRAP::Graphics::RendererAPI::CompareMode::Always;
-	samplerDesc.MipLodBias = 0.0f;
-	samplerDesc.MipMapMode = TRAP::Graphics::RendererAPI::MipMapMode::Linear;
-	m_textureSampler = TRAP::Graphics::Sampler::Create(samplerDesc);
-
-	//////////////////////////////////////
-	//INTERNAL CODE USE AT YOUR OWN RISK//
-	//////////////////////////////////////
-	//Add Sampler to RootSignature
-	const auto& data = TRAP::Graphics::RendererAPI::GetPerWindowData(TRAP::Application::GetWindow().get());
-	TRAP::Graphics::RendererAPI::GetGraphicsRootSignatureDesc().StaticSamplerNames.emplace_back("Tex");
-	TRAP::Graphics::RendererAPI::GetGraphicsRootSignatureDesc().StaticSamplers.emplace_back(m_textureSampler);
-	data->RebuildRootSignature = true;
-
-	//Load Texture
-	TRAP::VFS::MountTextures("Assets/Textures");
-	TRAP::Graphics::RendererAPI::TextureLoadDesc textureLoadDesc{};
-	textureLoadDesc.Filepaths[0] = "/Textures/testequi.png";
-	TRAP::Graphics::API::SyncToken token;
-	textureLoadDesc.Texture = &m_testTexture;
-	TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(textureLoadDesc, nullptr);
-
-	//TODO Test Runtime Texture Update
-	//////////////////////////////////////
 
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 }
@@ -116,9 +81,6 @@ void VulkanTests::OnAttach()
 
 void VulkanTests::OnDetach()
 {
-	m_textureSampler.reset();
-	m_testTexture.reset();
-
 	if (s_window)
 		m_window.reset();
 
@@ -186,11 +148,11 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 		TRAP::Graphics::ShaderManager::Get("VKTestPushConstant")->Use();
 
-		TRAP::Graphics::RendererAPI::GetRenderer()->BindPushConstantsByIndex(0, &m_colorData);
+		TRAP::Graphics::RendererAPI::GetRenderer()->BindPushConstants("ColorRootConstant", &m_colorData);
 	}
 	else if(m_pushConstantOrUBO == 2)
 	{
-		if(!m_sizeMultiplicatorUniformBuffer && !m_colorUniformBuffer)
+		if(!m_sizeMultiplicatorUniformBuffer && !m_colorUniformBuffer) //Bug somewhere (Windows)
 		{
 			m_sizeMultiplicatorUniformBuffer = TRAP::Graphics::UniformBuffer::Create("SizeMultiplicator", sizeof(SizeMultiplicatorData), TRAP::Graphics::BufferUsage::Stream);
 			m_colorUniformBuffer = TRAP::Graphics::UniformBuffer::Create("Color", sizeof(ColorData), TRAP::Graphics::BufferUsage::Stream);
@@ -228,40 +190,13 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 		TRAP::Graphics::ShaderManager::Get("VKTestUBO")->Use();
 	}
-	else if(!m_texture)
+	else
 		TRAP::Graphics::ShaderManager::Get("VKTest")->Use();
-	else //(m_texture)
-	{
-		m_vertexBuffer->Use();
-		m_indexBuffer->Use();
-
-		TRAP::Graphics::ShaderManager::Get("VKTestTexture")->Use();
-
-		//////////////////////////////////////
-		//INTERNAL CODE USE AT YOUR OWN RISK//
-		//////////////////////////////////////
-		if(!m_descriptorSet)
-		{
-			TRAP::Graphics::RendererAPI::DescriptorSetDesc desc{};
-			desc.RootSignature = TRAP::Graphics::RendererAPI::GetGraphicsRootSignature(TRAP::Application::GetWindow().get());
-			desc.UpdateFrequency = TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::None;
-			desc.MaxSets = 1;
-			m_descriptorSet = TRAP::Graphics::RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(desc);
-
-			TRAP::Graphics::RendererAPI::DescriptorData param = {};
-			param.Name = "Tex";
-			param.Resource = std::vector<TRAP::Graphics::API::VulkanTexture*>{m_testTexture.get()};
-			param.Count = 1;
-			m_descriptorSet->Update(0, {param});
-		}
-		TRAP::Graphics::RendererAPI::GetRenderer()->BindDescriptorSet(*m_descriptorSet, 0);
-		//////////////////////////////////////
-	}
 
 	if(!m_indexed)
 		TRAP::Graphics::RendererAPI::GetRenderer()->Draw(m_quad ? 6 : 3);
 	else
-		TRAP::Graphics::RendererAPI::GetRenderer()->DrawIndexed(static_cast<uint32_t>(m_indexBuffer->GetCount()));
+		TRAP::Graphics::RendererAPI::GetRenderer()->DrawIndexed(m_quad ? 6 : 3);
 
 	if (m_fpsTimer.Elapsed() >= 5.0f) //Output Every 5 Seconds
 	{
@@ -285,7 +220,6 @@ void VulkanTests::OnImGuiRender()
 	else if(m_pushConstantOrUBO == 1)
 		shaderData = "Push Constants";
 	ImGui::Text("Shader Data (F4): %s", shaderData.c_str());
-	ImGui::Text("Texture (F5): %s", m_texture ? "Enabled" : "Diabled");
 	ImGui::Text("VSync (V): %s", m_vsync ? "Enabled" : "Disabled");
 	ImGui::End();
 }
@@ -336,22 +270,6 @@ bool VulkanTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 		m_pushConstantOrUBO = ++m_pushConstantOrUBO % 3;
 		TP_TRACE("[VulkanTests] Push Constant / Uniform Buffer: ", m_pushConstantOrUBO ? "On" : "Off");
 	}
-	if(e.GetKey() == TRAP::Input::Key::F5)
-	{
-		if(!m_texture)
-		{
-			//Required for Texture
-			m_indexed = true;
-			TP_TRACE("[VulkanTests] Indexed Drawing: On");
-			m_pushConstantOrUBO = 0;
-			TP_TRACE("[VulkanTests] Push Constant / Uniform Buffer: Off");
-			m_quad = true;
-			TP_TRACE("[VulkanTests] Geometry: Quad");
-		}
-
-		m_texture = !m_texture;
-		TP_TRACE("[VulkanTests] Texture: ", m_texture ? "On" : "Off");
-	}
 	if(e.GetKey() == TRAP::Input::Key::V)
 	{
 		m_vsync = !m_vsync;
@@ -364,13 +282,6 @@ bool VulkanTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 			m_window.reset();
 		else
 			TRAP::Application::Shutdown();
-	}
-
-	//Disable Texture when not rendering Quad
-	if(m_texture && (!m_quad && !m_indexed))
-	{
-		TP_TRACE("[VulkanTests] Texture: Off");
-		m_texture = false;
 	}
 
 	return false;
