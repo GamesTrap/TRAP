@@ -1822,3 +1822,4 @@ SITREP 04/29/2021|21w17b1
     - Seperated VulkanTests Textures stuff into VulkanTextureTests ~>40 mins
     - VulkanTextureTests Seperated sampler from texture ~<10 mins
     - Fixed a bug in UniformBuffer (Offset in DescriptorData was not BufferOffset) ~<10 mins
+    - Docs Removed VMA & VulkanLoader ~<10 mins

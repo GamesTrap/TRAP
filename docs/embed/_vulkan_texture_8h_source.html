@@ -62,7 +62,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -140,7 +139,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        VkImageView&amp; GetSRVStencilVkImageView();</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keyword">const</span> std::vector&lt;VkImageView&gt;&amp; GetUAVVkImageViews() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        VkImage&amp; GetVkImage();</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <a class="code" href="struct_vma_allocation.html">VmaAllocation</a>&amp; GetVMAAllocation();</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        VmaAllocation&amp; GetVMAAllocation();</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        uint32_t GetWidth() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        uint32_t GetHeight() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        uint32_t GetDepth() <span class="keyword">const</span>;</div>
@@ -186,7 +185,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keyword">union</span></div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        {</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            <span class="comment">//Contains resource allocation info such as parent heap, offset in heap</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <a class="code" href="struct_vma_allocation.html">VmaAllocation</a> m_vkAllocation;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            VmaAllocation m_vkAllocation;</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            VkDeviceMemory m_vkDeviceMemory;</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        };</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
@@ -211,7 +210,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="aclass_t_r_a_p_1_1_graphics_1_1_a_p_i_1_1_vulkan_texture_html"><div class="ttname"><a href="class_t_r_a_p_1_1_graphics_1_1_a_p_i_1_1_vulkan_texture.html">TRAP::Graphics::API::VulkanTexture</a></div><div class="ttdef"><b>Definition:</b> <a href="_vulkan_texture_8h_source.html#l00012">VulkanTexture.h:13</a></div></div>
 <div class="ttc" id="astruct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_texture_desc_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_texture_desc.html">TRAP::Graphics::RendererAPI::TextureDesc</a></div><div class="ttdef"><b>Definition:</b> <a href="_renderer_a_p_i_8h_source.html#l01531">RendererAPI.h:1532</a></div></div>
 <div class="ttc" id="aclass_t_r_a_p_1_1_graphics_1_1_command_buffer_html"><div class="ttname"><a href="class_t_r_a_p_1_1_graphics_1_1_command_buffer.html">TRAP::Graphics::CommandBuffer</a></div><div class="ttdef"><b>Definition:</b> <a href="_command_buffer_8h_source.html#l00016">CommandBuffer.h:17</a></div></div>
-<div class="ttc" id="astruct_vma_allocation_html"><div class="ttname"><a href="struct_vma_allocation.html">VmaAllocation</a></div><div class="ttdoc">Represents single memory allocation.</div></div>
 <div class="ttc" id="astruct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_virtual_texture_page_html"><div class="ttname"><a href="struct_t_r_a_p_1_1_graphics_1_1_renderer_a_p_i_1_1_virtual_texture_page.html">TRAP::Graphics::RendererAPI::VirtualTexturePage</a></div><div class="ttdef"><b>Definition:</b> <a href="_renderer_a_p_i_8h_source.html#l02062">RendererAPI.h:2063</a></div></div>
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->
