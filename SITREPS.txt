@@ -1823,3 +1823,7 @@ SITREP 04/29/2021|21w17b1
     - VulkanTextureTests Seperated sampler from texture ~<10 mins
     - Fixed a bug in UniformBuffer (Offset in DescriptorData was not BufferOffset) ~<10 mins
     - Docs Removed VMA & VulkanLoader ~<10 mins
+
+SITREP 05/04/2021|21w18a1
+    - Changed TRAP Engine version to 21w18a1(0.7.41)
+    - Replaced ModernFileDialogs submodule with ModernDialogs ~<10 mins

@@ -3,7 +3,7 @@
 
 #include "Application.h"
 #include "Vulkan/VulkanRenderer.h"
-#include "Utils/Dialogs/MsgBox.h"
+#include "Utils/Dialogs/Dialogs.h"
 #include "Vulkan/VulkanCommon.h"
 #include "Vulkan/Objects/VulkanInits.h"
 #include "Vulkan/Objects/VulkanInstance.h"
@@ -43,7 +43,9 @@ void TRAP::Graphics::RendererAPI::Init(const std::string& gameName)
 
 	default:
 		TP_CRITICAL(Log::RendererPrefix, "Unsupported Device!");
-		Utils::Dialogs::MsgBox::Show("Device is unsupported!\n No RenderAPI selected!", "Unsupported Device", Utils::Dialogs::MsgBox::Style::Error, Utils::Dialogs::MsgBox::Buttons::Quit);
+		Utils::Dialogs::ShowMsgBox("Unsupported Device",
+			"Device is unsupported!\n No RenderAPI selected!",
+			Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
 		exit(-1);
 	}
 
@@ -95,10 +97,10 @@ void TRAP::Graphics::RendererAPI::AutoSelectRenderAPI()
 	TP_DEBUG(Log::RendererVulkanPrefix, "Device isn't Vulkan 1.2 capable!");
 
 	s_RenderAPI = RenderAPI::NONE;
-	TRAP::Utils::Dialogs::MsgBox::Show("TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
-		"No compatible RenderAPI found",
-		Utils::Dialogs::MsgBox::Style::Error,
-		Utils::Dialogs::MsgBox::Buttons::Quit);
+	TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
+		"TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
+		Utils::Dialogs::Style::Error,
+		Utils::Dialogs::Buttons::Quit);
 	TRAP::Application::Shutdown();
 }
 
@@ -120,18 +122,18 @@ void TRAP::Graphics::RendererAPI::SwitchRenderAPI(const RenderAPI api)
 
 			TP_ERROR(Log::RendererVulkanPrefix, "This device doesn't support Vulkan 1.2!");
 			
-			TRAP::Utils::Dialogs::MsgBox::Show("TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
-				"No compatible RenderAPI found",
-				Utils::Dialogs::MsgBox::Style::Error,
-				Utils::Dialogs::MsgBox::Buttons::Quit);
+			TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
+				"TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
+				Utils::Dialogs::Style::Error,
+				Utils::Dialogs::Buttons::Quit);
 			TRAP::Application::Shutdown();
 		}
 		else
 		{
-			TRAP::Utils::Dialogs::MsgBox::Show("TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
-				"No compatible RenderAPI found",
-				Utils::Dialogs::MsgBox::Style::Error,
-				Utils::Dialogs::MsgBox::Buttons::Quit);
+			TRAP::Utils::Dialogs::ShowMsgBox("No compatible RenderAPI found",
+				"TRAP was unable to detect a compatible RenderAPI!\nPlease check your GPU driver!",
+				Utils::Dialogs::Style::Error,
+				Utils::Dialogs::Buttons::Quit);
 			TRAP::Application::Shutdown();
 		}
 	}

@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "Window.h"
 
-#include "Utils/Dialogs/MsgBox.h"
+#include "Utils/Dialogs/Dialogs.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvent.h"
@@ -736,7 +736,10 @@ void TRAP::Window::Init(const WindowProps& props)
 		const int32_t success = INTERNAL::WindowingAPI::Init();
 		TRAP_CORE_ASSERT(success, "Could not initialize WindowingAPI!");
 		if (!success)
-			Utils::Dialogs::MsgBox::Show("Could not initialize WindowingAPI!", "Error WindowingAPI", Utils::Dialogs::MsgBox::Style::Error, Utils::Dialogs::MsgBox::Buttons::Quit);
+			Utils::Dialogs::ShowMsgBox("Error WindowingAPI",
+				"Could not initialize WindowingAPI!",
+				Utils::Dialogs::Style::Error,
+				Utils::Dialogs::Buttons::Quit);
 		s_WindowingAPIInitialized = true;
 	}
 
@@ -801,7 +804,10 @@ void TRAP::Window::Init(const WindowProps& props)
 	if (!m_window)
 	{
 		TP_CRITICAL(Log::WindowPrefix, "Failed to create window");
-		TRAP::Utils::Dialogs::MsgBox::Show("Failed to create Window!", "Failed to Create Window", Utils::Dialogs::MsgBox::Style::Error, Utils::Dialogs::MsgBox::Buttons::Quit);
+		TRAP::Utils::Dialogs::ShowMsgBox("Failed to create Window",
+			"Failed to create Window!",
+			Utils::Dialogs::Style::Error,
+			Utils::Dialogs::Buttons::Quit);
 		exit(-1);
 	}
 	

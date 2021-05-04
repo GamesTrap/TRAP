@@ -28,8 +28,6 @@ project "TRAP"
 		"src/Utils/Win.h",
 		"src/Log/ANSILog.cpp",
 		"src/Log/WindowsLog.cpp",
-		"src/Utils/Dialogs/MsgBoxWindows.cpp",
-		"src/Utils/Dialogs/MsgBoxLinux.cpp",
 		"src/Input/WindowsInput.cpp",
 		"src/Input/LinuxInput.cpp",
 		"src/Window/WindowingAPIWin32.cpp",
@@ -50,7 +48,7 @@ project "TRAP"
 		"../%{IncludeDir.VULKAN}/include/",
 		"../%{IncludeDir.ENTT}",
 		"../%{IncludeDir.YAMLCPP}",
-		"../%{IncludeDir.MODERNFILEDIALOGS}"
+		"../%{IncludeDir.MODERNDIALOGS}"
 	}
 
 	filter "system:windows"
@@ -58,7 +56,6 @@ project "TRAP"
 		{
 			"src/Utils/Win.h",
 			"src/Log/WindowsLog.cpp",
-			"src/Utils/Dialogs/MsgBoxWindows.cpp",
 			"src/Input/WindowsInput.cpp",
 			"src/Window/WindowingAPIWin32.cpp",
 			"src/Network/Sockets/Platform/SocketImplWinAPI.h",
@@ -69,7 +66,7 @@ project "TRAP"
 		{
 			"ImGui",
 			"YAMLCpp",
-			"ModernFileDialogs",
+			"ModernDialogs",
 			"GLSLang",
 			"SPIRV",
 			"SPIRV-Cross-Core",
@@ -86,7 +83,6 @@ project "TRAP"
         {
 			"src/Log/ANSILog.cpp",
 			"src/Input/LinuxInput.cpp",
-			"src/Utils/Dialogs/MsgBoxLinux.cpp",
 			"src/Window/WindowingAPILinuxX11.cpp",
 			"src/Network/Sockets/Platform/SocketImplLinux.h",
 			"src/Network/Sockets/Platform/SocketImplLinux.cpp"
@@ -96,7 +92,7 @@ project "TRAP"
 		{
 			"ImGui",
 			"YAMLCpp",
-			"ModernFileDialogs",
+			"ModernDialogs",
 			"GLSLang",
 			"SPIRV",
 			"SPIRV-Cross-Core",

@@ -12,7 +12,7 @@
 #include "Graphics/Textures/TextureCube.h"
 #include "Graphics/Renderer.h"
 #include "Utils/String/String.h"
-#include "Utils/Dialogs/MsgBox.h"
+#include "Utils/Dialogs/Dialogs.h"
 #include "Events/KeyEvent.h"
 #include "Events/WindowEvent.h"
 #include "Input/Input.h"
@@ -62,8 +62,8 @@ TRAP::Application::Application(const std::string& gameName)
 	//TODO Future Remove
 	if (GetLinuxWindowManager() == LinuxWindowManager::Wayland)
 	{
-        TRAP::Utils::Dialogs::MsgBox::Show("Wayland is currently not supported by TRAP! Please use X11 instead", "Wayland unsupported!",
-            TRAP::Utils::Dialogs::MsgBox::Style::Error, TRAP::Utils::Dialogs::MsgBox::Buttons::Quit);
+        TRAP::Utils::Dialogs::ShowMsgBox("Wayland unsupported!", "Wayland is currently not supported by TRAP! Please use X11 instead",
+            TRAP::Utils::Dialogs::Style::Error, TRAP::Utils::Dialogs::Buttons::Quit);
 		TP_CRITICAL(Log::EngineLinuxWaylandPrefix, "Wayland is currently not supported by TRAP! Please use X11 instead");
 		exit(-1);
 	}
@@ -106,10 +106,10 @@ TRAP::Application::Application(const std::string& gameName)
 		else
 		{
 			//All RenderAPIs are unsupported
-			TRAP::Utils::Dialogs::MsgBox::Show("Every RenderAPI that TRAP Engine uses is unsupported on your device!\nDoes your system meet the minimum system requirements for running TRAP Engine?",
-				"Incompatible Device",
-				Utils::Dialogs::MsgBox::Style::Error,
-				Utils::Dialogs::MsgBox::Buttons::Quit);
+			TRAP::Utils::Dialogs::ShowMsgBox("Incompatible Device",
+				"Every RenderAPI that TRAP Engine uses is unsupported on your device!\nDoes your system meet the minimum system requirements for running TRAP Engine?",
+				Utils::Dialogs::Style::Error,
+				Utils::Dialogs::Buttons::Quit);
 			exit(-1);
 		}
 	}
@@ -692,7 +692,9 @@ void TRAP::Application::UpdateLinuxWindowManager()
 	else
 	{
 		TP_CRITICAL(Log::EngineLinuxPrefix, "Unsupported Window Manager!");
-		Utils::Dialogs::MsgBox::Show("Window Manager is unsupported!\nTRAP Engine uses X11 or Wayland\nMake sure the appropriate environment variables are set!", "Unsupported Window Manager", Utils::Dialogs::MsgBox::Style::Error, Utils::Dialogs::MsgBox::Buttons::Quit);
+		Utils::Dialogs::ShowMsgBox("Unsupported Window Manager",
+			"Window Manager is unsupported!\nTRAP Engine uses X11 or Wayland\nMake sure the appropriate environment variables are set!",
+			Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
 		exit(-1);
 	}
 #endif

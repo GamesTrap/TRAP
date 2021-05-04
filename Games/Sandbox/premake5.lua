@@ -26,7 +26,7 @@ project "Sandbox"
 		"../../%{IncludeDir.SPIRVCROSS}",
 		"../../%{IncludeDir.ENTT}",
 		"../../%{IncludeDir.YAMLCPP}",
-		"../../%{IncludeDir.MODERNFILEDIALOGS}"
+		"../../%{IncludeDir.MODERNDIALOGS}"
 	}
 
 	links
@@ -39,7 +39,7 @@ project "Sandbox"
 		{
 			"ImGui",
 			"YAMLCpp",
-			"ModernFileDialogs",
+			"ModernDialogs",
 			"GLSLang",
 			"SPIRV",
 
