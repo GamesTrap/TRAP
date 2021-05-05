@@ -1827,3 +1827,8 @@ SITREP 04/29/2021|21w17b1
 SITREP 05/04/2021|21w18a1
     - Changed TRAP Engine version to 21w18a1(0.7.41)
     - Replaced ModernFileDialogs submodule with ModernDialogs ~<10 mins
+
+SITREP 05/05/2021|21w18a2
+    - Changed TRAP Engine version to 21w18a2(0.7.42)
+    - Added VulkanLoader generation script ~>30 mins
+    - Updated VulkanLoader ~<10 mins

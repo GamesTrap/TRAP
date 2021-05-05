@@ -6,7 +6,6 @@ local p = premake
 local success = true
 local doxygenPath = "Dependencies/Docs/Doxygen"
 local doxygenBinPath = doxygenPath .. "/bin/"
-local pythonPath = "Dependencies/Docs/Python3"
 local tempSphinxEmbedPath = "../.modules/generatedocs/sphinx/embed"
 
 function InstallSphinx()

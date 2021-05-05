@@ -1,5 +1,6 @@
 require "generatecontrollermappings"
 require "generatedocs"
+require "generatevulkanloader"
 
 workspace "TRAP"
 	architecture "x86_64"
