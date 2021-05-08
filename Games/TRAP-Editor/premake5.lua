@@ -6,6 +6,7 @@ project "TRAP-Editor"
 	cppdialect "C++17"
 	systemversion "latest"
 	vectorextensions "AVX2"
+	warnings "Extra"
 
 	targetdir ("../../bin/" .. outputdir .. "/%{prj.group}/%{prj.name}")
 	objdir ("../../bin-int/" .. outputdir .. "/%{prj.group}/%{prj.name}")

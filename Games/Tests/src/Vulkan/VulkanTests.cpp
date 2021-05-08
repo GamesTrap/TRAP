@@ -25,7 +25,7 @@ void VulkanTests::OnAttach()
 	TRAP::VFS::SetHotShaderReloading(true);
 	TRAP::VFS::MountShaders("Assets/Shaders");
 
-	TRAP::Application::GetWindow()->SetTitle("Vulkan Multi-Window Test");
+	TRAP::Application::GetWindow()->SetTitle("Vulkan Test");
 
 	if (s_window)
 	{
