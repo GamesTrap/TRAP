@@ -1,3 +1,4 @@
 #include "TRAPPCH.h"
 
-#include <examples/imgui_impl_vulkan.cpp>
+#undef VK_NO_PROTOTYPES
+#include <backends/imgui_impl_vulkan.cpp>
