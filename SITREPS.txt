@@ -1832,3 +1832,12 @@ SITREP 05/05/2021|21w18a2
     - Changed TRAP Engine version to 21w18a2(0.7.42)
     - Added VulkanLoader generation script ~>30 mins
     - Updated VulkanLoader ~<10 mins
+
+SITREP 05/14/2021|21w19a1
+    - Changed TRAP Engine version to 21w19a1(0.7.43)
+    - Moved Config class to Utils folder ~<5 mins
+    - Math Added Min & Max for 3-4 inputs ~<10 mins
+    - Math Added Rounding methods ~<10 mins
+    - Math made Dot & Cross functions constexpr ~<10 mins
+    - Math Added SLerp function with spin count ~<15 mins
+    - 

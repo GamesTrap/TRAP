@@ -388,6 +388,22 @@ namespace TRAP::Math
 	template<uint32_t L, typename T>
 	constexpr Vec<L, T> Min(const Vec<L, T>& a, const Vec<L, T>& b);
 
+	/// <summary>Returns the minimum component-wise values of 3 inputs</summary>
+	/// 
+	/// <typeparam name="L">Integer between 1 and 4.</typeparam>
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Returns the minimum component-wise values of 3 inputs</returns>
+	template<uint32_t L, typename T>
+	constexpr Vec<L, T> Min(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c);
+
+	/// <summary>Returns the minimum component-wise values of 4 inputs</summary>
+	/// 
+	/// <typeparam name="L">Integer between 1 and 4.</typeparam>
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Returns the minimum component-wise values of 4 inputs</returns>
+	template<uint32_t L, typename T>
+	constexpr Vec<L, T> Min(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c, const Vec<L, T>& d);
+
 	//-------------------------------------------------------------------------------------------------------------------//
 
 	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
@@ -399,6 +415,22 @@ namespace TRAP::Math
 	/// <returns>y if x < y; otherwise it returns x.</returns>
 	template<uint32_t L, typename T>
 	constexpr Vec<L, T> Max(const Vec<L, T>& a, const Vec<L, T>& b);
+
+	/// <summary>Returns the maximum component-wise values of 3 inputs</summary>
+	/// 
+	/// <typeparam name="L">Integer between 1 and 4.</typeparam>
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Returns the maximum component-wise values of 3 inputs</returns>
+	template<uint32_t L, typename T>
+	constexpr Vec<L, T> Max(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c);
+
+	/// <summary>Returns the maximum component-wise values of 4 inputs</summary>
+	/// 
+	/// <typeparam name="L">Integer between 1 and 4.</typeparam>
+	/// <typeparam name="T">Floating-point or integer scalar types.</typeparam>
+	/// <returns>Returns the maximum component-wise values of 4 inputs</returns>
+	template<uint32_t L, typename T>
+	constexpr Vec<L, T> Max(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c, const Vec<L, T>& d);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
@@ -416,6 +448,58 @@ namespace TRAP::Math
 	/// <returns>Min(Max(x, minval), maxVal) for each component in x using the floating-point values minval and maxVal.</returns>
 	template<uint32_t L, typename T>
 	constexpr Vec<L, T> Clamp(const Vec<L, T>& x, const Vec<L, T>& minVal, const Vec<L, T>& maxVal);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Returns a value equal to the nearest integer to x.<br>
+	/// The fraction 0.5 will round in a direction chosen by the<br>
+	/// implementation, presumably the direction that is fastest.
+	/// </summary>
+	/// 
+	/// <typeparam name="genType">Floating-point scalar type.</typeparam>
+	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
+	/// <returns>Value equal to the nearest integer to x.</returns>
+	template<typename genType>
+	int32_t IRound(const genType& x);
+
+	/// <summary>
+	/// Returns a value equal to the nearest integer to x.<br>
+	/// The fraction 0.5 will round in a direction chosen by the<br>
+	/// implementation, presumably the direction that is fastest.
+	/// </summary>
+	/// 
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
+	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
+	/// <returns>Value equal to the nearest integer to x.</returns>
+	template<uint32_t L, typename T>
+	Vec<L, T> IRound(const Vec<L, T>& x);
+
+	//-------------------------------------------------------------------------------------------------------------------//
+
+	/// <summary>
+	/// Returns a value equal to the nearest integer to x.<br>
+	/// The fraction 0.5 will round in a direction chosen by the<br>
+	/// implementation, presumably the direction that is fastest.
+	/// </summary>
+	/// 
+	/// <typeparam name="genType">Floating-point scalar type.</typeparam>
+	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
+	/// <returns>Value equal to the nearest integer to x.</returns>
+	template<typename genType>
+	uint32_t URound(const genType& x);
+
+	/// <summary>
+	/// Returns a value equal to the nearest integer to x.<br>
+	/// The fraction 0.5 will round in a direction chosen by the
+	/// implementation, presumably the direction that is fastest.
+	/// </summary>
+	/// 
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
+	/// <returns>Value equal to the nearest integer to x.</returns>
+	template<uint32_t L, typename T>
+	Vec<L, T> URound(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
@@ -890,12 +974,12 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar or vector type.</typeparam>
 	/// <returns>Dot product of x and y, i.e., result = x * y.</returns>
 	template<typename T>
-	T Dot(T x, T y);
+	constexpr T Dot(T x, T y);
 
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Dot product of x and y, i.e., result = x * y.</returns>
 	template<uint32_t L, typename T>
-	T Dot(const Vec<L, T>& x, const Vec<L, T>& y);
+	constexpr T Dot(const Vec<L, T>& x, const Vec<L, T>& y);
 
 	/// <summary>
 	/// Compute a cross product.
@@ -903,7 +987,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Compute a cross product.</returns>
 	template<typename T>
-	T Dot(const tQuaternion<T>& x, const tQuaternion<T>& y);
+	constexpr T Dot(const tQuaternion<T>& x, const tQuaternion<T>& y);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -913,7 +997,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Cross product of x and y.</returns>
 	template<typename T>
-	Vec<2, T> Cross(const Vec<2, T>& x, const Vec<2, T>& y);
+	constexpr Vec<2, T> Cross(const Vec<2, T>& x, const Vec<2, T>& y);
 	
 	/// <summary>
 	/// Compute a cross product.
@@ -921,7 +1005,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Cross product of x and y.</returns>
 	template<typename T>
-	Vec<3, T> Cross(const Vec<3, T>& x, const Vec<3, T>& y);
+	constexpr Vec<3, T> Cross(const Vec<3, T>& x, const Vec<3, T>& y);
 
 	/// <summary>
 	/// Compute a cross product.
@@ -929,7 +1013,7 @@ namespace TRAP::Math
 	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Compute a cross product.</returns>
 	template<typename T>
-	tQuaternion<T> Cross(const tQuaternion<T>& q1, const tQuaternion<T>& q2);
+	constexpr tQuaternion<T> Cross(const tQuaternion<T>& q1, const tQuaternion<T>& q2);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -1046,7 +1130,7 @@ namespace TRAP::Math
 	/// <summary>
 	/// Multiply matrix x by matrix y component-wise, i.e., result[i][j] is the scalar product of x[i][j] and y[i][j].
 	/// </summary>
-	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Multiplied matrix.</returns>
 	template<uint32_t L, typename T>
 	Mat<L, L, T> MatrixCompMult(const Mat<L, L, T>& x, const Mat<L, L, T>& y);
@@ -1057,40 +1141,40 @@ namespace TRAP::Math
 	/// Treats the first parameter c as a column vector and the second parameter r as a row
 	/// vector and does a linear algebraic matrix multiply c * r.
 	/// </summary>
-	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Multiplied matrix.</returns>
 	template<uint32_t L, typename T>
 	Mat<L, L, T> OuterProduct(const Vec<L, T>& c, const Vec<L, T>& r);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Transposed matrix of m.</returns>
 	template<typename T>
 	typename Mat<3, 3, T>::transposeType Transpose(const Mat<3, 3, T>& m);
-	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Transposed matrix of m.</returns>
 	template<typename T>
 	typename Mat<4, 4, T>::transposeType Transpose(const Mat<4, 4, T>& m);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Determinant of a squared matrix.</returns>
 	template<typename T>
 	T Determinant(const Mat<3, 3, T>& m);
-	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Determinant of a squared matrix.</returns>
 	template<typename T>
 	T Determinant(const Mat<4, 4, T>& m);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
-	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Inverse of a squared matrix.</returns>
 	template<typename T>
 	Mat<3, 3, T> Inverse(const Mat<3, 3, T>& m);
-	/// <typeparam name="T">Floating-point or signed integer scalar types.</typeparam>
+	/// <typeparam name="T">Floating-point scalar types.</typeparam>
 	/// <returns>Inverse of a squared matrix.</returns>
 	template<typename T>
 	Mat<4, 4, T> Inverse(const Mat<4, 4, T>& m);
@@ -1298,6 +1382,23 @@ namespace TRAP::Math
 	/// <returns>Interpolated quaternions.</returns>
 	template<typename T>
 	tQuaternion<T> SLerp(const tQuaternion<T>& x, const tQuaternion<T>& y, T a);
+
+	/// <summary>
+	/// Spherical linear interpolation of two quaternions with multiple spins over rotation axis.
+	/// The interpolation always takes the short path when the spin count is positive and long path
+	/// when count is negative.
+	/// Rotation is performed at constant speed.
+	/// </summary>
+	/// 
+	/// <typeparam name="T">Floating-point scalar type.</typeparam>
+	/// <typeparam name="S">Integer scalar type.</typeparam>
+	/// <param name="x">A quaternion.</param>
+	/// <param name="y">A quaternion.</param>
+	/// <param name="a">Interpolation factor. The interpolation is defined beyond the range [0, 1].</param>
+	/// <param name="k">Additional spin count. If value is negative interpolation will be on "long" path.</param>
+	/// <returns>Interpolated quaternions.</returns>
+	template<typename T, typename S>
+	tQuaternion<T> SLerp(const tQuaternion<T>& x, const tQuaternion<T>& y, T a, S k);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -2131,17 +2232,34 @@ constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(const Vec<L, T>& a, T b)
 
 	Vec<L, T> result;
 	for (uint32_t i = 0; i < L; i++)
-		result[i] = std::min(a[i], b);
+		result[i] = Min(a[i], b);
 	return result;
 }
 
 template<uint32_t L, typename T>
 constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(const Vec<L, T>& a, const Vec<L, T>& b)
 {
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Min' only accepts floating-point or integer inputs");
+
 	Vec<L, T> result;
 	for (uint32_t i = 0; i < L; i++)
-		result[i] = std::min(a[i], b[i]);
+		result[i] = Min(a[i], b[i]);
 	return result;
+}
+
+template<uint32_t L, typename T>
+constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(const Vec<L, T>&a, const Vec<L, T>& b, const Vec<L, T>& c)
+{
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Min' only accepts floating-point or integer inputs");
+
+	return Min(Min(a, b), c);
+}
+
+template<uint32_t L, typename T>
+constexpr TRAP::Math::Vec<L, T> TRAP::Math::Min(const Vec<L, T>&a, const Vec<L, T>& b, const Vec<L, T>& c, const Vec<L, T>& d)
+{
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Min' only accepts floating-point or integer inputs");
+	return Min(Min(a, b), Min(c, d));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2153,17 +2271,35 @@ constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(const Vec<L, T>& a, T b)
 
 	Vec<L, T> result;
 	for (uint32_t i = 0; i < L; i++)
-		result[i] = std::max(a[i], b);
+		result[i] = Max(a[i], b);
 	return result;
 }
 
 template<uint32_t L, typename T>
 constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(const Vec<L, T>& a, const Vec<L, T>& b)
 {
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Max' only accepts floating-point or integer inputs");
+
 	Vec<L, T> result;
 	for (uint32_t i = 0; i < L; i++)
-		result[i] = std::max(a[i], b[i]);
+		result[i] = Max(a[i], b[i]);
 	return result;
+}
+
+template<uint32_t L, typename T>
+constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c)
+{
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Max' only accepts floating-point or integer inputs");
+
+	return Max(Max(a, b), c);
+}
+
+template<uint32_t L, typename T>
+constexpr TRAP::Math::Vec<L, T> TRAP::Math::Max(const Vec<L, T>& a, const Vec<L, T>& b, const Vec<L, T>& c, const Vec<L, T>& d)
+{
+	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Max' only accepts floating-point or integer inputs");
+	
+	return Max(Max(a, b), Max(c, d));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2190,6 +2326,46 @@ constexpr TRAP::Math::Vec<L, T> TRAP::Math::Clamp(const Vec<L, T>& x, const Vec<
 	static_assert(std::numeric_limits<T>::is_iec559 || std::numeric_limits<T>::is_integer, "'Clamp' only accepts floating-point or integer inputs");
 
 	return Vec<L, T>(Min(Max(x, minVal), maxVal));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename genType>
+int32_t TRAP::Math::IRound(const genType& x)
+{
+	static_assert(std::numeric_limits<genType>::is_iec559, "'IRound' only accepts floating-point inputs");
+	assert(static_cast<genType>(0.0) <= x);
+
+	return static_cast<int32_t>(x + static_cast<genType>(0.5));
+}
+
+template<uint32_t L, typename T>
+TRAP::Math::Vec<L, int32_t> TRAP::Math::IRound(const Vec<L, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'IRound' only accepts floating-point inputs");
+	assert(All(LessThanEqual(Vec<L, T>(0), x)));
+
+	return Vec<L, int32_t>(x + static_cast<T>(0.5));
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+template<typename genType>
+uint32_t TRAP::Math::URound(const genType& x)
+{
+	static_assert(std::numeric_limits<genType>::is_iec559, "'URound' only accepts floating-point inputs");
+	assert(static_cast<genType>(0.0) <= x);
+
+	return static_cast<uint32_t>(x + static_cast<genType>(0.5));
+}
+
+template<uint32_t L, typename T>
+TRAP::Math::Vec<L, int32_t> TRAP::Math::URound(const Vec<L, T>& x)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'URound' only accepts floating-point inputs");
+	assert(All(LessThanEqual(Vec<L, T>(0), x)));
+
+	return Vec<L, uint32_t>(x + static_cast<T>(0.5));
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -2510,8 +2686,9 @@ TRAP::Math::tQuaternion<T> TRAP::Math::Pow(const tQuaternion<T>& x, T y)
 		
 		//Prevent a division by 0 error later on
 		T vectorMagnitude = x.x * x.x + x.y * x.y + x.z * x.z;
-		//if(Abs(vectorMagnitude - static_cast<T>(0)) < Epsilon<T>())
-		//Despite the compiler might say, we actually want to compare vectorMagnitude to 0.
+		//Despite the compiler might say, we actually want to compare vectorMagnitude ti 0.
+		//Here, we could use denorm_int() compiling a project with unsafe maths optimizations
+		//might make the comparison always false, even when vectorMagnitude is 0.
 		if(vectorMagnitude < std::numeric_limits<T>::min())
 		{
 			//Equivalent to raising a real number to a power
@@ -2721,7 +2898,7 @@ T TRAP::Math::Distance(const Vec<L, T>& p0, const Vec<L, T>& p1)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-T TRAP::Math::Dot(T x, T y)
+constexpr T TRAP::Math::Dot(T x, T y)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'Dot' accepts only floating-point inputs");
 	
@@ -2729,7 +2906,7 @@ T TRAP::Math::Dot(T x, T y)
 }
 
 template<uint32_t L, typename T>
-T TRAP::Math::Dot(const Vec<L, T>& x, const Vec<L, T>& y)
+constexpr T TRAP::Math::Dot(const Vec<L, T>& x, const Vec<L, T>& y)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'Dot' accepts only floating-point inputs");
 
@@ -2741,7 +2918,7 @@ T TRAP::Math::Dot(const Vec<L, T>& x, const Vec<L, T>& y)
 }
 
 template <typename T>
-T TRAP::Math::Dot(const tQuaternion<T>& x, const tQuaternion<T>& y)
+constexpr T TRAP::Math::Dot(const tQuaternion<T>& x, const tQuaternion<T>& y)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'Dot' accepts only floating-point inputs");
 
@@ -2753,7 +2930,7 @@ T TRAP::Math::Dot(const tQuaternion<T>& x, const tQuaternion<T>& y)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-TRAP::Math::Vec<2, T> TRAP::Math::Cross(const Vec<2, T>& x, const Vec<2, T>& y)
+constexpr TRAP::Math::Vec<2, T> TRAP::Math::Cross(const Vec<2, T>& x, const Vec<2, T>& y)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'Cross' accepts only floating-point inputs");
 
@@ -2761,7 +2938,7 @@ TRAP::Math::Vec<2, T> TRAP::Math::Cross(const Vec<2, T>& x, const Vec<2, T>& y)
 }
 
 template<typename T>
-TRAP::Math::Vec<3, T> TRAP::Math::Cross(const Vec<3, T>& x, const Vec<3, T>& y)
+constexpr TRAP::Math::Vec<3, T> TRAP::Math::Cross(const Vec<3, T>& x, const Vec<3, T>& y)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'Cross' accepts only floating-point inputs");
 
@@ -2771,7 +2948,7 @@ TRAP::Math::Vec<3, T> TRAP::Math::Cross(const Vec<3, T>& x, const Vec<3, T>& y)
 }
 
 template <typename T>
-TRAP::Math::tQuaternion<T> TRAP::Math::Cross(const tQuaternion<T>& q1, const tQuaternion<T>& q2)
+constexpr TRAP::Math::tQuaternion<T> TRAP::Math::Cross(const tQuaternion<T>& q1, const tQuaternion<T>& q2)
 {
 	return tQuaternion<T>(q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z,
 						  q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y,
@@ -2860,7 +3037,10 @@ TRAP::Math::Vec<L, T> TRAP::Math::Refract(const Vec<L, T>& I, const Vec<L, T>& N
 template <uint32_t L, typename T>
 constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Mat<L, L, T>& x, const Mat<L, L, T>& y)
 {
-	return Equal(x, y, static_cast<T>(0));
+	Vec<L, bool> result(true);
+	for(uint32_t i = 0; i < L; ++i)
+		result[i] = All(Equal(x[i], y[i]));
+	return result;
 }
 
 template <uint32_t L, typename T>
@@ -2898,7 +3078,10 @@ constexpr TRAP::Math::Vec<L, bool> TRAP::Math::Equal(const Mat<L, L, T>& x, cons
 template <uint32_t L, typename T>
 constexpr TRAP::Math::Vec<L, bool> TRAP::Math::NotEqual(const Mat<L, L, T>& x, const Mat<L, L, T>& y)
 {
-	return Equal(x, y, static_cast<T>(0));
+	Vec<L, bool> result(true);
+	for(uint32_t i = 0; i < L; ++i)
+		result[i] = Any(NotEqual(x[i], y[i]));
+	return result;
 }
 
 template <uint32_t L, typename T>
@@ -3438,6 +3621,41 @@ TRAP::Math::tQuaternion<T> TRAP::Math::SLerp(const tQuaternion<T>& x, const tQua
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+template<typename T, typename S>
+TRAP::Math::tQuaternion<T> TRAP::Math::SLerp(const tQuaternion<T>& x, const tQuaternion<T>& y, T a, S k)
+{
+	static_assert(std::numeric_limits<T>::is_iec559, "'SLerp' only accepts floating-point inputs");
+	static_assert(std::numeric_limits<S>::is_integer, "'SLerp' only accepts integers for spin count");
+
+	tQuaternion<T> z = y;
+
+	T cosTheta = Dot(x, y);
+
+	//If cosTheta < 0, the interpolation will take the long way around the sphere.
+	//To fix this, one quat must be negated.
+	if(cosTheta < static_cast<T>(0))
+	{
+		z = -y;
+		cosTheta = -cosTheta;
+	}
+
+	//Perform a linear interpolation when cosTheta is close to 1 to avoid side effect of Sin(angle) becoming a zero denominator
+	if(cosTheta > static_cast<T>(1) - Epsilon<T>())
+	{
+		//Linear interpolation
+		return tQuaternion<T>(Mix(x.w, z.w, a), Mix(x.x, z.x, a), Mix(x.y, z.y, a), Mix(x.z, z.z, a));
+	}
+	else
+	{
+		//Graphics Gems III, page 96
+		T angle = ACos(cosTheta);
+		T phi = angle + k * PI<T>();
+		return (Sin(angle - a * phi) * x + Sin(a * phi) * z) / Sin(angle);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 template <typename T>
 TRAP::Math::tQuaternion<T> TRAP::Math::Conjugate(const tQuaternion<T>& q)
 {
@@ -3468,7 +3686,7 @@ T TRAP::Math::Roll(const tQuaternion<T>& q)
 	const T y = static_cast<T>(2) * (q.x * q.y + q.w * q.z);
 	const T x = q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z;
 
-	if (All(Equal(tVec2<T>(x, y), tVec2<T>(0), Epsilon<T>())))
+	if (All(Equal(tVec2<T>(x, y), tVec2<T>(0), Epsilon<T>()))) //Avoid ATan2(0, 0) - handle singularity
 		return static_cast<T>(0);
 
 	return static_cast<T>(ATan(y, x));
@@ -3644,7 +3862,8 @@ TRAP::Math::tQuaternion<T> TRAP::Math::QuaternionLookAt(const Vec<3, T>& directi
 	Mat<3, 3, T> result;
 
 	result[2] = direction;
-	result[0] = Normalize(Cross(up, result[2]));
+	const Vec<3, T>& right = Cross(up, result[2]);
+	result[0] = right * InverseSqrt(Max(static_cast<T>(0.00001), Dot(right, right)));
 	result[1] = Cross(result[2], result[0]);
 
 	return QuaternionCast(result);
@@ -3694,7 +3913,14 @@ template <typename T>
 T TRAP::Math::Angle(const tQuaternion<T>& x)
 {
 	if (Abs(x.w) > CosOneOverTwo<T>())
-		return ASin(Sqrt(x.x * x.x + x.y * x.y + x.z * x.z)) * static_cast<T>(2);
+	{
+		const T a = ASin(Sqrt(x.x * x.x + x.y * x.y + x.z * x.z)) * static_cast<T>(2);
+
+		if(x.w < static_cast<T>(0))
+			return PI<T>() * static_cast<T>(2) - a;
+
+		return a;
+	}
 
 	return ACos(x.w) * static_cast<T>(2);
 }

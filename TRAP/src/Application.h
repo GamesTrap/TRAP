@@ -3,7 +3,7 @@
 
 #include "Layers/ImGui/ImGuiLayer.h"
 
-#include "Config/Config.h"
+#include "Utils/Config/Config.h"
 #include "Layers/LayerStack.h"
 #include "ThreadPool/ThreadPool.h"
 #include "Utils/Time/Timer.h"
