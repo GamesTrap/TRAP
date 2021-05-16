@@ -1,4 +1,4 @@
-﻿#include "PropertiesPanel.h"
+#include "PropertiesPanel.h"
 
 #include <Scene/Components.h>
 #include <Core/PlatformDetection.h>
