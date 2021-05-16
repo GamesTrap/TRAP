@@ -19,7 +19,11 @@ project "Tests3D"
 
 	includedirs
 	{
-		"../../TRAP/src",
+		"../../TRAP/src"
+	}
+
+	sysincludedirs
+	{
 		"../../%{IncludeDir.IMGUI}",
 		"../../%{IncludeDir.GLSLANG}",
 		"../../%{IncludeDir.SPIRV}",

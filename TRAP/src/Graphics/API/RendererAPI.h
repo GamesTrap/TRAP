@@ -2104,12 +2104,11 @@ namespace TRAP::Graphics
 		struct TextureUpdateDesc
 		{
 			TRAP::Ref<TRAP::Graphics::API::VulkanTexture> Texture; //TODO Replace VulkanTexture with TRAP::Graphics::Texture
-			uint32_t MipLevel;
 			uint32_t ArrayLayer;
 
 			//To be filled by the caller
 			//Example
-			//TRAP::Graphics::RendererAPI::BufferUpdateDesc update = {Texture, 2, 1};
+			//TRAP::Graphics::RendererAPI::BufferUpdateDesc update = {Texture, 1};
 			//TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(update);
 			//Row by row copy is required if DstRowStride > SrcRowStride.
 			//Single memcpy will work if DstRowStride == SrcRowStride.

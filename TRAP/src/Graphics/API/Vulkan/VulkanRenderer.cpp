@@ -546,7 +546,7 @@ void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x,
 	
 	const TRAP::Scope<PerWindowData>& data = s_perWindowDataMap[window];
 
-	data->GraphicCommandBuffers[data->ImageIndex]->SetViewport(static_cast<const float>(x),
+	data->GraphicCommandBuffers[data->ImageIndex]->SetViewport(static_cast<float>(x),
 	                                                           static_cast<const float>(y),
 	                                                           static_cast<const float>(width),
 	                                                           static_cast<const float>(height),

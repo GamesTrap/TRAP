@@ -17,7 +17,7 @@ project "ConvertToSPIRV"
 		"src/**.cpp"
 	}
 
-	includedirs
+	sysincludedirs
 	{
 		"../../%{IncludeDir.GLSLANG}",
 		"../../%{IncludeDir.SPIRV}"

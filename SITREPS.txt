@@ -1840,4 +1840,11 @@ SITREP 05/14/2021|21w19a1
     - Math Added Rounding methods ~<10 mins
     - Math made Dot & Cross functions constexpr ~<10 mins
     - Math Added SLerp function with spin count ~<15 mins
-    - 
+
+SITREP 05/16/2021|21w19a2
+    - Changed TRAP Engine version to 21w19a2(0.7.44)
+    - Updated Codestyle.md ~<20 mins
+    - Resolved some warnings ~<10 mins
+    - Disabled warnings from dependencies on gcc/... ~<15 mins
+    - RendererAPI/ResourceLoader Removed MipLevel selection from texture updates ~<15 mins
+    - VulkanTextureTests Added runtime texture update test ~<30 mins

@@ -26,6 +26,7 @@ private:
     bool m_cycleMips;
     uint32_t m_currentMipLevel;
     uint32_t m_maxMipLevel;
+    bool m_updateTexture;
 
     std::array<float, 5 * 4> m_quadVerticesIndexed
 	{
@@ -39,6 +40,9 @@ private:
 	{
 		0, 1, 2, 2, 3, 0
 	};
+
+    std::vector<uint8_t> m_vulkanLogoImgData;
+    bool m_debugImgVisible;
 
     //////////////////////////////////////
 	//INTERNAL CODE USE AT YOUR OWN RISK//

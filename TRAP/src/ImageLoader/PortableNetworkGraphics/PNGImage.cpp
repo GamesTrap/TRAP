@@ -215,7 +215,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 			decompressedData.resize(expectedSize);
 		}
 
-		if (!DecompressData(data.CompressedData.data(), static_cast<uint32_t>(data.CompressedData.size()), decompressedData.data(), static_cast<uint32_t>(decompressedData.size()), needSwap))
+		if (!DecompressData(data.CompressedData.data(), static_cast<uint32_t>(data.CompressedData.size()), decompressedData.data(), static_cast<uint32_t>(decompressedData.size())))
 		{
 			decompressedData.clear();
 			return;
@@ -1483,7 +1483,7 @@ bool TRAP::INTERNAL::PNGImage::tIMECheck(const tIMEChunk& timeChunk)
 	return true;
 }
 
-bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceLength, uint8_t* destination, const int destinationLength, const bool needSwap)
+bool TRAP::INTERNAL::PNGImage::DecompressData(uint8_t* source, const int sourceLength, uint8_t* destination, const int destinationLength)
 {
 	if (sourceLength < 2)
 	{

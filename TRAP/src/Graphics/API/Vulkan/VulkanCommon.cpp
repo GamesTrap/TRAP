@@ -1089,7 +1089,7 @@ void TRAP::Graphics::API::UtilGetPlanarVkImageMemoryRequirement(VkDevice device,
 
 TRAP::Graphics::RendererAPI::ImageFormat TRAP::Graphics::API::VulkanGetRecommendedSwapchainFormat(const bool HDR)
 {
-	return RendererAPI::ImageFormat::B8G8R8A8_UNORM;
+	return RendererAPI::ImageFormat::B8G8R8A8_UNORM; //TODO HDR support
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

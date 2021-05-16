@@ -102,7 +102,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindPushConstantsByIndex(const TR
 {
 	TRAP_ASSERT(constants);
 	TRAP_ASSERT(rootSignature);
-	TRAP_ASSERT(paramIndex >= 0 && paramIndex < rootSignature->GetDescriptorCount());
+	TRAP_ASSERT(paramIndex < rootSignature->GetDescriptorCount());
 
 	const RendererAPI::DescriptorInfo* desc = &rootSignature->GetDescriptors()[paramIndex];
 	TRAP_ASSERT(desc);
@@ -273,9 +273,9 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		frameBufferHash = HashAlg<uint32_t>(colorArraySlices.data(), renderTargets.size(), frameBufferHash);
 	if (!colorMipSlices.empty())
 		frameBufferHash = HashAlg<uint32_t>(colorMipSlices.data(), renderTargets.size(), frameBufferHash);
-	if (depthArraySlice != -1)
+	if (depthArraySlice != std::numeric_limits<uint32_t>::max())
 		frameBufferHash = HashAlg<uint32_t>(&depthArraySlice, 1, frameBufferHash);
-	if (depthMipSlice != -1)
+	if (depthMipSlice != std::numeric_limits<uint32_t>::max())
 		frameBufferHash = HashAlg<uint32_t>(&depthMipSlice, 1, frameBufferHash);
 
 	RendererAPI::SampleCount sampleCount = RendererAPI::SampleCount::SampleCount1;

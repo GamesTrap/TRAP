@@ -82,8 +82,7 @@ void TRAP::Graphics::API::ResourceLoader::StreamerThreadFunc(ResourceLoader* loa
 
 			case UpdateRequestType::UpdateTexture:
 			{
-				//TODO
-				result = loader->UpdateTexture(loader->m_nextSet, std::get<TextureUpdateDescInternal>(updateState.Desc), {}); //Bug Crash?!
+				result = loader->UpdateTexture(loader->m_nextSet, std::get<TextureUpdateDescInternal>(updateState.Desc), nullptr);
 				break;
 			}
 
@@ -432,7 +431,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Textu
 	const RendererAPI::ImageFormat fmt = texture->GetImageFormat();
 	const uint32_t alignment = UtilGetTextureSubresourceAlignment(fmt);
 
-	bool success = UtilGetSurfaceInfo(Math::Max(1u, (texture->GetWidth() >> desc.MipLevel)), Math::Max(1u, (texture->GetHeight() >> desc.MipLevel)),
+	bool success = UtilGetSurfaceInfo(texture->GetWidth(), texture->GetHeight(),
 		fmt, &desc.SrcSliceStride, &desc.SrcRowStride, &desc.RowCount);
 	TRAP_ASSERT(success);
 
@@ -440,8 +439,7 @@ void TRAP::Graphics::API::ResourceLoader::BeginUpdateResource(RendererAPI::Textu
 	desc.DstRowStride = ((desc.SrcRowStride + rowAlignment - 1) / rowAlignment) * rowAlignment;
 	desc.DstSliceStride = (((desc.DstRowStride * desc.RowCount) + alignment - 1) / alignment) * alignment;
 
-	uint32_t mip = Math::Max(1u, static_cast<uint32_t>((texture->GetDepth()) >> (desc.MipLevel)));
-	const int64_t requiredSize = ((mip * desc.DstRowStride * desc.RowCount + alignment - 1) / alignment) * alignment;
+	const int64_t requiredSize = ((desc.DstRowStride * desc.RowCount + alignment - 1) / alignment) * alignment;
 
 	//We need to use a staging buffer
 	desc.Internal.MappedRange = AllocateUploadMemory(requiredSize, alignment);
@@ -472,7 +470,7 @@ void TRAP::Graphics::API::ResourceLoader::EndUpdateResource(RendererAPI::Texture
 	TextureUpdateDescInternal internalDesc = {};
 	internalDesc.Texture = desc.Texture;
 	internalDesc.Range = desc.Internal.MappedRange;
-	internalDesc.BaseMipLevel = desc.MipLevel;
+	internalDesc.BaseMipLevel = 0;
 	internalDesc.MipLevels = 1;
 	internalDesc.BaseArrayLayer = desc.ArrayLayer;
 	internalDesc.LayerCount = 1;
@@ -878,7 +876,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::ResourceLoader::UpdateTexture(const std::size_t activeSet,
-	const TextureUpdateDescInternal& textureUpdateDesc, std::array<TRAP::Scope<TRAP::Image>, 6> images)
+	const TextureUpdateDescInternal& textureUpdateDesc, std::array<TRAP::Scope<TRAP::Image>, 6>* const images)
 {
 	//When this call comes from UpdateResource, staging buffer data is already filled
 	//All that is left to do is record and execute the Copy commands
@@ -947,15 +945,15 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 				for(uint32_t z = 0; z < subDepth; ++z)
 				{
 					uint8_t* dstData = data + subSlicePitch * z;
-					const uint8_t* pixelData = static_cast<const uint8_t*>(images[layer]->GetPixelData());
+					const uint8_t* pixelData = static_cast<const uint8_t*>((*images)[layer]->GetPixelData());
 
-					if(images[layer]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //RGB also needs an alpha value
+					if((*images)[layer]->GetColorFormat() == TRAP::Image::ColorFormat::RGB) //RGB also needs an alpha value
 					{
 						uint8_t alpha1Byte = 255;
 						uint16_t alpha2Byte = 65535;
 						float alphaHDR = 1.0f;
-						uint32_t pixelDataByteSizePerChannel = images[layer]->GetBytesPerPixel() / 3;
-						uint64_t pixelDataSizeRGBA = images[layer]->GetWidth() * images[layer]->GetHeight() * 4 * pixelDataByteSizePerChannel;
+						uint32_t pixelDataByteSizePerChannel = (*images)[layer]->GetBytesPerPixel() / 3;
+						uint64_t pixelDataSizeRGBA = (*images)[layer]->GetWidth() * (*images)[layer]->GetHeight() * 4 * pixelDataByteSizePerChannel;
 						uint64_t pixelDataOffset = 0;
 						for(uint64_t i = 0; i < pixelDataSizeRGBA; i += 4 * pixelDataByteSizePerChannel)
 						{
@@ -988,7 +986,6 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 			RendererAPI::SubresourceDataDesc subresourceDesc = {};
 			subresourceDesc.ArrayLayer = layer;
-			//subresourceDesc.MipLevel = mip;
 			subresourceDesc.MipLevel = 0;
 			subresourceDesc.SrcOffset = upload.Offset + offset;
 			if(RendererAPI::GetRenderAPI() == RenderAPI::Vulkan)
@@ -1271,7 +1268,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 		updateDesc.BaseArrayLayer = 0;
 		updateDesc.LayerCount = textureDesc.ArraySize;
 
-		return UpdateTexture(activeSet, updateDesc, std::move(images));
+		return UpdateTexture(activeSet, updateDesc, &images);
 	}
 
 	//Fallback to default textures
@@ -1311,7 +1308,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 	updateDesc.BaseArrayLayer = 0;
 	updateDesc.LayerCount = textureDesc.ArraySize;
 
-	return UpdateTexture(activeSet, updateDesc, std::move(images));
+	return UpdateTexture(activeSet, updateDesc, &images);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

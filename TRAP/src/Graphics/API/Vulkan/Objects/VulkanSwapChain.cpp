@@ -168,7 +168,7 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 		}
 
 		//If there is no dedicated present queue, just find the first available queue which supports present
-		if (presentQueueFamilyIndex == -1)
+		if (presentQueueFamilyIndex == std::numeric_limits<uint32_t>::max())
 		{
 			for (uint32_t index = 0; index < queueFamilyProperties.size(); ++index)
 			{
@@ -189,7 +189,7 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 	//Find if GPU has a dedicated present queue
 	VkQueue presentQueue;
 	uint32_t finalPresentQueueFamilyIndex;
-	if (presentQueueFamilyIndex != -1 && queueFamilyIndices[0] != presentQueueFamilyIndex)
+	if (presentQueueFamilyIndex != std::numeric_limits<uint32_t>::max() && queueFamilyIndices[0] != presentQueueFamilyIndex)
 	{
 		queueFamilyIndices[0] = presentQueueFamilyIndex;
 		vkGetDeviceQueue(m_device->GetVkDevice(), queueFamilyIndices[0], 0, &presentQueue);

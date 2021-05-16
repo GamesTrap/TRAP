@@ -41,7 +41,7 @@ namespace TRAP::Graphics
 		virtual void Begin() = 0;
 		virtual void End() = 0;
 
-		virtual void SetViewport(float x, float y, float width, float height, float minDepth, float maxDepth) const = 0;
+		virtual void SetViewport(const float x, const float y, const float width, const float height, const float minDepth, const float maxDepth) const = 0;
 		virtual void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height) const = 0;
 
 		virtual void Draw(uint32_t vertexCount, uint32_t firstVertex) const = 0;

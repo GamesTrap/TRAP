@@ -565,7 +565,7 @@ const TRAP::CPUInfo& TRAP::Application::GetCPUInfo()
 					if (HFS >= 4)
 					{
 						std::array<uint32_t, 4> regs1 = CPUID(4, 0);
-						s_CPU.Cores = 1 + (regs1[0] >> 26) & 0x3F;
+						s_CPU.Cores = (1 + (regs1[0] >> 26)) & 0x3F;
 					}
 				}
 				if (s_CPU.HyperThreaded)

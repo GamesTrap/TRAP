@@ -2,6 +2,7 @@
 
 #include <Graphics/API/Objects/DescriptorPool.h>
 #include <Graphics/API/Objects/DescriptorSet.h>
+#include <Embed.h>
 
 VulkanTextureTests::VulkanTextureTests()
     : Layer("VulkanTextureTests"),
@@ -11,7 +12,9 @@ VulkanTextureTests::VulkanTextureTests()
       m_descriptorSet(nullptr),
       m_currentMipLevel(0),
       m_maxMipLevel(0),
-      m_textureSamplers()
+      m_textureSamplers(),
+      m_updateTexture(false),
+      m_debugImgVisible(false)
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -37,6 +40,17 @@ void VulkanTextureTests::OnAttach()
     //Setup IndexBuffer
     m_indexBuffer = TRAP::Graphics::IndexBuffer::Create(m_quadIndices.data(), static_cast<uint16_t>(m_quadIndices.size()) * sizeof(uint16_t), TRAP::Graphics::BufferUsage::Static);
     m_indexBuffer->AwaitLoading();
+
+    TRAP::Scope<TRAP::Image> m_vulkanLogoImg = TRAP::Image::LoadFromFile("/Textures/vulkanlogo.png");
+    m_vulkanLogoImgData.resize(m_vulkanLogoImg->GetWidth() * m_vulkanLogoImg->GetHeight() * 4);
+    uint32_t imgCounter = 0;
+    for(uint32_t i = 0; i < m_vulkanLogoImg->GetWidth() * m_vulkanLogoImg->GetHeight() * 4; i += 4)
+    {
+        m_vulkanLogoImgData[i + 0] = *((uint8_t*)m_vulkanLogoImg->GetPixelData() + imgCounter++);
+        m_vulkanLogoImgData[i + 1] = *((uint8_t*)m_vulkanLogoImg->GetPixelData() + imgCounter++);
+        m_vulkanLogoImgData[i + 2] = *((uint8_t*)m_vulkanLogoImg->GetPixelData() + imgCounter++);
+        m_vulkanLogoImgData[i + 3] = 255;
+    }
 
     //////////////////////////////////////
 	//INTERNAL CODE USE AT YOUR OWN RISK//
@@ -75,7 +89,7 @@ void VulkanTextureTests::OnAttach()
         m_textureSamplers[i] = TRAP::Graphics::Sampler::Create(samplerDesc);
     }
 
-	//TODO Test Runtime Texture Update
+    //TODO Test Runtime Texture Update Cubemaps (ArrayLayer)
 
     //Just in case
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
@@ -145,6 +159,41 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
     else
         m_currentMipLevel = 0;
 
+    if(m_updateTexture)
+    {
+        m_updateTexture = false;
+
+        //NOTE: This also automagically updates all miplevels
+        TRAP::Graphics::API::SyncToken token{};
+        TRAP::Graphics::RendererAPI::TextureUpdateDesc desc{};
+        desc.Texture = m_texture;
+        TRAP::Graphics::RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);
+
+        if(m_debugImgVisible)
+            std::memcpy(desc.MappedData, m_vulkanLogoImgData.data(), desc.DstSliceStride);
+        else
+        {
+            //This puts the debug texture in the middle (tiny) and makes everything else white
+            std::vector<uint8_t> col(desc.DstSliceStride, 255);
+            uint32_t j = 0;
+            for(uint32_t y = 0; y < 32; ++y)
+            {
+                for(uint32_t x = 0; x < 32; ++x)
+                {
+                    col[(desc.DstSliceStride / 2 + desc.DstRowStride / 2) + (y * desc.DstRowStride + (x * 4) + 0)] = TRAP::Embed::DefaultImageData[j++];
+                    col[(desc.DstSliceStride / 2 + desc.DstRowStride / 2) + (y * desc.DstRowStride + (x * 4) + 1)] = TRAP::Embed::DefaultImageData[j++];
+                    col[(desc.DstSliceStride / 2 + desc.DstRowStride / 2) + (y * desc.DstRowStride + (x * 4) + 2)] = TRAP::Embed::DefaultImageData[j++];
+                    col[(desc.DstSliceStride / 2 + desc.DstRowStride / 2) + (y * desc.DstRowStride + (x * 4) + 3)] = TRAP::Embed::DefaultImageData[j++];
+                }
+            }
+            std::memcpy(desc.MappedData, col.data(), desc.DstSliceStride);
+        }
+        m_debugImgVisible = !m_debugImgVisible;
+
+        TRAP::Graphics::RendererAPI::GetResourceLoader()->EndUpdateResource(desc, &token);
+        TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForToken(&token);
+    }
+
     //Upload mip level index
     TRAP::Graphics::RendererAPI::GetRenderer()->BindPushConstants("SamplerRootConstant", &m_currentMipLevel);
 
@@ -178,6 +227,11 @@ bool VulkanTextureTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
     {
         m_cycleMips = !m_cycleMips;
         TP_TRACE("[VulkanTextureTests] Mipmap cycling: ", m_cycleMips ? "On" : "Off");
+    }
+    else if(e.GetKey() == TRAP::Input::Key::F2)
+    {
+        m_updateTexture = true;
+        TP_TRACE("[VulkanTextureTests] Updating Texture");
     }
     else if(e.GetKey() == TRAP::Input::Key::Escape)
         TRAP::Application::Shutdown();

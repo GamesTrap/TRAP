@@ -41,7 +41,11 @@ project "TRAP"
 
 	includedirs
 	{
-		"src",
+		"src"
+	}
+
+	sysincludedirs
+	{
 		"../%{IncludeDir.IMGUI}",
 		"../%{IncludeDir.GLSLANG}",
 		"../%{IncludeDir.SPIRV}",

@@ -335,7 +335,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				{
 				case RendererAPI::DescriptorType::Sampler:
 					for (uint32_t arr = 0; arr < arrayCount; ++arr)
-						updateData[descInfo->HandleIndex + arr].ImageInfo = {VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(), VK_NULL_HANDLE};
+						updateData[descInfo->HandleIndex + arr].ImageInfo = {VulkanRenderer::s_NullDescriptors->DefaultSampler->GetVkSampler(), VK_NULL_HANDLE, VK_IMAGE_LAYOUT_UNDEFINED};
 					break;
 
 				case RendererAPI::DescriptorType::Texture:

@@ -118,11 +118,11 @@ void TRAP::Graphics::Renderer::EndScene()
 	}
 
 	//vertexArray->Bind();
-	/*if (vertexArray->GetIndexBuffer())
-		RenderCommand::DrawIndexed(vertexArray, 0);
-	else
-		RenderCommand::Draw(vertexArray);*/
-//}
+	//if (vertexArray->GetIndexBuffer())
+		//RenderCommand::DrawIndexed(vertexArray, 0);
+	//else
+		//RenderCommand::Draw(vertexArray);
+}*/
 
 //-------------------------------------------------------------------------------------------------------------------//
 

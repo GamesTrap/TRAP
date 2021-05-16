@@ -19,7 +19,11 @@ project "TRAP-Editor"
 
 	includedirs
 	{
-		"../../TRAP/src",
+		"../../TRAP/src"
+	}
+
+	sysincludedirs
+	{
 		"../../%{IncludeDir.IMGUI}",
 		"../../%{IncludeDir.GLSLANG}",
 		"../../%{IncludeDir.SPIRV}",

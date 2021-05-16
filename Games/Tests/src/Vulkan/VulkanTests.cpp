@@ -152,7 +152,7 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 	}
 	else if(m_pushConstantOrUBO == 2)
 	{
-		if(!m_sizeMultiplicatorUniformBuffer && !m_colorUniformBuffer) //Bug somewhere (Windows)
+		if(!m_sizeMultiplicatorUniformBuffer && !m_colorUniformBuffer)
 		{
 			m_sizeMultiplicatorUniformBuffer = TRAP::Graphics::UniformBuffer::Create("SizeMultiplicator", sizeof(SizeMultiplicatorData), TRAP::Graphics::BufferUsage::Stream);
 			m_colorUniformBuffer = TRAP::Graphics::UniformBuffer::Create("Color", sizeof(ColorData), TRAP::Graphics::BufferUsage::Stream);

@@ -103,7 +103,7 @@ namespace TRAP::Graphics::API
 		};
 		
 		UploadFunctionResult UpdateBuffer(std::size_t activeSet, const RendererAPI::BufferUpdateDesc& bufferUpdateDesc);
-		UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& bufferUpdateDesc, std::array<TRAP::Scope<TRAP::Image>, 6> img);
+		UploadFunctionResult UpdateTexture(std::size_t activeSet, const TextureUpdateDescInternal& bufferUpdateDesc, std::array<TRAP::Scope<TRAP::Image>, 6>* const img);
 		UploadFunctionResult LoadTexture(std::size_t activeSet, UpdateRequest& textureUpdate);
 		
 		template<typename T>

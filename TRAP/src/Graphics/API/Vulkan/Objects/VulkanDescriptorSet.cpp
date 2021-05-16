@@ -123,10 +123,10 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index, const std:
 		const RendererAPI::DescriptorData& param = params[i];
 		uint32_t paramIndex = param.Index;
 
-		VALIDATE_DESCRIPTOR(param.Name || (paramIndex != -1), "DescriptorData has nullptr name and invalid index");
+		VALIDATE_DESCRIPTOR(param.Name || (paramIndex != std::numeric_limits<uint32_t>::max()), "DescriptorData has nullptr name and invalid index");
 
-		const RendererAPI::DescriptorInfo* desc = (paramIndex != -1) ? (&rootSignature->GetDescriptors()[paramIndex]) : rootSignature->GetDescriptor(param.Name);
-		if(paramIndex != -1)
+		const RendererAPI::DescriptorInfo* desc = (paramIndex != std::numeric_limits<uint32_t>::max()) ? (&rootSignature->GetDescriptors()[paramIndex]) : rootSignature->GetDescriptor(param.Name);
+		if(paramIndex != std::numeric_limits<uint32_t>::max())
 		{
 			VALIDATE_DESCRIPTOR(desc, "Invalid descriptor with param index ", paramIndex);
 		}
@@ -145,7 +145,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index, const std:
 		case RendererAPI::DescriptorType::Sampler:
 		{
 			//Index is invalid when descriptor is a static sampler
-			VALIDATE_DESCRIPTOR(desc->IndexInParent != -1,
+			VALIDATE_DESCRIPTOR(desc->IndexInParent != std::numeric_limits<uint32_t>::max(),
 				std::string("Trying to update a static sampler (") + std::string(desc->Name) + "). All static samplers must be set in RootSignature constructor and cannot be updated later");
 
 			const std::vector<Sampler*>& samplers = std::get<std::vector<Sampler*>>(param.Resource);
@@ -155,7 +155,7 @@ void TRAP::Graphics::API::VulkanDescriptorSet::Update(uint32_t index, const std:
 			{
 				VALIDATE_DESCRIPTOR(samplers[arr], std::string("nullptr Sampler (") + std::string(desc->Name) + std::string(" [") + std::to_string(arr) + std::string("])"));
 
-				updateData[desc->HandleIndex + arr].ImageInfo = { dynamic_cast<VulkanSampler*>(samplers[arr])->GetVkSampler(), VK_NULL_HANDLE };
+				updateData[desc->HandleIndex + arr].ImageInfo = { dynamic_cast<VulkanSampler*>(samplers[arr])->GetVkSampler(), VK_NULL_HANDLE, VK_IMAGE_LAYOUT_UNDEFINED };
 				update = true;
 			}
 			break;

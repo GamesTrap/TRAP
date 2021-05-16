@@ -1,7 +1,6 @@
 #include "TRAPPCH.h"
 #include "Shader.h"
 
-
 #include "DummyShader.h"
 #include "VFS/VFS.h"
 #include "Graphics/API/Vulkan/Objects/VulkanShader.h"
@@ -673,6 +672,7 @@ TRAP::Scope<glslang::TShader> TRAP::Graphics::Shader::PreProcessGLSLForConversio
 			/* .maxTaskWorkGroupSizeY_NV = */ 1,
 			/* .maxTaskWorkGroupSizeZ_NV = */ 1,
 			/* .maxMeshViewCountNV = */ 4,
+			/* .maxDualSourceDrawBuffersEXT = */ 1,
 
 			/* TLimits */
 			/* .nonInductiveForLoops = */ true,
@@ -806,6 +806,7 @@ bool TRAP::Graphics::Shader::ParseGLSLang(glslang::TShader* shader)
 		/* .maxTaskWorkGroupSizeY_NV = */ 1,
 		/* .maxTaskWorkGroupSizeZ_NV = */ 1,
 		/* .maxMeshViewCountNV = */ 4,
+		/* .maxDualSourceDrawBuffersEXT = */ 1,
 
 		/* TLimits */
 		/* .nonInductiveForLoops = */ true,

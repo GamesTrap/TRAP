@@ -26,9 +26,9 @@ namespace TRAP
 	protected:
 		virtual void OnCreate() {}
 		virtual void OnDestroy() {}
-		virtual void OnUpdate(Utils::TimeStep deltaTime) {}
+		virtual void OnUpdate(const Utils::TimeStep& deltaTime) {}
 		virtual void OnTick() {}
-		
+
 	private:
 		Entity m_entity;
 		friend class Scene;

@@ -112,7 +112,8 @@ void TRAP::Graphics::IndexBuffer::SetData(uint16_t* indices, const uint32_t size
 {
 	TRAP_ASSERT(size + offset <= m_indexBuffer->GetSize());
 
-	RendererAPI::BufferUpdateDesc desc{ m_indexBuffer };
+	RendererAPI::BufferUpdateDesc desc{};
+	desc.Buffer = m_indexBuffer;
 	desc.DstOffset = offset;
 	RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);
 	std::memcpy(desc.MappedData, indices, size);
@@ -126,7 +127,8 @@ void TRAP::Graphics::IndexBuffer::SetData(uint32_t* indices, const uint32_t size
 {
 	TRAP_ASSERT(size + offset <= m_indexBuffer->GetSize());
 
-	RendererAPI::BufferUpdateDesc desc{ m_indexBuffer };
+	RendererAPI::BufferUpdateDesc desc{};
+	desc.Buffer = m_indexBuffer;
 	desc.DstOffset = offset;
 	RendererAPI::GetResourceLoader()->BeginUpdateResource(desc);
 	std::memcpy(desc.MappedData, indices, size);
