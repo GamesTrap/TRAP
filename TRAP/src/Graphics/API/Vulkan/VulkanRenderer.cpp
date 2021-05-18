@@ -196,7 +196,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 			swapChainDesc.PresentQueues = { p->GraphicQueue };
 			swapChainDesc.Width = p->Window->GetWidth();
 			swapChainDesc.Height = p->Window->GetHeight();
-			swapChainDesc.ImageCount = PerWindowData::ImageCount;
+			swapChainDesc.ImageCount = RendererAPI::ImageCount;
 			swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true);
 			swapChainDesc.ColorClearValue = p->ClearColor;
 			swapChainDesc.EnableVSync = p->CurrentVSync;
@@ -206,7 +206,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 				TRAP::Application::Shutdown();
 		}
 
-		p->ImageIndex = (p->ImageIndex + 1) % PerWindowData::ImageCount;
+		p->ImageIndex = (p->ImageIndex + 1) % RendererAPI::ImageCount;
 
 		p->Recording = false;
 	}
@@ -835,7 +835,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		p->ComputeQueue = Queue::Create(queueDesc);
 
 		//For each buffered image
-		for (uint32_t i = 0; i < PerWindowData::ImageCount; ++i)
+		for (uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
 		{
 			//Create Graphic Command Pool
 			p->GraphicCommandPools[i] = CommandPool::Create({ p->GraphicQueue, false });
@@ -864,7 +864,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 			swapChainDesc.PresentQueues = { p->GraphicQueue };
 			swapChainDesc.Width = window->GetWidth();
 			swapChainDesc.Height = window->GetHeight();
-			swapChainDesc.ImageCount = PerWindowData::ImageCount;
+			swapChainDesc.ImageCount = RendererAPI::ImageCount;
 			swapChainDesc.ColorFormat = SwapChain::GetRecommendedSwapchainFormat(true);
 			swapChainDesc.EnableVSync = p->CurrentVSync;
 			swapChainDesc.ColorClearValue = p->ClearColor;

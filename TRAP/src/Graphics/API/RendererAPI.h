@@ -2174,7 +2174,7 @@ namespace TRAP::Graphics
 				MappedMemoryRange MappedRange;
 			} Internal;
 		};
-		
+
 		inline static struct GPUSettings
 		{
 			uint32_t UniformBufferAlignment;
@@ -2194,22 +2194,23 @@ namespace TRAP::Graphics
 	protected:
 		static TRAP::Scope<RendererAPI> s_Renderer;
 		static RenderAPI s_RenderAPI;
-		static TRAP::Scope<API::ResourceLoader> s_ResourceLoader;
+		static TRAP::Scope<API::ResourceLoader> s_ResourceLoader; //TODO This is a singleton shouldnt it be moved to ResourceLoader with a Getter?!
 
 		static TRAP::Ref<DescriptorPool> s_descriptorPool;
 		static RootSignatureDesc s_graphicRootSignatureDesc;
-		
+
+		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
+
 		friend class TRAP::ImGuiLayer;
+
 		struct PerWindowData
 		{
 			friend class TRAP::ImGuiLayer;
 
 			~PerWindowData();
-			
-			inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
 
 			TRAP::Window* Window;
-			
+
 			uint32_t ImageIndex = 0;
 			TRAP::Ref<Queue> GraphicQueue;
 			TRAP::Ref<Queue> ComputeQueue;
@@ -2220,12 +2221,12 @@ namespace TRAP::Graphics
 			std::array<TRAP::Ref<Fence>, ImageCount> RenderCompleteFences;
 			TRAP::Ref<Semaphore> ImageAcquiredSemaphore;
 			std::array<TRAP::Ref<Semaphore>, ImageCount> RenderCompleteSemaphores;
-			
+
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 			uint32_t CurrentSwapChainImageIndex;
 
 			ClearValue ClearColor{0.1f, 0.1f, 0.1f, 1.0f};
-			
+
 			bool CurrentVSync;
 			bool NewVSync;
 
@@ -2236,6 +2237,7 @@ namespace TRAP::Graphics
 
 			bool RebuildRootSignature = false;
 		};
+
 	protected:
 		static std::unordered_map<Window*, TRAP::Scope<PerWindowData>> s_perWindowDataMap;
 		static std::mutex s_perWindowDataMutex;

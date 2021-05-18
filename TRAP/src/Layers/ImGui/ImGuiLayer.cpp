@@ -100,8 +100,8 @@ void TRAP::ImGuiLayer::OnAttach()
 		initInfo.PipelineCache = dynamic_cast<TRAP::Graphics::API::VulkanPipelineCache*>(m_imguiPipelineCache.get())->GetVkPipelineCache();
 		initInfo.DescriptorPool = m_imguiDescriptorPool;
 		initInfo.Allocator = nullptr;
-		initInfo.MinImageCount = winData->ImageCount;
-		initInfo.ImageCount = winData->ImageCount;
+		initInfo.MinImageCount = TRAP::Graphics::RendererAPI::ImageCount;
+		initInfo.ImageCount = TRAP::Graphics::RendererAPI::ImageCount;
 		initInfo.CheckVkResultFn = [](const VkResult res) {VkCall(res); };
 		
 		ImGui_ImplVulkan_Init(&initInfo, dynamic_cast<TRAP::Graphics::API::VulkanCommandBuffer*>(winData->GraphicCommandBuffers[winData->ImageIndex])->GetActiveVkRenderPass());
