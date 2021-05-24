@@ -5293,7 +5293,7 @@ std::string TRAP::INTERNAL::WindowingAPI::GetX11KeyboardLayoutName()
 		return "";
 	}
 
-	XkbStateRec state = { 0 };
+	XkbStateRec state{};
 	s_Data.XKB.GetState(s_Data.display, XkbUseCoreKbd, &state);
 
 	XkbDescPtr desc = s_Data.XKB.AllocKeyboard();

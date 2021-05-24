@@ -143,7 +143,7 @@ void TRAP::Graphics::API::VulkanQueue::Submit(const RendererAPI::QueueSubmitDesc
 		if(!desc.SignalSemaphores[i]->IsSignaled())
 		{
 			signalSemaphores[signalCount] = dynamic_cast<VulkanSemaphore*>(desc.SignalSemaphores[i].get())->GetVkSemaphore();
-			desc.SignalSemaphores[signalCount]->m_signaled = true;
+			desc.SignalSemaphores[i]->m_signaled = true;
 			++signalCount;
 		}
 	}

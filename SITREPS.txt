@@ -1848,3 +1848,15 @@ SITREP 05/16/2021|21w19a2
     - Disabled warnings from dependencies on gcc/... ~<15 mins
     - RendererAPI/ResourceLoader Removed MipLevel selection from texture updates ~<15 mins
     - VulkanTextureTests Added runtime texture update test ~<30 mins
+
+SITREP 05/24/2021|21w21a1
+    - Changed TRAP Engine version to 21w21a1(0.7.45)
+    - Tests (Re)Added VulkanMultiWindowTests ~>20 mins
+    - Application Removed artifical FrameTime/FPS when not focused ~<10 mins
+    - RendererAPI Fixed for loop not running last iteration ~<5 mins
+    - RendererAPI Moved Compute stuff out of PerWindowData ~<20 mins
+    - RendererAPI Moved Queue stuff out of PerWindowData ~<20 mins
+    - RendererAPI Added enums for ShadingRate stuff (WIP) ~<10 mins
+    - Vulkan Changed how undefined layouts are handled ~<30 mins
+    - Layerstack Added Pop*** methods to remove Layers from LayerStack with a Layer pointer ~<15 mins
+    - GCC Silenced unknown pragma warnings ~<5 mins

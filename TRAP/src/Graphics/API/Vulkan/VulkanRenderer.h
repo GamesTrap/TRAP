@@ -20,6 +20,10 @@ namespace TRAP::Graphics::API
 	class VulkanDevice;
 	class VulkanInstance;
 	class VulkanDebug;
+	class VulkanCommandPool;
+	class VulkanCommandBuffer;
+	class VulkanFence;
+	class VulkanQueue;
 
 	class VulkanRenderer final : public RendererAPI
 	{
@@ -175,12 +179,23 @@ namespace TRAP::Graphics::API
 			TRAP::Ref<VulkanBuffer> DefaultBufferUAV;
 			TRAP::Ref<VulkanSampler> DefaultSampler;
 			std::mutex SubmitMutex;
+
+			//Unlike DirectX 12, Vulkan textures start in undefined layout.
+			//With this, we transition them to the specified layout so app codee doesn't
+			//have to worry about this
+			std::mutex InitialTransitionMutex;
+			TRAP::Ref<VulkanQueue> InitialTransitionQueue;
+			TRAP::Ref<VulkanCommandPool> InitialTransitionCmdPool;
+			VulkanCommandBuffer* InitialTransitionCmd;
+			TRAP::Ref<VulkanFence> InitialTransitionFence;
 		};
 		static TRAP::Scope<NullDescriptors> s_NullDescriptors;
 		static std::vector<VkPipelineColorBlendAttachmentState> DefaultBlendAttachments;
 		static VkPipelineRasterizationStateCreateInfo DefaultRasterizerDesc;
 		static VkPipelineDepthStencilStateCreateInfo DefaultDepthDesc;
-		static VkPipelineColorBlendStateCreateInfo DefaultBlendDesc;		
+		static VkPipelineColorBlendStateCreateInfo DefaultBlendDesc;
+
+		static void UtilInitialTransition(TRAP::Ref<VulkanTexture> texture, RendererAPI::ResourceState startState);
 
 		//Per Thread Render Pass synchronization logic
 		//Render-passes are not exposed to the engine code since they are not available on all APIs

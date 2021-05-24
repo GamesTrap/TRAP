@@ -8,7 +8,7 @@
 #include "Window/WindowingAPI.h"
 #include "Utils/Utils.h"
 
-#include <Graphics/API/Objects/Pipeline.h>
+#include "Graphics/API/Objects/Pipeline.h"
 
 #include "Objects/VulkanSemaphore.h"
 #include "Objects/VulkanFence.h"
@@ -32,6 +32,7 @@
 #include "Graphics/API/PipelineDescHash.h"
 #include "Graphics/API/Objects/PipelineCache.h"
 #include "VFS/VFS.h"
+#include "Utils/Dialogs/Dialogs.h"
 
 TRAP::Graphics::API::VulkanRenderer* TRAP::Graphics::API::VulkanRenderer::s_renderer = nullptr;
 //Instance Extensions
@@ -174,18 +175,30 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 		submitDesc.SignalSemaphores = { p->RenderCompleteSemaphores[p->ImageIndex] };
 		submitDesc.WaitSemaphores = { p->ImageAcquiredSemaphore };
 		submitDesc.SignalFence = p->RenderCompleteFences[p->ImageIndex];
-		p->GraphicQueue->Submit(submitDesc);
+		s_graphicQueue->Submit(submitDesc);
 
 		QueuePresentDesc presentDesc{};
 		presentDesc.Index = static_cast<uint8_t>(p->CurrentSwapChainImageIndex);
 		presentDesc.WaitSemaphores = { p->RenderCompleteSemaphores[p->ImageIndex] };
 		presentDesc.SwapChain = p->SwapChain;
-		const PresentStatus presentStatus = p->GraphicQueue->Present(presentDesc);
+		const PresentStatus presentStatus = s_graphicQueue->Present(presentDesc);
+
 		if (presentStatus == PresentStatus::DeviceReset || presentStatus == PresentStatus::Failed)
+		{
+			if(presentStatus == PresentStatus::DeviceReset)
+				TRAP::Utils::Dialogs::ShowMsgBox("Presenting failed", "Vulkan: Device was reset while presenting!",
+				TRAP::Utils::Dialogs::Style::Error, TRAP::Utils::Dialogs::Buttons::Quit);
+			else if(presentStatus == PresentStatus::Failed)
+			{
+				TRAP::Utils::Dialogs::ShowMsgBox("Presenting failed", "Vulkan: Presenting failed!",
+				TRAP::Utils::Dialogs::Style::Error, TRAP::Utils::Dialogs::Buttons::Quit);
+			}
+
 			TRAP::Application::Shutdown();
+		}
 		else if (presentStatus == PresentStatus::OutOfDate)
 		{
-			//Resize needed
+			//Recreation needed
 			//Clear SwapChain reference
 			presentDesc = {};
 
@@ -193,7 +206,7 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 
 			SwapChainDesc swapChainDesc{};
 			swapChainDesc.Window = p->Window;
-			swapChainDesc.PresentQueues = { p->GraphicQueue };
+			swapChainDesc.PresentQueues = { s_graphicQueue };
 			swapChainDesc.Width = p->Window->GetWidth();
 			swapChainDesc.Height = p->Window->GetHeight();
 			swapChainDesc.ImageCount = RendererAPI::ImageCount;
@@ -203,7 +216,11 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 			p->SwapChain = SwapChain::Create(swapChainDesc);
 
 			if (!p->SwapChain)
+			{
+				TRAP::Utils::Dialogs::ShowMsgBox("Swapchain creation failed", "Vulkan: Unable to create Swapchain!",
+				TRAP::Utils::Dialogs::Style::Error, TRAP::Utils::Dialogs::Buttons::Quit);
 				TRAP::Application::Shutdown();
+			}
 		}
 
 		p->ImageIndex = (p->ImageIndex + 1) % RendererAPI::ImageCount;
@@ -289,9 +306,9 @@ void TRAP::Graphics::API::VulkanRenderer::Present(const Scope<Window>& window)
 	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window.get()];
 
 	EndGraphicRecording(p);
-	if (p->CurrentVSync != p->NewVSync)
+	if (p->CurrentVSync != p->NewVSync) //Change V-Sync state only between frames!
 	{
-		std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
+		//std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
 		if(p->SwapChain)
 			p->SwapChain->ToggleVSync();
 		p->CurrentVSync = p->NewVSync;
@@ -547,9 +564,9 @@ void TRAP::Graphics::API::VulkanRenderer::SetViewport(const uint32_t x,
 	const TRAP::Scope<PerWindowData>& data = s_perWindowDataMap[window];
 
 	data->GraphicCommandBuffers[data->ImageIndex]->SetViewport(static_cast<float>(x),
-	                                                           static_cast<const float>(y),
-	                                                           static_cast<const float>(width),
-	                                                           static_cast<const float>(height),
+	                                                           static_cast<float>(y),
+	                                                           static_cast<float>(width),
+	                                                           static_cast<float>(height),
 	                                                           minDepth,
 	                                                           maxDepth);
 }
@@ -614,15 +631,20 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 	else if (stages != ShaderStage::None && stages != ShaderStage::SHADER_STAGE_COUNT)
 	{
 		GraphicsPipelineDesc& gpd = std::get<GraphicsPipelineDesc>(data->GraphicsPipelineDesc.Pipeline);
-		if (gpd.ShaderProgram != shader)
-		{
-			gpd.ShaderProgram = shader;
 
-			if (!gpd.RootSignature || data->RebuildRootSignature)
-			{
-				gpd.RootSignature = RootSignature::Create(s_graphicRootSignatureDesc);
-				data->RebuildRootSignature = false;
-			}
+		if(gpd.ShaderProgram == shader)
+		{
+			data->CurrentGraphicsPipeline = GetPipeline(data->GraphicsPipelineDesc);
+			data->GraphicCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentGraphicsPipeline);
+			return;
+		}
+
+		gpd.ShaderProgram = shader;
+
+		if (!gpd.RootSignature || data->RebuildRootSignature)
+		{
+			gpd.RootSignature = RootSignature::Create(s_graphicRootSignatureDesc);
+			data->RebuildRootSignature = false;
 		}
 
 		data->CurrentGraphicsPipeline = GetPipeline(data->GraphicsPipelineDesc);
@@ -823,29 +845,14 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 		TRAP::Scope<PerWindowData> p = TRAP::MakeScope<PerWindowData>();
 
 		p->Window = window;
-		
-		//Create Graphic Queue
-		QueueDesc queueDesc{};
-		queueDesc.Type = QueueType::Graphics;
-		queueDesc.Flag = QueueFlag::InitMicroprofile;
-		p->GraphicQueue = Queue::Create(queueDesc);
-
-		//Create Compute Queue
-		queueDesc.Type = QueueType::Compute;
-		p->ComputeQueue = Queue::Create(queueDesc);
 
 		//For each buffered image
 		for (uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
 		{
 			//Create Graphic Command Pool
-			p->GraphicCommandPools[i] = CommandPool::Create({ p->GraphicQueue, false });
+			p->GraphicCommandPools[i] = CommandPool::Create({ s_graphicQueue, false });
 			//Allocate Graphic Command Buffer
 			p->GraphicCommandBuffers[i] = p->GraphicCommandPools[i]->AllocateCommandBuffer(false);
-
-			//Create Compute Command Pool
-			p->ComputeCommandPools[i] = CommandPool::Create({ p->ComputeQueue, false });
-			//Allocate Compute Command Buffer
-			p->ComputeCommandBuffers[i] = p->ComputeCommandPools[i]->AllocateCommandBuffer(false);
 
 			//Create Render Fences/Semaphores
 			p->RenderCompleteFences[i] = Fence::Create();
@@ -861,7 +868,7 @@ void TRAP::Graphics::API::VulkanRenderer::InitPerWindowData(Window* window)
 			p->CurrentVSync = p->NewVSync = window->GetVSync();
 			SwapChainDesc swapChainDesc{};
 			swapChainDesc.Window = window;
-			swapChainDesc.PresentQueues = { p->GraphicQueue };
+			swapChainDesc.PresentQueues = { s_graphicQueue };
 			swapChainDesc.Width = window->GetWidth();
 			swapChainDesc.Height = window->GetHeight();
 			swapChainDesc.ImageCount = RendererAPI::ImageCount;
@@ -1208,36 +1215,22 @@ void TRAP::Graphics::API::VulkanRenderer::AddDefaultResources()
 	
 	CommandBuffer* cmd = cmdPool->AllocateCommandBuffer(false);
 
+	TRAP::Ref<VulkanFence> fence = TRAP::MakeRef<VulkanFence>();
+
+	s_NullDescriptors->InitialTransitionQueue = graphicsQueue;
+	s_NullDescriptors->InitialTransitionCmdPool = cmdPool;
+	s_NullDescriptors->InitialTransitionCmd = dynamic_cast<VulkanCommandBuffer*>(cmd);
+	s_NullDescriptors->InitialTransitionFence = fence;
+
 	//Transition resources
-	cmd->Begin();
-
-	std::vector<BufferBarrier> bufferBarriers;
-	std::vector<TextureBarrier> textureBarriers;
-
 	for (uint32_t dim = 0; dim < static_cast<uint32_t>(ShaderReflection::TextureDimension::TextureDimCount); ++dim)
 	{
 		if (s_NullDescriptors->DefaultTextureSRV[dim])
-			textureBarriers.push_back({ s_NullDescriptors->DefaultTextureSRV[dim], ResourceState::Undefined, ResourceState::ShaderResource });
+			UtilInitialTransition(s_NullDescriptors->DefaultTextureSRV[dim], ResourceState::ShaderResource);
 
 		if (s_NullDescriptors->DefaultTextureUAV[dim])
-			textureBarriers.push_back({s_NullDescriptors->DefaultTextureUAV[dim], ResourceState::Undefined, ResourceState::UnorderedAccess});
+			UtilInitialTransition(s_NullDescriptors->DefaultTextureUAV[dim], ResourceState::UnorderedAccess);
 	}
-
-	bufferBarriers.push_back({ s_NullDescriptors->DefaultBufferSRV, ResourceState::Undefined, ResourceState::ShaderResource });
-	bufferBarriers.push_back({ s_NullDescriptors->DefaultBufferUAV, ResourceState::Undefined, ResourceState::UnorderedAccess });
-
-	cmd->ResourceBarrier(bufferBarriers, textureBarriers, {});
-	cmd->End();
-
-	QueueSubmitDesc submitDesc{};
-	submitDesc.Cmds.push_back(cmd);
-	graphicsQueue->Submit(submitDesc);
-	graphicsQueue->WaitQueueIdle();
-
-	//Delete Command Buffer
-	cmdPool->FreeCommandBuffer(cmd);
-	cmdPool.reset();
-	graphicsQueue.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1261,8 +1254,31 @@ void TRAP::Graphics::API::VulkanRenderer::RemoveDefaultResources()
 	s_NullDescriptors->DefaultBufferUAV.reset();
 
 	s_NullDescriptors->DefaultSampler.reset();
+
+	s_NullDescriptors->InitialTransitionFence.reset();
+	s_NullDescriptors->InitialTransitionCmdPool->FreeCommandBuffer(s_NullDescriptors->InitialTransitionCmd);
+	s_NullDescriptors->InitialTransitionCmdPool.reset();
+	s_NullDescriptors->InitialTransitionQueue.reset();
 	
 	s_NullDescriptors.reset();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::UtilInitialTransition(TRAP::Ref<VulkanTexture> texture, RendererAPI::ResourceState startState)
+{
+	std::lock_guard<std::mutex> lock(s_NullDescriptors->InitialTransitionMutex);
+	VulkanCommandBuffer* cmd = s_NullDescriptors->InitialTransitionCmd;
+	s_NullDescriptors->InitialTransitionCmdPool->Reset();
+	cmd->Begin();
+	TextureBarrier barrier = {texture, RendererAPI::ResourceState::Undefined, startState};
+	cmd->ResourceBarrier({}, {barrier}, {});
+	cmd->End();
+	RendererAPI::QueueSubmitDesc submitDesc{};
+	submitDesc.Cmds = {cmd};
+	submitDesc.SignalFence = s_NullDescriptors->InitialTransitionFence;
+	s_NullDescriptors->InitialTransitionQueue->Submit(submitDesc);
+	s_NullDescriptors->InitialTransitionFence->Wait();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1338,10 +1354,13 @@ const TRAP::Ref<TRAP::Graphics::Pipeline>& TRAP::Graphics::API::VulkanRenderer::
 
 		desc.Cache = s_pipelineCaches[hash];
 		
-		std::lock_guard<std::mutex> lock(s_pipelineMutex);
 		TP_TRACE(Log::RendererVulkanPipelinePrefix, "Recreating Graphics Pipeline...");
-		//Lock while inserting new Pipeline
-		s_pipelines.insert({ hash, Pipeline::Create(desc) });
+		TRAP::Ref<TRAP::Graphics::Pipeline> pipeline = Pipeline::Create(desc);
+		{
+			//Lock while inserting new Pipeline
+			std::lock_guard<std::mutex> lock(s_pipelineMutex);
+			s_pipelines.insert({ hash, std::move(pipeline) });
+		}
 		TP_TRACE(Log::RendererVulkanPipelinePrefix, "Cached Graphics Pipeline");
 		return s_pipelines[hash];
 	}

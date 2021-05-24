@@ -1,9 +1,13 @@
 #ifndef _TRAP_SCENE_H_
 #define _TRAP_SCENE_H_
 
-#pragma warning(push, 0)
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
 #include <entt.h>
-#pragma warning(pop)
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
 
 namespace TRAP
 {

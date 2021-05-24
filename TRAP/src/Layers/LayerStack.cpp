@@ -71,6 +71,39 @@ void TRAP::LayerStack::PopOverlay(const std::unique_ptr<Layer>& overlay)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::LayerStack::PopLayer(Layer* const layer)
+{
+	TP_PROFILE_FUNCTION();
+
+	const auto it = std::find_if(m_layers.begin(), m_layers.begin() + m_layerInsertIndex,
+		[layer](const std::unique_ptr<Layer>& l){return l.get() == layer;});
+	if (it != m_layers.end())
+	{
+		TP_DEBUG(Log::LayerStackPrefix, "Destroying Layer: ", layer->GetName());
+		layer->OnDetach();
+		m_layers.erase(it);
+		m_layerInsertIndex--;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::LayerStack::PopOverlay(Layer* const overlay)
+{
+	TP_PROFILE_FUNCTION();
+
+	const auto it = std::find_if(m_layers.begin() + m_layerInsertIndex, m_layers.end(),
+		[overlay](const std::unique_ptr<Layer>& l){return l.get() == overlay;});
+	if (it != m_layers.end())
+	{
+		TP_DEBUG(Log::LayerStackPrefix, "Destroying Overlay: ", overlay->GetName());
+		overlay->OnDetach();
+		m_layers.erase(it);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 std::vector<std::unique_ptr<TRAP::Layer>>::iterator TRAP::LayerStack::begin()
 {
 	return m_layers.begin();

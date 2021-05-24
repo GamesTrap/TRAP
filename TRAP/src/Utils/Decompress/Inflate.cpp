@@ -807,11 +807,11 @@ bool TRAP::Utils::Decompress::Inflate(const uint8_t* source, const std::size_t s
 			return false; //Invalid BTYPE
 		if (BTYPE == 0)
 		{
-			if (!InflateNoCompression(result, pos, reader))
+			if (!TRAP::Utils::Decompress::INTERNAL::InflateNoCompression(result, pos, reader))
 				return false;
 		}
 		else
-			if (!InflateHuffmanBlock(result, pos, reader, BTYPE)) //Compression, BTYPE 01 or 10
+			if (!TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(result, pos, reader, BTYPE)) //Compression, BTYPE 01 or 10
 				return false;
 	}
 	

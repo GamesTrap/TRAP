@@ -1098,7 +1098,8 @@ namespace TRAP::Utils
             , T>::type Get(T from = std::numeric_limits<T>::min(),
                 T to = std::numeric_limits<T>::max())
     	{
-            if (from < to) //Allow range from higher to lower
+            //Allow range from higher to lower
+            if (from < to)
                 return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(from), static_cast<std::int64_t>(to) }(m_engine));
 
         	return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(to), static_cast<std::int64_t>(from) }(m_engine));

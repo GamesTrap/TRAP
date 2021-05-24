@@ -901,7 +901,7 @@ VkSwapchainCreateInfoKHR TRAP::Graphics::API::VulkanInits::SwapchainCreateInfoKH
 	info.imageColorSpace = surfaceFormat.colorSpace;
 	info.imageExtent = imageExtent;
 	info.imageArrayLayers = 1;
-	info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+	info.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 	info.imageSharingMode = sharingMode;
 	info.queueFamilyIndexCount = queueFamilyIndexCount;
 	info.pQueueFamilyIndices = queueFamilyIndices.data();

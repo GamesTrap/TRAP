@@ -122,6 +122,12 @@ TRAP::Graphics::API::VulkanRenderTarget::VulkanRenderTarget(const RendererAPI::R
 		else
 			VkCall(vkCreateImageView(m_device->GetVkDevice(), &rtvDesc, nullptr, &m_vkSliceDescriptors[i]));
 	}
+
+	//Unlike DirectX 12, Vulkan textures start in undefined layout.
+	//To keep in line with DirectX 12, we transition them to the specified layout
+	//manually so app code doesn't have to worry about this
+	//Render targets wont be created during runtime so this overhead will be minimal
+	VulkanRenderer::UtilInitialTransition(m_texture, desc.StartState);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

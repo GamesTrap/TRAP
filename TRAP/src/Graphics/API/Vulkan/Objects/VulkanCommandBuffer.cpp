@@ -226,9 +226,6 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 	std::size_t renderPassHash = 0;
 	std::size_t frameBufferHash = 0;
 
-	std::vector<RendererAPI::RenderTargetBarrier> barriers;
-	barriers.reserve(8 + 1);
-	
 	//Generate hash for RenderPass and FrameBuffer
 	//NOTE:
 	//RenderPass does not care about underlying VkImageView.
@@ -248,9 +245,6 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		renderPassHash = HashAlg<uint32_t>(hashValues.data(), 3, renderPassHash);
 		const uint32_t ID = dynamic_cast<VulkanRenderTarget*>(renderTargets[i].get())->GetID();
 		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
-
-		if(0 == dynamic_cast<VulkanRenderTarget*>(renderTargets[i].get())->m_used++)
-			barriers.push_back({ renderTargets[i], RendererAPI::ResourceState::Undefined, RendererAPI::ResourceState::RenderTarget });
 	}
 	if(depthStencil)
 	{
@@ -266,8 +260,6 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		const uint32_t ID = dStencil->GetID();
 		frameBufferHash = HashAlg<uint32_t>(&ID, 1, frameBufferHash);
 
-		if (0 == dStencil->m_used++)
-			barriers.push_back({ depthStencil, RendererAPI::ResourceState::Undefined, RendererAPI::ResourceState::DepthWrite });
 	}
 	if (!colorArraySlices.empty())
 		frameBufferHash = HashAlg<uint32_t>(colorArraySlices.data(), renderTargets.size(), frameBufferHash);
@@ -363,9 +355,6 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 			clearValues.push_back(val);
 		}
 	}
-
-	if (!barriers.empty())
-		ResourceBarrier({}, {}, barriers);
 
 	VkRenderPassBeginInfo beginInfo = VulkanInits::RenderPassBeginInfo(renderPass->GetVkRenderPass(), frameBuffer->GetVkFrameBuffer(), renderArea, clearValues);
 
@@ -890,7 +879,7 @@ void TRAP::Graphics::API::VulkanCommandBuffer::ResourceBarrier(const std::vector
 
 			imageBarrier->srcAccessMask = ResourceStateToVkAccessFlags(trans.CurrentState);
 			imageBarrier->dstAccessMask = ResourceStateToVkAccessFlags(trans.NewState);
-			imageBarrier->oldLayout = dynamic_cast<VulkanRenderTarget*>(trans.RenderTarget.get())->m_used++ ? ResourceStateToVkImageLayout(trans.CurrentState) : VK_IMAGE_LAYOUT_UNDEFINED;
+			imageBarrier->oldLayout = ResourceStateToVkImageLayout(trans.CurrentState);
 			imageBarrier->newLayout = ResourceStateToVkImageLayout(trans.NewState);
 		}
 

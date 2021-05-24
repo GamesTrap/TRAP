@@ -159,6 +159,8 @@ namespace TRAP::Graphics
 		virtual std::vector<std::pair<std::string, std::array<uint8_t, 16>>> GetAllGPUs() = 0;
 
 		static TRAP::Ref<TRAP::Graphics::DescriptorPool> GetDescriptorPool();
+		static TRAP::Ref<TRAP::Graphics::Queue> GetGraphicsQueue();
+		static TRAP::Ref<TRAP::Graphics::Queue> GetComputeQueue();
 		static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(Window* window = nullptr);
 
 		static void AddShaderToGraphicsRootSignature(Shader* shader);
@@ -1114,7 +1116,11 @@ namespace TRAP::Graphics
 			//Display target
 			AllowDisplayTarget = 0x100,
 			//Create an sRGB texture
-			SRGB = 0x200
+			SRGB = 0x200,
+			//Fast clear
+			FastClear = 0x400,
+			//Fragment mask
+			FragMask = 0x800
 		};
 
 		enum class ResourceState
@@ -1136,7 +1142,8 @@ namespace TRAP::Graphics
 			GenericRead = (((((0x1 | 0x2) | 0x40) | 0x80) | 0x200) | 0x800),
 			Present = 0x1000,
 			Common = 0x2000,
-			RayTracingAccelerationStructure = 0x4000
+			RayTracingAccelerationStructure = 0x4000,
+			ShadingRateSource = 0x8000
 		};
 
 		enum class DescriptorType
@@ -1466,7 +1473,36 @@ namespace TRAP::Graphics
 			Depth = 0x1,
 			Stencil = 0x2
 		};
-		
+
+		enum class ShadingRate
+		{
+			NotSupported = 0x0,
+			Full = 0x1,
+			Half = Full << 1,
+			Quarter = Half << 1,
+			Eighth = Quarter << 1,
+			OneXTwo = Eighth << 1,
+			TwoXOne = OneXTwo << 1,
+			TwoXFour = TwoXOne << 1,
+			FourXTwo = TwoXFour << 1
+		};
+
+		enum class ShadingRateCombiner
+		{
+			Passthrough = 0,
+			Override = 1,
+			Min = 2,
+			Max = 3,
+			Sum = 4
+		};
+
+		enum class ShadingRateCaps
+		{
+			NotSupported = 0x0,
+			PerDraw = 0x1,
+			PerTile = PerDraw << 1
+		};
+
 		union ClearValue
 		{
 			struct
@@ -2191,15 +2227,19 @@ namespace TRAP::Graphics
 			uint32_t MaxAnisotropy;
 		} GPUSettings{};
 
+		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
+
 	protected:
 		static TRAP::Scope<RendererAPI> s_Renderer;
 		static RenderAPI s_RenderAPI;
 		static TRAP::Scope<API::ResourceLoader> s_ResourceLoader; //TODO This is a singleton shouldnt it be moved to ResourceLoader with a Getter?!
 
 		static TRAP::Ref<DescriptorPool> s_descriptorPool;
+		static TRAP::Ref<Queue> s_graphicQueue;
+		static TRAP::Ref<Queue> s_computeQueue;
+		static std::array<TRAP::Ref<CommandPool>, ImageCount> s_computeCommandPools;
+		static std::array<CommandBuffer*, ImageCount> s_computeCommandBuffers;
 		static RootSignatureDesc s_graphicRootSignatureDesc;
-
-		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered
 
 		friend class TRAP::ImGuiLayer;
 
@@ -2212,12 +2252,8 @@ namespace TRAP::Graphics
 			TRAP::Window* Window;
 
 			uint32_t ImageIndex = 0;
-			TRAP::Ref<Queue> GraphicQueue;
-			TRAP::Ref<Queue> ComputeQueue;
 			std::array<TRAP::Ref<CommandPool>, ImageCount> GraphicCommandPools;
 			std::array<CommandBuffer*, ImageCount> GraphicCommandBuffers;
-			std::array<TRAP::Ref<CommandPool>, ImageCount> ComputeCommandPools;
-			std::array<CommandBuffer*, ImageCount> ComputeCommandBuffers;
 			std::array<TRAP::Ref<Fence>, ImageCount> RenderCompleteFences;
 			TRAP::Ref<Semaphore> ImageAcquiredSemaphore;
 			std::array<TRAP::Ref<Semaphore>, ImageCount> RenderCompleteSemaphores;
@@ -2259,5 +2295,7 @@ MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::RootSignatureFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::BlendStateTargets);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::PipelineCacheFlags);
 MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ClearFlags);
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRate);
+MAKE_ENUM_FLAG(TRAP::Graphics::RendererAPI::ShadingRateCaps);
 
 #endif /*_TRAP_RENDERERAPI_H_*/

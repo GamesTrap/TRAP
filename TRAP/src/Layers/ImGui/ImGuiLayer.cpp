@@ -96,7 +96,7 @@ void TRAP::ImGuiLayer::OnAttach()
 		initInfo.PhysicalDevice = renderer->GetDevice()->GetPhysicalDevice()->GetVkPhysicalDevice();
 		initInfo.Device = renderer->GetDevice()->GetVkDevice();
 		initInfo.QueueFamily = renderer->GetDevice()->GetGraphicsQueueFamilyIndex();
-		initInfo.Queue = dynamic_cast<TRAP::Graphics::API::VulkanQueue*>(winData->GraphicQueue.get())->GetVkQueue();
+		initInfo.Queue = dynamic_cast<TRAP::Graphics::API::VulkanQueue*>(TRAP::Graphics::RendererAPI::GetGraphicsQueue().get())->GetVkQueue();
 		initInfo.PipelineCache = dynamic_cast<TRAP::Graphics::API::VulkanPipelineCache*>(m_imguiPipelineCache.get())->GetVkPipelineCache();
 		initInfo.DescriptorPool = m_imguiDescriptorPool;
 		initInfo.Allocator = nullptr;
@@ -115,7 +115,7 @@ void TRAP::ImGuiLayer::OnAttach()
 		TRAP::Graphics::RendererAPI::QueueSubmitDesc submitDesc{};
 		submitDesc.Cmds = { cmd };
 		submitDesc.SignalFence = submitFence;
-		winData->GraphicQueue->Submit(submitDesc);
+		TRAP::Graphics::RendererAPI::GetGraphicsQueue()->Submit(submitDesc);
 		submitFence->Wait();
 		submitFence.reset();
 		winData->GraphicCommandPools[winData->ImageIndex]->FreeCommandBuffer(cmd);

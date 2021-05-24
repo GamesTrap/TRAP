@@ -23,6 +23,10 @@ std::mutex TRAP::Graphics::RendererAPI::s_perWindowDataMutex{};
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapable = true;
 bool TRAP::Graphics::RendererAPI::s_isVulkanCapableFirstTest = true;
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::s_descriptorPool = nullptr;
+TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_graphicQueue = nullptr;
+TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_computeQueue = nullptr;
+std::array<TRAP::Ref<TRAP::Graphics::CommandPool>, TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandPools{};
+std::array<TRAP::Graphics::CommandBuffer*, TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandBuffers{};
 TRAP::Graphics::RendererAPI::RootSignatureDesc TRAP::Graphics::RendererAPI::s_graphicRootSignatureDesc{};
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -50,6 +54,25 @@ void TRAP::Graphics::RendererAPI::Init(const std::string& gameName)
 	}
 
 	s_Renderer->InitInternal(gameName);
+
+	//Create Graphic Queue
+	QueueDesc queueDesc{};
+	queueDesc.Type = QueueType::Graphics;
+	queueDesc.Flag = QueueFlag::InitMicroprofile;
+	s_graphicQueue = Queue::Create(queueDesc);
+
+	//Create Compute Queue
+	queueDesc.Type = QueueType::Compute;
+	s_computeQueue = Queue::Create(queueDesc);
+
+	//For each buffered image
+	for (uint32_t i = 0; i < RendererAPI::ImageCount; ++i)
+	{
+		//Create Compute Command Pool
+		s_computeCommandPools[i] = CommandPool::Create({ s_computeQueue, false });
+		//Allocate Compute Command Buffer
+		s_computeCommandBuffers[i] = s_computeCommandPools[i]->AllocateCommandBuffer(false);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -61,8 +84,20 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 		s_perWindowDataMap.clear();
 	}
 
+	for(uint32_t i = ImageCount; i > 0; i--)
+	{
+		s_computeCommandPools[i - 1]->FreeCommandBuffer(s_computeCommandBuffers[i - 1]);
+		s_computeCommandBuffers[i - 1] = nullptr;
+		s_computeCommandPools[i - 1].reset();
+	}
+
 	for(uint32_t i = 0; i < s_graphicRootSignatureDesc.StaticSamplers.size(); ++i)
 		s_graphicRootSignatureDesc.StaticSamplers[i].reset();
+
+	s_Renderer->s_graphicQueue->WaitQueueIdle();
+	s_Renderer->s_computeQueue->WaitQueueIdle();
+	s_Renderer->s_graphicQueue.reset();
+	s_Renderer->s_computeQueue.reset();
 
 	s_Renderer.reset();
 	s_Renderer = nullptr;
@@ -161,6 +196,20 @@ TRAP::Graphics::RenderAPI TRAP::Graphics::RendererAPI::GetRenderAPI()
 TRAP::Ref<TRAP::Graphics::DescriptorPool> TRAP::Graphics::RendererAPI::GetDescriptorPool()
 {
 	return s_descriptorPool;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetGraphicsQueue()
+{
+	return s_graphicQueue;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetComputeQueue()
+{
+	return s_computeQueue;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -299,24 +348,16 @@ bool TRAP::Graphics::RendererAPI::IsVulkanCapable()
 
 TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 {
-	GraphicQueue->WaitQueueIdle();
-	ComputeQueue->WaitQueueIdle();
-
 	SwapChain.reset();
 	ImageAcquiredSemaphore.reset();
 
-	for(uint32_t i = ImageCount - 1; i > 0; i--)
+	for(uint32_t i = ImageCount; i > 0; i--)
 	{
-		RenderCompleteSemaphores[i].reset();
-		RenderCompleteFences[i].reset();
+		RenderCompleteSemaphores[i - 1].reset();
+		RenderCompleteFences[i - 1].reset();
 
-		GraphicCommandPools[i]->FreeCommandBuffer(GraphicCommandBuffers[i]);
-		GraphicCommandPools[i].reset();
-
-		ComputeCommandPools[i]->FreeCommandBuffer(ComputeCommandBuffers[i]);
-		ComputeCommandPools[i].reset();
+		GraphicCommandPools[i - 1]->FreeCommandBuffer(GraphicCommandBuffers[i - 1]);
+		GraphicCommandBuffers[i - 1] = nullptr;
+		GraphicCommandPools[i - 1].reset();
 	}
-
-	GraphicQueue.reset();
-	ComputeQueue.reset();
 }

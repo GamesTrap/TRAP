@@ -32,7 +32,7 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 		else
 			m_arraySize = renderTarget->GetArraySize();
 	}
-	else
+	else if(depthAttachmentCount)
 	{
 		m_width = desc.DepthStencil->GetWidth();
 		m_height = desc.DepthStencil->GetHeight();
@@ -40,6 +40,10 @@ TRAP::Graphics::API::VulkanFrameBuffer::VulkanFrameBuffer(TRAP::Ref<VulkanDevice
 			m_arraySize = 1;
 		else
 			m_arraySize = desc.DepthStencil->GetArraySize();
+	}
+	else
+	{
+		TRAP_ASSERT(false, "No color or depth attachments");
 	}
 
 	if (colorAttachmentCount && desc.RenderTargets[0]->GetDepth() > 1)

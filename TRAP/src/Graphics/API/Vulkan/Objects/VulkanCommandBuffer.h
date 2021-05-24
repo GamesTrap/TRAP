@@ -76,6 +76,9 @@ namespace TRAP::Graphics::API
 
 		void SetStencilReferenceValue(uint32_t val) const override;
 
+		//TODO
+		//void SetShadingRate(RendererAPI::ShadingRate shadingRate, TRAP::Ref<VulkanTexture> texture, RendererAPI::ShadingRateCombiner postRasterizerRate, RendererAPI::ShadingRateCombiner finalRate);
+
 		void Clear(RendererAPI::ClearFlags flags, RendererAPI::ClearValue value, uint32_t width, uint32_t height) override;
 
 		VkRenderPass GetActiveVkRenderPass() const;

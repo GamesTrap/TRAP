@@ -6,9 +6,13 @@
 #include "TRAP_Assert.h"
 #include "Scene.h"
 
-#pragma warning(push, 0)
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
 #include <entt.h>
-#pragma warning(pop)
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
 
 namespace TRAP
 {

@@ -47,10 +47,14 @@
 #include <numeric>
 #include <variant>
 
-#pragma warning(push, 0)
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
 //ImGUI
 #include <imgui.h>
-#pragma warning(pop)
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
 
 //TRAP Engine
 #include "Core/Base.h"
@@ -59,7 +63,9 @@
 #include "Utils/Profiler/Instrumentor.h"
 
 #ifdef TRAP_PLATFORM_LINUX
-#pragma warning(push, 0)
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
 #include <linux/input.h>
 #include <linux/limits.h>
 #include <regex.h>
@@ -87,7 +93,9 @@
 #include <dlfcn.h>
 #include <arpa/inet.h>
 #include <signal.h>
-#pragma warning(pop)
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
 
 #ifdef None
 	#undef None
@@ -126,7 +134,9 @@
 #endif
 
 #ifdef TRAP_PLATFORM_WINDOWS
-#pragma warning(push, 0)
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
 //WinAPI
 #include "Utils/Win.h"
 #include <Dbt.h>
@@ -148,7 +158,9 @@
 #include <winsock.h>
 #include <WS2tcpip.h>
 #include <shellapi.h>
-#pragma warning(pop)
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
 
 #ifdef far
 	#undef far
@@ -213,16 +225,24 @@
 #endif
 
 //VulkanAPI
-#pragma warning(push, 0)
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
 #include "Graphics/API/Vulkan/Utils/VulkanLoader.h"
-#pragma warning(pop)
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
 
-#pragma warning(push, 0)
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
 //SPIRV
 #include <glslang/Public/ShaderLang.h>
 #include <SPIRV/GlslangToSpv.h>
 //SPIRV to GLSL
 #include <spirv_glsl.hpp>
-#pragma warning(pop)
+#ifdef _MSC_VER
+	#pragma warning(pop)
+#endif
 
 #endif /*_TRAP_TRAPPCH_H_*/

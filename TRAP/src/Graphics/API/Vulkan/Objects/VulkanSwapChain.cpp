@@ -23,7 +23,7 @@ TRAP::Graphics::API::VulkanSwapChain::VulkanSwapChain(RendererAPI::SwapChainDesc
 	  m_enableVSync()
 {
 	TRAP_ASSERT(m_device);
-	TRAP_ASSERT(desc.ImageCount <= 3);
+	TRAP_ASSERT(desc.ImageCount >= RendererAPI::ImageCount);
 
 #ifdef ENABLE_GRAPHICS_DEBUG
 	TP_DEBUG(Log::RendererVulkanSwapChainPrefix, "Creating SwapChain");
@@ -261,42 +261,14 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 	descColor.ClearValue = desc.ColorClearValue;
 	descColor.SampleCount = RendererAPI::SampleCount::SampleCount1;
 	descColor.SampleQuality = 0;
-
-	std::vector<RendererAPI::RenderTargetBarrier> barriers;
+	descColor.StartState = RendererAPI::ResourceState::Present;
 
 	//Populate the vk_image field and add the Vulkan texture objects
 	for (uint32_t i = 0; i < imageCount; ++i)
 	{
 		descColor.NativeHandle = images[i];
 		m_renderTargets.push_back(TRAP::MakeRef<VulkanRenderTarget>(descColor));
-		barriers.push_back({ m_renderTargets[i], RendererAPI::ResourceState::Undefined, RendererAPI::ResourceState::Present });
 	}
-
-	TRAP::Ref<VulkanQueue> queue = nullptr;
-	TRAP::Ref<VulkanCommandPool> cmdPool = nullptr;
-	CommandBuffer* cmd = nullptr;
-	TRAP::Ref<VulkanFence> fence = nullptr;
-	RendererAPI::QueueDesc queueDesc{};
-	queueDesc.Type = RendererAPI::QueueType::Graphics;
-	queue = TRAP::MakeRef<VulkanQueue>(queueDesc);
-	RendererAPI::CommandPoolDesc cmdPoolDesc{};
-	cmdPoolDesc.Queue = queue;
-	cmdPoolDesc.Transient = false;
-	cmdPool = TRAP::MakeRef<VulkanCommandPool>(cmdPoolDesc);
-	cmd = cmdPool->AllocateCommandBuffer(false);
-	fence = TRAP::MakeRef<VulkanFence>();
-	cmd->Begin();
-	cmd->ResourceBarrier({}, {}, barriers);
-	cmd->End();
-	RendererAPI::QueueSubmitDesc submitDesc{};
-	submitDesc.Cmds.push_back(cmd);
-	submitDesc.SignalFence = fence;
-	queue->Submit(submitDesc);
-	fence->Wait();
-	fence.reset();
-	cmdPool->FreeCommandBuffer(cmd);
-	cmdPool.reset();
-	queue.reset();
 
 	//////////////
 

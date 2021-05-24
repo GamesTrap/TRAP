@@ -14,7 +14,8 @@ VulkanTextureTests::VulkanTextureTests()
       m_maxMipLevel(0),
       m_textureSamplers(),
       m_updateTexture(false),
-      m_debugImgVisible(false)
+      m_debugImgVisible(false),
+      m_cycleMips(false)
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//

@@ -53,6 +53,16 @@ namespace TRAP
 		/// </summary>
 		/// <param name="overlay">Overlay to pop.</param>
 		void PopOverlay(const std::unique_ptr<Layer>& overlay);
+		/// <summary>
+		/// Pop a Layer from the LayerStack.
+		/// </summary>
+		/// <param name="layer">Layer to pop.</param>
+		void PopLayer(Layer* const layer);
+		/// <summary>
+		/// Pop an Overlay from the LayerStack.
+		/// </summary>
+		/// <param name="overlay">Overlay to pop.</param>
+		void PopOverlay(Layer* const overlay);
 
 		/// <summary>
 		/// LayerStack begin iterator.
