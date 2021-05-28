@@ -473,7 +473,7 @@ namespace TRAP::Math
 	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
-	Vec<L, T> IRound(const Vec<L, T>& x);
+	Vec<L, uint32_t> IRound(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 
@@ -499,7 +499,7 @@ namespace TRAP::Math
 	/// <param name="x">Values of the argument must be greater or equal to zero.</param>
 	/// <returns>Value equal to the nearest integer to x.</returns>
 	template<uint32_t L, typename T>
-	Vec<L, T> URound(const Vec<L, T>& x);
+	Vec<L, uint32_t> URound(const Vec<L, T>& x);
 
 	//-------------------------------------------------------------------------------------------------------------------//
 	
@@ -2340,7 +2340,7 @@ int32_t TRAP::Math::IRound(const genType& x)
 }
 
 template<uint32_t L, typename T>
-TRAP::Math::Vec<L, int32_t> TRAP::Math::IRound(const Vec<L, T>& x)
+TRAP::Math::Vec<L, uint32_t> TRAP::Math::IRound(const Vec<L, T>& x)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'IRound' only accepts floating-point inputs");
 	assert(All(LessThanEqual(Vec<L, T>(0), x)));
@@ -2360,7 +2360,7 @@ uint32_t TRAP::Math::URound(const genType& x)
 }
 
 template<uint32_t L, typename T>
-TRAP::Math::Vec<L, int32_t> TRAP::Math::URound(const Vec<L, T>& x)
+TRAP::Math::Vec<L, uint32_t> TRAP::Math::URound(const Vec<L, T>& x)
 {
 	static_assert(std::numeric_limits<T>::is_iec559, "'URound' only accepts floating-point inputs");
 	assert(All(LessThanEqual(Vec<L, T>(0), x)));

@@ -28,7 +28,7 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 
 #include "WindowingAPI.h"
-#include "Utils/Dialogs/MsgBox.h"
+#include "Utils/Dialogs/Dialogs.h"
 
 #ifdef TRAP_PLATFORM_WINDOWS
 
@@ -204,7 +204,7 @@ bool TRAP::INTERNAL::WindowingAPI::LoadLibraries()
 		return true;
 	
 	TP_CRITICAL(Log::EngineWindowsPrefix, "Unsupported Windows version!");
-	Utils::Dialogs::MsgBox::Show("Unsupported Windows Version!\nTRAP Engine needs Windows 7 or newer", "Unsupported Windows Version", Utils::Dialogs::MsgBox::Style::Error, Utils::Dialogs::MsgBox::Buttons::Quit);
+	Utils::Dialogs::ShowMsgBox("Unsupported Windows Version", "Unsupported Windows Version!\nTRAP Engine needs Windows 7 or newer", Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
 	return false;
 }
 

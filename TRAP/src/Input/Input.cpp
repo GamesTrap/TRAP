@@ -688,7 +688,7 @@ bool TRAP::Input::ParseMapping(Mapping& mapping, const std::string_view str)
 			}
 		}
 
-		if(fields[j].Element && found)
+		if(found && fields[j].Element) //Bug PS5 not working
 		{
 			MapElement* e = fields[j].Element;
 			int8_t minimum = -1;

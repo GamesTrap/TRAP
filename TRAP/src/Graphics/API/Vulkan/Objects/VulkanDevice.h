@@ -51,8 +51,8 @@ namespace TRAP::Graphics::API
 
 		std::vector<std::string> m_deviceExtensions;
 
-		std::vector<uint32_t> m_availableQueueCount;
-		std::vector<uint32_t> m_usedQueueCount;
+		std::vector<uint32_t> m_availableQueueCount; //TODO make unordered_map
+		std::vector<uint32_t> m_usedQueueCount; //TODO make unordered_map
 
 		uint8_t m_graphicsQueueFamilyIndex;
 		uint8_t m_transferQueueFamilyIndex;
