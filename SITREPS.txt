@@ -1860,3 +1860,13 @@ SITREP 05/24/2021|21w21a1
     - Vulkan Changed how undefined layouts are handled ~<30 mins
     - Layerstack Added Pop*** methods to remove Layers from LayerStack with a Layer pointer ~<15 mins
     - GCC Silenced unknown pragma warnings ~<5 mins
+
+SITREP 06/07/2021|21w23a1
+    - Changed TRAP Engine version to 21w23a1(0.7.46)
+    - Removed global GraphicsRootSignature in RendererAPI ~<10 mins
+    - Made RootSignature per shader for now ~<15 mins
+    - Shader Added creation of DescriptorSets into constructor ~<30 mins
+    - BufferUsage Removed Stream as it has no use for now ~<5 mins
+    - Removed Descriptors from UniformBuffer ~<10 mins
+    - UniformBuffer made Static not persistent mapped ~<5 mins
+    - UniformBuffer Changed Use method (will be replaced soon) ~<20 mins
