@@ -2,6 +2,7 @@
 #define _TRAP_SHADER_H_
 
 #include "Graphics/API/RendererAPI.h"
+#include "Graphics/Buffers/UniformBuffer.h"
 
 namespace TRAP::Graphics
 {
@@ -12,6 +13,14 @@ namespace TRAP::Graphics
 		{
 			std::string Definition{};
 			std::string Value{};
+		};
+
+		struct DescriptorSets
+		{
+			DescriptorSet* StaticDescriptors;
+			DescriptorSet* PerFrameDescriptors;
+			//TODO Per Batch Descriptors
+			//TODO Per Draw Descriptors
 		};
 
 	protected:
@@ -29,8 +38,11 @@ namespace TRAP::Graphics
 
 		RendererAPI::ShaderStage GetShaderStages() const;
 
+		TRAP::Ref<RootSignature> GetRootSignature() const;
+		const DescriptorSets& GetDescriptorSets() const;
+
 		virtual void Use(Window* window = nullptr) = 0;
-		
+
 		static Scope<Shader> CreateFromFile(const std::string& name, const std::string& filePath, const std::vector<Macro>* userMacros = nullptr);
 		static Scope<Shader> CreateFromFile(const std::string& filepath, const std::vector<Macro>* userMacros = nullptr);
 		static Scope<Shader> CreateFromSource(const std::string& name, const std::string& glslSource, const std::vector<Macro>* userMacros = nullptr);
@@ -39,7 +51,9 @@ namespace TRAP::Graphics
 		std::string m_name;
 		std::string m_filepath;
 		RendererAPI::ShaderStage m_shaderStages{};
-		
+		TRAP::Ref<RootSignature> m_rootSignature;
+		DescriptorSets m_descriptorSets;
+
 	private:
 		static bool CheckSPIRVMagicNumber(std::string_view filePath);
 		static std::vector<uint32_t> Convert8To32(const std::vector<uint8_t>& source);

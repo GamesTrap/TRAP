@@ -4,8 +4,6 @@
 #include "Maths/Math.h"
 #include "Window/Window.h"
 
-#include "TRAPPCH.h"
-
 #include "Layers/ImGui/ImGuiLayer.h"
 
 namespace TRAP
@@ -167,8 +165,6 @@ namespace TRAP::Graphics
 		static void RemoveShaderFromGraphicsRootSignature(Shader* shader);
 		
 		static const TRAP::Scope<PerWindowData>& GetPerWindowData(Window* window); //TODO Remove
-		struct RootSignatureDesc;
-		static RootSignatureDesc& GetGraphicsRootSignatureDesc();
 	
 	protected:
 		static const TRAP::Scope<PerWindowData>& GetMainWindowData();
@@ -2239,7 +2235,6 @@ namespace TRAP::Graphics
 		static TRAP::Ref<Queue> s_computeQueue;
 		static std::array<TRAP::Ref<CommandPool>, ImageCount> s_computeCommandPools;
 		static std::array<CommandBuffer*, ImageCount> s_computeCommandBuffers;
-		static RootSignatureDesc s_graphicRootSignatureDesc;
 
 		friend class TRAP::ImGuiLayer;
 
@@ -2270,8 +2265,6 @@ namespace TRAP::Graphics
 			TRAP::Ref<Pipeline> CurrentGraphicsPipeline;
 
 			bool Recording;
-
-			bool RebuildRootSignature = false;
 		};
 
 	protected:

@@ -13,14 +13,12 @@ bool TRAP::Graphics::Shader::s_glslangInitialized = false;
 TRAP::Graphics::Shader::Shader()
 	: m_name(), m_filepath(), m_shaderStages()
 {
-	TRAP::Graphics::RendererAPI::AddShaderToGraphicsRootSignature(this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Shader::~Shader()
 {
-	TRAP::Graphics::RendererAPI::RemoveShaderFromGraphicsRootSignature(this);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -46,6 +44,20 @@ const std::string& TRAP::Graphics::Shader::GetFilePath() const
 TRAP::Graphics::RendererAPI::ShaderStage TRAP::Graphics::Shader::GetShaderStages() const
 {
 	return m_shaderStages;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::Shader::GetRootSignature() const
+{
+	return m_rootSignature;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+const TRAP::Graphics::Shader::DescriptorSets& TRAP::Graphics::Shader::GetDescriptorSets() const
+{
+	return m_descriptorSets;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

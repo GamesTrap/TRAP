@@ -27,7 +27,6 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_graphicQueue = n
 TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::s_computeQueue = nullptr;
 std::array<TRAP::Ref<TRAP::Graphics::CommandPool>, TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandPools{};
 std::array<TRAP::Graphics::CommandBuffer*, TRAP::Graphics::RendererAPI::ImageCount> TRAP::Graphics::RendererAPI::s_computeCommandBuffers{};
-TRAP::Graphics::RendererAPI::RootSignatureDesc TRAP::Graphics::RendererAPI::s_graphicRootSignatureDesc{};
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -35,8 +34,6 @@ void TRAP::Graphics::RendererAPI::Init(const std::string& gameName)
 {
 	if(s_Renderer)
 		return;
-
-	s_graphicRootSignatureDesc.Shaders.reserve(256);
 
 	switch (s_RenderAPI)
 	{
@@ -90,9 +87,6 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 		s_computeCommandBuffers[i - 1] = nullptr;
 		s_computeCommandPools[i - 1].reset();
 	}
-
-	for(uint32_t i = 0; i < s_graphicRootSignatureDesc.StaticSamplers.size(); ++i)
-		s_graphicRootSignatureDesc.StaticSamplers[i].reset();
 
 	s_Renderer->s_graphicQueue->WaitQueueIdle();
 	s_Renderer->s_computeQueue->WaitQueueIdle();
@@ -214,37 +208,9 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetComputeQueue()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::RendererAPI::AddShaderToGraphicsRootSignature(Shader* shader)
-{
-	s_graphicRootSignatureDesc.Shaders.push_back(shader);
-
-	for(auto& [windows, data] : s_perWindowDataMap)
-		data->RebuildRootSignature = true;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Graphics::RendererAPI::RemoveShaderFromGraphicsRootSignature(Shader* shader)
-{
-	if (s_graphicRootSignatureDesc.Shaders.empty())
-		return;
-
-	if(std::find(s_graphicRootSignatureDesc.Shaders.begin(), s_graphicRootSignatureDesc.Shaders.end(), shader) != s_graphicRootSignatureDesc.Shaders.end())
-		s_graphicRootSignatureDesc.Shaders.erase(std::remove(s_graphicRootSignatureDesc.Shaders.begin(), s_graphicRootSignatureDesc.Shaders.end(), shader));
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& TRAP::Graphics::RendererAPI::GetPerWindowData(Window* window)
 {
 	return s_perWindowDataMap[window];
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::RendererAPI::RootSignatureDesc& TRAP::Graphics::RendererAPI::GetGraphicsRootSignatureDesc()
-{
-	return s_graphicRootSignatureDesc;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

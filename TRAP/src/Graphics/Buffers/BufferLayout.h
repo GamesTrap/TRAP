@@ -14,9 +14,8 @@ namespace TRAP::Graphics
 
 	enum class BufferUsage
 	{
-		Static,  //Buffer can't be updated
-		Dynamic, //Buffer Data can be updated(also partially) when needed
-		Stream   //Whole Buffer Data must be updated every Frame
+		Static,
+		Dynamic,
 	};
 
 	uint32_t ShaderDataTypeSize(ShaderDataType type);

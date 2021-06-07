@@ -6,6 +6,9 @@
 #include "Graphics/API/Vulkan/VulkanCommon.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Graphics/API/Vulkan/VulkanShaderReflection.h"
+#include "Graphics/API/Vulkan/Objects/VulkanRootSignature.h"
+#include "Graphics/API/Objects/RootSignature.h"
+#include "Graphics/API/Objects/DescriptorPool.h"
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const RendererAPI::BinaryShaderDesc& desc)
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
@@ -119,6 +122,30 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const R
 	}
 
 	m_reflection = CreatePipelineReflection(stageReflections, counter);
+
+	RendererAPI::RootSignatureDesc rootDesc{};
+	rootDesc.Shaders.push_back(this);
+	m_rootSignature = RootSignature::Create(rootDesc);
+
+	//Static Descriptors
+	if(dynamic_cast<VulkanRootSignature*>(m_rootSignature.get())->GetVkDescriptorSetLayouts()[static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::None)] != VK_NULL_HANDLE)
+	{
+		RendererAPI::DescriptorSetDesc desc{};
+		desc.MaxSets = 1; //TODO What does this do?
+		desc.RootSignature = m_rootSignature;
+		desc.UpdateFrequency = RendererAPI::DescriptorUpdateFrequency::None;
+		m_descriptorSets.StaticDescriptors = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(desc);
+	}
+
+	//Per Frame Descriptors
+	if(dynamic_cast<VulkanRootSignature*>(m_rootSignature.get())->GetVkDescriptorSetLayouts()[static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::PerFrame)] != VK_NULL_HANDLE)
+	{
+		RendererAPI::DescriptorSetDesc desc{};
+		desc.MaxSets = RendererAPI::ImageCount; //TODO What does this do?
+		desc.RootSignature = m_rootSignature;
+		desc.UpdateFrequency = RendererAPI::DescriptorUpdateFrequency::PerFrame;
+		m_descriptorSets.PerFrameDescriptors = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(desc);
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

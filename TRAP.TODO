@@ -1,0 +1,33 @@
+Shader (After Reflection):
+    UniformBuffers:
+        ☐ Create automatically & save in shader (use reflection)
+        ☐ Add a Get method to retrieve the UniformBuffer pointer
+    Descriptors:
+        ✔ Create descriptors per shader (includes RootSignature per Shader (maybe not needed?!) @done(21-06-07 03:21)
+            ☐ Test with global GraphicsRootSignature again
+    Textures/Samplers:
+        ☐ Implement abstraction
+        ☐ CombinedImageSampler vs seperate image & sampler
+            ☐ If seperate samplers need a Use method using the name?!
+            ☐ Else provide sampler to Textures Use method
+        ☐ On Sampler::Create instead of always creating a new Sampler use a cached
+            ☐ This will need a hash function for the SamplerDesc
+    RenderAPI switching:
+        ☐ Fix runtime API switching
+
+Bugs:
+    ☐ Fix "[03:18:21][Error][Renderer][Vulkan] Failed Vulkan Version Test!" on Linux which still passes capability tester?!
+
+With most things working with Vulkan:
+    ☐ Create a Vulkan-Development branch on GitHub TRAP repo
+    ☐ Cleanup everything using Visual Studio
+    ☐ TRAP::Ref to TRAP::Scope (Renderer stuff)
+    ☐ Better ImGui integration (see The-Forge implementation)
+    ☐ Compute Shader support (will be needed for a Mipmap compute shader because
+        there is no equivalent of vkCmdBlitImage in D3D12)
+    ☐ HDR support?!
+    ☐ Texture GPU compression (for Images like PNG, PAM, ...)
+    ☐ Loader for KTX, DDS Texture (can only be loaded as Texture because they are GPU compressed?!)
+    ☐ Raytracing support?!
+
+More stuff in private GitKraken Board:

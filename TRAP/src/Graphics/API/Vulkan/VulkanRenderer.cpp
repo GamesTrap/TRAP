@@ -23,6 +23,7 @@
 #include "Objects/VulkanPhysicalDevice.h"
 #include "Objects/VulkanInstance.h"
 #include "Objects/VulkanDebug.h"
+#include "Objects/VulkanRootSignature.h"
 
 #include "Graphics/API/ResourceLoader.h"
 #include "Graphics/API/Objects/RenderTarget.h"
@@ -636,19 +637,32 @@ void TRAP::Graphics::API::VulkanRenderer::BindShader(Shader* shader, Window* win
 		{
 			data->CurrentGraphicsPipeline = GetPipeline(data->GraphicsPipelineDesc);
 			data->GraphicCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentGraphicsPipeline);
+
+			//Bind Static Descriptors
+			if(shader->GetDescriptorSets().StaticDescriptors)
+				data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(0, *(shader->GetDescriptorSets().StaticDescriptors));
+
+			//Bind Per Frame Descriptors
+			if(shader->GetDescriptorSets().PerFrameDescriptors)
+				data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(data->ImageIndex, *(shader->GetDescriptorSets().PerFrameDescriptors));
+
 			return;
 		}
 
 		gpd.ShaderProgram = shader;
+		gpd.RootSignature = shader->GetRootSignature();
 
-		if (!gpd.RootSignature || data->RebuildRootSignature)
-		{
-			gpd.RootSignature = RootSignature::Create(s_graphicRootSignatureDesc);
-			data->RebuildRootSignature = false;
-		}
 
 		data->CurrentGraphicsPipeline = GetPipeline(data->GraphicsPipelineDesc);
 		data->GraphicCommandBuffers[data->ImageIndex]->BindPipeline(data->CurrentGraphicsPipeline);
+
+		//Bind Static Descriptors
+		if(shader->GetDescriptorSets().StaticDescriptors)
+			data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(0, *(shader->GetDescriptorSets().StaticDescriptors));
+
+		//Bind Per Frame Descriptors
+		if(shader->GetDescriptorSets().PerFrameDescriptors)
+			data->GraphicCommandBuffers[data->ImageIndex]->BindDescriptorSet(data->ImageIndex, *(shader->GetDescriptorSets().PerFrameDescriptors));
 	}
 }
 
