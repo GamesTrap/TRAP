@@ -2,6 +2,7 @@ Shader (After Reflection):
     UniformBuffers:
         ✔ Create automatically & save in shader (use reflection) @done(21-06-07 12:34)
         ✔ Add a Get method to retrieve the UniformBuffer pointer @done(21-06-07 12:34)
+        ☐ Test if UpdateFreqNone still works
     Descriptors:
         ✔ Create descriptors per shader (includes RootSignature per Shader (maybe not needed?!) @done(21-06-07 03:21)
             ☐ Test with global GraphicsRootSignature again
@@ -14,6 +15,10 @@ Shader (After Reflection):
             ☐ This will need a hash function for the SamplerDesc
     RenderAPI switching:
         ☐ Fix runtime API switching
+
+Non-functional:
+    ☐ Make VulkanTextureTest work again
+    ☐ Make VulkanMultiWindowTest work again
 
 Bugs:
     ☐ Fix "[03:18:21][Error][Renderer][Vulkan] Failed Vulkan Version Test!" on Linux which still passes capability tester?!

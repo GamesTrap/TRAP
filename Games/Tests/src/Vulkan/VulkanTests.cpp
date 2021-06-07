@@ -2,7 +2,6 @@
 
 VulkanTests::VulkanTests()
 	: Layer("VulkanTests"),
-	  m_window(nullptr),
 	  m_wireFrame(false),
 	  m_quad(false),
 	  m_indexed(false),
@@ -23,34 +22,6 @@ void VulkanTests::OnAttach()
 	TRAP::VFS::MountShaders("Assets/Shaders");
 
 	TRAP::Application::GetWindow()->SetTitle("Vulkan Test");
-
-	if (s_window)
-	{
-		TRAP::WindowProps windowProps
-		{
-			"Vulkan Test",
-			200,
-			200,
-			60,
-			false,
-			TRAP::Window::DisplayMode::Windowed,
-			TRAP::WindowProps::AdvancedProps
-			{
-				true,
-				false,
-				true,
-				true,
-				true,
-				true,
-				false,
-				TRAP::Window::CursorMode::Normal
-			},
-			0
-		};
-		m_window = TRAP::MakeScope<TRAP::Window>(windowProps);
-		m_window->SetEventCallback([this](TRAP::Events::Event& e) { OnEvent(e); });
-		TRAP::Graphics::RendererAPI::GetRenderer()->SetClearColor({ 1.0f, 0.0f, 1.0f, 1.0f }, m_window.get());
-	}
 
 	m_vertexBuffer = TRAP::Graphics::VertexBuffer::Create(m_triangleVertices.data(), static_cast<uint32_t>(m_quadVertices.size()) * sizeof(float), TRAP::Graphics::BufferUsage::Dynamic);
 	const TRAP::Graphics::BufferLayout layout =
@@ -83,9 +54,6 @@ void VulkanTests::OnAttach()
 
 void VulkanTests::OnDetach()
 {
-	if (s_window)
-		m_window.reset();
-
 	m_indexBuffer.reset();
 	m_vertexBuffer.reset();
 }
@@ -94,9 +62,6 @@ void VulkanTests::OnDetach()
 
 void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
-	if (s_window && m_window)
-		TRAP::Graphics::RenderCommand::Present(m_window);
-
 	if(m_wireFrame)
 		TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::WireFrame);
 	else
@@ -181,9 +146,6 @@ void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 
 
 		TRAP::Graphics::ShaderManager::Get("VKTestUBO")->Use();
-
-		//m_sizeMultiplicatorUniformBuffer->Use(TRAP::Graphics::ShaderManager::Get("VKTestUBO").get());
-		//m_colorUniformBuffer->Use(TRAP::Graphics::ShaderManager::Get("VKTestUBO").get());
 	}
 	else
 		TRAP::Graphics::ShaderManager::Get("VKTest")->Use();
@@ -224,21 +186,7 @@ void VulkanTests::OnImGuiRender()
 void VulkanTests::OnEvent(TRAP::Events::Event& event)
 {
 	TRAP::Events::EventDispatcher dispatcher(event);
-	dispatcher.Dispatch<TRAP::Events::WindowCloseEvent>([this](TRAP::Events::WindowCloseEvent& e) { return OnWindowClose(e); });
 	dispatcher.Dispatch<TRAP::Events::KeyPressEvent>([this](TRAP::Events::KeyPressEvent& e) { return OnKeyPress(e); });
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-bool VulkanTests::OnWindowClose(TRAP::Events::WindowCloseEvent& e)
-{
-	if (s_window)
-	{
-		if (e.GetWindow() == m_window.get())
-			m_window.reset();
-	}
-
-	return true;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -272,12 +220,7 @@ bool VulkanTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 		e.GetWindow()->SetVSync(m_vsync);
 	}
 	if (e.GetKey() == TRAP::Input::Key::Escape)
-	{
-		if(s_window && m_window)
-			m_window.reset();
-		else
-			TRAP::Application::Shutdown();
-	}
+		TRAP::Application::Shutdown();
 
 	return false;
 }

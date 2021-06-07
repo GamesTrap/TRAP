@@ -16,10 +16,7 @@ public:
 	void OnEvent(TRAP::Events::Event& event) override;
 
 private:
-	bool OnWindowClose(TRAP::Events::WindowCloseEvent& e);
 	bool OnKeyPress(TRAP::Events::KeyPressEvent& e);
-
-	TRAP::Scope<TRAP::Window> m_window;
 
 	TRAP::Utils::Timer m_fpsTimer;
 
@@ -68,8 +65,6 @@ private:
 	bool m_indexed;
 	bool m_vsync;
 	uint8_t m_pushConstantOrUBO;
-
-	inline static constexpr bool s_window = false;
 
 	struct ColorData
 	{

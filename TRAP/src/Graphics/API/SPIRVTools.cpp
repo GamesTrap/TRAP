@@ -81,8 +81,10 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 		{
 			if (!type.array.empty())
 				resource.Size = type.array[0];
-			else
+			else if(!type.member_types.empty())
 				resource.Size = compiler.get_declared_struct_size(type); //Used by UBO creation from Shader
+			else
+				resource.Size = 1;
 		}
 
 		//Use the instance name if there is one
