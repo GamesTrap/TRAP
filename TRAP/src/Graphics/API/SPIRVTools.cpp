@@ -82,7 +82,8 @@ void ReflectBoundResources(spirv_cross::Compiler& compiler,
 			if (!type.array.empty())
 				resource.Size = type.array[0];
 			else
-				resource.Size = 1;
+				resource.Size = 1;//compiler.get_declared_struct_size(type);
+				//TODO Own value for BufferSize
 		}
 
 		//Use the instance name if there is one

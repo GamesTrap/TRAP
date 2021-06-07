@@ -1870,3 +1870,12 @@ SITREP 06/07/2021|21w23a1
     - Removed Descriptors from UniformBuffer ~<10 mins
     - UniformBuffer made Static not persistent mapped ~<5 mins
     - UniformBuffer Changed Use method (will be replaced soon) ~<20 mins
+
+SITREP 06/07/2021|21w23a2
+    - Changed TRAP Engine version to 21w23a2(0.7.47)
+    - GenerateVulkanLoader replaced copy with move ~<10 mins
+    - Shaders now create UniformBuffers automatically using reflection data ~<20 mins
+    - Updated VulkanLoader version ~<5 mins
+    - Updated Controller mappings ~<5 mins
+    - UniformBuffer Removed window stuff ~<10 mins
+    - Updated VulkanTests ~<15 mins

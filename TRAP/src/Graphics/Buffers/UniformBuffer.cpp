@@ -9,12 +9,9 @@
 #include "Graphics/API/Objects/DescriptorSet.h"
 #include "Graphics/Shaders/Shader.h"
 
-TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name, const uint64_t size, const BufferUsage usage, Window* window)
+TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name, const uint64_t size, const BufferUsage usage)
 {
 	TP_PROFILE_FUNCTION();
-
-	if(!window)
-		window = TRAP::Application::GetWindow().get();
 
 	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer());
 	buffer->m_name = name;
@@ -39,12 +36,9 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name, void* data, const uint64_t size, const BufferUsage usage, Window* window)
+TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create(const std::string& name, void* data, const uint64_t size, const BufferUsage usage)
 {
 	TP_PROFILE_FUNCTION();
-
-	if(!window)
-		window = TRAP::Application::GetWindow().get();
 
 	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer());
 	buffer->m_name = name;
@@ -98,11 +92,8 @@ TRAP::Graphics::BufferUsage TRAP::Graphics::UniformBuffer::GetBufferUsage() cons
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::UniformBuffer::Use(Shader* shader, Window* window)
+void TRAP::Graphics::UniformBuffer::Use(Shader* shader) //TODO Maybe replace with Shader->UseUBO(UBO) ?!
 {
-	if(!window)
-		window = TRAP::Application::GetWindow().get();
-
 	TRAP_ASSERT(shader);
 
 	//TODO Find out in which DescriptorSet (set = X) our UBO is

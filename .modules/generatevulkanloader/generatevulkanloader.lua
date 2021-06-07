@@ -42,12 +42,12 @@ function CheckWindowsStuff()
     return true
 end
 
-function LinuxCopyVulkanLoader()
-    os.execute("cp ../.modules/generatevulkanloader/VulkanLoader.h ../TRAP/src/Graphics/API/Vulkan/Utils/VulkanLoader.h")
+function LinuxMoveVulkanLoader()
+    os.execute("mv ../.modules/generatevulkanloader/VulkanLoader.h ../TRAP/src/Graphics/API/Vulkan/Utils/VulkanLoader.h")
 end
 
-function WindowsCopyVulkanLoader()
-    os.execute("copy ../.modules/generatevulkanloader/VulkanLoader.h ../TRAP/src/Graphics/API/Vulkan/Utils/VulkanLoader.h > NUL")
+function WindowsMoveVulkanLoader()
+    os.execute("move ../.modules/generatevulkanloader/VulkanLoader.h ../TRAP/src/Graphics/API/Vulkan/Utils/VulkanLoader.h > NUL")
 end
 
 function LinuxCopyTemplate()
@@ -105,9 +105,9 @@ newaction
         os.remove("../TRAP/src/Graphics/API/Vulkan/Utils/VulkanLoader.h") --Delete old VulkanLoader
 
         if(_TARGET_OS == "linux") then
-            LinuxCopyVulkanLoader()
+            LinuxMoveVulkanLoader()
         elseif(_TARGET_OS == "windows") then
-            WindowsCopyVulkanLoader()
+            WindowsMoveVulkanLoader()
         end
     end,
 

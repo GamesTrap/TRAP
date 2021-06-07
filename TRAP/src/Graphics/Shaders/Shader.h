@@ -41,6 +41,8 @@ namespace TRAP::Graphics
 		TRAP::Ref<RootSignature> GetRootSignature() const;
 		const DescriptorSets& GetDescriptorSets() const;
 
+		Ref<UniformBuffer> GetUniformBuffer(uint32_t set, uint32_t binding);
+
 		virtual void Use(Window* window = nullptr) = 0;
 
 		static Scope<Shader> CreateFromFile(const std::string& name, const std::string& filePath, const std::vector<Macro>* userMacros = nullptr);
@@ -53,6 +55,8 @@ namespace TRAP::Graphics
 		RendererAPI::ShaderStage m_shaderStages{};
 		TRAP::Ref<RootSignature> m_rootSignature;
 		DescriptorSets m_descriptorSets;
+		//Set -> Binding -> UBO
+		std::unordered_map<uint32_t, std::unordered_map<uint32_t, Ref<UniformBuffer>>> m_UBOs;
 
 	private:
 		static bool CheckSPIRVMagicNumber(std::string_view filePath);

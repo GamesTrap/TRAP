@@ -27,7 +27,7 @@ namespace TRAP::Graphics
 		uint64_t GetSize() const;
 		BufferUsage GetBufferUsage() const;
 
-		void Use(Shader* shader, Window* window = nullptr);
+		void Use(Shader* shader);
 
 		void SetData(const void* data, uint64_t size, uint64_t offset = 0);
 
@@ -36,8 +36,8 @@ namespace TRAP::Graphics
 
 		const std::string& GetName() const;
 
-		static Scope<UniformBuffer> Create(const std::string& name, uint64_t size, BufferUsage usage, Window* window = nullptr);
-		static Scope<UniformBuffer> Create(const std::string& name, void* data, uint64_t size, BufferUsage usage, Window* window = nullptr);
+		static Scope<UniformBuffer> Create(const std::string& name, uint64_t size, BufferUsage usage);
+		static Scope<UniformBuffer> Create(const std::string& name, void* data, uint64_t size, BufferUsage usage);
 
 	private:
 		std::vector<TRAP::Ref<TRAP::Graphics::Buffer>> m_uniformBuffers;

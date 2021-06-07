@@ -9,6 +9,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanRootSignature.h"
 #include "Graphics/API/Objects/RootSignature.h"
 #include "Graphics/API/Objects/DescriptorPool.h"
+#include "Graphics/Buffers/BufferLayout.h"
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const RendererAPI::BinaryShaderDesc& desc)
 	: m_device(dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->GetDevice()),
@@ -146,6 +147,18 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const R
 		desc.UpdateFrequency = RendererAPI::DescriptorUpdateFrequency::PerFrame;
 		m_descriptorSets.PerFrameDescriptors = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(desc);
 	}
+
+	for(const auto& resource : m_reflection->ShaderResources)
+	{
+		if(resource.Type == RendererAPI::DescriptorType::UniformBuffer)
+		{
+			BufferUsage usage = BufferUsage::Static;
+			if (resource.Set != static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::None))
+				usage = BufferUsage::Dynamic;
+
+			m_UBOs[resource.Set][resource.Reg] = UniformBuffer::Create(resource.Name, resource.Size, usage); //TODO Multiple Windows ?!
+		}
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -213,4 +226,10 @@ const std::vector<std::string>& TRAP::Graphics::API::VulkanShader::GetEntryNames
 void TRAP::Graphics::API::VulkanShader::Use(Window* window)
 {
 	dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->BindShader(this, window);
+
+	for(const auto& UBOSet : m_UBOs)
+	{
+		for (const auto& UBOBinding : UBOSet.second)
+			UBOBinding.second->Use(this, window);
+	}
 }

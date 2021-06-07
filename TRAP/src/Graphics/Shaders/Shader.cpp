@@ -11,7 +11,7 @@ bool TRAP::Graphics::Shader::s_glslangInitialized = false;
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Shader::Shader()
-	: m_name(), m_filepath(), m_shaderStages()
+	: m_name(), m_filepath(), m_shaderStages(), m_descriptorSets()
 {
 }
 
@@ -58,6 +58,17 @@ TRAP::Ref<TRAP::Graphics::RootSignature> TRAP::Graphics::Shader::GetRootSignatur
 const TRAP::Graphics::Shader::DescriptorSets& TRAP::Graphics::Shader::GetDescriptorSets() const
 {
 	return m_descriptorSets;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::UniformBuffer> TRAP::Graphics::Shader::GetUniformBuffer(const uint32_t set, const uint32_t binding)
+{
+	//Check if set & binding exist in map
+	if (!m_UBOs.count(set) || !m_UBOs[set].count(binding))
+		return nullptr;
+
+	return m_UBOs[set][binding];
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
