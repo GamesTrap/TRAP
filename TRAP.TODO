@@ -1,7 +1,7 @@
 Shader (After Reflection):
     UniformBuffers:
-        ☐ Create automatically & save in shader (use reflection)
-        ☐ Add a Get method to retrieve the UniformBuffer pointer
+        ✔ Create automatically & save in shader (use reflection) @done(21-06-07 12:34)
+        ✔ Add a Get method to retrieve the UniformBuffer pointer @done(21-06-07 12:34)
     Descriptors:
         ✔ Create descriptors per shader (includes RootSignature per Shader (maybe not needed?!) @done(21-06-07 03:21)
             ☐ Test with global GraphicsRootSignature again
@@ -17,6 +17,7 @@ Shader (After Reflection):
 
 Bugs:
     ☐ Fix "[03:18:21][Error][Renderer][Vulkan] Failed Vulkan Version Test!" on Linux which still passes capability tester?!
+        Not reproducable on Windows
 
 With most things working with Vulkan:
     ☐ Create a Vulkan-Development branch on GitHub TRAP repo

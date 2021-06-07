@@ -5,7 +5,6 @@
 #include "BufferLayout.h"
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/API/Objects/Buffer.h"
-#include "Graphics/API/Objects/DescriptorPool.h"
 #include "Graphics/API/Objects/DescriptorSet.h"
 #include "Graphics/Shaders/Shader.h"
 
@@ -16,8 +15,8 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer());
 	buffer->m_name = name;
 	buffer->m_bufferUsage = usage;
-	buffer->m_tokens.resize(usage == BufferUsage::Static ? 1 : 3);
-	buffer->m_uniformBuffers.resize(usage == BufferUsage::Static ? 1 : 3);
+	buffer->m_tokens.resize(usage == BufferUsage::Static ? 1 : RendererAPI::ImageCount);
+	buffer->m_uniformBuffers.resize(usage == BufferUsage::Static ? 1 : RendererAPI::ImageCount);
 
 	RendererAPI::BufferLoadDesc desc{};
 	desc.Desc.MemoryUsage = (usage == BufferUsage::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly : RendererAPI::ResourceMemoryUsage::CPUToGPU;
@@ -43,8 +42,8 @@ TRAP::Scope<TRAP::Graphics::UniformBuffer> TRAP::Graphics::UniformBuffer::Create
 	TRAP::Scope<UniformBuffer> buffer = TRAP::Scope<UniformBuffer>(new UniformBuffer());
 	buffer->m_name = name;
 	buffer->m_bufferUsage = usage;
-	buffer->m_tokens.resize(usage == BufferUsage::Static ? 1 : 3);
-	buffer->m_uniformBuffers.resize(usage == BufferUsage::Static ? 1 : 3);
+	buffer->m_tokens.resize(usage == BufferUsage::Static ? 1 : RendererAPI::ImageCount);
+	buffer->m_uniformBuffers.resize(usage == BufferUsage::Static ? 1 : RendererAPI::ImageCount);
 
 	RendererAPI::BufferLoadDesc desc{};
 	desc.Desc.MemoryUsage = (usage == BufferUsage::Static) ? RendererAPI::ResourceMemoryUsage::GPUOnly : RendererAPI::ResourceMemoryUsage::CPUToGPU;

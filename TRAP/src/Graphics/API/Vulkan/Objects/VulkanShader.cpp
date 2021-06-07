@@ -230,6 +230,6 @@ void TRAP::Graphics::API::VulkanShader::Use(Window* window)
 	for(const auto& UBOSet : m_UBOs)
 	{
 		for (const auto& UBOBinding : UBOSet.second)
-			UBOBinding.second->Use(this, window);
+			UBOBinding.second->Use(this);
 	}
 }
