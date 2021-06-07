@@ -1879,3 +1879,5 @@ SITREP 06/07/2021|21w23a2
     - Updated Controller mappings ~<5 mins
     - UniformBuffer Removed window stuff ~<10 mins
     - Updated VulkanTests ~<15 mins
+    - Removed Window stuff from VulkanTests ~<10 mins
+    - Fixed a crash in Shader reflection ~<10 mins
