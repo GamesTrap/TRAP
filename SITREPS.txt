@@ -1881,3 +1881,7 @@ SITREP 06/07/2021|21w23a2
     - Updated VulkanTests ~<15 mins
     - Removed Window stuff from VulkanTests ~<10 mins
     - Fixed a crash in Shader reflection ~<10 mins
+
+SITREP 06/08/2021|21w23a2
+    - Changed TRAP Engine version to 21w23a2(0.7.47)
+    - Made VulkanTextureTests work again ~<20 mins

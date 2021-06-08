@@ -1,21 +1,21 @@
 #include "VulkanTextureTests.h"
 
-#include <Graphics/API/Objects/DescriptorPool.h>
-#include <Graphics/API/Objects/DescriptorSet.h>
 #include <Embed.h>
+
+#include <Graphics/API/Objects/DescriptorSet.h>
 
 VulkanTextureTests::VulkanTextureTests()
     : Layer("VulkanTextureTests"),
       m_vertexBuffer(nullptr),
       m_indexBuffer(nullptr),
       m_texture(nullptr),
-      m_descriptorSet(nullptr),
       m_currentMipLevel(0),
       m_maxMipLevel(0),
       m_textureSamplers(),
       m_updateTexture(false),
       m_debugImgVisible(false),
-      m_cycleMips(false)
+      m_cycleMips(false),
+	  m_shader(nullptr)
 {}
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -70,7 +70,7 @@ void VulkanTextureTests::OnAttach()
     //Load Shader
     std::vector<TRAP::Graphics::Shader::Macro> macros{};
     macros.emplace_back(TRAP::Graphics::Shader::Macro{"MAX_TEXTURE_MIP_LEVELS", std::to_string(m_maxMipLevel)});
-    TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "/shaders/testtextureseperate.shader", &macros);
+    m_shader = TRAP::Graphics::ShaderManager::LoadFile("VKTextureTest", "/shaders/testtextureseperate.shader", &macros).get();
 
     TRAP::Graphics::RendererAPI::SamplerDesc samplerDesc{};
     samplerDesc.AddressU = TRAP::Graphics::RendererAPI::AddressMode::Repeat;
@@ -95,10 +95,28 @@ void VulkanTextureTests::OnAttach()
     //Just in case
     TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 
-    //Bind everything
+    //////////////////////////////////////
+    //INTERNAL CODE USE AT YOUR OWN RISK//
+    //////////////////////////////////////
+    TRAP::Graphics::RendererAPI::DescriptorData param{};
+    param.Name = "Texture";
+    param.Resource = std::vector<TRAP::Graphics::API::VulkanTexture*>{ m_texture.get() };
+    param.Count = 1;
+
+    TRAP::Graphics::RendererAPI::DescriptorData paramSamplers{};
+    paramSamplers.Name = "Samplers";
+    std::vector<TRAP::Graphics::Sampler*> samplers(m_maxMipLevel, nullptr);
+    for (uint32_t i = 0; i < samplers.size(); ++i)
+        samplers[i] = m_textureSamplers[i].get();
+    paramSamplers.Resource = samplers;
+    paramSamplers.Count = m_textureSamplers.size();
+	
+    m_shader->GetDescriptorSets().StaticDescriptors->Update(0, { param, paramSamplers });
+    //////////////////////////////////////
+	
+    //Bind buffers
     m_vertexBuffer->Use();
     m_indexBuffer->Use();
-    TRAP::Graphics::ShaderManager::Get("VKTextureTest")->Use();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -117,35 +135,6 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
 {
     m_vertexBuffer->Use();
     m_indexBuffer->Use();
-
-    //////////////////////////////////////
-	//INTERNAL CODE USE AT YOUR OWN RISK//
-	//////////////////////////////////////
-    if(!m_descriptorSet)
-    {
-        TRAP::Graphics::RendererAPI::DescriptorSetDesc desc{};
-        desc.RootSignature = TRAP::Graphics::RendererAPI::GetGraphicsRootSignature();
-        desc.UpdateFrequency = TRAP::Graphics::RendererAPI::DescriptorUpdateFrequency::None;
-        desc.MaxSets = 1;
-        m_descriptorSet = TRAP::Graphics::RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(desc);
-
-        TRAP::Graphics::RendererAPI::DescriptorData param{};
-        param.Name = "Texture";
-        param.Resource = std::vector<TRAP::Graphics::API::VulkanTexture*>{m_texture.get()};
-        param.Count = 1;
-
-        TRAP::Graphics::RendererAPI::DescriptorData paramSamplers{};
-        paramSamplers.Name = "Samplers";
-        std::vector<TRAP::Graphics::Sampler*> samplers(m_maxMipLevel, nullptr);
-        for(uint32_t i = 0; i < samplers.size(); ++i)
-            samplers[i] = m_textureSamplers[i].get();
-        paramSamplers.Resource = samplers;
-        paramSamplers.Count = m_textureSamplers.size();
-
-        m_descriptorSet->Update(0, {param, paramSamplers});
-    }
-    TRAP::Graphics::RendererAPI::GetRenderer()->BindDescriptorSet(*m_descriptorSet, 0);
-	//////////////////////////////////////
 
     if(m_cycleMips)
     {
@@ -195,8 +184,13 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
         TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForToken(&token);
     }
 
+	//Bind shader
+    TRAP::Graphics::ShaderManager::Get("VKTextureTest")->Use();
+	//TODO Currently shader needs to be bound in orderd to set push constants
+	//TODO PushConstant binding should use a shader as input or better Shader should have a function for binding push constants
+
     //Upload mip level index
-    TRAP::Graphics::RendererAPI::GetRenderer()->BindPushConstants("SamplerRootConstant", &m_currentMipLevel);
+    TRAP::Graphics::RendererAPI::GetRenderer()->BindPushConstants("SamplerRootConstant", &m_currentMipLevel); //TODO Use Shaders RootSignature internally instead of GraphicsPipelineDescs RootSignature
 
     //Render Quad
     TRAP::Graphics::RendererAPI::GetRenderer()->DrawIndexed(m_indexBuffer->GetCount());

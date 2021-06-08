@@ -17,7 +17,7 @@ Shader (After Reflection):
         ☐ Fix runtime API switching
 
 Non-functional:
-    ☐ Make VulkanTextureTest work again
+    ✔ Make VulkanTextureTest work again @done(21-06-08 13:24)
     ☐ Make VulkanMultiWindowTest work again
 
 Bugs:

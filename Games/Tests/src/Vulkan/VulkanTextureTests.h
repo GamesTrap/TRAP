@@ -44,11 +44,12 @@ private:
     std::vector<uint8_t> m_vulkanLogoImgData;
     bool m_debugImgVisible;
 
+    TRAP::Graphics::Shader* m_shader;
+	
     //////////////////////////////////////
 	//INTERNAL CODE USE AT YOUR OWN RISK//
 	//////////////////////////////////////
     TRAP::Ref<TRAP::Graphics::API::VulkanTexture> m_texture;
-    TRAP::Graphics::DescriptorSet* m_descriptorSet;
 	//////////////////////////////////////
 };
 
