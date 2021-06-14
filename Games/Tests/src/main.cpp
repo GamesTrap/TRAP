@@ -12,6 +12,7 @@
 #include "Vulkan/VulkanTests.h"
 #include "Vulkan/VulkanTextureTests.h"
 #include "Vulkan/VulkanMultiWindowTests.h"
+#include "Vulkan/VulkanIcoSphereTests.h"
 #include "ImageLoader/ImageLoaderTests.h"
 #include "DragAndDrop/DragAndDropTests.h"
 
@@ -31,8 +32,9 @@ public:
 		//PushLayer(TRAP::MakeScope<OpacityTests>());
 		//PushLayer(TRAP::MakeScope<TitleTests>());
 		//PushLayer(TRAP::MakeScope<VulkanTests>());
-		PushLayer(TRAP::MakeScope<VulkanTextureTests>());
+		//PushLayer(TRAP::MakeScope<VulkanTextureTests>());
 		//PushLayer(TRAP::MakeScope<VulkanMultiWindowTests>());
+		PushLayer(TRAP::MakeScope<VulkanIcoSphereTests>());
 		//PushLayer(TRAP::MakeScope<ImageLoaderTests>());
 		//PushLayer(TRAP::MakeScope<DragAndDropTests>());
 	}
