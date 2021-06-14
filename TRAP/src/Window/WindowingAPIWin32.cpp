@@ -320,7 +320,7 @@ void TRAP::INTERNAL::WindowingAPI::InputWindowContentScale(const InternalWindow*
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Window callback function (handles window messages)
-LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const UINT uMsg, const WPARAM wParam, const LPARAM lParam)
+LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(HWND hWnd, const UINT uMsg, const WPARAM wParam, const LPARAM lParam)
 {
 	InternalWindow* windowPtr = static_cast<InternalWindow*>(GetPropW(hWnd, L"TRAP"));
 
@@ -495,7 +495,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 					codePoint = static_cast<WCHAR>(wParam);
 
 				windowPtr->HighSurrogate = 0;
-				InputChar(windowPtr, static_cast<uint32_t>(codePoint));
+				InputChar(windowPtr, codePoint);
 			}
 
 			return 0;
@@ -601,7 +601,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 		case WM_MBUTTONUP:
 		case WM_XBUTTONUP:
 		{
-			int32_t i;
+			uint32_t i;
 			Input::MouseButton button;
 			bool pressed;
 
@@ -686,7 +686,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 		case WM_INPUT:
 		{
 			UINT size = 0;
-			const HRAWINPUT ri = reinterpret_cast<HRAWINPUT>(lParam);
+			HRAWINPUT ri = reinterpret_cast<HRAWINPUT>(lParam);
 			int32_t dx, dy;
 
 			if (s_Data.DisabledCursorWindow != windowPtr)
@@ -738,7 +738,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 
 		case WM_MOUSEWHEEL:
 		{
-			InputScroll(windowPtr, 0.0f, static_cast<SHORT>(HIWORD(wParam)) / static_cast<double>(WHEEL_DELTA));
+			InputScroll(windowPtr, 0.0, static_cast<SHORT>(HIWORD(wParam)) / static_cast<double>(WHEEL_DELTA));
 			return 0;
 		}
 
@@ -856,7 +856,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 			if(!windowPtr->Decorated)
 			{
 				MONITORINFO mi;
-				const HMONITOR mh = MonitorFromWindow(windowPtr->Handle, MONITOR_DEFAULTTONEAREST);
+				HMONITOR mh = MonitorFromWindow(windowPtr->Handle, MONITOR_DEFAULTTONEAREST);
 
 				ZeroMemory(&mi, sizeof(mi));
 				mi.cbSize = sizeof(mi);
@@ -954,7 +954,7 @@ LRESULT CALLBACK TRAP::INTERNAL::WindowingAPI::WindowProc(const HWND hWnd, const
 
 		case WM_DROPFILES:
 		{
-			const HDROP drop = reinterpret_cast<HDROP>(wParam);
+			HDROP drop = reinterpret_cast<HDROP>(wParam);
 			POINT pt;
 
 			const uint32_t count = DragQueryFileW(drop, 0xFFFFFFFF, nullptr, 0);
@@ -1040,7 +1040,7 @@ void TRAP::INTERNAL::WindowingAPI::UnregisterWindowClassWin32()
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Callback for EnumDisplayMonitors in CreateMonitor
-BOOL CALLBACK TRAP::INTERNAL::WindowingAPI::MonitorCallback(HMONITOR handle, HDC dc, RECT* rect, const LPARAM data)
+BOOL CALLBACK TRAP::INTERNAL::WindowingAPI::MonitorCallback(HMONITOR handle, HDC, RECT*, const LPARAM data)
 {
 	MONITORINFOEXW mi;
 	ZeroMemory(&mi, sizeof(mi));
@@ -1271,7 +1271,7 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseMonitor(const InternalWindow* window)
 	if (window->Monitor->Window != window)
 		return;
 
-	s_Data.AcquiredMonitorCount--;
+	--s_Data.AcquiredMonitorCount;
 	if (!s_Data.AcquiredMonitorCount)
 	{
 		SetThreadExecutionState(ES_CONTINUOUS);
@@ -1293,7 +1293,8 @@ void TRAP::INTERNAL::WindowingAPI::ReleaseMonitor(const InternalWindow* window)
 
 void TRAP::INTERNAL::WindowingAPI::FitToMonitor(const InternalWindow* window)
 {
-	MONITORINFO mi = { sizeof(mi) };
+	MONITORINFO mi = {};
+	mi.cbSize = sizeof(mi);
 	GetMonitorInfo(window->Monitor->Handle, &mi);
 	::SetWindowPos(window->Handle, HWND_TOPMOST,
 		mi.rcMonitor.left,
@@ -1357,7 +1358,7 @@ void TRAP::INTERNAL::WindowingAPI::SetVideoModeWin32(InternalMonitor* monitor, c
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(const HMONITOR handle, float& xScale, float& yScale)
+void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(HMONITOR handle, float& xScale, float& yScale)
 {
 	UINT xDPI = 0, yDPI = 0;
 
@@ -1365,14 +1366,14 @@ void TRAP::INTERNAL::WindowingAPI::GetMonitorContentScaleWin32(const HMONITOR ha
 		s_Data.SHCore.GetDPIForMonitor(handle, Monitor_DPI_Type::MDT_Effective_DPI, &xDPI, &yDPI);
 	else
 	{
-		const HDC dc = GetDC(nullptr);
+		HDC dc = GetDC(nullptr);
 		xDPI = GetDeviceCaps(dc, LOGPIXELSX);
 		yDPI = GetDeviceCaps(dc, LOGPIXELSY);
 		ReleaseDC(nullptr, dc);
 	}
 
-	xScale = xDPI / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
-	yScale = yDPI / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
+	xScale = static_cast<float>(xDPI) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
+	yScale = static_cast<float>(yDPI) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -1420,7 +1421,7 @@ DWORD TRAP::INTERNAL::WindowingAPI::GetWindowExStyle(const InternalWindow* windo
 //Creates the TRAP window
 int32_t TRAP::INTERNAL::WindowingAPI::CreateNativeWindow(InternalWindow* window,
 	                                                     const WindowConfig& WNDConfig,
-	                                                     const FrameBufferConfig& FBConfig)
+	                                                     const FrameBufferConfig&)
 {
 	int32_t xPos, yPos, fullWidth, fullHeight;
 	DWORD style = GetWindowStyle(window);
@@ -1623,8 +1624,8 @@ HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Scope<Image>& image, const 
 	bi.bV5BlueMask = 0x000000ff;
 	bi.bV5AlphaMask = 0xff000000;
 
-	const HDC dc = GetDC(nullptr);
-	const HBITMAP color = CreateDIBSection(dc,
+	HDC dc = GetDC(nullptr);
+	HBITMAP color = CreateDIBSection(dc,
 		reinterpret_cast<BITMAPINFO*>(&bi),
 		DIB_RGB_COLORS,
 		reinterpret_cast<void**>(&target),
@@ -1638,7 +1639,7 @@ HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Scope<Image>& image, const 
 		return nullptr;
 	}
 
-	const HBITMAP mask = CreateBitmap(image->GetWidth(), image->GetHeight(), 1, 1, nullptr);
+	HBITMAP mask = CreateBitmap(image->GetWidth(), image->GetHeight(), 1, 1, nullptr);
 	if (!mask)
 	{
 		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to create mask bitmap");
@@ -1663,7 +1664,7 @@ HICON TRAP::INTERNAL::WindowingAPI::CreateIcon(const Scope<Image>& image, const 
 	ii.hbmMask = mask;
 	ii.hbmColor = color;
 
-	const HICON handle = CreateIconIndirect(&ii);
+	HICON handle = CreateIconIndirect(&ii);
 
 	DeleteObject(color);
 	DeleteObject(mask);
@@ -1715,7 +1716,7 @@ void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow* wi
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Disables WM_INPUT messages for the mouse
-void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion(const InternalWindow*)
 {
 	const RAWINPUTDEVICE rid = { 0x01, 0x02, RIDEV_REMOVE, nullptr };
 
@@ -1846,7 +1847,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* wind
                                                             InternalMonitor* monitor,
 	                                                        const int32_t xPos, const int32_t yPos,
 	                                                        const int32_t width, const int32_t height,
-	                                                        const int32_t refreshRate)
+	                                                        const int32_t)
 {
 	if (window->Monitor == monitor)
 	{
@@ -2269,7 +2270,7 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateCursor(InternalCursor* cursor,
                                                         const int32_t xHotspot,
                                                         const int32_t yHotspot)
 {
-	cursor->Handle = static_cast<HCURSOR>(CreateIcon(image, xHotspot, yHotspot, false));
+	cursor->Handle = CreateIcon(image, xHotspot, yHotspot, false);
 	if (!cursor->Handle)
 		return false;
 
@@ -2349,12 +2350,12 @@ bool TRAP::INTERNAL::WindowingAPI::PlatformCreateStandardCursor(InternalCursor* 
 void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursor(InternalCursor* cursor)
 {
 	if (cursor->Handle)
-		DestroyIcon(static_cast<HICON>(cursor->Handle));
+		DestroyIcon(cursor->Handle);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(const InternalWindow* window, const InternalCursor* cursor)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(const InternalWindow* window, const InternalCursor*)
 {
 	if (CursorInContentArea(window))
 		UpdateCursorImage(window);
@@ -2507,14 +2508,14 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSize(InternalWindow* window,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(InternalWindow* window, const bool enabled)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(InternalWindow* window, const bool)
 {
 	UpdateWindowStyles(window);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(const InternalWindow* window, const bool enabled)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(const InternalWindow* window, const bool)
 {
 	UpdateWindowStyles(window);
 }
@@ -2523,7 +2524,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowDecorated(const InternalWind
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowFloating(const InternalWindow* window, const bool enabled)
 {
-	const HWND after = enabled ? HWND_TOPMOST : HWND_NOTOPMOST;
+	HWND after = enabled ? HWND_TOPMOST : HWND_NOTOPMOST;
 	::SetWindowPos(window->Handle, after, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 }
 
@@ -2608,7 +2609,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSize(const InternalWind
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScale(const InternalWindow* window, float& xScale, float& yScale)
 {
-	const HANDLE handle = MonitorFromWindow(window->Handle, MONITOR_DEFAULTTONEAREST);
+	HANDLE handle = MonitorFromWindow(window->Handle, MONITOR_DEFAULTTONEAREST);
 	GetMonitorContentScaleWin32(static_cast<HMONITOR>(handle), xScale, yScale);
 }
 
@@ -2616,7 +2617,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScale(const InternalW
 
 void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorWorkArea(const InternalMonitor* monitor, int32_t& xPos, int32_t& yPos, int32_t& width, int32_t& height)
 {
-	MONITORINFO mi = { sizeof(MONITORINFO) };
+	MONITORINFO mi = {};
+	mi.cbSize = sizeof(MONITORINFO);
 	GetMonitorInfoW(monitor->Handle, &mi);
 	
 	xPos = mi.rcWork.left;
@@ -2675,7 +2677,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformPollEvents()
 	//      by the first key release
 	//NOTE: Windows key is not reported as released by the Win+V hot-key
 	//      Other Win hot-keys are handled implicitly by InputWindowFocus because they change the input focus
-	const HWND handle = GetActiveWindow();
+	HWND handle = GetActiveWindow();
 	if (handle)
 	{
 		InternalWindow* windowPtr = static_cast<InternalWindow*>(GetPropW(handle, L"TRAP"));
@@ -2776,7 +2778,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetClipboardString(const std::string_
 	if (!characterCount)
 		return;
 
-	const HANDLE object = GlobalAlloc(GMEM_MOVEABLE, characterCount * sizeof(WCHAR));
+	HANDLE object = GlobalAlloc(GMEM_MOVEABLE, characterCount * sizeof(WCHAR));
 	if (!object)
 	{
 		InputErrorWin32(Error::Platform_Error, "[WinAPI] Failed to allocate global handle for clipboard");
@@ -2816,7 +2818,7 @@ std::string TRAP::INTERNAL::WindowingAPI::PlatformGetClipboardString()
 		return {};
 	}
 
-	const HANDLE object = GetClipboardData(CF_UNICODETEXT);
+	HANDLE object = GetClipboardData(CF_UNICODETEXT);
 	if (!object)
 	{
 		InputErrorWin32(Error::Format_Unavailable, "[WinAPI] Failed to convert clipboard to string");
@@ -2853,7 +2855,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetRequiredInstanceExtensions(std::ar
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(const VkInstance instance,
+VkResult TRAP::INTERNAL::WindowingAPI::PlatformCreateWindowSurface(VkInstance instance,
                                                                    const InternalWindow* window,
                                                                    const VkAllocationCallbacks* allocator, VkSurfaceKHR& surface)
 {
@@ -2985,7 +2987,7 @@ void TRAP::INTERNAL::WindowingAPI::DisableCursor(InternalWindow* window)
 void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 {
 	std::fill(s_Data.KeyCodes.begin(), s_Data.KeyCodes.end(), Input::Key::Unknown);
-	std::fill(s_Data.ScanCodes.begin(), s_Data.ScanCodes.end(), -1);
+	std::fill(s_Data.ScanCodes.begin(), s_Data.ScanCodes.end(), static_cast<int16_t>(-1));
 
 	s_Data.KeyCodes[0x00B] = Input::Key::Zero;
 	s_Data.KeyCodes[0x002] = Input::Key::One;
@@ -3112,7 +3114,7 @@ void TRAP::INTERNAL::WindowingAPI::CreateKeyTables()
 
 	for (uint32_t scanCode = 0; scanCode < 512; scanCode++)
 		if (static_cast<int32_t>(s_Data.KeyCodes[scanCode]) > 0)
-			s_Data.ScanCodes[static_cast<int32_t>(s_Data.KeyCodes[scanCode])] = scanCode;
+			s_Data.ScanCodes[static_cast<int32_t>(s_Data.KeyCodes[scanCode])] = static_cast<int16_t>(scanCode);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

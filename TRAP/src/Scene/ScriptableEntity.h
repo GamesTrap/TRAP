@@ -26,7 +26,7 @@ namespace TRAP
 	protected:
 		virtual void OnCreate() {}
 		virtual void OnDestroy() {}
-		virtual void OnUpdate(const Utils::TimeStep& deltaTime) {}
+		virtual void OnUpdate(const Utils::TimeStep&) {}
 		virtual void OnTick() {}
 
 	private:

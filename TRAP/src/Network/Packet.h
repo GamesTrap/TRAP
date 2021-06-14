@@ -202,7 +202,7 @@ namespace TRAP::Network
 		/// <param name="size">Number of bytes.</param>
 		virtual void OnReceive(const void* data, std::size_t size);
 
-	private:
+	public:
 		/// <summary>
 		/// Disallow comparisons between packets.
 		/// </summary>
@@ -212,6 +212,7 @@ namespace TRAP::Network
 		/// </summary>
 		bool operator!=(const Packet & right) const = delete;
 
+	private:
 		/// <summary>
 		/// Check if the packet can extract a given number of bytes.<br>
 		/// <br>

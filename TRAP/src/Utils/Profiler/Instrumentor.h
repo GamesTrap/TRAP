@@ -229,13 +229,13 @@ namespace TRAP::Utils::Debug
 	/// </summary>
 	/// <param name="name">Name for the session.</param>
 	/// <param name="filePath">Physical file path where to store session.</param>
-	constexpr void TP_PROFILE_BEGIN_SESSION(const std::string& name, const std::string& filePath) {}
+	inline constexpr void TP_PROFILE_BEGIN_SESSION(const std::string&, const std::string&) {}
 	/// <summary>
 	/// End the current active profiler session.
 	/// </summary>
-	constexpr void TP_PROFILE_END_SESSION() {}
-	#define TP_PROFILE_SCOPE(name)
-	#define TP_PROFILE_FUNCTION()
+	inline constexpr void TP_PROFILE_END_SESSION() {}
+	inline constexpr void TP_PROFILE_SCOPE(const std::string&) {}
+	inline constexpr void TP_PROFILE_FUNCTION() {}
 #endif
 
 #endif /*_TRAP_INSTRUMENTOR_H_*/

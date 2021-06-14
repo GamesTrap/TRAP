@@ -33,7 +33,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #define _TRAP_VEC3_H_
 
 #include "Types.h"
-#include "Core/PlatformDetection.h"
 #include "Core/Base.h"
 #include "TRAP_Assert.h"
 

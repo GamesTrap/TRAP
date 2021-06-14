@@ -131,21 +131,21 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const R
 	//Static Descriptors
 	if(dynamic_cast<VulkanRootSignature*>(m_rootSignature.get())->GetVkDescriptorSetLayouts()[static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::None)] != VK_NULL_HANDLE)
 	{
-		RendererAPI::DescriptorSetDesc desc{};
-		desc.MaxSets = 1; //TODO What does this do?
-		desc.RootSignature = m_rootSignature;
-		desc.UpdateFrequency = RendererAPI::DescriptorUpdateFrequency::None;
-		m_descriptorSets.StaticDescriptors = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(desc);
+		RendererAPI::DescriptorSetDesc setDesc{};
+		setDesc.MaxSets = 1; //TODO What does this do?
+		setDesc.RootSignature = m_rootSignature;
+		setDesc.UpdateFrequency = RendererAPI::DescriptorUpdateFrequency::None;
+		m_descriptorSets.StaticDescriptors = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
 	}
 
 	//Per Frame Descriptors
 	if(dynamic_cast<VulkanRootSignature*>(m_rootSignature.get())->GetVkDescriptorSetLayouts()[static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::PerFrame)] != VK_NULL_HANDLE)
 	{
-		RendererAPI::DescriptorSetDesc desc{};
-		desc.MaxSets = RendererAPI::ImageCount; //TODO What does this do?
-		desc.RootSignature = m_rootSignature;
-		desc.UpdateFrequency = RendererAPI::DescriptorUpdateFrequency::PerFrame;
-		m_descriptorSets.PerFrameDescriptors = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(desc);
+		RendererAPI::DescriptorSetDesc setDesc{};
+		setDesc.MaxSets = RendererAPI::ImageCount; //TODO What does this do?
+		setDesc.RootSignature = m_rootSignature;
+		setDesc.UpdateFrequency = RendererAPI::DescriptorUpdateFrequency::PerFrame;
+		m_descriptorSets.PerFrameDescriptors = RendererAPI::GetDescriptorPool()->RetrieveDescriptorSet(setDesc);
 	}
 
 	for(const auto& resource : m_reflection->ShaderResources)

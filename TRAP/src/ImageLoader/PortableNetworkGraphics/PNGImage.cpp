@@ -1705,9 +1705,9 @@ bool TRAP::INTERNAL::PNGImage::UnFilter(uint8_t* out, const uint8_t* in, const u
 
 uint8_t TRAP::INTERNAL::PNGImage::PaethPredictor(uint16_t a, const uint16_t b, uint16_t c)
 {
-	uint16_t pa = Math::Abs(b - c);
-	const uint16_t pb = Math::Abs(a - c);
-	const uint16_t pc = Math::Abs(a + b - c - c);
+	uint16_t pa = static_cast<uint16_t>(Math::Abs(b - c));
+	const uint16_t pb = static_cast<uint16_t>(Math::Abs(a - c));
+	const uint16_t pc = static_cast<uint16_t>(Math::Abs(a + b - c - c));
 
 	//Return input value associated with smallest of pa, pb, pc(with certain priority if equal)
 	if (pb < pa)

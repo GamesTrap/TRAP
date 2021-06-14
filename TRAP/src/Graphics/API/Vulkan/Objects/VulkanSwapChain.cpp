@@ -149,7 +149,7 @@ void TRAP::Graphics::API::VulkanSwapChain::AddSwapchain(RendererAPI::SwapChainDe
 	VkSharingMode sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	uint32_t queueFamilyIndexCount = 0;
 	std::array<uint32_t, 2> queueFamilyIndices = { static_cast<uint32_t>(dynamic_cast<VulkanQueue*>(desc.PresentQueues[0].get())->GetQueueFamilyIndex()), 0 };
-	uint32_t presentQueueFamilyIndex = -1;
+	uint32_t presentQueueFamilyIndex = std::numeric_limits<uint32_t>::max();
 
 	const std::vector<VkQueueFamilyProperties>& queueFamilyProperties = m_device->GetPhysicalDevice()->GetQueueFamilyProperties();
 
@@ -303,7 +303,7 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 	TRAP_ASSERT(m_swapChain != VK_NULL_HANDLE);
 	TRAP_ASSERT(signalSemaphore || fence);
 	
-	uint32_t imageIndex = -1;
+	uint32_t imageIndex = std::numeric_limits<uint32_t>::max();
 	VkResult res{};
 
 	if(fence != nullptr)
@@ -316,7 +316,7 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 		{
 			VkCall(vkResetFences(m_device->GetVkDevice(), 1, &fen->GetVkFence()));
 			fen->m_submitted = false;
-			return -1;
+			return std::numeric_limits<uint32_t>::max();
 		}
 
 		fen->m_submitted = true;
@@ -330,7 +330,7 @@ uint32_t TRAP::Graphics::API::VulkanSwapChain::AcquireNextImage(const TRAP::Ref<
 		if(res == VK_ERROR_OUT_OF_DATE_KHR)
 		{
 			sema->m_signaled = false;
-			return -1;
+			return std::numeric_limits<uint32_t>::max();
 		}
 
 		VkCall(res);

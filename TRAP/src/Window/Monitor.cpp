@@ -32,7 +32,6 @@ std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 	std::vector<VideoMode> modes{};
 	const std::vector<INTERNAL::WindowingAPI::InternalVideoMode>& internalModes = INTERNAL::WindowingAPI::GetVideoModes(m_handle);
 
-	//for (const INTERNAL::WindowingAPI::InternalVideoMode mode : INTERNAL::WindowingAPI::GetVideoModes(m_handle))
 	for(auto i = internalModes.rbegin(); i != internalModes.rend(); ++i)
 		modes.emplace_back(i->Width, i->Height, i->RefreshRate);
 		
@@ -43,7 +42,6 @@ std::vector<TRAP::Monitor::VideoMode> TRAP::Monitor::GetVideoModes() const
 
 TRAP::Monitor::VideoMode TRAP::Monitor::GetCurrentVideoMode() const
 {
-	
 	return VideoMode{ m_handle->CurrentMode.Width, m_handle->CurrentMode.Height, m_handle->CurrentMode.RefreshRate };
 }
 
@@ -53,28 +51,24 @@ TRAP::Math::Vec2 TRAP::Monitor::GetContentScale() const
 {
 	TP_PROFILE_FUNCTION();
 
-	float xScale, yScale;
-	INTERNAL::WindowingAPI::GetMonitorContentScale(m_handle, xScale, yScale);
+	TRAP::Math::Vec2 scale{};
+	INTERNAL::WindowingAPI::GetMonitorContentScale(m_handle, scale.x, scale.y);
 	
-	return { xScale, yScale };
+	return scale;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 float TRAP::Monitor::GetContentScaleX() const
 {
-	const auto vec = GetContentScale();
-
-	return vec.x;
+	return GetContentScale().x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 float TRAP::Monitor::GetContentScaleY() const
 {
-	const auto vec = GetContentScale();
-
-	return vec.y;
+	return GetContentScale().y;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -83,28 +77,24 @@ TRAP::Math::Vec2i TRAP::Monitor::GetPosition() const
 {
 	TP_PROFILE_FUNCTION();
 
-	int32_t xPos, yPos;
-	INTERNAL::WindowingAPI::GetMonitorPos(m_handle, xPos, yPos);
+	TRAP::Math::Vec2i pos{};
+	INTERNAL::WindowingAPI::GetMonitorPos(m_handle, pos.x, pos.y);
 
-	return { xPos, yPos };
+	return pos;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 int32_t TRAP::Monitor::GetPositionX() const
 {
-	const auto vec = GetPosition();
-
-	return vec.x;
+	return GetPosition().x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 int32_t TRAP::Monitor::GetPositionY() const
 {
-	const auto vec = GetPosition();
-
-	return vec.y;
+	return GetPosition().y;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -113,53 +103,45 @@ TRAP::Math::Vec4i TRAP::Monitor::GetWorkArea() const
 {
 	TP_PROFILE_FUNCTION();
 
-	int32_t xPos, yPos, width, height;
-	INTERNAL::WindowingAPI::GetMonitorWorkArea(m_handle, xPos, yPos, width, height);
+	TRAP::Math::Vec4i workArea{};
+	INTERNAL::WindowingAPI::GetMonitorWorkArea(m_handle, workArea.x, workArea.y, workArea.z, workArea.w);
 
-	return { xPos, yPos, width, height };
+	return workArea;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 int32_t TRAP::Monitor::GetWorkAreaWidth() const
 {
-	const auto vec = GetWorkArea();
-	
-	return vec.z;
+	return GetWorkArea().z;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 int32_t TRAP::Monitor::GetWorkAreaHeight() const
 {
-	const auto vec = GetWorkArea();
-
-	return vec.w;
+	return GetWorkArea().w;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 int32_t TRAP::Monitor::GetWorkAreaX() const
 {
-	const auto vec = GetWorkArea();
-
-	return vec.x;
+	return GetWorkArea().x;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 int32_t TRAP::Monitor::GetWorkAreaY() const
 {
-	const auto vec = GetWorkArea();
-	
-	return vec.y;
+	return GetWorkArea().y;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 bool TRAP::Monitor::IsInUse() const
 {
-	return m_handle->Window ? true : false;
+	return m_handle->Window;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -170,8 +152,10 @@ uint32_t TRAP::Monitor::GetID() const
 
 	std::vector<INTERNAL::WindowingAPI::InternalMonitor*> monitors = INTERNAL::WindowingAPI::GetMonitors();
 	for(uint32_t i = 0; i < monitors.size(); i++)
+	{
 		if (monitors[i] == m_handle)
 			return i;
+	}
 
 	return 0; //Primary Monitor as fallback
 }
@@ -189,10 +173,10 @@ std::vector<TRAP::Monitor> TRAP::Monitor::GetAllMonitors()
 {
 	TP_PROFILE_FUNCTION();
 
-	std::vector<Monitor> monitors;
-	const uint32_t internalMonitorsSize = static_cast<uint32_t>(INTERNAL::WindowingAPI::GetMonitors().size());
-	for (uint32_t i = 0; i < internalMonitorsSize; i++)
-		monitors.push_back(Monitor(i));
+	std::vector<Monitor> monitors{};
+	const uint32_t monitorSize = static_cast<uint32_t>(INTERNAL::WindowingAPI::GetMonitors().size());
+	for (uint32_t i = 0; i < monitorSize; i++)
+		monitors.emplace_back(Monitor(i));
 
 	return monitors;
 }

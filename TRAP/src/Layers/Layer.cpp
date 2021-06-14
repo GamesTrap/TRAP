@@ -22,7 +22,7 @@ void TRAP::Layer::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Layer::OnUpdate(const Utils::TimeStep& deltaTime)
+void TRAP::Layer::OnUpdate(const Utils::TimeStep&)
 {
 }
 
@@ -40,7 +40,7 @@ void TRAP::Layer::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Layer::OnEvent(Events::Event& event)
+void TRAP::Layer::OnEvent(Events::Event&)
 {
 }
 

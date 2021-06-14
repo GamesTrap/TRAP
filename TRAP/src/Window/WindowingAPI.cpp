@@ -30,7 +30,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "WindowingAPI.h"
 #include "Window.h"
 #include "Events/KeyEvent.h"
-#include "Utils/String/String.h"
 #include "Layers/ImGui/ImGuiWindowing.h"
 
 TRAP::INTERNAL::WindowingAPI::Data TRAP::INTERNAL::WindowingAPI::s_Data{};
@@ -146,6 +145,12 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 			break;
 		}
 
+		case Hint::Minimized:
+		{
+			s_Data.Hints.Window.Maximized = !value;
+			break;
+		}
+
 		case Hint::Visible:
 		{
 			s_Data.Hints.Window.Visible = value;
@@ -182,6 +187,7 @@ void TRAP::INTERNAL::WindowingAPI::WindowHint(const Hint hint, const bool value)
 			break;
 		}
 
+		case Hint::Hovered:
 		default:
 		{
 			InputError(Error::Invalid_Enum, " Invalid Window Hint!");
@@ -387,12 +393,10 @@ void TRAP::INTERNAL::WindowingAPI::DestroyCursor(Scope<InternalCursor> cursor)
 		return;
 
 	//Make sure the cursor is not being used by any window
+	for(InternalWindow* window : s_Data.WindowList)
 	{
-		for(InternalWindow* window : s_Data.WindowList)
-		{
-			if (window->Cursor == cursor.get())
-				SetCursor(window, nullptr);
-		}
+		if (window->Cursor == cursor.get())
+			SetCursor(window, nullptr);
 	}
 
 	PlatformDestroyCursor(cursor.get());
@@ -731,6 +735,11 @@ void TRAP::INTERNAL::WindowingAPI::SetWindowHint(InternalWindow* window, const H
 			break;
 		}
 
+		case Hint::Maximized:
+		case Hint::Minimized:
+		case Hint::Visible:
+		case Hint::Focused:
+		case Hint::Hovered:
 		default:
 		{
 			InputError(Error::Invalid_Enum, " Invalid window attribute provided!");
@@ -1556,9 +1565,9 @@ const TRAP::INTERNAL::WindowingAPI::FrameBufferConfig* TRAP::INTERNAL::Windowing
 	uint32_t extraDiff, leastExtraDiff = UINT_MAX;
 	const FrameBufferConfig* closest = nullptr;
 
-	for (uint32_t i = 0; i < alternatives.size(); i++)
+	for (const auto& alternative : alternatives)
 	{
-		const FrameBufferConfig* current = &alternatives[i];
+		const FrameBufferConfig* current = &alternative;
 
 		if (desired.Stereo != current->Stereo)
 			//Stereo is a hard constraint
@@ -1767,7 +1776,8 @@ std::string TRAP::INTERNAL::WindowingAPI::GetVulkanResultString(const VkResult r
 //The position is specified in content area relative screen coordinates
 void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow* window, const double xPos, const double yPos)
 {
-	if (window->VirtualCursorPosX == xPos && window->VirtualCursorPosY == yPos)
+	if (Math::Abs(window->VirtualCursorPosX - xPos) < Math::Epsilon<double>() &&
+		Math::Abs(window->VirtualCursorPosY - yPos) < Math::Epsilon<double>())
 		return;
 
 	window->VirtualCursorPosX = xPos;
@@ -1780,7 +1790,7 @@ void TRAP::INTERNAL::WindowingAPI::InputCursorPos(InternalWindow* window, const 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of a physical key event
-void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* window, Input::Key key, const int32_t scancode, const bool pressed)
+void TRAP::INTERNAL::WindowingAPI::InputKey(InternalWindow* window, Input::Key key, const int32_t, const bool pressed)
 {
 	if (key != Input::Key::Unknown)
 	{
@@ -2085,9 +2095,9 @@ TRAP::INTERNAL::WindowingAPI::InternalVideoMode* TRAP::INTERNAL::WindowingAPI::C
 	if (!RefreshVideoModes(monitor))
 		return nullptr;
 
-	for (uint32_t i = 0; i < monitor->Modes.size(); i++)
+	for (auto& mode : monitor->Modes)
 	{
-		InternalVideoMode* current = &monitor->Modes[i];
+		InternalVideoMode* current = &mode;
 
 		uint32_t colorDiff = 0;
 
@@ -2169,7 +2179,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Notifies shared code of a monitor disconnection
-void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitorIndex, const uint32_t placement)
+void TRAP::INTERNAL::WindowingAPI::InputMonitorDisconnect(const uint32_t monitorIndex, const uint32_t)
 {
 	Scope<InternalMonitor>& monitor = s_Data.Monitors[monitorIndex];
 

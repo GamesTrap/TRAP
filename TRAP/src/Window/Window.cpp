@@ -59,7 +59,7 @@ TRAP::Window::~Window()
 
 	TRAP::Graphics::RendererAPI::GetRenderer()->RemovePerWindowData(this);
 	
-	s_windows--;
+	--s_windows;
 
 	if(!s_windows)
 	{
@@ -519,7 +519,7 @@ void TRAP::Window::SetIcon(const Scope<Image>& image) const
 		SetIcon();
 		return;
 	}
-	if (image->GetColorFormat() != Image::ColorFormat::RGBA && image->GetColorFormat() != Image::ColorFormat::RGB)
+	if (image->IsImageGrayScale())
 	{
 		TP_ERROR(Log::WindowIconPrefix, "\"", m_data.Title, "\" Only RGBA Images are supported for window icons!");
 		TP_WARN(Log::WindowIconPrefix, "\"", m_data.Title, "\" Using Default Icon!");
@@ -761,6 +761,7 @@ void TRAP::Window::Init(const WindowProps& props)
 	}
 
 	if(s_baseVideoModes.empty())
+	{
 		for(uint32_t i = 0; i < monitors.size(); i++)
 		{
 			s_baseVideoModes[i] = INTERNAL::WindowingAPI::GetVideoMode(monitors[i]);
@@ -768,6 +769,7 @@ void TRAP::Window::Init(const WindowProps& props)
 			         s_baseVideoModes[i].Width, 'x', s_baseVideoModes[i].Height, '@', s_baseVideoModes[i].RefreshRate, "Hz (R",
 			         s_baseVideoModes[i].RedBits, 'G', s_baseVideoModes[i].GreenBits, 'B', s_baseVideoModes[i].BlueBits, ')');			
 		}
+	}
 
 	INTERNAL::WindowingAPI::DefaultWindowHints();
 
@@ -1140,12 +1142,12 @@ void TRAP::Window::Init(const WindowProps& props)
 
 		if (pressed)
 		{
-			Events::MouseButtonPressEvent event(static_cast<Input::MouseButton>(button), data.Win);
+			Events::MouseButtonPressEvent event(button, data.Win);
 			data.EventCallback(event);
 		}
 		else
 		{
-			Events::MouseButtonReleaseEvent event(static_cast<Input::MouseButton>(button), data.Win);
+			Events::MouseButtonReleaseEvent event(button, data.Win);
 			data.EventCallback(event);
 		}
 	});

@@ -27,16 +27,16 @@ TRAP::CPUInfo TRAP::Application::s_CPU{};
 
 TRAP::Application::Application(const std::string& gameName)
 	: m_timer(std::make_unique<Utils::Timer>()),
-	m_FramesPerSecond(0),
-	m_FrameTime(0.0f),
-	m_drawCalls(0),
-	m_fpsLimit(0),
-	m_tickRate(100),
-	m_timeScale(1.0f),
-	m_gameName(gameName),
-	m_linuxWindowManager(LinuxWindowManager::Unknown),
-	m_threadPool(GetCPUInfo().LogicalCores > 1 ? GetCPUInfo().LogicalCores : std::thread::hardware_concurrency()),
-	m_newRenderAPI(Graphics::RenderAPI::NONE)
+	  m_FramesPerSecond(0),
+	  m_FrameTime(0.0f),
+	  m_drawCalls(0),
+	  m_fpsLimit(0),
+	  m_tickRate(100),
+	  m_timeScale(1.0f),
+	  m_gameName(gameName),
+	  m_linuxWindowManager(LinuxWindowManager::Unknown),
+	  m_threadPool(GetCPUInfo().LogicalCores > 1 ? (GetCPUInfo().LogicalCores - 1) : std::thread::hardware_concurrency()),
+	  m_newRenderAPI(Graphics::RenderAPI::NONE)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -48,6 +48,7 @@ TRAP::Application::Application(const std::string& gameName)
 
 	TP_INFO(Log::ApplicationPrefix, "CPU: ", GetCPUInfo().LogicalCores, "x ", GetCPUInfo().Model);
 
+	//TODO Move to Utils
 	//Check if machine is using little-endian or big-endian
 	int32_t intVal = 1;
 	uint8_t* uVal = reinterpret_cast<uint8_t*>(&intVal);
@@ -59,7 +60,7 @@ TRAP::Application::Application(const std::string& gameName)
 
 	UpdateLinuxWindowManager();
 
-	//TODO Future Remove
+	//TODO Future remove when Wayland Windows are implemented
 	if (GetLinuxWindowManager() == LinuxWindowManager::Wayland)
 	{
         TRAP::Utils::Dialogs::ShowMsgBox("Wayland unsupported!", "Wayland is currently not supported by TRAP! Please use X11 instead",
@@ -71,9 +72,6 @@ TRAP::Application::Application(const std::string& gameName)
 	VFS::Init();
 	if (!m_config.LoadFromFile("Engine.cfg"))
 		TP_INFO(Log::ConfigPrefix, "Using default values");
-#if defined(TRAP_DEBUG_CONFIGS)
-	m_config.Print();
-#endif
 
 	uint32_t width = 1280;
 	uint32_t height = 720;
@@ -149,7 +147,7 @@ TRAP::Application::Application(const std::string& gameName)
 	//Update Viewport
 	int32_t w, h;
 	INTERNAL::WindowingAPI::GetFrameBufferSize(static_cast<const INTERNAL::WindowingAPI::InternalWindow*>(m_window->GetInternalWindow()), w, h);
-	Graphics::RenderCommand::SetViewport(0, 0, width, height);
+	Graphics::RenderCommand::SetViewport(0, 0, static_cast<uint32_t>(w), static_cast<uint32_t>(h));
 	
 	//Always added as a fallback shader
 	Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader)->Use();
@@ -208,9 +206,6 @@ TRAP::Application::~Application()
 		if (m_config.Get<std::string_view>("VulkanGPU").empty())
 			m_config.Set("VulkanGPU", "");
 	}
-#if defined(TRAP_DEBUG_CONFIGS)
-	m_config.Print();
-#endif
 	m_config.SaveToFile("Engine.cfg");
 	m_window.reset();
 	VFS::Shutdown();
@@ -699,7 +694,8 @@ void TRAP::Application::UpdateLinuxWindowManager()
 
 bool TRAP::Application::OnWindowClose(Events::WindowCloseEvent& e)
 {
-	m_running = false;
+	if(e.GetWindow() == m_window.get())
+		m_running = false;
 
 	return true;
 }
@@ -736,7 +732,7 @@ bool TRAP::Application::OnKeyPress(Events::KeyPressEvent& e) const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent& e)
+bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent&)
 {
 	m_focused = true;
 
@@ -745,7 +741,7 @@ bool TRAP::Application::OnWindowFocus(Events::WindowFocusEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent& e)
+bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent&)
 {
 	if (Window::GetActiveWindows() == 1)
 		m_focused = false;
@@ -755,7 +751,7 @@ bool TRAP::Application::OnWindowLostFocus(Events::WindowLostFocusEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent& e)
+bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent&)
 {
 	if (Window::GetActiveWindows() == 1)
 		m_minimized = true;
@@ -765,7 +761,7 @@ bool TRAP::Application::OnWindowMinimize(Events::WindowMinimizeEvent& e)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent& e)
+bool TRAP::Application::OnWindowRestore(Events::WindowRestoreEvent&)
 {
 	m_minimized = false;
 
@@ -814,27 +810,28 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 			VFS::GetTextureFileWatcher()->Check([&](const std::filesystem::path& physicalPath,
 				const std::string& virtualPath,
 				const FileWatcher::FileStatus status) -> void
-				{
-					//Process only regular files and FileStatus::Modified
-					if (!std::filesystem::is_regular_file(physicalPath))
-						return;
-					if (status == FileWatcher::FileStatus::Erased)
-						return;
+			{
+				//Process only regular files and FileStatus::Modified
+				if (!std::filesystem::is_regular_file(physicalPath))
+					return;
+				if (status == FileWatcher::FileStatus::Erased)
+					return;
 
-					const std::string_view suffix = Utils::String::GetSuffixStringView(virtualPath);
-					if (suffix == "pgm" || suffix == "ppm" || suffix == "pnm" || suffix == "pam" || suffix == "pfm" ||
-						suffix == "tga" || suffix == "icb" || suffix == "vda" || suffix == "vst" || suffix == "bmp" ||
-						suffix == "dib" || suffix == "png" || suffix == "hdr" || suffix == "pic")
+				const std::string_view suffix = Utils::String::GetSuffixStringView(virtualPath);
+				//TODO Refactor to Image::GetSupportedImageFormatSuffixes(); ?!
+				if (suffix == "pgm" || suffix == "ppm" || suffix == "pnm" || suffix == "pam" || suffix == "pfm" ||
+					suffix == "tga" || suffix == "icb" || suffix == "vda" || suffix == "vst" || suffix == "bmp" ||
+					suffix == "dib" || suffix == "png" || suffix == "hdr" || suffix == "pic")
+				{
+					if (std::find(textures.begin(), textures.end(), virtualPath) == textures.end())
 					{
-						if (std::find(textures.begin(), textures.end(), virtualPath) == textures.end())
 						{
-							{
-								std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
-								textures.emplace_back(virtualPath);
-							}
+							std::lock_guard<std::mutex> lock(s_hotReloadingMutex);
+							textures.emplace_back(virtualPath);
 						}
 					}
-				});
+				}
+			});
 		}
 	}
 }

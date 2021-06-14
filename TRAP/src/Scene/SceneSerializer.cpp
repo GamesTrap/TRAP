@@ -1,7 +1,13 @@
 #include "TRAPPCH.h"
 #include "SceneSerializer.h"
 
+#ifdef _MSC_VER
+#pragma warning(push, 0)
+#endif
 #include <yaml-cpp/yaml.h>
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 #include "Components.h"
 #include "Entity.h"
@@ -178,7 +184,7 @@ void TRAP::SceneSerializer::Serialize(const std::string& filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::SceneSerializer::SerializeRuntime(const std::string& filepath)
+void TRAP::SceneSerializer::SerializeRuntime(const std::string&)
 {
 	TRAP_CORE_ASSERT(false, "Not implemented yet!");
 }
@@ -276,7 +282,7 @@ bool TRAP::SceneSerializer::Deserialize(const std::string& filepath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::SceneSerializer::DeserializeRuntime(const std::string& filepath)
+bool TRAP::SceneSerializer::DeserializeRuntime(const std::string&)
 {
 	TRAP_CORE_ASSERT(false, "Not implemented yet!");
 	return false;

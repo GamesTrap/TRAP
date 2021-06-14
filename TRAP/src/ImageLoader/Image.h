@@ -301,7 +301,7 @@ inline TRAP::Scope<TRAP::Image> TRAP::Image::FlipY(const Scope<Image>& img)
 template <typename T>
 std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, const ColorFormat format, const T* data)
 {
-	if (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value || std::is_same<T, float>::value))
+	if constexpr (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value || std::is_same<T, float>::value))
 	{
 		TRAP_CORE_ASSERT(false, "Invalid type!");
 		return std::vector<T>();
@@ -353,7 +353,7 @@ std::vector<T> TRAP::Image::FlipX(const uint32_t width, const uint32_t height, c
 template <typename T>
 std::vector<T> TRAP::Image::FlipY(const uint32_t width, const uint32_t height, const ColorFormat format, const T* data)
 {
-	if (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value || std::is_same<T, float>::value))
+	if constexpr (!(std::is_same<T, uint8_t>::value || std::is_same<T, uint16_t>::value || std::is_same<T, float>::value))
 	{
 		TRAP_CORE_ASSERT(false, "Invalid type!");
 		return std::vector<T>();

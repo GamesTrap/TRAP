@@ -213,7 +213,11 @@ std::vector<T> TRAP::Utils::Config::GetVector(const std::string_view key) const
 {
 	TP_PROFILE_FUNCTION();
 
-	const auto it = std::find_if(m_data.begin(), m_data.end(), [&key](const std::pair<std::string, std::string>& element) {return element.first == key; });
+	const auto it = std::find_if(m_data.begin(), m_data.end(),
+		[&key](const std::pair<std::string, std::string>& element)
+		{
+			return element.first == key;
+		});
 	if (it != m_data.end())
 	{
 		std::vector<T> data{};
@@ -530,7 +534,7 @@ inline TRAP::Graphics::RenderAPI TRAP::Utils::Config::ConvertToType<TRAP::Graphi
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-std::string TRAP::Utils::Config::ConvertToString(T value) const
+std::string TRAP::Utils::Config::ConvertToString(T) const
 {
 	TP_ERROR(TRAP::Log::ConfigPrefix, "Unsupported type supplied, either change types, or write a correct conversion function for the template type.");
 	throw "[Config] Unsupported type supplied, either change types, or write a correct conversion function for the template type.";

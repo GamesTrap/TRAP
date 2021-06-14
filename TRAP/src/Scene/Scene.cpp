@@ -6,14 +6,6 @@
 #include "Utils/Time/TimeStep.h"
 #include "Entity.h"
 
-TRAP::Scene::Scene() = default;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Scene::~Scene() = default;
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 TRAP::Entity TRAP::Scene::CreateEntity(const std::string& name)
 {
 	Entity entity = { m_registry.create(), this };
@@ -129,7 +121,7 @@ void TRAP::Scene::OnViewportResize(const uint32_t width, const uint32_t height)
 //-------------------------------------------------------------------------------------------------------------------//
 
 template<typename T>
-void TRAP::Scene::OnComponentAdded(Entity entity, T& component)
+void TRAP::Scene::OnComponentAdded(Entity, T&)
 {
 #ifndef __GNUC__
 	static_assert(false);
@@ -139,23 +131,23 @@ void TRAP::Scene::OnComponentAdded(Entity entity, T& component)
 }
 
 template<>
-void TRAP::Scene::OnComponentAdded<TRAP::TransformComponent>(Entity entity, TransformComponent& component)
+void TRAP::Scene::OnComponentAdded<TRAP::TransformComponent>(Entity, TransformComponent&)
 {}
 
 template<>
-void TRAP::Scene::OnComponentAdded<TRAP::CameraComponent>(Entity entity, CameraComponent& component)
+void TRAP::Scene::OnComponentAdded<TRAP::CameraComponent>(Entity, CameraComponent& component)
 {
 	component.Camera.SetViewportSize(m_viewportWidth, m_viewportHeight);
 } 
 
 template<>
-void TRAP::Scene::OnComponentAdded<TRAP::SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
+void TRAP::Scene::OnComponentAdded<TRAP::SpriteRendererComponent>(Entity, SpriteRendererComponent&)
 {}
 
 template<>
-void TRAP::Scene::OnComponentAdded<TRAP::TagComponent>(Entity entity, TagComponent& component)
+void TRAP::Scene::OnComponentAdded<TRAP::TagComponent>(Entity, TagComponent&)
 {}
 
 template<>
-void TRAP::Scene::OnComponentAdded<TRAP::NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+void TRAP::Scene::OnComponentAdded<TRAP::NativeScriptComponent>(Entity, NativeScriptComponent&)
 {}

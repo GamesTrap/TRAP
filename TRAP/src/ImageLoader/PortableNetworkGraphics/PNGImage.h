@@ -87,7 +87,7 @@ namespace TRAP::INTERNAL
 		{
 			uint32_t Length = 0;
 			std::array<uint8_t, 4> MagicNumber{};
-		} nextChunk;
+		};
 
 		static bool ProcessChunk(NextChunk& nextChunk, std::ifstream& file, Data& data, AlreadyLoaded& alreadyLoaded, bool needSwap);
 

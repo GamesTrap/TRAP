@@ -93,7 +93,7 @@ function LinuxCopyDocs()
 end
 
 function WindowsCopyDocs()
-    os.execute("move ../.modules/generatedocs/sphinx ../ > NUL")
+    os.execute("move ..\\.modules\\generatedocs\\sphinx ..\\ > NUL")
     os.execute("rename ..\\sphinx docs > NUL")
 end
 
@@ -102,7 +102,7 @@ function LinuxCopyFonts()
 end
 
 function WindowsCopyFonts()
-    os.execute("xcopy ../.modules/generatedocs/fonts ../.modules/generatedocs/sphinx/fonts > NUL")
+    os.execute("xcopy ..\\.modules\\generatedocs\\fonts ..\\.modules\\generatedocs\\sphinx\\fonts > NUL")
 end
 
 newaction
@@ -133,14 +133,20 @@ newaction
         if(not os.isdir(tempSphinxEmbedPath)) then
             os.mkdir(tempSphinxEmbedPath)
         end
-        local doxygenCmd = "doxygen ../.modules/generatedocs/Doxyfile"
-        if(_TARGET_OS == "linux") then
-            doxygenCmd = "doxygen ../.modules/generatedocs/Doxyfile > /dev/null 2>&1"
+
+        --Generate Doxygen pages
+        if(_TARGET_OS == "windows") then
+            os.execute("doxygen ..\\.modules\\generatedocs\\Doxyfile")
+        elseif(_TARGET_OS == "linux") then
+            os.execute("doxygen ../.modules/generatedocs/Doxyfile > /dev/null 2>&1")
         end
-        os.execute(doxygenCmd) --Generate Doxygen pages
 
         print("Generating Sphinx pages...")
-        os.execute("sphinx-build ../.modules/generatedocs/ ../.modules/generatedocs/sphinx -b html -j 8 -q") --Generate Sphinx pages
+        if(_TARGET_OS == "windows") then
+            os.execute("sphinx-build ..\\.modules\\generatedocs\\ ..\\.modules\\generatedocs\\sphinx -b html -j 8 -q") --Generate Sphinx pages
+        elseif(_TARGET_OS == "linux") then
+            os.execute("sphinx-build ../.modules/generatedocs/ ../.modules/generatedocs/sphinx -b html -j 8 -q") --Generate Sphinx pages
+        end
 
         print("Copying .nojekyll")
         os.copyfile("../.modules/generatedocs/.nojekyll", "../.modules/generatedocs/sphinx") --Needed for GitHub Pages to display correctly as a static page
@@ -152,7 +158,11 @@ newaction
             WindowsCopyFonts()
         end
 
-        os.rmdir("../docs") --Delete old pages
+        if(_TARGET_OS == "linux") then
+            os.rmdir("../docs") --Delete old pages
+        elseif(_TARGET_OS == "windows") then
+            os.rmdir("..\\docs") --Delete old pages
+        end
 
         print("Copying files to docs folder...")
         if(_TARGET_OS == "linux") then

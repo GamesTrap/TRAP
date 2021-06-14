@@ -38,7 +38,7 @@ namespace TRAP
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~ImGuiLayer() = default;
+		~ImGuiLayer() override = default;
 
 		/// <summary>
 		/// Called when pushed to a LayerStack.

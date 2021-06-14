@@ -145,7 +145,8 @@ void TRAP::Graphics::API::VulkanRenderer::StartGraphicRecording(const TRAP::Scop
 		LoadActionsDesc loadActions{};
 		loadActions.LoadActionsColor[0] = LoadActionType::Clear;
 		loadActions.ClearColorValues[0] = p->ClearColor;
-		p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({ renderTarget }, nullptr, &loadActions, {}, {}, -1, -1);
+		p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({ renderTarget }, nullptr, &loadActions,
+			{}, {}, std::numeric_limits<uint32_t>::max(), std::numeric_limits<uint32_t>::max());
 
 		//Set Default Dynamic Viewport & Scissor
 		p->GraphicCommandBuffers[p->ImageIndex]->SetViewport(0.0f, 0.0f, static_cast<float>(p->Window->GetWidth()), static_cast<float>(p->Window->GetHeight()), 0.0f, 1.0f);
@@ -164,7 +165,8 @@ void TRAP::Graphics::API::VulkanRenderer::EndGraphicRecording(const TRAP::Scope<
 	if (!p->Window->IsMinimized() && p->Recording)
 	{
 		//End Recording
-		p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr, {}, {}, -1, -1);
+		p->GraphicCommandBuffers[p->ImageIndex]->BindRenderTargets({}, nullptr, nullptr,
+			{}, {}, std::numeric_limits<uint32_t>::max(), std::numeric_limits<uint32_t>::max());
 
 		const RenderTargetBarrier barrier = { p->SwapChain->GetRenderTargets()[p->CurrentSwapChainImageIndex], ResourceState::RenderTarget, ResourceState::Present };
 		p->GraphicCommandBuffers[p->ImageIndex]->ResourceBarrier({}, {}, { barrier });
@@ -480,8 +482,20 @@ void TRAP::Graphics::API::VulkanRenderer::SetFillMode(const FillMode mode, Windo
 		window = TRAP::Application::GetWindow().get();
 
 	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window];
-	
+
 	std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).RasterizerState->FillMode = mode;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanRenderer::SetPrimitiveTopology(const PrimitiveTopology topology, Window* window)
+{
+	if (!window)
+		window = TRAP::Application::GetWindow().get();
+
+	const TRAP::Scope<PerWindowData>& p = s_perWindowDataMap[window];
+
+	std::get<GraphicsPipelineDesc>(p->GraphicsPipelineDesc.Pipeline).PrimitiveTopology = topology;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

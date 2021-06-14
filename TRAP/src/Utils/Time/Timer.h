@@ -13,7 +13,6 @@ namespace TRAP::Utils
 		/// Default Constructor.<br>
 		/// Creates and starts a new Timer.
 		/// </summary>
-		/// <returns></returns>
 		Timer();
 
 		/// <summary>

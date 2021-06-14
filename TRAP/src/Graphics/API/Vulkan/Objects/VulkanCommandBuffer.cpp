@@ -345,13 +345,13 @@ void TRAP::Graphics::API::VulkanCommandBuffer::BindRenderTargets(const std::vect
 		{
 			RendererAPI::ClearValue clearValue = loadActions->ClearColorValues[i];
 			VkClearValue val{};
-			val.color = { {clearValue.R, clearValue.G, clearValue.B, clearValue.A} };
+			val.color = { {clearValue.Color.R, clearValue.Color.G, clearValue.Color.B, clearValue.Color.A} };
 			clearValues.push_back(val);
 		}
 		if(depthStencil)
 		{
 			VkClearValue val{};
-			val.depthStencil = { loadActions->ClearDepth.Depth, loadActions->ClearDepth.Stencil };
+			val.depthStencil = { loadActions->ClearDepth.DepthStencil.Depth, loadActions->ClearDepth.DepthStencil.Stencil };
 			clearValues.push_back(val);
 		}
 	}
@@ -946,9 +946,9 @@ void TRAP::Graphics::API::VulkanCommandBuffer::Clear(const RendererAPI::ClearFla
 	attachment.aspectMask = ClearFlagsToVKImageAspectFlags(flags);
 	attachment.colorAttachment = 0;
 	if (flags == RendererAPI::ClearFlags::Color)
-		attachment.clearValue.color = { value.R, value.G, value.B, value.A };
+		attachment.clearValue.color = { value.Color.R, value.Color.G, value.Color.B, value.Color.A };
 	else
-		attachment.clearValue.depthStencil = { value.Depth, value.Stencil };
+		attachment.clearValue.depthStencil = { value.DepthStencil.Depth, value.DepthStencil.Stencil };
 	
 	vkCmdClearAttachments(m_vkCommandBuffer, 1, &attachment, 1, &rect);
 }

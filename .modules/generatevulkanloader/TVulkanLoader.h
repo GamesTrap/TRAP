@@ -56,6 +56,9 @@ Modified by: Jan "GamesTrap" Schuerkamp
     #undef VK_NVX_image_view_handle
 #endif
 
+#ifdef _MSC_VER
+	#pragma warning(push, 0)
+#endif
 #ifdef __cplusplus
 extern "C"
 {
@@ -299,6 +302,9 @@ static void VkGenLoadDeviceTable(struct VkDeviceTable* table, void* context, PFN
 
 #ifdef __cplusplus
 }
+#endif
+#ifdef _MSC_VER
+	#pragma warning(pop)
 #endif
 
 /*

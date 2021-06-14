@@ -16,7 +16,7 @@ namespace TRAP::Utils
 	/// <returns>16 byte long UUID.</returns>
 	std::array<uint8_t, 16> UUIDFromString(std::string_view uuid);
 
-	inline void HashCombine(std::size_t& seed)
+	inline void HashCombine(std::size_t&)
 	{}
 
 	template<typename T, typename... Rest>

@@ -3,13 +3,13 @@
 Copyright(c) 2014 - 2020 Omar Cornut
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this softwareand associated documentation files(the "Software"), to deal
+of this software and associated documentation files(the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions :
 
-The above copyright noticeand this permission notice shall be included in all
+The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -96,7 +96,7 @@ void TRAP::INTERNAL::ImGuiWindowing::NewFrame()
 
 	//Setup time step
 	const double currentTime = static_cast<double>(Application::GetTime());
-	io.DeltaTime = s_time > 0.0 ? static_cast<float>(currentTime - s_time) : static_cast<float>(1.0f / 60.0f);
+	io.DeltaTime = s_time > 0.0 ? static_cast<float>(currentTime - s_time) : 1.0f / 60.0f;
 	s_time = currentTime;
 
 	UpdateMousePosAndButtons();
@@ -280,7 +280,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMousePosAndButtons()
 					//Multi-Viewport mode: mouse position in OS absolute coordinates (io.MousePos is (0,0) when the mouse is on the upper-left of the primary monitor)
 					int32_t windowX = 0, windowY = 0;
 					WindowingAPI::GetWindowPos(windowPtr, windowX, windowY);
-					io.MousePos = ImVec2(static_cast<float>(mouseX) + windowX, static_cast<float>(mouseY) + windowY);
+					io.MousePos = ImVec2(static_cast<float>(mouseX) + static_cast<float>(windowX), static_cast<float>(mouseY) + static_cast<float>(windowY));
 				}
 				else
 				{
@@ -437,7 +437,7 @@ void TRAP::INTERNAL::ImGuiWindowing::UpdateMonitors()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const char* TRAP::INTERNAL::ImGuiWindowing::GetClipboardText(void* userData)
+const char* TRAP::INTERNAL::ImGuiWindowing::GetClipboardText(void*)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -446,7 +446,7 @@ const char* TRAP::INTERNAL::ImGuiWindowing::GetClipboardText(void* userData)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::SetClipboardText(void* userData, const char* text)
+void TRAP::INTERNAL::ImGuiWindowing::SetClipboardText(void*, const char* text)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -521,7 +521,7 @@ void TRAP::INTERNAL::ImGuiWindowing::WindowCloseCallback(const WindowingAPI::Int
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::WindowPosCallback(const WindowingAPI::InternalWindow* window, int32_t x, int32_t y)
+void TRAP::INTERNAL::ImGuiWindowing::WindowPosCallback(const WindowingAPI::InternalWindow* window, int32_t, int32_t)
 {
 	if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(const_cast<WindowingAPI::InternalWindow*>(window)))
 		viewport->PlatformRequestMove = true;
@@ -529,7 +529,7 @@ void TRAP::INTERNAL::ImGuiWindowing::WindowPosCallback(const WindowingAPI::Inter
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::WindowSizeCallback(const WindowingAPI::InternalWindow* window, int32_t width, int32_t height)
+void TRAP::INTERNAL::ImGuiWindowing::WindowSizeCallback(const WindowingAPI::InternalWindow* window, int32_t, int32_t)
 {
 	if(ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle(const_cast<WindowingAPI::InternalWindow*>(window)))
 	{
@@ -594,7 +594,7 @@ void TRAP::INTERNAL::ImGuiWindowing::DestroyWindow(ImGuiViewport* viewport)
 		if(data->WindowOwned)
 		{
 #ifdef TRAP_PLATFORM_WINDOWS
-			const HWND hwnd = static_cast<HWND>(viewport->PlatformHandleRaw);
+			HWND hwnd = static_cast<HWND>(viewport->PlatformHandleRaw);
 			::RemovePropA(hwnd, "IMGUI_VIEWPORT");
 #endif
 			WindowingAPI::DestroyWindow(std::move(data->Window));
@@ -615,7 +615,7 @@ void TRAP::INTERNAL::ImGuiWindowing::ShowWindow(ImGuiViewport* viewport)
 	ImGuiViewportDataTRAP* data = static_cast<ImGuiViewportDataTRAP*>(viewport->PlatformUserData);
 
 	if(viewport->Flags & ImGuiViewportFlags_NoTaskBarIcon)
-		WindowingAPI::HideWindowFromTaskbar((WindowingAPI::InternalWindow*)viewport->PlatformHandle);
+		WindowingAPI::HideWindowFromTaskbar(static_cast<WindowingAPI::InternalWindow*>(viewport->PlatformHandle));
 	
 	WindowingAPI::ShowWindow(data->WindowPtr);
 }
@@ -726,7 +726,7 @@ void TRAP::INTERNAL::ImGuiWindowing::SetWindowAlpha(ImGuiViewport* viewport, con
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::RenderWindow(ImGuiViewport* viewport, void* unused)
+void TRAP::INTERNAL::ImGuiWindowing::RenderWindow(ImGuiViewport* viewport, void*)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -740,7 +740,7 @@ void TRAP::INTERNAL::ImGuiWindowing::RenderWindow(ImGuiViewport* viewport, void*
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::SwapBuffers(ImGuiViewport* viewport, void* unused)
+void TRAP::INTERNAL::ImGuiWindowing::SwapBuffers(ImGuiViewport*, void*)
 {
 	TP_PROFILE_FUNCTION();
 
@@ -758,12 +758,14 @@ void TRAP::INTERNAL::ImGuiWindowing::SetIMEInputPos(ImGuiViewport* viewport, con
 	TP_PROFILE_FUNCTION();
 
 	COMPOSITIONFORM cf = { CFS_FORCE_POSITION, {static_cast<LONG>(pos.x - viewport->Pos.x), static_cast<LONG>(pos.y - viewport->Pos.y)}, {0, 0, 0, 0} };
-	if(const HWND hwnd = static_cast<HWND>(viewport->PlatformHandleRaw))
-		if(const HIMC himc = ::ImmGetContext(hwnd))
+	if(HWND hwnd = static_cast<HWND>(viewport->PlatformHandleRaw))
+	{
+		if(HIMC himc = ::ImmGetContext(hwnd))
 		{
 			::ImmSetCompositionWindow(himc, &cf);
 			::ImmReleaseContext(hwnd, himc);
 		}
+	}
 }
 #endif
 
@@ -780,14 +782,14 @@ int32_t TRAP::INTERNAL::ImGuiWindowing::CreateVkSurface(ImGuiViewport* viewport,
 	const VkResult err = WindowingAPI::CreateWindowSurface(reinterpret_cast<VkInstance>(vkInstance),
 	                                                       data->WindowPtr,
 	                                                       static_cast<const VkAllocationCallbacks*>(vkAllocator),
-	                                                       reinterpret_cast<VkSurfaceKHR&>(*outVkSurface));
+														   *reinterpret_cast<VkSurfaceKHR*>(outVkSurface));
 
 	return static_cast<int32_t>(err);
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::ImGuiWindowing::MonitorCallback(const WindowingAPI::InternalMonitor* unused1, bool unused2)
+void TRAP::INTERNAL::ImGuiWindowing::MonitorCallback(const WindowingAPI::InternalMonitor*, bool)
 {
 	s_wantUpdateMonitors = true;
 }

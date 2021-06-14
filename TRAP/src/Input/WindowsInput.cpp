@@ -330,7 +330,7 @@ bool TRAP::Input::PollController(Controller controller, const PollMode mode)
 		if (xis.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT)
 			dpad |= static_cast<uint32_t>(ControllerDPad::Left);
 		
-		InternalInputControllerDPad(con, 0, dpad);
+		InternalInputControllerDPad(con, 0, static_cast<uint8_t>(dpad));
 	}
 
 	return true;
@@ -538,7 +538,7 @@ int TRAP::Input::CompareControllerObjects(const void* first, const void* second)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //DirectInput device enumeration callback
-BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance, void* user)
+BOOL CALLBACK TRAP::Input::DeviceCallback(const DIDEVICEINSTANCE* deviceInstance, void*)
 {
 	DIDEVCAPS dc{};
 	DIPROPDWORD dipd{};

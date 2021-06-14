@@ -638,14 +638,14 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		};
 		for (const std::string& str : raytracingExt)
 		{
-			const auto res = std::find_if(extensions.begin(),
+			const auto extRes = std::find_if(extensions.begin(),
 				extensions.end(),
 				[str](const VkExtensionProperties& props)
 				{
 					return std::strcmp(str.c_str(), props.extensionName) == 0;
 				});
 
-			if (res == extensions.end())
+			if (extRes == extensions.end())
 			{
 				raytracing = false;
 				break;

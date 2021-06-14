@@ -78,8 +78,7 @@ std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 				uuidDigit = 10 + i - 'A';
 			else
 				uuidDigit = 0;
-			
-			result[index] = ((charDigit << 4) | uuidDigit);
+			result[index] = (static_cast<uint8_t>((charDigit << 4)) | uuidDigit);
 			index++;
 			firstDigit = true;
 		}

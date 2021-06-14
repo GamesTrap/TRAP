@@ -216,7 +216,7 @@ void Transform(const void* mp, const uint64_t numBlks, std::array<uint64_t, 8>& 
 		std::array<uint64_t, 16> M{};
 		for (uint64_t i = 0; i < 128 / 8; i++)
 		{
-			M[i] = (reinterpret_cast<const uint64_t*>(mp)[blk * 16 + i]);
+			M[i] = (static_cast<const uint64_t*>(mp)[blk * 16 + i]);
 			TRAP::Utils::Memory::SwapBytes<uint64_t>(M[i]);
 		}
 

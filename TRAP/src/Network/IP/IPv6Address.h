@@ -25,7 +25,7 @@ namespace TRAP::Network
 		/// network name (ex: "localhost").
 		/// </summary>
 		/// <param name="address">IPv6 address or network name.</param>
-		IPv6Address(const std::string& address);
+		explicit IPv6Address(const std::string& address);
 
 		/// <summary>
 		/// Construct the address from a string.<br>
@@ -37,13 +37,13 @@ namespace TRAP::Network
 		/// implicit conversion from literal strings to IPv6Address work.
 		/// </summary>
 		/// <param name="address">IPv6 address or network name.</param>
-		IPv6Address(const char* address);
+		explicit IPv6Address(const char* address);
 
 		/// <summary>
 		/// Construct the address from 16 bytes array.
 		/// </summary>
 		/// <param name="addressBytes">Array containing 16 bytes address.</param>
-		IPv6Address(const std::array<uint8_t, 16>& addressBytes);
+		explicit IPv6Address(const std::array<uint8_t, 16>& addressBytes);
 
 		/// <summary>
 		/// Get a string representation of the address.<br>

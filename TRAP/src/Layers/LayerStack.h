@@ -57,12 +57,12 @@ namespace TRAP
 		/// Pop a Layer from the LayerStack.
 		/// </summary>
 		/// <param name="layer">Layer to pop.</param>
-		void PopLayer(Layer* const layer);
+		void PopLayer(Layer* layer);
 		/// <summary>
 		/// Pop an Overlay from the LayerStack.
 		/// </summary>
 		/// <param name="overlay">Overlay to pop.</param>
-		void PopOverlay(Layer* const overlay);
+		void PopOverlay(Layer* overlay);
 
 		/// <summary>
 		/// LayerStack begin iterator.

@@ -36,7 +36,6 @@ namespace TRAP::INTERNAL
 	class WindowingAPI final
 	{
 	private:
-
 		/// <summary>
 		/// Private Constructor.
 		/// </summary>

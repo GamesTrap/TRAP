@@ -344,7 +344,7 @@ namespace TRAP
 		{
 			std::string Title;
 			int32_t Width{}, Height{}, RefreshRate{};
-			bool VSync;
+			bool VSync{};
 			DisplayMode displayMode{};
 			uint32_t Monitor{};
 			CursorMode cursorMode{};

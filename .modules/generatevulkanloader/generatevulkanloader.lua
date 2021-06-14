@@ -5,11 +5,6 @@ local p = premake
 
 local success = true
 
--- function InstallSphinx()
---     print("Installing Sphinx...")
---     os.execute("pip install -U sphinx")
--- end
-
 function CheckLinuxStuff()
     print("Checking Python")
     if(os.outputof("python3 --version > /dev/null 2>&1") == nil) then
@@ -28,7 +23,7 @@ end
 
 function CheckWindowsStuff()
     print("Checking Python")
-    if(os.outputof("python --version >NUL") == nil) then
+    if(os.outputof("python --version > NUL") == nil) then
         print("Unable to find Python 3")
         return false
     end
@@ -47,7 +42,7 @@ function LinuxMoveVulkanLoader()
 end
 
 function WindowsMoveVulkanLoader()
-    os.execute("move ../.modules/generatevulkanloader/VulkanLoader.h ../TRAP/src/Graphics/API/Vulkan/Utils/VulkanLoader.h > NUL")
+    os.execute("move ..\\.modules\\generatevulkanloader\\VulkanLoader.h ..\\TRAP\\src\\Graphics\\API\\Vulkan\\Utils\\VulkanLoader.h > NUL")
 end
 
 function LinuxCopyTemplate()
@@ -55,7 +50,7 @@ function LinuxCopyTemplate()
 end
 
 function WindowsCopyTemplate()
-    os.execute("copy ../.modules/generatevulkanloader/TVulkanLoader.h ../.modules/generatevulkanloader/VulkanLoader.h > NUL")
+    os.execute("copy ..\\.modules\\generatevulkanloader\\TVulkanLoader.h ..\\.modules\\generatevulkanloader\\VulkanLoader.h > NUL")
 end
 
 function LinuxExecuteGenerator()
@@ -101,8 +96,6 @@ newaction
         elseif(_TARGET_OS == "windows") then
             WindowsExecuteGenerator()
         end
-
-        os.remove("../TRAP/src/Graphics/API/Vulkan/Utils/VulkanLoader.h") --Delete old VulkanLoader
 
         if(_TARGET_OS == "linux") then
             LinuxMoveVulkanLoader()

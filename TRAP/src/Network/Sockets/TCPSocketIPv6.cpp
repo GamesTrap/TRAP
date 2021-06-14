@@ -109,73 +109,71 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Connect(const IPv6Ad
 		//Connection succeeded
 		return Status::Done;
 	}
-	else
+	
+	//We're using a timeout: we'll need a few tricks to make it work
+
+	//save the previous blocking state
+	const bool blocking = IsBlocking();
+
+	//Switch to non-blocking to enable our connection timeout
+	if (blocking)
+		SetBlocking(false);
+
+	//Try to connect to the remote address
+	if(::connect(GetHandle(), reinterpret_cast<sockaddr*>(&address), sizeof(address)) >= 0)
 	{
-		//We're using a timeout: we'll need a few tricks to make it work
+		//We got instantly connected! (it may no happen a lot...)
+		SetBlocking(blocking);
+		return Status::Done;
+	}
 
-		//save the previous blocking state
-		const bool blocking = IsBlocking();
+	//Get the error status
+	Status status = INTERNAL::Network::SocketImpl::GetErrorStatus();
 
-		//Switch to non-blocking to enable our connection timeout
-		if (blocking)
-			SetBlocking(false);
+	//If we were in non-blocking mode, return immediately
+	if (!blocking)
+		return status;
 
-		//Try to connect to the remote address
-		if(::connect(GetHandle(), reinterpret_cast<sockaddr*>(&address), sizeof(address)) >= 0)
+	//Otherwise, wait until something happens to our socket (success, timeout or error)
+	if(status == Status::NotReady)
+	{
+		//Setup the selector
+		fd_set selector;
+		FD_ZERO(&selector);
+		FD_SET(GetHandle(), &selector);
+
+		//Setup the timeout
+		timeval time;
+		time.tv_sec = static_cast<long>(timeout.GetSeconds());
+		time.tv_usec = static_cast<long>(timeout.GetSeconds());
+
+		//Wait for something to write on our socket (which means that the connection request has returned)
+		if(select(static_cast<int>(GetHandle() + 1), nullptr, &selector, nullptr, &time) > 0)
 		{
-			//We got instantly connected! (it may no happen a lot...)
-			SetBlocking(blocking);
-			return Status::Done;
-		}
-
-		//Get the error status
-		Status status = INTERNAL::Network::SocketImpl::GetErrorStatus();
-
-		//If we were in non-blocking mode, return immediately
-		if (!blocking)
-			return status;
-
-		//Otherwise, wait until something happens to our socket (success, timeout or error)
-		if(status == Status::NotReady)
-		{
-			//Setup the selector
-			fd_set selector;
-			FD_ZERO(&selector);
-			FD_SET(GetHandle(), &selector);
-
-			//Setup the timeout
-			timeval time{};
-			time.tv_sec = static_cast<long>(timeout.GetSeconds());
-			time.tv_usec = static_cast<long>(timeout.GetSeconds());
-
-			//Wait for something to write on our socket (which means that the connection request has returned)
-			if(select(static_cast<int>(GetHandle() + 1), nullptr, &selector, nullptr, &time) > 0)
+			//At this point the connection may have been either accepted or refused.
+			//To know whether it's a success or a failure, we must check the address of the connected peer
+			if(GetRemoteAddress() != IPv6Address::None)
 			{
-				//At this point the connection may have been either accepted or refused.
-				//To know whether it's a success or a failure, we must check the address of the connected peer
-				if(GetRemoteAddress() != IPv6Address::None)
-				{
-					//Connection accepted
-					status = Status::Done;
-				}
-				else
-				{
-					//Conncetion refused
-					status = INTERNAL::Network::SocketImpl::GetErrorStatus();
-				}
+				//Connection accepted
+				status = Status::Done;
 			}
 			else
 			{
-				//Failed to connect before timeout is over
+				//Conncetion refused
 				status = INTERNAL::Network::SocketImpl::GetErrorStatus();
 			}
 		}
-
-		//Switch back to blocking mode
-		SetBlocking(true);
-
-		return status;
+		else
+		{
+			//Failed to connect before timeout is over
+			status = INTERNAL::Network::SocketImpl::GetErrorStatus();
+		}
 	}
+
+	//Switch back to blocking mode
+	SetBlocking(true);
+
+	return status;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -342,7 +340,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocketIPv6::Receive(Packet& pack
 	while(m_pendingPacket.Data.size() < packetSize)
 	{
 		//Receive a chunk of data
-		const std::size_t sizeToGet = std::min(static_cast<std::size_t>(packetSize - m_pendingPacket.Data.size()), buffer.size());
+		const std::size_t sizeToGet = std::min(static_cast<std::size_t>(packetSize) - m_pendingPacket.Data.size(), buffer.size());
 		const Status status = Receive(buffer.data(), sizeToGet, received);
 		if (status != Status::Done)
 			return status;

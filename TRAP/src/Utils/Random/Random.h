@@ -43,7 +43,8 @@ namespace TRAP::Utils
         template<typename> class RealDist = std::uniform_real_distribution,
         typename BoolDist = std::bernoulli_distribution
     >
-    class BasicRandomStatic {
+    class BasicRandomStatic
+	{
     public:
         /// <summary>
         /// Deleted Constructor.
@@ -214,9 +215,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>A random integer number in a [from; to] range.</returns>
         template<typename T>
-        static typename std::enable_if<INTERNAL::IsUniformInt<T>::value
-            , T>::type Get(T from = std::numeric_limits<T>::min(),
-                T to = std::numeric_limits<T>::max())
+        static typename std::enable_if<INTERNAL::IsUniformInt<T>::value, T>::type
+    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
             if (from < to) //Allow range from higher to lower
                 return IntegerDist<T>{ from, to }(EngineInstance());
@@ -231,9 +231,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>A random real number in a [from; to] range.</returns>
         template<typename T>
-        static typename std::enable_if<INTERNAL::IsUniformReal<T>::value
-            , T>::type Get(T from = std::numeric_limits<T>::min(),
-                T to = std::numeric_limits<T>::max())
+        static typename std::enable_if<INTERNAL::IsUniformReal<T>::value, T>::type
+    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
             if (from < to) //Allow range from higher to lower
                 return RealDist<T>{ from, to }(EngineInstance());
@@ -248,9 +247,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>A random byte number in a [from; to] range.</returns>
         template<typename T>
-        static typename std::enable_if<INTERNAL::IsByte<T>::value
-            , T>::type Get(T from = std::numeric_limits<T>::min(),
-                T to = std::numeric_limits<T>::max())
+        static typename std::enable_if<INTERNAL::IsByte<T>::value, T>::type
+    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
             //Choose between short and unsigned short for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
@@ -273,14 +271,13 @@ namespace TRAP::Utils
             typename B,
             typename C = typename std::common_type<A, B>::type
         >
-            static typename std::enable_if<
-            std::is_same<Key, Common>::value
-            && INTERNAL::IsSupportedNumber<A>::value
-            && INTERNAL::IsSupportedNumber<B>::value
+        static typename std::enable_if<std::is_same<Key, Common>::value &&
+            INTERNAL::IsSupportedNumber<A>::value &&
+            INTERNAL::IsSupportedNumber<B>::value &&
             //Prevent implicit type conversion from singed to unsigned types
-            && std::is_signed<A>::value != std::is_unsigned<B>::value
-            , C>::type Get(A from = std::numeric_limits<A>::min(),
-                B to = std::numeric_limits<B>::max())
+            std::is_signed<A>::value != std::is_unsigned<B>::value, C>::type
+    	Get(A from = std::numeric_limits<A>::min(),
+            B to = std::numeric_limits<B>::max())
     	{
             return Get(static_cast<C>(from), static_cast<C>(to));
         }
@@ -292,9 +289,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>A random character in a [from; to] range.</returns>
         template<typename T>
-        static typename std::enable_if<INTERNAL::IsSupportedCharacter<T>::value
-            , T>::type Get(T from = std::numeric_limits<T>::min(),
-                T to = std::numeric_limits<T>::max())
+        static typename std::enable_if<INTERNAL::IsSupportedCharacter<T>::value, T>::type
+    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
             if (from < to) //Allow range from higher to lower
                 return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(from), static_cast<std::int64_t>(to) }(EngineInstance()));
@@ -308,8 +304,8 @@ namespace TRAP::Utils
         /// <param name="probability">Probability of generating true in [0; 1] range 0 means always false, 1 means always true.</param>
         /// <returns>'true' with 'probability' probability ('false' otherwise).</returns>
         template<typename T>
-        static typename std::enable_if<std::is_same<T, bool>::value
-            , bool>::type Get(const double probability = 0.5)
+        static typename std::enable_if<std::is_same<T, bool>::value, bool>::type
+    	Get(const double probability = 0.5)
     	{
             TRAP_ASSERT(0 <= probability && 1 >= probability); //Out of [0; 1] range
             return BoolDist{ probability }(EngineInstance());
@@ -336,8 +332,8 @@ namespace TRAP::Utils
         /// <param name="last">Range of elements.</param>
         /// <returns>Random iterator from [first, last) range.</returns>
         template<typename InputIt>
-        static typename std::enable_if<INTERNAL::IsIterator<InputIt>::value
-            , InputIt>::type Get(InputIt first, InputIt last)
+        static typename std::enable_if<INTERNAL::IsIterator<InputIt>::value, InputIt>::type
+    	Get(InputIt first, InputIt last)
     	{
             const auto size = std::distance(first, last);
             if (0 == size) return last;
@@ -353,9 +349,8 @@ namespace TRAP::Utils
         template<typename Container>
         static auto Get(Container& container) ->
             typename std::enable_if<INTERNAL::IsIterator<
-            decltype(std::begin(container))>::value
-            , decltype(std::begin(container))
-            >::type
+            decltype(std::begin(container))>::value,
+    		decltype(std::begin(container))>::type
         {
             return Get(std::begin(container), std::end(container));
         }
@@ -440,7 +435,8 @@ namespace TRAP::Utils
         /// Get reference to the static engine instance.
         /// </summary>
         /// <returns>Static engine instance.</returns>
-        static engine& EngineInstance() {
+        static engine& EngineInstance()
+    	{
             static engine Engine{ Seeder{ }() };
             return Engine;
         }
@@ -461,7 +457,8 @@ namespace TRAP::Utils
         template<typename> class RealDist = std::uniform_real_distribution,
         typename BoolDist = std::bernoulli_distribution
     >
-    class BasicRandomThreadLocal {
+    class BasicRandomThreadLocal
+	{
     public:
         /// <summary>
         /// Deleted Constructor.
@@ -628,9 +625,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random integer number in a [from; to] range.</returns>
         template<typename T>
-        static typename std::enable_if<INTERNAL::IsUniformInt<T>::value
-            , T>::type Get(T from = std::numeric_limits<T>::min(),
-                T to = std::numeric_limits<T>::max())
+        static typename std::enable_if<INTERNAL::IsUniformInt<T>::value, T>::type
+    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
             if (from < to) //Allow range from higher to lower
                 return IntegerDist<T>{ from, to }(EngineInstance());
@@ -645,9 +641,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random real number in a [from; to] range.</returns>
         template<typename T>
-        static typename std::enable_if<INTERNAL::IsUniformReal<T>::value
-            , T>::type Get(T from = std::numeric_limits<T>::min(),
-                T to = std::numeric_limits<T>::max())
+        static typename std::enable_if<INTERNAL::IsUniformReal<T>::value, T>::type
+    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
             if (from < to) //Allow range from higher to lower
                 return RealDist<T>{ from, to }(EngineInstance());
@@ -662,9 +657,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random byte number in a [from; to] range.</returns>
         template<typename T>
-        static typename std::enable_if<INTERNAL::IsByte<T>::value
-            , T>::type Get(T from = std::numeric_limits<T>::min(),
-                T to = std::numeric_limits<T>::max())
+        static typename std::enable_if<INTERNAL::IsByte<T>::value, T>::type
+    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
             //Choose between short and unsigned short for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
@@ -687,14 +681,12 @@ namespace TRAP::Utils
             typename B,
             typename C = typename std::common_type<A, B>::type
         >
-            static typename std::enable_if<
-            std::is_same<Key, Common>::value
-            && INTERNAL::IsSupportedNumber<A>::value
-            && INTERNAL::IsSupportedNumber<B>::value
-            //Prevent implicit type conversion from singed to unsigned types
-            && std::is_signed<A>::value != std::is_unsigned<B>::value
-            , C>::type Get(A from = std::numeric_limits<A>::min(),
-                B to = std::numeric_limits<B>::max())
+        static typename std::enable_if<std::is_same<Key, Common>::value &&
+            INTERNAL::IsSupportedNumber<A>::value &&
+            INTERNAL::IsSupportedNumber<B>::value &&
+			//Prevent implicit type conversion from singed to unsigned types
+			std::is_signed<A>::value != std::is_unsigned<B>::value, C>::type
+    	Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
     	{
             return Get(static_cast<C>(from), static_cast<C>(to));
         }
@@ -706,9 +698,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random character in a [from; to] range.</returns>
         template<typename T>
-        static typename std::enable_if<INTERNAL::IsSupportedCharacter<T>::value
-            , T>::type Get(T from = std::numeric_limits<T>::min(),
-                T to = std::numeric_limits<T>::max())
+        static typename std::enable_if<INTERNAL::IsSupportedCharacter<T>::value, T>::type
+    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
             if (from < to) //Allow range from higher to lower
                 return static_cast<T>(IntegerDist<std::int64_t>{ static_cast<std::int64_t>(from), static_cast<std::int64_t>(to) }(EngineInstance()));
@@ -722,8 +713,8 @@ namespace TRAP::Utils
         /// <param name="probability">Probability of generating true in [0; 1] range 0 means always false, 1 means always true.</param>
         /// <returns>'True' with 'probability' probability ('False' otherwise).</returns>
         template<typename T>
-        static typename std::enable_if<std::is_same<T, bool>::value
-            , bool>::type Get(const double probability = 0.5)
+        static typename std::enable_if<std::is_same<T, bool>::value, bool>::type
+    	Get(const double probability = 0.5)
     	{
             TRAP_ASSERT(0 <= probability && 1 >= probability); //Out of [0; 1] range
             return BoolDist{ probability }(EngineInstance());
@@ -748,8 +739,8 @@ namespace TRAP::Utils
         /// <param name="last">Range of elements.</param>
         /// <returns>Random iterator from [first, last) range.</returns>
         template<typename InputIt>
-        static typename std::enable_if<INTERNAL::IsIterator<InputIt>::value
-            , InputIt>::type Get(InputIt first, InputIt last)
+        static typename std::enable_if<INTERNAL::IsIterator<InputIt>::value, InputIt>::type
+    	Get(InputIt first, InputIt last)
     	{
             const auto size = std::distance(first, last);
             if (0 == size) return last;
@@ -764,10 +755,8 @@ namespace TRAP::Utils
         /// <returns>Random iterator from container.</returns>
         template<typename Container>
         static auto Get(Container& container) ->
-            typename std::enable_if<INTERNAL::IsIterator<
-            decltype(std::begin(container))>::value
-            , decltype(std::begin(container))
-            >::type
+            typename std::enable_if<INTERNAL::IsIterator<decltype(std::begin(container))>::value,
+    		decltype(std::begin(container))>::type
     	{
             return Get(std::begin(container), std::end(container));
         }
@@ -874,7 +863,8 @@ namespace TRAP::Utils
         template<typename> class RealDist = std::uniform_real_distribution,
         typename BoolDist = std::bernoulli_distribution
     >
-    class BasicRandomLocal {
+    class BasicRandomLocal
+	{
     public:
         /// <summary>
         /// Type of used random number engine.
@@ -1016,9 +1006,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random integer number in a [from; to] range.</returns>
         template<typename T>
-        typename std::enable_if<INTERNAL::IsUniformInt<T>::value
-            , T>::type Get(T from = std::numeric_limits<T>::min(),
-                T to = std::numeric_limits<T>::max())
+        typename std::enable_if<INTERNAL::IsUniformInt<T>::value, T>::type
+    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
             if (from < to) //Allow range from higher to lower
                 return IntegerDist<T>{ from, to }(m_engine);
@@ -1033,9 +1022,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random real number in a [from; to] range.</returns>
         template<typename T>
-        typename std::enable_if<INTERNAL::IsUniformReal<T>::value
-            , T>::type Get(T from = std::numeric_limits<T>::min(),
-                T to = std::numeric_limits<T>::max())
+        typename std::enable_if<INTERNAL::IsUniformReal<T>::value, T>::type
+    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
             if (from < to) //Allow range from higher to lower
                 return RealDist<T>{ from, to }(m_engine);
@@ -1050,9 +1038,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random byte number in a [from; to] range.</returns>
         template<typename T>
-        typename std::enable_if<INTERNAL::IsByte<T>::value
-            , T>::type Get(T from = std::numeric_limits<T>::min(),
-                T to = std::numeric_limits<T>::max())
+        typename std::enable_if<INTERNAL::IsByte<T>::value, T>::type
+    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
             //Choose between short and unsigned short for byte conversion
             using short_t = typename std::conditional<std::is_signed<T>::value,
@@ -1075,14 +1062,12 @@ namespace TRAP::Utils
             typename B,
             typename C = typename std::common_type<A, B>::type
         >
-            typename std::enable_if<
-            std::is_same<Key, Common>::value
-            && INTERNAL::IsSupportedNumber<A>::value
-            && INTERNAL::IsSupportedNumber<B>::value
-            //Prevent implicit type conversion from singed to unsigned types
-            && std::is_signed<A>::value != std::is_unsigned<B>::value
-            , C>::type Get(A from = std::numeric_limits<A>::min(),
-                B to = std::numeric_limits<B>::max())
+        typename std::enable_if<std::is_same<Key, Common>::value &&
+            INTERNAL::IsSupportedNumber<A>::value &&
+            INTERNAL::IsSupportedNumber<B>::value &&
+			//Prevent implicit type conversion from singed to unsigned types
+			std::is_signed<A>::value != std::is_unsigned<B>::value, C>::type
+    	Get(A from = std::numeric_limits<A>::min(), B to = std::numeric_limits<B>::max())
     	{
             return Get(static_cast<C>(from), static_cast<C>(to));
         }
@@ -1094,9 +1079,8 @@ namespace TRAP::Utils
         /// <param name="to">Second limit number of a random range.</param>
         /// <returns>Random character in a [from; to] range.</returns>
         template<typename T>
-        typename std::enable_if<INTERNAL::IsSupportedCharacter<T>::value
-            , T>::type Get(T from = std::numeric_limits<T>::min(),
-                T to = std::numeric_limits<T>::max())
+        typename std::enable_if<INTERNAL::IsSupportedCharacter<T>::value, T>::type
+    	Get(T from = std::numeric_limits<T>::min(), T to = std::numeric_limits<T>::max())
     	{
             //Allow range from higher to lower
             if (from < to)
@@ -1111,8 +1095,8 @@ namespace TRAP::Utils
         /// <param name="probability">Probability of generating true in [0; 1] range 0 means always false, 1 means always true.</param>
         /// <returns>'true' with 'probability' probability ('false' otherwise).</returns>
         template<typename T>
-        typename std::enable_if<std::is_same<T, bool>::value
-            , bool>::type Get(const double probability = 0.5)
+        typename std::enable_if<std::is_same<T, bool>::value, bool>::type
+    	Get(const double probability = 0.5)
     	{
             TRAP_ASSERT(0 <= probability && 1 >= probability); //Out of [0; 1] range
             return BoolDist{ probability }(m_engine);
@@ -1137,8 +1121,8 @@ namespace TRAP::Utils
         /// <param name="last">Range of elements.</param>
         /// <returns>Random iterator from [first, last) range.</returns>
         template<typename InputIt>
-        typename std::enable_if<INTERNAL::IsIterator<InputIt>::value
-            , InputIt>::type Get(InputIt first, InputIt last)
+        typename std::enable_if<INTERNAL::IsIterator<InputIt>::value, InputIt>::type
+    	Get(InputIt first, InputIt last)
     	{
             const auto size = std::distance(first, last);
             if (0 == size) return last;
@@ -1154,10 +1138,8 @@ namespace TRAP::Utils
         /// <returns>Random iterator from container.</returns>
         template<typename Container>
         auto Get(Container& container) ->
-            typename std::enable_if<INTERNAL::IsIterator<
-            decltype(std::begin(container))>::value
-            , decltype(std::begin(container))
-            >::type
+            typename std::enable_if<INTERNAL::IsIterator<decltype(std::begin(container))>::value,
+    		decltype(std::begin(container))>::type
     	{
             return Get(std::begin(container), std::end(container));
         }

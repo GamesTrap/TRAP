@@ -23,6 +23,10 @@
 #ifndef AMD_VULKAN_MEMORY_ALLOCATOR_H
 #define AMD_VULKAN_MEMORY_ALLOCATOR_H
 
+#ifdef _MSC_VER
+#pragma warning(push, 0)
+#endif
+
 /** \mainpage Vulkan Memory Allocator
 
 <b>Version 3.0.0-development</b> (2021-02-16)
@@ -19306,5 +19310,9 @@ VMA_CALL_PRE void VMA_CALL_POST vmaDestroyImage(
             &allocation);
     }
 }
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 #endif // #ifdef VMA_IMPLEMENTATION

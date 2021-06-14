@@ -29,8 +29,6 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #include "TRAPPCH.h"
 #include "HTTP.h"
 
-#include <utility>
-
 #include "Utils/String/String.h"
 
 TRAP::Network::HTTP::Request::Request(const std::string& uri, const Method method, std::string body)

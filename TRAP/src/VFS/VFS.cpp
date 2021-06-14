@@ -528,7 +528,7 @@ void TRAP::VFS::Init()
 	TP_PROFILE_FUNCTION();
 
 	TP_DEBUG(Log::VFSPrefix, "Initializing Virtual File System");
-	s_Instance = MakeScope<VFS>();
+	s_Instance = Scope<VFS>(new VFS);
 
 	if (!std::filesystem::exists(GetTempFolderPath() + "TRAP"))
 		std::filesystem::create_directory(GetTempFolderPath() + "TRAP");

@@ -16,7 +16,7 @@ namespace TRAP
 		/// Constructor.
 		/// </summary>
 		/// <param name="threads">Max amount of threads to use for tasks.</param>
-		explicit ThreadPool(uint32_t threads = std::thread::hardware_concurrency());
+		explicit ThreadPool(uint32_t threads = (std::thread::hardware_concurrency() - 1));
 		/// <summary>
 		/// Destructor.
 		/// </summary>
@@ -56,7 +56,7 @@ namespace TRAP
 		/// <param name="f">Functor to work on.</param>
 		/// <returns>Future for the result of the given functor.</returns>
 		template<typename F, typename... Args>
-		[[nodiscard]] auto EnqueueTask(F&& f, Args&&... args)->std::future<std::invoke_result_t<F, Args...>>;
+		[[nodiscard]] auto EnqueueTask(F&& f, Args&&... args) -> std::future<std::invoke_result_t<F, Args...>>;
 
 	private:
 		using Proc = std::function<void()>;

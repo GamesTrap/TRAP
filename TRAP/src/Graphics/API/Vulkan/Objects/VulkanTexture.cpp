@@ -439,13 +439,13 @@ TRAP::Graphics::API::VulkanTexture::VulkanTexture(TRAP::Ref<VulkanDevice> device
 						offset.y = y * imageGranularity.height;
 						offset.z = z * imageGranularity.depth;
 						//Size of the page
-						VkExtent3D extent;
-						extent.width = (x == sparseBindCounts.width - 1) ? lastBlockExtent.width : imageGranularity.width;
-						extent.height = (y == sparseBindCounts.height - 1) ? lastBlockExtent.height : imageGranularity.height;
-						extent.depth = (z == sparseBindCounts.depth - 1) ? lastBlockExtent.depth : imageGranularity.depth;
+						VkExtent3D pageExtent;
+						pageExtent.width = (x == sparseBindCounts.width - 1) ? lastBlockExtent.width : imageGranularity.width;
+						pageExtent.height = (y == sparseBindCounts.height - 1) ? lastBlockExtent.height : imageGranularity.height;
+						pageExtent.depth = (z == sparseBindCounts.depth - 1) ? lastBlockExtent.depth : imageGranularity.depth;
 
 						//Add new virtual page
-						RendererAPI::VirtualTexturePage* newPage = AddPage(offset, extent, m_SVT->SparseVirtualTexturePageWidth * m_SVT->SparseVirtualTexturePageHeight * sizeof(uint32_t), mipLevel, layer);
+						RendererAPI::VirtualTexturePage* newPage = AddPage(offset, pageExtent, m_SVT->SparseVirtualTexturePageWidth * m_SVT->SparseVirtualTexturePageHeight * sizeof(uint32_t), mipLevel, layer);
 						newPage->ImageMemoryBind.subresource = subResource;
 						
 						index++;

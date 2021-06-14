@@ -28,9 +28,9 @@ namespace TRAP
 	/// <summary>
 	/// CPUInfo is a struct which contains information about the CPU of the system which is used by TRAP Engine.
 	/// </summary>
-	struct CPUInfo
+	struct CPUInfo //TODO Move to Utils
 	{
-		std::string Model = "";
+		std::string Model{};
 		uint32_t Cores = 0;
 		uint32_t LogicalCores = 0;
 		bool HyperThreaded = false;
@@ -132,11 +132,11 @@ namespace TRAP
 		/// Get the current DrawCalls of the frame.
 		/// </summary>
 		/// <returns>Current DrawCalls of the frame.</returns>
-		static uint32_t GetDrawCalls();
+		static uint32_t GetDrawCalls(); //TODO Remove
 		/// <summary>
 		/// Add a single DrawCall to the DrawCall counter.
 		/// </summary>
-		static void AddSingleDrawCall();
+		static void AddSingleDrawCall(); //TODO Remove
 		/// <summary>
 		/// Get the current TickRate (Default: 100).
 		/// </summary>
@@ -183,12 +183,12 @@ namespace TRAP
 		/// Get the endianness of the system.
 		/// </summary>
 		/// <returns>TRAP::Application::Endian::Little or TRAP::Application::Endian::Big.</returns>
-		static Endian GetEndian();
+		static Endian GetEndian(); //TODO Move to Utils
 		/// <summary>
 		/// Get the Window Manager used by Linux based systems.
 		/// </summary>
 		/// <returns>TRAP::Application::LinuxWindowManager::X11, TRAP::Application::LinuxWindowManager::Wayland or TRAP::Application::LinuxWindowManager::Unknown(If Window Manager is unknown or system OS is Windows).</returns>
-		static LinuxWindowManager GetLinuxWindowManager();
+		static LinuxWindowManager GetLinuxWindowManager(); //TODO Move to Utils
 		/// <summary>
 		/// Get the TRAP::ThreadPool to be used for small tasks that can be multi-threaded.
 		/// </summary>
@@ -210,7 +210,7 @@ namespace TRAP
 		/// Get information about the CPU that runs the Engine.
 		/// </summary>
 		/// <returns>Constant reference to the TRAP::CPUInfo.</returns>
-		static const CPUInfo& GetCPUInfo();
+		static const CPUInfo& GetCPUInfo(); //TODO Move to Utils
 
 		/// <summary>
 		/// Get the id of the main engine thread.
@@ -279,11 +279,11 @@ namespace TRAP
 		bool OnWindowRestore(Events::WindowRestoreEvent& e);
 
 		/// <summary>
-		/// Checks if the environmental variable for Wayland(WAYLAND_DISPLAY or XDG_SESSION_TYPE=wayland" or X11(DISPLAY or XDG_SESSION_TYPE=x11) is set.<br>
+		/// Checks if the environmental variable for Wayland(WAYLAND_DISPLAY or XDG_SESSION_TYPE=wayland or X11(DISPLAY or XDG_SESSION_TYPE=x11) is set.<br>
 		/// Note: If neither Wayland or X11 was found the Engine will shutdown!<br>
 		/// NOTE: This function only affects Linux OSes!
 		/// </summary>
-		void UpdateLinuxWindowManager();
+		void UpdateLinuxWindowManager(); //TODO Move to Utils
 
 		/// <summary>
 		/// ProcessHotReloading is used to offload the HotReloading system onto another Thread.
@@ -313,14 +313,14 @@ namespace TRAP
 		std::unique_ptr<Utils::Timer> m_timer;
 		uint32_t m_FramesPerSecond;
 		float m_FrameTime;
-		uint32_t m_drawCalls;
+		uint32_t m_drawCalls; //TODO Remove
 		uint32_t m_fpsLimit;
 		uint32_t m_tickRate;
 		float m_timeScale;
 		std::string m_gameName;
 
-		Endian m_endian;
-		LinuxWindowManager m_linuxWindowManager;
+		Endian m_endian; //TODO Move to Utils
+		LinuxWindowManager m_linuxWindowManager; //TODO Move to Utils
 
 		ThreadPool m_threadPool;
 
@@ -328,7 +328,7 @@ namespace TRAP
 
 		Graphics::RenderAPI m_newRenderAPI;
 
-		static CPUInfo s_CPU;
+		static CPUInfo s_CPU; //TODO Move to Utils
 		static Application* s_Instance;
 
 		friend int ::main();

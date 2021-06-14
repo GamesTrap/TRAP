@@ -164,7 +164,7 @@ TRAP::Network::Socket::Status TRAP::Network::TCPSocket::Connect(const IPv4Addres
 			FD_SET(GetHandle(), &selector);
 
 			//Setup the timeout
-			timeval time{};
+			timeval time;
 			time.tv_sec = static_cast<long>(timeout.GetSeconds());
 			time.tv_usec = static_cast<long>(timeout.GetSeconds());
 

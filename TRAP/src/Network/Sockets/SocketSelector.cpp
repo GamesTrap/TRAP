@@ -144,7 +144,7 @@ void TRAP::Network::SocketSelector::Clear() const
 bool TRAP::Network::SocketSelector::Wait(const Utils::TimeStep timeout) const
 {
 	//Setup the timeout
-	timeval time{};
+	timeval time;
 	time.tv_sec = static_cast<long>(timeout.GetSeconds());
 	time.tv_usec = static_cast<long>(timeout.GetSeconds());
 

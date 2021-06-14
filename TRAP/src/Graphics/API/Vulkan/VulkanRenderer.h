@@ -56,6 +56,7 @@ namespace TRAP::Graphics::API
 		void SetStencilMask(uint8_t read, uint8_t write, Window* window = nullptr) override;
 		void SetCullMode(CullMode mode, Window* window = nullptr) override;
 		void SetFillMode(FillMode mode, Window* window = nullptr) override;
+		void SetPrimitiveTopology(PrimitiveTopology topology, Window* window = nullptr) override;
 		void SetFrontFace(FrontFace face, Window* window = nullptr) override;
 		void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, Window* window = nullptr) override;
 		void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,

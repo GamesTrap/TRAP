@@ -50,7 +50,7 @@ std::string TRAP::Utils::Dialogs::SelectFolder(const std::string& title, const s
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::string& title, const std::string& message,
-    Style style, Buttons buttons)
+    const Style style, const Buttons buttons)
 {
     return MD::ShowMsgBox(title, message, style, buttons);
 }
@@ -58,7 +58,7 @@ TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::stri
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::string& title, const std::string& message,
-    Style style)
+    const Style style)
 {
     return MD::ShowMsgBox(title, message, style);
 }
@@ -66,7 +66,7 @@ TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::stri
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Utils::Dialogs::Selection TRAP::Utils::Dialogs::ShowMsgBox(const std::string& title, const std::string& message,
-    Buttons buttons)
+    const Buttons buttons)
 {
     return MD::ShowMsgBox(title, message, buttons);
 }

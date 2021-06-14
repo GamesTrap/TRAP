@@ -67,6 +67,7 @@ namespace TRAP::Graphics
 		enum class StencilOp;
 		enum class CullMode;
 		enum class FillMode;
+		enum class PrimitiveTopology;
 		enum class FrontFace;
 		enum class BlendMode;
 		enum class BlendConstant;
@@ -119,6 +120,7 @@ namespace TRAP::Graphics
 		virtual void SetStencilMask(uint8_t read, uint8_t write, Window* window = nullptr) = 0;
 		virtual void SetCullMode(CullMode mode, Window* window = nullptr) = 0;
 		virtual void SetFillMode(FillMode mode, Window* window = nullptr) = 0;
+		virtual void SetPrimitiveTopology(PrimitiveTopology topology, Window* window = nullptr) = 0;
 		virtual void SetFrontFace(FrontFace face, Window* window = nullptr) = 0;
 		virtual void SetBlendMode(BlendMode modeRGB, BlendMode modeAlpha, Window* window = nullptr) = 0;
 		virtual void SetBlendConstant(BlendConstant sourceRGB, BlendConstant sourceAlpha,
@@ -768,8 +770,6 @@ namespace TRAP::Graphics
 			default:
 				return false;
 			}
-
-			return false;
 		}
 
 		enum class WaveOpsSupportFlags : uint32_t
@@ -1499,20 +1499,23 @@ namespace TRAP::Graphics
 			PerTile = PerDraw << 1
 		};
 
+		struct _Color
+		{
+			float R;
+			float G;
+			float B;
+			float A;
+		};
+		struct _DepthStencil
+		{
+			float Depth;
+			uint32_t Stencil;
+		};
+
 		union ClearValue
 		{
-			struct
-			{
-				float R;
-				float G;
-				float B;
-				float A;
-			};
-			struct
-			{
-				float Depth;
-				uint32_t Stencil;
-			};
+			_Color Color;
+			_DepthStencil DepthStencil;
 		};
 
 		struct SubresourceDataDesc
@@ -2220,7 +2223,7 @@ namespace TRAP::Graphics
 			uint32_t ROVsSupported;
 			bool TessellationSupported;
 			bool GeometryShaderSupported;
-			uint32_t MaxAnisotropy;
+			float MaxAnisotropy;
 		} GPUSettings{};
 
 		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered

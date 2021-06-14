@@ -38,9 +38,9 @@ TRAP::Graphics::API::VulkanDebug::~VulkanDebug()
 //-------------------------------------------------------------------------------------------------------------------//
 
 VkBool32 TRAP::Graphics::API::VulkanDebug::VulkanDebugCallback(const VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                                                               const VkDebugUtilsMessageTypeFlagsEXT messageType,
+                                                               const VkDebugUtilsMessageTypeFlagsEXT,
                                                                const VkDebugUtilsMessengerCallbackDataEXT* callbackData,
-                                                               void* userData)
+                                                               void*)
 {
 	std::string str = Log::RendererVulkanDebugPrefix;
 	str.pop_back();

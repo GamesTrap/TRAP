@@ -113,7 +113,7 @@ namespace TRAP::Utils::String
 	std::string GetStatement(const char* str, const char** outPosition = nullptr);
 
 	//-------------------------------------------------------------------------------------------------------------------//
-
+	
 	/// <summary>
 	/// Tokenize a string.
 	/// </summary>

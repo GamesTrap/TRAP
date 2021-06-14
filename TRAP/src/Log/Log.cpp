@@ -36,7 +36,7 @@ void TRAP::Log::SetFilePath(const std::string& virtualOrPhysicalFilePath)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffer()
+const std::vector<std::pair<TRAP::Log::Level, std::string>>& TRAP::Log::GetBuffer() const
 {
 	return m_buffer;
 }

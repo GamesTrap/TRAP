@@ -955,23 +955,23 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 						uint32_t pixelDataByteSizePerChannel = (*images)[layer]->GetBytesPerPixel() / 3;
 						uint64_t pixelDataSizeRGBA = (*images)[layer]->GetWidth() * (*images)[layer]->GetHeight() * 4 * pixelDataByteSizePerChannel;
 						uint64_t pixelDataOffset = 0;
-						for(uint64_t i = 0; i < pixelDataSizeRGBA; i += 4 * pixelDataByteSizePerChannel)
+						for(uint64_t j = 0; j < pixelDataSizeRGBA; j += 4 * pixelDataByteSizePerChannel)
 						{
-							memcpy(dstData + i, pixelData + pixelDataOffset, 3 * pixelDataByteSizePerChannel);
+							memcpy(dstData + j, pixelData + pixelDataOffset, 3 * pixelDataByteSizePerChannel);
 							pixelDataOffset += 3 * pixelDataByteSizePerChannel;
 
 							switch(pixelDataByteSizePerChannel)
 							{
 							case 1:
-								memcpy(dstData + i + 3 * pixelDataByteSizePerChannel, &alpha1Byte, 1 * pixelDataByteSizePerChannel);
+								memcpy(dstData + j + 3 * pixelDataByteSizePerChannel, &alpha1Byte, 1 * pixelDataByteSizePerChannel);
 								break;
 
 							case 2:
-								memcpy(dstData + i + 3 * pixelDataByteSizePerChannel, &alpha2Byte, 1 * pixelDataByteSizePerChannel);
+								memcpy(dstData + j + 3 * pixelDataByteSizePerChannel, &alpha2Byte, 1 * pixelDataByteSizePerChannel);
 								break;
 
 							case 4:
-								memcpy(dstData + i + 3 * pixelDataByteSizePerChannel, &alphaHDR, 1 * pixelDataByteSizePerChannel);
+								memcpy(dstData + j + 3 * pixelDataByteSizePerChannel, &alphaHDR, 1 * pixelDataByteSizePerChannel);
 								break;
 
 							default:
@@ -1026,7 +1026,7 @@ TRAP::Graphics::API::ResourceLoader::UploadFunctionResult TRAP::Graphics::API::R
 
 		for(uint32_t i = 1; i < texture->GetMipLevels(); ++i)
 		{
-			barrier.MipLevel = i - 1;
+			barrier.MipLevel = static_cast<uint8_t>(i) - 1;
 			barrier.CurrentState = RendererAPI::ResourceState::CopyDestination;
 			barrier.NewState = RendererAPI::ResourceState::CopySource;
 

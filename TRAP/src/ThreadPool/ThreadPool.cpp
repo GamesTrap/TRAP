@@ -8,8 +8,8 @@ TRAP::ThreadPool::ThreadPool(const uint32_t threads)
 {
 	if (!m_maxThreadsCount)
 	{
-		m_maxThreadsCount = 4; //Fallback to using 4 threads
-		m_queues = Queues(4);
+		m_maxThreadsCount = 3; //Fallback to 3 threads
+		m_queues = Queues(3);
 	}
 
 	auto worker = [&](const uint32_t i)

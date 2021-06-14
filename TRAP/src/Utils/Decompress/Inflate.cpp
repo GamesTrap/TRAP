@@ -397,7 +397,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::GetTreeInflateDynamic(Huffm
 //Returns the code. The bit reader must already have been ensured at least 15bits
 uint32_t TRAP::Utils::Decompress::INTERNAL::HuffmanTree::DecodeSymbol(BitReader& reader)
 {
-	const uint16_t code = reader.PeekBits(FirstBits);
+	const uint16_t code = static_cast<uint16_t>(reader.PeekBits(FirstBits));
 	const uint16_t l = TableLength[code];
 	const uint16_t value = TableValue[code];
 	if(l <= FirstBits)
@@ -543,7 +543,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 		const uint32_t l = maxLengths[i];
 		if (l <= FirstBits)
 			continue;
-		TableLength[i] = l;
+		TableLength[i] = static_cast<uint8_t>(l);
 		TableValue[i] = static_cast<uint16_t>(pointer);
 		pointer += static_cast<std::size_t>(1u) << (l - FirstBits);
 	}
@@ -571,7 +571,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 				const uint32_t index = reverse | (j << l);
 				if (TableLength[index] != 16)
 					return false; //Invalid tree: Long symbol shares prefix with short symbol
-				TableLength[index] = l;
+				TableLength[index] = static_cast<uint8_t>(l);
 				TableValue[index] = static_cast<uint16_t>(i);
 			}
 		}
@@ -591,7 +591,7 @@ bool TRAP::Utils::Decompress::INTERNAL::HuffmanTree::MakeTable()
 			{
 				const uint32_t reverse2 = reverse >> FirstBits; //l - FIRSTBITS(9u) bits
 				const uint32_t index2 = start + (reverse2 | (j << (l - FirstBits)));
-				TableLength[index2] = l;
+				TableLength[index2] = static_cast<uint8_t>(l);
 				TableValue[index2] = static_cast<uint16_t>(i);
 			}
 		}
@@ -752,10 +752,9 @@ bool TRAP::Utils::Decompress::INTERNAL::InflateHuffmanBlock(std::vector<uint8_t>
 			out.resize(pos + length);
 			if(distance < length)
 			{
-				std::size_t forward = 0;
 				std::memcpy(out.data() + pos, out.data() + backward, distance);
 				pos += distance;
-				for (forward = distance; forward < length; ++forward)
+				for (std::size_t forward = distance; forward < length; ++forward)
 					out[pos++] = out[backward++];
 			}
 			else

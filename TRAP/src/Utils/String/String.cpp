@@ -89,8 +89,8 @@ std::vector<std::string> TRAP::Utils::String::GetLines(const std::string_view st
 
 const char* TRAP::Utils::String::FindToken(const char* str, const std::string_view token)
 {
-	const char* t = str;
-	while ((t = strstr(t, token.data())))
+	const char* t = strstr(str, token.data());
+	while (t)
 	{
 		const bool left = str == t || isspace(t[-1]);
 		const bool right = !t[token.size()] || isspace(t[token.size()]);
@@ -98,6 +98,7 @@ const char* TRAP::Utils::String::FindToken(const char* str, const std::string_vi
 			return t;
 
 		t += token.size();
+		t = strstr(t, token.data());
 	}
 	return nullptr;
 }
@@ -142,7 +143,7 @@ std::string TRAP::Utils::String::GetBlock(const char* str, const char** outPosit
 		return std::string(str);
 
 	if (outPosition)
-		* outPosition = end;
+		*outPosition = end;
 	const auto length = static_cast<uint32_t>(end - str + 1);
 
 	return std::string(str, length);
@@ -181,7 +182,7 @@ std::string TRAP::Utils::String::GetStatement(const char* str, const char** outP
 		return std::string(str);
 
 	if (outPosition)
-		* outPosition = end;
+		*outPosition = end;
 	const auto length = static_cast<uint32_t>(end - str + 1);
 
 	return std::string(str, length);
@@ -231,7 +232,10 @@ std::string TRAP::Utils::String::GetSuffix(const std::string_view name)
 std::string TRAP::Utils::String::ToLower(const std::string& string)
 {
 	std::string result(string);
-	std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+	std::transform(result.begin(), result.end(), result.begin(), [](const int32_t c) -> char
+	{
+		return static_cast<char>(::tolower(c));
+	});
 
 	return result;
 }
@@ -241,7 +245,10 @@ std::string TRAP::Utils::String::ToLower(const std::string& string)
 std::string TRAP::Utils::String::ToUpper(const std::string& string)
 {
 	std::string result(string);
-	std::transform(result.begin(), result.end(), result.begin(), ::toupper);
+	std::transform(result.begin(), result.end(), result.begin(), [](const int32_t c) -> char
+	{
+		return static_cast<char>(::toupper(c));
+	});
 
 	return result;
 }

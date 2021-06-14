@@ -53,7 +53,7 @@ namespace TRAP::Network
 		/// network name (ex: "localhost").
 		/// </summary>
 		/// <param name="address">IPv4 address or network name.</param>
-		IPv4Address(std::string_view address);
+		explicit IPv4Address(std::string_view address);
 
 		/// <summary>
 		/// Construct the address from a string.<br>
@@ -65,7 +65,7 @@ namespace TRAP::Network
 		/// implicit conversion from literal strings to IPv4Address work.
 		/// </summary>
 		/// <param name="address">IPv4 address or network name.</param>
-		IPv4Address(const char* address);
+		explicit IPv4Address(const char* address);
 
 		/// <summary>
 		/// Construct the address from 4 bytes.<br>

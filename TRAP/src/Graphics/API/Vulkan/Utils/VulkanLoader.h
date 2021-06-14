@@ -11,12 +11,16 @@ Modified by: Jan "GamesTrap" Schuerkamp
 #ifndef _GAMESTRAP_VULKANLOADER_H_
 #define _GAMESTRAP_VULKANLOADER_H_
 
+#ifdef _MSC_VER
+#pragma warning(push, 0)
+#endif
+
 #if defined(VULKAN_H_) && !defined(VK_NO_PROTOTYPES)
     #error To use VulkanLoader, you need to define VK_NO_PROTOTYPES before including vulkan.h
 #endif
 
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
-#define VULKANLOADER_HEADER_VERSION 179
+#define VULKANLOADER_HEADER_VERSION 180
 /* VULKANLOADER_GENERATE_VERSION_DEFINE */
 
 #ifndef VK_NO_PROTOTYPES
@@ -3536,6 +3540,10 @@ inline PFN_vkAcquireNextImage2KHR vkAcquireNextImage2KHR;
 
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef _MSC_VER
+	#pragma warning(pop)
 #endif
 
 /*

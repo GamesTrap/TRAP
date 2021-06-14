@@ -78,7 +78,7 @@ void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, st
 					if (!std::filesystem::is_directory(file))
 					{
 						std::string formattedPath = file.path().string();
-						auto currentFileLastWriteTime = VFS::GetLastWriteTime(formattedPath);
+						const auto currentFileLastWriteTime = VFS::GetLastWriteTime(formattedPath);
 						if (currentFileLastWriteTime != std::filesystem::file_time_type::min())
 						{
 							//File creation
@@ -121,7 +121,7 @@ void TRAP::FileWatcher::Check(const std::function<void(std::filesystem::path, st
 				{
 					if (!std::filesystem::is_directory(file))
 					{
-						std::string formattedPath = file.path().string();
+						const std::string formattedPath = file.path().string();
 						if(m_physicalPaths.find(formattedPath) == m_physicalPaths.end())
 						{
 							m_physicalPaths[formattedPath] = VFS::GetLastWriteTime(formattedPath);

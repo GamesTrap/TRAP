@@ -22,8 +22,8 @@ namespace TRAP
 	class Scene
 	{
 	public:
-		Scene();
-		~Scene();
+		Scene() = default;
+		~Scene() = default;
 		
 		Scene(const Scene&) = delete;
 		Scene(Scene&&) = default;

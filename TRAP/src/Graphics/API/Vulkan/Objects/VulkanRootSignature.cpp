@@ -65,39 +65,38 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 		{
 			ShaderReflection::ShaderResource& res = reflection->ShaderResources[i];
 
-			std::unordered_map<std::string, uint32_t>::iterator it =
-				indexMap.Map.find(res.Name);
-			if(it == indexMap.Map.end())
+			auto resNameIt = indexMap.Map.find(res.Name);
+			if(resNameIt == indexMap.Map.end())
 			{
-				auto it = std::find_if(shaderResources.begin(), shaderResources.end(),
+				auto resIt = std::find_if(shaderResources.begin(), shaderResources.end(),
 				                       [res](const ShaderReflection::ShaderResource& a)
 				                       {
 					                       return (a.Type == res.Type) && (a.UsedStages == res.UsedStages) && (((a.Reg ^ res.Reg) | (a.Set ^ res.Set)) == 0);
 				                       });
-				if(it == shaderResources.end())
+				if(resIt == shaderResources.end())
 				{
 					indexMap.Map.insert({ res.Name, static_cast<uint32_t>(shaderResources.size()) });
 					shaderResources.push_back(res);
 				}
 				else
 				{
-					TRAP_ASSERT(res.Type == it->Type);
-					if(res.Type != it->Type)
+					TRAP_ASSERT(res.Type == resIt->Type);
+					if(res.Type != resIt->Type)
 					{
 						TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Failed to create root signature");
-						TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Shared shader resources ", res.Name, " and ", it->Name, " have mismatching types (", static_cast<uint32_t>(res.Type),
-							") and (", static_cast<uint32_t>(it->Type), "). All shader resources sharing the same",
+						TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Shared shader resources ", res.Name, " and ", resIt->Name, " have mismatching types (", static_cast<uint32_t>(res.Type),
+							") and (", static_cast<uint32_t>(resIt->Type), "). All shader resources sharing the same",
 							"register and space RootSignature must have the same type");
 						return;
 					}
 
-					indexMap.Map.insert({ res.Name, indexMap.Map[it->Name] });
-					it->UsedStages |= res.UsedStages;
+					indexMap.Map.insert({ res.Name, indexMap.Map[resIt->Name] });
+					resIt->UsedStages |= res.UsedStages;
 				}
 			}
 			else
 			{
-				if(shaderResources[it->second].Reg != res.Reg)
+				if(shaderResources[resNameIt->second].Reg != res.Reg)
 				{
 					TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Failed to create root signature");
 					TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Shared shader resources ", res.Name, " has mismatching binding.", 
@@ -105,7 +104,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 						"must have the same binding and set.");
 					return;
 				}
-				if (shaderResources[it->second].Set != res.Set)
+				if (shaderResources[resNameIt->second].Set != res.Set)
 				{
 					TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Failed to create root signature");
 					TP_ERROR(Log::RendererVulkanRootSignaturePrefix, "Shared shader resources ", res.Name, " has mismatching set.",
@@ -116,7 +115,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 
 				for(ShaderReflection::ShaderResource& r : shaderResources)
 				{
-					if(res.Name == it->first)
+					if(res.Name == resNameIt->first)
 					{
 						r.UsedStages |= res.UsedStages;
 						break;
@@ -200,7 +199,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 			//In case of Combined Image Samplers, skip invalidating the index
 			//because we do not introduce new ways to update the descriptor in the interface
 			if(hasStaticSampler && descInfo.Type != RendererAPI::DescriptorType::CombinedImageSampler)
-				descInfo.IndexInParent = -1;
+				descInfo.IndexInParent = std::numeric_limits<uint32_t>::max();
 			else
 				layouts[setIndex].Descriptors.emplace_back(&descInfo);
 
@@ -315,7 +314,7 @@ TRAP::Graphics::API::VulkanRootSignature::VulkanRootSignature(const RendererAPI:
 				//Raytracing descriptor dont support update template so we ignore them
 				if(descInfo->Type == RendererAPI::DescriptorType::RayTracing)
 				{
-					m_vkRayTracingDescriptorCounts[setIndex] += descInfo->Size;
+					m_vkRayTracingDescriptorCounts[setIndex] += static_cast<uint8_t>(descInfo->Size);
 					continue;
 				}
 

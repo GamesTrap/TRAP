@@ -69,12 +69,12 @@ namespace std
 					TRAP::Utils::HashCombine(hash, i);
 			}
 
-			if (std::holds_alternative<TRAP::Graphics::RendererAPI::RayTracingPipelineDesc>(p.Pipeline))
-			{
-				const TRAP::Graphics::RendererAPI::RayTracingPipelineDesc& r = std::get<TRAP::Graphics::RendererAPI::RayTracingPipelineDesc>(p.Pipeline);
+			//if (std::holds_alternative<TRAP::Graphics::RendererAPI::RayTracingPipelineDesc>(p.Pipeline))
+			//{
+			//	const TRAP::Graphics::RendererAPI::RayTracingPipelineDesc& r = std::get<TRAP::Graphics::RendererAPI::RayTracingPipelineDesc>(p.Pipeline);
 
-				//TODO Implement When RayTracing is implemented
-			}
+			//	//TODO Implement When RayTracing is implemented
+			//}
 
 			return hash;
 		}

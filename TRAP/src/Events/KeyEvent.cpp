@@ -375,18 +375,18 @@ std::string TRAP::Events::KeyTypeEvent::EncodeUTF8(const uint32_t codePoint)
 		result.push_back(static_cast<uint8_t>(codePoint));
 	else if (codePoint < 0x800)
 	{
-		result.push_back((codePoint >> 6) | 0xC0);
+		result.push_back(static_cast<char>((codePoint >> 6) | 0xC0u));
 		result.push_back((codePoint & 0x3F) | 0x80);
 	}
 	else if (codePoint < 0x10000)
 	{
-		result.push_back((codePoint >> 12) | 0xE0);
+		result.push_back(static_cast<char>((codePoint >> 12) | 0xE0u));
 		result.push_back(((codePoint >> 6) & 0x3F) | 0x80);
 		result.push_back((codePoint & 0x3F) | 0x80);
 	}
 	else if (codePoint < 0x110000)
 	{
-		result.push_back((codePoint >> 18) | 0xF0);
+		result.push_back(static_cast<char>((codePoint >> 18) | 0xF0u));
 		result.push_back(((codePoint >> 12) & 0x3F) | 0x80);
 		result.push_back(((codePoint >> 6) & 0x3F) | 0x80);
 		result.push_back((codePoint & 0x3F) | 0x80);

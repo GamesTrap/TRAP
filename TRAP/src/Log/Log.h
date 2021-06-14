@@ -19,7 +19,7 @@ namespace TRAP
 		/// Private Constructor.
 		/// </summary>
 		/// <param name="virtualOrPhysicalFilePath">Virtual or Physical file path to save to.</param>
-		Log(std::string virtualOrPhysicalFilePath);
+		explicit Log(std::string virtualOrPhysicalFilePath);
 		/// <summary>
 		///	Destructor.
 		/// </summary>
@@ -111,7 +111,7 @@ namespace TRAP
 		/// Get all saves log messages and their importance level.
 		/// </summary>
 		/// <returns>Messages and importance level in a vector.</returns>
-		const std::vector<std::pair<Level, std::string>>& GetBuffer();
+		const std::vector<std::pair<Level, std::string>>& GetBuffer() const;
 
 		/// <summary>
 		/// Save all collected messages to file.
@@ -122,7 +122,7 @@ namespace TRAP
 		/// </summary>
 		void Clear();
 
-		inline static constexpr auto WindowVersion = "[21w23a2]";
+		inline static constexpr auto WindowVersion = "[21w24a1]";
 		inline static constexpr auto WindowPrefix = "[Window] ";
 		inline static constexpr auto WindowInternalPrefix = "[Window][Internal] ";
 		inline static constexpr auto WindowIconPrefix = "[Window][Icon] ";

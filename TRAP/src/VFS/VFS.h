@@ -8,15 +8,17 @@ namespace TRAP
 {
 	class VFS final
 	{
-	public:
+	private:
 		/// <summary>
 		/// Default Constructor.
 		/// </summary>
 		VFS() = default;
+
+	public:
 		/// <summary>
 		///	Default Destructor.
 		/// </summary>
-		~VFS() = default;		
+		~VFS() = default;
 
 		/// <summary>
 		/// Deleted Copy Constructor.
@@ -35,6 +37,7 @@ namespace TRAP
 		/// </summary>
 		VFS& operator=(VFS&&) = delete;
 
+	public:
 		/// <summary>
 		/// WriteMode to be used by writing operations.
 		/// </summary>
