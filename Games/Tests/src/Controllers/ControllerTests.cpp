@@ -142,7 +142,7 @@ void ControllerTests::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ControllerTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void ControllerTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	//Render
 	TRAP::Graphics::RenderCommand::SetClearColor();

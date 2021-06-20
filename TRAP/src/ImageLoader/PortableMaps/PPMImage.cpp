@@ -3,8 +3,8 @@
 
 #include "Utils/String/String.h"
 #include "VFS/VFS.h"
-#include "Application.h"
 #include "Utils/ByteSwap.h"
+#include "Utils/Utils.h"
 
 TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 {
@@ -92,7 +92,7 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 			
 			//File uses big-endian
 			//Convert to machines endian
-			bool needSwap = static_cast<bool>(Application::GetEndian() != Application::Endian::Big);
+			bool needSwap = static_cast<bool>(Utils::GetEndian() != Utils::Endian::Big);
 			if (needSwap)
 				for (uint16_t& element : m_data2Byte)
 					Utils::Memory::SwapBytes(element);

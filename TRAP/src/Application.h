@@ -40,15 +40,6 @@ namespace TRAP
 	{
 	public:
 		/// <summary>
-		/// Enum used to describe endianness.
-		/// </summary>
-		enum class Endian
-		{
-			Little = 1,
-			Big = 0
-		};
-
-		/// <summary>
 		/// Enum used to indicate which Window Manager is used by Linux based systems.
 		/// </summary>
 		enum class LinuxWindowManager
@@ -180,11 +171,6 @@ namespace TRAP
 		/// <returns>TRAP::Utils::TimeStep containing the passed Time since the Engine was started.</returns>
 		static Utils::TimeStep GetTime();
 		/// <summary>
-		/// Get the endianness of the system.
-		/// </summary>
-		/// <returns>TRAP::Application::Endian::Little or TRAP::Application::Endian::Big.</returns>
-		static Endian GetEndian(); //TODO Move to Utils
-		/// <summary>
 		/// Get the Window Manager used by Linux based systems.
 		/// </summary>
 		/// <returns>TRAP::Application::LinuxWindowManager::X11, TRAP::Application::LinuxWindowManager::Wayland or TRAP::Application::LinuxWindowManager::Unknown(If Window Manager is unknown or system OS is Windows).</returns>
@@ -216,7 +202,7 @@ namespace TRAP
 		/// Get the id of the main engine thread.
 		/// </summary>
 		/// <returns>Main thread ID.</returns>
-		static std::thread::id GetMainThreadID();
+		static std::thread::id GetMainThreadID(); //TODO Move to Utils
 
 	private:
 		/// <summary>
@@ -319,7 +305,6 @@ namespace TRAP
 		float m_timeScale;
 		std::string m_gameName;
 
-		Endian m_endian; //TODO Move to Utils
 		LinuxWindowManager m_linuxWindowManager; //TODO Move to Utils
 
 		ThreadPool m_threadPool;

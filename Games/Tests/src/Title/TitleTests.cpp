@@ -14,7 +14,7 @@ void TitleTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TitleTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void TitleTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	//Render
 	TRAP::Graphics::RenderCommand::SetClearColor();

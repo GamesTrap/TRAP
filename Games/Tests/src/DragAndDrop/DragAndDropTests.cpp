@@ -31,7 +31,7 @@ void DragAndDropTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void DragAndDropTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void DragAndDropTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
 }

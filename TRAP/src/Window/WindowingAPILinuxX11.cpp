@@ -86,7 +86,7 @@ void TRAP::INTERNAL::WindowingAPI::SendEventToWM(const InternalWindow* window, A
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns whether it is a _NET_FRAME_EXTENTS event for the specified window
-int32_t TRAP::INTERNAL::WindowingAPI::IsFrameExtentsEvent(Display* display, XEvent* event, XPointer pointer)
+int32_t TRAP::INTERNAL::WindowingAPI::IsFrameExtentsEvent(Display*, XEvent* event, XPointer pointer)
 {
 	InternalWindow* window = (InternalWindow*)pointer;
 	
@@ -737,14 +737,14 @@ bool TRAP::INTERNAL::WindowingAPI::HasUsableInputMethodStyle()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::InputMethodDestroyCallback(XIM im, XPointer clientData, XPointer callData)
+void TRAP::INTERNAL::WindowingAPI::InputMethodDestroyCallback(XIM, XPointer, XPointer)
 {
 	s_Data.IM = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::InputMethodInstantiateCallback(Display* display, XPointer clientData, XPointer callData)
+void TRAP::INTERNAL::WindowingAPI::InputMethodInstantiateCallback(Display*, XPointer, XPointer)
 {
 	if(s_Data.IM)
 		return;
@@ -869,7 +869,7 @@ void TRAP::INTERNAL::WindowingAPI::PollMonitorsX11()
 
 
 //Returns whether the event is a selection event
-int32_t TRAP::INTERNAL::WindowingAPI::IsSelectionEvent(Display* display, XEvent* event, XPointer pointer)
+int32_t TRAP::INTERNAL::WindowingAPI::IsSelectionEvent(Display*, XEvent* event, XPointer)
 {
 	if(event->xany.window != s_Data.HelperWindowHandle)
 		return false;
@@ -2282,7 +2282,7 @@ int64_t TRAP::INTERNAL::WindowingAPI::KeySymToUnicode(uint32_t keySym)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Returns whether it is a property event for the specified selection transfer
-int32_t TRAP::INTERNAL::WindowingAPI::IsSelPropNewValueNotify(Display* display, XEvent* event, XPointer pointer)
+int32_t TRAP::INTERNAL::WindowingAPI::IsSelPropNewValueNotify(Display*, XEvent* event, XPointer pointer)
 {
 	XEvent* notification = (XEvent*)pointer;
 	
@@ -2435,7 +2435,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowFrameSize(const InternalWind
 //-------------------------------------------------------------------------------------------------------------------//
 
 void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMonitor(InternalWindow* window, InternalMonitor* monitor,
-														    int32_t xPos, int32_t yPos, int32_t width, int32_t height, int32_t refreshRate)
+														    int32_t xPos, int32_t yPos, int32_t width, int32_t height, int32_t)
 {
 	if(window->Monitor == monitor)
 	{
@@ -2882,7 +2882,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformShutdown()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScale(const InternalMonitor* monitor, float& xScale, float& yScale)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetMonitorContentScale(const InternalMonitor*, float& xScale, float& yScale)
 {
 	xScale = s_Data.ContentScaleX;
 	yScale = s_Data.ContentScaleY;
@@ -2938,7 +2938,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformFocusWindow(const InternalWindow* win
 
 bool TRAP::INTERNAL::WindowingAPI::PlatformCreateWindow(InternalWindow* window,
 			                                            const WindowConfig& WNDConfig,
-			                                            const FrameBufferConfig& FBConfig)
+			                                            const FrameBufferConfig&)
 {
 	Visual* visual = nullptr;
 	int32_t depth;
@@ -3126,7 +3126,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformDestroyCursor(InternalCursor* cursor)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(const InternalWindow* window, const InternalCursor* cursor)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetCursor(const InternalWindow* window, const InternalCursor*)
 {
 	if(window->cursorMode == CursorMode::Normal)
 	{
@@ -3271,7 +3271,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSize(InternalWindow* window,
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(InternalWindow* window, bool enabled)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowResizable(InternalWindow* window, bool)
 {
 	int32_t width, height;
 	
@@ -3383,7 +3383,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowMousePassthrough(InternalWin
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar(InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::PlatformHideWindowFromTaskbar(InternalWindow*)
 {
 }
 
@@ -3416,7 +3416,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformGetFrameBufferSize(const InternalWind
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScale(const InternalWindow* window, float& xScale, float& yScale)
+void TRAP::INTERNAL::WindowingAPI::PlatformGetWindowContentScale(const InternalWindow*, float& xScale, float& yScale)
 {
 	xScale = s_Data.ContentScaleX;
 	yScale = s_Data.ContentScaleY;
@@ -3907,8 +3907,8 @@ void TRAP::INTERNAL::WindowingAPI::PlatformRestoreWindow(InternalWindow* window)
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* window, int32_t minWidth,
-                                                               int32_t minHeight, int32_t maxWidth, int32_t maxHeight)
+void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* window, int32_t,
+                                                               int32_t, int32_t, int32_t)
 {
 	int32_t width, height;
 	PlatformGetWindowSize(window, width, height);
@@ -3919,7 +3919,7 @@ void TRAP::INTERNAL::WindowingAPI::PlatformSetWindowSizeLimits(InternalWindow* w
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Enable XI2 raw mouse motion events
-void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow*)
 {
 	XIEventMask em;
 	std::array<uint8_t, XIMaskLen(XI_RawMotion)> mask = {0};
@@ -3935,7 +3935,7 @@ void TRAP::INTERNAL::WindowingAPI::EnableRawMouseMotion(const InternalWindow* wi
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Disable XI2 raw mouse motion events
-void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion(const InternalWindow* window)
+void TRAP::INTERNAL::WindowingAPI::DisableRawMouseMotion(const InternalWindow*)
 {
 	XIEventMask em;
 	
@@ -4079,7 +4079,7 @@ void TRAP::INTERNAL::WindowingAPI::ProcessEvent(XEvent& event)
 				//      (the server never sends a timestamp of zero)
 				//NOTE: Timestamp difference is compared to handle wrap-around
 				Time diff = event.xkey.time - window->KeyPressTimes[keyCode];
-				if(diff == event.xkey.time || (diff > 0 && diff < (1 << 31)))
+				if(diff == event.xkey.time || (diff > 0 && diff < (1u << 31u)))
 				{
 					if(keyCode)
 						InputKey(window, (Input::Key)key, keyCode, true);
@@ -4856,7 +4856,7 @@ void TRAP::INTERNAL::WindowingAPI::EnableCursor(InternalWindow* window)
 //-------------------------------------------------------------------------------------------------------------------//
 
 //Clear its handle when the input context has been destroyed
-void TRAP::INTERNAL::WindowingAPI::InputContextDestroyCallback(XIC ic, XPointer clientData, XPointer callData)
+void TRAP::INTERNAL::WindowingAPI::InputContextDestroyCallback(XIC, XPointer clientData, XPointer)
 {
 	InternalWindow* window = (InternalWindow*)clientData;
 

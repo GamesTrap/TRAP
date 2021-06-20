@@ -2,6 +2,9 @@
 
 VulkanTests::VulkanTests()
 	: Layer("VulkanTests"),
+	  m_fpsTimer(),
+	  m_vertexBuffer(nullptr),
+	  m_indexBuffer(nullptr),
 	  m_wireFrame(false),
 	  m_quad(false),
 	  m_indexed(false),
@@ -10,7 +13,9 @@ VulkanTests::VulkanTests()
 	  m_colorData(),
 	  m_sizeMultiplicatorData(),
 	  m_colorTimer(),
-	  m_vertexTimer()
+	  m_vertexTimer(),
+	  m_colorUniformBuffer(nullptr),
+	  m_sizeMultiplicatorUniformBuffer(nullptr)
 {
 }
 
@@ -60,7 +65,7 @@ void VulkanTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void VulkanTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	if(m_wireFrame)
 		TRAP::Graphics::RendererAPI::GetRenderer()->SetFillMode(TRAP::Graphics::RendererAPI::FillMode::WireFrame);
@@ -210,7 +215,7 @@ bool VulkanTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 	}
 	if(e.GetKey() == TRAP::Input::Key::F4)
 	{
-		m_pushConstantOrUBO = ++m_pushConstantOrUBO % 3;
+		m_pushConstantOrUBO = (m_pushConstantOrUBO + 1) % 3;
 		TP_TRACE("[VulkanTests] Push Constant / Uniform Buffer: ", m_pushConstantOrUBO ? "On" : "Off");
 	}
 	if(e.GetKey() == TRAP::Input::Key::V)

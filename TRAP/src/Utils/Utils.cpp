@@ -86,3 +86,19 @@ std::array<uint8_t, 16> TRAP::Utils::UUIDFromString(const std::string_view uuid)
 
 	return result;
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Utils::Endian TRAP::Utils::GetEndian()
+{
+	//Check if machine is using little-endian or big-endian
+	int32_t intVal = 1;
+	uint8_t* uVal = reinterpret_cast<uint8_t*>(&intVal);
+#if __cplusplus > 201703L
+	static Endian endian = static_cast<Endian>(std::endian::native == std::endian::little);
+#else
+	static Endian endian = static_cast<Endian>(uVal[0] == 1);
+#endif
+
+	return endian;
+}

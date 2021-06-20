@@ -3,8 +3,8 @@
 
 #include "Utils/String/String.h"
 #include "VFS/VFS.h"
-#include "Application.h"
 #include "Utils/ByteSwap.h"
+#include "Utils/Utils.h"
 
 TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 {
@@ -66,7 +66,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 
 		//File uses little-endian
 		//Convert to machines endian
-		bool needSwap = static_cast<bool>(Application::GetEndian() != Application::Endian::Little);
+		bool needSwap = static_cast<bool>(Utils::GetEndian() != Utils::Endian::Little);
 		if (needSwap)
 		{
 			Utils::Memory::SwapBytes(header.ColorMapOffset);

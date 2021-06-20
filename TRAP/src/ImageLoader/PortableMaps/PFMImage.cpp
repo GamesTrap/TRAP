@@ -3,8 +3,8 @@
 
 #include "Utils/String/String.h"
 #include "VFS/VFS.h"
-#include "Application.h"
 #include "Utils/ByteSwap.h"
+#include "Utils/Utils.h"
 
 TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 {
@@ -71,7 +71,7 @@ TRAP::INTERNAL::PFMImage::PFMImage(std::string filepath)
 		
 		//Determine endianness
 		bool isFileLittleEndian = (header.ByteOrder < 0.0f); //If true little-endian is used else if false big-endian is used
-		bool needSwap = isFileLittleEndian != static_cast<bool>(Application::GetEndian());
+		bool needSwap = isFileLittleEndian != static_cast<bool>(Utils::GetEndian());
 		
 		file.ignore(256, '\n'); //Skip ahead to the pixel data	
 

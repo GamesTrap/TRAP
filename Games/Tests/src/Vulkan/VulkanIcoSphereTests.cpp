@@ -57,7 +57,7 @@ void VulkanIcoSphereTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanIcoSphereTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void VulkanIcoSphereTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	if(m_wireFrame)
 	{

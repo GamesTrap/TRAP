@@ -2,9 +2,12 @@
 
 VulkanMultiWindowTests::VulkanMultiWindowTests()
 	: Layer("VulkanMultiWindowTests"),
-	  m_window(nullptr),
+	  m_fpsTimer(),
+	  m_vertexBuffer(nullptr),
+	  m_indexBuffer(nullptr),
 	  m_wireFrameMainWindow(false),
-	  m_wireFrameSecondWindow(false)
+	  m_wireFrameSecondWindow(false),
+	  m_window(nullptr)
 {
 }
 
@@ -75,7 +78,7 @@ void VulkanMultiWindowTests::OnDetach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	//Second Window OnUpdate
 	if(m_window)

@@ -49,7 +49,7 @@ void MonitorTests::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void MonitorTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void MonitorTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
 }

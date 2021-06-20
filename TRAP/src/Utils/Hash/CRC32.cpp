@@ -1,7 +1,7 @@
 #include "TRAPPCH.h"
 #include "CRC32.h"
 
-#include "Application.h"
+#include "Utils/Utils.h"
 #include "Utils/ByteSwap.h"
 
 constexpr std::array<std::array<uint32_t, 256>, 16> CRC32Lookup =
@@ -571,7 +571,7 @@ std::array<uint8_t, 4> TRAP::Utils::Hash::CRC32(const void* data, uint64_t lengt
 	{
 		for (std::size_t unrolling = 0; unrolling < Unroll; unrolling++)
 		{
-			if (Application::GetEndian() == Application::Endian::Big)
+			if (Utils::GetEndian() == Utils::Endian::Big)
 			{
 				Memory::SwapBytes(crc);
 				const uint32_t one = *current++ ^ crc;

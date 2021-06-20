@@ -27,7 +27,7 @@ void WindowStateTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void WindowStateTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void WindowStateTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	//Render
 	TRAP::Graphics::RenderCommand::SetClearColor();

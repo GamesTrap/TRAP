@@ -14,7 +14,7 @@ void EventTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void EventTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void EventTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	//Render
 	TRAP::Graphics::RenderCommand::SetClearColor();
