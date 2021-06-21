@@ -171,7 +171,7 @@ void ImageLoaderTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ImageLoaderTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void ImageLoaderTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	TRAP::Graphics::RenderCommand::Clear(TRAP::Graphics::RendererBufferType::Color_Depth);
 
@@ -262,8 +262,8 @@ void ImageLoaderTests::OnEvent(TRAP::Events::Event& event)
 
 bool ImageLoaderTests::OnFrameBufferResize(TRAP::Events::FrameBufferResizeEvent& event)
 {
-	m_camera.SetProjection(-(static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight())),
-		                   static_cast<float>(TRAP::Application::GetWindow()->GetWidth()) / static_cast<float>(TRAP::Application::GetWindow()->GetHeight()),
+	m_camera.SetProjection(-(static_cast<float>(event.GetWidth()) / static_cast<float>(event.GetHeight())),
+		                   static_cast<float>(event.GetWidth()) / static_cast<float>(event.GetHeight()),
 		                   -1.0f, 1.0f, -1.0f, 1.0f);
 
 	return false;

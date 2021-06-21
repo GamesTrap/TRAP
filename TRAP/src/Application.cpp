@@ -48,16 +48,6 @@ TRAP::Application::Application(const std::string& gameName)
 
 	TP_INFO(Log::ApplicationPrefix, "CPU: ", GetCPUInfo().LogicalCores, "x ", GetCPUInfo().Model);
 
-	//TODO Move to Utils
-	//Check if machine is using little-endian or big-endian
-	int32_t intVal = 1;
-	uint8_t* uVal = reinterpret_cast<uint8_t*>(&intVal);
-#if __cplusplus > 201703L
-	m_endian = static_cast<Endian>(std::endian::native == std::endian::little);
-#else
-	m_endian = static_cast<Endian>(uVal[0] == 1);
-#endif
-
 	UpdateLinuxWindowManager();
 
 	//TODO Future remove when Wayland Windows are implemented
@@ -447,13 +437,6 @@ TRAP::Utils::TimeStep TRAP::Application::GetTime()
 	const Utils::TimeStep timeStep(s_Instance->m_timer->Elapsed());
 
 	return timeStep;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Application::Endian TRAP::Application::GetEndian()
-{
-	return s_Instance->m_endian;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

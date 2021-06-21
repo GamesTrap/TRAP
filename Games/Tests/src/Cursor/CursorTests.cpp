@@ -80,7 +80,7 @@ void CursorTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void CursorTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void CursorTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	//Render
 	TRAP::Graphics::RenderCommand::SetClearColor();

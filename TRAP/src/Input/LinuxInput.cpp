@@ -377,7 +377,7 @@ void TRAP::Input::DetectControllerConnectionLinux()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-bool TRAP::Input::PollController(Controller controller, PollMode mode)
+bool TRAP::Input::PollController(Controller controller, PollMode)
 {
 	if(s_controllerInternal[static_cast<uint8_t>(controller)].Connected)
 	{
@@ -514,7 +514,7 @@ void TRAP::Input::HandleKeyEventLinux(ControllerInternal* con, int32_t code, int
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Input::UpdateControllerGUID(std::string& guid)
+void TRAP::Input::UpdateControllerGUID(std::string&)
 {
 }
 

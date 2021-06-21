@@ -24,7 +24,7 @@ void OpacityTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void OpacityTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void OpacityTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	//Render
 	TRAP::Graphics::RenderCommand::SetClearColor();

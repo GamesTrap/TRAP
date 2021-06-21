@@ -26,6 +26,21 @@ namespace TRAP::Utils
 		seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 		HashCombine(seed, rest...);
 	}
+
+	/// <summary>
+	/// Enum used to describe endianness.
+	/// </summary>
+	enum class Endian
+	{
+		Little = 1,
+		Big = 0
+	};
+
+	/// <summary>
+	/// Get the endianness of the system.
+	/// </summary>
+	/// <returns>TRAP::Utils::Endian::Little or TRAP::Utils::Endian::Big.</returns>
+	Endian GetEndian();
 }
 
 #endif /*_TRAP_UTILS_H_*/

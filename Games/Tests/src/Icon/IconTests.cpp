@@ -67,7 +67,7 @@ void IconTests::OnAttach()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void IconTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void IconTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	//Render
 	TRAP::Graphics::RenderCommand::SetClearColor();

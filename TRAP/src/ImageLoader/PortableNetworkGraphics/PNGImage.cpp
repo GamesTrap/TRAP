@@ -3,9 +3,9 @@
 
 #include "Utils/String/String.h"
 #include "VFS/VFS.h"
-#include "Application.h"
 #include "Maths/Math.h"
 #include "Utils/ByteSwap.h"
+#include "Utils/Utils.h"
 #include "Utils/Hash/CRC32.h"
 #include "Utils/Decompress/Inflate.h"
 #include "Utils/Hash/Adler32.h"
@@ -53,7 +53,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 		}
 
 		//File uses big-endian
-		bool needSwap = Application::GetEndian() != Application::Endian::Big;
+		bool needSwap = static_cast<bool>(Utils::GetEndian() != Utils::Endian::Big);
 
 		//Load Chunk
 		Data data{};
@@ -1866,7 +1866,7 @@ std::vector<uint16_t> TRAP::INTERNAL::PNGImage::ConvertTo2Byte(std::vector<uint8
 {
 	std::vector<uint16_t> result(raw.size() / 2, 0);
 	uint32_t resultIndex = 0;
-	if (Application::GetEndian() == Application::Endian::Big)
+	if (Utils::GetEndian() == Utils::Endian::Big)
 	{
 		for (uint32_t i = 0; i < raw.size(); i += 2)
 		{

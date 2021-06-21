@@ -30,7 +30,7 @@ void ClipboardTests::OnImGuiRender()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void ClipboardTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
+void ClipboardTests::OnUpdate(const TRAP::Utils::TimeStep&)
 {
 	//Render
 	TRAP::Graphics::RenderCommand::SetClearColor();

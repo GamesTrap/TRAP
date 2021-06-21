@@ -1890,3 +1890,8 @@ SITREP 06/14/2021|21w24a1
     - Changed TRAP Engine version to 21w24a1(0.7.48)
     - Resolved warnings (MSVC) ~>30 mins
     - Added VulkanIcoSphereTests ~<30 mins
+
+SITREP 06/20/2021|21w24a2
+    - Changed TRAP Engine version to 21w24a2(0.7.49)
+    - Resolved more warnings (GCC) ~>30 mins
+    - Moved GetEndian from Application to Utils ~<20 mins

@@ -8,15 +8,15 @@ VulkanTextureTests::VulkanTextureTests()
     : Layer("VulkanTextureTests"),
       m_vertexBuffer(nullptr),
       m_indexBuffer(nullptr),
-      m_texture(nullptr),
+      m_cycleMips(false),
       m_currentMipLevel(0),
       m_maxMipLevel(0),
-      m_textureSamplers(),
       m_updateTexture(false),
       m_debugImgVisible(false),
-      m_cycleMips(false),
-	  m_shader(nullptr)
-{}
+	  m_shader(nullptr),
+      m_texture(nullptr)
+{
+}
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -142,7 +142,7 @@ void VulkanTextureTests::OnUpdate(const TRAP::Utils::TimeStep& deltaTime)
         time += deltaTime.GetMilliseconds();
         if(time > 1000.0f)
         {
-            m_currentMipLevel = ++m_currentMipLevel % m_maxMipLevel;
+            m_currentMipLevel = (m_currentMipLevel + 1) % m_maxMipLevel;
             time = 0.0f;
         }
     }
