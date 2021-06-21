@@ -53,7 +53,7 @@ TRAP::INTERNAL::PNGImage::PNGImage(std::string filepath)
 		}
 
 		//File uses big-endian
-		bool needSwap = static_cast<bool>(Application::GetEndian() != Application::Endian::Big);
+		bool needSwap = Application::GetEndian() != Application::Endian::Big;
 
 		//Load Chunk
 		Data data{};

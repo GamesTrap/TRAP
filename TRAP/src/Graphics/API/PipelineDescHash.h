@@ -2,7 +2,6 @@
 #define _TRAP_PIPELINEDESCHASH_H_
 
 #include "RendererAPI.h"
-#include "Graphics/Shaders/Shader.h"
 #include "Utils/Utils.h"
 
 namespace std

@@ -17,7 +17,7 @@ namespace TRAP::Graphics
 		float GetHeight() const;
 	};
 	
-	class OrthographicCameraController
+class OrthographicCameraController
 	{
 	public:
 		explicit OrthographicCameraController(float aspectRatio, bool rotation = false, bool useController = false, Input::Controller controller = Input::Controller::One, const std::unique_ptr<Window>& window = Application::GetWindow());

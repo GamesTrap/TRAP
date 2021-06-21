@@ -110,6 +110,7 @@ TRAP::Graphics::BufferUsage TRAP::Graphics::IndexBuffer::GetBufferUsage() const
 
 void TRAP::Graphics::IndexBuffer::SetData(uint16_t* indices, const uint32_t size, const uint32_t offset)
 {
+	TRAP_ASSERT(indices);
 	TRAP_ASSERT(size + offset <= m_indexBuffer->GetSize());
 
 	RendererAPI::BufferUpdateDesc desc{};
@@ -125,6 +126,7 @@ void TRAP::Graphics::IndexBuffer::SetData(uint16_t* indices, const uint32_t size
 
 void TRAP::Graphics::IndexBuffer::SetData(uint32_t* indices, const uint32_t size, const uint32_t offset)
 {
+	TRAP_ASSERT(indices);
 	TRAP_ASSERT(size + offset <= m_indexBuffer->GetSize());
 
 	RendererAPI::BufferUpdateDesc desc{};

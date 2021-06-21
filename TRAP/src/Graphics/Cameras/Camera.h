@@ -9,9 +9,7 @@ namespace TRAP::Graphics
 	{		
 	public:
 		Camera() = default;
-		explicit Camera(const Math::Mat4& projection)
-			: m_projection(projection)
-		{}
+		explicit Camera(const Math::Mat4& projection);
 		virtual ~Camera() = default;
 		Camera(const Camera&) = default;
 		Camera(Camera&&) = default;

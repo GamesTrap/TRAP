@@ -112,11 +112,11 @@ TRAP::INTERNAL::RadianceImage::RadianceImage(std::string filepath)
 
 		std::vector<std::array<uint8_t, 4>> scanline;
 		scanline.resize(m_width);
-		uint32_t scanlineIndex = 0;
 
 		//Convert image
 		for(int32_t y = m_height - 1; y >= 0; y--)
 		{
+			uint32_t scanlineIndex = 0;
 			if (!Decrunch(scanline, scanlineIndex, m_width, file))
 			{
 				m_data.clear();
@@ -160,7 +160,7 @@ float TRAP::INTERNAL::RadianceImage::ConvertComponent(const int8_t exponent, con
 		return 0.0f;
 
 	const float v = static_cast<float>(value) / 256.0f;
-	const float d = static_cast<float>(Math::Pow(2.0f, static_cast<float>(exponent)));
+	const float d = Math::Pow(2.0f, static_cast<float>(exponent));
 
 	return v * d;
 }

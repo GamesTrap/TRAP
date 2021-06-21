@@ -11,7 +11,6 @@
 #include "ResourceLoader.h"
 #include "Objects/CommandPool.h"
 #include "Objects/Queue.h"
-#include "Vulkan/Objects/VulkanDevice.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 

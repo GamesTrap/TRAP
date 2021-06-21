@@ -589,54 +589,52 @@ void TRAP::INTERNAL::BMPImage::DecodeRLE8(std::vector<uint8_t>& compressedImageD
 			}
 		}
 	}
-	else
+	
+	//Compressed Grayscale
+	while (true)
 	{
-		//Compressed Grayscale
-		while (true)
+		uint8_t color = compressedImageData[dataIndex++];
+
+		if (color != 0)
 		{
-			uint8_t color = compressedImageData[dataIndex++];
+			r = compressedImageData[dataIndex++];
+
+			for (t = 0; t < color; t++)
+			{
+				m_data[x + (y * m_width)] = r;
+				x++;
+			}
+		}
+		else
+		{
+			r = compressedImageData[dataIndex++];
+
+			if (r == 0)
+			{
+				x = 0;
+				y++;
+				continue;
+			}
+			if (r == 1)
+				return;
+			if (r == 2)
+			{
+				x = x + compressedImageData[dataIndex++];
+				y = y + compressedImageData[dataIndex++];
+				continue;
+			}
+
+			for (t = 0; t < r; t++)
+			{
+				color = compressedImageData[dataIndex++];
+				m_data[x + (y * m_width)] = color;
+				x++;
+			}
+
+			color = r % 2;
 
 			if (color != 0)
-			{
-				r = compressedImageData[dataIndex++];
-
-				for (t = 0; t < color; t++)
-				{
-					m_data[x + (y * m_width)] = r;
-					x++;
-				}
-			}
-			else
-			{
-				r = compressedImageData[dataIndex++];
-
-				if (r == 0)
-				{
-					x = 0;
-					y++;
-					continue;
-				}
-				if (r == 1)
-					return;
-				if (r == 2)
-				{
-					x = x + compressedImageData[dataIndex++];
-					y = y + compressedImageData[dataIndex++];
-					continue;
-				}
-
-				for (t = 0; t < r; t++)
-				{
-					color = compressedImageData[dataIndex++];
-					m_data[x + (y * m_width)] = color;
-					x++;
-				}
-
-				color = r % 2;
-
-				if (color != 0)
-					dataIndex++;
-			}
+				dataIndex++;
 		}
 	}
 }

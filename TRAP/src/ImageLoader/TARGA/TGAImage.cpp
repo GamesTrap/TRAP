@@ -66,7 +66,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 
 		//File uses little-endian
 		//Convert to machines endian
-		bool needSwap = static_cast<bool>(Application::GetEndian() != Application::Endian::Little);
+		bool needSwap = Application::GetEndian() != Application::Endian::Little;
 		if (needSwap)
 		{
 			Utils::Memory::SwapBytes(header.ColorMapOffset);
@@ -94,7 +94,7 @@ TRAP::INTERNAL::TGAImage::TGAImage(std::string filepath)
 		if (header.IDLength != 0)
 		{
 			colorMapData.ImageID.resize(header.IDLength);
-			file.read(static_cast<char*>(colorMapData.ImageID.data()), header.IDLength);
+			file.read(colorMapData.ImageID.data(), header.IDLength);
 		}
 		if (header.ColorMapType == 1)
 		{

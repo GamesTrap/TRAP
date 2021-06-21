@@ -162,9 +162,6 @@ namespace TRAP::Graphics
 		static TRAP::Ref<TRAP::Graphics::Queue> GetGraphicsQueue();
 		static TRAP::Ref<TRAP::Graphics::Queue> GetComputeQueue();
 		static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(Window* window = nullptr);
-
-		static void AddShaderToGraphicsRootSignature(Shader* shader);
-		static void RemoveShaderFromGraphicsRootSignature(Shader* shader);
 		
 		static const TRAP::Scope<PerWindowData>& GetPerWindowData(Window* window); //TODO Remove
 	
@@ -1499,14 +1496,14 @@ namespace TRAP::Graphics
 			PerTile = PerDraw << 1
 		};
 
-		struct _Color
+		struct Color_
 		{
 			float R;
 			float G;
 			float B;
 			float A;
 		};
-		struct _DepthStencil
+		struct DepthStencil_
 		{
 			float Depth;
 			uint32_t Stencil;
@@ -1514,8 +1511,8 @@ namespace TRAP::Graphics
 
 		union ClearValue
 		{
-			_Color Color;
-			_DepthStencil DepthStencil;
+			Color_ Color;
+			DepthStencil_ DepthStencil;
 		};
 
 		struct SubresourceDataDesc
@@ -2259,7 +2256,7 @@ namespace TRAP::Graphics
 			TRAP::Ref<TRAP::Graphics::SwapChain> SwapChain;
 			uint32_t CurrentSwapChainImageIndex;
 
-			ClearValue ClearColor{0.1f, 0.1f, 0.1f, 1.0f};
+			ClearValue ClearColor{{0.1f, 0.1f, 0.1f, 1.0f}};
 
 			bool CurrentVSync;
 			bool NewVSync;

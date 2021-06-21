@@ -92,7 +92,7 @@ TRAP::INTERNAL::PPMImage::PPMImage(std::string filepath)
 			
 			//File uses big-endian
 			//Convert to machines endian
-			bool needSwap = static_cast<bool>(Application::GetEndian() != Application::Endian::Big);
+			bool needSwap = Application::GetEndian() != Application::Endian::Big;
 			if (needSwap)
 				for (uint16_t& element : m_data2Byte)
 					Utils::Memory::SwapBytes(element);

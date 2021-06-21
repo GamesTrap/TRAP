@@ -106,6 +106,7 @@ void TRAP::Graphics::VertexBuffer::Use(Window* window) const
 
 void TRAP::Graphics::VertexBuffer::SetData(float* data, const uint64_t size, const uint64_t offset)
 {
+	TRAP_ASSERT(data);
 	TRAP_ASSERT(size + offset <= m_vertexBuffer->GetSize());
 	
 	RendererAPI::BufferUpdateDesc desc{};

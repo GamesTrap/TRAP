@@ -11,7 +11,7 @@ bool TRAP::Graphics::Shader::s_glslangInitialized = false;
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Shader::Shader()
-	: m_name(), m_filepath(), m_shaderStages(), m_descriptorSets()
+	: m_descriptorSets()
 {
 }
 
@@ -86,7 +86,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	std::string glslSource;
 	std::string VFSFilePath;
 	bool isSPIRV = false;
-	RendererAPI::BinaryShaderDesc desc{};
+	RendererAPI::BinaryShaderDesc desc;
 	std::vector<uint32_t> SPIRVSource{};
 	if (!filePath.empty())
 	{
@@ -176,7 +176,7 @@ TRAP::Scope<TRAP::Graphics::Shader> TRAP::Graphics::Shader::CreateFromFile(const
 	std::string VFSFilePath;
 	std::string name;
 	bool isSPIRV = false;
-	RendererAPI::BinaryShaderDesc desc{};
+	RendererAPI::BinaryShaderDesc desc;
 	std::vector<uint32_t> SPIRVSource{};
 	if (!filePath.empty())
 	{
@@ -517,7 +517,7 @@ bool TRAP::Graphics::Shader::PreProcessGLSL(const std::string& glslSource,
 			}
 		}
 
-		std::string preprocessed = "";
+		std::string preprocessed;
 		if (!shaders[i].empty() && TRAP::Graphics::RendererAPI::GetRenderAPI() == TRAP::Graphics::RenderAPI::Vulkan)
 		{
 			//Found main function

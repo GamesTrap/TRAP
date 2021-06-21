@@ -9,7 +9,7 @@ namespace TRAP::Graphics
 	{
 	public:
 		DummyShader(const std::string& name, const std::string& filepath);
-		~DummyShader() = default;
+		~DummyShader() override = default;
 
 		void Use(Window* window = nullptr) override;
 	};

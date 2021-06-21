@@ -17,7 +17,7 @@
 #include "Embed.h"
 
 TRAP::Image::Image()
-	: m_width(0), m_height(0), m_isHDR(false), m_colorFormat(ColorFormat::NONE), m_filepath(""), m_bitsPerPixel(0)
+	: m_width(0), m_height(0), m_isHDR(false), m_colorFormat(ColorFormat::NONE), m_bitsPerPixel(0)
 {
 }
 
@@ -267,7 +267,7 @@ bool TRAP::Image::IsSupportedImageFile(const std::string& filepath)
 {
 	TP_PROFILE_FUNCTION();
 
-	std::string virtualFilePath = VFS::MakeVirtualPathCompatible(filepath);
+	const std::string virtualFilePath = VFS::MakeVirtualPathCompatible(filepath);
 	const std::string fileFormat = Utils::String::GetSuffix(Utils::String::ToLower(virtualFilePath));
 
 	bool result = false;

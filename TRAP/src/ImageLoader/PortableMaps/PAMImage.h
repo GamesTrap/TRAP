@@ -32,7 +32,7 @@ namespace TRAP::INTERNAL
 		/// <summary>
 		/// Default Destructor.
 		/// </summary>
-		~PAMImage() = default;
+		~PAMImage() override = default;
 
 		/// <summary>
 		/// Retrieve the raw pixel data of the Image.
