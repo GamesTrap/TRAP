@@ -16,6 +16,13 @@
 #include "CustomImage.h"
 #include "Embed.h"
 
+const std::array<std::string, 14> TRAP::Image::SupportedImageFormatSuffixes
+{
+	"pgm", "ppm", "pnm", "pam", "pfm", "tga", "icb", "vda", "vst", "bmp", "dib", "png", "hdr", "pic"
+};
+
+//-------------------------------------------------------------------------------------------------------------------//
+
 TRAP::Image::Image()
 	: m_width(0), m_height(0), m_isHDR(false), m_colorFormat(ColorFormat::NONE), m_bitsPerPixel(0)
 {
@@ -270,14 +277,8 @@ bool TRAP::Image::IsSupportedImageFile(const std::string& filepath)
 	const std::string virtualFilePath = VFS::MakeVirtualPathCompatible(filepath);
 	const std::string fileFormat = Utils::String::GetSuffix(Utils::String::ToLower(virtualFilePath));
 
-	bool result = false;
-
-	if (fileFormat == "pgm" || fileFormat == "ppm" || fileFormat == "pnm" || fileFormat == "pam" || fileFormat == "pfm" ||
-	    fileFormat == "tga" || fileFormat == "icb" || fileFormat == "vda" || fileFormat == "vst" ||
-		fileFormat == "bmp" || fileFormat == "dib" ||
-		fileFormat == "png" ||
-		fileFormat == "hdr" || fileFormat == "pic")
-		result = true;
-
-	return result;
+	return std::any_of(SupportedImageFormatSuffixes.begin(), SupportedImageFormatSuffixes.end(), [fileFormat](const std::string& suffix)
+	{
+		return fileFormat == suffix;
+	});
 }

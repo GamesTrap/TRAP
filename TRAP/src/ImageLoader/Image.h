@@ -184,7 +184,9 @@ namespace TRAP
 		/// <param name="img">Image to flip</param>
 		/// <returns>Flipped Image.</returns>
 		static Scope<Image> FlipY(const Scope<Image>& img);
-		
+
+		static const std::array<std::string, 14> SupportedImageFormatSuffixes;
+
 	protected:
 		/// <summary>
 		/// Flip raw pixel data on X axis.

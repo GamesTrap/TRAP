@@ -801,10 +801,10 @@ void TRAP::Application::ProcessHotReloading(std::vector<std::string>& shaders, s
 					return;
 
 				const std::string_view suffix = Utils::String::GetSuffixStringView(virtualPath);
-				//TODO Refactor to Image::GetSupportedImageFormatSuffixes(); ?!
-				if (suffix == "pgm" || suffix == "ppm" || suffix == "pnm" || suffix == "pam" || suffix == "pfm" ||
-					suffix == "tga" || suffix == "icb" || suffix == "vda" || suffix == "vst" || suffix == "bmp" ||
-					suffix == "dib" || suffix == "png" || suffix == "hdr" || suffix == "pic")
+				if(std::any_of(Image::SupportedImageFormatSuffixes.begin(), Image::SupportedImageFormatSuffixes.end(), [suffix](const std::string& sfx)
+				{
+					return suffix == sfx;
+				}))
 				{
 					if (std::find(textures.begin(), textures.end(), virtualPath) == textures.end())
 					{
