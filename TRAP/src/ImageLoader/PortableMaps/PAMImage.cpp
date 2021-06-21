@@ -126,10 +126,11 @@ TRAP::INTERNAL::PAMImage::PAMImage(std::string filepath)
 
 			//File uses big-endian
 			//Convert to machines endian
-			bool needSwap = static_cast<bool>(Utils::GetEndian() != Utils::Endian::Big);
-			if (needSwap)
+			if (Utils::GetEndian() != Utils::Endian::Big)
+			{
 				for (uint16_t& element : m_data2Byte)
 					Utils::Memory::SwapBytes(element);
+			}
 		}
 		else
 		{

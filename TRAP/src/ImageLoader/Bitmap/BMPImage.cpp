@@ -46,7 +46,7 @@ TRAP::INTERNAL::BMPImage::BMPImage(std::string filepath)
 
 		//File uses little-endian
 		//Convert to machines endian
-		bool needSwap = static_cast<bool>(Utils::GetEndian() != Utils::Endian::Little);
+		bool needSwap = Utils::GetEndian() != Utils::Endian::Little;
 		if (needSwap)
 		{
 			Utils::Memory::SwapBytes(header.MagicNumber);

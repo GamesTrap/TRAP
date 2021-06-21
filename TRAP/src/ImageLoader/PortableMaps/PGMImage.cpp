@@ -93,9 +93,11 @@ TRAP::INTERNAL::PGMImage::PGMImage(std::string filepath)
 			
 			//File uses big-endian
 			//Convert to machines endian
-			if (static_cast<bool>(Utils::GetEndian() != Utils::Endian::Big))
+			if (Utils::GetEndian() != Utils::Endian::Big)
+			{
 				for (uint16_t& element : m_data2Byte)
 					Utils::Memory::SwapBytes(element);
+			}
 		}
 		else
 		{
