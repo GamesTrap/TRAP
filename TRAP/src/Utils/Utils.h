@@ -41,6 +41,23 @@ namespace TRAP::Utils
 	/// </summary>
 	/// <returns>TRAP::Utils::Endian::Little or TRAP::Utils::Endian::Big.</returns>
 	Endian GetEndian();
+
+	/// <summary>
+	/// CPUInfo is a struct which contains information about the CPU of the system which is used by TRAP Engine.
+	/// </summary>
+	struct CPUInfo
+	{
+		std::string Model{};
+		uint32_t Cores = 0;
+		uint32_t LogicalCores = 0;
+		bool HyperThreaded = false;
+	};
+
+	/// <summary>
+	/// Get information about the CPU that runs the Engine.
+	/// </summary>
+	/// <returns>Constant reference to the TRAP::CPUInfo.</returns>
+	const CPUInfo& GetCPUInfo();
 }
 
 #endif /*_TRAP_UTILS_H_*/

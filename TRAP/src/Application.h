@@ -25,17 +25,6 @@ namespace TRAP
 		class KeyPressEvent;
 	}
 
-	/// <summary>
-	/// CPUInfo is a struct which contains information about the CPU of the system which is used by TRAP Engine.
-	/// </summary>
-	struct CPUInfo //TODO Move to Utils
-	{
-		std::string Model{};
-		uint32_t Cores = 0;
-		uint32_t LogicalCores = 0;
-		bool HyperThreaded = false;
-	};
-
 	class Application
 	{
 	public:
@@ -193,12 +182,6 @@ namespace TRAP
 		static std::string GetClipboardString();
 
 		/// <summary>
-		/// Get information about the CPU that runs the Engine.
-		/// </summary>
-		/// <returns>Constant reference to the TRAP::CPUInfo.</returns>
-		static const CPUInfo& GetCPUInfo(); //TODO Move to Utils
-
-		/// <summary>
 		/// Get the id of the main engine thread.
 		/// </summary>
 		/// <returns>Main thread ID.</returns>
@@ -313,7 +296,6 @@ namespace TRAP
 
 		Graphics::RenderAPI m_newRenderAPI;
 
-		static CPUInfo s_CPU; //TODO Move to Utils
 		static Application* s_Instance;
 
 		friend int ::main();

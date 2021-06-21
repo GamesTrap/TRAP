@@ -1899,3 +1899,4 @@ SITREP 06/20/2021|21w24a2
 SITREP 06/21/2021|21w25a1
     - Changed TRAP Engine version to 21w25a1(0.7.50)
     - Added SupportedImageFormatSuffixes to TRAP::Image ~<10 mins
+    - Moved CPUInfo from Application to Utils ~<15 mins
