@@ -31,13 +31,6 @@ const std::string& TRAP::Graphics::Renderer::GetTitle()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Graphics::Renderer::GetDrawCalls()
-{
-	return Application::GetDrawCalls();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 uint32_t TRAP::Graphics::Renderer::GetFPS()
 {
 	return Application::GetFPS();

@@ -58,6 +58,23 @@ namespace TRAP::Utils
 	/// </summary>
 	/// <returns>Constant reference to the TRAP::CPUInfo.</returns>
 	const CPUInfo& GetCPUInfo();
+
+	/// <summary>
+	/// Enum used to indicate which Window Manager is used by Linux based systems.
+	/// </summary>
+	enum class LinuxWindowManager
+	{
+		Unknown,
+
+		X11,
+		Wayland
+	};
+
+	/// <summary>
+	/// Get the Window Manager used by Linux based systems.
+	/// </summary>
+	/// <returns>TRAP::Application::LinuxWindowManager::X11, TRAP::Application::LinuxWindowManager::Wayland or TRAP::Application::LinuxWindowManager::Unknown(If Window Manager is unknown or system OS is Windows).</returns>
+	LinuxWindowManager GetLinuxWindowManager();
 }
 
 #endif /*_TRAP_UTILS_H_*/

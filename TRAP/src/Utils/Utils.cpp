@@ -2,6 +2,7 @@
 #include "Utils.h"
 
 #include "Utils/String/String.h"
+#include "Utils/Dialogs/Dialogs.h"
 
 std::string TRAP::Utils::UUIDToString(const std::array<uint8_t, 16>& uuid)
 {
@@ -244,4 +245,36 @@ const TRAP::Utils::CPUInfo& TRAP::Utils::GetCPUInfo()
 	}
 
 	return cpu;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Utils::LinuxWindowManager TRAP::Utils::GetLinuxWindowManager()
+{
+	static LinuxWindowManager windowManager{};
+
+	#ifdef TRAP_PLATFORM_LINUX
+	if(windowManager == LinuxWindowManager::Unknown)
+	{
+		std::string wl = "wayland";
+		std::string x = "x11";
+		std::string session;
+		if(std::getenv("XDG_SESSION_TYPE"))
+			session = std::getenv("XDG_SESSION_TYPE");
+		if (std::getenv("WAYLAND_DISPLAY") || session == wl)
+			windowManager = LinuxWindowManager::Wayland;
+		else if (std::getenv("DISPLAY") || session == x)
+			windowManager = LinuxWindowManager::X11;
+		else
+		{
+			TP_CRITICAL(Log::EngineLinuxPrefix, "Unsupported Window Manager!");
+			Utils::Dialogs::ShowMsgBox("Unsupported Window Manager",
+				"Window Manager is unsupported!\nTRAP Engine uses X11 or Wayland\nMake sure the appropriate environment variables are set!",
+				Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
+			exit(-1);
+		}
+	}
+#endif
+
+	return windowManager;
 }

@@ -29,17 +29,6 @@ namespace TRAP
 	{
 	public:
 		/// <summary>
-		/// Enum used to indicate which Window Manager is used by Linux based systems.
-		/// </summary>
-		enum class LinuxWindowManager
-		{
-			Unknown,
-
-			X11,
-			Wayland
-		};
-
-		/// <summary>
 		/// Constructor.
 		/// </summary>
 		/// <param name="gameName">Name of the game.</param>
@@ -109,15 +98,6 @@ namespace TRAP
 		/// <returns>Current TimeScale.</returns>
 		static float GetTimeScale();
 		/// <summary>
-		/// Get the current DrawCalls of the frame.
-		/// </summary>
-		/// <returns>Current DrawCalls of the frame.</returns>
-		static uint32_t GetDrawCalls(); //TODO Remove
-		/// <summary>
-		/// Add a single DrawCall to the DrawCall counter.
-		/// </summary>
-		static void AddSingleDrawCall(); //TODO Remove
-		/// <summary>
 		/// Get the current TickRate (Default: 100).
 		/// </summary>
 		/// <returns>Current TickRate.</returns>
@@ -159,11 +139,6 @@ namespace TRAP
 		/// </summary>
 		/// <returns>TRAP::Utils::TimeStep containing the passed Time since the Engine was started.</returns>
 		static Utils::TimeStep GetTime();
-		/// <summary>
-		/// Get the Window Manager used by Linux based systems.
-		/// </summary>
-		/// <returns>TRAP::Application::LinuxWindowManager::X11, TRAP::Application::LinuxWindowManager::Wayland or TRAP::Application::LinuxWindowManager::Unknown(If Window Manager is unknown or system OS is Windows).</returns>
-		static LinuxWindowManager GetLinuxWindowManager(); //TODO Move to Utils
 		/// <summary>
 		/// Get the TRAP::ThreadPool to be used for small tasks that can be multi-threaded.
 		/// </summary>
@@ -248,13 +223,6 @@ namespace TRAP
 		bool OnWindowRestore(Events::WindowRestoreEvent& e);
 
 		/// <summary>
-		/// Checks if the environmental variable for Wayland(WAYLAND_DISPLAY or XDG_SESSION_TYPE=wayland or X11(DISPLAY or XDG_SESSION_TYPE=x11) is set.<br>
-		/// Note: If neither Wayland or X11 was found the Engine will shutdown!<br>
-		/// NOTE: This function only affects Linux OSes!
-		/// </summary>
-		void UpdateLinuxWindowManager(); //TODO Move to Utils
-
-		/// <summary>
 		/// ProcessHotReloading is used to offload the HotReloading system onto another Thread.
 		/// </summary>
 		/// <param name="shaders">Reference to a vector for adding the virtual paths of modified shaders.</param>
@@ -282,13 +250,10 @@ namespace TRAP
 		std::unique_ptr<Utils::Timer> m_timer;
 		uint32_t m_FramesPerSecond;
 		float m_FrameTime;
-		uint32_t m_drawCalls; //TODO Remove
 		uint32_t m_fpsLimit;
 		uint32_t m_tickRate;
 		float m_timeScale;
 		std::string m_gameName;
-
-		LinuxWindowManager m_linuxWindowManager; //TODO Move to Utils
 
 		ThreadPool m_threadPool;
 

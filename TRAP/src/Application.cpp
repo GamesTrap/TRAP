@@ -28,12 +28,10 @@ TRAP::Application::Application(const std::string& gameName)
 	: m_timer(std::make_unique<Utils::Timer>()),
 	  m_FramesPerSecond(0),
 	  m_FrameTime(0.0f),
-	  m_drawCalls(0),
 	  m_fpsLimit(0),
 	  m_tickRate(100),
 	  m_timeScale(1.0f),
 	  m_gameName(gameName),
-	  m_linuxWindowManager(LinuxWindowManager::Unknown),
 	  m_threadPool(Utils::GetCPUInfo().LogicalCores > 1 ? (Utils::GetCPUInfo().LogicalCores - 1) : std::thread::hardware_concurrency()),
 	  m_newRenderAPI(Graphics::RenderAPI::NONE)
 {
@@ -47,10 +45,8 @@ TRAP::Application::Application(const std::string& gameName)
 
 	TP_INFO(Log::ApplicationPrefix, "CPU: ", Utils::GetCPUInfo().LogicalCores, "x ", Utils::GetCPUInfo().Model);
 
-	UpdateLinuxWindowManager();
-
 	//TODO Future remove when Wayland Windows are implemented
-	if (GetLinuxWindowManager() == LinuxWindowManager::Wayland)
+	if (TRAP::Utils::GetLinuxWindowManager() == TRAP::Utils::LinuxWindowManager::Wayland)
 	{
         TRAP::Utils::Dialogs::ShowMsgBox("Wayland unsupported!", "Wayland is currently not supported by TRAP! Please use X11 instead",
             TRAP::Utils::Dialogs::Style::Error, TRAP::Utils::Dialogs::Buttons::Quit);
@@ -221,8 +217,6 @@ void TRAP::Application::Run()
 		if (!m_focused && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
 			nextFrame += std::chrono::milliseconds(1000 / 30); //30 FPS
 
-		m_drawCalls = 0;
-
 		Utils::Timer FrameTimeTimer;
 		const float time = m_timer->Elapsed();
 		const Utils::TimeStep deltaTime{ (time - lastFrameTime) * m_timeScale };
@@ -368,20 +362,6 @@ float TRAP::Application::GetTimeScale()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint32_t TRAP::Application::GetDrawCalls()
-{
-	return s_Instance->m_drawCalls;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Application::AddSingleDrawCall()
-{
-	++(s_Instance->m_drawCalls);
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 uint32_t TRAP::Application::GetTickRate()
 {
 	return s_Instance->m_tickRate;
@@ -436,13 +416,6 @@ TRAP::Utils::TimeStep TRAP::Application::GetTime()
 	const Utils::TimeStep timeStep(s_Instance->m_timer->Elapsed());
 
 	return timeStep;
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Application::LinuxWindowManager TRAP::Application::GetLinuxWindowManager()
-{
-	return s_Instance->m_linuxWindowManager;
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -505,31 +478,6 @@ void TRAP::Application::ReCreate(const Graphics::RenderAPI renderAPI) const
 
 	for (const auto& layer : *m_layerStack)
 		layer->OnAttach();
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
-void TRAP::Application::UpdateLinuxWindowManager()
-{
-#ifdef TRAP_PLATFORM_LINUX
-	std::string wl = "wayland";
-	std::string x = "x11";
-	std::string session;
-	if(std::getenv("XDG_SESSION_TYPE"))
-		session = std::getenv("XDG_SESSION_TYPE");
-	if (std::getenv("WAYLAND_DISPLAY") || session == wl)
-		m_linuxWindowManager = LinuxWindowManager::Wayland;
-	else if (std::getenv("DISPLAY") || session == x)
-		m_linuxWindowManager = LinuxWindowManager::X11;
-	else
-	{
-		TP_CRITICAL(Log::EngineLinuxPrefix, "Unsupported Window Manager!");
-		Utils::Dialogs::ShowMsgBox("Unsupported Window Manager",
-			"Window Manager is unsupported!\nTRAP Engine uses X11 or Wayland\nMake sure the appropriate environment variables are set!",
-			Utils::Dialogs::Style::Error, Utils::Dialogs::Buttons::Quit);
-		exit(-1);
-	}
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------------------------//

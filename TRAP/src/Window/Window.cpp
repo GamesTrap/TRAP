@@ -14,6 +14,7 @@
 #include "Embed.h"
 #include "Graphics/API/Vulkan/VulkanRenderer.h"
 #include "Layers/ImGui/ImGuiWindowing.h"
+#include "Utils/Utils.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -202,9 +203,9 @@ void TRAP::Window::SetTitle(const std::string& title)
 		std::to_string(TRAP_VERSION_MINOR(TRAP_VERSION)) + "." + std::to_string(TRAP_VERSION_PATCH(TRAP_VERSION)) +
 		"[INDEV]" + Log::WindowVersion + Graphics::Renderer::GetTitle();
 #ifdef TRAP_PLATFORM_LINUX
-	if (Application::GetLinuxWindowManager() == Application::LinuxWindowManager::Wayland)
+	if (Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
 		newTitle += "[Wayland]";
-	else if (Application::GetLinuxWindowManager() == Application::LinuxWindowManager::X11)
+	else if (Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
 		newTitle += "[X11]";
 	else
 		newTitle += "[Unknown]";
@@ -822,9 +823,9 @@ void TRAP::Window::Init(const WindowProps& props)
 	#ifndef TRAP_RELEASE
 		newTitle += Graphics::Renderer::GetTitle();
 	#ifdef TRAP_PLATFORM_LINUX
-		if (Application::GetLinuxWindowManager() == Application::LinuxWindowManager::Wayland)
+		if (Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::Wayland)
 			newTitle += "[Wayland]";
-		else if (Application::GetLinuxWindowManager() == Application::LinuxWindowManager::X11)
+		else if (Utils::GetLinuxWindowManager() == Utils::LinuxWindowManager::X11)
 			newTitle += "[X11]";
 		else
 			newTitle += "[Unknown]";
