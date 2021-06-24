@@ -162,8 +162,6 @@ namespace TRAP::Graphics
 		static TRAP::Ref<TRAP::Graphics::Queue> GetGraphicsQueue();
 		static TRAP::Ref<TRAP::Graphics::Queue> GetComputeQueue();
 		static TRAP::Ref<TRAP::Graphics::RootSignature> GetGraphicsRootSignature(Window* window = nullptr);
-		
-		static const TRAP::Scope<PerWindowData>& GetPerWindowData(Window* window); //TODO Remove
 	
 	protected:
 		static const TRAP::Scope<PerWindowData>& GetMainWindowData();

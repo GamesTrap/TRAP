@@ -1905,3 +1905,7 @@ SITREP 06/22/2021|21w25a2
     - Changed TRAP Engine version to 21w25a2(0.7.51)
     - Application Removed GetDrawCalls & AddSingleDrawCall ~<10 mins
     - Moved GetLinuxWindowManager from Application to Utils ~<15 mins
+
+SITREP 06/24/2021|21w25a3
+    - Changed TRAP Engine version to 21w25a3(0.7.52)
+    - RendererAPI Removed GetPerWindowData ~<10 mins

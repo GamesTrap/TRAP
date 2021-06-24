@@ -207,13 +207,6 @@ TRAP::Ref<TRAP::Graphics::Queue> TRAP::Graphics::RendererAPI::GetComputeQueue()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& TRAP::Graphics::RendererAPI::GetPerWindowData(Window* window)
-{
-	return s_perWindowDataMap[window];
-}
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 const TRAP::Scope<TRAP::Graphics::RendererAPI::PerWindowData>& TRAP::Graphics::RendererAPI::GetMainWindowData()
 {
 	return s_perWindowDataMap[TRAP::Application::GetWindow().get()];

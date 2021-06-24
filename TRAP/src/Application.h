@@ -160,7 +160,7 @@ namespace TRAP
 		/// Get the id of the main engine thread.
 		/// </summary>
 		/// <returns>Main thread ID.</returns>
-		static std::thread::id GetMainThreadID(); //TODO Move to Utils
+		static std::thread::id GetMainThreadID();
 
 	private:
 		/// <summary>
