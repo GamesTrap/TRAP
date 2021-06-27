@@ -26,8 +26,9 @@ namespace TRAP::Graphics
 
 		uint64_t GetSize() const;
 		BufferUsage GetBufferUsage() const;
+		const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& GetUBOs() const;
 
-		void Use(Shader* shader);
+		//void Use(Shader* shader); TODO REMOVE
 
 		void SetData(const void* data, uint64_t size, uint64_t offset = 0);
 

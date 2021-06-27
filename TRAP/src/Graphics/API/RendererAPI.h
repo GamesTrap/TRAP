@@ -139,7 +139,6 @@ namespace TRAP::Graphics
 		                         Window* window = nullptr) = 0;
 		virtual void SetScissor(uint32_t x, uint32_t y, uint32_t width, uint32_t height, Window* window = nullptr) = 0;
 		
-		//TODO More CommandBuffer Stuff
 		virtual void Draw(uint32_t vertexCount, uint32_t firstVertex = 0, Window* window = nullptr) = 0;
 		virtual void DrawIndexed(uint32_t indexCount, uint32_t firstIndex = 0, uint32_t firstVertex = 0, Window* window = nullptr) = 0;
 
@@ -2226,7 +2225,7 @@ namespace TRAP::Graphics
 	protected:
 		static TRAP::Scope<RendererAPI> s_Renderer;
 		static RenderAPI s_RenderAPI;
-		static TRAP::Scope<API::ResourceLoader> s_ResourceLoader; //TODO This is a singleton shouldnt it be moved to ResourceLoader with a Getter?!
+		static TRAP::Scope<API::ResourceLoader> s_ResourceLoader;
 
 		static TRAP::Ref<DescriptorPool> s_descriptorPool;
 		static TRAP::Ref<Queue> s_graphicQueue;

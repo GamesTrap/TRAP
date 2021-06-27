@@ -33,8 +33,8 @@ public:
 		//PushLayer(TRAP::MakeScope<TitleTests>());
 		//PushLayer(TRAP::MakeScope<VulkanTests>());
 		//PushLayer(TRAP::MakeScope<VulkanTextureTests>());
-		//PushLayer(TRAP::MakeScope<VulkanMultiWindowTests>());
-		PushLayer(TRAP::MakeScope<VulkanIcoSphereTests>());
+		PushLayer(TRAP::MakeScope<VulkanMultiWindowTests>());
+		//PushLayer(TRAP::MakeScope<VulkanIcoSphereTests>());
 		//PushLayer(TRAP::MakeScope<ImageLoaderTests>());
 		//PushLayer(TRAP::MakeScope<DragAndDropTests>());
 	}

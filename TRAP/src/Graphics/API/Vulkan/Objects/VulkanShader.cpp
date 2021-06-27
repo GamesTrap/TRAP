@@ -9,6 +9,7 @@
 #include "Graphics/API/Vulkan/Objects/VulkanRootSignature.h"
 #include "Graphics/API/Objects/RootSignature.h"
 #include "Graphics/API/Objects/DescriptorPool.h"
+#include "Graphics/API/Objects/DescriptorSet.h"
 #include "Graphics/Buffers/BufferLayout.h"
 
 TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const RendererAPI::BinaryShaderDesc& desc)
@@ -16,7 +17,8 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const R
 	  m_numThreadsPerGroup(),
 	  m_shaderModules(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
 	  m_reflection(nullptr),
-	  m_entryNames(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT))
+	  m_entryNames(static_cast<uint32_t>(RendererAPI::ShaderStage::SHADER_STAGE_COUNT)),
+	  m_firstUBOBind(true)
 {
 	m_name = name;
 	
@@ -156,7 +158,7 @@ TRAP::Graphics::API::VulkanShader::VulkanShader(const std::string& name, const R
 			if (resource.Set != static_cast<uint32_t>(RendererAPI::DescriptorUpdateFrequency::None))
 				usage = BufferUsage::Dynamic;
 
-			m_UBOs[resource.Set][resource.Reg] = UniformBuffer::Create(resource.Name, resource.Size, usage); //TODO Multiple Windows ?!
+			m_UBOs[resource.Set][resource.Reg] = UniformBuffer::Create(resource.Name, resource.Size, usage);
 		}
 	}
 }
@@ -227,9 +229,34 @@ void TRAP::Graphics::API::VulkanShader::Use(Window* window)
 {
 	dynamic_cast<VulkanRenderer*>(RendererAPI::GetRenderer().get())->BindShader(this, window);
 
-	for(const auto& UBOSet : m_UBOs)
+	if(m_firstUBOBind)
 	{
-		for (const auto& UBOBinding : UBOSet.second)
-			UBOBinding.second->Use(this);
+		for(const auto& UBOSet : m_UBOs)
+		{
+			for (const auto& UBOBinding : UBOSet.second)
+			{
+				//Bind UBO
+				//Currently assumes "UpdateFreqNone" for Static & "UpdateFreqPerFrame" for Dynamic
+				std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
+				params[0].Name = UBOBinding.second->GetName().c_str();
+				params[0].Offset = TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset{};
+
+				if(UBOBinding.second->GetBufferUsage() == BufferUsage::Static)
+				{
+					params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{UBOBinding.second->GetUBOs()[0].get()};
+					GetDescriptorSets().StaticDescriptors->Update(0, params);
+				}
+				else
+				{
+					for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
+					{
+						params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{UBOBinding.second->GetUBOs()[i].get()};
+						GetDescriptorSets().PerFrameDescriptors->Update(i, params);
+					}
+				}
+			}
+		}
+
+		m_firstUBOBind = false;
 	}
 }

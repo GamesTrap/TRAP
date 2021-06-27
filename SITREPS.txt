@@ -1909,3 +1909,11 @@ SITREP 06/22/2021|21w25a2
 SITREP 06/24/2021|21w25a3
     - Changed TRAP Engine version to 21w25a3(0.7.52)
     - RendererAPI Removed GetPerWindowData ~<10 mins
+
+SITREP 06/27/2021|21w25a4
+    - Changed TRAP Engine version to 21w25a4(0.7.53)
+    - VulkanDevice Changed VkQueueFlags vector to unordered_map ~<10 mins
+    - VulkanPhysicalDevice now also prints device name when a check doesn't pass capability tester ~<15 mins
+    - UniformBuffer Added GetUBOs() function which returns the internal buffers holding the data ~<10 mins
+    - Moved UniformBuffer Use() function to inside Shader Use() ~<20 mins
+    - VulkanMultiWindowTets Added UBO test for secondary Window ~<20 mins

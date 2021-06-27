@@ -7,7 +7,14 @@ VulkanMultiWindowTests::VulkanMultiWindowTests()
 	  m_indexBuffer(nullptr),
 	  m_wireFrameMainWindow(false),
 	  m_wireFrameSecondWindow(false),
-	  m_window(nullptr)
+	  m_window(nullptr),
+	  m_colorData(),
+	  m_sizeMultiplicatorData(),
+	  m_colorTimer(),
+	  m_vertexTimer(),
+	  m_colorUniformBuffer(nullptr),
+	  m_sizeMultiplicatorUniformBuffer(nullptr),
+	  m_useUBO(false)
 {
 }
 
@@ -61,6 +68,13 @@ void VulkanMultiWindowTests::OnAttach()
 	m_indexBuffer->Use();
 
 	TRAP::Graphics::ShaderManager::LoadFile("VKTest", "/shaders/test.shader");
+	std::vector<TRAP::Graphics::Shader::Macro> macros{{"TEST", "0.5f"}};
+	const TRAP::Scope<TRAP::Graphics::Shader>& vkTestUBOShader = TRAP::Graphics::ShaderManager::LoadFile("VKTestUBO", "/shaders/testubo.shader", &macros);
+
+	m_sizeMultiplicatorUniformBuffer = vkTestUBOShader->GetUniformBuffer(1, 0);
+	m_colorUniformBuffer = vkTestUBOShader->GetUniformBuffer(1, 1);
+	m_sizeMultiplicatorUniformBuffer->AwaitLoading();
+	m_colorUniformBuffer->AwaitLoading();
 
 	TRAP::Graphics::RendererAPI::GetResourceLoader()->WaitForAllResourceLoads();
 }
@@ -91,7 +105,37 @@ void VulkanMultiWindowTests::OnUpdate(const TRAP::Utils::TimeStep&)
 		m_vertexBuffer->Use(m_window.get());
 		m_indexBuffer->Use(m_window.get());
 
-		TRAP::Graphics::ShaderManager::Get("VKTest")->Use(m_window.get());
+		if(m_useUBO)
+		{
+			if(m_vertexTimer.Elapsed() > 2.0f)
+			{
+				m_sizeMultiplicatorData.Multiplier = TRAP::Math::Vec3(1.5f);
+				if(m_vertexTimer.Elapsed() > 4.0f)
+					m_vertexTimer.Reset();
+			}
+			else
+				m_sizeMultiplicatorData.Multiplier = TRAP::Math::Vec3(1.0f);
+
+			if(m_colorTimer.Elapsed() > 1.0f)
+			{
+				if(m_colorTimer.Elapsed() > 2.0f)
+					m_colorData.Color = TRAP::Math::Vec3(0.0f, 0.0f, 1.0f);
+				else
+					m_colorData.Color = TRAP::Math::Vec3(0.0f, 1.0f, 0.0f);
+
+				if(m_colorTimer.Elapsed() > 3.0f)
+					m_colorTimer.Reset();
+			}
+			else
+				m_colorData.Color = TRAP::Math::Vec3(1.0f, 0.0f, 0.0f);
+
+			m_sizeMultiplicatorUniformBuffer->SetData(&m_sizeMultiplicatorData, sizeof(SizeMultiplicatorData));
+			m_colorUniformBuffer->SetData(&m_colorData, sizeof(ColorData));
+
+			TRAP::Graphics::ShaderManager::Get("VKTestUBO")->Use(m_window.get());
+		}
+		else
+			TRAP::Graphics::ShaderManager::Get("VKTest")->Use(m_window.get());
 
 		TRAP::Graphics::RendererAPI::GetRenderer()->DrawIndexed(3, 0, 0, m_window.get());
 
@@ -129,6 +173,7 @@ void VulkanMultiWindowTests::OnImGuiRender()
 	ImGui::Begin("Vulkan Multi-Window Test");
 	ImGui::Text("Main-Window WireFrame (F1): %s", m_wireFrameMainWindow ? "Enabled" : "Disabled");
 	ImGui::Text("Secondary-Window WireFrame (F2): %s", m_wireFrameSecondWindow ? "Enabled" : "Disabled");
+	ImGui::Text("UBO (F3): %s", m_useUBO ? "Enabled" : "Disabled");
 	ImGui::End();
 }
 
@@ -164,6 +209,11 @@ bool VulkanMultiWindowTests::OnKeyPress(TRAP::Events::KeyPressEvent& e)
 	{
 		m_wireFrameSecondWindow = !m_wireFrameSecondWindow;
 		TP_TRACE("[VulkanMultiWindowTests] Secondary-Window WireFrame: ", m_wireFrameSecondWindow ? "Enabled" : "Disabled");
+	}
+	if(e.GetKey() == TRAP::Input::Key::F3)
+	{
+		m_useUBO = !m_useUBO;
+		TP_TRACE("[VulkanMultiWindowTests] UBO: ", m_useUBO ? "Enabled" : "Disabled");
 	}
 
 	if (e.GetKey() == TRAP::Input::Key::Escape)

@@ -31,6 +31,8 @@ namespace TRAP::Graphics::API
 		std::vector<VkShaderModule> m_shaderModules;
 		TRAP::Ref<ShaderReflection::PipelineReflection> m_reflection;
 		std::vector<std::string> m_entryNames;
+
+		bool m_firstUBOBind;
 	};
 }
 

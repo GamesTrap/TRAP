@@ -40,6 +40,20 @@ private:
 	bool m_wireFrameSecondWindow;
 
 	TRAP::Scope<TRAP::Window> m_window;
+
+	struct ColorData
+	{
+		TRAP::Math::Vec3 Color;
+	} m_colorData;
+	struct SizeMultiplicatorData
+	{
+		TRAP::Math::Vec3 Multiplier;
+	} m_sizeMultiplicatorData;
+	TRAP::Utils::Timer m_colorTimer;
+	TRAP::Utils::Timer m_vertexTimer;
+	TRAP::Ref<TRAP::Graphics::UniformBuffer> m_colorUniformBuffer;
+	TRAP::Ref<TRAP::Graphics::UniformBuffer> m_sizeMultiplicatorUniformBuffer;
+	bool m_useUBO;
 };
 
 #endif /*_GAMESTRAP_VULKANMULTIWINDOWTESTS_H_*/

@@ -428,7 +428,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		//Required: Vulkan 1.2 is minimum
 		if(devProps.apiVersion < VK_API_VERSION_1_2)
 		{
-			TP_ERROR(Log::RendererVulkanPrefix, "Failed Vulkan Version Test!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Vulkan Version Test!");
 			continue;
 		}
 
@@ -439,7 +439,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			score += 2500;
 		else
 		{
-			TP_ERROR(Log::RendererVulkanPrefix, "Failed Dedicated/Internal GPU Test!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Dedicated/Internal GPU Test!");
 			continue;
 		}
 
@@ -461,7 +461,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 
 		if (result == extensions.end())
 		{
-			TP_ERROR(Log::RendererVulkanPrefix, "Failed Required PhysicalDevice Extensions Test!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Required PhysicalDevice Extensions Test!");
 			continue;
 		}
 
@@ -470,7 +470,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		//Init WindowingAPI needed here for instance extensions
 		if(!INTERNAL::WindowingAPI::Init())
 		{
-			TP_ERROR(Log::RendererVulkanPrefix, "Failed to initialize WindowingAPI!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed to initialize WindowingAPI!");
 			TRAP::Application::Shutdown();
 		}
 
@@ -487,7 +487,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		VkCall(vkCreateInstance(&instanceCreateInfo, nullptr, &instance));
 		if(!instance)
 		{
-			TP_ERROR(Log::RendererVulkanPrefix, "Failed Instance Creation Test!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Instance Creation Test!");
 			continue;
 		}
 
@@ -502,7 +502,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		if (!vulkanTestWindow)
 		{
 			vkDestroyInstance(instance, nullptr);
-			TP_ERROR(Log::RendererVulkanPrefix, "Failed Vulkan Surface Test Window creation!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Vulkan Surface Test Window creation!");
 			continue;
 		}
 		
@@ -514,7 +514,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		{
 			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 			vkDestroyInstance(instance, nullptr);
-			TP_ERROR(Log::RendererVulkanPrefix, "Failed Surface creation!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Surface creation!");
 			continue;
 		}
 		
@@ -528,7 +528,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 			vkDestroyInstance(instance, nullptr);
-			TP_ERROR(Log::RendererVulkanPrefix, "Failed Querying Queue Family Properties!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Querying Queue Family Properties!");
 			continue;
 		}
 		
@@ -547,7 +547,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 			vkDestroyInstance(instance, nullptr);
-			TP_ERROR(Log::RendererVulkanPrefix, "Failed Graphics Queue Test!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Graphics Queue Test!");
 			continue;
 		}
 		
@@ -564,7 +564,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 			vkDestroyInstance(instance, nullptr);
-			TP_ERROR(Log::RendererVulkanPrefix, "Failed Present Queue Test!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Present Queue Test!");
 			continue;
 		}
 
@@ -578,7 +578,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 			vkDestroyInstance(instance, nullptr);
-			TP_ERROR(Log::RendererVulkanPrefix, "Failed Present Mode Test!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Present Mode Test!");
 			continue;
 		}
 
@@ -592,7 +592,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			vkDestroySurfaceKHR(instance, surface, nullptr);
 			TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
 			vkDestroyInstance(instance, nullptr);
-			TP_ERROR(Log::RendererVulkanPrefix, "Failed Surface Format Test!");
+			TP_ERROR(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Surface Format Test!");
 			continue;
 		}
 
@@ -608,7 +608,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			}
 		}
 		if (!foundComputeQueue)
-			TP_WARN(Log::RendererVulkanPrefix, "Failed Compute Queue Test!");
+			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Compute Queue Test!");
 
 		//Big Optionally: Check if PhysicalDevice supports Transfer queue
 		bool foundTransferQueue = false;
@@ -622,7 +622,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 			}
 		}
 		if (!foundTransferQueue)
-			TP_WARN(Log::RendererVulkanPrefix, "Failed Transfer Queue Test!");
+			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Transfer Queue Test!");
 		
 		//Big Optionally: Check if Raytracing extensions are supported
 		bool raytracing = true;
@@ -655,7 +655,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		if (raytracing)
 			score += 2000;
 		else
-			TP_WARN(Log::RendererVulkanPrefix, "Failed Raytracing Test!");
+			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Raytracing Test!");
 
 		//Get PhysicalDevice Features
 		VkPhysicalDeviceFeatures devFeatures;
@@ -665,13 +665,13 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		if (devFeatures.geometryShader)
 			score += 1000;
 		else
-			TP_WARN(Log::RendererVulkanPrefix, "Failed Geometry Shader Test!");
+			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Geometry Shader Test!");
 
 		//Big Optionally: Check if Tessellation Shaders are supported
 		if (devFeatures.tessellationShader)
 			score += 1000;
 		else
-			TP_WARN(Log::RendererVulkanPrefix, "Failed Tessellation Shader Test!");
+			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Tessellation Shader Test!");
 
 		//Optionally: Check if Surface has optimal surface format
 		bool optimalFormat = false;
@@ -686,7 +686,7 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		if(optimalFormat)
 			score += 250;
 		else
-			TP_WARN(Log::RendererVulkanPrefix, "Failed Optimal Surface Format Test!");
+			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Optimal Surface Format Test!");
 
 		vkDestroySurfaceKHR(instance, surface, nullptr);
 		TRAP::INTERNAL::WindowingAPI::DestroyWindow(std::move(vulkanTestWindow));
@@ -710,13 +710,13 @@ void TRAP::Graphics::API::VulkanPhysicalDevice::RatePhysicalDevices(const std::v
 		if (devFeatures.fillModeNonSolid)
 			score += 500;
 		else
-			TP_WARN(Log::RendererVulkanPrefix, "Failed WireFrame Test!");
+			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed WireFrame Test!");
 
 		//Optionally: Check if Anisotropic Filtering is supported
 		if (devFeatures.samplerAnisotropy)
 			score += 500;
 		else
-			TP_WARN(Log::RendererVulkanPrefix, "Failed Anisotropic Filtering Test!");
+			TP_WARN(Log::RendererVulkanPrefix, "Device: \"", devProps.deviceName, "\" Failed Anisotropic Filtering Test!");
 
 		//Get PhysicalDevice UUID
 		std::array<uint8_t, 16> physicalDeviceUUID{};

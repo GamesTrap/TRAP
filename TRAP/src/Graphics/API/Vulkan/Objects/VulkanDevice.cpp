@@ -87,11 +87,6 @@ TRAP::Graphics::API::VulkanDevice::VulkanDevice(TRAP::Scope<VulkanPhysicalDevice
 	std::vector<std::vector<float>> queueFamilyPriorities(queueFamilyProperties.size());
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos{};
 
-	const uint32_t maxQueueFlag = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT |
-			                      VK_QUEUE_SPARSE_BINDING_BIT | VK_QUEUE_PROTECTED_BIT;
-	m_availableQueueCount.resize(maxQueueFlag * sizeof(uint32_t));
-	m_usedQueueCount.resize(maxQueueFlag * sizeof(uint32_t));
-
 	for(uint32_t i = 0; i < queueFamilyProperties.size(); i++)
 	{
 		uint32_t queueCount = queueFamilyProperties[i].queueCount;
