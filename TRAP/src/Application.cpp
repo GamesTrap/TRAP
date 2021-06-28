@@ -137,8 +137,8 @@ TRAP::Application::Application(const std::string& gameName)
 	//Always added as a fallback shader
 	Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader)->Use();
 	//Always added as a fallback texture
-	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
-	Graphics::TextureManager::Add(Graphics::TextureCube::Create());
+	Graphics::TextureManager::Add(Graphics::Texture2D::Create(Graphics::TextureUsage::Static));
+	Graphics::TextureManager::Add(Graphics::TextureCube::Create(Graphics::TextureUsage::Static));
 
 	//Initialize Renderer
 	Graphics::Renderer::Init();
@@ -471,8 +471,8 @@ void TRAP::Application::ReCreate(const Graphics::RenderAPI renderAPI) const
 	//Always added as a fallback shader
 	Graphics::ShaderManager::LoadSource("Fallback", Embed::FallbackShader);
 	//Always added as a fallback texture
-	Graphics::TextureManager::Add(Graphics::Texture2D::Create());
-	Graphics::TextureManager::Add(Graphics::TextureCube::Create());
+	Graphics::TextureManager::Add(Graphics::Texture2D::Create(Graphics::TextureUsage::Static));
+	Graphics::TextureManager::Add(Graphics::TextureCube::Create(Graphics::TextureUsage::Static));
 	//Initialize Renderer
 	Graphics::Renderer::Init();
 

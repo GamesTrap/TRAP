@@ -3,6 +3,7 @@
 
 #include "Graphics/API/RendererAPI.h"
 #include "Graphics/Buffers/UniformBuffer.h"
+#include "Graphics/Textures/Texture.h"
 
 namespace TRAP::Graphics
 {
@@ -44,6 +45,7 @@ namespace TRAP::Graphics
 		Ref<UniformBuffer> GetUniformBuffer(uint32_t set, uint32_t binding);
 
 		virtual void Use(Window* window = nullptr) = 0;
+		virtual void UseTexture(uint32_t binding, const TRAP::Graphics::Texture* texture) = 0;
 
 		static Scope<Shader> CreateFromFile(const std::string& name, const std::string& filePath, const std::vector<Macro>* userMacros = nullptr);
 		static Scope<Shader> CreateFromFile(const std::string& filepath, const std::vector<Macro>* userMacros = nullptr);

@@ -41,7 +41,7 @@ namespace TRAP::Graphics::API
 		void FillVirtualTexture(CommandBuffer& cmd);
 		void ReleasePage();
 		
-		void SetTextureName(const char* name) const;
+		void SetTextureName(const std::string& name) const;
 		
 	private:
 		struct PageCounts

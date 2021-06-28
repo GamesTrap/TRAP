@@ -64,11 +64,15 @@ TRAP::Window::~Window()
 
 	if(!s_windows)
 	{
+		TP_TRACE("Shutting down Renderer");
 		Graphics::Renderer::Shutdown();
+		TP_TRACE("Shutting down TextureManager");
 		Graphics::TextureManager::Shutdown();
+		TP_TRACE("Shutting down ShaderManager");
 		Graphics::ShaderManager::Shutdown();
+		TP_TRACE("Shutting down RendererAPI");
 		Graphics::RendererAPI::Shutdown();
-	}	
+	}
 	TP_DEBUG(Log::WindowPrefix, "Destroying Window: \"", m_data.Title, "\"");
 	Shutdown();
 }

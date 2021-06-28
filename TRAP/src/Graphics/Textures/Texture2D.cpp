@@ -2,12 +2,8 @@
 #include "Texture2D.h"
 
 #include "Graphics/API/RendererAPI.h"
-#include "Graphics/API/Vulkan/Textures/VulkanTexture2D.h"
 #include "VFS/VFS.h"
-
-uint32_t TRAP::Graphics::Texture2D::s_maxTextureSize = 0;
-
-//-------------------------------------------------------------------------------------------------------------------//
+#include "Graphics/API/ResourceLoader.h"
 
 std::vector<std::pair<TRAP::Graphics::Texture2D*, std::future<TRAP::Scope<TRAP::Image>>>> TRAP::Graphics::Texture2D::m_loadingTextures{};
 
@@ -27,20 +23,38 @@ const std::string& TRAP::Graphics::Texture2D::GetFilePath() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string& name, const std::string_view filepath, TextureParameters parameters)
+TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string& name,
+	const std::string_view filepath, const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
 	if(name.empty())
 	{
 		TP_WARN(Log::Texture2DPrefix, "Name is empty! Using Filename as Texture2D Name!");
-		return CreateFromFile(filepath, parameters);
+		return CreateFromFile(filepath, usage);
 	}
-	
+
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
-		return MakeScope<API::VulkanTexture2D>(name, filepath, parameters);
+	{
+		TRAP::Scope<Texture2D> texture = TRAP::Scope<Texture2D>(new Texture2D());
+
+		//Load Texture
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
+		desc.Filepaths[0] = filepath;
+		desc.IsCubemap = false;
+		desc.Texture = &texture->m_texture;
+
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
+		texture->m_name = name;
+		texture->m_texture->SetTextureName(texture->m_name);
+		texture->m_filepath = filepath;
+		texture->m_textureType = TextureType::Texture2D;
+		texture->m_textureUsage = usage;
+
+		return texture;
+	}
 
 	default:
 		return nullptr;
@@ -49,16 +63,33 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string_view filepath, TextureParameters parameters)
+TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile(const std::string_view filepath,
+	const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
 	std::string name = VFS::GetFileName(VFS::MakeVirtualPathCompatible(filepath));
-	
+
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
-		return MakeScope<API::VulkanTexture2D>(name, filepath, parameters);
+	{
+		TRAP::Scope<Texture2D> texture = TRAP::Scope<Texture2D>(new Texture2D());
+
+		//Load Texture
+		TRAP::Graphics::RendererAPI::TextureLoadDesc desc{};
+		desc.Filepaths[0] = filepath;
+		desc.IsCubemap = false;
+		desc.Texture = &texture->m_texture;
+
+		TRAP::Graphics::RendererAPI::GetResourceLoader()->AddResource(desc, &texture->m_syncToken);
+		texture->m_name = name;
+		texture->m_filepath = filepath;
+		texture->m_textureType = TextureType::Texture2D;
+		texture->m_textureUsage = usage;
+
+		return texture;
+	}
 
 	default:
 		return nullptr;
@@ -67,14 +98,17 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromFile
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImage(const std::string& name, const Scope<Image>& img, TextureParameters parameters)
+TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImage(const std::string& name,
+	const Scope<Image>& img, const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
 	switch(RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
-		return MakeScope<API::VulkanTexture2D>(name, img, parameters);
+		//TODO
+		return nullptr;
+		//return MakeScope<API::VulkanTexture2D>(name, img);
 
 	default:
 		return nullptr;
@@ -83,14 +117,17 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateFromImag
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(uint32_t width, uint32_t height, uint32_t bitsPerPixel, Image::ColorFormat format, TextureParameters parameters)
+TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(uint32_t width, uint32_t height,
+	uint32_t bitsPerPixel, Image::ColorFormat format, const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
 	switch (RendererAPI::GetRenderAPI())
 	{
 	case RenderAPI::Vulkan:
-		return MakeScope<API::VulkanTexture2D>(width, height, bitsPerPixel, format, parameters);
+		//TODO
+		return nullptr;
+		//return MakeScope<API::VulkanTexture2D>(width, height, bitsPerPixel, format);
 
 	default:
 		return nullptr;
@@ -99,22 +136,21 @@ TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::CreateEmpty(ui
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::Create(TextureParameters parameters)
+TRAP::Scope<TRAP::Graphics::Texture2D> TRAP::Graphics::Texture2D::Create(const TextureUsage usage)
 {
-	TP_PROFILE_FUNCTION();
-
-	switch (RendererAPI::GetRenderAPI())
-	{
-	case RenderAPI::Vulkan:
-		return MakeScope<API::VulkanTexture2D>(parameters);
-
-	default:
-		return nullptr;
-	}
+	return nullptr; //TODO
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
+void TRAP::Graphics::Texture2D::UploadImage(const TRAP::Scope<TRAP::Image>& image)
+{
+	//TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+//TODO Move to Texture (TextureCube support?!)
 void TRAP::Graphics::Texture2D::UpdateLoadingTextures()
 {
 	for (uint32_t i = 0; i < m_loadingTextures.size(); i++)

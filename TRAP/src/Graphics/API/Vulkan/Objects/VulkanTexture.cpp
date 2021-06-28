@@ -571,9 +571,9 @@ TRAP::Graphics::API::VulkanTexture::~VulkanTexture()
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VulkanTexture::SetTextureName(const char* name) const
+void TRAP::Graphics::API::VulkanTexture::SetTextureName(const std::string& name) const
 {
-	TRAP_ASSERT(name);
+	TRAP_ASSERT(!name.empty());
 
 	VkSetObjectName(m_device->GetVkDevice(), reinterpret_cast<uint64_t>(m_vkImage), VK_OBJECT_TYPE_IMAGE, name);
 }

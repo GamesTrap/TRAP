@@ -15,3 +15,9 @@ void TRAP::Graphics::DummyShader::Use(Window* window)
 {
 	TRAP::Graphics::ShaderManager::Get("Fallback")->Use(window);
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::DummyShader::UseTexture(const uint32_t binding, const TRAP::Graphics::Texture* texture)
+{
+}

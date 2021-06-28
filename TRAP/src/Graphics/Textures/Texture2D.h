@@ -2,28 +2,28 @@
 #define _TRAP_TEXTURE2D_H_
 
 #include "Texture.h"
+#include "ImageLoader/Image.h"
 
 namespace TRAP::Graphics
 {
 	class Texture2D : public Texture
 	{
 	public:
-		static Scope<Texture2D> CreateFromFile(const std::string& name, std::string_view filepath, TextureParameters parameters = TextureParameters());
-		static Scope<Texture2D> CreateFromFile(std::string_view filepath, TextureParameters parameters = TextureParameters());
-		static Scope<Texture2D> CreateFromImage(const std::string& name, const TRAP::Scope<TRAP::Image>& img, TextureParameters parameters = TextureParameters());
-		static Scope<Texture2D> CreateEmpty(uint32_t width, uint32_t height, uint32_t bitsPerPixel, Image::ColorFormat format, TextureParameters parameters = TextureParameters());
-		static Scope<Texture2D> Create(TextureParameters parameters = TextureParameters());
+		static Scope<Texture2D> CreateFromFile(const std::string& name, std::string_view filepath, TextureUsage usage);
+		static Scope<Texture2D> CreateFromFile(std::string_view filepath, TextureUsage usage);
+		static Scope<Texture2D> CreateFromImage(const std::string& name, const TRAP::Scope<TRAP::Image>& img, TextureUsage usage);
+		static Scope<Texture2D> CreateEmpty(uint32_t width, uint32_t height, uint32_t bitsPerPixel, Image::ColorFormat format, TextureUsage usage);
+		static Scope<Texture2D> Create(TextureUsage usage); //Fallback Texture
 
 		const std::string& GetFilePath() const;
 
-		virtual void UploadImage(const TRAP::Scope<TRAP::Image>& image) = 0;
+		void UploadImage(const TRAP::Scope<TRAP::Image>& image) override;
 
 		static void UpdateLoadingTextures();
-		
+
+		~Texture2D() = default;
 	protected:
 		Texture2D();
-		
-		static uint32_t s_maxTextureSize;
 
 		std::string m_filepath;
 

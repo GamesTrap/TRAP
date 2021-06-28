@@ -65,7 +65,7 @@ VkDebugUtilsMessengerCreateInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsM
 
 VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObjectNameInfo(const VkObjectType type,
 	const uint64_t handle,
-	const char* name)
+	const std::string& name)
 {
 	VkDebugUtilsObjectNameInfoEXT info{};
 
@@ -73,7 +73,7 @@ VkDebugUtilsObjectNameInfoEXT TRAP::Graphics::API::VulkanInits::DebugUtilsObject
 	info.pNext = nullptr;
 	info.objectType = type;
 	info.objectHandle = handle;
-	info.pObjectName = name;
+	info.pObjectName = name.c_str();
 	
 	return info;
 }

@@ -1,38 +1,50 @@
 #include "TRAPPCH.h"
 #include "Texture.h"
 
-//-------------------------------------------------------------------------------------------------------------------//
-
-TRAP::Graphics::TextureParameters::TextureParameters()
-	: Filter(TextureFilter::Nearest), Wrap(TextureWrap::Clamp_To_Edge)
-{
-	TP_PROFILE_FUNCTION();
-
-}
+#include "Graphics/API/Vulkan/Objects/VulkanTexture.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::TextureParameters::TextureParameters(const TextureFilter filter)
-	: Filter(filter), Wrap(TextureWrap::Clamp_To_Edge)
-{
-	TP_PROFILE_FUNCTION();
+// TRAP::Graphics::TextureParameters::TextureParameters()
+// 	: Filter(TextureFilter::Nearest), Wrap(TextureWrap::Clamp_To_Edge)
+// {
+// 	TP_PROFILE_FUNCTION();
 
-}
+// }
 
-//-------------------------------------------------------------------------------------------------------------------//
+// //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::TextureParameters::TextureParameters(const TextureFilter filter, const TextureWrap wrap)
-	: Filter(filter), Wrap(wrap)
-{
-	TP_PROFILE_FUNCTION();
+// TRAP::Graphics::TextureParameters::TextureParameters(const TextureFilter filter)
+// 	: Filter(filter), Wrap(TextureWrap::Clamp_To_Edge)
+// {
+// 	TP_PROFILE_FUNCTION();
 
-}
+// }
+
+// //-------------------------------------------------------------------------------------------------------------------//
+
+// TRAP::Graphics::TextureParameters::TextureParameters(const TextureFilter filter, const TextureWrap wrap)
+// 	: Filter(filter), Wrap(wrap)
+// {
+// 	TP_PROFILE_FUNCTION();
+
+// }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
 TRAP::Graphics::Texture::Texture()
-	: m_textureType(TextureType::Texture2D)
-{	
+	: m_textureType(TextureType::Texture2D),
+	  m_texture(nullptr),
+	  m_textureUsage(TextureUsage::Static),
+	  m_syncToken()
+{
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::Texture::~Texture()
+{
+	m_texture.reset();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
@@ -51,30 +63,56 @@ TRAP::Graphics::TextureType TRAP::Graphics::Texture::GetType() const
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-TRAP::Graphics::TextureParameters TRAP::Graphics::Texture::GetParameters() const
+uint32_t TRAP::Graphics::Texture::GetWidth() const
 {
-	return m_textureParameters;
+	return m_texture->GetWidth();
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-uint8_t TRAP::Graphics::Texture::GetStrideFromFormat(const Image::ColorFormat format)
+uint32_t TRAP::Graphics::Texture::GetHeight() const
 {
-	switch(format)
-	{
-	case Image::ColorFormat::RGB:
-		return 3;
+	return m_texture->GetHeight();
+}
 
-	case Image::ColorFormat::RGBA:
-		return 4;
+//-------------------------------------------------------------------------------------------------------------------//
 
-	case Image::ColorFormat::GrayScale:
-		return 1;
+uint32_t TRAP::Graphics::Texture::GetDepth() const
+{
+	return m_texture->GetDepth();
+}
 
-	case Image::ColorFormat::GrayScaleAlpha:
-		return 2;
+//-------------------------------------------------------------------------------------------------------------------//
 
-	default:
-		return 0;
-	}
+uint32_t TRAP::Graphics::Texture::GetMipLevels() const
+{
+	return m_texture->GetMipLevels();
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Graphics::TextureUsage TRAP::Graphics::Texture::GetTextureUsage() const
+{
+	return m_textureUsage;
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::Texture::IsLoaded() const
+{
+	return RendererAPI::GetResourceLoader()->IsTokenCompleted(&m_syncToken);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::Texture::AwaitLoading() const
+{
+	RendererAPI::GetResourceLoader()->WaitForToken(&m_syncToken);
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+TRAP::Ref<TRAP::Graphics::API::VulkanTexture> TRAP::Graphics::Texture::GetTexture() const
+{
+	return m_texture;
 }

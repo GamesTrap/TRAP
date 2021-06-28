@@ -22,6 +22,7 @@ namespace TRAP::Graphics::API
 		const std::vector<std::string>& GetEntryNames() const;
 
 		void Use(Window* window = nullptr) override;
+		void UseTexture(uint32_t binding, const TRAP::Graphics::Texture* texture) override;
 		
 	private:
 		TRAP::Ref<VulkanDevice> m_device;

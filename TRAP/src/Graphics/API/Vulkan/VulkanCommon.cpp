@@ -647,7 +647,7 @@ VkSamplerAddressMode TRAP::Graphics::API::AddressModeToVkAddressMode(const Rende
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-void TRAP::Graphics::API::VkSetObjectName(VkDevice device, const uint64_t handle, const VkObjectType type, const char* name)
+void TRAP::Graphics::API::VkSetObjectName(VkDevice device, const uint64_t handle, const VkObjectType type, const std::string& name)
 {
 #if defined(ENABLE_GRAPHICS_DEBUG)
 	if (VulkanRenderer::s_debugUtilsExtension)

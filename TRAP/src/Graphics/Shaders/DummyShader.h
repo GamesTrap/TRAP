@@ -12,6 +12,7 @@ namespace TRAP::Graphics
 		~DummyShader() override = default;
 
 		void Use(Window* window = nullptr) override;
+		void UseTexture(uint32_t binding, const TRAP::Graphics::Texture* texture) override;
 	};
 }
 

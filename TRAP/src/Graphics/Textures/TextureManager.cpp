@@ -7,17 +7,18 @@ std::unordered_map<std::string, TRAP::Scope<TRAP::Graphics::Texture>> TRAP::Grap
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Load(const std::string_view filepath, const TextureParameters parameters)
+const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Load(const std::string& filepath,
+	const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture2D> texture = Texture2D::CreateFromFile(filepath, parameters);
+	Scope<Texture2D> texture = Texture2D::CreateFromFile(filepath, usage);
 	if(texture)
 	{
 		const std::string name = texture->GetName();
-		
+
 		Add(std::move(texture));
-		
+
 		return Get2D(name);
 	}
 
@@ -26,16 +27,17 @@ const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Lo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Load(const std::string& name, const std::string& filepath, const TextureParameters parameters)
+const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Load(const std::string& name,
+	const std::string& filepath, const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture2D::CreateFromFile(name, filepath, parameters);
+	Scope<Texture> texture = Texture2D::CreateFromFile(name, filepath, usage);
 
 	if(texture)
 	{
 		Add(std::move(texture));
-		
+
 		return Get2D(name);
 	}
 
@@ -44,11 +46,12 @@ const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Lo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Load(const std::string& name, const Scope<Image>& img, TextureParameters parameters)
+const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Load(const std::string& name,
+	const Scope<Image>& img, const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<Texture> texture = Texture2D::CreateFromImage(name, img, parameters);
+	Scope<Texture> texture = Texture2D::CreateFromImage(name, img, usage);
 
 	if (texture)
 	{
@@ -62,36 +65,38 @@ const TRAP::Scope<TRAP::Graphics::Texture2D>& TRAP::Graphics::TextureManager::Lo
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::Load(const std::string& name, const std::string& filepath, const InputFormat format, const TextureParameters parameters)
+const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::Load(const std::string& name,
+	const std::string& filepath, const TextureCubeFormat format, const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<TextureCube> texture = TextureCube::CreateFromCross(name, filepath, format, parameters);
+	Scope<TextureCube> texture = TextureCube::CreateFromFile(name, filepath, format, usage);
 
 	if(texture)
 	{
 		Add(std::move(texture));
-		
+
 		return GetCube(name);
 	}
-	
+
 	return GetCube("FallbackCube");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::Load(const std::string_view filepath, const InputFormat format, const TextureParameters parameters)
+const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::Load(const std::string& filepath,
+	const TextureCubeFormat format, const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<TextureCube> texture = TextureCube::CreateFromCross(filepath, format, parameters);
+	Scope<TextureCube> texture = TextureCube::CreateFromFile(filepath, format, usage);
 
 	if(texture)
 	{
 		const std::string name = texture->GetName();
-		
+
 		Add(std::move(texture));
-		
+
 		return GetCube(name);
 	}
 
@@ -100,29 +105,31 @@ const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::Load(const std::string& name, const std::array<std::string_view, 6> & filepaths, const TextureParameters parameters)
+const TRAP::Scope<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::Load(const std::string& name,
+	const std::array<std::string, 6> & filepaths, const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<TextureCube> texture = TextureCube::CreateFromFiles(name, filepaths, parameters);
+	Scope<TextureCube> texture = TextureCube::CreateFromFiles(name, filepaths, usage);
 
 	if(texture)
 	{
 		Add(std::move(texture));
-		
+
 		return GetCube(name);
 	}
-	
+
 	return GetCube("FallbackCube");
 }
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-const std::unique_ptr<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::Load(const std::string& name, const Scope<Image>& img, const InputFormat format, const TextureParameters parameters)
+const std::unique_ptr<TRAP::Graphics::TextureCube>& TRAP::Graphics::TextureManager::Load(const std::string& name,
+	const Scope<Image>& img, const TextureCubeFormat format, const TextureUsage usage)
 {
 	TP_PROFILE_FUNCTION();
 
-	Scope<TextureCube> texture = TextureCube::CreateFromCrossImage(name, img, format, parameters);
+	Scope<TextureCube> texture = TextureCube::CreateFromImage(name, img, format, usage);
 
 	if(texture)
 	{
@@ -188,7 +195,7 @@ const TRAP::Scope<TRAP::Graphics::Texture>& TRAP::Graphics::TextureManager::Get(
 
 	if (textureType == TextureType::Texture2D)
 		return Get("Fallback2D", TextureType::Texture2D);
-	
+
 	return Get("FallbackCube", TextureType::TextureCube);
 }
 
@@ -242,29 +249,29 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 			}
 
 			const std::string name = s_Textures[nameOrVirtualPath]->GetName();
-			const TextureParameters textureParameters = s_Textures[nameOrVirtualPath]->GetParameters();
+			const TextureUsage usage = s_Textures[nameOrVirtualPath]->GetTextureUsage();
 
 			if (textureType == TextureType::Texture2D)
 			{
 				s_Textures[nameOrVirtualPath].reset();
-				s_Textures[nameOrVirtualPath] = Texture2D::CreateFromFile(name, filePath, textureParameters);
+				s_Textures[nameOrVirtualPath] = Texture2D::CreateFromFile(name, filePath, usage);
 				TP_INFO(Log::TextureManagerTexture2DPrefix, "Reloaded: \"", nameOrVirtualPath, "\"");
 			}
 			else if (textureType == TextureType::TextureCube)
 			{
 				if (s_Textures[nameOrVirtualPath])
 				{
-					const InputFormat inputFormat = dynamic_cast<TextureCube*>(s_Textures[nameOrVirtualPath].get())->GetInputFormat();
+					const TextureCubeFormat textureFormat = dynamic_cast<TextureCube*>(s_Textures[nameOrVirtualPath].get())->GetTextureCubeFormat();
 
-					std::array<std::string_view, 6> filePaths{};
+					std::array<std::string, 6> filePaths{};
 					for (uint32_t i = 0; i < dynamic_cast<TextureCube*>(s_Textures[nameOrVirtualPath].get())->GetFilePaths().size(); i++)
 						filePaths[i] = dynamic_cast<TextureCube*>(s_Textures[nameOrVirtualPath].get())->GetFilePaths()[i];
 
 					s_Textures[nameOrVirtualPath].reset();
-					if (inputFormat == InputFormat::Vertical_Cross || inputFormat == InputFormat::Horizontal_Cross)
-						s_Textures[nameOrVirtualPath] = TextureCube::CreateFromCross(name, filePath, inputFormat, textureParameters);
+					if (textureFormat == TextureCubeFormat::Cross /*|| textureFormat == TextureCubeFormat::Equirectangular*/) //TODO Add when Equirecangular is implemented
+						s_Textures[nameOrVirtualPath] = TextureCube::CreateFromFile(name, filePath, textureFormat, usage);
 					else
-						s_Textures[nameOrVirtualPath] = TextureCube::CreateFromFiles(name, filePaths, textureParameters);
+						s_Textures[nameOrVirtualPath] = TextureCube::CreateFromFiles(name, filePaths, usage);
 
 					TP_INFO(Log::TextureManagerTextureCubePrefix, "Reloaded: \"", nameOrVirtualPath, "\"");
 				}
@@ -301,7 +308,7 @@ void TRAP::Graphics::TextureManager::Reload(const std::string& nameOrVirtualPath
 					}
 				}
 			}
-		
+
 		TP_WARN(Log::TextureManagerPrefix, "Could not find Texture: \"", nameOrVirtualPath, "\" to reload.");
 	}
 }
@@ -327,29 +334,29 @@ void TRAP::Graphics::TextureManager::Reload(const Scope<Texture>& texture)
 			return;
 		}
 
-		const TextureParameters textureParameters = texture->GetParameters();
+		const TextureUsage usage = texture->GetTextureUsage();
 
 		if (textureType == TextureType::Texture2D)
 		{
 			s_Textures[name].reset();
-			s_Textures[name] = Texture2D::CreateFromFile(name, filePath, textureParameters);
+			s_Textures[name] = Texture2D::CreateFromFile(name, filePath, usage);
 			TP_INFO(Log::TextureManagerTexture2DPrefix, "Reloaded: \"", name, "\"");
 		}
 		else if (textureType == TextureType::TextureCube)
 		{
 			if (texture)
 			{
-				const InputFormat inputFormat = dynamic_cast<TextureCube*>(texture.get())->GetInputFormat();
+				const TextureCubeFormat textureFormat = dynamic_cast<TextureCube*>(texture.get())->GetTextureCubeFormat();
 
-				std::array<std::string_view, 6> filePaths{};
+				std::array<std::string, 6> filePaths{};
 				for (uint32_t i = 0; i < dynamic_cast<TextureCube*>(texture.get())->GetFilePaths().size(); i++)
 					filePaths[i] = dynamic_cast<TextureCube*>(texture.get())->GetFilePaths()[i];
 
 				s_Textures[name].reset();
-				if (inputFormat == InputFormat::Vertical_Cross || inputFormat == InputFormat::Horizontal_Cross)
-					s_Textures[name] = TextureCube::CreateFromCross(name, filePath, inputFormat, textureParameters);
+				if (textureFormat == TextureCubeFormat::Cross /*|| textureFormat == TextureCubeFormat::Equirectangular*/) //TODO Add when Equirecangular is implemented
+					s_Textures[name] = TextureCube::CreateFromFile(name, filePath, textureFormat, usage);
 				else
-					s_Textures[name] = TextureCube::CreateFromFiles(name, filePaths, textureParameters);
+					s_Textures[name] = TextureCube::CreateFromFiles(name, filePaths, usage);
 
 				TP_INFO(Log::TextureManagerTextureCubePrefix, "Reloaded: \"", name, "\"");
 			}
@@ -408,6 +415,6 @@ bool TRAP::Graphics::TextureManager::ExistsVirtualPath(const std::string_view vi
 					return true;
 		}
 	}
-	
+
 	return false;
 }

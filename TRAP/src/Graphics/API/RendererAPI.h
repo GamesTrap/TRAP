@@ -2218,6 +2218,8 @@ namespace TRAP::Graphics
 			bool TessellationSupported;
 			bool GeometryShaderSupported;
 			float MaxAnisotropy;
+			uint32_t MaxImageDimension2D;
+			uint32_t MaxImageDimensionCube;
 		} GPUSettings{};
 
 		inline static constexpr uint32_t ImageCount = 3; //Triple Buffered

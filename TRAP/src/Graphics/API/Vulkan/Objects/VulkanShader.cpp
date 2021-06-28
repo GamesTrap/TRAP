@@ -260,3 +260,10 @@ void TRAP::Graphics::API::VulkanShader::Use(Window* window)
 		m_firstUBOBind = false;
 	}
 }
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t binding, const TRAP::Graphics::Texture* texture)
+{
+	//TODO
+}

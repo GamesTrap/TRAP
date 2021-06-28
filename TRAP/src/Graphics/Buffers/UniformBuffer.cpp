@@ -99,40 +99,6 @@ const std::vector<TRAP::Ref<TRAP::Graphics::Buffer>>& TRAP::Graphics::UniformBuf
 
 //-------------------------------------------------------------------------------------------------------------------//
 
-//TODO REMOVE
-// void TRAP::Graphics::UniformBuffer::Use(Shader* shader) //TODO Maybe replace with Shader->UseUBO(UBO) ?!
-// {
-// 	TRAP_ASSERT(shader);
-
-// 	//TODO Find out in which DescriptorSet (set = X) our UBO is
-// 	//Currently assumes "UpdateFreqNone" for Static & "UpdateFreqPerFrame" for Dynamic
-// 	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
-// 	params[0].Name = m_name.c_str();
-// 	params[0].Offset = TRAP::Graphics::RendererAPI::DescriptorData::BufferOffset{};
-
-// 	//TODO Only needs to be bound once!
-// 	if(m_first)
-// 	{
-// 		m_first = false;
-
-// 		if(m_bufferUsage == BufferUsage::Static)
-// 		{
-// 			params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{m_uniformBuffers[0].get()};
-// 			shader->GetDescriptorSets().StaticDescriptors->Update(0, params);
-// 		}
-// 		else
-// 		{
-// 			for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
-// 			{
-// 				params[0].Resource = std::vector<TRAP::Graphics::Buffer*>{m_uniformBuffers[i].get()};
-// 				shader->GetDescriptorSets().PerFrameDescriptors->Update(i, params);
-// 			}
-// 		}
-// 	}
-// }
-
-//-------------------------------------------------------------------------------------------------------------------//
-
 void TRAP::Graphics::UniformBuffer::SetData(const void* data, const uint64_t size, const uint64_t offset)
 {
 	TRAP_ASSERT(size + offset <= m_uniformBuffers[0]->GetSize());
