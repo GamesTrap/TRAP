@@ -265,5 +265,80 @@ void TRAP::Graphics::API::VulkanShader::Use(Window* window)
 
 void TRAP::Graphics::API::VulkanShader::UseTexture(const uint32_t binding, const TRAP::Graphics::Texture* texture)
 {
+	TRAP_ASSERT(texture, "Texture is nullptr!");
 	//TODO
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanShader::UseSampler(const uint32_t set, const uint32_t binding,
+	TRAP::Graphics::Sampler* const sampler)
+{
+	TRAP_ASSERT(sampler, "Sampler is nullptr!");
+
+	std::string name = ""; //OPTIMIZE Use index into root signature instead of name
+	for(const auto& resource : m_reflection->ShaderResources)
+	{
+		if(resource.Type == RendererAPI::DescriptorType::Sampler && resource.Set == set &&
+			resource.Reg == binding)
+		{
+			name = resource.Name;
+			break;
+		}
+	}
+
+	if(name.empty())
+	{
+		TP_ERROR(Log::RendererVulkanSamplerPrefix, "Sampler with invalid set and/or binding provided!");
+		return;
+	}
+
+	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
+	params[0].Name = name.c_str();
+	params[0].Resource = std::vector<TRAP::Graphics::Sampler*>{sampler};
+	if(set == 0) //None
+		GetDescriptorSets().StaticDescriptors->Update(0, params);
+	else if(set == 1) //Per Frame
+	{
+		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
+			GetDescriptorSets().PerFrameDescriptors->Update(i, params);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+void TRAP::Graphics::API::VulkanShader::UseSamplers(const uint32_t set, const uint32_t binding,
+	const std::vector<TRAP::Graphics::Sampler*>& samplers)
+{
+	TRAP_ASSERT(!samplers.empty(), "Samplers are empty!");
+
+	//TODO
+	std::string name = ""; //OPTIMIZE Use index into root signature instead of name
+	for(const auto& resource : m_reflection->ShaderResources)
+	{
+		if(resource.Type == RendererAPI::DescriptorType::Sampler && resource.Set == set &&
+			resource.Reg == binding && resource.Size == samplers.size())
+		{
+			name = resource.Name;
+			break;
+		}
+	}
+
+	if(name.empty())
+	{
+		TP_ERROR(Log::RendererVulkanSamplerPrefix, "Sampler with invalid set and/or binding provided!");
+		return;
+	}
+
+	std::vector<TRAP::Graphics::RendererAPI::DescriptorData> params(1);
+	params[0].Name = name.c_str();
+	params[0].Resource = samplers;
+	params[0].Count = samplers.size();
+	if(set == 0) //None
+		GetDescriptorSets().StaticDescriptors->Update(0, params);
+	else if(set == 1) //Per Frame
+	{
+		for(uint32_t i = 0; i < TRAP::Graphics::RendererAPI::ImageCount; ++i)
+			GetDescriptorSets().PerFrameDescriptors->Update(i, params);
+	}
 }

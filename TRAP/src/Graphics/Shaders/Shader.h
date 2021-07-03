@@ -46,6 +46,8 @@ namespace TRAP::Graphics
 
 		virtual void Use(Window* window = nullptr) = 0;
 		virtual void UseTexture(uint32_t binding, const TRAP::Graphics::Texture* texture) = 0;
+		virtual void UseSampler(uint32_t set, uint32_t binding, TRAP::Graphics::Sampler* const sampler) = 0;
+		virtual void UseSamplers(uint32_t set, uint32_t binding, const std::vector<TRAP::Graphics::Sampler*>& samplers) = 0;
 
 		static Scope<Shader> CreateFromFile(const std::string& name, const std::string& filePath, const std::vector<Macro>* userMacros = nullptr);
 		static Scope<Shader> CreateFromFile(const std::string& filepath, const std::vector<Macro>* userMacros = nullptr);

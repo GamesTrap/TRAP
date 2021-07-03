@@ -107,17 +107,14 @@ void VulkanTextureTests::OnAttach()
     param.Resource = std::vector<TRAP::Graphics::API::VulkanTexture*>{ m_texture->GetTexture().get() };
     param.Count = 1;
 
-    TRAP::Graphics::RendererAPI::DescriptorData paramSamplers{};
-    paramSamplers.Name = "Samplers";
+    m_shader->GetDescriptorSets().StaticDescriptors->Update(0, { param });
+    //////////////////////////////////////
+
     std::vector<TRAP::Graphics::Sampler*> samplers(m_maxMipLevel, nullptr);
     for (uint32_t i = 0; i < samplers.size(); ++i)
         samplers[i] = m_textureSamplers[i].get();
-    paramSamplers.Resource = samplers;
-    paramSamplers.Count = m_textureSamplers.size();
-	
-    m_shader->GetDescriptorSets().StaticDescriptors->Update(0, { param, paramSamplers });
-    //////////////////////////////////////
-	
+    m_shader->UseSamplers(0, 1, samplers);
+
     //Bind buffers
     m_vertexBuffer->Use();
     m_indexBuffer->Use();

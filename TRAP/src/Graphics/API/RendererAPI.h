@@ -1673,6 +1673,8 @@ namespace TRAP::Graphics
 				FilterType ChromaFilter;
 				bool ForceExplicitReconstruction;
 			} SamplerConversionDesc{};
+
+			bool operator==(const SamplerDesc& s) const;
 		};
 
 		struct BinaryShaderStageDesc

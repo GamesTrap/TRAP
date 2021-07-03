@@ -249,7 +249,7 @@ void TRAP::Utils::Config::Set(const std::string& key, const T value)
 	else
 	{
 		//If not it creates a new element
-		m_data.push_back({ key, ConvertToString<T>(value) });
+		m_data.emplace_back(key, ConvertToString<T>(value));
 	}
 }
 
@@ -278,7 +278,7 @@ void TRAP::Utils::Config::Set(const std::string& key, const std::vector<T>& valu
 	else
 	{
 		//If not it creates a new element
-		m_data.push_back({ key, valueAsString });
+		m_data.emplace_back(key, valueAsString);
 	}
 }
 

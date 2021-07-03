@@ -2150,7 +2150,7 @@ void TRAP::INTERNAL::WindowingAPI::InputMonitor(Scope<InternalMonitor> monitor, 
 		}
 		else
 		{
-			s_Data.Monitors.push_back(std::move(monitor));
+			s_Data.Monitors.emplace_back(std::move(monitor));
 			
 			if (s_Data.Callbacks.Monitor)
 				s_Data.Callbacks.Monitor(s_Data.Monitors.back().get(), connected);

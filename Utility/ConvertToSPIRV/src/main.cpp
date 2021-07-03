@@ -263,7 +263,7 @@ std::vector<Shader> LoadShaderSources(const int argc, char* argv[])
 					{
 						std::string newPath = argv[i];
 						newPath = newPath.substr(0, newPath.size() - 7);
-						shaders.push_back({ newPath, source });
+						shaders.emplace_back(newPath, source);
 					}
 					else
 					{
@@ -292,7 +292,7 @@ std::vector<Shader> LoadShaderSources(const int argc, char* argv[])
 							{
 								std::string newPath = file.path().string();
 								newPath = newPath.substr(0, newPath.size() - 7);
-								shaders.push_back({ newPath, source });
+								shaders.emplace_back(newPath, source);
 							}
 							else
 							{

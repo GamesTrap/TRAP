@@ -11,6 +11,7 @@
 #include "ResourceLoader.h"
 #include "Objects/CommandPool.h"
 #include "Objects/Queue.h"
+#include "Objects/Sampler.h"
 
 //-------------------------------------------------------------------------------------------------------------------//
 
@@ -79,6 +80,8 @@ void TRAP::Graphics::RendererAPI::Shutdown()
 		std::lock_guard<std::mutex> lock(s_perWindowDataMutex);
 		s_perWindowDataMap.clear();
 	}
+
+	TRAP::Graphics::Sampler::ClearCache();
 
 	for(uint32_t i = ImageCount; i > 0; i--)
 	{
@@ -318,4 +321,21 @@ TRAP::Graphics::RendererAPI::PerWindowData::~PerWindowData()
 		GraphicCommandBuffers[i - 1] = nullptr;
 		GraphicCommandPools[i - 1].reset();
 	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------//
+
+bool TRAP::Graphics::RendererAPI::SamplerDesc::operator==(const SamplerDesc& s) const
+{
+	return MinFilter == s.MinFilter && MagFilter == s.MagFilter && MipMapMode == s.MipMapMode &&
+		AddressU == s.AddressU && AddressV == s.AddressV && AddressW == s.AddressW &&
+		MipLodBias == s.MipLodBias && MaxAnisotropy == s.MaxAnisotropy && CompareFunc == s.CompareFunc &&
+		ForceMipLevel == s.ForceMipLevel && MipLevel == s.MipLevel &&
+		SamplerConversionDesc.Format == s.SamplerConversionDesc.Format &&
+		SamplerConversionDesc.Model == s.SamplerConversionDesc.Model &&
+		this->SamplerConversionDesc.Range == s.SamplerConversionDesc.Range &&
+		this->SamplerConversionDesc.ChromaOffsetX == s.SamplerConversionDesc.ChromaOffsetX &&
+		this->SamplerConversionDesc.ChromaOffsetY == s.SamplerConversionDesc.ChromaOffsetY &&
+		this->SamplerConversionDesc.ChromaFilter == s.SamplerConversionDesc.ChromaFilter &&
+		this->SamplerConversionDesc.ForceExplicitReconstruction == s.SamplerConversionDesc.ForceExplicitReconstruction;
 }
